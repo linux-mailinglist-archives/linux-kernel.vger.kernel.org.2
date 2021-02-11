@@ -2,371 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DA631973E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9C1319743
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 01:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhBKX7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 18:59:01 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52920 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhBKX6m (ORCPT
+        id S230170AbhBLABL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 19:01:11 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:47088 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhBLABH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 18:58:42 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id A43F92ADA4;
-        Thu, 11 Feb 2021 18:57:57 -0500 (EST)
-Date:   Fri, 12 Feb 2021 10:58:04 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-cc:     tanxiaofei <tanxiaofei@huawei.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
-Subject: RE: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage optimization
- for SCSI drivers
-In-Reply-To: <4646dd5cb26d4e1195951228c46fbff6@hisilicon.com>
-Message-ID: <8296cd-85d0-6b2e-3291-9a73db553ad8@telegraphics.com.au>
-References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com> <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au> <e949a474a9284ac6951813bfc8b34945@hisilicon.com> <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
- <88d26bd86c314e5483ec596952054be7@hisilicon.com> <da111631-83ef-1ad8-799a-5d976d5759d@telegraphics.com.au> <00c06b19e87a425fa3a4b6aaecc66d49@hisilicon.com> <9611728-3e7-3954-cfee-f3d3cf45df6@telegraphics.com.au> <13c414b9bd7940caa5e1df810356dcfd@hisilicon.com>
- <221cb29-53a8-fd1-4232-360655f28f3@telegraphics.com.au> <3ec7cb32aa754a59b894d048873132cf@hisilicon.com> <9d248ea6-f861-850-ba71-ac2cdd5596ff@telegraphics.com.au> <4646dd5cb26d4e1195951228c46fbff6@hisilicon.com>
+        Thu, 11 Feb 2021 19:01:07 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BNtMEk015976;
+        Thu, 11 Feb 2021 23:59:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=1paWtOfO2mhJngy+COKzBibROrOKsgW2JJkw9tjmcnE=;
+ b=WEeyPhJ8lM5gM0MXQH2DXOjY8Je17Fq/NXkj7OahIWRSUFsc1kFGVxLlJZvIxGKQDHqO
+ 3S418WujZa1tF2nm5lJh5E8R2fSJDgThbPZxkLRn7/obw2+I79QQz0lm8Y7dd7+3yMuj
+ jiESOokVynYCChMrKxavXzvl8rjfhLppSId0mb6RyQPPTWbjefCB+eyHhdDtn/YBtC19
+ r8zHsLrCV3Ljizma6lOZ17XzGzeGaIUSmJ7NsxV4e5Ri/M2g5uI21IW6L1N17716ouLe
+ o3iCNWeJ71uwTbcKOAqEDD4eFH2mIjxzz/eOpHVbav4adlqc9HoyPQ2hGAc1ddMX7GTv iA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 36hkrn9eqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 23:59:15 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11BNtAnR142996;
+        Thu, 11 Feb 2021 23:59:14 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+        by userp3030.oracle.com with ESMTP id 36j520qqa7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 23:59:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cr2earjof1NZ3NR18p9Ifd250LL3L9iGIZld9kBt9ESgLBYYsezFHl/U7luNefw0SsNm78IubV33QoIfcShK87x2oUouGyGHzyjrUlHoJVZA1XqZGarYoqdkd6Vg/hBW2SUBd46kkN1nOqWqd24jkwiI3cZlm19WoS5p4uV/Ue4bqvt77uCfxv0AUCYG2SvikYIj+swPAu5Sah/ephp+7ITK38pDTGbKpf/CKbDr/HLyZmqCAA1VPustNxoumdx9EWxTR9qVMmO8eRiLP3tnxk3QRh3/md6ItrY0qwpUnVJLLkgzPhB34LjM2fgOEJVSKg9pc0xjri2RzK/Yu/zeWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1paWtOfO2mhJngy+COKzBibROrOKsgW2JJkw9tjmcnE=;
+ b=Fw+ySUnC3nGODsV/6CzMtcWBjfxN5O83fD5omXp5WVh2CS+osdRSXbmrwbm6PQka6VvmQQZGRoomN7njm/7EGFBSligh7i44tHdXPyA1d7Il4joyxacSZPF17btlY9awBozReG5gQ8qrH0aSjfXGNNlR1GklahZvvEs/hu7R5ayCpLct20PE4wGU/lbRf9rxTlHMBA5Fi3Mly9vIoyyIrFoI7OlF9o7Nag2Ry2HnhUM3dcLtgepmRGRm28pbGBMMldhl/gLYRqbam5wqF4n575ohwDyOrPcTJ6YZrZTvLURuW2ALo4RTfjeE2VYH0nUxbFQ8fKPPAdyxeHss1HZDpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1paWtOfO2mhJngy+COKzBibROrOKsgW2JJkw9tjmcnE=;
+ b=luLiz+eQeJT+pboO2tbbiaTgv/aG5m8/2JXC+2JsQEKKvBtRzsMri55TfvYb7o7Y5wwKtZERcg94OULUVZk+mmkqLe/HfF7dLq/OmWJIVDQ/Z4PEH1+quEzEsNGiLHVhMWwQNalf5gM1SZxzw3B+toSM98g+3NPdGPs63ELghY4=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com (2603:10b6:300:21::22)
+ by CO1PR10MB4451.namprd10.prod.outlook.com (2603:10b6:303:96::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Thu, 11 Feb
+ 2021 23:59:11 +0000
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074]) by MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074%5]) with mapi id 15.20.3846.028; Thu, 11 Feb 2021
+ 23:59:11 +0000
+Subject: Re: [PATCH v5 01/10] hugetlb: Pass vma into huge_pte_alloc() and
+ huge_pmd_share()
+To:     Axel Rasmussen <axelrasmussen@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+References: <20210210212200.1097784-1-axelrasmussen@google.com>
+ <20210210212200.1097784-2-axelrasmussen@google.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <99dee8e1-dacc-d4d7-2270-dd473b022b74@oracle.com>
+Date:   Thu, 11 Feb 2021 15:59:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <20210210212200.1097784-2-axelrasmussen@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MW4PR04CA0018.namprd04.prod.outlook.com
+ (2603:10b6:303:69::23) To MWHPR10MB1389.namprd10.prod.outlook.com
+ (2603:10b6:300:21::22)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463811774-827468299-1613084310=:6"
-Content-ID: <78e7903f-6cc5-33d7-349a-13c12c8ea@telegraphics.com.au>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MW4PR04CA0018.namprd04.prod.outlook.com (2603:10b6:303:69::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Thu, 11 Feb 2021 23:59:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 77743b2c-3d45-46a7-b476-08d8cee906d5
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4451:
+X-Microsoft-Antispam-PRVS: <CO1PR10MB4451AF35D79DB3AB84EAAD28E28C9@CO1PR10MB4451.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TNdY6vJxIxagAz2AltDHtjW502lCxy3KBB0DPL3kd6uFCyHtZBUcx141uErJI5iaC2cbMENYGZc6oOc6jvY4789FntW/SgVtsDfYvWc2leiGRb3zsRL2UXJXhSuxB+aKhfJFl/U225RYv4ysbEA0kRXXpgZ7XyFfAV9QwM2Lm4cElX+R8BjU/sF0lCPFJpNmje6bYgEgWkwCJDHeWAc9nBCCe+YnengzbZng2+mmzTEj2Lhxu4zQj/1GB9AKIkLMbdJJP41lbJPK6aHrblF7n1narKmqWxsbFUWm1zif5F7cP2ZJlfCgllVoc+96R5ASPnHMSU/pF40TtBbaWQBiyiA223jLpMi5960clfDPJa8RnWfNLD9pjgWVxQwenjKFnh4PTVW0rxw8jq6ecfHsBjpraaSVrhESmMxiH+MwDvrQFwUVwS9V1ISA+z6G4uhUvzdpGLl3R7Lybr0eUnzLhs+3Cqg/I9nh+V5gsItDRFpOb7V8gtFqdA0mMUs95KebWE5ZIvz6GY0QTc1T2AeEpAYHdZE8drVYnwobX2spwnNoYmodSpHvqil8/ib929G97duMOKTopc7/G6z2t2aTFhff+G1eJYqx3iUenDGEtAtW/GwojGK2mNx0upUqWfz6RQZqlZ4YGf9HJxUgl5Ec2g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(346002)(366004)(39860400002)(83380400001)(8936002)(86362001)(4326008)(2906002)(8676002)(31696002)(186003)(26005)(16526019)(2616005)(31686004)(36756003)(316002)(956004)(110136005)(53546011)(66946007)(66556008)(16576012)(66476007)(54906003)(6486002)(921005)(7406005)(44832011)(7416002)(5660300002)(478600001)(52116002)(14583001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RSs4MForcnV2SjZ5eXFzeUg3dXZWendTZEZVNEV6eUIxTjVYUmpFSjhjcVZ3?=
+ =?utf-8?B?ZkhiYS9TUEk4aUxTN0VqQTdlT3JrUWN3b1hPcnorNVhXVzNpcTdQWmJhUDlO?=
+ =?utf-8?B?NUNKQVFsdXl0WWlVTXZVU000bExqVnZwamNnTDBUNzgrMDJUTlAybk9XTmxJ?=
+ =?utf-8?B?aEdWTXNEcWFiMll3RVpheTAxbytXenRzeFMxdTk5dzVlbDdhakR6eDUzQjJy?=
+ =?utf-8?B?UnZhQ2xnSVpOaW9YMWswR0NYaTBTdDhXT1FQZitnUXRHVk5qdy9QT0VnbHF0?=
+ =?utf-8?B?bW1IRTE5UkFrbXZSY0g5Z214UitZMTJybEVwVk5nNmt4OFYyYXVTYnBDaDF0?=
+ =?utf-8?B?cUtoaUorUE40cGZVTWErblBKMWRBeHhHUTEwcTVUeGpqUHI1SU5HYXJ6UCtx?=
+ =?utf-8?B?ZUd6U01wRXNGMGFTR1lhb2VaMUFWS3RLM2pneUxkUEF2N1FUOGdBQVVFZ2NW?=
+ =?utf-8?B?eUc4cWVYUnpRdWM1dTh1a1hmSXQ2T0l1RXVmQ2RhZFVRdkdWTmZzcDRwdGoz?=
+ =?utf-8?B?TjlvUjFTUDlWMjUyUG14bm9KWFFiUjJRbEs0TXNCcHJNVEtLWEpia2puQ0hp?=
+ =?utf-8?B?Nm1Hby8zOHcrcmFJeTNLSDN6ZjA0VkJ1dnp1M3ZlUnpFVzVGWlAyd3BPUmN1?=
+ =?utf-8?B?SHB5dkpkUVMzTHBobGozdThmNm1hWHJSZ2pPeHZlZkNlUGZESTY2dEpsWkNn?=
+ =?utf-8?B?WnExUmNxT0p5ZEc2a3ZuWWQ2UUZLcnI2MU44a25WQWZpRlZ0QkVNdVRsRFFk?=
+ =?utf-8?B?YjBBWkJveHJ1NWRoMlJHbHZLalVMQjNyUGkwaFprT25FWUtmYVlBTi8zRkcx?=
+ =?utf-8?B?UXJOVVZYd25SRUxzR1RqOWo4bGdoV29FbkJOMDhTak5yenk2Ui9ELzh0VDh5?=
+ =?utf-8?B?SmtFTHd2bXIxZEpZU0FVNGRTTjBGem1XTmI5c0hYU0tHRTJWblVYZHBOMmVW?=
+ =?utf-8?B?dVh0eXdTZk9aMWxJeG1YZzZNbG43eXJiVWxuWjJZd2hGRXJPSG5PTnRjUnlv?=
+ =?utf-8?B?bzQvUE5GbVR4L0MzdWdlNmdsUGEwVjZBSDhjNzRQV0xoQUV4SmhaU2pFTS83?=
+ =?utf-8?B?dVd2eTF1R0Q5U2dBaUxiUnNFbno0TmF2bzl1aVdja1NLY3gvTDZrMG4rc0JL?=
+ =?utf-8?B?bTE0djQ5SFRxcHBPamt1Rm1OM2dJOUY2VTE5YXFHeHF5Mm1Na0dHRmRZdE9O?=
+ =?utf-8?B?Wmw3VkE0bnJtbDF3TlRZbkJjdHZIK0I2dTNFYVJpVG90WE9pQmhIQmVWb3J1?=
+ =?utf-8?B?Zmw4QTBTZmM2dFVqRzQrclpFTHBpbzRmaUw2cUdBVzM5T0tKaTBFanpseDEr?=
+ =?utf-8?B?RUlPbDltWVM1emVodklPb0t4SDRhcVdWWXYxdXUxMW1rZkF3NnREeUw4NEdr?=
+ =?utf-8?B?MWhHaFJrZDNhbjhhL0tudGlEdk5hSHpYcm9zbitoK28vSHVyMThOUitFUEho?=
+ =?utf-8?B?am1sbWFIOXE1cHBwN05DWnRsMUgyN0svamVmcU41emg1N041VE0rMFB6NVpo?=
+ =?utf-8?B?YWJwR3J3UU9obmE3UEhmVFovNTdUVVJEWXJZM0NCMUVIN0pHWFJXeFl0T1RZ?=
+ =?utf-8?B?dG85cHZ2c1I3OXRYUXdEc3FtZTVGVU9qa2hQM1c1TDZjS255aTJDajFRUi9i?=
+ =?utf-8?B?N0crWWpmNW9xUWJiYlNuNC9qVGRUS3h6QnB3bTVsZUhnSEd1cHY2NjJJK3dR?=
+ =?utf-8?B?ZW9McEtDTG0vWS9NUEo3dHNGRFB2cmVLTGFOUXdZSWJ5NTBFSk5wLzhWMkdN?=
+ =?utf-8?Q?lotFsP7bawIzoLlTUTLzTXvAtlEhwN0AC2s6Yb3?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77743b2c-3d45-46a7-b476-08d8cee906d5
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2021 23:59:11.5113
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: //VAsl/Zsow8WzS6NIYdMuj42UTrLK9ompDcidMs9dXAlICBJ1nVLRGvMkee5nylemXiP3zuEsFRyvdQJ05akA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4451
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110185
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110185
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 2/10/21 1:21 PM, Axel Rasmussen wrote:
+> From: Peter Xu <peterx@redhat.com>
+> 
+> It is a preparation work to be able to behave differently in the per
+> architecture huge_pte_alloc() according to different VMA attributes.
+> 
+> Pass it deeper into huge_pmd_share() so that we can avoid the find_vma() call.
+> 
+> Suggested-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  arch/arm64/mm/hugetlbpage.c   |  4 ++--
+>  arch/ia64/mm/hugetlbpage.c    |  3 ++-
+>  arch/mips/mm/hugetlbpage.c    |  4 ++--
+>  arch/parisc/mm/hugetlbpage.c  |  2 +-
+>  arch/powerpc/mm/hugetlbpage.c |  3 ++-
+>  arch/s390/mm/hugetlbpage.c    |  2 +-
+>  arch/sh/mm/hugetlbpage.c      |  2 +-
+>  arch/sparc/mm/hugetlbpage.c   |  6 +-----
+>  include/linux/hugetlb.h       |  5 +++--
+>  mm/hugetlb.c                  | 15 ++++++++-------
+>  mm/userfaultfd.c              |  2 +-
+>  11 files changed, 24 insertions(+), 24 deletions(-)
 
----1463811774-827468299-1613084310=:6
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <989b9068-7be-9a98-58d-73ad484bb9c0@telegraphics.com.au>
+Thanks, this will be needed for multiple features where pmd sharing must
+be disabled.  And, the need to disable sharing is based on information in
+the vma.
 
-On Thu, 11 Feb 2021, Song Bao Hua (Barry Song) wrote:
-
-> > On Wed, 10 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> >=20
-> > > > On Wed, 10 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> > > >
-> > > > > TBH, that is why m68k is so confusing. irqs_disabled() on m68k=20
-> > > > > should just reflect the status of all interrupts have been=20
-> > > > > disabled except NMI.
-> > > > >
-> > > > > irqs_disabled() should be consistent with the calling of APIs=20
-> > > > > such as local_irq_disable, local_irq_save, spin_lock_irqsave=20
-> > > > > etc.
-> > > > >
-> > > >
-> > > > When irqs_disabled() returns true, we cannot infer that=20
-> > > > arch_local_irq_disable() was called. But I have not yet found=20
-> > > > driver code or core kernel code attempting that inference.
-> > > >
-> > > > > >
-> > > > > > > Isn't arch_irqs_disabled() a status reflection of irq=20
-> > > > > > > disable API?
-> > > > > > >
-> > > > > >
-> > > > > > Why not?
-> > > > >
-> > > > > If so, arch_irqs_disabled() should mean all interrupts have been=
-=20
-> > > > > masked except NMI as NMI is unmaskable.
-> > > > >
-> > > >
-> > > > Can you support that claim with a reference to core kernel code or=
-=20
-> > > > documentation? (If some arch code agrees with you, that's neither=
-=20
-> > > > here nor there.)
-> > >
-> > > I think those links I share you have supported this. Just you don't=
-=20
-> > > believe :-)
-> > >
-> >=20
-> > Your links show that the distinction between fast and slow handlers=20
-> > was removed. Your links don't support your claim that=20
-> > "arch_irqs_disabled() should mean all interrupts have been masked".=20
-> > Where is the code that makes that inference? Where is the=20
-> > documentation that supports your claim?
->=20
-> (1)
-> https://lwn.net/Articles/380931/
-> Looking at all these worries, one might well wonder if a system which=20
-> *disabled interrupts for all handlers* would function well at all. So it=
-=20
-> is interesting to note one thing: any system which has the lockdep=20
-> locking checker enabled has been running all handlers that way for some=
-=20
-> years now. Many developers and testers run lockdep-enabled kernels, and=
-=20
-> they are available for some of the more adventurous distributions=20
-> (Rawhide, for example) as well. So we have quite a bit of test coverage=
-=20
-> for this mode of operation already.
->=20
-
-IIUC, your claim is that CONFIG_LOCKDEP involves code that contains the=20
-inference, "arch_irqs_disabled() means all interrupts have been masked".
-
-Unfortunately, m68k lacks CONFIG_LOCKDEP support so I can't easily confirm=
-=20
-this. I suppose there may be other architectures that support both LOCKDEP=
-=20
-and nested interrupts (?)
-
-Anyway, if you would point to the code that contains said inference, that=
-=20
-would help a lot.
-
-> (2)
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/?id=3Db738a50a
->=20
-> "We run all handlers *with interrupts disabled* and expect them not to
-> enable them. Warn when we catch one who does."
->=20
-
-Again, you don't see that warning because irqs_disabled() correctly=20
-returns true. You can confirm this fact in QEMU or Aranym if you are=20
-interested.
-
-> (3)=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/?id=3De58aa3d2d0cc
-> genirq: Run irq handlers *with interrupts disabled*
->=20
-> Running interrupt handlers with interrupts enabled can cause stack=20
-> overflows. That has been observed with multiqueue NICs delivering all=20
-> their interrupts to a single core. We might band aid that somehow by=20
-> checking the interrupt stacks, but the real safe fix is to *run the irq=
-=20
-> handlers with interrupts disabled*.
->=20
-
-Again, the stack overflow issue is not applicable. 68000 uses a priority=20
-mask, like ARM GIC. So there's no arbitrary nesting of interrupt handlers.=
-=20
-
-In practice stack overflows simply don't occur on m68k. Please do try it.
-
->=20
-> All these documents say we are running irq handler with interrupts
-> disabled. but it seems you think high-prio interrupts don't belong
-> to "interrupts" in those documents :-)
->=20
-> that is why we can't get agreement. I think "interrupts" mean all except=
-=20
-> NMI in these documents, but you insist high-prio IRQ is an exception.
->=20
-
-We can't get agreement because you seek to remove functionality without=20
-justification.
-
-> > > >
-> > > > > >
-> > > > > > Are all interrupts (including NMI) masked whenever=20
-> > > > > > arch_irqs_disabled() returns true on your platforms?
-> > > > >
-> > > > > On my platform, once irqs_disabled() is true, all interrupts are=
-=20
-> > > > > masked except NMI. NMI just ignore spin_lock_irqsave or=20
-> > > > > local_irq_disable.
-> > > > >
-> > > > > On ARM64, we also have high-priority interrupts, but they are
-> > > > > running as PESUDO_NMI:
-> > > > > https://lwn.net/Articles/755906/
-> > > > >
-> > > >
-> > > > A glance at the ARM GIC specification suggests that your hardware=
-=20
-> > > > works much like 68000 hardware.
-> > > >
-> > > >    When enabled, a CPU interface takes the highest priority=20
-> > > >    pending interrupt for its connected processor and determines=20
-> > > >    whether the interrupt has sufficient priority for it to signal=
-=20
-> > > >    the interrupt request to the processor. [...]
-> > > >
-> > > >    When the processor acknowledges the interrupt at the CPU=20
-> > > >    interface, the Distributor changes the status of the interrupt=
-=20
-> > > >    from pending to either active, or active and pending. At this=20
-> > > >    point the CPU interface can signal another interrupt to the=20
-> > > >    processor, to preempt interrupts that are active on the=20
-> > > >    processor. If there is no pending interrupt with sufficient=20
-> > > >    priority for signaling to the processor, the interface=20
-> > > >    deasserts the interrupt request signal to the processor.
-> > > >
-> > > > https://developer.arm.com/documentation/ihi0048/b/
-> > > >
-> > > > Have you considered that Linux/arm might benefit if it could fully=
-=20
-> > > > exploit hardware features already available, such as the interrupt=
-=20
-> > > > priority masking feature in the GIC in existing arm systems?
-> > >
-> > > I guess no:-) there are only two levels: IRQ and NMI. Injecting a=20
-> > > high-prio IRQ level between them makes no sense.
-> > >
-> > > To me, arm64's design is quite clear and has no any confusion.
-> > >
-> >=20
-> > Are you saying that the ARM64 hardware design is confusing because it=
-=20
-> > implements a priority mask, and that's why you had to simplify it with=
-=20
-> > a pseudo-nmi scheme in software?
->=20
-> No, I was not saying this. I think both m68k and arm64 have good=20
-> hardware design. Just Linux's implementation is running irq-handlers=20
-> with interrupts disabled. So ARM64's pseudo-nmi is adapted to Linux=20
-> better.
->=20
-
-So, a platform should do what all the other platforms do because to=20
-deviate would be too dangerous?
-
-> > > >
-> > > > > On m68k, it seems you mean=EF=BC=9A
-> > > > > irq_disabled() is true, but high-priority interrupts can still=20
-> > > > > come; local_irq_disable() can disable high-priority interrupts,=
-=20
-> > > > > and at that time, irq_disabled() is also true.
-> > > > >
-> > > > > TBH, this is wrong and confusing on m68k.
-> > > > >
-> > > >
-> > > > Like you, I was surprised when I learned about it. But that=20
-> > > > doesn't mean it's wrong. The fact that it works should tell you=20
-> > > > something.
-> > > >
-> > >
-> > > The fact is that m68k lets arch_irq_disabled() return true to=20
-> > > pretend all IRQs are disabled while high-priority IRQ is still open,=
-=20
-> > > thus "pass" all sanitizing check in genirq and kernel core.
-> > >
-> >=20
-> > The fact is that m68k has arch_irq_disabled() return false when all=20
-> > IRQs are enabled. So there is no bug.
->=20
-> But it has arch_irq_disabled() return true while some interrupts(not=20
-> NMI) are still open.
->=20
-> >=20
-> > > > Things could always be made simpler. But discarding features isn't=
-=20
-> > > > necessarily an improvement.
-> > >
-> > > This feature could be used by calling local_irq_enable_in_hardirq()=
-=20
-> > > in those IRQ handlers who hope high-priority interrupts to preempt=20
-> > > it for a while.
-> > >
-> >=20
-> > So, if one handler is sensitive to interrupt latency, all other=20
-> > handlers should be modified? I don't think that's workable.
->=20
-> I think we just enable preempt_rt or force threaded_irq, and then=20
-> improve the priority of the irq thread who is sensitive to latency. No=20
-> need to touch all threads.
->=20
-> I also understand your point, we let one high-prio interrupt preempt low=
-=20
-> priority interrupt, then we don't need to change the whole system. But I=
-=20
-> think Linux prefers the method of threaded_irq or preempt_rt for this=20
-> kind of problems.
->=20
-
-So, some interrupt (or exception) processing happens atomically and the=20
-rest is deferred to a different execution context. (Not a new idea.)
-
-If you introduce latency in the former context you can't win it back in=20
-the latter. Your solution fails because it adds latency to high priority=20
-handlers.
-
-> >=20
-> > In anycase, what you're describing is a completely different nested=20
-> > interrupt scheme that would defeat the priority level mechanism that=20
-> > the hardware provides us with.
->=20
-> Yes. Indeed.
->=20
-> >=20
-> > > It shouldn't hide somewhere and make confusion.
-> > >
-> >=20
-> > The problem is hiding so well that no-one has found it! I say it=20
-> > doesn't exist.
->=20
-> Long long ago(before 2.6.38), we had a kernel supporting IRQF_DISABLED=20
-> and nested interrupts were widely supported, but system also ran well in=
-=20
-> most cases. That means nested interrupts don't really matter in most=20
-> cases. That is why m68k is also running well even though it is still=20
-> nesting.
->=20
-
-No, m68k runs well because it uses priority masking. It is not because=20
-some cases are untested.
-
-Your hardware may not have been around for 4 decades but it implements the=
-=20
-same capability because the design is known to work.
-
-> >=20
-> > > On the other hand, those who care about realtime should use threaded=
-=20
-> > > IRQ and let IRQ threads preempt each other.
-> > >
-> >=20
-> > Yes. And those threads also have priority levels.
->=20
-> Finn, I am not a m68k guy, would you help check if this could activate a
-> warning on m68k. maybe we can discuss this question in genirq maillist fr=
-om
-> this warning if you are happy. Thanks very much.
->=20
-> diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
-> index 7c9d6a2d7e90..b8ca27555c76 100644
-> --- a/include/linux/hardirq.h
-> +++ b/include/linux/hardirq.h
-> @@ -32,6 +32,7 @@ static __always_inline void rcu_irq_enter_check_tick(vo=
-id)
->   */
->  #define __irq_enter()                                  \
->         do {                                            \
-> +               WARN_ONCE(in_hardirq() && irqs_disabled(), "nested interr=
-upts\n"); \
->                 preempt_count_add(HARDIRQ_OFFSET);      \
->                 lockdep_hardirq_enter();                \
->                 account_hardirq_enter(current);         \
-> @@ -44,6 +45,7 @@ static __always_inline void rcu_irq_enter_check_tick(vo=
-id)
->   */
->  #define __irq_enter_raw()                              \
->         do {                                            \
-> +               WARN_ONCE(in_hardirq() && irqs_disabled(), "nested interr=
-upts\n"); \
->                 preempt_count_add(HARDIRQ_OFFSET);      \
->                 lockdep_hardirq_enter();                \
->         } while (0)
->=20
-
-If you think that lockdep or some other code somewhere should be protected=
-=20
-in this way, perhaps you can point to that code. Otherwise, your patch=20
-seems to lack any justification.
-
-> Best Regards
-> Barry
->=20
->=20
----1463811774-827468299-1613084310=:6--
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+-- 
+Mike Kravetz
