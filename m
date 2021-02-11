@@ -2,92 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F34E318405
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 04:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED655318407
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 04:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhBKDgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 22:36:19 -0500
-Received: from mail-pj1-f50.google.com ([209.85.216.50]:55457 "EHLO
-        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhBKDgI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 22:36:08 -0500
-Received: by mail-pj1-f50.google.com with SMTP id cv23so2552332pjb.5;
-        Wed, 10 Feb 2021 19:35:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JK5ZFfSHXoOOi8G6GwtZewu3hGx5BYnS6z+5kmBTBJw=;
-        b=kFt66vdfKWk11641GdL7T3HXOSUTXKnp4mv/v2VPVUGFqFc+e+elfLH6zgDJ760GAw
-         B4qjL7QfYGy0z3WbKQs0nZE8zbw6LMEga9BZ3PGa5Rs3KnUsDwCi0RsS8ieMm2xZgt8i
-         5KQKhNIQhVHoPX90Ckjnq6ytJTfSF8hh5d7vsM7s7InSJzLfZboQvxrGZ694AYW3MvIz
-         HTb+jpTf35nUN5m/LxzosHrvflfIRnGcescWVLJ+HiZpc4nI0aCpO2FNaR7p9+sd2YI6
-         PZAM0SLESj33kAXlaykfo0h+0ZsWW/2AB2IRRGmO0gLYyxFMsZKRx6X3Qnr4OAHFnS+P
-         8GKg==
-X-Gm-Message-State: AOAM530dRlTW+uNwyTpLhXyKIYV6rXo9V7oH0BFHwVcUtOPITWlfve4J
-        nRRWhHQP4oYtiOc38X0HGhw=
-X-Google-Smtp-Source: ABdhPJwtA8mGO2eVkRliipdUd3pvjJh654zz8FT6gSw3lVVM4+oLAR5GEeTAe/AzomjKBTjt/P8Twg==
-X-Received: by 2002:a17:90a:9a4:: with SMTP id 33mr2030837pjo.147.1613014528220;
-        Wed, 10 Feb 2021 19:35:28 -0800 (PST)
-Received: from ?IPv6:2601:647:4000:d7:3ee1:3bad:6322:19be? ([2601:647:4000:d7:3ee1:3bad:6322:19be])
-        by smtp.gmail.com with ESMTPSA id i7sm3363078pjx.13.2021.02.10.19.35.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 19:35:27 -0800 (PST)
-Subject: Re: [PATCH] scsi: ufs: sysfs: add is_ascii_output entry
-To:     Arthur Simchaev <Arthur.Simchaev@sandisk.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     alim.akhtar@samsung.com, Bean Huo <beanhuo@micron.com>,
-        Arthur Simchaev <arthur.simchaev@wdc.com>
-References: <1612954425-6705-1-git-send-email-Arthur.Simchaev@sandisk.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <4bba4245-df01-f23d-65ba-4ff133cae0bc@acm.org>
-Date:   Wed, 10 Feb 2021 19:35:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229850AbhBKDhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 22:37:45 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:59683 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229812AbhBKDhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 22:37:43 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dbj3r5bFRz9sBy;
+        Thu, 11 Feb 2021 14:36:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613014617;
+        bh=YLUDqgRDKAtWi5FdISRI1n3N3z+A0LrRf1pFnoCeZwc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bWipClgYbMijHdmw31tkghs8KlowHFYD0VMbsnphM9NXOOk0CQuxTvXH/PsKqgS7t
+         i/t81d2fy1P242D2J+pSjBG+NgJNuq8FgEogl4DgYmWHO9D/Yh1xSmp6gr+r+PPER2
+         pHoijm5K02NjLgkTQvAEq2v8kxU91eaLzTvRQj43P3bewMulXLH2RWxmPtBcQJqqOa
+         prQFr44Cqfx1LGX95xYDSc5C6M5NKW3lahVifDrzx85P+pOmkN3fFYbiatrOWSSeuD
+         yKs28fdKLPsxoP02wn/im1HKRMKpT49VRfVVjQVkNLvdPzN4DSms2f5y+gPNXsVyfK
+         ObFrBtK+xKGHA==
+Date:   Thu, 11 Feb 2021 14:36:55 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alasdair G Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the device-mapper tree
+Message-ID: <20210211143655.5d736b71@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <1612954425-6705-1-git-send-email-Arthur.Simchaev@sandisk.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/r1SSl5frTbtM15u0ySEhcxM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 2:53 AM, Arthur Simchaev wrote:
-> +static bool is_ascii_output = true;
+--Sig_/r1SSl5frTbtM15u0ySEhcxM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[ ... ]
+Hi all,
 
->  static const char *ufschd_uic_link_state_to_string(
->  			enum uic_link_state state)
->  {
-> @@ -693,7 +695,15 @@ static ssize_t _name##_show(struct device *dev,				\
->  				      SD_ASCII_STD);			\
->  	if (ret < 0)							\
->  		goto out;						\
-> -	ret = sysfs_emit(buf, "%s\n", desc_buf);			\
-> +	if (is_ascii_output) {						\
-> +		ret = sysfs_emit(buf, "%s\n", desc_buf);		\
-> +	} else {							\
-> +		int i;							\
-> +									\
-> +		for (i = 0; i < desc_buf[0]; i++)			\
-> +			hex_byte_pack(buf + i * 2, desc_buf[i]);	\
-> +		ret = sysfs_emit(buf, "%s\n", buf);			\
-> +	}								\
->  out:									\
->  	pm_runtime_put_sync(hba->dev);					\
->  	kfree(desc_buf);						\
+After merging the device-mapper tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-Please do not introduce a mode variable but instead introduce a new
-attribute such that there is one attribute for the unicode output and
-one attribute for the ASCII output. Mode variables are troublesome when
-e.g. two scripts try to set the mode attribute concurrently.
+drivers/md/dm-linear.c:234:3: error: 'struct target_type' has no member nam=
+ed 'report_zones'
+  234 |  .report_zones =3D linear_report_zones,
+      |   ^~~~~~~~~~~~
+drivers/md/dm-crypt.c:3585:3: error: 'struct target_type' has no member nam=
+ed 'report_zones'
+ 3585 |  .report_zones =3D crypt_report_zones,
+      |   ^~~~~~~~~~~~
 
-Thanks,
+Caused by commit
 
-Bart.
+  7defd0da9dd2 ("dm: simplify target code conditional on CONFIG_BLK_DEV_ZON=
+ED")
+
+The report_zones members existence is guarded by CONFIG_BLK_DEV_ZONED.
+
+I have used the device-mapper tree from next-20210210 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/r1SSl5frTbtM15u0ySEhcxM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAkplcACgkQAVBC80lX
+0GyZ0Af/aKi8ZrtN14P71ou1N/T0yv2fcX++0GDjAWDt1jzZYzbuw4v/ITKUfI/O
+eXFak08yniSiHT/YvAUT+4SPiayetwe/Xiuu5ij1IiVak61RSJYkOEWjkoFeBrRB
+vxRJjvykNFTP8d2v30g1604lfzOGer2YGBIX/VQZ8z/j1S/5w9gl1zCVCQm4P3kW
+QKeO7IB+qqyMfzoOEmPk1hvsKT1ueZ1NEVOpqgOj8Vx5E2gDm+V5Bgs9C1p3i7vf
+4e4wDSuaXOdfAvxZtnp0FSSLDroeZZ/W3FjJlbjvih3Ct6oWEtGmgfvFpThArXWV
+v+AngOonPJMjeLEfy8tuJj+qH6dsFw==
+=CDRO
+-----END PGP SIGNATURE-----
+
+--Sig_/r1SSl5frTbtM15u0ySEhcxM--
