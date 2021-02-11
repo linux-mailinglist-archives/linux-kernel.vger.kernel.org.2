@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15DF3174E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9D23174E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234094AbhBKAAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 19:00:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232565AbhBKAAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:00:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3DFD964E16;
-        Thu, 11 Feb 2021 00:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613001607;
-        bh=yj20q5kPQi5rfMEAVi/VtRdZVsbRN8a/HB78My4y0nc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=VPa0Fkt2KHwp3qLX6HMos41sC5cmTrFCOYmvabN5gPyLicNextgZmtJBkcMLGgeVT
-         ulyMZhWmLduVvR3yfvSpEvdQKhqT8y2vFWNrMqF3aHyMiCePQGaLGWOHwltyfb5+Xx
-         dgeBg81XiHSOe4mn2Y9c7RWDAJoqAQRIRHy9BwsV7Y1hAap4nrcP1Ca8Ehleb9/2xv
-         QZr0JVS/tMeNsazScdxdQ3pS1SPddb+fpmwY5rkbDOgZfZheoC3LrTYcSHJ7cT1tbA
-         VnSVLe4KLNwJ6hoZ7Eu1niqItAczpe9+LkI7HJaCaAGiaQCRCeHjpmhXZ4VwznaZ7C
-         D9AXXBOcT9lKw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2945660A0F;
-        Thu, 11 Feb 2021 00:00:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233870AbhBKABZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 19:01:25 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17277 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232565AbhBKABO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 19:01:14 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602473a20000>; Wed, 10 Feb 2021 16:00:34 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 11 Feb
+ 2021 00:00:31 +0000
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.59) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 11 Feb 2021 00:00:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nkD6/JzLU6+FsX5mltEZXGTG4Ln00Wvp5ykcu61juOU75HKMUIYKBQyqYetCH1243LF3ofzgQMCwvqydDFZxzkZzqGaU+HPr2Sk3zAWXT2F3cP2QrdPFxba8AIf6r1qAL20YCTQiAA+57c3cBt50oXOyloOUfg8Ix0LtzgXWTWvmKyvTi/lgfLF05+AeNnr3td86TELYMUdeP0ZVsM4CwBQezQODWGWUn/tTBHp0lDc0iWjCKp1jbDLvgnOluuzmifymmNwAM9VlniTv90dyLDj6+yoZZ1C5/idCxewpOEf1kWd5I5oT7TfaSgldBALuOUmUNjVWvANE8yMiWvJH/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fW0dpCfgf+feF+Hanwlm08Xngky9go34WL1qdZ2fT5Y=;
+ b=BKt+KrFxa6VuEYJLgAoE1vIi8lzGuSvfvJBUqNHGi4447RVZNkvDP5jZZnKOBGeIYNpS1H2Gg3AiZ2fJL5VCL2bQ9dsPoTDKhfL/A+04ssVTR72sJC9kOnhJbRnQuL5IW64pgtjHy7H7MovpxmNfxAqGC2YL0JbUcElW5gt+V75SKqQmGNp8yoqHDC3U72sU7vvoSr8ooaW00SYcRBUxOE+4gjO4QlNDX8ut9L7WK5k0drZ+GE7BNAH6/TGKpCXZmSGmiGgOS0fL3BgwxIJ1qSzHwjKZjQSnhHLYpoyb9x5bwnph29ZYoQFLxs62F5hNizZvJp3uBN/i4oepOpohnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3210.namprd12.prod.outlook.com (2603:10b6:5:185::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Thu, 11 Feb
+ 2021 00:00:30 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.027; Thu, 11 Feb 2021
+ 00:00:30 +0000
+Date:   Wed, 10 Feb 2021 20:00:28 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dave Jiang <dave.jiang@intel.com>
+CC:     <alex.williamson@redhat.com>, <kwankhede@nvidia.com>,
+        <tglx@linutronix.de>, <vkoul@kernel.org>, <megha.dey@intel.com>,
+        <jacob.jun.pan@intel.com>, <ashok.raj@intel.com>,
+        <yi.l.liu@intel.com>, <baolu.lu@intel.com>, <kevin.tian@intel.com>,
+        <sanjay.k.kumar@intel.com>, <tony.luck@intel.com>,
+        <dan.j.williams@intel.com>, <eric.auger@redhat.com>,
+        <parav@mellanox.com>, <netanelg@mellanox.com>,
+        <shahafs@mellanox.com>, <pbonzini@redhat.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>
+Subject: Re: [PATCH v5 07/14] vfio/mdev: idxd: add 1dwq-v1 mdev type
+Message-ID: <20210211000028.GK4247@nvidia.com>
+References: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
+ <161255841792.339900.13314425685185083794.stgit@djiang5-desk3.ch.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <161255841792.339900.13314425685185083794.stgit@djiang5-desk3.ch.intel.com>
+X-ClientProxiedBy: BL0PR0102CA0042.prod.exchangelabs.com
+ (2603:10b6:208:25::19) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf_lru_list: Read double-checked variable once without lock
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161300160716.412.6891143842651326044.git-patchwork-notify@kernel.org>
-Date:   Thu, 11 Feb 2021 00:00:07 +0000
-References: <20210209112701.3341724-1-elver@google.com>
-In-Reply-To: <20210209112701.3341724-1-elver@google.com>
-To:     Marco Elver <elver@google.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        paulmck@kernel.org, dvyukov@google.com,
-        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
-        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR0102CA0042.prod.exchangelabs.com (2603:10b6:208:25::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Thu, 11 Feb 2021 00:00:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l9zPI-006IFO-BP; Wed, 10 Feb 2021 20:00:28 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613001634; bh=fW0dpCfgf+feF+Hanwlm08Xngky9go34WL1qdZ2fT5Y=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=Hu33ZMC0Qq3PtGiAAnkqMebWtfQZWi8ACiI2TeU6OQjPIO53OG0lp2TsKyBb09CHw
+         BSAvrdQvq8XINemzqKovCyw0ri/Yom63D5XIhOjJ27x2snguFiLWB0DI9TjResWEDp
+         VUaDSsf8KcXOnVY8BybTAolePD2ExFgJi2FEaVQ5LBxchQ1hrujRZHNCZpN562N0Pl
+         gRl71ISoo92H+fo1DuWKCK63LMbB5PQMuwWx7T4YYLU6KCSX8xTMTY14cIbQTIIdzj
+         xfI1hdw8Shzt8w4P4QNXEny8KHZU3uBkmyVJtmMBcIvKh0gnEO5wyhFWoM9FGBADrm
+         oQA27UltwhcQA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, Feb 05, 2021 at 01:53:37PM -0700, Dave Jiang wrote:
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+> -static const struct mdev_parent_ops idxd_vdcm_ops = {
+> +static ssize_t name_show(struct kobject *kobj, struct device *dev, char *buf)
+> +{
+> +	struct vdcm_idxd_type *type;
+> +
+> +	type = idxd_vdcm_find_vidxd_type(dev, kobject_name(kobj));
+> +
+> +	if (type)
+> +		return sprintf(buf, "%s\n", type->name);
+> +
+> +	return -EINVAL;
 
-On Tue,  9 Feb 2021 12:27:01 +0100 you wrote:
-> For double-checked locking in bpf_common_lru_push_free(), node->type is
-> read outside the critical section and then re-checked under the lock.
-> However, concurrent writes to node->type result in data races.
-> 
-> For example, the following concurrent access was observed by KCSAN:
-> 
->   write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
->    __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
->    __local_list_flush            kernel/bpf/bpf_lru_list.c:298
->    ...
->   read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
->    bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
->    bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
->    ...
-> 
-> [...]
+Success oriented flow
 
-Here is the summary with links:
-  - bpf_lru_list: Read double-checked variable once without lock
-    https://git.kernel.org/bpf/bpf-next/c/6df8fb83301d
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Jason
