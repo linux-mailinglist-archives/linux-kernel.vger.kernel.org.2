@@ -2,126 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA463319736
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4919231973A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhBKXyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 18:54:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230187AbhBKXxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 18:53:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E462164E4A;
-        Thu, 11 Feb 2021 23:52:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613087556;
-        bh=xtzmI2dR4hRaYr3yDSbATKA7Pt6c4sw8xv9I6JldghY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D72F1mhgSuhPSrhUH8Jo74/w0Z3fradjOWXTcGkZYfblNkMiHFEaevmvMuCEcmQ5h
-         rk2RfBLEYzVlHpDBF65cLyIxgSaJzgdJo57tdY9oedM/gNClU/G97wtG37Tq0pRek3
-         XeMkxW2gCIHQIHklktBKTWKz9cx/GJTPjxa3swyEcQrViNM6VyOjh5+GAGhwF1YdjQ
-         34K/hEsWZyE5PKpvhFpuZLF6KbIzTjmVaVEV7SDVlO1h8Zqd8cUstZLsqHwM7N6B3V
-         /amyA+8WFFyZ6vYFaSAvFVdw6R7G7F4RNMroZoMH60GC0/yzr6uS6eZnqUKh0PuwWQ
-         qeWJ8+CqQlolw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DA69F40513; Thu, 11 Feb 2021 20:52:30 -0300 (-03)
-Date:   Thu, 11 Feb 2021 20:52:30 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Dmitry Safonov <dima@arista.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jacek Caban <jacek@codeweavers.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Remi Bernon <rbernon@codeweavers.com>
-Subject: Re: [PATCH] perf: Use (long) for iterator for bfd symbols
-Message-ID: <20210211235230.GA1370062@kernel.org>
-References: <20210209145148.178702-1-dima@arista.com>
- <CAM9d7civ8h5uh6_uMj9zKBkeRaCxr_UvA0inEiR8EmgHHxRtGQ@mail.gmail.com>
+        id S230178AbhBKX46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 18:56:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229743AbhBKX44 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 18:56:56 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F5BC061574;
+        Thu, 11 Feb 2021 15:56:16 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id b24so5525206qtp.13;
+        Thu, 11 Feb 2021 15:56:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fn9ECLUi2tPSHi7X9/WE7UqWMZvrqWVcR0Z02vtxJFM=;
+        b=REJNTNOWdXeu6f7LaWhf4cwIC55Mp0Qq8gBt7jCVoL6KCO1/EAgCoGXxCqBOqz0R7n
+         ZGIOkeZwLsQiEcXJN2Mjl9w/ExaghyhnqMXFeteGj0ofoZc9cl0dBp/HPLIuA0aITzZp
+         NhR175zCa86KTLhRczWqtxri9/wYrpL7n8PRcor6nF2/BlN7BPqG1ifNJnDSNEWI/NKw
+         AWIfMLGk9ZbaEFUXj6jhTCoHD8zQ/Q+VyM53pYwVRHTpYUUOj72MMNQluSvV8JIif/HR
+         FpWiVfomx1VKHmtNFqAOoClRumweAZLsUn4VsRl4Gt+VQkhkKM+F3FGHuexGnjTrdSGh
+         PhaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fn9ECLUi2tPSHi7X9/WE7UqWMZvrqWVcR0Z02vtxJFM=;
+        b=GYIoy6v3bSIKFspHUmxWRK8cDzYk8hOE57I6xbVZzrIwftVQ49lJYE7la1VkPE0ss8
+         MbUnV6/K+mdvpoC/p1JNWd+OQ/amdjdgYE2wKrPo70nBZO0JXRf4blwNnd4pONMkvNc0
+         iw9IyriA2dmtbSdW1mWJ2z86b6MCb67NdVUlnJKCteOytZLhfJazS0t2ehUhWJbc2UL9
+         sbwpGec0eLdVO5vnCDntp/6ELGtWXniyFvNyELGw3P2wXbNcuZdt+rDYF9F0DHkiUnOC
+         SJhXLc+Ubz/wOBqZaEJnupdKScgPxsDQMhr4vmc/n2RtlUTLX3Dyz1nyT9MoWR96OW0q
+         b61g==
+X-Gm-Message-State: AOAM532wSxXBdtzkcdpWYCihelz1EfAGYcGxNfbXtIzoi8njS7CAGLcK
+        H1ndlgNztXeME+KXbPWqlaI=
+X-Google-Smtp-Source: ABdhPJyuiD3jKQsR4lp7R1jCbPxoM1hsEvSszFs2HWKuwJSZ2Og5Sp0UmJRyNNsX1qJjFZf+0wYnTg==
+X-Received: by 2002:ac8:498e:: with SMTP id f14mr215580qtq.286.1613087775410;
+        Thu, 11 Feb 2021 15:56:15 -0800 (PST)
+Received: from shinobu ([193.27.12.132])
+        by smtp.gmail.com with ESMTPSA id l66sm5143121qkd.21.2021.02.11.15.56.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 15:56:14 -0800 (PST)
+Date:   Fri, 12 Feb 2021 08:56:04 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     jic23@kernel.org, kernel@pengutronix.de,
+        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com
+Subject: Re: [PATCH v7 5/5] counter: 104-quad-8: Add IRQ support for the
+ ACCES 104-QUAD-8
+Message-ID: <YCXEFMJOoOhyhfBu@shinobu>
+References: <cover.1608935587.git.vilhelm.gray@gmail.com>
+ <bb2db54669ef27515da4d5f235c52e0b484b5820.1608935587.git.vilhelm.gray@gmail.com>
+ <7a78ad95-9eba-277d-25da-ddf68357b969@lechnology.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="p7kKPpmXtdPwRZVn"
 Content-Disposition: inline
-In-Reply-To: <CAM9d7civ8h5uh6_uMj9zKBkeRaCxr_UvA0inEiR8EmgHHxRtGQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <7a78ad95-9eba-277d-25da-ddf68357b969@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Feb 11, 2021 at 06:14:03PM +0900, Namhyung Kim escreveu:
-> Hello,
-> 
-> On Tue, Feb 9, 2021 at 11:51 PM Dmitry Safonov <dima@arista.com> wrote:
-> >
-> > GCC (GCC) 8.4.0 20200304 fails to build perf with:
-> > : util/symbol.c: In function 'dso__load_bfd_symbols':
-> > : util/symbol.c:1626:16: error: comparison of integer expressions of different signednes
-> > :   for (i = 0; i < symbols_count; ++i) {
-> > :                 ^
-> > : util/symbol.c:1632:16: error: comparison of integer expressions of different signednes
-> > :    while (i + 1 < symbols_count &&
-> > :                 ^
-> > : util/symbol.c:1637:13: error: comparison of integer expressions of different signednes
-> > :    if (i + 1 < symbols_count &&
-> > :              ^
-> > : cc1: all warnings being treated as errors
-> >
-> > It's unlikely that the symtable will be that big, but the fix is
-> > oneliner and as perf has CORE_CFLAGS += -Wextra, which makes build to
-> > fail together with CORE_CFLAGS += -Werror
-> >
-> > Fixes: eac9a4342e54 ("perf symbols: Try reading the symbol table with libbfd")
-> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Jacek Caban <jacek@codeweavers.com>
-> > Cc: Jiri Olsa <jolsa@redhat.com>
-> > Cc: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Remi Bernon <rbernon@codeweavers.com>
-> > Signed-off-by: Dmitry Safonov <dima@arista.com>
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Thanks, applied.
+--p7kKPpmXtdPwRZVn
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- Arnaldo
+On Wed, Dec 30, 2020 at 11:36:45AM -0600, David Lechner wrote:
+> On 12/25/20 6:15 PM, William Breathitt Gray wrote:
+>=20
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8 b/D=
+ocumentation/ABI/testing/sysfs-bus-counter-104-quad-8
+> > index eac32180c40d..0ecba24d43aa 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
+> > +++ b/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
+> > @@ -1,3 +1,28 @@
+> > +What:		/sys/bus/counter/devices/counterX/countY/irq_trigger
+>=20
+> Do we really need this sysfs attribute? Shouldn't interrupts be configured
+> _only_ by the chrdev interface?
 
- 
-> Thanks,
-> Namhyung
-> 
-> 
-> > ---
-> >  tools/perf/util/symbol.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> > index 64a039cbba1b..1645fb4ec9ed 100644
-> > --- a/tools/perf/util/symbol.c
-> > +++ b/tools/perf/util/symbol.c
-> > @@ -1561,12 +1561,11 @@ static int bfd2elf_binding(asymbol *symbol)
-> >  int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
-> >  {
-> >         int err = -1;
-> > -       long symbols_size, symbols_count;
-> > +       long symbols_size, symbols_count, i;
-> >         asection *section;
-> >         asymbol **symbols, *sym;
-> >         struct symbol *symbol;
-> >         bfd *abfd;
-> > -       u_int i;
-> >         u64 start, len;
-> >
-> >         abfd = bfd_openr(dso->long_name, NULL);
-> > --
-> > 2.30.0
-> >
+I think this attribute can go away because we can implicitly figure out
+the correct IRQ configuration from the struct counter_watch data when a
+user executes a COUNTER_ADD_WATCH_IOCTL ioctl command.
 
--- 
+However, I need some help deciding on an appropriate behavior for
+conflicting counter_watch configurations. Let me give some context
+first.
 
-- Arnaldo
+The 104-QUAD-8 features 8 channels (essentially 8 independent physical
+counters on the device). Each channel can independently issue an event,
+but any particular channel can only be set to a single kind of event
+(COUNTER_EVENT_INDEX, COUNTER_EVENT_OVERFLOW, etc.).
+
+The purpose of the irq_trigger sysfs attribute I introduced in this
+patch is to allow the user to select the event configuration they want
+for a particular channel. We can theoretically figure this out
+implicitly from the struct counter_watch request, so this sysfs
+attribute may not be necessary.
+
+However, how do we handle the case where a user executes two
+COUNTER_ADD_WATCH_IOCTL ioctl commands for the same channel but with
+different event selections? I'm considering three possible behaviors:
+
+* Fail the second ioctl call; event selection of the first struct
+  counter_watch takes precedence and thus second is incompatible.
+* Issue a dev_warn() indicating that the second struct counter_watch
+  event selection will now be the event configuration for that channel.
+* Don't notify the user, just silently reconfigure for the second struct
+  counter_watch event selection.
+
+I'm suspecting the first behavior I listed here (ioctl returning failed)
+is the most appropriate as a user is explicitly made known of this
+particular device's inability to support more than one type of event per
+channel.
+
+What do you think?
+
+William Breathitt Gray
+
+--p7kKPpmXtdPwRZVn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmAlxAMACgkQhvpINdm7
+VJJejBAAzJHKhvvQx5+lsNzKsvoLOZi+R4kk9Amkh2HH90O+UyagdXEHac++XOto
+K9fWenvVvr9x4XVCxB62Z65YkRnQDNdWdrZ7WLNkk1L5a/RL7ePJiozsjuaWAXVQ
+j6/uKv7ho45A5d5vQsdhdwBxfwNIRDQDqYqrLo8NYsl9ScBGQ1Wq1cYDWKG1HGuJ
+Is72OgyL3Mf2U5JSHIv/jk5Ox9YMLnJwr8XSQCZKldS42ieddRxd7vyxYJ4ePr9m
+Z/jhjczp0TVuXw7Ika0G1IreRwEfxWHqNJ9mtqFRbRzxLblcHqmMLcrNG4AUIMWN
+doEozsnwAIldaAxDljw2f6ZPQ7b8hd0PK8bieb901oNvEFf7kv8G1cOwfsuHvzYs
+GH/08NBtwvAk0RFiNQhrm6OowZmgUO2KAjWr9PQdXXOjit+1mgsvW1BdBEjO0i3D
+DPDkb+I+ZrnB5VeRxqudTGakFmuE6YXGM2ubxtSx1otNi7TdZKJhsEUU9JzUkf1J
+/BmOikFg/8yv/YoodDqCzymjOgxqUWSriQSIretaHz+rQR3/PD5xbqVnTe3pMUiR
+LRUVcwil/5DIZV0NdHqzbip3DK2OIzoQjHp2sIH+evT5Z0XtWiSgiZAs1lX9vuT3
+5KpsAcytNu5TUzaXnMZ9tAzAWZ3X0TQk4zc9KD+U3XdymZz97ys=
+=O8ar
+-----END PGP SIGNATURE-----
+
+--p7kKPpmXtdPwRZVn--
