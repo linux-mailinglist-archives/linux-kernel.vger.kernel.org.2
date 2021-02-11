@@ -2,50 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2BA319055
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACBE319065
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhBKQsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:48:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhBKPja (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:39:30 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FF4C061788;
-        Thu, 11 Feb 2021 07:38:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=fB39imcLsV4m8j47uUz7LYp4JK
-        y5C9g1Yi7Fs5hlPNKjrdaEIOKbF8Xxfxh3A4nKY296rM6FCkum3SfyejWIJi/cFROoUWVC994wC1Z
-        Sa4FYEvfSlWuQKT1qUO7PdqjznuIhCQsdiM0FIzS+j2nPZpTgYCScmHchdBB0oqZYRqUlacGaO7oO
-        r6E1d5Ubmccdm/ZcUzyXFURHRZBGaZwBbHuxOPFECZidtox2XFN0J3v6CN5f9im1K+9XGMGd9k2RL
-        fdIjEA6qst0ENxdm7z5U7YDHnJSOMJe6niAy9dp5tpGQ7BhHozZnKTqTtcHDHmnV2G6lUEX7DKhIg
-        NA7+aRHA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lAE3D-00APk7-VY; Thu, 11 Feb 2021 15:38:41 +0000
-Date:   Thu, 11 Feb 2021 15:38:39 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>, kernel@pengutronix.de,
-        Jan Kara <jack@suse.com>, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 2/2] quota: wire up quotactl_path
-Message-ID: <20210211153839.GB2480649@infradead.org>
-References: <20210211153024.32502-1-s.hauer@pengutronix.de>
- <20210211153024.32502-3-s.hauer@pengutronix.de>
+        id S232113AbhBKQwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:52:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230399AbhBKPkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:40:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D53A864E8A;
+        Thu, 11 Feb 2021 15:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613057980;
+        bh=WkhNi8ol3f1VI1S+4Gsf371AiJwJ79gqlKtzjzdXMUA=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=JkknHSnZybPCBxcOILruAYK5wW9P5YV3XE/aWCQ3Wtd0GrsNhk9pRgH8ZUksmoAdC
+         MCV7CJtO4USAGKEqO7pfZNvjRsoh4amQYycd6fpLhsLrv84ORSbOt711/oEYtOUDv/
+         P89h8UE53rLYviDDI1WxHviiQHWH8mnusX15/aIhnjd1uY7Jt7uL/lWLr1GWGla+OW
+         F2s0Vw0tL9MKeFnQP6NqGs1cOhoaSf3jYcox6fxY6tscTJkyZ1szjlxNhuavfKV9MH
+         DiYPqTD+q50y8xyQtvLkAnmIKNeGIFLKabwknGXHYOyc4n8zhIaTc1aiFD2jAOeJU0
+         FGqHwT1DXsOnQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>, thierry.reding@gmail.com,
+        robh@kernel.org
+Cc:     devicetree@vger.kernel.org, sharadg@nvidia.com,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+        jonathanh@nvidia.com
+In-Reply-To: <1612939421-19900-1-git-send-email-spujar@nvidia.com>
+References: <1612939421-19900-1-git-send-email-spujar@nvidia.com>
+Subject: Re: [PATCH 0/3] Use clocks property in a device node
+Message-Id: <161305792123.12370.8611418623618908867.b4-ty@kernel.org>
+Date:   Thu, 11 Feb 2021 15:38:41 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211153024.32502-3-s.hauer@pengutronix.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
+On Wed, 10 Feb 2021 12:13:38 +0530, Sameer Pujar wrote:
+> It is recommended to not specifiy clocks property in an endpoint subnode.
+> This series moves clocks to device node.
+> 
+> However after moving the clocks to device node, the audio playback or
+> capture fails. The specified clock is not actually getting enabled and
+> hence the failure is seen. There seems to be a bug in simple-card-utils.c
+> where clock handle is not assigned when parsing clocks from device node.
+> 
+> [...]
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/3] ASoC: simple-card-utils: Fix device module clock
+      commit: 1e30f642cf2939bbdac82ea0dd3071232670b5ab
+[2/3] Revert "ASoC: audio-graph-card: Add clocks property to endpoint node"
+      commit: 0be0f142b8323378df6358c36dd15494134f5b94
+[3/3] arm64: tegra: Move clocks from RT5658 endpoint to device node
+      (no commit info)
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
