@@ -2,110 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098783184F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AB03184FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 06:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbhBKFjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 00:39:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBKFjf (ORCPT
+        id S229662AbhBKFkg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Feb 2021 00:40:36 -0500
+Received: from mailoutvs34.siol.net ([185.57.226.225]:47598 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229467AbhBKFkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 00:39:35 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0369CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 21:38:55 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d13so2774806plg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 21:38:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DkXaHbb7vfykOZTzC+xBJRdgo6D6KFDFoMk3bIB0y48=;
-        b=rIlTHtfRRMnexiBN16ky6IIM2MAx4co/9o7WPcw9X4ioxz5IsxhxNnBKhzI9A7ZwUF
-         +RVX6MWWTJ08gfUfrbxnnCypUaHZ5GoSI7kMo4KNUQWd5X+ntOlO9qyTYI369aqCc8EJ
-         pAlntRfuI39nXx1DCwSPUtW93PkuL6mMBx1WM6BX6/ACvsNSvMNN32ZJwatDMEo5TSKS
-         Dspq9fObwxdqu9YE3lG+inENRPh8XwkA8J+mlLP23bAHrLWg4+RQRDnkbLnTFCOF6rSY
-         6ZRwR41bYKSLAM1viUAef6rczrb2SZ4q0kcf/xiYdpQKOsMSOJUPrQvWqidOOrG6Ex8w
-         wwLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DkXaHbb7vfykOZTzC+xBJRdgo6D6KFDFoMk3bIB0y48=;
-        b=UtpPmdMB7UzRL5dGwdun8ze1pRtR5zqvdH1Jw3Y6CpB5Q+upt43dumJSpLTzpZBIXq
-         guKsG0C1noTMztqGoRZdpFVPdn+gRcFU9RA0C+kXxiroeVIz7FvKVjeVp+GCDWZ6qv/B
-         RR45LPJDWL8+NVbDgeKgyWOqXkXEv1BmO+PYvaAcRH5xaAoo6VYIjvJBMeF8fcgQFB3X
-         MSdA9RTorXeeWR4PX9qZDW7iQnFraM3K3bkfMNnFzz3Khp+lisoE+s3ybi37/gu8D5xE
-         pl8ZChWCQXvaXcYuBCb61PQMOOMtbdnL28mkphYnv1uZh788zILdiTMcHLFeoDjURW0S
-         h49A==
-X-Gm-Message-State: AOAM530qh+WTaLqdIDYCr/hz7TBsGCTc8aaDuf5PoiApGVyPQi3HhlPo
-        2O1DtPUmFwZlxO+WJT5GbiM=
-X-Google-Smtp-Source: ABdhPJzKo6Ld8SfUdADvztVyYjrxWsk6xblowX30cNJR6Go7zw8d+MnCYFq9aNLcFj4MvL5Oe1SiuQ==
-X-Received: by 2002:a17:902:7c0d:b029:e2:e9cd:6280 with SMTP id x13-20020a1709027c0db02900e2e9cd6280mr1043758pll.22.1613021934616;
-        Wed, 10 Feb 2021 21:38:54 -0800 (PST)
-Received: from localhost.localdomain ([103.200.106.135])
-        by smtp.googlemail.com with ESMTPSA id v1sm4513641pfi.99.2021.02.10.21.38.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 21:38:54 -0800 (PST)
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     gregkh@linuxfoundation.org, dan.carpenter@oracle.com
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: [PATCH v4] staging: gdm724x: Fix DMA from stack
-Date:   Thu, 11 Feb 2021 11:08:19 +0530
-Message-Id: <20210211053819.34858-1-ameynarkhede03@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        Thu, 11 Feb 2021 00:40:31 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id BBBF7522F77;
+        Thu, 11 Feb 2021 06:39:46 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id zympFg3kgA5V; Thu, 11 Feb 2021 06:39:46 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id 71452521B94;
+        Thu, 11 Feb 2021 06:39:46 +0100 (CET)
+Received: from jernej-laptop.localnet (cpe-86-58-58-53.static.triera.net [86.58.58.53])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Postfix) with ESMTPA id 754F6522B31;
+        Thu, 11 Feb 2021 06:39:43 +0100 (CET)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     Maxime Ripard <maxime@cerno.tech>, mturquette@baylibre.com,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     wens@csie.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-sunxi@googlegroups.com, Andre Heider <a.heider@gmail.com>
+Subject: Re: [PATCH v3 1/5] clk: sunxi-ng: mp: fix parent rate change flag check
+Date:   Thu, 11 Feb 2021 06:39:43 +0100
+Message-ID: <44806885.xO3ZHcXyXd@jernej-laptop>
+In-Reply-To: <161301048085.1254594.6786751472945742937@swboyd.mtv.corp.google.com>
+References: <20210209175900.7092-1-jernej.skrabec@siol.net> <20210210102904.xyr6bftn4ueuu74z@gilmour> <161301048085.1254594.6786751472945742937@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stack allocated buffers cannot be used for DMA
-on all architectures so allocate hci_packet buffer
-using kmalloc.
+Dne četrtek, 11. februar 2021 ob 03:28:00 CET je Stephen Boyd napisal(a):
+> Quoting Maxime Ripard (2021-02-10 02:29:04)
+> 
+> > Hi Mike, Stephen,
+> > 
+> > On Tue, Feb 09, 2021 at 06:58:56PM +0100, Jernej Skrabec wrote:
+> > > CLK_SET_RATE_PARENT flag is checked on parent clock instead of current
+> > > one. Fix that.
+> > > 
+> > > Fixes: 3f790433c3cb ("clk: sunxi-ng: Adjust MP clock parent rate when
+> > > allowed") Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+> > > Tested-by: Andre Heider <a.heider@gmail.com>
+> > > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > 
+> > This is a last minute fix for us, can you merge it into clk-fixes
+> > directly?
+> > 
+> > Acked-by: Maxime Ripard <mripard@kernel.org>
+> 
+> It's also fixing a problem that's been around since v5.0. Is something
+> broken that needs fixing this late? The motivation could be added to the
+> commit text because right now it looks like a typo fix spotted visually.
 
-Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
----
-Changes in v4:
-	- Use struct_size to allocate memory for hci_packet
-	- Fix memory corruption
+Yes, it's needed. Without this patch, 4k@60 doesn't work and probably some 
+other resolutions too. That's why it's send with other display related fixes. 
+This is part of solution for longstanding display issues.
 
- drivers/staging/gdm724x/gdm_usb.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+Best regards,
+Jernej
 
-diff --git a/drivers/staging/gdm724x/gdm_usb.c b/drivers/staging/gdm724x/gdm_usb.c
-index dc4da66c3..54bdb64f5 100644
---- a/drivers/staging/gdm724x/gdm_usb.c
-+++ b/drivers/staging/gdm724x/gdm_usb.c
-@@ -56,20 +56,24 @@ static int gdm_usb_recv(void *priv_dev,
 
- static int request_mac_address(struct lte_udev *udev)
- {
--	u8 buf[16] = {0,};
--	struct hci_packet *hci = (struct hci_packet *)buf;
-+	struct hci_packet *hci;
- 	struct usb_device *usbdev = udev->usbdev;
- 	int actual;
- 	int ret = -1;
 
-+	hci = kmalloc(struct_size(hci, data, 1), GFP_KERNEL);
-+	if (!hci)
-+		return -ENOMEM;
-+
- 	hci->cmd_evt = gdm_cpu_to_dev16(udev->gdm_ed, LTE_GET_INFORMATION);
- 	hci->len = gdm_cpu_to_dev16(udev->gdm_ed, 1);
- 	hci->data[0] = MAC_ADDRESS;
-
--	ret = usb_bulk_msg(usbdev, usb_sndbulkpipe(usbdev, 2), buf, 5,
-+	ret = usb_bulk_msg(usbdev, usb_sndbulkpipe(usbdev, 2), hci, 5,
- 			   &actual, 1000);
-
- 	udev->request_mac_addr = 1;
-+	kfree(hci);
-
- 	return ret;
- }
---
-2.30.1
