@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A996318D41
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF14E318D58
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbhBKOWs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Feb 2021 09:22:48 -0500
+        id S232308AbhBKO0B convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Feb 2021 09:26:01 -0500
 Received: from mail.pronor.es ([195.55.45.130]:49504 "EHLO pronor.es"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232269AbhBKOJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:09:01 -0500
+        id S232143AbhBKOQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 09:16:20 -0500
 Received: from YdeaPad.home ([82.158.192.164] RDNS failed) by pronor.es with Microsoft SMTPSVC(6.0.3790.4675);
-         Thu, 11 Feb 2021 06:36:39 +0100
+         Thu, 11 Feb 2021 06:39:44 +0100
 Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
@@ -20,10 +20,10 @@ Content-Description: Mail message body
 Subject: APPLY FOR LOAN NOW?
 To:     Recipients <office@quinnlncompanyltd.com>
 From:   "MRS.MARIA RICARDO" <office@quinnlncompanyltd.com>
-Date:   Thu, 11 Feb 2021 06:36:35 +0100
+Date:   Thu, 11 Feb 2021 06:39:43 +0100
 Reply-To: office@quinnlncompanyltd.com
-Message-ID: <PRONORMAILvg58w1Dxv00001872@pronor.es>
-X-OriginalArrivalTime: 11 Feb 2021 05:36:39.0197 (UTC) FILETIME=[DECE1CD0:01D70037]
+Message-ID: <PRONORMAILAsVUJrStl00001929@pronor.es>
+X-OriginalArrivalTime: 11 Feb 2021 05:39:44.0531 (UTC) FILETIME=[4D45D630:01D70038]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
