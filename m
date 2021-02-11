@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A891318D29
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96535318D30
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 15:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhBKOSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 09:18:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbhBKODj (ORCPT
+        id S232111AbhBKOTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 09:19:13 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:13260 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231293AbhBKODw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 09:03:39 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1230C061574;
-        Thu, 11 Feb 2021 06:02:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=kktYp+pSh+O4XJKVd7hgFyroxYNNVW4Lv43MZBaTjMo=; b=q6cYOC4VWiAdEFG/xowGGAtNX
-        D2VQS0sWKkIcHm4EKQd/JPMSva3XUgyPqdmMFQLXxJApcIgbEX8jma50a+1D4DC+yHy4xC895QJeb
-        9p36MWFbjti7G0qp3oVamjZlb3VwRLfztoEhvBVyasCY6TsM0YVD4+fQVcYKNOG4WrLYA/RS+5bQ0
-        VG2N2U3BWxVX2fj0589/apMTDt+XhB1+DpspyM1f8Pv4UCi0/uLCLvp4niJzjo7gF8bpjP9sf5wC3
-        8IIVcUq31NAJzzufLIubu+HzteMgSR0T2rLvAJU8jwJPol6m8pNuctDB/xzr8qc6eC2jU8XWPgGwH
-        QIi057Kkw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42062)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lACYA-0006Eu-Nm; Thu, 11 Feb 2021 14:02:30 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lACY8-00069e-0Z; Thu, 11 Feb 2021 14:02:28 +0000
-Date:   Thu, 11 Feb 2021 14:02:27 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Kostya Porotchkin <kostap@marvell.com>
-Cc:     Jon Nettleton <jon@solid-run.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        "jaz@semihalf.com" <jaz@semihalf.com>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Ben Peled <bpeled@marvell.com>
-Subject: Re: [EXT] Re: [PATCH v2 01/12] fix: arm64: dts: replace wrong
- regulator on ap emmc
-Message-ID: <20210211140227.GL1463@shell.armlinux.org.uk>
-References: <20210210140949.32515-1-kostap@marvell.com>
- <20210210140949.32515-2-kostap@marvell.com>
- <20210211105222.GY1463@shell.armlinux.org.uk>
- <DM5PR18MB1452DFBCDCE970384339545BCA8C9@DM5PR18MB1452.namprd18.prod.outlook.com>
+        Thu, 11 Feb 2021 09:03:52 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11BE1XbY022387;
+        Thu, 11 Feb 2021 06:02:49 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=0elgG08z95Mp0bp42T6eKXc/pbp6nML5TVGVwcbMJp0=;
+ b=WsFZJYLcM4JpHGrj1V7DI6O8kqunBbE5yjECzMZO8zhr7wRheTYRWnp+Ck4edr4JfoCw
+ +1RsHw2TsJzxUIINxmGprMOY6VyU7J6igYkh42j+GhvtJvmYisbPy8pTec19ZzpEf7vn
+ 0w/FNvlGqSWUnLSjWvfWX+XZ9ELmmywGYtZ4te+4xu2tAZi4pnjv+ogCa4ikLWx2qOHE
+ y5bEyH0EE6OJkywDCuIo8rtvFy+6q87io+ZSIq8gg0pAalbiZ0s4MoNj7uXTjDt86ILW
+ 6wpKw3zXUcWsu5L8nF3s6dC3kC7jzDct8Vqm65kyDiOT2uH6tlCpO2RaE8to2K0jvSt9 XQ== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36hugqew71-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 06:02:49 -0800
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
+ 2021 06:02:47 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 11 Feb
+ 2021 06:02:47 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 11 Feb 2021 06:02:47 -0800
+Received: from octopus.marvell.com (octopus.marvell.com [10.5.24.3])
+        by maili.marvell.com (Postfix) with ESMTP id 8E5B63F7040;
+        Thu, 11 Feb 2021 06:02:43 -0800 (PST)
+From:   <kostap@marvell.com>
+To:     <linux-pm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <Julia.Lawall@inria.fr>, <amitk@kernel.org>,
+        <daniel.lezcano@linaro.org>, <rui.zhang@intel.com>,
+        <miquel.raynal@bootlin.com>, <sboyd@kernel.org>,
+        <mturquette@baylibre.com>, <mw@semihalf.com>, <jaz@semihalf.com>,
+        <nadavh@marvell.com>, <stefanc@marvell.com>, <bpeled@marvell.com>,
+        "Konstantin Porotchkin" <kostap@marvell.com>
+Subject: [PATCH v3 0/2] Enable usage of Marvell FW SIP services
+Date:   Thu, 11 Feb 2021 16:02:38 +0200
+Message-ID: <20210211140240.23778-1-kostap@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM5PR18MB1452DFBCDCE970384339545BCA8C9@DM5PR18MB1452.namprd18.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_06:2021-02-10,2021-02-11 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 01:57:25PM +0000, Kostya Porotchkin wrote:
-> 
-> > ----------------------------------------------------------------------
-> > On Wed, Feb 10, 2021 at 04:09:38PM +0200, kostap@marvell.com wrote:
-> > > From: Konstantin Porotchkin <kostap@marvell.com>
-> > >
-> > > Replace wrong regulator in AP0 eMMC definition on MacchiatoBIN board
-> > > with 3.3V regulator.
-> > > The MacchiatoBIN board has no 1.8V regulator connected to AP0 eMMC
-> > > (ap0_sdhci0) interface.
-> > 
-> > There seems to be some variability between Macchiatobin versions according
-> > to the schematics.
-> > 
-> > The VDDO_H supply is connected to the eMMC VCCQ pins, and is also
-> > connected to the AP_VDDO_H pins. It is wired to the 1.8V regulator on rev 1.1
-> > schematics, but hard-wired to the 3.3V regulator on rev 1.3 schematics.
-> > 
-> > This needs clarification from SolidRun before the patch can be accepted - was
-> > VDDO_H ever wired to the 1.8V regulator on production hardware?
-> > 
-> [KP] I will try to find a relevant contact in SolidRun for get this issue clarified.
+From: Konstantin Porotchkin <kostap@marvell.com>
 
-I've already added Jon Nettleton.
+These patches enable usage of Arm Trusted Firmware SIP services on
+Marvell Armada plaforms for accessing system registers that are not
+normally accessible from kernel or user space (EL1/EL0), like DFX
+registers group.
+
+v2:
+* use separate legacy/smc regmap functions registered at ap-cpu
+  clock driver probe according to FW response
+
+v3:
+* fix build errors and rebase on top of clk-next branch
+
+Grzegorz Jaszczyk (2):
+  thermal: armada: ap806: use firmware SiP services for thermal
+    operations
+  clk: mvebu: use firmware SiP service for accessing dfx register set
+
+ drivers/clk/mvebu/ap-cpu-clk.c    | 174 ++++++++++++++++++--
+ drivers/thermal/armada_thermal.c  | 125 +++++++++++++-
+ include/soc/marvell/armada8k/fw.h |  22 +++
+ 3 files changed, 302 insertions(+), 19 deletions(-)
+ create mode 100644 include/soc/marvell/armada8k/fw.h
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.17.1
+
