@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02083182D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA343182D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 02:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbhBKA4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 19:56:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
+        id S231258AbhBKA4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 19:56:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhBKAvt (ORCPT
+        with ESMTP id S231503AbhBKAxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:51:49 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F33AC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:50:46 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id w1so2493380ilm.12
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:50:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qo+wFkhMOw4vBkKARIdSL+H1M6zkBiXdlsvhgUURo0U=;
-        b=CGJwwvk+hj6NaZbgbq7gOkoa71jCtKCtUd2U6K7dzMuTI+JCIfWW34EwOG+EWZXZIe
-         6XAVKMwQ1RkcNFVwJ4HaaKRbLo5jUS+j1/7hDFHe/QiVuLvd58UP4rFdTjEFhP4r6W21
-         pvXim1o9QWpbQPkQWWx0Nb/ip6VHDqIU+8k5pwq8dK140FFJmcprGpw/vaompZFPFmwq
-         4Z8kihH6IjjuaTqj1DtCN9v0hbg8jPmoe+Td7QY0s+eo2Aj13l3O5iDN0maM5bEnfIee
-         yGTB7xDkMtBG5el6QB9PZyFuetpCIyzR4e4sgQn8F0u9/8KUIO99U2+Vxj2j/SeHsbql
-         61QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qo+wFkhMOw4vBkKARIdSL+H1M6zkBiXdlsvhgUURo0U=;
-        b=GjtmXSWPcoDrNuSjC92GfJYN07MEemNVBe6q4j3ywnOiVC2iPH/y9LN2ALGq4TCXBG
-         0zXuUi8QqvU/4GtXPIzA8sQ7LwaZevhF4Ds4DJH2YViYzG8UqIGdCjZLPYPrakDzAhaT
-         J6uV2+qrpLXrSqK4+0vYYKDjPLD7qYc0BHa/Sk05ZSSyFBtkq94WsFfBrqB6FurxUtLZ
-         iVGrk64Xv06wUz4rhW2Q02GlmO5Serk6/xDFWqSwnnZYzRw8I17MyCQsxJJc1PkqKxZX
-         SdDIYR2Vo9vjjxBDVzhGL1IH0X26zbAdAdQMrxSczqyHfeA5GjxEx9r87LKJkPFolAno
-         eGTg==
-X-Gm-Message-State: AOAM531ATTP+/0OErXEtp1yrxQp+en2XPDZy46cIMFjJeWd6BWmioofJ
-        gFnKum3G+7Sign7EXIZSlqmiug6AuMauK2MhWKhN5Q==
-X-Google-Smtp-Source: ABdhPJw2t174aZ4yAP0dy2NIZHoDN/JKC84DY22OXwPi2mc1JjhuZfpu9e/zmpv8ch2/1Khjy0gspt5SpkNqJMUhyJg=
-X-Received: by 2002:a92:cbce:: with SMTP id s14mr3731880ilq.306.1613004645983;
- Wed, 10 Feb 2021 16:50:45 -0800 (PST)
+        Wed, 10 Feb 2021 19:53:10 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C10C06174A;
+        Wed, 10 Feb 2021 16:52:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=yv1+O/uHfzIBsPuoTfwkhqPfAsKUlTuB4wwNfLpf8ho=; b=b4sYtAv7sYUrxCItJpHcs6Zup8
+        Fde9m3Aq5bgFvavX8anZJ17mWxmeDqk8ClpPvkhKuOhyMBrZOjKmvPDJd55EUloyIMdIhFHXsPk4o
+        h+xDpXo8TCbQmr5Hd1kWjOP32S0+EDt72Lf7L9pFem2Jn7dgeATveajW0GDf0blCbBPhHOwjfXUXH
+        RWRCBWAnVaoZtFM1Yuyi+QMa6ZweG1BArJf8okcjlfByFGkVjF0BEsceFLYr/KFneniuJ2VmEotlh
+        Nq2I4mgUgzpVQDGlHlIX9mDUKR4mIGZ9ljEGyL+Js3+/o/z5KeUu63PmIecJ3EU0XLOqqqnaYub8M
+        rrWayVyw==;
+Received: from [2601:1c0:6280:3f0::cf3b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lA0DX-0002Kq-U6; Thu, 11 Feb 2021 00:52:24 +0000
+Subject: Re: UBSAN: shift-out-of-bounds in xprt_do_reserve
+To:     syzbot <syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com>,
+        anna.schumaker@netapp.com, bfields@fieldses.org,
+        chuck.lever@oracle.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        trond.myklebust@hammerspace.com
+References: <0000000000000f622105baf14335@google.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <258ca358-d4ea-2bc0-9b0d-1d659eec04f7@infradead.org>
+Date:   Wed, 10 Feb 2021 16:52:18 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210210230625.550939-1-seanjc@google.com> <20210210230625.550939-2-seanjc@google.com>
-In-Reply-To: <20210210230625.550939-2-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 10 Feb 2021 16:50:35 -0800
-Message-ID: <CANgfPd8D8MRczwGFeaYv8CyTubMNmcnfwYjSAjQu19io9mHCjQ@mail.gmail.com>
-Subject: Re: [PATCH 01/15] KVM: selftests: Explicitly state indicies for
- vm_guest_mode_params array
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0000000000000f622105baf14335@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 3:06 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Explicitly state the indices when populating vm_guest_mode_params to
-> make it marginally easier to visualize what's going on.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On 2/9/21 5:24 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    dd86e7fa Merge tag 'pci-v5.11-fixes-2' of git://git.kernel..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=105930c4d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=266a5362c89c8127
+> dashboard link: https://syzkaller.appspot.com/bug?extid=f3a0fa110fd630ab56c8
+> compiler:       Debian clang version 11.0.1-2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ba3038d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15cf0d64d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+f3a0fa110fd630ab56c8@syzkaller.appspotmail.com
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+#syz dup: UBSAN: shift-out-of-bounds in xprt_calc_majortimeo
 
-> ---
->  tools/testing/selftests/kvm/lib/kvm_util.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index d787cb802b4a..960f4c5129ff 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -154,13 +154,13 @@ _Static_assert(sizeof(vm_guest_mode_string)/sizeof(char *) == NUM_VM_MODES,
->                "Missing new mode strings?");
->
->  const struct vm_guest_mode_params vm_guest_mode_params[] = {
-> -       { 52, 48,  0x1000, 12 },
-> -       { 52, 48, 0x10000, 16 },
-> -       { 48, 48,  0x1000, 12 },
-> -       { 48, 48, 0x10000, 16 },
-> -       { 40, 48,  0x1000, 12 },
-> -       { 40, 48, 0x10000, 16 },
-> -       {  0,  0,  0x1000, 12 },
-> +       [VM_MODE_P52V48_4K]     = { 52, 48,  0x1000, 12 },
-> +       [VM_MODE_P52V48_64K]    = { 52, 48, 0x10000, 16 },
-> +       [VM_MODE_P48V48_4K]     = { 48, 48,  0x1000, 12 },
-> +       [VM_MODE_P48V48_64K]    = { 48, 48, 0x10000, 16 },
-> +       [VM_MODE_P40V48_4K]     = { 40, 48,  0x1000, 12 },
-> +       [VM_MODE_P40V48_64K]    = { 40, 48, 0x10000, 16 },
-> +       [VM_MODE_PXXV48_4K]     = {  0,  0,  0x1000, 12 },
->  };
->  _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params) == NUM_VM_MODES,
->                "Missing new mode params?");
-> --
-> 2.30.0.478.g8a0d178c01-goog
->
+> ================================================================================
+> UBSAN: shift-out-of-bounds in net/sunrpc/xprt.c:658:14
+> shift exponent 536870976 is too large for 64-bit type 'unsigned long'
+> CPU: 1 PID: 8411 Comm: syz-executor902 Not tainted 5.11.0-rc6-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x137/0x1be lib/dump_stack.c:120
+>  ubsan_epilogue lib/ubsan.c:148 [inline]
+>  __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
+>  xprt_calc_majortimeo net/sunrpc/xprt.c:658 [inline]
+>  xprt_init_majortimeo net/sunrpc/xprt.c:686 [inline]
+
+
+-- 
+~Randy
+
