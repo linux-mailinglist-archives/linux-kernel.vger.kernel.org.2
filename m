@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645A4318F95
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E437318FBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhBKQKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:10:41 -0500
-Received: from pv50p00im-zteg10021301.me.com ([17.58.6.46]:55011 "EHLO
-        pv50p00im-zteg10021301.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230246AbhBKPTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:19:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1613056714;
-        bh=Spixzkgr31UYD6OOSHfazV/DOQhxzGDJYf6HOkWLy7k=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=wXKuw5XSFw35oaCdosnpg3oZr+R+gyRO5Ogp81FGM8/MRyK+siEOn2G31T0vb4pYo
-         mnM7i00xC4lFFDcPuXS0yI7TtLDgkMuoR3o6Yr2XlJ9OGjMQQ7VGnp31VakAGHAhtX
-         SDKNdPI/aeT6stRaVB2NdVbzaMIxPhiLxPN/bY9qwv6OZt02BxIbDmR8CidWkXme+b
-         EvK/2kKU27uH5cUsOEbhc38phMs/lHJJzKtmw2DmeBKAk5F66qYjz5zgtjPfvC/tJy
-         Hb88tFMAJfQLB0npzqFGkvsTMRXgwSMsfpK9o06Y+wjrQTqTx/OXpf5w5FvOHe+aiO
-         I+uTV6Ca9nQFw==
-Received: from [192.168.31.114] (unknown [45.250.50.68])
-        by pv50p00im-zteg10021301.me.com (Postfix) with ESMTPSA id B32AECC03E2;
-        Thu, 11 Feb 2021 15:18:31 +0000 (UTC)
-Subject: Re: [PATCH] staging: vt6656: Fixed alignment with issue in rf.c
-To:     forest@alittletooquiet.net, gregkh@linuxfoundation.org,
-        oscar.carter@gmx.com, tvboxspy@gmail.com
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20210211134548.84956-1-pritthijit.nath@icloud.com>
-From:   Pritthijit Nath <pritthijit.nath@icloud.com>
-Message-ID: <bf7da60f-d981-7c2b-ee35-52a8b766e2d2@icloud.com>
-Date:   Thu, 11 Feb 2021 20:48:27 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231712AbhBKQSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:18:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:53336 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230353AbhBKPXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:23:06 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 776AE113E;
+        Thu, 11 Feb 2021 07:22:20 -0800 (PST)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A94C3F73D;
+        Thu, 11 Feb 2021 07:22:19 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v2] arm64: Fix warning in mte_get_random_tag()
+Date:   Thu, 11 Feb 2021 15:22:08 +0000
+Message-Id: <20210211152208.23811-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210211134548.84956-1-pritthijit.nath@icloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_07:2021-02-10,2021-02-11 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2102110133
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/02/21 7:15 pm, Pritthijit Nath wrote:
-> This change fixes a checkpatch CHECK style issue for "Alignment should match open parenthesis".
-> 
-> Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
-> ---
->  drivers/staging/vt6656/rf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
-> index 5b8da06e3916..bcd4d467e03a 100644
-> --- a/drivers/staging/vt6656/rf.c
-> +++ b/drivers/staging/vt6656/rf.c
-> @@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
->  
->  			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
->  				ret = vnt_rf_write_embedded(priv,
-> -					vt3226d0_lo_current_table[hw_value]);
-> +							    vt3226d0_lo_current_table[hw_value]);
->  				if (ret)
->  					return ret;
->  			}
-> 
+The simplification of mte_get_random_tag() caused the introduction of the
+warning below:
 
-I am resubmitting this patch. Pardon the typo in the subject line.
+In file included from arch/arm64/include/asm/kasan.h:9,
+                 from include/linux/kasan.h:16,
+                 from mm/kasan/common.c:14:
+mm/kasan/common.c: In function ‘mte_get_random_tag’:
+arch/arm64/include/asm/mte-kasan.h:45:9: warning: ‘addr’ is used
+                                         uninitialized [-Wuninitialized]
+   45 |         asm(__MTE_PREAMBLE "irg %0, %0"
+      |
 
-thanks,
-Pritthijit
+Fix the warning using "=r" for the address in the asm inline.
+
+Fixes: c8f8de4c0887 ("arm64: kasan: simplify and inline MTE functions")
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+---
+
+This patch is based on linux-next/akpm
+
+ arch/arm64/include/asm/mte-kasan.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+index 3d58489228c0..7ab500e2ad17 100644
+--- a/arch/arm64/include/asm/mte-kasan.h
++++ b/arch/arm64/include/asm/mte-kasan.h
+@@ -43,7 +43,7 @@ static inline u8 mte_get_random_tag(void)
+ 	void *addr;
+ 
+ 	asm(__MTE_PREAMBLE "irg %0, %0"
+-		: "+r" (addr));
++		: "=r" (addr));
+ 
+ 	return mte_get_ptr_tag(addr);
+ }
+-- 
+2.30.0
+
