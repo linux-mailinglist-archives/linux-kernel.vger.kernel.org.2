@@ -2,180 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB3331949B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BB331949D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhBKUhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:37:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34336 "EHLO
+        id S231562AbhBKUiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhBKUhS (ORCPT
+        with ESMTP id S229707AbhBKUiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:37:18 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2D2C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:36:38 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id gx20so4108483pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:36:38 -0800 (PST)
+        Thu, 11 Feb 2021 15:38:01 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A997C06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:37:19 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d13so3973279plg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:37:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=CJoKOyJ/+fV1yTi8COq9+GsinjN35J8Xxpn6tpcdpRU=;
-        b=QbmbfyI0qQypKcIHnyCYOUMh+edEbR9HP19kIJJF9u+VacXRyXbibnJTcvI7IFeIgC
-         mfNLBXVuJ9JX+sWaGOhu7GezZGF5Tik1rXGY+b37aIBMezXmRJUz+hV+jQ0yU7wxsmfp
-         vg4KdaSz6StsHsNMB+12sh/Ekya7zOtYuUXVk=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9BHuk3ZYMLLx5jkh2jfjNl/0+0DOqtjeK6vm2BoIWLM=;
+        b=LTxtqY4r6M08Z++xlLlEFgEpj9xnOLzNb2VDxxPGPfaXYDd3hebnYLucoMv+4K3gZf
+         b238WdzxH+CwSavS1QG1gSIset8fIziXAmNEGRm8WcBhHZIc8YqF4r0cySYF0UC91O71
+         jQ6RHwAtVQDykw7pe64D2Kdt4hNuWSgI8fziY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CJoKOyJ/+fV1yTi8COq9+GsinjN35J8Xxpn6tpcdpRU=;
-        b=BVT9brJHFeD9qkz2tHYncrAwv0N+cPLprsMonmo0GDGmCJdfDquqI+jC0GnJYNNwz3
-         1TUQBV6ZdxQdnElL1sKVbgCwP2e+y7zIsRK3RxUkInJ+JNn8NnVtmSM2kpfY141gpAke
-         ADhb5G6hASF1uT4gZAYz+dF/UREC8nLFtq+tIiGWNwH3RKkJTAO1309OI2vvKtsbFkL4
-         HfTpnOEDhfjDDEM+F82XAIDA5f2gUzsX3VQyR2/xJlvsSPjHkcrcGRJHvFH04+1UiLPL
-         DGNcf8zkGBVcuFkaAMqayYKp23WdWq8UoUqoSl7Q9+1fkpqBu2cHGVethpA63dTGUCMY
-         vNoA==
-X-Gm-Message-State: AOAM5322G1nR/TBQrCESw9o+rjpWORQ7NZhTRtKyuuOE7wyguXBA6fWq
-        ZwR7kDGdeldDjL60yVws/4AxzA==
-X-Google-Smtp-Source: ABdhPJyvwsXbtNkPHebU5byTz3n/UhWwr1foC+7U/kGK0y+cS85N6zpcfchbtNLyti/UzJJfwuQ9Yw==
-X-Received: by 2002:a17:90b:618:: with SMTP id gb24mr5390563pjb.163.1613075798069;
-        Thu, 11 Feb 2021 12:36:38 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:fc92:99c:fc2f:8603])
-        by smtp.gmail.com with UTF8SMTPSA id b14sm6308643pfi.74.2021.02.11.12.36.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Feb 2021 12:36:37 -0800 (PST)
-Date:   Thu, 11 Feb 2021 12:36:35 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>
-Subject: Re: [PATCH v5 3/4] usb: host: xhci-plat: Create platform device for
- onboard hubs in probe()
-Message-ID: <YCWVU7YCE+WzRx9v@google.com>
-References: <20210210171040.684659-1-mka@chromium.org>
- <20210210091015.v5.3.I7a3a7d9d2126c34079b1cab87aa0b2ec3030f9b7@changeid>
- <20210210210645.xapaua7djdsvr3ca@kozik-lap>
- <YCRcIuCxB8nYi7/e@google.com>
- <161307087919.1254594.11784819060723374369@swboyd.mtv.corp.google.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9BHuk3ZYMLLx5jkh2jfjNl/0+0DOqtjeK6vm2BoIWLM=;
+        b=NixNSBnoQ0VkROZGhQKKHKui0nVdg1rg11SmIuizLBwCPa5BSg0elhZZjGAYPF4JEc
+         vSLEihfEUMHgnY7ii78Xrse5wYBVvZJDwzF+KiU3Vobg++e9HEWNKteGG3d7frmWMewA
+         Wh6RimVc3/hJDdRqB8nkYUpzKG+2nbOw2+K30ioFUZAXloPde6ua8LzwdV3ftB6pdNHL
+         SbYUpq22ZTIJkwLv1IXzGW+OEtOLng7BWfEUtsdhLpeOtVX0X8RfkIbE9O+bVi7qAYIk
+         TAHOAqoxV09l7G7TrmxSjgyejEWcEvWf61pZMGbEhSvFCpq7xGhenVr+76RucHLIiRF3
+         e8Wg==
+X-Gm-Message-State: AOAM531oblvYhZ32dekY5s6jEOmQZTPuqEV06ndfGbKATiL27G7RgeSN
+        bNZ15iw/AuDt5eVc0xHgkxabyg==
+X-Google-Smtp-Source: ABdhPJy4mCUr+FLNqbadedEOQ4Ml0HfxCmiOE1ccQ8KAD7UIlNx/XTmTLlNpxAd6je8BoCjpBiIL3w==
+X-Received: by 2002:a17:90a:b26:: with SMTP id 35mr5576902pjq.104.1613075838848;
+        Thu, 11 Feb 2021 12:37:18 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s1sm6009223pjz.42.2021.02.11.12.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 12:37:18 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        linux-spi@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] spi: dw: Avoid stack content exposure
+Date:   Thu, 11 Feb 2021 12:37:14 -0800
+Message-Id: <20210211203714.1929862-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-Patch-Hashes: v=1; h=sha256; g=c096925a3c8985c42f6bdce7c1dc78eabf32a678; i=ACsCAAtHySWi4/GyQJ4FPUqzRVqKGJseolXprmVqVo0=; m=ssMcO9+CE4ZCEW+w5qXFX6Gk6yDhsXYySpOVbzwhQXs=; p=4UX3omQoBN9kpGxRRn7MGtHp0PfSA3+8vaFM2wXCPcs=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmAllXoACgkQiXL039xtwCb2nA/9ER3 P8/seL8bh2p+NxuRip48LLX1pasXUciBYzdnQ2gykRsTcWSc74DMtIfQkvibEQwjVS7Fdk6tHg+la pWJAiy9KxO3RYWZiq2Bc42Bv0kITcvQkn9NAxUzmBRMuJzbEFp7lOErLuuPy1GJw9cIFfYDFZo3Ow ky0whXUtjbzVpeSL16pg7pRdJhFvnGguV7Dz+sShfopgUpBVdIW+/hfxhiHiMKhjxzxWQd97+4S6x 4543Ba1XY9ij/P66g9In4Q0pBT+/0C9xCBF+0QrAcW43zPlgzcFjiOdlYu4cxvrwd4Oc1maRihxy/ d7YtuBRnmM/28hzvwG0SkFzKpnOWWBS4aR5A54lVrncQp8csikHnrRh/R4s4Wyrypuhxmcc62FPwX 7o86BzsAzi+0ESiivTyHkPcP3+p4MjEjt/EMpPSJ6xlDoUWGirhLt+380ZiaDpEsUACHMIzvoWATK Oq4gW8T9HNWbYEPlMaQ3MF0Sr9Sj+SfJ7yFspxveplbW1PhG9IgYMGN31pkUFlNgkhSf/jpBIjDZr Ymhc8WMK3axbWNX7rzYiz0VfPBUse30A85+WVfzP0Dwv2lb+UdjHEQl9+f95vZAyAKZ3GS0tRgVbi zebE19BkoKQEhrL6E9yYaWWT36/73azQfHCrWPw++0aJVtPFj0ip/y4BgCh6Xa8E=
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <161307087919.1254594.11784819060723374369@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Since "data" is u32, &data is a "u32 *" type, which means pointer math
+will move in u32-sized steps. This was meant to be a byte offset, so
+cast &data to "char *" to aim the copy into the correct location.
 
-On Thu, Feb 11, 2021 at 11:14:39AM -0800, Stephen Boyd wrote:
-> Quoting Matthias Kaehlcke (2021-02-10 14:20:18)
-> > 
-> > On Wed, Feb 10, 2021 at 10:06:45PM +0100, Krzysztof Kozlowski wrote:
-> > > 
-> > > This looks hackish... what if later we have something else than hub?
-> > > Another if()?
-> > > 
-> > > What if hub could be connected to something else than XHCI controller?
-> > 
-> > In earlier versions this was standalone driver, which was more flexible and
-> > didn't require cooperation from the XHCI driver:
-> > 
-> > https://lore.kernel.org/patchwork/patch/1313001/
-> > 
-> > Rob Herring raised objections about the DT bindings, since the USB hub would be
-> > represented twice in the DT, once in the USB hierachry (with an explicit node or
-> > implicitly) plus a node for the platform device for the new driver:
-> > 
-> > https://lore.kernel.org/patchwork/patch/1305395/
-> > https://lore.kernel.org/patchwork/patch/1313000/
-> > 
-> > Alan Stern suggested to create the platform device in the XHCI platform driver:
-> > 
-> > https://lore.kernel.org/patchwork/patch/1313000/#1510227
-> > 
-> > I wasn't super happy about involving xhci-plat, but at least the code is minimal
-> > and all the device specific stuff is handled by the onboard_usb_hub driver.
-> > 
-> > If you have better suggestions that might satisfy all parties please let us
-> > know :)
-> > 
-> 
-> Is it possible to use the graph binding to connect the USB controller on
-> the SoC to the port on the hub? Then the hub would be a standalone node
-> at the root of DT connected to the USB controller (or phy) and xhci code
-> could probe the firmware to see if there's a graph connection downstream
-> that is a powered hub like this. I didn't see this idea mentioned in the
-> previous discussions, but maybe I missed it.
+Seen with -Warray-bounds (and found by Coverity):
 
-Thanks for bringing this up. I'm not sure I completely understand your
-suggestion, but in general it seems a direction that could be worth
-exploring.
+In file included from ./include/linux/string.h:269,
+                 from ./arch/powerpc/include/asm/paca.h:15,
+                 from ./arch/powerpc/include/asm/current.h:13,
+                 from ./include/linux/mutex.h:14,
+                 from ./include/linux/notifier.h:14,
+                 from ./include/linux/clk.h:14,
+                 from drivers/spi/spi-dw-bt1.c:12:
+In function 'memcpy',
+    inlined from 'dw_spi_bt1_dirmap_copy_from_map' at drivers/spi/spi-dw-bt1.c:87:3:
+./include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset 4 is out of the bounds [0, 4] of object 'data' with type 'u32' {aka 'unsigned int'} [-Warray-bounds]
+   20 | #define __underlying_memcpy __builtin_memcpy
+      |                             ^
+./include/linux/fortify-string.h:191:9: note: in expansion of macro '__underlying_memcpy'
+  191 |  return __underlying_memcpy(p, q, size);
+      |         ^~~~~~~~~~~~~~~~~~~
+drivers/spi/spi-dw-bt1.c: In function 'dw_spi_bt1_dirmap_copy_from_map':
+drivers/spi/spi-dw-bt1.c:77:6: note: 'data' declared here
+   77 |  u32 data;
+      |      ^~~~
 
-I think something like the following should work even without requiring
-cooperation from the XHCI code:
+Addresses-Coverity: CID 1497771 Out-of-bounds access
+Fixes: abf00907538e ("spi: dw: Add Baikal-T1 SPI Controller glue driver")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/spi/spi-dw-bt1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-onboard-usb-hub {
-    compatible = “realtek,rts5411”, “onboard_usb_hub”;
-    #address-cells = <1>;
-    #size-cells = <0>;
+diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
+index 4aa8596fb1f2..5be6b7b80c21 100644
+--- a/drivers/spi/spi-dw-bt1.c
++++ b/drivers/spi/spi-dw-bt1.c
+@@ -84,7 +84,7 @@ static void dw_spi_bt1_dirmap_copy_from_map(void *to, void __iomem *from, size_t
+ 	if (shift) {
+ 		chunk = min_t(size_t, 4 - shift, len);
+ 		data = readl_relaxed(from - shift);
+-		memcpy(to, &data + shift, chunk);
++		memcpy(to, (char *)&data + shift, chunk);
+ 		from += chunk;
+ 		to += chunk;
+ 		len -= chunk;
+-- 
+2.25.1
 
-    vdd-supply = <&pp3300_hub>;
-
-    port@0 {
-        reg = <0>;
-
-        rts5411_3_0: endpoint {
-            // should not be needed
-            remote-endpoint = <&usb_1_dwc3_port1>;
-        };
-    };
-
-    port@1 {
-        reg = <1>;
-
-        rts5411_2_0: endpoint {
-            // should not be needed
-            remote-endpoint = <&usb_1_dwc3_port2>;
-        };
-    };
-};
-
-&usb_1_dwc3 {
-    dr_mode = "host";
-    #address-cells = <1>;
-    #size-cells = <0>;
-
-    port@1 {
-        reg = <1>;
-
-        usb_1_dwc3_port1: endpoint {
-            remote-endpoint = <&rts5411_3_0>;
-        };
-    };
-
-    port@2 {
-        reg = <2>;
-
-        usb_1_dwc3_port2: endpoint {
-            remote-endpoint = <&rts5411_2_0>;
-        };
-    };
-};
-
-That looks like an actual description of the hardware, without multiple DT
-nodes for the hub.
-
-The USB part of the onboard_hub driver could determine the platform device
-from the remote endpoint and register the USB device with it.
