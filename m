@@ -2,121 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745593189F6
+	by mail.lfdr.de (Postfix) with ESMTP id 03B6F3189F5
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhBKL67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:58:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22043 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231685AbhBKLmL (ORCPT
+        id S231694AbhBKL6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:58:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230011AbhBKLmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 06:42:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613043645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vUoDjptBfW2j+T80yjumKevzhFB51qnZmG+ldDF5KQQ=;
-        b=ibhHYvpILB6LeTcPw3dmVnXrdfk++X8cftMyToVlsjV0BhuilM1+cIDJKRpGhJDBxOBOrM
-        uJW0wkApzkV2n69S8rkb07ndBdYnydlrqYlvVz5LNTFndLYyT6glVbZxI+mXx2kR2aG1S2
-        KYd/j5DazWTBADZhAYWFo271SyiAvQE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-487-jA-X_cteNgqQURcGYrtNkg-1; Thu, 11 Feb 2021 06:40:43 -0500
-X-MC-Unique: jA-X_cteNgqQURcGYrtNkg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 501C21936B60;
-        Thu, 11 Feb 2021 11:40:41 +0000 (UTC)
-Received: from krava (unknown [10.40.195.165])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 71078100164C;
-        Thu, 11 Feb 2021 11:40:38 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 12:40:37 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     kan.liang@linux.intel.com
-Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
-        namhyung@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com
-Subject: Re: [PATCH 00/49] Add Alder Lake support for perf
-Message-ID: <YCUXte/CMEQlCq4f@krava>
-References: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
+        Thu, 11 Feb 2021 06:42:20 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9156DC0613D6;
+        Thu, 11 Feb 2021 03:41:40 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id o38so3666750pgm.9;
+        Thu, 11 Feb 2021 03:41:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZKnpBYO+jJqLR8mObCZWV6snnWw00w1z5Mlo7cxi4x4=;
+        b=ShyJFr7Ao+baj5q7zWX0omKGr97CLs+LxaY1OfkIsk2wGdRvLB8XVrcvsA/J78lRod
+         RfrJZCnkZtLq0lCv5tFj+kZ+Uu5m3ntn8W24vsWYAWd5rOR10X4Ci46/3JM90GCg4meo
+         2ho8Fp2j/mtVuGWeASQu1JZ+StH28utRNOHAp3X/THN4SLJWLU66rh94THHfrIgOMjvu
+         ez0TgOiNhHnJqAdRgU6AgsW7jJAHgQwgIQsTCYxZEs098S/hIrYmnlbVD7ymdpHFZ81M
+         ThiSIgKVJfoKKGyLtwyvIbQhwNvpFneHevK+9EwPXTJcenHVCT1wvJ/LcUJShC7gMFvb
+         qqxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZKnpBYO+jJqLR8mObCZWV6snnWw00w1z5Mlo7cxi4x4=;
+        b=EJlIW5jmQy/ZxZTf/sZvWj+tMgcaRb16cfgsr+RGPkc7f7TG+KutJ0lgQdGpk37uCO
+         ZC7nFvlRSkroUnMnaR0JO/a0NCxpgtmyNrHlE4mlakuTFd16bjmc0Rj5Q66W5yNVuO60
+         c8+096qQC+/OnHLppWnHWBw9IIyjMQbZG9CB0stogwP0+JFXqgT1CD/zesiNTrG2dxs6
+         TgfLTHnqGyLLwinIZEBHmTsvUUegue1biIQNDa8X4QKx/sxA2sHlyl3Mgbz1ET5MFak7
+         Meo30JNg4P4vXmsJ0nrUgZtjDKkrCJh9OGApS2C0QJSP5o7o4sQrg0/U3H04wvSEzHjO
+         FPcg==
+X-Gm-Message-State: AOAM530ZupXPkVP8NOXGvYlXw1S+L31Dru49kHClsAaYK/+GgqL8+tTh
+        AYn1uP5LbwqEh5My4DrWbNx5gcv8W4eGhPgR5LfZVFLI0Crp3dHS
+X-Google-Smtp-Source: ABdhPJzoOE6nv0mkkRBPdVzBxR1Run8+t57h/QVHmmlZ07T/TASS22YevmGHC+TZZMAyKNZnk5oaNkMLCbqI7gl4OHQ=
+X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
+ q20-20020a056a000854b02901b762330c5fmr7562483pfk.73.1613043700020; Thu, 11
+ Feb 2021 03:41:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612797946-18784-1-git-send-email-kan.liang@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210208222203.22335-1-info@metux.net> <CAHp75VdNTenoE0AOmGfndqQ7SrxbuK+SvfFYn3W2GmqhkCSByQ@mail.gmail.com>
+ <1b92deea-cf6d-7eca-197f-b12456279890@metux.net>
+In-Reply-To: <1b92deea-cf6d-7eca-197f-b12456279890@metux.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 11 Feb 2021 13:41:23 +0200
+Message-ID: <CAHp75Vd39OaGkgi5mSH+o39Js8gDW77fP8LUBx73EAH_mZ-scg@mail.gmail.com>
+Subject: Re: RFC: oftree based setup of composite board devices
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 07:24:57AM -0800, kan.liang@linux.intel.com wrote:
+On Thu, Feb 11, 2021 at 1:15 PM Enrico Weigelt, metux IT consult
+<lkml@metux.net> wrote:
+> On 10.02.21 11:30, Andy Shevchenko wrote:
 
-SNIP
+> >> Use cases are boards with non-oftree firmware (ACPI, etc) where certain
+> >> platform devices can't be directly enumerated via firmware. Traditionally
+> >> we had to write board specific drivers that check for board identification
+> >> (DMI strings, etc), then initialize the actual devices and their links
+> >> (eg. gpio<->leds/buttons, ...). Often this can be expressed just by DT.
+> >
+> > In ACPI we support DT compatible strings, and we support overlays for
+> > a long time. Would it work for you?
+>
+> please tell me more, how ACPI and DT can already work together ?
 
-> Jin Yao (24):
->   perf jevents: Support unit value "cpu_core" and "cpu_atom"
->   perf util: Save pmu name to struct perf_pmu_alias
->   perf pmu: Save detected hybrid pmus to a global pmu list
->   perf pmu: Add hybrid helper functions
->   perf list: Support --cputype option to list hybrid pmu events
->   perf stat: Hybrid evsel uses its own cpus
->   perf header: Support HYBRID_TOPOLOGY feature
->   perf header: Support hybrid CPU_PMU_CAPS
->   tools headers uapi: Update tools's copy of linux/perf_event.h
->   perf parse-events: Create two hybrid hardware events
->   perf parse-events: Create two hybrid cache events
->   perf parse-events: Support hardware events inside PMU
->   perf list: Display pmu prefix for partially supported hybrid cache
->     events
->   perf parse-events: Support hybrid raw events
->   perf stat: Support --cputype option for hybrid events
->   perf stat: Support metrics with hybrid events
->   perf evlist: Create two hybrid 'cycles' events by default
->   perf stat: Add default hybrid events
->   perf stat: Uniquify hybrid event name
->   perf stat: Merge event counts from all hybrid PMUs
->   perf stat: Filter out unmatched aggregation for hybrid event
->   perf evlist: Warn as events from different hybrid PMUs in a group
->   perf Documentation: Document intel-hybrid support
->   perf evsel: Adjust hybrid event and global event mixed group
-> 
-> Kan Liang (22):
->   perf/x86/intel: Hybrid PMU support for perf capabilities
->   perf/x86: Hybrid PMU support for intel_ctrl
->   perf/x86: Hybrid PMU support for counters
->   perf/x86: Hybrid PMU support for unconstrained
->   perf/x86: Hybrid PMU support for hardware cache event
->   perf/x86: Hybrid PMU support for event constraints
->   perf/x86: Hybrid PMU support for extra_regs
->   perf/x86/intel: Factor out intel_pmu_check_num_counters
->   perf/x86/intel: Factor out intel_pmu_check_event_constraints
->   perf/x86/intel: Factor out intel_pmu_check_extra_regs
->   perf/x86: Expose check_hw_exists
->   perf/x86: Remove temporary pmu assignment in event_init
->   perf/x86: Factor out x86_pmu_show_pmu_cap
->   perf/x86: Register hybrid PMUs
->   perf/x86: Add structures for the attributes of Hybrid PMUs
->   perf/x86/intel: Add attr_update for Hybrid PMUs
->   perf/x86: Support filter_match callback
->   perf/x86/intel: Add Alder Lake Hybrid support
->   perf: Introduce PERF_TYPE_HARDWARE_PMU and PERF_TYPE_HW_CACHE_PMU
->   perf/x86/intel/uncore: Add Alder Lake support
->   perf/x86/msr: Add Alder Lake CPU support
->   perf/x86/cstate: Add Alder Lake CPU support
-> 
-> Ricardo Neri (2):
->   x86/cpufeatures: Enumerate Intel Hybrid Technology feature bit
->   x86/cpu: Describe hybrid CPUs in cpuinfo_x86
-> 
-> Zhang Rui (1):
->   perf/x86/rapl: Add support for Intel Alder Lake
+It's all in documentation.
 
-hi,
-would you have git branch with all this somewhere?
+https://www.kernel.org/doc/html/latest/firmware-guide/acpi/enumeration.html#device-tree-namespace-link-device-id
+https://www.kernel.org/doc/html/latest/admin-guide/acpi/ssdt-overlays.html
 
-thanks,
-jirka
+Please, please, read documentation beforehand!
 
+> You already know my apu board driver - that's my first example usecase.
+
+Sorry, but I forgot about it. Can you summarize what is your use case
+that really needs so intrusive and hard work?
+
+> There're few things I don't know how to solve w/ overlays:
+>
+> * match rules shall be inside the DTS
+> * future match rules shall also check for bios versions etc
+> * adding new boards shall be possible by just adding another DTS to
+>    the tree (not a whole module)
+> * supporting several board variants (w/ small differences) by one DTS
+> * sometimes existing devices (eg. enumerated by acpi) need to be kicked
+>    out (buggy firmware, ...)
+> * can't rely on any special userland tweaks
+
+Show an example why either of the above is needed in your case and
+tell what is the exact issue.
+
+> >> The approach can be easily be extended to other kinds of composite devices,
+> >> eg. PCI cards or USB dongles.
+> >
+> > What do you mean? PCI and USB are self-enumerated. What's wrong with them?
+>
+> In general yes, but of course you need drivers for them. Sometimes those
+> devices are composites of other devices, wired up in some special way.
+> Traditionally, we'd need to write a special driver that just don't do
+> much more than instantiating other drivers.
+
+Yes, that driver represents hardware. MFD already has some support for
+composite devices. We have the auxiliary bus for some other
+interesting cases, etc. Depending on the hardware in question you have
+to choose a proper bus and locking (access synchronisation) schema.
+
+> Those things could be expressed via DTS, so we don't need to write
+> individual drivers anymore.
+
+It seems you are trying to create something like "universal quirk".
+Brave idea, but from my experience a fiasco is what will be out of it.
+The hardware has a lot of different issues and levels of issues and it
+is close to impossible to describe everything possible and predict the
+future... Good luck!
+
+
+...
+
+> * need to split the information into several places (instead of having
+>    all in one DTS)
+> * need to have one separate module board, or merge the dmi tables.
+
+Have no idea what you are talking about here, sorry.
+
+> My goal is having everything that describes a board into one DTS
+> (source) file.
+
+I'm confused, you are talking about non-DT platforms in the
+cover-letter and now you are talking about DTS. AFAIK DTS allows you
+to put everything in one source.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
