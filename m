@@ -2,97 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A474E3183FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 04:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2453183FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 04:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhBKDaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 22:30:35 -0500
-Received: from mga02.intel.com ([134.134.136.20]:31674 "EHLO mga02.intel.com"
+        id S229741AbhBKDbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 22:31:00 -0500
+Received: from mga04.intel.com ([192.55.52.120]:47943 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhBKDaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 22:30:30 -0500
-IronPort-SDR: RiF5eYBAqzJkLmTQS+l2l/cejBG+prbGwR79sbzAqDldW6jzRGYVv0S2SaHHe8P7c3KX/yidwt
- 5YigVXineFhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="169315031"
+        id S229478AbhBKDa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 10 Feb 2021 22:30:56 -0500
+IronPort-SDR: nXFU93MRZ8ql+1dVYfpiWLomYutstvjzhxl4KEVg+DLbkvnLooYqyDPwGjKc1I65X1IVaRvOFw
+ xt0/ochfNYog==
+X-IronPort-AV: E=McAfee;i="6000,8403,9891"; a="179630290"
 X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="169315031"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 19:29:48 -0800
-IronPort-SDR: MfbfcWjF2/AeA73asNEIFh0HW5OpiAC1h/QeeqZF7cTb1Lp0DvGX+0QM6mHzDd8YJo2WsR1JF8
- jvqusn39GAlQ==
+   d="scan'208";a="179630290"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 19:30:15 -0800
+IronPort-SDR: 1EwnGt/b8p4IoblknDgapz3hDLweTqv2QFuRsoGHgoXH+J2/gBFi1FH/uLk0JmvVVsImymaVIQ
+ LKhCKwTy5W2w==
 X-IronPort-AV: E=Sophos;i="5.81,169,1610438400"; 
-   d="scan'208";a="397071471"
-Received: from sliu49-mobl1.ccr.corp.intel.com (HELO [10.249.171.210]) ([10.249.171.210])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 19:29:46 -0800
-Subject: Re: linux-next: Tree for Feb 10 (acrn)
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        acrn-dev@lists.projectacrn.org
-References: <20210210224220.28657128@canb.auug.org.au>
- <f13e97f3-88b9-294a-71d7-024478c13223@infradead.org>
-From:   "Liu, Shuo A" <shuo.a.liu@intel.com>
-Message-ID: <eedf6122-ec76-c25a-8d57-4ee0fa9f55d3@intel.com>
-Date:   Thu, 11 Feb 2021 11:29:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+   d="scan'208";a="586827240"
+Received: from rontiver-mobl.amr.corp.intel.com (HELO intel.com) ([10.212.99.95])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2021 19:30:14 -0800
+Date:   Wed, 10 Feb 2021 22:30:13 -0500
+From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     intel-gfx@lists.freedesktop.org,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Yijun Shen <Yijun.Shen@dell.com>,
+        Sean Paul <seanpaul@chromium.org>
+Subject: Re: [Intel-gfx] [PATCH v5 2/4] drm/i915/gen9_bc: Introduce TGP PCH
+ DDC pin mappings
+Message-ID: <20210211033013.GE82362@intel.com>
+References: <20210209212832.1401815-1-lyude@redhat.com>
+ <20210209212832.1401815-3-lyude@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <f13e97f3-88b9-294a-71d7-024478c13223@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209212832.1401815-3-lyude@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/11/2021 01:52, Randy Dunlap wrote:
-> On 2/10/21 3:42 AM, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20210209:
->>
+On Tue, Feb 09, 2021 at 04:28:29PM -0500, Lyude Paul wrote:
+> With the introduction of gen9_bc, where Intel combines Cometlake CPUs with
+> a Tigerpoint PCH, we'll need to introduce new DDC pin mappings for this
+> platform in order to make all of the display connectors work. So, let's do
+> that.
 > 
-> ../drivers/virt/acrn/hsm.c: In function ‘remove_cpu_store’:
-> ../drivers/virt/acrn/hsm.c:389:3: error: implicit declaration of function ‘remove_cpu’; did you mean ‘register_cpu’? [-Werror=implicit-function-declaration]
->    remove_cpu(cpu);
+> Changes since v4:
+> * Split this into it's own patch - vsyrjala
 > 
-> ../drivers/virt/acrn/hsm.c:402:2: error: implicit declaration of function ‘add_cpu’; did you mean ‘task_cpu’? [-Werror=implicit-function-declaration]
->   add_cpu(cpu);
+> Cc: Matt Roper <matthew.d.roper@intel.com>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> Cc: Ville Syrjala <ville.syrjala@linux.intel.com>
+> [originally from Tejas's work]
+> Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> ---
+>  drivers/gpu/drm/i915/display/intel_bios.c |  9 +++++++++
+>  drivers/gpu/drm/i915/display/intel_hdmi.c | 20 ++++++++++++++++++++
+>  2 files changed, 29 insertions(+)
 > 
+> diff --git a/drivers/gpu/drm/i915/display/intel_bios.c b/drivers/gpu/drm/i915/display/intel_bios.c
+> index 7118530a1c38..1289f9d437e4 100644
+> --- a/drivers/gpu/drm/i915/display/intel_bios.c
+> +++ b/drivers/gpu/drm/i915/display/intel_bios.c
+> @@ -1638,6 +1638,12 @@ static const u8 adls_ddc_pin_map[] = {
+>  	[ADLS_DDC_BUS_PORT_TC4] = GMBUS_PIN_12_TC4_ICP,
+>  };
+>  
+> +static const u8 gen9bc_tgp_ddc_pin_map[] = {
+> +	[DDC_BUS_DDI_B] = GMBUS_PIN_2_BXT,
+> +	[DDC_BUS_DDI_C] = GMBUS_PIN_9_TC1_ICP,
+> +	[DDC_BUS_DDI_D] = GMBUS_PIN_10_TC2_ICP,
+> +};
+> +
+>  static u8 map_ddc_pin(struct drm_i915_private *dev_priv, u8 vbt_pin)
+>  {
+>  	const u8 *ddc_pin_map;
+> @@ -1651,6 +1657,9 @@ static u8 map_ddc_pin(struct drm_i915_private *dev_priv, u8 vbt_pin)
+>  	} else if (IS_ROCKETLAKE(dev_priv) && INTEL_PCH_TYPE(dev_priv) == PCH_TGP) {
+>  		ddc_pin_map = rkl_pch_tgp_ddc_pin_map;
+>  		n_entries = ARRAY_SIZE(rkl_pch_tgp_ddc_pin_map);
+> +	} else if (HAS_PCH_TGP(dev_priv) && IS_GEN9_BC(dev_priv)) {
+> +		ddc_pin_map = gen9bc_tgp_ddc_pin_map;
+> +		n_entries = ARRAY_SIZE(gen9bc_tgp_ddc_pin_map);
+>  	} else if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP) {
+>  		ddc_pin_map = icp_ddc_pin_map;
+>  		n_entries = ARRAY_SIZE(icp_ddc_pin_map);
+> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> index dad54e116bc4..49528d07c7f3 100644
+> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> @@ -3138,6 +3138,24 @@ static u8 rkl_port_to_ddc_pin(struct drm_i915_private *dev_priv, enum port port)
+>  	return GMBUS_PIN_1_BXT + phy;
+>  }
+>  
+> +static u8 gen9bc_port_to_ddc_pin(struct drm_i915_private *i915, enum port port)
+> +{
+> +	enum phy phy = intel_port_to_phy(i915, port);
+> +
+> +	drm_WARN_ON(&i915->drm, port == PORT_A);
+> +
+> +	/*
+> +	 * Pin mapping for GEN9 BC depends on which PCH is present.  With TGP,
+> +	 * final two outputs use type-c pins, even though they're actually
+> +	 * combo outputs.  With CMP, the traditional DDI A-D pins are used for
+> +	 * all outputs.
+> +	 */
+> +	if (INTEL_PCH_TYPE(i915) >= PCH_TGP && phy >= PHY_C)
+> +		return GMBUS_PIN_9_TC1_ICP + phy - PHY_C;
+> +
+> +	return GMBUS_PIN_1_BXT + phy;
+> +}
+> +
+>  static u8 dg1_port_to_ddc_pin(struct drm_i915_private *dev_priv, enum port port)
+>  {
+>  	return intel_port_to_phy(dev_priv, port) + 1;
+> @@ -3202,6 +3220,8 @@ static u8 intel_hdmi_ddc_pin(struct intel_encoder *encoder)
+>  		ddc_pin = dg1_port_to_ddc_pin(dev_priv, port);
+>  	else if (IS_ROCKETLAKE(dev_priv))
+>  		ddc_pin = rkl_port_to_ddc_pin(dev_priv, port);
+> +	else if (IS_GEN9_BC(dev_priv) && HAS_PCH_TGP(dev_priv))
+> +		ddc_pin = gen9bc_port_to_ddc_pin(dev_priv, port);
+
+what about also calling this function gen9bc_tgp_ ?
+
+but up to you...
+this version is much better without the if gen9 inside a "tgp" func...
+thanks
+
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+
+>  	else if (HAS_PCH_MCC(dev_priv))
+>  		ddc_pin = mcc_port_to_ddc_pin(dev_priv, port);
+>  	else if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
+> -- 
+> 2.29.2
 > 
-> Full randconfig file is attached.
-> 
-
-Thanks.
-The vCPU removing depends on CONFIG_HOTPLUG_CPU. Below change could fix.
-
----
-
-diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-index 1f6b7c54a1a4..e340788aacdf 100644
---- a/drivers/virt/acrn/hsm.c
-+++ b/drivers/virt/acrn/hsm.c
-@@ -372,6 +372,7 @@ static int acrn_dev_release(struct inode *inode,
-struct file *filp)
-        return 0;
- }
-
-+#ifdef CONFIG_HOTPLUG_CPU
- static ssize_t remove_cpu_store(struct device *dev,
-                                struct device_attribute *attr,
-                                const char *buf, size_t count)
-@@ -403,9 +404,12 @@ static ssize_t remove_cpu_store(struct device *dev,
-        return ret;
- }
- static DEVICE_ATTR_WO(remove_cpu);
-+#endif
-
- static struct attribute *acrn_attrs[] = {
-+#ifdef CONFIG_HOTPLUG_CPU
-        &dev_attr_remove_cpu.attr,
-+#endif
-        NULL
- };
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
