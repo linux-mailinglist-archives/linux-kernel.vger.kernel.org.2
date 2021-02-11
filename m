@@ -2,138 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFCE31864B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 09:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D75318666
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 09:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbhBKIZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 03:25:39 -0500
-Received: from mail-co1nam11on2062.outbound.protection.outlook.com ([40.107.220.62]:26848
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229679AbhBKIYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 03:24:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cRwqFP5z4Wj4mgnABTPNdZ79LYcjlgVfByYUc7ZYgG8G6rIqsIcjVcrjxmm6IqhWIADV0BRrt18uK9jSrVb23m4FfFj8zeXonxzWCADzggcM2frLkkt5hXA2oWTFq35qFqo9zjnV7D3N0zbmeWgyNMI1Ku5aEkdOeGbpi8zeqjrMhNFYNukvDr6NacOT7ZD74IYj4SvjqUoEa+Bto1Vajpa608h1VFy1lpfWFxEPatc+i8QIrWEofm6YeC7IrHoOInR8At0hg1ZqpVjcZ8ita0cFg3HnnqUeLWQCycCNvdncpU8PXzOQ1aN79GKO4gVukzG7nJAQIFA2S+d/rmSmcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nrEGsnh/Kx3kpihV3zHjmvx/0tB+yInI5DORp4OC9Uw=;
- b=nCkHl0L+7S/fOBPCov4dGfDtB5RZEnXtQ6CObElnEQHgLYhIRfigLSU+/1JGcF2G2UiynogOADy+IGkFjJSNjzr4D+Z25r8WpXyKcI+wv7OPejsEwogoqmyyNwhAp2lJe6MgbQV4Jwxz9Tla7Rv47/AQA/636haGU6AUZxK3ECqrRgemV1QgfUOidGByK2goAdc0K+PvLgUA6a3GnvqeK3rQ6umuAc2HCj6znUjWoHMod0I8Uh1pe0H4vCsQhBqH8tKMRtLoUPczywwlVBxtCKc3hhBO7rXHCna0s//bOChvt3TJVgPYDsVhu22PYlJiOuMCFDh5/8PwbBEzJEv+fA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nrEGsnh/Kx3kpihV3zHjmvx/0tB+yInI5DORp4OC9Uw=;
- b=lx6AaO+v/lr7B5/dgrF8mFGueUoD/lwLrwHCKxjLaljk4sCS8T+7xGgv91pQF3+1f4PkJIYkzcGMhqEsE44zDDthvqME891EptMqm3OUGmXWy4E4NkjZi5g6onxi7aJgFkaQpTLZcH+bCkDPHjjBYHPZc/Z+x/V5cazFCsrQKL0=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by BYAPR11MB3110.namprd11.prod.outlook.com (2603:10b6:a03:8a::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.27; Thu, 11 Feb
- 2021 08:24:05 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.026; Thu, 11 Feb 2021
- 08:24:05 +0000
-From:   qiang.zhang@windriver.com
-To:     tj@kernel.org, jiangshanlai@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] workqueue: Move the position of debug_work_activate() in __queue_work()
-Date:   Thu, 11 Feb 2021 16:23:51 +0800
-Message-Id: <20210211082351.178536-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [2409:8a02:b422:31c0:98c4:8a81:334d:be19]
-X-ClientProxiedBy: HK2P15301CA0006.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::16) To BYAPR11MB2632.namprd11.prod.outlook.com
- (2603:10b6:a02:c4::17)
+        id S229580AbhBKIgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 03:36:43 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43008 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229478AbhBKIgh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 03:36:37 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11B8WIJs150417;
+        Thu, 11 Feb 2021 03:35:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=to : cc : references :
+ from : subject : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Nlcr3nKBLvyoPjmf/rFztISMggdQUalsfPUdkRrSmHs=;
+ b=BbkpthWdeiMX2KXdxgUDyIx/Rv0ubpKmTp2c+5OidS0+bqKxJZvUSLUJ5JAkWse6obr+
+ 7DLI30AKqZAFozFHNWoOjEAULQdX/RhVdkSs8Pr7YDkjvyNK7ZCNfPJrXuVhBVw9SIrb
+ BbugEg0cKGjzIKxVjMYe2IcfN+EIVMCSZSHTLJrN8dgs5HGogURONrTMieAwIN3T6h3l
+ ogcJaKrdWKP7thqQbV3chu2YZ7Usb8TeElrju5rcTSk+d45z2bbCNeSzpBrzI1pELIGs
+ HLbm5WYKsp/yErs4OiISFqpS/tB4K9aUx3gtXx6MNgz5On0jc4okXamGO8rALFnTvfn5 TA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36n13y05nb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 03:35:20 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11B8Ws99152603;
+        Thu, 11 Feb 2021 03:35:20 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36n13y05kq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 03:35:20 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11B8RBuH026928;
+        Thu, 11 Feb 2021 08:35:18 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 36hjr8dk4x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 08:35:18 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11B8Z5b434931004
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 08:35:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7758CAE055;
+        Thu, 11 Feb 2021 08:35:15 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0D26EAE04D;
+        Thu, 11 Feb 2021 08:35:15 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.64.239])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 11 Feb 2021 08:35:14 +0000 (GMT)
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, david@redhat.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210209154302.1033165-1-imbrenda@linux.ibm.com>
+ <20210209154302.1033165-2-imbrenda@linux.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Subject: Re: [PATCH v3 1/2] s390/kvm: extend kvm_s390_shadow_fault to return
+ entry pointer
+Message-ID: <f7fabdb6-e53a-1c17-92a8-3240b0c03e47@linux.ibm.com>
+Date:   Thu, 11 Feb 2021 09:35:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-qzhang2-l1.corp.ad.wrs.com (2409:8a02:b422:31c0:98c4:8a81:334d:be19) by HK2P15301CA0006.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.0 via Frontend Transport; Thu, 11 Feb 2021 08:24:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5b339816-14be-469f-c87e-08d8ce666511
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3110:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB3110949CE86C14CE1563677DFF8C9@BYAPR11MB3110.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OaElr8SwgRzKILhHY6Uz2wXWFX4ZUIZrhBTyjSu+5m43wnsyRkDV/B5VeaSgvuZR706/jsmuiZDE1LzInXtLFFN2rywFaFdCxO1YzcJBtROR2W7zOo6H95LCbTAYhyWk+1NGBZ5Vxeg1srBgQwaLBxmN26Ws9/KBgq5/Mwx2gx8MdjhNwROtJQYsI9b5R4dUmw5PIF3lo7kPCgKEH2EFbjHf/q8IltSnmUw7buXdc8ktHEGIZWnnSdmXibd2JRZbVXDMSignwPZd6ggUPH6F5w9iyl5B4aijcG/RFbIWr7526VH5ZpQXFbNWwXvUmpf3Yh8xmMZTcYXz9IRi5Of2ehq+J3bzLQdx5nTtdUZsWHE2YGbAPOElXY3xCcT6Wf744CyNlMOVLIGwbrvBiyBGF8bTjLxMJ4OawV5mGCnK3ncwr+63E8Van+5nOPULTDijeZgIQjI0/WBFya+sWIB86HitqDSfNQhtZkhFf5+A7wuX2Wrs7/Cb3zGiidgTY1kBjvOyJrYBLt/SdS8KdWD7cg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39850400004)(136003)(346002)(376002)(6486002)(2616005)(478600001)(8936002)(16526019)(186003)(5660300002)(66946007)(8676002)(316002)(1076003)(83380400001)(6666004)(9686003)(6506007)(36756003)(6512007)(86362001)(66476007)(66556008)(4744005)(52116002)(4326008)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ot6X0VhfIOaCV84N7LajsTQ/Tq7/jFlrypBL7SbGYQOizLwMu/PwP+wJ/geB?=
- =?us-ascii?Q?hSjSxyAgCX8kiwKZQtmxUl8Q3slPq41++8mugJQNdyUgUEwfWWq0QmlSgRzy?=
- =?us-ascii?Q?erVjVSvyCQ2kbb5/VeNeOFIazo1OohcG7AAWL5H3b4e9842P0PHSq3ZNsz36?=
- =?us-ascii?Q?xNyG1iVsyv01dSu4e8eSyjYusrF74JJaPtxefeLKpcnF0nN9nps20VGIyHBt?=
- =?us-ascii?Q?9ure0POvBgUHzBVd6D0+penXeob2Jc9zWFzdqGReC46hJTxpkiOrkJk2CRFV?=
- =?us-ascii?Q?l0/xCC1yoboHJsq4ArTFZPW6lzNMAQVcgoboSsV037HaXatsWiDLWtwy7G6e?=
- =?us-ascii?Q?VyWMb4U13Hh0ZnBNgyN3hAMWIreZPC0wMNIL1hNunhP4vMgv93R/DyXyeo6X?=
- =?us-ascii?Q?aCe6ieiJE9HZaGEX6xT/WEAgNlOJEw3LY0WPIX41Q4POh+MdMNl1XP0HM0Dt?=
- =?us-ascii?Q?1WZ4kcyGrKeL/WsRJkyCmDnRuNiwFKIeE9LZGwgYTPnuvtsOv2AsoEroZrIe?=
- =?us-ascii?Q?/EYSHuBH/5VnnBtye6AdsXpApniCotmjWxb7QsPMg/9+kCG7XEsoKtzvm79G?=
- =?us-ascii?Q?OMOdd89+6iDtWYNaltH4NH4Ug+U+ZkhQ97qzRisVgxut7dtHWADPJ3eHs9Py?=
- =?us-ascii?Q?Jh+h8afMMVMD1X2a6mh+k/DTBB7OUBcliLkMVa2II4kqtPfoHyjmCCg3BOHq?=
- =?us-ascii?Q?C+yvW/azfAkgRpv/gtbchN6Nzu1qzNOEunk54bRpHlKMjP+bDcUaGalgG4w3?=
- =?us-ascii?Q?fxaGn5Lv8SSlSi+MY2jLLfho9MH5PB1iiLO3sRXOJrUa48jZxuAcAWj3xPwD?=
- =?us-ascii?Q?MF70r6tAe8GYqsKd2ZeKET0V0N6ff7DKn+71pNJiiGrLxLqBC9NfZ1TtyiJs?=
- =?us-ascii?Q?SWH95rrMADR38qXH23EB2t8MQQ3EQ3vj8E4oBkHbpiO/CyvNjlixLZNgCXbT?=
- =?us-ascii?Q?zYBLSVhQAblcr11LQHZlK4LAWxqUaYwczenC1x7xpG4yt+XsTIcP1enqBG+m?=
- =?us-ascii?Q?By7lZCSx02Fm+s2pX+DlTSy5H69k2yTJ4+DP7jAGS2+I9F2gxB83hlTeiQ9o?=
- =?us-ascii?Q?mmUk315USQvRFYTnYcTo8l0X6vUFSlBqVULHn9opl5zHoW8pp0n1Ep1FtSGk?=
- =?us-ascii?Q?SzTGisgQax6mOo4vIDOwEcHZ+IdJygzLj5lTZqFyq/QzkqXSx/oKcaehnW2w?=
- =?us-ascii?Q?NGiE3hC+rYNdHLFYgDXdqhzSqzsqZUsXdhib5rsMf6kkDYPIdbhQ1RvHEfQK?=
- =?us-ascii?Q?basxEG6oenVVgyRbxzVcOX4WArD3LQLmze4Src15BbiP+QHsGvTJCKRHOpGw?=
- =?us-ascii?Q?k7rq8aZ47/Rf34Z2ErOeJfwDhgNiiBt8winsZYYuv7TdHL3BxLxvkt9x7rdp?=
- =?us-ascii?Q?x+8/GAnF+JQtBH3QFE+06JYdSavV?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b339816-14be-469f-c87e-08d8ce666511
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2021 08:24:05.4403
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iDU/WgiXB3rxdM7688t+TarQL/TC4bAbotV9Pkz1BrlMqFmNiza4DV35xeiHlE+7024V5q+ciPrdmnwIvNhl+CHPJmO2e/B6spZ44MWAXps=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3110
+In-Reply-To: <20210209154302.1033165-2-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_05:2021-02-10,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 clxscore=1015 impostorscore=0 malwarescore=0 mlxscore=0
+ suspectscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+On 2/9/21 4:43 PM, Claudio Imbrenda wrote:
+> Extend kvm_s390_shadow_fault to return the pointer to the valid leaf
+> DAT table entry, or to the invalid entry.
+> 
+> Also return some flags in the lower bits of the address:
+> DAT_PROT: indicates that DAT protection applies because of the
+>           protection bit in the segment (or, if EDAT, region) tables
+> NOT_PTE: indicates that the address of the DAT table entry returned
+>          does not refer to a PTE, but to a segment or region table.
+> 
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Cc: stable@vger.kernel.org
 
-The debug_work_activate() is called on the premise that
-the work can be inserted, because if wq be in WQ_DRAINING
-status, insert work may be failed.
+Reviewed-by: Janosch Frank <frankja@de.ibm.com>
 
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
----
- kernel/workqueue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Small nit below.
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 0d150da252e8..21fb00b52def 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1412,7 +1412,6 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
- 	 */
- 	lockdep_assert_irqs_disabled();
- 
--	debug_work_activate(work);
- 
- 	/* if draining, only works from the same workqueue are allowed */
- 	if (unlikely(wq->flags & __WQ_DRAINING) &&
-@@ -1494,6 +1493,7 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
- 		worklist = &pwq->delayed_works;
- 	}
- 
-+	debug_work_activate(work);
- 	insert_work(pwq, work, worklist, work_flags);
- 
- out:
--- 
-2.25.1
+> ---
+>  arch/s390/kvm/gaccess.c | 30 +++++++++++++++++++++++++-----
+>  arch/s390/kvm/gaccess.h |  5 ++++-
+>  arch/s390/kvm/vsie.c    |  8 ++++----
+>  3 files changed, 33 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
+> index 6d6b57059493..e0ab83f051d2 100644
+> --- a/arch/s390/kvm/gaccess.c
+> +++ b/arch/s390/kvm/gaccess.c
+> @@ -976,7 +976,9 @@ int kvm_s390_check_low_addr_prot_real(struct kvm_vcpu *vcpu, unsigned long gra)
+>   * kvm_s390_shadow_tables - walk the guest page table and create shadow tables
+>   * @sg: pointer to the shadow guest address space structure
+>   * @saddr: faulting address in the shadow gmap
+> - * @pgt: pointer to the page table address result
+> + * @pgt: pointer to the beginning of the page table for the given address if
+> + *       successful (return value 0), or to the first invalid DAT entry in
+> + *       case of exceptions (return value > 0)
+>   * @fake: pgt references contiguous guest memory block, not a pgtable
+>   */
+>  static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+> @@ -1034,6 +1036,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+>  			rfte.val = ptr;
+>  			goto shadow_r2t;
+>  		}
+> +		*pgt = ptr + vaddr.rfx * 8;
+>  		rc = gmap_read_table(parent, ptr + vaddr.rfx * 8, &rfte.val);
+>  		if (rc)
+>  			return rc;
+> @@ -1060,6 +1063,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+>  			rste.val = ptr;
+>  			goto shadow_r3t;
+>  		}
+> +		*pgt = ptr + vaddr.rsx * 8;
+>  		rc = gmap_read_table(parent, ptr + vaddr.rsx * 8, &rste.val);
+>  		if (rc)
+>  			return rc;
+> @@ -1087,6 +1091,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+>  			rtte.val = ptr;
+>  			goto shadow_sgt;
+>  		}
+> +		*pgt = ptr + vaddr.rtx * 8;
+>  		rc = gmap_read_table(parent, ptr + vaddr.rtx * 8, &rtte.val);
+>  		if (rc)
+>  			return rc;
+> @@ -1123,6 +1128,7 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+>  			ste.val = ptr;
+>  			goto shadow_pgt;
+>  		}
+> +		*pgt = ptr + vaddr.sx * 8;
+>  		rc = gmap_read_table(parent, ptr + vaddr.sx * 8, &ste.val);
+>  		if (rc)
+>  			return rc;
+> @@ -1157,6 +1163,8 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+>   * @vcpu: virtual cpu
+>   * @sg: pointer to the shadow guest address space structure
+>   * @saddr: faulting address in the shadow gmap
+> + * @datptr: will contain the address of the faulting DAT table entry, or of
+> + *          the valid leaf, plus some flags
+>   *
+>   * Returns: - 0 if the shadow fault was successfully resolved
+>   *	    - > 0 (pgm exception code) on exceptions while faulting
+> @@ -1165,11 +1173,11 @@ static int kvm_s390_shadow_tables(struct gmap *sg, unsigned long saddr,
+>   *	    - -ENOMEM if out of memory
+>   */
+>  int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap *sg,
+> -			  unsigned long saddr)
+> +			  unsigned long saddr, unsigned long *datptr)
+>  {
+>  	union vaddress vaddr;
+>  	union page_table_entry pte;
+> -	unsigned long pgt;
+> +	unsigned long pgt = 0;
+>  	int dat_protection, fake;
+>  	int rc;
+>  
+> @@ -1191,8 +1199,20 @@ int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap *sg,
+>  		pte.val = pgt + vaddr.px * PAGE_SIZE;
+>  		goto shadow_page;
+>  	}
+> -	if (!rc)
+> -		rc = gmap_read_table(sg->parent, pgt + vaddr.px * 8, &pte.val);
+> +
+> +	switch (rc) {
+> +	case PGM_SEGMENT_TRANSLATION:
+> +	case PGM_REGION_THIRD_TRANS:
+> +	case PGM_REGION_SECOND_TRANS:
+> +	case PGM_REGION_FIRST_TRANS:
+> +		pgt |= NOT_PTE;
+> +		break;
+> +	case 0:
+> +		pgt += vaddr.px * 8;
+> +		rc = gmap_read_table(sg->parent, pgt, &pte.val);
+> +	}
+> +	if (*datptr)
+> +		*datptr = pgt | dat_protection * DAT_PROT;
+>  	if (!rc && pte.i)
+>  		rc = PGM_PAGE_TRANSLATION;
+>  	if (!rc && pte.z)
+> diff --git a/arch/s390/kvm/gaccess.h b/arch/s390/kvm/gaccess.h
+> index f4c51756c462..fec26bbb17ba 100644
+> --- a/arch/s390/kvm/gaccess.h
+> +++ b/arch/s390/kvm/gaccess.h
+> @@ -359,7 +359,10 @@ void ipte_unlock(struct kvm_vcpu *vcpu);
+>  int ipte_lock_held(struct kvm_vcpu *vcpu);
+>  int kvm_s390_check_low_addr_prot_real(struct kvm_vcpu *vcpu, unsigned long gra);
+>  
+> +#define DAT_PROT 2
+> +#define NOT_PTE 4
+
+I'd like to have a PEI prefix and a short comment where this comes from,
+something like:
+"MVPG PEI indication bits"
+
+> +
+>  int kvm_s390_shadow_fault(struct kvm_vcpu *vcpu, struct gmap *shadow,
+> -			  unsigned long saddr);
+> +			  unsigned long saddr, unsigned long *datptr);
+>  
+>  #endif /* __KVM_S390_GACCESS_H */
+> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+> index c5d0a58b2c29..7db022141db3 100644
+> --- a/arch/s390/kvm/vsie.c
+> +++ b/arch/s390/kvm/vsie.c
+> @@ -619,10 +619,10 @@ static int map_prefix(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>  	/* with mso/msl, the prefix lies at offset *mso* */
+>  	prefix += scb_s->mso;
+>  
+> -	rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, prefix);
+> +	rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, prefix, NULL);
+>  	if (!rc && (scb_s->ecb & ECB_TE))
+>  		rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap,
+> -					   prefix + PAGE_SIZE);
+> +					   prefix + PAGE_SIZE, NULL);
+>  	/*
+>  	 * We don't have to mprotect, we will be called for all unshadows.
+>  	 * SIE will detect if protection applies and trigger a validity.
+> @@ -913,7 +913,7 @@ static int handle_fault(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>  				    current->thread.gmap_addr, 1);
+>  
+>  	rc = kvm_s390_shadow_fault(vcpu, vsie_page->gmap,
+> -				   current->thread.gmap_addr);
+> +				   current->thread.gmap_addr, NULL);
+>  	if (rc > 0) {
+>  		rc = inject_fault(vcpu, rc,
+>  				  current->thread.gmap_addr,
+> @@ -935,7 +935,7 @@ static void handle_last_fault(struct kvm_vcpu *vcpu,
+>  {
+>  	if (vsie_page->fault_addr)
+>  		kvm_s390_shadow_fault(vcpu, vsie_page->gmap,
+> -				      vsie_page->fault_addr);
+> +				      vsie_page->fault_addr, NULL);
+>  	vsie_page->fault_addr = 0;
+>  }
+>  
+> 
 
