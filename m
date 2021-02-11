@@ -2,144 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D333182B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B18BC3182C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 01:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhBKAug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 10 Feb 2021 19:50:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhBKAue (ORCPT
+        id S231287AbhBKAv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 10 Feb 2021 19:51:56 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:35472 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhBKAvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:50:34 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B25C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:49:53 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id e24so4003374ioc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Feb 2021 16:49:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JCQoxUWW+WqGD0toLXrCMCFnjUYr8lZy9dGVryfod24=;
-        b=rGIqwLFmmaGGhM/AjOQhIUmMxjI00/7np4DL9QFis8v7VWy5z1f8EZ53FnM4wP7vPY
-         OjR03eth+8Q7ROgPeyX1worZRj2qV5yio7/EE9s09h+jWqvZqPOJsGtxdrkMOKQ/veBt
-         nCEmtnhQr9Chr2lMmcxRbjd01ibIdoTY50uCQklSNAVDwyNFws/PonvZtlfy7DKvRpdI
-         /5fGqR6KwvYCi8yQyNK1QFkIjtY9MSjs9582C3Oy2eofSpeuVi6d1+teBZn7UjIaRF3A
-         xKmvBH9vrncKScBlV41nvWKUgzfhx9IniFUng8O4MKumRdnJ0jy+ZaoUKwPUO+KMTjFQ
-         ir6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JCQoxUWW+WqGD0toLXrCMCFnjUYr8lZy9dGVryfod24=;
-        b=T14NZBvwA5xI9bAzXx1c1j/kkRMV+vRM3ptMCHk1nvIykvBi0gzryIsilp3QWZFt0G
-         q74mtpag9nUTk2Tw/e4uQJ/M5qo3V8j/YZaYXg6YPNY5L9Ca2ohYhigwtXW4lQXYUJCF
-         ez+j9N7XP5/j8GhWqfF6IvrpPfTlhuN/FTDINiqy8hxEUlsEjR7gZy5VV50FlRU35KK5
-         Pd7qzVOW0HfyQTV0mHa04EtbxL2K2Kv6N+Ck2hn8BGbiF5Gfv+l4sZm+R5O/cPsff1R5
-         g1c71VSk0KSpQetqyNTUqc00bHTny/fJghc3/7kLb7P9S7TOVu5QcroTtgmedsf6THDa
-         B4VA==
-X-Gm-Message-State: AOAM530oX5zEvDo8hCMHP6lbN+8aP6MPOQuy6ZqwnFBnrbFY1i0GbmOU
-        55fAj6vEhGYTIp4or/3wGXyzp1cia7mrhR9QIiPTaZo5R+k=
-X-Google-Smtp-Source: ABdhPJxpxTGfXP3NRxUBrQcfau2gcrZ5o4LdrjpPcDt4sBzuzTnEpSI4iFOr7MCAzj1pSquZbD/jkVUMnEoWQKKD5Mk=
-X-Received: by 2002:a05:6602:2e01:: with SMTP id o1mr3275411iow.9.1613004592900;
- Wed, 10 Feb 2021 16:49:52 -0800 (PST)
+        Wed, 10 Feb 2021 19:51:07 -0500
+Date:   Thu, 11 Feb 2021 00:50:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613004624;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z5IjVgqPId2cFMAuEW2DPBY1CxG8DUyPvcjHrQNn0iM=;
+        b=L6ZHyUcTRnsZzVa8tkMwDkQMBIyllQV5Utfym8qYAIbrSxO2IEoA+G5CEbjrsiTMiHjTxg
+        +eKmnMyYCVI9cNAR8anbiYY+TktugTtw5krIciChzOvYk7X3KTDR25Wy+44d2XwHZjIXU1
+        TrRd2Meah91tqYnuHCmJP885vualmlexddpDIrRM//yS0yNPbKjnIPYyurYl6cGzjcyq8c
+        CCE9pevPdYm2MZdaofSnOmeuzJH+nbVayZWMnw0kwUxmZ+tODDj+oyh7gZCE4l7Ks2lvcw
+        e4VfJ3bUFBy6sznZG3I2hztvwtiFGZ2VH7YAFR7TF6x3hSbu0oPfmiONAnaxsw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613004624;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z5IjVgqPId2cFMAuEW2DPBY1CxG8DUyPvcjHrQNn0iM=;
+        b=Kqo/pOJP7lnXZwg6k7QJtyQPLGLVmOBneRoQgv9sll2/NNNNr6qFUrGcAVwVGQTxlJyktS
+        poRNe978pc2ZWOAA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/entry] x86/softirq/64: Inline do_softirq_own_stack()
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210210002513.382806685@linutronix.de>
+References: <20210210002513.382806685@linutronix.de>
 MIME-Version: 1.0
-References: <20210210230625.550939-1-seanjc@google.com> <20210210230625.550939-3-seanjc@google.com>
-In-Reply-To: <20210210230625.550939-3-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Wed, 10 Feb 2021 16:49:41 -0800
-Message-ID: <CANgfPd9GHjvPF4O6ryo-x-CuuNYchXhWo2mpSopfru1cBmjsfA@mail.gmail.com>
-Subject: Re: [PATCH 02/15] KVM: selftests: Expose align() helpers to tests
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161300462370.23325.14952958631693787504.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 3:06 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Refactor align() to work with non-pointers, add align_ptr() for use with
-> pointers, and expose both helpers so that they can be used by tests
-> and/or other utilities.  The align() helper in particular will be used
-> to ensure gpa alignment for hugepages.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+The following commit has been merged into the x86/entry branch of tip:
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+Commit-ID:     72f40a2823d6e16229ab58b898c6f22044e5222f
+Gitweb:        https://git.kernel.org/tip/72f40a2823d6e16229ab58b898c6f22044e5222f
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 10 Feb 2021 00:40:54 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 10 Feb 2021 23:34:17 +01:00
 
-> ---
->  tools/testing/selftests/kvm/include/kvm_util.h | 15 +++++++++++++++
->  tools/testing/selftests/kvm/lib/kvm_util.c     | 11 +----------
->  2 files changed, 16 insertions(+), 10 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-> index 2d7eb6989e83..4b5d2362a68a 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
-> @@ -79,6 +79,21 @@ struct vm_guest_mode_params {
->  };
->  extern const struct vm_guest_mode_params vm_guest_mode_params[];
->
-> +/* Aligns x up to the next multiple of size. Size must be a power of 2. */
+x86/softirq/64: Inline do_softirq_own_stack()
 
-It might also be worth updating this comment to clarify that the
-function rounds down, not up.
+There is no reason to have this as a seperate function for a single caller.
 
-> +static inline uint64_t align(uint64_t x, uint64_t size)
-> +{
-> +       uint64_t mask = size - 1;
-> +
-> +       TEST_ASSERT(size != 0 && !(size & (size - 1)),
-> +                   "size not a power of 2: %lu", size);
-> +       return ((x + mask) & ~mask);
-> +}
-> +
-> +static inline void *align_ptr(void *x, size_t size)
-> +{
-> +       return (void *)align((unsigned long)x, size);
-> +}
-> +
->  int kvm_check_cap(long cap);
->  int vm_enable_cap(struct kvm_vm *vm, struct kvm_enable_cap *cap);
->  int vcpu_enable_cap(struct kvm_vm *vm, uint32_t vcpu_id,
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index 960f4c5129ff..584167c6dbc7 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -21,15 +21,6 @@
->  #define KVM_UTIL_PGS_PER_HUGEPG 512
->  #define KVM_UTIL_MIN_PFN       2
->
-> -/* Aligns x up to the next multiple of size. Size must be a power of 2. */
-> -static void *align(void *x, size_t size)
-> -{
-> -       size_t mask = size - 1;
-> -       TEST_ASSERT(size != 0 && !(size & (size - 1)),
-> -                   "size not a power of 2: %lu", size);
-> -       return (void *) (((size_t) x + mask) & ~mask);
-> -}
-> -
->  /*
->   * Capability
->   *
-> @@ -757,7 +748,7 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->                     region->mmap_start, errno);
->
->         /* Align host address */
-> -       region->host_mem = align(region->mmap_start, alignment);
-> +       region->host_mem = align_ptr(region->mmap_start, alignment);
->
->         /* As needed perform madvise */
->         if (src_type == VM_MEM_SRC_ANONYMOUS || src_type == VM_MEM_SRC_ANONYMOUS_THP) {
-> --
-> 2.30.0.478.g8a0d178c01-goog
->
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210210002513.382806685@linutronix.de
+
+---
+ arch/x86/include/asm/irq_stack.h     |  3 +--
+ arch/x86/include/asm/softirq_stack.h | 11 +++++++++++
+ arch/x86/kernel/irq_64.c             |  5 -----
+ 3 files changed, 12 insertions(+), 7 deletions(-)
+ create mode 100644 arch/x86/include/asm/softirq_stack.h
+
+diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
+index 1b82f92..9b2a0ff 100644
+--- a/arch/x86/include/asm/irq_stack.h
++++ b/arch/x86/include/asm/irq_stack.h
+@@ -194,7 +194,7 @@
+  * interrupts are pending to be processed. The interrupt stack cannot be in
+  * use here.
+  */
+-#define run_softirq_on_irqstack()					\
++#define do_softirq_own_stack()						\
+ {									\
+ 	__this_cpu_write(hardirq_stack_inuse, true);			\
+ 	call_on_irqstack(__do_softirq, ASM_CALL_SOFTIRQ);		\
+@@ -202,7 +202,6 @@
+ }
+ 
+ #else /* CONFIG_X86_64 */
+-
+ /* System vector handlers always run on the stack they interrupted. */
+ #define run_sysvec_on_irqstack_cond(func, regs)				\
+ {									\
+diff --git a/arch/x86/include/asm/softirq_stack.h b/arch/x86/include/asm/softirq_stack.h
+new file mode 100644
+index 0000000..889d53d
+--- /dev/null
++++ b/arch/x86/include/asm/softirq_stack.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_X86_SOFTIRQ_STACK_H
++#define _ASM_X86_SOFTIRQ_STACK_H
++
++#ifdef CONFIG_X86_64
++# include <asm/irq_stack.h>
++#else
++# include <asm-generic/softirq_stack.h>
++#endif
++
++#endif
+diff --git a/arch/x86/kernel/irq_64.c b/arch/x86/kernel/irq_64.c
+index f335c39..1c0fb96 100644
+--- a/arch/x86/kernel/irq_64.c
++++ b/arch/x86/kernel/irq_64.c
+@@ -74,8 +74,3 @@ int irq_init_percpu_irqstack(unsigned int cpu)
+ 		return 0;
+ 	return map_irq_stack(cpu);
+ }
+-
+-void do_softirq_own_stack(void)
+-{
+-	run_softirq_on_irqstack();
+-}
