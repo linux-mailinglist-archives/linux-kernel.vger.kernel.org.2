@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D562319063
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817B7319054
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:50:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhBKQwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:52:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230006AbhBKPjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:39:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 349F064E08;
-        Thu, 11 Feb 2021 15:38:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613057890;
-        bh=5YfJF7uxrTWeac4nnX0BQnZhyrdOqrgfkk/zq2S5Oik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o/r4K0nYNzJXsb12h+VVxHetr449jMfWcETjIiklOpW8NxCd7gE2xNi4prN2wLPju
-         Qs2EmoX0GQTEAjpVH0IuwDuxWEoQVDKMOfN9fXURFN3uvEzhaS5Z9iCj67AZ/fECkk
-         Cu75UdlnltnUKPLNIW6AnhV2JVlCI2U9xNNuJuTU=
-Date:   Thu, 11 Feb 2021 16:38:08 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        David Collins <collinsd@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 07/24] regulator: core: avoid
- regulator_resolve_supply() race condition
-Message-ID: <YCVPYEgCIbqDRYLa@kroah.com>
-References: <20210211150147.743660073@linuxfoundation.org>
- <20210211150148.069380965@linuxfoundation.org>
- <20210211152656.GD5217@sirena.org.uk>
+        id S231993AbhBKQs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:48:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhBKPi5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:38:57 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7351CC061756;
+        Thu, 11 Feb 2021 07:38:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hJ8uepiWcgph891R8KmreTzxxreni/R3Me86FH4whMI=; b=AM9M439DoxUhB2VN8sDK+YxWqJ
+        BSt3SLbkDhjj63TYXe0RewsK2AnF1vNMZTCQff7DxgeMRETzDYSV+xvWEjVomMr58RuYXcrjxA3D0
+        RHv4hj7HlhSdzgSAryVR7ppxvG6jBa2vV4tMe65tJIGIAWcQPgXSdxQFQwA1r1FXAYu73lwFVExaT
+        bDNR3D7MWIzz0eNmvPCPi1HKdLwAXlS4Bx0+4hmk0Cph0JKyIxxFqXuimax+XsnNyt+kZp0h5Jh1y
+        AowmOKlWantiHq1fVgZxr/oVzARN45ok+Ra8WdyD5q32rQVRIy8GNAqPGCu0lWZhFCs/evV9YWk3f
+        ZwdAl6Wg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lAE2n-00APiO-6Q; Thu, 11 Feb 2021 15:38:13 +0000
+Date:   Thu, 11 Feb 2021 15:38:13 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, kernel@pengutronix.de,
+        Jan Kara <jack@suse.com>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 1/2] quota: Add mountpath based quota support
+Message-ID: <20210211153813.GA2480649@infradead.org>
+References: <20210211153024.32502-1-s.hauer@pengutronix.de>
+ <20210211153024.32502-2-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210211152656.GD5217@sirena.org.uk>
+In-Reply-To: <20210211153024.32502-2-s.hauer@pengutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 03:26:56PM +0000, Mark Brown wrote:
-> On Thu, Feb 11, 2021 at 04:02:41PM +0100, Greg Kroah-Hartman wrote:
-> > From: David Collins <collinsd@codeaurora.org>
-> > 
-> > [ Upstream commit eaa7995c529b54d68d97a30f6344cc6ca2f214a7 ]
-> > 
-> > The final step in regulator_register() is to call
-> > regulator_resolve_supply() for each registered regulator
-> 
-> This is buggy without a followup which doesn't seem to have been
-> backported here.
+> +	if (!mountpoint)
+> +		return -ENODEV;
+> +
+> +	ret = user_path_at(AT_FDCWD, mountpoint,
+> +			     LOOKUP_FOLLOW | LOOKUP_AUTOMOUNT, &mountpath);
 
-Would that be 14a71d509ac8 ("regulator: Fix lockdep warning resolving
-supplies")?  Looks like it made it into the 5.4.y and 5.10.y queues, but
-not 4.19.y.
+user_path_at handles an empty path, although you'll get EFAULT instead.
+Do we care about the -ENODEV here?
 
-Sasha, any reason for this?
+Otherwise this looks good:
 
-thanks,
-
-greg k-h
+Reviewed-by: Christoph Hellwig <hch@lst.de>
