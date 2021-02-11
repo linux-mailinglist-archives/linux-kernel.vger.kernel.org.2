@@ -2,123 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF080318B47
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA0C318B48
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhBKM4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 07:56:02 -0500
-Received: from mail-lf1-f43.google.com ([209.85.167.43]:33212 "EHLO
-        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbhBKMfc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:35:32 -0500
-Received: by mail-lf1-f43.google.com with SMTP id b2so7886578lfq.0;
-        Thu, 11 Feb 2021 04:35:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x6TZw+obX8DsydwkNebGYL0Sc7QmwV6s4HOdYPKBxHw=;
-        b=f/RKuKE6mf1D8Ro2tOf+9xb9dvE96mRBolVMlIxtnnC8VAA2kj9EEJ4l/I/gv3qpEq
-         t64xZ8p8lJLj0HT0Lvr1Wz/wiUZxOwugof7sNm+l0a7mhCp8w0AjE8p1sdU2HyIWgl2H
-         CIDhGprDPZGpahIz7G/Q+YQXHDdmadL9ijTtHbZi8eB00S9KbByhClipAAw4u7FBeYUt
-         g5ax8JzWN93RRGhGhDmh9LlV1IXWkxDSPilgnG8yzn3MwtVcV0xfzbb+PtdgVnAtvprL
-         sYF6Ymvho2kYzeFohZvp78lBfNCUOCs1pA3mxt72e0tvilVs+61tgcIg14n7BIjGfHCG
-         9smg==
-X-Gm-Message-State: AOAM532EIOEM9AbnSe8DIheBl+BYcwJDkV3LVDHjgA204D/EbZIeMwQe
-        2f0Z2mCREKQqTh7u577/0W8=
-X-Google-Smtp-Source: ABdhPJxlHhG+xj+C0nTx2fx3+LCbxwcIuZR2sycsfftyoa8MkIC20+5FPDRp++sEy2GrUrfMCt4k8A==
-X-Received: by 2002:a05:6512:201c:: with SMTP id a28mr4363766lfb.25.1613046888332;
-        Thu, 11 Feb 2021 04:34:48 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id f5sm891715ljc.8.2021.02.11.04.34.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 04:34:47 -0800 (PST)
-Date:   Thu, 11 Feb 2021 14:34:41 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: [RFC PATCH 2/7] regulator: add warning flags
-Message-ID: <796abe0408e36c52a405b52738b27617b9e32325.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
+        id S230476AbhBKM5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 07:57:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33418 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229763AbhBKMfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 07:35:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613046889; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2VY81SAYEzedSESQb03CooHyQXuD8/QJRlDqluCM/Iw=;
+        b=a1DzIuRHjGNkMtX91/tgAzW1IQ3z7iD1tkE+MPzuj2mofBmmDMVPqlST2qGt5yACd5EDNl
+        CriIZR1oqISALt+PFB64rGE0ojsykcR6CNOrGE9A10JQh8HQYESa30or656Cp53JpdRGp5
+        /0sWHD6v+nwWRlc2LBTuVhtfeylmbEM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 96FF4AD29;
+        Thu, 11 Feb 2021 12:34:49 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 13:34:48 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: possible deadlock in start_this_handle (2)
+Message-ID: <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
+References: <000000000000563a0205bafb7970@google.com>
+ <20210211104947.GL19070@quack2.suse.cz>
+ <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
+ <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
+ <20210211121020.GO19070@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210211121020.GO19070@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 'warning' level events and error flags to regulator core.
-Current regulator core notifications are used to inform consumers
-about errors where HW is misbehaving in such way it is assumed to
-be broken/unrecoverable.
+On Thu 11-02-21 13:10:20, Jan Kara wrote:
+> On Thu 11-02-21 12:28:48, Dmitry Vyukov wrote:
+> > On Thu, Feb 11, 2021 at 12:22 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > >
+> > > On Thu, Feb 11, 2021 at 11:49 AM Jan Kara <jack@suse.cz> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > added mm guys to CC.
+> > > >
+> > > > On Wed 10-02-21 05:35:18, syzbot wrote:
+> > > > > HEAD commit:    1e0d27fc Merge branch 'akpm' (patches from Andrew)
+> > > > > git tree:       upstream
+> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15cbce90d00000
+> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=bd1f72220b2e57eb
+> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
+> > > > > userspace arch: i386
+> > > > >
+> > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > >
+> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > Reported-by: syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com
+> > > > >
+> > > > > ======================================================
+> > > > > WARNING: possible circular locking dependency detected
+> > > > > 5.11.0-rc6-syzkaller #0 Not tainted
+> > > > > ------------------------------------------------------
+> > > > > kswapd0/2246 is trying to acquire lock:
+> > > > > ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
+> > > > >
+> > > > > but task is already holding lock:
+> > > > > ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
+> > > > >
+> > > > > which lock already depends on the new lock.
+> > > > >
+> > > > > the existing dependency chain (in reverse order) is:
+> > > > >
+> > > > > -> #2 (fs_reclaim){+.+.}-{0:0}:
+> > > > >        __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
+> > > > >        fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
+> > > > >        might_alloc include/linux/sched/mm.h:193 [inline]
+> > > > >        slab_pre_alloc_hook mm/slab.h:493 [inline]
+> > > > >        slab_alloc_node mm/slub.c:2817 [inline]
+> > > > >        __kmalloc_node+0x5f/0x430 mm/slub.c:4015
+> > > > >        kmalloc_node include/linux/slab.h:575 [inline]
+> > > > >        kvmalloc_node+0x61/0xf0 mm/util.c:587
+> > > > >        kvmalloc include/linux/mm.h:781 [inline]
+> > > > >        ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
+> > > > >        ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
+> > > > >        ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
+> > > > >        ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
+> > > > >        ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
+> > > > >        ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
+> > > > >        ext4_xattr_user_set+0xbc/0x100 fs/ext4/xattr_user.c:40
+> > > > >        __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
+> > > > >        __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
+> > > > >        __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
+> > > > >        vfs_setxattr+0x135/0x320 fs/xattr.c:291
+> > > > >        setxattr+0x1ff/0x290 fs/xattr.c:553
+> > > > >        path_setxattr+0x170/0x190 fs/xattr.c:572
+> > > > >        __do_sys_setxattr fs/xattr.c:587 [inline]
+> > > > >        __se_sys_setxattr fs/xattr.c:583 [inline]
+> > > > >        __ia32_sys_setxattr+0xbc/0x150 fs/xattr.c:583
+> > > > >        do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
+> > > > >        __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
+> > > > >        do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
+> > > > >        entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> > > >
+> > > > This stacktrace should never happen. ext4_xattr_set() starts a transaction.
+> > > > That internally goes through start_this_handle() which calls:
+> > > >
+> > > >         handle->saved_alloc_context = memalloc_nofs_save();
+> > > >
+> > > > and we restore the allocation context only in stop_this_handle() when
+> > > > stopping the handle. And with this fs_reclaim_acquire() should remove
+> > > > __GFP_FS from the mask and not call __fs_reclaim_acquire().
+> > > >
+> > > > Now I have no idea why something here didn't work out. Given we don't have
+> > > > a reproducer it will be probably difficult to debug this. I'd note that
+> > > > about year and half ago similar report happened (got autoclosed) so it may
+> > > > be something real somewhere but it may also be just some HW glitch or
+> > > > something like that.
+> > >
+> > > HW glitch is theoretically possible. But if we are considering such
+> > > causes, I would say a kernel memory corruption is way more likely, we
+> > > have hundreds of known memory-corruption-capable bugs open. In most
+> > > cases they are caught by KASAN before doing silent damage. But KASAN
+> > > can miss some cases.
+> > >
+> > > I see at least 4 existing bugs with similar stack:
+> > > https://syzkaller.appspot.com/bug?extid=bfdded10ab7dcd7507ae
+> > > https://syzkaller.appspot.com/bug?extid=a7ab8df042baaf42ae3c
+> > > https://syzkaller.appspot.com/bug?id=c814a55a728493959328551c769ede4c8ff72aab
+> > > https://syzkaller.appspot.com/bug?id=426ad9adca053dafcd698f3a48ad5406dccc972b
+> > >
+> > > All in all, I would not assume it's a memory corruption. When we had
+> > > bugs that actually caused silent memory corruption, that caused a
+> > > spike of random one-time crashes all over the kernel. This does not
+> > > look like it.
+> > 
+> > I wonder if memalloc_nofs_save (or any other manipulation of
+> > current->flags) could have been invoked from interrupt context? I
+> > think it could cause the failure mode we observe (extremely rare
+> > disappearing flags). It may be useful to add a check for task context
+> > there.
+> 
+> That's an interesting idea. I'm not sure if anything does manipulate
+> current->flags from inside an interrupt (definitely memalloc_nofs_save()
+> doesn't seem to be) but I'd think that in fully preemtible kernel,
+> scheduler could preempt the task inside memalloc_nofs_save() and the
+> current->flags manipulation could also clash with a manipulation of these
+> flags by the scheduler if there's any?
 
-There are PMICs which are designed for system(s) that may have use
-for regulator indications sent before HW is damaged so that some
-board/consumer specific recovery-event can be performed while
-continuing most of the normal operations.
+current->flags should be always manipulated from the user context. But
+who knows maybe there is a bug and some interrupt handler is calling it.
+This should be easy to catch no?
 
-Add new WARNING level events and notifications to be used for
-that purpose.
-
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- include/linux/regulator/consumer.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
-index 2024944fd2f7..a5e2d9b9237c 100644
---- a/include/linux/regulator/consumer.h
-+++ b/include/linux/regulator/consumer.h
-@@ -119,6 +119,16 @@ struct regulator_dev;
- #define REGULATOR_EVENT_PRE_DISABLE		0x400
- #define REGULATOR_EVENT_ABORT_DISABLE		0x800
- #define REGULATOR_EVENT_ENABLE			0x1000
-+/*
-+ * Following notifications should be emitted only if detected condition
-+ * is such that the HW is likely to still be working but consumers should
-+ * take a recovery action to prevent problems esacalating into errors.
-+ */
-+#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
-+#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
-+#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
-+#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
-+#define REGULATOR_EVENT_WARN_MASK		0x1E000
- 
- /*
-  * Regulator errors that can be queried using regulator_get_error_flags
-@@ -138,6 +148,10 @@ struct regulator_dev;
- #define REGULATOR_ERROR_FAIL			BIT(4)
- #define REGULATOR_ERROR_OVER_TEMP		BIT(5)
- 
-+#define REGULATOR_ERROR_UNDER_VOLTAGE_WARN	BIT(6)
-+#define REGULATOR_ERROR_OVER_CURRENT_WARN	BIT(7)
-+#define REGULATOR_ERROR_OVER_VOLTAGE_WARN	BIT(8)
-+#define REGULATOR_ERROR_OVER_TEMP_WARN		BIT(9)
- 
- /**
-  * struct pre_voltage_change_data - Data sent with PRE_VOLTAGE_CHANGE event
 -- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Michal Hocko
+SUSE Labs
