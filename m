@@ -2,95 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F1031934F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21522319354
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 20:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhBKTpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 14:45:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53256 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229742AbhBKTp1 (ORCPT
+        id S230493AbhBKTrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 14:47:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhBKTr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 14:45:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613072640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eFsY3BREFzEWy1QnYPGFKXq13XSYJPUDZ/zXRChLIII=;
-        b=YgsETP2xc4aHDeWj6yCVLIMGla87hznfNvoY6VnAyyGYYx6g/iH2RPtSeprIBknczS9j69
-        VHmoqiS8k+GMtcYrK5cJTiaaGER1IUOM7YYTvVgNPrhOKjjGzv+2oTPx3aKiCAbT2iMAdH
-        Q2j/7OURieArPlmnXmB87zjvffmb+vE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-PDd46njoMeKtUChwvOp2uQ-1; Thu, 11 Feb 2021 14:43:56 -0500
-X-MC-Unique: PDd46njoMeKtUChwvOp2uQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C818801965;
-        Thu, 11 Feb 2021 19:43:53 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A6A510013D7;
-        Thu, 11 Feb 2021 19:43:52 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 12:43:51 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, liranl@nvidia.com, oren@nvidia.com,
-        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
-        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
-        kwankhede@nvidia.com, ACurrid@nvidia.com, gmataev@nvidia.com,
-        cjia@nvidia.com, yishaih@nvidia.com, aik@ozlabs.ru
-Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
-Message-ID: <20210211124351.53a833c5@omen.home.shazbot.org>
-In-Reply-To: <20210211084426.GB2378134@infradead.org>
-References: <20210202170659.1c62a9e8.cohuck@redhat.com>
-        <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
-        <20210202105455.5a358980@omen.home.shazbot.org>
-        <20210202185017.GZ4247@nvidia.com>
-        <20210202123723.6cc018b8@omen.home.shazbot.org>
-        <20210202204432.GC4247@nvidia.com>
-        <5e9ee84e-d950-c8d9-ac70-df042f7d8b47@nvidia.com>
-        <20210202143013.06366e9d@omen.home.shazbot.org>
-        <20210202230604.GD4247@nvidia.com>
-        <20210202165923.53f76901@omen.home.shazbot.org>
-        <20210211084426.GB2378134@infradead.org>
+        Thu, 11 Feb 2021 14:47:27 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9193DC061574;
+        Thu, 11 Feb 2021 11:46:46 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id s11so8220599edd.5;
+        Thu, 11 Feb 2021 11:46:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JO1yJnzNGk+cfdm/MK4Cg/ptUIdGMILlgNKobj7r/6Q=;
+        b=GKd6kKv4UhqDP76SbugI5dy2FIavaEualhuGpHb2s6pLWcHHWS7PKzG9GcH9bFYSut
+         E3o6NhsZ3hSISh3Lg0qtMDW86qfOeowALwxJQVTi7b6kiNaLbCfELEmrrjmw9NijX3rm
+         Ei8EaX9c2Y/euW3bX3kXu3SXJUonyku4SuKz2Ew522G/b134wXQV0AVlOaWvRgfgERN7
+         17rGF0H1bNHENZIlAAQrUOuIg/iwHdblVs9h3C3YKaUZsPE0lNFV/eCnN0AGKfqC76Nr
+         RUlv0E7KpjLQ34WOI0U9rEw0KZfe1E8ParnU7yUaZdmZLT5KDsvDdtBkGIzrbJzF46Wn
+         IVtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JO1yJnzNGk+cfdm/MK4Cg/ptUIdGMILlgNKobj7r/6Q=;
+        b=LwBXNIoRjroAn9vemA7/WiJPOQeRFom3+NP1HQbCLXQYlqtR1+6zPvQ7xhubIHaisL
+         4x+MeafhesqlLvrXpLBP4RsBZi4ZNwaLjlpSvXMMhUN66z4HYJBqqhDlOmxwsw4RaMuK
+         f5+yFXUJXpZox2PFuASUkRRb6RJsJqUGz+x9nyDozQNB50pxP6Vrs7pZBozsGjwYmdi8
+         WSeGUH3Yq8/QtSDY+FGrWiF+wu3C2mE7ksdyOlRVMCz58B0IChoU/2xLBYxqXUuTpcg5
+         lHoQ193Pc6ZZ7q7SmLJbOgnXw9J4V2X7zIX39Hxlle12TWfq8cIeJpfXZfvnkL/xBBkQ
+         O2eA==
+X-Gm-Message-State: AOAM532LWb2Y+xnW1w7Aa8i6ui8CF5OTajdtd/8KqJRi+KnNt75unaRs
+        8EEYElmIbZYGxfSetthaAJ+A18mWJ4YtFQ==
+X-Google-Smtp-Source: ABdhPJx7gkS+eZ+LAuuinByra5e97OOO3PCFJF0btCpRLmxNoEDwaW3WK5wQ3ebr/J5/ihecHe9+rw==
+X-Received: by 2002:aa7:c0cd:: with SMTP id j13mr9821640edp.156.1613072805308;
+        Thu, 11 Feb 2021 11:46:45 -0800 (PST)
+Received: from xws.localdomain ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id f6sm4728728edr.72.2021.02.11.11.46.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 11:46:44 -0800 (PST)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] platform/surface: Add Surface Aggregator device registry
+Date:   Thu, 11 Feb 2021 20:46:30 +0100
+Message-Id: <20210211194636.568929-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Feb 2021 08:44:26 +0000
-Christoph Hellwig <hch@infradead.org> wrote:
+The Surface System Aggregator Module (SSAM) subsystem provides various
+functionalities, which are separated by spreading them across multiple
+devices and corresponding drivers. Parts of that functionality / some of
+those devices, however, can (as far as we currently know) not be
+auto-detected by conventional means. While older (specifically 5th- and
+6th-)generation models do advertise most of their functionality via
+standard platform devices in ACPI, newer generations do not.
 
-> On Tue, Feb 02, 2021 at 04:59:23PM -0700, Alex Williamson wrote:
-> > vfio-pci-igd support knows very little about the device, we're
-> > effectively just exposing a firmware table and some of the host bridge
-> > config space (read-only).  So the idea that the host kernel needs to
-> > have updated i915 support in order to expose the device to userspace
-> > with these extra regions is a bit silly.  
-> 
-> On the other hand assuming the IGD scheme works for every device
-> with an Intel Vendor ID and a VGA classcode that hangs off an Intel
-> host bridge seems highly dangerous.  Is this actually going to work
-> for the new discreete Intel graphics?  For the old i740?  And if not
-> what is the failure scenario?
+As we are currently also not aware of any feasible way to query said
+functionalities dynamically, this poses a problem. There is, however, a
+device in ACPI that seems to be used by Windows for identifying
+different Surface models: The Windows Surface Integration Device (WSID).
+This device seems to have a HID corresponding to the overall set of
+functionalities SSAM provides for the associated model.
 
-The failure scenario is that we expose read-only copies of the OpRegion
-firmware table and host and lpc bridge config space to userspace.  Not
-exactly dangerous.  For discrete graphics we'd simply fail the device
-probe if the target device isn't on the root bus.  This would cover the
-old i740 as well, assuming you're seriously concerned about someone
-plugging in a predominantly AGP graphics card from 20+ years ago into a
-modern system and trying to assign it to a guest.  Thanks,
+This series introduces a device registry based on software nodes and
+device hubs to solve this problem. The registry is intended to contain
+all required non-detectable information.
 
-Alex
+The platform hub driver is loaded against the WSID device and
+instantiates and manages SSAM devices based on the information provided
+by the registry for the given WSID HID of the Surface model. All new
+devices created by this hub added as child devices to this hub.
+
+In addition, a base hub is introduced to manage devices associated with
+the detachable base part of the Surface Book 3, as this requires special
+handling (i.e. devices need to be removed when the base is removed).
+Again, all devices created by the base hub (i.e. associated with the
+base) are added as child devices to this hub.
+
+In total, this will yield the following device structure
+
+  WSID
+   |- SSAM device 1 (physical device)
+   |- SSAM device 2 (physical device)
+   |- SSAM device 3 (physical device)
+   |- ...
+   \- SSAM base hub (virtual device)
+      |- SSAM base device 1 (physical device)
+      |- SSAM base device 2 (physical device)
+      |- ...
+
+While software nodes seem to be well suited for this approach due to
+extensibility, they still need to be hard-coded, so I'm open for ideas
+on how this could be improved.
+
+Changes in v2:
+ - Fix Kconfig dependency
+
+Maximilian Luz (6):
+  platform/surface: Set up Surface Aggregator device registry
+  platform/surface: aggregator_registry: Add base device hub
+  platform/surface: aggregator_registry: Add battery subsystem devices
+  platform/surface: aggregator_registry: Add platform profile device
+  platform/surface: aggregator_registry: Add DTX device
+  platform/surface: aggregator_registry: Add HID subsystem devices
+
+ MAINTAINERS                                   |   1 +
+ drivers/platform/surface/Kconfig              |  27 +
+ drivers/platform/surface/Makefile             |   1 +
+ .../surface/surface_aggregator_registry.c     | 641 ++++++++++++++++++
+ 4 files changed, 670 insertions(+)
+ create mode 100644 drivers/platform/surface/surface_aggregator_registry.c
+
+-- 
+2.30.0
 
