@@ -2,109 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE73031949E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2B03194A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 21:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhBKUjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 15:39:03 -0500
-Received: from pv50p00im-zteg10021301.me.com ([17.58.6.46]:33844 "EHLO
-        pv50p00im-zteg10021301.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229873AbhBKUi6 (ORCPT
+        id S230054AbhBKUll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 15:41:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229918AbhBKUlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 15:38:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1613075876;
-        bh=+UqQfeVaYIVGyWxiq1h9v749UZHZAQFSnLtzkXJ9+PE=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=WO21kUgZgUTk0G7hVFeat58bpckwW2lz+GmBh9Zbk8KKotz9b1pNm9CgtCnrb0kda
-         tMdYdYcm0kp+b3VdqiGzW8zJDMrXF7+dqlmos+Gofv/xRaIQZMtlw/p2hurCaRD4Dc
-         +T/5RIF9Drs2MdtXPPDTU2x9QjwL80fNxoRn7NARb+EANRrDy1Tv1gnf9CRz/h/VSm
-         zuVlh3FbN7ig49oklLVjgBPu9/0/ycxbzaaS+aldYjpVaunm48MRYFXDQ/Wuseqh2b
-         K8w9cPR3yANGI/mQa/o/fwYpKE55lQg6YRNNBfQtkRkS9WjAq8DyHCkGq8z0h3libT
-         tOcnr730kaGvQ==
-Received: from [192.168.31.114] (unknown [45.250.50.68])
-        by pv50p00im-zteg10021301.me.com (Postfix) with ESMTPSA id 11AFACC0562;
-        Thu, 11 Feb 2021 20:37:53 +0000 (UTC)
-Subject: Re: [PATCH] staging: vt6656: Fixed issue with alignment in rf.c
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     forest@alittletooquiet.net, oscar.carter@gmx.com,
-        tvboxspy@gmail.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-References: <20210211152426.10008-1-pritthijit.nath@icloud.com>
- <YCWTlWj4KHT6Okq/@kroah.com>
-From:   Pritthijit Nath <pritthijit.nath@icloud.com>
-Message-ID: <141aa6fe-972c-a9a2-f321-65a98ebccc41@icloud.com>
-Date:   Fri, 12 Feb 2021 02:07:50 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 11 Feb 2021 15:41:37 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7AFC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:40:57 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id g10so8397908eds.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 12:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o+MkWSBkvC/UMwT/VgZJGycfyB5NFr4bsCioBd7cfA4=;
+        b=coyflfwbCdbsJ3zzo0z6wSKT59iLTCQVdnZtGrbaNG8QIdR39uPo9V6tfCTRydcisL
+         4k5JGnBJW2bwe/Y98Ay8kKjlpA7C1M7t5HKlvHlD2W0hs4hkrrX9jMaaFPooSlzZaqeb
+         qnbKvbKvtFMP2Gcb2JhAqzQcRwHeCtf4BKRWIpIIHZen8wJEdzLIzoQePkCym3WVdGd/
+         8amklPn5Y1DQDOGZ65J3q4g6AmlJfZBY5cUKedCA145v+34ax7wnmlls4kKFRLPdURDS
+         HwZMs0P9MDREJORNNWoZRXavVtngNRUPbTJE6VBjR5mURUsu/qMEf25CUKIaBzJwIfJh
+         67gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o+MkWSBkvC/UMwT/VgZJGycfyB5NFr4bsCioBd7cfA4=;
+        b=lnQAIwp5dfg0Fxpp0SDPC7ITtQCUqA5+dOPom/BsuvzlA8wZyWMIlbEco2LZqkoXXa
+         ten+8XR0K6Xi8kdv1u88in7MBpK8Dd5TDOkEEpk8ksTOUQ04GE3EH+nPLvxfAgdKYiac
+         k40CTOli3MTb8vzcOhPem431DAy8SPYQjuNFiFSS53Gw3Gy1p2XfTkhQewhPBScwF6Uo
+         jUNhiN++tWTK1TnRSjdgvuOIjxphs+nVdqmvEU6Ezm3P4Pgiyt1n51mZ5a6i7Cq+9GxC
+         3W3yhGr7TUUHPgPi4kzjAfrhFQoBNuo8pCX5SH0xkfU5U1nUqv++J7M+BTbiPHCHMWUQ
+         yEIg==
+X-Gm-Message-State: AOAM5325r0Ch+z5xoQ5B6OU93wjbla+zmB0Ht2PboIK11hAjUh9PdgP3
+        G2Fmr2x8Wpp8s2rPk7ZUW+RpoauINg6/9taSg/pJzw==
+X-Google-Smtp-Source: ABdhPJwUwoQIw5/TCL2CLB2ZlTQ8uewrH9tgE5Yw4rRMQ6jMgq9i5WT/KqL+JKgKKFkIg69ICnqn7QI9yjjwV0IjT0U=
+X-Received: by 2002:a05:6402:3585:: with SMTP id y5mr9870835edc.97.1613076055992;
+ Thu, 11 Feb 2021 12:40:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YCWTlWj4KHT6Okq/@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2102110162
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-4-ben.widawsky@intel.com> <20210210181725.00007865@Huawei.com>
+ <20210211101746.00005e8c@Huawei.com>
+In-Reply-To: <20210211101746.00005e8c@Huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 11 Feb 2021 12:40:45 -0800
+Message-ID: <CAPcyv4hgzv7B7sv85A3No-bAgeADqfrhRySBrQBx43HVEMfnzg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/8] cxl/mem: Register CXL memX devices
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/02/21 1:59 am, Greg KH wrote:
-> On Thu, Feb 11, 2021 at 08:54:26PM +0530, Pritthijit Nath wrote:
->> This change fixes a checkpatch CHECK style issue for "Alignment should match open parenthesis".
->>
->> Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
->> ---
->>  drivers/staging/vt6656/rf.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
->> index 5b8da06e3916..bcd4d467e03a 100644
->> --- a/drivers/staging/vt6656/rf.c
->> +++ b/drivers/staging/vt6656/rf.c
->> @@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
->>  
->>  			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
->>  				ret = vnt_rf_write_embedded(priv,
->> -					vt3226d0_lo_current_table[hw_value]);
->> +							    vt3226d0_lo_current_table[hw_value]);
->>  				if (ret)
->>  					return ret;
->>  			}
->> -- 
->> 2.25.1
-> 
-> Please run this change, with the changelog above, through
-> checkpatch.pl, fix that, and resend.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Thu, Feb 11, 2021 at 2:19 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Wed, 10 Feb 2021 18:17:25 +0000
+> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+>
+> > On Tue, 9 Feb 2021 16:02:54 -0800
+> > Ben Widawsky <ben.widawsky@intel.com> wrote:
+> >
+> > > From: Dan Williams <dan.j.williams@intel.com>
+> > >
+> > > Create the /sys/bus/cxl hierarchy to enumerate:
+> > >
+> > > * Memory Devices (per-endpoint control devices)
+> > >
+> > > * Memory Address Space Devices (platform address ranges with
+> > >   interleaving, performance, and persistence attributes)
+> > >
+> > > * Memory Regions (active provisioned memory from an address space device
+> > >   that is in use as System RAM or delegated to libnvdimm as Persistent
+> > >   Memory regions).
+> > >
+> > > For now, only the per-endpoint control devices are registered on the
+> > > 'cxl' bus. However, going forward it will provide a mechanism to
+> > > coordinate cross-device interleave.
+> > >
+> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> >
+> > One stray header, and a request for a tiny bit of reordering to
+> > make it easier to chase through creation and destruction.
+> >
+> > Either way with the header move to earlier patch I'm fine with this one.
+> >
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>
+> Actually thinking more on this, what is the justification for the
+> complexity + overhead of a percpu_refcount vs a refcount
 
-This change fixes a checkpatch CHECK style issue for "Alignment should 
-match open parenthesis".
+A typical refcount does not have the block and drain semantics of a
+percpu_ref. I'm planning to circle back and make this a first class
+facility of the cdev interface borrowing the debugfs approach [1], but
+for now percpu_ref fits the bill locally.
 
-Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
----
- drivers/staging/vt6656/rf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I don't think this is a high enough performance path for it to matter.
+> Perhaps I'm missing a usecase where it does?
 
-diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
-index 5b8da06e3916..bcd4d467e03a 100644
---- a/drivers/staging/vt6656/rf.c
-+++ b/drivers/staging/vt6656/rf.c
-@@ -687,7 +687,7 @@ static int vnt_rf_set_txpower(struct vnt_private *priv, u8 power,
- 
- 			if (hw_value < ARRAY_SIZE(vt3226d0_lo_current_table)) {
- 				ret = vnt_rf_write_embedded(priv,
--					vt3226d0_lo_current_table[hw_value]);
-+							    vt3226d0_lo_current_table[hw_value]);
- 				if (ret)
- 					return ret;
- 			}
--- 
-2.25.1
+It's less about percpu_ref performance and more about the
+percpu_ref_tryget_live() facility.
+
+[1]: http://lore.kernel.org/r/CAPcyv4jEYPsyh0bhbtKGRbK3bgp=_+=2rjx4X0gLi5-25VvDyg@mail.gmail.com
