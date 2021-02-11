@@ -2,141 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C6731922F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7470319231
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 19:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbhBKSYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 13:24:55 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40696 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231767AbhBKSQO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 13:16:14 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11BIEuQg089910;
-        Thu, 11 Feb 2021 12:14:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1613067296;
-        bh=Xz229qIcE38srOs1TPZ0TAU7LwMq0Gf4DOp8pxqP/0M=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=BOpP4XF72GE4yZiJpYV/JQGjJuNl3HBP1prXgoOjY/5WiMNxC4h8vFrL98DPv7Jsk
-         tGJ3y1GB5j/KIdRSt8SsGWvd71f81VCuJiD5VmlwYlADEXBZiM1one+I1goBOXSIWa
-         honeEeoGr5qkBsyqOQ8O7jB+ldxwO1pv2Y+oyPKE=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11BIEuPH029974
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 11 Feb 2021 12:14:56 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 11
- Feb 2021 12:14:55 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 11 Feb 2021 12:14:55 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11BIEqVu098270;
-        Thu, 11 Feb 2021 12:14:53 -0600
-Subject: Re: [PATCH for next v1 1/2] gpio: omap: Replace raw_spin_lock_irqsave
- with raw_spin_lock in omap_gpio_irq_handler()
-To:     Luo Jiaxing <luojiaxing@huawei.com>, <linus.walleij@linaro.org>,
-        <andy.shevchenko@gmail.com>, <andriy.shevchenko@linux.intel.com>,
-        <ssantosh@kernel.org>, <khilman@kernel.org>
-CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
- <1612774577-55943-2-git-send-email-luojiaxing@huawei.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <fab1e871-08e4-fc71-9dbf-9bcacf18e2e1@ti.com>
-Date:   Thu, 11 Feb 2021 20:14:53 +0200
+        id S232650AbhBKSZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 13:25:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231866AbhBKSRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 13:17:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DD4764E5F;
+        Thu, 11 Feb 2021 18:16:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613067418;
+        bh=a9Mage+YDe1nKc3ePEl7r91KB9eDjlkq0mBjRYUgY7Y=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=MGYKNQBRn+TnI7ZLBVEERLlb/VuyR4+19I141SQ4UHwoe8Ibml0lrpZYdUT8CNwqU
+         IuEXpq/g6ui86KXEdSLX7ORPuV9DDI9yDHer/ioujj4ftQNAGaKE5CTwUBI12S54KQ
+         PGhq5XDqi1PIcbWb//k7XAfu8KYc8IKb4Mcibk6FaW3nMCAdhbficNqJrULLCQRiiR
+         rtFMSE10Iyban/U7OAPBOdSn8Lk4LtIR3ra7LbIBpemVtfi1NjhJkjR9NivfmwpqDG
+         nW3IdU4oaDtj2rOU9Cqd44nLKXmUTgrFai1sT051jVAR8NopOBGYQhC+tvqmrK9bEb
+         GfYg9W6yd7mcg==
+Subject: Re: [PATCH 3/3] [v3] lib/vsprintf: debug_never_hash_pointers prints
+ all addresses as unhashed
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        akpm@linux-foundation.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        akinobu.mita@gmail.com, glider@google.com,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Pavel Machek <pavel@ucw.cz>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210210213453.1504219-1-timur@kernel.org>
+ <20210210213453.1504219-4-timur@kernel.org> <YCVvB7skjoN18HKO@alley>
+From:   Timur Tabi <timur@kernel.org>
+Message-ID: <4a233bef-8ba6-82bb-9075-35793a244a3b@kernel.org>
+Date:   Thu, 11 Feb 2021 12:16:55 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1612774577-55943-2-git-send-email-luojiaxing@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <YCVvB7skjoN18HKO@alley>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 08/02/2021 10:56, Luo Jiaxing wrote:
-> There is no need to use API with _irqsave in omap_gpio_irq_handler(),
-> because it already be in a irq-disabled context.
+On 2/11/21 11:53 AM, Petr Mladek wrote:
+> I would really like to make it clear here that it is not only about
+> consoles. Most people will see only this message. Only few people read
+> documentation. Many people will learn the parameter name from another
+> context by googling.
 > 
-> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-> ---
->   drivers/gpio/gpio-omap.c | 15 ++++++---------
->   1 file changed, 6 insertions(+), 9 deletions(-)
+> I know that it is not easy to find good words. Especially because
+> pointers printed by %pK might still be hashed.
 > 
-> diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
-> index 41952bb..dc8bbf4 100644
-> --- a/drivers/gpio/gpio-omap.c
-> +++ b/drivers/gpio/gpio-omap.c
-> @@ -560,8 +560,6 @@ static irqreturn_t omap_gpio_irq_handler(int irq, void *gpiobank)
->   	u32 enabled, isr, edge;
->   	unsigned int bit;
->   	struct gpio_bank *bank = gpiobank;
-> -	unsigned long wa_lock_flags;
-> -	unsigned long lock_flags;
->   
->   	isr_reg = bank->base + bank->regs->irqstatus;
->   	if (WARN_ON(!isr_reg))
-> @@ -572,7 +570,7 @@ static irqreturn_t omap_gpio_irq_handler(int irq, void *gpiobank)
->   		return IRQ_NONE;
->   
->   	while (1) {
-> -		raw_spin_lock_irqsave(&bank->lock, lock_flags);
-> +		raw_spin_lock(&bank->lock);
->   
->   		enabled = omap_get_gpio_irqbank_mask(bank);
->   		isr = readl_relaxed(isr_reg) & enabled;
-> @@ -586,7 +584,7 @@ static irqreturn_t omap_gpio_irq_handler(int irq, void *gpiobank)
->   		if (edge)
->   			omap_clear_gpio_irqbank(bank, edge);
->   
-> -		raw_spin_unlock_irqrestore(&bank->lock, lock_flags);
-> +		raw_spin_unlock(&bank->lock);
->   
->   		if (!isr)
->   			break;
-> @@ -595,7 +593,7 @@ static irqreturn_t omap_gpio_irq_handler(int irq, void *gpiobank)
->   			bit = __ffs(isr);
->   			isr &= ~(BIT(bit));
->   
-> -			raw_spin_lock_irqsave(&bank->lock, lock_flags);
-> +			raw_spin_lock(&bank->lock);
->   			/*
->   			 * Some chips can't respond to both rising and falling
->   			 * at the same time.  If this irq was requested with
-> @@ -606,15 +604,14 @@ static irqreturn_t omap_gpio_irq_handler(int irq, void *gpiobank)
->   			if (bank->toggle_mask & (BIT(bit)))
->   				omap_toggle_gpio_edge_triggering(bank, bit);
->   
-> -			raw_spin_unlock_irqrestore(&bank->lock, lock_flags);
-> +			raw_spin_unlock(&bank->lock);
->   
-> -			raw_spin_lock_irqsave(&bank->wa_lock, wa_lock_flags);
-> +			raw_spin_lock(&bank->wa_lock);
->   
->   			generic_handle_irq(irq_find_mapping(bank->chip.irq.domain,
->   							    bit));
->   
-> -			raw_spin_unlock_irqrestore(&bank->wa_lock,
-> -						   wa_lock_flags);
-> +			raw_spin_unlock(&bank->wa_lock);
->   		}
->   	}
->   exit:
-> 
+>> +	pr_warn("**                                                      **\n");
+>> +	pr_warn("** Kernel memory addresses are exposed, which may       **\n");
+>> +	pr_warn("** reduce the security of your system.                  **\n");
 
-NACK.
-Who said that this is always hard IRQ handler?
-What about RT-kernel or boot with "threadirqs"?
+> What about replacing the first two paragraphs with something like:
+> 
+> "This system shows unhashed kernel memory addresses via logs and
+>   other interfaces. It might reduce the security of your system."
 
--- 
-Best regards,
-grygorii
+That works, thanks.  I'll post a v4 soon.
