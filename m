@@ -2,164 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2126731856C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CD1318575
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 07:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhBKGy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 01:54:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53400 "EHLO mail.kernel.org"
+        id S229602AbhBKG44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 01:56:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42216 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhBKGyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 01:54:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD7760C40;
-        Thu, 11 Feb 2021 06:54:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613026450;
-        bh=IxBpgpXoqSmCQVQHUpTpaGs9ireN9YORDUebT0MkHtk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=upXIfAhFwyr2OF/6pxiTGFTpN6o2uJoiSjZyT13xVRYAfQK/QCdV030NOO6f0Gbdp
-         9qq64UCVqQF7tErcKZEUnmOqbJVjUxr/w52bPx1xuK2k3Nlud+g7vBf9jkyWnHt+i0
-         ZLHt+RgRWA/FQ2u1+iD/EkStIpsiIFUQ36Fs81Es=
-Date:   Thu, 11 Feb 2021 07:54:06 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH v3] driver core: auxiliary bus: Fix calling stage for
- auxiliary bus init
-Message-ID: <YCTUjimQhVi7VSrw@kroah.com>
-References: <20210210201611.1611074-1-dave.jiang@intel.com>
+        id S229768AbhBKG4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 01:56:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613026544; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MG2qQKwGA2uwRNd91SQJ/4zh6icXa16Zvxps844WLyY=;
+        b=o6p/9ZxnNkhqoyKI3pkOCczBjjBBKV7qZRZR95iTrfxykBKKhe2Qn4Yy1GgTJcDT3sdOmR
+        n/5NkhGfdA23FkvLGB4SNaPYN6KIZS0soJtJdfrzjkEJ9DLeZtXAIO6aYMBmuu5fQADFfg
+        T0r7TyvFXHK083w4dxDUU9f5ItH/6oI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D3D28AC69;
+        Thu, 11 Feb 2021 06:55:43 +0000 (UTC)
+Subject: Re: [PATCH] arm/xen: Don't probe xenbus as part of an early initcall
+To:     Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org
+Cc:     sstabellini@kernel.org, boris.ostrovsky@oracle.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Julien Grall <jgrall@amazon.com>,
+        Ian Jackson <iwj@xenproject.org>, dwmw@amazon.co.uk
+References: <20210210170654.5377-1-julien@xen.org>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <06a4feb3-a29e-221d-cdb6-68b9c453b2a4@suse.com>
+Date:   Thu, 11 Feb 2021 07:55:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210201611.1611074-1-dave.jiang@intel.com>
+In-Reply-To: <20210210170654.5377-1-julien@xen.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="nnFzFztgxzAPbRsxw8PBIWzXP1DcgeEzh"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 01:16:11PM -0700, Dave Jiang wrote:
-> When the auxiliary device code is built into the kernel, it can be executed
-> before the auxiliary bus is registered. This causes bus->p to be not
-> allocated and triggers a NULL pointer dereference when the auxiliary bus
-> device gets added with bus_add_device(). Call the auxiliary_bus_init()
-> under driver_init() so the bus is initialized before devices.
-> 
-> Below is the kernel splat for the bug:
-> [ 1.948215] BUG: kernel NULL pointer dereference, address: 0000000000000060
-> [ 1.950670] #PF: supervisor read access in kernel mode
-> [ 1.950670] #PF: error_code(0x0000) - not-present page
-> [ 1.950670] PGD 0
-> [ 1.950670] Oops: 0000 1 SMP NOPTI
-> [ 1.950670] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-intel-nextsvmtest+ #2205
-> [ 1.950670] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> [ 1.950670] RIP: 0010:bus_add_device+0x64/0x140
-> [ 1.950670] Code: 00 49 8b 75 20 48 89 df e8 59 a1 ff ff 41 89 c4 85 c0 75 7b 48 8b 53 50 48 85 d2 75 03 48 8b 13 49 8b 85 a0 00 00 00 48 89 de <48> 8
-> 78 60 48 83 c7 18 e8 ef d9 a9 ff 41 89 c4 85 c0 75 45 48 8b
-> [ 1.950670] RSP: 0000:ff46032ac001baf8 EFLAGS: 00010246
-> [ 1.950670] RAX: 0000000000000000 RBX: ff4597f7414aa680 RCX: 0000000000000000
-> [ 1.950670] RDX: ff4597f74142bbc0 RSI: ff4597f7414aa680 RDI: ff4597f7414aa680
-> [ 1.950670] RBP: ff46032ac001bb10 R08: 0000000000000044 R09: 0000000000000228
-> [ 1.950670] R10: ff4597f741141b30 R11: ff4597f740182a90 R12: 0000000000000000
-> [ 1.950670] R13: ffffffffa5e936c0 R14: 0000000000000000 R15: 0000000000000000
-> [ 1.950670] FS: 0000000000000000(0000) GS:ff4597f7bba00000(0000) knlGS:0000000000000000
-> [ 1.950670] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 1.950670] CR2: 0000000000000060 CR3: 000000002140c001 CR4: 0000000000f71ef0
-> [ 1.950670] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 1.950670] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-> [ 1.950670] PKRU: 55555554
-> [ 1.950670] Call Trace:
-> [ 1.950670] device_add+0x3ee/0x850
-> [ 1.950670] __auxiliary_device_add+0x47/0x60
-> [ 1.950670] idxd_pci_probe+0xf77/0x1180
-> [ 1.950670] local_pci_probe+0x4a/0x90
-> [ 1.950670] pci_device_probe+0xff/0x1b0
-> [ 1.950670] really_probe+0x1cf/0x440
-> [ 1.950670] ? rdinit_setup+0x31/0x31
-> [ 1.950670] driver_probe_device+0xe8/0x150
-> [ 1.950670] device_driver_attach+0x58/0x60
-> [ 1.950670] __driver_attach+0x8f/0x150
-> [ 1.950670] ? device_driver_attach+0x60/0x60
-> [ 1.950670] ? device_driver_attach+0x60/0x60
-> [ 1.950670] bus_for_each_dev+0x79/0xc0
-> [ 1.950670] ? kmem_cache_alloc_trace+0x323/0x430
-> [ 1.950670] driver_attach+0x1e/0x20
-> [ 1.950670] bus_add_driver+0x154/0x1f0
-> [ 1.950670] driver_register+0x70/0xc0
-> [ 1.950670] __pci_register_driver+0x54/0x60
-> [ 1.950670] idxd_init_module+0xe2/0xfc
-> [ 1.950670] ? idma64_platform_driver_init+0x19/0x19
-> [ 1.950670] do_one_initcall+0x4a/0x1e0
-> [ 1.950670] kernel_init_freeable+0x1fc/0x25c
-> [ 1.950670] ? rest_init+0xba/0xba
-> [ 1.950670] kernel_init+0xe/0x116
-> [ 1.950670] ret_from_fork+0x1f/0x30
-> [ 1.950670] Modules linked in:
-> [ 1.950670] CR2: 0000000000000060
-> [ 1.950670] --[ end trace cd7d1b226d3ca901 ]--
-> 
-> Fixes: 7de3697e9cbd ("Add auxiliary bus support")
-> Reported-by: Jacob Pan <jacob.jun.pan@intel.com>
-> Acked-by: Dave Ertman <david.m.ertman@intel.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-> ---
-> 
-> v3:
-> - Change init function to return void. (GregKH)
-> v2:
-> - Call in driver_init() to ensure aux bus gets init before devices.  (GregKH)
-> 
->  drivers/base/base.h      |  5 +++++
->  drivers/base/auxiliary.c | 13 +++----------
->  drivers/base/init.c      |  1 +
->  3 files changed, 9 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/base/base.h b/drivers/base/base.h
-> index f5600a83124f..52b3d7b75c27 100644
-> --- a/drivers/base/base.h
-> +++ b/drivers/base/base.h
-> @@ -119,6 +119,11 @@ static inline int hypervisor_init(void) { return 0; }
->  extern int platform_bus_init(void);
->  extern void cpu_dev_init(void);
->  extern void container_dev_init(void);
-> +#ifdef CONFIG_AUXILIARY_BUS
-> +extern void auxiliary_bus_init(void);
-> +#else
-> +static inline void auxiliary_bus_init(void) { }
-> +#endif
->  
->  struct kobject *virtual_device_parent(struct device *dev);
->  
-> diff --git a/drivers/base/auxiliary.c b/drivers/base/auxiliary.c
-> index 8336535f1e11..d8b314e7d0fd 100644
-> --- a/drivers/base/auxiliary.c
-> +++ b/drivers/base/auxiliary.c
-> @@ -15,6 +15,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/string.h>
->  #include <linux/auxiliary_bus.h>
-> +#include "base.h"
->  
->  static const struct auxiliary_device_id *auxiliary_match_id(const struct auxiliary_device_id *id,
->  							    const struct auxiliary_device *auxdev)
-> @@ -260,19 +261,11 @@ void auxiliary_driver_unregister(struct auxiliary_driver *auxdrv)
->  }
->  EXPORT_SYMBOL_GPL(auxiliary_driver_unregister);
->  
-> -static int __init auxiliary_bus_init(void)
-> +void __init auxiliary_bus_init(void)
->  {
-> -	return bus_register(&auxiliary_bus_type);
-> +	WARN_ON(bus_register(&auxiliary_bus_type));
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--nnFzFztgxzAPbRsxw8PBIWzXP1DcgeEzh
+Content-Type: multipart/mixed; boundary="A8lgVItKpCdvz0ARwxIlEoRtrBIMamMIS";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org
+Cc: sstabellini@kernel.org, boris.ostrovsky@oracle.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Julien Grall <jgrall@amazon.com>, Ian Jackson <iwj@xenproject.org>,
+ dwmw@amazon.co.uk
+Message-ID: <06a4feb3-a29e-221d-cdb6-68b9c453b2a4@suse.com>
+Subject: Re: [PATCH] arm/xen: Don't probe xenbus as part of an early initcall
+References: <20210210170654.5377-1-julien@xen.org>
+In-Reply-To: <20210210170654.5377-1-julien@xen.org>
 
-If this fails you have worse problems, what is this WARN_ON() going to
-help with except give you a crashdump right before something else in the
-kernel dies?
+--A8lgVItKpCdvz0ARwxIlEoRtrBIMamMIS
+Content-Type: multipart/mixed;
+ boundary="------------95F5BB8C01B298769DA42A6A"
+Content-Language: en-US
 
-Feels frivilous to me, but oh well, I'll take it for now...
+This is a multi-part message in MIME format.
+--------------95F5BB8C01B298769DA42A6A
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On 10.02.21 18:06, Julien Grall wrote:
+> From: Julien Grall <jgrall@amazon.com>
+>=20
+> After Commit 3499ba8198cad ("xen: Fix event channel callback via
+> INTX/GSI"), xenbus_probe() will be called too early on Arm. This will
+> recent to a guest hang during boot.
+>=20
+> If there hang wasn't there, we would have ended up to call
+> xenbus_probe() twice (the second time is in xenbus_probe_initcall()).
+>=20
+> We don't need to initialize xenbus_probe() early for Arm guest.
+> Therefore, the call in xen_guest_init() is now removed.
+>=20
+> After this change, there is no more external caller for xenbus_probe().=
 
-greg k-h
+> So the function is turned to a static one. Interestingly there were two=
+
+> prototypes for it.
+>=20
+> Fixes: 3499ba8198cad ("xen: Fix event channel callback via INTX/GSI")
+> Reported-by: Ian Jackson <iwj@xenproject.org>
+> Signed-off-by: Julien Grall <jgrall@amazon.com>
+
+Pushed to xen/tip.git for-linus-5.11
+
+
+Juergen
+
+--------------95F5BB8C01B298769DA42A6A
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------95F5BB8C01B298769DA42A6A--
+
+--A8lgVItKpCdvz0ARwxIlEoRtrBIMamMIS--
+
+--nnFzFztgxzAPbRsxw8PBIWzXP1DcgeEzh
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAk1O4FAwAAAAAACgkQsN6d1ii/Ey8J
+IQf+PSQEDt8aCr21sa7tvlRw1eioS5L/bTXlTHmERWCqh1+F3zTIc11A3mGG+TWLR2qjBzdH/qhw
+z1uATDVZc3onJB8JiYfY1PWZXKyc/aUdWir687Aoxf9m2fyBM6+vm1s5+h6IhPwS8lSfYqpVzjYB
+utWheEjj7FJdfqrHlnKsKfiAYpVuWZwwZZOtQ/3rRISXXQFtmoPr/rkPWFsc8BwraBG1kkrPcbOH
+xKOIRkpPxG3f9GnYjuYDRU/n4sVraUJ8AznOT9rPwBWVF0lLxUrUIQOoKO1MN8Wh/KXSiU18Osk4
+4xoX7BHd8KR093breswelP6lE30hWD1b1Kd2Dc1Wqg==
+=7ZRQ
+-----END PGP SIGNATURE-----
+
+--nnFzFztgxzAPbRsxw8PBIWzXP1DcgeEzh--
