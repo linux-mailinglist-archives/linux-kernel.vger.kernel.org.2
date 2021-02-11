@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0D3318B91
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD15318B96
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 14:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhBKNGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 08:06:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229793AbhBKMkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 07:40:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BD9764E05;
-        Thu, 11 Feb 2021 12:40:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613047201;
-        bh=qjJTw4Ge1nQUpb57midRU3heEpiHLCmlvVagsllttyo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ns25xXL/is+KBrwNhowdssL582b2VsAwnEkeo3Ncm7EqMeoNCDBaQjI8YckevQOyG
-         0n0oAK7Fbv0YX4loOBVaJibp/potEpIua90/0eb1iIot+Q/AClwhZPkyF6rsI792Zm
-         lTluSe/rv3v3uC2+ZprlUCdGoNCnkXVmbqbA30L/gZuxM9XEXHQyVEPgeXdi3i+mRI
-         4uy6OSBkYXQqL4eSkB/Iu1PBNQDqd0UQyT7ZUNfqnbFlz5P6XD6QH3PfrrMNfDhqKW
-         g0Wo9oZ9LpgO0YCiTs4RL3hlxp4KLhf+ZK2MECfLPj99dxyrgfavBugGr3M1q6DVrr
-         n6Aa0MBk7X1Xw==
-Date:   Thu, 11 Feb 2021 12:39:07 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Michal Simek <monstr@monstr.eu>
-Cc:     LKML <linux-kernel@vger.kernel.org>, git <git@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: spi: zynq: Convert Zynq QSPI binding to
- yaml
-Message-ID: <20210211123907.GA5217@sirena.org.uk>
-References: <4ece21a7e9691ed1e775fd6b0b4046b1562e44bd.1612951821.git.michal.simek@xilinx.com>
- <CAHTX3dKPTC1+awBADMCcgX+=PXsHPw2Bz3Po5=CocdKzVy3bRg@mail.gmail.com>
+        id S231335AbhBKNHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 08:07:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231722AbhBKMmn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 07:42:43 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA7EEC0613D6;
+        Thu, 11 Feb 2021 04:42:02 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id g6so3995251wrs.11;
+        Thu, 11 Feb 2021 04:42:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qtFZ+ysode8Xi1WRcTgeQ/GmeL5uIuE9pL6MZ8vd2tk=;
+        b=LeUQKnPdwGFXMMCh42bauUrMAG0o/uP4Plr/v1Q1wJ1vzrH3AX3i6u1RaLPcz5idLX
+         09DHqTgu/Fp0FXdk87K3y4maKSc+zkHswsJbFojiqPwlWVQwfS+Wbc8kSQ6RdlLHidKV
+         4w4mJ2NR2cjmCT0djL5NvydexMBxXTJWT6crqNLf7mjlaqQeNgtO2H7aOwNyXfIDXJ9E
+         twH4gya129KR6UYmZNFtfEUuJPUX8p4OydMkanUyNNV8GP5H5VzqeF3U15IZD2dxfAXB
+         ITldAKr/Tj40Q/DIAywCdE7OA0iX88k4VfPTsv2uZe68KgcOsv5FtONeJMkgB1XYt5ut
+         IbxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qtFZ+ysode8Xi1WRcTgeQ/GmeL5uIuE9pL6MZ8vd2tk=;
+        b=WRIou/3FV/baGgFZGi/KaPlWUqM/j0+DQ2/o0XGr3uT1zxfZ9yM4cOAU585GILA1l1
+         iy16OGtybaoFhi9mQvSv1hYTSg/2p4DWumnbxO/BBF7WfeJ9ROsrkP589N0xMS9+od+C
+         aLN9WowIn/U2Bx0DW+OvEikQlAsxILKGoicS8Gk9+3X1yFk9uw3cMZDwt1ZKlFVl6aBX
+         Y3zJSOusBZuWpS4CnCt8xRsUqemzR2FzHkvRyfvPeRcAbgIGMRQZ+JxsUPQUHX1meezP
+         s4AeexHYlp2NLgaU7B///mPIx2FOEDLCuwT0430FeM0IwEY5hg7MFOdD4zKF9v9LyPtm
+         uoEg==
+X-Gm-Message-State: AOAM532hzpTueKvChT4Hw0q3TqAJ2rHNqvWtzTIPDh1vzGvJvV/nGNBp
+        k9eQtJ7rLDeawjXeX4R0YUfh6CbIqE8FuQ==
+X-Google-Smtp-Source: ABdhPJxIEiquzBiL9X2r1/AEeGI0+b6t9u5snGJfTycACRLWyedjDPN1ZKcckQNJOInIzGP7nctWew==
+X-Received: by 2002:a05:6000:254:: with SMTP id m20mr5615671wrz.300.1613047321520;
+        Thu, 11 Feb 2021 04:42:01 -0800 (PST)
+Received: from xws.localdomain (p5487b829.dip0.t-ipconnect.de. [84.135.184.41])
+        by smtp.gmail.com with ESMTPSA id s12sm4754222wrr.29.2021.02.11.04.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 04:42:00 -0800 (PST)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Mark Gross <mgross@linx.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-test-robot <lkp@intel.com>
+Subject: [PATCH v2] platform/surface: aggregator: Fix access of unaligned value
+Date:   Thu, 11 Feb 2021 13:41:49 +0100
+Message-Id: <20210211124149.2439007-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
-Content-Disposition: inline
-In-Reply-To: <CAHTX3dKPTC1+awBADMCcgX+=PXsHPw2Bz3Po5=CocdKzVy3bRg@mail.gmail.com>
-X-Cookie: Do not pick the flowers.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The raw message frame length is unaligned and explicitly marked as
+little endian. It should not be accessed without the appropriate
+accessor functions. Fix this.
 
---h31gzZEtNLTqOjlF
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Note that payload.len already contains the correct length after parsing
+via sshp_parse_frame(), so we can simply use that instead.
 
-On Thu, Feb 11, 2021 at 10:37:30AM +0100, Michal Simek wrote:
-> st 10. 2. 2021 v 11:10 odes=EDlatel Michal Simek <michal.simek@xilinx.com=
-> napsal:
+Reported-by: kernel-test-robot <lkp@intel.com>
+Fixes: c167b9c7e3d6 ("platform/surface: Add Surface Aggregator subsystem")
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+---
 
-> > +description:
-> > +  The Xilinx Zynq QSPI controller is used to access multi-bit serial f=
-lash
-> > +  memory devices.
+Changes in v2:
+ - Use payload.len instead of getting the frame length directly. Note
+   that payload.len equals the frame length and is already correctly set
+   in sshp_parse_frame(), so they are exactly the same thing. Makes it
+   look a bit nicer though.
 
-> Applied.
+   I did drop the ACKs/Reveiewd-by in case you want to check that
+   yourselves and since that's essentially the whole change.
 
-Doesn't really matter here but I would really expect subsystem binding
-documents to go through the subsystem tree.
+---
+ drivers/platform/surface/aggregator/ssh_packet_layer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---h31gzZEtNLTqOjlF
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/platform/surface/aggregator/ssh_packet_layer.c b/drivers/platform/surface/aggregator/ssh_packet_layer.c
+index 583315db8b02..15d96eac6811 100644
+--- a/drivers/platform/surface/aggregator/ssh_packet_layer.c
++++ b/drivers/platform/surface/aggregator/ssh_packet_layer.c
+@@ -1774,7 +1774,7 @@ static size_t ssh_ptl_rx_eval(struct ssh_ptl *ptl, struct ssam_span *source)
+ 		break;
+ 	}
+ 
+-	return aligned.ptr - source->ptr + SSH_MESSAGE_LENGTH(frame->len);
++	return aligned.ptr - source->ptr + SSH_MESSAGE_LENGTH(payload.len);
+ }
+ 
+ static int ssh_ptl_rx_threadfn(void *data)
+-- 
+2.30.0
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAlJWoACgkQJNaLcl1U
-h9CROwf8CWGGnX7EkL4HWz4W+Ff9XeN7IdRAlRnqbuFXz/M4PGZOHhj121uHX/Rg
-d7nl2ndT3S2KinCRf3wh9H8KerCX9JMRob/ZGOqetZlJJqcUDN2WvVQuwMW2u+Ud
-116Fg0gfhNzoswprSSIB6qimJLE8xbLwcd1mbhuyCj/DgCtnz9qjl7XB9Pw+zwap
-cKCFBkcMrhl+uQ5dY8Skm7B/1YYfYBTeyawPXFykNdooolzgt8/kcD5ZarGJw2/w
-CZ8FIL+l1CCggNaV3eocXyR3gD15Cr3TLvqocuY/D5oVx8nrSEeZUizE66g/j9Uo
-ZNiYk0v5FuMJOeh1gAO9FlXvoL6LtA==
-=MCLa
------END PGP SIGNATURE-----
-
---h31gzZEtNLTqOjlF--
