@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053D7319044
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A1331900F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 17:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbhBKQon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 11:44:43 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:58968 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbhBKPfa (ORCPT
+        id S231655AbhBKQdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 11:33:01 -0500
+Received: from www62.your-server.de ([213.133.104.62]:35602 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhBKP1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:35:30 -0500
-Date:   Thu, 11 Feb 2021 15:25:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1613057125;
-        bh=9OryoUxmgqWAontORTfCdXDAEicngqdQmtwMbqTQWrI=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=AYAscctucsVgUolbpGWxfmiD5rfuNIZLvGRPlTBgQ1oqpVVC1lfn7x3tDKhAnkqlf
-         70k7p74TJBOCG6ESnGaGLX1F5e9jQ0kUUg81tiOJOALLM6p7pOqVYJtLsBsqeCgEV1
-         lYVjRYRKl3MC8sw65/ab1CsBibdpQAN80hHVWzQQ=
-To:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "wens@csie.org" <wens@csie.org>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH v2] arm: dts: sun5i: Add GPU node
-Message-ID: <nGyI_fodh-zDD7vDOH3sqaiGbOQprYmljxEKSlTdu9Ju5OcpUcLBIHndYSnzQKT0n6Yh4H4VX8ss-XPyuBMU6n8nX5Oag_4LrqrryrZaqx8=@protonmail.com>
+        Thu, 11 Feb 2021 10:27:52 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lADrf-0005Ul-Ur; Thu, 11 Feb 2021 16:26:43 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lADrf-000J5I-NF; Thu, 11 Feb 2021 16:26:43 +0100
+Subject: Re: [PATCH/v2] bpf: add bpf_skb_adjust_room flag
+ BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        huangxuesen <hxseverything@gmail.com>
+Cc:     David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        huangxuesen <huangxuesen@kuaishou.com>,
+        Willem de Bruijn <willemb@google.com>,
+        chengzhiyong <chengzhiyong@kuaishou.com>,
+        wangli <wangli09@kuaishou.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+References: <20210210065925.22614-1-hxseverything@gmail.com>
+ <CAF=yD-LLzAheej1upLdBOeJc9d0RUXMrL9f9+QVC-4thj1EG5Q@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <29b5395f-daff-99f2-4a4b-6d462623a9fe@iogearbox.net>
+Date:   Thu, 11 Feb 2021 16:26:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <CAF=yD-LLzAheej1upLdBOeJc9d0RUXMrL9f9+QVC-4thj1EG5Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26077/Thu Feb 11 13:18:43 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sun5i has the same Mali 400 GPU as sun4i with the same interrupts, clocks
-and resets. Add node for it in dts.
+On 2/10/21 3:50 PM, Willem de Bruijn wrote:
+> On Wed, Feb 10, 2021 at 1:59 AM huangxuesen <hxseverything@gmail.com> wrote:
+>>
+>> From: huangxuesen <huangxuesen@kuaishou.com>
+>>
+>> bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
+>> encapsulation. But that is not appropriate when pushing Ethernet header.
+>>
+>> Add an option to further specify encap L2 type and set the inner_protocol
+>> as ETH_P_TEB.
+>>
+>> Suggested-by: Willem de Bruijn <willemb@google.com>
+>> Signed-off-by: huangxuesen <huangxuesen@kuaishou.com>
+>> Signed-off-by: chengzhiyong <chengzhiyong@kuaishou.com>
+>> Signed-off-by: wangli <wangli09@kuaishou.com>
+> 
+> Thanks, this is exactly what I meant.
+> 
+> Acked-by: Willem de Bruijn <willemb@google.com>
+> 
+> One small point regarding Signed-off-by: It is customary to capitalize
+> family and given names.
 
-Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
----
- arch/arm/boot/dts/sun5i.dtsi | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
++1, huangxuesen, would be great if you could resubmit with capitalized names in
+your SoB as well as From (both seem affected).
 
-diff --git a/arch/arm/boot/dts/sun5i.dtsi b/arch/arm/boot/dts/sun5i.dtsi
-index c2b4fbf552a3..e21b4fe64cbe 100644
---- a/arch/arm/boot/dts/sun5i.dtsi
-+++ b/arch/arm/boot/dts/sun5i.dtsi
-@@ -726,6 +726,27 @@ i2c2: i2c@1c2b400 {
- =09=09=09#size-cells =3D <0>;
- =09=09};
-
-+=09=09mali: gpu@1c40000 {
-+=09=09=09compatible =3D "allwinner,sun4i-a10-mali", "arm,mali-400";
-+=09=09=09reg =3D <0x01c40000 0x10000>;
-+=09=09=09interrupts =3D <69>,
-+=09=09=09=09     <70>,
-+=09=09=09=09     <71>,
-+=09=09=09=09     <72>,
-+=09=09=09=09     <73>;
-+=09=09=09interrupt-names =3D "gp",
-+=09=09=09=09=09  "gpmmu",
-+=09=09=09=09=09  "pp0",
-+=09=09=09=09=09  "ppmmu0",
-+=09=09=09=09=09  "pmu";
-+=09=09=09clocks =3D <&ccu CLK_AHB_GPU>, <&ccu CLK_GPU>;
-+=09=09=09clock-names =3D "bus", "core";
-+=09=09=09resets =3D <&ccu RST_GPU>;
-+
-+=09=09=09assigned-clocks =3D <&ccu CLK_GPU>;
-+=09=09=09assigned-clock-rates =3D <384000000>;
-+=09=09};
-+
- =09=09timer@1c60000 {
- =09=09=09compatible =3D "allwinner,sun5i-a13-hstimer";
- =09=09=09reg =3D <0x01c60000 0x1000>;
---
-2.30.0
-
+Thanks,
+Daniel
