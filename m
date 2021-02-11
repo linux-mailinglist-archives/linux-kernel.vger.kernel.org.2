@@ -2,100 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637B93196A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31203196A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 00:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhBKX3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 18:29:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49428 "EHLO mail.kernel.org"
+        id S230054AbhBKXbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 18:31:25 -0500
+Received: from mga11.intel.com ([192.55.52.93]:47778 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229521AbhBKX3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 18:29:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D55F664DD8;
-        Thu, 11 Feb 2021 23:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613086125;
-        bh=MZAWePskn2HEdxy+HD42A1K7WAT50DQT5epDnHayuP4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IPLRMqpQbwGDlvlcvKfv3OxlN2Qo6J6OpexYxz2q5SXR7ymCTFQfJnDEzpMyj8DyB
-         vt1zxrKbbmGpcx+JD7gi66kDvzf+UhX0dHaZbcaBaDHO4b3GTcpyIQsLmTHAMpBiO2
-         a6yH3uLJ7A4BX9vA4G2ZXhCCg8MgU0axjHlKnWPJlAU66bhqJj1Gf4ZamKgWuhyQYp
-         TKc3gFOaYGxNt7AQy85hy00gEhu9cyxEZjORuWOlKOxeNvyQqBUgvP0UjF+pMNp/o/
-         Hnfdhbz6Kr4D/JSI1TeWQLtfuGbpa6UezwbabYCVAzK+aO5wZDXNCP1Ge7skFOU7L/
-         QD/GRm3y7+9Bg==
-Received: by pali.im (Postfix)
-        id 7B912A80; Fri, 12 Feb 2021 00:28:42 +0100 (CET)
-Date:   Fri, 12 Feb 2021 00:28:42 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     kostap@marvell.com
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        robh+dt@kernel.org, sebastian.hesselbarth@gmail.com,
-        gregory.clement@bootlin.com, andrew@lunn.ch, mw@semihalf.com,
-        jaz@semihalf.com, nadavh@marvell.com, stefanc@marvell.com,
-        bpeled@marvell.com
-Subject: Re: [PATCH v2 06/12] arm64: dts: marvell: armada-3270-espressobin:
- add comphy references
-Message-ID: <20210211232842.no4jhvdwh4634cyt@pali>
-References: <20210210140949.32515-1-kostap@marvell.com>
- <20210210140949.32515-7-kostap@marvell.com>
+        id S229903AbhBKXbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 18:31:21 -0500
+IronPort-SDR: +aD+XM7l83HcHF1oSXbwnP7zTdw4pS82LxjagWx0XSdup21T/JR9i3GRb/0ZTU0c9RQS3IJ5dq
+ OKcVJtcOFr7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="178826932"
+X-IronPort-AV: E=Sophos;i="5.81,172,1610438400"; 
+   d="scan'208";a="178826932"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 15:30:38 -0800
+IronPort-SDR: B57FWrFYk3VPVhRoTkcZ5weZr9LrEurIJG/IzPDTFzp7+TTZx98V58j7KHGcvKDFA5/iYwZ39c
+ IEzbv2NB0fMw==
+X-IronPort-AV: E=Sophos;i="5.81,172,1610438400"; 
+   d="scan'208";a="381226333"
+Received: from avinigue-mobl.amr.corp.intel.com (HELO intel.com) ([10.209.142.134])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 15:30:37 -0800
+Date:   Thu, 11 Feb 2021 18:30:35 -0500
+From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     David Airlie <airlied@linux.ie>, intel-gfx@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Yijun Shen <Yijun.Shen@dell.com>,
+        Dave Airlie <airlied@redhat.com>
+Subject: Re: [Intel-gfx] [PATCH v5 4/4] drm/i915/gen9_bc: Add W/A for missing
+ STRAP config on TGP PCH + CML combos
+Message-ID: <20210211233035.GA320726@intel.com>
+References: <20210209212832.1401815-1-lyude@redhat.com>
+ <20210209212832.1401815-5-lyude@redhat.com>
+ <20210211032358.GD82362@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210210140949.32515-7-kostap@marvell.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210211032358.GD82362@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 10 February 2021 16:09:43 kostap@marvell.com wrote:
-> From: Grzegorz Jaszczyk <jaz@semihalf.com>
+On Wed, Feb 10, 2021 at 10:23:58PM -0500, Rodrigo Vivi wrote:
+> On Tue, Feb 09, 2021 at 04:28:31PM -0500, Lyude Paul wrote:
+> > Apparently the new gen9_bc platforms that Intel has introduced don't
+> > provide us with a STRAP config register to read from for initializing DDI
+> > B, C, and D detection. So, workaround this by hard-coding our strap config
+> > in intel_setup_outputs().
+> > 
+> > Changes since v4:
+> > * Split this into it's own commit
+> > 
+> > Cc: Matt Roper <matthew.d.roper@intel.com>
+> > Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> > Cc: Ville Syrjala <ville.syrjala@linux.intel.com>
+> > [originally from Tejas's work]
+> > Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > ---
+> >  drivers/gpu/drm/i915/display/intel_display.c | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
+> > index beed08c00b6c..4dee37f8659d 100644
+> > --- a/drivers/gpu/drm/i915/display/intel_display.c
+> > +++ b/drivers/gpu/drm/i915/display/intel_display.c
+> > @@ -11943,7 +11943,14 @@ static void intel_setup_outputs(struct drm_i915_private *dev_priv)
+> >  
+> >  		/* DDI B, C, D, and F detection is indicated by the SFUSE_STRAP
+> >  		 * register */
+> > -		found = intel_de_read(dev_priv, SFUSE_STRAP);
+> > +		if (HAS_PCH_TGP(dev_priv)) {
+> > +			/* W/A due to lack of STRAP config on TGP PCH*/
+> > +			found = (SFUSE_STRAP_DDIB_DETECTED |
+> > +				 SFUSE_STRAP_DDIC_DETECTED |
+> > +				 SFUSE_STRAP_DDID_DETECTED);
 > 
-> Add "phys" entries pointing to COMPHYs to PCIe and USB3 nodes
+> we have somewhere in this function these forced fuse straps for gen9 platform...
+> don't we have a ways to combine them?
 > 
-> Signed-off-by: Grzegorz Jaszczyk <jaz@semihalf.com>
-> Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
+> Afterall, the reason that we need these forced bits is
+> because it is a gen9, not because it is a TGP...
 
-Hello! This patch is not needed and now does nothing.
+just ignore my non-sense comment... I confused with the 
+/* WaIgnoreDDIAStrap: skl */
+above...
+thought it was for all the ports... not just for port A...
 
-> ---
->  arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi | 5 +++++
->  1 file changed, 5 insertions(+)
+
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+
+
 > 
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> index daffe136c523..bbd955909813 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
-> @@ -59,6 +59,8 @@
->  /* J9 */
->  &pcie0 {
->  	status = "okay";
-> +	/* Generic PHY, providing serdes lanes */
-> +	phys = <&comphy1 0>;
-
-In mainline kernel is PCIe PHY already provided in armada-37xx.dtsi:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/marvell/armada-37xx.dtsi#n497
-
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pcie_reset_pins &pcie_clkreq_pins>;
->  	reset-gpios = <&gpiosb 3 GPIO_ACTIVE_LOW>;
-> @@ -139,6 +141,9 @@
->  /* J7 */
->  &usb3 {
->  	status = "okay";
-> +	/* Generic PHY, providing serdes lanes */
-> +	phys = <&comphy0 0>;
-> +	phy-names = "usb";
-
-In mainline kernel is USB 3.0 PHY already provided in armada-37xx.dtsi:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/marvell/armada-37xx.dtsi#n359
-
->  };
->  
->  /* J8 */
-> -- 
-> 2.17.1
-> 
-
-So final binary espressobin DTB files are same with and without this
-patch.
+> > +		} else {
+> > +			found = intel_de_read(dev_priv, SFUSE_STRAP);
+> > +		}
+> >  
+> >  		if (found & SFUSE_STRAP_DDIB_DETECTED)
+> >  			intel_ddi_init(dev_priv, PORT_B);
+> > -- 
+> > 2.29.2
+> > 
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
