@@ -2,82 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62D0318927
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8821318944
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Feb 2021 12:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhBKLMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 06:12:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhBKKxJ (ORCPT
+        id S231458AbhBKLTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 06:19:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21847 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230393AbhBKKyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 05:53:09 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B9FC06178B;
-        Thu, 11 Feb 2021 02:52:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=n2jv6riMUsox9J+M/vK0Ktetfs55I55iNexrJKgD5UI=; b=GdkBd1S457VLAefOmcvVtCYPb
-        0trVpPOCxxVlSAJH1m6baoNepic+5tPjFwZCrjxLIphXOXuE27v8l9HHOlQAD+jYmVUAh/8P+9JWx
-        ZcuI+HSuCPcTQ9EaUnWNHUX3AFxA6nIIt3HbNE+l1aHTqE8nQXuVhUZCENiMAQNcBIQ83yLIpz4C0
-        NrG3bKPvVR2DoLeXjGbJTpHiUFCfuBWRMG8AVXz018Q0/zEC14/kxAYmueU/sYEKvdfoVwAsP0E9m
-        pbFHSycBmmdg+a2W1lAZVWORmLxT/J7lsogxfGYU1ImmPEnEIJRQsZbPnoyjoQuj8owqrloMFuez0
-        9KCcrC5fA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41984)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lA9aB-0005xo-Bm; Thu, 11 Feb 2021 10:52:23 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lA9aA-00060y-KL; Thu, 11 Feb 2021 10:52:22 +0000
-Date:   Thu, 11 Feb 2021 10:52:22 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     kostap@marvell.com, Jon Nettleton <jon@solid-run.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        sebastian.hesselbarth@gmail.com, gregory.clement@bootlin.com,
-        andrew@lunn.ch, mw@semihalf.com, jaz@semihalf.com,
-        nadavh@marvell.com, stefanc@marvell.com, bpeled@marvell.com
-Subject: Re: [PATCH v2 01/12] fix: arm64: dts: replace wrong regulator on ap
- emmc
-Message-ID: <20210211105222.GY1463@shell.armlinux.org.uk>
-References: <20210210140949.32515-1-kostap@marvell.com>
- <20210210140949.32515-2-kostap@marvell.com>
+        Thu, 11 Feb 2021 05:54:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613040755;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c6JIyxLiRHESwY6rJeK+rsmJNAoxnfQJq+AkTGikyDY=;
+        b=gKi4hz7cnY6rmBf7RnSpVJLsJQT3TLOW50w6cAZC6rzhYjmc0evEVzXPj88ipov2A7g/aC
+        bM1nb/hMYRYwfGgxjGgscxCFL/lS32JIrC8fi5dx0WWzGOZrlq5W3/MYgoWPoN/RU10lZ9
+        i0/hKJaOaNFpjwQ8jGDabPUIOnlhqk4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-9kyoR4aOOoqozaNVNrXZxA-1; Thu, 11 Feb 2021 05:52:34 -0500
+X-MC-Unique: 9kyoR4aOOoqozaNVNrXZxA-1
+Received: by mail-ej1-f69.google.com with SMTP id m4so4652394ejc.14
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 02:52:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c6JIyxLiRHESwY6rJeK+rsmJNAoxnfQJq+AkTGikyDY=;
+        b=kHpL/FsfTawYgTtm3vmaqOSYnyTfBX7d+GCPg8MAIcM+kAJ1JRsC47/snMEewLk2Oz
+         YetI2b5X46W8AAi78ClkULeYZZJHFToKG1ISiQj5HUzXAtRvNaV899Gd2xj07k73JW5h
+         8yuXmGzjcO9WHxMsVcTiBDyGSx4nilSElhMRyRwuVOO5Tpnj2LuP7bnGYnTFtzVMAn7h
+         kJJY8ikcLqx8nVCI8p0LUpS9bsHVGFRG7Qs8rry0ernzDck/7tMo027OkWHrGvbtGkHA
+         SIygnJ1alSkx7OTMBUYu9NHuAk46g7DqC0qE7NiQShBX7Z3kZIGOIesJ5SVOQkbSLj9e
+         yrYQ==
+X-Gm-Message-State: AOAM532hNytrM1LZr3sC/V9jcKpNhpF68YFzMy16LZTIXLZ9StXus3a4
+        ISnZdfRR9g7KEAI4qtYbSoY/AoJGQBGYF/hSy0VyupGY1PLR4nThhzh1Rxw6ARBDThCDdxda5KH
+        kV63Tshy8Z4FrAKNoihqNDT4q
+X-Received: by 2002:a50:b765:: with SMTP id g92mr7847343ede.317.1613040752987;
+        Thu, 11 Feb 2021 02:52:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw4L+tgVkXdxNZfo4WOdRQsyzuiJJ+oUQSD+Mof1i2r3UcuhRlRZ20qv++UXJ9lCcDs9kLlIA==
+X-Received: by 2002:a50:b765:: with SMTP id g92mr7847336ede.317.1613040752718;
+        Thu, 11 Feb 2021 02:52:32 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id l12sm3613142edn.83.2021.02.11.02.52.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 02:52:32 -0800 (PST)
+Date:   Thu, 11 Feb 2021 11:52:29 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v4 01/17] af_vsock: update functions for connectible
+ socket
+Message-ID: <20210211105229.fmdonwqe3swhq6lb@steredhat>
+References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
+ <20210207151426.804348-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210210140949.32515-2-kostap@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210207151426.804348-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 04:09:38PM +0200, kostap@marvell.com wrote:
-> From: Konstantin Porotchkin <kostap@marvell.com>
-> 
-> Replace wrong regulator in AP0 eMMC definition on MacchiatoBIN
-> board with 3.3V regulator.
-> The MacchiatoBIN board has no 1.8V regulator connected to AP0
-> eMMC (ap0_sdhci0) interface.
+On Sun, Feb 07, 2021 at 06:14:23PM +0300, Arseny Krasnov wrote:
+>This prepares af_vsock.c for SEQPACKET support: some functions such
+>as setsockopt(), getsockopt(), connect(), recvmsg(), sendmsg() are
+>shared between both types of sockets, so rename them in general
+>manner.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> net/vmw_vsock/af_vsock.c | 64 +++++++++++++++++++++-------------------
+> 1 file changed, 34 insertions(+), 30 deletions(-)
 
-There seems to be some variability between Macchiatobin versions
-according to the schematics.
+This patch LGTM:
 
-The VDDO_H supply is connected to the eMMC VCCQ pins, and is also
-connected to the AP_VDDO_H pins. It is wired to the 1.8V regulator
-on rev 1.1 schematics, but hard-wired to the 3.3V regulator on
-rev 1.3 schematics.
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-This needs clarification from SolidRun before the patch can be
-accepted - was VDDO_H ever wired to the 1.8V regulator on production
-hardware?
+Thanks,
+Stefano
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 6894f21dc147..f4fabec50650 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -604,8 +604,8 @@ static void vsock_pending_work(struct work_struct *work)
+>
+> /**** SOCKET OPERATIONS ****/
+>
+>-static int __vsock_bind_stream(struct vsock_sock *vsk,
+>-			       struct sockaddr_vm *addr)
+>+static int __vsock_bind_connectible(struct vsock_sock *vsk,
+>+				    struct sockaddr_vm *addr)
+> {
+> 	static u32 port;
+> 	struct sockaddr_vm new_addr;
+>@@ -685,7 +685,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
+> 	switch (sk->sk_socket->type) {
+> 	case SOCK_STREAM:
+> 		spin_lock_bh(&vsock_table_lock);
+>-		retval = __vsock_bind_stream(vsk, addr);
+>+		retval = __vsock_bind_connectible(vsk, addr);
+> 		spin_unlock_bh(&vsock_table_lock);
+> 		break;
+>
+>@@ -767,6 +767,11 @@ static struct sock *__vsock_create(struct net *net,
+> 	return sk;
+> }
+>
+>+static bool sock_type_connectible(u16 type)
+>+{
+>+	return type == SOCK_STREAM;
+>+}
+>+
+> static void __vsock_release(struct sock *sk, int level)
+> {
+> 	if (sk) {
+>@@ -785,7 +790,7 @@ static void __vsock_release(struct sock *sk, int level)
+>
+> 		if (vsk->transport)
+> 			vsk->transport->release(vsk);
+>-		else if (sk->sk_type == SOCK_STREAM)
+>+		else if (sock_type_connectible(sk->sk_type))
+> 			vsock_remove_sock(vsk);
+>
+> 		sock_orphan(sk);
+>@@ -945,7 +950,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
+> 	sk = sock->sk;
+> 	if (sock->state == SS_UNCONNECTED) {
+> 		err = -ENOTCONN;
+>-		if (sk->sk_type == SOCK_STREAM)
+>+		if (sock_type_connectible(sk->sk_type))
+> 			return err;
+> 	} else {
+> 		sock->state = SS_DISCONNECTING;
+>@@ -960,7 +965,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
+> 		sk->sk_state_change(sk);
+> 		release_sock(sk);
+>
+>-		if (sk->sk_type == SOCK_STREAM) {
+>+		if (sock_type_connectible(sk->sk_type)) {
+> 			sock_reset_flag(sk, SOCK_DONE);
+> 			vsock_send_shutdown(sk, mode);
+> 		}
+>@@ -1013,7 +1018,7 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
+> 		if (!(sk->sk_shutdown & SEND_SHUTDOWN))
+> 			mask |= EPOLLOUT | EPOLLWRNORM | EPOLLWRBAND;
+>
+>-	} else if (sock->type == SOCK_STREAM) {
+>+	} else if (sock_type_connectible(sk->sk_type)) {
+> 		const struct vsock_transport *transport;
+>
+> 		lock_sock(sk);
+>@@ -1263,8 +1268,8 @@ static void vsock_connect_timeout(struct work_struct *work)
+> 	sock_put(sk);
+> }
+>
+>-static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+>-				int addr_len, int flags)
+>+static int vsock_connect(struct socket *sock, struct sockaddr *addr,
+>+			 int addr_len, int flags)
+> {
+> 	int err;
+> 	struct sock *sk;
+>@@ -1414,7 +1419,7 @@ static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
+>
+> 	lock_sock(listener);
+>
+>-	if (sock->type != SOCK_STREAM) {
+>+	if (!sock_type_connectible(sock->type)) {
+> 		err = -EOPNOTSUPP;
+> 		goto out;
+> 	}
+>@@ -1491,7 +1496,7 @@ static int vsock_listen(struct socket *sock, int backlog)
+>
+> 	lock_sock(sk);
+>
+>-	if (sock->type != SOCK_STREAM) {
+>+	if (!sock_type_connectible(sk->sk_type)) {
+> 		err = -EOPNOTSUPP;
+> 		goto out;
+> 	}
+>@@ -1535,11 +1540,11 @@ static void vsock_update_buffer_size(struct vsock_sock *vsk,
+> 	vsk->buffer_size = val;
+> }
+>
+>-static int vsock_stream_setsockopt(struct socket *sock,
+>-				   int level,
+>-				   int optname,
+>-				   sockptr_t optval,
+>-				   unsigned int optlen)
+>+static int vsock_connectible_setsockopt(struct socket *sock,
+>+					int level,
+>+					int optname,
+>+					sockptr_t optval,
+>+					unsigned int optlen)
+> {
+> 	int err;
+> 	struct sock *sk;
+>@@ -1617,10 +1622,10 @@ static int vsock_stream_setsockopt(struct socket *sock,
+> 	return err;
+> }
+>
+>-static int vsock_stream_getsockopt(struct socket *sock,
+>-				   int level, int optname,
+>-				   char __user *optval,
+>-				   int __user *optlen)
+>+static int vsock_connectible_getsockopt(struct socket *sock,
+>+					int level, int optname,
+>+					char __user *optval,
+>+					int __user *optlen)
+> {
+> 	int err;
+> 	int len;
+>@@ -1688,8 +1693,8 @@ static int vsock_stream_getsockopt(struct socket *sock,
+> 	return 0;
+> }
+>
+>-static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+>-				size_t len)
+>+static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+>+				     size_t len)
+> {
+> 	struct sock *sk;
+> 	struct vsock_sock *vsk;
+>@@ -1828,10 +1833,9 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+> 	return err;
+> }
+>
+>-
+> static int
+>-vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>-		     int flags)
+>+vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>+			  int flags)
+> {
+> 	struct sock *sk;
+> 	struct vsock_sock *vsk;
+>@@ -2007,7 +2011,7 @@ static const struct proto_ops vsock_stream_ops = {
+> 	.owner = THIS_MODULE,
+> 	.release = vsock_release,
+> 	.bind = vsock_bind,
+>-	.connect = vsock_stream_connect,
+>+	.connect = vsock_connect,
+> 	.socketpair = sock_no_socketpair,
+> 	.accept = vsock_accept,
+> 	.getname = vsock_getname,
+>@@ -2015,10 +2019,10 @@ static const struct proto_ops vsock_stream_ops = {
+> 	.ioctl = sock_no_ioctl,
+> 	.listen = vsock_listen,
+> 	.shutdown = vsock_shutdown,
+>-	.setsockopt = vsock_stream_setsockopt,
+>-	.getsockopt = vsock_stream_getsockopt,
+>-	.sendmsg = vsock_stream_sendmsg,
+>-	.recvmsg = vsock_stream_recvmsg,
+>+	.setsockopt = vsock_connectible_setsockopt,
+>+	.getsockopt = vsock_connectible_getsockopt,
+>+	.sendmsg = vsock_connectible_sendmsg,
+>+	.recvmsg = vsock_connectible_recvmsg,
+> 	.mmap = sock_no_mmap,
+> 	.sendpage = sock_no_sendpage,
+> };
+>-- 
+>2.25.1
+>
+
