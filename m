@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A52319966
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 06:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04A931996D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 06:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhBLE77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 23:59:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229575AbhBLE7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 23:59:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B2AC64E70;
-        Fri, 12 Feb 2021 04:59:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613105943;
-        bh=izbQjwna7XZsPlb3xdcIvo7CctQA3iJf8QX043cAiT4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b+/6gGzv0s/IzrB6GvOareNQ4+chnYH0WbwR/TidFZK5LAfN8wnWOCp/FtMWAq73X
-         INn2OZuYkdvcbb/LCaOZT3yR/F5S4s2At48KACJNpA0ZtQlXmJgyZulKOs883UucOK
-         +XF7aUrUYpHNnTx7G+HDO/fCh0H5zuQ+wZcW1UzIZsxtYSP4uBEKO+TFEUUQmHZMFw
-         D8mtHDEOjaqWr97Du4KxLcTOcPOj1B9fbZHyOayP3Dnr7TEQHR9pvYYXoDr92sH6U6
-         +7NKnjoz/FxvQO4hQxqkydEoyXUBBLviWvY5EkwFyvoMAMuB/PEFSiC+rSGvaOCKgq
-         c089WPu6YFWRw==
-Date:   Thu, 11 Feb 2021 20:59:02 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] vfs: Disallow copy_file_range on generated file
- systems
-Message-ID: <20210212045902.GG7187@magnolia>
-References: <20210212044405.4120619-1-drinkcat@chromium.org>
- <20210212124354.6.Idc9c3110d708aa0df9d8fe5a6246524dc8469dae@changeid>
- <20210212045347.GM7190@magnolia>
+        id S229675AbhBLFHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 00:07:21 -0500
+Received: from pbmsgap01.intersil.com ([192.157.179.201]:55182 "EHLO
+        pbmsgap01.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhBLFHO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 00:07:14 -0500
+X-Greylist: delayed 1629 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Feb 2021 00:07:13 EST
+Received: from pps.filterd (pbmsgap01.intersil.com [127.0.0.1])
+        by pbmsgap01.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 11C4Y2LJ016819;
+        Thu, 11 Feb 2021 23:39:18 -0500
+Received: from pbmxdp02.intersil.corp (pbmxdp02.pb.intersil.com [132.158.200.223])
+        by pbmsgap01.intersil.com with ESMTP id 36hqh6adwa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 23:39:18 -0500
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp02.intersil.corp (132.158.200.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1979.3; Thu, 11 Feb 2021 23:39:17 -0500
+Received: from localhost (132.158.202.108) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 11 Feb 2021 23:39:16 -0500
+From:   <vincent.cheng.xh@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vincent Cheng <vincent.cheng.xh@renesas.com>
+Subject: [PATCH net-next 0/2] ptp: ptp_clockmatrix: Fix output 1 PPS alignment.
+Date:   Thu, 11 Feb 2021 23:38:43 -0500
+Message-ID: <1613104725-22056-1-git-send-email-vincent.cheng.xh@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212045347.GM7190@magnolia>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 mlxlogscore=923 adultscore=0
+ spamscore=0 mlxscore=0 suspectscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102120032
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 08:53:47PM -0800, Darrick J. Wong wrote:
-> On Fri, Feb 12, 2021 at 12:44:05PM +0800, Nicolas Boichat wrote:
-> > copy_file_range (which calls generic_copy_file_checks) uses the
-> > inode file size to adjust the copy count parameter. This breaks
-> > with special filesystems like procfs/sysfs/debugfs/tracefs, where
-> > the file size appears to be zero, but content is actually returned
-> > when a read operation is performed. Other issues would also
-> > happen on partial writes, as the function would attempt to seek
-> > in the input file.
-> > 
-> > Use the newly introduced FS_GENERATED_CONTENT filesystem flag
-> > to return -EOPNOTSUPP: applications can then retry with a more
-> > usual read/write based file copy (the fallback code is usually
-> > already present to handle older kernels).
-> > 
-> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> > ---
-> > 
-> >  fs/read_write.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/fs/read_write.c b/fs/read_write.c
-> > index 0029ff2b0ca8..80322e89fb0a 100644
-> > --- a/fs/read_write.c
-> > +++ b/fs/read_write.c
-> > @@ -1485,6 +1485,9 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
-> >  	if (flags != 0)
-> >  		return -EINVAL;
-> >  
-> > +	if (file_inode(file_in)->i_sb->s_type->fs_flags & FS_GENERATED_CONTENT)
-> > +		return -EOPNOTSUPP;
-> 
-> Why not declare a dummy copy_file_range_nop function that returns
-> EOPNOTSUPP and point all of these filesystems at it?
-> 
-> (Or, I guess in these days where function pointers are the enemy,
-> create a #define that is a cast of 0x1, and fix do_copy_file_range to
-> return EOPNOTSUPP if it sees that?)
+From: Vincent Cheng <vincent.cheng.xh@renesas.com>
 
-Oh, I see, because that doesn't help if the source file is procfs and
-the dest file is (say) xfs, because the generic version will try to do
-splice magic and *poof*.
+This series fixes a race condition that may result in the output clock
+not aligned to internal 1 PPS clock.
 
-I guess the other nit thatI can think of at this late hour is ... what
-about the other virtual filesystems like configfs and whatnot?  Should
-we have a way to flag them as "this can't be the source of a CFR
-request" as well?
+Part of device initialization is to align the rising edge of output
+clocks to the internal rising edge of the 1 PPS clock.  If the system
+APLL and DPLL are not locked when this alignment occurs, the alignment
+fails and a fixed offset between the internal 1 PPS clock and the
+output clock occurs.
 
-Or is it just trace/debug/proc/sysfs that have these "zero size but
-readable" speshul behaviors?
+If a clock is dynamically enabled after power-up, the output clock
+also needs to be aligned to the internal 1 PPS clock.
 
---D
+Vincent Cheng (2):
+  ptp: ptp_clockmatrix: Add wait_for_sys_apll_dpll_lock.
+  ptp: ptp_clockmatrix: Add alignment of 1 PPS to idtcm_perout_enable.
 
-> 
-> --D
-> 
-> > +
-> >  	ret = generic_copy_file_checks(file_in, pos_in, file_out, pos_out, &len,
-> >  				       flags);
-> >  	if (unlikely(ret))
-> > -- 
-> > 2.30.0.478.g8a0d178c01-goog
-> > 
+ drivers/ptp/idt8a340_reg.h    | 10 +++++
+ drivers/ptp/ptp_clockmatrix.c | 92 ++++++++++++++++++++++++++++++++++++++++---
+ drivers/ptp/ptp_clockmatrix.h | 17 +++++++-
+ 3 files changed, 112 insertions(+), 7 deletions(-)
+
+-- 
+2.7.4
+
