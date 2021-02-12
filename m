@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2109319E7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E16D319E7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhBLMfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:35:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53878 "EHLO mail.kernel.org"
+        id S230396AbhBLMgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:36:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229965AbhBLMfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:35:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ED6C6024A;
-        Fri, 12 Feb 2021 12:34:23 +0000 (UTC)
+        id S229907AbhBLMgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:36:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A4B564DEE;
+        Fri, 12 Feb 2021 12:36:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613133263;
-        bh=30Ryb5NwLiOdhh3x8OJtvw+nFA5R/PlajuHrbKYvioY=;
+        s=k20201202; t=1613133369;
+        bh=cnTIOUrwbSss0NsP381REUNNVtv0SaySoeMM4ym6xLs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JcDVyRL8/RbrC1Bn25ibtuKPpMM2idJ/cfOkE/p8OmivlXFq8tk9t4ePbW2k10vPq
-         kF7z5bpXFZMTSJckY3qB2J8Xm32oFWSzSFrS6u0t5RaV2jqyjAGwwKP9vRhaVklqcZ
-         3zv4gjUwDgD7ABoLg6hLKwiRcpBsxZZSHvEXxyiBK/YghDC5A4gqFwgphlNGsPV96F
-         vdIZFryF0QGP+oNOrX/jx4lXy2MCsWFfCgUqEcu8e6cI0D5k3z/fW8F85HNq/KM/UP
-         IJuEfAJdVhc8QNQJkAD2bHwmkhhOgc4UbdWvBQDH8Tdd+aXbMrVhajpyT3vhBL/qEd
-         iLM6EdzM955Xw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6D68940513; Fri, 12 Feb 2021 09:34:21 -0300 (-03)
-Date:   Fri, 12 Feb 2021 09:34:21 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nicholas Fraser <nfraser@codeweavers.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        b=RdlEud5Vcwv7Bbex5r6Y2fe3o5GEdrpUXdmwC0fYOpCiL0irjf7O+vggKqq0yhlSZ
+         Dgsz/WmSW5yJs2O+61tMAy9BcqrM+RH3X1cNRDsmN1SA1MbaATctkDSdVMV1xxdVGG
+         A/+ZR/RWTWI8VZdTA8B7rzmUekXxmkr/QiRN3IxmXk3p+nZxCvzaYYV+US91+Y8gqi
+         0tTIkwnob0V+vuLPht5lZD4a+ikD83oj4+4he7+4Dr5aTLDheqSRdd6g5LyUtJUhw1
+         m0hBkXbZMzeNZFdoVVH7Jy2km0smiY+44p8m8QYJfN5IbCTHhNhQ/UTIr8AfBvmRD5
+         JqfoLrfPW/UBA==
+Date:   Fri, 12 Feb 2021 12:35:15 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     sonicadvance1@gmail.com, amanieu@gmail.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org,
-        Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-Subject: Re: [PATCH 4/4] perf report: Fix return value when loading PE DSO
-Message-ID: <20210212123421.GC1398414@kernel.org>
-References: <1671b43b-09c3-1911-dbf8-7f030242fbf7@codeweavers.com>
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        David Brazdil <dbrazdil@google.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gavin Shan <gshan@redhat.com>, Mike Rapoport <rppt@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jason Yan <yanaijie@huawei.com>, Andrey Ignatov <rdna@fb.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Julien Grall <julien.grall@arm.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND RFC PATCH v2] arm64: Exposes support for 32-bit syscalls
+Message-ID: <20210212123515.GC6057@sirena.org.uk>
+References: <20210211202208.31555-1-Sonicadvance1@gmail.com>
+ <58b03e17-3729-99ea-8691-0d735a53b9bc@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
 Content-Disposition: inline
-In-Reply-To: <1671b43b-09c3-1911-dbf8-7f030242fbf7@codeweavers.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <58b03e17-3729-99ea-8691-0d735a53b9bc@arm.com>
+X-Cookie: One size fits all.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Feb 10, 2021 at 02:18:02PM -0500, Nicholas Fraser escreveu:
-> The first time dso__load() was called on a PE file it always returned -1
-> error. This caused the first call to map__find_symbol() to always fail
-> on a PE file so the first sample from each PE file always had symbol
-> <unknown>. Subsequent samples succeed however because the DSO is already
-> loaded.
-> 
-> This fixes dso__load() to return 0 when successfully loading a DSO with
-> libbfd.
 
-You forgot to add this:
+--Md/poaVZ8hnGTzuv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: eac9a4342e5447ca ("perf symbols: Try reading the symbol table with libbfd")
+On Fri, Feb 12, 2021 at 11:30:41AM +0000, Steven Price wrote:
+> On 11/02/2021 20:21, sonicadvance1@gmail.com wrote:
 
-This helps, for instance, the stable@kernel.org guys, since their
-scripts will scrape this and find that it should also go to whatever
-stable releases are based on:
+> > Why do we need compatibility layers?
+> > There are ARMv8 CPUs that only support AArch64 but still need to run
+> > AArch32 applications.
+> > Cortex-A34/R82 and other cores are prime examples of this.
+> > Additionally if a user is needing to run legacy 32-bit x86 software, it
+> > needs the same compatibility layer.
 
-  $ git tag --contains eac9a4342e5447ca | grep ^v[45].* | grep -v -- -rc
-  v5.10
-  $
+> Unless I'm much mistaken QEMU's user mode already does this - admittedly I
+> don't tend to run "legacy 32-bit x86 software".
 
-Applied and added the Fixes tag,
+Yes, this has been deployed on Debian for a long time - you can install
+any combination of Debian architectures on a single system and it will
+use qemu to run binaries that can't be supported natively by the
+hardware.
 
-- Arnaldo
- 
-> Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
-> ---
->  tools/perf/util/symbol.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> index aa9ae875b995..492c873713cc 100644
-> --- a/tools/perf/util/symbol.c
-> +++ b/tools/perf/util/symbol.c
-> @@ -1861,8 +1861,10 @@ int dso__load(struct dso *dso, struct map *map)
->  		if (nsexit)
->  			nsinfo__mountns_enter(dso->nsinfo, &nsc);
->  
-> -		if (bfdrc == 0)
-> +		if (bfdrc == 0) {
-> +			ret = 0;
->  			break;
-> +		}
->  
->  		if (!is_reg || sirc < 0)
->  			continue;
-> -- 
-> 2.30.0
-> 
+--Md/poaVZ8hnGTzuv
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
+-----BEGIN PGP SIGNATURE-----
 
-- Arnaldo
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAmdgIACgkQJNaLcl1U
+h9Ar6Qf7Be9ErKtx5lm+ZTtLIlBvwbYKuCANK8wuDnCzLybGOxE/0n+OHlsJsPoh
++HgRSrSab9IvlOcPXxJZ7tWr81ZW8JHdP+gVAKV2ogYn18IWni9jiFw1ti1qru6m
+y8ow6AFHYS2BryKDPchKalvl3iKVcYGkWvtZVwvK0+0K6PkWCNOIRKI7vRNbqXKa
+EvMjgvlb//CumMk6TnW3TajWnK5SCpoUN8aP+s5+SJsAsOwpySsum2lwNDXqc1R1
+2xYXdB1pgtWgjA7WtasM1W0xwAJ8ol81BaU6FzFXToOPBxg31dff/9dQHXuSyedk
+r6DqAhGK+pyhY6mhQJvV5jTzaPad+A==
+=UG5o
+-----END PGP SIGNATURE-----
+
+--Md/poaVZ8hnGTzuv--
