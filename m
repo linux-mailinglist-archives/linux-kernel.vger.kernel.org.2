@@ -2,122 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95D631A3AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2766D31A3AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbhBLRa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 12:30:29 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3441 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhBLR3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 12:29:23 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DcgRM2rSbz5RKj;
-        Sat, 13 Feb 2021 01:27:11 +0800 (CST)
-Received: from dggemm751-chm.china.huawei.com (10.1.198.57) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Sat, 13 Feb 2021 01:28:37 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggemm751-chm.china.huawei.com (10.1.198.57) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Sat, 13 Feb 2021 01:28:36 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2106.006; Fri, 12 Feb 2021 17:28:34 +0000
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-CC:     "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [PATCH v2] iommu: Check dev->iommu in iommu_dev_xxx functions
-Thread-Topic: [PATCH v2] iommu: Check dev->iommu in iommu_dev_xxx functions
-Thread-Index: AdcBTrfjz4ngs6VWSn6F9Rp3qrl5mQADsiaAAAAQ0NAAAVXqEA==
-Date:   Fri, 12 Feb 2021 17:28:34 +0000
-Message-ID: <33cf95925cfb47dda3ee472e00b9846c@huawei.com>
-References: <c82f6d0cced74c43947714e7de576d5a@huawei.com>
- <d541ebeb-5b89-7a9d-50a2-3867f9cf78b3@arm.com> 
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.89.255]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231704AbhBLRar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 12:30:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231585AbhBLR3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 12:29:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0AED64E95;
+        Fri, 12 Feb 2021 17:28:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613150935;
+        bh=GFtq0B3Onk0lHTm0ppoQIGAxNpPaVFOx5jJLCzZQSQ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bb3gzoBWSN8jfLP4qc0LoBX5luPDYRAPNv5tC4lFWG9a2Uyg3WAPitKNT5ppP502v
+         aNRnvDjnINauiA7JNG13YIO5ZklqTH3QgOaJ5aG4wlT+4FR9usLObfdXTZBRNUJfr/
+         49WdWAGRFHS3HkhXHoigFM5GaLTsgN0r3BzNRBhSU8aJgnjkphovMswQ7YqZXoC3zA
+         t6Nw3G4m8/FRD53QoDq5kouPV6FP8dKEfrRT72147hLUNiZqVrgHgE5880hJCkb+6c
+         wMcOsn9QR8VVUyuQUvQzR1wtJ12lwuS5sGT5rWBGRR7PFMC5OBYXjRvXMSZIW9XEO7
+         hVtHZRxDO+0Pw==
+Received: by earth.universe (Postfix, from userid 1000)
+        id E02143C0C96; Fri, 12 Feb 2021 18:28:52 +0100 (CET)
+Date:   Fri, 12 Feb 2021 18:28:52 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-iio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v4] MAINTAINERS: move Milo Kim to credits
+Message-ID: <20210212172852.hplx6ly3m5ixrw4o@earth.universe>
+References: <20210212163229.68270-1-krzk@kernel.org>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="56e5d2djjx3fcdkn"
+Content-Disposition: inline
+In-Reply-To: <20210212163229.68270-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2hhbWVlcmFsaSBLb2xv
-dGh1bSBUaG9kaQ0KPiBTZW50OiAxMiBGZWJydWFyeSAyMDIxIDE2OjQ1DQo+IFRvOiAnUm9iaW4g
-TXVycGh5JyA8cm9iaW4ubXVycGh5QGFybS5jb20+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
-b3JnOw0KPiBpb21tdUBsaXN0cy5saW51eC1mb3VuZGF0aW9uLm9yZw0KPiBDYzogam9yb0A4Ynl0
-ZXMub3JnOyBqZWFuLXBoaWxpcHBlQGxpbmFyby5vcmc7IHdpbGxAa2VybmVsLm9yZzsgWmVuZ3Rh
-byAoQikNCj4gPHByaW1lLnplbmdAaGlzaWxpY29uLmNvbT47IGxpbnV4YXJtQG9wZW5ldWxlci5v
-cmcNCj4gU3ViamVjdDogUkU6IFtQQVRDSCB2Ml0gaW9tbXU6IENoZWNrIGRldi0+aW9tbXUgaW4g
-aW9tbXVfZGV2X3h4eCBmdW5jdGlvbnMNCj4gDQo+IA0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1l
-c3NhZ2UtLS0tLQ0KPiA+IEZyb206IFJvYmluIE11cnBoeSBbbWFpbHRvOnJvYmluLm11cnBoeUBh
-cm0uY29tXQ0KPiA+IFNlbnQ6IDEyIEZlYnJ1YXJ5IDIwMjEgMTY6MzkNCj4gPiBUbzogU2hhbWVl
-cmFsaSBLb2xvdGh1bSBUaG9kaSA8c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29t
-PjsNCj4gPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBpb21tdUBsaXN0cy5saW51eC1m
-b3VuZGF0aW9uLm9yZw0KPiA+IENjOiBqb3JvQDhieXRlcy5vcmc7IGplYW4tcGhpbGlwcGVAbGlu
-YXJvLm9yZzsgd2lsbEBrZXJuZWwub3JnOyBaZW5ndGFvIChCKQ0KPiA+IDxwcmltZS56ZW5nQGhp
-c2lsaWNvbi5jb20+OyBsaW51eGFybUBvcGVuZXVsZXIub3JnDQo+ID4gU3ViamVjdDogUmU6IFtQ
-QVRDSCB2Ml0gaW9tbXU6IENoZWNrIGRldi0+aW9tbXUgaW4gaW9tbXVfZGV2X3h4eA0KPiBmdW5j
-dGlvbnMNCj4gPg0KPiA+IE9uIDIwMjEtMDItMTIgMTQ6NTQsIFNoYW1lZXJhbGkgS29sb3RodW0g
-VGhvZGkgd3JvdGU6DQo+ID4gPiBIaSBSb2Jpbi9Kb2VyZywNCj4gPiA+DQo+ID4gPj4gLS0tLS1P
-cmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+PiBGcm9tOiBTaGFtZWVyIEtvbG90aHVtDQo+IFtt
-YWlsdG86c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29tXQ0KPiA+ID4+IFNlbnQ6
-IDAxIEZlYnJ1YXJ5IDIwMjEgMTI6NDENCj4gPiA+PiBUbzogbGludXgta2VybmVsQHZnZXIua2Vy
-bmVsLm9yZzsgaW9tbXVAbGlzdHMubGludXgtZm91bmRhdGlvbi5vcmcNCj4gPiA+PiBDYzogam9y
-b0A4Ynl0ZXMub3JnOyByb2Jpbi5tdXJwaHlAYXJtLmNvbTsgamVhbi1waGlsaXBwZUBsaW5hcm8u
-b3JnOw0KPiA+ID4+IHdpbGxAa2VybmVsLm9yZzsgWmVuZ3RhbyAoQikgPHByaW1lLnplbmdAaGlz
-aWxpY29uLmNvbT47DQo+ID4gPj4gbGludXhhcm1Ab3BlbmV1bGVyLm9yZw0KPiA+ID4+IFN1Ympl
-Y3Q6IFtMaW51eGFybV0gW1BBVENIIHYyXSBpb21tdTogQ2hlY2sgZGV2LT5pb21tdSBpbg0KPiA+
-IGlvbW11X2Rldl94eHgNCj4gPiA+PiBmdW5jdGlvbnMNCj4gPiA+Pg0KPiA+ID4+IFRoZSBkZXZp
-Y2UgaW9tbXUgcHJvYmUvYXR0YWNoIG1pZ2h0IGhhdmUgZmFpbGVkIGxlYXZpbmcgZGV2LT5pb21t
-dQ0KPiA+ID4+IHRvIE5VTEwgYW5kIGRldmljZSBkcml2ZXJzIG1heSBzdGlsbCBpbnZva2UgdGhl
-c2UgZnVuY3Rpb25zIHJlc3VsdGluZw0KPiA+ID4+IGluIGEgY3Jhc2ggaW4gaW9tbXUgdmVuZG9y
-IGRyaXZlciBjb2RlLiBIZW5jZSBtYWtlIHN1cmUgd2UgY2hlY2sgdGhhdC4NCj4gPiA+Pg0KPiA+
-ID4+IEFsc28gYWRkZWQgaW9tbXVfb3BzIHRvIHRoZSAic3RydWN0IGRldl9pb21tdSIgYW5kIHNl
-dCBpdCBpZiB0aGUgZGV2DQo+ID4gPj4gaXMgc3VjY2Vzc2Z1bGx5IGFzc29jaWF0ZWQgd2l0aCBh
-biBpb21tdS4NCj4gPiA+Pg0KPiA+ID4+IEZpeGVzOsKgYTNhMTk1OTI5ZDQwICgiaW9tbXU6IEFk
-ZCBBUElzIGZvciBtdWx0aXBsZSBkb21haW5zIHBlcg0KPiBkZXZpY2UiKQ0KPiA+ID4+IFNpZ25l
-ZC1vZmYtYnk6IFNoYW1lZXIgS29sb3RodW0NCj4gPiA8c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9k
-aUBodWF3ZWkuY29tPg0KPiA+ID4+IC0tLQ0KPiA+ID4+IHYxIC0tPiB2MjoNCj4gPiA+PiAgIC1B
-ZGRlZCBpb21tdV9vcHMgdG8gc3RydWN0IGRldl9pb21tdSBiYXNlZCBvbiB0aGUgZGlzY3Vzc2lv
-biB3aXRoDQo+ID4gUm9iaW4uDQo+ID4gPj4gICAtUmViYXNlZCBhZ2FpbnN0IGlvbW11LXRyZWUg
-Y29yZSBicmFuY2guDQo+ID4gPg0KPiA+ID4gQSBnZW50bGUgcGluZyBvbiB0aGlzLi4uDQo+ID4N
-Cj4gPiBJcyB0aGVyZSBhIGNvbnZpbmNpbmcganVzdGlmaWNhdGlvbiBmb3IgbWFpbnRhaW5pbmcg
-eWV0IGFub3RoZXIgY29weSBvZg0KPiA+IHRoZSBvcHMgcG9pbnRlciByYXRoZXIgdGhhbiBzaW1w
-bHkgZGVyZWZlcmVuY2luZyBpb21tdV9kZXYtPm9wcyBhdCBwb2ludA0KPiA+IG9mIHVzZT8NCj4g
-Pg0KPiANCj4gVEJILCBub3RoaW5nIEkgY2FuIHRoaW5rIG9mIG5vdy4gVGhhdCB3YXMgbWFpbmx5
-IHRoZSB3YXkgSSBpbnRlcnByZXRlZCB5b3VyDQo+IHN1Z2dlc3Rpb24NCj4gZnJvbSB0aGUgdjEu
-ICBOb3cgaXQgbG9va3MgbGlrZSB5b3UgZGlkbuKAmXQgbWVhbiBpdCA6KS4gSSBhbSBPayB0byBy
-ZXdvcmsgaXQgdG8NCj4gZGVyZWZlcmVuY2UNCj4gaXQgZnJvbSBpb21tdV9kZXYuIFBsZWFzZSBs
-ZXQgbWUga25vdy4NCg0KU28gd2UgY2FuIGRvIHNvbWV0aGluZyBsaWtlIHRoaXMsDQoNCmluZGV4
-IGZkNzZlMmY1NzlmZS4uNWZkMzFhM2NlYzE4IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9pb21tdS9p
-b21tdS5jDQorKysgYi9kcml2ZXJzL2lvbW11L2lvbW11LmMNCkBAIC0yODY1LDEwICsyODY1LDEy
-IEBAIEVYUE9SVF9TWU1CT0xfR1BMKGlvbW11X2Z3c3BlY19hZGRfaWRzKTsNCiAgKi8NCiBpbnQg
-aW9tbXVfZGV2X2VuYWJsZV9mZWF0dXJlKHN0cnVjdCBkZXZpY2UgKmRldiwgZW51bSBpb21tdV9k
-ZXZfZmVhdHVyZXMgZmVhdCkNCiB7DQotICAgICAgIGNvbnN0IHN0cnVjdCBpb21tdV9vcHMgKm9w
-cyA9IGRldi0+YnVzLT5pb21tdV9vcHM7DQorICAgICAgIGlmIChkZXYtPmlvbW11ICYmIGRldi0+
-aW9tbXUtPmlvbW11X2RldiAmJiBkZXYtPmlvbW11LT5pb21tdV9kZXYtPm9wcykNCisgICAgICAg
-ICAgICAgICBzdHJ1Y3QgaW9tbXVfb3BzICAqb3BzID0gZGV2LT5pb21tdS0+aW9tbXVfZGV2LT5v
-cHM7DQogDQotICAgICAgIGlmIChvcHMgJiYgb3BzLT5kZXZfZW5hYmxlX2ZlYXQpDQotICAgICAg
-ICAgICAgICAgcmV0dXJuIG9wcy0+ZGV2X2VuYWJsZV9mZWF0KGRldiwgZmVhdCk7DQorICAgICAg
-ICAgICAgICAgaWYgKG9wcy0+ZGV2X2VuYWJsZV9mZWF0KQ0KKyAgICAgICAgICAgICAgICAgICAg
-ICAgcmV0dXJuIG9wcy0+ZGV2X2VuYWJsZV9mZWF0KGRldiwgZmVhdCk7DQorICAgICAgIH0NCiAN
-CiAgICAgICAgcmV0dXJuIC1FTk9ERVY7DQogfQ0KDQpBZ2Fpbiwgbm90IHN1cmUgd2UgbmVlZCB0
-byBkbyB0aGUgY2hlY2tpbmcgZm9yIGlvbW11LT5kZXYgYW5kIG9wcyBoZXJlLiBJZiB0aGUNCmRl
-di0+aW9tbXUgaXMgc2V0LCBpcyBpdCBzYWZlIHRvIGFzc3VtZSB0aGF0IHdlIGhhdmUgYSB2YWxp
-ZCBpb21tdS0+aW9tbXVfZGV2DQphbmQgb3BzIGFsd2F5cz8gKE1heSBiZSBpdCBpcyBzYWZlciB0
-byBkbyB0aGUgY2hlY2tpbmcgaW4gY2FzZSBzb21ldGhpbmcNCmVsc2UgYnJlYWtzIHRoaXMgYXNz
-dW1wdGlvbiBpbiBmdXR1cmUpLiBQbGVhc2UgbGV0IG1lIGtub3cgeW91ciB0aG91Z2h0cy4NCg0K
-VGhhbmtzLA0KU2hhbWVlcg0KDQoNCg==
+
+--56e5d2djjx3fcdkn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Fri, Feb 12, 2021 at 05:32:29PM +0100, Krzysztof Kozlowski wrote:
+> Milo Kim's email in TI bounces with permanent error (550: Invalid
+> recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+> credits and remove the separate driver entries for:
+>  - TI LP855x backlight driver,
+>  - TI LP8727 charger driver,
+>  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Cc: Jingoo Han <jingoohan1@gmail.com>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: Daniel Thompson <daniel.thompson@linaro.org>
+>=20
+> ---
+>
+> Dear Lee,
+>=20
+> Could you take care about this patch?
+>=20
+> Best regards,
+> Krzysztof
+>=20
+> Changes since v3:
+> 1. Remove the entries as Dan Murphy won't be mainaining them.
+>=20
+> Changes since v2:
+> 1. Fix subject (TP -> TI).
+>=20
+> Changes since v1:
+> 1. Add Dan Murphy, do not remove the entries.
+> ---
+
+Acked-by: Sebastian Reichel <sre@kernel.org>
+
+-- Sebastian
+
+>  CREDITS     |  3 +++
+>  MAINTAINERS | 23 -----------------------
+>  2 files changed, 3 insertions(+), 23 deletions(-)
+>=20
+> diff --git a/CREDITS b/CREDITS
+> index be097156bd71..71552790774d 100644
+> --- a/CREDITS
+> +++ b/CREDITS
+> @@ -1933,6 +1933,9 @@ N: Kukjin Kim
+>  E: kgene@kernel.org
+>  D: Samsung S3C, S5P and Exynos ARM architectures
+> =20
+> +N: Milo Kim
+> +D: TI LP855x, LP8727 and LP8788 drivers
+> +
+>  N: Sangbeom Kim
+>  E: sbkim73@samsung.com
+>  D: Samsung SoC Audio (ASoC) drivers
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 00bca3e220cc..3478082debd1 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17880,29 +17880,6 @@ S:	Maintained
+>  F:	sound/soc/codecs/isabelle*
+>  F:	sound/soc/codecs/lm49453*
+> =20
+> -TI LP855x BACKLIGHT DRIVER
+> -M:	Milo Kim <milo.kim@ti.com>
+> -S:	Maintained
+> -F:	Documentation/driver-api/backlight/lp855x-driver.rst
+> -F:	drivers/video/backlight/lp855x_bl.c
+> -F:	include/linux/platform_data/lp855x.h
+> -
+> -TI LP8727 CHARGER DRIVER
+> -M:	Milo Kim <milo.kim@ti.com>
+> -S:	Maintained
+> -F:	drivers/power/supply/lp8727_charger.c
+> -F:	include/linux/platform_data/lp8727.h
+> -
+> -TI LP8788 MFD DRIVER
+> -M:	Milo Kim <milo.kim@ti.com>
+> -S:	Maintained
+> -F:	drivers/iio/adc/lp8788_adc.c
+> -F:	drivers/leds/leds-lp8788.c
+> -F:	drivers/mfd/lp8788*.c
+> -F:	drivers/power/supply/lp8788-charger.c
+> -F:	drivers/regulator/lp8788-*.c
+> -F:	include/linux/mfd/lp8788*.h
+> -
+>  TI NETCP ETHERNET DRIVER
+>  M:	Wingman Kwok <w-kwok2@ti.com>
+>  M:	Murali Karicheri <m-karicheri2@ti.com>
+> --=20
+> 2.25.1
+>=20
+
+--56e5d2djjx3fcdkn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAmusMACgkQ2O7X88g7
++pq5YxAAi9sMZJ6My43p1X33t66UXnrR6iZir+yvyHCur564wWsRrT+XCPKJJVGX
+JYMtku40qwJSzvF9ZBR5otvlXdPq592MuTPhdq81AE5W/NiS2PBWwn6WFOVMwQe/
+to4K+oaOLiOfVAkMeV8jZQeFlJrKtCJIm05K+rVTJKI8ZDW2ggY/eLygzzrAsXH9
+xD/9aCxyU7ra5mWiBC+8+Z8szKt6lc4rqrc98uEZTOJL244YUprtOI3Qzz2oC5Dx
+o/YUOEhtiAH9zeQZTNBBllfg/HUMtKzEcKA/a7zbA1Pv7RRpldr7Jv9N8a03F6Xr
+Y84j9Iay39KOMGbJuDG0QGTMlP0cmgZKsJ8+gk9jyT5YGLSuPFEQdwZjEZu6Fgxb
+iHUqAybdZIwEqgOA+hzsxFXbL3dHTKLbvuUjEtcMhdythDZCLVpN5vGCGsbn46vB
+lzENDVKf/yYY3HJYqJCY5XbIABTqX6yOxjUPxOMjyDc8PpY4tFppASJ92i3z9XXI
+ayWP4rCaEhKFiviGrrA7CQQaMo+n1B1k5vfXkYMuwjwG4L5upXiBYOgwxx/XB8bs
+5vbXTwC2JBb2mHKKxrWRZIbDJNaBn55A6oYOeGoznLRkUYytsLsAKJ244lw4CKy3
+HVH6yTNna7+Xzm6m2HF6y8xN8xO0nSw4lXamSGUF6y8G8x+fM6g=
+=QaBn
+-----END PGP SIGNATURE-----
+
+--56e5d2djjx3fcdkn--
