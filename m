@@ -2,132 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6E031A630
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F3D31A634
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhBLUra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:47:30 -0500
-Received: from mga12.intel.com ([192.55.52.136]:29182 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229583AbhBLUrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:47:21 -0500
-IronPort-SDR: Hzfg0EYVUvq467Cl3BF+/BVx461/pTAth3AW7nM1vUPdE1wDBgCvrOrRJxfWPRFqimgBNUUn1f
- uQ7FsP4zFTeQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="161617185"
-X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
-   d="scan'208";a="161617185"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 12:46:39 -0800
-IronPort-SDR: XOXlTI/VtTWad2d9wzIm8/F7prWcREd9R1p9Id5wtDWQVRfdnKOEjGkp/KBTlfxiMgE5Z7UeAy
- i0fwyuMsCw+Q==
-X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
-   d="scan'208";a="364219418"
-Received: from nmustaf1-mobl.amr.corp.intel.com (HELO [10.212.81.109]) ([10.212.81.109])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 12:46:37 -0800
-Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CALCETrWPCTmoeFBEJvw98zwNpw316Xii_16COZAWoYNC=obF+w@mail.gmail.com>
- <YCbfyde9jl7ti0Oz@google.com>
- <8c23bbfd-e371-a7cf-7f77-ec744181547b@intel.com>
- <YCbm/umiGUS7UuVb@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <514734d9-d8be-03ee-417e-4d0ad2f56276@intel.com>
-Date:   Fri, 12 Feb 2021 12:46:37 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231327AbhBLUsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:48:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231445AbhBLUrw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 15:47:52 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34341C061574;
+        Fri, 12 Feb 2021 12:47:10 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id s15so454977plr.9;
+        Fri, 12 Feb 2021 12:47:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9nlPrdgdpUhBT4OqPIpJHurxob/WSRTldRiaZgCuebA=;
+        b=mEalseKMxInqyKHV7UpFcJBMqxSyFknnSvj7smKWsPgaa04masHhh4Nf9nN3eNhjPG
+         zzzwGLnVafIckFzjBfsEgDgibHfhSz1I47NzHWqMrUX/HbhBoGUFRJ8xzmtpykyQiRQW
+         CNwu0Ki4ybC8HpTAeLxosIa6MyIqwnRjMs2n/oNdVu1YhGpy8tXPJzYd08EoqwWzTcIq
+         ArAZatvCv4/bAcEFQFIEz5PXhFQI4t4C36gEN82yxrOVDPzumFN2viNJuB690YirePqK
+         /6J+GXoQqPFwfdBOVDV+yqPUBOI33H5nobS4jsj+yM5wCTYyPLMzaY9TxsIQlsB4WTwe
+         dHgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9nlPrdgdpUhBT4OqPIpJHurxob/WSRTldRiaZgCuebA=;
+        b=r3fK26H+WO3CRLnPIZq4ey5col9N556jo05gpIG+pIuiMIlt0IhxRlyct/jWmUQEsn
+         rI547Z87gFzum7ZKh9T7QgQ2DQWb/Vgff1xQIyWzw5rRkOjNMr1UFwz/2w5YaMd5QQnn
+         ghMp0+a4dwPqJKBZO4BoPYqBkOqyzD07yYlmmWbeyqnbpGegAtYhRmrkufSujMScQZwM
+         a390v7DTQpCCHxH/mpE+Zc1LlRxS5wRZpIviCJLD+wbzVyKk8xKfyhkGHCD4taAVsIxe
+         /gWR/ZNdGc5CPNYdlQJM6+OpBnyueOA41JvYZH71KTvLPU2iNhGrfXZdiFKGua5IF6It
+         aF3g==
+X-Gm-Message-State: AOAM530dyH0Q6OnIkOGUhSsrzm+THpp0A3jXRRAA0A3CxxPjPBkB5nWs
+        aBVMaohqx2/d8eiRfDDhzZI=
+X-Google-Smtp-Source: ABdhPJzS5Lrk7YliIkxbQhanWAw0UsFKk7hCmMvP3GxFB0VhGdCErkgqFxJLgLSLeik+D9D4ORGB9g==
+X-Received: by 2002:a17:90a:ce03:: with SMTP id f3mr4230246pju.44.1613162829402;
+        Fri, 12 Feb 2021 12:47:09 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id t22sm10659579pgm.18.2021.02.12.12.47.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Feb 2021 12:47:08 -0800 (PST)
+Subject: Re: [PATCH v3 2/2] serial: 8250: Add new 8250-core based Broadcom STB
+ driver
+To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20210212195736.45328-1-alcooperx@gmail.com>
+ <20210212195736.45328-3-alcooperx@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <8cb4bae6-5617-8dd5-4c0f-4c81cb4d741b@gmail.com>
+Date:   Fri, 12 Feb 2021 12:47:02 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YCbm/umiGUS7UuVb@google.com>
+In-Reply-To: <20210212195736.45328-3-alcooperx@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/21 12:37 PM, Sean Christopherson wrote:
-> There needs to be a mechanism for lazy/deferred/on-demand acceptance of pages.
-> E.g. pre-accepting every page in a VM with hundreds of GB of memory will be
-> ridiculously slow.
+
+
+On 2/12/2021 11:57 AM, Al Cooper wrote:
+> Add a UART driver for the new Broadcom 8250 based STB UART. The new
+> UART is backward compatible with the standard 8250, but has some
+> additional features. The new features include a high accuracy baud
+> rate clock system and DMA support.
 > 
-> #VE is the best option to do that:
+> The driver will use the new optional BAUD MUX clock to select the best
+> one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
+> the baud rate selection logic for any requested baud rate.  This allows
+> for more accurate BAUD rates when high speed baud rates are selected.
 > 
->   - Relatively sane re-entrancy semantics.
->   - Hardware accelerated.
->   - Doesn't require stealing an IRQ from the guest.
+> The driver will use the new UART DMA hardware if the UART DMA registers
+> are specified in Device Tree "reg" property.
+> 
+> The driver also sets the UPSTAT_AUTOCTS flag when hardware flow control
+> is enabled. This flag is needed for UARTs that don't assert a CTS
+> changed interrupt when CTS changes and AFE (Hardware Flow Control) is
+> enabled.
+> 
+> The driver also contains a workaround for a bug in the Synopsis 8250
+> core. The problem is that at high baud rates, the RX partial FIFO
+> timeout interrupt can occur but there is no RX data (DR not set in
+> the LSR register). In this case the driver will not read the Receive
+> Buffer Register, which clears the interrupt, and the system will get
+> continuous UART interrupts until the next RX character arrives. The
+> fix originally suggested by Synopsis was to read the Receive Buffer
+> Register and discard the character when the DR bit in the LSR was
+> not set, to clear the interrupt. The problem was that occasionally
+> a character would arrive just after the DR bit check and a valid
+> character would be discarded. The fix that was added will clear
+> receive interrupts to stop the interrupt, deassert RTS to insure
+> that no new data can arrive, wait for 1.5 character times for the
+> sender to react to RTS and then check for data and either do a dummy
+> read or a valid read. Sysfs error counters were also added and were
+> used to help create test software that would cause the error condition.
+> The counters can be found at:
+> /sys/devices/platform/rdb/*serial/rx_bad_timeout_late_char
+> /sys/devices/platform/rdb/*serial/rx_bad_timeout_no_char
+> 
+> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+> ---
+>  MAINTAINERS                            |    8 +
+>  drivers/tty/serial/8250/8250_bcm7271.c | 1099 ++++++++++++++++++++++++
+>  drivers/tty/serial/8250/Kconfig        |   11 +
+>  drivers/tty/serial/8250/Makefile       |    1 +
+>  drivers/tty/serial/8250/bcm7271_uart.h |  158 ++++
+>  5 files changed, 1277 insertions(+)
+>  create mode 100644 drivers/tty/serial/8250/8250_bcm7271.c
+>  create mode 100644 drivers/tty/serial/8250/bcm7271_uart.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 64c7169db617..bb6ad2fc4376 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3582,6 +3582,14 @@ S:	Supported
+>  F:	Documentation/devicetree/bindings/i2c/brcm,brcmstb-i2c.yaml
+>  F:	drivers/i2c/busses/i2c-brcmstb.c
+>  
+> +BROADCOM BRCMSTB UART DRIVER
+> +M:	Al Cooper <alcooperx@gmail.com>
+> +L:	linux-usb@vger.kernel.org
 
-TDX already provides a basic environment for the guest when it starts
-up.  The guest has some known, good memory.  The guest also has a very,
-very clear understanding of which physical pages it uses and when.  It's
-staged, of course, as decompression happens and the guest comes up.
-
-But, the guest still knows which guest physical pages it accesses and
-when.  It doesn't need on-demand faulting in of non-accepted pages.  It
-can simply decline to expose non-accepted pages to the wider system
-before they've been accepted.
-
-It would be nuts to merrily free non-accepted pages into the page
-allocator and handle the #VE fallout as they're touched from
-god-knows-where.
-
-I don't see *ANY* case for #VE to occur inside the guest kernel, outside
-of *VERY* narrow places like copy_from_user().  Period.  #VE from ring-0
-is not OK.
-
-So, no, #VE is not the best option.  No #VE's in the first place is the
-best option.
+This should probably be linux-serial, copy pasted from the USB entry
+down below presumably.
+-- 
+Florian
