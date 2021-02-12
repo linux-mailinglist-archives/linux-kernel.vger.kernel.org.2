@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B962319946
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A8C319947
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhBLEpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 23:45:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
+        id S229787AbhBLEqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 23:46:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhBLEpZ (ORCPT
+        with ESMTP id S229457AbhBLEqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 23:45:25 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F07FC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:44:45 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id b21so5457170pgk.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:44:45 -0800 (PST)
+        Thu, 11 Feb 2021 23:46:04 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753B6C06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:44:48 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id b21so5457235pgk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:44:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Uwr/8PJUNMrs1DNHiVxSJVanvT/KDCxxvdzqAMfX/20=;
-        b=jDPV6GnSoh0tUu9SL3pV6ZNkNlrVV4nNS5weOpmxNEER4+qGUF4kuWbxGzf7zUe4Q6
-         0fNbc8n6aPmawRsXKF60jjdrAlO3PQ6/lKXdvfCYNb1N+gAjmCFqexp/zw0kQUWuFKmo
-         tsPTSYVURrDD1QkSKI9JBQAqmySDiCWcOQCeI=
+        bh=kOCq94xjVzI4ceYxRuWCABPovXysMtiBjdG9BO6ZZlk=;
+        b=YFLT2F+J3RvMBDSiUHuypueB0DK/XGg7G87wgW+rPVjaHKPEEMXI6pHivuc83P91bE
+         kMLIh6M0HtmB+EqZNhXx8eoQnJCEoy1eUXnUxMxjpVTr74I6Q4FoQDJQkOySytnwuLdy
+         R55uL0VGEYvuO4NVzPP+pMQ1ef5edLP85FnNk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Uwr/8PJUNMrs1DNHiVxSJVanvT/KDCxxvdzqAMfX/20=;
-        b=CepYRJDcn8ST26p0WKgKwIUyP5mOktzMi74CeldUcAihiCpV6uSOQZ2OsqyXPe31OP
-         8sw3Os5cweIpWJEFGdSXsgX9NU1wULwVH++vK4ZRVA8XWBlIPvRJi/GbkQS10XmiBQaN
-         Ax/v81r0+ZNwven7zvfmQv8OvYgASzof4AXtn4NBb1q3V5yZdPhcAAQPtY75Z3zINNLD
-         YrNmCTL9X+Jdh15pf7/Edoo0VvxjhLHVc6Swj0HoPPDGRd7HNhEry+3esaVvRIjHoMAm
-         yTInl7IRa04/OrCzekIF5njoklJZ6I4HWalh5GZDthC+IJbl2jrQkYAHLTAz1n/FDjJP
-         4fuQ==
-X-Gm-Message-State: AOAM530C3246nhuiuHAR9sfqw3Y9nFyY9To/3xYVmb4Q93FMLBhQhxim
-        aEzguRfxpQIH6D3hwV0FboOjnw==
-X-Google-Smtp-Source: ABdhPJzVzB2K3BQRHbHlI8qUm7OdSQAl5fNCAIJBHSDbPKSvTVB19WkYz5J5ZvETG1Vuz0V/f25kmg==
-X-Received: by 2002:a63:1965:: with SMTP id 37mr1468628pgz.349.1613105084885;
-        Thu, 11 Feb 2021 20:44:44 -0800 (PST)
+        bh=kOCq94xjVzI4ceYxRuWCABPovXysMtiBjdG9BO6ZZlk=;
+        b=i7LLjDNlUYgxi0V+60eCIGArryTvfi0ba+/i6bnaFKxVUWz+FyjWel16zAnz0q3of7
+         +7kCbbdDWXPNb3agEbKhRKtaN8EWCpjCCOQpIHpat66iCZMzgiERG5rRgMOiBSp0AjNr
+         +RkhwxFA5F+gUxxSfb+6BTlM+q2dviFKV8V2zl9bEJAsC8A3y8kDIbulL4nYuRX+1PSB
+         AiBadg19RNDB9MFLtsCNNJwEYoAOxwfuv5X7aesSLnY2JLqnz6hLz7QFPTmjQP1ljd5L
+         eqN3NImDXvQM7bVYu6GdDy0wiF6+7X2PyzhvtSeHdix0W0gtbMzEXqzW7s6E7vzoxPlx
+         qQvA==
+X-Gm-Message-State: AOAM530day6QB6+x01Ogp9CtrCIi2iosuXQqWExlVI7mqqgalbtLu1ND
+        +3xxgy12/fQJQMnBANwrt5FB4A==
+X-Google-Smtp-Source: ABdhPJyDqCSgz7B7i5HFEOaYVmF8gpNgKK8UqSgtygiJmq1OSOo2Gge9hjbzPGZv5mCs18fovQKXMg==
+X-Received: by 2002:a62:43:0:b029:1cd:2de2:5a24 with SMTP id 64-20020a6200430000b02901cd2de25a24mr1403879pfa.27.1613105088055;
+        Thu, 11 Feb 2021 20:44:48 -0800 (PST)
 Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:a453:d6cd:41b9:5925])
-        by smtp.gmail.com with ESMTPSA id 25sm7298904pfh.199.2021.02.11.20.44.43
+        by smtp.gmail.com with ESMTPSA id 25sm7298904pfh.199.2021.02.11.20.44.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 20:44:44 -0800 (PST)
+        Thu, 11 Feb 2021 20:44:47 -0800 (PST)
 From:   Nicolas Boichat <drinkcat@chromium.org>
 To:     "Darrick J . Wong" <djwong@kernel.org>
 Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -53,10 +53,15 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Greg KH <gregkh@linuxfoundation.org>,
         Dave Chinner <david@fromorbit.com>,
         Nicolas Boichat <drinkcat@chromium.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/6] fs: Add flag to file_system_type to indicate content is generated
-Date:   Fri, 12 Feb 2021 12:44:00 +0800
-Message-Id: <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
+Subject: [PATCH 2/6] proc: Add FS_GENERATED_CONTENT to filesystem flags
+Date:   Fri, 12 Feb 2021 12:44:01 +0800
+Message-Id: <20210212124354.2.I89f693bbe7011553bfac5fedd88d2fc7398be61b@changeid>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
 In-Reply-To: <20210212044405.4120619-1-drinkcat@chromium.org>
 References: <20210212044405.4120619-1-drinkcat@chromium.org>
@@ -66,35 +71,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Filesystems such as procfs and sysfs generate their content at
-runtime. This implies the file sizes do not usually match the
-amount of data that can be read from the file, and that seeking
-may not work as intended.
-
-This will be useful to disallow copy_file_range with input files
-from such filesystems.
+procfs content is generated at runtime.
 
 Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 ---
-I first thought of adding a new field to struct file_operations,
-but that doesn't quite scale as every single file creation
-operation would need to be modified.
 
- include/linux/fs.h | 1 +
- 1 file changed, 1 insertion(+)
+ fs/proc/root.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 3482146b11b0..5bd58b928e94 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2335,6 +2335,7 @@ struct file_system_type {
- #define FS_ALLOW_IDMAP         32      /* FS has been updated to handle vfs idmappings. */
- #define FS_THP_SUPPORT		8192	/* Remove once all fs converted */
- #define FS_RENAME_DOES_D_MOVE	32768	/* FS will handle d_move() during rename() internally. */
-+#define FS_GENERATED_CONTENT	65536	/* FS contains generated content */
- 	int (*init_fs_context)(struct fs_context *);
- 	const struct fs_parameter_spec *parameters;
- 	struct dentry *(*mount) (struct file_system_type *, int,
+diff --git a/fs/proc/root.c b/fs/proc/root.c
+index c7e3b1350ef8..7ed715a0f807 100644
+--- a/fs/proc/root.c
++++ b/fs/proc/root.c
+@@ -282,7 +282,7 @@ static struct file_system_type proc_fs_type = {
+ 	.init_fs_context	= proc_init_fs_context,
+ 	.parameters		= proc_fs_parameters,
+ 	.kill_sb		= proc_kill_sb,
+-	.fs_flags		= FS_USERNS_MOUNT | FS_DISALLOW_NOTIFY_PERM,
++	.fs_flags		= FS_USERNS_MOUNT | FS_DISALLOW_NOTIFY_PERM | FS_GENERATED_CONTENT,
+ };
+ 
+ void __init proc_root_init(void)
 -- 
 2.30.0.478.g8a0d178c01-goog
 
