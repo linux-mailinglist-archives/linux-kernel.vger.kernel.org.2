@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233F631993B
+	by mail.lfdr.de (Postfix) with ESMTP id 9F57131993C
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbhBLEif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 23:38:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhBLEi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 23:38:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2522964E6B;
-        Fri, 12 Feb 2021 04:37:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613104668;
-        bh=4De3mzBZ+mqAwyW0Wsfgk0cGyXtUPIYJ8BazedKSyq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lfH94CfbcfbOVPkrbhfRmwNXExIR3Q0ExwWk4qI23kNJXIVGzztqqSU56d6NAKKGt
-         5JZQSqxf7O/XtjubHfsXSfxuab/286gEngC6VWWtQ12zQL5+K6VtW0gng3ci+bfrkC
-         OYz0b8hDgrq9Zg0k4mYXcZvDuUKDf3Scsw0esQ7raXZ92g/KqnJhR3Yn9czfjOSQeC
-         C5dFRSw9OMSCCQ3sbLLZDPVQ5SgAO4ZCZIwXANMkbFzC1EY5nJM5cQUChDm+/yx4tU
-         UeTGEnHB7IiJmrRE7orD71SyTgv4C6oCN1CM5a2ZD+kJkJflTN9A7l4nZr+JXGPB2J
-         CO3F8x7QCExTA==
-Date:   Fri, 12 Feb 2021 10:07:44 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        id S229497AbhBLEiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 23:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229538AbhBLEis (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 23:38:48 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991D9C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:38:08 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 127so8455142ybc.19
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:38:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=5wM3QmaBSjsPMVOPBa5ekJ9mtLxgwKxj2USgf1qZous=;
+        b=j0ezXLsyoeZR+fx0DkY0/Y68tG9puzu/N7D/BqodlMcdaEMAvJrYZUEKxqhbv3luXX
+         uN5wAgO9a84ehGjZJu1hhEkz7O3nDYnbEFXNyi0T+EMaQH8Q7hKjf0KOQoFga4P28mmG
+         BkMZwgC1eYPKowEA8SEqMcHojiDjYa9F5tumBypDO++l8pJSJ5lP2XEjjsFAVkPlZqpe
+         5qSQykItz2B/UrKPeEQr+zonY3Lv3j7LjaSaCC+NU2/vLX+10+zYNtvin0/NWVuB9nr+
+         BjFVUCa4eeejDLOSqm/r7HrSW5Ojfmxm5/9aS0URbBO7uGUsDns8pXUUYoKKNdQXcj1p
+         QvLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=5wM3QmaBSjsPMVOPBa5ekJ9mtLxgwKxj2USgf1qZous=;
+        b=VSWWjky7wdzsMJln1NEX0rmr1lSsnjC8jCVuQ97PFaerN0KjvFxTT+JHKKHUAL6Ofj
+         gsBHoAoqNKI/r5MBt0TEHNkw0aj+sHEXElbzc+xXFiN8tNhP5JWIPfJ2dWHTx4zE2jW+
+         fSA4b7+yc+6fVbE8z8S5FP7ytAPyJbC3hGSBQwNw7L2vXW8mYPSnki+D8J3vX1vh+H/5
+         fmEVjc35mtCIy6UXh+4Q3RKg/KNybgtQ2PrNjiusB/8ZBOpqTeZoCVItLOaukQpk0/8O
+         CF2J9CNnumeDBEIKLs/PTCF+oQ9jrN+JZsfX6nXXMuUd/8kJU2yvn9Tkj8wdtHxYxhGt
+         ap2Q==
+X-Gm-Message-State: AOAM533NXAgKRF5QHqnrs1PJ4qgAXFHk0n2wJokFJHtjCqjIZ8uZ695S
+        i+mgdOSNKUEB0fAvyGal+yDkM79RJnkn
+X-Google-Smtp-Source: ABdhPJxaeyGkfUwuOC0yJXdHAFeLBzdKkUWGmRClrty0qaerZC4HcpiV9qHDRybUxfq1ZZJ0odikg6O4abBH
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:cdf1:7c25:80b2:5961])
+ (user=irogers job=sendgmr) by 2002:a25:bbc2:: with SMTP id
+ c2mr1576997ybk.311.1613104687710; Thu, 11 Feb 2021 20:38:07 -0800 (PST)
+Date:   Thu, 11 Feb 2021 20:38:03 -0800
+Message-Id: <20210212043803.365993-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH] perf libperf: Remove unused xyarray.c
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: remoteproc: qcom: pas: Add SM8350
- remoteprocs
-Message-ID: <20210212043744.GL2774@vkoul-mobl.Dlink>
-References: <20210210104539.340349-1-vkoul@kernel.org>
- <YCV80dfkxXEPBveo@builder.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCV80dfkxXEPBveo@builder.lan>
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-02-21, 12:52, Bjorn Andersson wrote:
-> On Wed 10 Feb 04:45 CST 2021, Vinod Koul wrote:
-> 
-> > Add the SM8350 audio, compute, modem and sensor remoteprocs to the PAS
-> > DT binding.
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >  .../devicetree/bindings/remoteproc/qcom,adsp.txt     | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-> > index 54737024da20..41eaa2466aab 100644
-> > --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-> > +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-> > @@ -25,6 +25,10 @@ on the Qualcomm ADSP Hexagon core.
-> >  		    "qcom,sm8250-adsp-pas"
-> >  		    "qcom,sm8250-cdsp-pas"
-> >  		    "qcom,sm8250-slpi-pas"
-> > +		    "qcom,sm8350-adsp-pas"
-> > +		    "qcom,sm8350-cdsp-pas"
-> > +		    "qcom,sm8350-slpi-pas"
-> > +		    "qcom,sm8350-mpss-pas"
-> >  
-> >  - interrupts-extended:
-> >  	Usage: required
-> > @@ -51,10 +55,14 @@ on the Qualcomm ADSP Hexagon core.
-> >  	qcom,sm8250-adsp-pas:
-> >  	qcom,sm8250-cdsp-pas:
-> >  	qcom,sm8250-slpi-pas:
-> > +	qcom,sm8350-adsp-pas:
-> > +	qcom,sm8350-cdsp-pas:
-> > +	qcom,sm8350-slpi-pas:
-> >  		    must be "wdog", "fatal", "ready", "handover", "stop-ack"
-> >  	qcom,qcs404-wcss-pas:
-> >  	qcom,sc7180-mpss-pas:
-> >  	qcom,sm8150-mpss-pas:
-> > +	qcom,sm8350-mpss-pas:
-> >  		    must be "wdog", "fatal", "ready", "handover", "stop-ack",
-> >  		    "shutdown-ack"
-> >  
-> > @@ -113,14 +121,18 @@ on the Qualcomm ADSP Hexagon core.
-> >  	qcom,sdm845-cdsp-pas:
-> >  	qcom,sm8150-adsp-pas:
-> >  	qcom,sm8150-cdsp-pas:
-> > +	qcom,sm8250-cdsp-pas:
-> 
-> This should be sm8350, I fixed this up and applied the patch.
+Migrated to libperf in:
+commit 4b247fa7314c ("libperf: Adopt xyarray class from perf")
 
-Sorry for missing this and thanks for fixing it up
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/xyarray.c | 33 ---------------------------------
+ 1 file changed, 33 deletions(-)
+ delete mode 100644 tools/perf/util/xyarray.c
 
+diff --git a/tools/perf/util/xyarray.c b/tools/perf/util/xyarray.c
+deleted file mode 100644
+index 86889ebc3514..000000000000
+--- a/tools/perf/util/xyarray.c
++++ /dev/null
+@@ -1,33 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include "xyarray.h"
+-#include <stdlib.h>
+-#include <string.h>
+-#include <linux/zalloc.h>
+-
+-struct xyarray *xyarray__new(int xlen, int ylen, size_t entry_size)
+-{
+-	size_t row_size = ylen * entry_size;
+-	struct xyarray *xy = zalloc(sizeof(*xy) + xlen * row_size);
+-
+-	if (xy != NULL) {
+-		xy->entry_size = entry_size;
+-		xy->row_size   = row_size;
+-		xy->entries    = xlen * ylen;
+-		xy->max_x      = xlen;
+-		xy->max_y      = ylen;
+-	}
+-
+-	return xy;
+-}
+-
+-void xyarray__reset(struct xyarray *xy)
+-{
+-	size_t n = xy->entries * xy->entry_size;
+-
+-	memset(xy->contents, 0, n);
+-}
+-
+-void xyarray__delete(struct xyarray *xy)
+-{
+-	free(xy);
+-}
 -- 
-~Vinod
+2.30.0.478.g8a0d178c01-goog
+
