@@ -2,99 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58531319ADA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80943319ADD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhBLHqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 02:46:42 -0500
-Received: from mx1.emlix.com ([136.243.223.33]:39676 "EHLO mx1.emlix.com"
+        id S229924AbhBLHso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 02:48:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229625AbhBLHp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 02:45:58 -0500
-Received: from mailer.emlix.com (unknown [81.20.119.6])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id 3B5F45FA8D;
-        Fri, 12 Feb 2021 08:44:52 +0100 (CET)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Daniel =?ISO-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH] scripts: Fix linking extract-cert against libcrypto
-Date:   Fri, 12 Feb 2021 08:44:46 +0100
-Message-ID: <5043253.pljLzkpU8D@mobilepool36.emlix.com>
-In-Reply-To: <3314666.Em9qtOGRgX@mobilepool36.emlix.com>
-References: <20210209050047.1958473-1-daniel.diaz@linaro.org> <6065587.C4oOSP4HzL@mobilepool36.emlix.com> <3314666.Em9qtOGRgX@mobilepool36.emlix.com>
+        id S229625AbhBLHrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 02:47:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E66064DEE;
+        Fri, 12 Feb 2021 07:46:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613116016;
+        bh=V5VmSoU6jzgdBUBGYUFsqrWJOs4ufbyeLq3ulBd68Ec=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B6yypRUVOhMMgeyh/U9LtFuNLEe6UEJ0mpIyLPj1yWUysz/TkxGifb+vrGoWItc9j
+         eujH4jnHSfPamC6y6mvLoPfmDinJDwdO95C/SmOIHE7vrOUDRsvoBPW3Q82n/cDEfa
+         kY+Y9o2CpyhZ3j2osBVZ7P7NnaIPpeTTbA/66Z0w=
+Date:   Fri, 12 Feb 2021 08:46:53 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
+ is generated
+Message-ID: <YCYybUg4d3+Oij4N@kroah.com>
+References: <20210212044405.4120619-1-drinkcat@chromium.org>
+ <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4651014.Q3cAxzu4sR"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart4651014.Q3cAxzu4sR
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Rolf Eike Beer <eb@emlix.com>
-To: Masahiro Yamada <masahiroy@kernel.org>, Michal Marek <michal.lkml@markovi.net>, linux-kbuild@vger.kernel.org, open list <linux-kernel@vger.kernel.org>, Daniel =?ISO-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc: stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH] scripts: Fix linking extract-cert against libcrypto
-Date: Fri, 12 Feb 2021 08:44:46 +0100
-Message-ID: <5043253.pljLzkpU8D@mobilepool36.emlix.com>
-In-Reply-To: <3314666.Em9qtOGRgX@mobilepool36.emlix.com>
-References: <20210209050047.1958473-1-daniel.diaz@linaro.org> <6065587.C4oOSP4HzL@mobilepool36.emlix.com> <3314666.Em9qtOGRgX@mobilepool36.emlix.com>
+On Fri, Feb 12, 2021 at 12:44:00PM +0800, Nicolas Boichat wrote:
+> Filesystems such as procfs and sysfs generate their content at
+> runtime. This implies the file sizes do not usually match the
+> amount of data that can be read from the file, and that seeking
+> may not work as intended.
+> 
+> This will be useful to disallow copy_file_range with input files
+> from such filesystems.
+> 
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> ---
+> I first thought of adding a new field to struct file_operations,
+> but that doesn't quite scale as every single file creation
+> operation would need to be modified.
 
-Am Donnerstag, 11. Februar 2021, 11:29:33 CET schrieb Rolf Eike Beer:
+Even so, you missed a load of filesystems in the kernel with this patch
+series, what makes the ones you did mark here different from the
+"internal" filesystems that you did not?
 
-> I'm just guessing, but your build error looks like you are also
-> cross-building the tools, which is wrong. You want them to be host-tools.
-> So don't export PKG_CONFIG_SYSROOT_DIR, it would then try to link target
-> libraries into a host binary.
+This feels wrong, why is userspace suddenly breaking?  What changed in
+the kernel that caused this?  Procfs has been around for a _very_ long
+time :)
 
-I have looked again how I do it:
+thanks,
 
-# this is for additional _host_ .pc files
-export PKG_CONFIG_PATH=3D${prefix}/lib/pkgconfig
-
-Then have a target-pkg-config, so this code inside several kernel Makefiles=
-=20
-will work:
-
-PKG_CONFIG ?=3D $(CROSS_COMPILE)pkg-config
-
-And then export your PKG_CONFIG_SYSROOT_DIR and the like inside that. I bet=
-=20
-you have all of this already in place, so just remove the SYSROOT_DIR from=
-=20
-your kernel build script and things should work.
-
-Eike
-=2D-=20
-Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-=46on +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
-Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
-Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
-=2E: DE 205 198 055
-
-emlix - smart embedded open source
---nextPart4651014.Q3cAxzu4sR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCYCYx7gAKCRCr5FH7Xu2t
-/NFpA/4qRzioJrV+c8gA4uYr32DEh5trgWBTbP6ErS8e9Ow99Qz5lZUI6ZQyBGvT
-I7PizSc19s4hWyt87AbD8syBwBZCRzFkcUYpU4T7a01gIUeQ4Lo7oPIdxG1haO44
-kgujtdugBr13B0/HG71ZZuNK2qstq7lDUaGoUn4f/KVbmKKKug==
-=R6I3
------END PGP SIGNATURE-----
-
---nextPart4651014.Q3cAxzu4sR--
-
-
-
+greg k-h
