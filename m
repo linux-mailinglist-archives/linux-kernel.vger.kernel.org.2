@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936DF3197AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DC53197B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhBLBCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 20:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34624 "EHLO
+        id S229903AbhBLBDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 20:03:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhBLBCJ (ORCPT
+        with ESMTP id S229862AbhBLBDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 20:02:09 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25982C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 17:01:26 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id f3so4590515oiw.13
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 17:01:26 -0800 (PST)
+        Thu, 11 Feb 2021 20:03:13 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB89DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 17:02:33 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id l23so6996830otn.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 17:02:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8YtrUSFE4UJxIRgtprGaYSyVbZ5RUtrrAW9L1A1aPAM=;
-        b=aNEO/kRlojFeLEP0qjB/cvQQntewciuY7gOlX5Ut+MMKNwBaRnN3hRur6M2YQJ5y9Q
-         /W66JF6PWlKAHDA1g0/VD9Zle6jAp6s4SfbMXMNTrLpHXOTp3tsjySfTJ+dhWW3Z2S5D
-         uyPGFySWIYZMh82pa3sZG6IXH/82xKew7RCP8R78lIMatjIME6vpfpjnHifxjP99Iffm
-         1ihZybbbrwRxpWw+/vw2lDBdDIjdN5IjzO95mpVdyCxqKVde0sqCoGDnSABKMLLEP3DQ
-         0Tt1w194wddNSqG6ZhGp8W1id3KtZOKG/0zi9aaZFtsRT22Fuan8UIKRXhac4rSx9kNV
-         0BkA==
+        bh=G0c1aSIeooVn4US+T6upq5lsDdJzeDCNMF30EK7w2HE=;
+        b=S1InspJro/5H+/PPv2oAx/fl5V6hyGWL2V07Fg3jY4OGhk7QkxsIb/sueJeRJV02HL
+         vylAZdhY8uYBMpNfhqwnNreL+ozzlyjbiQMJWd4jGTb1kEpDzhINj1U+tZPDVsKqVQ5Q
+         WH3ZM3gldRXDXrzlAyyhdu57JAketnJNAdAr3uMyVN8UkuJp0wmn+4NBd6sydZFeOdWg
+         0KoknN/LH5ri3CTAElpVGI69ZBbINnYQ87g+CBt9UmFg7VPk+bE+a6KUrmA4rBWWDoPe
+         t1JRPOJ0qO42TURynD57svVquAdzTlZ0lyrlpb7aTBUgHu/cbDF4GLgH9xh6JmBfEebV
+         DNgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8YtrUSFE4UJxIRgtprGaYSyVbZ5RUtrrAW9L1A1aPAM=;
-        b=LmcIq+QO9xea3c9RZu+3nunTN30TtcT82ldP7YKLQin5DBYZNMv97l2oTokj6YLzyL
-         8W8b6oCqZWkOkXMECT0F0fXhEkSR4yk4ZJ3+Srh5c6J8P5mUANg9f/oitwcCE8yCSpyw
-         CxBZ3HmNa3uUh0yraYDn7OUc9y7PNoBmntVJFdN+F/t6CdLm8S1I5xrC/16Znhf2mhSp
-         /CaWMOP21AFcHHmrOuUFtz65oyzUsNt+vASoXye1H6xF6YgK/8iN+FD/rsvHiTSg3B2O
-         SzzSXeYqltJDxL5fEyIT9zJ9wbMcLdvY9Tqr7xKaWvPXID/MQk8YoBGWlk2zVL6npODS
-         RSqg==
-X-Gm-Message-State: AOAM5324KOzuDEHT3LiKSjHCsm6b+tbt/how5czcF97qA5rFQsHBvr9d
-        TfKytWN8yfMGMbeD/JAnSPfmjua727zy0Kgs+b7D2g==
-X-Google-Smtp-Source: ABdhPJwLhfqYPeRsmtMMO97n8ySrNv2UOTZ4UHhf8NE1lf1LkIuaq0Ygs5pm6LUH3negoPkQwg2BYittfMhqW95bHEs=
-X-Received: by 2002:aca:5008:: with SMTP id e8mr344509oib.13.1613091685350;
- Thu, 11 Feb 2021 17:01:25 -0800 (PST)
+        bh=G0c1aSIeooVn4US+T6upq5lsDdJzeDCNMF30EK7w2HE=;
+        b=eBmDg95MpCznoqK/UlFh1cFaK+doz884gBZG7/KCby8it5oCsFOXqieZG67SACBUtf
+         fSi2J3OiuawA+e/nJkYjxOTXlrOi7Q376fMa0MsB0tXGwXUAijWhPzhQ7m/VrS8S8sOQ
+         1MkA5VPRCaeM0onNMTsaOqjkSIJgWIex9689YQYh9yg02PF26K0vEwyyVhC58tKyq3lX
+         7EJenhwob9fjrXkET+195JeLzWVAZrTbKet6y6/EOlHMLJ39iC0JDj42HzGaAME5x4j4
+         qNITK7nESnAAzR/xTFJeFLbW95NqICY14p3jwOC6lFDpfk+4hBx7NEUcHjeg2OYo9wui
+         3HXw==
+X-Gm-Message-State: AOAM532GtrPyHnCrZz+yQcYkkQC84Ps7QpYdleIuEv3ne6PPiETvkKEa
+        GFvdkLBB1oidVdWD1ONW1Km01FWK38h703TcEj7JBA==
+X-Google-Smtp-Source: ABdhPJz9r6ERkoLQdfI+Dwjfs+b2Nx+GXUAiPbP59fdVrcF4sukekzYTaNysdabBFweaMURitABWaV8HPVOUGwzLdmQ=
+X-Received: by 2002:a05:6830:543:: with SMTP id l3mr452534otb.241.1613091752913;
+ Thu, 11 Feb 2021 17:02:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20210212003411.1102677-1-seanjc@google.com> <20210212003411.1102677-2-seanjc@google.com>
-In-Reply-To: <20210212003411.1102677-2-seanjc@google.com>
+References: <20210212003411.1102677-1-seanjc@google.com> <20210212003411.1102677-3-seanjc@google.com>
+In-Reply-To: <20210212003411.1102677-3-seanjc@google.com>
 From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 11 Feb 2021 17:01:14 -0800
-Message-ID: <CALMp9eRhSCWWEcxR-UoRoQ-g=ZFhj20Cd15Tu5jP8LZ7mBi9FA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] KVM: SVM: Intercept INVPCID when it's disabled to
- inject #UD
+Date:   Thu, 11 Feb 2021 17:02:21 -0800
+Message-ID: <CALMp9eR2fun289DuqSC87hkTyzT3KpvDwojhRis8KqLJS5_qaw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] KVM: x86: Advertise INVPCID by default
 To:     Sean Christopherson <seanjc@google.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
@@ -66,10 +65,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Feb 11, 2021 at 4:34 PM Sean Christopherson <seanjc@google.com> wrote:
 >
-> Intercept INVPCID if it's disabled in the guest, even when using NPT,
-> as KVM needs to inject #UD in this case.
+> Advertise INVPCID by default (if supported by the host kernel) instead
+> of having both SVM and VMX opt in.  INVPCID was opt in when it was a
+> VMX only feature so that KVM wouldn't prematurely advertise support
+> if/when it showed up in the kernel on AMD hardware.
 >
-> Fixes: 4407a797e941 ("KVM: SVM: Enable INVPCID feature on AMD")
-> Cc: Babu Moger <babu.moger@amd.com>
 > Signed-off-by: Sean Christopherson <seanjc@google.com>
 Reviewed-by: Jim Mattson <jmattson@google.com>
