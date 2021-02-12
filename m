@@ -2,118 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4381231A862
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E68B31A868
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbhBLXpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 18:45:21 -0500
-Received: from out02.mta.xmission.com ([166.70.13.232]:37708 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhBLXpS (ORCPT
+        id S231474AbhBLXsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 18:48:23 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3026 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229767AbhBLXsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 18:45:18 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lAi72-001KCr-76; Fri, 12 Feb 2021 16:44:36 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lAi70-00AAP5-Mb; Fri, 12 Feb 2021 16:44:35 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Joe Perches <joe@perches.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <85ff6fd6b26aafdf6087666629bad3acc29258d8.camel@perches.com>
-        <m1im6x0wtv.fsf@fess.ebiederm.org>
-        <130bc5f98c2fd501d32024d267ea73f1fb9d88b6.camel@perches.com>
-Date:   Fri, 12 Feb 2021 17:44:16 -0600
-In-Reply-To: <130bc5f98c2fd501d32024d267ea73f1fb9d88b6.camel@perches.com> (Joe
-        Perches's message of "Fri, 12 Feb 2021 14:51:26 -0800")
-Message-ID: <m1y2fszwa7.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 12 Feb 2021 18:48:21 -0500
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Dcqrq1xqrzRDQy;
+        Sat, 13 Feb 2021 07:46:19 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Sat, 13 Feb 2021 07:47:37 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Sat, 13 Feb 2021 07:46:59 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Sat, 13 Feb 2021 07:46:59 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "fthain@telegraphics.com.au" <fthain@telegraphics.com.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+Thread-Topic: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+Thread-Index: AdcA2xDwQTa7W6j6SmS4J3iBnsSynAAcRXSAABFJYBD//354gP//dYEg
+Date:   Fri, 12 Feb 2021 23:46:59 +0000
+Message-ID: <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+ <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+ <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com>
+ <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+In-Reply-To: <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.105]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lAi70-00AAP5-Mb;;;mid=<m1y2fszwa7.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+qBXDbfZLXHXoONMPahKJzWEoz0+wrmrk=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,
-        T_TooManySym_01,T_TooManySym_02 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Joe Perches <joe@perches.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 899 ms - load_scoreonly_sql: 0.15 (0.0%),
-        signal_user_changed: 14 (1.6%), b_tie_ro: 12 (1.4%), parse: 1.09
-        (0.1%), extract_message_metadata: 17 (1.9%), get_uri_detail_list: 2.1
-        (0.2%), tests_pri_-1000: 12 (1.4%), tests_pri_-950: 1.51 (0.2%),
-        tests_pri_-900: 1.18 (0.1%), tests_pri_-90: 91 (10.1%), check_bayes:
-        88 (9.7%), b_tokenize: 4.8 (0.5%), b_tok_get_all: 8 (0.9%),
-        b_comp_prob: 2.3 (0.3%), b_tok_touch_all: 67 (7.5%), b_finish: 1.36
-        (0.2%), tests_pri_0: 155 (17.3%), check_dkim_signature: 0.47 (0.1%),
-        check_dkim_adsp: 3.3 (0.4%), poll_dns_idle: 578 (64.3%), tests_pri_10:
-        2.3 (0.3%), tests_pri_500: 600 (66.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] proc: Convert S_<FOO> permission uses to octal
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joe Perches <joe@perches.com> writes:
-
-> On Fri, 2021-02-12 at 16:01 -0600, Eric W. Biederman wrote:
->> Joe Perches <joe@perches.com> writes:
->> 
->> > Convert S_<FOO> permissions to the more readable octal.
->> > 
->> > Done using:
->> > $ ./scripts/checkpatch.pl -f --fix-inplace --types=SYMBOLIC_PERMS fs/proc/*.[ch]
->> > 
->> > No difference in generated .o files allyesconfig x86-64
->> > 
->> > Link:
->> > https://lore.kernel.org/lkml/CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ@mail.gmail.com/
->> 
->> 
->> I will be frank.  I don't know what 0644 means.  I can never remember
->> which bit is read, write or execute.  So I like symbolic constants.
->> 
->> I don't see a compelling reason to change the existing code.
->
-> Did you read Linus' message in the Link: above?
->
-> It was a reply to what Ingo Molnar suggested here:
->
-> https://lore.kernel.org/lkml/20160803081140.GA7833@gmail.com/
-
-Only if you read in reverse chronological order.
-
-Ingo's message was in reply to Linus and it received somewhat favorable
-replies and was not shot down.
-
-I certainly do not see sufficient consensus to go around changing code
-other people maintain.
-
-My suggest has the nice property that it handles all 512 different
-combinations.  I think that was the only real downside of Ingo's
-suggestion.  There are just too many different combinations to define
-a set of macros to cover all of the cases.
-
-Eric
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQXJuZCBCZXJnbWFubiBb
+bWFpbHRvOmFybmRAa2VybmVsLm9yZ10NCj4gU2VudDogU2F0dXJkYXksIEZlYnJ1YXJ5IDEzLCAy
+MDIxIDEyOjA2IFBNDQo+IFRvOiBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpIDxzb25nLmJhby5o
+dWFAaGlzaWxpY29uLmNvbT4NCj4gQ2M6IHRnbHhAbGludXRyb25peC5kZTsgZ3JlZ2toQGxpbnV4
+Zm91bmRhdGlvbi5vcmc7IGFybmRAYXJuZGIuZGU7DQo+IGdlZXJ0QGxpbnV4LW02OGsub3JnOyBm
+dW5haG9AanVyYWkub3JnOyBwaGlsYkBnbnUub3JnOyBjb3JiZXRAbHduLm5ldDsNCj4gbWluZ29A
+cmVkaGF0LmNvbTsgbGludXgtbTY4a0BsaXN0cy5saW51eC1tNjhrLm9yZzsNCj4gZnRoYWluQHRl
+bGVncmFwaGljcy5jb20uYXU7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVj
+dDogUmU6IFtSRkNdIElSUSBoYW5kbGVycyBydW4gd2l0aCBzb21lIGhpZ2gtcHJpb3JpdHkgaW50
+ZXJydXB0cyhub3QgTk1JKQ0KPiBlbmFibGVkIG9uIHNvbWUgcGxhdGZvcm0NCj4gDQo+IE9uIFNh
+dCwgRmViIDEzLCAyMDIxIGF0IDEyOjAwIEFNIFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykNCj4g
+PHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPiB3cm90ZToNCj4gPiA+IC0tLS0tT3JpZ2luYWwg
+TWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBBcm5kIEJlcmdtYW5uIFttYWlsdG86YXJuZEBrZXJu
+ZWwub3JnXQ0KPiA+ID4gU2VudDogU2F0dXJkYXksIEZlYnJ1YXJ5IDEzLCAyMDIxIDExOjM0IEFN
+DQo+ID4gPiBUbzogU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKSA8c29uZy5iYW8uaHVhQGhpc2ls
+aWNvbi5jb20+DQo+ID4gPiBDYzogdGdseEBsaW51dHJvbml4LmRlOyBncmVna2hAbGludXhmb3Vu
+ZGF0aW9uLm9yZzsgYXJuZEBhcm5kYi5kZTsNCj4gPiA+IGdlZXJ0QGxpbnV4LW02OGsub3JnOyBm
+dW5haG9AanVyYWkub3JnOyBwaGlsYkBnbnUub3JnOyBjb3JiZXRAbHduLm5ldDsNCj4gPiA+IG1p
+bmdvQHJlZGhhdC5jb207IGxpbnV4LW02OGtAbGlzdHMubGludXgtbTY4ay5vcmc7DQo+ID4gPiBm
+dGhhaW5AdGVsZWdyYXBoaWNzLmNvbS5hdTsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0K
+PiA+ID4gU3ViamVjdDogUmU6IFtSRkNdIElSUSBoYW5kbGVycyBydW4gd2l0aCBzb21lIGhpZ2gt
+cHJpb3JpdHkgaW50ZXJydXB0cyhub3QNCj4gTk1JKQ0KPiA+ID4gZW5hYmxlZCBvbiBzb21lIHBs
+YXRmb3JtDQo+ID4gPg0KPiA+ID4gT24gRnJpLCBGZWIgMTIsIDIwMjEgYXQgMjoxOCBBTSBTb25n
+IEJhbyBIdWEgKEJhcnJ5IFNvbmcpDQo+ID4gPiA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+
+IHdyb3RlOg0KPiA+ID4NCj4gPiA+ID4gU28gSSBhbSByZXF1ZXN0aW5nIGNvbW1lbnRzIG9uOg0K
+PiA+ID4gPiAxLiBhcmUgd2UgZXhwZWN0aW5nIGFsbCBpbnRlcnJ1cHRzIGV4Y2VwdCBOTUkgdG8g
+YmUgZGlzYWJsZWQgaW4gaXJxIGhhbmRsZXIsDQo+ID4gPiA+IG9yIGRvIHdlIGFjdHVhbGx5IGFs
+bG93IHNvbWUgaGlnaC1wcmlvcml0eSBpbnRlcnJ1cHRzIGJldHdlZW4gbG93IGFuZA0KPiBOTUkN
+Cj4gPiA+IHRvDQo+ID4gPiA+IGNvbWUgaW4gc29tZSBwbGF0Zm9ybXM/DQo+ID4gPg0KPiA+ID4g
+SSB0cmllZCB0byBjb21lIHRvIGFuIGFuc3dlciBidXQgdGhpcyBkb2VzIG5vdCBzZWVtIHBhcnRp
+Y3VsYXJseSB3ZWxsLWRlZmluZWQuDQo+ID4gPiBUaGVyZSBhcmUgYSBmZXcgdGhpbmdzIEkgbm90
+aWNlZDoNCj4gPiA+DQo+ID4gPiAtIGdvaW5nIHRocm91Z2ggdGhlIGxvY2FsX2lycV9zYXZlKCkv
+cmVzdG9yZSgpIGltcGxlbWVudGF0aW9ucyBvbiBhbGwNCj4gPiA+ICAgYXJjaGl0ZWN0dXJlcywg
+SSBkaWQgbm90IGZpbmQgYW55IG90aGVyIG9uZXMgYmVzaWRlcyBtNjhrIHRoYXQgbGVhdmUNCj4g
+PiA+ICAgaGlnaC1wcmlvcml0eSBpbnRlcnJ1cHRzIGVuYWJsZWQuIEkgZGlkIHNlZSB0aGF0IGF0
+IGxlYXN0IGFscGhhIGFuZCBvcGVucmlzYw0KPiA+ID4gICBhcmUgZGVzaWduZWQgdG8gc3VwcG9y
+dCB0aGF0IGluIGhhcmR3YXJlLCBidXQgdGhlIGNvZGUganVzdCBsZWF2ZXMgdGhlDQo+ID4gPiAg
+IGludGVycnVwdHMgZGlzYWJsZWQuDQo+ID4NCj4gPiBUaGUgY2FzZSBpcyBhIGxpdHRsZSBkaWZm
+ZXJlbnQuIEV4cGxpY2l0IGxvY2FsX2lycV9zYXZlKCkgZG9lcyBkaXNhYmxlIGFsbA0KPiA+IGhp
+Z2ggcHJpb3JpdHkgaW50ZXJydXB0cyBvbiBtNjhrLiBUaGUgb25seSBkaWZmZXJlbmNlIGlzIGFy
+Y2hfaXJxc19kaXNhYmxlZCgpDQo+ID4gb2YgbTY4ayB3aWxsIHJldHVybiB0cnVlIHdoaWxlIGxv
+dy1wcmlvcml0eSBpbnRlcnJ1cHRzIGFyZSBtYXNrZWQgYW5kIGhpZ2gNCj4gPiAtcHJpb3JpdHkg
+YXJlIHN0aWxsIG9wZW4uIE02OGsncyBoYXJkSVJRIGFsc28gcnVucyBpbiB0aGlzIGNvbnRleHQg
+d2l0aCBoaWdoDQo+ID4gcHJpb3JpdHkgaW50ZXJydXB0cyBlbmFibGVkLg0KPiANCj4gTXkgcG9p
+bnQgd2FzIHRoYXQgb24gbW9zdCBvdGhlciBhcmNoaXRlY3R1cmVzLCBsb2NhbF9pcnFfc2F2ZSgp
+L3Jlc3RvcmUoKQ0KPiBhbHdheXMgZGlzYWJsZXMvZW5hYmxlcyBhbGwgaW50ZXJydXB0cywgd2hp
+bGUgb24gbTY4ayBpdCByZXN0b3JlcyB0aGUNCj4gc3BlY2lmaWMgbGV2ZWwgdGhleSB3ZXJlIG9u
+IGJlZm9yZS4gT24gYWxwaGEsIGl0IGRvZXMgdGhlIHNhbWUgYXMgb24gbTY4aywNCj4gYnV0IHRo
+ZW4gdGhlIHRvcC1sZXZlbCBpbnRlcnJ1cHQgaGFuZGxlciBqdXN0IGRpc2FibGVzIHRoZW0gYWxs
+IGJlZm9yZSBjYWxsaW5nDQo+IGludG8gYW55IG90aGVyIGNvZGUuDQoNClRoYXQncyB3aGF0IEkg
+dGhpbmsgbTY4ayBpcyBiZXR0ZXIgdG8gZG8uDQogDQpMb29rcyB3ZWlyZCB0aGF0IG5lc3RlZCBp
+bnRlcnJ1cHRzIGNhbiBlbnRlciB3aGlsZSBhcmNoX2lycXNfZGlzYWJsZWQoKQ0KaXMgdHJ1ZSBv
+biBtNjhrIGJlY2F1c2UgbWFza2luZyBsb3ctcHJpb3JpdHkgaW50ZXJydXB0cyB3aXRoDQpoaWdo
+LWludGVycnVwdHMgc3RpbGwgZW5hYmxlZCB3b3VsZCBiZSBhYmxlIHRvIG1ha2UgbTY4aydzDQph
+cmNoX2lycXNfZGlzYWJsZWQoKSB0cnVlLCB3aGljaCBpcyBleGFjdGx5IHRoZSBlbnZpcm9ubWVu
+dA0KbTY4aydzIGlycSBoYW5kbGVyIGlzIHJ1bm5pbmcuDQoNClNvIEkgd2FzIGFjdHVhbGx5IHRy
+eWluZyB0byB3YXJuIHRoaXMgdW51c3VhbCBjYXNlIC0gaW50ZXJydXB0cw0KZ2V0IG5lc3RlZCB3
+aGlsZSBib3RoIGluX2hhcmRpcnEoKSBhbmQgaXJxc19kaXNhYmxlZCgpIGFyZSB0cnVlLg0KDQpk
+aWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9oYXJkaXJxLmggYi9pbmNsdWRlL2xpbnV4L2hhcmRp
+cnEuaA0KaW5kZXggN2M5ZDZhMmQ3ZTkwLi5iOGNhMjc1NTVjNzYgMTAwNjQ0DQotLS0gYS9pbmNs
+dWRlL2xpbnV4L2hhcmRpcnEuaA0KKysrIGIvaW5jbHVkZS9saW51eC9oYXJkaXJxLmgNCkBAIC0z
+Miw2ICszMiw3IEBAIHN0YXRpYyBfX2Fsd2F5c19pbmxpbmUgdm9pZCByY3VfaXJxX2VudGVyX2No
+ZWNrX3RpY2sodm9pZCkNCiAgKi8NCiAjZGVmaW5lIF9faXJxX2VudGVyKCkgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgXA0KICAgICAgICBkbyB7ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBcDQorICAgICAgICAgICAgICAgV0FSTl9PTkNFKGluX2hh
+cmRpcnEoKSAmJiBpcnFzX2Rpc2FibGVkKCksICJuZXN0ZWQNCmludGVycnVwdHNcbiIpOyBcDQog
+ICAgICAgICAgICAgICAgcHJlZW1wdF9jb3VudF9hZGQoSEFSRElSUV9PRkZTRVQpOyAgICAgIFwN
+CiAgICAgICAgICAgICAgICBsb2NrZGVwX2hhcmRpcnFfZW50ZXIoKTsgICAgICAgICAgICAgICAg
+XA0KICAgICAgICAgICAgICAgIGFjY291bnRfaGFyZGlycV9lbnRlcihjdXJyZW50KTsgICAgICAg
+ICBcDQpAQCAtNDQsNiArNDUsNyBAQCBzdGF0aWMgX19hbHdheXNfaW5saW5lIHZvaWQgcmN1X2ly
+cV9lbnRlcl9jaGVja190aWNrKHZvaWQpDQogICovDQogI2RlZmluZSBfX2lycV9lbnRlcl9yYXco
+KSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwNCiAgICAgICAgZG8geyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0KKyAgICAgICAgICAgICAgIFdBUk5f
+T05DRShpbl9oYXJkaXJxKCkgJiYgaXJxc19kaXNhYmxlZCgpLCAiIG5lc3RlZA0KaW50ZXJydXB0
+c1xuIik7IFwNCiAgICAgICAgICAgICAgICBwcmVlbXB0X2NvdW50X2FkZChIQVJESVJRX09GRlNF
+VCk7ICAgICAgXA0KICAgICAgICAgICAgICAgIGxvY2tkZXBfaGFyZGlycV9lbnRlcigpOyAgICAg
+ICAgICAgICAgICBcDQogICAgICAgIH0gd2hpbGUgKDApDQoNCkFuZCBJIGFsc28gdGhpbmsgaXQg
+aXMgYmV0dGVyIGZvciBtNjhrJ3MgYXJjaF9pcnFzX2Rpc2FibGVkKCkgdG8gDQpyZXR1cm4gdHJ1
+ZSBvbmx5IHdoZW4gYm90aCBsb3cgYW5kIGhpZ2ggcHJpb3JpdHkgaW50ZXJydXB0cyBhcmUNCmRp
+c2FibGVkIHJhdGhlciB0aGFuIHRyeSB0byBtdXRlIHRoaXMgd2FybiBpbiBnZW5pcnEgYnkgYSB3
+ZWFrZXINCmNvbmRpdGlvbjoNCg0KaXJxcmV0dXJuX3QgX19oYW5kbGVfaXJxX2V2ZW50X3BlcmNw
+dShzdHJ1Y3QgaXJxX2Rlc2MgKmRlc2MsIHVuc2lnbmVkIGludCAqZmxhZ3MpDQp7DQoJLi4uDQoN
+CgkJdHJhY2VfaXJxX2hhbmRsZXJfZW50cnkoaXJxLCBhY3Rpb24pOw0KCQlyZXMgPSBhY3Rpb24t
+PmhhbmRsZXIoaXJxLCBhY3Rpb24tPmRldl9pZCk7DQoJCXRyYWNlX2lycV9oYW5kbGVyX2V4aXQo
+aXJxLCBhY3Rpb24sIHJlcyk7DQoNCgkJaWYgKFdBUk5fT05DRSghaXJxc19kaXNhYmxlZCgpLCJp
+cnEgJXUgaGFuZGxlciAlcFMgZW5hYmxlZCBpbnRlcnJ1cHRzXG4iLA0KCQkJICAgICAgaXJxLCBh
+Y3Rpb24tPmhhbmRsZXIpKQ0KCQkJbG9jYWxfaXJxX2Rpc2FibGUoKTsNCn0NCg0KVGhpcyB3YXJu
+IGlzIG5vdCBhY3RpdmF0ZWQgb24gbTY4ayBiZWNhdXNlIGl0cyBhcmNoX2lycXNfZGlzYWJsZWQo
+KSByZXR1cm4NCnRydWUgdGhvdWdoIGl0cyBoaWdoLXByaW9yaXR5IGludGVycnVwdHMgYXJlIHN0
+aWxsIGVuYWJsZWQuDQoNCj4gDQo+IEl0J3MgcG9zc2libGUgdGhhdCBJIG1pc3NlZCBzb21lIG90
+aGVyIGltcGxlbWVudGF0aW9uIGRvaW5nIHRoZSBzYW1lDQo+IGFzIG02OGssIGFzIHRoaXMgY29k
+ZSBpcyBmYWlybHkgc3VidGxlIG9uIHNvbWUgYXJjaGl0ZWN0dXJlcy4NCj4gDQo+ICAgICAgICAg
+QXJuZA0KDQpUaGFua3MNCkJhcnJ5DQoNCg==
