@@ -2,114 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB093319941
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAB2319944
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhBLEmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 23:42:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
+        id S229675AbhBLEp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 23:45:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhBLEmH (ORCPT
+        with ESMTP id S229497AbhBLEpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 23:42:07 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D458DC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:41:26 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id lw17so5613669pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:41:26 -0800 (PST)
+        Thu, 11 Feb 2021 23:45:23 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8C6C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:44:43 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id m6so5098690pfk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:44:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3WNMt5XR+692WIpXHZivWGdM4xBg7M/kL8/oPyqVZG4=;
-        b=qaQ5JWYqNNgsWrAMQwM8o2jl8EI0jJR2snb9qPJvnTXgING1a+YDGz4nusTevahy80
-         kWwJ8PR+3Xbj7JFAtYCUuqkzUUc12Y/7Pta24nOyz6mjnVappjZrdflJ3JuSm4bYIQOW
-         w3FYTt1q83kY+ycLunbpsWg7ALI12ARzJcgferXPxk4uZ3euWCv1PPExNynfikwGKhiv
-         MXEt0dgmQ1sAOktW+4niEDh8HTnY43T2cepdVJL1v7+atSnoexSzs98yz40ZSeThDsYr
-         hcbjqWHeBSWXMS1uURtgLlrKaQ0dN3V36yQpSeQQGbIzqapNOylA7gm3ah6LiqEaozAP
-         RZzQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=meg9sC7YyyK/ccxHauwvbjLk6iFrdpEJaLlXNYNQrRw=;
+        b=j71D5TPJlB5a96J93TSXkpENx3ekgcrGWmn1JZtNQhnqd2Mge7An6OhBb5P8TnUMZQ
+         4OUadpA2+MJX9QKhG3n8gr0GKnHyeVCl4h2ODUFy+jbH8WgKbmv8HqUeXBekYqVqcTHV
+         xS2DhrwxhEz9TIoS7Zn9TTVKi4LDipZ1HBq4s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3WNMt5XR+692WIpXHZivWGdM4xBg7M/kL8/oPyqVZG4=;
-        b=Ik1wl1qAeXTlupBzsNvxCLnY2D5gTkhJQqeFKZzA8jI+VgJp0a7V0qFRCs33APpA43
-         JI/5ZfmnUamXmEDHgMrNZjuBUIZH3laoBmMIfPk70ASa8YgTmEhwfUeUF8tTUjSI3Dfh
-         3f5Mx2AU7C/b6QSdRNjQqm1LSQKt9Ebt4kdEd4TGxmmKy3zpNLWaPz23uk/WaIjG0FQ4
-         2U7GXQz8LapXH9b8Q20k46bE9//Yp5sUahirgH0AikpWd7t1tfzL6NBcpU5mkJEgTEVd
-         gLT0VkZd/k3x1VF0bkVVS7NesdVylhAGKwOKh2QmqfPMvt7RA7XradHtZJG98G1OJZB4
-         iTqg==
-X-Gm-Message-State: AOAM530uVIlxGoJWUsWxK3kd8vlgNEAsLYVtxnV9HLrLw1io3UYI6/RJ
-        wEKnW4xDs8tSLbZhxpa8HBWRHQ==
-X-Google-Smtp-Source: ABdhPJyd9z/0E7cIiRh5X4uMlSbgcHzZSG/VIra3j3yOYbbXcYBEgVNzBzpdHejP7k0epZ2ItDg0Nw==
-X-Received: by 2002:a17:902:b094:b029:e3:a2f:4681 with SMTP id p20-20020a170902b094b02900e30a2f4681mr1370874plr.69.1613104886229;
-        Thu, 11 Feb 2021 20:41:26 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id h11sm7316176pfr.201.2021.02.11.20.41.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Feb 2021 20:41:25 -0800 (PST)
-Date:   Fri, 12 Feb 2021 10:11:23 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH V7 1/3] kbuild: Add generic rule to apply fdtoverlay
-Message-ID: <20210212044123.7i6kzgekoddqufko@vireshk-i7>
-References: <cover.1612955268.git.viresh.kumar@linaro.org>
- <44dad578df8a848fc378cd358f03b071f44c9a5b.1612955268.git.viresh.kumar@linaro.org>
- <CAK7LNARa8GzhhvZWV_KAW=MC0DRcSsfPsQ-KTBRRpbBgBqY=ig@mail.gmail.com>
- <CAL_JsqKHUG6VvvpQ18YdzsOA_gZ59gFsc2tUzt1SxKHsO2A03g@mail.gmail.com>
- <CAK7LNAQH8hVwqGF+82j=38gi7VaixLhYS-K1uT1wdX4t07pJ6Q@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=meg9sC7YyyK/ccxHauwvbjLk6iFrdpEJaLlXNYNQrRw=;
+        b=blAJLoz9jdYLrEnScHYVXXLnY/85ggL/vjm6xVgB/cvcMVGahflVxgabkGeANMv2V0
+         T1kysT/qDmkaw64ctWZ4r/TZbcGzL8bD1jzZIwCiswGtUjWMLiwvdSxiWB09Zc2o3qDz
+         n6kPT/vzzilHbq/qp/huQvdnNTrw+up9B/mQtBsefa9RurUbmz7OU8Qu1NVKdpeNf0GQ
+         y7FF5TmrCc1LIgUIf9yK25Fqio3wmtqKLbXeUlN3BfWAXmFaF1bkA26S2fJA6KnkB7+W
+         LqGUCKuIwI0wt/dr1o0qidYC4DLWDZobkWKU+xEcvINVYIHqQ4GkNS6u0cj8l73hA2mt
+         bd6w==
+X-Gm-Message-State: AOAM531tAS6r2ZojxoPR1IO+SLf4hj4/K5T2VuaZVwx9xnV2Z03tM1Lf
+        iGYEjZe5AI2GiCY20nqPQ/e3hw==
+X-Google-Smtp-Source: ABdhPJzJ8v8dSTSVOML2sIt78PbLqD2VT6NK9LoWSGUmE8HEfFqP2J/kMV8nnkcPsdyrqXTVW649yQ==
+X-Received: by 2002:a63:1845:: with SMTP id 5mr1499499pgy.244.1613105082790;
+        Thu, 11 Feb 2021 20:44:42 -0800 (PST)
+Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:a453:d6cd:41b9:5925])
+        by smtp.gmail.com with ESMTPSA id 25sm7298904pfh.199.2021.02.11.20.44.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 20:44:42 -0800 (PST)
+From:   Nicolas Boichat <drinkcat@chromium.org>
+To:     "Darrick J . Wong" <djwong@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/6] Add generated flag to filesystem struct to block copy_file_range
+Date:   Fri, 12 Feb 2021 12:43:59 +0800
+Message-Id: <20210212044405.4120619-1-drinkcat@chromium.org>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQH8hVwqGF+82j=38gi7VaixLhYS-K1uT1wdX4t07pJ6Q@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-02-21, 12:07, Masahiro Yamada wrote:
-> BTW, I do not know how to use overlay.
-> Do we apply overlay in the build time?
+We hit an issue when upgrading Go compiler from 1.13 to 1.15 [1],
+as we use Go's `io.Copy` to copy the content of
+`/sys/kernel/debug/tracing/trace` to a temporary file.
 
-Ideally it can be applied at both build time and runtime, but we
-haven't allowed the runtime way until now in kernel. This patchset is
-all about applying it at build time.
+Under the hood, Go 1.15 uses `copy_file_range` syscall to
+optimize the copy operation. However, that fails to copy any
+content when the input file is from tracefs, with an apparent
+size of 0 (but there is still content when you `cat` it, of
+course).
 
-> If so, I do not know what the benefit of overlay is.
-> Or is this just for build testing?
+From discussions in [2][3], it is clear that copy_file_range
+cannot be properly implemented on filesystems where the content
+is generated at runtime: the file size is incorrect (because it
+is unknown before the content is generated), and seeking in such
+files (as required by partial writes) is unlikely to work
+correctly.
 
-For now the main benefit of using them is that we can keep stuff in
-separate files without including each other. For example a primary
-board may or may not have an extension board connected to it.
+With this patch, Go's `io.Copy` gracefully falls back to a normal
+read/write file copy.
 
-Without overlays we will have this many dtbs for this simple case:
-1. primary.dtb
-2. extension.dtb
-3. primary-includes-extension.dtb
+I'm not 100% sure which stable tree this should go in, I'd say
+at least >=5.3 since this is what introduced support for
+cross-filesystem copy_file_range (and where most users are
+somewhat likely to hit this issue). But let's discuss the patch
+series first.
 
-With overlays we will have the first two. Now the same extension can
-be applied to lots of boards and multiple extensions can be applied to
-the same primary board. This just complicates the process of managing
-dtbs.
+[1] http://issuetracker.google.com/issues/178332739
+[2] https://lkml.org/lkml/2021/1/25/64
+[3] https://lkml.org/lkml/2021/1/26/1736
 
-> I just thought this was done in the boot time,
-> for example, in U-Boot or something.
 
-Yes, bootloader can do it as well.
+Nicolas Boichat (6):
+  fs: Add flag to file_system_type to indicate content is generated
+  proc: Add FS_GENERATED_CONTENT to filesystem flags
+  sysfs: Add FS_GENERATED_CONTENT to filesystem flags
+  debugfs: Add FS_GENERATED_CONTENT to filesystem flags
+  tracefs: Add FS_GENERATED_CONTENT to filesystem flags
+  vfs: Disallow copy_file_range on generated file systems
+
+ fs/debugfs/inode.c | 1 +
+ fs/proc/root.c     | 2 +-
+ fs/read_write.c    | 3 +++
+ fs/sysfs/mount.c   | 2 +-
+ fs/tracefs/inode.c | 1 +
+ include/linux/fs.h | 1 +
+ 6 files changed, 8 insertions(+), 2 deletions(-)
 
 -- 
-viresh
+2.30.0.478.g8a0d178c01-goog
+
