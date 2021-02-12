@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6397319F17
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCC1319F18
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhBLMry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:47:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
+        id S232009AbhBLMr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:47:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231514AbhBLMid (ORCPT
+        with ESMTP id S231518AbhBLMid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 12 Feb 2021 07:38:33 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4278C061794;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA17C061797;
         Fri, 12 Feb 2021 04:37:10 -0800 (PST)
 Date:   Fri, 12 Feb 2021 12:37:06 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -21,31 +21,31 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=urmQRgyyjq2DfPzMSGF2CLgXVgFwC4cz6ctagHDNTbI=;
-        b=WawQjOKpwdGWUfqOMDRNhMLS5Bql7cqqC3BJ2vFppoLpxLEHqpd4MJ/qOr6v+DT/GE5zTc
-        OxunjJPjVJ/sutuVYiqLyGKQ26djsbouC57YGCIIRrpaDMk3zcMz2eddxgzvLm3Dngbrdg
-        +Gwr1rSVyOEP3rWni256AUnnt0zNGx7v+2AyA5jliBNlAKKuEOt4rZde40fE3UvAlQW8bG
-        Syk3oJQpCWCE4JEFkKN2wphPO6qxrjV+lT1ikJ4nRI66/dq/T1PbTLfuKfuu4S1MmZvzeZ
-        aMJ9AIGhmhnt7IZvgG1ZwgEZFL0hThMzMRYJdxHbNKyRHtrlg5OHNE/Z35cjkQ==
+        bh=uxyrjjTtzb3HDBMsgQo3W1WjPnT24y71jbOQXob22eo=;
+        b=pCqc+AUth97Q+Z5TvfVNTLGPcFd4dtSCynoL1f+F84IcWoo5hjHQNexQXuik1cwctKrJX1
+        CPXH+Zx4tX+UFpLto8/siXFFUxQ9NRPs2eZjfiLLl/Unl4Ys4/u0/962ZNFBYcCxzerz1k
+        O9k2t3uF3BKzHobS50bfN/Pe2N2HeHVURu1jjyaotMv9XzE1ImEXUsJ7+4ixJkGZEWAN/J
+        y9QDi5krbDbTxMa0mbeBsBcodpHxdE3PkuKyTiZHpqCB/0iZ7Kz6Mpo3u4wvT6sz+Pz+CY
+        kMrlrq3Qd8aPGjvzvi9B8mSETr1FW3m/6jxtnaVEUcmVoOOe6zTd1EaFdKXhJw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1613133427;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=urmQRgyyjq2DfPzMSGF2CLgXVgFwC4cz6ctagHDNTbI=;
-        b=yKm+5evHZQsX6AlbTLTVNsXxgroN4t+kKIuuFUR5N89YY9xoyGgP0dJ6k2KbbU1l+nSozD
-        fBXAHrq9hM3wIwCA==
+        bh=uxyrjjTtzb3HDBMsgQo3W1WjPnT24y71jbOQXob22eo=;
+        b=yJWRoEZwL35dXa7D4Ong0bih/xyYllGOpjuBcyqUqwqKK9fczUFNQb696WCf7ydY+LgQTE
+        tBbrfLUQ0BcMoNBw==
 From:   "tip-bot2 for Willy Tarreau" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] tools/nolibc: Make dup2() rely on dup3() when available
+Subject: [tip: core/rcu] tools/nolibc: Make getpgrp() fall back to getpgid(0)
 Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         Mark Rutland <mark.rutland@arm.com>, Willy Tarreau <w@1wt.eu>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161313342682.23325.2871472805056866547.tip-bot2@tip-bot2>
+Message-ID: <161313342657.23325.16799302339651184115.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,65 +56,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     79f220e56dc85739aa5462fa8a1abd4a44f002e0
-Gitweb:        https://git.kernel.org/tip/79f220e56dc85739aa5462fa8a1abd4a44f002e0
+Commit-ID:     c0c7c103756fee25aadfd5c36f7b86e318f9abb4
+Gitweb:        https://git.kernel.org/tip/c0c7c103756fee25aadfd5c36f7b86e318f9abb4
 Author:        Willy Tarreau <w@1wt.eu>
-AuthorDate:    Thu, 21 Jan 2021 08:20:24 +01:00
+AuthorDate:    Thu, 21 Jan 2021 08:20:25 +01:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Thu, 21 Jan 2021 10:06:44 -08:00
 
-tools/nolibc: Make dup2() rely on dup3() when available
+tools/nolibc: Make getpgrp() fall back to getpgid(0)
 
-A recent boot failure on 5.4-rc3 on arm64 revealed that sys_dup2()
-is not available and that only sys_dup3() is implemented.  This commit
-detects this and falls back to sys_dup3() when available.  This is a
-port of nolibc's upstream commit fd5272ec2c66 to the Linux kernel.
+The getpgrp() syscall is not implemented on arm64, so this commit instead
+uses getpgid(0) when getpgrp() is not available.  This is a port of
+nolibc's upstream commit 2379f25073f9 to the Linux kernel.
 
+Fixes: 66b6f755ad45 ("rcutorture: Import a copy of nolibc")
 Tested-by: Valentin Schneider <valentin.schneider@arm.com>
 Tested-by: Mark Rutland <mark.rutland@arm.com> [arm64]
 Signed-off-by: Willy Tarreau <w@1wt.eu>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/include/nolibc/nolibc.h | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ tools/include/nolibc/nolibc.h | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
-index 3115c64..5fda4d8 100644
+index 5fda4d8..9209da8 100644
 --- a/tools/include/nolibc/nolibc.h
 +++ b/tools/include/nolibc/nolibc.h
-@@ -1502,10 +1502,22 @@ int sys_dup(int fd)
- 	return my_syscall1(__NR_dup, fd);
+@@ -1545,9 +1545,15 @@ int sys_getdents64(int fd, struct linux_dirent64 *dirp, int count)
  }
  
-+#ifdef __NR_dup3
-+static __attribute__((unused))
-+int sys_dup3(int old, int new, int flags)
+ static __attribute__((unused))
++pid_t sys_getpgid(pid_t pid)
 +{
-+	return my_syscall3(__NR_dup3, old, new, flags);
++	return my_syscall1(__NR_getpgid, pid);
 +}
-+#endif
 +
- static __attribute__((unused))
- int sys_dup2(int old, int new)
- {
-+#ifdef __NR_dup3
-+	return my_syscall3(__NR_dup3, old, new, 0);
-+#else
- 	return my_syscall2(__NR_dup2, old, new);
-+#endif
- }
- 
- static __attribute__((unused))
-@@ -1876,6 +1888,20 @@ int dup2(int old, int new)
- 	return ret;
- }
- 
-+#ifdef __NR_dup3
 +static __attribute__((unused))
-+int dup3(int old, int new, int flags)
+ pid_t sys_getpgrp(void)
+ {
+-	return my_syscall0(__NR_getpgrp);
++	return sys_getpgid(0);
+ }
+ 
+ static __attribute__((unused))
+@@ -1951,6 +1957,18 @@ int getdents64(int fd, struct linux_dirent64 *dirp, int count)
+ }
+ 
+ static __attribute__((unused))
++pid_t getpgid(pid_t pid)
 +{
-+	int ret = sys_dup3(old, new, flags);
++	pid_t ret = sys_getpgid(pid);
 +
 +	if (ret < 0) {
 +		SET_ERRNO(-ret);
@@ -122,8 +113,8 @@ index 3115c64..5fda4d8 100644
 +	}
 +	return ret;
 +}
-+#endif
 +
- static __attribute__((unused))
- int execve(const char *filename, char *const argv[], char *const envp[])
++static __attribute__((unused))
+ pid_t getpgrp(void)
  {
+ 	pid_t ret = sys_getpgrp();
