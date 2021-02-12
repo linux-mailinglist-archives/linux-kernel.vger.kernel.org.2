@@ -2,199 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913F531A2C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 878F531A2C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhBLQdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:33:16 -0500
-Received: from mga01.intel.com ([192.55.52.88]:44491 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229793AbhBLQ1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:27:42 -0500
-IronPort-SDR: qfWInwRrtqWrGQyr8UoeZg5aKfdUv3x78M88A6nPkj1ePd5E0P67rGuUcv/XNrf+Zg1gVIMaco
- MrPkzjCG1M8g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="201586481"
-X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
-   d="scan'208";a="201586481"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 08:25:51 -0800
-IronPort-SDR: tzC/7NJyV3HMd421pvXXeXiDSVx4gH+MUZQpy3xrx7IcbaBekNnTb569rJb6GA3IjUQbuy8OKH
- odlqwNLS6SoQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
-   d="scan'208";a="415940678"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Feb 2021 08:25:50 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 387A51FA; Fri, 12 Feb 2021 18:25:48 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] device property: Add test cases for fwnode_property_count_*() APIs
-Date:   Fri, 12 Feb 2021 18:25:39 +0200
-Message-Id: <20210212162539.86850-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.0
+        id S230178AbhBLQci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:32:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229903AbhBLQ1L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 11:27:11 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF3AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 08:26:29 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id e7so8665297ile.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 08:26:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wWYQggmidDOXt8SlEpUZeJHp/q9QIYaBxVftGHC9fl4=;
+        b=wqK20CJrDipWCz9QUtF7I6iO/4sqOeVO4U9r0p+G2dg+YwXUcEaQOw/vfYef9zebwY
+         tseAfC4F9wICBg3NN8s+WDl1D9LUAkCp3cqLS+JmkIhnhXy6tAInE8eUu0wZjDfdvRsf
+         Izj928y0tSJPXIBy+FAZmJPHOn2SrTTafRHRXl0fnpaUW8rAxSOIubeD7jPnr3glJWsi
+         +xgH6NENxsyA/mR0TxfoG2/CT7KG8dgUQblOwXJ/byahzdJdvtXcGSNym3TVoUzth5IY
+         hqelihDyrtMw9gqPiCDK24udHz7NuN2AMH5Yd1CYZMItGOB9bNecmcCXFbOsxxIByitx
+         b5Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wWYQggmidDOXt8SlEpUZeJHp/q9QIYaBxVftGHC9fl4=;
+        b=Rmfl2LZsaTqMiOCGSOyhSGG5jc5eKIAv5/2oBfWaNbcjgmf/gl2q8QQ7e3f15DWGvq
+         e6v00CLlIulnhrHSGAFfWh/gotvvR5coB9GjSFnXtX0OybygMzGciEhr6VhoQc5hF7+z
+         GYj21YblxJWLlquR0bvQUw9sHxsAUgoJav+LfIPwIPYM/NgNlbikppJ6eSKqqPZ8HW+6
+         UT1ZDxqi055m3R+FHOh3cGs7RFfzGUFeZR5cqEAs3Va1tAgKnd8RwQL5xZxBqsDUM+nZ
+         0u8GFmNwIWATLiSCMz8ZtCLEHCUJV1sfA9qtJUtETJD+xX6J8BJ3oYO3IBNYGQQoSNjv
+         5NZw==
+X-Gm-Message-State: AOAM530QoiuLuUpDr0vT/shqEj9M4svLSMHEZhP5BclKRnt8SW0wOgZe
+        eAPzwihxASXktRiU0ciiLJka/g==
+X-Google-Smtp-Source: ABdhPJzqKK70rITdwxOkp1Fp0AxwB0gmZns9uk9e8ElQcdo6PA7zYv9EhYMyqsn7CTpZc1rPJ20/4g==
+X-Received: by 2002:a92:ad09:: with SMTP id w9mr2869509ilh.23.1613147189266;
+        Fri, 12 Feb 2021 08:26:29 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id j5sm2013784ilo.42.2021.02.12.08.26.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Feb 2021 08:26:28 -0800 (PST)
+Subject: Re: linux-next: manual merge of the rcu tree with the block tree
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     paulmck@kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210211164852.7489b87d@canb.auug.org.au>
+ <20210211173802.GM2743@paulmck-ThinkPad-P72>
+ <d4232318-0e44-445d-a7a3-1e2a018c824e@kernel.dk>
+ <YCaqSuQBhqgAkWLm@hirez.programming.kicks-ass.net>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <793e83ff-3bd1-39a0-9037-cb3cbfb455e8@kernel.dk>
+Date:   Fri, 12 Feb 2021 09:26:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YCaqSuQBhqgAkWLm@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add test cases for fwnode_property_count_*() APIs.
+On 2/12/21 9:18 AM, Peter Zijlstra wrote:
+> On Fri, Feb 12, 2021 at 08:26:56AM -0700, Jens Axboe wrote:
+>> But I think I made a mistake in that it should've been sched/smp instead,
+>> which would likely get rid of this issue too? I'll rebase it, it's just
+>> a single topic branch with just those two patches on top.
+> 
+> Right, I made tip/sched/smp with just that one patch. That _should_ work
+> for you, if not, please let me know.
 
-While at it, modify the arrays of integers to be size of non-power-of-2
-for better test coverage and decreasing stack usage.
+It does, I just originally fat fingered the pull. All fixed up now!
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/base/test/property-entry-test.c | 50 +++++++++++++++++++++++--
- 1 file changed, 46 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/base/test/property-entry-test.c b/drivers/base/test/property-entry-test.c
-index abe03315180f..3a4f755c483c 100644
---- a/drivers/base/test/property-entry-test.c
-+++ b/drivers/base/test/property-entry-test.c
-@@ -27,6 +27,9 @@ static void pe_test_uints(struct kunit *test)
- 	node = fwnode_create_software_node(entries, NULL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, node);
- 
-+	error = fwnode_property_count_u8(node, "prop-u8");
-+	KUNIT_EXPECT_EQ(test, error, 1);
-+
- 	error = fwnode_property_read_u8(node, "prop-u8", &val_u8);
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)val_u8, 8);
-@@ -48,6 +51,9 @@ static void pe_test_uints(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)val_u16, 16);
- 
-+	error = fwnode_property_count_u16(node, "prop-u16");
-+	KUNIT_EXPECT_EQ(test, error, 1);
-+
- 	error = fwnode_property_read_u16_array(node, "prop-u16", array_u16, 1);
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)array_u16[0], 16);
-@@ -65,6 +71,9 @@ static void pe_test_uints(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)val_u32, 32);
- 
-+	error = fwnode_property_count_u32(node, "prop-u32");
-+	KUNIT_EXPECT_EQ(test, error, 1);
-+
- 	error = fwnode_property_read_u32_array(node, "prop-u32", array_u32, 1);
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)array_u32[0], 32);
-@@ -82,6 +91,9 @@ static void pe_test_uints(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)val_u64, 64);
- 
-+	error = fwnode_property_count_u64(node, "prop-u64");
-+	KUNIT_EXPECT_EQ(test, error, 1);
-+
- 	error = fwnode_property_read_u64_array(node, "prop-u64", array_u64, 1);
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)array_u64[0], 64);
-@@ -95,15 +107,19 @@ static void pe_test_uints(struct kunit *test)
- 	error = fwnode_property_read_u64_array(node, "no-prop-u64", array_u64, 1);
- 	KUNIT_EXPECT_NE(test, error, 0);
- 
-+	/* Count 64-bit values as 16-bit */
-+	error = fwnode_property_count_u16(node, "prop-u64");
-+	KUNIT_EXPECT_EQ(test, error, 4);
-+
- 	fwnode_remove_software_node(node);
- }
- 
- static void pe_test_uint_arrays(struct kunit *test)
- {
--	static const u8 a_u8[16] = { 8, 9 };
--	static const u16 a_u16[16] = { 16, 17 };
--	static const u32 a_u32[16] = { 32, 33 };
--	static const u64 a_u64[16] = { 64, 65 };
-+	static const u8 a_u8[10] = { 8, 9 };
-+	static const u16 a_u16[10] = { 16, 17 };
-+	static const u32 a_u32[10] = { 32, 33 };
-+	static const u64 a_u64[10] = { 64, 65 };
- 	static const struct property_entry entries[] = {
- 		PROPERTY_ENTRY_U8_ARRAY("prop-u8", a_u8),
- 		PROPERTY_ENTRY_U16_ARRAY("prop-u16", a_u16),
-@@ -126,6 +142,9 @@ static void pe_test_uint_arrays(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)val_u8, 8);
- 
-+	error = fwnode_property_count_u8(node, "prop-u8");
-+	KUNIT_EXPECT_EQ(test, error, 10);
-+
- 	error = fwnode_property_read_u8_array(node, "prop-u8", array_u8, 1);
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)array_u8[0], 8);
-@@ -148,6 +167,9 @@ static void pe_test_uint_arrays(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)val_u16, 16);
- 
-+	error = fwnode_property_count_u16(node, "prop-u16");
-+	KUNIT_EXPECT_EQ(test, error, 10);
-+
- 	error = fwnode_property_read_u16_array(node, "prop-u16", array_u16, 1);
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)array_u16[0], 16);
-@@ -170,6 +192,9 @@ static void pe_test_uint_arrays(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)val_u32, 32);
- 
-+	error = fwnode_property_count_u32(node, "prop-u32");
-+	KUNIT_EXPECT_EQ(test, error, 10);
-+
- 	error = fwnode_property_read_u32_array(node, "prop-u32", array_u32, 1);
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)array_u32[0], 32);
-@@ -192,6 +217,9 @@ static void pe_test_uint_arrays(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)val_u64, 64);
- 
-+	error = fwnode_property_count_u64(node, "prop-u64");
-+	KUNIT_EXPECT_EQ(test, error, 10);
-+
- 	error = fwnode_property_read_u64_array(node, "prop-u64", array_u64, 1);
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_EQ(test, (int)array_u64[0], 64);
-@@ -210,6 +238,14 @@ static void pe_test_uint_arrays(struct kunit *test)
- 	error = fwnode_property_read_u64_array(node, "no-prop-u64", array_u64, 1);
- 	KUNIT_EXPECT_NE(test, error, 0);
- 
-+	/* Count 64-bit values as 16-bit */
-+	error = fwnode_property_count_u16(node, "prop-u64");
-+	KUNIT_EXPECT_EQ(test, error, 40);
-+
-+	/* Other way around */
-+	error = fwnode_property_count_u64(node, "prop-u16");
-+	KUNIT_EXPECT_EQ(test, error, 2);
-+
- 	fwnode_remove_software_node(node);
- }
- 
-@@ -239,6 +275,9 @@ static void pe_test_strings(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_STREQ(test, str, "single");
- 
-+	error = fwnode_property_string_array_count(node, "str");
-+	KUNIT_EXPECT_EQ(test, error, 1);
-+
- 	error = fwnode_property_read_string_array(node, "str", strs, 1);
- 	KUNIT_EXPECT_EQ(test, error, 1);
- 	KUNIT_EXPECT_STREQ(test, strs[0], "single");
-@@ -258,6 +297,9 @@ static void pe_test_strings(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, error, 0);
- 	KUNIT_EXPECT_STREQ(test, str, "");
- 
-+	error = fwnode_property_string_array_count(node, "strs");
-+	KUNIT_EXPECT_EQ(test, error, 2);
-+
- 	error = fwnode_property_read_string_array(node, "strs", strs, 3);
- 	KUNIT_EXPECT_EQ(test, error, 2);
- 	KUNIT_EXPECT_STREQ(test, strs[0], "string-a");
 -- 
-2.30.0
+Jens Axboe
 
