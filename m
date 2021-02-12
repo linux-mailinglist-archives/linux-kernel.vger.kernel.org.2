@@ -2,271 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BCE31A19D
+	by mail.lfdr.de (Postfix) with ESMTP id 87FF231A19E
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhBLPZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:25:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S232163AbhBLPZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbhBLPVd (ORCPT
+        with ESMTP id S230006AbhBLPV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:21:33 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BC0C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:20:52 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id w1so16207875ejf.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:20:52 -0800 (PST)
+        Fri, 12 Feb 2021 10:21:59 -0500
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3E9C061574;
+        Fri, 12 Feb 2021 07:21:18 -0800 (PST)
+Received: by mail-oo1-xc2b.google.com with SMTP id i11so1317628oov.13;
+        Fri, 12 Feb 2021 07:21:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=slq6ueUgpPdgBtLvydLK5qzaduqPiP8HW93VCeAsw5c=;
-        b=f5iDugPSBWAsaVrx+h8qV+LKoCqAiXPMdfRr02RE3IA0aRAnfDdo75RMuthx1+YaRm
-         yu5KnyMSeH5Y5HH2KuxBzLCdQ4e1lj0e+0ZUk2/Q7Q1p4HReaJ+fnUTYb0FLDQhx9wbz
-         MqMn/miE7B5DHqJJRaGa47yMhV+p02tOAdSafMfUco8R1KGiZVN1bdTBwftLhw3ptl6D
-         65scNan7qCa1mLidzEoRlGpSkJoVSYg9GveteAtXtV0AKLLkpkovQ05AzxJASytzVDwS
-         TxhqUPq371T1HXtDQPo5tXUSAo+M5kXSKqGHNVQ4aTcJF2R0vqgM10EalmRzen9cvjEd
-         zezg==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7xROe8ze/bEj3DdX2NidRAOr1uloYGmnFBNWkT1fXos=;
+        b=WArc+sLe9oRtL+eq8BKz2AfW5l9OyOFD3fOieMAO90vhLtwXObMzLxjFaACfb9RTdn
+         /D3EDoQ7PMsOJzGDtfpABQCB4yQsfHBZYnPwotfyqlKEEzzBZliFYOjn6LNojMxFVJlJ
+         35LrxWi8eusvqex584PEUf1oKtHO7IPty3Zm0u4vNJylYnRnbXvTBECZdiXESULXKxKu
+         c1kRJbGRuaLsa1FZb+AT1Q+bv4/FgygRcOi6JLi1RgVP+RSveHrbYWRrwSu80t7tbA7E
+         aFcgPEnO1eNox1SxplVhwDfrWRSbzQ+YrMG5N926If4KxdIyoqIjztZ4NydNSbf+hqfp
+         bYeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=slq6ueUgpPdgBtLvydLK5qzaduqPiP8HW93VCeAsw5c=;
-        b=PiU3ifVgNE+/9QeODA3gUPH7E+DHxlll4SXoGwng4BRMCfY12E6qzwR0yQKhPJwPyT
-         spvoFyvumkRv9M72+1/e7qUyN588G7s1hJRNLZ24hY51AKX1HCDhYF+iutcopqjLRO20
-         SxN2/tffmmQ1Qp/hG1rDEsTyiJjf7BIdFfdkMe6Gh6H+g0Jop+CWdUNXDq8w5xuTqa10
-         7dbaVeE8sTyi6YztC/dXn35+3wNLKiTGNuHrvXTRoaPmTHq3sse1+yEvSYkYmO5KIiwZ
-         7NFKMEzwHk7HZR7mki/rG4mMf0AweD5HfxnV/zAvGmSBLcilwZkJPO0r1tyzmZqstr+i
-         /8GA==
-X-Gm-Message-State: AOAM531Pbq2q/hsdrPV3MeLluTGrt/xV85gqigsmgQ0jFRh5dQDcDux9
-        oj6WhVH3+CenUWuVW7sxk9ZxbaU9oOHfARU/JxHzmQ==
-X-Google-Smtp-Source: ABdhPJzqeIzjy5N/wAnucZyDDEu9g4rRnyJmRE/sq0XVEi3CQtC4jXxczIgggHgKzE/ucmyEOtZHBDrOMhYK3Lwsj2Y=
-X-Received: by 2002:a17:906:7a49:: with SMTP id i9mr3525907ejo.247.1613143251066;
- Fri, 12 Feb 2021 07:20:51 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7xROe8ze/bEj3DdX2NidRAOr1uloYGmnFBNWkT1fXos=;
+        b=ThE2doBekluodxAzyMGQKZB9dTJ11so5VA5PYQnoYq2+vRmz+KL42ukDKgwDlIuDU/
+         7yXb3SdCuyTr92a7DouPHnJiJkXVFiYABe9CuLA8gfFpdK1TjIiNKKQ5a9ojjrQwXb/h
+         1miT6CFxBIN6ohpNtKlPj2USbdZ9xmk+V7pj3jyzPpF6eCRtdGWbJJVVA0ULKxyYzpap
+         tcB37OsHHlZJ7UA8gMhXUhxLVLBxTqvtAj0c0wzlYguHnC8F0P91TLjH3LLwaAjBeKuM
+         f6HjzBoGG4YSCsAicFyL/RgckPMBRigMPXdbUmx/dNWjfMQxngn7rf2axQSbGkWXwMcA
+         wcYw==
+X-Gm-Message-State: AOAM531a6B1loYffglQSJUfm4+G0rRmzwl7vdzukAiPM/O1tp1qqVqKx
+        jb6Zo0dEHzQrZuzGqaqKHhv/qhZwJSI=
+X-Google-Smtp-Source: ABdhPJwGsKh+tnGwJrtbCT3nlxnHp4rGF4TyGoukRjw9KqU+zeRmPkaUONaXwA3BdWBSRe6YH/aulw==
+X-Received: by 2002:a4a:858c:: with SMTP id t12mr2217683ooh.20.1613143277522;
+        Fri, 12 Feb 2021 07:21:17 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g36sm1707061otb.67.2021.02.12.07.21.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 12 Feb 2021 07:21:16 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 12 Feb 2021 07:21:14 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     robh+dt@kernel.org, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, badhri@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] Documentation: connector: Update the description of
+ sink-vdos
+Message-ID: <20210212152114.GC57042@roeck-us.net>
+References: <20210212073743.665038-1-kyletso@google.com>
 MIME-Version: 1.0
-References: <20210211150148.516371325@linuxfoundation.org>
-In-Reply-To: <20210211150148.516371325@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 12 Feb 2021 20:50:39 +0530
-Message-ID: <CA+G9fYtvpqNrkNZDJCjHYUeDHneGz4QZikvm9+k30b-i7wMzjQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/24] 5.4.98-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212073743.665038-1-kyletso@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Feb 2021 at 20:36, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.98 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 13 Feb 2021 15:01:39 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.98-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Fri, Feb 12, 2021 at 03:37:43PM +0800, Kyle Tso wrote:
+> Remove the acronym "VDM" and replace it with the full name "Vendor
+> Defined Message".
+> 
+> Signed-off-by: Kyle Tso <kyletso@google.com>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-NOTE:
-The following lockdep warning was found during the arm64 db410c boot.
-And this is easily reproducible.
-
-WARNING: possible recursive locking detected
-5.4.98-rc1 #1 Not tainted
-
-kworker/1:1/31 is trying to acquire lock:
-ffff00000eb36940 (regulator_ww_class_mutex){+.+.}, at:
-create_regulator+0x23c/0x360
-
-This was noticed on Linux next and reported on linux arm msm mailing list.
-https://lore.kernel.org/linux-arm-msm/CA+G9fYunK_2h3-pHtZT_+56Xf8b=3DM-8Q9G=
-nTsCJ3KxVaJULorA@mail.gmail.com/
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.98-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 539f3bba2f5bb16b852f7d0cf50f8d39d0c4c4e3
-git describe: v5.4.97-25-g539f3bba2f5b
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.97-25-g539f3bba2f5b
-
-No regressions (compared to build v5.4.97)
-
-No fixes (compared to build v5.4.97)
-
-Ran 51109 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-intel_pstate
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* perf
-* fwts
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-tc-testing
-* kvm-unit-tests
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* v4l2-compliance
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-vm
-* kselftest-x86
-* ltp-controllers-tests
-* ltp-fs-tests
-* ltp-open-posix-tests
-* ltp-tracing-tests
-* rcutorture
-* kselftest-
-* kselftest-vsyscall-mode-native-
-* ssuite
-* timesync-off
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+> ---
+>  .../devicetree/bindings/connector/usb-connector.yaml       | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> index d385026944ec..ce11b2027199 100644
+> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> @@ -138,9 +138,10 @@ properties:
+>      $ref: /schemas/types.yaml#/definitions/uint32-array
+>  
+>    sink-vdos:
+> -    description: An array of u32 with each entry (VDM Objects) providing additional information
+> -      corresponding to the product, the detailed bit definitions and the order of each VDO can be
+> -      found in "USB Power Delivery Specification Revision 3.0, Version 2.0 + ECNs 2020-12-10"
+> +    description: An array of u32 with each entry, a Vendor Defined Message Object (VDO),
+> +      providing additional information corresponding to the product, the detailed bit
+> +      definitions and the order of each VDO can be found in
+> +      "USB Power Delivery Specification Revision 3.0, Version 2.0 + ECNs 2020-12-10"
+>        chapter 6.4.4.3.1 Discover Identity. User can specify the VDO array via
+>        VDO_IDH/_CERT/_PRODUCT/_UFP/_DFP/_PCABLE/_ACABLE(1/2)/_VPD() defined in
+>        dt-bindings/usb/pd.h.
+> -- 
+> 2.30.0.478.g8a0d178c01-goog
+> 
