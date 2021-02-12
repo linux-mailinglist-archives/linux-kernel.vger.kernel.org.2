@@ -2,85 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E17C31A040
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A9531A03A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhBLOCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 09:02:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29038 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230493AbhBLOCb (ORCPT
+        id S230482AbhBLOCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 09:02:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230493AbhBLOB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 09:02:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613138465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lMH8Jy+Ac2exXElrSB53MclXMZkH36voPPBwm8uMTT8=;
-        b=OicdHgx7ULvGTF7fd71z6srkch0gBeTHIurqY6jVns2n8DZmP6BNPcydZJ27lwSK5/l5l/
-        ORPjMgHKSYR0ji02XURG8fGPYDbW7yE19OzlnFLkxKhtaO1QtgSXphRPfSM8Z/Bl6xCB1h
-        VVSRrkOj38BEs+5WCFjl7JgX4YJswKE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-haYVU5a1Of6QesRuLmtI6Q-1; Fri, 12 Feb 2021 09:01:03 -0500
-X-MC-Unique: haYVU5a1Of6QesRuLmtI6Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96E49801981;
-        Fri, 12 Feb 2021 14:01:02 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-8.gru2.redhat.com [10.97.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5669F6E528;
-        Fri, 12 Feb 2021 14:01:02 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id A63AA416D87F; Fri, 12 Feb 2021 11:00:41 -0300 (-03)
-Date:   Fri, 12 Feb 2021 11:00:41 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [patch 2/3] nohz: change signal tick dependency to wakeup CPUs
- of member tasks
-Message-ID: <20210212140041.GA182392@fuller.cnet>
-References: <20210128202134.608115362@fuller.cnet>
- <20210128202235.849263653@fuller.cnet>
- <20210212122521.GA90839@lothringen>
+        Fri, 12 Feb 2021 09:01:57 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7429C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 06:01:17 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id q7so9381265iob.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 06:01:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hfpu4JNrDZMZnmuhC/B9i4uH563p9QYRFbc8Z09AD8Y=;
+        b=GVHI2HxeHVr1cuXtdzYruzbOiB4KETUjoyUjvXcXqgUOA9aFMSI3A365t7/7fGTAtq
+         YKJVDBzuKs/D84SZkm9Dw0+S13oOh9H3BG8AFUnVN3h7aCcNBdaHxXxVQeh0JDuYyxfi
+         7W9e0uvmlM7ICY+AZfbgjwiABPj+emU5f+acs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hfpu4JNrDZMZnmuhC/B9i4uH563p9QYRFbc8Z09AD8Y=;
+        b=aChGHnqH1J1q74ShVRJwdJKIZWSWcnT9ZEuaB4ChJIzo17h85MpUT0NWpZ9ZdKerXW
+         nOjPAHZd+sJQP9PyICoEMuIytE3NWvr4AFkXa4C9l9ZP9quvgMEEE1BDg1Mvk+Gl+JZy
+         YEUQ/zjrrCqIWTjmtl8bY2Yjn4La4+/M2nqKEtTQI9ZJBWGqknqGB9iQ5mWIqf06Jz68
+         zOG3kNGXVI5M0v9k2OLkxhupcSOYCZg3VTMbrBl2QfVujXENWQ78EelJ/qkXYO+J8UmH
+         Hgt9vjl9YVu8R5qvs5+PuBmBq3vKIv4R1U+3W7tT6LV+7v1s1go2KpnCpJW49v2XTN3X
+         CfJA==
+X-Gm-Message-State: AOAM533IyZHRH/nItebMs8dnGHuuuItKrd0hWMRbq8rRZoQ3HSqvCH7H
+        z948h/yuYi0q2yFM8rrdlVhuv+4zGQc/pOMs
+X-Google-Smtp-Source: ABdhPJylam6eGTL3mklnT2GyKQxTakQ2Q39BnfQThOB9Nf0FTkzmUCs0MldOziz7vdfNTcrQ8nBpjw==
+X-Received: by 2002:a02:30d5:: with SMTP id q204mr2659530jaq.55.1613138476532;
+        Fri, 12 Feb 2021 06:01:16 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id i20sm4494742ilc.2.2021.02.12.06.01.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Feb 2021 06:01:15 -0800 (PST)
+Subject: Re: [PATCH 2/3] net:ethernet:rmnet:Support for downlink MAPv5 csum
+ offload
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Sharath Chandra Vurukala <sharathv@codeaurora.org>
+Cc:     davem@davemloft.net, elder@kernel.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1613079324-20166-1-git-send-email-sharathv@codeaurora.org>
+ <1613079324-20166-3-git-send-email-sharathv@codeaurora.org>
+ <20210211180459.500654b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <1c4e21bf-5903-bc45-6d6e-64b68e494542@ieee.org>
+Date:   Fri, 12 Feb 2021 08:01:15 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212122521.GA90839@lothringen>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210211180459.500654b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 01:25:21PM +0100, Frederic Weisbecker wrote:
-> On Thu, Jan 28, 2021 at 05:21:36PM -0300, Marcelo Tosatti wrote:
-> > Rather than waking up all nohz_full CPUs on the system, only wakeup 
-> > the target CPUs of member threads of the signal.
-> > 
-> > Reduces interruptions to nohz_full CPUs.
-> > 
-> > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-> > 
-> > Index: linux-2.6/kernel/time/tick-sched.c
-> > ===================================================================
-> > --- linux-2.6.orig/kernel/time/tick-sched.c
-> > +++ linux-2.6/kernel/time/tick-sched.c
-> > @@ -444,9 +444,20 @@ EXPORT_SYMBOL_GPL(tick_nohz_dep_clear_ta
-> >   * Set a per-taskgroup tick dependency. Posix CPU timers need this in order to elapse
-> >   * per process timers.
-> >   */
-> > -void tick_nohz_dep_set_signal(struct signal_struct *sig, enum tick_dep_bits
-> > bit)
+On 2/11/21 8:04 PM, Jakub Kicinski wrote:
+> On Fri, 12 Feb 2021 03:05:23 +0530 Sharath Chandra Vurukala wrote:
+>> +/* MAP CSUM headers */
+>> +struct rmnet_map_v5_csum_header {
+>> +	u8  next_hdr:1;
+>> +	u8  header_type:7;
+>> +	u8  hw_reserved:5;
+>> +	u8  priority:1;
+>> +	u8  hw_reserved_bit:1;
+>> +	u8  csum_valid_required:1;
+>> +	__be16 reserved;
+>> +} __aligned(1);
 > 
-> Why not keeping the signal struct as a parameter?
-> 
-> Thanks.
+> Will this work on big endian?
 
-All callers use "struct signal_struct *sig = tsk->signal" as
-signal parameter anyway...
+Sort of related to this point...
 
-Can change parameters to (task, signal, bit) if you prefer.
+I'm sure the response to this will be to add two versions
+of the definition, surrounded __LITTLE_ENDIAN_BITFIELD
+and __BIG_ENDIAN_BITFIELD tests.
 
+I really find this non-intuitive, and every time I
+look at it I have to think about it a bit to figure
+out where the bits actually lie in the word.
+
+I know this pattern is used elsewhere in the networking
+code, but that doesn't make it any easier for me to
+understand...
+
+Can we used mask, defined in host byte order, to
+specify the positions of these fields?
+
+I proposed a change at one time that did this and
+this *_ENDIAN_BITFIELD thing was used instead.
+
+I will gladly implement this change (completely
+separate from what's being done here), but thought
+it might be best to see what people think about it
+before doing that work.
+
+					-Alex
