@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1DB319F62
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E5D319F63
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbhBLNCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:02:37 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45414 "EHLO
+        id S232107AbhBLNCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:02:41 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:45424 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231724AbhBLMkm (ORCPT
+        with ESMTP id S231723AbhBLMkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 12 Feb 2021 07:40:42 -0500
 Date:   Fri, 12 Feb 2021 12:37:23 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613133444;
+        s=2020; t=1613133443;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=2pa/tvKC8kX87YpN0GJLxqnBZJ43AuDqAJGMs4EEDnw=;
-        b=DjL6Ar24YHs+cF/EjXnK/eAgKifjNpt36QjvPcG741Nxg1VC0EQnJWEUr5fL2hDiIMc1Bh
-        DZSKGku1SKhKGe4XPHkNwKYCvwyc5t0wC19pHcHDz24fiTjK5igRlL/998tRkuq7Xi3U6d
-        0pE8mOS1gl3/vQDsj9GW5pwi66AWhs3q39QlAKn1RKhylUd9v67e0hg31tk+vwY5owIMsP
-        DQsCwCr7DwnIqQeoZag5VNWBv5SoWsuPACbgS64irmGTZ6NVCdrl7hjlNeL1N8e7K+dWrQ
-        0eBbsUHIWBAaUBAZMKsegbSuMkIPsvf5qYHrV5CAwi/NGXnOOclyyJueY9U81Q==
+        bh=FRaI3sQjCeshQMzGhBxLjEjmUL9tQ+4g486H8Z4AnyQ=;
+        b=s+9maFWJ6du6OPx7Pxb08uPBKxeNXFAVErJFt2CNse2aAIsk62aTmPgKm6brzynWHmco9B
+        ucPqL3Ozsx+wnWl1pAk8NSNLvF/03HQ3PCEY85EMRKq29vuqY/m05cXPadlEtmDukFskhA
+        KKohH3l5E57ParUh4/KvHGy/BW0g2lTjN9FLm4WDe9sEZKkJY2b7FHIM60eNxHfaTtn6sL
+        I/QqDCIMVw7JHOCZf/BgF+7eH3AJjS1y4WSD5CNX03rqZYx9idrL0J1FyVwajY7sy+OTfu
+        Ri1uEDeo+z1c7i4aeCmgoJ+TJXvb/IjA5I41qMEPWgkyw+M+JMzL2EKarwhvmQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613133444;
+        s=2020e; t=1613133443;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=2pa/tvKC8kX87YpN0GJLxqnBZJ43AuDqAJGMs4EEDnw=;
-        b=G3PGzo+wovI+FwUFMVAG9Tjhfhzh1UASizoEUaYz1dsepGgGWYYGIM8aKd355nCOvsz32P
-        aTZLUSp653fyu/Aw==
-From:   "tip-bot2 for Uladzislau Rezki (Sony)" <tip-bot2@linutronix.de>
+        bh=FRaI3sQjCeshQMzGhBxLjEjmUL9tQ+4g486H8Z4AnyQ=;
+        b=l1b8vkNh63f5ChQQe9AwZ9fSKOwkjVX9WCt5Q+6aMmNXKZAyw8/n7pU8wMkGZdYploWtEK
+        c544VjZnc69WV3CQ==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu-tasks: Add RCU-tasks self tests
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+Subject: [tip: core/rcu] rcu: Make TASKS_TRACE_RCU select IRQ_WORK
+Cc:     kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161313344357.23325.6360256353255340492.tip-bot2@tip-bot2>
+Message-ID: <161313344327.23325.3926169999535371814.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -52,123 +53,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     bfba7ed084f8ab0269a5a1d2f51b07865456c334
-Gitweb:        https://git.kernel.org/tip/bfba7ed084f8ab0269a5a1d2f51b07865456c334
-Author:        Uladzislau Rezki (Sony) <urezki@gmail.com>
-AuthorDate:    Wed, 09 Dec 2020 21:27:32 +01:00
+Commit-ID:     c26165efac41bce0c7764262b21f5897e771f34f
+Gitweb:        https://git.kernel.org/tip/c26165efac41bce0c7764262b21f5897e771f34f
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Mon, 21 Dec 2020 21:00:18 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 04 Jan 2021 15:54:49 -08:00
 
-rcu-tasks: Add RCU-tasks self tests
+rcu: Make TASKS_TRACE_RCU select IRQ_WORK
 
-This commit adds self tests for early-boot use of RCU-tasks grace periods.
-It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
-both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
-call_rcu_tasks()) grace-period APIs.
+Tasks Trace RCU uses irq_work_queue() to safely awaken its grace-period
+kthread, so this commit therefore causes the TASKS_TRACE_RCU Kconfig
+option select the IRQ_WORK Kconfig option.
 
-Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-[ paulmck: Handle CONFIG_PROVE_RCU=n and identify test cases' callbacks. ]
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 79 +++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 79 insertions(+)
+ kernel/rcu/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 73bbe79..74767d3 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1231,6 +1231,82 @@ void show_rcu_tasks_gp_kthreads(void)
- }
- #endif /* #ifndef CONFIG_TINY_RCU */
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index b71e21f..84dfa8d 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -95,6 +95,7 @@ config TASKS_RUDE_RCU
  
-+#ifdef CONFIG_PROVE_RCU
-+struct rcu_tasks_test_desc {
-+	struct rcu_head rh;
-+	const char *name;
-+	bool notrun;
-+};
-+
-+static struct rcu_tasks_test_desc tests[] = {
-+	{
-+		.name = "call_rcu_tasks()",
-+		/* If not defined, the test is skipped. */
-+		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
-+	},
-+	{
-+		.name = "call_rcu_tasks_rude()",
-+		/* If not defined, the test is skipped. */
-+		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
-+	},
-+	{
-+		.name = "call_rcu_tasks_trace()",
-+		/* If not defined, the test is skipped. */
-+		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
-+	}
-+};
-+
-+static void test_rcu_tasks_callback(struct rcu_head *rhp)
-+{
-+	struct rcu_tasks_test_desc *rttd =
-+		container_of(rhp, struct rcu_tasks_test_desc, rh);
-+
-+	pr_info("Callback from %s invoked.\n", rttd->name);
-+
-+	rttd->notrun = true;
-+}
-+
-+static void rcu_tasks_initiate_self_tests(void)
-+{
-+	pr_info("Running RCU-tasks wait API self tests\n");
-+#ifdef CONFIG_TASKS_RCU
-+	synchronize_rcu_tasks();
-+	call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
-+#endif
-+
-+#ifdef CONFIG_TASKS_RUDE_RCU
-+	synchronize_rcu_tasks_rude();
-+	call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
-+#endif
-+
-+#ifdef CONFIG_TASKS_TRACE_RCU
-+	synchronize_rcu_tasks_trace();
-+	call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
-+#endif
-+}
-+
-+static int rcu_tasks_verify_self_tests(void)
-+{
-+	int ret = 0;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		if (!tests[i].notrun) {		// still hanging.
-+			pr_err("%s has been failed.\n", tests[i].name);
-+			ret = -1;
-+		}
-+	}
-+
-+	if (ret)
-+		WARN_ON(1);
-+
-+	return ret;
-+}
-+late_initcall(rcu_tasks_verify_self_tests);
-+#else /* #ifdef CONFIG_PROVE_RCU */
-+static void rcu_tasks_initiate_self_tests(void) { }
-+#endif /* #else #ifdef CONFIG_PROVE_RCU */
-+
- void __init rcu_init_tasks_generic(void)
- {
- #ifdef CONFIG_TASKS_RCU
-@@ -1244,6 +1320,9 @@ void __init rcu_init_tasks_generic(void)
- #ifdef CONFIG_TASKS_TRACE_RCU
- 	rcu_spawn_tasks_trace_kthread();
- #endif
-+
-+	// Run the self-tests.
-+	rcu_tasks_initiate_self_tests();
- }
- 
- #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ config TASKS_TRACE_RCU
+ 	def_bool 0
++	select IRQ_WORK
+ 	help
+ 	  This option enables a task-based RCU implementation that uses
+ 	  explicit rcu_read_lock_trace() read-side markers, and allows
