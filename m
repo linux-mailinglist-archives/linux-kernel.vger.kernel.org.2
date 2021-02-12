@@ -2,161 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7419319B1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D58B7319B1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhBLIUp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Feb 2021 03:20:45 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:35123 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBLIUh (ORCPT
+        id S229985AbhBLIVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 03:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229965AbhBLIVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 03:20:37 -0500
-X-Originating-IP: 90.2.4.167
-Received: from xps13 (aputeaux-654-1-105-167.w90-2.abo.wanadoo.fr [90.2.4.167])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 3D36A60010;
-        Fri, 12 Feb 2021 08:19:46 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 09:19:45 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     mdalam@codeaurora.org
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        boris.brezillon@collabora.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, vigneshr@ti.com,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH V4] mtd: rawnand: qcom: update last code word register
-Message-ID: <20210212091945.304c2530@xps13>
-In-Reply-To: <fe43b382fd48d7fb494dd66a4b5ac80a@codeaurora.org>
-References: <1611869959-5109-1-git-send-email-mdalam@codeaurora.org>
-        <20210210090144.GE19226@work>
-        <20210211150759.506f3463@xps13>
-        <fe43b382fd48d7fb494dd66a4b5ac80a@codeaurora.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 12 Feb 2021 03:21:10 -0500
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B6AC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 00:20:29 -0800 (PST)
+Received: by mail-vs1-xe36.google.com with SMTP id o186so4408174vso.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 00:20:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9eYlj6hQUpTjmYWO1lf/Yhxzwmx2Hj9092MghEwCPMY=;
+        b=K5xk8xd16HqUbigXN8BlwaPLjCOqShVd9lxD0yujPtmZqP9Oaku0mPFAZEtFgUeWwN
+         NV1d/6le+5zDnw4HY8TbN2qNaylzKUE5b66s86Jw85ugyYMTFQKEa9+HKcOZFxgbLjth
+         UwwVVRkxJ6Fg5FGUeKSrvdvA9uz2QqY/QdEFo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9eYlj6hQUpTjmYWO1lf/Yhxzwmx2Hj9092MghEwCPMY=;
+        b=Ra6VrFPBHqswxqa3pIEk/vRMx18Tw8CD8iW15aiDdi088rf8L5RIaLbq/56uku6aTt
+         uHCoug/LYdbquUhV5eiAeksrv5Q4BxS4Qj70+CFj8Ef0oMwMZyDOWS0g4UhDOdK4f+yj
+         oKNT4UAA5VzBwwmzsQFsQ7jtut+/CETeRztTZ59Q9vYAGDLTXO125pGuK6rOo94Ou3B3
+         9jctizBPHHSXlYj7Q/cdOLlUGWA3EVqhzE7g15r/H8hZ1Nti7gczAos/2tC0r8vIs6Re
+         MPi3p3G0duRVJkhJVsAq7L2rfmxPQmbtNxDbESup6nAOOnHcxS2j/3ft/qofqbpse5Vo
+         zTRg==
+X-Gm-Message-State: AOAM533HI/95QaaIr9oR8QpESf2/Yo2JiHSfQCjxX8wjZRMYX+aIEFrt
+        PR3J9U66jcEtF7HI4YHqcjCr9fa8L3sBbKjLkeML8A==
+X-Google-Smtp-Source: ABdhPJy8GtLDrHlH0v3PR/949do7x9zOWryAYOiJbgogM3Cjnalj5B4JdLINRgvBhedGwy0yOkpXK2Ta8I3Lp10s/Xk=
+X-Received: by 2002:a05:6102:2327:: with SMTP id b7mr849901vsa.47.1613118028682;
+ Fri, 12 Feb 2021 00:20:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210212044405.4120619-1-drinkcat@chromium.org>
+ <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid> <YCYybUg4d3+Oij4N@kroah.com>
+In-Reply-To: <YCYybUg4d3+Oij4N@kroah.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Fri, 12 Feb 2021 16:20:17 +0800
+Message-ID: <CANMq1KBuPaU5UtRR8qTgdf+J3pt-xAQq69kCVBdaYGx8F+WmFA@mail.gmail.com>
+Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
+ is generated
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Feb 12, 2021 at 3:46 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Feb 12, 2021 at 12:44:00PM +0800, Nicolas Boichat wrote:
+> > Filesystems such as procfs and sysfs generate their content at
+> > runtime. This implies the file sizes do not usually match the
+> > amount of data that can be read from the file, and that seeking
+> > may not work as intended.
+> >
+> > This will be useful to disallow copy_file_range with input files
+> > from such filesystems.
+> >
+> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> > ---
+> > I first thought of adding a new field to struct file_operations,
+> > but that doesn't quite scale as every single file creation
+> > operation would need to be modified.
+>
+> Even so, you missed a load of filesystems in the kernel with this patch
+> series, what makes the ones you did mark here different from the
+> "internal" filesystems that you did not?
 
-mdalam@codeaurora.org wrote on Fri, 12 Feb 2021 01:00:47 +0530:
+Which ones did I miss? (apart from configfs, see the conversation on
+patch 6/6). Anyway, hopefully auditing all filesystems is an order of
+magnitude easier task, and easier to maintain in the longer run ,-)
 
-> On 2021-02-11 19:37, Miquel Raynal wrote:
-> > Hello,
-> > 
-> > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Wed,
-> > 10 Feb 2021 14:31:44 +0530:
-> >   
-> >> On Fri, Jan 29, 2021 at 03:09:19AM +0530, Md Sadre Alam wrote:  
-> >> > From QPIC version 2.0 onwards new register got added to
-> >> > read last codeword. This change will add the READ_LOCATION_LAST_CW_n
-> >> > register.
-> >> >
-> >> > For first three code word READ_LOCATION_n register will be
-> >> > use.For last code word READ_LOCATION_LAST_CW_n register will be
-> >> > use.  
-> > 
-> > Sorry for the late notice, I think the patch is fine but if you don't
-> > mind I would like to propose a small change that should simplify your
-> > patch a lot, see below.
-> >   
-> >> >
-> >> > Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>  
-> >> >> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> >> >> Thanks,  
-> >> Mani  
-> >> >> > ---  
-> >> > [V4]
-> >> >  * Modified condition for nandc_set_read_loc_last() in qcom_nandc_read_cw_raw().
-> >> >  * Added one additional argument "last_cw" to the function config_nand_cw_read()
-> >> >    to handle last code word condition.
-> >> >  * Changed total number of last code word register "NAND_READ_LOCATION_LAST_CW_0" to 4
-> >> >    while doing code word configuration.
-> >> >  drivers/mtd/nand/raw/qcom_nandc.c | 110 +++++++++++++++++++++++++++++---------
-> >> >  1 file changed, 84 insertions(+), 26 deletions(-)
-> >> >
-> >> > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> >> > index 667e4bf..9484be8 100644
-> >> > --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> >> > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> >> > @@ -48,6 +48,10 @@
-> >> >  #define	NAND_READ_LOCATION_1		0xf24
-> >> >  #define	NAND_READ_LOCATION_2		0xf28
-> >> >  #define	NAND_READ_LOCATION_3		0xf2c
-> >> > +#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
-> >> > +#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
-> >> > +#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
-> >> > +#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
-> >> >
-> >> >  /* dummy register offsets, used by write_reg_dma */
-> >> >  #define	NAND_DEV_CMD1_RESTORE		0xdead
-> >> > @@ -187,6 +191,12 @@ nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
-> >> >  	      ((size) << READ_LOCATION_SIZE) |			\
-> >> >  	      ((is_last) << READ_LOCATION_LAST))
-> >> >
-> >> > +#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
-> >> > +nandc_set_reg(nandc, NAND_READ_LOCATION_LAST_CW_##reg,			\
-> >> > +	      ((offset) << READ_LOCATION_OFFSET) |		\
-> >> > +	      ((size) << READ_LOCATION_SIZE) |			\
-> >> > +	      ((is_last) << READ_LOCATION_LAST))
-> >> > +  
-> > 
-> > You could rename the macro nandc_set_read_loc() into
-> > nandc_set_read_loc_first() or anything else that make sense, then have
-> > a helper which does:
-> > 
-> > nandc_set_read_loc()
-> > {
-> > 	if (condition for first)
-> > 		return nandc_set_read_loc_first();
-> > 	else
-> > 		return nandc_set_read_loc_last();
-> > }
-> >   
-> 
->    Yes this is more precise way & simplify the patch a lot.
->    But for this i have to change these two macro as a function.
-> 
->    nandc_set_read_loc() & nandc_set_read_loc_last().
-> 
->    Since for last code word register we are using Token Pasting Operator##.
-> 
->    So if i am implementing like the below.
-> 
->    /* helper to configure location register values */
->    static void nandc_set_read_loc(struct qcom_nand_controller *nandc, int reg,
->                    int offset, int size, int is_last, bool last_cw)
->    {
->            if (last_cw)
->                    return nandc_set_read_loc_last(nandc, reg, offset, size, is_last);
->            else
->                    return nandc_set_read_loc_first(nandc, reg, offset, size, is_last);
->   }
-> 
->    So here for macro expansion reg should be a value not a variable else it will be expended like
->    NAND_READ_LOCATION_LAST_CW_reg instead of NAND_READ_LOCATION_LAST_CW_0,1,2,3 etc.
+> This feels wrong, why is userspace suddenly breaking?  What changed in
+> the kernel that caused this?  Procfs has been around for a _very_ long
+> time :)
 
-I know it involves a little bit more computation but I wonder if using
-funcs instead of macros here would not be nicer? Perhaps something like:
+Some of this is covered in the cover letter 0/6. To expand a bit:
+copy_file_range has only supported cross-filesystem copies since 5.3
+[1], before that the kernel would return EXDEV and userspace
+application would fall back to a read/write based copy. After 5.3,
+copy_file_range copies no data as it thinks the input file is empty.
 
-	loc = is_last ? NAND_READ_LOCATION /* 0xf20 */ : NAND_READ_LOCATION_LAST /* 0xf40 */;
-	loc += reg * 2;
+[1] I think it makes little sense to try to use copy_file_range
+between 2 files in /proc, but technically, I think that has been
+broken since copy_file_range fallback to do_splice_direct was
+introduced (eac70053a141 ("vfs: Add vfs_copy_file_range() support for
+pagecache copies", ~4.4).
 
->   the call for nandc_set_read_loc() as nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0, true); ---> for last code word.
->   nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0, false); ---> for first three code wrod.
-
-I think it's best to forward 'cw' as a parameter and do the
-computation of is_last locally.
-
->   So is this ok for you to convert these two macro into function ?
-> 
-> > And in the rest of your patch you won't have to touch anything else.
-> > 
-> > Thanks,
-> > Miquèl  
-
-Thanks,
-Miquèl
+>
+> thanks,
+>
+> greg k-h
