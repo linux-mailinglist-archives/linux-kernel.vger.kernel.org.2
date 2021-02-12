@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BDA319DD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A39319DC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:04:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhBLMC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:02:57 -0500
-Received: from mout.kundenserver.de ([217.72.192.74]:49311 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhBLL5p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:57:45 -0500
-Received: from [192.168.1.155] ([77.9.136.38]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MtfRp-1m2DDQ1vWp-00v86A; Fri, 12 Feb 2021 12:54:51 +0100
-Subject: Re: [RFC PATCH 11/12] platform/x86: skeleton for oftree based board
- device initialization
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>
-References: <20210208222203.22335-1-info@metux.net>
- <20210208222203.22335-12-info@metux.net>
- <CACRpkdYbOX_RDqwxaiugtYB4vSpSKChvKsPjcB_vv3Q74QeG2Q@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <c5ed2b27-21a2-5a07-8dd9-e080f9a6cd98@metux.net>
-Date:   Fri, 12 Feb 2021 12:54:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231237AbhBLMAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:00:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230515AbhBLL4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 06:56:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F051864E89;
+        Fri, 12 Feb 2021 11:55:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613130945;
+        bh=+ksclk1VuPRdokZ1JA/IoRHQrZPGa+MYaPpavLQzyR0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YSjvTPsKwrvqD/5Txof71gk3+AjkpfGrmAKWy4bk4ZPbG9Vp4eh3A7BvDbIAo/tAB
+         CIpsoLGaf9bpUbf9+Wk+dk8ns3zLv6L0D9bNL+RCbi5Dc+aMgq3SslRvsGsk9JZfu6
+         3T+vnkPbC7a7yehId+eCPryI5lJ/j4nDSa12U4x8DIoTzGy6qN5vaC7u85UeSo5/ET
+         w4syXS3BjycRoHbTltTYLMYQDl1szrNW9pAOCyz40bQWum7L5wjQPLt72V5IVrJS5j
+         gfUPU2bv1obJmGS2zdxSaeH3weQtNYCWspOFUk2RWmZKyT+hlC/nonm1ntfD4/ugf4
+         Kh0OZgwGtCLGg==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/7] arm64: dts: qcom: sm8350: Add rpmhpd node
+Date:   Fri, 12 Feb 2021 17:25:27 +0530
+Message-Id: <20210212115532.1339942-3-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210212115532.1339942-1-vkoul@kernel.org>
+References: <20210212115532.1339942-1-vkoul@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdYbOX_RDqwxaiugtYB4vSpSKChvKsPjcB_vv3Q74QeG2Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:Npo/PU7UdIpTpagqXDvQYHTvyeYgYpL3AhZrbNJI23XzTyfeuFE
- THes8swi8Le3F2P/ubGpPoYak7vaedItBxpsgGCM0TeLONNoEft33fPoSTjC5S3Zcq3S5c/
- YLZVZ48IvmJV02Z4TIQNduQuz6fm+S8pRAqf22GzYLstAbXK6cap/ZWVZTrZhBSvBSa8MDt
- TciwW/8TStMGki1KwecmA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WDiPXQt54Es=:9IYQdYBamq+Xb6JVydt0yX
- ngDglnl/G7B9zcWXfFAYw3vIA+SYhpAr2lxBW7g5cG5tQtTd3mc8u3HXqIrk0iUvPal14pbfB
- h9eMjHvayGDcI9KYyoDTK6S2rprl0pV3qFdh9mfIaregLKrA0+RkxP/IXezCXOB3EXp0Hp28f
- RfXg5/bDBpcbQL/V9U6F2q24m44Icp76OfMcbuAlny2mN/QqVIjgLQ1cXBpOtlYbG/1U0vKEG
- mqTm+rEE0/61L7v0aZM+TsiBw0XrFcqs3ygd8CB+ZIpoi9Y7jnzsWWthpqc5abnrnAa6pJclz
- oEWC0b1dYVOzcFv/jyWL4F338dIL3WZmUNLaKq8+k1omHiWVK9DqW0VsrWBj8YC6dom4kphZT
- QKJpbqxlbi8LQlkgvXKiZvYukbTH3R04OhMt/ostar8OWMbL7jbMdc0M7FE2A
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.02.21 10:58, Linus Walleij wrote:
+This adds RPMH power domain found in SM8350 SoC
 
-Hi,
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ arch/arm64/boot/dts/qcom/sm8350.dtsi | 49 ++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-> I think Intel people often take the stance that the ACPI DSDT (or whatever)
-> needs to be fixed.
-
-It should, actually board/firmware vendors should think more carefully
-and do it right in the first place. But reality is different. And
-firmware upgrade often is anything but easy (as soon as we leave the
-field of average Joh Doe's home PC)
-
-> If the usecase is to explicitly work around deployed firmware that cannot
-> and will not be upgraded/fixed by describing the hardware using DT
-> instead, based on just the DMI ID then we should spell that out
-> explicitly.
-
-Okay, maybe I should have stated this more clearly.
-
-OTOH, the scope is also a little bit greater: certain external cards
-that don't need much special handling for the card itself, just
-enumerate devices (and connections between them) using existing drivers.
-
-That's a pretty common scenario in industrial backplane systems, where
-we have lots of different (even application specific) cards, usually
-composed of standard chips, that can be identified by some ID, but
-cannot describe themselves. We have to write lots of specific drivers
-for them, usually just for instantiating existing drivers. (we rarely
-see such code going towards mainline).
-
-A similar case (mainlined) seems to be the RCAR display unit - they're
-using dt overlays that are built into the driver and applied by it
-based on the detected DU at runtime. RCAR seems to be a pure DT
-platform, so that's an obvious move. APU2/3/4 is ACPI based, so I went
-in a different direction - but I'm now investigating how to make DT
-overlays work on an ACPI platform (eg. needs some initial nodes, ...)
-In case that's successful, I'll rework my RFC to use overlays, and
-it will become much smaller (my oftree core changes then won't be
-necessary anymore).
-
-> It feels a bit like fixing a problem using a different hardware description
-> just because we can. Look in drivers/gpio/gpiolib-acpi.c
-> table gpiolib_acpi_quirks[]. It's just an example how this is fixed using
-> fine granular ACPI-specific mechanisms at several places in the kernel
-> instead of just tossing out the whole description and redoing it in
-> device tree.
-
-I'm quite reluctant to put everything in there. Theoretically, for apu
-case, I could prevent enumerating the incomplete gpios there, but the
-actual driver setup still remains (certainly don't wanna put that into
-such a global place). But the original problem of having to write so
-much code for just instantiating generic drivers remains. And
-distributing knowledge of certain devices over several places doesn't
-feel like a good idea to me.
-
-
---mtx
-
+diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+index b53744618102..0bf5cec3a2aa 100644
+--- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+@@ -591,6 +591,55 @@ rpmhcc: clock-controller {
+ 				clocks = <&xo_board>;
+ 			};
+ 
++			rpmhpd: power-controller {
++				compatible = "qcom,sm8350-rpmhpd";
++				#power-domain-cells = <1>;
++				operating-points-v2 = <&rpmhpd_opp_table>;
++
++				rpmhpd_opp_table: opp-table {
++					compatible = "operating-points-v2";
++
++					rpmhpd_opp_ret: opp1 {
++						opp-level = <RPMH_REGULATOR_LEVEL_RETENTION>;
++					};
++
++					rpmhpd_opp_min_svs: opp2 {
++						opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
++					};
++
++					rpmhpd_opp_low_svs: opp3 {
++						opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
++					};
++
++					rpmhpd_opp_svs: opp4 {
++						opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
++					};
++
++					rpmhpd_opp_svs_l1: opp5 {
++						opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
++					};
++
++					rpmhpd_opp_nom: opp6 {
++						opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
++					};
++
++					rpmhpd_opp_nom_l1: opp7 {
++						opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
++					};
++
++					rpmhpd_opp_nom_l2: opp8 {
++						opp-level = <RPMH_REGULATOR_LEVEL_NOM_L2>;
++					};
++
++					rpmhpd_opp_turbo: opp9 {
++						opp-level = <RPMH_REGULATOR_LEVEL_TURBO>;
++					};
++
++					rpmhpd_opp_turbo_l1: opp10 {
++						opp-level = <RPMH_REGULATOR_LEVEL_TURBO_L1>;
++					};
++				};
++			};
+ 		};
+ 
+ 		ufs_mem_hc: ufshc@1d84000 {
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+2.26.2
+
