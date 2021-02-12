@@ -2,130 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54ADE319B28
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3E0319B2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbhBLIXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 03:23:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
+        id S230042AbhBLIYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 03:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhBLIXH (ORCPT
+        with ESMTP id S229690AbhBLIYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 03:23:07 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE16FC061574;
-        Fri, 12 Feb 2021 00:22:27 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id q5so7485192ilc.10;
-        Fri, 12 Feb 2021 00:22:27 -0800 (PST)
+        Fri, 12 Feb 2021 03:24:07 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46EBC061574;
+        Fri, 12 Feb 2021 00:23:26 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id x14so7995630qkm.2;
+        Fri, 12 Feb 2021 00:23:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0QbnuU3w0fMxLbjjXQCuQlV17YLHiXRweTN+JAYolKs=;
-        b=iplLAyDNexWr1YjMBumTYEKEEMPoTGBydbtrQL2Hi0O3xMaZAnvFZ9JRk5QvBWu0FZ
-         QC/3IxUbnMQb1GNzLaq56xtHoWSxFBzwNvFCQIGzM8d5Cd4GcNPVRNBhtDEToe8+ulaQ
-         1PhKDBCAPo1fc4N8yfZg71LZ+odREfKQy9YbAIww45p1x40LSK7hfvRN8uvxF1K6WeKu
-         h5Q0pKBOs5pM31xtZlenADnIrTJYIadYuy0U8OZJg2IEHdp8Jfd+RFqRYNuVdFU8RXcl
-         Y64h0+52lbkvvi3DXhNwaF+nD70QR9nWKly7nD0X7H7r3SYg6ENA2jePcp2rMrdjrZz0
-         voDw==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zo7gwS8RPYEVeaZ3nWrakdE8Lwe2tlMhL3SC2eaylwM=;
+        b=VY7iVEm3Wppz+osSGRplv5FBHknsRsCH+DmFKVAw2EpxLYkSuH1+1bKBSa1r+9z5H5
+         Mlz3cbNfhPcJw+scdC6EgobWmP/7WuIhwkxy8AMG4Fk6d8h/cdpNEJw7OBglY3kkr+3i
+         nGyCuSO6ycRRRjVwjrDbHtSgUC8MVhfyqDD4JSFyxIA2qCtnj0KstiRwGdY1cG/ijcgC
+         Z3AiaV46bmfSihQDRH4kSnBsTta/+rIBIf/tK4mimMTfbRd678PsP+Gfx7iyx3p728Bx
+         RJr5vP1n+sqMMi2tIUWcVl9eHsLF2FvSkRfNEqapwixJgsq8ANBr8hQqcH6iAhRB/9vL
+         pBAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0QbnuU3w0fMxLbjjXQCuQlV17YLHiXRweTN+JAYolKs=;
-        b=BX/pa/7GeJskC5MyoHz37faGNWkfkUNAzhpGq3o4VsuVkice2D/vlZI6nPHbIVIi3f
-         StV7DQ9fgwQSG0cWb0EKpxA4TJuVG/AUObV8skpRgVivJCWYLB0bUkY4H/X3y9fEDtTx
-         5MGvXI10s1uYXhKXVrvMHrrfULCA2a/cN+l4nuPrRiW6FRdNPcUnnfDc7jyaUSuGixSy
-         WQZOlBeGCPYfAfrzlK80rM9PbHo0T34HmepaxGYyTYAXeq9XUVIu55Jm/tmWihjbMpPC
-         ZAFs+dcGIRlH4JnqWGbTqfZxA7dqdyqzm8hQfk/75HAv0gajK3yYTnDj6UwzWwHuygc+
-         Vx9A==
-X-Gm-Message-State: AOAM531DwF+N3TBGFgUf4oUZyU6MNDoGvReGPwWhfBj8ld3W7QtsN/PS
-        jj0qiWTT7IrBBocIeTWKaRZb8kaLuLwKex+TeEA=
-X-Google-Smtp-Source: ABdhPJyrXMlshXTgv5ZY6W5If1SjxvuVfmYaBhOjwCFVOCXG0cpNzO/sIEln1zjGEogtIKp6reu5gKb8k8u0Rib4jVY=
-X-Received: by 2002:a05:6e02:2c2:: with SMTP id v2mr1532394ilr.137.1613118147110;
- Fri, 12 Feb 2021 00:22:27 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=zo7gwS8RPYEVeaZ3nWrakdE8Lwe2tlMhL3SC2eaylwM=;
+        b=bmYHsj1hiDYd7HwIABqdaUZXieSNcYVIJNoW2yGvwC+VpC4M/DMjOVfbuFb2eqKh1f
+         ZWwP08EWNqW73S7I8B3BfVvJs+AM8o/QU3Chz1uFLB5dWBmVkkdtQ9Z+YBziQ9D3yo4S
+         f7xZ3yXdke+j98267knmU6LnjcIEvPnfAgAg7i+WOItYeQs8RDTl2rjOa++EJKEZz6MG
+         7ZFNdyXwmVAbjY29Vmv4FrC4AIqxXE3OQ7/UcAve7t0f95/tnAtUdMwwU/X9LiepMGll
+         pCAyK9S86y/qnbmG+WkjT2S1p4u4nfFosXmosTklkhbH1MQJ0p9UW49LItFXB0VdlAh6
+         yzsQ==
+X-Gm-Message-State: AOAM533W5UagWDHgTH/p+yfQ9TZ972ajme+5jWXGNXNONr+dq+rOCpNv
+        okmaFnxLUkdZn6+y+nXJOsw=
+X-Google-Smtp-Source: ABdhPJykZmedCR0RVXZb0p6YFiQBkva+h/MWPLDvmVspvfxnq4cK3Q1GznJMJP8Mz9v4SuUrEmYx/Q==
+X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr1664573qkg.300.1613118205946;
+        Fri, 12 Feb 2021 00:23:25 -0800 (PST)
+Received: from ArchLinux ([156.146.36.184])
+        by smtp.gmail.com with ESMTPSA id f14sm5674223qkl.76.2021.02.12.00.23.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 00:23:25 -0800 (PST)
+Date:   Fri, 12 Feb 2021 13:53:14 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, swboyd@chromium.org,
+        tiwai@suse.de, nfraprado@protonmail.com, mchehab+huawei@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: kernel-hacking: Remove the word fuck,trying to be
+ civil :)
+Message-ID: <YCY68j2miphB9myN@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, swboyd@chromium.org,
+        tiwai@suse.de, nfraprado@protonmail.com, mchehab+huawei@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210205115951.1276526-1-unixbhaskar@gmail.com>
+ <87sg62pmd4.fsf@meer.lwn.net>
+ <ca67086b-3b52-40b6-003e-9ac7796ad68d@infradead.org>
 MIME-Version: 1.0
-References: <20210212044405.4120619-1-drinkcat@chromium.org>
- <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid> <YCYybUg4d3+Oij4N@kroah.com>
-In-Reply-To: <YCYybUg4d3+Oij4N@kroah.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 12 Feb 2021 10:22:16 +0200
-Message-ID: <CAOQ4uxhovoZ4S3WhXwgYDeOeomBxfQ1BdzSyGdqoVX6boDOkeA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
- is generated
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tCXFL2zAXXsGZfua"
+Content-Disposition: inline
+In-Reply-To: <ca67086b-3b52-40b6-003e-9ac7796ad68d@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 9:49 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+
+--tCXFL2zAXXsGZfua
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+
+On 09:10 Thu 11 Feb 2021, Randy Dunlap wrote:
+>On 2/11/21 9:04 AM, Jonathan Corbet wrote:
+>> Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
+>>
+>>> s/fuck//
+>>>
+>>>
+>>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>>> ---
+>>>  Documentation/kernel-hacking/locking.rst | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/kernel-hacking/locking.rst
+>>> index c3448929a824..ed1284c6f078 100644
+>>> --- a/Documentation/kernel-hacking/locking.rst
+>>> +++ b/Documentation/kernel-hacking/locking.rst
+>>> @@ -958,7 +958,7 @@ grabs a read lock, searches a list, fails to find what it wants, drops
+>>>  the read lock, grabs a write lock and inserts the object has a race
+>>>  condition.
+>>>
+>>> -If you don't see why, please stay the fuck away from my code.
+>>> +If you don't see why, please stay away from my code.
+>>
+>> Sigh.
+>>
+>> I've gotten a few variants of this patch over the years...I guess maybe
+>> the time has come to apply one, so I did.  If the word is too offensive
+>> to be in our docs, though, perhaps it shouldn't be in the changelog
+>> either, so I rewrote it:
+>>
+>>     docs: kernel-hacking: be more civil
+>>
+>>     Remove the f-bomb from locking.rst.  Let's have a moment of silence,
+>>     though, as we mark the passing of the last of Rusty's once plentiful
+>>     profanities in this venerable document.
 >
-> On Fri, Feb 12, 2021 at 12:44:00PM +0800, Nicolas Boichat wrote:
-> > Filesystems such as procfs and sysfs generate their content at
-> > runtime. This implies the file sizes do not usually match the
-> > amount of data that can be read from the file, and that seeking
-> > may not work as intended.
-> >
-> > This will be useful to disallow copy_file_range with input files
-> > from such filesystems.
-> >
-> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> > ---
-> > I first thought of adding a new field to struct file_operations,
-> > but that doesn't quite scale as every single file creation
-> > operation would need to be modified.
+>I really like that tribute there, Jon. :)
 >
-> Even so, you missed a load of filesystems in the kernel with this patch
-> series, what makes the ones you did mark here different from the
-> "internal" filesystems that you did not?
+Indeed!
+>--
+>~Randy
 >
-> This feels wrong, why is userspace suddenly breaking?  What changed in
-> the kernel that caused this?  Procfs has been around for a _very_ long
-> time :)
 
-That would be because of (v5.3):
+--tCXFL2zAXXsGZfua
+Content-Type: application/pgp-signature; name="signature.asc"
 
-5dae222a5ff0 vfs: allow copy_file_range to copy across devices
+-----BEGIN PGP SIGNATURE-----
 
-The intention of this change (series) was to allow server side copy
-for nfs and cifs via copy_file_range().
-This is mostly work by Dave Chinner that I picked up following requests
-from the NFS folks.
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAmOu0ACgkQsjqdtxFL
+KRXKAAf8DVYgMCVAnifWxwiQrXPWSZLY418rSsWAR7iz292aFH0KiByjUHc6lxf5
+LaccVE7emH6+bzetmovYAAMVH7Ot3ZIxyHbrrdYpQaUI/hWMwyWcjzZoI9fvAYtF
+fVnOksq4eTB+dfGnf/7X2xFfda/fXO4htjEngZOAU2m9+K3/7QHOC2T0yoL/9Z/8
+69dOPEML/VinyWqZmFDaBTWfN9O5zWit5wHVzjkxo+HU4OKPaKcDhEKkhQ9X8vOH
+Y1Pg8+eB60Nc0nk9FzjZ67HxBpobgKSfH3ZQFWkLF6Aw4R/pAmLIuJMRo5i1GhRF
+OpNUUNntZlgGDkqbNjhm27p7xMSffA==
+=1arQ
+-----END PGP SIGNATURE-----
 
-But the above change also includes this generic change:
-
--       /* this could be relaxed once a method supports cross-fs copies */
--       if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
--               return -EXDEV;
--
-
-The change of behavior was documented in the commit message.
-It was also documented in:
-
-88e75e2c5 copy_file_range.2: Kernel v5.3 updates
-
-I think our rationale for the generic change was:
-"Why not? What could go wrong? (TM)"
-I am not sure if any workload really gained something from this
-kernel cross-fs CFR.
-
-In retrospect, I think it would have been safer to allow cross-fs CFR
-only to the filesystems that implement ->{copy,remap}_file_range()...
-
-Our option now are:
-- Restore the cross-fs restriction into generic_copy_file_range()
-- Explicitly opt-out of CFR per-fs and/or per-file as Nicolas' patch does
-
-Preference anyone?
-
-Thanks,
-Amir.
+--tCXFL2zAXXsGZfua--
