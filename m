@@ -2,493 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB13C3197E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDA83197E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhBLBLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 20:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhBLBHF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 20:07:05 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F9EC061794;
-        Thu, 11 Feb 2021 17:05:58 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id q2so9009670edi.4;
-        Thu, 11 Feb 2021 17:05:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RKakjanRpzIR5MAQb4Sd3TvOnPPsCGh4dNfLAeJvo8c=;
-        b=FwM2Std1N0j9sHa58uQxErecyyMLwYN4b3dT5b/MywugYbHc8Aa36am5sRuJNc3z/q
-         p3HiODGAVwDonkWRbd4UTySrM+T3DYVrX7OCZdLacvlF7hNHppucXmW5vLmOmIx6Smaw
-         PsHXdAwtg2PtaOkDK149ctMvWe+IzfEdWMh8Ksr38PQAI270bYo+R7wTLG2G6Dls4UQz
-         9sTbD87YWnADn8rspKBrzxdcH7NRTMTF3IR2Zr3m+OPxv6fZPRIYLR8Z5RExhoMb/gqG
-         tfVyvJbyNgaeaK0RtNXnZmpljjMvowsvdh1KTMA61po0AzTcJwwwFBdOtbPdYUAhHfU9
-         cO2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RKakjanRpzIR5MAQb4Sd3TvOnPPsCGh4dNfLAeJvo8c=;
-        b=EdsLcRihr18N31fTZ1q72G5k3cbYt66EnQc0qKu6If6o1Z74VVvj8e0kUKJ8W3m7C7
-         /zjMfFieBzugb5a4ZhtX33EoVYpNJoSsXqzmGYvdQ+9oIBztHKea/9T8ymBv74AZNnMv
-         5lmYAZGoDiEEF71ukqo4KKO5Duib7VjtlWk85Eyc8Si6Z8vMmzOWHrCs/4up01kLNKJy
-         sEqbjyi2pEqCMXwP3m998PoMqiW0xcIIHPlnuyAZAbBVuZHO8WVPVyGrRdB1DYed8XLj
-         czhW0abTHXjGuwayGWGqZbY2vbgeNiRFEJx+UHov6AQm0A5qty8+qSTVZ6QiVsO7WuKw
-         PwEA==
-X-Gm-Message-State: AOAM533J1LCx+OX/sQrTdZ/NEVBWzbNSwUHHsccYFShQvje8XES6bZQc
-        La5jgH4KuVoKF8B0bp1s35Y=
-X-Google-Smtp-Source: ABdhPJxz/Wqnk5GJjhE/LiNuGe1IcGrsAJDpZA7zWp0EsxAwCQZe5q0oSj/EGz+7LgVZdykI3jZaew==
-X-Received: by 2002:aa7:cd62:: with SMTP id ca2mr870615edb.94.1613091956625;
-        Thu, 11 Feb 2021 17:05:56 -0800 (PST)
-Received: from localhost.localdomain (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id z13sm5019580edc.73.2021.02.11.17.05.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 17:05:56 -0800 (PST)
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-Subject: [PATCH v4 net-next 9/9] net: dsa: sja1105: offload bridge port flags to device
-Date:   Fri, 12 Feb 2021 03:05:31 +0200
-Message-Id: <20210212010531.2722925-10-olteanv@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210212010531.2722925-1-olteanv@gmail.com>
-References: <20210212010531.2722925-1-olteanv@gmail.com>
+        id S230030AbhBLBLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 20:11:21 -0500
+Received: from mga06.intel.com ([134.134.136.31]:64725 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230344AbhBLBIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 20:08:23 -0500
+IronPort-SDR: B75in2S6/+FLELlhTwlgO1vzy4nSstdmMBFKRFk2ax+5rxAHtpj7CTULSojVwMhQwdpocGLynt
+ LnTzxhfOe9pw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="243840392"
+X-IronPort-AV: E=Sophos;i="5.81,172,1610438400"; 
+   d="scan'208";a="243840392"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 17:07:41 -0800
+IronPort-SDR: 8hCIGhROSfXX8U8q50C7ZgUKWlHHvNJ5KA22+/FHFiuL/MNJ9gdrqBamQJfgGfRmPLqWErJfPh
+ ObIblddJki7g==
+X-IronPort-AV: E=Sophos;i="5.81,172,1610438400"; 
+   d="scan'208";a="397710246"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 17:07:41 -0800
+Date:   Thu, 11 Feb 2021 17:07:41 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Sterba <dsterba@suse.cz>,
+        David Howells <dhowells@redhat.com>,
+        David Sterba <dsterba@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the btrfs tree with the fscache tree
+Message-ID: <20210212010740.GP3014244@iweiny-DESK2.sc.intel.com>
+References: <20210212103810.170b93e8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212103810.170b93e8@canb.auug.org.au>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Fri, Feb 12, 2021 at 10:38:10AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the btrfs tree got a conflict in:
+> 
+>   lib/iov_iter.c
+> 
+> between commit:
+> 
+>   11432a3cc061 ("iov_iter: Add ITER_XARRAY")
+> 
+> from the fscache tree and commit:
+> 
+>   325a835476e3 ("iov_iter: Remove memzero_page() in favor of zero_user()")
 
-The chip can configure unicast flooding, broadcast flooding and learning.
-Learning is per port, while flooding is per {ingress, egress} port pair
-and we need to configure the same value for all possible ingress ports
-towards the requested one.
+I don't seem to have that commit after fetching linux-next?  Should I have it?
 
-While multicast flooding is not officially supported, we can hack it by
-using a feature of the second generation (P/Q/R/S) devices, which is that
-FDB entries are maskable, and multicast addresses always have an odd
-first octet. So by putting a match-all for 00:01:00:00:00:00 addr and
-00:01:00:00:00:00 mask at the end of the FDB, we make sure that it is
-always checked last, and does not take precedence in front of any other
-MDB. So it behaves effectively as an unknown multicast entry.
+This is where I fetched from.
 
-For the first generation switches, this feature is not available, so
-unknown multicast will always be treated the same as unknown unicast.
-So the only thing we can do is request the user to offload the settings
-for these 2 flags in tandem, i.e.
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 
-ip link set swp2 type bridge_slave flood off
-Error: sja1105: This chip cannot configure multicast flooding independently of unicast.
-ip link set swp2 type bridge_slave flood off mcast_flood off
-ip link set swp2 type bridge_slave mcast_flood on
-Error: sja1105: This chip cannot configure multicast flooding independently of unicast.
+After doing that I don't see the zero_user() as below.
 
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
----
-Changes in v4:
-Move the restrictions to .port_pre_bridge_flags.
+All that said the resolution below seems correct.
 
-Changes in v3:
-None.
+Ira
 
-Changes in v2:
-Patch is new.
+> 
+> from the btrfs tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc lib/iov_iter.c
+> index 24413884b5ca,aa0d03b33a1e..000000000000
+> --- a/lib/iov_iter.c
+> +++ b/lib/iov_iter.c
+> @@@ -1048,9 -961,8 +1028,9 @@@ size_t iov_iter_zero(size_t bytes, stru
+>   		return pipe_zero(bytes, i);
+>   	iterate_and_advance(i, bytes, v,
+>   		clear_user(v.iov_base, v.iov_len),
+> - 		memzero_page(v.bv_page, v.bv_offset, v.bv_len),
+> + 		zero_user(v.bv_page, v.bv_offset, v.bv_len),
+>  -		memset(v.iov_base, 0, v.iov_len)
+>  +		memset(v.iov_base, 0, v.iov_len),
+> - 		memzero_page(v.bv_page, v.bv_offset, v.bv_len)
+> ++		zero_user(v.bv_page, v.bv_offset, v.bv_len)
+>   	)
+>   
+>   	return bytes;
 
- drivers/net/dsa/sja1105/sja1105.h      |   2 +
- drivers/net/dsa/sja1105/sja1105_main.c | 222 +++++++++++++++++++++++--
- drivers/net/dsa/sja1105/sja1105_spi.c  |   6 +
- 3 files changed, 219 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/dsa/sja1105/sja1105.h b/drivers/net/dsa/sja1105/sja1105.h
-index d582308c2401..15a0893d0ff1 100644
---- a/drivers/net/dsa/sja1105/sja1105.h
-+++ b/drivers/net/dsa/sja1105/sja1105.h
-@@ -94,6 +94,7 @@ struct sja1105_info {
- 	 * pop it when it's equal to TPID2.
- 	 */
- 	u16 qinq_tpid;
-+	bool can_limit_mcast_flood;
- 	int (*reset_cmd)(struct dsa_switch *ds);
- 	int (*setup_rgmii_delay)(const void *ctx, int port);
- 	/* Prototypes from include/net/dsa.h */
-@@ -204,6 +205,7 @@ struct sja1105_private {
- 	bool rgmii_rx_delay[SJA1105_NUM_PORTS];
- 	bool rgmii_tx_delay[SJA1105_NUM_PORTS];
- 	bool best_effort_vlan_filtering;
-+	unsigned long learn_ena;
- 	const struct sja1105_info *info;
- 	struct gpio_desc *reset_gpio;
- 	struct spi_device *spidev;
-diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
-index 282253543f3b..1dad94540cc9 100644
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -25,6 +25,8 @@
- #include "sja1105_sgmii.h"
- #include "sja1105_tas.h"
- 
-+#define SJA1105_UNKNOWN_MULTICAST	0x010000000000ull
-+
- static const struct dsa_switch_ops sja1105_switch_ops;
- 
- static void sja1105_hw_reset(struct gpio_desc *gpio, unsigned int pulse_len,
-@@ -42,15 +44,10 @@ static void
- sja1105_port_allow_traffic(struct sja1105_l2_forwarding_entry *l2_fwd,
- 			   int from, int to, bool allow)
- {
--	if (allow) {
--		l2_fwd[from].bc_domain  |= BIT(to);
-+	if (allow)
- 		l2_fwd[from].reach_port |= BIT(to);
--		l2_fwd[from].fl_domain  |= BIT(to);
--	} else {
--		l2_fwd[from].bc_domain  &= ~BIT(to);
-+	else
- 		l2_fwd[from].reach_port &= ~BIT(to);
--		l2_fwd[from].fl_domain  &= ~BIT(to);
--	}
- }
- 
- /* Structure used to temporarily transport device tree
-@@ -220,17 +217,43 @@ static int sja1105_init_mii_settings(struct sja1105_private *priv,
- 
- static int sja1105_init_static_fdb(struct sja1105_private *priv)
- {
-+	struct sja1105_l2_lookup_entry *l2_lookup;
- 	struct sja1105_table *table;
-+	int port;
- 
- 	table = &priv->static_config.tables[BLK_IDX_L2_LOOKUP];
- 
--	/* We only populate the FDB table through dynamic
--	 * L2 Address Lookup entries
-+	/* We only populate the FDB table through dynamic L2 Address Lookup
-+	 * entries, except for a special entry at the end which is a catch-all
-+	 * for unknown multicast and will be used to control flooding domain.
- 	 */
- 	if (table->entry_count) {
- 		kfree(table->entries);
- 		table->entry_count = 0;
- 	}
-+
-+	if (!priv->info->can_limit_mcast_flood)
-+		return 0;
-+
-+	table->entries = kcalloc(1, table->ops->unpacked_entry_size,
-+				 GFP_KERNEL);
-+	if (!table->entries)
-+		return -ENOMEM;
-+
-+	table->entry_count = 1;
-+	l2_lookup = table->entries;
-+
-+	/* All L2 multicast addresses have an odd first octet */
-+	l2_lookup[0].macaddr = SJA1105_UNKNOWN_MULTICAST;
-+	l2_lookup[0].mask_macaddr = SJA1105_UNKNOWN_MULTICAST;
-+	l2_lookup[0].lockeds = true;
-+	l2_lookup[0].index = SJA1105_MAX_L2_LOOKUP_COUNT - 1;
-+
-+	/* Flood multicast to every port by default */
-+	for (port = 0; port < priv->ds->num_ports; port++)
-+		if (!dsa_is_unused_port(priv->ds, port))
-+			l2_lookup[0].destports |= BIT(port);
-+
- 	return 0;
- }
- 
-@@ -390,6 +413,12 @@ static int sja1105_init_l2_forwarding(struct sja1105_private *priv)
- 
- 		sja1105_port_allow_traffic(l2fwd, i, upstream, true);
- 		sja1105_port_allow_traffic(l2fwd, upstream, i, true);
-+
-+		l2fwd[i].bc_domain = BIT(upstream);
-+		l2fwd[i].fl_domain = BIT(upstream);
-+
-+		l2fwd[upstream].bc_domain |= BIT(i);
-+		l2fwd[upstream].fl_domain |= BIT(i);
- 	}
- 	/* Next 8 entries define VLAN PCP mapping from ingress to egress.
- 	 * Create a one-to-one mapping.
-@@ -1514,6 +1543,12 @@ static int sja1105_fdb_dump(struct dsa_switch *ds, int port,
- 		 */
- 		if (!(l2_lookup.destports & BIT(port)))
- 			continue;
-+
-+		/* We need to hide the FDB entry for unknown multicast */
-+		if (l2_lookup.macaddr == SJA1105_UNKNOWN_MULTICAST &&
-+		    l2_lookup.mask_macaddr == SJA1105_UNKNOWN_MULTICAST)
-+			continue;
-+
- 		u64_to_ether_addr(l2_lookup.macaddr, macaddr);
- 
- 		/* We need to hide the dsa_8021q VLANs from the user. */
-@@ -1605,12 +1640,12 @@ static void sja1105_bridge_stp_state_set(struct dsa_switch *ds, int port,
- 	case BR_STATE_LEARNING:
- 		mac[port].ingress   = true;
- 		mac[port].egress    = false;
--		mac[port].dyn_learn = true;
-+		mac[port].dyn_learn = !!(priv->learn_ena & BIT(port));
- 		break;
- 	case BR_STATE_FORWARDING:
- 		mac[port].ingress   = true;
- 		mac[port].egress    = true;
--		mac[port].dyn_learn = true;
-+		mac[port].dyn_learn = !!(priv->learn_ena & BIT(port));
- 		break;
- 	default:
- 		dev_err(ds->dev, "invalid STP state: %d\n", state);
-@@ -3239,6 +3274,169 @@ static void sja1105_port_policer_del(struct dsa_switch *ds, int port)
- 	sja1105_static_config_reload(priv, SJA1105_BEST_EFFORT_POLICING);
- }
- 
-+static int sja1105_port_set_learning(struct sja1105_private *priv, int port,
-+				     bool enabled)
-+{
-+	struct sja1105_mac_config_entry *mac;
-+	int rc;
-+
-+	mac = priv->static_config.tables[BLK_IDX_MAC_CONFIG].entries;
-+
-+	mac[port].dyn_learn = !!(priv->learn_ena & BIT(port));
-+
-+	rc = sja1105_dynamic_config_write(priv, BLK_IDX_MAC_CONFIG, port,
-+					  &mac[port], true);
-+	if (rc)
-+		return rc;
-+
-+	if (enabled)
-+		priv->learn_ena |= BIT(port);
-+	else
-+		priv->learn_ena &= ~BIT(port);
-+
-+	return 0;
-+}
-+
-+/* Common function for unicast and broadcast flood configuration.
-+ * Flooding is configured between each {ingress, egress} port pair, and since
-+ * the bridge's semantics are those of "egress flooding", it means we must
-+ * enable flooding towards this port from all ingress ports that are in the
-+ * same bridge. In practice, we just enable flooding from all possible ingress
-+ * ports regardless of whether they're in the same bridge or not, since the
-+ * reach_port configuration will not allow flooded frames to leak across
-+ * bridging domains anyway.
-+ */
-+static int sja1105_port_ucast_bcast_flood(struct sja1105_private *priv, int to,
-+					  struct switchdev_brport_flags flags)
-+{
-+	struct sja1105_l2_forwarding_entry *l2_fwd;
-+	int from, rc;
-+
-+	l2_fwd = priv->static_config.tables[BLK_IDX_L2_FORWARDING].entries;
-+
-+	for (from = 0; from < priv->ds->num_ports; from++) {
-+		if (dsa_is_unused_port(priv->ds, from))
-+			continue;
-+		if (from == to)
-+			continue;
-+
-+		/* Unicast */
-+		if (flags.mask & BR_FLOOD) {
-+			if (flags.val & BR_FLOOD)
-+				l2_fwd[from].fl_domain |= BIT(to);
-+			else
-+				l2_fwd[from].fl_domain &= ~BIT(to);
-+		}
-+		/* Broadcast */
-+		if (flags.mask & BR_BCAST_FLOOD) {
-+			if (flags.val & BR_BCAST_FLOOD)
-+				l2_fwd[from].bc_domain |= BIT(to);
-+			else
-+				l2_fwd[from].bc_domain &= ~BIT(to);
-+		}
-+
-+		rc = sja1105_dynamic_config_write(priv, BLK_IDX_L2_FORWARDING,
-+						  from, &l2_fwd[from], true);
-+		if (rc < 0)
-+			return rc;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sja1105_port_mcast_flood(struct sja1105_private *priv, int to,
-+				    struct switchdev_brport_flags flags,
-+				    struct netlink_ext_ack *extack)
-+{
-+	struct sja1105_l2_lookup_entry *l2_lookup;
-+	struct sja1105_table *table;
-+	int match;
-+
-+	table = &priv->static_config.tables[BLK_IDX_L2_LOOKUP];
-+	l2_lookup = table->entries;
-+
-+	for (match = 0; match < table->entry_count; match++)
-+		if (l2_lookup[match].macaddr == SJA1105_UNKNOWN_MULTICAST &&
-+		    l2_lookup[match].mask_macaddr == SJA1105_UNKNOWN_MULTICAST)
-+			break;
-+
-+	if (match == table->entry_count) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Could not find FDB entry for unknown multicast");
-+		return -ENOSPC;
-+	}
-+
-+	if (flags.val & BR_MCAST_FLOOD)
-+		l2_lookup[match].destports |= BIT(to);
-+	else
-+		l2_lookup[match].destports &= ~BIT(to);
-+
-+	return sja1105_dynamic_config_write(priv, BLK_IDX_L2_LOOKUP,
-+					    l2_lookup[match].index,
-+					    &l2_lookup[match],
-+					    true);
-+}
-+
-+static int sja1105_port_pre_bridge_flags(struct dsa_switch *ds, int port,
-+					 struct switchdev_brport_flags flags,
-+					 struct netlink_ext_ack *extack)
-+{
-+	struct sja1105_private *priv = ds->priv;
-+
-+	if (flags.mask & ~(BR_LEARNING | BR_FLOOD | BR_MCAST_FLOOD |
-+			   BR_BCAST_FLOOD))
-+		return -EINVAL;
-+
-+	if (flags.mask & (BR_FLOOD | BR_MCAST_FLOOD) &&
-+	    !priv->info->can_limit_mcast_flood) {
-+		bool multicast = !!(flags.val & BR_MCAST_FLOOD);
-+		bool unicast = !!(flags.val & BR_FLOOD);
-+
-+		if (unicast != multicast) {
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "This chip cannot configure multicast flooding independently of unicast");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int sja1105_port_bridge_flags(struct dsa_switch *ds, int port,
-+				     struct switchdev_brport_flags flags,
-+				     struct netlink_ext_ack *extack)
-+{
-+	struct sja1105_private *priv = ds->priv;
-+	int rc;
-+
-+	if (flags.mask & BR_LEARNING) {
-+		bool learn_ena = !!(flags.val & BR_LEARNING);
-+
-+		rc = sja1105_port_set_learning(priv, port, learn_ena);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	if (flags.mask & (BR_FLOOD | BR_BCAST_FLOOD)) {
-+		rc = sja1105_port_ucast_bcast_flood(priv, port, flags);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	/* For chips that can't offload BR_MCAST_FLOOD independently, there
-+	 * is nothing to do here, we ensured the configuration is in sync by
-+	 * offloading BR_FLOOD.
-+	 */
-+	if (flags.mask & BR_MCAST_FLOOD && priv->info->can_limit_mcast_flood) {
-+		rc = sja1105_port_mcast_flood(priv, port, flags,
-+					      extack);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct dsa_switch_ops sja1105_switch_ops = {
- 	.get_tag_protocol	= sja1105_get_tag_protocol,
- 	.setup			= sja1105_setup,
-@@ -3262,6 +3460,8 @@ static const struct dsa_switch_ops sja1105_switch_ops = {
- 	.port_fdb_del		= sja1105_fdb_del,
- 	.port_bridge_join	= sja1105_bridge_join,
- 	.port_bridge_leave	= sja1105_bridge_leave,
-+	.port_pre_bridge_flags	= sja1105_port_pre_bridge_flags,
-+	.port_bridge_flags	= sja1105_port_bridge_flags,
- 	.port_stp_state_set	= sja1105_bridge_stp_state_set,
- 	.port_vlan_filtering	= sja1105_vlan_filtering,
- 	.port_vlan_add		= sja1105_vlan_add,
-diff --git a/drivers/net/dsa/sja1105/sja1105_spi.c b/drivers/net/dsa/sja1105/sja1105_spi.c
-index 591c5734747d..f7a1514f81e8 100644
---- a/drivers/net/dsa/sja1105/sja1105_spi.c
-+++ b/drivers/net/dsa/sja1105/sja1105_spi.c
-@@ -512,6 +512,7 @@ const struct sja1105_info sja1105e_info = {
- 	.static_ops		= sja1105e_table_ops,
- 	.dyn_ops		= sja1105et_dyn_ops,
- 	.qinq_tpid		= ETH_P_8021Q,
-+	.can_limit_mcast_flood	= false,
- 	.ptp_ts_bits		= 24,
- 	.ptpegr_ts_bytes	= 4,
- 	.num_cbs_shapers	= SJA1105ET_MAX_CBS_COUNT,
-@@ -529,6 +530,7 @@ const struct sja1105_info sja1105t_info = {
- 	.static_ops		= sja1105t_table_ops,
- 	.dyn_ops		= sja1105et_dyn_ops,
- 	.qinq_tpid		= ETH_P_8021Q,
-+	.can_limit_mcast_flood	= false,
- 	.ptp_ts_bits		= 24,
- 	.ptpegr_ts_bytes	= 4,
- 	.num_cbs_shapers	= SJA1105ET_MAX_CBS_COUNT,
-@@ -546,6 +548,7 @@ const struct sja1105_info sja1105p_info = {
- 	.static_ops		= sja1105p_table_ops,
- 	.dyn_ops		= sja1105pqrs_dyn_ops,
- 	.qinq_tpid		= ETH_P_8021AD,
-+	.can_limit_mcast_flood	= true,
- 	.ptp_ts_bits		= 32,
- 	.ptpegr_ts_bytes	= 8,
- 	.num_cbs_shapers	= SJA1105PQRS_MAX_CBS_COUNT,
-@@ -564,6 +567,7 @@ const struct sja1105_info sja1105q_info = {
- 	.static_ops		= sja1105q_table_ops,
- 	.dyn_ops		= sja1105pqrs_dyn_ops,
- 	.qinq_tpid		= ETH_P_8021AD,
-+	.can_limit_mcast_flood	= true,
- 	.ptp_ts_bits		= 32,
- 	.ptpegr_ts_bytes	= 8,
- 	.num_cbs_shapers	= SJA1105PQRS_MAX_CBS_COUNT,
-@@ -582,6 +586,7 @@ const struct sja1105_info sja1105r_info = {
- 	.static_ops		= sja1105r_table_ops,
- 	.dyn_ops		= sja1105pqrs_dyn_ops,
- 	.qinq_tpid		= ETH_P_8021AD,
-+	.can_limit_mcast_flood	= true,
- 	.ptp_ts_bits		= 32,
- 	.ptpegr_ts_bytes	= 8,
- 	.num_cbs_shapers	= SJA1105PQRS_MAX_CBS_COUNT,
-@@ -601,6 +606,7 @@ const struct sja1105_info sja1105s_info = {
- 	.dyn_ops		= sja1105pqrs_dyn_ops,
- 	.regs			= &sja1105pqrs_regs,
- 	.qinq_tpid		= ETH_P_8021AD,
-+	.can_limit_mcast_flood	= true,
- 	.ptp_ts_bits		= 32,
- 	.ptpegr_ts_bytes	= 8,
- 	.num_cbs_shapers	= SJA1105PQRS_MAX_CBS_COUNT,
--- 
-2.25.1
 
