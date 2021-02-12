@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D12319F84
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B16319F85
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhBLNJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:09:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36612 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231753AbhBLMtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:49:03 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 348E8AC90;
-        Fri, 12 Feb 2021 12:48:22 +0000 (UTC)
-Message-ID: <cd41a204107900c890b0234847fa0b62701f74cc.camel@suse.de>
-Subject: Re: [PATCH] spi: Skip zero-length transfers in
- spi_transfer_one_message()
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Phil Elwell <phil@raspberrypi.com>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 12 Feb 2021 13:48:21 +0100
-In-Reply-To: <20210212123118.GB6057@sirena.org.uk>
-References: <20210211180820.25757-1-nsaenzjulienne@suse.de>
-         <20210212123118.GB6057@sirena.org.uk>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-v8DGUj7fz+Xkq1UEyNyZ"
-User-Agent: Evolution 3.38.3 
+        id S230242AbhBLNKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:10:20 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35142 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231178AbhBLMto (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:49:44 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11CCmZwY071475;
+        Fri, 12 Feb 2021 06:48:35 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1613134115;
+        bh=SFCHRJEZKuC8tAGhsa/pKFsCkhYCR9NZsOPbGEoRRKU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=cCtjL3XPG0iph9XzEB20haUA3QdIq3oGP9G1scv101jW+MRMWO8Hitk3qwl6f0fS+
+         bJG/4KPV7Mv/RPc8lp3jRxOP7L8QxNbiORUx0kuqBGLbbms5iaD+OSM+1yq1Ee3T+I
+         drl514DiBkNuqt18k8gvM92JdFuYehcNpftl/nIk=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11CCmZuq071363
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Feb 2021 06:48:35 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
+ Feb 2021 06:48:35 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 12 Feb 2021 06:48:35 -0600
+Received: from [10.250.234.16] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11CCmVXk037765;
+        Fri, 12 Feb 2021 06:48:32 -0600
+Subject: Re: [PATCH -next] NTB: Drop kfree for memory allocated with
+ devm_kzalloc
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>, Jon Mason <jdmason@kudzu.us>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     <linux-ntb@googlegroups.com>, <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+References: <20210210075345.1096001-1-weiyongjun1@huawei.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <ede29bb2-d501-4add-979a-baed99fe730c@ti.com>
+Date:   Fri, 12 Feb 2021 18:18:31 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210210075345.1096001-1-weiyongjun1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-v8DGUj7fz+Xkq1UEyNyZ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2021-02-12 at 12:31 +0000, Mark Brown wrote:
-> On Thu, Feb 11, 2021 at 07:08:20PM +0100, Nicolas Saenz Julienne wrote:
->=20
-> > -		if (xfer->tx_buf || xfer->rx_buf) {
-> > +		if ((xfer->tx_buf || xfer->rx_buf) && xfer->len) {
->=20
-> I think the issue here is more that some users were passing in buffers
-> with zero length transfers, the above check was already intended to
-> catch this case but was working on the assumption that if there was
-> nothing to transfer then no buffer would be provided.
+On 10/02/21 1:23 pm, Wei Yongjun wrote:
+> It's not necessary to free memory allocated with devm_kzalloc
+> and using kfree leads to a double free.
+> 
+> Fixes: 363baf7d6051 ("NTB: Add support for EPF PCI-Express Non-Transparent Bridge")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+>  drivers/ntb/hw/epf/ntb_hw_epf.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/ntb/hw/epf/ntb_hw_epf.c b/drivers/ntb/hw/epf/ntb_hw_epf.c
+> index 2cccb7dff5dd..b019755e4e21 100644
+> --- a/drivers/ntb/hw/epf/ntb_hw_epf.c
+> +++ b/drivers/ntb/hw/epf/ntb_hw_epf.c
+> @@ -723,7 +723,6 @@ static void ntb_epf_pci_remove(struct pci_dev *pdev)
+>  	ntb_unregister_device(&ndev->ntb);
+>  	ntb_epf_cleanup_isr(ndev);
+>  	ntb_epf_deinit_pci(ndev);
+> -	kfree(ndev);
+>  }
 
-Fair enough, maybe it makes sense to move the check into __spi_validate() a=
-nd
-propagate an error upwards?
-
-Regads,
-Nicolas
-
-
---=-v8DGUj7fz+Xkq1UEyNyZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAmeRUACgkQlfZmHno8
-x/7SsQf/TdB8vXIJOKUbyFOgMkt+2pL2NOhrR7/gOHjvswb5nPNd6x4hOAl1tPiM
-8As/5uPnXbPvxhmsMzsXKjwcylJDD5z00lFCXNZNzmxOBGcBnEtfwDD9/9nTpke6
-T5EsTsbMAU+nLbzlmX0pR6z0FGpzQkToxop0X+mp2IX8Hdxt9FwepKB3MdnC/Oq9
-Af4G9mp0pd8tjEHmjckZLfAymQ4mJ1HW/xwSk6bnv1mG34UysJYWIOBfsx/IQM4F
-OSTjB+D/2yDcA6eS2MceKh9qV0CJA5UPEW3Z2zVfw9tq/R8/8iuzsjcoMPWY2bXL
-xW8iaDHqlzwPJkY6WfkQdbLNnQuR3Q==
-=2avD
------END PGP SIGNATURE-----
-
---=-v8DGUj7fz+Xkq1UEyNyZ--
-
+Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
+>  
+>  static const struct ntb_epf_data j721e_data = {
+> 
