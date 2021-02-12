@@ -2,120 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B46319B5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CA3319B63
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbhBLIkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 03:40:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230024AbhBLIkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 03:40:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 067FE64E56;
-        Fri, 12 Feb 2021 08:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613119160;
-        bh=0RDCEB1dSflSI5nXa6iE2Jxwnf0NqSgsW3CVWb/ar0s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MZ5p1Ys1bWM0d6fl/J6/taMlmNOgtsUk5QeqdLJFBxFzkW+ib/PuT7SYGiDw6tUdp
-         tkUPM/5T957Wvnol1T15QrBHtP5UTQvUbpMdlTHVLSN4Upwl762SdgYmYmgW6zrozE
-         WZ0oHcjBTemixcSjxS3hGojvNqv2PYBUsE3Ka/Wc=
-Date:   Fri, 12 Feb 2021 09:39:18 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
- is generated
-Message-ID: <YCY+tjPgcDmgmVD1@kroah.com>
-References: <20210212044405.4120619-1-drinkcat@chromium.org>
- <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
- <YCYybUg4d3+Oij4N@kroah.com>
- <CAOQ4uxhovoZ4S3WhXwgYDeOeomBxfQ1BdzSyGdqoVX6boDOkeA@mail.gmail.com>
+        id S230142AbhBLIle convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Feb 2021 03:41:34 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4627 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230201AbhBLIlD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 03:41:03 -0500
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DcRjm3md3zY7bG;
+        Fri, 12 Feb 2021 16:38:52 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 12 Feb 2021 16:40:09 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 12 Feb 2021 16:40:09 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Fri, 12 Feb 2021 16:40:09 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+CC:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        "sjenning@linux.vnet.ibm.com" <sjenning@linux.vnet.ibm.com>,
+        "Linux List Kernel Mailing" <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: RE: kernel BUG at mm/zswap.c:1275! (rc6 - git 61556703b610)
+Thread-Topic: kernel BUG at mm/zswap.c:1275! (rc6 - git 61556703b610)
+Thread-Index: AQHXAFP/pTUK4Kj84UiROgFUcTG6DapSwoOggADb+QCAAJRVcA==
+Date:   Fri, 12 Feb 2021 08:40:09 +0000
+Message-ID: <1ad147ed4e71406698f5df9305acfe38@hisilicon.com>
+References: <CABXGCsNEUpv9x93UeCa-wOjE0LgUdTCY2FTABJeFL=gGq4SX_g@mail.gmail.com>
+ <2538f4c21dd2405aac2abb776047a0fa@hisilicon.com>
+ <20210212074234.vumx4odistyhbu4m@spock.localdomain>
+In-Reply-To: <20210212074234.vumx4odistyhbu4m@spock.localdomain>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.192]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxhovoZ4S3WhXwgYDeOeomBxfQ1BdzSyGdqoVX6boDOkeA@mail.gmail.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 10:22:16AM +0200, Amir Goldstein wrote:
-> On Fri, Feb 12, 2021 at 9:49 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+
+
+> -----Original Message-----
+> From: Oleksandr Natalenko [mailto:oleksandr@natalenko.name]
+> Sent: Friday, February 12, 2021 8:43 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>;
+> sjenning@linux.vnet.ibm.com; Linux List Kernel Mailing
+> <linux-kernel@vger.kernel.org>; Linux Memory Management List
+> <linux-mm@kvack.org>
+> Subject: Re: kernel BUG at mm/zswap.c:1275! (rc6 - git 61556703b610)
+> 
+> Hello.
+> 
+> On Thu, Feb 11, 2021 at 10:43:18AM +0000, Song Bao Hua (Barry Song) wrote:
+> > Are you using zsmalloc? There is a known bug on the combination
+> > of zsmalloc and zswap, fixed by patches of tiantao:
 > >
-> > On Fri, Feb 12, 2021 at 12:44:00PM +0800, Nicolas Boichat wrote:
-> > > Filesystems such as procfs and sysfs generate their content at
-> > > runtime. This implies the file sizes do not usually match the
-> > > amount of data that can be read from the file, and that seeking
-> > > may not work as intended.
-> > >
-> > > This will be useful to disallow copy_file_range with input files
-> > > from such filesystems.
-> > >
-> > > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> > > ---
-> > > I first thought of adding a new field to struct file_operations,
-> > > but that doesn't quite scale as every single file creation
-> > > operation would need to be modified.
+> > mm: set the sleep_mapped to true for zbud and z3fold
+> > mm/zswap: fix variable 'entry' is uninitialized when used
+> > mm/zswap: fix potential memory leak
+> > mm/zswap: add the flag can_sleep_mapped
 > >
-> > Even so, you missed a load of filesystems in the kernel with this patch
-> > series, what makes the ones you did mark here different from the
-> > "internal" filesystems that you did not?
+> > at Linux-next:
 > >
-> > This feels wrong, why is userspace suddenly breaking?  What changed in
-> > the kernel that caused this?  Procfs has been around for a _very_ long
-> > time :)
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?q
+> t=author&q=tiantao6%40hisilicon.com
 > 
-> That would be because of (v5.3):
+> Is this a future stable-5.11 material (and/or, potentially, older stable
+> branches
+> as well)?
+
+I would believe this should be put into 5.11. I will ask Andrew.
+
 > 
-> 5dae222a5ff0 vfs: allow copy_file_range to copy across devices
-> 
-> The intention of this change (series) was to allow server side copy
-> for nfs and cifs via copy_file_range().
-> This is mostly work by Dave Chinner that I picked up following requests
-> from the NFS folks.
-> 
-> But the above change also includes this generic change:
-> 
-> -       /* this could be relaxed once a method supports cross-fs copies */
-> -       if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
-> -               return -EXDEV;
-> -
-> 
-> The change of behavior was documented in the commit message.
-> It was also documented in:
-> 
-> 88e75e2c5 copy_file_range.2: Kernel v5.3 updates
-> 
-> I think our rationale for the generic change was:
-> "Why not? What could go wrong? (TM)"
-> I am not sure if any workload really gained something from this
-> kernel cross-fs CFR.
+> --
+>   Oleksandr Natalenko (post-factum)
 
-Why not put that check back?
+Thanks
+Barry
 
-> In retrospect, I think it would have been safer to allow cross-fs CFR
-> only to the filesystems that implement ->{copy,remap}_file_range()...
-
-Why not make this change?  That seems easier and should fix this for
-everyone, right?
-
-> Our option now are:
-> - Restore the cross-fs restriction into generic_copy_file_range()
-
-Yes.
-
-> - Explicitly opt-out of CFR per-fs and/or per-file as Nicolas' patch does
-
-No.  That way lies constant auditing and someone being "vigilant" for
-the next 30+ years.  Which will not happen.
-
-thanks,
-
-greg k-h
