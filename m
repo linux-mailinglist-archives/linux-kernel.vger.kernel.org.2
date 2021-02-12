@@ -2,156 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3575B319D4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3F0319D51
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhBLLVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:21:50 -0500
-Received: from mga02.intel.com ([134.134.136.20]:13597 "EHLO mga02.intel.com"
+        id S230134AbhBLLWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:22:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35538 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230206AbhBLLUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:20:16 -0500
-IronPort-SDR: Qegj80yXQGpmEstzuCdfrA+WapeshJPF+QK1inO4hBlGTJCCeUZlIvw0TUlggnxCwgoajC5aC8
- Qlo4FWX/enZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="169524664"
-X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
-   d="scan'208";a="169524664"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 03:19:25 -0800
-IronPort-SDR: o4XUVyapFaA4ncOLCojy9ctX5wTK4EP0Z8qRnofniDW/2mnGpL1xDKer7kIWCN+4Nan7JWx5bj
- +IaNtV+9xL6A==
-X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
-   d="scan'208";a="397941401"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 03:19:24 -0800
-Date:   Fri, 12 Feb 2021 19:19:21 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-next@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] virt: acrn: Fix vCPU removing code build error
-Message-ID: <20210212111921.GA30008@shuo-intel.sh.intel.com>
-References: <20210212045724.77846-1-shuo.a.liu@intel.com>
- <YCYzwVE0wm5osXGF@kroah.com>
- <20210212105853.GF15601@shuo-intel.sh.intel.com>
- <YCZgOrbH7txiOedo@kroah.com>
+        id S230259AbhBLLVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 06:21:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6DE31AC69;
+        Fri, 12 Feb 2021 11:20:17 +0000 (UTC)
+Message-ID: <97eef5ad872b08b174dfd4ed903508371b1baaa5.camel@suse.de>
+Subject: Re: [PATCH v2 14/15] ARM: dts: bcm2711: Add the BSC interrupt
+ controller
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Date:   Fri, 12 Feb 2021 12:20:14 +0100
+In-Reply-To: <d4f8c89b-9bab-3dce-1f05-aeef39f64211@gmail.com>
+References: <20210111142309.193441-1-maxime@cerno.tech>
+         <20210111142309.193441-15-maxime@cerno.tech>
+         <CAPY8ntC7U1BAVT8xe0emX19p4mCu-BQOeBeC-CDgKjE+asZKRQ@mail.gmail.com>
+         <20210210144043.s4plyc7ekwnnu7k4@gilmour>
+         <9d868bf76072fee7838b6f2ff73a575c@kernel.org>
+         <CAPY8ntCG3vLy1NWNF09DEZWE-t_xc+q5m89Jv8GB8GofBLVp3Q@mail.gmail.com>
+         <d4f8c89b-9bab-3dce-1f05-aeef39f64211@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-c2ZiMS/8MK1k9wh+A4JP"
+User-Agent: Evolution 3.38.3 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YCZgOrbH7txiOedo@kroah.com>
-User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 12.Feb'21 at 12:02:18 +0100, Greg Kroah-Hartman wrote:
->On Fri, Feb 12, 2021 at 06:58:53PM +0800, Shuo A Liu wrote:
->> Hi Greg,
->>
->> On Fri 12.Feb'21 at  8:52:33 +0100, Greg Kroah-Hartman wrote:
->> > On Fri, Feb 12, 2021 at 12:57:24PM +0800, shuo.a.liu@intel.com wrote:
->> > > From: Shuo Liu <shuo.a.liu@intel.com>
->> > >
->> > > vCPU removing code depends on CONFIG_HOTPLUG_CPU as it uses remove_cpu()
->> > > and add_cpu(). Make the vCPU removing interface building with
->> > > CONFIG_HOTPLUG_CPU.
->> > >
->> > > ../drivers/virt/acrn/hsm.c: In function ‘remove_cpu_store’:
->> > > ../drivers/virt/acrn/hsm.c:389:3: error: implicit declaration of function ‘remove_cpu’; [-Werror=implicit-function-declaration]
->> > >    remove_cpu(cpu);
->> > >
->> > > ../drivers/virt/acrn/hsm.c:402:2: error: implicit declaration of function ‘add_cpu’; [-Werror=implicit-function-declaration]
->> > >    add_cpu(cpu);
->> > >
->> > > Fixes: 279dcf693ac7 ("virt: acrn: Introduce an interface for Service VM to control vCPU")
->> > > Reported-by: Randy Dunlap <rdunlap@infradead.org>
->> > > Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
->> > > Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
->> > > ---
->> > >  drivers/virt/acrn/hsm.c | 4 ++++
->> > >  1 file changed, 4 insertions(+)
->> > >
->> > > diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
->> > > index 1f6b7c54a1a4..e340788aacdf 100644
->> > > --- a/drivers/virt/acrn/hsm.c
->> > > +++ b/drivers/virt/acrn/hsm.c
->> > > @@ -372,6 +372,7 @@ static int acrn_dev_release(struct inode *inode, struct file *filp)
->> > >  	return 0;
->> > >  }
->> > >
->> > > +#ifdef CONFIG_HOTPLUG_CPU
->> > >  static ssize_t remove_cpu_store(struct device *dev,
->> > >  				struct device_attribute *attr,
->> > >  				const char *buf, size_t count)
->> > > @@ -403,9 +404,12 @@ static ssize_t remove_cpu_store(struct device *dev,
->> > >  	return ret;
->> > >  }
->> > >  static DEVICE_ATTR_WO(remove_cpu);
->> > > +#endif
->> > >
->> > >  static struct attribute *acrn_attrs[] = {
->> > > +#ifdef CONFIG_HOTPLUG_CPU
->> > >  	&dev_attr_remove_cpu.attr,
->> > > +#endif
->> > >  	NULL
->> > >  };
->> > >
->> > >
->> >
->> > Shouldn't the real solution for this be that remove_cpu() and add_cpu()
->> > have function prototypes for when this is not enabled in the kernel
->> > build?
->>
->> Something like this in linux/cpu.h?
->>
->> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
->> index 3aaa0687e8df..94a578a96202 100644
->> --- a/include/linux/cpu.h
->> +++ b/include/linux/cpu.h
->> @@ -108,6 +108,8 @@ static inline void cpu_maps_update_done(void)
->> {
->> }
->>
->> +static inline int add_cpu(unsigned int cpu) { return 0;}
->> +
->> #endif /* CONFIG_SMP */
->> extern struct bus_type cpu_subsys;
->>
->> @@ -137,6 +139,7 @@ static inline int  cpus_read_trylock(void) { return
->> true; }
->> static inline void lockdep_assert_cpus_held(void) { }
->> static inline void cpu_hotplug_disable(void) { }
->> static inline void cpu_hotplug_enable(void) { }
->> +static inline int remove_cpu(unsigned int cpu) { return -EPERM; }
->> static inline void smp_shutdown_nonboot_cpus(unsigned int primary_cpu)
->> { }
->> #endif /* !CONFIG_HOTPLUG_CPU */
->>
->>
->> >
->> > Putting #ifdef in .c files like this is not a good idea at all.
->> >
->> > Then, at runtime, you can determine if you need to create this sysfs
->> > file or not, as you do not want to expose it to userspace if the kernel
->> > can not handle it, right?
->>
->> Right. I don't want to expose the sysfs to userspace if the kernel built
->> w/o CONFIG_HOTPLUG_CPU. But how to implement that if #ifdef is not used?
->> misc_register() creates sysfs with .groups (acrn_attr_groups)
->> unconditionally, then userspace can see the interface even it doesn't
->> work.
->
->Use the is_visible() callback for your attribute group.
 
-Thanks for the guide, is_visible() is good. Seems good i can provide the
-callback with 
-	return IS_ENABLED(CONFIG_HOTPLUG_CPU);
+--=-c2ZiMS/8MK1k9wh+A4JP
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Will update in v2.
+On Wed, 2021-02-10 at 10:49 -0800, Florian Fainelli wrote:
+> On 2/10/21 7:49 AM, Dave Stevenson wrote:
+> > Hi Marc.
+> >=20
+> > On Wed, 10 Feb 2021 at 15:30, Marc Zyngier <maz@kernel.org> wrote:
+> > >=20
+> > > Hi Maxime,
+> > >=20
+> > > On 2021-02-10 14:40, Maxime Ripard wrote:
+> > > > Hi Dave,
+> > > >=20
+> > > > On Tue, Feb 09, 2021 at 09:49:05AM +0000, Dave Stevenson wrote:
+> > > > > On Mon, 11 Jan 2021 at 14:23, Maxime Ripard <maxime@cerno.tech> w=
+rote:
+> > > > > >=20
+> > > > > > The BSC controllers used for the HDMI DDC have an interrupt con=
+troller
+> > > > > > shared between both instances. Let's add it to avoid polling.
+> > > > >=20
+> > > > > This seems to have unintended side effects.
+> > > > > GIC interrupt 117 is shared between the standard I2C controllers
+> > > > > (i2c-bcm2835) and the l2-intc block handling the HDMI I2C interru=
+pts.
+> > > > >=20
+> > > > > Whilst i2c-bcm2835 requests the interrupt with IRQF_SHARED, that
+> > > > > doesn't appear to be an option for l2-intc registering as an inte=
+rrupt
+> > > > > controller. i2c-bcm2835 therefore loses out and fails to register=
+ for
+> > > > > the interrupt.
+> > > > >=20
+> > > > > Is there an equivalent flag that an interrupt controller can add =
+to
+> > > > > say that the parent interrupt is shared? Is that even supported?
+> > > >=20
+> > > > Indeed, it looks like setting an equivalent to IRQF_SHARED would be=
+ the
+> > > > solution, but I couldn't find anything that would allow us to in th=
+e
+> > > > irqchip code.
+> > > >=20
+> > > > Marc, Thomas, is it something that is allowed?
+> > >=20
+> > > No, not really. That's because the chained handler is actually an
+> > > interrupt flow, and not a normal handler. IRQF_SHARED acts at the wro=
+ng
+> > > level for that.
+> > >=20
+> > > I can see two possibilities:
+> > >=20
+> > > - the l2-intc gets turned into a normal handler, and does the demux
+> > > =C2=A0=C2=A0=C2=A0from there. Horrible stuff.
+> > >=20
+> > > - the i2c controller gets parented to the l2c-int as a fake interrupt=
+,
+> > > =C2=A0=C2=A0=C2=A0and gets called from there. Horrible stuff.
+> > >=20
+> > > Pick your poison... :-/
+> >=20
+> > Thanks for the info.
+> >=20
+> > Option 3 - remove l2-intc and drop back to polling the i2c-brcmstb
+> > blocks (which the driver supports anyway).
+> > HDMI I2C generally isn't heavily used once displays are connected, so
+> > I'd be OK with that.
+> >=20
+> > (We can keep the l2-intc that handles CEC and HPD as that is on a
+> > unique GIC interrupt).
+>=20
+> Agreed, Maxime or Nicolas do you want me to send a revert of this patch?
 
-Thanks
-shuo
+Reverting seems the safe move, but I'll defer to whatever Maxime says.
+
+Regards,
+Nicolas
+
+
+--=-c2ZiMS/8MK1k9wh+A4JP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAmZG4ACgkQlfZmHno8
+x/5YOgf/R/l8SyblxkstWXvc6zfCjfB89hKUbIctbdEK1RHkvwIvanO4qScRUL4d
+EaUHq3za69fXEHf6Uplk+nANGMncTVG3nDlpD60vjf1/v4hixsn+7j8bf1eFiKF3
+i71eFfzGgEjh2v5k+qjzfDdjYbs5y2QuT7u1Dfrr+RmRt/vX2MB/8yuByXHl5+iV
+54WT4Qo9BRUIWeAIPBg9ewTT9+d/Fg+NcxjPxe5daoYJcj6VLRcr61MG2QK7+t/d
+LoxHQGBqkWdrBE930lYCGMeA/NtMExYdiUEyf0jHhDMkONb+lvQ8F3Hy5aK6bqcK
+SfTZI6wEcCZkB2q+GrVmTXf5EE6BXA==
+=TacG
+-----END PGP SIGNATURE-----
+
+--=-c2ZiMS/8MK1k9wh+A4JP--
 
