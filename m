@@ -2,159 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A13319DD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 618D4319DDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhBLMDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:03:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:35890 "EHLO foss.arm.com"
+        id S231231AbhBLMF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:05:56 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:47052 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229992AbhBLMBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:01:08 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 48B8A113E;
-        Fri, 12 Feb 2021 04:00:22 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80EA73F719;
-        Fri, 12 Feb 2021 04:00:20 -0800 (PST)
-Date:   Fri, 12 Feb 2021 12:00:15 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH v13 6/7] arm64: mte: Report async tag faults before
- suspend
-Message-ID: <20210212120015.GA18281@e121166-lin.cambridge.arm.com>
-References: <20210211153353.29094-1-vincenzo.frascino@arm.com>
- <20210211153353.29094-7-vincenzo.frascino@arm.com>
+        id S230510AbhBLMFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:05:21 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 903B0FB03;
+        Fri, 12 Feb 2021 13:04:38 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id tTQevExgCqMb; Fri, 12 Feb 2021 13:04:34 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 866B14188B; Fri, 12 Feb 2021 13:04:33 +0100 (CET)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [PATCH v2 0/4] usb: typec: tps6598x: Add IRQ flag and register tracing
+Date:   Fri, 12 Feb 2021 13:04:29 +0100
+Message-Id: <cover.1613131413.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211153353.29094-7-vincenzo.frascino@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 03:33:52PM +0000, Vincenzo Frascino wrote:
-> When MTE async mode is enabled TFSR_EL1 contains the accumulative
-> asynchronous tag check faults for EL1 and EL0.
-> 
-> During the suspend/resume operations the firmware might perform some
-> operations that could change the state of the register resulting in
-> a spurious tag check fault report.
-> 
-> Report asynchronous tag faults before suspend and clear the TFSR_EL1
-> register after resume to prevent this to happen.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> ---
->  arch/arm64/include/asm/mte.h |  4 ++++
->  arch/arm64/kernel/mte.c      | 20 ++++++++++++++++++++
->  arch/arm64/kernel/suspend.c  |  3 +++
->  3 files changed, 27 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> index 43169b978cd3..33e88a470357 100644
-> --- a/arch/arm64/include/asm/mte.h
-> +++ b/arch/arm64/include/asm/mte.h
-> @@ -41,6 +41,7 @@ void mte_sync_tags(pte_t *ptep, pte_t pte);
->  void mte_copy_page_tags(void *kto, const void *kfrom);
->  void flush_mte_state(void);
->  void mte_thread_switch(struct task_struct *next);
-> +void mte_suspend_enter(void);
->  void mte_suspend_exit(void);
->  long set_mte_ctrl(struct task_struct *task, unsigned long arg);
->  long get_mte_ctrl(struct task_struct *task);
-> @@ -66,6 +67,9 @@ static inline void flush_mte_state(void)
->  static inline void mte_thread_switch(struct task_struct *next)
->  {
->  }
-> +static inline void mte_suspend_enter(void)
-> +{
-> +}
->  static inline void mte_suspend_exit(void)
->  {
->  }
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index f5aa5bea6dfe..de905102245a 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -258,12 +258,32 @@ void mte_thread_switch(struct task_struct *next)
->  	mte_check_tfsr_el1();
->  }
->  
-> +void mte_suspend_enter(void)
-> +{
-> +	if (!system_supports_mte())
-> +		return;
-> +
-> +	/*
-> +	 * The barriers are required to guarantee that the indirect writes
-> +	 * to TFSR_EL1 are synchronized before we report the state.
-> +	 */
-> +	dsb(nsh);
-> +	isb();
-> +
-> +	/* Report SYS_TFSR_EL1 before suspend entry */
-> +	mte_check_tfsr_el1();
-> +}
-> +
->  void mte_suspend_exit(void)
->  {
->  	if (!system_supports_mte())
->  		return;
->  
->  	update_gcr_el1_excl(gcr_kernel_excl);
-> +
-> +	/* Clear SYS_TFSR_EL1 after suspend exit */
-> +	write_sysreg_s(0, SYS_TFSR_EL1);
+This series adds tracing events for the chips IRQ and registers that are useful
+to figure out the current data and power status. This came about since
+diagnosing why a certain usb-c hub or dp-alt-mode adapter fails is hard with
+the information in /sys/class/typec alone since this does not have a timeline
+of events (and we don't want every typec user having to also buy a PD
+analyzer). With this series debugging these kinds of things starts to become
+fun:
 
-AFAICS it is not needed, it is done already in __cpu_setup() (that is
-called by cpu_resume on return from cpu_suspend() from firmware).
+   # echo 1 > /sys/kernel/debug/tracing/events/tps6598x/enable
+   # cat /sys/kernel/debug/tracing/trace_pipe
+   irq/79-0-003f-526     [003] ....   512.717871: tps6598x_irq: event1=PLUG_EVENT|DATA_STATUS_UPDATE|STATUS_UPDATE, event2=
+   irq/79-0-003f-526     [003] ....   512.722408: tps6598x_status: conn: conn-Ra, pp_5v0: off, pp_hv: off, pp_ext: off, pp_cable: off, pwr-src: vin-3p3, vbus: vSafe0V, usb-host: no, legacy: no, flags: PLUG_PRESENT|PORTROLE|DATAROLE
+   irq/79-0-003f-526     [003] ....   512.727127: tps6598x_data_status: DATA_CONNECTION|USB2_CONNECTION|USB3_CONNECTION
+   irq/79-0-003f-526     [003] ....   512.769571: tps6598x_irq: event1=PP_SWITCH_CHANGED|STATUS_UPDATE, event2=
+   irq/79-0-003f-526     [003] ....   512.773380: tps6598x_status: conn: conn-Ra, pp_5v0: out, pp_hv: off, pp_ext: off, pp_cable: in, pwr-src: vin-3p3, vbus: vSafe0V, usb-host: no, legacy: no, flags: PLUG_PRESENT|PORTROLE|DATAROLE|VCONN
+   irq/79-0-003f-526     [003] ....   512.872450: tps6598x_irq: event1=POWER_STATUS_UPDATE|PD_STATUS_UPDATE, event2=
+   irq/79-0-003f-526     [003] ....   512.876311: tps6598x_status: conn: conn-Ra, pp_5v0: out, pp_hv: off, pp_ext: off, pp_cable: in, pwr-src: vin-3p3, vbus: vSafe0V, usb-host: no, legacy: no, flags: PLUG_PRESENT|PORTROLE|DATAROLE|VCONN
+   irq/79-0-003f-526     [003] ....   512.880237: tps6598x_power_status: conn: 1, pwr-role: source, typec: usb, bc: sdp
+   irq/79-0-003f-526     [003] ....   513.072682: tps6598x_irq: event1=STATUS_UPDATE, event2=
+   irq/79-0-003f-526     [003] ....   513.076390: tps6598x_status: conn: conn-Ra, pp_5v0: out, pp_hv: off, pp_ext: off, pp_cable: in, pwr-src: vin-3p3, vbus: vSafe5V, usb-host: no, legacy: no, flags: PLUG_PRESENT|PORTROLE|DATAROLE|VCONN
+   irq/79-0-003f-526     [003] ....   513.090676: tps6598x_irq: event1=ERROR_CANNOT_PROVIDE_PWR, event2=
+   irq/79-0-003f-526     [003] ....   513.094368: tps6598x_status: conn: conn-Ra, pp_5v0: out, pp_hv: off, pp_ext: off, pp_cable: in, pwr-src: vin-3p3, vbus: vSafe5V, usb-host: no, legacy: no, flags: PLUG_PRESENT|PORTROLE|DATAROLE|VCONN
+   irq/79-0-003f-526     [003] ....   513.109606: tps6598x_irq: event1=NEW_CONTRACT_AS_PROVIDER|POWER_STATUS_UPDATE|STATUS_UPDATE|SRC_TRANSITION, event2=
+   irq/79-0-003f-526     [003] ....   513.113777: tps6598x_status: conn: conn-Ra, pp_5v0: out, pp_hv: off, pp_ext: off, pp_cable: in, pwr-src: vin-3p3, vbus: pd, usb-host: no, legacy: no, flags: PLUG_PRESENT|PORTROLE|DATAROLE|VCONN
+   irq/79-0-003f-526     [003] ....   513.117475: tps6598x_power_status: conn: 1, pwr-role: source, typec: pd, bc: sdp
+   irq/79-0-003f-526     [003] ....   513.137469: tps6598x_irq: event1=VDM_RECEIVED, event2=
+   irq/79-0-003f-526     [003] ....   513.141570: tps6598x_status: conn: conn-Ra, pp_5v0: out, pp_hv: off, pp_ext: off, pp_cable: in, pwr-src: vin-3p3, vbus: pd, usb-host: no, legacy: no, flags: PLUG_PRESENT|PORTROLE|DATAROLE|VCONN
+   irq/79-0-003f-526     [003] ....   513.281926: tps6598x_irq: event1=VDM_RECEIVED, event2=
+   irq/79-0-003f-526     [003] ....   513.285638: tps6598x_status: conn: conn-Ra, pp_5v0: out, pp_hv: off, pp_ext: off, pp_cable: in, pwr-src: vin-3p3, vbus: pd, usb-host: no, legacy: no, flags: PLUG_PRESENT|PORTROLE|DATAROLE|VCONN
+   irq/79-0-003f-526     [003] ....   513.300515: tps6598x_irq: event1=VDM_RECEIVED|DATA_STATUS_UPDATE, event2=
+   irq/79-0-003f-526     [003] ....   513.304226: tps6598x_status: conn: conn-Ra, pp_5v0: out, pp_hv: off, pp_ext: off, pp_cable: in, pwr-src: vin-3p3, vbus: pd, usb-host: no, legacy: no, flags: PLUG_PRESENT|PORTROLE|DATAROLE|VCONN
+   irq/79-0-003f-526     [003] ....   513.308302: tps6598x_data_status: DATA_CONNECTION|USB2_CONNECTION|USB3_CONNECTION|DP_CONNECTION, DP pinout D
 
-However, I have a question. We are relying on context switch to set
-sctlr_el1_tfc0 right ? If that's the case, till the thread resuming from
-low power switches context we are running with SCTLR_EL1_TCF0 not
-reflecting the actual value.
+It should not impose any problems for firmwares that don't have IRQs for the
+registers enabled. The trace will then just be missing those events.
 
-Just making sure that I understand it correctly, I need to check the
-resume from suspend-to-RAM path, it is something that came up with perf
-save/restore already in the past.
+Patch is against next-20210210.
 
-Lorenzo
+changes from v1:
+- Fix issues on 32bit arches and missing include spotted by kbuild
+  (build testes on mips)
 
-> +
->  }
->  
->  long set_mte_ctrl(struct task_struct *task, unsigned long arg)
-> diff --git a/arch/arm64/kernel/suspend.c b/arch/arm64/kernel/suspend.c
-> index a67b37a7a47e..25a02926ad88 100644
-> --- a/arch/arm64/kernel/suspend.c
-> +++ b/arch/arm64/kernel/suspend.c
-> @@ -91,6 +91,9 @@ int cpu_suspend(unsigned long arg, int (*fn)(unsigned long))
->  	unsigned long flags;
->  	struct sleep_stack_data state;
->  
-> +	/* Report any MTE async fault before going to suspend */
-> +	mte_suspend_enter();
-> +
->  	/*
->  	 * From this point debug exceptions are disabled to prevent
->  	 * updates to mdscr register (saved and restored along with
-> -- 
-> 2.30.0
-> 
+
+
+Guido Günther (4):
+  usb: typec: tps6598x: Add trace event for IRQ events
+  usb: typec: tps6598x: Add trace event for status register
+  usb: typec: tps6598x: Add trace event for power status register
+  usb: typec: tps6598x: Add trace event for data status
+
+ drivers/usb/typec/Makefile         |   3 +
+ drivers/usb/typec/tps6598x.c       |  66 ++++---
+ drivers/usb/typec/tps6598x.h       | 185 +++++++++++++++++++
+ drivers/usb/typec/tps6598x_trace.h | 283 +++++++++++++++++++++++++++++
+ 4 files changed, 511 insertions(+), 26 deletions(-)
+ create mode 100644 drivers/usb/typec/tps6598x.h
+ create mode 100644 drivers/usb/typec/tps6598x_trace.h
+
+-- 
+2.30.0
+
