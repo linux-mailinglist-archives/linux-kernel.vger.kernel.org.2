@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC48E31A751
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 679DB31A758
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhBLWGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 17:06:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhBLWG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 17:06:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0132264DE0;
-        Fri, 12 Feb 2021 22:05:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613167547;
-        bh=x7+O4dfMkemD6U+vgZkpKlnW63NDjJ8hkv36eJK9x4o=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=utCEACe2van290abpiVInryUj9yVn2FwsXMbagw9hbUab72VorrpgY32/Amx4utiN
-         j7Mc9urIjizH+MO0kEXOEdRlO76JE8KDEfkf4VWZwpa5zwrsAHPR56JbVeQtLZm12M
-         bt5NlZBF9WzNhSn0NR7WBJh7jZ+hZ/mTGX3E9sSXjoSfOubGx2bNNkcKvhIvonnWu6
-         JniU8yhese97VZl+fQvPXwdJS917BMwsjIXpAOMxS4tvp7ZmpIAVtFA5fW1n1VvGsu
-         HrqDR1yu8d1pn1hjR0JDtDenwDYyBO+cHSWBDZDx/N3OrSRsy+traSF5EdAtnY+kyN
-         qSNMsCRFENbmg==
-Content-Type: text/plain; charset="utf-8"
+        id S229923AbhBLWN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 17:13:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhBLWNx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 17:13:53 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5678EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 14:13:13 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id r38so521190pgk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 14:13:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4Nl/Py1ndXbVVLIJoXB37vggu0Nr5Z73MPLWWsd0ksk=;
+        b=LNj5xQOhiN4K16MHtHzkxeccQuu2Qit93z9VMBmBYOgnQiJsgWLurNXcJahfG4mrv+
+         UWJiUZXGCUqfsTViMGDxIQsFYIwT2Wp1zm/irTU6xljq1pNOHbTag9SU8ue8WMskk1Ic
+         Mli7kW5ERJMDweWbspATca484WYTv55mK99IyOkoewhAR0LBp1u1bHFrzUvvXaDA6rrf
+         qkUkmxtJnZEcUpAgyaaf0K2vDg8iYcyigUXtZUCA1yARKEkO+ZXotzVQBAwWtxH7X3ly
+         EKnBuFgdCCKy1wthKq2WJnyYLMtqCD4g9RXr5ypiw1JLO/yHK8FeT9vc3W4oBlFfSfAN
+         SOrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4Nl/Py1ndXbVVLIJoXB37vggu0Nr5Z73MPLWWsd0ksk=;
+        b=U/iiuXaNZxkHzXJd8s6Cqsrg4LqKJu4vHUmRdSd3nVGT9scvQscLLOsBPl0lcYRpYg
+         Oq5d27nn81sbcaSzZRUKdaHVVEgdSeZUsHEubZdHvXdDIN8YuLGry41U3hiTcGtKrCas
+         kusweyICbDXGdvB7vYvf5nbha6iB5Egd/V/qtVt++ixoHd6UGTAauhDxYqCuLKPgYaSS
+         VdUtuWFsHlP6n9TVjiujNDKpLj1j5yZM8IybxOEXv+716jqT7OAkkb2dJ367e00g0yn1
+         7evS+Ke6ot5eEHAsJGnamSWCD05pss6ne2kOq3rPNx4L91oM1whSndE71NIslavSOgdz
+         BoWw==
+X-Gm-Message-State: AOAM531Z9lZjY8yxi/E7SNh2GM/9+eg29SVp32i/oKmCSaOM5ipi6D3x
+        25xJHh8FfvwO/DT+3PAbg7WnG6hfOFYswA==
+X-Google-Smtp-Source: ABdhPJx8zmHswAB8D7dKDkihjeP2fNqUJtcTmr5AxQn7e4IaaN6EIWGfKQUAi2FSRy4aow09Q1slWQ==
+X-Received: by 2002:a63:cd08:: with SMTP id i8mr5107370pgg.425.1613167992574;
+        Fri, 12 Feb 2021 14:13:12 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:b407:1780:13d2:b27])
+        by smtp.gmail.com with ESMTPSA id o189sm9710742pfd.73.2021.02.12.14.13.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 14:13:11 -0800 (PST)
+Date:   Fri, 12 Feb 2021 14:13:05 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Makarand Sonare <makarandsonare@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, pshier@google.com, jmattson@google.com,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [RESEND PATCH ] KVM: VMX: Enable/disable PML when dirty logging
+ gets enabled/disabled
+Message-ID: <YCb9cUwu+7SrM2sq@google.com>
+References: <20210210212308.2219465-1-makarandsonare@google.com>
+ <YCbE+hJC8xeWnKRg@google.com>
+ <CA+qz5sqFYrFj=0+kq9m4huwkpC6V8MV_vy5c05VNqMgCPw+fDg@mail.gmail.com>
+ <YCbws4v7Up2daHyQ@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210212212630.GD179940@dell>
-References: <20210126124540.3320214-1-lee.jones@linaro.org> <161307643148.1254594.6590013599999468609@swboyd.mtv.corp.google.com> <20210211211054.GD4572@dell> <161309925025.1254594.6210738031889810500@swboyd.mtv.corp.google.com> <20210212092016.GF4572@dell> <161316374113.1254594.14156657225822268891@swboyd.mtv.corp.google.com> <20210212212503.GC179940@dell> <20210212212630.GD179940@dell>
-Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Boris BREZILLON <boris.brezillon@free-electrons.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Emilio =?utf-8?q?L=C3=B3pez?= <emilio@elopez.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jan Kotas <jank@cadence.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-tegra@vger.kernel.org, Loc Ho <lho@apm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Nuvoton Technologies <tali.perry@nuvoton.com>,
-        NXP Linux Team <linux-imx@nxp.com>, openbmc@lists.ozlabs.org,
-        Patrick Venture <venture@google.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
-        Richard Woodruff <r-woodruff2@ti.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        =?utf-8?q?S=C3=B6ren?= Brinkmann <soren.brinkmann@xilinx.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Date:   Fri, 12 Feb 2021 14:05:45 -0800
-Message-ID: <161316754567.1254594.9542583200097699504@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCbws4v7Up2daHyQ@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Lee Jones (2021-02-12 13:26:30)
-> On Fri, 12 Feb 2021, Lee Jones wrote:
->=20
-> > The alternative is to not worry about it and review the slow drip of
-> > fixes that will occur as a result.  The issues I just fixed were built
-> > up over years.  They won't get to that level again.
-> >=20
-> > In my mind contributors should be compiling their submissions with W=3D1
-> > enabled by default.  I'm fairly sure the auto-builders do this now.
+On Fri, Feb 12, 2021, Sean Christopherson wrote:
+> On Fri, Feb 12, 2021, Makarand Sonare wrote:
+> > >> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > >> index 777177ea9a35e..eb6639f0ee7eb 100644
+> > >> --- a/arch/x86/kvm/vmx/vmx.c
+> > >> +++ b/arch/x86/kvm/vmx/vmx.c
+> > >> @@ -4276,7 +4276,7 @@ static void
+> > >> vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+> > >>  	*/
+> > >>  	exec_control &= ~SECONDARY_EXEC_SHADOW_VMCS;
+> > >>
+> > >> -	if (!enable_pml)
+> > >> +	if (!enable_pml || !vcpu->kvm->arch.pml_enabled)
+> > >>  		exec_control &= ~SECONDARY_EXEC_ENABLE_PML;
+> > >
+> > > The checks are unnecessary if PML is dynamically toggled, i.e. this
+> > > snippet can unconditionally clear PML.  When setting SECONDARY_EXEC
+> > > (below snippet), PML will be preserved in the current controls, which is
+> > > what we want.
+> > 
+> > Assuming a new VCPU can be added at a later time after PML is already
+> > enabled, should we clear
+> > PML in VMCS for the new VCPU. If yes what will be the trigger for
+> > setting PML for the new VCPU?
+> 
+> Ah, didn't consider that.  Phooey.
 
-That's good.
+I remember why I thought this could be unconditional.  Adding PML to the list of
+dynamic bits in vmcs_set_secondary_exec_control() effectively makes this code
+unconditional, because it means that current bit will be preserved, including
+the case where PML=0 when a vCPU is created.
 
-> >=20
-> > Once W=3D1 warnings are down to an acceptable level in the kernel as a
-> > whole, we can provide some guidance in SubmittingPatches (or similar)
-> > on how to enable them (hint: you add "W=3D1" on the compile line).
-> >=20
-> > Enabling W=3D1 in the default build will only serve to annoy Linus IMHO.
-> > If he wants them to be enabled by default, they wouldn't be W=3D1 in the
-> > first place, they'd be W=3D0 which *is* the default build.
->=20
-> Just to add real quick - my advice is to enable them for yourself and
-> send back any issues along with your normal review.  A W=3D1 issue is no
-> different to a semantic or coding style one.
->=20
-
-I'd like to enable it for only files under drivers/clk/ but it doesn't
-seem to work. I'm not asking to enable it at the toplevel Makefile. I'm
-asking to enable it for drivers/clk/ so nobody has to think about it now
-that you've done the hard work of getting the numbers in this directory
-down to zero or close to zero.
+I believe the fix is simply to not mark PML as fully dynamic.
