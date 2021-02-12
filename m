@@ -2,114 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6DC319927
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA9C31992F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhBLEc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 23:32:27 -0500
-Received: from ozlabs.org ([203.11.71.1]:35925 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhBLEcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 23:32:25 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DcLDb0s9Fz9sB4;
-        Fri, 12 Feb 2021 15:31:43 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613104303;
-        bh=itmzlFUyHqeL4s3wEw4G0ZaKppPV6xrZiajsKNwmq5c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UWUD/EHB9ckSxYY0kjmpwWrx71QXjtyZnvxMKXWJG/Mq3dYgBM1jv4JgF+Pe30SBl
-         bvq6hAflYEWrJgYvTUO2RQokAxjvVhPFjBTqk+gsJLjNvY5t/yRxHtzEf7gBXmKOG4
-         3hEavcGsxOdz135dumfadoXTP2GzhOm6JMmIdqTR7jWcJiwbIruLqHSOrobdoQPnsT
-         IkRUG6UnXQ4OOeaLvs500DxCiEaSksEpOFc/6q7vhfJy2KmH51nPpEY2acfHuOLYHy
-         1YW2Is6gTeKUMQc+GHFQ36l4I8RYCD8S7iBDkCpGKdQA7FnaBiYWLmrAV27AUE6YdR
-         +lmS6VJETSdVQ==
-Date:   Fri, 12 Feb 2021 15:31:42 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the spi tree with the powerpc tree
-Message-ID: <20210212152755.5c82563a@canb.auug.org.au>
+        id S229674AbhBLEdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 23:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhBLEd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 23:33:29 -0500
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A86C061574;
+        Thu, 11 Feb 2021 20:32:48 -0800 (PST)
+Received: by mail-oo1-xc2e.google.com with SMTP id l5so1812164ooj.7;
+        Thu, 11 Feb 2021 20:32:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xsOPczLGfI7n7RHjYinC5J14JbYSByA43sfelhBS05I=;
+        b=ZlRNJk/jJEBQWTYESFevm5JccRvNWSUEZnY5eOFahj05E3RSxLCMm9muH4aOGubsTg
+         QnyxIaxqj71fzpwiVLCkjS3fAkqHn6ywlDmXQDhj3Mz6X80mus6McECxADVal3tqC4aH
+         9tIXMy3lAehqCurlJpy77R+1Tvpizgf4gkJvWWp6wyJ2Cjd5mn6RT8FITTQGIMvf0U+4
+         2VO6IvtQtSyv0NezcQmDHrM78geazeDQFbTmpZ5IsjtoPgo1Y7y4h8X00+Uk6JJQ/DC7
+         QvRhD7S3hajHKo1/pUl2giox4hExEw4+jcoHFwakUJJVOx3fwRGa6rTghsPkO5PGLmG3
+         zuYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xsOPczLGfI7n7RHjYinC5J14JbYSByA43sfelhBS05I=;
+        b=qLpPfHxCcTW6/9+DGPzh+4DyEdi3xyFB4QAoYxS4GQG0+M9rjC+dJKtCsyiGJWBb39
+         9K8b1D0Z+GiZrUZAcSFEggjnLAlRWmrmBJm/+5mAcNJ+16xrMzABR0FE+95xlzWaz/0E
+         KRgwpFWKHGfNR4rUB3ba65mlyKM6gmOrUAOF4takdWTZHCgaT9kInWZUSyi2b19tfzXr
+         ccAJ6MMUWq/cyexP0EFC8wsVrFJHLx0m3ZTANnRaur2od1WzyJxYoZOF4jwgq0gSDhFQ
+         Xp/7LLpu2y20JQ4utO4HM9RK6CEea2aAvTuWmDjBIERtHSy9ciOeTVwzFYda9AfmQ1aj
+         rDyA==
+X-Gm-Message-State: AOAM530/3Qej921apZ1iDNhPDz7tmhCQBEgXclOnuLKnIPBX4jDTDEPd
+        qfNoDmPOXynCn6VcBp/N7AY=
+X-Google-Smtp-Source: ABdhPJwVS1wmzEazLpd7tf4P2eENTXemBoxf3OO+tRygwVj59uvRBGy2AVfb7PXxCAsmXMaCj3/RFA==
+X-Received: by 2002:a4a:c44d:: with SMTP id h13mr768850ooq.65.1613104368047;
+        Thu, 11 Feb 2021 20:32:48 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p20sm1342727oos.46.2021.02.11.20.32.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 11 Feb 2021 20:32:47 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 11 Feb 2021 20:32:46 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     jdelvare@suse.com, robh+dt@kernel.org, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, linux-doc@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: Re: [PATCH v5 1/3] dt-bindings: hwmon: Add TI TPS23861 bindings
+Message-ID: <20210212043246.GA105010@roeck-us.net>
+References: <20210121134434.2782405-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QoTe.d1fVIKxU/bYVpVZf7q";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121134434.2782405-1-robert.marko@sartura.hr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/QoTe.d1fVIKxU/bYVpVZf7q
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 21, 2021 at 02:44:32PM +0100, Robert Marko wrote:
+> Document bindings for the Texas Instruments TPS23861 driver.
+> 
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Hi all,
+Applied.
 
-Today's linux-next merge of the spi tree got a conflict in:
+Thanks,
+Guenter
 
-  drivers/spi/spi-mpc52xx.c
-
-between commit:
-
-  e10656114d32 ("spi: mpc52xx: Avoid using get_tbl()")
-
-from the powerpc tree and commit:
-
-  258ea99fe25a ("spi: spi-mpc52xx: Use new structure for SPI transfer delay=
-s")
-
-from the spi tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-BTW Mark: the author's address in 258ea99fe25a uses a non existent domain :=
--(
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/spi/spi-mpc52xx.c
-index e6a30f232370,36f941500676..000000000000
---- a/drivers/spi/spi-mpc52xx.c
-+++ b/drivers/spi/spi-mpc52xx.c
-@@@ -247,8 -247,10 +247,10 @@@ static int mpc52xx_spi_fsmstate_transfe
-  	/* Is the transfer complete? */
-  	ms->len--;
-  	if (ms->len =3D=3D 0) {
- -		ms->timestamp =3D get_tbl();
- +		ms->timestamp =3D mftb();
-- 		ms->timestamp +=3D ms->transfer->delay_usecs * tb_ticks_per_usec;
-+ 		if (ms->transfer->delay.unit =3D=3D SPI_DELAY_UNIT_USECS)
-+ 			ms->timestamp +=3D ms->transfer->delay.value *
-+ 					 tb_ticks_per_usec;
-  		ms->state =3D mpc52xx_spi_fsmstate_wait;
-  		return FSM_CONTINUE;
-  	}
-
---Sig_/QoTe.d1fVIKxU/bYVpVZf7q
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAmBK4ACgkQAVBC80lX
-0GxwDgf+LQNlltZd+xuYSuIXW0zN7QqigfOzpezCQv4daK7jfPropPYZyTsC87JK
-lj0vZmkheBapZvKKtKbA1VvhJfeqZsy6ojIc2DsegOmFlBtTiv00xvQ8HKsVvYJs
-bumKRtrExhWzPJb4HiUmJ8OgFbOkwzwxULIsRtmDaNjUrElIOHsq0806OjkmMAJ5
-p92zn/KegmuUjHRzcxU9OqUOffOIvsHDbcrFRg7UyPvw4ZHJgkzMtiobqkYk5MRj
-VIdXT8E7WsSrghK+lbqi7hnmyrB8td65QCzllR6z7kitCDgWFQ9S2Hk6MH8XSTnv
-NFYF5HMm8RprUx/cvXw6PhBQ1CHXQg==
-=9ePJ
------END PGP SIGNATURE-----
-
---Sig_/QoTe.d1fVIKxU/bYVpVZf7q--
+> ---
+> Changes in v5:
+> * Drop uint32 reference
+> 
+> Changes in v4:
+> * Correct shunt binding
+> 
+>  .../bindings/hwmon/ti,tps23861.yaml           | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml b/Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml
+> new file mode 100644
+> index 000000000000..3bc8e73dfbf0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/ti,tps23861.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/hwmon/ti,tps23861.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TI TPS23861 PoE PSE
+> +
+> +maintainers:
+> +  - Robert Marko <robert.marko@sartura.hr>
+> +
+> +description: |
+> +  The TPS23861 is a IEEE 802.3at Quad Port Power-over-Ethernet PSE Controller.
+> +
+> +  Datasheets:
+> +  https://www.ti.com/lit/gpn/tps23861
+> +
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,tps23861
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  shunt-resistor-micro-ohms:
+> +    description: The value of curent sense resistor in microohms.
+> +    default: 255000
+> +    minimum: 250000
+> +    maximum: 255000
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          tps23861@30 {
+> +              compatible = "ti,tps23861";
+> +              reg = <0x30>;
+> +              shunt-resistor-micro-ohms = <255000>;
+> +          };
+> +    };
