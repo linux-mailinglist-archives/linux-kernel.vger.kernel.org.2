@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF09319AD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58531319ADA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhBLHqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 02:46:25 -0500
-Received: from mx.socionext.com ([202.248.49.38]:26054 "EHLO mx.socionext.com"
+        id S230017AbhBLHqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 02:46:42 -0500
+Received: from mx1.emlix.com ([136.243.223.33]:39676 "EHLO mx1.emlix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229913AbhBLHpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 02:45:30 -0500
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 12 Feb 2021 16:44:36 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 6797A2059027;
-        Fri, 12 Feb 2021 16:44:36 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 12 Feb 2021 16:44:36 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id F12F5B1D40;
-        Fri, 12 Feb 2021 16:44:35 +0900 (JST)
-Received: from [10.212.20.145] (unknown [10.212.20.145])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id 44DE21202F7;
-        Fri, 12 Feb 2021 16:44:35 +0900 (JST)
-Subject: Re: [PATCH v2] PCI: designware-ep: Fix the reference to
- pci->num_{ib,ob}_windows before setting
-To:     Rob Herring <robh@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-References: <1611011439-29881-1-git-send-email-hayashi.kunihiko@socionext.com>
- <CAL_JsqLtcXFktBWWqpbYf3B5BR2eUyBsQQ3Q5S3Ma8hn5T5Z0Q@mail.gmail.com>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <216818ce-adee-3c08-7410-1d5d1ef5011c@socionext.com>
-Date:   Fri, 12 Feb 2021 16:44:34 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229625AbhBLHp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 02:45:58 -0500
+Received: from mailer.emlix.com (unknown [81.20.119.6])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.emlix.com (Postfix) with ESMTPS id 3B5F45FA8D;
+        Fri, 12 Feb 2021 08:44:52 +0100 (CET)
+From:   Rolf Eike Beer <eb@emlix.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel =?ISO-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc:     stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: [PATCH] scripts: Fix linking extract-cert against libcrypto
+Date:   Fri, 12 Feb 2021 08:44:46 +0100
+Message-ID: <5043253.pljLzkpU8D@mobilepool36.emlix.com>
+In-Reply-To: <3314666.Em9qtOGRgX@mobilepool36.emlix.com>
+References: <20210209050047.1958473-1-daniel.diaz@linaro.org> <6065587.C4oOSP4HzL@mobilepool36.emlix.com> <3314666.Em9qtOGRgX@mobilepool36.emlix.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLtcXFktBWWqpbYf3B5BR2eUyBsQQ3Q5S3Ma8hn5T5Z0Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="nextPart4651014.Q3cAxzu4sR"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+--nextPart4651014.Q3cAxzu4sR
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Rolf Eike Beer <eb@emlix.com>
+To: Masahiro Yamada <masahiroy@kernel.org>, Michal Marek <michal.lkml@markovi.net>, linux-kbuild@vger.kernel.org, open list <linux-kernel@vger.kernel.org>, Daniel =?ISO-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc: stable@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: [PATCH] scripts: Fix linking extract-cert against libcrypto
+Date: Fri, 12 Feb 2021 08:44:46 +0100
+Message-ID: <5043253.pljLzkpU8D@mobilepool36.emlix.com>
+In-Reply-To: <3314666.Em9qtOGRgX@mobilepool36.emlix.com>
+References: <20210209050047.1958473-1-daniel.diaz@linaro.org> <6065587.C4oOSP4HzL@mobilepool36.emlix.com> <3314666.Em9qtOGRgX@mobilepool36.emlix.com>
 
-I found that this patch would cause null pointer dereference exception
-when removing the function link.
+Am Donnerstag, 11. Februar 2021, 11:29:33 CET schrieb Rolf Eike Beer:
 
-If once linking the test function to the controller,
-   # ln -s functions/pci_epf_test/test controllers/66000000.pcie-ep/
+> I'm just guessing, but your build error looks like you are also
+> cross-building the tools, which is wrong. You want them to be host-tools.
+> So don't export PKG_CONFIG_SYSROOT_DIR, it would then try to link target
+> libraries into a host binary.
 
-and unlinking it immediately,
-   # rm controllers/66000000.pcie-ep/test
+I have looked again how I do it:
 
-then the driver will occur null pointer access in dw_pcie_ep_clear_bar()
-because ep->ib_window_map doesn't have a pointer to allocated memory yet.
+# this is for additional _host_ .pc files
+export PKG_CONFIG_PATH=3D${prefix}/lib/pkgconfig
 
-To fix the original issue, I strongly recommend to apply Hou's patch [1]
-instead of this patch.
+Then have a target-pkg-config, so this code inside several kernel Makefiles=
+=20
+will work:
 
-Thank you,
+PKG_CONFIG ?=3D $(CROSS_COMPILE)pkg-config
 
-[1] https://patchwork.kernel.org/project/linux-pci/patch/20210125044803.4310-1-Zhiqiang.Hou@nxp.com/
+And then export your PKG_CONFIG_SYSROOT_DIR and the like inside that. I bet=
+=20
+you have all of this already in place, so just remove the SYSROOT_DIR from=
+=20
+your kernel build script and things should work.
 
-On 2021/01/21 0:20, Rob Herring wrote:
-> On Mon, Jan 18, 2021 at 5:10 PM Kunihiko Hayashi
-> <hayashi.kunihiko@socionext.com> wrote:
->>
->> The commit 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows") gets
->> the values of pci->num_ib_windows and pci->num_ob_windows from iATU
->> registers instead of DT properties in dw_pcie_iatu_detect_regions*() or its
->> unroll version.
->>
->> However, before the values are set, the allocations in dw_pcie_ep_init()
->> refer them to determine the sizes of window_map. As a result, null pointer
->> dereference exception will occur when linking the EP function and the
->> controller.
->>
->>    # ln -s functions/pci_epf_test/test controllers/66000000.pcie-ep/
->>    Unable to handle kernel NULL pointer dereference at virtual address
->>    0000000000000010
->>
->> The call trace is as follows:
->>
->>    Call trace:
->>     _find_next_bit.constprop.1+0xc/0x88
->>     dw_pcie_ep_set_bar+0x78/0x1f8
->>     pci_epc_set_bar+0x9c/0xe8
->>     pci_epf_test_core_init+0xe8/0x220
->>     pci_epf_test_bind+0x1e0/0x378
->>     pci_epf_bind+0x54/0xb0
->>     pci_epc_epf_link+0x58/0x80
->>     configfs_symlink+0x1c0/0x570
->>     vfs_symlink+0xdc/0x198
->>     do_symlinkat+0xa0/0x110
->>     __arm64_sys_symlinkat+0x28/0x38
->>     el0_svc_common+0x84/0x1a0
->>     do_el0_svc+0x38/0x88
->>     el0_svc+0x1c/0x28
->>     el0_sync_handler+0x88/0xb0
->>     el0_sync+0x140/0x180
->>
->> The pci->num_{ib,ob}_windows should be referenced after they are set by
->> dw_pcie_iatu_detect_regions*() called from dw_pcie_setup().
->>
->> Cc: Rob Herring <robh@kernel.org>
->> Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
->> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
->> ---
->>   drivers/pci/controller/dwc/pcie-designware-ep.c | 41 ++++++++++++-------------
->>   1 file changed, 20 insertions(+), 21 deletions(-)
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
+Eike
+=2D-=20
+Rolf Eike Beer, emlix GmbH, http://www.emlix.com
+=46on +49 551 30664-0, Fax +49 551 30664-11
+Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
+Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
+Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
+=2E: DE 205 198 055
 
--- 
----
-Best Regards
-Kunihiko Hayashi
+emlix - smart embedded open source
+--nextPart4651014.Q3cAxzu4sR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCYCYx7gAKCRCr5FH7Xu2t
+/NFpA/4qRzioJrV+c8gA4uYr32DEh5trgWBTbP6ErS8e9Ow99Qz5lZUI6ZQyBGvT
+I7PizSc19s4hWyt87AbD8syBwBZCRzFkcUYpU4T7a01gIUeQ4Lo7oPIdxG1haO44
+kgujtdugBr13B0/HG71ZZuNK2qstq7lDUaGoUn4f/KVbmKKKug==
+=R6I3
+-----END PGP SIGNATURE-----
+
+--nextPart4651014.Q3cAxzu4sR--
+
+
+
