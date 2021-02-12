@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D4B31A61F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3668331A621
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhBLUhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:37:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60242 "EHLO
+        id S231366AbhBLUiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:38:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbhBLUhc (ORCPT
+        with ESMTP id S231289AbhBLUiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:37:32 -0500
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88894C061574;
-        Fri, 12 Feb 2021 12:36:52 -0800 (PST)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 83F339200BF; Fri, 12 Feb 2021 21:36:49 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 7FCBB9200BC;
-        Fri, 12 Feb 2021 21:36:49 +0100 (CET)
-Date:   Fri, 12 Feb 2021 21:36:49 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH] MIPS: Fix inline asm input/output type mismatch in
- checksum.h used with Clang
-In-Reply-To: <20210127210757.GF21002@alpha.franken.de>
-Message-ID: <alpine.DEB.2.21.2102122116230.35623@angie.orcam.me.uk>
-References: <1611722507-12017-1-git-send-email-yangtiezhu@loongson.cn> <20210127210757.GF21002@alpha.franken.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Fri, 12 Feb 2021 15:38:07 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A7CC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:37:25 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id r2so441546plr.10
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:37:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j66JtDHKSYYacXhJ57b4zqjxRlOZnEcxF+9VBlahFek=;
+        b=CqOjYfESwcESAZCqoaDy3zoo7YyZckVAYKVV/PK+2XaouNfrSmXWecHqTaiaHMe/a8
+         7p4eTSpcXiS1CtvHiwBduKYgH/R6g8rANcQSikbxLfDr6d4I6sDwqPSVFlV9IaOTEKyA
+         1rv3teKLA5/aYfs7Mw50AAJzwDrObXRdWE9YdmfmeQnTULAjALECsTjZ4L70ID/4wW4R
+         3wZEAGTMUQI69NmUcCbccTzzgKPcqIJQgZpfptixtWq2Q3g8JktG85JPUtYgoq8HMoJy
+         qNnIirq1PauaPrhJxjfDlERNnIs6A0EY6smhgYMQ4/xG8nU0e0gCJB5dmqy+63S4bgfo
+         nhsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j66JtDHKSYYacXhJ57b4zqjxRlOZnEcxF+9VBlahFek=;
+        b=slxoWPhSXJ9g1q8xd85jB8egXelK054lyMTYpkyQdzJQvbfRVHFclgi/6KrPuTbiSA
+         D4/IcsGKBHFDcfRg878UjnpqwoaLL1/ZNPTF1muMDdkAY7kRf1jx9IwXMSCiM3NWoCEf
+         BVytnDjtk8ddBCiDIpE7ua1i9jqdOcRlriDIVlmCFTAZ1Qg8Hs1QA2PxDI9q7LJTIiEd
+         vh6It9gmuUGgZt8NQyAKFEVRve1+NHbF/tEJEhfN2/L6jfShbWwbMZflJqdNoqIyOyNq
+         dcZB7YIIrakXGi0hIt7SZU/0JFGKuUPrBdD8yNeIOPadIOeE+GgLgJ0Puu7aLqZ4eiLY
+         Gp5g==
+X-Gm-Message-State: AOAM531kSddZkG4WYgSCqikIZfsLijFWlYCbCKgdYc1tGYaWYmswEl7g
+        xZMOojPKLQ6bYQiVOKSbj9Fhfw==
+X-Google-Smtp-Source: ABdhPJwLZ9yg71nYuePsjWZyRrKAJwDr8Q9E/d/VGQFF6oKWD6sl6WSIZkzoYAG8inLgTxOAvczCFA==
+X-Received: by 2002:a17:902:d886:b029:e1:7784:4db5 with SMTP id b6-20020a170902d886b02900e177844db5mr4407027plz.72.1613162245180;
+        Fri, 12 Feb 2021 12:37:25 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:b407:1780:13d2:b27])
+        by smtp.gmail.com with ESMTPSA id c15sm8572970pjc.46.2021.02.12.12.37.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 12:37:24 -0800 (PST)
+Date:   Fri, 12 Feb 2021 12:37:18 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
+Message-ID: <YCbm/umiGUS7UuVb@google.com>
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CALCETrWPCTmoeFBEJvw98zwNpw316Xii_16COZAWoYNC=obF+w@mail.gmail.com>
+ <YCbfyde9jl7ti0Oz@google.com>
+ <8c23bbfd-e371-a7cf-7f77-ec744181547b@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c23bbfd-e371-a7cf-7f77-ec744181547b@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021, Thomas Bogendoerfer wrote:
-
-> > Fix the following build error when make M=samples/bpf used with Clang:
-> > 
-> >   CLANG-bpf  samples/bpf/sockex2_kern.o
-> > In file included from samples/bpf/sockex2_kern.c:7:
-> > In file included from ./include/uapi/linux/if_tunnel.h:7:
-> > In file included from ./include/linux/ip.h:16:
-> > In file included from ./include/linux/skbuff.h:28:
-> > In file included from ./include/net/checksum.h:22:
-> > ./arch/mips/include/asm/checksum.h:161:9: error: unsupported inline asm: input with type 'unsigned long' matching output with type '__wsum' (aka 'unsigned int')
-> >         : "0" ((__force unsigned long)daddr),
-> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > 1 error generated.
-> > 
-> > This is a known issue on MIPS [1], the changed code can be compiled
-> > successfully by both GCC and Clang.
-> > 
-> > [1] https://lore.kernel.org/linux-mips/CAG_fn=W0JHf8QyUX==+rQMp8PoULHrsQCa9Htffws31ga8k-iw@mail.gmail.com/
-> > 
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> >  arch/mips/include/asm/checksum.h | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
+On Fri, Feb 12, 2021, Dave Hansen wrote:
+> On 2/12/21 12:06 PM, Sean Christopherson wrote:
+> >> What happens if the guest attempts to access a secure GPA that is not
+> >> ACCEPTed?  For example, suppose the VMM does THH.MEM.PAGE.REMOVE on a secure
+> >> address and the guest accesses it, via instruction fetch or data access.
+> >> What happens?
+> > Well, as currently written in the spec, it will generate an EPT violation and
+> > the host will have no choice but to kill the guest.
 > 
-> applied to mips-next.
+> That's actually perfect behavior from my perspective.  Host does
+> something stupid.  Host gets left holding the pieces.  No enabling to do
+> in the guest.
+> 
+> This doesn't *preclude* the possibility that the VMM and guest could
+> establish a protocol to remove guest pages.  It just means that the host
+> can't go it alone and that if they guest and host get out of sync, the
+> guest dies.
+> 
+> In other words, I think I'm rooting for the docs, as written. :)
 
- This is in a performance-critical path (otherwise it wouldn't have been 
-in the form of inline assembly).  Has it been verified that it does not 
-regress code quality with GCC?
+I tentatively agree that the host should not be able to remove pages without
+guest approval, but that's not the only use case for #VE on EPT violations.
+It's not even really an intended use case.
 
- The semantics is clear here: output is in the same register as in input, 
-but the register holds a different local variable in each case.  There's 
-nothing odd about that and the variables can obviously be of a different 
-type each; that's no different to register usage with code produced by the 
-compiler directly itself from a high-level language.
+There needs to be a mechanism for lazy/deferred/on-demand acceptance of pages.
+E.g. pre-accepting every page in a VM with hundreds of GB of memory will be
+ridiculously slow.
 
- I seem to remember discussing the issue before, but I can't remember what 
-the outcome has been WRT filing this as a Clang bug, and archives are not 
-easily available at the moment (I know a mirror exists, but any old links 
-are not relevant there).  Would someone be able to fill me in?
+#VE is the best option to do that:
 
- I think ultimately with any critical piece where a Clang workaround does 
-regress code produced with GCC we do want to go with `#ifdef __clang__' so 
-that good use with GCC is not penalised on one hand and we know the places 
-to revert changes at should Clang ever get fixed.
-
- Otherwise I'll start suspecting that Clang supporters try some kind of an 
-unfair game to gain advantage over GCC, by modifying projects such that 
-the competing compiler produces worse code than it could if Clang was not 
-actively supported.
-
-  Maciej
+  - Relatively sane re-entrancy semantics.
+  - Hardware accelerated.
+  - Doesn't require stealing an IRQ from the guest.
