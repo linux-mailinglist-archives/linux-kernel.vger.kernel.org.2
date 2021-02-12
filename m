@@ -2,123 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6492731A80A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0589831A807
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhBLWtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 17:49:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34135 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232464AbhBLWph (ORCPT
+        id S232604AbhBLWsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 17:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhBLWot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 17:45:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613169850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nUItIC8AvpxN/ifxyQrgm5PhbIt2D7FId215syGUsUA=;
-        b=cuwMLVZ2FzMEVhBupYdFUzTcYJCJAsBrbaSVaW1DJGuErC4uMy5X3491zJvWBIhKYCKpGO
-        eRXMcbZ7/AaeWBahdokZuJcRVj2epfuM3EWg55obuqaXy4UU9agY7qdIfH0YXG4KbxfmjB
-        7OQRgfBkaViXwUbdT5qFjdsgre27QqU=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-p80Ry_zDPfSYDk2eHeclsQ-1; Fri, 12 Feb 2021 17:44:08 -0500
-X-MC-Unique: p80Ry_zDPfSYDk2eHeclsQ-1
-Received: by mail-qt1-f198.google.com with SMTP id d11so1169459qth.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 14:44:08 -0800 (PST)
+        Fri, 12 Feb 2021 17:44:49 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED1BC061574;
+        Fri, 12 Feb 2021 14:44:09 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id d7so704304otq.6;
+        Fri, 12 Feb 2021 14:44:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xbNtLELg1RtFG5KjcFUY5MwAGwBpJT01ZUSEWMmRYHs=;
+        b=ktkbrRhy3LgCj38onsFfpS89UiTL8Robqcs849yOWncrnJ0yIJMs30uR/0fpy1oGed
+         Ofs2HfOtEIXkXz6z8Z8Gkom246Zmg2OkOyDNwgmYJjig6YMaBLoVAHpzzlIZUdFHSXa/
+         DuveQeu/u+rHtHUEU2EHDU2qSBnw75eNSV1u/xAMYl/1w78Zk29wU7LvBXYVie04QLt0
+         VzeWG5q63tksvXlXBr8S6L2bSbiq+zQ4X7UpwF0rkpxgEgaNtPR6cN9LIwC3yarZ1ccW
+         RI2S7mdlEkyT/hz93omwejlS+l35VOadKCDOWyEYvJ3Jv5KKBZvD/jzx4wZ/QQjP+mrY
+         UdqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nUItIC8AvpxN/ifxyQrgm5PhbIt2D7FId215syGUsUA=;
-        b=pjgqWtiFrmFrn4Pvzokn86O/p3Pxm4XniiZ31L/hGPWe8CGNOjuIwINxVTmCgAtXBT
-         b94NSvCQBnjpJlUqt1FoUm75uxDqleg4iYfiPJEnGKYc0YcYrBlMqt8MtIYjqikOunnr
-         bkENcA6hloQySslMYnC0YqmZZo5Cy9DNFaiu3jhVhZ7n824BBaRkvrxYmXqENIZs7GlR
-         J7+/wWMQr3GtU52PYSCbp4UgMU/PISIo8hF/9bgwDS4lGGTe5BJ3tT8MG5W35G/4ENcL
-         TWmEKSK3KbXyctq+JNj/n2qsn+LFcNE3RXmXkKS+KL4QUvqaSsd3OublIsy8Br+OpJFM
-         r5Lw==
-X-Gm-Message-State: AOAM530FhnWaJQ+Iz1hTuFdWPjpIyXou99cVIURcTTTpQCdO45cTntUb
-        vQ/VxlKHVM8lq0D/P7E7DxXjQXSXoGWNYgLymxknMmGPZPKTITNiNGxNLLlfSnqd73tF1sIiGhm
-        e5R1ZSRvKF16mpNOaSTiqka8k
-X-Received: by 2002:aed:2705:: with SMTP id n5mr4756513qtd.36.1613169848289;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xbNtLELg1RtFG5KjcFUY5MwAGwBpJT01ZUSEWMmRYHs=;
+        b=etNmsj2kvXzSIW94Io7lvP1FUxHOVT7AFiKj2qvEwJr1JNxyeIK1tURQPTn9k+b4AT
+         cPdttbZvGE8W9CTZ/hO/+KO7afb+CFGN3wGUZgpIx6wEwFJSVfIkOUMw7ZNDuUjvOqQw
+         2DbalK3M5o7RzD8TLYVlleI1v3VC82zkEGlZJXBDA2khsE04enzosMHElpY0PhROyPrm
+         WhBSpJRP9gBbDAJJtJek+wmrX0KELfIBxDqnCfav89clWg3QZm2dOEMhHIY+lT4l1grO
+         x+/vGGHgv0F1Aiy9wFw3+8ueNKwyH/wMF/OEwNsPcq90LKJ3aEm4WN+QihMt/ywGSq4D
+         gfBA==
+X-Gm-Message-State: AOAM533Yt9ufH2PlHzk8HIVBnOX5MMbh6B7vSFJKyx3dAoud3WiUuywJ
+        7ZjD69vjjVzpOGfX4mQRpZk=
+X-Google-Smtp-Source: ABdhPJygl/LHWfpGbSMmOYXjMukxoaH5L5TIqxidgD3lkdNSLK1Ta2BaKL+Cwljdtk4v6qJZMcZkeg==
+X-Received: by 2002:a9d:74c6:: with SMTP id a6mr3692163otl.369.1613169848900;
         Fri, 12 Feb 2021 14:44:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJybkH7EUY1ijGZtLtkL/3zdNnvQq/skhUoxC9qRmqlhCz+jadj7lnP17oSpV43oxXUFKfZbcw==
-X-Received: by 2002:aed:2705:: with SMTP id n5mr4756479qtd.36.1613169848101;
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 18sm1934991oti.30.2021.02.12.14.44.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
         Fri, 12 Feb 2021 14:44:08 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id f188sm7216631qkj.110.2021.02.12.14.44.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 14:44:07 -0800 (PST)
-Date:   Fri, 12 Feb 2021 17:44:05 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v5 05/10] userfaultfd: add minor fault registration mode
-Message-ID: <20210212224405.GF3171@xz-x1>
-References: <20210210212200.1097784-1-axelrasmussen@google.com>
- <20210210212200.1097784-6-axelrasmussen@google.com>
- <CAJHvVch8jmqu=Hi9=1CHzPHJfZCRvSb6g7xngSBDQ_nDfSj-gA@mail.gmail.com>
- <20210212222145.GB2858050@casper.infradead.org>
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 12 Feb 2021 14:44:06 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Rob Herring <robh@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] scripts/dtc: Update to upstream version
+ v1.6.0-51-g183df9e9c2b9
+Message-ID: <20210212224406.GB115630@roeck-us.net>
+References: <20210212033120.GA100407@roeck-us.net>
+ <CAL_JsqLm3mHdPg4wkdhoFXNY1JgTJ56dxi3oLqBS_NBrX=rOfw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210212222145.GB2858050@casper.infradead.org>
+In-Reply-To: <CAL_JsqLm3mHdPg4wkdhoFXNY1JgTJ56dxi3oLqBS_NBrX=rOfw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 10:21:45PM +0000, Matthew Wilcox wrote:
-> On Thu, Feb 11, 2021 at 11:28:09AM -0800, Axel Rasmussen wrote:
-> > Ah, I had added this just after VM_UFFD_WP, without noticing that this
-> > would be sharing a bit with VM_LOCKED. That seems like not such a
-> > great idea.
-> > 
-> > I don't see another unused bit, and I don't see some other obvious
-> > candidate to share with. So, the solution that comes to mind is
+On Fri, Feb 12, 2021 at 08:16:04AM -0600, Rob Herring wrote:
+> On Thu, Feb 11, 2021 at 9:31 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > Hi Rob,
+> >
+> > On Wed, Feb 03, 2021 at 03:26:03PM -0600, Rob Herring wrote:
+> > > This adds the following commits from upstream:
+> > >
+> > > 183df9e9c2b9 gitignore: Ignore the swp files
+> > > 0db6d09584e1 gitignore: Add cscope files
+> > > 307afa1a7be8 Update Jon Loeliger's email
+> > > ca16a723fa9d fdtdump: Fix gcc11 warning
+> > > 64990a272e8f srcpos: increase MAX_SRCFILE_DEPTH
+> > > 163f0469bf2e dtc: Allow overlays to have .dtbo extension
+> > > 3b01518e688d Set last_comp_version correctly in new dtb and fix potential version issues in fdt_open_into
+> > > f7e5737f26aa tests: Fix overlay_overlay_nosugar test case
+> > > 7cd5d5fe43d5 libfdt: Tweak description of assume-aligned load helpers
+> > > a7c404099349 libfdt: Internally perform potentially unaligned loads
+> > > bab85e48a6f4 meson: increase default timeout for tests
+> > > f8b46098824d meson: do not assume python is installed, skip tests
+> > > 30a56bce4f0b meson: fix -Wall warning
+> > > 5e735860c478 libfdt: Check for 8-byte address alignment in fdt_ro_probe_()
+> > > 67849a327927 build-sys: add meson build
+> > > 05874d08212d pylibfdt: allow build out of tree
+> > > 3bc3a6b9fe0c dtc: Fix signedness comparisons warnings: Wrap (-1)
+> > > e1147b159e92 dtc: Fix signedness comparisons warnings: change types
+> > > 04cf1fdc0fcf convert-dtsv0: Fix signedness comparisons warning
+> > > b30013edb878 libfdt: Fix kernel-doc comments
+> > >
+> > > Signed-off-by: Rob Herring <robh@kernel.org>
+> >
+> > This patch causes my little-endian microblaze qemu emulations to fail
+> > silently (no console output) in next-20210211. Reverting this patch
+> > together with "scripts: dtc: Build fdtoverlay tool" fixes the problem.
 > 
-> it'd be even better if you didn't use the last unused bit for UFFD_WP.
-> not sure how feasible that is, but you can see we're really short on
-> bits here.
+> My guess would be something in libfdt. Maybe 7cd5d5fe43d5 or
+> a7c404099349, though that should return to historical behavior.
+> 
 
-UFFD_WP is used now for anonymouse already.. And the support for hugetlbfs and
-shmem is in rfc stage on the list.
+7cd5d5fe43d5 is just a comment change, so that won't be it.
+Reverting a7c404099349 didn't help, but reverting 5e735860c478 did the trick.
+This does the trick as well:
 
-Is it possible to use CONFIG_ARCH_USES_HIGH_VMA_FLAGS here?  So far uffd-wp is
-only working for 64 bit x86 too due to enlarged pte space.  Maybe we can also
-let minor mode to only support 64 bit hosts.
+index 3e893073da05..6ab627e52a21 100644
+--- a/scripts/dtc/libfdt/fdt.c
++++ b/scripts/dtc/libfdt/fdt.c
+@@ -23,8 +23,9 @@ int32_t fdt_ro_probe_(const void *fdt)
+                return totalsize;
+
+        /* The device tree must be at an 8-byte aligned address */
+-       if ((uintptr_t)fdt & 7)
+-               return -FDT_ERR_ALIGNMENT;
++       if ((uintptr_t)fdt & 7) {
++               // return -FDT_ERR_ALIGNMENT;
++       }
+
+with some debugging ... aha:
+
+Compiled-in FDT at c043f804
+
+and in arch/microblaze/kernel/vmlinux.lds.S:
+
+        . = ALIGN (4) ;
+        __fdt_blob : AT(ADDR(__fdt_blob) - LOAD_OFFSET) {
+                _fdt_start = . ;                /* place for fdt blob */
+
+So the fix is to either remove the 8-byte alignment check or:
+
+diff --git a/arch/microblaze/kernel/vmlinux.lds.S b/arch/microblaze/kernel/vmlinux.lds.S
+index df07b3d06cd6..fb31747ec092 100644
+--- a/arch/microblaze/kernel/vmlinux.lds.S
++++ b/arch/microblaze/kernel/vmlinux.lds.S
+@@ -45,7 +45,7 @@ SECTIONS {
+                _etext = . ;
+        }
+ 
+-       . = ALIGN (4) ;
++       . = ALIGN (8) ;
+        __fdt_blob : AT(ADDR(__fdt_blob) - LOAD_OFFSET) {
+                _fdt_start = . ;                /* place for fdt blob */
+                *(__fdt_blob) ;                 /* Any link-placed DTB */
 
 Thanks,
-
--- 
-Peter Xu
-
+Guenter
