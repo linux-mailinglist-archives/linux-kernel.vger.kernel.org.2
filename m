@@ -2,133 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111C031A1C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B649631A1C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbhBLPeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:34:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54994 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232171AbhBLPdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232245AbhBLPd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:33:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232191AbhBLPdP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 12 Feb 2021 10:33:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613143949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sz9isorLitO6+MUwRfzG4d+ngvLUmm93AgjGBsOwKxU=;
-        b=NQFIpsht5R8CYBdP29r7QuSh8xFKjDnFvyWczXw2qhMx0h5DJV2E0hbTnJHzVsLWCnPW/h
-        fUKCMiIHUHpf17evOuH6L7eqIrEe463x0HpUMjljIPGsL1x/f3VXY/PO91PEzCKiqvWKbB
-        xHUcXgycKFZm5Uhlp5UuiIkmNfoz9CY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EC145AD29;
-        Fri, 12 Feb 2021 15:32:28 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 16:32:26 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap pages associated
- with each HugeTLB page
-Message-ID: <YCafit5ruRJ+SL8I@dhcp22.suse.cz>
-References: <20210208085013.89436-1-songmuchun@bytedance.com>
- <20210208085013.89436-5-songmuchun@bytedance.com>
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B35EC061574;
+        Fri, 12 Feb 2021 07:32:35 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id t25so6491298pga.2;
+        Fri, 12 Feb 2021 07:32:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WX/P9Y7j8yYly47Dz+Y05mhCHy0eD2ijBJOWsd7J+4c=;
+        b=CCQFtbW9WwjHdN0fr59zZY5PmRmIIeLJRbVr0hfNUXXSKNI8yC2ul/BUTH/tqkjQSu
+         Rb6iD4pFX3/Bv2v2T0otMhD7Krk9DECA6FGhW5Lj4Wfa61zvs22y+NS0EXFp0Bj8VHxQ
+         jXFEKf1r9XE8+HMnjqgNUzukAgafQJQwvqNZqU4i0uoOmGJB6cJuaACjVFaopCiuTS8a
+         aKG7ml6kLKmtjufQ9/tIZvffb+Q7Kw9245IWO/lGyTrGu3/PfCeg2t9KA8GDQ0O2ZYok
+         /qFGKTdyFpMCBnxOQQrK20R00+/ombJ1CnLjZibdQka7IrWMWymK7x82BpuIeQFg1SdR
+         /ONQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WX/P9Y7j8yYly47Dz+Y05mhCHy0eD2ijBJOWsd7J+4c=;
+        b=YRDhXhs/a6qLaDANFgHG+7UrLlBnyPlGVOBdzSEIHtESVNtzo7xNcAQRNz0YLvSa55
+         x4+XBI1jWQMWZcchuDOA/MOSocKgt3MTlFcHS9YGTWrryKo3jZJ9neLKsBw4T+JbtSNm
+         BLEtEStKgrELlpQGrzwMjRshy6aQpYTwntn83EqLC6TW+OADEAmeuyJc8mjQK1qBdaKv
+         63ecOt108kquEs1W22VTtCYFASZ97b0XRIbXpeQPCtA/TKpO5cz9Lvvph9VL1XDfDc7q
+         FkXAmINQULBjEdbC8JAAiUoJroarzohNeTQsEZ+rZzlo0ANh11kVmQ7mfn7fy7V8JwRf
+         gsGw==
+X-Gm-Message-State: AOAM532LZ/f8OV994vxFrGmZLzgwCvl7FKZaS4mzT6TBFhLtomKr6TcV
+        1yDpM7m4cOkDeJI2XyIxwD6cRlsr+Gg=
+X-Google-Smtp-Source: ABdhPJxVuGmJvFQD2hPlKHk+D5u8qJ0+u3wc46id29iPQO8Dy8JTDUolIHHlKkszEWU3fUmIdMC69Q==
+X-Received: by 2002:a63:4507:: with SMTP id s7mr3677346pga.390.1613143954901;
+        Fri, 12 Feb 2021 07:32:34 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id p2sm8978777pjj.0.2021.02.12.07.32.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 07:32:34 -0800 (PST)
+Date:   Fri, 12 Feb 2021 07:32:32 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     vincent.cheng.xh@renesas.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/2] ptp: ptp_clockmatrix: Add alignment of 1
+ PPS to idtcm_perout_enable.
+Message-ID: <20210212153232.GC23246@hoboy.vegasvil.org>
+References: <1613104725-22056-1-git-send-email-vincent.cheng.xh@renesas.com>
+ <1613104725-22056-3-git-send-email-vincent.cheng.xh@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210208085013.89436-5-songmuchun@bytedance.com>
+In-Reply-To: <1613104725-22056-3-git-send-email-vincent.cheng.xh@renesas.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 08-02-21 16:50:09, Muchun Song wrote:
-> When we free a HugeTLB page to the buddy allocator, we should allocate the
-> vmemmap pages associated with it. But we may cannot allocate vmemmap pages
-> when the system is under memory pressure, in this case, we just refuse to
-> free the HugeTLB page instead of looping forever trying to allocate the
-> pages.
+On Thu, Feb 11, 2021 at 11:38:45PM -0500, vincent.cheng.xh@renesas.com wrote:
+> From: Vincent Cheng <vincent.cheng.xh@renesas.com>
+> 
+> When enabling output using PTP_CLK_REQ_PEROUT, need to align the output
+> clock to the internal 1 PPS clock.
+> 
+> Signed-off-by: Vincent Cheng <vincent.cheng.xh@renesas.com>
 
-Thanks for simplifying the implementation from your early proposal!
-
-This will not be looping for ever. The allocation will usually trigger
-the OOM killer and sooner or later there will be a memory to allocate
-from or the system panics when there are no eligible tasks to kill. This
-is just a side note.
-
-I think the changelog could benefit from a more explicit documentation
-of those error failures. There are different cases when the hugetlb page
-is freed. It can be due to an admin intervention (decrease the pool),
-overcommit, migration, dissolving and likely some others. Most of them
-should be fine to stay in the pool which would just increase the surplus
-pages in the pool. I am not so sure about dissolving path.
-[...]
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 0209b736e0b4..3d85e3ab7caa 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -169,6 +169,8 @@
->   * (last) level. So this type of HugeTLB page can be optimized only when its
->   * size of the struct page structs is greater than 2 pages.
->   */
-> +#define pr_fmt(fmt)	"HugeTLB: " fmt
-> +
->  #include "hugetlb_vmemmap.h"
->  
->  /*
-> @@ -198,6 +200,34 @@ static inline unsigned long free_vmemmap_pages_size_per_hpage(struct hstate *h)
->  	return (unsigned long)free_vmemmap_pages_per_hpage(h) << PAGE_SHIFT;
->  }
->  
-> +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
-> +{
-> +	int ret;
-> +	unsigned long vmemmap_addr = (unsigned long)head;
-> +	unsigned long vmemmap_end, vmemmap_reuse;
-> +
-> +	if (!free_vmemmap_pages_per_hpage(h))
-> +		return 0;
-> +
-> +	vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-> +	vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-> +	vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
-> +
-> +	/*
-> +	 * The pages which the vmemmap virtual address range [@vmemmap_addr,
-> +	 * @vmemmap_end) are mapped to are freed to the buddy allocator, and
-> +	 * the range is mapped to the page which @vmemmap_reuse is mapped to.
-> +	 * When a HugeTLB page is freed to the buddy allocator, previously
-> +	 * discarded vmemmap pages must be allocated and remapping.
-> +	 */
-> +	ret = vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
-> +				  GFP_ATOMIC | __GFP_NOWARN | __GFP_THISNODE);
-
-I do not think that this is a good allocation mode. GFP_ATOMIC is a non
-sleeping allocation and a medium memory pressure might cause it to
-fail prematurely. I do not think this is really an atomic context which
-couldn't afford memory reclaim. I also do not think we want to grant
-access to memory reserve is reasonable. Just think of a huge number of
-hugetlb pages being freed which can deplete the memory reserve for
-atomic allocations. I think that you want 
-	GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN | __GFP_THISNODE
-
-for an initial implementation. The justification being that the
-allocation should at least try to reclaim but it shouldn't cause any
-major disruption because the failure is not fatal. If the failure rate
-would be impractically high then just drop NORETRY part. You can replace
-it by __GFP_RETRY_MAYFAIL but that shouldn't be strictly necessary
-because __GFP_THISNODE on its own implies on OOM killer, but that is
-kinda ugly to rely on.
--- 
-Michal Hocko
-SUSE Labs
+Acked-by: Richard Cochran <richardcochran@gmail.com>
