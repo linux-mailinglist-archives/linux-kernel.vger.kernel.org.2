@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65ED9319969
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 06:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55EBD31996B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 06:07:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhBLFBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 00:01:21 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:24555 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229575AbhBLFBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 00:01:10 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613106036; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=TeOP1sX3sE49jC/4ISLDzgsH1ouPFQt5neym8SKA4zE=; b=O47hr9xoZ5YJfJ2WLGdKyj+O9SrmtOu8mg1haTsHHWpoCx00cepN8gJba7LYYbBJ2nyoYXZ7
- oBWqSjL5sN6rWfVAcOAVqo2aihsKbL8pvIGFr8OJTlihicaY4CsCqSpykZJEtRRXQYd3WeTj
- QTtEg1J2xuNjKgo0gCLhrChB22E=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60260b503919dfb4551997db (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 12 Feb 2021 05:00:00
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F39A3C43462; Fri, 12 Feb 2021 04:59:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        SORTED_RECIPS,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9C2CC433C6;
-        Fri, 12 Feb 2021 04:59:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A9C2CC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        linus.walleij@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maulik Shah <mkshah@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH] pinctrl: qcom: sc7280: Add GPIO wakeup interrupt map
-Date:   Fri, 12 Feb 2021 10:29:34 +0530
-Message-Id: <1613105974-28181-1-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S229547AbhBLFGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 00:06:38 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2836 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229450AbhBLFGf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 00:06:35 -0500
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DcLxK6fbCz13svH;
+        Fri, 12 Feb 2021 13:03:33 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 12 Feb 2021 13:05:52 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 12 Feb 2021 13:05:51 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Fri, 12 Feb 2021 13:05:51 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>
+CC:     luojiaxing <luojiaxing@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        "open list:GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>,
+        linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: RE: [Linuxarm]  Re: [PATCH for next v1 1/2] gpio: omap: Replace
+ raw_spin_lock_irqsave with raw_spin_lock in omap_gpio_irq_handler()
+Thread-Topic: [Linuxarm]  Re: [PATCH for next v1 1/2] gpio: omap: Replace
+ raw_spin_lock_irqsave with raw_spin_lock in omap_gpio_irq_handler()
+Thread-Index: AQHXAKHhsnGPZbS2Vke5X41yG/e2eapS08GAgAAKhoCAARbAkA==
+Date:   Fri, 12 Feb 2021 05:05:51 +0000
+Message-ID: <a61ef337fd1c4538a47fe855920f95d3@hisilicon.com>
+References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
+ <1612774577-55943-2-git-send-email-luojiaxing@huawei.com>
+ <fab1e871-08e4-fc71-9dbf-9bcacf18e2e1@ti.com>
+ <CAK8P3a0m4ocfLyJZ5wMxyKESYUJ5um5sb5MyAzC8ckCb6qAH5g@mail.gmail.com>
+ <d5465b81-bb53-49ee-a556-40d208deb765@ti.com>
+In-Reply-To: <d5465b81-bb53-49ee-a556-40d208deb765@ti.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.224]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maulik Shah <mkshah@codeaurora.org>
-
-GPIOs that can be configured as wakeup sources, have their
-interrupt lines routed to PDC interrupt controller.
-
-Provide the interrupt map of the GPIO to its wakeup capable
-interrupt parent.
-
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- drivers/pinctrl/qcom/pinctrl-sc7280.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
-index 8daccd5..99c416e 100644
---- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
-@@ -1449,6 +1449,28 @@ static const struct msm_pingroup sc7280_groups[] = {
- 	[182] = SDC_QDSD_PINGROUP(sdc2_data, 0x1b4000, 9, 0),
- };
- 
-+static const struct msm_gpio_wakeirq_map sc7280_pdc_map[] = {
-+	{ 0, 134 }, { 3, 131 }, { 4, 121 }, { 7, 103 }, { 8, 155 },
-+	{ 11, 93 }, { 12, 78 }, { 15, 79 }, { 16, 80 }, { 18, 81 },
-+	{ 19, 107 }, { 20, 82 }, { 21, 83 }, { 23, 99 }, { 24, 86 },
-+	{ 25, 95 }, { 27, 158 }, { 28, 159 }, { 31, 90 }, { 32, 144 },
-+	{ 34, 77 }, { 35, 92 }, { 36, 157 }, { 39, 73 }, { 40, 97 },
-+	{ 41, 98 }, { 43, 85 }, { 44, 100 }, { 45, 101 }, { 47, 102 },
-+	{ 48, 74 }, { 51, 112 }, { 52, 156 }, { 54, 117 }, { 55, 84 },
-+	{ 56, 108 }, { 59, 110 }, { 60, 111 }, { 61, 123 }, { 63, 104 },
-+	{ 68, 127 }, { 72, 150 }, { 75, 133 }, { 77, 125 }, { 78, 105 },
-+	{ 79, 106 }, { 80, 118 }, { 81, 119 }, { 82, 162 }, { 83, 122 },
-+	{ 86, 75 }, { 88, 154 }, { 89, 124 }, { 90, 149 }, { 91, 76 },
-+	{ 93, 128 }, { 95, 160 }, { 101, 126 }, { 102, 96 }, { 103, 116 },
-+	{ 104, 114 }, { 112, 72 }, { 116, 135 }, { 117, 163 }, { 119, 137 },
-+	{ 121, 138 }, { 123, 139 }, { 125, 140 }, { 127, 141 }, { 128, 165 },
-+	{ 129, 143 }, { 130, 94 }, { 131, 145 }, { 133, 146 }, { 136, 147 },
-+	{ 140, 148 }, { 141, 115 }, { 142, 113 }, { 145, 130 }, { 148, 132 },
-+	{ 150, 87 }, { 151, 88 }, { 153, 89 }, { 155, 164 }, { 156, 129 },
-+	{ 157, 161 }, { 158, 120 }, { 161, 136 }, { 163, 142 }, { 172, 166 },
-+	{ 174, 167 },
-+};
-+
- static const struct msm_pinctrl_soc_data sc7280_pinctrl = {
- 	.pins = sc7280_pins,
- 	.npins = ARRAY_SIZE(sc7280_pins),
-@@ -1457,6 +1479,8 @@ static const struct msm_pinctrl_soc_data sc7280_pinctrl = {
- 	.groups = sc7280_groups,
- 	.ngroups = ARRAY_SIZE(sc7280_groups),
- 	.ngpios = 176,
-+	.wakeirq_map = sc7280_pdc_map,
-+	.nwakeirq_map = ARRAY_SIZE(sc7280_pdc_map),
- };
- 
- static int sc7280_pinctrl_probe(struct platform_device *pdev)
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogR3J5Z29yaWkgU3RyYXNo
+a28gW21haWx0bzpncnlnb3JpaS5zdHJhc2hrb0B0aS5jb21dDQo+IFNlbnQ6IEZyaWRheSwgRmVi
+cnVhcnkgMTIsIDIwMjEgOToxNyBBTQ0KPiBUbzogQXJuZCBCZXJnbWFubiA8YXJuZEBrZXJuZWwu
+b3JnPg0KPiBDYzogbHVvamlheGluZyA8bHVvamlheGluZ0BodWF3ZWkuY29tPjsgTGludXMgV2Fs
+bGVpag0KPiA8bGludXMud2FsbGVpakBsaW5hcm8ub3JnPjsgQW5keSBTaGV2Y2hlbmtvIDxhbmR5
+LnNoZXZjaGVua29AZ21haWwuY29tPjsgQW5keQ0KPiBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNo
+ZW5rb0BsaW51eC5pbnRlbC5jb20+OyBTYW50b3NoIFNoaWxpbWthcg0KPiA8c3NhbnRvc2hAa2Vy
+bmVsLm9yZz47IEtldmluIEhpbG1hbiA8a2hpbG1hbkBrZXJuZWwub3JnPjsgb3BlbiBsaXN0OkdQ
+SU8NCj4gU1VCU1lTVEVNIDxsaW51eC1ncGlvQHZnZXIua2VybmVsLm9yZz4sIGxpbnV4LWtlcm5l
+bEB2Z2VyLmtlcm5lbC5vcmcNCj4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBsaW51
+eGFybUBvcGVuZXVsZXIub3JnDQo+IFN1YmplY3Q6IFtMaW51eGFybV0gUmU6IFtQQVRDSCBmb3Ig
+bmV4dCB2MSAxLzJdIGdwaW86IG9tYXA6IFJlcGxhY2UNCj4gcmF3X3NwaW5fbG9ja19pcnFzYXZl
+IHdpdGggcmF3X3NwaW5fbG9jayBpbiBvbWFwX2dwaW9faXJxX2hhbmRsZXIoKQ0KPiANCj4gDQo+
+IA0KPiBPbiAxMS8wMi8yMDIxIDIxOjM5LCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0KPiA+IE9uIFRo
+dSwgRmViIDExLCAyMDIxIGF0IDc6MjUgUE0gR3J5Z29yaWkgU3RyYXNoa28NCj4gPiA8Z3J5Z29y
+aWkuc3RyYXNoa29AdGkuY29tPiB3cm90ZToNCj4gPj4gT24gMDgvMDIvMjAyMSAxMDo1NiwgTHVv
+IEppYXhpbmcgd3JvdGU6DQo+ID4+PiBUaGVyZSBpcyBubyBuZWVkIHRvIHVzZSBBUEkgd2l0aCBf
+aXJxc2F2ZSBpbiBvbWFwX2dwaW9faXJxX2hhbmRsZXIoKSwNCj4gPj4+IGJlY2F1c2UgaXQgYWxy
+ZWFkeSBiZSBpbiBhIGlycS1kaXNhYmxlZCBjb250ZXh0Lg0KPiA+Pg0KPiA+PiBOQUNLLg0KPiA+
+PiBXaG8gc2FpZCB0aGF0IHRoaXMgaXMgYWx3YXlzIGhhcmQgSVJRIGhhbmRsZXI/DQo+ID4+IFdo
+YXQgYWJvdXQgUlQta2VybmVsIG9yIGJvb3Qgd2l0aCAidGhyZWFkaXJxcyI/DQo+ID4NCj4gPiBJ
+biB0aG9zZSBjYXNlcywgdGhlIGludGVycnVwdCBoYW5kbGVyIGlzIGp1c3QgYSBub3JtYWwgdGhy
+ZWFkLCBzbyB0aGUNCj4gPiBwcmVlbXB0X2Rpc2FibGUoKSB0aGF0IGlzIGltcGxpZWQgYnkgcmF3
+X3NwaW5fbG9jaygpIGlzIHN1ZmZpY2llbnQuDQo+ID4NCj4gPiBEaXNhYmxpbmcgaW50ZXJydXB0
+cyBpbnNpZGUgb2YgYW4gaW50ZXJydXB0IGhhbmRsZXIgaXMgYWx3YXlzIGluY29ycmVjdCwNCj4g
+PiB0aGUgcGF0Y2ggbG9va3MgbGlrZSBhIHVzZWZ1bCBjbGVhbnVwIHRvIG1lLCBpZiBvbmx5IGZv
+ciByZWFkYWJpbGl0eS4NCj4gDQo+IE5vdGUuIHRoZXJlIGlzIGFsc28gZ2VuZXJpY19oYW5kbGVf
+aXJxKCkgY2FsbCBpbnNpZGUuDQoNClNvIGdlbmVyaWNfaGFuZGxlX2lycSgpIGlzIG5vdCBzYWZl
+IHRvIHJ1biBpbiB0aHJlYWQgdGh1cyByZXF1aXJlcw0KYW4gaW50ZXJydXB0LWRpc2FibGVkIGVu
+dmlyb25tZW50IHRvIHJ1bj8gSWYgc28sIEknZCByYXRoZXIgdGhpcw0KaXJxc2F2ZSBtb3ZlZCBp
+bnRvIGdlbmVyaWNfaGFuZGxlX2lycSgpIHJhdGhlciB0aGFuIGFza2luZyBldmVyeW9uZQ0KY2Fs
+bGluZyBpdCB0byBkbyBpcnFzYXZlLg0KDQpPbiB0aGUgb3RoZXIgaGFuZCwgdGhlIGF1dGhvciBj
+aGFuZ2VkIGEgY291cGxlIG9mIHNwaW5fbG9ja19pcnFzYXZlDQp0byBzcGluX2xvY2ssIGlmIG9u
+bHkgdGhpcyBvbmUgaXMgaW5jb3JyZWN0LCBpdCBzZWVtcyBpdCBpcyB3b3J0aCBhDQpuZXcgdmVy
+c2lvbiB0byBmaXggdGhpcy4NCg0KPiANCj4gLS0NCj4gQmVzdCByZWdhcmRzLA0KPiBncnlnb3Jp
+aQ0KDQpUaGFua3MNCkJhcnJ5DQoNCg==
