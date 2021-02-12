@@ -2,96 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBDF31A87A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4371731A87E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbhBLXxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 18:53:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhBLXx1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 18:53:27 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370F9C061574;
-        Fri, 12 Feb 2021 15:52:47 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id g10so1353910wrx.1;
-        Fri, 12 Feb 2021 15:52:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c3J0XcePyleo796OvAaICLfI1i20geRcVa5TsLh1tao=;
-        b=Ri4AMW9WYsRMqlRHoKub72GSWBvDgwFPnMTKhWh0wBPrcwosb6T8gdQwPeEAoaopzY
-         DlptP0AAw2P9cCAUZBfQXy0zgQBUhVm2BT+zYBRyzNimA6JYxtx2za4t90YXqEycJia4
-         dI/ydnuMjPu1bzm7v6CjiTmzrf8Q2oz5nI2H/aGnLFOPDqGEjFMHYFbgV1hNFzSzvmNP
-         kj1ECwKHmM8qTmocYLec+Lacd9R19q8aU5n+fKNK14jH9a1sSUD+NAkJk71tIzWRiOHC
-         yfL14o71yRL4da7YGU2zrbWX53U1SUU+nhr+9zDSLR/que85rwUbcd3mOhyjj+knnDZy
-         ohZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c3J0XcePyleo796OvAaICLfI1i20geRcVa5TsLh1tao=;
-        b=Lh4aysQLoJTFYAbvKhFvMbl3jwx0kEs0qjcPCytZclOREYxtNpITrfQjU8gppUZ/1d
-         oEs8zRsiFhQcoXtKX2+Itk1RlMHNIReFQ9M8s3HyEZ2CTNzb9PLZ65C0Yg3kVWZvQgXR
-         7jT9GxZ7/mQLWxkXZmQtqvQOSNXdTvXUJ2Kiyd2dngM8XOo6kgyEPRtycc8Pq90f1J9X
-         wDY8YMd65wjzkSzKXnC4L89Me9wNlrvmktgLF+Yxgq8yBH8XiZ7G8RQKwweOnT4kbcV4
-         HCL0VGSxzINwiS1L9FGXXu8LmiPLM4z5FRE08aAm94Q/YwuPoaws8LIiiz0JSF0GOlL4
-         nzCw==
-X-Gm-Message-State: AOAM530fW1/2SXE3OOiM2y9D/jMxY/7bOUNNRZnAKEbx8ZmoQoO6oVid
-        6/pggAO7HpCpEUEFlPsCbS4mDprUotYmE86EINo=
-X-Google-Smtp-Source: ABdhPJy5ege6vYLkKFNBg45tfxjKebdizpZt3Rwblyqb6bDBWNW2cRm35aKN8i+fn5joETlGoWPu0tLUHi/KopCNX2o=
-X-Received: by 2002:adf:e511:: with SMTP id j17mr6291375wrm.251.1613173965866;
- Fri, 12 Feb 2021 15:52:45 -0800 (PST)
+        id S231561AbhBLXzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 18:55:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229679AbhBLXza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 18:55:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F4E864E25;
+        Fri, 12 Feb 2021 23:54:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613174089;
+        bh=/OvqjRmaBoFigF88nuGOnn8jZUAKHCUoPALIy3wKaE4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FNcUUbm3NiiNAzM1st/UIKjwfMmXXIIrFHJRZwV4hTGBgdQIOvlQWHRfEwKpvZ2p+
+         RinxLoyCUKISZ2pU/lLkqmlRsyV+uFf7oJYeJKq2SpLDpoPtySvUXSz8QM+5PwIG1V
+         JC0h1x2EUMc7NaFUG8dpVB3kpuyAJB1Y1Np9m4CXa8M4o2L9KIIrPRvpLCd10uIdga
+         V3EefdYP9daNMHdpnbeGbsV/SwHhKO7PpKeJ/ex+NWQqdQl6IizE3DtPQ6xCbK4gMD
+         FKk5b0p5E3Cj4AA6hWD8xdoSXZ0nlr+66cJVVP8TOCcoPOkfZvXJVqd4JvwWYrc5G7
+         3iKoBfhuQYung==
+Date:   Fri, 12 Feb 2021 15:54:48 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Ian Lance Taylor <iant@golang.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luis Lozano <llozano@chromium.org>,
+        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
+ is generated
+Message-ID: <20210212235448.GH7187@magnolia>
+References: <20210212044405.4120619-1-drinkcat@chromium.org>
+ <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
+ <YCYybUg4d3+Oij4N@kroah.com>
+ <CANMq1KBuPaU5UtRR8qTgdf+J3pt-xAQq69kCVBdaYGx8F+WmFA@mail.gmail.com>
+ <YCY+Ytr2J2R5Vh0+@kroah.com>
+ <CAKOQZ8zPFM29DYPwbnUJEhf+a8kPSJ5E_W06JLFjn-5Fy-ZWWw@mail.gmail.com>
+ <YCaipZ+iY65iSrui@kroah.com>
+ <20210212230346.GU4626@dread.disaster.area>
+ <CAOyqgcX_wN2RGunDix5rSWxtp3pvSpFy2Stx-Ln4GozgSeS2LQ@mail.gmail.com>
+ <20210212232726.GW4626@dread.disaster.area>
 MIME-Version: 1.0
-References: <20210203163348.30686-1-TheSven73@gmail.com> <804285cff81878a2c188d1b823182114f891ca38.camel@ndufresne.ca>
- <CAGngYiWt9Q4jWksiniC6vqUw29L3mOFuQpw7Dz_BK9Ye9FbQ1Q@mail.gmail.com> <20210211143233.GA1360@pengutronix.de>
-In-Reply-To: <20210211143233.GA1360@pengutronix.de>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Fri, 12 Feb 2021 18:52:34 -0500
-Message-ID: <CAGngYiWAohHXYPfd5NJc4URVuMA4GP01jvRV78uM5P+H7zKx-A@mail.gmail.com>
-Subject: Re: [BUG REPORT] media: coda: mpeg4 decode corruption on i.MX6qp only
-To:     Philipp Zabel <pza@pengutronix.de>
-Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212232726.GW4626@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Philipp, Fabio,
+On Sat, Feb 13, 2021 at 10:27:26AM +1100, Dave Chinner wrote:
+> On Fri, Feb 12, 2021 at 03:07:39PM -0800, Ian Lance Taylor wrote:
+> > On Fri, Feb 12, 2021 at 3:03 PM Dave Chinner <david@fromorbit.com> wrote:
+> > >
+> > > On Fri, Feb 12, 2021 at 04:45:41PM +0100, Greg KH wrote:
+> > > > On Fri, Feb 12, 2021 at 07:33:57AM -0800, Ian Lance Taylor wrote:
+> > > > > On Fri, Feb 12, 2021 at 12:38 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > > >
+> > > > > > Why are people trying to use copy_file_range on simple /proc and /sys
+> > > > > > files in the first place?  They can not seek (well most can not), so
+> > > > > > that feels like a "oh look, a new syscall, let's use it everywhere!"
+> > > > > > problem that userspace should not do.
+> > > > >
+> > > > > This may have been covered elsewhere, but it's not that people are
+> > > > > saying "let's use copy_file_range on files in /proc."  It's that the
+> > > > > Go language standard library provides an interface to operating system
+> > > > > files.  When Go code uses the standard library function io.Copy to
+> > > > > copy the contents of one open file to another open file, then on Linux
+> > > > > kernels 5.3 and greater the Go standard library will use the
+> > > > > copy_file_range system call.  That seems to be exactly what
+> > > > > copy_file_range is intended for.  Unfortunately it appears that when
+> > > > > people writing Go code open a file in /proc and use io.Copy the
+> > > > > contents to another open file, copy_file_range does nothing and
+> > > > > reports success.  There isn't anything on the copy_file_range man page
+> > > > > explaining this limitation, and there isn't any documented way to know
+> > > > > that the Go standard library should not use copy_file_range on certain
+> > > > > files.
+> > > >
+> > > > But, is this a bug in the kernel in that the syscall being made is not
+> > > > working properly, or a bug in that Go decided to do this for all types
+> > > > of files not knowing that some types of files can not handle this?
+> > > >
+> > > > If the kernel has always worked this way, I would say that Go is doing
+> > > > the wrong thing here.  If the kernel used to work properly, and then
+> > > > changed, then it's a regression on the kernel side.
+> > > >
+> > > > So which is it?
+> > >
+> > > Both Al Viro and myself have said "copy file range is not a generic
+> > > method for copying data between two file descriptors". It is a
+> > > targetted solution for *regular files only* on filesystems that store
+> > > persistent data and can accelerate the data copy in some way (e.g.
+> > > clone, server side offload, hardware offlead, etc). It is not
+> > > intended as a copy mechanism for copying data from one random file
+> > > descriptor to another.
+> > >
+> > > The use of it as a general file copy mechanism in the Go system
+> > > library is incorrect and wrong. It is a userspace bug.  Userspace
+> > > has done the wrong thing, userspace needs to be fixed.
+> > 
+> > OK, we'll take it out.
+> > 
+> > I'll just make one last plea that I think that copy_file_range could
+> > be much more useful if there were some way that a program could know
+> > whether it would work or not.
 
-I was able to verify that the PREs do indeed overrun their allocated ocram area.
+Well... we could always implement a CFR_DRYRUN flag that would run
+through all the parameter validation and return 0 just before actually
+starting any real copying logic.  But that wouldn't itself solve the
+problem that there are very old virtual filesystems in Linux that have
+zero-length regular files that behave like a pipe.
 
-Section 38.5.1 of the iMX6QuadPlus manual indicates the ocram size
-required: width(pixels) x 8 lines x 4 bytes. For 2048 pixels max, this
-comes to 64K. This is what the PRE driver allocates. So far, so good.
+> If you can't tell from userspace that a file has data in it other
+> than by calling read() on it, then you can't use cfr on it.
 
-The trouble starts when we're displaying a section of a much wider
-bitmap. This happens in X when using two displays. e.g.:
-HDMI 1920x1088
-LVDS 1280x800
-X bitmap 3200x1088, left side displayed on HDMI, right side on LVDS.
+I don't know how to do that, Dave. :)
 
-In such a case, the stride will be much larger than the width of a
-display scanline.
+Frankly I'm with the Go developers on this -- one should detect c_f_r by
+calling it and if it errors out then fall back to the usual userspace
+buffer copy strategy.
 
-This is where things start to go very wrong.
+That still means we need to fix the kernel WRT these weird old
+filesystems.  One of...
 
-I found that the ocram area used by the PREs increases with the
-stride. I experimentally found a formula:
-ocam_used = display_widthx8x4 + (bitmap_width-display_width)x7x4
+1. Get rid of the generic fallback completely, since splice only copies
+64k at a time and ... yay?  I guess it at least passes generic/521 and
+generic/522 these days.
 
-As the stride increases, the PRE eventually overruns the ocram and...
-ends up in the "ocram aliased" area, where it overwrites the ocram in
-use by the vpu/coda !
+2. Keep it, but change c_f_r to require that both files have a
+->copy_file_range implementation.  If they're the same then we'll call
+the function pointer, if not, we call the generic fallback.  This at
+least gets us back to the usual behavior which is that filesystems have
+to opt in to new functionality (== we assume they QA'd all the wunnerful
+combinations).
 
-I could not find any PRE register setting that changes the used ocram area.
+3. #2, but fix the generic fallback to not suck so badly.  That sounds
+like someone (else's) 2yr project. :P
 
-Sven
+--D
+
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
