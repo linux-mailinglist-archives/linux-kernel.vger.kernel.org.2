@@ -2,73 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E6D319C73
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9D1319C76
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhBLKO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 05:14:59 -0500
-Received: from pv50p00im-ztdg10021901.me.com ([17.58.6.55]:52148 "EHLO
-        pv50p00im-ztdg10021901.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229906AbhBLKOv (ORCPT
+        id S230282AbhBLKPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 05:15:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55182 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229650AbhBLKPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 05:14:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1613124830;
-        bh=zKxn6CR/gmXhVeTG2aKkLvzoS7M7r385JLEcPBaeWp8=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=r83pITR4RBAHpGZED7IN+IVT3ijUdmE5PZh3GB9EcoRaWsIa5sZKi/NJ1LzM/tCYk
-         zoQ3OEg0bL2DxUQw65zVLorZlwZJoaoLp/a9LRoF4GbqlxdLTQJwDB2b8ScMC0fv5+
-         DThfJp6xoqd0AN8dQWqhMEY5HyBwFVt4zXS+GSIEp+Mwm5r4b6Ovm9OFA4HchUCO0p
-         P+RMpu9SR8ZKmqGiFsi2WlPvElbRmUTk8kmKomUXRK/fTveBYksgSpFKxyRngcTDei
-         5ptNdy1/tKGb7pe+Xn87lShwlNBeESr+n52wcCs2BZ+/6Dzx8QdzaiQogy/al4E/pa
-         uEYF5CBIJ5pGw==
-Received: from everest.nathzi1505 (unknown [103.17.84.167])
-        by pv50p00im-ztdg10021901.me.com (Postfix) with ESMTPSA id 53AA788034D;
-        Fri, 12 Feb 2021 10:13:46 +0000 (UTC)
-From:   Pritthijit Nath <pritthijit.nath@icloud.com>
-To:     vireshk@kernel.org, gregkh@linuxfoundation.org, johan@kernel.org,
-        elder@kernel.org
-Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Pritthijit Nath <pritthijit.nath@icloud.com>
-Subject: [PATCH 2/2] staging: greybus: Fixed a misspelling in hid.c
-Date:   Fri, 12 Feb 2021 15:43:24 +0530
-Message-Id: <20210212101324.12391-1-pritthijit.nath@icloud.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 12 Feb 2021 05:15:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613124866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J2fAtOqtlFprVzhOykuVJGPyK43JZHoiCBMHURJCN5g=;
+        b=CaASkZ/ojp+3i0YWC9XfAAavVke80341Oizlx9LXeN1oNIyguxYXQlf4DTcRksMACrGDqJ
+        WFtSBw+DhGj2kqWvnC2wHHRI8mZNIk6TFpuWyNX02SdSdjNEG8UBMykoLeTSvCOW0byYy9
+        d6At460FoWZn/4ss2uFN4fdC6csIwSU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-UgtpkCbdO5-rEgbxQBzfTA-1; Fri, 12 Feb 2021 05:14:23 -0500
+X-MC-Unique: UgtpkCbdO5-rEgbxQBzfTA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E6141005501;
+        Fri, 12 Feb 2021 10:14:22 +0000 (UTC)
+Received: from [10.36.114.178] (ovpn-114-178.ams2.redhat.com [10.36.114.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A633A100239F;
+        Fri, 12 Feb 2021 10:14:20 +0000 (UTC)
+To:     Adithya Chandrakasan <adithya.chandrakasan@gmail.com>,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org
+References: <20210211072918.376837-1-adithya.chandrakasan@gmail.com>
+ <bce53689-4a6e-c3c3-a09c-6e946a577f61@redhat.com>
+ <3512c272-dbec-2c0a-4476-203315341fe2@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: This reply comments on the patch to fixes the missing a blank
+ line warning
+Message-ID: <35cbe08d-6c29-c904-1402-de18b787c5b0@redhat.com>
+Date:   Fri, 12 Feb 2021 11:14:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <3512c272-dbec-2c0a-4476-203315341fe2@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-12_03:2021-02-12,2021-02-12 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2102120077
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed the spelling of 'transfered' to 'transferred'.
+On 11.02.21 19:20, Adithya Chandrakasan wrote:
+> On 2/11/21 2:36 AM, David Hildenbrand wrote:
+>> ^
+>>
+>> Please create proper patch subjects. Nobody has a glue what you are doing when looking at the subject.
+>>
+>> "mm/util: fix ??? warning"
+>>
+>> Which raises the question, what is ???
+>>
+>> Compiler? static code checker? ... ?
+>>
 
-Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
----
- Fixed the typo in 'transferred' which crept in last time.
 
- drivers/staging/greybus/hid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/greybus/hid.c b/drivers/staging/greybus/hid.c
-index a56c3fb5d35a..adb91286803a 100644
---- a/drivers/staging/greybus/hid.c
-+++ b/drivers/staging/greybus/hid.c
-@@ -254,7 +254,7 @@ static int __gb_hid_output_raw_report(struct hid_device *hid, __u8 *buf,
- 
- 	ret = gb_hid_set_report(ghid, report_type, report_id, buf, len);
- 	if (report_id && ret >= 0)
--		ret++; /* add report_id to the number of transfered bytes */
-+		ret++; /* add report_id to the number of transferred bytes */
- 
- 	return 0;
- }
+>>
+>> Thanks
+>>
+>> On 11.02.21 08:29, Adithya Chandrakasan wrote:
+>>> FILE: mm/util.c:930: WARNING: Missing a blank line after declarations
+>>>
+>>> Signed-off-by: Adithya Chandrakasan <adithya.chandrakasan@gmail.com>
+>>> ---
+>>>     mm/util.c | 1 +
+>>>     1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/mm/util.c b/mm/util.c
+>>> index 8c9b7d1e7c49..60286876636d 100644
+>>> --- a/mm/util.c
+>>> +++ b/mm/util.c
+>>> @@ -927,6 +927,7 @@ int get_cmdline(struct task_struct *task, char *buffer, int buflen)
+>>>         unsigned int len;
+>>>         struct mm_struct *mm = get_task_mm(task);
+>>>         unsigned long arg_start, arg_end, env_start, env_end;
+>>> +
+>>>         if (!mm)
+>>>             goto out;
+>>>         if (!mm->arg_end)
+>>>
+>>
+>>
+> Hi David,
+> 
+> Thanks for feedback. I have fixed the issues in the patch thread with
+> change in subject and also log message.
+
+Hi,
+
+Please always send patches via proper mails and versioned.
+
+E.g.,
+
+rm *.patch
+git format-patch -1 -v2
+git send-email --to ... *.patch
+
+
+The introducing patch is from 2014. So I wonder how you even get a 
+checkpatch warning?
+
+a90902531a06a ("proc read mm's {arg,env}_{start,end} with mmap semaphore 
+taken.")
+
+Anyhow, maybe just call this patch "mm: util.c: minor coding style fix", 
+that makes it clearer that this is really minor and has been in the code 
+for a while.
+
+Thanks!
+
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
