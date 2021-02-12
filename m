@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E73B31A023
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C538D31A02D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhBLNxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:53:45 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:36838 "EHLO vps0.lunn.ch"
+        id S231383AbhBLN6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:58:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230515AbhBLNxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 08:53:40 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lAYsO-005py6-6x; Fri, 12 Feb 2021 14:52:52 +0100
-Date:   Fri, 12 Feb 2021 14:52:52 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marcin Wojtas <mw@semihalf.com>
-Cc:     Stefan Chulski <stefanc@marvell.com>,
-        David Miller <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Yan Markman <ymarkman@marvell.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>,
-        "atenart@kernel.org" <atenart@kernel.org>,
+        id S230249AbhBLN6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 08:58:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 015BE64E57;
+        Fri, 12 Feb 2021 13:57:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613138244;
+        bh=v4zfZkRGfMEsNs46OiyzraGryvAEHvd4MX/NPDSMX4I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=td3De8T9CuymU1OvNXoEQg9Urm1F4nLlbG1Se4Dj17bNJq/A923AY4oS+l9b0L2ma
+         turAE+DZPk0Bx7EidvByJmaOivX2g84j2u88jI1B9Z6JaBzi2/SIzCSnBH/hCo4ZED
+         bFk3pedUEUsrCdWzNZoVdUQexKXQvX5EtsTLWclDrSQTgOs83e9lXCj2XyCoU+NDue
+         j7OJV/AYDdeWb4KAiXp/MxzO8pTQ5mtHpRHEM6VNQkZ7Z2y61DpFUa/+5VeVZQer4b
+         9rA1pkSPVd0yorV9R2n8SRu8dAOpBYeJRWUM6J4qlZMcPLP63JUKJFEPAL1K/SAjtp
+         J1BnCVeUkd+bg==
+Date:   Fri, 12 Feb 2021 13:56:30 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "agross@kernel.org" <agross@kernel.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
         "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [EXT] Re: [PATCH v12 net-next 12/15] net: mvpp2: add BM
- protection underrun feature support
-Message-ID: <YCaINEHqrz2QDGJb@lunn.ch>
-References: <1612950500-9682-1-git-send-email-stefanc@marvell.com>
- <1612950500-9682-13-git-send-email-stefanc@marvell.com>
- <20210210.152924.767175240247395907.davem@davemloft.net>
- <CO6PR18MB3873D8B7BE3AE28A1407C05BB08C9@CO6PR18MB3873.namprd18.prod.outlook.com>
- <YCU864+AH6UioNwQ@lunn.ch>
- <CAPv3WKd48fiZmdnP+NN_FRCT1h6xmu9zO4BWAz_pgTXW2fQt9w@mail.gmail.com>
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [RFC PATCH 3/7] regulator: IRQ based event/error notification
+ helpers
+Message-ID: <20210212135630.GF6057@sirena.org.uk>
+References: <cover.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
+ <3daf0531910c25d8b0da3964778ae2a6c9049d43.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
+ <6355af19b137fe25d55c33f813b05ba43e2cd41e.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
 Content-Disposition: inline
-In-Reply-To: <CAPv3WKd48fiZmdnP+NN_FRCT1h6xmu9zO4BWAz_pgTXW2fQt9w@mail.gmail.com>
+In-Reply-To: <6355af19b137fe25d55c33f813b05ba43e2cd41e.camel@fi.rohmeurope.com>
+X-Cookie: One size fits all.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Or we have also found out, that pushing back on parameters like this,
-> > the developers goes back and looks at the code, and sometimes figures
-> > out a way to automatically do the right thing, removing the
-> > configuration knob, and just making it all simpler for the user to
-> > use.
-> 
-> I think of 2 alternatives:
-> * `ethtool --set-priv-flags` - in such case there is a question if
-> switching this particular feature in runtime is a good idea.
-> * New DT/ACPI property - it is a hardware feature after all, so maybe
-> let the user decide whether to enable it on the platform description
-> level.
 
-Does this even need to be configurable? What is the cost of turning it
-on? How does having less pools affect the system? Does average latency
-go up?  When would i consider an underrun actually a good thing?
+--eDB11BtaWSyaBkpc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Maybe it should just be hard coded on? Or we should try to detect when
-underruns are happening a lot, and dynamically turn it on for a while?
+On Fri, Feb 12, 2021 at 09:33:44AM +0000, Vaittinen, Matti wrote:
 
-	  Andrew
+> There seems to be few drivers which need delayed wq and which implement
+> .remove() just to call the cancel_delayed_work_sync().
+
+> I think this might help cleaning up those(?) Or am I completely off
+> here?
+
+I can see it being useful, yes.
+
+--eDB11BtaWSyaBkpc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAmiQ0ACgkQJNaLcl1U
+h9CMuQf9HAhei76oYBLmI/hNxYHgRwXYNE689EdS2oom5KN4iOBmVDDX4Me3G0j/
+11aTN8El2PFkjsSMy8og0ckMsHeStFzDEf8w8ebQ3v3fM2XnJQu7ziCo7EYXgDYr
+RPBdg0WkR/5DrLwqvZKff5ruOa8VVX5EBkWTg7unmlE3bfvrI/U2/hB4626OlgaG
+pKOWECigmK+J3dPiAKDzmhYrcAJ1Uo0ZFOlxJMWIFA8+/mMGAKIi7TCpDP/GqGpb
+w83q2T3SrtDUkQ3b/bohpIRuc81GzLxYBu/8SBkpRHlO4lSKUYM8m1h+vNXDbW74
+37gH3KhykFPng9eb6BTZyZfrhNtGZA==
+=Lycb
+-----END PGP SIGNATURE-----
+
+--eDB11BtaWSyaBkpc--
