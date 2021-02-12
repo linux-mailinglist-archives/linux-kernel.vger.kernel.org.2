@@ -2,141 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC8C3198E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 04:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D13A3198E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 04:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbhBLDmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 22:42:04 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:28402 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhBLDl4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 22:41:56 -0500
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 11C3ekF1021377;
-        Fri, 12 Feb 2021 12:40:47 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 11C3ekF1021377
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613101247;
-        bh=pG/OJzM59r3vLQTzd4X/NaxClE5gYa5IX5eP29F4sOY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eKQ6QFiXY3t1NhEJqy5vKxVE6ykBDbNz9kmZxYJ52UJ8aPUOVRfLB82J2hwyu2BcK
-         7FljOGnwAWvYj2Potml01bEIHSpILyvxrJ5rmACLMW3IDr0WII1ewihS0k/b1CPGXT
-         /mukVhlmfJxOBTTxw+f/5hshX5PaTG79fFrjnhYHYMI6Mcq1dKdCNn4xmZB4FYjB8S
-         DhPmGgcKFBjDJzizw2HhthulqeMK4D8yPEMfGQEWz3ZM5Mo8BfLZL12CDCpJcdIfuF
-         MBktEyiuvZ4dY6eKYhZ7xxe36ZaQ411BW+tf+Dilpbd/2pNwDtcZ8cIqZap078ImqV
-         GXXUW26fphbqQ==
-X-Nifty-SrcIP: [209.85.214.170]
-Received: by mail-pl1-f170.google.com with SMTP id x9so4433451plb.5;
-        Thu, 11 Feb 2021 19:40:47 -0800 (PST)
-X-Gm-Message-State: AOAM530bncAWxT7C3BwYXw3wx0Ugolw5PBc/P6lzoqgVBH7inGx582pk
-        i3TYse7Ka8JacfNELEe2vDH/EJ2sJad3cg6Y5Yw=
-X-Google-Smtp-Source: ABdhPJyZzI+cht22tb75Ymef8K/ASjRMA6GacsO2qgDIi6jcH7B5gKcwtBZRyKHIgpo0kln+GV5V/4lEE95volBbi0M=
-X-Received: by 2002:a17:902:8687:b029:e1:601e:bd29 with SMTP id
- g7-20020a1709028687b02900e1601ebd29mr1144608plo.47.1613101246499; Thu, 11 Feb
- 2021 19:40:46 -0800 (PST)
+        id S229733AbhBLDlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 22:41:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229611AbhBLDlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 22:41:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AC6564E36;
+        Fri, 12 Feb 2021 03:40:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613101224;
+        bh=902ral9gacRgw098ICH6/nm9ePThn6pw1zsXbniDEfs=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=WrMK1vdbXJhWJUelkspQ60k0fN1pYYM8wxIgfZ27IC98OAdPMne+L64XgB/ACwIoF
+         ctJ01jpM4mYRP5QVuDYnMVcaD5MldMGwFcSlXnURPLU/yzsn9zd6Uixjx70bwmXehq
+         7m1WPYERLo3QSlHIes190mm34eGLuv0DIXkO92cqYB8Qn7gS7HTxn7w3gWhbO1eVWy
+         GkqI/VSrzrFLNo4jP2Ms7O7aWP4Lgakp8U6nyn8VCPd1Qtyx/o0yWtQkB07lPmdU58
+         BJIHwRnZ+dQrx6d6cn1km+LmtwXkY3KCER9MBM3EGWJH2nzFQHSDAZxUgu8dAnnTf3
+         f0FS5ooFl30wg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210207161352.2044572-1-sashal@kernel.org> <20210208175007.GA1501867@infradead.org>
- <20210208182001.GA4035784@sasha-vm> <CAK7LNAQtQTwGt4SCK88a=y4ydASXoR30cCCmcFFdsUk=WY7tfA@mail.gmail.com>
-In-Reply-To: <CAK7LNAQtQTwGt4SCK88a=y4ydASXoR30cCCmcFFdsUk=WY7tfA@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 12 Feb 2021 12:40:08 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASo2i_NT8acBCJ2gYeLE_rjyncSteyqD_mrMMR5Wf261g@mail.gmail.com>
-Message-ID: <CAK7LNASo2i_NT8acBCJ2gYeLE_rjyncSteyqD_mrMMR5Wf261g@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: simplify access to the kernel's version
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0f44b1d32d28f64b5a33a8319319506fdf317487.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com> <0f44b1d32d28f64b5a33a8319319506fdf317487.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+Subject: Re: [PATCH v2 15/17] clk: bd718x7: Add support for clk gate on ROHM BD71815 PMIC
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
+        linux-clk@vger.kernel.org
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Date:   Thu, 11 Feb 2021 19:40:22 -0800
+Message-ID: <161310122259.1254594.13571103811238327212@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 5:18 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Tue, Feb 9, 2021 at 3:20 AM Sasha Levin <sashal@kernel.org> wrote:
-> >
-> > On Mon, Feb 08, 2021 at 05:50:07PM +0000, Christoph Hellwig wrote:
-> > >On Sun, Feb 07, 2021 at 11:13:52AM -0500, Sasha Levin wrote:
-> > >> +            (u8)(LINUX_VERSION_MAJOR), (u8)(LINUX_VERSION_PATCHLEVEL),
-> > >> +            (u16)(LINUX_VERSION_SUBLEVEL));
-> > >
-> > >No need for the casts and braces.
-> > >
->
->
-> I agree.
->
-> Shall I remove the casts when I apply this?
->
->
->
->
-> > >Otherwise this looks good, but please also kill off KERNEL_VERSION
-> > >and LINUX_KERNEL_VERSION entirely while you're at it.
-> >
-> > I don't think there are in-tree users left?
-> >
-> > We can't remove it completely because userspace is still using it, so if
-> > we drop those userspace will be sad.
->
->
-> Right.
-> Once we export a macros to userspace, we cannot remove it.
->
->
->
->
->
-> > --
-> > Thanks,
-> > Sasha
->
->
->
-> --
-> Best Regards
-> Masahiro Yamada
+Quoting Matti Vaittinen (2021-01-18 23:30:26)
+> ROHM BD71815 also provide clk signal for RTC. Add control
+> for gating this clock.
+>=20
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
 
-
-
-
-
-Wait, this patch does not work.
-None of the submitter or reviewers
-tested this patch... Sigh.
-
-
-masahiro@grover:~/workspace/linux-kbuild$ make
-Makefile:1249: *** missing 'endef', unterminated 'define'.  Stop.
-
-
-
-
-
-
-
-diff --git a/Makefile b/Makefile
-index ef81c8895abf..1fdd44fe1659 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1258,7 +1258,7 @@ define filechk_version.h
-        ((c) > 255 ? 255 : (c)))';                                       \
-        echo \#define LINUX_VERSION_MAJOR $(VERSION);                    \
-        echo \#define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL);            \
--       echo \#define LINUX_VERSION_SUBLEVEL $(SUBLEVEL);                \
-+       echo \#define LINUX_VERSION_SUBLEVEL $(SUBLEVEL)
- endef
-
- $(version_h): FORCE
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
