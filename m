@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A972431A35E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E4E31A369
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhBLRNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 12:13:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41236 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229451AbhBLRNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 12:13:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 261AAAD29;
-        Fri, 12 Feb 2021 17:13:09 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 17:12:58 +0000
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
-Message-ID: <20210212171246.GA20817@wotan.suse.de>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-7-mrostecki@suse.de>
- <c2cbf3a7-3db2-afae-4984-450e758f4987@oracle.com>
- <20210211155533.GB1263@wotan.suse.de>
+        id S230137AbhBLRSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 12:18:05 -0500
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21351 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhBLRSD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 12:18:03 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1613150235; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=dhppv5YRKrOiIY9ShjAPv0FL6PtAawegCZUNQ+9w1ed81nzIeF4B+WNw6FHtApDV3V62TXq0PGmtQGI3rYSuxSilRMSzdULSh7K2m+iEM0Bdl8fcNPUt0V4xuom/Cw4a5T2Z/QO27xTIkerxoSfjX43cGy0pkBoOKLLwg9zUE8E=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1613150235; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=U4ErNhDeAwMqPKmHkfMnsR+tSrT1hZl5AXxcsRpJu8I=; 
+        b=dZBX19dAcfzOwJFwNksZYc9uayX8wjh9fMUiRMa9QsXcUD4Q+rhs/b8ol7/W5Pt/HvFpzBfCAySWH+Uun12xQwobyzjgID2xrYV1TZ5tiWBAEEi19EokwiUwGQabTDWMiguOt+BhEYTNmt+Lm2B0KsCS9MGdjFUr71ImkwDv/og=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1613150235;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=Date:From:To:Cc:Message-ID:Subject:References:MIME-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To;
+        bh=U4ErNhDeAwMqPKmHkfMnsR+tSrT1hZl5AXxcsRpJu8I=;
+        b=OnSHuoo0b4jcpl/TCTjidFq8VU+g2saU3BhaUDVRVsTOq2+cJd7YCg3k9VH1byAG
+        MNbbHpbn3B2BKpm/uxkyAdYrOaKulNeGoz95XqrzoSOTZ5iAOGbP4SdzgHVorJwbxSi
+        vYmNZLlx0oFI/FQ2PrGvEegHMluKy3uCJsAR3CiA=
+Received: from anirudhrb.com (106.51.104.65 [106.51.104.65]) by mx.zohomail.com
+        with SMTPS id 1613150230624196.03993421440634; Fri, 12 Feb 2021 09:17:10 -0800 (PST)
+Date:   Fri, 12 Feb 2021 22:47:04 +0530
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, colin.king@canonical.com,
+        kuba@kernel.org, johannes@sipsolutions.net, lee.jones@linaro.org
+Message-ID: <YCa4EBQHw02BeQ4B@anirudhrb.com>
+Subject: Re: [PATCH] staging: wimax/i2400m: fix some byte order issues found
+ by sparse
+References: <20210211202908.4604-1-mail@anirudhrb.com>
+ <YCWVD34rU5Lu71/S@kroah.com>
+ <YCaRAYjiz0TJH+4L@anirudhrb.com>
+ <YCaT/qLci4ap1grf@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210211155533.GB1263@wotan.suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YCaT/qLci4ap1grf@kroah.com>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
+On Fri, Feb 12, 2021 at 03:43:10PM +0100, Greg KH wrote:
+> On Fri, Feb 12, 2021 at 08:00:25PM +0530, Anirudh Rayabharam wrote:
+> > On Thu, Feb 11, 2021 at 09:35:27PM +0100, Greg KH wrote:
+> > > On Fri, Feb 12, 2021 at 01:59:08AM +0530, Anirudh Rayabharam wrote:
+> > > > Fix sparse byte-order warnings in the i2400m_bm_cmd_prepare()
+> > > > function:
+> > > >=20
+> > > > wimax/i2400m/fw.c:194:36: warning: restricted __le32 degrades to in=
+teger
+> > > > wimax/i2400m/fw.c:195:34: warning: invalid assignment: +=3D
+> > > > wimax/i2400m/fw.c:195:34:    left side has type unsigned int
+> > > > wimax/i2400m/fw.c:195:34:    right side has type restricted __le32
+> > > > wimax/i2400m/fw.c:196:32: warning: restricted __le32 degrades to in=
+teger
+> > > > wimax/i2400m/fw.c:196:47: warning: restricted __le32 degrades to in=
+teger
+> > > > wimax/i2400m/fw.c:196:66: warning: restricted __le32 degrades to in=
+teger
+> > > >=20
+> > > > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> > > > ---
+> > > >  drivers/staging/wimax/i2400m/fw.c | 14 +++++++++-----
+> > > >  1 file changed, 9 insertions(+), 5 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/staging/wimax/i2400m/fw.c b/drivers/staging/wi=
+max/i2400m/fw.c
+> > > > index b2fd4bd2c5f9..bce651a6b543 100644
+> > > > --- a/drivers/staging/wimax/i2400m/fw.c
+> > > > +++ b/drivers/staging/wimax/i2400m/fw.c
+> > > > @@ -189,12 +189,16 @@ void i2400m_bm_cmd_prepare(struct i2400m_boot=
+rom_header *cmd)
+> > > >  {
+> > > >  =09if (i2400m_brh_get_use_checksum(cmd)) {
+> > > >  =09=09int i;
+> > > > -=09=09u32 checksum =3D 0;
+> > > > +=09=09__le32 checksum =3D 0;
+> > >=20
+> > > __le32 is only for when the data crosses the kernel/user boundry, jus=
+t
+> > > use le32 in the kernel for stuff like this.
+> > >=20
+> > But that throws a compile error.
+>=20
+> What error?
 
-re: inflight calculation
+drivers/staging/wimax/i2400m/fw.c:192:3: error: unknown type name
+=E2=80=98le32=E2=80=99; did you mean =E2=80=98__le32=E2=80=99?
 
-On Thu, Feb 11, 2021 at 03:55:33PM +0000, Michal Rostecki wrote:
-> > It is better to have random workloads in the above three categories
-> > of configs.
-> > 
-> > Apart from the above three configs, there is also
-> >  all-non-rotational with hetero
-> > For example, ssd and nvme together both are non-rotational.
-> > And,
-> >  all-rotational with hetero
-> > For example, rotational disks with different speeds.
-> > 
-> > 
-> > The inflight calculation is local to btrfs. If the device is busy due to
-> > external factors, it would not switch to the better performing device.
-> > 
-> 
-> Good point. Maybe I should try to use the part stats instead of storing
-> inflight locally in btrfs.
+=09- Anirudh
 
-I tried today to reuse the inflight calculation which is done for
-iostat. And I came to conclusion that it's impossible without exporting
-some methods from the block/ subsystem.
-
-The thing is that there are two methods of calculating inflight. Which
-one of them is used, depends on queue_is_mq():
-
-https://github.com/kdave/btrfs-devel/blob/9d294a685fbcb256ce8c5f7fd88a7596d0f52a8a/block/genhd.c#L1163
-
-And if that condition is true, I noticed that part_stats return 0, even
-though there are processed requests (I checked with fio inside VM).
-
-In general, those two methods of checking inflight are:
-
-1) part_stats - which would be trivial to reuse, just a matter of one
-   simple for_each_possible_cpu() loop with part_stat_local_read_cpu()
-
-https://github.com/kdave/btrfs-devel/blob/9d294a685fbcb256ce8c5f7fd88a7596d0f52a8a/block/genhd.c#L133-L146
-
-2) blk_mq_in_flight() - which has a lot of code and unexported
-   structs inside the block/ directory, double function callback;
-   definitely not easy to reimplement easily in btrfs without copying
-   dozens of lines
-
-https://github.com/kdave/btrfs-devel/blob/9d294a685fbcb256ce8c5f7fd88a7596d0f52a8a/block/blk-mq.c#L115-L123
-
-Well, I tried copying the whole blk_mq_in_flight() function with all
-dependencies anyway, hard to do without causing modpost errors.
-
-So, to sum it up, I think that making 2) possible to reuse in btrfs
-would require at lest exporting the blk_mq_in_flight() function,
-therefore the change would have to go through linux-block tree. Which
-maybe would be a good thing to do in long term, not sure if it should
-block my patchset entirely.
-
-The question is if we are fine with inflight stats inside btrfs.
-Personally I think we sholdn't be concerned too much about it. The
-inflight counter in my patches is a percpu counted, used in places which
-already do some atomic operations.
-
-Thanks,
-Michal
