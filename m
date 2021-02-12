@@ -2,183 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2766D31A3AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF7D31A3AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbhBLRar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 12:30:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231585AbhBLR3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 12:29:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0AED64E95;
-        Fri, 12 Feb 2021 17:28:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613150935;
-        bh=GFtq0B3Onk0lHTm0ppoQIGAxNpPaVFOx5jJLCzZQSQ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bb3gzoBWSN8jfLP4qc0LoBX5luPDYRAPNv5tC4lFWG9a2Uyg3WAPitKNT5ppP502v
-         aNRnvDjnINauiA7JNG13YIO5ZklqTH3QgOaJ5aG4wlT+4FR9usLObfdXTZBRNUJfr/
-         49WdWAGRFHS3HkhXHoigFM5GaLTsgN0r3BzNRBhSU8aJgnjkphovMswQ7YqZXoC3zA
-         t6Nw3G4m8/FRD53QoDq5kouPV6FP8dKEfrRT72147hLUNiZqVrgHgE5880hJCkb+6c
-         wMcOsn9QR8VVUyuQUvQzR1wtJ12lwuS5sGT5rWBGRR7PFMC5OBYXjRvXMSZIW9XEO7
-         hVtHZRxDO+0Pw==
-Received: by earth.universe (Postfix, from userid 1000)
-        id E02143C0C96; Fri, 12 Feb 2021 18:28:52 +0100 (CET)
-Date:   Fri, 12 Feb 2021 18:28:52 +0100
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-iio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v4] MAINTAINERS: move Milo Kim to credits
-Message-ID: <20210212172852.hplx6ly3m5ixrw4o@earth.universe>
-References: <20210212163229.68270-1-krzk@kernel.org>
+        id S231287AbhBLRb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 12:31:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231759AbhBLRbW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 12:31:22 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EADC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 09:30:42 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id u16so329921wmq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 09:30:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m26TZ2tJuGxHBQo60qfAvVdy7loPGID74+UtZKlfkOg=;
+        b=Qfnmud5g3lCzCePjlJrPbZtUmeeJR8MxWC9cXk14YQdskS8dsXWY1w17KCQwnHc2Hz
+         jZnbB1OkLK36/68EMpyLPCv5iF9m33zhbWAzTf1v6wo9eZy2lzEcctCtrrkt53I91zNc
+         eD9Y1Wd0etCGfEs/pZDzNcwvPMyIcbJlm38GWbg6dTxu2yILiMp1OybumgoJT7DvIRgV
+         23zhen8nr6Rm/qHhVoX9yMTKK95WY8VX0YlQ2kOeYlnTSBhZtcWeIhqwpzksoF4dtceo
+         CBaX+sWlRpdCrInLYacJnotHP4cUDsGlqwqY+joMmnZJcvfyXAIwJfx6DO8nnVg4vIyv
+         6/RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m26TZ2tJuGxHBQo60qfAvVdy7loPGID74+UtZKlfkOg=;
+        b=XmcZ5RQprE4r0purvHDOwOqMxwQ5Wds0dbB04Ms5/3B/M8BjRABiPTItTGe0rqySXR
+         X5n+F+xYqiPMfUrEhXa50czeRHEC82fttEcUr1Gh+1uGhzOsw7A/WKqvWw/jMf8XeD0r
+         hy/UXu+SRbu/i13lSzlMUsUaXFcD7YsOu9gNv8DrKM71oe+VcBsB5CBeF8gW/SX7H8cq
+         IP1Lawja8LOzNo8HDC5YiXsc0UXnW7z9wo6ByDHSFE+JK81z7N1zWE7bVGfLn4rrbkNd
+         ON6E07+yEoXErOud6rxq57pxvAxPo6pQHnC93qPNn7PKOAxmMVBNBhJ/ViiVcm0jw6KO
+         JLLg==
+X-Gm-Message-State: AOAM532U4DAbZlDchqipAW97rRz3g9cJZISdjYJpVQjNLNmVFY31lboc
+        pMgQE66XsD+fmyUzz8kRsk/JKo59K2fBoKjH0asWsw==
+X-Google-Smtp-Source: ABdhPJy52YXbmOf00JWxlF3hemo/oj+rIHdEoWUO9Pr70Gx3wPY4oq9ObryiZJyNQPBO2ODs9Ho/MP/A9bIPQzCvgJc=
+X-Received: by 2002:a7b:c952:: with SMTP id i18mr3177294wml.5.1613151041500;
+ Fri, 12 Feb 2021 09:30:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="56e5d2djjx3fcdkn"
-Content-Disposition: inline
-In-Reply-To: <20210212163229.68270-1-krzk@kernel.org>
+References: <20210110224850.1880240-1-suzuki.poulose@arm.com>
+ <20210110224850.1880240-29-suzuki.poulose@arm.com> <CAJ9a7ViwNA__+5f7-DehM6OtGer3DjdZfWsgHc9EOcr5-vQXgA@mail.gmail.com>
+ <72f85de4-5b39-c963-78cf-2f8347e21268@arm.com>
+In-Reply-To: <72f85de4-5b39-c963-78cf-2f8347e21268@arm.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Fri, 12 Feb 2021 17:30:30 +0000
+Message-ID: <CAJ9a7Vh-CkYQrxgTv-erb6MBXkXWkFg6xF5vEem4iQyOx9LYkw@mail.gmail.com>
+Subject: Re: [PATCH v7 28/28] coresight: Add support for v8.4 SelfHosted tracing
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Zhou <jonathan.zhouwen@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Suzuki,
 
---56e5d2djjx3fcdkn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Feb 12, 2021 at 05:32:29PM +0100, Krzysztof Kozlowski wrote:
-> Milo Kim's email in TI bounces with permanent error (550: Invalid
-> recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
-> credits and remove the separate driver entries for:
->  - TI LP855x backlight driver,
->  - TI LP8727 charger driver,
->  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: Jingoo Han <jingoohan1@gmail.com>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Daniel Thompson <daniel.thompson@linaro.org>
->=20
-> ---
+On Fri, 12 Feb 2021 at 15:36, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
 >
-> Dear Lee,
->=20
-> Could you take care about this patch?
->=20
-> Best regards,
-> Krzysztof
->=20
-> Changes since v3:
-> 1. Remove the entries as Dan Murphy won't be mainaining them.
->=20
-> Changes since v2:
-> 1. Fix subject (TP -> TI).
->=20
-> Changes since v1:
-> 1. Add Dan Murphy, do not remove the entries.
-> ---
+> Hi Mike
+>
+> On 2/12/21 10:34 AM, Mike Leach wrote:
+> > Hi Mathieu, Suzuki,
+> >
+> > Sorry for the really late response on this patch, but I noticed a
+> > problem while doing a review of the ETE / TRBE set. (TRBE specs
+> > mention TRFCR_ELx, so I was confirming a couple of things).
+> >
+> > On Sun, 10 Jan 2021 at 22:49, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+> >>
+> >> From: Jonathan Zhou <jonathan.zhouwen@huawei.com>
+> >>
+> >> v8.4 tracing extensions added support for trace filtering controlled
+> >> by TRFCR_ELx. This must be programmed to allow tracing at EL1/EL2 and
+> >> EL0. The timestamp used is the virtual time. Also enable CONTEXIDR_EL2
+> >> tracing if we are running the kernel at EL2.
+> >>
+> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >> Cc: Mike Leach <mike.leach@linaro.org>
+> >> Cc: Will Deacon <will@kernel.org>
+> >> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> >> Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
+> >> [ Move the trace filtering setup etm_init_arch_data() and
+> >>   clean ups]
+> >> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> >> ---
+> >>   .../coresight/coresight-etm4x-core.c          | 25 +++++++++++++++++++
+> >>   1 file changed, 25 insertions(+)
+> >>
+> >> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> >> index 3d3165dd09d4..18c1a80abab8 100644
+> >> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> >> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> >> @@ -859,6 +859,30 @@ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
+> >>          return false;
+> >>   }
+> >>
+> >> +static void cpu_enable_tracing(void)
+> >> +{
+> >> +       u64 dfr0 = read_sysreg(id_aa64dfr0_el1);
+> >> +       u64 trfcr;
+> >> +
+> >> +       if (!cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_TRACE_FILT_SHIFT))
+> >> +               return;
+> >> +
+> >> +       /*
+> >> +        * If the CPU supports v8.4 SelfHosted Tracing, enable
+> >> +        * tracing at the kernel EL and EL0, forcing to use the
+> >> +        * virtual time as the timestamp.
+> >> +        */
+> >> +       trfcr = (TRFCR_ELx_TS_VIRTUAL |
+> >> +                TRFCR_ELx_ExTRE |
+> >> +                TRFCR_ELx_E0TRE);
+> >> +
+> >> +       /* If we are running at EL2, allow tracing the CONTEXTIDR_EL2. */
+> >> +       if (is_kernel_in_hyp_mode())
+> >> +               trfcr |= TRFCR_EL2_CX;
+> >> +
+> >
+> > This is wrong - CX bit is present on TRFCR_EL2, not TRFCR_EL1.
+>
+> Why is this wrong ? We do this only when we are in EL2.
+>
 
-Acked-by: Sebastian Reichel <sre@kernel.org>
+Sorry  - must have been looking at an older version of the ARMARM when
+I looked for EL1 registers that are aliased to EL2.  So this does
+indeed work!
 
--- Sebastian
+> > Moreover, TRFCR_EL2 has a separate enables for tracing at EL0 and EL2.
+> >
+>
+> True, that is for EL0&2 translation regimes. i.e, tracing EL0 with
+> the kernel running at EL2. But bits TRFCR_EL2.E2TRE == TRFCR_EL1.E1TRE
+> If notice, we name the bit TRFCR_ELx_ExTRE. And E0TRE == E0HTRE.
+>
+> So we do the following :
+>
+>    1) When kernel running at EL2:
+>      Enable tracing at EL2 and EL0 and context tracking
+>    2) When kernel running at EL1:
+>      Enable tracing at EL1 and EL0.
+>
+>
+> > Secondly - is this correct in principal?  Should the driver not be
+> > reading the access it is permitted by the kernel, rather than giving
+> > itself unfettered access to trace where it wants to.
+>
+> I dont follow the "access permitted by the kernel" here. What are we referrring to ?
+>
 
->  CREDITS     |  3 +++
->  MAINTAINERS | 23 -----------------------
->  2 files changed, 3 insertions(+), 23 deletions(-)
->=20
-> diff --git a/CREDITS b/CREDITS
-> index be097156bd71..71552790774d 100644
-> --- a/CREDITS
-> +++ b/CREDITS
-> @@ -1933,6 +1933,9 @@ N: Kukjin Kim
->  E: kgene@kernel.org
->  D: Samsung S3C, S5P and Exynos ARM architectures
-> =20
-> +N: Milo Kim
-> +D: TI LP855x, LP8727 and LP8788 drivers
-> +
->  N: Sangbeom Kim
->  E: sbkim73@samsung.com
->  D: Samsung SoC Audio (ASoC) drivers
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 00bca3e220cc..3478082debd1 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17880,29 +17880,6 @@ S:	Maintained
->  F:	sound/soc/codecs/isabelle*
->  F:	sound/soc/codecs/lm49453*
-> =20
-> -TI LP855x BACKLIGHT DRIVER
-> -M:	Milo Kim <milo.kim@ti.com>
-> -S:	Maintained
-> -F:	Documentation/driver-api/backlight/lp855x-driver.rst
-> -F:	drivers/video/backlight/lp855x_bl.c
-> -F:	include/linux/platform_data/lp855x.h
-> -
-> -TI LP8727 CHARGER DRIVER
-> -M:	Milo Kim <milo.kim@ti.com>
-> -S:	Maintained
-> -F:	drivers/power/supply/lp8727_charger.c
-> -F:	include/linux/platform_data/lp8727.h
-> -
-> -TI LP8788 MFD DRIVER
-> -M:	Milo Kim <milo.kim@ti.com>
-> -S:	Maintained
-> -F:	drivers/iio/adc/lp8788_adc.c
-> -F:	drivers/leds/leds-lp8788.c
-> -F:	drivers/mfd/lp8788*.c
-> -F:	drivers/power/supply/lp8788-charger.c
-> -F:	drivers/regulator/lp8788-*.c
-> -F:	include/linux/mfd/lp8788*.h
-> -
->  TI NETCP ETHERNET DRIVER
->  M:	Wingman Kwok <w-kwok2@ti.com>
->  M:	Murali Karicheri <m-karicheri2@ti.com>
-> --=20
-> 2.25.1
->=20
+By that I mean that as I suggest below this should be controlled by
+what we could call the hypervisor, rather than a driver.
 
---56e5d2djjx3fcdkn
-Content-Type: application/pgp-signature; name="signature.asc"
+> > Surely TRFCR_ELx  levels should be chosen in KConfig  and then should
+> > be set up in kernel initialisation?
+>
+> I disagree with yet another Kconfig. This basic requirement for
+> enabling the trace collection. It is not something that we can optionally
+> use from the architecture. So we should transparently do the right
+> thing for making sure that we set up the system for something that
+> didn't require any other steps. Or in other words, if we add a Kconfig
+> option for TRFCR programming, if someone forgets to select it
+> when they upgraded the kernel they are in for a surprisingly long
+> debugging to find why the trace doesnt work.
+>
+> As for the TRFCR programming, we have two choices. etm4x driver
+> or generic boot up for the CPU. I preferred to do this in the
+> driver as we can enable it only if trace drivers are available.
+>
 
------BEGIN PGP SIGNATURE-----
+The point is that TRFCR are not part of the controlling registers for
+the ETE or any trace source device. The architecture manual seems to
+regard them as being controlled by the hypervisor, rather than the PE
+trace device. This implies that the control feature is designed to be
+independent from the trace generation features.
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAmusMACgkQ2O7X88g7
-+pq5YxAAi9sMZJ6My43p1X33t66UXnrR6iZir+yvyHCur564wWsRrT+XCPKJJVGX
-JYMtku40qwJSzvF9ZBR5otvlXdPq592MuTPhdq81AE5W/NiS2PBWwn6WFOVMwQe/
-to4K+oaOLiOfVAkMeV8jZQeFlJrKtCJIm05K+rVTJKI8ZDW2ggY/eLygzzrAsXH9
-xD/9aCxyU7ra5mWiBC+8+Z8szKt6lc4rqrc98uEZTOJL244YUprtOI3Qzz2oC5Dx
-o/YUOEhtiAH9zeQZTNBBllfg/HUMtKzEcKA/a7zbA1Pv7RRpldr7Jv9N8a03F6Xr
-Y84j9Iay39KOMGbJuDG0QGTMlP0cmgZKsJ8+gk9jyT5YGLSuPFEQdwZjEZu6Fgxb
-iHUqAybdZIwEqgOA+hzsxFXbL3dHTKLbvuUjEtcMhdythDZCLVpN5vGCGsbn46vB
-lzENDVKf/yYY3HJYqJCY5XbIABTqX6yOxjUPxOMjyDc8PpY4tFppASJ92i3z9XXI
-ayWP4rCaEhKFiviGrrA7CQQaMo+n1B1k5vfXkYMuwjwG4L5upXiBYOgwxx/XB8bs
-5vbXTwC2JBb2mHKKxrWRZIbDJNaBn55A6oYOeGoznLRkUYytsLsAKJ244lw4CKy3
-HVH6yTNna7+Xzm6m2HF6y8xN8xO0nSw4lXamSGUF6y8G8x+fM6g=
-=QaBn
------END PGP SIGNATURE-----
+I thought they were there to allow virtualisation code to determine
+what gets traced and what is prohibited, and what view the trace sees
+of the clock. If you simple switch everything on from the driver and
+control the ELs traced from the ETE / ETM registers then what are they
+there for?
 
---56e5d2djjx3fcdkn--
+This solution could be a first pass at this to get trace working, but
+I think it will have to change in future.
+
+Regards
+
+Mike
+
+
+
+> Cheers
+> Suzuki
+>
+> >
+> > Regards
+> >
+> > Mike
+> >
+> >
+> >
+> >> +       write_sysreg_s(trfcr, SYS_TRFCR_EL1);
+> >> +}
+> >> +
+> >>   static void etm4_init_arch_data(void *info)
+> >>   {
+> >>          u32 etmidr0;
+> >> @@ -1044,6 +1068,7 @@ static void etm4_init_arch_data(void *info)
+> >>          /* NUMCNTR, bits[30:28] number of counters available for tracing */
+> >>          drvdata->nr_cntr = BMVAL(etmidr5, 28, 30);
+> >>          etm4_cs_lock(drvdata, csa);
+> >> +       cpu_enable_tracing();
+> >>   }
+> >>
+> >>   static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
+> >> --
+> >> 2.24.1
+> >>
+> >
+> >
+> > --
+> > Mike Leach
+> > Principal Engineer, ARM Ltd.
+> > Manchester Design Centre. UK
+> >
+>
+
+
+--
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
