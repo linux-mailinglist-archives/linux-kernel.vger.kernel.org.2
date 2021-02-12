@@ -2,80 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF1631A1AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D03431A1C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbhBLP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbhBLP2f (ORCPT
+        id S231954AbhBLPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:35:29 -0500
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.2]:58162 "EHLO
+        mail1.bemta23.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232270AbhBLPed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:28:35 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB828C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:27:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=xCWTsoSbOlREB9C8JV0M5wM8KtNFMw7ytG5hkc4u4As=; b=02pPfDfDq2DgQpcKDDFXi7krtc
-        noEa1zoBRz51wPIHSZ76k30UlPMtHuXcszIn+eSqXHMnyegDDpbC+wEMhu4/fD3QYK4MKW7NMjU/t
-        mCTLehrbsKo3rChovH0+ll3z5JP5tRCtm6Q0SV7lGjhGyVHaJcOcPUiJTn+04ZHqLaGYzlNVV0suQ
-        V1OiUz+9T5IxEX+N7DX3nPPlAjXJM74T4L1wL3Ke3pO3TmC0Dz6O3btXmWwGqb4GZgxg8lT4kQCtr
-        yYP8MStjDmDMvfyTdLJC8b3Nzhk+Inu/EQAiNmh7g3F+RKa3xFtj4A3La45ZK7YRUZr1UjoCyjwo+
-        AW/pmvWA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lAaMD-00031t-SC; Fri, 12 Feb 2021 15:27:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C1B3300446;
-        Fri, 12 Feb 2021 16:27:42 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 521542C1CD09A; Fri, 12 Feb 2021 16:27:42 +0100 (CET)
-Date:   Fri, 12 Feb 2021 16:27:42 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jason Gerecke <killertofu@gmail.com>, linux-kernel@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Jason Gerecke <jason.gerecke@wacom.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH] RFC: x86/jump_label: Mark arguments as const to satisfy
- asm constraints
-Message-ID: <YCaebvpeLjY5oRAs@hirez.programming.kicks-ass.net>
-References: <20210211214848.536626-1-jason.gerecke@wacom.com>
- <20210212094059.5f8d05e8@gandalf.local.home>
+        Fri, 12 Feb 2021 10:34:33 -0500
+Received: from [100.112.3.43] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+        by server-2.bemta.az-b.us-east-1.aws.symcld.net id 32/66-00973-1CE96206; Fri, 12 Feb 2021 15:29:05 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPKsWRWlGSWpSXmKPExsWS8eIhj+7BeWo
+  JBlM6+C3eHJ/OZDH1QI3Fzodv2SyW7+tntLi8aw6bRfvG2awWnzsms1is3vOC2eLM6UusDpwe
+  705tYfPYOesuu8emVZ1sHvNOBnq833eVzWPL1XYWj8+b5ALYo1gz85LyKxJYM+7+WcNe8EWgo
+  vubQANjP28XIxeHkMB/Romvhw+zQzjPGSVOf1zF3MXIySEskCkxad5UMFtEoFqi8fwvVpAiZo
+  FLjBKvpq1lB0kICdhK3F9yHqyITUBbYsuWX2wgNi9Q/OPMVlYQm0VAVWLqtM8sILaoQLjE602
+  fGSFqBCVOznwCFucUsJO4smoWUxcjB9ACTYn1u/RBwswC4hK3nsxngrDlJba/nQO2SgLI/vHo
+  FjuEnSDR8+8R2wRGwVlIps5CmDQLyaRZSCYtYGRZxWiWVJSZnlGSm5iZo2toYKBraGika6BrZ
+  GSkl1ilm6RXWqybmlhcomuol1herFdcmZuck6KXl1qyiREYbykFDPd2MP55/UHvEKMkB5OSKO
+  +ZGWoJQnxJ+SmVGYnFGfFFpTmpxYcYZTg4lCR4VWcD5QSLUtNTK9Iyc4CxD5OW4OBREuHNmgu
+  U5i0uSMwtzkyHSJ1iVJQS590JkhAASWSU5sG1wdLNJUZZKWFeRgYGBiGegtSi3MwSVPlXjOIc
+  jErCvEfmAE3hycwrgZv+CmgxE9Dimi6wxSWJCCmpBqaiJQ31JTUCDCqfU9xfn/gnce6sUscxF
+  ZnWTbcWHPCNrZ8zmSlhGofSFMf2FxsZly45M0NhldmPTZIfQyZNNunqjQ5j+cRetGby1pQjx2
+  Z7npmwepkze/9/SQtjhramBYe5vns8s62QMZrkkS7az+ZycmKmF/PU6gd2b7TfTHTvfXYuU0Y
+  y913KvqPVSXUch32mxnz/+GNp7c4ONa9J0fPqeQ22zzjPW+xkwj3rl12lT5hegOkT+e1HOhZt
+  /ZejU1y55L5sh/pk75IZHIYbGZ9OY/+4wtTQ8HSDhI0nr/UPy4dzbzydKVXPHOF3TnV+fPORz
+  7XO/797xh59c+fxF1ulyq1litaLp0XVcuqI8CqxFGckGmoxFxUnAgCPf1JPsgMAAA==
+X-Env-Sender: markpearson@lenovo.com
+X-Msg-Ref: server-31.tower-395.messagelabs.com!1613143745!262690!1
+X-Originating-IP: [104.232.225.12]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.60.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 28115 invoked from network); 12 Feb 2021 15:29:05 -0000
+Received: from unknown (HELO lenovo.com) (104.232.225.12)
+  by server-31.tower-395.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 12 Feb 2021 15:29:05 -0000
+Received: from reswpmail01.lenovo.com (unknown [10.62.32.20])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by Forcepoint Email with ESMTPS id 0B0FDB4F202F52A5DBA3;
+        Fri, 12 Feb 2021 10:29:05 -0500 (EST)
+Received: from localhost.localdomain (10.46.53.63) by reswpmail01.lenovo.com
+ (10.62.32.20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2106.2; Fri, 12 Feb
+ 2021 10:28:27 -0500
+Subject: Re: [External] [PATCH v2 0/4] platform/surface: Add platform profile
+ driver for Surface devices
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+CC:     Mark Gross <mgross@linux.intel.com>, Len Brown <lenb@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210211201703.658240-1-luzmaximilian@gmail.com>
+From:   Mark Pearson <markpearson@lenovo.com>
+Message-ID: <5133800c-e7e4-034a-d646-de1411065fac@lenovo.com>
+Date:   Fri, 12 Feb 2021 10:29:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210212094059.5f8d05e8@gandalf.local.home>
+In-Reply-To: <20210211201703.658240-1-luzmaximilian@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.46.53.63]
+X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
+ reswpmail01.lenovo.com (10.62.32.20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 09:40:59AM -0500, Steven Rostedt wrote:
-> On Thu, 11 Feb 2021 13:48:48 -0800
-> Jason Gerecke <killertofu@gmail.com> wrote:
+On 11/02/2021 15:16, Maximilian Luz wrote:
+> This series adds a driver to provide platform profile support on 5th-
+> and later generation Microsoft Surface devices with a Surface System
+> Aggregator Module. On those devices, the platform profile can be used to
+> influence cooling behavior and power consumption.
 > 
-> > When compiling an external kernel module with `-O0` or `-O1`, the following
-> > compile error may be reported:
-> > 
-> >     ./arch/x86/include/asm/jump_label.h:25:2: error: impossible constraint in ‘asm’
-> >        25 |  asm_volatile_goto("1:"
-> >           |  ^~~~~~~~~~~~~~~~~
-> > 
-> > It appears that these lower optimization levels prevent GCC from detecting
-> > that the key/branch arguments can be treated as constants and used as
-> > immediate operands. To work around this, explicitly add the `const` label.
+> To achieve this, a new platform profile is introduced: the
+> 'balanced-performance' profile.
 > 
-> Yes this makes sense. The "i" constraint needs to be a constant.
+> In addition, a couple of fix-ups are performed:
+> - Hide CONFIG_ACPI_PLATFORM_PROFILE and change drivers so that it is
+>   selected instead of depended on.
+> - Fix some references to documentation in a comment.
+> 
+> Note: This series (or more specifically "platform/surface: Add platform
+> profile driver") depends on the "platform/surface: Add Surface
+> Aggregator device registry" series.
+> 
+> Changes in v2:
+>  - Introduce new 'balanced-performance' platform profile and change
+>    profile mapping in driver.
+>  - Perform some fix-ups for the ACPI platform profile implementation:
+>    - Fix some references to documentation in a comment.
+>    - Hide CONFIG_ACPI_PLATFORM_PROFILE
+> 
+> Maximilian Luz (4):
+>   ACPI: platform: Hide ACPI_PLATFORM_PROFILE option
+>   ACPI: platform: Fix file references in comment
+>   ACPI: platform: Add balanced-performance platform profile
+>   platform/surface: Add platform profile driver
+> 
+>  .../ABI/testing/sysfs-platform_profile        |  18 +-
+>  MAINTAINERS                                   |   6 +
+>  drivers/acpi/Kconfig                          |  16 +-
+>  drivers/acpi/platform_profile.c               |   1 +
+>  drivers/platform/surface/Kconfig              |  22 ++
+>  drivers/platform/surface/Makefile             |   1 +
+>  .../surface/surface_platform_profile.c        | 190 ++++++++++++++++++
+>  drivers/platform/x86/Kconfig                  |   4 +-
+>  include/linux/platform_profile.h              |   6 +-
+>  9 files changed, 237 insertions(+), 27 deletions(-)
+>  create mode 100644 drivers/platform/surface/surface_platform_profile.c
+> 
+I looked through the patch series and it all looked good to me.
+Glad the platform profile implementation is getting used in more places :)
 
-Right, using -O[01] seems a little daft though. But yeah, that patch is
-correct and won't cause harm.
-
-I've queued it for after the next merge window.
+Thanks
+Mark
