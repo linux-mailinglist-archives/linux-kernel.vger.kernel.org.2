@@ -2,78 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B250319D2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B57DD319D36
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhBLLR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:17:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36550 "EHLO mail.kernel.org"
+        id S230024AbhBLLSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:18:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229718AbhBLLRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:17:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 035AB60C41;
-        Fri, 12 Feb 2021 11:16:42 +0000 (UTC)
+        id S229782AbhBLLSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 06:18:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A03D64DE0;
+        Fri, 12 Feb 2021 11:18:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613128603;
-        bh=3cBFgSXoPKtGmZ39QTAsBzgIxi9rHYwIcUPbJHWDSvA=;
+        s=korg; t=1613128687;
+        bh=tJzhvntznc/FRgHjBqWUd1r8SrDuRwD4WNhViT1t8Kw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z1c5KuWmeNAsE0v455SwagTiWRv6dcQYqpQH0ZEMdip5vz2k1HUhbGChnLuEdDHrv
-         wEnadPY6ZiJlQkk7Wf55dpnB289oOo9AcsaYD5d46AuU1iu+PeT34hp711kSy2Gf5l
-         T1g9RrkGsCgLWRZaNy2Uq8Aw2GnLGsClvE+/9vsk=
-Date:   Fri, 12 Feb 2021 12:16:41 +0100
+        b=0/H3daOncA5CdDesBRodDPOIXcbcpgwfDaqND/4FmuthL+L826Bbz2SflEx8kFDTi
+         Gz4fUukJ5xeBxWqkPdKYl1HF01tu3GDWzvBQMGwcwxhpcyYxjvHPOrVdLZ678WmCLs
+         t2Oc4nDK8yAaiRyr7UrziIYVYsnqc3FXFBwTykkY=
+Date:   Fri, 12 Feb 2021 12:18:03 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lukasz Majczak <lma@semihalf.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Tj <ml.linux@elloe.vision>, Dirk Gouders <dirk@gouders.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>, upstream@semihalf.com
-Subject: Re: [PATCH v5] tpm_tis: Add missing
- tpm_request/relinquish_locality() calls
-Message-ID: <YCZjmf4ZLMnlvu9r@kroah.com>
-References: <20210212110600.19216-1-lma@semihalf.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] soundwire updates for v5.12-rc1
+Message-ID: <YCZj6zO/n45w6NQF@kroah.com>
+References: <20210212111422.GN2774@vkoul-mobl.Dlink>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210212110600.19216-1-lma@semihalf.com>
+In-Reply-To: <20210212111422.GN2774@vkoul-mobl.Dlink>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:06:00PM +0100, Lukasz Majczak wrote:
-> There are missing calls to tpm_request_locality() before the calls to
-> the tpm_get_timeouts() and tpm_tis_probe_irq_single() - both functions
-> internally send commands to the tpm using tpm_tis_send_data()
-> which in turn, at the very beginning, calls the tpm_tis_status().
-> This one tries to read TPM_STS register, what fails and propagates
-> this error upward. The read fails due to lack of acquired locality,
-> as it is described in
-> TCG PC Client Platform TPM Profile (PTP) Specification,
-> paragraph 6.1 FIFO Interface Locality Usage per Register,
-> Table 39 Register Behavior Based on Locality Setting for FIFO
-> - a read attempt to TPM_STS_x Registers returns 0xFF in case of lack
-> of locality. The described situation manifests itself with
-> the following warning trace:
+On Fri, Feb 12, 2021 at 04:44:22PM +0530, Vinod Koul wrote:
+> Hello greg,
 > 
-> [    4.324298] TPM returned invalid status
-> [    4.324806] WARNING: CPU: 2 PID: 1 at drivers/char/tpm/tpm_tis_core.c:275 tpm_tis_status+0x86/0x8f
+> Few more patches came in late and would be great to have in upcoming
+> merge window. Please pull to receive a fix for Intel laptops and support
+> for _no_pm in sdw regmap (acked by Mark)
 > 
-> Tested on Samsung Chromebook Pro (Caroline), TPM 1.2 (SLB 9670)
-> Fixes: a3fbfae82b4c ("tpm: take TPM chip power gating out of tpm_transmit()")
+> The following changes since commit 6d7a1ff71cbb326fadfbedb7f75c1fc8f5c84d84:
 > 
-> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-<formletter>
+>   soundwire: bus: clarify dev_err/dbg device references (2021-02-07 17:49:17 +0530)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/soundwire-2_5.12-rc1
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+Pulled and pushed out, thanks.
 
-</formletter>
+greg k-h
