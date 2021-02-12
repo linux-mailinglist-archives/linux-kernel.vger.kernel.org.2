@@ -2,92 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047A331A18E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D1231A194
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbhBLPXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:23:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhBLPTR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:19:17 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D213C061574;
-        Fri, 12 Feb 2021 07:18:37 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id k10so8688710otl.2;
-        Fri, 12 Feb 2021 07:18:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RJSi3uIsnP1NF42ZthmkocG9MIg4snJ5/E3aqfDTg1A=;
-        b=rcTg62QsOh0ugTinJH4hnbb6mVvib2Ml/lugUiAAutipD9hT57AxzYFOtyeNQRieoT
-         HMn2hKofvwUesEwrt2jmHV3yQJWRXqCPQOkIDfy0V9wkgQQocqDsW2enRStt6Sx9ADIt
-         xgA8+R7q0pGT6o+iCHFElv306/UHjy1uJESOc9fvzXFX1TOcmWnSPzwh3dtD2tNUq9ul
-         rjOxaQIOLDByOyAAYp7ssiIkFi8KBj/5o+2hMaRoRuPF+Z6N3mhyfUqF4yAXP6msDpHI
-         lSPDBuFCiTDO1PhR6f9JphdZm0NHcIKBaZdBgr4y2fNNwtni863lm4vsHGPLrHBP6isI
-         RkCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RJSi3uIsnP1NF42ZthmkocG9MIg4snJ5/E3aqfDTg1A=;
-        b=Hc5dSYE2QCItENEdQmoG/HAoD+DW/JU602SgOy5d0FZ1PlPf0qJfg1V/L2xL+4ZeCr
-         HGeCZU6ekSxsYYL+nH4IfAu0BhOlVVe7KMahF21GSgBHQRuYNJtJllZ+ZZhxJaBuafPc
-         C+h9sPreN9uCJthfjuVVegUGAaIVFDPA9qhEIgX29nVuiq8At9bjeeUdIigPMw1O8Bn4
-         +L2Nal59SsHl+DiI6kKBdm4ntfKQk7zhPGFQE6lH2wu1xn+aN6SD19/J9cDjbXIfTXMf
-         rAPX+23FsA/8S6jNw01H01Wfv4IqpOidQ9EvVOJc9rTWo/9K6fLS8fVnNFkpEXAAwDI9
-         ewVw==
-X-Gm-Message-State: AOAM530hxxx2SS4tPclCKocmboisxMCtBpr2y4sx9hYLaDdqQe/I6fE4
-        f8vI/xVrlj0BmnvGlVcE9b5yASO/Vg8=
-X-Google-Smtp-Source: ABdhPJy+Y0ggbcrV3wUSoSBHWRffKWs2pgL6hiw9x07TjoqMcsXl3yfTOMvcmv6SiSjsXovUikGNKw==
-X-Received: by 2002:a9d:7dd3:: with SMTP id k19mr2310986otn.162.1613143116996;
-        Fri, 12 Feb 2021 07:18:36 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p20sm1577429oos.46.2021.02.12.07.18.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Feb 2021 07:18:36 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 12 Feb 2021 07:18:35 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v6 3/7] usb: typec: tcpm: Determine common SVDM Version
-Message-ID: <20210212151835.GB57042@roeck-us.net>
-References: <20210205033415.3320439-1-kyletso@google.com>
- <20210205033415.3320439-4-kyletso@google.com>
- <20210212041756.GC103223@roeck-us.net>
- <CAGZ6i=2LfU16K7HHVOwVsHvxpL3rQtVhnabScAReqT9cY3HWyw@mail.gmail.com>
- <CAGZ6i=1BWi+9KiBJrEmOTin-yLhgDCVuksZNiFoxHM24bwnqSA@mail.gmail.com>
+        id S231703AbhBLPXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:23:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229475AbhBLPTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:19:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26B3860C41;
+        Fri, 12 Feb 2021 15:18:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613143135;
+        bh=5m7qNeM+iZGkaEN9U3T+IB2rVlBvv/69Py0HDS2w5A4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t2vdBIm1rWDCTIOTLgQ/AgdEa6rcWJ/yOTMSWoqsJQ/SC4rBL1szYvIccyOdShr+9
+         7Kes6omLBYp6gGDNlga1IUx4kcAIZ5Mbv9/oDvL3VuOoT+bkNpJfjUH2OZjbH8IsS+
+         DZ6NuEns8ODSB7MKZUkcnJ5sFWhkcw4654DcIl9cy/r7pPpjznj8xfSIzUGb2aqUmU
+         2Vcp5tiAmk9IC2w1vSiDUYyeFQAbwc4H7lb/znERvsM0LVZHBAmxT3NpHiK1vCitCP
+         sdYw0aMSR9UZ5jgoqd7hoM1DYpSmDITNpDrdQt0ZlkKZJlCHAloBX8jE/A5L1J5Eil
+         Yiw2JCfA/Rxsg==
+Date:   Fri, 12 Feb 2021 16:18:53 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: linux-next: manual merge of the rcu tree with the block tree
+Message-ID: <20210212151853.GC94816@lothringen>
+References: <20210211164852.7489b87d@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGZ6i=1BWi+9KiBJrEmOTin-yLhgDCVuksZNiFoxHM24bwnqSA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210211164852.7489b87d@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 03:24:22PM +0800, Kyle Tso wrote:
-> On Fri, Feb 12, 2021 at 3:10 PM Kyle Tso <kyletso@google.com> wrote:
+On Thu, Feb 11, 2021 at 04:48:52PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> > Unless every time the local variable "svdm_version" is updated when
-> > "typec_partner_set_svdm_version" is called.
-> >
+> Today's linux-next merge of the rcu tree got conflicts in:
 > 
-> I can do that if it is clearer to do so.
-> It just needs two additional lines.
+>   include/linux/rcupdate.h
+>   kernel/rcu/tree.c
+>   kernel/rcu/tree_plugin.h
 > 
+> between commits:
+> 
+>   3a7b5c87a0b2 ("rcu/nocb: Perform deferred wake up before last idle's need_resched() check")
+>   e4234f21d2ea ("rcu: Pull deferred rcuog wake up to rcu_eqs_enter() callers")
+>   14bbd41d5109 ("entry/kvm: Explicitly flush pending rcuog wakeup before last
+>   rescheduling point")
+> from the block tree and commits:
 
-Don't bother; I don't want to hold up that series any further.
-
-Guenter
+Isn't it tip:/sched/core instead of block?
