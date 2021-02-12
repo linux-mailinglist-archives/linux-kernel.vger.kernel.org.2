@@ -2,204 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A9531994F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B0D319955
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbhBLEro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 23:47:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54458 "EHLO
+        id S229740AbhBLEuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 23:50:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhBLErE (ORCPT
+        with ESMTP id S229636AbhBLEtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 23:47:04 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB7CC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:46:23 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id l12so9362764edt.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:46:23 -0800 (PST)
+        Thu, 11 Feb 2021 23:49:51 -0500
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC247C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:49:10 -0800 (PST)
+Received: by mail-vs1-xe34.google.com with SMTP id y123so4200753vsy.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:49:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9+2yrPqX2PuOtJQUEK4jTbIiRslC1Fg3ZyV+1OHc848=;
-        b=RKyIKnbvKOs02wQagQDLcw7ZyPj/rRl1baNQmo2q3O7ofpvR5z/20KgSJjIXuH09iZ
-         5QYL0YL2PZFQ71p1YAR0tsJnuSnYqt9OgACRg7g7EK+HXwA1vschMMJCvq1P2pZI+GaY
-         zV2XFRSNH+/OyEuOUb4hCCIDeKOsP8PBs/XS67mT4/01ckV9zzpEsmAEX/nbk55xuv5Y
-         i9jMGuP6aPmTKilWKCFuulkwPmb+F01x+GntLPDkviI4PyYI8n7N9DzzoRG0xVMDhSEx
-         RyO22bnInB8Hxw34sFVS7DJ/K69LrDXYAV9Ti96id7n6mHAVDkVpW7/cj3SG4vIj9ZbM
-         zakg==
+        bh=oT9pyCENAroqyQofR5rn6Lps4PvawUWgtEucTBqW7iw=;
+        b=SBcCIGew+7NcUv9Rxp/TNTz7mifemsxhrM6e+hfhx5MYwXbz52Ck4QZR+r4jsLBJO2
+         r+XRXX2Vsw7cQ5XjHme0SSRI6NrP72/VTYwoCEGyoWYu6uo/N76xzEO8dKY70/o/Y0eo
+         IInnBbOrjCaaoLGRVVyDTdgc3DvVHgg4DZWGI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9+2yrPqX2PuOtJQUEK4jTbIiRslC1Fg3ZyV+1OHc848=;
-        b=PGH4SMpJV78ZPIWpw/GkT5eTiscj0t1iiXolrgiYN1QP7Z1z4ReynjOXqK1SlkeBI3
-         QGojxrgCIilyHabgKmH2lkEDC5WLvi8NGYtvMuI5GB15f+jzyCMwDlqOCwK0CSURMC0P
-         FwIx5VEw2XqCXkEx94o07wqHRL0Vjp6lnCRKnwtoYbH+DHf+fcfluwivF9Snd8Ktkw0k
-         pvr8U9/ffX3ZyOPQtL7TuVGyR2RY4Jajl87ucqQ6yxUbijG90mQoQ53p0Pl0necSA+4f
-         AU6OgpGLP7iUGx+uRnvqhl5FzMcrtPmSnTpvsT/ROwZJhQJRejB3icSPXSS0TixvrbW4
-         4mew==
-X-Gm-Message-State: AOAM5305fRGlHSfK6/eCMXLFxvdUggVYzHZwnaZhUFrzbYWTSMmLGTvK
-        ypuBF8xMQlTK10YdzB+uhexA183osrFyUVVNRm3Qpg==
-X-Google-Smtp-Source: ABdhPJy0lJyBPB/Ayi6OC6JWEL6RjKMWAjdxD1+csMzTd3UjkDnZX4sKKlB9/3I3OBcy+ZpxS3tLUaPUGoAH3tBG9nU=
-X-Received: by 2002:a05:6402:2053:: with SMTP id bc19mr1453492edb.230.1613105182209;
- Thu, 11 Feb 2021 20:46:22 -0800 (PST)
+        bh=oT9pyCENAroqyQofR5rn6Lps4PvawUWgtEucTBqW7iw=;
+        b=kyXfX9GL3tcgYnrGyRHf1PjjkFu2p9QASQ5oFnoCHBBAbTSQXZjDCkV43sFsBQPOtd
+         8/ftOt3W4dHiAiNl8b47ZfLXVsAUqd4vwNgtZ9fW4bQSMsH8HJeYVrkLC42Vo7uIlHYy
+         7LGjapMxEuKcPGSIgtAN34praUwXLmxZ7NlQSQnsv2D0qUrX0cmBaQExiTltS5Jdkm+h
+         A4F7DmI5/3Y4/fFXf6Vv521Ezsm1SkBDFYDPra7ljDwe8whS841smMJkZ1rUy6rdGIlF
+         ciE5nwBM0WR8UdUysyo0PgSnSEJBpwS/3H4HPModlM+YhTk13pPycPU8thwpXz4TWd/Y
+         nrgw==
+X-Gm-Message-State: AOAM532PTOd0dhf45Jy6fJt0l1Qvmmtg+oJYzM5wvqMn7evS53N8juHi
+        M4slo3Jp/03sAAlWSFGydxRlcZrGtTz+8NHdls7zww==
+X-Google-Smtp-Source: ABdhPJyHoAlR6CMUlfGjiAWZc0NvZy9JCi9TYPUoslYua2PwM2zVdEd4SGjcOXxORuVffGnf+189/F+jN/EF996hdrs=
+X-Received: by 2002:a67:8945:: with SMTP id l66mr530140vsd.48.1613105349219;
+ Thu, 11 Feb 2021 20:49:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20210211150147.743660073@linuxfoundation.org>
-In-Reply-To: <20210211150147.743660073@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 12 Feb 2021 10:16:11 +0530
-Message-ID: <CA+G9fYugE5n1qsudwP7XntBvvNcEquxQkMEskWvxJAZdZX5Fng@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/24] 4.19.176-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Mark Brown <broonie@kernel.org>
+References: <20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid>
+ <20210126233840.GG4626@dread.disaster.area> <CANMq1KBcs+S02T=76V6YMwTprUx6ucTK8d+ZKG2VmekbXPBZnA@mail.gmail.com>
+ <20210128055726.GF7695@magnolia>
+In-Reply-To: <20210128055726.GF7695@magnolia>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Fri, 12 Feb 2021 12:48:58 +0800
+Message-ID: <CANMq1KCcSZL=_CC2r2Yv8e_p7JY9RKgJ1kSVMrCAO0ZokSupeg@mail.gmail.com>
+Subject: Re: [PATCH] fs: generic_copy_file_checks: Do not adjust count based
+ on file size
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Feb 2021 at 20:36, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Thu, Jan 28, 2021 at 1:57 PM Darrick J. Wong <djwong@kernel.org> wrote:
 >
-> This is the start of the stable review cycle for the 4.19.176 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Thu, Jan 28, 2021 at 08:46:04AM +0800, Nicolas Boichat wrote:
+[snip]
+> > Okay, so, based on this and Al's reply, I see 2 things we can do:
+> >  1. Go should probably not use copy_file_range in a common library
+> > function, as I don't see any easy way to detect this scenario
+> > currently (detect 0 size? sure, but that won't work with the example
+> > you provide above). And the man page should document this behaviour
+> > more explicitly to prevent further incorrect usage.
+> >  2. Can procfs/sysfs/debugfs and friends explicitly prevent usage of
+> > copy_file_range? (based on Al's reply, there seems to be no way to
+> > implement it correctly as seeking in such files will not work in case
+> > of short writes)
 >
-> Responses should be made by Sat, 13 Feb 2021 15:01:39 +0000.
-> Anything received after that time might be too late.
+> One /could/ make those three provide a phony CFR implementation that
+> would return -EOPNOTSUPP, though like others have said, it's weird to
+> have regular files that aren't quite regular.  Not sure where that
+> leaves them, though...
+
+Not that simple, as the issue happens on cross-filesystem operations
+where file_operations->copy_file_range is not called (and also, that'd
+require modifying operations for every single generated file...
+
+Anyway, made an attempt here:
+https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/T/#t
+
+> --D
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.176-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-
-The following lockdep noticed on the arm beaglebone x15 device.
-I have not bisected this problem yet.
-Suspecting this patch,
-
-> David Collins <collinsd@codeaurora.org>
->     regulator: core: avoid regulator_resolve_supply() race condition
-
-
-[    2.470568] WARNING: possible recursive locking detected
-[    2.470580] 4.19.176-rc1 #1 Not tainted
-[    2.470590] --------------------------------------------
-[    2.470600] swapper/0/1 is trying to acquire lock:
-[    2.470611] (ptrval) (&rdev->mutex){+.+.}, at: regulator_enable+0x44/0x20c
-[    2.470639]
-[    2.470639] but task is already holding lock:
-[    2.470650] (ptrval) (&rdev->mutex){+.+.}, at:
-regulator_lock_nested+0x28/0x88
-[    2.470676]
-[    2.470676] other info that might help us debug this:
-[    2.470687]  Possible unsafe locking scenario:
-[    2.470687]
-[    2.470698]        CPU0
-[    2.470707]        ----
-[    2.470716]   lock(&rdev->mutex);
-[    2.470728]   lock(&rdev->mutex);
-[    2.470740]
-[    2.470740]  *** DEADLOCK ***
-[    2.470740]
-[    2.470752]  May be due to missing lock nesting notation
-[    2.470752]
-[    2.470765] 2 locks held by swapper/0/1:
-[    2.470774]  #0: (ptrval) (&dev->mutex){....}, at: __driver_attach+0x78/0x168
-[    2.470797]  #1: (ptrval) (&rdev->mutex){+.+.}, at:
-regulator_lock_nested+0x28/0x88
-[    2.470820]
-[    2.470820] stack backtrace:
-[    2.470836] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.19.176-rc1 #1
-[    2.470846] Hardware name: Generic DRA74X (Flattened Device Tree)
-[    2.470871] [<c0416430>] (unwind_backtrace) from [<c040f920>]
-(show_stack+0x20/0x24)
-[    2.470891] [<c040f920>] (show_stack) from [<c1306bec>]
-(dump_stack+0xe8/0x114)
-[    2.470910] [<c1306bec>] (dump_stack) from [<c04c2a04>]
-(__lock_acquire+0x7cc/0x1acc)
-[    2.470925] [<c04c2a04>] (__lock_acquire) from [<c04c46ec>]
-(lock_acquire+0xdc/0x238)
-[    2.470941] [<c04c46ec>] (lock_acquire) from [<c130a008>]
-(__mutex_lock+0xa0/0xaf4)
-[    2.470958] [<c130a008>] (__mutex_lock) from [<c130aa88>]
-(mutex_lock_nested+0x2c/0x34)
-[    2.470974] [<c130aa88>] (mutex_lock_nested) from [<c0ae9434>]
-(regulator_enable+0x44/0x20c)
-[    2.470990] [<c0ae9434>] (regulator_enable) from [<c0ae9780>]
-(regulator_resolve_supply+0x184/0x2c8)
-[    2.471006] [<c0ae9780>] (regulator_resolve_supply) from
-[<c0ae98e8>] (regulator_register_resolve_supply+0x24/0x8c)
-[    2.471022] [<c0ae98e8>] (regulator_register_resolve_supply) from
-[<c0c294f0>] (class_for_each_device+0x70/0xe8)
-[    2.471037] [<c0c294f0>] (class_for_each_device) from [<c0aea368>]
-(regulator_register+0xa18/0xc58)
-[    2.471053] [<c0aea368>] (regulator_register) from [<c0aebd64>]
-(devm_regulator_register+0x54/0x84)
-[    2.471069] [<c0aebd64>] (devm_regulator_register) from
-[<c0af8c28>] (pbias_regulator_probe+0x1f4/0x2d0)
-[    2.471084] [<c0af8c28>] (pbias_regulator_probe) from [<c0c29da0>]
-(platform_drv_probe+0x58/0xa8)
-[    2.471101] [<c0c29da0>] (platform_drv_probe) from [<c0c273b8>]
-(really_probe+0x310/0x418)
-[    2.471119] [<c0c273b8>] (really_probe) from [<c0c276e4>]
-(driver_probe_device+0x88/0x1dc)
-[    2.471135] [<c0c276e4>] (driver_probe_device) from [<c0c27984>]
-(__driver_attach+0x14c/0x168)
-[    2.471150] [<c0c27984>] (__driver_attach) from [<c0c24e08>]
-(bus_for_each_dev+0x84/0xc4)
-[    2.471167] [<c0c24e08>] (bus_for_each_dev) from [<c0c26a18>]
-(driver_attach+0x2c/0x30)
-[    2.471184] [<c0c26a18>] (driver_attach) from [<c0c26380>]
-(bus_add_driver+0x1d0/0x274)
-[    2.471199] [<c0c26380>] (bus_add_driver) from [<c0c28a4c>]
-(driver_register+0x84/0x118)
-[    2.471213] [<c0c28a4c>] (driver_register) from [<c0c29cf0>]
-(__platform_driver_register+0x50/0x58)
-[    2.471231] [<c0c29cf0>] (__platform_driver_register) from
-[<c1ca3174>] (pbias_regulator_driver_init+0x24/0x28)
-[    2.471249] [<c1ca3174>] (pbias_regulator_driver_init) from
-[<c0403a68>] (do_one_initcall+0xa0/0x394)
-[    2.471268] [<c0403a68>] (do_one_initcall) from [<c1c01454>]
-(kernel_init_freeable+0x3ec/0x484)
-[    2.471283] [<c1c01454>] (kernel_init_freeable) from [<c1306ff4>]
-(kernel_init+0x18/0x128)
-[    2.471299] [<c1306ff4>] (kernel_init) from [<c04010ac>]
-(ret_from_fork+0x14/0x28)
-[    2.471310] Exception stack(0xee19bfb0 to 0xee19bff8)
-[    2.471323] bfa0:                                     00000000
-00000000 00000000 00000000
-[    2.471336] bfc0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000
-[    2.471348] bfe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[    2.471385] vtt_fixed: supplied by smps3
-
-test log link,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19.175-25-g30e16c3fd5ac/testrun/3938030/suite/linux-log-parser/test/check-kernel-warning-2263196/log
-
-metadata:
-  git branch: linux-4.19.y
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-  git commit: 30e16c3fd5acd42264d873aacb75891f3cd202c4
-  git describe: v4.19.175-25-g30e16c3fd5ac
-  make_kernelversion: 4.19.176-rc1
-  kernel-config:
-http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/am57xx-evm/lkft/linux-stable-rc-4.19/747/config
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+> >
+> > Thanks,
+> >
+> > >
+> > > Cheers,
+> > >
+> > > Dave.
+> > > --
+> > > Dave Chinner
+> > > david@fromorbit.com
