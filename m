@@ -2,1019 +2,527 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4616319BAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EF0319BA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhBLJMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:12:44 -0500
-Received: from esa2.hc1455-7.c3s2.iphmx.com ([207.54.90.48]:53143 "EHLO
-        esa2.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229907AbhBLJMV (ORCPT
+        id S229873AbhBLJGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:06:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229960AbhBLJE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:12:21 -0500
-IronPort-SDR: tm5kf/RtFM3m6aza7qCa84GRGOrj7B6s9pc08BLDyVUw7qjN2FKRVPlC2LpPYAXV4HKhCdrB6l
- x+nT6HIG0SaZ2b7pEZOob0HH/X98kq7DevrovT9g6zAMRxHXQs9kTCB/NQsX//Vq+w13m0TV1Q
- LvxWUUbYPJZVZx5mB5rqW9YjWoQZI7yYxD2UT4jHSO3Oy0JJHsplkOn+1hgS4Fx1cPEYcNplTV
- yVyznl7J621zBMtwGm6ltCWy/pjVJjlyups6sV9jzmbsZmpZHBz6jMSEShR6yhapd+G6/38N4/
- dZg=
-X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="19085313"
-X-IronPort-AV: E=Sophos;i="5.81,173,1610377200"; 
-   d="scan'208";a="19085313"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
-  by esa2.hc1455-7.c3s2.iphmx.com with ESMTP; 12 Feb 2021 18:10:01 +0900
-Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com [192.168.83.67])
-        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id F0828EC7EE
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 18:09:59 +0900 (JST)
-Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
-        by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 1100859574A
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 18:09:59 +0900 (JST)
-Received: by pumpkin.openstacklocal (Postfix, from userid 1012)
-        id 0F55783B; Fri, 12 Feb 2021 18:03:19 +0900 (JST)
-From:   Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
-To:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
-Subject: [PATCH v6 3/3] perf vendor events arm64: Add Fujitsu A64FX pmu event
-Date:   Fri, 12 Feb 2021 18:03:18 +0900
-Message-Id: <20210212090318.1522292-4-nakamura.shun@jp.fujitsu.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210212090318.1522292-1-nakamura.shun@jp.fujitsu.com>
-References: <20210212090318.1522292-1-nakamura.shun@jp.fujitsu.com>
+        Fri, 12 Feb 2021 04:04:58 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932CFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:04:17 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id nm1so90317pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:04:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WIqutrnC3LrJReEL0n0HsTZuNVM2U4qwRQxP5RKg79k=;
+        b=zp5AVYDIswCiKU7h0bSitN4YcfNKJ7iDEy6Q4BfA32SbhVQD4zDO3iaaCzzFZRUBUf
+         6YVspFyYJsTnuEPBJ8xSMcIAqosqCziRVEkc6lpBGXpCMudZXyHFqgd7OMGp99o+bIQS
+         xNf8vf9tKdkSFAAi7pbGvWmWEbUvRcRLkCupSDP9y8Ng9eCNxuNxfgKk10iLk+9IPz3z
+         kKg48NiYHxfU6jEPxr7f1F+cnF2iys5tx3zHbcLlrltNJfJOHIS9t1xTik3d3yTErMHc
+         dMQDbdWgJ02JtpDfPU93ZGH4w1GPuDoxZdF02dWBkhlA9HzjAbMcU8oKIoU7ohtOEH81
+         5wTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WIqutrnC3LrJReEL0n0HsTZuNVM2U4qwRQxP5RKg79k=;
+        b=ZTQfEFSe4ALn1G9K+sgQ+b4YGw9Kl+3GQJHZ3I1WDl1ja7hNlknQZWu45eQLpEO8q6
+         yvIkDvg64Xt6A2HatrcghGH6Z0G0kKEGWl2DnsYYYApAy3oWYQVHSo9lksy2NVRwJtYY
+         LQ/eOkjDhtP+P1IwzWYBWLdzuBhESDNq7m6fIvmIUFUAV2Rj1kEzZHv1oNExdUvwd29z
+         a/Ua/HuXlFQ8CRMGBGH6bHszO4e09lUTlXlS10U/RBsSIvn/17zryIQRuqGSs5Cafyt0
+         RYBxaDTgRiu1IBBMx7z53C9+qTksCDtQs/rlyx5dR63iMvWCmOAX8VXCqhxVwAKqo7qS
+         MUVg==
+X-Gm-Message-State: AOAM533JDJEgGMwwEa3bEzuwWZxQZVynZV3lVtztVeYd8CxhbTHonaWN
+        ctumMz1Fjbjxcosnst4kIhv4WG9jH6jCHa2QX/HAjw==
+X-Google-Smtp-Source: ABdhPJzgsD4wV0QrDjoysYQOkM1sJm+YPJU5eYcnxSuq3i1gE0UbGccj3iwNx94C+VH4WwEsvzFN+WDJ2NtA9ZN1Jbk=
+X-Received: by 2002:a17:90a:9414:: with SMTP id r20mr1846895pjo.222.1613120656815;
+ Fri, 12 Feb 2021 01:04:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+References: <20210211113309.1.I629b2366a6591410359c7fcf6d385b474b705ca2@changeid>
+In-Reply-To: <20210211113309.1.I629b2366a6591410359c7fcf6d385b474b705ca2@changeid>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 12 Feb 2021 10:04:05 +0100
+Message-ID: <CAG3jFysXNVmgujtt-X15ud1Nk0S4mzsz1Pns0kY4mGKyA+r7kw@mail.gmail.com>
+Subject: Re: [PATCH] drm/dsi: Add _NO_ to MIPI_DSI_* flags disabling features
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Xin Ji <xji@analogixsemi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno@lists.freedesktop.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pmu events for A64FX.
+Hey Nicolas,
 
-Documentation source:
-https://github.com/fujitsu/A64FX/blob/master/doc/A64FX_PMU_Events_v1.2.pdf
+Thanks for submitting this, making these flags more intuitive is really nice.
 
-Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
----
- .../arch/arm64/fujitsu/a64fx/branch.json      |   8 +
- .../arch/arm64/fujitsu/a64fx/bus.json         |  62 ++++++
- .../arch/arm64/fujitsu/a64fx/cache.json       | 128 ++++++++++++
- .../arch/arm64/fujitsu/a64fx/cycle.json       |   5 +
- .../arch/arm64/fujitsu/a64fx/exception.json   |  29 +++
- .../arch/arm64/fujitsu/a64fx/instruction.json | 131 ++++++++++++
- .../arch/arm64/fujitsu/a64fx/memory.json      |   8 +
- .../arch/arm64/fujitsu/a64fx/other.json       | 188 +++++++++++++++++
- .../arch/arm64/fujitsu/a64fx/pipeline.json    | 194 ++++++++++++++++++
- .../arch/arm64/fujitsu/a64fx/sve.json         | 110 ++++++++++
- tools/perf/pmu-events/arch/arm64/mapfile.csv  |   1 +
- 11 files changed, 864 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
- create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
+This looks good to me, feel free to add my r-b.
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
-new file mode 100644
-index 000000000000..b011af11bf94
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
-@@ -0,0 +1,8 @@
-+[
-+  {
-+    "ArchStdEvent": "BR_MIS_PRED"
-+  },
-+  {
-+    "ArchStdEvent": "BR_PRED"
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
-new file mode 100644
-index 000000000000..084e88d7df73
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
-@@ -0,0 +1,62 @@
-+[
-+  {
-+    "PublicDescription": "This event counts read transactions from tofu controller to measured CMG.",
-+    "EventCode": "0x314",
-+    "EventName": "BUS_READ_TOTAL_TOFU",
-+    "BriefDescription": "This event counts read transactions from tofu controller to measured CMG."
-+  },
-+  {
-+    "PublicDescription": "This event counts read transactions from PCI controller to measured CMG.",
-+    "EventCode": "0x315",
-+    "EventName": "BUS_READ_TOTAL_PCI",
-+    "BriefDescription": "This event counts read transactions from PCI controller to measured CMG."
-+  },
-+  {
-+    "PublicDescription": "This event counts read transactions from measured CMG local memory to measured CMG.",
-+    "EventCode": "0x316",
-+    "EventName": "BUS_READ_TOTAL_MEM",
-+    "BriefDescription": "This event counts read transactions from measured CMG local memory to measured CMG."
-+  },
-+  {
-+    "PublicDescription": "This event counts write transactions from measured CMG to CMG0, if measured CMG is not CMG0.",
-+    "EventCode": "0x318",
-+    "EventName": "BUS_WRITE_TOTAL_CMG0",
-+    "BriefDescription": "This event counts write transactions from measured CMG to CMG0, if measured CMG is not CMG0."
-+  },
-+  {
-+    "PublicDescription": "This event counts write transactions from measured CMG to CMG1, if measured CMG is not CMG1.",
-+    "EventCode": "0x319",
-+    "EventName": "BUS_WRITE_TOTAL_CMG1",
-+    "BriefDescription": "This event counts write transactions from measured CMG to CMG1, if measured CMG is not CMG1."
-+  },
-+  {
-+    "PublicDescription": "This event counts write transactions from measured CMG to CMG2, if measured CMG is not CMG2.",
-+    "EventCode": "0x31A",
-+    "EventName": "BUS_WRITE_TOTAL_CMG2",
-+    "BriefDescription": "This event counts write transactions from measured CMG to CMG2, if measured CMG is not CMG2."
-+  },
-+  {
-+    "PublicDescription": "This event counts write transactions from measured CMG to CMG3, if measured CMG is not CMG3.",
-+    "EventCode": "0x31B",
-+    "EventName": "BUS_WRITE_TOTAL_CMG3",
-+    "BriefDescription": "This event counts write transactions from measured CMG to CMG3, if measured CMG is not CMG3."
-+  },
-+  {
-+    "PublicDescription": "This event counts write transactions from measured CMG to tofu controller.",
-+    "EventCode": "0x31C",
-+    "EventName": "BUS_WRITE_TOTAL_TOFU",
-+    "BriefDescription": "This event counts write transactions from measured CMG to tofu controller."
-+  },
-+  {
-+    "PublicDescription": "This event counts write transactions from measured CMG to PCI controller.",
-+    "EventCode": "0x31D",
-+    "EventName": "BUS_WRITE_TOTAL_PCI",
-+    "BriefDescription": "This event counts write transactions from measured CMG to PCI controller."
-+  },
-+  {
-+    "PublicDescription": "This event counts write transactions from measured CMG to measured CMG local memory.",
-+    "EventCode": "0x31E",
-+    "EventName": "BUS_WRITE_TOTAL_MEM",
-+    "BriefDescription": "This event counts write transactions from measured CMG to measured CMG local memory."
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
-new file mode 100644
-index 000000000000..2e341a951a10
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
-@@ -0,0 +1,128 @@
-+[
-+  {
-+    "ArchStdEvent": "L1I_CACHE_REFILL"
-+  },
-+  {
-+    "ArchStdEvent": "L1I_TLB_REFILL"
-+  },
-+  {
-+    "ArchStdEvent": "L1D_CACHE_REFILL"
-+  },
-+  {
-+    "ArchStdEvent": "L1D_CACHE"
-+  },
-+  {
-+    "ArchStdEvent": "L1D_TLB_REFILL"
-+  },
-+  {
-+    "ArchStdEvent": "L1I_CACHE"
-+  },
-+  {
-+    "ArchStdEvent": "L1D_CACHE_WB"
-+  },
-+  {
-+    "ArchStdEvent": "L2D_CACHE"
-+  },
-+  {
-+    "ArchStdEvent": "L2D_CACHE_REFILL"
-+  },
-+  {
-+    "ArchStdEvent": "L2D_CACHE_WB"
-+  },
-+  {
-+    "ArchStdEvent": "L2D_TLB_REFILL"
-+  },
-+  {
-+    "ArchStdEvent": "L2I_TLB_REFILL"
-+  },
-+  {
-+    "ArchStdEvent": "L2D_TLB"
-+  },
-+  {
-+    "ArchStdEvent": "L2I_TLB"
-+  },
-+  {
-+    "PublicDescription": "This event counts L1D_CACHE_REFILL caused by software or hardware prefetch.",
-+    "EventCode": "0x49",
-+    "EventName": "L1D_CACHE_REFILL_PRF",
-+    "BriefDescription": "This event counts L1D_CACHE_REFILL caused by software or hardware prefetch."
-+  },
-+  {
-+    "PublicDescription": "This event counts L2D_CACHE_REFILL caused by software or hardware prefetch.",
-+    "EventCode": "0x59",
-+    "EventName": "L2D_CACHE_REFILL_PRF",
-+    "BriefDescription": "This event counts L2D_CACHE_REFILL caused by software or hardware prefetch."
-+  },
-+  {
-+    "PublicDescription": "This event counts L1D_CACHE_REFILL caused by demand access.",
-+    "EventCode": "0x200",
-+    "EventName": "L1D_CACHE_REFILL_DM",
-+    "BriefDescription": "This event counts L1D_CACHE_REFILL caused by demand access."
-+  },
-+  {
-+    "PublicDescription": "This event counts L1D_CACHE_REFILL caused by hardware prefetch.",
-+    "EventCode": "0x202",
-+    "EventName": "L1D_CACHE_REFILL_HWPRF",
-+    "BriefDescription": "This event counts L1D_CACHE_REFILL caused by hardware prefetch."
-+  },
-+  {
-+    "PublicDescription": "This event counts outstanding L1D cache miss requests per cycle.",
-+    "EventCode": "0x208",
-+    "EventName": "L1_MISS_WAIT",
-+    "BriefDescription": "This event counts outstanding L1D cache miss requests per cycle."
-+  },
-+  {
-+    "PublicDescription": "This event counts outstanding L1I cache miss requests per cycle.",
-+    "EventCode": "0x209",
-+    "EventName": "L1I_MISS_WAIT",
-+    "BriefDescription": "This event counts outstanding L1I cache miss requests per cycle."
-+  },
-+  {
-+    "PublicDescription": "This event counts L2D_CACHE_REFILL caused by demand access.",
-+    "EventCode": "0x300",
-+    "EventName": "L2D_CACHE_REFILL_DM",
-+    "BriefDescription": "This event counts L2D_CACHE_REFILL caused by demand access."
-+  },
-+  {
-+    "PublicDescription": "This event counts L2D_CACHE_REFILL caused by hardware prefetch.",
-+    "EventCode": "0x302",
-+    "EventName": "L2D_CACHE_REFILL_HWPRF",
-+    "BriefDescription": "This event counts L2D_CACHE_REFILL caused by hardware prefetch."
-+  },
-+  {
-+    "PublicDescription": "This event counts outstanding L2 cache miss requests per cycle.",
-+    "EventCode": "0x308",
-+    "EventName": "L2_MISS_WAIT",
-+    "BriefDescription": "This event counts outstanding L2 cache miss requests per cycle."
-+  },
-+  {
-+    "PublicDescription": "This event counts the number of times of L2 cache miss.",
-+    "EventCode": "0x309",
-+    "EventName": "L2_MISS_COUNT",
-+    "BriefDescription": "This event counts the number of times of L2 cache miss."
-+  },
-+  {
-+    "PublicDescription": "This event counts operations where demand access hits an L2 cache refill buffer allocated by software or hardware prefetch.",
-+    "EventCode": "0x325",
-+    "EventName": "L2D_SWAP_DM",
-+    "BriefDescription": "This event counts operations where demand access hits an L2 cache refill buffer allocated by software or hardware prefetch."
-+  },
-+  {
-+    "PublicDescription": "This event counts operations where software or hardware prefetch hits an L2 cache refill buffer allocated by demand access.",
-+    "EventCode": "0x326",
-+    "EventName": "L2D_CACHE_MIBMCH_PRF",
-+    "BriefDescription": "This event counts operations where software or hardware prefetch hits an L2 cache refill buffer allocated by demand access."
-+  },
-+  {
-+    "PublicDescription": "This event counts operations where demand access hits an L2 cache refill buffer allocated by software or hardware prefetch.",
-+    "EventCode": "0x396",
-+    "EventName": "L2D_CACHE_SWAP_LOCAL",
-+    "BriefDescription": "This event counts operations where demand access hits an L2 cache refill buffer allocated by software or hardware prefetch."
-+  },
-+  {
-+    "PublicDescription": "This event counts energy consumption per cycle of L2 cache.",
-+    "EventCode": "0x3E0",
-+    "EventName": "EA_L2",
-+    "BriefDescription": "This event counts energy consumption per cycle of L2 cache."
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
-new file mode 100644
-index 000000000000..b16484628290
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
-@@ -0,0 +1,5 @@
-+[
-+  {
-+    "ArchStdEvent": "CPU_CYCLES"
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json
-new file mode 100644
-index 000000000000..348749c154c0
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json
-@@ -0,0 +1,29 @@
-+[
-+  {
-+    "ArchStdEvent": "EXC_TAKEN"
-+  },
-+  {
-+    "ArchStdEvent": "EXC_UNDEF"
-+  },
-+  {
-+    "ArchStdEvent": "EXC_SVC"
-+  },
-+  {
-+    "ArchStdEvent": "EXC_PABORT"
-+  },
-+  {
-+    "ArchStdEvent": "EXC_DABORT"
-+  },
-+  {
-+    "ArchStdEvent": "EXC_IRQ"
-+  },
-+  {
-+    "ArchStdEvent": "EXC_FIQ"
-+  },
-+  {
-+    "ArchStdEvent": "EXC_SMC"
-+  },
-+  {
-+    "ArchStdEvent": "EXC_HVC"
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
-new file mode 100644
-index 000000000000..6d258b1080cf
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
-@@ -0,0 +1,131 @@
-+[
-+  {
-+    "ArchStdEvent": "SW_INCR"
-+  },
-+  {
-+    "ArchStdEvent": "INST_RETIRED"
-+  },
-+  {
-+    "ArchStdEvent": "EXC_RETURN"
-+  },
-+  {
-+    "ArchStdEvent": "CID_WRITE_RETIRED"
-+  },
-+  {
-+    "ArchStdEvent": "INST_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "LDREX_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "STREX_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "LD_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "ST_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "LDST_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "DP_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "ASE_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "VFP_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "PC_WRITE_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "CRYPTO_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "BR_IMMED_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "BR_RETURN_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "BR_INDIRECT_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "ISB_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "DSB_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "DMB_SPEC"
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed zero blocking operations due to the 'DC ZVA' instruction.",
-+    "EventCode": "0x9F",
-+    "EventName": "DCZVA_SPEC",
-+    "BriefDescription": "This event counts architecturally executed zero blocking operations due to the 'DC ZVA' instruction."
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed floating-point move operations.",
-+    "EventCode": "0x105",
-+    "EventName": "FP_MV_SPEC",
-+    "BriefDescription": "This event counts architecturally executed floating-point move operations."
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed operations that using predicate register.",
-+    "EventCode": "0x108",
-+    "EventName": "PRD_SPEC",
-+    "BriefDescription": "This event counts architecturally executed operations that using predicate register."
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed inter-element manipulation operations.",
-+    "EventCode": "0x109",
-+    "EventName": "IEL_SPEC",
-+    "BriefDescription": "This event counts architecturally executed inter-element manipulation operations."
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed inter-register manipulation operations.",
-+    "EventCode": "0x10A",
-+    "EventName": "IREG_SPEC",
-+    "BriefDescription": "This event counts architecturally executed inter-register manipulation operations."
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed NOSIMD load operations that using SIMD&FP registers.",
-+    "EventCode": "0x112",
-+    "EventName": "FP_LD_SPEC",
-+    "BriefDescription": "This event counts architecturally executed NOSIMD load operations that using SIMD&FP registers."
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed NOSIMD store operations that using SIMD&FP registers.",
-+    "EventCode": "0x113",
-+    "EventName": "FP_ST_SPEC",
-+    "BriefDescription": "This event counts architecturally executed NOSIMD store operations that using SIMD&FP registers."
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed SIMD broadcast floating-point load operations.",
-+    "EventCode": "0x11A",
-+    "EventName": "BC_LD_SPEC",
-+    "BriefDescription": "This event counts architecturally executed SIMD broadcast floating-point load operations."
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed instructions, excluding the MOVPRFX instruction.",
-+    "EventCode": "0x121",
-+    "EventName": "EFFECTIVE_INST_SPEC",
-+    "BriefDescription": "This event counts architecturally executed instructions, excluding the MOVPRFX instruction."
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed operations that uses 'pre-index' as its addressing mode.",
-+    "EventCode": "0x123",
-+    "EventName": "PRE_INDEX_SPEC",
-+    "BriefDescription": "This event counts architecturally executed operations that uses 'pre-index' as its addressing mode."
-+  },
-+  {
-+    "PublicDescription": "This event counts architecturally executed operations that uses 'post-index' as its addressing mode.",
-+    "EventCode": "0x124",
-+    "EventName": "POST_INDEX_SPEC",
-+    "BriefDescription": "This event counts architecturally executed operations that uses 'post-index' as its addressing mode."
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
-new file mode 100644
-index 000000000000..c1f6479e92b4
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
-@@ -0,0 +1,8 @@
-+[
-+  {
-+    "PublicDescription": "This event counts energy consumption per cycle of CMG local memory.",
-+    "EventCode": "0x3E8",
-+    "EventName": "EA_MEMORY",
-+    "BriefDescription": "This event counts energy consumption per cycle of CMG local memory."
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
-new file mode 100644
-index 000000000000..68b8e46d6140
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
-@@ -0,0 +1,188 @@
-+[
-+  {
-+    "PublicDescription": "This event counts the occurrence count of the micro-operation split.",
-+    "EventCode": "0x139",
-+    "EventName": "UOP_SPLIT",
-+    "BriefDescription": "This event counts the occurrence count of the micro-operation split."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no operation was committed because the oldest and uncommitted load/store/prefetch operation waits for memory access.",
-+    "EventCode": "0x180",
-+    "EventName": "LD_COMP_WAIT_L2_MISS",
-+    "BriefDescription": "This event counts every cycle that no operation was committed because the oldest and uncommitted load/store/prefetch operation waits for memory access."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for memory access.",
-+    "EventCode": "0x181",
-+    "EventName": "LD_COMP_WAIT_L2_MISS_EX",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for memory access."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted load/store/prefetch operation waits for L2 cache access.",
-+    "EventCode": "0x182",
-+    "EventName": "LD_COMP_WAIT_L1_MISS",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted load/store/prefetch operation waits for L2 cache access."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for L2 cache access.",
-+    "EventCode": "0x183",
-+    "EventName": "LD_COMP_WAIT_L1_MISS_EX",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for L2 cache access."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted load/store/prefetch operation waits for L1D cache, L2 cache and memory access.",
-+    "EventCode": "0x184",
-+    "EventName": "LD_COMP_WAIT",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted load/store/prefetch operation waits for L1D cache, L2 cache and memory access."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for L1D cache, L2 cache and memory access.",
-+    "EventCode": "0x185",
-+    "EventName": "LD_COMP_WAIT_EX",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed because the oldest and uncommitted integer load operation waits for L1D cache, L2 cache and memory access."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed due to the lack of an available prefetch port.",
-+    "EventCode": "0x186",
-+    "EventName": "LD_COMP_WAIT_PFP_BUSY",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed due to the lack of an available prefetch port."
-+  },
-+  {
-+    "PublicDescription": "This event counts the LD_COMP_WAIT_PFP_BUSY caused by an integer load operation.",
-+    "EventCode": "0x187",
-+    "EventName": "LD_COMP_WAIT_PFP_BUSY_EX",
-+    "BriefDescription": "This event counts the LD_COMP_WAIT_PFP_BUSY caused by an integer load operation."
-+  },
-+  {
-+    "PublicDescription": "This event counts the LD_COMP_WAIT_PFP_BUSY caused by a software prefetch instruction.",
-+    "EventCode": "0x188",
-+    "EventName": "LD_COMP_WAIT_PFP_BUSY_SWPF",
-+    "BriefDescription": "This event counts the LD_COMP_WAIT_PFP_BUSY caused by a software prefetch instruction."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is an integer or floating-point/SIMD instruction.",
-+    "EventCode": "0x189",
-+    "EventName": "EU_COMP_WAIT",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is an integer or floating-point/SIMD instruction."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is a floating-point/SIMD instruction.",
-+    "EventCode": "0x18A",
-+    "EventName": "FL_COMP_WAIT",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is a floating-point/SIMD instruction."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is a branch instruction.",
-+    "EventCode": "0x18B",
-+    "EventName": "BR_COMP_WAIT",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed and the oldest and uncommitted instruction is a branch instruction."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed because the CSE is empty.",
-+    "EventCode": "0x18C",
-+    "EventName": "ROB_EMPTY",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed because the CSE is empty."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed because the CSE is empty and the store port (SP) is full.",
-+    "EventCode": "0x18D",
-+    "EventName": "ROB_EMPTY_STQ_BUSY",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed because the CSE is empty and the store port (SP) is full."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that the instruction unit is halted by the WFE/WFI instruction.",
-+    "EventCode": "0x18E",
-+    "EventName": "WFE_WFI_CYCLE",
-+    "BriefDescription": "This event counts every cycle that the instruction unit is halted by the WFE/WFI instruction."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that no instruction was committed, but counts at the time when commits MOVPRFX only.",
-+    "EventCode": "0x190",
-+    "EventName": "0INST_COMMIT",
-+    "BriefDescription": "This event counts every cycle that no instruction was committed, but counts at the time when commits MOVPRFX only."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that one instruction is committed.",
-+    "EventCode": "0x191",
-+    "EventName": "1INST_COMMIT",
-+    "BriefDescription": "This event counts every cycle that one instruction is committed."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that two instructions are committed.",
-+    "EventCode": "0x192",
-+    "EventName": "2INST_COMMIT",
-+    "BriefDescription": "This event counts every cycle that two instructions are committed."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that three instructions are committed.",
-+    "EventCode": "0x193",
-+    "EventName": "3INST_COMMIT",
-+    "BriefDescription": "This event counts every cycle that three instructions are committed."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that four instructions are committed.",
-+    "EventCode": "0x194",
-+    "EventName": "4INST_COMMIT",
-+    "BriefDescription": "This event counts every cycle that four instructions are committed."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that only any micro-operations are committed.",
-+    "EventCode": "0x198",
-+    "EventName": "UOP_ONLY_COMMIT",
-+    "BriefDescription": "This event counts every cycle that only any micro-operations are committed."
-+  },
-+  {
-+    "PublicDescription": "This event counts every cycle that only the MOVPRFX instruction is committed.",
-+    "EventCode": "0x199",
-+    "EventName": "SINGLE_MOVPRFX_COMMIT",
-+    "BriefDescription": "This event counts every cycle that only the MOVPRFX instruction is committed."
-+  },
-+  {
-+    "PublicDescription": "This event counts energy consumption per cycle of core.",
-+    "EventCode": "0x1E0",
-+    "EventName": "EA_CORE",
-+    "BriefDescription": "This event counts energy consumption per cycle of core."
-+  },
-+  {
-+    "PublicDescription": "This event counts streaming prefetch requests to L1D cache generated by hardware prefetcher.",
-+    "EventCode": "0x230",
-+    "EventName": "L1HWPF_STREAM_PF",
-+    "BriefDescription": "This event counts streaming prefetch requests to L1D cache generated by hardware prefetcher."
-+  },
-+  {
-+    "PublicDescription": "This event counts allocation type prefetch injection requests to L1D cache generated by hardware prefetcher.",
-+    "EventCode": "0x231",
-+    "EventName": "L1HWPF_INJ_ALLOC_PF",
-+    "BriefDescription": "This event counts allocation type prefetch injection requests to L1D cache generated by hardware prefetcher."
-+  },
-+  {
-+    "PublicDescription": "This event counts non-allocation type prefetch injection requests to L1D cache generated by hardware prefetcher.",
-+    "EventCode": "0x232",
-+    "EventName": "L1HWPF_INJ_NOALLOC_PF",
-+    "BriefDescription": "This event counts non-allocation type prefetch injection requests to L1D cache generated by hardware prefetcher."
-+  },
-+  {
-+    "PublicDescription": "This event counts streaming prefetch requests to L2 cache generated by hardware prefecher.",
-+    "EventCode": "0x233",
-+    "EventName": "L2HWPF_STREAM_PF",
-+    "BriefDescription": "This event counts streaming prefetch requests to L2 cache generated by hardware prefecher."
-+  },
-+  {
-+    "PublicDescription": "This event counts allocation type prefetch injection requests to L2 cache generated by hardware prefetcher.",
-+    "EventCode": "0x234",
-+    "EventName": "L2HWPF_INJ_ALLOC_PF",
-+    "BriefDescription": "This event counts allocation type prefetch injection requests to L2 cache generated by hardware prefetcher."
-+  },
-+  {
-+    "PublicDescription": "This event counts non-allocation type prefetch injection requests to L2 cache generated by hardware prefetcher.",
-+    "EventCode": "0x235",
-+    "EventName": "L2HWPF_INJ_NOALLOC_PF",
-+    "BriefDescription": "This event counts non-allocation type prefetch injection requests to L2 cache generated by hardware prefetcher."
-+  },
-+  {
-+    "PublicDescription": "This event counts prefetch requests to L2 cache generated by the other causes.",
-+    "EventCode": "0x236",
-+    "EventName": "L2HWPF_OTHER",
-+    "BriefDescription": "This event counts prefetch requests to L2 cache generated by the other causes."
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
-new file mode 100644
-index 000000000000..dd7c97a9972b
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
-@@ -0,0 +1,194 @@
-+[
-+  {
-+    "ArchStdEvent": "STALL_FRONTEND"
-+  },
-+  {
-+    "ArchStdEvent": "STALL_BACKEND"
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of EAGA pipeline.",
-+    "EventCode": "0x1A0",
-+    "EventName": "EAGA_VAL",
-+    "BriefDescription": "This event counts valid cycles of EAGA pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of EAGB pipeline.",
-+    "EventCode": "0x1A1",
-+    "EventName": "EAGB_VAL",
-+    "BriefDescription": "This event counts valid cycles of EAGB pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of EXA pipeline.",
-+    "EventCode": "0x1A2",
-+    "EventName": "EXA_VAL",
-+    "BriefDescription": "This event counts valid cycles of EXA pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of EXB pipeline.",
-+    "EventCode": "0x1A3",
-+    "EventName": "EXB_VAL",
-+    "BriefDescription": "This event counts valid cycles of EXB pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of FLA pipeline.",
-+    "EventCode": "0x1A4",
-+    "EventName": "FLA_VAL",
-+    "BriefDescription": "This event counts valid cycles of FLA pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of FLB pipeline.",
-+    "EventCode": "0x1A5",
-+    "EventName": "FLB_VAL",
-+    "BriefDescription": "This event counts valid cycles of FLB pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of PRX pipeline.",
-+    "EventCode": "0x1A6",
-+    "EventName": "PRX_VAL",
-+    "BriefDescription": "This event counts valid cycles of PRX pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts the number of 1's in the predicate bits of request in FLA pipeline, where it is corrected so that it becomes 16 when all bits are 1.",
-+    "EventCode": "0x1B4",
-+    "EventName": "FLA_VAL_PRD_CNT",
-+    "BriefDescription": "This event counts the number of 1's in the predicate bits of request in FLA pipeline, where it is corrected so that it becomes 16 when all bits are 1."
-+  },
-+  {
-+    "PublicDescription": "This event counts the number of 1's in the predicate bits of request in FLB pipeline, where it is corrected so that it becomes 16 when all bits are 1.",
-+    "EventCode": "0x1B5",
-+    "EventName": "FLB_VAL_PRD_CNT",
-+    "BriefDescription": "This event counts the number of 1's in the predicate bits of request in FLB pipeline, where it is corrected so that it becomes 16 when all bits are 1."
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of L1D cache pipeline#0.",
-+    "EventCode": "0x240",
-+    "EventName": "L1_PIPE0_VAL",
-+    "BriefDescription": "This event counts valid cycles of L1D cache pipeline#0."
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of L1D cache pipeline#1.",
-+    "EventCode": "0x241",
-+    "EventName": "L1_PIPE1_VAL",
-+    "BriefDescription": "This event counts valid cycles of L1D cache pipeline#1."
-+  },
-+  {
-+    "PublicDescription": "This event counts requests in L1D cache pipeline#0 that its sce bit of tagged address is 1.",
-+    "EventCode": "0x250",
-+    "EventName": "L1_PIPE0_VAL_IU_TAG_ADRS_SCE",
-+    "BriefDescription": "This event counts requests in L1D cache pipeline#0 that its sce bit of tagged address is 1."
-+  },
-+  {
-+    "PublicDescription": "This event counts requests in L1D cache pipeline#0 that its pfe bit of tagged address is 1.",
-+    "EventCode": "0x251",
-+    "EventName": "L1_PIPE0_VAL_IU_TAG_ADRS_PFE",
-+    "BriefDescription": "This event counts requests in L1D cache pipeline#0 that its pfe bit of tagged address is 1."
-+  },
-+  {
-+    "PublicDescription": "This event counts requests in L1D cache pipeline#1 that its sce bit of tagged address is 1.",
-+    "EventCode": "0x252",
-+    "EventName": "L1_PIPE1_VAL_IU_TAG_ADRS_SCE",
-+    "BriefDescription": "This event counts requests in L1D cache pipeline#1 that its sce bit of tagged address is 1."
-+  },
-+  {
-+    "PublicDescription": "This event counts requests in L1D cache pipeline#1 that its pfe bit of tagged address is 1.",
-+    "EventCode": "0x253",
-+    "EventName": "L1_PIPE1_VAL_IU_TAG_ADRS_PFE",
-+    "BriefDescription": "This event counts requests in L1D cache pipeline#1 that its pfe bit of tagged address is 1."
-+  },
-+  {
-+    "PublicDescription": "This event counts completed requests in L1D cache pipeline#0.",
-+    "EventCode": "0x260",
-+    "EventName": "L1_PIPE0_COMP",
-+    "BriefDescription": "This event counts completed requests in L1D cache pipeline#0."
-+  },
-+  {
-+    "PublicDescription": "This event counts completed requests in L1D cache pipeline#1.",
-+    "EventCode": "0x261",
-+    "EventName": "L1_PIPE1_COMP",
-+    "BriefDescription": "This event counts completed requests in L1D cache pipeline#1."
-+  },
-+  {
-+    "PublicDescription": "This event counts completed requests in L1I cache pipeline.",
-+    "EventCode": "0x268",
-+    "EventName": "L1I_PIPE_COMP",
-+    "BriefDescription": "This event counts completed requests in L1I cache pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of L1I cache pipeline.",
-+    "EventCode": "0x269",
-+    "EventName": "L1I_PIPE_VAL",
-+    "BriefDescription": "This event counts valid cycles of L1I cache pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts aborted requests in L1D pipelines that due to store-load interlock.",
-+    "EventCode": "0x274",
-+    "EventName": "L1_PIPE_ABORT_STLD_INTLK",
-+    "BriefDescription": "This event counts aborted requests in L1D pipelines that due to store-load interlock."
-+  },
-+  {
-+    "PublicDescription": "This event counts requests in L1D cache pipeline#0 that its sector cache ID is not 0.",
-+    "EventCode": "0x2A0",
-+    "EventName": "L1_PIPE0_VAL_IU_NOT_SEC0",
-+    "BriefDescription": "This event counts requests in L1D cache pipeline#0 that its sector cache ID is not 0."
-+  },
-+  {
-+    "PublicDescription": "This event counts requests in L1D cache pipeline#1 that its sector cache ID is not 0.",
-+    "EventCode": "0x2A1",
-+    "EventName": "L1_PIPE1_VAL_IU_NOT_SEC0",
-+    "BriefDescription": "This event counts requests in L1D cache pipeline#1 that its sector cache ID is not 0."
-+  },
-+  {
-+    "PublicDescription": "This event counts the number of times where 2 elements of the gather instructions became 2 flows because 2 elements could not be combined.",
-+    "EventCode": "0x2B0",
-+    "EventName": "L1_PIPE_COMP_GATHER_2FLOW",
-+    "BriefDescription": "This event counts the number of times where 2 elements of the gather instructions became 2 flows because 2 elements could not be combined."
-+  },
-+  {
-+    "PublicDescription": "This event counts the number of times where 2 elements of the gather instructions became 1 flow because 2 elements could be combined.",
-+    "EventCode": "0x2B1",
-+    "EventName": "L1_PIPE_COMP_GATHER_1FLOW",
-+    "BriefDescription": "This event counts the number of times where 2 elements of the gather instructions became 1 flow because 2 elements could be combined."
-+  },
-+  {
-+    "PublicDescription": "This event counts the number of times where 2 elements of the gather instructions became 0 flow because both predicate values are 0.",
-+    "EventCode": "0x2B2",
-+    "EventName": "L1_PIPE_COMP_GATHER_0FLOW",
-+    "BriefDescription": "This event counts the number of times where 2 elements of the gather instructions became 0 flow because both predicate values are 0."
-+  },
-+  {
-+    "PublicDescription": "This event counts the number of flows of the scatter instructions.",
-+    "EventCode": "0x2B3",
-+    "EventName": "L1_PIPE_COMP_SCATTER_1FLOW",
-+    "BriefDescription": "This event counts the number of flows of the scatter instructions."
-+  },
-+  {
-+    "PublicDescription": "This event counts the number of 1's in the predicate bits of request in L1D cache pipeline#0, where it is corrected so that it becomes 16 when all bits are 1.",
-+    "EventCode": "0x2B8",
-+    "EventName": "L1_PIPE0_COMP_PRD_CNT",
-+    "BriefDescription": "This event counts the number of 1's in the predicate bits of request in L1D cache pipeline#0, where it is corrected so that it becomes 16 when all bits are 1."
-+  },
-+  {
-+    "PublicDescription": "This event counts the number of 1's in the predicate bits of request in L1D cache pipeline#1, where it is corrected so that it becomes 16 when all bits are 1.",
-+    "EventCode": "0x2B9",
-+    "EventName": "L1_PIPE1_COMP_PRD_CNT",
-+    "BriefDescription": "This event counts the number of 1's in the predicate bits of request in L1D cache pipeline#1, where it is corrected so that it becomes 16 when all bits are 1."
-+  },
-+  {
-+    "PublicDescription": "This event counts valid cycles of L2 cache pipeline.",
-+    "EventCode": "0x330",
-+    "EventName": "L2_PIPE_VAL",
-+    "BriefDescription": "This event counts valid cycles of L2 cache pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts completed requests in L2 cache pipeline.",
-+    "EventCode": "0x350",
-+    "EventName": "L2_PIPE_COMP_ALL",
-+    "BriefDescription": "This event counts completed requests in L2 cache pipeline."
-+  },
-+  {
-+    "PublicDescription": "This event counts operations where software or hardware prefetch hits an L2 cache refill buffer allocated by demand access.",
-+    "EventCode": "0x370",
-+    "EventName": "L2_PIPE_COMP_PF_L2MIB_MCH",
-+    "BriefDescription": "This event counts operations where software or hardware prefetch hits an L2 cache refill buffer allocated by demand access."
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
-new file mode 100644
-index 000000000000..dc1b95e42c32
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
-@@ -0,0 +1,110 @@
-+[
-+  {
-+    "ArchStdEvent": "SIMD_INST_RETIRED"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_INST_RETIRED"
-+  },
-+  {
-+    "ArchStdEvent": "UOP_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_MATH_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_FMA_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_RECPE_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_CVT_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "ASE_SVE_INT_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_PRED_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_MOVPRFX_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_MOVPRFX_U_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "ASE_SVE_LD_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "ASE_SVE_ST_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "PRF_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "BASE_LD_REG_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "BASE_ST_REG_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_LDR_REG_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_STR_REG_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_LDR_PREG_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_STR_PREG_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_PRF_CONTIG_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "ASE_SVE_LD_MULTI_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "ASE_SVE_ST_MULTI_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_LD_GATHER_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_ST_SCATTER_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_PRF_GATHER_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "SVE_LDFF_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_SCALE_OPS_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_FIXED_OPS_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_HP_SCALE_OPS_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_HP_FIXED_OPS_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_SP_SCALE_OPS_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_SP_FIXED_OPS_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_DP_SCALE_OPS_SPEC"
-+  },
-+  {
-+    "ArchStdEvent": "FP_DP_FIXED_OPS_SPEC"
-+  }
-+]
-diff --git a/tools/perf/pmu-events/arch/arm64/mapfile.csv b/tools/perf/pmu-events/arch/arm64/mapfile.csv
-index 0d609149b82a..c43591d831b8 100644
---- a/tools/perf/pmu-events/arch/arm64/mapfile.csv
-+++ b/tools/perf/pmu-events/arch/arm64/mapfile.csv
-@@ -20,5 +20,6 @@
- 0x00000000410fd0c0,v1,arm/cortex-a76-n1,core
- 0x00000000420f5160,v1,cavium/thunderx2,core
- 0x00000000430f0af0,v1,cavium/thunderx2,core
-+0x00000000460f0010,v1,fujitsu/a64fx,core
- 0x00000000480fd010,v1,hisilicon/hip08,core
- 0x00000000500f0000,v1,ampere/emag,core
--- 
-2.25.1
-
+On Thu, 11 Feb 2021 at 04:34, Nicolas Boichat <drinkcat@chromium.org> wrote:
+>
+> Many of the DSI flags have names opposite to their actual effects,
+> e.g. MIPI_DSI_MODE_EOT_PACKET means that EoT packets will actually
+> be disabled. Fix this by including _NO_ in the flag names, e.g.
+> MIPI_DSI_MODE_NO_EOT_PACKET.
+>
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> ---
+> I considered adding _DISABLE_ instead, but that'd make the
+> flag names a big too long.
+>
+> Generated with:
+> flag=MIPI_DSI_MODE_VIDEO_HFP; git grep $flag | cut -f1 -d':' | \
+>   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HFP/" {}
+> flag=MIPI_DSI_MODE_VIDEO_HBP; git grep $flag | cut -f1 -d':' | \
+>   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HBP/" {}
+> flag=MIPI_DSI_MODE_VIDEO_HSA; git grep $flag | cut -f1 -d':' | \
+>   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HSA/" {}
+> flag=MIPI_DSI_MODE_EOT_PACKET; git grep $flag | cut -f1 -d':' | \
+>   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_NO_EOT_PACKET/" {}
+> (then minor format changes)
+>
+>  drivers/gpu/drm/bridge/adv7511/adv7533.c             | 2 +-
+>  drivers/gpu/drm/bridge/analogix/anx7625.c            | 2 +-
+>  drivers/gpu/drm/bridge/cdns-dsi.c                    | 4 ++--
+>  drivers/gpu/drm/bridge/tc358768.c                    | 2 +-
+>  drivers/gpu/drm/exynos/exynos_drm_dsi.c              | 8 ++++----
+>  drivers/gpu/drm/mcde/mcde_dsi.c                      | 2 +-
+>  drivers/gpu/drm/mediatek/mtk_dsi.c                   | 2 +-
+>  drivers/gpu/drm/msm/dsi/dsi_host.c                   | 8 ++++----
+>  drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c | 2 +-
+>  drivers/gpu/drm/panel/panel-dsi-cm.c                 | 2 +-
+>  drivers/gpu/drm/panel/panel-elida-kd35t133.c         | 2 +-
+>  drivers/gpu/drm/panel/panel-khadas-ts050.c           | 2 +-
+>  drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c   | 2 +-
+>  drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c   | 2 +-
+>  drivers/gpu/drm/panel/panel-novatek-nt35510.c        | 2 +-
+>  drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c   | 2 +-
+>  drivers/gpu/drm/panel/panel-samsung-s6d16d0.c        | 2 +-
+>  drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c     | 2 +-
+>  drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c    | 2 +-
+>  drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c        | 4 ++--
+>  drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c      | 2 +-
+>  drivers/gpu/drm/panel/panel-simple.c                 | 2 +-
+>  drivers/gpu/drm/panel/panel-sony-acx424akp.c         | 2 +-
+>  drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c     | 2 +-
+>  include/drm/drm_mipi_dsi.h                           | 8 ++++----
+>  25 files changed, 36 insertions(+), 36 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7533.c b/drivers/gpu/drm/bridge/adv7511/adv7533.c
+> index aa19d5a40e31..59d718bde8c4 100644
+> --- a/drivers/gpu/drm/bridge/adv7511/adv7533.c
+> +++ b/drivers/gpu/drm/bridge/adv7511/adv7533.c
+> @@ -165,7 +165,7 @@ int adv7533_attach_dsi(struct adv7511 *adv)
+>         dsi->lanes = adv->num_dsi_lanes;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
+> -                         MIPI_DSI_MODE_EOT_PACKET | MIPI_DSI_MODE_VIDEO_HSE;
+> +                         MIPI_DSI_MODE_NO_EOT_PACKET | MIPI_DSI_MODE_VIDEO_HSE;
+>
+>         ret = mipi_dsi_attach(dsi);
+>         if (ret < 0) {
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> index 65cc05982f82..beecfe6bf359 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -1334,7 +1334,7 @@ static int anx7625_attach_dsi(struct anx7625_data *ctx)
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO   |
+>                 MIPI_DSI_MODE_VIDEO_SYNC_PULSE  |
+> -               MIPI_DSI_MODE_EOT_PACKET        |
+> +               MIPI_DSI_MODE_NO_EOT_PACKET     |
+>                 MIPI_DSI_MODE_VIDEO_HSE;
+>
+>         if (mipi_dsi_attach(dsi) < 0) {
+> diff --git a/drivers/gpu/drm/bridge/cdns-dsi.c b/drivers/gpu/drm/bridge/cdns-dsi.c
+> index 76373e31df92..34aa24269a57 100644
+> --- a/drivers/gpu/drm/bridge/cdns-dsi.c
+> +++ b/drivers/gpu/drm/bridge/cdns-dsi.c
+> @@ -829,7 +829,7 @@ static void cdns_dsi_bridge_enable(struct drm_bridge *bridge)
+>         tmp = DIV_ROUND_UP(dsi_cfg.htotal, nlanes) -
+>               DIV_ROUND_UP(dsi_cfg.hsa, nlanes);
+>
+> -       if (!(output->dev->mode_flags & MIPI_DSI_MODE_EOT_PACKET))
+> +       if (!(output->dev->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET))
+>                 tmp -= DIV_ROUND_UP(DSI_EOT_PKT_SIZE, nlanes);
+>
+>         tx_byte_period = DIV_ROUND_DOWN_ULL((u64)NSEC_PER_SEC * 8,
+> @@ -902,7 +902,7 @@ static void cdns_dsi_bridge_enable(struct drm_bridge *bridge)
+>         tmp = readl(dsi->regs + MCTL_MAIN_DATA_CTL);
+>         tmp &= ~(IF_VID_SELECT_MASK | HOST_EOT_GEN | IF_VID_MODE);
+>
+> -       if (!(output->dev->mode_flags & MIPI_DSI_MODE_EOT_PACKET))
+> +       if (!(output->dev->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET))
+>                 tmp |= HOST_EOT_GEN;
+>
+>         if (output->dev->mode_flags & MIPI_DSI_MODE_VIDEO)
+> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+> index 8ed8302d6bbb..320f95ae6077 100644
+> --- a/drivers/gpu/drm/bridge/tc358768.c
+> +++ b/drivers/gpu/drm/bridge/tc358768.c
+> @@ -825,7 +825,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>         if (!(dsi_dev->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
+>                 val |= TC358768_DSI_CONTROL_HSCKMD;
+>
+> -       if (dsi_dev->mode_flags & MIPI_DSI_MODE_EOT_PACKET)
+> +       if (dsi_dev->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET)
+>                 val |= TC358768_DSI_CONTROL_EOTDIS;
+>
+>         tc358768_write(priv, TC358768_DSI_CONFW, val);
+> diff --git a/drivers/gpu/drm/exynos/exynos_drm_dsi.c b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
+> index 83ab6b343f51..99249d0da330 100644
+> --- a/drivers/gpu/drm/exynos/exynos_drm_dsi.c
+> +++ b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
+> @@ -809,15 +809,15 @@ static int exynos_dsi_init_link(struct exynos_dsi *dsi)
+>                         reg |= DSIM_AUTO_MODE;
+>                 if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_HSE)
+>                         reg |= DSIM_HSE_MODE;
+> -               if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_HFP))
+> +               if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_NO_HFP))
+>                         reg |= DSIM_HFP_MODE;
+> -               if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_HBP))
+> +               if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_NO_HBP))
+>                         reg |= DSIM_HBP_MODE;
+> -               if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_HSA))
+> +               if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_NO_HSA))
+>                         reg |= DSIM_HSA_MODE;
+>         }
+>
+> -       if (!(dsi->mode_flags & MIPI_DSI_MODE_EOT_PACKET))
+> +       if (!(dsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET))
+>                 reg |= DSIM_EOT_DISABLE;
+>
+>         switch (dsi->format) {
+> diff --git a/drivers/gpu/drm/mcde/mcde_dsi.c b/drivers/gpu/drm/mcde/mcde_dsi.c
+> index 2314c8122992..f4cdc3cfd7d0 100644
+> --- a/drivers/gpu/drm/mcde/mcde_dsi.c
+> +++ b/drivers/gpu/drm/mcde/mcde_dsi.c
+> @@ -760,7 +760,7 @@ static void mcde_dsi_start(struct mcde_dsi *d)
+>                 DSI_MCTL_MAIN_DATA_CTL_BTA_EN |
+>                 DSI_MCTL_MAIN_DATA_CTL_READ_EN |
+>                 DSI_MCTL_MAIN_DATA_CTL_REG_TE_EN;
+> -       if (d->mdsi->mode_flags & MIPI_DSI_MODE_EOT_PACKET)
+> +       if (d->mdsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET)
+>                 val |= DSI_MCTL_MAIN_DATA_CTL_HOST_EOT_GEN;
+>         writel(val, d->regs + DSI_MCTL_MAIN_DATA_CTL);
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> index a1ff152ef468..5c0c9180273a 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -402,7 +402,7 @@ static void mtk_dsi_rxtx_control(struct mtk_dsi *dsi)
+>         }
+>
+>         tmp_reg |= (dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) << 6;
+> -       tmp_reg |= (dsi->mode_flags & MIPI_DSI_MODE_EOT_PACKET) >> 3;
+> +       tmp_reg |= (dsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET) >> 3;
+>
+>         writel(tmp_reg, dsi->regs + DSI_TXRX_CTRL);
+>  }
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> index ab281cba0f08..a97a7822e596 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> @@ -850,11 +850,11 @@ static void dsi_ctrl_config(struct msm_dsi_host *msm_host, bool enable,
+>         if (flags & MIPI_DSI_MODE_VIDEO) {
+>                 if (flags & MIPI_DSI_MODE_VIDEO_HSE)
+>                         data |= DSI_VID_CFG0_PULSE_MODE_HSA_HE;
+> -               if (flags & MIPI_DSI_MODE_VIDEO_HFP)
+> +               if (flags & MIPI_DSI_MODE_VIDEO_NO_HFP)
+>                         data |= DSI_VID_CFG0_HFP_POWER_STOP;
+> -               if (flags & MIPI_DSI_MODE_VIDEO_HBP)
+> +               if (flags & MIPI_DSI_MODE_VIDEO_NO_HBP)
+>                         data |= DSI_VID_CFG0_HBP_POWER_STOP;
+> -               if (flags & MIPI_DSI_MODE_VIDEO_HSA)
+> +               if (flags & MIPI_DSI_MODE_VIDEO_NO_HSA)
+>                         data |= DSI_VID_CFG0_HSA_POWER_STOP;
+>                 /* Always set low power stop mode for BLLP
+>                  * to let command engine send packets
+> @@ -909,7 +909,7 @@ static void dsi_ctrl_config(struct msm_dsi_host *msm_host, bool enable,
+>                           DSI_T_CLK_PRE_EXTEND_INC_BY_2_BYTECLK);
+>
+>         data = 0;
+> -       if (!(flags & MIPI_DSI_MODE_EOT_PACKET))
+> +       if (!(flags & MIPI_DSI_MODE_NO_EOT_PACKET))
+>                 data |= DSI_EOT_PACKET_CTRL_TX_EOT_APPEND;
+>         dsi_write(msm_host, REG_DSI_EOT_PACKET_CTRL, data);
+>
+> diff --git a/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c b/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
+> index e95bc9f60b3f..44674ebedf59 100644
+> --- a/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
+> +++ b/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
+> @@ -302,7 +302,7 @@ static int tm5p5_nt35596_probe(struct mipi_dsi_device *dsi)
+>         dsi->lanes = 4;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+> -                         MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_MODE_EOT_PACKET |
+> +                         MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_MODE_NO_EOT_PACKET |
+>                           MIPI_DSI_CLOCK_NON_CONTINUOUS | MIPI_DSI_MODE_LPM;
+>
+>         drm_panel_init(&ctx->panel, dev, &tm5p5_nt35596_panel_funcs,
+> diff --git a/drivers/gpu/drm/panel/panel-dsi-cm.c b/drivers/gpu/drm/panel/panel-dsi-cm.c
+> index af381d756ac1..178abfb1737c 100644
+> --- a/drivers/gpu/drm/panel/panel-dsi-cm.c
+> +++ b/drivers/gpu/drm/panel/panel-dsi-cm.c
+> @@ -571,7 +571,7 @@ static int dsicm_probe(struct mipi_dsi_device *dsi)
+>         dsi->lanes = 2;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS |
+> -                         MIPI_DSI_MODE_EOT_PACKET;
+> +                         MIPI_DSI_MODE_NO_EOT_PACKET;
+>         dsi->hs_rate = ddata->panel_data->max_hs_rate;
+>         dsi->lp_rate = ddata->panel_data->max_lp_rate;
+>
+> diff --git a/drivers/gpu/drm/panel/panel-elida-kd35t133.c b/drivers/gpu/drm/panel/panel-elida-kd35t133.c
+> index bc36aa3c1123..ae3361ccccd5 100644
+> --- a/drivers/gpu/drm/panel/panel-elida-kd35t133.c
+> +++ b/drivers/gpu/drm/panel/panel-elida-kd35t133.c
+> @@ -265,7 +265,7 @@ static int kd35t133_probe(struct mipi_dsi_device *dsi)
+>         dsi->lanes = 1;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+> -                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
+> +                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         drm_panel_init(&ctx->panel, &dsi->dev, &kd35t133_funcs,
+>                        DRM_MODE_CONNECTOR_DSI);
+> diff --git a/drivers/gpu/drm/panel/panel-khadas-ts050.c b/drivers/gpu/drm/panel/panel-khadas-ts050.c
+> index 8f6ac1a40c31..a3ec4cbdbf7a 100644
+> --- a/drivers/gpu/drm/panel/panel-khadas-ts050.c
+> +++ b/drivers/gpu/drm/panel/panel-khadas-ts050.c
+> @@ -809,7 +809,7 @@ static int khadas_ts050_panel_probe(struct mipi_dsi_device *dsi)
+>         dsi->lanes = 4;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+> -                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
+> +                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         khadas_ts050 = devm_kzalloc(&dsi->dev, sizeof(*khadas_ts050),
+>                                     GFP_KERNEL);
+> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
+> index ed0d5f959037..a5a414920430 100644
+> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
+> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
+> @@ -593,7 +593,7 @@ static int ltk050h3146w_probe(struct mipi_dsi_device *dsi)
+>         dsi->lanes = 4;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+> -                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
+> +                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         drm_panel_init(&ctx->panel, &dsi->dev, &ltk050h3146w_funcs,
+>                        DRM_MODE_CONNECTOR_DSI);
+> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c b/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
+> index 3c00e4f8f803..21e48923836d 100644
+> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
+> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
+> @@ -442,7 +442,7 @@ static int ltk500hd1829_probe(struct mipi_dsi_device *dsi)
+>         dsi->lanes = 4;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+> -                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
+> +                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         drm_panel_init(&ctx->panel, &dsi->dev, &ltk500hd1829_funcs,
+>                        DRM_MODE_CONNECTOR_DSI);
+> diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35510.c b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
+> index b9a0e56f33e2..9d9334656803 100644
+> --- a/drivers/gpu/drm/panel/panel-novatek-nt35510.c
+> +++ b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
+> @@ -899,7 +899,7 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
+>         dsi->hs_rate = 349440000;
+>         dsi->lp_rate = 9600000;
+>         dsi->mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS |
+> -               MIPI_DSI_MODE_EOT_PACKET;
+> +               MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         /*
+>          * Every new incarnation of this display must have a unique
+> diff --git a/drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c b/drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c
+> index 45b975dee587..198493a6eb6a 100644
+> --- a/drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c
+> +++ b/drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c
+> @@ -184,7 +184,7 @@ static int osd101t2587_panel_probe(struct mipi_dsi_device *dsi)
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
+>                           MIPI_DSI_MODE_VIDEO_BURST |
+>                           MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
+> -                         MIPI_DSI_MODE_EOT_PACKET;
+> +                         MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         osd101t2587 = devm_kzalloc(&dsi->dev, sizeof(*osd101t2587), GFP_KERNEL);
+>         if (!osd101t2587)
+> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c b/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
+> index 4aac0d1573dd..b04b9975e9b2 100644
+> --- a/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
+> +++ b/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
+> @@ -186,7 +186,7 @@ static int s6d16d0_probe(struct mipi_dsi_device *dsi)
+>          */
+>         dsi->mode_flags =
+>                 MIPI_DSI_CLOCK_NON_CONTINUOUS |
+> -               MIPI_DSI_MODE_EOT_PACKET;
+> +               MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         s6->supply = devm_regulator_get(dev, "vdd1");
+>         if (IS_ERR(s6->supply))
+> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c b/drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c
+> index b962c817fb30..ccc8ed6fe3ae 100644
+> --- a/drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c
+> +++ b/drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c
+> @@ -446,7 +446,7 @@ static int s6e63j0x03_probe(struct mipi_dsi_device *dsi)
+>
+>         dsi->lanes = 1;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+> -       dsi->mode_flags = MIPI_DSI_MODE_EOT_PACKET;
+> +       dsi->mode_flags = MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         ctx->supplies[0].supply = "vdd3";
+>         ctx->supplies[1].supply = "vci";
+> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c b/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
+> index eec74c10ddda..77289967d3e5 100644
+> --- a/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
+> +++ b/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
+> @@ -97,7 +97,7 @@ static int s6e63m0_dsi_probe(struct mipi_dsi_device *dsi)
+>         dsi->hs_rate = 349440000;
+>         dsi->lp_rate = 9600000;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
+> -               MIPI_DSI_MODE_EOT_PACKET |
+> +               MIPI_DSI_MODE_NO_EOT_PACKET |
+>                 MIPI_DSI_MODE_VIDEO_BURST;
+>
+>         ret = s6e63m0_probe(dev, s6e63m0_dsi_dcs_read, s6e63m0_dsi_dcs_write,
+> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c b/drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c
+> index 527371120266..9b3599d6d2de 100644
+> --- a/drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c
+> +++ b/drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c
+> @@ -990,8 +990,8 @@ static int s6e8aa0_probe(struct mipi_dsi_device *dsi)
+>         dsi->lanes = 4;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST
+> -               | MIPI_DSI_MODE_VIDEO_HFP | MIPI_DSI_MODE_VIDEO_HBP
+> -               | MIPI_DSI_MODE_VIDEO_HSA | MIPI_DSI_MODE_EOT_PACKET
+> +               | MIPI_DSI_MODE_VIDEO_NO_HFP | MIPI_DSI_MODE_VIDEO_NO_HBP
+> +               | MIPI_DSI_MODE_VIDEO_NO_HSA | MIPI_DSI_MODE_NO_EOT_PACKET
+>                 | MIPI_DSI_MODE_VSYNC_FLUSH | MIPI_DSI_MODE_VIDEO_AUTO_VERT;
+>
+>         ret = s6e8aa0_parse_dt(ctx);
+> diff --git a/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c b/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c
+> index 16dbf0f353ed..b937e24dac8e 100644
+> --- a/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c
+> +++ b/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c
+> @@ -282,7 +282,7 @@ static int sharp_nt_panel_probe(struct mipi_dsi_device *dsi)
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
+>                         MIPI_DSI_MODE_VIDEO_HSE |
+>                         MIPI_DSI_CLOCK_NON_CONTINUOUS |
+> -                       MIPI_DSI_MODE_EOT_PACKET;
+> +                       MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         sharp_nt = devm_kzalloc(&dsi->dev, sizeof(*sharp_nt), GFP_KERNEL);
+>         if (!sharp_nt)
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index 4e2dad314c79..babc7a7f6844 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -4745,7 +4745,7 @@ static const struct panel_desc_dsi osd101t2045_53ts = {
+>         },
+>         .flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+>                  MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
+> -                MIPI_DSI_MODE_EOT_PACKET,
+> +                MIPI_DSI_MODE_NO_EOT_PACKET,
+>         .format = MIPI_DSI_FMT_RGB888,
+>         .lanes = 4,
+>  };
+> diff --git a/drivers/gpu/drm/panel/panel-sony-acx424akp.c b/drivers/gpu/drm/panel/panel-sony-acx424akp.c
+> index 065efae213f5..6b706cbf2f9c 100644
+> --- a/drivers/gpu/drm/panel/panel-sony-acx424akp.c
+> +++ b/drivers/gpu/drm/panel/panel-sony-acx424akp.c
+> @@ -450,7 +450,7 @@ static int acx424akp_probe(struct mipi_dsi_device *dsi)
+>         else
+>                 dsi->mode_flags =
+>                         MIPI_DSI_CLOCK_NON_CONTINUOUS |
+> -                       MIPI_DSI_MODE_EOT_PACKET;
+> +                       MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         acx->supply = devm_regulator_get(dev, "vddi");
+>         if (IS_ERR(acx->supply))
+> diff --git a/drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c b/drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c
+> index 55172d63a922..d17aae8b71d7 100644
+> --- a/drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c
+> +++ b/drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c
+> @@ -311,7 +311,7 @@ static int xpp055c272_probe(struct mipi_dsi_device *dsi)
+>         dsi->lanes = 4;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+> -                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
+> +                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET;
+>
+>         drm_panel_init(&ctx->panel, &dsi->dev, &xpp055c272_funcs,
+>                        DRM_MODE_CONNECTOR_DSI);
+> diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
+> index 360e6377e84b..ba91cf22af51 100644
+> --- a/include/drm/drm_mipi_dsi.h
+> +++ b/include/drm/drm_mipi_dsi.h
+> @@ -119,15 +119,15 @@ struct mipi_dsi_host *of_find_mipi_dsi_host_by_node(struct device_node *node);
+>  /* enable hsync-end packets in vsync-pulse and v-porch area */
+>  #define MIPI_DSI_MODE_VIDEO_HSE                BIT(4)
+>  /* disable hfront-porch area */
+> -#define MIPI_DSI_MODE_VIDEO_HFP                BIT(5)
+> +#define MIPI_DSI_MODE_VIDEO_NO_HFP     BIT(5)
+>  /* disable hback-porch area */
+> -#define MIPI_DSI_MODE_VIDEO_HBP                BIT(6)
+> +#define MIPI_DSI_MODE_VIDEO_NO_HBP     BIT(6)
+>  /* disable hsync-active area */
+> -#define MIPI_DSI_MODE_VIDEO_HSA                BIT(7)
+> +#define MIPI_DSI_MODE_VIDEO_NO_HSA     BIT(7)
+>  /* flush display FIFO on vsync pulse */
+>  #define MIPI_DSI_MODE_VSYNC_FLUSH      BIT(8)
+>  /* disable EoT packets in HS mode */
+> -#define MIPI_DSI_MODE_EOT_PACKET       BIT(9)
+> +#define MIPI_DSI_MODE_NO_EOT_PACKET    BIT(9)
+>  /* device supports non-continuous clock behavior (DSI spec 5.6.1) */
+>  #define MIPI_DSI_CLOCK_NON_CONTINUOUS  BIT(10)
+>  /* transmit data in low power */
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
