@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8ADC31A70E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6519D31A711
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbhBLVpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 16:45:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhBLVpn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 16:45:43 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E95C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:45:03 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id d2so378182pjs.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:45:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9lL2r/Ey+YYeyZvvoc/iJkTezo+Dg1gXvxnIcJaEP3o=;
-        b=fqnpY2LTk6Zsf/0+gk4cZNkiRQa9ox4GWv28mE+3MrRnQ3ZfHCbkJ1FsxOJDLTbT/5
-         lg9DkNp9poT4rzBrcie54CgkuC7jJqbLnaq7nFUbUdzH3BR3e1wVi47kGPALDqvFui+8
-         RJPGrCqA73nJPeDsR7aVEBjJiBTbIiiEp/h1vApnRiXRvOorZdPU7ILlBfC2SwCsYH0g
-         U3jo/lC0FDaJYub6uo3nZM6RlUQKi1Y3EXmNWh1F/3xLZwbJShTWqVi6iOcMtwVIzbQV
-         n7LCOHzPzAjDZAySpkXtBLiTQ4Hrc2OqXVRDbkAt/BsheLfj05oNw7kRfY+6Yfgv0P6u
-         sWkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9lL2r/Ey+YYeyZvvoc/iJkTezo+Dg1gXvxnIcJaEP3o=;
-        b=PkwFcOOuqrh5POFvvbgBkyzFfxWPGYZHwWDINUpyjaJXlPv1XIKM8Pc12hA0e85uf1
-         5JAR2DTQNWG84ZYFtIq8PWa4a56v8vQioJ76NKJXPuG8n8PawTBpbDI7AEfB+dKdhfy5
-         D1GD+8dzof4i7kptQmrtWqykGs+bTVaVNvthbPfWXNPxdw3FGFsO2g7xu1dVaNjNlg1T
-         orRp2dRhNuRgHxiOmelouy+40hdRewMBkP76nxHsDnK5fmpLSVt0za8Q6WyoYRCF51pJ
-         nwpq/BEbr2CPuzyTzhvKkhwkqQeD4M1JA7WAm/Fq5iH2Ysj9xG1Dt60NvR93SE9lp/fA
-         12Dw==
-X-Gm-Message-State: AOAM5320YcwYbiQroy70w+ga8gr7pVSMoskTwv0ri3h8Cm6xK8TuVMJq
-        oWRHodX+RlNi4y9F16LiRuYiXU9NngKKHW89sN2/+w==
-X-Google-Smtp-Source: ABdhPJwyl+sxMWegLYDQ55g4lZZv0FZ3/Rem6ATplzDrdLDGYqj6dgJfwqJBcasJRBNRT461MnZoqxbrUTWKz0ycL/o=
-X-Received: by 2002:a17:90a:9ac:: with SMTP id 41mr4510715pjo.136.1613166302591;
- Fri, 12 Feb 2021 13:45:02 -0800 (PST)
+        id S229906AbhBLVsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 16:48:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229648AbhBLVsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 16:48:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEC4064E36
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 21:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613166454;
+        bh=Kv70a1+yCdYDmMZp2KaJ7CNkCDLjUtW0dJHR2g8xWPY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IdvlBN3htDscXoj0MZ014Aa04rMJoOlQk2mFCkeO6EGFig3efhJcxvd/C5RQ788YQ
+         HVcEBThc6kFiC/vi9+P4HYCePuYqJPWzKgXsvIALWRXPnDmZ1yPXP0K6rEVQlXSbdp
+         ODCJgpBdacraVhAILyoUL5q4FrDTBROnK4J3q05j8ZwzXzW5iKJ02T2LK5oZVoDNJ/
+         jLEmZZLXN0rFBCPYy1RNM5IzgsBy0u1Y42nUcBvEaI9LARwIip+Nes77exBHZ6cBTM
+         wHgWQH7532f725Wqi8eS2exYTryL3rcCObzTQKVSUtmbZ/5sENuUlHg/LmXFR27njx
+         LjwELdNxIPtUw==
+Received: by mail-ej1-f47.google.com with SMTP id y9so1503921ejp.10
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:47:33 -0800 (PST)
+X-Gm-Message-State: AOAM530NRLaaFkVjzYk+hcY/nff3c1lWr82a9KUvBmBIRDquvKo08nh1
+        ttB0l6y0+f4cYPirCIgLrOVkpp0s9hrl3RyekcOL/Q==
+X-Google-Smtp-Source: ABdhPJz7be6PPmoSpUI865okhoDYmG5h7QOsEpRWjHxyeQnhCo97KYGJFZ9gOH0wSIzugA9fCveQujr1Wg5FIKfHNH4=
+X-Received: by 2002:a17:906:24d1:: with SMTP id f17mr4874863ejb.503.1613166452442;
+ Fri, 12 Feb 2021 13:47:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20210211153353.29094-1-vincenzo.frascino@arm.com>
- <20210211153353.29094-8-vincenzo.frascino@arm.com> <20210212172224.GF7718@arm.com>
-In-Reply-To: <20210212172224.GF7718@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 12 Feb 2021 22:44:51 +0100
-Message-ID: <CAAeHK+zg5aoFfi1Q36NyoaJqorES+1cvn+mRRcZ64uW8s7kAmQ@mail.gmail.com>
-Subject: Re: [PATCH v13 7/7] kasan: don't run tests in async mode
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CALCETrWPCTmoeFBEJvw98zwNpw316Xii_16COZAWoYNC=obF+w@mail.gmail.com>
+ <YCbfyde9jl7ti0Oz@google.com> <8c23bbfd-e371-a7cf-7f77-ec744181547b@intel.com>
+ <YCbm/umiGUS7UuVb@google.com> <514734d9-d8be-03ee-417e-4d0ad2f56276@intel.com>
+ <YCbq+UEMIsE0NIWI@google.com> <7d0b08c4-5ae7-f914-e217-767a9fae7b78@intel.com>
+ <YCb0/Dg28uI7TRD/@google.com>
+In-Reply-To: <YCb0/Dg28uI7TRD/@google.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 12 Feb 2021 13:47:20 -0800
+X-Gmail-Original-Message-ID: <CALCETrUnOVvC4d8c_Z=5ZDefAo+0t6-9hadttOjTypJykN6_3A@mail.gmail.com>
+Message-ID: <CALCETrUnOVvC4d8c_Z=5ZDefAo+0t6-9hadttOjTypJykN6_3A@mail.gmail.com>
+Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+        Sean Christopherson <sean.j.christopherson@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 6:22 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+On Fri, Feb 12, 2021 at 1:37 PM Sean Christopherson <seanjc@google.com> wrote:
 >
-> On Thu, Feb 11, 2021 at 03:33:53PM +0000, Vincenzo Frascino wrote:
-> > From: Andrey Konovalov <andreyknvl@google.com>
+> On Fri, Feb 12, 2021, Dave Hansen wrote:
+> > On 2/12/21 12:54 PM, Sean Christopherson wrote:
+> > > Ah, I see what you're thinking.
+> > >
+> > > Treating an EPT #VE as fatal was also considered as an option.  IIUC it was
+> > > thought that finding every nook and cranny that could access a page, without
+> > > forcing the kernel to pre-accept huge swaths of memory, would be very difficult.
+> > > It'd be wonderful if that's not the case.
 > >
-> > Asynchronous KASAN mode doesn't guarantee that a tag fault will be
-> > detected immediately and causes tests to fail. Forbid running them
-> > in asynchronous mode.
+> > We have to manually set up the page table entries for every physical
+> > page of memory (except for the hard-coded early stuff below 8MB or
+> > whatever).  We *KNOW*, 100% before physical memory is accessed.
 > >
-> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > ---
-> >  lib/test_kasan.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> > index f8c72d3aed64..77a60592d350 100644
-> > --- a/lib/test_kasan.c
-> > +++ b/lib/test_kasan.c
-> > @@ -51,6 +51,10 @@ static int kasan_test_init(struct kunit *test)
-> >               kunit_err(test, "can't run KASAN tests with KASAN disabled");
-> >               return -1;
-> >       }
-> > +     if (kasan_flag_async) {
-> > +             kunit_err(test, "can't run KASAN tests in async mode");
-> > +             return -1;
-> > +     }
+> > There aren't nooks and crannies where memory is accessed.  There are a
+> > few, very well-defined choke points which must be crossed before memory
+> > is accessed.  Page table creation, bootmem and the core page allocator
+> > come to mind.
 >
-> I think we have time to fix this properly ;), so I'd rather not add this
-> patch at all.
+> Heh, for me, that's two places too many beyond my knowledge domain to feel
+> comfortable putting a stake in the ground saying #VE isn't necessary.
+>
+> Joking aside, I agree that treating EPT #VEs as fatal would be ideal, but from a
+> TDX architecture perspective, when considering all possible kernels, drivers,
+> configurations, etc..., it's risky to say that there will _never_ be a scenario
+> that "requires" #VE.
+>
+> What about adding a property to the TD, e.g. via a flag set during TD creation,
+> that controls whether unaccepted accesses cause #VE or are, for all intents and
+> purposes, fatal?  That would allow Linux to pursue treating EPT #VEs for private
+> GPAs as fatal, but would give us a safety and not prevent others from utilizing
+> #VEs.
 
-Yeah, this patch can be dropped.
-
-I have a prototype of async support for tests working. I'll apply it
-on top of the next version Vincenzo posts and share the patch.
-
-Vincenzo, when you post the next version, please make sure you rebase
-on top of the mm tree version that includes "kasan: export HW_TAGS
-symbols for KUnit tests" (linux-next/akpm doesn't yet have it).
+That seems reasonable.
