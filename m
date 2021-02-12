@@ -2,200 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA3C319CB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B90F0319CB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhBLKeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 05:34:25 -0500
-Received: from mga12.intel.com ([192.55.52.136]:16940 "EHLO mga12.intel.com"
+        id S230425AbhBLKea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 05:34:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42456 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230046AbhBLKeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 05:34:07 -0500
-IronPort-SDR: xoXangnJxijt8I7Ce0KeEYR8eIEzTQVBG9106/qWYgiNo1sk7SmM1Ux/yp92nEX+RDLTE7LGKY
- PxeZLspnzlVQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="161536065"
-X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
-   d="scan'208";a="161536065"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 02:32:14 -0800
-IronPort-SDR: ewelfyhW1zzOTth4TCnY+JHw59DhCjb1xEffkvMCuOvqUF4S+UU523beNBTBomQS3FWZ50Imiy
- rE89pDatRUaQ==
-X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
-   d="scan'208";a="376305422"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 02:32:12 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lAVk9-004SQ5-Nj; Fri, 12 Feb 2021 12:32:09 +0200
-Date:   Fri, 12 Feb 2021 12:32:09 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Calvin Johnson <calvin.johnson@oss.nxp.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: Re: [PATCH] ACPI: property: Fix fwnode string properties matching
-Message-ID: <YCZZKcILHvVnVuUp@smile.fi.intel.com>
-References: <5831274.1ZjA0VymzF@kreacher>
+        id S230348AbhBLKeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 05:34:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613126010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FfObjgGx1kUN+XiaHjFPPNh76df2UzoGP5Po1j6Jimw=;
+        b=N6Iwd2emtwpqfotywCiDnLn4/e5bC+kqeLBBWSzIDQ6HYQLuqYvlUbAFaOgKvahlymivwA
+        FDnl0JNn9a5dT2l/yqgtLHLy4NMTDkQBZvj/aJ8aHJ2uacu9x89useMcdedNLQKy2J4JRo
+        nqV85a7GKLpjAoWvieI4p5O5xJIN//Q=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D95E8AFF6;
+        Fri, 12 Feb 2021 10:33:29 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 11:33:28 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
+ holes in memory layout
+Message-ID: <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
+References: <20210208110820.6269-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5831274.1ZjA0VymzF@kreacher>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210208110820.6269-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 07:30:01PM +0100, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon 08-02-21 13:08:20, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Property matching does not work for ACPI fwnodes if the value of the
-> given property is not represented as a package in the _DSD package
-> containing it.  For example, the "compatible" property in the _DSD
-> below
+> There could be struct pages that are not backed by actual physical memory.
+> This can happen when the actual memory bank is not a multiple of
+> SECTION_SIZE or when an architecture does not register memory holes
+> reserved by the firmware as memblock.memory.
 > 
->   Name (_DSD, Package () {
->     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
->     Package () {
->       Package () {"compatible", "ethernet-phy-ieee802.3-c45"}
->     }
->   })
+> Such pages are currently initialized using init_unavailable_mem() function
+> that iterates through PFNs in holes in memblock.memory and if there is a
+> struct page corresponding to a PFN, the fields of this page are set to
+> default values and it is marked as Reserved.
 > 
-> will not be found by fwnode_property_match_string(), because the ACPI
-> code handling device properties does not regard the single value as a
-> "list" in that case.
-> 
-> Namely, fwnode_property_match_string() invoked to match a given
-> string property value first calls fwnode_property_read_string_array()
-> with the last two arguments equal to NULL and 0, respectively, in
-> order to count the items in the value of the given property, with the
-> assumption that this value may be an array.  For ACPI fwnodes, that
-> operation is carried out by acpi_node_prop_read() which calls
-> acpi_data_prop_read() for this purpose.  However, when the return
-> (val) pointer is NULL, that function only looks for a property whose
-> value is a package without checking the single-value case at all.
-> 
-> To fix that, make acpi_data_prop_read() check the single-value case
-> regardless of the return pointer value if its return pointer argument
-> is NULL and modify acpi_data_prop_read_single() handling that case to
-> attempt to read the value of the property if the return pointer is
-> NULL and return 1 if that succeeds.
+> init_unavailable_mem() does not take into account zone and node the page
+> belongs to and sets both zone and node links in struct page to zero.
 
-Thanks, fine with me.
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+IIUC the zone should be associated based on the pfn and architecture
+constraines on zones. Node is then guessed based on the last existing
+range, right?
 
-I'll rebase the rest I have on to of this.
+> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+> instance in a configuration below:
+> 
+> 	# grep -A1 E820 /proc/iomem
+> 	7a17b000-7a216fff : Unknown E820 type
+> 	7a217000-7bffffff : System RAM
 
-> Fixes: 3708184afc77 ("device property: Move FW type specific functionality to FW specific files")
-> Reported-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> Cc: 4.13+ <stable@vger.kernel.org> # 4.13+
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  drivers/acpi/property.c |   44 +++++++++++++++++++++++++++++++++-----------
->  1 file changed, 33 insertions(+), 11 deletions(-)
-> 
-> Index: linux-pm/drivers/acpi/property.c
-> ===================================================================
-> --- linux-pm.orig/drivers/acpi/property.c
-> +++ linux-pm/drivers/acpi/property.c
-> @@ -787,9 +787,6 @@ static int acpi_data_prop_read_single(co
->  	const union acpi_object *obj;
->  	int ret;
->  
-> -	if (!val)
-> -		return -EINVAL;
-> -
->  	if (proptype >= DEV_PROP_U8 && proptype <= DEV_PROP_U64) {
->  		ret = acpi_data_get_property(data, propname, ACPI_TYPE_INTEGER, &obj);
->  		if (ret)
-> @@ -799,28 +796,43 @@ static int acpi_data_prop_read_single(co
->  		case DEV_PROP_U8:
->  			if (obj->integer.value > U8_MAX)
->  				return -EOVERFLOW;
-> -			*(u8 *)val = obj->integer.value;
-> +
-> +			if (val)
-> +				*(u8 *)val = obj->integer.value;
-> +
->  			break;
->  		case DEV_PROP_U16:
->  			if (obj->integer.value > U16_MAX)
->  				return -EOVERFLOW;
-> -			*(u16 *)val = obj->integer.value;
-> +
-> +			if (val)
-> +				*(u16 *)val = obj->integer.value;
-> +
->  			break;
->  		case DEV_PROP_U32:
->  			if (obj->integer.value > U32_MAX)
->  				return -EOVERFLOW;
-> -			*(u32 *)val = obj->integer.value;
-> +
-> +			if (val)
-> +				*(u32 *)val = obj->integer.value;
-> +
->  			break;
->  		default:
-> -			*(u64 *)val = obj->integer.value;
-> +			if (val)
-> +				*(u64 *)val = obj->integer.value;
-> +
->  			break;
->  		}
-> +
-> +		if (!val)
-> +			return 1;
->  	} else if (proptype == DEV_PROP_STRING) {
->  		ret = acpi_data_get_property(data, propname, ACPI_TYPE_STRING, &obj);
->  		if (ret)
->  			return ret;
->  
-> -		*(char **)val = obj->string.pointer;
-> +		if (val)
-> +			*(char **)val = obj->string.pointer;
->  
->  		return 1;
->  	} else {
-> @@ -834,7 +846,7 @@ int acpi_dev_prop_read_single(struct acp
->  {
->  	int ret;
->  
-> -	if (!adev)
-> +	if (!adev || !val)
->  		return -EINVAL;
->  
->  	ret = acpi_data_prop_read_single(&adev->data, propname, proptype, val);
-> @@ -928,10 +940,20 @@ static int acpi_data_prop_read(const str
->  	const union acpi_object *items;
->  	int ret;
->  
-> -	if (val && nval == 1) {
-> +	if (nval == 1 || !val) {
->  		ret = acpi_data_prop_read_single(data, propname, proptype, val);
-> -		if (ret >= 0)
-> +		/*
-> +		 * The overflow error means that the property is there and it is
-> +		 * single-value, but its type does not match, so return.
-> +		 */
-> +		if (ret >= 0 || ret == -EOVERFLOW)
->  			return ret;
-> +
-> +		/*
-> +		 * Reading this property as a single-value one failed, but its
-> +		 * value may still be represented as one-element array, so
-> +		 * continue.
-> +		 */
->  	}
->  
->  	ret = acpi_data_get_property_array(data, propname, ACPI_TYPE_ANY, &obj);
-> 
-> 
-> 
+I like the description here though. Thanks very useful.
 
+> unset zone link in struct page will trigger
+> 
+> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+
+I guess you mean set_pfnblock_flags_mask, right? Is this bug on really
+needed? Maybe we just need to skip over reserved pages?
+
+> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
+> in struct page) in the same pageblock.
+> 
+> Moreover, it is possible that the lowest node and zone start is not aligned
+> to the section boundarie, for example on x86:
+> 
+> [    0.078898] Zone ranges:
+> [    0.078899]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+> ...
+> [    0.078910] Early memory node ranges
+> [    0.078912]   node   0: [mem 0x0000000000001000-0x000000000009cfff]
+> [    0.078913]   node   0: [mem 0x0000000000100000-0x000000003fffffff]
+> 
+> and thus with SPARSEMEM memory model the beginning of the memory map will
+> have struct pages that are not spanned by any node and zone.
+> 
+> Update detection of node boundaries in get_pfn_range_for_nid() so that the
+> node range will be expanded to cover memory map section. Since zone spans
+> are derived from the node span, there always will be a zone that covers the
+> part of the memory map with unavailable pages.
+> 
+> Interleave initialization of the unavailable pages with the normal
+> initialization of memory map, so that zone and node information will be
+> properly set on struct pages that are not backed by the actual memory.
+
+I have to digest this but my first impression is that this is more heavy
+weight than it needs to. Pfn walkers should normally obey node range at
+least. The first pfn is usually excluded but I haven't seen real
+problems with that. The VM_BUG_ON blowing up is really bad but as said
+above we can simply make it less offensive in presence of reserved pages
+as those shouldn't reach that path AFAICS normally. Or we can just
+remove it. It is not really clear to me whether it has any value beyond
+debugging TBH.
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Michal Hocko
+SUSE Labs
