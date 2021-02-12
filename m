@@ -2,94 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1C931A212
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD9931A221
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbhBLPtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:49:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
+        id S229475AbhBLPzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:55:38 -0500
+Received: from mga12.intel.com ([192.55.52.136]:8025 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231424AbhBLPtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:49:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C3A264E02;
-        Fri, 12 Feb 2021 15:48:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613144940;
-        bh=mPWU5J6FvfSdf87XeMnvIwDdBegHQnAd+4cz0Zhf7/k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J6Zxe15mIrkj4UIWWsMMaLMX4mZkklYfrPxMUuKCk1g49j+b4Lxx7yRiu86k/RKTn
-         8bFgVXJjWUJ2Q6P+0Qp3vgQMWjhwgVqvYo3UWlkPtsBBfbDypmISlr8Fr1VKsVpAIW
-         HrW28m8dvXj0lco4hV66PanfVN8PEbhp9u+stFhg=
-Date:   Fri, 12 Feb 2021 16:48:58 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2] misc: Add Renesas Synchronization Management
- Unit (SMU) support
-Message-ID: <YCajam09pnhVHqkQ@kroah.com>
-References: <1613092575-17311-1-git-send-email-min.li.xe@renesas.com>
- <YCYwrNE8547uuODo@kroah.com>
- <OSBPR01MB47733A5CB20E20E48EE84602BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+        id S229512AbhBLPzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:55:18 -0500
+IronPort-SDR: DdcDcPzVbCi0TLLzQdad/idpN0woYGb0azSPwdpyplH94DHluMJp2rRe6kYRBnfcK+gMkv9evl
+ SQG5d+t+b76w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="161576520"
+X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
+   d="scan'208";a="161576520"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 07:54:38 -0800
+IronPort-SDR: ua5ODGCeCiIyd188xVcwJvXjmN0ucGTZtobnydEpeFsnW38CpSKttJz/zUEdqu62gGlHsWL+cn
+ GNLoQHgHV0hA==
+X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
+   d="scan'208";a="381488777"
+Received: from smandal1-mobl2.amr.corp.intel.com (HELO intel.com) ([10.252.133.121])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 07:54:36 -0800
+Date:   Fri, 12 Feb 2021 07:54:35 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v2 2/8] cxl/mem: Find device capabilities
+Message-ID: <20210212155435.wwmsuqom4qyymdq6@intel.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+ <20210210000259.635748-3-ben.widawsky@intel.com>
+ <20210210133252.000047af@Huawei.com>
+ <20210210150759.00005684@Huawei.com>
+ <20210210165557.7fuqbyr7e7zjoxaa@intel.com>
+ <20210210181605.ecbl3m5ep4rszpqs@intel.com>
+ <20210211095548.00000da7@Huawei.com>
+ <20210211155529.agul56lcb33cta5s@intel.com>
+ <20210212132706.00006edc@Huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OSBPR01MB47733A5CB20E20E48EE84602BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+In-Reply-To: <20210212132706.00006edc@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 03:39:03PM +0000, Min Li wrote:
-> > > +
-> > > +	/* Only one open per device at a time */
-> > > +	if (!atomic_dec_and_test(&rsmu->open_count)) {
-> > > +		atomic_inc(&rsmu->open_count);
-> > > +		return -EBUSY;
-> > 
-> > This does not do what you think it does, and does not prevent multiple
-> > applications from talking to your device at the same time.
-> > 
-> > There is no need for this at all, as it does not work, sorry.  If multiple apps
-> > talk to your device, it's their fault, not the kernel's fault, that things go
-> > wrong.
-> > 
-> > And I thought that Arnd already told you to fix this?
-> > 
+On 21-02-12 13:27:06, Jonathan Cameron wrote:
+> On Thu, 11 Feb 2021 07:55:29 -0800
+> Ben Widawsky <ben.widawsky@intel.com> wrote:
 > 
-> Hi Greg
+> > On 21-02-11 09:55:48, Jonathan Cameron wrote:
+> > > On Wed, 10 Feb 2021 10:16:05 -0800
+> > > Ben Widawsky <ben.widawsky@intel.com> wrote:
+> > >   
+> > > > On 21-02-10 08:55:57, Ben Widawsky wrote:  
+> > > > > On 21-02-10 15:07:59, Jonathan Cameron wrote:    
+> > > > > > On Wed, 10 Feb 2021 13:32:52 +0000
+> > > > > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> > > > > >     
+> > > > > > > On Tue, 9 Feb 2021 16:02:53 -0800
+> > > > > > > Ben Widawsky <ben.widawsky@intel.com> wrote:
+> > > > > > >     
+> > > > > > > > Provide enough functionality to utilize the mailbox of a memory device.
+> > > > > > > > The mailbox is used to interact with the firmware running on the memory
+> > > > > > > > device. The flow is proven with one implemented command, "identify".
+> > > > > > > > Because the class code has already told the driver this is a memory
+> > > > > > > > device and the identify command is mandatory.
+> > > > > > > > 
+> > > > > > > > CXL devices contain an array of capabilities that describe the
+> > > > > > > > interactions software can have with the device or firmware running on
+> > > > > > > > the device. A CXL compliant device must implement the device status and
+> > > > > > > > the mailbox capability. Additionally, a CXL compliant memory device must
+> > > > > > > > implement the memory device capability. Each of the capabilities can
+> > > > > > > > [will] provide an offset within the MMIO region for interacting with the
+> > > > > > > > CXL device.
+> > > > > > > > 
+> > > > > > > > The capabilities tell the driver how to find and map the register space
+> > > > > > > > for CXL Memory Devices. The registers are required to utilize the CXL
+> > > > > > > > spec defined mailbox interface. The spec outlines two mailboxes, primary
+> > > > > > > > and secondary. The secondary mailbox is earmarked for system firmware,
+> > > > > > > > and not handled in this driver.
+> > > > > > > > 
+> > > > > > > > Primary mailboxes are capable of generating an interrupt when submitting
+> > > > > > > > a background command. That implementation is saved for a later time.
+> > > > > > > > 
+> > > > > > > > Link: https://www.computeexpresslink.org/download-the-specification
+> > > > > > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > > > > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>      
+> > > > > > > 
+> > > > > > > Hi Ben,
+> > > > > > > 
+> > > > > > >     
+> > > > > > > > +/**
+> > > > > > > > + * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
+> > > > > > > > + * @cxlm: The CXL memory device to communicate with.
+> > > > > > > > + * @mbox_cmd: Command to send to the memory device.
+> > > > > > > > + *
+> > > > > > > > + * Context: Any context. Expects mbox_lock to be held.
+> > > > > > > > + * Return: -ETIMEDOUT if timeout occurred waiting for completion. 0 on success.
+> > > > > > > > + *         Caller should check the return code in @mbox_cmd to make sure it
+> > > > > > > > + *         succeeded.      
+> > > > > > > 
+> > > > > > > cxl_xfer_log() doesn't check mbox_cmd->return_code and for my test it currently
+> > > > > > > enters an infinite loop as a result.    
+> > > > > 
+> > > > > I meant to fix that.
+> > > > >     
+> > > > > > > 
+> > > > > > > I haven't checked other paths, but to my mind it is not a good idea to require
+> > > > > > > two levels of error checking - the example here proves how easy it is to forget
+> > > > > > > one.    
+> > > > > 
+> > > > > Demonstrably, you're correct. I think it would be good to have a kernel only
+> > > > > mbox command that does the error checking though. Let me type something up and
+> > > > > see how it looks.    
+> > > > 
+> > > > Hi Jonathan. What do you think of this? The bit I'm on the fence about is if I
+> > > > should validate output size too. I like the simplicity as it is, but it requires
+> > > > every caller to possibly check output size, which is kind of the same problem
+> > > > you're originally pointing out.  
+> > > 
+> > > The simplicity is good and this is pretty much what I expected you would end up with
+> > > (always reassuring)
+> > > 
+> > > For the output, perhaps just add another parameter to the wrapper for minimum
+> > > output length expected?
+> > > 
+> > > Now you mention the length question.  It does rather feel like there should also
+> > > be some protection on memcpy_fromio() copying too much data if the hardware
+> > > happens to return an unexpectedly long length.  Should never happen, but
+> > > the hardening is worth adding anyway given it's easy to do.
+> > > 
+> > > Jonathan  
+> > 
+> > Some background because I forget what I've said previously... It's unfortunate
+> > that the spec maxes at 1M mailbox size but has enough bits in the length field
+> > to support 2M-1. I've made some requests to have this fixed, so maybe 3.0 won't
+> > be awkward like this.
 > 
-> Sorry for not replying to the list, I am new so not very familiar with the process.
+> Agreed spec should be tighter here, but I'd argue over 1M indicates buggy hardware.
 > 
-> Can you elaborate why it doesn't work? I kind of borrow the idea from
-> xilinx_sdfec.c and I don't see why it doesn't work.
+> > 
+> > I think it makes sense to do as you suggested. One question though, do you have
+> > an opinion on we return to the caller as the output payload size, do we cap it
+> > at 1M also, or are we honest?
+> > 
+> > -       if (out_len && mbox_cmd->payload_out)
+> > -               memcpy_fromio(mbox_cmd->payload_out, payload, out_len);
+> > +       if (out_len && mbox_cmd->payload_out) {
+> > +               size_t n = min_t(size_t, cxlm->payload_size, out_len);
+> > +               memcpy_fromio(mbox_cmd->payload_out, payload, n);
+> > +       }
+> 
+> Ah, I read emails in wrong order.  What you have is what I expected and got
+> confused about in your other email.
+> 
+> > 
+> > So...
+> > mbox_cmd->size_out = out_len;
+> > mbox_cmd->size_out = n;
+> 
+> Good question.  My gut says the second one.
+> Maybe it's worth a warning print to let us know something
+> unexpected happened.
+> 
 
-xilinx_sdfec.c has:
+I also prefer 'n', It's unfortunate though if userspace hits this condition, it
+would have to scrape kernel logs to find out. Perhaps though userspace wouldn't
+ever really care.
 
-	static int xsdfec_dev_open(struct inode *iptr, struct file *fptr)
-	{
-	        return 0;
-	}
-
-Which isn't even needed at all, but it is NOT trying to keep people from
-calling open multiple times.
-
-As for why the above logic does not work in your driver, think of what
-happens if someone opens the character device node, and then calls
-dup(2) on it and passes that file descriptor off to another program.  Or
-just calls it multiple times from different threads in the same program.
-The kernel does not know what is happening here, and so, "do not allow
-to be opened multiple times" does not do anything to keep userspace from
-actually writing to the device node from multiple processes or threads.
-
-So don't even try, it's not worth it.
-
-> I mean if an application failed at opening the device, how can it
-> proceed to talk the device without a file descriptor?
-
-See above for how to do this.
-
-thanks,
-
-greg k-h
+> > 
+> > 
+> > > 
+> > >   
+> > > > 
+> > > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > > index 55c5f5a6023f..ad7b2077ab28 100644
+> > > > --- a/drivers/cxl/mem.c
+> > > > +++ b/drivers/cxl/mem.c
+> > > > @@ -284,7 +284,7 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+> > > >  }
+> > > >  
+> > > >  /**
+> > > > - * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
+> > > > + * __cxl_mem_mbox_send_cmd() - Execute a mailbox command
+> > > >   * @cxlm: The CXL memory device to communicate with.
+> > > >   * @mbox_cmd: Command to send to the memory device.
+> > > >   *
+> > > > @@ -296,7 +296,8 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+> > > >   * This is a generic form of the CXL mailbox send command, thus the only I/O
+> > > >   * operations used are cxl_read_mbox_reg(). Memory devices, and perhaps other
+> > > >   * types of CXL devices may have further information available upon error
+> > > > - * conditions.
+> > > > + * conditions. Driver facilities wishing to send mailbox commands should use the
+> > > > + * wrapper command.
+> > > >   *
+> > > >   * The CXL spec allows for up to two mailboxes. The intention is for the primary
+> > > >   * mailbox to be OS controlled and the secondary mailbox to be used by system
+> > > > @@ -304,8 +305,8 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+> > > >   * not need to coordinate with each other. The driver only uses the primary
+> > > >   * mailbox.
+> > > >   */
+> > > > -static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
+> > > > -				 struct mbox_cmd *mbox_cmd)
+> > > > +static int __cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
+> > > > +				   struct mbox_cmd *mbox_cmd)
+> > > >  {
+> > > >  	void __iomem *payload = cxlm->mbox_regs + CXLDEV_MBOX_PAYLOAD_OFFSET;
+> > > >  	u64 cmd_reg, status_reg;
+> > > > @@ -469,6 +470,54 @@ static void cxl_mem_mbox_put(struct cxl_mem *cxlm)
+> > > >  	mutex_unlock(&cxlm->mbox_mutex);
+> > > >  }
+> > > >  
+> > > > +/**
+> > > > + * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
+> > > > + * @cxlm: The CXL memory device to communicate with.
+> > > > + * @opcode: Opcode for the mailbox command.
+> > > > + * @in: The input payload for the mailbox command.
+> > > > + * @in_size: The length of the input payload
+> > > > + * @out: Caller allocated buffer for the output.
+> > > > + *
+> > > > + * Context: Any context. Will acquire and release mbox_mutex.
+> > > > + * Return:
+> > > > + *  * %>=0	- Number of bytes returned in @out.
+> > > > + *  * %-EBUSY	- Couldn't acquire exclusive mailbox access.
+> > > > + *  * %-EFAULT	- Hardware error occurred.
+> > > > + *  * %-ENXIO	- Command completed, but device reported an error.
+> > > > + *
+> > > > + * Mailbox commands may execute successfully yet the device itself reported an
+> > > > + * error. While this distinction can be useful for commands from userspace, the
+> > > > + * kernel will often only care when both are successful.
+> > > > + *
+> > > > + * See __cxl_mem_mbox_send_cmd()
+> > > > + */
+> > > > +static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, u16 opcode, u8 *in,
+> > > > +				 size_t in_size, u8 *out)
+> > > > +{
+> > > > +	struct mbox_cmd mbox_cmd = {
+> > > > +		.opcode = opcode,
+> > > > +		.payload_in = in,
+> > > > +		.size_in = in_size,
+> > > > +		.payload_out = out,
+> > > > +	};
+> > > > +	int rc;
+> > > > +
+> > > > +	rc = cxl_mem_mbox_get(cxlm);
+> > > > +	if (rc)
+> > > > +		return rc;
+> > > > +
+> > > > +	rc = __cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
+> > > > +	cxl_mem_mbox_put(cxlm);
+> > > > +	if (rc)
+> > > > +		return rc;
+> > > > +
+> > > > +	/* TODO: Map return code to proper kernel style errno */
+> > > > +	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS)
+> > > > +		return -ENXIO;
+> > > > +
+> > > > +	return mbox_cmd.size_out;
+> > > > +}
+> > > > +
+> > > >  /**
+> > > >   * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
+> > > >   * @cxlmd: The CXL memory device to communicate with.
+> > > > @@ -1380,33 +1429,18 @@ static int cxl_mem_identify(struct cxl_mem *cxlm)
+> > > >  		u8 poison_caps;
+> > > >  		u8 qos_telemetry_caps;
+> > > >  	} __packed id;
+> > > > -	struct mbox_cmd mbox_cmd = {
+> > > > -		.opcode = CXL_MBOX_OP_IDENTIFY,
+> > > > -		.payload_out = &id,
+> > > > -		.size_in = 0,
+> > > > -	};
+> > > >  	int rc;
+> > > >  
+> > > > -	/* Retrieve initial device memory map */
+> > > > -	rc = cxl_mem_mbox_get(cxlm);
+> > > > -	if (rc)
+> > > > -		return rc;
+> > > > -
+> > > > -	rc = cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
+> > > > -	cxl_mem_mbox_put(cxlm);
+> > > > -	if (rc)
+> > > > +	rc = cxl_mem_mbox_send_cmd(cxlm, CXL_MBOX_OP_IDENTIFY, NULL, 0,
+> > > > +				   (u8 *)&id);
+> > > > +	if (rc < 0)
+> > > >  		return rc;
+> > > >  
+> > > > -	/* TODO: Handle retry or reset responses from firmware. */
+> > > > -	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS) {
+> > > > -		dev_err(&cxlm->pdev->dev, "Mailbox command failed (%d)\n",
+> > > > -			mbox_cmd.return_code);
+> > > > +	if (rc < sizeof(id)) {
+> > > > +		dev_err(&cxlm->pdev->dev, "Short identify data\n",
+> > > >  		return -ENXIO;
+> > > >  	}
+> > > >  
+> > > > -	if (mbox_cmd.size_out != sizeof(id))
+> > > > -		return -ENXIO;
+> > > > -
+> > > >  	/*
+> > > >  	 * TODO: enumerate DPA map, as 'ram' and 'pmem' do not alias.
+> > > >  	 * For now, only the capacity is exported in sysfs
+> > > > 
+> > > > 
+> > > > [snip]
+> > > >   
+> > >   
+> 
