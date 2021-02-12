@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872D7319BE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A56319BE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBLJbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:31:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60342 "EHLO mx2.suse.de"
+        id S230188AbhBLJdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:33:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229521AbhBLJbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:31:33 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 89542B141;
-        Fri, 12 Feb 2021 09:30:16 +0000 (UTC)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Daniel Wagner <dwagner@suse.de>, Hannes Reinecke <hare@suse.de>
-Subject: [PATCH] nvme/hwmon: Return error code when registration fails
-Date:   Fri, 12 Feb 2021 10:30:15 +0100
-Message-Id: <20210212093015.2846-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
+        id S229948AbhBLJdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 04:33:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DC2F64E70;
+        Fri, 12 Feb 2021 09:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613122346;
+        bh=uH2uH6dNqR1exkOjgcwbR8+KhXrkNWP1fsTyCq0Y+KI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PYbfwt0ODuK1neMa7aSKw9g3e9UF5fTWb0hkKVSgweEFpYgDa5iL/ToXHxRpJ76uk
+         nqw+QLywy+P8IpeJS8L9FQ7SQVtYIKd8czeiycUKDlrFoSoPiO6dz2701Y7MYdDKxi
+         I7DJhRXl6lRQCXcOTPLwOPvRnvH/oaSZ7O1WXzY3InVs67AQunlgDG9eYf6wcqPYTQ
+         77EWSFLWy8SpKirs1AiKJjNGImmUrxrOEkzO7wvyvCLrDMXlpObRLtdq1gYSp7SPMF
+         uqb1xwrszVZya4eH5auJS1o1hGug6VKhOJKcMjMJYBwQ1kMo64lZ0MTe2h2lX3VCO8
+         Zk1Th4G1NtdYg==
+Received: by mail-oo1-f42.google.com with SMTP id i11so1100559oov.13;
+        Fri, 12 Feb 2021 01:32:26 -0800 (PST)
+X-Gm-Message-State: AOAM53273Uw6uOmqGwUu7qCsO1P8T3G1nrzBrRWqCF1EIlnbR51rOcna
+        huh96X3gjMM8Dw7YYoSBTrVBQGq1MqjQdZY+tMo=
+X-Google-Smtp-Source: ABdhPJyIY5bdiO51KwR00j/VKqhWeWZNxz7A39ipaie90l20cuJ7MHTu+wONfYseRUG8HaxMMQhE9XfXDvrzJvZrZb8=
+X-Received: by 2002:a4a:e383:: with SMTP id l3mr1315042oov.66.1613122345259;
+ Fri, 12 Feb 2021 01:32:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210212025806.556217-1-nobuhiro1.iwamatsu@toshiba.co.jp> <20210212025806.556217-5-nobuhiro1.iwamatsu@toshiba.co.jp>
+In-Reply-To: <20210212025806.556217-5-nobuhiro1.iwamatsu@toshiba.co.jp>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 12 Feb 2021 10:32:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0Wycgn=Dq8KE+-F2keWj4mKaYQ=Y5RLefYn4gc71vVFw@mail.gmail.com>
+Message-ID: <CAK8P3a0Wycgn=Dq8KE+-F2keWj4mKaYQ=Y5RLefYn4gc71vVFw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] arm: dts: visconti: Add DT support for Toshiba
+ Visconti5 ethernet controller
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hwmon pointer wont be NULL if the registration fails. Though the
-exit code path will assign it to ctrl->hwmon_device. Later
-nvme_hwmon_exit() will try to free the invalid pointer. Avoid this by
-returning the error code from hwmon_device_register_with_info().
+On Fri, Feb 12, 2021 at 4:03 AM Nobuhiro Iwamatsu
+<nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
+> @@ -384,6 +398,16 @@ spi6: spi@28146000 {
+>                         #size-cells = <0>;
+>                         status = "disabled";
+>                 };
+> +
+> +               piether: ethernet@28000000 {
+> +                       compatible = "toshiba,visconti-dwmac";
 
-Fixes: ec420cdcfab4 ("nvme/hwmon: rework to avoid devm allocation")
-Cc: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
+Shouldn't there be a more specific compatible string here, as well as the
+particular version of the dwmac you use?
 
-This patch is against linux-block/for-next.
+In the binding example, you list the device as "dma-coherent",
+but in this instance, it is not marked that way. Can you find out
+whether the device is in fact connected properly to a cache-coherent
+bus?
 
- drivers/nvme/host/hwmon.c | 1 +
- 1 file changed, 1 insertion(+)
+Note that failing to mark it as cache-coherent will make the device
+rather slow and possibly not work correctly if it is in fact coherent,
+but the default is non-coherent since a lot of SoCs are lacking
+that hardware support.
 
-diff --git a/drivers/nvme/host/hwmon.c b/drivers/nvme/host/hwmon.c
-index 8f9e96986780..0a586d712920 100644
---- a/drivers/nvme/host/hwmon.c
-+++ b/drivers/nvme/host/hwmon.c
-@@ -248,6 +248,7 @@ int nvme_hwmon_init(struct nvme_ctrl *ctrl)
- 	if (IS_ERR(hwmon)) {
- 		dev_warn(dev, "Failed to instantiate hwmon device\n");
- 		kfree(data);
-+		return PTR_ERR(hwmon);
- 	}
- 	ctrl->hwmon_device = hwmon;
- 	return 0;
--- 
-2.29.2
-
+       Arnd
