@@ -2,59 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBAE31A33E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E618B31A349
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:07:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhBLRFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 12:05:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:39934 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230412AbhBLREy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 12:04:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E3F2139F;
-        Fri, 12 Feb 2021 09:04:06 -0800 (PST)
-Received: from e125528.arm.com (unknown [10.57.5.230])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7C1403F73B;
-        Fri, 12 Feb 2021 09:04:05 -0800 (PST)
-From:   Alexandre Truong <alexandre.truong@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     Alexandre Truong <alexandre.truong@arm.com>
-Subject: [PATCH v2 3/4] perf tools: enable dwarf_callchain_users on aarch64
-Date:   Fri, 12 Feb 2021 17:03:42 +0000
-Message-Id: <20210212170343.7729-3-alexandre.truong@arm.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210212170343.7729-1-alexandre.truong@arm.com>
-References: <20210212170343.7729-1-alexandre.truong@arm.com>
+        id S229580AbhBLRGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 12:06:39 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51090 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231264AbhBLRFx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 12:05:53 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11CH3p59044501;
+        Fri, 12 Feb 2021 11:03:51 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1613149431;
+        bh=Z3TcTypt+Mt5FAf3Iq7QLSvCNUViIN7BJJlQSIOTRD8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=bApGhzs/wsXy2YufD9ZW9l+z7nBZf2YNSQdfdC1FaAKSr0UiM6bYTuVvBZRRIXMIg
+         inYbJ/ZK48K1YECAa3Nus0j+mcFKAOIg0JnYOT3/MCSI3UlVuhu9+lojhYPtE2ihyP
+         zcpzi3ARqT7Yo/Id/jbjYaEnJyCXaWIbrn6iv9Ls=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11CH3ovR058671
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Feb 2021 11:03:50 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
+ Feb 2021 11:03:50 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 12 Feb 2021 11:03:50 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11CH3iPe083194;
+        Fri, 12 Feb 2021 11:03:45 -0600
+Subject: Re: [PATCH v5 net-next 01/10] net: switchdev: propagate extack to
+ port attributes
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        <UNGLinuxDriver@microchip.com>, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, <linux-omap@vger.kernel.org>
+References: <20210212151600.3357121-1-olteanv@gmail.com>
+ <20210212151600.3357121-2-olteanv@gmail.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <0765d09e-2088-247e-7053-86e73abcceef@ti.com>
+Date:   Fri, 12 Feb 2021 19:03:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210212151600.3357121-2-olteanv@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On arm64, enable dwarf_callchain_users which will be needed
-to do a dwarf unwind in order to get the caller of the leaf frame.
 
-Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
----
- tools/perf/builtin-report.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index 2a845d6cac09..93661a3eaeb1 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -405,6 +405,10 @@ static int report__setup_sample_type(struct report *rep)
- 
- 	callchain_param_setup(sample_type);
- 
-+	if (callchain_param.record_mode == CALLCHAIN_FP &&
-+			strncmp(rep->session->header.env.arch, "aarch64", 7) == 0)
-+		dwarf_callchain_users = true;
-+
- 	if (rep->stitch_lbr && (callchain_param.record_mode != CALLCHAIN_LBR)) {
- 		ui__warning("Can't find LBR callchain. Switch off --stitch-lbr.\n"
- 			    "Please apply --call-graph lbr when recording.\n");
+On 12/02/2021 17:15, Vladimir Oltean wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> 
+> When a struct switchdev_attr is notified through switchdev, there is no
+> way to report informational messages, unlike for struct switchdev_obj.
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+> Changes in v5:
+> Rebased on top of AM65 CPSW driver merge.
+> 
+> Changes in v4:
+> None.
+> 
+> Changes in v3:
+> None.
+> 
+> Changes in v2:
+> Patch is new.
+> 
+>   .../ethernet/marvell/prestera/prestera_switchdev.c    |  3 ++-
+>   .../net/ethernet/mellanox/mlxsw/spectrum_switchdev.c  |  3 ++-
+>   drivers/net/ethernet/mscc/ocelot_net.c                |  3 ++-
+>   drivers/net/ethernet/ti/am65-cpsw-switchdev.c         |  3 ++-
+>   drivers/net/ethernet/ti/cpsw_switchdev.c              |  3 ++-
+>   include/net/switchdev.h                               |  6 ++++--
+>   net/dsa/slave.c                                       |  3 ++-
+>   net/switchdev/switchdev.c                             | 11 ++++++++---
+>   8 files changed, 24 insertions(+), 11 deletions(-)
+> 
+
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+
 -- 
-2.23.0
-
+Best regards,
+grygorii
