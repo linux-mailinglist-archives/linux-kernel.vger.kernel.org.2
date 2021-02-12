@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B63D31A44B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A449031A44E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbhBLSJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 13:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
+        id S231594AbhBLSL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 13:11:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbhBLSJI (ORCPT
+        with ESMTP id S229451AbhBLSLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 13:09:08 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9381C061786;
-        Fri, 12 Feb 2021 10:08:27 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id 18so543374oiz.7;
-        Fri, 12 Feb 2021 10:08:27 -0800 (PST)
+        Fri, 12 Feb 2021 13:11:21 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994A7C061756;
+        Fri, 12 Feb 2021 10:10:41 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id m6so14824pfk.1;
+        Fri, 12 Feb 2021 10:10:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=b8rsPW6hx+IRc6VCaqA7AiZrA102auoLBiZQBE4YAJY=;
-        b=fMDcpuMuzIZoP7n0BREk9eRGAAgpLbVi3Qr31WZogpid4vtzs57gOCBlhDUyOdsCaF
-         lyxzIl6PpMcsCOT84iIvzVLLtA0DhbGXirElw77G3h9+0mBpz3mrwThz4/aVSfbdCwUw
-         Ei14mQKHKvsVRDhsJRBfzLYmH2Mr0efN14Qq3K/x4DPzgxt7t3fC862gQ+qHXhwdeZSa
-         lslmO44K1MfpL8i/KhGAtXKQzeZVTuFV+45EHGpimVHzzx9qbjLE2Ywlyf305ZcOdLLj
-         PUhcheRO2ez43ejN0q5vcgd3aL2L2sYKLRS/EDlEF+q59tOFE9QVoW9YURQxA/w1YHvj
-         BUuQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bytmtoINOEdkBtL4V2XAs15+q8GmAS7yZKBoJvhkgLk=;
+        b=akE2ozj4n+Syf78UgJqCInvzuDDz+8VmFwiwu0NVDiPEtd9yuZancJkUYDsXQzYUbp
+         ObndXxrSoodxkK60wJ6CouUlchzBZ3QP8k4bGVwfdMaQGNShPX5gMyLHokdta2A9EPEP
+         DEApGNbbS247uAc79ayPDzMVwo1pC/QOSoxC2xFMT3tSTWuPrGkZqDtrKvfi0c+4YG1v
+         kKxdMB4aFm280e4uW/KM2G4eO3f0iQkqyTYgX5pdNZKGS+IqNofZo2HkZD+KsnCZs9kZ
+         RaHYXbRaeC1CMggg6p0Lw0mzj7wAvEO/tfwHENqV3oJSpWqbcOcPesH9LsuuO+2V3Sd2
+         SRuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=b8rsPW6hx+IRc6VCaqA7AiZrA102auoLBiZQBE4YAJY=;
-        b=opq0DPJ3vpxmzHoF0gF/vM/lUmNN6ctiTheOCEYZaCy2TJyeJhspsDi2ECv6IaTD69
-         be2aaaKQZ3txxYVuuNV8gTWVdhPQH6hnKHv3f2kkggH99yFmDsI74R2PG2c8UjHc+R0V
-         MGkMM+/f9KAPLeUw/naOOshAuCMgZUrJ47Az9VqrEUv8pWbxxss4fXc/BKMyVt1psCK8
-         gbSEswf6u84Eg3UHbzIYyiAwfL3Hqe4TNGsplOB8f3GF95Nj2Z4frfnYESAc+xejPJuA
-         52Yuo9R4rzdolQC57gQ7z+R9bbnJA6QOb8WEhRVlexxEppjfundqtRr+vjvv2uE841C4
-         0f/A==
-X-Gm-Message-State: AOAM533hc2/4gnaQu5UhKC+ujPOK+D6BRjTQHn/8hFcQ/kdu2H3sMwHA
-        WcPEvX+7+hgL2GFAjmV+b/Y=
-X-Google-Smtp-Source: ABdhPJz4KJGAizZzEluHiHbCQxMsyVItBR28wcwBEtue1qG3UvrN/HPxyq4pMnMLyuFfhE5J5RN9hw==
-X-Received: by 2002:a54:4697:: with SMTP id k23mr469902oic.17.1613153307087;
-        Fri, 12 Feb 2021 10:08:27 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i16sm1814970oto.45.2021.02.12.10.08.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Feb 2021 10:08:26 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 12 Feb 2021 10:08:25 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/54] 5.10.16-rc1 review
-Message-ID: <20210212180825.GC243679@roeck-us.net>
-References: <20210211150152.885701259@linuxfoundation.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bytmtoINOEdkBtL4V2XAs15+q8GmAS7yZKBoJvhkgLk=;
+        b=hLkyK2Nkt+F7PwhobC49LUXUnQnWeIvlS+PS4shq/+pIJdjTRDyo3/Gvb44W9PDvUc
+         x1Oc9dpLDyRQLt+mH4qEKQvXSfsq+niHHfuO5Qq5/hvqeVrUPIdTiIC3ayiIiQbECyr/
+         bhwgD4bvLBpxvkGBx0QgMyYO7uQzudVCpethFYjYVchOIHtDVsOhU+GrLp0Rea0Ik/hw
+         bxyC37Ya33+Juom7vbwmmQ6UydaOOU80/vVOXKoS+qIV6L0sGQPHsKO6FCYtYmnwpKAC
+         /L979FRUeX6Pgsl2X08iMHg+Qzu6JdoTtlELwDbS6p7FxQG1aNyqwLHS0+6lUddBuM01
+         Wx+w==
+X-Gm-Message-State: AOAM533UWkoffOWTVKdrER8EAI+zKPFcVUlQMN0+JWG/BaQV2QQrVI7D
+        YXlVyz5hSFNJKBnpEiO8F7XeK9h7Ydg=
+X-Google-Smtp-Source: ABdhPJz/Ti9d44Rv75w/tdspUxsn1D7i/I0j1GsylUmhWNr5eKXVF+yfHYMhqeLr+UkmhJ5ihnkcTQ==
+X-Received: by 2002:a63:4e09:: with SMTP id c9mr4365562pgb.107.1613153440776;
+        Fri, 12 Feb 2021 10:10:40 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id e15sm11325899pgr.81.2021.02.12.10.10.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Feb 2021 10:10:40 -0800 (PST)
+Subject: Re: [PATCH v5 net-next 05/10] net: switchdev: pass flags and mask to
+ both {PRE_,}BRIDGE_FLAGS attributes
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
+References: <20210212151600.3357121-1-olteanv@gmail.com>
+ <20210212151600.3357121-6-olteanv@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <9a1efd0d-9930-cbc7-5450-ffb47a0034e4@gmail.com>
+Date:   Fri, 12 Feb 2021 10:10:37 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210212151600.3357121-6-olteanv@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 04:01:44PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.16 release.
-> There are 54 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+
+
+On 2/12/2021 7:15 AM, Vladimir Oltean wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
 > 
-> Responses should be made by Sat, 13 Feb 2021 15:01:39 +0000.
-> Anything received after that time might be too late.
+> This switchdev attribute offers a counterproductive API for a driver
+> writer, because although br_switchdev_set_port_flag gets passed a
+> "flags" and a "mask", those are passed piecemeal to the driver, so while
+> the PRE_BRIDGE_FLAGS listener knows what changed because it has the
+> "mask", the BRIDGE_FLAGS listener doesn't, because it only has the final
+> value. But certain drivers can offload only certain combinations of
+> settings, like for example they cannot change unicast flooding
+> independently of multicast flooding - they must be both on or both off.
+> The way the information is passed to switchdev makes drivers not
+> expressive enough, and unable to reject this request ahead of time, in
+> the PRE_BRIDGE_FLAGS notifier, so they are forced to reject it during
+> the deferred BRIDGE_FLAGS attribute, where the rejection is currently
+> ignored.
 > 
+> This patch also changes drivers to make use of the "mask" field for edge
+> detection when possible.
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 427 pass: 427 fail: 0
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
