@@ -2,133 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FFCA31A319
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C22D31A320
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhBLQvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:51:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhBLQvl (ORCPT
+        id S230006AbhBLQxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:53:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30506 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229465AbhBLQxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:51:41 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02286C061574;
-        Fri, 12 Feb 2021 08:51:01 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id f14so231285ejc.8;
-        Fri, 12 Feb 2021 08:51:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=kuyIAN6ynILC6Lb1Ej4zOAFFZL68p0m+Z5l76VYpdI4=;
-        b=pQ6KJ66aU4m9vG+s3RKS3nIO1REYUCD/HIfeBWb/ray8H2l25s8Q6t8eeBvC81VOwj
-         JgmxhAqZFLNd9LndP8r/4EQQfM39a5bexDTvN8dhRfzNQRtrty9Ges2pArAFSN4IlMqB
-         E50vDhmSB87YjNOo9c56Ad835Zxsd2FkW/gWgIPWJQszMui8KRlOvsEPLHQGjxG2iMhZ
-         8UA8Dy4rSA4jK5+Wgfyhob65xkiJWNyWnEnw+U0b5clkgFlyrLNbkG1OrTzmQebnblOk
-         SEAl6Kg6u42jsJlDQyXMX+7qjJMdZTmpQOJAuqvSrXbEHrrQWG5GXJ6lYqQe+I7EnXqn
-         KbSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=kuyIAN6ynILC6Lb1Ej4zOAFFZL68p0m+Z5l76VYpdI4=;
-        b=tVWu3rEGvPo7/0HcCadGdijSc5/zV+iRsDnq0lnj1THiC2Hp4a2O8ivcHN7mb3qPeg
-         hNW28Dg+1Z18dbGQERLqnMRzTPC+bhXQsLEium1uUYmmHr71dGCONw3v9rKz+0oRjewl
-         62Myijgi4ZhoTBzg99xU7aKU41aCzc3sdKNeGGO/UThpG3DawyQhHzMjh30D3KTg0Dol
-         R+Z0W9pzz7w729AYMB9YgpxFwamQQbulQJ/5AtXV48dJzKGeSkj/JkpHKnUvsKGsKCpc
-         OYooB847Aezk7dFIFkwQNrgqWI93wcrMrbKeAo3JUocctuv6itcWdAggbN4B4wxGD6R3
-         McVA==
-X-Gm-Message-State: AOAM5304xLwkuH/2GTA+jg1P1FaOyNAQEDDZ8YYRgEoc6AWRCwmgDXiS
-        nIkQvSfvaKMzLlKuYlxkgcvScza+t+Vzw/wP
-X-Google-Smtp-Source: ABdhPJw+9EQuVkXn16atquT/DdvsnrytGuk42nwp9fu3inZ/k5/jDBeVUF+gk6tK8IDbBYAMCLQMaw==
-X-Received: by 2002:a17:906:364b:: with SMTP id r11mr3850258ejb.447.1613148659299;
-        Fri, 12 Feb 2021 08:50:59 -0800 (PST)
-Received: from anparri (host-95-239-64-41.retail.telecomitalia.it. [95.239.64.41])
-        by smtp.gmail.com with ESMTPSA id lo3sm580481ejb.106.2021.02.12.08.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 08:50:58 -0800 (PST)
-Date:   Fri, 12 Feb 2021 17:50:50 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, mikelley@microsoft.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, davem@davemloft.net, kuba@kernel.org,
-        linux-hyperv@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Regressions with VMBus/VSCs hardening changes
-Message-ID: <20210212165050.GA11906@anparri>
+        Fri, 12 Feb 2021 11:53:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613148723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HwuucntKVy9+H2UoHo2+dgorK0b8KRqhqcCY+C9nrig=;
+        b=LcaYne+p9S+xcJYynlqwkoYc2GuvTHr1nOHLMRGrwiJbc1HapDwNSChkV0DvaSBAo9AMhs
+        YK9BmhRnOfoOMiUatquMh3VV5Z3y7cyzVCuHa5Us85lyKs8X7gFdqLt0kNxUVmhkVjTV5n
+        bEmdBJdCBrnFBmsfvTTWwvA73Ls9BuI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398-iSWoKwKQMOK8cc1ChY21Lg-1; Fri, 12 Feb 2021 11:52:01 -0500
+X-MC-Unique: iSWoKwKQMOK8cc1ChY21Lg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AC8479EC2;
+        Fri, 12 Feb 2021 16:52:00 +0000 (UTC)
+Received: from [10.36.112.23] (ovpn-112-23.ams2.redhat.com [10.36.112.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A4DF45D9FC;
+        Fri, 12 Feb 2021 16:51:58 +0000 (UTC)
+Subject: Re: [PATCH] powerpc/pseries: Don't enforce MSI affinity with kdump
+To:     Greg Kurz <groug@kaod.org>, Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+        stable@vger.kernel.org
+References: <20210212164132.821332-1-groug@kaod.org>
+From:   Laurent Vivier <lvivier@redhat.com>
+Message-ID: <81b4e767-289f-8fb6-9e05-c3fe60beb740@redhat.com>
+Date:   Fri, 12 Feb 2021 17:51:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210212164132.821332-1-groug@kaod.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On 12/02/2021 17:41, Greg Kurz wrote:
+> Depending on the number of online CPUs in the original kernel, it is
+> likely for CPU #0 to be offline in a kdump kernel. The associated IRQs
+> in the affinity mappings provided by irq_create_affinity_masks() are
+> thus not started by irq_startup(), as per-design with managed IRQs.
+> 
+> This can be a problem with multi-queue block devices driven by blk-mq :
+> such a non-started IRQ is very likely paired with the single queue
+> enforced by blk-mq during kdump (see blk_mq_alloc_tag_set()). This
+> causes the device to remain silent and likely hangs the guest at
+> some point.
+> 
+> This is a regression caused by commit 9ea69a55b3b9 ("powerpc/pseries:
+> Pass MSI affinity to irq_create_mapping()"). Note that this only happens
+> with the XIVE interrupt controller because XICS has a workaround to bypass
+> affinity, which is activated during kdump with the "noirqdistrib" kernel
+> parameter.
+> 
+> The issue comes from a combination of factors:
+> - discrepancy between the number of queues detected by the multi-queue
+>   block driver, that was used to create the MSI vectors, and the single
+>   queue mode enforced later on by blk-mq because of kdump (i.e. keeping
+>   all queues fixes the issue)
+> - CPU#0 offline (i.e. kdump always succeed with CPU#0)
+> 
+> Given that I couldn't reproduce on x86, which seems to always have CPU#0
+> online even during kdump, I'm not sure where this should be fixed. Hence
+> going for another approach : fine-grained affinity is for performance
+> and we don't really care about that during kdump. Simply revert to the
+> previous working behavior of ignoring affinity masks in this case only.
+> 
+> Fixes: 9ea69a55b3b9 ("powerpc/pseries: Pass MSI affinity to irq_create_mapping()")
+> Cc: lvivier@redhat.com
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Greg Kurz <groug@kaod.org>
+> ---
+>  arch/powerpc/platforms/pseries/msi.c | 24 ++++++++++++++++++++++--
+>  1 file changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/pseries/msi.c b/arch/powerpc/platforms/pseries/msi.c
+> index b3ac2455faad..29d04b83288d 100644
+> --- a/arch/powerpc/platforms/pseries/msi.c
+> +++ b/arch/powerpc/platforms/pseries/msi.c
+> @@ -458,8 +458,28 @@ static int rtas_setup_msi_irqs(struct pci_dev *pdev, int nvec_in, int type)
+>  			return hwirq;
+>  		}
+>  
+> -		virq = irq_create_mapping_affinity(NULL, hwirq,
+> -						   entry->affinity);
+> +		/*
+> +		 * Depending on the number of online CPUs in the original
+> +		 * kernel, it is likely for CPU #0 to be offline in a kdump
+> +		 * kernel. The associated IRQs in the affinity mappings
+> +		 * provided by irq_create_affinity_masks() are thus not
+> +		 * started by irq_startup(), as per-design for managed IRQs.
+> +		 * This can be a problem with multi-queue block devices driven
+> +		 * by blk-mq : such a non-started IRQ is very likely paired
+> +		 * with the single queue enforced by blk-mq during kdump (see
+> +		 * blk_mq_alloc_tag_set()). This causes the device to remain
+> +		 * silent and likely hangs the guest at some point.
+> +		 *
+> +		 * We don't really care for fine-grained affinity when doing
+> +		 * kdump actually : simply ignore the pre-computed affinity
+> +		 * masks in this case and let the default mask with all CPUs
+> +		 * be used when creating the IRQ mappings.
+> +		 */
+> +		if (is_kdump_kernel())
+> +			virq = irq_create_mapping(NULL, hwirq);
+> +		else
+> +			virq = irq_create_mapping_affinity(NULL, hwirq,
+> +							   entry->affinity);
+>  
+>  		if (!virq) {
+>  			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
+> 
 
-I'm reporting two regressions following certain VMBus/VSCs hardening changes
-we've been discussing 'recently', unfortunately the first regression already
-touched/affects mainline while the second one is in hyperv-next:
+Reviewed-by: Laurent Vivier <lvivier@redhat.com>
 
-1) [mainline]
-
-The first regression manifests with the following message (several):
-
-  hv_vmbus: No request id available
-
-I could reliably reproduce such message/behavior by running the command:
-
-  fio --name=seqwrite --rw=read --direct=1 --ioengine=libaio --bs=32k --numjobs=4 --size=2G --runtime=60
-
-(the message is triggered when files are being created).
-
-I've bisected this regression to commit:
-
-  453de21c2b8281 ("scsi: storvsc: Use vmbus_requestor to generate transaction IDs for VMBus hardening")
-
-2) [hyperv-next]
-
-The second regression manifests with various messages including:
-
-  hv_netvsc 9c5f5000-0499-4b18-b2eb-a8d5c57c8774 eth0: Unknown nvsp packet type received 51966
-
-  hv_netvsc 9c5f5000-0499-4b18-b2eb-a8d5c57c8774 eth0: unhandled packet type 0, tid 0
-
-  hv_netvsc 9c5f5000-0499-4b18-b2eb-a8d5c57c8774 eth0: Incorrect transaction id
-
-  hv_netvsc 9c5f5000-0499-4b18-b2eb-a8d5c57c8774 eth0: Invalid rndis_msg (buflen: 262, msg_len: 1728)
-
-The connection was then typically lost/reset by the peer.
-
-I could reproduce such behavior/messages by running the test:
-
-  ntttcp -r -m 8,*,<receiver IP address> # receiver
-
-  ntttcp -s -m 8,*,<receiver IP address> -ns -t 60 # sender
-
-I bisected this regression to commit:
-
-  a8c3209998afb5 ("Drivers: hv: vmbus: Copy packets sent by Hyper-V out of the ring buffer")
-
----
-I am investigating but don't have fixes for these regressions now: given the
-'timing' (-rc7 with the next merge window at the door...) I would propose to
-revert/drop the interested changes:
-
-1) 453de21c2b8281 is part of the so called 'vmbus_requestor' series that was
-   applied during the merge window for 5.11:
-
-  e8b7db38449ac5 ("Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus hardening")
-  453de21c2b8281 ("scsi: storvsc: Use vmbus_requestor to generate transaction IDs for VMBus hardening")
-  4d18fcc95f5095 ("hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus hardening")
-
-  I could prepare/submit patches to revert such commits (asap but likely not
-  before tomorrow/late Saturday - EU time).
-
-2) IIUC a8c3209998afb5 could be dropped (after rebase) without further modi-
-   fications to hyperv-next.
-
-Other suggestions/thoughts?
-
-Thanks,
-  Andrea
