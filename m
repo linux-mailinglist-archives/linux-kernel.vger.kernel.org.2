@@ -2,113 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7602D319C0F
+	by mail.lfdr.de (Postfix) with ESMTP id E8A6F319C10
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbhBLJpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:45:15 -0500
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:42515 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhBLJpM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:45:12 -0500
-Received: by mail-lj1-f179.google.com with SMTP id v6so6163153ljh.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:44:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=qEeOVeGWUjbAKd3cc616gfNSqKL4F62UR20tHIDa83s=;
-        b=H5keGv5kmJzVopY+IYkM5X+YnHL4CVzZwE8DRPRlDplo2eyK6fSUysrOGYsCuA1vz3
-         5uE7itu+254SetGHUTC1ZOy9Iy9e1Px1MxKFbPXxP4vTAAn7imWwA5IkhBftu8TxrGqi
-         Uv9U/U4KDjKQBQKyGDgGRlmQnPStqgaf8Azi1/gaoMA+qHbvpNDbzltTYPkUSyGFUPvM
-         cUiorZD0+Wc5KkvhrTCkSfzWW17AoiwQosi+ZzwR0OPHdITImrZ58s0agnmKScF370K1
-         ZgsoSlE5lPaovnsdOWHfcDv326lWig3sNvjb2KWVK7aBAwyL589AJewbnS7/+XKeBB5j
-         URXw==
-X-Gm-Message-State: AOAM5309utujgRSD4VSTh4lhFZM4El9JnBeXmoaYY2CiUy9bbB8fk8qL
-        1EhucqZepb6vd3J+RC3cW70=
-X-Google-Smtp-Source: ABdhPJyukF6o9pPKdx8454gWasWj/ENUYADOj1/Q16fjMrBjtQRXov+kosLT1DpOpatiKqOWKvDw0g==
-X-Received: by 2002:a2e:9a1a:: with SMTP id o26mr1227066lji.231.1613123069863;
-        Fri, 12 Feb 2021 01:44:29 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id i13sm920648lfo.203.2021.02.12.01.44.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 01:44:29 -0800 (PST)
-Message-ID: <5d23f943cea65096eb40fec45f54114fd879905f.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH RESEND] regulator: bd718x7, bd71828, Fix dvs voltage
- levels
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210212091608.GE4572@dell>
-References: <20210212080023.GA880728@localhost.localdomain>
-         <20210212091608.GE4572@dell>
-Content-Type: text/plain; charset="UTF-8"
+        id S230203AbhBLJqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:46:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhBLJqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 04:46:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2ADF64E77
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 09:45:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613123128;
+        bh=BbEhXej3UDqv6ywrb7c2WICTBWGHFl7FT92DDfTe4YU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tS20NBgYQIoH115aNkqNxzaqAG3B5nWvML0gh99ZTG8BZ0n6WXKgKpu1n1ceD1HbI
+         6HQXdSwYVPkRsRUqoKPJxJcN+VEdUr+y3CGIaQ/JImFgBjmM5ClhBqHU2/106IqY6i
+         bc+PwHRSkgn7EKx+T1RIhj7VeQ5jJdIBXIMxJKFXLUiiOPdW0oH8Y8Zo2d1E+QLJKB
+         wuL6+iwunPOXlgi7mu1jl3uG/WP+M/dFOgwPt8Ra6MGzXjg6b2C8pU4RL4+OKgfBce
+         ttj2uAD0V8cs1BimVjUYeKXgmeK4gDJCDQr7XLDpCyrff3khYvr/kkh5S3cIdu12fN
+         ZmbNS8u/XTqLg==
+Received: by mail-oi1-f173.google.com with SMTP id d20so9349715oiw.10
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:45:28 -0800 (PST)
+X-Gm-Message-State: AOAM531QgZTmkNC70DVlCIn2Z0VRe5wc/TICaP1LrkHiBYg75Rep31cg
+        1bi3nMmbL804p1uIBCpjxiOD8CHZ8b7qSEOerhs=
+X-Google-Smtp-Source: ABdhPJzD5e6QclZTBQwRsZoRCLLpZYukyOSqBEinruy8DlGlhxaUvUSfA98nK6oNeB0RIfdhYI9xQOfnExujeCY4C9Y=
+X-Received: by 2002:aca:2117:: with SMTP id 23mr1286794oiz.4.1613123128011;
+ Fri, 12 Feb 2021 01:45:28 -0800 (PST)
 MIME-Version: 1.0
-Date:   Fri, 12 Feb 2021 11:44:25 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
+ <1612774577-55943-2-git-send-email-luojiaxing@huawei.com> <fab1e871-08e4-fc71-9dbf-9bcacf18e2e1@ti.com>
+ <CAK8P3a0m4ocfLyJZ5wMxyKESYUJ5um5sb5MyAzC8ckCb6qAH5g@mail.gmail.com>
+ <d5465b81-bb53-49ee-a556-40d208deb765@ti.com> <a61ef337fd1c4538a47fe855920f95d3@hisilicon.com>
+In-Reply-To: <a61ef337fd1c4538a47fe855920f95d3@hisilicon.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 12 Feb 2021 10:45:12 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3SHQNjF5ZpqHQweG7BQ52Xi1hQKDiMVKq4aNK_7VDw6w@mail.gmail.com>
+Message-ID: <CAK8P3a3SHQNjF5ZpqHQweG7BQ52Xi1hQKDiMVKq4aNK_7VDw6w@mail.gmail.com>
+Subject: Re: [Linuxarm] Re: [PATCH for next v1 1/2] gpio: omap: Replace
+ raw_spin_lock_irqsave with raw_spin_lock in omap_gpio_irq_handler()
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        luojiaxing <luojiaxing@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        "open list:GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>,
+        linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Lee,
+On Fri, Feb 12, 2021 at 6:05 AM Song Bao Hua (Barry Song)
+<song.bao.hua@hisilicon.com> wrote:
+> > -----Original Message-----
 
-On Fri, 2021-02-12 at 09:16 +0000, Lee Jones wrote:
-> On Fri, 12 Feb 2021, Matti Vaittinen wrote:
-> 
-> > The ROHM BD718x7 and BD71828 drivers support setting HW state
-> > specific voltages from device-tree. This is used also by various
-> > in-tree DTS files.
-> > 
-> > These drivers do incorrectly try to compose bit-map using enum
-> > values. By a chance this works for first two valid levels having
-> > values 1 and 2 - but setting values for the rest of the levels
-> > do indicate capability of setting values for first levels as
-> > well. Luckily the regulators which support setting values for
-> > SUSPEND/LPSR do usually also support setting values for RUN
-> > and IDLE too - thus this has not been such a fatal issue.
-> > 
-> > Fix this by defining the old enum values as bits and fixing the
-> > parsing code. This allows keeping existing IC specific drivers
-> > intact and only slightly changing the rohm-regulator.c
-> > 
-> > Fixes: 21b72156ede8b ("regulator: bd718x7: Split driver to common
-> > and bd718x7 specific parts")
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > ---
-> > 
-> > I just noticed this fix never made it in-tree. So this is a resend
-> > of a
-> > resend :)
-> 
-> Not sure what you mean.  Isn't this patch part of:
-> 
->   [PATCH v2 00/17] Support ROHM BD71815 PMIC
-> 
-> ... which has just been reviewed and is awaiting rework?
+> >
+> > Note. there is also generic_handle_irq() call inside.
+>
+> So generic_handle_irq() is not safe to run in thread thus requires
+> an interrupt-disabled environment to run? If so, I'd rather this
+> irqsave moved into generic_handle_irq() rather than asking everyone
+> calling it to do irqsave.
 
-Sorry for the confusion Lee.
-It was originally part of the series but I did intend to submit it
-separately. That's because it is a bugfix for existing drivers - and
-because the  series "[PATCH v2 00/17] Support ROHM BD71815 PMIC"
-is expected to take some time as it needs to wait the dependency
-patches to get merged in relevant sub-systems. (The parent-data removal
-patches to gpio, regulator and clk).
+In a preempt-rt kernel, interrupts are run in task context, so they clearly
+should not be called with interrupts disabled, that would defeat the
+purpose of making them preemptible.
 
-So my thinking was that that fix could've been merged in as it's own
-patch to get existing things fixed in next release. I could then rebase
-the "PATCH v2 00/17] Support ROHM BD71815 PMIC" - series on top of this
-when it is in-tree.
+generic_handle_irq() does need to run with in_irq()==true though,
+but this should be set by the caller of the gpiochip's handler, and
+it is not set by raw_spin_lock_irqsave().
 
-I think I should have communicated this better. Sorry.
-
-Please let me know what works for you guys the best.
-
-Best Regards
-    Matti Vaittinen
-
+       Arnd
