@@ -2,125 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6695431A5F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C98D831A5F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhBLUUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:20:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        id S230390AbhBLUWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:22:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhBLUUx (ORCPT
+        with ESMTP id S229660AbhBLUWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:20:53 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A9BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:20:13 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id l18so276603pji.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:20:13 -0800 (PST)
+        Fri, 12 Feb 2021 15:22:31 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72F5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:21:50 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id cl8so265154pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:21:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=8FRSOnqUpUq7EuOD8xnnTKHw7l2Js1Dkk8XYGKAJmDw=;
-        b=NlwKSi9RVtFUyPntoS2LpRNEJRTGNDQRRE+SKH3sylayWFpf2ZJOA26tLIPPMAsM4X
-         S5u4S5nW2IOBHWaUQYLLoO4Ih+zNZj3Kv1zxPL8LvX4B4KPRY/q9y6Su+6Yn10MzclKf
-         8NYIm3Rfmxm7MR1cLwGR5k6BrwcA27+buoC2UPSzyWdO5/89J6hSdgRJI8gQ0yiLSR5z
-         qez3o1BJAI29CzkraFdg09WtPgfsNhNJnww+BrNCr3r4j4P6fc50YG9UglnQrbQB8HKY
-         zUeVWG+k4QQazyGypIEk6C0uSXv1vv4DulB4jUNMj9rWL+c0ooDQ8MLIAWPw/fYNXdwM
-         gMzw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zqHGpHlEVtMfxaAYSRUeoJtPJMW39eSW7LQpfFCRpGU=;
+        b=l95kKpXY/Ffe7uyRIJyZ57R505HOX3CkoEK3rvVY1WlysL8Q8zw+ZWWZoPwKdnUREA
+         FAh9wVuYAuOP3/BnTUKom0DP83wHkGcOkqcqVV1ehLoHnvPgKFQLv05pd++AvOb22Y3/
+         pST169LY53VWEECPdVPfgaHYBEu6puzilFe8TzRNQ1zJ1LxIcoaiCfF42WCu3WWtn9f/
+         mbbRDnxmlGLJN58dIl0OhQkSEKxNSO9P4l6hXmjgzvobjFcuPPmkE/aJEkKwKdsrsc9b
+         FwmxrXMJCUZxGpb4QNixgUieoVzw/WSO2KV76LGFPDMPtQb0WleT1wFkbnFfxR/bhfzS
+         65/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=8FRSOnqUpUq7EuOD8xnnTKHw7l2Js1Dkk8XYGKAJmDw=;
-        b=JCk6yGuUvLSfAejOKBZsvDtV+CEiKBDSQgakwaDDlUAJwL9xNzKzgaDfs7/0n4pADH
-         b+ZxGGJbcy70MaKAcUZ8vSSX1xXPfpSbmK8/93nOS5THjNdOwZ9jgfiQjrxm6Piwqnbi
-         0QZkfAgSb1LFyZnaMyh+LKZRZtaE4bO2yjwDJ+rd+qtkQcUIz9j9qMoek7429Qk37xLE
-         YbtdhF4CyOrZcZnFH8fFty4LN2bcsRvF0WFY2GFlRPKRGKXvCdzrPhFd0xBobfXZOas0
-         OXWpx+KQVNZaP2wjdj7nVygI9M01ivBUAPsTMXO2SXNgH+OnwoRLeZ2F2zNvvzOU9lyN
-         mq3Q==
-X-Gm-Message-State: AOAM532HwXluT8mbBp0g0qqzdCMHAV7BIP9EzX9XNM9Fq9qPUe4DlHQ6
-        OUn68gGsQk57cn1Q9TqLzd2PEg==
-X-Google-Smtp-Source: ABdhPJzc5sKW2uPXs5DKZpJTr9R5AyhaDZ33zeskLY2YIyK3TqpKwbYZ7REPKbUrbCbGIgud2n39dg==
-X-Received: by 2002:a17:902:6808:b029:e2:b405:fc0d with SMTP id h8-20020a1709026808b02900e2b405fc0dmr4231748plk.10.1613161212845;
-        Fri, 12 Feb 2021 12:20:12 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:70f0:3400:772e:fd77? ([2601:646:c200:1ef2:70f0:3400:772e:fd77])
-        by smtp.gmail.com with ESMTPSA id j9sm10495997pgb.47.2021.02.12.12.20.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 12:20:12 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
-Date:   Fri, 12 Feb 2021 12:20:11 -0800
-Message-Id: <A06CFC3D-53A8-45C1-9580-8459585F458E@amacapital.net>
-References: <YCbfyde9jl7ti0Oz@google.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-In-Reply-To: <YCbfyde9jl7ti0Oz@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-X-Mailer: iPhone Mail (18D52)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zqHGpHlEVtMfxaAYSRUeoJtPJMW39eSW7LQpfFCRpGU=;
+        b=YqkrpsMewjoB6SFG6ylQj5wK0idoV7Oz6aqpEa/7XelSN7aK3cn3KmaEv3jo5IKC/Y
+         Vj4R8zLb1NL+0hTY2VNLvzAvLPMbEQ0QjolehEDGJTu626BW5+SzvFa3GcaMku8fC3SQ
+         wPyEb7BAUzciSj0XiOupmKVnRcV46xFmZdIlf7hDmcnhqUtIfeqb3trxrc3G/y1Qt2oV
+         sqyJkM+sWky6wkQRS7EcvIaTSoJWG1p3JwtEw4ASO0RUfrwso8WcG8IiFxS6OtGVCqpb
+         vmAVcQIhLPZ/2h+9o7UoLPcfRgYpUzdti/9hHQCmqNkzHz/9BNUlI0Eok+lBbAgHewbx
+         vBhw==
+X-Gm-Message-State: AOAM532nusrnTcKJD/eh4FOdVVN+2Yr6z+jD6axSDP0HFST5bel1/idG
+        0pqWQCrrV7ytspQtcsV0SQK+BjapW+WU8kBsprVqmg==
+X-Google-Smtp-Source: ABdhPJyBOo+RPuiHr7zk2m0j3+Grll3y+A/FkP89wfB3qaOEU+d4H8phHBAgRXJ/hz9jm1O2ASsrK5j5zv2u00V6aEk=
+X-Received: by 2002:a17:903:31d1:b029:de:8361:739b with SMTP id
+ v17-20020a17090331d1b02900de8361739bmr4221474ple.85.1613161310340; Fri, 12
+ Feb 2021 12:21:50 -0800 (PST)
+MIME-Version: 1.0
+References: <e7eeb252da408b08f0c81b950a55fb852f92000b.1613155970.git.andreyknvl@google.com>
+ <20210212121610.ff05a7bb37f97caef97dc924@linux-foundation.org>
+In-Reply-To: <20210212121610.ff05a7bb37f97caef97dc924@linux-foundation.org>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 12 Feb 2021 21:21:39 +0100
+Message-ID: <CAAeHK+z5pkZkuNbqbAOSN_j34UhohRPhnu=EW-_PtZ88hdNjpA@mail.gmail.com>
+Subject: Re: [PATCH mm] kasan: export HW_TAGS symbols for KUnit tests
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 12, 2021 at 9:16 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri, 12 Feb 2021 21:08:52 +0100 Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> > Currently, building KASAN-KUnit tests as a module fails with:
+> >
+> > ERROR: modpost: "mte_enable_kernel" [lib/test_kasan.ko] undefined!
+> > ERROR: modpost: "mte_set_report_once" [lib/test_kasan.ko] undefined!
+> >
+> > This change adds KASAN wrappers for mte_enable_kernel() and
+> > mte_set_report_once() and only defines and exports them when KASAN-KUnit
+> > tests are enabled.
+> >
+> > The wrappers aren't defined when tests aren't enabled to avoid misuse.
+> > The mte_() functions aren't exported directly to avoid having low-level
+> > KASAN ifdefs in the arch code.
+> >
+>
+> Please confirm that this is applicable to current Linus mainline?
 
-> On Feb 12, 2021, at 12:06 PM, Sean Christopherson <seanjc@google.com> wrot=
-e:
->=20
-> =EF=BB=BFOn Fri, Feb 12, 2021, Andy Lutomirski wrote:
->>> On Fri, Feb 5, 2021 at 3:39 PM Kuppuswamy Sathyanarayanan
->>> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->>>=20
->>> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
->>>=20
->>> The TDX module injects #VE exception to the guest TD in cases of
->>> disallowed instructions, disallowed MSR accesses and subset of CPUID
->>> leaves. Also, it's theoretically possible for CPU to inject #VE
->>> exception on EPT violation, but the TDX module makes sure this does
->>> not happen, as long as all memory used is properly accepted using
->>> TDCALLs.
->>=20
->> By my very cursory reading of the TDX arch specification 9.8.2,
->> "Secure" EPT violations don't send #VE.  But the docs are quite
->> unclear, or at least the docs I found are.
->=20
-> The version I have also states that SUPPRESS_VE is always set.  So either t=
-here
-> was a change in direction, or the public docs need to be updated.  Lazy ac=
-cept
-> requires a #VE, either from hardware or from the module.  The latter would=
+It's not applicable. KUnit tests for HW_TAGS aren't supported there,
+the patches for that are in mm only. So no need to put it into 5.11.
 
-> require walking the Secure EPT tables on every EPT violation...
->=20
->> What happens if the guest attempts to access a secure GPA that is not
->> ACCEPTed?  For example, suppose the VMM does THH.MEM.PAGE.REMOVE on a sec=
-ure
->> address and the guest accesses it, via instruction fetch or data access.
->> What happens?
->=20
-> Well, as currently written in the spec, it will generate an EPT violation a=
-nd
-> the host will have no choice but to kill the guest.
-
-Or page the page back in and try again?
-
-In regular virt guests, if the host pages out a guest page, it=E2=80=99s the=
- host=E2=80=99s job to put it back when needed. In paravirt, a well designed=
- async of protocol can sometimes let the guest to useful work when this happ=
-ens. If a guest (or bare metal) has its memory hot removed (via balloon or w=
-hatever) and the kernel messes up and accesses removed memory, the guest (or=
- bare metal) is toast.
-
-I don=E2=80=99t see why TDX needs to be any different.=
+> Today is pretty much the last day for getting material into 5.11, and
+> this patch has been churning somewhat.
+>
+> So I think it would be better to merge this into 5.12-rc1, with a
+> cc:stable so it goes into 5.11.1.
+>
+> For which we'll need a Fixes:, please?
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210212121610.ff05a7bb37f97caef97dc924%40linux-foundation.org.
