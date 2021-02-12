@@ -2,169 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C919531A803
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4618231A804
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbhBLWr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 17:47:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
+        id S232569AbhBLWsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 17:48:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232350AbhBLWkJ (ORCPT
+        with ESMTP id S232392AbhBLWkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 17:40:09 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D134BC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 14:37:45 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id x4so1113755wmi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 14:37:45 -0800 (PST)
+        Fri, 12 Feb 2021 17:40:21 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88266C061797;
+        Fri, 12 Feb 2021 14:38:59 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id u14so1119207wri.3;
+        Fri, 12 Feb 2021 14:38:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=gabp5PA91SwinpJ0/myZDDPAWJJmDGhuF5vT4HNQofk=;
-        b=lzptYNv+Z/QkUjO1dor3sL5BlvgIRzJT0h3tMKe+AEsBnXH7z9s3DEjUf4ogNn07Bm
-         SYkfEK7DEk7HbO6bs2GfyVnUPJuIbwvSYRQZU3qm/ENvlPlqYZYeeFUmElt8hp9808Gh
-         jHiPsPRyuDq4vcSW3ZynoMmbn8t/Vf83Qeij8ATKKgXsvBiBStVp2M/aogaFGZo2G9l9
-         KOksv/RBoVdxTB+BnnfIFJzEKw94Qm6UwwU4X4q4w6Xrx3QHpWeTjpL/uS9dH4q0UvT/
-         nOAIOypn0sTekthhwXWei2O6M2wnbBdsYnwxj2Gp697y/os3Rxes6rNclui8jYxeeUvD
-         fA5w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4XhE9nbvZZEvqp+VBT2ONDgBP5HJs5gEj+RiWZgZ+YE=;
+        b=iqP14VcsBlhmEwk0zYi5+KCmrq9K2xA5Kyap60gFraEfU6hSbAKYWE6aTARzh6+EnV
+         BrXZh1n8wfJIoOvRJrxHIICZf/4coYzinleNIgN2+GK8Dp7XKrfkNb0LDAzTKSFBhZaf
+         GPm4FOlxrEV0yuqZYz9dbeIGYz1aDJgt0gTgyECDkfHBEqQVfogGiRr2mCR97LRrw4ze
+         FaUkxBc6PGjjvx+ie6dap1M+VcQZB+0nskKMmY3XqZkM8GXA+gUhI6ZzsRMzHf/2gBwR
+         X9eY/A9A4Wx5SBDHT32a1fERXfOjKWZu6ofSySFWzeZAO2BOBUMh0S1EpHO0T3VhIrNM
+         jn5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=gabp5PA91SwinpJ0/myZDDPAWJJmDGhuF5vT4HNQofk=;
-        b=Y2hDCVXoZP+Kro3Wej5CS+MN1rc4x+RQ4VGvfWv4AKkSzTMxxVVYvgwKBCA46m/XrT
-         D3KwhbnZbfnfoIlAQudQO7BMzD4ttPeW5NeRWAqvow7S/+4okXgZBKTYgcClnLRK3W5l
-         LV8RQWmNQR2ISP05a3eRWDAx+/0xIpbvWSyMXhIGAyvWJQkNShJVuLDCTDqrgNyPRN0w
-         GiRsz1exKNQ2tMeYxkxzkwuUvFGc28O9m2xS1G/8T1Fe1XOrttU6iU2JRRo7t5VgRSmx
-         9NgAUjLe0mMyg050lgH3S1P5jCqitM5arTGkVyZl+Dbf/bkEE5xeVqjxFR4JCUrQCAqH
-         Ch/w==
-X-Gm-Message-State: AOAM531x/49fTviKJixD/2ethYE40GlvPEetjUrsrme+rYdefPrXVQHj
-        I/RArUEnWuoKJE5938zShjoYJg==
-X-Google-Smtp-Source: ABdhPJw/W7aXURMUdb+FiiPcMWZ20hidPBYo6T7ZCqELCNUFf+nZRpp16Lmp3XkUiPvFeKkrd7BkhQ==
-X-Received: by 2002:a1c:bd55:: with SMTP id n82mr4450894wmf.93.1613169462215;
-        Fri, 12 Feb 2021 14:37:42 -0800 (PST)
-Received: from dell ([91.110.221.187])
-        by smtp.gmail.com with ESMTPSA id l5sm11839112wrv.44.2021.02.12.14.37.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 14:37:41 -0800 (PST)
-Date:   Fri, 12 Feb 2021 22:37:39 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Boris BREZILLON <boris.brezillon@free-electrons.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jan Kotas <jank@cadence.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-tegra@vger.kernel.org, Loc Ho <lho@apm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Nuvoton Technologies <tali.perry@nuvoton.com>,
-        NXP Linux Team <linux-imx@nxp.com>, openbmc@lists.ozlabs.org,
-        Patrick Venture <venture@google.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
-        Richard Woodruff <r-woodruff2@ti.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        =?iso-8859-1?Q?S=F6ren?= Brinkmann <soren.brinkmann@xilinx.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>
-Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
-Message-ID: <20210212223739.GE179940@dell>
-References: <20210126124540.3320214-1-lee.jones@linaro.org>
- <161307643148.1254594.6590013599999468609@swboyd.mtv.corp.google.com>
- <20210211211054.GD4572@dell>
- <161309925025.1254594.6210738031889810500@swboyd.mtv.corp.google.com>
- <20210212092016.GF4572@dell>
- <161316374113.1254594.14156657225822268891@swboyd.mtv.corp.google.com>
- <20210212212503.GC179940@dell>
- <20210212212630.GD179940@dell>
- <161316754567.1254594.9542583200097699504@swboyd.mtv.corp.google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4XhE9nbvZZEvqp+VBT2ONDgBP5HJs5gEj+RiWZgZ+YE=;
+        b=lpANLXyrfHM+PsO0Qpc/03TH2kL5PSx2sy6Iagb02cLNjYDBwdLNJk1ghQs4R4V8PB
+         aC+5N30ibieIySpfIpz5LONPc/vptbpnEiDsUvhxhVMem95/uOvzRTMt0Vx1bqSV2nyJ
+         equqLHJbbG1CKc311vj2Sd8vnAAVSGNXPUV4yluG6Er3mZDZYdATK3he19Ik1ObTPMos
+         4uDOv+fE3KsRkEde9MI2CbWqhAtciZgC2Hid4etgIY3eMjMgxfQkH9nANH3zZzK8fIDY
+         Z8aVhnm4Wc7PjvJqbuFeKETphQVq3DHDrEhmlOo5v9nll11Uzan3q/I4OpIfWZKTHbCp
+         uiSg==
+X-Gm-Message-State: AOAM5306eB3RaubuSB+ebx5bNQ2RzM5kcU7tsXmA/ELmgyyYQJmJz+B9
+        TkI68tXvYUlhzNnTk8r+jpOGy56CruUjGh1J2+s=
+X-Google-Smtp-Source: ABdhPJw+7VngcfuMrCOOkwo1E6yiHYWr5atjpHih5X6Wxr08jB0drHoleEoBHN8aUsy6wMEdaeWt+rqeGnNdV/JdsSk=
+X-Received: by 2002:a5d:65ca:: with SMTP id e10mr5897713wrw.166.1613169538231;
+ Fri, 12 Feb 2021 14:38:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <161316754567.1254594.9542583200097699504@swboyd.mtv.corp.google.com>
+References: <20210211161830.17366-1-TheSven73@gmail.com> <20210211161830.17366-3-TheSven73@gmail.com>
+ <MN2PR11MB36628F31F7478FED5885FB92FA8B9@MN2PR11MB3662.namprd11.prod.outlook.com>
+In-Reply-To: <MN2PR11MB36628F31F7478FED5885FB92FA8B9@MN2PR11MB3662.namprd11.prod.outlook.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Fri, 12 Feb 2021 17:38:47 -0500
+Message-ID: <CAGngYiXE1pajamOKhtMN8y243Gh8ByWA=AHP80jM=uDsYxTmsQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 2/5] lan743x: sync only the received area of
+ an rx ring buffer
+To:     Bryan Whitehead <Bryan.Whitehead@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Sergej Bauer <sbauer@blackbox.su>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        Hillf Danton <hdanton@sina.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021, Stephen Boyd wrote:
+Hi Bryan,
 
-> Quoting Lee Jones (2021-02-12 13:26:30)
-> > On Fri, 12 Feb 2021, Lee Jones wrote:
-> > 
-> > > The alternative is to not worry about it and review the slow drip of
-> > > fixes that will occur as a result.  The issues I just fixed were built
-> > > up over years.  They won't get to that level again.
-> > > 
-> > > In my mind contributors should be compiling their submissions with W=1
-> > > enabled by default.  I'm fairly sure the auto-builders do this now.
-> 
-> That's good.
-> 
-> > > 
-> > > Once W=1 warnings are down to an acceptable level in the kernel as a
-> > > whole, we can provide some guidance in SubmittingPatches (or similar)
-> > > on how to enable them (hint: you add "W=1" on the compile line).
-> > > 
-> > > Enabling W=1 in the default build will only serve to annoy Linus IMHO.
-> > > If he wants them to be enabled by default, they wouldn't be W=1 in the
-> > > first place, they'd be W=0 which *is* the default build.
-> > 
-> > Just to add real quick - my advice is to enable them for yourself and
-> > send back any issues along with your normal review.  A W=1 issue is no
-> > different to a semantic or coding style one.
-> > 
-> 
-> I'd like to enable it for only files under drivers/clk/ but it doesn't
-> seem to work. I'm not asking to enable it at the toplevel Makefile. I'm
-> asking to enable it for drivers/clk/ so nobody has to think about it now
-> that you've done the hard work of getting the numbers in this directory
-> down to zero or close to zero.
+On Fri, Feb 12, 2021 at 3:45 PM <Bryan.Whitehead@microchip.com> wrote:
+>
+> According to the document I have, FRAME_LENGTH is only valid when LS bit is set, and reserved otherwise.
+> Therefore, I'm not sure you can rely on it being zero when LS is not set, even if your experiments say it is.
+> Future chip revisions might use those bits differently.
 
-I'm not sure which one of us is confused.  Probably me, but ...
+That's good to know. I didn't find any documentation related to
+multi-buffer frames, so I had to go with what I saw the chip do
+experimentally. It's great that you were able to double-check against
+the official docs.
 
-Even if you could enable it per-subsystem, how would that help you?
+>
+> Can you change this so the LS bit is checked.
+>         If set you can use the smaller of FRAME_LENGTH or buffer length.
+>         If clear you can just use buffer length.
 
-How can you ensure that contributors see any new W=1 warnings, but
-Linus doesn't?  When Linus conducts his build-tests during the merge
-window, he is also going to build W=1 for drivers/clk.
-
-All that's going to achieve is put you in the firing line.
-
-From my PoV W=1 builds should be enabled during the development phase
-(i.e. contributor, auto-builder, maintainer).  By the time patches get
-make it into Mainline the review/testing stage is over and only the
-default W=0 warnings are meaningful.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Will do. Are you planning to hold off your tests until v3? It
+shouldn't take too long.
