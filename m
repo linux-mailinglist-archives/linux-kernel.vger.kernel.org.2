@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAE331A2AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B664231A2B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhBLQ1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:27:31 -0500
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:42016 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229798AbhBLQZJ (ORCPT
+        id S230401AbhBLQ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:29:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhBLQZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:25:09 -0500
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id A8D78822A6;
-        Fri, 12 Feb 2021 19:24:25 +0300 (MSK)
+        Fri, 12 Feb 2021 11:25:25 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB59C061756;
+        Fri, 12 Feb 2021 08:24:44 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id s15so106477plr.9;
+        Fri, 12 Feb 2021 08:24:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1613147065;
-        bh=cvhE6bT7mSSpoJRSz+Z136fOHC6JpgahrhrZ2HaU5i0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=jweXOu7NGc+0TAp5bJNJgoQzi5ObJ3wdk9RENvothrnDMVVSdBCoc8bMI6lXcHrOs
-         Bfymr1KT3wquQS3Kq+t4OzzHTF6Nq55e7lkTgl8GDk2Va/E4WYgVCnJ1DGzdKyykda
-         8RaftuzaKBeRq2yPgcjzdVgy1jJLUmmAn7lEYTpA=
-Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 12 Feb 2021 19:24:25 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
-        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
-        <mark@harmstone.com>, <nborisov@suse.com>,
-        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
-        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
-        <andy.lavr@gmail.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v21 09/10] fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
-Date:   Fri, 12 Feb 2021 19:24:15 +0300
-Message-ID: <20210212162416.2756937-10-almaz.alexandrovich@paragon-software.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20210212162416.2756937-1-almaz.alexandrovich@paragon-software.com>
-References: <20210212162416.2756937-1-almaz.alexandrovich@paragon-software.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AyVdYp4XHpNQZCGZsh4I/si/qqoq8d7SNCRAzCX5430=;
+        b=mAUeC2hEZ16mr8DoI+7evauEUBx8cjJvy7mwPfEFFprnn1Hm5uuAAvx2irH76Ulsqb
+         91xdKn7n8nW2ma/Zu173h9fXffdB3CtBPI0gwkdKJk0Qv1g5+O25OGlJHJVCO8r7e0zd
+         W4P4zcWIv3YaLiOLh24RsA/apkxpSyTJ6bhgaPEQcnG9egk1Jsrow6dziPUQv36ouF59
+         Vdo1Pz7O1NUy7whdJbC6BCfB9dWfu4hpzX99M3uw7Sb0YByWsYbGXKv85Dmj3yAfrGa3
+         PsrD8Mh1R02RCyJe73iXJq3U+DmgehE1qxy0uv0+qvDnzqCHGpBgtxF0BtGn9iazUbcc
+         EGlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AyVdYp4XHpNQZCGZsh4I/si/qqoq8d7SNCRAzCX5430=;
+        b=YSSjzXpUz2QOT8jnD2wtcts50QDjrsTGDHtX7rUs6+arAG8pVbVuXJUtOIvw0V9Gh5
+         zwIPn0ykNTFco2ZLFKs+KhmNdbss3TWDRRGgpBD/rl4pHqbYQs8Hg8R+L8QSHoH1ABjW
+         FM99+CVpTIJNPYutxr75gKobk/koE0lZkNPdpV8PNX2GeUPIUAOLKHQZQonHutZjcg7o
+         LColA2Pa74Nn80Q3Tq+uokq9xEOwVG3TYRN9c9CARCV7j/+JntAYnEABzIy1QotSxtKM
+         5v2FEAp/UdPTEbBMsU0D2bzlcy5Zp2GIT69VEiwXqVc/2Q5gbvwEQAm1n1BFUrrIMm2l
+         CVTg==
+X-Gm-Message-State: AOAM531Ce9HR+rbljNtrAeNEXyipFBpqITVeRDCtATEyRUFAqP9+G+DD
+        L8pU7OiltTKMMP5KAUp2pZ+BGnH5qWJM0GlTclQ=
+X-Google-Smtp-Source: ABdhPJz0mqyw/DHAX7vfCsptEAXofYBiy5jaxju5oOgLtcZiVvSwS/XSGhlOmyJpvs/W2rwiEMtWZ05jVRbjnsHguAk=
+X-Received: by 2002:a17:902:be14:b029:e1:bec9:f4a7 with SMTP id
+ r20-20020a170902be14b02900e1bec9f4a7mr3490949pls.21.1613147084314; Fri, 12
+ Feb 2021 08:24:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.30.114.105]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+References: <20210212141121.62115-1-andriy.shevchenko@linux.intel.com>
+ <20210212141121.62115-5-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0jot6w2AdTCmxn4Hw2zOzJk2JSrTaeH9cQR4or2N9HjCg@mail.gmail.com>
+ <YCamNlCxK9nb8XrZ@smile.fi.intel.com> <CAJZ5v0i=YT_pqSC+WJoZYOvA0oM4nwJhnPuD46WjezQGPJGJXw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0i=YT_pqSC+WJoZYOvA0oM4nwJhnPuD46WjezQGPJGJXw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 12 Feb 2021 18:24:28 +0200
+Message-ID: <CAHp75VcvVuZR-dyKZcPW2TwgT8RDT6z78kbdarv79YG_NY=C3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] ACPI: property: Refactor acpi_data_prop_read_single()
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds NTFS3 in fs/Kconfig and fs/Makefile
+On Fri, Feb 12, 2021 at 6:11 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> On Fri, Feb 12, 2021 at 5:01 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Fri, Feb 12, 2021 at 03:31:24PM +0100, Rafael J. Wysocki wrote:
+> > > On Fri, Feb 12, 2021 at 3:14 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/Kconfig  | 1 +
- fs/Makefile | 1 +
- 2 files changed, 2 insertions(+)
+...
 
-diff --git a/fs/Kconfig b/fs/Kconfig
-index da524c4d7b7e..0bbad356ab57 100644
---- a/fs/Kconfig
-+++ b/fs/Kconfig
-@@ -145,6 +145,7 @@ menu "DOS/FAT/EXFAT/NT Filesystems"
- source "fs/fat/Kconfig"
- source "fs/exfat/Kconfig"
- source "fs/ntfs/Kconfig"
-+source "fs/ntfs3/Kconfig"
- 
- endmenu
- endif # BLOCK
-diff --git a/fs/Makefile b/fs/Makefile
-index 999d1a23f036..4f5242cdaee2 100644
---- a/fs/Makefile
-+++ b/fs/Makefile
-@@ -100,6 +100,7 @@ obj-$(CONFIG_SYSV_FS)		+= sysv/
- obj-$(CONFIG_CIFS)		+= cifs/
- obj-$(CONFIG_HPFS_FS)		+= hpfs/
- obj-$(CONFIG_NTFS_FS)		+= ntfs/
-+obj-$(CONFIG_NTFS3_FS)		+= ntfs3/
- obj-$(CONFIG_UFS_FS)		+= ufs/
- obj-$(CONFIG_EFS_FS)		+= efs/
- obj-$(CONFIG_JFFS2_FS)		+= jffs2/
+> > > > +       if (ret)
+> > > > +               return ret;
+> > >
+> > > else if (!val)
+> > >         ret = 1;
+> >
+> > But then it become a bug again :-)
+>
+> I'm not sure why?  The checks below will still happen and they may
+> cause an error to be returned.
+
+Oh, I misinterpreted ret = as plain return. Right. Seems okay.
+
 -- 
-2.25.4
-
+With Best Regards,
+Andy Shevchenko
