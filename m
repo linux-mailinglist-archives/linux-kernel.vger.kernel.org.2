@@ -2,81 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A335C31A2C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 913F531A2C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhBLQby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:31:54 -0500
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:38635 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230186AbhBLQ0L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:26:11 -0500
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 18F361F9D;
-        Fri, 12 Feb 2021 19:24:26 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1613147066;
-        bh=vxwJlK/J7K45Po3bVL3K4iU7JCHPQ14476gEiuy/nBQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=peugFVgwfQjT08j/UAY9Rn3OwDO09xxPN5sQ1bvuEKPDdxxi1BaS0SnQczRN/owZl
-         Nv2rFmSTZyQGAcciDpxGBWDbHoukZOtWrYr9yn6PJomLFr2HR8uuUMEMG/gxASnBpz
-         C3cuQ0s0on2V8uuI2sKkcej6tEZcSB3IE9uhO4Bk=
-Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 12 Feb 2021 19:24:25 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
-        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
-        <mark@harmstone.com>, <nborisov@suse.com>,
-        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
-        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
-        <andy.lavr@gmail.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v21 10/10] fs/ntfs3: Add MAINTAINERS
-Date:   Fri, 12 Feb 2021 19:24:16 +0300
-Message-ID: <20210212162416.2756937-11-almaz.alexandrovich@paragon-software.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20210212162416.2756937-1-almaz.alexandrovich@paragon-software.com>
-References: <20210212162416.2756937-1-almaz.alexandrovich@paragon-software.com>
+        id S231283AbhBLQdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:33:16 -0500
+Received: from mga01.intel.com ([192.55.52.88]:44491 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229793AbhBLQ1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 11:27:42 -0500
+IronPort-SDR: qfWInwRrtqWrGQyr8UoeZg5aKfdUv3x78M88A6nPkj1ePd5E0P67rGuUcv/XNrf+Zg1gVIMaco
+ MrPkzjCG1M8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="201586481"
+X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
+   d="scan'208";a="201586481"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 08:25:51 -0800
+IronPort-SDR: tzC/7NJyV3HMd421pvXXeXiDSVx4gH+MUZQpy3xrx7IcbaBekNnTb569rJb6GA3IjUQbuy8OKH
+ odlqwNLS6SoQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
+   d="scan'208";a="415940678"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 12 Feb 2021 08:25:50 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 387A51FA; Fri, 12 Feb 2021 18:25:48 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] device property: Add test cases for fwnode_property_count_*() APIs
+Date:   Fri, 12 Feb 2021 18:25:39 +0200
+Message-Id: <20210212162539.86850-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.30.114.105]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds MAINTAINERS
+Add test cases for fwnode_property_count_*() APIs.
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+While at it, modify the arrays of integers to be size of non-power-of-2
+for better test coverage and decreasing stack usage.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/base/test/property-entry-test.c | 50 +++++++++++++++++++++++--
+ 1 file changed, 46 insertions(+), 4 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 64c7169db617..b86988db65b3 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12667,6 +12667,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
- F:	Documentation/filesystems/ntfs.rst
- F:	fs/ntfs/
+diff --git a/drivers/base/test/property-entry-test.c b/drivers/base/test/property-entry-test.c
+index abe03315180f..3a4f755c483c 100644
+--- a/drivers/base/test/property-entry-test.c
++++ b/drivers/base/test/property-entry-test.c
+@@ -27,6 +27,9 @@ static void pe_test_uints(struct kunit *test)
+ 	node = fwnode_create_software_node(entries, NULL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, node);
  
-+NTFS3 FILESYSTEM
-+M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-+S:	Supported
-+W:	http://www.paragon-software.com/
-+F:	Documentation/filesystems/ntfs3.rst
-+F:	fs/ntfs3/
++	error = fwnode_property_count_u8(node, "prop-u8");
++	KUNIT_EXPECT_EQ(test, error, 1);
 +
- NUBUS SUBSYSTEM
- M:	Finn Thain <fthain@telegraphics.com.au>
- L:	linux-m68k@lists.linux-m68k.org
+ 	error = fwnode_property_read_u8(node, "prop-u8", &val_u8);
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)val_u8, 8);
+@@ -48,6 +51,9 @@ static void pe_test_uints(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)val_u16, 16);
+ 
++	error = fwnode_property_count_u16(node, "prop-u16");
++	KUNIT_EXPECT_EQ(test, error, 1);
++
+ 	error = fwnode_property_read_u16_array(node, "prop-u16", array_u16, 1);
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)array_u16[0], 16);
+@@ -65,6 +71,9 @@ static void pe_test_uints(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)val_u32, 32);
+ 
++	error = fwnode_property_count_u32(node, "prop-u32");
++	KUNIT_EXPECT_EQ(test, error, 1);
++
+ 	error = fwnode_property_read_u32_array(node, "prop-u32", array_u32, 1);
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)array_u32[0], 32);
+@@ -82,6 +91,9 @@ static void pe_test_uints(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)val_u64, 64);
+ 
++	error = fwnode_property_count_u64(node, "prop-u64");
++	KUNIT_EXPECT_EQ(test, error, 1);
++
+ 	error = fwnode_property_read_u64_array(node, "prop-u64", array_u64, 1);
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)array_u64[0], 64);
+@@ -95,15 +107,19 @@ static void pe_test_uints(struct kunit *test)
+ 	error = fwnode_property_read_u64_array(node, "no-prop-u64", array_u64, 1);
+ 	KUNIT_EXPECT_NE(test, error, 0);
+ 
++	/* Count 64-bit values as 16-bit */
++	error = fwnode_property_count_u16(node, "prop-u64");
++	KUNIT_EXPECT_EQ(test, error, 4);
++
+ 	fwnode_remove_software_node(node);
+ }
+ 
+ static void pe_test_uint_arrays(struct kunit *test)
+ {
+-	static const u8 a_u8[16] = { 8, 9 };
+-	static const u16 a_u16[16] = { 16, 17 };
+-	static const u32 a_u32[16] = { 32, 33 };
+-	static const u64 a_u64[16] = { 64, 65 };
++	static const u8 a_u8[10] = { 8, 9 };
++	static const u16 a_u16[10] = { 16, 17 };
++	static const u32 a_u32[10] = { 32, 33 };
++	static const u64 a_u64[10] = { 64, 65 };
+ 	static const struct property_entry entries[] = {
+ 		PROPERTY_ENTRY_U8_ARRAY("prop-u8", a_u8),
+ 		PROPERTY_ENTRY_U16_ARRAY("prop-u16", a_u16),
+@@ -126,6 +142,9 @@ static void pe_test_uint_arrays(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)val_u8, 8);
+ 
++	error = fwnode_property_count_u8(node, "prop-u8");
++	KUNIT_EXPECT_EQ(test, error, 10);
++
+ 	error = fwnode_property_read_u8_array(node, "prop-u8", array_u8, 1);
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)array_u8[0], 8);
+@@ -148,6 +167,9 @@ static void pe_test_uint_arrays(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)val_u16, 16);
+ 
++	error = fwnode_property_count_u16(node, "prop-u16");
++	KUNIT_EXPECT_EQ(test, error, 10);
++
+ 	error = fwnode_property_read_u16_array(node, "prop-u16", array_u16, 1);
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)array_u16[0], 16);
+@@ -170,6 +192,9 @@ static void pe_test_uint_arrays(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)val_u32, 32);
+ 
++	error = fwnode_property_count_u32(node, "prop-u32");
++	KUNIT_EXPECT_EQ(test, error, 10);
++
+ 	error = fwnode_property_read_u32_array(node, "prop-u32", array_u32, 1);
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)array_u32[0], 32);
+@@ -192,6 +217,9 @@ static void pe_test_uint_arrays(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)val_u64, 64);
+ 
++	error = fwnode_property_count_u64(node, "prop-u64");
++	KUNIT_EXPECT_EQ(test, error, 10);
++
+ 	error = fwnode_property_read_u64_array(node, "prop-u64", array_u64, 1);
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_EQ(test, (int)array_u64[0], 64);
+@@ -210,6 +238,14 @@ static void pe_test_uint_arrays(struct kunit *test)
+ 	error = fwnode_property_read_u64_array(node, "no-prop-u64", array_u64, 1);
+ 	KUNIT_EXPECT_NE(test, error, 0);
+ 
++	/* Count 64-bit values as 16-bit */
++	error = fwnode_property_count_u16(node, "prop-u64");
++	KUNIT_EXPECT_EQ(test, error, 40);
++
++	/* Other way around */
++	error = fwnode_property_count_u64(node, "prop-u16");
++	KUNIT_EXPECT_EQ(test, error, 2);
++
+ 	fwnode_remove_software_node(node);
+ }
+ 
+@@ -239,6 +275,9 @@ static void pe_test_strings(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_STREQ(test, str, "single");
+ 
++	error = fwnode_property_string_array_count(node, "str");
++	KUNIT_EXPECT_EQ(test, error, 1);
++
+ 	error = fwnode_property_read_string_array(node, "str", strs, 1);
+ 	KUNIT_EXPECT_EQ(test, error, 1);
+ 	KUNIT_EXPECT_STREQ(test, strs[0], "single");
+@@ -258,6 +297,9 @@ static void pe_test_strings(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, error, 0);
+ 	KUNIT_EXPECT_STREQ(test, str, "");
+ 
++	error = fwnode_property_string_array_count(node, "strs");
++	KUNIT_EXPECT_EQ(test, error, 2);
++
+ 	error = fwnode_property_read_string_array(node, "strs", strs, 3);
+ 	KUNIT_EXPECT_EQ(test, error, 2);
+ 	KUNIT_EXPECT_STREQ(test, strs[0], "string-a");
 -- 
-2.25.4
+2.30.0
 
