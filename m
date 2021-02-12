@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C493198A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 04:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5E531989E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 04:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhBLDI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 22:08:59 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:61173 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhBLDIy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 22:08:54 -0500
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 11C37d0w009910;
-        Fri, 12 Feb 2021 12:07:39 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 11C37d0w009910
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613099260;
-        bh=I5mK3G+CjJ+ik2u7vLdWvYhGKvVsmh00OZqq6nOWAfo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oyrj/HrlI42UvZ/W4/qK01nOaTO1jKZ+Gj5Kwj/VE1NJ13/IXuJ2oniIoCC4t3Fpy
-         fD0fJ12sl0e/dNaFQ4QdjNgUq8agIlZKJsD3UFveynhKajmvsu+8biPfBeuFeCDdH3
-         hlTfyqy3Dzn413PNssEmhneLlehzw5s8h0RceZbyEcNtE7JF+BwE3lWuBgOHg4xlL9
-         1YUEZNSVmC8gMLfCb6YkHQxrm2nJSGvf35q9yl2Y/dA3jd1nv7X7//XEnp82+ynwro
-         2NPTUhovCbmXsDBlQDO2aKFLlCpryxI+uxYXHU0k2AX0ul30u7QzHctKXznSOZzxy+
-         UnZvMEz518kXg==
-X-Nifty-SrcIP: [209.85.210.180]
-Received: by mail-pf1-f180.google.com with SMTP id c11so4963782pfp.10;
-        Thu, 11 Feb 2021 19:07:39 -0800 (PST)
-X-Gm-Message-State: AOAM5335C91fISp+5UC7w9984s+yOBl7aahfMv91TFO5wxPStJ8gYyjr
-        sz4Dmyx/Q0VEk2LrkkHo6JKNGk/9XHmeTOwdQJA=
-X-Google-Smtp-Source: ABdhPJx8OiSoNeZ/dmRG1leCMKTZJ1WHVjWadinf3/HxClDg13CKEIq42sKUnmjPj6qz2ebltPfCHfzmGNkzOzRQJVI=
-X-Received: by 2002:a62:2f07:0:b029:1bb:5f75:f985 with SMTP id
- v7-20020a622f070000b02901bb5f75f985mr993540pfv.76.1613099258850; Thu, 11 Feb
- 2021 19:07:38 -0800 (PST)
+        id S230011AbhBLDIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 22:08:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229573AbhBLDIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 22:08:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AB7164DE9;
+        Fri, 12 Feb 2021 03:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613099251;
+        bh=JzVhC9UdJJv6ZQYoxZTHOXMBUYZPfGjZSYy10m7haaw=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=SYmvPCI5iLDLklNsYLfXsKhdIGU0kxMM/XaL2DlnmiZraToGSaET422RLhim0mkKG
+         RoiGu0ntDl6hHLODMR8ALSW7kpifw5WjKBjNjhs4fdpyAOJVVnJbYvtF6Mpb9ve000
+         0Zrh9JsUqA1ekIBdiTfFZEXtSJmxsXcUcYw80epyZtLr/HcY/wJGMs2NjqqbTrpiKG
+         vSfka5Bd8hbU28plm6Y7njg9koYzROBKyfm+v1ULHhsyN2yv2NsFrjDeJjGvieHg4f
+         ZWDDNV7z8uS/Vg9ApuUuSt3gkxZIgeXFrAnz+7xsEPBw/7+nv2P4FnwnaFYnSH8Nof
+         thlWWB5HE1I8Q==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <cover.1612955268.git.viresh.kumar@linaro.org> <44dad578df8a848fc378cd358f03b071f44c9a5b.1612955268.git.viresh.kumar@linaro.org>
- <CAK7LNARa8GzhhvZWV_KAW=MC0DRcSsfPsQ-KTBRRpbBgBqY=ig@mail.gmail.com> <CAL_JsqKHUG6VvvpQ18YdzsOA_gZ59gFsc2tUzt1SxKHsO2A03g@mail.gmail.com>
-In-Reply-To: <CAL_JsqKHUG6VvvpQ18YdzsOA_gZ59gFsc2tUzt1SxKHsO2A03g@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 12 Feb 2021 12:07:00 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQH8hVwqGF+82j=38gi7VaixLhYS-K1uT1wdX4t07pJ6Q@mail.gmail.com>
-Message-ID: <CAK7LNAQH8hVwqGF+82j=38gi7VaixLhYS-K1uT1wdX4t07pJ6Q@mail.gmail.com>
-Subject: Re: [PATCH V7 1/3] kbuild: Add generic rule to apply fdtoverlay
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210211211054.GD4572@dell>
+References: <20210126124540.3320214-1-lee.jones@linaro.org> <161307643148.1254594.6590013599999468609@swboyd.mtv.corp.google.com> <20210211211054.GD4572@dell>
+Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris BREZILLON <boris.brezillon@free-electrons.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Emilio =?utf-8?q?L=C3=B3pez?= <emilio@elopez.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jan Kotas <jank@cadence.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Loc Ho <lho@apm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Nuvoton Technologies <tali.perry@nuvoton.com>,
+        NXP Linux Team <linux-imx@nxp.com>, openbmc@lists.ozlabs.org,
+        Patrick Venture <venture@google.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+        Richard Woodruff <r-woodruff2@ti.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        =?utf-8?q?S=C3=B6ren?= Brinkmann <soren.brinkmann@xilinx.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Date:   Thu, 11 Feb 2021 19:07:30 -0800
+Message-ID: <161309925025.1254594.6210738031889810500@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 5:05 AM Rob Herring <robh+dt@kernel.org> wrote:
->
-> On Thu, Feb 11, 2021 at 12:28 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > On Wed, Feb 10, 2021 at 8:13 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > >
-> > > From: Rob Herring <robh@kernel.org>
-> > >
-> > > Add a generic rule to apply fdtoverlay in Makefile.lib, so every
-> > > platform doesn't need to carry the complex rule.
-> > >
-> > > The platform's Makefile only needs to have this now:
-> > >
-> > >  DTC_FLAGS_foo_base += -@
-> > >  foo-dtbs := foo_base.dtb foo_overlay1.dtbo foo_overlay2.dtbo
-> > >  overlay-y := foo.dtb
-> >
-> >
-> > Please reuse dtb-y instead of introducing the new
-> > overlay-y syntax, that is,
-> >
-> > foo-dtbs := foo_base.dtb foo_overlay1.dtbo foo_overlay2.dtbo
-> > dtb-y := foo.dtb
->
-> That's what I had, but I believe Viresh changed this because we don't
-> want to run schema checks on foo.dtb (as foo.dts doesn't exist).
-> However, we should be able to filter those out using something similar
-> to technique used for multi-used-y and real-obj-y. We just need to
-> drop composite entries when creating the .dt.yaml list.
+Quoting Lee Jones (2021-02-11 13:10:54)
+> On Thu, 11 Feb 2021, Stephen Boyd wrote:
+>=20
+> > Quoting Lee Jones (2021-01-26 04:45:19)
+> > > This set is part of a larger effort attempting to clean-up W=3D1
+> > > kernel builds, which are currently overwhelmingly riddled with
+> > > niggly little warnings.
+> > >=20
+> > > This is the last set.  Clock is clean after this.
+> >=20
+> > Is it possible to slam in some patch that makes W=3D1 the default for t=
+he
+> > clk directory? I'm trying to avoid seeing this patch series again.
+>=20
+> One of my main goals of this project is that everyone (contributors,
+> maintainers auto-builder robots etc) will be enabling W=3D1 builds
+> *locally*.
+>=20
+> This isn't something you'll want to do at a global (i.e. in Mainline)
+> level.  That's kinda the point of W=3D1.
+>=20
 
-
-
-Yes, I think this will work.
-
-
-
-BTW, I do not know how to use overlay.
-Do we apply overlay in the build time?
-If so, I do not know what the benefit of overlay is.
-Or is this just for build testing?
-
-
-I just thought this was done in the boot time,
-for example, in U-Boot or something.
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Agreed, but is it possible to pass W=3D1 in the drivers/clk/Makefile?
