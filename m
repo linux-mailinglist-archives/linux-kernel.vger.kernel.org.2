@@ -2,220 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC3831A070
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FB831A077
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbhBLOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 09:15:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:37642 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231264AbhBLOOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 09:14:52 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F02B331B;
-        Fri, 12 Feb 2021 06:14:03 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AB793F73D;
-        Fri, 12 Feb 2021 06:13:57 -0800 (PST)
-Date:   Fri, 12 Feb 2021 14:13:50 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     sonicadvance1@gmail.com
-Cc:     amanieu@gmail.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Gavin Shan <gshan@redhat.com>, Mike Rapoport <rppt@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jason Yan <yanaijie@huawei.com>, Andrey Ignatov <rdna@fb.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Julien Grall <julien.grall@arm.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND RFC PATCH v2] arm64: Exposes support for 32-bit syscalls
-Message-ID: <20210212141350.GA2744@C02TD0UTHF1T.local>
-References: <20210211202208.31555-1-Sonicadvance1@gmail.com>
+        id S231986AbhBLOQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 09:16:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44482 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231135AbhBLOQv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 09:16:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613139324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pFui2wB5cJmJppKeE9fg7DgPntP+r/xmUSyZ0JYk3sc=;
+        b=HA2tFRuwvlzt0hwekuqfugAAM6LlK46uNuniBAWDxp3A7IGs0G401hXOwBJg4Dc4D9Wa3+
+        FC+WLJ0zYHm4ZaLqY6Bf3iGHWCFyoMNaXOHF9j0iqhhP7azl3xv2lIJ6d1JidfSq1HPmNS
+        CmTtlieXCUrqvkEAZ0ogb8ucf8kktNE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-364-xbkPRNinPeikoybW4Bn4nQ-1; Fri, 12 Feb 2021 09:15:20 -0500
+X-MC-Unique: xbkPRNinPeikoybW4Bn4nQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9737107ACF2;
+        Fri, 12 Feb 2021 14:15:15 +0000 (UTC)
+Received: from [10.36.114.178] (ovpn-114-178.ams2.redhat.com [10.36.114.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 29EB95D9FC;
+        Fri, 12 Feb 2021 14:15:09 +0000 (UTC)
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        willy@infradead.org, osalvador@suse.de, mhocko@suse.com,
+        song.bao.hua@hisilicon.com, naoya.horiguchi@nec.com,
+        joao.m.martins@oracle.com
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+References: <20210208085013.89436-1-songmuchun@bytedance.com>
+ <20210208085013.89436-5-songmuchun@bytedance.com>
+ <72e772bc-7103-62da-d834-059eb5a3ce5b@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap pages associated
+ with each HugeTLB page
+Message-ID: <2afd12e0-60cd-0f9e-99a8-8ded09644504@redhat.com>
+Date:   Fri, 12 Feb 2021 15:15:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211202208.31555-1-Sonicadvance1@gmail.com>
+In-Reply-To: <72e772bc-7103-62da-d834-059eb5a3ce5b@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 12:21:54PM -0800, sonicadvance1@gmail.com wrote:
-> From: Ryan Houdek <Sonicadvance1@gmail.com>
+On 11.02.21 19:05, Mike Kravetz wrote:
+> On 2/8/21 12:50 AM, Muchun Song wrote:
+>> When we free a HugeTLB page to the buddy allocator, we should allocate the
+>> vmemmap pages associated with it. But we may cannot allocate vmemmap pages
+>> when the system is under memory pressure, in this case, we just refuse to
+>> free the HugeTLB page instead of looping forever trying to allocate the
+>> pages.
+>>
+>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>> ---
+>>   include/linux/mm.h   |  2 ++
+>>   mm/hugetlb.c         | 19 ++++++++++++-
+>>   mm/hugetlb_vmemmap.c | 30 +++++++++++++++++++++
+>>   mm/hugetlb_vmemmap.h |  6 +++++
+>>   mm/sparse-vmemmap.c  | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+>>   5 files changed, 130 insertions(+), 2 deletions(-)
 > 
-> Sorry about the noise. I obviously don't work in this ecosystem.
-> Didn't get any comments previously so I'm resending
+> Muchun has done a great job simplifying this patch series and addressing
+> issues as they are brought up.  This patch addresses the issue which seems
+> to be the biggest stumbling block to this series.  The need to allocate
+> vmemmap pages to dissolve a hugetlb page to the buddy allocator.  The way
+> it is addressed in this patch is to simply fail to dissolve the hugetlb
+> page if the vmmemmap pages can not be allocated.  IMO, this is an 'acceptable'
+> strategy.  If we find ourselves in this situation then we are likely to be
+> hitting other corner cases in the system.  I wish there was a perfect way
+> to address this issue, but we have been unable to come up with one.
 > 
-> The problem:
-> We need to support 32-bit processes running under a userspace
-> compatibility layer. The compatibility layer is a AArch64 process.
-> This means exposing the 32bit compatibility syscalls to userspace.
-
-I think that the requirement is that the compatibility layer can
-/somehow/ emulate the 32-bit syscalls (e.g. being able to limit the
-range of mmap() and friends), and doesn't strictly require that the
-kernel expose the 32-bit compat syscalls directly to userspace.
-
-> Why do we need compatibility layers?
-> There are ARMv8 CPUs that only support AArch64 but still need to run
-> AArch32 applications.
-> Cortex-A34/R82 and other cores are prime examples of this.
-> Additionally if a user is needing to run legacy 32-bit x86 software, it
-> needs the same compatibility layer.
-
-I think that for this series x86 emulation is a red herring. ABIs differ
-across 32-bit arm and 32-bit x86 (and they have distinct arch-specific
-syscalls), and so those need distinct compatibility layers.
-
-If you're wanting to accelerate x86 emulation, I don't think this is the
-right approach.
-
-> Who does this matter to?
-> Any user that has a specific need to run legacy 32-bit software under a
-> compatibility layer.
-> Not all software is open source or easy to convert to 64bit, it's
-> something we need to live with.
-> Professional software and the gaming ecosystem is rife with this.
+> There was a decent discussion about this is a previous version of the
+> series starting here:
+> https://lore.kernel.org/linux-mm/20210126092942.GA10602@linux/
+> In this thread various other options were suggested and discussed.
 > 
-> What applications have tried to work around this problem?
-> FEX emulator (1) - Userspace x86 to AArch64 compatibility layer
-> Tango binary translator (2) - AArch32 to AArch64 compatibility layer
-> QEmu (3) - Not really but they do some userspace ioctl emulation
+> I would like to come to some agreement on an acceptable way to handle this
+> specific issue.  IMO, it makes little sense to continue refining other
+> parts of this series if we can not figure out how to move forward on this
+> issue.
 > 
-> What problems did they hit?
-> FEX and Tango hit problems with emulating memory related syscalls.
-> - Emulating 32-bit mmap, mremap, shmat in userspace changes behaviour
-> All three hit issues with ioctl emulation
+> It would be great if David H, David R and Michal could share their opinions
+> on this.  No need to review details the code yet (unless you want), but
+> let's start a discussion on how to move past this issue if we can.
 
-I suspect these can be solved by extending these syscalls (or adding new
-variants) with new functionality to support emulation cases. For
-example, having variants with an explicit address mask would also
-benefit JITs which want to turn VA bits into additional tag bits.
+So a summary from my side:
 
-> - ioctls are free to do what they want including allocating memory and
-> returning opaque structures with pointers.
+We might fail freeing a huge page at any point in time iff we are low on 
+kernel (!CMA, !ZONE_MOVABLE) memory. While we could play games with 
+allocating the vmemmap from a huge page itself in some cases (e.g., 
+!CMA, !ZONE_MOVABLE), simply retrying is way easier and we don't turn 
+the huge page forever unusable.
 
-They're also free to mess with state that can differ across
-compat/native tasks, so I don't think this is generally safe to expose
-without auditing the specific ioctl.
+Corner cases might be having many huge pages in ZONE_MOVABLE, freeing 
+them all at once and eating up a lot of kernel memory. But then, the 
+same setup would already be problematic nowadays where we simply always 
+consume that kernel memory for the vmemmap.
 
-I'd also note that non-ioctl syscalls can affect distinct state across
-compat/native tasks, e.g. TPIDR_EL0 vs TPIDRRO_EL0, and while I see some
-accounting for that below I don't believe that will work consistently or
-reliably without further invasive changes (e.g. considering the KPTI
-trampoline). Futher, this introduces significant scope for error, and
-the potential to introduce security problems.
+I think this problem only really becomes visible in corner cases. And 
+someone actively has to enable new behavior.
 
-So to reiterate, I am strongly opposed to exposing compat syscalls in
-this way. However, I do think that we can make emulation easier by
-extending some syscalls (e.g. mmap()), and that this would be worthwhile
-regardless of emulation.
 
-I've made some further technical comments below, but those have no
-bearing on my fundamental objection here.
+1. Failing to free a huge page triggered by the user (decrease nr_pages):
 
-> With this patch we will be exposing the compatibility syscall table
-> through the regular syscall svc API. There is prior art here where on
-> x86-64 they also expose the compatibility tables.
-> The justification for this is that we need to maintain support for 32bit
-> application compatibility going in to the foreseeable future.
-> Userspace does almost all of the heavy lifting here, especially when the
-> hardware no longer supports the 32bit use case.
-> 
-> A couple of caveats to this approach.
-> Userspace must know that this doesn't solve structure alignment problems
-> for the x86->AArch64 (1) case.
-> The API for this changes from syscall number in x8 to x7 to match
-> AArch32 syscall semantics
-> This is now exposing the compat syscalls to userspace, but for the sake
-> of userspace compatibility it is a necessary evil.
-> 
-> Why does the upstream kernel care?
-> I believe every user wants to have their software ecosystem continue
-> working if they are in a mixed AArch32/AArch64 world even when they are
-> running AArch64 only hardware. The kernel should facilitate a good user
-> experience.
+Bad luck. Try again later.
 
-I appreciate that people have 32-bit applications, and want to run
-those, but I'm not convinced that this requires these specific changes.
-Especially considering that the cross-architecture cases you mention are
-not addressed by this, and need syscall emulation in userspace; that
-implies that in general userspace needs to handle conversion of
-semantics, and what the kernel needs to do is provide the primitives
-onto which userspace can map things in order to get the desried
-semantics (which is not the same as blindly exposing compat syscalls).
+2. Failing to free a surplus huge page when freed by the application:
 
-[...]
+Bad luck. But who will try again later?
 
-> +/* Definitions for compat syscall guest mmap area */
-> +#define COMPAT_MIN_GAP			(SZ_128M)
-> +#define COMPAT_STACK_TOP		0xffff0000
-> +#define COMPAT_MAX_GAP			(COMPAT_STACK_TOP/6*5)
-> +#define COMPAT_TASK_UNMAPPED_BASE	PAGE_ALIGN(TASK_SIZE_32 / 4)
-> +#define COMPAT_STACK_RND_MASK		(0x7ff >> (PAGE_SHIFT - 12))
+3. Failing to dissolve a free huge page on ZONE_MOVABLE via offline_pages()
 
-What's the "guest mmap area" ?
+This is a bit unfortunate if we have plenty of ZONE_MOVABLE memory but 
+are low on kernel memory. For example, migration of huge pages would 
+still work, however, dissolving the free page does not work. I'd say 
+this is a corner cases. When the system is that much under memory 
+pressure, offlining/unplug can be expected to fail.
 
-The commit message introduced the abstract problem, but none of the new
-technical concepts like this.
+4. Failing to dissolve a huge page on CMA/ZONE_MOVABLE via 
+alloc_contig_range() - once we have that handling in place. Mainly 
+affects CMA and virtio-mem.
 
-> +#ifndef arch_get_mmap_end
-> +#define arch_get_mmap_end(addr)	(TASK_SIZE)
-> +#endif
-> +
-> +#ifndef arch_get_mmap_base
-> +#define arch_get_mmap_base(addr, base) (base)
-> +#endif
-> +
-> +static int mmap_is_legacy(unsigned long rlim_stack)
-> +{
-> +	if (current->personality & ADDR_COMPAT_LAYOUT)
-> +		return 1;
-> +
-> +	if (rlim_stack == RLIM_INFINITY)
-> +		return 1;
-> +
-> +	return sysctl_legacy_va_layout;
-> +}
-> +
-> +static unsigned long compat_mmap_base(unsigned long rnd, unsigned long gap)
-> +{
-> +	unsigned long pad = stack_guard_gap;
-> +
-> +	/* Account for stack randomization if necessary */
-> +	if (current->flags & PF_RANDOMIZE)
-> +		pad += (COMPAT_STACK_RND_MASK << PAGE_SHIFT);
-> +
-> +	/* Values close to RLIM_INFINITY can overflow. */
-> +	if (gap + pad > gap)
-> +		gap += pad;
-> +
-> +	if (gap < COMPAT_MIN_GAP)
-> +		gap = COMPAT_MIN_GAP;
-> +	else if (gap > COMPAT_MAX_GAP)
-> +		gap = COMPAT_MAX_GAP;
-> +
-> +	return PAGE_ALIGN(COMPAT_STACK_TOP - gap - rnd);
-> +}
+Similar to 3. However, we didn't even take care of huge pages *at all* 
+for now (neither migrate nor dissolve). So actually don't make the 
+current state any worse. virito-mem will handle migration errors 
+gracefully. CMA might be able to fallback on other free areas within the 
+CMA region.
 
-Again, it's not clear what's going on here, and I fear this is specific
-to the design of your userspace emilation layer.
 
+I'd say, document the changed behavior properly so people are aware that 
+there might be issues in corner cases with huge pages on CMA / ZONE_MOVABLE.
+
+-- 
 Thanks,
-Mark.
+
+David / dhildenb
+
