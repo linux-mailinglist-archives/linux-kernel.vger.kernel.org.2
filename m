@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFF93197A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 936DF3197AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbhBLA7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 19:59:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34110 "EHLO
+        id S229813AbhBLBCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 20:02:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhBLA7t (ORCPT
+        with ESMTP id S229653AbhBLBCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 19:59:49 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388DCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 16:59:09 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id s107so6992736otb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 16:59:09 -0800 (PST)
+        Thu, 11 Feb 2021 20:02:09 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25982C06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 17:01:26 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id f3so4590515oiw.13
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 17:01:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=E8dTklfppDgtQ5t+jdmFpUHmiL5MAONXlpGXODd+kf0=;
-        b=SorPw2Scef1yOshGti7Inf8DzOeiRsZ7yHSUKsbc8+NXWhPG7zW6N0DoyhxI6UIQNh
-         mayKPkr0QDB6iD4VNbHnqlgheyTykyjR8/q7e4w6T94NDAwfNxEWA95SmJyrzPkWaRRP
-         13sIzAmOwV6ixC/LwBlXS3oJ47cquyc5yETttJHrDGcTj8myLn377pxQMxqAWlE6CzyH
-         xHgkRcokd3P0ywLLItHIyZBp9MQhc649ifyZu/v3VpdQOi9XLPFydp7JZVvo96aSBbH6
-         m9JI3H6OhFvjpglhgPpXY6zDoGUkcpexn1f70W2OrhC+GOzZAtx0PpVQRaUUKjI+badu
-         jU7w==
+        bh=8YtrUSFE4UJxIRgtprGaYSyVbZ5RUtrrAW9L1A1aPAM=;
+        b=aNEO/kRlojFeLEP0qjB/cvQQntewciuY7gOlX5Ut+MMKNwBaRnN3hRur6M2YQJ5y9Q
+         /W66JF6PWlKAHDA1g0/VD9Zle6jAp6s4SfbMXMNTrLpHXOTp3tsjySfTJ+dhWW3Z2S5D
+         uyPGFySWIYZMh82pa3sZG6IXH/82xKew7RCP8R78lIMatjIME6vpfpjnHifxjP99Iffm
+         1ihZybbbrwRxpWw+/vw2lDBdDIjdN5IjzO95mpVdyCxqKVde0sqCoGDnSABKMLLEP3DQ
+         0Tt1w194wddNSqG6ZhGp8W1id3KtZOKG/0zi9aaZFtsRT22Fuan8UIKRXhac4rSx9kNV
+         0BkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=E8dTklfppDgtQ5t+jdmFpUHmiL5MAONXlpGXODd+kf0=;
-        b=mjEibhoruqfKbFY7IBRl9se5XgO+Yx7yo6EdSLprNA/tkD5x+JSy76pfaP4ZrsGdH+
-         GeVAx32dyi8LuWzLKAT+RtEKQM563uhnGFGo2Z6rZ589N+YEan5qlpxoZWATC2bJe6Yh
-         t/vX+n7aDWvkFVoKbkun8l4fhium/6HndFMz9eyDesO0e+ky/KUW33SR9bjxDgnap0Gb
-         RHO7tvZErw45hVg8LyHVTPhEwmlQcAv1dqIX524S+cxjhReeLP3YGmmcl9Cu2oD/mumV
-         dheZtgCseKZCgL4otvJgIpXCKxLjpLDuHbBr41YBqpUURZuCc3lRfiwkRMclZ2ul+1sJ
-         e5rA==
-X-Gm-Message-State: AOAM533eQm7ykYDu1lOQ6ROwtHF34V+ihTDAIktu8gyaLZQEHeGAOdFg
-        Kl/O3sdV7+RCA5JH3sBNGKTeDtTSrZ+mOumWFLnmGw==
-X-Google-Smtp-Source: ABdhPJwboH2bgMuX2aLA+0ostnowl3Ehax1DZAhkm1wfOYTPGkTXxKvLSaPPwydNjb3E+ZSGF8jwG+s959v/ITGHUbc=
-X-Received: by 2002:a05:6830:902:: with SMTP id v2mr474189ott.56.1613091548340;
- Thu, 11 Feb 2021 16:59:08 -0800 (PST)
+        bh=8YtrUSFE4UJxIRgtprGaYSyVbZ5RUtrrAW9L1A1aPAM=;
+        b=LmcIq+QO9xea3c9RZu+3nunTN30TtcT82ldP7YKLQin5DBYZNMv97l2oTokj6YLzyL
+         8W8b6oCqZWkOkXMECT0F0fXhEkSR4yk4ZJ3+Srh5c6J8P5mUANg9f/oitwcCE8yCSpyw
+         CxBZ3HmNa3uUh0yraYDn7OUc9y7PNoBmntVJFdN+F/t6CdLm8S1I5xrC/16Znhf2mhSp
+         /CaWMOP21AFcHHmrOuUFtz65oyzUsNt+vASoXye1H6xF6YgK/8iN+FD/rsvHiTSg3B2O
+         SzzSXeYqltJDxL5fEyIT9zJ9wbMcLdvY9Tqr7xKaWvPXID/MQk8YoBGWlk2zVL6npODS
+         RSqg==
+X-Gm-Message-State: AOAM5324KOzuDEHT3LiKSjHCsm6b+tbt/how5czcF97qA5rFQsHBvr9d
+        TfKytWN8yfMGMbeD/JAnSPfmjua727zy0Kgs+b7D2g==
+X-Google-Smtp-Source: ABdhPJwLhfqYPeRsmtMMO97n8ySrNv2UOTZ4UHhf8NE1lf1LkIuaq0Ygs5pm6LUH3negoPkQwg2BYittfMhqW95bHEs=
+X-Received: by 2002:aca:5008:: with SMTP id e8mr344509oib.13.1613091685350;
+ Thu, 11 Feb 2021 17:01:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20210212003411.1102677-1-seanjc@google.com> <20210212003411.1102677-4-seanjc@google.com>
-In-Reply-To: <20210212003411.1102677-4-seanjc@google.com>
+References: <20210212003411.1102677-1-seanjc@google.com> <20210212003411.1102677-2-seanjc@google.com>
+In-Reply-To: <20210212003411.1102677-2-seanjc@google.com>
 From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 11 Feb 2021 16:58:57 -0800
-Message-ID: <CALMp9eQL4YOofdAV9CiZg-AD5atzxR28LcejB2sHHQ0SZZ6+ug@mail.gmail.com>
-Subject: Re: [PATCH 3/3] KVM: VMX: Allow INVPCID in guest without PCID
+Date:   Thu, 11 Feb 2021 17:01:14 -0800
+Message-ID: <CALMp9eRhSCWWEcxR-UoRoQ-g=ZFhj20Cd15Tu5jP8LZ7mBi9FA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] KVM: SVM: Intercept INVPCID when it's disabled to
+ inject #UD
 To:     Sean Christopherson <seanjc@google.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
@@ -65,20 +66,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Feb 11, 2021 at 4:34 PM Sean Christopherson <seanjc@google.com> wrote:
 >
-> Remove the restriction that prevents VMX from exposing INVPCID to the
-> guest without PCID also being exposed to the guest.  The justification of
-> the restriction is that INVPCID will #UD if it's disabled in the VMCS.
-> While that is a true statement, it's also true that RDTSCP will #UD if
-> it's disabled in the VMCS.  Neither of those things has any dependency
-> whatsoever on the guest being able to set CR4.PCIDE=1, which is what is
-> effectively allowed by exposing PCID to the guest.
+> Intercept INVPCID if it's disabled in the guest, even when using NPT,
+> as KVM needs to inject #UD in this case.
 >
-> Removing the bogus restriction aligns VMX with SVM, and also allows for
-> an interesting configuration.  INVPCID is that fastest way to do a global
-> TLB flush, e.g. see native_flush_tlb_global().  Allowing INVPCID without
-> PCID would let a guest use the expedited flush while also limiting the
-> number of ASIDs consumed by the guest.
->
+> Fixes: 4407a797e941 ("KVM: SVM: Enable INVPCID feature on AMD")
+> Cc: Babu Moger <babu.moger@amd.com>
 > Signed-off-by: Sean Christopherson <seanjc@google.com>
-I always thought this was a bizarre one-off restriction.
 Reviewed-by: Jim Mattson <jmattson@google.com>
