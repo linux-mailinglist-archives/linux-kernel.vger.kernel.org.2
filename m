@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261CE31A790
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E8A31A79F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhBLW0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 17:26:44 -0500
-Received: from mga17.intel.com ([192.55.52.151]:1242 "EHLO mga17.intel.com"
+        id S231639AbhBLW3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 17:29:08 -0500
+Received: from mga04.intel.com ([192.55.52.120]:42449 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231352AbhBLWY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 17:24:57 -0500
-IronPort-SDR: 2vv1vvrKugrNcD4DeBRMEPBGXxv57c8MI4f43bY8VX9G+s1wnApV3GoYwYxqVmmfXnY4CqqpPZ
- 1e+3RKGXnC1Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="162242566"
+        id S231599AbhBLWZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 17:25:07 -0500
+IronPort-SDR: pxQfYcEKiynV49n/IRWIdfMMeLEAMbhO03iHo9dIumq46/ji3QvDQSv++Ft/32iwXVuW6j4mKG
+ Mu+w2XaJkMCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="179928229"
 X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
-   d="scan'208";a="162242566"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 14:23:08 -0800
-IronPort-SDR: SLO/ZFmSARb7FFW4G38RAgo/3UWZeOEB2zGgsxacotBsOVjYUWUu3RwLCe5BFLXVsGlb0ZgsxQ
- 776FlfyPnSMw==
+   d="scan'208";a="179928229"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 14:23:08 -0800
+IronPort-SDR: 5y98pGNi9a8IrG4OlEAHuCGnTVM+KB6wpgUM0TBwoJ9ucFgf0iy00pa7GTZZZ57MO7VFLhvJfq
+ Z/kppWY8rxYg==
 X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
-   d="scan'208";a="491290279"
+   d="scan'208";a="381881513"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 14:23:08 -0800
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 14:23:08 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id D4790636D;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id EFAF8636F;
         Fri, 12 Feb 2021 14:23:07 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id CD9CC3636F6; Fri, 12 Feb 2021 14:23:07 -0800 (PST)
+        id E82993636F8; Fri, 12 Feb 2021 14:23:07 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -37,11 +37,11 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
-        Paul Murphy <paul.j.murphy@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Subject: [PATCH v6 07/34] keembay-vpu-ipc: Add Keem Bay VPU IPC module
-Date:   Fri, 12 Feb 2021 14:22:37 -0800
-Message-Id: <20210212222304.110194-8-mgross@linux.intel.com>
+        Srikanth Thokala <srikanth.thokala@intel.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>
+Subject: [PATCH v6 09/34] misc: xlink-pcie: lh: Add PCIe EPF driver for Local Host
+Date:   Fri, 12 Feb 2021 14:22:39 -0800
+Message-Id: <20210212222304.110194-10-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210212222304.110194-1-mgross@linux.intel.com>
 References: <20210212222304.110194-1-mgross@linux.intel.com>
@@ -49,2199 +49,568 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Murphy <paul.j.murphy@intel.com>
+From: Srikanth Thokala <srikanth.thokala@intel.com>
 
-Intel Keem Bay SoC contains a Vision Processing Unit (VPU) to enable
-machine vision and other applications.
+Add PCIe EPF driver for local host (lh) to configure BAR's and other
+HW resources. Underlying PCIe HW controller is a Synopsys DWC PCIe core.
 
-Enable Linux to control the VPU processor and provides an interface to
-the Keem Bay IPC for communicating with the VPU firmware.
-
-Specifically the driver provides the following functionality to other
-kernel components:
-- Starting (including loading the VPU firmware) / Stopping / Rebooting
-  the   VPU.
-- Getting notifications of VPU events (e.g., WDT events).
-- Communicating with the VPU via the Keem Bay IPC mechanism.
-
-In addition to the above, the driver also exposes SoC information (like
-stepping, device ID, etc.) to user-space via sysfs. Specifically, the
-following sysfs files are provided:
-- /sys/firmware/keembay-vpu-ipc/device_id
-- /sys/firmware/keembay-vpu-ipc/feature_exclusion
-- /sys/firmware/keembay-vpu-ipc/hardware_id
-- /sys/firmware/keembay-vpu-ipc/sku
-- /sys/firmware/keembay-vpu-ipc/stepping
-
-Co-developed-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Cc: Derek Kiernan <derek.kiernan@xilinx.com>
+Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Mark Gross <mgross@linux.intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Paul Murphy <paul.j.murphy@intel.com>
+Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
 ---
- MAINTAINERS                               |    9 +
- drivers/soc/intel/Kconfig                 |   15 +
- drivers/soc/intel/Makefile                |    3 +-
- drivers/soc/intel/keembay-vpu-ipc.c       | 2026 +++++++++++++++++++++
- include/linux/soc/intel/keembay-vpu-ipc.h |   62 +
- 5 files changed, 2114 insertions(+), 1 deletion(-)
- create mode 100644 drivers/soc/intel/keembay-vpu-ipc.c
- create mode 100644 include/linux/soc/intel/keembay-vpu-ipc.h
+ MAINTAINERS                                 |   6 +
+ drivers/misc/Kconfig                        |   1 +
+ drivers/misc/Makefile                       |   1 +
+ drivers/misc/xlink-pcie/Kconfig             |   9 +
+ drivers/misc/xlink-pcie/Makefile            |   1 +
+ drivers/misc/xlink-pcie/local_host/Makefile |   2 +
+ drivers/misc/xlink-pcie/local_host/epf.c    | 373 ++++++++++++++++++++
+ drivers/misc/xlink-pcie/local_host/epf.h    |  37 ++
+ drivers/misc/xlink-pcie/local_host/xpcie.h  |  38 ++
+ 9 files changed, 468 insertions(+)
+ create mode 100644 drivers/misc/xlink-pcie/Kconfig
+ create mode 100644 drivers/misc/xlink-pcie/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/local_host/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/local_host/epf.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/epf.h
+ create mode 100644 drivers/misc/xlink-pcie/local_host/xpcie.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index bb39711065a4..c18640ae6955 100644
+index c18640ae6955..3a7fe50f17a9 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -9066,6 +9066,15 @@ F:	Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
- F:	drivers/soc/intel/keembay-ipc.c
- F:	include/linux/soc/intel/keembay-ipc.h
+@@ -1961,6 +1961,12 @@ F:	Documentation/devicetree/bindings/arm/intel,keembay.yaml
+ F:	arch/arm64/boot/dts/intel/keembay-evm.dts
+ F:	arch/arm64/boot/dts/intel/keembay-soc.dtsi
  
-+INTEL KEEM BAY VPU IPC DRIVER
-+M:	Paul J Murphy <paul.j.murphy@intel.com>
-+M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
++ARM KEEM BAY XLINK PCIE SUPPORT
++M:	Srikanth Thokala <srikanth.thokala@intel.com>
 +M:	Mark Gross <mgross@linux.intel.com>
 +S:	Supported
-+F:	Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
-+F:	drivers/soc/intel/keembay-vpu-ipc.c
-+F:	include/linux/soc/intel/keembay-vpu-ipc.h
++F:	drivers/misc/xlink-pcie/
 +
- INTEL MANAGEMENT ENGINE (mei)
- M:	Tomas Winkler <tomas.winkler@intel.com>
- L:	linux-kernel@vger.kernel.org
-diff --git a/drivers/soc/intel/Kconfig b/drivers/soc/intel/Kconfig
-index a575e31e47b4..ebd23ea57d04 100644
---- a/drivers/soc/intel/Kconfig
-+++ b/drivers/soc/intel/Kconfig
-@@ -15,4 +15,19 @@ config KEEMBAY_IPC
- 
- 	  Select this if you are compiling the Kernel for an Intel SoC that
- 	  includes the Intel Vision Processing Unit (VPU) such as Keem Bay.
-+
-+config KEEMBAY_VPU_IPC
-+	tristate "Intel Keem Bay VPU IPC Driver"
-+	depends on KEEMBAY_IPC
-+	depends on HAVE_ARM_SMCCC
-+	help
-+	  This option enables support for loading and communicating with
-+	  the firmware on the Vision Processing Unit (VPU) of the Keem Bay
-+	  SoC. The driver depends on the Keem Bay IPC driver to do
-+	  communication, and it depends on secure world monitor software to
-+	  do the control of the VPU state.
-+
-+	  Select this if you are compiling the Kernel for an Intel SoC that
-+	  includes the Intel Vision Processing Unit (VPU) such as Keem Bay.
-+
+ ARM/INTEL RESEARCH IMOTE/STARGATE 2 MACHINE SUPPORT
+ M:	Jonathan Cameron <jic23@cam.ac.uk>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index fafa8b0d8099..dfb98e444c6e 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -481,4 +481,5 @@ source "drivers/misc/ocxl/Kconfig"
+ source "drivers/misc/cardreader/Kconfig"
+ source "drivers/misc/habanalabs/Kconfig"
+ source "drivers/misc/uacce/Kconfig"
++source "drivers/misc/xlink-pcie/Kconfig"
  endmenu
-diff --git a/drivers/soc/intel/Makefile b/drivers/soc/intel/Makefile
-index ecf0246e7822..363a81848843 100644
---- a/drivers/soc/intel/Makefile
-+++ b/drivers/soc/intel/Makefile
-@@ -1,4 +1,5 @@
- #
- # Makefile for Keem Bay IPC Linux driver
- #
--obj-$(CONFIG_KEEMBAY_IPC) += keembay-ipc.o
-+obj-$(CONFIG_KEEMBAY_IPC)	+= keembay-ipc.o
-+obj-$(CONFIG_KEEMBAY_VPU_IPC)	+= keembay-vpu-ipc.o
-diff --git a/drivers/soc/intel/keembay-vpu-ipc.c b/drivers/soc/intel/keembay-vpu-ipc.c
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index d23231e73330..d17621fc43d5 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -57,3 +57,4 @@ obj-$(CONFIG_HABANA_AI)		+= habanalabs/
+ obj-$(CONFIG_UACCE)		+= uacce/
+ obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
+ obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
++obj-y                           += xlink-pcie/
+diff --git a/drivers/misc/xlink-pcie/Kconfig b/drivers/misc/xlink-pcie/Kconfig
 new file mode 100644
-index 000000000000..8f3d6a466629
+index 000000000000..46aa401d79b7
 --- /dev/null
-+++ b/drivers/soc/intel/keembay-vpu-ipc.c
-@@ -0,0 +1,2026 @@
++++ b/drivers/misc/xlink-pcie/Kconfig
+@@ -0,0 +1,9 @@
++config XLINK_PCIE_LH_DRIVER
++	tristate "XLink PCIe Local Host driver"
++	depends on PCI_ENDPOINT && ARCH_KEEMBAY
++	help
++	  This option enables XLink PCIe Local Host driver.
++
++	  Choose M here to compile this driver as a module, name is mxlk_ep.
++	  This driver is used for XLink communication over PCIe and is to be
++	  loaded on the Intel Keem Bay platform.
+diff --git a/drivers/misc/xlink-pcie/Makefile b/drivers/misc/xlink-pcie/Makefile
+new file mode 100644
+index 000000000000..d693d382e9c6
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/Makefile
+@@ -0,0 +1 @@
++obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += local_host/
+diff --git a/drivers/misc/xlink-pcie/local_host/Makefile b/drivers/misc/xlink-pcie/local_host/Makefile
+new file mode 100644
+index 000000000000..514d3f0c91bc
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/local_host/Makefile
+@@ -0,0 +1,2 @@
++obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += mxlk_ep.o
++mxlk_ep-objs := epf.o
+diff --git a/drivers/misc/xlink-pcie/local_host/epf.c b/drivers/misc/xlink-pcie/local_host/epf.c
+new file mode 100644
+index 000000000000..0234756e89ae
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/local_host/epf.c
+@@ -0,0 +1,373 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Keem Bay VPU IPC Driver.
++ * Intel Keem Bay XLink PCIe Driver
 + *
-+ * Copyright (c) 2018-2020 Intel Corporation.
-+ *
-+ * The purpose of this driver is to facilitate booting, control and
-+ * communication with the VPU IP on the Keem Bay SoC.
-+ *
-+ * Specifically the driver provides the following functionality to other kernel
-+ * components:
-+ * - Loading the VPU firmware into DDR for the VPU to execute.
-+ * - Starting / Stopping / Rebooting the VPU.
-+ * - Getting notifications of VPU events (e.g., WDT events).
-+ * - Communicating with the VPU using the Keem Bay IPC mechanism.
-+ *
-+ * In addition to the above, the driver also exposes SoC information (like
-+ * stepping, device ID, etc.) to user-space via sysfs.
-+ *
-+ *
-+ * VPU Firmware loading
-+ * --------------------
-+ *
-+ * The VPU Firmware consists of both the RTOS and the application code meant to
-+ * be run by the VPU.
-+ *
-+ * The VPU Firmware is loaded into DDR using the Linux Firmware API. The
-+ * firmware is loaded into a specific reserved memory region in DDR and
-+ * executed by the VPU directly from there.
-+ *
-+ * The VPU Firmware binary is expected to have the following format:
-+ *
-+ * +------------------+ 0x0
-+ * | Header           |
-+ * +------------------+ 0x1000
-+ * | FW Version Area  |
-+ * +------------------+ 0x2000
-+ * | FW Image         |
-+ * +------------------+ 0x2000 + FW image size
-+ * | x509 Certificate |
-+ * +------------------+
-+ *
-+ * Note: the x509 Certificate is ignored for now.
-+ *
-+ * As part of the firmware loading process, the driver performs the following
-+ * operations:
-+ * - It parses the VPU firmware binary.
-+ * - It loads the FW version area to the DDR location expected by the VPU
-+ *   firmware and specified in the FW header.
-+ * - It loads the FW image to the location specified in the FW header.
-+ * - It prepares the boot parameters to be passed to the VPU firmware and loads
-+ *   them at the location specified in the FW header.
-+ *
-+ * VPU Start / Stop / Reboot
-+ * -------------------------
-+ *
-+ * The VPU is started / stopped by the SoC firmware, not by this driver
-+ * directly. This driver just calls the VPU_BOOT and VPU_STOP SMC SiP services
-+ * provided by the SoC firmware.
-+ *
-+ * Reboot is performed by stopping and re-starting the VPU, including
-+ * re-loading the VPU firmware (this is because the VPU firmware .data and .bss
-+ * sections need to be re-initialized).
-+ *
-+ * Sysfs interface
-+ * ---------------
-+ *
-+ * This module exposes SoC information via sysfs. The following sysfs files are
-+ * created by this module:
-+ * - /sys/firmware/keembay-vpu-ipc/device_id
-+ * - /sys/firmware/keembay-vpu-ipc/feature_exclusion
-+ * - /sys/firmware/keembay-vpu-ipc/hardware_id
-+ * - /sys/firmware/keembay-vpu-ipc/sku
-+ * - /sys/firmware/keembay-vpu-ipc/stepping
++ * Copyright (C) 2021 Intel Corporation
 + */
 +
-+#include <linux/arm-smccc.h>
-+#include <linux/clk.h>
-+#include <linux/dma-direct.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/firmware.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/irq.h>
-+#include <linux/kernel.h>
-+#include <linux/kthread.h>
-+#include <linux/module.h>
 +#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_platform.h>
-+#include <linux/of_reserved_mem.h>
 +#include <linux/platform_device.h>
-+#include <linux/slab.h>
 +
-+#include <linux/soc/intel/keembay-ipc.h>
-+#include <linux/soc/intel/keembay-vpu-ipc.h>
++#include "epf.h"
 +
-+/* Function ID for the SiP SMC to boot the VPU */
-+#define KMB_SIP_SVC_VPU_BOOT		0xFF10
++#define BAR2_MIN_SIZE			SZ_16K
++#define BAR4_MIN_SIZE			SZ_16K
 +
-+/* Function ID for the SiP SMC to stop the VPU */
-+#define KMB_SIP_SVC_VPU_STOP		0xFF16
++#define PCIE_REGS_PCIE_INTR_ENABLE	0x18
++#define PCIE_REGS_PCIE_INTR_FLAGS	0x1C
++#define LBC_CII_EVENT_FLAG		BIT(18)
++#define PCIE_REGS_PCIE_ERR_INTR_FLAGS	0x24
++#define LINK_REQ_RST_FLG		BIT(15)
 +
-+/* Device tree "memory-region" for VPU firmware area */
-+#define VPU_IPC_FW_AREA_IDX		0
-+
-+/* Device tree region for VPU driver to store X509 region */
-+#define VPU_IPC_X509_AREA_IDX		1
-+
-+/* Device tree "memory-region" for MSS IPC header area */
-+#define MSS_IPC_AREA_IDX		2
-+
-+/*
-+ * These are the parameters of the ready message to be received
-+ * from the VPU when it is booted correctly.
-+ */
-+#define READY_MESSAGE_IPC_CHANNEL	0xA
-+
-+/* Ready message timeout, in ms */
-+#define READY_MESSAGE_TIMEOUT_MS	2000
-+
-+/* Ready message 'physical data address', which is actually a command. */
-+#define READY_MESSAGE_EXPECTED_PADDR	0x424f4f54
-+
-+/* Ready message size */
-+#define READY_MESSAGE_EXPECTED_SIZE	0
-+
-+/* Size of version information in the header */
-+#define VPU_VERSION_SIZE		32
-+
-+/* Version of header that this driver supports. */
-+#define HEADER_VERSION_SUPPORTED	0x1
-+
-+/* Maximum size allowed for firmware version region */
-+#define MAX_FIRMWARE_VERSION_SIZE	0x1000
-+
-+/* Size allowed for header region */
-+#define MAX_HEADER_SIZE			0x1000
-+
-+/* VPU reset vector must be aligned to 4kB. */
-+#define VPU_RESET_VECTOR_ALIGNMENT	0x1000
-+
-+/* Watchdog timer reset trigger */
-+#define TIM_WATCHDOG			0x0
-+
-+/* Watchdog counter enable register */
-+#define TIM_WDOG_EN			0x8
-+
-+/* Write access to protected registers */
-+#define TIM_SAFE			0xC
-+
-+/* Watchdog timer count value */
-+#define TIM_WATCHDOG_RESET_VALUE	0xFFFFFFFF
-+
-+/* Watchdog timer safe value */
-+#define TIM_SAFE_ENABLE			0xf1d0dead
-+
-+/* Watchdog timeout interrupt clear bit */
-+#define TIM_GEN_CONFIG_WDOG_TO_INT_CLR	BIT(9)
-+
-+/* Magic number for the boot parameters. */
-+#define BOOT_PARAMS_MAGIC_NUMBER	0x00010000
-+
-+/* Maximum size of string of form "pll_i_out_j" */
-+#define PLL_STRING_SIZE			128
-+
-+/* Number of PLLs */
-+#define NUM_PLLS			3
-+
-+/* Every PLL has this many outputs. */
-+#define NUM_PLL_OUTPUTS			4
-+
-+/* SoC SKU length, in bytes. */
-+#define SOC_INFO_SKU_BYTES		6
-+
-+/* SoC stepping length, in bytes. */
-+#define SOC_INFO_STEPPING_BYTES		2
-+
-+/*
-+ * The offset to convert the HW IRQ reported by irqd_to_hwirq() to the GIC_SPI
-+ * IRQ number specified in the device tree:
-+ * GIC_SPI x = irqd_to_hwirq() - 32
-+ */
-+#define GIC_SPI_HWIRQ_OFFSET		32
-+
-+/**
-+ * struct boot_parameters - Boot parameters passed to the VPU.
-+ * @magic_number:		Magic number to indicate structure populated
-+ * @vpu_id:			ID to be passed to the VPU firmware.
-+ * @reserved_0:			Reserved memory for other 'header' information
-+ * @cpu_frequency_hz:		Frequency that the CPU is running at
-+ * @pll0_out:			Frequency of each of the outputs of PLL 0
-+ * @pll1_out:			Frequency of each of the outputs of PLL 1
-+ * @pll2_out:			Frequency of each of the outputs of PLL 2
-+ * @reserved_1:			Reserved memory for other clock frequencies
-+ * @mss_ipc_header_address:	Base address of MSS IPC header region
-+ * @mss_ipc_header_area_size:	Size of MSS IPC header region
-+ * @mmio_address:		MMIO region for VPU communication
-+ * @mmio_area_size:		Size of MMIO region for VPU communication
-+ * @reserved_2:			Reserved memory for other memory regions
-+ * @mss_wdt_to_irq_a53_redir:	MSS redirects WDT TO IRQ to this ARM IRQ number
-+ * @nce_wdt_to_irq_a53_redir:	NCE redirects WDT TO IRQ to this ARM IRQ number
-+ * @vpu_to_host_irq:		VPU to host notification IRQ
-+ * @reserved_3:			Reserved memory for other configurations
-+ * @a53ss_version_id:		SoC A53SS_VERSION_ID register value
-+ * @si_stepping:		Silicon stepping, 2 characters
-+ * @device_id:			64 bits of device ID info from fuses
-+ * @feature_exclusion:		64 bits of feature exclusion info from fuses
-+ * @sku:			64-bit SKU identifier.
-+ * @reserved_4:			Reserved memory for other information
-+ * @reserved_5:			Unused/reserved memory
-+ */
-+struct boot_parameters {
-+	/* Header: 0x0 - 0x1F */
-+	u32 magic_number;
-+	u32 vpu_id;
-+	u32 reserved_0[6];
-+	/* Clock frequencies: 0x20 - 0xFF */
-+	u32 cpu_frequency_hz;
-+	u32 pll0_out[NUM_PLL_OUTPUTS];
-+	u32 pll1_out[NUM_PLL_OUTPUTS];
-+	u32 pll2_out[NUM_PLL_OUTPUTS];
-+	u32 reserved_1[43];
-+	/* Memory regions: 0x100 - 0x1FF */
-+	u64 mss_ipc_header_address;
-+	u32 mss_ipc_header_area_size;
-+	u64 mmio_address;
-+	u32 mmio_area_size;
-+	u32 reserved_2[58];
-+	/* IRQ re-direct numbers: 0x200 - 0x2FF */
-+	u32 mss_wdt_to_irq_a53_redir;
-+	u32 nce_wdt_to_irq_a53_redir;
-+	u32 vpu_to_host_irq;
-+	u32 reserved_3[61];
-+	/* Silicon information: 0x300 - 0x3FF */
-+	u32 a53ss_version_id;
-+	u32 si_stepping;
-+	u64 device_id;
-+	u64 feature_exclusion;
-+	u64 sku;
-+	u32 reserved_4[56];
-+	/* Unused/reserved: 0x400 - 0xFFF */
-+	u32 reserved_5[0x300];
-+} __packed;
-+
-+/**
-+ * struct firmware_header - Firmware header information
-+ * @header_ver:	This header version dictates content structure of
-+ *			remainder of firmware image, including the header
-+ *			itself.
-+ * @image_format:	Image format defines how the loader will handle the
-+ *			'firmware image'.
-+ * @image_load_addr:	VPU address where the firmware image must be loaded to.
-+ * @image_size:		Size of the image.
-+ * @entry_point:	Entry point for the VPU firmware (this is a VPU
-+ *			address).
-+ * @vpu_ver:		Version of the VPU firmware.
-+ * @compression_type:	Type of compression used for the VPU firmware.
-+ * @fw_ver_load_addr: VPU address where to load the data in the FW version
-+ *			area of the binary.
-+ * @fw_ver_size:	Size of the FW version.
-+ * @config_load_addr:	VPU IPC driver will populate the 4kB of configuration
-+ *			data to this address.
-+ */
-+struct firmware_header {
-+	u32 header_ver;
-+	u32 image_format;
-+	u64 image_load_addr;
-+	u32 image_size;
-+	u64 entry_point;
-+	u8  vpu_ver[VPU_VERSION_SIZE];
-+	u32 compression_type;
-+	u64 fw_ver_load_addr;
-+	u32 fw_ver_size;
-+	u64 config_load_addr;
-+} __packed;
-+
-+/**
-+ * struct vpu_mem - Information about reserved memory shared with VPU.
-+ * @vaddr:	The virtual address of the memory region.
-+ * @paddr:	The (CPU) physical address of the memory region.
-+ * @vpu_addr:	The VPU address of the memory region.
-+ * @size:	The size of the memory region.
-+ */
-+struct vpu_mem {
-+	void *vaddr;
-+	phys_addr_t paddr;
-+	dma_addr_t vpu_addr;
-+	size_t size;
++static struct pci_epf_header xpcie_header = {
++	.vendorid = PCI_VENDOR_ID_INTEL,
++	.deviceid = PCI_DEVICE_ID_INTEL_KEEMBAY,
++	.baseclass_code = PCI_BASE_CLASS_MULTIMEDIA,
++	.subclass_code = 0x0,
++	.subsys_vendor_id = 0x0,
++	.subsys_id = 0x0,
 +};
 +
-+/**
-+ * struct vpu_mem - Information about reserved memory shared with ATF.
-+ * @vaddr:	The virtual address of the memory region.
-+ * @paddr:	The physical address of the memory region.
-+ * @size:	The size of the memory region.
-+ */
-+struct atf_mem {
-+	void __iomem *vaddr;
-+	phys_addr_t paddr;
-+	size_t size;
++static const struct pci_epf_device_id xpcie_epf_ids[] = {
++	{
++		.name = "mxlk_pcie_epf",
++	},
++	{},
 +};
 +
-+/**
-+ * struct vpu_ipc_dev - The VPU IPC device structure.
-+ * @pdev:		Platform device associated with this VPU IPC device.
-+ * @state:		The current state of the device's finite state machine.
-+ * @reserved_mem:	VPU firmware reserved memory region. The VPU firmware,
-+ *			VPU firmware version and the boot parameters are loaded
-+ *			inside this region.
-+ * @x509_mem:		x509 reserved memory region.
-+ * @mss_ipc_mem:	The reserved memory from which the VPU is expected to
-+ *			allocate its own IPC buffers.
-+ * @boot_vec_paddr:	The VPU entry point (as specified in the VPU FW binary).
-+ * @boot_params:	Pointer to the VPU boot parameters.
-+ * @fw_res:		The memory region where the VPU FW was loaded.
-+ * @ready_message_task: The ktrhead instantiated to handle the reception of the
-+ *			VPU ready message.
-+ * @lock:		Spinlock protecting @state.
-+ * @cpu_clock:		The main clock powering the VPU IP.
-+ * @pll:		Array of PLL clocks.
-+ * @nce_irq:		IRQ number of the A53 re-direct IRQ used for receiving
-+ *			the NCE WDT timeout interrupt.
-+ * @mss_irq:		IRQ number of the A53 re-direct IRQ which will be used
-+ *			for receiving the MSS WDT timeout interrupt.
-+ * @imr:		Isolated Memory Region (IMR) to be used to protect the
-+ *			loaded VPU firmware.
-+ * @vpu_id:		The ID of the VPU associated with this device.
-+ * @nce_wdt_reg:	NCE WDT registers.
-+ * @nce_tim_cfg_reg:	NCE TIM registers.
-+ * @mss_wdt_reg:	MSS WDT registers.
-+ * @mss_tim_cfg_reg:	MSS TIM registers.
-+ * @nce_wdt_count:	Number of NCE WDT timeout event occurred since device
-+ *			probing.
-+ * @mss_wdt_count:	Number of MSS WDT timeout event occurred since device
-+ *			probing.
-+ * @ready_queue:	Wait queue for waiting on VPU to be ready.
-+ * @ipc_dev:		The IPC device to use for IPC communication.
-+ * @firmware_name:	The name of the firmware binary to be loaded.
-+ * @callback:		The callback executed when CONNECT / DISCONNECT events
-+ *			happen.
-+ */
-+struct vpu_ipc_dev {
-+	struct platform_device *pdev;
-+	enum intel_keembay_vpu_state state;
-+	struct vpu_mem reserved_mem;
-+	struct atf_mem x509_mem;
-+	struct vpu_mem mss_ipc_mem;
-+	u64 boot_vec_paddr;
-+	struct boot_parameters *boot_params;
-+	struct resource fw_res;
-+	struct task_struct *ready_message_task;
-+	spinlock_t lock; /* Protects the 'state' field above. */
-+	struct clk *cpu_clock;
-+	struct clk *pll[NUM_PLLS][NUM_PLL_OUTPUTS];
-+	int nce_irq;
-+	int mss_irq;
-+	u32 imr;
-+	u32 vpu_id;
-+	void __iomem *nce_wdt_reg;
-+	void __iomem *nce_tim_cfg_reg;
-+	void __iomem *mss_wdt_reg;
-+	void __iomem *mss_tim_cfg_reg;
-+	unsigned int nce_wdt_count;
-+	unsigned int mss_wdt_count;
-+	wait_queue_head_t ready_queue;
-+	struct device *ipc_dev;
-+	char *firmware_name;
-+	void (*callback)(struct device *dev, enum intel_keembay_vpu_event);
-+};
-+
-+/**
-+ * struct vpu_ipc_soc_info - VPU SKU information.
-+ * @device_id:		Value of device ID e-fuse.
-+ * @feature_exclusion:	Value of feature exclusion e-fuse.
-+ * @hardware_id:	Hardware identifier.
-+ * @stepping:		Silicon stepping.
-+ * @sku:		SKU identifier.
-+ *
-+ * SoC information read from the device-tree and exported via sysfs.
-+ */
-+struct vpu_ipc_soc_info {
-+	u64 device_id;
-+	u64 feature_exclusion;
-+	u32 hardware_id;
-+	u8 stepping[SOC_INFO_STEPPING_BYTES];
-+	u8 sku[SOC_INFO_SKU_BYTES];
-+};
-+
-+/**
-+ * enum keembay_vpu_event - Internal events handled by the driver state machine.
-+ * @KEEMBAY_VPU_EVENT_BOOT:		VPU booted.
-+ * @KEEMBAY_VPU_EVENT_BOOT_FAILED:	VPU boot failed.
-+ * @KEEMBAY_VPU_EVENT_STOP:		VPU stop initiated.
-+ * @KEEMBAY_VPU_EVENT_STOP_COMPLETE:	VPU stop completed.
-+ * @KEEMBAY_VPU_EVENT_NCE_WDT_TIMEOUT:	NCE watchdog triggered.
-+ * @KEEMBAY_VPU_EVENT_MSS_WDT_TIMEOUT:	MSS watchdog triggered.
-+ * @KEEMBAY_VPU_EVENT_MSS_READY_OK:	VPU ready message successfully received.
-+ * @KEEMBAY_VPU_EVENT_MSS_READY_FAIL:	Failed to receive VPU ready message.
-+ */
-+enum keembay_vpu_event {
-+	KEEMBAY_VPU_EVENT_BOOT = 0,
-+	KEEMBAY_VPU_EVENT_BOOT_FAILED,
-+	KEEMBAY_VPU_EVENT_STOP,
-+	KEEMBAY_VPU_EVENT_STOP_COMPLETE,
-+	KEEMBAY_VPU_EVENT_NCE_WDT_TIMEOUT,
-+	KEEMBAY_VPU_EVENT_MSS_WDT_TIMEOUT,
-+	KEEMBAY_VPU_EVENT_MSS_READY_OK,
-+	KEEMBAY_VPU_EVENT_MSS_READY_FAIL
-+};
-+
-+static struct vpu_ipc_dev *to_vpu_dev(struct device *dev);
-+
-+/* Variable containing SoC information. */
-+static struct vpu_ipc_soc_info *vpu_ipc_soc_info;
-+
-+/**
-+ * vpu_ipc_notify_event() - Trigger callback
-+ * @vpu_dev:		Private data
-+ * @event:		Event to notify
-+ *
-+ * This function is called when an event has occurred. If a callback has
-+ * been registered it is called with the device and event as arguments.
-+ *
-+ * This function can be called from interrupt context.
-+ */
-+static void vpu_ipc_notify_event(struct vpu_ipc_dev *vpu_dev,
-+				 enum intel_keembay_vpu_event event)
++static irqreturn_t intel_xpcie_err_interrupt(int irq, void *args)
 +{
-+	struct device *dev = &vpu_dev->pdev->dev;
++	struct xpcie_epf *xpcie_epf;
++	struct xpcie *xpcie = args;
++	u32 val;
 +
-+	if (vpu_dev->callback)
-+		vpu_dev->callback(dev, event);
-+}
++	xpcie_epf = container_of(xpcie, struct xpcie_epf, xpcie);
++	val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_ERR_INTR_FLAGS);
 +
-+/**
-+ * vpu_ipc_handle_event() - Handle events and optionally update state
-+ *
-+ * @vpu_dev:		Private data
-+ * @event:		Event that has occurred
-+ *
-+ * This function is called in the case that an event has occurred. This
-+ * function tells the calling code if the event is valid for the current state
-+ * and also updates the internal state accordingly to the event.
-+ *
-+ * This function can be called from interrupt context.
-+ *
-+ * Returns: 0 for success otherwise negative error value
-+ */
-+static int vpu_ipc_handle_event(struct vpu_ipc_dev *vpu_dev,
-+				enum keembay_vpu_event event)
-+{
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	unsigned long flags;
-+	int rc = -EINVAL;
-+
-+	/*
-+	 * Atomic update of state.
-+	 * Note: this function is called by the WDT IRQ handlers; therefore
-+	 * we must use the spin_lock_irqsave().
-+	 */
-+	spin_lock_irqsave(&vpu_dev->lock, flags);
-+
-+	switch (vpu_dev->state) {
-+	case KEEMBAY_VPU_OFF:
-+		if (event == KEEMBAY_VPU_EVENT_BOOT) {
-+			vpu_dev->state = KEEMBAY_VPU_BUSY;
-+			rc = 0;
-+		}
-+		break;
-+	case KEEMBAY_VPU_BUSY:
-+		if (event == KEEMBAY_VPU_EVENT_MSS_READY_OK) {
-+			vpu_dev->state = KEEMBAY_VPU_READY;
-+			vpu_ipc_notify_event(vpu_dev,
-+					     KEEMBAY_VPU_NOTIFY_CONNECT);
-+			rc = 0;
-+			break;
-+		}
-+		if (event == KEEMBAY_VPU_EVENT_MSS_READY_FAIL ||
-+		    event == KEEMBAY_VPU_EVENT_BOOT_FAILED) {
-+			vpu_dev->state = KEEMBAY_VPU_ERROR;
-+			rc = 0;
-+		}
-+		break;
-+	case KEEMBAY_VPU_READY:
-+		if (event != KEEMBAY_VPU_EVENT_MSS_READY_OK)
-+			vpu_ipc_notify_event(vpu_dev,
-+					     KEEMBAY_VPU_NOTIFY_DISCONNECT);
-+
-+		if (event == KEEMBAY_VPU_EVENT_MSS_READY_FAIL ||
-+		    event == KEEMBAY_VPU_EVENT_BOOT_FAILED) {
-+			vpu_dev->state = KEEMBAY_VPU_ERROR;
-+			rc = 0;
-+			break;
-+		}
-+		if (event == KEEMBAY_VPU_EVENT_NCE_WDT_TIMEOUT ||
-+		    event == KEEMBAY_VPU_EVENT_MSS_WDT_TIMEOUT) {
-+			vpu_dev->state = KEEMBAY_VPU_ERROR;
-+			rc = 0;
-+			break;
-+		}
-+		fallthrough;
-+	case KEEMBAY_VPU_ERROR:
-+		if (event == KEEMBAY_VPU_EVENT_BOOT) {
-+			vpu_dev->state = KEEMBAY_VPU_BUSY;
-+			rc = 0;
-+			break;
-+		}
-+		if (event == KEEMBAY_VPU_EVENT_STOP) {
-+			vpu_dev->state = KEEMBAY_VPU_STOPPING;
-+			rc = 0;
-+		}
-+		break;
-+	case KEEMBAY_VPU_STOPPING:
-+		if (event == KEEMBAY_VPU_EVENT_STOP_COMPLETE) {
-+			vpu_dev->state = KEEMBAY_VPU_OFF;
-+			rc = 0;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	spin_unlock_irqrestore(&vpu_dev->lock, flags);
-+
-+	if (rc)
-+		dev_err(dev, "Can't handle event %d in state %d\n",
-+			event, vpu_dev->state);
-+
-+	return rc;
-+}
-+
-+/**
-+ * clear_and_disable_vpu_wdt() - Clear and disable VPU WDT.
-+ * @wdt_base:		Base address of the WDT register.
-+ * @tim_cfg_base:	Base address of the associated TIM configuration
-+ *			register.
-+ */
-+static void clear_and_disable_vpu_wdt(u8 __iomem *wdt_base,
-+				      u8 __iomem *tim_cfg_base)
-+{
-+	u32 tim_gen_config;
-+
-+	/* Enable writing and set non-zero WDT value */
-+	iowrite32(TIM_SAFE_ENABLE, wdt_base + TIM_SAFE);
-+	iowrite32(TIM_WATCHDOG_RESET_VALUE, wdt_base + TIM_WATCHDOG);
-+
-+	/* Enable writing and disable watchdog timer */
-+	iowrite32(TIM_SAFE_ENABLE, wdt_base + TIM_SAFE);
-+	iowrite32(0, wdt_base + TIM_WDOG_EN);
-+
-+	/* Now clear the timeout interrupt */
-+	tim_gen_config = ioread32(tim_cfg_base);
-+	tim_gen_config &= ~(TIM_GEN_CONFIG_WDOG_TO_INT_CLR);
-+	iowrite32(tim_gen_config, tim_cfg_base);
-+}
-+
-+static irqreturn_t nce_wdt_irq_handler(int irq, void *ptr)
-+{
-+	struct vpu_ipc_dev *vpu_dev = ptr;
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	int rc;
-+
-+	vpu_ipc_notify_event(vpu_dev, KEEMBAY_VPU_NOTIFY_NCE_WDT);
-+	dev_dbg_ratelimited(dev, "NCE WDT IRQ occurred.\n");
-+
-+	clear_and_disable_vpu_wdt(vpu_dev->nce_wdt_reg,
-+				  vpu_dev->nce_tim_cfg_reg);
-+	/* Update driver state machine. */
-+	rc = vpu_ipc_handle_event(vpu_dev, KEEMBAY_VPU_EVENT_NCE_WDT_TIMEOUT);
-+	if (rc < 0)
-+		dev_warn_ratelimited(dev, "Unexpected NCE WDT event.\n");
-+
-+	vpu_dev->nce_wdt_count++;
++	iowrite32(val, xpcie_epf->apb_base + PCIE_REGS_PCIE_ERR_INTR_FLAGS);
 +
 +	return IRQ_HANDLED;
 +}
 +
-+static irqreturn_t mss_wdt_irq_handler(int irq, void *ptr)
++static irqreturn_t intel_xpcie_host_interrupt(int irq, void *args)
 +{
-+	struct vpu_ipc_dev *vpu_dev = ptr;
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	int rc;
++	struct xpcie_epf *xpcie_epf;
++	struct xpcie *xpcie = args;
++	u32 val;
 +
-+	vpu_ipc_notify_event(vpu_dev, KEEMBAY_VPU_NOTIFY_MSS_WDT);
-+	dev_dbg_ratelimited(dev, "MSS WDT IRQ occurred.\n");
-+
-+	clear_and_disable_vpu_wdt(vpu_dev->mss_wdt_reg,
-+				  vpu_dev->mss_tim_cfg_reg);
-+	/* Update driver state machine. */
-+	rc = vpu_ipc_handle_event(vpu_dev, KEEMBAY_VPU_EVENT_MSS_WDT_TIMEOUT);
-+	if (rc < 0)
-+		dev_warn_ratelimited(dev, "Unexpected MSS WDT event.\n");
-+
-+	vpu_dev->mss_wdt_count++;
++	xpcie_epf = container_of(xpcie, struct xpcie_epf, xpcie);
++	val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_INTR_FLAGS);
++	if (val & LBC_CII_EVENT_FLAG) {
++		iowrite32(LBC_CII_EVENT_FLAG,
++			  xpcie_epf->apb_base + PCIE_REGS_PCIE_INTR_FLAGS);
++	}
 +
 +	return IRQ_HANDLED;
 +}
 +
-+static resource_size_t get_reserved_mem_size(struct device *dev,
-+					     unsigned int idx)
++static void
++intel_xpcie_configure_bar(struct pci_epf *epf,
++			  const struct pci_epc_features *epc_features)
 +{
-+	struct resource mem;
-+	struct device_node *np;
-+	int rc;
-+
-+	np = of_parse_phandle(dev->of_node, "memory-region", idx);
-+	if (!np) {
-+		pr_err("Couldn't find memory-region %d\n", idx);
-+		return 0;
-+	}
-+
-+	rc = of_address_to_resource(np, 0, &mem);
-+	if (rc) {
-+		pr_err("Couldn't map address to resource\n");
-+		return 0;
-+	}
-+
-+	return resource_size(&mem);
-+}
-+
-+static int setup_vpu_fw_region(struct vpu_ipc_dev *vpu_dev)
-+{
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	struct vpu_mem *rsvd_mem = &vpu_dev->reserved_mem;
-+	int rc;
-+
-+	rc = of_reserved_mem_device_init(dev);
-+	if (rc) {
-+		dev_err(dev, "Failed to initialise device reserved memory.\n");
-+		return rc;
-+	}
-+
-+	rsvd_mem->size = get_reserved_mem_size(dev, VPU_IPC_FW_AREA_IDX);
-+	if (rsvd_mem->size == 0) {
-+		dev_err(dev, "Couldn't get size of reserved memory region.\n");
-+		rc = -ENODEV;
-+		goto setup_vpu_fw_fail;
-+	}
-+
-+	rsvd_mem->vaddr = dmam_alloc_coherent(dev, rsvd_mem->size,
-+					      &rsvd_mem->vpu_addr, GFP_KERNEL);
-+	/* Get the physical address of the reserved memory region. */
-+	rsvd_mem->paddr = dma_to_phys(dev, vpu_dev->reserved_mem.vpu_addr);
-+
-+	if (!rsvd_mem->vaddr) {
-+		dev_err(dev, "Failed to allocate memory for firmware.\n");
-+		rc = -ENOMEM;
-+		goto setup_vpu_fw_fail;
-+	}
-+
-+	return 0;
-+
-+setup_vpu_fw_fail:
-+	of_reserved_mem_device_release(dev);
-+
-+	return rc;
-+}
-+
-+static int setup_x509_region(struct vpu_ipc_dev *vpu_dev)
-+{
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	struct device_node *node;
-+	struct resource res;
-+	int rc;
-+
-+	node = of_parse_phandle(dev->of_node, "memory-region",
-+				VPU_IPC_X509_AREA_IDX);
-+	if (!node) {
-+		dev_err(dev, "Couldn't find X509 region.\n");
-+		return -EINVAL;
-+	}
-+
-+	rc = of_address_to_resource(node, 0, &res);
-+
-+	/* Release node first as we will not use it anymore */
-+	of_node_put(node);
-+
-+	if (rc) {
-+		dev_err(dev, "Couldn't resolve X509 region.\n");
-+		return rc;
-+	}
-+
-+	vpu_dev->x509_mem.vaddr =
-+		devm_ioremap(dev, res.start, resource_size(&res));
-+	if (!vpu_dev->x509_mem.vaddr) {
-+		dev_err(dev, "Couldn't ioremap x509 region.\n");
-+		return -EADDRNOTAVAIL;
-+	}
-+
-+	vpu_dev->x509_mem.paddr = res.start;
-+	vpu_dev->x509_mem.size = resource_size(&res);
-+
-+	return 0;
-+}
-+
-+static int setup_mss_ipc_region(struct vpu_ipc_dev *vpu_dev)
-+{
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	struct device_node *node;
-+	struct resource res;
-+	int rc;
-+
-+	node = of_parse_phandle(dev->of_node, "memory-region",
-+				MSS_IPC_AREA_IDX);
-+	if (!node) {
-+		dev_err(dev, "Didn't find MSS IPC region.\n");
-+		return -EINVAL;
-+	}
-+
-+	rc = of_address_to_resource(node, 0, &res);
-+	if (rc) {
-+		dev_err(dev, "Couldn't resolve MSS IPC region.\n");
-+		return rc;
-+	}
-+	of_node_put(node);
-+
-+	vpu_dev->mss_ipc_mem.paddr = res.start;
-+	vpu_dev->mss_ipc_mem.vpu_addr = phys_to_dma(dev, res.start);
-+	vpu_dev->mss_ipc_mem.size = resource_size(&res);
-+
-+	return 0;
-+}
-+
-+static int setup_reserved_memory(struct vpu_ipc_dev *vpu_dev)
-+{
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	int rc;
-+
-+	/*
-+	 * Find the VPU firmware area described in the device tree,
-+	 * and allocate it for our usage.
-+	 */
-+	rc = setup_vpu_fw_region(vpu_dev);
-+	if (rc) {
-+		dev_err(dev, "Failed to init FW memory.\n");
-+		return rc;
-+	}
-+
-+	/*
-+	 * Find the X509 area described in the device tree,
-+	 * and allocate it for our usage.
-+	 */
-+	rc = setup_x509_region(vpu_dev);
-+	if (rc) {
-+		dev_err(dev, "Failed to setup X509 region.\n");
-+		goto res_mem_setup_fail;
-+	}
-+
-+	/*
-+	 * Find the MSS IPC area in the device tree and get the location and
-+	 * size information
-+	 */
-+	rc = setup_mss_ipc_region(vpu_dev);
-+	if (rc) {
-+		dev_err(dev, "Couldn't setup MSS IPC region.\n");
-+		goto res_mem_setup_fail;
-+	}
-+
-+	return 0;
-+
-+res_mem_setup_fail:
-+	of_reserved_mem_device_release(dev);
-+
-+	return rc;
-+}
-+
-+static void ipc_device_put(struct vpu_ipc_dev *vpu_dev)
-+{
-+	put_device(vpu_dev->ipc_dev);
-+}
-+
-+static int ipc_device_get(struct vpu_ipc_dev *vpu_dev)
-+{
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	struct platform_device *pdev;
-+	struct device_node *np;
-+
-+	np = of_parse_phandle(dev->of_node, "intel,keembay-ipc", 0);
-+	if (!np) {
-+		dev_err(dev, "Cannot find phandle to IPC device\n");
-+		return -ENODEV;
-+	}
-+
-+	pdev = of_find_device_by_node(np);
-+	if (!pdev) {
-+		dev_info(dev, "IPC device not probed\n");
-+		of_node_put(np);
-+		return -EPROBE_DEFER;
-+	}
-+
-+	vpu_dev->ipc_dev = get_device(&pdev->dev);
-+	of_node_put(np);
-+
-+	return 0;
-+}
-+
-+static int retrieve_clocks(struct vpu_ipc_dev *vpu_dev)
-+{
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	char pll_string[PLL_STRING_SIZE];
-+	struct clk *clk;
-+	int pll;
-+	int out;
-+
-+	clk = devm_clk_get(dev, "cpu_clock");
-+	if (IS_ERR(clk)) {
-+		dev_err(dev, "cpu_clock not found.\n");
-+		return PTR_ERR(clk);
-+	}
-+	vpu_dev->cpu_clock = clk;
-+
-+	for (pll = 0; pll < NUM_PLLS; pll++) {
-+		for (out = 0; out < NUM_PLL_OUTPUTS; out++) {
-+			sprintf(pll_string, "pll_%d_out_%d", pll, out);
-+			clk = devm_clk_get(dev, pll_string);
-+			if (IS_ERR(clk)) {
-+				dev_err(dev, "%s not found.\n", pll_string);
-+				return PTR_ERR(clk);
-+			}
-+			vpu_dev->pll[pll][out] = clk;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/* Get register resource from device tree and re-map as I/O memory. */
-+static int get_pdev_res_and_ioremap(struct platform_device *pdev,
-+				    const char *reg_name,
-+				    void __iomem **target_reg)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct resource *res;
-+	void __iomem *reg;
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, reg_name);
-+	if (!res) {
-+		dev_err(dev, "Couldn't get resource for %s\n", reg_name);
-+		return -EINVAL;
-+	}
-+
-+	reg = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(reg)) {
-+		dev_err(dev, "Couldn't ioremap resource for %s\n", reg_name);
-+		return PTR_ERR(reg);
-+	}
-+
-+	*target_reg = reg;
-+
-+	return 0;
-+}
-+
-+static int setup_watchdog_resources(struct vpu_ipc_dev *vpu_dev)
-+{
-+	struct platform_device *pdev = vpu_dev->pdev;
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	int rc;
-+
-+	/* Get registers */
-+	rc = get_pdev_res_and_ioremap(pdev, "nce_wdt", &vpu_dev->nce_wdt_reg);
-+	if (rc) {
-+		dev_err(dev, "Failed to get NCE WDT registers\n");
-+		return rc;
-+	}
-+	rc = get_pdev_res_and_ioremap(pdev, "nce_tim_cfg",
-+				      &vpu_dev->nce_tim_cfg_reg);
-+	if (rc) {
-+		dev_err(dev, "Failed to get NCE TIM_GEN_CONFIG register\n");
-+		return rc;
-+	}
-+	rc = get_pdev_res_and_ioremap(pdev, "mss_wdt", &vpu_dev->mss_wdt_reg);
-+	if (rc) {
-+		dev_err(dev, "Failed to get MSS WDT registers\n");
-+		return rc;
-+	}
-+	rc = get_pdev_res_and_ioremap(pdev, "mss_tim_cfg",
-+				      &vpu_dev->mss_tim_cfg_reg);
-+	if (rc) {
-+		dev_err(dev, "Failed to get MSS TIM_GEN_CONFIG register\n");
-+		return rc;
-+	}
-+
-+	/* Request interrupts */
-+	vpu_dev->nce_irq = platform_get_irq_byname(pdev, "nce_wdt");
-+	if (vpu_dev->nce_irq < 0)
-+		return vpu_dev->nce_irq;
-+	vpu_dev->mss_irq = platform_get_irq_byname(pdev, "mss_wdt");
-+	if (vpu_dev->mss_irq < 0)
-+		return vpu_dev->mss_irq;
-+	rc = devm_request_irq(dev, vpu_dev->nce_irq, nce_wdt_irq_handler, 0,
-+			      "keembay-vpu-ipc", vpu_dev);
-+	if (rc) {
-+		dev_err(dev, "failed to request NCE IRQ.\n");
-+		return rc;
-+	}
-+	rc = devm_request_irq(dev, vpu_dev->mss_irq, mss_wdt_irq_handler, 0,
-+			      "keembay-vpu-ipc", vpu_dev);
-+	if (rc) {
-+		dev_err(dev, "failed to request MSS IRQ.\n");
-+		return rc;
-+	}
-+
-+	return 0;
-+}
-+
-+/* Populate the boot parameters to be passed to the VPU. */
-+static int setup_boot_parameters(struct vpu_ipc_dev *vpu_dev)
-+{
++	struct pci_epf_bar *epf_bar;
++	bool bar_fixed_64bit;
 +	int i;
 +
-+	/* Set all values to zero. This will disable most clocks/devices */
-+	memset(vpu_dev->boot_params, 0, sizeof(*vpu_dev->boot_params));
-+
-+	/*
-+	 * Set magic number, so VPU knows that the parameters are
-+	 * populated correctly
-+	 */
-+	vpu_dev->boot_params->magic_number = BOOT_PARAMS_MAGIC_NUMBER;
-+
-+	/* Set VPU ID. */
-+	vpu_dev->boot_params->vpu_id = vpu_dev->vpu_id;
-+
-+	/* Inform VPU of clock frequencies */
-+	vpu_dev->boot_params->cpu_frequency_hz =
-+		clk_get_rate(vpu_dev->cpu_clock);
-+	for (i = 0; i < NUM_PLL_OUTPUTS; i++) {
-+		vpu_dev->boot_params->pll0_out[i] =
-+			clk_get_rate(vpu_dev->pll[0][i]);
-+		vpu_dev->boot_params->pll1_out[i] =
-+			clk_get_rate(vpu_dev->pll[1][i]);
-+		vpu_dev->boot_params->pll2_out[i] =
-+			clk_get_rate(vpu_dev->pll[2][i]);
++	for (i = BAR_0; i <= BAR_5; i++) {
++		epf_bar = &epf->bar[i];
++		bar_fixed_64bit = !!(epc_features->bar_fixed_64bit & (1 << i));
++		if (bar_fixed_64bit)
++			epf_bar->flags |= PCI_BASE_ADDRESS_MEM_TYPE_64;
++		if (epc_features->bar_fixed_size[i])
++			epf_bar->size = epc_features->bar_fixed_size[i];
 +	}
-+
-+	/*
-+	 * Fill in IPC buffer information: the VPU needs to know where it
-+	 * should allocate IPC buffer from.
-+	 */
-+	vpu_dev->boot_params->mss_ipc_header_address =
-+		vpu_dev->mss_ipc_mem.vpu_addr;
-+	vpu_dev->boot_params->mss_ipc_header_area_size =
-+		vpu_dev->mss_ipc_mem.size;
-+
-+	/* Fill in IRQ re-direct request information */
-+	vpu_dev->boot_params->mss_wdt_to_irq_a53_redir =
-+			irqd_to_hwirq(irq_get_irq_data(vpu_dev->mss_irq)) -
-+			GIC_SPI_HWIRQ_OFFSET;
-+	vpu_dev->boot_params->nce_wdt_to_irq_a53_redir =
-+			irqd_to_hwirq(irq_get_irq_data(vpu_dev->nce_irq)) -
-+			GIC_SPI_HWIRQ_OFFSET;
-+
-+	/* Setup A53SS_VERSION_ID */
-+	vpu_dev->boot_params->a53ss_version_id = vpu_ipc_soc_info->hardware_id;
-+
-+	/* Setup Silicon stepping */
-+	vpu_dev->boot_params->si_stepping = vpu_ipc_soc_info->stepping[0] |
-+					    vpu_ipc_soc_info->stepping[1] << 8;
-+
-+	/* Set feature exclude and device id information. */
-+	vpu_dev->boot_params->device_id = vpu_ipc_soc_info->device_id;
-+	vpu_dev->boot_params->feature_exclusion =
-+					vpu_ipc_soc_info->feature_exclusion;
-+
-+	/* Set SKU information */
-+	vpu_dev->boot_params->sku = (u64)vpu_ipc_soc_info->sku[0] |
-+				    (u64)vpu_ipc_soc_info->sku[1] << 8 |
-+				    (u64)vpu_ipc_soc_info->sku[2] << 16 |
-+				    (u64)vpu_ipc_soc_info->sku[3] << 24 |
-+				    (u64)vpu_ipc_soc_info->sku[4] << 32 |
-+				    (u64)vpu_ipc_soc_info->sku[5] << 40;
-+	return 0;
 +}
 +
-+/* Request SoC firmware to boot the VPU. */
-+static int request_vpu_boot(struct vpu_ipc_dev *vpu_dev)
++static void intel_xpcie_cleanup_bar(struct pci_epf *epf, enum pci_barno barno)
 +{
-+	u64 function_id;
-+	struct arm_smccc_res res;
-+	u16 function_number = KMB_SIP_SVC_VPU_BOOT;
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	struct pci_epc *epc = epf->epc;
 +
-+	function_id = ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL, ARM_SMCCC_SMC_32,
-+					 ARM_SMCCC_OWNER_SIP, function_number);
-+
-+	/*
-+	 * Arguments are as follows:
-+	 * 1. Reserved
-+	 * 2. Reserved region size
-+	 * 3. Firmware image physical base address
-+	 * 4. Firmware image size
-+	 * 5. Entry point for VPU
-+	 * 6. X509 certificate location
-+	 * 7. IMR driver number
-+	 */
-+	arm_smccc_smc(function_id, 0,
-+		      vpu_dev->reserved_mem.size, vpu_dev->fw_res.start,
-+		      resource_size(&vpu_dev->fw_res), vpu_dev->boot_vec_paddr,
-+		      vpu_dev->x509_mem.paddr, vpu_dev->imr, &res);
-+
-+	if (res.a0) {
-+		dev_info(&vpu_dev->pdev->dev, "Boot failed: 0x%lx.\n", res.a0);
-+		return -EIO;
++	if (xpcie_epf->vaddr[barno]) {
++		pci_epc_clear_bar(epc, epf->func_no, &epf->bar[barno]);
++		pci_epf_free_space(epf, xpcie_epf->vaddr[barno], barno);
++		xpcie_epf->vaddr[barno] = NULL;
 +	}
-+
-+	dev_info(&vpu_dev->pdev->dev,
-+		 "VPU Boot successfully requested to secure monitor.\n");
-+
-+	return 0;
 +}
 +
-+/* Request SoC firmware to stop the VPU. */
-+static int request_vpu_stop(struct vpu_ipc_dev *vpu_dev)
++static void intel_xpcie_cleanup_bars(struct pci_epf *epf)
 +{
-+	u64 function_id;
-+	struct arm_smccc_res res;
-+	u16 function_number = KMB_SIP_SVC_VPU_STOP;
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
 +
-+	function_id = ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL, ARM_SMCCC_SMC_32,
-+					 ARM_SMCCC_OWNER_SIP, function_number);
-+
-+	arm_smccc_smc(function_id, 0, 0, 0, 0, 0, 0, 0, &res);
-+
-+	if (res.a0) {
-+		dev_info(&vpu_dev->pdev->dev, "Stop failed: 0x%lx.\n", res.a0);
-+		return -EIO;
-+	}
-+
-+	dev_info(&vpu_dev->pdev->dev,
-+		 "VPU Stop successfully requested to secure monitor.\n");
-+
-+	return 0;
++	intel_xpcie_cleanup_bar(epf, BAR_2);
++	intel_xpcie_cleanup_bar(epf, BAR_4);
++	xpcie_epf->xpcie.mmio = NULL;
++	xpcie_epf->xpcie.bar4 = NULL;
 +}
 +
-+/*
-+ * Get kernel virtual address of resource inside the VPU reserved memory
-+ * region.
-+ */
-+static void *get_vpu_dev_vaddr(struct vpu_ipc_dev *vpu_dev,
-+			       struct resource *res)
++static int intel_xpcie_setup_bar(struct pci_epf *epf, enum pci_barno barno,
++				 size_t min_size, size_t align)
 +{
-+	unsigned long offset;
-+
-+	/* Given the calculation below, this must not be true. */
-+	if (res->start < vpu_dev->reserved_mem.vpu_addr)
-+		return NULL;
-+
-+	offset = res->start - vpu_dev->reserved_mem.vpu_addr;
-+
-+	/* Cast to (u8 *) since void pointer arithmetic is undefined. */
-+	return (u8 *)vpu_dev->reserved_mem.vaddr + offset;
-+}
-+
-+static int parse_fw_header(struct vpu_ipc_dev *vpu_dev,
-+			   const struct firmware *fw)
-+{
-+	struct resource config_res, version_res, total_reserved_res;
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	struct firmware_header *fw_header;
-+	void *version_region;
-+	void *config_region;
-+	void *fw_region;
-+
-+	/* Is the fw size big enough to read the header? */
-+	if (fw->size < sizeof(struct firmware_header)) {
-+		dev_err(dev, "Firmware was too small for header.\n");
-+		return -EINVAL;
-+	}
-+
-+	fw_header = (struct firmware_header *)fw->data;
-+
-+	/* Check header version */
-+	if (fw_header->header_ver != HEADER_VERSION_SUPPORTED) {
-+		dev_err(dev, "Header version check expected 0x%x, got 0x%x\n",
-+			HEADER_VERSION_SUPPORTED, fw_header->header_ver);
-+		return -EINVAL;
-+	}
-+
-+	/* Check firmware version size is allowed */
-+	if (fw_header->fw_ver_size > MAX_FIRMWARE_VERSION_SIZE) {
-+		dev_err(dev, "Firmware version area larger than allowed: %d\n",
-+			fw_header->fw_ver_size);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Check the firmware binary is at least large enough for the
-+	 * firmware image size described in the header.
-+	 */
-+	if (fw->size < (MAX_HEADER_SIZE + MAX_FIRMWARE_VERSION_SIZE +
-+			fw_header->image_size)) {
-+		dev_err(dev, "Real firmware size is not large enough.\n");
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Make sure that the final address is aligned correctly. If not, the
-+	 * boot will never work.
-+	 */
-+	if (!IS_ALIGNED(fw_header->entry_point, VPU_RESET_VECTOR_ALIGNMENT)) {
-+		dev_err(dev,
-+			"Entry point for firmware (0x%llX) is not correctly aligned.\n",
-+			fw_header->entry_point);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Generate the resource describing the region containing the actual
-+	 * firmware data.
-+	 */
-+	vpu_dev->fw_res.start = fw_header->image_load_addr;
-+	vpu_dev->fw_res.end = fw_header->image_size +
-+			      fw_header->image_load_addr - 1;
-+	vpu_dev->fw_res.flags = IORESOURCE_MEM;
-+
-+	/*
-+	 * Generate the resource describing the region containing the
-+	 * configuration data for the VPU.
-+	 */
-+	config_res.start = fw_header->config_load_addr;
-+	config_res.end = sizeof(struct boot_parameters) +
-+			 fw_header->config_load_addr - 1;
-+	config_res.flags = IORESOURCE_MEM;
-+
-+	/*
-+	 * Generate the resource describing the region containing the
-+	 * version information for the VPU.
-+	 */
-+	version_res.start = fw_header->fw_ver_load_addr;
-+	version_res.end = fw_header->fw_ver_size +
-+			  fw_header->fw_ver_load_addr - 1;
-+	version_res.flags = IORESOURCE_MEM;
-+
-+	/*
-+	 * Generate the resource describing the region of memory
-+	 * completely dedicated to the VPU.
-+	 */
-+	total_reserved_res.start = vpu_dev->reserved_mem.vpu_addr;
-+	total_reserved_res.end = vpu_dev->reserved_mem.vpu_addr +
-+		vpu_dev->reserved_mem.size - 1;
-+	total_reserved_res.flags = IORESOURCE_MEM;
-+
-+	/*
-+	 * Check all pieces to be copied reside completely in the reserved
-+	 * region
-+	 */
-+	if (!resource_contains(&total_reserved_res, &vpu_dev->fw_res)) {
-+		dev_err(dev, "Can't fit firmware in reserved region.\n");
-+		return -EINVAL;
-+	}
-+	if (!resource_contains(&total_reserved_res, &version_res)) {
-+		dev_err(dev,
-+			"Can't fit firmware version data in reserved region.\n");
-+		return -EINVAL;
-+	}
-+	if (!resource_contains(&total_reserved_res, &config_res)) {
-+		dev_err(dev,
-+			"Can't fit configuration information in reserved region.\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Check for overlapping regions */
-+	if (resource_overlaps(&vpu_dev->fw_res, &version_res)) {
-+		dev_err(dev, "FW and version regions overlap.\n");
-+		return -EINVAL;
-+	}
-+	if (resource_overlaps(&vpu_dev->fw_res, &config_res)) {
-+		dev_err(dev, "FW and config regions overlap.\n");
-+		return -EINVAL;
-+	}
-+	if (resource_overlaps(&config_res, &version_res)) {
-+		dev_err(dev, "Version and config regions overlap.\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Setup boot parameter region */
-+	config_region = get_vpu_dev_vaddr(vpu_dev, &config_res);
-+	if (!config_region) {
-+		dev_err(dev,
-+			"Couldn't map boot configuration area to CPU virtual address.\n");
-+		return -EINVAL;
-+	}
-+	version_region = get_vpu_dev_vaddr(vpu_dev, &version_res);
-+	if (!version_region) {
-+		dev_err(dev,
-+			"Couldn't map version area to CPU virtual address.\n");
-+		return -EINVAL;
-+	}
-+	fw_region = get_vpu_dev_vaddr(vpu_dev, &vpu_dev->fw_res);
-+	if (!fw_region) {
-+		dev_err(dev,
-+			"Couldn't map firmware area to CPU virtual address.\n");
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Copy version region: the region is located in the file @ offset of
-+	 * MAX_HEADER_SIZE, size was specified in the header and has been
-+	 * checked to not be larger than that allowed.
-+	 */
-+	memcpy(version_region, &fw->data[MAX_HEADER_SIZE],
-+	       fw_header->fw_ver_size);
-+
-+	/*
-+	 * Copy firmware region: the region is located in the file @ offset of
-+	 * MAX_HEADER_SIZE + MAX_FIRMWARE_VERSION_SIZE, size was specified in
-+	 * the header and has been checked to not be larger than that allowed.
-+	 */
-+	memcpy(fw_region,
-+	       &fw->data[MAX_HEADER_SIZE + MAX_FIRMWARE_VERSION_SIZE],
-+	       fw_header->image_size);
-+
-+	/* Save off boot parameters region vaddr */
-+	vpu_dev->boot_params = config_region;
-+
-+	/* Save off boot vector physical address */
-+	vpu_dev->boot_vec_paddr = fw_header->entry_point;
-+
-+	return 0;
-+}
-+
-+static int ready_message_wait_thread(void *arg)
-+{
-+	struct vpu_ipc_dev *vpu_dev = arg;
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	size_t size = 0;
-+	u32 paddr = 0;
-+	int close_rc;
-+	int rc;
-+
-+	/*
-+	 * We will wait a few seconds for the message. We will complete earlier
-+	 * if the message is received earlier.
-+	 * NOTE: this is not a busy wait, we sleep until message is received.
-+	 */
-+	rc = intel_keembay_ipc_recv(vpu_dev->ipc_dev, KMB_IPC_NODE_LEON_MSS,
-+				    READY_MESSAGE_IPC_CHANNEL, &paddr, &size,
-+				    READY_MESSAGE_TIMEOUT_MS);
-+	/*
-+	 * IPC channel must be closed regardless of 'rc' value, so close the
-+	 * channel now and then process 'rc' value.
-+	 */
-+	close_rc = intel_keembay_ipc_close_channel(vpu_dev->ipc_dev,
-+						   KMB_IPC_NODE_LEON_MSS,
-+						   READY_MESSAGE_IPC_CHANNEL);
-+	if (close_rc < 0) {
-+		dev_warn(dev, "Couldn't close IPC channel.\n");
-+		/* Continue, as this is not a critical issue. */
-+	}
-+
-+	/* Now process recv() return code. */
-+	if (rc < 0) {
-+		dev_err(dev,
-+			"Failed to receive ready message within %d ms: %d.\n",
-+			READY_MESSAGE_TIMEOUT_MS, rc);
-+		goto ready_message_thread_failure;
-+	}
-+
-+	if (paddr != READY_MESSAGE_EXPECTED_PADDR ||
-+	    size != READY_MESSAGE_EXPECTED_SIZE) {
-+		dev_err(dev, "Bad ready message: (paddr, size) = (0x%x, %zu)\n",
-+			paddr, size);
-+		goto ready_message_thread_failure;
-+	}
-+
-+	dev_info(dev, "VPU ready message received successfully!\n");
-+
-+	rc = vpu_ipc_handle_event(vpu_dev, KEEMBAY_VPU_EVENT_MSS_READY_OK);
-+	if (rc < 0)
-+		dev_err(dev, "Fatal error: failed to set state (ready ok).\n");
-+
-+	/* Wake up anyone waiting for READY. */
-+	wake_up_all(&vpu_dev->ready_queue);
-+
-+	return 0;
-+
-+ready_message_thread_failure:
-+	rc = vpu_ipc_handle_event(vpu_dev, KEEMBAY_VPU_EVENT_MSS_READY_FAIL);
-+	if (rc < 0)
-+		dev_err(dev,
-+			"Fatal error: failed to set state (ready timeout).\n");
-+
-+	return 0;
-+}
-+
-+static int create_ready_message_thread(struct vpu_ipc_dev *vpu_dev)
-+{
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	struct task_struct *task;
-+
-+	task = kthread_run(&ready_message_wait_thread, (void *)vpu_dev,
-+			   "keembay-vpu-ipc-ready");
-+	if (IS_ERR(task)) {
-+		dev_err(dev, "Couldn't start thread to receive message.\n");
-+		return -EIO;
-+	}
-+
-+	vpu_dev->ready_message_task = task;
-+
-+	return 0;
-+}
-+
-+static int kickoff_vpu_sequence(struct vpu_ipc_dev *vpu_dev,
-+				int (*boot_fn)(struct vpu_ipc_dev *))
-+{
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	int err_rc;
-+	int rc;
-+
-+	/*
-+	 * Open the IPC channel. If we don't do it before booting
-+	 * the VPU, we may miss the message, as the IPC driver will
-+	 * discard messages for unopened channels.
-+	 */
-+	rc = intel_keembay_ipc_open_channel(vpu_dev->ipc_dev,
-+					    KMB_IPC_NODE_LEON_MSS,
-+					    READY_MESSAGE_IPC_CHANNEL);
-+	if (rc < 0) {
-+		dev_err(dev,
-+			"Couldn't open IPC channel to receive ready message.\n");
-+		goto kickoff_failed;
-+	}
-+
-+	/* Request boot */
-+	rc = boot_fn(vpu_dev);
-+	if (rc < 0) {
-+		dev_err(dev, "Failed to do request to boot.\n");
-+		goto close_and_kickoff_failed;
-+	}
-+
-+	/*
-+	 * Start thread waiting for message, and update state
-+	 * if the request was successful.
-+	 */
-+	rc = create_ready_message_thread(vpu_dev);
-+	if (rc < 0) {
-+		dev_err(dev,
-+			"Failed to create thread to wait for ready message.\n");
-+		goto close_and_kickoff_failed;
-+	}
-+
-+	return 0;
-+
-+close_and_kickoff_failed:
-+	/* Close the channel. */
-+	err_rc = intel_keembay_ipc_close_channel(vpu_dev->ipc_dev,
-+						 KMB_IPC_NODE_LEON_MSS,
-+						 READY_MESSAGE_IPC_CHANNEL);
-+	if (err_rc < 0) {
-+		dev_err(dev, "Couldn't close IPC channel: %d\n", err_rc);
-+		/*
-+		 * We have had a more serious failure - don't update the
-+		 * original 'rc' and continue.
-+		 */
-+	}
-+
-+kickoff_failed:
-+	return rc;
-+}
-+
-+/*
-+ * Try to boot the VPU using the firmware name stored in
-+ * vpu_dev->firmware_name (which when this function is called is expected to be
-+ * not NULL).
-+ */
-+static int do_boot_sequence(struct vpu_ipc_dev *vpu_dev)
-+{
-+	struct device *dev = &vpu_dev->pdev->dev;
-+	const struct firmware *fw;
-+	int event_rc;
-+	int rc;
-+
-+	/* Update state machine. */
-+	rc = vpu_ipc_handle_event(vpu_dev, KEEMBAY_VPU_EVENT_BOOT);
-+	if (rc < 0) {
-+		dev_err(dev, "Can't start in this state.\n");
-+		return rc;
-+	}
-+
-+	/* Stop the VPU running */
-+	rc = request_vpu_stop(vpu_dev);
-+	if (rc < 0)
-+		dev_err(dev, "Failed stop - continue sequence anyway.\n");
-+
-+	dev_info(dev, "Keem Bay VPU IPC start with %s.\n",
-+		 vpu_dev->firmware_name);
-+
-+	/* Request firmware and wait for it. */
-+	rc = request_firmware(&fw, vpu_dev->firmware_name, &vpu_dev->pdev->dev);
-+	if (rc < 0) {
-+		dev_err(dev, "Couldn't find firmware: %d\n", rc);
-+		goto boot_failed_no_fw;
-+	}
-+
-+	/* Do checks on the firmware header. */
-+	rc = parse_fw_header(vpu_dev, fw);
-+	if (rc < 0) {
-+		dev_err(dev, "Firmware checks failed.\n");
-+		goto boot_failed;
-+	}
-+
-+	/* Write configuration data. */
-+	rc = setup_boot_parameters(vpu_dev);
-+	if (rc < 0) {
-+		dev_err(dev, "Failed to set up boot parameters.\n");
-+		goto boot_failed;
-+	}
-+
-+	/* Try 'boot' sequence */
-+	rc = kickoff_vpu_sequence(vpu_dev, request_vpu_boot);
-+	if (rc < 0) {
-+		dev_err(dev, "Failed to boot VPU.\n");
-+		goto boot_failed;
-+	}
-+
-+	release_firmware(fw);
-+	return 0;
-+
-+boot_failed:
-+	release_firmware(fw);
-+
-+boot_failed_no_fw:
-+	/* Update state machine after failure. */
-+	event_rc = vpu_ipc_handle_event(vpu_dev,
-+					KEEMBAY_VPU_EVENT_BOOT_FAILED);
-+	if (event_rc < 0) {
-+		dev_err(dev,
-+			"Unexpected error: failed to handle fail event: %d.\n",
-+			event_rc);
-+		/* Continue: prefer original 'rc' to 'event_rc'. */
-+	}
-+
-+	return rc;
-+}
-+
-+/**
-+ * intel_keembay_vpu_ipc_open_channel() - Open an IPC channel.
-+ * @dev:	The VPU IPC device to use.
-+ * @node_id:	The node ID of the remote node (used to identify the link the
-+ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
-+ *		allowed value for now.
-+ * @chan_id:	The ID of the channel to be opened.
-+ *
-+ * Return:	0 on success, negative error code otherwise.
-+ */
-+int intel_keembay_vpu_ipc_open_channel(struct device *dev, u8 node_id,
-+				       u16 chan_id)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+
-+	if (IS_ERR(vpu_dev))
-+		return -EINVAL;
-+
-+	return intel_keembay_ipc_open_channel(vpu_dev->ipc_dev, node_id,
-+					      chan_id);
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_ipc_open_channel);
-+
-+/**
-+ * intel_keembay_vpu_ipc_close_channel() - Close an IPC channel.
-+ * @dev:	The VPU IPC device to use.
-+ * @node_id:	The node ID of the remote node (used to identify the link the
-+ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
-+ *		allowed value for now.
-+ * @chan_id:	The ID of the channel to be closed.
-+ *
-+ * Return:	0 on success, negative error code otherwise.
-+ */
-+
-+int intel_keembay_vpu_ipc_close_channel(struct device *dev, u8 node_id,
-+					u16 chan_id)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+
-+	if (IS_ERR(vpu_dev))
-+		return -EINVAL;
-+
-+	return intel_keembay_ipc_close_channel(vpu_dev->ipc_dev,
-+					       node_id, chan_id);
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_ipc_close_channel);
-+
-+/**
-+ * intel_keembay_vpu_ipc_send() - Send data via IPC.
-+ * @dev:	The VPU IPC device to use.
-+ * @node_id:	The node ID of the remote node (used to identify the link the
-+ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
-+ *		allowed value for now.
-+ * @chan_id:	The IPC channel to be used to send the message.
-+ * @vpu_addr:	The VPU address of the data to be transferred.
-+ * @size:	The size of the data to be transferred.
-+ *
-+ * Return:	0 on success, negative error code otherwise.
-+ */
-+int intel_keembay_vpu_ipc_send(struct device *dev, u8 node_id, u16 chan_id,
-+			       u32 vpu_addr, size_t size)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+
-+	if (IS_ERR(vpu_dev))
-+		return -EINVAL;
-+
-+	return intel_keembay_ipc_send(vpu_dev->ipc_dev, node_id, chan_id,
-+				      vpu_addr, size);
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_ipc_send);
-+
-+/**
-+ * intel_keembay_vpu_ipc_recv() - Read data via IPC
-+ * @dev:	The VPU IPC device to use.
-+ * @node_id:	The node ID of the remote node (used to identify the link the
-+ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
-+ *		allowed value for now.
-+ * @chan_id:	The IPC channel to read from.
-+ * @vpu_addr:	[out] The VPU address of the received data.
-+ * @size:	[out] Where to store the size of the received data.
-+ * @timeout:	How long (in ms) the function will block waiting for an IPC
-+ *		message; if UINT32_MAX it will block indefinitely; if 0 it
-+ *		will not block.
-+ *
-+ * Return:	0 on success, negative error code otherwise
-+ */
-+int intel_keembay_vpu_ipc_recv(struct device *dev, u8 node_id, u16 chan_id,
-+			       u32 *vpu_addr, size_t *size, u32 timeout)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+
-+	if (IS_ERR(vpu_dev))
-+		return -EINVAL;
-+
-+	return intel_keembay_ipc_recv(vpu_dev->ipc_dev, node_id, chan_id,
-+				      vpu_addr, size, timeout);
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_ipc_recv);
-+
-+/**
-+ * intel_keembay_vpu_startup() - Boot the VPU
-+ * @dev:	   The VPU device to boot.
-+ * @firmware_name: Name of firmware file
-+ *
-+ * This API is only valid while the VPU is OFF.
-+ *
-+ * The firmware called "firmware_name" will be searched for using the
-+ * kernel firmware API. The firmware header will then be parsed. This driver
-+ * will load requested information to the reserved memory region, including
-+ * initialisation data. Lastly, we will request the secure world to do the
-+ * boot sequence. If the boot sequence is successful, the
-+ * VPU state will become BUSY. The caller should then wait for the status to
-+ * become READY before starting to communicate with the VPU. If the boot
-+ * sequence failed, this function will fail and the caller may try again,
-+ * the VPU status will still be OFF.
-+ *
-+ * If we fail to get to READY, because the VPU did not send us the 'ready'
-+ * message, the VPU state will go to ERROR.
-+ *
-+ * Return: 0 on success, negative error code otherwise
-+ */
-+int intel_keembay_vpu_startup(struct device *dev, const char *firmware_name)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+
-+	if (IS_ERR(vpu_dev))
-+		return PTR_ERR(vpu_dev);
-+
-+	if (!firmware_name)
-+		return -EINVAL;
-+
-+	/* Free old vpu_dev->firmware_name value (if any). */
-+	kfree(vpu_dev->firmware_name);
-+
-+	/* Set new value. */
-+	vpu_dev->firmware_name = kstrdup(firmware_name, GFP_KERNEL);
-+
-+	return do_boot_sequence(vpu_dev);
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_startup);
-+
-+/**
-+ * intel_keembay_vpu_reset() - Reset the VPU
-+ * @dev:	The VPU device to reset.
-+ *
-+ * Resets the VPU. Only valid when the VPU is in the READY or ERROR state.
-+ * The state of the VPU will become BUSY.
-+ *
-+ * Return: 0 on success, negative error code otherwise
-+ */
-+int intel_keembay_vpu_reset(struct device *dev)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+
-+	if (IS_ERR(vpu_dev))
-+		return PTR_ERR(vpu_dev);
-+
-+	/*
-+	 * If vpu_dev->firmware_name == NULL then the VPU is not running
-+	 * (either it was never booted or vpu_stop() was called). So, calling
-+	 * reset is not allowed.
-+	 */
-+	if (!vpu_dev->firmware_name)
-+		return -EINVAL;
-+
-+	return do_boot_sequence(vpu_dev);
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_reset);
-+
-+/**
-+ * intel_keembay_vpu_stop() - Stop the VPU
-+ * @dev:	The VPU device to stop.
-+ *
-+ * Stops the VPU and restores to the OFF state. Only valid when the VPU is in
-+ * the READY or ERROR state.
-+ *
-+ * Return: 0 on success, negative error code otherwise
-+ */
-+int intel_keembay_vpu_stop(struct device *dev)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+	int event_rc;
-+	int rc;
-+
-+	if (IS_ERR(vpu_dev))
-+		return -EINVAL;
-+
-+	rc = vpu_ipc_handle_event(vpu_dev, KEEMBAY_VPU_EVENT_STOP);
-+	if (rc < 0) {
-+		dev_err(dev, "Can't stop in this state.\n");
-+		return rc;
-+	}
-+
-+	dev_info(dev, "Keem Bay VPU IPC stop.\n");
-+
-+	/* Request stop */
-+	rc = request_vpu_stop(vpu_dev);
-+	if (rc < 0) {
-+		dev_err(dev,
-+			"Failed to do request to stop - resetting state to OFF anyway.\n");
-+	}
-+
-+	/* Remove any saved-off name */
-+	kfree(vpu_dev->firmware_name);
-+	vpu_dev->firmware_name = NULL;
-+
-+	event_rc = vpu_ipc_handle_event(vpu_dev,
-+					KEEMBAY_VPU_EVENT_STOP_COMPLETE);
-+	if (event_rc < 0) {
-+		dev_err(dev,
-+			"Failed to handle 'stop complete' event, probably fatal.\n");
-+		return event_rc;
-+	}
-+
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_stop);
-+
-+/**
-+ * intel_keembay_vpu_status() - Get the VPU state.
-+ * @dev:	The VPU device to retrieve the status for.
-+ *
-+ * Returns the state of the VPU as tracked by this driver.
-+ *
-+ * Return: Relevant value of enum intel_keembay_vpu_state
-+ */
-+enum intel_keembay_vpu_state intel_keembay_vpu_status(struct device *dev)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+
-+	if (IS_ERR(vpu_dev))
-+		return -EINVAL;
-+
-+	return vpu_dev->state;
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_status);
-+
-+/**
-+ * intel_keembay_vpu_get_wdt_count() - Get the WDT count
-+ * @dev:	The VPU device to get the WDT count for.
-+ * @id:		ID of WDT events we wish to get
-+ *
-+ * Returns: Number of WDT timeout occurrences for given ID, or negative
-+ *	    error value for invalid ID.
-+ */
-+int intel_keembay_vpu_get_wdt_count(struct device *dev,
-+				    enum intel_keembay_wdt_cpu_id id)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+	int rc = -EINVAL;
-+
-+	if (IS_ERR(vpu_dev))
-+		return -EINVAL;
-+
-+	switch (id) {
-+	case KEEMBAY_VPU_NCE:
-+		rc = vpu_dev->nce_wdt_count;
-+		break;
-+	case KEEMBAY_VPU_MSS:
-+		rc = vpu_dev->mss_wdt_count;
-+		break;
-+	default:
-+		break;
-+	}
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_get_wdt_count);
-+
-+/**
-+ * intel_keembay_vpu_wait_for_ready() - Sleep until VPU is READY
-+ * @dev:	The VPU device for which we are waiting the ready message.
-+ * @timeout:	How long (in ms) the function will block waiting for the VPU
-+ *		to become ready.
-+ *
-+ * The caller may ask the VPU IPC driver to notify it when the VPU
-+ * is READY. The driver performs no checks on the current state, so it
-+ * is up to the caller to confirm that the state is correct before starting
-+ * the wait.
-+ *
-+ * Returns: 0 on success negative error code otherwise
-+ */
-+int intel_keembay_vpu_wait_for_ready(struct device *dev, u32 timeout)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+	int rc;
-+
-+	if (IS_ERR(vpu_dev))
-+		return -EINVAL;
-+
-+	/*
-+	 * If we are in ERROR state, we will not get to READY
-+	 * state without some other transitions, so return
-+	 * error immediately for caller to handle.
-+	 */
-+	if (vpu_dev->state == KEEMBAY_VPU_ERROR)
-+		return -EIO;
-+
-+	rc = wait_event_interruptible_timeout(vpu_dev->ready_queue,
-+					      vpu_dev->state == KEEMBAY_VPU_READY,
-+					      msecs_to_jiffies(timeout));
-+
-+	/* Condition was false after timeout elapsed */
-+	if (!rc)
-+		rc = -ETIME;
-+
-+	/* Condition was true, so rc == 1 */
-+	if (rc > 0)
-+		rc = 0;
-+
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_wait_for_ready);
-+
-+/**
-+ * intel_keembay_vpu_register_for_events() - Register callback for event notification
-+ * @dev:	The VPU device.
-+ * @callback: Callback function pointer
-+ *
-+ * Only a single callback can be registered at a time.
-+ *
-+ * Callback can be triggered from any context, so needs to be able to be run
-+ * from IRQ context.
-+ *
-+ * Return: 0 on success, negative error code otherwise
-+ */
-+int intel_keembay_vpu_register_for_events(struct device *dev,
-+					  void (*callback)(struct device *dev,
-+							   enum intel_keembay_vpu_event))
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+
-+	if (IS_ERR(vpu_dev))
-+		return PTR_ERR(vpu_dev);
-+
-+	if (vpu_dev->callback)
-+		return -EEXIST;
-+
-+	vpu_dev->callback = callback;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_register_for_events);
-+
-+/**
-+ * intel_keembay_vpu_unregister_for_events() - Unregister callback for event notification
-+ * @dev:	The VPU device.
-+ *
-+ * Return: 0 on success, negative error code otherwise
-+ */
-+int intel_keembay_vpu_unregister_for_events(struct device *dev)
-+{
-+	struct vpu_ipc_dev *vpu_dev = to_vpu_dev(dev);
-+
-+	if (IS_ERR(vpu_dev))
-+		return PTR_ERR(vpu_dev);
-+
-+	vpu_dev->callback = NULL;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_vpu_unregister_for_events);
-+
-+/* Probe() function for the VPU IPC platform driver. */
-+static int keembay_vpu_ipc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct vpu_ipc_dev *vpu_dev;
-+	int rc;
-+
-+	vpu_dev = devm_kzalloc(dev, sizeof(*vpu_dev), GFP_KERNEL);
-+	if (!vpu_dev)
-+		return -ENOMEM;
-+
-+	vpu_dev->pdev = pdev;
-+	vpu_dev->state = KEEMBAY_VPU_OFF;
-+	vpu_dev->ready_message_task = NULL;
-+	vpu_dev->firmware_name = NULL;
-+	vpu_dev->nce_wdt_count = 0;
-+	vpu_dev->mss_wdt_count = 0;
-+	spin_lock_init(&vpu_dev->lock);
-+	init_waitqueue_head(&vpu_dev->ready_queue);
-+
-+	/* Retrieve clocks */
-+	rc = retrieve_clocks(vpu_dev);
-+	if (rc) {
-+		dev_err(dev, "Failed to retrieve clocks %d\n", rc);
-+		return rc;
-+	}
-+
-+	/* Retrieve memory regions, allocate memory */
-+	rc = setup_reserved_memory(vpu_dev);
-+	if (rc) {
-+		dev_err(dev,
-+			"Failed to set up reserved memory regions: %d\n", rc);
-+		return rc;
-+	}
-+
-+	/* Request watchdog timer resources */
-+	rc = setup_watchdog_resources(vpu_dev);
-+	if (rc) {
-+		dev_err(dev, "Failed to setup watchdog resources %d\n", rc);
-+		goto probe_fail_post_resmem_setup;
-+	}
-+
-+	/* Request the IMR number to be used */
-+	rc = of_property_read_u32(dev->of_node, "intel,keembay-vpu-ipc-imr",
-+				  &vpu_dev->imr);
-+	if (rc) {
-+		dev_err(dev, "failed to get IMR number.\n");
-+		goto probe_fail_post_resmem_setup;
-+	}
-+
-+	/* Get VPU ID. */
-+	rc = of_property_read_u32(dev->of_node, "intel,keembay-vpu-ipc-id",
-+				  &vpu_dev->vpu_id);
-+	if (rc) {
-+		/* Only warn for now; we will enforce this in the future. */
-+		dev_err(dev, "VPU ID not defined in Device Tree\n");
-+		goto probe_fail_post_resmem_setup;
-+	}
-+
-+	/* Get IPC device to be used for IPC communication. */
-+	rc = ipc_device_get(vpu_dev);
-+	if (rc) {
-+		dev_err(dev, "Failed to get IPC device\n");
-+		goto probe_fail_post_resmem_setup;
-+	}
-+
-+	/* Set platform data reference. */
-+	platform_set_drvdata(pdev, vpu_dev);
-+
-+	return rc;
-+
-+probe_fail_post_resmem_setup:
-+	of_reserved_mem_device_release(dev);
-+
-+	return rc;
-+}
-+
-+/* Remove() function for the VPU IPC platform driver. */
-+static int keembay_vpu_ipc_remove(struct platform_device *pdev)
-+{
-+	struct vpu_ipc_dev *vpu_dev = platform_get_drvdata(pdev);
-+	struct device *dev = &pdev->dev;
-+
-+	if (vpu_dev->ready_message_task) {
-+		kthread_stop(vpu_dev->ready_message_task);
-+		vpu_dev->ready_message_task = NULL;
-+	}
-+
-+	of_reserved_mem_device_release(dev);
-+
-+	ipc_device_put(vpu_dev);
-+
-+	return 0;
-+}
-+
-+/* Compatible string for the VPU/IPC driver. */
-+static const struct of_device_id keembay_vpu_ipc_of_match[] = {
-+	{
-+		.compatible = "intel,keembay-vpu-ipc",
-+	},
-+	{}
-+};
-+
-+/* The VPU IPC platform driver. */
-+static struct platform_driver keem_bay_vpu_ipc_driver = {
-+	.driver = {
-+			.name = "keembay-vpu-ipc",
-+			.of_match_table = keembay_vpu_ipc_of_match,
-+		},
-+	.probe = keembay_vpu_ipc_probe,
-+	.remove = keembay_vpu_ipc_remove,
-+};
-+
-+/* Helper function to get a vpu_dev struct from a generic device pointer. */
-+static struct vpu_ipc_dev *to_vpu_dev(struct device *dev)
-+{
-+	struct platform_device *pdev;
-+
-+	if (!dev || dev->driver != &keem_bay_vpu_ipc_driver.driver)
-+		return ERR_PTR(-EINVAL);
-+	pdev = to_platform_device(dev);
-+
-+	return platform_get_drvdata(pdev);
-+}
-+
-+/*
-+ * Retrieve SoC information from the '/soc/version-info' device tree node and
-+ * store it into 'vpu_ipc_soc_info' global variable.
-+ */
-+static int retrieve_dt_soc_information(void)
-+{
-+	struct device_node *soc_info_dn;
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	struct pci_epf_bar *bar = &epf->bar[barno];
++	struct pci_epc *epc = epf->epc;
++	void *vaddr;
 +	int ret;
 +
-+	soc_info_dn = of_find_node_by_path("/soc/version-info");
-+	if (!soc_info_dn)
-+		return -ENOENT;
++	bar->flags |= PCI_BASE_ADDRESS_MEM_TYPE_64;
++	if (!bar->size)
++		bar->size = min_size;
 +
-+	ret = of_property_read_u64(soc_info_dn, "feature-exclusion",
-+				   &vpu_ipc_soc_info->feature_exclusion);
++	if (barno == BAR_4)
++		bar->flags |= PCI_BASE_ADDRESS_MEM_PREFETCH;
++
++	vaddr = pci_epf_alloc_space(epf, bar->size, barno, align);
++	if (!vaddr) {
++		dev_err(&epf->dev, "Failed to map BAR%d\n", barno);
++		return -ENOMEM;
++	}
++
++	ret = pci_epc_set_bar(epc, epf->func_no, bar);
 +	if (ret) {
-+		pr_err("Property 'feature-exclusion' can't be read.\n");
++		pci_epf_free_space(epf, vaddr, barno);
++		dev_err(&epf->dev, "Failed to set BAR%d\n", barno);
 +		return ret;
 +	}
-+	ret = of_property_read_u64(soc_info_dn, "device-id",
-+				   &vpu_ipc_soc_info->device_id);
++
++	xpcie_epf->vaddr[barno] = vaddr;
++
++	return 0;
++}
++
++static int intel_xpcie_setup_bars(struct pci_epf *epf, size_t align)
++{
++	int ret;
++
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++
++	ret = intel_xpcie_setup_bar(epf, BAR_2, BAR2_MIN_SIZE, align);
++	if (ret)
++		return ret;
++
++	ret = intel_xpcie_setup_bar(epf, BAR_4, BAR4_MIN_SIZE, align);
 +	if (ret) {
-+		pr_err("Property 'device-id' can't be read.\n");
++		intel_xpcie_cleanup_bar(epf, BAR_2);
 +		return ret;
 +	}
-+	ret = of_property_read_u32(soc_info_dn, "hardware-id",
-+				   &vpu_ipc_soc_info->hardware_id);
-+	if (ret) {
-+		pr_err("Property 'hardware-id' can't be read.\n");
-+		return ret;
++
++	xpcie_epf->comm_bar = BAR_2;
++	xpcie_epf->xpcie.mmio = (void *)xpcie_epf->vaddr[BAR_2] +
++				XPCIE_MMIO_OFFSET;
++
++	xpcie_epf->bar4 = BAR_4;
++	xpcie_epf->xpcie.bar4 = xpcie_epf->vaddr[BAR_4];
++
++	return 0;
++}
++
++static int intel_xpcie_epf_get_platform_data(struct device *dev,
++					     struct xpcie_epf *xpcie_epf)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	struct device_node *soc_node, *version_node;
++	struct resource *res;
++	const char *prop;
++	int prop_size;
++
++	xpcie_epf->irq_dma = platform_get_irq_byname(pdev, "intr");
++	if (xpcie_epf->irq_dma < 0) {
++		dev_err(&xpcie_epf->epf->dev, "failed to get IRQ: %d\n",
++			xpcie_epf->irq_dma);
++		return -EINVAL;
 +	}
-+	/*
-+	 * Note: the SKU and stepping information from the device tree is
-+	 * not a string, but an array of u8/chars. Therefore, we cannot
-+	 * parse it as a string.
-+	 */
-+	ret = of_property_read_u8_array(soc_info_dn, "sku",
-+					vpu_ipc_soc_info->sku,
-+					sizeof(vpu_ipc_soc_info->sku));
-+	if (ret) {
-+		pr_err("Property 'sku' can't be read.\n");
-+		return ret;
++
++	xpcie_epf->irq_err = platform_get_irq_byname(pdev, "err_intr");
++	if (xpcie_epf->irq_err < 0) {
++		dev_err(&xpcie_epf->epf->dev, "failed to get erroe IRQ: %d\n",
++			xpcie_epf->irq_err);
++		return -EINVAL;
 +	}
-+	ret = of_property_read_u8_array(soc_info_dn, "stepping",
-+					vpu_ipc_soc_info->stepping,
-+					sizeof(vpu_ipc_soc_info->stepping));
-+	if (ret) {
-+		pr_err("Property 'stepping' can't be read.\n");
-+		return ret;
++
++	xpcie_epf->irq = platform_get_irq_byname(pdev, "ev_intr");
++	if (xpcie_epf->irq < 0) {
++		dev_err(&xpcie_epf->epf->dev, "failed to get event IRQ: %d\n",
++			xpcie_epf->irq);
++		return -EINVAL;
++	}
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "apb");
++	xpcie_epf->apb_base =
++		devm_ioremap(dev, res->start, resource_size(res));
++	if (IS_ERR(xpcie_epf->apb_base))
++		return PTR_ERR(xpcie_epf->apb_base);
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi");
++	xpcie_epf->dbi_base =
++		devm_ioremap(dev, res->start, resource_size(res));
++	if (IS_ERR(xpcie_epf->dbi_base))
++		return PTR_ERR(xpcie_epf->dbi_base);
++
++	memcpy(xpcie_epf->stepping, "B0", 2);
++	soc_node = of_get_parent(pdev->dev.of_node);
++	if (soc_node) {
++		version_node = of_get_child_by_name(soc_node, "version-info");
++		if (version_node) {
++			prop = of_get_property(version_node, "stepping",
++					       &prop_size);
++			if (prop && prop_size <= KEEMBAY_XPCIE_STEPPING_MAXLEN)
++				memcpy(xpcie_epf->stepping, prop, prop_size);
++			of_node_put(version_node);
++		}
++		of_node_put(soc_node);
 +	}
 +
 +	return 0;
 +}
 +
-+/*
-+ * Init VPU IPC module:
-+ * - Retrieve SoC information from device tree.
-+ * - Register the VPU IPC platform driver.
-+ */
-+static int __init vpu_ipc_init(void)
++static int intel_xpcie_epf_bind(struct pci_epf *epf)
 +{
-+	int rc;
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	const struct pci_epc_features *features;
++	struct pci_epc *epc = epf->epc;
++	struct device *dev;
++	size_t align = SZ_16K;
++	int ret;
 +
-+	vpu_ipc_soc_info = kzalloc(sizeof(*vpu_ipc_soc_info), GFP_KERNEL);
-+	if (!vpu_ipc_soc_info)
++	if (WARN_ON_ONCE(!epc))
++		return -EINVAL;
++
++	dev = epc->dev.parent;
++	features = pci_epc_get_features(epc, epf->func_no);
++	xpcie_epf->epc_features = features;
++	if (features) {
++		align = features->align;
++		intel_xpcie_configure_bar(epf, features);
++	}
++
++	ret = intel_xpcie_setup_bars(epf, align);
++	if (ret) {
++		dev_err(&epf->dev, "BAR initialization failed\n");
++		return ret;
++	}
++
++	ret = intel_xpcie_epf_get_platform_data(dev, xpcie_epf);
++	if (ret) {
++		dev_err(&epf->dev, "Unable to get platform data\n");
++		return -EINVAL;
++	}
++
++	if (!strcmp(xpcie_epf->stepping, "A0")) {
++		xpcie_epf->xpcie.legacy_a0 = true;
++		iowrite32(1, (void __iomem *)xpcie_epf->xpcie.mmio +
++			     XPCIE_MMIO_LEGACY_A0);
++	} else {
++		xpcie_epf->xpcie.legacy_a0 = false;
++		iowrite32(0, (void __iomem *)xpcie_epf->xpcie.mmio +
++			     XPCIE_MMIO_LEGACY_A0);
++	}
++
++	/* Enable interrupt */
++	writel(LBC_CII_EVENT_FLAG,
++	       xpcie_epf->apb_base + PCIE_REGS_PCIE_INTR_ENABLE);
++	ret = devm_request_irq(&epf->dev, xpcie_epf->irq,
++			       &intel_xpcie_host_interrupt, 0,
++			       XPCIE_DRIVER_NAME, &xpcie_epf->xpcie);
++	if (ret) {
++		dev_err(&epf->dev, "failed to request irq\n");
++		goto err_cleanup_bars;
++	}
++
++	ret = devm_request_irq(&epf->dev, xpcie_epf->irq_err,
++			       &intel_xpcie_err_interrupt, 0,
++			       XPCIE_DRIVER_NAME, &xpcie_epf->xpcie);
++	if (ret) {
++		dev_err(&epf->dev, "failed to request error irq\n");
++		goto err_cleanup_bars;
++	}
++
++	return 0;
++
++err_cleanup_bars:
++	intel_xpcie_cleanup_bars(epf);
++
++	return ret;
++}
++
++static void intel_xpcie_epf_unbind(struct pci_epf *epf)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	struct pci_epc *epc = epf->epc;
++
++	free_irq(xpcie_epf->irq, &xpcie_epf->xpcie);
++	free_irq(xpcie_epf->irq_err, &xpcie_epf->xpcie);
++
++	pci_epc_stop(epc);
++
++	intel_xpcie_cleanup_bars(epf);
++}
++
++static int intel_xpcie_epf_probe(struct pci_epf *epf)
++{
++	struct device *dev = &epf->dev;
++	struct xpcie_epf *xpcie_epf;
++
++	xpcie_epf = devm_kzalloc(dev, sizeof(*xpcie_epf), GFP_KERNEL);
++	if (!xpcie_epf)
 +		return -ENOMEM;
 +
-+	rc = retrieve_dt_soc_information();
-+	if (rc < 0)
-+		pr_warn("VPU IPC failed to find SoC info, using defaults.\n");
++	epf->header = &xpcie_header;
++	xpcie_epf->epf = epf;
++	epf_set_drvdata(epf, xpcie_epf);
 +
-+	rc = platform_driver_register(&keem_bay_vpu_ipc_driver);
-+	if (rc < 0) {
-+		pr_err("Failed to register platform driver for VPU IPC.\n");
-+		goto cleanup_soc_info;
++	return 0;
++}
++
++static void intel_xpcie_epf_shutdown(struct device *dev)
++{
++	struct pci_epf *epf = to_pci_epf(dev);
++	struct xpcie_epf *xpcie_epf;
++
++	xpcie_epf = epf_get_drvdata(epf);
++
++	/* Notify host in case PCIe hot plug not supported */
++	if (xpcie_epf)
++		pci_epc_raise_irq(epf->epc, epf->func_no, PCI_EPC_IRQ_MSI, 1);
++}
++
++static struct pci_epf_ops ops = {
++	.bind = intel_xpcie_epf_bind,
++	.unbind = intel_xpcie_epf_unbind,
++};
++
++static struct pci_epf_driver xpcie_epf_driver = {
++	.driver.name = "mxlk_pcie_epf",
++	.driver.shutdown = intel_xpcie_epf_shutdown,
++	.probe = intel_xpcie_epf_probe,
++	.id_table = xpcie_epf_ids,
++	.ops = &ops,
++	.owner = THIS_MODULE,
++};
++
++static int __init intel_xpcie_epf_init(void)
++{
++	int ret;
++
++	ret = pci_epf_register_driver(&xpcie_epf_driver);
++	if (ret) {
++		pr_err("Failed to register xlink pcie epf driver: %d\n", ret);
++		return ret;
 +	}
 +
 +	return 0;
-+
-+cleanup_soc_info:
-+	kfree(vpu_ipc_soc_info);
-+
-+	return rc;
 +}
++module_init(intel_xpcie_epf_init);
 +
-+/*
-+ * Remove VPU IPC module.
-+ * - Un-register the VPU IPC platform driver.
-+ * - Remove sysfs exposing SoC information.
-+ * - Free allocated memory.
-+ */
-+static void __exit vpu_ipc_exit(void)
++static void __exit intel_xpcie_epf_exit(void)
 +{
-+	platform_driver_unregister(&keem_bay_vpu_ipc_driver);
-+	kfree(vpu_ipc_soc_info);
++	pci_epf_unregister_driver(&xpcie_epf_driver);
 +}
++module_exit(intel_xpcie_epf_exit);
 +
-+module_init(vpu_ipc_init);
-+module_exit(vpu_ipc_exit);
-+
-+MODULE_DESCRIPTION("Keem Bay VPU IPC Driver");
-+MODULE_AUTHOR("Paul Murphy <paul.j.murphy@intel.com>");
-+MODULE_AUTHOR("Daniele Alessandrelli <daniele.alessandrelli@intel.com>");
 +MODULE_LICENSE("GPL");
-diff --git a/include/linux/soc/intel/keembay-vpu-ipc.h b/include/linux/soc/intel/keembay-vpu-ipc.h
++MODULE_AUTHOR("Intel Corporation");
++MODULE_DESCRIPTION(XPCIE_DRIVER_DESC);
+diff --git a/drivers/misc/xlink-pcie/local_host/epf.h b/drivers/misc/xlink-pcie/local_host/epf.h
 new file mode 100644
-index 000000000000..81d132186482
+index 000000000000..a60cd43fe555
 --- /dev/null
-+++ b/include/linux/soc/intel/keembay-vpu-ipc.h
-@@ -0,0 +1,62 @@
++++ b/drivers/misc/xlink-pcie/local_host/epf.h
+@@ -0,0 +1,37 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
-+ * Keem Bay VPU IPC Linux Kernel API
++ * Intel Keem Bay XLink PCIe Driver
 + *
-+ * Copyright (c) 2018-2020 Intel Corporation.
++ * Copyright (C) 2021 Intel Corporation
 + */
 +
-+#ifndef __KEEMBAY_VPU_IPC_H
-+#define __KEEMBAY_VPU_IPC_H
++#ifndef XPCIE_EPF_HEADER_
++#define XPCIE_EPF_HEADER_
 +
-+#include "linux/types.h"
++#include <linux/pci-epc.h>
++#include <linux/pci-epf.h>
 +
-+/* The possible node IDs. */
-+enum {
-+	KMB_VPU_IPC_NODE_ARM_CSS = 0,
-+	KMB_VPU_IPC_NODE_LEON_MSS,
++#include "xpcie.h"
++
++#define XPCIE_DRIVER_NAME "mxlk_pcie_epf"
++#define XPCIE_DRIVER_DESC "Intel(R) xLink PCIe endpoint function driver"
++
++#define KEEMBAY_XPCIE_STEPPING_MAXLEN 8
++
++struct xpcie_epf {
++	struct pci_epf *epf;
++	void *vaddr[BAR_5 + 1];
++	enum pci_barno comm_bar;
++	enum pci_barno bar4;
++	const struct pci_epc_features *epc_features;
++	struct xpcie xpcie;
++	int irq;
++	int irq_dma;
++	int irq_err;
++	void __iomem *apb_base;
++	void __iomem *dma_base;
++	void __iomem *dbi_base;
++	char stepping[KEEMBAY_XPCIE_STEPPING_MAXLEN];
 +};
 +
-+/* Possible states of VPU. */
-+enum intel_keembay_vpu_state {
-+	KEEMBAY_VPU_OFF = 0,
-+	KEEMBAY_VPU_BUSY,
-+	KEEMBAY_VPU_READY,
-+	KEEMBAY_VPU_ERROR,
-+	KEEMBAY_VPU_STOPPING
++#endif /* XPCIE_EPF_HEADER_ */
+diff --git a/drivers/misc/xlink-pcie/local_host/xpcie.h b/drivers/misc/xlink-pcie/local_host/xpcie.h
+new file mode 100644
+index 000000000000..0745e6dfee10
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/local_host/xpcie.h
+@@ -0,0 +1,38 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*****************************************************************************
++ *
++ * Intel Keem Bay XLink PCIe Driver
++ *
++ * Copyright (C) 2020 Intel Corporation
++ *
++ ****************************************************************************/
++
++#ifndef XPCIE_HEADER_
++#define XPCIE_HEADER_
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/pci_ids.h>
++
++#ifndef PCI_DEVICE_ID_INTEL_KEEMBAY
++#define PCI_DEVICE_ID_INTEL_KEEMBAY 0x6240
++#endif
++
++#define XPCIE_IO_COMM_SIZE SZ_16K
++#define XPCIE_MMIO_OFFSET SZ_4K
++
++/* MMIO layout and offsets shared between device and host */
++struct xpcie_mmio {
++	u8 legacy_a0;
++} __packed;
++
++#define XPCIE_MMIO_LEGACY_A0	(offsetof(struct xpcie_mmio, legacy_a0))
++
++struct xpcie {
++	u32 status;
++	bool legacy_a0;
++	void *mmio;
++	void *bar4;
 +};
 +
-+/* Possible CPU IDs for which we receive WDT timeout events. */
-+enum intel_keembay_wdt_cpu_id {
-+	KEEMBAY_VPU_MSS = 0,
-+	KEEMBAY_VPU_NCE
-+};
-+
-+/* Events that can be notified via callback, when registered. */
-+enum intel_keembay_vpu_event {
-+	KEEMBAY_VPU_NOTIFY_DISCONNECT = 0,
-+	KEEMBAY_VPU_NOTIFY_CONNECT,
-+	KEEMBAY_VPU_NOTIFY_MSS_WDT,
-+	KEEMBAY_VPU_NOTIFY_NCE_WDT,
-+};
-+
-+int intel_keembay_vpu_ipc_open_channel(struct device *dev, u8 node_id,
-+				       u16 chan_id);
-+int intel_keembay_vpu_ipc_close_channel(struct device *dev, u8 node_id,
-+					u16 chan_id);
-+int intel_keembay_vpu_ipc_send(struct device *dev, u8 node_id, u16 chan_id,
-+			       u32 paddr, size_t size);
-+int intel_keembay_vpu_ipc_recv(struct device *dev, u8 node_id, u16 chan_id,
-+			       u32 *paddr, size_t *size, u32 timeout);
-+int intel_keembay_vpu_startup(struct device *dev, const char *firmware_name);
-+int intel_keembay_vpu_reset(struct device *dev);
-+int intel_keembay_vpu_stop(struct device *dev);
-+enum intel_keembay_vpu_state intel_keembay_vpu_status(struct device *dev);
-+int intel_keembay_vpu_get_wdt_count(struct device *dev,
-+				    enum intel_keembay_wdt_cpu_id id);
-+int intel_keembay_vpu_wait_for_ready(struct device *dev, u32 timeout);
-+int intel_keembay_vpu_register_for_events(struct device *dev,
-+					  void (*callback)(struct device *dev,
-+							   enum intel_keembay_vpu_event event));
-+int intel_keembay_vpu_unregister_for_events(struct device *dev);
-+
-+#endif /* __KEEMBAY_VPU_IPC_H */
++#endif /* XPCIE_HEADER_ */
 -- 
 2.17.1
 
