@@ -2,113 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24658319B91
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9627319B96
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhBLI6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 03:58:06 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:34443 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhBLI6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 03:58:03 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DcS6y19thzB09b7;
-        Fri, 12 Feb 2021 09:57:14 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id oKM2_lEypWxp; Fri, 12 Feb 2021 09:57:14 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DcS6y0Pf7zB09b5;
-        Fri, 12 Feb 2021 09:57:14 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 059198B84B;
-        Fri, 12 Feb 2021 09:57:15 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id SN8BfrB5wnyV; Fri, 12 Feb 2021 09:57:14 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C6DB78B842;
-        Fri, 12 Feb 2021 09:57:14 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 8606F672F8; Fri, 12 Feb 2021 08:57:14 +0000 (UTC)
-Message-Id: <f6d16f3321f1dc89b77ada1c7d961fae4089766e.1613120077.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH for 5.10] powerpc/32: Preserve cr1 in exception prolog stack check to
- fix build error
-To:     fedora.dm0@gmail.com, stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 12 Feb 2021 08:57:14 +0000 (UTC)
+        id S229806AbhBLJBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:01:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhBLJBa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 04:01:30 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E779DC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:00:49 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id u4so10678103ljh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:00:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/pP8IfofSQOMTyTQK3QurwdHzvMKt17mfyF6G06VuY4=;
+        b=BE2sVqkpY8iV5KlzoqSFgIqejZnRPNqnhM6tgGP/yYdQ5eOPscSlPOQMmId00RYG30
+         ffQLABcNE9F/fSol9dy+3knyrjhm+jHJZna5fQGWPplxbdiCVw/O6qoNlngMsDpM6lhO
+         8kM32MuSPmnt5z793i75BDy+Tn9TMlZ1XXOekIVckGv6jF4BVCEQpkJdWnMuIkNJSgPK
+         c80L0q2OYeM03ahUi24Ot0UkVLhzoDfXFQ1Atrr84vOjSYKIA3t4+FebplC6XijIDqwq
+         2CiZiybl0OOCSYfnQGO0QUcGfHMtoh83kEbKj8Rs9BLd6F3iK+pVI58GVOc++DgSs5PM
+         gmvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/pP8IfofSQOMTyTQK3QurwdHzvMKt17mfyF6G06VuY4=;
+        b=iXw9Old2Lndeg1VIbv2nq7n98ESGKtAcXJouoXOxIGjEt6TvAaCBmyI5ujwZISC6kw
+         WJLP1U1NgSvt0wae/2/gQwWy07tWwEnquJVowEz7J1P3rU7KeJbDXaaKTy6/5nDOfnca
+         lKQqlTUi0LHgBLzWtrp9bKFvLncjgdKitDmFyIaU85MchNnwxi3EMorHt/7hMitunSsh
+         Mwum6RfdrOKo438BTH8/LwtlZTvRUEuUFcWD9go64PJFZoymRTCLA/gz2Gzu87d+6rYX
+         ctG9Ng84y2cO4vP9MOAbZuI7KqN1LpSSK7dEJ6C3x6kJZdFWPOrh1YUD6/rRGdZd265i
+         DmXg==
+X-Gm-Message-State: AOAM533YPvR5aizZtsFKb9sUIGLQeoXUfkmcrtXbkktfxJ1QNAGwQFnW
+        Vv0wagSrnla5HVnDuZzxUYiPE1I41KI3Oyem8RYGBg==
+X-Google-Smtp-Source: ABdhPJxp220Yhyu3KHp6tFzIhAqaKO6NgKCwcJhjjshCAICA/X6GwVjbfUpJnmZIwex3hBvnP48RP/kcS+Py2GYQhOc=
+X-Received: by 2002:a2e:8998:: with SMTP id c24mr1221309lji.74.1613120448271;
+ Fri, 12 Feb 2021 01:00:48 -0800 (PST)
+MIME-Version: 1.0
+References: <1612688430-54282-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1612688430-54282-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 12 Feb 2021 10:00:37 +0100
+Message-ID: <CACRpkdZho-zSTjVFNSrcQ_VWdgKpW_jpc-bX+EcA_dzdGgOKrA@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: cdev: convert stream-like files from
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is backport of 3642eb21256a ("powerpc/32: Preserve cr1 in
-exception prolog stack check to fix build error") for kernel 5.10
+On Sun, Feb 7, 2021 at 10:00 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
 
-It fixes the build failure on v5.10 reported by kernel test robot
-and by David Michael.
+> Eliminate the following coccicheck warning:
+> ./drivers/gpio/gpiolib-cdev.c:2307:7-23: WARNING: gpio_fileops: .read()
+> has stream semantic; safe to change nonseekable_open -> stream_open.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-This fix is not in Linux tree yet, it is in next branch in powerpc tree.
+This doesn't make any sense to me.
 
-(cherry picked from commit 3642eb21256a317ac14e9ed560242c6d20cf06d9)
+It is pretty clear from context that this file should *not* be
+seeked and it seems just dangerous to randomly allow that.
+Better safe than sorry.
 
-THREAD_ALIGN_SHIFT = THREAD_SHIFT + 1 = PAGE_SHIFT + 1
-Maximum PAGE_SHIFT is 18 for 256k pages so
-THREAD_ALIGN_SHIFT is 19 at the maximum.
+I don't know if the function nonseekable_open() has an unintuitive
+name if it means anything else than that. I burnt myself on the FS
+before.
 
-No need to clobber cr1, it can be preserved when moving r1
-into CR when we check stack overflow.
-
-This reduces the number of instructions in Machine Check Exception
-prolog and fixes a build failure reported by the kernel test robot
-on v5.10 stable when building with RTAS + VMAP_STACK + KVM. That
-build failure is due to too many instructions in the prolog hence
-not fitting between 0x200 and 0x300. Allthough the problem doesn't
-show up in mainline, it is still worth the change.
-
-Fixes: 98bf2d3f4970 ("powerpc/32s: Fix RTAS machine check with VMAP stack")
-Cc: stable@vger.kernel.org
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/5ae4d545e3ac58e133d2599e0deb88843cb494fc.1612768623.git.christophe.leroy@csgroup.eu
----
- arch/powerpc/kernel/head_32.h        | 2 +-
- arch/powerpc/kernel/head_book3s_32.S | 6 ------
- 2 files changed, 1 insertion(+), 7 deletions(-)
-
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index c88e66adecb5..fef0b34a77c9 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -56,7 +56,7 @@
- 1:
- 	tophys_novmstack r11, r11
- #ifdef CONFIG_VMAP_STACK
--	mtcrf	0x7f, r1
-+	mtcrf	0x3f, r1
- 	bt	32 - THREAD_ALIGN_SHIFT, stack_overflow
- #endif
- .endm
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index d66da35f2e8d..2729d8fa6e77 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -280,12 +280,6 @@ MachineCheck:
- 7:	EXCEPTION_PROLOG_2
- 	addi	r3,r1,STACK_FRAME_OVERHEAD
- #ifdef CONFIG_PPC_CHRP
--#ifdef CONFIG_VMAP_STACK
--	mfspr	r4, SPRN_SPRG_THREAD
--	tovirt(r4, r4)
--	lwz	r4, RTAS_SP(r4)
--	cmpwi	cr1, r4, 0
--#endif
- 	beq	cr1, machine_check_tramp
- 	twi	31, 0, 0
- #else
--- 
-2.25.0
-
+Yours,
+Linus Walleij
