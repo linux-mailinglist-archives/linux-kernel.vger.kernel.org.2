@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9397831A2F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1132031A2F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhBLQlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:41:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
+        id S231255AbhBLQle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:41:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231251AbhBLQiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:38:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BE7064E36;
-        Fri, 12 Feb 2021 16:38:09 +0000 (UTC)
+        id S229648AbhBLQjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 11:39:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AE3E64E76;
+        Fri, 12 Feb 2021 16:38:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613147892;
-        bh=/r8OlkVb1UZ3ooJxgAqMaRYOERuR7leTS0IPlTRu2SA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UJV4wdzJ1WwvVfz5RcPglO/NNQWEjx6It0Z5G3Gmv4luzlE9K3hVoV9O042vrQKqy
-         RuWNsIgYVK2GGhoLbU84XKv+SIp7ctc28v1s806tAAVg3qiv5d3bqjtiwpbnfSt5zF
-         WYhQtH6Jwmvr6Yrr7DmoYZQZYhpyWJTkQV5PQDwyHNCGggccDURIHdPVR2LJU6SVbI
-         SHKfooN4tlygJ4Hvf2zXhbszBM71dTqylzFRVlNXB8OB4BDs0rx+KdzCfk+GvFAMTt
-         W5aqVYko4ykK2P47Odf/6hXV9t5vNq8p8SuGHVh9cD3plqeMB12jLRv8saUr+C1hk7
-         MTACSSE2oQG2w==
+        s=k20201202; t=1613147902;
+        bh=9WJDOv6LqmavZD/gcwbgUYrQTdVMFQ4jH6W3lKzKcnY=;
+        h=From:To:Subject:Date:From;
+        b=gkCTxMiw2MJuREDJn/mmcl4VfMx4fZcdedyxfDmjVqIkUsIqvCX4vhol/Ya0y6ikF
+         lFGYpSPGNpYUJbWZGpVRACGCqM0r8AXczMVqKzA2+imDLeTK2EvR3Svloy/T9jRTE2
+         0Fc2eIYtp5tdEqqatGjhGXwmgJA2GowgGgzXwNkzKXbC0UsMNjDNlHFRwnAF1oTzXA
+         bpVD/L+MtL31HXybavHJOe5iaqLSLkBep0p2k2jqQ5H8r5vTUpt+JPQXeLnUYRr1P2
+         xrtNavdcro2iSPrmT3aINPN7LvOa1GujZ+iqKElt4X0ALqQOcPuJF2EYTsyHEdwsH3
+         +rI13JKVEp37Q==
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Nick Dyer <nick@shmanahar.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
         Rob Herring <robh+dt@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] dt-bindings: input: atmel,maxtouch: add wakeup-source
-Date:   Fri, 12 Feb 2021 17:38:06 +0100
-Message-Id: <20210212163806.69996-1-krzk@kernel.org>
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: iio: samsung,exynos-adc: add common clock properties
+Date:   Fri, 12 Feb 2021 17:38:16 +0100
+Message-Id: <20210212163816.70058-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -44,30 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The touchscreen can be a wake up source and it's being used in DTS:
+Add common properties appearing in DTSes (assigned-clocks and similar)
+to fix dtbs_check warnings like:
 
-  arch/arm/boot/dts/exynos5250-spring.dt.yaml:
-    trackpad@4b: 'wakeup-source' does not match any of the regexes: 'pinctrl-[0-9]+'
+  arch/arm/boot/dts/exynos3250-artik5-eval.dt.yaml:
+    adc@126c0000: assigned-clock-rates: [[6000000]] is not of type 'object'
+  arch/arm/boot/dts/exynos3250-artik5-eval.dt.yaml:
+    adc@126c0000: assigned-clocks: [[7, 238]] is not of type 'object'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- Documentation/devicetree/bindings/input/atmel,maxtouch.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ .../bindings/iio/adc/samsung,exynos-adc.yaml         | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
-index 8c6418f76e94..eb69a8fc8498 100644
---- a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
-+++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
-@@ -53,6 +53,9 @@ properties:
-       or experiment to determine which bit corresponds to which input. Use
-       KEY_RESERVED for unused padding values.
+diff --git a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+index c65921e66dc1..ce03132f8ebc 100644
+--- a/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/samsung,exynos-adc.yaml
+@@ -27,6 +27,18 @@ properties:
+   reg:
+     maxItems: 1
  
-+  wakeup-source:
-+    type: boolean
++  assigned-clocks:
++    minItems: 1
++    maxItems: 3
 +
- required:
-   - compatible
-   - reg
++  assigned-clock-parents:
++    minItems: 1
++    maxItems: 3
++
++  assigned-clock-rates:
++    minItems: 1
++    maxItems: 3
++
+   clocks:
+     description:
+       Phandle to ADC bus clock. For Exynos3250 additional clock is needed.
 -- 
 2.25.1
 
