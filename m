@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C22319CCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD84319CC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhBLKn6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Feb 2021 05:43:58 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20091 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230389AbhBLKnN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 05:43:13 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-115-2rM-qm06PAG36k1cQRmO6Q-1; Fri, 12 Feb 2021 10:41:04 +0000
-X-MC-Unique: 2rM-qm06PAG36k1cQRmO6Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 12 Feb 2021 10:41:03 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 12 Feb 2021 10:41:03 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Nathan Chancellor' <nathan@kernel.org>,
-        Jian Cai <jiancai@google.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Daniel Palmer" <daniel@0x0f.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "manojgupta@google.com" <manojgupta@google.com>,
-        =?iso-8859-1?Q?Andreas_F=E4rber?= <afaerber@suse.de>,
-        "llozano@google.com" <llozano@google.com>,
-        James Morris <jmorris@namei.org>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Subject: RE: [PATCH] ARM: Implement Clang's SLS mitigation
-Thread-Topic: [PATCH] ARM: Implement Clang's SLS mitigation
-Thread-Index: AQHXAQPpjAt19oU7EUuQ7rTdUOVK86pUVCnA
-Date:   Fri, 12 Feb 2021 10:41:03 +0000
-Message-ID: <3f61af0eee9b495e8e8c032902d033c5@AcuMS.aculab.com>
-References: <20210212051500.943179-1-jiancai@google.com>
- <20210212055508.GA3822196@ubuntu-m3-large-x86>
-In-Reply-To: <20210212055508.GA3822196@ubuntu-m3-large-x86>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S230488AbhBLKnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 05:43:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49852 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229650AbhBLKl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 05:41:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A7436AD62;
+        Fri, 12 Feb 2021 10:41:14 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 206521E62E4; Fri, 12 Feb 2021 11:41:14 +0100 (CET)
+Date:   Fri, 12 Feb 2021 11:41:14 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Jan Kara <jack@suse.cz>, Richard Weinberger <richard@nod.at>,
+        linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, kernel@pengutronix.de,
+        Jan Kara <jack@suse.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] quota: Add mountpath based quota support
+Message-ID: <20210212104114.GV19070@quack2.suse.cz>
+References: <20210211153024.32502-1-s.hauer@pengutronix.de>
+ <20210211153024.32502-2-s.hauer@pengutronix.de>
+ <20210211153813.GA2480649@infradead.org>
+ <20210212083835.GF19583@pengutronix.de>
+ <20210212100505.GT19070@quack2.suse.cz>
+ <20210212102900.GN19583@pengutronix.de>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212102900.GN19583@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > on -mharden-sls=all, which mitigates the straight-line speculation
-> > vulnerability, or more commonly known as Spectre, Meldown.
+On Fri 12-02-21 11:29:00, Sascha Hauer wrote:
+> On Fri, Feb 12, 2021 at 11:05:05AM +0100, Jan Kara wrote:
+> > On Fri 12-02-21 09:38:35, Sascha Hauer wrote:
+> > > On Thu, Feb 11, 2021 at 03:38:13PM +0000, Christoph Hellwig wrote:
+> > > > > +	if (!mountpoint)
+> > > > > +		return -ENODEV;
+> > > > > +
+> > > > > +	ret = user_path_at(AT_FDCWD, mountpoint,
+> > > > > +			     LOOKUP_FOLLOW | LOOKUP_AUTOMOUNT, &mountpath);
+> > > > 
+> > > > user_path_at handles an empty path, although you'll get EFAULT instead.
+> > > > Do we care about the -ENODEV here?
+> > > 
+> > > The quotactl manpage documents EFAULT as error code for invalid addr or
+> > > special argument, so we really should return -EFAULT here.
+> > > 
+> > > Existing quotactl gets this wrong as well:
+> > > 
+> > > 	if (!special) {
+> > > 		if (cmds == Q_SYNC)
+> > > 			return quota_sync_all(type);
+> > > 		return -ENODEV;
+> > > 	}
+> > > 
+> > > Should we fix this or is there userspace code that is confused by a changed
+> > > return value?
+> > 
+> > I'd leave the original quotactl(2) as is. There's no strong reason to risk
+> > breaking some userspace. For the new syscall, I agree we can just
+> > standardize the return value, there ENODEV makes even less sense since
+> > there's no device in that call.
 > 
->                  ^ I would drop "or" here
->                                                   ^ drop comma,
->                                                     use "and",
->                                                     typo: "Meltdown"
-> 
-> Although, is that a fair statement? SLS is not called Spectre or
-> Meltdown by ARM, it is a speculative processor vulnerabilty. It
-> might just be better to drop eerything after the first comma (although
-> maybe that is just being pedantic).
+> Ok, will do. Who can pick this series up? Anyone else I need to Cc next
+> round?
 
-or replace with:
-   (speculative execution of the instruction following some unconditional jumps).
+I guess I can pick up both kernel patches (the manpage patch needs to be
+submitted to the manpage list) but please CC linux-api@vger as well so that
+interested people are aware of the new syscall.
 
-Which will save a lot of people looking up what it means.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
