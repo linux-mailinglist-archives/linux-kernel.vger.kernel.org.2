@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB14D31A1B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EA631A1BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbhBLPbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:31:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229917AbhBLPbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:31:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2570A64E65;
-        Fri, 12 Feb 2021 15:30:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613143852;
-        bh=2GikqJ76Pgc7I30iCl8osvQH0Fze6qbpvM2PmeBOsWk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bGyIaPrlayhiG4sd7omkCau887oZhQK4o2OEsex4fQwRz626PQe2b/p9KTbYjxdgZ
-         Hvq36OVPzq5ZykACksRWi7rVJWXGNcD6VTV4rzu9D8x/oqh0zm3fHcIqz6EYf6an62
-         VNaHGdywrpcPajZSvT6tGNp4IvcyEuYxggXNrldI=
-Date:   Fri, 12 Feb 2021 16:30:49 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Xi Ruoyao <xry111@mengyan1223.wang>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org
-Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
- non-section symbols
-Message-ID: <YCafKVSTX9MxDBMd@kroah.com>
-References: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
- <160812658044.3364.4188208281079332844.tip-bot2@tip-bot2>
- <dded80b60d9136ea90987516c28f93273385651f.camel@mengyan1223.wang>
- <YCU3Vdoqd+EI+zpv@kroah.com>
- <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
+        id S232184AbhBLPdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:33:03 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20606 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232081AbhBLPcz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:32:55 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-7-JP_7B2LuPXKpBjoyLqlaog-1;
+ Fri, 12 Feb 2021 15:31:17 +0000
+X-MC-Unique: JP_7B2LuPXKpBjoyLqlaog-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 12 Feb 2021 15:31:16 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 12 Feb 2021 15:31:16 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Coly Li' <colyli@suse.de>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Christina Jacob <cjacob@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+CC:     "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] bcache: Use 64-bit arithmetic instead of 32-bit
+Thread-Topic: [PATCH][next] bcache: Use 64-bit arithmetic instead of 32-bit
+Thread-Index: AQHXAUq33fUjMDIuaUm57r6l5bDb0apUpJ4g
+Date:   Fri, 12 Feb 2021 15:31:16 +0000
+Message-ID: <0a2eb2e143ad480cbce3f84c3c920b5f@AcuMS.aculab.com>
+References: <20210212125028.GA264620@embeddedor>
+ <ea24a361-ab1f-a330-b5e6-007bb9a1013b@suse.de>
+In-Reply-To: <ea24a361-ab1f-a330-b5e6-007bb9a1013b@suse.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 10:46:05AM -0800, Nick Desaulniers wrote:
-> On Thu, Feb 11, 2021 at 5:55 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Feb 11, 2021 at 09:32:03PM +0800, Xi Ruoyao wrote:
-> > > Hi all,
-> > >
-> > > The latest GNU assembler (binutils-2.36.1) is removing unused section symbols
-> > > like Clang [1].  So linux-5.10.15 can't be built with binutils-2.36.1 now.  It
-> > > has been reported as https://bugzilla.kernel.org/show_bug.cgi?id=211693.
-> 
-> Xi,
-> Happy Lunar New Year to you, too, and thanks for the report.  Did you
-> observe such segfaults for older branches of stable?
-> 
-> > 2.36 of binutils fails to build the 4.4.y tree right now as well, but as
-> > objtool isn't there, I don't know what to do about it :(
-> 
-> Greg,
-> There may be multiple issues in the latest binutils release for the
-> kernel; we should still avoid segfaults in host tools so I do
-> recommend considering this patch for inclusion at least into 5.10.y.
-> Arnd's report in https://github.com/ClangBuiltLinux/linux/issues/1207
-> mentions this was found via randconfig testing, so likely some set of
-> configs is needed to reproduce reliably.
-> 
-> Do you have more info about the failure you're observing? Trolling
-> lore, I only see:
-> https://lore.kernel.org/stable/YCLeJcQFsDIsrAEc@kroah.com/
-> (Maybe it was reported on a different list; I only searched stable ML).
+PiA+ICAJCWlmIChjLT5nY19zdGF0cy5pbl91c2UgPD0gQkNIX1dSSVRFQkFDS19GUkFHTUVOVF9U
+SFJFU0hPTERfTUlEKSB7DQo+ID4gLQkJCWZwX3Rlcm0gPSBkYy0+d3JpdGViYWNrX3JhdGVfZnBf
+dGVybV9sb3cgKg0KPiA+ICsJCQlmcF90ZXJtID0gKGludDY0X3QpZGMtPndyaXRlYmFja19yYXRl
+X2ZwX3Rlcm1fbG93ICoNCj4gPiAgCQkJKGMtPmdjX3N0YXRzLmluX3VzZSAtIEJDSF9XUklURUJB
+Q0tfRlJBR01FTlRfVEhSRVNIT0xEX0xPVyk7DQo+ID4gIAkJfSBlbHNlIGlmIChjLT5nY19zdGF0
+cy5pbl91c2UgPD0gQkNIX1dSSVRFQkFDS19GUkFHTUVOVF9USFJFU0hPTERfSElHSCkgew0KPiA+
+IC0JCQlmcF90ZXJtID0gZGMtPndyaXRlYmFja19yYXRlX2ZwX3Rlcm1fbWlkICoNCj4gPiArCQkJ
+ZnBfdGVybSA9IChpbnQ2NF90KWRjLT53cml0ZWJhY2tfcmF0ZV9mcF90ZXJtX21pZCAqDQo+ID4g
+IAkJCShjLT5nY19zdGF0cy5pbl91c2UgLSBCQ0hfV1JJVEVCQUNLX0ZSQUdNRU5UX1RIUkVTSE9M
+RF9NSUQpOw0KPiA+ICAJCX0gZWxzZSB7DQo+ID4gLQkJCWZwX3Rlcm0gPSBkYy0+d3JpdGViYWNr
+X3JhdGVfZnBfdGVybV9oaWdoICoNCj4gPiArCQkJZnBfdGVybSA9IChpbnQ2NF90KWRjLT53cml0
+ZWJhY2tfcmF0ZV9mcF90ZXJtX2hpZ2ggKg0KPiA+ICAJCQkoYy0+Z2Nfc3RhdHMuaW5fdXNlIC0g
+QkNIX1dSSVRFQkFDS19GUkFHTUVOVF9USFJFU0hPTERfSElHSCk7DQo+ID4gIAkJfQ0KPiA+ICAJ
+CWZwcyA9IGRpdl9zNjQoZGlydHksIGRpcnR5X2J1Y2tldHMpICogZnBfdGVybTsNCj4gPg0KPiAN
+Cj4gSG1tLCBzaG91bGQgc3VjaCB0aGluZyBiZSBoYW5kbGVkIGJ5IGNvbXBpbGVyID8gIE90aGVy
+d2lzZSB0aGlzIGtpbmQgb2YNCj4gcG90ZW50aWFsIG92ZXJmbG93IGlzc3VlIHdpbGwgYmUgZW5k
+bGVzcyB0aW1lIHRvIHRpbWUuDQo+IA0KPiBJIGFtIG5vdCBhIGNvbXBpbGVyIGV4cGVydCwgc2hv
+dWxkIHdlIGhhdmUgdG8gZG8gc3VjaCBleHBsaWNpdCB0eXBlIGNhc3QNCj4gYWxsIHRoZSB0aW1l
+ID8NCg0KV2UgZG8gdG8gZ2V0IGEgNjRiaXQgcHJvZHVjdCBmcm9tIHR3byAzMmJpdCB2YWx1ZXMu
+DQpBbiBhbHRlcm5hdGl2ZSBmb3IgdGhlIGFib3ZlIHdvdWxkIGJlOg0KCQlmcF90ZXJtID0gYy0+
+Z2Nfc3RhdHMuaW5fdXNlIC0gQkNIX1dSSVRFQkFDS19GUkFHTUVOVF9USFJFU0hPTERfSElHSDsN
+CgkJZnBfdGVybSAqPSBkYy0+d3JpdGViYWNrX3JhdGVfZnBfdGVybV9oaWdoOw0KDQpJIGhvcGUg
+QkNIX1dSSVRFQkFDS19GUkFHTUVOVF9USFJFU0hPTERfTE9XIGlzIHplcm8gOi0pDQoNCglEYXZp
+ZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQg
+RmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4
+NiAoV2FsZXMpDQo=
 
-I didn't report it anywhere.
-
-Here's the output of doing a 'make allmodconfig' on the latest 4.4.257
-release failing with binutils 2.36
-
-Cannot find symbol for section 8: .text.unlikely.
-kernel/kexec_file.o: failed
-make[1]: *** [scripts/Makefile.build:277: kernel/kexec_file.o] Error 1
-make[1]: *** Deleting file 'kernel/kexec_file.o'
-make[1]: *** Waiting for unfinished jobs....
-
-4.9.257 works fine, probably because we are using objtool?
-
-Any ideas are appreciated.
-
-thanks,
-
-greg k-h
