@@ -2,262 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD170319793
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 01:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF4331979C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 01:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhBLAnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 19:43:11 -0500
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:33447 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229714AbhBLAmo (ORCPT
+        id S229742AbhBLAsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 19:48:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhBLAsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 19:42:44 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id E2E8BA09;
-        Thu, 11 Feb 2021 19:41:35 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute4.internal (MEProxy); Thu, 11 Feb 2021 19:41:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type:content-transfer-encoding; s=fm2; bh=lq1Mg
-        yURT/+FvHph6bNyVR+n3tqnPDI+rDy1fPdgW94=; b=AVhtDn53IA8cD0v6GxrFX
-        Z7vzLOKcV0/KKec4L+z3qWmfRjQx4bBXTnMOUdpFXfCEzm3I2S7RGqNa1dEhd/yP
-        N7vKZWJMQK6FQWkPD1gBH5krZZVCUWdHFR2mmc+vjY/JQXrbBRzIHWMm079k85rm
-        elPY1cIyQUj/1Z6TVVEj5HUL9HZ8ncpesJ0g5YB46uvExSDxdkt7SKGqqM/j4dPU
-        CrzIaWuIcXoWaXifpAXs2MFaM9pucKqocRjZztKstA/9DJWIefPyNTbFx2biDqZD
-        d0csDEh5i90hRZzXNWkhJpMiEPo0n1nf39Ls0qjEf1WMsPWS7A5v5VygDtlZb1PF
-        g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=lq1MgyURT/+FvHph6bNyVR+n3tqnPDI+rDy1fPdgW
-        94=; b=s4rsHYhWqu9S1Ov9cvQBPCElVPg79zYML7GS0VcDcz/2aCispB7Qj0VjI
-        V7M2IH41lD2MCHhx0BP5vwaB1lJ0uCncS8wzlO25X75D2LTXGWvw8xUmY9TmR0UF
-        QKXxOPBGUI/N1WqlVSAdLLGvBqzHqiFkxl3MROWzmeYiDgThLwGMybGKyd6Nb4lO
-        i1dVBsMU6HqrGB5sO9iS3N0nxpuCYs7b9Q6jiWEQ59CCFV224bgtbKosU+4goc2l
-        zdpwP+6h5b8B3oMAs9+o46VFgQeotfgpFP2wNN83dGHmfpZTIRBYxYN0/bKZJRHg
-        iMWYfOlxojZ2L223QiZ+dcmbeYh6Q==
-X-ME-Sender: <xms:vc4lYFeGToQWuZsPp0_3xPYYB-PKQCD5AGUU_ANQq9mksw89ktPKew>
-    <xme:vc4lYDN5S3TjJjjygNZiJz2qqaS7I3XnUDUCHQD0v9U0f6HtSShpOv-Q_Pm-EORnn
-    NTFzJbK_Ueqww>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledriedtgddvhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepnhhnvght
-    uceonhhnvghtsehfrghsthhmrghilhdrfhhmqeenucggtffrrghtthgvrhhnpeeugeekvd
-    ehheevheetieetudeljedvvddtieevvdeukeejgfeuheffueelueegueenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnnhgvthesfhgrshhtmh
-    grihhlrdhfmh
-X-ME-Proxy: <xmx:vc4lYOjEaj-HynicqRVM_tyktWi-PfxmnnWObo-cG7qb4e52gqQ7MQ>
-    <xmx:vc4lYO-yIegTwl9lEn_pb-OTFDbTXpg8OuCfVNsxy4OLIeVGJyvmdw>
-    <xmx:vc4lYBuus4_ekGeZQbhoTUN3jWKHwgHl8-L-uZJoVvPXdBSMX5N1BQ>
-    <xmx:v84lYBGqrg9D8slf9hC0qmZdhkLFZLlVgLzULC06AsENMRH5SirIv5OXwHQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E7215A0005E; Thu, 11 Feb 2021 19:41:33 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
-Mime-Version: 1.0
-Message-Id: <000b92cc-9b54-4af9-b95c-d1317fb6f97f@www.fastmail.com>
-In-Reply-To: <20210211234445.hbv2diphmgbir76u@pali>
-References: <20210210002619.43104a9b@kernel.org>
- <ac03801e-87e2-4e57-b131-bff52f03579d@www.fastmail.com>
- <1cd0c2ee-aa3a-4da2-9c0c-57cc5a1dad49@www.fastmail.com>
- <a1277b1f-f829-4d02-9e54-68ab4faaa047@www.fastmail.com>
- <20210210092339.qy6wwuq6qr5m2ozr@pali>
- <d6971325-af71-4f71-91c2-7b661804c022@www.fastmail.com>
- <20210210180322.rlfxdussqhejqpo6@pali>
- <966f50f2-68b2-4d4f-85f0-396df112c0f4@www.fastmail.com>
- <20210211195559.n2j4jnchl2ho54mg@pali>
- <1ad78446-4a40-4c3e-8680-6dbf19616515@www.fastmail.com>
- <20210211234445.hbv2diphmgbir76u@pali>
-Date:   Thu, 11 Feb 2021 16:41:13 -0800
-From:   nnet <nnet@fastmail.fm>
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
-        a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
-        gregory.clement@bootlin.com, kostap@marvell.com,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
-        miquel.raynal@bootlin.com, mturquette@baylibre.com,
-        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
-        vladimir.vid@sartura.hr
-Subject: =?UTF-8?Q?Re:_[PATCH_mvebu_v2_00/10]_Armada_37xx:_Fix_cpufreq_changing_b?=
- =?UTF-8?Q?ase_CPU_speed_to_800_MHz_from_1000_MHz?=
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Thu, 11 Feb 2021 19:48:05 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E1FC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 16:47:25 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id z9so4430279pjl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 16:47:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ks52tpf3v7A4jHH+mRESFUFGss0ADSjmWr1iWfb7C4M=;
+        b=TzkbUfRPwqf8/3JuxAaFmmQomPZatsOf8NAmJxiyOH6XcRJA4V+OFi8mstO6kM0xYS
+         3N1QiXWS+Dlg1aT/gtzsxvJjS/B4/UIW5VhO5VA72Y9sbSyUQfwtD+oXLsBAM52KV9yC
+         wgBrOxVP6wQfKiWxSGAyWd/xtGv78tMKjx/QtrEvX/eJQ/oWn4RKn/nMOoWpNER87hjL
+         kkIWPlM8JWOUEe2KTL/WvmfgrIBd8lAfUnaXf/G82Bb30r4D8uO312ZptK6TmFNm2A4w
+         SyC+Iep5x0Id0y8GyyGGzR9DF1MYJLj9y+3kocD45tgMthWSTk1WRNglA2rsAV4jtZnk
+         fnkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ks52tpf3v7A4jHH+mRESFUFGss0ADSjmWr1iWfb7C4M=;
+        b=mKdhkpVf8LYkKV7nQQtFvdL1NB5WV3s+6WwUThzEI1Bhf3F2+NpnBKIk1Il2qb62SN
+         mLAe3XmPwHay4scGpz45oIsYUg20UJQWNHzI1ZyzvB/+XvpMluI8Q0YQNuycUVbKIhB8
+         5KJjDg2fkHgypM01W2tLeBWehKR35W0ob6hiUPOhomch4hZTo78kaZdtt89p1Elldt5x
+         xF0fT6lQ7c1SPcI5BZiYV1I7+m4zjYTlqBtFHk3eKyaLigJCpP+LGSObDj3flT1Y7NXC
+         4N6DgmurMlRj71msBkuao+5ghDXAe24ovyXah46jKhsbB0Qh9y1aXvQurclPeT+4M3Zk
+         LkBQ==
+X-Gm-Message-State: AOAM531O1FhkjDHP2grs725qaeloEbq5AGBEkcpUN9u/hbBnJTOlnjiX
+        Li/xfPUrWTtAOMN43uXoZ8oxFw==
+X-Google-Smtp-Source: ABdhPJy98/6ednOU/Q/l32Ubvhg+Xgf3pOL9G/kmi4ZpHPIvfWNPZK3W+qzQpSH0fgdh48LQgB/dVw==
+X-Received: by 2002:a17:90a:ab17:: with SMTP id m23mr379585pjq.0.1613090844830;
+        Thu, 11 Feb 2021 16:47:24 -0800 (PST)
+Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
+        by smtp.gmail.com with ESMTPSA id v31sm7120301pgl.76.2021.02.11.16.47.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 16:47:24 -0800 (PST)
+Date:   Fri, 12 Feb 2021 00:47:20 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com,
+        Alasdair Kergon <agk@redhat.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v4 0/5] add support for inline encryption to device mapper
+Message-ID: <YCXQGLUbE//ffIe7@google.com>
+References: <20210201051019.1174983-1-satyat@google.com>
+ <20210210193327.GA8226@redhat.com>
+ <c681d976-f1bd-482c-8ead-b099986b70e5@kernel.dk>
+ <YCW3SlbDFNn+Xyac@google.com>
+ <20210211230459.GA15187@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211230459.GA15187@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Thu, Feb 11, 2021, at 3:44 PM, Pali Roh=C3=A1r wrote:
-> On Thursday 11 February 2021 12:22:52 nnet wrote:
-> > On Thu, Feb 11, 2021, at 11:55 AM, Pali Roh=C3=A1r wrote:
-> > > On Wednesday 10 February 2021 11:08:59 nnet wrote:
-> > > > On Wed, Feb 10, 2021, at 10:03 AM, Pali Roh=C3=A1r wrote:
-> > > > > > > Hello! Could you please enable userspace governor during k=
-ernel
-> > > > > > > compilation?
-> > > > > > >=20
-> > > > > > >     CONFIG_CPU_FREQ_GOV_USERSPACE=3Dy
-> > > > > > >=20
-> > > > > > > It can be activated via command:
-> > > > > > >=20
-> > > > > > >     echo userspace > /sys/devices/system/cpu/cpufreq/polic=
-y0/scaling_governor
-> > > > > > >=20
-> > > > > > > After that you can "force" CPU frequency to specific value=
-, e.g.:
-> > > > > > >=20
-> > > > > > >     echo 1000000 > /sys/devices/system/cpu/cpufreq/policy0=
-/scaling_setspeed
-> > > > > > >=20
-> > > > > > > I need to know which switch (from --> to freq) cause this =
-system hang.
-> > > > > > >=20
-> > > > > > > This patch series (via MIN_VOLT_MV_FOR_L0_L1_1GHZ) is fixi=
-ng only
-> > > > > > > switching from 500 MHz to 1000 MHz on 1 GHz variant. As on=
-ly this switch
-> > > > > > > is causing issue.
-> > > > > > >=20
-> > > > > > > I have used following simple bash script to check that swi=
-tching between
-> > > > > > > 500 MHz and 1 GHz is stable:
-> > > > > > >=20
-> > > > > > >     while true; do
-> > > > > > >         echo 1000000 > /sys/devices/system/cpu/cpufreq/pol=
-icy0/scaling_setspeed;
-> > > > > > >         echo 500000 > /sys/devices/system/cpu/cpufreq/poli=
-cy0/scaling_setspeed;
-> > > > > > >         echo 1000000 > /sys/devices/system/cpu/cpufreq/pol=
-icy0/scaling_setspeed;
-> > > > > > >         echo 500000 > /sys/devices/system/cpu/cpufreq/poli=
-cy0/scaling_setspeed;
-> > > > > > >     done
-> > > > > >=20
-> > > > > > echo userspace | tee /sys/devices/system/cpu/cpufreq/policy0=
-/scaling_governor
-> > > > > > while true; do
-> > > > > >   echo 1200000 | tee /sys/devices/system/cpu/cpufreq/policy0=
-/scaling_setspeed;
-> > > > > >   echo 600000 | tee /sys/devices/system/cpu/cpufreq/policy0/=
-scaling_setspeed;
-> > > > > > done
-> > > > > >=20
-> > > > > > >> +#define MIN_VOLT_MV_FOR_L0_L1_1GHZ 1108
-> > > > > >=20
-> > > > > > With 1108 I get a freeze within a minute. The last output to=
- stdout is 600000.
-> > > > > >=20
-> > > > > > With 1120 it takes a few minutes.
-> > > > > >=20
-> > > > > > With any of 1225, 1155, 1132 the device doesn't freeze over =
-the full 5 minute load test.
-> > > > > >=20
-> > > > > > I'm using ondemand now with the above at 1132 without issue =
-so far.
-> > > > >=20
-> > > > > Great, thank you for testing!
-> > > > >=20
-> > > > > Can you check if switching between any two lower frequencies 2=
-00000
-> > > > > 300000 600000 is stable?
-> > > >=20
-> > > > This is stable using 1132 mV for MIN_VOLT_MV_FOR_L0_L1_1GHZ:
-> > > >=20
-> > > > while true; do
-> > > >   # down
-> > > >   echo 1200000 | tee /sys/devices/system/cpu/cpufreq/policy0/sca=
-ling_setspeed;
-> > > ...
-> > >=20
-> > > Hello!
-> > >=20
-> > > Could you please re-run test without tee, in form as I have shown =
-above?
-> > > UART is slow and printing something to console adds delay which de=
-crease
-> > > probability that real issue is triggered as this is timing issue.
-> >=20
-> > The test was done over SSH.
->=20
-> Ok! But it is still better to not print any results as it adds unwante=
-d
-> delay between frequency switching.
->=20
-> > > Also please do tests just between two frequencies in loop as I obs=
-erved
-> > > that switching between more decreased probability to hit issue.
-> >=20
-> > > > > > echo userspace | tee /sys/devices/system/cpu/cpufreq/policy0=
-/scaling_governor
-> > > > > > while true; do
-> > > > > >   echo 1200000 | tee /sys/devices/system/cpu/cpufreq/policy0=
-/scaling_setspeed;
-> > > > > >   echo 600000 | tee /sys/devices/system/cpu/cpufreq/policy0/=
-scaling_setspeed;
-> > > > > > done
-> >=20
-> > The first test ^ switched between 600 MHz and 1.2 GHz.
-> >=20
-> > > The real issue for 1 GHz variant of A3720 is only when doing switc=
-h from
-> > > 500 MHz to 1 GHz. So could you try to do some tests also without
-> > > changing MIN_VOLT_MV_FOR_L0_L1_1GHZ and switching just between non=
--1.2
-> > > frequencies (to verify that on 1.2 GHz variant it is also from 600=
- MHz
-> > > to 1.2 GHz)?
-> >=20
-> > With 1108 mV and switching between 600 MHz and 1.2GHz, I always saw =
-a freeze within a minute.
->=20
-> I mean to try switching with 1.108 V between 200 MHz and 300 MHz or
-> between 300 MHz and 600 MHz. To check that issue is really only with
-> switch from 600 MHz to 1.2 GHz.
-
-With:
-
-+#define MIN_VOLT_MV_FOR_L0_L1_1GHZ 1108
-
-with 5 min load:
-
-# no lock-up
-
-echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governo=
-r
-while true; do
-  echo 200000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed=
-;
-  echo 300000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed=
-;
-done
-
-# no lock-up
-
-echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governo=
-r
-while true; do
-  echo 300000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed=
-;
-  echo 600000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed=
-;
-done
-
-# lock-up with 10 seconds of load applied
-
-echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governo=
-r
-while true; do
-  echo 600000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed=
-;
-  echo 1200000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspee=
-d;
-done
-
-> I need to know if current settings are fine for 200, 300 and 600 MHz
-> frequencies and the only 600 --> 1200 needs to be fixed.
->
+On Thu, Feb 11, 2021 at 06:04:59PM -0500, Mike Snitzer wrote:
+> On Thu, Feb 11 2021 at  6:01pm -0500,
+> Satya Tangirala <satyat@google.com> wrote:
+> 
+> > On Wed, Feb 10, 2021 at 12:59:59PM -0700, Jens Axboe wrote:
+> > > On 2/10/21 12:33 PM, Mike Snitzer wrote:
+> > > > On Mon, Feb 01 2021 at 12:10am -0500,
+> > > > Satya Tangirala <satyat@google.com> wrote:
+> > > > 
+> > > >> This patch series adds support for inline encryption to the device mapper.
+> > > >>
+> > > >> Patch 1 introduces the "passthrough" keyslot manager.
+> > > >>
+> > > >> The regular keyslot manager is designed for inline encryption hardware that
+> > > >> have only a small fixed number of keyslots. A DM device itself does not
+> > > >> actually have only a small fixed number of keyslots - it doesn't actually
+> > > >> have any keyslots in the first place, and programming an encryption context
+> > > >> into a DM device doesn't make much semantic sense. It is possible for a DM
+> > > >> device to set up a keyslot manager with some "sufficiently large" number of
+> > > >> keyslots in its request queue, so that upper layers can use the inline
+> > > >> encryption capabilities of the DM device's underlying devices, but the
+> > > >> memory being allocated for the DM device's keyslots is a waste since they
+> > > >> won't actually be used by the DM device.
+> > > >>
+> > > >> The passthrough keyslot manager solves this issue - when the block layer
+> > > >> sees that a request queue has a passthrough keyslot manager, it doesn't
+> > > >> attempt to program any encryption context into the keyslot manager. The
+> > > >> passthrough keyslot manager only allows the device to expose its inline
+> > > >> encryption capabilities, and a way for upper layers to evict keys if
+> > > >> necessary.
+> > > >>
+> > > >> There also exist inline encryption hardware that can handle encryption
+> > > >> contexts directly, and allow users to pass them a data request along with
+> > > >> the encryption context (as opposed to inline encryption hardware that
+> > > >> require users to first program a keyslot with an encryption context, and
+> > > >> then require the users to pass the keyslot index with the data request).
+> > > >> Such devices can also make use of the passthrough keyslot manager.
+> > > >>
+> > > >> Patch 2 introduces some keyslot manager functions useful for the device
+> > > >> mapper.
+> > > >>
+> > > >> Patch 3 introduces the changes for inline encryption support for the device
+> > > >> mapper. A DM device only exposes the intersection of the crypto
+> > > >> capabilities of its underlying devices. This is so that in case a bio with
+> > > >> an encryption context is eventually mapped to an underlying device that
+> > > >> doesn't support that encryption context, the blk-crypto-fallback's cipher
+> > > >> tfms are allocated ahead of time by the call to blk_crypto_start_using_key.
+> > > >>
+> > > >> Each DM target can now also specify the "DM_TARGET_PASSES_CRYPTO" flag in
+> > > >> the target type features to opt-in to supporting passing through the
+> > > >> underlying inline encryption capabilities.  This flag is needed because it
+> > > >> doesn't make much semantic sense for certain targets like dm-crypt to
+> > > >> expose the underlying inline encryption capabilities to the upper layers.
+> > > >> Again, the DM exposes inline encryption capabilities of the underlying
+> > > >> devices only if all of them opt-in to passing through inline encryption
+> > > >> support.
+> > > >>
+> > > >> A keyslot manager is created for a table when it is loaded. However, the
+> > > >> mapped device's exposed capabilities *only* updated once the table is
+> > > >> swapped in (until the new table is swapped in, the mapped device continues
+> > > >> to expose the old table's crypto capabilities).
+> > > >>
+> > > >> This patch only allows the keyslot manager's capabilities to *expand*
+> > > >> because of table changes. Any attempt to load a new table that doesn't
+> > > >> support a crypto capability that the old table did is rejected.
+> > > >>
+> > > >> This patch also only exposes the intersection of the underlying device's
+> > > >> capabilities, which has the effect of causing en/decryption of a bio to
+> > > >> fall back to the kernel crypto API (if the fallback is enabled) whenever
+> > > >> any of the underlying devices doesn't support the encryption context of the
+> > > >> bio - it might be possible to make the bio only fall back to the kernel
+> > > >> crypto API if the bio's target underlying device doesn't support the bio's
+> > > >> encryption context, but the use case may be uncommon enough in the first
+> > > >> place not to warrant worrying about it right now.
+> > > >>
+> > > >> Patch 4 makes DM evict a key from all its underlying devices when asked to
+> > > >> evict a key.
+> > > >>
+> > > >> Patch 5 makes some DM targets opt-in to passing through inline encryption
+> > > >> support. It does not (yet) try to enable this option with dm-raid, since
+> > > >> users can "hot add" disks to a raid device, which makes this not completely
+> > > >> straightforward (we'll need to ensure that any "hot added" disks must have
+> > > >> a superset of the inline encryption capabilities of the rest of the disks
+> > > >> in the raid device, due to the way Patch 2 of this series works).
+> > > >>
+> > > >> Changes v3 => v4:
+> > > >>  - Allocate the memory for the ksm of the mapped device in
+> > > >>    dm_table_complete(), and install the ksm in the md queue in __bind()
+> > > >>    (as suggested by Mike). Also drop patch 5 from v3 since it's no longer
+> > > >>    needed.
+> > > >>  - Some cleanups
+> > > >>
+> > > >> Changes v2 => v3:
+> > > >>  - Split up the main DM patch into 4 separate patches
+> > > >>  - Removed the priv variable added to struct keyslot manager in v2
+> > > >>  - Use a flag in target type features for opting-in to inline encryption
+> > > >>    support, instead of using "may_passthrough_inline_crypto"
+> > > >>  - cleanups, improve docs and restructure code
+> > > >>
+> > > >> Changes v1 => v2:
+> > > >>  - Introduce private field to struct blk_keyslot_manager
+> > > >>  - Allow the DM keyslot manager to expand its crypto capabilities if the
+> > > >>    table is changed.
+> > > >>  - Make DM reject table changes that would otherwise cause crypto
+> > > >>    capabilities to be dropped.
+> > > >>  - Allocate the DM device's keyslot manager only when at least one crypto
+> > > >>    capability is supported (since a NULL value for q->ksm represents "no
+> > > >>    crypto support" anyway).
+> > > >>  - Remove the struct blk_keyslot_manager field from struct mapped_device.
+> > > >>    This patch now relies on just directly setting up the keyslot manager in
+> > > >>    the request queue, since each DM device is tied to only 1 queue.
+> > > >>
+> > > >> Satya Tangirala (5):
+> > > >>   block: keyslot-manager: Introduce passthrough keyslot manager
+> > > >>   block: keyslot-manager: Introduce functions for device mapper support
+> > > >>   dm: add support for passing through inline crypto support
+> > > >>   dm: support key eviction from keyslot managers of underlying devices
+> > > >>   dm: set DM_TARGET_PASSES_CRYPTO feature for some targets
+> > > >>
+> > > >>  block/blk-crypto.c              |   1 +
+> > > >>  block/keyslot-manager.c         | 146 ++++++++++++++++++++++
+> > > >>  drivers/md/dm-core.h            |   5 +
+> > > >>  drivers/md/dm-flakey.c          |   4 +-
+> > > >>  drivers/md/dm-linear.c          |   5 +-
+> > > >>  drivers/md/dm-table.c           | 210 ++++++++++++++++++++++++++++++++
+> > > >>  drivers/md/dm.c                 |  18 ++-
+> > > >>  include/linux/device-mapper.h   |  11 ++
+> > > >>  include/linux/keyslot-manager.h |  11 ++
+> > > >>  9 files changed, 407 insertions(+), 4 deletions(-)
+> > > >>
+> > > >> -- 
+> > > >> 2.30.0.365.g02bc693789-goog
+> > > >>
+> > > > 
+> > > > This set looks good to me now.
+> > > > 
+> > > > To avoid DM needing another rebase on block: Jens (and others), would
+> > > > you like to review patches 1 and 2 (and reply with your Reviewed-by) so
+> > > > I could pickup the DM required keyslot-manager changes along with
+> > > > patches 3-5?
+> > > 
+> > > You can add my acked-by to 1+2 and queue it up.
+> > > 
+> > I resent the series (as v5) while addressing the comments Eric had on
+> > Patch 3 (the changes were only to comments, so no functional
+> > changes). I also added the acked/reviewed-bys.
+> 
+> I took care of Eric's comments.
+> And I already staged these changes in linux-next for dm-5.12, see:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/log/?h=dm-5.12
+> 
+Ah, I didn't see that till a little while ago. Thanks!
