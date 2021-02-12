@@ -2,162 +2,443 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FCA319FFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99599319FFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhBLNji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:39:38 -0500
-Received: from mail-dm6nam11on2068.outbound.protection.outlook.com ([40.107.223.68]:28999
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230336AbhBLNjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 08:39:36 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ctHXI3on9Dffu4VbW32PrhTUyahtup0hIfl3LFiLsXhiLj/hHk7P21xGJYgDp5Ce/2WPqc4d36xY7p3nla2gLdF9yLNFRzdg+45Dxa2ALch9+gt319Uz1UxIKo+U4VcU7dcgWcjPLDU6GkRpHdsZv8eyagoTyyqVcJ1iOt6P2V4cQfBWxSmUkndzWLtG8/EVVEbFdz32mGB0+Wx4q5XlmdJ/3h5trIiGGTqbVs+ugrm/rJj1Yr3JYnDIYYrwRk1XcZo0CLd28cLzAoxN4N+J3J8jMcjkJu9A555oSZBNg+uo9K1UYH4GKg84/Jw8PmnGxfVFIOkYmKI5ZsKYrfsTYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zFA5ttsy5pD6JsNKvWI8HVy/TN3o6C0B5hk/TJUdfXM=;
- b=MjCK02m0njOVqzG0/DZSVn+WR9r6iO//U36fAW2GPsdlXz2Mh8DVsn5ZDXYv3Y5pJpJD0QYGocI1GTWCXP7TdG98tcQKjFLyxHfLiqmwW5PqsTZxGQb28UlsjM8UrWv8pmCmllg/05YVQdtZpgHi0SrnflksXwlQYG0HLZCYI+rmkcVUjZyYlXlsWK5o4GiOUQZHhG2w9xHkxVcwpqPGvtTjykuwklc1CEdObWhRYQPXcg+SvqpkYoul7oljU8xxHkxhnG1QnERHl8vmk92/zUizGW5rib3i6eXuBxe0HXZ4HETRGWPu9q1cfa/G8iDYnB1BZjv1eLx931Wuc6dDLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zFA5ttsy5pD6JsNKvWI8HVy/TN3o6C0B5hk/TJUdfXM=;
- b=i+/ampxQ69MIGU7YRikdR3qDfpky3YYwDOKu8pvXV8Gm5irs9zkP7VaUlsJH31bmbuJAhI8QUMdO1a2abQOp7oueESaYcmyJvh9ZO/BpBJY1HNbruDkprv8+J3aUd9uN3hoIkpkJHYCR2GqBIfqCU+m0KVj1lbH7uDDoQUGdOM4=
-Received: from PH0PR11MB4904.namprd11.prod.outlook.com (2603:10b6:510:40::10)
- by PH0PR11MB4999.namprd11.prod.outlook.com (2603:10b6:510:37::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Fri, 12 Feb
- 2021 13:38:23 +0000
-Received: from PH0PR11MB4904.namprd11.prod.outlook.com
- ([fe80::4cc3:4690:b257:8c51]) by PH0PR11MB4904.namprd11.prod.outlook.com
- ([fe80::4cc3:4690:b257:8c51%6]) with mapi id 15.20.3846.034; Fri, 12 Feb 2021
- 13:38:23 +0000
-From:   "Beckius, Mikael" <mikael.beckius@windriver.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: Sv: [PATCH] hrtimer: Interrupt storm on clock_settime
-Thread-Topic: [PATCH] hrtimer: Interrupt storm on clock_settime
-Thread-Index: AQHW+9X7XBZLk3jbIESBUTkLlSY7p6pUjrzQ
-Date:   Fri, 12 Feb 2021 13:38:23 +0000
-Message-ID: <PH0PR11MB4904A4830FED08F91CA97C04928B9@PH0PR11MB4904.namprd11.prod.outlook.com>
-References: <20210128140208.30264-1-mikael.beckius@windriver.com>
- <87r1lu8qmx.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87r1lu8qmx.fsf@nanos.tec.linutronix.de>
-Accept-Language: sv-SE, en-US
-Content-Language: sv-SE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none
- header.from=windriver.com;
-x-originating-ip: [94.254.65.183]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ad38bad2-dd8b-45be-964a-08d8cf5b7836
-x-ms-traffictypediagnostic: PH0PR11MB4999:
-x-microsoft-antispam-prvs: <PH0PR11MB4999C8541C7EAE1096EECB87928B9@PH0PR11MB4999.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cmsTIw51WYUaZzY0MJMWlRqv88CW+ztyP9LQQ4BoTBVB6uX9ehgnv862xdsaCvyuCWiJ4KpciKT0qb+xRRs/oEsxwkswur34OJUQUdnLt4ttFRqWi823gl9auQLtC1fV2O/wJgwoqmVJrSl3//rDlD2T6BdOKgpCIoh16AunPmI6b5EyuLkkiQWDjnNk4sujSjwx5D1Xc/4P5KcugPMZM3GOiRhQZ16+RPCYXc1x8esLV7QpQ5scRisYQEunX+1Vx4bT6/Im7DH3GvsnMawvkCi66Hrg5Mmm3DIBjyodO5EiB/W19HXVCMHp/c7vm9HkpbB2k5LPYyELtH+VNsUj9KyQ2upkwCIVjRyS9pi2gvst2lxVo0NuU0EcS/0o7/Cr6fi40TgCqPSu++ZuJCdrO4/XAe/zWxbsdCvw4sxHYNvyVqdMkCOL+WSIXCB72yJTTJHWjpcdT8NjDmwClE72J0qvxuUSJeOazv5TrYDMLiEnFkrNfOvsxMVjKIz1VmsuQAhhaQX4keGAi+ylr7dalw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4904.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(136003)(396003)(376002)(366004)(346002)(9686003)(55016002)(7696005)(26005)(6506007)(8936002)(66446008)(110136005)(66476007)(64756008)(71200400001)(186003)(52536014)(2906002)(86362001)(83380400001)(8676002)(33656002)(4326008)(66556008)(66946007)(478600001)(316002)(76116006)(5660300002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?kYdgL5h4B7r3Tl7LQalBRr8QtwKEkt0YDMIHxiRrI8gnZshoHw/tsbrxE8fp?=
- =?us-ascii?Q?nSgRK6gCs+0ld2FghL19pvykJWnolm5/mm5ZRC1UkdFstd67870PDAPMPX7V?=
- =?us-ascii?Q?VGRx/ezCH2AsAJY3uRvmTwPfyvLsbCkoWc6+tmfq3jEcCgvEP48/TKceGPrf?=
- =?us-ascii?Q?HsGeh/ZYoVwaxWakWAEM1fs92354BRdpJkTGixPiIOoUf3eDMLH9zD+CA5xK?=
- =?us-ascii?Q?7ghgHKPDY//p43edctolibZuySFYziPi3wgKzBHm0H8mxJicQoW8llJtx+1r?=
- =?us-ascii?Q?EQgJtus0maWpWnu2UK+Lh13/4VlONOB9dM9+oKROtj8rIpcVqgg9WIJaBsyJ?=
- =?us-ascii?Q?DDTS6bFoOXq28wEjr80D/pdgTsrJlS2MCg31JroUXL2c00dH7e9/q5GNvCqv?=
- =?us-ascii?Q?sCoTY+Dy61cUOj80aP33a6OLy+kz94ayYJZCJgvWt7xhUiBv2+O3w25Y1cB/?=
- =?us-ascii?Q?WW3Uq/7I3+BvcLBTUZVX5JI8sqwgC4agFAUlx2P1BdONd18BlGMEfDDrfYuI?=
- =?us-ascii?Q?A5puKpQJhucU7M0WhrMlqxMBuI0cF+lbgd8spY8BX53+da9dzHxZXpBvAB+R?=
- =?us-ascii?Q?fF5sd0POI989VVcG0R7ts5b3IHUaOebOYWbXVz0fMzAaSoNelzTf7Fh4FSzf?=
- =?us-ascii?Q?Fjk9uG3lTs1AJ0umdkTLiUdlIMlGo/lacJ+ShROMriqVPoXKJkBbUPMbeSWi?=
- =?us-ascii?Q?9ZG5nChRTYC8tckQzw5/ZAM4DL4Wrr55t6iTQ1yO2jxVA8e8zUxpLLAQ1LyA?=
- =?us-ascii?Q?o6SjLkoHdu3wFa4D3rAXQetXMNUQUtdgQDpDrDeDLldjt/7jOnq5KaMKJB8R?=
- =?us-ascii?Q?Hdtj1U8+jK4176b4dNUNBolUANjfOlbd9OIkIOgJoOoNFCRFiMxcaEobfnll?=
- =?us-ascii?Q?gKwc+NchV7qiT9+jpDh/XwmBSvTT1s0DQ6YMqqLwPONQC3KQdmauzeVzzEMI?=
- =?us-ascii?Q?Se3kP6MEmfr2h6RvW/J4WtUobp/UfCnW07uqiwjh18QkoAjs+38N9haSgAmV?=
- =?us-ascii?Q?9CAqQovyWA77Ee7Y3vgzqiANuBhPmvEk7ZRCbyjY0XlBW9u7B6BoorV0MCW/?=
- =?us-ascii?Q?J/SEDlNCq4ahvCFigqmIYAj3ySsp8zscdSQ6P4q69F7fJnHFxj3dQSl2YN/t?=
- =?us-ascii?Q?3MF7YFvGX9AZZUBpqE1xeXuuIblVB6vnzVthqB/drZ4vGbTV9gWp63SF9/OU?=
- =?us-ascii?Q?lnoiv3iz4dwnDfPLiBM7TP1lkNPPolDL+vXbKlo/1qIUzL/bMafFwyRphH+L?=
- =?us-ascii?Q?bg9bd58hMyBoZsrW5BY/3Q1SfukHjhMlfmHRi9GdsPIryJ5zThK9W+n7xD2j?=
- =?us-ascii?Q?VO7s2aSsivIb0oHFwIRB5Bvr?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231538AbhBLNmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:42:43 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2562 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231330AbhBLNmk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 08:42:40 -0500
+Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DcZKh2Mrmz67mYL;
+        Fri, 12 Feb 2021 21:36:56 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 12 Feb 2021 14:41:56 +0100
+Received: from localhost (10.47.28.230) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 12 Feb
+ 2021 13:41:50 +0000
+Date:   Fri, 12 Feb 2021 13:40:46 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        "Chris Browy" <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Jon Masters" <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Ariel Sibley <Ariel.Sibley@microchip.com>
+Subject: Re: [PATCH v2 5/8] cxl/mem: Add a "RAW" send command
+Message-ID: <20210212134046.00006a5a@Huawei.com>
+In-Reply-To: <20210211160148.i6bcvezhh6tcx2zv@intel.com>
+References: <20210210000259.635748-1-ben.widawsky@intel.com>
+        <20210210000259.635748-6-ben.widawsky@intel.com>
+        <20210211111924.000019a5@Huawei.com>
+        <20210211160148.i6bcvezhh6tcx2zv@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4904.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad38bad2-dd8b-45be-964a-08d8cf5b7836
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2021 13:38:23.7726
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bhu+hab/QSqM3e5+PcUGikaYk8005KDzNvpGM3oVpl8jxwz4Fv0e2hVRaVJ4W31zRrBPulGIQ1Yz+z7XRA9mAgfKUcMaCj8A5y5II48Y8wI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4999
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.28.230]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the update and sorry for the late reply. After long-term testing=
- of the patch, storm detection improved, it turns out that a similar proble=
-m can occur if hrtimer_interrupt runs during clock_settime. In this case it=
- seems the offset can get updated and later read using hrtimer_update_base =
-in hrtimer_interrupt before softirq_expires_next gets updated. As soon as s=
-oftirq_expires_next gets updated by hrtimer_force_reprogram the storm ends.=
- To fix this I made the below changes.
+On Thu, 11 Feb 2021 08:01:48 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
 
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -529,8 +529,10 @@ static ktime_t __hrtimer_next_event_base(struct hrtime=
-r_cpu_base *cpu_base,
- 			if (exclude)
- 				continue;
-=20
--			if (timer->is_soft)
-+			if (timer->is_soft) {
- 				cpu_base->softirq_next_timer =3D timer;
-+				cpu_base->softirq_expires_next =3D expires;
-+			}
- 			else
- 				cpu_base->next_timer =3D timer;
- 		}
-@@ -633,19 +635,6 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_b=
-ase, int skip_equal)
- 	 */
- 	expires_next =3D __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
-=20
--	if (cpu_base->next_timer && cpu_base->next_timer->is_soft) {
--		/*
--		 * When the softirq is activated, hrtimer has to be
--		 * programmed with the first hard hrtimer because soft
--		 * timer interrupt could occur too late.
--		 */
--		if (cpu_base->softirq_activated)
--			expires_next =3D __hrtimer_get_next_event(cpu_base,
--								HRTIMER_ACTIVE_HARD);
--		else
--			cpu_base->softirq_expires_next =3D expires_next;
--	}
--
- 	if (skip_equal && expires_next =3D=3D cpu_base->expires_next)
- 		return;
-=20
---
+> On 21-02-11 11:19:24, Jonathan Cameron wrote:
+> > On Tue, 9 Feb 2021 16:02:56 -0800
+> > Ben Widawsky <ben.widawsky@intel.com> wrote:
+> >   
+> > > The CXL memory device send interface will have a number of supported
+> > > commands. The raw command is not such a command. Raw commands allow
+> > > userspace to send a specified opcode to the underlying hardware and
+> > > bypass all driver checks on the command. This is useful for a couple of
+> > > usecases, mainly:
+> > > 1. Undocumented vendor specific hardware commands  
+> > 
+> > This one I get.  There are things we'd love to standardize but often they
+> > need proving in a generation of hardware before the data is available to
+> > justify taking it to a standards body.  Stuff like performance stats.
+> > This stuff will all sit in the vendor defined range.  Maybe there is an
+> > argument for in driver hooks to allow proper support even for these
+> > (Ben mentioned this in the other branch of the thread).
+> >   
+> > > 2. Prototyping new hardware commands not yet supported by the driver  
+> > 
+> > For 2, could just have a convenient place to enable this by one line patch.
+> > Some subsystems (SPI comes to mind) do this for their equivalent of raw
+> > commands.  The code is all there to enable it but you need to hook it
+> > up if you want to use it.  Avoids chance of a distro shipping it.
+> >   
+> 
+> I'm fine to drop #2 as a justification point, or maybe reword the commit message
+> to say, "you could also just do... but since we have it for #1 already..."
+> 
+> > > 
+> > > While this all sounds very powerful it comes with a couple of caveats:
+> > > 1. Bug reports using raw commands will not get the same level of
+> > >    attention as bug reports using supported commands (via taint).
+> > > 2. Supported commands will be rejected by the RAW command.  
+> > 
+> > Perhaps I'm missing reading this point 2 (not sure the code actually does it!)
+> > 
+> > As stated what worries me as it means when we add support for a new
+> > bit of the spec we just broke the userspace ABI.
+> >   
+> 
+> It does not break ABI. The agreement is userspace must always use the QUERY
+> command to find out what commands are supported. If it tries to use a RAW
+> command that is a supported command, it will be rejected. In the case you
+> mention, that's an application bug. If there is a way to document that better
+> than what's already in the UAPI kdocs, I'm open to suggestions.
+> 
+> Unlike perhaps other UAPI, this one only promises to give you a way to determine
+> what commands you can use, not the list of what commands you can use.
 
-This is similar to hrtimer_reprogram. I also removed the cpu_base->softirq_=
-activated case since as far as I can tell expires_next must be hard if cpu_=
-base->softirq_activated is true. I might be missing something as I don't ha=
-ve whole picture of the hrtimer subsystem but at least no interrupt storms =
-are detected during clock_settime with latest changes.
+*crossed fingers* on this.  Users may have a different view when their application
+just stops working.  It might print a nice error message telling them why
+but it still doesn't work and that way lies grumpy Linus and reverts...
 
-Micke
+Mostly we'll get away with it because no one will notice, but it's unfortunately
+still risky.   Personal preference is toplay safer and not allow direct userspace
+access to commands in the spec (unless we've decided they will always be available
+directly to userspace).  This includes anything in the ranges reserved for future
+spec usage.
+
+Jonathan
+
+
+
+> 
+> > > 
+> > > With this comes new debugfs knob to allow full access to your toes with
+> > > your weapon of choice.  
+> > 
+> > A few trivial things inline,
+> > 
+> > Jonathan
+> >   
+> > > 
+> > > Cc: Ariel Sibley <Ariel.Sibley@microchip.com>
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> > > ---
+> > >  drivers/cxl/Kconfig          |  18 +++++
+> > >  drivers/cxl/mem.c            | 125 ++++++++++++++++++++++++++++++++++-
+> > >  include/uapi/linux/cxl_mem.h |  12 +++-
+> > >  3 files changed, 152 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> > > index c4ba3aa0a05d..08eaa8e52083 100644
+> > > --- a/drivers/cxl/Kconfig
+> > > +++ b/drivers/cxl/Kconfig
+> > > @@ -33,6 +33,24 @@ config CXL_MEM
+> > >  
+> > >  	  If unsure say 'm'.
+> > >  
+> > > +config CXL_MEM_RAW_COMMANDS
+> > > +	bool "RAW Command Interface for Memory Devices"
+> > > +	depends on CXL_MEM
+> > > +	help
+> > > +	  Enable CXL RAW command interface.
+> > > +
+> > > +	  The CXL driver ioctl interface may assign a kernel ioctl command
+> > > +	  number for each specification defined opcode. At any given point in
+> > > +	  time the number of opcodes that the specification defines and a device
+> > > +	  may implement may exceed the kernel's set of associated ioctl function
+> > > +	  numbers. The mismatch is either by omission, specification is too new,
+> > > +	  or by design. When prototyping new hardware, or developing / debugging
+> > > +	  the driver it is useful to be able to submit any possible command to
+> > > +	  the hardware, even commands that may crash the kernel due to their
+> > > +	  potential impact to memory currently in use by the kernel.
+> > > +
+> > > +	  If developing CXL hardware or the driver say Y, otherwise say N.
+> > > +
+> > >  config CXL_MEM_INSECURE_DEBUG
+> > >  	bool "CXL.mem debugging"
+> > >  	depends on CXL_MEM
+> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > index ce65630bb75e..6d766a994dce 100644
+> > > --- a/drivers/cxl/mem.c
+> > > +++ b/drivers/cxl/mem.c
+> > > @@ -1,6 +1,8 @@
+> > >  // SPDX-License-Identifier: GPL-2.0-only
+> > >  /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
+> > >  #include <uapi/linux/cxl_mem.h>
+> > > +#include <linux/security.h>
+> > > +#include <linux/debugfs.h>
+> > >  #include <linux/module.h>
+> > >  #include <linux/mutex.h>
+> > >  #include <linux/cdev.h>
+> > > @@ -41,7 +43,14 @@
+> > >  
+> > >  enum opcode {
+> > >  	CXL_MBOX_OP_INVALID		= 0x0000,
+> > > +	CXL_MBOX_OP_RAW			= CXL_MBOX_OP_INVALID,
+> > > +	CXL_MBOX_OP_ACTIVATE_FW		= 0x0202,
+> > >  	CXL_MBOX_OP_IDENTIFY		= 0x4000,
+> > > +	CXL_MBOX_OP_SET_PARTITION_INFO	= 0x4101,
+> > > +	CXL_MBOX_OP_SET_LSA		= 0x4103,
+> > > +	CXL_MBOX_OP_SET_SHUTDOWN_STATE	= 0x4204,
+> > > +	CXL_MBOX_OP_SCAN_MEDIA		= 0x4304,
+> > > +	CXL_MBOX_OP_GET_SCAN_MEDIA	= 0x4305,
+> > >  	CXL_MBOX_OP_MAX			= 0x10000
+> > >  };
+> > >  
+> > > @@ -91,6 +100,8 @@ struct cxl_memdev {
+> > >  
+> > >  static int cxl_mem_major;
+> > >  static DEFINE_IDA(cxl_memdev_ida);
+> > > +static struct dentry *cxl_debugfs;
+> > > +static bool raw_allow_all;
+> > >  
+> > >  /**
+> > >   * struct cxl_mem_command - Driver representation of a memory device command
+> > > @@ -132,6 +143,49 @@ struct cxl_mem_command {
+> > >   */
+> > >  static struct cxl_mem_command mem_commands[] = {
+> > >  	CXL_CMD(IDENTIFY, NONE, 0, 0x43),
+> > > +#ifdef CONFIG_CXL_MEM_RAW_COMMANDS
+> > > +	CXL_CMD(RAW, NONE, ~0, ~0),
+> > > +#endif
+> > > +};
+> > > +
+> > > +/*
+> > > + * Commands that RAW doesn't permit. The rationale for each:
+> > > + *
+> > > + * CXL_MBOX_OP_ACTIVATE_FW: Firmware activation requires adjustment /
+> > > + * coordination of transaction timeout values at the root bridge level.
+> > > + *
+> > > + * CXL_MBOX_OP_SET_PARTITION_INFO: The device memory map may change live
+> > > + * and needs to be coordinated with HDM updates.
+> > > + *
+> > > + * CXL_MBOX_OP_SET_LSA: The label storage area may be cached by the
+> > > + * driver and any writes from userspace invalidates those contents.
+> > > + *
+> > > + * CXL_MBOX_OP_SET_SHUTDOWN_STATE: Set shutdown state assumes no writes
+> > > + * to the device after it is marked clean, userspace can not make that
+> > > + * assertion.
+> > > + *
+> > > + * CXL_MBOX_OP_[GET_]SCAN_MEDIA: The kernel provides a native error list that
+> > > + * is kept up to date with patrol notifications and error management.
+> > > + */
+> > > +static u16 disabled_raw_commands[] = {
+> > > +	CXL_MBOX_OP_ACTIVATE_FW,
+> > > +	CXL_MBOX_OP_SET_PARTITION_INFO,
+> > > +	CXL_MBOX_OP_SET_LSA,
+> > > +	CXL_MBOX_OP_SET_SHUTDOWN_STATE,
+> > > +	CXL_MBOX_OP_SCAN_MEDIA,
+> > > +	CXL_MBOX_OP_GET_SCAN_MEDIA,
+> > > +};
+> > > +
+> > > +/*
+> > > + * Command sets that RAW doesn't permit. All opcodes in this set are
+> > > + * disabled because they pass plain text security payloads over the
+> > > + * user/kernel boundary. This functionality is intended to be wrapped
+> > > + * behind the keys ABI which allows for encrypted payloads in the UAPI
+> > > + */
+> > > +static u8 security_command_sets[] = {
+> > > +	0x44, /* Sanitize */
+> > > +	0x45, /* Persistent Memory Data-at-rest Security */
+> > > +	0x46, /* Security Passthrough */
+> > >  };
+> > >  
+> > >  #define cxl_for_each_cmd(cmd)                                                  \
+> > > @@ -162,6 +216,16 @@ static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
+> > >  	return 0;
+> > >  }
+> > >  
+> > > +static bool is_security_command(u16 opcode)
+> > > +{
+> > > +	int i;
+> > > +
+> > > +	for (i = 0; i < ARRAY_SIZE(security_command_sets); i++)
+> > > +		if (security_command_sets[i] == (opcode >> 8))
+> > > +			return true;
+> > > +	return false;
+> > > +}
+> > > +
+> > >  static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+> > >  				 struct mbox_cmd *mbox_cmd)
+> > >  {
+> > > @@ -170,7 +234,8 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+> > >  	dev_dbg(dev, "Mailbox command (opcode: %#x size: %zub) timed out\n",
+> > >  		mbox_cmd->opcode, mbox_cmd->size_in);
+> > >  
+> > > -	if (IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
+> > > +	if (!is_security_command(mbox_cmd->opcode) ||
+> > > +	    IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
+> > >  		print_hex_dump_debug("Payload ", DUMP_PREFIX_OFFSET, 16, 1,
+> > >  				     mbox_cmd->payload_in, mbox_cmd->size_in,
+> > >  				     true);
+> > > @@ -434,6 +499,9 @@ static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
+> > >  		cxl_command_names[cmd->info.id].name, mbox_cmd.opcode,
+> > >  		cmd->info.size_in);
+> > >  
+> > > +	dev_WARN_ONCE(dev, cmd->info.id == CXL_MEM_COMMAND_ID_RAW,
+> > > +		      "raw command path used\n");
+> > > +
+> > >  	rc = cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
+> > >  	cxl_mem_mbox_put(cxlm);
+> > >  	if (rc)
+> > > @@ -464,6 +532,29 @@ static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
+> > >  	return rc;
+> > >  }
+> > >  
+> > > +static bool cxl_mem_raw_command_allowed(u16 opcode)
+> > > +{
+> > > +	int i;
+> > > +
+> > > +	if (!IS_ENABLED(CONFIG_CXL_MEM_RAW_COMMANDS))
+> > > +		return false;
+> > > +
+> > > +	if (security_locked_down(LOCKDOWN_NONE))
+> > > +		return false;
+> > > +
+> > > +	if (raw_allow_all)
+> > > +		return true;
+> > > +
+> > > +	if (is_security_command(opcode))  
+> > Given we are mixing generic calls like security_locked_down()
+> > and local cxl specific ones like this one, prefix the
+> > local versions.
+> > 
+> > cxl_is_security_command()
+> > 
+> > I'd also have a slight preference to do it for cxl_disabled_raw_commands
+> > and cxl_raw_allow_all though they are less important as more obviously
+> > local by not being function calls.
+> >   
+> > > +		return false;
+> > > +
+> > > +	for (i = 0; i < ARRAY_SIZE(disabled_raw_commands); i++)
+> > > +		if (disabled_raw_commands[i] == opcode)
+> > > +			return false;
+> > > +
+> > > +	return true;
+> > > +}
+> > > +
+> > >  /**
+> > >   * cxl_validate_cmd_from_user() - Check fields for CXL_MEM_SEND_COMMAND.
+> > >   * @cxlm: &struct cxl_mem device whose mailbox will be used.
+> > > @@ -500,6 +591,29 @@ static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
+> > >  	if (send_cmd->in.size > cxlm->payload_size)
+> > >  		return -EINVAL;
+> > >  
+> > > +	/* Checks are bypassed for raw commands but along comes the taint! */
+> > > +	if (send_cmd->id == CXL_MEM_COMMAND_ID_RAW) {
+> > > +		const struct cxl_mem_command temp = {
+> > > +			.info = {
+> > > +				.id = CXL_MEM_COMMAND_ID_RAW,
+> > > +				.flags = CXL_MEM_COMMAND_FLAG_NONE,
+> > > +				.size_in = send_cmd->in.size,
+> > > +				.size_out = send_cmd->out.size,
+> > > +			},
+> > > +			.opcode = send_cmd->raw.opcode
+> > > +		};
+> > > +
+> > > +		if (send_cmd->raw.rsvd)
+> > > +			return -EINVAL;
+> > > +
+> > > +		if (!cxl_mem_raw_command_allowed(send_cmd->raw.opcode))
+> > > +			return -EPERM;
+> > > +
+> > > +		memcpy(out_cmd, &temp, sizeof(temp));
+> > > +
+> > > +		return 0;
+> > > +	}
+> > > +
+> > >  	if (send_cmd->flags & ~CXL_MEM_COMMAND_FLAG_MASK)
+> > >  		return -EINVAL;
+> > >  
+> > > @@ -1123,8 +1237,9 @@ static struct pci_driver cxl_mem_driver = {
+> > >  
+> > >  static __init int cxl_mem_init(void)
+> > >  {
+> > > -	int rc;
+> > > +	struct dentry *mbox_debugfs;
+> > >  	dev_t devt;
+> > > +	int rc;  
+> > 
+> > Shuffle this back to the place it was introduced to reduce patch noise.
+> >   
+> > >  
+> > >  	rc = alloc_chrdev_region(&devt, 0, CXL_MEM_MAX_DEVS, "cxl");
+> > >  	if (rc)
+> > > @@ -1139,11 +1254,17 @@ static __init int cxl_mem_init(void)
+> > >  		return rc;
+> > >  	}
+> > >  
+> > > +	cxl_debugfs = debugfs_create_dir("cxl", NULL);
+> > > +	mbox_debugfs = debugfs_create_dir("mbox", cxl_debugfs);
+> > > +	debugfs_create_bool("raw_allow_all", 0600, mbox_debugfs,
+> > > +			    &raw_allow_all);
+> > > +
+> > >  	return 0;
+> > >  }
+> > >  
+> > >  static __exit void cxl_mem_exit(void)
+> > >  {
+> > > +	debugfs_remove_recursive(cxl_debugfs);
+> > >  	pci_unregister_driver(&cxl_mem_driver);
+> > >  	unregister_chrdev_region(MKDEV(cxl_mem_major, 0), CXL_MEM_MAX_DEVS);
+> > >  }
+> > > diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
+> > > index f1f7e9f32ea5..72d1eb601a5d 100644
+> > > --- a/include/uapi/linux/cxl_mem.h
+> > > +++ b/include/uapi/linux/cxl_mem.h
+> > > @@ -22,6 +22,7 @@
+> > >  #define CXL_CMDS                                                          \
+> > >  	___C(INVALID, "Invalid Command"),                                 \
+> > >  	___C(IDENTIFY, "Identify Command"),                               \
+> > > +	___C(RAW, "Raw device command"),                                  \
+> > >  	___C(MAX, "Last command")
+> > >  
+> > >  #define ___C(a, b) CXL_MEM_COMMAND_ID_##a
+> > > @@ -112,6 +113,9 @@ struct cxl_mem_query_commands {
+> > >   * @id: The command to send to the memory device. This must be one of the
+> > >   *	commands returned by the query command.
+> > >   * @flags: Flags for the command (input).
+> > > + * @raw: Special fields for raw commands
+> > > + * @raw.opcode: Opcode passed to hardware when using the RAW command.
+> > > + * @raw.rsvd: Must be zero.
+> > >   * @rsvd: Must be zero.
+> > >   * @retval: Return value from the memory device (output).
+> > >   * @in.size: Size of the payload to provide to the device (input).
+> > > @@ -133,7 +137,13 @@ struct cxl_mem_query_commands {
+> > >  struct cxl_send_command {
+> > >  	__u32 id;
+> > >  	__u32 flags;
+> > > -	__u32 rsvd;
+> > > +	union {
+> > > +		struct {
+> > > +			__u16 opcode;
+> > > +			__u16 rsvd;
+> > > +		} raw;
+> > > +		__u32 rsvd;
+> > > +	};
+> > >  	__u32 retval;
+> > >  
+> > >  	struct {  
+> >   
+
