@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F733197E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AC53197ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhBLBNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 20:13:10 -0500
-Received: from vern.gendns.com ([98.142.107.122]:47300 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229800AbhBLBL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 20:11:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=F8f7LywDtKTmk9rZYp4IQgbKog4kMRZJjOcgsQe3LqI=; b=xxBJvN3oq/mEpgslNCzqZoWktf
-        YJ0QYkvdGpElUtgNgkwXtP7+tEsxB0biJ3ZWbgHicnsF846uU6fcXixCtGd3jIUUfD8CC6IY3Y96P
-        6qWX9qXc9CXI85/JI2r+zF6nrgIbdGBM9eixwoYPbXOTUf5rW0DSSjK9D8MYzlcgG1cPcNQwXiZxO
-        XHFez9U8PNdsv6grLAIl+atBuO5RLoPCMCJw4SOxF87+kYMQYPRLUVFe7uKOT6TUvt5UV9CYK6oFu
-        8dbpxcLq21lmZuz9YkBzZKRpACK89nYiYAxr+s/UEA+10lLrr9KvzCtzmh79lTKaqaw0Kc+M3FQoE
-        kWs9fGLA==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:43618 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1lAMz7-0001We-0Y; Thu, 11 Feb 2021 20:11:01 -0500
-Subject: Re: [PATCH v7 5/5] counter: 104-quad-8: Add IRQ support for the ACCES
- 104-QUAD-8
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, kernel@pengutronix.de,
-        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com
-References: <cover.1608935587.git.vilhelm.gray@gmail.com>
- <bb2db54669ef27515da4d5f235c52e0b484b5820.1608935587.git.vilhelm.gray@gmail.com>
- <7a78ad95-9eba-277d-25da-ddf68357b969@lechnology.com>
- <YCXEFMJOoOhyhfBu@shinobu>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <add6a885-e666-c5b7-612c-c2d1b08111a5@lechnology.com>
-Date:   Thu, 11 Feb 2021 19:10:59 -0600
+        id S229711AbhBLBSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 20:18:41 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:36180 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhBLBSi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 20:18:38 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3434B20B6C40;
+        Thu, 11 Feb 2021 17:17:57 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3434B20B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1613092677;
+        bh=Y7BtTH5ulPnacnf3FX5f0RFcRSYsD0USlFVkCyasTd4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=gyo459klbjM84xwkX6PXkazK+7OzLyws3VPz679/pgnVlag/yYxfVMm7nXbGMrkcm
+         tMcaGkes9he/hxnfLrRRLCNmuf6kZxit5kxbALc4vmgd+a1J78MYVjD93gERNjxLcM
+         U979bY8a948Kz/YGiY2ldd16eUNbb2nnfsD1Ybms=
+Subject: Re: [PATCH v17 02/10] of: Add a common kexec FDT setup function
+To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+ <20210209182200.30606-3-nramas@linux.microsoft.com>
+ <87k0reozwh.fsf@manicouagan.localdomain>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <8a3aa3d2-2eba-549a-9970-a2b0fe3586c9@linux.microsoft.com>
+Date:   Thu, 11 Feb 2021 17:17:56 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YCXEFMJOoOhyhfBu@shinobu>
+In-Reply-To: <87k0reozwh.fsf@manicouagan.localdomain>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 5:56 PM, William Breathitt Gray wrote:
-> On Wed, Dec 30, 2020 at 11:36:45AM -0600, David Lechner wrote:
->> On 12/25/20 6:15 PM, William Breathitt Gray wrote:
->>
->>> diff --git a/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8 b/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
->>> index eac32180c40d..0ecba24d43aa 100644
->>> --- a/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
->>> +++ b/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
->>> @@ -1,3 +1,28 @@
->>> +What:		/sys/bus/counter/devices/counterX/countY/irq_trigger
->>
->> Do we really need this sysfs attribute? Shouldn't interrupts be configured
->> _only_ by the chrdev interface?
+On 2/11/21 5:09 PM, Thiago Jung Bauermann wrote:
 > 
-> I think this attribute can go away because we can implicitly figure out
-> the correct IRQ configuration from the struct counter_watch data when a
-> user executes a COUNTER_ADD_WATCH_IOCTL ioctl command.
-> 
-> However, I need some help deciding on an appropriate behavior for
-> conflicting counter_watch configurations. Let me give some context
-> first.
-> 
-> The 104-QUAD-8 features 8 channels (essentially 8 independent physical
-> counters on the device). Each channel can independently issue an event,
-> but any particular channel can only be set to a single kind of event
-> (COUNTER_EVENT_INDEX, COUNTER_EVENT_OVERFLOW, etc.).
-> 
-> The purpose of the irq_trigger sysfs attribute I introduced in this
-> patch is to allow the user to select the event configuration they want
-> for a particular channel. We can theoretically figure this out
-> implicitly from the struct counter_watch request, so this sysfs
-> attribute may not be necessary.
-> 
-> However, how do we handle the case where a user executes two
-> COUNTER_ADD_WATCH_IOCTL ioctl commands for the same channel but with
-> different event selections? I'm considering three possible behaviors:
-> 
-> * Fail the second ioctl call; event selection of the first struct
->    counter_watch takes precedence and thus second is incompatible.
-> * Issue a dev_warn() indicating that the second struct counter_watch
->    event selection will now be the event configuration for that channel.
-> * Don't notify the user, just silently reconfigure for the second struct
->    counter_watch event selection.
-> 
-> I'm suspecting the first behavior I listed here (ioctl returning failed)
-> is the most appropriate as a user is explicitly made known of this
-> particular device's inability to support more than one type of event per
-> channel.
-> 
-> What do you think?
+> There's actually a complication that I just noticed and needs to be
+> addressed. More below.
 > 
 
-I agree that it should return an error instead of adding the watch.
-I'm pretty sure that is how I implemented the TI eQEP driver already.
+<...>
 
+>> +
+>> +/*
+>> + * of_kexec_alloc_and_setup_fdt - Alloc and setup a new Flattened Device Tree
+>> + *
+>> + * @image:		kexec image being loaded.
+>> + * @initrd_load_addr:	Address where the next initrd will be loaded.
+>> + * @initrd_len:		Size of the next initrd, or 0 if there will be none.
+>> + * @cmdline:		Command line for the next kernel, or NULL if there will
+>> + *			be none.
+>> + *
+>> + * Return: fdt on success, or NULL errno on error.
+>> + */
+>> +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
+>> +				   unsigned long initrd_load_addr,
+>> +				   unsigned long initrd_len,
+>> +				   const char *cmdline)
+>> +{
+>> +	void *fdt;
+>> +	int ret, chosen_node;
+>> +	const void *prop;
+>> +	unsigned long fdt_size;
+>> +
+>> +	fdt_size = fdt_totalsize(initial_boot_params) +
+>> +		   (cmdline ? strlen(cmdline) : 0) +
+>> +		   FDT_EXTRA_SPACE;
+> 
+> Just adding 4 KB to initial_boot_params won't be enough for crash
+> kernels on ppc64. The current powerpc code doubles the size of
+> initial_boot_params (which is normally larger than 4 KB) and even that
+> isn't enough. A patch was added to powerpc/next today which uses a more
+> precise (but arch-specific) formula:
+> 
+> https://lore.kernel.org/linuxppc-dev/161243826811.119001.14083048209224609814.stgit@hbathini/
+> 
+> So I believe we need a hook here where architectures can provide their
+> own specific calculation for the size of the fdt. Perhaps a weakly
+> defined function providing a default implementation which an
+> arch-specific file can override (a la arch_kexec_kernel_image_load())?
+> 
+> Then the powerpc specific hook would be the kexec_fdt_totalsize_ppc64()
+> function from the patch I linked above.
+> 
+
+Do you think it'd better to add "fdt_size" parameter to 
+of_kexec_alloc_and_setup_fdt() so that the caller can provide the 
+desired FDT buffer size?
+
+thanks,
+  -lakshmi
