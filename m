@@ -2,194 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9DF319D68
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 098F8319D6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhBLLeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:34:06 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45484 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhBLLd5 (ORCPT
+        id S230110AbhBLLfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:35:19 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:37919 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229608AbhBLLfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:33:57 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11CBWCcO046265;
-        Fri, 12 Feb 2021 05:32:12 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1613129532;
-        bh=lyiLDwogJ1paXgGUXDm0c4v2P/Y1qePzkvGucH2e5Us=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=GmJqnkkFtxBDSim9680fu9/si7iKpQ7G/hJrLVGBhnBkq2YK1fXyye6wtnbp2wgfj
-         WgNx11Sjye3KW3Zt4PjvwHqgOvROD941P63KCIcW3GzusRKVQtLnUkomLPjbtOylis
-         mS8zss5FnP/crsBNz6V6eaeGaEOKy2nReUMq66gs=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11CBWCdg094817
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Feb 2021 05:32:12 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
- Feb 2021 05:32:12 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 12 Feb 2021 05:32:12 -0600
-Received: from [10.250.234.7] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11CBW83G057822;
-        Fri, 12 Feb 2021 05:32:09 -0600
-Subject: Re: [PATCH v14 2/4] phy: Add media type and speed serdes
- configuration interfaces
-To:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-References: <20210210085255.2006824-1-steen.hegelund@microchip.com>
- <20210210085255.2006824-3-steen.hegelund@microchip.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <04d91f6b-775a-8389-b813-31f7b4a778cb@ti.com>
-Date:   Fri, 12 Feb 2021 17:02:08 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 12 Feb 2021 06:35:13 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 73733580288;
+        Fri, 12 Feb 2021 06:34:06 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 12 Feb 2021 06:34:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=SCo77A5HejQko8j3nfqh2hiWDhR
+        HJSfStdaCIX7Vu0Q=; b=PEV8SbkKDHZJ/WSbJpBLEeD6nz70KEI9IzOgmeg6XME
+        UPA9HBteZwIw6LzmT0KFxstGjE9ihxLWt+cVlXG6idwg9mvwkI4BN1ofnXp5CP4g
+        VaYXZ6/MwhRsO05vuDbByrp+sgT5axFGTjgDJPX6LmR4FhCjdQSiktVWcHKrTiiZ
+        7Y/6aaIk80d027TqU0VOkhTkE8/Yj6TlyChfM5qankht7AMN7H1kSxM1hJQP5GMr
+        j64Y+w94h8ofOzT9ZDGHwgbhCIC9exe9Db33udjWxv/x0dwK6SVP5hzCAHWtCnlz
+        +qvk1kChZUkWcmQj0HfRYkQDtpQp7Lp4tWdKkzpd7lA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=SCo77A
+        5HejQko8j3nfqh2hiWDhRHJSfStdaCIX7Vu0Q=; b=tnkx0rO22nxm7nZR+dSJk8
+        K8wiUWU0Eb7EmF0po2TfihJOihncjbNSvt1tVVGArODQjTV023U4DCYEKkWVFz9U
+        KRkr47fWzSWPUqeNUpRBwsjISYQ7pvNca+Mh1u83lZIEp7cWiO6uXyyCXsEOVcyO
+        ZJ/ZXCz4x+wvz3yEpri6QIOpR8R5ks162hCgCxdxXTDizMFcu84FNUHDbodP0poC
+        Zrg8J1VmfvzW+9bh7hEGtO7P2iogkgjffH47LJ2ZUUD1LCC14naXz+zk9Efdku2g
+        VyAQJKYxr4e3r3FlLQ+WtJGrgaQPjAib9zPCGYPKkdycNmvGW0GWNjV8PJMUOEfQ
+        ==
+X-ME-Sender: <xms:rGcmYHFHbOoCS4DzSjPRx1-Zc58QzL2WVg6NZifUx5h6J3dQDvmt7w>
+    <xme:rGcmYNpgY9ZrMr8yd-0Jy871By1rOWWhEsaVe2gagkKCGQGa9vlTpU859JFZtloh4
+    sFXmU2_54-aOgWIBG0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledriedugddvlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
+    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:rGcmYAbowUyCorVdCmnZ1Excidc6cgE6l94jFauQ_T-DFsDZV9VkNg>
+    <xmx:rGcmYGVNvY3ZW-N-4dzdbAMcR3yeuDyDedj1cMLOyKWdxhaBuqKaWQ>
+    <xmx:rGcmYJ8oR2oErYr-GCoWRhsvC0qa5jd_ogBtmF-b-FNp_mvO7ynDOw>
+    <xmx:rmcmYG_PGv-6F_W5diM_T-xfLt90SSM9CNuXfa_qsB241m1m8aEfUQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id F3102240057;
+        Fri, 12 Feb 2021 06:34:03 -0500 (EST)
+Date:   Fri, 12 Feb 2021 12:34:01 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v2 14/15] ARM: dts: bcm2711: Add the BSC interrupt
+ controller
+Message-ID: <20210212113401.rqm3373c7i3gvfaa@gilmour>
+References: <20210111142309.193441-1-maxime@cerno.tech>
+ <20210111142309.193441-15-maxime@cerno.tech>
+ <CAPY8ntC7U1BAVT8xe0emX19p4mCu-BQOeBeC-CDgKjE+asZKRQ@mail.gmail.com>
+ <20210210144043.s4plyc7ekwnnu7k4@gilmour>
+ <9d868bf76072fee7838b6f2ff73a575c@kernel.org>
+ <CAPY8ntCG3vLy1NWNF09DEZWE-t_xc+q5m89Jv8GB8GofBLVp3Q@mail.gmail.com>
+ <d4f8c89b-9bab-3dce-1f05-aeef39f64211@gmail.com>
+ <97eef5ad872b08b174dfd4ed903508371b1baaa5.camel@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210210085255.2006824-3-steen.hegelund@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="moz7vodkmjhn6f2x"
+Content-Disposition: inline
+In-Reply-To: <97eef5ad872b08b174dfd4ed903508371b1baaa5.camel@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steen,
 
-On 10/02/21 2:22 pm, Steen Hegelund wrote:
-> Provide new phy configuration interfaces for media type and speed that
-> allows allows e.g. PHYs used for ethernet to be configured with this
-> information.
-> 
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> ---
->  drivers/phy/phy-core.c  | 30 ++++++++++++++++++++++++++++++
->  include/linux/phy/phy.h | 26 ++++++++++++++++++++++++++
->  2 files changed, 56 insertions(+)
-> 
-> diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
-> index 71cb10826326..ccb575b13777 100644
-> --- a/drivers/phy/phy-core.c
-> +++ b/drivers/phy/phy-core.c
-> @@ -373,6 +373,36 @@ int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode)
->  }
->  EXPORT_SYMBOL_GPL(phy_set_mode_ext);
->  
-> +int phy_set_media(struct phy *phy, enum phy_media media)
-> +{
-> +	int ret;
-> +
-> +	if (!phy || !phy->ops->set_media)
-> +		return 0;
-> +
-> +	mutex_lock(&phy->mutex);
-> +	ret = phy->ops->set_media(phy, media);
-> +	mutex_unlock(&phy->mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(phy_set_media);
-> +
-> +int phy_set_speed(struct phy *phy, int speed)
-> +{
-> +	int ret;
-> +
-> +	if (!phy || !phy->ops->set_speed)
-> +		return 0;
-> +
-> +	mutex_lock(&phy->mutex);
-> +	ret = phy->ops->set_speed(phy, speed);
-> +	mutex_unlock(&phy->mutex);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(phy_set_speed);
+--moz7vodkmjhn6f2x
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Can't speed derived from mode? Do we need a separate set_speed function?
+On Fri, Feb 12, 2021 at 12:20:14PM +0100, Nicolas Saenz Julienne wrote:
+> On Wed, 2021-02-10 at 10:49 -0800, Florian Fainelli wrote:
+> > On 2/10/21 7:49 AM, Dave Stevenson wrote:
+> > > Hi Marc.
+> > >=20
+> > > On Wed, 10 Feb 2021 at 15:30, Marc Zyngier <maz@kernel.org> wrote:
+> > > >=20
+> > > > Hi Maxime,
+> > > >=20
+> > > > On 2021-02-10 14:40, Maxime Ripard wrote:
+> > > > > Hi Dave,
+> > > > >=20
+> > > > > On Tue, Feb 09, 2021 at 09:49:05AM +0000, Dave Stevenson wrote:
+> > > > > > On Mon, 11 Jan 2021 at 14:23, Maxime Ripard <maxime@cerno.tech>=
+ wrote:
+> > > > > > >=20
+> > > > > > > The BSC controllers used for the HDMI DDC have an interrupt c=
+ontroller
+> > > > > > > shared between both instances. Let's add it to avoid polling.
+> > > > > >=20
+> > > > > > This seems to have unintended side effects.
+> > > > > > GIC interrupt 117 is shared between the standard I2C controllers
+> > > > > > (i2c-bcm2835) and the l2-intc block handling the HDMI I2C inter=
+rupts.
+> > > > > >=20
+> > > > > > Whilst i2c-bcm2835 requests the interrupt with IRQF_SHARED, that
+> > > > > > doesn't appear to be an option for l2-intc registering as an in=
+terrupt
+> > > > > > controller. i2c-bcm2835 therefore loses out and fails to regist=
+er for
+> > > > > > the interrupt.
+> > > > > >=20
+> > > > > > Is there an equivalent flag that an interrupt controller can ad=
+d to
+> > > > > > say that the parent interrupt is shared? Is that even supported?
+> > > > >=20
+> > > > > Indeed, it looks like setting an equivalent to IRQF_SHARED would =
+be the
+> > > > > solution, but I couldn't find anything that would allow us to in =
+the
+> > > > > irqchip code.
+> > > > >=20
+> > > > > Marc, Thomas, is it something that is allowed?
+> > > >=20
+> > > > No, not really. That's because the chained handler is actually an
+> > > > interrupt flow, and not a normal handler. IRQF_SHARED acts at the w=
+rong
+> > > > level for that.
+> > > >=20
+> > > > I can see two possibilities:
+> > > >=20
+> > > > - the l2-intc gets turned into a normal handler, and does the demux
+> > > > =A0=A0=A0from there. Horrible stuff.
+> > > >=20
+> > > > - the i2c controller gets parented to the l2c-int as a fake interru=
+pt,
+> > > > =A0=A0=A0and gets called from there. Horrible stuff.
+> > > >=20
+> > > > Pick your poison... :-/
+> > >=20
+> > > Thanks for the info.
+> > >=20
+> > > Option 3 - remove l2-intc and drop back to polling the i2c-brcmstb
+> > > blocks (which the driver supports anyway).
+> > > HDMI I2C generally isn't heavily used once displays are connected, so
+> > > I'd be OK with that.
+> > >=20
+> > > (We can keep the l2-intc that handles CEC and HPD as that is on a
+> > > unique GIC interrupt).
+> >=20
+> > Agreed, Maxime or Nicolas do you want me to send a revert of this patch?
+>=20
+> Reverting seems the safe move, but I'll defer to whatever Maxime says.
 
-Thanks
-Kishon
+Yes, reverting it seems like the easiest way forward. If you can send it
+Florian that would be great :)
 
-> +
->  int phy_reset(struct phy *phy)
->  {
->  	int ret;
-> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> index e435bdb0bab3..e4fd69a1faa7 100644
-> --- a/include/linux/phy/phy.h
-> +++ b/include/linux/phy/phy.h
-> @@ -44,6 +44,12 @@ enum phy_mode {
->  	PHY_MODE_DP
->  };
->  
-> +enum phy_media {
-> +	PHY_MEDIA_DEFAULT,
-> +	PHY_MEDIA_SR,
-> +	PHY_MEDIA_DAC,
-> +};
-> +
->  /**
->   * union phy_configure_opts - Opaque generic phy configuration
->   *
-> @@ -64,6 +70,8 @@ union phy_configure_opts {
->   * @power_on: powering on the phy
->   * @power_off: powering off the phy
->   * @set_mode: set the mode of the phy
-> + * @set_media: set the media type of the phy (optional)
-> + * @set_speed: set the speed of the phy (optional)
->   * @reset: resetting the phy
->   * @calibrate: calibrate the phy
->   * @release: ops to be performed while the consumer relinquishes the PHY
-> @@ -75,6 +83,8 @@ struct phy_ops {
->  	int	(*power_on)(struct phy *phy);
->  	int	(*power_off)(struct phy *phy);
->  	int	(*set_mode)(struct phy *phy, enum phy_mode mode, int submode);
-> +	int	(*set_media)(struct phy *phy, enum phy_media media);
-> +	int	(*set_speed)(struct phy *phy, int speed);
->  
->  	/**
->  	 * @configure:
-> @@ -215,6 +225,8 @@ int phy_power_off(struct phy *phy);
->  int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode);
->  #define phy_set_mode(phy, mode) \
->  	phy_set_mode_ext(phy, mode, 0)
-> +int phy_set_media(struct phy *phy, enum phy_media media);
-> +int phy_set_speed(struct phy *phy, int speed);
->  int phy_configure(struct phy *phy, union phy_configure_opts *opts);
->  int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
->  		 union phy_configure_opts *opts);
-> @@ -344,6 +356,20 @@ static inline int phy_set_mode_ext(struct phy *phy, enum phy_mode mode,
->  #define phy_set_mode(phy, mode) \
->  	phy_set_mode_ext(phy, mode, 0)
->  
-> +static inline int phy_set_media(struct phy *phy, enum phy_media media)
-> +{
-> +	if (!phy)
-> +		return 0;
-> +	return -ENOSYS;
-> +}
-> +
-> +static inline int phy_set_speed(struct phy *phy, int speed)
-> +{
-> +	if (!phy)
-> +		return 0;
-> +	return -ENOSYS;
-> +}
-> +
->  static inline enum phy_mode phy_get_mode(struct phy *phy)
->  {
->  	return PHY_MODE_INVALID;
-> 
+Maxime
+
+--moz7vodkmjhn6f2x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYCZnnwAKCRDj7w1vZxhR
+xdTQAQC85VJJ8wGUhPixlwCo17bQ6yPOc9ss6XeEenGXEOsgkwEA73taLwLEdjTp
+Vm9W4RMnUydzJnx0LRGV68eTY4SMNwE=
+=X4Yr
+-----END PGP SIGNATURE-----
+
+--moz7vodkmjhn6f2x--
