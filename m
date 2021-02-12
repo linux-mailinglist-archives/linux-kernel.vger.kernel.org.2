@@ -2,126 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7855431A653
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7C631A643
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhBLU5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:57:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20106 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231604AbhBLU4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:56:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613163296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nefY369XOVTnG731C2OIoEJTJR52Ge56ZdFn8C2MDf4=;
-        b=ikK73oPJWL5xPStTe+NyBRJIB/Fh7zJp6tXrrr9/Hi+I89e/onVM8urWyLyjpcaBjVMrHq
-        AZ334mWTzV0F5FttSTu3JZhpRS9gEYzAIcdxAFPA+l/2/hmo1QFCMR72c5bQ/vni66dMLJ
-        DwlJ4xpqPASSqnrmoWAUvvZlVeOSecg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-8RZwlGw2O8Wy9U7SbsnMkA-1; Fri, 12 Feb 2021 15:54:52 -0500
-X-MC-Unique: 8RZwlGw2O8Wy9U7SbsnMkA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5EE061885783;
-        Fri, 12 Feb 2021 20:54:51 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E27E419811;
-        Fri, 12 Feb 2021 20:54:42 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 15:54:40 -0500
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Phil Sutter <phil@nwl.cc>, Steve Grubb <sgrubb@redhat.com>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>, fw@strlen.de,
-        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
-        tgraf@infradead.org
-Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
- events
-Message-ID: <20210212205440.GM3141668@madcap2.tricolour.ca>
-References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
- <20210211151606.GX3158@orbyte.nwl.cc>
- <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
- <4087569.ejJDZkT8p0@x2>
- <20210212121112.GA3158@orbyte.nwl.cc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212121112.GA3158@orbyte.nwl.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S231324AbhBLUzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:55:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhBLUzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 15:55:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E1EF64DEC;
+        Fri, 12 Feb 2021 20:54:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1613163296;
+        bh=Ia9H3DANjBECP5ALIOgyaTEVqkmPXIUALarC94QCNpE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MXmSU8z6UjJKHj5Jy0OCYdQljNqK1FT9j5QRP8bMb4dzRIcGqgLyZfemibatf0t2z
+         3Hr/WSBzaf3unKsuB8vamGctrNcGwM3Ycmryx9kCM2SJwAbbw0zPfmlhC8nfTOnTz3
+         6Qq+4rNaxOYNTC1wjI8hPtaBMwp20NMi4gkBuRRM=
+Date:   Fri, 12 Feb 2021 12:54:54 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH mm] kasan: export HW_TAGS symbols for KUnit tests
+Message-Id: <20210212125454.b660a3bf3e9945515f530066@linux-foundation.org>
+In-Reply-To: <CAAeHK+z5pkZkuNbqbAOSN_j34UhohRPhnu=EW-_PtZ88hdNjpA@mail.gmail.com>
+References: <e7eeb252da408b08f0c81b950a55fb852f92000b.1613155970.git.andreyknvl@google.com>
+        <20210212121610.ff05a7bb37f97caef97dc924@linux-foundation.org>
+        <CAAeHK+z5pkZkuNbqbAOSN_j34UhohRPhnu=EW-_PtZ88hdNjpA@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-12 13:11, Phil Sutter wrote:
-> Hi,
-> 
-> On Thu, Feb 11, 2021 at 04:02:55PM -0500, Steve Grubb wrote:
-> > On Thursday, February 11, 2021 11:29:34 AM EST Paul Moore wrote:
-> > > > If I'm not mistaken, iptables emits a single audit log per table, ipset
-> > > > doesn't support audit at all. So I wonder how much audit logging is
-> > > > required at all (for certification or whatever reason). How much
-> > > > granularity is desired?
-> >  
-> >   <snip> 
-> > 
-> > > I believe the netfilter auditing was mostly a nice-to-have bit of
-> > > functionality to help add to the completeness of the audit logs, but I
-> > > could very easily be mistaken.  Richard put together those patches, he
-> > > can probably provide the background/motivation for the effort.
-> > 
-> > There are certifications which levy requirements on information flow control. 
-> > The firewall can decide if information should flow or be blocked. Information 
-> > flow decisions need to be auditable - which we have with the audit target. 
-> 
-> In nftables, this is realized via 'log level audit' statement.
-> Functionality should by all means be identical to that of xtables' AUDIT
-> target.
-> 
-> > That then swings in requirements on the configuration of the information flow 
-> > policy.
-> > 
-> > The requirements state a need to audit any management activity - meaning the 
-> > creation, modification, and/or deletion of a "firewall ruleset". Because it 
-> > talks constantly about a ruleset and then individual rules, I suspect only 1 
-> > summary event is needed to say something happened, who did it, and the 
-> > outcome. This would be in line with how selinux is treated: we have 1 summary 
-> > event for loading/modifying/unloading selinux policy.
-> 
-> So the central element are firewall rules for audit purposes and
-> NETFILTER_CFG notifications merely serve asserting changes to those
-> rules are noticed by the auditing system. Looking at xtables again, this
-> seems coherent: Any change causes the whole table blob to be replaced
-> (while others stay in place). So table replace/create is the most common
-> place for a change notification. In nftables, the most common one is
-> generation dump - all tables are treated as elements of the same
-> ruleset, not individually like in xtables.
-> 
-> Richard, assuming the above is correct, are you fine with reducing
-> nftables auditing to a single notification per transaction then? I guess
-> Florian sufficiently illustrated how this would be implemented.
+On Fri, 12 Feb 2021 21:21:39 +0100 Andrey Konovalov <andreyknvl@google.com> wrote:
 
-Yes, that should be possible.
-
-> > Hope this helps...
+> > > The wrappers aren't defined when tests aren't enabled to avoid misuse.
+> > > The mte_() functions aren't exported directly to avoid having low-level
+> > > KASAN ifdefs in the arch code.
+> > >
+> >
+> > Please confirm that this is applicable to current Linus mainline?
 > 
-> It does, thanks a lot for the information!
-> 
-> Thanks, Phil
+> It's not applicable. KUnit tests for HW_TAGS aren't supported there,
+> the patches for that are in mm only. So no need to put it into 5.11.
 
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+So... which -mm patch does this patch fix?
