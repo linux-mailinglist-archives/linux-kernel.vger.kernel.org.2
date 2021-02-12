@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1330131A3BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:38:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9FB31A3E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:42:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhBLRi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 12:38:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhBLRiZ (ORCPT
+        id S231925AbhBLRlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 12:41:42 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:42844 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231611AbhBLRjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 12:38:25 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79622C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 09:37:45 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id t29so6222548pfg.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 09:37:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kW4kCcmZpN9DXSNX16HNa+NYisnsmMLvFLsGVM7NGGs=;
-        b=g66WvT5ybaijeCWJNQ81WWGHK/fuYsNV9UWhFxQKOZiHHzOGOCJhGA60plFJiyfz07
-         /d5zAV1tJmJ/kGv0BH9afH0V8OTzVozqgSAONLVAEUPfidijmpdD2LDjxlhCXQNpAhwR
-         KCpEFEUCZtd95p8fnBx0DwB6wEao3NHA355ie+igGBchUnEfyhxDn+Z3nyzNtkF6d5m3
-         iI8qvIgEBnHWscmKOonGvrFAtNgtMOAy861tNxp9aUOuBt/RODni1Qx2Qc/G+ebClGhp
-         wuBKefmKjpocn4fxU7HxYbXeErEGGLzg7M6TcxgIU7Tfi0Y1MQsjh9dKt+6gGhajZJuq
-         ieNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kW4kCcmZpN9DXSNX16HNa+NYisnsmMLvFLsGVM7NGGs=;
-        b=PJ861HemReZ8/1Zy9K2Upa+zizBS6eK5H7Z0UNy68QOBDpkJ3oIObUxu6U/A2IQCwX
-         0fM+QNZsrPG5hjzGe/1MkW3sYRMua4in19aH5LR4jNn9bcflwG9NiNHK5I+X8qxxb5v+
-         zKYJl+/Deug7ipzyALf8niMSQoVYJyyBO0nanGJ8oOfEM1B/ClSBF3+zwioWDXt4h1Qs
-         gIJjdY2TyIyMMYJEcLiUyKViPhYtso1AQWVlXEuOT0fpvo2fkagtC8ycZzb22XtXaPUR
-         fNLQ+BTXjJbqyrYIHO5VYqU3LunPRxGCxAYIOp/D6/8uZkYLhf0RzNbcXctbNyp59NKu
-         QKtg==
-X-Gm-Message-State: AOAM531jOBEFwr8+AElGBYZrpkIhIQDhn0XWM/oiS/Xd33UMHBg55ade
-        6nS0t08Sptlv6FwsnzOUxCe3+51GYh8MLA==
-X-Google-Smtp-Source: ABdhPJy9io6J3C5KbIOyrn6eZ6xjVshGEO1x8G1WfrqbgwVjf7IUtCx//OIUGA7PcYhEwPErP30bQg==
-X-Received: by 2002:a63:a552:: with SMTP id r18mr4143162pgu.19.1613151464942;
-        Fri, 12 Feb 2021 09:37:44 -0800 (PST)
-Received: from x1 ([2601:1c0:4701:ae70:55c2:10c0:c1dd:8558])
-        by smtp.gmail.com with ESMTPSA id 17sm9948748pgy.53.2021.02.12.09.37.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 09:37:44 -0800 (PST)
-Date:   Fri, 12 Feb 2021 09:37:42 -0800
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pinctrl: use to octal permissions for debugfs files
-Message-ID: <20210212173742.GA660547@x1>
-References: <20210126044742.87602-1-drew@beagleboard.org>
- <CACRpkdbcOvOS4OSZt8cAWV7+-D8sHN7HWhrxGLU7fqKiwB1CCg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbcOvOS4OSZt8cAWV7+-D8sHN7HWhrxGLU7fqKiwB1CCg@mail.gmail.com>
+        Fri, 12 Feb 2021 12:39:05 -0500
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id EEF8E40C73;
+        Fri, 12 Feb 2021 17:38:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1613151485; bh=NA4JeeG3cX+2fYKsMboULujwYLJgtmE/qoisVnvluZI=;
+        h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
+         References:From;
+        b=XXvklP52pnFcs/TyXgrz+8YDrXqR7M2HAMJYIXpmcmA6QF9uHj5DTze2KPnqV9nNJ
+         xJ1NrttxOVPetTnNA1K4IS/c9RxeT73bl1D6ddX3uP7eFNbcIvWFMitYDH9pos+vtn
+         rrltWfOKDCjXxWh8xbHdFvhvrrzZIWM/vmlOqQ1GtPUqI2SWztGwzVKZU/c7rzOLxR
+         AvOWNS6WEREYaaZR8pfqkrBoBwAq7EzXTkiLakt04mVz91ML0qDgnf7xyPQWL5OpGn
+         NcXjSblx6wkd9JfJ/BPkugD+dSPKMrrvmrJad9ljxYpM8lKzjK036qDJvw+roaDNON
+         u0h/77GYn4i3A==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id BBA7CA005C;
+        Fri, 12 Feb 2021 17:38:03 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Subject: [PATCH v6 08/15] dmaengine: dw-edma: Reorder variables to keep consistency
+Date:   Fri, 12 Feb 2021 18:37:43 +0100
+Message-Id: <d9d6b08b01fb776f5e4a73ef781da9193b1b55d2.1613151392.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <cover.1613151392.git.gustavo.pimentel@synopsys.com>
+References: <cover.1613151392.git.gustavo.pimentel@synopsys.com>
+In-Reply-To: <cover.1613151392.git.gustavo.pimentel@synopsys.com>
+References: <cover.1613151392.git.gustavo.pimentel@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 08:58:58AM +0100, Linus Walleij wrote:
-> On Tue, Jan 26, 2021 at 5:55 AM Drew Fustini <drew@beagleboard.org> wrote:
-> 
-> > Switch over pinctrl debugfs files to use octal permissions as they are
-> > preferred over symbolic permissions. Refer to commit f90774e1fd27
-> > ("checkpatch: look for symbolic permissions and suggest octal instead").
-> >
-> > Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> 
-> That's right. Patch applied!
-> 
-> Yours,
-> Linus Walleij
+In the driver code structure, I tried to keep the code style consistency
+by writing the write channels instructions first, and then follow by the
+read channels instructions, mimicking the hardware implementation.
 
-Thanks, Linus.  However, Andy suggested I make this a series as it was
-prep for my patch to add 'pinmux-select' to debugfs.  I posted it as
-part of a 2 patch series [1].  In addition, Joe Perches noticed I forgot
-3 instances of debugfs_create_file() in core.c so I was about to fix
-that in v5 of the patch series.  v5 is mostly addressing comments on the
-pinmux-select feature.
+However, this code style failed in some cases. This patch fixes that and
+no functional changes are expected.
 
-Thank you,
-Drew
+Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+---
+ drivers/dma/dw-edma/dw-edma-pcie.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-[1] https://lore.kernel.org/linux-gpio/20210210222851.232374-1-drew@beagleboard.org/
+diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
+index 1ddea34..41384ff 100644
+--- a/drivers/dma/dw-edma/dw-edma-pcie.c
++++ b/drivers/dma/dw-edma/dw-edma-pcie.c
+@@ -20,8 +20,8 @@
+ #define DW_PCIE_VSEC_DMA_ID			0x6
+ #define DW_PCIE_VSEC_DMA_BAR			GENMASK(10, 8)
+ #define DW_PCIE_VSEC_DMA_MAP			GENMASK(2, 0)
+-#define DW_PCIE_VSEC_DMA_RD_CH			GENMASK(25, 16)
+ #define DW_PCIE_VSEC_DMA_WR_CH			GENMASK(9, 0)
++#define DW_PCIE_VSEC_DMA_RD_CH			GENMASK(25, 16)
+ 
+ struct dw_edma_pcie_data {
+ 	/* eDMA registers location */
+@@ -39,8 +39,8 @@ struct dw_edma_pcie_data {
+ 	/* Other */
+ 	enum dw_edma_map_format		mf;
+ 	u8				irqs;
+-	u16				rd_ch_cnt;
+ 	u16				wr_ch_cnt;
++	u16				rd_ch_cnt;
+ };
+ 
+ static const struct dw_edma_pcie_data snps_edda_data = {
+@@ -59,8 +59,8 @@ static const struct dw_edma_pcie_data snps_edda_data = {
+ 	/* Other */
+ 	.mf				= EDMA_MF_EDMA_UNROLL,
+ 	.irqs				= 1,
+-	.rd_ch_cnt			= 0,
+ 	.wr_ch_cnt			= 0,
++	.rd_ch_cnt			= 0,
+ };
+ 
+ static int dw_edma_pcie_irq_vector(struct device *dev, unsigned int nr)
+@@ -99,8 +99,8 @@ static void dw_edma_pcie_get_vsec_dma_data(struct pci_dev *pdev,
+ 	pdata->rg_bar = FIELD_GET(DW_PCIE_VSEC_DMA_BAR, val);
+ 
+ 	pci_read_config_dword(pdev, vsec + 0xc, &val);
+-	pdata->rd_ch_cnt = FIELD_GET(DW_PCIE_VSEC_DMA_RD_CH, val);
+ 	pdata->wr_ch_cnt = FIELD_GET(DW_PCIE_VSEC_DMA_WR_CH, val);
++	pdata->rd_ch_cnt = FIELD_GET(DW_PCIE_VSEC_DMA_RD_CH, val);
+ 
+ 	pci_read_config_dword(pdev, vsec + 0x14, &val);
+ 	off = val;
+@@ -216,8 +216,8 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
+ 	dw->mf = vsec_data.mf;
+ 	dw->nr_irqs = nr_irqs;
+ 	dw->ops = &dw_edma_pcie_core_ops;
+-	dw->rd_ch_cnt = vsec_data.rd_ch_cnt;
+ 	dw->wr_ch_cnt = vsec_data.wr_ch_cnt;
++	dw->rd_ch_cnt = vsec_data.rd_ch_cnt;
+ 
+ 	/* Debug info */
+ 	if (dw->mf == EDMA_MF_EDMA_LEGACY)
+-- 
+2.7.4
+
