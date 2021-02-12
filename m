@@ -2,138 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7223631A1F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE7E31A1FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhBLPpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:45:45 -0500
-Received: from mail-eopbgr1400138.outbound.protection.outlook.com ([40.107.140.138]:53249
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229574AbhBLPpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:45:42 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y6uElf7FdIlJWNrzYvXiYUmgwT5P2QeEoylZzJahqLtN1/5eRoUEO5PvPrlU7hFbpydym1GGsKp3JszGje6hGvbmLtGWWo++NKshejwZVzjsqQZVI2E8ZuWeGpBJpDhUcWGUX38TSmVkZEqevkhDhmHQzbsn0mIt29HBdpnSA2aNEZpZGwCRUTNYVv6VdKUogwmfOV5eSw81ukwc3vmKRc0Y2dxKzgB/4aJ6+ldY4i2Hbmrghe4BZJHD/P6D9JAK10liUlcmdHobfMN3NWVJEVHP2sWY5rKgyQLGZfihGsWX+hiLNnPhIWKwzNHXuZMenpE4qzvVk5qpxjvkBBD+sQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d9eROCzeRRIKGowf7pzVTK3IshMUazFgIrUZ1vFtn0E=;
- b=kQAFuutOmVVfumnfRBY3eShojbSAEgP42l/72eXXi4M6SYPhBO+dzHovVJY56yUH93azpy4XHnE1Fd67qmBcl/mrfFa/IYl0EK2LjPuqxdycQ6+/iPPGaKFa2lzsU5EkISx6K7ySnS909kWn7sHxhGwDkU2V4lGYK73tWga2M6527L9qs9Q7LJVkMFIDSsFiC5zP2Rbf4VwHNVaqYcc5BUglYcuwdBxo5zxlImdJPHxg/JLTMSIx21Dyg4CUruiN6iVDlfei0gs5vWWPqKvEMSQTJH4xGjlBzs8gjt4eSoCoQstr9JpEoY45ERSEymtk7Up9XsU+Q7TXNIasLd2CYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
+        id S231718AbhBLPpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:45:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhBLPps (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:45:48 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E53C061756;
+        Fri, 12 Feb 2021 07:45:08 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id v5so13711462lft.13;
+        Fri, 12 Feb 2021 07:45:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d9eROCzeRRIKGowf7pzVTK3IshMUazFgIrUZ1vFtn0E=;
- b=oNG69vwZuswUaYZBr88+AxvWMiLytPSPxUeTm8yg23kqymxA15NsHzCwRoSb5/us6OXTkJEqxDAGf7uxrpEES3aV9AxKxANwBq3yozOh9papCaRaTSEI4hNy7MKe6SiX0RmaVzScI+FMIxDlWGDlrEEx/fJ2mCCTLY9FINaGq/I=
-Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com (2603:1096:604:7a::23)
- by OSAPR01MB2580.jpnprd01.prod.outlook.com (2603:1096:603:3c::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.31; Fri, 12 Feb
- 2021 15:44:52 +0000
-Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com
- ([fe80::1971:336c:e4c0:8c5]) by OSBPR01MB4773.jpnprd01.prod.outlook.com
- ([fe80::1971:336c:e4c0:8c5%3]) with mapi id 15.20.3846.029; Fri, 12 Feb 2021
- 15:44:52 +0000
-From:   Min Li <min.li.xe@renesas.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next v2] misc: Add Renesas Synchronization Management
- Unit (SMU) support
-Thread-Topic: [PATCH net-next v2] misc: Add Renesas Synchronization Management
- Unit (SMU) support
-Thread-Index: AQHXANy3Kc3xxVsbt0Wl/bCSqSMNqapUIuqAgACGZWA=
-Date:   Fri, 12 Feb 2021 15:44:52 +0000
-Message-ID: <OSBPR01MB4773472EE0C8D34456C79121BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
-References: <1613092575-17311-1-git-send-email-min.li.xe@renesas.com>
- <YCYw5xXe16fSj6eI@kroah.com>
-In-Reply-To: <YCYw5xXe16fSj6eI@kroah.com>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=renesas.com;
-x-originating-ip: [72.140.114.230]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1f592421-a80d-40a8-bb2e-08d8cf6d2382
-x-ms-traffictypediagnostic: OSAPR01MB2580:
-x-microsoft-antispam-prvs: <OSAPR01MB2580F260827CB3C878C40906BA8B9@OSAPR01MB2580.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wF4dR2cg5CpwqiyjpIjd4x1OVPPwCyMQY+Xb+sZ7AKccURp9UiYmjlBdLl3awR9yaULpYv4JoJPrvECmRF3YqtjQHp7BUPoG7vHb6Nd49IJSMS1Oh94qI0hEoFMPrBesvh9VckNp4leZ0u/nhLgXz6OQUkB5xFdZ6v3HkRGlQ2KZZZOygKdRltDLQYcYy+WLgHhPOdwquoZ1PARliwIVhvrh2+Ek8Q0eBKAX8mGGKDwtzI90RhKnnj8tGv63N1YOWRE2T8yBXdzQ4qnAakrEe9QG1mOetmX3o2PwVEkIJRoO0RoU09tKbn8iQz0t1FdCnVsnqaYeYHfa5ihgl0Ut4qPmbHbheLruHGn4I6bYkXacW40nV2QumEArBlAl9dcUFjJ6Zl6lzBfKAsBHv0gj59OvoyUsSY39Aa38u5wLf0zeHYUkZppbyOpiaLDVtx92RjLQuG3yOP/W2JZk35m4bhfugS6yhpMUE+BwYsZmBQeRfeLdDdni3EoZSie/odWUVhlgPsRSgj8xghV+DtRAUg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4773.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(396003)(346002)(39850400004)(76116006)(2906002)(4744005)(6916009)(83380400001)(86362001)(478600001)(66476007)(71200400001)(33656002)(4326008)(52536014)(66446008)(8936002)(26005)(8676002)(186003)(6506007)(7696005)(9686003)(66556008)(54906003)(316002)(5660300002)(64756008)(55016002)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?hm+H33HL5L9Ov7LY83fnv8tpLa8jchyU/aGhdm/3jWHXJvv9gjP5r5bhEHEQ?=
- =?us-ascii?Q?QV33pWdobuuv9TdIYMyZ0eflH+AO3NSeMeK2dN6gtzcdEPNjqiZiedFEZYLo?=
- =?us-ascii?Q?yY+7sts5IFep2qneyoBA4VZukBP8WjUKD4PAMa20V5Gs4E93UTpJlyqe88vf?=
- =?us-ascii?Q?PMTdTN7IdZjXVD9Gkug9dNZzDlSDa3tF6Y+t0KvXZONzN3Dqm/g2RaGfM7KI?=
- =?us-ascii?Q?gSwflYZ1HXr3zxcu3rnm7DG7Dyvl+GeDnr+9EBlDgYIaUGDmZaAyEanlYOWM?=
- =?us-ascii?Q?Ech6c0FUID7IQ2V8+Ct3yy4IrSywgVYi8vehUT825vJHXr7KiPY58wdzn1oq?=
- =?us-ascii?Q?wBrpFkXl13MI6T4HOOxZmFXSaRciJAs138BR5UtySDjTOffA4C8aVzfAg0H5?=
- =?us-ascii?Q?FR73f/eGtwh17AcS0Hl/qubksEaxKtQnrjbA9vjaZkSMS+FUnbnbBYIVi65r?=
- =?us-ascii?Q?H3WmfblDRM4WIWmM3AzUWbwMMJ0Oc24GxBqcY9TVdIOE3OI3nbT4WBcqw7ia?=
- =?us-ascii?Q?jC+Kc+RzSvYdzn1USe9OTaJKCMMw1Jrp/+uosG7qpv6KBY2riYqSHFyJ8Cgl?=
- =?us-ascii?Q?yKBAtk+JhccAgbMuFKCGhaqFV25BfTS/yzWcvXJdo9rTuNivpQVdgyqEiGN+?=
- =?us-ascii?Q?U8xjJN7dqA6ZJxK06IiBs7+IETvBbpbvJ8NUhRo+3cd+e95wIw4ea9NxGTJ+?=
- =?us-ascii?Q?ERQ60TBj01l5kXfADzLksa7ojyn290CLoWvLLlHEjgHiiuQhAHDI66AbWkEg?=
- =?us-ascii?Q?r7uZyZ/JGColm6SKiSFoQhHpmBI2izBYcEP8cFzrM3ubg6FQQmLE4PbfVVze?=
- =?us-ascii?Q?C8Z73KIaOmGJ4AFrsVGGLFkTPlgMVwjoKOw5Tbpx2lSHrfQTUEf035yFf9VJ?=
- =?us-ascii?Q?8PI9c66BhtuV9UYOlPiQXF7SyBgrb1VjO6RLVdz1Cj25GlrYeX7zFoMt4woI?=
- =?us-ascii?Q?JMYAkknIwVekikhJg7d9QtSzz6wRkLjt+NkQzOrzNBXsjRPHMglD6hj06+dw?=
- =?us-ascii?Q?qRWDaQXI1UNzQ0wnE0Dc3Eh7qfoX+At/z0ck0nblq9wRVqlPgUZUfFJNCAb1?=
- =?us-ascii?Q?JqImFw+1a2ddBvCvr6aSKD4qbFxF+JVApyRGrDvOULDJTInnAeuRpaahPRqA?=
- =?us-ascii?Q?SDTs9Z/Uzgv18uG6V6eeaG+mLANfAlI3S3sRTGgSnDE/PvKKXD+xQ1JdAxKV?=
- =?us-ascii?Q?ygSCCZJolzA3M1ANtLnw0nnEaJ9oyACtmN653RpVdLWis9XutSyoN2jmbSTC?=
- =?us-ascii?Q?XSzSz0LdhRqkeHVeF5kvgLmPzV0LjJ6+8EiQj2jzKTAyD4kmTSxqN7kPtbBY?=
- =?us-ascii?Q?PBPvVh3vNLvqgclmpkeovQob?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cu8L/WplKZ780G9jwN56kevEB3GtJ8y5NssLfkx6Uqg=;
+        b=SjejLWzTI2VFjY1dfkVD5V42v7lXpknS0S+UFFh5UdUiIm+u2XIbf88yDmsIVpG7o8
+         74Wb8toCwyKozPNSyWhtUZCM6QT8Pk6OSUh7SWve9TVS8dywtofoD11+lHtcwv4VpUkH
+         n05k6PyRfcDWBH/iv9dZZKCb00arx84pdhW93LAj6KM+FKqdUZAGt2jro60j9O7wi3X6
+         bfFCyVK4ZzxxCDZlgVc4eD+s7TvYUvRoqzOSqQmZh6JwMqyyMYOqx/d+PMzxJL8k2Z3A
+         S0/5UpSp1yUY98tYLRsrfiEaF0VzTI4S+QYv0uGzrYqIL7gMo3dyiDkR39IE0Y2P7bU1
+         xdaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cu8L/WplKZ780G9jwN56kevEB3GtJ8y5NssLfkx6Uqg=;
+        b=P3ZnPNeAeUcV/lGg1hCEeTZfQ8RMzY/8mQwy18NSIoLvh8+tUfseuBVFDCWQkfCVNJ
+         qPOJexwZP8iA9dv2cwGuis3uBBAGRN3AejKSex2NfJdBMED376g6M9V/Cexba4P1Aiq8
+         0J1V/LGrZtpEO3kMl7HT714P6kQMmPbdnWMZYaxDfarLAfR6ZQjROTN4yQ2ATWT2Nl4c
+         WKSDrbimo5U0INJV+1V4b3TgHco/S21fZY5O2sI5wQYR2xmMzI/oZSQKrvYnoXkWkv3O
+         1kMkxNZ5XCds8xNVQd7F3A40WLKmJOeXYC6jyCNDRrDSE23rUOUKNraOALMK8n1Ru5ZZ
+         RaUQ==
+X-Gm-Message-State: AOAM533KieM9PEaC+N0wZ+m1mdix1hx9qliQWVWFYEfmMHE3DlcQykzm
+        nVxaHwZdCoqnSBKcnEBCT18=
+X-Google-Smtp-Source: ABdhPJw5Rpzi91fLuT88nMYep4Q2yYCQDO87d3z/tYohHXQW6mK1UQU4krUDCvgTp1mS8xnWYoiYBA==
+X-Received: by 2002:a19:4013:: with SMTP id n19mr1887674lfa.543.1613144706407;
+        Fri, 12 Feb 2021 07:45:06 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id v25sm1416346ljc.92.2021.02.12.07.45.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 07:45:05 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 12 Feb 2021 16:45:03 +0100
+To:     qiang.zhang@windriver.com
+Cc:     urezki@gmail.com, paulmck@kernel.org, joel@joelfernandes.org,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] kvfree_rcu: Release page cache under memory pressure
+Message-ID: <20210212154503.GA55693@pc638.lan>
+References: <20210211121012.278203-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4773.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f592421-a80d-40a8-bb2e-08d8cf6d2382
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2021 15:44:52.6080
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LIwY96fXhYNcvES3R/G+8m8taeMpzemlqzeryqaF2Zmefa+Y1izY4lqaF29X/2Qh6o2CbllgdTga/e19A/G+sw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB2580
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211121012.278203-1-qiang.zhang@windriver.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >
-> > -set combomode
-> > -get dpll's state
-> > -get dpll's ffo
-> >
-> > This driver must work with Renesas MFD driver to access SMU through
-> > I2C/SPI.
-> >
-> > Changes since v1:
-> > -Provide more background for purpose of the change.
-> > -Provide compat_ioctl support
-> > -Fix ioctl cmd definition
->=20
-> This "changes" list goes below the --- line.
->=20
+> From: Zqiang <qiang.zhang@windriver.com>
+> 
+> Add free per-cpu existing krcp's page cache operation in shrink callback
+> function, and also during shrink period, simple delay schedule fill page
+> work, to avoid refill page while free krcp page cache.
+> 
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> Co-developed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  v1->v4:
+>  During the test a page shrinker is pretty active, because of low memory
+>  condition. callback drains it whereas kvfree_rcu() part refill it right
+>  away making kind of vicious circle.
+>  Through Vlad Rezki suggestion, to avoid this, schedule a periodic delayed
+>  work with HZ, and it's easy to do that.
+>  v4->v5:
+>  change commit message and use xchg replace WRITE_ONCE()
+> 
+>  kernel/rcu/tree.c | 49 +++++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 41 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index c1ae1e52f638..f1fba23f5036 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3139,7 +3139,7 @@ struct kfree_rcu_cpu {
+>  	bool initialized;
+>  	int count;
+>  
+> -	struct work_struct page_cache_work;
+> +	struct delayed_work page_cache_work;
+>  	atomic_t work_in_progress;
+>  	struct hrtimer hrtimer;
+>  
+> @@ -3395,7 +3395,7 @@ schedule_page_work_fn(struct hrtimer *t)
+>  	struct kfree_rcu_cpu *krcp =
+>  		container_of(t, struct kfree_rcu_cpu, hrtimer);
+>  
+> -	queue_work(system_highpri_wq, &krcp->page_cache_work);
+> +	queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, 0);
+>  	return HRTIMER_NORESTART;
+>  }
+>  
+> @@ -3404,7 +3404,7 @@ static void fill_page_cache_func(struct work_struct *work)
+>  	struct kvfree_rcu_bulk_data *bnode;
+>  	struct kfree_rcu_cpu *krcp =
+>  		container_of(work, struct kfree_rcu_cpu,
+> -			page_cache_work);
+> +			page_cache_work.work);
+>  	unsigned long flags;
+>  	bool pushed;
+>  	int i;
+> @@ -3428,15 +3428,21 @@ static void fill_page_cache_func(struct work_struct *work)
+>  	atomic_set(&krcp->work_in_progress, 0);
+>  }
+>  
+> +static atomic_t backoff_page_cache_fill = ATOMIC_INIT(0);
+> +
+Should we initialize a static atomic_t? It is zero by default.
 
-Sorry, is this a problem that you are requesting me to address? I am bit co=
-nfused...
+>  static void
+>  run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+>  {
+>  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+>  			!atomic_xchg(&krcp->work_in_progress, 1)) {
+> -		hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+> -			HRTIMER_MODE_REL);
+> -		krcp->hrtimer.function = schedule_page_work_fn;
+> -		hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+> +		if (atomic_xchg(&backoff_page_cache_fill, 0)) {
+> +			queue_delayed_work(system_highpri_wq, &krcp->page_cache_work, HZ);
+system_wq? It is not so critical, anyway the job is rearmed with 1 second interval.
 
-> And you seem to have ignored my review, especially about documenting the
-> sysfs files here, please do that as I can not accept this patch as-is.
->=20
+> +		} else {
+> +			hrtimer_init(&krcp->hrtimer, CLOCK_MONOTONIC,
+> +				HRTIMER_MODE_REL);
+> +			krcp->hrtimer.function = schedule_page_work_fn;
+> +			hrtimer_start(&krcp->hrtimer, 0, HRTIMER_MODE_REL);
+> +		}
+>  	}
+>  }
+>  
+> @@ -3571,19 +3577,44 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  }
+>  EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+>  
+> +static int free_krc_page_cache(struct kfree_rcu_cpu *krcp)
+> +{
+> +	unsigned long flags;
+> +	struct llist_node *page_list, *pos, *n;
+> +	int freed = 0;
+> +
+> +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> +	page_list = llist_del_all(&krcp->bkvcache);
+> +	krcp->nr_bkv_objs = 0;
+> +	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> +
+> +	llist_for_each_safe(pos, n, page_list) {
+> +		free_page((unsigned long)pos);
+> +		freed++;
+> +	}
+> +
+> +	return freed;
+> +}
+> +
+>  static unsigned long
+>  kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+>  {
+>  	int cpu;
+>  	unsigned long count = 0;
+> +	unsigned long flags;
+>  
+>  	/* Snapshot count of all CPUs */
+>  	for_each_possible_cpu(cpu) {
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+>  
+>  		count += READ_ONCE(krcp->count);
+> +
+> +		raw_spin_lock_irqsave(&krcp->lock, flags);
+> +		count += krcp->nr_bkv_objs;
+> +		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+>  	}
+>  
+> +	atomic_set(&backoff_page_cache_fill, 1);
+>  	return count;
+>  }
+>  
+> @@ -3598,6 +3629,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+>  
+>  		count = krcp->count;
+> +		count += free_krc_page_cache(krcp);
+> +
+>  		raw_spin_lock_irqsave(&krcp->lock, flags);
+>  		if (krcp->monitor_todo)
+>  			kfree_rcu_drain_unlock(krcp, flags);
+> @@ -4574,7 +4607,7 @@ static void __init kfree_rcu_batch_init(void)
+>  		}
+>  
+>  		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
+> -		INIT_WORK(&krcp->page_cache_work, fill_page_cache_func);
+> +		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+>  		krcp->initialized = true;
+>  	}
+>  	if (register_shrinker(&kfree_rcu_shrinker))
+> -- 
+> 2.25.1
+> 
+I have reviewed and tested that patch. Even though it can not be applied
+cleanly on the latest Paul "dev" branch feel free to use:
 
-If I come up with an rsmu.rst under Documentation/driver-api, is that somet=
-hing you are looking for?
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Tested-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+
+Also i placed some small nits, because it should be rebased on latest dev.
+As for commit message i guess Paul will help :)
+
+Thank you!
+
+--
+Vlad Rezki
