@@ -2,170 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3A9319FE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C674319FE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhBLNaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:30:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
+        id S231580AbhBLN3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:29:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231587AbhBLNai (ORCPT
+        with ESMTP id S231537AbhBLN3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 08:30:38 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F0FC061786
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 05:29:58 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id n10so1009560wmq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 05:29:57 -0800 (PST)
+        Fri, 12 Feb 2021 08:29:43 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618B6C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 05:29:03 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id z22so10791983edb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 05:29:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=SK6ZKYQhoxc/9qFXR2hMAG1f6VvVXc8X+Tu1akX9MNM=;
-        b=x0eTwJpJmGP6YRVhBtmbKikyDwa0BemVbiaJcRKbjb/NQX4WvHvyCwljzNTGEcbgeF
-         +aZB5o8wwEeEr0cMD8hdpRVwmSktzutGBkBfuWRHw2Qvwx10wYpB7ojeH2oLksrczS9t
-         3SQ6KBtKPl3CAAyLezUvyhcf7hCw7b9JWYMDQzshjIGRn4c7IcRZydpCNoYsPo1aCqo+
-         h4SbeMKGrrgqv+dFoQ714cQ2YXQIPQ4308zWtRDzrRq9dTkTDLyHpx3nJJiF7KMRX911
-         P3Ai4YCelfdVWtsZy+gyQpitCNQYxILiPmCfOhcO3Tv9lreB8zRleI/l+KPxdUX9vE4Z
-         hwyw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Neefq26+0wySW8CCnpLiBrHunY0atHBH7eM16bKt2m0=;
+        b=bcewxCG4FV8BHFBpRn1shnV7GDwRUGR+xXERg6mUXkd8n62XwsN2ArPOvBxUNeYXuB
+         2r3SjemR3eHwstWqtHfua3AbZsVZvKaOUHfXuJOfjX2zfh0HVdx8Nu+7W7+LXb3Edcic
+         AsnhQFP4d6HmuuQmp3X9rHHNtcpy7xKuKSJMJmPVMW3WPc1wtXVNju06lRMlmWZxIdXQ
+         OPPocEKzMv0q+VTjQSru+7VI/w3PHjZZ1s0GEcvT0Emh6yhcwQ7HaUrERjaGCNFuaSeQ
+         0USgCvt56eN92SS3RdeiAEWuA20QEkOH0IwMSBJb7dF/HpDrajBrDUpYA2jbz1GeN/Em
+         mmcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=SK6ZKYQhoxc/9qFXR2hMAG1f6VvVXc8X+Tu1akX9MNM=;
-        b=G9ySA6Sum+KsUK1pBDhjXuDOb5kp0V2Fqr6HsIHQoxbRCrjGYy+tVgTOIdEvc4/tuc
-         8+HnTB7GZuKI/a3pe2WntZxHYQ7FLbNOTZUYS+XqwsR3vU+dX0Br8gIuFkBJ/mTTsEH9
-         fCVVXZfftyg/bL0Ymm1X+ATqh6ZnsE2b4NaTC8afL9BpWh8qXu7ZftYrVb49h6gkTHNe
-         dlyfi+fTSJ3otfRVqHc7lhxRNLz94SFGmMeIccZ6FMzla54SjYKPncxDcpUWfBbukwrT
-         /io1K4Nv53p/F6mqoJHR8MP8cFTglqJy/McAZU/Qcd9b4TNlAbzBZLk3bHELCNRqddaK
-         JIVA==
-X-Gm-Message-State: AOAM533t6a3IQpj60WQPBcsUb2NOmAtd9HCHkSJN73aPUXoV3YzgvJ5s
-        56sG3MDRKokQ2I4LecVto3MBAg==
-X-Google-Smtp-Source: ABdhPJy9eUieVQdRwzoWIDtqKeVPjlDANhL9TkT7nUfZx5LE6acf641FC4Nw5ss/5rApsPDvaafkWQ==
-X-Received: by 2002:a1c:f212:: with SMTP id s18mr2703374wmc.107.1613136596776;
-        Fri, 12 Feb 2021 05:29:56 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:ad4e:cdb3:8eaf:6329])
-        by smtp.gmail.com with ESMTPSA id h13sm10470773wrv.20.2021.02.12.05.29.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 05:29:55 -0800 (PST)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org, valentin.schneider@arm.com
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, qais.yousef@arm.com,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH 1/7 v2] sched/fair: remove update of blocked load from newidle_balance
-Date:   Fri, 12 Feb 2021 14:28:43 +0100
-Message-Id: <20210212132849.32515-2-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210212132849.32515-1-vincent.guittot@linaro.org>
-References: <20210212132849.32515-1-vincent.guittot@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Neefq26+0wySW8CCnpLiBrHunY0atHBH7eM16bKt2m0=;
+        b=ZeZ+6e3qjHRSZ5glw58bJKxjDJQnt1lLW25tQ7GenIgbuRyj/hqi+MJ2AX68fmQ4ft
+         /EUozetAQkRhHd4itUUhJTJ1CDNfuyUGOIPkGXXmxkuVJII6Ypz5LLis/P8c10mRA/4D
+         XtLw2j4bPtoFUJlmbZYpswPlGoRUwK3GGTtKA8nddxNd9F1LPAlxt8aQnHWwPb/BvqjL
+         P81bbwGH2r2Ll3DukDC5qCG0aUEbmtB/GJKuy5AXgKfYHsbU3ykSHbiNF7wrq+Pg9dfi
+         Ya1ygr/Smd/0VXlFkj0TmqtSpEC7ocFs2kRjcGZFlxvBcU9aWkgrxl1KJVytphOkDD5P
+         Cmdw==
+X-Gm-Message-State: AOAM530CTTWrIQ7F3oc8ak8hdSGO+KQ+7p+ClVVdMlZAjMyKvCMGV2Bs
+        meh8sv5ufRCVIvtW0pp5Nv9Mr4bFZPpEnVL4NpHQgw==
+X-Google-Smtp-Source: ABdhPJyuoZ2N89f1TFVEVZX0+m2/XBkrFKVLO0lTG9qKGTaZn1cG4Ny2hI2eK7IiHUvaopGL8HqK4A4rmZAiWFKd5+Q=
+X-Received: by 2002:aa7:d3c7:: with SMTP id o7mr3355484edr.23.1613136541914;
+ Fri, 12 Feb 2021 05:29:01 -0800 (PST)
+MIME-Version: 1.0
+References: <20210212074240.963766197@linuxfoundation.org>
+In-Reply-To: <20210212074240.963766197@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 12 Feb 2021 18:58:50 +0530
+Message-ID: <CA+G9fYvtosFoB8ufDgu-3jhLOYGhEH5Vxo1n6P3bbgmDhBFzqA@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/27] 4.19.176-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-newidle_balance runs with both preempt and irq disabled which prevent
-local irq to run during this period. The duration for updating the
-blocked load of CPUs varies according to the number of CPU cgroups
-with non-decayed load and extends this critical period to an uncontrolled
-level.
+On Fri, 12 Feb 2021 at 13:25, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.176 release.
+> There are 27 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 14 Feb 2021 07:42:29 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.176-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Remove the update from newidle_balance and trigger a normal ILB that
-will take care of the update instead.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
- kernel/sched/fair.c | 33 +++++----------------------------
- 1 file changed, 5 insertions(+), 28 deletions(-)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 59b645e3c4fd..bfe1e235fe01 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7392,8 +7392,6 @@ enum migration_type {
- #define LBF_NEED_BREAK	0x02
- #define LBF_DST_PINNED  0x04
- #define LBF_SOME_PINNED	0x08
--#define LBF_NOHZ_STATS	0x10
--#define LBF_NOHZ_AGAIN	0x20
- 
- struct lb_env {
- 	struct sched_domain	*sd;
-@@ -8397,9 +8395,6 @@ static inline void update_sg_lb_stats(struct lb_env *env,
- 	for_each_cpu_and(i, sched_group_span(group), env->cpus) {
- 		struct rq *rq = cpu_rq(i);
- 
--		if ((env->flags & LBF_NOHZ_STATS) && update_nohz_stats(rq, false))
--			env->flags |= LBF_NOHZ_AGAIN;
--
- 		sgs->group_load += cpu_load(rq);
- 		sgs->group_util += cpu_util(i);
- 		sgs->group_runnable += cpu_runnable(rq);
-@@ -8940,11 +8935,6 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 	struct sg_lb_stats tmp_sgs;
- 	int sg_status = 0;
- 
--#ifdef CONFIG_NO_HZ_COMMON
--	if (env->idle == CPU_NEWLY_IDLE && READ_ONCE(nohz.has_blocked))
--		env->flags |= LBF_NOHZ_STATS;
--#endif
--
- 	do {
- 		struct sg_lb_stats *sgs = &tmp_sgs;
- 		int local_group;
-@@ -8981,14 +8971,6 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 	/* Tag domain that child domain prefers tasks go to siblings first */
- 	sds->prefer_sibling = child && child->flags & SD_PREFER_SIBLING;
- 
--#ifdef CONFIG_NO_HZ_COMMON
--	if ((env->flags & LBF_NOHZ_AGAIN) &&
--	    cpumask_subset(nohz.idle_cpus_mask, sched_domain_span(env->sd))) {
--
--		WRITE_ONCE(nohz.next_blocked,
--			   jiffies + msecs_to_jiffies(LOAD_AVG_PERIOD));
--	}
--#endif
- 
- 	if (env->sd->flags & SD_NUMA)
- 		env->fbq_type = fbq_classify_group(&sds->busiest_stat);
-@@ -10517,16 +10499,11 @@ static void nohz_newidle_balance(struct rq *this_rq)
- 	    time_before(jiffies, READ_ONCE(nohz.next_blocked)))
- 		return;
- 
--	raw_spin_unlock(&this_rq->lock);
- 	/*
--	 * This CPU is going to be idle and blocked load of idle CPUs
--	 * need to be updated. Run the ilb locally as it is a good
--	 * candidate for ilb instead of waking up another idle CPU.
--	 * Kick an normal ilb if we failed to do the update.
-+	 * Blocked load of idle CPUs need to be updated.
-+	 * Kick an ILB to update statistics.
- 	 */
--	if (!_nohz_idle_balance(this_rq, NOHZ_STATS_KICK, CPU_NEWLY_IDLE))
--		kick_ilb(NOHZ_STATS_KICK);
--	raw_spin_lock(&this_rq->lock);
-+	kick_ilb(NOHZ_STATS_KICK);
- }
- 
- #else /* !CONFIG_NO_HZ_COMMON */
-@@ -10587,8 +10564,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 			update_next_balance(sd, &next_balance);
- 		rcu_read_unlock();
- 
--		nohz_newidle_balance(this_rq);
--
- 		goto out;
- 	}
- 
-@@ -10654,6 +10629,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 
- 	if (pulled_task)
- 		this_rq->idle_stamp = 0;
-+	else
-+		nohz_newidle_balance(this_rq);
- 
- 	rq_repin_lock(this_rq, rf);
- 
--- 
-2.17.1
+Summary
+------------------------------------------------------------------------
 
+kernel: 4.19.176-rc2
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 7a5acd93ed02982be8ee91127bad4f85473b3c1a
+git describe: v4.19.175-28-g7a5acd93ed02
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.175-28-g7a5acd93ed02
+
+No regressions (compared to build v4.19.175)
+
+No fixes (compared to build v4.19.175)
+
+
+Ran 48636 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-containers-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* perf
+* v4l2-compliance
+* fwts
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* kselftest-
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-vm
+* kselftest-x86
+* ltp-open-posix-tests
+* kvm-unit-tests
+* rcutorture
+* ssuite
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
