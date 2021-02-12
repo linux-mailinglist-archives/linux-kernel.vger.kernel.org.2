@@ -2,75 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FADB31A5AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E4A31A5B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhBLTzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:55:10 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46592 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbhBLTzA (ORCPT
+        id S230470AbhBLT6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhBLT6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:55:00 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 187091C0BC1; Fri, 12 Feb 2021 20:54:02 +0100 (CET)
-Date:   Fri, 12 Feb 2021 20:54:01 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/54] 5.10.16-rc1 review
-Message-ID: <20210212195401.GB30277@amd>
-References: <20210211150152.885701259@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="K8nIJk4ghYZn606h"
-Content-Disposition: inline
-In-Reply-To: <20210211150152.885701259@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        Fri, 12 Feb 2021 14:58:30 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3E5C061574;
+        Fri, 12 Feb 2021 11:57:50 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id o63so362380pgo.6;
+        Fri, 12 Feb 2021 11:57:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=x0lAXp3U/g0l3OJrFf2vZ9CuZA+kZKT7TY6/m3gZV8g=;
+        b=WPlnAWDts8qNdBgjoZyOVL7Agv+5C28OhkgbPV3F8Yk51n1a0Z7PxswJD3beYsH9iH
+         bc86/OmNTRcKQEP4wMY46jV3SAk/PFWeGAkNcvpXNgtw3AmVjAdFLTkPosar4CSw7nOE
+         qhNfR9qZ5Z0LRT/490Bn7ij8K10jNY84DJw+MRwvvP/gd8v+BBvyY2CZEzeBJIw2QajY
+         1s77ptJHXVPVqLNKoYQ7cgRrqBYJCc3qgrTMD5XtcrWVNNkIWQ6IYRRbvU7jGyC6SfC1
+         p9DR9PbFUSQN2B8/SRCAI1rGzs5GOEDMQmVbc3xiwhbJ/iGqoUqgBVTDQmrFQ8tZ3sIn
+         wesQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=x0lAXp3U/g0l3OJrFf2vZ9CuZA+kZKT7TY6/m3gZV8g=;
+        b=LXJbr5Zdvzn8sDzQKSyQjHH+Y7z7pdAu271d4GTO/nCFko8e0x72wfDq9ZUAweiF9D
+         xSEzJ1dqGFWp3qEN+JKB7s9g9OvF+5zD5c384PfkftdlbyrJRq8nUald8JCDkzGrDHlS
+         x2C//89K4NAYCRnPFD723UmaPCbP3JaTylGJrYot6KGcvxJ6+bur5slopcAFgxE5PAu9
+         HyBXRQspGg9wNGthXTBLUhJoknlRp0m0f0CHC21L5ND83/JKeZo41DuAKLJo5lBwHcoI
+         YumyXaqIseFagZYEog7/j3kOZnOaCTUdmMzbTHbl7ZnPnKmsLbemfM+JlavKsS0c4et4
+         Fl0A==
+X-Gm-Message-State: AOAM531MHaGUw+uBrkrUZo6mPcVaens5meuHdSkzGmSkC+KrjnQmygRv
+        WYeoPqSB5RJml0erSkbdNNvyNpr7jeY=
+X-Google-Smtp-Source: ABdhPJzgXmnV6GTKNCYNE5+/45uPJlRehFyW77kFWMvvRlfz6UX51akptA/xe1Lou7+k46JXh7uV+A==
+X-Received: by 2002:aa7:9a46:0:b029:1db:57ba:5e2 with SMTP id x6-20020aa79a460000b02901db57ba05e2mr4255277pfj.5.1613159869674;
+        Fri, 12 Feb 2021 11:57:49 -0800 (PST)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id t25sm10003819pgo.87.2021.02.12.11.57.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 11:57:49 -0800 (PST)
+From:   Al Cooper <alcooperx@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v3 0/2] serial: 8250: Add driver for Broadcom UART
+Date:   Fri, 12 Feb 2021 14:57:34 -0500
+Message-Id: <20210212195736.45328-1-alcooperx@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v3 - remove "disable_dma" module param because it can be done
+     by modifying the device tree node instead. Reduce size by
+     removing some debug fuctionality that was no longer used.
+   - Fix error from yaml compiler in bindings
 
---K8nIJk4ghYZn606h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v2 - remove the patch that modified 8250_of.c to keep it from
+     registering before this driver when this driver was deferred
+     as it was getting it's "clocks". This was fixed by changing
+     the Device Tree entry to remove "clock-frequency". This results
+     in both drivers getting "clocks" and getting same the deferral.
 
-Hi!
+Al Cooper (2):
+  dt-bindings: Add support for the Broadcom UART driver
+  serial: 8250: Add new 8250-core based Broadcom STB driver
 
-> This is the start of the stable review cycle for the 5.10.16 release.
-> There are 54 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+ .../bindings/serial/brcm,bcm7271-uart.yaml    |   96 ++
+ MAINTAINERS                                   |    8 +
+ drivers/tty/serial/8250/8250_bcm7271.c        | 1099 +++++++++++++++++
+ drivers/tty/serial/8250/Kconfig               |   11 +
+ drivers/tty/serial/8250/Makefile              |    1 +
+ drivers/tty/serial/8250/bcm7271_uart.h        |  158 +++
+ 6 files changed, 1373 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
+ create mode 100644 drivers/tty/serial/8250/8250_bcm7271.c
+ create mode 100644 drivers/tty/serial/8250/bcm7271_uart.h
 
-CIP testing did not find any problems here:
+-- 
+2.17.1
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
-							=09
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---K8nIJk4ghYZn606h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAm3NkACgkQMOfwapXb+vKvpACgiC48WbCSGadNWeHMELwSBMQ7
-hT8An3Xw5xbcJZJWjUPxZNzdWc8Df3cH
-=MPvW
------END PGP SIGNATURE-----
-
---K8nIJk4ghYZn606h--
