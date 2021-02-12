@@ -2,109 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC2B319CA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DACF2319CAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhBLK3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 05:29:14 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:55478 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhBLK3M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 05:29:12 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11CARo41022623;
-        Fri, 12 Feb 2021 04:27:50 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1613125670;
-        bh=SqBeUtT5NjBGreoJPsxd+PxgBYN94+X5BvsJ9ZR/Lrk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=BUKtM0a+ZoGDD2/bzv2vABaebPQr58uoBVPnngwVDxZqS/KRiBd18u1gI8hIppnjw
-         gW8mEE6wdgDn2+OJjiLMl5GdTgcH8uOg9auiK0NpkE4oTJFd3J0MvvQnXwsEH8YWTN
-         rkPuLR7e14vZtVcOxFTvcMFXqgWYdDgL5WYc/YUA=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11CARoCp123925
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Feb 2021 04:27:50 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
- Feb 2021 04:27:50 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 12 Feb 2021 04:27:50 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11CARlhr129287;
-        Fri, 12 Feb 2021 04:27:47 -0600
-Subject: Re: [Linuxarm] Re: [PATCH for next v1 1/2] gpio: omap: Replace
- raw_spin_lock_irqsave with raw_spin_lock in omap_gpio_irq_handler()
-To:     Arnd Bergmann <arnd@kernel.org>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-CC:     luojiaxing <luojiaxing@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
- <1612774577-55943-2-git-send-email-luojiaxing@huawei.com>
- <fab1e871-08e4-fc71-9dbf-9bcacf18e2e1@ti.com>
- <CAK8P3a0m4ocfLyJZ5wMxyKESYUJ5um5sb5MyAzC8ckCb6qAH5g@mail.gmail.com>
- <d5465b81-bb53-49ee-a556-40d208deb765@ti.com>
- <a61ef337fd1c4538a47fe855920f95d3@hisilicon.com>
- <CAK8P3a3SHQNjF5ZpqHQweG7BQ52Xi1hQKDiMVKq4aNK_7VDw6w@mail.gmail.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <e34a4085-268f-1cd0-a5dc-a87a2e655fe2@ti.com>
-Date:   Fri, 12 Feb 2021 12:27:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230380AbhBLKaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 05:30:39 -0500
+Received: from mga03.intel.com ([134.134.136.65]:16175 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229653AbhBLKag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 05:30:36 -0500
+IronPort-SDR: lQIF3U+6oD7htNhN0ECriiXMTyLRJVQtK3PjYTLnhZ8fJ6jkbHLBuBtIVAHi7lrtaynZL3YfVw
+ Y+WdFtJc45DQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="182463613"
+X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
+   d="scan'208";a="182463613"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 02:28:50 -0800
+IronPort-SDR: xMPymEm/e9YiMmihnEa5y2rtorDhIH6vzmGuFw0mnx8OWCamCc/cc+om/C7EASKmVNaAbxnsS3
+ YHzGRLsBHvBw==
+X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
+   d="scan'208";a="397927633"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 02:28:47 -0800
+Received: by lahna (sSMTP sendmail emulation); Fri, 12 Feb 2021 12:28:44 +0200
+Date:   Fri, 12 Feb 2021 12:28:44 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: Re: [PATCH] ACPI: property: Fix fwnode string properties matching
+Message-ID: <20210212102844.GN2542@lahna.fi.intel.com>
+References: <5831274.1ZjA0VymzF@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3SHQNjF5ZpqHQweG7BQ52Xi1hQKDiMVKq4aNK_7VDw6w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5831274.1ZjA0VymzF@kreacher>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-
-On 12/02/2021 11:45, Arnd Bergmann wrote:
-> On Fri, Feb 12, 2021 at 6:05 AM Song Bao Hua (Barry Song)
-> <song.bao.hua@hisilicon.com> wrote:
->>> -----Original Message-----
+On Thu, Feb 11, 2021 at 07:30:01PM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
->>>
->>> Note. there is also generic_handle_irq() call inside.
->>
->> So generic_handle_irq() is not safe to run in thread thus requires
->> an interrupt-disabled environment to run? If so, I'd rather this
->> irqsave moved into generic_handle_irq() rather than asking everyone
->> calling it to do irqsave.
+> Property matching does not work for ACPI fwnodes if the value of the
+> given property is not represented as a package in the _DSD package
+> containing it.  For example, the "compatible" property in the _DSD
+> below
 > 
-> In a preempt-rt kernel, interrupts are run in task context, so they clearly
-> should not be called with interrupts disabled, that would defeat the
-> purpose of making them preemptible.
+>   Name (_DSD, Package () {
+>     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+>     Package () {
+>       Package () {"compatible", "ethernet-phy-ieee802.3-c45"}
+>     }
+>   })
 > 
-> generic_handle_irq() does need to run with in_irq()==true though,
-> but this should be set by the caller of the gpiochip's handler, and
-> it is not set by raw_spin_lock_irqsave().
+> will not be found by fwnode_property_match_string(), because the ACPI
+> code handling device properties does not regard the single value as a
+> "list" in that case.
+> 
+> Namely, fwnode_property_match_string() invoked to match a given
+> string property value first calls fwnode_property_read_string_array()
+> with the last two arguments equal to NULL and 0, respectively, in
+> order to count the items in the value of the given property, with the
+> assumption that this value may be an array.  For ACPI fwnodes, that
+> operation is carried out by acpi_node_prop_read() which calls
+> acpi_data_prop_read() for this purpose.  However, when the return
+> (val) pointer is NULL, that function only looks for a property whose
+> value is a package without checking the single-value case at all.
+> 
+> To fix that, make acpi_data_prop_read() check the single-value case
+> regardless of the return pointer value if its return pointer argument
+> is NULL and modify acpi_data_prop_read_single() handling that case to
+> attempt to read the value of the property if the return pointer is
+> NULL and return 1 if that succeeds.
+> 
+> Fixes: 3708184afc77 ("device property: Move FW type specific functionality to FW specific files")
+> Reported-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> Cc: 4.13+ <stable@vger.kernel.org> # 4.13+
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-It will produce warning from __handle_irq_event_percpu(), as this is IRQ dispatcher
-and generic_handle_irq() will call one of handle_level_irq or handle_edge_irq.
-
-The history behind this is commit 450fa54cfd66 ("gpio: omap: convert to use generic irq handler").
-
-The resent related discussion:
-https://lkml.org/lkml/2020/12/5/208
-
-
-
--- 
-Best regards,
-grygorii
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
