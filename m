@@ -2,222 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC57B319BDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A61319BD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhBLJZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:25:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhBLJZW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:25:22 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBC9C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:24:42 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id r2so8398830ybk.11
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:24:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y0No0ONR6FUuFWuujJd79fK6HXBhAF9QPUsiKwkH7Y0=;
-        b=J6MmOM83V9YJ2fLjJv6qw5ny8k7dfibZTrMS/tOukhD9W0VWt8JSMxchBBgC7Pmc2H
-         m7Hx+sK/6q7adee0PvddBj7StxLuKl3xcdhQmIjKUkL0HFTLelUZgGXaCfT600GCsvql
-         O/UVe84S0XiD45Eq6nygIpU+zrP/uEJP0YznVtQKM1N7XkZKS5J9gI9jAS3+BG00uWVO
-         BOBOxOChC9bBL6PhR99bg245OFWat3E1fggoCQWac0OaWgSyCmliBJ1RhsjAikhQ6Ke8
-         qykAHD6Nq1Ahjkr5akaCRyH0SPhju7X3Tmhs9GGeW0726BfcPpGNsqQy6SEEPP3ouQzR
-         iOTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y0No0ONR6FUuFWuujJd79fK6HXBhAF9QPUsiKwkH7Y0=;
-        b=fCbG+dVak3HQE7v6jn2O8ZytZwed/Qvd18nkN9sua/cqhRj+41LcH7YixU/m6kRhF4
-         DFR7vni0CUndPT4Ew1+TLYBUwT/G13o8qrWbDcO0qNXXuJK2PhzTQf/p+Nt1VV7TIwE2
-         y1HwSpWFCyJergwEIFYmvW5ER3tJYYgufdIWiRuCfRPYqsv7D/XsNMv+22+5s7oNipJ0
-         bxh1ft7HtX+ei5iJHSJ6OcxApIPxAnNCXYD932TSpuITYn8YoRqyV0bTQMqpvVAoC1xR
-         9xDR9zsxHPgz2501iVh0RoCfPTwwK1A5yhOc1HJT3HDye4FMVAuVjGo+dNstK5O4nEFn
-         Difg==
-X-Gm-Message-State: AOAM532Kydb/HojWesvrQjz9cuGe/T2FpSQXHxW9XnRlLMeSagkFb4gF
-        FiRazl3a4OvNMMdeNxq/8Fue3XcNzmJvMgRRolFA+Q==
-X-Google-Smtp-Source: ABdhPJymHwa8TOcq3zW+VCNvmwG/+uOU+gPqVHU+h64ZngBdFfIYnujLXqJARPqLjFPIUYoanE9Stcqk2k7gtBmHdQE=
-X-Received: by 2002:a25:ca42:: with SMTP id a63mr2856231ybg.318.1613121881114;
- Fri, 12 Feb 2021 01:24:41 -0800 (PST)
+        id S229862AbhBLJZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:25:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhBLJZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 04:25:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98A4B64E38;
+        Fri, 12 Feb 2021 09:24:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613121869;
+        bh=+2D8dYfapJLCYhEXN5R5hzo32tj97Tg3Vth7gOSDPQE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=U3vfuWFTCb3eYyXkQ7MCtoqmIzP5zJxG1wWSZ52jFF3TfOl7Q0W4BBjWrlbavCLHq
+         sh8EqeLoL0i8ezHu8KaBSnx/BmORJB2oMswR+oNRsVyctNZga6TF1crboY+wafFgcf
+         KNNwXeeewqlYE1pL6D5A/vglJfmjiffKU8OSd+hn0q2T20gNqoh7MuE8fp+ieNJxZ5
+         PMyoFb2ZEgyaFK0BhmwQu8Yxvy1Vgjji3QAh4H66e3K5cfFImJRmOiLwLk1wsT6rin
+         rXzRhk6y1wEWHDbhzs4rseLx8qYuDcWKisPyAXwRV7kwlgjtbuRrfKhE0u7usvoVbu
+         JZ/3W3+LwraxQ==
+Received: by mail-oi1-f171.google.com with SMTP id l19so9315506oih.6;
+        Fri, 12 Feb 2021 01:24:29 -0800 (PST)
+X-Gm-Message-State: AOAM531mL1FdgnCycAFPR7Ntp8skOvGBQYm2B6yXfqGYtIp4qG3n66CJ
+        81B+raiCM/BNtHeaHCrocvfz2ZnvS6myCK0FcB0=
+X-Google-Smtp-Source: ABdhPJwnvcnpu7mYcyYmf7HXBqIq29ZhxrA0P0+FAhHgzg6z9h9Nmm70De+POfEXgoNwO8FrKp+bqdh5z+4I03y9X7c=
+X-Received: by 2002:aca:2117:: with SMTP id 23mr1245709oiz.4.1613121868865;
+ Fri, 12 Feb 2021 01:24:28 -0800 (PST)
 MIME-Version: 1.0
-References: <1612945128-23174-1-git-send-email-amit.pundir@linaro.org> <13bd5e9d-3f3b-0b97-aa48-9a7bc551ddf6@somainline.org>
-In-Reply-To: <13bd5e9d-3f3b-0b97-aa48-9a7bc551ddf6@somainline.org>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Fri, 12 Feb 2021 14:54:05 +0530
-Message-ID: <CAMi1Hd3d8krtQHv-3LuiCcgCWSgL1L0UeSYWJp27KToyW338gw@mail.gmail.com>
-Subject: Re: [PATCH v3] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add DSI and
- panel bits
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org
+References: <1613012611-8489-1-git-send-email-min.li.xe@renesas.com>
+ <CAK8P3a3YhAGEfrvmi4YhhnG_3uWZuQi0ChS=0Cu9c4XCf5oGdw@mail.gmail.com> <OSBPR01MB47732017A97D5C911C4528F0BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+In-Reply-To: <OSBPR01MB47732017A97D5C911C4528F0BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 12 Feb 2021 10:24:12 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2KDO4HutsXNJzjmRJTvW1QW4Kt8H7U53_QqpmgvZtd3A@mail.gmail.com>
+Message-ID: <CAK8P3a2KDO4HutsXNJzjmRJTvW1QW4Kt8H7U53_QqpmgvZtd3A@mail.gmail.com>
+Subject: Re: [PATCH net-next] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        gregkh <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Feb 12, 2021 at 2:40 AM Min Li <min.li.xe@renesas.com> wrote:
+> > There should probably be a description of the purpose of the hardware both
+> > here and in the patch description.
+> >
+> > In particular, please explain how it relates to the existing clockmatrix driver.
+>
+> I just uploaded v2 patch to provide more background info for this change.
 
-On Thu, 11 Feb 2021 at 00:25, AngeloGioacchino Del Regno
-<angelogioacchino.delregno@somainline.org> wrote:
->
-> Il 10/02/21 09:18, Amit Pundir ha scritto:
-> > From: Sumit Semwal <sumit.semwal@linaro.org>
-> >
-> > Enabling the Display panel for beryllium requires DSI
-> > labibb regulators and panel dts nodes to be added.
-> > It is also required to keep some of the regulators as
-> > always-on.
-> >
-> > Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
-> > Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-> > ---
->
-> Hello!
-> Your patch looks good, however, I have a few concerns...
->
-> > v3: Addressed Konrad's concerns. Configured labibb regulators
-> >      explicitly based on downstream microvolt values. Display
-> >      comes up fine with default discharge-resistor-kohms and
-> >      soft-start-us properties, so didn't touch them.
-> >      Smoke tested on next-20210209.
-> > v2: Rebased to mainline (v5.11-rc6) and fixed build warnings.
-> >
-> >   .../boot/dts/qcom/sdm845-xiaomi-beryllium.dts      | 64 ++++++++++++++++++++++
-> >   1 file changed, 64 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-> > index 86cbae63eaf7..5ac049a247e1 100644
-> > --- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-> > +++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-> > @@ -157,6 +157,14 @@
-> >                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> >               };
-> >
-> > +             vreg_l14a_1p8: ldo14 {
-> > +                     regulator-min-microvolt = <1800000>;
-> > +                     regulator-max-microvolt = <1800000>;
-> > +                     regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> > +                     regulator-boot-on;
-> > +                     regulator-always-on;
-> > +             };
-> > +
-> >               vreg_l17a_1p3: ldo17 {
-> >                       regulator-min-microvolt = <1304000>;
-> >                       regulator-max-microvolt = <1304000>;
-> > @@ -191,6 +199,7 @@
-> >                       regulator-min-microvolt = <1200000>;
-> >                       regulator-max-microvolt = <1200000>;
-> >                       regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> > +                     regulator-boot-on;
-> >               };
-> >       };
-> >   };
-> > @@ -200,6 +209,43 @@
-> >       firmware-name = "qcom/sdm845/cdsp.mdt";
-> >   };
-> >
-> > +&dsi0 {
-> > +     status = "okay";
-> > +     vdda-supply = <&vreg_l26a_1p2>;
-> > +
-> > +     #address-cells = <1>;
-> > +     #size-cells = <0>;
-> > +
-> > +     panel@0 {
-> > +             compatible = "tianma,fhd-video";
-> > +             reg = <0>;
-> > +             vddi0-supply = <&vreg_l14a_1p8>;
-> > +             vddpos-supply = <&lab>;
-> > +             vddneg-supply = <&ibb>;
-> > +
-> > +             #address-cells = <1>;
-> > +             #size-cells = <0>;
-> > +
-> > +             reset-gpios = <&tlmm 6 GPIO_ACTIVE_LOW>;
-> > +
-> > +             port {
-> > +                     tianma_nt36672a_in_0: endpoint {
-> > +                             remote-endpoint = <&dsi0_out>;
-> > +                     };
-> > +             };
-> > +     };
-> > +};
-> > +
-> > +&dsi0_out {
-> > +     remote-endpoint = <&tianma_nt36672a_in_0>;
-> > +     data-lanes = <0 1 2 3>;
-> > +};
-> > +
-> > +&dsi0_phy {
-> > +     status = "okay";
-> > +     vdds-supply = <&vreg_l1a_0p875>;
-> > +};
-> > +
-> >   &gcc {
-> >       protected-clocks = <GCC_QSPI_CORE_CLK>,
-> >                          <GCC_QSPI_CORE_CLK_SRC>,
-> > @@ -215,6 +261,24 @@
-> >       };
-> >   };
-> >
-> > +&ibb {
-> > +     regulator-min-microvolt = <4600000>;
-> > +     regulator-max-microvolt = <6000000>;
-> > +};
-> > +
->
-> I think you want to also configure overvoltage and overcurrent
-> protection values for both LAB and IBB, as these regulators may be a bit
-> dangerous if used without.
+It appears that you accidentally dropped the Cc list, adding them back in the
+reply.  Also adding the PTP maintainer, as this clearly needs to be reviewed
+in the context of the PTP subsystem. Please keep Richard and the netdev
+list on Cc in future submissions.
 
-Can you point me to the relevant DT properties please. I didn't find
-any DT properties which set the over voltage/current protection
-properties explicitly in upstream as well as in downstream kernel.
-Plus I also do not see "regulator-min/max-microamp" values set
-downstream, otherwise I'd have used that as well atleast.
+> This driver is developed to be only used by Renesas PTP Clock Manager for
+> Linux (pcm4l) software.
+>
+> This driver supports 1588/PTP releated functionalities that
+> specific to Renesas devices but are not supported by general PHC framework.
+> So pcm4l will use both the existing PHC driver and this driver to complete
+> 1588/PTP support.
 
-Regards,
-Amit Pundir
+Ah, so if this is for a PTP related driver, it should probably be integrated
+into the PTP subsystem rather than being a separate class.
 
-> Besides that, even if it wouldn't be that dangerous, since the
-> protection features are present, it would be nice to configure them
-> properly as in the rare event that something bad happens, you would be
-> able to save the hardware (or at least have a chance to!).
->
-> > +&lab {
-> > +     regulator-min-microvolt = <4600000>;
-> > +     regulator-max-microvolt = <6000000>;
-> > +};
-> > +
->
-> Same here.
->
-> Yours,
-> -- Angelo
->
-> > +&mdss {
-> > +     status = "okay";
-> > +};
-> > +
-> > +&mdss_mdp {
-> > +     status = "okay";
-> > +};
-> > +
-> >   &mss_pil {
-> >       status = "okay";
-> >       firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mdt";
+> > A pure list of register values seems neither particular portable nor intuitive.
+> > How is a user expected to interpret these, and are you sure that any driver
+> > for this class would have the same interpretation at the same register index?
 > >
 >
+> Yes we need a way to dump register values when remote debugging with customers.
+> And all the Renesas SMU has similar register layout
+
+A sysfs interface is a poor choice for this though -- how can you guarantee that
+even future Renesas devices follow the exact same register layout? By
+encoding the current hardware generation into the user interface, you
+would end up having to emulate this on other chips you want to support later.
+
+If it's only for debugging, best leave it out of the public interface, and only
+have it in your own copy of the driver until the bugs are gone, or add a debugfs
+interface.
+
+> > Can you explain the purpose of this restriction? Why is it ok for two threads
+> > to access the same file descriptor, but not two different file descriptors for
+> > the same device?
+> >
+>
+> The mutex is there to provide synchronization to the device access while PHC driver is accessing the device.
+> The atomic count is to make sure only one user space program is using the driver at a time.
+
+Then remove the atomic count, as it clearly doesn't do what you describe
+when you can have multiple threads access the driver concurrently.
+
+> > Each of these needs a device tree binding. It's usually better to name the
+> > compatible strings according to the chips that contain this hardware, such as
+> > "renesas,r8a1234567-rsmucdev" instead of "renesas,rsmu-cdev0".
+> >
+> > Since you don't seem to about the difference between the devices, the driver
+> > can also just bind to one of them (usually the oldest) and then the newer
+> > devices contain the string as a fallback, so you don't have to update the
+> > driver every time another variant gets made.
+> >
+> >
+>
+> Actually the device is not spawned from device tree but from Renesas MFD driver (submitted in a separate thread).
+> The MFD driver will call mfd_add_devices to create the platform devices. I am not sure if I still need to create binding
+> In this case.
+
+If you have an of_device_id table, it needs a binding. It sounds like you
+don't need the of_device_id though.
+
+> > This should probably be part of the .c file, as no other driver needs to
+> > interface with it.
+> >
+>
+> We actually run a unit test on the driver that needs to access this structure.
+> That is why I need to put it in a header
+
+Unit tests are good, but it's better to have them in the kernel.
+Can you add the unit test into the patch then?
+We now have the kunit framework for running unit tests.
+
+> > This tells me that you got the abstraction the wrong way: the common files
+> > should not need to know anything about the specific implementations.
+> >
+> > Instead, these should be in separate modules that call exported functions
+> > from the common code.
+> >
+> >
+>
+> I got what you mean. But so far it only supports small set of functions, which is why
+> I don't feet it is worth the effort to over abstract things.
+
+Then maybe pick one of the two hardware variants and drop the abstraction you
+have. You can then add more features before you add a proper abstraction
+layer and then the second driver.
+
+            Arnd
