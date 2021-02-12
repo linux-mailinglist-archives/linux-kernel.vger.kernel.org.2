@@ -2,71 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CF2319D37
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F42319D3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhBLLTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:19:00 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:59558 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhBLLS5 (ORCPT
+        id S230158AbhBLLTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:19:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229718AbhBLLTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:18:57 -0500
-Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11CBIE5c098656;
-        Fri, 12 Feb 2021 20:18:14 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
- Fri, 12 Feb 2021 20:18:14 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11CBIEE2098653
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 12 Feb 2021 20:18:14 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: possible deadlock in start_this_handle (2)
-To:     Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
-References: <20210211104947.GL19070@quack2.suse.cz>
- <CACT4Y+b5gSAAtX3DUf-H3aRxbir44MTO6BCC3XYvN=6DniT+jw@mail.gmail.com>
- <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
- <20210211121020.GO19070@quack2.suse.cz> <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
- <20210211125717.GH308988@casper.infradead.org>
- <YCUr99//z8hJmnDH@dhcp22.suse.cz>
- <20210211132533.GI308988@casper.infradead.org>
- <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
- <20210211142630.GK308988@casper.infradead.org>
- <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
-Date:   Fri, 12 Feb 2021 20:18:11 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 12 Feb 2021 06:19:25 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4D9C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 03:18:45 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id o7so6027905pgl.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 03:18:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DiH+0nsh0TFSeG09Dd5i67FW61zv+WlXR+4na8usw8M=;
+        b=dstpR3OZccsYNKmvZ/hTIXfK8fOejY/E98zi84c90kxjsQ7EBLijoTbCmTkCmuIBbF
+         X+GGSytGTFlSjU9UuYEaOx6sj8/sNka6gT7pjs0ik1gb1G4WQrFnc2cwFTLlGm4knwUf
+         iCowTv+Qqv7XL1zF9ewVIiSGF/HehKlmYlUbn69m7gMmfYqD5lj8KfXZY4msYJ4YA9jl
+         cP1/8j0xXtGmG1/siNeOUXeW8pSi3cZ6cFzrdv7/4XVBaqUpKs/VVx86hckfpPMcW6Q/
+         q78C7ZQNUYupCAIzhGcEF9cKSVFEMlruom/bQNjKl40UrAaCN9OToOg80gfWrc0k/GvU
+         c1eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DiH+0nsh0TFSeG09Dd5i67FW61zv+WlXR+4na8usw8M=;
+        b=qdMohAMiUFhslJb3HUEiUgXWAIylDajsgAJY2OqQgRnTI9Dui/omu8VZYhxd/mpyd/
+         3l0ekPhhkDDKU8O5ykKeWjmOyH21uIxle79r4RgJCdgi4c2fvCzllKxDY2E1+mcbnoMZ
+         NWw1QYrvTxgNagllEw4eAuR5OvDXT9/Qm5lM9DT+lBg4wW9xtjzkCPxA4Zgs8EH7mG21
+         3mol2DpxlMu/HFz9PCrs8VAbsyiklosxkgBwOLSTiXGeXnDDCDSHZqVQMIuJjyPR/yl7
+         6tGZsE3bvTo3hfijGWBuOXcQGoJoa0pyK5fNa+hsRB/JFNmdG+5Zg7SWcQad0w7WPd+z
+         Fw2g==
+X-Gm-Message-State: AOAM531ohztvnvPQCfPR0NGq8iByvpKGpuDe3OL219F9MC2ni1iJD9KY
+        MXSa0N7MR3Cbmzy4cYUQMybrnQ==
+X-Google-Smtp-Source: ABdhPJxRLdhA24PIbVGs7N1vm0OoG/+dEpN8+1SGQg64ZwDg/XUKglrx192K9Y5V03Z2d7uBWUdIKA==
+X-Received: by 2002:a62:1bc9:0:b029:1e6:3492:2d88 with SMTP id b192-20020a621bc90000b02901e634922d88mr2540051pfb.72.1613128724860;
+        Fri, 12 Feb 2021 03:18:44 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id v31sm9092762pgl.76.2021.02.12.03.18.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 Feb 2021 03:18:44 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH V8 0/4] dt: Add fdtoverlay rule and statically build unittest
+Date:   Fri, 12 Feb 2021 16:48:34 +0530
+Message-Id: <cover.1613127681.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-In-Reply-To: <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/02/12 1:41, Michal Hocko wrote:
-> But I suspect we have drifted away from the original issue. I thought
-> that a simple check would help us narrow down this particular case and
-> somebody messing up from the IRQ context didn't sound like a completely
-> off.
-> 
+Hi,
 
- From my experience at https://lkml.kernel.org/r/201409192053.IHJ35462.JLOMOSOFFVtQFH@I-love.SAKURA.ne.jp ,
-I think we can replace direct PF_* manipulation with macros which do not receive "struct task_struct *" argument.
-Since TASK_PFA_TEST()/TASK_PFA_SET()/TASK_PFA_CLEAR() are for manipulating PFA_* flags on a remote thread, we can
-define similar ones for manipulating PF_* flags on current thread. Then, auditing dangerous users becomes easier.
+This patchset adds a generic rule for applying overlays using fdtoverlay
+tool and then updates unittests to get built statically using the same.
+
+V7->V8:
+- Patch 1 is new.
+- Platforms need to use dtb-y += foo.dtb instead of overlay-y +=
+  foo.dtb.
+- Use multi_depend instead of .SECONDEXPANSION.
+- Use dtb-y for unittest instead of overlay-y.
+- Rename the commented dtb filess in unittest Makefile as .dtbo.
+- Improved Makefile code (I am learning a lot every day :)
+
+V6->V7:
+- Dropped the first 4 patches, already merged.
+- Patch 1/3 is new, suggested by Rob and slightly modified by me.
+- Adapt Patch 3/3 to the new rule and name the overlay dtbs as .dtbo.
+
+--
+Viresh
+
+Rob Herring (1):
+  kbuild: Add generic rule to apply fdtoverlay
+
+Viresh Kumar (3):
+  kbuild: Simplify builds with CONFIG_OF_ALL_DTBS
+  of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
+  of: unittest: Statically apply overlays using fdtoverlay
+
+ drivers/of/unittest-data/Makefile             | 50 ++++++++++
+ drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
+ drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
+ drivers/of/unittest-data/static_base_1.dts    |  4 +
+ drivers/of/unittest-data/static_base_2.dts    |  4 +
+ drivers/of/unittest-data/testcases.dts        | 18 ++--
+ .../of/unittest-data/testcases_common.dtsi    | 19 ++++
+ .../of/unittest-data/tests-interrupts.dtsi    |  7 --
+ scripts/Makefile.lib                          | 29 +++++-
+ 9 files changed, 200 insertions(+), 112 deletions(-)
+ create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+ create mode 100644 drivers/of/unittest-data/static_base_1.dts
+ create mode 100644 drivers/of/unittest-data/static_base_2.dts
+ create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+
+-- 
+2.25.0.rc1.19.g042ed3e048af
+
