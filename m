@@ -2,81 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7E3319ABC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CB7319ABD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbhBLHnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 02:43:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhBLHmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 02:42:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC8FC64DE2;
-        Fri, 12 Feb 2021 07:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613115722;
-        bh=hyrGObWesCGH0zWreiF+hEnrketEdVfxj5+Ju1D1YgM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ak8q+OS0fQs46vQe8C5uI0VZZWNPAmJ7l1ehMDUnEfedwSVWI4Ae8M24xxH65iA47
-         ffDGY3TuhMfU6ELAcwjHw/IMgu81YXKw/1jjIFctTiNuBs/hDZeobvv6lbhqtVmw0D
-         uK2+oCKEv8sg6Ot+nOYIduIZI8YvKxnM8ZtwrVn4=
-Date:   Fri, 12 Feb 2021 08:42:00 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4.19 00/24] 4.19.176-rc1 review
-Message-ID: <YCYxSEwzNGfMoLbb@kroah.com>
-References: <20210211150147.743660073@linuxfoundation.org>
- <CA+G9fYugE5n1qsudwP7XntBvvNcEquxQkMEskWvxJAZdZX5Fng@mail.gmail.com>
+        id S230054AbhBLHoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 02:44:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhBLHn0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 02:43:26 -0500
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8A1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 23:42:42 -0800 (PST)
+Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 9209B98B165;
+        Fri, 12 Feb 2021 08:42:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1613115754;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bMTrgXz+EclRf8Nzne07lJpNQPGCITvy7cG07cDm6qc=;
+        b=BXerbnRxtvZrdlHUNJn4gj2zuwSw1hEzSudfnsN6iGhsXVE/RMBpeVOIvrGmq5ZWGpvRwZ
+        k36df/+K8+/CyJ5omMcHyjNep3pP2/J59guJ5ckyfeg3uniMjgh9M7KlOD51ibdor8B24/
+        QmVrHu872QxzaJF6xeTwgjUW298Kmas=
+Date:   Fri, 12 Feb 2021 08:42:34 +0100
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        "sjenning@linux.vnet.ibm.com" <sjenning@linux.vnet.ibm.com>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: kernel BUG at mm/zswap.c:1275! (rc6 - git 61556703b610)
+Message-ID: <20210212074234.vumx4odistyhbu4m@spock.localdomain>
+References: <CABXGCsNEUpv9x93UeCa-wOjE0LgUdTCY2FTABJeFL=gGq4SX_g@mail.gmail.com>
+ <2538f4c21dd2405aac2abb776047a0fa@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYugE5n1qsudwP7XntBvvNcEquxQkMEskWvxJAZdZX5Fng@mail.gmail.com>
+In-Reply-To: <2538f4c21dd2405aac2abb776047a0fa@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 10:16:11AM +0530, Naresh Kamboju wrote:
-> On Thu, 11 Feb 2021 at 20:36, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 4.19.176 release.
-> > There are 24 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Sat, 13 Feb 2021 15:01:39 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.176-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+Hello.
+
+On Thu, Feb 11, 2021 at 10:43:18AM +0000, Song Bao Hua (Barry Song) wrote:
+> Are you using zsmalloc? There is a known bug on the combination
+> of zsmalloc and zswap, fixed by patches of tiantao:
 > 
-> The following lockdep noticed on the arm beaglebone x15 device.
-> I have not bisected this problem yet.
-> Suspecting this patch,
+> mm: set the sleep_mapped to true for zbud and z3fold
+> mm/zswap: fix variable 'entry' is uninitialized when used
+> mm/zswap: fix potential memory leak
+> mm/zswap: add the flag can_sleep_mapped
 > 
-> > David Collins <collinsd@codeaurora.org>
-> >     regulator: core: avoid regulator_resolve_supply() race condition
+> at Linux-next:
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?qt=author&q=tiantao6%40hisilicon.com
 
-Sasha queued up a fix for this, let me push out a -rc2 with that in
-there to see if this resolves the issue.
+Is this a future stable-5.11 material (and/or, potentially, older stable branches
+as well)?
 
-thanks
-
-greg k-h
+-- 
+  Oleksandr Natalenko (post-factum)
