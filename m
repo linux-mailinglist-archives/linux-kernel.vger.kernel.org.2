@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72A731A43F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE47331A441
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbhBLSIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 13:08:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56458 "EHLO
+        id S231815AbhBLSIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 13:08:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbhBLSH6 (ORCPT
+        with ESMTP id S231649AbhBLSI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 13:07:58 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0A5C061574;
-        Fri, 12 Feb 2021 10:07:18 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id m6so9044pfk.1;
-        Fri, 12 Feb 2021 10:07:18 -0800 (PST)
+        Fri, 12 Feb 2021 13:08:29 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2475BC061756;
+        Fri, 12 Feb 2021 10:07:40 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id l23so9180835otn.10;
+        Fri, 12 Feb 2021 10:07:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jzL26zkMdAnOD2IACVtEn2EhF+H59r0z5RTwLn52Y3M=;
-        b=GGYIq9OqvYpdw/0qjHnAVD0LJTXFfZcF0KciroJWpaauQnVLdTBpp/glr+Vy5rULBz
-         9VQOkY+RSQu4SXh0pD54mneZPEI8+KptrYQxXK2wDgIv7dRYwDkvBbXidHT29ddo2i9u
-         QMWmiWE3Clmpx/3DFGzuaaDPXA8xVqFM8kqIKuoDLbSdppwy39dQhLw6H33A/7tjNqRf
-         0rrqJegRUUHMsrSQu0qKnuVbRY376nmZlbdGeyrM4WjUol11Z91O6oXU8BJKwaOIkEeT
-         IhbGpgQV/Ev8g2EZ5l6XtPPUyZU1vOrrxCilIU3WEk6hoi9TFj5Gs0+sBMLGJyD7GuOM
-         9pEg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/6lubjhkqAIEf66nHQ+jIqqmUQSsup3QTHClxceqdFQ=;
+        b=V8p3UNnXQIo6v5Py9Ep+xKjjm91Sw0tdnbSaCiJioYLd/fEbAdo1ULMcTtnnAPAtgG
+         qEePifNuHwk85qXizmtfk0TIGMWaXPWiwFltT0hZ8XASlvTWO08kY0SlPlbyupw202xH
+         fJYzbVDBMgoqWBLvh+8m6am5ZsrfkqqSz2ZNyOlzdeN7Ao5qWswGTjfiBzGkocwRmTn9
+         A5jOe8UBFPzxDJO8lnZXiWx+XHCNyv21RZpDA4uJROUr65hxgzv4pAAQ8tH5j1ZUcDSL
+         eoP10YcEMjMjic8zK98IYjONID1qkuD5aCrDzgF745krWGnJj2NlwkHsT7pSNx8zc26/
+         bn7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jzL26zkMdAnOD2IACVtEn2EhF+H59r0z5RTwLn52Y3M=;
-        b=pyndGLkzRYUFjGWiYmcO1t/RthGX9uadM0M8VBYQue9aPDVGPoz3oFRA9j+8/ECG76
-         nFiC2sd022yPVMdgwyYMJcUdwmhn3Fp7o0UvLWInNNJqZvdekew2z/cgG/Sc8b7Mc6Dk
-         JK8rXtA4ErB4Z8osaCwk4/cGkAdtTmrlNmuA2oo4RjhSOj61kt6ZmmmNGulFApvOwQMz
-         iesEkidxiROPr6JJtDKycaICqiwh2ghjnME+C6OB5Fe2nd6MYTvhPiYDeRfzzcaIOt80
-         o0hTQuCT/4+KghiqUb7zQTlzI+RwSDQgccQNsChQsClE/qxw0MKN42ibdnaNyAUZSmk1
-         Y8pw==
-X-Gm-Message-State: AOAM532RJMPw2Eio/Ol0byTBHkd5SXMC6NWVFn9ITHNPJZv3zpieV8XN
-        kjYv3nRzZn5A9Cx9uWeD46EuKv2tHT8=
-X-Google-Smtp-Source: ABdhPJwEtkuYl4IEjrY3K94aY/JomFbslkQgXIBduPK1tbo89twwiU07e/yZ3gbwrmhbKdxwSu/FAw==
-X-Received: by 2002:a63:4405:: with SMTP id r5mr4272320pga.168.1613153237967;
-        Fri, 12 Feb 2021 10:07:17 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id e21sm9422315pgv.74.2021.02.12.10.07.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 10:07:17 -0800 (PST)
-Subject: Re: [PATCH v5 net-next 03/10] net: bridge: don't print in
- br_switchdev_set_port_flag
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-References: <20210212151600.3357121-1-olteanv@gmail.com>
- <20210212151600.3357121-4-olteanv@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6097810e-9b74-df81-ccc4-3a4b47b94b67@gmail.com>
-Date:   Fri, 12 Feb 2021 10:07:14 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/6lubjhkqAIEf66nHQ+jIqqmUQSsup3QTHClxceqdFQ=;
+        b=d6VyiUul9sThdgWSzoM7Cn7NH95PeaHBXuf1J0E3wUj8uTnnR+LMV9cPcI1VsVAYGM
+         2hhOsoialar/0FEnuPwxszWPcZ5fXvAILRnBVDJv6NSpytWMsurhbvf2ZQo0riNRvDTL
+         A8BbTNMJafYPg2w+Cus/TJ5Z9mDPsHjJcElm1l+p141pLzmG3LRznklMXxwsPh4d8En2
+         ZNol5TPEmcyOZRtCz0oEvsr3Ax7rag/g6sUTYqkg9ibjTBQTH/p0OhwiKegDBBI6Bgcr
+         ETqEkcEl1bKMQJPhKSIagkWTm2yE9R0NTYqUSJkE0YCLUV9HAIWDdWX5ujhUCR/5dg1y
+         SHOg==
+X-Gm-Message-State: AOAM532mhRTGd+chnOAfnV19Wdz+zJY+2OG4XvRCZrkmbU5s6ZIa9JMT
+        00tCO1pfnsYX2tFbmigOLzbgOBEtGkE=
+X-Google-Smtp-Source: ABdhPJxWBzCZZ2B+p7DmbvIwTZHOF0ayPrqc0r+6HDEf1NttMQ9oi+oMNseTKuJQTET/Fn0WOCnZ0w==
+X-Received: by 2002:a05:6830:1b72:: with SMTP id d18mr2901365ote.228.1613153259530;
+        Fri, 12 Feb 2021 10:07:39 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b9sm941165otl.14.2021.02.12.10.07.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 12 Feb 2021 10:07:38 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 12 Feb 2021 10:07:37 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/27] 4.19.176-rc2 review
+Message-ID: <20210212180737.GA243679@roeck-us.net>
+References: <20210212074240.963766197@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210212151600.3357121-4-olteanv@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212074240.963766197@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/12/2021 7:15 AM, Vladimir Oltean wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Fri, Feb 12, 2021 at 08:55:04AM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.176 release.
+> There are 27 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> For the netlink interface, propagate errors through extack rather than
-> simply printing them to the console. For the sysfs interface, we still
-> print to the console, but at least that's one layer higher than in
-> switchdev, which also allows us to silently ignore the offloading of
-> flags if that is ever needed in the future.
+> Responses should be made by Sun, 14 Feb 2021 07:42:29 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 418 pass: 418 fail: 0
 
-I suppose the slight "loss" of information on which port failed the
-operation is okay since it was implied by either the path (sysfs) or the
-bridge command.
--- 
-Florian
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
