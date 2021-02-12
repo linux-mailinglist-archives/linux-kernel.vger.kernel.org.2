@@ -2,89 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F043198D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 04:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE51E3198DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 04:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhBLDdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 22:33:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
+        id S229575AbhBLDgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 22:36:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhBLDdo (ORCPT
+        with ESMTP id S229499AbhBLDgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 22:33:44 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8443C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 19:33:03 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id u11so4404924plg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 19:33:03 -0800 (PST)
+        Thu, 11 Feb 2021 22:36:17 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647D0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 19:35:37 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id z7so4419453plk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 19:35:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+k2EVCWavlGQSSplECmMOLFV14dV8eLZdDl9Lm/0vCU=;
-        b=dC5i+gWofwtMMN4P1igX9soRn8hQ5Wbvgq3ing4Gu8mBc+DUFbJUCypx0CdiiPHALc
-         vXxTXvKUbY2c+mH0wDwcF2MfLKeaLj9ehhxw6j5xml32aDG7bDd/ylmOzjSrIYUs3W4L
-         JEIG0DeVTw2rRBB9uwX52eXtx6CE598bu8aRJ8y5YqG5M7yK/TfcNIaWsQWJW5L68Gl/
-         duwKm8FJvNGDnw6DaL0QA2ScS8LqL/GUq4f/rql4v9GliGJkkyGEFvNOVumTfFY+UkKC
-         8nRpz5W6HRzFM+2OIx2DXSMaV9UbkoeOK4dxeUjP/vlIpXsAPkzzD54VUK0mA3v2a60w
-         mUkA==
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FU6M+H964ngY0zpfpbcjRSHTk9tl8Qf14a9FzoajTy0=;
+        b=YAgCHymoFMiybaEx8M86wrnBJWK+FetX/KrWwPlWv2jAsO4ynRIco23kUFw0tIeaI+
+         VvucPeKM63bfOzFDc71Svu3V0yF1oh4USkG1gbu7FkxtDhDNB4ELvLPvD21JGIl4FvHI
+         rz9t920eozmBG0kWsot3K0MlzNxSZzfXvNrFEzkmZrNMYUFbdv026xSbvu2uFBq1r6k4
+         Cg8dkfqjZHUYxt/zVdOGre5S2DAn+qCL6Dlx/qUfBEZS9nekQGCSij2UcO0UkjpAa+Fv
+         0TLysYr0aezQ9niOkvJbNVinV2m00KOcxth5K33YMt6J2h+eV9ChTuYjzJ7XA/1Pgmj3
+         dJZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+k2EVCWavlGQSSplECmMOLFV14dV8eLZdDl9Lm/0vCU=;
-        b=hpLLFi1Ak4EF8vz2003sHZDGFHkS1GKBBazQRQIRMaBKQU4GAEktT0wMPZGGtumir7
-         Ly7TGAj5Bhq4SfkL/EPV3A0p0mCdRZNE8JwR7Mh9ckCYbgjlGdGSL9x1k+A07aN432+V
-         NLWQT9xhoLJwJyZdv2gqmND0v/7jEEBT92TapT7eLJOP+zFUUL+doDtHUfGwZ6goG8AS
-         X14UnZKEeYD8kc1PNA3x7JngpguwJAjQiXcC0S/qCC4SzZJnwVFgtdWmGTV2NSLD6YPy
-         78jQpTK7ZbcJG6e+5wz/9Z1n0oFKb7E6cREKt7EtF207ghg3vX94Vj/msKFNeJX7BklJ
-         9dGg==
-X-Gm-Message-State: AOAM5321OD7zFGp1lryS476eaURLUFttU0JCbXAs+xPKC3O4o+6yWvxO
-        2zJQTIX6ROjiyfyxZ2l+yK2OFbi173op+Q==
-X-Google-Smtp-Source: ABdhPJyCo1ysklJEzL+xTQk3OXzvJHYJ/bPrpeUbIpxVp0iGJdGssitiBCeQRT6IMgK8AQiVLwaTVA==
-X-Received: by 2002:a17:902:6b45:b029:e0:7a3:a8c with SMTP id g5-20020a1709026b45b02900e007a30a8cmr1023503plt.1.1613100783450;
-        Thu, 11 Feb 2021 19:33:03 -0800 (PST)
-Received: from localhost.localdomain ([116.75.214.250])
-        by smtp.gmail.com with ESMTPSA id t21sm7726215pfc.92.2021.02.11.19.32.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FU6M+H964ngY0zpfpbcjRSHTk9tl8Qf14a9FzoajTy0=;
+        b=nU6o1/dSNBE55LBsgO6zH1fDa4x6b27EhqApIGI7YU52FIeZow2MEQRfUmkFBwM1Pi
+         zTFUjQkksxw5MIE0yEnLWkcXfuj+lIYXJbfFR/lO+i/DxGYmKJtG+SHJFvkCt+eU5zv9
+         O2ujT7Gdk9kcuj5Gzmqt861sFBjNUzCaD3et9XMfaoaCoeYReJJoymQUWuwnRp/p86Ow
+         zF/Fy4hIo8owHLuoPU/sENq6vZExIs6cwa8E6vM46i9wXya67hgXRgVk/wtizju7WQ33
+         NEOleQGhmX2t5wfOJOD56Egii53Yxh0GCK8nwIbk1PKHPrPNJ3OMEWDs1sVueclXouXx
+         iMIg==
+X-Gm-Message-State: AOAM532HMIXznNNBMm8j5grnWv8K3IY6alb3gJmDqyzypxr09Cb9L5fe
+        Mn1t1WLz4TwJKDrx34eGvySHBA==
+X-Google-Smtp-Source: ABdhPJxnDOxUrhhX4wg2Yab8769hfK9YKrifY98MDT9GV4jvBb6tiEkA3IOeIO92a1q6nQ5OkszSvA==
+X-Received: by 2002:a17:90a:da02:: with SMTP id e2mr880989pjv.173.1613100936894;
+        Thu, 11 Feb 2021 19:35:36 -0800 (PST)
+Received: from x1 ([2601:1c0:4701:ae70:3a7f:bbfb:1664:2a63])
+        by smtp.gmail.com with ESMTPSA id y16sm6964889pgg.20.2021.02.11.19.35.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 19:33:03 -0800 (PST)
-From:   Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
-To:     gregkh@linuxfoundation.org, lee.jones@linaro.org,
-        johannes@sipsolutions.net, kuba@kernel.org, arnd@arndb.de,
-        mail@anirudhrb.com
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: wimax: Fix some coding style problem
-Date:   Fri, 12 Feb 2021 09:02:56 +0530
-Message-Id: <20210212033256.2116-1-hemanshagnihotri27@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Thu, 11 Feb 2021 19:35:35 -0800 (PST)
+Date:   Thu, 11 Feb 2021 19:35:33 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Joe Perches <joe@perches.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Subject: Re: [PATCH v4 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
+Message-ID: <20210212033533.GA347396@x1>
+References: <20210210222851.232374-1-drew@beagleboard.org>
+ <20210210222851.232374-3-drew@beagleboard.org>
+ <20210211071153.GJ20820@kadam>
+ <7b4105ca8671a2962910deb5418a934bf07d1458.camel@perches.com>
+ <20210211073938.GL20820@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211073938.GL20820@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes checkpatch error "open brace '{' following struct go on
-the same line" in file drivers/staging/wimax/i2400m/rx.c .
+On Thu, Feb 11, 2021 at 10:39:38AM +0300, Dan Carpenter wrote:
+> On Wed, Feb 10, 2021 at 11:24:23PM -0800, Joe Perches wrote:
+> > On Thu, 2021-02-11 at 10:11 +0300, Dan Carpenter wrote:
+> > > On Wed, Feb 10, 2021 at 02:28:54PM -0800, Drew Fustini wrote:
+> > > > +	ret = strncpy_from_user(buf, user_buf, PINMUX_MAX_NAME * 2);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(pctldev->dev, "failed to copy buffer from userspace");
+> > > > +		goto free_gname;
+> > > > +	}
+> > > > +	buf[len-1] = '\0';
+> > > > +
+> > > > +	ret = sscanf(buf, "%s %s", fname, gname);
+> > > > +	if (ret != 2) {
+> > > > +		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
+> > > > +		goto free_gname;
+> > > 
+> > > We need a "ret = -EINVAL;" before the goto.  sscanf doesn't return error
+> > > codes.  Normally we would write it like so:
+> > > 
+> > > 	if (sscanf(buf, "%s %s", fname, gname) != 2) {
+> > > 		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
+> > > 		ret = -EINVAL;
+> > > 		goto free_gname;
+> > > 	}
+> > > 
+> > > I'm going to write a Smatch check for this today.
+> > 
+> > It's a pretty frequently used style:
+> > 
+> > $ git grep -P '\w+\s*=\s+sscanf\b' | wc -l
+> > 327
+> 
+> Yeah.  That's true.  I looked through a couple of those and they were
+> fine.  (Sample size 2)  But the other format is more common.
+> 
+> $ git grep sscanf | grep = | wc -l
+> 803
+> 
+> I have written a Smatch check to complain whenever we propogate the
+> return value from sscanf.  I'll let you know tomorrow how that goes.
+> 
+> I should write another check which says "On this error path, we know
+> sscanf was not equal to the value we wanted but we are still returning
+> success".
+> 
+> regards,
+> dan carpenter
+> 
 
-Signed-off-by: Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
----
- drivers/staging/wimax/i2400m/rx.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Thank you for comments regarding sscanf().  And also thank you for the
+LF mentorship session on smatch this morning.  It helped me understand
+it much better.
 
-diff --git a/drivers/staging/wimax/i2400m/rx.c b/drivers/staging/wimax/i2400m/rx.c
-index 5b3a85035f6a..702a1e2fabcd 100644
---- a/drivers/staging/wimax/i2400m/rx.c
-+++ b/drivers/staging/wimax/i2400m/rx.c
-@@ -485,8 +485,7 @@ struct i2400m_roq_data {
-  * store the sequence number (sn) and the cs (packet type) coming from
-  * the RX payload header from the device.
-  */
--struct i2400m_roq
--{
-+struct i2400m_roq {
- 	unsigned ws;
- 	struct sk_buff_head queue;
- 	struct i2400m_roq_log *log;
--- 
-2.30.0
+Based on further comments, it seems there are better ways for me to pull
+the strings out of the write buffer, but I will keep this in mind if I
+need to use sscanf() in the future.
 
+-Drew
