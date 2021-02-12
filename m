@@ -2,323 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66323319FDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D93AF319FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhBLN27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:28:59 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2560 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbhBLN2z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 08:28:55 -0500
-Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DcZ1n46DXz67g3H;
-        Fri, 12 Feb 2021 21:23:09 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 12 Feb 2021 14:28:09 +0100
-Received: from localhost (10.47.28.230) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 12 Feb
- 2021 13:28:08 +0000
-Date:   Fri, 12 Feb 2021 13:27:06 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Jon Masters" <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v2 2/8] cxl/mem: Find device capabilities
-Message-ID: <20210212132706.00006edc@Huawei.com>
-In-Reply-To: <20210211155529.agul56lcb33cta5s@intel.com>
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
-        <20210210000259.635748-3-ben.widawsky@intel.com>
-        <20210210133252.000047af@Huawei.com>
-        <20210210150759.00005684@Huawei.com>
-        <20210210165557.7fuqbyr7e7zjoxaa@intel.com>
-        <20210210181605.ecbl3m5ep4rszpqs@intel.com>
-        <20210211095548.00000da7@Huawei.com>
-        <20210211155529.agul56lcb33cta5s@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S231362AbhBLN3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:29:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230249AbhBLN24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 08:28:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEB7D64E35;
+        Fri, 12 Feb 2021 13:28:10 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 13:28:08 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>, sonicadvance1@gmail.com,
+        amanieu@gmail.com, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        David Brazdil <dbrazdil@google.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gavin Shan <gshan@redhat.com>, Mike Rapoport <rppt@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jason Yan <yanaijie@huawei.com>, Andrey Ignatov <rdna@fb.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Julien Grall <julien.grall@arm.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND RFC PATCH v2] arm64: Exposes support for 32-bit syscalls
+Message-ID: <20210212132807.GC7718@arm.com>
+References: <20210211202208.31555-1-Sonicadvance1@gmail.com>
+ <58b03e17-3729-99ea-8691-0d735a53b9bc@arm.com>
+ <20210212123515.GC6057@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.28.230]
-X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212123515.GC6057@sirena.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Feb 2021 07:55:29 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
-
-> On 21-02-11 09:55:48, Jonathan Cameron wrote:
-> > On Wed, 10 Feb 2021 10:16:05 -0800
-> > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> >   
-> > > On 21-02-10 08:55:57, Ben Widawsky wrote:  
-> > > > On 21-02-10 15:07:59, Jonathan Cameron wrote:    
-> > > > > On Wed, 10 Feb 2021 13:32:52 +0000
-> > > > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > > > >     
-> > > > > > On Tue, 9 Feb 2021 16:02:53 -0800
-> > > > > > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > > > > >     
-> > > > > > > Provide enough functionality to utilize the mailbox of a memory device.
-> > > > > > > The mailbox is used to interact with the firmware running on the memory
-> > > > > > > device. The flow is proven with one implemented command, "identify".
-> > > > > > > Because the class code has already told the driver this is a memory
-> > > > > > > device and the identify command is mandatory.
-> > > > > > > 
-> > > > > > > CXL devices contain an array of capabilities that describe the
-> > > > > > > interactions software can have with the device or firmware running on
-> > > > > > > the device. A CXL compliant device must implement the device status and
-> > > > > > > the mailbox capability. Additionally, a CXL compliant memory device must
-> > > > > > > implement the memory device capability. Each of the capabilities can
-> > > > > > > [will] provide an offset within the MMIO region for interacting with the
-> > > > > > > CXL device.
-> > > > > > > 
-> > > > > > > The capabilities tell the driver how to find and map the register space
-> > > > > > > for CXL Memory Devices. The registers are required to utilize the CXL
-> > > > > > > spec defined mailbox interface. The spec outlines two mailboxes, primary
-> > > > > > > and secondary. The secondary mailbox is earmarked for system firmware,
-> > > > > > > and not handled in this driver.
-> > > > > > > 
-> > > > > > > Primary mailboxes are capable of generating an interrupt when submitting
-> > > > > > > a background command. That implementation is saved for a later time.
-> > > > > > > 
-> > > > > > > Link: https://www.computeexpresslink.org/download-the-specification
-> > > > > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > > > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>      
-> > > > > > 
-> > > > > > Hi Ben,
-> > > > > > 
-> > > > > >     
-> > > > > > > +/**
-> > > > > > > + * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
-> > > > > > > + * @cxlm: The CXL memory device to communicate with.
-> > > > > > > + * @mbox_cmd: Command to send to the memory device.
-> > > > > > > + *
-> > > > > > > + * Context: Any context. Expects mbox_lock to be held.
-> > > > > > > + * Return: -ETIMEDOUT if timeout occurred waiting for completion. 0 on success.
-> > > > > > > + *         Caller should check the return code in @mbox_cmd to make sure it
-> > > > > > > + *         succeeded.      
-> > > > > > 
-> > > > > > cxl_xfer_log() doesn't check mbox_cmd->return_code and for my test it currently
-> > > > > > enters an infinite loop as a result.    
-> > > > 
-> > > > I meant to fix that.
-> > > >     
-> > > > > > 
-> > > > > > I haven't checked other paths, but to my mind it is not a good idea to require
-> > > > > > two levels of error checking - the example here proves how easy it is to forget
-> > > > > > one.    
-> > > > 
-> > > > Demonstrably, you're correct. I think it would be good to have a kernel only
-> > > > mbox command that does the error checking though. Let me type something up and
-> > > > see how it looks.    
-> > > 
-> > > Hi Jonathan. What do you think of this? The bit I'm on the fence about is if I
-> > > should validate output size too. I like the simplicity as it is, but it requires
-> > > every caller to possibly check output size, which is kind of the same problem
-> > > you're originally pointing out.  
-> > 
-> > The simplicity is good and this is pretty much what I expected you would end up with
-> > (always reassuring)
-> > 
-> > For the output, perhaps just add another parameter to the wrapper for minimum
-> > output length expected?
-> > 
-> > Now you mention the length question.  It does rather feel like there should also
-> > be some protection on memcpy_fromio() copying too much data if the hardware
-> > happens to return an unexpectedly long length.  Should never happen, but
-> > the hardening is worth adding anyway given it's easy to do.
-> > 
-> > Jonathan  
+On Fri, Feb 12, 2021 at 12:35:15PM +0000, Mark Brown wrote:
+> On Fri, Feb 12, 2021 at 11:30:41AM +0000, Steven Price wrote:
+> > On 11/02/2021 20:21, sonicadvance1@gmail.com wrote:
+> > > Why do we need compatibility layers?
+> > > There are ARMv8 CPUs that only support AArch64 but still need to run
+> > > AArch32 applications.
+> > > Cortex-A34/R82 and other cores are prime examples of this.
+> > > Additionally if a user is needing to run legacy 32-bit x86 software, it
+> > > needs the same compatibility layer.
 > 
-> Some background because I forget what I've said previously... It's unfortunate
-> that the spec maxes at 1M mailbox size but has enough bits in the length field
-> to support 2M-1. I've made some requests to have this fixed, so maybe 3.0 won't
-> be awkward like this.
-
-Agreed spec should be tighter here, but I'd argue over 1M indicates buggy hardware.
-
+> > Unless I'm much mistaken QEMU's user mode already does this - admittedly I
+> > don't tend to run "legacy 32-bit x86 software".
 > 
-> I think it makes sense to do as you suggested. One question though, do you have
-> an opinion on we return to the caller as the output payload size, do we cap it
-> at 1M also, or are we honest?
-> 
-> -       if (out_len && mbox_cmd->payload_out)
-> -               memcpy_fromio(mbox_cmd->payload_out, payload, out_len);
-> +       if (out_len && mbox_cmd->payload_out) {
-> +               size_t n = min_t(size_t, cxlm->payload_size, out_len);
-> +               memcpy_fromio(mbox_cmd->payload_out, payload, n);
-> +       }
+> Yes, this has been deployed on Debian for a long time - you can install
+> any combination of Debian architectures on a single system and it will
+> use qemu to run binaries that can't be supported natively by the
+> hardware.
 
-Ah, I read emails in wrong order.  What you have is what I expected and got
-confused about in your other email.
+The only downside I think is that for some syscalls it's not that
+efficient. Those using struct iovec come to mind, qemu probably
+duplicates the user structures, having to copy them in both directions
+(well, the kernel compat layer does something similar).
 
-> 
-> So...
-> mbox_cmd->size_out = out_len;
-> mbox_cmd->size_out = n;
+Anyway, I'm not in favour of this patch. Those binary translation tools
+need to explore the user-only options first and come up with some perf
+numbers to justify the proposal.
 
-Good question.  My gut says the second one.
-Maybe it's worth a warning print to let us know something
-unexpected happened.
-
-> 
-> 
-> > 
-> >   
-> > > 
-> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > index 55c5f5a6023f..ad7b2077ab28 100644
-> > > --- a/drivers/cxl/mem.c
-> > > +++ b/drivers/cxl/mem.c
-> > > @@ -284,7 +284,7 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
-> > >  }
-> > >  
-> > >  /**
-> > > - * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
-> > > + * __cxl_mem_mbox_send_cmd() - Execute a mailbox command
-> > >   * @cxlm: The CXL memory device to communicate with.
-> > >   * @mbox_cmd: Command to send to the memory device.
-> > >   *
-> > > @@ -296,7 +296,8 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
-> > >   * This is a generic form of the CXL mailbox send command, thus the only I/O
-> > >   * operations used are cxl_read_mbox_reg(). Memory devices, and perhaps other
-> > >   * types of CXL devices may have further information available upon error
-> > > - * conditions.
-> > > + * conditions. Driver facilities wishing to send mailbox commands should use the
-> > > + * wrapper command.
-> > >   *
-> > >   * The CXL spec allows for up to two mailboxes. The intention is for the primary
-> > >   * mailbox to be OS controlled and the secondary mailbox to be used by system
-> > > @@ -304,8 +305,8 @@ static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
-> > >   * not need to coordinate with each other. The driver only uses the primary
-> > >   * mailbox.
-> > >   */
-> > > -static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
-> > > -				 struct mbox_cmd *mbox_cmd)
-> > > +static int __cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
-> > > +				   struct mbox_cmd *mbox_cmd)
-> > >  {
-> > >  	void __iomem *payload = cxlm->mbox_regs + CXLDEV_MBOX_PAYLOAD_OFFSET;
-> > >  	u64 cmd_reg, status_reg;
-> > > @@ -469,6 +470,54 @@ static void cxl_mem_mbox_put(struct cxl_mem *cxlm)
-> > >  	mutex_unlock(&cxlm->mbox_mutex);
-> > >  }
-> > >  
-> > > +/**
-> > > + * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
-> > > + * @cxlm: The CXL memory device to communicate with.
-> > > + * @opcode: Opcode for the mailbox command.
-> > > + * @in: The input payload for the mailbox command.
-> > > + * @in_size: The length of the input payload
-> > > + * @out: Caller allocated buffer for the output.
-> > > + *
-> > > + * Context: Any context. Will acquire and release mbox_mutex.
-> > > + * Return:
-> > > + *  * %>=0	- Number of bytes returned in @out.
-> > > + *  * %-EBUSY	- Couldn't acquire exclusive mailbox access.
-> > > + *  * %-EFAULT	- Hardware error occurred.
-> > > + *  * %-ENXIO	- Command completed, but device reported an error.
-> > > + *
-> > > + * Mailbox commands may execute successfully yet the device itself reported an
-> > > + * error. While this distinction can be useful for commands from userspace, the
-> > > + * kernel will often only care when both are successful.
-> > > + *
-> > > + * See __cxl_mem_mbox_send_cmd()
-> > > + */
-> > > +static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm, u16 opcode, u8 *in,
-> > > +				 size_t in_size, u8 *out)
-> > > +{
-> > > +	struct mbox_cmd mbox_cmd = {
-> > > +		.opcode = opcode,
-> > > +		.payload_in = in,
-> > > +		.size_in = in_size,
-> > > +		.payload_out = out,
-> > > +	};
-> > > +	int rc;
-> > > +
-> > > +	rc = cxl_mem_mbox_get(cxlm);
-> > > +	if (rc)
-> > > +		return rc;
-> > > +
-> > > +	rc = __cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
-> > > +	cxl_mem_mbox_put(cxlm);
-> > > +	if (rc)
-> > > +		return rc;
-> > > +
-> > > +	/* TODO: Map return code to proper kernel style errno */
-> > > +	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS)
-> > > +		return -ENXIO;
-> > > +
-> > > +	return mbox_cmd.size_out;
-> > > +}
-> > > +
-> > >  /**
-> > >   * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
-> > >   * @cxlmd: The CXL memory device to communicate with.
-> > > @@ -1380,33 +1429,18 @@ static int cxl_mem_identify(struct cxl_mem *cxlm)
-> > >  		u8 poison_caps;
-> > >  		u8 qos_telemetry_caps;
-> > >  	} __packed id;
-> > > -	struct mbox_cmd mbox_cmd = {
-> > > -		.opcode = CXL_MBOX_OP_IDENTIFY,
-> > > -		.payload_out = &id,
-> > > -		.size_in = 0,
-> > > -	};
-> > >  	int rc;
-> > >  
-> > > -	/* Retrieve initial device memory map */
-> > > -	rc = cxl_mem_mbox_get(cxlm);
-> > > -	if (rc)
-> > > -		return rc;
-> > > -
-> > > -	rc = cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
-> > > -	cxl_mem_mbox_put(cxlm);
-> > > -	if (rc)
-> > > +	rc = cxl_mem_mbox_send_cmd(cxlm, CXL_MBOX_OP_IDENTIFY, NULL, 0,
-> > > +				   (u8 *)&id);
-> > > +	if (rc < 0)
-> > >  		return rc;
-> > >  
-> > > -	/* TODO: Handle retry or reset responses from firmware. */
-> > > -	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS) {
-> > > -		dev_err(&cxlm->pdev->dev, "Mailbox command failed (%d)\n",
-> > > -			mbox_cmd.return_code);
-> > > +	if (rc < sizeof(id)) {
-> > > +		dev_err(&cxlm->pdev->dev, "Short identify data\n",
-> > >  		return -ENXIO;
-> > >  	}
-> > >  
-> > > -	if (mbox_cmd.size_out != sizeof(id))
-> > > -		return -ENXIO;
-> > > -
-> > >  	/*
-> > >  	 * TODO: enumerate DPA map, as 'ram' and 'pmem' do not alias.
-> > >  	 * For now, only the capacity is exported in sysfs
-> > > 
-> > > 
-> > > [snip]
-> > >   
-> >   
-
+-- 
+Catalin
