@@ -2,141 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2712319AFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6176B319B06
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhBLIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 03:01:17 -0500
-Received: from mail-lj1-f182.google.com ([209.85.208.182]:33823 "EHLO
-        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhBLIBO (ORCPT
+        id S229880AbhBLIJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 03:09:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30132 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229598AbhBLIJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 03:01:14 -0500
-Received: by mail-lj1-f182.google.com with SMTP id r23so10573208ljh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 00:00:57 -0800 (PST)
+        Fri, 12 Feb 2021 03:09:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613117281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e91sBuS2eUt5U/U4RuQCZfbUWRB/D2S94vtMrUqV2is=;
+        b=HBd518FOjfQ3gz8LetFZeOefAbaI7fHDzCMHXTBzciiJM6nOWdqgORNauS/Ym35EV1ElZ2
+        mlb+gkZnnJUAeNhUxg7LvH6agfPcQpjUPTqzNBQcKz4tukKWSDnTBz71DTjLyfo9/aWZn3
+        CpFuRg+kJrDt42sgMO4OapOeV9vvSM0=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-CdfwIe_OM8e72V2ZItQjEg-1; Fri, 12 Feb 2021 03:08:00 -0500
+X-MC-Unique: CdfwIe_OM8e72V2ZItQjEg-1
+Received: by mail-ej1-f69.google.com with SMTP id gx1so6331599ejc.21
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 00:07:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=yPYj2lYXmsj9W+mRRHZb7R031SjCFkl+yjijgD0R8/A=;
-        b=tDW+n8vdWEuOIkVL0bLmWmoRLiV+NwXxGIEJLrWhtNlRgD5nu693BU2TqPYFAAPZH7
-         IumwF5aMh5kiK6PVCrBxl4WpbKxwIXiFtjWfUPLIIC8mYRBbpuOD+WRR+0KH1HuqZmq9
-         tF2vRKCwuqqfE8uxIBBZ4kzd/iMaVhFXO/I4KByV6H4str4jcSZ7e7iK7QciA7eyM2AC
-         LuaBlyC332bqBh4ebTHejD3MEaoC442hBOgru7uOBAh5/7mKuSvEf7p1yBVKleBfXxcF
-         SS6S7HlBPV615HfxuEYK0xVGpJFtFcu3J5enACXndQNUGD9tPTFws8Cl9tyhzQqbP3vL
-         8uqA==
-X-Gm-Message-State: AOAM532t1y+iyZOmriihcKnU6AY9ySbaKwPeIiY+/NmXcX2HPMQUQ50O
-        tgL3ysHq4mU491BUecWhbG8=
-X-Google-Smtp-Source: ABdhPJw3e10dAeOPhx7cD2PTjYKRgQtpQ0cdRKSnGHMUZIxYXFZLoUSK959GFFpp0eKlHekDiST1Iw==
-X-Received: by 2002:a2e:a40e:: with SMTP id p14mr1034118ljn.390.1613116831462;
-        Fri, 12 Feb 2021 00:00:31 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id a1sm1218140lji.22.2021.02.12.00.00.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e91sBuS2eUt5U/U4RuQCZfbUWRB/D2S94vtMrUqV2is=;
+        b=XEUN9oBoDPbfukLCcwrtt/yPH6/Ibu2L5ZXjHg2jYDppxI8bJQrAT+1F/HA2tgRcGM
+         LtLKKVdPSAEqUCDMjYEXRJbwOWf0CA9TuBuD0EgP6lsUN+eFV1wgqvPOjPLRlVsy5awb
+         Tg1eGBjlKRwhROGKi6WrmC9pCN6bHufAJkl/74bA4d1MFJ3Tel2CCfTJSls3fODuegjM
+         nrcZBL6NQN1d+ASG+q0y4GuNI5CMFk06i5lbNrEXQPam4sa7SHGrVT37Xd5Hh7xCM9Vj
+         EzqxQYVywAlZMumeStFAjWHEVEjh4E2oYySksrR9P1gmPFPvuYDWqoYpB3fo0h9dKlr6
+         0nDg==
+X-Gm-Message-State: AOAM533xugXKGjA97fkIcE9WGys8kOdMeDxVG5tCNRFCPVOY5cBOx36Q
+        VkXHljTINxo9Qa9dwO413vYzMMD30StYCF+FBFgjCJP5WpAyAw8tYuEUNIybVv8A6IQYh9UsJVd
+        Onw+nmFvvsToochoBSe272hTE
+X-Received: by 2002:a17:906:b19a:: with SMTP id w26mr1837739ejy.296.1613117278890;
+        Fri, 12 Feb 2021 00:07:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx4UZHOM3MECOyqyoo31l+Ya9+PmIMzipGRc9pjPxWBn6h9u4zDZXf7FXG0XDCU+qiqPKdNxg==
+X-Received: by 2002:a17:906:b19a:: with SMTP id w26mr1837718ejy.296.1613117278668;
+        Fri, 12 Feb 2021 00:07:58 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id cn18sm5361167edb.66.2021.02.12.00.07.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 00:00:30 -0800 (PST)
-Date:   Fri, 12 Feb 2021 10:00:23 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] regulator: bd718x7, bd71828, Fix dvs voltage levels
-Message-ID: <20210212080023.GA880728@localhost.localdomain>
+        Fri, 12 Feb 2021 00:07:58 -0800 (PST)
+Date:   Fri, 12 Feb 2021 09:07:55 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v4 00/17] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210212080755.ajip7s7dhmxqhxqd@steredhat>
+References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
+ <20210207111954-mutt-send-email-mst@kernel.org>
+ <8bd3789c-8df1-4383-f233-b4b854b30970@kaspersky.com>
+ <20210211145701.qikgx5czosdwx3mm@steredhat>
+ <10aa4548-2455-295d-c993-30f25fba15f2@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
+In-Reply-To: <10aa4548-2455-295d-c993-30f25fba15f2@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ROHM BD718x7 and BD71828 drivers support setting HW state
-specific voltages from device-tree. This is used also by various
-in-tree DTS files.
+On Fri, Feb 12, 2021 at 09:11:50AM +0300, Arseny Krasnov wrote:
+>
+>On 11.02.2021 17:57, Stefano Garzarella wrote:
+>> Hi Arseny,
+>>
+>> On Mon, Feb 08, 2021 at 09:32:59AM +0300, Arseny Krasnov wrote:
+>>> On 07.02.2021 19:20, Michael S. Tsirkin wrote:
+>>>> On Sun, Feb 07, 2021 at 06:12:56PM +0300, Arseny Krasnov wrote:
+>>>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
+>>>>> transport.
+>>>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>>>> do it, two new packet operations were added: first for start of record
+>>>>>  and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
+>>>>> both operations carries metadata - to maintain boundaries and payload
+>>>>> integrity. Metadata is introduced by adding special header with two
+>>>>> fields - message count and message length:
+>>>>>
+>>>>> 	struct virtio_vsock_seq_hdr {
+>>>>> 		__le32  msg_cnt;
+>>>>> 		__le32  msg_len;
+>>>>> 	} __attribute__((packed));
+>>>>>
+>>>>> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
+>>>>> packets(buffer of second virtio descriptor in chain) in the same way as
+>>>>> data transmitted in RW packets. Payload was chosen as buffer for this
+>>>>> header to avoid touching first virtio buffer which carries header of
+>>>>> packet, because someone could check that size of this buffer is equal
+>>>>> to size of packet header. To send record, packet with start marker is
+>>>>> sent first(it's header contains length of record and counter), then
+>>>>> counter is incremented and all data is sent as usual 'RW' packets and
+>>>>> finally SEQ_END is sent(it also carries counter of message, which is
+>>>>> counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
+>>>>> incremented again. On receiver's side, length of record is known from
+>>>>> packet with start record marker. To check that no packets were dropped
+>>>>> by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
+>>>>> checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
+>>>>> 1) and length of data between two markers is compared to length in
+>>>>> SEQ_BEGIN header.
+>>>>> 	Now as  packets of one socket are not reordered neither on
+>>>>> vsock nor on vhost transport layers, such markers allows to restore
+>>>>> original record on receiver's side. If user's buffer is smaller that
+>>>>> record length, when all out of size data is dropped.
+>>>>> 	Maximum length of datagram is not limited as in stream socket,
+>>>>> because same credit logic is used. Difference with stream socket is
+>>>>> that user is not woken up until whole record is received or error
+>>>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>>>>> 	Tests also implemented.
+>>>>>
+>>>>>  Arseny Krasnov (17):
+>>>>>   af_vsock: update functions for connectible socket
+>>>>>   af_vsock: separate wait data loop
+>>>>>   af_vsock: separate receive data loop
+>>>>>   af_vsock: implement SEQPACKET receive loop
+>>>>>   af_vsock: separate wait space loop
+>>>>>   af_vsock: implement send logic for SEQPACKET
+>>>>>   af_vsock: rest of SEQPACKET support
+>>>>>   af_vsock: update comments for stream sockets
+>>>>>   virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>>>>>   virtio/vsock: fetch length for SEQPACKET record
+>>>>>   virtio/vsock: add SEQPACKET receive logic
+>>>>>   virtio/vsock: rest of SOCK_SEQPACKET support
+>>>>>   virtio/vsock: setup SEQPACKET ops for transport
+>>>>>   vhost/vsock: setup SEQPACKET ops for transport
+>>>>>   vsock_test: add SOCK_SEQPACKET tests
+>>>>>   loopback/vsock: setup SEQPACKET ops for transport
+>>>>>   virtio/vsock: simplify credit update function API
+>>>>>
+>>>>>  drivers/vhost/vsock.c                   |   8 +-
+>>>>>  include/linux/virtio_vsock.h            |  15 +
+>>>>>  include/net/af_vsock.h                  |   9 +
+>>>>>  include/uapi/linux/virtio_vsock.h       |  16 +
+>>>>>  net/vmw_vsock/af_vsock.c                | 588 +++++++++++++++-------
+>>>>>  net/vmw_vsock/virtio_transport.c        |   5 +
+>>>>>  net/vmw_vsock/virtio_transport_common.c | 316 ++++++++++--
+>>>>>  net/vmw_vsock/vsock_loopback.c          |   5 +
+>>>>>  tools/testing/vsock/util.c              |  32 +-
+>>>>>  tools/testing/vsock/util.h              |   3 +
+>>>>>  tools/testing/vsock/vsock_test.c        | 126 +++++
+>>>>>  11 files changed, 895 insertions(+), 228 deletions(-)
+>>>>>
+>>>>>  TODO:
+>>>>>  - What to do, when server doesn't support SOCK_SEQPACKET. In current
+>>>>>    implementation RST is replied in the same way when listening port
+>>>>>    is not found. I think that current RST is enough,because case when
+>>>>>    server doesn't support SEQ_PACKET is same when listener missed(e.g.
+>>>>>    no listener in both cases).
+>> I think is fine.
+>>
+>>>>    - virtio spec patch
+>>> Ok
+>> Yes, please prepare a patch to discuss the VIRTIO spec changes.
+>>
+>> For example for 'virtio_vsock_seq_hdr', I left a comment about 'msg_cnt'
+>> naming that should be better to discuss with virtio guys.
+>
+>Ok, i'll prepare it in v5. So I have to send it both LKML(as one of patches) and
+>
+>virtio mailing lists? (e.g. virtio-comment@lists.oasis-open.org)
 
-These drivers do incorrectly try to compose bit-map using enum
-values. By a chance this works for first two valid levels having
-values 1 and 2 - but setting values for the rest of the levels
-do indicate capability of setting values for first levels as
-well. Luckily the regulators which support setting values for
-SUSPEND/LPSR do usually also support setting values for RUN
-and IDLE too - thus this has not been such a fatal issue.
+I think you can send the VIRTIO spec patch separately from this series 
+to virtio-comment, maybe CCing virtualization@lists.linux-foundation.org
 
-Fix this by defining the old enum values as bits and fixing the
-parsing code. This allows keeping existing IC specific drivers
-intact and only slightly changing the rohm-regulator.c
+But Michael could correct me :-)
 
-Fixes: 21b72156ede8b ("regulator: bd718x7: Split driver to common and bd718x7 specific parts")
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
+>
+>>
+>> Anyway, I reviewed this series and I left some comments.
+>> I think we are in a good shape :-)
+>Great, thanks for review. I'll consider all review comments in next 
+>version.
 
-I just noticed this fix never made it in-tree. So this is a resend of a
-resend :)
+Great!
 
- drivers/regulator/rohm-regulator.c |  9 ++++++---
- include/linux/mfd/rohm-generic.h   | 14 ++++++--------
- 2 files changed, 12 insertions(+), 11 deletions(-)
+Stefano
 
-diff --git a/drivers/regulator/rohm-regulator.c b/drivers/regulator/rohm-regulator.c
-index 399002383b28..5c558b153d55 100644
---- a/drivers/regulator/rohm-regulator.c
-+++ b/drivers/regulator/rohm-regulator.c
-@@ -52,9 +52,12 @@ int rohm_regulator_set_dvs_levels(const struct rohm_dvs_config *dvs,
- 	char *prop;
- 	unsigned int reg, mask, omask, oreg = desc->enable_reg;
- 
--	for (i = 0; i < ROHM_DVS_LEVEL_MAX && !ret; i++) {
--		if (dvs->level_map & (1 << i)) {
--			switch (i + 1) {
-+	for (i = 0; i < ROHM_DVS_LEVEL_VALID_AMOUNT && !ret; i++) {
-+		int bit;
-+
-+		bit = BIT(i);
-+		if (dvs->level_map & bit) {
-+			switch (bit) {
- 			case ROHM_DVS_LEVEL_RUN:
- 				prop = "rohm,dvs-run-voltage";
- 				reg = dvs->run_reg;
-diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
-index 4283b5b33e04..2b85b9deb03a 100644
---- a/include/linux/mfd/rohm-generic.h
-+++ b/include/linux/mfd/rohm-generic.h
-@@ -20,14 +20,12 @@ struct rohm_regmap_dev {
- 	struct regmap *regmap;
- };
- 
--enum {
--	ROHM_DVS_LEVEL_UNKNOWN,
--	ROHM_DVS_LEVEL_RUN,
--	ROHM_DVS_LEVEL_IDLE,
--	ROHM_DVS_LEVEL_SUSPEND,
--	ROHM_DVS_LEVEL_LPSR,
--	ROHM_DVS_LEVEL_MAX = ROHM_DVS_LEVEL_LPSR,
--};
-+#define ROHM_DVS_LEVEL_RUN		BIT(0)
-+#define ROHM_DVS_LEVEL_IDLE		BIT(1)
-+#define ROHM_DVS_LEVEL_SUSPEND		BIT(2)
-+#define ROHM_DVS_LEVEL_LPSR		BIT(3)
-+#define ROHM_DVS_LEVEL_VALID_AMOUNT	4
-+#define ROHM_DVS_LEVEL_UNKNOWN		0
- 
- /**
-  * struct rohm_dvs_config - dynamic voltage scaling register descriptions
-
-base-commit: 92bf22614b21a2706f4993b278017e437f7785b3
--- 
-2.25.4
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
