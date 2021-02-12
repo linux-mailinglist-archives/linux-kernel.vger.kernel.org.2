@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B0A319FB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2F8319FCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhBLNTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:19:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45928 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230489AbhBLNTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 08:19:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613135902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DdKEhUPuhqGBAUysfIP1I2yAVIN2YPMmqzhpgnH18iA=;
-        b=ZArfTI79Cfq9BQnCodN+yfBRelzlY3xtotzVaP9cXFcIXOl1s5EqKg5dk+qp13v2m87L0b
-        3FwdtayPn96A1scACXpo/1rjSoWoKnwT4oGZ7turTE2WfRi/ENrb0B3ti5Zo8yCSwHSW+f
-        RGuiC+m1XB9HyJvF6O4kbS1PGYhfaoI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2BADFAC90;
-        Fri, 12 Feb 2021 13:18:22 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 14:18:20 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
- holes in memory layout
-Message-ID: <YCaAHI/rFp1upRLc@dhcp22.suse.cz>
-References: <20210208110820.6269-1-rppt@kernel.org>
- <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
- <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
+        id S231740AbhBLNWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:22:53 -0500
+Received: from mo-csw1116.securemx.jp ([210.130.202.158]:49798 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231513AbhBLNWC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 08:22:02 -0500
+Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 11CDJTf7024694; Fri, 12 Feb 2021 22:19:29 +0900
+X-Iguazu-Qid: 2wGqn5DuWpbZZCpp4t
+X-Iguazu-QSIG: v=2; s=0; t=1613135968; q=2wGqn5DuWpbZZCpp4t; m=LEXnUXKL/jGx/Sb83cgREPmRUajxEqhYSQ3U0HUgE+E=
+Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
+        by relay.securemx.jp (mx-mr1110) id 11CDJRAi026390;
+        Fri, 12 Feb 2021 22:19:27 +0900
+Received: from enc01.toshiba.co.jp ([106.186.93.100])
+        by imx2.toshiba.co.jp  with ESMTP id 11CDJRxR018972;
+        Fri, 12 Feb 2021 22:19:27 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 11CDJQMt001984;
+        Fri, 12 Feb 2021 22:19:26 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v2 0/2] pwm: visconti: Add Toshiba Visconti SoC PWM support
+Date:   Fri, 12 Feb 2021 22:19:08 +0900
+X-TSB-HOP: ON
+Message-Id: <20210212131910.557581-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.30.0.rc2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 12-02-21 11:42:15, David Hildenbrand wrote:
-> On 12.02.21 11:33, Michal Hocko wrote:
-[...]
-> > I have to digest this but my first impression is that this is more heavy
-> > weight than it needs to. Pfn walkers should normally obey node range at
-> > least. The first pfn is usually excluded but I haven't seen real
-> 
-> We've seen examples where this is not sufficient. Simple example:
-> 
-> Have your physical memory end within a memory section. Easy via QEMU, just
-> do a "-m 4000M". The remaining part of the last section has fake/wrong
-> node/zone info.
+This series is the PWM driver for Toshiba's ARM SoC, Visconti[0].
+This provides DT binding documentation and device driver.
 
-Does this really matter though. If those pages are reserved then nobody
-will touch them regardless of their node/zone ids.
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
 
-> Hotplug memory. The node/zone gets resized such that PFN walkers might
-> stumble over it.
-> 
-> The basic idea is to make sure that any initialized/"online" pfn belongs to
-> exactly one node/zone and that the node/zone spans that PFN.
+Updates:
 
-Yeah, this sounds like a good idea but what is the poper node for hole
-between two ranges associated with a different nodes/zones? This will
-always be a random number. We should have a clear way to tell "do not
-touch those pages" and PageReserved sounds like a good way to tell that.
+  dt-bindings: pwm: Add bindings for Toshiba Visconti PWM Controller
+    v1 -> v2:
+      - Change SPDX-License-Identifier to GPL-2.0-only OR BSD-2-Clause.
+      - Set compatible toshiba,pwm-visconti only.
+      - Drop unnecessary comments.
 
-> > problems with that. The VM_BUG_ON blowing up is really bad but as said
-> > above we can simply make it less offensive in presence of reserved pages
-> > as those shouldn't reach that path AFAICS normally.
-> 
-> Andrea tried tried working around if via PG_reserved pages and it resulted
-> in quite some ugly code. Andrea also noted that we cannot rely on any random
-> page walker to do the right think when it comes to messed up node/zone info.
+  pwm: visconti: Add Toshiba Visconti SoC PWM support
+    v1 -> v2:
+      - Change SPDX-License-Identifier to GPL-2.0-only.
+      - Add prefix for the register defines.
+      - Drop struct device from struct visconti_pwm_chip.
+      - Use '>>' instead of '/'.
+      - Drop error message by devm_platform_ioremap_resource().
+      - Use dev_err_probe instead of dev_err.
+      - Change dev_info to dev_dbg.
+      - Remove some empty lines.
+      - Fix MODULE_ALIAS to platform:pwm-visconti.
+      - Add .get_state() function.
+      - Use the author name and email address to MODULE_AUTHOR.
+      - Add more comment to function of the hardware.
+      - Support .get_status() function.
+      - Use NSEC_PER_USEC instead of 1000.
+      - Alphabetically sorted for Makefile and Kconfig.
+      - Added check for set value in visconti_pwm_apply().
 
-I am sorry, I haven't followed previous discussions. Has the removal of
-the VM_BUG_ON been considered as an immediate workaround?
+Nobuhiro Iwamatsu (2):
+  dt-bindings: pwm: Add bindings for Toshiba Visconti PWM Controller
+  pwm: visconti: Add Toshiba Visconti SoC PWM support
+
+ .../bindings/pwm/toshiba,pwm-visconti.yaml    |  43 +++++
+ drivers/pwm/Kconfig                           |   9 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-visconti.c                    | 173 ++++++++++++++++++
+ 4 files changed, 226 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/toshiba,pwm-visconti.yaml
+ create mode 100644 drivers/pwm/pwm-visconti.c
+
 -- 
-Michal Hocko
-SUSE Labs
+2.30.0.rc2
+
