@@ -2,58 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DBA31A28A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBD131A290
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhBLQUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:20:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34872 "EHLO mail.kernel.org"
+        id S229871AbhBLQX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:23:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229580AbhBLQUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:20:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36F6764E0A;
-        Fri, 12 Feb 2021 16:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613146762;
-        bh=4KE6QZ6eBl3MF3x94JWk2+atZ7tnhruHiOBbr4r5xH8=;
+        id S229718AbhBLQXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 11:23:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53D1464E00;
+        Fri, 12 Feb 2021 16:22:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613146959;
+        bh=cGis2STI/FXiZ6D9aq1qL5hwCPADBv6IX2lNQypgg48=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YwIHARmIlS3BXIPg3R6tclnLcUi9BiHc/PDY1aZZz6uAgVee0H8KtJ0LNjyPiAS3m
-         Vm4AdzsQFonP245SHlIcDp9+3+zIvXGalxeLoXa4Mo1sWtCR6B4OMEK+fKdDlYNjfL
-         A/bI8uKMYe6RyG0fy3pgmWzg+FBfIVXYJP+mEsO8Y4/yJUkhWQm9xZL/DL1iTDLgOB
-         RhB4L8y38ranUoLhwkIDuDBwjXr5P0ufXWXovElELnF91NZPZ4qvGvekd4oqid0kxj
-         PyhO/DWgQZdiB0PjLQ0SoUEoeuWDcfMRpUxPAn3Oyd0n70NN4or3RlIgVthTYm5Af2
-         WTjI8Rqlbqxpw==
-Date:   Fri, 12 Feb 2021 11:19:21 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] kbuild: simplify access to the kernel's version
-Message-ID: <20210212161921.GH4035784@sasha-vm>
-References: <20210207161352.2044572-1-sashal@kernel.org>
- <20210208175007.GA1501867@infradead.org>
- <20210208182001.GA4035784@sasha-vm>
- <CAK7LNAQtQTwGt4SCK88a=y4ydASXoR30cCCmcFFdsUk=WY7tfA@mail.gmail.com>
- <CAK7LNASo2i_NT8acBCJ2gYeLE_rjyncSteyqD_mrMMR5Wf261g@mail.gmail.com>
- <CAK7LNAQiSe3j5h_rjvruJJfMpRsvkTcKuU0RJ7EJvpjGVX7G_w@mail.gmail.com>
+        b=BvA3dK6zB63Q3prs2eh8ASE5tD8BKIpOsT97w1RGrtG0ZysJy23Hr0l+2xTjdc3Zx
+         szVDsbRzOcvP7MLWbhrsQmfta5zXh5PiKZcGqv6GYoI1f7+DsA5GDg52yR9ZvTMNoR
+         Mn1wN3rNi3P1Zw6PozC4A/c8aCzjRwcGYwYc0DPw=
+Date:   Fri, 12 Feb 2021 17:22:37 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+Message-ID: <YCarTeNR/Jxd2inD@kroah.com>
+References: <1613092575-17311-1-git-send-email-min.li.xe@renesas.com>
+ <YCYwrNE8547uuODo@kroah.com>
+ <OSBPR01MB47733A5CB20E20E48EE84602BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <YCajam09pnhVHqkQ@kroah.com>
+ <OSBPR01MB47734853C9CAAE5AD9C4AD0FBA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK7LNAQiSe3j5h_rjvruJJfMpRsvkTcKuU0RJ7EJvpjGVX7G_w@mail.gmail.com>
+In-Reply-To: <OSBPR01MB47734853C9CAAE5AD9C4AD0FBA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:41:21PM +0900, Masahiro Yamada wrote:
->Please send a correct patch,
->also drop the unneeded casts.
+On Fri, Feb 12, 2021 at 04:02:14PM +0000, Min Li wrote:
+> > 
+> > xilinx_sdfec.c has:
+> > 
+> > 	static int xsdfec_dev_open(struct inode *iptr, struct file *fptr)
+> > 	{
+> > 	        return 0;
+> > 	}
+> > 
+> > Which isn't even needed at all, but it is NOT trying to keep people from
+> > calling open multiple times.
+> > 
+> > As for why the above logic does not work in your driver, think of what
+> > happens if someone opens the character device node, and then calls
+> > dup(2) on it and passes that file descriptor off to another program.  Or just
+> > calls it multiple times from different threads in the same program.
+> > The kernel does not know what is happening here, and so, "do not allow to
+> > be opened multiple times" does not do anything to keep userspace from
+> > actually writing to the device node from multiple processes or threads.
+> > 
+> > So don't even try, it's not worth it.
+> > 
+> > > I mean if an application failed at opening the device, how can it
+> > > proceed to talk the device without a file descriptor?
+> > 
+> > See above for how to do this.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> Hi Greg
+> 
+> Thanks for your insight for this. Now I can see this change doesn't prevent deliberate hacker from opening the driver multiple times.
+> 
+> What I had in mind is that it does prevent some unintentional mistake like some one accidentally opens the application twice. The second
+> one would fail due to the change here.
 
-Sorry about that, I've hand edited the patch right before sending it out
-and obviously messed it up. I'll resend.
+Do not add kernel code that does not work for it's intended purpose :)
 
--- 
-Thanks,
-Sasha
+thanks,
+
+greg k-h
