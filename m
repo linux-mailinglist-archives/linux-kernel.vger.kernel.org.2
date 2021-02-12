@@ -2,86 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D562031A6A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7444531A6AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhBLVRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 16:17:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhBLVRi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 16:17:38 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65E4C06178A
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:16:50 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id nm1so319534pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:16:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=M/V9sHCfr1P7mccIZjuFtNDI0XPkeWeQkaWblX7rzrU=;
-        b=Novk5M0h1oNgDUgzlJk25bkItR0UvpHNxdt0a2DVs2STYka7XfgdWsO30SmM+kLjZ4
-         DleObURg+mXqHj8gp6H+/k8UVgDFNP5NqMKOnmreImU1yDjOEP4471Z43GPN+ldyofox
-         iBCf5OvX30jFvI/Nt03rcVmj+YbRaMx2xlVr2GUptdNeHfVhI9Dmbjajx4A140CoM3EN
-         rjwWvA9mDFj12bF7YNJo6d+hmKUfjVkkVtaPzdh2/vMxL9juIqQsWQdCr/g7oolNHkYX
-         Z0I2ITemWIQqFGy/+YoeOwj9+UAl4t2vJQO81rUu0xKQtd8nY77dWM7gNO3uf8wJW+t1
-         37/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=M/V9sHCfr1P7mccIZjuFtNDI0XPkeWeQkaWblX7rzrU=;
-        b=NGIEKbTi3L1t8oRfGcutF4T0NbiDr8OeUMLIA5F18wenlEkdbj7iVXGEVglEUFhJTY
-         Ob3PMkaXadyk4Fk87qCECYk4nXpozaiGde5dCETjTVJVDRsDRfRQ8qUeVLd2zZpJgrYG
-         cVwJmq3wBzpvH9M7l1einRsdrA/m2yC+xMHyrXczd7WQLl3fYwMOoHuInKqbxFZMLhmx
-         R+geDr/0hZ+ifF6o9Qd9LeMnrsSXpoc4ND7V2agzaGLawOCkigpxgzEyGZvRXfHGbwsn
-         osf7wrloXDxvzqvC6MqRvNTT7oLljdSS6PCcl/WapU+WHU/hVAvouA+6pQUcsm1pXAYA
-         ThMg==
-X-Gm-Message-State: AOAM531kCNwVxzE1GrWAF7V6dpZ4NGemRCO9gy4ZMEqZjPqkTC//tJLC
-        +57anaEahlA3h4+Fw7PXZk/T6g==
-X-Google-Smtp-Source: ABdhPJwnHIL/mZk6gNgm6uW6ZGCLnfRfNCRUAEqBKwD/QJDdiAR3/bxVQy1yBlxAuMhfeWJoyxFRTg==
-X-Received: by 2002:a17:90a:c686:: with SMTP id n6mr4280017pjt.82.1613164609859;
-        Fri, 12 Feb 2021 13:16:49 -0800 (PST)
-Received: from [2620:15c:17:3:b175:9ecb:5cdc:43e5] ([2620:15c:17:3:b175:9ecb:5cdc:43e5])
-        by smtp.gmail.com with ESMTPSA id bk12sm8949655pjb.1.2021.02.12.13.16.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 13:16:49 -0800 (PST)
-Date:   Fri, 12 Feb 2021 13:16:48 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Charan Teja Reddy <charante@codeaurora.org>
-cc:     akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
-        vinmenon@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] mm: compaction: update the COMPACT[STALL|FAIL] events
- properly
-In-Reply-To: <1613151184-21213-1-git-send-email-charante@codeaurora.org>
-Message-ID: <e4a4bd48-a8a6-2c3a-88fb-50161f23bed0@google.com>
-References: <1613151184-21213-1-git-send-email-charante@codeaurora.org>
+        id S231818AbhBLVSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 16:18:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231175AbhBLVSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 16:18:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6D5564E05;
+        Fri, 12 Feb 2021 21:17:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613164672;
+        bh=igwJV3Ql7mI9BeCjbv2SB4KehkRXZXKbNfnOto/Iu5U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q3kHHg/TI83N9dl4FXATamXGs8BoL/7ZUyBtgd/CcthqD5zgKwfkfmskwEaKEtgPL
+         gw8Mm3zUBzPfEyeZJCXoIKxFSh8CbWSmQhTIYBXm/JWNeDpihAdFaAwizUJMRpKFzy
+         f1HRZcBfsHn4eRalVpEvPzXIQ76imjoyES/z0VEH1F6u/tymV+LBAI4Pq4nGKJCyw7
+         wgGY40/LYOlz2yagxoM3MJdYyecRs7fqcL/bR6GFjMZNb7puhimgOhn+7mJ9LsNtQT
+         g3UfFWS58gF/wYrcrd5KvrQ3cxU7WvRbWNenA9wmoOk6Ng2bqa6LFfd9oM+8/SKhpX
+         Vd8PQGgFt3TiQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 9CDE040513; Fri, 12 Feb 2021 18:17:50 -0300 (-03)
+Date:   Fri, 12 Feb 2021 18:17:50 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Nicholas Fraser <nfraser@codeweavers.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org,
+        Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+Subject: Re: [PATCH 2/4] perf report: Load PE files from debug cache only
+Message-ID: <20210212211750.GL1398414@kernel.org>
+References: <e58e1237-94ab-e1c9-a7b9-473531906954@codeweavers.com>
+ <20210212122800.GA1398414@kernel.org>
+ <367456d0-78ea-f2e1-2269-3e6cf95ea3fb@codeweavers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <367456d0-78ea-f2e1-2269-3e6cf95ea3fb@codeweavers.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021, Charan Teja Reddy wrote:
+Em Fri, Feb 12, 2021 at 11:34:24AM -0500, Nicholas Fraser escreveu:
+> Sorry, I should have been more clear in the commit message. The use case
+> you outlined still works even with this patch.
 
-> By definition, COMPACT[STALL|FAIL] events needs to be counted when there
-> is 'At least in one zone compaction wasn't deferred or skipped from the
-> direct compaction'. And when compaction is skipped or deferred,
-> COMPACT_SKIPPED will be returned but it will still go and update these
-> compaction events which is wrong in the sense that COMPACT[STALL|FAIL]
-> is counted without even trying the compaction.
-> 
-> Correct this by skipping the counting of these events when
-> COMPACT_SKIPPED is returned for compaction. This indirectly also avoid
-> the unnecessary try into the get_page_from_freelist() when compaction is
-> not even tried.
-> 
-> There is a corner case where compaction is skipped but still count
-> COMPACTSTALL event, which is that IRQ came and freed the page and the
-> same is captured in capture_control.
-> 
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+Ok, I'll clarify that in the commit log then.
 
-Acked-by: David Rientjes <rientjes@google.com>
+- Arnaldo
+ 
+> dso__load_bfd_symbols() is called in a loop from dso__load() for a variety
+> of paths. These are generated by the various DSO_BINARY_TYPEs in the
+> binary_type_symtab list at the top of util/symbol.c. In each case the
+> debugfile passed to dso__load_bfd_symbols() is the path to try.
+> 
+> One of those iterations (the first one I believe) passes the original path
+> as the debugfile. If the file still exists at the original path, this is
+> the one that ends up being used in case the debugcache was deleted or the
+> PE file doesn't have a build-id.
+> 
+> A later iteration (BUILD_ID_CACHE) passes debugfile as the file in the
+> debugcache if it has a build-id. Even if the file was previously loaded at
+> its original path, (if I understand correctly) this load will override it
+> so the debugcache file ends up being used.
+> 
+> Nick
+> 
+> 
+> On 2021-02-12 7:28 a.m., Arnaldo Carvalho de Melo wrote:
+> > Em Wed, Feb 10, 2021 at 02:17:38PM -0500, Nicholas Fraser escreveu:
+> >> dso__load_bfd_symbols() attempts to load a DSO at its original path,
+> >> then closes it and loads the file in the debug cache. This is incorrect.
+> >> It should ignore the original file and work with only the debug cache.
+> >> The original file may have changed or may not even exist, for example if
+> >> the debug cache has been transferred to another machine via "perf
+> >> archive".
+> >>
+> >> This fix makes it only load the file in the debug cache.
+> > 
+> > Well this improves your current use case and only affects PE files, so I
+> > am applying, but consider a slightly different workflow:
+> > 
+> >  1. perf record ./foo.exe
+> >  2. perf report     # works, finds the file in the ~/.debug cache, as stored
+> >                     # by 'perf record'
+> >  3. rm -rf ~/.debug # I need more space
+> >  4. perf report     # Fails, as it looks only in the ~/.debug cache, that
+> >                     # was nuked
+> > 
+> > 
+> > So at 4 it should look at the original pathname, and hope for the best.
+> > 
+> > All this is moot if we have something like a build-id in PE files,
+> > where we can look in any order since we'll verify the unique ID to see
+> > if it is the one we need, right?
+> > 
+> > - Arnaldo
+> >  
+> >> Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+> >> ---
+> >>  tools/perf/util/symbol.c | 8 +-------
+> >>  1 file changed, 1 insertion(+), 7 deletions(-)
+> >>
+> >> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> >> index 64a039cbba1b..aa9ae875b995 100644
+> >> --- a/tools/perf/util/symbol.c
+> >> +++ b/tools/perf/util/symbol.c
+> >> @@ -1569,7 +1569,7 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
+> >>  	u_int i;
+> >>  	u64 start, len;
+> >>  
+> >> -	abfd = bfd_openr(dso->long_name, NULL);
+> >> +	abfd = bfd_openr(debugfile, NULL);
+> >>  	if (!abfd)
+> >>  		return -1;
+> >>  
+> >> @@ -1586,12 +1586,6 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
+> >>  	if (section)
+> >>  		dso->text_offset = section->vma - section->filepos;
+> >>  
+> >> -	bfd_close(abfd);
+> >> -
+> >> -	abfd = bfd_openr(debugfile, NULL);
+> >> -	if (!abfd)
+> >> -		return -1;
+> >> -
+> >>  	if (!bfd_check_format(abfd, bfd_object)) {
+> >>  		pr_debug2("%s: cannot read %s bfd file.\n", __func__,
+> >>  			  debugfile);
+> >> -- 
+> >> 2.30.0
+> >>
+> > 
+
+-- 
+
+- Arnaldo
