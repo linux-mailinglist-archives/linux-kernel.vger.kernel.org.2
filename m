@@ -2,112 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A9531A03A
+	by mail.lfdr.de (Postfix) with ESMTP id E192A31A03B
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:02:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhBLOCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 09:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbhBLOB5 (ORCPT
+        id S231569AbhBLOCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 09:02:24 -0500
+Received: from mail.netline.ch ([148.251.143.178]:35277 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230493AbhBLOCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 09:01:57 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7429C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 06:01:17 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id q7so9381265iob.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 06:01:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hfpu4JNrDZMZnmuhC/B9i4uH563p9QYRFbc8Z09AD8Y=;
-        b=GVHI2HxeHVr1cuXtdzYruzbOiB4KETUjoyUjvXcXqgUOA9aFMSI3A365t7/7fGTAtq
-         YKJVDBzuKs/D84SZkm9Dw0+S13oOh9H3BG8AFUnVN3h7aCcNBdaHxXxVQeh0JDuYyxfi
-         7W9e0uvmlM7ICY+AZfbgjwiABPj+emU5f+acs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hfpu4JNrDZMZnmuhC/B9i4uH563p9QYRFbc8Z09AD8Y=;
-        b=aChGHnqH1J1q74ShVRJwdJKIZWSWcnT9ZEuaB4ChJIzo17h85MpUT0NWpZ9ZdKerXW
-         nOjPAHZd+sJQP9PyICoEMuIytE3NWvr4AFkXa4C9l9ZP9quvgMEEE1BDg1Mvk+Gl+JZy
-         YEUQ/zjrrCqIWTjmtl8bY2Yjn4La4+/M2nqKEtTQI9ZJBWGqknqGB9iQ5mWIqf06Jz68
-         zOG3kNGXVI5M0v9k2OLkxhupcSOYCZg3VTMbrBl2QfVujXENWQ78EelJ/qkXYO+J8UmH
-         Hgt9vjl9YVu8R5qvs5+PuBmBq3vKIv4R1U+3W7tT6LV+7v1s1go2KpnCpJW49v2XTN3X
-         CfJA==
-X-Gm-Message-State: AOAM533IyZHRH/nItebMs8dnGHuuuItKrd0hWMRbq8rRZoQ3HSqvCH7H
-        z948h/yuYi0q2yFM8rrdlVhuv+4zGQc/pOMs
-X-Google-Smtp-Source: ABdhPJylam6eGTL3mklnT2GyKQxTakQ2Q39BnfQThOB9Nf0FTkzmUCs0MldOziz7vdfNTcrQ8nBpjw==
-X-Received: by 2002:a02:30d5:: with SMTP id q204mr2659530jaq.55.1613138476532;
-        Fri, 12 Feb 2021 06:01:16 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id i20sm4494742ilc.2.2021.02.12.06.01.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 06:01:15 -0800 (PST)
-Subject: Re: [PATCH 2/3] net:ethernet:rmnet:Support for downlink MAPv5 csum
- offload
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Sharath Chandra Vurukala <sharathv@codeaurora.org>
-Cc:     davem@davemloft.net, elder@kernel.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1613079324-20166-1-git-send-email-sharathv@codeaurora.org>
- <1613079324-20166-3-git-send-email-sharathv@codeaurora.org>
- <20210211180459.500654b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <1c4e21bf-5903-bc45-6d6e-64b68e494542@ieee.org>
-Date:   Fri, 12 Feb 2021 08:01:15 -0600
+        Fri, 12 Feb 2021 09:02:05 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id 4FFAD2A6045;
+        Fri, 12 Feb 2021 15:01:23 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id vkV0bfZJWGJB; Fri, 12 Feb 2021 15:01:23 +0100 (CET)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPSA id 622122A6042;
+        Fri, 12 Feb 2021 15:01:21 +0100 (CET)
+Received: from [::1]
+        by thor with esmtp (Exim 4.94)
+        (envelope-from <michel@daenzer.net>)
+        id 1lAZ0b-000BpT-Bs; Fri, 12 Feb 2021 15:01:21 +0100
+To:     Emil Velikov <emil.l.velikov@gmail.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     Will Drewry <wad@chromium.org>, Kees Cook <keescook@chromium.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        "# 3.13+" <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210205163752.11932-1-chris@chris-wilson.co.uk>
+ <20210205220012.1983-1-chris@chris-wilson.co.uk>
+ <CACvgo52u1ASWXOuWuDwoXvbZhoq+RHn_GTxD5y9k+kO_dzmT7w@mail.gmail.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [PATCH v3] kcmp: Support selection of SYS_kcmp without
+ CHECKPOINT_RESTORE
+Message-ID: <3a2316b6-27a9-d56a-b488-ac15a402a0d2@daenzer.net>
+Date:   Fri, 12 Feb 2021 15:01:16 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210211180459.500654b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CACvgo52u1ASWXOuWuDwoXvbZhoq+RHn_GTxD5y9k+kO_dzmT7w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 8:04 PM, Jakub Kicinski wrote:
-> On Fri, 12 Feb 2021 03:05:23 +0530 Sharath Chandra Vurukala wrote:
->> +/* MAP CSUM headers */
->> +struct rmnet_map_v5_csum_header {
->> +	u8  next_hdr:1;
->> +	u8  header_type:7;
->> +	u8  hw_reserved:5;
->> +	u8  priority:1;
->> +	u8  hw_reserved_bit:1;
->> +	u8  csum_valid_required:1;
->> +	__be16 reserved;
->> +} __aligned(1);
+On 2021-02-12 1:57 p.m., Emil Velikov wrote:
+> On Fri, 5 Feb 2021 at 22:01, Chris Wilson <chris@chris-wilson.co.uk> wrote:
+>>
+>> Userspace has discovered the functionality offered by SYS_kcmp and has
+>> started to depend upon it. In particular, Mesa uses SYS_kcmp for
+>> os_same_file_description() in order to identify when two fd (e.g. device
+>> or dmabuf)
 > 
-> Will this work on big endian?
+> As you rightfully point out, SYS_kcmp is a bit of a two edged sword.
+> While you mention the CONFIG issue, there is also a portability aspect
+> (mesa runs on more than just linux) and as well as sandbox filtering
+> of the extra syscall.
+> 
+> Last time I looked, the latter was still an issue and mesa was using
+> SYS_kcmp to compare device node fds.
+> A far shorter and more portable solution is possible, so let me
+> prepare a Mesa patch.
 
-Sort of related to this point...
+Make sure to read my comments on 
+https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/6881 first. :)
 
-I'm sure the response to this will be to add two versions
-of the definition, surrounded __LITTLE_ENDIAN_BITFIELD
-and __BIG_ENDIAN_BITFIELD tests.
 
-I really find this non-intuitive, and every time I
-look at it I have to think about it a bit to figure
-out where the bits actually lie in the word.
-
-I know this pattern is used elsewhere in the networking
-code, but that doesn't make it any easier for me to
-understand...
-
-Can we used mask, defined in host byte order, to
-specify the positions of these fields?
-
-I proposed a change at one time that did this and
-this *_ENDIAN_BITFIELD thing was used instead.
-
-I will gladly implement this change (completely
-separate from what's being done here), but thought
-it might be best to see what people think about it
-before doing that work.
-
-					-Alex
+-- 
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
