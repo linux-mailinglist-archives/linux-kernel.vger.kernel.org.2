@@ -2,112 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5322631A10D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9FF31A115
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhBLPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:03:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhBLPDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:03:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4969564E00;
-        Fri, 12 Feb 2021 15:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613142179;
-        bh=EAuHpm5/CirPOX+FrG/WqMowYIetJKRyv+lKo0kk1qw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zFLZJP6/r6ue2b986HktAb/MtNiT8YM9oB4oRxzD1iy/btRaCJ6BYmahwWN6MJ4Yw
-         MpbuM6QiYBel1Y/5pu8J+ws7cZjrdiBtEriYgDvV8/DTyxRpmdV4TYPM6Od3KxAP+Q
-         uZafpt/s8BVmUz0wbP6s0YvHr9ZlCXojWnUQhJgg=
-Date:   Fri, 12 Feb 2021 16:02:57 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alaa Emad <alaaemadhossney.ae@gmail.com>
-Cc:     mh12gx2825@gmail.com, sbrivio@redhat.com, colin.king@canonical.com,
-        oliver.graute@kococonnector.com, devel@driverdev.osuosl.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] Fix space prohibited issue in fbtft-bus.c
-Message-ID: <YCaYoZSM3BvwK7IK@kroah.com>
-References: <20210212145833.3809-1-alaaemadhossney.ae@gmail.com>
+        id S230174AbhBLPE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:04:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52241 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230109AbhBLPEu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:04:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613142203;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JhAp9Dkg4RRdpdBWiCoCFdcpso2FfEPdKgKKWApZlQU=;
+        b=E3KwWPVvj8L6uebjc4ksBQgEdqLevQ5b1JztRLO/ih2i2JuUMSaWAx6R5YPGjN2UINckhN
+        d3k1riqTPf5kwVLm7O9O48SO9lk4LOXN4s8wKim6j3D9xzryagXDO/o785tAXZpQCQtlh2
+        L6LkK1TrR8NHythWVtwtJ9EwK8mNgpc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-63-mP_OdMD9NdOC4DzwWgLBbQ-1; Fri, 12 Feb 2021 10:03:13 -0500
+X-MC-Unique: mP_OdMD9NdOC4DzwWgLBbQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 834E1107ACC7;
+        Fri, 12 Feb 2021 15:03:12 +0000 (UTC)
+Received: from ws.net.home (ovpn-117-0.ams2.redhat.com [10.36.117.0])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 993C219811;
+        Fri, 12 Feb 2021 15:03:11 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 16:03:09 +0100
+From:   Karel Zak <kzak@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        util-linux@vger.kernel.org
+Subject: [ANNOUNCE] util-linux v2.36.2
+Message-ID: <20210212150309.dk7pnsjc4gk66m7u@ws.net.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210212145833.3809-1-alaaemadhossney.ae@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 04:58:33PM +0200, Alaa Emad wrote:
-> This change fixes a checkpatch error for "space prohibited before that close parenthesis ')'"
-> 
-> Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
-> ---
->  certs/x509_revocation_list        | 0
->  drivers/staging/fbtft/fbtft-bus.c | 4 ++--
->  2 files changed, 2 insertions(+), 2 deletions(-)
->  create mode 100644 certs/x509_revocation_list
-> 
-> diff --git a/certs/x509_revocation_list b/certs/x509_revocation_list
-> new file mode 100644
-> index 000000000000..e69de29bb2d1
-> diff --git a/drivers/staging/fbtft/fbtft-bus.c b/drivers/staging/fbtft/fbtft-bus.c
-> index 63c65dd67b17..847cbfbbd766 100644
-> --- a/drivers/staging/fbtft/fbtft-bus.c
-> +++ b/drivers/staging/fbtft/fbtft-bus.c
-> @@ -62,9 +62,9 @@ out:									      \
->  }                                                                             \
->  EXPORT_SYMBOL(func);
->  
-> -define_fbtft_write_reg(fbtft_write_reg8_bus8, u8, u8, )
-> +define_fbtft_write_reg(fbtft_write_reg8_bus8, u8, u8)
->  define_fbtft_write_reg(fbtft_write_reg16_bus8, __be16, u16, cpu_to_be16)
-> -define_fbtft_write_reg(fbtft_write_reg16_bus16, u16, u16, )
-> +define_fbtft_write_reg(fbtft_write_reg16_bus16, u16, u16)
->  
->  void fbtft_write_reg8_bus9(struct fbtft_par *par, int len, ...)
->  {
-> -- 
-> 2.25.1
-> 
-> _______________________________________________
-> devel mailing list
-> devel@linuxdriverproject.org
-> http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
 
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- Your patch breaks the build.
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
+The util-linux stable maintenance release v2.36.2 is available at
+ 
+  http://www.kernel.org/pub/linux/utils/util-linux/v2.36/
+ 
+Feedback and bug reports, as always, are welcomed.
+ 
+  Karel
 
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+util-linux 2.36.2 Release Notes
+===============================
 
-thanks,
+agetty:
+   - tty eol defaults to REPRINT  [Sami Loone]
+blkdiscard:
+   - fix compiler warnings [-Wmaybe-uninitialized]  [Karel Zak]
+build-sys:
+   - do not build plymouth-ctrl.c w/ disabled plymouth  [Pino Toscano]
+configure:
+   - test -a|o is not POSIX  [Issam E. Maghni]
+docs:
+   - update AUTHORS file  [Karel Zak]
+fsck.cramfs:
+   - fix fsck.cramfs crashes on blocksizes > 4K  [ToddRK]
+fstab:
+   - fstab.5 NTFS and FAT volume IDs use upper case  [Heinrich Schuchardt]
+github:
+   - remove cifuzz from stable branch  [Karel Zak]
+hwclock:
+   - do not assume __NR_settimeofday_time32  [Pino Toscano]
+   - fix compiler warnings [-Wmaybe-uninitialized]  [Karel Zak]
+lib/caputils:
+   - add fall back for last cap using prctl.  [Érico Rolim]
+lib/loopdev:
+   - make is_loopdev() more robust  [Karel Zak]
+lib/procutils:
+   - add proc_is_procfs helper.  [Érico Rolim]
+   - improve proc_is_procfs(), add test  [Karel Zak]
+lib/signames:
+   - change license to public domain  [Karel Zak]
+libblkid:
+   - drbdmanage  use blkid_probe_strncpy_uuid instead of blkid_probe_set_id_label  [Pali Rohár]
+   - make gfs2 prober more extendible  [Karel Zak]
+libfdisk:
+   - (dos) fix last possible sector calculation  [Karel Zak]
+   - (script) ignore empty values for start and size  [Gaël PORTAY]
+   - ignore 33553920 byte optimal I/O size  [Ryan Finnie]
+libmount:
+   - (py) do not use pointer as an integer value  [Karel Zak]
+   - add vboxsf, virtiofs to pseudo filesystems  [Shahid Laher]
+   - do not canonicalize ZFS source dataset  [Karel Zak]
+   - don't use "symfollow" for helpers on user mounts  [Karel Zak]
+   - fix /{etc,proc}/filesystems use  [Karel Zak]
+login:
+   - use full tty path for PAM_TTY  [Karel Zak]
+losetup:
+   - fix wrong printf() format specifier for ino_t data type  [Manuel Bentele]
+lsblk:
+   - read SCSI_IDENT_SERIAL also from udev  [Karel Zak]
+lslogins:
+   - call close() for usable FD [coverity scan]  [Karel Zak]
+po:
+   - add sr.po (from translationproject.org)  [Мирослав Николић]
+   - merge changes  [Karel Zak]
+   - update hr.po (from translationproject.org)  [Božidar Putanec]
+   - update sv.po (from translationproject.org)  [Sebastian Rasmussen]
+rfkill:
+   - stop execution when rfkill device cannot be opened  [Sami Kerola]
+script:
+   - fix compiler warnings [-Wmaybe-uninitialized]  [Karel Zak]
+scriptlive:
+   - fix compiler warnings [-Wmaybe-uninitialized]  [Karel Zak]
+setpriv:
+   - allow using [-+]all for capabilities.  [Érico Rolim]
+   - small clean-up.  [Érico Rolim]
+su:
+   - use full tty path for PAM_TTY  [Karel Zak]
+switch_root:
+   - check if mount point to move even exists  [Thomas Deutschmann]
+sys-utils:
+   - mount.8  fix a typo  [Eric Biggers]
+tests:
+   - add checksum for cramfs/mkfs for LE 16384 (ia64)  [Anatoly Pugachev]
+   - be explicit with file permissions for cramfs  [Karel Zak]
+   - don't rely on scsi_debug partitions  [Karel Zak]
+umount:
+   - ignore --no-canonicalize,-c for non-root users  [Karel Zak]
 
-greg k-h's patch email bot
+- Show the 'r' option in the help menu  [Vincent McIntyre]
+
+-- 
+ Karel Zak  <kzak@redhat.com>
+ http://karelzak.blogspot.com
+
