@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3065131A6E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B67231A6DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhBLV2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 16:28:45 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:21713 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232054AbhBLV2d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232076AbhBLV2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 12 Feb 2021 16:28:33 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613165291; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=iahau7b0RP23BqJ1mHFpNKNC9lJ0XkgdYICyLtBm1lc=; b=VXrBXtXDBQSPIxOnotMnclTOjHhwBocdEpgOpqXLLT+HsoSd4ukW24M2rw4hETs26E+TgmVp
- QW0xWleWpsSR1qkxNlmKddEq1dglFGSGUckY3orm6bRSj6Y04eQzqSFSKu6wfFgfxSZP/+Bb
- GRSFve+RpM1OAcBE8YTvtCJcAeM=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6026f2cc4bd23a05ae37a146 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 12 Feb 2021 21:27:40
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 10D45C43462; Fri, 12 Feb 2021 21:27:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhBLV22 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 16:28:28 -0500
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB150C061574;
+        Fri, 12 Feb 2021 13:27:47 -0800 (PST)
+Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA27AC433ED;
-        Fri, 12 Feb 2021 21:27:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EA27AC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     bbhatt@codeaurora.org, loic.poulain@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [PATCH] bus: mhi: core: Fix check for syserr at power_up
-Date:   Fri, 12 Feb 2021 14:27:23 -0700
-Message-Id: <1613165243-23359-1-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 6903098C705;
+        Fri, 12 Feb 2021 22:27:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1613165258;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2mjYffK+zMGEpM0j9pXBNGRQO7ZCRVVsHBrv+6cjjGI=;
+        b=X8fFhVhw4zK3PJT/b3dj7oUqtbVRYCp6q+Ph7yoyECn0ZHTFFewgKc2WdVpi/dd3Dco74a
+        sEeOEWTdcfTCgGSLeDlawmiOHfY0HUFQ37gHIKp2HFsZ/mf4opfzWxv1ktxGdMwg80C6rm
+        LxWfqVEV6XGuvpCizwal3yZdt5eOc8k=
+Date:   Fri, 12 Feb 2021 22:27:37 +0100
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com, kasep pisan <babam.yes@gmail.com>,
+        Hanabishi Recca <irecca.kun@gmail.com>
+Subject: Re: [PATCH v21 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+Message-ID: <20210212212737.d4fwocea3rbxbfle@spock.localdomain>
+References: <20210212162416.2756937-1-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210212162416.2756937-1-almaz.alexandrovich@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The check to see if we have reset the device after detecting syserr at
-power_up is inverted.  wait_for_event_timeout() returns 0 on failure,
-and a positive value on success.  The check is looking for non-zero
-as a failure, which is likely to incorrectly cause a device init failure
-if syserr was detected at power_up.  Fix this.
+Hi.
 
-Fixes: e18d4e9fa79b ("bus: mhi: core: Handle syserr during power_up")
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
----
- drivers/bus/mhi/core/pm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Feb 12, 2021 at 07:24:06PM +0300, Konstantin Komarov wrote:
+> This patch adds NTFS Read-Write driver to fs/ntfs3.
+> …
+> v21:
+> - fixes for clang CFI checks
+> - fixed sb->s_maxbytes for 32bit clusters
+> - user.DOSATTRIB is no more intercepted by ntfs3
+> - corrected xattr limits;  is used
+> - corrected CONFIG_NTFS3_64BIT_CLUSTER usage
+> - info about current build is added into module info and printing
+> on insmod (by Andy Lavr's request)
+> note: v21 is applicable for 'linux-next' not older than 2021.01.28
 
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 681960c..36ab7aa 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -1092,7 +1092,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
- 							   &val) ||
- 					!val,
- 				msecs_to_jiffies(mhi_cntrl->timeout_ms));
--		if (ret) {
-+		if (!ret) {
- 			ret = -EIO;
- 			dev_info(dev, "Failed to reset MHI due to syserr state\n");
- 			goto error_bhi_offset;
+For those who use this on v5.10/v5.11, there's an extra patch available
+that applies on top of this submission: [1].
+
+Hanabishi, babam (both in Cc), here [2] you've reported some issues with
+accessing some files and with hidden attributes. You may reply to this
+email of mine with detailed description of your issues, and maybe
+developers will answer you.
+
+Thanks.
+
+[1] https://gitlab.com/post-factum/pf-kernel/-/commit/e487427ef07c735fdc711a56d1ceac6629c34dcf.patch
+[2] https://aur.archlinux.org/packages/ntfs3-dkms/
+
 -- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+  Oleksandr Natalenko (post-factum)
