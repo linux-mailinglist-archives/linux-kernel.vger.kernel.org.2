@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC77A319C46
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE45319C4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhBLKC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 05:02:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37962 "EHLO mx2.suse.de"
+        id S230303AbhBLKDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 05:03:45 -0500
+Received: from mga18.intel.com ([134.134.136.126]:24132 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhBLKCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 05:02:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613124094; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cs26kCY0hsa0aqGGjDhuczNNgwFlToJBee0N36Ijfno=;
-        b=gcuuKi2TtnV5+jXy9s7w1VdNVK1dg2XQ/Dq9U+YusvASWdvTKqTejXs5UO4WatYwBHsf07
-        wOmdsYw1e34GLKTdAOnPiQnx76B9Sqs3dKr4emz0te5C5a6iyK2/KKLSkNN426ZdAtYrSI
-        WvzdKglFl1TfnFx8S4QiwMk5646i6LQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 95028ADDB;
-        Fri, 12 Feb 2021 10:01:34 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 11:01:33 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Timur Tabi <timur@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
+        id S230046AbhBLKDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 05:03:36 -0500
+IronPort-SDR: gx7R40SxeodEU6QpCNEaT2Z+Ov6J1owzbe8NsK0HfSoJ9zsW6gxcwn41yLiMA49CA+9/7/5SZ+
+ gnQkSeDgHPSQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="170059826"
+X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
+   d="scan'208";a="170059826"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 02:01:47 -0800
+IronPort-SDR: ehlZTpGZ5wEitMMPpLCdIWlxBduBTxxBfLgyWANj1C32rvXqbw/7Ut+u7zm3dz8zioBr4Iy+ev
+ lVydzinX/niA==
+X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
+   d="scan'208";a="363665377"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 02:01:42 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id E29C820345;
+        Fri, 12 Feb 2021 12:01:40 +0200 (EET)
+Date:   Fri, 12 Feb 2021 12:01:40 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        akinobu.mita@gmail.com, glider@google.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 3/3] [v3] lib/vsprintf: debug_never_hash_pointers prints
- all addresses as unhashed
-Message-ID: <YCZR/VQ6M61JIEN0@alley>
-References: <20210210213453.1504219-1-timur@kernel.org>
- <20210210213453.1504219-4-timur@kernel.org>
- <20210211123118.GB31708@amd>
- <9f0c02d9-29d6-95ce-b9b7-27342aa70c6f@kernel.org>
- <20210211172026.GL308988@casper.infradead.org>
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v6 2/3] v4l: ioctl: Use %p4cc printk modifier to print
+ FourCC codes
+Message-ID: <20210212100140.GC3@paasikivi.fi.intel.com>
+References: <20210208200903.28084-1-sakari.ailus@linux.intel.com>
+ <20210208200903.28084-3-sakari.ailus@linux.intel.com>
+ <YCVb8hxawwd2l2yx@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210211172026.GL308988@casper.infradead.org>
+In-Reply-To: <YCVb8hxawwd2l2yx@alley>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-02-11 17:20:26, Matthew Wilcox wrote:
-> On Thu, Feb 11, 2021 at 11:08:12AM -0600, Timur Tabi wrote:
+Hi Petr,
+
+On Thu, Feb 11, 2021 at 05:31:46PM +0100, Petr Mladek wrote:
+> On Mon 2021-02-08 22:09:02, Sakari Ailus wrote:
+> > Now that we can print FourCC codes directly using printk, make use of the
+> > feature in V4L2 core.
 > > 
+> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > ---
+> >  drivers/media/v4l2-core/v4l2-ioctl.c | 85 +++++++---------------------
+> >  1 file changed, 21 insertions(+), 64 deletions(-)
 > > 
-> > On 2/11/21 6:31 AM, Pavel Machek wrote:
-> > > Can we make this something shorter? Clearly you don't want people
-> > > placing this in their grub config, so they'll be most likely typing
-> > > this a lot...
-> > > 
-> > > debug_pointers or debug_ptrs would be better.
-> > 
-> > dbg_unhash_ptrs?  "debug_ptrs" is too vague IMHO, and I want to keep the
-> > word "hash" somewhere there to indicate exactly what's happening.
+> > diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> > index 31d1342e61e8..31662c3a8c9e 100644
+> > --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> > +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> > @@ -265,13 +265,9 @@ static void v4l_print_fmtdesc(const void *arg, bool write_only)
+> >  {
+> >  	const struct v4l2_fmtdesc *p = arg;
+> >  
+> > -	pr_cont("index=%u, type=%s, flags=0x%x, pixelformat=%c%c%c%c, mbus_code=0x%04x, description='%.*s'\n",
+> > +	pr_cont("index=%u, type=%s, flags=0x%x, pixelformat=%p4cc, mbus_code=0x%04x, description='%.*s'\n",
 > 
-> no_hash_pointers ?
+> Is %p4cc really acceptable here?
+> 
+> The original code printed only the 4 characters. The original code
+> would print something like:
+> 
+>   index=21, type=bla, flags=0x0, pixelformat=BG12, mbus_code=0x0a9f, descrition="bla bla bla"
+> 
+> while the new code will do:
+> 
+>   index=21, type=bla, flags=0x0, pixelformat=BG12 little-endian (0x32314742), mbus_code=0x0a9f, descrition="bla bla bla"
+> 
+> This is much harder to parse because there are spaces also inside
+> pixel_format=<value>
 
-I am fine with this.
+Note that also the fourcc code itself could contains spaces so that's not
+new.
 
-I am still a bit scared of a bikeshedng. But AFAIK, Mathew was most
-active on proposing clear names. So, when he is fine with this...
+The fourcc (debug) form is now one and the same for V4L2 and DRM, but I
+guess nothing would prevent adding a shorter form if needed. This is not
+continuously happening during streaming so this is also not performance
+critical in any way. The fourcc code was used to be printed this way here
+mainly because it was, well, easy to do for "just" debugging purposes.
 
-Anyway, we should use the same name also for the variable.
+Hans, any opinion?
 
-Best Regards,
-Petr
+-- 
+Kind regards,
+
+Sakari Ailus
