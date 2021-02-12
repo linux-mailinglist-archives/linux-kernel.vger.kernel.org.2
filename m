@@ -2,76 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6FC319834
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4D931983D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhBLCKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 21:10:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229521AbhBLCKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 21:10:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id F11DA64E44;
-        Fri, 12 Feb 2021 02:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613095808;
-        bh=WWZq60lKjBbV1QGpCo+4xQ4EhtmI2S3/9grhTT5qphI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qQFdgDPq9zN2OQ0l4bBzJHYqnC6g3uO6CmHbmcinzeFq/mjWKEydlfEFqN/oX2scI
-         2T2hpqxIYso9CS6kRsBY0YeNif+Ed0cuHNtO6PM5PHOfpJRtFaZSuqGqaizvf57Ifg
-         VMKHphzDk9NoF6rjeAZ8uIpNtOa2e9VRtqlKUdiQTLWX+bGEBwnF3FXPP5NIgsrqF/
-         zrdLR9buMN4MbqwYV3r+bFSdb650y3xBhp2tBdcYuJwPCCg9GzRjdy2gz91k27/9aC
-         gv52xrQlXDvI8EWzikas7dlLYkXGUM/dd1JFi2cAdkh9jABqjrVRbS6tlzSPmxosJ4
-         1a2v6MoytddpA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DD27360951;
-        Fri, 12 Feb 2021 02:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229873AbhBLCN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 21:13:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhBLCNx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 21:13:53 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E51BC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 18:13:13 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id n14so7870602iog.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 18:13:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KNCXIuhBf/yLZUR6g/Q3bWrDbjCkAY4sfEfqXAFf6ac=;
+        b=PwLlHkN9fXZfpRWioXDoeeGXdYYWvqi46HIRhejT36qNkWkJyGKc4zk3p0GOfmzgr6
+         Q/r+kYD7SMKLoFSi2dITxN9BC40NtITXEhxpXIFZ7jEQw+fgXpFsRrgxKaxo8EMxO880
+         LfoxXYyzUgNNBgbgBxSnjPtjJfglTE2CrxRr4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KNCXIuhBf/yLZUR6g/Q3bWrDbjCkAY4sfEfqXAFf6ac=;
+        b=HhADIaHUsI3BNYAhOydwgsKIpQhHwePOzo75HHNxPNIf3jYpqdESb9ALIOdbqzREEh
+         gjfi1mV9EL0J2JnAeSQJC33XGODf/sLKGZcUw0uC5vbsbVNNvp9PszVqDoJT8r+nXvdq
+         6vwL8j6HP768CPncrZ4WV08oz8+7jTG35PMvwVG31ODLBMhXIuoMyHP2gPKPvDyd0DZt
+         S7n38RgIFPAjUj/QAOnt5NuHhwx0U9Rei89pxy3wyVsuujk7n1rBud4r/zsu/OTKBScL
+         ImS2NdcIukA0yvgPT6n/qRMwEI4Fdum+XnKbxjVrM3bdm1clhKu8+i8fMGfX/zDyN58o
+         EssA==
+X-Gm-Message-State: AOAM532myCmO2TRHPGv1r4rns+FlnIBrGd6WF4f6KwWQkGf07Lr/s611
+        /uG6Ph7CpYPOhnUhRrUZTifmfA==
+X-Google-Smtp-Source: ABdhPJxHRgQuh8MMHCQ262DBYXeGkeepRITcB4r+KoyS6RHQeVleSejAtUPLHOQGUvq9MZCYHSNzWg==
+X-Received: by 2002:a05:6602:2c4e:: with SMTP id x14mr548974iov.58.1613095992862;
+        Thu, 11 Feb 2021 18:13:12 -0800 (PST)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id c2sm3480594ilk.32.2021.02.11.18.13.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 18:13:12 -0800 (PST)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] ath9k: hold RCU lock when calling ieee80211_find_sta_by_ifaddr()
+Date:   Thu, 11 Feb 2021 19:13:05 -0700
+Message-Id: <1cfa036227cfa9fdd04316c01e1d754f13a70d9e.1613090339.git.skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1613090339.git.skhan@linuxfoundation.org>
+References: <cover.1613090339.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 0/4] net: ti: am65-cpsw-nuss: Add switchdev driver
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161309580790.7705.13800045098803596831.git-patchwork-notify@kernel.org>
-Date:   Fri, 12 Feb 2021 02:10:07 +0000
-References: <20210211105644.15521-1-vigneshr@ti.com>
-In-Reply-To: <20210211105644.15521-1-vigneshr@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
-        jiri@nvidia.com, grygorii.strashko@ti.com, andrew@lunn.ch,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+ieee80211_find_sta_by_ifaddr() must be called under the RCU lock and
+the resulting pointer is only valid under RCU lock as well.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+Fix ath_tx_process_buffer() to hold RCU read lock before it calls
+ieee80211_find_sta_by_ifaddr() and release it when the resulting
+pointer is no longer needed.
 
-On Thu, 11 Feb 2021 16:26:40 +0530 you wrote:
-> This series adds switchdev support for AM65 CPSW NUSS driver to support
-> multi port CPSW present on J721e and AM64 SoCs.
-> It adds devlink hook to switch b/w switch mode and multi mac mode.
-> 
-> v2:
-> Rebased on latest net-next
-> Update patch 1/4 with rationale for using devlink
-> 
-> [...]
+This problem was found while reviewing code to debug RCU warn from
+ath10k_wmi_tlv_parse_peer_stats_info() and a subsequent manual audit
+of other callers of ieee80211_find_sta_by_ifaddr() that don't hold
+RCU read lock.
 
-Here is the summary with links:
-  - [v2,1/4] net: ti: am65-cpsw-nuss: Add devlink support
-    https://git.kernel.org/netdev/net-next/c/58356eb31d60
-  - [v2,2/4] net: ti: am65-cpsw-nuss: Add netdevice notifiers
-    https://git.kernel.org/netdev/net-next/c/2934db9bcb30
-  - [v2,3/4] net: ti: am65-cpsw-nuss: Add switchdev support
-    https://git.kernel.org/netdev/net-next/c/86e8b070b25e
-  - [v2,4/4] docs: networking: ti: Add driver doc for AM65 NUSS switch driver
-    https://git.kernel.org/netdev/net-next/c/e276cfb9cd5b
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+---
+- Note: This patch is compile tested. I don't have access to
+  hardware.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ drivers/net/wireless/ath/ath9k/xmit.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath9k/xmit.c b/drivers/net/wireless/ath/ath9k/xmit.c
+index e60d4737fc6e..1d36aae3f7b6 100644
+--- a/drivers/net/wireless/ath/ath9k/xmit.c
++++ b/drivers/net/wireless/ath/ath9k/xmit.c
+@@ -701,6 +701,9 @@ static void ath_tx_process_buffer(struct ath_softc *sc, struct ath_txq *txq,
+ 					     ts->ts_rateindex);
+ 
+ 	hdr = (struct ieee80211_hdr *) bf->bf_mpdu->data;
++
++	rcu_read_lock();
++
+ 	sta = ieee80211_find_sta_by_ifaddr(hw, hdr->addr1, hdr->addr2);
+ 	if (sta) {
+ 		struct ath_node *an = (struct ath_node *)sta->drv_priv;
+@@ -725,6 +728,8 @@ static void ath_tx_process_buffer(struct ath_softc *sc, struct ath_txq *txq,
+ 
+ 	if (!flush)
+ 		ath_txq_schedule(sc, txq);
++
++	rcu_read_unlock();
+ }
+ 
+ static bool ath_lookup_legacy(struct ath_buf *bf)
+-- 
+2.27.0
 
