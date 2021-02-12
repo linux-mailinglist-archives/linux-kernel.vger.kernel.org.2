@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22CF319A75
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF047319A7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhBLHcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 02:32:46 -0500
-Received: from mail-lf1-f43.google.com ([209.85.167.43]:40270 "EHLO
-        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbhBLHa3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 02:30:29 -0500
-Received: by mail-lf1-f43.google.com with SMTP id v24so11767969lfr.7;
-        Thu, 11 Feb 2021 23:30:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=oHM+FbSwfw+bAEOtvRPNgvbEO07PEfYAR+cRoJRtIhE=;
-        b=IBCWWsslmaeYWDjFjxskJd3VDUxunkKuHAa7xftANS2opSO46uaPvDBoFhnH7QEBz5
-         lcG8D8KYdjMc40cN+Le907oJnxH0RL9V/O0bviSRgMSvSqMbIpcKcwzdtzCsFJkXSV2M
-         9a8tzjclRiVJnMqOUvjuQqttYQx3wu9vhxRnmOSkMGJ0oC+CXZQ5pU0CW8LbdWokBl0F
-         sYbNumBNzXpdM6qSBXPuwM6iNI0j9Hfwqw235U8tS6cR9nrtnxlOMgrK9mZUs7JhXDJS
-         INOW+yBsvY98iDisuVtvnNyUQNik2tll5iztic6/eJt1FsiSFQkapSUnfBkgNbB8tNFL
-         CD4w==
-X-Gm-Message-State: AOAM53144Jt8pGvUEtxq6PTSExCifDevlrwdaLcOS/UrR5UTxKhzElxM
-        rqM4KG5BpUh7DiMQoxduQVM=
-X-Google-Smtp-Source: ABdhPJxsTpcP9GhEE4ZXq/AR57UPCrjzy+mLS/MTfYx4ynoRV0m9jMpm49v8AXzQrU+hc8gewveWbQ==
-X-Received: by 2002:a05:6512:3743:: with SMTP id a3mr936281lfs.8.1613114985467;
-        Thu, 11 Feb 2021 23:29:45 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id w3sm883599lft.35.2021.02.11.23.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 23:29:44 -0800 (PST)
-Message-ID: <b7019810a6450f43714573f227b0082f8e029634.camel@fi.rohmeurope.com>
-Subject: Re: [RFC PATCH 4/7] regulator: add property parsing and callbacks
- to set protection limits
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-arm-msm@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-In-Reply-To: <19d533dbc99d610c40b9023dba7da7a9eaadbe3d.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
-         <19d533dbc99d610c40b9023dba7da7a9eaadbe3d.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229592AbhBLHdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 02:33:32 -0500
+Received: from mga07.intel.com ([134.134.136.100]:2579 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229880AbhBLHb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 02:31:27 -0500
+IronPort-SDR: ndFPjInU+oxGTPikaJGBzPFuD85oe2De6Mecqg/oZxmWAd398qksjgn0A1zcrkCBfiyfm+uMAd
+ z9q2Fix34Fbw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="246442151"
+X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
+   d="scan'208";a="246442151"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 23:30:42 -0800
+IronPort-SDR: 4Ttpozjz99BYQvL0XQbIbRF0fE2kY9GEG4Ik+s5GVQMqiDK0jDFmwUy/tchjBOWsqSqEkZg4/D
+ m/mti69jqJJA==
+X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
+   d="scan'208";a="415824809"
+Received: from isaxena-mobl2.amr.corp.intel.com (HELO [10.212.99.189]) ([10.212.99.189])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2021 23:30:42 -0800
+Subject: Re: Memory keys and io_uring.
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <877dndzs8c.fsf@linux.ibm.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <1cbf2f0b-7833-8a6c-e371-f648ebcb94a6@intel.com>
+Date:   Thu, 11 Feb 2021 23:30:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Date:   Fri, 12 Feb 2021 09:29:39 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <877dndzs8c.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/11/21 10:59 PM, Aneesh Kumar K.V wrote:
+> A read syscall do fail with EFAULT. But we allow read via io_uring
+> syscalls. Is that ok? 
 
-On Thu, 2021-02-11 at 14:35 +0200, Matti Vaittinen wrote:
-> Add DT property parsing code and setting callback for regulator
-> over/under
-> voltage, over-current and temperature error limits.
-> 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
->  drivers/regulator/core.c                  | 122
-> +++++++++++++++++++++-
->  drivers/regulator/of_regulator.c          |  58 ++++++++++
->  drivers/regulator/qcom-labibb-regulator.c |  10 +-
->  drivers/regulator/stpmic1_regulator.c     |  17 ++-
->  include/linux/regulator/driver.h          |  41 +++++++-
->  include/linux/regulator/machine.h         |  26 +++++
->  6 files changed, 267 insertions(+), 7 deletions(-)
+In short, yes.
 
-Just a note. I did somehow miss the qcom_spmi-regulator.c which also
-uses the .set_over_current_protection. I will include that file in next
-version if the idea is still seen worthy. Sorry for the incompleteness.
+As much as I'd like to apply pkey permissions to all accesses, when we
+don't have the CPU registers around, we don't have a choice: we have to
+let the access through.
 
-Best Regards
-	Matti Vaittinen
+The same basic thing is done for accesses via the IOMMU and for things
+like ptrace() where the ptracer's registers don't have anything to do
+with the ptracee's address space.
 
-
+We could *probably* be a bit pickier at io_uring_submit() time.  But,
+I'm not sure it's worth it.
