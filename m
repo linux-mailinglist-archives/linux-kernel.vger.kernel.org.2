@@ -2,233 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08D4319F9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:18:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F81A319FA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhBLNNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:13:23 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:24972 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhBLNG5 (ORCPT
+        id S231905AbhBLNOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:14:46 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:57130 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231952AbhBLNKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 08:06:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613135216; x=1644671216;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=wem8VWP1r4deBj6bYzYai383jsYUEwEf4qxZfo8ZsX4=;
-  b=D+WjCn7o3q/Bo8qyl1GqZU2Ogro3YHmEJJySzYKgqVrY2Nj3tC0hgL+N
-   dyJFsAp4gCL+Xh0pQRQBC3NW1Gk5lkYF8xCMABbhnz0nzbYkM0+t5q8iN
-   q/8AkeB6GqtLDUHdcTEn0LWf/1RITWP3EwJiTO73U559XRMof/EzEjLS3
-   2W24enpIfnjfgas/jMoWefpl65JhAHhZICgrB9hn2uLiVysTJbAK1frXC
-   Y7aRhHVSnwRz7UXJb2ltTRgw720EmXvXSOCSJkNYq963D3GSKRHehGgtK
-   0pAY51oUp3a0WLiFp3TNuGlexjhFEAA/AWS9DoSjv1IGH99QO9Ko4RMMQ
-   A==;
-IronPort-SDR: UA3b4W1c0SlI9aKmkIjd+jY1LFF7qGeq/5N6cNleHFkJgTI1Nb3gEtW7qkr6vL3LEHB1m1e2q+
- l8+EMK1xP6dLCDqD5pYM9dr1wfDNACiJC/ri3+nnnXR0iTDLi3V+1xFoIvsX/lys01UfEPsjQp
- FrgHn542jIcnh7IEToG5oMrQcL5bTaCxLbArIzatyNusIODdO4FZ4fpM81S77KPdLl7eXUR+G0
- mTAVDFveQmMGjQ5/OrnluvmIvgLBoGWMWFy0zFT03elcI/R9fPGpktLjhBvcD8sW6pylNzOkCs
- 7dY=
-X-IronPort-AV: E=Sophos;i="5.81,173,1610434800"; 
-   d="scan'208";a="103556667"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Feb 2021 06:05:38 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 12 Feb 2021 06:06:00 -0700
-Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 12 Feb 2021 06:05:58 -0700
-Message-ID: <ffa00a2bf83ffa21ffdc61b380ab800c31f8cf28.camel@microchip.com>
-Subject: Re: [PATCH v14 2/4] phy: Add media type and speed serdes
- configuration interfaces
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-Date:   Fri, 12 Feb 2021 14:05:35 +0100
-In-Reply-To: <04d91f6b-775a-8389-b813-31f7b4a778cb@ti.com>
-References: <20210210085255.2006824-1-steen.hegelund@microchip.com>
-         <20210210085255.2006824-3-steen.hegelund@microchip.com>
-         <04d91f6b-775a-8389-b813-31f7b4a778cb@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 
+        Fri, 12 Feb 2021 08:10:08 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11CCnvg2167631;
+        Fri, 12 Feb 2021 13:09:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2020-01-29; bh=WSbBM7PtGpXLsEuLwh7yJ5FLn3Jf4ndP5Mw+IX7i2os=;
+ b=PrILnExuY3m4efcH6gdrMxjRXjDwu3bIjwIxAG5Mja4b8mmDaTkiQlQp5O9txja6bfos
+ k8U3MsqXZG6zn7bsWmhVITfLNWk7e1jIszLDkiSSaSoJwxOodzXmTVDk0poEgH3uz9gg
+ QB9f1ogHYuz+H3dOYrbK8d0I6hdh2hoKlXUmR3FQl9WKb9cONc9fAgB3Lir2DTjNnDuz
+ WaC6OQQjnTUR7XCY30kGVbyvfdg3r6V/eTs7oYXQ/Yv0ygjMayDl9unIUEHY0dv5oTxg
+ LsWgAH/yVBbWJES8AEu9ek8bI4ISBWSRqqe/+kH/1iWQYiQ463X1Z5sGez9mhdgXO2Nl Sg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 36hkrnb2ft-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Feb 2021 13:09:04 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11CCo6t5055467;
+        Fri, 12 Feb 2021 13:09:03 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2172.outbound.protection.outlook.com [104.47.58.172])
+        by aserp3030.oracle.com with ESMTP id 36j4psyf3t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Feb 2021 13:09:03 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MBrViagkWY7EGlZgtoNaGhbm22fqBV+LYnAS4dAlZP0qH/89X3NPhXOyV1InrTdhxmeWAOr7pvb8GA/uxNAPkR28lgoUSTDBgllKl/o9wZ4IQ51lIGrfohZ9Mb/9a40i/787fhqqiCa8r+04FKVv4g/IPFnuhHmno9FTqtFshLS1AS6DifY8zqcLsJHBXVP7b0jkFtHp4x4kLGr/xu/n30dKScCZYLi6jpmP4DYjcYGlrEsmUx/xHNylvf3UIksSdkmIrHT6GDLIeHtRCCtAlFDfFlvXM9oYw9ue8TpvGtFuza37sDfcB5q7ibo6eOmDfYCkzG5b5fCegupeo4fXpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WSbBM7PtGpXLsEuLwh7yJ5FLn3Jf4ndP5Mw+IX7i2os=;
+ b=DwnjOuseWOAJ54N22bUZeCBTGwniZq/WOYK23KoQ9LIQVdEDDW1JdySyyNaHKcRWrqABFL09azlVXrD9gjkkaIjvGNrSWjbB87us1UrNZxWKaLvPv0n4yPXUt5mcq6a+yGfCxDblbDune2nTRMFIAc3HXr0dlJLKyQJNQMLXhkrbEdk5tT+5Gbm3oxdfROotWL6PQ0jKJ0O81ayYCIWuQNHL3QItCRd01aAQ/uHOZewA2Bu+eFBcB2URX1bcuP5n4hTrsot1lXjpA/o5GWJR/JY5oXdebU2k1xYLgHgtrTw5EUIKFXZE2sBVgdSXuzF/HA4TntxR7XHWIWUcgXGrWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WSbBM7PtGpXLsEuLwh7yJ5FLn3Jf4ndP5Mw+IX7i2os=;
+ b=kNqWIwGEYiQJHq8H1JLZFEQUvGMKY/2pxmiUdGtrZm+AFXkV73MjPTfiAZBcs0IXM+nISxfYd5zHxFZSOcXz6zMva8uEygGTO/BpH94QH+lD94eBW37BGQmipe5voY6KVk8RVvquq8l3sEtIZyG9+nKF/UFqJneKzcn/qm4lbbs=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com (2603:10b6:a03:8c::12)
+ by SJ0PR10MB4509.namprd10.prod.outlook.com (2603:10b6:a03:2d9::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Fri, 12 Feb
+ 2021 13:09:01 +0000
+Received: from BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571]) by BYAPR10MB3077.namprd10.prod.outlook.com
+ ([fe80::74a8:8649:e20b:d571%7]) with mapi id 15.20.3846.034; Fri, 12 Feb 2021
+ 13:09:01 +0000
+From:   Joao Martins <joao.m.martins@oracle.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: [PATCH v4 0/4] mm/gup: page unpining improvements
+Date:   Fri, 12 Feb 2021 13:08:39 +0000
+Message-Id: <20210212130843.13865-1-joao.m.martins@oracle.com>
+X-Mailer: git-send-email 2.11.0
+Content-Type: text/plain
+X-Originating-IP: [94.61.1.144]
+X-ClientProxiedBy: LO4P123CA0347.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18d::10) To BYAPR10MB3077.namprd10.prod.outlook.com
+ (2603:10b6:a03:8c::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from paddy.uk.oracle.com (94.61.1.144) by LO4P123CA0347.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:18d::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3825.17 via Frontend Transport; Fri, 12 Feb 2021 13:08:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 45660e2a-ba55-4714-caaa-08d8cf575d88
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4509:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB4509B4CE89D21CD45BF81B3ABB8B9@SJ0PR10MB4509.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:112;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aJWohGYfwsreQGWZY1Dtw5+KoizcX3HJ70iNUEQld/sMywgPr5QJXPtJR+TYFrxFdhO+2qz825uBnLuAG+k9KvZMIugHlZmT+96vqBSL0ZhscGS2QAAUoQrrFYpFWlwVP5qhZWQOjDLMyGnNe+cBjWIahs4vJcieupmT/H+LJ8MVO+qHj8dmPT5fbE5nAHn5SXVl+XQIawbU4r28/GjnG6z36xlYMyD9t064Un11GKTnzLf/4cJQ8FPIOZqX6pSI2kkIyaTD5GnQrcsnriTeAi7MCH20GTPJMSpNS+aHPKh3SzsXKgCcRLm5uCv0s95g8dRyMVLzgZREg4ub67Ys4AwGjN6KcMOIbDv/o79UsHJAW1dpDSBxGuBQQpiSKxQ6vjG3HM+ZOt3OsQuxEuqEoOziVlNayO6fTOvFbQ8wpCZDWKb+06lTnE6VI9r38wlj5jMhxGOlqwIqau+9TrAQ0GT16ut+QssRvTDG9Ex6Bb2Su+jdnNMbFqMjW4V9YO/Uk5Eb4vEQfVmGo+tXyks9skStIeK1unsidaloSzFNevxZ5d88i6E0W4bOtsbmimCJl8LTugIiGhPeEWfbMrQnQFkWCOL8/WnpvN1PfyUDZ+A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3077.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(136003)(39860400002)(366004)(6486002)(2906002)(8676002)(4326008)(52116002)(186003)(966005)(26005)(2616005)(1076003)(316002)(8936002)(107886003)(6666004)(478600001)(6916009)(36756003)(66476007)(5660300002)(86362001)(66946007)(103116003)(66556008)(54906003)(956004)(83380400001)(16526019)(7696005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?N6eqRFEEVWFECrkkJnYOg20//hKYKHI8QGmdRsgU6iNHn3XM/9L4gjDdy1kW?=
+ =?us-ascii?Q?YQe39Aa2NkA2RKp+qCOjXIT/S3HkPBAoaHr8YhEzToTaMXxAhK9sdlGALmXR?=
+ =?us-ascii?Q?hnaobiv/5+zpTjRviE0J0Elzty6BL85rrXPe76syPS1E6cGx5gUN+wCg+TQ3?=
+ =?us-ascii?Q?htMyDDSVWGTzNo1obeo1lsg0HxGRZv65no3v3vc/vmdl3szEyyL+IkOtPSRl?=
+ =?us-ascii?Q?RhXWvNJ/K6qxkewNxwaiM2dpIh7j7XB5ml4GOcYX+voo5Ak7UOog9tw379E+?=
+ =?us-ascii?Q?DJjtc6kBEuEMiYGIDDlurOigUIMBQk7XL6Di0AOpflYnjzmB0rv9/7TMOW1r?=
+ =?us-ascii?Q?HcyWDx7vVn2+muaqEJsTNQszLr+4YvBFp9XyC3AqMe/apBHXmH8Q1/bXOlQT?=
+ =?us-ascii?Q?hwPJ/7x+BA4fOQ30pn+o44GE4Ae6Is9GVTcIlCTTx+syvRr2m0wY53H7D8nN?=
+ =?us-ascii?Q?lJtiKXb6/VxCSbQvJjK0DJsZWak0TwcFxTYuSNSnhmJt8ycWLOPG0RL2ehxV?=
+ =?us-ascii?Q?x+ii1KMjHgyJYEnwIWakzRb182wse6DeMP9+ZdsP76NqVKr6W/dswdCGMA6s?=
+ =?us-ascii?Q?lBzeptW1XDzfnHReEZvKW9aQHxxvd9oIuExQDovEZsJKQEC8CmLx23Gw6SQI?=
+ =?us-ascii?Q?YrDOvuvzPMdUo7bXcVGAJuX7dSKo3DUQAOMLltbrUwagA79OjgzXKBnwOECs?=
+ =?us-ascii?Q?UP3+dhM9gMrD5yEE8HBPBSb0zBlVR3iYQJBI2dT+B4kf7/JaIEb1tVVkM3+O?=
+ =?us-ascii?Q?Rf54/UdyyRLoOVsCMGwtOyQjb5aJ7dH1VObyi/O+3XRjN0LUBd/4b5wRriXi?=
+ =?us-ascii?Q?7V+hoaWjhr2sA8WVVOf+5XM7RKeRbYABPprw2dy9Ds0iVYMuMiGJPnrt6kew?=
+ =?us-ascii?Q?Pp7ApsJJaYjB2rnZHI1xW2TqNLnfFINjXOSRe6ZxqjZM8maSjdO9tqcVL5s1?=
+ =?us-ascii?Q?5zAdpjy12uDInsUiFxgJAT5zip1PpQsIyNyAkPE3/D5A3MAPPZRcTlKFTFLP?=
+ =?us-ascii?Q?sNGl76iInEJwXLuEnIlVq99/ZyND1IRt238kG3/rjol+I/m/VTgeTKux00f5?=
+ =?us-ascii?Q?fltSYwKLr39E1ad6ZPaR7fPRP70h+yKWu/Z0bac6PIjdDnX99m0SBwsSs7Bm?=
+ =?us-ascii?Q?GWDsmRmvRLorx26l8VzhcetEcCl5ueWZpwIcerPX7wAhuQ7LyOa/3rimNKHZ?=
+ =?us-ascii?Q?m+a6ka5ueJuNQVs7tK4T4gORrfUFW2XZMBvtVdwg6oYJCeSihlRyQlEETMNz?=
+ =?us-ascii?Q?o5rnarCSj4LBqyzZALcJcvtr/s6LsZU901f8yMyLnSzk8DQDtkmXrKc1iqoZ?=
+ =?us-ascii?Q?5WU69zr9zjWLuqYPyLz8MXKY?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45660e2a-ba55-4714-caaa-08d8cf575d88
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3077.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Feb 2021 13:09:01.3084
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m12/oLIqsq6dlqAC2EQHsu0Runh9iQSgG0beeXRFgjmoQj+IrEARgKqSXmpB/FJLcHjMDXrjrP+77nxB9Yti7+AE5PxYZ9T4JoAnB0bt6rA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4509
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102120101
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102120101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+Hey,
 
-On Fri, 2021-02-12 at 17:02 +0530, Kishon Vijay Abraham I wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
-> 
-> Hi Steen,
-> 
-> On 10/02/21 2:22 pm, Steen Hegelund wrote:
-> > Provide new phy configuration interfaces for media type and speed
-> > that
-> > allows allows e.g. PHYs used for ethernet to be configured with
-> > this
-> > information.
-> > 
-> > Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> > Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> > Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > ---
-> >  drivers/phy/phy-core.c  | 30 ++++++++++++++++++++++++++++++
-> >  include/linux/phy/phy.h | 26 ++++++++++++++++++++++++++
-> >  2 files changed, 56 insertions(+)
-> > 
-> > diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
-> > index 71cb10826326..ccb575b13777 100644
-> > --- a/drivers/phy/phy-core.c
-> > +++ b/drivers/phy/phy-core.c
-> > @@ -373,6 +373,36 @@ int phy_set_mode_ext(struct phy *phy, enum
-> > phy_mode mode, int submode)
-> >  }
-> >  EXPORT_SYMBOL_GPL(phy_set_mode_ext);
-> > 
-> > +int phy_set_media(struct phy *phy, enum phy_media media)
-> > +{
-> > +     int ret;
-> > +
-> > +     if (!phy || !phy->ops->set_media)
-> > +             return 0;
-> > +
-> > +     mutex_lock(&phy->mutex);
-> > +     ret = phy->ops->set_media(phy, media);
-> > +     mutex_unlock(&phy->mutex);
-> > +
-> > +     return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(phy_set_media);
-> > +
-> > +int phy_set_speed(struct phy *phy, int speed)
-> > +{
-> > +     int ret;
-> > +
-> > +     if (!phy || !phy->ops->set_speed)
-> > +             return 0;
-> > +
-> > +     mutex_lock(&phy->mutex);
-> > +     ret = phy->ops->set_speed(phy, speed);
-> > +     mutex_unlock(&phy->mutex);
-> > +
-> > +     return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(phy_set_speed);
-> 
-> Can't speed derived from mode? Do we need a separate set_speed
-> function?
-> 
-> Thanks
-> Kishon
+This series improves page unpinning, with an eye on improving MR
+deregistration for big swaths of memory (which is bound by the page
+unpining), particularly:
 
-Yes the client will need to be able to choose the speed as needed: 
-e.g. lower than the serdes mode supports, in case the the media or the
-other end is not capable of running that speed.  
+ 1) Decrement the head page by @ntails and thus reducing a lot the number of
+atomic operations per compound page. This is done by comparing individual
+tail pages heads, and counting number of consecutive tails on which they 
+match heads and based on that update head page refcount. Should have a
+visible improvement in all page (un)pinners which use compound pages
 
-An example is a 10G and 25G serdes connected via DAC and as there is no
-inband autoneg, the 25G client would have to manually select 10G speed
-to communicate with its partner.
+ 2) Introducing a new API for unpinning page ranges (to avoid the trick in the
+previous item and be based on math), and use that in RDMA ib_mem_release
+(used for mr deregistration).
 
-> 
-> > +
-> >  int phy_reset(struct phy *phy)
-> >  {
-> >       int ret;
-> > diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> > index e435bdb0bab3..e4fd69a1faa7 100644
-> > --- a/include/linux/phy/phy.h
-> > +++ b/include/linux/phy/phy.h
-> > @@ -44,6 +44,12 @@ enum phy_mode {
-> >       PHY_MODE_DP
-> >  };
-> > 
-> > +enum phy_media {
-> > +     PHY_MEDIA_DEFAULT,
-> > +     PHY_MEDIA_SR,
-> > +     PHY_MEDIA_DAC,
-> > +};
-> > +
-> >  /**
-> >   * union phy_configure_opts - Opaque generic phy configuration
-> >   *
-> > @@ -64,6 +70,8 @@ union phy_configure_opts {
-> >   * @power_on: powering on the phy
-> >   * @power_off: powering off the phy
-> >   * @set_mode: set the mode of the phy
-> > + * @set_media: set the media type of the phy (optional)
-> > + * @set_speed: set the speed of the phy (optional)
-> >   * @reset: resetting the phy
-> >   * @calibrate: calibrate the phy
-> >   * @release: ops to be performed while the consumer relinquishes
-> > the PHY
-> > @@ -75,6 +83,8 @@ struct phy_ops {
-> >       int     (*power_on)(struct phy *phy);
-> >       int     (*power_off)(struct phy *phy);
-> >       int     (*set_mode)(struct phy *phy, enum phy_mode mode, int
-> > submode);
-> > +     int     (*set_media)(struct phy *phy, enum phy_media media);
-> > +     int     (*set_speed)(struct phy *phy, int speed);
-> > 
-> >       /**
-> >        * @configure:
-> > @@ -215,6 +225,8 @@ int phy_power_off(struct phy *phy);
-> >  int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int
-> > submode);
-> >  #define phy_set_mode(phy, mode) \
-> >       phy_set_mode_ext(phy, mode, 0)
-> > +int phy_set_media(struct phy *phy, enum phy_media media);
-> > +int phy_set_speed(struct phy *phy, int speed);
-> >  int phy_configure(struct phy *phy, union phy_configure_opts
-> > *opts);
-> >  int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
-> >                union phy_configure_opts *opts);
-> > @@ -344,6 +356,20 @@ static inline int phy_set_mode_ext(struct phy
-> > *phy, enum phy_mode mode,
-> >  #define phy_set_mode(phy, mode) \
-> >       phy_set_mode_ext(phy, mode, 0)
-> > 
-> > +static inline int phy_set_media(struct phy *phy, enum phy_media
-> > media)
-> > +{
-> > +     if (!phy)
-> > +             return 0;
-> > +     return -ENOSYS;
-> > +}
-> > +
-> > +static inline int phy_set_speed(struct phy *phy, int speed)
-> > +{
-> > +     if (!phy)
-> > +             return 0;
-> > +     return -ENOSYS;
-> > +}
-> > +
-> >  static inline enum phy_mode phy_get_mode(struct phy *phy)
-> >  {
-> >       return PHY_MODE_INVALID;
-> > 
+Performance improvements: unpin_user_pages() for hugetlbfs and THP improves ~3x
+(through gup_test) and RDMA MR dereg improves ~4.5x with the new API.
+See patches 2 and 4 for those.
+
+These patches used to be in this RFC:
+
+https://lore.kernel.org/linux-mm/20201208172901.17384-1-joao.m.martins@oracle.com/,
+"[PATCH RFC 0/9] mm, sparse-vmemmap: Introduce compound pagemaps"
+
+But were moved separately at the suggestion of Jason, given it's applicable
+to page unpinning in general. Thanks Jason and John for all the comments.
+
+These patches apply on top of linux-next tag next-20210202.
+
+Suggestions, comments, welcomed as usual.
+
+	Joao
+
+Changelog since,
+
+v3 -> v4:
+ * Add the Reviewed-by/Acked-by by Jason on all patches.
+ * Add the Reviewed-by by John on the third patch.
+ * Fix the wrong mention to get_user_pages()  in
+ unpin_user_page_range_dirty_lock()  docs (third patch).
+
+v2 -> v3:
+ * Handle compound_order = 1 as well and move subtraction to min_t()
+   on patch 3.
+ * Remove stale paragraph on patch 3 commit description (John)
+ * Rename range_next to compound_range_next() (John)
+ * Add John's Reviewed-by on patch 1 (John)
+ * Clean and rework compound_next() on patch 1 (John)
+
+v1 -> v2:
+ * Prefix macro arguments with __ to avoid collisions with other defines (John)
+ * Remove count_tails() and have the logic for the two iterators split into
+   range_next() and compound_next() (John)
+ * Remove the @range boolean from the iterator helpers (John)
+ * Add docs on unpin_user_page_range_dirty_lock() on patch 3 (John)
+ * Use unsigned for @i on patch 4 (John)
+ * Fix subject line of patch 4 (John)
+ * Add John's Reviewed-by on the second patch
+ * Fix incorrect use of @nmap and use @sg_nents instead (Jason)
+
+RFC -> v1:
+ * Introduce a head/ntails iterator and change unpin_*_pages() to use that,
+   inspired by folio iterators (Jason)
+ * Introduce an alternative unpin_user_page_range_dirty_lock() to unpin based
+   on a consecutive page range without having to walk page arrays (Jason)
+ * Use unsigned for number of tails (Jason)
 
 
-Thanks for your comments.
+Joao Martins (4):
+  mm/gup: add compound page list iterator
+  mm/gup: decrement head page once for group of subpages
+  mm/gup: add a range variant of unpin_user_pages_dirty_lock()
+  RDMA/umem: batch page unpin in __ib_umem_release()
 
+ drivers/infiniband/core/umem.c |  12 ++--
+ include/linux/mm.h             |   2 +
+ mm/gup.c                       | 117 ++++++++++++++++++++++++++++-----
+ 3 files changed, 107 insertions(+), 24 deletions(-)
 
 -- 
-BR
-Steen
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=
-steen.hegelund@microchip.com
+2.17.1
 
