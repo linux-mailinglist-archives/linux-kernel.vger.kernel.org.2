@@ -2,82 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D2E31A602
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD5231A607
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbhBLUYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:24:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52516 "EHLO mail.kernel.org"
+        id S230227AbhBLU1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:27:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231293AbhBLUYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:24:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0A7B64E95;
-        Fri, 12 Feb 2021 20:23:39 +0000 (UTC)
+        id S229959AbhBLU1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 15:27:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3D4760200;
+        Fri, 12 Feb 2021 20:26:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613161419;
-        bh=SgpeauIjBEYBb19bzKlcu3o1aZnQbA7DQQyuDGnV+uw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bgpPQyf79qdr95if+5Dmg8ElIx9DuTNkhPqEWCY8ykckc5CIjK6dnlop9hrIluch8
-         DKhZL6ZTZNmP05P+g2Zf+Kl2bTeTmmfFjEH/RYKDC5C4SacpQIeq7nbwD5Yq8Vefwi
-         AVuAgmifzPrYjUp/fvJsYXTv8g/pTHVxFAtx/Ru605wde12aZtW5srazgdj/R9UJjR
-         ukh4jqCH+m4tljEHjSGbXoYp2k1CEUVqKUTDATxLgMLsWqE+0pTA067gadqaclshbx
-         ZkWzPB86j/7fx3VmtF97IDcKTrH5JqWZT4TCIf4FUwqo3kJRVwv62Jx2N1E9rRcrg3
-         0AhPRQx7BUNSQ==
-Received: by mail-oo1-f45.google.com with SMTP id i11so135158oov.13;
-        Fri, 12 Feb 2021 12:23:39 -0800 (PST)
-X-Gm-Message-State: AOAM531PJwx9yJ/nJJWdnJAjn0+rqfA27ZodRd9a7fxxk8b+dTuO36l/
-        bI4hOUsWK/i3lIy+VnLDHoeURLXxa4aPvQBlVDk=
-X-Google-Smtp-Source: ABdhPJwMNy7Be51JAAzOcVXxyMadWUxZgfu2ogN/4Rpg2m9kmLt37KCPrT5+zVNmI6BrFLJtsLdm+NGVC0q+89FH2u4=
-X-Received: by 2002:a4a:88c9:: with SMTP id q9mr3261535ooh.26.1613161418961;
- Fri, 12 Feb 2021 12:23:38 -0800 (PST)
+        s=k20201202; t=1613161581;
+        bh=uvh2JjJGO0LkjSarTE71s0DcdlwXWYF696TTVPU/K98=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JMtwmZx2glV5ayocFr98JAfSziC5Jq2W0I8qBI3FfyoddlmdavXgD3OlV0hts1aYB
+         W3PZN203IyUBiyW0kQxZzA+DZUn1/sgXz0VUqAcjCUWvDQZUsJwgfB6HndGp8k7TLq
+         b2m6AM8FdnfYUQ2jTFgeKb2ZSULHSc4P53DS3kMDW1+/eQ1JA2aOZKEAogReJvI6II
+         IIO1tReYhvAzU6GFqTjQm8V6ufGsT22C3dljGDCi+IqvGN9ImQPF2IoDHkcTd/JEI6
+         bapfP4VDR1FrdpzM97SciNSoCrQIfwqz7I9xa30wh3xmEIRGcH8nW8mRXqGRMxEAMe
+         0RzcleV5vLrtg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 66F4C40513; Fri, 12 Feb 2021 17:26:16 -0300 (-03)
+Date:   Fri, 12 Feb 2021 17:26:16 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf libperf: Remove unused xyarray.c
+Message-ID: <20210212202616.GG1398414@kernel.org>
+References: <20210212043803.365993-1-irogers@google.com>
+ <YCY9dtFKwTLjTq+w@krava>
 MIME-Version: 1.0
-References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
- <1612774577-55943-2-git-send-email-luojiaxing@huawei.com> <fab1e871-08e4-fc71-9dbf-9bcacf18e2e1@ti.com>
- <CAK8P3a0m4ocfLyJZ5wMxyKESYUJ5um5sb5MyAzC8ckCb6qAH5g@mail.gmail.com>
- <d5465b81-bb53-49ee-a556-40d208deb765@ti.com> <a61ef337fd1c4538a47fe855920f95d3@hisilicon.com>
- <CAK8P3a3SHQNjF5ZpqHQweG7BQ52Xi1hQKDiMVKq4aNK_7VDw6w@mail.gmail.com>
- <e34a4085-268f-1cd0-a5dc-a87a2e655fe2@ti.com> <2a12cf7a21f74a0c9e2552a467b77fae@hisilicon.com>
- <YCZfBMPwmzD2U/4c@smile.fi.intel.com> <c4a07bef5dd24fd2af0aa7fe4c78b903@hisilicon.com>
- <33720e72-a438-8ffe-1b5f-38756738ad9b@ti.com>
-In-Reply-To: <33720e72-a438-8ffe-1b5f-38756738ad9b@ti.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 12 Feb 2021 21:23:23 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0JEhhw4vB=YgUJj5_ywds=sVuzPd4Zf0iiRwX4Mgsk3g@mail.gmail.com>
-Message-ID: <CAK8P3a0JEhhw4vB=YgUJj5_ywds=sVuzPd4Zf0iiRwX4Mgsk3g@mail.gmail.com>
-Subject: Re: [Linuxarm] Re: [PATCH for next v1 1/2] gpio: omap: Replace
- raw_spin_lock_irqsave with raw_spin_lock in omap_gpio_irq_handler()
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        luojiaxing <luojiaxing@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCY9dtFKwTLjTq+w@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:53 PM Grygorii Strashko
-<grygorii.strashko@ti.com> wrote:
->
-> The worst RT case I can imagine is when gpio API is still called from hard IRQ context by some
-> other device driver - some toggling for example.
-> Note. RT or "threadirqs" does not mean gpiochip become sleepable.
->
-> In this case:
->   threaded handler
->     raw_spin_lock
->         IRQ from other device
->            hard_irq handler
->              gpiod_x()
->                 raw_spin_lock_irqsave() -- oops
->
+Em Fri, Feb 12, 2021 at 09:33:58AM +0100, Jiri Olsa escreveu:
+> On Thu, Feb 11, 2021 at 08:38:03PM -0800, Ian Rogers wrote:
+> > Migrated to libperf in:
+> > commit 4b247fa7314c ("libperf: Adopt xyarray class from perf")
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Good point, I had missed the fact that drivers can call gpio functions from
-hardirq context when I replied earlier, gpio is clearly special here.
+Thanks, applied.
 
-          Arnd
+- Arnaldo
+
+ 
+> thanks,
+> jirka
+> 
+> > 
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/xyarray.c | 33 ---------------------------------
+> >  1 file changed, 33 deletions(-)
+> >  delete mode 100644 tools/perf/util/xyarray.c
+> > 
+> > diff --git a/tools/perf/util/xyarray.c b/tools/perf/util/xyarray.c
+> > deleted file mode 100644
+> > index 86889ebc3514..000000000000
+> > --- a/tools/perf/util/xyarray.c
+> > +++ /dev/null
+> > @@ -1,33 +0,0 @@
+> > -// SPDX-License-Identifier: GPL-2.0
+> > -#include "xyarray.h"
+> > -#include <stdlib.h>
+> > -#include <string.h>
+> > -#include <linux/zalloc.h>
+> > -
+> > -struct xyarray *xyarray__new(int xlen, int ylen, size_t entry_size)
+> > -{
+> > -	size_t row_size = ylen * entry_size;
+> > -	struct xyarray *xy = zalloc(sizeof(*xy) + xlen * row_size);
+> > -
+> > -	if (xy != NULL) {
+> > -		xy->entry_size = entry_size;
+> > -		xy->row_size   = row_size;
+> > -		xy->entries    = xlen * ylen;
+> > -		xy->max_x      = xlen;
+> > -		xy->max_y      = ylen;
+> > -	}
+> > -
+> > -	return xy;
+> > -}
+> > -
+> > -void xyarray__reset(struct xyarray *xy)
+> > -{
+> > -	size_t n = xy->entries * xy->entry_size;
+> > -
+> > -	memset(xy->contents, 0, n);
+> > -}
+> > -
+> > -void xyarray__delete(struct xyarray *xy)
+> > -{
+> > -	free(xy);
+> > -}
+> > -- 
+> > 2.30.0.478.g8a0d178c01-goog
+> > 
+> 
+
+-- 
+
+- Arnaldo
