@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5932319F9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE492319F99
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbhBLNMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:12:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230336AbhBLM6w (ORCPT
+        id S232147AbhBLNMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:12:51 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:49273 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231317AbhBLM7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:58:52 -0500
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BC7C061574;
-        Fri, 12 Feb 2021 04:58:11 -0800 (PST)
-Received: by mail-vs1-xe2c.google.com with SMTP id a11so4007045vsm.7;
-        Fri, 12 Feb 2021 04:58:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z12PhhCoyKbGlotTE60lQTToSx/Gs5QgkUPZavQ8JyM=;
-        b=WakuNUrLlqX3/pBx8Z5QWInFd2yPiItuIQv0HfK2RuT6FZ9GV1Q9EesYKehz/9zq1u
-         0i0yYGb1RCCwH546iOAiodn/t4q/0NkGapIQt7gnyZh02Ne55TgDkxsWlqq8CTP7s3wH
-         Y1jKc3TFbigc+4YZ9EuPwZDO+NA9XsJ7bGDB+lz/vBkm0pXIPcY5J7i4FOEyC/4aSRmX
-         tYDbM+tQZ42kmiykaxMwTzg/KXgn7XJJ/gCtC/pIJNDopm9nxhKRUNxIdar8a595ou4B
-         MCpj3dHuI7QKp0t2WwOnEJOhQQKGIatIobHB8tUp4ZBC2f4x43D+9V/LSZOVcB1b51Qn
-         Y6Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z12PhhCoyKbGlotTE60lQTToSx/Gs5QgkUPZavQ8JyM=;
-        b=EA55BL0ahihrfWwwxdoUSQfvjoIFjf3K5haMD6F3OKQjawyguqV7TuGmK/89WfM4JX
-         bgFPI4dKavm0JSY9z30TrcfII7151ZpQpadfWF3O9NkfWlTW5vOuHwS+Awzw7jh0yBxy
-         Ob4B9WHIgdbcMVWjHG8z5ZXPWRL6ctShflPPQ5I7MaGpC9SN4PA2DFXA/cnle5Rx7ybj
-         13Pn/NVv3RAxJRgTxPOvbNfGZZhATenylpf6ywe2phGJxDGqGLCBmxlEijqZhSRyN9RE
-         k6zGFcczyEV3UJTA0ujIB9G2TGi959Aeg+2rseCCAKA0DXWdM5h9Li0vmMIbKcxoEN+g
-         X4lw==
-X-Gm-Message-State: AOAM533NBZUzLjvBfdYWzZUKchtA9TDhdK1dam2VDxXVNfTndZdooyX3
-        VHW0uY8sBbllhv73d2ikN6cI/BUuHg9o8hruhaM=
-X-Google-Smtp-Source: ABdhPJz3FJd2niEkts/x/fUwfjf6jSSgG5LfMcil8AoCJ8Ae9QFcx8LfcFbVGYiker6htZZ0mPPuDZXC92wGm/H7das=
-X-Received: by 2002:a67:882:: with SMTP id 124mr998667vsi.33.1613134690545;
- Fri, 12 Feb 2021 04:58:10 -0800 (PST)
+        Fri, 12 Feb 2021 07:59:09 -0500
+Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11CCwHU0006876;
+        Fri, 12 Feb 2021 21:58:17 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
+ Fri, 12 Feb 2021 21:58:17 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11CCwHoG006873
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 12 Feb 2021 21:58:17 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: possible deadlock in start_this_handle (2)
+To:     Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+References: <20210211121020.GO19070@quack2.suse.cz>
+ <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
+ <20210211125717.GH308988@casper.infradead.org>
+ <YCUr99//z8hJmnDH@dhcp22.suse.cz>
+ <20210211132533.GI308988@casper.infradead.org>
+ <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
+ <20210211142630.GK308988@casper.infradead.org>
+ <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
+ <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
+ <20210212122207.GM308988@casper.infradead.org>
+ <YCZ056SJDGrgXCss@dhcp22.suse.cz>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <2b90c488-a6b9-2565-bd3a-e4f8bf8404e9@i-love.sakura.ne.jp>
+Date:   Fri, 12 Feb 2021 21:58:15 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210205163752.11932-1-chris@chris-wilson.co.uk> <20210205220012.1983-1-chris@chris-wilson.co.uk>
-In-Reply-To: <20210205220012.1983-1-chris@chris-wilson.co.uk>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Fri, 12 Feb 2021 12:57:59 +0000
-Message-ID: <CACvgo52u1ASWXOuWuDwoXvbZhoq+RHn_GTxD5y9k+kO_dzmT7w@mail.gmail.com>
-Subject: Re: [PATCH v3] kcmp: Support selection of SYS_kcmp without CHECKPOINT_RESTORE
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Will Drewry <wad@chromium.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        "# 3.13+" <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YCZ056SJDGrgXCss@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 5 Feb 2021 at 22:01, Chris Wilson <chris@chris-wilson.co.uk> wrote:
->
-> Userspace has discovered the functionality offered by SYS_kcmp and has
-> started to depend upon it. In particular, Mesa uses SYS_kcmp for
-> os_same_file_description() in order to identify when two fd (e.g. device
-> or dmabuf)
+On 2021/02/12 21:30, Michal Hocko wrote:
+> On Fri 12-02-21 12:22:07, Matthew Wilcox wrote:
+>> On Fri, Feb 12, 2021 at 08:18:11PM +0900, Tetsuo Handa wrote:
+>>> On 2021/02/12 1:41, Michal Hocko wrote:
+>>>> But I suspect we have drifted away from the original issue. I thought
+>>>> that a simple check would help us narrow down this particular case and
+>>>> somebody messing up from the IRQ context didn't sound like a completely
+>>>> off.
+>>>>
+>>>
+>>>  From my experience at https://lkml.kernel.org/r/201409192053.IHJ35462.JLOMOSOFFVtQFH@I-love.SAKURA.ne.jp ,
+>>> I think we can replace direct PF_* manipulation with macros which do not receive "struct task_struct *" argument.
+>>> Since TASK_PFA_TEST()/TASK_PFA_SET()/TASK_PFA_CLEAR() are for manipulating PFA_* flags on a remote thread, we can
+>>> define similar ones for manipulating PF_* flags on current thread. Then, auditing dangerous users becomes easier.
+>>
+>> No, nobody is manipulating another task's GFP flags.
+> 
+> Agreed. And nobody should be manipulating PF flags on remote tasks
+> either.
+> 
 
-As you rightfully point out, SYS_kcmp is a bit of a two edged sword.
-While you mention the CONFIG issue, there is also a portability aspect
-(mesa runs on more than just linux) and as well as sandbox filtering
-of the extra syscall.
-
-Last time I looked, the latter was still an issue and mesa was using
-SYS_kcmp to compare device node fds.
-A far shorter and more portable solution is possible, so let me
-prepare a Mesa patch.
-
--Emil
+No. You are misunderstanding. The bug report above is an example of manipulating PF flags on remote tasks.
+You say "nobody should", but the reality is "there indeed was". There might be unnoticed others. The point of
+this proposal is to make it possible to "find such unnoticed users who are manipulating PF flags on remote tasks".
