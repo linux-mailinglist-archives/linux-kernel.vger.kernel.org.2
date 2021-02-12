@@ -2,178 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2F5319D43
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3575B319D4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhBLLUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:20:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhBLLTt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:19:49 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07870C0617AB
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 03:18:58 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id x136so5633150pfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 03:18:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wF13wHlH8AwN31lqAZwhyJR4x/IvJw4g38aibW4ph8w=;
-        b=Amb+jKC7GS9/Nh89skSUnbGw/MjcxgSTvKj+QeSofjwQWAB72O+crjokGbjJKp4nzt
-         0xo1aAAVZYXXctB3fqwFF4Z+IlaZ4SK61Cl9x07BQVVSGo/NPxaZ7/BKR45XDib8/37A
-         2e/c4V+MhTJ+ag97f4Soca6W4JFcfW/3XOjB6SOty7Jpfp60Jn4MlHY3vqcvQ+cigg15
-         WorvVsnqqfvh7bBwDIQW1p0K7nFd18ZnhXYr3/fhVNbztDxo5c2VALk8iwX2veHnUMDm
-         aYY0dK6GJxq4oJv/hPQ6KOnCWKnlB6TvEjJlu8rmKTSzQwBFEEBhstacZA1Rn/z4LNiY
-         XPKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wF13wHlH8AwN31lqAZwhyJR4x/IvJw4g38aibW4ph8w=;
-        b=Qo/PJ//wEQlCXMWKoL4g1ag5o/Tbkg4rkfEMTvN+GJwLP5+ds3kI/39QtyXS0ES/It
-         nu+6FPS2eVSw7rbRnpxZ0kMUO6nD/CUefPDGMhEZMAdcrzMAwBvPdILLwhqp2RD6hSWn
-         cJD+HqEJ5J+VcmYA+pfHDJT4QCBLgZt3IexND+s1I6jZlzS/GHGpMhn9+NKEx7/LePDh
-         333WQXW/npWhO6861FH9JPYnjQiCXEnxUi3rW6qJpZPEwNtatGHy6VhFsDS5a5FAvC6r
-         PPvFsdDgNGx3QpxnQ+vNWZ1Xdp1+1ic2roF/n7zqdgOKI25L18GjSB4+UnAgG5cruOIY
-         6/IA==
-X-Gm-Message-State: AOAM531bhXMfGUE9zNx1u2qQSQJWxQMFdQRz9A0kCZIxQ2PPM53/yVJl
-        QoTl69wZEwvSyBFg2nv080X6zw==
-X-Google-Smtp-Source: ABdhPJwc3RACf1a60kDzhiAt8G6zfxfDX50y6YB81gE9Cr9NCRMlnocyE/BJ7az/AHL9e8GmoQCRtw==
-X-Received: by 2002:a63:4f1f:: with SMTP id d31mr2802136pgb.104.1613128737563;
-        Fri, 12 Feb 2021 03:18:57 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id 74sm8836106pfw.53.2021.02.12.03.18.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 Feb 2021 03:18:57 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: [PATCH V8 4/4] of: unittest: Statically apply overlays using fdtoverlay
-Date:   Fri, 12 Feb 2021 16:48:38 +0530
-Message-Id: <3fd43e11012d0c21606aef6d2af1e01a4efe274c.1613127681.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1613127681.git.viresh.kumar@linaro.org>
-References: <cover.1613127681.git.viresh.kumar@linaro.org>
+        id S231152AbhBLLVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:21:50 -0500
+Received: from mga02.intel.com ([134.134.136.20]:13597 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230206AbhBLLUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 06:20:16 -0500
+IronPort-SDR: Qegj80yXQGpmEstzuCdfrA+WapeshJPF+QK1inO4hBlGTJCCeUZlIvw0TUlggnxCwgoajC5aC8
+ Qlo4FWX/enZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9892"; a="169524664"
+X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
+   d="scan'208";a="169524664"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 03:19:25 -0800
+IronPort-SDR: o4XUVyapFaA4ncOLCojy9ctX5wTK4EP0Z8qRnofniDW/2mnGpL1xDKer7kIWCN+4Nan7JWx5bj
+ +IaNtV+9xL6A==
+X-IronPort-AV: E=Sophos;i="5.81,173,1610438400"; 
+   d="scan'208";a="397941401"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 03:19:24 -0800
+Date:   Fri, 12 Feb 2021 19:19:21 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-next@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virt: acrn: Fix vCPU removing code build error
+Message-ID: <20210212111921.GA30008@shuo-intel.sh.intel.com>
+References: <20210212045724.77846-1-shuo.a.liu@intel.com>
+ <YCYzwVE0wm5osXGF@kroah.com>
+ <20210212105853.GF15601@shuo-intel.sh.intel.com>
+ <YCZgOrbH7txiOedo@kroah.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YCZgOrbH7txiOedo@kroah.com>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that fdtoverlay is part of the kernel build, start using it to test
-the unitest overlays we have by applying them statically. Create two new
-base files static_base_1.dts and static_base_2.dts which includes other
-.dtsi files.
+On Fri 12.Feb'21 at 12:02:18 +0100, Greg Kroah-Hartman wrote:
+>On Fri, Feb 12, 2021 at 06:58:53PM +0800, Shuo A Liu wrote:
+>> Hi Greg,
+>>
+>> On Fri 12.Feb'21 at  8:52:33 +0100, Greg Kroah-Hartman wrote:
+>> > On Fri, Feb 12, 2021 at 12:57:24PM +0800, shuo.a.liu@intel.com wrote:
+>> > > From: Shuo Liu <shuo.a.liu@intel.com>
+>> > >
+>> > > vCPU removing code depends on CONFIG_HOTPLUG_CPU as it uses remove_cpu()
+>> > > and add_cpu(). Make the vCPU removing interface building with
+>> > > CONFIG_HOTPLUG_CPU.
+>> > >
+>> > > ../drivers/virt/acrn/hsm.c: In function ‘remove_cpu_store’:
+>> > > ../drivers/virt/acrn/hsm.c:389:3: error: implicit declaration of function ‘remove_cpu’; [-Werror=implicit-function-declaration]
+>> > >    remove_cpu(cpu);
+>> > >
+>> > > ../drivers/virt/acrn/hsm.c:402:2: error: implicit declaration of function ‘add_cpu’; [-Werror=implicit-function-declaration]
+>> > >    add_cpu(cpu);
+>> > >
+>> > > Fixes: 279dcf693ac7 ("virt: acrn: Introduce an interface for Service VM to control vCPU")
+>> > > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>> > > Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+>> > > Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+>> > > ---
+>> > >  drivers/virt/acrn/hsm.c | 4 ++++
+>> > >  1 file changed, 4 insertions(+)
+>> > >
+>> > > diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+>> > > index 1f6b7c54a1a4..e340788aacdf 100644
+>> > > --- a/drivers/virt/acrn/hsm.c
+>> > > +++ b/drivers/virt/acrn/hsm.c
+>> > > @@ -372,6 +372,7 @@ static int acrn_dev_release(struct inode *inode, struct file *filp)
+>> > >  	return 0;
+>> > >  }
+>> > >
+>> > > +#ifdef CONFIG_HOTPLUG_CPU
+>> > >  static ssize_t remove_cpu_store(struct device *dev,
+>> > >  				struct device_attribute *attr,
+>> > >  				const char *buf, size_t count)
+>> > > @@ -403,9 +404,12 @@ static ssize_t remove_cpu_store(struct device *dev,
+>> > >  	return ret;
+>> > >  }
+>> > >  static DEVICE_ATTR_WO(remove_cpu);
+>> > > +#endif
+>> > >
+>> > >  static struct attribute *acrn_attrs[] = {
+>> > > +#ifdef CONFIG_HOTPLUG_CPU
+>> > >  	&dev_attr_remove_cpu.attr,
+>> > > +#endif
+>> > >  	NULL
+>> > >  };
+>> > >
+>> > >
+>> >
+>> > Shouldn't the real solution for this be that remove_cpu() and add_cpu()
+>> > have function prototypes for when this is not enabled in the kernel
+>> > build?
+>>
+>> Something like this in linux/cpu.h?
+>>
+>> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+>> index 3aaa0687e8df..94a578a96202 100644
+>> --- a/include/linux/cpu.h
+>> +++ b/include/linux/cpu.h
+>> @@ -108,6 +108,8 @@ static inline void cpu_maps_update_done(void)
+>> {
+>> }
+>>
+>> +static inline int add_cpu(unsigned int cpu) { return 0;}
+>> +
+>> #endif /* CONFIG_SMP */
+>> extern struct bus_type cpu_subsys;
+>>
+>> @@ -137,6 +139,7 @@ static inline int  cpus_read_trylock(void) { return
+>> true; }
+>> static inline void lockdep_assert_cpus_held(void) { }
+>> static inline void cpu_hotplug_disable(void) { }
+>> static inline void cpu_hotplug_enable(void) { }
+>> +static inline int remove_cpu(unsigned int cpu) { return -EPERM; }
+>> static inline void smp_shutdown_nonboot_cpus(unsigned int primary_cpu)
+>> { }
+>> #endif /* !CONFIG_HOTPLUG_CPU */
+>>
+>>
+>> >
+>> > Putting #ifdef in .c files like this is not a good idea at all.
+>> >
+>> > Then, at runtime, you can determine if you need to create this sysfs
+>> > file or not, as you do not want to expose it to userspace if the kernel
+>> > can not handle it, right?
+>>
+>> Right. I don't want to expose the sysfs to userspace if the kernel built
+>> w/o CONFIG_HOTPLUG_CPU. But how to implement that if #ifdef is not used?
+>> misc_register() creates sysfs with .groups (acrn_attr_groups)
+>> unconditionally, then userspace can see the interface even it doesn't
+>> work.
+>
+>Use the is_visible() callback for your attribute group.
 
-Some unittest overlays deliberately contain errors that unittest checks
-for. These overlays will cause fdtoverlay to fail, and are thus not
-included for static builds.
+Thanks for the guide, is_visible() is good. Seems good i can provide the
+callback with 
+	return IS_ENABLED(CONFIG_HOTPLUG_CPU);
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/of/unittest-data/Makefile          | 50 ++++++++++++++++++++++
- drivers/of/unittest-data/static_base_1.dts |  4 ++
- drivers/of/unittest-data/static_base_2.dts |  4 ++
- 3 files changed, 58 insertions(+)
- create mode 100644 drivers/of/unittest-data/static_base_1.dts
- create mode 100644 drivers/of/unittest-data/static_base_2.dts
+Will update in v2.
 
-diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
-index 009f4045c8e4..f88b2f48f172 100644
---- a/drivers/of/unittest-data/Makefile
-+++ b/drivers/of/unittest-data/Makefile
-@@ -34,7 +34,57 @@ DTC_FLAGS_overlay += -@
- DTC_FLAGS_overlay_bad_phandle += -@
- DTC_FLAGS_overlay_bad_symbol += -@
- DTC_FLAGS_overlay_base += -@
-+DTC_FLAGS_static_base_1 += -@
-+DTC_FLAGS_static_base_2 += -@
- DTC_FLAGS_testcases += -@
- 
- # suppress warnings about intentional errors
- DTC_FLAGS_testcases += -Wno-interrupts_property
-+
-+# Apply overlays statically with fdtoverlay.  This is a build time test that
-+# the overlays can be applied successfully by fdtoverlay.  This does not
-+# guarantee that the overlays can be applied successfully at run time by
-+# unittest, but it provides a bit of build time test coverage for those
-+# who do not execute unittest.
-+#
-+# The overlays are applied on top of static_base_1.dtb and static_base_2.dtb to
-+# create static_test_1.dtb and static_test_2.dtb.  If fdtoverlay detects an
-+# error than the kernel build will fail.  static_test_1.dtb and
-+# static_test_2.dtb are not consumed by unittest.
-+#
-+# Some unittest overlays deliberately contain errors that unittest checks for.
-+# These overlays will cause fdtoverlay to fail, and are thus not included
-+# in the static test:
-+#			  overlay_bad_add_dup_node.dtbo \
-+#			  overlay_bad_add_dup_prop.dtbo \
-+#			  overlay_bad_phandle.dtbo \
-+#			  overlay_bad_symbol.dtbo \
-+
-+apply_static_overlay_1 := overlay_0.dtbo \
-+			  overlay_1.dtbo \
-+			  overlay_2.dtbo \
-+			  overlay_3.dtbo \
-+			  overlay_4.dtbo \
-+			  overlay_5.dtbo \
-+			  overlay_6.dtbo \
-+			  overlay_7.dtbo \
-+			  overlay_8.dtbo \
-+			  overlay_9.dtbo \
-+			  overlay_10.dtbo \
-+			  overlay_11.dtbo \
-+			  overlay_12.dtbo \
-+			  overlay_13.dtbo \
-+			  overlay_15.dtbo \
-+			  overlay_gpio_01.dtbo \
-+			  overlay_gpio_02a.dtbo \
-+			  overlay_gpio_02b.dtbo \
-+			  overlay_gpio_03.dtbo \
-+			  overlay_gpio_04a.dtbo \
-+			  overlay_gpio_04b.dtbo
-+
-+apply_static_overlay_2 := overlay.dtbo
-+
-+static_test_1-dtbs := static_base_1.dtb $(apply_static_overlay_1)
-+static_test_2-dtbs := static_base_2.dtb $(apply_static_overlay_2)
-+
-+dtb-$(CONFIG_OF_OVERLAY) += static_test_1.dtb static_test_2.dtb
-diff --git a/drivers/of/unittest-data/static_base_1.dts b/drivers/of/unittest-data/static_base_1.dts
-new file mode 100644
-index 000000000000..10556cb3f01f
---- /dev/null
-+++ b/drivers/of/unittest-data/static_base_1.dts
-@@ -0,0 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/dts-v1/;
-+
-+#include "testcases_common.dtsi"
-diff --git a/drivers/of/unittest-data/static_base_2.dts b/drivers/of/unittest-data/static_base_2.dts
-new file mode 100644
-index 000000000000..b0ea9504d6f3
---- /dev/null
-+++ b/drivers/of/unittest-data/static_base_2.dts
-@@ -0,0 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/dts-v1/;
-+
-+#include "overlay_common.dtsi"
--- 
-2.25.0.rc1.19.g042ed3e048af
+Thanks
+shuo
 
