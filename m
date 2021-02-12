@@ -2,307 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D306731A61A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3820231A61D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhBLUe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:34:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53918 "EHLO mail.kernel.org"
+        id S230235AbhBLUhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:37:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229660AbhBLUew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:34:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DC8764D5D;
-        Fri, 12 Feb 2021 20:34:10 +0000 (UTC)
+        id S229797AbhBLUhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 15:37:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D55D364D9F;
+        Fri, 12 Feb 2021 20:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613162050;
-        bh=wsxAobsfZBfVL3J6K8JwnfzCIzCe1QIc+xOYU6dgGJU=;
+        s=k20201202; t=1613162180;
+        bh=U/81S6udlah0JZgUh9eZXBAvF005a3uhKn9HB8qtlbM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KAkvK7onLOJJXAg+m7wvSs5B6FowWihS1Kk1/yRaCXigMKBHVk8IWefqBBYNWNZ1+
-         HT9CXcl+/w9gIpaPxPWKPLz2cavGZMvxAm4hAHp0fmYzdG4QPkOoi/kZS10VHBMJv9
-         f78hiBrZo7fypBUhwziHvzvr1+X6h673sODUCGffSQkIzTNaOs3x/r+JwRwW75D8u0
-         QJVEJmb6Ax7W7SAe8Hp3V3kBxg42eMtnydSZ9/LgBodEqUOxFnAlNPl7rwAahd03Jt
-         aTRnhOfN9p/Z3V+yz9+Zb+glhjJ4lkCuKr0wztWde6uxGlN59Yp7QhzRVSnQuMHvZ8
-         68+uCMVHnTfkg==
+        b=bU8lkmY1qxm3jI92j6PIyXI/jBsWaJjK5sdSWDNLjha2Vfx3tvpLGzMRYMU39NA/U
+         A6YudtDS/CnJUuRvP5/2Qkzfkcs7P9/bw1IWbpAzB8Dbix3EybZ/t5BjSLMrCM+gEz
+         k/36w6G34VtMUKzmIjasN8dy+7j1zbOHzf3CVVo6AZsV3Ybyeb0cmZQT9TsAskdbt/
+         MhY+0X9XLZ27gRgtEHBzDFSz8y6RJCB2/mLvGejhrs0Xbqvo+kerx5QOLfyHUK8bLo
+         frITOop4O2dmc6t/9b44Q2JCt2cSnmuh3oI2iZZoON/6gw01Jk++U7P/oRiV03te6Y
+         iAMcFaRHN8R2g==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2018D40513; Fri, 12 Feb 2021 17:34:08 -0300 (-03)
-Date:   Fri, 12 Feb 2021 17:34:08 -0300
+        id C66AB40513; Fri, 12 Feb 2021 17:36:17 -0300 (-03)
+Date:   Fri, 12 Feb 2021 17:36:17 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH][RFC] perf annotate: show full line locations with 'k' in
- UI
-Message-ID: <20210212203408.GH1398414@kernel.org>
-References: <9acb63e0-af38-eeeb-157e-32f6177da557@suse.cz>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf env: Remove unneeded internal/cpumap inclusions
+Message-ID: <20210212203617.GI1398414@kernel.org>
+References: <20210211183914.4093187-1-irogers@google.com>
+ <YCY9aTcEMS1pFP6+@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9acb63e0-af38-eeeb-157e-32f6177da557@suse.cz>
+In-Reply-To: <YCY9aTcEMS1pFP6+@krava>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Feb 12, 2021 at 03:42:47PM +0100, Martin Liška escreveu:
-> Hello.
+Em Fri, Feb 12, 2021 at 09:33:45AM +0100, Jiri Olsa escreveu:
+> On Thu, Feb 11, 2021 at 10:39:14AM -0800, Ian Rogers wrote:
+> > Minor cleanup.
+> > 
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 > 
-> Sometimes it's handy to display also a filename of a source location, mainly because
-> source lines can come from different files. I extended 'k' hotkey and one can now see:
-> 
-> 1) no source lines:
-> 
->   1.31 │     ↓ je      130                                                                                   ▒
->        │     return iterative_hash_object (arg, val);                                                        ▒
->        │                                                                                                     ▒
->        │     if (!TYPE_P (arg))                                                                              ▒
->        │       movzwl  (%rdi),%edx                                                                           ▒
->  18.95 │       lea     tree_code_type,%rbx                                                                   ▒
->        │       movzwl  %dx,%ecx                                                                              ▒
->        │       mov     %rdx,%rax                                                                             ▒
->        │       cmpl    $0x2,(%rbx,%rcx,4)                                                                    ▒
->  11.76 │     ↓ jne     5f                                                                                    ▒
->   0.65 │     ↓ jmp     c0                                                                                    ▒
->        │       nop                                                                                           ▒
->        │     iterative_hash_template_arg(tree_node*, unsigned int) [clone .localalias]:                      ▒
->        │     tree_operand_length (const_tree node)                                                           ▒
->        │     {                                                                                               ▒
->        │     if (VL_EXP_CLASS_P (node))                                                                      ▒
->        │     return VL_EXP_OPERAND_LENGTH (node);                                                            ▒
->        │     else                                                                                            ▒
->        │     return TREE_CODE_LENGTH (TREE_CODE (node));                                                     ▒
->        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
-> 
-> 2) only source lines displayed
-> 
->   1.31 │     ↓ je      130                                                                                   ▒
->        │1774 return iterative_hash_object (arg, val);                                                        ▒
->        │                                                                                                     ▒
->        │1776 if (!TYPE_P (arg))                                                                              ▒
->        │       movzwl  (%rdi),%edx                                                                           ▒
->  18.95 │       lea     tree_code_type,%rbx                                                                   ▒
->        │       movzwl  %dx,%ecx                                                                              ▒
->        │       mov     %rdx,%rax                                                                             ▒
->        │       cmpl    $0x2,(%rbx,%rcx,4)                                                                    ▒
->  11.76 │     ↓ jne     5f                                                                                    ▒
->   0.65 │     ↓ jmp     c0                                                                                    ▒
->        │       nop                                                                                           ▒
->        │1785 iterative_hash_template_arg(tree_node*, unsigned int) [clone .localalias]:                      ▒
->        │3837 tree_operand_length (const_tree node)                                                           ▒
->        │3838 {                                                                                               ▒
->        │3839 if (VL_EXP_CLASS_P (node))                                                                      ▒
->        │3840 return VL_EXP_OPERAND_LENGTH (node);                                                            ▒
->        │3841 else                                                                                            ▒
->        │3842 return TREE_CODE_LENGTH (TREE_CODE (node));                                                     ▒
->        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
-> 
-> full source locations displayed.
-> 
->   1.31 │     ↓ je      130                                                                                   ▒
->        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774 return iterative_hash_object (arg, val);               ▒
->        │                                                                                                     ▒
->        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774 if (!TYPE_P (arg))                                     ▒
->        │       movzwl  (%rdi),%edx                                                                           ▒
->  18.95 │       lea     tree_code_type,%rbx                                                                   ▒
->        │       movzwl  %dx,%ecx                                                                              ▒
->        │       mov     %rdx,%rax                                                                             ▒
->        │       cmpl    $0x2,(%rbx,%rcx,4)                                                                    ▒
->  11.76 │     ↓ jne     5f                                                                                    ▒
->   0.65 │     ↓ jmp     c0                                                                                    ▒
->        │       nop                                                                                           ▒
->        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774 iterative_hash_template_arg(tree_node*, unsigned int) [▒
->        │/home/marxin/Programming/gcc/gcc/tree.h:3837 tree_operand_length (const_tree node)                   ▒
->        │/home/marxin/Programming/gcc/gcc/tree.h:3837 {                                                       ▒
->        │/home/marxin/Programming/gcc/gcc/tree.h:3837 if (VL_EXP_CLASS_P (node))                              ▒
->        │/home/marxin/Programming/gcc/gcc/tree.h:3837 return VL_EXP_OPERAND_LENGTH (node);                    ▒
->        │/home/marxin/Programming/gcc/gcc/tree.h:3837 else                                                    ▒
->        │/home/marxin/Programming/gcc/gcc/tree.h:3837 return TREE_CODE_LENGTH (TREE_CODE (node));             ▒
->        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-It is valuable, I just think we should try to limit the number of
-columns used by the source code line, perhaps something like:
-
-   0.65 │     ↓ jmp     c0                                                                                    ▒
-        │       nop                                                                                           ▒
-        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774                                                        ▒
-        │           iterative_hash_template_arg(tree_node*, unsigned int) [                                   ▒
-        │/home/marxin/Programming/gcc/gcc/tree.h:3837                                                         ▒
-        │           tree_operand_length (const_tree node)                                                     ▒
-        │           {                                                                                         ▒
-        │           if (VL_EXP_CLASS_P (node))                                                                ▒
-        │           return VL_EXP_OPERAND_LENGTH (node);                                                      ▒
-        │           else                                                                                      ▒
-        │           return TREE_CODE_LENGTH (TREE_CODE (node));                                               ▒
-        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
-
-Another idea is to, when requested, reserve one line at the bottom to
-show what is the source code file:line for where the TUI cursor is, i.e.
-you press down/up and the line under the cursor has its source file:line
-shown at the second (from bottom to top) line in the screen.
+Thanks, applied.
 
 - Arnaldo
+
  
-> Thoughts?
-> Thanks,
-> Martin
+> thanks,
+> jirka
 > 
-> ---
->  tools/perf/ui/browsers/annotate.c | 11 +++++++++--
->  tools/perf/util/annotate.c        | 24 ++++++++++++++++++------
->  tools/perf/util/annotate.h        |  2 ++
->  3 files changed, 29 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
-> index bd77825fd5a1..ca09736e14a3 100644
-> --- a/tools/perf/ui/browsers/annotate.c
-> +++ b/tools/perf/ui/browsers/annotate.c
-> @@ -746,7 +746,7 @@ static int annotate_browser__run(struct annotate_browser *browser,
->  		"t             Circulate percent, total period, samples view\n"
->  		"c             Show min/max cycle\n"
->  		"/             Search string\n"
-> -		"k             Toggle line numbers\n"
-> +		"k             Circulate line numbers, full location, no source lines\n"
->  		"P             Print to [symbol_name].annotation file.\n"
->  		"r             Run available scripts\n"
->  		"p             Toggle percent type [local/global]\n"
-> @@ -758,7 +758,14 @@ static int annotate_browser__run(struct annotate_browser *browser,
->  			annotate_browser__show(&browser->b, title, help);
->  			continue;
->  		case 'k':
-> -			notes->options->show_linenr = !notes->options->show_linenr;
-> +			if (notes->options->show_fileloc) {
-> +				notes->options->show_fileloc = false;
-> +				notes->options->show_linenr = false;
-> +			}
-> +			else if (notes->options->show_linenr)
-> +				notes->options->show_fileloc = true;
-> +			else
-> +				notes->options->show_linenr = true;
->  			break;
->  		case 'H':
->  			nd = browser->curr_hot;
-> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> index e3eae646be3e..32e5926d587f 100644
-> --- a/tools/perf/util/annotate.c
-> +++ b/tools/perf/util/annotate.c
-> @@ -1159,6 +1159,7 @@ struct annotate_args {
->  	s64			  offset;
->  	char			  *line;
->  	int			  line_nr;
-> +	char			  *fileloc;
->  };
->  static void annotation_line__init(struct annotation_line *al,
-> @@ -1168,6 +1169,7 @@ static void annotation_line__init(struct annotation_line *al,
->  	al->offset = args->offset;
->  	al->line = strdup(args->line);
->  	al->line_nr = args->line_nr;
-> +	al->fileloc = args->fileloc;
->  	al->data_nr = nr;
->  }
-> @@ -1480,7 +1482,7 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
->   */
->  static int symbol__parse_objdump_line(struct symbol *sym,
->  				      struct annotate_args *args,
-> -				      char *parsed_line, int *line_nr)
-> +				      char *parsed_line, int *line_nr, char **fileloc)
->  {
->  	struct map *map = args->ms.map;
->  	struct annotation *notes = symbol__annotation(sym);
-> @@ -1492,6 +1494,7 @@ static int symbol__parse_objdump_line(struct symbol *sym,
->  	/* /filename:linenr ? Save line number and ignore. */
->  	if (regexec(&file_lineno, parsed_line, 2, match, 0) == 0) {
->  		*line_nr = atoi(parsed_line + match[1].rm_so);
-> +		*fileloc = strdup(parsed_line);
->  		return 0;
->  	}
-> @@ -1511,6 +1514,7 @@ static int symbol__parse_objdump_line(struct symbol *sym,
->  	args->offset  = offset;
->  	args->line    = parsed_line;
->  	args->line_nr = *line_nr;
-> +	args->fileloc = *fileloc;
->  	args->ms.sym  = sym;
->  	dl = disasm_line__new(args);
-> @@ -1805,6 +1809,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
->  			args->offset = -1;
->  			args->line = strdup(srcline);
->  			args->line_nr = 0;
-> +			args->fileloc = NULL;
->  			args->ms.sym  = sym;
->  			dl = disasm_line__new(args);
->  			if (dl) {
-> @@ -1816,6 +1821,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
->  		args->offset = pc;
->  		args->line = buf + prev_buf_size;
->  		args->line_nr = 0;
-> +		args->fileloc = NULL;
->  		args->ms.sym  = sym;
->  		dl = disasm_line__new(args);
->  		if (dl)
-> @@ -1850,6 +1856,7 @@ symbol__disassemble_bpf_image(struct symbol *sym,
->  	args->offset = -1;
->  	args->line = strdup("to be implemented");
->  	args->line_nr = 0;
-> +	args->fileloc = NULL;
->  	dl = disasm_line__new(args);
->  	if (dl)
->  		annotation_line__add(&dl->al, &notes->src->source);
-> @@ -1931,6 +1938,7 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
->  	bool delete_extract = false;
->  	bool decomp = false;
->  	int lineno = 0;
-> +	char *fileloc = strdup("");
->  	int nline;
->  	char *line;
->  	size_t line_len;
-> @@ -2058,7 +2066,7 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
->  		 * See disasm_line__new() and struct disasm_line::line_nr.
->  		 */
->  		if (symbol__parse_objdump_line(sym, args, expanded_line,
-> -					       &lineno) < 0)
-> +					       &lineno, &fileloc) < 0)
->  			break;
->  		nline++;
->  	}
-> @@ -3004,10 +3012,14 @@ static void __annotation_line__write(struct annotation_line *al, struct annotati
->  	if (!*al->line)
->  		obj__printf(obj, "%-*s", width - pcnt_width - cycles_width, " ");
->  	else if (al->offset == -1) {
-> -		if (al->line_nr && notes->options->show_linenr)
-> -			printed = scnprintf(bf, sizeof(bf), "%-*d ", notes->widths.addr + 1, al->line_nr);
-> -		else
-> -			printed = scnprintf(bf, sizeof(bf), "%-*s  ", notes->widths.addr, " ");
-> +		if (al->line_nr) {
-> +			if (notes->options->show_fileloc)
-> +				printed = scnprintf(bf, sizeof(bf), "%s ", al->fileloc);
-> +			else if (notes->options->show_linenr)
-> +				printed = scnprintf(bf, sizeof(bf), "%-*d ", notes->widths.addr + 1, al->line_nr);
-> +			else
-> +				printed = scnprintf(bf, sizeof(bf), "%-*s  ", notes->widths.addr, " ");
-> +		}
->  		obj__printf(obj, bf);
->  		obj__printf(obj, "%-*s", width - printed - pcnt_width - cycles_width + 1, al->line);
->  	} else {
-> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-> index 096cdaf21b01..3757416bcf46 100644
-> --- a/tools/perf/util/annotate.h
-> +++ b/tools/perf/util/annotate.h
-> @@ -84,6 +84,7 @@ struct annotation_options {
->  	     print_lines,
->  	     full_path,
->  	     show_linenr,
-> +	     show_fileloc,
->  	     show_nr_jumps,
->  	     show_minmax_cycle,
->  	     show_asm_raw,
-> @@ -136,6 +137,7 @@ struct annotation_line {
->  	s64			 offset;
->  	char			*line;
->  	int			 line_nr;
-> +	char			*fileloc;
->  	int			 jump_sources;
->  	float			 ipc;
->  	u64			 cycles;
-> -- 
-> 2.30.0
+> > ---
+> >  tools/perf/bench/epoll-ctl.c               | 1 -
+> >  tools/perf/bench/epoll-wait.c              | 1 -
+> >  tools/perf/bench/futex-hash.c              | 1 -
+> >  tools/perf/bench/futex-lock-pi.c           | 1 -
+> >  tools/perf/bench/futex-requeue.c           | 1 -
+> >  tools/perf/bench/futex-wake-parallel.c     | 1 -
+> >  tools/perf/bench/futex-wake.c              | 1 -
+> >  tools/perf/tests/openat-syscall-all-cpus.c | 1 -
+> >  tools/perf/util/synthetic-events.c         | 1 -
+> >  9 files changed, 9 deletions(-)
+> > 
+> > diff --git a/tools/perf/bench/epoll-ctl.c b/tools/perf/bench/epoll-ctl.c
+> > index ca2d591aad8a..ddaca75c3bc0 100644
+> > --- a/tools/perf/bench/epoll-ctl.c
+> > +++ b/tools/perf/bench/epoll-ctl.c
+> > @@ -21,7 +21,6 @@
+> >  #include <sys/resource.h>
+> >  #include <sys/epoll.h>
+> >  #include <sys/eventfd.h>
+> > -#include <internal/cpumap.h>
+> >  #include <perf/cpumap.h>
+> >  
+> >  #include "../util/stat.h"
+> > diff --git a/tools/perf/bench/epoll-wait.c b/tools/perf/bench/epoll-wait.c
+> > index 75dca9773186..0a0ff1247c83 100644
+> > --- a/tools/perf/bench/epoll-wait.c
+> > +++ b/tools/perf/bench/epoll-wait.c
+> > @@ -76,7 +76,6 @@
+> >  #include <sys/epoll.h>
+> >  #include <sys/eventfd.h>
+> >  #include <sys/types.h>
+> > -#include <internal/cpumap.h>
+> >  #include <perf/cpumap.h>
+> >  
+> >  #include "../util/stat.h"
+> > diff --git a/tools/perf/bench/futex-hash.c b/tools/perf/bench/futex-hash.c
+> > index 915bf3da7ce2..b65373ce5c4f 100644
+> > --- a/tools/perf/bench/futex-hash.c
+> > +++ b/tools/perf/bench/futex-hash.c
+> > @@ -20,7 +20,6 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/zalloc.h>
+> >  #include <sys/time.h>
+> > -#include <internal/cpumap.h>
+> >  #include <perf/cpumap.h>
+> >  
+> >  #include "../util/stat.h"
+> > diff --git a/tools/perf/bench/futex-lock-pi.c b/tools/perf/bench/futex-lock-pi.c
+> > index bb25d8beb3b8..89c6d160379c 100644
+> > --- a/tools/perf/bench/futex-lock-pi.c
+> > +++ b/tools/perf/bench/futex-lock-pi.c
+> > @@ -14,7 +14,6 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/zalloc.h>
+> >  #include <errno.h>
+> > -#include <internal/cpumap.h>
+> >  #include <perf/cpumap.h>
+> >  #include "bench.h"
+> >  #include "futex.h"
+> > diff --git a/tools/perf/bench/futex-requeue.c b/tools/perf/bench/futex-requeue.c
+> > index 7a15c2e61022..5fa23295ee5f 100644
+> > --- a/tools/perf/bench/futex-requeue.c
+> > +++ b/tools/perf/bench/futex-requeue.c
+> > @@ -20,7 +20,6 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/time64.h>
+> >  #include <errno.h>
+> > -#include <internal/cpumap.h>
+> >  #include <perf/cpumap.h>
+> >  #include "bench.h"
+> >  #include "futex.h"
+> > diff --git a/tools/perf/bench/futex-wake-parallel.c b/tools/perf/bench/futex-wake-parallel.c
+> > index cd2b81a845ac..6e6f5247e1fe 100644
+> > --- a/tools/perf/bench/futex-wake-parallel.c
+> > +++ b/tools/perf/bench/futex-wake-parallel.c
+> > @@ -29,7 +29,6 @@ int bench_futex_wake_parallel(int argc __maybe_unused, const char **argv __maybe
+> >  #include <linux/time64.h>
+> >  #include <errno.h>
+> >  #include "futex.h"
+> > -#include <internal/cpumap.h>
+> >  #include <perf/cpumap.h>
+> >  
+> >  #include <err.h>
+> > diff --git a/tools/perf/bench/futex-wake.c b/tools/perf/bench/futex-wake.c
+> > index 2dfcef3e371e..6d217868f53c 100644
+> > --- a/tools/perf/bench/futex-wake.c
+> > +++ b/tools/perf/bench/futex-wake.c
+> > @@ -20,7 +20,6 @@
+> >  #include <linux/kernel.h>
+> >  #include <linux/time64.h>
+> >  #include <errno.h>
+> > -#include <internal/cpumap.h>
+> >  #include <perf/cpumap.h>
+> >  #include "bench.h"
+> >  #include "futex.h"
+> > diff --git a/tools/perf/tests/openat-syscall-all-cpus.c b/tools/perf/tests/openat-syscall-all-cpus.c
+> > index 71f85e2cc127..f7dd6c463f04 100644
+> > --- a/tools/perf/tests/openat-syscall-all-cpus.c
+> > +++ b/tools/perf/tests/openat-syscall-all-cpus.c
+> > @@ -15,7 +15,6 @@
+> >  #include "tests.h"
+> >  #include "thread_map.h"
+> >  #include <perf/cpumap.h>
+> > -#include <internal/cpumap.h>
+> >  #include "debug.h"
+> >  #include "stat.h"
+> >  #include "util/counts.h"
+> > diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
+> > index c6f9db3faf83..0b767233ae1f 100644
+> > --- a/tools/perf/util/synthetic-events.c
+> > +++ b/tools/perf/util/synthetic-events.c
+> > @@ -24,7 +24,6 @@
+> >  #include <linux/perf_event.h>
+> >  #include <asm/bug.h>
+> >  #include <perf/evsel.h>
+> > -#include <internal/cpumap.h>
+> >  #include <perf/cpumap.h>
+> >  #include <internal/lib.h> // page_size
+> >  #include <internal/threadmap.h>
+> > -- 
+> > 2.30.0.478.g8a0d178c01-goog
+> > 
 > 
 
 -- 
