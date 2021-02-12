@@ -2,159 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB67B31A472
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8842E31A47D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhBLSUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 13:20:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhBLSUG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 13:20:06 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30336C061574;
-        Fri, 12 Feb 2021 10:19:26 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id u143so9590pfc.7;
-        Fri, 12 Feb 2021 10:19:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LjggpD0ZH/Pqu3nkvvYgvuE8A11ApMPMgPJmvgr5AOc=;
-        b=hCYlf9Bd/xukRXSaj9KNSXuGNpdT3LKCCM8afVgruvN/IgilhYlrbApS/H5kvBac9C
-         f20TZYDRynrncNa2dFQbzpnaMyHHr+xWjKtv9FDQlZmfm2C/Wltc7IRtcYTi2miEGQy6
-         Yv93I3W90ML3E6FnkeThqAXXjA/jE9X1vEXaS1B+Q6NBKCU/tYWkg9qfXr4um3LOUMpj
-         DZjUxQhM77V1uxArxyyFeuAQICGDypJmtORkXElLLX3Fs+JsOJsRDbSNoA9m9W92quiu
-         gyzKcoG7JFOuySRWQrtnxJMAKARgb1I6Mt+AIhAb32l3YXdwLGkJNNfZo/YnnoptZAfT
-         1hjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LjggpD0ZH/Pqu3nkvvYgvuE8A11ApMPMgPJmvgr5AOc=;
-        b=uCz6TpwtOEyoIcM2XmfEb5vnrnxgz6BbgAW/hZy1sUJAWYVGp2Webc5FQa9ZLoeciE
-         wCnjuBNwbBjQeJsAMxss9UvhAL16160Y/0hYOHeMbi+0BYit2IOZJlfLz2LUKdOCDlNw
-         KLmbTdn7JHDINEzUVjbdmY4oVzd6Dyxar8B/ixhzZOSGMO6br4rRcoNWDrGczgHulq0d
-         Cx3AoiwcO/KTWfX2zuSfsdmGN/QiQw3inYYtKPo0zqbdC9eJFq8mZAQk9MGMtPw0NxJK
-         g6bT+GmORpP99qqsw2pmP39RCGXsx5WYlvtoum6mNyNNcUliUygtQd6GUTLbTRaLa4H2
-         qQtA==
-X-Gm-Message-State: AOAM533o0/d5z4CfbZfPOsWUqs5w1Jf4smpaLMh1dxDfXQ5nZd0OlAbA
-        aa56fkPAQZgz8x1yizjNkkRUVVvZSQs=
-X-Google-Smtp-Source: ABdhPJwUWkZNP1RymSaYKEK/YXsJ7CqqjBW+nAYgg7/2jvH1y7TsgdRhr0Er2w7QRW4OaHMs+VCEHA==
-X-Received: by 2002:aa7:8f0a:0:b029:1de:4d20:8346 with SMTP id x10-20020aa78f0a0000b02901de4d208346mr4255553pfr.15.1613153965260;
-        Fri, 12 Feb 2021 10:19:25 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id w19sm9842592pgf.23.2021.02.12.10.19.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 10:19:24 -0800 (PST)
-Subject: Re: [PATCH v5 net-next 06/10] net: dsa: act as passthrough for bridge
- port flags
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
-References: <20210212151600.3357121-1-olteanv@gmail.com>
- <20210212151600.3357121-7-olteanv@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <77072163-86e3-a6a5-350c-22bdab10d890@gmail.com>
-Date:   Fri, 12 Feb 2021 10:19:21 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        id S231278AbhBLSZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 13:25:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229558AbhBLSZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 13:25:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97AE464E99;
+        Fri, 12 Feb 2021 18:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613154261;
+        bh=i59A6KsNy0tuBkPE86R7oS3fgQDlOUtW1mMckoQBugI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NXKvqHb7A+THftvgjtBzxKYyRmPhlWrhWAUE1s5olkMvcyXKGGTsUbOfZ/Kbq+/Sp
+         IJG5euh/BxNwmvojFqLHCbfWwl/eufDrPGlA1sO3o+LM/6rHmoJi77jpQ09sP8oqMU
+         C9N4a4tUCFv/uT1NVHbea95+IDU7HK3tWOVFICI6FDKfuSgnqHVRtePViDIhHnWQsR
+         oJwo38HOo9JZILJUiayMoRBXl10oEW4BImwzUxAQDfHDhxeWAGhUuAew2Jccvfpm6r
+         R5CPg6RWJYG7fQd2KJiupQkfysRO7DOsfVBVvW7jwV7fdJgZ6NtqfhaCy5a3CN48En
+         HbQa2a3Z8isuQ==
+Received: by mail-ej1-f47.google.com with SMTP id y9so629398ejp.10;
+        Fri, 12 Feb 2021 10:24:21 -0800 (PST)
+X-Gm-Message-State: AOAM533VFgDrRwAWYdRgPVEnnAmG7tODJUCAkDnfGAh8AWE5P3vt98pz
+        2sY2pTn1ZqNnCQVJVPHb8ikqvL8RbeUOCqKx7A==
+X-Google-Smtp-Source: ABdhPJyhoggp31g4RDWhw83ePzBTd54yx+b2MhgGQx4aizGlRuZj/as8C2cqI3V6hI+fnA4ZqS7VGuem7Oso5zN7Aec=
+X-Received: by 2002:a17:906:af41:: with SMTP id ly1mr4076035ejb.525.1613154260106;
+ Fri, 12 Feb 2021 10:24:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210212151600.3357121-7-olteanv@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210209182200.30606-1-nramas@linux.microsoft.com>
+ <20210209182200.30606-3-nramas@linux.microsoft.com> <87k0reozwh.fsf@manicouagan.localdomain>
+ <8a3aa3d2-2eba-549a-9970-a2b0fe3586c9@linux.microsoft.com>
+ <CAL_JsqJ3sDzjsJXtb6EzE77BL+PhUxDJYUngLTqcm0popd7Ajw@mail.gmail.com> <55685b61-dac0-2f24-f74a-939acf74a4f2@linux.microsoft.com>
+In-Reply-To: <55685b61-dac0-2f24-f74a-939acf74a4f2@linux.microsoft.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 12 Feb 2021 12:24:07 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKDCgtJngxqMCRdC9evEQpHnryEaMvfgYEh0Mcto6dLHA@mail.gmail.com>
+Message-ID: <CAL_JsqKDCgtJngxqMCRdC9evEQpHnryEaMvfgYEh0Mcto6dLHA@mail.gmail.com>
+Subject: Re: [PATCH v17 02/10] of: Add a common kexec FDT setup function
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Allison Randal <allison@lohutok.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Prakhar Srivastava <prsriva@linux.microsoft.com>,
+        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 12, 2021 at 11:19 AM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+>
+> On 2/12/21 6:38 AM, Rob Herring wrote:
+> > On Thu, Feb 11, 2021 at 7:17 PM Lakshmi Ramasubramanian
+> > <nramas@linux.microsoft.com> wrote:
+> >>
+> >> On 2/11/21 5:09 PM, Thiago Jung Bauermann wrote:
+> >>>
+> >>> There's actually a complication that I just noticed and needs to be
+> >>> addressed. More below.
+> >>>
+> >>
+> >> <...>
+> >>
+> >>>> +
+> >>>> +/*
+> >>>> + * of_kexec_alloc_and_setup_fdt - Alloc and setup a new Flattened Device Tree
+> >>>> + *
+> >>>> + * @image:          kexec image being loaded.
+> >>>> + * @initrd_load_addr:       Address where the next initrd will be loaded.
+> >>>> + * @initrd_len:             Size of the next initrd, or 0 if there will be none.
+> >>>> + * @cmdline:                Command line for the next kernel, or NULL if there will
+> >>>> + *                  be none.
+> >>>> + *
+> >>>> + * Return: fdt on success, or NULL errno on error.
+> >>>> + */
+> >>>> +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
+> >>>> +                               unsigned long initrd_load_addr,
+> >>>> +                               unsigned long initrd_len,
+> >>>> +                               const char *cmdline)
+> >>>> +{
+> >>>> +    void *fdt;
+> >>>> +    int ret, chosen_node;
+> >>>> +    const void *prop;
+> >>>> +    unsigned long fdt_size;
+> >>>> +
+> >>>> +    fdt_size = fdt_totalsize(initial_boot_params) +
+> >>>> +               (cmdline ? strlen(cmdline) : 0) +
+> >>>> +               FDT_EXTRA_SPACE;
+> >>>
+> >>> Just adding 4 KB to initial_boot_params won't be enough for crash
+> >>> kernels on ppc64. The current powerpc code doubles the size of
+> >>> initial_boot_params (which is normally larger than 4 KB) and even that
+> >>> isn't enough. A patch was added to powerpc/next today which uses a more
+> >>> precise (but arch-specific) formula:
+> >>>
+> >>> https://lore.kernel.org/linuxppc-dev/161243826811.119001.14083048209224609814.stgit@hbathini/
+> >>>
+> >>> So I believe we need a hook here where architectures can provide their
+> >>> own specific calculation for the size of the fdt. Perhaps a weakly
+> >>> defined function providing a default implementation which an
+> >>> arch-specific file can override (a la arch_kexec_kernel_image_load())?
+> >>>
+> >>> Then the powerpc specific hook would be the kexec_fdt_totalsize_ppc64()
+> >>> function from the patch I linked above.
+> >>>
+> >>
+> >> Do you think it'd better to add "fdt_size" parameter to
+> >> of_kexec_alloc_and_setup_fdt() so that the caller can provide the
+> >> desired FDT buffer size?
+> >
+> > Yes, I guess so. But please define the param as extra size, not total
+> > size. The kernel command line size addition can be in the common code.
+>
+> Will do. Just to clarify -
+>
+> The common code will do:
+>
+> fdt_totalsize(initial_boot_params) + strlen(cmdline) + extra_fdt_size
+>
+> The caller will pass "extra_fdt_size"
+> ARM64 => 4KB
+> PPC64 => fdt_totalsize(initial_boot_params) - which will be updated when
+> the patch Thiago had referred to is merged.
 
+Yes, I'd leave the 4KB in there by default and arm64 use 0.
 
-On 2/12/2021 7:15 AM, Vladimir Oltean wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> 
-> There are multiple ways in which a PORT_BRIDGE_FLAGS attribute can be
-> expressed by the bridge through switchdev, and not all of them can be
-> emulated by DSA mid-layer API at the same time.
-> 
-> One possible configuration is when the bridge offloads the port flags
-> using a mask that has a single bit set - therefore only one feature
-> should change. However, DSA currently groups together unicast and
-> multicast flooding in the .port_egress_floods method, which limits our
-> options when we try to add support for turning off broadcast flooding:
-> do we extend .port_egress_floods with a third parameter which b53 and
-> mv88e6xxx will ignore? But that means that the DSA layer, which
-> currently implements the PRE_BRIDGE_FLAGS attribute all by itself, will
-> see that .port_egress_floods is implemented, and will report that all 3
-> types of flooding are supported - not necessarily true.
-> 
-> Another configuration is when the user specifies more than one flag at
-> the same time, in the same netlink message. If we were to create one
-> individual function per offloadable bridge port flag, we would limit the
-> expressiveness of the switch driver of refusing certain combinations of
-> flag values. For example, a switch may not have an explicit knob for
-> flooding of unknown multicast, just for flooding in general. In that
-> case, the only correct thing to do is to allow changes to BR_FLOOD and
-> BR_MCAST_FLOOD in tandem, and never allow mismatched values. But having
-> a separate .port_set_unicast_flood and .port_set_multicast_flood would
-> not allow the driver to possibly reject that.
-> 
-> Also, DSA doesn't consider it necessary to inform the driver that a
-> SWITCHDEV_ATTR_ID_BRIDGE_MROUTER attribute was offloaded, because it
-> just calls .port_egress_floods for the CPU port. When we'll add support
-> for the plain SWITCHDEV_ATTR_ID_PORT_MROUTER, that will become a real
-> problem because the flood settings will need to be held statefully in
-> the DSA middle layer, otherwise changing the mrouter port attribute will
-> impact the flooding attribute. And that's _assuming_ that the underlying
-> hardware doesn't have anything else to do when a multicast router
-> attaches to a port than flood unknown traffic to it.  If it does, there
-> will need to be a dedicated .port_set_mrouter anyway.
-> 
-> So we need to let the DSA drivers see the exact form that the bridge
-> passes this switchdev attribute in, otherwise we are standing in the
-> way. Therefore we also need to use this form of language when
-> communicating to the driver that it needs to configure its initial
-> (before bridge join) and final (after bridge leave) port flags.
-> 
-> The b53 and mv88e6xxx drivers are converted to the passthrough API and
-> their implementation of .port_egress_floods is split into two: a
-> function that configures unicast flooding and another for multicast.
-> The mv88e6xxx implementation is quite hairy, and it turns out that
-> the implementations of unknown unicast flooding are actually the same
-> for 6185 and for 6352:
-> 
-> behind the confusing names actually lie two individual bits:
-> NO_UNKNOWN_MC -> FLOOD_UC = 0x4 = BIT(2)
-> NO_UNKNOWN_UC -> FLOOD_MC = 0x8 = BIT(3)
-> 
-> so there was no reason to entangle them in the first place.
-> 
-> Whereas the 6185 writes to MV88E6185_PORT_CTL0_FORWARD_UNKNOWN of
-> PORT_CTL0, which has the exact same bit index. I have left the
-> implementations separate though, for the only reason that the names are
-> different enough to confuse me, since I am not able to double-check with
-> a user manual. The multicast flooding setting for 6185 is in a different
-> register than for 6352 though.
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Rob
