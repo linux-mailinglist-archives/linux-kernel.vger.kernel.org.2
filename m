@@ -2,192 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C220931A4F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20ACE31A507
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhBLTFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:05:54 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:51530 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhBLTFf (ORCPT
+        id S232045AbhBLTJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:09:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231430AbhBLTIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:05:35 -0500
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 608BF20B6C40;
-        Fri, 12 Feb 2021 11:04:52 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 608BF20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1613156693;
-        bh=6YnCV6liH82sConSeIcoMvSWdbV+LrQaalBNmKqtnLk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GITEbyMOWmtO06swLLyzbqAndCL6qYoJwEmT2XhJyRqxT/lw3xpO8LZVsa6FeEhyy
-         Zla+9UCM9aT2VCn9g+XvrcPOq6hrKkSXzExsDCw+BNm3xfc6aB/ucA30hTk8Gslh4D
-         mf9uScKCuHbQdzAFC0IQnNVnowxrfhjH6wwp5mJA=
-Date:   Fri, 12 Feb 2021 13:04:50 -0600
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Mark Salyzyn <salyzyn@android.com>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Cc:     linux-kernel@vger.kernel.org,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        LSM <linux-security-module@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Amir Goldstein <amir73il@gmail.com>, linux-doc@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        James Morris <jmorris@namei.org>
-Subject: Re: [RESEND PATCH v18 2/4] overlayfs: handle XATTR_NOSECURITY flag
- for get xattr method
-Message-ID: <20210212190450.GB56839@sequoia>
-References: <20201021151903.652827-1-salyzyn@android.com>
- <20201021151903.652827-3-salyzyn@android.com>
- <CAJfpegtMoD85j5namV592sJD23QeUMD=+tq4SvFDqjVxsAszYQ@mail.gmail.com>
- <2fd64e4f-c573-c841-abb6-ec0908f78cdd@android.com>
- <20210205180131.GA648953@sequoia>
+        Fri, 12 Feb 2021 14:08:51 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D6CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:08:10 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id b9so797695ejy.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:08:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q3ikNalsuZzL53jhGkXErOWPpRGEg8NvbnsD1QXWEGY=;
+        b=HFX4SsNcGO6UF2J9+8AQmIwEznHImS+LvV+tkpAvg0DU0fKJGfSKmIVXjLNw5a10Nj
+         BmyT6DGjrU7FY9JR75SH9SDhW74SpdMeFgMubI51cKZbrWQJyRZoXZX0nukGbRbsq7r+
+         R9HNZC42AZzxTyEM6BZZPoCngd2I9yvwP5zt+ZftOmFErKXr1OTND4NtdIsezES1r/Lr
+         HhZb82yTMA4cqTIpTTs3KuSzms7JzVRK+wvQ2+UkvHjP4zlX3sqKZs984/kX8mv6bz7l
+         lXWE9xfybrJXy3HHSusT4skwSW+bBCt99HTBD1UGLCZUV8795gLlDzJbbwUq3OYsqGO8
+         pBiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q3ikNalsuZzL53jhGkXErOWPpRGEg8NvbnsD1QXWEGY=;
+        b=gnzjeeF1z+22gbhloU0ykiEYrb6sTqvUbBHe9nJo2RQZRSAxkkQXNRVcHqs9O/wsTI
+         GFvp0NRDZ9X6ft83HqjalFYfE58ce6yBUogTrhQsJXilb+AIGMZ8YYLDM4jYHS4iWx+R
+         KNkVKSf7co11wwnJNyRy9U/bzP3fV+KDaJOUASO4pqBgxVRkD2NhTr700hSzxdwkFyLL
+         2enYoh7WqKVeqgVHPvy6n7P1QnwqbFs/qLMe17rKY/uf9R5KAEZaOeovRJeyLFAW6WRd
+         /g37mX2Qaxtd0d/35y7AW2E+boenmDwGs1TK59sgzAIuRwx0LYTlf0A6wWzlgdugNfIA
+         3ghA==
+X-Gm-Message-State: AOAM531cTeaWyrCRgwwWQvc1Q9WDcUtclsF/fj5KvDNoVY/BOKgi8PnS
+        Vtv2DlGS3K/67dVkuX4d2KLNi8+0Fdq5PuSo7vE=
+X-Google-Smtp-Source: ABdhPJy1J4J3oiU/BDBlUoQbZjzXZ2s4r0BCftF+1LpngtFoGKRsnHEy2+mluePb4E3CYOuaXeMoOGwTiml9qMtn7Qg=
+X-Received: by 2002:a17:906:1954:: with SMTP id b20mr4399816eje.61.1613156888953;
+ Fri, 12 Feb 2021 11:08:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210205180131.GA648953@sequoia>
+References: <20210211202208.31555-1-Sonicadvance1@gmail.com>
+ <58b03e17-3729-99ea-8691-0d735a53b9bc@arm.com> <20210212123515.GC6057@sirena.org.uk>
+ <20210212132807.GC7718@arm.com> <CA+y5pbTOZF9NgHdf0yG2d6GmPGqyyX400j0c=D8669WfWvk4SQ@mail.gmail.com>
+ <20210212180434.GB2744@C02TD0UTHF1T.local>
+In-Reply-To: <20210212180434.GB2744@C02TD0UTHF1T.local>
+From:   "Amanieu d'Antras" <amanieu@gmail.com>
+Date:   Fri, 12 Feb 2021 19:06:07 +0000
+Message-ID: <CA+y5pbRZqWNw8KuVg7bUUVoK5c2WyRPpcjfxymDmX_fX7-MoAA@mail.gmail.com>
+Subject: Re: [RESEND RFC PATCH v2] arm64: Exposes support for 32-bit syscalls
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Steven Price <steven.price@arm.com>, sonicadvance1@gmail.com,
+        Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        David Brazdil <dbrazdil@google.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gavin Shan <gshan@redhat.com>, Mike Rapoport <rppt@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jason Yan <yanaijie@huawei.com>, Andrey Ignatov <rdna@fb.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Julien Grall <julien.grall@arm.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-05 12:01:55, Tyler Hicks wrote:
-> On 2020-10-30 09:00:35, Mark Salyzyn wrote:
-> > On 10/30/20 8:07 AM, Miklos Szeredi wrote:
-> > > On Wed, Oct 21, 2020 at 5:19 PM Mark Salyzyn <salyzyn@android.com> wrote:
-> > > > Because of the overlayfs getxattr recursion, the incoming inode fails
-> > > > to update the selinux sid resulting in avc denials being reported
-> > > > against a target context of u:object_r:unlabeled:s0.
-> > > > 
-> > > > Solution is to respond to the XATTR_NOSECURITY flag in get xattr
-> > > > method that calls the __vfs_getxattr handler instead so that the
-> > > > context can be read in, rather than being denied with an -EACCES
-> > > > when vfs_getxattr handler is called.
-> > > > 
-> > > > For the use case where access is to be blocked by the security layer.
-> > > > 
-> > > > The path then would be security(dentry) ->
-> > > > __vfs_getxattr({dentry...XATTR_NOSECURITY}) ->
-> > > > handler->get({dentry...XATTR_NOSECURITY}) ->
-> > > > __vfs_getxattr({realdentry...XATTR_NOSECURITY}) ->
-> > > > lower_handler->get({realdentry...XATTR_NOSECURITY}) which
-> > > > would report back through the chain data and success as expected,
-> > > > the logging security layer at the top would have the data to
-> > > > determine the access permissions and report back to the logs and
-> > > > the caller that the target context was blocked.
-> > > > 
-> > > > For selinux this would solve the cosmetic issue of the selinux log
-> > > > and allow audit2allow to correctly report the rule needed to address
-> > > > the access problem.
-> > > > 
-> > > > Check impure, opaque, origin & meta xattr with no sepolicy audit
-> > > > (using __vfs_getxattr) since these operations are internal to
-> > > > overlayfs operations and do not disclose any data.  This became
-> > > > an issue for credential override off since sys_admin would have
-> > > > been required by the caller; whereas would have been inherently
-> > > > present for the creator since it performed the mount.
-> > > > 
-> > > > This is a change in operations since we do not check in the new
-> > > > ovl_do_getxattr function if the credential override is off or not.
-> > > > Reasoning is that the sepolicy check is unnecessary overhead,
-> > > > especially since the check can be expensive.
-> > > > 
-> > > > Because for override credentials off, this affects _everyone_ that
-> > > > underneath performs private xattr calls without the appropriate
-> > > > sepolicy permissions and sys_admin capability.  Providing blanket
-> > > > support for sys_admin would be bad for all possible callers.
-> > > > 
-> > > > For the override credentials on, this will affect only the mounter,
-> > > > should it lack sepolicy permissions. Not considered a security
-> > > > problem since mounting by definition has sys_admin capabilities,
-> > > > but sepolicy contexts would still need to be crafted.
-> > > This would be a problem when unprivileged mounting of overlay is
-> > > introduced.  I'd really like to avoid weakening the current security
-> > > model.
-> > 
-> > The current security model does not deal with non-overlapping security
-> > contexts between init (which on android has MAC permissions only when
-> > necessary, only enough permissions to perform the mount and other mundane
-> > operations, missing exec and read permissions in key spots) and user calls.
-> > 
-> > We are only weakening (that is actually an incorrect statement, security is
-> > there, just not double security of both mounter and caller) the security
-> > around calls that retrieve the xattr for administrative and internal
-> > purposes. No data is exposed to the caller that it would not otherwise have
-> > permissions for.
-> 
-> We've ran into the same issues that Mark is trying to solve with this
-> series. I came across Mark's series while searching around before I
-> wrote up a similar patch to Mark's patch #3.
-> 
-> We have a confined process that sets up Overlayfs mounts, then that process
-> starts a service confined by another security context, then that service
-> may execute binaries that run under a third security context. In this
-> case, I'm talking about SELinux security contexts but it could be
-> AppArmor or anything else that you use to separate out
-> privileges/permissions at fine-grained detail.
-> 
-> We don't want to grant all the privileges/permissions required by the
-> service (and its helper utilities) to the process that sets up the
-> Overlayfs mounts because we've been very careful in separating them
-> apart with security policy. However, we want to make use of Overlayfs
-> and adding a mount option to bypass the check on the mounter's cred
-> seems like a safe way of using Overlayfs without violating our principle
-> of least privilege.
+On Fri, Feb 12, 2021 at 6:04 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> > The patch proposed by
+> > Ryan is based on the kernel patch used by Tango which can be found
+> > here: https://github.com/Amanieu/linux/tree/tango-v5.4
+> >
+> > Efficiency is not the concern here: copying/rearranging some bytes is
+> > tiny compared to the cost of a syscall. The main concern is
+> > correctness: there are many cases where userspace does not have the
+> > information or the capabilities needed to ensure that the 32-bit
+> > syscall ABI is correctly emulated.
+>
+> I do appreciate that today there are cases where the emulator cannot do
+> the right thing due to lack of a mechanism, but where the emulator does
+> not have knowledge, I don't think that it can safely invoke the syscall.
+> Consider if userspace invokes compat_rt_sigreturn() or similar, which
+> will trash the emulator's state.
+>
+> Note that there are cases (e.g. compat_rt_sigreturn()), the kernel
+> cannot provide the correct behaviour either. In your tree above, I spot
+> at least the following:
+>
+> * For rt_sigreturn() the kernel will attempt to validate/restore a
+>   compat sigframe assuming the AArch32 register mappings, then
+>   valid_user_regs() will blat the PSTATE/SPSR_ELx value to /some/ valid
+>   AArch64 SPSR_ELx value that happens to mostly alias.
+>
+>   I hope that your emulator doesn't allow emulated apps to call this,
+>   because it would blat the emulator's state. Regardless, this syscall
+>   simply cannot do any correct thing in the context of a fake compat
+>   task, and doesn't make sense to expose.
 
-I just realized that I missed one noteworthy aspect of our use case. We
-would be alright if this functionality to bypass the mounter's cred
-checks (conditional, based on a mount option) was only allowed for
-read-only overlays[1].
+sigreturn and sigaction and completely emulated by Tango and never
+reach the kernel. It simply doesn't make sense to do otherwise since
+the kernel has no knowledge of how Tango manages the emulated AArch32
+state.
 
-I'm not sure if that would meet the needs of Android. Can you comment on
-that, Mark?
+I agree that invoking compat_sys_rt_sigreturn from a 64-bit process
+doesn't make sense. My reading of the code is that it will trigger a
+SIGSEGV due to valid_user_regs failing. We could add an explicit check
+against is_aarch32_compat_task in the compat syscall but the end
+result will be the same.
 
-Miklos, would that restriction make this series any more acceptable to
-you?
+> * For ptrace, operations on the user_aarch32_view (which
+>   task_user_regset_view() will return for fake compat tasks) will
+>   erroneously try to convert between SPSR_ELx <-> AARCH32 SPSR layouts,
+>   assuming the pt_regs::pstate field is using the encoding for AArch32
+>   EL0, where it's actually the AArch64 EL0 encoding where the layout is
+>   subtly differnt. Subseqeuntly valid_user_regs() will sanitize that to
+>   an AArch64 encoding, with the exact same problems as for rt_sigreturn().
 
-Thanks!
+Note that user_aarch32_view is only returned when the tracer is
+performing a compat syscall. This is no different from a normal 32-bit
+process tracing a 64-bit process, which already "works" (the register
+state is garbage but everything else works).
 
-Tyler
+Tango doesn't use the regsets and instead retrieves the AArch32
+register state directly from the traced process (which is also running
+under Tango) with process_vm_readv and returns that when emulating the
+various PTRACE_* operations.
 
-[1] https://www.kernel.org/doc/html/latest/filesystems/overlayfs.html#multiple-lower-layers
+>   Note that attempting to set the TLS will clobber TPIDRR0_EL0, which
+>   the kernel will clobber for AArch64 tasks (including your fake compat
+>   tasks) in the KPTI trampoline. I'm not sure what your emulator expects
+>   here, and I suspect this also gets clobbered by the case
+>   tls_thread_flush() tries to cater for.
 
-> 
-> Tyler
-> 
-> > 
-> > This patch becomes necessary when matched with the PATCH v18 3/4 of the
-> > series which fixes the user space break introduced in ~4.6 that formerly
-> > used the callers credentials for all accesses in all places. Security is
-> > weakened already as-is in overlayfs with all the overriding of the
-> > credentials for internal accesses to overlayfs mechanics based on the
-> > mounter credentials. Using the mounter credentials as a wider security hole
-> > is the problem, at least with PATCH v18 3/4 of the series we go back
-> > optionally to only using the caller's credentials to perform the operations.
-> > Admittedly some of the internal operations like mknod are privileged, but at
-> > least in Android's use case we are not using them with callers without the
-> > necessary credentials.
-> > 
-> > Android does not give the mounter more credentials than the callers, there
-> > is very little overlap in the MAC security.
-> > 
-> > > The big API churn in the 1/4 patch also seems excessive considering
-> > > that this seems to be mostly a cosmetic issue for android.  Am I
-> > > missing something?
-> > 
-> > Breaks sepolicy, it no longer has access to the context data at the
-> > overlayfs security boundary.
-> > 
-> > unknown is a symptom of being denied based on the denial to xattr data from
-> > the underlying filesystem layer. Being denied the security context of the
-> > target is not a good thing within the sepolicy security layer.
-> > 
-> > > 
-> > > Thanks,
-> > > Miklos
-> > 
-> > 
+All the code paths that modify TPIDRR0_EL0 are guarded by
+is_aarch32_compat_task which returns false for fake compat tasks. The
+call to compat_arm_syscall which handles __ARM_NR_compat_set_tls is
+also guarded by is_aarch32_compat_task.
+
+Again, __ARM_NR_compat_set_tls is emulated internally by Tango and the
+AArch32 TLS registers visible to translated code are also emulated in
+software.
+
+>   So this really doesn't make sense to expose either, the kernel cannot
+>   possibly do something that is correct in this case.
+>
+> I fully expect that there are more cases where this sort of mismatch
+> exists and there isn't some final sanity check that prevents said
+> mismatch from breaking the kernel.
+>
+> Maybe your emulator avoids these, but that's no justification for the
+> kernel to expose such broken behaviour.
+
+I disagree that any broken behavior is exposed here.
