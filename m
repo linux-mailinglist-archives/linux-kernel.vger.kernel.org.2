@@ -2,152 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF8F31A310
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFCA31A319
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbhBLQpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:45:39 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2839 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhBLQpf (ORCPT
+        id S229821AbhBLQvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:51:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhBLQvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:45:35 -0500
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DcfRp21Rgz13t1p;
-        Sat, 13 Feb 2021 00:42:30 +0800 (CST)
-Received: from dggemm751-chm.china.huawei.com (10.1.198.57) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Sat, 13 Feb 2021 00:44:49 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggemm751-chm.china.huawei.com (10.1.198.57) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Sat, 13 Feb 2021 00:44:48 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2106.006; Fri, 12 Feb 2021 16:44:46 +0000
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-CC:     "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [PATCH v2] iommu: Check dev->iommu in iommu_dev_xxx functions
-Thread-Topic: [PATCH v2] iommu: Check dev->iommu in iommu_dev_xxx functions
-Thread-Index: AdcBTrfjz4ngs6VWSn6F9Rp3qrl5mQADsiaAAAAQ0NA=
-Date:   Fri, 12 Feb 2021 16:44:46 +0000
-Message-ID: <501a26a47f6649fc8920d0a308009a5d@huawei.com>
-References: <c82f6d0cced74c43947714e7de576d5a@huawei.com>
- <d541ebeb-5b89-7a9d-50a2-3867f9cf78b3@arm.com>
-In-Reply-To: <d541ebeb-5b89-7a9d-50a2-3867f9cf78b3@arm.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.89.255]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 12 Feb 2021 11:51:41 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02286C061574;
+        Fri, 12 Feb 2021 08:51:01 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id f14so231285ejc.8;
+        Fri, 12 Feb 2021 08:51:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=kuyIAN6ynILC6Lb1Ej4zOAFFZL68p0m+Z5l76VYpdI4=;
+        b=pQ6KJ66aU4m9vG+s3RKS3nIO1REYUCD/HIfeBWb/ray8H2l25s8Q6t8eeBvC81VOwj
+         JgmxhAqZFLNd9LndP8r/4EQQfM39a5bexDTvN8dhRfzNQRtrty9Ges2pArAFSN4IlMqB
+         E50vDhmSB87YjNOo9c56Ad835Zxsd2FkW/gWgIPWJQszMui8KRlOvsEPLHQGjxG2iMhZ
+         8UA8Dy4rSA4jK5+Wgfyhob65xkiJWNyWnEnw+U0b5clkgFlyrLNbkG1OrTzmQebnblOk
+         SEAl6Kg6u42jsJlDQyXMX+7qjJMdZTmpQOJAuqvSrXbEHrrQWG5GXJ6lYqQe+I7EnXqn
+         KbSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=kuyIAN6ynILC6Lb1Ej4zOAFFZL68p0m+Z5l76VYpdI4=;
+        b=tVWu3rEGvPo7/0HcCadGdijSc5/zV+iRsDnq0lnj1THiC2Hp4a2O8ivcHN7mb3qPeg
+         hNW28Dg+1Z18dbGQERLqnMRzTPC+bhXQsLEium1uUYmmHr71dGCONw3v9rKz+0oRjewl
+         62Myijgi4ZhoTBzg99xU7aKU41aCzc3sdKNeGGO/UThpG3DawyQhHzMjh30D3KTg0Dol
+         R+Z0W9pzz7w729AYMB9YgpxFwamQQbulQJ/5AtXV48dJzKGeSkj/JkpHKnUvsKGsKCpc
+         OYooB847Aezk7dFIFkwQNrgqWI93wcrMrbKeAo3JUocctuv6itcWdAggbN4B4wxGD6R3
+         McVA==
+X-Gm-Message-State: AOAM5304xLwkuH/2GTA+jg1P1FaOyNAQEDDZ8YYRgEoc6AWRCwmgDXiS
+        nIkQvSfvaKMzLlKuYlxkgcvScza+t+Vzw/wP
+X-Google-Smtp-Source: ABdhPJw+9EQuVkXn16atquT/DdvsnrytGuk42nwp9fu3inZ/k5/jDBeVUF+gk6tK8IDbBYAMCLQMaw==
+X-Received: by 2002:a17:906:364b:: with SMTP id r11mr3850258ejb.447.1613148659299;
+        Fri, 12 Feb 2021 08:50:59 -0800 (PST)
+Received: from anparri (host-95-239-64-41.retail.telecomitalia.it. [95.239.64.41])
+        by smtp.gmail.com with ESMTPSA id lo3sm580481ejb.106.2021.02.12.08.50.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 08:50:58 -0800 (PST)
+Date:   Fri, 12 Feb 2021 17:50:50 +0100
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, mikelley@microsoft.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, davem@davemloft.net, kuba@kernel.org,
+        linux-hyperv@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Regressions with VMBus/VSCs hardening changes
+Message-ID: <20210212165050.GA11906@anparri>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUm9iaW4gTXVycGh5IFtt
-YWlsdG86cm9iaW4ubXVycGh5QGFybS5jb21dDQo+IFNlbnQ6IDEyIEZlYnJ1YXJ5IDIwMjEgMTY6
-MzkNCj4gVG86IFNoYW1lZXJhbGkgS29sb3RodW0gVGhvZGkgPHNoYW1lZXJhbGkua29sb3RodW0u
-dGhvZGlAaHVhd2VpLmNvbT47DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGlvbW11
-QGxpc3RzLmxpbnV4LWZvdW5kYXRpb24ub3JnDQo+IENjOiBqb3JvQDhieXRlcy5vcmc7IGplYW4t
-cGhpbGlwcGVAbGluYXJvLm9yZzsgd2lsbEBrZXJuZWwub3JnOyBaZW5ndGFvIChCKQ0KPiA8cHJp
-bWUuemVuZ0BoaXNpbGljb24uY29tPjsgbGludXhhcm1Ab3BlbmV1bGVyLm9yZw0KPiBTdWJqZWN0
-OiBSZTogW1BBVENIIHYyXSBpb21tdTogQ2hlY2sgZGV2LT5pb21tdSBpbiBpb21tdV9kZXZfeHh4
-IGZ1bmN0aW9ucw0KPiANCj4gT24gMjAyMS0wMi0xMiAxNDo1NCwgU2hhbWVlcmFsaSBLb2xvdGh1
-bSBUaG9kaSB3cm90ZToNCj4gPiBIaSBSb2Jpbi9Kb2VyZywNCj4gPg0KPiA+PiAtLS0tLU9yaWdp
-bmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9tOiBTaGFtZWVyIEtvbG90aHVtIFttYWlsdG86c2hh
-bWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29tXQ0KPiA+PiBTZW50OiAwMSBGZWJydWFy
-eSAyMDIxIDEyOjQxDQo+ID4+IFRvOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBpb21t
-dUBsaXN0cy5saW51eC1mb3VuZGF0aW9uLm9yZw0KPiA+PiBDYzogam9yb0A4Ynl0ZXMub3JnOyBy
-b2Jpbi5tdXJwaHlAYXJtLmNvbTsgamVhbi1waGlsaXBwZUBsaW5hcm8ub3JnOw0KPiA+PiB3aWxs
-QGtlcm5lbC5vcmc7IFplbmd0YW8gKEIpIDxwcmltZS56ZW5nQGhpc2lsaWNvbi5jb20+Ow0KPiA+
-PiBsaW51eGFybUBvcGVuZXVsZXIub3JnDQo+ID4+IFN1YmplY3Q6IFtMaW51eGFybV0gW1BBVENI
-IHYyXSBpb21tdTogQ2hlY2sgZGV2LT5pb21tdSBpbg0KPiBpb21tdV9kZXZfeHh4DQo+ID4+IGZ1
-bmN0aW9ucw0KPiA+Pg0KPiA+PiBUaGUgZGV2aWNlIGlvbW11IHByb2JlL2F0dGFjaCBtaWdodCBo
-YXZlIGZhaWxlZCBsZWF2aW5nIGRldi0+aW9tbXUNCj4gPj4gdG8gTlVMTCBhbmQgZGV2aWNlIGRy
-aXZlcnMgbWF5IHN0aWxsIGludm9rZSB0aGVzZSBmdW5jdGlvbnMgcmVzdWx0aW5nDQo+ID4+IGlu
-IGEgY3Jhc2ggaW4gaW9tbXUgdmVuZG9yIGRyaXZlciBjb2RlLiBIZW5jZSBtYWtlIHN1cmUgd2Ug
-Y2hlY2sgdGhhdC4NCj4gPj4NCj4gPj4gQWxzbyBhZGRlZCBpb21tdV9vcHMgdG8gdGhlICJzdHJ1
-Y3QgZGV2X2lvbW11IiBhbmQgc2V0IGl0IGlmIHRoZSBkZXYNCj4gPj4gaXMgc3VjY2Vzc2Z1bGx5
-IGFzc29jaWF0ZWQgd2l0aCBhbiBpb21tdS4NCj4gPj4NCj4gPj4gRml4ZXM6wqBhM2ExOTU5Mjlk
-NDAgKCJpb21tdTogQWRkIEFQSXMgZm9yIG11bHRpcGxlIGRvbWFpbnMgcGVyIGRldmljZSIpDQo+
-ID4+IFNpZ25lZC1vZmYtYnk6IFNoYW1lZXIgS29sb3RodW0NCj4gPHNoYW1lZXJhbGkua29sb3Ro
-dW0udGhvZGlAaHVhd2VpLmNvbT4NCj4gPj4gLS0tDQo+ID4+IHYxIC0tPiB2MjoNCj4gPj4gICAt
-QWRkZWQgaW9tbXVfb3BzIHRvIHN0cnVjdCBkZXZfaW9tbXUgYmFzZWQgb24gdGhlIGRpc2N1c3Np
-b24gd2l0aA0KPiBSb2Jpbi4NCj4gPj4gICAtUmViYXNlZCBhZ2FpbnN0IGlvbW11LXRyZWUgY29y
-ZSBicmFuY2guDQo+ID4NCj4gPiBBIGdlbnRsZSBwaW5nIG9uIHRoaXMuLi4NCj4gDQo+IElzIHRo
-ZXJlIGEgY29udmluY2luZyBqdXN0aWZpY2F0aW9uIGZvciBtYWludGFpbmluZyB5ZXQgYW5vdGhl
-ciBjb3B5IG9mDQo+IHRoZSBvcHMgcG9pbnRlciByYXRoZXIgdGhhbiBzaW1wbHkgZGVyZWZlcmVu
-Y2luZyBpb21tdV9kZXYtPm9wcyBhdCBwb2ludA0KPiBvZiB1c2U/DQo+IA0KDQpUQkgsIG5vdGhp
-bmcgSSBjYW4gdGhpbmsgb2Ygbm93LiBUaGF0IHdhcyBtYWlubHkgdGhlIHdheSBJIGludGVycHJl
-dGVkIHlvdXIgc3VnZ2VzdGlvbg0KZnJvbSB0aGUgdjEuICBOb3cgaXQgbG9va3MgbGlrZSB5b3Ug
-ZGlkbuKAmXQgbWVhbiBpdCA6KS4gSSBhbSBPayB0byByZXdvcmsgaXQgdG8gZGVyZWZlcmVuY2UN
-Cml0IGZyb20gaW9tbXVfZGV2LiBQbGVhc2UgbGV0IG1lIGtub3cuDQoNClRoYW5rcywNClNoYW1l
-ZXINCg0KPiBSb2Jpbi4NCj4gDQo+ID4gVGhhbmtzLA0KPiA+IFNoYW1lZXINCj4gPg0KPiA+PiAt
-LS0NCj4gPj4gICBkcml2ZXJzL2lvbW11L2lvbW11LmMgfCAxOSArKysrKysrLS0tLS0tLS0tLS0t
-DQo+ID4+ICAgaW5jbHVkZS9saW51eC9pb21tdS5oIHwgIDIgKysNCj4gPj4gICAyIGZpbGVzIGNo
-YW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgMTIgZGVsZXRpb25zKC0pDQo+ID4+DQo+ID4+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL2lvbW11L2lvbW11LmMgYi9kcml2ZXJzL2lvbW11L2lvbW11LmMNCj4g
-Pj4gaW5kZXggZmQ3NmUyZjU3OWZlLi42MDIzZDBiN2M1NDIgMTAwNjQ0DQo+ID4+IC0tLSBhL2Ry
-aXZlcnMvaW9tbXUvaW9tbXUuYw0KPiA+PiArKysgYi9kcml2ZXJzL2lvbW11L2lvbW11LmMNCj4g
-Pj4gQEAgLTIxNyw2ICsyMTcsNyBAQCBzdGF0aWMgaW50IF9faW9tbXVfcHJvYmVfZGV2aWNlKHN0
-cnVjdCBkZXZpY2UNCj4gKmRldiwNCj4gPj4gc3RydWN0IGxpc3RfaGVhZCAqZ3JvdXBfbGlzdA0K
-PiA+PiAgIAl9DQo+ID4+DQo+ID4+ICAgCWRldi0+aW9tbXUtPmlvbW11X2RldiA9IGlvbW11X2Rl
-djsNCj4gPj4gKwlkZXYtPmlvbW11LT5vcHMgPSBpb21tdV9kZXYtPm9wczsNCj4gPj4NCj4gPj4g
-ICAJZ3JvdXAgPSBpb21tdV9ncm91cF9nZXRfZm9yX2RldihkZXYpOw0KPiA+PiAgIAlpZiAoSVNf
-RVJSKGdyb3VwKSkgew0KPiA+PiBAQCAtMjg2NSwxMCArMjg2Niw4IEBADQo+IEVYUE9SVF9TWU1C
-T0xfR1BMKGlvbW11X2Z3c3BlY19hZGRfaWRzKTsNCj4gPj4gICAgKi8NCj4gPj4gICBpbnQgaW9t
-bXVfZGV2X2VuYWJsZV9mZWF0dXJlKHN0cnVjdCBkZXZpY2UgKmRldiwgZW51bQ0KPiA+PiBpb21t
-dV9kZXZfZmVhdHVyZXMgZmVhdCkNCj4gPj4gICB7DQo+ID4+IC0JY29uc3Qgc3RydWN0IGlvbW11
-X29wcyAqb3BzID0gZGV2LT5idXMtPmlvbW11X29wczsNCj4gPj4gLQ0KPiA+PiAtCWlmIChvcHMg
-JiYgb3BzLT5kZXZfZW5hYmxlX2ZlYXQpDQo+ID4+IC0JCXJldHVybiBvcHMtPmRldl9lbmFibGVf
-ZmVhdChkZXYsIGZlYXQpOw0KPiA+PiArCWlmIChkZXYtPmlvbW11ICYmIGRldi0+aW9tbXUtPm9w
-cy0+ZGV2X2VuYWJsZV9mZWF0KQ0KPiA+PiArCQlyZXR1cm4gZGV2LT5pb21tdS0+b3BzLT5kZXZf
-ZW5hYmxlX2ZlYXQoZGV2LCBmZWF0KTsNCj4gPj4NCj4gPj4gICAJcmV0dXJuIC1FTk9ERVY7DQo+
-ID4+ICAgfQ0KPiA+PiBAQCAtMjg4MSwxMCArMjg4MCw4IEBADQo+ID4+IEVYUE9SVF9TWU1CT0xf
-R1BMKGlvbW11X2Rldl9lbmFibGVfZmVhdHVyZSk7DQo+ID4+ICAgICovDQo+ID4+ICAgaW50IGlv
-bW11X2Rldl9kaXNhYmxlX2ZlYXR1cmUoc3RydWN0IGRldmljZSAqZGV2LCBlbnVtDQo+ID4+IGlv
-bW11X2Rldl9mZWF0dXJlcyBmZWF0KQ0KPiA+PiAgIHsNCj4gPj4gLQljb25zdCBzdHJ1Y3QgaW9t
-bXVfb3BzICpvcHMgPSBkZXYtPmJ1cy0+aW9tbXVfb3BzOw0KPiA+PiAtDQo+ID4+IC0JaWYgKG9w
-cyAmJiBvcHMtPmRldl9kaXNhYmxlX2ZlYXQpDQo+ID4+IC0JCXJldHVybiBvcHMtPmRldl9kaXNh
-YmxlX2ZlYXQoZGV2LCBmZWF0KTsNCj4gPj4gKwlpZiAoZGV2LT5pb21tdSAmJiBkZXYtPmlvbW11
-LT5vcHMtPmRldl9kaXNhYmxlX2ZlYXQpDQo+ID4+ICsJCXJldHVybiBkZXYtPmlvbW11LT5vcHMt
-PmRldl9kaXNhYmxlX2ZlYXQoZGV2LCBmZWF0KTsNCj4gPj4NCj4gPj4gICAJcmV0dXJuIC1FQlVT
-WTsNCj4gPj4gICB9DQo+ID4+IEBAIC0yODkyLDEwICsyODg5LDggQEANCj4gPj4gRVhQT1JUX1NZ
-TUJPTF9HUEwoaW9tbXVfZGV2X2Rpc2FibGVfZmVhdHVyZSk7DQo+ID4+DQo+ID4+ICAgYm9vbCBp
-b21tdV9kZXZfZmVhdHVyZV9lbmFibGVkKHN0cnVjdCBkZXZpY2UgKmRldiwgZW51bQ0KPiA+PiBp
-b21tdV9kZXZfZmVhdHVyZXMgZmVhdCkNCj4gPj4gICB7DQo+ID4+IC0JY29uc3Qgc3RydWN0IGlv
-bW11X29wcyAqb3BzID0gZGV2LT5idXMtPmlvbW11X29wczsNCj4gPj4gLQ0KPiA+PiAtCWlmIChv
-cHMgJiYgb3BzLT5kZXZfZmVhdF9lbmFibGVkKQ0KPiA+PiAtCQlyZXR1cm4gb3BzLT5kZXZfZmVh
-dF9lbmFibGVkKGRldiwgZmVhdCk7DQo+ID4+ICsJaWYgKGRldi0+aW9tbXUgJiYgZGV2LT5pb21t
-dS0+b3BzLT5kZXZfZmVhdF9lbmFibGVkKQ0KPiA+PiArCQlyZXR1cm4gZGV2LT5pb21tdS0+b3Bz
-LT5kZXZfZmVhdF9lbmFibGVkKGRldiwgZmVhdCk7DQo+ID4+DQo+ID4+ICAgCXJldHVybiBmYWxz
-ZTsNCj4gPj4gICB9DQo+ID4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2lvbW11LmggYi9p
-bmNsdWRlL2xpbnV4L2lvbW11LmgNCj4gPj4gaW5kZXggNTI0ZmZjMmZmNjRmLi5mZjBjNzZiZGZi
-NjcgMTAwNjQ0DQo+ID4+IC0tLSBhL2luY2x1ZGUvbGludXgvaW9tbXUuaA0KPiA+PiArKysgYi9p
-bmNsdWRlL2xpbnV4L2lvbW11LmgNCj4gPj4gQEAgLTM1NCw2ICszNTQsNyBAQCBzdHJ1Y3QgaW9t
-bXVfZmF1bHRfcGFyYW0gew0KPiA+PiAgICAqIEBmYXVsdF9wYXJhbTogSU9NTVUgZGV0ZWN0ZWQg
-ZGV2aWNlIGZhdWx0IHJlcG9ydGluZyBkYXRhDQo+ID4+ICAgICogQGZ3c3BlYzoJIElPTU1VIGZ3
-c3BlYyBkYXRhDQo+ID4+ICAgICogQGlvbW11X2RldjoJIElPTU1VIGRldmljZSB0aGlzIGRldmlj
-ZSBpcyBsaW5rZWQgdG8NCj4gPj4gKyAqIEBvcHM6CSBpb21tdS1vcHMgZm9yIHRhbGtpbmcgdG8g
-dGhlIGlvbW11X2Rldg0KPiA+PiAgICAqIEBwcml2OgkgSU9NTVUgRHJpdmVyIHByaXZhdGUgZGF0
-YQ0KPiA+PiAgICAqDQo+ID4+ICAgICogVE9ETzogbWlncmF0ZSBvdGhlciBwZXIgZGV2aWNlIGRh
-dGEgcG9pbnRlcnMgdW5kZXINCj4gaW9tbXVfZGV2X2RhdGEsDQo+ID4+IGUuZy4NCj4gPj4gQEAg
-LTM2NCw2ICszNjUsNyBAQCBzdHJ1Y3QgZGV2X2lvbW11IHsNCj4gPj4gICAJc3RydWN0IGlvbW11
-X2ZhdWx0X3BhcmFtCSpmYXVsdF9wYXJhbTsNCj4gPj4gICAJc3RydWN0IGlvbW11X2Z3c3BlYwkJ
-KmZ3c3BlYzsNCj4gPj4gICAJc3RydWN0IGlvbW11X2RldmljZQkJKmlvbW11X2RldjsNCj4gPj4g
-Kwljb25zdCBzdHJ1Y3QgaW9tbXVfb3BzCQkqb3BzOw0KPiA+PiAgIAl2b2lkCQkJCSpwcml2Ow0K
-PiA+PiAgIH07DQo+ID4+DQo+ID4+IC0tDQo+ID4+IDIuMTcuMQ0KPiA+PiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiA+PiBMaW51eGFybSBtYWlsaW5n
-IGxpc3QgLS0gbGludXhhcm1Ab3BlbmV1bGVyLm9yZw0KPiA+PiBUbyB1bnN1YnNjcmliZSBzZW5k
-IGFuIGVtYWlsIHRvIGxpbnV4YXJtLWxlYXZlQG9wZW5ldWxlci5vcmcNCg==
+Hi all,
+
+I'm reporting two regressions following certain VMBus/VSCs hardening changes
+we've been discussing 'recently', unfortunately the first regression already
+touched/affects mainline while the second one is in hyperv-next:
+
+1) [mainline]
+
+The first regression manifests with the following message (several):
+
+  hv_vmbus: No request id available
+
+I could reliably reproduce such message/behavior by running the command:
+
+  fio --name=seqwrite --rw=read --direct=1 --ioengine=libaio --bs=32k --numjobs=4 --size=2G --runtime=60
+
+(the message is triggered when files are being created).
+
+I've bisected this regression to commit:
+
+  453de21c2b8281 ("scsi: storvsc: Use vmbus_requestor to generate transaction IDs for VMBus hardening")
+
+2) [hyperv-next]
+
+The second regression manifests with various messages including:
+
+  hv_netvsc 9c5f5000-0499-4b18-b2eb-a8d5c57c8774 eth0: Unknown nvsp packet type received 51966
+
+  hv_netvsc 9c5f5000-0499-4b18-b2eb-a8d5c57c8774 eth0: unhandled packet type 0, tid 0
+
+  hv_netvsc 9c5f5000-0499-4b18-b2eb-a8d5c57c8774 eth0: Incorrect transaction id
+
+  hv_netvsc 9c5f5000-0499-4b18-b2eb-a8d5c57c8774 eth0: Invalid rndis_msg (buflen: 262, msg_len: 1728)
+
+The connection was then typically lost/reset by the peer.
+
+I could reproduce such behavior/messages by running the test:
+
+  ntttcp -r -m 8,*,<receiver IP address> # receiver
+
+  ntttcp -s -m 8,*,<receiver IP address> -ns -t 60 # sender
+
+I bisected this regression to commit:
+
+  a8c3209998afb5 ("Drivers: hv: vmbus: Copy packets sent by Hyper-V out of the ring buffer")
+
+---
+I am investigating but don't have fixes for these regressions now: given the
+'timing' (-rc7 with the next merge window at the door...) I would propose to
+revert/drop the interested changes:
+
+1) 453de21c2b8281 is part of the so called 'vmbus_requestor' series that was
+   applied during the merge window for 5.11:
+
+  e8b7db38449ac5 ("Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus hardening")
+  453de21c2b8281 ("scsi: storvsc: Use vmbus_requestor to generate transaction IDs for VMBus hardening")
+  4d18fcc95f5095 ("hv_netvsc: Use vmbus_requestor to generate transaction IDs for VMBus hardening")
+
+  I could prepare/submit patches to revert such commits (asap but likely not
+  before tomorrow/late Saturday - EU time).
+
+2) IIUC a8c3209998afb5 could be dropped (after rebase) without further modi-
+   fications to hyperv-next.
+
+Other suggestions/thoughts?
+
+Thanks,
+  Andrea
