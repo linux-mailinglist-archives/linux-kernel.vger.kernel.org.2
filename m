@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B61319789
+	by mail.lfdr.de (Postfix) with ESMTP id A806331978A
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 01:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhBLAgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 19:36:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        id S230453AbhBLAgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 19:36:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbhBLAfl (ORCPT
+        with ESMTP id S230413AbhBLAfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 19:35:41 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8EFC06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 16:34:20 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id 124so6002766qkg.6
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 16:34:20 -0800 (PST)
+        Thu, 11 Feb 2021 19:35:43 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C269EC06178C
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 16:34:22 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id l10so8013861ybt.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 16:34:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=M+eyZ12tarq6UkDTGfT0OACpGX3Sqrl84N/PdHAw1yU=;
-        b=noaYGPU2lYBspzZciBFmGhYBxjzuQ7nsmNTnWE7bK+VXu1VfCXybGuUI3vhsNy0Vkw
-         m4sEnBsWWYJPdfib4mqj77emep6BvLkp66x6M3B2dC4bFuaYLcJ9I6blaCgrgMwyzeER
-         n9vW4Ya5T967d1I+JLEJ8J1m4ifdoqOEBxbKcBtmgv6oTFBIGGF3lanJrary0UbAZc+N
-         fv9kgzA/qPiarqOAkcyFYTTAUOdOhI+uBHmIW3AgJNukRZEifAcJZQPaSFddjjYWGhEB
-         zxDXK6DlOqRKWSb/e2ccRbj31QToEOqObrRgGoK51y+eP6O7zkK2E+w9eSJDv5XKhqGi
-         T3aQ==
+        bh=HiLuaEqgR2Zld6XmaaPoO5KvEAReZ5PkM63iqGTwhYE=;
+        b=ZsKNp492o99jcgPOmAK9In2KwTkldmofXtwhobMCDR54LWHgw43V6No73zBR1S5ALi
+         fx0ZOcy7c+r+wQrPsBDFdugM41Dh5lpn+VNZBgLOrMleScPRqb/tNiwzoQEGm1TjJOJn
+         l6ddgrgyUwK+TTDdcv4E7MbMabLrG7drll821snERsbcjmnYKhU0aUH43h6RtpGdwqnB
+         knsdzOM7TU1C3dnTEYqN5h2jgfqnz2XsBEKmg6ilFTnpFXqd3G9rgQgf67CBWpiFuBoi
+         j7NOGRDhbQvawgpRsBEZv+khpTk17mhPdzoAxXC/hwRTaRNDZQ5x7qNQfCPvan7I61nq
+         TeDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=M+eyZ12tarq6UkDTGfT0OACpGX3Sqrl84N/PdHAw1yU=;
-        b=NjBr4dt/1nBu/tAkPn/J6pXS8ONDB1qxiNKRU6bUi8IAwau75O1MIt96J/Rq3iTP7F
-         uU89T4vStHRuATZ29VPZyNZCDCyUzI14hel94fiT2rEOvYwQZN1V5og84xCWbluZy/GT
-         9JeLLyr1GQvppDB5JfsPgbG+eRPIB2eoz9KEs2P6sX4Yk2USCg4lt/qGyrZE+WFpksTl
-         FsgK+IyFs565wQOq0A1dNC9K4BH0ZwKWp+WBSD3VrvZymj15zQ2qCw14ay71SMdDAtyt
-         HHiOpvSW3uzI8oU83zEDb/8LYfFwUjhfMey9pxIJwnzxi+XvTCgSKR2DvNcxojIID+JZ
-         h3YQ==
-X-Gm-Message-State: AOAM530cvU6DfiJXzocrMKHbr+0IAMpBkwtyHxwkQ3jY1dVRyypCWC4R
-        Z2O/MoBR015tUWDOiW8xfzDzmGx8mUQ=
-X-Google-Smtp-Source: ABdhPJxEkdaoRqPqf5oFS/oyQj2EMhabB41ggzQAHTxQMUh2tIPzigyF9exo98vwfWsvOTuVsIo8wFsMAVw=
+        bh=HiLuaEqgR2Zld6XmaaPoO5KvEAReZ5PkM63iqGTwhYE=;
+        b=jZWBpXc/q6pyUkx7MBRmn05hTehX2Ibo4EGrnWsKwvpTlghcUguWyKndISSCvKsYRm
+         oSUe1xrjGuuZ+mnUZwJ28NqO4RrBkFHXR3kECTQRefi7VwcenY8tShmhVC8Bddd7e+re
+         dQvtWHjafgELT/FiILx5WgfwS2XZ2yqeNupQTUk6+QlGE8xNeTzGQRu9OfQC0rojhHcY
+         FycPG3VlhnBVwD6VaYQXD+LgclMZ0Cbxn0Eec29XSim9Yn8cSSecyF5e+X3ASH8c1LW3
+         wBxLkaSKJF6eYfXlMXQdiO7/A8SX3w/pM2zfmhw1bm7gCBVPkQXTIPCCi57xNHQYH1Ph
+         9bkA==
+X-Gm-Message-State: AOAM531VYzqAKv9Xj/OAJiHff5vMpBDuaeEx8jmD6t1wwJc41dnc75ih
+        WLUTz/DW15tmK+AE01kEdUrFYe5ERoI=
+X-Google-Smtp-Source: ABdhPJwK5b+suKRPnqy0zqTg7zGY3SLR+Mwuz3838RchlSecSDLe7wNZ+yk5VjjAgFs7GvC5s5tPDbKjUGM=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:f588:a708:f347:3ebb])
- (user=seanjc job=sendgmr) by 2002:ad4:4b30:: with SMTP id s16mr520658qvw.62.1613090059665;
- Thu, 11 Feb 2021 16:34:19 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:2b04:: with SMTP id r4mr699264ybr.219.1613090062011;
+ Thu, 11 Feb 2021 16:34:22 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 11 Feb 2021 16:34:10 -0800
+Date:   Thu, 11 Feb 2021 16:34:11 -0800
 In-Reply-To: <20210212003411.1102677-1-seanjc@google.com>
-Message-Id: <20210212003411.1102677-3-seanjc@google.com>
+Message-Id: <20210212003411.1102677-4-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210212003411.1102677-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH 2/3] KVM: x86: Advertise INVPCID by default
+Subject: [PATCH 3/3] KVM: VMX: Allow INVPCID in guest without PCID
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,59 +67,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Advertise INVPCID by default (if supported by the host kernel) instead
-of having both SVM and VMX opt in.  INVPCID was opt in when it was a
-VMX only feature so that KVM wouldn't prematurely advertise support
-if/when it showed up in the kernel on AMD hardware.
+Remove the restriction that prevents VMX from exposing INVPCID to the
+guest without PCID also being exposed to the guest.  The justification of
+the restriction is that INVPCID will #UD if it's disabled in the VMCS.
+While that is a true statement, it's also true that RDTSCP will #UD if
+it's disabled in the VMCS.  Neither of those things has any dependency
+whatsoever on the guest being able to set CR4.PCIDE=1, which is what is
+effectively allowed by exposing PCID to the guest.
+
+Removing the bogus restriction aligns VMX with SVM, and also allows for
+an interesting configuration.  INVPCID is that fastest way to do a global
+TLB flush, e.g. see native_flush_tlb_global().  Allowing INVPCID without
+PCID would let a guest use the expedited flush while also limiting the
+number of ASIDs consumed by the guest.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/cpuid.c   | 2 +-
- arch/x86/kvm/svm/svm.c | 3 ---
- arch/x86/kvm/vmx/vmx.c | 4 ++--
- 3 files changed, 3 insertions(+), 6 deletions(-)
+ arch/x86/kvm/vmx/vmx.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index c8f2592ccc99..6bd2f8b830e4 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -408,7 +408,7 @@ void kvm_set_cpu_caps(void)
- 
- 	kvm_cpu_cap_mask(CPUID_7_0_EBX,
- 		F(FSGSBASE) | F(BMI1) | F(HLE) | F(AVX2) | F(SMEP) |
--		F(BMI2) | F(ERMS) | 0 /*INVPCID*/ | F(RTM) | 0 /*MPX*/ | F(RDSEED) |
-+		F(BMI2) | F(ERMS) | F(INVPCID) | F(RTM) | 0 /*MPX*/ | F(RDSEED) |
- 		F(ADX) | F(SMAP) | F(AVX512IFMA) | F(AVX512F) | F(AVX512PF) |
- 		F(AVX512ER) | F(AVX512CD) | F(CLFLUSHOPT) | F(CLWB) | F(AVX512DQ) |
- 		F(SHA_NI) | F(AVX512BW) | F(AVX512VL) | 0 /*INTEL_PT*/
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index ca9706c2f99b..f4eca77f65c6 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -926,9 +926,6 @@ static __init void svm_set_cpu_caps(void)
- 	if (boot_cpu_has(X86_FEATURE_LS_CFG_SSBD) ||
- 	    boot_cpu_has(X86_FEATURE_AMD_SSBD))
- 		kvm_cpu_cap_set(X86_FEATURE_VIRT_SSBD);
--
--	/* Enable INVPCID feature */
--	kvm_cpu_cap_check_and_set(X86_FEATURE_INVPCID);
- }
- 
- static __init int svm_hardware_setup(void)
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index e0a3a9be654b..6d265b2523f8 100644
+index 6d265b2523f8..e1b84008a05d 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7330,8 +7330,8 @@ static __init void vmx_set_cpu_caps(void)
- 	/* CPUID 0x7 */
- 	if (kvm_mpx_supported())
- 		kvm_cpu_cap_check_and_set(X86_FEATURE_MPX);
--	if (cpu_has_vmx_invpcid())
--		kvm_cpu_cap_check_and_set(X86_FEATURE_INVPCID);
-+	if (!cpu_has_vmx_invpcid())
-+		kvm_cpu_cap_clear(X86_FEATURE_INVPCID);
- 	if (vmx_pt_mode_is_host_guest())
- 		kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
+@@ -4295,18 +4295,8 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+ 	}
+ 
+ 	vmx_adjust_sec_exec_feature(vmx, &exec_control, rdtscp, RDTSCP);
+-
+-	/*
+-	 * Expose INVPCID if and only if PCID is also exposed to the guest.
+-	 * INVPCID takes a #UD when it's disabled in the VMCS, but a #GP or #PF
+-	 * if CR4.PCIDE=0.  Enumerating CPUID.INVPCID=1 would lead to incorrect
+-	 * behavior from the guest perspective (it would expect #GP or #PF).
+-	 */
+-	if (!guest_cpuid_has(vcpu, X86_FEATURE_PCID))
+-		guest_cpuid_clear(vcpu, X86_FEATURE_INVPCID);
+ 	vmx_adjust_sec_exec_feature(vmx, &exec_control, invpcid, INVPCID);
+ 
+-
+ 	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdrand, RDRAND);
+ 	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdseed, RDSEED);
  
 -- 
 2.30.0.478.g8a0d178c01-goog
