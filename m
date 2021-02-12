@@ -2,266 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712A131A158
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154C731A159
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhBLPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:15:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
+        id S229789AbhBLPQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:16:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhBLPP1 (ORCPT
+        with ESMTP id S231422AbhBLPPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:15:27 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F574C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:14:47 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id z21so6455995pgj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:14:47 -0800 (PST)
+        Fri, 12 Feb 2021 10:15:52 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8FAC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:15:12 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id e24so9629942ioc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:15:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EYCiO0FAhTmxDX1fPyXHVZ6/SbHmYSGTeHA0I798KT8=;
-        b=Am7Ztbdp/+XBNAPpyetsD98C2ySi+gsRVo9Vlbol1GRkOc2UOBDyyFOMS0HVdbBQOq
-         33jb5vx1vq/7AFCMMEAshhu6zcou0deRKhgb41INj4rXGOdsOelr9eFGGU+NM+D2B4z8
-         rQQuEN0UdtlPnmxZs/a3CkTCa/jQgxRz3R+hQGI6WuPisfPYhWDFR4TKahBZUVP+0dlc
-         LMSitHaruQyqMREBiI3xfoBnFdRU+zWEGdo+sUu2qCQpcJOhKuSezB0NK39/dEwX6LGm
-         sFBqNNLHRQ3FbfLb/1c+x7u9nd+V8N0F2M8NYopFfSvF9J69vd27RmdM5UAaR9PUREWv
-         hcGg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=g5Qd6pYvAFJWK+gEpErCm9aESy14N4Z1oHpZ+sVfQOc=;
+        b=ZcR5ap78jvA6h4aOH14zmB9wDCk19/qv8W8niAZWhnr5nTtMlT5d34/JWNHzD3v1AN
+         tSzLbKUDQgvxlx/6Zfo2NLgykz9WakzKRsH0XsZdVbetee3kCrE5FcWerGgykKAYs4V1
+         gsm7PFrHz00eeKr4SfYWOTy21mM6LE7gmcI/nKHfQ+R7+1VcLAMtuim2BV+nV0NMexb7
+         pyy8tRcbD6T5kfxRwbKC86XdXOO3v0HVhyxihLdEbUof0SdGglfQoccXTc5tCeeTYk40
+         43gbCcFB5TXZSk6eyEvmhDtLTAlDAXw8Txg1Zwsn5atVic24ktAGhTPNldgKS2PDhBES
+         bCqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=EYCiO0FAhTmxDX1fPyXHVZ6/SbHmYSGTeHA0I798KT8=;
-        b=nnDR5JgL4jKzlKYd/ywbux07MN1sTiRda6p9Tn/8WjrPEeRx9agp3o2BiRmZrDqZ/g
-         GjFd1gKBRlF+8oYEf/IdpWmcYbNks3BXBk830W5E8TDnGXBsIpiWfjzWk43wgnO3FOKd
-         PhRgS0ccKqrbO3ywmhGwSvKUqQB2lXREzLNmszwCBYQ1q8EHhWeCoi55y98f1rXNaPKV
-         fJeP7qSO7VDHILoFgDa3bzawhdAHTGhigLcY1rdvrJgW1c5xXqqVt9UnXCvKEtBCMToh
-         CcyeexysivXFiyqe48C97JGoMmk+Ox8DoqAxBUkg7Nz7rh3rHmVJM2w5FTdeIMfmZ+uW
-         YM3Q==
-X-Gm-Message-State: AOAM5322C7Ek0RqnbCeFGOK9u3MRFsIC4rtmhQOfahkl7Yr1hPtQ3uBV
-        uU6uXSQG3tezDYcUB868s+BiAg==
-X-Google-Smtp-Source: ABdhPJwoZkWpryzWR7dsIKNiVgyH7QJWpyZsfXnnJ9ZbU2DqMXnvZsd/FD3ptXiVEZ8Sj2Z39nC9lQ==
-X-Received: by 2002:a65:6899:: with SMTP id e25mr3467908pgt.387.1613142886891;
-        Fri, 12 Feb 2021 07:14:46 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id o14sm6872845pgh.48.2021.02.12.07.14.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 Feb 2021 07:14:46 -0800 (PST)
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com
-Subject: [PATCH v2] psi: Use ONCPU state tracking machinery to detect reclaim
-Date:   Fri, 12 Feb 2021 23:14:37 +0800
-Message-Id: <20210212151437.69675-1-zhouchengming@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        bh=g5Qd6pYvAFJWK+gEpErCm9aESy14N4Z1oHpZ+sVfQOc=;
+        b=oj0AOVJ11kW0lN5SfZVMx3EcUiJWsvqi3IkJOJCGX8GhGYd3I6OlX5pR4aMMM2NRML
+         tXBeDg6ammpxWo15eHQr1woK106qubTJE25KpMQ16AHKMiV02UnafITIQJoC3SnzE2+h
+         QpjY+TFHrfM5A7No5yOcEHxV3FMPCUhIeZlw9BUCKzoUrwSFRaTUFg5H1qjA2Pvl/tng
+         klDr8qhk9EB55HXfBQ2YcYDsFaL8r4wxPm9GKlpEbgaG26NMg5RMiQRiaIcGDWllBqH1
+         YLoyeNwBM9zYGp3FdaI4Em5VHEkeBibsnXTxcLSvT+hZEjacQriHZKnk4seQc3HxGJ55
+         N3JQ==
+X-Gm-Message-State: AOAM531tbfYKhBsql9xxcTamxB/x84lvrPyJbWR+7oIDEqwnA8iVwbcX
+        QUm4cdHn1i1U59hQLuugrLQq2ll64dAhnOjS
+X-Google-Smtp-Source: ABdhPJwvDDD3TWSoAEVShUKZDLa92YwusU8s2w4HHwA6v00UG/7bVDm4Y184knqYvr/k3y56NDnCJA==
+X-Received: by 2002:a05:6638:ccc:: with SMTP id e12mr3175973jak.6.1613142911672;
+        Fri, 12 Feb 2021 07:15:11 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id i19sm4256080ioh.38.2021.02.12.07.15.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Feb 2021 07:15:11 -0800 (PST)
+Subject: Re: Memory keys and io_uring.
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <877dndzs8c.fsf@linux.ibm.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b6ed27dc-7dec-aab5-acfc-073a30e49422@kernel.dk>
+Date:   Fri, 12 Feb 2021 08:15:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <877dndzs8c.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the reclaim detection from the timer tick to the task state
-tracking machinery using the recently added ONCPU state. And we
-also add task psi_flags changes checking in the psi_task_switch()
-optimization to update the parents properly.
+On 2/11/21 11:59 PM, Aneesh Kumar K.V wrote:
+> 
+> Hi,
+> 
+> I am trying to estabilish the behaviour we should expect when passing a
+> buffer with memory keys attached to io_uring syscalls. As show  in the
+> blow test
+> 
+> /*
+>  * gcc -Wall -O2 -D_GNU_SOURCE -o pkey_uring pkey_uring.c -luring
+>  */
+> #include <stdio.h>
+> #include <fcntl.h>
+> #include <string.h>
+> #include <stdlib.h>
+> #include <unistd.h>
+> #include <sys/mman.h>
+> #include "liburing.h"
+> 
+> #define PAGE_SIZE  (64 << 10)
+> 
+> int main(int argc, char *argv[])
+> {
+> 	int fd, ret, pkey;
+> 	struct io_uring ring;
+> 	struct io_uring_sqe *sqe;
+> 	struct io_uring_cqe *cqe;
+> 	struct iovec iovec;
+> 	void *buf;
+> 
+> 	if (argc < 2) {
+> 		printf("%s: file\n", argv[0]);
+> 		return 1;
+> 	}
+> 
+> 	ret = io_uring_queue_init(1, &ring, IORING_SETUP_SQPOLL);
+> 	if (ret < 0) {
+> 		fprintf(stderr, "queue_init: %s\n", strerror(-ret));
+> 		return 1;
+> 	}
+> 
+> 	fd = open(argv[1], O_RDONLY | O_DIRECT);
+> 	if (fd < 0) {
+> 		perror("open");
+> 		return 1;
+> 	}
+> 
+> 	if (posix_memalign(&buf, PAGE_SIZE, PAGE_SIZE))
+> 		return 1;
+> 	iovec.iov_base = buf;
+> 	iovec.iov_len = PAGE_SIZE;
+> 
+> 	//mprotect(buf, PAGE_SIZE, PROT_NONE);
+> 	pkey = pkey_alloc(0, PKEY_DISABLE_WRITE);
+> 	pkey_mprotect(buf, PAGE_SIZE, PROT_READ | PROT_WRITE, pkey);
+> 
+> 
+> 	sqe = io_uring_get_sqe(&ring);
+> 	if (!sqe) {
+> 		perror("io_uring_get_sqe");
+> 		return 1;
+> 	}
+> 	io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
+> 
+> 	ret = io_uring_submit(&ring);
+> 	if (ret != 1) {
+> 		fprintf(stderr, "io_uring_submit: %s\n", strerror(-ret));
+> 		return 1;
+> 	}
+> 
+> 	ret = io_uring_wait_cqe(&ring, &cqe);
+> 
+> 	if (cqe->res < 0)
+> 		fprintf(stderr, "iouring submit failed %s\n", strerror(-cqe->res));
+> 	else
+> 		fprintf(stderr, "iouring submit success\n");
+> 
+> 	io_uring_cqe_seen(&ring, cqe);
+> 
+> 	/*
+> 	 * let's access this via a read syscall
+> 	 */
+> 	ret = read(fd, buf, PAGE_SIZE);
+> 	if (ret < 0)
+> 		fprintf(stderr, "read failed : %s\n", strerror(errno));
+> 
+> 	close(fd);
+> 	io_uring_queue_exit(&ring);
+> 
+> 	return 0;
+> }
+> 
+> A read syscall do fail with EFAULT. But we allow read via io_uring
+> syscalls. Is that ok? Considering memory keys are thread-specific we
+> could debate that kernel thread can be considered to be the one that got all access
+> allowed via keys or we could update that access is denied via kernel
+> thread for any key value other than default key (key 0). Other option
+> is to inherit the memory key restrictions when doing
+> io_uring_submit() and use the same when accessing the userspace from
+> kernel thread. 
+> 
+> Any thoughts here with respect to what should be behaviour?
 
-In terms of performance and cost, this ONCPU task state tracking
-is not cheaper than previous timer tick in aggregate. But the code is
-simpler and shorter this way, so it's a maintainability win. And
-Johannes did some testing with perf bench, the performace and cost
-changes would be acceptable for real workloads.
+It this a powerpc thing? I get -EFAULT on x86 for both reads, io_uring
+and regular syscall. That includes SQPOLL, not using SQPOLL, or
+explicitly setting IOSQE_ASYNC on the sqe.
 
-Thanks to Johannes Weiner for pointing out the psi_task_switch()
-optimization things and the clearer changelog.
-
-Updates since v1:
-- Fold changes from Johannes that compare task psi_flags instead of
-  in_memstall in the psi_task_switch() optimization and move it out
-  of the loop
-- Include some comments about the performance and cost from Johannes
-  too, and the detailed bench results can be seen from here:
-  https://lore.kernel.org/patchwork/patch/1378653/#1577607
-
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- include/linux/psi.h  |  1 -
- kernel/sched/core.c  |  1 -
- kernel/sched/psi.c   | 65 +++++++++++++++++++---------------------------------
- kernel/sched/stats.h |  9 --------
- 4 files changed, 24 insertions(+), 52 deletions(-)
-
-diff --git a/include/linux/psi.h b/include/linux/psi.h
-index 7361023f3fdd..65eb1476ac70 100644
---- a/include/linux/psi.h
-+++ b/include/linux/psi.h
-@@ -20,7 +20,6 @@ void psi_task_change(struct task_struct *task, int clear, int set);
- void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- 		     bool sleep);
- 
--void psi_memstall_tick(struct task_struct *task, int cpu);
- void psi_memstall_enter(unsigned long *flags);
- void psi_memstall_leave(unsigned long *flags);
- 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 15d2562118d1..31788a9b335b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4533,7 +4533,6 @@ void scheduler_tick(void)
- 	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
- 	curr->sched_class->task_tick(rq, curr, 0);
- 	calc_global_load_tick(rq);
--	psi_task_tick(rq);
- 
- 	rq_unlock(rq, &rf);
- 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 2293c45d289d..0fe6ff6a6a15 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -644,8 +644,7 @@ static void poll_timer_fn(struct timer_list *t)
- 	wake_up_interruptible(&group->poll_wait);
- }
- 
--static void record_times(struct psi_group_cpu *groupc, int cpu,
--			 bool memstall_tick)
-+static void record_times(struct psi_group_cpu *groupc, int cpu)
- {
- 	u32 delta;
- 	u64 now;
-@@ -664,23 +663,6 @@ static void record_times(struct psi_group_cpu *groupc, int cpu,
- 		groupc->times[PSI_MEM_SOME] += delta;
- 		if (groupc->state_mask & (1 << PSI_MEM_FULL))
- 			groupc->times[PSI_MEM_FULL] += delta;
--		else if (memstall_tick) {
--			u32 sample;
--			/*
--			 * Since we care about lost potential, a
--			 * memstall is FULL when there are no other
--			 * working tasks, but also when the CPU is
--			 * actively reclaiming and nothing productive
--			 * could run even if it were runnable.
--			 *
--			 * When the timer tick sees a reclaiming CPU,
--			 * regardless of runnable tasks, sample a FULL
--			 * tick (or less if it hasn't been a full tick
--			 * since the last state change).
--			 */
--			sample = min(delta, (u32)jiffies_to_nsecs(1));
--			groupc->times[PSI_MEM_FULL] += sample;
--		}
- 	}
- 
- 	if (groupc->state_mask & (1 << PSI_CPU_SOME)) {
-@@ -714,7 +696,7 @@ static void psi_group_change(struct psi_group *group, int cpu,
- 	 */
- 	write_seqcount_begin(&groupc->seq);
- 
--	record_times(groupc, cpu, false);
-+	record_times(groupc, cpu);
- 
- 	for (t = 0, m = clear; m; m &= ~(1 << t), t++) {
- 		if (!(m & (1 << t)))
-@@ -738,6 +720,18 @@ static void psi_group_change(struct psi_group *group, int cpu,
- 		if (test_state(groupc->tasks, s))
- 			state_mask |= (1 << s);
- 	}
-+
-+	/*
-+	 * Since we care about lost potential, a memstall is FULL
-+	 * when there are no other working tasks, but also when
-+	 * the CPU is actively reclaiming and nothing productive
-+	 * could run even if it were runnable. So when the current
-+	 * task in a cgroup is in_memstall, the corresponding groupc
-+	 * on that cpu is in PSI_MEM_FULL state.
-+	 */
-+	if (groupc->tasks[NR_ONCPU] && cpu_curr(cpu)->in_memstall)
-+		state_mask |= (1 << PSI_MEM_FULL);
-+
- 	groupc->state_mask = state_mask;
- 
- 	write_seqcount_end(&groupc->seq);
-@@ -823,17 +817,21 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- 	void *iter;
- 
- 	if (next->pid) {
-+		bool identical_state;
-+
- 		psi_flags_change(next, 0, TSK_ONCPU);
- 		/*
--		 * When moving state between tasks, the group that
--		 * contains them both does not change: we can stop
--		 * updating the tree once we reach the first common
--		 * ancestor. Iterate @next's ancestors until we
--		 * encounter @prev's state.
-+		 * When switching between tasks that have an identical
-+		 * runtime state, the cgroup that contains both tasks
-+		 * runtime state, the cgroup that contains both tasks
-+		 * we reach the first common ancestor. Iterate @next's
-+		 * ancestors only until we encounter @prev's ONCPU.
- 		 */
-+		identical_state = prev->psi_flags == next->psi_flags;
- 		iter = NULL;
- 		while ((group = iterate_groups(next, &iter))) {
--			if (per_cpu_ptr(group->pcpu, cpu)->tasks[NR_ONCPU]) {
-+			if (identical_state &&
-+			    per_cpu_ptr(group->pcpu, cpu)->tasks[NR_ONCPU]) {
- 				common = group;
- 				break;
- 			}
-@@ -859,21 +857,6 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- 	}
- }
- 
--void psi_memstall_tick(struct task_struct *task, int cpu)
--{
--	struct psi_group *group;
--	void *iter = NULL;
--
--	while ((group = iterate_groups(task, &iter))) {
--		struct psi_group_cpu *groupc;
--
--		groupc = per_cpu_ptr(group->pcpu, cpu);
--		write_seqcount_begin(&groupc->seq);
--		record_times(groupc, cpu, true);
--		write_seqcount_end(&groupc->seq);
--	}
--}
--
- /**
-  * psi_memstall_enter - mark the beginning of a memory stall section
-  * @flags: flags to handle nested sections
-diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
-index 33d0daf83842..9e4e67a94731 100644
---- a/kernel/sched/stats.h
-+++ b/kernel/sched/stats.h
-@@ -144,14 +144,6 @@ static inline void psi_sched_switch(struct task_struct *prev,
- 	psi_task_switch(prev, next, sleep);
- }
- 
--static inline void psi_task_tick(struct rq *rq)
--{
--	if (static_branch_likely(&psi_disabled))
--		return;
--
--	if (unlikely(rq->curr->in_memstall))
--		psi_memstall_tick(rq->curr, cpu_of(rq));
--}
- #else /* CONFIG_PSI */
- static inline void psi_enqueue(struct task_struct *p, bool wakeup) {}
- static inline void psi_dequeue(struct task_struct *p, bool sleep) {}
-@@ -159,7 +151,6 @@ static inline void psi_ttwu_dequeue(struct task_struct *p) {}
- static inline void psi_sched_switch(struct task_struct *prev,
- 				    struct task_struct *next,
- 				    bool sleep) {}
--static inline void psi_task_tick(struct rq *rq) {}
- #endif /* CONFIG_PSI */
- 
- #ifdef CONFIG_SCHED_INFO
 -- 
-2.11.0
+Jens Axboe
 
