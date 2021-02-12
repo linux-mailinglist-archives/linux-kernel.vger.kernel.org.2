@@ -2,108 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58B7319B1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3892C319B23
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhBLIVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 03:21:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
+        id S230031AbhBLIV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 03:21:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbhBLIVK (ORCPT
+        with ESMTP id S230007AbhBLIVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 03:21:10 -0500
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B6AC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 00:20:29 -0800 (PST)
-Received: by mail-vs1-xe36.google.com with SMTP id o186so4408174vso.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 00:20:29 -0800 (PST)
+        Fri, 12 Feb 2021 03:21:49 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A978C061788
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 00:21:08 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id v24so11931784lfr.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 00:21:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9eYlj6hQUpTjmYWO1lf/Yhxzwmx2Hj9092MghEwCPMY=;
-        b=K5xk8xd16HqUbigXN8BlwaPLjCOqShVd9lxD0yujPtmZqP9Oaku0mPFAZEtFgUeWwN
-         NV1d/6le+5zDnw4HY8TbN2qNaylzKUE5b66s86Jw85ugyYMTFQKEa9+HKcOZFxgbLjth
-         UwwVVRkxJ6Fg5FGUeKSrvdvA9uz2QqY/QdEFo=
+        bh=J22oY5jJJYHZcZyrz+k91kqCAacMKFIfAIoEnP/Ajh0=;
+        b=dcCZN62Nfz34impfEaIHrUkAnPwWrY7VSt0hrlr5klbwwNlfX0KiIxIZ7DlCBstNRa
+         v9qZiqB9XF6ZL0DeiFf1x/Bxo0zyV9qKTv9wbcYjHWH2Om5TKyVV62NJ5uIdOWw0f53K
+         JQecxjp0p9VdsX+24xmGv1P5O3us1I1POY4r4NXYTBlvFeqPUd6N0VNsKN3vWH9T9wD2
+         PhWvKi144v5+A30o+QVhK6myD0eaTS+ll3cVap8FZlQ45GHSzRuTYcIjCqbO0aykZWFg
+         uTtMLNfjCee8ZaQn2tPypy8nuw65uf8BtAUqXRrWc8wAtQo9Jl9ncr10WRjHtly/lXsx
+         mEXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9eYlj6hQUpTjmYWO1lf/Yhxzwmx2Hj9092MghEwCPMY=;
-        b=Ra6VrFPBHqswxqa3pIEk/vRMx18Tw8CD8iW15aiDdi088rf8L5RIaLbq/56uku6aTt
-         uHCoug/LYdbquUhV5eiAeksrv5Q4BxS4Qj70+CFj8Ef0oMwMZyDOWS0g4UhDOdK4f+yj
-         oKNT4UAA5VzBwwmzsQFsQ7jtut+/CETeRztTZ59Q9vYAGDLTXO125pGuK6rOo94Ou3B3
-         9jctizBPHHSXlYj7Q/cdOLlUGWA3EVqhzE7g15r/H8hZ1Nti7gczAos/2tC0r8vIs6Re
-         MPi3p3G0duRVJkhJVsAq7L2rfmxPQmbtNxDbESup6nAOOnHcxS2j/3ft/qofqbpse5Vo
-         zTRg==
-X-Gm-Message-State: AOAM533HI/95QaaIr9oR8QpESf2/Yo2JiHSfQCjxX8wjZRMYX+aIEFrt
-        PR3J9U66jcEtF7HI4YHqcjCr9fa8L3sBbKjLkeML8A==
-X-Google-Smtp-Source: ABdhPJy8GtLDrHlH0v3PR/949do7x9zOWryAYOiJbgogM3Cjnalj5B4JdLINRgvBhedGwy0yOkpXK2Ta8I3Lp10s/Xk=
-X-Received: by 2002:a05:6102:2327:: with SMTP id b7mr849901vsa.47.1613118028682;
- Fri, 12 Feb 2021 00:20:28 -0800 (PST)
+        bh=J22oY5jJJYHZcZyrz+k91kqCAacMKFIfAIoEnP/Ajh0=;
+        b=R8HZsTF6z0uy2J9CiFPoOMMY1x7Yvbz3rnD3q8fHL90vLfJS+1QiBjDkfGhoOY76ga
+         easIDzvSg9FzQTfO4Uct/aRRi7oPdfPOPOz0Ya9yBasWGlAFPt7XgoGN7U39uvaBuaXp
+         fueMqmIrNZY5JODi5m3WZRPkvF0jsIwaEm7/ke/1j0pvvGWoKP+jJkeW38yBcJ9ZEcHJ
+         T7HAS9JHCy0ostNDKSWKTHt9y76WWdGTSk3DrGSA3wjkyzTL/bvYSiB7RHN4ISEPZTZb
+         /F45gTSO5+fh7/Mx3ODv4mrnOWi5hsA7yXvJTN2/Jp1g1GMfaZnfcP9u+RQIqfpFKUwS
+         G8jw==
+X-Gm-Message-State: AOAM5339DCajfcg+WrU3ZKHR/isg7TT4Y+5taIWMQHjO63E2aiKiSfp7
+        DNLsQP/PmiHvYmGgmNDcFMBC2nNln0CIn0oTJcO7XA==
+X-Google-Smtp-Source: ABdhPJyhuZMWgGg2Yq2aLGW3OSafEDaTZzOtNuOvna9rKJV/jfN6S6d5/a0SmOmCvbYkm3aarVGluKv9HHxJncu2nU8=
+X-Received: by 2002:a19:600e:: with SMTP id u14mr976720lfb.465.1613118066837;
+ Fri, 12 Feb 2021 00:21:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20210212044405.4120619-1-drinkcat@chromium.org>
- <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid> <YCYybUg4d3+Oij4N@kroah.com>
-In-Reply-To: <YCYybUg4d3+Oij4N@kroah.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Fri, 12 Feb 2021 16:20:17 +0800
-Message-ID: <CANMq1KBuPaU5UtRR8qTgdf+J3pt-xAQq69kCVBdaYGx8F+WmFA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
- is generated
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+References: <1611747945-29960-1-git-send-email-claudiu.beznea@microchip.com>
+In-Reply-To: <1611747945-29960-1-git-send-email-claudiu.beznea@microchip.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 12 Feb 2021 09:20:56 +0100
+Message-ID: <CACRpkdaaJNPG9mqTxr5GHi4B3470=9A8iV7s+sZNWiT6VrR83Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] pinctrl: at91-pio4: add support for slew-rate
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 3:46 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Feb 12, 2021 at 12:44:00PM +0800, Nicolas Boichat wrote:
-> > Filesystems such as procfs and sysfs generate their content at
-> > runtime. This implies the file sizes do not usually match the
-> > amount of data that can be read from the file, and that seeking
-> > may not work as intended.
-> >
-> > This will be useful to disallow copy_file_range with input files
-> > from such filesystems.
-> >
-> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> > ---
-> > I first thought of adding a new field to struct file_operations,
-> > but that doesn't quite scale as every single file creation
-> > operation would need to be modified.
->
-> Even so, you missed a load of filesystems in the kernel with this patch
-> series, what makes the ones you did mark here different from the
-> "internal" filesystems that you did not?
+On Wed, Jan 27, 2021 at 12:45 PM Claudiu Beznea
+<claudiu.beznea@microchip.com> wrote:
 
-Which ones did I miss? (apart from configfs, see the conversation on
-patch 6/6). Anyway, hopefully auditing all filesystems is an order of
-magnitude easier task, and easier to maintain in the longer run ,-)
+> This series adds support for slew rate on SAMA7G5. Along with this
+> patch 3/3 fixes some checkpatch.pl warnings.
 
-> This feels wrong, why is userspace suddenly breaking?  What changed in
-> the kernel that caused this?  Procfs has been around for a _very_ long
-> time :)
+Patches applied!
 
-Some of this is covered in the cover letter 0/6. To expand a bit:
-copy_file_range has only supported cross-filesystem copies since 5.3
-[1], before that the kernel would return EXDEV and userspace
-application would fall back to a read/write based copy. After 5.3,
-copy_file_range copies no data as it thinks the input file is empty.
-
-[1] I think it makes little sense to try to use copy_file_range
-between 2 files in /proc, but technically, I think that has been
-broken since copy_file_range fallback to do_splice_direct was
-introduced (eac70053a141 ("vfs: Add vfs_copy_file_range() support for
-pagecache copies", ~4.4).
-
->
-> thanks,
->
-> greg k-h
+Yours,
+Linus Walleij
