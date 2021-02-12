@@ -2,161 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB46319CCE
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD22319CCD
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbhBLKos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 05:44:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38137 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230363AbhBLKoA (ORCPT
+        id S230268AbhBLKoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 05:44:17 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3440 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhBLKnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 05:44:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613126548;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6ZntO9QgNpavvwp9VvBrnPMHVLypPqNlK4JlwHmPtXM=;
-        b=MAa3q//qK0fiTLdLyFiYs5Q+jcZHcFViSlKD+98N4MOf5hdF8yoMuxg7rGtLHrWc7S0DxJ
-        yKwhYDYi/QJuBh18IPhMg9q6KFs5bzlzZdB5WbTm7WadGdq1YAWiz0jDQ1ZUVdMB5eIzBk
-        zMMQSLVeY97Plx3ROsjigj4xGZ0SMCc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-RTEL0pWVP2Gk_MdZynMuhQ-1; Fri, 12 Feb 2021 05:42:24 -0500
-X-MC-Unique: RTEL0pWVP2Gk_MdZynMuhQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F37A3427C3;
-        Fri, 12 Feb 2021 10:42:20 +0000 (UTC)
-Received: from [10.36.114.178] (ovpn-114-178.ams2.redhat.com [10.36.114.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C27637047A;
-        Fri, 12 Feb 2021 10:42:16 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-References: <20210208110820.6269-1-rppt@kernel.org>
- <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
- holes in memory layout
-Message-ID: <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
-Date:   Fri, 12 Feb 2021 11:42:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Fri, 12 Feb 2021 05:43:17 -0500
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DcVQZ3wQBz5RMf;
+        Fri, 12 Feb 2021 18:40:54 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 12 Feb 2021 18:42:19 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 12 Feb 2021 18:42:20 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Fri, 12 Feb 2021 18:42:20 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>
+CC:     luojiaxing <luojiaxing@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: RE: [Linuxarm] Re: [PATCH for next v1 1/2] gpio: omap: Replace
+ raw_spin_lock_irqsave with raw_spin_lock in omap_gpio_irq_handler()
+Thread-Topic: [Linuxarm] Re: [PATCH for next v1 1/2] gpio: omap: Replace
+ raw_spin_lock_irqsave with raw_spin_lock in omap_gpio_irq_handler()
+Thread-Index: AQHXASPSlQt84o9SE0i+o14ylEf4e6pTywWAgACGpJA=
+Date:   Fri, 12 Feb 2021 10:42:19 +0000
+Message-ID: <2a12cf7a21f74a0c9e2552a467b77fae@hisilicon.com>
+References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
+ <1612774577-55943-2-git-send-email-luojiaxing@huawei.com>
+ <fab1e871-08e4-fc71-9dbf-9bcacf18e2e1@ti.com>
+ <CAK8P3a0m4ocfLyJZ5wMxyKESYUJ5um5sb5MyAzC8ckCb6qAH5g@mail.gmail.com>
+ <d5465b81-bb53-49ee-a556-40d208deb765@ti.com>
+ <a61ef337fd1c4538a47fe855920f95d3@hisilicon.com>
+ <CAK8P3a3SHQNjF5ZpqHQweG7BQ52Xi1hQKDiMVKq4aNK_7VDw6w@mail.gmail.com>
+ <e34a4085-268f-1cd0-a5dc-a87a2e655fe2@ti.com>
+In-Reply-To: <e34a4085-268f-1cd0-a5dc-a87a2e655fe2@ti.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.31]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.02.21 11:33, Michal Hocko wrote:
-> On Mon 08-02-21 13:08:20, Mike Rapoport wrote:
->> From: Mike Rapoport <rppt@linux.ibm.com>
->>
->> There could be struct pages that are not backed by actual physical memory.
->> This can happen when the actual memory bank is not a multiple of
->> SECTION_SIZE or when an architecture does not register memory holes
->> reserved by the firmware as memblock.memory.
->>
->> Such pages are currently initialized using init_unavailable_mem() function
->> that iterates through PFNs in holes in memblock.memory and if there is a
->> struct page corresponding to a PFN, the fields of this page are set to
->> default values and it is marked as Reserved.
->>
->> init_unavailable_mem() does not take into account zone and node the page
->> belongs to and sets both zone and node links in struct page to zero.
-> 
-> IIUC the zone should be associated based on the pfn and architecture
-> constraines on zones. Node is then guessed based on the last existing
-> range, right?
-> 
->> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
->> instance in a configuration below:
->>
->> 	# grep -A1 E820 /proc/iomem
->> 	7a17b000-7a216fff : Unknown E820 type
->> 	7a217000-7bffffff : System RAM
-> 
-> I like the description here though. Thanks very useful.
-> 
->> unset zone link in struct page will trigger
->>
->> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
-> 
-> I guess you mean set_pfnblock_flags_mask, right? Is this bug on really
-> needed? Maybe we just need to skip over reserved pages?
-> 
->> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
->> in struct page) in the same pageblock.
->>
->> Moreover, it is possible that the lowest node and zone start is not aligned
->> to the section boundarie, for example on x86:
->>
->> [    0.078898] Zone ranges:
->> [    0.078899]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
->> ...
->> [    0.078910] Early memory node ranges
->> [    0.078912]   node   0: [mem 0x0000000000001000-0x000000000009cfff]
->> [    0.078913]   node   0: [mem 0x0000000000100000-0x000000003fffffff]
->>
->> and thus with SPARSEMEM memory model the beginning of the memory map will
->> have struct pages that are not spanned by any node and zone.
->>
->> Update detection of node boundaries in get_pfn_range_for_nid() so that the
->> node range will be expanded to cover memory map section. Since zone spans
->> are derived from the node span, there always will be a zone that covers the
->> part of the memory map with unavailable pages.
->>
->> Interleave initialization of the unavailable pages with the normal
->> initialization of memory map, so that zone and node information will be
->> properly set on struct pages that are not backed by the actual memory.
-> 
-> I have to digest this but my first impression is that this is more heavy
-> weight than it needs to. Pfn walkers should normally obey node range at
-> least. The first pfn is usually excluded but I haven't seen real
-
-We've seen examples where this is not sufficient. Simple example:
-
-Have your physical memory end within a memory section. Easy via QEMU, 
-just do a "-m 4000M". The remaining part of the last section has 
-fake/wrong node/zone info.
-
-Hotplug memory. The node/zone gets resized such that PFN walkers might 
-stumble over it.
-
-The basic idea is to make sure that any initialized/"online" pfn belongs 
-to exactly one node/zone and that the node/zone spans that PFN.
-
-> problems with that. The VM_BUG_ON blowing up is really bad but as said
-> above we can simply make it less offensive in presence of reserved pages
-> as those shouldn't reach that path AFAICS normally.
-
-Andrea tried tried working around if via PG_reserved pages and it 
-resulted in quite some ugly code. Andrea also noted that we cannot rely 
-on any random page walker to do the right think when it comes to messed 
-up node/zone info.
-
--- 
-Thanks,
-
-David / dhildenb
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogR3J5Z29yaWkgU3RyYXNo
+a28gW21haWx0bzpncnlnb3JpaS5zdHJhc2hrb0B0aS5jb21dDQo+IFNlbnQ6IEZyaWRheSwgRmVi
+cnVhcnkgMTIsIDIwMjEgMTE6MjggUE0NCj4gVG86IEFybmQgQmVyZ21hbm4gPGFybmRAa2VybmVs
+Lm9yZz47IFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykNCj4gPHNvbmcuYmFvLmh1YUBoaXNpbGlj
+b24uY29tPg0KPiBDYzogbHVvamlheGluZyA8bHVvamlheGluZ0BodWF3ZWkuY29tPjsgTGludXMg
+V2FsbGVpag0KPiA8bGludXMud2FsbGVpakBsaW5hcm8ub3JnPjsgQW5keSBTaGV2Y2hlbmtvIDxh
+bmR5LnNoZXZjaGVua29AZ21haWwuY29tPjsgQW5keQ0KPiBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hl
+dmNoZW5rb0BsaW51eC5pbnRlbC5jb20+OyBTYW50b3NoIFNoaWxpbWthcg0KPiA8c3NhbnRvc2hA
+a2VybmVsLm9yZz47IEtldmluIEhpbG1hbiA8a2hpbG1hbkBrZXJuZWwub3JnPjsgb3BlbiBsaXN0
+OkdQSU8NCj4gU1VCU1lTVEVNIDxsaW51eC1ncGlvQHZnZXIua2VybmVsLm9yZz47IGxpbnV4LWtl
+cm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4YXJtQG9wZW5ldWxlci5vcmcNCj4gU3ViamVj
+dDogUmU6IFtMaW51eGFybV0gUmU6IFtQQVRDSCBmb3IgbmV4dCB2MSAxLzJdIGdwaW86IG9tYXA6
+IFJlcGxhY2UNCj4gcmF3X3NwaW5fbG9ja19pcnFzYXZlIHdpdGggcmF3X3NwaW5fbG9jayBpbiBv
+bWFwX2dwaW9faXJxX2hhbmRsZXIoKQ0KPiANCj4gSGkgQXJuZCwNCj4gDQo+IE9uIDEyLzAyLzIw
+MjEgMTE6NDUsIEFybmQgQmVyZ21hbm4gd3JvdGU6DQo+ID4gT24gRnJpLCBGZWIgMTIsIDIwMjEg
+YXQgNjowNSBBTSBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpDQo+ID4gPHNvbmcuYmFvLmh1YUBo
+aXNpbGljb24uY29tPiB3cm90ZToNCj4gPj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+
+ID4NCj4gPj4+DQo+ID4+PiBOb3RlLiB0aGVyZSBpcyBhbHNvIGdlbmVyaWNfaGFuZGxlX2lycSgp
+IGNhbGwgaW5zaWRlLg0KPiA+Pg0KPiA+PiBTbyBnZW5lcmljX2hhbmRsZV9pcnEoKSBpcyBub3Qg
+c2FmZSB0byBydW4gaW4gdGhyZWFkIHRodXMgcmVxdWlyZXMNCj4gPj4gYW4gaW50ZXJydXB0LWRp
+c2FibGVkIGVudmlyb25tZW50IHRvIHJ1bj8gSWYgc28sIEknZCByYXRoZXIgdGhpcw0KPiA+PiBp
+cnFzYXZlIG1vdmVkIGludG8gZ2VuZXJpY19oYW5kbGVfaXJxKCkgcmF0aGVyIHRoYW4gYXNraW5n
+IGV2ZXJ5b25lDQo+ID4+IGNhbGxpbmcgaXQgdG8gZG8gaXJxc2F2ZS4NCj4gPg0KPiA+IEluIGEg
+cHJlZW1wdC1ydCBrZXJuZWwsIGludGVycnVwdHMgYXJlIHJ1biBpbiB0YXNrIGNvbnRleHQsIHNv
+IHRoZXkgY2xlYXJseQ0KPiA+IHNob3VsZCBub3QgYmUgY2FsbGVkIHdpdGggaW50ZXJydXB0cyBk
+aXNhYmxlZCwgdGhhdCB3b3VsZCBkZWZlYXQgdGhlDQo+ID4gcHVycG9zZSBvZiBtYWtpbmcgdGhl
+bSBwcmVlbXB0aWJsZS4NCj4gPg0KPiA+IGdlbmVyaWNfaGFuZGxlX2lycSgpIGRvZXMgbmVlZCB0
+byBydW4gd2l0aCBpbl9pcnEoKT09dHJ1ZSB0aG91Z2gsDQo+ID4gYnV0IHRoaXMgc2hvdWxkIGJl
+IHNldCBieSB0aGUgY2FsbGVyIG9mIHRoZSBncGlvY2hpcCdzIGhhbmRsZXIsIGFuZA0KPiA+IGl0
+IGlzIG5vdCBzZXQgYnkgcmF3X3NwaW5fbG9ja19pcnFzYXZlKCkuDQo+IA0KPiBJdCB3aWxsIHBy
+b2R1Y2Ugd2FybmluZyBmcm9tIF9faGFuZGxlX2lycV9ldmVudF9wZXJjcHUoKSwgYXMgdGhpcyBp
+cyBJUlENCj4gZGlzcGF0Y2hlcg0KPiBhbmQgZ2VuZXJpY19oYW5kbGVfaXJxKCkgd2lsbCBjYWxs
+IG9uZSBvZiBoYW5kbGVfbGV2ZWxfaXJxIG9yIGhhbmRsZV9lZGdlX2lycS4NCj4gDQo+IFRoZSBo
+aXN0b3J5IGJlaGluZCB0aGlzIGlzIGNvbW1pdCA0NTBmYTU0Y2ZkNjYgKCJncGlvOiBvbWFwOiBj
+b252ZXJ0IHRvIHVzZQ0KPiBnZW5lcmljIGlycSBoYW5kbGVyIikuDQo+IA0KPiBUaGUgcmVzZW50
+IHJlbGF0ZWQgZGlzY3Vzc2lvbjoNCj4gaHR0cHM6Ly9sa21sLm9yZy9sa21sLzIwMjAvMTIvNS8y
+MDgNCg0KT2ssIHNlY29uZCB0aG91Z2h0LiBpcnFzYXZlIGJlZm9yZSBnZW5lcmljX2hhbmRsZV9p
+cnEoKSB3b24ndCBkZWZlYXQNCnRoZSBwdXJwb3NlIG9mIHByZWVtcHRpb24gdG9vIG11Y2ggYXMg
+dGhlIGRpc3BhdGNoZWQgaXJxIGhhbmRsZXJzIGJ5DQpncGlvY2hpcCB3aWxsIHJ1biBpbiB0aGVp
+ciBvd24gdGhyZWFkcyBidXQgbm90IGluIHRoZSB0aHJlYWQgb2YNCmdwaW9jaGlwJ3MgaGFuZGxl
+ci4NCg0Kc28gbG9va3MgbGlrZSB0aGlzIHBhdGNoIGNhbiBpbXByb3ZlIGJ5Og0KKiBtb3ZlIG90
+aGVyIHJhd19zcGluX2xvY2tfaXJxc2F2ZSB0byByYXdfc3Bpbl9sb2NrOw0KKiBrZWVwIHRoZSBy
+YXdfc3Bpbl9sb2NrX2lycXNhdmUgYmVmb3JlIGdlbmVyaWNfaGFuZGxlX2lycSgpIHRvIG11dGUN
+CnRoZSB3YXJuaW5nIGluIGdlbmlycS4NCg0KPiANCj4gDQo+IA0KPiAtLQ0KPiBCZXN0IHJlZ2Fy
+ZHMsDQo+IEdyeWdvcmlpDQoNClRoYW5rcw0KQmFycnkNCg0K
