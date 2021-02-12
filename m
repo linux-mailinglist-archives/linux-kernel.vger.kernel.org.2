@@ -2,146 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB13D31978D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 01:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD170319793
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 01:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhBLAjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 19:39:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229521AbhBLAjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 19:39:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 695FA61493;
-        Fri, 12 Feb 2021 00:38:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613090302;
-        bh=WcNPuJnmk5vyURXYl4skxvJr55pfhPAMsl6062FOmFo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tArgsQL/B1R0XDiuFVacP9amj2196ZK+/Zc4leJpmnIxSAlti1D2sawqLQEyaH+4+
-         zaZktbG0OvaoP4+nLqBUWw3m6N5ayZ7e7ECoCRI1GEYRRV8RsckN1x+x8G5nJTagLY
-         T1Hwyf3OrvKKdm0IqrqBL0FvKOXebePa8zRaAzBYTSeZ5MfLfkWC/GJfbQNclkSuz0
-         fkQn+rsw0hHLUpvAeMPWWgLfzyLRMi4O9lC4j/GbI/Vj/FMRggE7OEwtMeV+e642xP
-         h+STIpxuNZ4BWgiASh0CaiUjtXt1O24YVnD7eUjZJZzYHq6zIdSsi3UG15wSPETRVh
-         gtu26YvVrZVOA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3409D3522694; Thu, 11 Feb 2021 16:38:22 -0800 (PST)
-Date:   Thu, 11 Feb 2021 16:38:22 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Li Zefan <lizefan@huawei.com>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v4 0/8] support for bitmap (and hence CPU) list "N"
- abbreviation
-Message-ID: <20210212003822.GN2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210209225907.78405-1-paul.gortmaker@windriver.com>
- <YCQJToq1d63BU55S@smile.fi.intel.com>
- <20210210175751.GH2743@paulmck-ThinkPad-P72>
- <CAAH8bW-oZG_h3F-d9Rc4wUwSZxNPR+sdeY41yZ+BpwAjXSCXWw@mail.gmail.com>
- <20210211002309.GL2743@paulmck-ThinkPad-P72>
- <20210212002339.GA167389@yury-ThinkPad>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212002339.GA167389@yury-ThinkPad>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S229870AbhBLAnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 19:43:11 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:33447 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229714AbhBLAmo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 19:42:44 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id E2E8BA09;
+        Thu, 11 Feb 2021 19:41:35 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute4.internal (MEProxy); Thu, 11 Feb 2021 19:41:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type:content-transfer-encoding; s=fm2; bh=lq1Mg
+        yURT/+FvHph6bNyVR+n3tqnPDI+rDy1fPdgW94=; b=AVhtDn53IA8cD0v6GxrFX
+        Z7vzLOKcV0/KKec4L+z3qWmfRjQx4bBXTnMOUdpFXfCEzm3I2S7RGqNa1dEhd/yP
+        N7vKZWJMQK6FQWkPD1gBH5krZZVCUWdHFR2mmc+vjY/JQXrbBRzIHWMm079k85rm
+        elPY1cIyQUj/1Z6TVVEj5HUL9HZ8ncpesJ0g5YB46uvExSDxdkt7SKGqqM/j4dPU
+        CrzIaWuIcXoWaXifpAXs2MFaM9pucKqocRjZztKstA/9DJWIefPyNTbFx2biDqZD
+        d0csDEh5i90hRZzXNWkhJpMiEPo0n1nf39Ls0qjEf1WMsPWS7A5v5VygDtlZb1PF
+        g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=lq1MgyURT/+FvHph6bNyVR+n3tqnPDI+rDy1fPdgW
+        94=; b=s4rsHYhWqu9S1Ov9cvQBPCElVPg79zYML7GS0VcDcz/2aCispB7Qj0VjI
+        V7M2IH41lD2MCHhx0BP5vwaB1lJ0uCncS8wzlO25X75D2LTXGWvw8xUmY9TmR0UF
+        QKXxOPBGUI/N1WqlVSAdLLGvBqzHqiFkxl3MROWzmeYiDgThLwGMybGKyd6Nb4lO
+        i1dVBsMU6HqrGB5sO9iS3N0nxpuCYs7b9Q6jiWEQ59CCFV224bgtbKosU+4goc2l
+        zdpwP+6h5b8B3oMAs9+o46VFgQeotfgpFP2wNN83dGHmfpZTIRBYxYN0/bKZJRHg
+        iMWYfOlxojZ2L223QiZ+dcmbeYh6Q==
+X-ME-Sender: <xms:vc4lYFeGToQWuZsPp0_3xPYYB-PKQCD5AGUU_ANQq9mksw89ktPKew>
+    <xme:vc4lYDN5S3TjJjjygNZiJz2qqaS7I3XnUDUCHQD0v9U0f6HtSShpOv-Q_Pm-EORnn
+    NTFzJbK_Ueqww>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledriedtgddvhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepnhhnvght
+    uceonhhnvghtsehfrghsthhmrghilhdrfhhmqeenucggtffrrghtthgvrhhnpeeugeekvd
+    ehheevheetieetudeljedvvddtieevvdeukeejgfeuheffueelueegueenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnnhgvthesfhgrshhtmh
+    grihhlrdhfmh
+X-ME-Proxy: <xmx:vc4lYOjEaj-HynicqRVM_tyktWi-PfxmnnWObo-cG7qb4e52gqQ7MQ>
+    <xmx:vc4lYO-yIegTwl9lEn_pb-OTFDbTXpg8OuCfVNsxy4OLIeVGJyvmdw>
+    <xmx:vc4lYBuus4_ekGeZQbhoTUN3jWKHwgHl8-L-uZJoVvPXdBSMX5N1BQ>
+    <xmx:v84lYBGqrg9D8slf9hC0qmZdhkLFZLlVgLzULC06AsENMRH5SirIv5OXwHQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id E7215A0005E; Thu, 11 Feb 2021 19:41:33 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
+Mime-Version: 1.0
+Message-Id: <000b92cc-9b54-4af9-b95c-d1317fb6f97f@www.fastmail.com>
+In-Reply-To: <20210211234445.hbv2diphmgbir76u@pali>
+References: <20210210002619.43104a9b@kernel.org>
+ <ac03801e-87e2-4e57-b131-bff52f03579d@www.fastmail.com>
+ <1cd0c2ee-aa3a-4da2-9c0c-57cc5a1dad49@www.fastmail.com>
+ <a1277b1f-f829-4d02-9e54-68ab4faaa047@www.fastmail.com>
+ <20210210092339.qy6wwuq6qr5m2ozr@pali>
+ <d6971325-af71-4f71-91c2-7b661804c022@www.fastmail.com>
+ <20210210180322.rlfxdussqhejqpo6@pali>
+ <966f50f2-68b2-4d4f-85f0-396df112c0f4@www.fastmail.com>
+ <20210211195559.n2j4jnchl2ho54mg@pali>
+ <1ad78446-4a40-4c3e-8680-6dbf19616515@www.fastmail.com>
+ <20210211234445.hbv2diphmgbir76u@pali>
+Date:   Thu, 11 Feb 2021 16:41:13 -0800
+From:   nnet <nnet@fastmail.fm>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
+        a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
+        gregory.clement@bootlin.com, kostap@marvell.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
+        miquel.raynal@bootlin.com, mturquette@baylibre.com,
+        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
+        vladimir.vid@sartura.hr
+Subject: =?UTF-8?Q?Re:_[PATCH_mvebu_v2_00/10]_Armada_37xx:_Fix_cpufreq_changing_b?=
+ =?UTF-8?Q?ase_CPU_speed_to_800_MHz_from_1000_MHz?=
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 04:23:39PM -0800, Yury Norov wrote:
-> On Wed, Feb 10, 2021 at 04:23:09PM -0800, Paul E. McKenney wrote:
-> > On Wed, Feb 10, 2021 at 03:50:07PM -0800, Yury Norov wrote:
-> > > On Wed, Feb 10, 2021 at 9:57 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Wed, Feb 10, 2021 at 06:26:54PM +0200, Andy Shevchenko wrote:
-> > > > > On Tue, Feb 09, 2021 at 05:58:59PM -0500, Paul Gortmaker wrote:
-> > > > > > The basic objective here was to add support for "nohz_full=8-N" and/or
-> > > > > > "rcu_nocbs="4-N" -- essentially introduce "N" as a portable reference
-> > > > > > to the last core, evaluated at boot for anything using a CPU list.
-> > > > >
-> > > > > I thought we kinda agreed that N is confusing and L is better.
-> > > > > N to me is equal to 32 on 32 core system as *number of cores / CPUs*. While L
-> > > > > sounds better as *last available CPU number*.
-> > > >
-> > > > The advantage of "N" is that people will automatically recognize it as
-> > > > "last thing" or number of things" because "N" has long been used in
-> > > > both senses.  In contrast, someone seeing "0-L" for the first time is
-> > > > likely to go "What???".
-> > > >
-> > > > Besides, why would someone interpret "N" as "number of CPUs" when doing
-> > > > that almost always gets you an invalid CPU number?
-> > > >
-> > > >                                                         Thanx, Paul
-> > > 
-> > > I have no strong opinion about a letter, but I like Andy's idea to make it
-> > > case-insensitive.
-> > > 
-> > > There is another comment from the previous iteration not addressed so far.
-> > > 
-> > > This idea of the N notation is to make the bitmap list interface more robust
-> > > when we share the configs between different machines. What we have now
-> > > is definitely a good thing, but not completely portable except for cases
-> > > 'N', '0-N' and 'N-N'.
-> > > 
-> > > For example, if one user adds rcu_nocbs= '4-N', and it works perfectly fine for
-> > > him, another user with s NR_CPUS == 2 will fail to boot with such a config.
-> > > 
-> > > This is not a problem of course in case of absolute values because nobody
-> > > guaranteed robustness. But this N feature would be barely useful in practice,
-> > > except for 'N', '0-N' and 'N-N' as I mentioned before, because there's always
-> > > a chance to end up with a broken config.
-> > > 
-> > > We can improve on robustness a lot if we take care about this case.For me,
-> > > the more reliable interface would look like this:
-> > > 1. chunks without N work as before.
-> > > 2. if 'a-N' is passed where a>=N, we drop chunk and print warning message
-> > > 3. if 'a-N' is passed where a>=N together with a control key, we set last bit
-> > > and print warning.
-> > > 
-> > > For example, on 2-core CPU:
-> > > "4-2" --> error
-> > > "4-4" --> error
-> > > "4-N" --> drop and warn
-> > > "X, 4-N" --> set last bit and warn
-> > > 
-> > > Any comments?
-> > 
-> > We really don't know the user's intent, and we cannot have complete
-> > portability without knowing the user's intent.  For example, "4-N" means
-> > "all but the first four CPUs", in which case an error is appropriate
-> > because "4-N" makes no more sense on a 2-CPU system than does "4-1".
-> > I could see a potential desire for some notation for "the last two CPUs",
-> > but let's please have a real need for such a thing before overengineering
-> > this patch series any further.
-> > 
-> > To get the level of portability you seem to be looking for, we need some
-> > higher-level automation that knows how many CPUs there are and what
-> > the intent is.  That automation can then generate the cpumasks for a
-> > given system.  But for more typical situations, what Paul has now will
-> > work fine.
-> > 
-> > Paul Gortmaker's patch series is doing something useful.  We should
-> > not let potential future desires prevent us from taking a very useful
-> > step forward.
-> > 
-> > 							Thanx, Paul
-> 
-> No problem, we can do it later if it will become a real concern. 
-> 
-> Can you please remove this series from linux-next unless we finish
-> the review? It prevents me from applying the series from the LKML.
 
-That will happen shortly, but in the meantime, just do the following on
-top of -next before applying Paul's latest series:
 
-	git revert b3c314b ed78166 1e792c4 e831c73
+On Thu, Feb 11, 2021, at 3:44 PM, Pali Roh=C3=A1r wrote:
+> On Thursday 11 February 2021 12:22:52 nnet wrote:
+> > On Thu, Feb 11, 2021, at 11:55 AM, Pali Roh=C3=A1r wrote:
+> > > On Wednesday 10 February 2021 11:08:59 nnet wrote:
+> > > > On Wed, Feb 10, 2021, at 10:03 AM, Pali Roh=C3=A1r wrote:
+> > > > > > > Hello! Could you please enable userspace governor during k=
+ernel
+> > > > > > > compilation?
+> > > > > > >=20
+> > > > > > >     CONFIG_CPU_FREQ_GOV_USERSPACE=3Dy
+> > > > > > >=20
+> > > > > > > It can be activated via command:
+> > > > > > >=20
+> > > > > > >     echo userspace > /sys/devices/system/cpu/cpufreq/polic=
+y0/scaling_governor
+> > > > > > >=20
+> > > > > > > After that you can "force" CPU frequency to specific value=
+, e.g.:
+> > > > > > >=20
+> > > > > > >     echo 1000000 > /sys/devices/system/cpu/cpufreq/policy0=
+/scaling_setspeed
+> > > > > > >=20
+> > > > > > > I need to know which switch (from --> to freq) cause this =
+system hang.
+> > > > > > >=20
+> > > > > > > This patch series (via MIN_VOLT_MV_FOR_L0_L1_1GHZ) is fixi=
+ng only
+> > > > > > > switching from 500 MHz to 1000 MHz on 1 GHz variant. As on=
+ly this switch
+> > > > > > > is causing issue.
+> > > > > > >=20
+> > > > > > > I have used following simple bash script to check that swi=
+tching between
+> > > > > > > 500 MHz and 1 GHz is stable:
+> > > > > > >=20
+> > > > > > >     while true; do
+> > > > > > >         echo 1000000 > /sys/devices/system/cpu/cpufreq/pol=
+icy0/scaling_setspeed;
+> > > > > > >         echo 500000 > /sys/devices/system/cpu/cpufreq/poli=
+cy0/scaling_setspeed;
+> > > > > > >         echo 1000000 > /sys/devices/system/cpu/cpufreq/pol=
+icy0/scaling_setspeed;
+> > > > > > >         echo 500000 > /sys/devices/system/cpu/cpufreq/poli=
+cy0/scaling_setspeed;
+> > > > > > >     done
+> > > > > >=20
+> > > > > > echo userspace | tee /sys/devices/system/cpu/cpufreq/policy0=
+/scaling_governor
+> > > > > > while true; do
+> > > > > >   echo 1200000 | tee /sys/devices/system/cpu/cpufreq/policy0=
+/scaling_setspeed;
+> > > > > >   echo 600000 | tee /sys/devices/system/cpu/cpufreq/policy0/=
+scaling_setspeed;
+> > > > > > done
+> > > > > >=20
+> > > > > > >> +#define MIN_VOLT_MV_FOR_L0_L1_1GHZ 1108
+> > > > > >=20
+> > > > > > With 1108 I get a freeze within a minute. The last output to=
+ stdout is 600000.
+> > > > > >=20
+> > > > > > With 1120 it takes a few minutes.
+> > > > > >=20
+> > > > > > With any of 1225, 1155, 1132 the device doesn't freeze over =
+the full 5 minute load test.
+> > > > > >=20
+> > > > > > I'm using ondemand now with the above at 1132 without issue =
+so far.
+> > > > >=20
+> > > > > Great, thank you for testing!
+> > > > >=20
+> > > > > Can you check if switching between any two lower frequencies 2=
+00000
+> > > > > 300000 600000 is stable?
+> > > >=20
+> > > > This is stable using 1132 mV for MIN_VOLT_MV_FOR_L0_L1_1GHZ:
+> > > >=20
+> > > > while true; do
+> > > >   # down
+> > > >   echo 1200000 | tee /sys/devices/system/cpu/cpufreq/policy0/sca=
+ling_setspeed;
+> > > ...
+> > >=20
+> > > Hello!
+> > >=20
+> > > Could you please re-run test without tee, in form as I have shown =
+above?
+> > > UART is slow and printing something to console adds delay which de=
+crease
+> > > probability that real issue is triggered as this is timing issue.
+> >=20
+> > The test was done over SSH.
+>=20
+> Ok! But it is still better to not print any results as it adds unwante=
+d
+> delay between frequency switching.
+>=20
+> > > Also please do tests just between two frequencies in loop as I obs=
+erved
+> > > that switching between more decreased probability to hit issue.
+> >=20
+> > > > > > echo userspace | tee /sys/devices/system/cpu/cpufreq/policy0=
+/scaling_governor
+> > > > > > while true; do
+> > > > > >   echo 1200000 | tee /sys/devices/system/cpu/cpufreq/policy0=
+/scaling_setspeed;
+> > > > > >   echo 600000 | tee /sys/devices/system/cpu/cpufreq/policy0/=
+scaling_setspeed;
+> > > > > > done
+> >=20
+> > The first test ^ switched between 600 MHz and 1.2 GHz.
+> >=20
+> > > The real issue for 1 GHz variant of A3720 is only when doing switc=
+h from
+> > > 500 MHz to 1 GHz. So could you try to do some tests also without
+> > > changing MIN_VOLT_MV_FOR_L0_L1_1GHZ and switching just between non=
+-1.2
+> > > frequencies (to verify that on 1.2 GHz variant it is also from 600=
+ MHz
+> > > to 1.2 GHz)?
+> >=20
+> > With 1108 mV and switching between 600 MHz and 1.2GHz, I always saw =
+a freeze within a minute.
+>=20
+> I mean to try switching with 1.108 V between 200 MHz and 300 MHz or
+> between 300 MHz and 600 MHz. To check that issue is really only with
+> switch from 600 MHz to 1.2 GHz.
 
-							Thanx, Paul
+With:
+
++#define MIN_VOLT_MV_FOR_L0_L1_1GHZ 1108
+
+with 5 min load:
+
+# no lock-up
+
+echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governo=
+r
+while true; do
+  echo 200000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed=
+;
+  echo 300000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed=
+;
+done
+
+# no lock-up
+
+echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governo=
+r
+while true; do
+  echo 300000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed=
+;
+  echo 600000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed=
+;
+done
+
+# lock-up with 10 seconds of load applied
+
+echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governo=
+r
+while true; do
+  echo 600000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed=
+;
+  echo 1200000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspee=
+d;
+done
+
+> I need to know if current settings are fine for 200, 300 and 600 MHz
+> frequencies and the only 600 --> 1200 needs to be fixed.
+>
