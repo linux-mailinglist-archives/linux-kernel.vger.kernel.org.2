@@ -2,269 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5729D319FC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DDF319FB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbhBLNWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:22:05 -0500
-Received: from mo-csw1514.securemx.jp ([210.130.202.153]:52422 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhBLNVt (ORCPT
+        id S231360AbhBLNUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:20:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230482AbhBLNUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 08:21:49 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 11CDJSbM027470; Fri, 12 Feb 2021 22:19:28 +0900
-X-Iguazu-Qid: 34tMScsDAqfUiYuTB4
-X-Iguazu-QSIG: v=2; s=0; t=1613135968; q=34tMScsDAqfUiYuTB4; m=z1OyDtMlrB7n7LoaVx0bkjrSihFhe7MphaT4/bt7/w4=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1511) id 11CDJRxK021399;
-        Fri, 12 Feb 2021 22:19:27 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 11CDJReG008799;
-        Fri, 12 Feb 2021 22:19:27 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 11CDJQ7g021201;
-        Fri, 12 Feb 2021 22:19:26 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>
-Cc:     devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH v2 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM support
-Date:   Fri, 12 Feb 2021 22:19:10 +0900
-X-TSB-HOP: ON
-Message-Id: <20210212131910.557581-3-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.30.0.rc2
-In-Reply-To: <20210212131910.557581-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20210212131910.557581-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        Fri, 12 Feb 2021 08:20:25 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96F7C061756;
+        Fri, 12 Feb 2021 05:19:44 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id cl8so418684pjb.0;
+        Fri, 12 Feb 2021 05:19:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=4cqievP1oLWYJ4Ny++CVFsTeEL6uztXwZyN4nT6gCro=;
+        b=o5ZQbFt3B3FNXTmRxyQrf5MaQvp1zVQr+8Ct25pANYhFgjoWEVXVvSB/sP3eFz8bRR
+         +GRpVSWZZTTeAR8kL+vzT2VfOBPiEz3tEJWEZ2MbI7Z/xO7M1iEkJPw7z7SANxTNL1Lu
+         p/l7Gxu5fEPPZ7VVmOIHNcWcuj0GCUyQGUn0BMUnX0LwFJNA5PdroaKS2NtNBEzInIVM
+         TQImvrYekeJhPHUmYAOdxSiB6uuoqLZMyYQJacafSLCTQchn6BD5h5sQ681Uv1/kDu/k
+         gtE2j8nGri1FW298EGy6ug3ATnrT2d0SwB1Lk2uZfAGcAZzxKWPj+yxYYNkQjg5bVfTQ
+         Tsfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=4cqievP1oLWYJ4Ny++CVFsTeEL6uztXwZyN4nT6gCro=;
+        b=GbvQlrmPj2KXBbhvB0oefD+M3QJk/0gDri3AWsdlVKq2+pePK0wtaWUwpgGsxjChe3
+         8w5xm5yTMcs20WlmJD1p8XFPNbaOgzYVFktQwGzH07SH1SYis4yZ0jxRsLotcw04AkDg
+         CUTM6F6CxcQwJ1jKI/J+s1fiM0uHYlYRc1L1Zv+fVcj2iJOBXvjfp2tfQ7km5zDv5/rF
+         D2iKpJeyJERoJNhcVX9exi94xRyxnQeazpzWCerZ4tK1zVOi3UEBUxAEcPT90ZsJNGLg
+         p6833ww8p6kfr9PUlr1NjOZkqkywYrJcGPMgemTD6VoKmzlGvRd+yMnsNQ65NjsJs5+4
+         qE6Q==
+X-Gm-Message-State: AOAM533aP4IMhWrkdtkMAOCatc6H1i/Uj5BfwpHzIrnK/USCIVctwLzK
+        5mrvm7yJNz0H1elepyI2At4=
+X-Google-Smtp-Source: ABdhPJw0W9r8mdFX58Wo4VzZMJed+tKGDHGxxiRlac9ze/7Q95PPuP7D90PvhGJ1KFgc0+sISreARg==
+X-Received: by 2002:a17:90a:c84:: with SMTP id v4mr2763919pja.228.1613135984448;
+        Fri, 12 Feb 2021 05:19:44 -0800 (PST)
+Received: from syed.domain.name ([103.201.127.1])
+        by smtp.gmail.com with ESMTPSA id g6sm8729106pfi.15.2021.02.12.05.19.37
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 Feb 2021 05:19:43 -0800 (PST)
+Date:   Fri, 12 Feb 2021 18:49:28 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     bgolaszewski@baylibre.com
+Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
+        michal.simek@xilinx.com, arnd@arndb.de, rrichter@marvell.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        yamada.masahiro@socionext.com, akpm@linux-foundation.org,
+        rui.zhang@intel.com, daniel.lezcano@linaro.org,
+        amit.kucheria@verdurent.com, linux-arch@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: [PATCH v2 0/3] Introduce the for_each_set_clump macro
+Message-ID: <cover.1613134924.git.syednwaris@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add driver for the PWM controller on Toshiba Visconti ARM SoC.
+Hello Bartosz,
 
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
----
- drivers/pwm/Kconfig        |   9 ++
- drivers/pwm/Makefile       |   1 +
- drivers/pwm/pwm-visconti.c | 173 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 183 insertions(+)
- create mode 100644 drivers/pwm/pwm-visconti.c
+Since this patchset primarily affects GPIO drivers, would you like
+to pick it up through your GPIO tree?
 
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 9a4f66ae8070..8ae68d6203fb 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -601,6 +601,15 @@ config PWM_TWL_LED
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called pwm-twl-led.
- 
-+config PWM_VISCONTI
-+	tristate "Toshiba Visconti PWM support"
-+	depends on ARCH_VISCONTI || COMPILE_TEST
-+	help
-+	  PWM Subsystem driver support for Toshiba Visconti SoCs.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called pwm-visconti.
-+
- config PWM_VT8500
- 	tristate "vt8500 PWM support"
- 	depends on ARCH_VT8500 || COMPILE_TEST
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index 6374d3b1d6f3..d43b1e17e8e1 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -56,4 +56,5 @@ obj-$(CONFIG_PWM_TIECAP)	+= pwm-tiecap.o
- obj-$(CONFIG_PWM_TIEHRPWM)	+= pwm-tiehrpwm.o
- obj-$(CONFIG_PWM_TWL)		+= pwm-twl.o
- obj-$(CONFIG_PWM_TWL_LED)	+= pwm-twl-led.o
-+obj-$(CONFIG_PWM_VISCONTI)	+= pwm-visconti.o
- obj-$(CONFIG_PWM_VT8500)	+= pwm-vt8500.o
-diff --git a/drivers/pwm/pwm-visconti.c b/drivers/pwm/pwm-visconti.c
-new file mode 100644
-index 000000000000..2aa140f1ec04
---- /dev/null
-+++ b/drivers/pwm/pwm-visconti.c
-@@ -0,0 +1,173 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Toshiba Visconti pulse-width-modulation controller driver
-+ *
-+ * Copyright (c) 2020 TOSHIBA CORPORATION
-+ * Copyright (c) 2020 Toshiba Electronic Devices & Storage Corporation
-+ *
-+ * Authors: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-+ *
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/pwm.h>
-+#include <linux/platform_device.h>
-+
-+
-+#define PIPGM_PCSR(ch) (0x400 + 4 * (ch))
-+#define PIPGM_PDUT(ch) (0x420 + 4 * (ch))
-+#define PIPGM_PWMC(ch) (0x440 + 4 * (ch))
-+
-+#define PIPGM_PWMC_PWMACT		BIT(5)
-+#define PIPGM_PWMC_CLK_MASK		GENMASK(1, 0)
-+#define PIPGM_PWMC_POLARITY_MASK	GENMASK(5, 5)
-+#define PIPGM_PDUT_MAX			0xFFFF
-+
-+struct visconti_pwm_chip {
-+	struct pwm_chip chip;
-+	void __iomem *base;
-+};
-+
-+#define to_visconti_chip(chip) \
-+	container_of(chip, struct visconti_pwm_chip, chip)
-+
-+static int visconti_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-+			  const struct pwm_state *state)
-+{
-+	struct visconti_pwm_chip *priv = to_visconti_chip(chip);
-+	u32 period, duty, pwmc0;
-+
-+	dev_dbg(chip->dev, "%s: ch = %d en = %d p = 0x%llx d = 0x%llx\n", __func__,
-+		pwm->hwpwm, state->enabled, state->period, state->duty_cycle);
-+
-+	/*
-+	 * pwmc is a 2-bit divider for the input clock running at 1 MHz.
-+	 * When the settings of the PWM are modified, the new values are shadowed in hardware until
-+	 * the period register (PCSR) is written and the currently running period is completed. This
-+	 * way the hardware switches atomically from the old setting to the new.
-+	 * Also, disabling the hardware completes the currently running period and keeps the output
-+	 * at low level at all times.
-+	 */
-+	if (!state->enabled) {
-+		writel(0, priv->base + PIPGM_PCSR(pwm->hwpwm));
-+		return 0;
-+	}
-+
-+	period = state->period / NSEC_PER_USEC;
-+	duty = state->duty_cycle / NSEC_PER_USEC;
-+	if (period < 0x10000)
-+		pwmc0 = 0;
-+	else if (period < 0x20000)
-+		pwmc0 = 1;
-+	else if (period < 0x40000)
-+		pwmc0 = 2;
-+	else if (period < 0x80000)
-+		pwmc0 = 3;
-+	else
-+		return -EINVAL;
-+
-+	if (duty > PIPGM_PDUT_MAX)
-+		return -EINVAL;
-+
-+	period >>= pwmc0;
-+	duty >>= pwmc0;
-+
-+	if (state->polarity == PWM_POLARITY_INVERSED)
-+		pwmc0 |= PIPGM_PWMC_PWMACT;
-+
-+	writel(pwmc0, priv->base + PIPGM_PWMC(pwm->hwpwm));
-+	writel(duty, priv->base + PIPGM_PDUT(pwm->hwpwm));
-+	writel(period, priv->base + PIPGM_PCSR(pwm->hwpwm));
-+
-+	return 0;
-+}
-+
-+static void visconti_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-+				   struct pwm_state *state)
-+{
-+	struct visconti_pwm_chip *priv = to_visconti_chip(chip);
-+	u32 period, duty, pwmc0, pwmc0_clk;
-+
-+	period = readl(priv->base + PIPGM_PCSR(pwm->hwpwm));
-+	if (period)
-+		state->enabled = true;
-+	else
-+		state->enabled = false;
-+
-+	duty = readl(priv->base + PIPGM_PDUT(pwm->hwpwm));
-+	pwmc0 = readl(priv->base + PIPGM_PWMC(pwm->hwpwm));
-+	pwmc0_clk = pwmc0 & PIPGM_PWMC_CLK_MASK;
-+
-+	state->period = (period << pwmc0_clk) * NSEC_PER_USEC;
-+	state->duty_cycle = (duty << pwmc0_clk) * NSEC_PER_USEC;
-+	if (pwmc0 & PIPGM_PWMC_POLARITY_MASK)
-+		state->polarity = PWM_POLARITY_INVERSED;
-+	else
-+		state->polarity = PWM_POLARITY_NORMAL;
-+}
-+
-+static const struct pwm_ops visconti_pwm_ops = {
-+	.apply = visconti_pwm_apply,
-+	.get_state = visconti_pwm_get_state,
-+	.owner = THIS_MODULE,
-+};
-+
-+static int visconti_pwm_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct visconti_pwm_chip *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	priv->chip.dev = dev;
-+	priv->chip.ops = &visconti_pwm_ops;
-+	priv->chip.base = -1;
-+	priv->chip.npwm = 4;
-+
-+	ret = pwmchip_add(&priv->chip);
-+	if (ret < 0)
-+		return dev_err_probe(&pdev->dev, ret, "Cannot register visconti PWM\n");
-+
-+	dev_dbg(&pdev->dev, "visconti PWM registered\n");
-+
-+	return 0;
-+}
-+
-+static int visconti_pwm_remove(struct platform_device *pdev)
-+{
-+	struct visconti_pwm_chip *priv = platform_get_drvdata(pdev);
-+
-+	return pwmchip_remove(&priv->chip);
-+}
-+
-+static const struct of_device_id visconti_pwm_of_match[] = {
-+	{ .compatible = "toshiba,pwm-visconti", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, visconti_pwm_of_match);
-+
-+static struct platform_driver visconti_pwm_driver = {
-+	.driver = {
-+		.name = "pwm-visconti",
-+		.of_match_table = visconti_pwm_of_match,
-+	},
-+	.probe = visconti_pwm_probe,
-+	.remove = visconti_pwm_remove,
-+};
-+module_platform_driver(visconti_pwm_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>");
-+MODULE_ALIAS("platform:visconti-pwm");
+This patchset introduces a new generic version of for_each_set_clump.
+The previous version of for_each_set_clump8 used a fixed size 8-bit
+clump, but the new generic version can work with clump of any size but
+less than or equal to BITS_PER_LONG. The patchset utilizes the new macro
+in several GPIO drivers.
+
+The earlier 8-bit for_each_set_clump8 facilitated a
+for-loop syntax that iterates over a memory region entire groups of set
+bits at a time.
+
+For example, suppose you would like to iterate over a 32-bit integer 8
+bits at a time, skipping over 8-bit groups with no set bit, where
+XXXXXXXX represents the current 8-bit group:
+
+    Example:        10111110 00000000 11111111 00110011
+    First loop:     10111110 00000000 11111111 XXXXXXXX
+    Second loop:    10111110 00000000 XXXXXXXX 00110011
+    Third loop:     XXXXXXXX 00000000 11111111 00110011
+
+Each iteration of the loop returns the next 8-bit group that has at
+least one set bit.
+
+But with the new for_each_set_clump the clump size can be different from 8 bits.
+Moreover, the clump can be split at word boundary in situations where word
+size is not multiple of clump size. Following are examples showing the working
+of new macro for clump sizes of 24 bits and 6 bits.
+
+Example 1:
+clump size: 24 bits, Number of clumps (or ports): 10
+bitmap stores the bit information from where successive clumps are retrieved.
+
+     /* bitmap memory region */
+        0x00aa0000ff000000;  /* Most significant bits */
+        0xaaaaaa0000ff0000;
+        0x000000aa000000aa;
+        0xbbbbabcdeffedcba;  /* Least significant bits */
+
+Different iterations of for_each_set_clump:-
+'offset' is the bit position and 'clump' is the 24 bit clump from the
+above bitmap.
+Iteration first:        offset: 0 clump: 0xfedcba
+Iteration second:       offset: 24 clump: 0xabcdef
+Iteration third:        offset: 48 clump: 0xaabbbb
+Iteration fourth:       offset: 96 clump: 0xaa
+Iteration fifth:        offset: 144 clump: 0xff
+Iteration sixth:        offset: 168 clump: 0xaaaaaa
+Iteration seventh:      offset: 216 clump: 0xff
+Loop breaks because in the end the remaining bits (0x00aa) size was less
+than clump size of 24 bits.
+
+In above example it can be seen that in iteration third, the 24 bit clump
+that was retrieved was split between bitmap[0] and bitmap[1]. This example
+also shows that 24 bit zeroes if present in between, were skipped (preserving
+the previous for_each_set_macro8 behaviour).
+
+Example 2:
+clump size = 6 bits, Number of clumps (or ports) = 3.
+
+     /* bitmap memory region */
+        0x00aa0000ff000000;  /* Most significant bits */
+        0xaaaaaa0000ff0000;
+        0x0f00000000000000;
+        0x0000000000000ac0;  /* Least significant bits */
+
+Different iterations of for_each_set_clump:
+'offset' is the bit position and 'clump' is the 6 bit clump from the
+above bitmap.
+Iteration first:        offset: 6 clump: 0x2b
+Loop breaks because 6 * 3 = 18 bits traversed in bitmap.
+Here 6 * 3 is clump size * no. of clumps.
+
+Changes in v2:
+ - [Patch 1/3]: Shift the macros and related functions to gpiolib inside 
+   gpio/. Reduce the visibilty of 'for_each_set_clump' to gpio.
+ - [Patch 1/3]: Remove __builtin_unreachable and simply use return
+   statement.
+ - Remove tests from lib/test_bitmap.c as 'for_each_set_clump' is
+   now localised inside gpio/ only.
+
+Syed Nayyar Waris (3):
+  gpiolib: : Introduce the for_each_set_clump macro
+  gpio: thunderx: Utilize for_each_set_clump macro
+  gpio: xilinx: Utilize generic bitmap_get_value and _set_value
+
+ drivers/gpio/gpio-thunderx.c | 13 ++++--
+ drivers/gpio/gpio-xilinx.c   | 63 ++++++++++++-------------
+ drivers/gpio/gpiolib.c       | 90 ++++++++++++++++++++++++++++++++++++
+ drivers/gpio/gpiolib.h       | 28 +++++++++++
+ 4 files changed, 158 insertions(+), 36 deletions(-)
+
+
+base-commit: e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
 -- 
-2.30.0.rc2
+2.29.0
 
