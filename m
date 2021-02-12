@@ -2,144 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E1231A636
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D9A31A63B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhBLUsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:48:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbhBLUsb (ORCPT
+        id S231640AbhBLUuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:50:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229959AbhBLUuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:48:31 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E074AC061786
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:47:50 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id a16so414780ilq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:47:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XHQMdD4M/9n7kXDwApYNepXGgL4rr9toLyZC0YSWleM=;
-        b=J1hnM+AVDAhiSATGl302gnQnCE/GOG7MuY62LilWK/sdFL812lS2Bdqnf2fQLH9VpQ
-         SzmM1gCQNMH+gRnJHEedOgSB3Mxjd191Ve34rKxUCz5aBpMdmt9/wlQPW1Ce50WtxbgD
-         ON5AlHpe8LT/nAzSpaTKz/4vknmVfNj08uFk6yL59XBq/0Ko7BpXjjOFhaT1xzn1crr1
-         oBcOPnRHOs3uv6kGiQnYHuOJr6phnsc+C3h5/yo4cZtENlUTCm8GccwJmpvr8IZZnDLQ
-         1Al2Ar8xTeYt+YJhhLB/xRjTwu1E+2S0h7j17nJ7oZKsEhogLRs7vJZqZW2IZiAi+K+s
-         DynA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XHQMdD4M/9n7kXDwApYNepXGgL4rr9toLyZC0YSWleM=;
-        b=nOHO8qYT3gicxLuBPsYhQrFv4EY6o1HPmPpcOo3qkTlXkAjdOVoaPVeKnafw7W+K6a
-         upZevNagHemi+fcPcZXxOM3nmqDkE3u0PnsX8PVWzlFDgDB8NNC/lWpIsEsEOkGIKyOu
-         uFgYTixIze2XgPHNKUOvK7fp+BS6b/hApwMXuPbPYkdaA63U3pbb5/lGuJ+FYarsHQf2
-         hODSAJcQsn1p6C3UnnvX+Iwc8aVsCLPhJxEPKtApo+7rKMX9cwFQcoFaK2xfHU+oysjg
-         LYGZx8xN6hgcBDU7dGQKxsaYRZREg3kM/QeNdWsgi3R74XdYqmICKQ/LtmnAswIQE8IG
-         nxPQ==
-X-Gm-Message-State: AOAM530nVG8geqOibxQfK4HFpMI9NwLnqLhfayObz+bpO0eLqfkiHjV9
-        PidIkAjGE+v7zfw1W4217Q45sBeSiYMyQiW3F0nssg==
-X-Google-Smtp-Source: ABdhPJy7X2kavmCOVJnqOgE4aEszNs9PZjIWjqj0Wwe57tdEHfPYv7JFz1/cCUxHzeX2/mUbeHqaY8XYstpcrrvvp4M=
-X-Received: by 2002:a92:c941:: with SMTP id i1mr3869403ilq.258.1613162870096;
- Fri, 12 Feb 2021 12:47:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20210210212200.1097784-1-axelrasmussen@google.com>
- <20210210212200.1097784-3-axelrasmussen@google.com> <0a991b83-18f8-cd76-46c0-4e0dcd5c87a7@oracle.com>
- <20210212204028.GC3171@xz-x1>
-In-Reply-To: <20210212204028.GC3171@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Fri, 12 Feb 2021 12:47:12 -0800
-Message-ID: <CAJHvVchJtjpjNUYTGw1m568w_GTK_KMKbu0MLyvK8gcbrs6S7A@mail.gmail.com>
-Subject: Re: [PATCH v5 02/10] hugetlb/userfaultfd: Forbid huge pmd sharing
- when uffd enabled
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
+        Fri, 12 Feb 2021 15:50:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613162931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2GTLBCiO9sWR+YwrKUUijDRwp4nWHKBHE9zqt66FKTk=;
+        b=g0oGjoUp3Nr6a1lEUGwHv4mlSUSxu7B/QzYORzEvzpUHVeJzmAMmmTAw3qNNh+wvz69n36
+        ZCwNd37Erj34dT27wtjeyHqub77SagiGakRFihYxkN1JWU7bDucYQI1BCjnVXy3Xm6abez
+        QnTWAUvmsV65PnYSlZEJ7OVUb6cXtvA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-pNF8CLBtOba6hMGRHWAmwQ-1; Fri, 12 Feb 2021 15:48:47 -0500
+X-MC-Unique: pNF8CLBtOba6hMGRHWAmwQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E231C8030C1;
+        Fri, 12 Feb 2021 20:48:45 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6079D5D9FC;
+        Fri, 12 Feb 2021 20:48:31 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 15:48:28 -0500
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Phil Sutter <phil@nwl.cc>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        netfilter-devel@vger.kernel.org, sgrubb@redhat.com,
+        Ondrej Mosnacek <omosnace@redhat.com>, fw@strlen.de,
+        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
+        tgraf@infradead.org
+Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
+ events
+Message-ID: <20210212204828.GL3141668@madcap2.tricolour.ca>
+References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
+ <20210211151606.GX3158@orbyte.nwl.cc>
+ <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
+ <20210211202628.GP2015948@madcap2.tricolour.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210211202628.GP2015948@madcap2.tricolour.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:40 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Thu, Feb 11, 2021 at 04:19:55PM -0800, Mike Kravetz wrote:
-> > want_pmd_share() is currently just a check for CONFIG_ARCH_WANT_HUGE_PMD_SHARE.
-> > How about leaving that mostly as is, and adding the new vma checks to
-> > vma_shareable().  vma_shareable() would then be something like:
-> >
-> >       if (!(vma->vm_flags & VM_MAYSHARE))
-> >               return false;
-> > #ifdef CONFIG_USERFAULTFD
-> >       if (uffd_disable_huge_pmd_share(vma)
-> >               return false;
-> > #endif
-> > #ifdef /* XXX */
-> >       /* add other checks for things like uffd wp and soft dirty here */
-> > #endif /* XXX */
-> >
-> >       if (range_in_vma(vma, base, end)
-> >               return true;
-> >       return false;
-> >
-> > Of course, this would require we leave the call to vma_shareable() at the
-> > beginning of huge_pmd_share.  It also means that we are always making a
-> > function call into huge_pmd_share to determine if sharing is possible.
-> > That is not any different than today.  If we do not want to make that extra
-> > function call, then I would suggest putting all that code in want_pmd_share.
-> > It just seems that all the vma checks for sharing should be in one place
-> > if possible.
->
-> I don't worry a lot on that since we've already got huge_pte_alloc() which
-> takes care of huge pmd sharing case, so I don't expect e.g. even most hugetlb
-> developers to use want_pmd_share() at all, because huge_pte_alloc() will be the
-> one that frequently got called.
->
-> But yeah we can definitely put the check logic into huge_pmd_share() too.
-> Looking at above code it looks still worth a helper like want_pmd_share() or
-> with some other name.  Then... instead of making this complicated, how about I
-> mostly keep this patch but move want_pmd_share() call into huge_pmd_share()
-> instead?
->
-> Btw, Axel, it seems there will still be some respins on the pmd sharing
-> patches.  Since it turns out it'll be shared by multiple tasks now, do you mind
-> I pick those out and send them separately?  Then we can consolidate this part
-> to move on with either the rest of the tasks we've got on hand.
+On 2021-02-11 15:26, Richard Guy Briggs wrote:
+> On 2021-02-11 11:29, Paul Moore wrote:
+> > On Thu, Feb 11, 2021 at 10:16 AM Phil Sutter <phil@nwl.cc> wrote:
+> > > Hi,
+> > >
+> > > On Thu, Jun 04, 2020 at 09:20:49AM -0400, Richard Guy Briggs wrote:
+> > > > iptables, ip6tables, arptables and ebtables table registration,
+> > > > replacement and unregistration configuration events are logged for the
+> > > > native (legacy) iptables setsockopt api, but not for the
+> > > > nftables netlink api which is used by the nft-variant of iptables in
+> > > > addition to nftables itself.
+> > > >
+> > > > Add calls to log the configuration actions in the nftables netlink api.
+> > >
+> > > As discussed offline already, these audit notifications are pretty hefty
+> > > performance-wise. In an internal report, 300% restore time of a ruleset
+> > > containing 70k set elements is measured.
+> > 
+> > If you're going to reference offline/off-list discussions in a post to
+> > a public list, perhaps the original discussion shouldn't have been
+> > off-list ;)  If you don't involve us in the discussion, we have to
+> > waste a lot of time getting caught up.
+> 
+> Here's part of that discussion:
+> 	https://bugzilla.redhat.com/show_bug.cgi?id=1918013
 
-Sounds good to me. :) Thanks Peter + Mike for working on this!
+Here's the rest:
+	 https://bugzilla.redhat.com/show_bug.cgi?id=1921624
 
->
-> Thanks,
->
-> --
-> Peter Xu
->
+> > > If I'm not mistaken, iptables emits a single audit log per table, ipset
+> > > doesn't support audit at all. So I wonder how much audit logging is
+> > > required at all (for certification or whatever reason). How much
+> > > granularity is desired?
+> > 
+> > That's a question for the people who track these certification
+> > requirements, which is thankfully not me at the moment.  Unless
+> > somebody else wants to speak up, Steve Grubb is probably the only
+> > person who tracks that sort of stuff and comments here.
+> > 
+> > I believe the netfilter auditing was mostly a nice-to-have bit of
+> > functionality to help add to the completeness of the audit logs, but I
+> > could very easily be mistaken.  Richard put together those patches, he
+> > can probably provide the background/motivation for the effort.
+> 
+> It was added because an audit test that normally produced records from
+> iptables on one distro stopped producing any records on another.
+> Investigation led to the fact that on the first it was using
+> iptables-legacy API and on the other it was using iptables-nft API.
+> 
+> > > I personally would notify once per transaction. This is easy and quick.
+> 
+> This was the goal.  iptables was atomic.  nftables appears to no longer
+> be so.  If I have this wrong, please show how that works.
+> 
+> > > Once per table or chain should be acceptable, as well. At the very
+> > > least, we should not have to notify once per each element. This is the
+> > > last resort of fast ruleset adjustments. If we lose it, people are
+> > > better off with ipset IMHO.
+> > >
+> > > Unlike nft monitor, auditd is not designed to be disabled "at will". So
+> > > turning it off for performance-critical workloads is no option.
+> 
+> If it were to be disabled "at will" it would defeat the purpose of
+> audit.  Those records can already be filtered, or audit can be disabled,
+> but let us look at rationalizing the current nftables records first.
+> 
+> > Patches are always welcome, but it might be wise to get to the bottom
+> > of the certification requirements first.
+> > 
+> > paul moore
+> 
+> - RGB
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
