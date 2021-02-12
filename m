@@ -2,205 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A76F319DE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B8B319DD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhBLMGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:06:43 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:47074 "EHLO honk.sigxcpu.org"
+        id S230409AbhBLMFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:05:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52752 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231167AbhBLMFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:05:33 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id DB3B1FB05;
-        Fri, 12 Feb 2021 13:04:42 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 0-yAo9O8Nnju; Fri, 12 Feb 2021 13:04:39 +0100 (CET)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id C7B634188C; Fri, 12 Feb 2021 13:04:33 +0100 (CET)
-From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [PATCH v2 4/4] usb: typec: tps6598x: Add trace event for data status
-Date:   Fri, 12 Feb 2021 13:04:33 +0100
-Message-Id: <d8efcb86bf71ddf52dc4f880b97525c4c04843be.1613131413.git.agx@sigxcpu.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <cover.1613131413.git.agx@sigxcpu.org>
-References: <cover.1613131413.git.agx@sigxcpu.org>
+        id S229497AbhBLMEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:04:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3D2A0AF49;
+        Fri, 12 Feb 2021 12:04:13 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id c04de85f;
+        Fri, 12 Feb 2021 12:05:14 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate
+ content is generated
+References: <20210212044405.4120619-1-drinkcat@chromium.org>
+        <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
+        <YCYybUg4d3+Oij4N@kroah.com>
+        <CAOQ4uxhovoZ4S3WhXwgYDeOeomBxfQ1BdzSyGdqoVX6boDOkeA@mail.gmail.com>
+        <YCY+tjPgcDmgmVD1@kroah.com>
+Date:   Fri, 12 Feb 2021 12:05:14 +0000
+In-Reply-To: <YCY+tjPgcDmgmVD1@kroah.com> (Greg KH's message of "Fri, 12 Feb
+        2021 09:39:18 +0100")
+Message-ID: <871rdljxtx.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is useful to debug DP negotiation and pin assignment even
-when the firmware does all the work.
+Greg KH <gregkh@linuxfoundation.org> writes:
 
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
----
- drivers/usb/typec/tps6598x.c       | 12 ++++++-
- drivers/usb/typec/tps6598x.h       | 36 ++++++++++++++++++++
- drivers/usb/typec/tps6598x_trace.h | 54 ++++++++++++++++++++++++++++++
- 3 files changed, 101 insertions(+), 1 deletion(-)
+> On Fri, Feb 12, 2021 at 10:22:16AM +0200, Amir Goldstein wrote:
+>> On Fri, Feb 12, 2021 at 9:49 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>> >
+>> > On Fri, Feb 12, 2021 at 12:44:00PM +0800, Nicolas Boichat wrote:
+>> > > Filesystems such as procfs and sysfs generate their content at
+>> > > runtime. This implies the file sizes do not usually match the
+>> > > amount of data that can be read from the file, and that seeking
+>> > > may not work as intended.
+>> > >
+>> > > This will be useful to disallow copy_file_range with input files
+>> > > from such filesystems.
+>> > >
+>> > > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+>> > > ---
+>> > > I first thought of adding a new field to struct file_operations,
+>> > > but that doesn't quite scale as every single file creation
+>> > > operation would need to be modified.
+>> >
+>> > Even so, you missed a load of filesystems in the kernel with this patch
+>> > series, what makes the ones you did mark here different from the
+>> > "internal" filesystems that you did not?
+>> >
+>> > This feels wrong, why is userspace suddenly breaking?  What changed in
+>> > the kernel that caused this?  Procfs has been around for a _very_ long
+>> > time :)
+>> 
+>> That would be because of (v5.3):
+>> 
+>> 5dae222a5ff0 vfs: allow copy_file_range to copy across devices
+>> 
+>> The intention of this change (series) was to allow server side copy
+>> for nfs and cifs via copy_file_range().
+>> This is mostly work by Dave Chinner that I picked up following requests
+>> from the NFS folks.
+>> 
+>> But the above change also includes this generic change:
+>> 
+>> -       /* this could be relaxed once a method supports cross-fs copies */
+>> -       if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
+>> -               return -EXDEV;
+>> -
+>> 
+>> The change of behavior was documented in the commit message.
+>> It was also documented in:
+>> 
+>> 88e75e2c5 copy_file_range.2: Kernel v5.3 updates
+>> 
+>> I think our rationale for the generic change was:
+>> "Why not? What could go wrong? (TM)"
+>> I am not sure if any workload really gained something from this
+>> kernel cross-fs CFR.
+>
+> Why not put that check back?
+>
+>> In retrospect, I think it would have been safer to allow cross-fs CFR
+>> only to the filesystems that implement ->{copy,remap}_file_range()...
+>
+> Why not make this change?  That seems easier and should fix this for
+> everyone, right?
+>
+>> Our option now are:
+>> - Restore the cross-fs restriction into generic_copy_file_range()
+>
+> Yes.
+>
 
-diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
-index 3e6ad3ba7fc8..a4ec8e56c2b9 100644
---- a/drivers/usb/typec/tps6598x.c
-+++ b/drivers/usb/typec/tps6598x.c
-@@ -36,6 +36,7 @@
- #define TPS_REG_CTRL_CONF		0x29
- #define TPS_REG_POWER_STATUS		0x3f
- #define TPS_REG_RX_IDENTITY_SOP		0x48
-+#define TPS_REG_DATA_STATUS		0x5f
- 
- /* TPS_REG_SYSTEM_CONF bits */
- #define TPS_SYSCONF_PORTINFO(c)		((c) & 7)
-@@ -408,7 +409,7 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
- 	struct tps6598x *tps = data;
- 	u64 event1;
- 	u64 event2;
--	u32 status;
-+	u32 status, data_status;
- 	u16 pwr_status;
- 	int ret;
- 
-@@ -438,6 +439,15 @@ static irqreturn_t tps6598x_interrupt(int irq, void *data)
- 		trace_tps6598x_power_status(pwr_status);
- 	}
- 
-+	if ((event1 | event2) & TPS_REG_INT_DATA_STATUS_UPDATE) {
-+		ret = tps6598x_read32(tps, TPS_REG_DATA_STATUS, &data_status);
-+		if (ret < 0) {
-+			dev_err(tps->dev, "failed to read data status: %d\n", ret);
-+			goto err_clear_ints;
-+		}
-+		trace_tps6598x_data_status(data_status);
-+	}
-+
- 	/* Handle plug insert or removal */
- 	if ((event1 | event2) & TPS_REG_INT_PLUG_EVENT) {
- 		if (status & TPS_STATUS_PLUG_PRESENT) {
-diff --git a/drivers/usb/typec/tps6598x.h b/drivers/usb/typec/tps6598x.h
-index 3f6503377678..1afc22ab4dbb 100644
---- a/drivers/usb/typec/tps6598x.h
-+++ b/drivers/usb/typec/tps6598x.h
-@@ -146,4 +146,40 @@
- #define TPS_POWER_STATUS_BC12_STATUS_CDP 2
- #define TPS_POWER_STATUS_BC12_STATUS_DCP 3
- 
-+/* TPS_REG_DATA_STATUS bits */
-+#define TPS_DATA_STATUS_DATA_CONNECTION	     BIT(0)
-+#define TPS_DATA_STATUS_UPSIDE_DOWN	     BIT(1)
-+#define TPS_DATA_STATUS_ACTIVE_CABLE	     BIT(2)
-+#define TPS_DATA_STATUS_USB2_CONNECTION	     BIT(4)
-+#define TPS_DATA_STATUS_USB3_CONNECTION	     BIT(5)
-+#define TPS_DATA_STATUS_USB3_GEN2	     BIT(6)
-+#define TPS_DATA_STATUS_USB_DATA_ROLE	     BIT(7)
-+#define TPS_DATA_STATUS_DP_CONNECTION	     BIT(8)
-+#define TPS_DATA_STATUS_DP_SINK		     BIT(9)
-+#define TPS_DATA_STATUS_TBT_CONNECTION	     BIT(16)
-+#define TPS_DATA_STATUS_TBT_TYPE	     BIT(17)
-+#define TPS_DATA_STATUS_OPTICAL_CABLE	     BIT(18)
-+#define TPS_DATA_STATUS_ACTIVE_LINK_TRAIN    BIT(20)
-+#define TPS_DATA_STATUS_FORCE_LSX	     BIT(23)
-+#define TPS_DATA_STATUS_POWER_MISMATCH	     BIT(24)
-+
-+#define TPS_DATA_STATUS_DP_PIN_ASSIGNMENT_MASK GENMASK(11, 10)
-+#define TPS_DATA_STATUS_DP_PIN_ASSIGNMENT(x) \
-+	FIELD_GET(TPS_DATA_STATUS_DP_PIN_ASSIGNMENT_MASK, (x))
-+#define TPS_DATA_STATUS_TBT_CABLE_SPEED_MASK   GENMASK(27, 25)
-+#define TPS_DATA_STATUS_TBT_CABLE_SPEED	       FIELD_GET(TPS_DATA_STATUS_TBT_CABLE_SPEED_MASK, (x))
-+#define TPS_DATA_STATUS_TBT_CABLE_GEN_MASK     GENMASK(29, 28)
-+#define TPS_DATA_STATUS_TBT_CABLE_GEN	       FIELD_GET(TPS_DATA_STATUS_TBT_CABLE_GEN_MASK, (x))
-+
-+/* Map data status to DP spec assignments */
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT(x) \
-+	((TPS_DATA_STATUS_DP_PIN_ASSIGNMENT(x) << 1) | \
-+		FIELD_GET(TPS_DATA_STATUS_USB3_CONNECTION, (x)))
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_E    0
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_F    BIT(0)
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_C    BIT(1)
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_D    (BIT(1) | BIT(0))
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_A    BIT(2)
-+#define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_B    (BIT(2) | BIT(1))
-+
- #endif /* __TPS6598X_H__ */
-diff --git a/drivers/usb/typec/tps6598x_trace.h b/drivers/usb/typec/tps6598x_trace.h
-index 78a5a6ca337b..38bfb2f04e46 100644
---- a/drivers/usb/typec/tps6598x_trace.h
-+++ b/drivers/usb/typec/tps6598x_trace.h
-@@ -152,6 +152,41 @@
- 		{ TPS_POWER_STATUS_BC12_STATUS_CDP, "cdp" }, \
- 		{ TPS_POWER_STATUS_BC12_STATUS_SDP, "sdp" })
- 
-+#define TPS_DATA_STATUS_FLAGS_MASK (GENMASK(31, 0) ^ (TPS_DATA_STATUS_DP_PIN_ASSIGNMENT_MASK | \
-+						      TPS_DATA_STATUS_TBT_CABLE_SPEED_MASK | \
-+						      TPS_DATA_STATUS_TBT_CABLE_GEN_MASK))
-+
-+#define show_data_status_flags(data_status) \
-+	__print_flags(data_status & TPS_DATA_STATUS_FLAGS_MASK, "|", \
-+		{ TPS_DATA_STATUS_DATA_CONNECTION,	"DATA_CONNECTION" }, \
-+		{ TPS_DATA_STATUS_UPSIDE_DOWN,		"DATA_UPSIDE_DOWN" }, \
-+		{ TPS_DATA_STATUS_ACTIVE_CABLE,		"ACTIVE_CABLE" }, \
-+		{ TPS_DATA_STATUS_USB2_CONNECTION,	"USB2_CONNECTION" }, \
-+		{ TPS_DATA_STATUS_USB3_CONNECTION,	"USB3_CONNECTION" }, \
-+		{ TPS_DATA_STATUS_USB3_GEN2,		"USB3_GEN2" }, \
-+		{ TPS_DATA_STATUS_USB_DATA_ROLE,	"USB_DATA_ROLE" }, \
-+		{ TPS_DATA_STATUS_DP_CONNECTION,	"DP_CONNECTION" }, \
-+		{ TPS_DATA_STATUS_DP_SINK,		"DP_SINK" }, \
-+		{ TPS_DATA_STATUS_TBT_CONNECTION,	"TBT_CONNECTION" }, \
-+		{ TPS_DATA_STATUS_TBT_TYPE,		"TBT_TYPE" }, \
-+		{ TPS_DATA_STATUS_OPTICAL_CABLE,	"OPTICAL_CABLE" }, \
-+		{ TPS_DATA_STATUS_ACTIVE_LINK_TRAIN,	"ACTIVE_LINK_TRAIN" }, \
-+		{ TPS_DATA_STATUS_FORCE_LSX,		"FORCE_LSX" }, \
-+		{ TPS_DATA_STATUS_POWER_MISMATCH,	"POWER_MISMATCH" })
-+
-+#define show_data_status_dp_pin_assignment(data_status) \
-+	__print_symbolic(TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT(data_status), \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_E, "E" }, \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_F, "F" }, \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_C, "C" }, \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_D, "D" }, \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_A, "A" }, \
-+		{ TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_B, "B" })
-+
-+#define maybe_show_data_status_dp_pin_assignment(data_status) \
-+	(data_status & TPS_DATA_STATUS_DP_CONNECTION ? \
-+	 show_data_status_dp_pin_assignment(data_status) : "")
-+
- TRACE_EVENT(tps6598x_irq,
- 	    TP_PROTO(u64 event1,
- 		     u64 event2),
-@@ -219,6 +254,25 @@ TRACE_EVENT(tps6598x_power_status,
- 		    )
- );
- 
-+TRACE_EVENT(tps6598x_data_status,
-+	    TP_PROTO(u32 data_status),
-+	    TP_ARGS(data_status),
-+
-+	    TP_STRUCT__entry(
-+			     __field(u32, data_status)
-+			     ),
-+
-+	    TP_fast_assign(
-+			   __entry->data_status = data_status;
-+			   ),
-+
-+	    TP_printk("%s%s%s",
-+		      show_data_status_flags(__entry->data_status),
-+		      __entry->data_status & TPS_DATA_STATUS_DP_CONNECTION ? ", DP pinout " : "",
-+		      maybe_show_data_status_dp_pin_assignment(__entry->data_status)
-+		    )
-+);
-+
- #endif /* _TPS6598X_TRACE_H_ */
- 
- /* This part must be outside protection */
+Restoring this restriction will actually change the current cephfs CFR
+behaviour.  Since that commit we have allowed doing remote copies between
+different filesystems within the same ceph cluster.  See commit
+6fd4e6348352 ("ceph: allow object copies across different filesystems in
+the same cluster").
+
+Although I'm not aware of any current users for this scenario, the
+performance impact can actually be huge as it's the difference between
+asking the OSDs for copying a file and doing a full read+write on the
+client side.
+
+Cheers,
 -- 
-2.30.0
+Luis
 
+
+>> - Explicitly opt-out of CFR per-fs and/or per-file as Nicolas' patch does
+>
+> No.  That way lies constant auditing and someone being "vigilant" for
+> the next 30+ years.  Which will not happen.
+>
+> thanks,
+>
+> greg k-h
