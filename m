@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8478C319F30
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7771D319F3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhBLMw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:52:59 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45404 "EHLO
+        id S231965AbhBLMzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:55:36 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:45294 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhBLMjG (ORCPT
+        with ESMTP id S231294AbhBLMju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:39:06 -0500
-Date:   Fri, 12 Feb 2021 12:37:17 -0000
+        Fri, 12 Feb 2021 07:39:50 -0500
+Date:   Fri, 12 Feb 2021 12:37:18 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613133437;
+        s=2020; t=1613133439;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=7nxcFYNNymYh9idMXgQ4P9EBHnP3Wdi2QRAUhSK5ilY=;
-        b=gABcBQ5QyA8QU3YQX8M8nJ45nMXiwwzDfOy4RFmEX58Hkxm6pXAyghF//PW1egYMM/ePTF
-        FW4nHiVa8VtQ0m2FcPfSW0Vz6YzINXKcmCQauSFgaVWNqJTNCVPVSDq2rSINqA8k6IQeHi
-        LzKP5DBja0eQn3VJhVO0nyyBFoUm3fKEt2jN+o6SgLKrSIvjmQIAxWZOoKhkJcWX/hbA83
-        3JxJf/t50IoUuoxsV3x6HiSsKWwRIU3jEyOlKyCQDt5PA6dqXnZVfhIRKWpNjFVlQtRUfS
-        CkpDfomSPagXpcIeu0p/+87AdgOZ5SHMCtnYpZpFmZBsLmUSnaHUQN0vfKXFAw==
+        bh=wYwql6tJOqJUPIe4BK59ur8kJLCOQne0MbFrCaGo69E=;
+        b=iBhlwK7sbR+heT+DsSguCXLrerg6Ha6CNPtF5CgWTkI3sEKmvbbatdUb4J7XS4FU03iNij
+        7Z+SWUGrNZglXzHjWjptQJ2d6Jwiy1ESpGymwZUfnbyp3UFJ70hRNPI5Jxz5qyFhagfj7V
+        sgRyTHbgbmfvziwlPFXVNkMMH0/awuP/EBO5/huTFf8d1GAqSV2EyI0xX7FszKYnQ1MVzO
+        KDsdFXHxxGKV/ftbfAUv6j+QeLp4aDlMDyhKBDPzR3k83Tj21D5yiWQ089GZD3JuDFC4jd
+        5M63FyoXf/UTi4YNHaIo4hzobFnExlWJWejOjAmjDoP8K7z0eAdZT6ysZyoAww==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613133437;
+        s=2020e; t=1613133439;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=7nxcFYNNymYh9idMXgQ4P9EBHnP3Wdi2QRAUhSK5ilY=;
-        b=uM6dZnwE0VZLJY5aeL+OXp0jdmFaB1aRiuWIaCRR9mkTOb5AOgYTZwqiZacjSRAP55q2gb
-        kKt7kBLh9ApuXgBQ==
+        bh=wYwql6tJOqJUPIe4BK59ur8kJLCOQne0MbFrCaGo69E=;
+        b=aICML/5s1iOfYPwzAKoWuEwW4yNR4oZvpZJTXThi9KB1oSQqqHa22xuZHe334n/E7ZTU19
+        v94xNETLYpbUB1BA==
 From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] timer: Add timer_curr_running()
+Subject: [tip: core/rcu] rcu/nocb: Flush bypass before setting SEGCBLIST_SOFTIRQ_ONLY
 Cc:     Josh Triplett <josh@joshtriplett.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
@@ -49,7 +49,7 @@ Cc:     Josh Triplett <josh@joshtriplett.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161313343712.23325.16879161573630488715.tip-bot2@tip-bot2>
+Message-ID: <161313343880.23325.18244968176863208111.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,17 +60,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     dcd42591ebb8a25895b551a5297ea9c24414ba54
-Gitweb:        https://git.kernel.org/tip/dcd42591ebb8a25895b551a5297ea9c24414ba54
+Commit-ID:     314202f84ddd61e4d7576ef62570ad2e2d9db06b
+Gitweb:        https://git.kernel.org/tip/314202f84ddd61e4d7576ef62570ad2e2d9db06b
 Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Fri, 13 Nov 2020 13:13:33 +01:00
+AuthorDate:    Fri, 13 Nov 2020 13:13:24 +01:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Wed, 06 Jan 2021 16:24:59 -08:00
 
-timer: Add timer_curr_running()
+rcu/nocb: Flush bypass before setting SEGCBLIST_SOFTIRQ_ONLY
 
-This commit adds a timer_curr_running() function that verifies that the
-current code is running in the context of the specified timer's handler.
+This commit flushes the bypass queue and sets state to avoid its being
+refilled before switching to the final de-offloaded state.  To avoid
+refilling, this commit sets SEGCBLIST_SOFTIRQ_ONLY before re-enabling
+IRQs.
 
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
@@ -79,48 +81,38 @@ Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Joel Fernandes <joel@joelfernandes.org>
 Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
+Inspired-by: Paul E. McKenney <paulmck@kernel.org>
 Tested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/timer.h |  2 ++
- kernel/time/timer.c   | 13 +++++++++++++
- 2 files changed, 15 insertions(+)
+ kernel/rcu/tree_plugin.h | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/timer.h b/include/linux/timer.h
-index fda13c9..4118a97 100644
---- a/include/linux/timer.h
-+++ b/include/linux/timer.h
-@@ -192,6 +192,8 @@ extern int try_to_del_timer_sync(struct timer_list *timer);
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index c88ad62..35dc9b3 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -2339,12 +2339,21 @@ static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+ 	swait_event_exclusive(rdp->nocb_state_wq,
+ 			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
+ 							SEGCBLIST_KTHREAD_GP));
+-	/* Make sure nocb timer won't stay around */
+ 	rcu_nocb_lock_irqsave(rdp, flags);
++	/* Make sure nocb timer won't stay around */
+ 	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_OFF);
+ 	rcu_nocb_unlock_irqrestore(rdp, flags);
+ 	del_timer_sync(&rdp->nocb_timer);
  
- #define del_singleshot_timer_sync(t) del_timer_sync(t)
- 
-+extern bool timer_curr_running(struct timer_list *timer);
++	/*
++	 * Flush bypass. While IRQs are disabled and once we set
++	 * SEGCBLIST_SOFTIRQ_ONLY, no callback is supposed to be
++	 * enqueued on bypass.
++	 */
++	rcu_nocb_lock_irqsave(rdp, flags);
++	rcu_nocb_flush_bypass(rdp, NULL, jiffies);
++	rcu_nocb_unlock_irqrestore(rdp, flags);
 +
- extern void init_timers(void);
- struct hrtimer;
- extern enum hrtimer_restart it_real_fn(struct hrtimer *);
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 8dbc008..f9b2096 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -1237,6 +1237,19 @@ int try_to_del_timer_sync(struct timer_list *timer)
+ 	return ret;
  }
- EXPORT_SYMBOL(try_to_del_timer_sync);
  
-+bool timer_curr_running(struct timer_list *timer)
-+{
-+	int i;
-+
-+	for (i = 0; i < NR_BASES; i++) {
-+		struct timer_base *base = this_cpu_ptr(&timer_bases[i]);
-+		if (base->running_timer == timer)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- #ifdef CONFIG_PREEMPT_RT
- static __init void timer_base_init_expiry_lock(struct timer_base *base)
- {
