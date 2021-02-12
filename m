@@ -2,125 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A799131A2C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296F531A2C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhBLQe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:34:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36418 "EHLO mail.kernel.org"
+        id S230127AbhBLQfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:35:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231175AbhBLQ3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:29:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 491A064E79;
-        Fri, 12 Feb 2021 16:28:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613147332;
-        bh=HcsDS6mK0dG0cq9UXuHaCkpq0Hiag5dWMSDBV6jX+fw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BKjEIsD0X86TF2KC4H104I1s9B5fYADy3zGRP/pcFLHhYDNI0IvNQzzcc0sAqES1L
-         sCJjsBdI34UGEyhpECUgisxlHMZo6UkgofcV+AFaenVxCJjN6U2U/BBXxDRWhTpGcv
-         C4EbRwLlvMx/T3EBrpHOc/ToISs9WjSIOnmUlX8E=
-Date:   Fri, 12 Feb 2021 17:28:50 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ian Lance Taylor <iant@golang.org>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Luis Lozano <llozano@chromium.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
- is generated
-Message-ID: <YCaswkcgM2NMxiMh@kroah.com>
-References: <20210212044405.4120619-1-drinkcat@chromium.org>
- <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
- <YCYybUg4d3+Oij4N@kroah.com>
- <CANMq1KBuPaU5UtRR8qTgdf+J3pt-xAQq69kCVBdaYGx8F+WmFA@mail.gmail.com>
- <YCY+Ytr2J2R5Vh0+@kroah.com>
- <CAKOQZ8zPFM29DYPwbnUJEhf+a8kPSJ5E_W06JLFjn-5Fy-ZWWw@mail.gmail.com>
- <YCaipZ+iY65iSrui@kroah.com>
- <CAOyqgcVTYhozM-mwc400qt+fabmUuBQTsjqbcA03xDooYXXcMA@mail.gmail.com>
+        id S229583AbhBLQaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 11:30:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DA5E64E7A;
+        Fri, 12 Feb 2021 16:29:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613147368;
+        bh=pPydJmMuskF2h5jMsOuWbH8ejnYogVvqwMz1wSmC790=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uMQlNCRRAH5smkk25PVRpp8/svC4jUlzA0VV2qGYLmdEfrJ4nfXCYios6S7+6qGb7
+         uP/UbPt/ql7m4nXS5E4gADaNnDpTC6c36EPkPw8E1+PbugykRcMjAgrg7pwkvd0uI4
+         6Ewvsq3bXHmVLVX62binrBmSJ8b07DLUIxSGzdb/Uy1O103eO9HUDMU0hX6rbngaah
+         aLJgyxtBb7dSnA3d2BGNMjDdHh7mG6mzsV0gB27+4Lu8dAfFr/oeKQBS8HNc/o6KKQ
+         NVE26gujKxcO3rnduJi7REK8hEAA0naSsQKa1zzQFT7UdB3CjJOohJ5iitzKVJAZl1
+         9a9zosUZfWP2g==
+From:   Sasha Levin <sashal@kernel.org>
+To:     masahiroy@kernel.org, michal.lkml@markovi.net
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH v2] kbuild: simplify access to the kernel's version
+Date:   Fri, 12 Feb 2021 11:29:24 -0500
+Message-Id: <20210212162924.2269887-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOyqgcVTYhozM-mwc400qt+fabmUuBQTsjqbcA03xDooYXXcMA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 07:59:04AM -0800, Ian Lance Taylor wrote:
-> On Fri, Feb 12, 2021 at 7:45 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Feb 12, 2021 at 07:33:57AM -0800, Ian Lance Taylor wrote:
-> > > On Fri, Feb 12, 2021 at 12:38 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > Why are people trying to use copy_file_range on simple /proc and /sys
-> > > > files in the first place?  They can not seek (well most can not), so
-> > > > that feels like a "oh look, a new syscall, let's use it everywhere!"
-> > > > problem that userspace should not do.
-> > >
-> > > This may have been covered elsewhere, but it's not that people are
-> > > saying "let's use copy_file_range on files in /proc."  It's that the
-> > > Go language standard library provides an interface to operating system
-> > > files.  When Go code uses the standard library function io.Copy to
-> > > copy the contents of one open file to another open file, then on Linux
-> > > kernels 5.3 and greater the Go standard library will use the
-> > > copy_file_range system call.  That seems to be exactly what
-> > > copy_file_range is intended for.  Unfortunately it appears that when
-> > > people writing Go code open a file in /proc and use io.Copy the
-> > > contents to another open file, copy_file_range does nothing and
-> > > reports success.  There isn't anything on the copy_file_range man page
-> > > explaining this limitation, and there isn't any documented way to know
-> > > that the Go standard library should not use copy_file_range on certain
-> > > files.
-> >
-> > But, is this a bug in the kernel in that the syscall being made is not
-> > working properly, or a bug in that Go decided to do this for all types
-> > of files not knowing that some types of files can not handle this?
-> >
-> > If the kernel has always worked this way, I would say that Go is doing
-> > the wrong thing here.  If the kernel used to work properly, and then
-> > changed, then it's a regression on the kernel side.
-> >
-> > So which is it?
-> 
-> I don't work on the kernel, so I can't tell you which it is.  You will
-> have to decide.
+Instead of storing the version in a single integer and having various
+kernel (and userspace) code how it's constructed, export individual
+(major, patchlevel, sublevel) components and simplify kernel code that
+uses it.
 
-As you have the userspace code, it should be easier for you to test this
-on an older kernel.  I don't have your userspace code...
+This should also make it easier on userspace.
 
-> From my perspective, as a kernel user rather than a kernel developer,
-> a system call that silently fails for certain files and that provides
-> no way to determine either 1) ahead of time that the system call will
-> fail, or 2) after the call that the system call did fail, is a useless
-> system call.
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ Makefile                                       | 5 ++++-
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 4 ++--
+ drivers/usb/core/hcd.c                         | 4 ++--
+ drivers/usb/gadget/udc/aspeed-vhub/hub.c       | 4 ++--
+ include/linux/usb/composite.h                  | 4 ++--
+ kernel/sys.c                                   | 2 +-
+ 6 files changed, 13 insertions(+), 10 deletions(-)
 
-Great, then don't use copy_file_range() yet as it seems like it fits
-that category at the moment :)
+diff --git a/Makefile b/Makefile
+index 12607d3891487..1fdd44fe16590 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1255,7 +1255,10 @@ define filechk_version.h
+ 		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
+ 	fi;                                                              \
+ 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
+-	((c) > 255 ? 255 : (c)))'
++	((c) > 255 ? 255 : (c)))';                                       \
++	echo \#define LINUX_VERSION_MAJOR $(VERSION);                    \
++	echo \#define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL);            \
++	echo \#define LINUX_VERSION_SUBLEVEL $(SUBLEVEL)
+ endef
+ 
+ $(version_h): FORCE
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index ca6f2fc39ea0a..29f886263dc52 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -235,8 +235,8 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
+ 	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
+ 
+ 	snprintf(string + strlen(string), remaining_size, "%u.%u.%u",
+-		 (u8)((LINUX_VERSION_CODE >> 16) & 0xff), (u8)((LINUX_VERSION_CODE >> 8) & 0xff),
+-		 (u16)(LINUX_VERSION_CODE & 0xffff));
++		LINUX_VERSION_MAJOR, LINUX_VERSION_PATCHLEVEL,
++		LINUX_VERSION_SUBLEVEL);
+ 
+ 	/*Send the command*/
+ 	MLX5_SET(set_driver_version_in, in, opcode,
+diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+index ad5a0f405a75c..3f0381344221e 100644
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -111,8 +111,8 @@ DECLARE_WAIT_QUEUE_HEAD(usb_kill_urb_queue);
+  */
+ 
+ /*-------------------------------------------------------------------------*/
+-#define KERNEL_REL	bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
+-#define KERNEL_VER	bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
++#define KERNEL_REL	bin2bcd(LINUX_VERSION_MAJOR)
++#define KERNEL_VER	bin2bcd(LINUX_VERSION_PATCHLEVEL)
+ 
+ /* usb 3.1 root hub device descriptor */
+ static const u8 usb31_rh_dev_descriptor[18] = {
+diff --git a/drivers/usb/gadget/udc/aspeed-vhub/hub.c b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
+index bfd8e77788e29..5c7dea5e0ff16 100644
+--- a/drivers/usb/gadget/udc/aspeed-vhub/hub.c
++++ b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
+@@ -46,8 +46,8 @@
+  *    - Make vid/did overridable
+  *    - make it look like usb1 if usb1 mode forced
+  */
+-#define KERNEL_REL	bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
+-#define KERNEL_VER	bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
++#define KERNEL_REL	bin2bcd(LINUX_VERSION_MAJOR)
++#define KERNEL_VER	bin2bcd(LINUX_VERSION_PATCHLEVEL)
+ 
+ enum {
+ 	AST_VHUB_STR_INDEX_MAX = 4,
+diff --git a/include/linux/usb/composite.h b/include/linux/usb/composite.h
+index a2d229ab63ba5..7531ce7233747 100644
+--- a/include/linux/usb/composite.h
++++ b/include/linux/usb/composite.h
+@@ -573,8 +573,8 @@ static inline u16 get_default_bcdDevice(void)
+ {
+ 	u16 bcdDevice;
+ 
+-	bcdDevice = bin2bcd((LINUX_VERSION_CODE >> 16 & 0xff)) << 8;
+-	bcdDevice |= bin2bcd((LINUX_VERSION_CODE >> 8 & 0xff));
++	bcdDevice = bin2bcd(LINUX_VERSION_MAJOR) << 8;
++	bcdDevice |= bin2bcd(LINUX_VERSION_PATCHLEVEL);
+ 	return bcdDevice;
+ }
+ 
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 51f00fe20e4d1..c2225bd405d58 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1243,7 +1243,7 @@ static int override_release(char __user *release, size_t len)
+ 				break;
+ 			rest++;
+ 		}
+-		v = ((LINUX_VERSION_CODE >> 8) & 0xff) + 60;
++		v = LINUX_VERSION_PATCHLEVEL + 60;
+ 		copy = clamp_t(size_t, len, 1, sizeof(buf));
+ 		copy = scnprintf(buf, copy, "2.6.%u%s", v, rest);
+ 		ret = copy_to_user(release, buf, copy + 1);
+-- 
+2.27.0
 
-> I can never use that system call, because I don't know
-> whether or not it will work.  So as a kernel user I would say that you
-> should fix the system call to report failure, or document some way to
-> know whether the system call will fail, or you should remove the
-> system call.  But I'm not a kernel developer, I don't have all the
-> information, and it's obviously your call.
-
-That's up to the authors of that syscall, I don't know what they
-intended this to be used for.  It feels like you are using this in a
-very generic "all file i/o works for this" way, while that is not what
-the authors of the syscall intended it for, as is evident by the
-failures that older kernels would report for you.
-
-> I'll note that to the best of my knowledge this failure started
-> happening with the 5.3 kernel, as before 5.3 the problematic calls
-> would report a failure (EXDEV).  Since 5.3 isn't all that old I
-> personally wouldn't say that the kernel "has always worked this way."
-> But I may be mistaken about this.
-
-Testing would be good, as regressions are more serious than "it would be
-nice if it would work like this instead!" type of issues.
-
-thanks,
-
-greg k-h
