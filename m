@@ -2,110 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED70319D21
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B250319D2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhBLLPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:15:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36076 "EHLO mail.kernel.org"
+        id S229928AbhBLLR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:17:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229650AbhBLLPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:15:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3140964DEA;
-        Fri, 12 Feb 2021 11:14:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613128466;
-        bh=IidUhkGGwdtC3r30xlEMa5gZ+5/0HvnkTQjR8pcg7RY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hXjdU/pXzLipGv3AsMZABVO2s7VOg5kdWBgyHXZ6fUEeV+IGGkuiId83U4M3a7qsw
-         6nViF+q4AMrjvI7ZH0LHk6w8KQoqnjrAgM5kzonHMKhDAHeNqQ3Z/K7esHGSkkff01
-         tI8K7td4BEXP/pQCy3NVzAw14NbkAWo7/10QPn00b56zLn8vOrnZyyaCMv4gVAcw/t
-         PodBSnHZWOiSy90ieum17eXqn1JaS5G4pLRx1q138pA2LBhNbYrqE1LlqJzGPr8Z5C
-         Mlg9KHjNu0KG7rSbc5B9uMIdf7jO1we5eW1seMl0mTf9glgFATFtHiFSVSEtjHf6sJ
-         JM2bP3SQndUYg==
-Date:   Fri, 12 Feb 2021 16:44:22 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] soundwire updates for v5.12-rc1
-Message-ID: <20210212111422.GN2774@vkoul-mobl.Dlink>
+        id S229718AbhBLLRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 06:17:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 035AB60C41;
+        Fri, 12 Feb 2021 11:16:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613128603;
+        bh=3cBFgSXoPKtGmZ39QTAsBzgIxi9rHYwIcUPbJHWDSvA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z1c5KuWmeNAsE0v455SwagTiWRv6dcQYqpQH0ZEMdip5vz2k1HUhbGChnLuEdDHrv
+         wEnadPY6ZiJlQkk7Wf55dpnB289oOo9AcsaYD5d46AuU1iu+PeT34hp711kSy2Gf5l
+         T1g9RrkGsCgLWRZaNy2Uq8Aw2GnLGsClvE+/9vsk=
+Date:   Fri, 12 Feb 2021 12:16:41 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Lukasz Majczak <lma@semihalf.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Tj <ml.linux@elloe.vision>, Dirk Gouders <dirk@gouders.net>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Radoslaw Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>, upstream@semihalf.com
+Subject: Re: [PATCH v5] tpm_tis: Add missing
+ tpm_request/relinquish_locality() calls
+Message-ID: <YCZjmf4ZLMnlvu9r@kroah.com>
+References: <20210212110600.19216-1-lma@semihalf.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="E/DnYTRukya0zdZ1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210212110600.19216-1-lma@semihalf.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 12, 2021 at 12:06:00PM +0100, Lukasz Majczak wrote:
+> There are missing calls to tpm_request_locality() before the calls to
+> the tpm_get_timeouts() and tpm_tis_probe_irq_single() - both functions
+> internally send commands to the tpm using tpm_tis_send_data()
+> which in turn, at the very beginning, calls the tpm_tis_status().
+> This one tries to read TPM_STS register, what fails and propagates
+> this error upward. The read fails due to lack of acquired locality,
+> as it is described in
+> TCG PC Client Platform TPM Profile (PTP) Specification,
+> paragraph 6.1 FIFO Interface Locality Usage per Register,
+> Table 39 Register Behavior Based on Locality Setting for FIFO
+> - a read attempt to TPM_STS_x Registers returns 0xFF in case of lack
+> of locality. The described situation manifests itself with
+> the following warning trace:
+> 
+> [    4.324298] TPM returned invalid status
+> [    4.324806] WARNING: CPU: 2 PID: 1 at drivers/char/tpm/tpm_tis_core.c:275 tpm_tis_status+0x86/0x8f
+> 
+> Tested on Samsung Chromebook Pro (Caroline), TPM 1.2 (SLB 9670)
+> Fixes: a3fbfae82b4c ("tpm: take TPM chip power gating out of tpm_transmit()")
+> 
+> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+<formletter>
 
---E/DnYTRukya0zdZ1
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-Hello greg,
-
-Few more patches came in late and would be great to have in upcoming
-merge window. Please pull to receive a fix for Intel laptops and support
-for _no_pm in sdw regmap (acked by Mark)
-
-The following changes since commit 6d7a1ff71cbb326fadfbedb7f75c1fc8f5c84d84:
-
-  soundwire: bus: clarify dev_err/dbg device references (2021-02-07 17:49:1=
-7 +0530)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
-undwire-2_5.12-rc1
-
-for you to fetch changes up to 8d8d958428674518cef083cd97e535ac5ac9f9d8:
-
-  regmap: sdw-mbq: use MODULE_LICENSE("GPL") (2021-02-11 10:54:00 +0530)
-
-----------------------------------------------------------------
-soundwire second update for 5.12-rc1
-
-Some late changes for sdw:
- - fix for crash on intel driver
- - support for _no_pm IO calls in sdw regmap
-
-----------------------------------------------------------------
-Bard Liao (3):
-      regmap: sdw: use _no_pm functions in regmap_read/write
-      regmap: sdw: use no_pm routines for SoundWire 1.2 MBQ
-      regmap: sdw-mbq: use MODULE_LICENSE("GPL")
-
-Marcin =C5=9Alusarz (1):
-      soundwire: intel: fix possible crash when no device is detected
-
- drivers/base/regmap/regmap-sdw-mbq.c | 10 +++++-----
- drivers/base/regmap/regmap-sdw.c     |  4 ++--
- drivers/soundwire/intel_init.c       |  3 ++-
- 3 files changed, 9 insertions(+), 8 deletions(-)
-
-Thanks
---=20
-~Vinod
-
---E/DnYTRukya0zdZ1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmAmYw0ACgkQfBQHDyUj
-g0dnlQ/+KdsYFCgQrzivQXA0HMHcROqMam02X/vWUwzWm6gEaKxsRuoWvvocgnOb
-YKlI26aIFyxA1/3kGAlIewGuBOlVTcRVlK9bR+GTYm4tcXmoWXpWy9jxotG0qCNT
-z2G0nk8yd8bIyAKcKAs3FjXkRzlCZqszHCHc41KPYuARev31byYo4J1qYSJEx/+K
-VTFpgby/bUzaFRWp6NSjO/gH4vUOutJn9ceSQZFxWBXODdbJc4io1O7IDpSQEsJr
-s9Rht//f0k6vDrMO+LIGLmaDWaEQtKVgX7RO2524o4OtbsZnay3QhxIMI92kZ6C2
-/WUsiPL3FKclSaYNweMQxM2emUTpwKdMagQ6vWWjcdxXqsbMKa7nT4/dxmC0zUAd
-KK5UFAqtU1w/EvOqz7ghVg3I/lNODAqAVOnUudyGxFFbviYkITf2OLchIJhQgr9D
-h+6qj5SME0iKv/0AlfKy0HPrt9HcTMU8UQMlFinJwlt1Elt6MOkgAozLBJs+V1wR
-LPowS8/WVt1e83DpMhRYXJy14u9HRKxWQ8X9m+qd5COgSTVdAe+IRAeE01IoLMAJ
-atNGSYPhwymzB/OCElDsPC0DtSK8qV+3AEzd5wZPI6nj/ehCMycHVJFJDJ76ok+K
-0gT9N1Wnp/iM7Fgg7Gha+sb3a3smJLXiQeJmL9+zSjIPYDOzO5Q=
-=ceGZ
------END PGP SIGNATURE-----
-
---E/DnYTRukya0zdZ1--
+</formletter>
