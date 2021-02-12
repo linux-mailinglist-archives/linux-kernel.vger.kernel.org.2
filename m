@@ -2,85 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8014331A1C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481AE31A1D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhBLPfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:35:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232248AbhBLPeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:34:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE72164E74;
-        Fri, 12 Feb 2021 15:33:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613144000;
-        bh=eHKAadsmBd1fO7UIdsFXiDdKBmGxRlbe1eHeIyb9E0w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GqB1bFfHPU//v13o12sxTWyqKKzPJhTfar56hm7l2N7YezwtkVFLPblGsuuiHBxnZ
-         oCcbnbqwnkpxvM3Vo/3+KxBJG7WfYcoeaD+k5YmOD330m74KB3ovNMDb0no4bdCQ3M
-         BmbpgDpXeGE9Ruk7DmMIGxL+wKN1x4aP4V19K9oOZUyj5oZ4qvu6U34qLKZ1jDZodr
-         dIICRlCxAJJynGWvOwX/VRN0fr2oLO5c9ON6Hxf5WVLh2HEbrRDWtacCD3YfG/Yjbw
-         JIAHtf6Rsmh9Rx6oj3w/ldwY3T+eBhQ+Mo4L8j/C6MHQSBpyp1tF75DZ1FMPc9NjYZ
-         7jIVIEP/EGNpQ==
-Date:   Fri, 12 Feb 2021 16:33:17 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: linux-next: manual merge of the rcu tree with the block tree
-Message-ID: <20210212153317.GE94816@lothringen>
-References: <20210211164852.7489b87d@canb.auug.org.au>
- <20210212151853.GC94816@lothringen>
- <858e7874-83c9-e4b9-a0a9-31be5a0c853e@kernel.dk>
+        id S232146AbhBLPgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:36:25 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52962 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230197AbhBLPfV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:35:21 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11CFXxvf001536;
+        Fri, 12 Feb 2021 10:34:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Jbzn9PTKpWYF/8TPV/kOGW0XZ4Y2LoKOXT+5rADtviM=;
+ b=HJ3PSRo1YoBrxsCj/045G9nAk4Jtp/vcJ6/0Emm/70ersrCziI8/yVGToncuai1ROqwZ
+ ojq+oPnB8sSpIn67Dx1doUlRepqJnXt7MClll6GLp4Ze/zBQjnpGsIe964Zv2Ff3+Tar
+ OxeJ1RGo+MIvxIW34yy6MfdOLsdNumP+8V+rXiTudtr6UnZbAZZkG/93YK4lQ7upAkBz
+ y8UFThIX77o1LwjE3mK9AG20lcZNOSeRkOQrA9WLEAW33vmX1c4Dmm70D+qyOzBdI57I
+ yqo9VOz8itEwPpcdEeggCVtmSz7BZ0yHIB9v8Tq0jBHVAlQYDIgUE/OAqmKDEZvVG00U YA== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36nv9vr7sv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Feb 2021 10:34:28 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11CFI1Db010169;
+        Fri, 12 Feb 2021 15:33:36 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 36hjr8bjek-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Feb 2021 15:33:36 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11CFXNmK36634944
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Feb 2021 15:33:23 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E17CEA4051;
+        Fri, 12 Feb 2021 15:33:33 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF69AA4040;
+        Fri, 12 Feb 2021 15:33:32 +0000 (GMT)
+Received: from [9.199.62.96] (unknown [9.199.62.96])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 12 Feb 2021 15:33:32 +0000 (GMT)
+Subject: Re: Memory keys and io_uring.
+To:     Jens Axboe <axboe@kernel.dk>, Dave Hansen <dave.hansen@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <877dndzs8c.fsf@linux.ibm.com>
+ <b6ed27dc-7dec-aab5-acfc-073a30e49422@kernel.dk>
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Message-ID: <4ed6cbf6-b850-dac5-88c6-03e58dfc6631@linux.ibm.com>
+Date:   Fri, 12 Feb 2021 21:03:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <858e7874-83c9-e4b9-a0a9-31be5a0c853e@kernel.dk>
+In-Reply-To: <b6ed27dc-7dec-aab5-acfc-073a30e49422@kernel.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-12_05:2021-02-12,2021-02-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ malwarescore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
+ adultscore=0 phishscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102120121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 08:30:27AM -0700, Jens Axboe wrote:
-> On 2/12/21 8:18 AM, Frederic Weisbecker wrote:
-> > On Thu, Feb 11, 2021 at 04:48:52PM +1100, Stephen Rothwell wrote:
-> >> Hi all,
-> >>
-> >> Today's linux-next merge of the rcu tree got conflicts in:
-> >>
-> >>   include/linux/rcupdate.h
-> >>   kernel/rcu/tree.c
-> >>   kernel/rcu/tree_plugin.h
-> >>
-> >> between commits:
-> >>
-> >>   3a7b5c87a0b2 ("rcu/nocb: Perform deferred wake up before last idle's need_resched() check")
-> >>   e4234f21d2ea ("rcu: Pull deferred rcuog wake up to rcu_eqs_enter() callers")
-> >>   14bbd41d5109 ("entry/kvm: Explicitly flush pending rcuog wakeup before last
-> >>   rescheduling point")
-> >> from the block tree and commits:
-> > 
-> > Isn't it tip:/sched/core instead of block?
+On 2/12/21 8:45 PM, Jens Axboe wrote:
+> On 2/11/21 11:59 PM, Aneesh Kumar K.V wrote:
+>>
+>> Hi,
+>>
+>> I am trying to estabilish the behaviour we should expect when passing a
+>> buffer with memory keys attached to io_uring syscalls. As show  in the
+>> blow test
+>>
+>> /*
+>>   * gcc -Wall -O2 -D_GNU_SOURCE -o pkey_uring pkey_uring.c -luring
+>>   */
+>> #include <stdio.h>
+>> #include <fcntl.h>
+>> #include <string.h>
+>> #include <stdlib.h>
+>> #include <unistd.h>
+>> #include <sys/mman.h>
+>> #include "liburing.h"
+>>
+>> #define PAGE_SIZE  (64 << 10)
+>>
+>> int main(int argc, char *argv[])
+>> {
+>> 	int fd, ret, pkey;
+>> 	struct io_uring ring;
+>> 	struct io_uring_sqe *sqe;
+>> 	struct io_uring_cqe *cqe;
+>> 	struct iovec iovec;
+>> 	void *buf;
+>>
+>> 	if (argc < 2) {
+>> 		printf("%s: file\n", argv[0]);
+>> 		return 1;
+>> 	}
+>>
+>> 	ret = io_uring_queue_init(1, &ring, IORING_SETUP_SQPOLL);
+>> 	if (ret < 0) {
+>> 		fprintf(stderr, "queue_init: %s\n", strerror(-ret));
+>> 		return 1;
+>> 	}
+>>
+>> 	fd = open(argv[1], O_RDONLY | O_DIRECT);
+>> 	if (fd < 0) {
+>> 		perror("open");
+>> 		return 1;
+>> 	}
+>>
+>> 	if (posix_memalign(&buf, PAGE_SIZE, PAGE_SIZE))
+>> 		return 1;
+>> 	iovec.iov_base = buf;
+>> 	iovec.iov_len = PAGE_SIZE;
+>>
+>> 	//mprotect(buf, PAGE_SIZE, PROT_NONE);
+>> 	pkey = pkey_alloc(0, PKEY_DISABLE_WRITE);
+>> 	pkey_mprotect(buf, PAGE_SIZE, PROT_READ | PROT_WRITE, pkey);
+>>
+>>
+>> 	sqe = io_uring_get_sqe(&ring);
+>> 	if (!sqe) {
+>> 		perror("io_uring_get_sqe");
+>> 		return 1;
+>> 	}
+>> 	io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
+>>
+>> 	ret = io_uring_submit(&ring);
+>> 	if (ret != 1) {
+>> 		fprintf(stderr, "io_uring_submit: %s\n", strerror(-ret));
+>> 		return 1;
+>> 	}
+>>
+>> 	ret = io_uring_wait_cqe(&ring, &cqe);
+>>
+>> 	if (cqe->res < 0)
+>> 		fprintf(stderr, "iouring submit failed %s\n", strerror(-cqe->res));
+>> 	else
+>> 		fprintf(stderr, "iouring submit success\n");
+>>
+>> 	io_uring_cqe_seen(&ring, cqe);
+>>
+>> 	/*
+>> 	 * let's access this via a read syscall
+>> 	 */
+>> 	ret = read(fd, buf, PAGE_SIZE);
+>> 	if (ret < 0)
+>> 		fprintf(stderr, "read failed : %s\n", strerror(errno));
+>>
+>> 	close(fd);
+>> 	io_uring_queue_exit(&ring);
+>>
+>> 	return 0;
+>> }
+>>
+>> A read syscall do fail with EFAULT. But we allow read via io_uring
+>> syscalls. Is that ok? Considering memory keys are thread-specific we
+>> could debate that kernel thread can be considered to be the one that got all access
+>> allowed via keys or we could update that access is denied via kernel
+>> thread for any key value other than default key (key 0). Other option
+>> is to inherit the memory key restrictions when doing
+>> io_uring_submit() and use the same when accessing the userspace from
+>> kernel thread.
+>>
+>> Any thoughts here with respect to what should be behaviour?
 > 
-> It must be, maybe block just got merged first?
-
-Yeah most likely.
-
-> It's just sched/core in a topic branch, to satisfy a dependency.
+> It this a powerpc thing? I get -EFAULT on x86 for both reads, io_uring
+> and regular syscall. That includes SQPOLL, not using SQPOLL, or
+> explicitly setting IOSQE_ASYNC on the sqe.
 > 
-> But as mentioned in the previous email, I just need sched/smp to satisfy
-> that dependency. So I've rebased that small topic branch with that
-> pulled in instead. Won't solve the sched/core vs rcu tree conflict, but
-> at least it's out of my hands now :-)
 
-Ok, sounds good :)
+Interesting, I didn't check x86 because i don't have hardware that 
+supports memory keys. I am trying to make ppc64 behavior compatible with 
+other archs here.
 
-Thanks.
+IIUC, in your test io_wqe/sqe kernel thread did hit access fault when 
+touching the buffer on x86? That is different from what Dave explained 
+earlier.
 
-> 
-> -- 
-> Jens Axboe
-> 
+With the patch 8c511eff1827 ("powerpc/kuap: Allow kernel thread to 
+access userspace after kthread_use_mm") I now have key 0 access  allowed 
+but all other keys denied with ppc64. I was planning to change that to 
+allow all key access based on reply from Dave.  I would be curious to 
+understand what made x86 deny the access and how did kthread inherit the 
+key details.
+
+
+
+-aneesh
+
