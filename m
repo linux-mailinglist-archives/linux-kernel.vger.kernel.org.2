@@ -2,142 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F6D31A800
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D9331A802
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbhBLWrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 17:47:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45152 "EHLO mail.kernel.org"
+        id S232295AbhBLWrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 17:47:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229903AbhBLWfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 17:35:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A529F64E8E;
-        Fri, 12 Feb 2021 22:34:17 +0000 (UTC)
+        id S232235AbhBLWfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 17:35:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 407A964EA0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 22:34:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613169257;
-        bh=jx3SkOo53FyBZWQ2WTsLZOKbb/JkJh7B6ZUavSTDDzY=;
+        s=k20201202; t=1613169278;
+        bh=WDyM20Jkx5Lw2bXDBhtM/Wh7714B42NhueKvph+Nmws=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bfYrYGKpjFoeuqMx8ouLctaZfSPcP817M5XYj3VgS6MZKaK8+MOXMhrby7uZvRrOq
-         aSSqyWo4xJ69Wb1sLA8tnAijieITo/QaR4OHrtwYrl2MF/HjGxyrUWx3dq2gPf3mRt
-         QZWF6B6hsHdSPUsnHC1vAX0DHQb7pcnLxcxnGFXBBCjDcLnOw/jdU40McczNAPxSjt
-         Km2aSoGCZhSa7pnOc+T+owGfrWgqQlIOpdp/8QtyZ4mMuDXSnfBksrGJ7RQY9i9wbe
-         40b0W3KmEf2OPwYuIAWewwy7Ab1ZwZ83ys3kq60vFX26GuojdTlFxNfwAaAA2+zsPT
-         XXOPQLhV0/NCg==
-Received: by mail-ej1-f44.google.com with SMTP id y26so1646019eju.13;
-        Fri, 12 Feb 2021 14:34:17 -0800 (PST)
-X-Gm-Message-State: AOAM532WMCBn0CNUQ/HPAPZt+AHLlqqdcBAAcLofek8hfGQa8mWCFxc8
-        kOlUxsvoPwlyjG88/GW2ekvZJT2WO7M/qGUEqg==
-X-Google-Smtp-Source: ABdhPJwzVjipKpkcLY2YlgHVjF8avz4tr5CX828BlvrRaiH8zZVQFzkrqJ7YjY2wDhNk6EwIO07jCPYBxRgkB58Wf9g=
-X-Received: by 2002:a17:906:d1d0:: with SMTP id bs16mr5262013ejb.468.1613169256227;
- Fri, 12 Feb 2021 14:34:16 -0800 (PST)
+        b=sGNJ1FzwLlsK9G9bklHujIthTsFGFY/yIAcdMaLkUTYUHn4Y+F3epfaRcd2ld94+w
+         7ub8pmFQERVj0RUZ1n10vEfBhPFGzTBG3VfX1tnqFijvhG+HiUMgyQDtMhFbbiJVTt
+         KpdlMALtH7f/zCeoAjlR75nryl/MSpTaFohmPuhXogJk+ZFNg+cdLlytfMATL0sQF3
+         DZgaRs9NEVnnvhynihRM2njK6ZFQu9dJikBwLErLfH3zCAo2uwhy5uQLyBTnz1XySE
+         Y624LG46WeKxU2s4fdYsIlwOPEYox2lbjKw30gz8M0Q0qZiwgOYhsqLZdF4YTxjD5s
+         PiUQRdppEV+pA==
+Received: by mail-oi1-f172.google.com with SMTP id k204so1371769oih.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 14:34:38 -0800 (PST)
+X-Gm-Message-State: AOAM530rBKdDJFREpXqJ3jkNvbF9+fXMRZi1LOplR5G7DlDHiq4a+XOB
+        60YyvdhT1mo+ybWxF4Vf4D5dKEp8j4AdFjiuB5E=
+X-Google-Smtp-Source: ABdhPJx/7gkwqMIiK2PlMZhZJc/b8vIR/e3YxMMVOnzfXH0frnKMagH9dJRnXtgSUbndHhDPoZAkoN8idKp9hOuxVM8=
+X-Received: by 2002:aca:e103:: with SMTP id y3mr1198690oig.11.1613169277530;
+ Fri, 12 Feb 2021 14:34:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20210212033120.GA100407@roeck-us.net> <CAL_JsqLm3mHdPg4wkdhoFXNY1JgTJ56dxi3oLqBS_NBrX=rOfw@mail.gmail.com>
- <20210212151725.GA57042@roeck-us.net> <CAL_Jsq+e+KdzanMdHYCEoGZn3ybY5_ASN60qiqbOkPWpkbQ6NQ@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+e+KdzanMdHYCEoGZn3ybY5_ASN60qiqbOkPWpkbQ6NQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 12 Feb 2021 16:34:04 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL4suDinALfp4v96arJXpWts8pergO1-aenLv+RN9S64Q@mail.gmail.com>
-Message-ID: <CAL_JsqL4suDinALfp4v96arJXpWts8pergO1-aenLv+RN9S64Q@mail.gmail.com>
-Subject: Re: [PATCH] scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+In-Reply-To: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 12 Feb 2021 23:34:21 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+Message-ID: <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "fthain@telegraphics.com.au" <fthain@telegraphics.com.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 3:01 PM Rob Herring <robh@kernel.org> wrote:
+On Fri, Feb 12, 2021 at 2:18 AM Song Bao Hua (Barry Song)
+<song.bao.hua@hisilicon.com> wrote:
+
+> So I am requesting comments on:
+> 1. are we expecting all interrupts except NMI to be disabled in irq handler,
+> or do we actually allow some high-priority interrupts between low and NMI to
+> come in some platforms?
+
+I tried to come to an answer but this does not seem particularly well-defined.
+There are a few things I noticed:
+
+- going through the local_irq_save()/restore() implementations on all
+  architectures, I did not find any other ones besides m68k that leave
+  high-priority interrupts enabled. I did see that at least alpha and openrisc
+  are designed to support that in hardware, but the code just leaves the
+  interrupts disabled.
+
+- The generic code is clearly prepared to handle nested hardirqs, and
+   the irq_enter()/irq_exit() functions have a counter in preempt_count
+   for the nesting level, using a 4-bit number for hardirq, plus another
+   4-bit number for NMI.
+
+- There are a couple of (ancient) drivers that enable interrupts in their
+   interrupt handlers, see the four callers of local_irq_enable_in_hardirq()
+   (all in the old drivers/ide stack) and arch/ia64/kernel/time.c, which
+   enables interupts in its timer function (I recently tried removing this
+   and my patch broke ia64 timers, but I'm not sure if the cause was
+   the local_irq_enable() or something else).
+
+- The local_irq_enable_in_hardirq() function itself turns into a nop
+  when lockdep is enabled, since d7e9629de051 ("[PATCH] lockdep:
+  add local_irq_enable_in_hardirq() API"). According to the comment
+  in there, lockdep already enforces the behavior you suggest. Note that
+  lockdep support is missing on m68k (and also alpha, h8300, ia64, nios2,
+  and parisc).
+
+> 2. If either side is true, I think we need to document it somewhere as there
+> is always confusion about this.
 >
-> On Fri, Feb 12, 2021 at 9:17 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > On Fri, Feb 12, 2021 at 08:16:04AM -0600, Rob Herring wrote:
-> > > On Thu, Feb 11, 2021 at 9:31 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > >
-> > > > Hi Rob,
-> > > >
-> > > > On Wed, Feb 03, 2021 at 03:26:03PM -0600, Rob Herring wrote:
-> > > > > This adds the following commits from upstream:
-> > > > >
-> > > > > 183df9e9c2b9 gitignore: Ignore the swp files
-> > > > > 0db6d09584e1 gitignore: Add cscope files
-> > > > > 307afa1a7be8 Update Jon Loeliger's email
-> > > > > ca16a723fa9d fdtdump: Fix gcc11 warning
-> > > > > 64990a272e8f srcpos: increase MAX_SRCFILE_DEPTH
-> > > > > 163f0469bf2e dtc: Allow overlays to have .dtbo extension
-> > > > > 3b01518e688d Set last_comp_version correctly in new dtb and fix potential version issues in fdt_open_into
-> > > > > f7e5737f26aa tests: Fix overlay_overlay_nosugar test case
-> > > > > 7cd5d5fe43d5 libfdt: Tweak description of assume-aligned load helpers
-> > > > > a7c404099349 libfdt: Internally perform potentially unaligned loads
-> > > > > bab85e48a6f4 meson: increase default timeout for tests
-> > > > > f8b46098824d meson: do not assume python is installed, skip tests
-> > > > > 30a56bce4f0b meson: fix -Wall warning
-> > > > > 5e735860c478 libfdt: Check for 8-byte address alignment in fdt_ro_probe_()
-> > > > > 67849a327927 build-sys: add meson build
-> > > > > 05874d08212d pylibfdt: allow build out of tree
-> > > > > 3bc3a6b9fe0c dtc: Fix signedness comparisons warnings: Wrap (-1)
-> > > > > e1147b159e92 dtc: Fix signedness comparisons warnings: change types
-> > > > > 04cf1fdc0fcf convert-dtsv0: Fix signedness comparisons warning
-> > > > > b30013edb878 libfdt: Fix kernel-doc comments
-> > > > >
-> > > > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > > >
-> > > > This patch causes my little-endian microblaze qemu emulations to fail
-> > > > silently (no console output) in next-20210211. Reverting this patch
-> > > > together with "scripts: dtc: Build fdtoverlay tool" fixes the problem.
-> > >
-> > > My guess would be something in libfdt. Maybe 7cd5d5fe43d5 or
-> > > a7c404099349, though that should return to historical behavior.
-> > >
-> > > Can you give me the qemu command line and kernel cfg?
-> > >
-> > I copied everything you should need to build a kernel (including toolchain)
-> > to http://server.roeck-us.net/qemu/microblazeel/
-> >
-> > [ wow, I really need to update that compiler ]
->
-> I can't seem to get BE/LE nor reverted or not working. It's always
-> dying in microblaze_cache_init() based on the last print. It's your
-> config, but gcc 10.1.0 off of kernel.org.
+> Personally, I would expect all interrupts to be disabled and I like the way
+> of ARM64 to only use high-priority interrupt as pseudo NMI:
+> https://lwn.net/Articles/755906/
+> Though Finn argued that this will contribute to lose hardware feature of m68k.
 
-It seems gcc 10.1 does not work. Seems to die before here:
+Regardless of what is documented, I would argue that any platform
+that relies on this is at the minimum doing something risky because at
+the minimum this runs into hard to debug code paths that are not
+exercised on any of the common architectures.
 
-pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
-
-> There is at least one possible problem here that the FDT may only be 4
-> byte aligned. The assumption is 8 bytes to not have misaligned
-> accesses (and only for 64-bit accesses if 4 byte aligned). That's an
-> issue with the qemu image loading depending on the sizes and
-> combination of images loaded. That doesn't explain your failure
-> though. As the initrd is a multiple of 8 bytes, you should be fine.
-
-It's the built-in dtb alignment that is the problem. I had noticed
-this earlier, then discovered I had no built-in DTB and QEMU provides
-a default. And changing didn't help because on broken gcc-10 it was 8
-byte aligned. None of that should matter because we're not using the
-built-in either, right? Wrong! The assembly entry code copies the
-bootloader dtb into the built-in dtb space. I remember this now from
-the last time I cleaned up the early DT code. I suppose the reason is
-the bootloader dtb is not or may not be at an address mapped early.
-I'd really like to get rid of that copy. Anyway, the oneliner below
-fixes it. We need it either way, but I'd like some comments on the
-copy.
-
-Rob
-
-diff --git a/arch/microblaze/kernel/vmlinux.lds.S
-b/arch/microblaze/kernel/vmlinux.lds.S
-index df07b3d06cd6..fb31747ec092 100644
---- a/arch/microblaze/kernel/vmlinux.lds.S
-+++ b/arch/microblaze/kernel/vmlinux.lds.S
-@@ -45,7 +45,7 @@ SECTIONS {
-                _etext = . ;
-        }
-
--       . = ALIGN (4) ;
-+       . = ALIGN (8) ;
-        __fdt_blob : AT(ADDR(__fdt_blob) - LOAD_OFFSET) {
-                _fdt_start = . ;                /* place for fdt blob */
-                *(__fdt_blob) ;                 /* Any link-placed DTB */
+        Arnd
