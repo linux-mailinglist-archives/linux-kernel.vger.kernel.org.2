@@ -2,172 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475DC319E74
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DFB319E73
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhBLMbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:31:33 -0500
-Received: from foss.arm.com ([217.140.110.172]:36470 "EHLO foss.arm.com"
+        id S231288AbhBLMbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:31:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49644 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230396AbhBLMbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:31:21 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC7491063;
-        Fri, 12 Feb 2021 04:30:35 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FD9B3F719;
-        Fri, 12 Feb 2021 04:30:33 -0800 (PST)
-Date:   Fri, 12 Feb 2021 12:30:29 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Branislav Rankov <Branislav.Rankov@arm.com>,
-        Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v13 6/7] arm64: mte: Report async tag faults before
- suspend
-Message-ID: <20210212123029.GA19585@e121166-lin.cambridge.arm.com>
-References: <20210211153353.29094-1-vincenzo.frascino@arm.com>
- <20210211153353.29094-7-vincenzo.frascino@arm.com>
- <20210212120015.GA18281@e121166-lin.cambridge.arm.com>
+        id S229650AbhBLMbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:31:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613133032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5qj3DCkH6KSXjLCqZi9x6XmR8kpK5XSIPuFj/6qx+Dk=;
+        b=GJdLO7vNuHU5kY/jx531qhdurR1ot+bvUV9wWhO8u2XWIGldELlfyLJidkMmSdnPn3rWEg
+        Moy4uqup9gTrdN6ugKLmIc1sLfAdJJavfJxHaFkN9mXOkRRLSo/w7zH5E4LOqpxOq0yXKc
+        iha7zSMFZfbcfuMcpheYvZOAM7Sqf1M=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8B501AC69;
+        Fri, 12 Feb 2021 12:30:32 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 13:30:31 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jan Kara <jack@suse.cz>, Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: possible deadlock in start_this_handle (2)
+Message-ID: <YCZ056SJDGrgXCss@dhcp22.suse.cz>
+References: <20210211121020.GO19070@quack2.suse.cz>
+ <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
+ <20210211125717.GH308988@casper.infradead.org>
+ <YCUr99//z8hJmnDH@dhcp22.suse.cz>
+ <20210211132533.GI308988@casper.infradead.org>
+ <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
+ <20210211142630.GK308988@casper.infradead.org>
+ <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
+ <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
+ <20210212122207.GM308988@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210212120015.GA18281@e121166-lin.cambridge.arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210212122207.GM308988@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:00:15PM +0000, Lorenzo Pieralisi wrote:
-> On Thu, Feb 11, 2021 at 03:33:52PM +0000, Vincenzo Frascino wrote:
-> > When MTE async mode is enabled TFSR_EL1 contains the accumulative
-> > asynchronous tag check faults for EL1 and EL0.
+On Fri 12-02-21 12:22:07, Matthew Wilcox wrote:
+> On Fri, Feb 12, 2021 at 08:18:11PM +0900, Tetsuo Handa wrote:
+> > On 2021/02/12 1:41, Michal Hocko wrote:
+> > > But I suspect we have drifted away from the original issue. I thought
+> > > that a simple check would help us narrow down this particular case and
+> > > somebody messing up from the IRQ context didn't sound like a completely
+> > > off.
+> > > 
 > > 
-> > During the suspend/resume operations the firmware might perform some
-> > operations that could change the state of the register resulting in
-> > a spurious tag check fault report.
-> > 
-> > Report asynchronous tag faults before suspend and clear the TFSR_EL1
-> > register after resume to prevent this to happen.
-> > 
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > ---
-> >  arch/arm64/include/asm/mte.h |  4 ++++
-> >  arch/arm64/kernel/mte.c      | 20 ++++++++++++++++++++
-> >  arch/arm64/kernel/suspend.c  |  3 +++
-> >  3 files changed, 27 insertions(+)
-> > 
-> > diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> > index 43169b978cd3..33e88a470357 100644
-> > --- a/arch/arm64/include/asm/mte.h
-> > +++ b/arch/arm64/include/asm/mte.h
-> > @@ -41,6 +41,7 @@ void mte_sync_tags(pte_t *ptep, pte_t pte);
-> >  void mte_copy_page_tags(void *kto, const void *kfrom);
-> >  void flush_mte_state(void);
-> >  void mte_thread_switch(struct task_struct *next);
-> > +void mte_suspend_enter(void);
-> >  void mte_suspend_exit(void);
-> >  long set_mte_ctrl(struct task_struct *task, unsigned long arg);
-> >  long get_mte_ctrl(struct task_struct *task);
-> > @@ -66,6 +67,9 @@ static inline void flush_mte_state(void)
-> >  static inline void mte_thread_switch(struct task_struct *next)
-> >  {
-> >  }
-> > +static inline void mte_suspend_enter(void)
-> > +{
-> > +}
-> >  static inline void mte_suspend_exit(void)
-> >  {
-> >  }
-> > diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> > index f5aa5bea6dfe..de905102245a 100644
-> > --- a/arch/arm64/kernel/mte.c
-> > +++ b/arch/arm64/kernel/mte.c
-> > @@ -258,12 +258,32 @@ void mte_thread_switch(struct task_struct *next)
-> >  	mte_check_tfsr_el1();
-> >  }
-> >  
-> > +void mte_suspend_enter(void)
-> > +{
-> > +	if (!system_supports_mte())
-> > +		return;
-> > +
-> > +	/*
-> > +	 * The barriers are required to guarantee that the indirect writes
-> > +	 * to TFSR_EL1 are synchronized before we report the state.
-> > +	 */
-> > +	dsb(nsh);
-> > +	isb();
-> > +
-> > +	/* Report SYS_TFSR_EL1 before suspend entry */
-> > +	mte_check_tfsr_el1();
-> > +}
-> > +
-> >  void mte_suspend_exit(void)
-> >  {
-> >  	if (!system_supports_mte())
-> >  		return;
-> >  
-> >  	update_gcr_el1_excl(gcr_kernel_excl);
-> > +
-> > +	/* Clear SYS_TFSR_EL1 after suspend exit */
-> > +	write_sysreg_s(0, SYS_TFSR_EL1);
+> >  From my experience at https://lkml.kernel.org/r/201409192053.IHJ35462.JLOMOSOFFVtQFH@I-love.SAKURA.ne.jp ,
+> > I think we can replace direct PF_* manipulation with macros which do not receive "struct task_struct *" argument.
+> > Since TASK_PFA_TEST()/TASK_PFA_SET()/TASK_PFA_CLEAR() are for manipulating PFA_* flags on a remote thread, we can
+> > define similar ones for manipulating PF_* flags on current thread. Then, auditing dangerous users becomes easier.
 > 
-> AFAICS it is not needed, it is done already in __cpu_setup() (that is
-> called by cpu_resume on return from cpu_suspend() from firmware).
-> 
-> However, I have a question. We are relying on context switch to set
-> sctlr_el1_tfc0 right ? If that's the case, till the thread resuming from
-> low power switches context we are running with SCTLR_EL1_TCF0 not
-> reflecting the actual value.
+> No, nobody is manipulating another task's GFP flags.
 
-Forget this, we obviously restore sctlr_el1 on resume (cpu_do_resume()).
+Agreed. And nobody should be manipulating PF flags on remote tasks
+either.
 
-With the line above removed:
-
-Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-
-> Just making sure that I understand it correctly, I need to check the
-> resume from suspend-to-RAM path, it is something that came up with perf
-> save/restore already in the past.
-> 
-> Lorenzo
-> 
-> > +
-> >  }
-> >  
-> >  long set_mte_ctrl(struct task_struct *task, unsigned long arg)
-> > diff --git a/arch/arm64/kernel/suspend.c b/arch/arm64/kernel/suspend.c
-> > index a67b37a7a47e..25a02926ad88 100644
-> > --- a/arch/arm64/kernel/suspend.c
-> > +++ b/arch/arm64/kernel/suspend.c
-> > @@ -91,6 +91,9 @@ int cpu_suspend(unsigned long arg, int (*fn)(unsigned long))
-> >  	unsigned long flags;
-> >  	struct sleep_stack_data state;
-> >  
-> > +	/* Report any MTE async fault before going to suspend */
-> > +	mte_suspend_enter();
-> > +
-> >  	/*
-> >  	 * From this point debug exceptions are disabled to prevent
-> >  	 * updates to mdscr register (saved and restored along with
-> > -- 
-> > 2.30.0
-> > 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+-- 
+Michal Hocko
+SUSE Labs
