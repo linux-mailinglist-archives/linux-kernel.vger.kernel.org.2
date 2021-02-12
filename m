@@ -2,131 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0CB319BF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9A5319BF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhBLJhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:37:21 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8611 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhBLJhQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:37:16 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60264c220000>; Fri, 12 Feb 2021 01:36:34 -0800
-Received: from reg-r-vrt-018-180.nvidia.com (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 12 Feb 2021 09:36:31 +0000
-References: <20210211222604.51bd537c@canb.auug.org.au>
- <YCWT6TZCGQOXlf6B@osiris>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Vlad Buslov <vladbu@nvidia.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dmytro Linkin <dlinkin@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Tree for Feb 11
-In-Reply-To: <YCWT6TZCGQOXlf6B@osiris>
-Date:   Fri, 12 Feb 2021 11:36:29 +0200
-Message-ID: <ygnh8s7tsk4i.fsf@nvidia.com>
+        id S230207AbhBLJho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:37:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230159AbhBLJhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 04:37:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFFF564E35;
+        Fri, 12 Feb 2021 09:36:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613122620;
+        bh=k+sD9g+C9OoEZjpy98wT9p5d57Ljl1iCOjkEB7l8r5E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VS1dHBF7Y0JLEvlrqgySoazU9r/jeE/VIBjABUsx2juDNgoJdgAKKibxqPsizzToo
+         HcU/juhsbiGN9DIVSZJL2DdVrIWLUJBwQRqakSO9mlmUqZ0Ice0NrCnzaWR9rZgc9w
+         vOTrhY0+CJI3qbB4EuC/d1U/ddj7rFgo08Px340I=
+Date:   Fri, 12 Feb 2021 10:36:57 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     devel@driverdev.osuosl.org, elder@kernel.org, vireshk@kernel.org,
+        johan@kernel.org, linux-kernel@vger.kernel.org,
+        greybus-dev@lists.linaro.org,
+        Pritthijit Nath <pritthijit.nath@icloud.com>
+Subject: Re: [PATCH 1/2] staging: greybus: Fixed alignment issue in hid.c
+Message-ID: <YCZMOQdVDk7mStBy@kroah.com>
+References: <20210212081835.9497-1-pritthijit.nath@icloud.com>
+ <20210212090926.ox763j3btrqfzzzj@vireshk-i7>
+ <YCZHsMPgyqtRMTII@kroah.com>
+ <20210212092130.cxo6tuess6msf4kb@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613122594; bh=RserMEccpievJi4knvPI7JSCL0bayUw+P38G/ozwRCw=;
-        h=References:User-agent:From:To:CC:Subject:In-Reply-To:Date:
-         Message-ID:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=K3ot1ngeO8zwBjXPrrPdbKUyijcy/bjwcy+awyTuIEXEas0fpWzpMw46d5/CLEDMb
-         T4JRvpg4NOQU/37PN/ZHLOolQPOfyA/MJOWVIMr5fSeMHSPyLLslJhRo5ga3jv0iPa
-         wOnoyHxwjLKASlr/FNIUPIbQuFiKuCjKGNV9TBDTXB/w/9oqplJ1ScJdtSJMR3PTsp
-         jHuVy1mq9VGxl/pngp30heMIsBZ1ayRPqiHhlvkzeauDuE8bXXLz7Pr1dlrsgHUxSN
-         NE/tstRel2mbXeFrakCT49wrk1mzVOTgFwXpZ5ixSVmSrhOCbALubsdgsAqX03flR7
-         8owCRSVIxeZBw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212092130.cxo6tuess6msf4kb@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 11 Feb 2021 at 22:30, Heiko Carstens <hca@linux.ibm.com> wrote:
-> On Thu, Feb 11, 2021 at 10:26:04PM +1100, Stephen Rothwell wrote:
->> Hi all,
->> 
->> Changes since 20210210:
->> 
->> The powerpc tree still had its build failure in the allyesconfig for
->> which I applied a supplied patch.
->> 
->> The v4l-dvb tree lost its build failure.
->> 
->> The drm-misc tree lost its build failure.
->> 
->> The modules tree lost its build failure.
->> 
->> The device-mapper tree gained a build failure so I used the version
->> from next-20210210.
->> 
->> The tip tree lost its boot failure.
->> 
->> The rcu tree gained conflicts against the block tree.
->> 
->> The driver-core tree lost its build failure.
->> 
->> The akpm-current tree gained conflicts against the fscache tree.
->> 
->> Non-merge commits (relative to Linus' tree): 9533
->>  9470 files changed, 385794 insertions(+), 266880 deletions(-)
->> 
->> ----------------------------------------------------------------------------
->
-> Build fails on s390 using defconfig with:
->
-> In file included from drivers/net/ethernet/mellanox/mlx5/core/en_tc.h:40,
->                  from drivers/net/ethernet/mellanox/mlx5/core/en_main.c:45:
-> drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h:24:29: error: field 'match_level' has incomplete type
->    24 |  enum mlx5_flow_match_level match_level;
->       |                             ^~~~~~~~~~~
-> drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h:27:26: warning: 'struct mlx5e_encap_entry' declared inside parameter list will not be visible outside of this definition or declaration
->    27 |  int (*calc_hlen)(struct mlx5e_encap_entry *e);
->       |                          ^~~~~~~~~~~~~~~~~
->
-> caused by this:
-> commit 0d9f96471493d5483d116c137693f03604332a04 (HEAD, refs/bisect/bad)
-> Author: Vlad Buslov <vladbu@nvidia.com>
-> Date:   Sun Jan 24 22:07:04 2021 +0200
->
->     net/mlx5e: Extract tc tunnel encap/decap code to dedicated file
->     
->     Following patches in series extend the extracted code with routing
->     infrastructure. To improve code modularity created a dedicated
->     tc_tun_encap.c source file and move encap/decap related code to the new
->     file. Export code that is used by both regular TC code and encap/decap code
->     into tc_priv.h (new header intended to be used only by TC module). Rename
->     some exported functions by adding "mlx5e_" prefix to their names.
->     
->     Signed-off-by: Vlad Buslov <vladbu@nvidia.com>
->     Signed-off-by: Dmytro Linkin <dlinkin@nvidia.com>
->     Reviewed-by: Roi Dayan <roid@nvidia.com>
->     Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
->
-> Note: switching on NET_SWITCHDEV fixes the build error.
+On Fri, Feb 12, 2021 at 02:51:30PM +0530, Viresh Kumar wrote:
+> On 12-02-21, 10:17, Greg KH wrote:
+> > On Fri, Feb 12, 2021 at 02:39:26PM +0530, Viresh Kumar wrote:
+> > > On 12-02-21, 13:48, Pritthijit Nath wrote:
+> > > > This change fixes a checkpatch CHECK style issue for "Alignment should match
+> > > > open parenthesis".
+> > > > 
+> > > > Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
+> > > > ---
+> > > >  drivers/staging/greybus/hid.c | 4 ++--
+> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/staging/greybus/hid.c b/drivers/staging/greybus/hid.c
+> > > > index ed706f39e87a..a56c3fb5d35a 100644
+> > > > --- a/drivers/staging/greybus/hid.c
+> > > > +++ b/drivers/staging/greybus/hid.c
+> > > > @@ -221,8 +221,8 @@ static void gb_hid_init_reports(struct gb_hid *ghid)
+> > > >  }
+> > > > 
+> > > >  static int __gb_hid_get_raw_report(struct hid_device *hid,
+> > > > -		unsigned char report_number, __u8 *buf, size_t count,
+> > > > -		unsigned char report_type)
+> > > > +				   unsigned char report_number, __u8 *buf, size_t count,
+> > > > +				   unsigned char report_type)
+> > > >  {
+> > > >  	struct gb_hid *ghid = hid->driver_data;
+> > > >  	int ret;
+> > > 
+> > > I can't even count the number of attempts we have seen in previous
+> > > years to make checkpatch --strict happy for greybus.
+> > > 
+> > > I say we make this change once and for all across greybus, so we don't
+> > > have to review or NAK someone afterwards.
+> > > 
+> > > Should I send a patch for this ?
+> > 
+> > Sure, but note that over time, checkpatch adds new things so there will
+> > always be something to change in here, until we move it out of the
+> > drivers/staging/ area :)
+> 
+> Right, though I wasn't worried about other checkpatch warning but
+> specially the "alignment - parenthesis" one. Everyone (specially
+> newbies) want to fix that everywhere :)
 
-Hi Heiko,
-
-This problem is supposed to be fixed by 36280f0797df ("net/mlx5e: Fix
-tc_tun.h to verify MLX5_ESWITCH config"). I'm trying to reproduce with
-config supplied by test robot in another thread (config: s390-defconfig)
-and current net-next builds fine for me. I've also verified that config
-option you mentioned is not set in that config:
-
-$ grep NET_SWITCHDEV .config
-# CONFIG_NET_SWITCHDEV is not set
-
-Can you help me reproduce?
-
-Thanks,
-Vlad
+Sure, fix it up "right" if you want to, I'll take coding style fixes
+from anyone :)
