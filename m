@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B57431A309
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A47B31A303
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhBLQnd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Feb 2021 11:43:33 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:39801 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229660AbhBLQme (ORCPT
+        id S231367AbhBLQnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:43:19 -0500
+Received: from mail-wm1-f48.google.com ([209.85.128.48]:38307 "EHLO
+        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229989AbhBLQmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:42:34 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201-pl7WNyoFMn2ojktRlSLfgQ-1; Fri, 12 Feb 2021 11:41:36 -0500
-X-MC-Unique: pl7WNyoFMn2ojktRlSLfgQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C425AFA82;
-        Fri, 12 Feb 2021 16:41:35 +0000 (UTC)
-Received: from bahia.redhat.com (ovpn-113-119.ams2.redhat.com [10.36.113.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DA3211F45B;
-        Fri, 12 Feb 2021 16:41:33 +0000 (UTC)
-From:   Greg Kurz <groug@kaod.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Greg Kurz <groug@kaod.org>, lvivier@redhat.com,
-        stable@vger.kernel.org
-Subject: [PATCH] powerpc/pseries: Don't enforce MSI affinity with kdump
-Date:   Fri, 12 Feb 2021 17:41:32 +0100
-Message-Id: <20210212164132.821332-1-groug@kaod.org>
+        Fri, 12 Feb 2021 11:42:23 -0500
+Received: by mail-wm1-f48.google.com with SMTP id x4so177410wmi.3;
+        Fri, 12 Feb 2021 08:42:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Qe/FoGB3XlHR5SsZoPBQ4OwjCkV7AUBZCJxKjMOTfb8=;
+        b=lt3v87cE8T3AGqhgyw28RKpFvc2bd8Gzq3TFsg1CaZNycOR6yoh/jsmAlq8HneaSMl
+         ty4Vrl95Ygq6Yia2OIBVWAdQiPXNql2BQjYspbADQulJSFNMR5qWk6mBJOABKw0wZuSf
+         bnQAZuB5IW2MtikvvtLI4cKToRWwjEO1JKvBNuOduurwd5pgrqXGfNeoebq78FtMMFAn
+         fWXQZSAyzj+GmgZgSXlkUVpWHOPRxS37zH8C3/ALiKZlr0js2yDqjo2FGGVomt8ua6UP
+         +9UolMt0Eme3TeuWfDxEk1eXb0TCJ5JkTPK/FPlgWdC71VbIZg8G+Ba4mWYW/whex/+B
+         fqlw==
+X-Gm-Message-State: AOAM531kekIqd0S6IftgMq42xn+0MQAVigySLFf2mT69RmctFJ7KiPe9
+        XQlnZhOqVyxeK+Gy/HO6uvg=
+X-Google-Smtp-Source: ABdhPJy1EwxBbvXpZvBJphcaVysg5nmtEDCb+FuNZjNuB5G7WhTqlXWEoTJH4+e6FhadvYAsALozhg==
+X-Received: by 2002:a1c:730a:: with SMTP id d10mr3480718wmb.53.1613148100192;
+        Fri, 12 Feb 2021 08:41:40 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id f17sm10790980wrx.57.2021.02.12.08.41.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 08:41:39 -0800 (PST)
+Date:   Fri, 12 Feb 2021 17:41:37 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Samsung SoC <linux-samsung-soc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: cpuidle: exynos: include header in file
+ pattern
+Message-ID: <20210212164137.rlp5sockb5ms7de2@kozik-lap>
+References: <20210210172208.335048-1-krzk@kernel.org>
+ <CAJZ5v0jnb__EpZxMSSk5Aop3+=FXXt5+0jNfTy9G1ac4s+xTaQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=groug@kaod.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kaod.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0jnb__EpZxMSSk5Aop3+=FXXt5+0jNfTy9G1ac4s+xTaQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Depending on the number of online CPUs in the original kernel, it is
-likely for CPU #0 to be offline in a kdump kernel. The associated IRQs
-in the affinity mappings provided by irq_create_affinity_masks() are
-thus not started by irq_startup(), as per-design with managed IRQs.
+On Fri, Feb 12, 2021 at 04:56:53PM +0100, Rafael J. Wysocki wrote:
+> On Wed, Feb 10, 2021 at 6:23 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >
+> > Inclue the platform data header in Exynos cpuidle maintainer entry.
+> >
+> > Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> > Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> > Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > ---
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 674f42375acf..68e2b4cb4788 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -4625,6 +4625,7 @@ L:        linux-samsung-soc@vger.kernel.org
+> >  S:     Supported
+> >  F:     arch/arm/mach-exynos/pm.c
+> >  F:     drivers/cpuidle/cpuidle-exynos.c
+> > +F:     include/linux/platform_data/cpuidle-exynos.h
+> >
+> >  CPUIDLE DRIVER - ARM PSCI
+> >  M:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > --
+> 
+> Do you want me to apply this?
 
-This can be a problem with multi-queue block devices driven by blk-mq :
-such a non-started IRQ is very likely paired with the single queue
-enforced by blk-mq during kdump (see blk_mq_alloc_tag_set()). This
-causes the device to remain silent and likely hangs the guest at
-some point.
+Hi Rafael,
 
-This is a regression caused by commit 9ea69a55b3b9 ("powerpc/pseries:
-Pass MSI affinity to irq_create_mapping()"). Note that this only happens
-with the XIVE interrupt controller because XICS has a workaround to bypass
-affinity, which is activated during kdump with the "noirqdistrib" kernel
-parameter.
+Yes, please apply it.
 
-The issue comes from a combination of factors:
-- discrepancy between the number of queues detected by the multi-queue
-  block driver, that was used to create the MSI vectors, and the single
-  queue mode enforced later on by blk-mq because of kdump (i.e. keeping
-  all queues fixes the issue)
-- CPU#0 offline (i.e. kdump always succeed with CPU#0)
-
-Given that I couldn't reproduce on x86, which seems to always have CPU#0
-online even during kdump, I'm not sure where this should be fixed. Hence
-going for another approach : fine-grained affinity is for performance
-and we don't really care about that during kdump. Simply revert to the
-previous working behavior of ignoring affinity masks in this case only.
-
-Fixes: 9ea69a55b3b9 ("powerpc/pseries: Pass MSI affinity to irq_create_mapping()")
-Cc: lvivier@redhat.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kurz <groug@kaod.org>
----
- arch/powerpc/platforms/pseries/msi.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
-
-diff --git a/arch/powerpc/platforms/pseries/msi.c b/arch/powerpc/platforms/pseries/msi.c
-index b3ac2455faad..29d04b83288d 100644
---- a/arch/powerpc/platforms/pseries/msi.c
-+++ b/arch/powerpc/platforms/pseries/msi.c
-@@ -458,8 +458,28 @@ static int rtas_setup_msi_irqs(struct pci_dev *pdev, int nvec_in, int type)
- 			return hwirq;
- 		}
- 
--		virq = irq_create_mapping_affinity(NULL, hwirq,
--						   entry->affinity);
-+		/*
-+		 * Depending on the number of online CPUs in the original
-+		 * kernel, it is likely for CPU #0 to be offline in a kdump
-+		 * kernel. The associated IRQs in the affinity mappings
-+		 * provided by irq_create_affinity_masks() are thus not
-+		 * started by irq_startup(), as per-design for managed IRQs.
-+		 * This can be a problem with multi-queue block devices driven
-+		 * by blk-mq : such a non-started IRQ is very likely paired
-+		 * with the single queue enforced by blk-mq during kdump (see
-+		 * blk_mq_alloc_tag_set()). This causes the device to remain
-+		 * silent and likely hangs the guest at some point.
-+		 *
-+		 * We don't really care for fine-grained affinity when doing
-+		 * kdump actually : simply ignore the pre-computed affinity
-+		 * masks in this case and let the default mask with all CPUs
-+		 * be used when creating the IRQ mappings.
-+		 */
-+		if (is_kdump_kernel())
-+			virq = irq_create_mapping(NULL, hwirq);
-+		else
-+			virq = irq_create_mapping_affinity(NULL, hwirq,
-+							   entry->affinity);
- 
- 		if (!virq) {
- 			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
--- 
-2.26.2
+Best regards,
+Krzysztof
 
