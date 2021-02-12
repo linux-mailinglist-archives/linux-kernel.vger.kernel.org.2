@@ -2,127 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D0831A5A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B52A31A5AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:55:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbhBLTwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:52:06 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:40446 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhBLTwC (ORCPT
+        id S231790AbhBLTyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:54:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbhBLTxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:52:02 -0500
-Date:   Fri, 12 Feb 2021 22:51:19 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
+        Fri, 12 Feb 2021 14:53:40 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252DFC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:53:00 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id t13so349879pfg.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:53:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:cc;
+        bh=i9bXYkYkNrS/myxp10YTd6xQPzarqSevtONWXeGJPlg=;
+        b=CEPFGAAZTn1YBSHByUfgpcddUlDuB43hOXZpOdPUc+0zn3cxDCWnpYIBMPOElNPPLW
+         cIPJ2hF4x195i6fCSs1CWIpOMlYYJx0hpXRU4Y1ennrFKXBMgYS/5gSl11abA8hXM3Uj
+         WvhElyaTAr+5YhBuMjzBs5fMk+8yHPmuKFDhw7ZoQ0GrBmRAI5pj7oW8bwI6ARh0Kn1/
+         v5VwKf+p3vFo+qcUs9UykjlqnA56+Ki4Oczm93zCXA2zfa7ovKXRoJjTaAWyyLCs75x8
+         2ZgJ7qMogVu4vu8BBfJUCJ7YD/G5dEJuhNLufGQQAyJG/8STZNwx0DCPBUl+WixZl4le
+         yh4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:cc;
+        bh=i9bXYkYkNrS/myxp10YTd6xQPzarqSevtONWXeGJPlg=;
+        b=Fc+tYkPC1QALxn36SmLH1uqvyf3HaQUFtsi2z8Z5+9kTWBvGP+e9HJT1Hb9IQripRN
+         JBKHgNdD/y6U0cIf8Miikg0PFYVVs96Zbk6Kllq10OZv5VWl5U8p6XTNSNpHQDLygHrT
+         wAAyteQ43Y/Cpd8d+UwKyX0vM6d66LA5S5cgxG6THoIYsGsdVhiX5SJuFI/K55jsfSlS
+         kSSLH9HBT7mP+feMjAZen/7iIxnaBxvuT1FFP8dndG7PI1+w5byO9FIgHsVr5wTU09CE
+         ha6Qz3TtC8vDjDHh2di27vLkLhEZ9nDKZW+sQkiH+lXUEyf07f2YUDt8WUUMAGm/fj6p
+         OqUQ==
+X-Gm-Message-State: AOAM532wOpBxindRIFACvpThWJbkBVKFV4XQfr6PMQkGOVaLf8FVKC5m
+        I04qGQKbh0uikUkUxknBROS5HB2xyl9q
+X-Google-Smtp-Source: ABdhPJzcLNW+FrrZp7ZKnrKVr8H5UQftS7u7Nn5TK/9khzHO3nQj/KyeiMBomoDzHkeCk9/NPtm2JLlrp5NX
+Sender: "jiancai via sendgmr" <jiancai@jiancai.svl.corp.google.com>
+X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:8cad:e5dd:2b3c:2e84])
+ (user=jiancai job=sendgmr) by 2002:a62:3852:0:b029:1da:7238:1cb1 with SMTP id
+ f79-20020a6238520000b02901da72381cb1mr4445517pfa.11.1613159579252; Fri, 12
+ Feb 2021 11:52:59 -0800 (PST)
+Date:   Fri, 12 Feb 2021 11:52:53 -0800
+In-Reply-To: <3f61af0eee9b495e8e8c032902d033c5@AcuMS.aculab.com>
+Message-Id: <20210212195255.1321544-1-jiancai@google.com>
+Mime-Version: 1.0
+References: <3f61af0eee9b495e8e8c032902d033c5@AcuMS.aculab.com>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH v2] ARM: Implement Clang's SLS mitigation
+From:   Jian Cai <jiancai@google.com>
+Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
+        clang-built-linux@googlegroups.com, Jian Cai <jiancai@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
- "usb"-prefixed names
-Message-ID: <20210212195119.f55q7mcmfcsqna5s@mobilestation>
-References: <20210210172850.20849-1-Sergey.Semin@baikalelectronics.ru>
- <20210210172850.20849-10-Sergey.Semin@baikalelectronics.ru>
- <CAL_JsqJBknqhCSUOdpZVbtmp6TYetBQPLoQUCT6DTFajpChaSA@mail.gmail.com>
- <20210210184051.ncvvs5xgyo7o3uzq@mobilestation>
- <YCQse9EtEHtLVe9A@builder.lan>
- <20210210193325.inp7rgpsfr624zhd@mobilestation>
- <YCa/m4qfT1T4e6CW@builder.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YCa/m4qfT1T4e6CW@builder.lan>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+        Ard Biesheuvel <ardb@kernel.org>,
+        "=?UTF-8?q?Andreas=20F=C3=A4rber?=" <afaerber@suse.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 11:49:15AM -0600, Bjorn Andersson wrote:
-> On Wed 10 Feb 13:33 CST 2021, Serge Semin wrote:
-> 
-> > On Wed, Feb 10, 2021 at 12:56:59PM -0600, Bjorn Andersson wrote:
-> > > On Wed 10 Feb 12:40 CST 2021, Serge Semin wrote:
-> > > 
-> > > > On Wed, Feb 10, 2021 at 12:17:27PM -0600, Rob Herring wrote:
-> > > > > On Wed, Feb 10, 2021 at 11:29 AM Serge Semin
-> > > > > <Sergey.Semin@baikalelectronics.ru> wrote:
-> > > > > >
-> > > > > > In accordance with the USB HCD/DRD schema all the USB controllers are
-> > > > > > supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
-> > > > > > existing DT-nodes will be renamed in a subsequent patch let's first make
-> > > > > > sure the DWC3 Qualcomm driver supports them and second falls back to the
-> > > > > > deprecated naming so not to fail on the legacy DTS-files passed to the
-> > > > > > newer kernels.
-> > > > > >
-> > > > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > > > > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > > > > ---
-> > > > > >  drivers/usb/dwc3/dwc3-qcom.c | 3 ++-
-> > > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > > >
-> > > > > > diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> > > > > > index c703d552bbcf..49ad8d507d37 100644
-> > > > > > --- a/drivers/usb/dwc3/dwc3-qcom.c
-> > > > > > +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> > > > > > @@ -630,7 +630,8 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
-> > > > > >         struct device           *dev = &pdev->dev;
-> > > > > >         int                     ret;
-> > > > > >
-> > > > > > -       dwc3_np = of_get_child_by_name(np, "dwc3");
-> > > > > > +       dwc3_np = of_get_child_by_name(np, "usb") ?:
-> > > > > > +                 of_get_child_by_name(np, "dwc3");
-> > > > > 
-> > > > 
-> > > > > Is there some reason using compatible instead wouldn't work here?
-> > > > 
-> > > > I don't know for sure. The fix has been requested in the framework of
-> > > > this discussion:
-> > > > https://lore.kernel.org/linux-usb/20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru/#t
-> > > > by the driver maintainer Bjorn. To get a firm answer it's better to
-> > > > have him asked.
-> > > 
-> > > My feedback was simply that it has to catch both cases, I didn't
-> > > consider the fact that we have a compatible to match against.
-> > > 
-> > > > As I see it having of_get_compatible_child() utilized
-> > > > here would also work. At least for the available in kernel dt-files.
-> > > > See the affected dts-es in:
-> > > > https://lore.kernel.org/linux-usb/20210210172850.20849-11-Sergey.Semin@baikalelectronics.ru/
-> > > > 
-> > > > A problem may happen if some older versions of DTS-es had another
-> > > > compatible string in the dwc3 sub-node...
-> > > > 
-> > > 
-> > > Afaict all Qualcomm dts files has "snps,dwc3", so you can match against
-> > > that instead.
-> > 
-> > Ok then. I'll replace of_get_child_by_name() here with
-> > of_get_compatible_child() matching just against "snps,dwc3" in v7. Can you
-> > confirm that noone ever had a Qcom-based hardware described with dts having
-> > the "synopsys,dwc3" compatible used as the DWC USB3 sub-node here? That
-> > string has been marked as deprecated recently because the vendor-prefix
-> > was changed sometime ago, but the original driver still accept it.
-> > 
-> 
-> I don't see any Qualcomm users of "synopsys,dwc3", past or present.
-> 
-> > Alternatively to be on a safe side we could match against both
-> > compatibles here as Rob suggests. What do you think?
-> > 
-> 
-> Let's go with only "snps,dwc3".
+This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
+-mharden-sls=all, which mitigates the straight-line speculation
+vulnerability, speculative execution of the instruction following some
+unconditional jumps. Notice -mharden-sls= has other options as below,
+and this config turns on the strongest option.
 
-Ok. Thanks. I'll resend just two patches in ten minutes.
+all: enable all mitigations against Straight Line Speculation that are implemented.
+none: disable all mitigations against Straight Line Speculation.
+retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
+blr: enable the mitigation against Straight Line Speculation for BLR instructions.
 
--Sergey
+Link: https://reviews.llvm.org/D93221
+Link: https://reviews.llvm.org/D81404
+Link: https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
+https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
 
-> 
-> Regards,
-> Bjorn
+Suggested-by: Manoj Gupta <manojgupta@google.com>
+Suggested-by: Nathan Chancellor  <nathan@kernel.org>
+Suggested-by: David Laight <David.Laight@aculab.com>
+Signed-off-by: Jian Cai <jiancai@google.com>
+---
+
+Changes v1 -> v2:
+ Update the description and patch based on Nathan and David's comments. 
+
+ arch/arm/Makefile          | 4 ++++
+ arch/arm64/Makefile        | 4 ++++
+ security/Kconfig.hardening | 7 +++++++
+ 3 files changed, 15 insertions(+)
+
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 4aaec9599e8a..11d89ef32da9 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -48,6 +48,10 @@ CHECKFLAGS	+= -D__ARMEL__
+ KBUILD_LDFLAGS	+= -EL
+ endif
+ 
++ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
++KBUILD_CFLAGS  += -mharden-sls=all
++endif
++
+ #
+ # The Scalar Replacement of Aggregates (SRA) optimization pass in GCC 4.9 and
+ # later may result in code being generated that handles signed short and signed
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 90309208bb28..ca7299b356a9 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -34,6 +34,10 @@ $(warning LSE atomics not supported by binutils)
+   endif
+ endif
+ 
++ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
++KBUILD_CFLAGS  += -mharden-sls=all
++endif
++
+ cc_has_k_constraint := $(call try-run,echo				\
+ 	'int main(void) {						\
+ 		asm volatile("and w0, w0, %w0" :: "K" (4294967295));	\
+diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
+index 269967c4fc1b..9266d8d1f78f 100644
+--- a/security/Kconfig.hardening
++++ b/security/Kconfig.hardening
+@@ -121,6 +121,13 @@ choice
+ 
+ endchoice
+ 
++config HARDEN_SLS_ALL
++	bool "enable SLS vulnerability hardening"
++	def_bool $(cc-option,-mharden-sls=all)
++        help
++          Enables straight-line speculation vulnerability hardening
++	  at highest level.
++
+ config GCC_PLUGIN_STRUCTLEAK_VERBOSE
+ 	bool "Report forcefully initialized variables"
+ 	depends on GCC_PLUGIN_STRUCTLEAK
+-- 
+2.30.0.478.g8a0d178c01-goog
+
