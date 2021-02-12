@@ -2,118 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC70B31A543
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E183431A54B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232100AbhBLTVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:21:52 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:47740 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbhBLTVo (ORCPT
+        id S231131AbhBLTWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:22:41 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42770 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232105AbhBLTWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:21:44 -0500
-Date:   Fri, 12 Feb 2021 20:20:59 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613157661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O0JCXs/B0BMCLMONMJZsI/4OSW8BmqkP+eivfeWEvrI=;
-        b=MJJLbl4pbGpuR7AQKoL5lLF49U/YR63l7OA9+f8eIp06P+4AP7vcjmxFbfFhTy4c4kKE1i
-        u8ANmQDMn8m182ANkNf10da7JTK23c2/z8qmk/M/xzK1KHJzins7nqBVAwHhKEXxdKywLL
-        vJftlsRHDw1Dmr40xUwTp8M25ODfWvtQ6qpAf89OIPpGpilptISq3+TPeCngQDXaa8aba1
-        MNLPDBFuU/nlbbwId1xl5h/+FtQBkou9ezUpVSap3Xeg75CPFDrOcFwMHa672ZSmT+nELJ
-        rZaHQzpgDDSTsCzPVLD8+r+wG1yxFzXaESVZsYbMfytF36e+NNyeyZ5uiiEaFA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613157661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O0JCXs/B0BMCLMONMJZsI/4OSW8BmqkP+eivfeWEvrI=;
-        b=yl7V4vAQdUrnNnHanGNMMClbihhzNOlS3TmIKCJgKXNy9CerasY3CvqVqroCOkEKrjidAW
-        Ro5BSnGShnqUzjBw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
-Message-ID: <20210212192059.wytqwdf4qm4rnq3d@linutronix.de>
-References: <20201209202732.5896-1-urezki@gmail.com>
- <20201209202732.5896-2-urezki@gmail.com>
+        Fri, 12 Feb 2021 14:22:15 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0FAEE1C0B9E; Fri, 12 Feb 2021 20:21:16 +0100 (CET)
+Date:   Fri, 12 Feb 2021 20:21:15 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/27] 4.19.176-rc2 review
+Message-ID: <20210212192115.GA30277@amd>
+References: <20210212074240.963766197@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
 Content-Disposition: inline
-In-Reply-To: <20201209202732.5896-2-urezki@gmail.com>
+In-Reply-To: <20210212074240.963766197@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 21:27:32 [+0100], Uladzislau Rezki (Sony) wrote:
-> Add self tests for checking of RCU-tasks API functionality.
-> It covers:
->     - wait API functions;
->     - invoking/completion call_rcu_tasks*().
-> 
-> Self-tests are run when CONFIG_PROVE_RCU kernel parameter is set.
 
-I just bisected to this commit. By booting with `threadirqs' I end up
-with:
-[    0.176533] Running RCU-tasks wait API self tests
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No stall warning or so.
-It boots again with:
+Hi!
 
-diff --git a/init/main.c b/init/main.c
---- a/init/main.c
-+++ b/init/main.c
-@@ -1489,6 +1489,7 @@ void __init console_on_rootfs(void)
- 	fput(file);
- }
- 
-+void rcu_tasks_initiate_self_tests(void);
- static noinline void __init kernel_init_freeable(void)
- {
- 	/*
-@@ -1514,6 +1515,7 @@ static noinline void __init kernel_init_freeable(void)
- 
- 	rcu_init_tasks_generic();
- 	do_pre_smp_initcalls();
-+	rcu_tasks_initiate_self_tests();
- 	lockup_detector_init();
- 
- 	smp_init();
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1266,7 +1266,7 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
- 	rttd->notrun = true;
- }
- 
--static void rcu_tasks_initiate_self_tests(void)
-+void rcu_tasks_initiate_self_tests(void)
- {
- 	pr_info("Running RCU-tasks wait API self tests\n");
- #ifdef CONFIG_TASKS_RCU
-@@ -1322,7 +1322,6 @@ void __init rcu_init_tasks_generic(void)
- #endif
- 
- 	// Run the self-tests.
--	rcu_tasks_initiate_self_tests();
- }
- 
- #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+> This is the start of the stable review cycle for the 4.19.176 release.
+> There are 27 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Our test infrastructure seems to have some problems, but we did not
+detect any problems with actual kernel. (I'm attempting to re-run the
+tests).
 
-Sebastian
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--17pEHd4RhPHOinZp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAm1SsACgkQMOfwapXb+vL8awCgog6Jf84TND4N+/c6Sr1EUz+s
+uIAAnjHlzcV9XAxP3bxg/9n2NxNQeg5a
+=LT6J
+-----END PGP SIGNATURE-----
+
+--17pEHd4RhPHOinZp--
