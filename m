@@ -2,84 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2B431A11D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA2E31A12C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhBLPHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:07:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51966 "EHLO mail.kernel.org"
+        id S229901AbhBLPKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:10:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhBLPHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:07:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5698B64E74;
-        Fri, 12 Feb 2021 15:07:05 +0000 (UTC)
+        id S229672AbhBLPKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:10:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5847764E70;
+        Fri, 12 Feb 2021 15:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613142425;
-        bh=FjAW/mBtnX1/Q68W0PWY/p9JgRXajMHsxna0jkBAf9k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=azx4/CQz+tii3wSOWTtKKjMCvXRT66O01+4tTCbPX3e5PWg1OWUaD4/XtRRm4Y8aq
-         X1CVA2nFnvo9SkX10VmgGjieKS2u7CE2Zm1qzTUJmZYLM52+WLtadCryYbohw6A0G4
-         hELKeiw/luoK5rcsPDCRiX/ueCcFAWUeIeR+QfHUvN/rwDeAONeu7Hjbvh9LsWfJa4
-         edcmFsresoiYnG27S483/lF00jxmy0oyqQluateSauKbAOB+HIETkWAUgv5BakiM6f
-         SZZn3eeplaNfSQS2YdYj/JVI6Q59Z4lB4x/bzQMfdCe3LUY1pqwRtkDBBZCk/L84C3
-         EJZo4bXxZRzDw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 28B543522598; Fri, 12 Feb 2021 07:07:05 -0800 (PST)
-Date:   Fri, 12 Feb 2021 07:07:05 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     akiyks@gmail.com, bigeasy@linutronix.de, elver@google.com,
-        frederic@kernel.org, joel@joelfernandes.org, julia@ni.com,
-        mchehab+huawei@kernel.org, neeraju@codeaurora.org,
-        paul.gortmaker@windriver.com, peterz@infradead.org,
-        qiang.zhang@windriver.com, swood@redhat.com, urezki@gmail.com,
-        w@1wt.eu, wangqing@vivo.com, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, kernel-team@fb.com, tglx@linutronix.de
-Subject: Re: [GIT PULL tip/core/rcu] RCU, LKMM, and KCSAN commits for v5.12
-Message-ID: <20210212150705.GO2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210128010437.GA32221@paulmck-ThinkPad-P72>
- <20210212123109.GB2185387@gmail.com>
+        s=k20201202; t=1613142600;
+        bh=k731R4Ul6UKTKtCgFca3L2FMVqQFKspI8tFGRTMpX9Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=l7ffahHrls/V+BKwdGEjH0nw2dMGXFX4vD4J+4HDjEkrJfn7A+Iit3nqim0umEqGg
+         lrZzaCCKvFPXGZTk93rdU0Ks5T6Wt8cFVFWuXxpGMucxQ4TupUB2X49Rocio8QqiWg
+         9WZdy65piPAs6SLREtg3FyzkLMEUFfP/fl59lu6Z9PN7zwKPikEnxuGi0a4NdGk64d
+         h6/RXRz9AifU3WIMz9+kUlGARFPTs8i5/ruIH6KzkCdCTdyTaeJX6/b1vv2vU+R6JX
+         IWj+zZdU2sRtgIyVM3nt9whehyFDrp8ePHXLMa4tpAZALBgAOTi7FwOj9jbVA1m00l
+         frBpPkiHNRKjQ==
+From:   Will Deacon <will@kernel.org>
+To:     Qi Liu <liuqi115@huawei.com>, mark.rutland@arm.com
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linuxarm@huawei.com
+Subject: Re: [PATCH] drivers/perf: Replace spin_lock_irqsave to spin_lock
+Date:   Fri, 12 Feb 2021 15:09:53 +0000
+Message-Id: <161298304279.2372115.11035796889461732110.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1612863742-1551-1-git-send-email-liuqi115@huawei.com>
+References: <1612863742-1551-1-git-send-email-liuqi115@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212123109.GB2185387@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 01:31:09PM +0100, Ingo Molnar wrote:
-> 
-> * Paul E. McKenney <paulmck@kernel.org> wrote:
-> 
-> > Hello, Ingo!
-> > 
-> > This pull request contains changes for RCU, KCSAN, LKMM, and nolibc.
-> > You can pull the entire group using branch for-mingo.  Or, if you prefer,
-> > you can pull them separately, using for-mingo-rcu to pull the RCU changes,
-> > for-mingo-kcsan to pull the KCSAN changes, for-mingo-lkmm to pull the
-> > LKMM changes, and for-mingo-nolibc to pull the noclib changes.
-> > 
-> > The changes are as follows:
-> > 
-> > 1.	RCU updates (for-mingo-rcu):
-> 
-> > 4.	Fixes to nolibc that allows it to run once again on ARMv8.
-> >	https://lore.kernel.org/lkml/20210121072031.23777-1-w@1wt.eu/
-> 
-> Pulled these two into tip:core/rcu - as nolibc's main (only?) usecase 
-> within the kernel is torture-testing.
-> 
-> > 2.	Kernel concurrency sanitizer (KCSAN) updates from Marco Elver.
-> > 	https://lore.kernel.org/lkml/20210106173323.GA23292@paulmck-ThinkPad-P72/
-> 
-> > 3.	Linux-kernel memory model (LKMM) updates.
-> > 	https://lore.kernel.org/lkml/20210106173548.GA23664@paulmck-ThinkPad-P72/
-> 
-> Pulled these two into tip:locking/core.
+On Tue, 9 Feb 2021 17:42:22 +0800, Qi Liu wrote:
+> There is no need to do spin_lock_irqsave in context of hard IRQ, so
+> replace them with spin_lock.
 
-Thank you, Ingo!  In the future, I will group nolibc with RCU.  But there
-has to be something other than RCU that needs it.  I will take a look. ;-)
+Applied to will (for-next/perf), thanks!
 
-							Thanx, Paul
+[1/1] drivers/perf: Replace spin_lock_irqsave to spin_lock
+      https://git.kernel.org/will/c/8ee37e0f97ec
+
+Cheers,
+-- 
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
