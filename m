@@ -2,108 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590C431A1A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF1631A1AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhBLP1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50388 "EHLO
+        id S231750AbhBLP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:29:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhBLP1i (ORCPT
+        with ESMTP id S231754AbhBLP2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:27:38 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B878AC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:26:58 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id f6so9661592ioz.5
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:26:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=onFvP6j6wda1P7gLjn52fbC4J1JLIa0ND92igZnAhqo=;
-        b=SmN6rUXtG05Jaq9xEA7sGXXJN73VP1CMy23o3/eIIwUc4CXl7cOKaibLS33quBXsC9
-         9pPqFG1+hRVTJiqFQGeu64MLLwZA+1omGGW/ckSMo4jXySwWecWUQKu7ZAv7K3Ow2hKZ
-         mZq5i/kywNdufEMh/6Zi++PITsHg467xqIO8eMt+yjVJSIKOlbCJ3TuHMNRdgD1u5+KD
-         wf1fIXYX70uSsYYS4pbfMIHvmoXPU0DZ+OAG9H/zwTG/VroiWKCy7vvJdnotTS39wppa
-         R7J/gQrIOp2PBXJY21zpaNR5kULka2+gGuyab3LXT2mH00ednNK7FBlp9MtHHwEgSkmS
-         569A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=onFvP6j6wda1P7gLjn52fbC4J1JLIa0ND92igZnAhqo=;
-        b=B/nKvQdTB/Z4FoVjWP/zP6lCv2iFz7ruZVsRzximaBq3cOup5BxtHzkRq7qQVHbUgf
-         qUO+zrwBd0n41/hx0UUpRA8UJCizpkjedMIP6s40Yi+TilRVskNfrOIh2YisY4DNmNbV
-         PlF8913j1JWFBriH1qRkUmb2CvxMQCut3gNj8nwFqGG2oCebAWMZ0ro0I3t0DU9vCoAG
-         6sdi7eGj9QN2fgzaobvZfTZppYm+2Y6RMd0ZWWK6qAU5ZRECNL66i8D9N5jAel/LZzxe
-         i4iRed7E7z+v+0SoIRK2SHztAGCBoKq11xBgjh66rY+mJh5SEccGGLzDaHQYCaQflxv1
-         tO4Q==
-X-Gm-Message-State: AOAM533KGUdOIAODBY66+9FErPzAmTb7yUdWF9VK2VncwB7sOX4DYWe+
-        7/EaTnE1w5kfL9xKoKqWeT/oSA==
-X-Google-Smtp-Source: ABdhPJw1k9SHpUvGqgnXAMoAZiizpnwt+C/glLQHRSp3gqyqPpGSifBgkGNxESbbgsKGO1zm7OeESw==
-X-Received: by 2002:a02:ccc5:: with SMTP id k5mr3182177jaq.105.1613143618094;
-        Fri, 12 Feb 2021 07:26:58 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id 4sm4671757ilj.22.2021.02.12.07.26.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 07:26:57 -0800 (PST)
-Subject: Re: linux-next: manual merge of the rcu tree with the block tree
-To:     paulmck@kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20210211164852.7489b87d@canb.auug.org.au>
- <20210211173802.GM2743@paulmck-ThinkPad-P72>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d4232318-0e44-445d-a7a3-1e2a018c824e@kernel.dk>
-Date:   Fri, 12 Feb 2021 08:26:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 12 Feb 2021 10:28:35 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB828C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:27:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=xCWTsoSbOlREB9C8JV0M5wM8KtNFMw7ytG5hkc4u4As=; b=02pPfDfDq2DgQpcKDDFXi7krtc
+        noEa1zoBRz51wPIHSZ76k30UlPMtHuXcszIn+eSqXHMnyegDDpbC+wEMhu4/fD3QYK4MKW7NMjU/t
+        mCTLehrbsKo3rChovH0+ll3z5JP5tRCtm6Q0SV7lGjhGyVHaJcOcPUiJTn+04ZHqLaGYzlNVV0suQ
+        V1OiUz+9T5IxEX+N7DX3nPPlAjXJM74T4L1wL3Ke3pO3TmC0Dz6O3btXmWwGqb4GZgxg8lT4kQCtr
+        yYP8MStjDmDMvfyTdLJC8b3Nzhk+Inu/EQAiNmh7g3F+RKa3xFtj4A3La45ZK7YRUZr1UjoCyjwo+
+        AW/pmvWA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lAaMD-00031t-SC; Fri, 12 Feb 2021 15:27:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C1B3300446;
+        Fri, 12 Feb 2021 16:27:42 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 521542C1CD09A; Fri, 12 Feb 2021 16:27:42 +0100 (CET)
+Date:   Fri, 12 Feb 2021 16:27:42 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jason Gerecke <killertofu@gmail.com>, linux-kernel@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Jason Gerecke <jason.gerecke@wacom.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH] RFC: x86/jump_label: Mark arguments as const to satisfy
+ asm constraints
+Message-ID: <YCaebvpeLjY5oRAs@hirez.programming.kicks-ass.net>
+References: <20210211214848.536626-1-jason.gerecke@wacom.com>
+ <20210212094059.5f8d05e8@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <20210211173802.GM2743@paulmck-ThinkPad-P72>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210212094059.5f8d05e8@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 10:38 AM, Paul E. McKenney wrote:
-> On Thu, Feb 11, 2021 at 04:48:52PM +1100, Stephen Rothwell wrote:
->> Hi all,
->>
->> Today's linux-next merge of the rcu tree got conflicts in:
->>
->>   include/linux/rcupdate.h
->>   kernel/rcu/tree.c
->>   kernel/rcu/tree_plugin.h
->>
->> between commits:
->>
->>   3a7b5c87a0b2 ("rcu/nocb: Perform deferred wake up before last idle's need_resched() check")
->>   e4234f21d2ea ("rcu: Pull deferred rcuog wake up to rcu_eqs_enter() callers")
->>   14bbd41d5109 ("entry/kvm: Explicitly flush pending rcuog wakeup before last rescheduling point")
+On Fri, Feb 12, 2021 at 09:40:59AM -0500, Steven Rostedt wrote:
+> On Thu, 11 Feb 2021 13:48:48 -0800
+> Jason Gerecke <killertofu@gmail.com> wrote:
 > 
-> Frederic had me move these out of the section of the -rcu commits for
-> the v5.12 merge window, saying that they were not yet ready.
+> > When compiling an external kernel module with `-O0` or `-O1`, the following
+> > compile error may be reported:
+> > 
+> >     ./arch/x86/include/asm/jump_label.h:25:2: error: impossible constraint in ‘asm’
+> >        25 |  asm_volatile_goto("1:"
+> >           |  ^~~~~~~~~~~~~~~~~
+> > 
+> > It appears that these lower optimization levels prevent GCC from detecting
+> > that the key/branch arguments can be treated as constants and used as
+> > immediate operands. To work around this, explicitly add the `const` label.
 > 
-> Jens, are these needed to prevent failures in the block tree?  If so,
-> there were some commits added late in v5.11 that might also get rid
-> of your failures.  If those v5.11 commits don't help the block tree,
-> let's figure out what we need to do here...  ;-)
+> Yes this makes sense. The "i" constraint needs to be a constant.
 
-I pulled these in from sched/core looks like, because there was a dependency
-for 2 block fixes from Sebastian:
+Right, using -O[01] seems a little daft though. But yeah, that patch is
+correct and won't cause harm.
 
-https://git.kernel.dk/cgit/linux-block/log/?h=for-5.12/block-ipi
-
-But I think I made a mistake in that it should've been sched/smp instead,
-which would likely get rid of this issue too? I'll rebase it, it's just
-a single topic branch with just those two patches on top.
-
--- 
-Jens Axboe
-
+I've queued it for after the next merge window.
