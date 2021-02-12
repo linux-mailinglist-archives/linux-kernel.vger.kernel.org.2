@@ -2,178 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0062B319DA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF0F319DAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhBLLzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:55:14 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50784 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbhBLLyr (ORCPT
+        id S230355AbhBLL4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:56:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhBLLzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:54:47 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11CBrJfK053185;
-        Fri, 12 Feb 2021 05:53:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1613130799;
-        bh=fBXXLq6KfeaXtjCrONVqVRjVy8lzIgiUm/maW9F9qvQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=eEMwLeXAj1ozQgUECeXOg/2JT1IEbuKUiLK6kj/DtT2TkMQD7CyIIg9G5DdZCJgTp
-         VrPFTY7nnNHzhgyrWcb1MvDgChPFLEIbhC/lJIaEFFO04yvINClSbToqz+0Cp9zdyw
-         j1aUHR4XHrsk0OjI3Hlq3iRXG3uoEEC32sNsU3wU=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11CBrJh3123338
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Feb 2021 05:53:19 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
- Feb 2021 05:53:18 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 12 Feb 2021 05:53:19 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11CBrEVs093445;
-        Fri, 12 Feb 2021 05:53:15 -0600
-Subject: Re: [Linuxarm] Re: [PATCH for next v1 1/2] gpio: omap: Replace
- raw_spin_lock_irqsave with raw_spin_lock in omap_gpio_irq_handler()
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Arnd Bergmann <arnd@kernel.org>,
-        luojiaxing <luojiaxing@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-References: <1612774577-55943-1-git-send-email-luojiaxing@huawei.com>
- <1612774577-55943-2-git-send-email-luojiaxing@huawei.com>
- <fab1e871-08e4-fc71-9dbf-9bcacf18e2e1@ti.com>
- <CAK8P3a0m4ocfLyJZ5wMxyKESYUJ5um5sb5MyAzC8ckCb6qAH5g@mail.gmail.com>
- <d5465b81-bb53-49ee-a556-40d208deb765@ti.com>
- <a61ef337fd1c4538a47fe855920f95d3@hisilicon.com>
- <CAK8P3a3SHQNjF5ZpqHQweG7BQ52Xi1hQKDiMVKq4aNK_7VDw6w@mail.gmail.com>
- <e34a4085-268f-1cd0-a5dc-a87a2e655fe2@ti.com>
- <2a12cf7a21f74a0c9e2552a467b77fae@hisilicon.com>
- <YCZfBMPwmzD2U/4c@smile.fi.intel.com>
- <c4a07bef5dd24fd2af0aa7fe4c78b903@hisilicon.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <33720e72-a438-8ffe-1b5f-38756738ad9b@ti.com>
-Date:   Fri, 12 Feb 2021 13:53:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 12 Feb 2021 06:55:40 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B05C061574;
+        Fri, 12 Feb 2021 03:55:00 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id l12so7540767wry.2;
+        Fri, 12 Feb 2021 03:55:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IPL+pi7tfOJgqXhdpEPJQS69XteO55VN6vxo2/M4MKY=;
+        b=kiBZY+OXC05nGliMqCIc9bbsWmWW9JaphUr+4IKugf1bXCQhMGsXBLz8sx+mc50B5b
+         ipIzSSLsJLGQ/LU1AKBIxChV2eSNmzVEr2J/e8dtfFXf0WAit5un+JgpsAOinps8Q6AQ
+         c4wUoGixFO7SUYey3F0XdyejujQWnyKfsHCXq2+1g42PN2VUzV84MjPBw1chpm+wSPtp
+         XaNso9v0j5T1yUaRRgNqk7cNsP9fLBOekXnS5dgzm8oXCokXhoS3tyM4sO6nl8zdvjQ2
+         JGkTBx62BNwQSIqJ0P+YMgGMnCLkxBKKfXJFo0lIdp0gX2tcirxuYoKb5BVgXDKhn4+u
+         Ag/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IPL+pi7tfOJgqXhdpEPJQS69XteO55VN6vxo2/M4MKY=;
+        b=oB/3g6jXaa1Qra55ghbNtOHTmORycubt3ptFeitCVGx7uaNv+5h/9/1xEuafqyWI1C
+         haI55wBcGyUEbaj13MHN2FG5mVi8Gy+F+opS8wightqyrgcc81zRjzzibfGX2esqGfw0
+         rOVYNb5GhLRmBMnG4qFxnScU1dSymkEgFwIkyx8s4YCKSJE98pMsONGvUDsIeVNi6hFP
+         NycYWHYpyYRK1212OD8SZOaa3kf0oQNbiqA7YBWgfvbkXiAUgy9j1d8nAN5LnnzvW+2w
+         hZOHY6yVu04+Qf4iuDFSxw81AJd4oplc+0tenllLY5DyGTjookv2qWKTJ5BhDQkdIape
+         G5+g==
+X-Gm-Message-State: AOAM5331gnt4HJ9pA/JTENsd11jJKFO6xjLkozjH9pYwOT/Rm4U2837s
+        U2oNcEDMB97/4A/R6y9Unxo=
+X-Google-Smtp-Source: ABdhPJwdhzy7UJ6koChLNIDqpt7fUBASqhXl9+Yp5UsofpF2z8ccGiXbQ6soyb5Mk1qOrP9CaU3sOA==
+X-Received: by 2002:adf:f003:: with SMTP id j3mr3014035wro.335.1613130899081;
+        Fri, 12 Feb 2021 03:54:59 -0800 (PST)
+Received: from xws.localdomain (p5487bf16.dip0.t-ipconnect.de. [84.135.191.22])
+        by smtp.gmail.com with ESMTPSA id p1sm9455560wru.86.2021.02.12.03.54.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 03:54:58 -0800 (PST)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/6] platform/surface: Add Surface Aggregator device registry
+Date:   Fri, 12 Feb 2021 12:54:33 +0100
+Message-Id: <20210212115439.1525216-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <c4a07bef5dd24fd2af0aa7fe4c78b903@hisilicon.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Surface System Aggregator Module (SSAM) subsystem provides various
+functionalities, which are separated by spreading them across multiple
+devices and corresponding drivers. Parts of that functionality / some of
+those devices, however, can (as far as we currently know) not be
+auto-detected by conventional means. While older (specifically 5th- and
+6th-)generation models do advertise most of their functionality via
+standard platform devices in ACPI, newer generations do not.
 
+As we are currently also not aware of any feasible way to query said
+functionalities dynamically, this poses a problem. There is, however, a
+device in ACPI that seems to be used by Windows for identifying
+different Surface models: The Windows Surface Integration Device (WSID).
+This device seems to have a HID corresponding to the overall set of
+functionalities SSAM provides for the associated model.
 
-On 12/02/2021 13:29, Song Bao Hua (Barry Song) wrote:
-> 
-> 
->> -----Original Message-----
->> From: Andy Shevchenko [mailto:andy.shevchenko@gmail.com]
->> Sent: Friday, February 12, 2021 11:57 PM
->> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
->> Cc: Grygorii Strashko <grygorii.strashko@ti.com>; Arnd Bergmann
->> <arnd@kernel.org>; luojiaxing <luojiaxing@huawei.com>; Linus Walleij
->> <linus.walleij@linaro.org>; Santosh Shilimkar <ssantosh@kernel.org>; Kevin
->> Hilman <khilman@kernel.org>; open list:GPIO SUBSYSTEM
->> <linux-gpio@vger.kernel.org>; linux-kernel@vger.kernel.org;
->> linuxarm@openeuler.org
->> Subject: Re: [Linuxarm] Re: [PATCH for next v1 1/2] gpio: omap: Replace
->> raw_spin_lock_irqsave with raw_spin_lock in omap_gpio_irq_handler()
->>
->> On Fri, Feb 12, 2021 at 10:42:19AM +0000, Song Bao Hua (Barry Song) wrote:
->>>> From: Grygorii Strashko [mailto:grygorii.strashko@ti.com]
->>>> Sent: Friday, February 12, 2021 11:28 PM
->>>> On 12/02/2021 11:45, Arnd Bergmann wrote:
->>>>> On Fri, Feb 12, 2021 at 6:05 AM Song Bao Hua (Barry Song)
->>>>> <song.bao.hua@hisilicon.com> wrote:
->>
->>>>>>> Note. there is also generic_handle_irq() call inside.
->>>>>>
->>>>>> So generic_handle_irq() is not safe to run in thread thus requires
->>>>>> an interrupt-disabled environment to run? If so, I'd rather this
->>>>>> irqsave moved into generic_handle_irq() rather than asking everyone
->>>>>> calling it to do irqsave.
->>>>>
->>>>> In a preempt-rt kernel, interrupts are run in task context, so they clearly
->>>>> should not be called with interrupts disabled, that would defeat the
->>>>> purpose of making them preemptible.
->>>>>
->>>>> generic_handle_irq() does need to run with in_irq()==true though,
->>>>> but this should be set by the caller of the gpiochip's handler, and
->>>>> it is not set by raw_spin_lock_irqsave().
->>>>
->>>> It will produce warning from __handle_irq_event_percpu(), as this is IRQ
->>>> dispatcher
->>>> and generic_handle_irq() will call one of handle_level_irq or
->> handle_edge_irq.
->>>>
->>>> The history behind this is commit 450fa54cfd66 ("gpio: omap: convert to
->> use
->>>> generic irq handler").
->>>>
->>>> The resent related discussion:
->>>> https://lkml.org/lkml/2020/12/5/208
->>>
->>> Ok, second thought. irqsave before generic_handle_irq() won't defeat
->>> the purpose of preemption too much as the dispatched irq handlers by
->>> gpiochip will run in their own threads but not in the thread of
->>> gpiochip's handler.
->>>
->>> so looks like this patch can improve by:
->>> * move other raw_spin_lock_irqsave to raw_spin_lock;
->>> * keep the raw_spin_lock_irqsave before generic_handle_irq() to mute
->>> the warning in genirq.
->>
->> Isn't the idea of irqsave is to prevent dead lock from the process context when
->> we get interrupt on the *same* CPU?
-> 
-> Anyway, gpiochip is more tricky as it is also a irq dispatcher. Moving
-> spin_lock_irq to spin_lock in the irq handler of non-irq dispatcher
-> driver is almost always correct.
-> 
-> But for gpiochip, would the below be true though it is almost alway true
-> for non-irq dispatcher?
-> 
-> 1. While gpiochip's handler runs in hardIRQ, interrupts are disabled, so no more
-> interrupt on the same cpu -> No deadleak.
-> 
-> 2. While gpiochip's handler runs in threads
-> * other non-threaded interrupts such as timer tick might come on same cpu,
-> but they are an irrelevant driver and thus they are not going to get the
-> lock gpiochip's handler has held. -> no deadlock.
-> * other devices attached to this gpiochip might get interrupts, since
-> gpiochip's handler is running in threads, raw_spin_lock can help avoid
-> messing up the critical data by two threads -> still no deadlock.
+This series introduces a device registry based on software nodes and
+device hubs to solve this problem. The registry is intended to contain
+all required non-detectable information.
 
-The worst RT case I can imagine is when gpio API is still called from hard IRQ context by some
-other device driver - some toggling for example.
-Note. RT or "threadirqs" does not mean gpiochip become sleepable.
+The platform hub driver is loaded against the WSID device and
+instantiates and manages SSAM devices based on the information provided
+by the registry for the given WSID HID of the Surface model. All new
+devices created by this hub added as child devices to this hub.
 
-In this case:
-  threaded handler
-    raw_spin_lock
-	IRQ from other device
-           hard_irq handler
-             gpiod_x()
-		raw_spin_lock_irqsave() -- oops
+In addition, a base hub is introduced to manage devices associated with
+the detachable base part of the Surface Book 3, as this requires special
+handling (i.e. devices need to be removed when the base is removed).
+Again, all devices created by the base hub (i.e. associated with the
+base) are added as child devices to this hub.
 
-But in general, what are the benefit of such changes at all, except better marking call context annotation,
-so we are spending so much time on it?
+In total, this will yield the following device structure
 
+  WSID
+   |- SSAM device 1 (physical device)
+   |- SSAM device 2 (physical device)
+   |- SSAM device 3 (physical device)
+   |- ...
+   \- SSAM base hub (virtual device)
+      |- SSAM base device 1 (physical device)
+      |- SSAM base device 2 (physical device)
+      |- ...
+
+While software nodes seem to be well suited for this approach due to
+extensibility, they still need to be hard-coded, so I'm open for ideas
+on how this could be improved.
+
+Changes in v2:
+ - Fix Kconfig dependency
+
+Changes in v3:
+ - Fix use of lockdep_assert_held()
+
+Maximilian Luz (6):
+  platform/surface: Set up Surface Aggregator device registry
+  platform/surface: aggregator_registry: Add base device hub
+  platform/surface: aggregator_registry: Add battery subsystem devices
+  platform/surface: aggregator_registry: Add platform profile device
+  platform/surface: aggregator_registry: Add DTX device
+  platform/surface: aggregator_registry: Add HID subsystem devices
+
+ MAINTAINERS                                   |   1 +
+ drivers/platform/surface/Kconfig              |  27 +
+ drivers/platform/surface/Makefile             |   1 +
+ .../surface/surface_aggregator_registry.c     | 641 ++++++++++++++++++
+ 4 files changed, 670 insertions(+)
+ create mode 100644 drivers/platform/surface/surface_aggregator_registry.c
 
 -- 
-Best regards,
-grygorii
+2.30.1
+
