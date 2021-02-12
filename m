@@ -2,85 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A62319C19
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B844E319C18
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:47:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhBLJrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:47:31 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:56260 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbhBLJrL (ORCPT
+        id S230248AbhBLJrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:47:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230200AbhBLJrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:47:11 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11C9YeU1042176;
-        Fri, 12 Feb 2021 09:46:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=NfvQ9ws4X6o6uCqH9n7aJ5xoug6FquVYBUBrDnHRfIs=;
- b=YyVrTzZVY5mUcCFWXKVwRBy1zWRfjVu1uH/Gw85kQSK6zFoEysQx9YF+uEHDQEbKcSU/
- mlsRidkS56WJeDsXsYxLKE43ysysW/lJupyuYa5aiKf24qAdaQaZcQSzZCPl/FjUsPdJ
- LfjRXl1z6fA6jZ1jaRKyRwj9mzXfwODWHMI7J5ayb83r1ZQywJ72TBzFcUboHEeQbmSv
- g3iYBYNECBw4AbrJ5zTvpVJaEe39Bzp6wLeS34GjPqDfkBbm8aJH7RLrjpsH/0FILzrQ
- FMfDTTZORtC2KQbHz+l69KxErMNgZhfxTFnfSH+aWMfscD4BViMT/kvVHWZLOhrLdAZM ag== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 36mv9dvrvb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Feb 2021 09:46:13 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11C9TaWl087880;
-        Fri, 12 Feb 2021 09:46:11 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 36j5159h25-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Feb 2021 09:46:11 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11C9k67g006243;
-        Fri, 12 Feb 2021 09:46:06 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 12 Feb 2021 01:46:05 -0800
-Date:   Fri, 12 Feb 2021 12:45:58 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     karthik alapati <mail@karthek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] staging: rtl8723bs: remove obsolete commented out
- code
-Message-ID: <20210212094558.GJ2696@kadam>
-References: <cover.1613048573.git.mail@karthek.com>
- <485415dbafc32710f1a8e3f7c951868f7738efe9.1613048573.git.mail@karthek.com>
+        Fri, 12 Feb 2021 04:47:09 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F0EC061786
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:46:27 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id v24so12213495lfr.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:46:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i4ca59SdGEVnFSofi3ZXoX6JlgB2eaV3/YrXqwVKM8w=;
+        b=Yy351HLBZUge4sG9PBG2oLCjXOrReyEUMGZdK7mNji7JwMOZqqljspFEyf0HEKVnDc
+         ZkyxPuWz5lXXja33P/NlPIJ1NSZGsATcWJKqtMtded81fkJO3ebDhCrDsWb5Np3hwtGL
+         WBzhe6ZboL8lBI0ymtSQTMaQfMpmzV+MRwTEOEQw8uCiUwDC3woGumorSBeK6WiQzcoU
+         8YwJhBQQKfJAF8+Np3v/9GniuaaJm68pfN/arA/yqwy2xeQnxLIpWNjngsbpUYPWpiqs
+         m4EXb4OfhBGb/HP4e9Iql22pw0jzeap/xgK6NHLr6KTupqokL+Wywa/xLc6IOUUmmRDd
+         mBlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i4ca59SdGEVnFSofi3ZXoX6JlgB2eaV3/YrXqwVKM8w=;
+        b=f0VTvWF2/AV0YBSl4BYwEj6+7a3dkbVr17nXvJflA6EMnxCcZQsMMdU6I5Cv3qLmPW
+         TO3hLfXS5zz74Za1Xr4oNK0IkI76lxILpd/Iwj2aS8NTrTj4t8K6hE6ZctVswM2twSe5
+         7Iz5kGxxZOWONxbY4spoMT1a/U1VS7It1e3gxoZLca6//9QVl3Pj9fr4g8ADWPbHygGP
+         h94HWRAh7DRaYa27lOh1TW8zKiQ8Q0sCzHGMHfuq1U4XbGF5qWBPCYl0SKk36cCMLFlo
+         l3Kq6opgYIBn4lZdgehbzOpbg7wRl+W6Vv4eB933uJuIx1Sw+vzRBDcDYbZJPx9zmy6n
+         aAoQ==
+X-Gm-Message-State: AOAM53319oU0kMATthS1TEWyIuHKHckvBiVRGtzf7vHm7B90Cuhbi/BL
+        sStJSXXdQQX4CAOOKq1gheSFogKBtC2mt3CPYi7jfQ==
+X-Google-Smtp-Source: ABdhPJwIYedS7M45SGCJ9oNwPA/7hLc3LJLJFqoY2yYENbG6825pEXbq5JXjPw2/Djuva+5uHhN7aTJfuFaSNzpMinQ=
+X-Received: by 2002:a19:70e:: with SMTP id 14mr1094188lfh.157.1613123185577;
+ Fri, 12 Feb 2021 01:46:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <485415dbafc32710f1a8e3f7c951868f7738efe9.1613048573.git.mail@karthek.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102120074
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9892 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxlogscore=999
- bulkscore=0 suspectscore=0 phishscore=0 adultscore=0 impostorscore=0
- mlxscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102120074
+References: <20210204125718.1646082-1-geert+renesas@glider.be>
+In-Reply-To: <20210204125718.1646082-1-geert+renesas@glider.be>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 12 Feb 2021 10:46:14 +0100
+Message-ID: <CACRpkdadDRXa=Hv7dkaTL5pU5hYANQicKgTUhE7jEu6m81Hqvw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: pinctrl: Group tuples in pin control properties
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sean Wang <sean.wang@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 06:36:04PM +0530, karthik alapati wrote:
-> There is a bunch of messy, commented out code.  Just delete it.
-> 
-> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: karthik alapati <mail@karthek.com>
+On Thu, Feb 4, 2021 at 7:02 PM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
 
-Perfect, thanks.  Greg already merged this as well so good job.
+> To improve human readability and enable automatic validation, the tuples
+> in "pinctrl-*" properties should be grouped using angle brackets.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-regards,
-dan carepnter
+Patch applied.
 
+Yours,
+Linus Walleij
