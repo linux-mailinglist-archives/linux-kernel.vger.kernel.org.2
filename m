@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97EA631A1BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCBA31A1B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbhBLPdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:33:03 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20606 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232081AbhBLPcz (ORCPT
+        id S231825AbhBLPcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:32:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231709AbhBLPcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:32:55 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-7-JP_7B2LuPXKpBjoyLqlaog-1;
- Fri, 12 Feb 2021 15:31:17 +0000
-X-MC-Unique: JP_7B2LuPXKpBjoyLqlaog-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 12 Feb 2021 15:31:16 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 12 Feb 2021 15:31:16 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Coly Li' <colyli@suse.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Christina Jacob <cjacob@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-CC:     "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH][next] bcache: Use 64-bit arithmetic instead of 32-bit
-Thread-Topic: [PATCH][next] bcache: Use 64-bit arithmetic instead of 32-bit
-Thread-Index: AQHXAUq33fUjMDIuaUm57r6l5bDb0apUpJ4g
-Date:   Fri, 12 Feb 2021 15:31:16 +0000
-Message-ID: <0a2eb2e143ad480cbce3f84c3c920b5f@AcuMS.aculab.com>
-References: <20210212125028.GA264620@embeddedor>
- <ea24a361-ab1f-a330-b5e6-007bb9a1013b@suse.de>
-In-Reply-To: <ea24a361-ab1f-a330-b5e6-007bb9a1013b@suse.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 12 Feb 2021 10:32:24 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6A1C061574;
+        Fri, 12 Feb 2021 07:31:44 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id m2so6488435pgq.5;
+        Fri, 12 Feb 2021 07:31:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ltSglfZMY17lX+uRkeTIPeqR41cYRoHJOPQRHZ7b8SA=;
+        b=f7vfbs7+M/3t3iQGo58QVprRfZXx5BQk3Sij+dtxwkA2B4d8TshrJcy4IDYuqUrQ3X
+         jbPFLR+JPae+rfpK7FKI+U04zlmU3OpqB0YA2XRvkQb0XHQgfzkIyvVfpcqiipqwMXbM
+         4QybCTMDE0NThS6gvVYsw2906IV1takbFt1Z/ffCEHLc7DbATmTc6m1POkLiEwlENW1T
+         fPxKDkNaU8W9btzFhn3XTcHb0kw1JAQHNUHnedOmIme/Kc5JQY7lqTlNGJmhpSGKH9EO
+         hKJnISvH0Klyg2av5nnRYRF/D5cfQVAUq9NRQOz9wjT0hMXB2CO/Ya03utLzoj4yu8B9
+         QMcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ltSglfZMY17lX+uRkeTIPeqR41cYRoHJOPQRHZ7b8SA=;
+        b=RCTMj+g7RLihwU9SxxELvCCukHpO6UW6LMi3S3g3apUn4/Xy20Yeg/C3A+fxAsEp4A
+         4pPNlRSZoZ1MIpuHixqgHzR+fmkmwLpvHJwjNajdR2d+O6bBpYbwSsjGrJ+eYirq2unT
+         pAEmQ4hjvHbR9Mux9t6EaIBjOryMKNnz4bg8lE8wSW0mIeL/n2EHjx4rE7nLUu/NBt6K
+         jZOjMbZxg9ovS299IGxWXqHYMVSc20j9s5LSGRZzPt/XBbpG3c/ak9RntVFas620E483
+         oToRCVEzzxgM5G+H5x5c6l/SLpn70DKFbNEIXH4BIc4Ydn4SCBBur+VI/1aufqofSlXF
+         ZnGg==
+X-Gm-Message-State: AOAM531uA1wf0byP+ShZLItCBr6DoYqqPbpXCKYNawNC9ebJNvp1C3wZ
+        vlGfqoV1FqCnhOQJmmQh0+KGEA38CvY=
+X-Google-Smtp-Source: ABdhPJwkkaW9PbSeEz8asnJ9d3ynvxVnat3zvpZ+Ee6/2K15NFPd0FxLedtoM9ifRBF+cDoN34qmiA==
+X-Received: by 2002:a65:60d1:: with SMTP id r17mr3772915pgv.210.1613143903488;
+        Fri, 12 Feb 2021 07:31:43 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id w1sm8308238pjq.38.2021.02.12.07.31.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 07:31:42 -0800 (PST)
+Date:   Fri, 12 Feb 2021 07:31:40 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     vincent.cheng.xh@renesas.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/2] ptp: ptp_clockmatrix: Add
+ wait_for_sys_apll_dpll_lock.
+Message-ID: <20210212153140.GB23246@hoboy.vegasvil.org>
+References: <1613104725-22056-1-git-send-email-vincent.cheng.xh@renesas.com>
+ <1613104725-22056-2-git-send-email-vincent.cheng.xh@renesas.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1613104725-22056-2-git-send-email-vincent.cheng.xh@renesas.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+ICAJCWlmIChjLT5nY19zdGF0cy5pbl91c2UgPD0gQkNIX1dSSVRFQkFDS19GUkFHTUVOVF9U
-SFJFU0hPTERfTUlEKSB7DQo+ID4gLQkJCWZwX3Rlcm0gPSBkYy0+d3JpdGViYWNrX3JhdGVfZnBf
-dGVybV9sb3cgKg0KPiA+ICsJCQlmcF90ZXJtID0gKGludDY0X3QpZGMtPndyaXRlYmFja19yYXRl
-X2ZwX3Rlcm1fbG93ICoNCj4gPiAgCQkJKGMtPmdjX3N0YXRzLmluX3VzZSAtIEJDSF9XUklURUJB
-Q0tfRlJBR01FTlRfVEhSRVNIT0xEX0xPVyk7DQo+ID4gIAkJfSBlbHNlIGlmIChjLT5nY19zdGF0
-cy5pbl91c2UgPD0gQkNIX1dSSVRFQkFDS19GUkFHTUVOVF9USFJFU0hPTERfSElHSCkgew0KPiA+
-IC0JCQlmcF90ZXJtID0gZGMtPndyaXRlYmFja19yYXRlX2ZwX3Rlcm1fbWlkICoNCj4gPiArCQkJ
-ZnBfdGVybSA9IChpbnQ2NF90KWRjLT53cml0ZWJhY2tfcmF0ZV9mcF90ZXJtX21pZCAqDQo+ID4g
-IAkJCShjLT5nY19zdGF0cy5pbl91c2UgLSBCQ0hfV1JJVEVCQUNLX0ZSQUdNRU5UX1RIUkVTSE9M
-RF9NSUQpOw0KPiA+ICAJCX0gZWxzZSB7DQo+ID4gLQkJCWZwX3Rlcm0gPSBkYy0+d3JpdGViYWNr
-X3JhdGVfZnBfdGVybV9oaWdoICoNCj4gPiArCQkJZnBfdGVybSA9IChpbnQ2NF90KWRjLT53cml0
-ZWJhY2tfcmF0ZV9mcF90ZXJtX2hpZ2ggKg0KPiA+ICAJCQkoYy0+Z2Nfc3RhdHMuaW5fdXNlIC0g
-QkNIX1dSSVRFQkFDS19GUkFHTUVOVF9USFJFU0hPTERfSElHSCk7DQo+ID4gIAkJfQ0KPiA+ICAJ
-CWZwcyA9IGRpdl9zNjQoZGlydHksIGRpcnR5X2J1Y2tldHMpICogZnBfdGVybTsNCj4gPg0KPiAN
-Cj4gSG1tLCBzaG91bGQgc3VjaCB0aGluZyBiZSBoYW5kbGVkIGJ5IGNvbXBpbGVyID8gIE90aGVy
-d2lzZSB0aGlzIGtpbmQgb2YNCj4gcG90ZW50aWFsIG92ZXJmbG93IGlzc3VlIHdpbGwgYmUgZW5k
-bGVzcyB0aW1lIHRvIHRpbWUuDQo+IA0KPiBJIGFtIG5vdCBhIGNvbXBpbGVyIGV4cGVydCwgc2hv
-dWxkIHdlIGhhdmUgdG8gZG8gc3VjaCBleHBsaWNpdCB0eXBlIGNhc3QNCj4gYWxsIHRoZSB0aW1l
-ID8NCg0KV2UgZG8gdG8gZ2V0IGEgNjRiaXQgcHJvZHVjdCBmcm9tIHR3byAzMmJpdCB2YWx1ZXMu
-DQpBbiBhbHRlcm5hdGl2ZSBmb3IgdGhlIGFib3ZlIHdvdWxkIGJlOg0KCQlmcF90ZXJtID0gYy0+
-Z2Nfc3RhdHMuaW5fdXNlIC0gQkNIX1dSSVRFQkFDS19GUkFHTUVOVF9USFJFU0hPTERfSElHSDsN
-CgkJZnBfdGVybSAqPSBkYy0+d3JpdGViYWNrX3JhdGVfZnBfdGVybV9oaWdoOw0KDQpJIGhvcGUg
-QkNIX1dSSVRFQkFDS19GUkFHTUVOVF9USFJFU0hPTERfTE9XIGlzIHplcm8gOi0pDQoNCglEYXZp
-ZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQg
-RmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4
-NiAoV2FsZXMpDQo=
+On Thu, Feb 11, 2021 at 11:38:44PM -0500, vincent.cheng.xh@renesas.com wrote:
 
+> +static int wait_for_sys_apll_dpll_lock(struct idtcm *idtcm)
+> +{
+> +	char *fmt = "%d ms SYS lock timeout: APLL Loss Lock %d  DPLL state %d";
+
+Probably you want: const char *fmt
+
+> diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
+> index 645de2c..fb32327 100644
+> --- a/drivers/ptp/ptp_clockmatrix.h
+> +++ b/drivers/ptp/ptp_clockmatrix.h
+> @@ -15,7 +15,6 @@
+>  #define FW_FILENAME	"idtcm.bin"
+>  #define MAX_TOD		(4)
+>  #define MAX_PLL		(8)
+> -#define MAX_OUTPUT	(12)
+
+...
+
+> @@ -123,7 +137,6 @@ struct idtcm_channel {
+>  	enum pll_mode		pll_mode;
+>  	u8			pll;
+>  	u16			output_mask;
+> -	u8			output_phase_adj[MAX_OUTPUT][4];
+>  };
+
+Looks like this removal is unrelated to the patch subject, and so it
+deserves its own small patch.
+
+Acked-by: Richard Cochran <richardcochran@gmail.com>
