@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8391B3199F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 07:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A41DB319A00
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 07:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbhBLGdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 01:33:18 -0500
-Received: from bl22-133-207.dsl.telepac.pt ([2.83.133.207]:61757 "EHLO
+        id S229716AbhBLGie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 01:38:34 -0500
+Received: from bl22-133-207.dsl.telepac.pt ([2.83.133.207]:62415 "EHLO
         localhost" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229611AbhBLGdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 01:33:00 -0500
+        id S229625AbhBLGiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 01:38:25 -0500
 Received: from [192.168.1.68] ([127.0.0.1]) by localhost with
  MailEnable ESMTP; Fri, 12 Feb 2021 06:24:26 +0000
 Message-Id: <YV7JQRDJ-M3BD-RDIJ-R23F-S1QKVD3GA0K6@outlook.pt>
