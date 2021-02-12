@@ -2,141 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A5F31A62C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE7F31A62E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhBLUpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:45:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhBLUpn (ORCPT
+        id S231401AbhBLUqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:46:37 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:22270 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhBLUqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:45:43 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AFFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:45:03 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id t2so311257pjq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:45:03 -0800 (PST)
+        Fri, 12 Feb 2021 15:46:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1613162792; x=1644698792;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=PEdG6regig4NQpq/+0yWxUOBCfKr1nEeKcE1H2wBOkk=;
+  b=RdOgm6yTKdiQShwvLqAqWHYo53mMSVRZ0zEVbcwuizHr+YgeD44FLkvN
+   bMsZNgAQrnttYcNQBgSBcvHkj5InG1TXOONfLRbw4ny6rHsYV7JVODqhh
+   3oMgcSl7I06SNZRPyDfXyD05Bk6h3AS8ekVyiz74FjHxrPuc9hZkBan0R
+   916+9ilAngpFvFS1IOc7FZjxj3P5THfjlqo/9DlOCGIxGeOsM5ogUzpTT
+   uXEAlmI12iWar3QIWz5WS1CJoDWCOY2kI8vA9emncxh6bN/LT9Cg2gFd/
+   30ECtnGlucUpTsw898qGl8YKT6AJ6mCmSO5C87X3idfAhvctg9fh6DQZW
+   g==;
+IronPort-SDR: Tv2aif4vrXXfjcvcF4ls/uBd6eObj2hZaGFC/g8Vmv+GykhM0AQZv4QxSe8ScVcJEegWYsNoiO
+ 9yOJ63NFM1SfbJ/DY+SEo+DOcK5xGOAzrDnQYaNU4twLPRzac5xWQRnceErhvCzhi99NDPteGw
+ Km5jhh1YyFg6CX9j/0uD+USC8bipSk4gC9D9Zc0Jx+aifnFrhzVJ9K0q3euOCMnsKX9M9M3HjZ
+ RiCzyHTYE1Bc7Y3pkfAdUgnECqOEtga4bDqM9IYtU/SqMK59y+SvhA8sP2LH1rfBwgXzh9tYvC
+ WI4=
+X-IronPort-AV: E=Sophos;i="5.81,174,1610434800"; 
+   d="scan'208";a="43937096"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Feb 2021 13:45:16 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 12 Feb 2021 13:45:14 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Fri, 12 Feb 2021 13:45:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E2OclpBN/5hXkAq73XweEW7MVFsgY728iP4eWF7rkxRlweJdI33Wm8LEyppwTh70q001+22rPQAdzYJtd7KKLZMeIZ2YBK3RmshPBz9gy2fh8ETUW8k0/O9d4npOH9DSpj070tmlK3uSHaHCn2jrpmaF9Bg+naxQOzLAn3bb212ouSdH4oIhcA06u4grgKrwUG3QNkBHhZA1E2jAA/OxvHOcZNS/xuh/Vq/5z3wJB3CdQsyuy156uPN34Yu9odKofiMOdtk8Ydn8eCg2046EP/LNY42FDSvKmpbNx3uRjsiYyDkk0iF/8HMgR6ErUrB++qEyxlAej6RYXrIe48UcsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PEdG6regig4NQpq/+0yWxUOBCfKr1nEeKcE1H2wBOkk=;
+ b=K/IvGTepqvD1J23SJErajkz+dsQ2wa2sT95ymgSGVh+7pzMc7xRi38BOBu0RzbhM17GlpkFRdAarR9si7hWL7opubo0yWYJBvF3FiAt0XyJNGadPoUvR3VOO8dFI/njqhdSCZDu/jvxG/dhdRdTnPnjzTGLUsUoIt0WiMrXYmGcbas/FCtlVl/BxqWYFdNw9PRTagmkpdVraVjKqR1UW5mKq6vEZb6OSStCRrdPztojnNQxEA8CUcIW36GEqWJpy/+mNWmWXjlQOk/Kr3W8heCWAi1A09yApFly6TeGvyKkxsiTUXtVbnLvKbR2gKZLoGd/TGenvTrVzs6FLsf5OZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=T5XtV1zKLaPDDpJm+haMaAY787MEldcJF2+52pVxJmg=;
-        b=fdTLoryrM9/7lgSKiAEHb24UPW9IA/tf3KURhdT0AjdwnJOuVO3Ei7JYQbIREOu8js
-         yznYy7Lnd7ltSGtnZZ/kmPGDVh/22ekC4+QWTUD8HWc6Wf5/5nlgpWYKrfjvZJruCU8W
-         JCBtAldYsLQtQ6m3LP9I75uyqVra49ImJYGGMAVUztImjhmrP8rK4Oe8QTdPnXq8Yfyj
-         /UIpaZN5tgIYGiTg9zR+Ocym7wqhV5hjSkvKcSAoC+nX90/o2ouHU9Z5A/Uj+fDaV4oo
-         CM/NbOMkY/rOyvaKMzRYy2bSVXMIi1xh9M5Ji5nJuOaxTGDTlMgxVerZlGztH7Re7Le2
-         Mffw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=T5XtV1zKLaPDDpJm+haMaAY787MEldcJF2+52pVxJmg=;
-        b=A3lCBzApa/ghfABFOgpKV2dU3HxuRWuiwh868gMYzWWy7q8FMlJlFlvkHww6CZYzXF
-         25jXfb2eRWe4GOgCRAa5etwOZi3lfnysLiKAiAxtpauh+QFXZ1JWwXvVMDnBXAsjvcCm
-         OFvPi/DMfbxiwmSN0Wpu7NJgq+dvlcFD2dYj4+UFZJoGrhUKwPakOHCu56IsFCsK9uxJ
-         9NFyR7ObP31YxP/JQndaP8+l5WB0b8O+awLejHB9yGt+qAlHw/zmN8xo6XuKTM8h4V3R
-         sN3FAK1Qel+K461AhFaCmeFzdD2nlNLtC4fH9mez4/djIcQD7TTQmeiK5vKfLxQrCJKv
-         FWgg==
-X-Gm-Message-State: AOAM532a9k/4Dheu04gR6EbikraMO7n7J60isDPoqsYqE19yeHIO0nXR
-        2eLEWS6IAmIi3ds5wmfIMYC61A==
-X-Google-Smtp-Source: ABdhPJxwniz/mprQnnacqbUM9CPi+CxHD5L35oLH5Tg5cr3+JZLrmm3qgnHNbf3kObTjL25l8kNdoA==
-X-Received: by 2002:a17:90b:795:: with SMTP id l21mr4083431pjz.5.1613162702361;
-        Fri, 12 Feb 2021 12:45:02 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:b407:1780:13d2:b27])
-        by smtp.gmail.com with ESMTPSA id o11sm8088766pjo.43.2021.02.12.12.45.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 12:45:01 -0800 (PST)
-Date:   Fri, 12 Feb 2021 12:44:55 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
-Message-ID: <YCbox5Z5zAQxwZkQ@google.com>
-References: <YCbfyde9jl7ti0Oz@google.com>
- <A06CFC3D-53A8-45C1-9580-8459585F458E@amacapital.net>
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PEdG6regig4NQpq/+0yWxUOBCfKr1nEeKcE1H2wBOkk=;
+ b=rCMmSzAHSco1w7jts8XI9uDINGWJlG9011kYFBn6d3DzuzSpOJ9Snp9K4PdJeH4A5L+gGCOB59AkoaJSGiBTmDOmIGMY+Awc5y/9XEUSFE8rqC9C9vzV/aSnt2fVs9R9suBVkTGztKaNfOzlWIls5DhMP2cjpJCEf9AZqnPiZIs=
+Received: from MN2PR11MB3662.namprd11.prod.outlook.com (2603:10b6:208:ee::11)
+ by MN2PR11MB3725.namprd11.prod.outlook.com (2603:10b6:208:f9::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Fri, 12 Feb
+ 2021 20:45:14 +0000
+Received: from MN2PR11MB3662.namprd11.prod.outlook.com
+ ([fe80::20a8:8a27:a512:d584]) by MN2PR11MB3662.namprd11.prod.outlook.com
+ ([fe80::20a8:8a27:a512:d584%2]) with mapi id 15.20.3825.031; Fri, 12 Feb 2021
+ 20:45:14 +0000
+From:   <Bryan.Whitehead@microchip.com>
+To:     <thesven73@gmail.com>, <UNGLinuxDriver@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <andrew@lunn.ch>, <rtgbnm@gmail.com>, <sbauer@blackbox.su>,
+        <tharvey@gateworks.com>, <anders@ronningen.priv.no>,
+        <hdanton@sina.com>, <hch@lst.de>,
+        <willemdebruijn.kernel@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next v2 2/5] lan743x: sync only the received area of
+ an rx ring buffer
+Thread-Topic: [PATCH net-next v2 2/5] lan743x: sync only the received area of
+ an rx ring buffer
+Thread-Index: AQHXAJGpa8G4jGvBo06W56EUgcdc1KpU/sdQ
+Date:   Fri, 12 Feb 2021 20:45:14 +0000
+Message-ID: <MN2PR11MB36628F31F7478FED5885FB92FA8B9@MN2PR11MB3662.namprd11.prod.outlook.com>
+References: <20210211161830.17366-1-TheSven73@gmail.com>
+ <20210211161830.17366-3-TheSven73@gmail.com>
+In-Reply-To: <20210211161830.17366-3-TheSven73@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [47.19.18.123]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 28c0337e-ad6c-4394-63fe-08d8cf971989
+x-ms-traffictypediagnostic: MN2PR11MB3725:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR11MB3725818508A868B65EF9FE95FA8B9@MN2PR11MB3725.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7NQzfFgIQa8Q3XfQvotSUPU+pOAuRMHYxAEgVIl8EQprZvahr0W/Q1MeDeN9P9gpLiwkVgTjDycJXgs3okV+Ynbju+V6VkJ4eT/phHuupn5mOgoaciNMUGmMPrOaGyfMPMOJI39ARn2Wjc5ih7y7t7sRM0Jz/BqpGy9g/5JMYG1mETJO/A+mht1TqZ4sII97PcNTM0Ihy8nTHNNBX3mgHo2t5Qep778sOICnUA+iq9mdZVfBXU01yG41npj/KbgMB/tI+r/SQzzdDwjflW5kHjcGbBeytlR+mAgsWoG11ePH8sHEwpNtqKjj5yHwTGPvxR3zuqNc5OLkBGpWOCtmZoRepuuO8HMIK39oIONEjI/JM7Gyg8gGF+CmZU3W7WLowfkK+hpSpwLcSN9GK0y67ktud2TCO8NbVZohxUzWXiOwha20EiQa/FdFN9gdZT4nB/OAB/Xb3CX+f9BeINnv4TPyzvIpPgOX8ozZHhjLA6yB/3eJFRXJsKZ0IQxkRD6Y9yygO7o3r+HhsE7RGeTJ3A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR11MB3662.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(376002)(346002)(136003)(366004)(316002)(66946007)(7696005)(5660300002)(9686003)(76116006)(66446008)(55016002)(52536014)(66476007)(26005)(64756008)(4326008)(7416002)(66556008)(478600001)(71200400001)(8936002)(33656002)(54906003)(8676002)(86362001)(2906002)(186003)(6506007)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SldQbDZWbGtXMFBicDlDaDhRYXhHYzBwd29ra0JDdGFOTFpsamFqSFRQRSsw?=
+ =?utf-8?B?bGo5SXN6QXVzcjliMWlRVmF6aFIwbWhUZUUxWjdVQzIwRVpoL2VjajYxZUta?=
+ =?utf-8?B?cnVDS1dZQlZMb2ZRUHZ6elVZTHpDK3oxcVlXK1pFc2NrK2QxaHQxTnovaGIx?=
+ =?utf-8?B?V1RLME1iblVBdUFGL2F0eGVxM0ZYVnVZRTBQT2IrZklibmJud3hKRWhGMmtl?=
+ =?utf-8?B?SjFaUmtLOVI1cXQyN1Z1TXBreWNMejBnSXdMRDVNMmlCK29GbVZlMWtrenBP?=
+ =?utf-8?B?U2FRMklmRFMzdWxFWnFtZ1B6MFgwendUMTE2anZreXNkSFYvQmxja2FuQndn?=
+ =?utf-8?B?SGczdzl6MzFFZjdaalRQVUJVWE1lVVQ5VXNUaGFxZEFIU1MxRm9PdW1MVmRl?=
+ =?utf-8?B?eEtTVlg3aDVUc3lCdlVXZjYwcFZsdnd5dkNTTkdEVVQ2VHFwbHRhZlZhUUUw?=
+ =?utf-8?B?Y3p2U3JtNHBUUERITzlvZFpSUkg0d3l6a2liUUlCT0tKZldma1Q5MHQwWlE0?=
+ =?utf-8?B?VFg2U2RWZkZCMnFjMVZiOXJwVmtMZlphTG9TcDY5RndsUXBuWUIyd3hXajlS?=
+ =?utf-8?B?Qng0Rjgxc2VaTFRtTFRnNXFQRHJwNHRRVUgrWUdnTlBjaisxUkFNOCs4aUtW?=
+ =?utf-8?B?OXV4ZVJUQzh5ZURRaXY0MGlVV0pHYWFIWmh3MTFrY0lnTjVEVHE3bjlUODkx?=
+ =?utf-8?B?cy9BTTBoWERkaU95NzRTNU1QcGRwVlpPYlM5M1NTSDdST1d5cktnN0l2eVRK?=
+ =?utf-8?B?UHFzZis0R1ZiT3pVVEY0bStWa1lZTXJGVjB4K0ticWtScHR4endJSFBkaDBZ?=
+ =?utf-8?B?NHlFdS81Ti9qR3Q0UVV3dzlCK2Ixclp1VHY1YlpXZ1ZFd1RlUEpYNWo0WEVB?=
+ =?utf-8?B?aDdVM1NrL0Z2MUQrZDFDOUhyeWZmazR4MmFocmVRT2N0dmpTZDNrejcwcHRo?=
+ =?utf-8?B?SXpWdUZZcEI0ZDhIUmZ4c0JLYVNhK0p2TVpMYXp2MERLaU1FQnExVk85ekFC?=
+ =?utf-8?B?MFRUWm5SSlpuRTVlSFJLWmQ2R2p3bGZjNjZpaVNIRmova09wbEF0Q3REK285?=
+ =?utf-8?B?SEpNOVZJN2ViMDVzalJKWGtBblhhbVoybUc2a0Z1a3k0SXhXRXZ0dzltOVNn?=
+ =?utf-8?B?bWZoQkFkMEtkUjF0eTFaNWx5SXdtVFhoR2VGRHZrZWdZR1Bnd2FLNXpwd2Ux?=
+ =?utf-8?B?enJSZUVyS3VuMG9FeEcxdFNtYXJJZUZvN1Y0NDRtRjNHeWRrS3N2Q0VxZjhi?=
+ =?utf-8?B?anpXZmI3TG1aM09iOGg3cEhTWlBFZmpVSTlYazBzT1lGelROaFRDNUpDTTNa?=
+ =?utf-8?B?UmhBR3FhdTN6TEd5NHJWOTIwUSt6RTRiQmJaSXpEenVJVVJ1Ry9PNWhXRWZz?=
+ =?utf-8?B?VFQxVlRibzV4OThhcmliT3p4WWFtaTU0YkhpZUZuTk5ZU20wZU1lbGJ5UVNk?=
+ =?utf-8?B?c3hnS0RWOVBuNTVCMU1GNDQ4TG1kYjBRcUFYeXVmS3daMDBrek5YMVRseWRI?=
+ =?utf-8?B?Z0VIN1FvQlluYnRFVU9CVEJJbTFGekt0S0xNZHYvL3NmUUdmUksySGFJSGZ4?=
+ =?utf-8?B?UFg1L3ZyeWxTZXlveGlQVDNWQzFBVUlHWlIvZWpTNC8xZENtenBLd0ZPV0tF?=
+ =?utf-8?B?TWdJSitidXFzREtSbE5Vd085ZE81TGxWaFZBY0RjSXh5bjhTcE44cit2YXUz?=
+ =?utf-8?B?bUVtWkk5ZHpKMFVMYkMwcUIxU2VtNlBiczRiNzUybzFsZGZObVFlRDAyYkF1?=
+ =?utf-8?Q?K70pvSpgcjWgx5MdB/9t6nU4RJ4NLQ1pvEJl6Vw?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <A06CFC3D-53A8-45C1-9580-8459585F458E@amacapital.net>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR11MB3662.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 28c0337e-ad6c-4394-63fe-08d8cf971989
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2021 20:45:14.7451
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Pr4QInPMEFX6z2JobCFj7SQRJ+aS+jEME9/4vM/KbX26T7uqSa/rk24JNlovptdZsOOKzxUC7wxPOTQVXDXIYNNHqbGJSGdv0yFpQZbhvmY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3725
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021, Andy Lutomirski wrote:
-> 
-> > On Feb 12, 2021, at 12:06 PM, Sean Christopherson <seanjc@google.com> wrote:
-> > 
-> > ﻿On Fri, Feb 12, 2021, Andy Lutomirski wrote:
-> >>> On Fri, Feb 5, 2021 at 3:39 PM Kuppuswamy Sathyanarayanan
-> >>> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> >>> 
-> >>> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> >>> 
-> >>> The TDX module injects #VE exception to the guest TD in cases of
-> >>> disallowed instructions, disallowed MSR accesses and subset of CPUID
-> >>> leaves. Also, it's theoretically possible for CPU to inject #VE
-> >>> exception on EPT violation, but the TDX module makes sure this does
-> >>> not happen, as long as all memory used is properly accepted using
-> >>> TDCALLs.
-> >> 
-> >> By my very cursory reading of the TDX arch specification 9.8.2,
-> >> "Secure" EPT violations don't send #VE.  But the docs are quite
-> >> unclear, or at least the docs I found are.
-> > 
-> > The version I have also states that SUPPRESS_VE is always set.  So either there
-> > was a change in direction, or the public docs need to be updated.  Lazy accept
-> > requires a #VE, either from hardware or from the module.  The latter would
-> > require walking the Secure EPT tables on every EPT violation...
-> > 
-> >> What happens if the guest attempts to access a secure GPA that is not
-> >> ACCEPTed?  For example, suppose the VMM does THH.MEM.PAGE.REMOVE on a secure
-> >> address and the guest accesses it, via instruction fetch or data access.
-> >> What happens?
-> > 
-> > Well, as currently written in the spec, it will generate an EPT violation and
-> > the host will have no choice but to kill the guest.
-> 
-> Or page the page back in and try again?
-
-The intended use isn't for swapping a page or migrating a page.  Those flows
-have dedicated APIs, and do not _remove_ a page.
-
-E.g. the KVM RFC patches already support zapping Secure EPT entries if NUMA
-balancing kicks in.  But, in TDX terminology, that is a BLOCK/UNBLOCK operation.
-
-Removal is for converting a private page to a shared page, and for paravirt
-memory ballooning.
-
-> In regular virt guests, if the host pages out a guest page, it’s the host’s
-> job to put it back when needed. In paravirt, a well designed async of
-> protocol can sometimes let the guest to useful work when this happens. If a
-> guest (or bare metal) has its memory hot removed (via balloon or whatever)
-> and the kernel messes up and accesses removed memory, the guest (or bare
-> metal) is toast.
-> 
-> I don’t see why TDX needs to be any different.
-
-The REMOVE API isn't intended for swap.  In fact, it can't be used for swap. If
-a page is removed, its contents are lost.  Because the original contents are
-lost, the guest is required to re-accept the page so that the host can't
-silently get the guest to consume a zero page that the guest thinks has valid
-data.
-
-For swap, the contents are preserved, and so explicit re-acceptance is not
-required.  From the guest's perspective, it's really just a high-latency memory
-access.
+SGkgU3Zlbiwgc2VlIGJlbG93Lg0KDQo+ICsgICAgICAgaWYgKGJ1ZmZlcl9pbmZvLT5kbWFfcHRy
+KSB7DQo+ICsgICAgICAgICAgICAgICAvKiB1bm1hcCBmcm9tIGRtYSAqLw0KPiArICAgICAgICAg
+ICAgICAgcGFja2V0X2xlbmd0aCA9IFJYX0RFU0NfREFUQTBfRlJBTUVfTEVOR1RIX0dFVF8NCj4g
+KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobGUzMl90b19jcHUoZGVzY3JpcHRvci0+
+ZGF0YTApKTsNCj4gKyAgICAgICAgICAgICAgIGlmIChwYWNrZXRfbGVuZ3RoID09IDAgfHwNCj4g
+KyAgICAgICAgICAgICAgICAgICBwYWNrZXRfbGVuZ3RoID4gYnVmZmVyX2luZm8tPmJ1ZmZlcl9s
+ZW5ndGgpDQo+ICsgICAgICAgICAgICAgICAgICAgICAgIC8qIGJ1ZmZlciBpcyBwYXJ0IG9mIG11
+bHRpLWJ1ZmZlciBwYWNrZXQ6IGZ1bGx5IHVzZWQgKi8NCj4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgcGFja2V0X2xlbmd0aCA9IGJ1ZmZlcl9pbmZvLT5idWZmZXJfbGVuZ3RoOw0KDQpBY2NvcmRp
+bmcgdG8gdGhlIGRvY3VtZW50IEkgaGF2ZSwgRlJBTUVfTEVOR1RIIGlzIG9ubHkgdmFsaWQgd2hl
+biBMUyBiaXQgaXMgc2V0LCBhbmQgcmVzZXJ2ZWQgb3RoZXJ3aXNlLg0KVGhlcmVmb3JlLCBJJ20g
+bm90IHN1cmUgeW91IGNhbiByZWx5IG9uIGl0IGJlaW5nIHplcm8gd2hlbiBMUyBpcyBub3Qgc2V0
+LCBldmVuIGlmIHlvdXIgZXhwZXJpbWVudHMgc2F5IGl0IGlzLg0KRnV0dXJlIGNoaXAgcmV2aXNp
+b25zIG1pZ2h0IHVzZSB0aG9zZSBiaXRzIGRpZmZlcmVudGx5Lg0KDQpDYW4geW91IGNoYW5nZSB0
+aGlzIHNvIHRoZSBMUyBiaXQgaXMgY2hlY2tlZC4NCglJZiBzZXQgeW91IGNhbiB1c2UgdGhlIHNt
+YWxsZXIgb2YgRlJBTUVfTEVOR1RIIG9yIGJ1ZmZlciBsZW5ndGguDQoJSWYgY2xlYXIgeW91IGNh
+biBqdXN0IHVzZSBidWZmZXIgbGVuZ3RoLiANCg0KPiArICAgICAgICAgICAgICAgLyogc3luYyB1
+c2VkIHBhcnQgb2YgYnVmZmVyIG9ubHkgKi8NCj4gKyAgICAgICAgICAgICAgIGRtYV9zeW5jX3Np
+bmdsZV9mb3JfY3B1KGRldiwgYnVmZmVyX2luZm8tPmRtYV9wdHIsDQo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBwYWNrZXRfbGVuZ3RoLA0KPiArICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgRE1BX0ZST01fREVWSUNFKTsNCj4gKyAgICAgICAg
+ICAgICAgIGRtYV91bm1hcF9zaW5nbGVfYXR0cnMoZGV2LCBidWZmZXJfaW5mby0+ZG1hX3B0ciwN
+Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnVmZmVyX2luZm8tPmJ1
+ZmZlcl9sZW5ndGgsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIERN
+QV9GUk9NX0RFVklDRSwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+RE1BX0FUVFJfU0tJUF9DUFVfU1lOQyk7DQo+ICsgICAgICAgfQ0KDQo=
