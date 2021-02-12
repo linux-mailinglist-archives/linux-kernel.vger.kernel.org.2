@@ -2,63 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A7E319B8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B066A319B8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhBLIzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 03:55:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhBLIzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 03:55:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 610BB64DEA;
-        Fri, 12 Feb 2021 08:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613120102;
-        bh=5DdrQt2I6f4i7iwHXUZo7yH9lSLs4JCO3DtBvITNDV8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bgrfFRaTAKOAraq8MRjygYLI5URHjbf/7X9eVH5pyfAyOakFf6zKzEMJgphQIkLWg
-         G6mXTN5Gps6vvV9ePXzRzb8UhxMRPavEKi/EntE2U3CkwrGskRZfDxXaPBUY0khHax
-         ggamO3W/YuUniWcWYIbn2x0vkSFMHOyB6xbZCMbc=
-Date:   Fri, 12 Feb 2021 09:54:59 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Pritthijit Nath <pritthijit.nath@icloud.com>,
-        devel@driverdev.osuosl.org, elder@kernel.org, vireshk@kernel.org,
-        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org
-Subject: Re: [PATCH 2/2] staging: greybus: Fixed a misspelling in hid.c
-Message-ID: <YCZCY+UlzdwGU6pw@kroah.com>
-References: <20210212081835.9497-1-pritthijit.nath@icloud.com>
- <20210212081835.9497-2-pritthijit.nath@icloud.com>
- <YCY/1LCP404AZxhm@hovoldconsulting.com>
+        id S229969AbhBLI44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 03:56:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20213 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229617AbhBLI4v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 03:56:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613120124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nma5RrDL02zgQCnQAmwMQggmlffp24gdJp2OtX7ZPuI=;
+        b=SD/NxV8HwsD3C5SQgj6WJz5zfhn0Bs91dMJu3GCilTkJnCGj0N+QgGgIP+QI/ct59P0cDq
+        eetowSmiL1LtU5C0p9tI/As5IxsD5XL644lISsqvQwjWefYE98VtirK6plnTQA2x4MzeTp
+        oTEd0hFIIeKJiZ6FqIGbe8C/zF7cmKo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-295-1LGCv3TxNmmITacLXAFtsw-1; Fri, 12 Feb 2021 03:55:20 -0500
+X-MC-Unique: 1LGCv3TxNmmITacLXAFtsw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 176EB6D4E0;
+        Fri, 12 Feb 2021 08:55:18 +0000 (UTC)
+Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B842F62AF8;
+        Fri, 12 Feb 2021 08:55:10 +0000 (UTC)
+Subject: Re: [PATCH v13 02/15] iommu: Introduce bind/unbind_guest_msi
+To:     Keqian Zhu <zhukeqian1@huawei.com>, eric.auger.pro@gmail.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
+        alex.williamson@redhat.com
+Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
+        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
+        zhangfei.gao@linaro.org
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <20201118112151.25412-3-eric.auger@redhat.com>
+ <6a70d93d-329f-4129-bd90-03f8589c5de4@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <1ef4f5ae-9ca6-7c6d-f8a9-31240e5688c2@redhat.com>
+Date:   Fri, 12 Feb 2021 09:55:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCY/1LCP404AZxhm@hovoldconsulting.com>
+In-Reply-To: <6a70d93d-329f-4129-bd90-03f8589c5de4@huawei.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 09:44:04AM +0100, Johan Hovold wrote:
-> On Fri, Feb 12, 2021 at 01:48:35PM +0530, Pritthijit Nath wrote:
-> > Fixed the spelling of 'transfered' to 'transferred'.
-> > 
-> > Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
-> > ---
-> >  drivers/staging/greybus/hid.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/staging/greybus/hid.c b/drivers/staging/greybus/hid.c
-> > index a56c3fb5d35a..6b19ff4743a9 100644
-> > --- a/drivers/staging/greybus/hid.c
-> > +++ b/drivers/staging/greybus/hid.c
-> > @@ -254,7 +254,7 @@ static int __gb_hid_output_raw_report(struct hid_device *hid, __u8 *buf,
-> > 
-> >  	ret = gb_hid_set_report(ghid, report_type, report_id, buf, len);
-> >  	if (report_id && ret >= 0)
-> > -		ret++; /* add report_id to the number of transfered bytes */
-> > +		ret++; /* add report_id to the number of transferrid bytes */
-> 
-> You now misspelled transferred in a different way.
+Hi Keqian,
 
-Oops, will go revert this, I need more coffee...
+On 2/1/21 12:52 PM, Keqian Zhu wrote:
+> Hi Eric,
+> 
+> On 2020/11/18 19:21, Eric Auger wrote:
+>> On ARM, MSI are translated by the SMMU. An IOVA is allocated
+>> for each MSI doorbell. If both the host and the guest are exposed
+>> with SMMUs, we end up with 2 different IOVAs allocated by each.
+>> guest allocates an IOVA (gIOVA) to map onto the guest MSI
+>> doorbell (gDB). The Host allocates another IOVA (hIOVA) to map
+>> onto the physical doorbell (hDB).
+>>
+>> So we end up with 2 untied mappings:
+>>          S1            S2
+>> gIOVA    ->    gDB
+>>               hIOVA    ->    hDB
+>>
+>> Currently the PCI device is programmed by the host with hIOVA
+>> as MSI doorbell. So this does not work.
+>>
+>> This patch introduces an API to pass gIOVA/gDB to the host so
+>> that gIOVA can be reused by the host instead of re-allocating
+>> a new IOVA. So the goal is to create the following nested mapping:
+> Does the gDB can be reused under non-nested mode?
+
+Under non nested mode the hIOVA is allocated within the MSI reserved
+region exposed by the SMMU driver, [0x8000000, 80fffff]. see
+iommu_dma_prepare_msi/iommu_dma_get_msi_page in dma_iommu.c. this hIOVA
+is programmed in the physical device so that the physical SMMU
+translates it into the physical doorbell (hDB = host physical ITS
+doorbell). The gDB is not used at pIOMMU programming level. It is only
+used when setting up the KVM irq route.
+
+Hope this answers your question.
+
+> 
+>>
+>>          S1            S2
+>> gIOVA    ->    gDB     ->    hDB
+>>
+>> and program the PCI device with gIOVA MSI doorbell.
+>>
+>> In case we have several devices attached to this nested domain
+>> (devices belonging to the same group), they cannot be isolated
+>> on guest side either. So they should also end up in the same domain
+>> on guest side. We will enforce that all the devices attached to
+>> the host iommu domain use the same physical doorbell and similarly
+>> a single virtual doorbell mapping gets registered (1 single
+>> virtual doorbell is used on guest as well).
+>>
+> [...]
+> 
+>> + *
+>> + * The associated IOVA can be reused by the host to create a nested
+>> + * stage2 binding mapping translating into the physical doorbell used
+>> + * by the devices attached to the domain.
+>> + *
+>> + * All devices within the domain must share the same physical doorbell.
+>> + * A single MSI GIOVA/GPA mapping can be attached to an iommu_domain.
+>> + */
+>> +
+>> +int iommu_bind_guest_msi(struct iommu_domain *domain,
+>> +			 dma_addr_t giova, phys_addr_t gpa, size_t size)
+>> +{
+>> +	if (unlikely(!domain->ops->bind_guest_msi))
+>> +		return -ENODEV;
+>> +
+>> +	return domain->ops->bind_guest_msi(domain, giova, gpa, size);
+>> +}
+>> +EXPORT_SYMBOL_GPL(iommu_bind_guest_msi);
+>> +
+>> +void iommu_unbind_guest_msi(struct iommu_domain *domain,
+>> +			    dma_addr_t iova)
+> nit: s/iova/giova
+sure
+> 
+>> +{
+>> +	if (unlikely(!domain->ops->unbind_guest_msi))
+>> +		return;
+>> +
+>> +	domain->ops->unbind_guest_msi(domain, iova);
+>> +}
+>> +EXPORT_SYMBOL_GPL(iommu_unbind_guest_msi);
+>> +
+> [...]
+> 
+> Thanks,
+> Keqian
+> 
+
+Thanks
+
+Eric
+
