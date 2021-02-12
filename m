@@ -2,76 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B649631A1C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5F931A1C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhBLPd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:33:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbhBLPdP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:33:15 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B35EC061574;
-        Fri, 12 Feb 2021 07:32:35 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id t25so6491298pga.2;
-        Fri, 12 Feb 2021 07:32:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WX/P9Y7j8yYly47Dz+Y05mhCHy0eD2ijBJOWsd7J+4c=;
-        b=CCQFtbW9WwjHdN0fr59zZY5PmRmIIeLJRbVr0hfNUXXSKNI8yC2ul/BUTH/tqkjQSu
-         Rb6iD4pFX3/Bv2v2T0otMhD7Krk9DECA6FGhW5Lj4Wfa61zvs22y+NS0EXFp0Bj8VHxQ
-         jXFEKf1r9XE8+HMnjqgNUzukAgafQJQwvqNZqU4i0uoOmGJB6cJuaACjVFaopCiuTS8a
-         aKG7ml6kLKmtjufQ9/tIZvffb+Q7Kw9245IWO/lGyTrGu3/PfCeg2t9KA8GDQ0O2ZYok
-         /qFGKTdyFpMCBnxOQQrK20R00+/ombJ1CnLjZibdQka7IrWMWymK7x82BpuIeQFg1SdR
-         /ONQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WX/P9Y7j8yYly47Dz+Y05mhCHy0eD2ijBJOWsd7J+4c=;
-        b=YRDhXhs/a6qLaDANFgHG+7UrLlBnyPlGVOBdzSEIHtESVNtzo7xNcAQRNz0YLvSa55
-         x4+XBI1jWQMWZcchuDOA/MOSocKgt3MTlFcHS9YGTWrryKo3jZJ9neLKsBw4T+JbtSNm
-         BLEtEStKgrELlpQGrzwMjRshy6aQpYTwntn83EqLC6TW+OADEAmeuyJc8mjQK1qBdaKv
-         63ecOt108kquEs1W22VTtCYFASZ97b0XRIbXpeQPCtA/TKpO5cz9Lvvph9VL1XDfDc7q
-         FkXAmINQULBjEdbC8JAAiUoJroarzohNeTQsEZ+rZzlo0ANh11kVmQ7mfn7fy7V8JwRf
-         gsGw==
-X-Gm-Message-State: AOAM532LZ/f8OV994vxFrGmZLzgwCvl7FKZaS4mzT6TBFhLtomKr6TcV
-        1yDpM7m4cOkDeJI2XyIxwD6cRlsr+Gg=
-X-Google-Smtp-Source: ABdhPJxVuGmJvFQD2hPlKHk+D5u8qJ0+u3wc46id29iPQO8Dy8JTDUolIHHlKkszEWU3fUmIdMC69Q==
-X-Received: by 2002:a63:4507:: with SMTP id s7mr3677346pga.390.1613143954901;
-        Fri, 12 Feb 2021 07:32:34 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id p2sm8978777pjj.0.2021.02.12.07.32.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 07:32:34 -0800 (PST)
-Date:   Fri, 12 Feb 2021 07:32:32 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     vincent.cheng.xh@renesas.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/2] ptp: ptp_clockmatrix: Add alignment of 1
- PPS to idtcm_perout_enable.
-Message-ID: <20210212153232.GC23246@hoboy.vegasvil.org>
-References: <1613104725-22056-1-git-send-email-vincent.cheng.xh@renesas.com>
- <1613104725-22056-3-git-send-email-vincent.cheng.xh@renesas.com>
+        id S231715AbhBLPen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:34:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232081AbhBLPdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:33:53 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52D3A64E70;
+        Fri, 12 Feb 2021 15:33:12 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 10:33:10 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v3 3/3] tracing: Add ptr-hash option to show the hashed
+ pointer value
+Message-ID: <20210212103310.791c1f48@gandalf.local.home>
+In-Reply-To: <160277372504.29307.14909828808982012211.stgit@devnote2>
+References: <160277369795.29307.6792451054602907237.stgit@devnote2>
+        <160277372504.29307.14909828808982012211.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1613104725-22056-3-git-send-email-vincent.cheng.xh@renesas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 11:38:45PM -0500, vincent.cheng.xh@renesas.com wrote:
-> From: Vincent Cheng <vincent.cheng.xh@renesas.com>
-> 
-> When enabling output using PTP_CLK_REQ_PEROUT, need to align the output
-> clock to the internal 1 PPS clock.
-> 
-> Signed-off-by: Vincent Cheng <vincent.cheng.xh@renesas.com>
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+Hi Masami,
+
+I noticed theses sitting in my patchwork and I said I was going to hold off
+to the next merge window, and these got pushed down in my stack :-/
+
+
+On Thu, 15 Oct 2020 23:55:25 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Add tracefs/options/hash-ptr option to show hashed pointer
+> value by %p in event printk format string.
+> 
+> For the security reason, normal printk will show the hashed
+> pointer value (encrypted by random number) with %p to printk
+> buffer to hide the real address. But the tracefs/trace always
+> shows real address for debug. To bridge those outputs, add an
+> option to switch the output format. Ftrace users can use it
+> to find the hashed value corresponding to the real address
+> in trace log.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  Documentation/trace/ftrace.rst |    6 ++++++
+>  kernel/trace/trace.c           |    3 +++
+>  kernel/trace/trace.h           |    1 +
+>  3 files changed, 10 insertions(+)
+> 
+> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+> index 87cf5c010d5d..62c98e9bbdd9 100644
+> --- a/Documentation/trace/ftrace.rst
+> +++ b/Documentation/trace/ftrace.rst
+> @@ -1159,6 +1159,12 @@ Here are the available options:
+>  	This simulates the original behavior of the trace file.
+>  	When the file is closed, tracing will be enabled again.
+>  
+> +  hash-ptr
+> +        When set, "%p" in the event printk format displays the
+> +        hashed pointer value instead of real address.
+> +        This will be useful if you want to find out which hashed
+> +        value is corresponding to the real value in trace log.
+> +
+
+I'm thinking of making this the default. I'll add a patch to make it
+enabled by default "for security reasons", but still allow people to clear
+it this value.
+
+Are you OK with that?
+
+-- Steve
+
+
+
+>    record-cmd
+>  	When any event or tracer is enabled, a hook is enabled
+>  	in the sched_switch trace point to fill comm cache
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 75395293d8df..b88cccf224cd 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -3543,6 +3543,9 @@ const char *trace_event_format(struct trace_iterator *iter, const char *fmt)
+>  	if (WARN_ON_ONCE(!fmt))
+>  		return fmt;
+>  
+> +	if (iter->tr->trace_flags & TRACE_ITER_HASH_PTR)
+> +		return fmt;
+> +
+>  	p = fmt;
+>  	new_fmt = q = iter->fmt;
+>  	while (*p) {
+> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> index 524502d1f60a..c34187bd22a9 100644
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -1347,6 +1347,7 @@ extern int trace_get_user(struct trace_parser *parser, const char __user *ubuf,
+>  		C(MARKERS,		"markers"),		\
+>  		C(EVENT_FORK,		"event-fork"),		\
+>  		C(PAUSE_ON_TRACE,	"pause-on-trace"),	\
+> +		C(HASH_PTR,		"hash-ptr"),	/* Print hashed pointer */ \
+>  		FUNCTION_FLAGS					\
+>  		FGRAPH_FLAGS					\
+>  		STACK_FLAGS					\
+
