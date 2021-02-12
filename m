@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE714319848
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0F431984F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhBLCRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 21:17:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhBLCRn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 21:17:43 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BCCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 18:17:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=r/OPg+xFtQLytfbJexyr61HkOhaw2sjKTK38fefNnfE=; b=OPW9YqjBVhPVeUZH3chQEPv3Ib
-        Y/elI26oipgFEX+VklHy3/9ag1InJFsdpusv4B/xvtjyiICcPKovCxsqkKq4qHYJBvB741EQ7KB0u
-        BkllX7ub6JPcyhUolkd7bXq51v7Lq7ZGZ2RX9GAydgMaM1M4AxlgDc0Wrruh2c7QHaUllKjMVffCj
-        h9KaazBXQcHnRT6aX4mVxPb7DnM6SPq+H5UUg4wFqr3lHLPt/paYrZVha/PXf6SHmncPZ8XrMm5Y8
-        kDXWTU3GjHPew+17zvXxwFfG0XZKxC4dKyfuIOu1ywPtmh39HwWwSzBm9VQBpcnQEOkLqkmr/1Kkw
-        UxAXA8ng==;
-Received: from [2601:1c0:6280:3f0::cf3b] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lAO0t-00020D-5k; Fri, 12 Feb 2021 02:16:55 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH] h8300: fix PREEMPTION build, TI_PRE_COUNT undefined
-Date:   Thu, 11 Feb 2021 18:16:50 -0800
-Message-Id: <20210212021650.22740-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S229903AbhBLCUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 21:20:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229662AbhBLCUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 21:20:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id A27DF64E38;
+        Fri, 12 Feb 2021 02:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613096407;
+        bh=xlMgynX/tXBzPare7r7xKaYZUVtzqnPeQetgZf3z0A4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=lwg9ENqFRm/R8B3HWqVefPfT1sR7a5j+S6/7wW1iWh33IxbeJfBxfr4Lk365sbu8H
+         /zZupTRXdsfm+gOeICEMgCUDo5l6F7cQWNMYg1zjNxq9YgZ2s4ib+8HHCl+7gIp2a+
+         xFw6CXSHPqAe/zPwEoZwc4T5K+bXE+FMAThVMBEMEwsyOPssESCwayncJNaS/iCvKE
+         DkasZIVbjiu59q/u0BXDNOoickTTvKTOX/y2IdkE08LEcWE1w/i2ACdq/tTK91Sfiy
+         BmsTiSJ3fZ7gwMcuR71rNCYY3TzOM02QmARGfcqlx+5ZVVhYWc2gLNhzRXgcmvneXu
+         0uE2ns/6P/lOw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 91B2360A2B;
+        Fri, 12 Feb 2021 02:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v7 1/5] bpf: Be less specific about socket cookies
+ guarantees
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161309640759.12988.9852007346010349044.git-patchwork-notify@kernel.org>
+Date:   Fri, 12 Feb 2021 02:20:07 +0000
+References: <20210210111406.785541-1-revest@chromium.org>
+In-Reply-To: <20210210111406.785541-1-revest@chromium.org>
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
+        jackmanb@chromium.org, linux-kernel@vger.kernel.org,
+        kpsingh@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a build error for undefined 'TI_PRE_COUNT' by adding it to
-asm-offsets.c.
+Hello:
 
-h8300-linux-ld: arch/h8300/kernel/entry.o: in function `resume_kernel':
-(.text+0x29a): undefined reference to `TI_PRE_COUNT'
+This series was applied to bpf/bpf-next.git (refs/heads/master):
 
-Fixes: df2078b8daa7 ("h8300: Low level entry")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: uclinux-h8-devel@lists.sourceforge.jp
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
----
-Possibly due to some Kconfig changes related to PREEMPTION?
-I suppose that CONFIG_PREEMPTION hasn't been used much on H8/300.
+On Wed, 10 Feb 2021 12:14:02 +0100 you wrote:
+> Since "92acdc58ab11 bpf, net: Rework cookie generator as per-cpu one"
+> socket cookies are not guaranteed to be non-decreasing. The
+> bpf_get_socket_cookie helper descriptions are currently specifying that
+> cookies are non-decreasing but we don't want users to rely on that.
+> 
+> Reported-by: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> Acked-by: KP Singh <kpsingh@kernel.org>
+> 
+> [...]
 
- arch/h8300/kernel/asm-offsets.c |    3 +++
- 1 file changed, 3 insertions(+)
+Here is the summary with links:
+  - [bpf-next,v7,1/5] bpf: Be less specific about socket cookies guarantees
+    https://git.kernel.org/bpf/bpf-next/c/07881ccbf40c
+  - [bpf-next,v7,2/5] bpf: Expose bpf_get_socket_cookie to tracing programs
+    https://git.kernel.org/bpf/bpf-next/c/c5dbb89fc2ac
+  - [bpf-next,v7,3/5] selftests/bpf: Integrate the socket_cookie test to test_progs
+    https://git.kernel.org/bpf/bpf-next/c/61f8c9c8f3c8
+  - [bpf-next,v7,4/5] selftests/bpf: Use vmlinux.h in socket_cookie_prog.c
+    https://git.kernel.org/bpf/bpf-next/c/6cd4dcc3fb81
+  - [bpf-next,v7,5/5] selftests/bpf: Add a selftest for the tracing bpf_get_socket_cookie
+    https://git.kernel.org/bpf/bpf-next/c/6fdd671baaf5
 
---- lnx-511-rc7.orig/arch/h8300/kernel/asm-offsets.c
-+++ lnx-511-rc7/arch/h8300/kernel/asm-offsets.c
-@@ -63,6 +63,9 @@ int main(void)
- 	OFFSET(TI_FLAGS, thread_info, flags);
- 	OFFSET(TI_CPU, thread_info, cpu);
- 	OFFSET(TI_PRE, thread_info, preempt_count);
-+#ifdef CONFIG_PREEMPTION
-+	DEFINE(TI_PRE_COUNT, offsetof(struct thread_info, preempt_count));
-+#endif
- 
- 	return 0;
- }
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
