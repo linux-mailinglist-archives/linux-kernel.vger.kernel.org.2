@@ -2,116 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3961319E48
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351D5319E50
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhBLMXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:23:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231447AbhBLMU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:20:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E4064E2D;
-        Fri, 12 Feb 2021 12:19:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613132382;
-        bh=W5sUFSHz2G1CpMp3u/PNpRMKInmYA9DHy9F0Xh4Qi/g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uliQ7ITQ7khrFMrul5UWtGReCQztr6YzMZSFQPlwFV556xDyZpjNOKf6PdKmcYGio
-         t2Wesl1HZq8fwM818L2OIxiqAHNMFJKewdV/amZshENuuWwrch2jdc6SlRUba6D3tt
-         TSsIW7NtrJkg2AmIuKd/nA7OwhzYiQD8kFmHqHxarVXLwUf4RGq/TDZiH6FXd4nY7h
-         d5R+5BwaOLnxqN9um+/AFNvMN/ph3gOU5MXr1/sw2QPUgiXwRltVCGrb0hP7NOBm25
-         RYLd5XK9XxpCfu7CvWaeEaVX29DvY5oZU1w+Cn6iujpo8Eel+JaQR00lpkgIDXGeuX
-         QG+ZtAqZ02UgA==
-Date:   Fri, 12 Feb 2021 14:19:33 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: Re: [PATCH v3 3/5] x86/sgx: Optimize the free_cnt count in
- sgx_epc_section
-Message-ID: <YCZyVXIeeYqNK+sy@kernel.org>
-References: <20210124062907.88229-1-tianjia.zhang@linux.alibaba.com>
- <20210124062907.88229-4-tianjia.zhang@linux.alibaba.com>
- <YBGlodsOaX4cWAtl@kernel.org>
- <abd77ee8-0311-1664-f3ee-6d4a9fe512b1@linux.alibaba.com>
+        id S230132AbhBLMYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:24:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231341AbhBLMVU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:21:20 -0500
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594D0C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 04:20:40 -0800 (PST)
+Received: by mail-vk1-xa29.google.com with SMTP id u22so2012954vke.9
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 04:20:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K7cVpiyFvKnbzOkHpmdbCjD/gvDLBbbhp96xZdfeqF4=;
+        b=vJxssJowYGLiIGwwoDnJH93+1/Ibpn6Kudfu0/PHyC/CuW2+GG/XPq4WhcMgj8d8Zi
+         3XB4K0TxEF/0PxLEgZlvmy32jk2qL8zJXutEChCgExNIhcx2/wywziqBH4I/apfBc30f
+         hZNP5NkeMTC0tWBBX+eg55yq6b9VkjA0v3o2O9JnaMtPD0PODgY2eJiSyHTnAD2rxqJm
+         iZ5fEhpYvSQ68zLgZBNOo0Pm62ZhOEeklozxvfWXodz7ynJRcw+v7T8pQZRNZeYuP9y6
+         xW8NTqCd9eIxa6KWBUnaV/0a0PtAlhPvgJmVcf0zpZa55A11jhyh1rkirfCn+0fUXRfG
+         7Cdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K7cVpiyFvKnbzOkHpmdbCjD/gvDLBbbhp96xZdfeqF4=;
+        b=WibiGPSW/3p3Wt/GjJLmbEvyE0WYogD/K0e/XHAHbK9CIhD/DQA62/oUDn3pTBfCpz
+         QFKZftDJq5CPcxjKcMarJOK5dBYGx1hk8ed7vbwKxv5ZlwI1VZDfSp8nvNKzEx2VsOeD
+         qzIkx+7UdqzPAT+WF/C7ZFQTz54vjQ0JPhlcmQtzjS3Uc9hRLj0enzOxTnz4+9JS1ehT
+         wnZMJZ1BPY0oq8FG0sWZ9IPky51ND90VVOv5wz9+e/FuiVRw/hiuU34wQsvmW+8nKGbq
+         SrY+CqoMc6M62J7nJqixsT0dIwV9VkcfBKYiWriwZdMBulpkchlKzVtnZqLZGBMbRNCq
+         Fyqw==
+X-Gm-Message-State: AOAM533BjU3r/Q0mqyQ9Y+39CqWJU7oRrwczBzPuPmbhB9EMEZV553dP
+        nOWVhUlRWuX1lXBJyv2ymsbLbN0432cR5RRySXCjXQ==
+X-Google-Smtp-Source: ABdhPJwQ1nSjux4OA93qdZZpDmtAPc2tQg5ZNbInA+vx/OIZYknuqD5ptknS6RW8OMMayzqjHyxN+/W+PYunEdkNWck=
+X-Received: by 2002:a1f:5606:: with SMTP id k6mr1088106vkb.6.1613132439488;
+ Fri, 12 Feb 2021 04:20:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <abd77ee8-0311-1664-f3ee-6d4a9fe512b1@linux.alibaba.com>
+References: <20210209145214.10518-1-yann.gautier@foss.st.com>
+In-Reply-To: <20210209145214.10518-1-yann.gautier@foss.st.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 12 Feb 2021 13:20:03 +0100
+Message-ID: <CAPDyKFrdoCWy5+xnFbMesBwACyK4zbPSHEUPA4YMAmO1ys3Sxg@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: mmc_test: use erase_arg for mmc_erase command
+To:     Yann Gautier <yann.gautier@foss.st.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        ludovic.barre@foss.st.com, Adrian Hunter <adrian.hunter@intel.com>,
+        =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 02:04:12PM +0800, Tianjia Zhang wrote:
-> Hi,
-> 
-> Sorry for the late reply.
-> 
-> On 1/28/21 1:40 AM, Jarkko Sakkinen wrote:
-> > I could bet some money that this does not bring any significant
-> > performance gain.
-> > 
-> 
-> Yes, this does not bring performance gains. This is not a change for
-> performance, mainly to make the value of free_cnt look more accurate.
-> 
-> > On Sun, Jan 24, 2021 at 02:29:05PM +0800, Tianjia Zhang wrote:
-> > > `section->free_cnt` represents the free page in sgx_epc_section,
-> > > which is assigned once after initialization. In fact, just after the
-> > > initialization is completed, the pages are in the `init_laundry_list`
-> > > list and cannot be allocated. This needs to be recovered by EREMOVE
-> > > of function sgx_sanitize_section() before it can be used as a page
-> > > that can be allocated. The sgx_sanitize_section() will be called in
-> > > the kernel thread ksgxd.
-> > > 
-> > > This patch moves the initialization of `section->free_cnt` from the
-> > > initialization function `sgx_setup_epc_section()` to the function
-> > > `sgx_sanitize_section()`, and then accumulates the count after the
-> > 
-> > Use single quotes instead of hyphens.
-> > >> successful execution of EREMOVE. This seems to be more reasonable,
-> > > free_cnt will also truly reflect the allocatable free pages in EPC.
-> > > 
-> > > Sined-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> > > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> > > ---
-> > >   arch/x86/kernel/cpu/sgx/main.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> > > index 4465912174fd..e455ec7b3449 100644
-> > > --- a/arch/x86/kernel/cpu/sgx/main.c
-> > > +++ b/arch/x86/kernel/cpu/sgx/main.c
-> > > @@ -48,6 +48,7 @@ static void sgx_sanitize_section(struct sgx_epc_section *section)
-> > >   		if (!ret) {
-> > >   			spin_lock(&section->lock);
-> > >   			list_move(&page->list, &section->page_list);
-> > > +			section->free_cnt++;
-> > >   			spin_unlock(&section->lock);
-> > 
-> > Someone can try to allocate a page while sanitize process is in progress.
-> > 
-> > I think it is better to keep critical sections in the form that when you
-> > leave from one, the global state is legit.
-> > 
-> 
-> Do you mean to move the critical section to protect the entire while loop?
-> Of course, this is also possible, sanitize is a process only needed for
-> initialization, and the possibility of conflict is very small.
-> 
-> Best regards,
-> Tianjia
+On Tue, 9 Feb 2021 at 15:52, <yann.gautier@foss.st.com> wrote:
+>
+> From: Yann Gautier <yann.gautier@foss.st.com>
+>
+> Since [1], the erase argument for mmc_erase() function is saved in
+> erase_arg field of card structure. It is preferable to use it instead of
+> hard-coded MMC_SECURE_ERASE_ARG, which from eMMC 4.51 spec is not
+> recommended:
+> "6.6.16 Secure Erase
+> NOTE Secure Erase is included for backwards compatibility. New system
+> level implementations (based on v4.51 devices and beyond) should use
+> Erase combined with Sanitize instead of secure erase."
+>
+> On STM32MP157C-EV1 board, embedding a THGBMDG5D1LBAIL eMMC, using
+> MMC_ERASE command with MMC_SECURE_ERASE_ARG may stuck the STM32 SDMMC IP,
+> if test 37 or test 38 are launched just after a write test, e.g. test 36.
+> Using the default MMC_ERASE argument from framework with erase_arg,
+> which default in our case to MMC_DISCARD_ARG does no more trig the
+> issue.
+>
+>  [1] commit 01904ff77676 ("mmc: core: Calculate the discard arg only once")
+>
+> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
 
-The big picture of this change to me, to be frank is that it's completely
-useless.
+Applied for next, and by adding Adrian's ack from the previous version, thanks!
 
-Please start with the picture.
+Kind regards
+Uffe
 
-/Jarkko
+
+> ---
+>
+> Changes in v2:
+> - Drop patch 1 from the previous series
+> - Update comment
+>
+>  drivers/mmc/core/mmc_test.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/core/mmc_test.c b/drivers/mmc/core/mmc_test.c
+> index 39a478874ca3..63524551a13a 100644
+> --- a/drivers/mmc/core/mmc_test.c
+> +++ b/drivers/mmc/core/mmc_test.c
+> @@ -2110,7 +2110,7 @@ static int mmc_test_rw_multiple(struct mmc_test_card *test,
+>         if (mmc_can_erase(test->card) &&
+>             tdata->prepare & MMC_TEST_PREP_ERASE) {
+>                 ret = mmc_erase(test->card, dev_addr,
+> -                               size / 512, MMC_SECURE_ERASE_ARG);
+> +                               size / 512, test->card->erase_arg);
+>                 if (ret)
+>                         ret = mmc_erase(test->card, dev_addr,
+>                                         size / 512, MMC_ERASE_ARG);
+> --
+> 2.17.1
+>
