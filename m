@@ -2,197 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5722131A875
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BB531A877
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhBLXuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 18:50:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231759AbhBLXtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 18:49:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF99F64DCF;
-        Fri, 12 Feb 2021 23:48:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613173731;
-        bh=LkICKmIiDChJQFRPY8bMTeEW0irTbDse7v0NyWyqZeo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SPyKoDwf/MdYvXNSbsD/WbrVOOBvkzzLSOzIL/rKAuCOdP9wuXGL3R05bdTq2otKW
-         uBdGtRfPeNa2CO1Sd2q54qHNdOpppKmPNThiM+XFZWNX12iLgfIoBxfT5vU1YWHGOy
-         pxYK4xSjuDWwQCzPv4qaKTFjy/VtE4lbyd7cYXnxAnnDNxaRhbSh6L3ImaZe8rzpTB
-         s6igB0bOkYgyYkc9Dn06Wj3Oc6g/FfD5OXRu8H/0qPDvJ9rG+llesTTYirD3hvTHG5
-         9bBZcoogTnkDpycaL09tupAHryIbe3mRH8A4gc81ISdqFbEzTY+JWB4iVK5MkrCj7Q
-         X/8CwvLF7AyDw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A238C352393D; Fri, 12 Feb 2021 15:48:51 -0800 (PST)
-Date:   Fri, 12 Feb 2021 15:48:51 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
-Message-ID: <20210212234851.GP2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201209202732.5896-1-urezki@gmail.com>
- <20201209202732.5896-2-urezki@gmail.com>
- <20210212192059.wytqwdf4qm4rnq3d@linutronix.de>
- <20210212211207.GA2046@pc638.lan>
+        id S231320AbhBLXxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 18:53:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20799 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229980AbhBLXxQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 18:53:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613173910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d9EOww0gRZcoT59lB4jZaAA8xsmsbTWpvHMYDAlGJbY=;
+        b=CSpja1jh/tfqbvJqPGdCKEUCs7TdPj7cxu1f8ILYV4oRjA20AlPqsxFTlPXODD4z6R1+m+
+        NU0iMm9q9/fyxEI1t4cOecBV9K+F9OywuR40KCtFQzAmt52rUvUopKjm6LudAmMkwNSE8u
+        wIQ9jeoOC1ifx1hzxWmMELtWdZqmOgM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-fGk8qRpMOp22Bc9XePYfXw-1; Fri, 12 Feb 2021 18:51:48 -0500
+X-MC-Unique: fGk8qRpMOp22Bc9XePYfXw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E1F5192CC41;
+        Fri, 12 Feb 2021 23:51:47 +0000 (UTC)
+Received: from treble (ovpn-120-169.rdu2.redhat.com [10.10.120.169])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B54FC5C23D;
+        Fri, 12 Feb 2021 23:51:46 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 17:51:45 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Ken Moffat <zarniwhoop73@googlemail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: objtool segfault in 5.10 kernels with binutils-2.36.1
+Message-ID: <20210212235145.t4jgnkyiztrbqlnp@treble>
+References: <CANVEwpb2oyYFbXkCaeuhnr0s1LH8ojf_WDoStcLYoB1eXWhgRw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210212211207.GA2046@pc638.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CANVEwpb2oyYFbXkCaeuhnr0s1LH8ojf_WDoStcLYoB1eXWhgRw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 10:12:07PM +0100, Uladzislau Rezki wrote:
-> On Fri, Feb 12, 2021 at 08:20:59PM +0100, Sebastian Andrzej Siewior wrote:
-> > On 2020-12-09 21:27:32 [+0100], Uladzislau Rezki (Sony) wrote:
-> > > Add self tests for checking of RCU-tasks API functionality.
-> > > It covers:
-> > >     - wait API functions;
-> > >     - invoking/completion call_rcu_tasks*().
-> > > 
-> > > Self-tests are run when CONFIG_PROVE_RCU kernel parameter is set.
-> > 
-> > I just bisected to this commit. By booting with `threadirqs' I end up
-> > with:
-> > [    0.176533] Running RCU-tasks wait API self tests
-> > 
-> > No stall warning or so.
-> > It boots again with:
-> > 
-> > diff --git a/init/main.c b/init/main.c
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -1489,6 +1489,7 @@ void __init console_on_rootfs(void)
-> >  	fput(file);
-> >  }
-> >  
-> > +void rcu_tasks_initiate_self_tests(void);
-> >  static noinline void __init kernel_init_freeable(void)
-> >  {
-> >  	/*
-> > @@ -1514,6 +1515,7 @@ static noinline void __init kernel_init_freeable(void)
-> >  
-> >  	rcu_init_tasks_generic();
-> >  	do_pre_smp_initcalls();
-> > +	rcu_tasks_initiate_self_tests();
-> >  	lockup_detector_init();
-> >  
-> >  	smp_init();
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -1266,7 +1266,7 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
-> >  	rttd->notrun = true;
-> >  }
-> >  
-> > -static void rcu_tasks_initiate_self_tests(void)
-> > +void rcu_tasks_initiate_self_tests(void)
-> >  {
-> >  	pr_info("Running RCU-tasks wait API self tests\n");
-> >  #ifdef CONFIG_TASKS_RCU
-> > @@ -1322,7 +1322,6 @@ void __init rcu_init_tasks_generic(void)
-> >  #endif
-> >  
-> >  	// Run the self-tests.
-> > -	rcu_tasks_initiate_self_tests();
-> >  }
-> >  
-> >  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
-> > 
-> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-
-Apologies for the hassle!  My testing clearly missed this combination
-of CONFIG_PROVE_RCU=y and threadirqs=1.  :-(
-
-But at least I can easily reproduce this hang as follows:
-
-tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --bootargs "threadirqs=1" --trust-make
-
-Sadly, I cannot take your patch because that simply papers over the
-fact that early boot use of synchronize_rcu_tasks() is broken in this
-particular configuration, which will likely eventually bite others now
-that init_kprobes() has been moved earlier in boot:
-
-1b04fa990026 ("rcu-tasks: Move RCU-tasks initialization to before early_initcall()")
-Link: https://lore.kernel.org/rcu/87eekfh80a.fsf@dja-thinkpad.axtens.net/
-Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
-
-> > Sebastian
-> >
-> We should be able to use call_rcu_tasks() in the *initcall() callbacks.
-> The problem is that, ksoftirqd threads are not spawned by the time when
-> an rcu_init_tasks_generic() is invoked:
+On Thu, Feb 11, 2021 at 05:16:56PM +0000, Ken Moffat wrote:
+> Hi,
 > 
-> diff --git a/init/main.c b/init/main.c
-> index c68d784376ca..e6106bb12b2d 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -954,7 +954,6 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
->  	rcu_init_nohz();
->  	init_timers();
->  	hrtimers_init();
-> -	softirq_init();
->  	timekeeping_init();
->  
->  	/*
-> @@ -1512,6 +1511,7 @@ static noinline void __init kernel_init_freeable(void)
->  
->  	init_mm_internals();
->  
-> +	softirq_init();
->  	rcu_init_tasks_generic();
->  	do_pre_smp_initcalls();
->  	lockup_detector_init();
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index 9d71046ea247..cafa55c496d0 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -630,6 +630,7 @@ void __init softirq_init(void)
->  			&per_cpu(tasklet_hi_vec, cpu).head;
->  	}
->  
-> +	spawn_ksoftirqd();
-
-We need a forward reference to allow this to build, but with that added,
-my test case passes.  Good show!
-
->  	open_softirq(TASKLET_SOFTIRQ, tasklet_action);
->  	open_softirq(HI_SOFTIRQ, tasklet_hi_action);
->  }
-> @@ -732,7 +733,6 @@ static __init int spawn_ksoftirqd(void)
->  
->  	return 0;
->  }
-> -early_initcall(spawn_ksoftirqd);
->  
->  /*
->   * [ These __weak aliases are kept in a separate compilation unit, so that
+> in 5.10 kernels up to and including 5.10.15 when trying to build the
+> kernel for an x86_64 skylake using binutils-2.36.1, gcc-10.2 and
+> glibic-2.33 I get a segfault in objtool if the orc unwinder is
+> enabled.
 > 
-> Any thoughts?
+> This has already been fixed in 5.11 by ''objtool: Fix seg fault with
+> Clang non-section symbols'
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/patch/?id=44f6a7c0755d8dd453c70557e11687bb080a6f21
+> 
+> So can this be added to 5.10 stable, please ?
+> 
+> Please CC me as I am no-longer subscribed.
 
-One likely problem is that there are almost certainly parts of the kernel
-that need softirq_init() to stay roughly where it is.  So, is it possible
-to leave softirq_init() where it is, and to arrange for spawn_ksoftirqd()
-to be invoked just before rcu_init_tasks_generic() is called?
+Hi Ken,
 
-For my part, I will look into what is required to make Tasks RCU do
-without softirq during boot, for example, by looking carefully at where
-in boot RCU grace periods are unconditionally expedited.  Just in case
-adjusting softirq has unforeseen side effects.
+I agree that needs to be backported (and my bad for not marking it as
+stable to begin with).
 
-							Thanx, Paul
+Greg, this also came up in another thread, are you pulling that one in,
+or do you want me to send it to stable list?
+
+-- 
+Josh
+
