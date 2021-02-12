@@ -2,78 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BB531A877
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBDF31A87A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhBLXxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 18:53:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20799 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229980AbhBLXxQ (ORCPT
+        id S231649AbhBLXxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 18:53:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229980AbhBLXx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 18:53:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613173910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d9EOww0gRZcoT59lB4jZaAA8xsmsbTWpvHMYDAlGJbY=;
-        b=CSpja1jh/tfqbvJqPGdCKEUCs7TdPj7cxu1f8ILYV4oRjA20AlPqsxFTlPXODD4z6R1+m+
-        NU0iMm9q9/fyxEI1t4cOecBV9K+F9OywuR40KCtFQzAmt52rUvUopKjm6LudAmMkwNSE8u
-        wIQ9jeoOC1ifx1hzxWmMELtWdZqmOgM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-fGk8qRpMOp22Bc9XePYfXw-1; Fri, 12 Feb 2021 18:51:48 -0500
-X-MC-Unique: fGk8qRpMOp22Bc9XePYfXw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E1F5192CC41;
-        Fri, 12 Feb 2021 23:51:47 +0000 (UTC)
-Received: from treble (ovpn-120-169.rdu2.redhat.com [10.10.120.169])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B54FC5C23D;
-        Fri, 12 Feb 2021 23:51:46 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 17:51:45 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Ken Moffat <zarniwhoop73@googlemail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: objtool segfault in 5.10 kernels with binutils-2.36.1
-Message-ID: <20210212235145.t4jgnkyiztrbqlnp@treble>
-References: <CANVEwpb2oyYFbXkCaeuhnr0s1LH8ojf_WDoStcLYoB1eXWhgRw@mail.gmail.com>
+        Fri, 12 Feb 2021 18:53:27 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370F9C061574;
+        Fri, 12 Feb 2021 15:52:47 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id g10so1353910wrx.1;
+        Fri, 12 Feb 2021 15:52:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c3J0XcePyleo796OvAaICLfI1i20geRcVa5TsLh1tao=;
+        b=Ri4AMW9WYsRMqlRHoKub72GSWBvDgwFPnMTKhWh0wBPrcwosb6T8gdQwPeEAoaopzY
+         DlptP0AAw2P9cCAUZBfQXy0zgQBUhVm2BT+zYBRyzNimA6JYxtx2za4t90YXqEycJia4
+         dI/ydnuMjPu1bzm7v6CjiTmzrf8Q2oz5nI2H/aGnLFOPDqGEjFMHYFbgV1hNFzSzvmNP
+         kj1ECwKHmM8qTmocYLec+Lacd9R19q8aU5n+fKNK14jH9a1sSUD+NAkJk71tIzWRiOHC
+         yfL14o71yRL4da7YGU2zrbWX53U1SUU+nhr+9zDSLR/que85rwUbcd3mOhyjj+knnDZy
+         ohZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c3J0XcePyleo796OvAaICLfI1i20geRcVa5TsLh1tao=;
+        b=Lh4aysQLoJTFYAbvKhFvMbl3jwx0kEs0qjcPCytZclOREYxtNpITrfQjU8gppUZ/1d
+         oEs8zRsiFhQcoXtKX2+Itk1RlMHNIReFQ9M8s3HyEZ2CTNzb9PLZ65C0Yg3kVWZvQgXR
+         7jT9GxZ7/mQLWxkXZmQtqvQOSNXdTvXUJ2Kiyd2dngM8XOo6kgyEPRtycc8Pq90f1J9X
+         wDY8YMd65wjzkSzKXnC4L89Me9wNlrvmktgLF+Yxgq8yBH8XiZ7G8RQKwweOnT4kbcV4
+         HCL0VGSxzINwiS1L9FGXXu8LmiPLM4z5FRE08aAm94Q/YwuPoaws8LIiiz0JSF0GOlL4
+         nzCw==
+X-Gm-Message-State: AOAM530fW1/2SXE3OOiM2y9D/jMxY/7bOUNNRZnAKEbx8ZmoQoO6oVid
+        6/pggAO7HpCpEUEFlPsCbS4mDprUotYmE86EINo=
+X-Google-Smtp-Source: ABdhPJy5ege6vYLkKFNBg45tfxjKebdizpZt3Rwblyqb6bDBWNW2cRm35aKN8i+fn5joETlGoWPu0tLUHi/KopCNX2o=
+X-Received: by 2002:adf:e511:: with SMTP id j17mr6291375wrm.251.1613173965866;
+ Fri, 12 Feb 2021 15:52:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANVEwpb2oyYFbXkCaeuhnr0s1LH8ojf_WDoStcLYoB1eXWhgRw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210203163348.30686-1-TheSven73@gmail.com> <804285cff81878a2c188d1b823182114f891ca38.camel@ndufresne.ca>
+ <CAGngYiWt9Q4jWksiniC6vqUw29L3mOFuQpw7Dz_BK9Ye9FbQ1Q@mail.gmail.com> <20210211143233.GA1360@pengutronix.de>
+In-Reply-To: <20210211143233.GA1360@pengutronix.de>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Fri, 12 Feb 2021 18:52:34 -0500
+Message-ID: <CAGngYiWAohHXYPfd5NJc4URVuMA4GP01jvRV78uM5P+H7zKx-A@mail.gmail.com>
+Subject: Re: [BUG REPORT] media: coda: mpeg4 decode corruption on i.MX6qp only
+To:     Philipp Zabel <pza@pengutronix.de>
+Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 05:16:56PM +0000, Ken Moffat wrote:
-> Hi,
-> 
-> in 5.10 kernels up to and including 5.10.15 when trying to build the
-> kernel for an x86_64 skylake using binutils-2.36.1, gcc-10.2 and
-> glibic-2.33 I get a segfault in objtool if the orc unwinder is
-> enabled.
-> 
-> This has already been fixed in 5.11 by ''objtool: Fix seg fault with
-> Clang non-section symbols'
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/patch/?id=44f6a7c0755d8dd453c70557e11687bb080a6f21
-> 
-> So can this be added to 5.10 stable, please ?
-> 
-> Please CC me as I am no-longer subscribed.
+Philipp, Fabio,
 
-Hi Ken,
+I was able to verify that the PREs do indeed overrun their allocated ocram area.
 
-I agree that needs to be backported (and my bad for not marking it as
-stable to begin with).
+Section 38.5.1 of the iMX6QuadPlus manual indicates the ocram size
+required: width(pixels) x 8 lines x 4 bytes. For 2048 pixels max, this
+comes to 64K. This is what the PRE driver allocates. So far, so good.
 
-Greg, this also came up in another thread, are you pulling that one in,
-or do you want me to send it to stable list?
+The trouble starts when we're displaying a section of a much wider
+bitmap. This happens in X when using two displays. e.g.:
+HDMI 1920x1088
+LVDS 1280x800
+X bitmap 3200x1088, left side displayed on HDMI, right side on LVDS.
 
--- 
-Josh
+In such a case, the stride will be much larger than the width of a
+display scanline.
 
+This is where things start to go very wrong.
+
+I found that the ocram area used by the PREs increases with the
+stride. I experimentally found a formula:
+ocam_used = display_widthx8x4 + (bitmap_width-display_width)x7x4
+
+As the stride increases, the PRE eventually overruns the ocram and...
+ends up in the "ocram aliased" area, where it overwrites the ocram in
+use by the vpu/coda !
+
+I could not find any PRE register setting that changes the used ocram area.
+
+Sven
