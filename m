@@ -2,84 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A11231A3FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3390131A407
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbhBLRqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 12:46:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231474AbhBLRqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 12:46:31 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D31664E89;
-        Fri, 12 Feb 2021 17:45:49 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 12:45:47 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Xi Ruoyao <xry111@mengyan1223.wang>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org
-Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
- non-section symbols
-Message-ID: <20210212124547.1dcf067e@gandalf.local.home>
-In-Reply-To: <20210212170750.y7xtitigfqzpchqd@treble>
-References: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
-        <160812658044.3364.4188208281079332844.tip-bot2@tip-bot2>
-        <dded80b60d9136ea90987516c28f93273385651f.camel@mengyan1223.wang>
-        <YCU3Vdoqd+EI+zpv@kroah.com>
-        <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
-        <YCafKVSTX9MxDBMd@kroah.com>
-        <20210212170750.y7xtitigfqzpchqd@treble>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231344AbhBLRuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 12:50:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230090AbhBLRt5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 12:49:57 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C36EC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 09:49:18 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id a5so7990269otq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 09:49:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IgQTDGA6KT8/4jMzE32KCsQnjArbvr7991kH2ywcpDI=;
+        b=t3/6LAI+MTU0yz3XDVuCBRaJa3CG+qinq/4GAAlJ4NBY9OrzQzj/zb9hLfV9jxo1DW
+         sMyyvPJR4tO4iTCTSS/hqm/j659WKZnU8q11M1dhv50M1EE6GLLrB1byTajvIGIpJKy6
+         KNERzywy/ZWIP49QDfmtscUelVLDBQccPcWx1CI24mJnf4HCfhNECXd0oOnBwxUdhKhF
+         gtefIvRLbq0/4feqLvo0lLHlzadkn/ev5vj21lcTx8c0sM9Cxx+8ezNoAJUwvaY5ukNC
+         zdMjyVRcah4fhuOELy7prlOFXchrPcmjJzE8YV3uKwHrcUpBxmSBKx3LrWXTxOs/gOmf
+         r18A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IgQTDGA6KT8/4jMzE32KCsQnjArbvr7991kH2ywcpDI=;
+        b=gwH9B+aX+sUh3e2/1e7bUlnBihEMc3BB5/MY9VzmdoNGfaFW6CEgAbxKLbvvCiWytR
+         KDShJvODB8MPOZjkGP5oU6/qMTbejwMYnkOFfhrhZwHn20XJgGiht41wJOISvkkxIR6V
+         usVbpZtWyVu/GObGYLyQiX25tQPNuXAeWmV8z4gNYgYfDX6FYzNt/G31eg6KIiZ9lIXc
+         K9Fmm+3Fza/GJqI06oSSIU29N2tC3iAJ9O7zYP81OmIoERwBVBNzSSFLvu3fRVob9QSV
+         dN0DpLP3iBPmAx7tHvj9Ti0eDGmTwwKNViDa4Ff/TEzVWkz0rrcNhhmj0bQQamWmtRfN
+         kApg==
+X-Gm-Message-State: AOAM530EEbLdEQk6T58wE/qDFXNF0B14L6wE/yMFTR7dgaKFME032/Cw
+        92EWmSeB9f8q9vfo7mdMadmyJg==
+X-Google-Smtp-Source: ABdhPJxqBMM8uqcRxkqMgXnF4x2r1EDMBw5gPnBeHG1iQ6G8RhAqJxAsmLzvsLpDK7LyYITTc6iWgg==
+X-Received: by 2002:a9d:6016:: with SMTP id h22mr2860194otj.63.1613152157372;
+        Fri, 12 Feb 2021 09:49:17 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a71sm1666148oob.48.2021.02.12.09.49.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 09:49:16 -0800 (PST)
+Date:   Fri, 12 Feb 2021 11:49:15 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
+ "usb"-prefixed names
+Message-ID: <YCa/m4qfT1T4e6CW@builder.lan>
+References: <20210210172850.20849-1-Sergey.Semin@baikalelectronics.ru>
+ <20210210172850.20849-10-Sergey.Semin@baikalelectronics.ru>
+ <CAL_JsqJBknqhCSUOdpZVbtmp6TYetBQPLoQUCT6DTFajpChaSA@mail.gmail.com>
+ <20210210184051.ncvvs5xgyo7o3uzq@mobilestation>
+ <YCQse9EtEHtLVe9A@builder.lan>
+ <20210210193325.inp7rgpsfr624zhd@mobilestation>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210193325.inp7rgpsfr624zhd@mobilestation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021 11:07:50 -0600
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On Wed 10 Feb 13:33 CST 2021, Serge Semin wrote:
 
-
-> > Any ideas are appreciated.  
+> On Wed, Feb 10, 2021 at 12:56:59PM -0600, Bjorn Andersson wrote:
+> > On Wed 10 Feb 12:40 CST 2021, Serge Semin wrote:
+> > 
+> > > On Wed, Feb 10, 2021 at 12:17:27PM -0600, Rob Herring wrote:
+> > > > On Wed, Feb 10, 2021 at 11:29 AM Serge Semin
+> > > > <Sergey.Semin@baikalelectronics.ru> wrote:
+> > > > >
+> > > > > In accordance with the USB HCD/DRD schema all the USB controllers are
+> > > > > supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
+> > > > > existing DT-nodes will be renamed in a subsequent patch let's first make
+> > > > > sure the DWC3 Qualcomm driver supports them and second falls back to the
+> > > > > deprecated naming so not to fail on the legacy DTS-files passed to the
+> > > > > newer kernels.
+> > > > >
+> > > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > > > > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > > > ---
+> > > > >  drivers/usb/dwc3/dwc3-qcom.c | 3 ++-
+> > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> > > > > index c703d552bbcf..49ad8d507d37 100644
+> > > > > --- a/drivers/usb/dwc3/dwc3-qcom.c
+> > > > > +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> > > > > @@ -630,7 +630,8 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+> > > > >         struct device           *dev = &pdev->dev;
+> > > > >         int                     ret;
+> > > > >
+> > > > > -       dwc3_np = of_get_child_by_name(np, "dwc3");
+> > > > > +       dwc3_np = of_get_child_by_name(np, "usb") ?:
+> > > > > +                 of_get_child_by_name(np, "dwc3");
+> > > > 
+> > > 
+> > > > Is there some reason using compatible instead wouldn't work here?
+> > > 
+> > > I don't know for sure. The fix has been requested in the framework of
+> > > this discussion:
+> > > https://lore.kernel.org/linux-usb/20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru/#t
+> > > by the driver maintainer Bjorn. To get a firm answer it's better to
+> > > have him asked.
+> > 
+> > My feedback was simply that it has to catch both cases, I didn't
+> > consider the fact that we have a compatible to match against.
+> > 
+> > > As I see it having of_get_compatible_child() utilized
+> > > here would also work. At least for the available in kernel dt-files.
+> > > See the affected dts-es in:
+> > > https://lore.kernel.org/linux-usb/20210210172850.20849-11-Sergey.Semin@baikalelectronics.ru/
+> > > 
+> > > A problem may happen if some older versions of DTS-es had another
+> > > compatible string in the dwc3 sub-node...
+> > > 
+> > 
+> > Afaict all Qualcomm dts files has "snps,dwc3", so you can match against
+> > that instead.
 > 
-> [ Adding Steve Rostedt ]
+> Ok then. I'll replace of_get_child_by_name() here with
+> of_get_compatible_child() matching just against "snps,dwc3" in v7. Can you
+> confirm that noone ever had a Qcom-based hardware described with dts having
+> the "synopsys,dwc3" compatible used as the DWC USB3 sub-node here? That
+> string has been marked as deprecated recently because the vendor-prefix
+> was changed sometime ago, but the original driver still accept it.
 > 
-> This error message comes from recordmcount.  It probably can't handle
-> the missing STT_SECTION symbols which are getting stripped by the new
-> binutils.  (Objtool also had trouble with that.)
+
+I don't see any Qualcomm users of "synopsys,dwc3", past or present.
+
+> Alternatively to be on a safe side we could match against both
+> compatibles here as Rob suggests. What do you think?
 > 
-> No idea why you only see this on 4.4 though.
-> 
 
-Just taking a quick look, but would something like this work?
+Let's go with only "snps,dwc3".
 
-I created this against v4.4.257.
-
--- Steve
-
-diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-index 04151ede8043..698404f092d0 100644
---- a/scripts/recordmcount.h
-+++ b/scripts/recordmcount.h
-@@ -437,6 +437,8 @@ static unsigned find_secsym_ndx(unsigned const txtndx,
- 			if (w2(ehdr->e_machine) == EM_ARM
- 			    && ELF_ST_TYPE(symp->st_info) == STT_FUNC)
- 				continue;
-+			if (ELF_ST_TYPE(symp->st_info) == STT_SECTION)
-+				continue;
- 
- 			*recvalp = _w(symp->st_value);
- 			return symp - sym0;
-
+Regards,
+Bjorn
