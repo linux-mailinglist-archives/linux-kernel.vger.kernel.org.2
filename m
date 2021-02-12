@@ -2,57 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE492319F99
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:18:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CF9319F9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:18:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbhBLNMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:12:51 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:49273 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbhBLM7J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:59:09 -0500
-Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11CCwHU0006876;
-        Fri, 12 Feb 2021 21:58:17 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
- Fri, 12 Feb 2021 21:58:17 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11CCwHoG006873
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 12 Feb 2021 21:58:17 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: possible deadlock in start_this_handle (2)
-To:     Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
-References: <20210211121020.GO19070@quack2.suse.cz>
- <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
- <20210211125717.GH308988@casper.infradead.org>
- <YCUr99//z8hJmnDH@dhcp22.suse.cz>
- <20210211132533.GI308988@casper.infradead.org>
- <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
- <20210211142630.GK308988@casper.infradead.org>
- <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
- <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
- <20210212122207.GM308988@casper.infradead.org>
- <YCZ056SJDGrgXCss@dhcp22.suse.cz>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <2b90c488-a6b9-2565-bd3a-e4f8bf8404e9@i-love.sakura.ne.jp>
-Date:   Fri, 12 Feb 2021 21:58:15 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232234AbhBLNM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:12:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:36788 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232046AbhBLNCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 08:02:01 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5001D1063;
+        Fri, 12 Feb 2021 05:01:11 -0800 (PST)
+Received: from [10.37.8.13] (unknown [10.37.8.13])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 57E053F719;
+        Fri, 12 Feb 2021 05:01:09 -0800 (PST)
+Subject: Re: [PATCH v13 6/7] arm64: mte: Report async tag faults before
+ suspend
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Branislav Rankov <Branislav.Rankov@arm.com>,
+        Marco Elver <elver@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210211153353.29094-1-vincenzo.frascino@arm.com>
+ <20210211153353.29094-7-vincenzo.frascino@arm.com>
+ <20210212120015.GA18281@e121166-lin.cambridge.arm.com>
+ <20210212123029.GA19585@e121166-lin.cambridge.arm.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <9d7b4475-dd59-d84f-5835-9222c2758eac@arm.com>
+Date:   Fri, 12 Feb 2021 13:05:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YCZ056SJDGrgXCss@dhcp22.suse.cz>
+In-Reply-To: <20210212123029.GA19585@e121166-lin.cambridge.arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -60,27 +50,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/02/12 21:30, Michal Hocko wrote:
-> On Fri 12-02-21 12:22:07, Matthew Wilcox wrote:
->> On Fri, Feb 12, 2021 at 08:18:11PM +0900, Tetsuo Handa wrote:
->>> On 2021/02/12 1:41, Michal Hocko wrote:
->>>> But I suspect we have drifted away from the original issue. I thought
->>>> that a simple check would help us narrow down this particular case and
->>>> somebody messing up from the IRQ context didn't sound like a completely
->>>> off.
->>>>
->>>
->>>  From my experience at https://lkml.kernel.org/r/201409192053.IHJ35462.JLOMOSOFFVtQFH@I-love.SAKURA.ne.jp ,
->>> I think we can replace direct PF_* manipulation with macros which do not receive "struct task_struct *" argument.
->>> Since TASK_PFA_TEST()/TASK_PFA_SET()/TASK_PFA_CLEAR() are for manipulating PFA_* flags on a remote thread, we can
->>> define similar ones for manipulating PF_* flags on current thread. Then, auditing dangerous users becomes easier.
->>
->> No, nobody is manipulating another task's GFP flags.
+
+
+On 2/12/21 12:30 PM, Lorenzo Pieralisi wrote:
+>> However, I have a question. We are relying on context switch to set
+>> sctlr_el1_tfc0 right ? If that's the case, till the thread resuming from
+>> low power switches context we are running with SCTLR_EL1_TCF0 not
+>> reflecting the actual value.
+> Forget this, we obviously restore sctlr_el1 on resume (cpu_do_resume()).
 > 
-> Agreed. And nobody should be manipulating PF flags on remote tasks
-> either.
+> With the line above removed:
+> 
+> Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 > 
 
-No. You are misunderstanding. The bug report above is an example of manipulating PF flags on remote tasks.
-You say "nobody should", but the reality is "there indeed was". There might be unnoticed others. The point of
-this proposal is to make it possible to "find such unnoticed users who are manipulating PF flags on remote tasks".
+Thanks Lorenzo, I will remove the register write in the next version and add
+your tag.
+
+-- 
+Regards,
+Vincenzo
