@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5E531989E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 04:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC7B3198A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 04:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhBLDIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 22:08:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53670 "EHLO mail.kernel.org"
+        id S229582AbhBLDPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 22:15:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhBLDIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 22:08:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AB7164DE9;
-        Fri, 12 Feb 2021 03:07:31 +0000 (UTC)
+        id S229457AbhBLDO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 22:14:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2D4464DB2;
+        Fri, 12 Feb 2021 03:14:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613099251;
-        bh=JzVhC9UdJJv6ZQYoxZTHOXMBUYZPfGjZSYy10m7haaw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=SYmvPCI5iLDLklNsYLfXsKhdIGU0kxMM/XaL2DlnmiZraToGSaET422RLhim0mkKG
-         RoiGu0ntDl6hHLODMR8ALSW7kpifw5WjKBjNjhs4fdpyAOJVVnJbYvtF6Mpb9ve000
-         0Zrh9JsUqA1ekIBdiTfFZEXtSJmxsXcUcYw80epyZtLr/HcY/wJGMs2NjqqbTrpiKG
-         vSfka5Bd8hbU28plm6Y7njg9koYzROBKyfm+v1ULHhsyN2yv2NsFrjDeJjGvieHg4f
-         ZWDDNV7z8uS/Vg9ApuUuSt3gkxZIgeXFrAnz+7xsEPBw/7+nv2P4FnwnaFYnSH8Nof
-         thlWWB5HE1I8Q==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210211211054.GD4572@dell>
-References: <20210126124540.3320214-1-lee.jones@linaro.org> <161307643148.1254594.6590013599999468609@swboyd.mtv.corp.google.com> <20210211211054.GD4572@dell>
-Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
+        s=k20201202; t=1613099657;
+        bh=pHK+ewlOJt9vDOvOtyapA8TtTWhPlac8i4JGB6Iekhc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BRissRnGVDvGFOzxz9jH+Zs8MsVyBXa/qUx0yO8W/kir7hLJmCpvXTNzcfG34+WcQ
+         l6tK0Ho/jB9m/NDrjc6RnSKzx3tMVIR5moQTgZiJOTQhAJUTVLvtRK1KIgDvn1AZwD
+         siHLI/r1D+Wj0NQHpqigXsy9OjKWHl5nqbMHQ70iZCxJ+f/fUsbffmIwQ2pJ04nlx3
+         0pS0UEIMot4J1zEshxfXIPnH04x715yrc5GJw2NQ5erS7l8Qb8GuvCUTTax/0bH2+c
+         zg21IWnnbJfjvFYLY9kG4zXQynZ4Wy8I+cHOF25QPkCFa/pYxIoqI5O38EMarsGDLN
+         VKQIBbwLklBIg==
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Boris BREZILLON <boris.brezillon@free-electrons.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Emilio =?utf-8?q?L=C3=B3pez?= <emilio@elopez.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jan Kotas <jank@cadence.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-tegra@vger.kernel.org, Loc Ho <lho@apm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Nuvoton Technologies <tali.perry@nuvoton.com>,
-        NXP Linux Team <linux-imx@nxp.com>, openbmc@lists.ozlabs.org,
-        Patrick Venture <venture@google.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
-        Richard Woodruff <r-woodruff2@ti.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        =?utf-8?q?S=C3=B6ren?= Brinkmann <soren.brinkmann@xilinx.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Date:   Thu, 11 Feb 2021 19:07:30 -0800
-Message-ID: <161309925025.1254594.6210738031889810500@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH] spmi: spmi-pmic-arb: Fix hw_irq overflow
+Date:   Thu, 11 Feb 2021 19:14:17 -0800
+Message-Id: <20210212031417.3148936-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Lee Jones (2021-02-11 13:10:54)
-> On Thu, 11 Feb 2021, Stephen Boyd wrote:
->=20
-> > Quoting Lee Jones (2021-01-26 04:45:19)
-> > > This set is part of a larger effort attempting to clean-up W=3D1
-> > > kernel builds, which are currently overwhelmingly riddled with
-> > > niggly little warnings.
-> > >=20
-> > > This is the last set.  Clock is clean after this.
-> >=20
-> > Is it possible to slam in some patch that makes W=3D1 the default for t=
-he
-> > clk directory? I'm trying to avoid seeing this patch series again.
->=20
-> One of my main goals of this project is that everyone (contributors,
-> maintainers auto-builder robots etc) will be enabling W=3D1 builds
-> *locally*.
->=20
-> This isn't something you'll want to do at a global (i.e. in Mainline)
-> level.  That's kinda the point of W=3D1.
->=20
+From: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
 
-Agreed, but is it possible to pass W=3D1 in the drivers/clk/Makefile?
+Currently, when handling the SPMI summary interrupt, the hw_irq
+number is calculated based on SID, Peripheral ID, IRQ index and
+APID. This is then passed to irq_find_mapping() to see if a
+mapping exists for this hw_irq and if available, invoke the
+interrupt handler. Since the IRQ index uses an "int" type, hw_irq
+which is of unsigned long data type can take a large value when
+SID has its MSB set to 1 and the type conversion happens. Because
+of this, irq_find_mapping() returns 0 as there is no mapping
+for this hw_irq. This ends up invoking cleanup_irq() as if
+the interrupt is spurious whereas it is actually a valid
+interrupt. Fix this by using the proper data type (u32) for id.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Link: https://lore.kernel.org/r/1612812784-26369-1-git-send-email-subbaram@codeaurora.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+---
+
+This is the only patch I've queued up this cycle for spmi.
+
+ drivers/spmi/spmi-pmic-arb.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
+index de844b412110..bbbd311eda03 100644
+--- a/drivers/spmi/spmi-pmic-arb.c
++++ b/drivers/spmi/spmi-pmic-arb.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * Copyright (c) 2012-2015, 2017, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2012-2015, 2017, 2021, The Linux Foundation. All rights reserved.
+  */
+ #include <linux/bitmap.h>
+ #include <linux/delay.h>
+@@ -505,8 +505,7 @@ static void cleanup_irq(struct spmi_pmic_arb *pmic_arb, u16 apid, int id)
+ static void periph_interrupt(struct spmi_pmic_arb *pmic_arb, u16 apid)
+ {
+ 	unsigned int irq;
+-	u32 status;
+-	int id;
++	u32 status, id;
+ 	u8 sid = (pmic_arb->apid_data[apid].ppid >> 8) & 0xF;
+ 	u8 per = pmic_arb->apid_data[apid].ppid & 0xFF;
+ 
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+
