@@ -2,90 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E73319F43
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5E1319F53
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhBLM4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:56:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
+        id S231503AbhBLM6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:58:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhBLMkB (ORCPT
+        with ESMTP id S231422AbhBLMkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:40:01 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471AEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 04:39:11 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id h26so12885873lfm.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 04:39:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GbdleSJdC5sxhIjInjPeBKytNLAK4lW/uYJX+QcIxuY=;
-        b=E3AwVJIJb0emzwQ9P0X/+qC9mp5j9CmtZInRpQabutsYl4eBYpG5L1uC4edYMlcsif
-         dptpvCPGdDJ2YGHJhviKreu2eIksat4aY+2YR1gat9mc5ae8PX4t60gAJwPfIZU3Quex
-         Qplnkd0gPXnAZst6vXcxTiAT7PTNxS/Jsr7Tlz6EUjSGJIYkrIPFd5QkuZjnDnMFP9Za
-         NvaJBsPddiIIBpo289eHPy5pTdWSWLPui/KFAGV3BSiNaRgJ/FrWlJUiJfJLe+EYI+2i
-         1sNk2/D3vzbD7uS1rTdMkiBmkqQYjx4SL8dWOB4A7trjjsclPk/W1Qpun8Pa+XGtxi35
-         5KvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GbdleSJdC5sxhIjInjPeBKytNLAK4lW/uYJX+QcIxuY=;
-        b=amaJKDpEEYZashIeJwttuNNCCSc4NvoSMUOq+oNO6IOOXV2YBFSARZjUiYlKD+pwxN
-         H53mFfVLghSBPhIWPY9IKktqTYQdRN2lfWGmpDGPIvurIs6pmyUkz0sNQO+5Jji/P+QO
-         PBc9p6wt8ALGSNC016oEWzwoLN5Ya5iJPm+kWLJZzdEsvbUWYQdCOTiJfDDNGO1cQaO8
-         5WaZjhBhP3NiG5Qq9nZwilSY9WOYsSaiNIB+/5eI6HCT9WpMwoAP6f1rp4juzbO8AW6w
-         8gPaqD5IRQ0r/+ZYP5XSPg9Wk0OKOZEZdCGzsPXSYyPMTgf1jdIXy3/MbznHICYw1Gya
-         lD8g==
-X-Gm-Message-State: AOAM5335ZBDraR8vvVZ161POjitu6rale6+DH4I8msRkZPDeUPbqtTei
-        lK38Ews36nWVeoOyaFsgIfBuNrXZbAQBjSD1IdXFig==
-X-Google-Smtp-Source: ABdhPJx9U5h3Tq56lc0kJylHa7Kr0AslGEOc90maPfzN54oNpqWzs05TCnHCbdi+q2Xdv77hIChspe3FcU2veOdXfJQ=
-X-Received: by 2002:a05:6512:310d:: with SMTP id n13mr1525892lfb.586.1613133549786;
- Fri, 12 Feb 2021 04:39:09 -0800 (PST)
+        Fri, 12 Feb 2021 07:40:24 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1C5C061221;
+        Fri, 12 Feb 2021 04:37:16 -0800 (PST)
+Date:   Fri, 12 Feb 2021 12:37:12 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613133433;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=22np+uEnrDxiUatsKLakeOFbS8WNGM7mLW0ZmCJWf0U=;
+        b=WmmGGUQj/D2ihKc6DE9MyM63um7qo/U/qhcpbOx+YJCRB/dpQ2yJxH+RQEQy0ZVRkksEkh
+        SoKRNX1sXTFfnVdIIn4GCQj80zGYroRKDknofE6mnj5BMA4xrX2FojThJpehevQYJC74sE
+        oGk+DFEefzkEUr4KiSS1VchWQeH3NmtVBivduRPT8TcBxwM4kBIlY6NRi+cQnZesbYhmh+
+        vEw31GfI3uuEbf6F1aLuTdEh4BktZbn5MGlOTG0F59SVpW2c4DTodiRFJlilX6pVYuUE7Z
+        4g8g05hToEeILsL3KxgyU0hMMGTh5jR0PXmAZqKNo+RiXuEHbQpuxuaMFe/p6A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613133433;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=22np+uEnrDxiUatsKLakeOFbS8WNGM7mLW0ZmCJWf0U=;
+        b=OQM22y0+EZ5kcYf8p6+zTRa15N5GKl17dKS5owvhudkdHk7AK7/bWXZCD7IlsWihel/CMV
+        Do9D2F0Lkre3D5CQ==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/rcu] torture: Create doyesno helper function for torture.sh
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-References: <202102120714.JSuT94C8-lkp@intel.com>
-In-Reply-To: <202102120714.JSuT94C8-lkp@intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 12 Feb 2021 13:38:58 +0100
-Message-ID: <CACRpkdbEecZZ8UUtmBY3tiK51zv-Y7S=4wjHqqzubz4odzMt+w@mail.gmail.com>
-Subject: Re: drivers/leds/flash/leds-rt8515.c:216: undefined reference to `v4l2_flash_release'
-To:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161313343299.23325.9795533429635723550.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I need Arnds help with this...
+The following commit has been merged into the core/rcu branch of tip:
 
-On Fri, Feb 12, 2021 at 12:05 AM kernel test robot <lkp@intel.com> wrote:
+Commit-ID:     c9a9d8e8f2e6f34e70701a1d1580eef9c76265ef
+Gitweb:        https://git.kernel.org/tip/c9a9d8e8f2e6f34e70701a1d1580eef9c76265ef
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Wed, 25 Nov 2020 10:14:24 -08:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Wed, 06 Jan 2021 17:03:43 -08:00
 
->    ld: drivers/leds/flash/leds-rt8515.o: in function `rt8515_v4l2_flash_release':
-> >> drivers/leds/flash/leds-rt8515.c:216: undefined reference to `v4l2_flash_release'
->    ld: drivers/leds/flash/leds-rt8515.o: in function `rt8515_probe':
->    drivers/leds/flash/leds-rt8515.c:354: undefined reference to `v4l2_flash_init'
+torture: Create doyesno helper function for torture.sh
 
-So the problem is that this is compiled in, so CONFIG_LEDS_RT8515=y
-(it is tristate so can also be a module)
-but it depends on symbols from a module:
-CONFIG_V4L2_FLASH_LED_CLASS=m.
+This commit saves a few lines of code by creating a doyesno helper bash
+function for argument parsing.
 
-In the code I try to only support the V4L2 interface when using V4L2:
-#if IS_ENABLED(CONFIG_V4L2_FLASH_LED_CLASS)
-(... V4L2 code...)
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/bin/torture.sh | 78 +++-----------
+ 1 file changed, 19 insertions(+), 59 deletions(-)
 
-Is there a way to define in Kconfig that if and only if you enable
-this other module it has to follow the y or m that we use for this
-driver?
-
-Or do I simply have to bite the bullet, make it bool and
-depend on CONFIG_V4L2_FLASH_LED_CLASS || !CONFIG_V4L2_FLASH_LED_CLASS
-?
-
-Yours,
-Linus Walleij
+diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+index a3c3c25..a01079e 100755
+--- a/tools/testing/selftests/rcutorture/bin/torture.sh
++++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+@@ -47,6 +47,16 @@ do_kvfree=yes
+ do_kasan=yes
+ do_kcsan=no
+ 
++# doyesno - Helper function for yes/no arguments
++function doyesno () {
++	if test "$1" = "$2"
++	then
++		echo yes
++	else
++		echo no
++	fi
++}
++
+ usage () {
+ 	echo "Usage: $scriptname optional arguments:"
+ 	echo "       --doall"
+@@ -79,44 +89,19 @@ do
+ 		do_kcsan=yes
+ 		;;
+ 	--do-allmodconfig|--do-no-allmodconfig)
+-		if test "$1" = --do-allmodconfig
+-		then
+-			do_allmodconfig=yes
+-		else
+-			do_allmodconfig=no
+-		fi
++		do_allmodconfig=`doyesno "$1" --do-allmodconfig`
+ 		;;
+ 	--do-kasan|--do-no-kasan)
+-		if test "$1" = --do-kasan
+-		then
+-			do_kasan=yes
+-		else
+-			do_kasan=no
+-		fi
++		do_kasan=`doyesno "$1" --do-kasan`
+ 		;;
+ 	--do-kcsan|--do-no-kcsan)
+-		if test "$1" = --do-kcsan
+-		then
+-			do_kcsan=yes
+-		else
+-			do_kcsan=no
+-		fi
++		do_kcsan=`doyesno "$1" --do-kcsan`
+ 		;;
+ 	--do-kvfree|--do-no-kvfree)
+-		if test "$1" = --do-kvfree
+-		then
+-			do_kvfree=yes
+-		else
+-			do_kvfree=no
+-		fi
++		do_kvfree=`doyesno "$1" --do-kvfree`
+ 		;;
+ 	--do-locktorture|--do-no-locktorture)
+-		if test "$1" = --do-locktorture
+-		then
+-			do_locktorture=yes
+-		else
+-			do_locktorture=no
+-		fi
++		do_locktorture=`doyesno "$1" --do-locktorture`
+ 		;;
+ 	--do-none)
+ 		do_allmodconfig=no
+@@ -130,36 +115,16 @@ do
+ 		do_kcsan=no
+ 		;;
+ 	--do-rcuscale|--do-no-rcuscale)
+-		if test "$1" = --do-rcuscale
+-		then
+-			do_rcuscale=yes
+-		else
+-			do_rcuscale=no
+-		fi
++		do_rcuscale=`doyesno "$1" --do-rcuscale`
+ 		;;
+ 	--do-rcutorture|--do-no-rcutorture)
+-		if test "$1" = --do-rcutorture
+-		then
+-			do_rcutorture=yes
+-		else
+-			do_rcutorture=no
+-		fi
++		do_rcutorture=`doyesno "$1" --do-rcutorture`
+ 		;;
+ 	--do-refscale|--do-no-refscale)
+-		if test "$1" = --do-refscale
+-		then
+-			do_refscale=yes
+-		else
+-			do_refscale=no
+-		fi
++		do_refscale=`doyesno "$1" --do-refscale`
+ 		;;
+ 	--do-scftorture|--do-no-scftorture)
+-		if test "$1" = --do-scftorture
+-		then
+-			do_scftorture=yes
+-		else
+-			do_scftorture=no
+-		fi
++		do_scftorture=`doyesno "$1" --do-scftorture`
+ 		;;
+ 	--duration)
+ 		checkarg --duration "(minutes)" $# "$2" '^[0-9][0-9]*\(m\|h\|d\|\)$' '^error'
+@@ -363,11 +328,6 @@ fi
+ exit $ret
+ 
+ # @@@
+-# RCU CPU stall warnings?
+-# scftorture warnings?
+ # Need a way for the invoker to specify clang.  Maybe --kcsan-kmake or some such.
+-# Work out --configs based on number of available CPUs?
+-# Need to sense CPUs to size scftorture run.  Ditto rcuscale and refscale.
+ # --kconfig as with --bootargs (Both have overrides.)
+ # Command line parameters for --bootargs, --config, --kconfig, --kmake-arg, and --qemu-arg
+-# Ensure that build failures count as failures
