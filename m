@@ -2,55 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0804431A08B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDE131A096
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbhBLOVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 09:21:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44922 "EHLO mail.kernel.org"
+        id S232070AbhBLOXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 09:23:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60160 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232168AbhBLOUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 09:20:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B916264E3D;
-        Fri, 12 Feb 2021 14:19:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613139600;
-        bh=Uyda5wqPFSXXYn0InDCALReOlU9knHM6ts9+78opvV4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GF1btb9C8VQhIWXaD+8A9iNaR2kr9UPOlayuqleqR5YRrTQZdqyDhZ2pV4WmaySJW
-         7z17YmclVEMfyj7f6g2Z9DhfYjUSgdfmgH9GSbXb7R90s7ha2vl6Dgrx1zviEdDI4a
-         3CokL4NYcN6pm91bkF4sJOME284fNp44OCX+Lfl4s2eywu9ZAepIzkdJ4tKM7NZCfG
-         ESyUa/Ll0UVLDgmUPYs0aHevQctWlsZCFakiUwP/A0tmsC2XyM/JYL5nOFVuOp2BYE
-         y+D47cWRBP9kan2dgTvY1zCMzSZDqAE1DPcmuReHOYSq1CCsRQ3ga5/IVmBs9VB88u
-         jlD/gh/8ATrOQ==
-Date:   Fri, 12 Feb 2021 15:19:57 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [patch 0/3] nohz_full: only wakeup target CPUs when notifying
- new tick dependency (v5)
-Message-ID: <20210212141957.GB94816@lothringen>
-References: <20210128202134.608115362@fuller.cnet>
+        id S231768AbhBLOXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 09:23:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9BBE0B029;
+        Fri, 12 Feb 2021 14:22:50 +0000 (UTC)
+Subject: Re: [PATCH][next] bcache: Use 64-bit arithmetic instead of 32-bit
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Christina Jacob <cjacob@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210212125028.GA264620@embeddedor>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <ea24a361-ab1f-a330-b5e6-007bb9a1013b@suse.de>
+Date:   Fri, 12 Feb 2021 22:22:44 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128202134.608115362@fuller.cnet>
+In-Reply-To: <20210212125028.GA264620@embeddedor>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 05:21:34PM -0300, Marcelo Tosatti wrote:
-> When enabling per-CPU posix timers, an IPI to nohz_full CPUs might be
-> performed (to re-read the dependencies and possibly not re-enter
-> nohz_full on a given CPU).
+On 2/12/21 8:50 PM, Gustavo A. R. Silva wrote:
+> Cast multiple variables to (int64_t) in order to give the compiler
+> complete information about the proper arithmetic to use. Notice that
+> these variables are being used in contexts that expect expressions of
+> type int64_t  (64 bit, signed). And currently, such expressions are
+> being evaluated using 32-bit arithmetic.
 > 
-> A common case is for applications that run on nohz_full= CPUs
-> to not use POSIX timers (eg DPDK). This patch changes the notification
-> to only IPI the target CPUs where the task(s) whose tick dependencies
-> are being updated are executing.
+> Fixes: d0cf9503e908 ("octeontx2-pf: ethtool fec mode support")
+> Addresses-Coverity-ID: 1501724 ("Unintentional integer overflow")
+> Addresses-Coverity-ID: 1501725 ("Unintentional integer overflow")
+> Addresses-Coverity-ID: 1501726 ("Unintentional integer overflow")
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/md/bcache/writeback.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> This reduces interruptions to nohz_full= CPUs.
+> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+> index 82d4e0880a99..4fb635c0baa0 100644
+> --- a/drivers/md/bcache/writeback.c
+> +++ b/drivers/md/bcache/writeback.c
+> @@ -110,13 +110,13 @@ static void __update_writeback_rate(struct cached_dev *dc)
+>  		int64_t fps;
+>  
+>  		if (c->gc_stats.in_use <= BCH_WRITEBACK_FRAGMENT_THRESHOLD_MID) {
+> -			fp_term = dc->writeback_rate_fp_term_low *
+> +			fp_term = (int64_t)dc->writeback_rate_fp_term_low *
+>  			(c->gc_stats.in_use - BCH_WRITEBACK_FRAGMENT_THRESHOLD_LOW);
+>  		} else if (c->gc_stats.in_use <= BCH_WRITEBACK_FRAGMENT_THRESHOLD_HIGH) {
+> -			fp_term = dc->writeback_rate_fp_term_mid *
+> +			fp_term = (int64_t)dc->writeback_rate_fp_term_mid *
+>  			(c->gc_stats.in_use - BCH_WRITEBACK_FRAGMENT_THRESHOLD_MID);
+>  		} else {
+> -			fp_term = dc->writeback_rate_fp_term_high *
+> +			fp_term = (int64_t)dc->writeback_rate_fp_term_high *
+>  			(c->gc_stats.in_use - BCH_WRITEBACK_FRAGMENT_THRESHOLD_HIGH);
+>  		}
+>  		fps = div_s64(dirty, dirty_buckets) * fp_term;
+> 
 
-Looks good. I'm queueing the series if Peter doesn't object.
+Hmm, should such thing be handled by compiler ?  Otherwise this kind of
+potential overflow issue will be endless time to time.
 
-Thanks!
+I am not a compiler expert, should we have to do such explicit type cast
+all the time ?
+
+Coly Li
