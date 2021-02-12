@@ -2,139 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293BE31A0B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F31831A0C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhBLOg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 09:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhBLOfj (ORCPT
+        id S229587AbhBLOiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 09:38:12 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:40747 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230249AbhBLOhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 09:35:39 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B54EC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 06:34:12 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id f20so9448811ioo.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 06:34:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ljog9ADMI3z+A1fikGBkRhxkobB8HTkMuLZ8xQG2g7c=;
-        b=bZPMogVKVXPc4UeEnREVxKL+YxfNYWyThw2gIao1s47oH9l7EXzOZD1o3VNMOVNub2
-         MYRhBbFNh/F3dU11b3M8E1W7d0aplL/ybV3BQ0+l1yIJ+P4rCdJ9Sv1DJyHp0vS4kVPR
-         yCQOx3PoTBXERzgBVuslsb2CVrgvOlP3uz8dirHkfIn3OcezU48qv+1eSjI8zUVcb28q
-         epbNpllF8SZPHQdNzV7XDpFcHvvKhJTlz09vVyMKkHk1NX/wyrMS1YGwGry2t3amriAV
-         ynFcFU+9cy//KT2wgJIFa+5w4VqxFnNAkcks8NAZelHuHlusfacvZLbMaucZZbSr1cBB
-         MXxg==
+        Fri, 12 Feb 2021 09:37:40 -0500
+Received: by mail-oi1-f180.google.com with SMTP id 18so10153127oiz.7;
+        Fri, 12 Feb 2021 06:37:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ljog9ADMI3z+A1fikGBkRhxkobB8HTkMuLZ8xQG2g7c=;
-        b=RYmReQ8vU2kfpIQ/ITsY2CBV2ZuH/YrXwACfDVLSfCUNVR1QOqOS/OoenSogXWvSG6
-         E88cfAFPQKa3mDVT8FbmRd9DsoMqIIiYPtkGZfop9fCYWPX6OBtsGHpg1MyYEUOCmi6H
-         s6vJk9kH0YoDjFMxZfaOp/cOSSgiDDfXwjQx5XuGEHccPXttO3hx4Tp7YWlUsEa+M335
-         ugkYZVVRa9tU+q3KciEbNvs3zhXb5RonSiXCpfCtQ8y45vnTTJNJoI6diyzAU93TPU0f
-         tiZVXNYHDCcie8Pa6HpE4ZbNw55eq6nZtPVz2plea9htrHxz2wwvDsYuH1WufmqQUyuM
-         lKcw==
-X-Gm-Message-State: AOAM533goe3RrbDWQiXbNjV3f0TCZcT/ZwaJsczw8ZOaieuP/fr+lrWe
-        rvWCK3/4X+DKVhWmGQx2QidShw==
-X-Google-Smtp-Source: ABdhPJxOiDYHCC21oqnaEphmZFEC1hNzb9Z3mfQ6lzO0cR4BT7/b5e1SCSw2tr/OYgjRQqeBKUs//A==
-X-Received: by 2002:a6b:da03:: with SMTP id x3mr2259297iob.127.1613140451517;
-        Fri, 12 Feb 2021 06:34:11 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id j12sm4387878ila.75.2021.02.12.06.34.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 06:34:11 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 net-next 5/5] net: ipa: introduce gsi_channel_initialized()
-Date:   Fri, 12 Feb 2021 08:34:02 -0600
-Message-Id: <20210212143402.2691-6-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210212143402.2691-1-elder@linaro.org>
-References: <20210212143402.2691-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eidZG+I3Er5dt5H72FEzd2tmVBif8YR3658fF+5wafQ=;
+        b=PVrNTr+nT6+SHbO45LQdNW1WBUI25D106AoZGb0nWrS8M1DJcu/paX/0HZ4DsEswYs
+         pOzVyCOR924GTeVOw6wE4TikzewhAavTc0hy4lemJae5PaWywCYvoi4stmwyyKltGZW4
+         CWvLNdUW/l+ajlkoo8t4WidufdnRNEEr7/I/XmuCkwFdU8/+X3FaFokB9Oyr987SgGtm
+         U7wAkgZXTNuuX/veNwI21rb06OUVzAL1/BfzzyhKK3/XEg2ON7ivSwP15HGbE68gbXaR
+         WfWvc74p7Z8KwUWkQ6xMwEhhBTdRB/Fh9gg0mgyazEpIwLP7P3aylJxc5298/Si1SNrB
+         mMmw==
+X-Gm-Message-State: AOAM531usFDK+Egez66fOu1eH7XMyUbZjSuF89+FIv0N6MBKuNoM29Zk
+        KniFE9IdsbA8loDj8Ggvw9epmgoSTd3bJqif35M=
+X-Google-Smtp-Source: ABdhPJzr3qg/PJ3Q7Bn4we8RXLAGDjnxwBiKNtRbp9C7s1FQH8WlkJy6oY3XNw8X76IM8tqVELRXBkcF+Q0cdQdxYe4=
+X-Received: by 2002:aca:3d85:: with SMTP id k127mr2018082oia.157.1613140618202;
+ Fri, 12 Feb 2021 06:36:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210212141121.62115-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210212141121.62115-1-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 12 Feb 2021 15:36:47 +0100
+Message-ID: <CAJZ5v0iE2yU9Dptwkyz8PgoGzdSk_8vS69Y+=hE2_o_R=+rbNg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] ACPI: property: Remove dead code
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a simple helper function that indicates whether a channel has
-been initialized.  This abstacts/hides the details of how this is
-determined.
+On Fri, Feb 12, 2021 at 3:16 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> After the commit 3a7a2ab839ad couple of functions became a dead code.
+> Moreover, for all these years nobody used them. Remove.
+>
+> Fixes: 3a7a2ab839ad ("ACPI / property: Extend fwnode_property_* to data-only subnodes")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/gsi.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+Patches [1-4/5] from this series applied as 5.12 material and please
+see my comments for the last one sent separately.
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 9c977f80109a9..390d3403386aa 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -175,6 +175,12 @@ static u32 gsi_channel_id(struct gsi_channel *channel)
- 	return channel - &channel->gsi->channel[0];
- }
- 
-+/* An initialized channel has a non-null GSI pointer */
-+static bool gsi_channel_initialized(struct gsi_channel *channel)
-+{
-+	return !!channel->gsi;
-+}
-+
- /* Update the GSI IRQ type register with the cached value */
- static void gsi_irq_type_update(struct gsi *gsi, u32 val)
- {
-@@ -1638,8 +1644,8 @@ static int gsi_channel_setup_one(struct gsi *gsi, u32 channel_id)
- 	u32 evt_ring_id = channel->evt_ring_id;
- 	int ret;
- 
--	if (!channel->gsi)
--		return 0;	/* Ignore uninitialized channels */
-+	if (!gsi_channel_initialized(channel))
-+		return 0;
- 
- 	ret = gsi_evt_ring_alloc_command(gsi, evt_ring_id);
- 	if (ret)
-@@ -1675,8 +1681,8 @@ static void gsi_channel_teardown_one(struct gsi *gsi, u32 channel_id)
- 	struct gsi_channel *channel = &gsi->channel[channel_id];
- 	u32 evt_ring_id = channel->evt_ring_id;
- 
--	if (!channel->gsi)
--		return;		/* Ignore uninitialized channels */
-+	if (!gsi_channel_initialized(channel))
-+		return;
- 
- 	netif_napi_del(&channel->napi);
- 
-@@ -1770,8 +1776,8 @@ static int gsi_channel_setup(struct gsi *gsi)
- 	while (channel_id < GSI_CHANNEL_COUNT_MAX) {
- 		struct gsi_channel *channel = &gsi->channel[channel_id++];
- 
--		if (!channel->gsi)
--			continue;	/* Ignore uninitialized channels */
-+		if (!gsi_channel_initialized(channel))
-+			continue;
- 
- 		ret = -EINVAL;
- 		dev_err(gsi->dev, "channel %u not supported by hardware\n",
-@@ -2089,8 +2095,8 @@ static int gsi_channel_init_one(struct gsi *gsi,
- /* Inverse of gsi_channel_init_one() */
- static void gsi_channel_exit_one(struct gsi_channel *channel)
- {
--	if (!channel->gsi)
--		return;		/* Ignore uninitialized channels */
-+	if (!gsi_channel_initialized(channel))
-+		return;
- 
- 	if (channel->command)
- 		ipa_cmd_pool_exit(channel);
--- 
-2.20.1
+Thanks!
 
+> ---
+>  drivers/acpi/property.c | 20 --------------------
+>  include/linux/acpi.h    | 21 ---------------------
+>  2 files changed, 41 deletions(-)
+>
+> diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+> index 16b28084c1ca..22ccab4e7c6d 100644
+> --- a/drivers/acpi/property.c
+> +++ b/drivers/acpi/property.c
+> @@ -841,20 +841,6 @@ static int acpi_data_prop_read_single(const struct acpi_device_data *data,
+>         return ret;
+>  }
+>
+> -int acpi_dev_prop_read_single(struct acpi_device *adev, const char *propname,
+> -                             enum dev_prop_type proptype, void *val)
+> -{
+> -       int ret;
+> -
+> -       if (!adev || !val)
+> -               return -EINVAL;
+> -
+> -       ret = acpi_data_prop_read_single(&adev->data, propname, proptype, val);
+> -       if (ret < 0 || proptype != ACPI_TYPE_STRING)
+> -               return ret;
+> -       return 0;
+> -}
+> -
+>  static int acpi_copy_property_array_u8(const union acpi_object *items, u8 *val,
+>                                        size_t nval)
+>  {
+> @@ -995,12 +981,6 @@ static int acpi_data_prop_read(const struct acpi_device_data *data,
+>         return ret;
+>  }
+>
+> -int acpi_dev_prop_read(const struct acpi_device *adev, const char *propname,
+> -                      enum dev_prop_type proptype, void *val, size_t nval)
+> -{
+> -       return adev ? acpi_data_prop_read(&adev->data, propname, proptype, val, nval) : -EINVAL;
+> -}
+> -
+>  /**
+>   * acpi_node_prop_read - retrieve the value of an ACPI property with given name.
+>   * @fwnode: Firmware node to get the property from.
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index ea296289a94c..14ac25165ae1 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -1121,14 +1121,9 @@ acpi_data_add_props(struct acpi_device_data *data, const guid_t *guid,
+>
+>  int acpi_node_prop_get(const struct fwnode_handle *fwnode, const char *propname,
+>                        void **valptr);
+> -int acpi_dev_prop_read_single(struct acpi_device *adev,
+> -                             const char *propname, enum dev_prop_type proptype,
+> -                             void *val);
+>  int acpi_node_prop_read(const struct fwnode_handle *fwnode,
+>                         const char *propname, enum dev_prop_type proptype,
+>                         void *val, size_t nval);
+> -int acpi_dev_prop_read(const struct acpi_device *adev, const char *propname,
+> -                      enum dev_prop_type proptype, void *val, size_t nval);
+>
+>  struct fwnode_handle *acpi_get_next_subnode(const struct fwnode_handle *fwnode,
+>                                             struct fwnode_handle *child);
+> @@ -1230,14 +1225,6 @@ static inline int acpi_node_prop_get(const struct fwnode_handle *fwnode,
+>         return -ENXIO;
+>  }
+>
+> -static inline int acpi_dev_prop_read_single(const struct acpi_device *adev,
+> -                                           const char *propname,
+> -                                           enum dev_prop_type proptype,
+> -                                           void *val)
+> -{
+> -       return -ENXIO;
+> -}
+> -
+>  static inline int acpi_node_prop_read(const struct fwnode_handle *fwnode,
+>                                       const char *propname,
+>                                       enum dev_prop_type proptype,
+> @@ -1246,14 +1233,6 @@ static inline int acpi_node_prop_read(const struct fwnode_handle *fwnode,
+>         return -ENXIO;
+>  }
+>
+> -static inline int acpi_dev_prop_read(const struct acpi_device *adev,
+> -                                    const char *propname,
+> -                                    enum dev_prop_type proptype,
+> -                                    void *val, size_t nval)
+> -{
+> -       return -ENXIO;
+> -}
+> -
+>  static inline struct fwnode_handle *
+>  acpi_get_next_subnode(const struct fwnode_handle *fwnode,
+>                       struct fwnode_handle *child)
+> --
+> 2.30.0
+>
