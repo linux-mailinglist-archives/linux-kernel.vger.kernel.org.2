@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED1B31A2EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9397831A2F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhBLQkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:40:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38068 "EHLO mail.kernel.org"
+        id S230527AbhBLQlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:41:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229989AbhBLQiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:38:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1C9064E42;
-        Fri, 12 Feb 2021 16:37:33 +0000 (UTC)
+        id S231251AbhBLQiy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 11:38:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BE7064E36;
+        Fri, 12 Feb 2021 16:38:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613147854;
-        bh=7q1Vc3ssciykH0aqot0h+gFx3rf7LE1Jyy2clH+JiQk=;
+        s=k20201202; t=1613147892;
+        bh=/r8OlkVb1UZ3ooJxgAqMaRYOERuR7leTS0IPlTRu2SA=;
         h=From:To:Cc:Subject:Date:From;
-        b=ivbi4LWZXUWDYisvWHvzin2fotyrP0B9MPa8RpXl5YMMpLRzJRGvNGLip83PGjXkC
-         AiJGDYT7lZKuIvtENi4eRwA0fpP1zi51ZOshLEzWhTpCjct9LAytXG+umTWrigogvm
-         EDgW1jvsqwqQFf04GL6EF2Bs0Bvm2LWxOTJR9+MyQ/s0JgQbTF25iirUAFCa5F8+8Z
-         IfehM7zfcXCCp4v8zynuIGi4/Yn+T067PbfwBNIT33nfIzTiim2VAW+pMOC8sZid56
-         uy62A25bueB+9U2qPjEXnz1r5MKFGnc+QuqUz0KHTMDMtiTv8TZGZCr7fKnzsXRsc6
-         AcpKk3kwINUaQ==
+        b=UJV4wdzJ1WwvVfz5RcPglO/NNQWEjx6It0Z5G3Gmv4luzlE9K3hVoV9O042vrQKqy
+         RuWNsIgYVK2GGhoLbU84XKv+SIp7ctc28v1s806tAAVg3qiv5d3bqjtiwpbnfSt5zF
+         WYhQtH6Jwmvr6Yrr7DmoYZQZYhpyWJTkQV5PQDwyHNCGggccDURIHdPVR2LJU6SVbI
+         SHKfooN4tlygJ4Hvf2zXhbszBM71dTqylzFRVlNXB8OB4BDs0rx+KdzCfk+GvFAMTt
+         W5aqVYko4ykK2P47Odf/6hXV9t5vNq8p8SuGHVh9cD3plqeMB12jLRv8saUr+C1hk7
+         MTACSSE2oQG2w==
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH] arm64: dts: exynos: re-order Slim SSS clocks to match dtschema
-Date:   Fri, 12 Feb 2021 17:37:29 +0100
-Message-Id: <20210212163729.69882-1-krzk@kernel.org>
+To:     Nick Dyer <nick@shmanahar.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] dt-bindings: input: atmel,maxtouch: add wakeup-source
+Date:   Fri, 12 Feb 2021 17:38:06 +0100
+Message-Id: <20210212163806.69996-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,35 +44,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dtschema expects pclk (APB clock) followed by aclk (AXI/AHB clock):
+The touchscreen can be a wake up source and it's being used in DTS:
 
-  arch/arm64/boot/dts/exynos/exynos5433-tm2.dt.yaml:
-    slim-sss@11140000: clock-names:0: 'pclk' was expected
-  arch/arm64/boot/dts/exynos/exynos5433-tm2.dt.yaml:
-    slim-sss@11140000: clock-names:1: 'aclk' was expected
+  arch/arm/boot/dts/exynos5250-spring.dt.yaml:
+    trackpad@4b: 'wakeup-source' does not match any of the regexes: 'pinctrl-[0-9]+'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/exynos/exynos5433.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/input/atmel,maxtouch.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos5433.dtsi b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-index 6433f9ee35e1..18a912eee360 100644
---- a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-@@ -564,9 +564,9 @@ slim_sss: slim-sss@11140000 {
- 			compatible = "samsung,exynos5433-slim-sss";
- 			reg = <0x11140000 0x1000>;
- 			interrupts = <GIC_SPI 312 IRQ_TYPE_LEVEL_HIGH>;
--			clock-names = "aclk", "pclk";
--			clocks = <&cmu_imem CLK_ACLK_SLIMSSS>,
--				 <&cmu_imem CLK_PCLK_SLIMSSS>;
-+			clock-names = "pclk", "aclk";
-+			clocks = <&cmu_imem CLK_PCLK_SLIMSSS>,
-+				 <&cmu_imem CLK_ACLK_SLIMSSS>;
- 		};
+diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+index 8c6418f76e94..eb69a8fc8498 100644
+--- a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
++++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+@@ -53,6 +53,9 @@ properties:
+       or experiment to determine which bit corresponds to which input. Use
+       KEY_RESERVED for unused padding values.
  
- 		pd_gscl: power-domain@105c4000 {
++  wakeup-source:
++    type: boolean
++
+ required:
+   - compatible
+   - reg
 -- 
 2.25.1
 
