@@ -2,192 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6D431A5AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F41531A56E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhBLT5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:57:11 -0500
-Received: from m1514.mail.126.com ([220.181.15.14]:59794 "EHLO
-        m1514.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhBLT5G (ORCPT
+        id S232127AbhBLT37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:29:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58196 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232079AbhBLT3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:57:06 -0500
-X-Greylist: delayed 5624 seconds by postgrey-1.27 at vger.kernel.org; Fri, 12 Feb 2021 14:56:47 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=TxEJH
-        zvsoz/dQp5y6P7ffEWtCEQFQnToRV0NYA0ZBk4=; b=W6F+dtcdEsdYl+HcjebpD
-        mk0+4Cpc+XUwXcd1U8RIBzhKVS8FRxFTQgrRvThW/+t9zJMtO0yx4fLzEspsSvaK
-        +xQFXQx/65eNhZuoxfpv/AXcWDQYcp1IWYbCbDShbRvQjbWDz7baOXVQYLKLCkkC
-        4VAxIn+k2BtEIqWu/RCSQU=
-Received: from kernelpatch$126.com ( [111.18.136.24] ) by
- ajax-webmail-wmsvr14 (Coremail) ; Sat, 13 Feb 2021 02:20:46 +0800 (CST)
-X-Originating-IP: [111.18.136.24]
-Date:   Sat, 13 Feb 2021 02:20:46 +0800 (CST)
-From:   "Tiezhu Yang" <kernelpatch@126.com>
-To:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Oleg Nesterov" <oleg@redhat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Xuefeng Li" <lixuefeng@loongson.cn>,
-        "kernel test robot" <lkp@intel.com>,
-        "Xingxing Su" <suxingxing@loongson.cn>
-Subject: [PATCH v2 RESEND] MIPS: Add basic support for ptrace single step
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn 126com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Fri, 12 Feb 2021 14:29:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613158101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1YuTGZbTwR1WBlvZwFuKyi6rNVLUvL5QcgrEv/9sJpk=;
+        b=dmIztR4F5dtie9q6/Xc3bKQOQfEUgm970NG24PzxCc10aOhJyaYW3+d1lGAQTnQvIWu8qQ
+        ZeHzTxAgE/0tRatozgWzLzSHP8NwYLhMSXZbkvV9frz9kdVqTLjjNxZy8Y6F/FEGNRKfsF
+        ndg23X9H2e8vb2kJloxdA/dmv2Uenl4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-298-WTcre85hMlWkVuAV9yg9YQ-1; Fri, 12 Feb 2021 14:28:17 -0500
+X-MC-Unique: WTcre85hMlWkVuAV9yg9YQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77BFD801962;
+        Fri, 12 Feb 2021 19:28:16 +0000 (UTC)
+Received: from gimli.home (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F17295D9DB;
+        Fri, 12 Feb 2021 19:28:09 +0000 (UTC)
+Subject: [PATCH 3/3] vfio/type1: Implement vma registration and restriction
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     alex.williamson@redhat.com
+Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jgg@nvidia.com, peterx@redhat.com
+Date:   Fri, 12 Feb 2021 12:28:09 -0700
+Message-ID: <161315808144.7320.2973346461158505515.stgit@gimli.home>
+In-Reply-To: <161315658638.7320.9686203003395567745.stgit@gimli.home>
+References: <161315658638.7320.9686203003395567745.stgit@gimli.home>
+User-Agent: StGit/0.21-dirty
 MIME-Version: 1.0
-Message-ID: <fb37951.4.177977952f5.Coremail.kernelpatch@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: DsqowACHL+r_xiZgD3E2AQ--.45670W
-X-CM-SenderInfo: xnhu0vxosd3ubk6rjloofrz/1tbimRU39V9E2DUNxQABsx
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogVGllemh1IFlhbmcgPHlhbmd0aWV6aHVAbG9vbmdzb24uY24+CgpJbiB0aGUgY3VycmVu
-dCBjb2RlLCBhcmNoX2hhc19zaW5nbGVfc3RlcCgpIGlzIG5vdCBkZWZpbmVkIG9uIE1JUFMsCnRo
-YXQgbWVhbnMgTUlQUyBkb2VzIG5vdCBzdXBwb3J0IGluc3RydWN0aW9uIHNpbmdsZS1zdGVwIGZv
-ciB1c2VyIG1vZGUuCgpEZWx2ZSBpcyBhIGRlYnVnZ2VyIGZvciB0aGUgR28gcHJvZ3JhbW1pbmcg
-bGFuZ3VhZ2UsIHRoZSBwdHJhY2Ugc3lzY2FsbApQdHJhY2VTaW5nbGVTdGVwKCkgZmFpbGVkIFsx
-XSBvbiBNSVBTIGFuZCB0aGVuIHRoZSBzaW5nbGUgc3RlcCBmdW5jdGlvbgpjYW4gbm90IHdvcmsg
-d2VsbCwgd2UgY2FuIHNlZSB0aGF0IFB0cmFjZVNpbmdsZVN0ZXAoKSBkZWZpbml0aW9uIHJldHVy
-bnMKcHRyYWNlKFBUUkFDRV9TSU5HTEVTVEVQKSBbMl0uCgpTbyBpdCBpcyBuZWNlc3NhcnkgdG8g
-c3VwcG9ydCBwdHJhY2Ugc2luZ2xlIHN0ZXAgb24gTUlQUy4KCkF0IHRoZSBiZWdpbm5pbmcsIHdl
-IHRyeSB0byB1c2UgdGhlIERlYnVnIFNpbmdsZSBTdGVwIGV4Y2VwdGlvbiBvbiB0aGUKTG9vbmdz
-b24gM0E0MDAwIHBsYXRmb3JtLCBidXQgaXQgaGFzIG5vIGVmZmVjdCB3aGVuIHNldCBDUDBfREVC
-VUcgU1N0CmJpdCwgdGhpcyBpcyBiZWNhdXNlIENQMF9ERUJVRyBOb1NTdCBiaXQgaXMgMSB3aGlj
-aCBpbmRpY2F0ZXMgbm8Kc2luZ2xlLXN0ZXAgZmVhdHVyZSBhdmFpbGFibGUgWzNdLCBzbyB0aGlz
-IHdheSB3aGljaCBpcyBkZXBlbmRlbnQgb24gdGhlCmhhcmR3YXJlIGlzIGFsbW9zdCBpbXBvc3Np
-YmxlLgoKV2l0aCBmdXJ0aGVyIHJlc2VhcmNoLCB3ZSBmaW5kIG91dCB0aGVyZSBleGlzdHMgYSBj
-b21tb24gd2F5IHVzZWQgd2l0aApicmVhayBpbnN0cnVjdGlvbiBpbiBhcmNoL2FscGhhL2tlcm5l
-bC9wdHJhY2UuYywgaXQgaXMgd29ya2FibGUuCgpGb3IgdGhlIGFib3ZlIGFuYWx5c2lzLCBkZWZp
-bmUgYXJjaF9oYXNfc2luZ2xlX3N0ZXAoKSwgYWRkIHRoZSBjb21tb24KZnVuY3Rpb24gdXNlcl9l
-bmFibGVfc2luZ2xlX3N0ZXAoKSBhbmQgdXNlcl9kaXNhYmxlX3NpbmdsZV9zdGVwKCksIHNldApm
-bGFnIFRJRl9TSU5HTEVTVEVQIGZvciBjaGlsZCBwcm9jZXNzLCB1c2UgYnJlYWsgaW5zdHJ1Y3Rp
-b24gdG8gc2V0CmJyZWFrcG9pbnQuCgpXZSBjYW4gdXNlIHRoZSBmb2xsb3dpbmcgdGVzdGNhc2Ug
-dG8gdGVzdCBpdDoKdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnJlYWtwb2ludHMvc3RlcF9hZnRl
-cl9zdXNwZW5kX3Rlc3QuYwoKICQgbWFrZSAtQyB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cyBUQVJH
-RVRTPWJyZWFrcG9pbnRzCiAkIGNkIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JyZWFrcG9pbnRz
-CgpXaXRob3V0IHRoaXMgcGF0Y2g6CgogJCAuL3N0ZXBfYWZ0ZXJfc3VzcGVuZF90ZXN0IC1uCiBU
-QVAgdmVyc2lvbiAxMwogMS4uNAogIyBwdHJhY2UoUFRSQUNFX1NJTkdMRVNURVApIG5vdCBzdXBw
-b3J0ZWQgb24gdGhpcyBhcmNoaXRlY3R1cmU6IElucHV0L291dHB1dCBlcnJvcgogb2sgMSAjIFNL
-SVAgQ1BVIDAKICMgcHRyYWNlKFBUUkFDRV9TSU5HTEVTVEVQKSBub3Qgc3VwcG9ydGVkIG9uIHRo
-aXMgYXJjaGl0ZWN0dXJlOiBJbnB1dC9vdXRwdXQgZXJyb3IKIG9rIDIgIyBTS0lQIENQVSAxCiAj
-IHB0cmFjZShQVFJBQ0VfU0lOR0xFU1RFUCkgbm90IHN1cHBvcnRlZCBvbiB0aGlzIGFyY2hpdGVj
-dHVyZTogSW5wdXQvb3V0cHV0IGVycm9yCiBvayAzICMgU0tJUCBDUFUgMgogIyBwdHJhY2UoUFRS
-QUNFX1NJTkdMRVNURVApIG5vdCBzdXBwb3J0ZWQgb24gdGhpcyBhcmNoaXRlY3R1cmU6IElucHV0
-L291dHB1dCBlcnJvcgogb2sgNCAjIFNLSVAgQ1BVIDMKICMgVG90YWxzOiBwYXNzOjAgZmFpbDow
-IHhmYWlsOjAgeHBhc3M6MCBza2lwOjQgZXJyb3I6MAoKV2l0aCB0aGlzIHBhdGNoOgoKICQgLi9z
-dGVwX2FmdGVyX3N1c3BlbmRfdGVzdCAtbgogVEFQIHZlcnNpb24gMTMKIDEuLjQKIG9rIDEgQ1BV
-IDAKIG9rIDIgQ1BVIDEKIG9rIDMgQ1BVIDIKIG9rIDQgQ1BVIDMKICMgVG90YWxzOiBwYXNzOjQg
-ZmFpbDowIHhmYWlsOjAgeHBhc3M6MCBza2lwOjAgZXJyb3I6MAoKWzFdIGh0dHBzOi8vZ2l0aHVi
-LmNvbS9nby1kZWx2ZS9kZWx2ZS9ibG9iL21hc3Rlci9wa2cvcHJvYy9uYXRpdmUvdGhyZWFkc19s
-aW51eC5nbyNMNTAKWzJdIGh0dHBzOi8vZ2l0aHViLmNvbS9nby1kZWx2ZS9kZWx2ZS9ibG9iL21h
-c3Rlci92ZW5kb3IvZ29sYW5nLm9yZy94L3N5cy91bml4L3N5c2NhbGxfbGludXguZ28jTDE1NzMK
-WzNdIGh0dHA6Ly93d3cudC1lcy10Lmh1L2Rvd25sb2FkL21pcHMvbWQwMDA0N2YucGRmCgpSZXBv
-cnRlZC1ieTogR3VvcWkgQ2hlbiA8Y2hlbmd1b3FpQGxvb25nc29uLmNuPgpTaWduZWQtb2ZmLWJ5
-OiBYaW5neGluZyBTdSA8c3V4aW5neGluZ0Bsb29uZ3Nvbi5jbj4KU2lnbmVkLW9mZi1ieTogVGll
-emh1IFlhbmcgPHlhbmd0aWV6aHVAbG9vbmdzb24uY24+ClJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVz
-dCByb2JvdCA8bGtwQGludGVsLmNvbT4KLS0tCgpSRVNFTkQgZHVlIHRvIHNlbmQgdG8gbWFpbCBs
-aXN0IGZhaWxlZCwgc29ycnkgZm9yIHRoYXQuCgp2MjogbWFrZSB1bmlvbiBtaXBzX2luc3RydWN0
-aW9uIG1pcHNfaW5zbiA9IHsgMCB9OwogICAgdG8gZml4IHVuaW5pdGlhbGl6ZWQgYnVpbGQgd2Fy
-bmluZyB1c2VkIHdpdGggY2xhbmcKICAgIHJlcG9ydGVkIGJ5IGtlcm5lbCB0ZXN0IHJvYm90LgoK
-IGFyY2gvbWlwcy9pbmNsdWRlL2FzbS9wdHJhY2UuaCAgICAgIHwgICAyICsKIGFyY2gvbWlwcy9p
-bmNsdWRlL2FzbS90aHJlYWRfaW5mby5oIHwgICA1ICsrCiBhcmNoL21pcHMva2VybmVsL3B0cmFj
-ZS5jICAgICAgICAgICB8IDEwOCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysK
-IGFyY2gvbWlwcy9rZXJuZWwvc2lnbmFsLmMgICAgICAgICAgIHwgICAyICstCiA0IGZpbGVzIGNo
-YW5nZWQsIDExNiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvYXJj
-aC9taXBzL2luY2x1ZGUvYXNtL3B0cmFjZS5oIGIvYXJjaC9taXBzL2luY2x1ZGUvYXNtL3B0cmFj
-ZS5oCmluZGV4IDFlNzY3NzQuLjYzODhiMjAgMTAwNjQ0Ci0tLSBhL2FyY2gvbWlwcy9pbmNsdWRl
-L2FzbS9wdHJhY2UuaAorKysgYi9hcmNoL21pcHMvaW5jbHVkZS9hc20vcHRyYWNlLmgKQEAgLTE4
-Niw0ICsxODYsNiBAQCBzdGF0aWMgaW5saW5lIHZvaWQgdXNlcl9zdGFja19wb2ludGVyX3NldChz
-dHJ1Y3QgcHRfcmVncyAqcmVncywKIAlyZWdzLT5yZWdzWzI5XSA9IHZhbDsKIH0KIAorI2RlZmlu
-ZSBhcmNoX2hhc19zaW5nbGVfc3RlcCgpCSgxKQorCiAjZW5kaWYgLyogX0FTTV9QVFJBQ0VfSCAq
-LwpkaWZmIC0tZ2l0IGEvYXJjaC9taXBzL2luY2x1ZGUvYXNtL3RocmVhZF9pbmZvLmggYi9hcmNo
-L21pcHMvaW5jbHVkZS9hc20vdGhyZWFkX2luZm8uaAppbmRleCBlMmMzNTJkLi5iZDRkYmI1IDEw
-MDY0NAotLS0gYS9hcmNoL21pcHMvaW5jbHVkZS9hc20vdGhyZWFkX2luZm8uaAorKysgYi9hcmNo
-L21pcHMvaW5jbHVkZS9hc20vdGhyZWFkX2luZm8uaApAQCAtMzUsNiArMzUsMTAgQEAgc3RydWN0
-IHRocmVhZF9pbmZvIHsKIAkJCQkJCSAqLwogCXN0cnVjdCBwdF9yZWdzCQkqcmVnczsKIAlsb25n
-CQkJc3lzY2FsbDsJLyogc3lzY2FsbCBudW1iZXIgKi8KKworCWludCBicHRfbnNhdmVkOworCXVu
-c2lnbmVkIGxvbmcgYnB0X2FkZHJbMV07CQkvKiBicmVha3BvaW50IGhhbmRsaW5nICovCisJdW5z
-aWduZWQgaW50IGJwdF9pbnNuWzFdOwogfTsKIAogLyoKQEAgLTExNyw2ICsxMjEsNyBAQCBzdGF0
-aWMgaW5saW5lIHN0cnVjdCB0aHJlYWRfaW5mbyAqY3VycmVudF90aHJlYWRfaW5mbyh2b2lkKQog
-I2RlZmluZSBUSUZfVVBST0JFCQk2CS8qIGJyZWFrcG9pbnRlZCBvciBzaW5nbGVzdGVwcGluZyAq
-LwogI2RlZmluZSBUSUZfTk9USUZZX1NJR05BTAk3CS8qIHNpZ25hbCBub3RpZmljYXRpb25zIGV4
-aXN0ICovCiAjZGVmaW5lIFRJRl9SRVNUT1JFX1NJR01BU0sJOQkvKiByZXN0b3JlIHNpZ25hbCBt
-YXNrIGluIGRvX3NpZ25hbCgpICovCisjZGVmaW5lIFRJRl9TSU5HTEVTVEVQCQkxMAkvKiByZXN0
-b3JlIHNpbmdsZXN0ZXAgb24gcmV0dXJuIHRvIHVzZXIgbW9kZSAqLwogI2RlZmluZSBUSUZfVVNF
-REZQVQkJMTYJLyogRlBVIHdhcyB1c2VkIGJ5IHRoaXMgdGFzayB0aGlzIHF1YW50dW0gKFNNUCkg
-Ki8KICNkZWZpbmUgVElGX01FTURJRQkJMTgJLyogaXMgdGVybWluYXRpbmcgZHVlIHRvIE9PTSBr
-aWxsZXIgKi8KICNkZWZpbmUgVElGX05PSFoJCTE5CS8qIGluIGFkYXB0aXZlIG5vaHogbW9kZSAq
-LwpkaWZmIC0tZ2l0IGEvYXJjaC9taXBzL2tlcm5lbC9wdHJhY2UuYyBiL2FyY2gvbWlwcy9rZXJu
-ZWwvcHRyYWNlLmMKaW5kZXggZGI3YzViZS4uZjI5MTQxOSAxMDA2NDQKLS0tIGEvYXJjaC9taXBz
-L2tlcm5lbC9wdHJhY2UuYworKysgYi9hcmNoL21pcHMva2VybmVsL3B0cmFjZS5jCkBAIC00NSwx
-MCArNDUsMTUgQEAKICNpbmNsdWRlIDxsaW51eC91YWNjZXNzLmg+CiAjaW5jbHVkZSA8YXNtL2Jv
-b3RpbmZvLmg+CiAjaW5jbHVkZSA8YXNtL3JlZy5oPgorI2luY2x1ZGUgPGFzbS9icmFuY2guaD4K
-IAogI2RlZmluZSBDUkVBVEVfVFJBQ0VfUE9JTlRTCiAjaW5jbHVkZSA8dHJhY2UvZXZlbnRzL3N5
-c2NhbGxzLmg+CiAKKyNpbmNsdWRlICJwcm9iZXMtY29tbW9uLmgiCisKKyNkZWZpbmUgQlJFQUtJ
-TlNUCTB4MDAwMDAwMGQKKwogLyoKICAqIENhbGxlZCBieSBrZXJuZWwvcHRyYWNlLmMgd2hlbiBk
-ZXRhY2hpbmcuLgogICoKQEAgLTU4LDYgKzYzLDcgQEAgdm9pZCBwdHJhY2VfZGlzYWJsZShzdHJ1
-Y3QgdGFza19zdHJ1Y3QgKmNoaWxkKQogewogCS8qIERvbid0IGxvYWQgdGhlIHdhdGNocG9pbnQg
-cmVnaXN0ZXJzIGZvciB0aGUgZXgtY2hpbGQuICovCiAJY2xlYXJfdHNrX3RocmVhZF9mbGFnKGNo
-aWxkLCBUSUZfTE9BRF9XQVRDSCk7CisJdXNlcl9kaXNhYmxlX3NpbmdsZV9zdGVwKGNoaWxkKTsK
-IH0KIAogLyoKQEAgLTEwNzIsNiArMTA3OCwxMDggQEAgY29uc3Qgc3RydWN0IHVzZXJfcmVnc2V0
-X3ZpZXcgKnRhc2tfdXNlcl9yZWdzZXRfdmlldyhzdHJ1Y3QgdGFza19zdHJ1Y3QgKnRhc2spCiAj
-ZW5kaWYKIH0KIAorc3RhdGljIGludCByZWFkX2luc24oc3RydWN0IHRhc2tfc3RydWN0ICp0YXNr
-LCB1bnNpZ25lZCBsb25nIGFkZHIsIHVuc2lnbmVkIGludCAqaW5zbikKK3sKKwlpbnQgY29waWVk
-ID0gYWNjZXNzX3Byb2Nlc3Nfdm0odGFzaywgYWRkciwgaW5zbiwKKwkJCQkgICAgICAgc2l6ZW9m
-KHVuc2lnbmVkIGludCksIEZPTExfRk9SQ0UpOworCisJaWYgKGNvcGllZCAhPSBzaXplb2YodW5z
-aWduZWQgaW50KSkgeworCQlwcl9lcnIoImZhaWxlZCB0byByZWFkIGluc3RydWN0aW9uIGZyb20g
-MHglbHhcbiIsIGFkZHIpOworCQlyZXR1cm4gLUVJTzsKKwl9CisKKwlyZXR1cm4gMDsKK30KKwor
-c3RhdGljIGludCB3cml0ZV9pbnNuKHN0cnVjdCB0YXNrX3N0cnVjdCAqdGFzaywgdW5zaWduZWQg
-bG9uZyBhZGRyLCB1bnNpZ25lZCBpbnQgaW5zbikKK3sKKwlpbnQgY29waWVkID0gYWNjZXNzX3By
-b2Nlc3Nfdm0odGFzaywgYWRkciwgJmluc24sCisJCQkJICAgICAgIHNpemVvZih1bnNpZ25lZCBp
-bnQpLCBGT0xMX0ZPUkNFIHwgRk9MTF9XUklURSk7CisKKwlpZiAoY29waWVkICE9IHNpemVvZih1
-bnNpZ25lZCBpbnQpKSB7CisJCXByX2VycigiZmFpbGVkIHRvIHdyaXRlIGluc3RydWN0aW9uIHRv
-IDB4JWx4XG4iLCBhZGRyKTsKKwkJcmV0dXJuIC1FSU87CisJfQorCisJcmV0dXJuIDA7Cit9CisK
-K3N0YXRpYyBpbnQgaW5zbl9oYXNfZGVsYXlzbG90KHVuaW9uIG1pcHNfaW5zdHJ1Y3Rpb24gaW5z
-bikKK3sKKwlyZXR1cm4gX19pbnNuX2hhc19kZWxheV9zbG90KGluc24pOworfQorCitzdGF0aWMg
-dm9pZCBwdHJhY2Vfc2V0X2JwdChzdHJ1Y3QgdGFza19zdHJ1Y3QgKmNoaWxkKQoreworCXVuaW9u
-IG1pcHNfaW5zdHJ1Y3Rpb24gbWlwc19pbnNuID0geyAwIH07CisJc3RydWN0IHB0X3JlZ3MgKnJl
-Z3M7CisJdW5zaWduZWQgbG9uZyBwYzsKKwl1bnNpZ25lZCBpbnQgaW5zbjsKKwlpbnQgaSwgcmV0
-LCBuc2F2ZWQgPSAwOworCisJcmVncyA9IHRhc2tfcHRfcmVncyhjaGlsZCk7CisJcGMgPSByZWdz
-LT5jcDBfZXBjOworCisJcmV0ID0gcmVhZF9pbnNuKGNoaWxkLCBwYywgJmluc24pOworCWlmIChy
-ZXQgPCAwKQorCQlyZXR1cm47CisKKwlpZiAoaW5zbl9oYXNfZGVsYXlzbG90KG1pcHNfaW5zbikp
-IHsKKwkJcHJfaW5mbygiZXhlY3V0aW5nIGJyYW5jaCBpbnNuXG4iKTsKKwkJcmV0ID0gX19jb21w
-dXRlX3JldHVybl9lcGMocmVncyk7CisJCWlmIChyZXQgPCAwKQorCQkJcmV0dXJuOworCQl0YXNr
-X3RocmVhZF9pbmZvKGNoaWxkKS0+YnB0X2FkZHJbbnNhdmVkKytdID0gcmVncy0+Y3AwX2VwYzsK
-Kwl9IGVsc2UgeworCQlwcl9pbmZvKCJleGVjdXRpbmcgbm9ybWFsIGluc25cbiIpOworCQl0YXNr
-X3RocmVhZF9pbmZvKGNoaWxkKS0+YnB0X2FkZHJbbnNhdmVkKytdID0gcGMgKyA0OworCX0KKwor
-CS8qIGluc3RhbGwgYnJlYWtwb2ludHMgKi8KKwlmb3IgKGkgPSAwOyBpIDwgbnNhdmVkOyBpKysp
-IHsKKwkJcmV0ID0gcmVhZF9pbnNuKGNoaWxkLCB0YXNrX3RocmVhZF9pbmZvKGNoaWxkKS0+YnB0
-X2FkZHJbaV0sICZpbnNuKTsKKwkJaWYgKHJldCA8IDApCisJCQlyZXR1cm47CisKKwkJdGFza190
-aHJlYWRfaW5mbyhjaGlsZCktPmJwdF9pbnNuW2ldID0gaW5zbjsKKworCQlyZXQgPSB3cml0ZV9p
-bnNuKGNoaWxkLCB0YXNrX3RocmVhZF9pbmZvKGNoaWxkKS0+YnB0X2FkZHJbaV0sIEJSRUFLSU5T
-VCk7CisJCWlmIChyZXQgPCAwKQorCQkJcmV0dXJuOworCX0KKworCXRhc2tfdGhyZWFkX2luZm8o
-Y2hpbGQpLT5icHRfbnNhdmVkID0gbnNhdmVkOworfQorCitzdGF0aWMgdm9pZCBwdHJhY2VfY2Fu
-Y2VsX2JwdChzdHJ1Y3QgdGFza19zdHJ1Y3QgKmNoaWxkKQoreworCWludCBpLCBuc2F2ZWQgPSB0
-YXNrX3RocmVhZF9pbmZvKGNoaWxkKS0+YnB0X25zYXZlZDsKKworCXRhc2tfdGhyZWFkX2luZm8o
-Y2hpbGQpLT5icHRfbnNhdmVkID0gMDsKKworCWlmIChuc2F2ZWQgPiAxKSB7CisJCXByX2luZm8o
-IiVzOiBib2d1cyBuc2F2ZWQ6ICVkIVxuIiwgX19mdW5jX18sIG5zYXZlZCk7CisJCW5zYXZlZCA9
-IDE7CisJfQorCisJZm9yIChpID0gMDsgaSA8IG5zYXZlZDsgaSsrKSB7CisJCXdyaXRlX2luc24o
-Y2hpbGQsIHRhc2tfdGhyZWFkX2luZm8oY2hpbGQpLT5icHRfYWRkcltpXSwKKwkJCSAgdGFza190
-aHJlYWRfaW5mbyhjaGlsZCktPmJwdF9pbnNuW2ldKTsKKwl9Cit9CisKK3ZvaWQgdXNlcl9lbmFi
-bGVfc2luZ2xlX3N0ZXAoc3RydWN0IHRhc2tfc3RydWN0ICpjaGlsZCkKK3sKKwlzZXRfdHNrX3Ro
-cmVhZF9mbGFnKGNoaWxkLCBUSUZfU0lOR0xFU1RFUCk7CisJcHRyYWNlX3NldF9icHQoY2hpbGQp
-OworfQorCit2b2lkIHVzZXJfZGlzYWJsZV9zaW5nbGVfc3RlcChzdHJ1Y3QgdGFza19zdHJ1Y3Qg
-KmNoaWxkKQoreworCWNsZWFyX3Rza190aHJlYWRfZmxhZyhjaGlsZCwgVElGX1NJTkdMRVNURVAp
-OworCXB0cmFjZV9jYW5jZWxfYnB0KGNoaWxkKTsKK30KKwogbG9uZyBhcmNoX3B0cmFjZShzdHJ1
-Y3QgdGFza19zdHJ1Y3QgKmNoaWxkLCBsb25nIHJlcXVlc3QsCiAJCSB1bnNpZ25lZCBsb25nIGFk
-ZHIsIHVuc2lnbmVkIGxvbmcgZGF0YSkKIHsKZGlmZiAtLWdpdCBhL2FyY2gvbWlwcy9rZXJuZWwv
-c2lnbmFsLmMgYi9hcmNoL21pcHMva2VybmVsL3NpZ25hbC5jCmluZGV4IGYxZTk4NTEuLjgyZDEx
-ZDggMTAwNjQ0Ci0tLSBhL2FyY2gvbWlwcy9rZXJuZWwvc2lnbmFsLmMKKysrIGIvYXJjaC9taXBz
-L2tlcm5lbC9zaWduYWwuYwpAQCAtODQ5LDcgKzg0OSw3IEBAIHN0YXRpYyB2b2lkIGhhbmRsZV9z
-aWduYWwoc3RydWN0IGtzaWduYWwgKmtzaWcsIHN0cnVjdCBwdF9yZWdzICpyZWdzKQogCQlyZXQg
-PSBhYmktPnNldHVwX2ZyYW1lKHZkc28gKyBhYmktPnZkc28tPm9mZl9zaWdyZXR1cm4sCiAJCQkJ
-ICAgICAgIGtzaWcsIHJlZ3MsIG9sZHNldCk7CiAKLQlzaWduYWxfc2V0dXBfZG9uZShyZXQsIGtz
-aWcsIDApOworCXNpZ25hbF9zZXR1cF9kb25lKHJldCwga3NpZywgdGVzdF90aHJlYWRfZmxhZyhU
-SUZfU0lOR0xFU1RFUCkpOwogfQogCiBzdGF0aWMgdm9pZCBkb19zaWduYWwoc3RydWN0IHB0X3Jl
-Z3MgKnJlZ3MpCi0tIAoxLjguMy4x
+Use the new vma registration interface to configure a notifier for DMA
+mappings to device memory.  On close notification, remove the mapping.
+This allows us to implement a new default policy to restrict PFNMAP
+mappings to only those vmas whose vm_ops is registered with vfio-core
+to provide this support.  A new module option is provided to opt-out
+should this conflict with existing use cases.
+
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+---
+ drivers/vfio/vfio_iommu_type1.c |  192 +++++++++++++++++++++++++++++++--------
+ 1 file changed, 155 insertions(+), 37 deletions(-)
+
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 90715413c3d9..137aab2a00fd 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -62,6 +62,11 @@ module_param_named(dma_entry_limit, dma_entry_limit, uint, 0644);
+ MODULE_PARM_DESC(dma_entry_limit,
+ 		 "Maximum number of user DMA mappings per container (65535).");
+ 
++static bool strict_mmio_maps = true;
++module_param_named(strict_mmio_maps, strict_mmio_maps, bool, 0644);
++MODULE_PARM_DESC(strict_mmio_maps,
++		 "Restrict to safe DMA mappings of device memory (true).");
++
+ struct vfio_iommu {
+ 	struct list_head	domain_list;
+ 	struct list_head	iova_list;
+@@ -89,6 +94,13 @@ struct vfio_domain {
+ 	bool			fgsp;		/* Fine-grained super pages */
+ };
+ 
++struct pfnmap_obj {
++	struct notifier_block	nb;
++	struct work_struct	work;
++	struct vfio_iommu	*iommu;
++	void			*opaque;
++};
++
+ struct vfio_dma {
+ 	struct rb_node		node;
+ 	dma_addr_t		iova;		/* Device address */
+@@ -101,6 +113,7 @@ struct vfio_dma {
+ 	struct task_struct	*task;
+ 	struct rb_root		pfn_list;	/* Ex-user pinned pfn list */
+ 	unsigned long		*bitmap;
++	struct pfnmap_obj	*pfnmap;
+ };
+ 
+ struct vfio_group {
+@@ -495,15 +508,108 @@ static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
+ 	return ret;
+ }
+ 
+-static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+-			 int prot, unsigned long *pfn)
++static void unregister_vma_bg(struct work_struct *work)
++{
++	struct pfnmap_obj *pfnmap = container_of(work, struct pfnmap_obj, work);
++
++	vfio_unregister_vma_nb(pfnmap->opaque);
++	kfree(pfnmap);
++}
++
++struct vfio_dma *pfnmap_find_dma(struct pfnmap_obj *pfnmap)
++{
++	struct rb_node *n;
++
++	for (n = rb_first(&pfnmap->iommu->dma_list); n; n = rb_next(n)) {
++		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
++
++		if (dma->pfnmap == pfnmap)
++			return dma;
++	}
++
++	return NULL;
++}
++
++/* Return 1 if iommu->lock dropped and notified, 0 if done */
++static int unmap_dma_pfn_list(struct vfio_iommu *iommu, struct vfio_dma *dma,
++			      struct vfio_dma **dma_last, int *retries)
++{
++	if (!RB_EMPTY_ROOT(&dma->pfn_list)) {
++		struct vfio_iommu_type1_dma_unmap nb_unmap;
++
++		if (*dma_last == dma) {
++			BUG_ON(++(*retries) > 10);
++		} else {
++			*dma_last = dma;
++			*retries = 0;
++		}
++
++		nb_unmap.iova = dma->iova;
++		nb_unmap.size = dma->size;
++
++		/*
++		 * Notify anyone (mdev vendor drivers) to invalidate and
++		 * unmap iovas within the range we're about to unmap.
++		 * Vendor drivers MUST unpin pages in response to an
++		 * invalidation.
++		 */
++		mutex_unlock(&iommu->lock);
++		blocking_notifier_call_chain(&iommu->notifier,
++					    VFIO_IOMMU_NOTIFY_DMA_UNMAP,
++					    &nb_unmap);
++		return 1;
++	}
++
++	return 0;
++}
++
++static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma);
++
++static int vfio_vma_nb_cb(struct notifier_block *nb,
++			  unsigned long action, void *unused)
++{
++	struct pfnmap_obj *pfnmap = container_of(nb, struct pfnmap_obj, nb);
++
++	switch (action) {
++	case VFIO_VMA_NOTIFY_CLOSE:
++	{
++		struct vfio_dma *dma, *dma_last = NULL;
++		int retries = 0;
++
++again:
++		mutex_lock(&pfnmap->iommu->lock);
++		dma = pfnmap_find_dma(pfnmap);
++		if (dma) {
++			if (unmap_dma_pfn_list(pfnmap->iommu, dma,
++					       &dma_last, &retries))
++				goto again;
++
++			dma->pfnmap = NULL;
++			vfio_remove_dma(pfnmap->iommu, dma);
++		}
++		mutex_unlock(&pfnmap->iommu->lock);
++
++		/* Cannot unregister notifier from callback chain */
++		INIT_WORK(&pfnmap->work, unregister_vma_bg);
++		schedule_work(&pfnmap->work);
++
++		break;
++	}
++	}
++
++	return NOTIFY_OK;
++}
++
++static int vaddr_get_pfn(struct vfio_iommu *iommu, struct vfio_dma *dma,
++			 struct mm_struct *mm, unsigned long vaddr,
++			 unsigned long *pfn)
+ {
+ 	struct page *page[1];
+ 	struct vm_area_struct *vma;
+ 	unsigned int flags = 0;
+ 	int ret;
+ 
+-	if (prot & IOMMU_WRITE)
++	if (dma->prot & IOMMU_WRITE)
+ 		flags |= FOLL_WRITE;
+ 
+ 	mmap_read_lock(mm);
+@@ -521,12 +627,40 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+ 	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
+ 
+ 	if (vma && vma->vm_flags & VM_PFNMAP) {
+-		ret = follow_fault_pfn(vma, mm, vaddr, pfn, prot & IOMMU_WRITE);
++		ret = follow_fault_pfn(vma, mm, vaddr, pfn,
++				       dma->prot & IOMMU_WRITE);
+ 		if (ret == -EAGAIN)
+ 			goto retry;
+ 
+-		if (!ret && !is_invalid_reserved_pfn(*pfn))
++		if (!ret && !is_invalid_reserved_pfn(*pfn)) {
+ 			ret = -EFAULT;
++			goto done;
++		}
++
++		if (!dma->pfnmap) {
++			struct pfnmap_obj *pfnmap;
++			void *opaque;
++
++			pfnmap = kzalloc(sizeof(*pfnmap), GFP_KERNEL);
++			if (!pfnmap) {
++				ret = -ENOMEM;
++				goto done;
++			}
++
++			pfnmap->iommu = iommu;
++			pfnmap->nb.notifier_call = vfio_vma_nb_cb;
++			opaque = vfio_register_vma_nb(vma, &pfnmap->nb);
++			if (IS_ERR(opaque)) {
++				kfree(pfnmap);
++				if (strict_mmio_maps) {
++					ret = PTR_ERR(opaque);
++					goto done;
++				}
++			} else {
++				pfnmap->opaque = opaque;
++				dma->pfnmap = pfnmap;
++			}
++		}
+ 	}
+ done:
+ 	mmap_read_unlock(mm);
+@@ -593,7 +727,8 @@ static int vfio_wait_all_valid(struct vfio_iommu *iommu)
+  * the iommu can only map chunks of consecutive pfns anyway, so get the
+  * first page and all consecutive pages with the same locking.
+  */
+-static long vfio_pin_pages_remote(struct vfio_dma *dma, unsigned long vaddr,
++static long vfio_pin_pages_remote(struct vfio_iommu *iommu,
++				  struct vfio_dma *dma, unsigned long vaddr,
+ 				  long npage, unsigned long *pfn_base,
+ 				  unsigned long limit)
+ {
+@@ -606,7 +741,7 @@ static long vfio_pin_pages_remote(struct vfio_dma *dma, unsigned long vaddr,
+ 	if (!current->mm)
+ 		return -ENODEV;
+ 
+-	ret = vaddr_get_pfn(current->mm, vaddr, dma->prot, pfn_base);
++	ret = vaddr_get_pfn(iommu, dma, current->mm, vaddr, pfn_base);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -633,7 +768,7 @@ static long vfio_pin_pages_remote(struct vfio_dma *dma, unsigned long vaddr,
+ 	/* Lock all the consecutive pages from pfn_base */
+ 	for (vaddr += PAGE_SIZE, iova += PAGE_SIZE; pinned < npage;
+ 	     pinned++, vaddr += PAGE_SIZE, iova += PAGE_SIZE) {
+-		ret = vaddr_get_pfn(current->mm, vaddr, dma->prot, &pfn);
++		ret = vaddr_get_pfn(iommu, dma, current->mm, vaddr, &pfn);
+ 		if (ret)
+ 			break;
+ 
+@@ -693,7 +828,8 @@ static long vfio_unpin_pages_remote(struct vfio_dma *dma, dma_addr_t iova,
+ 	return unlocked;
+ }
+ 
+-static int vfio_pin_page_external(struct vfio_dma *dma, unsigned long vaddr,
++static int vfio_pin_page_external(struct vfio_iommu *iommu,
++				  struct vfio_dma *dma, unsigned long vaddr,
+ 				  unsigned long *pfn_base, bool do_accounting)
+ {
+ 	struct mm_struct *mm;
+@@ -703,7 +839,7 @@ static int vfio_pin_page_external(struct vfio_dma *dma, unsigned long vaddr,
+ 	if (!mm)
+ 		return -ENODEV;
+ 
+-	ret = vaddr_get_pfn(mm, vaddr, dma->prot, pfn_base);
++	ret = vaddr_get_pfn(iommu, dma, mm, vaddr, pfn_base);
+ 	if (!ret && do_accounting && !is_invalid_reserved_pfn(*pfn_base)) {
+ 		ret = vfio_lock_acct(dma, 1, true);
+ 		if (ret) {
+@@ -811,8 +947,8 @@ static int vfio_iommu_type1_pin_pages(void *iommu_data,
+ 		}
+ 
+ 		remote_vaddr = dma->vaddr + (iova - dma->iova);
+-		ret = vfio_pin_page_external(dma, remote_vaddr, &phys_pfn[i],
+-					     do_accounting);
++		ret = vfio_pin_page_external(iommu, dma, remote_vaddr,
++					     &phys_pfn[i], do_accounting);
+ 		if (ret)
+ 			goto pin_unwind;
+ 
+@@ -1071,6 +1207,10 @@ static long vfio_unmap_unpin(struct vfio_iommu *iommu, struct vfio_dma *dma,
+ static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
+ {
+ 	WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list));
++	if (dma->pfnmap) {
++		vfio_unregister_vma_nb(dma->pfnmap->opaque);
++		kfree(dma->pfnmap);
++	}
+ 	vfio_unmap_unpin(iommu, dma, true);
+ 	vfio_unlink_dma(iommu, dma);
+ 	put_task_struct(dma->task);
+@@ -1318,29 +1458,7 @@ static int vfio_dma_do_unmap(struct vfio_iommu *iommu,
+ 			continue;
+ 		}
+ 
+-		if (!RB_EMPTY_ROOT(&dma->pfn_list)) {
+-			struct vfio_iommu_type1_dma_unmap nb_unmap;
+-
+-			if (dma_last == dma) {
+-				BUG_ON(++retries > 10);
+-			} else {
+-				dma_last = dma;
+-				retries = 0;
+-			}
+-
+-			nb_unmap.iova = dma->iova;
+-			nb_unmap.size = dma->size;
+-
+-			/*
+-			 * Notify anyone (mdev vendor drivers) to invalidate and
+-			 * unmap iovas within the range we're about to unmap.
+-			 * Vendor drivers MUST unpin pages in response to an
+-			 * invalidation.
+-			 */
+-			mutex_unlock(&iommu->lock);
+-			blocking_notifier_call_chain(&iommu->notifier,
+-						    VFIO_IOMMU_NOTIFY_DMA_UNMAP,
+-						    &nb_unmap);
++		if (unmap_dma_pfn_list(iommu, dma, &dma_last, &retries)) {
+ 			mutex_lock(&iommu->lock);
+ 			goto again;
+ 		}
+@@ -1404,7 +1522,7 @@ static int vfio_pin_map_dma(struct vfio_iommu *iommu, struct vfio_dma *dma,
+ 
+ 	while (size) {
+ 		/* Pin a contiguous chunk of memory */
+-		npage = vfio_pin_pages_remote(dma, vaddr + dma->size,
++		npage = vfio_pin_pages_remote(iommu, dma, vaddr + dma->size,
+ 					      size >> PAGE_SHIFT, &pfn, limit);
+ 		if (npage <= 0) {
+ 			WARN_ON(!npage);
+@@ -1660,7 +1778,7 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
+ 				size_t n = dma->iova + dma->size - iova;
+ 				long npage;
+ 
+-				npage = vfio_pin_pages_remote(dma, vaddr,
++				npage = vfio_pin_pages_remote(iommu, dma, vaddr,
+ 							      n >> PAGE_SHIFT,
+ 							      &pfn, limit);
+ 				if (npage <= 0) {
+
