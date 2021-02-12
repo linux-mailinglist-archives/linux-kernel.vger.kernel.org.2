@@ -2,180 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154C731A159
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA8F31A161
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhBLPQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:16:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
+        id S231650AbhBLPRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:17:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhBLPPw (ORCPT
+        with ESMTP id S230043AbhBLPQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:15:52 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8FAC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:15:12 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id e24so9629942ioc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:15:12 -0800 (PST)
+        Fri, 12 Feb 2021 10:16:50 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D00BC061574;
+        Fri, 12 Feb 2021 07:16:10 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id y9so16166792ejp.10;
+        Fri, 12 Feb 2021 07:16:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g5Qd6pYvAFJWK+gEpErCm9aESy14N4Z1oHpZ+sVfQOc=;
-        b=ZcR5ap78jvA6h4aOH14zmB9wDCk19/qv8W8niAZWhnr5nTtMlT5d34/JWNHzD3v1AN
-         tSzLbKUDQgvxlx/6Zfo2NLgykz9WakzKRsH0XsZdVbetee3kCrE5FcWerGgykKAYs4V1
-         gsm7PFrHz00eeKr4SfYWOTy21mM6LE7gmcI/nKHfQ+R7+1VcLAMtuim2BV+nV0NMexb7
-         pyy8tRcbD6T5kfxRwbKC86XdXOO3v0HVhyxihLdEbUof0SdGglfQoccXTc5tCeeTYk40
-         43gbCcFB5TXZSk6eyEvmhDtLTAlDAXw8Txg1Zwsn5atVic24ktAGhTPNldgKS2PDhBES
-         bCqA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9js+f0qftXEjk3IJleRBb/QBgSDgHgl8iRdUuTKast8=;
+        b=of3rK2160oByIIF+kBqqx46rjK0WSMxkO7kPEe6tJr4iA+dDvK7Dzat72AyCT5iI8v
+         Da+pwi6/NfrUoK2avV2XFp4k0z0B6ji1v7rSzNfCPaV4NgExTJRU3yPmaJExppN4amXG
+         eHFlLGmi9nfNtqBrAsPkrdL4TBoHHrGw21fa3WsMi14HyyHWrAEAXyuByn40KFvmZNX9
+         ZpTkhmXIDolxrmpb/CvmI0wXf3OlnH7CzSsoW2secyyyHugLLTnhm+0Y6c4zGRAQJvNB
+         CER3Gr9IuoTxnuUll2AurDx22ml2btXEag6zrEJ9AXat8AZLhwEgDuIEMsdNrulqOPCl
+         M6GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=g5Qd6pYvAFJWK+gEpErCm9aESy14N4Z1oHpZ+sVfQOc=;
-        b=oj0AOVJ11kW0lN5SfZVMx3EcUiJWsvqi3IkJOJCGX8GhGYd3I6OlX5pR4aMMM2NRML
-         tXBeDg6ammpxWo15eHQr1woK106qubTJE25KpMQ16AHKMiV02UnafITIQJoC3SnzE2+h
-         QpjY+TFHrfM5A7No5yOcEHxV3FMPCUhIeZlw9BUCKzoUrwSFRaTUFg5H1qjA2Pvl/tng
-         klDr8qhk9EB55HXfBQ2YcYDsFaL8r4wxPm9GKlpEbgaG26NMg5RMiQRiaIcGDWllBqH1
-         YLoyeNwBM9zYGp3FdaI4Em5VHEkeBibsnXTxcLSvT+hZEjacQriHZKnk4seQc3HxGJ55
-         N3JQ==
-X-Gm-Message-State: AOAM531tbfYKhBsql9xxcTamxB/x84lvrPyJbWR+7oIDEqwnA8iVwbcX
-        QUm4cdHn1i1U59hQLuugrLQq2ll64dAhnOjS
-X-Google-Smtp-Source: ABdhPJwvDDD3TWSoAEVShUKZDLa92YwusU8s2w4HHwA6v00UG/7bVDm4Y184knqYvr/k3y56NDnCJA==
-X-Received: by 2002:a05:6638:ccc:: with SMTP id e12mr3175973jak.6.1613142911672;
-        Fri, 12 Feb 2021 07:15:11 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id i19sm4256080ioh.38.2021.02.12.07.15.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 07:15:11 -0800 (PST)
-Subject: Re: Memory keys and io_uring.
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <877dndzs8c.fsf@linux.ibm.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <b6ed27dc-7dec-aab5-acfc-073a30e49422@kernel.dk>
-Date:   Fri, 12 Feb 2021 08:15:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=9js+f0qftXEjk3IJleRBb/QBgSDgHgl8iRdUuTKast8=;
+        b=tYZi3p68qLO9KmyrNghKU+QSjMQx9Db2mNGW/HKmVMbr+A9gdoRrSJ2rS6uy8OHJqy
+         NcL3FRzUMUpDTsd72QjFQ8JIljg16lU8/+Ki5/HltCSH5+6HfgYnhmTOqkMFfhCKKGUq
+         WQU2Cknav85a6GlyvcPfcb/sxY1391wxvx8zK+4QxXxRNnpQmwhNV4MBc9Z2FBGotUOR
+         fuoogFIfC7buswI2S9vQ5200FnbqR4l3IyFnudfacT9RAN6vRoMfKdChTl52iEpQ4N8n
+         e4oOYsQ48gL28QtuB+4IgQCvRCSeyNTix+pNlFLLsiuU7hqr5GwkK/sB57YZVz0piZ0X
+         Gt6Q==
+X-Gm-Message-State: AOAM531MY3MEpCtjnzpKCC+Sm+DfxazYsrnPMN/ry4aA4SnekrHl79Ip
+        /JNxOE0xftNa6PhtmpRWTpk=
+X-Google-Smtp-Source: ABdhPJzAZJbg31w/pvGoxHoKvxji6eJsGt8VTGpKu8R1ebmr7OBUW/jKTDmRDYVrYpts1s0tIeDwEw==
+X-Received: by 2002:a17:906:2e4f:: with SMTP id r15mr3452573eji.407.1613142969032;
+        Fri, 12 Feb 2021 07:16:09 -0800 (PST)
+Received: from localhost.localdomain (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id z19sm6515456edr.69.2021.02.12.07.16.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 07:16:08 -0800 (PST)
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bridge@lists.linux-foundation.org, Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, linux-omap@vger.kernel.org
+Subject: [PATCH v5 net-next 00/10] Cleanup in brport flags switchdev offload for DSA
+Date:   Fri, 12 Feb 2021 17:15:50 +0200
+Message-Id: <20210212151600.3357121-1-olteanv@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <877dndzs8c.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 11:59 PM, Aneesh Kumar K.V wrote:
-> 
-> Hi,
-> 
-> I am trying to estabilish the behaviour we should expect when passing a
-> buffer with memory keys attached to io_uring syscalls. As show  in the
-> blow test
-> 
-> /*
->  * gcc -Wall -O2 -D_GNU_SOURCE -o pkey_uring pkey_uring.c -luring
->  */
-> #include <stdio.h>
-> #include <fcntl.h>
-> #include <string.h>
-> #include <stdlib.h>
-> #include <unistd.h>
-> #include <sys/mman.h>
-> #include "liburing.h"
-> 
-> #define PAGE_SIZE  (64 << 10)
-> 
-> int main(int argc, char *argv[])
-> {
-> 	int fd, ret, pkey;
-> 	struct io_uring ring;
-> 	struct io_uring_sqe *sqe;
-> 	struct io_uring_cqe *cqe;
-> 	struct iovec iovec;
-> 	void *buf;
-> 
-> 	if (argc < 2) {
-> 		printf("%s: file\n", argv[0]);
-> 		return 1;
-> 	}
-> 
-> 	ret = io_uring_queue_init(1, &ring, IORING_SETUP_SQPOLL);
-> 	if (ret < 0) {
-> 		fprintf(stderr, "queue_init: %s\n", strerror(-ret));
-> 		return 1;
-> 	}
-> 
-> 	fd = open(argv[1], O_RDONLY | O_DIRECT);
-> 	if (fd < 0) {
-> 		perror("open");
-> 		return 1;
-> 	}
-> 
-> 	if (posix_memalign(&buf, PAGE_SIZE, PAGE_SIZE))
-> 		return 1;
-> 	iovec.iov_base = buf;
-> 	iovec.iov_len = PAGE_SIZE;
-> 
-> 	//mprotect(buf, PAGE_SIZE, PROT_NONE);
-> 	pkey = pkey_alloc(0, PKEY_DISABLE_WRITE);
-> 	pkey_mprotect(buf, PAGE_SIZE, PROT_READ | PROT_WRITE, pkey);
-> 
-> 
-> 	sqe = io_uring_get_sqe(&ring);
-> 	if (!sqe) {
-> 		perror("io_uring_get_sqe");
-> 		return 1;
-> 	}
-> 	io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
-> 
-> 	ret = io_uring_submit(&ring);
-> 	if (ret != 1) {
-> 		fprintf(stderr, "io_uring_submit: %s\n", strerror(-ret));
-> 		return 1;
-> 	}
-> 
-> 	ret = io_uring_wait_cqe(&ring, &cqe);
-> 
-> 	if (cqe->res < 0)
-> 		fprintf(stderr, "iouring submit failed %s\n", strerror(-cqe->res));
-> 	else
-> 		fprintf(stderr, "iouring submit success\n");
-> 
-> 	io_uring_cqe_seen(&ring, cqe);
-> 
-> 	/*
-> 	 * let's access this via a read syscall
-> 	 */
-> 	ret = read(fd, buf, PAGE_SIZE);
-> 	if (ret < 0)
-> 		fprintf(stderr, "read failed : %s\n", strerror(errno));
-> 
-> 	close(fd);
-> 	io_uring_queue_exit(&ring);
-> 
-> 	return 0;
-> }
-> 
-> A read syscall do fail with EFAULT. But we allow read via io_uring
-> syscalls. Is that ok? Considering memory keys are thread-specific we
-> could debate that kernel thread can be considered to be the one that got all access
-> allowed via keys or we could update that access is denied via kernel
-> thread for any key value other than default key (key 0). Other option
-> is to inherit the memory key restrictions when doing
-> io_uring_submit() and use the same when accessing the userspace from
-> kernel thread. 
-> 
-> Any thoughts here with respect to what should be behaviour?
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-It this a powerpc thing? I get -EFAULT on x86 for both reads, io_uring
-and regular syscall. That includes SQPOLL, not using SQPOLL, or
-explicitly setting IOSQE_ASYNC on the sqe.
+The initial goal of this series was to have better support for
+standalone ports mode on the DSA drivers like ocelot/felix and sja1105.
+This turned out to require some API adjustments in both directions:
+to the information presented to and by the switchdev notifier, and to
+the API presented to the switch drivers by the DSA layer.
+
+Vladimir Oltean (10):
+  net: switchdev: propagate extack to port attributes
+  net: bridge: offload all port flags at once in br_setport
+  net: bridge: don't print in br_switchdev_set_port_flag
+  net: dsa: configure better brport flags when ports leave the bridge
+  net: switchdev: pass flags and mask to both {PRE_,}BRIDGE_FLAGS
+    attributes
+  net: dsa: act as passthrough for bridge port flags
+  net: dsa: felix: restore multicast flood to CPU when NPI tagger
+    reinitializes
+  net: mscc: ocelot: use separate flooding PGID for broadcast
+  net: mscc: ocelot: offload bridge port flags to device
+  net: dsa: sja1105: offload bridge port flags to device
+
+ drivers/net/dsa/b53/b53_common.c              |  91 ++++---
+ drivers/net/dsa/b53/b53_priv.h                |   2 -
+ drivers/net/dsa/mv88e6xxx/chip.c              | 163 ++++++++++---
+ drivers/net/dsa/mv88e6xxx/chip.h              |   6 +-
+ drivers/net/dsa/mv88e6xxx/port.c              |  52 ++--
+ drivers/net/dsa/mv88e6xxx/port.h              |  19 +-
+ drivers/net/dsa/ocelot/felix.c                |  25 ++
+ drivers/net/dsa/sja1105/sja1105.h             |   2 +
+ drivers/net/dsa/sja1105/sja1105_main.c        | 222 +++++++++++++++++-
+ drivers/net/dsa/sja1105/sja1105_spi.c         |   6 +
+ .../marvell/prestera/prestera_switchdev.c     |  26 +-
+ .../mellanox/mlxsw/spectrum_switchdev.c       |  53 +++--
+ drivers/net/ethernet/mscc/ocelot.c            | 100 +++++++-
+ drivers/net/ethernet/mscc/ocelot_net.c        |  52 +++-
+ drivers/net/ethernet/rocker/rocker_main.c     |  10 +-
+ drivers/net/ethernet/ti/am65-cpsw-switchdev.c |  27 ++-
+ drivers/net/ethernet/ti/cpsw_switchdev.c      |  27 ++-
+ drivers/staging/fsl-dpaa2/ethsw/ethsw.c       |  34 ++-
+ include/net/dsa.h                             |  10 +-
+ include/net/switchdev.h                       |  13 +-
+ include/soc/mscc/ocelot.h                     |  20 +-
+ net/bridge/br_netlink.c                       | 116 +++------
+ net/bridge/br_private.h                       |   6 +-
+ net/bridge/br_switchdev.c                     |  23 +-
+ net/bridge/br_sysfs_if.c                      |   7 +-
+ net/dsa/dsa_priv.h                            |  11 +-
+ net/dsa/port.c                                |  76 ++++--
+ net/dsa/slave.c                               |  10 +-
+ net/switchdev/switchdev.c                     |  11 +-
+ 29 files changed, 889 insertions(+), 331 deletions(-)
 
 -- 
-Jens Axboe
+2.25.1
 
