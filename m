@@ -2,76 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF36319E77
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2109319E7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhBLMdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:33:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53726 "EHLO mail.kernel.org"
+        id S230311AbhBLMfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:35:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231401AbhBLMcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:32:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0CD964DEE;
-        Fri, 12 Feb 2021 12:32:11 +0000 (UTC)
+        id S229965AbhBLMfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:35:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ED6C6024A;
+        Fri, 12 Feb 2021 12:34:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613133132;
-        bh=SwpDPlc1sS/6olGE5QWH+xrx1QzaQAKD+39i9frVaUg=;
+        s=k20201202; t=1613133263;
+        bh=30Ryb5NwLiOdhh3x8OJtvw+nFA5R/PlajuHrbKYvioY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hgW4xVuRDSAqphHjttIz0VyMlYQpp71InUo/xIDF7XENwTJe5XVikOFafVd0tzsRG
-         3JdiZAAMi3MO/j3urLfnpz80QdJJGac9lpm0BwQ221ytGwfh55sgQbjwORXYOYdQEN
-         mdC21wrxrIvYwpadfgPDrOgeHV8/q0WaHX1k5/HhqfGellC6gI37SNX2jAnz/4N6za
-         L/blOOYExMdb1hSoN3vDJC0Q+bvzSOqUfRV3l9D1fDyL2mE/dYZt8nEp5xtvR1vk6/
-         TmPFiZB6bEqWCVh6E3zeWJXKCmmtq32HJQxmcBS6WLOTyxgciHFu/rMlI+m0OmYEib
-         W8/QGXz+fafZg==
-Date:   Fri, 12 Feb 2021 12:31:18 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Phil Elwell <phil@raspberrypi.com>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: Skip zero-length transfers in
- spi_transfer_one_message()
-Message-ID: <20210212123118.GB6057@sirena.org.uk>
-References: <20210211180820.25757-1-nsaenzjulienne@suse.de>
+        b=JcDVyRL8/RbrC1Bn25ibtuKPpMM2idJ/cfOkE/p8OmivlXFq8tk9t4ePbW2k10vPq
+         kF7z5bpXFZMTSJckY3qB2J8Xm32oFWSzSFrS6u0t5RaV2jqyjAGwwKP9vRhaVklqcZ
+         3zv4gjUwDgD7ABoLg6hLKwiRcpBsxZZSHvEXxyiBK/YghDC5A4gqFwgphlNGsPV96F
+         vdIZFryF0QGP+oNOrX/jx4lXy2MCsWFfCgUqEcu8e6cI0D5k3z/fW8F85HNq/KM/UP
+         IJuEfAJdVhc8QNQJkAD2bHwmkhhOgc4UbdWvBQDH8Tdd+aXbMrVhajpyT3vhBL/qEd
+         iLM6EdzM955Xw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6D68940513; Fri, 12 Feb 2021 09:34:21 -0300 (-03)
+Date:   Fri, 12 Feb 2021 09:34:21 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Nicholas Fraser <nfraser@codeweavers.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org,
+        Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+Subject: Re: [PATCH 4/4] perf report: Fix return value when loading PE DSO
+Message-ID: <20210212123421.GC1398414@kernel.org>
+References: <1671b43b-09c3-1911-dbf8-7f030242fbf7@codeweavers.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210211180820.25757-1-nsaenzjulienne@suse.de>
-X-Cookie: One size fits all.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1671b43b-09c3-1911-dbf8-7f030242fbf7@codeweavers.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Wed, Feb 10, 2021 at 02:18:02PM -0500, Nicholas Fraser escreveu:
+> The first time dso__load() was called on a PE file it always returned -1
+> error. This caused the first call to map__find_symbol() to always fail
+> on a PE file so the first sample from each PE file always had symbol
+> <unknown>. Subsequent samples succeed however because the DSO is already
+> loaded.
+> 
+> This fixes dso__load() to return 0 when successfully loading a DSO with
+> libbfd.
 
---U+BazGySraz5kW0T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You forgot to add this:
 
-On Thu, Feb 11, 2021 at 07:08:20PM +0100, Nicolas Saenz Julienne wrote:
+Fixes: eac9a4342e5447ca ("perf symbols: Try reading the symbol table with libbfd")
 
-> -		if (xfer->tx_buf || xfer->rx_buf) {
-> +		if ((xfer->tx_buf || xfer->rx_buf) && xfer->len) {
+This helps, for instance, the stable@kernel.org guys, since their
+scripts will scrape this and find that it should also go to whatever
+stable releases are based on:
 
-I think the issue here is more that some users were passing in buffers
-with zero length transfers, the above check was already intended to
-catch this case but was working on the assumption that if there was
-nothing to transfer then no buffer would be provided.
+  $ git tag --contains eac9a4342e5447ca | grep ^v[45].* | grep -v -- -rc
+  v5.10
+  $
 
---U+BazGySraz5kW0T
-Content-Type: application/pgp-signature; name="signature.asc"
+Applied and added the Fixes tag,
 
------BEGIN PGP SIGNATURE-----
+- Arnaldo
+ 
+> Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+> ---
+>  tools/perf/util/symbol.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> index aa9ae875b995..492c873713cc 100644
+> --- a/tools/perf/util/symbol.c
+> +++ b/tools/perf/util/symbol.c
+> @@ -1861,8 +1861,10 @@ int dso__load(struct dso *dso, struct map *map)
+>  		if (nsexit)
+>  			nsinfo__mountns_enter(dso->nsinfo, &nsc);
+>  
+> -		if (bfdrc == 0)
+> +		if (bfdrc == 0) {
+> +			ret = 0;
+>  			break;
+> +		}
+>  
+>  		if (!is_reg || sirc < 0)
+>  			continue;
+> -- 
+> 2.30.0
+> 
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAmdRUACgkQJNaLcl1U
-h9ANBAf/ec1vXL9i3wJ+GOx2sxWeEvlBz0R3/jHeZSPQuSr92n0uuADcHjSOrB/E
-g+MIX5xTBstY0r4pHyMkeehUo5RcRDhojfKCe488GLJgWtRjhcCnKK9jC//AFCxR
-oOAdC5HhpK7z0nyXFEiaGqcXdGUQXzYELWLkwJ5XmV1axeWPLVYgILBSMZR8Lg7V
-rOZaw8TCyx2f79mRQpWOyc6xz8w+NaklJzO788oa2+HMK0oIlKAzr60IwStNllo6
-fnt/bttxjAflij1m/jZNwRW2COWAwg1UcMU7nGW1onMBLH8Kix8isv8MqCEoB/5P
-CxOCgFp8K0cdX4nfmgpqhopJ1JUR4g==
-=wz+s
------END PGP SIGNATURE-----
+-- 
 
---U+BazGySraz5kW0T--
+- Arnaldo
