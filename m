@@ -2,203 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A75319861
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9D7319863
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhBLCqo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Feb 2021 21:46:44 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3021 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBLCqk (ORCPT
+        id S229730AbhBLCx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 21:53:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhBLCxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 21:46:40 -0500
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DcHs13h3kzRDQr;
-        Fri, 12 Feb 2021 10:44:37 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Fri, 12 Feb 2021 10:45:55 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 12 Feb 2021 10:45:54 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Fri, 12 Feb 2021 10:45:54 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Finn Thain <fthain@telegraphics.com.au>
-CC:     tanxiaofei <tanxiaofei@huawei.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
-Subject: RE: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
- drivers
-Thread-Topic: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
- drivers
-Thread-Index: AdcAYpckfegWyL1RTeK8yhWOZkcCaAAK/seAABDAZzD//30igP//VM2g
-Date:   Fri, 12 Feb 2021 02:45:54 +0000
-Message-ID: <48d2891ad9e340028c3b551a83d570b0@hisilicon.com>
-References: <417fa728c3ff4418ac87e0d409b5a084@hisilicon.com>
- <c7fdb63e-e84-c685-35f4-6b6f663cd867@telegraphics.com.au>
- <0d104f0e26134b1ea9c530be895e65d1@hisilicon.com>
- <4dcf1410-768e-ae95-33bf-cba093b0751d@telegraphics.com.au>
-In-Reply-To: <4dcf1410-768e-ae95-33bf-cba093b0751d@telegraphics.com.au>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.23]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 11 Feb 2021 21:53:25 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D9FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 18:52:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=mxVrexMn+Usujjpp3mumO4bl8uz++eXZX7zFnkCAvVk=; b=0QvSa34SKaNOjl+eRicAa2RiG1
+        3LS9gGoOUyWPufYDf0FCb5B3OgZ3hzc2scPqQuFfOa7ZuKf9uip57I5ighlvz001FOsSvOcGwAGmD
+        iiLK5++YMGDMVorqqw0ua380zH5SY4O/58+vYJhJk+RocCMio5aoMpHC9K957uslPx47mOOI6XOh3
+        aERkthujK++5OF12TTumyIujkCh3+LdptO45gTNeqinfRGev+ntHrw/lxOcWuJ1UFDgnOV8MYJSID
+        xuZkPCjzqir/47m46pHw74QIyNnyqVi/hp7eqZvxW+6JJPdCrUL6qroksfX9Wio4Syfn3zzjTqD3z
+        WDxNNaGQ==;
+Received: from [2601:1c0:6280:3f0::cf3b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lAOZT-0003ws-RG; Fri, 12 Feb 2021 02:52:40 +0000
+Subject: Re: arch/alpha/lib/csum_partial_copy.c:328:1: error: no previous
+ prototype for 'csum_and_copy_from_user'
+To:     kernel test robot <lkp@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+References: <202102120715.fQ8OSFnI-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8b064ade-ccc2-909f-5ef9-ca8287212049@infradead.org>
+Date:   Thu, 11 Feb 2021 18:52:36 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <202102120715.fQ8OSFnI-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Finn Thain [mailto:fthain@telegraphics.com.au]
-> Sent: Friday, February 12, 2021 1:09 PM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: tanxiaofei <tanxiaofei@huawei.com>; jejb@linux.ibm.com;
-> martin.petersen@oracle.com; linux-scsi@vger.kernel.org;
-> linux-kernel@vger.kernel.org; linuxarm@openeuler.org;
-> linux-m68k@vger.kernel.org
-> Subject: RE: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
-> drivers
+On 2/11/21 3:26 PM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   291009f656e8eaebbdfd3a8d99f6b190a9ce9deb
+> commit: 808b49da54e640cba5c5c92dee658018a529226b alpha: turn csum_partial_copy_from_user() into csum_and_copy_from_user()
+> date:   9 months ago
+> config: alpha-defconfig (attached as .config)
+> compiler: alpha-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=808b49da54e640cba5c5c92dee658018a529226b
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 808b49da54e640cba5c5c92dee658018a529226b
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=alpha 
 > 
-> On Fri, 12 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> >
-> > > -----Original Message-----
-> > > From: Finn Thain [mailto:fthain@telegraphics.com.au]
-> > > Sent: Friday, February 12, 2021 12:57 PM
-> > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > > Cc: tanxiaofei <tanxiaofei@huawei.com>; jejb@linux.ibm.com;
-> > > martin.petersen@oracle.com; linux-scsi@vger.kernel.org;
-> > > linux-kernel@vger.kernel.org; linuxarm@openeuler.org;
-> > > linux-m68k@vger.kernel.org
-> > > Subject: RE: Re: [PATCH for-next 00/32] spin lock usage optimization for
-> SCSI
-> > > drivers
-> > >
-> > >
-> > > On Thu, 11 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> > >
-> > > >
-> > > > Actually in m68k, I also saw its IRQ entry disabled interrupts by
-> > > > ' move	#0x2700,%sr		/* disable intrs */'
-> > > >
-> > > > arch/m68k/include/asm/entry.h:
-> > > >
-> > > > .macro SAVE_ALL_SYS
-> > > > 	move	#0x2700,%sr		/* disable intrs */
-> > > > 	btst	#5,%sp@(2)		/* from user? */
-> > > > 	bnes	6f			/* no, skip */
-> > > > 	movel	%sp,sw_usp		/* save user sp */
-> > > > ...
-> > > >
-> > > > .macro SAVE_ALL_INT
-> > > > 	SAVE_ALL_SYS
-> > > > 	moveq	#-1,%d0			/* not system call entry */
-> > > > 	movel	%d0,%sp@(PT_OFF_ORIG_D0)
-> > > > .endm
-> > > >
-> > > > arch/m68k/kernel/entry.S:
-> > > >
-> > > > /* This is the main interrupt handler for autovector interrupts */
-> > > >
-> > > > ENTRY(auto_inthandler)
-> > > > 	SAVE_ALL_INT
-> > > > 	GET_CURRENT(%d0)
-> > > > 					|  put exception # in d0
-> > > > 	bfextu	%sp@(PT_OFF_FORMATVEC){#4,#10},%d0
-> > > > 	subw	#VEC_SPUR,%d0
-> > > >
-> > > > 	movel	%sp,%sp@-
-> > > > 	movel	%d0,%sp@-		|  put vector # on stack
-> > > > auto_irqhandler_fixup = . + 2
-> > > > 	jsr	do_IRQ			|  process the IRQ
-> > > > 	addql	#8,%sp			|  pop parameters off stack
-> > > > 	jra	ret_from_exception
-> > > >
-> > > > So my question is that " move	#0x2700,%sr" is actually disabling
-> > > > all interrupts? And is m68k actually running irq handlers
-> > > > with interrupts disabled?
-> > > >
-> > >
-> > > When sonic_interrupt() executes, the IPL is 2 or 3 (since either IRQ may
-> > > be involved). That is, SR & 0x700 is 0x200 or 0x300. The level 3 interrupt
-> > > may interrupt execution of the level 2 handler so an irq lock is used to
-> > > avoid re-entrance.
-> > >
-> > > This patch,
-> > >
-> > > diff --git a/drivers/net/ethernet/natsemi/sonic.c
-> > > b/drivers/net/ethernet/natsemi/sonic.c
-> > > index d17d1b4f2585..041354647bad 100644
-> > > --- a/drivers/net/ethernet/natsemi/sonic.c
-> > > +++ b/drivers/net/ethernet/natsemi/sonic.c
-> > > @@ -355,6 +355,8 @@ static irqreturn_t sonic_interrupt(int irq, void *dev_id)
-> > >          */
-> > >         spin_lock_irqsave(&lp->lock, flags);
-> > >
-> > > +       printk_once(KERN_INFO "%s: %08lx\n", __func__, flags);
-> > > +
-> > >         status = SONIC_READ(SONIC_ISR) & SONIC_IMR_DEFAULT;
-> > >         if (!status) {
-> > >                 spin_unlock_irqrestore(&lp->lock, flags);
-> > >
-> > > produces this output,
-> > >
-> > > [    3.800000] sonic_interrupt: 00002300
-> >
-> > I actually hope you can directly read the register rather than reading
-> > a flag which might be a software one not from register.
-> >
+> All errors (new ones prefixed by >>):
 > 
-> Again, the implementation of arch_local_irq_save() may be found in
-> arch/m68k/include/asm/irqflags.h
+>>> arch/alpha/lib/csum_partial_copy.c:328:1: error: no previous prototype for 'csum_and_copy_from_user' [-Werror=missing-prototypes]
+>      328 | csum_and_copy_from_user(const void __user *src, void *dst, int len,
+>          | ^~~~~~~~~~~~~~~~~~~~~~~
+>    arch/alpha/lib/csum_partial_copy.c:375:1: error: no previous prototype for 'csum_partial_copy_nocheck' [-Werror=missing-prototypes]
+>      375 | csum_partial_copy_nocheck(const void *src, void *dst, int len, __wsum sum)
+>          | ^~~~~~~~~~~~~~~~~~~~~~~~~
+>    cc1: all warnings being treated as errors
 
-Yes. I have read it. Anyway, I started a discussion in genirq
-with you cc-ed:
-https://lore.kernel.org/lkml/c46ddb954cfe45d9849c911271d7ec23@hisilicon.com/
+I can't reproduce this (wrong version of gcc) but it looks like adding
+#include <asm/checksum.h>
+to arch/alpha/lib/csum_partial_copy.c should fix the warnings.
 
-And thanks very much for all your efforts to help me understand
-M68k. Let's get this clarified thoroughly in genirq level.
-
-In arm, we also have some special high-priority interrupts
-which are not NMI but able to preempt normal IRQ. They are
-managed by arch-extended APIs rather than common APIs.
-
-Neither arch_irqs_disabled() nor local_irq_disable() API can
-access this kind of interrupts. They are using things specific
-to ARM like:
-local_fiq_disable()
-local_fiq_enable()
-set_fiq_handler()
-disable_fiq()
-enable_fiq()
-...
-
-so fiq doesn't bother us anyhow in genirq.
-
-> 
-> > >
-> > > I ran that code in QEMU, but experience shows that Apple hardware works
-> > > exactly the same. Please do confirm this for yourself, if you still think
-> > > the code and comments in sonic_interrupt are wrong.
-> > >
-> > > > Best Regards
-> > > > Barry
-> > > >
-> >
-
-Thanks
-Barry
+-- 
+~Randy
 
