@@ -2,193 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3820231A61D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D4B31A61F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhBLUhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:37:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhBLUhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:37:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D55D364D9F;
-        Fri, 12 Feb 2021 20:36:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613162180;
-        bh=U/81S6udlah0JZgUh9eZXBAvF005a3uhKn9HB8qtlbM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bU8lkmY1qxm3jI92j6PIyXI/jBsWaJjK5sdSWDNLjha2Vfx3tvpLGzMRYMU39NA/U
-         A6YudtDS/CnJUuRvP5/2Qkzfkcs7P9/bw1IWbpAzB8Dbix3EybZ/t5BjSLMrCM+gEz
-         k/36w6G34VtMUKzmIjasN8dy+7j1zbOHzf3CVVo6AZsV3Ybyeb0cmZQT9TsAskdbt/
-         MhY+0X9XLZ27gRgtEHBzDFSz8y6RJCB2/mLvGejhrs0Xbqvo+kerx5QOLfyHUK8bLo
-         frITOop4O2dmc6t/9b44Q2JCt2cSnmuh3oI2iZZoON/6gw01Jk++U7P/oRiV03te6Y
-         iAMcFaRHN8R2g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C66AB40513; Fri, 12 Feb 2021 17:36:17 -0300 (-03)
-Date:   Fri, 12 Feb 2021 17:36:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] perf env: Remove unneeded internal/cpumap inclusions
-Message-ID: <20210212203617.GI1398414@kernel.org>
-References: <20210211183914.4093187-1-irogers@google.com>
- <YCY9aTcEMS1pFP6+@krava>
+        id S231245AbhBLUhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:37:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229797AbhBLUhc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 15:37:32 -0500
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88894C061574;
+        Fri, 12 Feb 2021 12:36:52 -0800 (PST)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 83F339200BF; Fri, 12 Feb 2021 21:36:49 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 7FCBB9200BC;
+        Fri, 12 Feb 2021 21:36:49 +0100 (CET)
+Date:   Fri, 12 Feb 2021 21:36:49 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [PATCH] MIPS: Fix inline asm input/output type mismatch in
+ checksum.h used with Clang
+In-Reply-To: <20210127210757.GF21002@alpha.franken.de>
+Message-ID: <alpine.DEB.2.21.2102122116230.35623@angie.orcam.me.uk>
+References: <1611722507-12017-1-git-send-email-yangtiezhu@loongson.cn> <20210127210757.GF21002@alpha.franken.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCY9aTcEMS1pFP6+@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Feb 12, 2021 at 09:33:45AM +0100, Jiri Olsa escreveu:
-> On Thu, Feb 11, 2021 at 10:39:14AM -0800, Ian Rogers wrote:
-> > Minor cleanup.
+On Wed, 27 Jan 2021, Thomas Bogendoerfer wrote:
+
+> > Fix the following build error when make M=samples/bpf used with Clang:
 > > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> thanks,
-> jirka
-> 
+> >   CLANG-bpf  samples/bpf/sockex2_kern.o
+> > In file included from samples/bpf/sockex2_kern.c:7:
+> > In file included from ./include/uapi/linux/if_tunnel.h:7:
+> > In file included from ./include/linux/ip.h:16:
+> > In file included from ./include/linux/skbuff.h:28:
+> > In file included from ./include/net/checksum.h:22:
+> > ./arch/mips/include/asm/checksum.h:161:9: error: unsupported inline asm: input with type 'unsigned long' matching output with type '__wsum' (aka 'unsigned int')
+> >         : "0" ((__force unsigned long)daddr),
+> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > 1 error generated.
+> > 
+> > This is a known issue on MIPS [1], the changed code can be compiled
+> > successfully by both GCC and Clang.
+> > 
+> > [1] https://lore.kernel.org/linux-mips/CAG_fn=W0JHf8QyUX==+rQMp8PoULHrsQCa9Htffws31ga8k-iw@mail.gmail.com/
+> > 
+> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > > ---
-> >  tools/perf/bench/epoll-ctl.c               | 1 -
-> >  tools/perf/bench/epoll-wait.c              | 1 -
-> >  tools/perf/bench/futex-hash.c              | 1 -
-> >  tools/perf/bench/futex-lock-pi.c           | 1 -
-> >  tools/perf/bench/futex-requeue.c           | 1 -
-> >  tools/perf/bench/futex-wake-parallel.c     | 1 -
-> >  tools/perf/bench/futex-wake.c              | 1 -
-> >  tools/perf/tests/openat-syscall-all-cpus.c | 1 -
-> >  tools/perf/util/synthetic-events.c         | 1 -
-> >  9 files changed, 9 deletions(-)
-> > 
-> > diff --git a/tools/perf/bench/epoll-ctl.c b/tools/perf/bench/epoll-ctl.c
-> > index ca2d591aad8a..ddaca75c3bc0 100644
-> > --- a/tools/perf/bench/epoll-ctl.c
-> > +++ b/tools/perf/bench/epoll-ctl.c
-> > @@ -21,7 +21,6 @@
-> >  #include <sys/resource.h>
-> >  #include <sys/epoll.h>
-> >  #include <sys/eventfd.h>
-> > -#include <internal/cpumap.h>
-> >  #include <perf/cpumap.h>
-> >  
-> >  #include "../util/stat.h"
-> > diff --git a/tools/perf/bench/epoll-wait.c b/tools/perf/bench/epoll-wait.c
-> > index 75dca9773186..0a0ff1247c83 100644
-> > --- a/tools/perf/bench/epoll-wait.c
-> > +++ b/tools/perf/bench/epoll-wait.c
-> > @@ -76,7 +76,6 @@
-> >  #include <sys/epoll.h>
-> >  #include <sys/eventfd.h>
-> >  #include <sys/types.h>
-> > -#include <internal/cpumap.h>
-> >  #include <perf/cpumap.h>
-> >  
-> >  #include "../util/stat.h"
-> > diff --git a/tools/perf/bench/futex-hash.c b/tools/perf/bench/futex-hash.c
-> > index 915bf3da7ce2..b65373ce5c4f 100644
-> > --- a/tools/perf/bench/futex-hash.c
-> > +++ b/tools/perf/bench/futex-hash.c
-> > @@ -20,7 +20,6 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/zalloc.h>
-> >  #include <sys/time.h>
-> > -#include <internal/cpumap.h>
-> >  #include <perf/cpumap.h>
-> >  
-> >  #include "../util/stat.h"
-> > diff --git a/tools/perf/bench/futex-lock-pi.c b/tools/perf/bench/futex-lock-pi.c
-> > index bb25d8beb3b8..89c6d160379c 100644
-> > --- a/tools/perf/bench/futex-lock-pi.c
-> > +++ b/tools/perf/bench/futex-lock-pi.c
-> > @@ -14,7 +14,6 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/zalloc.h>
-> >  #include <errno.h>
-> > -#include <internal/cpumap.h>
-> >  #include <perf/cpumap.h>
-> >  #include "bench.h"
-> >  #include "futex.h"
-> > diff --git a/tools/perf/bench/futex-requeue.c b/tools/perf/bench/futex-requeue.c
-> > index 7a15c2e61022..5fa23295ee5f 100644
-> > --- a/tools/perf/bench/futex-requeue.c
-> > +++ b/tools/perf/bench/futex-requeue.c
-> > @@ -20,7 +20,6 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/time64.h>
-> >  #include <errno.h>
-> > -#include <internal/cpumap.h>
-> >  #include <perf/cpumap.h>
-> >  #include "bench.h"
-> >  #include "futex.h"
-> > diff --git a/tools/perf/bench/futex-wake-parallel.c b/tools/perf/bench/futex-wake-parallel.c
-> > index cd2b81a845ac..6e6f5247e1fe 100644
-> > --- a/tools/perf/bench/futex-wake-parallel.c
-> > +++ b/tools/perf/bench/futex-wake-parallel.c
-> > @@ -29,7 +29,6 @@ int bench_futex_wake_parallel(int argc __maybe_unused, const char **argv __maybe
-> >  #include <linux/time64.h>
-> >  #include <errno.h>
-> >  #include "futex.h"
-> > -#include <internal/cpumap.h>
-> >  #include <perf/cpumap.h>
-> >  
-> >  #include <err.h>
-> > diff --git a/tools/perf/bench/futex-wake.c b/tools/perf/bench/futex-wake.c
-> > index 2dfcef3e371e..6d217868f53c 100644
-> > --- a/tools/perf/bench/futex-wake.c
-> > +++ b/tools/perf/bench/futex-wake.c
-> > @@ -20,7 +20,6 @@
-> >  #include <linux/kernel.h>
-> >  #include <linux/time64.h>
-> >  #include <errno.h>
-> > -#include <internal/cpumap.h>
-> >  #include <perf/cpumap.h>
-> >  #include "bench.h"
-> >  #include "futex.h"
-> > diff --git a/tools/perf/tests/openat-syscall-all-cpus.c b/tools/perf/tests/openat-syscall-all-cpus.c
-> > index 71f85e2cc127..f7dd6c463f04 100644
-> > --- a/tools/perf/tests/openat-syscall-all-cpus.c
-> > +++ b/tools/perf/tests/openat-syscall-all-cpus.c
-> > @@ -15,7 +15,6 @@
-> >  #include "tests.h"
-> >  #include "thread_map.h"
-> >  #include <perf/cpumap.h>
-> > -#include <internal/cpumap.h>
-> >  #include "debug.h"
-> >  #include "stat.h"
-> >  #include "util/counts.h"
-> > diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-> > index c6f9db3faf83..0b767233ae1f 100644
-> > --- a/tools/perf/util/synthetic-events.c
-> > +++ b/tools/perf/util/synthetic-events.c
-> > @@ -24,7 +24,6 @@
-> >  #include <linux/perf_event.h>
-> >  #include <asm/bug.h>
-> >  #include <perf/evsel.h>
-> > -#include <internal/cpumap.h>
-> >  #include <perf/cpumap.h>
-> >  #include <internal/lib.h> // page_size
-> >  #include <internal/threadmap.h>
-> > -- 
-> > 2.30.0.478.g8a0d178c01-goog
-> > 
+> >  arch/mips/include/asm/checksum.h | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
+> applied to mips-next.
 
--- 
+ This is in a performance-critical path (otherwise it wouldn't have been 
+in the form of inline assembly).  Has it been verified that it does not 
+regress code quality with GCC?
 
-- Arnaldo
+ The semantics is clear here: output is in the same register as in input, 
+but the register holds a different local variable in each case.  There's 
+nothing odd about that and the variables can obviously be of a different 
+type each; that's no different to register usage with code produced by the 
+compiler directly itself from a high-level language.
+
+ I seem to remember discussing the issue before, but I can't remember what 
+the outcome has been WRT filing this as a Clang bug, and archives are not 
+easily available at the moment (I know a mirror exists, but any old links 
+are not relevant there).  Would someone be able to fill me in?
+
+ I think ultimately with any critical piece where a Clang workaround does 
+regress code produced with GCC we do want to go with `#ifdef __clang__' so 
+that good use with GCC is not penalised on one hand and we know the places 
+to revert changes at should Clang ever get fixed.
+
+ Otherwise I'll start suspecting that Clang supporters try some kind of an 
+unfair game to gain advantage over GCC, by modifying projects such that 
+the competing compiler produces worse code than it could if Clang was not 
+actively supported.
+
+  Maciej
