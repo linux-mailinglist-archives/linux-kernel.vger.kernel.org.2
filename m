@@ -2,258 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8233197E7
+	by mail.lfdr.de (Postfix) with ESMTP id E0F733197E8
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhBLBMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 20:12:31 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64608 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230352AbhBLBLD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 20:11:03 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11C12oKE194214;
-        Thu, 11 Feb 2021 20:09:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=nmTDub/Ux2hr+XxZPtDhKJc7n/Ne0M1pVdt80JFvfdQ=;
- b=XbDVdfjo/SU5a0O3VlsI2elV+tb+sDBEh2f+oVr/sVjssPcdCs2ry1DJt9NhPOACCzwG
- wujbHQX1O9pL9zUeolxtp7Msg2zhC9l3pjUiFL7uRhlLDE9VrXL5Y3NWCB/+VeKPQjWg
- lw2aZGOIAcK0JSi2m7Jd7j0mmmx8XFAS9wrxd3F/GgvGpH9ecX86udfT5zq6vknNQe54
- vMDTUlUb1ViVpKDBlO1rWmxT49z6oPddljPHS2qt72RI1WIS0jYVq18P7tw6EoM5qfM0
- y08ByxfxuQsqYUFeV4j9yqNmBNM9JaW0dO+jQwoqmwqwYd5Bv8LnOjC30/j3QhdTFeSs YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36nfcpgvw7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 20:09:30 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11C13XG3003550;
-        Thu, 11 Feb 2021 20:09:29 -0500
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36nfcpgvvg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 20:09:29 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11C17WSq008415;
-        Fri, 12 Feb 2021 01:09:28 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma04dal.us.ibm.com with ESMTP id 36hjra451h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Feb 2021 01:09:28 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11C19RC912845554
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Feb 2021 01:09:27 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 668D5AE062;
-        Fri, 12 Feb 2021 01:09:27 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 44AA1AE05C;
-        Fri, 12 Feb 2021 01:09:20 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.85.204.73])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Fri, 12 Feb 2021 01:09:20 +0000 (GMT)
-References: <20210209182200.30606-1-nramas@linux.microsoft.com>
- <20210209182200.30606-3-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        frowand.list@gmail.com, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v17 02/10] of: Add a common kexec FDT setup function
-In-reply-to: <20210209182200.30606-3-nramas@linux.microsoft.com>
-Date:   Thu, 11 Feb 2021 22:09:18 -0300
-Message-ID: <87k0reozwh.fsf@manicouagan.localdomain>
+        id S229714AbhBLBNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 20:13:10 -0500
+Received: from vern.gendns.com ([98.142.107.122]:47300 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229800AbhBLBL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 20:11:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=F8f7LywDtKTmk9rZYp4IQgbKog4kMRZJjOcgsQe3LqI=; b=xxBJvN3oq/mEpgslNCzqZoWktf
+        YJ0QYkvdGpElUtgNgkwXtP7+tEsxB0biJ3ZWbgHicnsF846uU6fcXixCtGd3jIUUfD8CC6IY3Y96P
+        6qWX9qXc9CXI85/JI2r+zF6nrgIbdGBM9eixwoYPbXOTUf5rW0DSSjK9D8MYzlcgG1cPcNQwXiZxO
+        XHFez9U8PNdsv6grLAIl+atBuO5RLoPCMCJw4SOxF87+kYMQYPRLUVFe7uKOT6TUvt5UV9CYK6oFu
+        8dbpxcLq21lmZuz9YkBzZKRpACK89nYiYAxr+s/UEA+10lLrr9KvzCtzmh79lTKaqaw0Kc+M3FQoE
+        kWs9fGLA==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:43618 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1lAMz7-0001We-0Y; Thu, 11 Feb 2021 20:11:01 -0500
+Subject: Re: [PATCH v7 5/5] counter: 104-quad-8: Add IRQ support for the ACCES
+ 104-QUAD-8
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     jic23@kernel.org, kernel@pengutronix.de,
+        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com
+References: <cover.1608935587.git.vilhelm.gray@gmail.com>
+ <bb2db54669ef27515da4d5f235c52e0b484b5820.1608935587.git.vilhelm.gray@gmail.com>
+ <7a78ad95-9eba-277d-25da-ddf68357b969@lechnology.com>
+ <YCXEFMJOoOhyhfBu@shinobu>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <add6a885-e666-c5b7-612c-c2d1b08111a5@lechnology.com>
+Date:   Thu, 11 Feb 2021 19:10:59 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 priorityscore=1501 malwarescore=0 spamscore=0 adultscore=0
- bulkscore=0 mlxscore=0 lowpriorityscore=0 clxscore=1015 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102120002
+In-Reply-To: <YCXEFMJOoOhyhfBu@shinobu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/11/21 5:56 PM, William Breathitt Gray wrote:
+> On Wed, Dec 30, 2020 at 11:36:45AM -0600, David Lechner wrote:
+>> On 12/25/20 6:15 PM, William Breathitt Gray wrote:
+>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8 b/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
+>>> index eac32180c40d..0ecba24d43aa 100644
+>>> --- a/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
+>>> +++ b/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
+>>> @@ -1,3 +1,28 @@
+>>> +What:		/sys/bus/counter/devices/counterX/countY/irq_trigger
+>>
+>> Do we really need this sysfs attribute? Shouldn't interrupts be configured
+>> _only_ by the chrdev interface?
+> 
+> I think this attribute can go away because we can implicitly figure out
+> the correct IRQ configuration from the struct counter_watch data when a
+> user executes a COUNTER_ADD_WATCH_IOCTL ioctl command.
+> 
+> However, I need some help deciding on an appropriate behavior for
+> conflicting counter_watch configurations. Let me give some context
+> first.
+> 
+> The 104-QUAD-8 features 8 channels (essentially 8 independent physical
+> counters on the device). Each channel can independently issue an event,
+> but any particular channel can only be set to a single kind of event
+> (COUNTER_EVENT_INDEX, COUNTER_EVENT_OVERFLOW, etc.).
+> 
+> The purpose of the irq_trigger sysfs attribute I introduced in this
+> patch is to allow the user to select the event configuration they want
+> for a particular channel. We can theoretically figure this out
+> implicitly from the struct counter_watch request, so this sysfs
+> attribute may not be necessary.
+> 
+> However, how do we handle the case where a user executes two
+> COUNTER_ADD_WATCH_IOCTL ioctl commands for the same channel but with
+> different event selections? I'm considering three possible behaviors:
+> 
+> * Fail the second ioctl call; event selection of the first struct
+>    counter_watch takes precedence and thus second is incompatible.
+> * Issue a dev_warn() indicating that the second struct counter_watch
+>    event selection will now be the event configuration for that channel.
+> * Don't notify the user, just silently reconfigure for the second struct
+>    counter_watch event selection.
+> 
+> I'm suspecting the first behavior I listed here (ioctl returning failed)
+> is the most appropriate as a user is explicitly made known of this
+> particular device's inability to support more than one type of event per
+> channel.
+> 
+> What do you think?
+> 
 
-There's actually a complication that I just noticed and needs to be
-addressed. More below.
+I agree that it should return an error instead of adding the watch.
+I'm pretty sure that is how I implemented the TI eQEP driver already.
 
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
-
-> From: Rob Herring <robh@kernel.org>
->
-> Both arm64 and powerpc do essentially the same FDT /chosen setup for
-> kexec.  The differences are either omissions that arm64 should have
-> or additional properties that will be ignored.  The setup code can be
-> combined and shared by both powerpc and arm64.
->
-> The differences relative to the arm64 version:
->  - If /chosen doesn't exist, it will be created (should never happen).
->  - Any old dtb and initrd reserved memory will be released.
->  - The new initrd and elfcorehdr are marked reserved.
->  - "linux,booted-from-kexec" is set.
->
-> The differences relative to the powerpc version:
->  - "kaslr-seed" and "rng-seed" may be set.
->  - "linux,elfcorehdr" is set.
->  - Any existing "linux,usable-memory-range" is removed.
->
-> Combine the code for setting up the /chosen node in the FDT and updating
-> the memory reservation for kexec, for powerpc and arm64, in
-> of_kexec_alloc_and_setup_fdt() and move it to "drivers/of/kexec.c".
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> ---
->  drivers/of/Makefile |   6 ++
->  drivers/of/kexec.c  | 258 ++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/of.h  |  13 +++
->  3 files changed, 277 insertions(+)
->  create mode 100644 drivers/of/kexec.c
->
-> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-> index 6e1e5212f058..c13b982084a3 100644
-> --- a/drivers/of/Makefile
-> +++ b/drivers/of/Makefile
-> @@ -14,4 +14,10 @@ obj-$(CONFIG_OF_RESOLVE)  += resolver.o
->  obj-$(CONFIG_OF_OVERLAY) += overlay.o
->  obj-$(CONFIG_OF_NUMA) += of_numa.o
->  
-> +ifdef CONFIG_KEXEC_FILE
-> +ifdef CONFIG_OF_FLATTREE
-> +obj-y	+= kexec.o
-> +endif
-> +endif
-> +
->  obj-$(CONFIG_OF_UNITTEST) += unittest-data/
-> diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
-> new file mode 100644
-> index 000000000000..469e09613cdd
-> --- /dev/null
-> +++ b/drivers/of/kexec.c
-> @@ -0,0 +1,258 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2020 Arm Limited
-> + *
-> + * Based on arch/arm64/kernel/machine_kexec_file.c:
-> + *  Copyright (C) 2018 Linaro Limited
-> + *
-> + * And arch/powerpc/kexec/file_load.c:
-> + *  Copyright (C) 2016  IBM Corporation
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/kexec.h>
-> +#include <linux/libfdt.h>
-> +#include <linux/of.h>
-> +#include <linux/of_fdt.h>
-> +#include <linux/random.h>
-> +#include <linux/types.h>
-> +
-> +/* relevant device tree properties */
-> +#define FDT_PROP_KEXEC_ELFHDR	"linux,elfcorehdr"
-> +#define FDT_PROP_MEM_RANGE	"linux,usable-memory-range"
-> +#define FDT_PROP_INITRD_START	"linux,initrd-start"
-> +#define FDT_PROP_INITRD_END	"linux,initrd-end"
-> +#define FDT_PROP_BOOTARGS	"bootargs"
-> +#define FDT_PROP_KASLR_SEED	"kaslr-seed"
-> +#define FDT_PROP_RNG_SEED	"rng-seed"
-> +#define RNG_SEED_SIZE		128
-> +
-> +/**
-> + * fdt_find_and_del_mem_rsv - delete memory reservation with given address and size
-> + *
-> + * @fdt:	Flattened device tree for the current kernel.
-> + * @start:	Starting address of the reserved memory.
-> + * @size:	Size of the reserved memory.
-> + *
-> + * Return: 0 on success, or negative errno on error.
-> + */
-> +static int fdt_find_and_del_mem_rsv(void *fdt, unsigned long start, unsigned long size)
-> +{
-> +	int i, ret, num_rsvs = fdt_num_mem_rsv(fdt);
-> +
-> +	for (i = 0; i < num_rsvs; i++) {
-> +		u64 rsv_start, rsv_size;
-> +
-> +		ret = fdt_get_mem_rsv(fdt, i, &rsv_start, &rsv_size);
-> +		if (ret) {
-> +			pr_err("Malformed device tree.\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (rsv_start == start && rsv_size == size) {
-> +			ret = fdt_del_mem_rsv(fdt, i);
-> +			if (ret) {
-> +				pr_err("Error deleting device tree reservation.\n");
-> +				return -EINVAL;
-> +			}
-> +
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	return -ENOENT;
-> +}
-> +
-> +/*
-> + * of_kexec_alloc_and_setup_fdt - Alloc and setup a new Flattened Device Tree
-> + *
-> + * @image:		kexec image being loaded.
-> + * @initrd_load_addr:	Address where the next initrd will be loaded.
-> + * @initrd_len:		Size of the next initrd, or 0 if there will be none.
-> + * @cmdline:		Command line for the next kernel, or NULL if there will
-> + *			be none.
-> + *
-> + * Return: fdt on success, or NULL errno on error.
-> + */
-> +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
-> +				   unsigned long initrd_load_addr,
-> +				   unsigned long initrd_len,
-> +				   const char *cmdline)
-> +{
-> +	void *fdt;
-> +	int ret, chosen_node;
-> +	const void *prop;
-> +	unsigned long fdt_size;
-> +
-> +	fdt_size = fdt_totalsize(initial_boot_params) +
-> +		   (cmdline ? strlen(cmdline) : 0) +
-> +		   FDT_EXTRA_SPACE;
-
-Just adding 4 KB to initial_boot_params won't be enough for crash
-kernels on ppc64. The current powerpc code doubles the size of
-initial_boot_params (which is normally larger than 4 KB) and even that
-isn't enough. A patch was added to powerpc/next today which uses a more
-precise (but arch-specific) formula:
-
-https://lore.kernel.org/linuxppc-dev/161243826811.119001.14083048209224609814.stgit@hbathini/
-
-So I believe we need a hook here where architectures can provide their
-own specific calculation for the size of the fdt. Perhaps a weakly
-defined function providing a default implementation which an
-arch-specific file can override (a la arch_kexec_kernel_image_load())?
-
-Then the powerpc specific hook would be the kexec_fdt_totalsize_ppc64()
-function from the patch I linked above.
-
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
