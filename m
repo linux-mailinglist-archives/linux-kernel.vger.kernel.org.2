@@ -2,203 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D7231A343
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05A331A34D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhBLRGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 12:06:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:39938 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230421AbhBLREy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 12:04:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46B1B13A1;
-        Fri, 12 Feb 2021 09:04:08 -0800 (PST)
-Received: from e125528.arm.com (unknown [10.57.5.230])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 09FDC3F73B;
-        Fri, 12 Feb 2021 09:04:06 -0800 (PST)
-From:   Alexandre Truong <alexandre.truong@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Cc:     Alexandre Truong <alexandre.truong@arm.com>
-Subject: [PATCH v2 4/4] perf tools: determine if LR is the return address
-Date:   Fri, 12 Feb 2021 17:03:43 +0000
-Message-Id: <20210212170343.7729-4-alexandre.truong@arm.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210212170343.7729-1-alexandre.truong@arm.com>
-References: <20210212170343.7729-1-alexandre.truong@arm.com>
+        id S230319AbhBLRIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 12:08:40 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51682 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229796AbhBLRId (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 12:08:33 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11CH6bsR045358;
+        Fri, 12 Feb 2021 11:06:37 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1613149597;
+        bh=hf5kWh4b5xDP8/ITjPs8a9MASJP8ofalTmmZo5fWH2Q=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=DFIbWSgCQWA/CFtOEJ9k6ghvxRwb+jnjL17WQaQzmdbVY076+UvXHAUFzLS48kByX
+         zLkAcl0JgDJ5E9jOkPdBqFDC3SbZhZ2wbIMLYqtHLNrISr7PiwcctLXU5+kGpWdj9s
+         xfqcIlJtilCmH6Ndtu6kbSryqd88COz3EjUOy7MQ=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11CH6bUm081026
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Feb 2021 11:06:37 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
+ Feb 2021 11:06:37 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 12 Feb 2021 11:06:36 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11CH6Wj1016094;
+        Fri, 12 Feb 2021 11:06:32 -0600
+Subject: Re: [PATCH v5 net-next 05/10] net: switchdev: pass flags and mask to
+ both {PRE_,}BRIDGE_FLAGS attributes
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        <UNGLinuxDriver@microchip.com>, Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ivan Vecera <ivecera@redhat.com>, <linux-omap@vger.kernel.org>
+References: <20210212151600.3357121-1-olteanv@gmail.com>
+ <20210212151600.3357121-6-olteanv@gmail.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <d06efa97-f9cf-3a3a-963b-3b15e7803e87@ti.com>
+Date:   Fri, 12 Feb 2021 19:06:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210212151600.3357121-6-olteanv@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On arm64 and frame pointer mode (e.g: perf record --callgraph fp),
-use dwarf unwind info to check if the link register is the return
-address in order to inject it to the frame pointer stack.
 
-Write the following application:
 
-	int a = 10;
+On 12/02/2021 17:15, Vladimir Oltean wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> 
+> This switchdev attribute offers a counterproductive API for a driver
+> writer, because although br_switchdev_set_port_flag gets passed a
+> "flags" and a "mask", those are passed piecemeal to the driver, so while
+> the PRE_BRIDGE_FLAGS listener knows what changed because it has the
+> "mask", the BRIDGE_FLAGS listener doesn't, because it only has the final
+> value. But certain drivers can offload only certain combinations of
+> settings, like for example they cannot change unicast flooding
+> independently of multicast flooding - they must be both on or both off.
+> The way the information is passed to switchdev makes drivers not
+> expressive enough, and unable to reject this request ahead of time, in
+> the PRE_BRIDGE_FLAGS notifier, so they are forced to reject it during
+> the deferred BRIDGE_FLAGS attribute, where the rejection is currently
+> ignored.
+> 
+> This patch also changes drivers to make use of the "mask" field for edge
+> detection when possible.
+> 
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
+> Changes in v5:
+> Rebased on top of AM65 CPSW driver.
+> 
+> Changes in v4:
+> Patch is new.
+> 
+>   .../marvell/prestera/prestera_switchdev.c     | 23 +++++----
+>   .../mellanox/mlxsw/spectrum_switchdev.c       | 50 +++++++++++--------
+>   drivers/net/ethernet/rocker/rocker_main.c     | 10 ++--
+>   drivers/net/ethernet/ti/am65-cpsw-switchdev.c | 24 +++++----
+>   drivers/net/ethernet/ti/cpsw_switchdev.c      | 24 +++++----
+>   drivers/staging/fsl-dpaa2/ethsw/ethsw.c       | 34 ++++++++-----
+>   include/net/switchdev.h                       |  7 ++-
+>   net/bridge/br_switchdev.c                     |  6 +--
+>   net/dsa/dsa_priv.h                            |  6 ++-
+>   net/dsa/port.c                                | 34 +++++++------
+>   10 files changed, 129 insertions(+), 89 deletions(-)
+> 
 
-	void f2(void)
-	{
-		for (int i = 0; i < 1000000; i++)
-			a *= a;
-	}
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
 
-	void f1()
-	{
-		for (int i = 0; i < 10; i++)
-			f2();
-	}
-
-	int main (void)
-	{
-		f1();
-		return 0;
-	}
-
-with the following compilation flags:
-	gcc -fno-omit-frame-pointer -fno-inline -O2
-
-The compiler omits the frame pointer for f2 on arm. This is a problem
-with any leaf call, for example an application with many different
-calls to malloc() would always omit the calling frame, even if it
-can be determined.
-
-	./perf record --call-graph fp ./a.out
-	./perf report
-
-currently gives the following stack:
-
-0xffffea52f361
-_start
-__libc_start_main
-main
-f2
-
-After this change, perf report correctly shows f1() calling f2(),
-even though it was missing from the frame pointer unwind:
-
-	./perf report
-
-0xffffea52f361
-_start
-__libc_start_main
-main
-f1
-f2
-
-Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
----
- tools/perf/util/Build                         |  1 +
- .../util/arm-frame-pointer-unwind-support.c   | 44 +++++++++++++++++++
- .../util/arm-frame-pointer-unwind-support.h   |  7 +++
- tools/perf/util/machine.c                     |  9 ++--
- 4 files changed, 58 insertions(+), 3 deletions(-)
- create mode 100644 tools/perf/util/arm-frame-pointer-unwind-support.c
- create mode 100644 tools/perf/util/arm-frame-pointer-unwind-support.h
-
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 188521f34347..3b82cb992bce 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -1,3 +1,4 @@
-+perf-y += arm-frame-pointer-unwind-support.o
- perf-y += annotate.o
- perf-y += block-info.o
- perf-y += block-range.o
-diff --git a/tools/perf/util/arm-frame-pointer-unwind-support.c b/tools/perf/util/arm-frame-pointer-unwind-support.c
-new file mode 100644
-index 000000000000..964efd08e72e
---- /dev/null
-+++ b/tools/perf/util/arm-frame-pointer-unwind-support.c
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "../arch/arm64/include/uapi/asm/perf_regs.h"
-+#include "arch/arm64/include/perf_regs.h"
-+#include "event.h"
-+#include "arm-frame-pointer-unwind-support.h"
-+#include "callchain.h"
-+#include "unwind.h"
-+
-+struct entries {
-+	u64 stack[2];
-+	size_t length;
-+};
-+
-+static bool get_leaf_frame_caller_enabled(struct perf_sample *sample)
-+{
-+	return callchain_param.record_mode == CALLCHAIN_FP && sample->user_regs.regs
-+		&& sample->user_regs.mask == PERF_REGS_MASK;
-+}
-+
-+static int add_entry(struct unwind_entry *entry, void *arg)
-+{
-+	struct entries *entries = arg;
-+
-+	entries->stack[entries->length++] = entry->ip;
-+	return 0;
-+}
-+
-+u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct thread *thread)
-+{
-+	int ret;
-+
-+	struct entries entries = {{0, 0}, 0};
-+
-+	if (!get_leaf_frame_caller_enabled(sample))
-+		return 0;
-+
-+	ret = unwind__get_entries(add_entry, &entries, thread, sample, 2);
-+
-+	if (ret || entries.length != 2)
-+		return ret;
-+
-+	return callchain_param.order == ORDER_CALLER ?
-+		entries.stack[0] : entries.stack[1];
-+}
-diff --git a/tools/perf/util/arm-frame-pointer-unwind-support.h b/tools/perf/util/arm-frame-pointer-unwind-support.h
-new file mode 100644
-index 000000000000..16dc03fa9abe
---- /dev/null
-+++ b/tools/perf/util/arm-frame-pointer-unwind-support.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H
-+#define __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H
-+
-+u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct thread *thread);
-+
-+#endif /* __PERF_ARM_FRAME_POINTER_UNWIND_SUPPORT_H */
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 7f03ffa016b0..dfb72dbc0e2d 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -34,6 +34,7 @@
- #include "bpf-event.h"
- #include <internal/lib.h> // page_size
- #include "cgroup.h"
-+#include "arm-frame-pointer-unwind-support.h"
- 
- #include <linux/ctype.h>
- #include <symbol/kallsyms.h>
-@@ -2671,10 +2672,12 @@ static int find_prev_cpumode(struct ip_callchain *chain, struct thread *thread,
- 	return err;
- }
- 
--static u64 get_leaf_frame_caller(struct perf_sample *sample __maybe_unused,
--		struct thread *thread __maybe_unused)
-+static u64 get_leaf_frame_caller(struct perf_sample *sample, struct thread *thread)
- {
--	return 0;
-+	if (strncmp(thread->maps->machine->env->arch, "aarch64", 7) == 0)
-+		return get_leaf_frame_caller_aarch64(sample, thread);
-+	else
-+		return 0;
- }
- 
- static int thread__resolve_callchain_sample(struct thread *thread,
 -- 
-2.23.0
-
+Best regards,
+grygorii
