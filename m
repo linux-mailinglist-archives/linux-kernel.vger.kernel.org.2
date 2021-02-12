@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F8031A1B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB14D31A1B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhBLPb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:31:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhBLPbJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:31:09 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF971C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:30:28 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id n201so9658896iod.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 07:30:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=offNES+WoCXP4r9MqdlrB2PaP4ULhXnwzksUvKn0s9g=;
-        b=BImA9WnABOwuvHJuOCLk4IyInjzUNAZ5LAcE7ci12u0pFt1uLrtFyddKgQRViPKs9H
-         WHrJYzriNJuu/1JQNkcwPAHm0IoCEX1/CKHtW0U8ho/9+y5Lq20BRKyTpyKzdd7h4+WK
-         bFWarq12kN/6KPaLTu11DI3d71MS/bnXOF5R2gpgh6dvQaxzslJqqzlhFAyjEuFUNuE2
-         LLkB+Uc1A5l6Q/QXdRduCvqaMjIHx0E3lw5t90V5E+RLu4UXYevUlHJ4zOZix369MBn6
-         bOBfn6p++PLnJ493qQC3bV4/GacE8fQoTQIDN9ONDAPpwAivAreqhwyoj8xeIdNI1yrU
-         TahA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=offNES+WoCXP4r9MqdlrB2PaP4ULhXnwzksUvKn0s9g=;
-        b=oTkqMaOeUA7G280z00TGZrF6V0g1SlBjauXw3pyY3eGwk+dzJJ+Y0bVHrcUp0aKMdj
-         4qbNkgpBtlqN1Bogv2/4r7vmHWr4MIBulELzV4BPa/d8Sg0bqkMHfjqtagCfqefU3ulk
-         UegaGxIeI/b4K8JgMGpZo7TvFFQrZ2zDzePLhlj3fRzrqxTQ3FG+9/Pvj8GYM+sRLGje
-         DTrGCy1XSmQlM0DT+UEocG4rkPfLRSBvaOg4zWJ5WCxuCs5tmv8YY+llzspQJHHBgqOi
-         87oMZTxYwwPjNA8RlF8MUT7HbvHuytdb1WTDeUFOq52tsDQYP21cZqIO3vDiOkNYh+FW
-         XcnQ==
-X-Gm-Message-State: AOAM532Qi/wbUSRlrZXkPD22wkKxDemSwAa3cNPfiiHZlndnuY17yLV8
-        lm1ecfwOT5YWAmGb97NNd6vJgw==
-X-Google-Smtp-Source: ABdhPJzzj7ZF9BLPJJuz3o5a3Kmr/Llvs84MLXqJEMRK8mSLYZxcDqVk1CtRG/bbNTNxUdvqyxnsgw==
-X-Received: by 2002:a02:660b:: with SMTP id k11mr3251814jac.120.1613143828470;
-        Fri, 12 Feb 2021 07:30:28 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id d2sm4593952ilr.66.2021.02.12.07.30.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 07:30:27 -0800 (PST)
-Subject: Re: linux-next: manual merge of the rcu tree with the block tree
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20210211164852.7489b87d@canb.auug.org.au>
- <20210212151853.GC94816@lothringen>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <858e7874-83c9-e4b9-a0a9-31be5a0c853e@kernel.dk>
-Date:   Fri, 12 Feb 2021 08:30:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229790AbhBLPbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:31:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55516 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229917AbhBLPbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:31:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2570A64E65;
+        Fri, 12 Feb 2021 15:30:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613143852;
+        bh=2GikqJ76Pgc7I30iCl8osvQH0Fze6qbpvM2PmeBOsWk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bGyIaPrlayhiG4sd7omkCau887oZhQK4o2OEsex4fQwRz626PQe2b/p9KTbYjxdgZ
+         Hvq36OVPzq5ZykACksRWi7rVJWXGNcD6VTV4rzu9D8x/oqh0zm3fHcIqz6EYf6an62
+         VNaHGdywrpcPajZSvT6tGNp4IvcyEuYxggXNrldI=
+Date:   Fri, 12 Feb 2021 16:30:49 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Xi Ruoyao <xry111@mengyan1223.wang>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-tip-commits@vger.kernel.org
+Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
+ non-section symbols
+Message-ID: <YCafKVSTX9MxDBMd@kroah.com>
+References: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
+ <160812658044.3364.4188208281079332844.tip-bot2@tip-bot2>
+ <dded80b60d9136ea90987516c28f93273385651f.camel@mengyan1223.wang>
+ <YCU3Vdoqd+EI+zpv@kroah.com>
+ <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210212151853.GC94816@lothringen>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/21 8:18 AM, Frederic Weisbecker wrote:
-> On Thu, Feb 11, 2021 at 04:48:52PM +1100, Stephen Rothwell wrote:
->> Hi all,
->>
->> Today's linux-next merge of the rcu tree got conflicts in:
->>
->>   include/linux/rcupdate.h
->>   kernel/rcu/tree.c
->>   kernel/rcu/tree_plugin.h
->>
->> between commits:
->>
->>   3a7b5c87a0b2 ("rcu/nocb: Perform deferred wake up before last idle's need_resched() check")
->>   e4234f21d2ea ("rcu: Pull deferred rcuog wake up to rcu_eqs_enter() callers")
->>   14bbd41d5109 ("entry/kvm: Explicitly flush pending rcuog wakeup before last
->>   rescheduling point")
->> from the block tree and commits:
+On Thu, Feb 11, 2021 at 10:46:05AM -0800, Nick Desaulniers wrote:
+> On Thu, Feb 11, 2021 at 5:55 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Feb 11, 2021 at 09:32:03PM +0800, Xi Ruoyao wrote:
+> > > Hi all,
+> > >
+> > > The latest GNU assembler (binutils-2.36.1) is removing unused section symbols
+> > > like Clang [1].  So linux-5.10.15 can't be built with binutils-2.36.1 now.  It
+> > > has been reported as https://bugzilla.kernel.org/show_bug.cgi?id=211693.
 > 
-> Isn't it tip:/sched/core instead of block?
+> Xi,
+> Happy Lunar New Year to you, too, and thanks for the report.  Did you
+> observe such segfaults for older branches of stable?
+> 
+> > 2.36 of binutils fails to build the 4.4.y tree right now as well, but as
+> > objtool isn't there, I don't know what to do about it :(
+> 
+> Greg,
+> There may be multiple issues in the latest binutils release for the
+> kernel; we should still avoid segfaults in host tools so I do
+> recommend considering this patch for inclusion at least into 5.10.y.
+> Arnd's report in https://github.com/ClangBuiltLinux/linux/issues/1207
+> mentions this was found via randconfig testing, so likely some set of
+> configs is needed to reproduce reliably.
+> 
+> Do you have more info about the failure you're observing? Trolling
+> lore, I only see:
+> https://lore.kernel.org/stable/YCLeJcQFsDIsrAEc@kroah.com/
+> (Maybe it was reported on a different list; I only searched stable ML).
 
-It must be, maybe block just got merged first? It's just sched/core in a
-topic branch, to satisfy a dependency.
+I didn't report it anywhere.
 
-But as mentioned in the previous email, I just need sched/smp to satisfy
-that dependency. So I've rebased that small topic branch with that
-pulled in instead. Won't solve the sched/core vs rcu tree conflict, but
-at least it's out of my hands now :-)
+Here's the output of doing a 'make allmodconfig' on the latest 4.4.257
+release failing with binutils 2.36
 
--- 
-Jens Axboe
+Cannot find symbol for section 8: .text.unlikely.
+kernel/kexec_file.o: failed
+make[1]: *** [scripts/Makefile.build:277: kernel/kexec_file.o] Error 1
+make[1]: *** Deleting file 'kernel/kexec_file.o'
+make[1]: *** Waiting for unfinished jobs....
 
+4.9.257 works fine, probably because we are using objtool?
+
+Any ideas are appreciated.
+
+thanks,
+
+greg k-h
