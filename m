@@ -2,78 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2088319C1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 869AF319C1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhBLJsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:48:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50284 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229928AbhBLJrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:47:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613123226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S229976AbhBLJvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:51:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57719 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229457AbhBLJvf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 04:51:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613123409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MRHvqshruqvs3aOgQUWLKWvnflNOmOtBfIlkGvC280w=;
-        b=JoS4EFB8kxyJDBNuOH8c7mCafhgaAwHMyt3Q9WWEi3p2biR2Nlw0CAWMTOG8x2KDqzVnZ3
-        UYZvA5HUxVT9yDKHjla4OxbbYL36LszQ9vg+O25hlOV+gnuDtgr98M7REk6tN7v6LMDtxE
-        ZoMD2sfCd4U8UEbsE+0/myALBQuq+jM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 36B87B176;
-        Fri, 12 Feb 2021 09:47:06 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 10:47:05 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "J. Avila" <elavila@google.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] printk: avoid prb_first_valid_seq() where possible
-Message-ID: <YCZOmajTizYrDSm5@alley>
-References: <20210211173152.1629-1-john.ogness@linutronix.de>
+        bh=ibCpcRXbNGbZ0c4IJYIhAiMzMee7fTcrcQjumXKkexE=;
+        b=ZiPggyrEGf1jhQUX+rjvXoRpeU2gKJo1xHhC2Xb7lb9AVaZY9WDugyuqlkOgZIGDRyMn6p
+        FTVT3iywiNxv3Kx6t6LBGTAkbCW8P85McYp3rc3hDbJo80/QDUqRCPctu+eHIiG68nLhHD
+        yYEfAEMfQBqngb3r6MR1SAlEh12cegA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-f0X1JRbpNYaYzLEOwMoXZA-1; Fri, 12 Feb 2021 04:50:05 -0500
+X-MC-Unique: f0X1JRbpNYaYzLEOwMoXZA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33D89801975;
+        Fri, 12 Feb 2021 09:50:04 +0000 (UTC)
+Received: from [10.36.114.178] (ovpn-114-178.ams2.redhat.com [10.36.114.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 10FCC1F45B;
+        Fri, 12 Feb 2021 09:50:02 +0000 (UTC)
+Subject: Re: [PATCH v2] mm/hugetlb: use helper huge_page_size() to get
+ hugepage size
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210209021803.49211-1-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <357ade66-8176-8ea6-92bd-f18fa540af93@redhat.com>
+Date:   Fri, 12 Feb 2021 10:50:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211173152.1629-1-john.ogness@linutronix.de>
+In-Reply-To: <20210209021803.49211-1-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-02-11 18:37:52, John Ogness wrote:
-> If message sizes average larger than expected (more than 32
-> characters), the data_ring will wrap before the desc_ring. Once the
-> data_ring wraps, it will start invalidating descriptors. These
-> invalid descriptors hang around until they are eventually recycled
-> when the desc_ring wraps. Readers do not care about invalid
-> descriptors, but they still need to iterate past them. If the
-> average message size is much larger than 32 characters, then there
-> will be many invalid descriptors preceding the valid descriptors.
+On 09.02.21 03:18, Miaohe Lin wrote:
+> We can use helper huge_page_size() to get the hugepage size directly to
+> simplify the code slightly.
 > 
-> The function prb_first_valid_seq() always begins at the oldest
-> descriptor and searches for the first valid descriptor. This can
-> be rather expensive for the above scenario. And, in fact, because
-> of its heavy usage in /dev/kmsg, there have been reports of long
-> delays and even RCU stalls.
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+> v1 -> v2
+> 	change huge_page_size(h) >> 10 to huge_page_size(h) / SZ_1K
+> 	collect Reviewed-by tag
+> ---
+>   mm/hugetlb.c | 14 ++++++--------
+>   1 file changed, 6 insertions(+), 8 deletions(-)
 > 
-> For code that does not need to search from the oldest record,
-> replace prb_first_valid_seq() usage with prb_read_valid_*()
-> functions, which provide a start sequence number to search from.
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 18628f8dbfb0..06719fdf9fd6 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3199,7 +3199,7 @@ void __init hugetlb_add_hstate(unsigned int order)
+>   	BUG_ON(order == 0);
+>   	h = &hstates[hugetlb_max_hstate++];
+>   	h->order = order;
+> -	h->mask = ~((1ULL << (order + PAGE_SHIFT)) - 1);
+> +	h->mask = ~(huge_page_size(h) - 1);
+>   	for (i = 0; i < MAX_NUMNODES; ++i)
+>   		INIT_LIST_HEAD(&h->hugepage_freelists[i]);
+>   	INIT_LIST_HEAD(&h->hugepage_activelist);
+> @@ -3474,7 +3474,7 @@ void hugetlb_report_meminfo(struct seq_file *m)
+>   	for_each_hstate(h) {
+>   		unsigned long count = h->nr_huge_pages;
+>   
+> -		total += (PAGE_SIZE << huge_page_order(h)) * count;
+> +		total += huge_page_size(h) * count;
+>   
+>   		if (h == &default_hstate)
+>   			seq_printf(m,
+> @@ -3487,10 +3487,10 @@ void hugetlb_report_meminfo(struct seq_file *m)
+>   				   h->free_huge_pages,
+>   				   h->resv_huge_pages,
+>   				   h->surplus_huge_pages,
+> -				   (PAGE_SIZE << huge_page_order(h)) / 1024);
+> +				   huge_page_size(h) / SZ_1K);
+>   	}
+>   
+> -	seq_printf(m, "Hugetlb:        %8lu kB\n", total / 1024);
+> +	seq_printf(m, "Hugetlb:        %8lu kB\n", total / SZ_1K);
+>   }
+>   
+>   int hugetlb_report_node_meminfo(char *buf, int len, int nid)
+> @@ -3524,7 +3524,7 @@ void hugetlb_show_meminfo(void)
+>   				h->nr_huge_pages_node[nid],
+>   				h->free_huge_pages_node[nid],
+>   				h->surplus_huge_pages_node[nid],
+> -				1UL << (huge_page_order(h) + PAGE_SHIFT - 10));
+> +				huge_page_size(h) / SZ_1K);
+>   }
+>   
+>   void hugetlb_report_usage(struct seq_file *m, struct mm_struct *mm)
+> @@ -3647,9 +3647,7 @@ static int hugetlb_vm_op_split(struct vm_area_struct *vma, unsigned long addr)
+>   
+>   static unsigned long hugetlb_vm_op_pagesize(struct vm_area_struct *vma)
+>   {
+> -	struct hstate *hstate = hstate_vma(vma);
+> -
+> -	return 1UL << huge_page_shift(hstate);
+> +	return huge_page_size(hstate_vma(vma));
+>   }
+>   
+>   /*
 > 
-> Fixes: 896fbe20b4e2333fb55 ("printk: use the lockless ringbuffer")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Reported-by: J. Avila <elavila@google.com>
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-I am going to push the patch later today. I would prefer to do it
-later and give a chance others to react. But the merge window
-will likely start the following week and Sergey was fine
-with this approach.
+Thanks!
 
-Best Regard,
-Petr
+-- 
+Thanks,
+
+David / dhildenb
+
