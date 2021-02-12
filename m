@@ -2,143 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F3D31A634
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E1231A636
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhBLUsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:48:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
+        id S230489AbhBLUsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:48:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhBLUrw (ORCPT
+        with ESMTP id S231578AbhBLUsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:47:52 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34341C061574;
-        Fri, 12 Feb 2021 12:47:10 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id s15so454977plr.9;
-        Fri, 12 Feb 2021 12:47:10 -0800 (PST)
+        Fri, 12 Feb 2021 15:48:31 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E074AC061786
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:47:50 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id a16so414780ilq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:47:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9nlPrdgdpUhBT4OqPIpJHurxob/WSRTldRiaZgCuebA=;
-        b=mEalseKMxInqyKHV7UpFcJBMqxSyFknnSvj7smKWsPgaa04masHhh4Nf9nN3eNhjPG
-         zzzwGLnVafIckFzjBfsEgDgibHfhSz1I47NzHWqMrUX/HbhBoGUFRJ8xzmtpykyQiRQW
-         CNwu0Ki4ybC8HpTAeLxosIa6MyIqwnRjMs2n/oNdVu1YhGpy8tXPJzYd08EoqwWzTcIq
-         ArAZatvCv4/bAcEFQFIEz5PXhFQI4t4C36gEN82yxrOVDPzumFN2viNJuB690YirePqK
-         /6J+GXoQqPFwfdBOVDV+yqPUBOI33H5nobS4jsj+yM5wCTYyPLMzaY9TxsIQlsB4WTwe
-         dHgg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XHQMdD4M/9n7kXDwApYNepXGgL4rr9toLyZC0YSWleM=;
+        b=J1hnM+AVDAhiSATGl302gnQnCE/GOG7MuY62LilWK/sdFL812lS2Bdqnf2fQLH9VpQ
+         SzmM1gCQNMH+gRnJHEedOgSB3Mxjd191Ve34rKxUCz5aBpMdmt9/wlQPW1Ce50WtxbgD
+         ON5AlHpe8LT/nAzSpaTKz/4vknmVfNj08uFk6yL59XBq/0Ko7BpXjjOFhaT1xzn1crr1
+         oBcOPnRHOs3uv6kGiQnYHuOJr6phnsc+C3h5/yo4cZtENlUTCm8GccwJmpvr8IZZnDLQ
+         1Al2Ar8xTeYt+YJhhLB/xRjTwu1E+2S0h7j17nJ7oZKsEhogLRs7vJZqZW2IZiAi+K+s
+         DynA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9nlPrdgdpUhBT4OqPIpJHurxob/WSRTldRiaZgCuebA=;
-        b=r3fK26H+WO3CRLnPIZq4ey5col9N556jo05gpIG+pIuiMIlt0IhxRlyct/jWmUQEsn
-         rI547Z87gFzum7ZKh9T7QgQ2DQWb/Vgff1xQIyWzw5rRkOjNMr1UFwz/2w5YaMd5QQnn
-         ghMp0+a4dwPqJKBZO4BoPYqBkOqyzD07yYlmmWbeyqnbpGegAtYhRmrkufSujMScQZwM
-         a390v7DTQpCCHxH/mpE+Zc1LlRxS5wRZpIviCJLD+wbzVyKk8xKfyhkGHCD4taAVsIxe
-         /gWR/ZNdGc5CPNYdlQJM6+OpBnyueOA41JvYZH71KTvLPU2iNhGrfXZdiFKGua5IF6It
-         aF3g==
-X-Gm-Message-State: AOAM530dyH0Q6OnIkOGUhSsrzm+THpp0A3jXRRAA0A3CxxPjPBkB5nWs
-        aBVMaohqx2/d8eiRfDDhzZI=
-X-Google-Smtp-Source: ABdhPJzS5Lrk7YliIkxbQhanWAw0UsFKk7hCmMvP3GxFB0VhGdCErkgqFxJLgLSLeik+D9D4ORGB9g==
-X-Received: by 2002:a17:90a:ce03:: with SMTP id f3mr4230246pju.44.1613162829402;
-        Fri, 12 Feb 2021 12:47:09 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id t22sm10659579pgm.18.2021.02.12.12.47.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 12:47:08 -0800 (PST)
-Subject: Re: [PATCH v3 2/2] serial: 8250: Add new 8250-core based Broadcom STB
- driver
-To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210212195736.45328-1-alcooperx@gmail.com>
- <20210212195736.45328-3-alcooperx@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8cb4bae6-5617-8dd5-4c0f-4c81cb4d741b@gmail.com>
-Date:   Fri, 12 Feb 2021 12:47:02 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XHQMdD4M/9n7kXDwApYNepXGgL4rr9toLyZC0YSWleM=;
+        b=nOHO8qYT3gicxLuBPsYhQrFv4EY6o1HPmPpcOo3qkTlXkAjdOVoaPVeKnafw7W+K6a
+         upZevNagHemi+fcPcZXxOM3nmqDkE3u0PnsX8PVWzlFDgDB8NNC/lWpIsEsEOkGIKyOu
+         uFgYTixIze2XgPHNKUOvK7fp+BS6b/hApwMXuPbPYkdaA63U3pbb5/lGuJ+FYarsHQf2
+         hODSAJcQsn1p6C3UnnvX+Iwc8aVsCLPhJxEPKtApo+7rKMX9cwFQcoFaK2xfHU+oysjg
+         LYGZx8xN6hgcBDU7dGQKxsaYRZREg3kM/QeNdWsgi3R74XdYqmICKQ/LtmnAswIQE8IG
+         nxPQ==
+X-Gm-Message-State: AOAM530nVG8geqOibxQfK4HFpMI9NwLnqLhfayObz+bpO0eLqfkiHjV9
+        PidIkAjGE+v7zfw1W4217Q45sBeSiYMyQiW3F0nssg==
+X-Google-Smtp-Source: ABdhPJy7X2kavmCOVJnqOgE4aEszNs9PZjIWjqj0Wwe57tdEHfPYv7JFz1/cCUxHzeX2/mUbeHqaY8XYstpcrrvvp4M=
+X-Received: by 2002:a92:c941:: with SMTP id i1mr3869403ilq.258.1613162870096;
+ Fri, 12 Feb 2021 12:47:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210212195736.45328-3-alcooperx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210210212200.1097784-1-axelrasmussen@google.com>
+ <20210210212200.1097784-3-axelrasmussen@google.com> <0a991b83-18f8-cd76-46c0-4e0dcd5c87a7@oracle.com>
+ <20210212204028.GC3171@xz-x1>
+In-Reply-To: <20210212204028.GC3171@xz-x1>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Fri, 12 Feb 2021 12:47:12 -0800
+Message-ID: <CAJHvVchJtjpjNUYTGw1m568w_GTK_KMKbu0MLyvK8gcbrs6S7A@mail.gmail.com>
+Subject: Re: [PATCH v5 02/10] hugetlb/userfaultfd: Forbid huge pmd sharing
+ when uffd enabled
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 12, 2021 at 12:40 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Thu, Feb 11, 2021 at 04:19:55PM -0800, Mike Kravetz wrote:
+> > want_pmd_share() is currently just a check for CONFIG_ARCH_WANT_HUGE_PMD_SHARE.
+> > How about leaving that mostly as is, and adding the new vma checks to
+> > vma_shareable().  vma_shareable() would then be something like:
+> >
+> >       if (!(vma->vm_flags & VM_MAYSHARE))
+> >               return false;
+> > #ifdef CONFIG_USERFAULTFD
+> >       if (uffd_disable_huge_pmd_share(vma)
+> >               return false;
+> > #endif
+> > #ifdef /* XXX */
+> >       /* add other checks for things like uffd wp and soft dirty here */
+> > #endif /* XXX */
+> >
+> >       if (range_in_vma(vma, base, end)
+> >               return true;
+> >       return false;
+> >
+> > Of course, this would require we leave the call to vma_shareable() at the
+> > beginning of huge_pmd_share.  It also means that we are always making a
+> > function call into huge_pmd_share to determine if sharing is possible.
+> > That is not any different than today.  If we do not want to make that extra
+> > function call, then I would suggest putting all that code in want_pmd_share.
+> > It just seems that all the vma checks for sharing should be in one place
+> > if possible.
+>
+> I don't worry a lot on that since we've already got huge_pte_alloc() which
+> takes care of huge pmd sharing case, so I don't expect e.g. even most hugetlb
+> developers to use want_pmd_share() at all, because huge_pte_alloc() will be the
+> one that frequently got called.
+>
+> But yeah we can definitely put the check logic into huge_pmd_share() too.
+> Looking at above code it looks still worth a helper like want_pmd_share() or
+> with some other name.  Then... instead of making this complicated, how about I
+> mostly keep this patch but move want_pmd_share() call into huge_pmd_share()
+> instead?
+>
+> Btw, Axel, it seems there will still be some respins on the pmd sharing
+> patches.  Since it turns out it'll be shared by multiple tasks now, do you mind
+> I pick those out and send them separately?  Then we can consolidate this part
+> to move on with either the rest of the tasks we've got on hand.
 
+Sounds good to me. :) Thanks Peter + Mike for working on this!
 
-On 2/12/2021 11:57 AM, Al Cooper wrote:
-> Add a UART driver for the new Broadcom 8250 based STB UART. The new
-> UART is backward compatible with the standard 8250, but has some
-> additional features. The new features include a high accuracy baud
-> rate clock system and DMA support.
-> 
-> The driver will use the new optional BAUD MUX clock to select the best
-> one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
-> the baud rate selection logic for any requested baud rate.  This allows
-> for more accurate BAUD rates when high speed baud rates are selected.
-> 
-> The driver will use the new UART DMA hardware if the UART DMA registers
-> are specified in Device Tree "reg" property.
-> 
-> The driver also sets the UPSTAT_AUTOCTS flag when hardware flow control
-> is enabled. This flag is needed for UARTs that don't assert a CTS
-> changed interrupt when CTS changes and AFE (Hardware Flow Control) is
-> enabled.
-> 
-> The driver also contains a workaround for a bug in the Synopsis 8250
-> core. The problem is that at high baud rates, the RX partial FIFO
-> timeout interrupt can occur but there is no RX data (DR not set in
-> the LSR register). In this case the driver will not read the Receive
-> Buffer Register, which clears the interrupt, and the system will get
-> continuous UART interrupts until the next RX character arrives. The
-> fix originally suggested by Synopsis was to read the Receive Buffer
-> Register and discard the character when the DR bit in the LSR was
-> not set, to clear the interrupt. The problem was that occasionally
-> a character would arrive just after the DR bit check and a valid
-> character would be discarded. The fix that was added will clear
-> receive interrupts to stop the interrupt, deassert RTS to insure
-> that no new data can arrive, wait for 1.5 character times for the
-> sender to react to RTS and then check for data and either do a dummy
-> read or a valid read. Sysfs error counters were also added and were
-> used to help create test software that would cause the error condition.
-> The counters can be found at:
-> /sys/devices/platform/rdb/*serial/rx_bad_timeout_late_char
-> /sys/devices/platform/rdb/*serial/rx_bad_timeout_no_char
-> 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> ---
->  MAINTAINERS                            |    8 +
->  drivers/tty/serial/8250/8250_bcm7271.c | 1099 ++++++++++++++++++++++++
->  drivers/tty/serial/8250/Kconfig        |   11 +
->  drivers/tty/serial/8250/Makefile       |    1 +
->  drivers/tty/serial/8250/bcm7271_uart.h |  158 ++++
->  5 files changed, 1277 insertions(+)
->  create mode 100644 drivers/tty/serial/8250/8250_bcm7271.c
->  create mode 100644 drivers/tty/serial/8250/bcm7271_uart.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 64c7169db617..bb6ad2fc4376 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3582,6 +3582,14 @@ S:	Supported
->  F:	Documentation/devicetree/bindings/i2c/brcm,brcmstb-i2c.yaml
->  F:	drivers/i2c/busses/i2c-brcmstb.c
->  
-> +BROADCOM BRCMSTB UART DRIVER
-> +M:	Al Cooper <alcooperx@gmail.com>
-> +L:	linux-usb@vger.kernel.org
-
-This should probably be linux-serial, copy pasted from the USB entry
-down below presumably.
--- 
-Florian
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
