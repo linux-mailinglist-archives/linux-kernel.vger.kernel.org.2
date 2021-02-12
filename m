@@ -2,157 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B066A319B8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24658319B91
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhBLI44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 03:56:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20213 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229617AbhBLI4v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 03:56:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613120124;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nma5RrDL02zgQCnQAmwMQggmlffp24gdJp2OtX7ZPuI=;
-        b=SD/NxV8HwsD3C5SQgj6WJz5zfhn0Bs91dMJu3GCilTkJnCGj0N+QgGgIP+QI/ct59P0cDq
-        eetowSmiL1LtU5C0p9tI/As5IxsD5XL644lISsqvQwjWefYE98VtirK6plnTQA2x4MzeTp
-        oTEd0hFIIeKJiZ6FqIGbe8C/zF7cmKo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-1LGCv3TxNmmITacLXAFtsw-1; Fri, 12 Feb 2021 03:55:20 -0500
-X-MC-Unique: 1LGCv3TxNmmITacLXAFtsw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 176EB6D4E0;
-        Fri, 12 Feb 2021 08:55:18 +0000 (UTC)
-Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B842F62AF8;
-        Fri, 12 Feb 2021 08:55:10 +0000 (UTC)
-Subject: Re: [PATCH v13 02/15] iommu: Introduce bind/unbind_guest_msi
-To:     Keqian Zhu <zhukeqian1@huawei.com>, eric.auger.pro@gmail.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
-        alex.williamson@redhat.com
-Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
-        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
-        zhangfei.gao@linaro.org
-References: <20201118112151.25412-1-eric.auger@redhat.com>
- <20201118112151.25412-3-eric.auger@redhat.com>
- <6a70d93d-329f-4129-bd90-03f8589c5de4@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <1ef4f5ae-9ca6-7c6d-f8a9-31240e5688c2@redhat.com>
-Date:   Fri, 12 Feb 2021 09:55:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <6a70d93d-329f-4129-bd90-03f8589c5de4@huawei.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        id S230005AbhBLI6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 03:58:06 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:34443 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229457AbhBLI6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 03:58:03 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DcS6y19thzB09b7;
+        Fri, 12 Feb 2021 09:57:14 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id oKM2_lEypWxp; Fri, 12 Feb 2021 09:57:14 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DcS6y0Pf7zB09b5;
+        Fri, 12 Feb 2021 09:57:14 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 059198B84B;
+        Fri, 12 Feb 2021 09:57:15 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id SN8BfrB5wnyV; Fri, 12 Feb 2021 09:57:14 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C6DB78B842;
+        Fri, 12 Feb 2021 09:57:14 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 8606F672F8; Fri, 12 Feb 2021 08:57:14 +0000 (UTC)
+Message-Id: <f6d16f3321f1dc89b77ada1c7d961fae4089766e.1613120077.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH for 5.10] powerpc/32: Preserve cr1 in exception prolog stack check to
+ fix build error
+To:     fedora.dm0@gmail.com, stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 12 Feb 2021 08:57:14 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Keqian,
+This is backport of 3642eb21256a ("powerpc/32: Preserve cr1 in
+exception prolog stack check to fix build error") for kernel 5.10
 
-On 2/1/21 12:52 PM, Keqian Zhu wrote:
-> Hi Eric,
-> 
-> On 2020/11/18 19:21, Eric Auger wrote:
->> On ARM, MSI are translated by the SMMU. An IOVA is allocated
->> for each MSI doorbell. If both the host and the guest are exposed
->> with SMMUs, we end up with 2 different IOVAs allocated by each.
->> guest allocates an IOVA (gIOVA) to map onto the guest MSI
->> doorbell (gDB). The Host allocates another IOVA (hIOVA) to map
->> onto the physical doorbell (hDB).
->>
->> So we end up with 2 untied mappings:
->>          S1            S2
->> gIOVA    ->    gDB
->>               hIOVA    ->    hDB
->>
->> Currently the PCI device is programmed by the host with hIOVA
->> as MSI doorbell. So this does not work.
->>
->> This patch introduces an API to pass gIOVA/gDB to the host so
->> that gIOVA can be reused by the host instead of re-allocating
->> a new IOVA. So the goal is to create the following nested mapping:
-> Does the gDB can be reused under non-nested mode?
+It fixes the build failure on v5.10 reported by kernel test robot
+and by David Michael.
 
-Under non nested mode the hIOVA is allocated within the MSI reserved
-region exposed by the SMMU driver, [0x8000000, 80fffff]. see
-iommu_dma_prepare_msi/iommu_dma_get_msi_page in dma_iommu.c. this hIOVA
-is programmed in the physical device so that the physical SMMU
-translates it into the physical doorbell (hDB = host physical ITS
-doorbell). The gDB is not used at pIOMMU programming level. It is only
-used when setting up the KVM irq route.
+This fix is not in Linux tree yet, it is in next branch in powerpc tree.
 
-Hope this answers your question.
+(cherry picked from commit 3642eb21256a317ac14e9ed560242c6d20cf06d9)
 
-> 
->>
->>          S1            S2
->> gIOVA    ->    gDB     ->    hDB
->>
->> and program the PCI device with gIOVA MSI doorbell.
->>
->> In case we have several devices attached to this nested domain
->> (devices belonging to the same group), they cannot be isolated
->> on guest side either. So they should also end up in the same domain
->> on guest side. We will enforce that all the devices attached to
->> the host iommu domain use the same physical doorbell and similarly
->> a single virtual doorbell mapping gets registered (1 single
->> virtual doorbell is used on guest as well).
->>
-> [...]
-> 
->> + *
->> + * The associated IOVA can be reused by the host to create a nested
->> + * stage2 binding mapping translating into the physical doorbell used
->> + * by the devices attached to the domain.
->> + *
->> + * All devices within the domain must share the same physical doorbell.
->> + * A single MSI GIOVA/GPA mapping can be attached to an iommu_domain.
->> + */
->> +
->> +int iommu_bind_guest_msi(struct iommu_domain *domain,
->> +			 dma_addr_t giova, phys_addr_t gpa, size_t size)
->> +{
->> +	if (unlikely(!domain->ops->bind_guest_msi))
->> +		return -ENODEV;
->> +
->> +	return domain->ops->bind_guest_msi(domain, giova, gpa, size);
->> +}
->> +EXPORT_SYMBOL_GPL(iommu_bind_guest_msi);
->> +
->> +void iommu_unbind_guest_msi(struct iommu_domain *domain,
->> +			    dma_addr_t iova)
-> nit: s/iova/giova
-sure
-> 
->> +{
->> +	if (unlikely(!domain->ops->unbind_guest_msi))
->> +		return;
->> +
->> +	domain->ops->unbind_guest_msi(domain, iova);
->> +}
->> +EXPORT_SYMBOL_GPL(iommu_unbind_guest_msi);
->> +
-> [...]
-> 
-> Thanks,
-> Keqian
-> 
+THREAD_ALIGN_SHIFT = THREAD_SHIFT + 1 = PAGE_SHIFT + 1
+Maximum PAGE_SHIFT is 18 for 256k pages so
+THREAD_ALIGN_SHIFT is 19 at the maximum.
 
-Thanks
+No need to clobber cr1, it can be preserved when moving r1
+into CR when we check stack overflow.
 
-Eric
+This reduces the number of instructions in Machine Check Exception
+prolog and fixes a build failure reported by the kernel test robot
+on v5.10 stable when building with RTAS + VMAP_STACK + KVM. That
+build failure is due to too many instructions in the prolog hence
+not fitting between 0x200 and 0x300. Allthough the problem doesn't
+show up in mainline, it is still worth the change.
+
+Fixes: 98bf2d3f4970 ("powerpc/32s: Fix RTAS machine check with VMAP stack")
+Cc: stable@vger.kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/5ae4d545e3ac58e133d2599e0deb88843cb494fc.1612768623.git.christophe.leroy@csgroup.eu
+---
+ arch/powerpc/kernel/head_32.h        | 2 +-
+ arch/powerpc/kernel/head_book3s_32.S | 6 ------
+ 2 files changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
+index c88e66adecb5..fef0b34a77c9 100644
+--- a/arch/powerpc/kernel/head_32.h
++++ b/arch/powerpc/kernel/head_32.h
+@@ -56,7 +56,7 @@
+ 1:
+ 	tophys_novmstack r11, r11
+ #ifdef CONFIG_VMAP_STACK
+-	mtcrf	0x7f, r1
++	mtcrf	0x3f, r1
+ 	bt	32 - THREAD_ALIGN_SHIFT, stack_overflow
+ #endif
+ .endm
+diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
+index d66da35f2e8d..2729d8fa6e77 100644
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -280,12 +280,6 @@ MachineCheck:
+ 7:	EXCEPTION_PROLOG_2
+ 	addi	r3,r1,STACK_FRAME_OVERHEAD
+ #ifdef CONFIG_PPC_CHRP
+-#ifdef CONFIG_VMAP_STACK
+-	mfspr	r4, SPRN_SPRG_THREAD
+-	tovirt(r4, r4)
+-	lwz	r4, RTAS_SP(r4)
+-	cmpwi	cr1, r4, 0
+-#endif
+ 	beq	cr1, machine_check_tramp
+ 	twi	31, 0, 0
+ #else
+-- 
+2.25.0
 
