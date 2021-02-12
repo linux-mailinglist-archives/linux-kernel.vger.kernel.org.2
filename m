@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF3831A106
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5322631A10D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbhBLPBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:01:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43894 "EHLO mx2.suse.de"
+        id S230103AbhBLPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:03:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhBLPBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:01:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 014C8AC90;
-        Fri, 12 Feb 2021 15:00:54 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id d8a92aa3;
-        Fri, 12 Feb 2021 15:01:55 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate
- content is generated
-References: <20210212044405.4120619-1-drinkcat@chromium.org>
-        <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
-        <YCYybUg4d3+Oij4N@kroah.com>
-        <CAOQ4uxhovoZ4S3WhXwgYDeOeomBxfQ1BdzSyGdqoVX6boDOkeA@mail.gmail.com>
-        <YCY+tjPgcDmgmVD1@kroah.com> <871rdljxtx.fsf@suse.de>
-        <YCZyBZ1iT+MUXLu1@kroah.com> <87sg61ihkj.fsf@suse.de>
-        <YCaMgtpCzPrLjw9c@kroah.com>
-Date:   Fri, 12 Feb 2021 15:01:54 +0000
-In-Reply-To: <YCaMgtpCzPrLjw9c@kroah.com> (Greg KH's message of "Fri, 12 Feb
-        2021 15:11:14 +0100")
-Message-ID: <87lfbtib31.fsf@suse.de>
+        id S229465AbhBLPDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:03:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4969564E00;
+        Fri, 12 Feb 2021 15:02:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613142179;
+        bh=EAuHpm5/CirPOX+FrG/WqMowYIetJKRyv+lKo0kk1qw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zFLZJP6/r6ue2b986HktAb/MtNiT8YM9oB4oRxzD1iy/btRaCJ6BYmahwWN6MJ4Yw
+         MpbuM6QiYBel1Y/5pu8J+ws7cZjrdiBtEriYgDvV8/DTyxRpmdV4TYPM6Od3KxAP+Q
+         uZafpt/s8BVmUz0wbP6s0YvHr9ZlCXojWnUQhJgg=
+Date:   Fri, 12 Feb 2021 16:02:57 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alaa Emad <alaaemadhossney.ae@gmail.com>
+Cc:     mh12gx2825@gmail.com, sbrivio@redhat.com, colin.king@canonical.com,
+        oliver.graute@kococonnector.com, devel@driverdev.osuosl.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] Fix space prohibited issue in fbtft-bus.c
+Message-ID: <YCaYoZSM3BvwK7IK@kroah.com>
+References: <20210212145833.3809-1-alaaemadhossney.ae@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212145833.3809-1-alaaemadhossney.ae@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH <gregkh@linuxfoundation.org> writes:
+On Fri, Feb 12, 2021 at 04:58:33PM +0200, Alaa Emad wrote:
+> This change fixes a checkpatch error for "space prohibited before that close parenthesis ')'"
+> 
+> Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+> ---
+>  certs/x509_revocation_list        | 0
+>  drivers/staging/fbtft/fbtft-bus.c | 4 ++--
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>  create mode 100644 certs/x509_revocation_list
+> 
+> diff --git a/certs/x509_revocation_list b/certs/x509_revocation_list
+> new file mode 100644
+> index 000000000000..e69de29bb2d1
+> diff --git a/drivers/staging/fbtft/fbtft-bus.c b/drivers/staging/fbtft/fbtft-bus.c
+> index 63c65dd67b17..847cbfbbd766 100644
+> --- a/drivers/staging/fbtft/fbtft-bus.c
+> +++ b/drivers/staging/fbtft/fbtft-bus.c
+> @@ -62,9 +62,9 @@ out:									      \
+>  }                                                                             \
+>  EXPORT_SYMBOL(func);
+>  
+> -define_fbtft_write_reg(fbtft_write_reg8_bus8, u8, u8, )
+> +define_fbtft_write_reg(fbtft_write_reg8_bus8, u8, u8)
+>  define_fbtft_write_reg(fbtft_write_reg16_bus8, __be16, u16, cpu_to_be16)
+> -define_fbtft_write_reg(fbtft_write_reg16_bus16, u16, u16, )
+> +define_fbtft_write_reg(fbtft_write_reg16_bus16, u16, u16)
+>  
+>  void fbtft_write_reg8_bus9(struct fbtft_par *par, int len, ...)
+>  {
+> -- 
+> 2.25.1
+> 
+> _______________________________________________
+> devel mailing list
+> devel@linuxdriverproject.org
+> http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
 
-> On Fri, Feb 12, 2021 at 12:41:48PM +0000, Luis Henriques wrote:
->> Greg KH <gregkh@linuxfoundation.org> writes:
-...
->> >> >> Our option now are:
->> >> >> - Restore the cross-fs restriction into generic_copy_file_range()
->> >> >
->> >> > Yes.
->> >> >
->> >> 
->> >> Restoring this restriction will actually change the current cephfs CFR
->> >> behaviour.  Since that commit we have allowed doing remote copies between
->> >> different filesystems within the same ceph cluster.  See commit
->> >> 6fd4e6348352 ("ceph: allow object copies across different filesystems in
->> >> the same cluster").
->> >> 
->> >> Although I'm not aware of any current users for this scenario, the
->> >> performance impact can actually be huge as it's the difference between
->> >> asking the OSDs for copying a file and doing a full read+write on the
->> >> client side.
->> >
->> > Regression in performance is ok if it fixes a regression for things that
->> > used to work just fine in the past :)
->> >
->> > First rule, make it work.
->> 
->> Sure, I just wanted to point out that *maybe* there are other options than
->> simply reverting that commit :-)
->> 
->> Something like the patch below (completely untested!) should revert to the
->> old behaviour in filesystems that don't implement the CFR syscall.
->> 
->> Cheers,
->> -- 
->> Luis
->> 
->> diff --git a/fs/read_write.c b/fs/read_write.c
->> index 75f764b43418..bf5dccc43cc9 100644
->> --- a/fs/read_write.c
->> +++ b/fs/read_write.c
->> @@ -1406,8 +1406,11 @@ static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
->>  						       file_out, pos_out,
->>  						       len, flags);
->>  
->> -	return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
->> -				       flags);
->> +	if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
->> +		return -EXDEV;
->> +	else
->> +		generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
->> +					flags);
->>  }
->>  
->>  /*
->
-> That would make much more sense to me.
+Hi,
 
-Great.  I can send a proper patch with changelog, if this is the really
-what we want.  But I would rather hear from others first.  I guess that at
-least the NFS devs have something to say here.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Cheers,
--- 
-Luis
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- Your patch breaks the build.
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
+
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what a proper Subject: line should
+  look like.
+
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
