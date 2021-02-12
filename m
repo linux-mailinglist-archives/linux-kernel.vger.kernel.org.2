@@ -2,139 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A080319E45
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3961319E48
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhBLMWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:22:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51504 "EHLO mail.kernel.org"
+        id S231475AbhBLMXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:23:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230242AbhBLMS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:18:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 343D264E23;
-        Fri, 12 Feb 2021 12:18:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613132295;
-        bh=PU4VW0JNQGSbREgmbJ1nOCN/MQP6HELV1e9AbMABgmg=;
+        id S231447AbhBLMU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:20:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E4064E2D;
+        Fri, 12 Feb 2021 12:19:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613132382;
+        bh=W5sUFSHz2G1CpMp3u/PNpRMKInmYA9DHy9F0Xh4Qi/g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G1lp83Nl95w3AmB0LUeZKyJ6PffpiVjLMU+GNOAt/NUXEVwLPMO9nPTPFFrN8q1uN
-         rDTWC1dMqFDT1Hm9Xioy0luL8pvHVWQCTf55leJg4am8LoCbc4O7ISa+NmMFWT5cTJ
-         qVTHYvkDIP8yRR9Tf/qSQWOf/bqEzR2lUpR7WN74=
-Date:   Fri, 12 Feb 2021 13:18:13 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
- is generated
-Message-ID: <YCZyBZ1iT+MUXLu1@kroah.com>
-References: <20210212044405.4120619-1-drinkcat@chromium.org>
- <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
- <YCYybUg4d3+Oij4N@kroah.com>
- <CAOQ4uxhovoZ4S3WhXwgYDeOeomBxfQ1BdzSyGdqoVX6boDOkeA@mail.gmail.com>
- <YCY+tjPgcDmgmVD1@kroah.com>
- <871rdljxtx.fsf@suse.de>
+        b=uliQ7ITQ7khrFMrul5UWtGReCQztr6YzMZSFQPlwFV556xDyZpjNOKf6PdKmcYGio
+         t2Wesl1HZq8fwM818L2OIxiqAHNMFJKewdV/amZshENuuWwrch2jdc6SlRUba6D3tt
+         TSsIW7NtrJkg2AmIuKd/nA7OwhzYiQD8kFmHqHxarVXLwUf4RGq/TDZiH6FXd4nY7h
+         d5R+5BwaOLnxqN9um+/AFNvMN/ph3gOU5MXr1/sw2QPUgiXwRltVCGrb0hP7NOBm25
+         RYLd5XK9XxpCfu7CvWaeEaVX29DvY5oZU1w+Cn6iujpo8Eel+JaQR00lpkgIDXGeuX
+         QG+ZtAqZ02UgA==
+Date:   Fri, 12 Feb 2021 14:19:33 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH v3 3/5] x86/sgx: Optimize the free_cnt count in
+ sgx_epc_section
+Message-ID: <YCZyVXIeeYqNK+sy@kernel.org>
+References: <20210124062907.88229-1-tianjia.zhang@linux.alibaba.com>
+ <20210124062907.88229-4-tianjia.zhang@linux.alibaba.com>
+ <YBGlodsOaX4cWAtl@kernel.org>
+ <abd77ee8-0311-1664-f3ee-6d4a9fe512b1@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871rdljxtx.fsf@suse.de>
+In-Reply-To: <abd77ee8-0311-1664-f3ee-6d4a9fe512b1@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:05:14PM +0000, Luis Henriques wrote:
-> Greg KH <gregkh@linuxfoundation.org> writes:
+On Thu, Feb 11, 2021 at 02:04:12PM +0800, Tianjia Zhang wrote:
+> Hi,
 > 
-> > On Fri, Feb 12, 2021 at 10:22:16AM +0200, Amir Goldstein wrote:
-> >> On Fri, Feb 12, 2021 at 9:49 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >> >
-> >> > On Fri, Feb 12, 2021 at 12:44:00PM +0800, Nicolas Boichat wrote:
-> >> > > Filesystems such as procfs and sysfs generate their content at
-> >> > > runtime. This implies the file sizes do not usually match the
-> >> > > amount of data that can be read from the file, and that seeking
-> >> > > may not work as intended.
-> >> > >
-> >> > > This will be useful to disallow copy_file_range with input files
-> >> > > from such filesystems.
-> >> > >
-> >> > > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> >> > > ---
-> >> > > I first thought of adding a new field to struct file_operations,
-> >> > > but that doesn't quite scale as every single file creation
-> >> > > operation would need to be modified.
-> >> >
-> >> > Even so, you missed a load of filesystems in the kernel with this patch
-> >> > series, what makes the ones you did mark here different from the
-> >> > "internal" filesystems that you did not?
-> >> >
-> >> > This feels wrong, why is userspace suddenly breaking?  What changed in
-> >> > the kernel that caused this?  Procfs has been around for a _very_ long
-> >> > time :)
-> >> 
-> >> That would be because of (v5.3):
-> >> 
-> >> 5dae222a5ff0 vfs: allow copy_file_range to copy across devices
-> >> 
-> >> The intention of this change (series) was to allow server side copy
-> >> for nfs and cifs via copy_file_range().
-> >> This is mostly work by Dave Chinner that I picked up following requests
-> >> from the NFS folks.
-> >> 
-> >> But the above change also includes this generic change:
-> >> 
-> >> -       /* this could be relaxed once a method supports cross-fs copies */
-> >> -       if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
-> >> -               return -EXDEV;
-> >> -
-> >> 
-> >> The change of behavior was documented in the commit message.
-> >> It was also documented in:
-> >> 
-> >> 88e75e2c5 copy_file_range.2: Kernel v5.3 updates
-> >> 
-> >> I think our rationale for the generic change was:
-> >> "Why not? What could go wrong? (TM)"
-> >> I am not sure if any workload really gained something from this
-> >> kernel cross-fs CFR.
-> >
-> > Why not put that check back?
-> >
-> >> In retrospect, I think it would have been safer to allow cross-fs CFR
-> >> only to the filesystems that implement ->{copy,remap}_file_range()...
-> >
-> > Why not make this change?  That seems easier and should fix this for
-> > everyone, right?
-> >
-> >> Our option now are:
-> >> - Restore the cross-fs restriction into generic_copy_file_range()
-> >
-> > Yes.
-> >
+> Sorry for the late reply.
 > 
-> Restoring this restriction will actually change the current cephfs CFR
-> behaviour.  Since that commit we have allowed doing remote copies between
-> different filesystems within the same ceph cluster.  See commit
-> 6fd4e6348352 ("ceph: allow object copies across different filesystems in
-> the same cluster").
+> On 1/28/21 1:40 AM, Jarkko Sakkinen wrote:
+> > I could bet some money that this does not bring any significant
+> > performance gain.
+> > 
 > 
-> Although I'm not aware of any current users for this scenario, the
-> performance impact can actually be huge as it's the difference between
-> asking the OSDs for copying a file and doing a full read+write on the
-> client side.
+> Yes, this does not bring performance gains. This is not a change for
+> performance, mainly to make the value of free_cnt look more accurate.
+> 
+> > On Sun, Jan 24, 2021 at 02:29:05PM +0800, Tianjia Zhang wrote:
+> > > `section->free_cnt` represents the free page in sgx_epc_section,
+> > > which is assigned once after initialization. In fact, just after the
+> > > initialization is completed, the pages are in the `init_laundry_list`
+> > > list and cannot be allocated. This needs to be recovered by EREMOVE
+> > > of function sgx_sanitize_section() before it can be used as a page
+> > > that can be allocated. The sgx_sanitize_section() will be called in
+> > > the kernel thread ksgxd.
+> > > 
+> > > This patch moves the initialization of `section->free_cnt` from the
+> > > initialization function `sgx_setup_epc_section()` to the function
+> > > `sgx_sanitize_section()`, and then accumulates the count after the
+> > 
+> > Use single quotes instead of hyphens.
+> > >> successful execution of EREMOVE. This seems to be more reasonable,
+> > > free_cnt will also truly reflect the allocatable free pages in EPC.
+> > > 
+> > > Sined-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> > > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > > ---
+> > >   arch/x86/kernel/cpu/sgx/main.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> > > index 4465912174fd..e455ec7b3449 100644
+> > > --- a/arch/x86/kernel/cpu/sgx/main.c
+> > > +++ b/arch/x86/kernel/cpu/sgx/main.c
+> > > @@ -48,6 +48,7 @@ static void sgx_sanitize_section(struct sgx_epc_section *section)
+> > >   		if (!ret) {
+> > >   			spin_lock(&section->lock);
+> > >   			list_move(&page->list, &section->page_list);
+> > > +			section->free_cnt++;
+> > >   			spin_unlock(&section->lock);
+> > 
+> > Someone can try to allocate a page while sanitize process is in progress.
+> > 
+> > I think it is better to keep critical sections in the form that when you
+> > leave from one, the global state is legit.
+> > 
+> 
+> Do you mean to move the critical section to protect the entire while loop?
+> Of course, this is also possible, sanitize is a process only needed for
+> initialization, and the possibility of conflict is very small.
+> 
+> Best regards,
+> Tianjia
 
-Regression in performance is ok if it fixes a regression for things that
-used to work just fine in the past :)
+The big picture of this change to me, to be frank is that it's completely
+useless.
 
-First rule, make it work.
+Please start with the picture.
 
-thanks,
-
-greg k-h
+/Jarkko
