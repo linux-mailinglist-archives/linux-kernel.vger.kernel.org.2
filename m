@@ -2,372 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5CC31988C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 04:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A2C319892
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 04:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhBLDDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 22:03:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
+        id S229873AbhBLDFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 22:05:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhBLDBW (ORCPT
+        with ESMTP id S229457AbhBLDFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 22:01:22 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735FAC06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 19:00:31 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id q12so5590899ybm.8
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 19:00:31 -0800 (PST)
+        Thu, 11 Feb 2021 22:05:45 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084CCC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 19:05:04 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id k4so7749516ybp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 19:05:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2YjH7EUH7e5dFZyK95JFbg4Mk0a2h8e9VHpnb/uN+f4=;
-        b=hrrZIRrCawC05z8ys0aGjWa1eOqkwmku4UHqTFr13ZSIA6fT+G2IvzKpKYh9K5dqwn
-         NIABQJjxAd28M3i8JvfkPjLBLQwPlGHAgBCTRoMjjkw7ZVxU+l7U68uX4Xm4dneE1KzF
-         Vthvf9SBlYUJa8qd4KE1Yplts1yOFoAUi8F+g0z31m5ckKC/LzJo5EcW4YIv6eCp3k51
-         nX1yU/6un0qh6l4Um5ikuPa98QpzhY0sgOgYLAseeWfyQ/ejxSsSWx4zVon9MqL/ofF1
-         Mlb+0a3lG5bWPnL31fTMQz52NB2wT3ptd77Zg2UC4PQDql2P4piYPqTCvzV9Li53IoTp
-         C7Bw==
+        bh=umGRLg+1wx6Dct4xi++63waA6bhM8DuWO/MBgfuP+to=;
+        b=lsYcskdEfrp1rxwOSLfMqivVJo7Eb/oCK4ZrFyXldZVxt+imnfC2bhNK2sjF2ipVpu
+         zrz+ZBYcBg8XtdfcB4ufK2WQ+WoHHBIWzPYtmClrGYWKdN5myUty6b5PVtlqHBnkjhHh
+         jn3gUCXdspQAlsvVxDpLat72A9XXVYoqYP1Sq6UvQcSp2JD9pOXbEtpzLQ/5iSs0rNt1
+         XEHSysOyNIjyhN/usLmg7Mee3yeyEU9qB7SSkCEYwGCtZPQeKKuISp66qKABB/n9rqub
+         OA37bViFiHQm6uBKIRutBZMytB6oZPHDrsdJt3aSTPq7l+adm+bXfmphTKeu5Hzmj14z
+         6ITw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2YjH7EUH7e5dFZyK95JFbg4Mk0a2h8e9VHpnb/uN+f4=;
-        b=AySqRoZQldO4G36AuTkHeyZCZLo1yKUTV1CWkkKlf7urEa+oDun9+cy7/sBKfybKDG
-         Xn4B19gTtQ4vypRNHntDKDg4Lrz9sefBeO5tAGZAfPBQbEs8qBj7dnhSNat3hijjAerF
-         +e+qE6cgoUyIXf3cJi+dmcsrXOffRWCrCFnrRuHpJIiX2CXI7Hz20lvAyd1etKHpG77F
-         rfnx7/plnLmhP143DFhb5JsRoGCja+hqdu5DAMi/hVvIuKgCn0TlzCEUHrhbwkOLHCIX
-         tEKc0A5t1hKWNoeS18WcBXHCQXTrxc8zZGjAe8vZpAIR+GFNjSCP52BNIc+63A2erd6I
-         /XFg==
-X-Gm-Message-State: AOAM533TngNk18ephR64jg505qoL6t+Mbbnip/ss4ZbnKoqcHYfgXXeD
-        VoejGqS387wncg1as8R2FXz9DusxePgeKeMBRauNfA==
-X-Google-Smtp-Source: ABdhPJw6f1k6YLFcwH8KpWSdfwb1r7O3nU7PUBUXU5E04MP4wEtpHd6uo0Zyq5FVRz5Rb0wmmDnSAoGB1af2cA2rWx0=
-X-Received: by 2002:a25:cc89:: with SMTP id l131mr1299415ybf.346.1613098830159;
- Thu, 11 Feb 2021 19:00:30 -0800 (PST)
+        bh=umGRLg+1wx6Dct4xi++63waA6bhM8DuWO/MBgfuP+to=;
+        b=EqL1xpaYbqqNLpYYXZfsmIP8D5aE7Rlquts7yVwgaye47+Yladt9ZsWodr1lQGFpda
+         Q0YJIUjCdf93hUAV/J07pCigDFzGVZyyNlzUiL47yULXMXZgGi0o1XYVDEbb3+FZzIkH
+         VHcy6HOPibDN7vYZmLSvVnjrDNe33DWy2UaHdnkDzSvoqHKPB4aIDeQW4RaSpREPwc77
+         Ux07+tX547avrPawWyyD6FmXRh22Efb8kcyhVd+lsLIN2A90nxpqZdf0xueFaMHZlXqh
+         w41o6rXs0sCNzDk1H7dYWcOQT1VyXd1mp1GNFs3zi09/VkIA6xJpUsvCKsB4fmRUfjQw
+         jaVw==
+X-Gm-Message-State: AOAM531Cv+4dGVdZTOe+xa/Wf9NrhwwkHUI7SWncVwZ3UEmZ6DD08JBZ
+        3X+6xlldny1v4Swb2dntvSQ1pDx/75zjpS2NdrKY+1+5Tko=
+X-Google-Smtp-Source: ABdhPJwbFxKsHdBt5t1veT/tIV3pPie1EclgzZtn0vZznGL3ATsg54MPxKEJCSIDP2nRsDk86HDxpF/SC6W+cofl9Eo=
+X-Received: by 2002:a25:8b8b:: with SMTP id j11mr1225200ybl.310.1613099103994;
+ Thu, 11 Feb 2021 19:05:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com> <CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com>
-In-Reply-To: <CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com>
+References: <20201218031703.3053753-1-saravanak@google.com>
+ <56f7d032-ba5a-a8c7-23de-2969d98c527e@nvidia.com> <CAGETcx9FAAa+gUOTJX76DGGOAE4g3cTbZhwNQ-pLioYzg=fTOw@mail.gmail.com>
+ <17939709-f6f4-fa9c-836f-9779081c4087@nvidia.com> <CAGETcx_1x7LFprsEM+-X8Y42-sbajBav5Bik4U=s4Z5XCSZtUg@mail.gmail.com>
+ <e11bc6a2-ec9d-ea3b-71f7-13c9f764bbfc@nvidia.com> <6a43e209-1d2d-b10a-4564-0289d54135d3@nvidia.com>
+ <CAGETcx9ZaBLRVPqiSkPf_4Tm5dDLNbLBM2RmHk1jr7yLp_1CCQ@mail.gmail.com>
+ <CAJZ5v0iv9fRzM8cbGrPhutPNpod-gLWcZ8fWzDpfJ=NUVmm5Og@mail.gmail.com>
+ <CAGETcx9qA-nq01ojfP73UJ0KjJCxd3Qhes0hatQGzNKYxuUj-w@mail.gmail.com> <CAJZ5v0g+cd_r=UzzEXAQAqVnVyN3czv4WCyBib5=e2a4X53VNA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0g+cd_r=UzzEXAQAqVnVyN3czv4WCyBib5=e2a4X53VNA@mail.gmail.com>
 From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 11 Feb 2021 18:59:54 -0800
-Message-ID: <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
+Date:   Thu, 11 Feb 2021 19:04:28 -0800
+Message-ID: <CAGETcx-RWyNgdyZ77i_7wQ8U2bCYQ7i0M5xswK-3iJ8PPWPW5w@mail.gmail.com>
+Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Jon Hunter <jonathanh@nvidia.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
         Android Kernel Team <kernel-team@android.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 5:00 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Thu, Feb 11, 2021 at 9:48 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
 >
-> Hi Saravana,
->
-> On Fri, Feb 5, 2021 at 11:26 PM Saravana Kannan <saravanak@google.com> wrote:
-> > There are a lot of devices/drivers where they never have a struct device
-> > created for them or the driver initializes the hardware without ever
-> > binding to the struct device.
+> On Thu, Feb 11, 2021 at 6:15 PM Saravana Kannan <saravanak@google.com> wrote:
 > >
-> > This series is intended to avoid any boot regressions due to such
-> > devices/drivers when fw_devlink=on and also address the handling of
-> > optional suppliers.
+> > On Thu, Feb 11, 2021 at 7:03 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > >
+> > > On Thu, Feb 11, 2021 at 1:02 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > >
+> > > > On Thu, Jan 28, 2021 at 7:03 AM Jon Hunter <jonathanh@nvidia.com> wrote:
+> > > > >
+> > > > >
+> > > > > On 14/01/2021 16:56, Jon Hunter wrote:
+> > > > > >
+> > > > > > On 14/01/2021 16:47, Saravana Kannan wrote:
+> > > > > >
+> > > > > > ...
+> > > > > >
+> > > > > >>> Yes this is the warning shown here [0] and this is coming from
+> > > > > >>> the 'Generic PHY stmmac-0:00' device.
+> > > > > >>
+> > > > > >> Can you print the supplier and consumer device when this warning is
+> > > > > >> happening and let me know? That'd help too. I'm guessing the phy is
+> > > > > >> the consumer.
+> > > > > >
+> > > > > >
+> > > > > > Sorry I should have included that. I added a print to dump this on
+> > > > > > another build but failed to include here.
+> > > > > >
+> > > > > > WARNING KERN Generic PHY stmmac-0:00: supplier 2200000.gpio (status 1)
+> > > > > >
+> > > > > > The status is the link->status and looks like the supplier is the
+> > > > > > gpio controller. I have verified that the gpio controller is probed
+> > > > > > before this successfully.
+> > > > > >
+> > > > > >> So the warning itself isn't a problem -- it's not breaking anything or
+> > > > > >> leaking memory or anything like that. But the device link is jumping
+> > > > > >> states in an incorrect manner. With enough context of this code (why
+> > > > > >> the device_bind_driver() is being called directly instead of going
+> > > > > >> through the normal probe path), it should be easy to fix (I'll just
+> > > > > >> need to fix up the device link state).
+> > > > > >
+> > > > > > Correct, the board seems to boot fine, we just get this warning.
+> > > > >
+> > > > >
+> > > > > Have you had chance to look at this further?
+> > > >
+> > > > Hi Jon,
+> > > >
+> > > > I finally got around to looking into this. Here's the email[1] that
+> > > > describes why it's done this way.
+> > > >
+> > > > [1] - https://lore.kernel.org/lkml/YCRjmpKjK0pxKTCP@lunn.ch/
+> > > >
+> > > > >
+> > > > > The following does appear to avoid the warning, but I am not sure if
+> > > > > this is the correct thing to do ...
+> > > > >
+> > > > > index 9179825ff646..095aba84f7c2 100644
+> > > > > --- a/drivers/base/dd.c
+> > > > > +++ b/drivers/base/dd.c
+> > > > > @@ -456,6 +456,10 @@ int device_bind_driver(struct device *dev)
+> > > > >  {
+> > > > >         int ret;
+> > > > >
+> > > > > +       ret = device_links_check_suppliers(dev);
+> > > > > +       if (ret)
+> > > > > +               return ret;
+> > > > > +
+> > > > >         ret = driver_sysfs_add(dev);
+> > > > >         if (!ret)
+> > > > >                 driver_bound(dev);
+> > > >
+> > > > So digging deeper into the usage of device_bind_driver and looking at
+> > > > [1], it doesn't look like returning an error here is a good option.
+> > > > When device_bind_driver() is called, the driver's probe function isn't
+> > > > even called. So, there's no way for the driver to even defer probing
+> > > > based on any of the suppliers. So, we have a couple of options:
+> > > >
+> > > > 1. Delete all the links to suppliers that haven't bound.
+> > >
+> > > Or maybe convert them to stateless links?  Would that be doable at all?
 > >
-> > Patch 1 and 2 addresses the issue of firmware nodes that look like
-> > they'll have struct devices created for them, but will never actually
-> > have struct devices added for them. For example, DT nodes with a
-> > compatible property that don't have devices added for them.
+> > Yeah, I think it should be doable.
 > >
-> > Patch 3 and 4 allow for handling optional DT bindings.
+> > >
+> > > > We'll still leave the links to active suppliers alone in case it helps with
+> > > > suspend/resume correctness.
+> > > > 2. Fix the warning to not warn on suppliers that haven't probed if the
+> > > > device's driver has no probe function. But this will also need fixing
+> > > > up the cleanup part when device_release_driver() is called. Also, I'm
+> > > > not sure if device_bind_driver() is ever called when the driver
+> > > > actually has a probe() function.
+> > > >
+> > > > Rafael,
+> > > >
+> > > > Option 1 above is pretty straightforward.
+> > >
+> > > I would prefer this ->
 > >
-> > Patch 5 sets up a generic API to handle drivers that never bind with
-> > their devices.
+> > Ok
 > >
-> > Patch 6 through 8 update different frameworks to use the new API.
+> > >
+> > > > Option 2 would look something like what's at the end of this email +
+> > > > caveat about whether the probe check is sufficient.
+> > >
+> > > -> because "fix the warning" really means that we haven't got the
+> > > device link state machine right and getting it right may imply a major
+> > > redesign.
+> > >
+> > > Overall, I'd prefer to take a step back and allow things to stabilize
+> > > for a while to let people catch up with this.
 > >
-> > Thanks,
-> > Saravana
-> >
-> > Saravana Kannan (8):
-> >   driver core: fw_devlink: Detect supplier devices that will never be
-> >     added
-> >   of: property: Don't add links to absent suppliers
-> >   driver core: Add fw_devlink.strict kernel param
-> >   of: property: Add fw_devlink support for optional properties
-> >   driver core: fw_devlink: Handle suppliers that don't use driver core
-> >   irqdomain: Mark fwnodes when their irqdomain is added/removed
-> >   PM: domains: Mark fwnodes when their powerdomain is added/removed
-> >   clk: Mark fwnodes when their clock provider is added/removed
+> > Are you referring to if/when we implement Option 2? Or do you want to
+> > step back for a while even before implementing Option 1?
 >
-> Thanks for your series, which is now part of driver-core-next.
-> I gave driver-core-next + [1] a try on various Renesas boards.
+> I would do option 1 and if then see what happens and maybe go back
+> from there if need be until getting a reasonably stable situation
+> (that is all of the systems that used to work before still work at
+> least).
 
-Thanks!
-
-> Test results are below.
-> In general, the result looks much better than before.
-
-Ah, good to hear this.
-
-> [1] - https://lore.kernel.org/lkml/20210210114435.122242-1-tudor.ambarus@microchip.com/
->
->   1. R-Car Gen2 (Koelsch), R-Car Gen3 (Salvator-X(S), Ebisu).
->
->       - Commit 2dfc564bda4a31bc ("soc: renesas: rcar-sysc: Mark device
->         node OF_POPULATED after init") is no longer needed (but already
->         queued for v5.12 anyway)
-
-Rob doesn't like the proliferation of OF_POPULATED and we don't need
-it anymore, so maybe work it out with him? It's a balance between some
-wasted memory (struct device(s)) vs not proliferating OF_POPULATED.
-
->       - Some devices are reprobed, despite their drivers returning
->         a real error code, and not -EPROBE_DEFER:
-
-Sorry, it's not obvious from the logs below where "reprobing" is
-happening. Can you give more pointers please?
-
-Also, thinking more about this, the only way I could see this happen is:
-1. Device fails with error that's not -EPROBE_DEFER
-2. It somehow gets added to a device link (with AUTOPROBE_CONSUMER
-flag) where it's a consumer.
-3. The supplier probes and the device gets added to the deferred probe
-list again.
-
-But I can't see how this sequence can happen. Device links are created
-only when a device is added. And is the supplier isn't added yet, the
-consumer wouldn't have probed in the first place.
-
-Other than "annoying waste of time" is this causing any other problems?
-
->             renesas_wdt e6020000.watchdog: Watchdog blacklisted on r8a7791 ES1.*
->             (rwdt_probe() returns -ENODEV)
->
->             sh-pfc e6060000.pinctrl: pin GP_7_23 already requested by
-> ee090000.pci; cannot claim for e6590000.usb
->             sh-pfc e6060000.pinctrl: pin-247 (e6590000.usb) status -22
->             sh-pfc e6060000.pinctrl: could not request pin 247
-> (GP_7_23) from group usb0  on device sh-pfc
->             renesas_usbhs e6590000.usb: Error applying setting,
-> reverse things back
->             renesas_usbhs: probe of e6590000.usb failed with error -22
->
->             rcar-pcie fe000000.pcie: host bridge /soc/pcie@fe000000 ranges:
->             rcar-pcie fe000000.pcie:       IO
-> 0x00fe100000..0x00fe1fffff -> 0x0000000000
->             rcar-pcie fe000000.pcie:      MEM
-> 0x00fe200000..0x00fe3fffff -> 0x00fe200000
->             rcar-pcie fe000000.pcie:      MEM
-> 0x0030000000..0x0037ffffff -> 0x0030000000
->             rcar-pcie fe000000.pcie:      MEM
-> 0x0038000000..0x003fffffff -> 0x0038000000
->             rcar-pcie fe000000.pcie:   IB MEM
-> 0x0040000000..0x00bfffffff -> 0x0040000000
->             rcar-pcie fe000000.pcie:   IB MEM
-> 0x0200000000..0x02ffffffff -> 0x0200000000
->             rcar-pcie fe000000.pcie: PCIe link down
->             (rcar_pcie_probe() returns -ENODEV)
->
->             xhci-hcd ee000000.usb: xHCI Host Controller
->             xhci-hcd ee000000.usb: new USB bus registered, assigned bus number 7
->             xhci-hcd ee000000.usb: Direct firmware load for
-> r8a779x_usb3_v3.dlmem failed with error -2
->             xhci-hcd ee000000.usb: can't setup: -2
->             xhci-hcd ee000000.usb: USB bus 7 deregistered
->             xhci-hcd: probe of ee000000.usb failed with error -2
->
->       - The PCI reprobing leads to a memory leak, for which I've sent a fix
->         "[PATCH] PCI: Fix memory leak in pci_register_io_range()"
->         https://lore.kernel.org/linux-pci/20210202100332.829047-1-geert+renesas@glider.be/
-
-Wrt PCI reprobing,
-1. Is this PCI never expected to probe, but it's being reattempted
-despite the NOT EPROBE_DEFER error? Or
-2. The PCI was deferred probe when it should have probed and then when
-it's finally reattemped and it could succeed, we are hitting this mem
-leak issue?
-
-I'm basically trying to distinguish between "this stuff should never
-be retried" vs "this/it's suppliers got probe deferred with
-fw_devlink=on vs but didn't get probe deferred with
-fw_devlink=permissive and that's causing issues"
-
->       - I2C on R-Car Gen3 does not seem to use DMA, according to
->         /sys/kernel/debug/dmaengine/summary:
->
->             -dma4chan0    | e66d8000.i2c:tx
->             -dma4chan1    | e66d8000.i2c:rx
->             -dma5chan0    | e6510000.i2c:tx
-
-I think I need more context on the problem before I can try to fix it.
-I'm also very unfamiliar with that file. With fw_devlink=permissive,
-I2C was using DMA? If so, the next step is to see if the I2C relative
-probe order with DMA is getting changed and if so, why.
-
->       - Disabling CONFIG_IPMMU_VMSA (IOMMU) now works, good!
->
->            ignoring dependency for device, assuming no driver
->
->       - Disabling CONFIG_RCAR_DMAC works for most devices, except for
->         sound:
->
->             -rcar_sound ec500000.sound: probed
->
->              ALSA device list:
->             -  #0: rcar-sound
->             +  No soundcards found.
->
->             # cat  /sys/kernel/debug/devices_deferred
->             2-0010
->             sound
->             ec500000.sound
->
->             platform e6510000.i2c: Linked as a sync state only
-> consumer to ec500000.sound
->             platform ec500000.sound: Linked as a consumer to e6060000.pinctrl
->             platform ec500000.sound: Linked as a consumer to
-> e6150000.clock-controller
->             i2c 2-0010: Linked as a consumer to ec500000.sound
->             platform ec500000.sound: Linked as a consumer to 2-004f
->             cs2000-cp 2-004f: revision - C1
->             i2c-rcar e6510000.i2c: probed
->             i2c-rcar e6510000.i2c: Dropping the link to ec500000.sound
->             i2c 2-0010: probe deferral - supplier ec500000.sound not ready
->
->         With CONFIG_RCAR_DMAC=y, ec500000.sound is probed quite early.
-
-I saw your other reply, so I'll ignore this sound/DMA issue.
-
->
->             arch/arm64/boot/dts/renesas/r8a77951-salvator-xs.dts
->
->             ak4613: codec@10 {
->                     clocks = <&rcar_sound 3>;
->
->                     port {
->                             ak4613_endpoint: endpoint {
->                                     remote-endpoint = <&rsnd_endpoint0>;
->                             };
->                     };
->             };
->
->             sound_card: sound {
->                     dais = <&rsnd_port0     /* ak4613 */
->                             &rsnd_port1     /* HDMI0  */
->                             &rsnd_port2>;   /* HDMI1  */
->             };
->
->             rcar_sound: sound@ec500000 {
->                     ports {
->                             rsnd_port0: port@0 {
->                                     rsnd_endpoint0: endpoint {
->                                             remote-endpoint =
-> <&ak4613_endpoint>;
->                                     }
->                             }
->                     }
->             };
->
->
->   2. SH/R-Mobile AG5 (kzm9g), APE6 (ape6evm), A1 (armadillo800-eva)
->
->       - "PATCH] soc: renesas: rmobile-sysc: Set OF_POPULATED and absorb
->         reset handling" is no longer needed
->         https://lore.kernel.org/linux-arm-kernel/20210205133319.1921108-1-geert+renesas@glider.be/
-
-Good to see more evidence that this series is fixing things at a more
-generic level.
-
->       - On R-Mobile A1, I get a BUG and a memory leak:
->
->             BUG: spinlock bad magic on CPU#0, swapper/1
->              lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner:
-> <none>/-1, .owner_cpu: 0
->             CPU: 0 PID: 1 Comm: swapper Not tainted
-> 5.11.0-rc5-armadillo-00032-gf0a85c26907e #266
->             Hardware name: Generic R8A7740 (Flattened Device Tree)
->             [<c010c3c8>] (unwind_backtrace) from [<c010a49c>]
-> (show_stack+0x10/0x14)
->             [<c010a49c>] (show_stack) from [<c0159534>]
-> (do_raw_spin_lock+0x20/0x94)
->             [<c0159534>] (do_raw_spin_lock) from [<c04089d8>]
-> (dev_pm_get_subsys_data+0x30/0xa0)
->             [<c04089d8>] (dev_pm_get_subsys_data) from [<c0413698>]
-> (genpd_add_device+0x34/0x1c0)
->             [<c0413698>] (genpd_add_device) from [<c041389c>]
-> (of_genpd_add_device+0x34/0x4c)
->             [<c041389c>] (of_genpd_add_device) from [<c0a1e9bc>]
-> (board_staging_register_device+0xf8/0x118)
->             [<c0a1e9bc>] (board_staging_register_device) from
-> [<c0a1ea00>] (board_staging_register_devices+0x24/0x28)
->             [<c0a1ea00>] (board_staging_register_devices) from
-> [<c0a1ea30>] (runtime_board_check+0x2c/0x40)
->             [<c0a1ea30>] (runtime_board_check) from [<c0101fac>]
-> (do_one_initcall+0xe0/0x278)
->             [<c0101fac>] (do_one_initcall) from [<c0a01034>]
-> (kernel_init_freeable+0x174/0x1c0)
->             [<c0a01034>] (kernel_init_freeable) from [<c05fd568>]
-> (kernel_init+0x8/0x118)
->             [<c05fd568>] (kernel_init) from [<c010011c>]
-> (ret_from_fork+0x14/0x38)
->             Exception stack(0xc19c9fb0 to 0xc19c9ff8)
->             9fa0:                                     00000000
-> 00000000 00000000 00000000
->             9fc0: 00000000 00000000 00000000 00000000 00000000
-> 00000000 00000000 00000000
->             9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
->
->             unreferenced object 0xc4134e00 (size 512):
->               comm "swapper", pid 1, jiffies 4294937296 (age 3541.930s)
->               hex dump (first 32 bytes):
->                 00 4e 13 c4 00 4e 13 c4 ff ff ff 7f ff ff ff 7f
-> .N...N..........
->                 ff ff ff 7f 02 00 00 00 00 5f 13 c4 1c 4e 13 c4
-> ........._...N..
->               backtrace:
->                 [<de1a3c34>] dev_pm_qos_constraints_allocate+0x10/0xcc
->                 [<d21cf6e4>] dev_pm_qos_add_notifier+0x6c/0xd0
->                 [<e04bbc90>] genpd_add_device+0x178/0x1c0
->                 [<95067303>] of_genpd_add_device+0x34/0x4c
->                 [<c334b97a>] board_staging_register_device+0xf8/0x118
->                 [<01bd495a>] board_staging_register_devices+0x24/0x28
->                 [<fb25a5d8>] runtime_board_check+0x2c/0x40
->                 [<65aed679>] do_one_initcall+0xe0/0x278
->                 [<97e3f4f7>] kernel_init_freeable+0x174/0x1c0
->                 [<63c8fed0>] kernel_init+0x8/0x118
->                 [<f704d96c>] ret_from_fork+0x14/0x38
->                 [<00000000>] 0x0
-
-Hmm... I looked at this in bits and pieces throughout the day. At
-least spent an hour looking at this. This doesn't make a lot of sense
-to me. I don't even touch anything in this code path AFAICT.  Are
-modules/kernel mixed up somehow? I need more info before I can help.
-Does reverting my pm domain change make any difference (assume it
-boots this far without it).
-
->
->   3. RZ/A1 and RZ/A2: No issues.
-
-Great!
+Ok, I'll implement Option 1 soon. Also, thinking more about it, I
+don't like converting it into STATELESS links. It's easy to do, but it
+doesn't feel right for the driver core to "create" a STATELESS link
+and then "forget" about it. So, when a device is force bound, I'll
+just delete the links where the suppliers haven't probed yet.
 
 -Saravana
