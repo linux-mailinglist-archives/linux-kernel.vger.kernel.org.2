@@ -2,116 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5280E31A618
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D306731A61A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhBLUeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:34:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhBLUd4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:33:56 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286C4C061574;
-        Fri, 12 Feb 2021 12:33:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=9uw9IAr8lyqmrfip3LyZc7NlrzYPAAm/36VrnVIikDg=; b=eoBsNoHgUjJxhXfuNEv5Yz2LMQ
-        jPN5Kq6W+kpMzV52pkqwqKK8A+ctKUoFLzdnTG2SHwrh46QnXJU9pFTm02MXbqkZzFqGguQvrs236
-        EvtAM2JJ/PdvTffkVLJgThfhKnfmWmWNGUPxudIWs8Y8u8WKdNueKd2VS/KV48rvMrQJK5R09iJ83
-        CBVkHJQ5Rpnx8v3X9dJ4YG4sEHSLoLkrhTru+dnk/wHsHJZ5fbzZKrIqJLaf++wzd12nP8lUhqmsi
-        mgFsY2AvPw/YopThXX2ECKR7CV9Ux4ImXNEBUzTEEAFgmdyDLUXt8lpIYIwpdrFmlyXV+5iW52sOs
-        WXWZCiOQ==;
-Received: from [2601:1c0:6280:3f0::cf3b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lAf7o-0007qq-7W; Fri, 12 Feb 2021 20:33:12 +0000
-Subject: Re: [PATCH v2 1/2] cpu/hotplug: Fix build error of using
- {add,remove}_cpu() with !CONFIG_SMP
-To:     shuo.a.liu@intel.com, linux-next@vger.kernel.org
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org
-References: <20210212165519.82126-1-shuo.a.liu@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e3095871-ac55-baba-8712-9afaa94b41f8@infradead.org>
-Date:   Fri, 12 Feb 2021 12:33:08 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230525AbhBLUe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:34:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229660AbhBLUew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 15:34:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DC8764D5D;
+        Fri, 12 Feb 2021 20:34:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613162050;
+        bh=wsxAobsfZBfVL3J6K8JwnfzCIzCe1QIc+xOYU6dgGJU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KAkvK7onLOJJXAg+m7wvSs5B6FowWihS1Kk1/yRaCXigMKBHVk8IWefqBBYNWNZ1+
+         HT9CXcl+/w9gIpaPxPWKPLz2cavGZMvxAm4hAHp0fmYzdG4QPkOoi/kZS10VHBMJv9
+         f78hiBrZo7fypBUhwziHvzvr1+X6h673sODUCGffSQkIzTNaOs3x/r+JwRwW75D8u0
+         QJVEJmb6Ax7W7SAe8Hp3V3kBxg42eMtnydSZ9/LgBodEqUOxFnAlNPl7rwAahd03Jt
+         aTRnhOfN9p/Z3V+yz9+Zb+glhjJ4lkCuKr0wztWde6uxGlN59Yp7QhzRVSnQuMHvZ8
+         68+uCMVHnTfkg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2018D40513; Fri, 12 Feb 2021 17:34:08 -0300 (-03)
+Date:   Fri, 12 Feb 2021 17:34:08 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH][RFC] perf annotate: show full line locations with 'k' in
+ UI
+Message-ID: <20210212203408.GH1398414@kernel.org>
+References: <9acb63e0-af38-eeeb-157e-32f6177da557@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210212165519.82126-1-shuo.a.liu@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <9acb63e0-af38-eeeb-157e-32f6177da557@suse.cz>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/21 8:55 AM, shuo.a.liu@intel.com wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
+Em Fri, Feb 12, 2021 at 03:42:47PM +0100, Martin Liška escreveu:
+> Hello.
 > 
-> 279dcf693ac7 ("virt: acrn: Introduce an interface for Service VM to
-> control vCPU") introduced {add,remove}_cpu() usage and it hit below
-> error with !CONFIG_SMP:
+> Sometimes it's handy to display also a filename of a source location, mainly because
+> source lines can come from different files. I extended 'k' hotkey and one can now see:
 > 
-> ../drivers/virt/acrn/hsm.c: In function ‘remove_cpu_store’:
-> ../drivers/virt/acrn/hsm.c:389:3: error: implicit declaration of function ‘remove_cpu’; [-Werror=implicit-function-declaration]
->    remove_cpu(cpu);
+> 1) no source lines:
 > 
-> ../drivers/virt/acrn/hsm.c:402:2: error: implicit declaration of function ‘add_cpu’; [-Werror=implicit-function-declaration]
->    add_cpu(cpu);
+>   1.31 │     ↓ je      130                                                                                   ▒
+>        │     return iterative_hash_object (arg, val);                                                        ▒
+>        │                                                                                                     ▒
+>        │     if (!TYPE_P (arg))                                                                              ▒
+>        │       movzwl  (%rdi),%edx                                                                           ▒
+>  18.95 │       lea     tree_code_type,%rbx                                                                   ▒
+>        │       movzwl  %dx,%ecx                                                                              ▒
+>        │       mov     %rdx,%rax                                                                             ▒
+>        │       cmpl    $0x2,(%rbx,%rcx,4)                                                                    ▒
+>  11.76 │     ↓ jne     5f                                                                                    ▒
+>   0.65 │     ↓ jmp     c0                                                                                    ▒
+>        │       nop                                                                                           ▒
+>        │     iterative_hash_template_arg(tree_node*, unsigned int) [clone .localalias]:                      ▒
+>        │     tree_operand_length (const_tree node)                                                           ▒
+>        │     {                                                                                               ▒
+>        │     if (VL_EXP_CLASS_P (node))                                                                      ▒
+>        │     return VL_EXP_OPERAND_LENGTH (node);                                                            ▒
+>        │     else                                                                                            ▒
+>        │     return TREE_CODE_LENGTH (TREE_CODE (node));                                                     ▒
+>        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
 > 
-> Add add_cpu() function prototypes with !CONFIG_SMP and remove_cpu() with
-> !CONFIG_HOTPLUG_CPU for such usage.
+> 2) only source lines displayed
 > 
-> Fixes: 279dcf693ac7 ("virt: acrn: Introduce an interface for Service VM to control vCPU")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+>   1.31 │     ↓ je      130                                                                                   ▒
+>        │1774 return iterative_hash_object (arg, val);                                                        ▒
+>        │                                                                                                     ▒
+>        │1776 if (!TYPE_P (arg))                                                                              ▒
+>        │       movzwl  (%rdi),%edx                                                                           ▒
+>  18.95 │       lea     tree_code_type,%rbx                                                                   ▒
+>        │       movzwl  %dx,%ecx                                                                              ▒
+>        │       mov     %rdx,%rax                                                                             ▒
+>        │       cmpl    $0x2,(%rbx,%rcx,4)                                                                    ▒
+>  11.76 │     ↓ jne     5f                                                                                    ▒
+>   0.65 │     ↓ jmp     c0                                                                                    ▒
+>        │       nop                                                                                           ▒
+>        │1785 iterative_hash_template_arg(tree_node*, unsigned int) [clone .localalias]:                      ▒
+>        │3837 tree_operand_length (const_tree node)                                                           ▒
+>        │3838 {                                                                                               ▒
+>        │3839 if (VL_EXP_CLASS_P (node))                                                                      ▒
+>        │3840 return VL_EXP_OPERAND_LENGTH (node);                                                            ▒
+>        │3841 else                                                                                            ▒
+>        │3842 return TREE_CODE_LENGTH (TREE_CODE (node));                                                     ▒
+>        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
+> 
+> full source locations displayed.
+> 
+>   1.31 │     ↓ je      130                                                                                   ▒
+>        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774 return iterative_hash_object (arg, val);               ▒
+>        │                                                                                                     ▒
+>        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774 if (!TYPE_P (arg))                                     ▒
+>        │       movzwl  (%rdi),%edx                                                                           ▒
+>  18.95 │       lea     tree_code_type,%rbx                                                                   ▒
+>        │       movzwl  %dx,%ecx                                                                              ▒
+>        │       mov     %rdx,%rax                                                                             ▒
+>        │       cmpl    $0x2,(%rbx,%rcx,4)                                                                    ▒
+>  11.76 │     ↓ jne     5f                                                                                    ▒
+>   0.65 │     ↓ jmp     c0                                                                                    ▒
+>        │       nop                                                                                           ▒
+>        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774 iterative_hash_template_arg(tree_node*, unsigned int) [▒
+>        │/home/marxin/Programming/gcc/gcc/tree.h:3837 tree_operand_length (const_tree node)                   ▒
+>        │/home/marxin/Programming/gcc/gcc/tree.h:3837 {                                                       ▒
+>        │/home/marxin/Programming/gcc/gcc/tree.h:3837 if (VL_EXP_CLASS_P (node))                              ▒
+>        │/home/marxin/Programming/gcc/gcc/tree.h:3837 return VL_EXP_OPERAND_LENGTH (node);                    ▒
+>        │/home/marxin/Programming/gcc/gcc/tree.h:3837 else                                                    ▒
+>        │/home/marxin/Programming/gcc/gcc/tree.h:3837 return TREE_CODE_LENGTH (TREE_CODE (node));             ▒
+>        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
+
+It is valuable, I just think we should try to limit the number of
+columns used by the source code line, perhaps something like:
+
+   0.65 │     ↓ jmp     c0                                                                                    ▒
+        │       nop                                                                                           ▒
+        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774                                                        ▒
+        │           iterative_hash_template_arg(tree_node*, unsigned int) [                                   ▒
+        │/home/marxin/Programming/gcc/gcc/tree.h:3837                                                         ▒
+        │           tree_operand_length (const_tree node)                                                     ▒
+        │           {                                                                                         ▒
+        │           if (VL_EXP_CLASS_P (node))                                                                ▒
+        │           return VL_EXP_OPERAND_LENGTH (node);                                                      ▒
+        │           else                                                                                      ▒
+        │           return TREE_CODE_LENGTH (TREE_CODE (node));                                               ▒
+        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
+
+Another idea is to, when requested, reserve one line at the bottom to
+show what is the source code file:line for where the TUI cursor is, i.e.
+you press down/up and the line under the cursor has its source file:line
+shown at the second (from bottom to top) line in the screen.
+
+- Arnaldo
+ 
+> Thoughts?
+> Thanks,
+> Martin
+> 
 > ---
-> I followed Greg's idea that add {add,remove}_cpu() functions prototypes.
-> The v2 solution is different from the v1, so i removed Randy's Acked-by.
-> Randy, please help have a look on v2.
+>  tools/perf/ui/browsers/annotate.c | 11 +++++++++--
+>  tools/perf/util/annotate.c        | 24 ++++++++++++++++++------
+>  tools/perf/util/annotate.h        |  2 ++
+>  3 files changed, 29 insertions(+), 8 deletions(-)
 > 
-> v2:
->   - Drop the #ifdef in .c solution. Add {add,remove}_cpu() prototypes. (Suggested by Greg)
-> 
->  include/linux/cpu.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-> index 3aaa0687e8df..94a578a96202 100644
-> --- a/include/linux/cpu.h
-> +++ b/include/linux/cpu.h
-> @@ -108,6 +108,8 @@ static inline void cpu_maps_update_done(void)
->  {
+> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+> index bd77825fd5a1..ca09736e14a3 100644
+> --- a/tools/perf/ui/browsers/annotate.c
+> +++ b/tools/perf/ui/browsers/annotate.c
+> @@ -746,7 +746,7 @@ static int annotate_browser__run(struct annotate_browser *browser,
+>  		"t             Circulate percent, total period, samples view\n"
+>  		"c             Show min/max cycle\n"
+>  		"/             Search string\n"
+> -		"k             Toggle line numbers\n"
+> +		"k             Circulate line numbers, full location, no source lines\n"
+>  		"P             Print to [symbol_name].annotation file.\n"
+>  		"r             Run available scripts\n"
+>  		"p             Toggle percent type [local/global]\n"
+> @@ -758,7 +758,14 @@ static int annotate_browser__run(struct annotate_browser *browser,
+>  			annotate_browser__show(&browser->b, title, help);
+>  			continue;
+>  		case 'k':
+> -			notes->options->show_linenr = !notes->options->show_linenr;
+> +			if (notes->options->show_fileloc) {
+> +				notes->options->show_fileloc = false;
+> +				notes->options->show_linenr = false;
+> +			}
+> +			else if (notes->options->show_linenr)
+> +				notes->options->show_fileloc = true;
+> +			else
+> +				notes->options->show_linenr = true;
+>  			break;
+>  		case 'H':
+>  			nd = browser->curr_hot;
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index e3eae646be3e..32e5926d587f 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -1159,6 +1159,7 @@ struct annotate_args {
+>  	s64			  offset;
+>  	char			  *line;
+>  	int			  line_nr;
+> +	char			  *fileloc;
+>  };
+>  static void annotation_line__init(struct annotation_line *al,
+> @@ -1168,6 +1169,7 @@ static void annotation_line__init(struct annotation_line *al,
+>  	al->offset = args->offset;
+>  	al->line = strdup(args->line);
+>  	al->line_nr = args->line_nr;
+> +	al->fileloc = args->fileloc;
+>  	al->data_nr = nr;
 >  }
->  
-> +static inline int add_cpu(unsigned int cpu) { return 0;}
-> +
->  #endif /* CONFIG_SMP */
->  extern struct bus_type cpu_subsys;
->  
-> @@ -137,6 +139,7 @@ static inline int  cpus_read_trylock(void) { return true; }
->  static inline void lockdep_assert_cpus_held(void) { }
->  static inline void cpu_hotplug_disable(void) { }
->  static inline void cpu_hotplug_enable(void) { }
-> +static inline int remove_cpu(unsigned int cpu) { return -EPERM; }
-
-I would have done: return 0;
-
-Anyway:
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-
->  static inline void smp_shutdown_nonboot_cpus(unsigned int primary_cpu) { }
->  #endif	/* !CONFIG_HOTPLUG_CPU */
-
-thanks.
+> @@ -1480,7 +1482,7 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+>   */
+>  static int symbol__parse_objdump_line(struct symbol *sym,
+>  				      struct annotate_args *args,
+> -				      char *parsed_line, int *line_nr)
+> +				      char *parsed_line, int *line_nr, char **fileloc)
+>  {
+>  	struct map *map = args->ms.map;
+>  	struct annotation *notes = symbol__annotation(sym);
+> @@ -1492,6 +1494,7 @@ static int symbol__parse_objdump_line(struct symbol *sym,
+>  	/* /filename:linenr ? Save line number and ignore. */
+>  	if (regexec(&file_lineno, parsed_line, 2, match, 0) == 0) {
+>  		*line_nr = atoi(parsed_line + match[1].rm_so);
+> +		*fileloc = strdup(parsed_line);
+>  		return 0;
+>  	}
+> @@ -1511,6 +1514,7 @@ static int symbol__parse_objdump_line(struct symbol *sym,
+>  	args->offset  = offset;
+>  	args->line    = parsed_line;
+>  	args->line_nr = *line_nr;
+> +	args->fileloc = *fileloc;
+>  	args->ms.sym  = sym;
+>  	dl = disasm_line__new(args);
+> @@ -1805,6 +1809,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
+>  			args->offset = -1;
+>  			args->line = strdup(srcline);
+>  			args->line_nr = 0;
+> +			args->fileloc = NULL;
+>  			args->ms.sym  = sym;
+>  			dl = disasm_line__new(args);
+>  			if (dl) {
+> @@ -1816,6 +1821,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
+>  		args->offset = pc;
+>  		args->line = buf + prev_buf_size;
+>  		args->line_nr = 0;
+> +		args->fileloc = NULL;
+>  		args->ms.sym  = sym;
+>  		dl = disasm_line__new(args);
+>  		if (dl)
+> @@ -1850,6 +1856,7 @@ symbol__disassemble_bpf_image(struct symbol *sym,
+>  	args->offset = -1;
+>  	args->line = strdup("to be implemented");
+>  	args->line_nr = 0;
+> +	args->fileloc = NULL;
+>  	dl = disasm_line__new(args);
+>  	if (dl)
+>  		annotation_line__add(&dl->al, &notes->src->source);
+> @@ -1931,6 +1938,7 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
+>  	bool delete_extract = false;
+>  	bool decomp = false;
+>  	int lineno = 0;
+> +	char *fileloc = strdup("");
+>  	int nline;
+>  	char *line;
+>  	size_t line_len;
+> @@ -2058,7 +2066,7 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
+>  		 * See disasm_line__new() and struct disasm_line::line_nr.
+>  		 */
+>  		if (symbol__parse_objdump_line(sym, args, expanded_line,
+> -					       &lineno) < 0)
+> +					       &lineno, &fileloc) < 0)
+>  			break;
+>  		nline++;
+>  	}
+> @@ -3004,10 +3012,14 @@ static void __annotation_line__write(struct annotation_line *al, struct annotati
+>  	if (!*al->line)
+>  		obj__printf(obj, "%-*s", width - pcnt_width - cycles_width, " ");
+>  	else if (al->offset == -1) {
+> -		if (al->line_nr && notes->options->show_linenr)
+> -			printed = scnprintf(bf, sizeof(bf), "%-*d ", notes->widths.addr + 1, al->line_nr);
+> -		else
+> -			printed = scnprintf(bf, sizeof(bf), "%-*s  ", notes->widths.addr, " ");
+> +		if (al->line_nr) {
+> +			if (notes->options->show_fileloc)
+> +				printed = scnprintf(bf, sizeof(bf), "%s ", al->fileloc);
+> +			else if (notes->options->show_linenr)
+> +				printed = scnprintf(bf, sizeof(bf), "%-*d ", notes->widths.addr + 1, al->line_nr);
+> +			else
+> +				printed = scnprintf(bf, sizeof(bf), "%-*s  ", notes->widths.addr, " ");
+> +		}
+>  		obj__printf(obj, bf);
+>  		obj__printf(obj, "%-*s", width - printed - pcnt_width - cycles_width + 1, al->line);
+>  	} else {
+> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+> index 096cdaf21b01..3757416bcf46 100644
+> --- a/tools/perf/util/annotate.h
+> +++ b/tools/perf/util/annotate.h
+> @@ -84,6 +84,7 @@ struct annotation_options {
+>  	     print_lines,
+>  	     full_path,
+>  	     show_linenr,
+> +	     show_fileloc,
+>  	     show_nr_jumps,
+>  	     show_minmax_cycle,
+>  	     show_asm_raw,
+> @@ -136,6 +137,7 @@ struct annotation_line {
+>  	s64			 offset;
+>  	char			*line;
+>  	int			 line_nr;
+> +	char			*fileloc;
+>  	int			 jump_sources;
+>  	float			 ipc;
+>  	u64			 cycles;
+> -- 
+> 2.30.0
+> 
 
 -- 
-~Randy
 
+- Arnaldo
