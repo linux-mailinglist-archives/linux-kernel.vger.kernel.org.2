@@ -2,241 +2,1110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672EA3197F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDCF319802
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhBLBZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 20:25:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBLBZB (ORCPT
+        id S229894AbhBLBfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 20:35:14 -0500
+Received: from pbmsgap02.intersil.com ([192.157.179.202]:60866 "EHLO
+        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhBLBe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 20:25:01 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F6BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 17:24:21 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id t62so838801qke.7
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 17:24:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dCKEEGBad1vtrLBcctXNlKDK+ANduoVGoPVyzgMOphI=;
-        b=E47mYWv3Stzwnppzl37fam8xT3lDdxoW6tL5MFqHF360n762WmUpej4AfbWcJUtMCb
-         bGQkFUlBfIUVXXDJGKYXqdi9nlljGgWgZJVaXrMogJDFFCpKJOyyLJRR2/x941a70/TY
-         e1kZZPUH3TVJkEPYAzgl92mODBHfuxwUXcr7/f0z0yJM6H6DKRFWXbL5XNwg2pf6abTa
-         ajE5jV7Evaf4zm/Uz6CQhS5xrtTtOM7XUya0wNf1TnhIurdAbiCB+QzUtxZqboXH+zRP
-         2Fjnw2sLZ7x7NcUw9eY6h21NYYaruBwh08/J28kahwOpn/RtgUGudsroddzSULfp3d8n
-         I9TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dCKEEGBad1vtrLBcctXNlKDK+ANduoVGoPVyzgMOphI=;
-        b=DbkkhmSteI2sERh2IQL9h5mrRCkPROJFhHbPT2bdR1MRD5jIG5JXJ/+IF4a5qHDokj
-         KCl21AS1nSLiU9yBbNYsoMFdinrd3nsnusAeZFyY+Q5UE8tEq7leooTzXUPDDfRaHJXa
-         5G8gKslHYnt83Sx9jv8EbgqdeyhDeA4glEos6DJMEQvpG2DL6M745MPps6Owkm0+qmZB
-         6zLQ8SCwTt6J1du69dN3S072x7jBDjgww3dXImFWhqCRpopVY0ZlPFBfZkNu2VCaWcfx
-         AqI7JbTW6kK7eZNDzP4P/ePI02CfoSfi60gy3TVos/MpsDxoZZVWbvxCCQWbYp0MlAqI
-         69EA==
-X-Gm-Message-State: AOAM533DaXHWf1nOXGrGHgxiVfNw5EEJwikJiu1y/R/Rmqz3M1ZSF2pf
-        kYPRESDLByQL1afxmVMxYG0=
-X-Google-Smtp-Source: ABdhPJzkPUfqYqANtXULj3VdywFLTypho8xN7/Y/9nBRICs9kaa5NJHAxlQ3GlgcWDuqenYQ2Z9S5w==
-X-Received: by 2002:a37:9e8e:: with SMTP id h136mr648349qke.50.1613093060197;
-        Thu, 11 Feb 2021 17:24:20 -0800 (PST)
-Received: from localhost ([2607:fb90:c68:5473:21b5:a5ca:7841:595c])
-        by smtp.gmail.com with ESMTPSA id t8sm5016385qkt.125.2021.02.11.17.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 17:24:19 -0800 (PST)
-Date:   Thu, 11 Feb 2021 17:24:17 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Li Zefan <lizefan@huawei.com>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH 6/8] lib: bitmap: support "N" as an alias for size of
- bitmap
-Message-ID: <20210212012417.GB167389@yury-ThinkPad>
-References: <20210209225907.78405-1-paul.gortmaker@windriver.com>
- <20210209225907.78405-7-paul.gortmaker@windriver.com>
- <CAAH8bW_fJi_PeHrXsPZzLtRP=-L99QJBXEvHkN9w6DBP-1FPWQ@mail.gmail.com>
- <20210210155825.GA28155@windriver.com>
- <YCQOmkfEH0lLJY8l@smile.fi.intel.com>
+        Thu, 11 Feb 2021 20:34:58 -0500
+X-Greylist: delayed 1048 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Feb 2021 20:34:56 EST
+Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
+        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 11C123ts012760;
+        Thu, 11 Feb 2021 20:16:37 -0500
+Received: from pbmxdp03.intersil.corp (pbmxdp03.pb.intersil.com [132.158.200.224])
+        by pbmsgap02.intersil.com with ESMTP id 36hp5k29vm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 20:16:37 -0500
+Received: from pbmxdp02.intersil.corp (132.158.200.223) by
+ pbmxdp03.intersil.corp (132.158.200.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1979.3; Thu, 11 Feb 2021 20:16:35 -0500
+Received: from localhost (132.158.202.108) by pbmxdp02.intersil.corp
+ (132.158.200.223) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 11 Feb 2021 20:16:34 -0500
+From:   <min.li.xe@renesas.com>
+To:     <derek.kiernan@xilinx.com>, <dragan.cvetic@xilinx.com>,
+        <arnd@arndb.de>, <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net-next v2] misc: Add Renesas Synchronization Management Unit (SMU) support
+Date:   Thu, 11 Feb 2021 20:16:15 -0500
+Message-ID: <1613092575-17311-1-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCQOmkfEH0lLJY8l@smile.fi.intel.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 spamscore=0 adultscore=0 mlxscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102120002
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 06:49:30PM +0200, Andy Shevchenko wrote:
-> On Wed, Feb 10, 2021 at 10:58:25AM -0500, Paul Gortmaker wrote:
-> > [Re: [PATCH 6/8] lib: bitmap: support "N" as an alias for size of bitmap] On 09/02/2021 (Tue 15:16) Yury Norov wrote:
-> > 
-> > > On Tue, Feb 9, 2021 at 3:01 PM Paul Gortmaker
-> > > <paul.gortmaker@windriver.com> wrote:
-> > 
-> > [...]
-> > 
-> > > > -static const char *bitmap_getnum(const char *str, unsigned int *num)
-> > > > +static const char *bitmap_getnum(const char *str, unsigned int *num,
-> > > > +                                unsigned int lastbit)
-> > > 
-> > > The idea of struct bitmap_region is avoid passing the lastbit to the functions.
-> > > But here you do pass. Can you please be consistent? Or if I misunderstand
-> > > the idea of struct bitmap_region, can you please clarify it?
-> > > 
-> > > Also, I don't think that in this specific case it's worth it to create
-> > > a hierarchy of
-> > > structures. Just adding lastbits to struct region will be simpler and more
-> > > transparent.
-> > 
-> > I'm getting mixed messages from different people as to what is wanted here.
-> > 
-> > Here is what the code looks like now; only relevant lines shown:
-> > 
-> >  -------------------------------
-> > int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
-> > {
-> > 
-> >         struct region r;
-> > 
-> >         bitmap_parse_region(buf, &r);       <-----------
-> >         bitmap_check_region(&r);
-> >         bitmap_set_region(&r, maskp, nmaskbits);
-> > }
-> > 
-> > static const char *bitmap_parse_region(const char *str, struct region *r)
-> > {
-> >         bitmap_getnum(str, &r->start);
-> >         bitmap_getnum(str + 1, &r->end);
-> >         bitmap_getnum(str + 1, &r->off);
-> >         bitmap_getnum(str + 1, &r->group_len);
-> > }
-> > 
-> > static const char *bitmap_getnum(const char *str, unsigned int *num)
-> > {
-> > 	/* PG: We need nmaskbits here for N processing. */
-> > }
-> >  -------------------------------
-> > 
-> > 
-> > Note the final function - the one where you asked to locate the N
-> > processing into -- does not take a region.  So even if we bundle nbits
-> > into the region struct, it doesn't get the data to where we need it.
-> > 
-> > Choices:
-> > 
-> > 1) pass in nbits just like bitmap_set_region() does currently.
-> > 
-> > 2) add nbits to region and pass full region instead of start/end/off.
-> > 
-> > 2a) add nbits to region and pass full region and also start/end/off.
-> > 
-> > 3) use *num as a bi-directional data path and initialize with nbits.
-> > 
-> > 
-> > Yury doesn't want us add any function args -- i.e. not to do #1.
-> > 
-> > Andy didn't like #2 because it "hides" that we are writing to r.
-> > 
-> > I ruled out sending 2a -- bitmap_getnum(str, r, &r->end)  because
-> > it adds an arg, AND seems rather redundant to pass r and r->field.
-> > 
-> > The #3 is the smallest change - but seems like we are trying to be
-> > too clever just to save a line of code or a couple bytes. (see below)
-> > 
-> > Yury - in your reply to patch 5, you indicate you wrote the region
-> > code and want me to go back to putting nbits into region directly.
-> > 
-> > Can you guys please clarify who is maintainer and hence exactly how
-> > you want this relatively minor detail handled?  I'll gladly do it
-> > in whatever way the maintainer wants just to get this finally done.
-> 
-> Funny that there is no maintainer of the code.
-> That said, I consider #1 or #3 is good enough. Rationale for
-> - #1: it doesn't touch purity of getnum(), I think it's good enough not to know
->   region details
-> - #3 (as you posted below): I like how it looks like (one nit below, though)
-> 
-> But let's put this way, I think Yury had done a lot in the area, let's listen
-> more to him than to me.
+From: Min Li <min.li.xe@renesas.com>
 
-I think that the simplest approach is the best. For me, the simplest
-thing is to add a field to existing structure, like this:
+This driver supports 1588 related functions of ClockMatrix(TM)
+and 82P33xxx families of timing and synchronization devices.
 
-        struct region {
-                unsigned int start;
-                unsigned int off; 
-                unsigned int group_len;
-                unsigned int end; 
-                unsigned int nbits; 
-        };
+The driver is developed to be only used by Renesas PTP Clock
+Manager for Linux (pcm4l) software. It supports 1588/PTP
+releated functionalities that specific to Renesas devices
+but are not supported by general PHC framework. So pcm4l
+will use both the existing PHC driver and this module to
+complete 1588/PTP support. The supported functons are:
 
-Of course we can do like:
+-set combomode
+-get dpll's state
+-get dpll's ffo
+
+This driver must work with Renesas MFD driver to access SMU
+through I2C/SPI.
+
+Changes since v1:
+-Provide more background for purpose of the change.
+-Provide compat_ioctl support
+-Fix ioctl cmd definition
+
+Signed-off-by: Min Li <min.li.xe@renesas.com>
+---
+ drivers/misc/Kconfig      |  13 ++
+ drivers/misc/Makefile     |   3 +
+ drivers/misc/rsmu_cdev.c  | 449 ++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/misc/rsmu_cdev.h  |  75 ++++++++
+ drivers/misc/rsmu_cm.c    | 214 ++++++++++++++++++++++
+ drivers/misc/rsmu_sabre.c | 153 ++++++++++++++++
+ include/uapi/linux/rsmu.h |  61 +++++++
+ 7 files changed, 968 insertions(+)
+ create mode 100644 drivers/misc/rsmu_cdev.c
+ create mode 100644 drivers/misc/rsmu_cdev.h
+ create mode 100644 drivers/misc/rsmu_cm.c
+ create mode 100644 drivers/misc/rsmu_sabre.c
+ create mode 100644 include/uapi/linux/rsmu.h
+
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index fafa8b0..70144f3 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -466,6 +466,19 @@ config HISI_HIKEY_USB
+ 	  switching between the dual-role USB-C port and the USB-A host ports
+ 	  using only one USB controller.
  
-        struct region {
-                struct boundaries;
-                struct periodic_part;
-        };
++config RSMU
++	tristate "Renesas Synchronization Management Unit (SMU)"
++	depends on MFD_RSMU_I2C || MFD_RSMU_SPI
++	help
++	  This option enables support for Renesas SMU, such as Clockmatrix and
++	  82P33XXX series. The driver is developed to be only used by Renesas
++	  PTP Clock Manager for Linux (pcm4l) software. It supports 1588/PTP
++	  releated functionalities that specific to Renesas devices but are not
++	  supported by general PHC framework. So pcm4l will use both the
++	  existing PHC driver and this module to complete 1588/PTP support.
++	  This driver must work with Renesas MFD driver to access SMU
++	  through I2C/SPI.
++
+ source "drivers/misc/c2port/Kconfig"
+ source "drivers/misc/eeprom/Kconfig"
+ source "drivers/misc/cb710/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index d23231e..3054c0d 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -57,3 +57,6 @@ obj-$(CONFIG_HABANA_AI)		+= habanalabs/
+ obj-$(CONFIG_UACCE)		+= uacce/
+ obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
+ obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
++
++rsmu-objs			:= rsmu_cdev.o rsmu_cm.o rsmu_sabre.o
++obj-$(CONFIG_RSMU)		+= rsmu.o
+diff --git a/drivers/misc/rsmu_cdev.c b/drivers/misc/rsmu_cdev.c
+new file mode 100644
+index 0000000..4af3e3d
+--- /dev/null
++++ b/drivers/misc/rsmu_cdev.c
+@@ -0,0 +1,449 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * This driver is developed for the IDT ClockMatrix(TM) and 82P33xxx families of
++ * timing and synchronization devices. It exposes rsmu interface in sysfs and
++ * supports file operations like  open(), close() and ioctl().
++ *
++ * This driver is developed to be only used by Renesas PTP Clock Manager for
++ * Linux (pcm4l) software.
++ *
++ * This driver supports 1588/PTP releated functionalities that
++ * specific to Renesas devices but are not supported by general PHC framework.
++ * So pcm4l will use both the existing PHC driver and this driver to complete
++ * 1588/PTP support.
++ *
++ * This driver must work with Renesas MFD driver to access SMU through
++ * I2C/SPI. Also, the MFD driver is responsible for creating platform device
++ * and invoking this driver to run.
++ *
++ * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
++ */
++#include <linux/cdev.h>
++#include <linux/device.h>
++#include <linux/fs.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/uaccess.h>
++#include <linux/mfd/rsmu.h>
++#include <uapi/linux/rsmu.h>
++
++#include "rsmu_cdev.h"
++
++#define DRIVER_NAME	"rsmu"
++#define DRIVER_MAX_DEV	BIT(MINORBITS)
++
++static struct class *rsmu_class;
++static dev_t rsmu_cdevt;
++static u8 scsr_page;
++
++static int
++rsmu_set_combomode(struct rsmu_cdev *rsmu, void __user *arg)
++{
++	struct rsmu_combomode mode;
++	int err;
++
++	if (copy_from_user(&mode, arg, sizeof(mode)))
++		return -EFAULT;
++
++	mutex_lock(rsmu->lock);
++	switch (rsmu->type) {
++	case RSMU_CM:
++		err = rsmu_cm_set_combomode(rsmu, mode.dpll, mode.mode);
++		break;
++	case RSMU_SABRE:
++		err = rsmu_sabre_set_combomode(rsmu, mode.dpll, mode.mode);
++		break;
++	default:
++		err = -EINVAL;
++	}
++	mutex_unlock(rsmu->lock);
++
++	return err;
++}
++
++static int
++rsmu_get_dpll_state(struct rsmu_cdev *rsmu, void __user *arg)
++{
++	struct rsmu_get_state state_request;
++	u8 state;
++	int err;
++
++	if (copy_from_user(&state_request, arg, sizeof(state_request)))
++		return -EFAULT;
++
++	mutex_lock(rsmu->lock);
++	switch (rsmu->type) {
++	case RSMU_CM:
++		err = rsmu_cm_get_dpll_state(rsmu, state_request.dpll, &state);
++		break;
++	case RSMU_SABRE:
++		err = rsmu_sabre_get_dpll_state(rsmu, state_request.dpll,
++						&state);
++		break;
++	default:
++		err = -EINVAL;
++	}
++	mutex_unlock(rsmu->lock);
++
++	state_request.state = state;
++	if (copy_to_user(arg, &state_request, sizeof(state_request)))
++		return -EFAULT;
++
++	return err;
++}
++
++static int
++rsmu_get_dpll_ffo(struct rsmu_cdev *rsmu, void __user *arg)
++{
++	struct rsmu_get_ffo ffo_request;
++	int err;
++
++	if (copy_from_user(&ffo_request, arg, sizeof(ffo_request)))
++		return -EFAULT;
++
++	mutex_lock(rsmu->lock);
++	switch (rsmu->type) {
++	case RSMU_CM:
++		err = rsmu_cm_get_dpll_ffo(rsmu, ffo_request.dpll,
++					   &ffo_request);
++		break;
++	case RSMU_SABRE:
++		err = rsmu_sabre_get_dpll_ffo(rsmu, ffo_request.dpll,
++					      &ffo_request);
++		break;
++	default:
++		err = -EINVAL;
++	}
++	mutex_unlock(rsmu->lock);
++
++	if (copy_to_user(arg, &ffo_request, sizeof(ffo_request)))
++		return -EFAULT;
++
++	return err;
++}
++
++static ssize_t scsr_show_regs_show(struct device *dev,
++				   struct device_attribute *attr, char *page)
++{
++	struct rsmu_cdev *rsmu = dev_get_drvdata(dev);
++	char *fmt = "%04x:%02x %02x %02x %02x %02x %02x %02x %02x\n";
++	int cnt = 0;
++	u8 regs[256];
++	u16 start;
++	int rows;
++	int row;
++	int err;
++
++	mutex_lock(rsmu->lock);
++	if (rsmu->type == RSMU_CM) {
++		rows = 32;
++		start = 0xc000 + ((u16)scsr_page << 8);
++		if (scsr_page >= 16)
++			err = -EINVAL;
++		else
++			err = rsmu_read(rsmu->mfd, start, regs, 256);
++	} else if (rsmu->type == RSMU_SABRE) {
++		rows = 16;
++		start = (u16)scsr_page << 7;
++		if (scsr_page >= 7)
++			err = -EINVAL;
++		else
++			err = rsmu_read(rsmu->mfd, start, regs, 128);
++
++	} else
++		err = -EINVAL;
++	mutex_unlock(rsmu->lock);
++
++	if (err)
++		return err;
++
++	for (row = 0; row < rows; row++) {
++		u8 index = row * 8;
++
++		cnt += snprintf(page + cnt, PAGE_SIZE - cnt - 1, fmt,
++				start + index, regs[index], regs[index + 1],
++				regs[index + 2], regs[index + 3],
++				regs[index + 4], regs[index + 5],
++				regs[index + 6], regs[index + 7]);
++	}
++
++	return cnt;
++}
++static DEVICE_ATTR_RO(scsr_show_regs);
++
++static ssize_t scsr_set_page_store(struct device *dev,
++				   struct device_attribute *attr,
++				   const char *buf, size_t count)
++{
++	struct rsmu_cdev *rsmu = dev_get_drvdata(dev);
++	u8 page;
++	u8 max;
++
++	if (kstrtou8(buf, 10, &page) < 0)
++		return -EINVAL;
++
++	if (rsmu->type == RSMU_CM)
++		max = 16;
++	else if (rsmu->type == RSMU_SABRE)
++		max = 7;
++	else
++		return -EINVAL;
++
++	if (page >= max)
++		return -EINVAL;
++
++	mutex_lock(rsmu->lock);
++	scsr_page = page;
++	mutex_unlock(rsmu->lock);
++
++	return count;
++}
++static DEVICE_ATTR_WO(scsr_set_page);
++
++static struct attribute *rsmu_attrs[] = {
++	&dev_attr_scsr_set_page.attr,
++	&dev_attr_scsr_show_regs.attr,
++	NULL
++};
++
++static const struct attribute_group rsmu_group = {
++	.attrs = rsmu_attrs
++};
++
++static int
++rsmu_open(struct inode *iptr, struct file *fptr)
++{
++	struct rsmu_cdev *rsmu;
++
++	rsmu = container_of(iptr->i_cdev, struct rsmu_cdev, rsmu_cdev);
++	if (!rsmu)
++		return -EAGAIN;
++
++	/* Only one open per device at a time */
++	if (!atomic_dec_and_test(&rsmu->open_count)) {
++		atomic_inc(&rsmu->open_count);
++		return -EBUSY;
++	}
++
++	fptr->private_data = rsmu;
++	return 0;
++}
++
++static int
++rsmu_release(struct inode *iptr, struct file *fptr)
++{
++	struct rsmu_cdev *rsmu;
++
++	rsmu = container_of(iptr->i_cdev, struct rsmu_cdev, rsmu_cdev);
++	if (!rsmu)
++		return -EAGAIN;
++
++	atomic_inc(&rsmu->open_count);
++	return 0;
++}
++
++static long
++rsmu_ioctl(struct file *fptr, unsigned int cmd, unsigned long data)
++{
++	struct rsmu_cdev *rsmu = fptr->private_data;
++	void __user *arg = (void __user *)data;
++	int err = 0;
++
++	if (!rsmu)
++		return -EINVAL;
++
++	switch (cmd) {
++	case RSMU_SET_COMBOMODE:
++		err = rsmu_set_combomode(rsmu, arg);
++		break;
++	case RSMU_GET_STATE:
++		err = rsmu_get_dpll_state(rsmu, arg);
++		break;
++	case RSMU_GET_FFO:
++		err = rsmu_get_dpll_ffo(rsmu, arg);
++		break;
++	default:
++		/* Should not get here */
++		dev_err(rsmu->dev, "Undefined RSMU IOCTL");
++		err = -EINVAL;
++		break;
++	}
++
++	return err;
++}
++
++static long rsmu_compat_ioctl(struct file *fptr, unsigned int cmd,
++			     unsigned long data)
++{
++	return rsmu_ioctl(fptr, cmd, data);
++}
++
++static const struct file_operations rsmu_fops = {
++	.owner = THIS_MODULE,
++	.open = rsmu_open,
++	.release = rsmu_release,
++	.unlocked_ioctl = rsmu_ioctl,
++	.compat_ioctl =	rsmu_compat_ioctl,
++};
++
++static int
++rsmu_probe(struct platform_device *pdev)
++{
++	struct rsmu_pdata *pdata = dev_get_platdata(&pdev->dev);
++	struct rsmu_cdev *rsmu;
++	struct device *rsmu_cdev;
++	int err;
++
++	rsmu = devm_kzalloc(&pdev->dev, sizeof(*rsmu), GFP_KERNEL);
++	if (!rsmu)
++		return -ENOMEM;
++
++	rsmu->dev = &pdev->dev;
++	rsmu->mfd = pdev->dev.parent;
++	rsmu->type = pdata->type;
++	rsmu->lock = pdata->lock;
++	rsmu->index = pdata->index;
++
++	/* Save driver private data */
++	platform_set_drvdata(pdev, rsmu);
++
++	cdev_init(&rsmu->rsmu_cdev, &rsmu_fops);
++	rsmu->rsmu_cdev.owner = THIS_MODULE;
++	err = cdev_add(&rsmu->rsmu_cdev,
++		       MKDEV(MAJOR(rsmu_cdevt), 0), 1);
++	if (err < 0) {
++		dev_err(rsmu->dev, "cdev_add failed");
++		err = -EIO;
++		goto err_rsmu_dev;
++	}
++
++	if (!rsmu_class) {
++		err = -EIO;
++		dev_err(rsmu->dev, "rsmu class not created correctly");
++		goto err_rsmu_cdev;
++	}
++
++	rsmu_cdev = device_create(rsmu_class, rsmu->dev,
++				   MKDEV(MAJOR(rsmu_cdevt), 0),
++				   rsmu, "rsmu%d", rsmu->index);
++	if (IS_ERR(rsmu_cdev)) {
++		dev_err(rsmu->dev, "unable to create char device");
++		err = PTR_ERR(rsmu_cdev);
++		goto err_rsmu_cdev;
++	}
++
++	err = sysfs_create_group(&rsmu_cdev->kobj, &rsmu_group);
++	if (err) {
++		dev_err(rsmu->dev, "sysfs_create_group failed\n");
++		goto err_rsmu_cdev;
++	}
++
++	atomic_set(&rsmu->open_count, 1);
++	dev_info(rsmu->dev, "Probe SMU type %d Successful\n", rsmu->type);
++	return 0;
++
++	/* Failure cleanup */
++err_rsmu_cdev:
++	cdev_del(&rsmu->rsmu_cdev);
++err_rsmu_dev:
++	return err;
++}
++
++static int
++rsmu_remove(struct platform_device *pdev)
++{
++	struct rsmu_cdev *rsmu;
++	struct device *dev = &pdev->dev;
++
++	rsmu = platform_get_drvdata(pdev);
++	if (!rsmu)
++		return -ENODEV;
++
++	if (!rsmu_class) {
++		dev_err(dev, "rsmu_class is NULL");
++		return -EIO;
++	}
++
++	device_destroy(rsmu_class, MKDEV(MAJOR(rsmu_cdevt), 0));
++	cdev_del(&rsmu->rsmu_cdev);
++
++	return 0;
++}
++
++static const struct platform_device_id rsmu_id_table[] = {
++	{ "rsmu-cdev0", },
++	{ "rsmu-cdev1", },
++	{ "rsmu-cdev2", },
++	{ "rsmu-cdev3", },
++	{},
++};
++MODULE_DEVICE_TABLE(platform, rsmu_id_table);
++
++static const struct of_device_id rsmu_of_match[] = {
++	{ .compatible = "renesas,rsmu-cdev0", },
++	{ .compatible = "renesas,rsmu-cdev1", },
++	{ .compatible = "renesas,rsmu-cdev2", },
++	{ .compatible = "renesas,rsmu-cdev3", },
++	{ /* end of table */ }
++};
++MODULE_DEVICE_TABLE(of, rsmu_of_match);
++
++static struct platform_driver rsmu_driver = {
++	.driver = {
++		.name = DRIVER_NAME,
++		.of_match_table = rsmu_of_match,
++	},
++	.probe = rsmu_probe,
++	.remove =  rsmu_remove,
++	.id_table = rsmu_id_table,
++};
++
++static int __init rsmu_init(void)
++{
++	int err;
++
++	rsmu_class = class_create(THIS_MODULE, DRIVER_NAME);
++	if (IS_ERR(rsmu_class)) {
++		err = PTR_ERR(rsmu_class);
++		pr_err("%s : Unable to register rsmu class", __func__);
++		return err;
++	}
++
++	err = alloc_chrdev_region(&rsmu_cdevt, 0, DRIVER_MAX_DEV, DRIVER_NAME);
++	if (err < 0) {
++		pr_err("%s : Unable to get major number", __func__);
++		goto err_rsmu_class;
++	}
++
++	err = platform_driver_register(&rsmu_driver);
++	if (err < 0) {
++		pr_err("%s Unabled to register %s driver",
++		       __func__, DRIVER_NAME);
++		goto err_rsmu_drv;
++	}
++	return 0;
++
++	/* Error Path */
++err_rsmu_drv:
++	unregister_chrdev_region(rsmu_cdevt, DRIVER_MAX_DEV);
++err_rsmu_class:
++	class_destroy(rsmu_class);
++	return err;
++}
++
++static void __exit rsmu_exit(void)
++{
++	platform_driver_unregister(&rsmu_driver);
++	unregister_chrdev_region(rsmu_cdevt, DRIVER_MAX_DEV);
++	class_destroy(rsmu_class);
++	rsmu_class = NULL;
++}
++
++module_init(rsmu_init);
++module_exit(rsmu_exit);
++
++MODULE_DESCRIPTION("Renesas SMU character device driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/misc/rsmu_cdev.h b/drivers/misc/rsmu_cdev.h
+new file mode 100644
+index 0000000..4b38790a
+--- /dev/null
++++ b/drivers/misc/rsmu_cdev.h
+@@ -0,0 +1,75 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * This driver is developed for the IDT ClockMatrix(TM) of
++ * timing and synchronization devices.
++ *
++ * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
++ */
++#ifndef __LINUX_RSMU_CDEV_H
++#define __LINUX_RSMU_CDEV_H
++
++#include <linux/cdev.h>
++
++/**
++ * struct rsmu_cdev - Driver data for RSMU character device
++ * @dev: pointer to platform device
++ * @mfd: pointer to MFD device
++ * @open_count: Count of char device being opened
++ * @rsmu_cdev: Character device handle
++ * @lock: Mutex to protect operations from being interrupted
++ */
++struct rsmu_cdev {
++	struct device *dev;
++	struct device *mfd;
++	struct cdev rsmu_cdev;
++	struct mutex *lock;
++	enum rsmu_type type;
++	atomic_t open_count;
++	u8 index;
++};
++
++/**
++ * Enumerated type listing DPLL combination modes
++ */
++enum rsmu_dpll_combomode {
++	E_COMBOMODE_CURRENT = 0,
++	E_COMBOMODE_FASTAVG,
++	E_COMBOMODE_SLOWAVG,
++	E_COMBOMODE_HOLDOVER,
++	E_COMBOMODE_MAX,
++};
++
++/**
++ * An id used to identify the respective child class states.
++ */
++enum rsmu_class_state {
++	E_SRVLOINITIALSTATE = 0,
++	E_SRVLOUNQUALIFIEDSTATE = 1,
++	E_SRVLOLOCKACQSTATE = 2,
++	E_SRVLOFREQUENCYLOCKEDSTATE = 3,
++	E_SRVLOTIMELOCKEDSTATE = 4,
++	E_SRVLOHOLDOVERINSPECSTATE = 5,
++	E_SRVLOHOLDOVEROUTOFSPECSTATE = 6,
++	E_SRVLOFREERUNSTATE = 7,
++	E_SRVNUMBERLOSTATES = 8,
++	E_SRVLOSTATEINVALID = 9
++};
++
++extern int
++rsmu_cm_set_combomode(struct rsmu_cdev *rsmu, u8 dpll, u8 mode);
++extern int
++rsmu_cm_get_combomode(struct rsmu_cdev *rsmu, u8 dpll, u8 *mode);
++extern int
++rsmu_cm_get_dpll_state(struct rsmu_cdev *rsmu, u8 dpll, u8 *state);
++extern int
++rsmu_cm_get_dpll_ffo(struct rsmu_cdev *rsmu, u8 dpll, struct rsmu_get_ffo *ffo);
++extern int
++rsmu_sabre_set_combomode(struct rsmu_cdev *rsmu, u8 dpll, u8 mode);
++extern int
++rsmu_sabre_get_combomode(struct rsmu_cdev *rsmu, u8 dpll, u8 *mode);
++extern int
++rsmu_sabre_get_dpll_state(struct rsmu_cdev *rsmu, u8 dpll, u8 *state);
++extern int
++rsmu_sabre_get_dpll_ffo(struct rsmu_cdev *rsmu, u8 dpll,
++			struct rsmu_get_ffo *ffo);
++#endif
+diff --git a/drivers/misc/rsmu_cm.c b/drivers/misc/rsmu_cm.c
+new file mode 100644
+index 0000000..26779e6
+--- /dev/null
++++ b/drivers/misc/rsmu_cm.c
+@@ -0,0 +1,214 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * This driver is developed for the IDT ClockMatrix(TM) of
++ * timing and synchronization devices.
++ *
++ * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
++ */
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/device.h>
++#include <linux/mfd/idt8a340_reg.h>
++#include <linux/mfd/rsmu.h>
++#include <uapi/linux/rsmu.h>
++
++#include "rsmu_cdev.h"
++
++int rsmu_cm_set_combomode(struct rsmu_cdev *rsmu, u8 dpll, u8 mode)
++{
++	u16 dpll_ctrl_n;
++	u8 cfg;
++	int err;
++
++	switch (dpll) {
++	case 0:
++		dpll_ctrl_n = DPLL_CTRL_0;
++		break;
++	case 1:
++		dpll_ctrl_n = DPLL_CTRL_1;
++		break;
++	case 2:
++		dpll_ctrl_n = DPLL_CTRL_2;
++		break;
++	case 3:
++		dpll_ctrl_n = DPLL_CTRL_3;
++		break;
++	case 4:
++		dpll_ctrl_n = DPLL_CTRL_4;
++		break;
++	case 5:
++		dpll_ctrl_n = DPLL_CTRL_5;
++		break;
++	case 6:
++		dpll_ctrl_n = DPLL_CTRL_6;
++		break;
++	case 7:
++		dpll_ctrl_n = DPLL_CTRL_7;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	if (mode >= E_COMBOMODE_MAX)
++		return -EINVAL;
++
++	err = rsmu_read(rsmu->mfd,
++			  dpll_ctrl_n + DPLL_CTRL_COMBO_MASTER_CFG,
++			  &cfg, sizeof(cfg));
++	if (err)
++		return err;
++
++	/* Only need to enable/disable COMBO_MODE_HOLD. */
++	if (mode)
++		cfg |= COMBO_MASTER_HOLD;
++	else
++		cfg &= ~COMBO_MASTER_HOLD;
++
++	return rsmu_write(rsmu->mfd,
++			    dpll_ctrl_n + DPLL_CTRL_COMBO_MASTER_CFG,
++			    &cfg, sizeof(cfg));
++}
++
++int rsmu_cm_get_combomode(struct rsmu_cdev *rsmu, u8 dpll, u8 *mode)
++{
++	u16 dpll_ctrl_n;
++	u8 cfg;
++	int err;
++
++	switch (dpll) {
++	case 0:
++		dpll_ctrl_n = DPLL_CTRL_0;
++		break;
++	case 1:
++		dpll_ctrl_n = DPLL_CTRL_1;
++		break;
++	case 2:
++		dpll_ctrl_n = DPLL_CTRL_2;
++		break;
++	case 3:
++		dpll_ctrl_n = DPLL_CTRL_3;
++		break;
++	case 4:
++		dpll_ctrl_n = DPLL_CTRL_4;
++		break;
++	case 5:
++		dpll_ctrl_n = DPLL_CTRL_5;
++		break;
++	case 6:
++		dpll_ctrl_n = DPLL_CTRL_6;
++		break;
++	case 7:
++		dpll_ctrl_n = DPLL_CTRL_7;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	err = rsmu_read(rsmu->mfd,
++			  dpll_ctrl_n + DPLL_CTRL_COMBO_MASTER_CFG,
++			  &cfg, sizeof(cfg));
++	if (err)
++		return err;
++
++	*mode = cfg & COMBO_MASTER_HOLD;
++
++	return 0;
++}
++
++int rsmu_cm_get_dpll_state(struct rsmu_cdev *rsmu, u8 dpll, u8 *state)
++{
++	u8 cfg;
++	int err;
++
++	/* 8 is sys dpll */
++	if (dpll > 8)
++		return -EINVAL;
++
++	err = rsmu_read(rsmu->mfd,
++			  STATUS + DPLL0_STATUS + dpll,
++			  &cfg, sizeof(cfg));
++	if (err)
++		return err;
++
++	switch (cfg & DPLL_STATE_MASK) {
++	case E_DPLL_STATE_FREERUN:
++		*state = E_SRVLOUNQUALIFIEDSTATE;
++		break;
++	case E_DPLL_STATE_LOCKACQ:
++	case E_DPLL_STATE_LOCKREQ:
++		*state = E_SRVLOLOCKACQSTATE;
++		break;
++	case E_DPLL_STATE_LOCKED:
++		*state = E_SRVLOTIMELOCKEDSTATE;
++		break;
++	case E_DPLL_STATE_HOLDOVER:
++		*state = E_SRVLOHOLDOVERINSPECSTATE;
++		break;
++	default:
++		*state = E_SRVLOSTATEINVALID;
++		break;
++	}
++
++	return 0;
++}
++
++int rsmu_cm_get_dpll_ffo(struct rsmu_cdev *rsmu, u8 dpll,
++			 struct rsmu_get_ffo *ffo)
++{
++	u8 buf[6] = {0};
++	s64 fcw = 0;
++	u16 dpll_filter_status;
++	int err;
++
++	switch (dpll) {
++	case 0:
++		dpll_filter_status = DPLL0_FILTER_STATUS;
++		break;
++	case 1:
++		dpll_filter_status = DPLL1_FILTER_STATUS;
++		break;
++	case 2:
++		dpll_filter_status = DPLL2_FILTER_STATUS;
++		break;
++	case 3:
++		dpll_filter_status = DPLL3_FILTER_STATUS;
++		break;
++	case 4:
++		dpll_filter_status = DPLL4_FILTER_STATUS;
++		break;
++	case 5:
++		dpll_filter_status = DPLL5_FILTER_STATUS;
++		break;
++	case 6:
++		dpll_filter_status = DPLL6_FILTER_STATUS;
++		break;
++	case 7:
++		dpll_filter_status = DPLL7_FILTER_STATUS;
++		break;
++	case 8:
++		dpll_filter_status = DPLLSYS_FILTER_STATUS;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	err = rsmu_read(rsmu->mfd, STATUS + dpll_filter_status, buf, 6);
++	if (err)
++		return err;
++
++	/* Convert to frequency control word */
++	fcw = buf[0];
++	fcw |= buf[1] << 8LL;
++	fcw |= buf[2] << 16LL;
++	fcw |= buf[3] << 24LL;
++	fcw |= buf[4] << 32LL;
++	fcw |= buf[5] << 40LL;
++	if (buf[5] & BIT(7))
++		/* Sign extend */
++		fcw |= GENMASK(63, 48);
++
++	/* FCW unit is 2 ^ -53 = 1.1102230246251565404236316680908e-16 */
++	ffo->ffo = fcw * 111;
++
++	return 0;
++}
+diff --git a/drivers/misc/rsmu_sabre.c b/drivers/misc/rsmu_sabre.c
+new file mode 100644
+index 0000000..8b27d6e
+--- /dev/null
++++ b/drivers/misc/rsmu_sabre.c
+@@ -0,0 +1,153 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * This driver is developed for the IDT 82P33XXX series of
++ * timing and synchronization devices.
++ *
++ * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
++ */
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/device.h>
++#include <linux/mfd/idt82p33_reg.h>
++#include <linux/mfd/rsmu.h>
++#include <uapi/linux/rsmu.h>
++
++#include "rsmu_cdev.h"
++
++int rsmu_sabre_set_combomode(struct rsmu_cdev *rsmu, u8 dpll, u8 mode)
++{
++	u16 dpll_ctrl_n;
++	u8 cfg;
++	int err;
++
++	switch (dpll) {
++	case 0:
++		dpll_ctrl_n = DPLL1_OPERATING_MODE_CNFG;
++		break;
++	case 1:
++		dpll_ctrl_n = DPLL2_OPERATING_MODE_CNFG;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	if (mode >= E_COMBOMODE_MAX)
++		return -EINVAL;
++
++	err = rsmu_read(rsmu->mfd, dpll_ctrl_n, &cfg, sizeof(cfg));
++	if (err)
++		return err;
++
++	cfg &= ~(COMBO_MODE_MASK << COMBO_MODE_SHIFT);
++	cfg |= (mode << COMBO_MODE_SHIFT);
++
++	return rsmu_write(rsmu->mfd, dpll_ctrl_n, &cfg, sizeof(cfg));
++}
++
++int rsmu_sabre_get_combomode(struct rsmu_cdev *rsmu, u8 dpll, u8 *mode)
++{
++	u16 dpll_ctrl_n;
++	u8 cfg;
++	int err;
++
++	switch (dpll) {
++	case 0:
++		dpll_ctrl_n = DPLL1_OPERATING_MODE_CNFG;
++		break;
++	case 1:
++		dpll_ctrl_n = DPLL2_OPERATING_MODE_CNFG;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	err = rsmu_read(rsmu->mfd, dpll_ctrl_n, &cfg, sizeof(cfg));
++	if (err)
++		return err;
++
++	*mode = cfg >> COMBO_MODE_SHIFT;
++
++	return 0;
++}
++
++int rsmu_sabre_get_dpll_state(struct rsmu_cdev *rsmu, u8 dpll, u8 *state)
++{
++	u16 dpll_sts_n;
++	u8 cfg;
++	int err;
++
++	switch (dpll) {
++	case 0:
++		dpll_sts_n = DPLL1_OPERATING_STS;
++		break;
++	case 1:
++		dpll_sts_n = DPLL2_OPERATING_STS;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	err = rsmu_read(rsmu->mfd, dpll_sts_n, &cfg, sizeof(cfg));
++	if (err)
++		return err;
++
++	switch (cfg & OPERATING_STS_MASK) {
++	case DPLL_STATE_FREERUN:
++		*state = E_SRVLOUNQUALIFIEDSTATE;
++		break;
++	case DPLL_STATE_PRELOCKED2:
++	case DPLL_STATE_PRELOCKED:
++		*state = E_SRVLOLOCKACQSTATE;
++		break;
++	case DPLL_STATE_LOCKED:
++		*state = E_SRVLOTIMELOCKEDSTATE;
++		break;
++	case DPLL_STATE_HOLDOVER:
++		*state = E_SRVLOHOLDOVERINSPECSTATE;
++		break;
++	default:
++		*state = E_SRVLOSTATEINVALID;
++		break;
++	}
++
++	return 0;
++}
++
++int rsmu_sabre_get_dpll_ffo(struct rsmu_cdev *rsmu, u8 dpll,
++			    struct rsmu_get_ffo *ffo)
++{
++	u8 buf[5] = {0};
++	s64 fcw = 0;
++	u16 dpll_freq_n;
++	int err;
++
++	switch (dpll) {
++	case 0:
++		dpll_freq_n = DPLL1_HOLDOVER_FREQ_CNFG;
++		break;
++	case 1:
++		dpll_freq_n = DPLL2_HOLDOVER_FREQ_CNFG;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	err = rsmu_read(rsmu->mfd, dpll_freq_n, buf, 5);
++	if (err)
++		return err;
++
++	/* Convert to frequency control word */
++	fcw = buf[0];
++	fcw |= buf[1] << 8LL;
++	fcw |= buf[2] << 16LL;
++	fcw |= buf[3] << 24LL;
++	fcw |= buf[4] << 32LL;
++	if (buf[4] & BIT(7))
++		/* Sign extend */
++		fcw |= GENMASK(63, 40);
++
++	/* FCW unit is 77760 / ( 1638400 * 2^48) = 1.68615121864946 * 10^-16 */
++	ffo->ffo = div_s64(fcw * 168615, 1000);
++
++	return 0;
++}
+diff --git a/include/uapi/linux/rsmu.h b/include/uapi/linux/rsmu.h
+new file mode 100644
+index 0000000..28b9d94
+--- /dev/null
++++ b/include/uapi/linux/rsmu.h
+@@ -0,0 +1,61 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Driver for the IDT ClockMatrix(TM) and 82p33xxx families of
++ * timing and synchronization devices.
++ *
++ * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
++ */
++
++#ifndef __UAPI_LINUX_RSMU_CDEV_H
++#define __UAPI_LINUX_RSMU_CDEV_H
++
++/* Set dpll combomode */
++struct rsmu_combomode {
++	__u8 dpll;
++	__u8 mode;
++};
++
++/* Get dpll state */
++struct rsmu_get_state {
++	__u8 dpll;
++	__u8 state;
++};
++
++/* Get dpll ffo (fractional frequency offset) in ppqt*/
++struct rsmu_get_ffo {
++	__u8 dpll;
++	__s64 ffo;
++};
++
++/*
++ * RSMU IOCTL List
++ */
++#define RSMU_MAGIC '?'
++
++/**
++ * @Description
++ * ioctl to set SMU combo mode.
++ *
++ * @Parameters
++ * pointer to struct rsmu_combomode that contains dpll combomode setting
++ */
++#define RSMU_SET_COMBOMODE  _IOW(RSMU_MAGIC, 1, struct rsmu_combomode)
++
++/**
++ * @Description
++ * ioctl to get SMU dpll state.
++ *
++ * @Parameters
++ * pointer to struct rsmu_get_state that contains dpll state
++ */
++#define RSMU_GET_STATE  _IOR(RSMU_MAGIC, 2, struct rsmu_get_state)
++
++/**
++ * @Description
++ * ioctl to get SMU dpll ffo.
++ *
++ * @Parameters
++ * pointer to struct rsmu_get_ffo that contains dpll ffo in ppqt
++ */
++#define RSMU_GET_FFO  _IOR(RSMU_MAGIC, 3, struct rsmu_get_ffo)
++#endif /* __UAPI_LINUX_RSMU_CDEV_H */
+-- 
+2.7.4
 
-        struct bitmap_region {
-                struct region;
-                unsigned int nbits; 
-        };
-
-But it would be nothing better than simple flat structure.
-
-> > I'd rather not keep going in circles and guessing and annoying everyone
-> > else on the Cc: list by filling their inbox any more than I already have.
-> > 
-> > That would help a lot in getting this finished.
-> 
-> Agree!
-> 
-> > Example #3 -- not sent..
-> > 
-> > +#define DECLARE_REGION(rname, initval) \
-> > +struct region rname = {                \
-> > +       .start = initval,               \
-> > +       .off = initval,                 \
-> > +       .group_len = initval,           \
-> > +       .end = initval,                 \
-> > +}
-> > 
-> > [...]
-> > 
-> > -       struct region r;
-> > +       DECLARE_REGION(r, nmaskbits - 1);       /* "N-N:N/N" */
->
-> I would initialize with nmaskbits to be sure the value is invalid, but it will
-> add some code, below, so up to you, guys.
-
-We don't need to initialize r because it's purely internal and helpers
-don't expect that r is initialized, so it's waste of cycles.
- 
-> > +/*
-> > + * Seeing 'N' tells us to leave the value of "num" unchanged (which will
-> > + * be the max value for the width of the bitmap, set via DECLARE_REGION).
-> > + */
-> >  static const char *bitmap_getnum(const char *str, unsigned int *num)
-> >  {
-> >         unsigned long long n;
-> >         unsigned int len;
-> >  
-> > +       if (str[0] == 'N')      /* nothing to do, just advance str */
-> > +               return str + 1;
-
-Is my understanding correct that this is an attempt to avoid adding
-the nbits to struct region? It would probably work, but I'd prefer
-to extend the structure. For me it's more readable and maintainable
-approach.
-
-Yury
