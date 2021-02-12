@@ -2,177 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E882319B15
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB928319B1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 09:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbhBLIQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 03:16:09 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:44012 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhBLIPx (ORCPT
+        id S229896AbhBLIUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 03:20:02 -0500
+Received: from pv50p00im-ztdg10011301.me.com ([17.58.6.40]:39873 "EHLO
+        pv50p00im-ztdg10011301.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229625AbhBLIUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 03:15:53 -0500
-Received: by mail-oi1-f178.google.com with SMTP id d20so9151874oiw.10;
-        Fri, 12 Feb 2021 00:15:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AUw6a0oNfUGx7sV9+BDmLKTx8i0omztJvVehVvMjp08=;
-        b=qEjn8JdK1Eu6xmpC/dDmOyxGdCxYz6cG7isOBUjSog9jKu+/4yYVCZ7xTih0XFJacg
-         sTWFGJGY2vwFMKVVL5ATbldDK+oNO3UpNFr57m7gX2mf9fBGSh7WdxOg731/NH6AthMg
-         3N30EUfAWh5PBWE5hrMQYA+BFR5Si++VoWdvw0PBrRErEvGh290RjPjJGVSzvbQzjV4U
-         IwKA1MpiWRo2zeidP+Ryicv8TCYipar4Y+MHA4ZZGYXuqutU/IELofxpXsUSZSFm3T5Q
-         mJifoUgXTNsZN4C1r04D7nY1/xh44XirHAh2BaO/Ku9ZsBqPxyWCN4uYAqS3OKRIpYJL
-         NAVw==
-X-Gm-Message-State: AOAM533p/j7sNKmu7ry4URASVaHnkD0jijp0uE3V3TEz8lZtS6ropovO
-        hohCXFxA7wtWCsdDDW654SS4Azsv9ly4c59CobE=
-X-Google-Smtp-Source: ABdhPJy6z32m+bzOluIHnLsLpN1EyV/5RCGuvrp+ntL/2TP7Vc/kZ3Ry6sT9BbR+1Sm0fMQkDE9ovvBYq5nqPtBHZk8=
-X-Received: by 2002:aca:d8c6:: with SMTP id p189mr1109394oig.54.1613117711336;
- Fri, 12 Feb 2021 00:15:11 -0800 (PST)
+        Fri, 12 Feb 2021 03:20:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1613117944;
+        bh=mCP60QzB4Xmc4Ln+UcyddAgkfpo4+d8gMR9T+A+GPF4=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=OE4HAGp9xHIpz6mRtPVtsLn7ImTn+FW0FIVtttbqBPYNEn5yNpJlP3fFNH57l4Rro
+         IeW77yodSj/vpGAhBLfsIrX94EksuIKFg5bhWwtOxJtzcJUzWBWDE8l7RwAn+BZEHr
+         S50fNm4I7CHCiRVCv9iYf0tByzrP3meH/q8aYgo7O6pa+9Ev0pV+HiRg0hKecuuUPU
+         SKuYCKS44fEpkFdMq5FCYqaBTwL2xhu8VWoeJ9qPLwEVmqmfRmsSLcooqQes0RvBt4
+         QnelrOwIJ5c/qMAC035EJKJZ/NYCkjTmThlxH6bHJXLl+6tq7NSs5N5jfJ756520KW
+         FFQS0n3Hmdc+g==
+Received: from everest.nathzi1505 (unknown [103.17.84.167])
+        by pv50p00im-ztdg10011301.me.com (Postfix) with ESMTPSA id 736FF7605AB;
+        Fri, 12 Feb 2021 08:19:00 +0000 (UTC)
+From:   Pritthijit Nath <pritthijit.nath@icloud.com>
+To:     vireshk@kernel.org, gregkh@linuxfoundation.org, johan@kernel.org,
+        elder@kernel.org
+Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Pritthijit Nath <pritthijit.nath@icloud.com>
+Subject: [PATCH 1/2] staging: greybus: Fixed alignment issue in hid.c
+Date:   Fri, 12 Feb 2021 13:48:34 +0530
+Message-Id: <20210212081835.9497-1-pritthijit.nath@icloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
- <CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com> <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com>
-In-Reply-To: <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 12 Feb 2021 09:14:59 +0100
-Message-ID: <CAMuHMdVG97Zjr1WO0554h9eUZhfeyxwUfNYuAdPoacpznkA6-Q@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-12_02:2021-02-12,2021-02-12 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2102120063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+This change fixes a checkpatch CHECK style issue for "Alignment should match
+open parenthesis".
 
-On Fri, Feb 12, 2021 at 4:00 AM Saravana Kannan <saravanak@google.com> wrote:
-> On Thu, Feb 11, 2021 at 5:00 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >   1. R-Car Gen2 (Koelsch), R-Car Gen3 (Salvator-X(S), Ebisu).
-> >
-> >       - Commit 2dfc564bda4a31bc ("soc: renesas: rcar-sysc: Mark device
-> >         node OF_POPULATED after init") is no longer needed (but already
-> >         queued for v5.12 anyway)
->
-> Rob doesn't like the proliferation of OF_POPULATED and we don't need
-> it anymore, so maybe work it out with him? It's a balance between some
-> wasted memory (struct device(s)) vs not proliferating OF_POPULATED.
+Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
+---
+ drivers/staging/greybus/hid.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Rob: should it be reverted?  For v5.13?
-I guess other similar "fixes" went in in the mean time.
+diff --git a/drivers/staging/greybus/hid.c b/drivers/staging/greybus/hid.c
+index ed706f39e87a..a56c3fb5d35a 100644
+--- a/drivers/staging/greybus/hid.c
++++ b/drivers/staging/greybus/hid.c
+@@ -221,8 +221,8 @@ static void gb_hid_init_reports(struct gb_hid *ghid)
+ }
 
-> >       - Some devices are reprobed, despite their drivers returning
-> >         a real error code, and not -EPROBE_DEFER:
->
-> Sorry, it's not obvious from the logs below where "reprobing" is
-> happening. Can you give more pointers please?
+ static int __gb_hid_get_raw_report(struct hid_device *hid,
+-		unsigned char report_number, __u8 *buf, size_t count,
+-		unsigned char report_type)
++				   unsigned char report_number, __u8 *buf, size_t count,
++				   unsigned char report_type)
+ {
+ 	struct gb_hid *ghid = hid->driver_data;
+ 	int ret;
+--
+2.25.1
 
-My log was indeed not a full log, but just the reprobes happening.
-I'll send you a full log by private email.
-
-> Also, thinking more about this, the only way I could see this happen is:
-> 1. Device fails with error that's not -EPROBE_DEFER
-> 2. It somehow gets added to a device link (with AUTOPROBE_CONSUMER
-> flag) where it's a consumer.
-> 3. The supplier probes and the device gets added to the deferred probe
-> list again.
->
-> But I can't see how this sequence can happen. Device links are created
-> only when a device is added. And is the supplier isn't added yet, the
-> consumer wouldn't have probed in the first place.
-
-The full log doesn't show any evidence of the device being added
-to a list in between the two probes.
-
-> Other than "annoying waste of time" is this causing any other problems?
-
-Probably not.  But see below.
-
-> >       - The PCI reprobing leads to a memory leak, for which I've sent a fix
-> >         "[PATCH] PCI: Fix memory leak in pci_register_io_range()"
-> >         https://lore.kernel.org/linux-pci/20210202100332.829047-1-geert+renesas@glider.be/
->
-> Wrt PCI reprobing,
-> 1. Is this PCI never expected to probe, but it's being reattempted
-> despite the NOT EPROBE_DEFER error? Or
-
-There is no PCIe card present, so the failure is expected.
-Later it is reprobed, which of course fails again.
-
-> 2. The PCI was deferred probe when it should have probed and then when
-> it's finally reattemped and it could succeed, we are hitting this mem
-> leak issue?
-
-I think the leak has always been there, but it was just exposed by
-this unneeded reprobe.  I don't think a reprobe after that specific
-error path had ever happened before.
-
-> I'm basically trying to distinguish between "this stuff should never
-> be retried" vs "this/it's suppliers got probe deferred with
-> fw_devlink=on vs but didn't get probe deferred with
-> fw_devlink=permissive and that's causing issues"
-
-There should not be a probe deferral, as no -EPROBE_DEFER was
-returned.
-
-> >       - I2C on R-Car Gen3 does not seem to use DMA, according to
-> >         /sys/kernel/debug/dmaengine/summary:
-> >
-> >             -dma4chan0    | e66d8000.i2c:tx
-> >             -dma4chan1    | e66d8000.i2c:rx
-> >             -dma5chan0    | e6510000.i2c:tx
->
-> I think I need more context on the problem before I can try to fix it.
-> I'm also very unfamiliar with that file. With fw_devlink=permissive,
-> I2C was using DMA? If so, the next step is to see if the I2C relative
-> probe order with DMA is getting changed and if so, why.
-
-Yes, I plan to dig deeper to see what really happens...
-
-> >       - On R-Mobile A1, I get a BUG and a memory leak:
-> >
-> >             BUG: spinlock bad magic on CPU#0, swapper/1
-
->
-> Hmm... I looked at this in bits and pieces throughout the day. At
-> least spent an hour looking at this. This doesn't make a lot of sense
-> to me. I don't even touch anything in this code path AFAICT.  Are
-> modules/kernel mixed up somehow? I need more info before I can help.
-> Does reverting my pm domain change make any difference (assume it
-> boots this far without it).
-
-I plan to dig deeper to see what really happens...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
