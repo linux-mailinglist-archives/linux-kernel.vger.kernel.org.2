@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD5E319BF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:38:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0CB319BF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhBLJhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:37:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhBLJhE (ORCPT
+        id S230175AbhBLJhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:37:21 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8611 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229889AbhBLJhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:37:04 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF19DC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:36:23 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id r21so7086338wrr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:36:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=xV/X6S3BgTkmgChLtbDzueTb5OHb5qAxSGvZ5rKEbzM=;
-        b=dnxVihN33cILJyM5Xtr0YeXxkdAQNGbBts7uYXFbgl0w14+LYLh5Ks6/89S7pROHVk
-         pQiImshTjs5C12HuMu3vSgPt92W+I9zh3HMXAsEK44t5OqssK+znxN7hFQLz6ya6B/p8
-         gLoR5bdXQ5vM+siyeK8O3QvpI8z1LTUOLMR9P2qYmPMIaUhZzK2CFp06J/VSC5mRPbIj
-         ssFzXxElD6vS0ya6jDM5wv0ImvkG5tktHMXgbCcPcfK9Z6sf3KhAvEd+nm/CvyxaQM67
-         eJQ3Y/ESW7KZdn5WbLpNA55Zxk8XjILhfPqhRLSH73ITXhLvp0oL848E8sPOAXEEjZ9X
-         jxBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xV/X6S3BgTkmgChLtbDzueTb5OHb5qAxSGvZ5rKEbzM=;
-        b=F+ZOGt4q+Z2bX55vy6DLpeXe5pKpmHq/GSaOsJIhkC34T5zfpvP0sEOLAeKZ8yRbgE
-         tvy05E47SE0/3KB/o4bPhjAZ2RFS0sZLzoxqsSzKrWoJy0PX/BDRvi9uP0poIzUc0x2C
-         X2iJSkxszq9flW3X51Pm+prgLDGxtgagW2KUPdo2jLvejru40O8iIRRYhuquROwxbN8Q
-         3ba8L2WYlfiUeB0AOzr7xX45h2u1tPdg5J2LyfThLETGulEr+0/WVSR3eSmiuB/6o4Qv
-         pvXiRxbFsmDg9365FvcOCyTFD9giS1SQCUpyPaPbR8aEgYcsSTa2u61vz5gTJagMHPpS
-         BkZQ==
-X-Gm-Message-State: AOAM5330HASfsP2sKKRGyQNegpWJiRGz/r+lnV5YMn/uCjpxCGHPJn3T
-        2hBU5G3jwpjLLOacdGR3Yd4tw4lP/94W3w==
-X-Google-Smtp-Source: ABdhPJxRZvbuMTHcgUIRA9pj2/JU5VnXZlBZVxaDHsSy9ohAmkujYELYahSSTt0hdmU4gMAfHMJrug==
-X-Received: by 2002:adf:f648:: with SMTP id x8mr2316877wrp.34.1613122582683;
-        Fri, 12 Feb 2021 01:36:22 -0800 (PST)
-Received: from dell ([91.110.221.187])
-        by smtp.gmail.com with ESMTPSA id t198sm3875628wmt.7.2021.02.12.01.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 01:36:21 -0800 (PST)
-Date:   Fri, 12 Feb 2021 09:36:20 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Stephen Boyd <sboyd@kernel.org>, arnd@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH 08/21] clk: clkdev: Ignore suggestion to use gnu_printf()
- as it's not appropriate here
-Message-ID: <20210212093620.GG4572@dell>
-References: <20210126124540.3320214-1-lee.jones@linaro.org>
- <20210126124540.3320214-9-lee.jones@linaro.org>
- <161307142704.1254594.1986201109191269158@swboyd.mtv.corp.google.com>
+        Fri, 12 Feb 2021 04:37:16 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B60264c220000>; Fri, 12 Feb 2021 01:36:34 -0800
+Received: from reg-r-vrt-018-180.nvidia.com (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 12 Feb 2021 09:36:31 +0000
+References: <20210211222604.51bd537c@canb.auug.org.au>
+ <YCWT6TZCGQOXlf6B@osiris>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Vlad Buslov <vladbu@nvidia.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dmytro Linkin <dlinkin@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Tree for Feb 11
+In-Reply-To: <YCWT6TZCGQOXlf6B@osiris>
+Date:   Fri, 12 Feb 2021 11:36:29 +0200
+Message-ID: <ygnh8s7tsk4i.fsf@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <161307142704.1254594.1986201109191269158@swboyd.mtv.corp.google.com>
+Content-Type: text/plain
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613122594; bh=RserMEccpievJi4knvPI7JSCL0bayUw+P38G/ozwRCw=;
+        h=References:User-agent:From:To:CC:Subject:In-Reply-To:Date:
+         Message-ID:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=K3ot1ngeO8zwBjXPrrPdbKUyijcy/bjwcy+awyTuIEXEas0fpWzpMw46d5/CLEDMb
+         T4JRvpg4NOQU/37PN/ZHLOolQPOfyA/MJOWVIMr5fSeMHSPyLLslJhRo5ga3jv0iPa
+         wOnoyHxwjLKASlr/FNIUPIbQuFiKuCjKGNV9TBDTXB/w/9oqplJ1ScJdtSJMR3PTsp
+         jHuVy1mq9VGxl/pngp30heMIsBZ1ayRPqiHhlvkzeauDuE8bXXLz7Pr1dlrsgHUxSN
+         NE/tstRel2mbXeFrakCT49wrk1mzVOTgFwXpZ5ixSVmSrhOCbALubsdgsAqX03flR7
+         8owCRSVIxeZBw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Feb 2021, Stephen Boyd wrote:
+On Thu 11 Feb 2021 at 22:30, Heiko Carstens <hca@linux.ibm.com> wrote:
+> On Thu, Feb 11, 2021 at 10:26:04PM +1100, Stephen Rothwell wrote:
+>> Hi all,
+>> 
+>> Changes since 20210210:
+>> 
+>> The powerpc tree still had its build failure in the allyesconfig for
+>> which I applied a supplied patch.
+>> 
+>> The v4l-dvb tree lost its build failure.
+>> 
+>> The drm-misc tree lost its build failure.
+>> 
+>> The modules tree lost its build failure.
+>> 
+>> The device-mapper tree gained a build failure so I used the version
+>> from next-20210210.
+>> 
+>> The tip tree lost its boot failure.
+>> 
+>> The rcu tree gained conflicts against the block tree.
+>> 
+>> The driver-core tree lost its build failure.
+>> 
+>> The akpm-current tree gained conflicts against the fscache tree.
+>> 
+>> Non-merge commits (relative to Linus' tree): 9533
+>>  9470 files changed, 385794 insertions(+), 266880 deletions(-)
+>> 
+>> ----------------------------------------------------------------------------
+>
+> Build fails on s390 using defconfig with:
+>
+> In file included from drivers/net/ethernet/mellanox/mlx5/core/en_tc.h:40,
+>                  from drivers/net/ethernet/mellanox/mlx5/core/en_main.c:45:
+> drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h:24:29: error: field 'match_level' has incomplete type
+>    24 |  enum mlx5_flow_match_level match_level;
+>       |                             ^~~~~~~~~~~
+> drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h:27:26: warning: 'struct mlx5e_encap_entry' declared inside parameter list will not be visible outside of this definition or declaration
+>    27 |  int (*calc_hlen)(struct mlx5e_encap_entry *e);
+>       |                          ^~~~~~~~~~~~~~~~~
+>
+> caused by this:
+> commit 0d9f96471493d5483d116c137693f03604332a04 (HEAD, refs/bisect/bad)
+> Author: Vlad Buslov <vladbu@nvidia.com>
+> Date:   Sun Jan 24 22:07:04 2021 +0200
+>
+>     net/mlx5e: Extract tc tunnel encap/decap code to dedicated file
+>     
+>     Following patches in series extend the extracted code with routing
+>     infrastructure. To improve code modularity created a dedicated
+>     tc_tun_encap.c source file and move encap/decap related code to the new
+>     file. Export code that is used by both regular TC code and encap/decap code
+>     into tc_priv.h (new header intended to be used only by TC module). Rename
+>     some exported functions by adding "mlx5e_" prefix to their names.
+>     
+>     Signed-off-by: Vlad Buslov <vladbu@nvidia.com>
+>     Signed-off-by: Dmytro Linkin <dlinkin@nvidia.com>
+>     Reviewed-by: Roi Dayan <roid@nvidia.com>
+>     Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+>
+> Note: switching on NET_SWITCHDEV fixes the build error.
 
-> Quoting Lee Jones (2021-01-26 04:45:27)
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/clk/clkdev.c: In function ‘vclkdev_alloc’:
-> >  drivers/clk/clkdev.c:173:3: warning: function ‘vclkdev_alloc’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
-> > 
-> > Cc: Russell King <linux@armlinux.org.uk>
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/clk/clkdev.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/drivers/clk/clkdev.c b/drivers/clk/clkdev.c
-> > index 0f2e3fcf0f19f..5e5f25d568724 100644
-> > --- a/drivers/clk/clkdev.c
-> > +++ b/drivers/clk/clkdev.c
-> > @@ -153,6 +153,11 @@ struct clk_lookup_alloc {
-> >         char    con_id[MAX_CON_ID];
-> >  };
-> >  
-> > +#pragma GCC diagnostic push
-> > +#ifndef __clang__
-> > +#pragma GCC diagnostic ignored "-Wsuggest-attribute=format"
-> > +#endif
-> 
-> Can this be some macro banished to compiler.h?
+Hi Heiko,
 
-This is probably a question for Arnd.
+This problem is supposed to be fixed by 36280f0797df ("net/mlx5e: Fix
+tc_tun.h to verify MLX5_ESWITCH config"). I'm trying to reproduce with
+config supplied by test robot in another thread (config: s390-defconfig)
+and current net-next builds fine for me. I've also verified that config
+option you mentioned is not set in that config:
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+$ grep NET_SWITCHDEV .config
+# CONFIG_NET_SWITCHDEV is not set
+
+Can you help me reproduce?
+
+Thanks,
+Vlad
