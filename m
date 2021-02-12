@@ -2,57 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D13319AAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FADC319AB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhBLHlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 02:41:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhBLHe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 02:34:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2F6E64DDF;
-        Fri, 12 Feb 2021 07:34:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613115251;
-        bh=neLigVsdoN+CYxyJjxX/qAVzIuWLkdZyDMtjMwYqrLI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HXxvvzoLkjPDeR3JvcBQ0yM6umQwZkmsCLbD2ensoMiDSwJ12mr5vWKrB0DrZiHW7
-         Gekvt4dNU/S+p5AIGSg4dt+0WYDyTcu/6XVXII5HxZO1gqLk/3yDI3Wlulmpn0zOJp
-         7rgsu6cSkxMG72w51fu99lYoEdiG5ZacmY648UG0=
-Date:   Fri, 12 Feb 2021 08:34:09 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-usb@vger.kernel.org, cocci@systeme.lip6.fr,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH v2 0/2] of: of_device.h cleanups
-Message-ID: <YCYvcUNiPoG/ipyj@kroah.com>
-References: <20210211232745.1498137-1-robh@kernel.org>
+        id S230015AbhBLHlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 02:41:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230126AbhBLHfY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 02:35:24 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A9EC061574;
+        Thu, 11 Feb 2021 23:34:36 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id f1so11808582lfu.3;
+        Thu, 11 Feb 2021 23:34:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y3hGEJAC31/KRNjy0ROs+LaCPxDmfXe9m8Xp8ZPqihs=;
+        b=KY8CWmmvhmEQaatRl10NIsd/xWZpEElri4vTuBbzGR3jOEQYF5/lnqnMpFi9JJYTdA
+         FHGHbUjv14vmZWRk+Mhg2jOqINdacPBYl7f9X4jItK/hzKj6pE/PynwWW3bGtPMQOF3M
+         SJ2jBwnmHztFCww+zZ/B6f/aQOiJxdPNxxnDEPTMsOOhkBpMraQ1na9wnxhVpLiane0q
+         pigV+v/6P7L4/ubMyIcSN2wAPmxl7JUxsIvJrLhPP09nYdtQWwMUIt+s+r5kPu7CdaAo
+         GJMpGzQH/BDU1C+NAerp58gxeFROcy7Muq2M0PDWft8tEmsjdIq6aVTRUYk1KH0Bvsq1
+         PXiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y3hGEJAC31/KRNjy0ROs+LaCPxDmfXe9m8Xp8ZPqihs=;
+        b=WNjizBw7sm9PM8lnXEBd5r0b1sVu5wbmRgaLHgep1M7xtESQ9gIldwVidCqUa/T6HD
+         BqfHcIrtx0ZntBRO9JVHfUWV8FJ4A8BgL/usJZDUs0GPVsgdJ4GruTEP86eIIHXNBNEv
+         QMY/czabzXkD3LOJVfIyutA1wqcv40EGZNBa8EFARBytUQg1H+3y7B/gvwgNQQWL7OKk
+         FvdNqUNq0Qv7bfsAbSSCsVi6lST3oKWZMqZW5wLdngpnOFII3+sV/wbZmxPlzbI3aCfI
+         TRrskoch1MSfaaXc6h66drV4fDc3QHqUZ2KaMMHF8PdI8kP4BtFZD7+Vzj5w7RpeFsW+
+         6szA==
+X-Gm-Message-State: AOAM5307b764zyQS323ghEnBS9BFLIa+0qXFn63VA/evnpPnaFgMwC65
+        lledlO5b/HYOpp5hMg6ftSyQov9PU7sXxw==
+X-Google-Smtp-Source: ABdhPJzv5Dw2UavQKAtYF4gkGVlRUlW06E5X49hx6/reBkqFu+Q+yooaflQj2bSHIkYwhLI98r1wcg==
+X-Received: by 2002:a05:6512:505:: with SMTP id o5mr900612lfb.90.1613115274959;
+        Thu, 11 Feb 2021 23:34:34 -0800 (PST)
+Received: from TRWS9215.usr.ingenico.loc ([213.143.229.14])
+        by smtp.gmail.com with ESMTPSA id z11sm883311lfd.98.2021.02.11.23.34.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Feb 2021 23:34:34 -0800 (PST)
+From:   Fatih Yildirim <yildirim.fatih@gmail.com>
+To:     marvin24@gmx.de, gregkh@linuxfoundation.org
+Cc:     Fatih Yildirim <yildirim.fatih@gmail.com>,
+        ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH -next] staging: nvec: minor coding style fix
+Date:   Fri, 12 Feb 2021 10:34:23 +0300
+Message-Id: <20210212073423.20562-1-yildirim.fatih@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211232745.1498137-1-robh@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 05:27:43PM -0600, Rob Herring wrote:
-> This is a couple of cleanups for of_device.h. They fell out from my
-> attempt at decoupling of_device.h and of_platform.h which is a mess
-> and I haven't finished, but there's no reason to wait on these.
+Fix for the below coding style warning.
+Warning: Move const after static - use 'static const int'
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Fatih Yildirim <yildirim.fatih@gmail.com>
+---
+ drivers/staging/nvec/nvec_power.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/nvec/nvec_power.c b/drivers/staging/nvec/nvec_power.c
+index 0e861c4bfcbf..b1ef196e1cfe 100644
+--- a/drivers/staging/nvec/nvec_power.c
++++ b/drivers/staging/nvec/nvec_power.c
+@@ -338,7 +338,7 @@ static const struct power_supply_desc nvec_psy_desc = {
+ };
+ 
+ static int counter;
+-static int const bat_iter[] = {
++static const int bat_iter[] = {
+ 	SLOT_STATUS, VOLTAGE, CURRENT, CAPACITY_REMAINING,
+ #ifdef EC_FULL_DIAG
+ 	AVERAGE_CURRENT, TEMPERATURE, TIME_REMAINING,
+-- 
+2.20.1
+
