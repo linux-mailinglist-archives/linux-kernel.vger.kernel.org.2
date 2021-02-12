@@ -2,124 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FE1319846
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE714319848
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhBLCOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 21:14:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
+        id S229777AbhBLCRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 21:17:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbhBLCOe (ORCPT
+        with ESMTP id S229475AbhBLCRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 21:14:34 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411DBC061794
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 18:13:17 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id p132so7824072iod.11
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 18:13:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=b//uXdEXn/IbyWUN9jECjkifnnE9MDyqXLg0odI7qQ8=;
-        b=eXyRVsRfEN70euVgiAtmESC4LEMBc5UdUY6dgr3lsi5tPhEcUNuJKHboVU/N4Z265E
-         g2OYFrPAw/oLLZRyqHCo//ujRwPC/5I0w7ywJ0ZJqi9IrwIo7aFiqcZrgyncJHuYJizB
-         rXHnCfSBrNh4n6qGKt2bOvDMi0tLR4BhXM5w0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=b//uXdEXn/IbyWUN9jECjkifnnE9MDyqXLg0odI7qQ8=;
-        b=AP+YgzfNrhoy/cVsYxqxGDvM1dRTWspILTcwHJIfpvoM/H6BnL1VFuKz/VBM701v/G
-         ELSlhhvgnK/vGblr7/TnKbVwI3dD/NmYz34H/LjznDXRG67xsChlZ/BGc4QsxOPtPg/9
-         Wh2iXlT8CruyQ3N9XFEFWGDeJmkzXNkxbtqKkWgTcLaNj+eBys3oOmHrjSuYpP2dvYM3
-         plsTM4MEsPA6K+Av+uTMSFIPgNOtWjNoNixxA3airPMtrdr2814szr6WdpQoFHrx7tpn
-         H0IEjHk0tXZh61d3WPxPMix+WWJ0KIAQz5oEMgP8GVS+MlPpG4fL8wz3E0JHbvkIXT3X
-         eiuA==
-X-Gm-Message-State: AOAM531RgN8moK5B9AXHfoJ+jKCgPXY7zgzhpj9bfJ0SOSAkMJiQ5/mM
-        zZw2H6cDCLirPiZQKZVM9hE5rA==
-X-Google-Smtp-Source: ABdhPJx/RCdCsRX+e5oooz5vMln7HcisejHBH5jilCl4mDg+LF74Is7NKrlK5kw310Vr5GykMGekEA==
-X-Received: by 2002:a6b:5a0f:: with SMTP id o15mr506350iob.49.1613095996797;
-        Thu, 11 Feb 2021 18:13:16 -0800 (PST)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c2sm3480594ilk.32.2021.02.11.18.13.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 18:13:16 -0800 (PST)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ath9k: fix ath_tx_process_buffer() potential null ptr dereference
-Date:   Thu, 11 Feb 2021 19:13:08 -0700
-Message-Id: <43ed9abb9e8d7112f3cc168c2f8c489e253635ba.1613090339.git.skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1613090339.git.skhan@linuxfoundation.org>
-References: <cover.1613090339.git.skhan@linuxfoundation.org>
+        Thu, 11 Feb 2021 21:17:43 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BCCC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 18:17:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=r/OPg+xFtQLytfbJexyr61HkOhaw2sjKTK38fefNnfE=; b=OPW9YqjBVhPVeUZH3chQEPv3Ib
+        Y/elI26oipgFEX+VklHy3/9ag1InJFsdpusv4B/xvtjyiICcPKovCxsqkKq4qHYJBvB741EQ7KB0u
+        BkllX7ub6JPcyhUolkd7bXq51v7Lq7ZGZ2RX9GAydgMaM1M4AxlgDc0Wrruh2c7QHaUllKjMVffCj
+        h9KaazBXQcHnRT6aX4mVxPb7DnM6SPq+H5UUg4wFqr3lHLPt/paYrZVha/PXf6SHmncPZ8XrMm5Y8
+        kDXWTU3GjHPew+17zvXxwFfG0XZKxC4dKyfuIOu1ywPtmh39HwWwSzBm9VQBpcnQEOkLqkmr/1Kkw
+        UxAXA8ng==;
+Received: from [2601:1c0:6280:3f0::cf3b] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lAO0t-00020D-5k; Fri, 12 Feb 2021 02:16:55 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] h8300: fix PREEMPTION build, TI_PRE_COUNT undefined
+Date:   Thu, 11 Feb 2021 18:16:50 -0800
+Message-Id: <20210212021650.22740-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ath_tx_process_buffer() references ieee80211_find_sta_by_ifaddr()
-return pointer (sta) outside null check. Fix it by moving the code
-block under the null check.
+Fix a build error for undefined 'TI_PRE_COUNT' by adding it to
+asm-offsets.c.
 
-This problem was found while reviewing code to debug RCU warn from
-ath10k_wmi_tlv_parse_peer_stats_info() and a subsequent manual audit
-of other callers of ieee80211_find_sta_by_ifaddr() that don't hold
-RCU read lock.
+h8300-linux-ld: arch/h8300/kernel/entry.o: in function `resume_kernel':
+(.text+0x29a): undefined reference to `TI_PRE_COUNT'
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Fixes: df2078b8daa7 ("h8300: Low level entry")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
 ---
-- Note: This patch is compile tested. I don't have access to
-  hardware.
+Possibly due to some Kconfig changes related to PREEMPTION?
+I suppose that CONFIG_PREEMPTION hasn't been used much on H8/300.
 
- drivers/net/wireless/ath/ath9k/xmit.c | 28 +++++++++++++++------------
- 1 file changed, 16 insertions(+), 12 deletions(-)
+ arch/h8300/kernel/asm-offsets.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath9k/xmit.c b/drivers/net/wireless/ath/ath9k/xmit.c
-index 1d36aae3f7b6..735858144e3a 100644
---- a/drivers/net/wireless/ath/ath9k/xmit.c
-+++ b/drivers/net/wireless/ath/ath9k/xmit.c
-@@ -711,20 +711,24 @@ static void ath_tx_process_buffer(struct ath_softc *sc, struct ath_txq *txq,
- 		ath_tx_count_airtime(sc, sta, bf, ts, tid->tidno);
- 		if (ts->ts_status & (ATH9K_TXERR_FILT | ATH9K_TXERR_XRETRY))
- 			tid->clear_ps_filter = true;
--	}
+--- lnx-511-rc7.orig/arch/h8300/kernel/asm-offsets.c
++++ lnx-511-rc7/arch/h8300/kernel/asm-offsets.c
+@@ -63,6 +63,9 @@ int main(void)
+ 	OFFSET(TI_FLAGS, thread_info, flags);
+ 	OFFSET(TI_CPU, thread_info, cpu);
+ 	OFFSET(TI_PRE, thread_info, preempt_count);
++#ifdef CONFIG_PREEMPTION
++	DEFINE(TI_PRE_COUNT, offsetof(struct thread_info, preempt_count));
++#endif
  
--	if (!bf_isampdu(bf)) {
--		if (!flush) {
--			info = IEEE80211_SKB_CB(bf->bf_mpdu);
--			memcpy(info->control.rates, bf->rates,
--			       sizeof(info->control.rates));
--			ath_tx_rc_status(sc, bf, ts, 1, txok ? 0 : 1, txok);
--			ath_dynack_sample_tx_ts(sc->sc_ah, bf->bf_mpdu, ts,
--						sta);
-+		if (!bf_isampdu(bf)) {
-+			if (!flush) {
-+				info = IEEE80211_SKB_CB(bf->bf_mpdu);
-+				memcpy(info->control.rates, bf->rates,
-+				       sizeof(info->control.rates));
-+				ath_tx_rc_status(sc, bf, ts, 1,
-+						 txok ? 0 : 1, txok);
-+				ath_dynack_sample_tx_ts(sc->sc_ah,
-+							bf->bf_mpdu, ts, sta);
-+			}
-+			ath_tx_complete_buf(sc, bf, txq, bf_head, sta,
-+					    ts, txok);
-+		} else {
-+			ath_tx_complete_aggr(sc, txq, bf, bf_head, sta,
-+					     tid, ts, txok);
- 		}
--		ath_tx_complete_buf(sc, bf, txq, bf_head, sta, ts, txok);
--	} else
--		ath_tx_complete_aggr(sc, txq, bf, bf_head, sta, tid, ts, txok);
-+	}
- 
- 	if (!flush)
- 		ath_txq_schedule(sc, txq);
--- 
-2.27.0
-
+ 	return 0;
+ }
