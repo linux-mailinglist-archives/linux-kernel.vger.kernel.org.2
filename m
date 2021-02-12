@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAB2319944
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B962319946
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhBLEp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 23:45:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
+        id S229730AbhBLEpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 23:45:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhBLEpX (ORCPT
+        with ESMTP id S229562AbhBLEpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 23:45:23 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8C6C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:44:43 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id m6so5098690pfk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:44:43 -0800 (PST)
+        Thu, 11 Feb 2021 23:45:25 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F07FC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:44:45 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id b21so5457170pgk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:44:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=meg9sC7YyyK/ccxHauwvbjLk6iFrdpEJaLlXNYNQrRw=;
-        b=j71D5TPJlB5a96J93TSXkpENx3ekgcrGWmn1JZtNQhnqd2Mge7An6OhBb5P8TnUMZQ
-         4OUadpA2+MJX9QKhG3n8gr0GKnHyeVCl4h2ODUFy+jbH8WgKbmv8HqUeXBekYqVqcTHV
-         xS2DhrwxhEz9TIoS7Zn9TTVKi4LDipZ1HBq4s=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Uwr/8PJUNMrs1DNHiVxSJVanvT/KDCxxvdzqAMfX/20=;
+        b=jDPV6GnSoh0tUu9SL3pV6ZNkNlrVV4nNS5weOpmxNEER4+qGUF4kuWbxGzf7zUe4Q6
+         0fNbc8n6aPmawRsXKF60jjdrAlO3PQ6/lKXdvfCYNb1N+gAjmCFqexp/zw0kQUWuFKmo
+         tsPTSYVURrDD1QkSKI9JBQAqmySDiCWcOQCeI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=meg9sC7YyyK/ccxHauwvbjLk6iFrdpEJaLlXNYNQrRw=;
-        b=blAJLoz9jdYLrEnScHYVXXLnY/85ggL/vjm6xVgB/cvcMVGahflVxgabkGeANMv2V0
-         T1kysT/qDmkaw64ctWZ4r/TZbcGzL8bD1jzZIwCiswGtUjWMLiwvdSxiWB09Zc2o3qDz
-         n6kPT/vzzilHbq/qp/huQvdnNTrw+up9B/mQtBsefa9RurUbmz7OU8Qu1NVKdpeNf0GQ
-         y7FF5TmrCc1LIgUIf9yK25Fqio3wmtqKLbXeUlN3BfWAXmFaF1bkA26S2fJA6KnkB7+W
-         LqGUCKuIwI0wt/dr1o0qidYC4DLWDZobkWKU+xEcvINVYIHqQ4GkNS6u0cj8l73hA2mt
-         bd6w==
-X-Gm-Message-State: AOAM531tAS6r2ZojxoPR1IO+SLf4hj4/K5T2VuaZVwx9xnV2Z03tM1Lf
-        iGYEjZe5AI2GiCY20nqPQ/e3hw==
-X-Google-Smtp-Source: ABdhPJzJ8v8dSTSVOML2sIt78PbLqD2VT6NK9LoWSGUmE8HEfFqP2J/kMV8nnkcPsdyrqXTVW649yQ==
-X-Received: by 2002:a63:1845:: with SMTP id 5mr1499499pgy.244.1613105082790;
-        Thu, 11 Feb 2021 20:44:42 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Uwr/8PJUNMrs1DNHiVxSJVanvT/KDCxxvdzqAMfX/20=;
+        b=CepYRJDcn8ST26p0WKgKwIUyP5mOktzMi74CeldUcAihiCpV6uSOQZ2OsqyXPe31OP
+         8sw3Os5cweIpWJEFGdSXsgX9NU1wULwVH++vK4ZRVA8XWBlIPvRJi/GbkQS10XmiBQaN
+         Ax/v81r0+ZNwven7zvfmQv8OvYgASzof4AXtn4NBb1q3V5yZdPhcAAQPtY75Z3zINNLD
+         YrNmCTL9X+Jdh15pf7/Edoo0VvxjhLHVc6Swj0HoPPDGRd7HNhEry+3esaVvRIjHoMAm
+         yTInl7IRa04/OrCzekIF5njoklJZ6I4HWalh5GZDthC+IJbl2jrQkYAHLTAz1n/FDjJP
+         4fuQ==
+X-Gm-Message-State: AOAM530C3246nhuiuHAR9sfqw3Y9nFyY9To/3xYVmb4Q93FMLBhQhxim
+        aEzguRfxpQIH6D3hwV0FboOjnw==
+X-Google-Smtp-Source: ABdhPJzVzB2K3BQRHbHlI8qUm7OdSQAl5fNCAIJBHSDbPKSvTVB19WkYz5J5ZvETG1Vuz0V/f25kmg==
+X-Received: by 2002:a63:1965:: with SMTP id 37mr1468628pgz.349.1613105084885;
+        Thu, 11 Feb 2021 20:44:44 -0800 (PST)
 Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:a453:d6cd:41b9:5925])
-        by smtp.gmail.com with ESMTPSA id 25sm7298904pfh.199.2021.02.11.20.44.39
+        by smtp.gmail.com with ESMTPSA id 25sm7298904pfh.199.2021.02.11.20.44.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 20:44:42 -0800 (PST)
+        Thu, 11 Feb 2021 20:44:44 -0800 (PST)
 From:   Nicolas Boichat <drinkcat@chromium.org>
 To:     "Darrick J . Wong" <djwong@kernel.org>
 Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -53,72 +53,48 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Greg KH <gregkh@linuxfoundation.org>,
         Dave Chinner <david@fromorbit.com>,
         Nicolas Boichat <drinkcat@chromium.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/6] Add generated flag to filesystem struct to block copy_file_range
-Date:   Fri, 12 Feb 2021 12:43:59 +0800
-Message-Id: <20210212044405.4120619-1-drinkcat@chromium.org>
+Subject: [PATCH 1/6] fs: Add flag to file_system_type to indicate content is generated
+Date:   Fri, 12 Feb 2021 12:44:00 +0800
+Message-Id: <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+In-Reply-To: <20210212044405.4120619-1-drinkcat@chromium.org>
+References: <20210212044405.4120619-1-drinkcat@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We hit an issue when upgrading Go compiler from 1.13 to 1.15 [1],
-as we use Go's `io.Copy` to copy the content of
-`/sys/kernel/debug/tracing/trace` to a temporary file.
+Filesystems such as procfs and sysfs generate their content at
+runtime. This implies the file sizes do not usually match the
+amount of data that can be read from the file, and that seeking
+may not work as intended.
 
-Under the hood, Go 1.15 uses `copy_file_range` syscall to
-optimize the copy operation. However, that fails to copy any
-content when the input file is from tracefs, with an apparent
-size of 0 (but there is still content when you `cat` it, of
-course).
+This will be useful to disallow copy_file_range with input files
+from such filesystems.
 
-From discussions in [2][3], it is clear that copy_file_range
-cannot be properly implemented on filesystems where the content
-is generated at runtime: the file size is incorrect (because it
-is unknown before the content is generated), and seeking in such
-files (as required by partial writes) is unlikely to work
-correctly.
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+---
+I first thought of adding a new field to struct file_operations,
+but that doesn't quite scale as every single file creation
+operation would need to be modified.
 
-With this patch, Go's `io.Copy` gracefully falls back to a normal
-read/write file copy.
-
-I'm not 100% sure which stable tree this should go in, I'd say
-at least >=5.3 since this is what introduced support for
-cross-filesystem copy_file_range (and where most users are
-somewhat likely to hit this issue). But let's discuss the patch
-series first.
-
-[1] http://issuetracker.google.com/issues/178332739
-[2] https://lkml.org/lkml/2021/1/25/64
-[3] https://lkml.org/lkml/2021/1/26/1736
-
-
-Nicolas Boichat (6):
-  fs: Add flag to file_system_type to indicate content is generated
-  proc: Add FS_GENERATED_CONTENT to filesystem flags
-  sysfs: Add FS_GENERATED_CONTENT to filesystem flags
-  debugfs: Add FS_GENERATED_CONTENT to filesystem flags
-  tracefs: Add FS_GENERATED_CONTENT to filesystem flags
-  vfs: Disallow copy_file_range on generated file systems
-
- fs/debugfs/inode.c | 1 +
- fs/proc/root.c     | 2 +-
- fs/read_write.c    | 3 +++
- fs/sysfs/mount.c   | 2 +-
- fs/tracefs/inode.c | 1 +
  include/linux/fs.h | 1 +
- 6 files changed, 8 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+)
 
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 3482146b11b0..5bd58b928e94 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2335,6 +2335,7 @@ struct file_system_type {
+ #define FS_ALLOW_IDMAP         32      /* FS has been updated to handle vfs idmappings. */
+ #define FS_THP_SUPPORT		8192	/* Remove once all fs converted */
+ #define FS_RENAME_DOES_D_MOVE	32768	/* FS will handle d_move() during rename() internally. */
++#define FS_GENERATED_CONTENT	65536	/* FS contains generated content */
+ 	int (*init_fs_context)(struct fs_context *);
+ 	const struct fs_parameter_spec *parameters;
+ 	struct dentry *(*mount) (struct file_system_type *, int,
 -- 
 2.30.0.478.g8a0d178c01-goog
 
