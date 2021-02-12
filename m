@@ -2,119 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155B731A641
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7855431A653
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhBLUzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:55:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhBLUzF (ORCPT
+        id S231756AbhBLU5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:57:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20106 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231604AbhBLU4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:55:05 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E086C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:54:25 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id u143so250919pfc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:54:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VFVcUbqW9ODUjW7JoMiKL18vrWLkMw7IHiYH3kRT6FQ=;
-        b=NndTPWbOgdo4Ef3RGwHTw+AUnRCHheazquBkzOvgdQs1sxZPdyJAYNXdwLwgXYGbyk
-         OGOofTYHsn4uRRj5Kksrq58cjiufjhtsgs8W7zuXVhrWGaekhLqtlURFkaH5xNytZgNW
-         jUnZPQqbJqc2kfPo8FNT5bOpxXx8T8sm51tNAMOyX1RLkyeCZs/lAd7VxaHtHZainOQX
-         9EApc5THUPgugpmvFK81DF7WjmEvtjgdlqNRKd/5pZa5mKGt9qnkmh0W0rbWHTyG/yod
-         FiUFZjH6gZwc+wLCUdC5DGz8IhRedi4Vl4NRXWbFxY90zBOsYS4apRuqkcogDHgewn/e
-         jt1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VFVcUbqW9ODUjW7JoMiKL18vrWLkMw7IHiYH3kRT6FQ=;
-        b=sLczVikBxITdOz7nnojjuOC7eEeR6oqgVBUgnvGB8IsB88u3HjK4+IqyFvrnm1j9zX
-         +BWxvtlZWnnG5IpoDn4/mrx0sUDCJ8Jfm1YU1fnD/E8OxI2kLrH6wUezXk+s/md4Th7i
-         dAhE2OtVLku5low6jAp25MOunGntYoK2pJzdCobZaSAvnt8HZEymIUEVCC754+McX6Zk
-         u/twsx7bvHtYVfUmqMN7phRU+oSdVPLxOvbUPr+noAbVz/bpxdTr1/2cFSBKOFlRJZVL
-         OjdSBA4i3LH1C2bee9xsrS0LmggvWXSUcVA881iYQCEvZ/f2j5QSRpLzA48DmHRLgHmJ
-         sdpA==
-X-Gm-Message-State: AOAM533oekTXBVJPX1fWRmZz5i56E4Pj2ko/4H7mV2qL666tI7DMYlu/
-        5h4/rs/BquhMhBtVQJV9JATBew==
-X-Google-Smtp-Source: ABdhPJyDqb54mTRRCYec/jSC5GzFP/HBU6/nZvB6fnCkp5aHXuxeWGemDpZ2+BKXgtRVqJ54uyVXjQ==
-X-Received: by 2002:aa7:9987:0:b029:1d9:f115:6f3b with SMTP id k7-20020aa799870000b02901d9f1156f3bmr4698607pfh.50.1613163264304;
-        Fri, 12 Feb 2021 12:54:24 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:b407:1780:13d2:b27])
-        by smtp.gmail.com with ESMTPSA id h1sm10526523pgj.59.2021.02.12.12.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 12:54:23 -0800 (PST)
-Date:   Fri, 12 Feb 2021 12:54:17 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
+        Fri, 12 Feb 2021 15:56:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613163296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nefY369XOVTnG731C2OIoEJTJR52Ge56ZdFn8C2MDf4=;
+        b=ikK73oPJWL5xPStTe+NyBRJIB/Fh7zJp6tXrrr9/Hi+I89e/onVM8urWyLyjpcaBjVMrHq
+        AZ334mWTzV0F5FttSTu3JZhpRS9gEYzAIcdxAFPA+l/2/hmo1QFCMR72c5bQ/vni66dMLJ
+        DwlJ4xpqPASSqnrmoWAUvvZlVeOSecg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-6-8RZwlGw2O8Wy9U7SbsnMkA-1; Fri, 12 Feb 2021 15:54:52 -0500
+X-MC-Unique: 8RZwlGw2O8Wy9U7SbsnMkA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5EE061885783;
+        Fri, 12 Feb 2021 20:54:51 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E27E419811;
+        Fri, 12 Feb 2021 20:54:42 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 15:54:40 -0500
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Phil Sutter <phil@nwl.cc>, Steve Grubb <sgrubb@redhat.com>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
-Message-ID: <YCbq+UEMIsE0NIWI@google.com>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CALCETrWPCTmoeFBEJvw98zwNpw316Xii_16COZAWoYNC=obF+w@mail.gmail.com>
- <YCbfyde9jl7ti0Oz@google.com>
- <8c23bbfd-e371-a7cf-7f77-ec744181547b@intel.com>
- <YCbm/umiGUS7UuVb@google.com>
- <514734d9-d8be-03ee-417e-4d0ad2f56276@intel.com>
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>, fw@strlen.de,
+        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
+        tgraf@infradead.org
+Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
+ events
+Message-ID: <20210212205440.GM3141668@madcap2.tricolour.ca>
+References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
+ <20210211151606.GX3158@orbyte.nwl.cc>
+ <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
+ <4087569.ejJDZkT8p0@x2>
+ <20210212121112.GA3158@orbyte.nwl.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <514734d9-d8be-03ee-417e-4d0ad2f56276@intel.com>
+In-Reply-To: <20210212121112.GA3158@orbyte.nwl.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021, Dave Hansen wrote:
-> On 2/12/21 12:37 PM, Sean Christopherson wrote:
-> > There needs to be a mechanism for lazy/deferred/on-demand acceptance of pages.
-> > E.g. pre-accepting every page in a VM with hundreds of GB of memory will be
-> > ridiculously slow.
+On 2021-02-12 13:11, Phil Sutter wrote:
+> Hi,
+> 
+> On Thu, Feb 11, 2021 at 04:02:55PM -0500, Steve Grubb wrote:
+> > On Thursday, February 11, 2021 11:29:34 AM EST Paul Moore wrote:
+> > > > If I'm not mistaken, iptables emits a single audit log per table, ipset
+> > > > doesn't support audit at all. So I wonder how much audit logging is
+> > > > required at all (for certification or whatever reason). How much
+> > > > granularity is desired?
+> >  
+> >   <snip> 
 > > 
-> > #VE is the best option to do that:
+> > > I believe the netfilter auditing was mostly a nice-to-have bit of
+> > > functionality to help add to the completeness of the audit logs, but I
+> > > could very easily be mistaken.  Richard put together those patches, he
+> > > can probably provide the background/motivation for the effort.
 > > 
-> >   - Relatively sane re-entrancy semantics.
-> >   - Hardware accelerated.
-> >   - Doesn't require stealing an IRQ from the guest.
+> > There are certifications which levy requirements on information flow control. 
+> > The firewall can decide if information should flow or be blocked. Information 
+> > flow decisions need to be auditable - which we have with the audit target. 
 > 
-> TDX already provides a basic environment for the guest when it starts
-> up.  The guest has some known, good memory.  The guest also has a very,
-> very clear understanding of which physical pages it uses and when.  It's
-> staged, of course, as decompression happens and the guest comes up.
+> In nftables, this is realized via 'log level audit' statement.
+> Functionality should by all means be identical to that of xtables' AUDIT
+> target.
 > 
-> But, the guest still knows which guest physical pages it accesses and
-> when.  It doesn't need on-demand faulting in of non-accepted pages.  It
-> can simply decline to expose non-accepted pages to the wider system
-> before they've been accepted.
+> > That then swings in requirements on the configuration of the information flow 
+> > policy.
+> > 
+> > The requirements state a need to audit any management activity - meaning the 
+> > creation, modification, and/or deletion of a "firewall ruleset". Because it 
+> > talks constantly about a ruleset and then individual rules, I suspect only 1 
+> > summary event is needed to say something happened, who did it, and the 
+> > outcome. This would be in line with how selinux is treated: we have 1 summary 
+> > event for loading/modifying/unloading selinux policy.
 > 
-> It would be nuts to merrily free non-accepted pages into the page
-> allocator and handle the #VE fallout as they're touched from
-> god-knows-where.
+> So the central element are firewall rules for audit purposes and
+> NETFILTER_CFG notifications merely serve asserting changes to those
+> rules are noticed by the auditing system. Looking at xtables again, this
+> seems coherent: Any change causes the whole table blob to be replaced
+> (while others stay in place). So table replace/create is the most common
+> place for a change notification. In nftables, the most common one is
+> generation dump - all tables are treated as elements of the same
+> ruleset, not individually like in xtables.
 > 
-> I don't see *ANY* case for #VE to occur inside the guest kernel, outside
-> of *VERY* narrow places like copy_from_user().  Period.  #VE from ring-0
-> is not OK.
-> 
-> So, no, #VE is not the best option.  No #VE's in the first place is the
-> best option.
+> Richard, assuming the above is correct, are you fine with reducing
+> nftables auditing to a single notification per transaction then? I guess
+> Florian sufficiently illustrated how this would be implemented.
 
-Ah, I see what you're thinking.
+Yes, that should be possible.
 
-Treating an EPT #VE as fatal was also considered as an option.  IIUC it was
-thought that finding every nook and cranny that could access a page, without
-forcing the kernel to pre-accept huge swaths of memory, would be very difficult.
-It'd be wonderful if that's not the case.
+> > Hope this helps...
+> 
+> It does, thanks a lot for the information!
+> 
+> Thanks, Phil
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
