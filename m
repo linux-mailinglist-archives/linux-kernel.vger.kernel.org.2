@@ -2,70 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4046F31A825
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBFC31A827
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbhBLWzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 17:55:53 -0500
-Received: from smtprelay0065.hostedemail.com ([216.40.44.65]:49510 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229980AbhBLWwK (ORCPT
+        id S232185AbhBLW54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 17:57:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47777 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231364AbhBLW5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 17:52:10 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id C17B3100E7B44;
-        Fri, 12 Feb 2021 22:51:28 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2561:2564:2682:2685:2693:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6248:7514:7652:9025:10004:10400:10848:11232:11658:11914:12043:12297:12438:12555:12696:12737:12740:12760:12895:12986:13069:13095:13311:13357:13439:13845:14181:14659:14721:14777:21080:21433:21611:21627:21939:21972:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: lace96_421607427625
-X-Filterd-Recvd-Size: 1786
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 12 Feb 2021 22:51:27 +0000 (UTC)
-Message-ID: <130bc5f98c2fd501d32024d267ea73f1fb9d88b6.camel@perches.com>
-Subject: Re: [PATCH] proc: Convert S_<FOO> permission uses to octal
-From:   Joe Perches <joe@perches.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Fri, 12 Feb 2021 17:57:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613170537;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=G72Pl8nG1WLDLDMTHNp9dVrAvZnBb4S9mwEK85oZBnU=;
+        b=TDCDyD45f3h54IXcQ6jsT2Zh+ecWboRMwxOMKjTgEh9aU3eSxjucUh9lIEgje9adi9wRLc
+        BObJuqfzDbwVzmv5Pj2IwTz/nypEes3xl/fGaW/2NapVS0szVanCS4I1T0TVhWj4z6uCti
+        csMItH2IuiAl3c8cv+qN3DMSSYl/RNU=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-Cf8JFmqTNkS5iaQ8kakvJQ-1; Fri, 12 Feb 2021 17:55:36 -0500
+X-MC-Unique: Cf8JFmqTNkS5iaQ8kakvJQ-1
+Received: by mail-qv1-f71.google.com with SMTP id d26so674399qve.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 14:55:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G72Pl8nG1WLDLDMTHNp9dVrAvZnBb4S9mwEK85oZBnU=;
+        b=ltMxlkkHosUGYkp4ANtiAUwDd9X3VsBuAVEq0oHhTN9gJq3RarsA1JP59cGf7O3w3x
+         oKshnhweZweb7gnvHc2wLpeOdZDmR14TtSMiRLZrL3wH3TnPgAtQp6vF7ioMunwqIRpp
+         D073Yl8rakrfAXWugVl6J9bk40MxncZlumIjHhf3xtx//cxWvKUn22qHdsgTd+gH8nlY
+         QulgUcx0WP2lTXZ2XL4SUZdRJWCN7d0FyVV0TuyaXBD82TAboFsxYHu2Peeu6W0Aip10
+         ZR+3/V9GgT53LT187KIN3l7ljco1PBA4oswwRoeN56qMcTErH3gEFAxj6uf4dOdxVQzz
+         xDvw==
+X-Gm-Message-State: AOAM533NOINA/hW9prrq99CwIQu9OacclJojFBR5Db0FXiuVvJpPjUYR
+        /cZr0QQrK3a8BSnAbPrZDmd576Tf1bvNfukihTTjSspgh2g0WV1jAnLz3cSAnV2lnkzBgyUa9Kk
+        REAgmzDrTyjl+6alw+bXT9KNM2eVVM0qHYsL7PZ047q6aVSt2R7bl9dGtUJOmb+1NjDNGIDVIjg
+        ==
+X-Received: by 2002:a05:620a:6d7:: with SMTP id 23mr4804418qky.460.1613170535485;
+        Fri, 12 Feb 2021 14:55:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwE+QsEbqcrRC9IoR3ljGZ6jq7YUJQ2UPD/pUUaZOGnETy33kOG0P09d6AUoAEKE5KsAUSAcA==
+X-Received: by 2002:a05:620a:6d7:: with SMTP id 23mr4804404qky.460.1613170535223;
+        Fri, 12 Feb 2021 14:55:35 -0800 (PST)
+Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id x34sm5930438qtd.15.2021.02.12.14.55.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 14:55:34 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     peterx@redhat.com, Jonathan Corbet <corbet@lwn.net>,
         Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Fri, 12 Feb 2021 14:51:26 -0800
-In-Reply-To: <m1im6x0wtv.fsf@fess.ebiederm.org>
-References: <85ff6fd6b26aafdf6087666629bad3acc29258d8.camel@perches.com>
-         <m1im6x0wtv.fsf@fess.ebiederm.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] docs: filesystem: Update smaps vm flag list to latest
+Date:   Fri, 12 Feb 2021 17:55:33 -0500
+Message-Id: <20210212225533.12589-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-02-12 at 16:01 -0600, Eric W. Biederman wrote:
-> Joe Perches <joe@perches.com> writes:
-> 
-> > Convert S_<FOO> permissions to the more readable octal.
-> > 
-> > Done using:
-> > $ ./scripts/checkpatch.pl -f --fix-inplace --types=SYMBOLIC_PERMS fs/proc/*.[ch]
-> > 
-> > No difference in generated .o files allyesconfig x86-64
-> > 
-> > Link:
-> > https://lore.kernel.org/lkml/CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ@mail.gmail.com/
-> 
-> 
-> I will be frank.  I don't know what 0644 means.  I can never remember
-> which bit is read, write or execute.  So I like symbolic constants.
-> 
-> I don't see a compelling reason to change the existing code.
+We've missed a few documentation when adding new VM_* flags.  Add the missing
+pieces so they'll be in sync now.
 
-Did you read Linus' message in the Link: above?
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ Documentation/filesystems/proc.rst | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-It was a reply to what Ingo Molnar suggested here:
-
-https://lore.kernel.org/lkml/20160803081140.GA7833@gmail.com/
-
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 533c79e8d2cd..3296f940111c 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -538,7 +538,9 @@ encoded manner. The codes are the following:
+     ac    area is accountable
+     nr    swap space is not reserved for the area
+     ht    area uses huge tlb pages
++    sf    synchronous page fault
+     ar    architecture specific flag
++    wf    wipe on fork
+     dd    do not include area into core dump
+     sd    soft dirty flag
+     mm    mixed map area
+@@ -546,6 +548,9 @@ encoded manner. The codes are the following:
+     nh    no huge page advise flag
+     mg    mergable advise flag
+     bt    arm64 BTI guarded page
++    mt    arm64 MTE tagged memory
++    um    userfaultfd missing tracking
++    uw    userfaultfd wr-protect tracking
+     ==    =======================================
+ 
+ Note that there is no guarantee that every flag and associated mnemonic will
+-- 
+2.26.2
 
