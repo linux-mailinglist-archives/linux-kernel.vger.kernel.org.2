@@ -2,145 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2B531A1E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 201FB31A1F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbhBLPjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:39:54 -0500
-Received: from mail-eopbgr1410100.outbound.protection.outlook.com ([40.107.141.100]:56560
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229974AbhBLPjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:39:52 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OfvP4EfMgG0I9kS20gopACUFIY/PjX9y3/4rFd0kQhaI21Akzf9li5i7g7ydjL1bG8apvgjOhy7TDkZ7jm2CgIuwk5FvX6i/RCTmbW3+AGEXCmdmIaLFCk1kQ7mMN/+WAI9msO+lQR4Bv9miObe6rN0ygoZTO2tPivEUDy1d1n7Pa2Sxf7GdURgB/WZ1RXe7eUQ4p/oLPenll0UoHEwLvqRDzaIE+aMLJ6z0D6uk35L6/i+9aTiXWUYXwG8h+sVSPAg3YyyXaGq965K+A8fSsk9M4NvopOZFhQefd+IUcMounAo3ObUNRfj5kRmlFzSh8juj+/2X36Jb1SnelVIQiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sfNC+4g6LQisBKLiz9qzXbUvPjJ8oNLtTVDRtO6OXvA=;
- b=lqJFYfJbC7yzkECB37qq6KBBb863/fsxLVjDuFDsQdle+M3Zqgdd5BqG7/X5LEZPReRdAAcbUw9GeNU/Dcodel5Gz4vaRMc3oieEw+kYyMtyRZRNAUt9CLpuyDZ1++UdBF71QWQgldhLwiCNWutclV79BBIt+mFmiOyblgxQmIhOKeZkApsaUNMPs/CnCj4a86TtjyNr+I0oVaCT0UV+f5IvYc8dDX2EM7j7c76gS0mYPEne18Wa9jGv8e/cJq6dMiNZPYchDk0l0kVs/jXWALqOpBMC/uV0FHPED9VnOKCkc7iKrBnrxkhUEUlaLPwVfZkmLMVJetr65NvPSG0jLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sfNC+4g6LQisBKLiz9qzXbUvPjJ8oNLtTVDRtO6OXvA=;
- b=ZTLs/ZEfVLQ+iZDHHRvQPsVhzBar1Qtzk4LON7ns6ADMYus950oyJG7aUW5GYpljmAlJjm9cHRv6Ao9CPMxHZWxfvAJuBfI4AEKOjtp3TXla0XbDxcx3A+Z0A5dYXB6luYqJ9i7QagoXsbknqSthUZSA0RLQr7Yudrg9GTvD9W0=
-Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com (2603:1096:604:7a::23)
- by OSBPR01MB4599.jpnprd01.prod.outlook.com (2603:1096:604:77::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19; Fri, 12 Feb
- 2021 15:39:03 +0000
-Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com
- ([fe80::1971:336c:e4c0:8c5]) by OSBPR01MB4773.jpnprd01.prod.outlook.com
- ([fe80::1971:336c:e4c0:8c5%3]) with mapi id 15.20.3846.029; Fri, 12 Feb 2021
- 15:39:03 +0000
-From:   Min Li <min.li.xe@renesas.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next v2] misc: Add Renesas Synchronization Management
- Unit (SMU) support
-Thread-Topic: [PATCH net-next v2] misc: Add Renesas Synchronization Management
- Unit (SMU) support
-Thread-Index: AQHXANy3Kc3xxVsbt0Wl/bCSqSMNqapUIqQAgACD5GA=
-Date:   Fri, 12 Feb 2021 15:39:03 +0000
-Message-ID: <OSBPR01MB47733A5CB20E20E48EE84602BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
-References: <1613092575-17311-1-git-send-email-min.li.xe@renesas.com>
- <YCYwrNE8547uuODo@kroah.com>
-In-Reply-To: <YCYwrNE8547uuODo@kroah.com>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=renesas.com;
-x-originating-ip: [72.140.114.230]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0410dc21-e381-4d13-a393-08d8cf6c538c
-x-ms-traffictypediagnostic: OSBPR01MB4599:
-x-microsoft-antispam-prvs: <OSBPR01MB4599C796749BB4FAC1617651BA8B9@OSBPR01MB4599.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lldDybsY/KIoOv90orjhhVtcZLCJUmpRaQ3urSPuWNOyufXJSpkzPSs/hZE2ljJNjruNv5lgJVHemxImdRhCgePqU+dhXIITaQsASPPxMd/VVQxuH3CZvPuYl1qz5nhWSaIbkSVijnf7HZbs9umKqiJ6CoPGMDyo8QWdF64KPjZ1rGigiQJqwthSySGIi/PMM7vEU5PxYRblJ3SG7wyVFrpzA1KxmKRoDKZ1trtxYymNhuO8TvqWwUQXAv9PQwt/zIFMbB2kLLph/jp1j6fnY0iQy8q9QlZqOz/rBlYh2Ti+hH5ewSx3lopHLHRRaObqzy3sYzs2evi3NC3/+W4dbduGq13Hmk9+fnUKZrSifwWVNyTNna8MXchZEeVeRBJhSk8aWzlvLdXk3l4sA1R86HkkW6NqgBjoGsykUg7PikH+MiPzdL8pGZwvY9AZGy5oU1+VeoUFfUosUhoJ2WdhGasmAZGLYdzm67RgmJx+SEN0f4fD6xL/P0qGUlxGkVuqHYGUWEiw6ZA5xJWZZvtYEQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4773.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(366004)(346002)(39850400004)(33656002)(64756008)(52536014)(6506007)(316002)(66476007)(76116006)(71200400001)(66556008)(54906003)(66446008)(86362001)(7696005)(6916009)(55016002)(4744005)(9686003)(186003)(5660300002)(8676002)(478600001)(8936002)(4326008)(2906002)(66946007)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?gGYzyTtZAXVZBbqhpCjC2d0MWRks6/cN4ch67YBv12fLJXavqcwZ9SZZ0ufI?=
- =?us-ascii?Q?mzAUnWsvX3PN5zgQp7N2YWWYqZ2LreuhOQnN615ixgReSJ9G9UozosE+GctC?=
- =?us-ascii?Q?kD6FKzFnmc0LEN1jKbH7BFtO0rzaEwBwtsUlXvSkN00YF48kyF8/b5pWFy7r?=
- =?us-ascii?Q?m1elqzQNC/R4kNJIbDNVfXJPg9hno5JnY0TWq38DcY5E3PHEV5OOA/hnUDRd?=
- =?us-ascii?Q?9gGYr3Q/yhfc/ANDkIsaut/tqVsJnne74Kwge+WHPtD9cDydd5uTn9mFXO3S?=
- =?us-ascii?Q?3JmqB6YOAEn3luOnqgdDX15fPCc/sfsMGX9PSMH0WgGXAnGEKPsDJddr/VDr?=
- =?us-ascii?Q?ArLRl/Pp8kCYOj1ZUOalqEi2noIF1mKt2OcCNLdDgKf7f/bDB+mBCz/qv1sd?=
- =?us-ascii?Q?OaM8o/FwxAGG/TsY3IPQwXwuWbDjbc/dK2XlkoxKRMKjuZUxdtkJu4SnYHk4?=
- =?us-ascii?Q?h2eg6B1o21jregi/cytcj3UnOunLCfS3cFcLdtl/qikxJmZKjGWD/sShhvE0?=
- =?us-ascii?Q?BXZKlUx/6AW6xtaqFYYlB5LSEVPXVWfILi3q3P9TbkEhFVhEMWSJFiDB4QCH?=
- =?us-ascii?Q?IOKiQzNQ2j80BOUT44ALoPt22QqTzpHcQtq+YXmIeMThD6xd33PKocFgsQZ8?=
- =?us-ascii?Q?Ci3VzuVyBHiZTqrEQ0cxHz439JDWJO/4VgsM4J2yvGQiW6iQWrDlXReQZBqo?=
- =?us-ascii?Q?bzQuldORqTWRdbYUMmDbnaFyrwG3v6KC66O2Ws2gyHrfNVdPur/uxGQjZP6T?=
- =?us-ascii?Q?Z3pv42zFIXchJt3+HCEGNthNjc/Mg1sMeem9BYj5o1SoHr6LHRfhxlGEieIU?=
- =?us-ascii?Q?XjjMD3RJ1K1nmedOQ9xWonyUU9HSjkLCG3rRCXMsPsGyOZegfbOV8Plg5UvD?=
- =?us-ascii?Q?ttYAFaO0a1uxXwPKN+bqR+LYRSCttYVBnuOLUcm3DPMQPPVPn4BtWp0n4IbF?=
- =?us-ascii?Q?RbzwiRgVtuCXxDQjx7Vatry8izFMtJO4DqkBZ0FWFjQKHgagGv+6bCfA7JMt?=
- =?us-ascii?Q?5WX4zCDz2X8OS7MnT/rnX0olp2SskWdNHovWotfpGnn3Xlj534C7DnVcV1Fz?=
- =?us-ascii?Q?fxLhf384EBEiV2ne++Xckd0NYPmI1pvDBorX4iLRzjazvNz7zKULK9dOK86I?=
- =?us-ascii?Q?l9XNWYZriaQ8Kn6Cgu7EzFBDP97keEoc6unesJ40DYyjJLyRw/2Mms6iNeMd?=
- =?us-ascii?Q?X+O4Tzb35Xk4fuv66/edQAgSUpHgF9TvZVF5ZzoM0DQr3SS05LnVsow9Qt8B?=
- =?us-ascii?Q?KODRk9CT8AuBqCGL13W384zTd3t20gjhedSaBH63wUbUOckcW8ibh6OwYSIW?=
- =?us-ascii?Q?PpVxFW+XnUQu3URc0eqzw9h3?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229911AbhBLPoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:44:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33866 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhBLPoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:44:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613144609; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l0Bxq/KL0yCkvILl5jK3tOzdE/S+BbmACGvGuXjiKlQ=;
+        b=ZD0+PegvL1j/B9IAapTxvSrPEq+miH/2OP7sAg7hCOzO9dQPnAGORUPAWwnC4ACmTzXN2u
+        1DpJ2B69//yyWooIjxZHp+g0FeoOA9EbzZiWeEJEA6kmdNdpcggWU2uX4aeuLDujdT5niu
+        wf9vNQeGrI8PlmtNST4D1BxYGAJwyS4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 52196AD29;
+        Fri, 12 Feb 2021 15:43:29 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 16:43:28 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: possible deadlock in start_this_handle (2)
+Message-ID: <YCaiIGE69ps3m8OO@dhcp22.suse.cz>
+References: <20210211125717.GH308988@casper.infradead.org>
+ <YCUr99//z8hJmnDH@dhcp22.suse.cz>
+ <20210211132533.GI308988@casper.infradead.org>
+ <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
+ <20210211142630.GK308988@casper.infradead.org>
+ <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
+ <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
+ <20210212122207.GM308988@casper.infradead.org>
+ <YCZ056SJDGrgXCss@dhcp22.suse.cz>
+ <2b90c488-a6b9-2565-bd3a-e4f8bf8404e9@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4773.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0410dc21-e381-4d13-a393-08d8cf6c538c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2021 15:39:03.7229
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UxwyEGFtElRopiaWSh+GlCn6dkYDAgz1WtLLmTytUwNyfrYsW9HHhQaJ7lUm2ytUVoZM3FEQvzQDLEwKxO2cyA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB4599
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b90c488-a6b9-2565-bd3a-e4f8bf8404e9@i-love.sakura.ne.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +
-> > +	/* Only one open per device at a time */
-> > +	if (!atomic_dec_and_test(&rsmu->open_count)) {
-> > +		atomic_inc(&rsmu->open_count);
-> > +		return -EBUSY;
->=20
-> This does not do what you think it does, and does not prevent multiple
-> applications from talking to your device at the same time.
->=20
-> There is no need for this at all, as it does not work, sorry.  If multipl=
-e apps
-> talk to your device, it's their fault, not the kernel's fault, that thing=
-s go
-> wrong.
->=20
-> And I thought that Arnd already told you to fix this?
->=20
+On Fri 12-02-21 21:58:15, Tetsuo Handa wrote:
+> On 2021/02/12 21:30, Michal Hocko wrote:
+> > On Fri 12-02-21 12:22:07, Matthew Wilcox wrote:
+> >> On Fri, Feb 12, 2021 at 08:18:11PM +0900, Tetsuo Handa wrote:
+> >>> On 2021/02/12 1:41, Michal Hocko wrote:
+> >>>> But I suspect we have drifted away from the original issue. I thought
+> >>>> that a simple check would help us narrow down this particular case and
+> >>>> somebody messing up from the IRQ context didn't sound like a completely
+> >>>> off.
+> >>>>
+> >>>
+> >>>  From my experience at https://lkml.kernel.org/r/201409192053.IHJ35462.JLOMOSOFFVtQFH@I-love.SAKURA.ne.jp ,
+> >>> I think we can replace direct PF_* manipulation with macros which do not receive "struct task_struct *" argument.
+> >>> Since TASK_PFA_TEST()/TASK_PFA_SET()/TASK_PFA_CLEAR() are for manipulating PFA_* flags on a remote thread, we can
+> >>> define similar ones for manipulating PF_* flags on current thread. Then, auditing dangerous users becomes easier.
+> >>
+> >> No, nobody is manipulating another task's GFP flags.
+> > 
+> > Agreed. And nobody should be manipulating PF flags on remote tasks
+> > either.
+> > 
+> 
+> No. You are misunderstanding. The bug report above is an example of
+> manipulating PF flags on remote tasks.
 
-Hi Greg
+The bug report you are referring to is ancient. And the cpuset code
+doesn't touch task->flags for a long time. I haven't checked exactly but
+it is years since regular and atomic flags have been separated unless I
+misremember.
 
-Sorry for not replying to the list, I am new so not very familiar with the =
-process.
+> You say "nobody should", but the reality is "there indeed was". There
+> might be unnoticed others. The point of this proposal is to make it
+> possible to "find such unnoticed users who are manipulating PF flags
+> on remote tasks".
 
-Can you elaborate why it doesn't work? I kind of borrow the idea from xilin=
-x_sdfec.c and I don't see why it doesn't work.
+I am really confused what you are proposing here TBH and referring to an
+ancient bug doesn't really help. task->flags are _explicitly_ documented
+to be only used for _current_. Is it possible that somebody writes a
+buggy code? Sure, should we build a whole infrastructure around that to
+catch such a broken code? I am not really sure. One bug 6 years ago
+doesn't sound like a good reason for that.
 
-I mean if an application failed at opening the device, how can it proceed t=
-o talk the device without a file descriptor?
-
-Thanks
-
-Min
+-- 
+Michal Hocko
+SUSE Labs
