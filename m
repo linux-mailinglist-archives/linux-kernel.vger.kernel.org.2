@@ -2,76 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9A331A60D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8B931A612
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhBLU3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:29:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229660AbhBLU3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:29:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76BC364E01;
-        Fri, 12 Feb 2021 20:29:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613161746;
-        bh=czE9tqeAxREhaNvBy6f3QpgF4Gi6kmxTebwcxdGejsM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Xq4F2eDH/aAsoe4KG0AMOE6Q7APVwpcPHiOzQsLTiKgV0R7lVPE63NMXdEb9gPioQ
-         dObKghkWj9cI6X+wcYznNDrjOSKBbNeWwhCdyR18DxckNQ/Eq9a0kS68FAb+m/TJFs
-         8/ybfTenXeKJuO4E+kIgD7whN5lDGdobSJ5ql1igItmF3pD937NYm24GEyZXQXG8w8
-         cCZz7g2qJSSaDZSTM1f8KpDeXQDIvk9CewhYyyaEmoExUCxcYl7KxPKd//2qxskX//
-         bnNG0y9Q75qLD0DFQHaD6jfTASxw7F0d5fA6YvTaWyBauSQ2GzVjz2qLtVTi625bSZ
-         m04b+DGuqD+4Q==
-Subject: Re: [PATCH 3/3] [v3] lib/vsprintf: debug_never_hash_pointers prints
- all addresses as unhashed
-To:     Petr Mladek <pmladek@suse.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        akinobu.mita@gmail.com, glider@google.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210210213453.1504219-1-timur@kernel.org>
- <20210210213453.1504219-4-timur@kernel.org> <20210211123118.GB31708@amd>
- <9f0c02d9-29d6-95ce-b9b7-27342aa70c6f@kernel.org>
- <20210211172026.GL308988@casper.infradead.org> <YCZR/VQ6M61JIEN0@alley>
-From:   Timur Tabi <timur@kernel.org>
-Message-ID: <99425ccf-a8e4-19fd-a504-eac2cfe31585@kernel.org>
-Date:   Fri, 12 Feb 2021 14:29:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230323AbhBLUb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:31:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229718AbhBLUbw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 15:31:52 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BDBC061574;
+        Fri, 12 Feb 2021 12:31:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=yRPqDT7WJiah8xiUj0TWBlWk749TUWjLjAH2yqjcZoo=; b=Zz+wAP4oOxHLYjcSDNhkFk1Xos
+        hQyjFErwHEP3a2htQQtleH03vL+4Rt2NI5qMtvTlR6nB1PIxlwJTRpkFLfSXqVxzQF6lm7I3bEelx
+        DQvdUJezUCVR1dMJvF/TjLsOebjPz4NwpcLH8oPislmgNC0TfivqRRBOx+d4hX0Skwavp/8d1GpFr
+        13NqZouVroBDqCEhb+JFHWQ1EY+gymVveS/vafnS0HfMCUo4Uqtk6lx6aEcyTGUpCX0m4l8asNW34
+        beDxKTK8048jjP14CjJZP5eas8IX1ivM8zndVvVsearxFKLNHbwXFCigwjSlpg5YtNy+dt1wnMuRW
+        SJOSVFTA==;
+Received: from [2601:1c0:6280:3f0::cf3b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lAf5o-0007hp-81; Fri, 12 Feb 2021 20:31:08 +0000
+Subject: Re: [PATCH v2 2/2] virt: acrn: Make remove_cpu sysfs invisible with
+ !CONFIG_HOTPLUG_CPU
+To:     shuo.a.liu@intel.com, linux-next@vger.kernel.org
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org
+References: <20210212165519.82126-1-shuo.a.liu@intel.com>
+ <20210212165519.82126-2-shuo.a.liu@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6ebd2b16-2a16-96fd-af80-9162a2aee4d1@infradead.org>
+Date:   Fri, 12 Feb 2021 12:31:04 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <YCZR/VQ6M61JIEN0@alley>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210212165519.82126-2-shuo.a.liu@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/12/21 4:01 AM, Petr Mladek wrote:
->> no_hash_pointers ?
-> I am fine with this.
+On 2/12/21 8:55 AM, shuo.a.liu@intel.com wrote:
+> From: Shuo Liu <shuo.a.liu@intel.com>
 > 
-> I am still a bit scared of a bikeshedng. But AFAIK, Mathew was most
-> active on proposing clear names. So, when he is fine with this...
+> Without cpu hotplug support, vCPU cannot be removed from a Service VM.
+> Don't expose remove_cpu sysfs when CONFIG_HOTPLUG_CPU disabled.
 > 
-> Anyway, we should use the same name also for the variable.
+> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
 
-Ok, unless there are any objections, I will change the parameter and 
-variable to "no_hash_pointers" in v4, which I will send out later today.
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-I hope this patch set gets accepted for 5.12.
+Thanks.
+
+> ---
+>  drivers/virt/acrn/hsm.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+> index 1f6b7c54a1a4..6996ea6219e5 100644
+> --- a/drivers/virt/acrn/hsm.c
+> +++ b/drivers/virt/acrn/hsm.c
+> @@ -404,6 +404,14 @@ static ssize_t remove_cpu_store(struct device *dev,
+>  }
+>  static DEVICE_ATTR_WO(remove_cpu);
+>  
+> +static umode_t acrn_attr_visible(struct kobject *kobj, struct attribute *a, int n)
+> +{
+> +       if (a == &dev_attr_remove_cpu.attr)
+> +               return IS_ENABLED(CONFIG_HOTPLUG_CPU) ? a->mode : 0;
+> +
+> +       return a->mode;
+> +}
+> +
+>  static struct attribute *acrn_attrs[] = {
+>  	&dev_attr_remove_cpu.attr,
+>  	NULL
+> @@ -411,6 +419,7 @@ static struct attribute *acrn_attrs[] = {
+>  
+>  static struct attribute_group acrn_attr_group = {
+>  	.attrs = acrn_attrs,
+> +	.is_visible = acrn_attr_visible,
+>  };
+>  
+>  static const struct attribute_group *acrn_attr_groups[] = {
+> 
+
+
+-- 
+~Randy
+
 
