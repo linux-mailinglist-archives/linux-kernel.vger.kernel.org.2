@@ -2,130 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C400319D11
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8330319D14
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhBLLG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:06:28 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30480 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231216AbhBLLEZ (ORCPT
+        id S230447AbhBLLH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:07:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230443AbhBLLHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:04:25 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11CAXWo0027883;
-        Fri, 12 Feb 2021 06:03:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=usnjfiBWFcGZxVK1Au441a6j8vI6WTNGS2y2zdPYlkQ=;
- b=D6vfk5vCMzFH00BjA+U2zc/EPPPjan4K5nTWnni1MCLiXiaj2ReYjDt0YvKJFlQKFBvH
- ew3IJzTod9Kc1q8m+VM8yhUwTVylhkxf44xAPc8bKHTEYsoGYtPJQRWN2CEF9YvauMLx
- c48nfpdyJ8QU/P9NTzr731SKR0CStrEmLf62oM5K8tjjXb2TauSz7LW2+2WN36xNYs3L
- KwG/+MSNRj1jpA4wokC4l0/pSBblrVUx9jpyIt4aRNCqRneWvPcHvYjRl9gtoApIzHJm
- 4MxEhpZnkSQJUfRD3Ut2RX0mTa4QzwfK4dU6PeR5XPM5cqJtYpySR6AXZHIZKju67wQP 2A== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36nr068u58-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Feb 2021 06:03:24 -0500
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11CB2Z5f002841;
-        Fri, 12 Feb 2021 11:03:12 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma01fra.de.ibm.com with ESMTP id 36hjr83evk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Feb 2021 11:03:11 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11CB39T025100784
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Feb 2021 11:03:09 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BBDE742047;
-        Fri, 12 Feb 2021 11:03:09 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6A4AA42041;
-        Fri, 12 Feb 2021 11:03:09 +0000 (GMT)
-Received: from osiris (unknown [9.171.56.89])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 12 Feb 2021 11:03:09 +0000 (GMT)
-Date:   Fri, 12 Feb 2021 12:03:08 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Vlad Buslov <vladbu@nvidia.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dmytro Linkin <dlinkin@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Tree for Feb 11
-Message-ID: <YCZgbOpD1xDw4PT8@osiris>
-References: <20210211222604.51bd537c@canb.auug.org.au>
- <YCWT6TZCGQOXlf6B@osiris>
- <ygnh8s7tsk4i.fsf@nvidia.com>
+        Fri, 12 Feb 2021 06:07:25 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEF6C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 03:06:45 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id z11so4576653lfb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 03:06:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p2xh5jdgGHTIrdu5lQXA6yzf53MI3dqdPEuKDN8QxP0=;
+        b=awaLbyc7oZphZTpAspqt8g3EyUJFSVCH+NnR7m4d9Y2ufof0nl9DcCoSrdtbdTjIYg
+         nMfDqMu5IywKsfxUoBTMyB6hpb0m4xElIcZ15V5gQWZSDJL1dQsfSKnLGe6TZcZaiwEu
+         uzr3aMd+WvW5IF2efECaWAHlRZoLF/xfUlB9jlSBhPAL2RntxlfZ19Bxr4nncKnTA99A
+         zuLVvv+BKY9mt3MfUzKosAqlJ6Wc9PolxjxGQrtYX0v1Uofu8cX3d4yRSzab9MVQ6/dc
+         vIINbKeQtNzf6Zc6IrhVZZt9ilBsrbtYuAghUByZeFJQAtJ+aBlW/KtoNGUltUWonx+Z
+         J/3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p2xh5jdgGHTIrdu5lQXA6yzf53MI3dqdPEuKDN8QxP0=;
+        b=V8JCBAh8iYi3+Ai9OcDioS2xO5fqHHrMU74K6ndxUQChzUPPB9D0gGELJLuEx1rIvI
+         9fvyNsu68wY9kEXPEACIe90+3rVzbXyeoG2W1Qcvo6yP3CZYWm9znQie2CMJWxlNknHb
+         KZ+dMSc1k+9HufIV4/Q0wltwP9e/9xQmzO+MO7oDqQthiAXttLcvbxPSEDrvd30YV/lE
+         /fy2k0z5GK8myKvcNL4LpxlwEqelh8hhwJPAPC77AcAhH8zI7pWpOdWTYeo4LoIn+CkC
+         Jsxsvt6NtK6/sp9b970wEAChuPPj/dYSFODcraWwBSuiQYYtNajcMaQEhHIj1kVPY1om
+         rnuw==
+X-Gm-Message-State: AOAM531VHc9BtwKzIEU+a8BdrEeSADxVqA7V1IVkU2tDfVVmAivrTsF/
+        8Os3N3/kN2LYTgCBDbF0Jf8Lmg==
+X-Google-Smtp-Source: ABdhPJw2RGg+jzJ/1l9de132plS/H1uvlpJ+LcoAaY6k+yoJV0lJ2JWSK9cvc/5Qbf0KuRj1KohNdw==
+X-Received: by 2002:a05:6512:11e2:: with SMTP id p2mr1280262lfs.321.1613128003337;
+        Fri, 12 Feb 2021 03:06:43 -0800 (PST)
+Received: from localhost.localdomain (89-70-221-122.dynamic.chello.pl. [89.70.221.122])
+        by smtp.gmail.com with ESMTPSA id 84sm937488lfd.131.2021.02.12.03.06.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 03:06:42 -0800 (PST)
+From:   Lukasz Majczak <lma@semihalf.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Tj <ml.linux@elloe.vision>, Dirk Gouders <dirk@gouders.net>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Radoslaw Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>, upstream@semihalf.com
+Subject: [PATCH v5] tpm_tis: Add missing tpm_request/relinquish_locality() calls
+Date:   Fri, 12 Feb 2021 12:06:00 +0100
+Message-Id: <20210212110600.19216-1-lma@semihalf.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ygnh8s7tsk4i.fsf@nvidia.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-12_03:2021-02-12,2021-02-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- spamscore=0 priorityscore=1501 mlxlogscore=999 suspectscore=0 mlxscore=0
- adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102120081
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vlad,
+There are missing calls to tpm_request_locality() before the calls to
+the tpm_get_timeouts() and tpm_tis_probe_irq_single() - both functions
+internally send commands to the tpm using tpm_tis_send_data()
+which in turn, at the very beginning, calls the tpm_tis_status().
+This one tries to read TPM_STS register, what fails and propagates
+this error upward. The read fails due to lack of acquired locality,
+as it is described in
+TCG PC Client Platform TPM Profile (PTP) Specification,
+paragraph 6.1 FIFO Interface Locality Usage per Register,
+Table 39 Register Behavior Based on Locality Setting for FIFO
+- a read attempt to TPM_STS_x Registers returns 0xFF in case of lack
+of locality. The described situation manifests itself with
+the following warning trace:
 
-> > Build fails on s390 using defconfig with:
-> >
-> > In file included from drivers/net/ethernet/mellanox/mlx5/core/en_tc.h:40,
-> >                  from drivers/net/ethernet/mellanox/mlx5/core/en_main.c:45:
-> > drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h:24:29: error: field 'match_level' has incomplete type
-> >    24 |  enum mlx5_flow_match_level match_level;
-> >       |                             ^~~~~~~~~~~
-> > drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h:27:26: warning: 'struct mlx5e_encap_entry' declared inside parameter list will not be visible outside of this definition or declaration
-> >    27 |  int (*calc_hlen)(struct mlx5e_encap_entry *e);
-> >       |                          ^~~~~~~~~~~~~~~~~
-> >
-> > caused by this:
-> > commit 0d9f96471493d5483d116c137693f03604332a04 (HEAD, refs/bisect/bad)
-> > Author: Vlad Buslov <vladbu@nvidia.com>
-> > Date:   Sun Jan 24 22:07:04 2021 +0200
-> >
-> >     net/mlx5e: Extract tc tunnel encap/decap code to dedicated file
-> >     
-> >     Following patches in series extend the extracted code with routing
-> >     infrastructure. To improve code modularity created a dedicated
-> >     tc_tun_encap.c source file and move encap/decap related code to the new
-> >     file. Export code that is used by both regular TC code and encap/decap code
-> >     into tc_priv.h (new header intended to be used only by TC module). Rename
-> >     some exported functions by adding "mlx5e_" prefix to their names.
-> >     
-> >     Signed-off-by: Vlad Buslov <vladbu@nvidia.com>
-> >     Signed-off-by: Dmytro Linkin <dlinkin@nvidia.com>
-> >     Reviewed-by: Roi Dayan <roid@nvidia.com>
-> >     Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-> >
-> > Note: switching on NET_SWITCHDEV fixes the build error.
-> 
-> Hi Heiko,
-> 
-> This problem is supposed to be fixed by 36280f0797df ("net/mlx5e: Fix
-> tc_tun.h to verify MLX5_ESWITCH config"). I'm trying to reproduce with
-> config supplied by test robot in another thread (config: s390-defconfig)
-> and current net-next builds fine for me. I've also verified that config
-> option you mentioned is not set in that config:
-> 
-> $ grep NET_SWITCHDEV .config
-> # CONFIG_NET_SWITCHDEV is not set
-> 
-> Can you help me reproduce?
+[    4.324298] TPM returned invalid status
+[    4.324806] WARNING: CPU: 2 PID: 1 at drivers/char/tpm/tpm_tis_core.c:275 tpm_tis_status+0x86/0x8f
 
-The commit you mention is not part of linux-next 20210211 (I'm not
-talking of net-next). So, probably will be fixed with today's
-release. I just checked: net-next builds with s390 defconfig.
+Tested on Samsung Chromebook Pro (Caroline), TPM 1.2 (SLB 9670)
+Fixes: a3fbfae82b4c ("tpm: take TPM chip power gating out of tpm_transmit()")
 
-Thanks!
+Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+---
+
+Hi
+
+I have tried to clean all the pointed issues, but decided to stay with 
+tpm_request/relinquish_locality() calls instead of using tpm_chip_start/stop(),
+the rationale behind this is that, in this case only locality is requested, there
+is no need to enable/disable the clock, the similar case is present in
+the probe_itpm() function.
+One more clarification is that, the TPM present on my test machine is the SLB 9670
+(not Cr50).
+
+Best regards,
+Lukasz
+
+Changes:
+v4->v5:
+* Fixed style, typos, clarified commit message
+
+ drivers/char/tpm/tpm-chip.c      |  6 ++++--
+ drivers/char/tpm/tpm-interface.c | 13 ++++++++++---
+ drivers/char/tpm/tpm.h           |  2 ++
+ drivers/char/tpm/tpm_tis_core.c  | 14 +++++++++++---
+ 4 files changed, 27 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+index ddaeceb7e109..ce9c2650fbe5 100644
+--- a/drivers/char/tpm/tpm-chip.c
++++ b/drivers/char/tpm/tpm-chip.c
+@@ -32,7 +32,7 @@ struct class *tpm_class;
+ struct class *tpmrm_class;
+ dev_t tpm_devt;
+ 
+-static int tpm_request_locality(struct tpm_chip *chip)
++int tpm_request_locality(struct tpm_chip *chip)
+ {
+ 	int rc;
+ 
+@@ -46,8 +46,9 @@ static int tpm_request_locality(struct tpm_chip *chip)
+ 	chip->locality = rc;
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(tpm_request_locality);
+ 
+-static void tpm_relinquish_locality(struct tpm_chip *chip)
++void tpm_relinquish_locality(struct tpm_chip *chip)
+ {
+ 	int rc;
+ 
+@@ -60,6 +61,7 @@ static void tpm_relinquish_locality(struct tpm_chip *chip)
+ 
+ 	chip->locality = -1;
+ }
++EXPORT_SYMBOL_GPL(tpm_relinquish_locality);
+ 
+ static int tpm_cmd_ready(struct tpm_chip *chip)
+ {
+diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-interface.c
+index 1621ce818705..2a9001d329f2 100644
+--- a/drivers/char/tpm/tpm-interface.c
++++ b/drivers/char/tpm/tpm-interface.c
+@@ -241,10 +241,17 @@ int tpm_get_timeouts(struct tpm_chip *chip)
+ 	if (chip->flags & TPM_CHIP_FLAG_HAVE_TIMEOUTS)
+ 		return 0;
+ 
+-	if (chip->flags & TPM_CHIP_FLAG_TPM2)
++	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+ 		return tpm2_get_timeouts(chip);
+-	else
+-		return tpm1_get_timeouts(chip);
++	} else {
++		ssize_t ret = tpm_request_locality(chip);
++
++		if (ret)
++			return ret;
++		ret = tpm1_get_timeouts(chip);
++		tpm_relinquish_locality(chip);
++		return ret;
++	}
+ }
+ EXPORT_SYMBOL_GPL(tpm_get_timeouts);
+ 
+diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
+index 947d1db0a5cc..8c13008437dd 100644
+--- a/drivers/char/tpm/tpm.h
++++ b/drivers/char/tpm/tpm.h
+@@ -193,6 +193,8 @@ static inline void tpm_msleep(unsigned int delay_msec)
+ 
+ int tpm_chip_start(struct tpm_chip *chip);
+ void tpm_chip_stop(struct tpm_chip *chip);
++int tpm_request_locality(struct tpm_chip *chip);
++void tpm_relinquish_locality(struct tpm_chip *chip);
+ struct tpm_chip *tpm_find_get_ops(struct tpm_chip *chip);
+ __must_check int tpm_try_get_ops(struct tpm_chip *chip);
+ void tpm_put_ops(struct tpm_chip *chip);
+diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+index 431919d5f48a..d4f381d6356e 100644
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -708,11 +708,19 @@ static int tpm_tis_gen_interrupt(struct tpm_chip *chip)
+ 	u32 cap2;
+ 	cap_t cap;
+ 
+-	if (chip->flags & TPM_CHIP_FLAG_TPM2)
++	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+ 		return tpm2_get_tpm_pt(chip, 0x100, &cap2, desc);
+-	else
+-		return tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc,
++	} else {
++		ssize_t ret = tpm_request_locality(chip);
++
++		if (ret)
++			return ret;
++		ret = tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc,
+ 				  0);
++		tpm_relinquish_locality(chip);
++		return ret;
++	}
++
+ }
+ 
+ /* Register the IRQ and issue a command that will cause an interrupt. If an
+-- 
+2.25.1
+
