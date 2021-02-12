@@ -2,129 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBF331A291
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5188331A2A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbhBLQYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:24:19 -0500
-Received: from mail-am6eur05on2062.outbound.protection.outlook.com ([40.107.22.62]:4800
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229451AbhBLQYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:24:08 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hcWMIemqYvh6SFO7i+T9sFrRqMRjQ5wvR60qwyvK/jYmgad14YiUvbUdHnIByoMUgbkp5yZ+Z6pOoa5/YF9paFayJp6IJllaWIbCVtEGsbEb5mCkrxQTKQ2dvPNjwsJrkWkgJEb7136JYu7SVIkVdFj/gnEf9A627+pDknmjXutdjWOZYvfWV9kTJioeLtJEZfKzZeNy+TY9o2mbYz7XN7TL1wCwykkGxWp9ENVUXopFNSbij3PdHwNoGQH1Zz7URkq29Qqkcf+peQrbz+X1ADM4UpNPY/chsv5188poGzBzWAkoOH9iRla20UYTIbscWdouYRGEF4Y+3dsaQwTO0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZgZUd3+fUP/He7w7fiOykPdL22pPq87TevaIvh+B2cU=;
- b=cCFevALsjRDL0I0RZ8ESSuJdyK9kIu6/HyA3bXq9lxJSADYBgNaTX7cKg4OF9FcfEh6pwZSECjq173WmpdRHeqJFzrzQKsm3BFRM63MPnGLQ620aBGDCteTsdqkJK9xTxAQOU8Yn7SQaYTD1vJ6tyFqkSGT1qf/NLsjOnlDrFalHuCPBPFAHuWlYWGlrFACkgPqkuaHP9OahcR7A4PKMVpWKjDikOFe79W+Ju8czV/AvBKoClTJZhhO0N3tQnGaRlYNpgQZfibm2PofNdOmLop5KbHTsVEbQm2jYQBLgw/vKHhcEVAHH2l1V84pTEW9seEgJYiRBsy0sYh2i+WzfxQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZgZUd3+fUP/He7w7fiOykPdL22pPq87TevaIvh+B2cU=;
- b=NU64yD87QmDs24MzOII/D3yF3fB95Mp9UCl+JrM66KlhUCbKY2ZXvjL+wGoOWibxX5MAOtUBB5o5MlypQEO3psAQCzhOGYH0K4nkQmf8tBD0wsY2QgHYK+m8egxM7r6Pw8v/mIY1SwRbRfhE4caJPBoA+8fDdfiyO8vcSjZa3s8=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VE1PR04MB7470.eurprd04.prod.outlook.com (2603:10a6:800:1a3::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Fri, 12 Feb
- 2021 16:23:19 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::3df3:2eba:51bb:58d7]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::3df3:2eba:51bb:58d7%7]) with mapi id 15.20.3846.029; Fri, 12 Feb 2021
- 16:23:19 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Antoine Tenart <atenart@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Steen Hegelund <steen.hegelund@microchip.com>
-Subject: Re: [PATCH net v1 1/3] net: phy: mscc: adding LCPLL reset to VSC8514
-Thread-Topic: [PATCH net v1 1/3] net: phy: mscc: adding LCPLL reset to VSC8514
-Thread-Index: AQHXAUhdAGZIwJCnokGEX7Rqm0aTdqpUtC0A
-Date:   Fri, 12 Feb 2021 16:23:19 +0000
-Message-ID: <20210212162318.zx6nx2suzdfocu55@skbuf>
-References: <20210212140643.23436-1-bjarni.jonasson@microchip.com>
-In-Reply-To: <20210212140643.23436-1-bjarni.jonasson@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [5.12.227.87]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0b16bdad-d705-4414-7a84-08d8cf72827a
-x-ms-traffictypediagnostic: VE1PR04MB7470:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB747080DD6ADE6AC64E73ED33E08B9@VE1PR04MB7470.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zqXvREza4UyrK0OHCWBHzcpEDmUvLTiaKCoCY+pe2koy/9oBDm7hWDEZYxnT9/ZPuvQF3RS56QOijK9QojM6x3sh0M2SeBhlNDHHaX+bEHy1hh/ZZQaTJs/ybdPTFY/b8xjeoETaxU765kXcILRNip/YGaZqaJJQHDQJX9sSFA0oS2svxlnyz1ue3HrTxrT/wcYDuJp8WYKnlDLs2NXD1xVvGHKc7oxhEHXSVe1n9HUug7beZPGR9d0TP/glpuGtiBjqKMQEskFsNPvZafZvAE8Mhs9wtfJqUFzQ39nwpEV0LYwGYKuY0doSdVmWlXomIgJyX6fqYsELnKBjC70Ay+9BTUuBpmLz3G/PWo0mtxc/9oF7CCUDB2Huv4jx10FCahP2r70luDCHonpb0y0fL3nHu6yAlCgbHJG8Fjpu1N2t7E15HPU2z9H+HMwP3ZnAsG3wPXOG6m3wM47SeC2hsVaNwHEi+YrY3Q7sP7jTlfJYHzxIeTJgi6w/oc/KtmeXGSwFer2tDGv5QXgjZ9sAAg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(346002)(366004)(396003)(39860400002)(376002)(136003)(71200400001)(5660300002)(76116006)(6506007)(44832011)(66556008)(26005)(4326008)(316002)(9686003)(64756008)(66446008)(66476007)(91956017)(86362001)(66946007)(2906002)(186003)(6916009)(7416002)(33716001)(6512007)(6486002)(8676002)(54906003)(478600001)(1076003)(8936002)(83380400001)(4744005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?cEw/il/iwM69ROqk+YDO6d28GHmEJ5iACmcLXMRqOo97psV8kU5dl3CZMOOl?=
- =?us-ascii?Q?WJtWD2nZ8KqBCP72Le9jDwQgel7FysjNk4A2fursMEBIHRS+o1lQ7LbQ/A7n?=
- =?us-ascii?Q?iI/mMksdqZH3D6VQbVOhorPjwgHCIfkEIyXEsipj+RdOq1IRkfVnngA/cz1t?=
- =?us-ascii?Q?51ycIKcj3OPF9gTZ1bbbxaiGsIZQK//xt+2JO5Bhf5yEXxpoTo0/oPrzxswL?=
- =?us-ascii?Q?LxACVslUZTlCSHm0WphC5fTDG6Q0R3YdV/ZJijFDUji/32R4fNyce8iimkYN?=
- =?us-ascii?Q?NZi2JH8AjcEYGlaY8eWogRUFLlWPi2ie8aAcnFLCn2hUnX8KIjObnjcQeTPL?=
- =?us-ascii?Q?TzGEMQMsal0gUVdYRcf/NPQiEZtzgMCUM2wCVJAJMWS7T8R8xzVLSp+MZmzk?=
- =?us-ascii?Q?PM/If5AIgky49c69twboXgBqLFoc/oEkuHiHOzoAm0gjXsqgNvN/V4JmPclQ?=
- =?us-ascii?Q?Jqn7MMNbQVAZmxTJwtLBqw0ED19z5HOnD5rC9FAbL4+Ajg7uoAHwretVDFIM?=
- =?us-ascii?Q?VGqtVMz1AmnXzXbQoAK/8ldjdswgsyd9GLlFNoOGW/KmMLiarN5fpf2+kNGg?=
- =?us-ascii?Q?6Do9ukJ6zfU3dtsOpsSLrPCFxgYoZzZ39AlNM2lAabH1wpAVCXhF1vqE4/vy?=
- =?us-ascii?Q?ZIiaXIGQxUOYaMG4TEpvmjmv8rezQFmy1u44crxzrRwcuj09ZQGYHO6LizWU?=
- =?us-ascii?Q?4f+b3xCvZoAbV+PSwu6T7mdcWWKlRIHmU9ZO3OnuDZOL5uJh74LGCq/htZug?=
- =?us-ascii?Q?KS5AJCZQ9gl6o7g7WwkaPOOUCwPfT6zOukGwtzcKQ7qYV/RREXjQuESa5WkG?=
- =?us-ascii?Q?xN8+hTbQ3iiA2mx5bJubSGW03inh4QhNX6jQaUIH9SyXsl0WBUJ884YOwcK9?=
- =?us-ascii?Q?h+sqjBB7F6LNd4HeQ1EkJfF0Rw/RmHUfHsrpAThJ1QkAN9xHDaMQwLo6DKOz?=
- =?us-ascii?Q?YGx23CO7d/7ZnYGFbvQSC/SyAwBPbqvMCXKe03KAV4qRJHyfPoDp49rxDg4/?=
- =?us-ascii?Q?Qmg8QwcKQLUTSh0M9e34B73pWntVBMksfLhnEacDe8GAfFMMQqR/rYPDIwyr?=
- =?us-ascii?Q?9m0wvNQskTHzkwiRNBS+gqfwWH6haRPmk+LohDdOe8ZyrKZ4fcKh/nex44DV?=
- =?us-ascii?Q?z8syOGxdjS9G/bg8e5vSF7LRIJKqhnF7ftcvB6dXR4AtBny5eWzBQprmIg6b?=
- =?us-ascii?Q?VsvqeR7BJIjOdsR4aABp2zsyXrknQx1d2ZV4E5HifGpIEDk5/u0CJc/iJbbL?=
- =?us-ascii?Q?w84bFkYfurqfFZFND6tqCK5oN88FrywQ79StSgkKUtLTGK7+INPyLcWDu/vW?=
- =?us-ascii?Q?hS2ujkSrmqpNKbx9jMxBePbY?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <302086AB8D16B041826B95C65D806E39@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S230154AbhBLQZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:25:38 -0500
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:41960 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229451AbhBLQZH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 11:25:07 -0500
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 0F4488215E;
+        Fri, 12 Feb 2021 19:24:22 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1613147062;
+        bh=rLXCTmEEj6fyeUeOlbIufUnzOp7wd0K7Avs5HsUoazw=;
+        h=From:To:CC:Subject:Date;
+        b=D7wVTEdgbGbh6zU6KuxfEAmOPYUe3Xdh7OqeJxPNFiJEB5EKy0nOpjjNJid4rETkK
+         mOncUNuSNQZ4xO5dKMIxgMHtVs0hu0NArpAEhggvfLoweYe41MfCtHsK+YUx0xIBPX
+         S+gZe+3Rk8hiiNb1P9/9qmX6Ve8gWEM5kBh6sxL4=
+Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 12 Feb 2021 19:24:21 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
+        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
+        <mark@harmstone.com>, <nborisov@suse.com>,
+        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
+        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
+        <andy.lavr@gmail.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v21 00/10] NTFS read-write driver GPL implementation by Paragon Software
+Date:   Fri, 12 Feb 2021 19:24:06 +0300
+Message-ID: <20210212162416.2756937-1-almaz.alexandrovich@paragon-software.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b16bdad-d705-4414-7a84-08d8cf72827a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2021 16:23:19.4501
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: c+fR+8+bQ1HAjSl0Zx1DNHh8YCBEiAkZSlo28pOb3KOHVXID2jygC50jeekK1e5/ESpe4rNTqaX05mXzx/Pxxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7470
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.30.114.105]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 03:06:41PM +0100, Bjarni Jonasson wrote:
-> At Power-On Reset, transients may cause the LCPLL to lock onto a
-> clock that is momentarily unstable. This is normally seen in QSGMII
-> setups where the higher speed 6G SerDes is being used.
-> This patch adds an initial LCPLL Reset to the PHY (first instance)
-> to avoid this issue.
->=20
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
-> Fixes: e4f9ba642f0b ("net: phy: mscc: add support for VSC8514 PHY.")
-> ---
+This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com> # for regressions=
+Having decades of expertise in commercial file systems development and huge
+test coverage, we at Paragon Software GmbH want to make our contribution to
+the Open Source Community by providing implementation of NTFS Read-Write
+driver for the Linux Kernel.
+
+This is fully functional NTFS Read-Write driver. Current version works with
+NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
+
+We plan to support this version after the codebase once merged, and add new
+features and fix bugs. For example, full journaling support over JBD will be
+added in later updates.
+
+v2:
+ - patch splitted to chunks (file-wise)
+ - build issues fixed
+ - sparse and checkpatch.pl errors fixed
+ - NULL pointer dereference on mkfs.ntfs-formatted volume mount fixed
+ - cosmetics + code cleanup
+
+v3:
+ - added acl, noatime, no_acs_rules, prealloc mount options
+ - added fiemap support
+ - fixed encodings support
+ - removed typedefs
+ - adapted Kernel-way logging mechanisms
+ - fixed typos and corner-case issues
+
+v4:
+ - atomic_open() refactored
+ - code style updated
+ - bugfixes
+
+v5:
+- nls/nls_alt mount options added
+- Unicode conversion fixes
+- Improved very fragmented files operations
+- logging cosmetics
+
+v6:
+- Security Descriptors processing changed
+  added system.ntfs_security xattr to set
+  SD
+- atomic_open() optimized
+- cosmetics
+
+v7:
+- Security Descriptors validity checks added (by Mark Harmstone)
+- atomic_open() fixed for the compressed file creation with directio
+  case
+- remount support
+- temporarily removed readahead usage
+- cosmetics
+
+v8:
+- Compressed files operations fixed
+
+v9:
+- Further cosmetics applied as suggested
+by Joe Perches
+
+v10:
+- operations with compressed/sparse files on very fragmented volumes improved
+- reduced memory consumption for above cases
+
+v11:
+- further compressed files optimizations: reads/writes are now skipping bufferization
+- journal wipe to the initial state optimized (bufferization is also skipped)
+- optimized run storage (re-packing cluster metainformation)
+- fixes based on Matthew Wilcox feedback to the v10
+- compressed/sparse/normal could be set for empty files with 'system.ntfs_attrib' xattr
+
+v12:
+- nls_alt mount option removed after discussion with Pali Rohar
+- fixed ni_repack()
+- fixed resident files transition to non-resident when size increasing
+
+v13:
+- nested_lock fix (lockdep)
+- out-of-bounds read fix (KASAN warning)
+- resident->nonresident transition fixed for compressed files
+- load_nls() missed fix applied
+- some sparse utility warnings fixes
+
+v14:
+- support for additional compression types (we've adapted WIMLIB's
+  implementation, authored by Eric Biggers, into ntfs3)
+
+v15:
+- kernel test robot warnings fixed
+- lzx/xpress compression license headers updated
+
+v16:
+- lzx/xpress moved to initial ntfs-3g plugin code
+- mutexes instead of a global spinlock for compresions
+- FALLOC_FL_PUNCH_HOLE and FALLOC_FL_COLLAPSE_RANGE implemented
+- CONFIG_NTFS3_FS_POSIX_ACL added
+
+v17:
+- FALLOC_FL_COLLAPSE_RANGE fixed
+- fixes for Mattew Wilcox's and Andy Lavr's concerns
+
+v18:
+- ntfs_alloc macro splitted into two ntfs_malloc + ntfs_zalloc
+- attrlist.c: always use ntfs_cmp_names instead of memcmp; compare entry names
+  only for entry with vcn == 0
+- dir.c: remove unconditional ni_lock in ntfs_readdir
+- fslog.c: corrected error case behavior
+- index.c: refactored due to modification of ntfs_cmp_names; use rw_semaphore
+  for read/write access to alloc_run and bitmap_run while ntfs_readdir
+- run.c: separated big/little endian code in functions
+- upcase.c: improved ntfs_cmp_names, thanks to Kari Argillander for idea
+  and 'bothcase' implementation
+
+v19:
+- fixed directory bitmap for 2MB cluster size
+- fixed rw_semaphore init for directories
+
+v20:
+- fixed issue with incorrect hidden/system attribute setting on
+  root subdirectories
+- use kvmalloc instead of kmalloc for runs array
+- fixed index behavior on volumes with cluster size more than 4k
+- current build info is added into module info instead of printing on insmod
+
+v21:
+- fixes for clang CFI checks
+- fixed sb->s_maxbytes for 32bit clusters
+- user.DOSATTRIB is no more intercepted by ntfs3
+- corrected xattr limits;  is used
+- corrected CONFIG_NTFS3_64BIT_CLUSTER usage
+- info about current build is added into module info and printing
+on insmod (by Andy Lavr's request)
+note: v21 is applicable for 'linux-next' not older than 2021.01.28
+
+Konstantin Komarov (10):
+  fs/ntfs3: Add headers and misc files
+  fs/ntfs3: Add initialization of super block
+  fs/ntfs3: Add bitmap
+  fs/ntfs3: Add file operations and implementation
+  fs/ntfs3: Add attrib operations
+  fs/ntfs3: Add compression
+  fs/ntfs3: Add NTFS journal
+  fs/ntfs3: Add Kconfig, Makefile and doc
+  fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+  fs/ntfs3: Add MAINTAINERS
+
+ Documentation/filesystems/ntfs3.rst |  107 +
+ MAINTAINERS                         |    7 +
+ fs/Kconfig                          |    1 +
+ fs/Makefile                         |    1 +
+ fs/ntfs3/Kconfig                    |   45 +
+ fs/ntfs3/Makefile                   |   31 +
+ fs/ntfs3/attrib.c                   | 2085 +++++++++++
+ fs/ntfs3/attrlist.c                 |  457 +++
+ fs/ntfs3/bitfunc.c                  |  135 +
+ fs/ntfs3/bitmap.c                   | 1495 ++++++++
+ fs/ntfs3/debug.h                    |   64 +
+ fs/ntfs3/dir.c                      |  583 +++
+ fs/ntfs3/file.c                     | 1130 ++++++
+ fs/ntfs3/frecord.c                  | 3083 ++++++++++++++++
+ fs/ntfs3/fslog.c                    | 5204 +++++++++++++++++++++++++++
+ fs/ntfs3/fsntfs.c                   | 2535 +++++++++++++
+ fs/ntfs3/index.c                    | 2646 ++++++++++++++
+ fs/ntfs3/inode.c                    | 2058 +++++++++++
+ fs/ntfs3/lib/decompress_common.c    |  332 ++
+ fs/ntfs3/lib/decompress_common.h    |  352 ++
+ fs/ntfs3/lib/lib.h                  |   26 +
+ fs/ntfs3/lib/lzx_decompress.c       |  683 ++++
+ fs/ntfs3/lib/xpress_decompress.c    |  155 +
+ fs/ntfs3/lznt.c                     |  452 +++
+ fs/ntfs3/namei.c                    |  592 +++
+ fs/ntfs3/ntfs.h                     | 1236 +++++++
+ fs/ntfs3/ntfs_fs.h                  | 1073 ++++++
+ fs/ntfs3/record.c                   |  609 ++++
+ fs/ntfs3/run.c                      | 1120 ++++++
+ fs/ntfs3/super.c                    | 1502 ++++++++
+ fs/ntfs3/upcase.c                   |  100 +
+ fs/ntfs3/xattr.c                    | 1050 ++++++
+ 32 files changed, 30949 insertions(+)
+ create mode 100644 Documentation/filesystems/ntfs3.rst
+ create mode 100644 fs/ntfs3/Kconfig
+ create mode 100644 fs/ntfs3/Makefile
+ create mode 100644 fs/ntfs3/attrib.c
+ create mode 100644 fs/ntfs3/attrlist.c
+ create mode 100644 fs/ntfs3/bitfunc.c
+ create mode 100644 fs/ntfs3/bitmap.c
+ create mode 100644 fs/ntfs3/debug.h
+ create mode 100644 fs/ntfs3/dir.c
+ create mode 100644 fs/ntfs3/file.c
+ create mode 100644 fs/ntfs3/frecord.c
+ create mode 100644 fs/ntfs3/fslog.c
+ create mode 100644 fs/ntfs3/fsntfs.c
+ create mode 100644 fs/ntfs3/index.c
+ create mode 100644 fs/ntfs3/inode.c
+ create mode 100644 fs/ntfs3/lib/decompress_common.c
+ create mode 100644 fs/ntfs3/lib/decompress_common.h
+ create mode 100644 fs/ntfs3/lib/lib.h
+ create mode 100644 fs/ntfs3/lib/lzx_decompress.c
+ create mode 100644 fs/ntfs3/lib/xpress_decompress.c
+ create mode 100644 fs/ntfs3/lznt.c
+ create mode 100644 fs/ntfs3/namei.c
+ create mode 100644 fs/ntfs3/ntfs.h
+ create mode 100644 fs/ntfs3/ntfs_fs.h
+ create mode 100644 fs/ntfs3/record.c
+ create mode 100644 fs/ntfs3/run.c
+ create mode 100644 fs/ntfs3/super.c
+ create mode 100644 fs/ntfs3/upcase.c
+ create mode 100644 fs/ntfs3/xattr.c
+
+
+base-commit: dcc0b49040c70ad827a7f3d58a21b01fdb14e749
+-- 
+2.25.4
+
