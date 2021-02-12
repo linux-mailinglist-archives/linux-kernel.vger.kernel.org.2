@@ -2,108 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BA7319C21
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA89319C27
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhBLJwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:52:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54364 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230023AbhBLJv5 (ORCPT
+        id S230021AbhBLJy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:54:29 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2556 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229844AbhBLJyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:51:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613123431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NLn/4/rOA5xb9flMxCQVXqwcmKnjIyeK9Sd83umgNVA=;
-        b=PFccEYJ3zXuIOJ8t3l4Sy9s1LrWpedBnsWbAJ+jTNqWWEoTWUFw4yhkDzypqlPk0inDn9q
-        n9OlY8UkLLJISscetatnjPAW5xcYNuaCaiZHsTpZApMbD3MRvOu/qNqttH+kMCm1nkqQBB
-        GKRYHAt2Zkqbf7YxmeFDKRYJI4xe3NA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-44-Z8u7bSY7O9y16m2jZttrzQ-1; Fri, 12 Feb 2021 04:50:27 -0500
-X-MC-Unique: Z8u7bSY7O9y16m2jZttrzQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DFDD0100CC88;
-        Fri, 12 Feb 2021 09:50:25 +0000 (UTC)
-Received: from [10.36.114.178] (ovpn-114-178.ams2.redhat.com [10.36.114.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B18585DEFB;
-        Fri, 12 Feb 2021 09:50:24 +0000 (UTC)
-Subject: Re: [PATCH] hugetlbfs: Remove unneeded return value of
- hugetlb_vmtruncate()
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210208084637.47789-1-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <379efeaf-a96b-d55d-b542-8fb6fad5ee9a@redhat.com>
-Date:   Fri, 12 Feb 2021 10:50:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 12 Feb 2021 04:54:24 -0500
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DcTGK5d6xz67lQJ;
+        Fri, 12 Feb 2021 17:48:41 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 12 Feb 2021 10:53:41 +0100
+Received: from [10.47.10.68] (10.47.10.68) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 12 Feb
+ 2021 09:53:40 +0000
+Subject: Re: [PATCH v6 3/3] perf vendor events arm64: Add Fujitsu A64FX pmu
+ event
+To:     Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>,
+        <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210212090318.1522292-1-nakamura.shun@jp.fujitsu.com>
+ <20210212090318.1522292-4-nakamura.shun@jp.fujitsu.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <f580a590-924d-ea44-f06f-f402df3582e1@huawei.com>
+Date:   Fri, 12 Feb 2021 09:52:03 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20210208084637.47789-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210212090318.1522292-4-nakamura.shun@jp.fujitsu.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Originating-IP: [10.47.10.68]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.02.21 09:46, Miaohe Lin wrote:
-> The function hugetlb_vmtruncate() is guaranteed to always success since
-> commit 7aa91e104028 ("hugetlb: allow extending ftruncate on hugetlbfs").
-> So we should remove the unneeded return value which is always 0.
+On 12/02/2021 09:03, Shunsuke Nakamura wrote:
+> Add pmu events for A64FX.
 > 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   fs/hugetlbfs/inode.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
+> Documentation source:
+> https://github.com/fujitsu/A64FX/blob/master/doc/A64FX_PMU_Events_v1.2.pdf
 > 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index 394da2ab08ad..701c82c36138 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -567,7 +567,7 @@ static void hugetlbfs_evict_inode(struct inode *inode)
->   	clear_inode(inode);
->   }
->   
-> -static int hugetlb_vmtruncate(struct inode *inode, loff_t offset)
-> +static void hugetlb_vmtruncate(struct inode *inode, loff_t offset)
->   {
->   	pgoff_t pgoff;
->   	struct address_space *mapping = inode->i_mapping;
-> @@ -582,7 +582,6 @@ static int hugetlb_vmtruncate(struct inode *inode, loff_t offset)
->   		hugetlb_vmdelete_list(&mapping->i_mmap, pgoff, 0);
->   	i_mmap_unlock_write(mapping);
->   	remove_inode_hugepages(inode, offset, LLONG_MAX);
-> -	return 0;
->   }
->   
->   static long hugetlbfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
-> @@ -781,9 +780,7 @@ static int hugetlbfs_setattr(struct user_namespace *mnt_userns,
->   		if ((newsize < oldsize && (info->seals & F_SEAL_SHRINK)) ||
->   		    (newsize > oldsize && (info->seals & F_SEAL_GROW)))
->   			return -EPERM;
-> -		error = hugetlb_vmtruncate(inode, newsize);
-> -		if (error)
-> -			return error;
-> +		hugetlb_vmtruncate(inode, newsize);
->   	}
->   
->   	setattr_copy(&init_user_ns, inode, attr);
-> 
+> Signed-off-by: Shunsuke Nakamura<nakamura.shun@fujitsu.com>
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+Reviewed-by: John Garry <john.garry@huawei.com>
