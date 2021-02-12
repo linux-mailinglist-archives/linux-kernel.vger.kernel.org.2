@@ -2,218 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5553199DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 07:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F05363199E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 07:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhBLGMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 01:12:43 -0500
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:37895 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhBLGMi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 01:12:38 -0500
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id C2D9775F92;
-        Fri, 12 Feb 2021 09:11:52 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1613110312;
-        bh=9NSNujscdOSzEvjcgS1M0d97z+6xEzosf+gBSkx6LJo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=U8Ua/p6Vf1+CvXME+1FHovT8tiT3kh9ze/HHo4uRVjULtSZV+lZxr0x5aO9IEE22i
-         zj4RovYKVYeO3jRbGNZiJwhgr52RI5uY9BeIw5XERt8+ItcNa84Tf20Dyiff6MzteG
-         QSwr0J4m6Cv5/aiSexF31V3A1sXSZDiN6mDdnbFM+VbaN1A5zJex5crVrdSFTHFp/x
-         inpljc8TUU5UF3OINAUPptlR/8yvnRPpJNFYOi5RLlBhzXxaOTpotP7F4Lm9AC9yVy
-         pnSevbusOgfeOQtBxHjHaeew8uXj6flEHyjAazxeOP6prHoQ1H4Jhae5SY76pj5Ej8
-         HR1x99SnWdN2g==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id D2B2775F8B;
-        Fri, 12 Feb 2021 09:11:51 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Fri, 12
- Feb 2021 09:11:51 +0300
-Subject: Re: [RFC PATCH v4 00/17] virtio/vsock: introduce SOCK_SEQPACKET
- support
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        id S229720AbhBLGOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 01:14:30 -0500
+Received: from mail-mw2nam10on2054.outbound.protection.outlook.com ([40.107.94.54]:7073
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229691AbhBLGO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 01:14:27 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mAyhZLsiGJG6z2eXJRILyjeXzsymwvv5fxfrwjXwvloFh/U0Hc7TCJY6QQuIW2ZC5G1jVE3HQ66/URNpGmSRJnxrk+dOOMk7tTAxdMvkx5VGTJSlkpWbJehWWnhkn2e7EJ3hZT+TfP8QSYCnU4TZ2MZt+3MBEFibfdmyNVKQMpzyRLMxaAZOCFiVVnwlvU2lFQHGc6PO112HnDgTh1dG/cNXogOISlVd+Pa+ZdQdtxdvpiU/JPPCuKKVS/BSHx+PQT27XUXYYc94yuZZFff6M+fLBhepKmTNaMGMTYQJ/nKacZGfUpBK2Q7799ZVSgY0s9qVgfL9ugiFQ8kpeqc8yg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YO5mhGW2DxfMouFb6K8zEZFLpaTcHdS64772SifrLvw=;
+ b=MxEy/rsBlHp6AULVKa8TWgAqJ3Xe3l5Uw17+1JkUgEnFR49r/PWabtw/IvjeI7ZMrj0IBK2/hK/umcwnd+BgxtODfuon24O5Ml+QG2CgJxkw+dmnc9ZwGUamKQSuk26/PUdrlXSX7F1o0Rrd6P48ESYNVJPustgmuSTdQEt8l8XFfUDwxAzgyOei49K4anmmyZWn9oaJdZQNLOH2aWTGYB5wdsgJb+Hy+VCFOHJ1EAGDOtEqnJ7CAmMbV2Rj+6PaozZZlegnf/HVyrOOk42WyC2Cwq16lY9FnpekxWhTSK1nTRIt9Uy577NzAz8cI0S3Zcsxp/1Ya5OlZJ66oX97rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YO5mhGW2DxfMouFb6K8zEZFLpaTcHdS64772SifrLvw=;
+ b=bsFGZd68WfnyQeaQl9KCLiMMyWl8YJrXJ20suT9ZzUwT31W6oMTiZlsHXsiFPMsIve+FDo4xVyxsvaxJQu8IZF7W6Y7A5rFZuWWdpoEIWqgiS5HiNEabZcF8GDTL8eDcB8LlZEt88iWrbF4pJRMHEtn7qgp8etFTO7ZyhDZ7FhY=
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com (2603:10b6:300:44::9)
+ by CO6PR02MB7602.namprd02.prod.outlook.com (2603:10b6:303:b0::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Fri, 12 Feb
+ 2021 06:13:33 +0000
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::804d:5b7:ada6:2f4]) by MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::804d:5b7:ada6:2f4%2]) with mapi id 15.20.3846.036; Fri, 12 Feb 2021
+ 06:13:33 +0000
+From:   Nava kishore Manne <navam@xilinx.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        git <git@xilinx.com>,
+        Appana Durga Kedareswara Rao <appanad@xilinx.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "chinnikishore369@gmail.com" <chinnikishore369@gmail.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
- <20210207111954-mutt-send-email-mst@kernel.org>
- <8bd3789c-8df1-4383-f233-b4b854b30970@kaspersky.com>
- <20210211145701.qikgx5czosdwx3mm@steredhat>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <10aa4548-2455-295d-c993-30f25fba15f2@kaspersky.com>
-Date:   Fri, 12 Feb 2021 09:11:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210211145701.qikgx5czosdwx3mm@steredhat>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+        "trix@redhat.com" <trix@redhat.com>,
+        Michal Simek <michals@xilinx.com>
+Subject: RE: [PATCH v2 2/3] dt-bindings: fpga: Add binding doc for versal fpga
+ manager
+Thread-Topic: [PATCH v2 2/3] dt-bindings: fpga: Add binding doc for versal
+ fpga manager
+Thread-Index: AQHXADzdawePkZwClU6ZKWYEIAeZ9apTC6MAgAD5mzA=
+Date:   Fri, 12 Feb 2021 06:13:33 +0000
+Message-ID: <MWHPR02MB2623787A36B389BCF337D8EBC28B9@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <20210211060532.23662-1-nava.manne@xilinx.com>
+ <20210211060532.23662-3-nava.manne@xilinx.com>
+ <1613055380.699799.519684.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1613055380.699799.519684.nullmailer@robh.at.kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [10.64.68.129]
-X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 02/06/2021 23:52:08
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 161679 [Feb 06 2021]
-X-KSE-AntiSpam-Info: LuaCore: 422 422 763e61bea9fcfcd94e075081cb96e065bc0509b4
-X-KSE-AntiSpam-Info: Version: 5.9.16.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
-X-KSE-AntiSpam-Info: {Tracking_date, moscow}
-X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 02/06/2021 23:55:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 2/6/2021 9:17:00 PM
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/02/12 04:28:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/02/12 03:08:00 #16194299
-X-KLMS-AntiVirus-Status: Clean, skipped
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.50.128]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a90d091c-491a-4ac7-5acf-08d8cf1d5377
+x-ms-traffictypediagnostic: CO6PR02MB7602:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CO6PR02MB76026FB6816A6470D2E922DDC28B9@CO6PR02MB7602.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ELS2g8T2FoWMPHgj9FhhKoCeII/EXl7lMVOvRwWuG5RIHJwaqJswb1ISGTeyzcjNpf1K+MvEeLBClP9n27gHy6dXsA6ehen2c9Yy7VDX+bb/3GY/q1CKtOWeLQqUhFYTGSdD8rfpAYz8U0xbDFVKdZOtakiXhalFBTXsM83WZJqrojNcdIkLcriuXSY0ntiAGcaF9AQ/gPUaF98bzbXYbSncMAlV4BDMSinp8w/lKa+Apb2i3FOc0RXvTIpQxdxHMCrMvcqozcgYgtddlV1+tatJz660IJDobx8bcbue33xHSj7QRqrD9+uYr7uuPZXAE08psrNermHeRBklcOLfXzcPNUMRnOpZxuBb4fcKhbCDtbjrcFFoc6ZktyZEcD892V4xT+3fHde6R71Urx6XyephAQinR0DvPbaA3083EljBoYLjPCH/1Fdtuni9UK3qgeP5dGqopjugUheZtTjVEWpTJopLBcLSFwa0+/qzVQdaFBj+IssEAgC3GldSEZfiudLesZmaFcYdgtRmVL8+wys/q4tu+vF7yHL65KuljEIm3JNxdObeEgFwivtVuGZuI+foE7cYs5P7DAMC/v/m+CevgEs5zUbVv32WB39lUuI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR02MB2623.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(376002)(346002)(136003)(86362001)(26005)(478600001)(186003)(5660300002)(7696005)(8936002)(66946007)(9686003)(6916009)(55016002)(966005)(316002)(53546011)(76116006)(52536014)(6506007)(8676002)(71200400001)(2906002)(4326008)(54906003)(66476007)(66556008)(33656002)(66446008)(83380400001)(7416002)(107886003)(64756008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Eaqjbj+lipFWpzK4w16qqtmBJara4hOCxTnFdWqnJTQGCvUhSUncSVsnvVdQ?=
+ =?us-ascii?Q?RGxfkQ1FCrIthgF7vaaYBSfDRtIYX+t+mu4K3QDovl2U25xXNa9iFHTWn3UO?=
+ =?us-ascii?Q?rkwhYHL7BQlMoEM49x5HHu86dYyivgstURdz+g2rh7a2U0Jf5vgBRJUnTwYS?=
+ =?us-ascii?Q?5l892Xl1nqar7nEEprYiUbZvFdNMePEjQl/rzaSRK/lzxFtjbL5YB9n5eN4Z?=
+ =?us-ascii?Q?GjzQnGNSlFFv9Zm0lL3XDpuUnmgKTqhx5iWZ8MTsW6yWxsyTlvWXCbw9kJzK?=
+ =?us-ascii?Q?YbMQHwmjCmxSLtZVBhQd09RgwdlM2FMqw+5+oSIKCuNyo8mffd7hqU8sDdMY?=
+ =?us-ascii?Q?fJMrMpQCc6RtZL1Ic2hr5Bey/fYx/D84lTzg668jdTqmmSF6c5W/4aSLnd0x?=
+ =?us-ascii?Q?stzXi0xFyfGQBfOt5mZGquE9n8N5i6f/a5F3XL9wV3D2iQYNzNUyRgxW47n4?=
+ =?us-ascii?Q?PVoDSPJwQr80x13WRFu/BfKF8YFUaxQhKZwJAOnk8v5tYdEdLW1q8Rvt0c/K?=
+ =?us-ascii?Q?kJZnxQoUty+d5Ehn8xDlikXvzBu99ijG242Xq+5v+bavak8edaWoSfqHF4vG?=
+ =?us-ascii?Q?XGNTkG5qJhgw/GBYVAgcC8eK2Gix87V8lXjncEtCoy7qSLJZ8365JYndJVRp?=
+ =?us-ascii?Q?yTCR3JXJ9SJCLbWztW4pQlcqZE3xjuQQzicP9NEIOP9MfP7MG/s/NcFUvZUC?=
+ =?us-ascii?Q?sl/TnwoPHq+1atjswi17WLoo7yhw7hlP/1H5VLZtvc1TI87B7mPx21ThYWmJ?=
+ =?us-ascii?Q?wTEmLyYs0zrORF/xK0lnLBd9Z3u3ftNmvHMzA7E/Y2k80d+rhhVX/QLyfgL0?=
+ =?us-ascii?Q?QBbx1IA3fkDCrTyCC2mr3BjXQbCu9nVbTqnQMVjNxQdsVkicJe5FeEgXTNS7?=
+ =?us-ascii?Q?zSu2eY8NEcq0U72uVIxEiqbXQuMOGlb+ACHtCjiHMGzkF4u1E3Eo8w4GTTV6?=
+ =?us-ascii?Q?aKMN4903OIJXLyjEmD+aTzr5IX5SyYviNaGeHfO71PwyGZDe4wHIv4iN9Pe6?=
+ =?us-ascii?Q?Pp8Bnht7UJcBg5vIpdj1eHahh0Wpf7jtGCIAjuxpOxiR+TqB3SKFDDOOt4s6?=
+ =?us-ascii?Q?VNnS0sSRzt/LE3dpnj+RulxeKFkzdQa4QjQ+maTWUSF4m8/VvliwlqC6w7vK?=
+ =?us-ascii?Q?4BYBDCzWnBrdjMUo5ln9PIYrS6xBjzeEdHUpk0+e6tfS37V5G99uodC77MeV?=
+ =?us-ascii?Q?w/y9u/mqhNjGZqqpLQO3gV/i8AX7eqmzBgDRezBN/91siW1n13Ggjc5DQPlU?=
+ =?us-ascii?Q?JiUVu3T97m5KKVHUWVDPvwmIFVxhm+QkCmkKvgywaFY7EoorLgo/M3XlKVCk?=
+ =?us-ascii?Q?ywqt2VJWiq3JvZODil/5mHi7?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR02MB2623.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a90d091c-491a-4ac7-5acf-08d8cf1d5377
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2021 06:13:33.1478
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tnOJzMEkbxO0waPZqX/t60SqcQ1mvRz5La6YXvP/U10YeovIMlDieVmMEK4VZpEDdGOq62oT32NejmKFLua8zQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR02MB7602
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
-On 11.02.2021 17:57, Stefano Garzarella wrote:
-> Hi Arseny,
->
-> On Mon, Feb 08, 2021 at 09:32:59AM +0300, Arseny Krasnov wrote:
->> On 07.02.2021 19:20, Michael S. Tsirkin wrote:
->>> On Sun, Feb 07, 2021 at 06:12:56PM +0300, Arseny Krasnov wrote:
->>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
->>>> transport.
->>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->>>> do it, two new packet operations were added: first for start of record
->>>>  and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
->>>> both operations carries metadata - to maintain boundaries and payload
->>>> integrity. Metadata is introduced by adding special header with two
->>>> fields - message count and message length:
->>>>
->>>> 	struct virtio_vsock_seq_hdr {
->>>> 		__le32  msg_cnt;
->>>> 		__le32  msg_len;
->>>> 	} __attribute__((packed));
->>>>
->>>> 	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
->>>> packets(buffer of second virtio descriptor in chain) in the same way as
->>>> data transmitted in RW packets. Payload was chosen as buffer for this
->>>> header to avoid touching first virtio buffer which carries header of
->>>> packet, because someone could check that size of this buffer is equal
->>>> to size of packet header. To send record, packet with start marker is
->>>> sent first(it's header contains length of record and counter), then
->>>> counter is incremented and all data is sent as usual 'RW' packets and
->>>> finally SEQ_END is sent(it also carries counter of message, which is
->>>> counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
->>>> incremented again. On receiver's side, length of record is known from
->>>> packet with start record marker. To check that no packets were dropped
->>>> by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
->>>> checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
->>>> 1) and length of data between two markers is compared to length in
->>>> SEQ_BEGIN header.
->>>> 	Now as  packets of one socket are not reordered neither on
->>>> vsock nor on vhost transport layers, such markers allows to restore
->>>> original record on receiver's side. If user's buffer is smaller that
->>>> record length, when all out of size data is dropped.
->>>> 	Maximum length of datagram is not limited as in stream socket,
->>>> because same credit logic is used. Difference with stream socket is
->>>> that user is not woken up until whole record is received or error
->>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
->>>> 	Tests also implemented.
->>>>
->>>>  Arseny Krasnov (17):
->>>>   af_vsock: update functions for connectible socket
->>>>   af_vsock: separate wait data loop
->>>>   af_vsock: separate receive data loop
->>>>   af_vsock: implement SEQPACKET receive loop
->>>>   af_vsock: separate wait space loop
->>>>   af_vsock: implement send logic for SEQPACKET
->>>>   af_vsock: rest of SEQPACKET support
->>>>   af_vsock: update comments for stream sockets
->>>>   virtio/vsock: dequeue callback for SOCK_SEQPACKET
->>>>   virtio/vsock: fetch length for SEQPACKET record
->>>>   virtio/vsock: add SEQPACKET receive logic
->>>>   virtio/vsock: rest of SOCK_SEQPACKET support
->>>>   virtio/vsock: setup SEQPACKET ops for transport
->>>>   vhost/vsock: setup SEQPACKET ops for transport
->>>>   vsock_test: add SOCK_SEQPACKET tests
->>>>   loopback/vsock: setup SEQPACKET ops for transport
->>>>   virtio/vsock: simplify credit update function API
->>>>
->>>>  drivers/vhost/vsock.c                   |   8 +-
->>>>  include/linux/virtio_vsock.h            |  15 +
->>>>  include/net/af_vsock.h                  |   9 +
->>>>  include/uapi/linux/virtio_vsock.h       |  16 +
->>>>  net/vmw_vsock/af_vsock.c                | 588 +++++++++++++++-------
->>>>  net/vmw_vsock/virtio_transport.c        |   5 +
->>>>  net/vmw_vsock/virtio_transport_common.c | 316 ++++++++++--
->>>>  net/vmw_vsock/vsock_loopback.c          |   5 +
->>>>  tools/testing/vsock/util.c              |  32 +-
->>>>  tools/testing/vsock/util.h              |   3 +
->>>>  tools/testing/vsock/vsock_test.c        | 126 +++++
->>>>  11 files changed, 895 insertions(+), 228 deletions(-)
->>>>
->>>>  TODO:
->>>>  - What to do, when server doesn't support SOCK_SEQPACKET. In current
->>>>    implementation RST is replied in the same way when listening port
->>>>    is not found. I think that current RST is enough,because case when
->>>>    server doesn't support SEQ_PACKET is same when listener missed(e.g.
->>>>    no listener in both cases).
-> I think is fine.
->
->>>    - virtio spec patch
->> Ok
-> Yes, please prepare a patch to discuss the VIRTIO spec changes.
->
-> For example for 'virtio_vsock_seq_hdr', I left a comment about 'msg_cnt' 
-> naming that should be better to discuss with virtio guys.
+Please find my response inline.
 
-Ok, i'll prepare it in v5. So I have to send it both LKML(as one of patches) and
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Thursday, February 11, 2021 8:26 PM
+> To: Nava kishore Manne <navam@xilinx.com>
+> Cc: linux-arm-kernel@lists.infradead.org; mdf@kernel.org; linux-
+> fpga@vger.kernel.org; git <git@xilinx.com>; Appana Durga Kedareswara Rao
+> <appanad@xilinx.com>; devicetree@vger.kernel.org; robh+dt@kernel.org;
+> chinnikishore369@gmail.com; linux-kernel@vger.kernel.org;
+> trix@redhat.com; Michal Simek <michals@xilinx.com>
+> Subject: Re: [PATCH v2 2/3] dt-bindings: fpga: Add binding doc for versal=
+ fpga
+> manager
+>=20
+> On Thu, 11 Feb 2021 11:35:31 +0530, Nava kishore Manne wrote:
+> > From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+> >
+> > This patch adds binding doc for versal fpga manager driver.
+> >
+> > Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> > Signed-off-by: Appana Durga Kedareswara rao
+> > <appana.durga.rao@xilinx.com>
+> > ---
+> > Changes for v2:
+> >                 -Fixed file format and syntax issues.
+> >
+> >  .../bindings/fpga/xlnx,versal-fpga.yaml       | 33 +++++++++++++++++++
+> >  1 file changed, 33 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
+> >
+>=20
+> My bot found errors running 'make dt_binding_check' on your patch:
+>=20
+> yamllint warnings/errors:
+> ./Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml:12:14:
+> [warning] too many spaces after colon (colons)
+> ./Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml:20:9:
+> [warning] wrong indentation: expected 10 but found 8 (indentation)
+>=20
+> dtschema/dtc warnings/errors:
+>=20
+> See https://patchwork.ozlabs.org/patch/1439305
+>=20
+> This check can fail if there are any dependencies. The base for a patch s=
+eries
+> is generally the most recent rc1.
+>=20
+> If you already ran 'make dt_binding_check' and didn't see the above error=
+(s),
+> then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>=20
+> pip3 install dtschema --upgrade
+>=20
+> Please check and re-submit.
 
-virtio mailing lists? (e.g. virtio-comment@lists.oasis-open.org)
+Initially, I couldn't see any issue when I run.
+After installing yamllint and with upgraded dt-schema, I am able to reprodu=
+ce the above pointed issues.
+Is there any prerequisite(Other than yamllint) I need to follow to run dt-s=
+chema?
 
->
-> Anyway, I reviewed this series and I left some comments.
-> I think we are in a good shape :-)
-Great, thanks for review. I'll consider all review comments in next version.
->
-> Thanks,
-> Stefano
->
->
+Regards,
+Navakishore.
