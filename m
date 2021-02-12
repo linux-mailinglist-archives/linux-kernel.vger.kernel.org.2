@@ -2,75 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5366F31A26F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A34131A272
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbhBLQOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:14:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58437 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229611AbhBLQOr (ORCPT
+        id S231571AbhBLQPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:15:01 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:46375 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229611AbhBLQO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:14:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613146399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L5Nb2hpHuSmEncyB7k8Kpd8+QlfZitjO1fAJZA9q6Ek=;
-        b=c04pVCzCWxuAj4I8knnl2Fc94M4gxl+vhFqM+4N8r4Cm0A/BpGqOXwXqNEVxtHAYhVZb7T
-        OobeeyS2WarBEiKts6MoyUTrSQytJ2ObQDHpnw+Uua1ooCDVEHs1vrNFB5V3bvaw97KC3R
-        EYk0c8+lQt+x/A/VxwJcUl0fttwz2rs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-2ly9sgg-M8a8-Mt3Amhy4g-1; Fri, 12 Feb 2021 11:13:14 -0500
-X-MC-Unique: 2ly9sgg-M8a8-Mt3Amhy4g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 271E51934100;
-        Fri, 12 Feb 2021 16:13:12 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0204360BF1;
-        Fri, 12 Feb 2021 16:13:05 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 11:13:05 -0500
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     Damien.LeMoal@wdc.com, hare@suse.de, ming.lei@redhat.com,
-        agk@redhat.com, corbet@lwn.net, axboe@kernel.dk, jack@suse.cz,
-        johannes.thumshirn@wdc.com, gregkh@linuxfoundation.org,
-        koct9i@gmail.com, steve@sk2.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pavel.tide@veeam.com
-Subject: Re: [PATCH v5 4/6] dm: new ioctl DM_DEV_REMAP_CMD
-Message-ID: <20210212161305.GB19424@redhat.com>
-References: <1612881028-7878-1-git-send-email-sergei.shtepa@veeam.com>
- <1612881028-7878-5-git-send-email-sergei.shtepa@veeam.com>
+        Fri, 12 Feb 2021 11:14:59 -0500
+Received: by mail-oi1-f181.google.com with SMTP id f3so98926oiw.13;
+        Fri, 12 Feb 2021 08:14:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lXNUtlsEhBTv3Qbo5ZsDYSNl4IO2zUHe9HmhCN3Jg7I=;
+        b=Cf0oLZOXRkFG1LpB0GovV7bcZR1+TimOsEErnW7xrjG5NZe5CtOX3RFgv+YXrT0FaR
+         lv4ucuhE2sydTPz8M6jq6uUpKjsik1nqVR7WRHDyYTJCiWqkFuKDgSmalyqRr+G7UmDF
+         dWqYorHN5I8MXqF6vnWQzcWX7viFE9L+dcuvTmWVuJKpDD5VD1zT/WMdTq8ADP/0nT8X
+         /JjbXz3mGQKDLyP5U51jbbEw+C3XJbU75MV4OXgE8hG2WPMgKcZYreT6ujcyx3VasPdR
+         yfVWNBl0h97Kf9ATTIniEkbh9rHM68BK85MmO7XgCvwCicDdxE/xbjIK4p0fosCOGFmP
+         o14Q==
+X-Gm-Message-State: AOAM5321+WcA1jlgw5uV8xpUBUiSsfPsCUUorSm3bu66OZU4JmYkHwQD
+        3RmmbCa/kIe/poGPXZ8VZsTVRnUlNLk1m/SzAeA=
+X-Google-Smtp-Source: ABdhPJydAzUv2dYl07m2W1w3jEZK6q+SCpUnAQh+fGtgPe6wIfXgqozSW4a4KCEMUzSxWlN6CzNsEUMNmxxQ4dDEuMw=
+X-Received: by 2002:aca:3d85:: with SMTP id k127mr47022oia.157.1613146455073;
+ Fri, 12 Feb 2021 08:14:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612881028-7878-5-git-send-email-sergei.shtepa@veeam.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210208030723.781-1-zbestahu@gmail.com>
+In-Reply-To: <20210208030723.781-1-zbestahu@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 12 Feb 2021 17:14:03 +0100
+Message-ID: <CAJZ5v0hmgQp--uhRMZbqZnOvQPy9zLfQx_u=xAewmV=LgT6rPA@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: schedutil: Don't use the limits_changed flag any more
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yue Hu <huyue2@yulong.com>, zbestahu@163.com,
+        zhangwen@yulong.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09 2021 at  9:30am -0500,
-Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
+On Mon, Feb 8, 2021 at 4:08 AM Yue Hu <zbestahu@gmail.com> wrote:
+>
+> From: Yue Hu <huyue2@yulong.com>
+>
+> The limits_changed flag was introduced by commit 600f5badb78c
+> ("cpufreq: schedutil: Don't skip freq update when limits change") due
+> to race condition where need_freq_update is cleared in get_next_freq()
+> which causes reducing the CPU frequency is ineffective while busy.
+>
+> But now, the race condition above is gone because get_next_freq()
+> doesn't clear the flag any more after commit 23a881852f3e ("cpufreq:
+> schedutil: Don't skip freq update if need_freq_update is set").
+>
+> Moreover, need_freq_update currently will be set to true only in
+> sugov_should_update_freq() if CPUFREQ_NEED_UPDATE_LIMITS is not set
+> for the driver. However, limits may have changed at any time.
 
-> New ioctl DM_DEV_REMAP_CMD allow to remap bio requests
-> from regular block device to dm device.
+Yes, they may change at any time.
 
-I really dislike the (ab)use of "REMAP" for this. DM is and always has
-been about remapping IO.  Would prefer DM_DEV_INTERPOSE_CMD
+> And subsequent frequence update is depending on need_freq_update.
 
-Similarly, all places documenting "remap" or variables with "remap"
-changed to "interpose".
+I'm not following, sorry.
 
-Also, any chance you'd be open to putting all these interposer specific
-changes in dm-interposer.[ch] ?
-(the various internal structs for DM core _should_ be available via dm-core.h)
+need_freq_update is set in sugov_should_update_freq() when
+limits_changed is cleared and it cannot be modified until
+sugov_update_next_freq() runs on the same CPU.
 
-Mike
+> So, we may skip this update.
 
+I'm not sure why?
+
+> Hence, let's remove it to avoid above issue and make code more simple.
+>
+> Signed-off-by: Yue Hu <huyue2@yulong.com>
+> ---
+>  kernel/sched/cpufreq_schedutil.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+>
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index 41e498b..7dd85fb 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -40,7 +40,6 @@ struct sugov_policy {
+>         struct task_struct      *thread;
+>         bool                    work_in_progress;
+>
+> -       bool                    limits_changed;
+>         bool                    need_freq_update;
+>  };
+>
+> @@ -89,11 +88,8 @@ static bool sugov_should_update_freq(struct sugov_policy *sg_policy, u64 time)
+>         if (!cpufreq_this_cpu_can_update(sg_policy->policy))
+>                 return false;
+>
+> -       if (unlikely(sg_policy->limits_changed)) {
+> -               sg_policy->limits_changed = false;
+> -               sg_policy->need_freq_update = true;
+> +       if (unlikely(sg_policy->need_freq_update))
+>                 return true;
+> -       }
+>
+>         delta_ns = time - sg_policy->last_freq_update_time;
+>
+> @@ -323,7 +319,7 @@ static bool sugov_cpu_is_busy(struct sugov_cpu *sg_cpu)
+>  static inline void ignore_dl_rate_limit(struct sugov_cpu *sg_cpu, struct sugov_policy *sg_policy)
+>  {
+>         if (cpu_bw_dl(cpu_rq(sg_cpu->cpu)) > sg_cpu->bw_dl)
+> -               sg_policy->limits_changed = true;
+> +               sg_policy->need_freq_update = true;
+>  }
+>
+>  static inline bool sugov_update_single_common(struct sugov_cpu *sg_cpu,
+> @@ -759,7 +755,6 @@ static int sugov_start(struct cpufreq_policy *policy)
+>         sg_policy->last_freq_update_time        = 0;
+>         sg_policy->next_freq                    = 0;
+>         sg_policy->work_in_progress             = false;
+> -       sg_policy->limits_changed               = false;
+>         sg_policy->cached_raw_freq              = 0;
+>
+>         sg_policy->need_freq_update = cpufreq_driver_test_flags(CPUFREQ_NEED_UPDATE_LIMITS);
+> @@ -813,7 +808,7 @@ static void sugov_limits(struct cpufreq_policy *policy)
+>                 mutex_unlock(&sg_policy->work_lock);
+>         }
+>
+> -       sg_policy->limits_changed = true;
+> +       sg_policy->need_freq_update = true;
+
+This may be running in parallel with sugov_update_next_freq() on a
+different CPU, so the latter may clear need_freq_update right after it
+has been set here unless I'm overlooking something.
+
+>  }
+>
+>  struct cpufreq_governor schedutil_gov = {
+> --
+> 1.9.1
+>
