@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD49319D3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471CE319D48
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhBLLTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:19:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
+        id S229864AbhBLLVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhBLLT2 (ORCPT
+        with ESMTP id S230224AbhBLLUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:19:28 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25605C061788
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 03:18:48 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id d2so253286pjs.4
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 03:18:48 -0800 (PST)
+        Fri, 12 Feb 2021 06:20:14 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76827C06178C
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 03:18:51 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id k13so5601110pfh.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 03:18:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5biKq7NugFH5645R57SKe1mgC1BP2ckBoaTjbO3BPZE=;
-        b=NCgoSjY/AMkFT1Q+TOjkW+QtV2Tgv5rRg6PXJ7EnfbP1PPBhrvLSMGJ2tMnLqGjvtS
-         hTZ1DG03+SMrZ6Bs3yBMlN5TnazwJrXYZNZvBQFot6TT7ndKRG4QylMsD6ASbF42Tyfa
-         C5XqIi0RdqUAiQAn4klCJX7wGydhpLNWEQcTuBnZ5R4vEUyVMTGeagoy3iwV2HTMcwB4
-         TnR1Ic+DM2P4BmPExrCFrXBZA/JS3eH2C3/Mn+gkULvE3kuz+Ujw0N0KntqfdXAwv1Iw
-         ilwczRfJcAuISVv6gcIH2Xjd9fH4xaIdiRqDg8rWPfEmvwHn4cTepuwpoG++vZdyNKKI
-         ur5g==
+        bh=WlFdDyGQ/GyyV1yLJE8ER90AFhPfewXl+s4lJ7PrNZo=;
+        b=rJRLNn9m5kSZ0YMaUALbsiU/2Yl8iEo8pmMVj8Wbcg+gAwcvGYGd7iSmGUcSUpj/WM
+         fMBSGIX+hwvdJwa4/bia4GuNXroSKbnsdJisKS5YIWJtuwGXtmDpEuLyd7t/CTdp3qho
+         UHD2cJby8qJi2eW+HQ7/FXmdn3p5sES+sLReAkNsnF57xB6MdPIogSrJqIy6S7BGvNDs
+         rH7+ppW3PXmu7iZy70zTKHFEU71UmyzKgAAx9nEdHcmo86dp2ECc2mDIx4boGHeU1rHs
+         XM18ZO47ERWvWBnrU8fVnBHVQ08SnOmRCMqavDWYRsHOZhxSULSBbHhsS5I3bqY9rRGT
+         Be9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5biKq7NugFH5645R57SKe1mgC1BP2ckBoaTjbO3BPZE=;
-        b=FUl7TVifMq5JomVqSgnMOATnylnx3hmGoKcm5/kjUgoE7EA6WYT9DLKA9miKculidt
-         OTKeZ7IbOiLuP67gtyXOYUTzMgLPGsk2NOi3KzY1m9LKp0IbFp8tlx7nKioi7mRRhjLP
-         2cz9BvdV2eUYS1h/ed7FmNXmwxINM25/NTjFerUoWGmw4tGRhS4jNco4snpt3pcT3M+O
-         pXLIcrBfxjsGuzY2CaKTLP0Xpnn9arH4np8H+y5gpu0uGv1+5OS5tIaDNacgmK0p00hB
-         r/0JtSjr2jHGDakURGBgpABTHDHUeE6wXK4iOttAZNiyLThz8nUK7B8Urcw+A/82V0Qs
-         4Z+A==
-X-Gm-Message-State: AOAM531NL2z5LUkNR8MigkLD6l9D3XQneUVompE7bZe8zouuTl2Y/Y10
-        IKqqKhC31WPtPaFjOBLAC98kXQ==
-X-Google-Smtp-Source: ABdhPJyr0neNj/pWhovDa+tl5s6PMfst3DzFfGPy4e8YRM91yRqkJguQKnyhNg/rIjo/pWUi7h9VHQ==
-X-Received: by 2002:a17:902:c9c3:b029:e3:12d4:f2ca with SMTP id q3-20020a170902c9c3b02900e312d4f2camr2433994pld.33.1613128727728;
-        Fri, 12 Feb 2021 03:18:47 -0800 (PST)
+        bh=WlFdDyGQ/GyyV1yLJE8ER90AFhPfewXl+s4lJ7PrNZo=;
+        b=t1MFqpKU4FOfZLsHzn3hTO7mtxJG5drwKfEySt14vL47tncM5+Vi17eNacVFvWRke0
+         3KqI05tM75iC8xEQmJwqa9KfaLpkW+QvRogZRI6x2JoUcZVaBqd0eunHImgOQBSGqL0r
+         eRDRT4SuIGKJe50sH0SgLRJIiQtLxnhy11YLlPwhcGDHPk1afJK5udILdHAogxWCcpvA
+         3vmcld6aVqdUgG1JDdL6pyftzq7ywktBJN0BnCXrcZAz8sjOwDqLGMqITr5t7xUnAh2g
+         MH5YraXKKkgllcYFOnpKPVSIwe9f9OSvYJyAM+4W7St3lWpGIX7/BR//IZbNXksowm4k
+         B5PQ==
+X-Gm-Message-State: AOAM530EkqC3VBjvU7Tefky+CWMPne1OGEPQHJOv8mIUHnIOFH+ycJ4w
+        3xzpINfauHxBjlMnyuJ6BDbDZg==
+X-Google-Smtp-Source: ABdhPJwEa9cAqDMrrNkWc6CGYQzJ3YY0YTih43P3yWd5mO8VRfNgoGWyHiLfAUWJF07maB2OFv78MA==
+X-Received: by 2002:a63:e108:: with SMTP id z8mr2616603pgh.363.1613128730998;
+        Fri, 12 Feb 2021 03:18:50 -0800 (PST)
 Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id a37sm8763963pgm.79.2021.02.12.03.18.46
+        by smtp.gmail.com with ESMTPSA id k4sm8349156pfk.44.2021.02.12.03.18.50
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 Feb 2021 03:18:47 -0800 (PST)
+        Fri, 12 Feb 2021 03:18:50 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Frank Rowand <frowand.list@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -61,10 +61,11 @@ Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
         David Gibson <david@gibson.dropbear.id.au>,
         devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: [PATCH V8 1/4] kbuild: Simplify builds with CONFIG_OF_ALL_DTBS
-Date:   Fri, 12 Feb 2021 16:48:35 +0530
-Message-Id: <cf35bc364da56fb8f1ea3677340508e01e411976.1613127681.git.viresh.kumar@linaro.org>
+        Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH V8 2/4] kbuild: Add generic rule to apply fdtoverlay
+Date:   Fri, 12 Feb 2021 16:48:36 +0530
+Message-Id: <2654369a72516ff612976252636dd80677e22cb8.1613127681.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 In-Reply-To: <cover.1613127681.git.viresh.kumar@linaro.org>
 References: <cover.1613127681.git.viresh.kumar@linaro.org>
@@ -74,36 +75,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We update 'extra-y' based on CONFIG_OF_ALL_DTBS three times. It would be
-far more straight forward if we rather update dtb-y to include all .dtb
-files if CONFIG_OF_ALL_DTBS is enabled.
+From: Rob Herring <robh@kernel.org>
 
+Add a generic rule to apply fdtoverlay in Makefile.lib, so every
+platform doesn't need to carry the complex rule.
+
+The platform's Makefile only needs to have this now:
+
+ DTC_FLAGS_foo_base += -@
+ foo-dtbs := foo_base.dtb foo_overlay1.dtbo foo_overlay2.dtbo
+ dtb-y := foo.dtb
+
+We don't want to run schema checks on foo.dtb (as foo.dts doesn't exist)
+and the Makefile is updated accordingly.
+
+Signed-off-by: Rob Herring <robh@kernel.org>
+Co-developed-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- scripts/Makefile.lib | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ scripts/Makefile.lib | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
 diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index b00855b247e0..fa0db696120f 100644
+index fa0db696120f..3c450bfec015 100644
 --- a/scripts/Makefile.lib
 +++ b/scripts/Makefile.lib
-@@ -81,14 +81,13 @@ always-y += $(userprogs-always-y) $(userprogs-always-m)
+@@ -66,6 +66,10 @@ multi-used   := $(multi-used-y) $(multi-used-m)
+ real-obj-y := $(foreach m, $(obj-y), $(if $(strip $($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-))),$($(m:.o=-objs)) $($(m:.o=-y)),$(m)))
+ real-obj-m := $(foreach m, $(obj-m), $(if $(strip $($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-m)) $($(m:.o=-))),$($(m:.o=-objs)) $($(m:.o=-y)) $($(m:.o=-m)),$(m)))
+ 
++# List all dtbs to be generated by fdtoverlay
++overlay-y := $(foreach m,$(dtb-y), $(if $(strip $($(m:.dtb=-dtbs))),$(m),))
++overlay-$(CONFIG_OF_ALL_DTBS) += $(foreach m,$(dtb-), $(if $(strip $($(m:.dtb=-dtbs))),$(m),))
++
+ always-y += $(always-m)
+ 
+ # hostprogs-always-y += foo
+@@ -80,14 +84,21 @@ userprogs += $(userprogs-always-y) $(userprogs-always-m)
+ always-y += $(userprogs-always-y) $(userprogs-always-m)
  
  # DTB
- # If CONFIG_OF_ALL_DTBS is enabled, all DT blobs are built
-+dtb-$(CONFIG_OF_ALL_DTBS)       += $(dtb-)
++# Add base dtb and overlay dtbo
++dtb-y += $(foreach m,$(overlay-y), $($(m:.dtb=-dtbs)))
 +
+ # If CONFIG_OF_ALL_DTBS is enabled, all DT blobs are built
+ dtb-$(CONFIG_OF_ALL_DTBS)       += $(dtb-)
+ 
  extra-y				+= $(dtb-y)
--extra-$(CONFIG_OF_ALL_DTBS)	+= $(dtb-)
  
  ifneq ($(CHECK_DTBS),)
- extra-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
- extra-y += $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
--extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.yaml, $(dtb-))
--extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
+-extra-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
+-extra-y += $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
++# Don't run schema checks for dtbs created by fdtoverlay as they don't
++# have corresponding dts files.
++dt-yaml-y := $(filter-out $(overlay-y),$(dtb-y))
++
++extra-y += $(patsubst %.dtb,%.dt.yaml, $(dt-yaml-y))
++extra-y += $(patsubst %.dtbo,%.dt.yaml, $(dt-yaml-y))
  endif
  
  # Add subdir path
+@@ -331,6 +342,15 @@ $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
+ $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
+ 	$(call if_changed_dep,dtc)
+ 
++overlay-y := $(addprefix $(obj)/, $(overlay-y))
++
++quiet_cmd_fdtoverlay = DTOVL   $@
++      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $(real-prereqs)
++
++$(overlay-y): FORCE
++	$(call if_changed,fdtoverlay)
++$(call multi_depend, $(overlay-y), .dtb, -dtbs)
++
+ DT_CHECKER ?= dt-validate
+ DT_BINDING_DIR := Documentation/devicetree/bindings
+ # DT_TMP_SCHEMA may be overridden from Documentation/devicetree/bindings/Makefile
 -- 
 2.25.0.rc1.19.g042ed3e048af
 
