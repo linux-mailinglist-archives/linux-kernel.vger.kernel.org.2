@@ -2,75 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE1431A22A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0035531A22D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbhBLP4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:56:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231611AbhBLP4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:56:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5869C64E3B;
-        Fri, 12 Feb 2021 15:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613145326;
-        bh=z8cgzmvcHY5pt2ILY8k3eQGEZLQX9gIzKT1h/OeeR+g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RqUN1mfjhccLKAgT8v2qHaqgUE2mTTZdqzoi1Kf2mavW7aLD6mpXHprHyBc1XuKHo
-         dDe7G8mkE9NSrQXXibAUu3FQ/hP39N6VarDRaxaaCZ6bl1VOQFWnSIdvpIDrxTZdIA
-         A5Al2r20PjOXyejV3EOsM8fj7ZbVh3Y6Zk41jlMU=
-Date:   Fri, 12 Feb 2021 16:55:24 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2] misc: Add Renesas Synchronization Management
- Unit (SMU) support
-Message-ID: <YCak7Eu2X0dzapPz@kroah.com>
-References: <1613092575-17311-1-git-send-email-min.li.xe@renesas.com>
- <YCYw5xXe16fSj6eI@kroah.com>
- <OSBPR01MB4773472EE0C8D34456C79121BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+        id S232201AbhBLP54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:57:56 -0500
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:35786 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232196AbhBLP5q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:57:46 -0500
+Received: by mail-ot1-f52.google.com with SMTP id k10so8813487otl.2;
+        Fri, 12 Feb 2021 07:57:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CSjbbaNIKklsxIEn5AtJtdKG7TrM5/PAZ+RSicaxCII=;
+        b=ZjhczgzlBu32CW9IXKhdQHoiEuEA0GIEUzkLJf8jM7bb+1F0t31e+FGPt61BOZZDf2
+         vYyeQLoKMhDIrcKKbDtsCc3bLdVTH4axH7t8cmKYNSmoBVwM/qPLl4ZPptkB6tMpRspP
+         hxQoHEREQkid6faG4XSv+PIitHP2WcRQe3tUZRItibneRBpDsJfdxymU5ybFJEPU5ku6
+         5EIBMd4ynseudM4UoUbARpTCnLft6eKEjzNd+CNEb8C6kNmos4e/iHqVdKH3X4QlGqpy
+         eziupAnZTwBj8zS50ZWl1ZNq7UMI8WEjQNxEZZLM515t7e7EhxbJfucvk0x1QkbeY4Te
+         Tfug==
+X-Gm-Message-State: AOAM533FHWOEEzN6kH1b3w/HmcHhCbNcPfEMNiPJdK+6LdL6ne3ICQsu
+        zhbOEtiGnQxBAzy2dKdV7dGHRCEClPbfHOLA7Ig=
+X-Google-Smtp-Source: ABdhPJxrlmCpx7RQESMcBTpnckct/6GjNtdVIpA6+Hidss2QWym3ldzjlUJBrwRvvFayvCsrgkx/8UfBqoJJSTryaG8=
+X-Received: by 2002:a05:6830:2106:: with SMTP id i6mr2397056otc.260.1613145424507;
+ Fri, 12 Feb 2021 07:57:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OSBPR01MB4773472EE0C8D34456C79121BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+References: <20210210172208.335048-1-krzk@kernel.org>
+In-Reply-To: <20210210172208.335048-1-krzk@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 12 Feb 2021 16:56:53 +0100
+Message-ID: <CAJZ5v0jnb__EpZxMSSk5Aop3+=FXXt5+0jNfTy9G1ac4s+xTaQ@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: cpuidle: exynos: include header in file pattern
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Samsung SoC <linux-samsung-soc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 03:44:52PM +0000, Min Li wrote:
-> > >
-> > > -set combomode
-> > > -get dpll's state
-> > > -get dpll's ffo
-> > >
-> > > This driver must work with Renesas MFD driver to access SMU through
-> > > I2C/SPI.
-> > >
-> > > Changes since v1:
-> > > -Provide more background for purpose of the change.
-> > > -Provide compat_ioctl support
-> > > -Fix ioctl cmd definition
-> > 
-> > This "changes" list goes below the --- line.
-> > 
-> 
-> Sorry, is this a problem that you are requesting me to address? I am bit confused...
+On Wed, Feb 10, 2021 at 6:23 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> Inclue the platform data header in Exynos cpuidle maintainer entry.
+>
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 674f42375acf..68e2b4cb4788 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4625,6 +4625,7 @@ L:        linux-samsung-soc@vger.kernel.org
+>  S:     Supported
+>  F:     arch/arm/mach-exynos/pm.c
+>  F:     drivers/cpuidle/cpuidle-exynos.c
+> +F:     include/linux/platform_data/cpuidle-exynos.h
+>
+>  CPUIDLE DRIVER - ARM PSCI
+>  M:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> --
 
-Yes, please place that list of changes below the --- line in your patch.
-The documentation says to do this, right?
-
-> > And you seem to have ignored my review, especially about documenting the
-> > sysfs files here, please do that as I can not accept this patch as-is.
-> > 
-> 
-> If I come up with an rsmu.rst under Documentation/driver-api, is that something you are looking for?
-
-No, all sysfs files need to be documented in Documentation/ABI/
-
-thanks,
-
-greg k-h
+Do you want me to apply this?
