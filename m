@@ -2,134 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EF7319A14
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D62E3319A1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 08:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbhBLHDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 02:03:22 -0500
-Received: from foss.arm.com ([217.140.110.172]:33044 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229608AbhBLHDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 02:03:20 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D507113E;
-        Thu, 11 Feb 2021 23:02:32 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 313123F73D;
-        Thu, 11 Feb 2021 23:02:27 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH 0/3] mm/page_alloc: Fix pageblock_order with
- HUGETLB_PAGE_SIZE_VARIABLE
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        akpm@linux-foundation.org, will@kernel.org
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <1613024531-19040-1-git-send-email-anshuman.khandual@arm.com>
- <683c812a-ce3d-ef74-10d1-eaf8a3ae93d4@redhat.com>
-Message-ID: <fb562021-9981-4434-cc4a-e813a7752adb@arm.com>
-Date:   Fri, 12 Feb 2021 12:32:56 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229671AbhBLHLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 02:11:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhBLHLk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 02:11:40 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48C7C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 23:10:59 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id f17so4583032qkl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 23:10:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AgHPpwugO+2c7pcQnevcfOS8q102WrSptiZIqx+0+ZI=;
+        b=P6AC+4DRL1B/DZ03XlhA5vtHO1iFHvrH9OoEV2734g1W2wE+0rueaMhn7q+jZ2n24I
+         2V8VVAqz1vCIqrwNfTEnr0m60cn17dqmmRsepRJQ6tZACwBQlOo0DE5Mwf+QqsUxadKX
+         oUTt5PTkwxDPKQwKrcZvPG5YqSxG7zh7FgzQEq3AQWBorqZEsBYvBe3hp8QD2nFhNBi0
+         LFKSgIyxm4XJWrV85Q2K/vLGXnDlScFW/ECRr+qr0Dd6Yb1Jiukef6u00tZfjI8pSF6V
+         Z7zHJiUBrYp4q10rYTgQimoLnFMD3kURtbsvoKRDGaDVhgT1NhLo3yKoOxgFclMA8lQI
+         +XPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AgHPpwugO+2c7pcQnevcfOS8q102WrSptiZIqx+0+ZI=;
+        b=f5Ej///sqhcDt4aaV1R3m3t2QCCpcVl19aacZpE8vJFkKm8Xakoq+9xAIsU/4xS4Te
+         8Y0BmuLEQa45X/cEH2cCHXtAYeh9zBsxvjRwayek9Op7oGKrdSFmqTSHdvcPuNGWVP07
+         pnt6xb8GdeWj88JTEQg2aEm+PDnAxfQ8mm2C5+WKezXkKIJhbn24GdeQEzU7C50BNJ9m
+         4tBP95yOe2vKWZhl1pfdJLQYtI1gwKeyWXNKMIPZvmaHF0255K9I2LXbjNcUjNnFs0mO
+         fHCfUtlJeae4atBrSb3yt9ZN6y4mSQ11pJmHXUIzGsdygnbIDMr5oyNknjeqTYRNpazC
+         mmHg==
+X-Gm-Message-State: AOAM532sHtX2iLAGUpYSLjaQA6sZi4sY9gTYujCD5IWklO/5ljyf2eLQ
+        FqzWe5kj0qtkubqZn2yAl30xQoKupbp57QelX5RJGQ==
+X-Google-Smtp-Source: ABdhPJzTtv/TVkJ2E2Cscs++1DEzDpKHRAYmfk2zkDygJqoGGsAP7nzYhYyYoSNxBLzCJgEYVL4fcDdVtrdbmb/J4T4=
+X-Received: by 2002:a37:a889:: with SMTP id r131mr1463885qke.410.1613113858326;
+ Thu, 11 Feb 2021 23:10:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <683c812a-ce3d-ef74-10d1-eaf8a3ae93d4@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210205033415.3320439-1-kyletso@google.com> <20210205033415.3320439-4-kyletso@google.com>
+ <20210212041756.GC103223@roeck-us.net>
+In-Reply-To: <20210212041756.GC103223@roeck-us.net>
+From:   Kyle Tso <kyletso@google.com>
+Date:   Fri, 12 Feb 2021 15:10:42 +0800
+Message-ID: <CAGZ6i=2LfU16K7HHVOwVsHvxpL3rQtVhnabScAReqT9cY3HWyw@mail.gmail.com>
+Subject: Re: [PATCH v6 3/7] usb: typec: tcpm: Determine common SVDM Version
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 12, 2021 at 12:17 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Fri, Feb 05, 2021 at 11:34:11AM +0800, Kyle Tso wrote:
+> > PD Spec Revision 3.0 Version 2.0 + ECNs 2020-12-10
+> >   6.4.4.2.3 Structured VDM Version
+> >   "The Structured VDM Version field of the Discover Identity Command
+> >   sent and received during VDM discovery Shall be used to determine the
+> >   lowest common Structured VDM Version supported by the Port Partners or
+> >   Cable Plug and Shall continue to operate using this Specification
+> >   Revision until they are Detached."
+> >
+> > Also clear the fields newly defined in SVDM version 2.0 if the
+> > negotiated SVDM version is 1.0.
+> >
+> > Signed-off-by: Kyle Tso <kyletso@google.com>
+> > ---
+> > Changes since v5:
+> > - follow the changes of "usb: typec: Manage SVDM version"
+> > - remove the "reset to default". Now the default SVDM version will be
+> >   set when calling to typec_register_partner
+> >
+> >  drivers/usb/typec/tcpm/tcpm.c | 71 ++++++++++++++++++++++++++++++-----
+> >  1 file changed, 61 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> > index 9aadb1e1bec5..b45cd191a8a4 100644
+> > --- a/drivers/usb/typec/tcpm/tcpm.c
+> > +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > @@ -1475,8 +1475,10 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >                       const u32 *p, int cnt, u32 *response,
+> >                       enum adev_actions *adev_action)
+> >  {
+> > +     struct typec_port *typec = port->typec_port;
+> >       struct typec_altmode *pdev;
+> >       struct pd_mode_data *modep;
+> > +     int svdm_version;
+> >       int rlen = 0;
+> >       int cmd_type;
+> >       int cmd;
+> > @@ -1493,6 +1495,10 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >       pdev = typec_match_altmode(port->partner_altmode, ALTMODE_DISCOVERY_MAX,
+> >                                  PD_VDO_VID(p[0]), PD_VDO_OPOS(p[0]));
+> >
+> > +     svdm_version = typec_get_negotiated_svdm_version(typec);
+> > +     if (svdm_version < 0)
+> > +             return 0;
+> > +
+> >       switch (cmd_type) {
+> >       case CMDT_INIT:
+> >               switch (cmd) {
+> > @@ -1500,10 +1506,22 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >                       if (PD_VDO_VID(p[0]) != USB_SID_PD)
+> >                               break;
+> >
+> > +                     if (PD_VDO_SVDM_VER(p[0]) < svdm_version)
+> > +                             typec_partner_set_svdm_version(port->partner,
+> > +                                                            PD_VDO_SVDM_VER(p[0]));
+> >                       /* 6.4.4.3.1: Only respond as UFP (device) */
+> >                       if (port->data_role == TYPEC_DEVICE &&
+> >                           port->nr_snk_vdo) {
+> > -                             for (i = 0; i <  port->nr_snk_vdo; i++)
+> > +                             /*
+> > +                              * Product Type DFP and Connector Type are not defined in SVDM
+> > +                              * version 1.0 and shall be set to zero.
+> > +                              */
+> > +                             if (typec_get_negotiated_svdm_version(typec) < SVDM_VER_2_0)
+>
+> Why not
+>                                 if (svdm_version)
+> ?
+>
 
-On 2/11/21 2:07 PM, David Hildenbrand wrote:
-> On 11.02.21 07:22, Anshuman Khandual wrote:
->> The following warning gets triggered while trying to boot a 64K page size
->> without THP config kernel on arm64 platform.
->>
->> WARNING: CPU: 5 PID: 124 at mm/vmstat.c:1080 __fragmentation_index+0xa4/0xc0
->> Modules linked in:
->> CPU: 5 PID: 124 Comm: kswapd0 Not tainted 5.11.0-rc6-00004-ga0ea7d62002 #159
->> Hardware name: linux,dummy-virt (DT)
->> [    8.810673] pstate: 20400005 (nzCv daif +PAN -UAO -TCO BTYPE=--)
->> [    8.811732] pc : __fragmentation_index+0xa4/0xc0
->> [    8.812555] lr : fragmentation_index+0xf8/0x138
->> [    8.813360] sp : ffff0000864079b0
->> [    8.813958] x29: ffff0000864079b0 x28: 0000000000000372
->> [    8.814901] x27: 0000000000007682 x26: ffff8000135b3948
->> [    8.815847] x25: 1fffe00010c80f48 x24: 0000000000000000
->> [    8.816805] x23: 0000000000000000 x22: 000000000000000d
->> [    8.817764] x21: 0000000000000030 x20: ffff0005ffcb4d58
->> [    8.818712] x19: 000000000000000b x18: 0000000000000000
->> [    8.819656] x17: 0000000000000000 x16: 0000000000000000
->> [    8.820613] x15: 0000000000000000 x14: ffff8000114c6258
->> [    8.821560] x13: ffff6000bff969ba x12: 1fffe000bff969b9
->> [    8.822514] x11: 1fffe000bff969b9 x10: ffff6000bff969b9
->> [    8.823461] x9 : dfff800000000000 x8 : ffff0005ffcb4dcf
->> [    8.824415] x7 : 0000000000000001 x6 : 0000000041b58ab3
->> [    8.825359] x5 : ffff600010c80f48 x4 : dfff800000000000
->> [    8.826313] x3 : ffff8000102be670 x2 : 0000000000000007
->> [    8.827259] x1 : ffff000086407a60 x0 : 000000000000000d
->> [    8.828218] Call trace:
->> [    8.828667]  __fragmentation_index+0xa4/0xc0
->> [    8.829436]  fragmentation_index+0xf8/0x138
->> [    8.830194]  compaction_suitable+0x98/0xb8
->> [    8.830934]  wakeup_kcompactd+0xdc/0x128
->> [    8.831640]  balance_pgdat+0x71c/0x7a0
->> [    8.832327]  kswapd+0x31c/0x520
->> [    8.832902]  kthread+0x224/0x230
->> [    8.833491]  ret_from_fork+0x10/0x30
->> [    8.834150] ---[ end trace 472836f79c15516b ]---
->>
->> This warning comes from __fragmentation_index() when the requested order
->> is greater than MAX_ORDER.
->>
->> static int __fragmentation_index(unsigned int order,
->>                  struct contig_page_info *info)
->> {
->>          unsigned long requested = 1UL << order;
->>
->>          if (WARN_ON_ONCE(order >= MAX_ORDER)) <===== Triggered here
->>                  return 0;
->>
->> Digging it further reveals that pageblock_order has been assigned a value
->> which is greater than MAX_ORDER failing the above check. But why this
->> happened ? Because HUGETLB_PAGE_ORDER for the given config on arm64 is
->> greater than MAX_ORDER.
->>
->> The solution involves enabling HUGETLB_PAGE_SIZE_VARIABLE which would make
->> pageblock_order a variable instead of constant HUGETLB_PAGE_ORDER. But that
->> change alone also did not really work as pageblock_order still got assigned
->> as HUGETLB_PAGE_ORDER in set_pageblock_order(). HUGETLB_PAGE_ORDER needs to
->> be less than MAX_ORDER for its appropriateness as pageblock_order otherwise
->> just fallback to MAX_ORDER - 1 as before. While here it also fixes a build
->> problem via type casting MAX_ORDER in rmem_cma_setup().
-> 
-> I'm wondering, is there any real value in allowing FORCE_MAX_ZONEORDER to be "11" with ARM64_64K_PAGES/ARM64_16K_PAGES?
+The "svdm_version" at this line is the cached value of
+"partner->svdm_version" at the time from below lines.
+In the case of the first calling to "tcpm_pd_svdm", this value is the
+default value set when "typec_register_partner" is called.
 
-MAX_ORDER should be as high as would be required for the current config.
-Unless THP is enabled, there is no need for it to be any higher than 11.
-But I might be missing historical reasons around this as well. Probably
-others from arm64 could help here.
+>>>>>>>>>>>>>
+       pdev = typec_match_altmode(port->partner_altmode, ALTMODE_DISCOVERY_MAX,
+                                  PD_VDO_VID(p[0]), PD_VDO_OPOS(p[0]));
 
-> 
-> Meaning: are there any real use cases that actually build a kernel without TRANSPARENT_HUGEPAGE and with ARM64_64K_PAGES/ARM64_16K_PAGES?
++     svdm_version = typec_get_negotiated_svdm_version(typec);
++     if (svdm_version < 0)
++             return 0;
+<<<<<<<<<<<<<
 
-THP is always optional. Besides kernel builds without THP should always
-be supported. Assuming that all builds will have THP enabled, might not
-be accurate.
+"partner->svdm_version" is updated afterward If someone calls
+"typec_partner_set_svdm_version" like these lines:
+>>>>>>>>>>>>>
++                     if (PD_VDO_SVDM_VER(p[0]) < svdm_version)
++                             typec_partner_set_svdm_version(port->partner,
++
+PD_VDO_SVDM_VER(p[0]));
+<<<<<<<<<<<<<
 
-> 
-> As builds are essentially broken, I assume this is not that relevant? Or how long has it been broken?
+However, this won't update the local variable "svdm_version". That's
+why we need to get the value of "partner->svdm_version" again.
+Unless every time the local variable "svdm_version" is updated when
+"typec_partner_set_svdm_version" is called.
 
-Git blame shows that it's been there for some time now. But how does
-that make this irrelevant ? A problem should be fixed nonetheless.
 
-> 
-> It might be easier to just drop the "TRANSPARENT_HUGEPAGE" part from the FORCE_MAX_ZONEORDER config.
-> 
+> > +                                     response[1] = port->snk_vdo[0] & ~IDH_DFP_MASK
+> > +                                                   & ~IDH_CONN_MASK;
+> > +                             else
+> > +                                     response[1] = port->snk_vdo[0];
+> > +                             for (i = 1; i <  port->nr_snk_vdo; i++)
+> >                                       response[i + 1] = port->snk_vdo[i];
+> >                               rlen = port->nr_snk_vdo + 1;
+> >                       }
+> > @@ -1532,6 +1550,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >                       response[0] = p[0] | VDO_CMDT(CMDT_RSP_BUSY);
+> >                       rlen = 1;
+> >               }
+> > +             response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
+> > +                           (VDO_SVDM_VERS(typec_get_negotiated_svdm_version(typec)));
+>
+> Unnecessary ( ) around VDO_SVDM_VERS. Also, why not svdm_version ?
+>
+> >               break;
+> >       case CMDT_RSP_ACK:
+> >               /* silently drop message if we are not connected */
+> > @@ -1542,19 +1562,22 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >
+> >               switch (cmd) {
+> >               case CMD_DISCOVER_IDENT:
+> > +                     if (PD_VDO_SVDM_VER(p[0]) < svdm_version)
+> > +                             typec_partner_set_svdm_version(port->partner,
+> > +                                                            PD_VDO_SVDM_VER(p[0]));
+> >                       /* 6.4.4.3.1 */
+> >                       svdm_consume_identity(port, p, cnt);
+> > -                     response[0] = VDO(USB_SID_PD, 1, SVDM_VER_1_0, CMD_DISCOVER_SVID);
+> > +                     response[0] = VDO(USB_SID_PD, 1, typec_get_negotiated_svdm_version(typec),
+>
+> Guess I am a bit confused about the use of svdm_version vs.
+> typec_get_negotiated_svdm_version(typec). Is there some rationale
+> for using one vs. the other ?
+>
 
-Not sure if it would be a good idea to unnecessarily have larger MAX_ORDER
-value for a given config. But I might be missing other contexts here.
+The local variable "svdm_version" is get at the beginning of this function.
+It cannot be trusted if someone calls "typec_partner_set_svdm_version"
+before you use the local variable.
+Unless, again,  it is updated everytime the
+"typec_partner_set_svdm_version" is called.
+
+
+> > +                                       CMD_DISCOVER_SVID);
+> >                       rlen = 1;
+> >                       break;
+> >               case CMD_DISCOVER_SVID:
+> >                       /* 6.4.4.3.2 */
+> >                       if (svdm_consume_svids(port, p, cnt)) {
+> > -                             response[0] = VDO(USB_SID_PD, 1, SVDM_VER_1_0,
+> > -                                               CMD_DISCOVER_SVID);
+> > +                             response[0] = VDO(USB_SID_PD, 1, svdm_version, CMD_DISCOVER_SVID);
+> >                               rlen = 1;
+> >                       } else if (modep->nsvids && supports_modal(port)) {
+> > -                             response[0] = VDO(modep->svids[0], 1, SVDM_VER_1_0,
+> > +                             response[0] = VDO(modep->svids[0], 1, svdm_version,
+> >                                                 CMD_DISCOVER_MODES);
+> >                               rlen = 1;
+> >                       }
+> > @@ -1565,7 +1588,7 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >                       modep->svid_index++;
+> >                       if (modep->svid_index < modep->nsvids) {
+> >                               u16 svid = modep->svids[modep->svid_index];
+> > -                             response[0] = VDO(svid, 1, SVDM_VER_1_0, CMD_DISCOVER_MODES);
+> > +                             response[0] = VDO(svid, 1, svdm_version, CMD_DISCOVER_MODES);
+> >                               rlen = 1;
+> >                       } else {
+> >                               tcpm_register_partner_altmodes(port);
+> > @@ -1592,6 +1615,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >                       /* Unrecognized SVDM */
+> >                       response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
+> >                       rlen = 1;
+> > +                     response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
+> > +                                   (VDO_SVDM_VERS(svdm_version));
+> >                       break;
+> >               }
+> >               break;
+> > @@ -1611,6 +1636,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >                       /* Unrecognized SVDM */
+> >                       response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
+> >                       rlen = 1;
+> > +                     response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
+> > +                                   (VDO_SVDM_VERS(svdm_version));
+> >                       break;
+> >               }
+> >               port->vdm_sm_running = false;
+> > @@ -1618,6 +1645,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >       default:
+> >               response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
+> >               rlen = 1;
+> > +             response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
+> > +                           (VDO_SVDM_VERS(svdm_version));
+> >               port->vdm_sm_running = false;
+> >               break;
+> >       }
+> > @@ -1695,7 +1724,13 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+> >                       break;
+> >               case ADEV_QUEUE_VDM_SEND_EXIT_MODE_ON_FAIL:
+> >                       if (typec_altmode_vdm(adev, p[0], &p[1], cnt)) {
+> > -                             response[0] = VDO(adev->svid, 1, SVDM_VER_1_0, CMD_EXIT_MODE);
+> > +                             int svdm_version = typec_get_negotiated_svdm_version(
+> > +                                                                     port->typec_port);
+> > +                             if (svdm_version < 0)
+> > +                                     break;
+> > +
+> > +                             response[0] = VDO(adev->svid, 1, svdm_version,
+> > +                                               CMD_EXIT_MODE);
+> >                               response[0] |= VDO_OPOS(adev->mode);
+> >                               rlen = 1;
+> >                       }
+> > @@ -1722,14 +1757,19 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+> >  static void tcpm_send_vdm(struct tcpm_port *port, u32 vid, int cmd,
+> >                         const u32 *data, int count)
+> >  {
+> > +     int svdm_version = typec_get_negotiated_svdm_version(port->typec_port);
+> >       u32 header;
+> >
+> > +     if (svdm_version < 0)
+> > +             return;
+> > +
+> >       if (WARN_ON(count > VDO_MAX_SIZE - 1))
+> >               count = VDO_MAX_SIZE - 1;
+> >
+> >       /* set VDM header with VID & CMD */
+> >       header = VDO(vid, ((vid & USB_SID_PD) == USB_SID_PD) ?
+> > -                     1 : (PD_VDO_CMD(cmd) <= CMD_ATTENTION), SVDM_VER_1_0, cmd);
+> > +                     1 : (PD_VDO_CMD(cmd) <= CMD_ATTENTION),
+> > +                     svdm_version, cmd);
+> >       tcpm_queue_vdm(port, header, data, count);
+> >  }
+> >
+> > @@ -2022,9 +2062,14 @@ static int tcpm_validate_caps(struct tcpm_port *port, const u32 *pdo,
+> >  static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
+> >  {
+> >       struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+> > +     int svdm_version;
+> >       u32 header;
+> >
+> > -     header = VDO(altmode->svid, vdo ? 2 : 1, SVDM_VER_1_0, CMD_ENTER_MODE);
+> > +     svdm_version = typec_get_negotiated_svdm_version(port->typec_port);
+> > +     if (svdm_version < 0)
+> > +             return svdm_version;
+> > +
+> > +     header = VDO(altmode->svid, vdo ? 2 : 1, svdm_version, CMD_ENTER_MODE);
+> >       header |= VDO_OPOS(altmode->mode);
+> >
+> >       tcpm_queue_vdm_unlocked(port, header, vdo, vdo ? 1 : 0);
+> > @@ -2034,9 +2079,14 @@ static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
+> >  static int tcpm_altmode_exit(struct typec_altmode *altmode)
+> >  {
+> >       struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+> > +     int svdm_version;
+> >       u32 header;
+> >
+> > -     header = VDO(altmode->svid, 1, SVDM_VER_1_0, CMD_EXIT_MODE);
+> > +     svdm_version = typec_get_negotiated_svdm_version(port->typec_port);
+> > +     if (svdm_version < 0)
+> > +             return svdm_version;
+> > +
+> > +     header = VDO(altmode->svid, 1, svdm_version, CMD_EXIT_MODE);
+> >       header |= VDO_OPOS(altmode->mode);
+> >
+> >       tcpm_queue_vdm_unlocked(port, header, NULL, 0);
+> > @@ -5977,6 +6027,7 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
+> >       port->typec_caps.fwnode = tcpc->fwnode;
+> >       port->typec_caps.revision = 0x0120;     /* Type-C spec release 1.2 */
+> >       port->typec_caps.pd_revision = 0x0300;  /* USB-PD spec release 3.0 */
+> > +     port->typec_caps.svdm_version = SVDM_VER_2_0;
+> >       port->typec_caps.driver_data = port;
+> >       port->typec_caps.ops = &tcpm_ops;
+> >       port->typec_caps.orientation_aware = 1;
+> > --
+> > 2.30.0.365.g02bc693789-goog
+> >
+
+thanks,
+Kyle
