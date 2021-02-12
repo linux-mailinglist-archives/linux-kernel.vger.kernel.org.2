@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F08331A203
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 701E431A205
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbhBLPqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:46:34 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:41685 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhBLPqY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:46:24 -0500
-Received: by mail-ot1-f46.google.com with SMTP id s107so8740985otb.8;
-        Fri, 12 Feb 2021 07:46:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SefNymZoQqys6Wmf/7JERZFC056mrOXLncjqPcwBSps=;
-        b=GMb5aDBPyIilDjhvgdbGoC43wEsSCthOPJDwEE5xuk4Z4ZyyX+ruAb3uh3K8e7AJaq
-         cgZOD8gxwnVJgCmh/LLKHMvUGiPk+ZNU9PPfywlWyt73ObtDJtQGoeIccih8AT8LS/ld
-         kz1fg5opz3tx2WbzJqey72zdCOB7wq8OUeaUqTNJSarw540+yn3oLX5FGkAKITjAJIox
-         A4rU04TTCtxo4ZTQGojHmFccDaMBuzAkPnTqruGdZwZWIWpvSHBXCAtw4cQDag33gHvi
-         CGmCcz/PGQ0XDXcdkya/ItVpVYAWgTpBQia3jqe5nB/O/uoPC0INdCDI1WyiTInifDqq
-         A7OQ==
-X-Gm-Message-State: AOAM53094vrTAS+TOQhQ+en8NSKf4eDZ6cI4wM2V1Ee9V373U3SKSIwo
-        F58FH07MvYCZP8NVM447TJHpaM1bi49qndZDG8c=
-X-Google-Smtp-Source: ABdhPJxZCy3tRdxx0qW6Z9mmCnUqVGmYj7GPV7ltAioN6mPPtD1lGZYkIt4GbaTPw586vm8l/2y+edbWSrOhhV5Gs/k=
-X-Received: by 2002:a05:6830:2106:: with SMTP id i6mr2365142otc.260.1613144743381;
- Fri, 12 Feb 2021 07:45:43 -0800 (PST)
+        id S230038AbhBLPq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:46:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231731AbhBLPqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:46:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B96FD64E05;
+        Fri, 12 Feb 2021 15:45:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613144744;
+        bh=qAkxI2payHVPgy5p/M13gZv73tlbs9in+RM2Honv+/s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K5CDgd4p15otjppQPBw4gXd3vHvXINpW5j1xt8ElGhl7PZkQ9gJk5zFyL5sjttTWf
+         eYiBwuaRStYE/XhBcsNglNC5ONtvieRJTNT3Cajj2Xlxdv4FkGUkwxBTvz4cVaOTgR
+         eZd2uY2D416b44cC7Bb/QqaJ3gFkN2WEthjBqn0Y=
+Date:   Fri, 12 Feb 2021 16:45:41 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ian Lance Taylor <iant@golang.org>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luis Lozano <llozano@chromium.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
+ is generated
+Message-ID: <YCaipZ+iY65iSrui@kroah.com>
+References: <20210212044405.4120619-1-drinkcat@chromium.org>
+ <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
+ <YCYybUg4d3+Oij4N@kroah.com>
+ <CANMq1KBuPaU5UtRR8qTgdf+J3pt-xAQq69kCVBdaYGx8F+WmFA@mail.gmail.com>
+ <YCY+Ytr2J2R5Vh0+@kroah.com>
+ <CAKOQZ8zPFM29DYPwbnUJEhf+a8kPSJ5E_W06JLFjn-5Fy-ZWWw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210209105435.21036-1-lukasz.luba@arm.com>
-In-Reply-To: <20210209105435.21036-1-lukasz.luba@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 12 Feb 2021 16:45:32 +0100
-Message-ID: <CAJZ5v0hZsns4_An-kCbdVjzXWp9QC+b1FV2WsfRqfEhvT=rs9g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] PM / EM: update Kconfig description and drop "default
- n" option
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greg Kroah-Hartman <greg@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKOQZ8zPFM29DYPwbnUJEhf+a8kPSJ5E_W06JLFjn-5Fy-ZWWw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 11:58 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> Energy Model supports now other devices like GPUs, DSPs, not only CPUs.
-> Thus, update the description in the config option. Remove also unneeded
-> "default n". If the "default" line is removed, it defaults to 'n'.
->
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+On Fri, Feb 12, 2021 at 07:33:57AM -0800, Ian Lance Taylor wrote:
+> On Fri, Feb 12, 2021 at 12:38 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > Why are people trying to use copy_file_range on simple /proc and /sys
+> > files in the first place?  They can not seek (well most can not), so
+> > that feels like a "oh look, a new syscall, let's use it everywhere!"
+> > problem that userspace should not do.
+> 
+> This may have been covered elsewhere, but it's not that people are
+> saying "let's use copy_file_range on files in /proc."  It's that the
+> Go language standard library provides an interface to operating system
+> files.  When Go code uses the standard library function io.Copy to
+> copy the contents of one open file to another open file, then on Linux
+> kernels 5.3 and greater the Go standard library will use the
+> copy_file_range system call.  That seems to be exactly what
+> copy_file_range is intended for.  Unfortunately it appears that when
+> people writing Go code open a file in /proc and use io.Copy the
+> contents to another open file, copy_file_range does nothing and
+> reports success.  There isn't anything on the copy_file_range man page
+> explaining this limitation, and there isn't any documented way to know
+> that the Go standard library should not use copy_file_range on certain
+> files.
 
-Applied along with the [2/2[ as 5.12 material, thanks!
+But, is this a bug in the kernel in that the syscall being made is not
+working properly, or a bug in that Go decided to do this for all types
+of files not knowing that some types of files can not handle this?
 
-> ---
->  kernel/power/Kconfig | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-> index a7320f07689d..56dbc2616d5c 100644
-> --- a/kernel/power/Kconfig
-> +++ b/kernel/power/Kconfig
-> @@ -322,15 +322,14 @@ config CPU_PM
->         bool
->
->  config ENERGY_MODEL
-> -       bool "Energy Model for CPUs"
-> +       bool "Energy Model for devices with DVFS (CPUs, GPUs, etc)"
->         depends on SMP
->         depends on CPU_FREQ
-> -       default n
->         help
->           Several subsystems (thermal and/or the task scheduler for example)
-> -         can leverage information about the energy consumed by CPUs to make
-> -         smarter decisions. This config option enables the framework from
-> -         which subsystems can access the energy models.
-> +         can leverage information about the energy consumed by devices to
-> +         make smarter decisions. This config option enables the framework
-> +         from which subsystems can access the energy models.
->
->           The exact usage of the energy model is subsystem-dependent.
->
-> --
-> 2.17.1
->
+If the kernel has always worked this way, I would say that Go is doing
+the wrong thing here.  If the kernel used to work properly, and then
+changed, then it's a regression on the kernel side.
+
+So which is it?
+
+> So ideally the kernel will report EOPNOTSUPP or EINVAL when using
+> copy_file_range on a file in /proc or some other file system that
+> fails (and, minor side note, the copy_file_range man page should
+> document that it can return EOPNOTSUPP or EINVAL in some cases, which
+> does already happen on at least some kernel versions using at least
+> some file systems).
+
+Documentation is good, but what the kernel does is the true "definition"
+of what is going right or wrong here.
+
+thanks,
+
+greg k-h
