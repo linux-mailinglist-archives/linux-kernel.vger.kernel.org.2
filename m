@@ -2,125 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D923231A3B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E482C31A3C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhBLReY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 12:34:24 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:40276 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhBLReD (ORCPT
+        id S231655AbhBLRjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 12:39:09 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:42784 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229980AbhBLRi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 12:34:03 -0500
-Date:   Fri, 12 Feb 2021 20:33:15 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
- "usb"-prefixed names
-Message-ID: <20210212173315.jgr6kata2yxrbkuu@mobilestation>
-References: <20210210172850.20849-1-Sergey.Semin@baikalelectronics.ru>
- <20210210172850.20849-10-Sergey.Semin@baikalelectronics.ru>
- <CAL_JsqJBknqhCSUOdpZVbtmp6TYetBQPLoQUCT6DTFajpChaSA@mail.gmail.com>
- <20210210184051.ncvvs5xgyo7o3uzq@mobilestation>
- <YCQse9EtEHtLVe9A@builder.lan>
- <20210210193325.inp7rgpsfr624zhd@mobilestation>
+        Fri, 12 Feb 2021 12:38:56 -0500
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 1BB3C40C64;
+        Fri, 12 Feb 2021 17:37:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1613151476; bh=pLtOjdMce9IcFnyPmHiwTn/lsgBXXN0dvV5+4sMtYHg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ie3cDqdhU6aeyPCpOdmTTXbxO8CF3qDeieUPkrZX94RDUPxfbEM5BDaAgR91rmDFV
+         W9AeK9Ss5qQiwvcVMx2MUaUxUEGvSi+HIaH//+owZjCmyMcEKBxiryIXfxUdP93c5T
+         FXHZtsluZm8IfxPEv6Z279HQzBxcPdviyvpjp2WVlMUnSu/OKHP1laOJnILyfG6LqX
+         VxW/ZIwC6sPfumzm5SlaAGT77VAyytZ569fvYNw4Pl65yocR+h/sRJl+CULY9Ddouw
+         unAMhxt0OJhlEj90TdHOKFwHIWt0CWx4SA3upqHCPKnwqkeAr8Ah0c/qsQ6y9kkVX0
+         wCCOE5KdOy/TQ==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 310E2A005C;
+        Fri, 12 Feb 2021 17:37:54 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Subject: [PATCH v6 00/15] dmaengine: dw-edma: HDMA support
+Date:   Fri, 12 Feb 2021 18:37:35 +0100
+Message-Id: <cover.1613151392.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210210193325.inp7rgpsfr624zhd@mobilestation>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:33:26PM +0300, Serge Semin wrote:
-> On Wed, Feb 10, 2021 at 12:56:59PM -0600, Bjorn Andersson wrote:
-> > On Wed 10 Feb 12:40 CST 2021, Serge Semin wrote:
-> > 
-> > > On Wed, Feb 10, 2021 at 12:17:27PM -0600, Rob Herring wrote:
-> > > > On Wed, Feb 10, 2021 at 11:29 AM Serge Semin
-> > > > <Sergey.Semin@baikalelectronics.ru> wrote:
-> > > > >
-> > > > > In accordance with the USB HCD/DRD schema all the USB controllers are
-> > > > > supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
-> > > > > existing DT-nodes will be renamed in a subsequent patch let's first make
-> > > > > sure the DWC3 Qualcomm driver supports them and second falls back to the
-> > > > > deprecated naming so not to fail on the legacy DTS-files passed to the
-> > > > > newer kernels.
-> > > > >
-> > > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > > > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > > > ---
-> > > > >  drivers/usb/dwc3/dwc3-qcom.c | 3 ++-
-> > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> > > > > index c703d552bbcf..49ad8d507d37 100644
-> > > > > --- a/drivers/usb/dwc3/dwc3-qcom.c
-> > > > > +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> > > > > @@ -630,7 +630,8 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
-> > > > >         struct device           *dev = &pdev->dev;
-> > > > >         int                     ret;
-> > > > >
-> > > > > -       dwc3_np = of_get_child_by_name(np, "dwc3");
-> > > > > +       dwc3_np = of_get_child_by_name(np, "usb") ?:
-> > > > > +                 of_get_child_by_name(np, "dwc3");
-> > > > 
-> > > 
-> > > > Is there some reason using compatible instead wouldn't work here?
-> > > 
-> > > I don't know for sure. The fix has been requested in the framework of
-> > > this discussion:
-> > > https://lore.kernel.org/linux-usb/20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru/#t
-> > > by the driver maintainer Bjorn. To get a firm answer it's better to
-> > > have him asked.
-> > 
-> > My feedback was simply that it has to catch both cases, I didn't
-> > consider the fact that we have a compatible to match against.
-> > 
-> > > As I see it having of_get_compatible_child() utilized
-> > > here would also work. At least for the available in kernel dt-files.
-> > > See the affected dts-es in:
-> > > https://lore.kernel.org/linux-usb/20210210172850.20849-11-Sergey.Semin@baikalelectronics.ru/
-> > > 
-> > > A problem may happen if some older versions of DTS-es had another
-> > > compatible string in the dwc3 sub-node...
-> > > 
-> > 
-> > Afaict all Qualcomm dts files has "snps,dwc3", so you can match against
-> > that instead.
-> 
-> Ok then. I'll replace of_get_child_by_name() here with
-> of_get_compatible_child() matching just against "snps,dwc3" in v7. Can you
-> confirm that noone ever had a Qcom-based hardware described with dts having
-> the "synopsys,dwc3" compatible used as the DWC USB3 sub-node here? That
-> string has been marked as deprecated recently because the vendor-prefix
-> was changed sometime ago, but the original driver still accept it.
-> 
-> Alternatively to be on a safe side we could match against both
-> compatibles here as Rob suggests. What do you think?
+This patch series adds the HDMA support, as long the IP design has set
+the compatible register map parameter, which allows compatibility at
+some degree for the existing Synopsys DesignWare eDMA driver that is
+already available on the Kernel.
 
-Bjorn, any comment on the question above? So I could respin the series
-with this patch updated.
+The HDMA "Hyper-DMA" IP is an enhancement of the eDMA "embedded-DMA" IP.
 
-Also note, since the patch's gonna be changed I'll have to remove your
-Reviewed-by tag unless u explicitly say I shouldn't.
+This new improvement comes with a PCI DVSEC that allows to the driver
+recognize and switch behavior if it's an eDMA or an HDMA, becoming
+retrocompatible, in the absence of this DVSEC, the driver will assume
+that is an eDMA IP.
 
--Sergey
+It also adds the interleaved support, since it will be similar to the
+current scatter-gather implementation.
 
-> 
-> -Sergey
-> 
-> > 
-> > Regards,
-> > Bjorn
+As well fixes/improves some abnormal behaviors not detected before, such as:
+ - crash on loading/unloading driver
+ - memory space definition for the data area and for the linked list space
+ - scatter-gather address calculation on 32 bits platforms
+ - minor comment and variable reordering
+
+Changes:
+ V2: Applied changes based on Bjorn Helgaas' review
+     Rebased patches on top of v5.11-rc1 version
+ V3: Applied changes based on Lukas Wunner' review
+ V4: Fix a typo detected by kernel test robot
+ V5: Rework driver accordingly to Bjorn Helgaas's feedback
+ V6: Rework driver accordingly to Krzysztof Wilczyński's feedback
+
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: dmaengine@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-pci@vger.kernel.org
+
+Gustavo Pimentel (15):
+  dmaengine: dw-edma: Add writeq() and readq() for 64 bits architectures
+  dmaengine: dw-edma: Fix comments offset characters' alignment
+  dmaengine: dw-edma: Add support for the HDMA feature
+  PCI: Add pci_find_vsec_capability() to find a specific VSEC
+  dmaengine: dw-edma: Add PCIe VSEC data retrieval support
+  dmaengine: dw-edma: Add device_prep_interleave_dma() support
+  dmaengine: dw-edma: Improve number of channels check
+  dmaengine: dw-edma: Reorder variables to keep consistency
+  dmaengine: dw-edma: Improve the linked list and data blocks definition
+  dmaengine: dw-edma: Change linked list and data blocks offset and
+    sizes
+  dmaengine: dw-edma: Move struct dentry variable from static definition
+    into dw_edma struct
+  dmaengine: dw-edma: Fix crash on loading/unloading driver
+  dmaengine: dw-edma: Change DMA abreviation from lower into upper case
+  dmaengine: dw-edma: Revert fix scatter-gather address calculation
+  dmaengine: dw-edma: Add pcim_iomap_table return check
+
+ drivers/dma/dw-edma/dw-edma-core.c       | 178 +++++++++++-------
+ drivers/dma/dw-edma/dw-edma-core.h       |  37 ++--
+ drivers/dma/dw-edma/dw-edma-pcie.c       | 275 +++++++++++++++++++++-------
+ drivers/dma/dw-edma/dw-edma-v0-core.c    | 300 ++++++++++++++++++++++++-------
+ drivers/dma/dw-edma/dw-edma-v0-core.h    |   2 +-
+ drivers/dma/dw-edma/dw-edma-v0-debugfs.c |  77 ++++----
+ drivers/dma/dw-edma/dw-edma-v0-debugfs.h |   4 +-
+ drivers/dma/dw-edma/dw-edma-v0-regs.h    | 291 +++++++++++++++++++-----------
+ drivers/pci/pci.c                        |  34 ++++
+ include/linux/pci.h                      |   2 +
+ include/uapi/linux/pci_regs.h            |   6 +
+ 11 files changed, 851 insertions(+), 355 deletions(-)
+
+-- 
+2.7.4
+
