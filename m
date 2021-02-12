@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA4531A10B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF3831A106
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhBLPCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:02:01 -0500
-Received: from mo-csw1116.securemx.jp ([210.130.202.158]:46234 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhBLPB4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:01:56 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 11CExO9r030513; Fri, 12 Feb 2021 23:59:24 +0900
-X-Iguazu-Qid: 2wGrVxzyElBLa1Vwyu
-X-Iguazu-QSIG: v=2; s=0; t=1613141964; q=2wGrVxzyElBLa1Vwyu; m=2QkLuNMlUJCxF7TouJ5hz1LlS63NCn+01MLR5NgKghM=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1110) id 11CExMnl023041;
-        Fri, 12 Feb 2021 23:59:23 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 11CExMlt014544;
-        Fri, 12 Feb 2021 23:59:22 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 11CExL1P032581;
-        Fri, 12 Feb 2021 23:59:21 +0900
-Date:   Fri, 12 Feb 2021 23:59:20 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/4] arm: dts: visconti: Add DT support for Toshiba
- Visconti5 ethernet controller
-X-TSB-HOP: ON
-Message-ID: <20210212145920.lz24qi5orqrfjtza@toshiba.co.jp>
-References: <20210212025806.556217-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210212025806.556217-5-nobuhiro1.iwamatsu@toshiba.co.jp>
- <CAK8P3a0Wycgn=Dq8KE+-F2keWj4mKaYQ=Y5RLefYn4gc71vVFw@mail.gmail.com>
+        id S229584AbhBLPBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:01:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43894 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhBLPBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:01:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 014C8AC90;
+        Fri, 12 Feb 2021 15:00:54 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id d8a92aa3;
+        Fri, 12 Feb 2021 15:01:55 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate
+ content is generated
+References: <20210212044405.4120619-1-drinkcat@chromium.org>
+        <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
+        <YCYybUg4d3+Oij4N@kroah.com>
+        <CAOQ4uxhovoZ4S3WhXwgYDeOeomBxfQ1BdzSyGdqoVX6boDOkeA@mail.gmail.com>
+        <YCY+tjPgcDmgmVD1@kroah.com> <871rdljxtx.fsf@suse.de>
+        <YCZyBZ1iT+MUXLu1@kroah.com> <87sg61ihkj.fsf@suse.de>
+        <YCaMgtpCzPrLjw9c@kroah.com>
+Date:   Fri, 12 Feb 2021 15:01:54 +0000
+In-Reply-To: <YCaMgtpCzPrLjw9c@kroah.com> (Greg KH's message of "Fri, 12 Feb
+        2021 15:11:14 +0100")
+Message-ID: <87lfbtib31.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0Wycgn=Dq8KE+-F2keWj4mKaYQ=Y5RLefYn4gc71vVFw@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Greg KH <gregkh@linuxfoundation.org> writes:
 
-Thanks for your review.
+> On Fri, Feb 12, 2021 at 12:41:48PM +0000, Luis Henriques wrote:
+>> Greg KH <gregkh@linuxfoundation.org> writes:
+...
+>> >> >> Our option now are:
+>> >> >> - Restore the cross-fs restriction into generic_copy_file_range()
+>> >> >
+>> >> > Yes.
+>> >> >
+>> >> 
+>> >> Restoring this restriction will actually change the current cephfs CFR
+>> >> behaviour.  Since that commit we have allowed doing remote copies between
+>> >> different filesystems within the same ceph cluster.  See commit
+>> >> 6fd4e6348352 ("ceph: allow object copies across different filesystems in
+>> >> the same cluster").
+>> >> 
+>> >> Although I'm not aware of any current users for this scenario, the
+>> >> performance impact can actually be huge as it's the difference between
+>> >> asking the OSDs for copying a file and doing a full read+write on the
+>> >> client side.
+>> >
+>> > Regression in performance is ok if it fixes a regression for things that
+>> > used to work just fine in the past :)
+>> >
+>> > First rule, make it work.
+>> 
+>> Sure, I just wanted to point out that *maybe* there are other options than
+>> simply reverting that commit :-)
+>> 
+>> Something like the patch below (completely untested!) should revert to the
+>> old behaviour in filesystems that don't implement the CFR syscall.
+>> 
+>> Cheers,
+>> -- 
+>> Luis
+>> 
+>> diff --git a/fs/read_write.c b/fs/read_write.c
+>> index 75f764b43418..bf5dccc43cc9 100644
+>> --- a/fs/read_write.c
+>> +++ b/fs/read_write.c
+>> @@ -1406,8 +1406,11 @@ static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
+>>  						       file_out, pos_out,
+>>  						       len, flags);
+>>  
+>> -	return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+>> -				       flags);
+>> +	if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
+>> +		return -EXDEV;
+>> +	else
+>> +		generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+>> +					flags);
+>>  }
+>>  
+>>  /*
+>
+> That would make much more sense to me.
 
-On Fri, Feb 12, 2021 at 10:32:09AM +0100, Arnd Bergmann wrote:
-> On Fri, Feb 12, 2021 at 4:03 AM Nobuhiro Iwamatsu
-> <nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
-> > @@ -384,6 +398,16 @@ spi6: spi@28146000 {
-> >                         #size-cells = <0>;
-> >                         status = "disabled";
-> >                 };
-> > +
-> > +               piether: ethernet@28000000 {
-> > +                       compatible = "toshiba,visconti-dwmac";
-> 
-> Shouldn't there be a more specific compatible string here, as well as the
-> particular version of the dwmac you use?
+Great.  I can send a proper patch with changelog, if this is the really
+what we want.  But I would rather hear from others first.  I guess that at
+least the NFS devs have something to say here.
 
-I rechecked the code again based on your point.
-I need to specify the version of dwmac. I also noticed that it could
-remove some unnecessary code. I will fix this.
-
-> 
-> In the binding example, you list the device as "dma-coherent",
-> but in this instance, it is not marked that way. Can you find out
-> whether the device is in fact connected properly to a cache-coherent
-> bus?
-> 
-> Note that failing to mark it as cache-coherent will make the device
-> rather slow and possibly not work correctly if it is in fact coherent,
-> but the default is non-coherent since a lot of SoCs are lacking
-> that hardware support.
-
-Thanks for point out.
-This hardware does not require dma-coherent. I will remove dma-coherent from DT
-binding document.
-
-> 
->        Arnd
-> 
-
-Best regards,
-  Nobuhiro
+Cheers,
+-- 
+Luis
