@@ -2,207 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC13319BA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EB7319BAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhBLJHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:07:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229907AbhBLJGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:06:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E1E64DF2;
-        Fri, 12 Feb 2021 09:06:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613120764;
-        bh=np7SqXCjziD+AGzYpWTOoztirigRiGQnjccnbJOBAJk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CrEokEg/IvbwcxMoHDRNjACc7I0WZC7VbiE+UV4N3t4t8Mid9nYT1+ptKhjAYxIkc
-         rZiYAZnSsL013WBzeUiWkNAZjQZ3NzqXrxxPWqv/lt/r/caHFBMZh0dJ3yKWBddFI5
-         R35qjn+nQ4QyAQf9wojUloiBPfZp7P2fenPThf6D4EpaN72M0RyISATETrboJgJxPY
-         wqRZD+HsZkEOeiDolfKeGUrQ8mdGHJjYCgdGgf2STJ2sTakm9RpQLLpOUj1HWKgN4e
-         Z6nZt/zm4BXrt0UQBTsjSMwleiIOkOFZX9JqCK4dQS4R5kgOvJmvs16T26KltD5WiC
-         u37KPnnVleSPQ==
-Date:   Fri, 12 Feb 2021 11:05:54 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterhuewe@gmx.de, Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>
-Subject: Re: [PATCH] tpm: ibmvtpm: Avoid -EINTR error when IMA talks to TPM
-Message-ID: <YCZE8nf9ylXJTo4k@kernel.org>
-References: <20210209221339.875739-1-stefanb@linux.ibm.com>
+        id S229954AbhBLJKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:10:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhBLJIP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 04:08:15 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED6AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:07:33 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id 189so5430057pfy.6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 01:07:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6MpurOZa0mv3rlud19+UrDfFOlySt773FOU0UbP6jCM=;
+        b=H0uHxpaYtAQke8Mv3RIL2YNNLNOPN70xD4hkOGIEAdqQXyzWiZ7Ov+rh2iZjSDn10I
+         012Ng7CiRiIvfSEkRG9FTkWztRt95KfP9SJokvbddIVOn3FIx6UgY0f4tJkFhYfOXFoJ
+         y1BnOmAowFehFLb9QnlQU/rYBnBFmcw1ZI+xKQI3p8Wf1HkDYKUbt0aGmd14PRH5jx68
+         IShE0L+EAoZ/+iZmfwPEHd03tdiFDsrxM7SzgQCDLbjBdYBRTZtaxPA9167mvgl4+l2k
+         a0ZenQeEkq/Z1LWtRVYuV99n/AUXRlDfDvuXUcOqIqKKZXRs8CC23aTuBVKzIib0liPM
+         PKfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6MpurOZa0mv3rlud19+UrDfFOlySt773FOU0UbP6jCM=;
+        b=AWV6PZ9JxUZ6chgNilbH2j7dj8azmMCLcpouXLwhXoMazl4A2KkqwCgExzwlKpIMwt
+         Qte2ARMJEH/dVAqHMX3XmkUEZJ4qihm+GH5Qn3zf2qSZ/oihOFSK5kYLYPqV/epX0wDG
+         fTp7HkdozSXYtAlxqaN7rJ1t8yyT68Dsl//Aeus++WKvyB/oiDDKIYyFPaszn6ylfC5X
+         acyOPtEUMgEVO+OMi5fgjpyNObcplrSJS5KMj6NcSIaiXyUGe5Ka2oHQ+H7jZHuvzfrC
+         xaHydCTWU4hqPbTMFekCvVrdYj2QyGd/hex2FirSs6JI4mH82/1nP/2FqVibhF2pB7oC
+         SwUA==
+X-Gm-Message-State: AOAM531ot0Ru5q7LsxNamIfvGWCvtyz59O5ozlylz+RoTkXIUUoavjwK
+        GSr7KAVW8l2fGrQwhngw3tSUpg==
+X-Google-Smtp-Source: ABdhPJzckJvZqN95IsVA2av6UB6S5iPiC56AQHWQsGqRBxE1qW91mw0dHw0tjcxCTu8hrwtVbE6bow==
+X-Received: by 2002:a62:ce82:0:b029:1d9:1872:294b with SMTP id y124-20020a62ce820000b02901d91872294bmr2043072pfg.36.1613120852892;
+        Fri, 12 Feb 2021 01:07:32 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id t17sm8587548pfc.43.2021.02.12.01.07.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 Feb 2021 01:07:32 -0800 (PST)
+Date:   Fri, 12 Feb 2021 14:37:30 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Pritthijit Nath <pritthijit.nath@icloud.com>,
+        devel@driverdev.osuosl.org, elder@kernel.org, vireshk@kernel.org,
+        linux-kernel@vger.kernel.org, greybus-dev@lists.linaro.org
+Subject: Re: [PATCH 2/2] staging: greybus: Fixed a misspelling in hid.c
+Message-ID: <20210212090730.mgpafwrkx4pvggyr@vireshk-i7>
+References: <20210212081835.9497-1-pritthijit.nath@icloud.com>
+ <20210212081835.9497-2-pritthijit.nath@icloud.com>
+ <YCY/1LCP404AZxhm@hovoldconsulting.com>
+ <YCZCY+UlzdwGU6pw@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209221339.875739-1-stefanb@linux.ibm.com>
+In-Reply-To: <YCZCY+UlzdwGU6pw@kroah.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:13:39PM -0500, Stefan Berger wrote:
-> When IMA is taking measurements during compilation for example and a
-> user presses ctrl-c to abort the compilation, lots of these types of
-> messages will appear in the kernel log:
+On 12-02-21, 09:54, Greg KH wrote:
+> On Fri, Feb 12, 2021 at 09:44:04AM +0100, Johan Hovold wrote:
+> > On Fri, Feb 12, 2021 at 01:48:35PM +0530, Pritthijit Nath wrote:
+> > > Fixed the spelling of 'transfered' to 'transferred'.
+> > > 
+> > > Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
+> > > ---
+> > >  drivers/staging/greybus/hid.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/staging/greybus/hid.c b/drivers/staging/greybus/hid.c
+> > > index a56c3fb5d35a..6b19ff4743a9 100644
+> > > --- a/drivers/staging/greybus/hid.c
+> > > +++ b/drivers/staging/greybus/hid.c
+> > > @@ -254,7 +254,7 @@ static int __gb_hid_output_raw_report(struct hid_device *hid, __u8 *buf,
+> > > 
+> > >  	ret = gb_hid_set_report(ghid, report_type, report_id, buf, len);
+> > >  	if (report_id && ret >= 0)
+> > > -		ret++; /* add report_id to the number of transfered bytes */
+> > > +		ret++; /* add report_id to the number of transferrid bytes */
+> > 
+> > You now misspelled transferred in a different way.
 > 
-> [ 7406.275163] tpm tpm0: tpm_transmit: tpm_recv: error -4
-> [ 7406.275242] ima: Error Communicating to TPM chip, result: -4
-> 
-> The issue is caused by the fact that the IBM vTPM driver's recv()
-> function is called immediately after send() without waiting for
-> status on whether a response was received. It currently waits for
-> the current command to finish using this call that ends up throwing
-> these error messages because it is 'interruptible':
+> Oops, will go revert this, I need more coffee...
 
-Why it is an issue?
+Yeah, its Friday.. You need a break too :)
 
-> sig = wait_event_interruptible(ibmvtpm->wq,
->                                !ibmvtpm->tpm_processing_cmd);
-> 
-> Instead, it should be using the polling loop in tpm_try_transmit()
-> that uses a command's duration to poll until a result has been
-> returned by the TPM, thus ending when the timeout has occurred but
-> not responding to users' ctrl-c request anymore. To stay in this
-> polling loop we now extend tpm_ibmvtpm_status() to return
-> PM_STATUS_BUSY for as long as the vTPM is busy. Since we will need
-> the timeouts in this loop now we get the TPM 1.2 and TPM 2 timeouts
-> with tpm_get_timeouts().
-> 
-> We change tpm_processing_cmd to tpm_status and set the TPM_STATUS_BUSY
-> flag while the vTPM is busy processing a command.
-
-Please, never use "we". The commit message should describe in
-imperative form the action taken.
-
-> 
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Fixes: 18b3670d79ae9 ("tpm: ibmvtpm: Add support for TPM2")
-> Cc: Nayna Jain <nayna@linux.ibm.com>
-> Cc: George Wilson <gcwilson@linux.ibm.com>
-
-Your SOB should be last.
-
-> ---
->  drivers/char/tpm/tpm_ibmvtpm.c | 31 ++++++++++++++++++-------------
->  drivers/char/tpm/tpm_ibmvtpm.h |  3 ++-
->  2 files changed, 20 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
-> index 994385bf37c0..6290bd8889e4 100644
-> --- a/drivers/char/tpm/tpm_ibmvtpm.c
-> +++ b/drivers/char/tpm/tpm_ibmvtpm.c
-> @@ -106,17 +106,12 @@ static int tpm_ibmvtpm_recv(struct tpm_chip *chip, u8 *buf, size_t count)
->  {
->  	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
->  	u16 len;
-> -	int sig;
->  
->  	if (!ibmvtpm->rtce_buf) {
->  		dev_err(ibmvtpm->dev, "ibmvtpm device is not ready\n");
->  		return 0;
->  	}
->  
-> -	sig = wait_event_interruptible(ibmvtpm->wq, !ibmvtpm->tpm_processing_cmd);
-> -	if (sig)
-> -		return -EINTR;
-> -
->  	len = ibmvtpm->res_len;
->  
->  	if (count < len) {
-> @@ -220,11 +215,12 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
->  		return -EIO;
->  	}
->  
-> -	if (ibmvtpm->tpm_processing_cmd) {
-> +	if ((ibmvtpm->tpm_status & TPM_STATUS_BUSY)) {
->  		dev_info(ibmvtpm->dev,
->  		         "Need to wait for TPM to finish\n");
->  		/* wait for previous command to finish */
-> -		sig = wait_event_interruptible(ibmvtpm->wq, !ibmvtpm->tpm_processing_cmd);
-> +		sig = wait_event_interruptible(ibmvtpm->wq,
-> +				(ibmvtpm->tpm_status & TPM_STATUS_BUSY) == 0);
->  		if (sig)
->  			return -EINTR;
->  	}
-> @@ -237,7 +233,7 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
->  	 * set the processing flag before the Hcall, since we may get the
->  	 * result (interrupt) before even being able to check rc.
->  	 */
-> -	ibmvtpm->tpm_processing_cmd = true;
-> +	ibmvtpm->tpm_status |= TPM_STATUS_BUSY;
->  
->  again:
->  	rc = ibmvtpm_send_crq(ibmvtpm->vdev,
-> @@ -255,7 +251,7 @@ static int tpm_ibmvtpm_send(struct tpm_chip *chip, u8 *buf, size_t count)
->  			goto again;
->  		}
->  		dev_err(ibmvtpm->dev, "tpm_ibmvtpm_send failed rc=%d\n", rc);
-> -		ibmvtpm->tpm_processing_cmd = false;
-> +		ibmvtpm->tpm_status &= ~TPM_STATUS_BUSY;
->  	}
->  
->  	spin_unlock(&ibmvtpm->rtce_lock);
-> @@ -269,7 +265,9 @@ static void tpm_ibmvtpm_cancel(struct tpm_chip *chip)
->  
->  static u8 tpm_ibmvtpm_status(struct tpm_chip *chip)
->  {
-> -	return 0;
-> +	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
-> +
-> +	return ibmvtpm->tpm_status;
->  }
->  
->  /**
-> @@ -459,7 +457,7 @@ static const struct tpm_class_ops tpm_ibmvtpm = {
->  	.send = tpm_ibmvtpm_send,
->  	.cancel = tpm_ibmvtpm_cancel,
->  	.status = tpm_ibmvtpm_status,
-> -	.req_complete_mask = 0,
-> +	.req_complete_mask = TPM_STATUS_BUSY,
->  	.req_complete_val = 0,
->  	.req_canceled = tpm_ibmvtpm_req_canceled,
->  };
-> @@ -552,7 +550,7 @@ static void ibmvtpm_crq_process(struct ibmvtpm_crq *crq,
->  		case VTPM_TPM_COMMAND_RES:
->  			/* len of the data in rtce buffer */
->  			ibmvtpm->res_len = be16_to_cpu(crq->len);
-> -			ibmvtpm->tpm_processing_cmd = false;
-> +			ibmvtpm->tpm_status &= ~TPM_STATUS_BUSY;
->  			wake_up_interruptible(&ibmvtpm->wq);
->  			return;
->  		default:
-> @@ -690,8 +688,15 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
->  		goto init_irq_cleanup;
->  	}
->  
-> -	if (!strcmp(id->compat, "IBM,vtpm20")) {
-> +
-> +	if (!strcmp(id->compat, "IBM,vtpm20"))
->  		chip->flags |= TPM_CHIP_FLAG_TPM2;
-> +
-> +	rc = tpm_get_timeouts(chip);
-> +	if (rc)
-> +		goto init_irq_cleanup;
-> +
-> +	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
->  		rc = tpm2_get_cc_attrs_tbl(chip);
->  		if (rc)
->  			goto init_irq_cleanup;
-> diff --git a/drivers/char/tpm/tpm_ibmvtpm.h b/drivers/char/tpm/tpm_ibmvtpm.h
-> index b92aa7d3e93e..252f1cccdfc5 100644
-> --- a/drivers/char/tpm/tpm_ibmvtpm.h
-> +++ b/drivers/char/tpm/tpm_ibmvtpm.h
-> @@ -41,7 +41,8 @@ struct ibmvtpm_dev {
->  	wait_queue_head_t wq;
->  	u16 res_len;
->  	u32 vtpm_version;
-> -	bool tpm_processing_cmd;
-> +	u8 tpm_status;
-> +#define TPM_STATUS_BUSY		(1 << 0) /* vtpm is processing a command */
->  };
->  
->  #define CRQ_RES_BUF_SIZE	PAGE_SIZE
-> -- 
-> 2.29.2
-> 
-> 
+-- 
+viresh
