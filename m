@@ -2,97 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC6E31A521
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DF131A528
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231995AbhBLTNM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Feb 2021 14:13:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231978AbhBLTNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:13:06 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57BF360241;
-        Fri, 12 Feb 2021 19:12:23 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 19:12:19 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Petr =?UTF-8?B?xaB0ZXRpYXI=?= <ynezz@true.cz>
-Cc:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: chemical: scd30: fix Oops due to missing parent
- device
-Message-ID: <20210212191219.7b16abbb@archlinux>
-In-Reply-To: <20210208223947.32344-1-ynezz@true.cz>
-References: <20210208223947.32344-1-ynezz@true.cz>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232026AbhBLTPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:15:35 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10314 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhBLTP3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 14:15:29 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6026d3a80001>; Fri, 12 Feb 2021 11:14:48 -0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Feb
+ 2021 19:14:48 +0000
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Feb
+ 2021 19:14:45 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 12 Feb 2021 19:14:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TD9n8hbFgxLDhuAk9j+mUBRdukizZcRdjNEQW2Yz6D1bkuQBEiLpCbrBIZrD5Ok0eqadMCVR89mFHy9psuw11nLt4kmIdRfKJxloF2LeF6oQlItO19xYqZC33KGzOj/Y9dmy8lklOlGYbfYf7lk8i2Lw/qfhkYL3M+cG6yHf5N9G5Dot5b6NHjUdRBC7XLHkqL6EObjenRX7gkYX5E1RcniKYxKi56i2m5ctbqzCXEQ9sEZsrfRPDjYmyh8tA1N5XwsS8stA4coKNkUcO51aaXdVWzUaGQPy1cTYkfjEHQHNF9ujlEBspSsI7lG9r8nTOsrLTjKFDXzznXU/SspH8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QY7pI6janZHs9kpAEAxoz63NCTTjPdCoT320HyCxjgQ=;
+ b=Q+W9u9zopRC9rgPE/lopx3Tb1FN0mi4ZfOOMxt5E7lD4LSR2IIb5KW/39CYhEG+dL31y6NsSJUn/46PGu89Kb/VZDa5fOr2Z4chM0yy9CWDR0moDuHCkw6Q8AA61X4WviV1NhX9RMj73bovlaRvVtColrlj5rUAIECCsrh+q0r3wnZqCxiM516UQwbV86yQyEjBpayj/DlW3nTEVJ2OdmZGV8OxSGsa5LMkpZClmZ+cj+g3C2ln2+eVSBRuOgSUEQZiYDu2Ct8qww1HncCwnso9MGEtn2Mpi+SwDaiv9GjUlIB2g2NuogmRIrM+do9tnM8rfrq1Kw2SZ3t299pGS+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2487.namprd12.prod.outlook.com (2603:10b6:4:af::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Fri, 12 Feb
+ 2021 19:14:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.030; Fri, 12 Feb 2021
+ 19:14:43 +0000
+Date:   Fri, 12 Feb 2021 15:14:41 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dave Jiang <dave.jiang@intel.com>
+CC:     <alex.williamson@redhat.com>, <kwankhede@nvidia.com>,
+        <tglx@linutronix.de>, <vkoul@kernel.org>, <megha.dey@intel.com>,
+        <jacob.jun.pan@intel.com>, <ashok.raj@intel.com>,
+        <yi.l.liu@intel.com>, <baolu.lu@intel.com>, <kevin.tian@intel.com>,
+        <sanjay.k.kumar@intel.com>, <tony.luck@intel.com>,
+        <dan.j.williams@intel.com>, <eric.auger@redhat.com>,
+        <parav@mellanox.com>, <netanelg@mellanox.com>,
+        <shahafs@mellanox.com>, <pbonzini@redhat.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>
+Subject: Re: [PATCH v5 04/14] vfio/mdev: idxd: Add auxialary device plumbing
+ for idxd mdev support
+Message-ID: <20210212191441.GU4247@nvidia.com>
+References: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
+ <161255839829.339900.16438737078488315104.stgit@djiang5-desk3.ch.intel.com>
+ <20210210234639.GI4247@nvidia.com>
+ <92c0e4b2-c85c-bda6-811b-8547b027d1ee@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <92c0e4b2-c85c-bda6-811b-8547b027d1ee@intel.com>
+X-ClientProxiedBy: BL0PR02CA0078.namprd02.prod.outlook.com
+ (2603:10b6:208:51::19) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0078.namprd02.prod.outlook.com (2603:10b6:208:51::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Fri, 12 Feb 2021 19:14:42 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lAdtp-007WJF-EI; Fri, 12 Feb 2021 15:14:41 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613157288; bh=W59+Xy4Yajr8FztdOXMZS49J9m3JsW1Cs+qg2tGacM4=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:Content-Transfer-Encoding:In-Reply-To:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=OFeSMy4U66tZFo8aUNhDVxQli3GolKZWkGDB/OI4MiTH0t9c5H2KD9F5V4wftjcPu
+         mv4gxBU0Ea3PUxURpV5SCgF4/QmGaSG17yfsooODItw8ujyDXO69O7XDmamQjNVVCj
+         m/Bp+E7XI+CUhpEXbWcYeIKe8ksRELXcj4NbwXYIF3zHK9jcpUdkQhygn+d4KM7+A/
+         /lg0r++ABH6tu0ew9GJ4eexygwR14RFYtzIW49l3sbGHF4BVz1kBm3HzwdquYXrAQ7
+         0DUY5WMopWRdpj5Sc4AIV5mLLiygfENI57IlrFqTMSPdEuFS9YqW21VPAzBGrhcZ0m
+         giVoIPGF8nF8w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  8 Feb 2021 23:39:47 +0100
-Petr Štetiar <ynezz@true.cz> wrote:
+On Fri, Feb 12, 2021 at 11:56:24AM -0700, Dave Jiang wrote:
 
-> My machine Oopsed while testing SCD30 sensor in interrupt driven mode:
-> 
->  Unable to handle kernel NULL pointer dereference at virtual address 00000188
->  pgd = (ptrval)
->  [00000188] *pgd=00000000
->  Internal error: Oops: 5 [#1] SMP ARM
->  Modules linked in:
->  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.4.96+ #473
->  Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
->  PC is at _raw_spin_lock_irqsave+0x10/0x4c
->  LR is at devres_add+0x18/0x38
->  ...
->  [<8070ecac>] (_raw_spin_lock_irqsave) from [<804916a8>] (devres_add+0x18/0x38)
->  [<804916a8>] (devres_add) from [<805ef708>] (devm_iio_trigger_alloc+0x5c/0x7c)
->  [<805ef708>] (devm_iio_trigger_alloc) from [<805f0a90>] (scd30_probe+0x1d4/0x3f0)
->  [<805f0a90>] (scd30_probe) from [<805f10fc>] (scd30_i2c_probe+0x54/0x64)
->  [<805f10fc>] (scd30_i2c_probe) from [<80583390>] (i2c_device_probe+0x150/0x278)
->  [<80583390>] (i2c_device_probe) from [<8048e6c0>] (really_probe+0x1f8/0x360)
-> 
-> I've found out, that it's due to missing parent/owner device in iio_dev struct
-> which then leads to NULL pointer dereference during spinlock while registering
-> the device resource via devres_add().
-> 
-> Cc: <stable@vger.kernel.org> # v5.9+
-> Fixes: 64b3d8b1b0f5 ("iio: chemical: scd30: add core driver")
-> Signed-off-by: Petr Štetiar <ynezz@true.cz>
+> > > @@ -434,11 +502,19 @@ static int idxd_probe(struct idxd_device *idxd)
+> > >   		goto err_idr_fail;
+> > >   	}
+> > > +	rc =3D idxd_setup_mdev_auxdev(idxd);
+> > > +	if (rc < 0)
+> > > +		goto err_auxdev_fail;
+> > > +
+> > >   	idxd->major =3D idxd_cdev_get_major(idxd);
+> > >   	dev_dbg(dev, "IDXD device %d probed successfully\n", idxd->id);
+> > >   	return 0;
+> > > + err_auxdev_fail:
+> > > +	mutex_lock(&idxd_idr_lock);
+> > > +	idr_remove(&idxd_idrs[idxd->type], idxd->id);
+> > > +	mutex_unlock(&idxd_idr_lock);
+> > Probably wrong to order things like this..
+>=20
+> How should it be ordered?
 
-Hi Petr,
+The IDR is global data so some other thread could have read the IDR
+and got this pointer, but now it is being torn down in some racy
+way. It is best to make the store to global access be the very last
+thing so you never have to try to unstore from global memory and don't
+have to think about concurrency.
 
-So, we moved this into the core a while back (to avoid exactly this sort of issue).
-That change predates this introduction of this driver as it went in
-in v5.8
+> > Also somehow this has a
+> >=20
+> > 	idxd =3D devm_kzalloc(dev, sizeof(struct idxd_device), GFP_KERNEL);
+> >=20
+> > but the idxd has a kref'd struct device in it:
+>=20
+> So the conf_dev is a struct device that let the driver do configuration o=
+f
+> the device and other components through sysfs. It's a child device to the
+> pdev. It should have no relation to the auxdev. The confdevs for each
+> component should not be released until the physical device is released. F=
+or
+> the mdev case, the auxdev shouldn't be released until the removal of the
+> pdev as well since it is a child of the pdev also.
+>=20
+> pdev --- device conf_dev --- wq conf_dev
+>=20
+> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |--- engine conf_=
+dev
+>=20
+> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |--- group conf_d=
+ev
+>=20
+> =C2=A0=C2=A0=C2=A0 |--- aux_dev
+>=20
+> >=20
+> > struct idxd_device {
+> > 	enum idxd_type type;
+> > 	struct device conf_dev;
+> >=20
+> > So that's not right either
+> >=20
+> > You'll need to fix the lifetime model for idxd_device before you get
+> > to adding auxdevices
+>=20
+> Can you kindly expand on how it's suppose to look like please?
 
-So I think you've hit an issue with a backport here to an earlier kernel?
+Well, you can't call kfree on memory that contains a struct device,
+you have to use put_device() - so the devm_kzalloc is unconditionally
+wrong. Maybe you could replace it with a devm put device action, but
+it would probably be alot saner to just put the required put_device's
+where they need to be in the first place.
 
-Jonathan
+I didn't try to work out what this was all for, but once it is sorted
+out you can just embed the aux device here and chain its release to
+put_device on the conf_dev and all the lifetime will work out
+naturally.=20
 
-
-> ---
->  drivers/iio/chemical/scd30_core.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/iio/chemical/scd30_core.c b/drivers/iio/chemical/scd30_core.c
-> index 4d0d798c7cd3..33aa6eb1963d 100644
-> --- a/drivers/iio/chemical/scd30_core.c
-> +++ b/drivers/iio/chemical/scd30_core.c
-> @@ -697,6 +697,7 @@ int scd30_probe(struct device *dev, int irq, const char *name, void *priv,
->  
->  	dev_set_drvdata(dev, indio_dev);
->  
-> +	indio_dev->dev.parent = dev;
->  	indio_dev->info = &scd30_info;
->  	indio_dev->name = name;
->  	indio_dev->channels = scd30_channels;
-
+Jason
