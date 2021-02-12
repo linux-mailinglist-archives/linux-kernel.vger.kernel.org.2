@@ -2,115 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC99319C29
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFED319C30
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhBLJyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:54:41 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44799 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229844AbhBLJyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:54:37 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S230209AbhBLJ4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:56:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43471 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229844AbhBLJ4u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 04:56:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613123723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MCtpJu25AskXpg2WUOKXsJXm7Er8lxZYRIyafRVXmcE=;
+        b=MsOA/ACYteoaUJtHN1jwFlkV6e/1JIkHEkEm92jit5cm224lNwkbWyJ+mb0OlnHOCwiG0v
+        V2ezIv3MxnM45AlBR8iEjTPkM0UaLF78st01B0A2ldmNx5+a5cm3ZTFkhr7f6DPVZJZEK9
+        BzAbvydzQpjUlICviacqYl4kCV3Jpo0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-81-tHA0lsW1NpqUiNeMQ6_JlQ-1; Fri, 12 Feb 2021 04:55:20 -0500
+X-MC-Unique: tHA0lsW1NpqUiNeMQ6_JlQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DcTNL34pyz9s1l;
-        Fri, 12 Feb 2021 20:53:54 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613123635;
-        bh=V6tZ9bJN3keYQ3P1n6itNnuQN6FwhXmN58WXFjXklwY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eSti4RUW+giXxWypA9JYzNr3vkb7z9otoxT3qVTARSZ7zLSfMuF2js7s449/4iH2E
-         hnW7W556gOWjN1DTbr46ZxSTm53HM+nAmt+vUhKzJbJQttlw7IAJ+uuelJFufTO1vB
-         bR297bEX0onPIgXu81YhFsbP6u13BLuRCeqjpK7+TZ/6eHyqEDK8GzKNwZKZwQsUow
-         19htF/5wGIugHii4sWMH3UUzAPuLgo80qixT7v5fQEra4fDhRa8jZ+IfW8+/KAV3QB
-         q3yBEQ+t2LN1A47sJcKwaY/35peR2foyPThyRr2bJyCwaXe14QMVuR6TSyjTSBpHF+
-         KMGCZz40bMelw==
-Date:   Fri, 12 Feb 2021 20:53:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: linux-next: manual merge of the akpm-current tree with the fscache
- tree
-Message-ID: <20210212205353.3db305ee@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4CF5F801962;
+        Fri, 12 Feb 2021 09:55:16 +0000 (UTC)
+Received: from [10.36.114.178] (ovpn-114-178.ams2.redhat.com [10.36.114.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B6ABC5C3FD;
+        Fri, 12 Feb 2021 09:55:10 +0000 (UTC)
+Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
+ holes in memory layout
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+References: <20210208110820.6269-1-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5dccbc93-f260-7f14-23bc-6dee2dff6c13@redhat.com>
+Date:   Fri, 12 Feb 2021 10:55:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NGUf4dhp2i/IsNpftn1P90=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210208110820.6269-1-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NGUf4dhp2i/IsNpftn1P90=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 08.02.21 12:08, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> There could be struct pages that are not backed by actual physical memory.
+> This can happen when the actual memory bank is not a multiple of
+> SECTION_SIZE or when an architecture does not register memory holes
+> reserved by the firmware as memblock.memory.
+> 
+> Such pages are currently initialized using init_unavailable_mem() function
+> that iterates through PFNs in holes in memblock.memory and if there is a
+> struct page corresponding to a PFN, the fields of this page are set to
+> default values and it is marked as Reserved.
+> 
+> init_unavailable_mem() does not take into account zone and node the page
+> belongs to and sets both zone and node links in struct page to zero.
+> 
+> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+> instance in a configuration below:
+> 
+> 	# grep -A1 E820 /proc/iomem
+> 	7a17b000-7a216fff : Unknown E820 type
+> 	7a217000-7bffffff : System RAM
+> 
+> unset zone link in struct page will trigger
+> 
+> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+> 
+> because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
+> in struct page) in the same pageblock.
+> 
+> Moreover, it is possible that the lowest node and zone start is not aligned
+> to the section boundarie, for example on x86:
+> 
+> [    0.078898] Zone ranges:
+> [    0.078899]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+> ...
+> [    0.078910] Early memory node ranges
+> [    0.078912]   node   0: [mem 0x0000000000001000-0x000000000009cfff]
+> [    0.078913]   node   0: [mem 0x0000000000100000-0x000000003fffffff]
+> 
+> and thus with SPARSEMEM memory model the beginning of the memory map will
+> have struct pages that are not spanned by any node and zone.
+> 
+> Update detection of node boundaries in get_pfn_range_for_nid() so that the
+> node range will be expanded to cover memory map section. Since zone spans
+> are derived from the node span, there always will be a zone that covers the
+> part of the memory map with unavailable pages.
+> 
+> Interleave initialization of the unavailable pages with the normal
+> initialization of memory map, so that zone and node information will be
+> properly set on struct pages that are not backed by the actual memory.
+> 
+> Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather
+> that check each PFN")
+> Reported-by: Andrea Arcangeli <aarcange@redhat.com>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Baoquan He <bhe@redhat.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Qian Cai <cai@lca.pw>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>   mm/page_alloc.c | 160 +++++++++++++++++++++++-------------------------
+>   1 file changed, 75 insertions(+), 85 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 6446778cbc6b..1c3f7521028f 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -6257,22 +6257,84 @@ static void __meminit zone_init_free_lists(struct zone *zone)
+>   	}
+>   }
+>   
+> +#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
+> +/*
+> + * Only struct pages that correspond to ranges defined by memblock.memory
+> + * are zeroed and initialized by going through __init_single_page() during
+> + * memmap_init_zone().
+> + *
+> + * But, there could be struct pages that correspond to holes in
+> + * memblock.memory. This can happen because of the following reasons:
+> + * - phyiscal memory bank size is not necessarily the exact multiple of the
+> + *   arbitrary section size
+> + * - early reserved memory may not be listed in memblock.memory
+> + * - memory layouts defined with memmap= kernel parameter may not align
+> + *   nicely with memmap sections
+> + *
+> + * Explicitly initialize those struct pages so that:
+> + * - PG_Reserved is set
+> + * - zone and node links point to zone and node that span the page
+> + */
+> +static u64 __meminit init_unavailable_range(unsigned long spfn,
+> +					    unsigned long epfn,
+> +					    int zone, int node)
+> +{
+> +	unsigned long pfn;
+> +	u64 pgcnt = 0;
+> +
+> +	for (pfn = spfn; pfn < epfn; pfn++) {
+> +		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
+> +			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
+> +				+ pageblock_nr_pages - 1;
+> +			continue;
+> +		}
+> +		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
+> +		__SetPageReserved(pfn_to_page(pfn));
+> +		pgcnt++;
+> +	}
+> +
+> +	return pgcnt;
+> +}
+> +#else
+> +static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
+> +					 int zone, int node)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+>   void __meminit __weak memmap_init_zone(struct zone *zone)
+>   {
+>   	unsigned long zone_start_pfn = zone->zone_start_pfn;
+>   	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
+>   	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
+>   	unsigned long start_pfn, end_pfn;
+> +	unsigned long hole_pfn = 0;
+> +	u64 pgcnt = 0;
+>   
+>   	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
+>   		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
+>   		end_pfn = clamp(end_pfn, zone_start_pfn, zone_end_pfn);
+> +		hole_pfn = clamp(hole_pfn, zone_start_pfn, zone_end_pfn);
+>   
+>   		if (end_pfn > start_pfn)
+>   			memmap_init_range(end_pfn - start_pfn, nid,
+>   					zone_id, start_pfn, zone_end_pfn,
+>   					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
+> +
+> +		if (hole_pfn < start_pfn)
+> +			pgcnt += init_unavailable_range(hole_pfn, start_pfn,
+> +							zone_id, nid);
+> +		hole_pfn = end_pfn;
+>   	}
+> +
+> +	if (hole_pfn < zone_end_pfn)
+> +		pgcnt += init_unavailable_range(hole_pfn, zone_end_pfn,
+> +						zone_id, nid);
+> +
+> +	if (pgcnt)
+> +		pr_info("  %s zone: %lld pages in unavailable ranges\n",
+> +			zone->name, pgcnt);
+>   }
+>   
+>   static int zone_batchsize(struct zone *zone)
+> @@ -6519,8 +6581,19 @@ void __init get_pfn_range_for_nid(unsigned int nid,
+>   		*end_pfn = max(*end_pfn, this_end_pfn);
+>   	}
+>   
+> -	if (*start_pfn == -1UL)
+> +	if (*start_pfn == -1UL) {
+>   		*start_pfn = 0;
+> +		return;
+> +	}
+> +
+> +#ifdef CONFIG_SPARSEMEM
+> +	/*
+> +	 * Sections in the memory map may not match actual populated
+> +	 * memory, extend the node span to cover the entire section.
+> +	 */
+> +	*start_pfn = round_down(*start_pfn, PAGES_PER_SECTION);
+> +	*end_pfn = round_up(*end_pfn, PAGES_PER_SECTION);
 
-Hi all,
+Does that mean that we might create overlapping zones when one node 
+starts in the middle of a section and the other one ends in the middle 
+of a section?
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+Could it be a problem? (e.g., would we have to look at neighboring nodes 
+when making the decision to extend, and how far to extend?)
 
-  include/linux/pagemap.h
+-- 
+Thanks,
 
-between commit:
+David / dhildenb
 
-  13aecd8259dc ("mm: Implement readahead_control pageset expansion")
-
-from the fscache tree and commit:
-
-  3ad6bba07ad0 ("mm/filemap: add mapping_seek_hole_data")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/pagemap.h
-index d2786607d297,20225b067583..000000000000
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@@ -758,11 -756,11 +757,13 @@@ int add_to_page_cache_lru(struct page *
-  				pgoff_t index, gfp_t gfp_mask);
-  extern void delete_from_page_cache(struct page *page);
-  extern void __delete_from_page_cache(struct page *page, void *shadow);
-- int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp=
-_mask);
-+ void replace_page_cache_page(struct page *old, struct page *new);
-  void delete_from_page_cache_batch(struct address_space *mapping,
-  				  struct pagevec *pvec);
- +void readahead_expand(struct readahead_control *ractl,
- +		      loff_t new_start, size_t new_len);
-+ loff_t mapping_seek_hole_data(struct address_space *, loff_t start, loff_=
-t end,
-+ 		int whence);
- =20
-  /*
-   * Like add_to_page_cache_locked, but used to add newly allocated pages:
-
---Sig_/NGUf4dhp2i/IsNpftn1P90=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAmUDEACgkQAVBC80lX
-0GzwuQf7BleQYh5H8zpxZL+Wu64753zcgfTvI4DY4weFf26AvogNAq07FVoJFqHm
-vWKrUZzjeQuvD6w9a/8O1C36wm+zRr020K52fEz+eCrDnBCmA2S7Ihm4U2gv2J+u
-33LcMyO9NyOI8IjmuQAbX5Wj6Ua54kqdYnquoaIrOpetDw32ltIdXsGgtBeLf4DG
-zz5QNJf/R0i/hLVnp3Dx4eNR1HV2FsnmE3ltQLXAKyAPMUNPG8zaiYMJE3CXnCbj
-bkCxWa/opQvDCkXZ7YyqXvJWDFnAOoYDnbncI78ese9smmQ3mSVS7qFewDEu1GCs
-mhaBnxRPeHDiybiobUBrTjqvCf2cFQ==
-=zOmJ
------END PGP SIGNATURE-----
-
---Sig_/NGUf4dhp2i/IsNpftn1P90=--
