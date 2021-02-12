@@ -2,204 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCC931A66D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD68431A66F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbhBLVAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 16:00:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231899AbhBLU6l (ORCPT
+        id S231685AbhBLVAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 16:00:49 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19182 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231942AbhBLU6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:58:41 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EFFC061788
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:58:01 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id m188so703845yba.13
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:58:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CqAzPT6VwnPBuxPka3afIBXbnCQbD8+pdFwxBKcHhXQ=;
-        b=uBTJQG+mWgC2KaNYo1bb3HfZG5kNKJ7vb1CkEXXuyZyIlMIUmRy7u+Ui98xv5m6wXD
-         R7N5LfNkcmh1NQ9NxgRQP3cWOkQFo7SAC+qn3I64HrXBzaGyP8UoGVC/bj+K+cZ8nSWe
-         YQAtaHJyorTUUKIOxX53zOw5ATfxwx2KVYuQOmCF02rn7CG0N1rPqvKrBgWPiLi45FON
-         shvjdCt7F02vXc8OsQJNlQ5Dg8hPGX1Xh3uWdinc2aBX3WWsUPVTakWNa4yKxhzAKQdV
-         EuNXoz2GuhV1z+hCYh7JVx2iqHGoG2X6f6zTTF5209mcejt6xlzEddhC7ShsSohFBkLy
-         xwLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CqAzPT6VwnPBuxPka3afIBXbnCQbD8+pdFwxBKcHhXQ=;
-        b=jAC5hvV+PHYSkiy/ofyAwuZQQE0FdRnqeORh/c3BH+6+TSUdZF50n0Rvf0mf+EEbuH
-         rpnqs6wCGhkxfkLuxam/6IkDwDZe02/wt+eY2VVZ8TuHpRSCK87wa+O9rgI7yurJpq7u
-         uMKwmLzlFCGQivJOmO4eslbI72Fz3AyncJXv4mM0nMtwu4GwsdzlJNtEWAdYKPykuOLx
-         +ICJhqjoxp90OAURATuGzp9ZjrEREVZ7yv7ky0vo67Z3UH/oXPbMZ1l4uHfajz3djVWb
-         1UECiMrXaeBtVRB2ZE3u7AeN8z8jR8OqqWmOfeAkjfPVtEwaIGYYVlbVSxFtlUWk5d2X
-         GwkA==
-X-Gm-Message-State: AOAM530lvRoaY7+8XGcPdBoM6C2aCFO93JW23N7gdGqgvD3oNiYti9OP
-        cD28aE6Vxf7hJMT63+Lckk0CZNzPxXmGsHi5CUw3OA==
-X-Google-Smtp-Source: ABdhPJwK0fc2ml/1MYUHRvi8x2ga/wmAbYgOqo2Dy3Txjf3hoDchCtA5qthJoSF2yZyW//AH/pAR//MQ+c+2yrZOeqg=
-X-Received: by 2002:a25:718b:: with SMTP id m133mr6949864ybc.412.1613163480367;
- Fri, 12 Feb 2021 12:58:00 -0800 (PST)
+        Fri, 12 Feb 2021 15:58:46 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6026ebdb0000>; Fri, 12 Feb 2021 12:58:03 -0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Feb
+ 2021 20:58:02 +0000
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Feb
+ 2021 20:58:00 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 12 Feb 2021 20:58:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aT/Jws6mnjaRE7fJI7QRedMCrlDJY3d8USxd4tQngATklMCTeoHASywU0gSMCeo2Xh3UGsziLDufKZSw3WXhI5aLivFIu4mO/4H7xVBe21U5zrQlMsDO2fgQqx9zOGa/5IBXhvPFnO+T9/QrUvR80Jagr9mugPVFpgmXgqQxEAJ8UplByqvU3+5RSV2/rfA+C0coOLXHZiYBn2+61UQAGb89W1Wuj+9NsjyZ+ilG+76sZZAR8tCTJvnCDfJxbJjvE3BvztlecOnyp7q81KsNqXk6b9yo2UuY+298zF8gNXPeusAuOCP4/xZ+BKa1I97Rx0ip58nRyjrGO7ukq/BXlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pXbet/aqZDSYrNDHmw3zTTbkFtCL94DHwD74wqCi4uc=;
+ b=YHiz+QsLEbNUXKk5TpOOaLctnoQgcJjX2u8gcdxeoDwwpCAAxIfJh+A4TA6p/lkhvBQOtMiiM46BdxOYr8bTKOfqM8SJdELg0xykDxqBUC7tScIzdMymDqrJ2IMPOW8ZA3AqdgcJXbOQYSCgbaO3Qj7gip+M3Pvj07C2Lu2YIcHXN0YSLFNMYyzDIis37tpQwROythTsAz7T6uRmeqfLBKE9z8pvmuNCj0a3IVUhjak5VKoZGuhQd8B+qaJii/tgIRjkyHtAGH8GTAGYyclRyOkzyCE9wWjM6hmmg+e0uYx8VGH9kHsZxO0cc0hbGe6dVuCka9FXBeYgbsRJnpgnig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2938.namprd12.prod.outlook.com (2603:10b6:5:18a::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Fri, 12 Feb
+ 2021 20:57:57 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.030; Fri, 12 Feb 2021
+ 20:57:57 +0000
+Date:   Fri, 12 Feb 2021 16:57:55 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
+Subject: Re: [PATCH 0/3] vfio: Device memory DMA mapping improvements
+Message-ID: <20210212205755.GV4247@nvidia.com>
+References: <161315658638.7320.9686203003395567745.stgit@gimli.home>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <161315658638.7320.9686203003395567745.stgit@gimli.home>
+X-ClientProxiedBy: MN2PR14CA0006.namprd14.prod.outlook.com
+ (2603:10b6:208:23e::11) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
- <CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com>
- <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com> <CAMuHMdVG97Zjr1WO0554h9eUZhfeyxwUfNYuAdPoacpznkA6-Q@mail.gmail.com>
-In-Reply-To: <CAMuHMdVG97Zjr1WO0554h9eUZhfeyxwUfNYuAdPoacpznkA6-Q@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 12 Feb 2021 12:57:24 -0800
-Message-ID: <CAGETcx9GAyWQTb1kuUpjAcYyPGYtxxWMRe9u0o5UOSMrryTdvg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR14CA0006.namprd14.prod.outlook.com (2603:10b6:208:23e::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Fri, 12 Feb 2021 20:57:57 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lAfVk-007nih-0H; Fri, 12 Feb 2021 16:57:56 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613163483; bh=pXbet/aqZDSYrNDHmw3zTTbkFtCL94DHwD74wqCi4uc=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=R7ZWhCwu0lhth2yrDvtnZYYP2WkW1s06XFvvTWoPTH35IsL+6dt2j9N2RnPgnLjm/
+         s0a1KI6ycwEoDumGm+KQ81wKmdEP91Ti0Lu7Vcfn2/UNq/VuIDwskOjJ/txEXJEbRQ
+         YjXhlXddeEfRvZKgSs7+Xc2hmAyJn/uzxcaPDySCHWI3wXcj9EO90xzfF7lAgO/Ckg
+         wd1xEOkGBXw6T4v+neBtsKSnTCjpgGmVYcOc6cIGsSIfk15rJfRwahiL9oMaqBmhxI
+         7TJmLVw246FuofVNtTqxlmI4QosQUNIzHGFg+06VJ9xcLVWnUk8BZjGBbjiM4B4+Kr
+         YDl+oMgp1cjQA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:15 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Fri, Feb 12, 2021 at 4:00 AM Saravana Kannan <saravanak@google.com> wrote:
-> > On Thu, Feb 11, 2021 at 5:00 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > >   1. R-Car Gen2 (Koelsch), R-Car Gen3 (Salvator-X(S), Ebisu).
-> > >
-> > >       - Commit 2dfc564bda4a31bc ("soc: renesas: rcar-sysc: Mark device
-> > >         node OF_POPULATED after init") is no longer needed (but already
-> > >         queued for v5.12 anyway)
-> >
-> > Rob doesn't like the proliferation of OF_POPULATED and we don't need
-> > it anymore, so maybe work it out with him? It's a balance between some
-> > wasted memory (struct device(s)) vs not proliferating OF_POPULATED.
->
-> Rob: should it be reverted?  For v5.13?
-> I guess other similar "fixes" went in in the mean time.
->
-> > >       - Some devices are reprobed, despite their drivers returning
-> > >         a real error code, and not -EPROBE_DEFER:
-> >
-> > Sorry, it's not obvious from the logs below where "reprobing" is
-> > happening. Can you give more pointers please?
->
-> My log was indeed not a full log, but just the reprobes happening.
-> I'll send you a full log by private email.
->
-> > Also, thinking more about this, the only way I could see this happen is:
-> > 1. Device fails with error that's not -EPROBE_DEFER
-> > 2. It somehow gets added to a device link (with AUTOPROBE_CONSUMER
-> > flag) where it's a consumer.
-> > 3. The supplier probes and the device gets added to the deferred probe
-> > list again.
-> >
-> > But I can't see how this sequence can happen. Device links are created
-> > only when a device is added. And is the supplier isn't added yet, the
-> > consumer wouldn't have probed in the first place.
->
-> The full log doesn't show any evidence of the device being added
-> to a list in between the two probes.
->
-> > Other than "annoying waste of time" is this causing any other problems?
->
-> Probably not.  But see below.
->
-> > >       - The PCI reprobing leads to a memory leak, for which I've sent a fix
-> > >         "[PATCH] PCI: Fix memory leak in pci_register_io_range()"
-> > >         https://lore.kernel.org/linux-pci/20210202100332.829047-1-geert+renesas@glider.be/
-> >
-> > Wrt PCI reprobing,
-> > 1. Is this PCI never expected to probe, but it's being reattempted
-> > despite the NOT EPROBE_DEFER error? Or
->
-> There is no PCIe card present, so the failure is expected.
-> Later it is reprobed, which of course fails again.
->
-> > 2. The PCI was deferred probe when it should have probed and then when
-> > it's finally reattemped and it could succeed, we are hitting this mem
-> > leak issue?
->
-> I think the leak has always been there, but it was just exposed by
-> this unneeded reprobe.  I don't think a reprobe after that specific
-> error path had ever happened before.
->
-> > I'm basically trying to distinguish between "this stuff should never
-> > be retried" vs "this/it's suppliers got probe deferred with
-> > fw_devlink=on vs but didn't get probe deferred with
-> > fw_devlink=permissive and that's causing issues"
->
-> There should not be a probe deferral, as no -EPROBE_DEFER was
-> returned.
->
-> > >       - I2C on R-Car Gen3 does not seem to use DMA, according to
-> > >         /sys/kernel/debug/dmaengine/summary:
-> > >
-> > >             -dma4chan0    | e66d8000.i2c:tx
-> > >             -dma4chan1    | e66d8000.i2c:rx
-> > >             -dma5chan0    | e6510000.i2c:tx
-> >
-> > I think I need more context on the problem before I can try to fix it.
-> > I'm also very unfamiliar with that file. With fw_devlink=permissive,
-> > I2C was using DMA? If so, the next step is to see if the I2C relative
-> > probe order with DMA is getting changed and if so, why.
->
-> Yes, I plan to dig deeper to see what really happens...
+On Fri, Feb 12, 2021 at 12:27:19PM -0700, Alex Williamson wrote:
+> This series intends to improve some long standing issues with mapping
+> device memory through the vfio IOMMU interface (ie. P2P DMA mappings).
+> Unlike mapping DMA to RAM, we can't pin device memory, nor is it
+> always accessible.  We attempt to tackle this (predominantly the
+> first issue in this iteration) by creating a registration and
+> notification interface through vfio-core, between the IOMMU backend
+> and the bus driver.  This allows us to do things like automatically
+> remove a DMA mapping to device if it's closed by the user.  We also
+> keep references to the device container such that it remains isolated
+> while this mapping exists.
+> 
+> Unlike my previous attempt[1], this version works across containers.
+> For example if a user has device1 with IOMMU context in container1
+> and device2 in container2, a mapping of device2 memory into container1
+> IOMMU context would be removed when device2 is released.
+> 
+> What I don't tackle here is when device memory is disabled, such as
+> for a PCI device when the command register memory bit is cleared or
+> while the device is in reset.  Ideally is seems like it might be
+> nice to have IOMMU API interfaces that could remove r/w permissions
+> from the IOTLB entry w/o removing it entirely, but I'm also unsure
+> of the ultimate value in modifying the IOTLB entries at this point.
+> 
+> In the PCI example again, I'd expect a DMA to disabled or unavailable
+> device memory to get an Unsupported Request response.  If we play
+> with the IOTLB mapping, we might change this to an IOMMU fault for
+> either page permissions or page not present, depending on how we
+> choose to invalidate that entry.  However, it seems that a system that
+> escalates an UR error to fatal, through things like firmware first
+> handling, is just as likely to also make the IOMMU fault fatal.  Are
+> there cases where we expect otherwise, and if not is there value to
+> tracking device memory enable state to that extent in the IOMMU?
+> 
+> Jason, I'm also curious if this scratches your itch relative to your
+> suggestion to solve this with dma-bufs, and if that's still your
+> preference, I'd love an outline to accomplish this same with that
+> method.
 
-Try fw_devlink.strict (you'll need IOMMU enabled too). If that fixes
-it and you also don't see this issue with fw_devlink=permissive, then
-it means there's probably some unnecessary probe deferral that we
-should try to avoid. At least, that's my hunch right now.
+I will look at this more closely later, but given this is solving a
+significant security problem and the patches now exist, I'm not
+inclined to push too hard to do something different if this works OK.
 
-Thanks,
-Saravana
+That said, it is not great to see VFIO create its own little dmabuf
+like thing inside itself, in particular if this was in core code we
+could add a new vm_operations_struct member like:
 
->
-> > >       - On R-Mobile A1, I get a BUG and a memory leak:
-> > >
-> > >             BUG: spinlock bad magic on CPU#0, swapper/1
->
-> >
-> > Hmm... I looked at this in bits and pieces throughout the day. At
-> > least spent an hour looking at this. This doesn't make a lot of sense
-> > to me. I don't even touch anything in this code path AFAICT.  Are
-> > modules/kernel mixed up somehow? I need more info before I can help.
-> > Does reverting my pm domain change make any difference (assume it
-> > boots this far without it).
->
-> I plan to dig deeper to see what really happens...
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+   struct dmabuf (*getdma_buf)(struct vm_operations_struct *area);
+
+And completely avoid a lot of the searching and fiddling with
+ops. Maybe we can make this look closer to that ideal..
+
+Jason
