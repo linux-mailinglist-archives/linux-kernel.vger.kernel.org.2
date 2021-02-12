@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A5D31A674
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD8A31A67A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhBLVCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 16:02:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231731AbhBLVCh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 16:02:37 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956C3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:01:51 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id t2so331378pjq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:01:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NT+Vr+SuI/IQr/HdheHFCPYtSKxGIwwJN+vDof64o90=;
-        b=a7+YT18oLHZ5w/c8d1pHLe0BM+ns6ibIMkUvLN/LqW+1RxGRvTb+QerKdeRqTbuJSX
-         kdDsvak+FMZwuz+RNTwLmQox516ga1GNPQo9TkYAzwm08jYZLw1zlOmKoCKInP0OhDxK
-         /2gHziPDBZeVpAU1cj5SzDWcaE95j/342nJPoSUIzC+5GxtgZ1EC6g1FLqUcbqnilNNm
-         IX+Y8k0hd/3fcWxk2DEuqA6gwae8193oHMdLYub4buQSmC5FAUcqtkAmvH/SS/7ubpl0
-         OX+rQewztENUKp3SfNjPFcAoTlrCRq0AzquK7KOX5yzD8RQIQ8fI4qHOvu0XXzSFfJRE
-         MXsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NT+Vr+SuI/IQr/HdheHFCPYtSKxGIwwJN+vDof64o90=;
-        b=hcoe9tRGl1fg+/wCGf7GS0653U4beudpatjo6Bzb4uVy/M3www6WbpiVB2xZBA2XQE
-         DEH91wop5lAxQarKmSvRaahMxtRU2COZ1+iqfJBAWSFBtPhu/zl91sm8VNLB/LBcMP33
-         za5fcKvt50fOLha/Q55AuhkaIp1hJROnACn14pAyl3cIQ6SZo7Ocjnu3VOLbcJVY4d5j
-         uw2GWbGJRfdiBnvrBfDM/+n+VrmLvH+3ckH4awKPex9zgZfEGMZQB4JoZ2abVxDm32J1
-         2WM6yf16JeqN5Z01g2HlgqNPwi4gsK8pQYEvsC2Bv1AvU65aNXGIWz4C0cUrWwPBShzz
-         QS8w==
-X-Gm-Message-State: AOAM532/fQUoSTuELNRZ1V7QFvScAv2bpYKMcBl/Kc7LU51FeNZe9PEX
-        HqK2r3tTuRp3WVYbfhcjWyqF8aUcwAtJaGM3KRcCNw==
-X-Google-Smtp-Source: ABdhPJxVIi7RVGo6x7Hy8l7XWUuFqhNVlzLeNz68scO2crocPe6nWcS/zly1uuYdwfygXW32Va+f0qPC9ZebvYE+VGo=
-X-Received: by 2002:a17:90b:350b:: with SMTP id ls11mr4351810pjb.166.1613163709768;
- Fri, 12 Feb 2021 13:01:49 -0800 (PST)
+        id S231989AbhBLVDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 16:03:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231289AbhBLVDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 16:03:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77F8864E05;
+        Fri, 12 Feb 2021 21:02:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613163742;
+        bh=W+5rNCA1AtqnGKfforyDrX1jEmPAq1AoeUYShAARidk=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=L8vv2t4t8eAuoCqn8NxiLKXPHOLn2qbZG/rTldBEck1qE3UJ9ZQgBMmDyAS+LCWPW
+         EzmQrYymjIjWzdM9L/7FXHZGGuj4mL3xtQEcEf8CqaYplO6L5RYs8XX06VCEcsrfdR
+         DnZefkSwJ3C/7GBHqDkPzplqR/1x05jRlJKJ6qT2qfEMeI8gZgeYtGj7iTUFb1gaWJ
+         0ewKJtGcnZgMY3nAWLZLIyhSM+nXjoN/Oz5tcLNPp2ONVxpr8E+MxgzJz7ExgeG7/5
+         lQhWIt1CShxke8FA18oo80Hy1k04ysgkM9gd+JOi/WRC9EeZrRZTWgw/1ZKPKae8Jz
+         RI+6N32IPbIKg==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <e7eeb252da408b08f0c81b950a55fb852f92000b.1613155970.git.andreyknvl@google.com>
- <20210212121610.ff05a7bb37f97caef97dc924@linux-foundation.org>
- <CAAeHK+z5pkZkuNbqbAOSN_j34UhohRPhnu=EW-_PtZ88hdNjpA@mail.gmail.com> <20210212125454.b660a3bf3e9945515f530066@linux-foundation.org>
-In-Reply-To: <20210212125454.b660a3bf3e9945515f530066@linux-foundation.org>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 12 Feb 2021 22:01:38 +0100
-Message-ID: <CAAeHK+w6znh95iHY496B15Smtoaun73yLYLCBr+FBu3J57knzQ@mail.gmail.com>
-Subject: Re: [PATCH mm] kasan: export HW_TAGS symbols for KUnit tests
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210212092016.GF4572@dell>
+References: <20210126124540.3320214-1-lee.jones@linaro.org> <161307643148.1254594.6590013599999468609@swboyd.mtv.corp.google.com> <20210211211054.GD4572@dell> <161309925025.1254594.6210738031889810500@swboyd.mtv.corp.google.com> <20210212092016.GF4572@dell>
+Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris BREZILLON <boris.brezillon@free-electrons.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Emilio =?utf-8?q?L=C3=B3pez?= <emilio@elopez.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jan Kotas <jank@cadence.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Loc Ho <lho@apm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Nuvoton Technologies <tali.perry@nuvoton.com>,
+        NXP Linux Team <linux-imx@nxp.com>, openbmc@lists.ozlabs.org,
+        Patrick Venture <venture@google.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+        Richard Woodruff <r-woodruff2@ti.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        =?utf-8?q?S=C3=B6ren?= Brinkmann <soren.brinkmann@xilinx.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Date:   Fri, 12 Feb 2021 13:02:21 -0800
+Message-ID: <161316374113.1254594.14156657225822268891@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 9:54 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Fri, 12 Feb 2021 21:21:39 +0100 Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> > > > The wrappers aren't defined when tests aren't enabled to avoid misuse.
-> > > > The mte_() functions aren't exported directly to avoid having low-level
-> > > > KASAN ifdefs in the arch code.
-> > > >
-> > >
-> > > Please confirm that this is applicable to current Linus mainline?
-> >
-> > It's not applicable. KUnit tests for HW_TAGS aren't supported there,
-> > the patches for that are in mm only. So no need to put it into 5.11.
->
-> So... which -mm patch does this patch fix?
+Quoting Lee Jones (2021-02-12 01:20:16)
+> On Thu, 11 Feb 2021, Stephen Boyd wrote:
+>=20
+> > Quoting Lee Jones (2021-02-11 13:10:54)
+> > > On Thu, 11 Feb 2021, Stephen Boyd wrote:
+> > >=20
+> > > > Quoting Lee Jones (2021-01-26 04:45:19)
+> > > > > This set is part of a larger effort attempting to clean-up W=3D1
+> > > > > kernel builds, which are currently overwhelmingly riddled with
+> > > > > niggly little warnings.
+> > > > >=20
+> > > > > This is the last set.  Clock is clean after this.
+> > > >=20
+> > > > Is it possible to slam in some patch that makes W=3D1 the default f=
+or the
+> > > > clk directory? I'm trying to avoid seeing this patch series again.
+> > >=20
+> > > One of my main goals of this project is that everyone (contributors,
+> > > maintainers auto-builder robots etc) will be enabling W=3D1 builds
+> > > *locally*.
+> > >=20
+> > > This isn't something you'll want to do at a global (i.e. in Mainline)
+> > > level.  That's kinda the point of W=3D1.
+> > >=20
+> >=20
+> > Agreed, but is it possible to pass W=3D1 in the drivers/clk/Makefile?
+>=20
+> That would circumvent the point of W=3D1.  Level-1 warnings are deemed,
+> and I'm paraphrasing/making this up "not worth rejecting pull-requests
+> over".  In contrast, if Linus catches any W=3D0 warnings at pull-time,
+> he will reject the pull-request as 'untested'.
+>=20
+> W=3D1 is defiantly something you'll want to enable locally though, and
+> subsequently push back on contributors submitting code adding new
+> ones.
+>=20
 
-"kasan, arm64: allow using KUnit tests with HW_TAGS mode".
-
-There will be some minor adjacent-line-changed conflicts if you decide
-to squash it.
-
-Alternatively, this can go as a separate patch after the tests series
-(after "kasan: don't run tests when KASAN is not enabled").
-
-Thanks!
+Why should I install a land mine for others to trip over? Won't that
+just take them more time because they won't know to compile with W=3D1 and
+then will have to go for another round of review while I push back on
+them submitting new warnings?
