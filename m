@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ADE31A85B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5523831A85E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhBLXa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 18:30:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232204AbhBLXaO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 18:30:14 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2B4C06178C
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 15:28:51 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id f20so887350ioo.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 15:28:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8w8XQdxn9R0vTUUYKwbH7//7X6JrjWFRUImHZ2qHCEA=;
-        b=MsK4Yp5tiWM/fulpatrxLLYBqeCGXaamHRMCb6oq63sXWcNUVVP2iuH/EpRTU/P71N
-         U5wVLxv4rRqyBLWYgo0h0gt5H8QyMeMDAyvdeKpgYBwlKGWxkRM7vtC8dzVJXzNqIv/F
-         go9UPLuCyA4cdM5ZZwhtXWdBYV1CGlDpw4UV8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8w8XQdxn9R0vTUUYKwbH7//7X6JrjWFRUImHZ2qHCEA=;
-        b=faivqcU6VQ76S9k7o1mmmFZ0zMuBjwP5y5POLgAxecdBUXxrcW14V4PRyNTFah6NLh
-         iC5EHBiCcNUW9G0BwTFQyecxB93EaZYMXFJThyPigP55qokrQ8+WdfYj4dvBUsTDXP8Y
-         yIWGunOCUiu/mt1Fj34o9HTP9y8fpSLycmVXupZLXe6UuifLB64KS354MJRMpMn+2poJ
-         pmS+FCXfOoyVdJcnWHza7oQCcKb6q6XSocN54zwA/ZZn/IqCxxOsMFjy0haQUga3cpMJ
-         yYlm5jcqMXPIMNdhO6YtkcudaqJuoq37IFMV83OZ4GfaB7W7NA0eMJg+eSjx30DEC6Cm
-         KTjw==
-X-Gm-Message-State: AOAM532U37BJH4NVlOmB15UWuKodnuR4IGKhvjmQZ0uSDTFJOFUaR6Ud
-        v6stBVKzfdAlX01vrb5GfeP7MQ==
-X-Google-Smtp-Source: ABdhPJyflu0RNWiIV3nbQa149G0hby7tBp9QoVfXWvAf6vhrbVm0ZDp9jsGcpqvP08a3LAahnffRrg==
-X-Received: by 2002:a05:6638:3c6:: with SMTP id r6mr4761929jaq.115.1613172530821;
-        Fri, 12 Feb 2021 15:28:50 -0800 (PST)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i20sm5180328ilc.2.2021.02.12.15.28.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 15:28:50 -0800 (PST)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ath10k: detect conf_mutex held ath10k_drain_tx() calls
-Date:   Fri, 12 Feb 2021 16:28:43 -0700
-Message-Id: <0686097db95ae32ce6805e5163798d912b394f37.1613171185.git.skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1613171185.git.skhan@linuxfoundation.org>
-References: <cover.1613171185.git.skhan@linuxfoundation.org>
+        id S231352AbhBLXhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 18:37:13 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:18838 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229497AbhBLXhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 18:37:11 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4DcqdS2Jp2z2d;
+        Sat, 13 Feb 2021 00:36:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1613172988; bh=1LIPV2cA41mWUhh9p8sX1mkd4boZDMkZYUfcvKjKciA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dqWjAImNL+CwZRFOURoGv1b76qCHUxxwGVLBEtzkHKNvzVDjcldzajoLDOSofVGtr
+         q9xMG7KBw5zL3eerdDnvmcbahqcqeAeeDzinN0Xsmq13nwHoFou4xxSSWkGWppkrQ4
+         iPF6ypjXlV02pEY1yzrjGa0FzAgUA6syuACcE35KRIIaaj8sZgwBZgtt6O2XIwtXmf
+         mZur81wnmmBfKrLMEyuF1UAUhm59rUhEZsV2bwdVot64WY6DR7VCZs2Jzqq03OB0Ju
+         vMjkxgfKSLTeq3AZS1iPVDSKFkbj1qCosCUwPM9YbD22NjmB8aAmdOCPGehU0yEoDT
+         ptqx+p6svNk2Q==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Sat, 13 Feb 2021 00:36:02 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Michal Rostecki <mrostecki@suse.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH RFC 4/6] btrfs: Check if the filesystem is has mixed type
+ of devices
+Message-ID: <20210212233602.GA30441@qmqm.qmqm.pl>
+References: <20210209203041.21493-1-mrostecki@suse.de>
+ <20210209203041.21493-5-mrostecki@suse.de>
+ <20210210040805.GB12086@qmqm.qmqm.pl>
+ <20210212182641.GB20817@wotan.suse.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210212182641.GB20817@wotan.suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ath10k_drain_tx() must not be called with conf_mutex held as workers can
-use that also. Add call to lockdep_assert_not_held() on conf_mutex to
-detect if conf_mutex is held by the caller.
+On Fri, Feb 12, 2021 at 06:26:41PM +0000, Michal Rostecki wrote:
+> On Wed, Feb 10, 2021 at 05:08:05AM +0100, Micha³ Miros³aw wrote:
+> > On Tue, Feb 09, 2021 at 09:30:38PM +0100, Michal Rostecki wrote:
+> > > From: Michal Rostecki <mrostecki@suse.com>
+> > > 
+> > > Add the btrfs_check_mixed() function which checks if the filesystem has
+> > > the mixed type of devices (non-rotational and rotational). This
+> > > information is going to be used in roundrobin raid1 read policy.a
+> > [...]
+> > > @@ -669,8 +699,12 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+> > >  	}
+> > >  
+> > >  	q = bdev_get_queue(bdev);
+> > > -	if (!blk_queue_nonrot(q))
+> > > +	rotating = !blk_queue_nonrot(q);
+> > > +	device->rotating = rotating;
+> > > +	if (rotating)
+> > >  		fs_devices->rotating = true;
+> > > +	if (!fs_devices->mixed)
+> > > +		fs_devices->mixed = btrfs_check_mixed(fs_devices, rotating);
+> > [...]
+> > 
+> > Since this is adding to a set, a faster way is:
+> > 
+> > if (fs_devices->rotating != rotating)
+> > 	fs_devices->mixed = true;
+> > 
+> > The scan might be necessary on device removal, though.
+> Actually, that's not going to work in case of appenging a rotational
+> device when all previous devices are non-rotational.
+[...]
+> Inverting the order of those `if` checks would break the other
+> permuitations which start with rotational disks.
 
-The idea for this patch stemmed from coming across the comment block
-above the ath10k_drain_tx() while reviewing the conf_mutex holds during
-to debug the conf_mutex lock assert in ath10k_debug_fw_stats_request().
+But not if you would add:
 
-Adding detection to assert on conf_mutex hold will help detect incorrect
-usages that could lead to locking problems when async worker routines try
-to call this routine.
+if (adding first device)
+	fs_devices->rotating = rotating;
 
-Link: https://lore.kernel.org/linux-wireless/871rdmu9z9.fsf@codeaurora.org/
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 2 ++
- 1 file changed, 2 insertions(+)
+before the checks.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c202b167d8c6..7de05b679ad2 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4728,6 +4728,8 @@ static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
- /* Must not be called with conf_mutex held as workers can use that also. */
- void ath10k_drain_tx(struct ath10k *ar)
- {
-+	lockdep_assert_not_held(&ar->conf_mutex);
-+
- 	/* make sure rcu-protected mac80211 tx path itself is drained */
- 	synchronize_net();
- 
--- 
-2.27.0
+But them, there is a simpler way: count how many rotating vs non-rotating
+devices there are while adding them. Like:
 
+rotating ? ++n_rotating : ++n_fixed;
+
+And then on remove you'd have it covered.
+
+Best Regards
+Micha³ Miros³aw
