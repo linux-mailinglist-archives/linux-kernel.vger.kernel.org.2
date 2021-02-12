@@ -2,237 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08496319778
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 01:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86485319783
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 01:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhBLAcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 19:32:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49480 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229873AbhBLAcH (ORCPT
+        id S230383AbhBLAfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 19:35:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230018AbhBLAez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 19:32:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613089840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=NLMPxtrDedh1aXRblNSj1Q9oYWpm+CQpAnETAilPvG4=;
-        b=YA32vMG35laHrDX9OT0RKVaPAgw6nI0ZobjLUDQrIz08U4JcnM/qqzgapNBrZCQQoTRQfJ
-        vIqU2X6PRso7NT/IkOvWoFNMbtroYX383iOnkFxBj6gVMFxcl2uf5bSFV6dIGh5UEC2uGV
-        AgzoeEpajNClBKKSnRLGd2Kmull5hHM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-WNSbCwQBNp6AkmMu3d7JDQ-1; Thu, 11 Feb 2021 19:30:38 -0500
-X-MC-Unique: WNSbCwQBNp6AkmMu3d7JDQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 435C1C280;
-        Fri, 12 Feb 2021 00:30:36 +0000 (UTC)
-Received: from rtux.redhat.com (unknown [10.33.36.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DE0B5C260;
-        Fri, 12 Feb 2021 00:30:33 +0000 (UTC)
-From:   Alexey Klimov <aklimov@redhat.com>
-To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc:     peterz@infradead.org, yury.norov@gmail.com,
-        daniel.m.jordan@oracle.com, tglx@linutronix.de, jobaker@redhat.com,
-        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        rafael@kernel.org, tj@kernel.org, qais.yousef@arm.com,
-        hannes@cmpxchg.org, klimov.linux@gmail.com
-Subject: [PATCH v2] cpu/hotplug: wait for cpuset_hotplug_work to finish on cpu onlining
-Date:   Fri, 12 Feb 2021 00:30:32 +0000
-Message-Id: <20210212003032.2037750-1-aklimov@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Thu, 11 Feb 2021 19:34:55 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CF4C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 16:34:14 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id v17so7907951ybq.9
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 16:34:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=mCXu5yp4jt72DPFHwJr3l/cPyL+1tdNvx3HP8ciMZWI=;
+        b=RshVkD31psjo3jq+kYicv60lao/jr62jKHN2nE2Km3dgWhxiOFwNwBGR3QLrHh57SW
+         woR27bU2e+0N1jGoWbr6rGWZqjU7zbNFtlhpWBZYEFQbiYFr9cwXpxuPD4ah2sdbwOpa
+         Hg0bAmmnqLLSSzgfyKCybkVkaD18EEJ7coY3Vu6jbMadehLOHoCuk4Wwo5NbwenkMk5Z
+         6FwlZnXstpupgjO3zONOzZeQJ0LTwaXvRSQZp5fEcyq+5wr2NPPQRSD1qtQqjdHRDX4I
+         zWdA5LN6UcRjhICwjkqnkVEwycpYvfk+6o6Lu8HMAMvcOrkq4xUY4gWeb84/Lja0XWXt
+         rzIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=mCXu5yp4jt72DPFHwJr3l/cPyL+1tdNvx3HP8ciMZWI=;
+        b=WvD0dPZgyfPq9kSjaozA4OhPCxstYXt57VlcFpqmEOqIr+Urz1oPjMMGdnjhmagurD
+         RzuwDxF6jAVpaqy/qxuv4eqMbkynzezvl6LAdg32OfLQpjGfIj/GoJC1C2CWkgj0TP9j
+         EiOC9XM8k47EaixD34TLDj9neGaVJRraawz6zilouMnYZhnqp+s9cbwTi3v6RSaQimPa
+         jyqfWWx/YbJdN14bK6NmmUh0wW2/Te4Ce7jdoFIljmElCf8i5ESQrkgI+ECDT0HJcX81
+         d1CFGsqMo1FJ3Hf7ooySDdsr2dhKgHUqq7OfSbfe79ew2dSTDC4xBIxqeWJpYXtSwUv5
+         3GYA==
+X-Gm-Message-State: AOAM532QRXC4uM/uFlbhWTOboF+zfa+PezqOE37lk3mHIaXA23ufkKgw
+        8egduKA+QEVrY5aOSoUXyKEQZhuRrzM=
+X-Google-Smtp-Source: ABdhPJy7Cv4THKPOAN1VWhlB1DO4+fYemdbGtP0zVuWGIArV8rDPD59/g6CUVkC1S257vurJ/1bme+JFcjo=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:f588:a708:f347:3ebb])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:706:: with SMTP id
+ k6mr757884ybt.52.1613090054147; Thu, 11 Feb 2021 16:34:14 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 11 Feb 2021 16:34:08 -0800
+Message-Id: <20210212003411.1102677-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH 0/3] KVM: x86: SVM INVPCID fix, and cleanups
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Babu Moger <babu.moger@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a CPU offlined and onlined via device_offline() and device_online()
-the userspace gets uevent notification. If, after receiving "online" uevent,
-userspace executes sched_setaffinity() on some task trying to move it
-to a recently onlined CPU, then it often fails with -EINVAL. Userspace needs
-to wait around 5..30 ms before sched_setaffinity() will succeed for recently
-onlined CPU after receiving uevent.
+Fix an INVPCID bug on SVM where it fails to injected a #UD when INVPCID is
+supported but not exposed to the guest.  Do a bit of cleanup in patch 02
+now that both VMX and SVM support PCID/INVPCID.
 
-If in_mask argument for sched_setaffinity() has only recently onlined CPU,
-it often fails with such flow:
+Patch 03 address KVM behavior that has long confused the heck out of me.
+KVM currently allows enabling INVPCID if and only if PCID is also enabled
+for the guest, the justification being that the guest will see incorrect
+fault behavior (#UD instead of #GP) due to the way the VMCS control works.
 
-  sched_setaffinity()
-    cpuset_cpus_allowed()
-      guarantee_online_cpus()   <-- cs->effective_cpus mask does not
-                                        contain recently onlined cpu
-    cpumask_and()               <-- final new_mask is empty
-    __set_cpus_allowed_ptr()
-      cpumask_any_and_distribute() <-- returns dest_cpu equal to nr_cpu_ids
-      returns -EINVAL
+But that makes no sense, because nothing is forcing KVM to disable INVCPID
+in the VMCS when PCID is disabled.  AFACIT, the myth was the result of a
+bug in the original _submission_, not even the original _commit_ was buggy.
 
-Cpusets used in guarantee_online_cpus() are updated using workqueue from
-cpuset_update_active_cpus() which in its turn is called from cpu hotplug callback
-sched_cpu_activate() hence it may not be observable by sched_setaffinity() if
-it is called immediately after uevent.
-Out of line uevent can be avoided if we will ensure that cpuset_hotplug_work
-has run to completion using cpuset_wait_for_hotplug() after onlining the
-cpu in cpu_device_up() and in cpuhp_smt_enable().
+Digging back, the very original submission had this code, where
+vmx_pcid_supported() was further conditioned on EPT being enabled.  This
+would lead to the buggy scenario of unexpected #UD, as a host with PCID
+and INVCPID would fail to enable INVPCID if EPT was disabled.
 
-Co-analyzed-by: Joshua Baker <jobaker@redhat.com>
-Signed-off-by: Alexey Klimov <aklimov@redhat.com>
----
+> > +	if (vmx_pcid_supported()) {
+> > +		exec_control = vmcs_read32(SECONDARY_VM_EXEC_CONTROL);
+> > +		if (exec_control & SECONDARY_EXEC_ENABLE_INVPCID) {
+> > +			best = kvm_find_cpuid_entry(vcpu, 0x1, 0);
+> > +			if (best && (best->ecx & bit(X86_FEATURE_PCID)))
+> > +				vmx->invpcid_enabled = true;
+> > +			else {
+> > +				exec_control &= ~SECONDARY_EXEC_ENABLE_INVPCID;
+> > +				vmcs_write32(SECONDARY_VM_EXEC_CONTROL,
+> > +						exec_control);
+> > +				best = kvm_find_cpuid_entry(vcpu, 0x7, 0);
+> > +				best->ecx &= ~bit(X86_FEATURE_INVPCID);
+> > +			}
+> > +		}
+> > +	}
 
-Previous patches and discussion are:
-RFC patch: https://lore.kernel.org/lkml/20201203171431.256675-1-aklimov@redhat.com/
-v1 patch:  https://lore.kernel.org/lkml/20210204010157.1823669-1-aklimov@redhat.com/
+The incorrect behavior is especially problematic now that SVM also
+supports INVCPID, as KVM allows !PCID && INVPCID on SVM but not on VMX.
 
-The commit a49e4629b5ed "cpuset: Make cpuset hotplug synchronous"
-would also get rid of the early uevent but it was reverted (deadlocks).
+Patches to fix kvm-unit-tests are also incoming...
 
-The nature of this bug is also described here (with different consequences):
-https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
+Sean Christopherson (3):
+  KVM: SVM: Intercept INVPCID when it's disabled to inject #UD
+  KVM: x86: Advertise INVPCID by default
+  KVM: VMX: Allow INVPCID in guest without PCID
 
-Reproducer: https://gitlab.com/0xeafffffe/xlam
+ arch/x86/kvm/cpuid.c   |  2 +-
+ arch/x86/kvm/svm/svm.c | 11 ++++-------
+ arch/x86/kvm/vmx/vmx.c | 14 ++------------
+ 3 files changed, 7 insertions(+), 20 deletions(-)
 
-Currently with such changes the reproducer code continues to work without issues.
-The idea is to avoid the situation when userspace receives the event about
-onlined CPU which is not ready to take tasks for a while after uevent.
-
- kernel/cpu.c | 79 +++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 56 insertions(+), 23 deletions(-)
-
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 4e11e91010e1..8817ccdc8e11 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -15,6 +15,7 @@
- #include <linux/sched/smt.h>
- #include <linux/unistd.h>
- #include <linux/cpu.h>
-+#include <linux/cpuset.h>
- #include <linux/oom.h>
- #include <linux/rcupdate.h>
- #include <linux/export.h>
-@@ -1294,7 +1295,17 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
-  */
- int cpu_device_up(struct device *dev)
- {
--	return cpu_up(dev->id, CPUHP_ONLINE);
-+	int err;
-+
-+	err = cpu_up(dev->id, CPUHP_ONLINE);
-+	/*
-+	 * Wait for cpuset updates to cpumasks to finish.  Later on this path
-+	 * may generate uevents whose consumers rely on the updates.
-+	 */
-+	if (!err)
-+		cpuset_wait_for_hotplug();
-+
-+	return err;
- }
- 
- int add_cpu(unsigned int cpu)
-@@ -2057,28 +2068,16 @@ void __cpuhp_remove_state(enum cpuhp_state state, bool invoke)
- EXPORT_SYMBOL(__cpuhp_remove_state);
- 
- #ifdef CONFIG_HOTPLUG_SMT
--static void cpuhp_offline_cpu_device(unsigned int cpu)
--{
--	struct device *dev = get_cpu_device(cpu);
--
--	dev->offline = true;
--	/* Tell user space about the state change */
--	kobject_uevent(&dev->kobj, KOBJ_OFFLINE);
--}
--
--static void cpuhp_online_cpu_device(unsigned int cpu)
--{
--	struct device *dev = get_cpu_device(cpu);
--
--	dev->offline = false;
--	/* Tell user space about the state change */
--	kobject_uevent(&dev->kobj, KOBJ_ONLINE);
--}
--
- int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
- {
--	int cpu, ret = 0;
-+	struct device *dev;
-+	cpumask_var_t mask;
-+	int cpu, ret;
-+
-+	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
-+		return -ENOMEM;
- 
-+	ret = 0;
- 	cpu_maps_update_begin();
- 	for_each_online_cpu(cpu) {
- 		if (topology_is_primary_thread(cpu))
-@@ -2099,18 +2098,35 @@ int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
- 		 * called under the sysfs hotplug lock, so it is properly
- 		 * serialized against the regular offline usage.
- 		 */
--		cpuhp_offline_cpu_device(cpu);
-+		dev = get_cpu_device(cpu);
-+		dev->offline = true;
-+
-+		cpumask_set_cpu(cpu, mask);
- 	}
- 	if (!ret)
- 		cpu_smt_control = ctrlval;
- 	cpu_maps_update_done();
-+
-+	/* Tell user space about the state changes */
-+	for_each_cpu(cpu, mask) {
-+		dev = get_cpu_device(cpu);
-+		kobject_uevent(&dev->kobj, KOBJ_OFFLINE);
-+	}
-+
-+	free_cpumask_var(mask);
- 	return ret;
- }
- 
- int cpuhp_smt_enable(void)
- {
--	int cpu, ret = 0;
-+	struct device *dev;
-+	cpumask_var_t mask;
-+	int cpu, ret;
-+
-+	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
-+		return -ENOMEM;
- 
-+	ret = 0;
- 	cpu_maps_update_begin();
- 	cpu_smt_control = CPU_SMT_ENABLED;
- 	for_each_present_cpu(cpu) {
-@@ -2121,9 +2137,26 @@ int cpuhp_smt_enable(void)
- 		if (ret)
- 			break;
- 		/* See comment in cpuhp_smt_disable() */
--		cpuhp_online_cpu_device(cpu);
-+		dev = get_cpu_device(cpu);
-+		dev->offline = false;
-+
-+		cpumask_set_cpu(cpu, mask);
- 	}
- 	cpu_maps_update_done();
-+
-+	/*
-+	 * Wait for cpuset updates to cpumasks to finish.  Later on this path
-+	 * may generate uevents whose consumers rely on the updates.
-+	 */
-+	cpuset_wait_for_hotplug();
-+
-+	/* Tell user space about the state changes */
-+	for_each_cpu(cpu, mask) {
-+		dev = get_cpu_device(cpu);
-+		kobject_uevent(&dev->kobj, KOBJ_ONLINE);
-+	}
-+
-+	free_cpumask_var(mask);
- 	return ret;
- }
- #endif
 -- 
-2.30.0
+2.30.0.478.g8a0d178c01-goog
 
