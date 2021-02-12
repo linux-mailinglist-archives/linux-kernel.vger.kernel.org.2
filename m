@@ -2,125 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5F031A513
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A2431A519
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbhBLTKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:10:08 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9944 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231756AbhBLTJn (ORCPT
+        id S230249AbhBLTLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:11:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231289AbhBLTLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:09:43 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6026d24b0000>; Fri, 12 Feb 2021 11:08:59 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Feb
- 2021 19:08:55 +0000
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.57) by
- HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Fri, 12 Feb 2021 19:08:55 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kpJYHJezCNwG5EKuGKh17MO5ALV+Ga79GnLs1fkmARiGKZP1f6TN8V5icYfZ+v0pO72uy4ykxpEwdsfwQkp0RgvhYGIVpql1NwLUvzg4TmeoJD7byU8vKt9wgkLlWi9zTYh6VRFnF9USekVAd+VxFF4z75dmTSom8yda/jqHZBntB1GhRG1eOY3iRaw2ZL812F8JiJqHjT1F7KTpk5Q8U2LmiX73x5TuESIbfcLE2XqdXeUCUQLBSffWfEKUpOxIkcJ0ZOg75ShGujagY1F8agorbZFhMWMvuJmA2eVj/0CANfNPtPugEhyhG9HBn/nYkQa/UNtpBtQZRQyo/cSpgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MXWVZMJ2ML1FpMAfUgjvBax3HnVKJanK1iPNIvf5ZJc=;
- b=kcged9XzneGWDFbPZreTKNHbKATpNRoVzWi1xwX6jnbdbpHJC1l1veHTcA4/prT3GVJF4deu7eXAjmRnS8sDDsYvvQp69PaINar0C0wly/yDwlZyhgio98GzWdRF0smqQQx65UNxY2THhXUODom0CUvWPZiCahTY6p72S7SYBSl/fuPR6THgm+d/fmEaY27qg+1XAP0UszRdLFzEodwb6fz6P0OLZRTNbIsQ6MD9ms5QSHA2sxgGAa5xJYvnw4SwA1BZ19rjjqCYwHsFPctxUBySeCmj4CqNXMg+ypg0JLts/Ib5ngTQB1ThemvZtltaHRKivDX9vFMNF4Oh3OBSjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4402.namprd12.prod.outlook.com (2603:10b6:5:2a5::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Fri, 12 Feb
- 2021 19:08:54 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.030; Fri, 12 Feb 2021
- 19:08:54 +0000
-Date:   Fri, 12 Feb 2021 15:08:51 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <pbonzini@redhat.com>,
-        <peterx@redhat.com>
-Subject: Re: [PATCH] vfio/type1: Use follow_pte()
-Message-ID: <20210212190851.GT4247@nvidia.com>
-References: <161315649533.7249.11715726297751446001.stgit@gimli.home>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <161315649533.7249.11715726297751446001.stgit@gimli.home>
-X-ClientProxiedBy: MN2PR01CA0035.prod.exchangelabs.com (2603:10b6:208:10c::48)
- To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+        Fri, 12 Feb 2021 14:11:48 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FFEC061574;
+        Fri, 12 Feb 2021 11:11:08 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id x9so353658plb.5;
+        Fri, 12 Feb 2021 11:11:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dUQPqGrqOjvv+mPHTG6J4xufRDhb/jwG8dfmae0QgUA=;
+        b=toh7dDdb0nclYftk7bpns5Fsk1Xg81Vo3sQTpUVnKXXdrY1jgRgMj9LYsN7+ssU+Wj
+         1MEf6A1x0Of/nqpi6xcBgNBxZMLfKtkFoZsyE1VsNveM6/2YjmqBUKtChvxdgw+s9UPH
+         tY9wPpmE2y/xYtV7xO+AK1uDuBV7UXbT7MTGRNwn7cI+S76+Jn8L4AwlnLmLc0x9YzSB
+         9Sf3F5HTmC0/+BCTsGH8+9Arkb3BO8jugZ58e/5yRg0bi9olri7c7IJNVWIahCpbmJWi
+         Mw/pSg4Sz3o8EdQg/cjmkn6BTBbu3x4+yqVVEjizE4/PwbPtaIfpu7cNeaxQUYotfxh0
+         znnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dUQPqGrqOjvv+mPHTG6J4xufRDhb/jwG8dfmae0QgUA=;
+        b=mIDds9HZEg7+bS0E8GyQJqIylvPx3sSl2aZhjt64SLnAte+ut4AdsNUR42ety21VQU
+         C1E1skRIDgfGZeIFRQICMOiwaVEntITfvCRNc+rMktF/ydDa4bG1FFrr31Fu+m7ryBMr
+         /IyCoPudeqYUpS1RnJmdpxEbzJm45yjkxuUsYVtPuCyeDFohCPqRR1piLTH5s48Y2aD+
+         u6lHUgIRxIsSY/kBneiLvfwUJukveCS9sSc74WlhO0i5Uzbd52F1eH8GsLfkNF9WyNlF
+         dlNR8+B7vj7+XO7Y1egYdKmaj5nJsQ18H1cavnxlK+Cgsm9eGtx0g2aiBMRy3CFTlv5h
+         mQDQ==
+X-Gm-Message-State: AOAM531OoiuA5V8UhcgVVHdRkS3+j0Kya4W1UcKFLeoVvvqOBpDIlZNJ
+        HvInIbyDx6FNmiLvB0QLWxrWv443hlQ=
+X-Google-Smtp-Source: ABdhPJzFJrubDP2iMk1Rg4vVAO4Pk2i8PW6t8ita0jcI9KziOc69D9GASt3DCwIgqERu6wx/KarI4A==
+X-Received: by 2002:a17:90a:657:: with SMTP id q23mr4082954pje.192.1613157068162;
+        Fri, 12 Feb 2021 11:11:08 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 21sm9453862pfh.56.2021.02.12.11.11.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 11:11:07 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     dave.stevenson@raspberrypi.com, maz@kernel.org, eric@anholt.net,
+        tzimmermann@suse.de, linux-rpi-kernel@lists.infradead.org,
+        hverkuil-cisco@xs4all.nl, nsaenzjulienne@suse.de,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        dri-devel@lists.freedesktop.org, maxime@cerno.tech,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] Revert "ARM: dts: bcm2711: Add the BSC interrupt controller"
+Date:   Fri, 12 Feb 2021 11:11:04 -0800
+Message-Id: <20210212191104.2365912-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR01CA0035.prod.exchangelabs.com (2603:10b6:208:10c::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Fri, 12 Feb 2021 19:08:53 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lAdoB-007WEG-V6; Fri, 12 Feb 2021 15:08:51 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613156939; bh=MXWVZMJ2ML1FpMAfUgjvBax3HnVKJanK1iPNIvf5ZJc=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=CXavsW0PjnQNeADlGVdeUoj8/Uto+drj/IUzRGMKLfW+D8MsDDE3S8Hl5SCkCnhs8
-         2gx9C9KmPuayyQckuk6piGc8jWARvOAvvuF43u5oqXm8YtgpYTmyOPwGSNsj8naaFF
-         nqyAPUSkPQ3QAgCqOS66XXG19QaTrykvGsbhyMRYXoUlOaSx/zKJZN1Zj7ZsaenfHB
-         dCXG60Bsur1VrPlN07ccOrZaII2GmQfAIQroUyx9Yvk5/QkDcVCLl0HLw/mvqxXf6l
-         oPsBB9XX+NiskSzHHFSnJIHXZbrLyaUz85ap6LccyBYwzT0xwl7Nug0LJk3g2Z3gMo
-         BZDOeuMt4KOdw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:01:50PM -0700, Alex Williamson wrote:
-> follow_pfn() doesn't make sure that we're using the correct page
-> protections, get the pte with follow_pte() so that we can test
-> protections and get the pfn from the pte.
-> 
-> Fixes: 5cbf3264bc71 ("vfio/type1: Fix VA->PA translation for PFNMAP VMAs in vaddr_get_pfn()")
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c |   14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index ec9fd95a138b..90715413c3d9 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -463,9 +463,11 @@ static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
->  			    unsigned long vaddr, unsigned long *pfn,
->  			    bool write_fault)
->  {
-> +	pte_t *ptep;
-> +	spinlock_t *ptl;
->  	int ret;
->  
-> -	ret = follow_pfn(vma, vaddr, pfn);
-> +	ret = follow_pte(vma->vm_mm, vaddr, NULL, &ptep, NULL, &ptl);
->  	if (ret) {
->  		bool unlocked = false;
->  
-> @@ -479,9 +481,17 @@ static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
->  		if (ret)
->  			return ret;
->  
-> -		ret = follow_pfn(vma, vaddr, pfn);
-> +		ret = follow_pte(vma->vm_mm, vaddr, NULL, &ptep, NULL, &ptl);
+As Dave reported:
 
-commit 9fd6dad1261a541b3f5fa7dc5b152222306e6702 in linux-next is what
-export's follow_pte and it uses a different signature:
+This seems to have unintended side effects.  GIC interrupt 117 is shared
+between the standard I2C controllers (i2c-bcm2835) and the l2-intc block
+handling the HDMI I2C interrupts.
 
-+int follow_pte(struct mm_struct *mm, unsigned long address,
-+              pte_t **ptepp, spinlock_t **ptlp)
+There is not a great way to share an interrupt between an interrupt
+controller using the chained IRQ handler which is an interrupt flow and
+another driver like i2c-bcm2835 which uses an interrupt handler
+(although it specifies IRQF_SHARED).
 
-Recommend you send this patch for rc1 once the right stuff lands in
-Linus's tree
+Simply revert this change for now which will mean that HDMI I2C will be
+polled, like it was before.
 
-Otherwise it looks OK
+Reported-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ arch/arm/boot/dts/bcm2711.dtsi | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
+index 462b1dfb0385..720beec54d61 100644
+--- a/arch/arm/boot/dts/bcm2711.dtsi
++++ b/arch/arm/boot/dts/bcm2711.dtsi
+@@ -308,14 +308,6 @@ dvp: clock@7ef00000 {
+ 			#reset-cells = <1>;
+ 		};
+ 
+-		bsc_intr: interrupt-controller@7ef00040 {
+-			compatible = "brcm,bcm2711-l2-intc", "brcm,l2-intc";
+-			reg = <0x7ef00040 0x30>;
+-			interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
+-			interrupt-controller;
+-			#interrupt-cells = <1>;
+-		};
+-
+ 		aon_intr: interrupt-controller@7ef00100 {
+ 			compatible = "brcm,bcm2711-l2-intc", "brcm,l2-intc";
+ 			reg = <0x7ef00100 0x30>;
+@@ -362,8 +354,6 @@ ddc0: i2c@7ef04500 {
+ 			reg = <0x7ef04500 0x100>, <0x7ef00b00 0x300>;
+ 			reg-names = "bsc", "auto-i2c";
+ 			clock-frequency = <97500>;
+-			interrupt-parent = <&bsc_intr>;
+-			interrupts = <0>;
+ 			status = "disabled";
+ 		};
+ 
+@@ -405,8 +395,6 @@ ddc1: i2c@7ef09500 {
+ 			reg = <0x7ef09500 0x100>, <0x7ef05b00 0x300>;
+ 			reg-names = "bsc", "auto-i2c";
+ 			clock-frequency = <97500>;
+-			interrupt-parent = <&bsc_intr>;
+-			interrupts = <1>;
+ 			status = "disabled";
+ 		};
+ 	};
+-- 
+2.25.1
 
-Jason
