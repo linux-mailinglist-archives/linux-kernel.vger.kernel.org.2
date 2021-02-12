@@ -2,164 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA61E31A48C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6324731A48F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbhBLS2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 13:28:41 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:47086 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhBLS2i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 13:28:38 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CA96E20B6C40;
-        Fri, 12 Feb 2021 10:27:56 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CA96E20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1613154477;
-        bh=cflwvEQVmR2Liv6dfdrVeSAaocg0bLd1F49bz3eKPjU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=clVeMuPjnkrNi1QWeejXFkDLfR59r4IhU4i4C1FxfsXzaIyYqoURk4pXCM1pEHuWh
-         iO+L3UR8oGXcIZtNqVSL65uV8wh+RgArEbCqaAynyzLx/5Qh/rzaUmBxRGyogYQ9RP
-         kkSU7JBuQzni0CLZHSBomQflDz5KmNF4TMYftQUo=
-Subject: Re: [PATCH v17 02/10] of: Add a common kexec FDT setup function
-To:     Rob Herring <robh@kernel.org>
-Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Morse <james.morse@arm.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        vincenzo.frascino@arm.com, Mark Rutland <mark.rutland@arm.com>,
-        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allison Randal <allison@lohutok.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, tao.li@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Prakhar Srivastava <prsriva@linux.microsoft.com>,
-        balajib@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-References: <20210209182200.30606-1-nramas@linux.microsoft.com>
- <20210209182200.30606-3-nramas@linux.microsoft.com>
- <87k0reozwh.fsf@manicouagan.localdomain>
- <8a3aa3d2-2eba-549a-9970-a2b0fe3586c9@linux.microsoft.com>
- <CAL_JsqJ3sDzjsJXtb6EzE77BL+PhUxDJYUngLTqcm0popd7Ajw@mail.gmail.com>
- <55685b61-dac0-2f24-f74a-939acf74a4f2@linux.microsoft.com>
- <CAL_JsqKDCgtJngxqMCRdC9evEQpHnryEaMvfgYEh0Mcto6dLHA@mail.gmail.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <11aff288-feaa-8e43-fcda-12bc12fbf4cf@linux.microsoft.com>
-Date:   Fri, 12 Feb 2021 10:27:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231636AbhBLS2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 13:28:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229782AbhBLS2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 13:28:49 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CFA064DEA;
+        Fri, 12 Feb 2021 18:28:08 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 18:28:09 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ye Xiang <xiang.ye@intel.com>
+Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] iio: Add relative sensitivity support
+Message-ID: <20210212182809.2cc90cfd@archlinux>
+In-Reply-To: <20210207070048.23935-2-xiang.ye@intel.com>
+References: <20210207070048.23935-1-xiang.ye@intel.com>
+        <20210207070048.23935-2-xiang.ye@intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKDCgtJngxqMCRdC9evEQpHnryEaMvfgYEh0Mcto6dLHA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/21 10:24 AM, Rob Herring wrote:
-> On Fri, Feb 12, 2021 at 11:19 AM Lakshmi Ramasubramanian
-> <nramas@linux.microsoft.com> wrote:
->>
->> On 2/12/21 6:38 AM, Rob Herring wrote:
->>> On Thu, Feb 11, 2021 at 7:17 PM Lakshmi Ramasubramanian
->>> <nramas@linux.microsoft.com> wrote:
->>>>
->>>> On 2/11/21 5:09 PM, Thiago Jung Bauermann wrote:
->>>>>
->>>>> There's actually a complication that I just noticed and needs to be
->>>>> addressed. More below.
->>>>>
->>>>
->>>> <...>
->>>>
->>>>>> +
->>>>>> +/*
->>>>>> + * of_kexec_alloc_and_setup_fdt - Alloc and setup a new Flattened Device Tree
->>>>>> + *
->>>>>> + * @image:          kexec image being loaded.
->>>>>> + * @initrd_load_addr:       Address where the next initrd will be loaded.
->>>>>> + * @initrd_len:             Size of the next initrd, or 0 if there will be none.
->>>>>> + * @cmdline:                Command line for the next kernel, or NULL if there will
->>>>>> + *                  be none.
->>>>>> + *
->>>>>> + * Return: fdt on success, or NULL errno on error.
->>>>>> + */
->>>>>> +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
->>>>>> +                               unsigned long initrd_load_addr,
->>>>>> +                               unsigned long initrd_len,
->>>>>> +                               const char *cmdline)
->>>>>> +{
->>>>>> +    void *fdt;
->>>>>> +    int ret, chosen_node;
->>>>>> +    const void *prop;
->>>>>> +    unsigned long fdt_size;
->>>>>> +
->>>>>> +    fdt_size = fdt_totalsize(initial_boot_params) +
->>>>>> +               (cmdline ? strlen(cmdline) : 0) +
->>>>>> +               FDT_EXTRA_SPACE;
->>>>>
->>>>> Just adding 4 KB to initial_boot_params won't be enough for crash
->>>>> kernels on ppc64. The current powerpc code doubles the size of
->>>>> initial_boot_params (which is normally larger than 4 KB) and even that
->>>>> isn't enough. A patch was added to powerpc/next today which uses a more
->>>>> precise (but arch-specific) formula:
->>>>>
->>>>> https://lore.kernel.org/linuxppc-dev/161243826811.119001.14083048209224609814.stgit@hbathini/
->>>>>
->>>>> So I believe we need a hook here where architectures can provide their
->>>>> own specific calculation for the size of the fdt. Perhaps a weakly
->>>>> defined function providing a default implementation which an
->>>>> arch-specific file can override (a la arch_kexec_kernel_image_load())?
->>>>>
->>>>> Then the powerpc specific hook would be the kexec_fdt_totalsize_ppc64()
->>>>> function from the patch I linked above.
->>>>>
->>>>
->>>> Do you think it'd better to add "fdt_size" parameter to
->>>> of_kexec_alloc_and_setup_fdt() so that the caller can provide the
->>>> desired FDT buffer size?
->>>
->>> Yes, I guess so. But please define the param as extra size, not total
->>> size. The kernel command line size addition can be in the common code.
->>
->> Will do. Just to clarify -
->>
->> The common code will do:
->>
->> fdt_totalsize(initial_boot_params) + strlen(cmdline) + extra_fdt_size
->>
->> The caller will pass "extra_fdt_size"
->> ARM64 => 4KB
->> PPC64 => fdt_totalsize(initial_boot_params) - which will be updated when
->> the patch Thiago had referred to is merged.
+On Sun,  7 Feb 2021 15:00:46 +0800
+Ye Xiang <xiang.ye@intel.com> wrote:
+
+> Some hid sensors may use relative sensitivity such as als sensor.
+> This patch adds relative sensitivity checking for all hid sensors.
 > 
-> Yes, I'd leave the 4KB in there by default and arm64 use 0.
+> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+Hi,
+
+One totally trivial extra line below.  I'll fix that whilst applying
+unless you need to respin for some reason.
+
+I'm fine with the series, but looking for an Ack from Jiri
+for the HID header changes.
+
+Unless we get a surprise on Sunday there is no chance I'll sneak
+this in for the coming merge window (or any of the things I've
+already gotten queued up in iio.git).  Good to get it lined up soon
+for next time so we can all forget about it :)
+
+Jonathan
+
+
+> ---
+>  .../hid-sensors/hid-sensor-attributes.c       | 74 ++++++++++++++++++-
+>  drivers/iio/industrialio-core.c               |  1 +
+>  include/linux/hid-sensor-hub.h                |  5 ++
+>  include/linux/hid-sensor-ids.h                |  1 +
+>  include/linux/iio/types.h                     |  1 +
+>  5 files changed, 78 insertions(+), 4 deletions(-)
 > 
+> diff --git a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+> index d349ace2e33f..cb52b4fd6bf7 100644
+> --- a/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+> +++ b/drivers/iio/common/hid-sensors/hid-sensor-attributes.c
+> @@ -263,6 +263,29 @@ int hid_sensor_read_raw_hyst_value(struct hid_sensor_common *st,
+>  }
+>  EXPORT_SYMBOL(hid_sensor_read_raw_hyst_value);
+>  
+> +int hid_sensor_read_raw_hyst_rel_value(struct hid_sensor_common *st, int *val1,
+> +				       int *val2)
+> +{
+> +	s32 value;
+> +	int ret;
+> +
+> +	ret = sensor_hub_get_feature(st->hsdev,
+> +				     st->sensitivity_rel.report_id,
+> +				     st->sensitivity_rel.index, sizeof(value),
+> +				     &value);
+> +	if (ret < 0 || value < 0) {
+> +		*val1 = *val2 = 0;
+> +		return -EINVAL;
+> +	}
+> +
+> +	convert_from_vtf_format(value, st->sensitivity_rel.size,
+> +				st->sensitivity_rel.unit_expo, val1, val2);
+> +
+> +	return IIO_VAL_INT_PLUS_MICRO;
+> +}
+> +EXPORT_SYMBOL(hid_sensor_read_raw_hyst_rel_value);
+> +
+> +
 
-Sounds good.
+One line only.
 
-common:
-fdt_totalsize(initial_boot_params) + strlen(cmdline) + 0x1000 + extra
 
-arm64 => 0 for extra
-ppc => fdt_totalsize(initial_boot_params) for extra.
-
-  -lakshmi
+>  int hid_sensor_write_raw_hyst_value(struct hid_sensor_common *st,
+>  					int val1, int val2)
+>  {
+> @@ -294,6 +317,37 @@ int hid_sensor_write_raw_hyst_value(struct hid_sensor_common *st,
+>  }
+>  EXPORT_SYMBOL(hid_sensor_write_raw_hyst_value);
+>  
+> +int hid_sensor_write_raw_hyst_rel_value(struct hid_sensor_common *st,
+> +					int val1, int val2)
+> +{
+> +	s32 value;
+> +	int ret;
+> +
+> +	if (val1 < 0 || val2 < 0)
+> +		return -EINVAL;
+> +
+> +	value = convert_to_vtf_format(st->sensitivity_rel.size,
+> +				st->sensitivity_rel.unit_expo,
+> +				val1, val2);
+> +	ret = sensor_hub_set_feature(st->hsdev, st->sensitivity_rel.report_id,
+> +				     st->sensitivity_rel.index, sizeof(value),
+> +				     &value);
+> +	if (ret < 0 || value < 0)
+> +		return -EINVAL;
+> +
+> +	ret = sensor_hub_get_feature(st->hsdev,
+> +				     st->sensitivity_rel.report_id,
+> +				     st->sensitivity_rel.index, sizeof(value),
+> +				     &value);
+> +	if (ret < 0 || value < 0)
+> +		return -EINVAL;
+> +
+> +	st->raw_hystersis = value;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(hid_sensor_write_raw_hyst_rel_value);
+> +
+>  /*
+>   * This fuction applies the unit exponent to the scale.
+>   * For example:
+> @@ -478,16 +532,28 @@ int hid_sensor_parse_common_attributes(struct hid_sensor_hub_device *hsdev,
+>  			HID_USAGE_SENSOR_PROP_SENSITIVITY_ABS,
+>  			 &st->sensitivity);
+>  
+> +	sensor_hub_input_get_attribute_info(hsdev,
+> +			HID_FEATURE_REPORT, usage_id,
+> +			HID_USAGE_SENSOR_PROP_SENSITIVITY_REL_PCT,
+> +			&st->sensitivity_rel);
+>  	/*
+>  	 * Set Sensitivity field ids, when there is no individual modifier, will
+> -	 * check absolute sensitivity of data field
+> +	 * check absolute sensitivity and relative sensitivity of data field
+>  	 */
+> -	for (i = 0; i < sensitivity_addresses_len && st->sensitivity.index < 0; i++) {
+> -		sensor_hub_input_get_attribute_info(hsdev,
+> -				HID_FEATURE_REPORT, usage_id,
+> +	for (i = 0; i < sensitivity_addresses_len; i++) {
+> +		if (st->sensitivity.index < 0)
+> +			sensor_hub_input_get_attribute_info(
+> +				hsdev, HID_FEATURE_REPORT, usage_id,
+>  				HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSITIVITY_ABS |
+>  					sensitivity_addresses[i],
+>  				&st->sensitivity);
+> +
+> +		if (st->sensitivity_rel.index < 0)
+> +			sensor_hub_input_get_attribute_info(
+> +				hsdev, HID_FEATURE_REPORT, usage_id,
+> +				HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSITIVITY_REL_PCT |
+> +					sensitivity_addresses[i],
+> +				&st->sensitivity_rel);
+>  	}
+>  
+>  	st->raw_hystersis = -1;
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 7db761afa578..3da8fcec3c16 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -157,6 +157,7 @@ static const char * const iio_chan_info_postfix[] = {
+>  	[IIO_CHAN_INFO_PHASE] = "phase",
+>  	[IIO_CHAN_INFO_HARDWAREGAIN] = "hardwaregain",
+>  	[IIO_CHAN_INFO_HYSTERESIS] = "hysteresis",
+> +	[IIO_CHAN_INFO_HYSTERESIS_RELATIVE] = "hysteresis_relative",
+>  	[IIO_CHAN_INFO_INT_TIME] = "integration_time",
+>  	[IIO_CHAN_INFO_ENABLE] = "en",
+>  	[IIO_CHAN_INFO_CALIBHEIGHT] = "calibheight",
+> diff --git a/include/linux/hid-sensor-hub.h b/include/linux/hid-sensor-hub.h
+> index 8b2599348554..5e7bc309172e 100644
+> --- a/include/linux/hid-sensor-hub.h
+> +++ b/include/linux/hid-sensor-hub.h
+> @@ -230,6 +230,7 @@ struct hid_sensor_common {
+>  	struct hid_sensor_hub_attribute_info report_state;
+>  	struct hid_sensor_hub_attribute_info power_state;
+>  	struct hid_sensor_hub_attribute_info sensitivity;
+> +	struct hid_sensor_hub_attribute_info sensitivity_rel;
+>  	struct hid_sensor_hub_attribute_info report_latency;
+>  	struct work_struct work;
+>  };
+> @@ -252,8 +253,12 @@ int hid_sensor_parse_common_attributes(struct hid_sensor_hub_device *hsdev,
+>  					u32 sensitivity_addresses_len);
+>  int hid_sensor_write_raw_hyst_value(struct hid_sensor_common *st,
+>  					int val1, int val2);
+> +int hid_sensor_write_raw_hyst_rel_value(struct hid_sensor_common *st, int val1,
+> +					int val2);
+>  int hid_sensor_read_raw_hyst_value(struct hid_sensor_common *st,
+>  					int *val1, int *val2);
+> +int hid_sensor_read_raw_hyst_rel_value(struct hid_sensor_common *st,
+> +				       int *val1, int *val2);
+>  int hid_sensor_write_samp_freq_value(struct hid_sensor_common *st,
+>  					int val1, int val2);
+>  int hid_sensor_read_samp_freq_value(struct hid_sensor_common *st,
+> diff --git a/include/linux/hid-sensor-ids.h b/include/linux/hid-sensor-ids.h
+> index 3bbdbccc5805..ac631159403a 100644
+> --- a/include/linux/hid-sensor-ids.h
+> +++ b/include/linux/hid-sensor-ids.h
+> @@ -149,6 +149,7 @@
+>  /* Per data field properties */
+>  #define HID_USAGE_SENSOR_DATA_MOD_NONE					0x00
+>  #define HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSITIVITY_ABS		0x1000
+> +#define HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSITIVITY_REL_PCT            0xE000
+>  
+>  /* Power state enumerations */
+>  #define HID_USAGE_SENSOR_PROP_POWER_STATE_UNDEFINED_ENUM	0x200850
+> diff --git a/include/linux/iio/types.h b/include/linux/iio/types.h
+> index 1e3ed6f55bca..5aa7f66d4345 100644
+> --- a/include/linux/iio/types.h
+> +++ b/include/linux/iio/types.h
+> @@ -50,6 +50,7 @@ enum iio_chan_info_enum {
+>  	IIO_CHAN_INFO_PHASE,
+>  	IIO_CHAN_INFO_HARDWAREGAIN,
+>  	IIO_CHAN_INFO_HYSTERESIS,
+> +	IIO_CHAN_INFO_HYSTERESIS_RELATIVE,
+>  	IIO_CHAN_INFO_INT_TIME,
+>  	IIO_CHAN_INFO_ENABLE,
+>  	IIO_CHAN_INFO_CALIBHEIGHT,
 
