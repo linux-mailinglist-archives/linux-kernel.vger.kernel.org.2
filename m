@@ -2,111 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3668331A621
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 212F231A624
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 21:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhBLUiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 15:38:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
+        id S230199AbhBLUkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 15:40:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231289AbhBLUiH (ORCPT
+        with ESMTP id S229648AbhBLUkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:38:07 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A7CC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:37:25 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id r2so441546plr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:37:25 -0800 (PST)
+        Fri, 12 Feb 2021 15:40:00 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AB6C061574;
+        Fri, 12 Feb 2021 12:39:20 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id g11so574138ljj.7;
+        Fri, 12 Feb 2021 12:39:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j66JtDHKSYYacXhJ57b4zqjxRlOZnEcxF+9VBlahFek=;
-        b=CqOjYfESwcESAZCqoaDy3zoo7YyZckVAYKVV/PK+2XaouNfrSmXWecHqTaiaHMe/a8
-         7p4eTSpcXiS1CtvHiwBduKYgH/R6g8rANcQSikbxLfDr6d4I6sDwqPSVFlV9IaOTEKyA
-         1rv3teKLA5/aYfs7Mw50AAJzwDrObXRdWE9YdmfmeQnTULAjALECsTjZ4L70ID/4wW4R
-         3wZEAGTMUQI69NmUcCbccTzzgKPcqIJQgZpfptixtWq2Q3g8JktG85JPUtYgoq8HMoJy
-         qNnIirq1PauaPrhJxjfDlERNnIs6A0EY6smhgYMQ4/xG8nU0e0gCJB5dmqy+63S4bgfo
-         nhsA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rQ1O8bncsueslh26Dm2w+TWZRzofaFWT1yqYHNMD4cE=;
+        b=L2YMJbAVwCKp9eh2IdDtFd8wqkCnGcewCJ/by/085tPkPIfjp4/qCWOj/dEy5EnRyJ
+         p7zkf9EY/OzEyxnE4g6qTK0ngpJzAqK3QNOxxyCYh+I7oG6v9ToTfZk2jhbAVtg0CC3l
+         RBCF6bpP42RAM/ePRz8xdBoSJgYlO2Q9S7GdWid2jsmkcJFNPtJNEyDfdHLyAO+glHEx
+         B2xULei10dLvKCEYNz7Hcv4pRW7ughpn7ccxrtw4j/7Hs24gK8whCcjSpllMgSmty5Rt
+         LydwUwBoIzeTevFPaN/GVgIQoBF9N8xZ6ZFgUXPGMtFMR4Ew8Awiw148LtXibJCGwxA9
+         MzYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j66JtDHKSYYacXhJ57b4zqjxRlOZnEcxF+9VBlahFek=;
-        b=slxoWPhSXJ9g1q8xd85jB8egXelK054lyMTYpkyQdzJQvbfRVHFclgi/6KrPuTbiSA
-         D4/IcsGKBHFDcfRg878UjnpqwoaLL1/ZNPTF1muMDdkAY7kRf1jx9IwXMSCiM3NWoCEf
-         BVytnDjtk8ddBCiDIpE7ua1i9jqdOcRlriDIVlmCFTAZ1Qg8Hs1QA2PxDI9q7LJTIiEd
-         vh6It9gmuUGgZt8NQyAKFEVRve1+NHbF/tEJEhfN2/L6jfShbWwbMZflJqdNoqIyOyNq
-         dcZB7YIIrakXGi0hIt7SZU/0JFGKuUPrBdD8yNeIOPadIOeE+GgLgJ0Puu7aLqZ4eiLY
-         Gp5g==
-X-Gm-Message-State: AOAM531kSddZkG4WYgSCqikIZfsLijFWlYCbCKgdYc1tGYaWYmswEl7g
-        xZMOojPKLQ6bYQiVOKSbj9Fhfw==
-X-Google-Smtp-Source: ABdhPJwLZ9yg71nYuePsjWZyRrKAJwDr8Q9E/d/VGQFF6oKWD6sl6WSIZkzoYAG8inLgTxOAvczCFA==
-X-Received: by 2002:a17:902:d886:b029:e1:7784:4db5 with SMTP id b6-20020a170902d886b02900e177844db5mr4407027plz.72.1613162245180;
-        Fri, 12 Feb 2021 12:37:25 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:b407:1780:13d2:b27])
-        by smtp.gmail.com with ESMTPSA id c15sm8572970pjc.46.2021.02.12.12.37.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 12:37:24 -0800 (PST)
-Date:   Fri, 12 Feb 2021 12:37:18 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
-Message-ID: <YCbm/umiGUS7UuVb@google.com>
-References: <cover.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <48a702f536ccf953eee5778023ed6d1a452f6dcf.1612563142.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CALCETrWPCTmoeFBEJvw98zwNpw316Xii_16COZAWoYNC=obF+w@mail.gmail.com>
- <YCbfyde9jl7ti0Oz@google.com>
- <8c23bbfd-e371-a7cf-7f77-ec744181547b@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rQ1O8bncsueslh26Dm2w+TWZRzofaFWT1yqYHNMD4cE=;
+        b=bHPNk+xIrIIvp43CxSqjgHCo8v5Pl8U9Nem+RmAzIfNn4H64xJvt8WTPlF4opB2YZ/
+         EZfE/XbNjC5A0n30ZiTap0dJW2R0YlIBLg7uwu0XOzuAbcurldsBPo38/zaJOeikIiah
+         KkrRbfYeJwDy7pU6lXMnzTaZr0YEQY41C+F+l6lGIFtmDICpHQFxo3W7b9NQyiVvbA/6
+         H/Gb5YJYgUOCoZ+bRJQD24cJtVOLsIAZZ9NdfrDS+c2AnbTOBl9XK3kq0xR0+OtZx/WD
+         2j+Tx/1pvLaUcjK6ziFlTeXywPP0O8MBfpcATBPUBZbGCYyQBNTysFqTHYlTu04BCUHU
+         t3CA==
+X-Gm-Message-State: AOAM533n0XGLA9vT6cpLQ58V2nZdy/MBDMgiHx3P5SIyuTxgsJAIUjxr
+        V+UzXSf6pYbf9Sql607pCiyd7W56/NwlH9sEuddYZHfFV/U=
+X-Google-Smtp-Source: ABdhPJy+6Y/9rSv1SocMi1oC8r7d5lBU0tCCa4M9Y3OOk9z1nF2vFLVCbWXkCyg2XpmVuYywmT33o7i5+xdBiutppPs=
+X-Received: by 2002:a05:651c:3cb:: with SMTP id f11mr2668505ljp.272.1613162358638;
+ Fri, 12 Feb 2021 12:39:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c23bbfd-e371-a7cf-7f77-ec744181547b@intel.com>
+References: <CAH2r5mtYEj+WLy+oPSXEwS5sZ8+TNk_dU3PVx3ieBz2DFS94Sg@mail.gmail.com>
+ <CAHk-=wja1Y8r5UKrmXcMFrS=VPkTPbkyK-vt8B9MBkEU4+-WLw@mail.gmail.com>
+In-Reply-To: <CAHk-=wja1Y8r5UKrmXcMFrS=VPkTPbkyK-vt8B9MBkEU4+-WLw@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Fri, 12 Feb 2021 14:39:05 -0600
+Message-ID: <CAH2r5mtj+-xGDy-YN0JwSJAsgvB+HpQFCBi-zdTNXTRBY_Mteg@mail.gmail.com>
+Subject: Re: [GIT PULL] cifs fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Stefan (metze) Metzmacher" <metze@samba.org>,
+        =?UTF-8?B?QmrDtnJuIEpBQ0tF?= <bjacke@samba.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021, Dave Hansen wrote:
-> On 2/12/21 12:06 PM, Sean Christopherson wrote:
-> >> What happens if the guest attempts to access a secure GPA that is not
-> >> ACCEPTed?  For example, suppose the VMM does THH.MEM.PAGE.REMOVE on a secure
-> >> address and the guest accesses it, via instruction fetch or data access.
-> >> What happens?
-> > Well, as currently written in the spec, it will generate an EPT violation and
-> > the host will have no choice but to kill the guest.
-> 
-> That's actually perfect behavior from my perspective.  Host does
-> something stupid.  Host gets left holding the pieces.  No enabling to do
-> in the guest.
-> 
-> This doesn't *preclude* the possibility that the VMM and guest could
-> establish a protocol to remove guest pages.  It just means that the host
-> can't go it alone and that if they guest and host get out of sync, the
-> guest dies.
-> 
-> In other words, I think I'm rooting for the docs, as written. :)
+Metze/Bjorn,
+Linus is right - samba.org is down for me (I also verified with JRA).
+Any ETA on when it gets back up?
 
-I tentatively agree that the host should not be able to remove pages without
-guest approval, but that's not the only use case for #VE on EPT violations.
-It's not even really an intended use case.
+On Fri, Feb 12, 2021 at 2:05 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Fri, Feb 12, 2021 at 10:16 AM Steve French <smfrench@gmail.com> wrote:
+> >
+> >   git://git.samba.org/sfrench/cifs-2.6.git tags/5.11-rc7-smb3
+>
+> It looks like git.samba.org is feeling very sick and is not answering.
+> Not git, not ping (but maybe icmp ping is blocked).
+>
+> Please give it a kick, or provide some other hosting mirror?
+>
+>            Linus
 
-There needs to be a mechanism for lazy/deferred/on-demand acceptance of pages.
-E.g. pre-accepting every page in a VM with hundreds of GB of memory will be
-ridiculously slow.
 
-#VE is the best option to do that:
 
-  - Relatively sane re-entrancy semantics.
-  - Hardware accelerated.
-  - Doesn't require stealing an IRQ from the guest.
+-- 
+Thanks,
+
+Steve
