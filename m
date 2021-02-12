@@ -2,64 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D053531A670
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5746D31A671
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhBLVBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 16:01:17 -0500
-Received: from mail-pf1-f181.google.com ([209.85.210.181]:35613 "EHLO
-        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbhBLU7K (ORCPT
+        id S231868AbhBLVBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 16:01:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhBLVAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:59:10 -0500
-Received: by mail-pf1-f181.google.com with SMTP id x136so273816pfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 12:58:55 -0800 (PST)
+        Fri, 12 Feb 2021 16:00:44 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD739C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:00:03 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id x14so979296qkm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:00:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7dfJau1Z2/Z0C+aryaDQsBuNGqh/xpuz6IGzQTXpFDE=;
+        b=ho4MgAkccq9A6xs2pboGPRayWLr3i1qFp20B9cvS0cs2FcJ2pX12SHB6BFfaJ7Mcnr
+         3bs50en/QfINHzxw+JBaURVEmpKQJzWWBlTnLwfSKcYhheuGaM9wQbUHI66qhMwoeT/W
+         Rc4fMnk4XtdMHQNZZSgUDy6mFMkKyjmcMGR5WYJvBO0044F0iXkJc1wnREySood9aLLy
+         aUZc6bhqES6O/zN+iCS5zXfSIfg1xAI1wNXbgHQ2D6dyBMV8X3d9D4kTujrzNa5SAS0l
+         CbNnvd7LnTc3hrSyS6nqLdkn+p/5EbKzoXr8AkKudTP1CTVbJez7nx5xyrlfxQJDoMfJ
+         1naA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OOP85J78eURVeajRWrWSkTfxx+e6ApRWxBqBF8ABPdM=;
-        b=jKbOze65g47PdPRRZSgoPtmCkInH6E27ghOXJnf5Ctyl3d/ifVH6e4QX6C3yi4gZqz
-         hcZSE7CVx+DHahBG7DigyqDwiUYbrvr6SoGIrCOU/3KMvloWp4dfE/0STe2F74VNvCLX
-         KJE2GouW39pTip2dk2Y09hT+hSou9RO+8uHlxpbyfESJ4n9+i+pwT/qt9xntG4OpU1UH
-         boBjD0ck4LBflKtqK7y1rmDcD1+IK91q/8aPptta9uiOpzfxGAxQ8Eh0cKDNiCR1c6k9
-         /9HjgmYn9+y1MkKm+ZtQxbHyTF/9l9LZpv+jVVLZQhpvT62f2DiLuCcF2hgOrGkrStkK
-         WX1g==
-X-Gm-Message-State: AOAM532Xv0oTMXx6xd5hwunqmlhKPH8LX8v9gk6zxPGfnoEr8Ib5ZgmK
-        x27+dtS2VT8h7780sk2PWMo=
-X-Google-Smtp-Source: ABdhPJy60UkNzLFCj6yFQkfBtOU88xBKIi0CchABJltdveTzvfTmlEU5zN4nhzO1XP9gPw1SGhrr7Q==
-X-Received: by 2002:aa7:93ad:0:b029:1d5:d9c5:cc08 with SMTP id x13-20020aa793ad0000b02901d5d9c5cc08mr4609553pff.37.1613163509931;
-        Fri, 12 Feb 2021 12:58:29 -0800 (PST)
-Received: from ?IPv6:2601:647:4802:9070:65a3:c687:b052:ed7b? ([2601:647:4802:9070:65a3:c687:b052:ed7b])
-        by smtp.gmail.com with ESMTPSA id w4sm9897356pfn.45.2021.02.12.12.58.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 12:58:29 -0800 (PST)
-Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
- it
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
-        Hannes Reinecke <hare@suse.de>
-References: <20210212181738.79274-1-dwagner@suse.de>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <c3a682d3-58f7-f5cc-caaa-75c36ca464e2@grimberg.me>
-Date:   Fri, 12 Feb 2021 12:58:27 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7dfJau1Z2/Z0C+aryaDQsBuNGqh/xpuz6IGzQTXpFDE=;
+        b=N65uLPrwgi/lsXqQAZYN/pp9UQUg6N7T0TVqbF+CLlYssjQZ/fP7X6pWrjz+1UOHOa
+         oXxZOE+vB/qG2GbAf0qB2sayjWF2YhwVy/lSMjrCC0ov70n5wKT8Nt/Zf7B5EVYYGXc1
+         1XiG2Mp6XDgOXRRKqf4Y2ihxoodq0GxDzNBx97wIWPIIEUcJCAqjrXAbHDqTCreFoAab
+         hEYptkVGssfZs6+T7KNKpEC1UiIjr5VvOaIhdniFduM3jCqSblI/RoXbZpDMl167O/91
+         oC3VEqDlCHhjzeaDMJt/xtsqQCZgpicGif3Qe42wMketQ8gWLkHETjeLGs9+xOoZKlsv
+         hbjQ==
+X-Gm-Message-State: AOAM533sIe6VJoo7X8lmAkBik673HH8n/ZsEbZCGVun9e5DTt448bLMB
+        kg94QCk2h7RaSHvTnGUj4EfI1oB4R82ourlXLwecEW5grhQ=
+X-Google-Smtp-Source: ABdhPJy6Z0W4TyuKig4+Ca8RyGe2t1thus2KTVLAwJ8xpq6uicWcz6au/b4OKzrdNujYwPgFz/7vK2/TPBawsLn+Ass=
+X-Received: by 2002:a37:83c3:: with SMTP id f186mr3910863qkd.185.1613163603085;
+ Fri, 12 Feb 2021 13:00:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210212181738.79274-1-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210202124838.30805-1-jbe@pengutronix.de>
+In-Reply-To: <20210202124838.30805-1-jbe@pengutronix.de>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Fri, 12 Feb 2021 21:59:52 +0100
+Message-ID: <CAFLxGvw=5uK0AHmMq5vqOWiBzS68TBd-vU3G9mpWeTXeO5B47A@mail.gmail.com>
+Subject: Re: [PATCH] fs: ubifs: set s_uuid in super block to support ima/evm
+ uuid options
+To:     Juergen Borleis <jbe@pengutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> blk_mq_tag_to_rq() will always return a request if the command_id is
-> in the valid range. Check if the request has been started. If we
-> blindly process the request we might double complete a request which
-> can be fatal.
+On Tue, Feb 2, 2021 at 1:55 PM Juergen Borleis <jbe@pengutronix.de> wrote:
+>
+> From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+>
+> This is required to provide uuid based integrity functionality for:
+> ima_policy (fsuuid option) and the 'evmctl' command ('--uuid' option).
+>
+> Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Acked-by: Juergen Borleis <jbe@pengutronix.de>
 
-How did you get to this one? did the controller send a completion for
-a completed/bogus request?
+I took this patch, thanks a lot for this but I have changed the sob-chain to:
+
+    Co-developed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+    Co-developed-by: Juergen Borleis <jbe@pengutronix.de>
+    Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+
+Namely, "patch was created by Steffen Trumtrar, Oleksij Rempel and
+Juergen Borleis.
+Steffen Trumtrar committed it and Juergen Borleis later sent it to the
+mailing list".
+
+Is this right?
+
+-- 
+Thanks,
+//richard
