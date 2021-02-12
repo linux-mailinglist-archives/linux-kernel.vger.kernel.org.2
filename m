@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DB9319EF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95303319F08
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhBLMoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:44:37 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45424 "EHLO
+        id S231681AbhBLMqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:46:08 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:45848 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbhBLMh5 (ORCPT
+        with ESMTP id S231497AbhBLMia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:37:57 -0500
-Date:   Fri, 12 Feb 2021 12:37:12 -0000
+        Fri, 12 Feb 2021 07:38:30 -0500
+Date:   Fri, 12 Feb 2021 12:37:13 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613133433;
+        s=2020; t=1613133434;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4QzyzH+i7zE/+4wPDVeCfxHXTTVoBPn9oomOjvTeLMw=;
-        b=bQvy3ECGLP8UIKJhVmbp0EMV0xIcPDYVxJ7G5eHR7ANSvQLFS1KOImqGVG1H+THQvp3qGB
-        GnzTfoFbDP3tKjbc8QcwfSxC3akffKo/fKXHLN4w7DtROyeeysPzJGHj+JngilvVcPLxoP
-        puKdK78gKPpC21m3Hp6SFayQ/ZncnKByaMpfZQQueQsq/tE/a7+A0P3ZVnsSpSiE60nlX4
-        yHcJ46WmIVz9znBzyyzUcVoVQ4DsxkcqmZTdygJQ2+iVDHRaI/+ULsyM7s5W0w9/Sc4HpD
-        CkWGS1FZsa7IHvECLKvbipIPhnLtVn6kcsUwxeWBlvUIY1v4hQ7fzeJfHZhmMg==
+        bh=/VxtpuwnvaNTvJkVnn5Ma6UNy9In9RdZgzgwgnX5gz4=;
+        b=iHDvFYXaklVCbWxxfm/fr6YNWsOIAvZ7HGhVZ6MVYDuR2YtvTpa9KB2rPVyDN4xxm9qLw7
+        w+Tu0MTRbFeAogjpISxJYaNKwh65jPwaqBC7yqKbvkagXfPYV6RQmsLDw66nOziS5KW6bJ
+        e5hpI7QhJSEwCLELuZ+V468oG9XcAX+mxHOWXtZ/xzt91macgKJFGiiGNNU1eHPGu1RAyW
+        mO6IZplTXnZnJ9hCPLd9TCPF/Qu3MytAJ1vHgJyHlwtOS4MjHDZDc9bkRjA6d2AlR7Tyn2
+        RNy15w68+y7ezvAM/eAl8fULoHdQfJmlHpAUzlBMc+TdkNkBw2hAQ7oU+Za2Ow==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613133433;
+        s=2020e; t=1613133434;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4QzyzH+i7zE/+4wPDVeCfxHXTTVoBPn9oomOjvTeLMw=;
-        b=QKYc1aVSzVjQ3eRhuM52PnBZFy6CfMlT9NH0gX8vhTGX/lFvKOJ8bAp9Hct2+sr/Hwiumt
-        +Yq32Lw4oe+8ULAQ==
+        bh=/VxtpuwnvaNTvJkVnn5Ma6UNy9In9RdZgzgwgnX5gz4=;
+        b=VVP6dqhG6qkOYLhcuhSYRrdMbXUGdTOZXz4NM3mBXY3TcDpt+IW2daiuRXmeGodUfRyQ+Q
+        LGv6E6rqAAPETKAQ==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Make torture.sh allmodconfig retain and label output
+Subject: [tip: core/rcu] torture: Make torture.sh rcuscale and refscale deal
+ with allmodconfig
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161313343277.23325.10840428776952693857.tip-bot2@tip-bot2>
+Message-ID: <161313343353.23325.11008300364151660207.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,41 +52,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     1fe9cef42b6cf6491a2982f68fc495c92389ba7b
-Gitweb:        https://git.kernel.org/tip/1fe9cef42b6cf6491a2982f68fc495c92389ba7b
+Commit-ID:     7a99487c76aad613b7533e3ea1b8d3eaf30ca37e
+Gitweb:        https://git.kernel.org/tip/7a99487c76aad613b7533e3ea1b8d3eaf30ca37e
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Wed, 25 Nov 2020 16:37:14 -08:00
+AuthorDate:    Tue, 24 Nov 2020 18:57:47 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Wed, 06 Jan 2021 17:03:43 -08:00
+CommitterDate: Wed, 06 Jan 2021 17:03:42 -08:00
 
-torture: Make torture.sh allmodconfig retain and label output
+torture: Make torture.sh rcuscale and refscale deal with allmodconfig
 
-This commit places "---" markers in the torture.sh script's allmodconfig
-output, and uses "<<" to avoid overwriting earlier output from this
-build test.
+The .mod.c files created by allmodconfig builds interfers with the approach
+torture.sh uses to enumerate types of rcuscale and refscale runs.  This
+commit therefore tightens the pattern matching to avoid this interference.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh |  9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index a01079e..e2c97f9 100755
+index 8e66797..a89b521 100755
 --- a/tools/testing/selftests/rcutorture/bin/torture.sh
 +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -238,9 +238,12 @@ then
- 	echo " --- allmodconfig:" Start `date` | tee -a $T/log
- 	amcdir="tools/testing/selftests/rcutorture/res/$ds/allmodconfig"
- 	mkdir -p "$amcdir"
--	make -j$MAKE_ALLOTED_CPUS clean > "$amcdir/Make.out" 2>&1
--	make -j$MAKE_ALLOTED_CPUS allmodconfig > "$amcdir/Make.out" 2>&1
--	make -j$MAKE_ALLOTED_CPUS > "$amcdir/Make.out" 2>&1
-+	echo " --- make clean" > "$amcdir/Make.out" 2>&1
-+	make -j$MAKE_ALLOTED_CPUS clean >> "$amcdir/Make.out" 2>&1
-+	echo " --- make allmodconfig" >> "$amcdir/Make.out" 2>&1
-+	make -j$MAKE_ALLOTED_CPUS allmodconfig >> "$amcdir/Make.out" 2>&1
-+	echo " --- make " >> "$amcdir/Make.out" 2>&1
-+	make -j$MAKE_ALLOTED_CPUS >> "$amcdir/Make.out" 2>&1
- 	retcode="$?"
- 	echo $retcode > "$amcdir/Make.exitcode"
- 	if test "$retcode" == 0
+@@ -302,7 +302,7 @@ fi
+ 
+ if test "$do_refscale" = yes
+ then
+-	primlist="`grep '\.name[ 	]*=' kernel/rcu/refscale*.c | sed -e 's/^[^"]*"//' -e 's/".*$//'`"
++	primlist="`grep '\.name[ 	]*=' kernel/rcu/refscale.c | sed -e 's/^[^"]*"//' -e 's/".*$//'`"
+ else
+ 	primlist=
+ fi
+@@ -314,7 +314,7 @@ done
+ 
+ if test "$do_rcuscale" = yes
+ then
+-	primlist="`grep '\.name[ 	]*=' kernel/rcu/rcuscale*.c | sed -e 's/^[^"]*"//' -e 's/".*$//'`"
++	primlist="`grep '\.name[ 	]*=' kernel/rcu/rcuscale.c | sed -e 's/^[^"]*"//' -e 's/".*$//'`"
+ else
+ 	primlist=
+ fi
