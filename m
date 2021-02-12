@@ -2,208 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D2C31A870
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5722131A875
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhBLXtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 18:49:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52086 "EHLO mail.kernel.org"
+        id S231956AbhBLXuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 18:50:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhBLXtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 18:49:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19CD864E2A;
-        Fri, 12 Feb 2021 23:48:30 +0000 (UTC)
+        id S231759AbhBLXtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 18:49:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF99F64DCF;
+        Fri, 12 Feb 2021 23:48:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613173711;
-        bh=OAq5dOrNvnWKNrhHL3ue9iqqdD8L+U4dRz2dwfyWJBg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YgGj2Ukcpv+DQ5OUqWhyIXB3w3IZsYUlytYZK2OuTayblpjWl3Mvd01gEKaeVD+gh
-         7fzFmh4fFEiYXc0IsWavyYuFV3QQYUh1oqSVyAiSmKSsUnbbdPi7hT62Tb2YG+Klvf
-         8nytsi+6mUd2r11TJminF7fFwYSSD/93G80BIFBiUxYKrC/ioLZi1aOGUnganpEy+w
-         taqQENDxD82CKC2Sp70TDO+gXbvUDb/3ieo3q45kRsmnk0OviPmKNJdBPIQ1tbxe23
-         +SqVmLrTvZlsPfh3YNLOGtm30HuSl95m9iKkz0wtWBKJyEiYnPwgd2Or9P1OFRZeyi
-         FJDzbA1ctIu4w==
-Date:   Sat, 13 Feb 2021 01:48:22 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Nayna Jain <nayna@linux.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] ima: enable loading of build time generated key to
- .ima keyring
-Message-ID: <YCcTxu1r5ABPMLOR@kernel.org>
-References: <20210211195435.135582-1-nayna@linux.ibm.com>
- <20210211195435.135582-6-nayna@linux.ibm.com>
+        s=k20201202; t=1613173731;
+        bh=LkICKmIiDChJQFRPY8bMTeEW0irTbDse7v0NyWyqZeo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SPyKoDwf/MdYvXNSbsD/WbrVOOBvkzzLSOzIL/rKAuCOdP9wuXGL3R05bdTq2otKW
+         uBdGtRfPeNa2CO1Sd2q54qHNdOpppKmPNThiM+XFZWNX12iLgfIoBxfT5vU1YWHGOy
+         pxYK4xSjuDWwQCzPv4qaKTFjy/VtE4lbyd7cYXnxAnnDNxaRhbSh6L3ImaZe8rzpTB
+         s6igB0bOkYgyYkc9Dn06Wj3Oc6g/FfD5OXRu8H/0qPDvJ9rG+llesTTYirD3hvTHG5
+         9bBZcoogTnkDpycaL09tupAHryIbe3mRH8A4gc81ISdqFbEzTY+JWB4iVK5MkrCj7Q
+         X/8CwvLF7AyDw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A238C352393D; Fri, 12 Feb 2021 15:48:51 -0800 (PST)
+Date:   Fri, 12 Feb 2021 15:48:51 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
+Message-ID: <20210212234851.GP2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201209202732.5896-1-urezki@gmail.com>
+ <20201209202732.5896-2-urezki@gmail.com>
+ <20210212192059.wytqwdf4qm4rnq3d@linutronix.de>
+ <20210212211207.GA2046@pc638.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210211195435.135582-6-nayna@linux.ibm.com>
+In-Reply-To: <20210212211207.GA2046@pc638.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 02:54:35PM -0500, Nayna Jain wrote:
-> The kernel currently only loads the kernel module signing key onto
-> the builtin trusted keyring. To support IMA, load the module signing
-> key selectively either onto builtin or ima keyring based on MODULE_SIG
-                                         ~~~
-                                         IMA
+On Fri, Feb 12, 2021 at 10:12:07PM +0100, Uladzislau Rezki wrote:
+> On Fri, Feb 12, 2021 at 08:20:59PM +0100, Sebastian Andrzej Siewior wrote:
+> > On 2020-12-09 21:27:32 [+0100], Uladzislau Rezki (Sony) wrote:
+> > > Add self tests for checking of RCU-tasks API functionality.
+> > > It covers:
+> > >     - wait API functions;
+> > >     - invoking/completion call_rcu_tasks*().
+> > > 
+> > > Self-tests are run when CONFIG_PROVE_RCU kernel parameter is set.
+> > 
+> > I just bisected to this commit. By booting with `threadirqs' I end up
+> > with:
+> > [    0.176533] Running RCU-tasks wait API self tests
+> > 
+> > No stall warning or so.
+> > It boots again with:
+> > 
+> > diff --git a/init/main.c b/init/main.c
+> > --- a/init/main.c
+> > +++ b/init/main.c
+> > @@ -1489,6 +1489,7 @@ void __init console_on_rootfs(void)
+> >  	fput(file);
+> >  }
+> >  
+> > +void rcu_tasks_initiate_self_tests(void);
+> >  static noinline void __init kernel_init_freeable(void)
+> >  {
+> >  	/*
+> > @@ -1514,6 +1515,7 @@ static noinline void __init kernel_init_freeable(void)
+> >  
+> >  	rcu_init_tasks_generic();
+> >  	do_pre_smp_initcalls();
+> > +	rcu_tasks_initiate_self_tests();
+> >  	lockup_detector_init();
+> >  
+> >  	smp_init();
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -1266,7 +1266,7 @@ static void test_rcu_tasks_callback(struct rcu_head *rhp)
+> >  	rttd->notrun = true;
+> >  }
+> >  
+> > -static void rcu_tasks_initiate_self_tests(void)
+> > +void rcu_tasks_initiate_self_tests(void)
+> >  {
+> >  	pr_info("Running RCU-tasks wait API self tests\n");
+> >  #ifdef CONFIG_TASKS_RCU
+> > @@ -1322,7 +1322,6 @@ void __init rcu_init_tasks_generic(void)
+> >  #endif
+> >  
+> >  	// Run the self-tests.
+> > -	rcu_tasks_initiate_self_tests();
+> >  }
+> >  
+> >  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+> > 
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
+Apologies for the hassle!  My testing clearly missed this combination
+of CONFIG_PROVE_RCU=y and threadirqs=1.  :-(
 
-> or MODULE_APPRAISE_MODSIG config respectively; and loads the CA kernel
-> key onto builtin trusted keyring.
+But at least I can easily reproduce this hang as follows:
+
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --bootargs "threadirqs=1" --trust-make
+
+Sadly, I cannot take your patch because that simply papers over the
+fact that early boot use of synchronize_rcu_tasks() is broken in this
+particular configuration, which will likely eventually bite others now
+that init_kprobes() has been moved earlier in boot:
+
+1b04fa990026 ("rcu-tasks: Move RCU-tasks initialization to before early_initcall()")
+Link: https://lore.kernel.org/rcu/87eekfh80a.fsf@dja-thinkpad.axtens.net/
+Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
+
+> > Sebastian
+> >
+> We should be able to use call_rcu_tasks() in the *initcall() callbacks.
+> The problem is that, ksoftirqd threads are not spawned by the time when
+> an rcu_init_tasks_generic() is invoked:
 > 
-> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
-
-/Jarkko
-
-> ---
->  certs/system_keyring.c        | 56 +++++++++++++++++++++++++++--------
->  include/keys/system_keyring.h |  9 +++++-
->  security/integrity/digsig.c   |  4 +++
->  3 files changed, 55 insertions(+), 14 deletions(-)
-> 
-> diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-> index 798291177186..0bbbe501f8a7 100644
-> --- a/certs/system_keyring.c
-> +++ b/certs/system_keyring.c
-> @@ -26,6 +26,7 @@ static struct key *platform_trusted_keys;
+> diff --git a/init/main.c b/init/main.c
+> index c68d784376ca..e6106bb12b2d 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -954,7 +954,6 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
+>  	rcu_init_nohz();
+>  	init_timers();
+>  	hrtimers_init();
+> -	softirq_init();
+>  	timekeeping_init();
 >  
->  extern __initconst const u8 system_certificate_list[];
->  extern __initconst const unsigned long system_certificate_list_size;
-> +extern __initconst const unsigned long module_cert_size;
+>  	/*
+> @@ -1512,6 +1511,7 @@ static noinline void __init kernel_init_freeable(void)
 >  
->  /**
->   * restrict_link_to_builtin_trusted - Restrict keyring addition by built in CA
-> @@ -131,19 +132,12 @@ static __init int system_trusted_keyring_init(void)
->   */
->  device_initcall(system_trusted_keyring_init);
+>  	init_mm_internals();
 >  
-> -/*
-> - * Load the compiled-in list of X.509 certificates.
-> - */
-> -static __init int load_system_certificate_list(void)
-> +static __init int load_cert(const u8 *p, const u8 *end, struct key *keyring,
-> +			    unsigned long flags)
->  {
->  	key_ref_t key;
-> -	const u8 *p, *end;
->  	size_t plen;
->  
-> -	pr_notice("Loading compiled-in X.509 certificates\n");
-> -
-> -	p = system_certificate_list;
-> -	end = p + system_certificate_list_size;
->  	while (p < end) {
->  		/* Each cert begins with an ASN.1 SEQUENCE tag and must be more
->  		 * than 256 bytes in size.
-> @@ -158,16 +152,15 @@ static __init int load_system_certificate_list(void)
->  		if (plen > end - p)
->  			goto dodgy_cert;
->  
-> -		key = key_create_or_update(make_key_ref(builtin_trusted_keys, 1),
-> +		key = key_create_or_update(make_key_ref(keyring, 1),
->  					   "asymmetric",
->  					   NULL,
->  					   p,
->  					   plen,
->  					   ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
->  					   KEY_USR_VIEW | KEY_USR_READ),
-> -					   KEY_ALLOC_NOT_IN_QUOTA |
-> -					   KEY_ALLOC_BUILT_IN |
-> -					   KEY_ALLOC_BYPASS_RESTRICTION);
-> +					   flags);
-> +
->  		if (IS_ERR(key)) {
->  			pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
->  			       PTR_ERR(key));
-> @@ -185,6 +178,43 @@ static __init int load_system_certificate_list(void)
->  	pr_err("Problem parsing in-kernel X.509 certificate list\n");
->  	return 0;
->  }
-> +
-> +__init int load_module_cert(struct key *keyring, unsigned long flags)
-> +{
-> +	const u8 *p, *end;
-> +
-> +	if (!IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG))
-> +		return 0;
-> +
-> +	pr_notice("Loading compiled-in module X.509 certificates\n");
-> +
-> +	p = system_certificate_list;
-> +	end = p + module_cert_size;
-> +	load_cert(p, end, keyring, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Load the compiled-in list of X.509 certificates.
-> + */
-> +static __init int load_system_certificate_list(void)
-> +{
-> +	const u8 *p, *end;
-> +
-> +	pr_notice("Loading compiled-in X.509 certificates\n");
-> +
-> +#ifdef CONFIG_MODULE_SIG
-> +	p = system_certificate_list;
-> +#else
-> +	p = system_certificate_list + module_cert_size;
-> +#endif
-> +	end = p + system_certificate_list_size;
-> +	load_cert(p, end, builtin_trusted_keys, KEY_ALLOC_NOT_IN_QUOTA |
-> +						KEY_ALLOC_BUILT_IN |
-> +						KEY_ALLOC_BYPASS_RESTRICTION);
-> +	return 0;
-> +}
->  late_initcall(load_system_certificate_list);
->  
->  #ifdef CONFIG_SYSTEM_DATA_VERIFICATION
-> diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
-> index fb8b07daa9d1..e91c03376599 100644
-> --- a/include/keys/system_keyring.h
-> +++ b/include/keys/system_keyring.h
-> @@ -16,9 +16,16 @@ extern int restrict_link_by_builtin_trusted(struct key *keyring,
->  					    const struct key_type *type,
->  					    const union key_payload *payload,
->  					    struct key *restriction_key);
-> -
-> +extern __init int load_module_cert(struct key *keyring, unsigned long flags);
->  #else
->  #define restrict_link_by_builtin_trusted restrict_link_reject
-> +
-> +static inline __init int load_module_cert(struct key *keyring,
-> +					  unsigned long flags)
-> +{
-> +	return 0;
-> +}
-> +
->  #endif
->  
->  #ifdef CONFIG_SECONDARY_TRUSTED_KEYRING
-> diff --git a/security/integrity/digsig.c b/security/integrity/digsig.c
-> index 0f518dcfde05..4009d1e33fe0 100644
-> --- a/security/integrity/digsig.c
-> +++ b/security/integrity/digsig.c
-> @@ -111,8 +111,12 @@ static int __init __integrity_init_keyring(const unsigned int id,
->  	} else {
->  		if (id == INTEGRITY_KEYRING_PLATFORM)
->  			set_platform_trusted_keys(keyring[id]);
-> +		if (id == INTEGRITY_KEYRING_IMA)
-> +			load_module_cert(keyring[id], KEY_ALLOC_NOT_IN_QUOTA);
+> +	softirq_init();
+>  	rcu_init_tasks_generic();
+>  	do_pre_smp_initcalls();
+>  	lockup_detector_init();
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index 9d71046ea247..cafa55c496d0 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -630,6 +630,7 @@ void __init softirq_init(void)
+>  			&per_cpu(tasklet_hi_vec, cpu).head;
 >  	}
 >  
-> +	pr_info("Loading key to ima keyring\n");
-> +
->  	return err;
+> +	spawn_ksoftirqd();
+
+We need a forward reference to allow this to build, but with that added,
+my test case passes.  Good show!
+
+>  	open_softirq(TASKLET_SOFTIRQ, tasklet_action);
+>  	open_softirq(HI_SOFTIRQ, tasklet_hi_action);
 >  }
+> @@ -732,7 +733,6 @@ static __init int spawn_ksoftirqd(void)
 >  
-> -- 
-> 2.18.1
+>  	return 0;
+>  }
+> -early_initcall(spawn_ksoftirqd);
+>  
+>  /*
+>   * [ These __weak aliases are kept in a separate compilation unit, so that
 > 
-> 
+> Any thoughts?
+
+One likely problem is that there are almost certainly parts of the kernel
+that need softirq_init() to stay roughly where it is.  So, is it possible
+to leave softirq_init() where it is, and to arrange for spawn_ksoftirqd()
+to be invoked just before rcu_init_tasks_generic() is called?
+
+For my part, I will look into what is required to make Tasks RCU do
+without softirq during boot, for example, by looking carefully at where
+in boot RCU grace periods are unconditionally expedited.  Just in case
+adjusting softirq has unforeseen side effects.
+
+							Thanx, Paul
