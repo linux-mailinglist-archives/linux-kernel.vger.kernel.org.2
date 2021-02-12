@@ -2,117 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C7D31A3B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D923231A3B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 18:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhBLRe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 12:34:26 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:27321 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231258AbhBLReV (ORCPT
+        id S230384AbhBLReY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 12:34:24 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:40276 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhBLReD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 12:34:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613151237; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=K2S35ZMNfNKZ70ztSuai8wLbHzfvfWAbdZyFwSz4e3Q=; b=oqQ3IdJ+ISFP42MHUsWAqOFSZ4HSvxtquZ0gbk8gxVrfMuBv/aYJkX5gSA1Cj41T0jq+clq/
- AiMpmIgKsrkRYsUM2fH5hgVJEiYfZVhG/whefI2m5O+4DJ82eEopj2XGB+YuJoFzcU07AD4f
- JFm5bijeuLY6Ib+9lk5LM0lmgEE=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6026bbea81f6c45dceb468c5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 12 Feb 2021 17:33:30
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 98748C433ED; Fri, 12 Feb 2021 17:33:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 82B37C433CA;
-        Fri, 12 Feb 2021 17:33:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 82B37C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, rientjes@google.com, vbabka@suse.cz,
-        linux-mm@kvack.org
-Cc:     vinmenon@codeaurora.org, linux-kernel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH V2] mm: compaction: update the COMPACT[STALL|FAIL] events properly
-Date:   Fri, 12 Feb 2021 23:03:04 +0530
-Message-Id: <1613151184-21213-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Fri, 12 Feb 2021 12:34:03 -0500
+Date:   Fri, 12 Feb 2021 20:33:15 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
+ "usb"-prefixed names
+Message-ID: <20210212173315.jgr6kata2yxrbkuu@mobilestation>
+References: <20210210172850.20849-1-Sergey.Semin@baikalelectronics.ru>
+ <20210210172850.20849-10-Sergey.Semin@baikalelectronics.ru>
+ <CAL_JsqJBknqhCSUOdpZVbtmp6TYetBQPLoQUCT6DTFajpChaSA@mail.gmail.com>
+ <20210210184051.ncvvs5xgyo7o3uzq@mobilestation>
+ <YCQse9EtEHtLVe9A@builder.lan>
+ <20210210193325.inp7rgpsfr624zhd@mobilestation>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210210193325.inp7rgpsfr624zhd@mobilestation>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By definition, COMPACT[STALL|FAIL] events needs to be counted when there
-is 'At least in one zone compaction wasn't deferred or skipped from the
-direct compaction'. And when compaction is skipped or deferred,
-COMPACT_SKIPPED will be returned but it will still go and update these
-compaction events which is wrong in the sense that COMPACT[STALL|FAIL]
-is counted without even trying the compaction.
+On Wed, Feb 10, 2021 at 10:33:26PM +0300, Serge Semin wrote:
+> On Wed, Feb 10, 2021 at 12:56:59PM -0600, Bjorn Andersson wrote:
+> > On Wed 10 Feb 12:40 CST 2021, Serge Semin wrote:
+> > 
+> > > On Wed, Feb 10, 2021 at 12:17:27PM -0600, Rob Herring wrote:
+> > > > On Wed, Feb 10, 2021 at 11:29 AM Serge Semin
+> > > > <Sergey.Semin@baikalelectronics.ru> wrote:
+> > > > >
+> > > > > In accordance with the USB HCD/DRD schema all the USB controllers are
+> > > > > supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
+> > > > > existing DT-nodes will be renamed in a subsequent patch let's first make
+> > > > > sure the DWC3 Qualcomm driver supports them and second falls back to the
+> > > > > deprecated naming so not to fail on the legacy DTS-files passed to the
+> > > > > newer kernels.
+> > > > >
+> > > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > > > > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > > > ---
+> > > > >  drivers/usb/dwc3/dwc3-qcom.c | 3 ++-
+> > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> > > > > index c703d552bbcf..49ad8d507d37 100644
+> > > > > --- a/drivers/usb/dwc3/dwc3-qcom.c
+> > > > > +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> > > > > @@ -630,7 +630,8 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+> > > > >         struct device           *dev = &pdev->dev;
+> > > > >         int                     ret;
+> > > > >
+> > > > > -       dwc3_np = of_get_child_by_name(np, "dwc3");
+> > > > > +       dwc3_np = of_get_child_by_name(np, "usb") ?:
+> > > > > +                 of_get_child_by_name(np, "dwc3");
+> > > > 
+> > > 
+> > > > Is there some reason using compatible instead wouldn't work here?
+> > > 
+> > > I don't know for sure. The fix has been requested in the framework of
+> > > this discussion:
+> > > https://lore.kernel.org/linux-usb/20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru/#t
+> > > by the driver maintainer Bjorn. To get a firm answer it's better to
+> > > have him asked.
+> > 
+> > My feedback was simply that it has to catch both cases, I didn't
+> > consider the fact that we have a compatible to match against.
+> > 
+> > > As I see it having of_get_compatible_child() utilized
+> > > here would also work. At least for the available in kernel dt-files.
+> > > See the affected dts-es in:
+> > > https://lore.kernel.org/linux-usb/20210210172850.20849-11-Sergey.Semin@baikalelectronics.ru/
+> > > 
+> > > A problem may happen if some older versions of DTS-es had another
+> > > compatible string in the dwc3 sub-node...
+> > > 
+> > 
+> > Afaict all Qualcomm dts files has "snps,dwc3", so you can match against
+> > that instead.
+> 
+> Ok then. I'll replace of_get_child_by_name() here with
+> of_get_compatible_child() matching just against "snps,dwc3" in v7. Can you
+> confirm that noone ever had a Qcom-based hardware described with dts having
+> the "synopsys,dwc3" compatible used as the DWC USB3 sub-node here? That
+> string has been marked as deprecated recently because the vendor-prefix
+> was changed sometime ago, but the original driver still accept it.
+> 
+> Alternatively to be on a safe side we could match against both
+> compatibles here as Rob suggests. What do you think?
 
-Correct this by skipping the counting of these events when
-COMPACT_SKIPPED is returned for compaction. This indirectly also avoid
-the unnecessary try into the get_page_from_freelist() when compaction is
-not even tried.
+Bjorn, any comment on the question above? So I could respin the series
+with this patch updated.
 
-There is a corner case where compaction is skipped but still count
-COMPACTSTALL event, which is that IRQ came and freed the page and the
-same is captured in capture_control.
+Also note, since the patch's gonna be changed I'll have to remove your
+Reviewed-by tag unless u explicitly say I shouldn't.
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
+-Sergey
 
-changes in V1: https://lore.kernel.org/patchwork/patch/1373665/
-
- mm/compaction.c | 8 ++++++++
- mm/page_alloc.c | 2 ++
- 2 files changed, 10 insertions(+)
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 190ccda..104ebef 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2487,6 +2487,14 @@ static enum compact_result compact_zone_order(struct zone *zone, int order,
- 	 */
- 	WRITE_ONCE(current->capture_control, NULL);
- 	*capture = READ_ONCE(capc.page);
-+	/*
-+	 * Technically, it is also possible that compaction is skipped but
-+	 * the page is still captured out of luck(IRQ came and freed the page).
-+	 * Returning COMPACT_SUCCESS in such cases helps in properly accounting
-+	 * the COMPACT[STALL|FAIL] when compaction is skipped.
-+	 */
-+	if (*capture)
-+		ret = COMPACT_SUCCESS;
- 
- 	return ret;
- }
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 519a60d..531f244 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4152,6 +4152,8 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
- 	memalloc_noreclaim_restore(noreclaim_flag);
- 	psi_memstall_leave(&pflags);
- 
-+	if (*compact_result == COMPACT_SKIPPED)
-+		return NULL;
- 	/*
- 	 * At least in one zone compaction wasn't deferred or skipped, so let's
- 	 * count a compaction stall
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
-
+> 
+> -Sergey
+> 
+> > 
+> > Regards,
+> > Bjorn
