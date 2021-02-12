@@ -2,141 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B6231A553
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B1131A55D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbhBLTXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:23:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
+        id S231861AbhBLT1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:27:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231756AbhBLTX3 (ORCPT
+        with ESMTP id S230053AbhBLT1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:23:29 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03DCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:22:49 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id q7so350552iob.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:22:49 -0800 (PST)
+        Fri, 12 Feb 2021 14:27:41 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E159C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:27:01 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id m22so1053597lfg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:27:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LxS5cUpKBcl5T2WAI80JBd2lVKJgCFSoSzgoNxoL1Hs=;
-        b=G7yR+HAcsA5Kd+v7dV8kNIedjfbNhvZi0El63ZC1o1gIr2OHZPhC5rVAMrvMuVAkbi
-         8Cuf2eoWvpkYc6dLG2bR8zUAv4AtGlLOrKS2MHBqAPgZNhRyC/+8z6ri/YnQrS7zerxz
-         6OZ8bT6o6JFhzohpPgam8FYS7BXvi8ExKD2HY=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IP5QHmh/uMxvGIZstG4E6Zl93QlY3SkTHtuFh4ovGBk=;
+        b=TasdBCqiOuiYWTRqMgX5qxBPZXpdf6fl7+gC1xYpA8jdRsBd0Yr+3iEDtYr6SQ+Z68
+         UznHFCytnWtegksCWO61y/C1bNY1nNCWlQaho/pTCmdY3RYDaHyAy0r7+Elz05soE+Z6
+         GsRnIVV2jiGYVR35CQ0ZUB7PAVkBG+DBk93xAGllgPqNyv9MNaOnS+iTMcZl+8hMkzwS
+         84peyD59+U9XDdg4hC9SLlE9YKvkFR5H6DBAt+cx/mn/CHB6X/jC/JFNYvLqJbQLsoG6
+         IJGEaCcALVFskmkEp5pg8/TD+SlC5zNuskFEp8E9MENIeVM/2OwYV9X9WvhJBJ7oEeX1
+         vWrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LxS5cUpKBcl5T2WAI80JBd2lVKJgCFSoSzgoNxoL1Hs=;
-        b=cZQcuI8EnIjEEexCTeeLwYPcCIxUX55uNjB+1FPgXktZUvUw8I+F/yc7JHitj/AeAV
-         +X5orqKW/gGlN2rLSY0rA+4TkaeckDf4kXCdTHHVD55V96942CnWdcmqtm57dnLJoGaG
-         kS/L48OSCh2wRLuPlsG1SVQox3hPUz0/+jQWmsQzMAPcg8cTXJDlZHacHRwTQQ61nGMV
-         JizwdHIgqE9Urj1N8pyiB0LjZHvMjXKif3oSn6OuCXmDMnSzxMdCCUXtTQtd8I8qgYbw
-         WA5PZn3lHX/P0yFxgkh0FRwZPdjmFaMJOGvzZ6bfnG5yjX4OLNUKnDUz5WCoaeVT8d8o
-         KKCw==
-X-Gm-Message-State: AOAM531OCJZXriC1wraO7G1JMZd1c68zKvS1eiya/jNK+HjYQvQhieBX
-        e9MRDb9ciYgBj2INR+72n1hxOYbeusRPWfCNOT6dgA==
-X-Google-Smtp-Source: ABdhPJytFpkHF+pnnx6a4gFjrnD5D+CJzbAz8JxcOO6nz/qiIysdtGVWbJndsqCxTHJfuzoiiLDi6a3eTnedrVPfFUY=
-X-Received: by 2002:a6b:7501:: with SMTP id l1mr3253466ioh.92.1613157769086;
- Fri, 12 Feb 2021 11:22:49 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IP5QHmh/uMxvGIZstG4E6Zl93QlY3SkTHtuFh4ovGBk=;
+        b=hCDen6nrOshTLiTUmJyyuGJIt8kCa5jz75q2M0dqLxBYJJ3AXHdPmSPD4QAoyAuIG3
+         jAxPwhcZHt+HBugAKzXImbHEWJXcZ9zv9/otbYtaUSglaWtFAVV/h0JqTd2jAVPgEM0p
+         zXcQlyUtvA4wvAEbUjSXRReF0c07BPjW/Y2mPcTzxOCM5kYmqwuih15Tj0a49N1pECS+
+         frzgvriZINxybQARmmb0YBgGaALj/m/EhlvVYN6AyqvLd8UxXiCHq3HyAKsB9U0Wl64E
+         h7oOgedvmkMWJSSZPfksgT7js0rh/5cbkRV7v6DHpMRiSNnrq9iCgYqQ0DP1FDGO5qPh
+         mpVg==
+X-Gm-Message-State: AOAM531TS2asF/onmuf9fwzlbHwRWlDt42TALA6nhhmvzrloCK4wGE2o
+        +Yk+3nwayIdTPDnkkCNpzh0VPQ==
+X-Google-Smtp-Source: ABdhPJxsfSkrWI3+yycb+PDvI7VGwKvvT+15WEsOznX+uhli7wFIgyrpO7My86tu+D5P5hyBSbe/GQ==
+X-Received: by 2002:a05:6512:39d5:: with SMTP id k21mr2277608lfu.142.1613158019847;
+        Fri, 12 Feb 2021 11:26:59 -0800 (PST)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id b5sm1209133lfi.3.2021.02.12.11.26.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 11:26:59 -0800 (PST)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>, stable@vger.kernel.org
+Subject: [PATCH v2] misc: fastrpc: restrict user apps from sending kernel RPC messages
+Date:   Fri, 12 Feb 2021 22:26:58 +0300
+Message-Id: <20210212192658.3476137-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210210025142.3609708-1-swboyd@chromium.org> <20210210025142.3609708-4-swboyd@chromium.org>
- <CAPUE2utey1os_CmYxHdmObCSPZWFGrLCVfP24wuZj_iQDNqQ5Q@mail.gmail.com> <161297912701.418021.12174983952645253802@swboyd.mtv.corp.google.com>
-In-Reply-To: <161297912701.418021.12174983952645253802@swboyd.mtv.corp.google.com>
-From:   Gwendal Grignou <gwendal@chromium.org>
-Date:   Fri, 12 Feb 2021 11:22:37 -0800
-Message-ID: <CAPUE2uvGaO_qpfg2S4vmcLto65eTzngbhL-pVcXKuS48r8zghQ@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 9:45 AM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Gwendal Grignou (2021-02-10 00:29:45)
-> > On Tue, Feb 9, 2021 at 6:51 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > > +       if (event_type == EC_MKBP_EVENT_SWITCH) {
-> > > +               data = container_of(nb, struct cros_ec_mkbp_proximity_data,
-> > > +                                   notifier);
-> > > +               indio_dev = data->indio_dev;
-> > > +
-> > > +               mutex_lock(&data->lock);
-> > > +               if (data->enabled) {
-> > > +                       timestamp = ktime_to_ns(ec->last_event_time);
-> > Note to self, ktime_to_ns is a noop, but make code cleaner: need to
-> > change other access to ec->last_event_time.
-> >
-> > > +                       if (iio_device_get_clock(indio_dev) != CLOCK_BOOTTIME)
-> > > +                               timestamp = iio_get_time_ns(indio_dev);
-> > > +                       state = cros_ec_mkbp_proximity_parse_state(switches);
-> >
-> > There can be several switches in the EC (lid open, tablet mode, ...),
-> > so you can get a switch event even when the proximity switch did not
-> > trigger.
-> > You can keep the current state and push an iio event only when there
-> > is a change. See cbas_ec_notify().
-> >
->
-> Ah ok. So we'll have to save a state tracking variable and poll the bit
-> once at boot and then at resume time?
-Required at boot: There is provision in the EC to report switch events
-at init mkbp_report_switch_on_init(), but that's only useful when EC
-reboots or transitions from RO to RW while AP is up.
-No need to peek at resume time: the EC will send a switch event if the
-mask has changed during suspend: when the AP is sleeping, EC just put
-the event in a FIFO. But looking at the code, the FIFO can get full,
-so if no switch events can be added, we lose them - see
-mkbp_fifo_add()).
-Then cros_ec_report_events_during_suspend() will gather these events.
-> What happens to events that happen across suspend/resume? We drop them?
-We should not drop them: if the user gets close while the device is
-suspended and she resumes it, we should be able to send that info to
-the user space.
-EV stores switches values in a single field |mkbp_switch_state|, so 2
-events that nullify themselves during suspend will be ignored.
-> Or we need to inject the last state
-> if it's different into IIO with the time of resume?
-The notifier routine will be called. Looking at the code, the ec
-last_event_time is not updated, I need to fix cros_ec_resume().
->
-> > > +                       dir = state ? IIO_EV_DIR_FALLING : IIO_EV_DIR_RISING;
-> > > +
-> > > +                       ev = IIO_UNMOD_EVENT_CODE(IIO_PROXIMITY, 0,
-> > > +                                                 IIO_EV_TYPE_THRESH, dir);
-> > > +                       iio_push_event(indio_dev, ev, timestamp);
-> > > +               }
-> > > +               mutex_unlock(&data->lock);
-> > > +       }
-> > > +
-> > > +       return NOTIFY_OK;
-> > > +}
-> > > +
-> > > +static int cros_ec_mkbp_proximity_read_raw(struct iio_dev *indio_dev,
-> > > +                          const struct iio_chan_spec *chan, int *val,
-> > > +                          int *val2, long mask)
-> > > +{
-> > > +       struct cros_ec_mkbp_proximity_data *data = iio_priv(indio_dev);
-> > > +       struct cros_ec_device *ec = data->ec;
-> > > +
-> > > +       if (chan->type != IIO_PROXIMITY)
-> > > +               return -EINVAL;
-> > > +
-> > > +       switch (mask) {
-> >
-> > A switch is not necessary here.
->
-> Ok.
->
-> > > +       case IIO_CHAN_INFO_RAW:
+Verify that user applications are not using the kernel RPC message
+handle to restrict them from directly attaching to guest OS on the
+remote subsystem. This is a port of CVE-2019-2308 fix.
+
+Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Jonathan Marek <jonathan@marek.ca>
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+
+Changes since v1:
+ - changed to dev_warn_ratelimited to prevent userspace from flooding
+   kernel log
+
+ drivers/misc/fastrpc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index f12e909034ac..beda610e6b30 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -950,6 +950,11 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
+ 	if (!fl->cctx->rpdev)
+ 		return -EPIPE;
+ 
++	if (handle == FASTRPC_INIT_HANDLE && !kernel) {
++		dev_warn_ratelimited(fl->sctx->dev, "user app trying to send a kernel RPC message (%d)\n",  handle);
++		return -EPERM;
++	}
++
+ 	ctx = fastrpc_context_alloc(fl, kernel, sc, args);
+ 	if (IS_ERR(ctx))
+ 		return PTR_ERR(ctx);
+-- 
+2.30.0
+
