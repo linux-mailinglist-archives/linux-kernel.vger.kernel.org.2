@@ -2,322 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C03A31A4D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A47A331A4DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbhBLS5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 13:57:15 -0500
-Received: from mga01.intel.com ([192.55.52.88]:56951 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229832AbhBLS5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 13:57:11 -0500
-IronPort-SDR: BgZecbE0lGmkR87LbXyQDYnTqpZDry4LEyTbZK9PNFnxpueCMuICtVKVxNdqBY0BN0EnPmqmip
- mXv6RiCW+rJQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="201611643"
-X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
-   d="scan'208";a="201611643"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 10:56:26 -0800
-IronPort-SDR: leerKFvFy2ZEqyp1pfCzhIAK6tRH3zQvMTF3w/OEEoH/kSQXyVhxCjn5KvIp9XzqWyuE+0lPUS
- fKaKca2+OU6A==
-X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
-   d="scan'208";a="398100969"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.209.46.84]) ([10.209.46.84])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 10:56:25 -0800
-Subject: Re: [PATCH v5 04/14] vfio/mdev: idxd: Add auxialary device plumbing
- for idxd mdev support
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com,
-        tglx@linutronix.de, vkoul@kernel.org, megha.dey@intel.com,
-        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, dan.j.williams@intel.com,
-        eric.auger@redhat.com, parav@mellanox.com, netanelg@mellanox.com,
-        shahafs@mellanox.com, pbonzini@redhat.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
- <161255839829.339900.16438737078488315104.stgit@djiang5-desk3.ch.intel.com>
- <20210210234639.GI4247@nvidia.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <92c0e4b2-c85c-bda6-811b-8547b027d1ee@intel.com>
-Date:   Fri, 12 Feb 2021 11:56:24 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231732AbhBLS5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 13:57:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231604AbhBLS5s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 13:57:48 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36F5C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 10:57:07 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id j19so861832lfr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 10:57:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jcvglq6lm2v5NtoaNp7KAMjtS1nc2H/6Xlbtuy2KR4E=;
+        b=kYi+d4wWq5tEorGxBX7x8+FRyebVeyXfgD+pv7bsDTvGDW8T9FZMxZ8g6MBVNoA1xw
+         MdGVwA1ePiWKy6yUW7yk7ZIUeAdaHebjjsy7bdTYokCBK/uOVggZWmLLWyJ/FakeDvHD
+         pITpd+Y+ovlJbJaRSfT1OhZDWxJGYRmPFnzgKNHKmJbY4kh6kMrGrQaJi5ZfEodvZYg7
+         nRop1AU9UXtKRKxN/GkyrhIFevvhuH9TPjnkO/w2xFGk3sqfafJ4putZUFsI+egd78OH
+         NjgpXytBano01WNQR9Q1xjCDLp9DiIraeVFqgMe/txbV5MqPvK24L5MbCbZ3Fh9pntB5
+         NowQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jcvglq6lm2v5NtoaNp7KAMjtS1nc2H/6Xlbtuy2KR4E=;
+        b=cw1YtXAuaVm9ddsZXgL1wyG3h0atRFeq6vjjtDxhlin/Kj1miHLtY8iCtkH6xg08JD
+         t6W5aYnvaMuKRs/aOmEs1A1TZlKn/+nzg0wv8hMnWlNQWxR02EizNMCpB0+dnQNfBS6M
+         uDF2kJOKLQNGf5TQdszeVusXKX6ur0BVSbh2KnX2Ap7gIhMwDz2sGwrCTFpJpuRRsrYD
+         GtT7wkUzn2js1wHkD7NPueTr+rf5MjfTYTcA+MCKrp9wnzs/JZeGRFy4Jkc0xTOexw4a
+         sE1kRLoOYuUHBg++SQ0RdUc0mG0iSR9D5zCO5SImte5dLDAEAFRDDyOeTo0WfpgDpqcB
+         GJmw==
+X-Gm-Message-State: AOAM532ueqCyoMRgU0LWhJ3GYzr6uRzkB26a/aXc5f7HzP3dMtMruuPu
+        r5pwOr/RFYnidiMMtLitSl3pcVDm3ZemR0wsaCpKEg==
+X-Google-Smtp-Source: ABdhPJwAOYDXAEN5WNwZAeVEMl2GGPFdRVNq1BAUEoKLv2s+gMFyHinl5X5g7/6SIVbIDkAvSIVoxVNRJ3j4rqMyA8I=
+X-Received: by 2002:a19:ad03:: with SMTP id t3mr2292251lfc.358.1613156226042;
+ Fri, 12 Feb 2021 10:57:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210210234639.GI4247@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210212170159.32153-1-songmuchun@bytedance.com> <20210212170159.32153-4-songmuchun@bytedance.com>
+In-Reply-To: <20210212170159.32153-4-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 12 Feb 2021 10:56:54 -0800
+Message-ID: <CALvZod6tXn9qrRmzyspp+7usB-Xx4ayu6KrzmKvoU7zWajx85g@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on cgroup v2
+To:     Muchun Song <songmuchun@bytedance.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+CCing more folks.
 
-On 2/10/2021 4:46 PM, Jason Gunthorpe wrote:
-> On Fri, Feb 05, 2021 at 01:53:18PM -0700, Dave Jiang wrote:
->> diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
->> index a2438b3166db..f02c96164515 100644
->> +++ b/drivers/dma/idxd/idxd.h
->> @@ -8,6 +8,7 @@
->>   #include <linux/percpu-rwsem.h>
->>   #include <linux/wait.h>
->>   #include <linux/cdev.h>
->> +#include <linux/auxiliary_bus.h>
->>   #include "registers.h"
->>   
->>   #define IDXD_DRIVER_VERSION	"1.00"
->> @@ -221,6 +222,8 @@ struct idxd_device {
->>   	struct work_struct work;
->>   
->>   	int *int_handles;
->> +
->> +	struct auxiliary_device *mdev_auxdev;
->>   };
-> If there is only one aux device there not much reason to make it a
-> dedicated allocation.
-
-Hi Jason. Thank you for the review. Very much appreciated!
-
-Yep. I had it embedded and then changed it when I was working on the 
-UACCE bits to make it uniform. Should've just kept it the way it was.
-
->>   /* IDXD software descriptor */
->> @@ -282,6 +285,10 @@ enum idxd_interrupt_type {
->>   	IDXD_IRQ_IMS,
->>   };
->>   
->> +struct idxd_mdev_aux_drv {
->> +	        struct auxiliary_driver auxiliary_drv;
->> +};
-> Wrong indent. What is this even for?
-
-Will remove.
-
->> +
->>   static inline int idxd_get_wq_portal_offset(enum idxd_portal_prot prot,
->>   					    enum idxd_interrupt_type irq_type)
->>   {
->> diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
->> index ee56b92108d8..fd57f39e4b7d 100644
->> +++ b/drivers/dma/idxd/init.c
->> @@ -382,6 +382,74 @@ static void idxd_disable_system_pasid(struct idxd_device *idxd)
->>   	idxd->sva = NULL;
->>   }
->>   
->> +static void idxd_remove_mdev_auxdev(struct idxd_device *idxd)
->> +{
->> +	if (!IS_ENABLED(CONFIG_VFIO_MDEV_IDXD))
->> +		return;
->> +
->> +	auxiliary_device_delete(idxd->mdev_auxdev);
->> +	auxiliary_device_uninit(idxd->mdev_auxdev);
->> +}
->> +
->> +static void idxd_auxdev_release(struct device *dev)
->> +{
->> +	struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
->> +	struct idxd_device *idxd = dev_get_drvdata(dev);
-> Nope, where did you see drvdata being used like this? You need to use
-> container_of.
+On Fri, Feb 12, 2021 at 9:14 AM Muchun Song <songmuchun@bytedance.com> wrote:
 >
-> If put the mdev_auxdev as a non pointer member then this is just:
+> The swap charges the actual number of swap entries on cgroup v2.
+> If a swap cache page is charged successful, and then we uncharge
+> the swap counter. It is wrong on cgroup v2. Because the swap
+> entry is not freed.
 >
->       struct idxd_device *idxd = container_of(dev, struct idxd_device, mdev_auxdev)
->       
->       put_device(&idxd->conf_dev);
+> Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+
+What's the user visible impact of this change?
+
+One impact I can see is that without this patch meminfo's (SwapTotal -
+SwapFree) is larger than the sum of top level memory.swap.current.
+This change will reduce that gap.
+
+BTW what about per-cpu slots_ret cache? Should we call
+mem_cgroup_uncharge_swap() before putting in the cache after this
+change?
+
+> ---
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> And fix the 'setup' to match this design
-
-Yes. Once it's embedded, everything falls in place. The drvdata hack was 
-to deal with the auxdev being a pointer.
-
-
->> +	kfree(auxdev->name);
-> This is weird, the name shouldn't be allocated, it is supposed to be a
-> fixed string to make it easy to find the driver name in the code base.
-
-Will fix.
-
-
->> +static int idxd_setup_mdev_auxdev(struct idxd_device *idxd)
->> +{
->> +	struct auxiliary_device *auxdev;
->> +	struct device *dev = &idxd->pdev->dev;
->> +	int rc;
->> +
->> +	if (!IS_ENABLED(CONFIG_VFIO_MDEV_IDXD))
->> +		return 0;
->> +
->> +	auxdev = kzalloc(sizeof(*auxdev), GFP_KERNEL);
->> +	if (!auxdev)
->> +		return -ENOMEM;
->> +
->> +	auxdev->name = kasprintf(GFP_KERNEL, "mdev-%s", idxd_name[idxd->type]);
->> +	if (!auxdev->name) {
->> +		rc = -ENOMEM;
->> +		goto err_name;
->> +	}
->> +
->> +	dev_dbg(&idxd->pdev->dev, "aux dev mdev: %s\n", auxdev->name);
->> +
->> +	auxdev->dev.parent = dev;
->> +	auxdev->dev.release = idxd_auxdev_release;
->> +	auxdev->id = idxd->id;
->> +
->> +	rc = auxiliary_device_init(auxdev);
->> +	if (rc < 0) {
->> +		dev_err(dev, "Failed to init aux dev: %d\n", rc);
->> +		goto err_auxdev;
->> +	}
-> Put the init earlier so it can handle the error unwinds
-
-I think with auxdev embedded, there's really not much going on so I 
-think this resolves itself.
-
-
->> +	rc = auxiliary_device_add(auxdev);
->> +	if (rc < 0) {
->> +		dev_err(dev, "Failed to add aux dev: %d\n", rc);
->> +		goto err_auxdev;
->> +	}
->> +
->> +	idxd->mdev_auxdev = auxdev;
->> +	dev_set_drvdata(&auxdev->dev, idxd);
-> No to using drvdata, and this is in the wrong order anyhow.
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index c737c8f05992..be6bc5044150 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6753,7 +6753,7 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+>         memcg_check_events(memcg, page);
+>         local_irq_enable();
 >
->> +	return 0;
->> +
->> + err_auxdev:
->> +	kfree(auxdev->name);
->> + err_name:
->> +	kfree(auxdev);
->> +	return rc;
->> +}
->> +
->>   static int idxd_probe(struct idxd_device *idxd)
->>   {
->>   	struct pci_dev *pdev = idxd->pdev;
->> @@ -434,11 +502,19 @@ static int idxd_probe(struct idxd_device *idxd)
->>   		goto err_idr_fail;
->>   	}
->>   
->> +	rc = idxd_setup_mdev_auxdev(idxd);
->> +	if (rc < 0)
->> +		goto err_auxdev_fail;
->> +
->>   	idxd->major = idxd_cdev_get_major(idxd);
->>   
->>   	dev_dbg(dev, "IDXD device %d probed successfully\n", idxd->id);
->>   	return 0;
->>   
->> + err_auxdev_fail:
->> +	mutex_lock(&idxd_idr_lock);
->> +	idr_remove(&idxd_idrs[idxd->type], idxd->id);
->> +	mutex_unlock(&idxd_idr_lock);
-> Probably wrong to order things like this..
-
-How should it be ordered?
-
+> -       if (PageSwapCache(page)) {
+> +       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && PageSwapCache(page)) {
+>                 swp_entry_t entry = { .val = page_private(page) };
+>                 /*
+>                  * The swap entry might not get freed for a long time,
+> --
+> 2.11.0
 >
-> Also somehow this has a
->
-> 	idxd = devm_kzalloc(dev, sizeof(struct idxd_device), GFP_KERNEL);
->
-> but the idxd has a kref'd struct device in it:
-
-So the conf_dev is a struct device that let the driver do configuration 
-of the device and other components through sysfs. It's a child device to 
-the pdev. It should have no relation to the auxdev. The confdevs for 
-each component should not be released until the physical device is 
-released. For the mdev case, the auxdev shouldn't be released until the 
-removal of the pdev as well since it is a child of the pdev also.
-
-pdev --- device conf_dev --- wq conf_dev
-
-     |                   |--- engine conf_dev
-
-     |                   |--- group conf_dev
-
-     |--- aux_dev
-
->
-> struct idxd_device {
-> 	enum idxd_type type;
-> 	struct device conf_dev;
->
-> So that's not right either
->
-> You'll need to fix the lifetime model for idxd_device before you get
-> to adding auxdevices
-
-Can you kindly expand on how it's suppose to look like please?
-
-
->
->> +static int idxd_mdev_host_init(struct idxd_device *idxd)
->> +{
->> +	/* FIXME: Fill in later */
->> +	return 0;
->> +}
->> +
->> +static int idxd_mdev_host_release(struct idxd_device *idxd)
->> +{
->> +	/* FIXME: Fill in later */
->> +	return 0;
->> +}
-> Don't leave empty stubs like this, just provide the whole driver in
-> the next patch
-
-Ok will do that.
-
-
->
->> +static int idxd_mdev_aux_probe(struct auxiliary_device *auxdev,
->> +			       const struct auxiliary_device_id *id)
->> +{
->> +	struct idxd_device *idxd = dev_get_drvdata(&auxdev->dev);
-> Continuing no to using drvdata, must use container_of
->
->> +	int rc;
->> +
->> +	rc = idxd_mdev_host_init(idxd);
-> And why add this indirection? Just write what it here
-
-ok
-
-
->
->> +static struct idxd_mdev_aux_drv idxd_mdev_aux_drv = {
->> +	.auxiliary_drv = {
->> +		.id_table = idxd_mdev_auxbus_id_table,
->> +		.probe = idxd_mdev_aux_probe,
->> +		.remove = idxd_mdev_aux_remove,
->> +	},
->> +};
-> Why idxd_mdev_aux_drv ? Does a later patch add something here?
-
-
-Yes. There is a callback function that's added later. But I can code it 
-so that it gets changed later on.
-
-
->
->> +static int idxd_mdev_auxdev_drv_register(struct idxd_mdev_aux_drv *drv)
->> +{
->> +	return auxiliary_driver_register(&drv->auxiliary_drv);
->> +}
->> +
->> +static void idxd_mdev_auxdev_drv_unregister(struct idxd_mdev_aux_drv *drv)
->> +{
->> +	auxiliary_driver_unregister(&drv->auxiliary_drv);
->> +}
->> +
->> +module_driver(idxd_mdev_aux_drv, idxd_mdev_auxdev_drv_register, idxd_mdev_auxdev_drv_unregister);
-> There is some auxillary driver macro that does this boilerplate
-
-Ok thanks.
-
-
->
-> Jason
