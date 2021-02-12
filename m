@@ -2,154 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7444531A6AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C5C31A6AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhBLVSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 16:18:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59858 "EHLO mail.kernel.org"
+        id S231910AbhBLVTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 16:19:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231175AbhBLVSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 16:18:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6D5564E05;
-        Fri, 12 Feb 2021 21:17:52 +0000 (UTC)
+        id S231175AbhBLVSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 16:18:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CD9D64DA1;
+        Fri, 12 Feb 2021 21:18:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613164672;
-        bh=igwJV3Ql7mI9BeCjbv2SB4KehkRXZXKbNfnOto/Iu5U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q3kHHg/TI83N9dl4FXATamXGs8BoL/7ZUyBtgd/CcthqD5zgKwfkfmskwEaKEtgPL
-         gw8Mm3zUBzPfEyeZJCXoIKxFSh8CbWSmQhTIYBXm/JWNeDpihAdFaAwizUJMRpKFzy
-         f1HRZcBfsHn4eRalVpEvPzXIQ76imjoyES/z0VEH1F6u/tymV+LBAI4Pq4nGKJCyw7
-         wgGY40/LYOlz2yagxoM3MJdYyecRs7fqcL/bR6GFjMZNb7puhimgOhn+7mJ9LsNtQT
-         g3UfFWS58gF/wYrcrd5KvrQ3cxU7WvRbWNenA9wmoOk6Ng2bqa6LFfd9oM+8/SKhpX
-         Vd8PQGgFt3TiQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9CDE040513; Fri, 12 Feb 2021 18:17:50 -0300 (-03)
-Date:   Fri, 12 Feb 2021 18:17:50 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nicholas Fraser <nfraser@codeweavers.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org,
-        Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-Subject: Re: [PATCH 2/4] perf report: Load PE files from debug cache only
-Message-ID: <20210212211750.GL1398414@kernel.org>
-References: <e58e1237-94ab-e1c9-a7b9-473531906954@codeweavers.com>
- <20210212122800.GA1398414@kernel.org>
- <367456d0-78ea-f2e1-2269-3e6cf95ea3fb@codeweavers.com>
+        s=k20201202; t=1613164693;
+        bh=4TFSTvj6ttdPFslO5+a0fodyQQ+7J57hi9zacbZWyJs=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=u2vcnA/DOj+ItizXjVG5627+qp5r2GJa6v4FcbNYyT2u0oU7GwjstZImCDltbyvdT
+         a0N23oq3n7v5d52OtGjnpA1yEx2w7gJm5uLRL3PDpiw76Vq4Ldk03vuXF29qqlcvrq
+         GtXCJxGQ8h2W2HZTlP+SEQ+85bsehw/wHkhdksUpOjzWrgAC6S4EB2DyUgqlWNptXu
+         RFtid48EMVEMX680zZZ1evLQY+oJ06vonq47DzjsjL3x5L/XrRsv5wYEHhnk6jX8JH
+         PMDOhuVobQXOb9Yb0IqiUaCsftkDDVQ068HxlFDvOfICIzZbY+DX8WQaifXk+r9G0E
+         opbRiVxdHcZ7g==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <367456d0-78ea-f2e1-2269-3e6cf95ea3fb@codeweavers.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210212143059.478554-1-dinguyen@kernel.org>
+References: <20210212143059.478554-1-dinguyen@kernel.org>
+Subject: Re: [PATCHv1 1/2] dt-bindings: documentation: add clock bindings information for eASIC N5X
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     dinguyen@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To:     Dinh Nguyen <dinguyen@kernel.org>
+Date:   Fri, 12 Feb 2021 13:18:11 -0800
+Message-ID: <161316469175.1254594.17867254186604019043@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Feb 12, 2021 at 11:34:24AM -0500, Nicholas Fraser escreveu:
-> Sorry, I should have been more clear in the commit message. The use case
-> you outlined still works even with this patch.
+Quoting Dinh Nguyen (2021-02-12 06:30:58)
+> Document the Agilex clock bindings, and add the clock header file. The
+> clock header is an enumeration of all the different clocks on the eASIC
+> N5X platform.
+>=20
+> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+> ---
 
-Ok, I'll clarify that in the commit log then.
-
-- Arnaldo
- 
-> dso__load_bfd_symbols() is called in a loop from dso__load() for a variety
-> of paths. These are generated by the various DSO_BINARY_TYPEs in the
-> binary_type_symtab list at the top of util/symbol.c. In each case the
-> debugfile passed to dso__load_bfd_symbols() is the path to try.
-> 
-> One of those iterations (the first one I believe) passes the original path
-> as the debugfile. If the file still exists at the original path, this is
-> the one that ends up being used in case the debugcache was deleted or the
-> PE file doesn't have a build-id.
-> 
-> A later iteration (BUILD_ID_CACHE) passes debugfile as the file in the
-> debugcache if it has a build-id. Even if the file was previously loaded at
-> its original path, (if I understand correctly) this load will override it
-> so the debugcache file ends up being used.
-> 
-> Nick
-> 
-> 
-> On 2021-02-12 7:28 a.m., Arnaldo Carvalho de Melo wrote:
-> > Em Wed, Feb 10, 2021 at 02:17:38PM -0500, Nicholas Fraser escreveu:
-> >> dso__load_bfd_symbols() attempts to load a DSO at its original path,
-> >> then closes it and loads the file in the debug cache. This is incorrect.
-> >> It should ignore the original file and work with only the debug cache.
-> >> The original file may have changed or may not even exist, for example if
-> >> the debug cache has been transferred to another machine via "perf
-> >> archive".
-> >>
-> >> This fix makes it only load the file in the debug cache.
-> > 
-> > Well this improves your current use case and only affects PE files, so I
-> > am applying, but consider a slightly different workflow:
-> > 
-> >  1. perf record ./foo.exe
-> >  2. perf report     # works, finds the file in the ~/.debug cache, as stored
-> >                     # by 'perf record'
-> >  3. rm -rf ~/.debug # I need more space
-> >  4. perf report     # Fails, as it looks only in the ~/.debug cache, that
-> >                     # was nuked
-> > 
-> > 
-> > So at 4 it should look at the original pathname, and hope for the best.
-> > 
-> > All this is moot if we have something like a build-id in PE files,
-> > where we can look in any order since we'll verify the unique ID to see
-> > if it is the one we need, right?
-> > 
-> > - Arnaldo
-> >  
-> >> Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
-> >> ---
-> >>  tools/perf/util/symbol.c | 8 +-------
-> >>  1 file changed, 1 insertion(+), 7 deletions(-)
-> >>
-> >> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> >> index 64a039cbba1b..aa9ae875b995 100644
-> >> --- a/tools/perf/util/symbol.c
-> >> +++ b/tools/perf/util/symbol.c
-> >> @@ -1569,7 +1569,7 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
-> >>  	u_int i;
-> >>  	u64 start, len;
-> >>  
-> >> -	abfd = bfd_openr(dso->long_name, NULL);
-> >> +	abfd = bfd_openr(debugfile, NULL);
-> >>  	if (!abfd)
-> >>  		return -1;
-> >>  
-> >> @@ -1586,12 +1586,6 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
-> >>  	if (section)
-> >>  		dso->text_offset = section->vma - section->filepos;
-> >>  
-> >> -	bfd_close(abfd);
-> >> -
-> >> -	abfd = bfd_openr(debugfile, NULL);
-> >> -	if (!abfd)
-> >> -		return -1;
-> >> -
-> >>  	if (!bfd_check_format(abfd, bfd_object)) {
-> >>  		pr_debug2("%s: cannot read %s bfd file.\n", __func__,
-> >>  			  debugfile);
-> >> -- 
-> >> 2.30.0
-> >>
-> > 
-
--- 
-
-- Arnaldo
+Applied to clk-next
