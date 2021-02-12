@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EAF319D74
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFEB319D78
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhBLLg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:36:57 -0500
-Received: from www381.your-server.de ([78.46.137.84]:36544 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhBLLg3 (ORCPT
+        id S230506AbhBLLht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:37:49 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:54049 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhBLLhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:36:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=LB8dl2RxIN//zhj+ja02xt445NXNMzDjJQYs9Xwtfa8=; b=e9IXiEEbfCytoXcIB16bx+BsX2
-        fAjG5vY/bS6142DoNUvUHl6fHqL7qlLIEvw4KhCcB+/sqMWwMWwKf0Krj+ZQTFs0SYbAsAWCVZRdB
-        BQXfSWgJNf24IE9TcHUQ+1JdxHRur/HTjq1IG0XFmG67ihEe0n37BnH/1X89tsXdwmH4M7C3R7lo1
-        R7m03oyPPYdgws6DhQpiz6g95v5qeuGWO+t/Qs0aMiLRpNv+xIMIYGTxmEO5zJuSiQaO5m+1bLiIn
-        iM7VclnBdVzpdwQZo/RVasz/2KyyHF6EmM5lIu4oyetGSo3yYA1X5ouWp1rYhsf15OrnRIYvgcmro
-        omrqMG1Q==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1lAWjY-00046S-9b; Fri, 12 Feb 2021 12:35:36 +0100
-Received: from [62.216.202.92] (helo=[192.168.178.20])
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1lAWjY-000F1M-4X; Fri, 12 Feb 2021 12:35:36 +0100
-Subject: Re: Adding custom functional callbacks to IIO driver
-To:     Anand Ashok Dumbre <ANANDASH@xilinx.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "knaack.h@gmx.de" <knaack.h@gmx.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michals@xilinx.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <BY5PR02MB69164C83B7BA664AF350D712A98B9@BY5PR02MB6916.namprd02.prod.outlook.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <b8cc5128-da41-2620-c44b-c7af28cf6980@metafoo.de>
-Date:   Fri, 12 Feb 2021 12:35:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 12 Feb 2021 06:37:15 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lAWkN-0006Xt-LS; Fri, 12 Feb 2021 11:36:27 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ath11k: debugfs: Fix spelling mistake "Opportunies" -> "Opportunities"
+Date:   Fri, 12 Feb 2021 11:36:27 +0000
+Message-Id: <20210212113627.212787-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <BY5PR02MB69164C83B7BA664AF350D712A98B9@BY5PR02MB6916.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26077/Thu Feb 11 13:18:43 2021)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/21 12:07 PM, Anand Ashok Dumbre wrote:
-> Hello,
->
-> I have an IIO adc driver that measures temperatures and voltages on the SOC.
-> There are other kernel modules interested in the temperature and voltage event information.
->
-> Would using a custom callback registration mechanism be advisable?
-> Is there something similar done already in IIO that can be leveraged?
+From: Colin Ian King <colin.king@canonical.com>
 
-Hi,
+There is a spelling mistake in some debug text, fix this.
 
-Have a look at the IIO consumer API that allows other kernel modules to 
-subscribe to the output of an IIO device. 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/iio/consumer.h 
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-- Lars
+diff --git a/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c b/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c
+index e13684343ec3..ec93f14e6d2a 100644
+--- a/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c
++++ b/drivers/net/wireless/ath/ath11k/debugfs_htt_stats.c
+@@ -3851,7 +3851,7 @@ htt_print_pdev_obss_pd_stats_tlv_v(const void *tag_buf,
+ 			   htt_stats_buf->num_non_srg_ppdu_tried);
+ 	len += HTT_DBG_OUT(buf + len, buf_len - len, "Non-SRG success PPDU = %u\n",
+ 			   htt_stats_buf->num_non_srg_ppdu_success);
+-	len += HTT_DBG_OUT(buf + len, buf_len - len, "SRG Opportunies = %u\n",
++	len += HTT_DBG_OUT(buf + len, buf_len - len, "SRG Opportunities = %u\n",
+ 			   htt_stats_buf->num_srg_opportunities);
+ 	len += HTT_DBG_OUT(buf + len, buf_len - len, "SRG tried PPDU = %u\n",
+ 			   htt_stats_buf->num_srg_ppdu_tried);
+-- 
+2.30.0
 
