@@ -2,126 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6E7319FF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C6C319FF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhBLNgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:36:13 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2561 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231424AbhBLNeu (ORCPT
+        id S231962AbhBLNgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:36:36 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:62103 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231990AbhBLNfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 08:34:50 -0500
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DcZB80s6bz67mLJ;
-        Fri, 12 Feb 2021 21:30:24 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 12 Feb 2021 14:34:07 +0100
-Received: from localhost (10.47.28.230) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 12 Feb
- 2021 13:34:06 +0000
-Date:   Fri, 12 Feb 2021 13:33:04 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Ben Widawsky <ben.widawsky@intel.com>, <linux-cxl@vger.kernel.org>,
-        "Linux ACPI" <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        "Rafael Wysocki" <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v2 3/8] cxl/mem: Register CXL memX devices
-Message-ID: <20210212133304.00001f28@Huawei.com>
-In-Reply-To: <CAPcyv4hgzv7B7sv85A3No-bAgeADqfrhRySBrQBx43HVEMfnzg@mail.gmail.com>
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
-        <20210210000259.635748-4-ben.widawsky@intel.com>
-        <20210210181725.00007865@Huawei.com>
-        <20210211101746.00005e8c@Huawei.com>
-        <CAPcyv4hgzv7B7sv85A3No-bAgeADqfrhRySBrQBx43HVEMfnzg@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Fri, 12 Feb 2021 08:35:07 -0500
+Received: from fsav104.sakura.ne.jp (fsav104.sakura.ne.jp [27.133.134.231])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11CDYQpr053608;
+        Fri, 12 Feb 2021 22:34:26 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav104.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp);
+ Fri, 12 Feb 2021 22:34:26 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11CDYPIM053602
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 12 Feb 2021 22:34:25 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: possible deadlock in start_this_handle (2)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+References: <20210211125717.GH308988@casper.infradead.org>
+ <YCUr99//z8hJmnDH@dhcp22.suse.cz>
+ <20210211132533.GI308988@casper.infradead.org>
+ <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
+ <20210211142630.GK308988@casper.infradead.org>
+ <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
+ <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
+ <20210212122207.GM308988@casper.infradead.org>
+ <YCZ056SJDGrgXCss@dhcp22.suse.cz>
+ <2b90c488-a6b9-2565-bd3a-e4f8bf8404e9@i-love.sakura.ne.jp>
+ <YCZ+2ZStwTbApo5E@dhcp22.suse.cz>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <a47ec496-f9ed-763b-5c66-b8423d65ec82@i-love.sakura.ne.jp>
+Date:   Fri, 12 Feb 2021 22:34:23 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <YCZ+2ZStwTbApo5E@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.28.230]
-X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Feb 2021 12:40:45 -0800
-Dan Williams <dan.j.williams@intel.com> wrote:
-
-> On Thu, Feb 11, 2021 at 2:19 AM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> >
-> > On Wed, 10 Feb 2021 18:17:25 +0000
-> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> >  
-> > > On Tue, 9 Feb 2021 16:02:54 -0800
-> > > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > >  
-> > > > From: Dan Williams <dan.j.williams@intel.com>
-> > > >
-> > > > Create the /sys/bus/cxl hierarchy to enumerate:
-> > > >
-> > > > * Memory Devices (per-endpoint control devices)
-> > > >
-> > > > * Memory Address Space Devices (platform address ranges with
-> > > >   interleaving, performance, and persistence attributes)
-> > > >
-> > > > * Memory Regions (active provisioned memory from an address space device
-> > > >   that is in use as System RAM or delegated to libnvdimm as Persistent
-> > > >   Memory regions).
-> > > >
-> > > > For now, only the per-endpoint control devices are registered on the
-> > > > 'cxl' bus. However, going forward it will provide a mechanism to
-> > > > coordinate cross-device interleave.
-> > > >
-> > > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>  
-> > >
-> > > One stray header, and a request for a tiny bit of reordering to
-> > > make it easier to chase through creation and destruction.
-> > >
-> > > Either way with the header move to earlier patch I'm fine with this one.
-> > >
-> > > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>  
-> >
-> > Actually thinking more on this, what is the justification for the
-> > complexity + overhead of a percpu_refcount vs a refcount  
+On 2021/02/12 22:12, Michal Hocko wrote:
+> On Fri 12-02-21 21:58:15, Tetsuo Handa wrote:
+>> On 2021/02/12 21:30, Michal Hocko wrote:
+>>> On Fri 12-02-21 12:22:07, Matthew Wilcox wrote:
+>>>> On Fri, Feb 12, 2021 at 08:18:11PM +0900, Tetsuo Handa wrote:
+>>>>> On 2021/02/12 1:41, Michal Hocko wrote:
+>>>>>> But I suspect we have drifted away from the original issue. I thought
+>>>>>> that a simple check would help us narrow down this particular case and
+>>>>>> somebody messing up from the IRQ context didn't sound like a completely
+>>>>>> off.
+>>>>>>
+>>>>>
+>>>>>  From my experience at https://lkml.kernel.org/r/201409192053.IHJ35462.JLOMOSOFFVtQFH@I-love.SAKURA.ne.jp ,
+>>>>> I think we can replace direct PF_* manipulation with macros which do not receive "struct task_struct *" argument.
+>>>>> Since TASK_PFA_TEST()/TASK_PFA_SET()/TASK_PFA_CLEAR() are for manipulating PFA_* flags on a remote thread, we can
+>>>>> define similar ones for manipulating PF_* flags on current thread. Then, auditing dangerous users becomes easier.
+>>>>
+>>>> No, nobody is manipulating another task's GFP flags.
+>>>
+>>> Agreed. And nobody should be manipulating PF flags on remote tasks
+>>> either.
+>>>
+>>
+>> No. You are misunderstanding. The bug report above is an example of manipulating PF flags on remote tasks.
 > 
-> A typical refcount does not have the block and drain semantics of a
-> percpu_ref. I'm planning to circle back and make this a first class
-> facility of the cdev interface borrowing the debugfs approach [1], but
-> for now percpu_ref fits the bill locally.
+> Could you be more specific? I do not remember there was any theory that
+> somebody is manipulating flags on a remote task. A very vague theory was
+> that an interrupt context might be doing that on the _current_ context
+> but even that is not based on any real evidence. It is a pure
+> speculation.
 > 
-> > I don't think this is a high enough performance path for it to matter.
-> > Perhaps I'm missing a usecase where it does?  
-> 
-> It's less about percpu_ref performance and more about the
-> percpu_ref_tryget_live() facility.
-> 
-> [1]: http://lore.kernel.org/r/CAPcyv4jEYPsyh0bhbtKGRbK3bgp=_+=2rjx4X0gLi5-25VvDyg@mail.gmail.com
 
-Thanks for the reference. Definitely a nasty corner to clean up so I'll
-keep an eye open for a new version of that series.
-
-Jonathan
-
-
+Please read the link above. The report is an example of manipulating PF flags on a remote task.
+You are thinking interrupt context as the only possible culprit, but you should also think
+concurrent access as the other possible culprit.
