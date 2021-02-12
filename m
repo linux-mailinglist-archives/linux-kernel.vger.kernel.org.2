@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D1231A194
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF8B31A19A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhBLPXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:23:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53688 "EHLO mail.kernel.org"
+        id S231347AbhBLPYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:24:22 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:37130 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229475AbhBLPTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:19:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26B3860C41;
-        Fri, 12 Feb 2021 15:18:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613143135;
-        bh=5m7qNeM+iZGkaEN9U3T+IB2rVlBvv/69Py0HDS2w5A4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t2vdBIm1rWDCTIOTLgQ/AgdEa6rcWJ/yOTMSWoqsJQ/SC4rBL1szYvIccyOdShr+9
-         7Kes6omLBYp6gGDNlga1IUx4kcAIZ5Mbv9/oDvL3VuOoT+bkNpJfjUH2OZjbH8IsS+
-         DZ6NuEns8ODSB7MKZUkcnJ5sFWhkcw4654DcIl9cy/r7pPpjznj8xfSIzUGb2aqUmU
-         2Vcp5tiAmk9IC2w1vSiDUYyeFQAbwc4H7lb/znERvsM0LVZHBAmxT3NpHiK1vCitCP
-         sdYw0aMSR9UZ5jgoqd7hoM1DYpSmDITNpDrdQt0ZlkKZJlCHAloBX8jE/A5L1J5Eil
-         Yiw2JCfA/Rxsg==
-Date:   Fri, 12 Feb 2021 16:18:53 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: linux-next: manual merge of the rcu tree with the block tree
-Message-ID: <20210212151853.GC94816@lothringen>
-References: <20210211164852.7489b87d@canb.auug.org.au>
+        id S232097AbhBLPVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:21:19 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lAaF9-005qpk-Ms; Fri, 12 Feb 2021 16:20:27 +0100
+Date:   Fri, 12 Feb 2021 16:20:27 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Antoine Tenart <atenart@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Steen Hegelund <steen.hegelund@microchip.com>
+Subject: Re: [PATCH net v1 1/3] net: phy: mscc: adding LCPLL reset to VSC8514
+Message-ID: <YCacux8K+ocWbRQ2@lunn.ch>
+References: <20210212140643.23436-1-bjarni.jonasson@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210211164852.7489b87d@canb.auug.org.au>
+In-Reply-To: <20210212140643.23436-1-bjarni.jonasson@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 04:48:52PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the rcu tree got conflicts in:
-> 
->   include/linux/rcupdate.h
->   kernel/rcu/tree.c
->   kernel/rcu/tree_plugin.h
-> 
-> between commits:
-> 
->   3a7b5c87a0b2 ("rcu/nocb: Perform deferred wake up before last idle's need_resched() check")
->   e4234f21d2ea ("rcu: Pull deferred rcuog wake up to rcu_eqs_enter() callers")
->   14bbd41d5109 ("entry/kvm: Explicitly flush pending rcuog wakeup before last
->   rescheduling point")
-> from the block tree and commits:
+On Fri, Feb 12, 2021 at 03:06:41PM +0100, Bjarni Jonasson wrote:
+> +static u32 vsc85xx_csr_read(struct phy_device *phydev,
+> +			    enum csr_target target, u32 reg);
+> +static int vsc85xx_csr_write(struct phy_device *phydev,
+> +			     enum csr_target target, u32 reg, u32 val);
+> +
 
-Isn't it tip:/sched/core instead of block?
+Hi Bjarni
+
+No forward definitions please. Move the code around so they are not
+required. Sometimes it is best to do such a move as a preparation
+patch.
+
+> @@ -1569,8 +1664,16 @@ static int vsc8514_config_pre_init(struct phy_device *phydev)
+>  		{0x16b2, 0x00007000},
+>  		{0x16b4, 0x00000814},
+>  	};
+> +	struct device *dev = &phydev->mdio.dev;
+>  	unsigned int i;
+>  	u16 reg;
+> +	int ret;
+
+Hard to say from the limited context, but is reverse christmass tree
+being preserved here?
+
+      Andrew
