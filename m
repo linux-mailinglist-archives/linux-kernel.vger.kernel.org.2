@@ -2,885 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81211319D66
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9DF319D68
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 12:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhBLLbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 06:31:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:35574 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230004AbhBLLbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:31:11 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 37DD8113E;
-        Fri, 12 Feb 2021 03:30:24 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 89BA13F719;
-        Fri, 12 Feb 2021 03:30:19 -0800 (PST)
-Subject: Re: [RESEND RFC PATCH v2] arm64: Exposes support for 32-bit syscalls
-To:     sonicadvance1@gmail.com
-Cc:     amanieu@gmail.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Gavin Shan <gshan@redhat.com>, Mike Rapoport <rppt@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jason Yan <yanaijie@huawei.com>, Andrey Ignatov <rdna@fb.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Julien Grall <julien.grall@arm.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210211202208.31555-1-Sonicadvance1@gmail.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <58b03e17-3729-99ea-8691-0d735a53b9bc@arm.com>
-Date:   Fri, 12 Feb 2021 11:30:41 +0000
+        id S230176AbhBLLeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 06:34:06 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45484 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhBLLd5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 06:33:57 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11CBWCcO046265;
+        Fri, 12 Feb 2021 05:32:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1613129532;
+        bh=lyiLDwogJ1paXgGUXDm0c4v2P/Y1qePzkvGucH2e5Us=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=GmJqnkkFtxBDSim9680fu9/si7iKpQ7G/hJrLVGBhnBkq2YK1fXyye6wtnbp2wgfj
+         WgNx11Sjye3KW3Zt4PjvwHqgOvROD941P63KCIcW3GzusRKVQtLnUkomLPjbtOylis
+         mS8zss5FnP/crsBNz6V6eaeGaEOKy2nReUMq66gs=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11CBWCdg094817
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 12 Feb 2021 05:32:12 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 12
+ Feb 2021 05:32:12 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 12 Feb 2021 05:32:12 -0600
+Received: from [10.250.234.7] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11CBW83G057822;
+        Fri, 12 Feb 2021 05:32:09 -0600
+Subject: Re: [PATCH v14 2/4] phy: Add media type and speed serdes
+ configuration interfaces
+To:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+References: <20210210085255.2006824-1-steen.hegelund@microchip.com>
+ <20210210085255.2006824-3-steen.hegelund@microchip.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <04d91f6b-775a-8389-b813-31f7b4a778cb@ti.com>
+Date:   Fri, 12 Feb 2021 17:02:08 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210211202208.31555-1-Sonicadvance1@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210210085255.2006824-3-steen.hegelund@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/02/2021 20:21, sonicadvance1@gmail.com wrote:
-> From: Ryan Houdek <Sonicadvance1@gmail.com>
+Hi Steen,
+
+On 10/02/21 2:22 pm, Steen Hegelund wrote:
+> Provide new phy configuration interfaces for media type and speed that
+> allows allows e.g. PHYs used for ethernet to be configured with this
+> information.
 > 
-> Sorry about the noise. I obviously don't work in this ecosystem.
-> Didn't get any comments previously so I'm resending
-
-We're just coming up to a merge window, so I expect people are fairly 
-busy at the moment. Also from a reviewability perspective I think you 
-need to split this up into several patches with logical changes, as it 
-stands the actual code changes are hard to review.
-
-> The problem:
-> We need to support 32-bit processes running under a userspace
-> compatibility layer. The compatibility layer is a AArch64 process.
-> This means exposing the 32bit compatibility syscalls to userspace.
-
-I'm not sure how you come to this conclusion. Running 32-bit processes 
-under a compatibility layer is a fine goal, but it's not clear why the 
-entire 32-bit compat syscall layer is needed for this.
-
-As a case in point QEMU's user mode emulation already achieves this in 
-many cases without any changes to the kernel.
-
-> Why do we need compatibility layers?
-> There are ARMv8 CPUs that only support AArch64 but still need to run
-> AArch32 applications.
-> Cortex-A34/R82 and other cores are prime examples of this.
-> Additionally if a user is needing to run legacy 32-bit x86 software, it
-> needs the same compatibility layer.
-
-Unless I'm much mistaken QEMU's user mode already does this - admittedly 
-I don't tend to run "legacy 32-bit x86 software".
-
-> Who does this matter to?
-> Any user that has a specific need to run legacy 32-bit software under a
-> compatibility layer.
-> Not all software is open source or easy to convert to 64bit, it's
-> something we need to live with.
-> Professional software and the gaming ecosystem is rife with this.
-> 
-> What applications have tried to work around this problem?
-> FEX emulator (1) - Userspace x86 to AArch64 compatibility layer
-> Tango binary translator (2) - AArch32 to AArch64 compatibility layer
-> QEmu (3) - Not really but they do some userspace ioctl emulation
-
-Can you expand on "not really"? Clearly there are limitations, but in 
-general I can happily "chroot" into a distro filesystem using an 
-otherwise incompatible architecture using a qemu-xxx-static binary.
-
-> What problems did they hit?
-> FEX and Tango hit problems with emulating memory related syscalls.
-> - Emulating 32-bit mmap, mremap, shmat in userspace changes behaviour
-> All three hit issues with ioctl emulation
-> - ioctls are free to do what they want including allocating memory and
-> returning opaque structures with pointers.
-
-Now I think we're getting to what the actual problems are:
-
-  * mmap and friends have no (easy) way of forcing a mapping into a 32 
-bit region.
-  * ioctls are a mess
-
-The first seems like a reasonable goal - I've seen examples of MAP_32BIT 
-being (ab)used to do this, but it actually restricts to 31 bits and it's 
-not even available on arm64. Here I think you'd be better off focusing 
-on coming up with a new (generic) way of restricting the addresses that 
-the kernel will pick.
-
-ioctls are going to be a problem whatever you do, and I don't think 
-there is much option other than having a list of known ioctls and 
-translating them in user space - see below.
-
-> With this patch we will be exposing the compatibility syscall table
-> through the regular syscall svc API. There is prior art here where on
-> x86-64 they also expose the compatibility tables.
-> The justification for this is that we need to maintain support for 32bit
-> application compatibility going in to the foreseeable future.
-> Userspace does almost all of the heavy lifting here, especially when the
-> hardware no longer supports the 32bit use case.
-> 
-> A couple of caveats to this approach.
-> Userspace must know that this doesn't solve structure alignment problems
-> for the x86->AArch64 (1) case.
-> The API for this changes from syscall number in x8 to x7 to match
-> AArch32 syscall semantics
-
-This is where the argument of exposing compat falls down - for one of 
-the main use cases (x86->aarch64) you still need to do a load of fixups 
-in user space due to the differing alignment/semantics of the 
-architectures. It's not clear to me why you can't just convert the 
-arguments to the full 64-bit native ioctls at the same time. You are 
-already going to have to have an allow-list of ioctls that are handled 
-because any unknown ioctl is likely to blow up in strange ways due to 
-the likes of structure alignment differences.
-
-> This is now exposing the compat syscalls to userspace, but for the sake
-> of userspace compatibility it is a necessary evil.
-
-You've yet to convince me that it's "necessary" - I agree on the "evil" 
-part ;)
-
-> Why does the upstream kernel care?
-> I believe every user wants to have their software ecosystem continue
-> working if they are in a mixed AArch32/AArch64 world even when they are
-> running AArch64 only hardware. The kernel should facilitate a good user
-> experience.
-
-I fully agree on the goal - just I think you need more justification for 
-the approach you are taking.
-
-Steve
-
-> External Resources
-> (1) https://github.com/FEX-Emu/FEX
-> (2) https://www.amanieusystems.com/
-> (3) https://www.qemu.org/
-> 
-> Further reading
-> - https://github.com/FEX-Emu/FEX/wiki/32Bit-x86-Woes
-> - Original patch: https://github.com/Amanieu/linux/commit/b4783002afb0
-> 
-> Changes in v2:
-> - Removed a tangential code path to make this more concise
->    - Now doesn't cover Tango's full use case
->    - This is purely for conciseness sake, easy enough to add back
-> - Cleaned up commit message
-> Signed-off-by: Ryan Houdek <Sonicadvance1@gmail.com>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 > ---
->   arch/arm64/Kconfig                   |   9 +
->   arch/arm64/include/asm/compat.h      |  20 +++
->   arch/arm64/include/asm/exception.h   |   2 +-
->   arch/arm64/include/asm/mmu.h         |   7 +
->   arch/arm64/include/asm/pgtable.h     |  10 ++
->   arch/arm64/include/asm/processor.h   |   6 +-
->   arch/arm64/include/asm/thread_info.h |   7 +
->   arch/arm64/kernel/asm-offsets.c      |   3 +
->   arch/arm64/kernel/entry-common.c     |   9 +-
->   arch/arm64/kernel/fpsimd.c           |   2 +-
->   arch/arm64/kernel/hw_breakpoint.c    |   2 +-
->   arch/arm64/kernel/perf_regs.c        |   2 +-
->   arch/arm64/kernel/process.c          |  13 +-
->   arch/arm64/kernel/ptrace.c           |   6 +-
->   arch/arm64/kernel/signal.c           |   2 +-
->   arch/arm64/kernel/syscall.c          |  41 ++++-
->   arch/arm64/mm/mmap.c                 | 249 +++++++++++++++++++++++++++
->   17 files changed, 369 insertions(+), 21 deletions(-)
+>  drivers/phy/phy-core.c  | 30 ++++++++++++++++++++++++++++++
+>  include/linux/phy/phy.h | 26 ++++++++++++++++++++++++++
+>  2 files changed, 56 insertions(+)
 > 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 1515f6f153a0..9832f05daaee 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1147,6 +1147,15 @@ config XEN
->   	help
->   	  Say Y if you want to run Linux in a Virtual Machine on Xen on ARM64.
->   
-> +config ARM_COMPAT_DISPATCH
-> +	bool "32bit syscall dispatch table"
-> +	depends on COMPAT && ARM64
-> +	default y
-> +	help
-> +	  Kernel support for exposing the 32-bit syscall dispatch table to
-> +	  userspace.
-> +	  For dynamically translating 32-bit applications to a 64-bit process.
-> +
->   config FORCE_MAX_ZONEORDER
->   	int
->   	default "14" if (ARM64_64K_PAGES && TRANSPARENT_HUGEPAGE)
-> diff --git a/arch/arm64/include/asm/compat.h b/arch/arm64/include/asm/compat.h
-> index 23a9fb73c04f..d00c6f427999 100644
-> --- a/arch/arm64/include/asm/compat.h
-> +++ b/arch/arm64/include/asm/compat.h
-> @@ -180,10 +180,30 @@ struct compat_shmid64_ds {
->   
->   static inline int is_compat_task(void)
->   {
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +	/* It is compatible if Tango, 32bit compat, or 32bit thread */
-> +	return current_thread_info()->compat_syscall_flags != 0 || test_thread_flag(TIF_32BIT);
-> +#else
->   	return test_thread_flag(TIF_32BIT);
-> +#endif
->   }
->   
->   static inline int is_compat_thread(struct thread_info *thread)
+> diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
+> index 71cb10826326..ccb575b13777 100644
+> --- a/drivers/phy/phy-core.c
+> +++ b/drivers/phy/phy-core.c
+> @@ -373,6 +373,36 @@ int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode)
+>  }
+>  EXPORT_SYMBOL_GPL(phy_set_mode_ext);
+>  
+> +int phy_set_media(struct phy *phy, enum phy_media media)
 > +{
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +	/* It is compatible if Tango, 32bit compat, or 32bit thread */
-> +	return thread->compat_syscall_flags != 0 || test_ti_thread_flag(thread, TIF_32BIT);
-> +#else
-> +	return test_ti_thread_flag(thread, TIF_32BIT);
-> +#endif
-> +}
+> +	int ret;
 > +
-> +static inline int is_aarch32_compat_task(void)
+> +	if (!phy || !phy->ops->set_media)
+> +		return 0;
+> +
+> +	mutex_lock(&phy->mutex);
+> +	ret = phy->ops->set_media(phy, media);
+> +	mutex_unlock(&phy->mutex);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(phy_set_media);
+> +
+> +int phy_set_speed(struct phy *phy, int speed)
 > +{
-> +	return test_thread_flag(TIF_32BIT);
+> +	int ret;
+> +
+> +	if (!phy || !phy->ops->set_speed)
+> +		return 0;
+> +
+> +	mutex_lock(&phy->mutex);
+> +	ret = phy->ops->set_speed(phy, speed);
+> +	mutex_unlock(&phy->mutex);
+> +
+> +	return ret;
 > +}
-> +
-> +static inline int is_aarch32_compat_thread(struct thread_info *thread)
->   {
->   	return test_ti_thread_flag(thread, TIF_32BIT);
->   }
-> diff --git a/arch/arm64/include/asm/exception.h b/arch/arm64/include/asm/exception.h
-> index 99b9383cd036..f2c94b44b51c 100644
-> --- a/arch/arm64/include/asm/exception.h
-> +++ b/arch/arm64/include/asm/exception.h
-> @@ -45,7 +45,7 @@ void do_sysinstr(unsigned int esr, struct pt_regs *regs);
->   void do_sp_pc_abort(unsigned long addr, unsigned int esr, struct pt_regs *regs);
->   void bad_el0_sync(struct pt_regs *regs, int reason, unsigned int esr);
->   void do_cp15instr(unsigned int esr, struct pt_regs *regs);
-> -void do_el0_svc(struct pt_regs *regs);
-> +void do_el0_svc(struct pt_regs *regs, unsigned int iss);
->   void do_el0_svc_compat(struct pt_regs *regs);
->   void do_ptrauth_fault(struct pt_regs *regs, unsigned int esr);
->   #endif	/* __ASM_EXCEPTION_H */
-> diff --git a/arch/arm64/include/asm/mmu.h b/arch/arm64/include/asm/mmu.h
-> index b2e91c187e2a..0744db65c0a9 100644
-> --- a/arch/arm64/include/asm/mmu.h
-> +++ b/arch/arm64/include/asm/mmu.h
-> @@ -27,6 +27,9 @@ typedef struct {
->   	refcount_t	pinned;
->   	void		*vdso;
->   	unsigned long	flags;
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +	unsigned long	compat_mmap_base;
-> +#endif
->   } mm_context_t;
->   
->   /*
-> @@ -79,6 +82,10 @@ extern void *fixmap_remap_fdt(phys_addr_t dt_phys, int *size, pgprot_t prot);
->   extern void mark_linear_text_alias_ro(void);
->   extern bool kaslr_requires_kpti(void);
->   
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +extern void process_init_compat_mmap(void);
-> +#endif
-> +
->   #define INIT_MM_CONTEXT(name)	\
->   	.pgd = init_pg_dir,
->   
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 4ff12a7adcfd..5e7662c2675c 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -974,6 +974,16 @@ static inline bool arch_faults_on_old_pte(void)
->   }
->   #define arch_faults_on_old_pte arch_faults_on_old_pte
->   
-> +/*
-> + * We provide our own arch_get_unmapped_area to handle 32-bit mmap calls from
-> + * tango.
-> + */
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +#define HAVE_ARCH_UNMAPPED_AREA
-> +#define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
-> +#define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
-> +#endif
-> +
->   #endif /* !__ASSEMBLY__ */
->   
->   #endif /* __ASM_PGTABLE_H */
-> diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
-> index fce8cbecd6bc..03c05cd19f87 100644
-> --- a/arch/arm64/include/asm/processor.h
-> +++ b/arch/arm64/include/asm/processor.h
-> @@ -175,7 +175,7 @@ static inline void arch_thread_struct_whitelist(unsigned long *offset,
->   #define task_user_tls(t)						\
->   ({									\
->   	unsigned long *__tls;						\
-> -	if (is_compat_thread(task_thread_info(t)))			\
-> +	if (is_aarch32_compat_thread(task_thread_info(t)))			\
->   		__tls = &(t)->thread.uw.tp2_value;			\
->   	else								\
->   		__tls = &(t)->thread.uw.tp_value;			\
-> @@ -256,8 +256,8 @@ extern struct task_struct *cpu_switch_to(struct task_struct *prev,
->   #define task_pt_regs(p) \
->   	((struct pt_regs *)(THREAD_SIZE + task_stack_page(p)) - 1)
->   
-> -#define KSTK_EIP(tsk)	((unsigned long)task_pt_regs(tsk)->pc)
-> -#define KSTK_ESP(tsk)	user_stack_pointer(task_pt_regs(tsk))
-> +#define KSTK_EIP(tsk)  ((unsigned long)task_pt_regs(tsk)->pc)
-> +#define KSTK_ESP(tsk)  user_stack_pointer(task_pt_regs(tsk))
->   
->   /*
->    * Prefetching support
-> diff --git a/arch/arm64/include/asm/thread_info.h b/arch/arm64/include/asm/thread_info.h
-> index 1fbab854a51b..cb04c7c4df38 100644
-> --- a/arch/arm64/include/asm/thread_info.h
-> +++ b/arch/arm64/include/asm/thread_info.h
-> @@ -41,6 +41,9 @@ struct thread_info {
->   #endif
->   		} preempt;
->   	};
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +	int			compat_syscall_flags;	/* 32-bit compat syscall */
-> +#endif
->   #ifdef CONFIG_SHADOW_CALL_STACK
->   	void			*scs_base;
->   	void			*scs_sp;
-> @@ -107,6 +110,10 @@ void arch_release_task_struct(struct task_struct *tsk);
->   				 _TIF_SYSCALL_TRACEPOINT | _TIF_SECCOMP | \
->   				 _TIF_SYSCALL_EMU)
->   
-> +#define TIF_COMPAT_32BITSYSCALL 0 /* Trivial 32bit compatible syscall */
-> +
-> +#define _TIF_COMPAT_32BITSYSCALL (1 << TIF_COMPAT_32BITSYSCALL)
-> +
->   #ifdef CONFIG_SHADOW_CALL_STACK
->   #define INIT_SCS							\
->   	.scs_base	= init_shadow_call_stack,			\
-> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-> index 7d32fc959b1a..742203cff128 100644
-> --- a/arch/arm64/kernel/asm-offsets.c
-> +++ b/arch/arm64/kernel/asm-offsets.c
-> @@ -34,6 +34,9 @@ int main(void)
->   #ifdef CONFIG_ARM64_SW_TTBR0_PAN
->     DEFINE(TSK_TI_TTBR0,		offsetof(struct task_struct, thread_info.ttbr0));
->   #endif
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +  DEFINE(TI_COMPAT_SYSCALL,	offsetof(struct task_struct, thread_info.compat_syscall_flags));
-> +#endif
->   #ifdef CONFIG_SHADOW_CALL_STACK
->     DEFINE(TSK_TI_SCS_BASE,	offsetof(struct task_struct, thread_info.scs_base));
->     DEFINE(TSK_TI_SCS_SP,		offsetof(struct task_struct, thread_info.scs_sp));
-> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-> index 43d4c329775f..6d98a9c6fafd 100644
-> --- a/arch/arm64/kernel/entry-common.c
-> +++ b/arch/arm64/kernel/entry-common.c
-> @@ -228,12 +228,12 @@ static void notrace el0_dbg(struct pt_regs *regs, unsigned long esr)
->   }
->   NOKPROBE_SYMBOL(el0_dbg);
->   
-> -static void notrace el0_svc(struct pt_regs *regs)
-> +static void notrace el0_svc(struct pt_regs *regs, unsigned int iss)
->   {
->   	if (system_uses_irq_prio_masking())
->   		gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
->   
-> -	do_el0_svc(regs);
-> +	do_el0_svc(regs, iss);
->   }
->   NOKPROBE_SYMBOL(el0_svc);
->   
-> @@ -251,7 +251,10 @@ asmlinkage void notrace el0_sync_handler(struct pt_regs *regs)
->   
->   	switch (ESR_ELx_EC(esr)) {
->   	case ESR_ELx_EC_SVC64:
-> -		el0_svc(regs);
-> +		/* Redundant masking here to show we are getting ISS mask
-> +		 * Then we are pulling the imm16 out of it for SVC64
-> +		 */
-> +		el0_svc(regs, (esr & ESR_ELx_ISS_MASK) & 0xffff);
->   		break;
->   	case ESR_ELx_EC_DABT_LOW:
->   		el0_da(regs, esr);
-> diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-> index 062b21f30f94..a35ab449a466 100644
-> --- a/arch/arm64/kernel/fpsimd.c
-> +++ b/arch/arm64/kernel/fpsimd.c
-> @@ -937,7 +937,7 @@ void fpsimd_release_task(struct task_struct *dead_task)
->   void do_sve_acc(unsigned int esr, struct pt_regs *regs)
->   {
->   	/* Even if we chose not to use SVE, the hardware could still trap: */
-> -	if (unlikely(!system_supports_sve()) || WARN_ON(is_compat_task())) {
-> +	if (unlikely(!system_supports_sve()) || WARN_ON(is_aarch32_compat_task())) {
->   		force_signal_inject(SIGILL, ILL_ILLOPC, regs->pc, 0);
->   		return;
->   	}
-> diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
-> index 712e97c03e54..37c9349c4999 100644
-> --- a/arch/arm64/kernel/hw_breakpoint.c
-> +++ b/arch/arm64/kernel/hw_breakpoint.c
-> @@ -168,7 +168,7 @@ static int is_compat_bp(struct perf_event *bp)
->   	 * deprecated behaviour if we use unaligned watchpoints in
->   	 * AArch64 state.
->   	 */
-> -	return tsk && is_compat_thread(task_thread_info(tsk));
-> +	return tsk && is_aarch32_compat_thread(task_thread_info(tsk));
->   }
->   
->   /**
-> diff --git a/arch/arm64/kernel/perf_regs.c b/arch/arm64/kernel/perf_regs.c
-> index f6f58e6265df..c4b061f0d182 100644
-> --- a/arch/arm64/kernel/perf_regs.c
-> +++ b/arch/arm64/kernel/perf_regs.c
-> @@ -66,7 +66,7 @@ int perf_reg_validate(u64 mask)
->   
->   u64 perf_reg_abi(struct task_struct *task)
->   {
-> -	if (is_compat_thread(task_thread_info(task)))
-> +	if (is_aarch32_compat_thread(task_thread_info(task)))
->   		return PERF_SAMPLE_REGS_ABI_32;
->   	else
->   		return PERF_SAMPLE_REGS_ABI_64;
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index a47a40ec6ad9..9c0775babbd0 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -314,7 +314,7 @@ static void tls_thread_flush(void)
->   {
->   	write_sysreg(0, tpidr_el0);
->   
-> -	if (is_compat_task()) {
-> +	if (is_aarch32_compat_task()) {
->   		current->thread.uw.tp_value = 0;
->   
->   		/*
-> @@ -409,7 +409,7 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
->   		*task_user_tls(p) = read_sysreg(tpidr_el0);
->   
->   		if (stack_start) {
-> -			if (is_compat_thread(task_thread_info(p)))
-> +			if (is_aarch32_compat_thread(task_thread_info(p)))
->   				childregs->compat_sp = stack_start;
->   			else
->   				childregs->sp = stack_start;
-> @@ -453,7 +453,7 @@ static void tls_thread_switch(struct task_struct *next)
->   {
->   	tls_preserve_current_state();
->   
-> -	if (is_compat_thread(task_thread_info(next)))
-> +	if (is_aarch32_compat_thread(task_thread_info(next)))
->   		write_sysreg(next->thread.uw.tp_value, tpidrro_el0);
->   	else if (!arm64_kernel_unmapped_at_el0())
->   		write_sysreg(0, tpidrro_el0);
-> @@ -619,7 +619,12 @@ unsigned long arch_align_stack(unsigned long sp)
->    */
->   void arch_setup_new_exec(void)
->   {
-> -	current->mm->context.flags = is_compat_task() ? MMCF_AARCH32 : 0;
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +	process_init_compat_mmap();
-> +	current_thread_info()->compat_syscall_flags = 0;
-> +#endif
-> +
-> +	current->mm->context.flags = is_aarch32_compat_task() ? MMCF_AARCH32 : 0;
->   
->   	ptrauth_thread_init_user(current);
->   
-> diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-> index f49b349e16a3..2e3c242941d1 100644
-> --- a/arch/arm64/kernel/ptrace.c
-> +++ b/arch/arm64/kernel/ptrace.c
-> @@ -175,7 +175,7 @@ static void ptrace_hbptriggered(struct perf_event *bp,
->   	const char *desc = "Hardware breakpoint trap (ptrace)";
->   
->   #ifdef CONFIG_COMPAT
-> -	if (is_compat_task()) {
-> +	if (is_aarch32_compat_task()) {
->   		int si_errno = 0;
->   		int i;
->   
-> @@ -1725,7 +1725,7 @@ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
->   	 */
->   	if (is_compat_task())
->   		return &user_aarch32_view;
-> -	else if (is_compat_thread(task_thread_info(task)))
-> +	else if (is_aarch32_compat_thread(task_thread_info(task)))
->   		return &user_aarch32_ptrace_view;
->   #endif
->   	return &user_aarch64_view;
-> @@ -1906,7 +1906,7 @@ int valid_user_regs(struct user_pt_regs *regs, struct task_struct *task)
->   	/* https://lore.kernel.org/lkml/20191118131525.GA4180@willie-the-truck */
->   	user_regs_reset_single_step(regs, task);
->   
-> -	if (is_compat_thread(task_thread_info(task)))
-> +	if (is_aarch32_compat_thread(task_thread_info(task)))
->   		return valid_compat_regs(regs);
->   	else
->   		return valid_native_regs(regs);
-> diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-> index a8184cad8890..e6462b32effa 100644
-> --- a/arch/arm64/kernel/signal.c
-> +++ b/arch/arm64/kernel/signal.c
-> @@ -813,7 +813,7 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
->   	/*
->   	 * Set up the stack frame
->   	 */
-> -	if (is_compat_task()) {
-> +	if (is_aarch32_compat_task()) {
->   		if (ksig->ka.sa.sa_flags & SA_SIGINFO)
->   			ret = compat_setup_rt_frame(usig, ksig, oldset, regs);
->   		else
-> diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-> index e4c0dadf0d92..6857dad5df8e 100644
-> --- a/arch/arm64/kernel/syscall.c
-> +++ b/arch/arm64/kernel/syscall.c
-> @@ -21,7 +21,7 @@ static long do_ni_syscall(struct pt_regs *regs, int scno)
->   {
->   #ifdef CONFIG_COMPAT
->   	long ret;
-> -	if (is_compat_task()) {
-> +	if (is_aarch32_compat_task()) {
->   		ret = compat_arm_syscall(regs, scno);
->   		if (ret != -ENOSYS)
->   			return ret;
-> @@ -167,6 +167,9 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
->   		local_daif_mask();
->   		flags = current_thread_info()->flags;
->   		if (!has_syscall_work(flags) && !(flags & _TIF_SINGLESTEP)) {
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +			current_thread_info()->compat_syscall_flags = 0;
-> +#endif
->   			/*
->   			 * We're off to userspace, where interrupts are
->   			 * always enabled after we restore the flags from
-> @@ -180,6 +183,9 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
->   
->   trace_exit:
->   	syscall_trace_exit(regs);
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +	current_thread_info()->compat_syscall_flags = 0;
-> +#endif
->   }
->   
->   static inline void sve_user_discard(void)
-> @@ -199,10 +205,39 @@ static inline void sve_user_discard(void)
->   	sve_user_disable();
->   }
->   
-> -void do_el0_svc(struct pt_regs *regs)
-> +void do_el0_svc(struct pt_regs *regs, unsigned int iss)
->   {
->   	sve_user_discard();
-> -	el0_svc_common(regs, regs->regs[8], __NR_syscalls, sys_call_table);
-> +	/* XXX: Which style is more ideal to take here? */
-> +#if 0
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +	/* Hardcode syscall 0x8000'0000 to be a 32bit support syscall */
-> +	if (regs->regs[8] == 0x80000000) {
-> +		current_thread_info()->compat_syscall_flags = _TIF_COMPAT_32BITSYSCALL;
-> +		el0_svc_common(regs, regs->regs[7], __NR_compat_syscalls,
-> +			       compat_sys_call_table);
-> +
-> +	} else
-> +#endif
-> +		el0_svc_common(regs, regs->regs[8], __NR_syscalls, sys_call_table);
-> +#else
-> +	switch (iss) {
-> +	/* SVC #1 is now a 32bit support syscall
-> +	 * Any other SVC ISS falls down the regular syscall code path
-> +	 */
-> +	case 1:
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +		current_thread_info()->compat_syscall_flags = _TIF_COMPAT_32BITSYSCALL;
-> +		el0_svc_common(regs, regs->regs[7], __NR_compat_syscalls,
-> +			       compat_sys_call_table);
-> +#else
-> +		return -ENOSYS;
-> +#endif
-> +		break;
-> +	default:
-> +		el0_svc_common(regs, regs->regs[8], __NR_syscalls, sys_call_table);
-> +	}
-> +#endif
->   }
->   
->   #ifdef CONFIG_COMPAT
-> diff --git a/arch/arm64/mm/mmap.c b/arch/arm64/mm/mmap.c
-> index 3028bacbc4e9..857aa03a3ac2 100644
-> --- a/arch/arm64/mm/mmap.c
-> +++ b/arch/arm64/mm/mmap.c
-> @@ -17,6 +17,8 @@
->   #include <linux/io.h>
->   #include <linux/personality.h>
->   #include <linux/random.h>
-> +#include <linux/security.h>
-> +#include <linux/hugetlb.h>
->   
->   #include <asm/cputype.h>
->   
-> @@ -68,3 +70,250 @@ int devmem_is_allowed(unsigned long pfn)
->   }
->   
->   #endif
-> +
-> +#ifdef CONFIG_ARM_COMPAT_DISPATCH
-> +
-> +/* Definitions for compat syscall guest mmap area */
-> +#define COMPAT_MIN_GAP			(SZ_128M)
-> +#define COMPAT_STACK_TOP		0xffff0000
-> +#define COMPAT_MAX_GAP			(COMPAT_STACK_TOP/6*5)
-> +#define COMPAT_TASK_UNMAPPED_BASE	PAGE_ALIGN(TASK_SIZE_32 / 4)
-> +#define COMPAT_STACK_RND_MASK		(0x7ff >> (PAGE_SHIFT - 12))
-> +
-> +#ifndef arch_get_mmap_end
-> +#define arch_get_mmap_end(addr)	(TASK_SIZE)
-> +#endif
-> +
-> +#ifndef arch_get_mmap_base
-> +#define arch_get_mmap_base(addr, base) (base)
-> +#endif
-> +
-> +static int mmap_is_legacy(unsigned long rlim_stack)
-> +{
-> +	if (current->personality & ADDR_COMPAT_LAYOUT)
-> +		return 1;
-> +
-> +	if (rlim_stack == RLIM_INFINITY)
-> +		return 1;
-> +
-> +	return sysctl_legacy_va_layout;
-> +}
-> +
-> +static unsigned long compat_mmap_base(unsigned long rnd, unsigned long gap)
-> +{
-> +	unsigned long pad = stack_guard_gap;
-> +
-> +	/* Account for stack randomization if necessary */
-> +	if (current->flags & PF_RANDOMIZE)
-> +		pad += (COMPAT_STACK_RND_MASK << PAGE_SHIFT);
-> +
-> +	/* Values close to RLIM_INFINITY can overflow. */
-> +	if (gap + pad > gap)
-> +		gap += pad;
-> +
-> +	if (gap < COMPAT_MIN_GAP)
-> +		gap = COMPAT_MIN_GAP;
-> +	else if (gap > COMPAT_MAX_GAP)
-> +		gap = COMPAT_MAX_GAP;
-> +
-> +	return PAGE_ALIGN(COMPAT_STACK_TOP - gap - rnd);
-> +}
-> +
-> +void process_init_compat_mmap(void)
-> +{
-> +	unsigned long random_factor = 0UL;
-> +	unsigned long rlim_stack = rlimit(RLIMIT_STACK);
-> +
-> +	if (current->flags & PF_RANDOMIZE) {
-> +		random_factor = (get_random_long() &
-> +			((1UL << mmap_rnd_compat_bits) - 1)) << PAGE_SHIFT;
-> +	}
-> +
-> +	if (mmap_is_legacy(rlim_stack)) {
-> +		current->mm->context.compat_mmap_base =
-> +			COMPAT_TASK_UNMAPPED_BASE + random_factor;
-> +	} else {
-> +		current->mm->context.compat_mmap_base =
-> +			compat_mmap_base(random_factor, rlim_stack);
-> +	}
-> +}
-> +
-> +/* Get an address range which is currently unmapped.
-> + * For shmat() with addr=0.
-> + *
-> + * Ugly calling convention alert:
-> + * Return value with the low bits set means error value,
-> + * ie
-> + *	if (ret & ~PAGE_MASK)
-> + *		error = ret;
-> + *
-> + * This function "knows" that -ENOMEM has the bits set.
-> + */
-> +unsigned long
-> +arch_get_unmapped_area(struct file *filp, unsigned long addr,
-> +		unsigned long len, unsigned long pgoff, unsigned long flags)
-> +{
-> +	struct mm_struct *mm = current->mm;
-> +	struct vm_area_struct *vma, *prev;
-> +	struct vm_unmapped_area_info info;
-> +	const unsigned long mmap_end = arch_get_mmap_end(addr);
-> +	bool bad_addr = false;
-> +
-> +	if (len > mmap_end - mmap_min_addr)
-> +		return -ENOMEM;
-> +
-> +	/*
-> +	 * Ensure that translated processes do not allocate the last
-> +	 * page of the 32-bit address space, or anything above it.
-> +	 */
-> +	if (is_compat_task())
-> +		bad_addr = addr + len > TASK_SIZE_32;
-> +
-> +	if (flags & MAP_FIXED)
-> +		return bad_addr ? -ENOMEM : addr;
-> +
-> +	if (addr && !bad_addr) {
-> +		addr = PAGE_ALIGN(addr);
-> +		vma = find_vma_prev(mm, addr, &prev);
-> +		if (mmap_end - len >= addr && addr >= mmap_min_addr &&
-> +		    (!vma || addr + len <= vm_start_gap(vma)) &&
-> +		    (!prev || addr >= vm_end_gap(prev)))
-> +			return addr;
-> +	}
-> +
-> +	info.flags = 0;
-> +	info.length = len;
-> +	if (is_compat_task()) {
-> +		info.low_limit = mm->context.compat_mmap_base;
-> +		info.high_limit = TASK_SIZE_32;
-> +	} else {
-> +		info.low_limit = mm->mmap_base;
-> +		info.high_limit = mmap_end;
-> +	}
-> +	info.align_mask = 0;
-> +	return vm_unmapped_area(&info);
-> +}
-> +
-> +/*
-> + * This mmap-allocator allocates new areas top-down from below the
-> + * stack's low limit (the base):
-> + */
-> +unsigned long
-> +arch_get_unmapped_area_topdown(struct file *filp, unsigned long addr,
-> +			  unsigned long len, unsigned long pgoff,
-> +			  unsigned long flags)
-> +{
-> +
-> +	struct vm_area_struct *vma, *prev;
-> +	struct mm_struct *mm = current->mm;
-> +	struct vm_unmapped_area_info info;
-> +	const unsigned long mmap_end = arch_get_mmap_end(addr);
-> +	bool bad_addr = false;
-> +
-> +	/* requested length too big for entire address space */
-> +	if (len > mmap_end - mmap_min_addr)
-> +		return -ENOMEM;
-> +
-> +	/*
-> +	 * Ensure that translated processes do not allocate the last
-> +	 * page of the 32-bit address space, or anything above it.
-> +	 */
-> +	if (is_compat_task())
-> +		bad_addr = addr + len > TASK_SIZE_32;
-> +
-> +	if (flags & MAP_FIXED)
-> +		return bad_addr ? -ENOMEM : addr;
-> +
-> +	/* requesting a specific address */
-> +	if (addr && !bad_addr) {
-> +		addr = PAGE_ALIGN(addr);
-> +		vma = find_vma_prev(mm, addr, &prev);
-> +		if (mmap_end - len >= addr && addr >= mmap_min_addr &&
-> +				(!vma || addr + len <= vm_start_gap(vma)) &&
-> +				(!prev || addr >= vm_end_gap(prev)))
-> +			return addr;
-> +	}
-> +
-> +	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
-> +	info.length = len;
-> +	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
-> +	if (is_compat_task())
-> +		info.high_limit = mm->context.compat_mmap_base;
-> +	else
-> +		info.high_limit = arch_get_mmap_base(addr, mm->mmap_base);
-> +	info.align_mask = 0;
-> +	addr = vm_unmapped_area(&info);
-> +
-> +	/*
-> +	 * A failed mmap() very likely causes application failure,
-> +	 * so fall back to the bottom-up function here. This scenario
-> +	 * can happen with large stack limits and large mmap()
-> +	 * allocations.
-> +	 */
-> +	if (offset_in_page(addr)) {
-> +		VM_BUG_ON(addr != -ENOMEM);
-> +		info.flags = 0;
-> +		if (is_compat_task()) {
-> +			info.low_limit = COMPAT_TASK_UNMAPPED_BASE;
-> +			info.high_limit = TASK_SIZE_32;
-> +		} else {
-> +			info.low_limit = TASK_UNMAPPED_BASE;
-> +			info.high_limit = mmap_end;
-> +		}
-> +		addr = vm_unmapped_area(&info);
-> +	}
-> +
-> +	return addr;
-> +}
-> +
-> +unsigned long
-> +hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
-> +		unsigned long len, unsigned long pgoff, unsigned long flags)
-> +{
-> +	struct mm_struct *mm = current->mm;
-> +	struct vm_area_struct *vma;
-> +	struct hstate *h = hstate_file(file);
-> +	struct vm_unmapped_area_info info;
-> +	bool bad_addr = false;
-> +
-> +	if (len & ~huge_page_mask(h))
-> +		return -EINVAL;
-> +	if (len > TASK_SIZE)
-> +		return -ENOMEM;
-> +
-> +	/*
-> +	 * Ensure that translated processes do not allocate the last
-> +	 * page of the 32-bit address space, or anything above it.
-> +	 */
-> +	if (is_compat_task())
-> +		bad_addr = addr + len > TASK_SIZE_32;
-> +
-> +	if (flags & MAP_FIXED) {
-> +		if (prepare_hugepage_range(file, addr, len))
-> +			return -EINVAL;
-> +		return bad_addr ? -ENOMEM : addr;
-> +	}
-> +
-> +	if (addr && !bad_addr) {
-> +		addr = ALIGN(addr, huge_page_size(h));
-> +		vma = find_vma(mm, addr);
-> +		if (TASK_SIZE - len >= addr &&
-> +		    (!vma || addr + len <= vm_start_gap(vma)))
-> +			return addr;
-> +	}
-> +
-> +	info.flags = 0;
-> +	info.length = len;
-> +	if (is_compat_task()) {
-> +		info.low_limit = COMPAT_TASK_UNMAPPED_BASE;
-> +		info.high_limit = TASK_SIZE_32;
-> +	} else {
-> +		info.low_limit = TASK_UNMAPPED_BASE;
-> +		info.high_limit = TASK_SIZE;
-> +	}
-> +	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
-> +	info.align_offset = 0;
-> +	return vm_unmapped_area(&info);
-> +}
-> +
-> +#endif
-> 
+> +EXPORT_SYMBOL_GPL(phy_set_speed);
 
+Can't speed derived from mode? Do we need a separate set_speed function?
+
+Thanks
+Kishon
+
+> +
+>  int phy_reset(struct phy *phy)
+>  {
+>  	int ret;
+> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+> index e435bdb0bab3..e4fd69a1faa7 100644
+> --- a/include/linux/phy/phy.h
+> +++ b/include/linux/phy/phy.h
+> @@ -44,6 +44,12 @@ enum phy_mode {
+>  	PHY_MODE_DP
+>  };
+>  
+> +enum phy_media {
+> +	PHY_MEDIA_DEFAULT,
+> +	PHY_MEDIA_SR,
+> +	PHY_MEDIA_DAC,
+> +};
+> +
+>  /**
+>   * union phy_configure_opts - Opaque generic phy configuration
+>   *
+> @@ -64,6 +70,8 @@ union phy_configure_opts {
+>   * @power_on: powering on the phy
+>   * @power_off: powering off the phy
+>   * @set_mode: set the mode of the phy
+> + * @set_media: set the media type of the phy (optional)
+> + * @set_speed: set the speed of the phy (optional)
+>   * @reset: resetting the phy
+>   * @calibrate: calibrate the phy
+>   * @release: ops to be performed while the consumer relinquishes the PHY
+> @@ -75,6 +83,8 @@ struct phy_ops {
+>  	int	(*power_on)(struct phy *phy);
+>  	int	(*power_off)(struct phy *phy);
+>  	int	(*set_mode)(struct phy *phy, enum phy_mode mode, int submode);
+> +	int	(*set_media)(struct phy *phy, enum phy_media media);
+> +	int	(*set_speed)(struct phy *phy, int speed);
+>  
+>  	/**
+>  	 * @configure:
+> @@ -215,6 +225,8 @@ int phy_power_off(struct phy *phy);
+>  int phy_set_mode_ext(struct phy *phy, enum phy_mode mode, int submode);
+>  #define phy_set_mode(phy, mode) \
+>  	phy_set_mode_ext(phy, mode, 0)
+> +int phy_set_media(struct phy *phy, enum phy_media media);
+> +int phy_set_speed(struct phy *phy, int speed);
+>  int phy_configure(struct phy *phy, union phy_configure_opts *opts);
+>  int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
+>  		 union phy_configure_opts *opts);
+> @@ -344,6 +356,20 @@ static inline int phy_set_mode_ext(struct phy *phy, enum phy_mode mode,
+>  #define phy_set_mode(phy, mode) \
+>  	phy_set_mode_ext(phy, mode, 0)
+>  
+> +static inline int phy_set_media(struct phy *phy, enum phy_media media)
+> +{
+> +	if (!phy)
+> +		return 0;
+> +	return -ENOSYS;
+> +}
+> +
+> +static inline int phy_set_speed(struct phy *phy, int speed)
+> +{
+> +	if (!phy)
+> +		return 0;
+> +	return -ENOSYS;
+> +}
+> +
+>  static inline enum phy_mode phy_get_mode(struct phy *phy)
+>  {
+>  	return PHY_MODE_INVALID;
+> 
