@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F57131993C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB093319941
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 05:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229497AbhBLEiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 23:38:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
+        id S229653AbhBLEmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 23:42:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbhBLEis (ORCPT
+        with ESMTP id S229562AbhBLEmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 23:38:48 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991D9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:38:08 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 127so8455142ybc.19
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:38:08 -0800 (PST)
+        Thu, 11 Feb 2021 23:42:07 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D458DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:41:26 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id lw17so5613669pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 20:41:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=5wM3QmaBSjsPMVOPBa5ekJ9mtLxgwKxj2USgf1qZous=;
-        b=j0ezXLsyoeZR+fx0DkY0/Y68tG9puzu/N7D/BqodlMcdaEMAvJrYZUEKxqhbv3luXX
-         uN5wAgO9a84ehGjZJu1hhEkz7O3nDYnbEFXNyi0T+EMaQH8Q7hKjf0KOQoFga4P28mmG
-         BkMZwgC1eYPKowEA8SEqMcHojiDjYa9F5tumBypDO++l8pJSJ5lP2XEjjsFAVkPlZqpe
-         5qSQykItz2B/UrKPeEQr+zonY3Lv3j7LjaSaCC+NU2/vLX+10+zYNtvin0/NWVuB9nr+
-         BjFVUCa4eeejDLOSqm/r7HrSW5Ojfmxm5/9aS0URbBO7uGUsDns8pXUUYoKKNdQXcj1p
-         QvLw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3WNMt5XR+692WIpXHZivWGdM4xBg7M/kL8/oPyqVZG4=;
+        b=qaQ5JWYqNNgsWrAMQwM8o2jl8EI0jJR2snb9qPJvnTXgING1a+YDGz4nusTevahy80
+         kWwJ8PR+3Xbj7JFAtYCUuqkzUUc12Y/7Pta24nOyz6mjnVappjZrdflJ3JuSm4bYIQOW
+         w3FYTt1q83kY+ycLunbpsWg7ALI12ARzJcgferXPxk4uZ3euWCv1PPExNynfikwGKhiv
+         MXEt0dgmQ1sAOktW+4niEDh8HTnY43T2cepdVJL1v7+atSnoexSzs98yz40ZSeThDsYr
+         hcbjqWHeBSWXMS1uURtgLlrKaQ0dN3V36yQpSeQQGbIzqapNOylA7gm3ah6LiqEaozAP
+         RZzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=5wM3QmaBSjsPMVOPBa5ekJ9mtLxgwKxj2USgf1qZous=;
-        b=VSWWjky7wdzsMJln1NEX0rmr1lSsnjC8jCVuQ97PFaerN0KjvFxTT+JHKKHUAL6Ofj
-         gsBHoAoqNKI/r5MBt0TEHNkw0aj+sHEXElbzc+xXFiN8tNhP5JWIPfJ2dWHTx4zE2jW+
-         fSA4b7+yc+6fVbE8z8S5FP7ytAPyJbC3hGSBQwNw7L2vXW8mYPSnki+D8J3vX1vh+H/5
-         fmEVjc35mtCIy6UXh+4Q3RKg/KNybgtQ2PrNjiusB/8ZBOpqTeZoCVItLOaukQpk0/8O
-         CF2J9CNnumeDBEIKLs/PTCF+oQ9jrN+JZsfX6nXXMuUd/8kJU2yvn9Tkj8wdtHxYxhGt
-         ap2Q==
-X-Gm-Message-State: AOAM533NXAgKRF5QHqnrs1PJ4qgAXFHk0n2wJokFJHtjCqjIZ8uZ695S
-        i+mgdOSNKUEB0fAvyGal+yDkM79RJnkn
-X-Google-Smtp-Source: ABdhPJxaeyGkfUwuOC0yJXdHAFeLBzdKkUWGmRClrty0qaerZC4HcpiV9qHDRybUxfq1ZZJ0odikg6O4abBH
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:cdf1:7c25:80b2:5961])
- (user=irogers job=sendgmr) by 2002:a25:bbc2:: with SMTP id
- c2mr1576997ybk.311.1613104687710; Thu, 11 Feb 2021 20:38:07 -0800 (PST)
-Date:   Thu, 11 Feb 2021 20:38:03 -0800
-Message-Id: <20210212043803.365993-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] perf libperf: Remove unused xyarray.c
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3WNMt5XR+692WIpXHZivWGdM4xBg7M/kL8/oPyqVZG4=;
+        b=Ik1wl1qAeXTlupBzsNvxCLnY2D5gTkhJQqeFKZzA8jI+VgJp0a7V0qFRCs33APpA43
+         JI/5ZfmnUamXmEDHgMrNZjuBUIZH3laoBmMIfPk70ASa8YgTmEhwfUeUF8tTUjSI3Dfh
+         3f5Mx2AU7C/b6QSdRNjQqm1LSQKt9Ebt4kdEd4TGxmmKy3zpNLWaPz23uk/WaIjG0FQ4
+         2U7GXQz8LapXH9b8Q20k46bE9//Yp5sUahirgH0AikpWd7t1tfzL6NBcpU5mkJEgTEVd
+         gLT0VkZd/k3x1VF0bkVVS7NesdVylhAGKwOKh2QmqfPMvt7RA7XradHtZJG98G1OJZB4
+         iTqg==
+X-Gm-Message-State: AOAM530uVIlxGoJWUsWxK3kd8vlgNEAsLYVtxnV9HLrLw1io3UYI6/RJ
+        wEKnW4xDs8tSLbZhxpa8HBWRHQ==
+X-Google-Smtp-Source: ABdhPJyd9z/0E7cIiRh5X4uMlSbgcHzZSG/VIra3j3yOYbbXcYBEgVNzBzpdHejP7k0epZ2ItDg0Nw==
+X-Received: by 2002:a17:902:b094:b029:e3:a2f:4681 with SMTP id p20-20020a170902b094b02900e30a2f4681mr1370874plr.69.1613104886229;
+        Thu, 11 Feb 2021 20:41:26 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id h11sm7316176pfr.201.2021.02.11.20.41.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 11 Feb 2021 20:41:25 -0800 (PST)
+Date:   Fri, 12 Feb 2021 10:11:23 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <michal.simek@xilinx.com>
+Subject: Re: [PATCH V7 1/3] kbuild: Add generic rule to apply fdtoverlay
+Message-ID: <20210212044123.7i6kzgekoddqufko@vireshk-i7>
+References: <cover.1612955268.git.viresh.kumar@linaro.org>
+ <44dad578df8a848fc378cd358f03b071f44c9a5b.1612955268.git.viresh.kumar@linaro.org>
+ <CAK7LNARa8GzhhvZWV_KAW=MC0DRcSsfPsQ-KTBRRpbBgBqY=ig@mail.gmail.com>
+ <CAL_JsqKHUG6VvvpQ18YdzsOA_gZ59gFsc2tUzt1SxKHsO2A03g@mail.gmail.com>
+ <CAK7LNAQH8hVwqGF+82j=38gi7VaixLhYS-K1uT1wdX4t07pJ6Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQH8hVwqGF+82j=38gi7VaixLhYS-K1uT1wdX4t07pJ6Q@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Migrated to libperf in:
-commit 4b247fa7314c ("libperf: Adopt xyarray class from perf")
+On 12-02-21, 12:07, Masahiro Yamada wrote:
+> BTW, I do not know how to use overlay.
+> Do we apply overlay in the build time?
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/xyarray.c | 33 ---------------------------------
- 1 file changed, 33 deletions(-)
- delete mode 100644 tools/perf/util/xyarray.c
+Ideally it can be applied at both build time and runtime, but we
+haven't allowed the runtime way until now in kernel. This patchset is
+all about applying it at build time.
 
-diff --git a/tools/perf/util/xyarray.c b/tools/perf/util/xyarray.c
-deleted file mode 100644
-index 86889ebc3514..000000000000
---- a/tools/perf/util/xyarray.c
-+++ /dev/null
-@@ -1,33 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include "xyarray.h"
--#include <stdlib.h>
--#include <string.h>
--#include <linux/zalloc.h>
--
--struct xyarray *xyarray__new(int xlen, int ylen, size_t entry_size)
--{
--	size_t row_size = ylen * entry_size;
--	struct xyarray *xy = zalloc(sizeof(*xy) + xlen * row_size);
--
--	if (xy != NULL) {
--		xy->entry_size = entry_size;
--		xy->row_size   = row_size;
--		xy->entries    = xlen * ylen;
--		xy->max_x      = xlen;
--		xy->max_y      = ylen;
--	}
--
--	return xy;
--}
--
--void xyarray__reset(struct xyarray *xy)
--{
--	size_t n = xy->entries * xy->entry_size;
--
--	memset(xy->contents, 0, n);
--}
--
--void xyarray__delete(struct xyarray *xy)
--{
--	free(xy);
--}
+> If so, I do not know what the benefit of overlay is.
+> Or is this just for build testing?
+
+For now the main benefit of using them is that we can keep stuff in
+separate files without including each other. For example a primary
+board may or may not have an extension board connected to it.
+
+Without overlays we will have this many dtbs for this simple case:
+1. primary.dtb
+2. extension.dtb
+3. primary-includes-extension.dtb
+
+With overlays we will have the first two. Now the same extension can
+be applied to lots of boards and multiple extensions can be applied to
+the same primary board. This just complicates the process of managing
+dtbs.
+
+> I just thought this was done in the boot time,
+> for example, in U-Boot or something.
+
+Yes, bootloader can do it as well.
+
 -- 
-2.30.0.478.g8a0d178c01-goog
-
+viresh
