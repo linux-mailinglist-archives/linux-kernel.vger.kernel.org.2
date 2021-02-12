@@ -2,67 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504BB31984D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF922319850
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhBLCUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 21:20:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229647AbhBLCUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 21:20:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id E175164E58;
-        Fri, 12 Feb 2021 02:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613096407;
-        bh=GLwgvOklUXd8yPRHO9qf8fcjVeJDuHeRv44glotC5Lo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=AGI6lN0ZsFRcnFnWGsip6WkYCmf8buJR2JUwjk1t0tSc9NO6RCuSHTBC6v7wjNl8E
-         XTD+s6rcKVWlOml6PoaYBbFfGmmNSQtV+03fChtUsM1vFKn801AkHJ9qxw0ighUFsA
-         j4BJaRqlX0YVeCyYI2UU4/rGPYnNk25feRGcFbg0eZNbOuAD21667qWqompA69I37V
-         /h01mDudwp+FmpB1+op0bo73g2hLm3JYQ1Ccu22qikset3+FKkyPPgdIlLcQJVJPrG
-         hyPou53xj5k5Ye6hMfaAjRbIYy7alTJt8y19zpmIdvIR081kOdW+igkhh9ZanNn2R6
-         y0jH8oF3YpA/Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DD25A60951;
-        Fri, 12 Feb 2021 02:20:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229837AbhBLCXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 11 Feb 2021 21:23:02 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:64444 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhBLCW7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 11 Feb 2021 21:22:59 -0500
+Received: from fsav403.sakura.ne.jp (fsav403.sakura.ne.jp [133.242.250.102])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11C2MGK1066572;
+        Fri, 12 Feb 2021 11:22:17 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav403.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp);
+ Fri, 12 Feb 2021 11:22:16 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav403.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11C2MGB8066504
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 12 Feb 2021 11:22:16 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000647eff05b3f7e0d4@google.com>
+ <20201113120055.11748-1-hdanton@sina.com>
+ <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
+ <ea4028b7-53f2-aeaf-76e7-69874efcdec5@I-love.SAKURA.ne.jp>
+ <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
+ <9bdd3f10-bddb-bd87-d7ad-b4b706477006@i-love.sakura.ne.jp>
+ <6b8da36f-a994-7604-77f4-52e29434605f@linuxfoundation.org>
+ <5f9ec159-77d8-ffba-21d1-2810e059f998@i-love.sakura.ne.jp>
+ <a06093f1-22b3-7d72-bc6c-f99f4e0d0de9@linuxfoundation.org>
+ <40617d66-1334-13a0-de9b-bd7cc1155ce5@i-love.sakura.ne.jp>
+ <43d8d6bf-53f3-11e6-894d-c257f7f4bd07@linuxfoundation.org>
+ <4368349b-fc0c-6da3-a502-2733f953d271@i-love.sakura.ne.jp>
+ <92a4c6ae-172d-91cb-b89e-8eb857fdfb3a@linuxfoundation.org>
+ <d177302a-3050-41db-cf44-6d614fd0c3a0@i-love.sakura.ne.jp>
+ <e5cb1f77-cd4b-9d74-4f28-d613d5478704@linuxfoundation.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <954bd943-8b55-36c8-9cba-a35a03213b2c@i-love.sakura.ne.jp>
+Date:   Fri, 12 Feb 2021 11:22:13 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] enetc: auto select PHYLIB and MDIO_DEVRES
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161309640790.12988.9567147824111785521.git-patchwork-notify@kernel.org>
-Date:   Fri, 12 Feb 2021 02:20:07 +0000
-References: <20210211175411.3115021-1-ztong0001@gmail.com>
-In-Reply-To: <20210211175411.3115021-1-ztong0001@gmail.com>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     claudiu.manoil@nxp.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <e5cb1f77-cd4b-9d74-4f28-d613d5478704@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Thu, 11 Feb 2021 12:54:11 -0500 you wrote:
-> FSL_ENETC_MDIO use symbols from PHYLIB (MDIO_BUS) and MDIO_DEVRES,
-> however there are no dependency specified in Kconfig
+On 2021/02/12 10:34, Shuah Khan wrote:
+> On 2/10/21 6:14 PM, Tetsuo Handa wrote:
+>> (Dropping LSM ML because this is not a TOMOYO's bug.)
+>>
+>> On 2021/02/11 4:29, Shuah Khan wrote:
+>>> This is a good find. I already replied to the thread to send a complete
+>>> fix.
+>>
+>> As I said at https://lkml.kernel.org/r/f8cae6b1-8f84-0e6a-7d9c-fc4aec68f07b@i-love.sakura.ne.jp ,
+>> the as-is patch is effectively a complete fix. And applying the as-is patch should help spending
+>> syzbot resources for reproducing "general protection fault in tomoyo_socket_sendmsg_permission"
+>> with debug printk() patch applied, which in turn will help you in
+>>
+>>> Right. I would like to get a clear understanding of how this condition
+>>> is triggered. I am not saying this isn't a problem. Understanding how
+>>> it is triggered helps find the best fix.
+>>
+>> part. Therefore, I strongly expect you to apply this version now.
+>>
 > 
-> ERROR: modpost: "__mdiobus_register" [drivers/net/ethernet/freescale/enetc/fsl-enetc-mdio.ko] undefined!
-> ERROR: modpost: "mdiobus_unregister" [drivers/net/ethernet/freescale/enetc/fsl-enetc-mdio.ko] undefined!
-> ERROR: modpost: "devm_mdiobus_alloc_size" [drivers/net/ethernet/freescale/enetc/fsl-enetc-mdio.ko] undefined!
-> 
-> [...]
+> Is there a reproducer for this problem?
 
-Here is the summary with links:
-  - [v2] enetc: auto select PHYLIB and MDIO_DEVRES
-    https://git.kernel.org/netdev/net/c/e185ea30df1f
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+There is no reproducer for "general protection fault in tomoyo_socket_sendmsg_permission" problem, but
+the race condition is explained at https://lkml.kernel.org/r/676d4518-0faa-9fab-15db-0db8d216d7fb@i-love.sakura.ne.jp .
