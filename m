@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEDC31A468
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1502331A46B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 19:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231473AbhBLSQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 13:16:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhBLSQu (ORCPT
+        id S231665AbhBLSR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 13:17:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52157 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231401AbhBLSRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 13:16:50 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4E4C061574;
-        Fri, 12 Feb 2021 10:16:10 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id u4so130167ljh.6;
-        Fri, 12 Feb 2021 10:16:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=AoTuhu3DlTVK1aUQYYk55qO6vEl1oKyV3T843XUxhck=;
-        b=Glv51Ob/vsn4WWmCNaOWmJeCG5COQtvDaEMOiAWSzzLAFDNuj6yTgJqNGG3T/jM7Fe
-         35YXPG08WR7kYrJywdGs21orfFlWsZl4TA+x2xANT+BaGWq/j+o61DeIGm+PkgnqJygY
-         oMFJyuE1JSuEu64A2yolqQCX/w4Wx3XtuA5roDKz/nE2najy8XM//q5p4ZKY4mMpc7EK
-         DsCI+S3cZKRvueL0Vpvi66EHGX5vwsRilVW+l12fgHPQCEpga3e9PJpaGoKeaD9HK4eu
-         X9M5blKlafBPGjpybG4n7BBsd+spI/gDcS5mHPGt2Ly8DM+8PGNR4b6Jy9aCNzuk/ArI
-         axHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=AoTuhu3DlTVK1aUQYYk55qO6vEl1oKyV3T843XUxhck=;
-        b=tDQtfpdCnQdEi7v0AYVHbAI8mkLaC3z0LW17OwrbVANUV/EW6Jxm/2Z1lCdgAXwb9s
-         Ym5/K9B0lNZfaXjxTjfx1xqoxnz3LmiFwc7wv7Yk1VNKofVEHFa8Nl63Wb8ubj+MC4er
-         dHQA2hgS7g26vMH1cGNwHHtm++MVdHYM53qjOA+DliuLA2tV0AEIkiJo0NmifvfGUUJE
-         YG/muoNK80sXrn9FdpXJBROIJUia+aAHMBlOZPoRRpITsAysEn4CTU9m5rJLR3T/GxZJ
-         +6y3jvUFUccz4Aywwvr/vK2hPr2NcllGMlrXLa3ZYPVVNiYSHkrxEht511zJW3HUoGPd
-         UieQ==
-X-Gm-Message-State: AOAM533k9ZaOgP55k0kP2VQ2mG98rOA0GkQ9G/YmpmSDYXreFTK0litp
-        4DsRYsopFZTRCn0Kc/AC1cn/g8R6Z0sdXAM24EY6LF17MQ3ung==
-X-Google-Smtp-Source: ABdhPJw2ieYrBRiUpSOzCXO9nQhTYw2BCM3LWRvVolDUXAFenFap0CJ9KrCxbRlx5K71i9LzJJXb3LVYP4DzHSxI7tU=
-X-Received: by 2002:a05:651c:548:: with SMTP id q8mr2348931ljp.256.1613153768589;
- Fri, 12 Feb 2021 10:16:08 -0800 (PST)
+        Fri, 12 Feb 2021 13:17:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613153787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NZl7b/r+ppu+9/FrF3IJzLz0mVLNre9CvDKAjn1o6yA=;
+        b=Cw07S8FXGAnpcX2hI8NlAQUR685ZSI9k49y3ct+ImHhWaIiPWoSt2FVptmKXTTXekWfbP8
+        bAae/7cpHmu4hD9gTWah0qmWLTFFpiQusn2wU8xY4hU8+NBMgy1KpWEyys+/rfXTYaYWXK
+        8WxNL0ddVtZNqO5RK3M5qmfyNk/k6Vs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-h8Vd8kzrMlCZ5LdBkFC8Dg-1; Fri, 12 Feb 2021 13:16:25 -0500
+X-MC-Unique: h8Vd8kzrMlCZ5LdBkFC8Dg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B61AAFA81;
+        Fri, 12 Feb 2021 18:16:23 +0000 (UTC)
+Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4D7915C23D;
+        Fri, 12 Feb 2021 18:16:14 +0000 (UTC)
+Subject: Re: [PATCH 2/2] iommu: arm-smmu-v3: Report domain nesting info
+ reuqired for stage1
+To:     Vivek Gautam <vivek.gautam@arm.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org
+Cc:     joro@8bytes.org, will.deacon@arm.com, mst@redhat.com,
+        robin.murphy@arm.com, jean-philippe@linaro.org,
+        alex.williamson@redhat.com, kevin.tian@intel.com,
+        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
+        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com
+References: <20210212105859.8445-1-vivek.gautam@arm.com>
+ <20210212105859.8445-3-vivek.gautam@arm.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <07d43c06-9876-2595-1139-b0bc67d94a2c@redhat.com>
+Date:   Fri, 12 Feb 2021 19:16:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 12 Feb 2021 12:15:57 -0600
-Message-ID: <CAH2r5mtYEj+WLy+oPSXEwS5sZ8+TNk_dU3PVx3ieBz2DFS94Sg@mail.gmail.com>
-Subject: [GIT PULL] cifs fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210212105859.8445-3-vivek.gautam@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-92bf22614b21a2706f4993b278017e437f7785b3:
+Hi Vivek,
 
-  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+On 2/12/21 11:58 AM, Vivek Gautam wrote:
+> Update nested domain information required for stage1 page table.
+> 
+> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index c11dd3940583..728018921fae 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -2555,6 +2555,7 @@ static int arm_smmu_domain_nesting_info(struct arm_smmu_domain *smmu_domain,
+>  					void *data)
+>  {
+>  	struct iommu_nesting_info *info = (struct iommu_nesting_info *)data;
+> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
+>  	unsigned int size;
+>  
+>  	if (!info || smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
+> @@ -2571,9 +2572,20 @@ static int arm_smmu_domain_nesting_info(struct arm_smmu_domain *smmu_domain,
+>  		return 0;
+>  	}
+>  
+> -	/* report an empty iommu_nesting_info for now */
+> -	memset(info, 0x0, size);
+> +	/* Update the nesting info as required for stage1 page tables */
+> +	info->addr_width = smmu->ias;
+> +	info->format = IOMMU_PASID_FORMAT_ARM_SMMU_V3;
+> +	info->features = IOMMU_NESTING_FEAT_BIND_PGTBL |
+> +			 IOMMU_NESTING_FEAT_PAGE_RESP |
+IOMMU_NESTING_FEAT_PAGE_RESP definition is missing too
 
-are available in the Git repository at:
+Eric
+> +			 IOMMU_NESTING_FEAT_CACHE_INVLD;
+> +	info->pasid_bits = smmu->ssid_bits;
+> +	info->vendor.smmuv3.asid_bits = smmu->asid_bits;
+> +	info->vendor.smmuv3.pgtbl_fmt = ARM_64_LPAE_S1;
+> +	memset(&info->padding, 0x0, 12);
+> +	memset(&info->vendor.smmuv3.padding, 0x0, 9);
+> +
+>  	info->argsz = size;
+> +
+>  	return 0;
+>  }
+>  
+> 
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.11-rc7-smb3
-
-for you to fetch changes up to a738c93fb1c17e386a09304b517b1c6b2a6a5a8b:
-
-  cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag on setting
-cifs_sb->prepath. (2021-02-11 11:08:32 -0600)
-
-----------------------------------------------------------------
-4 small cifs fixes for the implementation of the new mount API (including
-a particularly important one for DFS links) that were found in
-additional testing
-this week of additional DFS scenarios, and a user testing of an apache container
-problem.
-
-Regression test results:
-http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/501
-----------------------------------------------------------------
-Ronnie Sahlberg (3):
-      cifs: fix dfs-links
-      cifs: do not disable noperm if multiuser mount option is not provided
-      cifs: In the new mount api we get the full devname as source=
-
-Shyam Prasad N (1):
-      cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
-
- fs/cifs/cifsfs.c     |  2 +-
- fs/cifs/connect.c    |  9 +++++++++
- fs/cifs/fs_context.c | 20 +++++++++++++++++---
- fs/cifs/fs_context.h |  1 +
- 4 files changed, 28 insertions(+), 4 deletions(-)
-
-
---
-Thanks,
-
-Steve
