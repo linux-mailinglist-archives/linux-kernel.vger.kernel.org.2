@@ -2,77 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBB131A52A
+	by mail.lfdr.de (Postfix) with ESMTP id B286E31A529
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbhBLTPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:15:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231981AbhBLTPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:15:33 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7B1C64DF0;
-        Fri, 12 Feb 2021 19:14:51 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 19:14:47 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, lars@metafoo.de,
-        pmeerw@pmeerw.net, alexandru.ardelean@analog.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: iio: proximity: Fix a spelling postive to
- positive in the file sx9500.c
-Message-ID: <20210212191447.26215a80@archlinux>
-In-Reply-To: <b19d9d8e-206e-757f-46ab-5fa159a30a88@infradead.org>
-References: <20210210085704.1228068-1-unixbhaskar@gmail.com>
-        <b19d9d8e-206e-757f-46ab-5fa159a30a88@infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232051AbhBLTPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:15:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231290AbhBLTPa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 14:15:30 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8975FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:14:50 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id i20so184134otl.7
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:14:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=A9RqSgP87Al5N7r4wNTwTSkDFbyphCfYLvrQ6aInDRk=;
+        b=L5U7YEPjxH6G8nAqeSl22q3t4kc9cMj0V5ZcpRLpNt5ygWxXRI3ai4ukdwx5B0hA3S
+         5J5XVbQ0n5NG7fB8nIyycGr06gFKU3fGG0uvgArJkJMzCp9NnzHKQO73EhdFfMPHHR38
+         Dqwltz9ZPxWhnrZj0rpgy5AmfI3g+dzzSKQ7N5LyQyvvon1nXvvlfsTxPqiR4H+7GKJe
+         Uk2+w4Os4zl5CYMNXrKVoMCot74tyVzIehuVYoV3tccirX1laSx0PujItNqePBR1q5gv
+         7iXUTNg4hHReoYaFffIcA+HJmy0YT14hlR8ENfDblDYyY618KrdIDI5xW02qFMGOGXJ2
+         Vg1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=A9RqSgP87Al5N7r4wNTwTSkDFbyphCfYLvrQ6aInDRk=;
+        b=GldwgJ4ZlPj9YAymCD9jiZ0MwgZhjaym24KJLhG80HlDLXbDy3mjqLj+IA4ygxHUCY
+         vyM9MXiP1D+HXk4cFtXbvPvjQRHFbNJ/AUs6ABWTgfgPrCYowrQL6UdfPQtkOYfBuXdl
+         kaJUyeVfhKHwUz2SfHcjsqVRfkgBPT5PPR4HflE2NLr26AWSgXLGOAde5butRwla+S6T
+         fwGFHYelRwOgSo/1FO2RGIBx1gSNYFc5lGt4iH+LYykY0aLzCtYzrVQRhqnsQ3g5Bq4r
+         INFRdDHWXOD173dRjIgAjdTYUfVmtUx41K1ukcDteNbmnXuOqu/kH5vx75g/UfbhfHjF
+         tgDA==
+X-Gm-Message-State: AOAM5320V+Iqih3acKBtyeILBZqaRgx34A/ttDd0Q29FnrfiU5U43xIW
+        J6C2S8vRxTC36vvZDXMVdNaOGk+K7sUfV/WaFI6kUg==
+X-Google-Smtp-Source: ABdhPJyHUGrt4BzpIZGhfLTe31ciY2M3YXayULhRfj7BpsXoqqToMvRW7l98cOZfMUXRnLHhg9avxhJg+YTBLPKjel4=
+X-Received: by 2002:a05:6830:56e:: with SMTP id f14mr3037587otc.85.1613157289747;
+ Fri, 12 Feb 2021 11:14:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6838:9251:0:0:0:0 with HTTP; Fri, 12 Feb 2021 11:14:49
+ -0800 (PST)
+In-Reply-To: <YCbE+hJC8xeWnKRg@google.com>
+References: <20210210212308.2219465-1-makarandsonare@google.com> <YCbE+hJC8xeWnKRg@google.com>
+From:   Makarand Sonare <makarandsonare@google.com>
+Date:   Fri, 12 Feb 2021 11:14:49 -0800
+Message-ID: <CA+qz5sqFYrFj=0+kq9m4huwkpC6V8MV_vy5c05VNqMgCPw+fDg@mail.gmail.com>
+Subject: Re: [RESEND PATCH ] KVM: VMX: Enable/disable PML when dirty logging
+ gets enabled/disabled
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, pshier@google.com, jmattson@google.com,
+        Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 08:16:36 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
+>> Currently, if enable_pml=1 PML remains enabled for the entire lifetime
+>> of the VM irrespective of whether dirty logging is enable or disabled.
+>> When dirty logging is disabled, all the pages of the VM are manually
+>> marked dirty, so that PML is effectively non-operational. Clearing
+>
+> s/clearing/setting
+>
+> Clearing is also expensive, but that can't be optimized away with this
+> change.
 
-> On 2/10/21 12:57 AM, Bhaskar Chowdhury wrote:
-> > 
-> > s/postive/positive/
-> > 
-> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>  
-> 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Applied with a tweaked patch title to the togreg branch of iio.git which
-I'll push out shortly as testing to the let the autobuilders poke at it
-and see what they can find that we missed.
+Thanks for catching the typo, it should be setting.
 
-Thanks,
+>
+>> the dirty bits is an expensive operation which can cause severe MMU
+>> lock contention in a performance sensitive path when dirty logging
+>> is disabled after a failed or canceled live migration. Also, this
+>> would break if some other code path clears the dirty bits in which
+>> case, PML will actually start logging dirty pages even when dirty
+>> logging is disabled incurring unnecessary vmexits when the PML buffer
+>> becomes full. In order to avoid this extra overhead, we should
+>> enable or disable PML in VMCS when dirty logging gets enabled
+>> or disabled instead of keeping it always enabled.
+>
+>
+> ...
+>
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index 777177ea9a35e..eb6639f0ee7eb 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -4276,7 +4276,7 @@ static void
+>> vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+>>  	*/
+>>  	exec_control &= ~SECONDARY_EXEC_SHADOW_VMCS;
+>>
+>> -	if (!enable_pml)
+>> +	if (!enable_pml || !vcpu->kvm->arch.pml_enabled)
+>>  		exec_control &= ~SECONDARY_EXEC_ENABLE_PML;
+>
+> The checks are unnecessary if PML is dynamically toggled, i.e. this snippet
+> can
+> unconditionally clear PML.  When setting SECONDARY_EXEC (below snippet),
+> PML
+> will be preserved in the current controls, which is what we want.
 
-Jonathan
+Assuming a new VCPU can be added at a later time after PML is already
+enabled, should we clear
+PML in VMCS for the new VCPU. If yes what will be the trigger for
+setting PML for the new VCPU?
 
-> 
-> > ---
-> >  drivers/iio/proximity/sx9500.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/iio/proximity/sx9500.c b/drivers/iio/proximity/sx9500.c
-> > index acb821cbad46..67353d33af94 100644
-> > --- a/drivers/iio/proximity/sx9500.c
-> > +++ b/drivers/iio/proximity/sx9500.c
-> > @@ -758,7 +758,7 @@ static const struct sx9500_reg_default sx9500_default_regs[] = {
-> >  		.reg = SX9500_REG_PROX_CTRL5,
-> >  		/*
-> >  		 * Debouncer off, lowest average negative filter,
-> > -		 * highest average postive filter.
-> > +		 * highest average positive filter.
-> >  		 */
-> >  		.def = 0x0f,
-> >  	},
-> > --  
-> 
-> 
+>
+>>  	if (cpu_has_vmx_xsaves()) {
+>> @@ -7133,7 +7133,8 @@ static void vmcs_set_secondary_exec_control(struct
+>> vcpu_vmx *vmx)
+>>  		SECONDARY_EXEC_SHADOW_VMCS |
+>>  		SECONDARY_EXEC_VIRTUALIZE_X2APIC_MODE |
+>>  		SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES |
+>> -		SECONDARY_EXEC_DESC;
+>> +		SECONDARY_EXEC_DESC |
+>> +		SECONDARY_EXEC_ENABLE_PML;
+>>
+>>  	u32 new_ctl = vmx->secondary_exec_control;
+>>  	u32 cur_ctl = secondary_exec_controls_get(vmx);
+>> @@ -7509,6 +7510,19 @@ static void vmx_sched_in(struct kvm_vcpu *vcpu, int
+>> cpu)
+>>  static void vmx_slot_enable_log_dirty(struct kvm *kvm,
+>>  				     struct kvm_memory_slot *slot)
+>>  {
+>> +	/*
+>> +	 * Check all slots and enable PML if dirty logging
+>> +	 * is being enabled for the 1st slot
+>> +	 *
+>> +	 */
+>> +	if (enable_pml &&
+>> +	    kvm->dirty_logging_enable_count == 1 &&
+>> +	    !kvm->arch.pml_enabled) {
+>> +		kvm->arch.pml_enabled = true;
+>> +		kvm_make_all_cpus_request(kvm,
+>> +			KVM_REQ_UPDATE_VCPU_DIRTY_LOGGING_STATE);
+>> +	}
+>
+> This is flawed.  .slot_enable_log_dirty() and .slot_disable_log_dirty() are
+> only
+> called when LOG_DIRTY_PAGE is toggled in an existing memslot _and_ only the
+> flags of the memslot are being changed.  This fails to enable PML if the
+> first
+> memslot with LOG_DIRTY_PAGE is created or moved, and fails to disable PML if
+> the
+> last memslot with LOG_DIRTY_PAGE is deleted.
 
+Thanks for pointing out. If there is such a scenario, what do you
+suggest to handle this?
+
+>
+>> +
+>>  	if (!kvm_dirty_log_manual_protect_and_init_set(kvm))
+>>  		kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
+>>  	kvm_mmu_slot_largepage_remove_write_access(kvm, slot);
+>> @@ -7517,9 +7531,39 @@ static void vmx_slot_enable_log_dirty(struct kvm
+>> *kvm,
+>>  static void vmx_slot_disable_log_dirty(struct kvm *kvm,
+>>  				       struct kvm_memory_slot *slot)
+>>  {
+>> +	/*
+>> +	 * Check all slots and disable PML if dirty logging
+>> +	 * is being disabled for the last slot
+>> +	 *
+>> +	 */
+>> +	if (enable_pml &&
+>> +	    kvm->dirty_logging_enable_count == 0 &&
+>> +	    kvm->arch.pml_enabled) {
+>> +		kvm->arch.pml_enabled = false;
+>> +		kvm_make_all_cpus_request(kvm,
+>> +			KVM_REQ_UPDATE_VCPU_DIRTY_LOGGING_STATE);
+>> +	}
+>> +
+>>  	kvm_mmu_slot_set_dirty(kvm, slot);
+>>  }
+>
+> ...
+>
+>>  #define kvm_err(fmt, ...) \
+>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> index ee4ac2618ec59..c6e5b026bbfe8 100644
+>> --- a/virt/kvm/kvm_main.c
+>> +++ b/virt/kvm/kvm_main.c
+>> @@ -307,6 +307,7 @@ bool kvm_make_all_cpus_request(struct kvm *kvm,
+>> unsigned int req)
+>>  {
+>>  	return kvm_make_all_cpus_request_except(kvm, req, NULL);
+>>  }
+>> +EXPORT_SYMBOL_GPL(kvm_make_all_cpus_request);
+>>
+>>  #ifndef CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
+>>  void kvm_flush_remote_tlbs(struct kvm *kvm)
+>> @@ -1366,15 +1367,24 @@ int __kvm_set_memory_region(struct kvm *kvm,
+>>  	}
+>>
+>>  	/* Allocate/free page dirty bitmap as needed */
+>> -	if (!(new.flags & KVM_MEM_LOG_DIRTY_PAGES))
+>> +	if (!(new.flags & KVM_MEM_LOG_DIRTY_PAGES)) {
+>>  		new.dirty_bitmap = NULL;
+>> -	else if (!new.dirty_bitmap && !kvm->dirty_ring_size) {
+>> +
+>> +		if (old.flags & KVM_MEM_LOG_DIRTY_PAGES) {
+>> +			WARN_ON(kvm->dirty_logging_enable_count == 0);
+>> +			--kvm->dirty_logging_enable_count;
+>
+> The count will be corrupted if kvm_set_memslot() fails.
+>
+> The easiest/cleanest way to fix both this and the refcounting bug is to
+> handle
+> the count in kvm_mmu_slot_apply_flags().  That will also allow making the
+> dirty
+> log count x86-only, and it can then be renamed to cpu_dirty_log_count to
+> align
+> with the
+>
+> We can always move/rename the count variable if additional motivation for
+> tracking dirty logging comes along.
+
+Thanks for pointing out. Will this solution take care of the scenario
+where a memslot is created/deleted with LOG_DIRTY_PAGE?
+
+>
+>
+>> +		}
+>> +
+>> +	} else if (!new.dirty_bitmap && !kvm->dirty_ring_size) {
+>>  		r = kvm_alloc_dirty_bitmap(&new);
+>>  		if (r)
+>>  			return r;
+>>
+>>  		if (kvm_dirty_log_manual_protect_and_init_set(kvm))
+>>  			bitmap_set(new.dirty_bitmap, 0, new.npages);
+>> +
+>> +		++kvm->dirty_logging_enable_count;
+>> +		WARN_ON(kvm->dirty_logging_enable_count == 0);
+>>  	}
+>>
+>>  	r = kvm_set_memslot(kvm, mem, &old, &new, as_id, change);
+>> --
+>> 2.30.0.478.g8a0d178c01-goog
+>
