@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A67931A78B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CF531A7A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 23:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhBLW0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 17:26:22 -0500
-Received: from mga03.intel.com ([134.134.136.65]:60252 "EHLO mga03.intel.com"
+        id S232054AbhBLWan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 17:30:43 -0500
+Received: from mga12.intel.com ([192.55.52.136]:39762 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231273AbhBLWYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 17:24:55 -0500
-IronPort-SDR: 6FwruvEh3IjUoymmLwGS8LF6/MIZgqQ6cUsALLRp+eJqc7FrXq4gv24H4hNcJdjGIJk4qOTpkb
- 8hTT1WiSbJXw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="182555205"
+        id S231937AbhBLW0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 17:26:20 -0500
+IronPort-SDR: FPquE97t/bXtbIqYgtmPkcJ5rrGnnyG4404TBZfLP9yx4jqxo9j25eefRu1lidYY3MLHwmWPdw
+ rVRP11iM2lEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="161628105"
 X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
-   d="scan'208";a="182555205"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 14:23:08 -0800
-IronPort-SDR: OIZ0OkTE7uENP9VyWKJU17qZ020w6zNcWy3He7p4/Si9BLlljz+IV84O0USSAbq0M+btz9RLVQ
- bUFdccEkd6Ng==
+   d="scan'208";a="161628105"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 14:23:08 -0800
+IronPort-SDR: Lbd804ybkhIpaGCK+JLOMrnZQGW2roKI4wljJMw8ZFkrOjlgw/8PlYhdYpUjnSZ81JVG/NMpKt
+ AI0cB0fhdgAA==
 X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
-   d="scan'208";a="360580346"
+   d="scan'208";a="416125100"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 14:23:08 -0800
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 14:23:07 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 3AF3A6372;
-        Fri, 12 Feb 2021 14:23:08 -0800 (PST)
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 869E66365;
+        Fri, 12 Feb 2021 14:23:07 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 344363636FD; Fri, 12 Feb 2021 14:23:08 -0800 (PST)
+        id 76D1E3636EF; Fri, 12 Feb 2021 14:23:07 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -36,794 +36,318 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         palmerdabbelt@google.com, paul.walmsley@sifive.com,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        Srikanth Thokala <srikanth.thokala@intel.com>
-Subject: [PATCH v6 14/34] misc: xlink-pcie: rh: Add core communication logic
-Date:   Fri, 12 Feb 2021 14:22:44 -0800
-Message-Id: <20210212222304.110194-15-mgross@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v6 00/34] Intel Vision Processing base enabling
+Date:   Fri, 12 Feb 2021 14:22:30 -0800
+Message-Id: <20210212222304.110194-1-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210212222304.110194-1-mgross@linux.intel.com>
-References: <20210212222304.110194-1-mgross@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srikanth Thokala <srikanth.thokala@intel.com>
+From: Mark Gross <mgross@linux.intel.com>
 
-Add logic to establish communication with the local host which is through
-ring buffer management and MSI/Doorbell interrupts
+The Intel Vision Processing Unit (VPU) is an IP block that is showing up for
+the first time as part of the Keem Bay SOC.  Keem Bay is a quad core A53 Arm
+SOC.  It is designed to be used as a stand alone SOC as well as in an PCIe
+Vision Processing accelerator add in card.
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
----
- drivers/misc/xlink-pcie/common/core.h        |  11 +-
- drivers/misc/xlink-pcie/remote_host/Makefile |   2 +
- drivers/misc/xlink-pcie/remote_host/core.c   | 621 +++++++++++++++++++
- drivers/misc/xlink-pcie/remote_host/pci.c    |  48 +-
- 4 files changed, 670 insertions(+), 12 deletions(-)
+This 6th version of this patch set includes more updates to the xlink SMBUS
+patch correction some language in its Kconfig file.
+
+At the bottom of this cover letter is the delta between v5 and this version for
+easy review of the modifications.
+
+Thanks for looking at these and providing feedback.
+
+
+C, Udhayakumar (8):
+  dt-bindings: misc: intel_tsens: Add tsens thermal bindings
+    documentation
+  misc: Tsens ARM host thermal driver.
+  misc: Intel tsens IA host driver.
+  Intel tsens i2c slave driver.
+  misc:intel_tsens: Intel Keem Bay tsens driver.
+  dt-bindings: misc: hddl_dev: Add hddl device management documentation
+  misc: Hddl device management for local host
+  misc: HDDL device management for IA host
+
+Daniele Alessandrelli (4):
+  dt-bindings: mailbox: Add Intel VPU IPC mailbox bindings
+  mailbox: vpu-ipc-mailbox: Add support for Intel VPU IPC mailbox
+  dt-bindings: Add bindings for Keem Bay IPC driver
+  keembay-ipc: Add Keem Bay IPC module
+
+Li, Tingqian (2):
+  dt-bindings: misc: Add Keem Bay vpumgr
+  misc: Add Keem Bay VPU manager
+
+Paul Murphy (2):
+  dt-bindings: Add bindings for Keem Bay VPU IPC driver
+  keembay-vpu-ipc: Add Keem Bay VPU IPC module
+
+Ramya P Karanth (1):
+  Intel Keembay XLink SMBus driver
+
+Seamus Kelly (7):
+  xlink-ipc: Add xlink ipc device tree bindings
+  xlink-ipc: Add xlink ipc driver
+  xlink-core: Add xlink core device tree bindings
+  xlink-core: Add xlink core driver xLink
+  xlink-core: Enable xlink protocol over pcie
+  xlink-core: Enable VPU IP management and runtime control
+  xlink-core: add async channel and events
+
+Srikanth Thokala (9):
+  misc: xlink-pcie: Add documentation for XLink PCIe driver
+  misc: xlink-pcie: lh: Add PCIe EPF driver for Local Host
+  misc: xlink-pcie: lh: Add PCIe EP DMA functionality
+  misc: xlink-pcie: lh: Add core communication logic
+  misc: xlink-pcie: lh: Prepare changes for adding remote host driver
+  misc: xlink-pcie: rh: Add PCIe EP driver for Remote Host
+  misc: xlink-pcie: rh: Add core communication logic
+  misc: xlink-pcie: Add XLink API interface
+  misc: xlink-pcie: Add asynchronous event notification support for
+    XLink
+
+mark gross (1):
+  Add Vision Processing Unit (VPU) documentation.
+
+ .../mailbox/intel,vpu-ipc-mailbox.yaml        |   69 +
+ .../bindings/misc/intel,hddl-client.yaml      |  117 +
+ .../bindings/misc/intel,intel-tsens.yaml      |  122 +
+ .../bindings/misc/intel,keembay-vpu-mgr.yaml  |   48 +
+ .../misc/intel,keembay-xlink-ipc.yaml         |   51 +
+ .../bindings/misc/intel,keembay-xlink.yaml    |   29 +
+ .../bindings/soc/intel/intel,keembay-ipc.yaml |   45 +
+ .../soc/intel/intel,keembay-vpu-ipc.yaml      |  143 ++
+ Documentation/hwmon/index.rst                 |    2 +
+ Documentation/hwmon/intel_tsens_host.rst      |   71 +
+ Documentation/hwmon/intel_tsens_sensor.rst    |   67 +
+ Documentation/i2c/busses/index.rst            |    1 +
+ .../i2c/busses/intel-xlink-smbus.rst          |   71 +
+ Documentation/index.rst                       |    1 +
+ .../misc-devices/hddl_device_client.rst       |  212 ++
+ .../misc-devices/hddl_device_server.rst       |  205 ++
+ Documentation/misc-devices/index.rst          |    2 +
+ Documentation/vpu/index.rst                   |   20 +
+ Documentation/vpu/vpu-stack-overview.rst      |  270 +++
+ Documentation/vpu/xlink-core.rst              |   81 +
+ Documentation/vpu/xlink-ipc.rst               |   51 +
+ Documentation/vpu/xlink-pcie.rst              |   90 +
+ MAINTAINERS                                   |   54 +
+ drivers/mailbox/Kconfig                       |   11 +
+ drivers/mailbox/Makefile                      |    2 +
+ drivers/mailbox/vpu-ipc-mailbox.c             |  297 +++
+ drivers/misc/Kconfig                          |    7 +
+ drivers/misc/Makefile                         |    7 +
+ drivers/misc/hddl_device/Kconfig              |   26 +
+ drivers/misc/hddl_device/Makefile             |    7 +
+ drivers/misc/hddl_device/hddl_device.c        |  565 +++++
+ drivers/misc/hddl_device/hddl_device_lh.c     |  764 +++++++
+ drivers/misc/hddl_device/hddl_device_rh.c     |  837 +++++++
+ drivers/misc/hddl_device/hddl_device_util.h   |   52 +
+ drivers/misc/intel_tsens/Kconfig              |   54 +
+ drivers/misc/intel_tsens/Makefile             |   10 +
+ drivers/misc/intel_tsens/intel_tsens_host.c   |  352 +++
+ drivers/misc/intel_tsens/intel_tsens_i2c.c    |  119 +
+ .../misc/intel_tsens/intel_tsens_thermal.c    |  651 ++++++
+ .../misc/intel_tsens/intel_tsens_thermal.h    |   38 +
+ drivers/misc/intel_tsens/keembay_thermal.c    |  169 ++
+ drivers/misc/intel_tsens/keembay_tsens.h      |  366 +++
+ drivers/misc/vpumgr/Kconfig                   |    9 +
+ drivers/misc/vpumgr/Makefile                  |    3 +
+ drivers/misc/vpumgr/vpu_common.h              |   31 +
+ drivers/misc/vpumgr/vpu_mgr.c                 |  370 +++
+ drivers/misc/vpumgr/vpu_smm.c                 |  554 +++++
+ drivers/misc/vpumgr/vpu_smm.h                 |   30 +
+ drivers/misc/vpumgr/vpu_vcm.c                 |  584 +++++
+ drivers/misc/vpumgr/vpu_vcm.h                 |   84 +
+ drivers/misc/xlink-core/Kconfig               |   33 +
+ drivers/misc/xlink-core/Makefile              |    5 +
+ drivers/misc/xlink-core/xlink-core.c          | 1331 +++++++++++
+ drivers/misc/xlink-core/xlink-core.h          |   25 +
+ drivers/misc/xlink-core/xlink-defs.h          |  181 ++
+ drivers/misc/xlink-core/xlink-dispatcher.c    |  436 ++++
+ drivers/misc/xlink-core/xlink-dispatcher.h    |   26 +
+ drivers/misc/xlink-core/xlink-ioctl.c         |  554 +++++
+ drivers/misc/xlink-core/xlink-ioctl.h         |   36 +
+ drivers/misc/xlink-core/xlink-multiplexer.c   | 1164 ++++++++++
+ drivers/misc/xlink-core/xlink-multiplexer.h   |   35 +
+ drivers/misc/xlink-core/xlink-platform.c      |  273 +++
+ drivers/misc/xlink-core/xlink-platform.h      |   65 +
+ drivers/misc/xlink-ipc/Kconfig                |    7 +
+ drivers/misc/xlink-ipc/Makefile               |    4 +
+ drivers/misc/xlink-ipc/xlink-ipc.c            |  878 +++++++
+ drivers/misc/xlink-pcie/Kconfig               |   20 +
+ drivers/misc/xlink-pcie/Makefile              |    2 +
+ drivers/misc/xlink-pcie/common/core.h         |  245 ++
+ drivers/misc/xlink-pcie/common/interface.c    |  124 +
+ drivers/misc/xlink-pcie/common/util.c         |  373 +++
+ drivers/misc/xlink-pcie/common/util.h         |   68 +
+ drivers/misc/xlink-pcie/common/xpcie.h        |  100 +
+ drivers/misc/xlink-pcie/local_host/Makefile   |    6 +
+ drivers/misc/xlink-pcie/local_host/core.c     |  817 +++++++
+ drivers/misc/xlink-pcie/local_host/dma.c      |  575 +++++
+ drivers/misc/xlink-pcie/local_host/epf.c      |  482 ++++
+ drivers/misc/xlink-pcie/local_host/epf.h      |  101 +
+ drivers/misc/xlink-pcie/remote_host/Makefile  |    6 +
+ drivers/misc/xlink-pcie/remote_host/core.c    |  621 +++++
+ drivers/misc/xlink-pcie/remote_host/main.c    |   93 +
+ drivers/misc/xlink-pcie/remote_host/pci.c     |  523 +++++
+ drivers/misc/xlink-pcie/remote_host/pci.h     |   65 +
+ drivers/misc/xlink-smbus/Kconfig              |   25 +
+ drivers/misc/xlink-smbus/Makefile             |    5 +
+ drivers/misc/xlink-smbus/xlink-smbus.c        |  467 ++++
+ drivers/soc/Kconfig                           |    1 +
+ drivers/soc/Makefile                          |    1 +
+ drivers/soc/intel/Kconfig                     |   33 +
+ drivers/soc/intel/Makefile                    |    5 +
+ drivers/soc/intel/keembay-ipc.c               | 1364 +++++++++++
+ drivers/soc/intel/keembay-vpu-ipc.c           | 2026 +++++++++++++++++
+ include/linux/hddl_device.h                   |  153 ++
+ include/linux/intel_tsens_host.h              |   34 +
+ include/linux/soc/intel/keembay-ipc.h         |   30 +
+ include/linux/soc/intel/keembay-vpu-ipc.h     |   62 +
+ include/linux/xlink-ipc.h                     |   48 +
+ include/linux/xlink.h                         |  146 ++
+ include/linux/xlink_drv_inf.h                 |   70 +
+ include/uapi/misc/vpumgr.h                    |   64 +
+ include/uapi/misc/xlink_uapi.h                |  145 ++
+ 101 files changed, 21774 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/intel,vpu-ipc-mailbox.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
+ create mode 100644 Documentation/hwmon/intel_tsens_host.rst
+ create mode 100644 Documentation/hwmon/intel_tsens_sensor.rst
+ create mode 100644 Documentation/i2c/busses/intel-xlink-smbus.rst
+ create mode 100644 Documentation/misc-devices/hddl_device_client.rst
+ create mode 100644 Documentation/misc-devices/hddl_device_server.rst
+ create mode 100644 Documentation/vpu/index.rst
+ create mode 100644 Documentation/vpu/vpu-stack-overview.rst
+ create mode 100644 Documentation/vpu/xlink-core.rst
+ create mode 100644 Documentation/vpu/xlink-ipc.rst
+ create mode 100644 Documentation/vpu/xlink-pcie.rst
+ create mode 100644 drivers/mailbox/vpu-ipc-mailbox.c
+ create mode 100644 drivers/misc/hddl_device/Kconfig
+ create mode 100644 drivers/misc/hddl_device/Makefile
+ create mode 100644 drivers/misc/hddl_device/hddl_device.c
+ create mode 100644 drivers/misc/hddl_device/hddl_device_lh.c
+ create mode 100644 drivers/misc/hddl_device/hddl_device_rh.c
+ create mode 100644 drivers/misc/hddl_device/hddl_device_util.h
+ create mode 100644 drivers/misc/intel_tsens/Kconfig
+ create mode 100644 drivers/misc/intel_tsens/Makefile
+ create mode 100644 drivers/misc/intel_tsens/intel_tsens_host.c
+ create mode 100644 drivers/misc/intel_tsens/intel_tsens_i2c.c
+ create mode 100644 drivers/misc/intel_tsens/intel_tsens_thermal.c
+ create mode 100644 drivers/misc/intel_tsens/intel_tsens_thermal.h
+ create mode 100644 drivers/misc/intel_tsens/keembay_thermal.c
+ create mode 100644 drivers/misc/intel_tsens/keembay_tsens.h
+ create mode 100644 drivers/misc/vpumgr/Kconfig
+ create mode 100644 drivers/misc/vpumgr/Makefile
+ create mode 100644 drivers/misc/vpumgr/vpu_common.h
+ create mode 100644 drivers/misc/vpumgr/vpu_mgr.c
+ create mode 100644 drivers/misc/vpumgr/vpu_smm.c
+ create mode 100644 drivers/misc/vpumgr/vpu_smm.h
+ create mode 100644 drivers/misc/vpumgr/vpu_vcm.c
+ create mode 100644 drivers/misc/vpumgr/vpu_vcm.h
+ create mode 100644 drivers/misc/xlink-core/Kconfig
+ create mode 100644 drivers/misc/xlink-core/Makefile
+ create mode 100644 drivers/misc/xlink-core/xlink-core.c
+ create mode 100644 drivers/misc/xlink-core/xlink-core.h
+ create mode 100644 drivers/misc/xlink-core/xlink-defs.h
+ create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.c
+ create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.h
+ create mode 100644 drivers/misc/xlink-core/xlink-ioctl.c
+ create mode 100644 drivers/misc/xlink-core/xlink-ioctl.h
+ create mode 100644 drivers/misc/xlink-core/xlink-multiplexer.c
+ create mode 100644 drivers/misc/xlink-core/xlink-multiplexer.h
+ create mode 100644 drivers/misc/xlink-core/xlink-platform.c
+ create mode 100644 drivers/misc/xlink-core/xlink-platform.h
+ create mode 100644 drivers/misc/xlink-ipc/Kconfig
+ create mode 100644 drivers/misc/xlink-ipc/Makefile
+ create mode 100644 drivers/misc/xlink-ipc/xlink-ipc.c
+ create mode 100644 drivers/misc/xlink-pcie/Kconfig
+ create mode 100644 drivers/misc/xlink-pcie/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/common/core.h
+ create mode 100644 drivers/misc/xlink-pcie/common/interface.c
+ create mode 100644 drivers/misc/xlink-pcie/common/util.c
+ create mode 100644 drivers/misc/xlink-pcie/common/util.h
+ create mode 100644 drivers/misc/xlink-pcie/common/xpcie.h
+ create mode 100644 drivers/misc/xlink-pcie/local_host/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/local_host/core.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/dma.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/epf.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/epf.h
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/Makefile
  create mode 100644 drivers/misc/xlink-pcie/remote_host/core.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/main.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.h
+ create mode 100644 drivers/misc/xlink-smbus/Kconfig
+ create mode 100644 drivers/misc/xlink-smbus/Makefile
+ create mode 100644 drivers/misc/xlink-smbus/xlink-smbus.c
+ create mode 100644 drivers/soc/intel/Kconfig
+ create mode 100644 drivers/soc/intel/Makefile
+ create mode 100644 drivers/soc/intel/keembay-ipc.c
+ create mode 100644 drivers/soc/intel/keembay-vpu-ipc.c
+ create mode 100644 include/linux/hddl_device.h
+ create mode 100644 include/linux/intel_tsens_host.h
+ create mode 100644 include/linux/soc/intel/keembay-ipc.h
+ create mode 100644 include/linux/soc/intel/keembay-vpu-ipc.h
+ create mode 100644 include/linux/xlink-ipc.h
+ create mode 100644 include/linux/xlink.h
+ create mode 100644 include/linux/xlink_drv_inf.h
+ create mode 100644 include/uapi/misc/vpumgr.h
+ create mode 100644 include/uapi/misc/xlink_uapi.h
 
-diff --git a/drivers/misc/xlink-pcie/common/core.h b/drivers/misc/xlink-pcie/common/core.h
-index 656b5e2dbfae..f43c175b7a48 100644
---- a/drivers/misc/xlink-pcie/common/core.h
-+++ b/drivers/misc/xlink-pcie/common/core.h
-@@ -8,15 +8,11 @@
- #ifndef XPCIE_CORE_HEADER_
- #define XPCIE_CORE_HEADER_
- 
--#include <linux/io.h>
--#include <linux/types.h>
--#include <linux/workqueue.h>
--#include <linux/slab.h>
--#include <linux/mutex.h>
--#include <linux/mempool.h>
- #include <linux/dma-mapping.h>
--#include <linux/cache.h>
-+#include <linux/mutex.h>
-+#include <linux/slab.h>
- #include <linux/wait.h>
-+#include <linux/workqueue.h>
- 
- #include <linux/xlink_drv_inf.h>
- 
-@@ -62,6 +58,7 @@ struct xpcie_buf_desc {
- struct xpcie_stream {
- 	size_t frag;
- 	struct xpcie_pipe pipe;
-+	struct xpcie_buf_desc **ddr;
- };
- 
- struct xpcie_list {
-diff --git a/drivers/misc/xlink-pcie/remote_host/Makefile b/drivers/misc/xlink-pcie/remote_host/Makefile
-index 96374a43023e..e8074dbb1161 100644
---- a/drivers/misc/xlink-pcie/remote_host/Makefile
-+++ b/drivers/misc/xlink-pcie/remote_host/Makefile
-@@ -1,3 +1,5 @@
- obj-$(CONFIG_XLINK_PCIE_RH_DRIVER) += mxlk.o
- mxlk-objs := main.o
- mxlk-objs += pci.o
-+mxlk-objs += core.o
-+mxlk-objs += ../common/util.o
-diff --git a/drivers/misc/xlink-pcie/remote_host/core.c b/drivers/misc/xlink-pcie/remote_host/core.c
-new file mode 100644
-index 000000000000..3be0492aa57c
---- /dev/null
-+++ b/drivers/misc/xlink-pcie/remote_host/core.c
-@@ -0,0 +1,621 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Intel Keem Bay XLink PCIe Driver
-+ *
-+ * Copyright (C) 2021 Intel Corporation
-+ */
-+
-+#include "pci.h"
-+
-+#include "../common/core.h"
-+#include "../common/util.h"
-+
-+static int intel_xpcie_map_dma(struct xpcie *xpcie, struct xpcie_buf_desc *bd,
-+			       int direction)
-+{
-+	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
-+	struct device *dev = &xdev->pci->dev;
-+
-+	bd->phys = dma_map_single(dev, bd->data, bd->length, direction);
-+
-+	return dma_mapping_error(dev, bd->phys);
-+}
-+
-+static void intel_xpcie_unmap_dma(struct xpcie *xpcie,
-+				  struct xpcie_buf_desc *bd,
-+				  int direction)
-+{
-+	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
-+	struct device *dev = &xdev->pci->dev;
-+
-+	dma_unmap_single(dev, bd->phys, bd->length, direction);
-+}
-+
-+static void intel_xpcie_txrx_cleanup(struct xpcie *xpcie)
-+{
-+	struct xpcie_interface *inf = &xpcie->interfaces[0];
-+	struct xpcie_stream *tx = &xpcie->tx;
-+	struct xpcie_stream *rx = &xpcie->rx;
-+	struct xpcie_buf_desc *bd;
-+	int index;
-+
-+	xpcie->stop_flag = true;
-+	xpcie->no_tx_buffer = false;
-+	inf->data_avail = true;
-+	wake_up_interruptible(&xpcie->tx_waitq);
-+	wake_up_interruptible(&inf->rx_waitq);
-+	mutex_lock(&xpcie->wlock);
-+	mutex_lock(&inf->rlock);
-+
-+	if (tx->ddr) {
-+		for (index = 0; index < tx->pipe.ndesc; index++) {
-+			struct xpcie_transfer_desc *td = tx->pipe.tdr + index;
-+
-+			bd = tx->ddr[index];
-+			if (bd) {
-+				intel_xpcie_unmap_dma(xpcie, bd, DMA_TO_DEVICE);
-+				intel_xpcie_free_tx_bd(xpcie, bd);
-+				intel_xpcie_set_td_address(td, 0);
-+				intel_xpcie_set_td_length(td, 0);
-+			}
-+		}
-+		kfree(tx->ddr);
-+	}
-+
-+	if (rx->ddr) {
-+		for (index = 0; index < rx->pipe.ndesc; index++) {
-+			struct xpcie_transfer_desc *td = rx->pipe.tdr + index;
-+
-+			bd = rx->ddr[index];
-+			if (bd) {
-+				intel_xpcie_unmap_dma(xpcie,
-+						      bd, DMA_FROM_DEVICE);
-+				intel_xpcie_free_rx_bd(xpcie, bd);
-+				intel_xpcie_set_td_address(td, 0);
-+				intel_xpcie_set_td_length(td, 0);
-+			}
-+		}
-+		kfree(rx->ddr);
-+	}
-+
-+	intel_xpcie_list_cleanup(&xpcie->tx_pool);
-+	intel_xpcie_list_cleanup(&xpcie->rx_pool);
-+
-+	mutex_unlock(&inf->rlock);
-+	mutex_unlock(&xpcie->wlock);
-+}
-+
-+static int intel_xpcie_txrx_init(struct xpcie *xpcie,
-+				 struct xpcie_cap_txrx *cap)
-+{
-+	struct xpcie_stream *tx = &xpcie->tx;
-+	struct xpcie_stream *rx = &xpcie->rx;
-+	int tx_pool_size, rx_pool_size;
-+	struct xpcie_buf_desc *bd;
-+	int rc, index, ndesc;
-+
-+	xpcie->txrx = cap;
-+	xpcie->fragment_size = intel_xpcie_ioread32(&cap->fragment_size);
-+	xpcie->stop_flag = false;
-+
-+	tx->pipe.ndesc = intel_xpcie_ioread32(&cap->tx.ndesc);
-+	tx->pipe.head = &cap->tx.head;
-+	tx->pipe.tail = &cap->tx.tail;
-+	tx->pipe.old = intel_xpcie_ioread32(&cap->tx.tail);
-+	tx->pipe.tdr = (struct xpcie_transfer_desc *)(xpcie->mmio +
-+				intel_xpcie_ioread32(&cap->tx.ring));
-+
-+	tx->ddr = kcalloc(tx->pipe.ndesc, sizeof(struct xpcie_buf_desc *),
-+			  GFP_KERNEL);
-+	if (!tx->ddr) {
-+		rc = -ENOMEM;
-+		goto error;
-+	}
-+
-+	rx->pipe.ndesc = intel_xpcie_ioread32(&cap->rx.ndesc);
-+	rx->pipe.head = &cap->rx.head;
-+	rx->pipe.tail = &cap->rx.tail;
-+	rx->pipe.old = intel_xpcie_ioread32(&cap->rx.head);
-+	rx->pipe.tdr = (struct xpcie_transfer_desc *)(xpcie->mmio +
-+				intel_xpcie_ioread32(&cap->rx.ring));
-+
-+	rx->ddr = kcalloc(rx->pipe.ndesc, sizeof(struct xpcie_buf_desc *),
-+			  GFP_KERNEL);
-+	if (!rx->ddr) {
-+		rc = -ENOMEM;
-+		goto error;
-+	}
-+
-+	intel_xpcie_list_init(&xpcie->rx_pool);
-+	rx_pool_size = roundup(SZ_32M, xpcie->fragment_size);
-+	ndesc = rx_pool_size / xpcie->fragment_size;
-+
-+	for (index = 0; index < ndesc; index++) {
-+		bd = intel_xpcie_alloc_bd(xpcie->fragment_size);
-+		if (bd) {
-+			intel_xpcie_list_put(&xpcie->rx_pool, bd);
-+		} else {
-+			rc = -ENOMEM;
-+			goto error;
-+		}
-+	}
-+
-+	intel_xpcie_list_init(&xpcie->tx_pool);
-+	tx_pool_size = roundup(SZ_32M, xpcie->fragment_size);
-+	ndesc = tx_pool_size / xpcie->fragment_size;
-+
-+	for (index = 0; index < ndesc; index++) {
-+		bd = intel_xpcie_alloc_bd(xpcie->fragment_size);
-+		if (bd) {
-+			intel_xpcie_list_put(&xpcie->tx_pool, bd);
-+		} else {
-+			rc = -ENOMEM;
-+			goto error;
-+		}
-+	}
-+
-+	for (index = 0; index < rx->pipe.ndesc; index++) {
-+		struct xpcie_transfer_desc *td = rx->pipe.tdr + index;
-+
-+		bd = intel_xpcie_alloc_rx_bd(xpcie);
-+		if (!bd) {
-+			rc = -ENOMEM;
-+			goto error;
-+		}
-+
-+		if (intel_xpcie_map_dma(xpcie, bd, DMA_FROM_DEVICE)) {
-+			dev_err(xpcie_to_dev(xpcie), "failed to map rx bd\n");
-+			rc = -ENOMEM;
-+			goto error;
-+		}
-+
-+		rx->ddr[index] = bd;
-+		intel_xpcie_set_td_address(td, bd->phys);
-+		intel_xpcie_set_td_length(td, bd->length);
-+	}
-+
-+	return 0;
-+
-+error:
-+	intel_xpcie_txrx_cleanup(xpcie);
-+
-+	return rc;
-+}
-+
-+static int intel_xpcie_discover_txrx(struct xpcie *xpcie)
-+{
-+	struct xpcie_cap_txrx *cap;
-+	int error;
-+
-+	cap = intel_xpcie_cap_find(xpcie, 0, XPCIE_CAP_TXRX);
-+	if (cap)
-+		error = intel_xpcie_txrx_init(xpcie, cap);
-+	else
-+		error = -EIO;
-+
-+	return error;
-+}
-+
-+static void intel_xpcie_start_tx(struct xpcie *xpcie, unsigned long delay)
-+{
-+	queue_delayed_work(xpcie->tx_wq, &xpcie->tx_event, delay);
-+}
-+
-+static void intel_xpcie_start_rx(struct xpcie *xpcie, unsigned long delay)
-+{
-+	queue_delayed_work(xpcie->rx_wq, &xpcie->rx_event, delay);
-+}
-+
-+static void intel_xpcie_rx_event_handler(struct work_struct *work)
-+{
-+	struct xpcie *xpcie = container_of(work, struct xpcie, rx_event.work);
-+	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
-+	struct xpcie_buf_desc *bd, *replacement = NULL;
-+	unsigned long delay = msecs_to_jiffies(1);
-+	struct xpcie_stream *rx = &xpcie->rx;
-+	struct xpcie_transfer_desc *td;
-+	u32 head, tail, ndesc, length;
-+	u16 status, interface;
-+	int rc;
-+
-+	if (intel_xpcie_get_device_status(xpcie) != XPCIE_STATUS_RUN)
-+		return;
-+
-+	ndesc = rx->pipe.ndesc;
-+	tail = intel_xpcie_get_tdr_tail(&rx->pipe);
-+	head = intel_xpcie_get_tdr_head(&rx->pipe);
-+
-+	while (head != tail) {
-+		td = rx->pipe.tdr + head;
-+		bd = rx->ddr[head];
-+
-+		replacement = intel_xpcie_alloc_rx_bd(xpcie);
-+		if (!replacement) {
-+			delay = msecs_to_jiffies(20);
-+			break;
-+		}
-+
-+		rc = intel_xpcie_map_dma(xpcie, replacement, DMA_FROM_DEVICE);
-+		if (rc) {
-+			dev_err(xpcie_to_dev(xpcie),
-+				"failed to map rx bd (%d)\n", rc);
-+			intel_xpcie_free_rx_bd(xpcie, replacement);
-+			break;
-+		}
-+
-+		status = intel_xpcie_get_td_status(td);
-+		interface = intel_xpcie_get_td_interface(td);
-+		length = intel_xpcie_get_td_length(td);
-+		intel_xpcie_unmap_dma(xpcie, bd, DMA_FROM_DEVICE);
-+
-+		if (unlikely(status != XPCIE_DESC_STATUS_SUCCESS) ||
-+		    unlikely(interface >= XPCIE_NUM_INTERFACES)) {
-+			dev_err(xpcie_to_dev(xpcie),
-+				"rx desc failure, status(%u), interface(%u)\n",
-+			status, interface);
-+			intel_xpcie_free_rx_bd(xpcie, bd);
-+		} else {
-+			bd->interface = interface;
-+			bd->length = length;
-+			bd->next = NULL;
-+
-+			intel_xpcie_add_bd_to_interface(xpcie, bd);
-+		}
-+
-+		rx->ddr[head] = replacement;
-+		intel_xpcie_set_td_address(td, replacement->phys);
-+		intel_xpcie_set_td_length(td, replacement->length);
-+		head = XPCIE_CIRCULAR_INC(head, ndesc);
-+	}
-+
-+	if (intel_xpcie_get_tdr_head(&rx->pipe) != head) {
-+		intel_xpcie_set_tdr_head(&rx->pipe, head);
-+		intel_xpcie_pci_raise_irq(xdev, DATA_RECEIVED, 1);
-+	}
-+
-+	if (!replacement)
-+		intel_xpcie_start_rx(xpcie, delay);
-+}
-+
-+static void intel_xpcie_tx_event_handler(struct work_struct *work)
-+{
-+	struct xpcie *xpcie = container_of(work, struct xpcie, tx_event.work);
-+	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
-+	struct xpcie_stream *tx = &xpcie->tx;
-+	struct xpcie_transfer_desc *td;
-+	u32 head, tail, old, ndesc;
-+	struct xpcie_buf_desc *bd;
-+	size_t bytes, buffers;
-+	u16 status;
-+
-+	if (intel_xpcie_get_device_status(xpcie) != XPCIE_STATUS_RUN)
-+		return;
-+
-+	ndesc = tx->pipe.ndesc;
-+	old = tx->pipe.old;
-+	tail = intel_xpcie_get_tdr_tail(&tx->pipe);
-+	head = intel_xpcie_get_tdr_head(&tx->pipe);
-+
-+	/* clean old entries first */
-+	while (old != head) {
-+		bd = tx->ddr[old];
-+		td = tx->pipe.tdr + old;
-+		status = intel_xpcie_get_td_status(td);
-+		if (status != XPCIE_DESC_STATUS_SUCCESS)
-+			dev_err(xpcie_to_dev(xpcie),
-+				"detected tx desc failure (%u)\n", status);
-+
-+		intel_xpcie_unmap_dma(xpcie, bd, DMA_TO_DEVICE);
-+		intel_xpcie_free_tx_bd(xpcie, bd);
-+		tx->ddr[old] = NULL;
-+		old = XPCIE_CIRCULAR_INC(old, ndesc);
-+	}
-+	tx->pipe.old = old;
-+
-+	/* add new entries */
-+	while (XPCIE_CIRCULAR_INC(tail, ndesc) != head) {
-+		bd = intel_xpcie_list_get(&xpcie->write);
-+		if (!bd)
-+			break;
-+
-+		td = tx->pipe.tdr + tail;
-+
-+		if (intel_xpcie_map_dma(xpcie, bd, DMA_TO_DEVICE)) {
-+			dev_err(xpcie_to_dev(xpcie),
-+				"dma mapping error bd addr %p, size %zu\n",
-+				bd->data, bd->length);
-+			break;
-+		}
-+
-+		tx->ddr[tail] = bd;
-+		intel_xpcie_set_td_address(td, bd->phys);
-+		intel_xpcie_set_td_length(td, bd->length);
-+		intel_xpcie_set_td_interface(td, bd->interface);
-+		intel_xpcie_set_td_status(td, XPCIE_DESC_STATUS_ERROR);
-+
-+		tail = XPCIE_CIRCULAR_INC(tail, ndesc);
-+	}
-+
-+	if (intel_xpcie_get_tdr_tail(&tx->pipe) != tail) {
-+		intel_xpcie_set_tdr_tail(&tx->pipe, tail);
-+		intel_xpcie_pci_raise_irq(xdev, DATA_SENT, 1);
-+	}
-+
-+	intel_xpcie_list_info(&xpcie->write, &bytes, &buffers);
-+	if (buffers)
-+		xpcie->tx_pending = true;
-+	else
-+		xpcie->tx_pending = false;
-+}
-+
-+static irqreturn_t intel_xpcie_interrupt(int irq, void *args)
-+{
-+	struct xpcie_dev *xdev = args;
-+	struct xpcie *xpcie;
-+
-+	xpcie = &xdev->xpcie;
-+
-+	if (intel_xpcie_get_doorbell(xpcie, FROM_DEVICE, DATA_SENT)) {
-+		intel_xpcie_set_doorbell(xpcie, FROM_DEVICE, DATA_SENT, 0);
-+		intel_xpcie_start_rx(xpcie, 0);
-+	}
-+	if (intel_xpcie_get_doorbell(xpcie, FROM_DEVICE, DATA_RECEIVED)) {
-+		intel_xpcie_set_doorbell(xpcie, FROM_DEVICE, DATA_RECEIVED, 0);
-+		if (xpcie->tx_pending)
-+			intel_xpcie_start_tx(xpcie, 0);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int intel_xpcie_events_init(struct xpcie *xpcie)
-+{
-+	xpcie->rx_wq = alloc_ordered_workqueue(XPCIE_DRIVER_NAME,
-+					       WQ_MEM_RECLAIM | WQ_HIGHPRI);
-+	if (!xpcie->rx_wq) {
-+		dev_err(xpcie_to_dev(xpcie), "failed to allocate workqueue\n");
-+		return -ENOMEM;
-+	}
-+
-+	xpcie->tx_wq = alloc_ordered_workqueue(XPCIE_DRIVER_NAME,
-+					       WQ_MEM_RECLAIM | WQ_HIGHPRI);
-+	if (!xpcie->tx_wq) {
-+		dev_err(xpcie_to_dev(xpcie), "failed to allocate workqueue\n");
-+		destroy_workqueue(xpcie->rx_wq);
-+		return -ENOMEM;
-+	}
-+
-+	INIT_DELAYED_WORK(&xpcie->rx_event, intel_xpcie_rx_event_handler);
-+	INIT_DELAYED_WORK(&xpcie->tx_event, intel_xpcie_tx_event_handler);
-+
-+	return 0;
-+}
-+
-+static void intel_xpcie_events_cleanup(struct xpcie *xpcie)
-+{
-+	cancel_delayed_work_sync(&xpcie->rx_event);
-+	cancel_delayed_work_sync(&xpcie->tx_event);
-+
-+	destroy_workqueue(xpcie->rx_wq);
-+	destroy_workqueue(xpcie->tx_wq);
-+}
-+
-+int intel_xpcie_core_init(struct xpcie *xpcie)
-+{
-+	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
-+	int status, rc;
-+
-+	status = intel_xpcie_get_device_status(xpcie);
-+	if (status != XPCIE_STATUS_RUN) {
-+		dev_err(&xdev->pci->dev,
-+			"device status not RUNNING (%d)\n", status);
-+		rc = -EBUSY;
-+		return rc;
-+	}
-+
-+	if (intel_xpcie_ioread8(xpcie->mmio + XPCIE_MMIO_LEGACY_A0))
-+		xpcie->legacy_a0 = true;
-+
-+	rc = intel_xpcie_events_init(xpcie);
-+	if (rc)
-+		return rc;
-+
-+	rc = intel_xpcie_discover_txrx(xpcie);
-+	if (rc)
-+		goto error_txrx;
-+
-+	intel_xpcie_interfaces_init(xpcie);
-+
-+	rc = intel_xpcie_pci_register_irq(xdev, &intel_xpcie_interrupt);
-+	if (rc)
-+		goto error_txrx;
-+
-+	intel_xpcie_set_host_status(xpcie, XPCIE_STATUS_RUN);
-+
-+	return 0;
-+
-+error_txrx:
-+	intel_xpcie_events_cleanup(xpcie);
-+	intel_xpcie_set_host_status(xpcie, XPCIE_STATUS_ERROR);
-+
-+	return rc;
-+}
-+
-+void intel_xpcie_core_cleanup(struct xpcie *xpcie)
-+{
-+	if (xpcie->status == XPCIE_STATUS_RUN) {
-+		intel_xpcie_set_host_status(xpcie, XPCIE_STATUS_UNINIT);
-+		intel_xpcie_events_cleanup(xpcie);
-+		intel_xpcie_interfaces_cleanup(xpcie);
-+		intel_xpcie_txrx_cleanup(xpcie);
-+	}
-+}
-+
-+int intel_xpcie_core_read(struct xpcie *xpcie, void *buffer, size_t *length,
-+			  uint32_t timeout_ms)
-+{
-+	long jiffies_timeout = (long)msecs_to_jiffies(timeout_ms);
-+	struct xpcie_interface *inf = &xpcie->interfaces[0];
-+	unsigned long jiffies_start = jiffies;
-+	struct xpcie_buf_desc *bd;
-+	size_t remaining, len;
-+	long jiffies_passed = 0;
-+	int ret;
-+
-+	if (*length == 0)
-+		return -EINVAL;
-+
-+	if (xpcie->status != XPCIE_STATUS_RUN)
-+		return -ENODEV;
-+
-+	len = *length;
-+	remaining = len;
-+	*length = 0;
-+
-+	ret = mutex_lock_interruptible(&inf->rlock);
-+	if (ret < 0)
-+		return -EINTR;
-+
-+	do {
-+		while (!inf->data_avail) {
-+			mutex_unlock(&inf->rlock);
-+			if (timeout_ms == 0) {
-+				ret = wait_event_interruptible(inf->rx_waitq,
-+							       inf->data_avail);
-+			} else {
-+				ret =
-+			wait_event_interruptible_timeout(inf->rx_waitq,
-+							 inf->data_avail,
-+							 jiffies_timeout -
-+							 jiffies_passed);
-+				if (ret == 0)
-+					return -ETIME;
-+			}
-+			if (ret < 0 || xpcie->stop_flag)
-+				return -EINTR;
-+
-+			ret = mutex_lock_interruptible(&inf->rlock);
-+			if (ret < 0)
-+				return -EINTR;
-+		}
-+
-+		bd = (inf->partial_read) ? inf->partial_read :
-+					   intel_xpcie_list_get(&inf->read);
-+		while (remaining && bd) {
-+			size_t bcopy;
-+
-+			bcopy = min(remaining, bd->length);
-+			memcpy(buffer, bd->data, bcopy);
-+
-+			buffer += bcopy;
-+			remaining -= bcopy;
-+			bd->data += bcopy;
-+			bd->length -= bcopy;
-+
-+			if (bd->length == 0) {
-+				intel_xpcie_free_rx_bd(xpcie, bd);
-+				bd = intel_xpcie_list_get(&inf->read);
-+			}
-+		}
-+
-+		/* save for next time */
-+		inf->partial_read = bd;
-+
-+		if (!bd)
-+			inf->data_avail = false;
-+
-+		*length = len - remaining;
-+
-+		jiffies_passed = (long)jiffies - (long)jiffies_start;
-+	} while (remaining > 0 && (jiffies_passed < jiffies_timeout ||
-+				   timeout_ms == 0));
-+
-+	mutex_unlock(&inf->rlock);
-+
-+	return 0;
-+}
-+
-+int intel_xpcie_core_write(struct xpcie *xpcie, void *buffer, size_t *length,
-+			   uint32_t timeout_ms)
-+{
-+	long jiffies_timeout = (long)msecs_to_jiffies(timeout_ms);
-+	struct xpcie_interface *inf = &xpcie->interfaces[0];
-+	unsigned long jiffies_start = jiffies;
-+	struct xpcie_buf_desc *bd, *head;
-+	long jiffies_passed = 0;
-+	size_t remaining, len;
-+	int ret;
-+
-+	if (*length == 0)
-+		return -EINVAL;
-+
-+	if (xpcie->status != XPCIE_STATUS_RUN)
-+		return -ENODEV;
-+
-+	len = *length;
-+	remaining = len;
-+	*length = 0;
-+
-+	ret = mutex_lock_interruptible(&xpcie->wlock);
-+	if (ret < 0)
-+		return -EINTR;
-+
-+	do {
-+		bd = intel_xpcie_alloc_tx_bd(xpcie);
-+		head = bd;
-+		while (!head) {
-+			mutex_unlock(&xpcie->wlock);
-+			if (timeout_ms == 0) {
-+				ret =
-+				wait_event_interruptible(xpcie->tx_waitq,
-+							 !xpcie->no_tx_buffer);
-+			} else {
-+				ret =
-+			wait_event_interruptible_timeout(xpcie->tx_waitq,
-+							 !xpcie->no_tx_buffer,
-+							 jiffies_timeout -
-+							 jiffies_passed);
-+				if (ret == 0)
-+					return -ETIME;
-+			}
-+			if (ret < 0 || xpcie->stop_flag)
-+				return -EINTR;
-+
-+			ret = mutex_lock_interruptible(&xpcie->wlock);
-+			if (ret < 0)
-+				return -EINTR;
-+
-+			bd = intel_xpcie_alloc_tx_bd(xpcie);
-+			head = bd;
-+		}
-+
-+		while (remaining && bd) {
-+			size_t bcopy;
-+
-+			bcopy = min(bd->length, remaining);
-+			memcpy(bd->data, buffer, bcopy);
-+
-+			buffer += bcopy;
-+			remaining -= bcopy;
-+			bd->length = bcopy;
-+			bd->interface = inf->id;
-+
-+			if (remaining) {
-+				bd->next = intel_xpcie_alloc_tx_bd(xpcie);
-+				bd = bd->next;
-+			}
-+		}
-+
-+		intel_xpcie_list_put(&xpcie->write, head);
-+		intel_xpcie_start_tx(xpcie, 0);
-+
-+		*length = len - remaining;
-+
-+		jiffies_passed = (long)jiffies - (long)jiffies_start;
-+	} while (remaining > 0 && (jiffies_passed < jiffies_timeout ||
-+				   timeout_ms == 0));
-+
-+	mutex_unlock(&xpcie->wlock);
-+
-+	return 0;
-+}
-diff --git a/drivers/misc/xlink-pcie/remote_host/pci.c b/drivers/misc/xlink-pcie/remote_host/pci.c
-index 7b94575ef997..71cbe779d1bc 100644
---- a/drivers/misc/xlink-pcie/remote_host/pci.c
-+++ b/drivers/misc/xlink-pcie/remote_host/pci.c
-@@ -206,10 +206,8 @@ static void xpcie_device_poll(struct work_struct *work)
- {
- 	struct xpcie_dev *xdev = container_of(work, struct xpcie_dev,
- 					      wait_event.work);
--	u32 dev_status = intel_xpcie_ioread32(xdev->xpcie.mmio +
--					      XPCIE_MMIO_DEV_STATUS);
- 
--	if (dev_status < XPCIE_STATUS_RUN)
-+	if (intel_xpcie_get_device_status(&xdev->xpcie) < XPCIE_STATUS_RUN)
- 		schedule_delayed_work(&xdev->wait_event,
- 				      msecs_to_jiffies(100));
- 	else
-@@ -222,9 +220,10 @@ static int intel_xpcie_pci_prepare_dev_reset(struct xpcie_dev *xdev,
- 	if (mutex_lock_interruptible(&xdev->lock))
- 		return -EINTR;
- 
--	if (xdev->core_irq_callback)
-+	if (xdev->core_irq_callback) {
- 		xdev->core_irq_callback = NULL;
--
-+		intel_xpcie_core_cleanup(&xdev->xpcie);
-+	}
- 	xdev->xpcie.status = XPCIE_STATUS_OFF;
- 	if (notify)
- 		intel_xpcie_pci_raise_irq(xdev, DEV_EVENT, REQUEST_RESET);
-@@ -324,6 +323,8 @@ int intel_xpcie_pci_cleanup(struct xpcie_dev *xdev)
- 	xdev->core_irq_callback = NULL;
- 	intel_xpcie_pci_irq_cleanup(xdev);
- 
-+	intel_xpcie_core_cleanup(&xdev->xpcie);
-+
- 	intel_xpcie_pci_unmap_bar(xdev);
- 	pci_release_regions(xdev->pci);
- 	pci_disable_device(xdev->pci);
-@@ -357,6 +358,7 @@ int intel_xpcie_pci_raise_irq(struct xpcie_dev *xdev,
- {
- 	u16 pci_status;
- 
-+	intel_xpcie_set_doorbell(&xdev->xpcie, TO_DEVICE, type, value);
- 	pci_read_config_word(xdev->pci, PCI_STATUS, &pci_status);
- 
- 	return 0;
-@@ -443,7 +445,43 @@ int intel_xpcie_pci_connect_device(u32 id)
- 		goto connect_cleanup;
- 	}
- 
-+	rc = intel_xpcie_core_init(&xdev->xpcie);
-+	if (rc < 0) {
-+		dev_err(&xdev->pci->dev, "failed to sync with device\n");
-+		goto connect_cleanup;
-+	}
-+
- connect_cleanup:
- 	mutex_unlock(&xdev->lock);
- 	return rc;
- }
-+
-+int intel_xpcie_pci_read(u32 id, void *data, size_t *size, u32 timeout)
-+{
-+	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(id);
-+
-+	if (!xdev)
-+		return -ENODEV;
-+
-+	return intel_xpcie_core_read(&xdev->xpcie, data, size, timeout);
-+}
-+
-+int intel_xpcie_pci_write(u32 id, void *data, size_t *size, u32 timeout)
-+{
-+	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(id);
-+
-+	if (!xdev)
-+		return -ENODEV;
-+
-+	return intel_xpcie_core_write(&xdev->xpcie, data, size, timeout);
-+}
-+
-+int intel_xpcie_pci_reset_device(u32 id)
-+{
-+	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(id);
-+
-+	if (!xdev)
-+		return -ENOMEM;
-+
-+	return intel_xpcie_pci_prepare_dev_reset(xdev, true);
-+}
 -- 
 2.17.1
 
+diff --git a/drivers/misc/xlink-smbus/Kconfig b/drivers/misc/xlink-smbus/Kconfig
+index e6cdf8b9a096..8d2451f8d1be 100644
+--- a/drivers/misc/xlink-smbus/Kconfig
++++ b/drivers/misc/xlink-smbus/Kconfig
+@@ -2,25 +2,24 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
+ config XLINK_SMBUS
+-	tristate "Enable smbus interface over Xlink PCIe"
++	tristate "Enable SMBUS interface over Xlink PCIe"
+ 	depends on XLINK_CORE
+ 	depends on HDDL_DEVICE_CLIENT || HDDL_DEVICE_SERVER
+ 	help
+-	 Enable xlink-pcie as i2c adapter both slave and master. The server
+-	 (Remote Host) will use this interface to get sensor data from the soc
+-	 (vision accelerator - Local Host) which is connected over PCIe.
+-	 This driver is loaded on both Remote Host and Local Host.
+-	 Select M to compile the driver as a module, name is xlink-smbus.
+-	 If unsure, select N.
+-
++	  Enable xlink-pcie as I2C adapter both slave and master. The server
++	  (Remote Host) will use this interface to get sensor data from the SoC
++	  (vision accelerator - Local Host) which is connected over PCIe.
++	  This driver is loaded on both Remote Host and Local Host.
++	  Select M to compile the driver as a module, name is xlink-smbus.
++	  If unsure, select N.
+ 
+ config XLINK_SMBUS_PROXY
+ 	tristate "Enable SMBUS adapter as proxy for I2C controller"
+ 	depends on XLINK_CORE
+ 	depends on XLINK_SMBUS
+ 	help
+-	 Enable this config when SMBUS adapter is acting as proxy for
+-	 another I2C controller.
+-	 Select M or Y if building for Intel Vision Processing Unit (VPU)
+-	 Local Host core.
+-	 Select N, if building for a Remote Host kernel.
++	  Enable this config when SMBUS adapter is acting as proxy for
++	  another I2C controller.
++	  Select M or Y if building for Intel Vision Processing Unit (VPU)
++	  Local Host core.
++	  Select N, if building for a Remote Host kernel.
