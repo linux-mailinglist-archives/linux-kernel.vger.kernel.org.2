@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06087319E5A
+	by mail.lfdr.de (Postfix) with ESMTP id 76DD2319E5B
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 13:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhBLMZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 07:25:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230296AbhBLMW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:22:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4366364E08;
-        Fri, 12 Feb 2021 12:22:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613132535;
-        bh=kL29m8B0BlKb4QIpXdEX+ADv5B/oc9gQuw1FfsQLD9w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U+dgREgRgSE8KbbgP9crNtAgqGKxU6y26G/RPkFQlbX0sd1F0ba0mGsQ3NZ+Nh04k
-         pPVOI7qtYe+QKH2I8GwccmNx9iU9wGHr8Xmn+Yku6OD3XBZqCXpOT7aVKHbgeDKnVu
-         V+YzGwm1doa07j7en/GB9Pexa9dwU1jFVD7BZ5rB8Mc18PmgYBRnnqsR27FgA/+7lE
-         wrqrNPBBXHeRZACL7Dgc0e9paAcNgqpAEMgPPg+XQMIO3Kugb+2Si7u+yjKPCzqsO1
-         N0fb5aqh92Gl1y3FJAbbOz7+RwKqKhzxDbMVDK/kMbGsJNz08149OemyiAdZqF7ooX
-         xpwybHFk4/3Gw==
-Date:   Fri, 12 Feb 2021 14:22:06 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        linux-security-module@vger.kernel.org, daniel.thompson@linaro.org,
-        op-tee@lists.trustedfirmware.org, corbet@lwn.net,
-        jejb@linux.ibm.com, janne.karhunen@gmail.com,
-        linux-doc@vger.kernel.org, jmorris@namei.org, zohar@linux.ibm.com,
-        linux-kernel@vger.kernel.org, dhowells@redhat.com,
-        lhinds@redhat.com, keyrings@vger.kernel.org,
-        jarkko.sakkinen@linux.intel.com, Markus.Wamser@mixed-mode.de,
-        casey@schaufler-ca.com, linux-integrity@vger.kernel.org,
-        jens.wiklander@linaro.org, linux-arm-kernel@lists.infradead.org,
-        serge@hallyn.com
-Subject: Re: [PATCH v8 1/4] KEYS: trusted: Add generic trusted keys framework
-Message-ID: <YCZy7mZ0yBPRSm9E@kernel.org>
-References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
- <1604419306-26105-2-git-send-email-sumit.garg@linaro.org>
- <YCQRPo0o6MZ0pcUa@kernel.org>
- <f51409f7-05b4-31b6-f1c5-d9e6d7c0bb46@pengutronix.de>
+        id S231462AbhBLMZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 07:25:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231510AbhBLMXC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:23:02 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2B4C061788;
+        Fri, 12 Feb 2021 04:22:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uLQApXb/sXTlVKThMOmNrm1a3iojPyy3XpzYg3wntEM=; b=AXzAzBHBMaxVXDuzdJwA9TnNM/
+        mTeOFL4n1b2MA6IriNolnXZG/icgCZ5CstHAW1nylSPSYPiVdkQRjGN0Y82gRq/5Qdd25fzGhc6od
+        y/7PijcW2oAn0B97MkTOO+Tp/b8vjvmRGzn5sqW1XKIHlPeBGVIMSeU3d2c0EObnPikHdGAjtOu6O
+        t5JYjQSGamvNLtgWPwyeFeqGIxOYUyx6mPFYwldFyY/vYzUIlMY817dpaJ7z6GJ6f/2tTcVnmVFaV
+        WZFaptjwAeGmpSjOXRFqEHGwjjPowbDt5P1rxc5oYwan2cfis3qWvTpEhBkQY5b2W7xTl07KBsjcn
+        RGyYUyNw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lAXSZ-00Ba2u-Fq; Fri, 12 Feb 2021 12:22:09 +0000
+Date:   Fri, 12 Feb 2021 12:22:07 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: possible deadlock in start_this_handle (2)
+Message-ID: <20210212122207.GM308988@casper.infradead.org>
+References: <CACT4Y+a_iyaYY18Uw28bd178xjso=n6jfMBjyZuYJiNeo8x+LQ@mail.gmail.com>
+ <20210211121020.GO19070@quack2.suse.cz>
+ <YCUkaJFoPkl7ZvKE@dhcp22.suse.cz>
+ <20210211125717.GH308988@casper.infradead.org>
+ <YCUr99//z8hJmnDH@dhcp22.suse.cz>
+ <20210211132533.GI308988@casper.infradead.org>
+ <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
+ <20210211142630.GK308988@casper.infradead.org>
+ <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
+ <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f51409f7-05b4-31b6-f1c5-d9e6d7c0bb46@pengutronix.de>
+In-Reply-To: <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 11:34:21AM +0100, Ahmad Fatoum wrote:
-> Hello Jarkko,
-> 
-> On 10.02.21 18:00, Jarkko Sakkinen wrote:
-> > On Tue, Nov 03, 2020 at 09:31:43PM +0530, Sumit Garg wrote:
-> >> +	case Opt_new:
-> >> +		key_len = payload->key_len;
-> >> +		ret = static_call(trusted_key_get_random)(payload->key,
-> >> +							  key_len);
-> >> +		if (ret != key_len) {
-> >> +			pr_info("trusted_key: key_create failed (%d)\n", ret);
-> >> +			goto out;
-> >> +		}
+On Fri, Feb 12, 2021 at 08:18:11PM +0900, Tetsuo Handa wrote:
+> On 2021/02/12 1:41, Michal Hocko wrote:
+> > But I suspect we have drifted away from the original issue. I thought
+> > that a simple check would help us narrow down this particular case and
+> > somebody messing up from the IRQ context didn't sound like a completely
+> > off.
 > > 
-> > This repeats a regression in existing code, i.e. does not check
-> > "ret < 0" condition. I noticed this now when I rebased the code
-> > on top of my fixes.
-> > 
-> > I.e. it's fixed in my master branch, which caused a merge conflict,
-> > and I found this.
 > 
-> Does that mean this series will go out for the next merge window?
-> Can you point me where your git tree is, so I can rebase on top?
+>  From my experience at https://lkml.kernel.org/r/201409192053.IHJ35462.JLOMOSOFFVtQFH@I-love.SAKURA.ne.jp ,
+> I think we can replace direct PF_* manipulation with macros which do not receive "struct task_struct *" argument.
+> Since TASK_PFA_TEST()/TASK_PFA_SET()/TASK_PFA_CLEAR() are for manipulating PFA_* flags on a remote thread, we can
+> define similar ones for manipulating PF_* flags on current thread. Then, auditing dangerous users becomes easier.
 
-No I mean the bug that is propagated here is fixed in my master
-branch, i.e. get_random() should check also '< 0' condition.
-
-/Jarkko
+No, nobody is manipulating another task's GFP flags.
