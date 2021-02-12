@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17088319CC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C22319CCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 11:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhBLKnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 05:43:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230311AbhBLKlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 05:41:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5876864E6B;
-        Fri, 12 Feb 2021 10:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613126425;
-        bh=xzoXFaoeYDTEMR3GxWVBJHXTFKlnfSz6FIU6JbD02kg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OdS1E/690pVqNSZvz1hzx9/9wmwurZzzpcY4AbVAjTN0P4zswcp6MDU2ezyVlqltY
-         vjY1YHqdStftk1JhFtRgM76uLU0EmIHPwNWtlEWYO3ndST1KJ3YsrPHdA+uvSTOEnx
-         I8elamVniEYZmov6Cw8uvECwV/WekrStAWPeAyriL/hGurbRCIG8LreOGUyAnpLAQV
-         RMGj0N6kl+/Gpl5L8M/h+OPtCTliU05lHFDlx9tIbAWGpXWB8QWj2eq1TxEO91LXIs
-         bUZ2rWMkjznQoAGv8nFgdRpj7J5F/D1XdqMHNJpdlRW+nd+ayjkScO1Bd3g2RW755h
-         +cuefkoNQrvrw==
-Date:   Fri, 12 Feb 2021 04:40:22 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        id S230365AbhBLKn6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 12 Feb 2021 05:43:58 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20091 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230389AbhBLKnN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 05:43:13 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-115-2rM-qm06PAG36k1cQRmO6Q-1; Fri, 12 Feb 2021 10:41:04 +0000
+X-MC-Unique: 2rM-qm06PAG36k1cQRmO6Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 12 Feb 2021 10:41:03 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 12 Feb 2021 10:41:03 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Nathan Chancellor' <nathan@kernel.org>,
+        Jian Cai <jiancai@google.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] mtd: physmap: physmap-bt1-rom: Fix unintentional stack access
-Message-ID: <20210212104022.GA242669@embeddedor>
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "Daniel Palmer" <daniel@0x0f.com>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "manojgupta@google.com" <manojgupta@google.com>,
+        =?iso-8859-1?Q?Andreas_F=E4rber?= <afaerber@suse.de>,
+        "llozano@google.com" <llozano@google.com>,
+        James Morris <jmorris@namei.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Subject: RE: [PATCH] ARM: Implement Clang's SLS mitigation
+Thread-Topic: [PATCH] ARM: Implement Clang's SLS mitigation
+Thread-Index: AQHXAQPpjAt19oU7EUuQ7rTdUOVK86pUVCnA
+Date:   Fri, 12 Feb 2021 10:41:03 +0000
+Message-ID: <3f61af0eee9b495e8e8c032902d033c5@AcuMS.aculab.com>
+References: <20210212051500.943179-1-jiancai@google.com>
+ <20210212055508.GA3822196@ubuntu-m3-large-x86>
+In-Reply-To: <20210212055508.GA3822196@ubuntu-m3-large-x86>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cast &data to (char *) in order to avoid unintentionally accessing
-the stack.
+> > on -mharden-sls=all, which mitigates the straight-line speculation
+> > vulnerability, or more commonly known as Spectre, Meldown.
+> 
+>                  ^ I would drop "or" here
+>                                                   ^ drop comma,
+>                                                     use "and",
+>                                                     typo: "Meltdown"
+> 
+> Although, is that a fair statement? SLS is not called Spectre or
+> Meltdown by ARM, it is a speculative processor vulnerabilty. It
+> might just be better to drop eerything after the first comma (although
+> maybe that is just being pedantic).
 
-Notice that data is of type u32, so any increment to &data
-will be in the order of 4-byte chunks, and this piece of code
-is actually intended to be a byte offset.
+or replace with:
+   (speculative execution of the instruction following some unconditional jumps).
 
-Fixes: b3e79e7682e0 ("mtd: physmap: Add Baikal-T1 physically mapped ROM support")
-Addresses-Coverity-ID: 1497765 ("Out-of-bounds access")
-Cc: stable@vger.kernel.org
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/mtd/maps/physmap-bt1-rom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Which will save a lot of people looking up what it means.
 
-diff --git a/drivers/mtd/maps/physmap-bt1-rom.c b/drivers/mtd/maps/physmap-bt1-rom.c
-index a35450002284..58782cfaf71c 100644
---- a/drivers/mtd/maps/physmap-bt1-rom.c
-+++ b/drivers/mtd/maps/physmap-bt1-rom.c
-@@ -79,7 +79,7 @@ static void __xipram bt1_rom_map_copy_from(struct map_info *map,
- 	if (shift) {
- 		chunk = min_t(ssize_t, 4 - shift, len);
- 		data = readl_relaxed(src - shift);
--		memcpy(to, &data + shift, chunk);
-+		memcpy(to, (char *)&data + shift, chunk);
- 		src += chunk;
- 		to += chunk;
- 		len -= chunk;
--- 
-2.27.0
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
