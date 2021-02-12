@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE0A31A041
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2D231A045
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbhBLODN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 09:03:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42122 "EHLO mail.kernel.org"
+        id S231683AbhBLOD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 09:03:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230090AbhBLODI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 09:03:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C682061490;
-        Fri, 12 Feb 2021 14:02:26 +0000 (UTC)
+        id S230090AbhBLODm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 09:03:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D386D64E25;
+        Fri, 12 Feb 2021 14:03:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613138547;
-        bh=F20AnwF+TvS+zwwsrCtysPu9GrbudAMXhAJTidO7JcY=;
+        s=k20201202; t=1613138581;
+        bh=VuqkFaZKHwNoY6ayATlulBlks2L7rIdSyE0iZde9Ji0=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=G0R0I5VhUovNUFJSeTOkGtp1jsVvKKXbjJijJk+VVfWcNG+MdqegI0enpsLvqART8
-         5nGIkfHla3mvWn+2JQyASrPYZg4PA/EAQrjLam73gSZFnWfbcXA/eB4dKXrTF5gDIk
-         5NBiOvqw/c3NVIdlc0v+HjsqJ5H6EsXV08qFpAAoaKP/aeBSP42u68tmQjZbGq/etf
-         AnyoxMxluYmRsRpiSr0WLBhZwewpPdptn5iEVtrHfSlMCz6kYU+8y7km3G+jWbknjF
-         5WECXyltwcFB2/dKnbdmu9eorLnyN1vwc+8xZ094dVPlBAfGr7+AfLQREBSh8+a1H+
-         oFCZ+8KzM51PA==
+        b=pnfqD28M/wUvoL5jJbWHzvQVZhqVVptV6wi4jztcYbcbbxFxEjOBw4fmlYMJknxqb
+         7SugWdCJucriHzzJPYnf2A05zETc+T7rLE7DBTYuh/5eyJ9zy+2LkW1vRzy4luUKxy
+         8q45+es95h7rQWKPX26qw7pn3lcJmNsgDq5d1VuQPmcTFfazaJ6p2sdg/Py881i5GL
+         AKDuV5n1JDuZeB115d9grCj0iBW6MT0ej4fjAZ+eeJSfBwObQcNAUD5RV5mlHpJ+eE
+         s5SYxdPBidWgLmayw1Lrd9EiaettiOaVT+mfMde/xnkNwAcHF2gBcDS0uvaiRpF1eN
+         3wf5/DUbY+oYw==
 From:   Mark Brown <broonie@kernel.org>
-To:     mazziesaccount@gmail.com,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, linux-power@fi.rohmeurope.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210212080023.GA880728@localhost.localdomain>
-References: <20210212080023.GA880728@localhost.localdomain>
-Subject: Re: [PATCH RESEND] regulator: bd718x7, bd71828, Fix dvs voltage levels
-Message-Id: <161313849261.18228.6540214535407961769.b4-ty@kernel.org>
-Date:   Fri, 12 Feb 2021 14:01:32 +0000
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Phil Elwell <phil@raspberrypi.com>
+In-Reply-To: <20210211180820.25757-1-nsaenzjulienne@suse.de>
+References: <20210211180820.25757-1-nsaenzjulienne@suse.de>
+Subject: Re: [PATCH] spi: Skip zero-length transfers in spi_transfer_one_message()
+Message-Id: <161313851919.18278.11191076448081876020.b4-ty@kernel.org>
+Date:   Fri, 12 Feb 2021 14:01:59 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,29 +40,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021 10:00:23 +0200, Matti Vaittinen wrote:
-> The ROHM BD718x7 and BD71828 drivers support setting HW state
-> specific voltages from device-tree. This is used also by various
-> in-tree DTS files.
+On Thu, 11 Feb 2021 19:08:20 +0100, Nicolas Saenz Julienne wrote:
+> With the introduction of 26751de25d25 ("spi: bcm2835: Micro-optimise
+> FIFO loops") it has become apparent that some users might initiate
+> zero-length SPI transfers. A fact the micro-optimization omitted, and
+> which turned out to cause crashes[1].
 > 
-> These drivers do incorrectly try to compose bit-map using enum
-> values. By a chance this works for first two valid levels having
-> values 1 and 2 - but setting values for the rest of the levels
-> do indicate capability of setting values for first levels as
-> well. Luckily the regulators which support setting values for
-> SUSPEND/LPSR do usually also support setting values for RUN
-> and IDLE too - thus this has not been such a fatal issue.
+> Instead of changing the micro-optimization itself, use a bigger hammer
+> and skip zero-length transfers altogether for drivers using the default
+> transfer_one_message() implementation.
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regulator: bd718x7, bd71828, Fix dvs voltage levels
-      commit: c294554111a835598b557db789d9ad2379b512a2
+[1/1] spi: Skip zero-length transfers in spi_transfer_one_message()
+      commit: b306320322c9cfaa465bc2c7367acf6072b1ac0e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
