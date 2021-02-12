@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5746D31A671
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4360F31A673
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 22:03:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbhBLVBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 16:01:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231599AbhBLVAo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 16:00:44 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD739C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:00:03 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id x14so979296qkm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 13:00:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7dfJau1Z2/Z0C+aryaDQsBuNGqh/xpuz6IGzQTXpFDE=;
-        b=ho4MgAkccq9A6xs2pboGPRayWLr3i1qFp20B9cvS0cs2FcJ2pX12SHB6BFfaJ7Mcnr
-         3bs50en/QfINHzxw+JBaURVEmpKQJzWWBlTnLwfSKcYhheuGaM9wQbUHI66qhMwoeT/W
-         Rc4fMnk4XtdMHQNZZSgUDy6mFMkKyjmcMGR5WYJvBO0044F0iXkJc1wnREySood9aLLy
-         aUZc6bhqES6O/zN+iCS5zXfSIfg1xAI1wNXbgHQ2D6dyBMV8X3d9D4kTujrzNa5SAS0l
-         CbNnvd7LnTc3hrSyS6nqLdkn+p/5EbKzoXr8AkKudTP1CTVbJez7nx5xyrlfxQJDoMfJ
-         1naA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7dfJau1Z2/Z0C+aryaDQsBuNGqh/xpuz6IGzQTXpFDE=;
-        b=N65uLPrwgi/lsXqQAZYN/pp9UQUg6N7T0TVqbF+CLlYssjQZ/fP7X6pWrjz+1UOHOa
-         oXxZOE+vB/qG2GbAf0qB2sayjWF2YhwVy/lSMjrCC0ov70n5wKT8Nt/Zf7B5EVYYGXc1
-         1XiG2Mp6XDgOXRRKqf4Y2ihxoodq0GxDzNBx97wIWPIIEUcJCAqjrXAbHDqTCreFoAab
-         hEYptkVGssfZs6+T7KNKpEC1UiIjr5VvOaIhdniFduM3jCqSblI/RoXbZpDMl167O/91
-         oC3VEqDlCHhjzeaDMJt/xtsqQCZgpicGif3Qe42wMketQ8gWLkHETjeLGs9+xOoZKlsv
-         hbjQ==
-X-Gm-Message-State: AOAM533sIe6VJoo7X8lmAkBik673HH8n/ZsEbZCGVun9e5DTt448bLMB
-        kg94QCk2h7RaSHvTnGUj4EfI1oB4R82ourlXLwecEW5grhQ=
-X-Google-Smtp-Source: ABdhPJy6Z0W4TyuKig4+Ca8RyGe2t1thus2KTVLAwJ8xpq6uicWcz6au/b4OKzrdNujYwPgFz/7vK2/TPBawsLn+Ass=
-X-Received: by 2002:a37:83c3:: with SMTP id f186mr3910863qkd.185.1613163603085;
- Fri, 12 Feb 2021 13:00:03 -0800 (PST)
+        id S232048AbhBLVCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 16:02:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232054AbhBLVCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 16:02:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A68864E05;
+        Fri, 12 Feb 2021 21:01:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613163681;
+        bh=pn5uwII/6r/H6VP+qSj25AE7juU0clcUCoKS/ZUelsw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fezGQO4TkSSBALxJ72g3iRQRtYthvdVjCSSO2pwqAqGfei86fUjhgnZ6QFP3wJHLx
+         gnSr/0NgANKbovmMgjXi+oX4TpM9hW75NEGb0OYe3D4J1jgeVb3kRdDDOvfOJea9dV
+         G1Cw16JscUCqHvnhm/Co/7TvvD48AKca+R0ypSs8XHXWEy/62fYftAXki6qGs1IrY0
+         5u7AC7jhufXrqJihJKrmj2qNZCP+paF3bBdQ7nT4MrayMOvmQOyv3SLKJkuou70/VT
+         r5IQNwZ0I5zhZb+4Up3z2KhYrx9FG5KSZzdPhTTh4i1SeEPr8ONzVGBh9XdF+ri4DA
+         Af54RlTGlMCJA==
+Received: by mail-ej1-f42.google.com with SMTP id z19so1355188eju.9;
+        Fri, 12 Feb 2021 13:01:21 -0800 (PST)
+X-Gm-Message-State: AOAM531wmQopXZ3XVSaZPh8IbfNimM8aFt8D5JuvlxsMfmS9oNagRRyT
+        RsI7pI5N7pb+ptMSxYnAV/LjZl5rTgn/0OAbfg==
+X-Google-Smtp-Source: ABdhPJyjRrUX7Iabe7BDDsQqvDVgcHeC2eL7Z0J6/ghXMUMjyGNjbakaaIGjUuZK2ljNajVT9UYHC/wcmBsdAErn91A=
+X-Received: by 2002:a17:906:d1d0:: with SMTP id bs16mr4962876ejb.468.1613163680046;
+ Fri, 12 Feb 2021 13:01:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20210202124838.30805-1-jbe@pengutronix.de>
-In-Reply-To: <20210202124838.30805-1-jbe@pengutronix.de>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Fri, 12 Feb 2021 21:59:52 +0100
-Message-ID: <CAFLxGvw=5uK0AHmMq5vqOWiBzS68TBd-vU3G9mpWeTXeO5B47A@mail.gmail.com>
-Subject: Re: [PATCH] fs: ubifs: set s_uuid in super block to support ima/evm
- uuid options
-To:     Juergen Borleis <jbe@pengutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        linux-mtd@lists.infradead.org, kernel@pengutronix.de,
-        Oleksij Rempel <o.rempel@pengutronix.de>
+References: <20210212033120.GA100407@roeck-us.net> <CAL_JsqLm3mHdPg4wkdhoFXNY1JgTJ56dxi3oLqBS_NBrX=rOfw@mail.gmail.com>
+ <20210212151725.GA57042@roeck-us.net>
+In-Reply-To: <20210212151725.GA57042@roeck-us.net>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 12 Feb 2021 15:01:08 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+e+KdzanMdHYCEoGZn3ybY5_ASN60qiqbOkPWpkbQ6NQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+e+KdzanMdHYCEoGZn3ybY5_ASN60qiqbOkPWpkbQ6NQ@mail.gmail.com>
+Subject: Re: [PATCH] scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 1:55 PM Juergen Borleis <jbe@pengutronix.de> wrote:
+On Fri, Feb 12, 2021 at 9:17 AM Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+> On Fri, Feb 12, 2021 at 08:16:04AM -0600, Rob Herring wrote:
+> > On Thu, Feb 11, 2021 at 9:31 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > >
+> > > Hi Rob,
+> > >
+> > > On Wed, Feb 03, 2021 at 03:26:03PM -0600, Rob Herring wrote:
+> > > > This adds the following commits from upstream:
+> > > >
+> > > > 183df9e9c2b9 gitignore: Ignore the swp files
+> > > > 0db6d09584e1 gitignore: Add cscope files
+> > > > 307afa1a7be8 Update Jon Loeliger's email
+> > > > ca16a723fa9d fdtdump: Fix gcc11 warning
+> > > > 64990a272e8f srcpos: increase MAX_SRCFILE_DEPTH
+> > > > 163f0469bf2e dtc: Allow overlays to have .dtbo extension
+> > > > 3b01518e688d Set last_comp_version correctly in new dtb and fix potential version issues in fdt_open_into
+> > > > f7e5737f26aa tests: Fix overlay_overlay_nosugar test case
+> > > > 7cd5d5fe43d5 libfdt: Tweak description of assume-aligned load helpers
+> > > > a7c404099349 libfdt: Internally perform potentially unaligned loads
+> > > > bab85e48a6f4 meson: increase default timeout for tests
+> > > > f8b46098824d meson: do not assume python is installed, skip tests
+> > > > 30a56bce4f0b meson: fix -Wall warning
+> > > > 5e735860c478 libfdt: Check for 8-byte address alignment in fdt_ro_probe_()
+> > > > 67849a327927 build-sys: add meson build
+> > > > 05874d08212d pylibfdt: allow build out of tree
+> > > > 3bc3a6b9fe0c dtc: Fix signedness comparisons warnings: Wrap (-1)
+> > > > e1147b159e92 dtc: Fix signedness comparisons warnings: change types
+> > > > 04cf1fdc0fcf convert-dtsv0: Fix signedness comparisons warning
+> > > > b30013edb878 libfdt: Fix kernel-doc comments
+> > > >
+> > > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > >
+> > > This patch causes my little-endian microblaze qemu emulations to fail
+> > > silently (no console output) in next-20210211. Reverting this patch
+> > > together with "scripts: dtc: Build fdtoverlay tool" fixes the problem.
+> >
+> > My guess would be something in libfdt. Maybe 7cd5d5fe43d5 or
+> > a7c404099349, though that should return to historical behavior.
+> >
+> > Can you give me the qemu command line and kernel cfg?
+> >
+> I copied everything you should need to build a kernel (including toolchain)
+> to http://server.roeck-us.net/qemu/microblazeel/
 >
-> This is required to provide uuid based integrity functionality for:
-> ima_policy (fsuuid option) and the 'evmctl' command ('--uuid' option).
->
-> Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Acked-by: Juergen Borleis <jbe@pengutronix.de>
+> [ wow, I really need to update that compiler ]
 
-I took this patch, thanks a lot for this but I have changed the sob-chain to:
+I can't seem to get BE/LE nor reverted or not working. It's always
+dying in microblaze_cache_init() based on the last print. It's your
+config, but gcc 10.1.0 off of kernel.org.
 
-    Co-developed-by: Oleksij Rempel <o.rempel@pengutronix.de>
-    Co-developed-by: Juergen Borleis <jbe@pengutronix.de>
-    Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+There is at least one possible problem here that the FDT may only be 4
+byte aligned. The assumption is 8 bytes to not have misaligned
+accesses (and only for 64-bit accesses if 4 byte aligned). That's an
+issue with the qemu image loading depending on the sizes and
+combination of images loaded. That doesn't explain your failure
+though. As the initrd is a multiple of 8 bytes, you should be fine.
 
-Namely, "patch was created by Steffen Trumtrar, Oleksij Rempel and
-Juergen Borleis.
-Steffen Trumtrar committed it and Juergen Borleis later sent it to the
-mailing list".
-
-Is this right?
-
--- 
-Thanks,
-//richard
+Rob
