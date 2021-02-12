@@ -2,92 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D344319858
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A75319861
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 03:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhBLC35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 21:29:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhBLC3y (ORCPT
+        id S229672AbhBLCqo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Feb 2021 21:46:44 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3021 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhBLCqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 21:29:54 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB25C061574;
-        Thu, 11 Feb 2021 18:29:08 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id a22so9831553ljp.10;
-        Thu, 11 Feb 2021 18:29:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HCnAVVy2YBgvZrEV3Lzj68ghKda1DDj22cLOx+VQ8/4=;
-        b=spNYCcANf7Kz+BPN/1GkoWjs5KiTLKBjLc+5NP+ZZNNiuuc8RnVv/IkM+UuB4oemwu
-         /4cKVodZQFdvAmdHvPpusMvCR5UWTa4DzH+ATMe5ifu+84ZMGw0CJUXc91tIy2RKXTHH
-         NtYatThEbFDmxv4qI0MkNOucOFzMc640yGPA0nZKC8uppNOMzvly+fh9dSimY7Mzx+uI
-         fe5m3lAEcWms/r3Ppo7Y0fn+fa39zVujIVpghcSaCe1iI77AmXAEna8FmAoexzVV5sTd
-         tdPcCYmysAbMNiwdXRkLopqut5HGT7QtCBDdcDpgcNf7xJTdQsQILyOA+6fd2mDeMu2n
-         jYVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HCnAVVy2YBgvZrEV3Lzj68ghKda1DDj22cLOx+VQ8/4=;
-        b=JUOCdWKl4Rl/5VqBSTCB6oRQfRyyi86Ro3RfadV0aoY4XMeOAh33xG8MoKW/OsgC0c
-         MnpNeuC07t78OlZCsaILGZLKKOyAmwoUP4/0Orm0QNFdv7vZa516VoHtnmO/sjAGyxrN
-         JTrD3EK4VifH8qMSu7NZgAZ+0kF0rbogy7kcjXhYu73b85FmJCAbiZbogeRoKdKHY/Oa
-         aI6+kgyXEv8qF4tJt7NWRMVL9bwOsuhuU10ewOobiUx+u8iks0uPMJbD1P57hcco8KY+
-         yutiVZbk/eN2BRCd/kkTbORs/paW7KCF/FEiIbsBOaTO+DUt7FMIqvCiMJJJZm6bCOLH
-         b8Cw==
-X-Gm-Message-State: AOAM530XvlndeVeUXikJ2Pb6talYmD31K+TRiB/K/wDgZbSm63Hgv1rB
-        00N7bFyUt7YInZG0FmLLz+5Rq8B2Xk/91r75dCI=
-X-Google-Smtp-Source: ABdhPJytJYG+Wg3a9ZqsIaqVE2Tobi+heYrA4DQDfuF08Hv27MvTmzJWAy5dTKq39OZTeq01aFFkvouF6f7lJHrfGS0=
-X-Received: by 2002:a2e:964e:: with SMTP id z14mr412938ljh.204.1613096945649;
- Thu, 11 Feb 2021 18:29:05 -0800 (PST)
+        Thu, 11 Feb 2021 21:46:40 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DcHs13h3kzRDQr;
+        Fri, 12 Feb 2021 10:44:37 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 12 Feb 2021 10:45:55 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 12 Feb 2021 10:45:54 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Fri, 12 Feb 2021 10:45:54 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Finn Thain <fthain@telegraphics.com.au>
+CC:     tanxiaofei <tanxiaofei@huawei.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
+Subject: RE: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
+ drivers
+Thread-Topic: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
+ drivers
+Thread-Index: AdcAYpckfegWyL1RTeK8yhWOZkcCaAAK/seAABDAZzD//30igP//VM2g
+Date:   Fri, 12 Feb 2021 02:45:54 +0000
+Message-ID: <48d2891ad9e340028c3b551a83d570b0@hisilicon.com>
+References: <417fa728c3ff4418ac87e0d409b5a084@hisilicon.com>
+ <c7fdb63e-e84-c685-35f4-6b6f663cd867@telegraphics.com.au>
+ <0d104f0e26134b1ea9c530be895e65d1@hisilicon.com>
+ <4dcf1410-768e-ae95-33bf-cba093b0751d@telegraphics.com.au>
+In-Reply-To: <4dcf1410-768e-ae95-33bf-cba093b0751d@telegraphics.com.au>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.23]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210210111406.785541-1-revest@chromium.org> <20210210111406.785541-2-revest@chromium.org>
-In-Reply-To: <20210210111406.785541-2-revest@chromium.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 11 Feb 2021 18:28:54 -0800
-Message-ID: <CAADnVQ+e7P9SeDFUQ58tX8PAEf+bymWBXXboO+Qv8AO2DS5YWQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 2/5] bpf: Expose bpf_get_socket_cookie to
- tracing programs
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@google.com>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 3:14 AM Florent Revest <revest@chromium.org> wrote:
->
-> +BPF_CALL_1(bpf_get_socket_ptr_cookie, struct sock *, sk)
-> +{
-> +       return sk ? sock_gen_cookie(sk) : 0;
-> +}
-> +
-> +const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto = {
-> +       .func           = bpf_get_socket_ptr_cookie,
-> +       .gpl_only       = false,
-> +       .ret_type       = RET_INTEGER,
-> +       .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
-> +};
 
-As Daniel pointed out there is an sk_destruct issue here, but I don't
-think it's fair
-to penalize this set and future similar patches. They don't make things worse.
-The issue has been there for some time due to sk_storage in tracing and
-other helpers. We need to come up with a holistic approach to solve it.
-I suspect allow/deny lists will certainly make it better, but won't
-really address it,
-and will be fragile over long term.
-I think tracing would need to be integrated with bpf_lsm and start relying
-on security_*_free callbacks to cover this last 1%.
-I think that would be a great topic for the next bpf office hours on Feb 25.
+
+> -----Original Message-----
+> From: Finn Thain [mailto:fthain@telegraphics.com.au]
+> Sent: Friday, February 12, 2021 1:09 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: tanxiaofei <tanxiaofei@huawei.com>; jejb@linux.ibm.com;
+> martin.petersen@oracle.com; linux-scsi@vger.kernel.org;
+> linux-kernel@vger.kernel.org; linuxarm@openeuler.org;
+> linux-m68k@vger.kernel.org
+> Subject: RE: Re: [PATCH for-next 00/32] spin lock usage optimization for SCSI
+> drivers
+> 
+> On Fri, 12 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> 
+> >
+> > > -----Original Message-----
+> > > From: Finn Thain [mailto:fthain@telegraphics.com.au]
+> > > Sent: Friday, February 12, 2021 12:57 PM
+> > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > > Cc: tanxiaofei <tanxiaofei@huawei.com>; jejb@linux.ibm.com;
+> > > martin.petersen@oracle.com; linux-scsi@vger.kernel.org;
+> > > linux-kernel@vger.kernel.org; linuxarm@openeuler.org;
+> > > linux-m68k@vger.kernel.org
+> > > Subject: RE: Re: [PATCH for-next 00/32] spin lock usage optimization for
+> SCSI
+> > > drivers
+> > >
+> > >
+> > > On Thu, 11 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> > >
+> > > >
+> > > > Actually in m68k, I also saw its IRQ entry disabled interrupts by
+> > > > ' move	#0x2700,%sr		/* disable intrs */'
+> > > >
+> > > > arch/m68k/include/asm/entry.h:
+> > > >
+> > > > .macro SAVE_ALL_SYS
+> > > > 	move	#0x2700,%sr		/* disable intrs */
+> > > > 	btst	#5,%sp@(2)		/* from user? */
+> > > > 	bnes	6f			/* no, skip */
+> > > > 	movel	%sp,sw_usp		/* save user sp */
+> > > > ...
+> > > >
+> > > > .macro SAVE_ALL_INT
+> > > > 	SAVE_ALL_SYS
+> > > > 	moveq	#-1,%d0			/* not system call entry */
+> > > > 	movel	%d0,%sp@(PT_OFF_ORIG_D0)
+> > > > .endm
+> > > >
+> > > > arch/m68k/kernel/entry.S:
+> > > >
+> > > > /* This is the main interrupt handler for autovector interrupts */
+> > > >
+> > > > ENTRY(auto_inthandler)
+> > > > 	SAVE_ALL_INT
+> > > > 	GET_CURRENT(%d0)
+> > > > 					|  put exception # in d0
+> > > > 	bfextu	%sp@(PT_OFF_FORMATVEC){#4,#10},%d0
+> > > > 	subw	#VEC_SPUR,%d0
+> > > >
+> > > > 	movel	%sp,%sp@-
+> > > > 	movel	%d0,%sp@-		|  put vector # on stack
+> > > > auto_irqhandler_fixup = . + 2
+> > > > 	jsr	do_IRQ			|  process the IRQ
+> > > > 	addql	#8,%sp			|  pop parameters off stack
+> > > > 	jra	ret_from_exception
+> > > >
+> > > > So my question is that " move	#0x2700,%sr" is actually disabling
+> > > > all interrupts? And is m68k actually running irq handlers
+> > > > with interrupts disabled?
+> > > >
+> > >
+> > > When sonic_interrupt() executes, the IPL is 2 or 3 (since either IRQ may
+> > > be involved). That is, SR & 0x700 is 0x200 or 0x300. The level 3 interrupt
+> > > may interrupt execution of the level 2 handler so an irq lock is used to
+> > > avoid re-entrance.
+> > >
+> > > This patch,
+> > >
+> > > diff --git a/drivers/net/ethernet/natsemi/sonic.c
+> > > b/drivers/net/ethernet/natsemi/sonic.c
+> > > index d17d1b4f2585..041354647bad 100644
+> > > --- a/drivers/net/ethernet/natsemi/sonic.c
+> > > +++ b/drivers/net/ethernet/natsemi/sonic.c
+> > > @@ -355,6 +355,8 @@ static irqreturn_t sonic_interrupt(int irq, void *dev_id)
+> > >          */
+> > >         spin_lock_irqsave(&lp->lock, flags);
+> > >
+> > > +       printk_once(KERN_INFO "%s: %08lx\n", __func__, flags);
+> > > +
+> > >         status = SONIC_READ(SONIC_ISR) & SONIC_IMR_DEFAULT;
+> > >         if (!status) {
+> > >                 spin_unlock_irqrestore(&lp->lock, flags);
+> > >
+> > > produces this output,
+> > >
+> > > [    3.800000] sonic_interrupt: 00002300
+> >
+> > I actually hope you can directly read the register rather than reading
+> > a flag which might be a software one not from register.
+> >
+> 
+> Again, the implementation of arch_local_irq_save() may be found in
+> arch/m68k/include/asm/irqflags.h
+
+Yes. I have read it. Anyway, I started a discussion in genirq
+with you cc-ed:
+https://lore.kernel.org/lkml/c46ddb954cfe45d9849c911271d7ec23@hisilicon.com/
+
+And thanks very much for all your efforts to help me understand
+M68k. Let's get this clarified thoroughly in genirq level.
+
+In arm, we also have some special high-priority interrupts
+which are not NMI but able to preempt normal IRQ. They are
+managed by arch-extended APIs rather than common APIs.
+
+Neither arch_irqs_disabled() nor local_irq_disable() API can
+access this kind of interrupts. They are using things specific
+to ARM like:
+local_fiq_disable()
+local_fiq_enable()
+set_fiq_handler()
+disable_fiq()
+enable_fiq()
+...
+
+so fiq doesn't bother us anyhow in genirq.
+
+> 
+> > >
+> > > I ran that code in QEMU, but experience shows that Apple hardware works
+> > > exactly the same. Please do confirm this for yourself, if you still think
+> > > the code and comments in sonic_interrupt are wrong.
+> > >
+> > > > Best Regards
+> > > > Barry
+> > > >
+> >
+
+Thanks
+Barry
+
