@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D23319C20
+	by mail.lfdr.de (Postfix) with ESMTP id 81BA7319C21
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhBLJv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:51:58 -0500
-Received: from pv50p00im-ztdg10011901.me.com ([17.58.6.50]:50393 "EHLO
-        pv50p00im-ztdg10011901.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229457AbhBLJv5 (ORCPT
+        id S230218AbhBLJwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:52:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54364 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230023AbhBLJv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 12 Feb 2021 04:51:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1613123461;
-        bh=9GBiUZ1WuOiLbK9rV9T1+uUAqkzPi3muDJd+lEHIoTw=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=ith6ixhrNDlV1C6oZFTxA+isgdnQaP9ZgO1VCMYr1Qis+EEl5pK+yRH43CnqvIhXu
-         wy+A9edZYnvzn6u2OtHVx8l92MIk627ZErukDxQjMUX8JSN8XaOn3NdsM2DfUGSpcd
-         DrHHVsKCyCabs5agicF3FfkoL4G9lzTiZ2AFbZ9/YQAQoREjJwI8KvBw93sh+44w/T
-         p4ESENchHxJFCrlkFtAlVUS8PafHt45O7wHUGgKkHNvwtpFK8jZR1nxyS0ZFv2ijSe
-         tI0/yRsRePO1DS+kRwPtRpO4tpfVf3URccJj8MtQT4xuekNNkFmuVUIPJRSqDwwkbe
-         CLgJJfVkqWd8w==
-Received: from everest.nathzi1505 (unknown [103.17.84.167])
-        by pv50p00im-ztdg10011901.me.com (Postfix) with ESMTPSA id E8C0F80059B;
-        Fri, 12 Feb 2021 09:50:57 +0000 (UTC)
-From:   Pritthijit Nath <pritthijit.nath@icloud.com>
-To:     vireshk@kernel.org, gregkh@linuxfoundation.org, johan@kernel.org,
-        elder@kernel.org
-Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Pritthijit Nath <pritthijit.nath@icloud.com>
-Subject: [PATCH 2/2] staging: greybus: Fixed a misspelling in hid.c
-Date:   Fri, 12 Feb 2021 15:20:08 +0530
-Message-Id: <20210212095008.11741-1-pritthijit.nath@icloud.com>
-X-Mailer: git-send-email 2.25.1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613123431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NLn/4/rOA5xb9flMxCQVXqwcmKnjIyeK9Sd83umgNVA=;
+        b=PFccEYJ3zXuIOJ8t3l4Sy9s1LrWpedBnsWbAJ+jTNqWWEoTWUFw4yhkDzypqlPk0inDn9q
+        n9OlY8UkLLJISscetatnjPAW5xcYNuaCaiZHsTpZApMbD3MRvOu/qNqttH+kMCm1nkqQBB
+        GKRYHAt2Zkqbf7YxmeFDKRYJI4xe3NA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-44-Z8u7bSY7O9y16m2jZttrzQ-1; Fri, 12 Feb 2021 04:50:27 -0500
+X-MC-Unique: Z8u7bSY7O9y16m2jZttrzQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DFDD0100CC88;
+        Fri, 12 Feb 2021 09:50:25 +0000 (UTC)
+Received: from [10.36.114.178] (ovpn-114-178.ams2.redhat.com [10.36.114.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B18585DEFB;
+        Fri, 12 Feb 2021 09:50:24 +0000 (UTC)
+Subject: Re: [PATCH] hugetlbfs: Remove unneeded return value of
+ hugetlb_vmtruncate()
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210208084637.47789-1-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <379efeaf-a96b-d55d-b542-8fb6fad5ee9a@redhat.com>
+Date:   Fri, 12 Feb 2021 10:50:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-12_02:2021-02-12,2021-02-12 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2102120075
+In-Reply-To: <20210208084637.47789-1-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed the spelling of 'transfered' to 'transferred'.
+On 08.02.21 09:46, Miaohe Lin wrote:
+> The function hugetlb_vmtruncate() is guaranteed to always success since
+> commit 7aa91e104028 ("hugetlb: allow extending ftruncate on hugetlbfs").
+> So we should remove the unneeded return value which is always 0.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   fs/hugetlbfs/inode.c | 7 ++-----
+>   1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index 394da2ab08ad..701c82c36138 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -567,7 +567,7 @@ static void hugetlbfs_evict_inode(struct inode *inode)
+>   	clear_inode(inode);
+>   }
+>   
+> -static int hugetlb_vmtruncate(struct inode *inode, loff_t offset)
+> +static void hugetlb_vmtruncate(struct inode *inode, loff_t offset)
+>   {
+>   	pgoff_t pgoff;
+>   	struct address_space *mapping = inode->i_mapping;
+> @@ -582,7 +582,6 @@ static int hugetlb_vmtruncate(struct inode *inode, loff_t offset)
+>   		hugetlb_vmdelete_list(&mapping->i_mmap, pgoff, 0);
+>   	i_mmap_unlock_write(mapping);
+>   	remove_inode_hugepages(inode, offset, LLONG_MAX);
+> -	return 0;
+>   }
+>   
+>   static long hugetlbfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+> @@ -781,9 +780,7 @@ static int hugetlbfs_setattr(struct user_namespace *mnt_userns,
+>   		if ((newsize < oldsize && (info->seals & F_SEAL_SHRINK)) ||
+>   		    (newsize > oldsize && (info->seals & F_SEAL_GROW)))
+>   			return -EPERM;
+> -		error = hugetlb_vmtruncate(inode, newsize);
+> -		if (error)
+> -			return error;
+> +		hugetlb_vmtruncate(inode, newsize);
+>   	}
+>   
+>   	setattr_copy(&init_user_ns, inode, attr);
+> 
 
-Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
----
- Fixed the typo in the patch which was meant to fix that very typo.
- Really sorry for last time.
- Hope this does not have any other typo.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
- drivers/staging/greybus/hid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/greybus/hid.c b/drivers/staging/greybus/hid.c
-index a56c3fb5d35a..adb91286803a 100644
---- a/drivers/staging/greybus/hid.c
-+++ b/drivers/staging/greybus/hid.c
-@@ -254,7 +254,7 @@ static int __gb_hid_output_raw_report(struct hid_device *hid, __u8 *buf,
- 
- 	ret = gb_hid_set_report(ghid, report_type, report_id, buf, len);
- 	if (report_id && ret >= 0)
--		ret++; /* add report_id to the number of transfered bytes */
-+		ret++; /* add report_id to the number of transferred bytes */
- 
- 	return 0;
- }
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
