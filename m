@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5523831A85E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E46631A85F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231352AbhBLXhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 18:37:13 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:18838 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhBLXhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 18:37:11 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4DcqdS2Jp2z2d;
-        Sat, 13 Feb 2021 00:36:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1613172988; bh=1LIPV2cA41mWUhh9p8sX1mkd4boZDMkZYUfcvKjKciA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dqWjAImNL+CwZRFOURoGv1b76qCHUxxwGVLBEtzkHKNvzVDjcldzajoLDOSofVGtr
-         q9xMG7KBw5zL3eerdDnvmcbahqcqeAeeDzinN0Xsmq13nwHoFou4xxSSWkGWppkrQ4
-         iPF6ypjXlV02pEY1yzrjGa0FzAgUA6syuACcE35KRIIaaj8sZgwBZgtt6O2XIwtXmf
-         mZur81wnmmBfKrLMEyuF1UAUhm59rUhEZsV2bwdVot64WY6DR7VCZs2Jzqq03OB0Ju
-         vMjkxgfKSLTeq3AZS1iPVDSKFkbj1qCosCUwPM9YbD22NjmB8aAmdOCPGehU0yEoDT
-         ptqx+p6svNk2Q==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Sat, 13 Feb 2021 00:36:02 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Michal Rostecki <mrostecki@suse.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 4/6] btrfs: Check if the filesystem is has mixed type
- of devices
-Message-ID: <20210212233602.GA30441@qmqm.qmqm.pl>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-5-mrostecki@suse.de>
- <20210210040805.GB12086@qmqm.qmqm.pl>
- <20210212182641.GB20817@wotan.suse.de>
+        id S231406AbhBLXlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 18:41:44 -0500
+Received: from smtprelay0053.hostedemail.com ([216.40.44.53]:51848 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229650AbhBLXlm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 18:41:42 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id F2AFA180A8CBE;
+        Fri, 12 Feb 2021 23:41:00 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2914:3138:3139:3140:3141:3142:3352:3865:3867:3868:4321:5007:6119:7652:7903:8603:8660:10004:10400:10848:11026:11473:11658:11914:12043:12297:12555:12760:13069:13148:13230:13311:13357:13439:14181:14394:14659:14721:21080:21433:21627:21939:21990:30012:30054:30090,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: thumb59_1407e5a27625
+X-Filterd-Recvd-Size: 2131
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 12 Feb 2021 23:41:00 +0000 (UTC)
+Message-ID: <a6e105886338f68afd35f7a13d73bcf06b0cc732.camel@perches.com>
+Subject: [PATCH] mm: Reduce mem_dump_obj() object size
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+Date:   Fri, 12 Feb 2021 15:40:59 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210212182641.GB20817@wotan.suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 06:26:41PM +0000, Michal Rostecki wrote:
-> On Wed, Feb 10, 2021 at 05:08:05AM +0100, Micha³ Miros³aw wrote:
-> > On Tue, Feb 09, 2021 at 09:30:38PM +0100, Michal Rostecki wrote:
-> > > From: Michal Rostecki <mrostecki@suse.com>
-> > > 
-> > > Add the btrfs_check_mixed() function which checks if the filesystem has
-> > > the mixed type of devices (non-rotational and rotational). This
-> > > information is going to be used in roundrobin raid1 read policy.a
-> > [...]
-> > > @@ -669,8 +699,12 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
-> > >  	}
-> > >  
-> > >  	q = bdev_get_queue(bdev);
-> > > -	if (!blk_queue_nonrot(q))
-> > > +	rotating = !blk_queue_nonrot(q);
-> > > +	device->rotating = rotating;
-> > > +	if (rotating)
-> > >  		fs_devices->rotating = true;
-> > > +	if (!fs_devices->mixed)
-> > > +		fs_devices->mixed = btrfs_check_mixed(fs_devices, rotating);
-> > [...]
-> > 
-> > Since this is adding to a set, a faster way is:
-> > 
-> > if (fs_devices->rotating != rotating)
-> > 	fs_devices->mixed = true;
-> > 
-> > The scan might be necessary on device removal, though.
-> Actually, that's not going to work in case of appenging a rotational
-> device when all previous devices are non-rotational.
-[...]
-> Inverting the order of those `if` checks would break the other
-> permuitations which start with rotational disks.
+Simplify the code by using a temporary and reduce the object size
+by using a single call to pr_cont().  Reverse a test and unindent
+a block too.
 
-But not if you would add:
+$ size mm/util.o* (defconfig x86-64)
+   text	   data	    bss	    dec	    hex	filename
+   7419	    372	     40	   7831	   1e97	mm/util.o.new
+   7477	    372	     40	   7889	   1ed1	mm/util.o.old
 
-if (adding first device)
-	fs_devices->rotating = rotating;
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ mm/util.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-before the checks.
+diff --git a/mm/util.c b/mm/util.c
+index c37e24d5fa43..143c627fb3e8 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -997,22 +997,26 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
+  */
+ void mem_dump_obj(void *object)
+ {
++	const char *type;
++
+ 	if (kmem_valid_obj(object)) {
+ 		kmem_dump_obj(object);
+ 		return;
+ 	}
++
+ 	if (vmalloc_dump_obj(object))
+ 		return;
+-	if (!virt_addr_valid(object)) {
+-		if (object == NULL)
+-			pr_cont(" NULL pointer.\n");
+-		else if (object == ZERO_SIZE_PTR)
+-			pr_cont(" zero-size pointer.\n");
+-		else
+-			pr_cont(" non-paged memory.\n");
+-		return;
+-	}
+-	pr_cont(" non-slab/vmalloc memory.\n");
++
++	if (virt_addr_valid(object))
++		type = "non-slab/vmalloc memory";
++	else if (object == NULL)
++		type = "NULL pointer";
++	else if (object == ZERO_SIZE_PTR)
++		type = "zero-size pointer";
++	else
++		type = "non-paged memory";
++
++	pr_cont(" %s\n", type);
+ }
+ EXPORT_SYMBOL_GPL(mem_dump_obj);
+ #endif
 
-But them, there is a simpler way: count how many rotating vs non-rotating
-devices there are while adding them. Like:
-
-rotating ? ++n_rotating : ++n_fixed;
-
-And then on remove you'd have it covered.
-
-Best Regards
-Micha³ Miros³aw
