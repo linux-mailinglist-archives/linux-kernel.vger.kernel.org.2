@@ -2,174 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20ACE31A507
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5B131A500
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhBLTJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:09:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbhBLTIv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:08:51 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D6CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:08:10 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id b9so797695ejy.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:08:10 -0800 (PST)
+        id S231964AbhBLTHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:07:10 -0500
+Received: from mail-eopbgr1410098.outbound.protection.outlook.com ([40.107.141.98]:30160
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231466AbhBLTHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 14:07:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=djue6P9WzRWsTxsVSozL54fYZn5S3Oe7LgDxDGVS/weutOXRrDykprlX3QE6WJBsT10jeDc8DvO2NvHvskyCBugKIZ6uou/VERplQbLZK4K2CTh1CICKxPKOMwhhYtbNNrm37JUvsSeftAXpVFpM5CJymuQArjNlwrz58zUJ/MzHJRj5AoVmfT+DbV+JCR1hYkJjIDKeENSVXzSpi6XBrGXd42Y1aX8i/F3Ec6H/xXhyDSFRtqVPt3TRznGWI9gm88EfRWlFy/gVqL8GcdvRLAympwcOH4leZcZHGm/SUFUv4nSJPyly3XQ8UD57jRzQhZktQFY60Pp7k1Tm9CVMog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X8aIMXNhl4CBHjaYja/pH31ggOnPk1P80VKoCLCCfm0=;
+ b=dKleoMP82PZEfv11ikuB3PD2XuOmMziP4HSJZHbggGkxek843F49QjQPU3u95yBum8TSVsJLbbm9VIY6guk2fJb9qD7FxDZqFfUyK5MFJMRGpg57SsA9tENe+7WoXouomshuITE/BlWYqpwU8tfFGBsIxnFi6iwDNtfOeHmhEj3sxZ/O8OXoFRKhrVZ+bDExzup/4N9MOj6GNc9cEoFfpxnE1V+KbfVRWjV6xaZDfb8HaXVjvkLz48Y7Bvb4iakrDv5blK1KX6FG1+vC7vxsQrvFQgwd5Z8MVK7Rscx9XXGYi7SAQ1tBdNb49ZeBYyy5EIHT5uYFf6c5nODrzd2XdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q3ikNalsuZzL53jhGkXErOWPpRGEg8NvbnsD1QXWEGY=;
-        b=HFX4SsNcGO6UF2J9+8AQmIwEznHImS+LvV+tkpAvg0DU0fKJGfSKmIVXjLNw5a10Nj
-         BmyT6DGjrU7FY9JR75SH9SDhW74SpdMeFgMubI51cKZbrWQJyRZoXZX0nukGbRbsq7r+
-         R9HNZC42AZzxTyEM6BZZPoCngd2I9yvwP5zt+ZftOmFErKXr1OTND4NtdIsezES1r/Lr
-         HhZb82yTMA4cqTIpTTs3KuSzms7JzVRK+wvQ2+UkvHjP4zlX3sqKZs984/kX8mv6bz7l
-         lXWE9xfybrJXy3HHSusT4skwSW+bBCt99HTBD1UGLCZUV8795gLlDzJbbwUq3OYsqGO8
-         pBiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q3ikNalsuZzL53jhGkXErOWPpRGEg8NvbnsD1QXWEGY=;
-        b=gnzjeeF1z+22gbhloU0ykiEYrb6sTqvUbBHe9nJo2RQZRSAxkkQXNRVcHqs9O/wsTI
-         GFvp0NRDZ9X6ft83HqjalFYfE58ce6yBUogTrhQsJXilb+AIGMZ8YYLDM4jYHS4iWx+R
-         KNkVKSf7co11wwnJNyRy9U/bzP3fV+KDaJOUASO4pqBgxVRkD2NhTr700hSzxdwkFyLL
-         2enYoh7WqKVeqgVHPvy6n7P1QnwqbFs/qLMe17rKY/uf9R5KAEZaOeovRJeyLFAW6WRd
-         /g37mX2Qaxtd0d/35y7AW2E+boenmDwGs1TK59sgzAIuRwx0LYTlf0A6wWzlgdugNfIA
-         3ghA==
-X-Gm-Message-State: AOAM531cTeaWyrCRgwwWQvc1Q9WDcUtclsF/fj5KvDNoVY/BOKgi8PnS
-        Vtv2DlGS3K/67dVkuX4d2KLNi8+0Fdq5PuSo7vE=
-X-Google-Smtp-Source: ABdhPJy1J4J3oiU/BDBlUoQbZjzXZ2s4r0BCftF+1LpngtFoGKRsnHEy2+mluePb4E3CYOuaXeMoOGwTiml9qMtn7Qg=
-X-Received: by 2002:a17:906:1954:: with SMTP id b20mr4399816eje.61.1613156888953;
- Fri, 12 Feb 2021 11:08:08 -0800 (PST)
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X8aIMXNhl4CBHjaYja/pH31ggOnPk1P80VKoCLCCfm0=;
+ b=lUxgQQURnpWzpWDyK9VUqyb39EMc/w4z9OUB4d/Kr4koBc8QrogeucRHHswGPopjvZ7kKxGvHAdkxu5XeTlDN4Z/MXPRiM6YzY5cw/rxCGpTxMSEnH2AkUC5Hh8USpklFoMrRrmJEYiNmipH7mzcG9d6StEYQqu0LqDuPqGHByc=
+Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com (2603:1096:604:7a::23)
+ by OSYPR01MB5399.jpnprd01.prod.outlook.com (2603:1096:604:89::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Fri, 12 Feb
+ 2021 19:06:18 +0000
+Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com
+ ([fe80::1971:336c:e4c0:8c5]) by OSBPR01MB4773.jpnprd01.prod.outlook.com
+ ([fe80::1971:336c:e4c0:8c5%3]) with mapi id 15.20.3846.029; Fri, 12 Feb 2021
+ 19:06:17 +0000
+From:   Min Li <min.li.xe@renesas.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next v2] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+Thread-Topic: [PATCH net-next v2] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+Thread-Index: AQHXANy3Kc3xxVsbt0Wl/bCSqSMNqapUIuqAgACGZWCAAAPqAIAANK8g
+Date:   Fri, 12 Feb 2021 19:06:17 +0000
+Message-ID: <OSBPR01MB47733B3FE2242E0338DC5983BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+References: <1613092575-17311-1-git-send-email-min.li.xe@renesas.com>
+ <YCYw5xXe16fSj6eI@kroah.com>
+ <OSBPR01MB4773472EE0C8D34456C79121BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <YCak7Eu2X0dzapPz@kroah.com>
+In-Reply-To: <YCak7Eu2X0dzapPz@kroah.com>
+Accept-Language: en-CA, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=renesas.com;
+x-originating-ip: [72.140.114.230]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 45cc20ed-be4d-49ac-011a-08d8cf8946cf
+x-ms-traffictypediagnostic: OSYPR01MB5399:
+x-microsoft-antispam-prvs: <OSYPR01MB539919F515CC485862A2F15EBA8B9@OSYPR01MB5399.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7tZjBjsE86XzB0j150nE8+Ax+7DCoQU7BmiAU5+NBuyXjPsH3OLUx8QQUgF9+XxdqJAA8JfddGr0DUD2Oof9RX3C1siY/5EUGmDEt0dUA/KDgNeEt/hIaaRbw2Yu35/V2/y3uTafY3tdhtOAwEHP4xAMXD7zsLK+JyNH5sk2GjNpK6VYVVvYPTXZwh11p9gKVqf5sPCOu/7/mYnMBUnQyyRdTXb+3ASOC4A8qiQ+w0RlS+It9vr6EEou6QAxlXWxlBHCq8pYtXCTZ8MtIFk64ghg7JqdIsUQOmqJ13eBlbh9/YPuQWCxKlfuUM0Ap7SevMFAf4IIz3lu605h14xcuiSwjEcgtr8ei5eMe5mC0yNEcDWVmZwshz79xn7R+kYo4zmLI0REKyN9afSE9EILmkieS89XMX+w2nw6Kt7Yj48A/0D0b5JbRwhxDA0GHH7FHg1UO995ZFT+o78h/zMRObZTtIzGxMaPXjGNRV55uLtWhXCECCxD0nL5UD2TVK66TK2ekMyop/wsRGTq2fQVzQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4773.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(376002)(39860400002)(66946007)(76116006)(66446008)(7696005)(52536014)(64756008)(33656002)(66556008)(66476007)(83380400001)(478600001)(6506007)(26005)(86362001)(71200400001)(8676002)(2906002)(316002)(54906003)(4326008)(55016002)(8936002)(9686003)(6916009)(186003)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?RzgUDLuet6HK7c+O5fvkXsG4qZZMA5ASL9bzQ0qoqjA3OuTntCkhlw2TjfqV?=
+ =?us-ascii?Q?F4jdUizW7WCd2rw2RKFHhltWIjvuGfQUqMtr55FLAMPPTGO+yNfAXoek92e6?=
+ =?us-ascii?Q?u4voSxBcWO9Z52DrJvth2CIowigbNzT/+4I23J7ZxhzGK9Q8LIUgdRt15xsd?=
+ =?us-ascii?Q?CLyFcyZk9BI/W6mgFs8EUGQqTCjoBOlbdj9cpoPDvI9YmYvcVzBlyOICdv6T?=
+ =?us-ascii?Q?oWA3DpHVf7blQRmJ9R9ZLelAyi755f/t6z3rJ5DlmHFByRQ1icGRGyq+ouGG?=
+ =?us-ascii?Q?gV/MwJeWawpgZE+s7MONdJjyS4KcZruwHsudBQ5XOzygPlYdzWfOomSeu5Im?=
+ =?us-ascii?Q?6lV90vgyvjLLLoH/FS5EZHLyfSzsRN/DHvSj/JSwysev+fBJ5QtmgXPMVK7l?=
+ =?us-ascii?Q?jlv3/uYaYIDPe6un2FaSjdtxtmnqRUKqlia2tkIpM4RRXUPLd3HQs9ny1d9x?=
+ =?us-ascii?Q?uscdsraSZFXHHRzkTrZbdWwUyE1r2fBYxzK2P0D3zcW/rp28XSDGdeZ+R4eA?=
+ =?us-ascii?Q?zyB3it/Ni7S7ur3qpk+AdlC5IIW+aE78HyWE4Wfkru3SHF+J0TZgiWtxQjvP?=
+ =?us-ascii?Q?qOupXMLDTlD9FVOXseeDez4ZV3sK6EvM/Y00y4zHx1vnMjcIMZScqLSDkwX/?=
+ =?us-ascii?Q?DgpjgjmCPYIsdjq/1TrdQl9BPoT8NYsCfmG26ppacB8GQKGv5s8FUTGzVZeB?=
+ =?us-ascii?Q?D5NiA6om1nyLNEazCpD+O4qbx+6KT/nE+gC5LKde2HN5UStFZTiy2GsjmbaQ?=
+ =?us-ascii?Q?MWnVysKm3Hun9QsVOP7baZVDqQZJ1IJOjgWWbOg6Lwq/bgZrXdarJ+ks5sXT?=
+ =?us-ascii?Q?VbrKQbUonpplDpwBlHAs+hq3xn2QOzdeS8B8DB4KSRNFfEf63G2SHvzd1Dnm?=
+ =?us-ascii?Q?pksdGRnQAIBKoMvgZl9iibr9hzZ2kf/fJ9oIJAAfjynIZjIMmRysD+eWWDL/?=
+ =?us-ascii?Q?/yHagm/EybzMiVCzcJwHE/K1/BVurax5hJjF68rUgUnQXg7qjO23CnsUcAB3?=
+ =?us-ascii?Q?kP4pe7thdKEQFeb9mKiAOTmJCr+zCtWRleemYz23G0kOa0nyfo1pI2e9dZlL?=
+ =?us-ascii?Q?Lq5BUQ757fYt/LCWsklewc0/igcmZrkzQKKkcqg4FE84hfBFKUsP9/6tOuGB?=
+ =?us-ascii?Q?Gj+JhNLL2shDNydJYB8dIPzevc7D9mLYwKgTK23kdnqGgcvNMfeilmPmaLL0?=
+ =?us-ascii?Q?3mnPCoNCYlFcvzyoLPwsgUc9qjxOfJ0fvhVqpvbroU6KBvYdL/UmUEMIvcDA?=
+ =?us-ascii?Q?t6xONITd7xDr4hXiCYBiPswYtFovuwYFkAR8Rjs60O9Tj8C7xnGRwHOKznxr?=
+ =?us-ascii?Q?yz7JEkFkVWp2YsdD8gKNbUe5?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210211202208.31555-1-Sonicadvance1@gmail.com>
- <58b03e17-3729-99ea-8691-0d735a53b9bc@arm.com> <20210212123515.GC6057@sirena.org.uk>
- <20210212132807.GC7718@arm.com> <CA+y5pbTOZF9NgHdf0yG2d6GmPGqyyX400j0c=D8669WfWvk4SQ@mail.gmail.com>
- <20210212180434.GB2744@C02TD0UTHF1T.local>
-In-Reply-To: <20210212180434.GB2744@C02TD0UTHF1T.local>
-From:   "Amanieu d'Antras" <amanieu@gmail.com>
-Date:   Fri, 12 Feb 2021 19:06:07 +0000
-Message-ID: <CA+y5pbRZqWNw8KuVg7bUUVoK5c2WyRPpcjfxymDmX_fX7-MoAA@mail.gmail.com>
-Subject: Re: [RESEND RFC PATCH v2] arm64: Exposes support for 32-bit syscalls
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Steven Price <steven.price@arm.com>, sonicadvance1@gmail.com,
-        Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Gavin Shan <gshan@redhat.com>, Mike Rapoport <rppt@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jason Yan <yanaijie@huawei.com>, Andrey Ignatov <rdna@fb.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Julien Grall <julien.grall@arm.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4773.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45cc20ed-be4d-49ac-011a-08d8cf8946cf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2021 19:06:17.7476
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lpMzormPiCKAhbr7WEACHm/9WErGD9qkLy5ug0GG1AJ/gqfZSbl5Oc3ettG4VMz9iEBATQ08kY2nqXLZbxwcFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSYPR01MB5399
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 6:04 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> > The patch proposed by
-> > Ryan is based on the kernel patch used by Tango which can be found
-> > here: https://github.com/Amanieu/linux/tree/tango-v5.4
+>=20
+> On Fri, Feb 12, 2021 at 03:44:52PM +0000, Min Li wrote:
+> > > >
+> > > > -set combomode
+> > > > -get dpll's state
+> > > > -get dpll's ffo
+> > > >
+> > > > This driver must work with Renesas MFD driver to access SMU
+> > > > through I2C/SPI.
+> > > >
+> > > > Changes since v1:
+> > > > -Provide more background for purpose of the change.
+> > > > -Provide compat_ioctl support
+> > > > -Fix ioctl cmd definition
+> > >
+> > > This "changes" list goes below the --- line.
+> > >
 > >
-> > Efficiency is not the concern here: copying/rearranging some bytes is
-> > tiny compared to the cost of a syscall. The main concern is
-> > correctness: there are many cases where userspace does not have the
-> > information or the capabilities needed to ensure that the 32-bit
-> > syscall ABI is correctly emulated.
->
-> I do appreciate that today there are cases where the emulator cannot do
-> the right thing due to lack of a mechanism, but where the emulator does
-> not have knowledge, I don't think that it can safely invoke the syscall.
-> Consider if userspace invokes compat_rt_sigreturn() or similar, which
-> will trash the emulator's state.
->
-> Note that there are cases (e.g. compat_rt_sigreturn()), the kernel
-> cannot provide the correct behaviour either. In your tree above, I spot
-> at least the following:
->
-> * For rt_sigreturn() the kernel will attempt to validate/restore a
->   compat sigframe assuming the AArch32 register mappings, then
->   valid_user_regs() will blat the PSTATE/SPSR_ELx value to /some/ valid
->   AArch64 SPSR_ELx value that happens to mostly alias.
->
->   I hope that your emulator doesn't allow emulated apps to call this,
->   because it would blat the emulator's state. Regardless, this syscall
->   simply cannot do any correct thing in the context of a fake compat
->   task, and doesn't make sense to expose.
+> > Sorry, is this a problem that you are requesting me to address? I am bi=
+t
+> confused...
+>=20
+> Yes, please place that list of changes below the --- line in your patch.
+> The documentation says to do this, right?
+>=20
+Hi Greg
 
-sigreturn and sigaction and completely emulated by Tango and never
-reach the kernel. It simply doesn't make sense to do otherwise since
-the kernel has no knowledge of how Tango manages the emulated AArch32
-state.
+Do you mean this "---" like below? How can I do that? Sorry I was never ask=
+ed to do that from other reviewer.
 
-I agree that invoking compat_sys_rt_sigreturn from a 64-bit process
-doesn't make sense. My reading of the code is that it will trigger a
-SIGSEGV due to valid_user_regs failing. We could add an explicit check
-against is_aarch32_compat_task in the compat syscall but the end
-result will be the same.
-
-> * For ptrace, operations on the user_aarch32_view (which
->   task_user_regset_view() will return for fake compat tasks) will
->   erroneously try to convert between SPSR_ELx <-> AARCH32 SPSR layouts,
->   assuming the pt_regs::pstate field is using the encoding for AArch32
->   EL0, where it's actually the AArch64 EL0 encoding where the layout is
->   subtly differnt. Subseqeuntly valid_user_regs() will sanitize that to
->   an AArch64 encoding, with the exact same problems as for rt_sigreturn().
-
-Note that user_aarch32_view is only returned when the tracer is
-performing a compat syscall. This is no different from a normal 32-bit
-process tracing a 64-bit process, which already "works" (the register
-state is garbage but everything else works).
-
-Tango doesn't use the regsets and instead retrieves the AArch32
-register state directly from the traced process (which is also running
-under Tango) with process_vm_readv and returns that when emulating the
-various PTRACE_* operations.
-
->   Note that attempting to set the TLS will clobber TPIDRR0_EL0, which
->   the kernel will clobber for AArch64 tasks (including your fake compat
->   tasks) in the KPTI trampoline. I'm not sure what your emulator expects
->   here, and I suspect this also gets clobbered by the case
->   tls_thread_flush() tries to cater for.
-
-All the code paths that modify TPIDRR0_EL0 are guarded by
-is_aarch32_compat_task which returns false for fake compat tasks. The
-call to compat_arm_syscall which handles __ARM_NR_compat_set_tls is
-also guarded by is_aarch32_compat_task.
-
-Again, __ARM_NR_compat_set_tls is emulated internally by Tango and the
-AArch32 TLS registers visible to translated code are also emulated in
-software.
-
->   So this really doesn't make sense to expose either, the kernel cannot
->   possibly do something that is correct in this case.
->
-> I fully expect that there are more cases where this sort of mismatch
-> exists and there isn't some final sanity check that prevents said
-> mismatch from breaking the kernel.
->
-> Maybe your emulator avoids these, but that's no justification for the
-> kernel to expose such broken behaviour.
-
-I disagree that any broken behavior is exposed here.
+Signed-off-by: Min Li <min.li.xe@renesas.com>
+---
+ drivers/misc/Kconfig      |  13 ++
+ drivers/misc/Makefile     |   3 +
+ drivers/misc/rsmu_cdev.c  | 449 ++++++++++++++++++++++++++++++++++++++++++=
+++++
+ drivers/misc/rsmu_cdev.h  |  75 ++++++++
+ drivers/misc/rsmu_cm.c    | 214 ++++++++++++++++++++++
+ drivers/misc/rsmu_sabre.c | 153 ++++++++++++++++
+ include/uapi/linux/rsmu.h |  61 +++++++
+ 7 files changed, 968 insertions(+)
+ create mode 100644 drivers/misc/rsmu_cdev.c
+ create mode 100644 drivers/misc/rsmu_cdev.h
+ create mode 100644 drivers/misc/rsmu_cm.c
+ create mode 100644 drivers/misc/rsmu_sabre.c
+ create mode 100644 include/uapi/linux/rsmu.h
