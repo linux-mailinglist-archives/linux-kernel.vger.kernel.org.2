@@ -2,80 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E9431A2E1
+	by mail.lfdr.de (Postfix) with ESMTP id EA7F031A2E3
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhBLQis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:38:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37308 "EHLO mail.kernel.org"
+        id S230353AbhBLQjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:39:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231139AbhBLQgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:36:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C5846186A;
-        Fri, 12 Feb 2021 16:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613147733;
-        bh=dsE/PR09Yy1lTaGcykGZP72nwOIqpU7wlx9keyjzDYg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tkcEEQgiQE87ZcAn5GYgtYaegaB5Olia7uq3lwJF6ahLQRHgvFgQ04gYHWzoIAdeP
-         Hv1h9U0uH7576Wd5gBNfyRI+mLHKlBc0VhYGNMt6tfWlWrjZlgyMZkwknuNcaM0rjP
-         Ui4CU8gtrVG8F8wIso+WjW1au9ls9bhbYBMOUDFX2gtqY9gDNhzs71rP6Xkbgjz05s
-         ybFYa3+gnIsudj5IwZ/sgtYq5YYKpcCTvNeUW/UoVIcGmV8SC58sG/4vlWq8XVs4zt
-         nBag+np+4Z20TojQ87mP55fR0vjFLKrNRht9aiPLDpCloqWZX198VNpq0tRcQiq/Lr
-         ABV2PzbhIMuuQ==
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Sylwester Nawrocki <snawrocki@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: [RFT PATCH] crypto: s5p-sss - initialize APB clock after the AXI bus clock for SlimSSS
-Date:   Fri, 12 Feb 2021 17:35:26 +0100
-Message-Id: <20210212163526.69422-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S231263AbhBLQhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 11:37:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96E5064E3D;
+        Fri, 12 Feb 2021 16:37:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613147825;
+        bh=TUCMyB8s7iVSOuvLP+3BA2E3kA4eTVJYvN1Ao3fl6Is=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YrvAOrMzyio5Bj0CydbOb7Ob6/lmxIoImfPTLrFHI5M+2Mqjr7elMWKeHCRhYOzNr
+         1w8zLrc1VVuYMY/Hx8QAfzXfRJYvHe39N0oAdZO/bynkdKQ7D3lw3IoCu+a888uuhq
+         YW8lHkyZDgn5nOGcQu04XMi+aTTaI/v0rhAtn7OA=
+Date:   Fri, 12 Feb 2021 17:37:02 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] kbuild: simplify access to the kernel's version
+Message-ID: <YCaurki1DFU6r79Z@kroah.com>
+References: <20210212162924.2269887-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212162924.2269887-1-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver for Slim Security Subsystem (SlimSSS) on Exynos5433 takes two
-clocks - aclk (AXI/AHB clock) and pclk (APB/Advanced Peripheral Bus
-clock).  The "aclk", as main high speed bus clock, is enabled first.  Then
-the "pclk" is enabled.
+On Fri, Feb 12, 2021 at 11:29:24AM -0500, Sasha Levin wrote:
+> Instead of storing the version in a single integer and having various
+> kernel (and userspace) code how it's constructed, export individual
+> (major, patchlevel, sublevel) components and simplify kernel code that
+> uses it.
+> 
+> This should also make it easier on userspace.
+> 
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-However the driver assigned reversed names for lookup of these clocks
-from devicetree, so effectively the "pclk" was enabled first.
-
-Although it might not matter in reality, the correct order is to enable
-first main/high speed bus clock - "aclk".  Also this was the intention
-of the actual code.
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
----
-
-Not tested, please kindly test on Exynos5433 hardware.
----
- drivers/crypto/s5p-sss.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/s5p-sss.c b/drivers/crypto/s5p-sss.c
-index 682c8a450a57..8ed08130196f 100644
---- a/drivers/crypto/s5p-sss.c
-+++ b/drivers/crypto/s5p-sss.c
-@@ -401,7 +401,7 @@ static const struct samsung_aes_variant exynos_aes_data = {
- static const struct samsung_aes_variant exynos5433_slim_aes_data = {
- 	.aes_offset	= 0x400,
- 	.hash_offset	= 0x800,
--	.clk_names	= { "pclk", "aclk", },
-+	.clk_names	= { "aclk", "pclk", },
- };
- 
- static const struct of_device_id s5p_sss_dt_match[] = {
--- 
-2.25.1
-
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
