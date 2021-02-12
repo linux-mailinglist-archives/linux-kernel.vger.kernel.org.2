@@ -2,94 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2306A319980
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 06:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C841319982
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 06:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbhBLFU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 00:20:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
+        id S229650AbhBLFWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 00:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhBLFU4 (ORCPT
+        with ESMTP id S229457AbhBLFWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 00:20:56 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAD9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 21:20:15 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id a17so10198433ljq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 21:20:15 -0800 (PST)
+        Fri, 12 Feb 2021 00:22:00 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E4AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 21:21:05 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id v7so9361564eds.10
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Feb 2021 21:21:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=gogFQozvbBeLcEC89/kgzG7875Ff5Yr9iitoytQmZ4w=;
-        b=Y+3Xmfuh7u2ZV+k2O6sFQemUV3Ar4730t1vtQ4hcAGDUYjdYp7NrxjyUi/TDfEqOO6
-         pNQmAOKJUxoLDeUjPc6kl2AMtemA6CjjomDQFvUmYSCAcs/hp4XKkeN0GX1/0gpord0n
-         qvKE9qAMHEZhFT51gLGIVASLcusixfCBeD+fOAOXH9t5v4rNCXifC+NSyUZqa0nxKXTt
-         VPAcEJeuV6+OnsKb1kyYIIEjMoLdkcD9/uqwYFQ5hdySZ4k64RrV6i2eUYjXbYUGkVmF
-         NCnbyIqafPX8/WgfXEgIC8J7/Bhd+dqWtvE09ofLUoWtg/RHUL2DkkT4iugxSnsNgo1O
-         od0g==
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=y7nisrS3slztw05efKZSiiT4QAGyRq7lEBDg3AjV2Is=;
+        b=pk+8zyPjingFZSCd9/PGKungold785BclOnmbLoVMZUHkhl4AVKo53J/KB/jKs7934
+         43VLhehx39QmmU7UeFEgvagz/E0JXNSaTWECUL3iQueDEXZQ/WuJOz7tQyZWzAo3QiV1
+         rABWzhw36f9WGv1uq/usyEzvv8RzRnoGUzJWg0VlgjxzGlmeHqGf0kDwBKtJmkdQAvS0
+         Mlu1WU//Nspxlvl6N/OjKQkPSkcpG+cxrrfS++VUjpvFK/lrZ+z//4BkAiCtnPRN8Krh
+         4Ac3K9GPyVOLtj7va9eV9IZ9NtrcEoHQNtMwUTa5Wgmoi3LTk9pzW4or3i+FBvX40GGF
+         Z+aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=gogFQozvbBeLcEC89/kgzG7875Ff5Yr9iitoytQmZ4w=;
-        b=VsyFbzewDP059CUnQwK8jz5CylnQyxM5mMIdPHhIf3cnp3RNaujy4eAcONX7jYlcU3
-         yPzmjAN76KDffPretdcAW0PPFHM27hb+A3LFFS5mic2gyf2Qq/Xn1IwfAZeVtVkfOhtY
-         hPsdU216DNNNhtC9h3Ik0J8qMdcSeaBCBJ0MDRyxgNUsGElgdl964rb/mN2MoR3wvNoU
-         TAijqjUEtb7gFjfhhH4FWXc30DdhHArNbWTKZ8Px+4w9dFefhKVG1W/JNGEBejJ8ZaEp
-         c/S/4la6Yo0DD0dgDGeFcio0HZCZ/mN8DEmHTqujFr/qOVjh/c35WKVAlJJFuDz4JV3T
-         G5Kg==
-X-Gm-Message-State: AOAM530clIDhSL7kbnF3lBsOnP+MWNptVmrnQgK/ScmCsAms5tt0ant1
-        0OOIzAA78E5+H7EfVeU4JJSHaXv7eft55v3eNtY=
-X-Google-Smtp-Source: ABdhPJxEaIWSMlHCLTs77E1r6b86PR7NKhr24F5HVEFJzIyTN8CBkcqE8reCZNh3RoALVpIYBnIHv0rj7ReRED1WvZU=
-X-Received: by 2002:a2e:145d:: with SMTP id 29mr691341lju.391.1613107214438;
- Thu, 11 Feb 2021 21:20:14 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=y7nisrS3slztw05efKZSiiT4QAGyRq7lEBDg3AjV2Is=;
+        b=jUw2cC5Qnl8eYT9Lm4rXmD7kpB/caeVICUIsmoKasYtSApICQbz0coUqJYaQPms8gI
+         8dHK1gETBXIBXQC7CyWtZ16Uj4gwdf3oH4OzmAJv+Z6QeSt8INN/uYBa8lVS+D//wmBq
+         wr42I5JdFdUF8abRZveslz3oKkwrNEajvdeGr9aJ7hcBBEE+fjM4dT+0pgazcmKxiKCe
+         sTFoSoLUSzfmVBh2Ka392oMg0gphxw3sy7wZEXobTCCjf503EpzHJ8rtCDh1xebKvkzi
+         ZVEEI/bkJPYenmjzYGEOSyDQBcTNCKTFFikHMv/W79i0WxYHjV7isT+v5vaLn79W5mJk
+         R+iw==
+X-Gm-Message-State: AOAM533Agibn5L7YZRhWUt2tSTx74M4uJ8lYjC/N1+AUWwx6eQc9iAQ5
+        CuD9iyXShTn/g9mZ0YrdgWXfkG4dRuLhDZCz044=
+X-Google-Smtp-Source: ABdhPJydRleu4Fi+tqpKqqHCMi9CV5hHYI+6tlLSCZbldCZoclHith8iIAgpBYk0In5/HikHvJypJlQdbxn6nWWiIo0=
+X-Received: by 2002:a50:9dcd:: with SMTP id l13mr1597472edk.220.1613107262891;
+ Thu, 11 Feb 2021 21:21:02 -0800 (PST)
 MIME-Version: 1.0
-Reply-To: cwchoi00@gmail.com
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Date:   Fri, 12 Feb 2021 14:19:37 +0900
-Message-ID: <CAGTfZH1o6zdN_42KJkVcA++QpSyY4_tMMFJSQFmWhKv7PWrghA@mail.gmail.com>
-Subject: [GIT PULL v2] extcon next for v5.12
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>, chanwoo@kernel.org
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 12 Feb 2021 15:20:52 +1000
+Message-ID: <CAPM=9tyT7BXCT-CKZed4F+CP4Anpgb4X4LBHv4mxcvLzMwBcQA@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.11 final
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Greg,
+(resent with a subject this time)
+Hi Linus,
 
-This is extcon-next pull request for v5.12. I add detailed description of
-this pull request on below. Please pull extcon with following updates.
+Regular fixes for final, there is a ttm regression fix, dp-mst fix,
+one amdgpu revert, two i915 fixes, and some misc fixes for sun4i,
+xlnx, and vc4.
 
-Changes from v1:
-- Add missing committer information
+All pretty quiet and don't think we have any known outstanding regressions.
 
-Best Regards,
-Chanwoo Choi
+Dave.
 
+drm-fixes-2021-02-12:
+drm fixes for 5.11-rc8
 
-The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
+ttm:
+- page pool regression fix.
 
-  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
+dp_mst:
+- Don't report un-attached ports as connected
 
-are available in the git repository at:
+amdgpu:
+- Blank screen fix
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon.git
-tags/extcon-next-for-5.12-v2
+i915:
+- Ensure Type-C FIA is powered when initializing
+- Fix overlay frontbuffer tracking
 
-for you to fetch changes up to bd30a35764e136dc372e74c4856de633cb7ed8de:
+sun4i:
+- tcon1 sync polarity fix
+- Always set HDMI clock rate
+- Fix H6 HDMI PHY config
+- Fix H6 max frequency
 
-  extcon: sm5502: Detect OTG when USB_ID is connected to ground
-(2021-02-10 08:15:28 +0900)
+vc4:
+- Fix buffer overflow
+
+xlnx:
+- Fix memory leak
+The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3=
+:
+
+  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-02-12
+
+for you to fetch changes up to 551c81853d6d3ff016269d62612e7cd0a53104ab:
+
+  Merge branch 'drm-misc-fixes' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes (2021-02-12
+13:38:51 +1000)
 
 ----------------------------------------------------------------
-Krzysztof Kozlowski (1):
-      extcon: Add stubs for extcon_register_notifier_all() functions
+drm fixes for 5.11-rc8
 
-Nikita Travkin (1):
-      extcon: sm5502: Detect OTG when USB_ID is connected to ground
+ttm:
+- page pool regression fix.
 
-Timon Baetz (1):
-      extcon: max8997: Add CHGINS and CHGRM interrupt handling
+dp_mst:
+- Don't report un-attached ports as connected
+
+amdgpu:
+- Blank screen fix
+
+i915:
+- Ensure Type-C FIA is powered when initializing
+- Fix overlay frontbuffer tracking
+
+sun4i:
+- tcon1 sync polarity fix
+- Always set HDMI clock rate
+- Fix H6 HDMI PHY config
+- Fix H6 max frequency
+
+vc4:
+- Fix buffer overflow
+
+xlnx:
+- Fix memory leak
+
+----------------------------------------------------------------
+Alex Deucher (1):
+      Revert "drm/amd/display: Update NV1x SR latency values"
+
+Christian K=C3=B6nig (1):
+      drm/ttm: make sure pool pages are cleared
+
+Dave Airlie (3):
+      Merge tag 'amd-drm-fixes-5.11-2021-02-10' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+      Merge tag 'drm-intel-fixes-2021-02-11' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge branch 'drm-misc-fixes' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+
+Imre Deak (2):
+      drm/dp_mst: Don't report ports connected if nothing is attached to th=
+em
+      drm/i915/tgl+: Make sure TypeC FIA is powered up when initializing it
+
+Jernej Skrabec (4):
+      drm/sun4i: tcon: set sync polarity for tcon1 channel
+      drm/sun4i: dw-hdmi: always set clock rate
+      drm/sun4i: Fix H6 HDMI PHY configuration
+      drm/sun4i: dw-hdmi: Fix max. frequency for H6
+
+Maxime Ripard (1):
+      drm/vc4: hvs: Fix buffer overflow with the dlist handling
+
+Quanyang Wang (1):
+      drm/xlnx: fix kmemleak by sending vblank_event in atomic_disable
+
+Ville Syrj=C3=A4l=C3=A4 (1):
+      drm/i915: Fix overlay frontbuffer tracking
+
+ .../gpu/drm/amd/display/dc/dcn20/dcn20_resource.c  |  4 +-
+ drivers/gpu/drm/drm_dp_mst_topology.c              |  1 +
+ drivers/gpu/drm/i915/display/intel_overlay.c       | 17 +++---
+ drivers/gpu/drm/i915/display/intel_tc.c            | 67 ++++++++++++------=
+----
+ drivers/gpu/drm/sun4i/sun4i_tcon.c                 | 25 ++++++++
+ drivers/gpu/drm/sun4i/sun4i_tcon.h                 |  6 ++
+ drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c              | 10 +---
+ drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h              |  1 -
+ drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c             | 26 +++------
+ drivers/gpu/drm/ttm/ttm_pool.c                     | 10 ++++
+ drivers/gpu/drm/vc4/vc4_plane.c                    | 18 ++++--
+ drivers/gpu/drm/xlnx/zynqmp_disp.c                 | 15 +++--
+ 12 files changed, 122 insertions(+), 78 deletions(-)
