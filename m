@@ -2,71 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CF9319F9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:18:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDB3319F9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbhBLNM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:12:59 -0500
-Received: from foss.arm.com ([217.140.110.172]:36788 "EHLO foss.arm.com"
+        id S232001AbhBLNNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:13:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232046AbhBLNCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 08:02:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5001D1063;
-        Fri, 12 Feb 2021 05:01:11 -0800 (PST)
-Received: from [10.37.8.13] (unknown [10.37.8.13])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 57E053F719;
-        Fri, 12 Feb 2021 05:01:09 -0800 (PST)
-Subject: Re: [PATCH v13 6/7] arm64: mte: Report async tag faults before
- suspend
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Branislav Rankov <Branislav.Rankov@arm.com>,
-        Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <20210211153353.29094-1-vincenzo.frascino@arm.com>
- <20210211153353.29094-7-vincenzo.frascino@arm.com>
- <20210212120015.GA18281@e121166-lin.cambridge.arm.com>
- <20210212123029.GA19585@e121166-lin.cambridge.arm.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <9d7b4475-dd59-d84f-5835-9222c2758eac@arm.com>
-Date:   Fri, 12 Feb 2021 13:05:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230301AbhBLNHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 08:07:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F91564DE3;
+        Fri, 12 Feb 2021 13:06:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613135184;
+        bh=AYZMbP/+Y3TVvujKHed+NO3CyK+JSIz9Z897iZIkEW0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SVChrVb7uaiO2jD7c60rZ37JnTxmD/GPhMT0KRS4WjzL/PwH7KeLnMoKIvT5xZyCD
+         5XsrV24Noc2y8PaaBLuNg6IPeMahr9U5SNi0Qro79sR6CaRv/uucbReUp2V+feyqfE
+         FzXqzhbQglaL6yQHMYvSFy/DuPwMiBRRxybv6nLuFcNKZl5LcWKhIr1AIh8ZtBbnnS
+         zpr1m6zDwlSaa5ie9DgOg5k7wlvxWf/FTpWI6JLSlbIUtMqneCZ/8B5loaVFUn/SEr
+         5YYFrsRnQHXoEB8T7xFMBAeFFHP38UigGqrzjxYfjCBdZSdMUBdmtXX5D4QeGOiVAb
+         jDnJnDF3NcxUw==
+Date:   Fri, 12 Feb 2021 13:05:30 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] spi: Skip zero-length transfers in
+ spi_transfer_one_message()
+Message-ID: <20210212130530.GE6057@sirena.org.uk>
+References: <20210211180820.25757-1-nsaenzjulienne@suse.de>
+ <20210212123118.GB6057@sirena.org.uk>
+ <cd41a204107900c890b0234847fa0b62701f74cc.camel@suse.de>
+ <20210212125221.GD6057@sirena.org.uk>
+ <CAMuHMdXFt-0vyBQnvwWim8MrijZ-PNN0HsO+dDp9iMzb2153Hg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210212123029.GA19585@e121166-lin.cambridge.arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="brEuL7wsLY8+TuWz"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXFt-0vyBQnvwWim8MrijZ-PNN0HsO+dDp9iMzb2153Hg@mail.gmail.com>
+X-Cookie: One size fits all.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--brEuL7wsLY8+TuWz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2/12/21 12:30 PM, Lorenzo Pieralisi wrote:
->> However, I have a question. We are relying on context switch to set
->> sctlr_el1_tfc0 right ? If that's the case, till the thread resuming from
->> low power switches context we are running with SCTLR_EL1_TCF0 not
->> reflecting the actual value.
-> Forget this, we obviously restore sctlr_el1 on resume (cpu_do_resume()).
-> 
-> With the line above removed:
-> 
-> Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> 
+On Fri, Feb 12, 2021 at 01:57:24PM +0100, Geert Uytterhoeven wrote:
+> On Fri, Feb 12, 2021 at 1:55 PM Mark Brown <broonie@kernel.org> wrote:
 
-Thanks Lorenzo, I will remove the register write in the next version and add
-your tag.
+> > No, I think it's fine - there's probably some sensible use case with
+> > drivers reusing a statically allocated transfer/buffer set for multiple
+> > operations and just tweaking the length as needed which seems a bit
+> > weird but I can't think of a reason not to allow it.  Your patch is
+> > currently queued, all being well it'll get tested & pushed out later
+> > today.
 
--- 
-Regards,
-Vincenzo
+> Aren't the zero-length transfers also used to do tricks with the CS signal,
+> e.g. combined with cs_change?
+
+The issue wasn't that things were using zero length transfers, the issue
+was that drivers were doing zero length transfers but also passing data
+buffers which isn't an obvious thing to do given that there will be no
+data in those buffers.
+
+--brEuL7wsLY8+TuWz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAmfRkACgkQJNaLcl1U
+h9CTbQf+M0AJe+8RIbyBkQmucMxzMYl1M7W5COpyanLLe/qcEZNQ0yWzuJ13HMCr
+9PcrQk+R63wg3Se0VUPAvx083lIbePEcCs2CkzoT+h2Y08zBxT3QBHNYNBq0MZ3D
+QqQP9G3BX3xqaFduWeJ/7ZZq5l4dDAC1u9P/7ZJajupQcnKe7H2MoPe01qgKvjS8
+T/i5dJaUS2LPhsHxieI5wNBCtvtbJ6ziCyXoc5/QDW5p4GXj9SfUF2jnA0wZEJ93
+uq5Qhyf07f7/FAcBfbODsStxhoR9t6PJ3v1ZsJ+bwUoPXKMEre2+Vmbx25q6+MWA
+J5MBE8qyVAtSNs4leGb06uNWAwIQ9g==
+=14UE
+-----END PGP SIGNATURE-----
+
+--brEuL7wsLY8+TuWz--
