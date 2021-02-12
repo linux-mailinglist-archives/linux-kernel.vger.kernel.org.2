@@ -2,83 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702FF31A25C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A0631A266
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhBLQIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:08:32 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:42600 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbhBLQI2 (ORCPT
+        id S229812AbhBLQLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:11:17 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36300 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229493AbhBLQLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:08:28 -0500
-Received: by mail-ot1-f45.google.com with SMTP id q4so8831150otm.9;
-        Fri, 12 Feb 2021 08:08:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+G8XBVjXwm5XDZ421FxNMfiS7Gmj2H4sQBSVF81T++Y=;
-        b=H1DwysWb2BPsydIKU4uoyAb1CEBpX8sfW0DMuUBpUaSC/A2pXWeZlMTOeotqfFXXwn
-         JJoAQjM/35/ExFWXUj7l6fdiGS1KFQDBFeif5BfMDTSiiYuvO6bRYS/7ameXTKhhiQoY
-         YV/1ZA/RWYe2/pKFOwGH+pwIm0ClluwRWVz8CtG0YgB53ZTJ3TWkM8oOkHJZCI9kfu6Z
-         3KhCb34w+ei+FBlIWPVm4jFm9jncr/vatl9W2ODw9oamI7YH6SE2O5u3Q2j5A37z+GlJ
-         KiFPzt00RQQVUql3ivOwdmBr3G20XhReTyf1nuPwGMen63tYUdCVGAv3incmeFflwrBO
-         q63A==
-X-Gm-Message-State: AOAM532WUtFOjULboB5kQgAwcj/NjyQUQJeUFQOnhifjkEt4SBWtLOpi
-        2glwoVPaFkHzdkANq3zg+oRZlDVZvEigrHIRrlA=
-X-Google-Smtp-Source: ABdhPJzl69TzQu1ArbwzpEWW1bdjXmMFmeXfxG7zifnFieYvjZjoYn8ppavsmvSJT1UNpoKBRA3YjmRoNSbUrqfWcEI=
-X-Received: by 2002:a05:6830:1481:: with SMTP id s1mr2567673otq.206.1613146066028;
- Fri, 12 Feb 2021 08:07:46 -0800 (PST)
+        Fri, 12 Feb 2021 11:11:13 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 11CGAG7W018325
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Feb 2021 11:10:17 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 79CA415C3428; Fri, 12 Feb 2021 11:10:16 -0500 (EST)
+Date:   Fri, 12 Feb 2021 11:10:16 -0500
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        syzbot <syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com>,
+        Jan Kara <jack@suse.com>, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Subject: Re: possible deadlock in dquot_commit
+Message-ID: <YCaoaNpF5n3nyja9@mit.edu>
+References: <000000000000a05b3b05baf9a856@google.com>
+ <20210211113718.GM19070@quack2.suse.cz>
+ <CACT4Y+b7245_5yjTk5Mw1pFBdV_f2LypAVSAZVym9n1Q0v5c-Q@mail.gmail.com>
+ <YCWlzl1q+eP22KVc@mit.edu>
+ <CACT4Y+YJtk_Lb9AGB4K3pdc-1VpBV0ZzH=1oHVDA003YpAhAog@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210212141121.62115-1-andriy.shevchenko@linux.intel.com>
- <20210212141121.62115-5-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0jot6w2AdTCmxn4Hw2zOzJk2JSrTaeH9cQR4or2N9HjCg@mail.gmail.com> <YCamNlCxK9nb8XrZ@smile.fi.intel.com>
-In-Reply-To: <YCamNlCxK9nb8XrZ@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 12 Feb 2021 17:07:34 +0100
-Message-ID: <CAJZ5v0i=YT_pqSC+WJoZYOvA0oM4nwJhnPuD46WjezQGPJGJXw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] ACPI: property: Refactor acpi_data_prop_read_single()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+YJtk_Lb9AGB4K3pdc-1VpBV0ZzH=1oHVDA003YpAhAog@mail.gmail.com>
+From:   "Theodore Ts'o" <tytso@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 5:01 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, Feb 12, 2021 at 03:31:24PM +0100, Rafael J. Wysocki wrote:
-> > On Fri, Feb 12, 2021 at 3:14 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
->
-> > > Refactor acpi_data_prop_read_single() for less LOCs and better maintenance.
->
-> Thanks for review, my answers below.
->
-> ...
->
-> > > +       if (ret)
-> > > +               return ret;
+>From: Theodore Ts'o <tytso@mit.edu>
+
+On Fri, Feb 12, 2021 at 12:01:51PM +0100, Dmitry Vyukov wrote:
+> > >
+> > > There is a reproducer for 4.19 available on the dashboard. Maybe it will help.
+> > > I don't why it did not pop up on upstream yet, there lots of potential
+> > > reasons for this.
 > >
-> > else if (!val)
-> >         ret = 1;
+> > The 4.19 version of the syzbot report has a very different stack
+> > trace.  Instead of it being related to an apparent write to the quota
+> > file, it is apparently caused by a call to rmdir:
+> >
 >
-> But then it become a bug again :-)
+> The 4.19 reproducer may reproducer something else, you know better. I
+> just want to answer points re syzkaller reproducers. FTR the 4.19
+> reproducer/reproducer is here:
+> https://syzkaller.appspot.com/bug?id=b6cacc9fa48fea07154b8797236727de981c1e02
 
-I'm not sure why?  The checks below will still happen and they may
-cause an error to be returned.
+Yes, I know.  That was my point.  I don't think it's useful for
+debugging the upstream dquot_commit syzbot report (for which we don't
+have a reproducer yet).
 
-> ...
->
-> > And this is just not looking good to me, sorry.
->
-> Yeah, I think this patch is not needed right now. At least it seems no gain
-> from it.
+> > there is never any attempt to run rmdir() on the corrupted file system that is mounted.
+> 
+> Recursive rmdir happens as part of test cleanup implicitly, you can
+> see rmdir call in remove_dir function in the C reproducer:
+> https://syzkaller.appspot.com/text?tag=ReproC&x=12caea37900000
 
-OK
+That rmdir() removes the mountpoint, which is *not* the fuzzed file
+system which has the quota feature enabled.
+
+> > procid never gets incremented, so all of the threads only operate on /dev/loop0
+> 
+> This is intentional. procid is supposed to "isolate" parallel test
+> processes (if any). This reproducer does not use parallel test
+> processes, thus procid has constant value.
+
+Um... yes it does:
+
+int main(void)
+{
+  syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+  syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
+  syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+  use_temporary_dir();
+  loop();
+  return 0;
+}
+
+and what is loop?
+
+static void loop(void)
+{
+  int iter = 0;
+  for (;; iter++) {
+  	...
+    reset_loop();
+    int pid = fork();
+    if (pid < 0)
+      exit(1);
+    if (pid == 0) {
+      if (chdir(cwdbuf))
+        exit(1);
+      setup_test();
+      execute_one();
+      exit(0);
+    }
+    ...	
+    remove_dir(cwdbuf);
+  }
+}
+
+> > Am I correct in understanding that when syzbot is running, it uses the syzbot repro, and not the C repro?
+> 
+> It tries both. If first tries to interpret "syzkaller program" as it
+> was done when the bug was triggered during fuzzing. But then it tries
+> to convert it to a corresponding stand-alone C program and confirms
+> that it still triggers the bug. If it provides a C reproducer, it
+> means that it did trigger the bug using this exact C program on a
+> freshly booted kernel (and the provided kernel oops is the
+> corresponding oops obtained on this exact program).
+> If it fails to reproduce the bug with a C reproducer, then it provides
+> only the "syzkaller program" to not mislead developers.
+
+Well, looking at the C reproducer, it doesn't reproduce on upstream,
+and the stack trace makes no sense to me.  The rmdir() executes at the
+end of the test, as part of the cleanup, and looking at the syzkaller
+console, the stack trace involving rmdir happens *early* while test
+threads are still trying to mount the file system.
+
+	    	  	    	      - Ted
