@@ -2,227 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2C231A566
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3A731A561
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbhBLT3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:29:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25613 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229980AbhBLT32 (ORCPT
+        id S231934AbhBLT3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:29:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229980AbhBLT3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:29:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613158081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tHqPKCx9QpsLepzPpPyRSDHkZRYjZbHiZsF2Y6qelmQ=;
-        b=jUpFbVobdu3l9DfTP9Y2FfGlFmPN394VymTA4dTOQtUfE9mxuGHc1uKteu5Lm4o/yUrjk0
-        5Vy7qiX8xhfHVMoflI1KUtuNhpuzv5RanWbOIWE1OHw/MGfljAlmPzsPttVBkrjskAwSoq
-        6j8R9LAIs94Mnvj2QYKNOheKJAzAijM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-Ws3A7GDeOSaHSXtJczLUCA-1; Fri, 12 Feb 2021 14:27:57 -0500
-X-MC-Unique: Ws3A7GDeOSaHSXtJczLUCA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D5E3107ACE6;
-        Fri, 12 Feb 2021 19:27:56 +0000 (UTC)
-Received: from gimli.home (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E60A760BE5;
-        Fri, 12 Feb 2021 19:27:55 +0000 (UTC)
-Subject: [PATCH 2/3] vfio/pci: Implement vm_ops registration
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     alex.williamson@redhat.com
-Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jgg@nvidia.com, peterx@redhat.com
-Date:   Fri, 12 Feb 2021 12:27:55 -0700
-Message-ID: <161315807103.7320.16122193489358171384.stgit@gimli.home>
-In-Reply-To: <161315658638.7320.9686203003395567745.stgit@gimli.home>
-References: <161315658638.7320.9686203003395567745.stgit@gimli.home>
-User-Agent: StGit/0.21-dirty
+        Fri, 12 Feb 2021 14:29:02 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41F8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:28:22 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id e24so360472ioc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:28:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JPMtzLnlt4VsMWUnR2fTirOhyXKhGfmXdJkhsBcAKOQ=;
+        b=EwWZA0XKqw7csZDrwBHuPEWnLeZQ+hSSFszis8NThmD4ltreQi2+ivAO/wH6tZHOjm
+         usSovTFTSlxL2y8TB+QYUd392rzy1DIFVIlXbklf/BOqrA8h2I9VYPveCKxL3mH69Bf2
+         SRPq4FRezzABvtrawtXOke1Mo0rUCyf4GiJMM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JPMtzLnlt4VsMWUnR2fTirOhyXKhGfmXdJkhsBcAKOQ=;
+        b=RsmTRw2pBE5c2jEPmsUs0Bn94MM4LqkbZ+OSVoddJPxGhlwPjvdDCxyOat6VuWGfJk
+         ETz1U061XX5A2UGCTUL6WViGLceNnXQG9WY6Tzs+Yt5me1LQbnt/qv8gjDFFfFXL79kd
+         1sC/InP2oyoNgBs4Io/1dET0f5bZLGUQdvR1NxuaYuzJ8msebbxZakhmXKgpC0tpwdNt
+         AzxTwcN5lLsCPiuwgLVGvbPak0lQu/CnfId2koQd/yLJHoPXL83HYKlGjK7sL4VjQf7v
+         dz/jl7V6YMzXg4NYHR7ZHVXSlIw1mQ7uI668lH6MN9VWZCqSxG/mQkXiQvRSNVqNBT8C
+         unxg==
+X-Gm-Message-State: AOAM531bpqstHvhIS1v79d3a4QBOeCCwA6VejufiS5aJTEjOsfvYh28K
+        ttSCps9Ff8lY+D6fS7MiGusqnzA1upUSLA==
+X-Google-Smtp-Source: ABdhPJw35/TKYlCUoEmdwHVAMMSCsLA9Pz21NfjqOum67K9ijGXbIOEo5b1kt03S+tAd4+jeWY9/0g==
+X-Received: by 2002:a05:6602:3283:: with SMTP id d3mr3304506ioz.53.1613158102081;
+        Fri, 12 Feb 2021 11:28:22 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id w8sm4808988ilu.1.2021.02.12.11.28.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Feb 2021 11:28:21 -0800 (PST)
+Subject: Re: [PATCH 4.19 00/27] 4.19.176-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20210212074240.963766197@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <32820f45-329d-35f4-7e37-62a433947722@linuxfoundation.org>
+Date:   Fri, 12 Feb 2021 12:28:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210212074240.963766197@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vfio-pci vfio bus driver implements a vm_operations_struct for
-managing mmaps to device BARs, therefore given a vma with matching
-vm_ops we can create a reference using the existing vfio external user
-interfaces and register the provided notifier to receive callbacks
-relative to the device.  The close notifier is implemented for when
-the device is released, rather than closing the vma to avoid
-possibly breaking userspace (ie. mmap -> dma map -> munmap is
-currently allowed and maintains the dma mapping to the device).
+On 2/12/21 12:55 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.176 release.
+> There are 27 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 14 Feb 2021 07:42:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.176-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
----
- drivers/vfio/pci/Kconfig            |    1 
- drivers/vfio/pci/vfio_pci.c         |   87 +++++++++++++++++++++++++++++++++++
- drivers/vfio/pci/vfio_pci_private.h |    1 
- 3 files changed, 89 insertions(+)
+Compiled and booted on my test system. No dmesg regressions.
 
-diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
-index 40a223381ab6..4e3059d6206c 100644
---- a/drivers/vfio/pci/Kconfig
-+++ b/drivers/vfio/pci/Kconfig
-@@ -4,6 +4,7 @@ config VFIO_PCI
- 	depends on VFIO && PCI && EVENTFD
- 	select VFIO_VIRQFD
- 	select IRQ_BYPASS_MANAGER
-+	select SRCU
- 	help
- 	  Support for the PCI VFIO bus driver.  This is required to make
- 	  use of PCI drivers using the VFIO framework.
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 706de3ef94bb..dcbdaece80f8 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -560,6 +560,8 @@ static void vfio_pci_release(void *device_data)
- 	mutex_lock(&vdev->reflck->lock);
- 
- 	if (!(--vdev->refcnt)) {
-+		srcu_notifier_call_chain(&vdev->vma_notifier,
-+					 VFIO_VMA_NOTIFY_CLOSE, NULL);
- 		vfio_pci_vf_token_user_add(vdev, -1);
- 		vfio_spapr_pci_eeh_release(vdev->pdev);
- 		vfio_pci_disable(vdev);
-@@ -1969,6 +1971,7 @@ static int vfio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	mutex_init(&vdev->vma_lock);
- 	INIT_LIST_HEAD(&vdev->vma_list);
- 	init_rwsem(&vdev->memory_lock);
-+	srcu_init_notifier_head(&vdev->vma_notifier);
- 
- 	ret = vfio_add_group_dev(&pdev->dev, &vfio_pci_ops, vdev);
- 	if (ret)
-@@ -2362,6 +2365,7 @@ static void vfio_pci_try_bus_reset(struct vfio_pci_device *vdev)
- 
- static void __exit vfio_pci_cleanup(void)
- {
-+	vfio_unregister_vma_ops(&vfio_pci_mmap_ops);
- 	pci_unregister_driver(&vfio_pci_driver);
- 	vfio_pci_uninit_perm_bits();
- }
-@@ -2407,6 +2411,81 @@ static void __init vfio_pci_fill_ids(void)
- 	}
- }
- 
-+struct vfio_pci_vma_obj {
-+	struct vfio_pci_device *vdev;
-+	struct vfio_group *group;
-+	struct vfio_device *device;
-+	struct notifier_block *nb;
-+};
-+
-+static void *vfio_pci_register_vma_notifier(struct vm_area_struct *vma,
-+					    struct notifier_block *nb)
-+{
-+	struct vfio_pci_device *vdev = vma->vm_private_data;
-+	struct vfio_pci_vma_obj *obj;
-+	struct vfio_group *group;
-+	struct vfio_device *device;
-+	int ret;
-+
-+	if (!vdev || vma->vm_ops != &vfio_pci_mmap_ops)
-+		return ERR_PTR(-EINVAL);
-+
-+	obj = kmalloc(sizeof(*obj), GFP_KERNEL);
-+	if (!obj)
-+		return ERR_PTR(-ENOMEM);
-+
-+	/*
-+	 * Get a group and container reference, this prevents the container
-+	 * from being torn down while this vma is mapped, ie. device stays
-+	 * isolated.
-+	 *
-+	 * NB. The container must be torn down on device close without
-+	 * explicit unmaps, therefore we must notify on close.
-+	 */
-+	group = vfio_group_get_external_user_from_dev(&vdev->pdev->dev);
-+	if (IS_ERR(group)) {
-+		kfree(obj);
-+		return group;
-+	}
-+
-+	/* Also need device reference to prevent unbind */
-+	device = vfio_device_get_from_dev(&vdev->pdev->dev);
-+	if (IS_ERR(device)) {
-+		vfio_group_put_external_user(group);
-+		kfree(obj);
-+		return device;
-+	}
-+
-+	/*
-+	 * Use the srcu notifier chain variant to avoid AB-BA locking issues
-+	 * with the caller, ex. iommu->lock vs nh->rwsem
-+	 */
-+	ret = srcu_notifier_chain_register(&vdev->vma_notifier, nb);
-+	if (ret) {
-+		vfio_device_put(device);
-+		vfio_group_put_external_user(group);
-+		kfree(obj);
-+		return ERR_PTR(ret);
-+	}
-+
-+	obj->vdev = vdev;
-+	obj->group = group;
-+	obj->device = device;
-+	obj->nb = nb;
-+
-+	return obj;
-+}
-+
-+static void vfio_pci_unregister_vma_notifier(void *opaque)
-+{
-+	struct vfio_pci_vma_obj *obj = opaque;
-+
-+	srcu_notifier_chain_unregister(&obj->vdev->vma_notifier, obj->nb);
-+	vfio_device_put(obj->device);
-+	vfio_group_put_external_user(obj->group);
-+	kfree(obj);
-+}
-+
- static int __init vfio_pci_init(void)
- {
- 	int ret;
-@@ -2421,6 +2500,12 @@ static int __init vfio_pci_init(void)
- 	if (ret)
- 		goto out_driver;
- 
-+	ret = vfio_register_vma_ops(&vfio_pci_mmap_ops,
-+				    vfio_pci_register_vma_notifier,
-+				    vfio_pci_unregister_vma_notifier);
-+	if (ret)
-+		goto out_vma;
-+
- 	vfio_pci_fill_ids();
- 
- 	if (disable_denylist)
-@@ -2428,6 +2513,8 @@ static int __init vfio_pci_init(void)
- 
- 	return 0;
- 
-+out_vma:
-+	pci_unregister_driver(&vfio_pci_driver);
- out_driver:
- 	vfio_pci_uninit_perm_bits();
- 	return ret;
-diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
-index 5c90e560c5c7..12c61d099d1a 100644
---- a/drivers/vfio/pci/vfio_pci_private.h
-+++ b/drivers/vfio/pci/vfio_pci_private.h
-@@ -142,6 +142,7 @@ struct vfio_pci_device {
- 	struct mutex		vma_lock;
- 	struct list_head	vma_list;
- 	struct rw_semaphore	memory_lock;
-+	struct srcu_notifier_head	vma_notifier;
- };
- 
- #define is_intx(vdev) (vdev->irq_type == VFIO_PCI_INTX_IRQ_INDEX)
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
 
