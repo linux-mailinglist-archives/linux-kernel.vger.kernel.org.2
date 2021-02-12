@@ -2,113 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AC53197ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AC43197F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 02:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbhBLBSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 11 Feb 2021 20:18:41 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:36180 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhBLBSi (ORCPT
+        id S229562AbhBLBTl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 11 Feb 2021 20:19:41 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3019 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhBLBTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 11 Feb 2021 20:18:38 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3434B20B6C40;
-        Thu, 11 Feb 2021 17:17:57 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3434B20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1613092677;
-        bh=Y7BtTH5ulPnacnf3FX5f0RFcRSYsD0USlFVkCyasTd4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=gyo459klbjM84xwkX6PXkazK+7OzLyws3VPz679/pgnVlag/yYxfVMm7nXbGMrkcm
-         tMcaGkes9he/hxnfLrRRLCNmuf6kZxit5kxbALc4vmgd+a1J78MYVjD93gERNjxLcM
-         U979bY8a948Kz/YGiY2ldd16eUNbb2nnfsD1Ybms=
-Subject: Re: [PATCH v17 02/10] of: Add a common kexec FDT setup function
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        frowand.list@gmail.com, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210209182200.30606-1-nramas@linux.microsoft.com>
- <20210209182200.30606-3-nramas@linux.microsoft.com>
- <87k0reozwh.fsf@manicouagan.localdomain>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <8a3aa3d2-2eba-549a-9970-a2b0fe3586c9@linux.microsoft.com>
-Date:   Thu, 11 Feb 2021 17:17:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <87k0reozwh.fsf@manicouagan.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 11 Feb 2021 20:19:36 -0500
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DcFwb3mh3zRCWT;
+        Fri, 12 Feb 2021 09:17:35 +0800 (CST)
+Received: from dggemi709-chm.china.huawei.com (10.3.20.108) by
+ DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 12 Feb 2021 09:18:52 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi709-chm.china.huawei.com (10.3.20.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Fri, 12 Feb 2021 09:18:52 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Fri, 12 Feb 2021 09:18:52 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>
+CC:     "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "fthain@telegraphics.com.au" <fthain@telegraphics.com.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [RFC] IRQ handlers run with some high-priority interrupts(not NMI)
+ enabled on some platform
+Thread-Topic: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+Thread-Index: AdcA2xDwQTa7W6j6SmS4J3iBnsSynA==
+Date:   Fri, 12 Feb 2021 01:18:52 +0000
+Message-ID: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.23]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 5:09 PM, Thiago Jung Bauermann wrote:
-> 
-> There's actually a complication that I just noticed and needs to be
-> addressed. More below.
-> 
+Hi,
 
-<...>
+I am getting a very long debate with Finn in this thread:
+https://lore.kernel.org/lkml/1612697823-8073-1-git-send-email-tanxiaofei@huawei.com/
 
->> +
->> +/*
->> + * of_kexec_alloc_and_setup_fdt - Alloc and setup a new Flattened Device Tree
->> + *
->> + * @image:		kexec image being loaded.
->> + * @initrd_load_addr:	Address where the next initrd will be loaded.
->> + * @initrd_len:		Size of the next initrd, or 0 if there will be none.
->> + * @cmdline:		Command line for the next kernel, or NULL if there will
->> + *			be none.
->> + *
->> + * Return: fdt on success, or NULL errno on error.
->> + */
->> +void *of_kexec_alloc_and_setup_fdt(const struct kimage *image,
->> +				   unsigned long initrd_load_addr,
->> +				   unsigned long initrd_len,
->> +				   const char *cmdline)
->> +{
->> +	void *fdt;
->> +	int ret, chosen_node;
->> +	const void *prop;
->> +	unsigned long fdt_size;
->> +
->> +	fdt_size = fdt_totalsize(initial_boot_params) +
->> +		   (cmdline ? strlen(cmdline) : 0) +
->> +		   FDT_EXTRA_SPACE;
-> 
-> Just adding 4 KB to initial_boot_params won't be enough for crash
-> kernels on ppc64. The current powerpc code doubles the size of
-> initial_boot_params (which is normally larger than 4 KB) and even that
-> isn't enough. A patch was added to powerpc/next today which uses a more
-> precise (but arch-specific) formula:
-> 
-> https://lore.kernel.org/linuxppc-dev/161243826811.119001.14083048209224609814.stgit@hbathini/
-> 
-> So I believe we need a hook here where architectures can provide their
-> own specific calculation for the size of the fdt. Perhaps a weakly
-> defined function providing a default implementation which an
-> arch-specific file can override (a la arch_kexec_kernel_image_load())?
-> 
-> Then the powerpc specific hook would be the kexec_fdt_totalsize_ppc64()
-> function from the patch I linked above.
-> 
+In short, the debate is about if high-priority IRQs (*not NMI*)
+are allowed to preempt an running IRQ handler in hardIRQ context.
 
-Do you think it'd better to add "fdt_size" parameter to 
-of_kexec_alloc_and_setup_fdt() so that the caller can provide the 
-desired FDT buffer size?
+In my understanding, right now IRQ handlers are running with *all* interrupts
+disabled since this commit and IRQF_DISABLED was dropped:
+e58aa3d2d0cc
+genirq: Run irq handlers with interrupts disabled
 
-thanks,
-  -lakshmi
+b738a50a2026
+genirq: Warn when handler enables interrupts
+We run all handlers with interrupts disabled and expect them not to
+enable them. Warn when we catch one who does.
+
+While it seems to be true in almost all platforms, it seems to be
+false on m68k.
+
+According to Finn, while IRQ handlers are running, high-priority
+interrupts can still jump out on m68k. A driver which is handling
+this issue is here: drivers/net/ethernet/natsemi/sonic.c.
+you can read the comment:
+static irqreturn_t sonic_interrupt(int irq, void *dev_id)
+{
+	struct net_device *dev = dev_id;
+	struct sonic_local *lp = netdev_priv(dev);
+	int status;
+	unsigned long flags;
+
+	/* The lock has two purposes. Firstly, it synchronizes sonic_interrupt()
+	 * with sonic_send_packet() so that the two functions can share state.
+	 * Secondly, it makes sonic_interrupt() re-entrant, as that is required
+	 * by macsonic which must use two IRQs with different priority levels.
+	 */
+	spin_lock_irqsave(&lp->lock, flags);
+
+	status = SONIC_READ(SONIC_ISR) & SONIC_IMR_DEFAULT;
+	if (!status) {
+		spin_unlock_irqrestore(&lp->lock, flags);
+
+		return IRQ_NONE;
+	}
+}
+
+So m68k does allow a high-priority interrupt to preempt
+a hardIRQ so the code needs to call irqsave to protect
+this risk. That is to say, some interrupts are not disabled
+during hardIRQ of m68k.
+
+But m68k doesn't trigger any warning for !irqs_disabled() in
+genirq:
+irqreturn_t __handle_irq_event_percpu(struct irq_desc *desc, unsigned int *flags)
+{
+	...
+
+		trace_irq_handler_entry(irq, action);
+		res = action->handler(irq, action->dev_id);
+		trace_irq_handler_exit(irq, action, res);
+
+		if (WARN_ONCE(!irqs_disabled(),"irq %u handler %pS enabled interrupts\n",
+			      irq, action->handler))
+			local_irq_disable();
+}
+
+The reason is:
+* arch_irqs_disabled() return true while low-priority interrupts are disabled
+though high-priority interrupts are still open;
+* local_irq_disable, spin_lock_irqsave() etc will disable high-priority interrupt
+(IPL 7);
+* arch_irqs_disabled() also return true while both low and high priority interrupts
+interrupts are disabled.
+Note m68k has several interrupt levels. But in the above description, I simply
+abstract them as high and low to help the understanding.
+
+I think m68k lets arch_irq_disabled() return true in relatively weaker condition
+to pretend all IRQs are disabled while high-priority IRQ is still open, thus
+pass all sanitizing check in genirq and kernel core. But Finn strongly disagreed.
+
+I am not saying I am right and Finn is wrong. But I think we need somewhere to clarify
+this problem.
+
+Personally, I would prefer "interrupts disabled" mean "all except NMI", So I'd like to
+guard this by:
+
+diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
+index 7c9d6a2d7e90..b8ca27555c76 100644
+--- a/include/linux/hardirq.h
++++ b/include/linux/hardirq.h
+@@ -32,6 +32,7 @@ static __always_inline void rcu_irq_enter_check_tick(void)
+  */
+ #define __irq_enter()                                  \
+        do {                                            \
++               WARN_ONCE(in_hardirq() && irqs_disabled(), "nested
+interrupts\n"); \
+                preempt_count_add(HARDIRQ_OFFSET);      \
+                lockdep_hardirq_enter();                \
+                account_hardirq_enter(current);         \
+@@ -44,6 +45,7 @@ static __always_inline void rcu_irq_enter_check_tick(void)
+  */
+ #define __irq_enter_raw()                              \
+        do {                                            \
++               WARN_ONCE(in_hardirq() && irqs_disabled(), " nested
+interrupts\n"); \
+                preempt_count_add(HARDIRQ_OFFSET);      \
+                lockdep_hardirq_enter();                \
+        } while (0)
+
+Though Finn thought it lacks any justification
+
+So I am requesting comments on:
+1. are we expecting all interrupts except NMI to be disabled in irq handler,
+or do we actually allow some high-priority interrupts between low and NMI to
+come in some platforms?
+
+2. If either side is true, I think we need to document it somewhere as there
+is always confusion about this.
+
+Personally, I would expect all interrupts to be disabled and I like the way
+of ARM64 to only use high-priority interrupt as pseudo NMI:
+https://lwn.net/Articles/755906/
+Though Finn argued that this will contribute to lose hardware feature of m68k.
+
+Thanks
+Barry
