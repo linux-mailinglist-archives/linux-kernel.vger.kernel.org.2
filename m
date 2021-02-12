@@ -2,126 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B582031A504
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5F031A513
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 20:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbhBLTIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 14:08:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhBLTId (ORCPT
+        id S232063AbhBLTKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 14:10:08 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9944 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231756AbhBLTJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 14:08:33 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ECBC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:06:58 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id z18so142746ile.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 11:06:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=41R6qCDY/8NfbYuCG9FTh5tckGwo/C1ROCg7V+WW60I=;
-        b=OaT7xFwBOZ0+5R5EzoiY52m0tMQujyW6KpViVkm/xpfriImjxyevrCWMW60cglSXgx
-         Sw2R9nNDnUMALq9grjb6+lviTsauWlQa+PgW5PGMpnFB6wHKq02Dh+uB1CHUYjKfJypV
-         qwJpTcmdeP+hJ8m2VrybqYdmnzrVbhW5hxhrc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=41R6qCDY/8NfbYuCG9FTh5tckGwo/C1ROCg7V+WW60I=;
-        b=qUrdxwgwpX/QP9A/J9ym560/ohFa2oGLTKIJVPVW9yVqdVqAfW4Zg7GzU5afaWV4NZ
-         UQe/eUzeXW5wBx+Zm0djH/f2/Dev4xGLfnnfj2TEn4FtoBtxhg7YDD5ump0/vOKiA2+o
-         WI8fioVhyqlBy0oZ860YBe153SVM843nsqHIeFLqyurr5HTRz+pRhUJo8++mc37W6JWu
-         GEhRtzKVodwzADhbKSE8m/nzf4+wG8Er7+buk19TJ46LWI69zX9JITywg7aPPJijcPdh
-         gnifiCXsFU1KIc8G4nL1vL+KSyeHwRC0F1naEzjeb7zgPHUTEyOBTD7iQdbOa6UpE1Y0
-         qalw==
-X-Gm-Message-State: AOAM531tsSh6ukQOOElZQru3CvGCGYtOP67pJex+dxpv0UXNfZzjj3pN
-        xdx8PYP2w6aTiJesANrlspPvFHbLSqoVkg==
-X-Google-Smtp-Source: ABdhPJzCLf67dxyoG6GNwbCZwq3WTq4i0gvkUrWAjINmoMjda0GmQBM+BnH61HfpcwpotGr/AOknOA==
-X-Received: by 2002:a92:d351:: with SMTP id a17mr3455278ilh.59.1613156817784;
-        Fri, 12 Feb 2021 11:06:57 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id e9sm4470134iob.43.2021.02.12.11.06.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 11:06:57 -0800 (PST)
-Subject: Re: [PATCH 2/3] net:ethernet:rmnet:Support for downlink MAPv5 csum
- offload
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Sharath Chandra Vurukala <sharathv@codeaurora.org>,
-        davem@davemloft.net, elder@kernel.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1613079324-20166-1-git-send-email-sharathv@codeaurora.org>
- <1613079324-20166-3-git-send-email-sharathv@codeaurora.org>
- <20210211180459.500654b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <1c4e21bf-5903-bc45-6d6e-64b68e494542@ieee.org>
- <20210212105120.01b04172@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <dfa87271-0ade-f8b5-b41f-1128353b3248@ieee.org>
-Date:   Fri, 12 Feb 2021 13:06:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Fri, 12 Feb 2021 14:09:43 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6026d24b0000>; Fri, 12 Feb 2021 11:08:59 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 12 Feb
+ 2021 19:08:55 +0000
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.57) by
+ HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 12 Feb 2021 19:08:55 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kpJYHJezCNwG5EKuGKh17MO5ALV+Ga79GnLs1fkmARiGKZP1f6TN8V5icYfZ+v0pO72uy4ykxpEwdsfwQkp0RgvhYGIVpql1NwLUvzg4TmeoJD7byU8vKt9wgkLlWi9zTYh6VRFnF9USekVAd+VxFF4z75dmTSom8yda/jqHZBntB1GhRG1eOY3iRaw2ZL812F8JiJqHjT1F7KTpk5Q8U2LmiX73x5TuESIbfcLE2XqdXeUCUQLBSffWfEKUpOxIkcJ0ZOg75ShGujagY1F8agorbZFhMWMvuJmA2eVj/0CANfNPtPugEhyhG9HBn/nYkQa/UNtpBtQZRQyo/cSpgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MXWVZMJ2ML1FpMAfUgjvBax3HnVKJanK1iPNIvf5ZJc=;
+ b=kcged9XzneGWDFbPZreTKNHbKATpNRoVzWi1xwX6jnbdbpHJC1l1veHTcA4/prT3GVJF4deu7eXAjmRnS8sDDsYvvQp69PaINar0C0wly/yDwlZyhgio98GzWdRF0smqQQx65UNxY2THhXUODom0CUvWPZiCahTY6p72S7SYBSl/fuPR6THgm+d/fmEaY27qg+1XAP0UszRdLFzEodwb6fz6P0OLZRTNbIsQ6MD9ms5QSHA2sxgGAa5xJYvnw4SwA1BZ19rjjqCYwHsFPctxUBySeCmj4CqNXMg+ypg0JLts/Ib5ngTQB1ThemvZtltaHRKivDX9vFMNF4Oh3OBSjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4402.namprd12.prod.outlook.com (2603:10b6:5:2a5::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Fri, 12 Feb
+ 2021 19:08:54 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.030; Fri, 12 Feb 2021
+ 19:08:54 +0000
+Date:   Fri, 12 Feb 2021 15:08:51 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Daniel Vetter <daniel.vetter@intel.com>
+CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <pbonzini@redhat.com>,
+        <peterx@redhat.com>
+Subject: Re: [PATCH] vfio/type1: Use follow_pte()
+Message-ID: <20210212190851.GT4247@nvidia.com>
+References: <161315649533.7249.11715726297751446001.stgit@gimli.home>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <161315649533.7249.11715726297751446001.stgit@gimli.home>
+X-ClientProxiedBy: MN2PR01CA0035.prod.exchangelabs.com (2603:10b6:208:10c::48)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <20210212105120.01b04172@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR01CA0035.prod.exchangelabs.com (2603:10b6:208:10c::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Fri, 12 Feb 2021 19:08:53 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lAdoB-007WEG-V6; Fri, 12 Feb 2021 15:08:51 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613156939; bh=MXWVZMJ2ML1FpMAfUgjvBax3HnVKJanK1iPNIvf5ZJc=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=CXavsW0PjnQNeADlGVdeUoj8/Uto+drj/IUzRGMKLfW+D8MsDDE3S8Hl5SCkCnhs8
+         2gx9C9KmPuayyQckuk6piGc8jWARvOAvvuF43u5oqXm8YtgpYTmyOPwGSNsj8naaFF
+         nqyAPUSkPQ3QAgCqOS66XXG19QaTrykvGsbhyMRYXoUlOaSx/zKJZN1Zj7ZsaenfHB
+         dCXG60Bsur1VrPlN07ccOrZaII2GmQfAIQroUyx9Yvk5/QkDcVCLl0HLw/mvqxXf6l
+         oPsBB9XX+NiskSzHHFSnJIHXZbrLyaUz85ap6LccyBYwzT0xwl7Nug0LJk3g2Z3gMo
+         BZDOeuMt4KOdw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/21 12:51 PM, Jakub Kicinski wrote:
-> On Fri, 12 Feb 2021 08:01:15 -0600 Alex Elder wrote:
->> On 2/11/21 8:04 PM, Jakub Kicinski wrote:
->>> On Fri, 12 Feb 2021 03:05:23 +0530 Sharath Chandra Vurukala wrote:
->>>> +/* MAP CSUM headers */
->>>> +struct rmnet_map_v5_csum_header {
->>>> +	u8  next_hdr:1;
->>>> +	u8  header_type:7;
->>>> +	u8  hw_reserved:5;
->>>> +	u8  priority:1;
->>>> +	u8  hw_reserved_bit:1;
->>>> +	u8  csum_valid_required:1;
->>>> +	__be16 reserved;
->>>> +} __aligned(1);
->>>
->>> Will this work on big endian?
->>
->> Sort of related to this point...
->>
->> I'm sure the response to this will be to add two versions
->> of the definition, surrounded __LITTLE_ENDIAN_BITFIELD
->> and __BIG_ENDIAN_BITFIELD tests.
->>
->> I really find this non-intuitive, and every time I
->> look at it I have to think about it a bit to figure
->> out where the bits actually lie in the word.
->>
->> I know this pattern is used elsewhere in the networking
->> code, but that doesn't make it any easier for me to
->> understand...
->>
->> Can we used mask, defined in host byte order, to
->> specify the positions of these fields?
->>
->> I proposed a change at one time that did this and
->> this *_ENDIAN_BITFIELD thing was used instead.
->>
->> I will gladly implement this change (completely
->> separate from what's being done here), but thought
->> it might be best to see what people think about it
->> before doing that work.
+On Fri, Feb 12, 2021 at 12:01:50PM -0700, Alex Williamson wrote:
+> follow_pfn() doesn't make sure that we're using the correct page
+> protections, get the pte with follow_pte() so that we can test
+> protections and get the pfn from the pte.
 > 
-> Most definitely agree, please convert.
+> Fixes: 5cbf3264bc71 ("vfio/type1: Fix VA->PA translation for PFNMAP VMAs in vaddr_get_pfn()")
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c |   14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index ec9fd95a138b..90715413c3d9 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -463,9 +463,11 @@ static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
+>  			    unsigned long vaddr, unsigned long *pfn,
+>  			    bool write_fault)
+>  {
+> +	pte_t *ptep;
+> +	spinlock_t *ptl;
+>  	int ret;
+>  
+> -	ret = follow_pfn(vma, vaddr, pfn);
+> +	ret = follow_pte(vma->vm_mm, vaddr, NULL, &ptep, NULL, &ptl);
+>  	if (ret) {
+>  		bool unlocked = false;
+>  
+> @@ -479,9 +481,17 @@ static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
+>  		if (ret)
+>  			return ret;
+>  
+> -		ret = follow_pfn(vma, vaddr, pfn);
+> +		ret = follow_pte(vma->vm_mm, vaddr, NULL, &ptep, NULL, &ptl);
 
-KS, would you like me to do this to the existing code
-first?
+commit 9fd6dad1261a541b3f5fa7dc5b152222306e6702 in linux-next is what
+export's follow_pte and it uses a different signature:
 
-I don't think it will take me very long.  If it were
-a priority I could probably get it done by the end of
-today, but I'd want to ensure the result worked for
-the testing you do.
++int follow_pte(struct mm_struct *mm, unsigned long address,
++              pte_t **ptepp, spinlock_t **ptlp)
 
-					-Alex
+Recommend you send this patch for rc1 once the right stuff lands in
+Linus's tree
+
+Otherwise it looks OK
+
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Jason
