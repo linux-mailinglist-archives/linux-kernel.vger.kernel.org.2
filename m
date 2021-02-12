@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5F931A1C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8014331A1C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 16:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbhBLPen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 10:34:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55844 "EHLO mail.kernel.org"
+        id S231709AbhBLPfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 10:35:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232081AbhBLPdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 10:33:53 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52D3A64E70;
-        Fri, 12 Feb 2021 15:33:12 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 10:33:10 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v3 3/3] tracing: Add ptr-hash option to show the hashed
- pointer value
-Message-ID: <20210212103310.791c1f48@gandalf.local.home>
-In-Reply-To: <160277372504.29307.14909828808982012211.stgit@devnote2>
-References: <160277369795.29307.6792451054602907237.stgit@devnote2>
-        <160277372504.29307.14909828808982012211.stgit@devnote2>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232248AbhBLPeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 10:34:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE72164E74;
+        Fri, 12 Feb 2021 15:33:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613144000;
+        bh=eHKAadsmBd1fO7UIdsFXiDdKBmGxRlbe1eHeIyb9E0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GqB1bFfHPU//v13o12sxTWyqKKzPJhTfar56hm7l2N7YezwtkVFLPblGsuuiHBxnZ
+         oCcbnbqwnkpxvM3Vo/3+KxBJG7WfYcoeaD+k5YmOD330m74KB3ovNMDb0no4bdCQ3M
+         BmbpgDpXeGE9Ruk7DmMIGxL+wKN1x4aP4V19K9oOZUyj5oZ4qvu6U34qLKZ1jDZodr
+         dIICRlCxAJJynGWvOwX/VRN0fr2oLO5c9ON6Hxf5WVLh2HEbrRDWtacCD3YfG/Yjbw
+         JIAHtf6Rsmh9Rx6oj3w/ldwY3T+eBhQ+Mo4L8j/C6MHQSBpyp1tF75DZ1FMPc9NjYZ
+         7jIVIEP/EGNpQ==
+Date:   Fri, 12 Feb 2021 16:33:17 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: linux-next: manual merge of the rcu tree with the block tree
+Message-ID: <20210212153317.GE94816@lothringen>
+References: <20210211164852.7489b87d@canb.auug.org.au>
+ <20210212151853.GC94816@lothringen>
+ <858e7874-83c9-e4b9-a0a9-31be5a0c853e@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <858e7874-83c9-e4b9-a0a9-31be5a0c853e@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Masami,
-
-I noticed theses sitting in my patchwork and I said I was going to hold off
-to the next merge window, and these got pushed down in my stack :-/
-
-
-On Thu, 15 Oct 2020 23:55:25 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> Add tracefs/options/hash-ptr option to show hashed pointer
-> value by %p in event printk format string.
+On Fri, Feb 12, 2021 at 08:30:27AM -0700, Jens Axboe wrote:
+> On 2/12/21 8:18 AM, Frederic Weisbecker wrote:
+> > On Thu, Feb 11, 2021 at 04:48:52PM +1100, Stephen Rothwell wrote:
+> >> Hi all,
+> >>
+> >> Today's linux-next merge of the rcu tree got conflicts in:
+> >>
+> >>   include/linux/rcupdate.h
+> >>   kernel/rcu/tree.c
+> >>   kernel/rcu/tree_plugin.h
+> >>
+> >> between commits:
+> >>
+> >>   3a7b5c87a0b2 ("rcu/nocb: Perform deferred wake up before last idle's need_resched() check")
+> >>   e4234f21d2ea ("rcu: Pull deferred rcuog wake up to rcu_eqs_enter() callers")
+> >>   14bbd41d5109 ("entry/kvm: Explicitly flush pending rcuog wakeup before last
+> >>   rescheduling point")
+> >> from the block tree and commits:
+> > 
+> > Isn't it tip:/sched/core instead of block?
 > 
-> For the security reason, normal printk will show the hashed
-> pointer value (encrypted by random number) with %p to printk
-> buffer to hide the real address. But the tracefs/trace always
-> shows real address for debug. To bridge those outputs, add an
-> option to switch the output format. Ftrace users can use it
-> to find the hashed value corresponding to the real address
-> in trace log.
+> It must be, maybe block just got merged first?
+
+Yeah most likely.
+
+> It's just sched/core in a topic branch, to satisfy a dependency.
 > 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  Documentation/trace/ftrace.rst |    6 ++++++
->  kernel/trace/trace.c           |    3 +++
->  kernel/trace/trace.h           |    1 +
->  3 files changed, 10 insertions(+)
+> But as mentioned in the previous email, I just need sched/smp to satisfy
+> that dependency. So I've rebased that small topic branch with that
+> pulled in instead. Won't solve the sched/core vs rcu tree conflict, but
+> at least it's out of my hands now :-)
+
+Ok, sounds good :)
+
+Thanks.
+
 > 
-> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-> index 87cf5c010d5d..62c98e9bbdd9 100644
-> --- a/Documentation/trace/ftrace.rst
-> +++ b/Documentation/trace/ftrace.rst
-> @@ -1159,6 +1159,12 @@ Here are the available options:
->  	This simulates the original behavior of the trace file.
->  	When the file is closed, tracing will be enabled again.
->  
-> +  hash-ptr
-> +        When set, "%p" in the event printk format displays the
-> +        hashed pointer value instead of real address.
-> +        This will be useful if you want to find out which hashed
-> +        value is corresponding to the real value in trace log.
-> +
-
-I'm thinking of making this the default. I'll add a patch to make it
-enabled by default "for security reasons", but still allow people to clear
-it this value.
-
-Are you OK with that?
-
--- Steve
-
-
-
->    record-cmd
->  	When any event or tracer is enabled, a hook is enabled
->  	in the sched_switch trace point to fill comm cache
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 75395293d8df..b88cccf224cd 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -3543,6 +3543,9 @@ const char *trace_event_format(struct trace_iterator *iter, const char *fmt)
->  	if (WARN_ON_ONCE(!fmt))
->  		return fmt;
->  
-> +	if (iter->tr->trace_flags & TRACE_ITER_HASH_PTR)
-> +		return fmt;
-> +
->  	p = fmt;
->  	new_fmt = q = iter->fmt;
->  	while (*p) {
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index 524502d1f60a..c34187bd22a9 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -1347,6 +1347,7 @@ extern int trace_get_user(struct trace_parser *parser, const char __user *ubuf,
->  		C(MARKERS,		"markers"),		\
->  		C(EVENT_FORK,		"event-fork"),		\
->  		C(PAUSE_ON_TRACE,	"pause-on-trace"),	\
-> +		C(HASH_PTR,		"hash-ptr"),	/* Print hashed pointer */ \
->  		FUNCTION_FLAGS					\
->  		FGRAPH_FLAGS					\
->  		STACK_FLAGS					\
-
+> -- 
+> Jens Axboe
+> 
