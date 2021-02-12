@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F975319FA7
+	by mail.lfdr.de (Postfix) with ESMTP id BC6C5319FA8
 	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 14:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhBLNQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 08:16:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34716 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231906AbhBLNNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 08:13:45 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613135577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DbvD0ELrznZKPnNNl0HUBrOi1DWu0bvse8JkNJGdDRo=;
-        b=iWUAxj11LEJ71+1Jag+ZMLi0QF45zOUDT+PkV4hrxnef9ep1y/LwWZWm2puQMPzZWSVzQq
-        /vESrx8fUz0lfk0F/DuHhwbqCmyzVXJwX4ivVfs/FH9vPX4eJeUixvkVAXkVzkJs1C70LC
-        9dbq8ImgPU9oxPHscKoH9+GaohBvX9Q=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C2C86AC90;
-        Fri, 12 Feb 2021 13:12:57 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 14:12:57 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Ts'o <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
-Subject: Re: possible deadlock in start_this_handle (2)
-Message-ID: <YCZ+2ZStwTbApo5E@dhcp22.suse.cz>
-References: <20210211125717.GH308988@casper.infradead.org>
- <YCUr99//z8hJmnDH@dhcp22.suse.cz>
- <20210211132533.GI308988@casper.infradead.org>
- <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
- <20210211142630.GK308988@casper.infradead.org>
- <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
- <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
- <20210212122207.GM308988@casper.infradead.org>
- <YCZ056SJDGrgXCss@dhcp22.suse.cz>
- <2b90c488-a6b9-2565-bd3a-e4f8bf8404e9@i-love.sakura.ne.jp>
+        id S232021AbhBLNQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 08:16:43 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:44315 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232042AbhBLNPZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 08:15:25 -0500
+Date:   Fri, 12 Feb 2021 13:14:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1613135680;
+        bh=3kzHPPEfw1Oh/I2MyZYvqJOoI3OUAOuTBbGYxZ6hJXU=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=QJUxtEvMZXp/osU9H8/N9GbtIb0yBNvkFGeCOL83GaSoAQ4Y5uzywHWQ5KupwWfZZ
+         dxXwtjq9n3nTzUsXXDQpC0e8gEpkSpIsFpQ+g+3LAMSPZmgku7VGXWKhBE9ICCCAdn
+         gGM4UJQ1XQmA4LCV0sNYK7v3dwHFEZOYYryZbtwmFdKey+Sb8bPuM5v/mJs0VMSt5q
+         SATj5yWIEkdvvnpW6dHFbUG3Qy9rcx6t3CLkgA8O6fUkpDg535qZLcMk2Tf4gh6Ysl
+         Pk4V0rUV5z6hgP8HNxDAh1AjvCHYnxiqIqgPy4H8+FjxNRaA+NQi++RR4j6vymslB8
+         7mfCBayLxA0xA==
+To:     Emil Velikov <emil.l.velikov@gmail.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Will Drewry <wad@chromium.org>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        "# 3.13+" <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH v3] kcmp: Support selection of SYS_kcmp without CHECKPOINT_RESTORE
+Message-ID: <pIyZ-Jj7O2MYk1vKeyghnFmiFWk_5ZWm-Ze1gUqdDaXzImOVjVdjPh2uyHa-sxOPovRk1ApSKk_5zKBvOrzoSwXeXUu0LbZ75Q1D3gIK2Kk=@emersion.fr>
+In-Reply-To: <CACvgo52u1ASWXOuWuDwoXvbZhoq+RHn_GTxD5y9k+kO_dzmT7w@mail.gmail.com>
+References: <20210205163752.11932-1-chris@chris-wilson.co.uk> <20210205220012.1983-1-chris@chris-wilson.co.uk> <CACvgo52u1ASWXOuWuDwoXvbZhoq+RHn_GTxD5y9k+kO_dzmT7w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b90c488-a6b9-2565-bd3a-e4f8bf8404e9@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 12-02-21 21:58:15, Tetsuo Handa wrote:
-> On 2021/02/12 21:30, Michal Hocko wrote:
-> > On Fri 12-02-21 12:22:07, Matthew Wilcox wrote:
-> >> On Fri, Feb 12, 2021 at 08:18:11PM +0900, Tetsuo Handa wrote:
-> >>> On 2021/02/12 1:41, Michal Hocko wrote:
-> >>>> But I suspect we have drifted away from the original issue. I thought
-> >>>> that a simple check would help us narrow down this particular case and
-> >>>> somebody messing up from the IRQ context didn't sound like a completely
-> >>>> off.
-> >>>>
-> >>>
-> >>>  From my experience at https://lkml.kernel.org/r/201409192053.IHJ35462.JLOMOSOFFVtQFH@I-love.SAKURA.ne.jp ,
-> >>> I think we can replace direct PF_* manipulation with macros which do not receive "struct task_struct *" argument.
-> >>> Since TASK_PFA_TEST()/TASK_PFA_SET()/TASK_PFA_CLEAR() are for manipulating PFA_* flags on a remote thread, we can
-> >>> define similar ones for manipulating PF_* flags on current thread. Then, auditing dangerous users becomes easier.
-> >>
-> >> No, nobody is manipulating another task's GFP flags.
-> > 
-> > Agreed. And nobody should be manipulating PF flags on remote tasks
-> > either.
-> > 
-> 
-> No. You are misunderstanding. The bug report above is an example of manipulating PF flags on remote tasks.
+On Friday, February 12th, 2021 at 1:57 PM, Emil Velikov <emil.l.velikov@gma=
+il.com> wrote:
 
-Could you be more specific? I do not remember there was any theory that
-somebody is manipulating flags on a remote task. A very vague theory was
-that an interrupt context might be doing that on the _current_ context
-but even that is not based on any real evidence. It is a pure
-speculation.
--- 
-Michal Hocko
-SUSE Labs
+> On Fri, 5 Feb 2021 at 22:01, Chris Wilson <chris@chris-wilson.co.uk> wrot=
+e:
+> >
+> > Userspace has discovered the functionality offered by SYS_kcmp and has
+> > started to depend upon it. In particular, Mesa uses SYS_kcmp for
+> > os_same_file_description() in order to identify when two fd (e.g. devic=
+e
+> > or dmabuf)
+>
+> As you rightfully point out, SYS_kcmp is a bit of a two edged sword.
+> While you mention the CONFIG issue, there is also a portability aspect
+> (mesa runs on more than just linux) and as well as sandbox filtering
+> of the extra syscall.
+>
+> Last time I looked, the latter was still an issue and mesa was using
+> SYS_kcmp to compare device node fds.
+> A far shorter and more portable solution is possible, so let me
+> prepare a Mesa patch.
+
+Comparing two DMA-BUFs can be done with their inode number, I think.
+
+Comparing two device FDs is more subtle, because of GEM handle
+ref'counting. You sometimes really want to check whether two FDs are
+backed by the same file *description*. See [1] for details.
+
+[1]: https://gitlab.freedesktop.org/mesa/drm/-/merge_requests/110
