@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9FB319C2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC99319C29
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 10:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhBLJzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 04:55:51 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2557 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhBLJzq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 04:55:46 -0500
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DcTHx69NQz67lYN;
-        Fri, 12 Feb 2021 17:50:05 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 12 Feb 2021 10:55:05 +0100
-Received: from [10.47.10.68] (10.47.10.68) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 12 Feb
- 2021 09:55:04 +0000
-Subject: Re: [PATCH v6 2/3] perf tools: Add lexical definition of event name
-To:     Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>,
-        <will@kernel.org>, <mathieu.poirier@linaro.org>,
-        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210212090318.1522292-1-nakamura.shun@jp.fujitsu.com>
- <20210212090318.1522292-3-nakamura.shun@jp.fujitsu.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <1e786f11-708f-85db-e965-a6ade5781b32@huawei.com>
-Date:   Fri, 12 Feb 2021 09:53:28 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S230271AbhBLJyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 04:54:41 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44799 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229844AbhBLJyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 04:54:37 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DcTNL34pyz9s1l;
+        Fri, 12 Feb 2021 20:53:54 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613123635;
+        bh=V6tZ9bJN3keYQ3P1n6itNnuQN6FwhXmN58WXFjXklwY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eSti4RUW+giXxWypA9JYzNr3vkb7z9otoxT3qVTARSZ7zLSfMuF2js7s449/4iH2E
+         hnW7W556gOWjN1DTbr46ZxSTm53HM+nAmt+vUhKzJbJQttlw7IAJ+uuelJFufTO1vB
+         bR297bEX0onPIgXu81YhFsbP6u13BLuRCeqjpK7+TZ/6eHyqEDK8GzKNwZKZwQsUow
+         19htF/5wGIugHii4sWMH3UUzAPuLgo80qixT7v5fQEra4fDhRa8jZ+IfW8+/KAV3QB
+         q3yBEQ+t2LN1A47sJcKwaY/35peR2foyPThyRr2bJyCwaXe14QMVuR6TSyjTSBpHF+
+         KMGCZz40bMelw==
+Date:   Fri, 12 Feb 2021 20:53:53 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: linux-next: manual merge of the akpm-current tree with the fscache
+ tree
+Message-ID: <20210212205353.3db305ee@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210212090318.1522292-3-nakamura.shun@jp.fujitsu.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.10.68]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/NGUf4dhp2i/IsNpftn1P90=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/02/2021 09:03, Shunsuke Nakamura wrote:
-> Add the lexical definition of event name so that the numbers are recognizable.
-> 
-> A64FX defines an event name that starts with a number.
->   - 0inst_commit
->   - 1inst_commit
->   - 2inst_commit
->   - 3inst_commit
->   - 4inst_commit
-> 
-> Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-> ---
+--Sig_/NGUf4dhp2i/IsNpftn1P90=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-FWIW,
+Hi all,
 
-Acked-by: John Garry <john.garry@huawei.com>
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-I would prefer if more knowledgeable perf reviewers also checked this...
+  include/linux/pagemap.h
 
->   tools/perf/util/parse-events.l | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
-> index 0b36285a9435..33f627187415 100644
-> --- a/tools/perf/util/parse-events.l
-> +++ b/tools/perf/util/parse-events.l
-> @@ -205,7 +205,7 @@ bpf_source	[^,{}]+\.c[a-zA-Z0-9._]*
->   num_dec		[0-9]+
->   num_hex		0x[a-fA-F0-9]+
->   num_raw_hex	[a-fA-F0-9]+
-> -name		[a-zA-Z_*?\[\]][a-zA-Z0-9_*?.\[\]]*
-> +name		[a-zA-Z0-9_*?\[\]][a-zA-Z0-9_*?.\[\]]*
->   name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
->   name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
->   drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
-> 
+between commit:
 
+  13aecd8259dc ("mm: Implement readahead_control pageset expansion")
+
+from the fscache tree and commit:
+
+  3ad6bba07ad0 ("mm/filemap: add mapping_seek_hole_data")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/pagemap.h
+index d2786607d297,20225b067583..000000000000
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@@ -758,11 -756,11 +757,13 @@@ int add_to_page_cache_lru(struct page *
+  				pgoff_t index, gfp_t gfp_mask);
+  extern void delete_from_page_cache(struct page *page);
+  extern void __delete_from_page_cache(struct page *page, void *shadow);
+- int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp=
+_mask);
++ void replace_page_cache_page(struct page *old, struct page *new);
+  void delete_from_page_cache_batch(struct address_space *mapping,
+  				  struct pagevec *pvec);
+ +void readahead_expand(struct readahead_control *ractl,
+ +		      loff_t new_start, size_t new_len);
++ loff_t mapping_seek_hole_data(struct address_space *, loff_t start, loff_=
+t end,
++ 		int whence);
+ =20
+  /*
+   * Like add_to_page_cache_locked, but used to add newly allocated pages:
+
+--Sig_/NGUf4dhp2i/IsNpftn1P90=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAmUDEACgkQAVBC80lX
+0GzwuQf7BleQYh5H8zpxZL+Wu64753zcgfTvI4DY4weFf26AvogNAq07FVoJFqHm
+vWKrUZzjeQuvD6w9a/8O1C36wm+zRr020K52fEz+eCrDnBCmA2S7Ihm4U2gv2J+u
+33LcMyO9NyOI8IjmuQAbX5Wj6Ua54kqdYnquoaIrOpetDw32ltIdXsGgtBeLf4DG
+zz5QNJf/R0i/hLVnp3Dx4eNR1HV2FsnmE3ltQLXAKyAPMUNPG8zaiYMJE3CXnCbj
+bkCxWa/opQvDCkXZ7YyqXvJWDFnAOoYDnbncI78ese9smmQ3mSVS7qFewDEu1GCs
+mhaBnxRPeHDiybiobUBrTjqvCf2cFQ==
+=zOmJ
+-----END PGP SIGNATURE-----
+
+--Sig_/NGUf4dhp2i/IsNpftn1P90=--
