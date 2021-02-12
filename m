@@ -2,134 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C22D31A320
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD51C31A324
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 17:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhBLQxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 11:53:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30506 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229465AbhBLQxa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 11:53:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613148723;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HwuucntKVy9+H2UoHo2+dgorK0b8KRqhqcCY+C9nrig=;
-        b=LcaYne+p9S+xcJYynlqwkoYc2GuvTHr1nOHLMRGrwiJbc1HapDwNSChkV0DvaSBAo9AMhs
-        YK9BmhRnOfoOMiUatquMh3VV5Z3y7cyzVCuHa5Us85lyKs8X7gFdqLt0kNxUVmhkVjTV5n
-        bEmdBJdCBrnFBmsfvTTWwvA73Ls9BuI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-398-iSWoKwKQMOK8cc1ChY21Lg-1; Fri, 12 Feb 2021 11:52:01 -0500
-X-MC-Unique: iSWoKwKQMOK8cc1ChY21Lg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AC8479EC2;
-        Fri, 12 Feb 2021 16:52:00 +0000 (UTC)
-Received: from [10.36.112.23] (ovpn-112-23.ams2.redhat.com [10.36.112.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A4DF45D9FC;
-        Fri, 12 Feb 2021 16:51:58 +0000 (UTC)
-Subject: Re: [PATCH] powerpc/pseries: Don't enforce MSI affinity with kdump
-To:     Greg Kurz <groug@kaod.org>, Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
-        stable@vger.kernel.org
-References: <20210212164132.821332-1-groug@kaod.org>
-From:   Laurent Vivier <lvivier@redhat.com>
-Message-ID: <81b4e767-289f-8fb6-9e05-c3fe60beb740@redhat.com>
-Date:   Fri, 12 Feb 2021 17:51:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S229697AbhBLQ4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 11:56:39 -0500
+Received: from mga14.intel.com ([192.55.52.115]:16371 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229558AbhBLQ4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 11:56:36 -0500
+IronPort-SDR: nzMvWrzl9mJqCasW2D8NzZ5MaNpM/1cRnjqFdL4gFWCG2cK3yrqZEKARsQJ8ydVJ0iPaM5P7Qc
+ LRoEn6sz2xxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="181665137"
+X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
+   d="scan'208";a="181665137"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 08:55:55 -0800
+IronPort-SDR: zZemSbYRA2DitIWANy+76U3L/CTOlpIiUmUBBHydrnsmVbA7k+6FkGAJWCml1kRdRpKFynDsqz
+ kSK6PNHTK8vg==
+X-IronPort-AV: E=Sophos;i="5.81,174,1610438400"; 
+   d="scan'208";a="398055793"
+Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2021 08:55:52 -0800
+From:   shuo.a.liu@intel.com
+To:     linux-next@vger.kernel.org
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Qais Yousef <qais.yousef@arm.com>,
+        linux-kernel@vger.kernel.org, Shuo Liu <shuo.a.liu@intel.com>
+Subject: [PATCH v2 1/2] cpu/hotplug: Fix build error of using {add,remove}_cpu() with !CONFIG_SMP
+Date:   Sat, 13 Feb 2021 00:55:18 +0800
+Message-Id: <20210212165519.82126-1-shuo.a.liu@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20210212164132.821332-1-groug@kaod.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/02/2021 17:41, Greg Kurz wrote:
-> Depending on the number of online CPUs in the original kernel, it is
-> likely for CPU #0 to be offline in a kdump kernel. The associated IRQs
-> in the affinity mappings provided by irq_create_affinity_masks() are
-> thus not started by irq_startup(), as per-design with managed IRQs.
-> 
-> This can be a problem with multi-queue block devices driven by blk-mq :
-> such a non-started IRQ is very likely paired with the single queue
-> enforced by blk-mq during kdump (see blk_mq_alloc_tag_set()). This
-> causes the device to remain silent and likely hangs the guest at
-> some point.
-> 
-> This is a regression caused by commit 9ea69a55b3b9 ("powerpc/pseries:
-> Pass MSI affinity to irq_create_mapping()"). Note that this only happens
-> with the XIVE interrupt controller because XICS has a workaround to bypass
-> affinity, which is activated during kdump with the "noirqdistrib" kernel
-> parameter.
-> 
-> The issue comes from a combination of factors:
-> - discrepancy between the number of queues detected by the multi-queue
->   block driver, that was used to create the MSI vectors, and the single
->   queue mode enforced later on by blk-mq because of kdump (i.e. keeping
->   all queues fixes the issue)
-> - CPU#0 offline (i.e. kdump always succeed with CPU#0)
-> 
-> Given that I couldn't reproduce on x86, which seems to always have CPU#0
-> online even during kdump, I'm not sure where this should be fixed. Hence
-> going for another approach : fine-grained affinity is for performance
-> and we don't really care about that during kdump. Simply revert to the
-> previous working behavior of ignoring affinity masks in this case only.
-> 
-> Fixes: 9ea69a55b3b9 ("powerpc/pseries: Pass MSI affinity to irq_create_mapping()")
-> Cc: lvivier@redhat.com
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Greg Kurz <groug@kaod.org>
-> ---
->  arch/powerpc/platforms/pseries/msi.c | 24 ++++++++++++++++++++++--
->  1 file changed, 22 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/powerpc/platforms/pseries/msi.c b/arch/powerpc/platforms/pseries/msi.c
-> index b3ac2455faad..29d04b83288d 100644
-> --- a/arch/powerpc/platforms/pseries/msi.c
-> +++ b/arch/powerpc/platforms/pseries/msi.c
-> @@ -458,8 +458,28 @@ static int rtas_setup_msi_irqs(struct pci_dev *pdev, int nvec_in, int type)
->  			return hwirq;
->  		}
->  
-> -		virq = irq_create_mapping_affinity(NULL, hwirq,
-> -						   entry->affinity);
-> +		/*
-> +		 * Depending on the number of online CPUs in the original
-> +		 * kernel, it is likely for CPU #0 to be offline in a kdump
-> +		 * kernel. The associated IRQs in the affinity mappings
-> +		 * provided by irq_create_affinity_masks() are thus not
-> +		 * started by irq_startup(), as per-design for managed IRQs.
-> +		 * This can be a problem with multi-queue block devices driven
-> +		 * by blk-mq : such a non-started IRQ is very likely paired
-> +		 * with the single queue enforced by blk-mq during kdump (see
-> +		 * blk_mq_alloc_tag_set()). This causes the device to remain
-> +		 * silent and likely hangs the guest at some point.
-> +		 *
-> +		 * We don't really care for fine-grained affinity when doing
-> +		 * kdump actually : simply ignore the pre-computed affinity
-> +		 * masks in this case and let the default mask with all CPUs
-> +		 * be used when creating the IRQ mappings.
-> +		 */
-> +		if (is_kdump_kernel())
-> +			virq = irq_create_mapping(NULL, hwirq);
-> +		else
-> +			virq = irq_create_mapping_affinity(NULL, hwirq,
-> +							   entry->affinity);
->  
->  		if (!virq) {
->  			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
-> 
+From: Shuo Liu <shuo.a.liu@intel.com>
 
-Reviewed-by: Laurent Vivier <lvivier@redhat.com>
+279dcf693ac7 ("virt: acrn: Introduce an interface for Service VM to
+control vCPU") introduced {add,remove}_cpu() usage and it hit below
+error with !CONFIG_SMP:
+
+../drivers/virt/acrn/hsm.c: In function ‘remove_cpu_store’:
+../drivers/virt/acrn/hsm.c:389:3: error: implicit declaration of function ‘remove_cpu’; [-Werror=implicit-function-declaration]
+   remove_cpu(cpu);
+
+../drivers/virt/acrn/hsm.c:402:2: error: implicit declaration of function ‘add_cpu’; [-Werror=implicit-function-declaration]
+   add_cpu(cpu);
+
+Add add_cpu() function prototypes with !CONFIG_SMP and remove_cpu() with
+!CONFIG_HOTPLUG_CPU for such usage.
+
+Fixes: 279dcf693ac7 ("virt: acrn: Introduce an interface for Service VM to control vCPU")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+---
+I followed Greg's idea that add {add,remove}_cpu() functions prototypes.
+The v2 solution is different from the v1, so i removed Randy's Acked-by.
+Randy, please help have a look on v2.
+
+v2:
+  - Drop the #ifdef in .c solution. Add {add,remove}_cpu() prototypes. (Suggested by Greg)
+
+ include/linux/cpu.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index 3aaa0687e8df..94a578a96202 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -108,6 +108,8 @@ static inline void cpu_maps_update_done(void)
+ {
+ }
+ 
++static inline int add_cpu(unsigned int cpu) { return 0;}
++
+ #endif /* CONFIG_SMP */
+ extern struct bus_type cpu_subsys;
+ 
+@@ -137,6 +139,7 @@ static inline int  cpus_read_trylock(void) { return true; }
+ static inline void lockdep_assert_cpus_held(void) { }
+ static inline void cpu_hotplug_disable(void) { }
+ static inline void cpu_hotplug_enable(void) { }
++static inline int remove_cpu(unsigned int cpu) { return -EPERM; }
+ static inline void smp_shutdown_nonboot_cpus(unsigned int primary_cpu) { }
+ #endif	/* !CONFIG_HOTPLUG_CPU */
+ 
+
+base-commit: 671176b0016c80b3943cb5387312c886aba3308d
+-- 
+2.28.0
 
