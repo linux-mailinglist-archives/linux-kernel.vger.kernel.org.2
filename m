@@ -2,109 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D70731A0D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A37631A0D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Feb 2021 15:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhBLOmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 09:42:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47984 "EHLO mail.kernel.org"
+        id S229713AbhBLOnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 09:43:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42586 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229917AbhBLOmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 09:42:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D917B64E7A;
-        Fri, 12 Feb 2021 14:41:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613140897;
-        bh=w41GzsJk0Vogbh4l71xjGxLnYcjpT88j2ABTUyR0CPA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CMJycKMceiGxoVjgh66jMjcZGvF/VK0b5CQPBqftuYsiYWCVToXNfbG4tzSjxa45T
-         820jRA1mpFm2F6XQLAZQ+YNjN6CR48/YM7qEYXZ0zA73VLCLS2hEldmADLAo9crSCo
-         Fypz0aHib4ZJ1dUeK1BX1iMHA/DamncbRbNsxEXOtfZmnDvQVacS93v6JcaA6IoBma
-         FDvCISxq9JB0n+ZCz3Df3KFhH4X6lLv2hhMCJPDDKi40FfdnnV/v0Ijx5b0gGGLDOr
-         z+JbUd2J5mE1STVwthrR/nDJwnlk7bW6X4M6vCDnvM5YcIykZZXFwX61UYSleHHj9E
-         YXt6C3hKpaq2Q==
-Received: by mail-wm1-f48.google.com with SMTP id y134so1232790wmd.3;
-        Fri, 12 Feb 2021 06:41:36 -0800 (PST)
-X-Gm-Message-State: AOAM533uVMTtzbFkdCSykAAzdXPbfMnhuc2DU93pSQXrsogqeF/sI2IH
-        BR8NiEAzPyMbGFUXKumsduLJ93qlg7273a84jQ==
-X-Google-Smtp-Source: ABdhPJzdFy4n8dWcKUYHoVq6+dVbyp7JXRlajzvwa8pvXT90zRWzOYhLksxIrD/3To51pG8WvOViuzKeUWRQtAPU1Qc=
-X-Received: by 2002:a1c:5f82:: with SMTP id t124mr2937914wmb.55.1613140895464;
- Fri, 12 Feb 2021 06:41:35 -0800 (PST)
+        id S229583AbhBLOnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 09:43:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 47C70B090;
+        Fri, 12 Feb 2021 14:42:48 +0000 (UTC)
+From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
+Subject: [PATCH][RFC] perf annotate: show full line locations with 'k' in UI
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Message-ID: <9acb63e0-af38-eeeb-157e-32f6177da557@suse.cz>
+Date:   Fri, 12 Feb 2021 15:42:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210201070016.41721-1-chunfeng.yun@mediatek.com> <20210201070016.41721-4-chunfeng.yun@mediatek.com>
-In-Reply-To: <20210201070016.41721-4-chunfeng.yun@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 12 Feb 2021 22:41:24 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__G=+8q=8WiRsh4Qvfk5GQz3D4iFTBecWXGq7hX_7_m_g@mail.gmail.com>
-Message-ID: <CAAOTY__G=+8q=8WiRsh4Qvfk5GQz3D4iFTBecWXGq7hX_7_m_g@mail.gmail.com>
-Subject: Re: [PATCH next v3 04/16] dt-bindings: phy: mediatek: hdmi-phy:
- modify compatible items
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Min Guo <min.guo@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>, linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Chunfeng:
+Hello.
 
-Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2021=E5=B9=B42=E6=9C=881=
-=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:00=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> mt7623-hdmi-tx is compatible to mt2701-hdmi-tx, and the compatible
-> "mediatek,mt7623-hdmi-tx" is not supported in driver, in fact uses
-> "mediatek,mt2701-hdmi-tx" instead on MT7623, so changes the
-> compatible items to make dependence clear.
+Sometimes it's handy to display also a filename of a source location, mainly because
+source lines can come from different files. I extended 'k' hotkey and one can now see:
 
-Acked-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+1) no source lines:
 
->
-> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
-> v3: modify commit message
-> v2: no changes
-> ---
->  .../devicetree/bindings/phy/mediatek,hdmi-phy.yaml    | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml=
- b/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml
-> index 4752517a1446..0d94950b84ca 100644
-> --- a/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml
-> +++ b/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml
-> @@ -21,10 +21,13 @@ properties:
->      pattern: "^hdmi-phy@[0-9a-f]+$"
->
->    compatible:
-> -    enum:
-> -      - mediatek,mt2701-hdmi-phy
-> -      - mediatek,mt7623-hdmi-phy
-> -      - mediatek,mt8173-hdmi-phy
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - mediatek,mt7623-hdmi-phy
-> +          - const: mediatek,mt2701-hdmi-phy
-> +      - const: mediatek,mt2701-hdmi-phy
-> +      - const: mediatek,mt8173-hdmi-phy
->
->    reg:
->      maxItems: 1
-> --
-> 2.18.0
+   1.31 │     ↓ je      130                                                                                   ▒
+        │     return iterative_hash_object (arg, val);                                                        ▒
+        │                                                                                                     ▒
+        │     if (!TYPE_P (arg))                                                                              ▒
+        │       movzwl  (%rdi),%edx                                                                           ▒
+  18.95 │       lea     tree_code_type,%rbx                                                                   ▒
+        │       movzwl  %dx,%ecx                                                                              ▒
+        │       mov     %rdx,%rax                                                                             ▒
+        │       cmpl    $0x2,(%rbx,%rcx,4)                                                                    ▒
+  11.76 │     ↓ jne     5f                                                                                    ▒
+   0.65 │     ↓ jmp     c0                                                                                    ▒
+        │       nop                                                                                           ▒
+        │     iterative_hash_template_arg(tree_node*, unsigned int) [clone .localalias]:                      ▒
+        │     tree_operand_length (const_tree node)                                                           ▒
+        │     {                                                                                               ▒
+        │     if (VL_EXP_CLASS_P (node))                                                                      ▒
+        │     return VL_EXP_OPERAND_LENGTH (node);                                                            ▒
+        │     else                                                                                            ▒
+        │     return TREE_CODE_LENGTH (TREE_CODE (node));                                                     ▒
+        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
+
+2) only source lines displayed
+
+   1.31 │     ↓ je      130                                                                                   ▒
+        │1774 return iterative_hash_object (arg, val);                                                        ▒
+        │                                                                                                     ▒
+        │1776 if (!TYPE_P (arg))                                                                              ▒
+        │       movzwl  (%rdi),%edx                                                                           ▒
+  18.95 │       lea     tree_code_type,%rbx                                                                   ▒
+        │       movzwl  %dx,%ecx                                                                              ▒
+        │       mov     %rdx,%rax                                                                             ▒
+        │       cmpl    $0x2,(%rbx,%rcx,4)                                                                    ▒
+  11.76 │     ↓ jne     5f                                                                                    ▒
+   0.65 │     ↓ jmp     c0                                                                                    ▒
+        │       nop                                                                                           ▒
+        │1785 iterative_hash_template_arg(tree_node*, unsigned int) [clone .localalias]:                      ▒
+        │3837 tree_operand_length (const_tree node)                                                           ▒
+        │3838 {                                                                                               ▒
+        │3839 if (VL_EXP_CLASS_P (node))                                                                      ▒
+        │3840 return VL_EXP_OPERAND_LENGTH (node);                                                            ▒
+        │3841 else                                                                                            ▒
+        │3842 return TREE_CODE_LENGTH (TREE_CODE (node));                                                     ▒
+        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
+
+full source locations displayed.
+
+   1.31 │     ↓ je      130                                                                                   ▒
+        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774 return iterative_hash_object (arg, val);               ▒
+        │                                                                                                     ▒
+        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774 if (!TYPE_P (arg))                                     ▒
+        │       movzwl  (%rdi),%edx                                                                           ▒
+  18.95 │       lea     tree_code_type,%rbx                                                                   ▒
+        │       movzwl  %dx,%ecx                                                                              ▒
+        │       mov     %rdx,%rax                                                                             ▒
+        │       cmpl    $0x2,(%rbx,%rcx,4)                                                                    ▒
+  11.76 │     ↓ jne     5f                                                                                    ▒
+   0.65 │     ↓ jmp     c0                                                                                    ▒
+        │       nop                                                                                           ▒
+        │/home/marxin/Programming/gcc/gcc/cp/pt.c:1774 iterative_hash_template_arg(tree_node*, unsigned int) [▒
+        │/home/marxin/Programming/gcc/gcc/tree.h:3837 tree_operand_length (const_tree node)                   ▒
+        │/home/marxin/Programming/gcc/gcc/tree.h:3837 {                                                       ▒
+        │/home/marxin/Programming/gcc/gcc/tree.h:3837 if (VL_EXP_CLASS_P (node))                              ▒
+        │/home/marxin/Programming/gcc/gcc/tree.h:3837 return VL_EXP_OPERAND_LENGTH (node);                    ▒
+        │/home/marxin/Programming/gcc/gcc/tree.h:3837 else                                                    ▒
+        │/home/marxin/Programming/gcc/gcc/tree.h:3837 return TREE_CODE_LENGTH (TREE_CODE (node));             ▒
+        │ 40:   lea     tree_code_length,%rdx                                                                 ▒
+
+Thoughts?
+Thanks,
+Martin
+
+---
+  tools/perf/ui/browsers/annotate.c | 11 +++++++++--
+  tools/perf/util/annotate.c        | 24 ++++++++++++++++++------
+  tools/perf/util/annotate.h        |  2 ++
+  3 files changed, 29 insertions(+), 8 deletions(-)
+
+diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+index bd77825fd5a1..ca09736e14a3 100644
+--- a/tools/perf/ui/browsers/annotate.c
++++ b/tools/perf/ui/browsers/annotate.c
+@@ -746,7 +746,7 @@ static int annotate_browser__run(struct annotate_browser *browser,
+  		"t             Circulate percent, total period, samples view\n"
+  		"c             Show min/max cycle\n"
+  		"/             Search string\n"
+-		"k             Toggle line numbers\n"
++		"k             Circulate line numbers, full location, no source lines\n"
+  		"P             Print to [symbol_name].annotation file.\n"
+  		"r             Run available scripts\n"
+  		"p             Toggle percent type [local/global]\n"
+@@ -758,7 +758,14 @@ static int annotate_browser__run(struct annotate_browser *browser,
+  			annotate_browser__show(&browser->b, title, help);
+  			continue;
+  		case 'k':
+-			notes->options->show_linenr = !notes->options->show_linenr;
++			if (notes->options->show_fileloc) {
++				notes->options->show_fileloc = false;
++				notes->options->show_linenr = false;
++			}
++			else if (notes->options->show_linenr)
++				notes->options->show_fileloc = true;
++			else
++				notes->options->show_linenr = true;
+  			break;
+  		case 'H':
+  			nd = browser->curr_hot;
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index e3eae646be3e..32e5926d587f 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -1159,6 +1159,7 @@ struct annotate_args {
+  	s64			  offset;
+  	char			  *line;
+  	int			  line_nr;
++	char			  *fileloc;
+  };
+  
+  static void annotation_line__init(struct annotation_line *al,
+@@ -1168,6 +1169,7 @@ static void annotation_line__init(struct annotation_line *al,
+  	al->offset = args->offset;
+  	al->line = strdup(args->line);
+  	al->line_nr = args->line_nr;
++	al->fileloc = args->fileloc;
+  	al->data_nr = nr;
+  }
+  
+@@ -1480,7 +1482,7 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+   */
+  static int symbol__parse_objdump_line(struct symbol *sym,
+  				      struct annotate_args *args,
+-				      char *parsed_line, int *line_nr)
++				      char *parsed_line, int *line_nr, char **fileloc)
+  {
+  	struct map *map = args->ms.map;
+  	struct annotation *notes = symbol__annotation(sym);
+@@ -1492,6 +1494,7 @@ static int symbol__parse_objdump_line(struct symbol *sym,
+  	/* /filename:linenr ? Save line number and ignore. */
+  	if (regexec(&file_lineno, parsed_line, 2, match, 0) == 0) {
+  		*line_nr = atoi(parsed_line + match[1].rm_so);
++		*fileloc = strdup(parsed_line);
+  		return 0;
+  	}
+  
+@@ -1511,6 +1514,7 @@ static int symbol__parse_objdump_line(struct symbol *sym,
+  	args->offset  = offset;
+  	args->line    = parsed_line;
+  	args->line_nr = *line_nr;
++	args->fileloc = *fileloc;
+  	args->ms.sym  = sym;
+  
+  	dl = disasm_line__new(args);
+@@ -1805,6 +1809,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
+  			args->offset = -1;
+  			args->line = strdup(srcline);
+  			args->line_nr = 0;
++			args->fileloc = NULL;
+  			args->ms.sym  = sym;
+  			dl = disasm_line__new(args);
+  			if (dl) {
+@@ -1816,6 +1821,7 @@ static int symbol__disassemble_bpf(struct symbol *sym,
+  		args->offset = pc;
+  		args->line = buf + prev_buf_size;
+  		args->line_nr = 0;
++		args->fileloc = NULL;
+  		args->ms.sym  = sym;
+  		dl = disasm_line__new(args);
+  		if (dl)
+@@ -1850,6 +1856,7 @@ symbol__disassemble_bpf_image(struct symbol *sym,
+  	args->offset = -1;
+  	args->line = strdup("to be implemented");
+  	args->line_nr = 0;
++	args->fileloc = NULL;
+  	dl = disasm_line__new(args);
+  	if (dl)
+  		annotation_line__add(&dl->al, &notes->src->source);
+@@ -1931,6 +1938,7 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
+  	bool delete_extract = false;
+  	bool decomp = false;
+  	int lineno = 0;
++	char *fileloc = strdup("");
+  	int nline;
+  	char *line;
+  	size_t line_len;
+@@ -2058,7 +2066,7 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
+  		 * See disasm_line__new() and struct disasm_line::line_nr.
+  		 */
+  		if (symbol__parse_objdump_line(sym, args, expanded_line,
+-					       &lineno) < 0)
++					       &lineno, &fileloc) < 0)
+  			break;
+  		nline++;
+  	}
+@@ -3004,10 +3012,14 @@ static void __annotation_line__write(struct annotation_line *al, struct annotati
+  	if (!*al->line)
+  		obj__printf(obj, "%-*s", width - pcnt_width - cycles_width, " ");
+  	else if (al->offset == -1) {
+-		if (al->line_nr && notes->options->show_linenr)
+-			printed = scnprintf(bf, sizeof(bf), "%-*d ", notes->widths.addr + 1, al->line_nr);
+-		else
+-			printed = scnprintf(bf, sizeof(bf), "%-*s  ", notes->widths.addr, " ");
++		if (al->line_nr) {
++			if (notes->options->show_fileloc)
++				printed = scnprintf(bf, sizeof(bf), "%s ", al->fileloc);
++			else if (notes->options->show_linenr)
++				printed = scnprintf(bf, sizeof(bf), "%-*d ", notes->widths.addr + 1, al->line_nr);
++			else
++				printed = scnprintf(bf, sizeof(bf), "%-*s  ", notes->widths.addr, " ");
++		}
+  		obj__printf(obj, bf);
+  		obj__printf(obj, "%-*s", width - printed - pcnt_width - cycles_width + 1, al->line);
+  	} else {
+diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+index 096cdaf21b01..3757416bcf46 100644
+--- a/tools/perf/util/annotate.h
++++ b/tools/perf/util/annotate.h
+@@ -84,6 +84,7 @@ struct annotation_options {
+  	     print_lines,
+  	     full_path,
+  	     show_linenr,
++	     show_fileloc,
+  	     show_nr_jumps,
+  	     show_minmax_cycle,
+  	     show_asm_raw,
+@@ -136,6 +137,7 @@ struct annotation_line {
+  	s64			 offset;
+  	char			*line;
+  	int			 line_nr;
++	char			*fileloc;
+  	int			 jump_sources;
+  	float			 ipc;
+  	u64			 cycles;
+-- 
+2.30.0
+
