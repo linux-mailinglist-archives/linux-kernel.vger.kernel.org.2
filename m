@@ -2,117 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD78631AA83
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 09:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 861DC31AA84
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 09:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhBMI11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 03:27:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41666 "EHLO mail.kernel.org"
+        id S229703AbhBMI2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 03:28:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhBMI1X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 03:27:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64A0164E12;
-        Sat, 13 Feb 2021 08:26:42 +0000 (UTC)
+        id S229691AbhBMI2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 03:28:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C11964E02;
+        Sat, 13 Feb 2021 08:28:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613204803;
-        bh=Hx2lvOO3U9lYskzR0Wudu5H3Pog0MfYpZs0Ec1Ipnuc=;
+        s=korg; t=1613204888;
+        bh=hR3FNv1WASv3Nh/3JxuayCot/MOkeoou3QnNQbWayJU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qJGBRk7B5CmmdyjhBy8Ds4gW+j0vhYFeWuzjJmZ/wpBT4ROdtjJZhBWs7w9+NqCgh
-         DkeSnaAU+Agk6wPBpl6ls/vGET9YgxvCrIFJCrTDUxQhghyv1DUL16N0Dao9tycGLl
-         O+Ak5oHlV258P+ItDh5WGL5A9QDZzoXJFYhcwob4=
-Date:   Sat, 13 Feb 2021 09:26:40 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 2/2] serial: 8250: Add new 8250-core based Broadcom
- STB driver
-Message-ID: <YCeNQERg1wm34lDE@kroah.com>
-References: <20210212195736.45328-1-alcooperx@gmail.com>
- <20210212195736.45328-3-alcooperx@gmail.com>
- <8cb4bae6-5617-8dd5-4c0f-4c81cb4d741b@gmail.com>
+        b=Rhsa9AfrZPXctKOIgkGMsqyhmD/RZdMBzCj1IPI4Mp8+a7bxYfYcfEAN3g7kBpDi5
+         GkMTVPVR2Sdg+pD9799XK22PzZMvIls2+wMw52wAy8XOSAVqtG+OeJFi/PHlSiLYLu
+         exYeMiqPQQkPHzx1O+jCXUuxdCe+RZ0fZZzgpmQk=
+Date:   Sat, 13 Feb 2021 09:28:04 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+Message-ID: <YCeNlIDDO+2SqNkx@kroah.com>
+References: <1613092575-17311-1-git-send-email-min.li.xe@renesas.com>
+ <YCYw5xXe16fSj6eI@kroah.com>
+ <OSBPR01MB4773472EE0C8D34456C79121BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <YCak7Eu2X0dzapPz@kroah.com>
+ <OSBPR01MB47733B3FE2242E0338DC5983BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8cb4bae6-5617-8dd5-4c0f-4c81cb4d741b@gmail.com>
+In-Reply-To: <OSBPR01MB47733B3FE2242E0338DC5983BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:47:02PM -0800, Florian Fainelli wrote:
+On Fri, Feb 12, 2021 at 07:06:17PM +0000, Min Li wrote:
+> > 
+> > On Fri, Feb 12, 2021 at 03:44:52PM +0000, Min Li wrote:
+> > > > >
+> > > > > -set combomode
+> > > > > -get dpll's state
+> > > > > -get dpll's ffo
+> > > > >
+> > > > > This driver must work with Renesas MFD driver to access SMU
+> > > > > through I2C/SPI.
+> > > > >
+> > > > > Changes since v1:
+> > > > > -Provide more background for purpose of the change.
+> > > > > -Provide compat_ioctl support
+> > > > > -Fix ioctl cmd definition
+> > > >
+> > > > This "changes" list goes below the --- line.
+> > > >
+> > >
+> > > Sorry, is this a problem that you are requesting me to address? I am bit
+> > confused...
+> > 
+> > Yes, please place that list of changes below the --- line in your patch.
+> > The documentation says to do this, right?
+> > 
+> Hi Greg
 > 
-> 
-> On 2/12/2021 11:57 AM, Al Cooper wrote:
-> > Add a UART driver for the new Broadcom 8250 based STB UART. The new
-> > UART is backward compatible with the standard 8250, but has some
-> > additional features. The new features include a high accuracy baud
-> > rate clock system and DMA support.
-> > 
-> > The driver will use the new optional BAUD MUX clock to select the best
-> > one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
-> > the baud rate selection logic for any requested baud rate.  This allows
-> > for more accurate BAUD rates when high speed baud rates are selected.
-> > 
-> > The driver will use the new UART DMA hardware if the UART DMA registers
-> > are specified in Device Tree "reg" property.
-> > 
-> > The driver also sets the UPSTAT_AUTOCTS flag when hardware flow control
-> > is enabled. This flag is needed for UARTs that don't assert a CTS
-> > changed interrupt when CTS changes and AFE (Hardware Flow Control) is
-> > enabled.
-> > 
-> > The driver also contains a workaround for a bug in the Synopsis 8250
-> > core. The problem is that at high baud rates, the RX partial FIFO
-> > timeout interrupt can occur but there is no RX data (DR not set in
-> > the LSR register). In this case the driver will not read the Receive
-> > Buffer Register, which clears the interrupt, and the system will get
-> > continuous UART interrupts until the next RX character arrives. The
-> > fix originally suggested by Synopsis was to read the Receive Buffer
-> > Register and discard the character when the DR bit in the LSR was
-> > not set, to clear the interrupt. The problem was that occasionally
-> > a character would arrive just after the DR bit check and a valid
-> > character would be discarded. The fix that was added will clear
-> > receive interrupts to stop the interrupt, deassert RTS to insure
-> > that no new data can arrive, wait for 1.5 character times for the
-> > sender to react to RTS and then check for data and either do a dummy
-> > read or a valid read. Sysfs error counters were also added and were
-> > used to help create test software that would cause the error condition.
-> > The counters can be found at:
-> > /sys/devices/platform/rdb/*serial/rx_bad_timeout_late_char
-> > /sys/devices/platform/rdb/*serial/rx_bad_timeout_no_char
-> > 
-> > Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> > ---
-> >  MAINTAINERS                            |    8 +
-> >  drivers/tty/serial/8250/8250_bcm7271.c | 1099 ++++++++++++++++++++++++
-> >  drivers/tty/serial/8250/Kconfig        |   11 +
-> >  drivers/tty/serial/8250/Makefile       |    1 +
-> >  drivers/tty/serial/8250/bcm7271_uart.h |  158 ++++
-> >  5 files changed, 1277 insertions(+)
-> >  create mode 100644 drivers/tty/serial/8250/8250_bcm7271.c
-> >  create mode 100644 drivers/tty/serial/8250/bcm7271_uart.h
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 64c7169db617..bb6ad2fc4376 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -3582,6 +3582,14 @@ S:	Supported
-> >  F:	Documentation/devicetree/bindings/i2c/brcm,brcmstb-i2c.yaml
-> >  F:	drivers/i2c/busses/i2c-brcmstb.c
-> >  
-> > +BROADCOM BRCMSTB UART DRIVER
-> > +M:	Al Cooper <alcooperx@gmail.com>
-> > +L:	linux-usb@vger.kernel.org
-> 
-> This should probably be linux-serial, copy pasted from the USB entry
-> down below presumably.
+> Do you mean this "---" like below? How can I do that? Sorry I was never asked to do that from other reviewer.
 
-Yes, it should not be linux-usb, and that explains why these
-serial-driver patches were cc:ed to that list :(
+Yes, that line.
+
+The documentation should tell you how to do that, as per my patch bot:
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
 
 thanks,
 
