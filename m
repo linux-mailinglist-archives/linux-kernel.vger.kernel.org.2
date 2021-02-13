@@ -2,240 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE6F31AAE7
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 11:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6A431AAE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 11:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhBMKjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 05:39:05 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:42721 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhBMKjA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 05:39:00 -0500
-Received: by mail-io1-f71.google.com with SMTP id q5so2058550iot.9
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 02:38:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=RZYFbsN8qP5Eq/QNYsQmM0bOQ1fzIM1OiYZbXtFQAig=;
-        b=Q+5AwrAS+o6Rgbk/3eAB7f19e99CTCn6EFrsQS3cnVuZfUUsoR8xLx0pLROXkU7+Dp
-         ifBVPgCuA7hdG4IZdi6lSbybHgxYyjuDHZZTDOdym/MhMnNBwFJkCZhzcYQOlJJICsOC
-         DPQIiqPqSMX2Qiw1Y0rw8gXkOoFkq/3D44UXYJydTvA6whpwMDdS4fP1VpY2z26xqd7Q
-         WH3EGdx7k8tpQsNX7Eju72Ss59CETUmUsBIphrqXnsZYvmCPFCSpiXmQsgrgnZ6JAgxQ
-         eZaoLPj/uXyAx2HtThL6vrljBo4xwvGi7cbsXnfIHt6Juuxus4d+txzce59PKfN89rJx
-         YgUw==
-X-Gm-Message-State: AOAM5330fVEekwQmLgcz4Ka2d+HNXZtKwyKx25krXlsJ7oIGBnOLwodw
-        6tca1kmoH4CRZk7zXkclDKRttAIncW5j3ZVvz8rqZsTzN+kb
-X-Google-Smtp-Source: ABdhPJylMogbIUg2MJ7L7zcAHjErOhcrm2Q81aVR5NeX4tw/5teVP6b/je1DtCwQa46s4DC4gCsOPe5gFwWXU0K8UDSiUZcYrnJ8
+        id S229636AbhBMKmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 05:42:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229475AbhBMKmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 05:42:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B47B64DA5;
+        Sat, 13 Feb 2021 10:42:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613212929;
+        bh=GF8gT1WEVAStIkSxxcU0OS1EW6hMHU/IQd7Bg7fg/fw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=g/eOjzAVARLSm6zNCckBT9LYS+PknVoALlDpYitwRDknUVsthwJXFzcOhvE8luy0p
+         lFuzw0n8sIjfhO+ibmcjK7CIN3dBZSEnDf1T7e1ZOaFTPAMy2ud1KNkFAurJ3fj/PS
+         3WLI9UwQf/02UdsPI8kAXGT2jvy/WMOfy8bUjLAApA3LOCGCqC22IPpvWRvWTF244C
+         Qxo03hEgXXpf0jQp3kxeobOMgJ+sBFe61X7QiQ/c9+fUFK5LPMYOx35SD4W2QQSsoH
+         zcBlVfCy7n8rLaq4HB6E1XT/uCLiWrNKcCqpdsaLxGcXNINzaz8gx2EYuT83E1hFuN
+         LyDIrK3YMQUoQ==
+Date:   Sat, 13 Feb 2021 11:42:00 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PULL REQUEST] i2c for v5.11
+Message-ID: <20210213104200.GA4086@ninjato>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d0c3:: with SMTP id y3mr6146636ila.116.1613212698956;
- Sat, 13 Feb 2021 02:38:18 -0800 (PST)
-Date:   Sat, 13 Feb 2021 02:38:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000de58b305bb355903@google.com>
-Subject: possible deadlock in evict
-From:   syzbot <syzbot+1b2c6989ec12e467d65c@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-HEAD commit:    c6d8570e Merge tag 'io_uring-5.11-2021-02-12' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=123a4be2d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bec717fd4ac4bf03
-dashboard link: https://syzkaller.appspot.com/bug?extid=1b2c6989ec12e467d65c
+Linus,
 
-Unfortunately, I don't have any reproducer for this issue yet.
+here is one more I2C driver bugfix. Please pull.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1b2c6989ec12e467d65c@syzkaller.appspotmail.com
+Thanks,
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.11.0-rc7-syzkaller #0 Not tainted
-------------------------------------------------------
-kswapd0/2232 is trying to acquire lock:
-ffff88801f552650 (sb_internal){.+.+}-{0:0}, at: evict+0x2ed/0x6b0 fs/inode.c:577
-
-but task is already holding lock:
-ffffffff8be89240 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
-
-which lock already depends on the new lock.
+   Wolfram
 
 
-the existing dependency chain (in reverse order) is:
+The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
 
--> #3 (fs_reclaim){+.+.}-{0:0}:
-       __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
-       fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
-       might_alloc include/linux/sched/mm.h:193 [inline]
-       slab_pre_alloc_hook mm/slab.h:493 [inline]
-       slab_alloc_node mm/slab.c:3221 [inline]
-       kmem_cache_alloc_node_trace+0x48/0x520 mm/slab.c:3596
-       __do_kmalloc_node mm/slab.c:3618 [inline]
-       __kmalloc_node+0x38/0x60 mm/slab.c:3626
-       kmalloc_node include/linux/slab.h:575 [inline]
-       kvmalloc_node+0x61/0xf0 mm/util.c:587
-       kvmalloc include/linux/mm.h:781 [inline]
-       ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
-       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
-       ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
-       ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
-       ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
-       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
-       __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
-       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
-       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
-       vfs_setxattr+0x135/0x320 fs/xattr.c:291
-       setxattr+0x1ff/0x290 fs/xattr.c:553
-       path_setxattr+0x170/0x190 fs/xattr.c:572
-       __do_sys_setxattr fs/xattr.c:587 [inline]
-       __se_sys_setxattr fs/xattr.c:583 [inline]
-       __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:583
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
 
--> #2 (&ei->xattr_sem){++++}-{3:3}:
-       down_write+0x8d/0x150 kernel/locking/rwsem.c:1406
-       ext4_write_lock_xattr fs/ext4/xattr.h:142 [inline]
-       ext4_xattr_set_handle+0x15c/0x13e0 fs/ext4/xattr.c:2308
-       ext4_initxattrs+0xb5/0x120 fs/ext4/xattr_security.c:43
-       security_inode_init_security+0x1c4/0x370 security/security.c:1054
-       __ext4_new_inode+0x3963/0x5570 fs/ext4/ialloc.c:1317
-       ext4_create+0x2c3/0x4c0 fs/ext4/namei.c:2613
-       lookup_open.isra.0+0xf85/0x1350 fs/namei.c:3106
-       open_last_lookups fs/namei.c:3180 [inline]
-       path_openat+0x96d/0x2730 fs/namei.c:3368
-       do_filp_open+0x17e/0x3c0 fs/namei.c:3398
-       do_sys_openat2+0x16d/0x420 fs/open.c:1172
-       do_sys_open fs/open.c:1188 [inline]
-       __do_sys_open fs/open.c:1196 [inline]
-       __se_sys_open fs/open.c:1192 [inline]
-       __x64_sys_open+0x119/0x1c0 fs/open.c:1192
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+are available in the Git repository at:
 
--> #1 (jbd2_handle){++++}-{0:0}:
-       start_this_handle+0xfb4/0x1380 fs/jbd2/transaction.c:446
-       jbd2__journal_start+0x399/0x930 fs/jbd2/transaction.c:503
-       __ext4_journal_start_sb+0x227/0x4a0 fs/ext4/ext4_jbd2.c:105
-       ext4_sample_last_mounted fs/ext4/file.c:804 [inline]
-       ext4_file_open+0x613/0xb40 fs/ext4/file.c:832
-       do_dentry_open+0x4b9/0x11b0 fs/open.c:817
-       do_open fs/namei.c:3254 [inline]
-       path_openat+0x1b9a/0x2730 fs/namei.c:3371
-       do_filp_open+0x17e/0x3c0 fs/namei.c:3398
-       do_sys_openat2+0x16d/0x420 fs/open.c:1172
-       do_sys_open fs/open.c:1188 [inline]
-       __do_sys_open fs/open.c:1196 [inline]
-       __se_sys_open fs/open.c:1192 [inline]
-       __x64_sys_open+0x119/0x1c0 fs/open.c:1192
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
 
--> #0 (sb_internal){.+.+}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:2868 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
-       validate_chain kernel/locking/lockdep.c:3608 [inline]
-       __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
-       lock_acquire kernel/locking/lockdep.c:5442 [inline]
-       lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1592 [inline]
-       sb_start_intwrite include/linux/fs.h:1709 [inline]
-       ext4_evict_inode+0xe6f/0x1940 fs/ext4/inode.c:241
-       evict+0x2ed/0x6b0 fs/inode.c:577
-       iput_final fs/inode.c:1653 [inline]
-       iput.part.0+0x57e/0x810 fs/inode.c:1679
-       iput fs/inode.c:1669 [inline]
-       inode_lru_isolate+0x301/0x4f0 fs/inode.c:778
-       __list_lru_walk_one+0x178/0x5c0 mm/list_lru.c:222
-       list_lru_walk_one+0x99/0xd0 mm/list_lru.c:266
-       list_lru_shrink_walk include/linux/list_lru.h:195 [inline]
-       prune_icache_sb+0xdc/0x140 fs/inode.c:803
-       super_cache_scan+0x38d/0x590 fs/super.c:107
-       do_shrink_slab+0x3e4/0x9f0 mm/vmscan.c:511
-       shrink_slab+0x16f/0x5d0 mm/vmscan.c:672
-       shrink_node_memcgs mm/vmscan.c:2665 [inline]
-       shrink_node+0x8cc/0x1de0 mm/vmscan.c:2780
-       kswapd_shrink_node mm/vmscan.c:3523 [inline]
-       balance_pgdat+0x745/0x1270 mm/vmscan.c:3681
-       kswapd+0x5b1/0xdb0 mm/vmscan.c:3938
-       kthread+0x3b1/0x4a0 kernel/kthread.c:292
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+for you to fetch changes up to 3d6a3d3a2a7a3a60a824e7c04e95fd50dec57812:
 
-other info that might help us debug this:
+  i2c: stm32f7: fix configuration of the digital filter (2021-02-12 11:36:40 +0100)
 
-Chain exists of:
-  sb_internal --> &ei->xattr_sem --> fs_reclaim
+----------------------------------------------------------------
+Alain Volmat (1):
+      i2c: stm32f7: fix configuration of the digital filter
 
- Possible unsafe locking scenario:
+ drivers/i2c/busses/i2c-stm32f7.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(&ei->xattr_sem);
-                               lock(fs_reclaim);
-  lock(sb_internal);
+--OXfL5xGRrasGEqWY
+Content-Type: application/pgp-signature; name="signature.asc"
 
- *** DEADLOCK ***
+-----BEGIN PGP SIGNATURE-----
 
-3 locks held by kswapd0/2232:
- #0: ffffffff8be89240 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
- #1: ffffffff8be50770 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab+0xc7/0x5d0 mm/vmscan.c:662
- #2: ffff88801f5520e0 (&type->s_umount_key#49){++++}-{3:3}, at: trylock_super fs/super.c:418 [inline]
- #2: ffff88801f5520e0 (&type->s_umount_key#49){++++}-{3:3}, at: super_cache_scan+0x6c/0x590 fs/super.c:80
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAnrPMACgkQFA3kzBSg
+KbaaUA/+OmDHhFC4dHIPBYbLtQTqMs6jHLri7Dos0mufF6ZYneZF9C7TH2+QNaJE
+de2PIfZsGEcyX1hmjZAgVHRiATFyb1jug+XUxIFPhvh2QwOp75t6iyWa/KPXozY/
+x4Kw9skpvM/QUlOMPrNq3nINsj0VuIGchTeY80QjUhjTAYTh2x9TNUAirll4NUUW
+G9y2UZaq8NMHNAYbu8hxhbzo32yg4i4heca+Y+mEKp7ueweYrTcZYJP0ZM4l6jLH
+jUHcdiGe+lBYsNBElFs8R3YAJ3zN/J0fv534JaIdoRoNwINHa671PS/mJuFnZ37W
+muNegFd4vTYMNIk13au4t5GVSp3aSb9e2CukGqeDaqSrOcSyux0/jgvcsMJbMJ1d
+iOrQLYCOczzTEAHz5E4T+FICDZKn5f90YPD79IPu/NcXu5HXTgCRyhx2uS8eiUBh
+L+i9Gcn1u8NI6iQwgN1QEkw5uFXXNcZKfnDrbnnEYb0eQoWAYWm+tlOM9GUIYfrf
+ZUnsI5S2ZkfcwB4jhZFNkT6WhlmH1R9xL/FpcFyFPmG8o5cRvzZOWRESdJPbN6UT
+DcJq5sfxJ2Nq3QSF485WYLLAHLWBAE32ROSs2PbWyAy/Y1Xk88zVWB5nEpBxRHQ7
+n7qOdfe4p6+Da5zABlh/Brsb9st2lVU4ND9emiA2h38HSs3+moo=
+=H0Jb
+-----END PGP SIGNATURE-----
 
-stack backtrace:
-CPU: 3 PID: 2232 Comm: kswapd0 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
- check_prev_add kernel/locking/lockdep.c:2868 [inline]
- check_prevs_add kernel/locking/lockdep.c:2993 [inline]
- validate_chain kernel/locking/lockdep.c:3608 [inline]
- __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
- lock_acquire kernel/locking/lockdep.c:5442 [inline]
- lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
- percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
- __sb_start_write include/linux/fs.h:1592 [inline]
- sb_start_intwrite include/linux/fs.h:1709 [inline]
- ext4_evict_inode+0xe6f/0x1940 fs/ext4/inode.c:241
- evict+0x2ed/0x6b0 fs/inode.c:577
- iput_final fs/inode.c:1653 [inline]
- iput.part.0+0x57e/0x810 fs/inode.c:1679
- iput fs/inode.c:1669 [inline]
- inode_lru_isolate+0x301/0x4f0 fs/inode.c:778
- __list_lru_walk_one+0x178/0x5c0 mm/list_lru.c:222
- list_lru_walk_one+0x99/0xd0 mm/list_lru.c:266
- list_lru_shrink_walk include/linux/list_lru.h:195 [inline]
- prune_icache_sb+0xdc/0x140 fs/inode.c:803
- super_cache_scan+0x38d/0x590 fs/super.c:107
- do_shrink_slab+0x3e4/0x9f0 mm/vmscan.c:511
- shrink_slab+0x16f/0x5d0 mm/vmscan.c:672
- shrink_node_memcgs mm/vmscan.c:2665 [inline]
- shrink_node+0x8cc/0x1de0 mm/vmscan.c:2780
- kswapd_shrink_node mm/vmscan.c:3523 [inline]
- balance_pgdat+0x745/0x1270 mm/vmscan.c:3681
- kswapd+0x5b1/0xdb0 mm/vmscan.c:3938
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--OXfL5xGRrasGEqWY--
