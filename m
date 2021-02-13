@@ -2,177 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF38E31ABDC
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 14:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755A831ABE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 14:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhBMNeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 08:34:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39010 "EHLO mail.kernel.org"
+        id S229971AbhBMNfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 08:35:39 -0500
+Received: from mga11.intel.com ([192.55.52.93]:40154 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229959AbhBMNeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 08:34:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A1C264DDF;
-        Sat, 13 Feb 2021 13:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613223213;
-        bh=/0LJXrTVSCEWr3pkVyARQm3xVqOgM4H/owa2RIc6tJI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uerP3uaunwq+zG20W7aTypbXj5gr7zF/rVnG7Dgri4obhymVxcNs+XmW7wQuVJva4
-         5lrOteyz7Peh1MCyYHLUBBQGVyPlGPilqePtAfiqtG3+gshVd+4sMUpEvqLPNtWHY4
-         SRBh7g73Yr/CckuvDKcltHQ9rSdCuyHdIloNe9aM=
-Date:   Sat, 13 Feb 2021 14:33:31 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        mazziesaccount@gmail.com, "Rafael J. Wysocki" <rafael@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Gross <mgross@linux.intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [RFC PATCH 1/7] drivers: base: Add resource managed version of
- delayed work init
-Message-ID: <YCfVKyXbeJXNbMsd@kroah.com>
-References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
- <1230b0d2ba99ad546d72ab079e76cb1b3df32afb.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
- <YCfDAly9b0zHMpJT@kroah.com>
- <284d4a13-5cc8-e23c-7e99-c03db5415bf1@redhat.com>
+        id S229651AbhBMNfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 08:35:21 -0500
+IronPort-SDR: 9J/IreI9w4MX4UTfh+0n8bDablFS67QVHVPu8oDpTbP/I/KTbWSrfBMmMN+XU9OLjLSCSo2ds7
+ bWJHBeZ/IQLg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9893"; a="179021727"
+X-IronPort-AV: E=Sophos;i="5.81,176,1610438400"; 
+   d="scan'208";a="179021727"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2021 05:34:38 -0800
+IronPort-SDR: Ok6U65l3yz2TVZ60t18HLFOUi+ZhNIqJbLi7jUq7m1vuE+/kMqW1O4O90WLkDADLUmaK+a69HD
+ jlJ+0qWDeTLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,176,1610438400"; 
+   d="scan'208";a="423568076"
+Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 13 Feb 2021 05:34:37 -0800
+Received: from kbuild by cd560a204411 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lAv4G-0005T7-OR; Sat, 13 Feb 2021 13:34:36 +0000
+Date:   Sat, 13 Feb 2021 21:33:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/mm] BUILD SUCCESS
+ 40c1fa52cdb7c13ef88232e374b4b8ac8d820c4f
+Message-ID: <6027d531.W+n9t7Lx7T6/OAIM%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <284d4a13-5cc8-e23c-7e99-c03db5415bf1@redhat.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 02:18:06PM +0100, Hans de Goede wrote:
-> Hi,
-> 
-> On 2/13/21 1:16 PM, Greg Kroah-Hartman wrote:
-> > On Sat, Feb 13, 2021 at 01:58:44PM +0200, Matti Vaittinen wrote:
-> >> A few drivers which need a delayed work-queue must cancel work at exit.
-> >> Some of those implement remove solely for this purpose. Help drivers
-> >> to avoid unnecessary remove and error-branch implementation by adding
-> >> managed verision of delayed work initialization
-> >>
-> >> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > 
-> > That's not a good idea.  As this would kick in when the device is
-> > removed from the system, not when it is unbound from the driver, right?
-> 
-> Erm, no devm managed resources get released when the driver is detached:
-> drivers/base/dd.c: __device_release_driver() calls devres_release_all(dev);
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mm
+branch HEAD: 40c1fa52cdb7c13ef88232e374b4b8ac8d820c4f  Merge branch 'x86/cleanups' into x86/mm
 
-Then why do you have to manually call devm_free_irq() in release
-callbacks?  I thought that was the primary problem with those things.
+elapsed time: 736m
 
-I can understand devm_ calls handling resources, but callbacks and
-workqueues feels like a big stretch.
+configs tested: 129
+configs skipped: 53
 
-> > There is two different lifespans here (well 3).  Code and data*2.  Don't
-> > confuse them as that will just cause lots of problems.
-> > 
-> > The move toward more and more "devm" functions is not the way to go as
-> > they just more and more make things easier to get wrong.
-> > 
-> > APIs should be impossible to get wrong, this one is going to be almost
-> > impossible to get right.
-> 
-> I have to disagree here devm generally makes it easier to get things right,
-> it is when some devm functions are missing and devm and non devm resources
-> are mixed that things get tricky.
-> 
-> Lets look for example at the drivers/extcon/extcon-intel-int3496.c code
-> from patch 2/7 from this set. The removed driver-remove function looks like
-> this:
-> 
-> -static int int3496_remove(struct platform_device *pdev)
-> -{
-> -	struct int3496_data *data = platform_get_drvdata(pdev);
-> -
-> -	devm_free_irq(&pdev->dev, data->usb_id_irq, data);
-> -	cancel_delayed_work_sync(&data->work);
-> -
-> -	return 0;
-> -}
-> -
-> 
-> This is a good example where the mix of devm and non devm (the workqueue)
-> resources makes things tricky. The IRQ must be freed first to avoid the
-> work potentially getting re-queued after the sync cancel.
-> 
-> In this case using devm for the IRQ may cause the driver author to forget
-> about this, leaving a race.
-> 
-> Bit with the new proposed devm_delayed_work_autocancel() function things
-> will just work.
-> 
-> This work gets queued by the IRQ handler, so the work must be initialized (1)
-> *before* devm_request_irq() gets called. Any different order would be a
-> bug in the probe function since then the IRQ might run before the work
-> is initialized.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-How are we now going to audit the order of these calls to ensure that
-this is done correctly?  That still feels like it is ripe for bugs in a
-much easier way than without these functions.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                      rts7751r2d1_defconfig
+m68k                            q40_defconfig
+arm                            lart_defconfig
+arm                            pleb_defconfig
+arm                   milbeaut_m10v_defconfig
+h8300                            alldefconfig
+openrisc                         alldefconfig
+sh                           se7712_defconfig
+h8300                               defconfig
+sh                            hp6xx_defconfig
+arm                          simpad_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                     akebono_defconfig
+arm                       mainstone_defconfig
+sh                         ap325rxa_defconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                           allnoconfig
+powerpc                 linkstation_defconfig
+mips                           jazz_defconfig
+powerpc                 mpc832x_mds_defconfig
+mips                       capcella_defconfig
+arm                       netwinder_defconfig
+powerpc                   bluestone_defconfig
+sh                          rsk7203_defconfig
+powerpc                    gamecube_defconfig
+mips                          ath79_defconfig
+powerpc64                        alldefconfig
+nds32                               defconfig
+arm                             rpc_defconfig
+arm                         lpc32xx_defconfig
+arm                          badge4_defconfig
+mips                      maltaaprp_defconfig
+openrisc                            defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                     mpc83xx_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a006-20210209
+x86_64               randconfig-a001-20210209
+x86_64               randconfig-a005-20210209
+x86_64               randconfig-a004-20210209
+x86_64               randconfig-a002-20210209
+x86_64               randconfig-a003-20210209
+x86_64               randconfig-a003-20210212
+x86_64               randconfig-a002-20210212
+x86_64               randconfig-a004-20210212
+x86_64               randconfig-a001-20210212
+x86_64               randconfig-a005-20210212
+x86_64               randconfig-a006-20210212
+i386                 randconfig-a001-20210209
+i386                 randconfig-a005-20210209
+i386                 randconfig-a003-20210209
+i386                 randconfig-a002-20210209
+i386                 randconfig-a006-20210209
+i386                 randconfig-a004-20210209
+i386                 randconfig-a003-20210212
+i386                 randconfig-a005-20210212
+i386                 randconfig-a002-20210212
+i386                 randconfig-a001-20210212
+i386                 randconfig-a004-20210212
+i386                 randconfig-a006-20210212
+i386                 randconfig-a016-20210209
+i386                 randconfig-a013-20210209
+i386                 randconfig-a012-20210209
+i386                 randconfig-a014-20210209
+i386                 randconfig-a011-20210209
+i386                 randconfig-a015-20210209
+i386                 randconfig-a016-20210211
+i386                 randconfig-a014-20210211
+i386                 randconfig-a012-20210211
+i386                 randconfig-a013-20210211
+i386                 randconfig-a011-20210211
+i386                 randconfig-a015-20210211
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> Since devm unrolls / releases resources in reverse order, this means that
-> it will automatically free the IRQ (which was requested later) before
-> cancelling the work.
-> 
-> So by switching to the new devm_delayed_work_autocancel() function we avoid
-> a case where a driver author can cause a race on driver detach because it is
-> relying on devm to free the IRQ, which may cause it to requeue a just
-> cancelled work.
-> 
-> IOW introducing this function (and using it where appropriate) actually
-> removes a possible class of bugs.
-> 
-> patch 2/7 actually has a nice example of this, drivers/extcon/extcon-gpio.c
-> also uses a delayed work queued by an interrupt, together with devm managing
-> the interrupt, yet the removed driver_remove callback:
-> 
-> -static int gpio_extcon_remove(struct platform_device *pdev)
-> -{
-> -	struct gpio_extcon_data *data = platform_get_drvdata(pdev);
-> -
-> -	cancel_delayed_work_sync(&data->work);
-> -
-> -	return 0;
-> -}
-> -
-> 
-> Is missing the explicit free on the IRQ which is necessary to avoid
-> the race. One the one hand this illustrates your (Greg's) argument that
-> devm managed IRQs may be a bad idea.
+clang tested configs:
+x86_64               randconfig-a013-20210209
+x86_64               randconfig-a014-20210209
+x86_64               randconfig-a015-20210209
+x86_64               randconfig-a012-20210209
+x86_64               randconfig-a016-20210209
+x86_64               randconfig-a011-20210209
 
-I still think it is :)
-
-> OTOH it shows that if we have devm managed IRQs anyways that then also
-> having devm managed autocancel works is a good idea, since this RFC patch-set
-> not only results in some cleanup, but is actually fixing at least 1 driver
-> detach race condition.
-
-Fixing bugs is good, but the abstraction away from resource management
-that the devm_ calls cause is worrying as the "magic" behind them can be
-wrong, as seen here.
-
-thanks,
-
-greg k-h
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
