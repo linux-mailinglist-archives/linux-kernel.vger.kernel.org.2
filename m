@@ -2,151 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6BF31AD44
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 17:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC8131AD49
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 17:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhBMQv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 11:51:29 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52136 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhBMQvZ (ORCPT
+        id S229675AbhBMQ64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 11:58:56 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:49974 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhBMQ6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 11:51:25 -0500
-Date:   Sat, 13 Feb 2021 17:50:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613235042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7z/aCScthZ9V/mXw68IO9g7+/wd6ZMg71iFmWLok6uI=;
-        b=p+npfVySksEqjsJqGXSoZ6qNHMVmv2arXuyZrUORkX6SxYxpRtQ3Zwpzd40Q+TlGNRBCva
-        326EjpujBNXcigSnRBBdLIA14Roka3TeyhyvIkA08eyFJ8RMRuKEz1hxJ6umguNdPDCvlH
-        BCJmDQUgGqMOzEeembUeiW3kzi5SRSn8o2uSK/9zbWpleMRn/Xe0mvZZFcFLxoBXlzrZdP
-        amLL5cZtMxXrCrJcBZmEBxps9y6r1lSHmeVwjH7LpB1Q2ydednxdJGiPjgw/7Hhp35QNJq
-        qk1HYhdZ3kB2kZAUyiBaq8VYHwr+zVFqmcPuhJ98cq/ecDL0ZNOwawRjqhlnQA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613235042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7z/aCScthZ9V/mXw68IO9g7+/wd6ZMg71iFmWLok6uI=;
-        b=x9rjzv1DnlD4an/VdBnhmI1eTAj58Cn56bJqhJx/qx/ru9RD2c+HjIZ1xResbCJm0XhSL/
-        vGqC94CIOSe+tEBA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Willy Tarreau <w@1wt.eu>
-Subject: [PATCH v3] auxdisplay: Remove in_interrupt() usage.
-Message-ID: <20210213165040.vzzieegx4aliyosd@linutronix.de>
-References: <20210208175824.381484-1-bigeasy@linutronix.de>
- <CANiq72kqfPOpgwvNo3hTesCJztODxVGonJXpeeX=S+O4roNZsw@mail.gmail.com>
- <20210208190735.ibq44r5pc4cwzt7j@linutronix.de>
- <CANiq72kq_d=5TvdhndP9zkyTD1pHF6WQb+qs01D68DEQH6jVjQ@mail.gmail.com>
- <20210208204136.sv4omzms3nadse6e@linutronix.de>
- <CANiq72mw47Qa9M6i23Dp+_3M8juBnv33PJ-6zFk++SV57G2-cQ@mail.gmail.com>
- <20210209090112.lewvvhnc2y7oyr27@linutronix.de>
- <CANiq72mG3zXA7j9KbC74hQ1BMgw713Hm3WDAcQBjKxgg0fLHeg@mail.gmail.com>
+        Sat, 13 Feb 2021 11:58:54 -0500
+Received: by mail-il1-f197.google.com with SMTP id q3so2235032ilv.16
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 08:58:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ZMalga4noUH0P3IatCDiyBwxELchBGjLLlOr8eoLRUU=;
+        b=U3iDScKRfPOia3A3uEkDr8r8CnruZPpa0MN3LlNi4oCQ8PY3sq1jHoko2BufZEKuBc
+         qQotYEsOxNOPTAMsg5rkQTc4Ysuw7f+OC7f2lYS74RZCMVkCv9yqV/HgMl1R1H+NmviS
+         Tz9i8+FHya1M8H/h97Ff4hNwLkNw1F4nM3nSsufWtxA4G9ZsWlr0NThpQ7xebswlCp1F
+         jp6BqccYYiZg7lFvMPD+l+mp4E9W5h5KbKp1jvRkb/kvoXsz3VU7DqrF2tY1L0aJXRD1
+         ySIqJ2c46B3ppd4QMILNq45wF8OgS1Nh/4YSjj2QdsrkVgTAdvxn6rH9vr8UbrG3SCFs
+         iYiA==
+X-Gm-Message-State: AOAM533TmeEwgYmv6mJuItss48BVrMsnLpj7x4+avM8YQVrFv8BBu14G
+        mYYZijzXW6K+bfcGtSbpBTjoAn0gDI9Gz9BxzO2Pn8VudW1n
+X-Google-Smtp-Source: ABdhPJwnNnaM/Foz0c3qACuLeuucWoLuoH6+1QEfF9J2UIPZfPhLHwmkIzoNHJOHuQUEnPAN+oUwfNPgYgiphAl3Gceoxl2K+OoS
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CANiq72mG3zXA7j9KbC74hQ1BMgw713Hm3WDAcQBjKxgg0fLHeg@mail.gmail.com>
+X-Received: by 2002:a05:6638:42:: with SMTP id a2mr7677936jap.99.1613235493277;
+ Sat, 13 Feb 2021 08:58:13 -0800 (PST)
+Date:   Sat, 13 Feb 2021 08:58:13 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000084130f05bb3aa802@google.com>
+Subject: WARNING in pstore_kill_sb
+From:   syzbot <syzbot+d0cf0ad6513e9a1da5df@syzkaller.appspotmail.com>
+To:     anton@enomsg.org, ccross@android.com, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tony.luck@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-charlcd_write() is invoked as a VFS->write() callback and as such it is
-always invoked from preemptible context and may sleep.
+Hello,
 
-charlcd_puts() is invoked from register/unregister callback which is
-preemtible. The reboot notifier callback is also invoked from
-preemptible context.
+syzbot found the following issue on:
 
-Therefore there is no need to use `in_interrupt()' to figure out if it
-is save to sleep because it always is. `in_interrupt()` and related
-context checks are being removed from non-core code.
-Using `schedule()' to schedule (an be friendly to others) is
-discouraged and `cond_resched()' should be used instead.
+HEAD commit:    e0756cfc Merge tag 'trace-v5.11-rc7' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10692850d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b9a66c874a03a1ed
+dashboard link: https://syzkaller.appspot.com/bug?extid=d0cf0ad6513e9a1da5df
+userspace arch: arm
 
-Remove `in_interrupt()' and use `cond_resched()' to schedule every 32
-iteration if needed.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Link: https://lkml.kernel.org/r/20200914204209.256266093@linutronix.de
-Cc: Miguel Ojeda Sandonis <miguel.ojeda.sandonis@gmail.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d0cf0ad6513e9a1da5df@syzkaller.appspotmail.com
+
+ do_el0_svc_compat+0x40/0x80 arch/arm64/kernel/syscall.c:204
+ el0_svc_compat+0x20/0x30 arch/arm64/kernel/entry-common.c:442
+ el0_sync_compat_handler+0x90/0x140 arch/arm64/kernel/entry-common.c:451
+ el0_sync_compat+0x178/0x180 arch/arm64/kernel/entry.S:708
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5780 at fs/pstore/inode.c:470 pstore_kill_sb+0x88/0x90 fs/pstore/inode.c:480
+Modules linked in:
+CPU: 0 PID: 5780 Comm: syz-executor.1 Not tainted 5.11.0-rc7-syzkaller-00002-ge0756cfc7d7c #0
+Hardware name: linux,dummy-virt (DT)
+pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
+pc : pstore_kill_sb+0x88/0x90 fs/pstore/inode.c:470
+lr : pstore_kill_sb+0x30/0x90 fs/pstore/inode.c:469
+sp : ffff00001d1e7a70
+x29: ffff00001d1e7a70 x28: 0000000000000004 
+x27: 0000000000008000 x26: ffff000016070a00 
+x25: 0000000000000000 x24: ffff00000df2e068 
+x23: 1fffe00001be5c0d x22: ffff800011edf070 
+x21: ffff80001bbea000 x20: ffff00000df2e000 
+x19: ffff800019a97a20 x18: 0000000000000000 
+x17: 0000000000000000 x16: 0000000000000002 
+x15: ffff800019c06380 x14: 1fffe00003a3cee8 
+x13: 0000000000000000 x12: ffff700003352f45 
+x11: 1ffff00003352f44 x10: ffff700003352f44 
+x9 : dfff800000000000 x8 : ffff800019a97a27 
+x7 : 0000000000000001 x6 : 00008ffffccad0bc 
+x5 : ffff800019a97a20 x4 : 1fffe00001de59a9 
+x3 : 0000000000000000 x2 : 0000000000000000 
+x1 : ffff00000ef2cd40 x0 : 0000000000000000 
+Call trace:
+ pstore_kill_sb+0x88/0x90 fs/pstore/inode.c:480
+ deactivate_locked_super+0x94/0x154 fs/super.c:335
+ mount_single+0x114/0x180 fs/super.c:1470
+ pstore_mount+0x1c/0x30 fs/pstore/inode.c:464
+ legacy_get_tree+0xd0/0x190 fs/fs_context.c:592
+ vfs_get_tree+0x74/0x2a0 fs/super.c:1496
+ do_new_mount fs/namespace.c:2881 [inline]
+ path_mount+0xf64/0x2170 fs/namespace.c:3211
+ do_mount fs/namespace.c:3224 [inline]
+ __do_sys_mount fs/namespace.c:3432 [inline]
+ __se_sys_mount fs/namespace.c:3409 [inline]
+ __arm64_sys_mount+0x2ec/0x520 fs/namespace.c:3409
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
+ el0_svc_common.constprop.0+0x110/0x3c0 arch/arm64/kernel/syscall.c:159
+ do_el0_svc_compat+0x40/0x80 arch/arm64/kernel/syscall.c:204
+ el0_svc_compat+0x20/0x30 arch/arm64/kernel/entry-common.c:442
+ el0_sync_compat_handler+0x90/0x140 arch/arm64/kernel/entry-common.c:451
+ el0_sync_compat+0x178/0x180 arch/arm64/kernel/entry.S:708
+
+
 ---
-v2=E2=80=A6v3: Extend the commit message as suggested by Miguel Ojeda.
-v1=E2=80=A6v2: Spelling fixes.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-On 2021-02-10 22:46:23 [+0100], Miguel Ojeda wrote:
-> Hi Sebastian,
-Hi Miguel,
-
-> Yeah, it is a bit confusing when reading without the context (it is
-> hard to keep up with everything going on unless you work full-time on
-> it :-)
-
-Sorry for leaving it out. I though it is not needed since it was not
-needed.
-
-> > since this patch was small, simple and removing not required code I kept
-> > it out. Is this enough information for you?
->=20
-> If you don't mind, please add a quick sentence like (I can do it on my
-> side too):
->=20
->     `in_interrupt()` and related context checks are being removed
->     from non-core code.
->=20
-> Plus the tag:
->=20
->     Link: https://lore.kernel.org/r/20200914204209.256266093@linutronix.d=
-e/
-
-Added as suggested.
-
- drivers/auxdisplay/charlcd.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
-index f43430e9dceed..fbfce95919f72 100644
---- a/drivers/auxdisplay/charlcd.c
-+++ b/drivers/auxdisplay/charlcd.c
-@@ -470,12 +470,8 @@ static ssize_t charlcd_write(struct file *file, const =
-char __user *buf,
- 	char c;
-=20
- 	for (; count-- > 0; (*ppos)++, tmp++) {
--		if (!in_interrupt() && (((count + 1) & 0x1f) =3D=3D 0))
--			/*
--			 * let's be a little nice with other processes
--			 * that need some CPU
--			 */
--			schedule();
-+		if (((count + 1) & 0x1f) =3D=3D 0)
-+			cond_resched();
-=20
- 		if (get_user(c, tmp))
- 			return -EFAULT;
-@@ -537,12 +533,8 @@ static void charlcd_puts(struct charlcd *lcd, const ch=
-ar *s)
- 	int count =3D strlen(s);
-=20
- 	for (; count-- > 0; tmp++) {
--		if (!in_interrupt() && (((count + 1) & 0x1f) =3D=3D 0))
--			/*
--			 * let's be a little nice with other processes
--			 * that need some CPU
--			 */
--			schedule();
-+		if (((count + 1) & 0x1f) =3D=3D 0)
-+			cond_resched();
-=20
- 		charlcd_write_char(lcd, *tmp);
- 	}
---=20
-2.30.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
