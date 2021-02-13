@@ -2,153 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C994431AAEB
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 11:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 559E731AAEE
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 11:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhBMKnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 05:43:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhBMKn2 (ORCPT
+        id S229592AbhBMKx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 05:53:28 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:14161 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhBMKxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 05:43:28 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E905C061574;
-        Sat, 13 Feb 2021 02:42:48 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id bl23so3507934ejb.5;
-        Sat, 13 Feb 2021 02:42:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=IUwXx4gXsOoZDX6P+xo+OQhFRPlkQf0kZxEOt2js0VY=;
-        b=egkpYsmfJHxov4IjfdHCheqitQe6m6IkmTxXL/qRoHu1wl5DbVIm0BlV+M+sUKctyT
-         TG4pv8Rx1TgO7wYrtOGhVfK3zBu7k4K3KSPOxTed+gm59aq3WC284iCOP2NyQSKSHhpy
-         zeCjB6PJ3UVRoI66uyZjPcPmLvXu+DyJ5kQ+wT1xk7LjUnifZZ8+RJ6T3Pk52VybWb42
-         UCasErEHxomYyWET9ZMyL3mUHg1y7kOQd5Znvi2/ws6y/wDEeQ36nrc0Rx4BNBuyt6Wt
-         SGFTMRiw8rH1ioxBTWrzuuUMnoaguEoCn41Cw2ywZDC5pSTy449X+oiVe9F//J0FQqvb
-         1fXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IUwXx4gXsOoZDX6P+xo+OQhFRPlkQf0kZxEOt2js0VY=;
-        b=qFPKyNjTrX+xFBf1aGl8Qj06mT1kvpbtgUue/FntYjriWAmI1obW65RzfIH+jr5dyt
-         IdaC0MzJ06orzSFM60gYp6X4ORNDJ3mLHmUaPuut4fETyAVBGiUuxdHskAHjw862qcbe
-         BjkoGyo3ZfZevc8+gOZ49xhAh2C3ZGEKBtpHJqRgozax0eyRGZ56mlHm/sDg8k0ycjB7
-         G0I8h+kUjgjrrCggGBpG3m/Skhuza+XaIrn4RYHCAi2fOYirT5ntBgGAM3/4b8yZ4LeC
-         7K712trrDw161cnhkyN+vWjjbqyrS7PDSNlPn69zsWg2JoA6enMXGXjUBADfyCCVcYgL
-         Q7sA==
-X-Gm-Message-State: AOAM5301PgvXqkGBiqJMIVhXmn9K8LRr3WdxSlxwFM3qD6KCe3NRSfE9
-        ZJe1tSM6K6muJMuwI1mjYrY=
-X-Google-Smtp-Source: ABdhPJxgTtX/IGOeE4dc1pIVzN3A9zFGaQ1mrdj7mvAwKHTvEHTF740W71Id5cgVd5RQvp/XvUPSpw==
-X-Received: by 2002:a17:906:3499:: with SMTP id g25mr7174739ejb.367.1613212966946;
-        Sat, 13 Feb 2021 02:42:46 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id p2sm7459863ejg.45.2021.02.13.02.42.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 02:42:46 -0800 (PST)
-Date:   Sat, 13 Feb 2021 12:42:45 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Chan <mchan@broadcom.com>,
-        "open list:BROADCOM ETHERNET PHY DRIVERS" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>, michael@walle.cc
-Subject: Re: [PATCH net-next v2 3/3] net: phy: broadcom: Allow BCM54210E to
- configure APD
-Message-ID: <20210213104245.uti4qb2u2r5nblef@skbuf>
-References: <20210213034632.2420998-1-f.fainelli@gmail.com>
- <20210213034632.2420998-4-f.fainelli@gmail.com>
+        Sat, 13 Feb 2021 05:53:24 -0500
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id CC2B9240007;
+        Sat, 13 Feb 2021 10:52:36 +0000 (UTC)
+Subject: Re: [PATCH v2 1/1] riscv/kasan: add KASAN_VMALLOC support
+From:   Alex Ghiti <alex@ghiti.fr>
+To:     Palmer Dabbelt <palmer@dabbelt.com>, nylon7@andestech.com
+Cc:     aou@eecs.berkeley.edu, nickhu@andestech.com, alankao@andestech.com,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        nylon7717@gmail.com, glider@google.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aryabinin@virtuozzo.com, linux-riscv@lists.infradead.org,
+        dvyukov@google.com
+References: <mhng-443fd141-b9a3-4be6-a056-416877f99ea4@palmerdabbelt-glaptop>
+ <2b2f3038-3e27-8763-cf78-3fbbfd2100a0@ghiti.fr>
+Message-ID: <4fa97788-157c-4059-ae3f-28ab074c5836@ghiti.fr>
+Date:   Sat, 13 Feb 2021 05:52:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <2b2f3038-3e27-8763-cf78-3fbbfd2100a0@ghiti.fr>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210213034632.2420998-4-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 07:46:32PM -0800, Florian Fainelli wrote:
-> BCM54210E/BCM50212E has been verified to work correctly with the
-> auto-power down configuration done by bcm54xx_adjust_rxrefclk(), add it
-> to the list of PHYs working.
+Hi Nylon, Palmer,
+
+Le 2/8/21 à 1:28 AM, Alex Ghiti a écrit :
+> Hi Nylon,
 > 
-> While we are at it, provide an appropriate name for the bit we are
-> changing which disables the RXC and TXC during auto-power down when
-> there is no energy on the cable.
+> Le 1/22/21 à 10:56 PM, Palmer Dabbelt a écrit :
+>> On Fri, 15 Jan 2021 21:58:35 PST (-0800), nylon7@andestech.com wrote:
+>>> It references to x86/s390 architecture.
+>>> >> So, it doesn't map the early shadow page to cover VMALLOC space.
+>>>
+>>> Prepopulate top level page table for the range that would otherwise be
+>>> empty.
+>>>
+>>> lower levels are filled dynamically upon memory allocation while
+>>> booting.
 > 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
-
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-
->  drivers/net/phy/broadcom.c | 8 +++++---
->  include/linux/brcmphy.h    | 2 +-
->  2 files changed, 6 insertions(+), 4 deletions(-)
+> I think we can improve the changelog a bit here with something like that:
 > 
-> diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-> index 3ce266ab521b..91fbd26c809e 100644
-> --- a/drivers/net/phy/broadcom.c
-> +++ b/drivers/net/phy/broadcom.c
-> @@ -193,6 +193,7 @@ static void bcm54xx_adjust_rxrefclk(struct phy_device *phydev)
->  	if (BRCM_PHY_MODEL(phydev) != PHY_ID_BCM57780 &&
->  	    BRCM_PHY_MODEL(phydev) != PHY_ID_BCM50610 &&
->  	    BRCM_PHY_MODEL(phydev) != PHY_ID_BCM50610M &&
-> +	    BRCM_PHY_MODEL(phydev) != PHY_ID_BCM54210E &&
->  	    BRCM_PHY_MODEL(phydev) != PHY_ID_BCM54810 &&
->  	    BRCM_PHY_MODEL(phydev) != PHY_ID_BCM54811)
->  		return;
-> @@ -227,9 +228,10 @@ static void bcm54xx_adjust_rxrefclk(struct phy_device *phydev)
->  		val |= BCM54XX_SHD_SCR3_DLLAPD_DIS;
->  
->  	if (phydev->dev_flags & PHY_BRCM_DIS_TXCRXC_NOENRGY) {
-> -		if (BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54810 ||
-> -		    BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54811)
-> -			val |= BCM54810_SHD_SCR3_TRDDAPD;
-> +		if (BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54210E ||
-> +		    BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54810 ||
-> +		    BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54210E)
-> +			val |= BCM54XX_SHD_SCR3_RXCTXC_DIS;
->  		else
->  			val |= BCM54XX_SHD_SCR3_TRDDAPD;
->  	}
-> diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
-> index 844dcfe789a2..16597d3fa011 100644
-> --- a/include/linux/brcmphy.h
-> +++ b/include/linux/brcmphy.h
-> @@ -193,6 +193,7 @@
->  #define  BCM54XX_SHD_SCR3_DEF_CLK125	0x0001
->  #define  BCM54XX_SHD_SCR3_DLLAPD_DIS	0x0002
->  #define  BCM54XX_SHD_SCR3_TRDDAPD	0x0004
-> +#define  BCM54XX_SHD_SCR3_RXCTXC_DIS	0x0100
-
-Curiously enough, my BCM5464R datasheet does say:
-
-The TXC and RXC outputs can be disabled during auto-power down by setting the â€œ1000BASE-T/100BASE-TX/10BASE-T
-Spare Control 3 Register (Address 1Ch, Shadow Value 00101),â€ bit 8 =1.
-
-but when I go to the definition of the register, bit 8 is hidden. Odd.
-
-How can I ensure that the auto power down feature is doing something?
-
->  
->  /* 01010: Auto Power-Down */
->  #define BCM54XX_SHD_APD			0x0a
-> @@ -253,7 +254,6 @@
->  #define BCM54810_EXP_BROADREACH_LRE_MISC_CTL_EN	(1 << 0)
->  #define BCM54810_SHD_CLK_CTL			0x3
->  #define BCM54810_SHD_CLK_CTL_GTXCLK_EN		(1 << 9)
-> -#define BCM54810_SHD_SCR3_TRDDAPD		0x0100
->  
->  /* BCM54612E Registers */
->  #define BCM54612E_EXP_SPARE0		(MII_BCM54XX_EXP_SEL_ETC + 0x34)
-> -- 
-> 2.25.1
+> "KASAN vmalloc space used to be mapped using kasan early shadow page. 
+> KASAN_VMALLOC requires the top-level of the kernel page table to be 
+> properly populated, lower levels being filled dynamically upon memory 
+> allocation at runtime."
 > 
+>>>
+>>> Signed-off-by: Nylon Chen <nylon7@andestech.com>
+>>> Signed-off-by: Nick Hu <nickhu@andestech.com>
+>>> ---
+>>>  arch/riscv/Kconfig         |  1 +
+>>>  arch/riscv/mm/kasan_init.c | 57 +++++++++++++++++++++++++++++++++++++-
+>>>  2 files changed, 57 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>>> index 81b76d44725d..15a2c8088bbe 100644
+>>> --- a/arch/riscv/Kconfig
+>>> +++ b/arch/riscv/Kconfig
+>>> @@ -57,6 +57,7 @@ config RISCV
+>>>      select HAVE_ARCH_JUMP_LABEL
+>>>      select HAVE_ARCH_JUMP_LABEL_RELATIVE
+>>>      select HAVE_ARCH_KASAN if MMU && 64BIT
+>>> +    select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+>>>      select HAVE_ARCH_KGDB
+>>>      select HAVE_ARCH_KGDB_QXFER_PKT
+>>>      select HAVE_ARCH_MMAP_RND_BITS if MMU
+>>> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+>>> index 12ddd1f6bf70..4b9149f963d3 100644
+>>> --- a/arch/riscv/mm/kasan_init.c
+>>> +++ b/arch/riscv/mm/kasan_init.c
+>>> @@ -9,6 +9,19 @@
+>>>  #include <linux/pgtable.h>
+>>>  #include <asm/tlbflush.h>
+>>>  #include <asm/fixmap.h>
+>>> +#include <asm/pgalloc.h>
+>>> +
+>>> +static __init void *early_alloc(size_t size, int node)
+>>> +{
+>>> +    void *ptr = memblock_alloc_try_nid(size, size,
+>>> +        __pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
+>>> +
+>>> +    if (!ptr)
+>>> +        panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d 
+>>> from=%llx\n",
+>>> +            __func__, size, size, node, (u64)__pa(MAX_DMA_ADDRESS));
+>>> +
+>>> +    return ptr;
+>>> +}
+>>>
+>>>  extern pgd_t early_pg_dir[PTRS_PER_PGD];
+>>>  asmlinkage void __init kasan_early_init(void)
+>>> @@ -83,6 +96,40 @@ static void __init populate(void *start, void *end)
+>>>      memset(start, 0, end - start);
+>>>  }
+>>>
+>>> +void __init kasan_shallow_populate(void *start, void *end)
+>>> +{
+>>> +    unsigned long vaddr = (unsigned long)start & PAGE_MASK;
+>>> +    unsigned long vend = PAGE_ALIGN((unsigned long)end);
+>>> +    unsigned long pfn;
+>>> +    int index;
+>>> +    void *p;
+>>> +    pud_t *pud_dir, *pud_k;
+>>> +    pgd_t *pgd_dir, *pgd_k;
+>>> +    p4d_t *p4d_dir, *p4d_k;
+>>> +
+>>> +    while (vaddr < vend) {
+>>> +        index = pgd_index(vaddr);
+>>> +        pfn = csr_read(CSR_SATP) & SATP_PPN;
+> 
+> At this point in the boot process, we know that we use swapper_pg_dir so 
+> no need to read SATP.
+> 
+>>> +        pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
+> 
+> Here, this pgd_dir assignment is overwritten 2 lines below, so no need 
+> for it.
+> 
+>>> +        pgd_k = init_mm.pgd + index;
+>>> +        pgd_dir = pgd_offset_k(vaddr);
+> 
+> pgd_offset_k(vaddr) = init_mm.pgd + pgd_index(vaddr) so pgd_k == pgd_dir.
+> 
+>>> +        set_pgd(pgd_dir, *pgd_k);
+>>> +
+>>> +        p4d_dir = p4d_offset(pgd_dir, vaddr);
+>>> +        p4d_k  = p4d_offset(pgd_k, vaddr);
+>>> +
+>>> +        vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
+> 
+> Why do you increase vaddr *before* populating the first one ? And 
+> pud_addr_end does that properly: it returns the next pud address if it 
+> does not go beyond end address to map.
+> 
+>>> +        pud_dir = pud_offset(p4d_dir, vaddr);
+>>> +        pud_k = pud_offset(p4d_k, vaddr);
+>>> +
+>>> +        if (pud_present(*pud_dir)) {
+>>> +            p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
+>>> +            pud_populate(&init_mm, pud_dir, p);
+> 
+> init_mm is not needed here.
+> 
+>>> +        }
+>>> +        vaddr += PAGE_SIZE;
+> 
+> Why do you need to add PAGE_SIZE ? vaddr already points to the next pud.
+> 
+> It seems like this patch tries to populate userspace page table whereas 
+> at this point in the boot process, only swapper_pg_dir is used or am I 
+> missing something ?
+> 
+> Thanks,
+> 
+> Alex
+
+I implemented this morning a version that fixes all the comments I made 
+earlier. I was able to insert test_kasan_module on both sv39 and sv48 
+without any modification: set_pgd "goes through" all the unused page 
+table levels, whereas p*d_populate are noop for unused levels.
+
+If you have any comment, do not hesitate.
+
+diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c 
+
+index adbf94b7e68a..d643b222167c 100644 
+
+--- a/arch/riscv/mm/kasan_init.c 
+
++++ b/arch/riscv/mm/kasan_init.c 
+
+@@ -195,6 +195,31 @@ static void __init kasan_populate(void *start, void 
+*end)
+         memset(start, KASAN_SHADOW_INIT, end - start); 
+
+  } 
+
+ 
+
++void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsigned 
+long end)
++{ 
+
++       unsigned long next; 
+
++       void *p; 
+
++       pgd_t *pgd_k = pgd_offset_k(vaddr); 
+
++ 
+
++       do { 
+
++               next = pgd_addr_end(vaddr, end); 
+
++               if (pgd_page_vaddr(*pgd_k) == (unsigned 
+long)lm_alias(kasan_early_shadow_pgd_next)) {
++                       p = memblock_alloc(PAGE_SIZE, PAGE_SIZE); 
+
++                       set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)), 
+PAGE_TABLE));
++               } 
+
++       } while (pgd_k++, vaddr = next, vaddr != end); 
+
++} 
+
++ 
+
++void __init kasan_shallow_populate(void *start, void *end) 
+
++{ 
+
++       unsigned long vaddr = (unsigned long)start & PAGE_MASK; 
+
++       unsigned long vend = PAGE_ALIGN((unsigned long)end); 
+
++ 
+
++       kasan_shallow_populate_pgd(vaddr, vend); 
+
++ 
+
++       local_flush_tlb_all(); 
+
++} 
+
++ 
+
+  void __init kasan_init(void) 
+
+  { 
+
+         phys_addr_t _start, _end; 
+
+@@ -206,7 +231,15 @@ void __init kasan_init(void) 
+
+          */ 
+
+         kasan_populate_early_shadow((void *)KASAN_SHADOW_START, 
+
+                                     (void *)kasan_mem_to_shadow((void 
+*)
+- 
+VMALLOC_END));
++ 
+VMEMMAP_END));
++       if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) 
+
++               kasan_shallow_populate( 
+
++                       (void *)kasan_mem_to_shadow((void 
+*)VMALLOC_START),
++                       (void *)kasan_mem_to_shadow((void 
+*)VMALLOC_END));
++       else 
+
++               kasan_populate_early_shadow( 
+
++                       (void *)kasan_mem_to_shadow((void 
+*)VMALLOC_START),
++                       (void *)kasan_mem_to_shadow((void 
+*)VMALLOC_END));
+ 
+
+         /* Populate the linear mapping */ 
+
+         for_each_mem_range(i, &_start, &_end) { 
+
+-- 
+
+2.20.1
+
+Thanks,
+
+Alex
+
+> 
+>>> +    }
+>>> +}
+>>> +
+>>>  void __init kasan_init(void)
+>>>  {
+>>>      phys_addr_t _start, _end;
+>>> @@ -90,7 +137,15 @@ void __init kasan_init(void)
+>>>
+>>>      kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
+>>>                      (void *)kasan_mem_to_shadow((void *)
+>>> -                                VMALLOC_END));
+>>> +                                VMEMMAP_END));
+>>> +    if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
+>>> +        kasan_shallow_populate(
+>>> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_START),
+>>> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+>>> +    else
+>>> +        kasan_populate_early_shadow(
+>>> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_START),
+>>> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+>>>
+>>>      for_each_mem_range(i, &_start, &_end) {
+>>>          void *start = (void *)_start; >
+>> Thanks, this is on for-next.
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
