@@ -2,154 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D8031AB3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBCD31AB40
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbhBMMQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 07:16:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229592AbhBMMQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 07:16:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAE7864DD6;
-        Sat, 13 Feb 2021 12:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613218567;
-        bh=4xFxyQXalGrldKkL8r7xY5JedLCnGKpV3hkcAB/m1wc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P1CMoTjyFG+N6rtSr9mS6CNFYhgNtCzBL8hhnGR+JH2R7vCweELe4lRrbbVp6RPiN
-         en8N4dDDqTgnZnQzGSQYwxOSm6ZS746+QT/AOxTto/0mhC5yLC163HMYpnUPGWDmdT
-         +Rd5L3vt5ecVTsaxeRi5phB99KKthyXaLvTdZ5ig=
-Date:   Sat, 13 Feb 2021 13:16:02 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com, "Rafael J. Wysocki" <rafael@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
+        id S229712AbhBMMRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 07:17:15 -0500
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:40653 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhBMMRL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 07:17:11 -0500
+Received: by mail-lf1-f52.google.com with SMTP id v24so3309486lfr.7
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 04:16:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ts9z6i2Vd+2GEZSPALZGbWQRGVWyFJsdyBZA/pMfoyA=;
+        b=NQ1qSU1w8bdwoCCx7JKoyDEicIZrt4+0SGBHpqZhhdsGhooK7FXELN7g2sX6YVh35t
+         lFnkOp36hBiPM83DVPoeN761PcH5iXcc4YFNYZrfGo9+QdZajz4kpr1zIi5c24pKL9HM
+         eaOMxqm0r2BU2CApPBmqzadz+Q9VijkxkbiTqB6fTcXuJP7ggR/ZdjUhSek7vzvHfDwJ
+         XuvgRWikOa0hOm1s9XR+Qa6ZBYD7lit9SjZpCjYXsSsGYbKoGlp11c42vCtr2eax8nfr
+         FJryIeMrGl5qR7tKCuWMRTHaW9PivVHOituoGqscty8Vd/uWm3OdqwSYnYyEECrtVrz+
+         vDuQ==
+X-Gm-Message-State: AOAM531vCvAUgZIDvJ9DOOI40Ziua4XwLdVQrpO5o2kTM+TpRog1uJQK
+        jEsTfyjAIyEuwQiJ0mRn4qo=
+X-Google-Smtp-Source: ABdhPJweKBwTGCyFjE3vhDeYFSoLEtwohWLK03qNhYcwEmySoDgsIMEdTwsL8Y2CYH714uXN6j4/Fg==
+X-Received: by 2002:ac2:58fb:: with SMTP id v27mr3852603lfo.371.1613218588424;
+        Sat, 13 Feb 2021 04:16:28 -0800 (PST)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id y22sm1853210lfl.286.2021.02.13.04.16.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Feb 2021 04:16:28 -0800 (PST)
+Date:   Sat, 13 Feb 2021 14:16:22 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [RFC PATCH 1/7] drivers: base: Add resource managed version of
- delayed work init
-Message-ID: <YCfDAly9b0zHMpJT@kroah.com>
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 6/7] regulator: qcom_spmi-regulator: Clean-up by using
+ managed work init
+Message-ID: <19ac678889cac174895b5080321c84ea2c26f530.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
 References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
- <1230b0d2ba99ad546d72ab079e76cb1b3df32afb.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1230b0d2ba99ad546d72ab079e76cb1b3df32afb.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 01:58:44PM +0200, Matti Vaittinen wrote:
-> A few drivers which need a delayed work-queue must cancel work at exit.
-> Some of those implement remove solely for this purpose. Help drivers
-> to avoid unnecessary remove and error-branch implementation by adding
-> managed verision of delayed work initialization
-> 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Few drivers implement remove call-back only for ensuring a delayed
+work gets cancelled prior driver removal. Clean-up these by switching
+to use devm_delayed_work_autocancel() instead.
 
-That's not a good idea.  As this would kick in when the device is
-removed from the system, not when it is unbound from the driver, right?
+This change is compile-tested only. All testing is appreciated.
 
-> ---
->  drivers/base/devres.c  | 33 +++++++++++++++++++++++++++++++++
->  include/linux/device.h |  5 +++++
->  2 files changed, 38 insertions(+)
-> 
-> diff --git a/drivers/base/devres.c b/drivers/base/devres.c
-> index fb9d5289a620..2879595bb5a4 100644
-> --- a/drivers/base/devres.c
-> +++ b/drivers/base/devres.c
-> @@ -1231,3 +1231,36 @@ void devm_free_percpu(struct device *dev, void __percpu *pdata)
->  			       (void *)pdata));
->  }
->  EXPORT_SYMBOL_GPL(devm_free_percpu);
-> +
-> +static void dev_delayed_work_drop(struct device *dev, void *res)
-> +{
-> +	cancel_delayed_work_sync(*(struct delayed_work **)res);
-> +}
-> +
-> +/**
-> + * devm_delayed_work_autocancel - Resource-managed work allocation
-> + * @dev: Device which lifetime work is bound to
-> + * @pdata: work to be cancelled when device exits
-> + *
-> + * Initialize work which is automatically cancelled when device exits.
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+ drivers/regulator/qcom_spmi-regulator.c | 33 ++++++-------------------
+ 1 file changed, 7 insertions(+), 26 deletions(-)
 
-There is no such thing in the driver model as "when device exits".
-Please use the proper terminology as I do not understand what you think
-this is doing here...
+diff --git a/drivers/regulator/qcom_spmi-regulator.c b/drivers/regulator/qcom_spmi-regulator.c
+index e62e1d72d943..68aefffc235f 100644
+--- a/drivers/regulator/qcom_spmi-regulator.c
++++ b/drivers/regulator/qcom_spmi-regulator.c
+@@ -1842,7 +1842,10 @@ static int spmi_regulator_of_parse(struct device_node *node,
+ 			return ret;
+ 		}
+ 
+-		INIT_DELAYED_WORK(&vreg->ocp_work, spmi_regulator_vs_ocp_work);
++		ret = devm_delayed_work_autocancel(dev, &vreg->ocp_work,
++						   spmi_regulator_vs_ocp_work);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	return 0;
+@@ -2157,10 +2160,8 @@ static int qcom_spmi_regulator_probe(struct platform_device *pdev)
+ 		vreg->regmap = regmap;
+ 		if (reg->ocp) {
+ 			vreg->ocp_irq = platform_get_irq_byname(pdev, reg->ocp);
+-			if (vreg->ocp_irq < 0) {
+-				ret = vreg->ocp_irq;
+-				goto err;
+-			}
++			if (vreg->ocp_irq < 0)
++				return vreg->ocp_irq;
+ 		}
+ 		vreg->desc.id = -1;
+ 		vreg->desc.owner = THIS_MODULE;
+@@ -2203,8 +2204,7 @@ static int qcom_spmi_regulator_probe(struct platform_device *pdev)
+ 		rdev = devm_regulator_register(dev, &vreg->desc, &config);
+ 		if (IS_ERR(rdev)) {
+ 			dev_err(dev, "failed to register %s\n", name);
+-			ret = PTR_ERR(rdev);
+-			goto err;
++			return PTR_ERR(rdev);
+ 		}
+ 
+ 		INIT_LIST_HEAD(&vreg->node);
+@@ -2212,24 +2212,6 @@ static int qcom_spmi_regulator_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	return 0;
+-
+-err:
+-	list_for_each_entry(vreg, vreg_list, node)
+-		if (vreg->ocp_irq)
+-			cancel_delayed_work_sync(&vreg->ocp_work);
+-	return ret;
+-}
+-
+-static int qcom_spmi_regulator_remove(struct platform_device *pdev)
+-{
+-	struct spmi_regulator *vreg;
+-	struct list_head *vreg_list = platform_get_drvdata(pdev);
+-
+-	list_for_each_entry(vreg, vreg_list, node)
+-		if (vreg->ocp_irq)
+-			cancel_delayed_work_sync(&vreg->ocp_work);
+-
+-	return 0;
+ }
+ 
+ static struct platform_driver qcom_spmi_regulator_driver = {
+@@ -2238,7 +2220,6 @@ static struct platform_driver qcom_spmi_regulator_driver = {
+ 		.of_match_table = qcom_spmi_regulator_match,
+ 	},
+ 	.probe		= qcom_spmi_regulator_probe,
+-	.remove		= qcom_spmi_regulator_remove,
+ };
+ module_platform_driver(qcom_spmi_regulator_driver);
+ 
+-- 
+2.25.4
 
-> + * A few drivers need delayed work which must be cancelled before driver
-> + * is unload to avoid accessing removed resources.
-> + * devm_delayed_work_autocancel() can be used to omit the explicit
-> + * cancelleation when driver is unload.
-> + */
-> +int devm_delayed_work_autocancel(struct device *dev, struct delayed_work *w,
-> +				 void (*worker)(struct work_struct *work))
-> +{
-> +	struct delayed_work **ptr;
-> +
-> +	ptr = devres_alloc(dev_delayed_work_drop, sizeof(*ptr), GFP_KERNEL);
-> +	if (!ptr)
-> +		return -ENOMEM;
-> +
-> +	INIT_DELAYED_WORK(w, worker);
-> +	*ptr = w;
-> +	devres_add(dev, ptr);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_delayed_work_autocancel);
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 1779f90eeb4c..192456198de7 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -27,6 +27,7 @@
->  #include <linux/uidgid.h>
->  #include <linux/gfp.h>
->  #include <linux/overflow.h>
-> +#include <linux/workqueue.h>
->  #include <linux/device/bus.h>
->  #include <linux/device/class.h>
->  #include <linux/device/driver.h>
-> @@ -249,6 +250,10 @@ void __iomem *devm_of_iomap(struct device *dev,
->  			    struct device_node *node, int index,
->  			    resource_size_t *size);
->  
-> +/* delayed work which is cancelled when driver exits */
 
-Not when the "driver exits".
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
-There is two different lifespans here (well 3).  Code and data*2.  Don't
-confuse them as that will just cause lots of problems.
-
-The move toward more and more "devm" functions is not the way to go as
-they just more and more make things easier to get wrong.
-
-APIs should be impossible to get wrong, this one is going to be almost
-impossible to get right.
-
-thanks,
-
-greg k-h
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
