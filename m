@@ -2,86 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6655031AC8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8210F31AC91
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbhBMPQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 10:16:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44418 "EHLO
+        id S229702AbhBMPSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 10:18:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhBMPQT (ORCPT
+        with ESMTP id S229649AbhBMPSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 10:16:19 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0A7C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 07:15:39 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id v7so3235426eds.10
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 07:15:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+53dwZq7zsOO2pgcY0g5mhQkV+ogJkALjGneKeNgxcg=;
-        b=jawz1GjvM04O15Neojs9DXosrwwzyBWno6vjqMUD3vTZ49QwGdlpYxfxHsM6JfUwGP
-         XjbW+hNGnGEnMX56sK6rQ864PvVStpp1S3F/SpBFMxWrRRov6STvv8iQL/ht4aPMBfki
-         CbQGCbKVoBwJHcaduKxpX57E7YJGlxvIL9SOU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+53dwZq7zsOO2pgcY0g5mhQkV+ogJkALjGneKeNgxcg=;
-        b=O0IfFyDsYRL66ZRl2HHFJx+UJN8JNygxwhy18XuYwLO12uelgekuXAv1h19g6U9esP
-         gWEXStv2BYqsxv5ngir4XKHbmWYnRjJVnxJq9DNdDLU4LATEHLFzfuhz0mc469b44RAL
-         Njo6D2IwRf/mTrnLFWQxIMipxpcQu1onGCXwweU3WbvJlMgtHhSfAHeUsal4v6ZEK6qV
-         Nc9t2eWJ1nbZsn9VnheG8sBc0n+WZ+yrSiBYQJBuYGS2o3pib96dwjqsYdFhy2j6ogBj
-         3aYbUCwhqTHgQwisgPWvXTzgFCQIk3WHlhxGwRdyBj27w/4czTaSMmscLTkMYjJVnB0V
-         y+iQ==
-X-Gm-Message-State: AOAM533PVE7t7i3qEDaGeftUXHapS81KlHKvBChN+6Zv4K4oUx+BqlPa
-        2K6NBPU8VQyQ9oXB7wyEHq+o1Q==
-X-Google-Smtp-Source: ABdhPJyS1xTR/auRilP5asQTKC5DJi0vP+fInYFjo5PXFzCSI2uj25o9lT4UXgNA7pT4BkVZj787AQ==
-X-Received: by 2002:a05:6402:3553:: with SMTP id f19mr8199580edd.271.1613229337967;
-        Sat, 13 Feb 2021 07:15:37 -0800 (PST)
-Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
-        by smtp.gmail.com with ESMTPSA id b6sm8150659ejb.8.2021.02.13.07.15.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 07:15:37 -0800 (PST)
-Date:   Sat, 13 Feb 2021 15:15:37 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
+        Sat, 13 Feb 2021 10:18:32 -0500
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C2BADC061574;
+        Sat, 13 Feb 2021 07:17:51 -0800 (PST)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 499989200BF; Sat, 13 Feb 2021 16:17:50 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 464369200BC;
+        Sat, 13 Feb 2021 16:17:50 +0100 (CET)
+Date:   Sat, 13 Feb 2021 16:17:50 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+cc:     Jinyang He <hejinyang@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v4] printk: Userspace format enumeration support
-Message-ID: <YCftGWAKe1rUbWll@chrisdown.name>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
- <202102130158.8qvFdZvE-lkp@intel.com>
- <YCfiYKvuW4DxgICH@chrisdown.name>
+        Ingo Molnar <mingo@redhat.com>,
+        Wu Zhangjin <wuzhangjin@gmail.com>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH 1/3] MIPS: ftrace: Fix N32 save registers
+In-Reply-To: <83e49b6e-9c9d-407e-8ac1-f3fad63df915@www.fastmail.com>
+Message-ID: <alpine.DEB.2.21.2102131609420.35623@angie.orcam.me.uk>
+References: <1612080878-5426-1-git-send-email-hejinyang@loongson.cn> <b1a5eae4-2032-4ace-aa48-a21893e47528@www.fastmail.com> <d9548ffc-9d91-baf6-107a-af1b174db29b@loongson.cn> <83e49b6e-9c9d-407e-8ac1-f3fad63df915@www.fastmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YCfiYKvuW4DxgICH@chrisdown.name>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Down writes:
->kernel test robot writes:
->>Hi Chris,
->>
->>Thank you for the patch! Yet something to improve:
->
->I'm pretty sure !CONFIG_PRINTK && CONFIG_IA64_DEBUG_CMPXCHG has been 
->broken like this long before this change.
+On Mon, 1 Feb 2021, Jiaxun Yang wrote:
 
-I sent "ia64: Depend on non-static printk for cmpxchg debug"[0] to ia64 folks.  
-It shouldn't block this patch, this is already broken.
+> > Thank you for your reply, and now I know. Before that, I saw the macro
+> > from arch/mips/include/asm/regdef.h and thought it needed to be modified
+> > here. But that seems have no sence.
+> > Please ignore this patch.
+> 
+> I guess that's for uapi consideration.
 
-0: https://lore.kernel.org/patchwork/patch/1380380/
+ Nope, it's not under arch/mips/include/uapi/, but this is a common MIPS 
+header used across many projects (see the copyright notices at the top 
+going back to 1985), so there has been no sense to make Linux-specific 
+changes to it just for the sake of it given that it works as it stands.  
+Don't fix what ain't broke.  Don't make changes just because you can.
+
+  Maciej
