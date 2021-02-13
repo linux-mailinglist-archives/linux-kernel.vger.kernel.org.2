@@ -2,147 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F5631A9D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 05:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4266A31A9E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 05:45:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbhBMESw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 23:18:52 -0500
-Received: from mail-eopbgr1410130.outbound.protection.outlook.com ([40.107.141.130]:53532
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229570AbhBMESs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 23:18:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FY4FneK/L3Ha81pgiZ8fn+Yhls3fJqUcZNn1QekprEgaBHfOSm3Bb5ouIlWhQeHHuGBBeVVxpBI0lYDdJoUVvaVW/p8EfboU5FAnxA6cHfxf0o1aglSJFMebxU++QQg3eFI+X8Y58sIYpXBSo2ZB06cpWmRdOKrHNrpPHaFGy5mttDEd92ctjI8h02cBW3QWKwN05sHexPmdsdkgNs15Qp9CmuS3R+5PCne7OW0v9g1eC+lzqg5L6HYP1msGDHYxwOyptRJJJoIm35lmenVUpHxhDVN6Y3kYz1xSplsp9bsDqGPFTK7Bshbxaub2veJX6WmaYBEMDXY697geYm2gEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yWVQbwUeR7xa/vRZ6uEadnmrQvIm79GhxfWotQmkJzs=;
- b=It+cvkF6h8PpP3R2/tsSg/oy6ueylsd2ns70sPcxR53oIMGum09zjDElwCk+d8JfjLi4+R2X66gWFwrXu881u6kPU3gyd/iVNwkmpfhxHs3CukCcR6u8w/F1R0wg2upelML6CqkUXkhpmxXcGeAo3aJoU2rZeujxaUmDBDFTibnG9Rw6bfOu88wKgQhA5Aj4auG4RvHds6LfP+dMSGialWfWNMA0d/1ThluKzSJQQWP++4o1IAp+FY99wuNRgWmwao0Nw0Im0c9gXVTzETqhRk/GJl8e68i5cD/lEaXD/w3cOvY3WfSxOp3PHjDVB7Jufgu8Gw7SAvBrD/d/37BCsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yWVQbwUeR7xa/vRZ6uEadnmrQvIm79GhxfWotQmkJzs=;
- b=I8wrkg+vzu0LCnHuzxc4TTDwqrDmq20TsidhFlwcsbhZZA7JP+bUJLs/UMU9ZpKGSHhstdRlTwUSJwTHtuq9s+cbTUkmEYi9sa7ARhgpfBEZiXwg7NrScSNW6I2EwJof4zT5QDIJzoT/IQoB6Dv1jMt6R7NdRvp7cf1BQSx1Ggw=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=renesas.com;
-Received: from OSAPR01MB5137.jpnprd01.prod.outlook.com (2603:1096:604:6d::17)
- by OSBPR01MB4262.jpnprd01.prod.outlook.com (2603:1096:604:4f::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Sat, 13 Feb
- 2021 04:17:58 +0000
-Received: from OSAPR01MB5137.jpnprd01.prod.outlook.com
- ([fe80::d46f:1a71:68ad:42a4]) by OSAPR01MB5137.jpnprd01.prod.outlook.com
- ([fe80::d46f:1a71:68ad:42a4%7]) with mapi id 15.20.3846.030; Sat, 13 Feb 2021
- 04:17:58 +0000
-Date:   Fri, 12 Feb 2021 23:17:45 -0500
-From:   Vincent Cheng <vincent.cheng.xh@renesas.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] ptp: ptp_clockmatrix: Add
- wait_for_sys_apll_dpll_lock.
-Message-ID: <20210213041742.GA14189@renesas.com>
-References: <1613104725-22056-1-git-send-email-vincent.cheng.xh@renesas.com>
- <1613104725-22056-2-git-send-email-vincent.cheng.xh@renesas.com>
- <20210212153140.GB23246@hoboy.vegasvil.org>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210212153140.GB23246@hoboy.vegasvil.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [173.195.53.163]
-X-ClientProxiedBy: BN9PR03CA0239.namprd03.prod.outlook.com
- (2603:10b6:408:f8::34) To OSAPR01MB5137.jpnprd01.prod.outlook.com
- (2603:1096:604:6d::17)
+        id S231946AbhBMEm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 23:42:57 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:53439 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229718AbhBMEmx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 23:42:53 -0500
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 11D4fXON003851;
+        Sat, 13 Feb 2021 13:41:33 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 11D4fXON003851
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613191294;
+        bh=VtwzTs7t+yMIoTEyh6Ci+xZr/ph8zDWPG+WEC8xBy3U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=08hJff096gJ1QloTX3xJTuTm84m2BHZzepggAD9CQmbF/8pYZTonUkM+uwWCeW6b6
+         5U6HPDO4WGz4/lnvwPsC3s0Yii6HeLuQqRVyauLANRFiUrqhTlCbjtJcokaTJRHH5v
+         GC/+X3eQbdl+idgBDNtNuSPcfIof952+Ljqe4uWmKjsffY5HTzlzR5iKhACFBoSLqr
+         k0EznIKcOQJiibNjqOHSQoeJjrxHmGfXhNRzkAdyVK0cduVcPRXA33heIkVL82G9F5
+         RNVpNlLGZEvvBQlS6TFMI6sNowTWgW1rvt1g7/xh9xsVNHPA/BNgsV3E4tLEv/pHul
+         uvE0rsLiYaQog==
+X-Nifty-SrcIP: [209.85.216.44]
+Received: by mail-pj1-f44.google.com with SMTP id my11so1087482pjb.1;
+        Fri, 12 Feb 2021 20:41:33 -0800 (PST)
+X-Gm-Message-State: AOAM530WgR89OwoBkJvxdfvvzMoKIQeYTXr7A5HiCmDjuoLoZryNEFl8
+        T9G+lRaySCgxaRfMwF5AwAoeMk1IfLhnHxPvmhs=
+X-Google-Smtp-Source: ABdhPJzyYF/q+0I82mHrNqBdW/9veWQ/SloqeavOVWSS6qD21FRc7ApcWXMpu4R/UkndY2hOktTsy9Vl6Garz9KHzAc=
+X-Received: by 2002:a17:90b:1b50:: with SMTP id nv16mr5488947pjb.153.1613191292991;
+ Fri, 12 Feb 2021 20:41:32 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from renesas.com (173.195.53.163) by BN9PR03CA0239.namprd03.prod.outlook.com (2603:10b6:408:f8::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Sat, 13 Feb 2021 04:17:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 8349e046-384f-43d3-89e4-08d8cfd65823
-X-MS-TrafficTypeDiagnostic: OSBPR01MB4262:
-X-Microsoft-Antispam-PRVS: <OSBPR01MB4262D482007317103C641557D28A9@OSBPR01MB4262.jpnprd01.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vLUeN8ceuW38Rvg0cc7zeWnSWXmWEgQEh3fT0tfF3nzo3B9dzsAdC9uv9sbeFJof6VI7CAXrey+Yz+cCuRR9nAYDhLCO5nzq7/Nu30q15mUdVeLt7tJhg84N5ScY1eJuFc33h6EL+4vuP9sW/NNxg+h96zOtCreIcE86udC7Zhux12IBkwHit5EaCkxKhFr8gYnwakNBqG5MwVPGA2wl81Ly/ijVFjzzNgBotoYbcsbr8VcjokEeGdtpJCZCwU8QeQNyRM4h5gzbHgEOjE2QoJ7cFSbwuGkATx9Sh1HS1njSqlOjiZGE1Yi3Hrns24Y87mVlOJWx8PK6qoCiCRmFzYVOjnwKpuNYdjSmBvHERuWLYbuGqCYs6T3T5FfuDKgfws8qxW0eKDqhKaCsjIjKch4WPjgL33NuClQUSX8TF9EbqQ2qCMWnAVNBa8LX8LQXjHpMnKVHwgyYxt0Yde3g2CMZkLiy3eHG++cAlNn2WBo9Hpwn+8qmx5cvvmnDnsXm1etgtga/0D5SxgJyA5S0sw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB5137.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(39860400002)(136003)(366004)(66476007)(83380400001)(186003)(66556008)(33656002)(8676002)(8886007)(8936002)(6666004)(7696005)(956004)(52116002)(6916009)(316002)(66946007)(2616005)(4744005)(86362001)(478600001)(26005)(1076003)(16526019)(2906002)(4326008)(36756003)(55016002)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Y3ZOOVcvd0hkWXJ1RTNtTkM2S1Z4cmd1cmN2dW1PMjR4bTFRaVFNMW82eUM4?=
- =?utf-8?B?YXVZNWg3cndyVkpST3c3Sm40cEY2NzVtQlZmeVVlMG5QUngxcFJ1Rk9TNjRF?=
- =?utf-8?B?R2dsbDAzT2laRmk3eHQ3TzlkVEloeGttT2lRS1VXQmtFVjBQL0NXdk9BU3N6?=
- =?utf-8?B?Yk4wR1BhazNZSWpHNzJTL01xM3ZTd3JrT1huY0VRTS9ZaXhGVzhOUisxbzNq?=
- =?utf-8?B?SnNMN2Z2ZEVoNlVSbXJMWDFHandOenVLRzdiWVU0cWFvcGwzci9OWkNvdk1C?=
- =?utf-8?B?dmw0THZvUlczSUc3bnZyTlI3WU9vWnE0UldZWE1seXgvWHBESy8waldVNXhT?=
- =?utf-8?B?T1lDcExzWkFseEFSc3pTZEtCdTZZaW8vYlpheWpSM0pPcEltYkhBbFVLR2hv?=
- =?utf-8?B?SU1HVTZsM1U0Ym03MXJKbW9MVk5TTFp1UkVhalhHNk1uZDdQZ1lFMk5CTHVo?=
- =?utf-8?B?TjNHcXlWQzM3R0tHdzBkbjJoNHpkM1lyWVl6cEp2ZndCYnZ1OEtJWVVkdFJ3?=
- =?utf-8?B?VlZPNFJvaU53ZGorSEpxZjE1aHVmeGczemZ2Ukl1Z1NTM1A2RVNPUkg0a0xB?=
- =?utf-8?B?U2NSSnlYVUYzSFUvdStNU3dnUWdtaWdNUEc3cGtoSE1nTUpzbk1qNlJRS0pJ?=
- =?utf-8?B?bGlQaXJqMzA4alYrQUROcmtnSHJwVHNOS3VDNlQ3RVBleEJuQ2JOcDYwK3Nr?=
- =?utf-8?B?dFA5Z3FaempBQlkwTXRjOS9HYWUvNktlMVFKUk9VN3dySXc4NytKNHp4K3pi?=
- =?utf-8?B?M3RQd1pIb2NYdG1lL0wzUE5TVTJocmphNzk3dUZIT2NGMWlDTEc2aUNFblFq?=
- =?utf-8?B?dDB5V1RkRHJ1MndBNzNhL1o0aDFzVWQvWW1NcnVNeURiKy9XeHdHMVVzeklI?=
- =?utf-8?B?U0RSdHBLcENsNm8wUFN1YVRsRFlraDhETE40b2Q3UWJncVhNNFd4S2VieTZG?=
- =?utf-8?B?cHFzQmRxQzcyT0UxdWZzM2xZSEI4MkVQQ214Z1ZWVzB5NU4xMGgwaXNxQWtW?=
- =?utf-8?B?WXZjMVgxVVdZTGZOVmd6aDRjVktPa3pZVjA3Nk91ckRETlU3YVJvd1JocTc1?=
- =?utf-8?B?SkQxQk16TVJjbVhtQy9WRHRpL1ZzWk5VZHJCMWpaR25DWk8weHhaWGxla2xu?=
- =?utf-8?B?WG96Nmw2eWE1bE5OZjhqdlZhZmZkcmZLcUJJeTRJdkNLbEllYm01QXJPdmpM?=
- =?utf-8?B?Y211YUJvcFk5VXZDUlZtSmFMbVRiOUdDY1lzeW9aMmZzRlRrSzNHMURJVmVM?=
- =?utf-8?B?MTRNWklnWmtySDRwY1ZpUzhXQVBvQ2plWkZzMTg2QXZza2JPdWtGNlFpWjh5?=
- =?utf-8?B?UVQrL2ZRbWE4dHVNYXBLQXhSaW9UTWs2RUFSZi9tYTVZYlFINGV2UUNESzN6?=
- =?utf-8?B?eUh5OFJ4RmF5VjNCMWxMdXhoK085cTl0bExKQXZwYVhoc3JoeW5nUEtnQnh0?=
- =?utf-8?B?MGpnWTJSc2duaXpzZm4vTzNZeG9nRFNMQTlGZTdiQ2VJMHA3VTd0Tit6UFh0?=
- =?utf-8?B?VmpIZndMOSt6eThZck5TVjhLVnVpejdmZFRSRzVZTy9scDhLdHN1N2hiRDVS?=
- =?utf-8?B?aS9DSmo0QWd1QWlFNGhoYlQ2S1pXcEFoS2Ivd3pTVHJRV1BCR3RFQ1FRZFli?=
- =?utf-8?B?VHpDM1ZKWjRyeWRJRHFTSDJRNVIvRjZSVE1vcVZYdDJadkZMWFdTd3MwZW1J?=
- =?utf-8?B?R1JibnFrZ2lnUnNRZ2ZUbC9vakd2STJ3bnBxaWZIa3ZFQ21pcjA2WjRWUlJX?=
- =?utf-8?Q?eJHl3aAlqUXcsrvB473x/QNJTQ8PY4LY6DMpDKR?=
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8349e046-384f-43d3-89e4-08d8cfd65823
-X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB5137.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2021 04:17:58.5178
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5Iin5S9yMOvywrakpAF2fQ8xj9GOM5r14mZR/68eqyteJO1iVwzqkMfltYgkJc04pkXGeMzlpShvIQtWPAoNwLDNAInnrlFCCdipF8sMFVQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB4262
+References: <20210212162924.2269887-1-sashal@kernel.org>
+In-Reply-To: <20210212162924.2269887-1-sashal@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 13 Feb 2021 13:40:54 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARKhxeV-41zENk7aBSmZDBZhAxDoN=SOH4yAgyrSjjVdA@mail.gmail.com>
+Message-ID: <CAK7LNARKhxeV-41zENk7aBSmZDBZhAxDoN=SOH4yAgyrSjjVdA@mail.gmail.com>
+Subject: Re: [PATCH v2] kbuild: simplify access to the kernel's version
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 10:31:40AM EST, Richard Cochran wrote:
-
->On Thu, Feb 11, 2021 at 11:38:44PM -0500, vincent.cheng.xh@renesas.com wrote:
+On Sat, Feb 13, 2021 at 1:29 AM Sasha Levin <sashal@kernel.org> wrote:
 >
->> +static int wait_for_sys_apll_dpll_lock(struct idtcm *idtcm)
->> +{
->> +	char *fmt = "%d ms SYS lock timeout: APLL Loss Lock %d  DPLL state %d";
+> Instead of storing the version in a single integer and having various
+> kernel (and userspace) code how it's constructed, export individual
+> (major, patchlevel, sublevel) components and simplify kernel code that
+> uses it.
 >
->Probably you want: const char *fmt
-
-Good point, will change in V2 patch.
-
+> This should also make it easier on userspace.
 >
->> diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
->> index 645de2c..fb32327 100644
->> --- a/drivers/ptp/ptp_clockmatrix.h
->...
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  Makefile                                       | 5 ++++-
+>  drivers/net/ethernet/mellanox/mlx5/core/main.c | 4 ++--
+>  drivers/usb/core/hcd.c                         | 4 ++--
+>  drivers/usb/gadget/udc/aspeed-vhub/hub.c       | 4 ++--
+>  include/linux/usb/composite.h                  | 4 ++--
+>  kernel/sys.c                                   | 2 +-
+>  6 files changed, 13 insertions(+), 10 deletions(-)
+
+
+
+
+Applied to linux-kbuild. Thanks.
+
+
+
+
+
+> diff --git a/Makefile b/Makefile
+> index 12607d3891487..1fdd44fe16590 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1255,7 +1255,10 @@ define filechk_version.h
+>                 expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
+>         fi;                                                              \
+>         echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
+> -       ((c) > 255 ? 255 : (c)))'
+> +       ((c) > 255 ? 255 : (c)))';                                       \
+> +       echo \#define LINUX_VERSION_MAJOR $(VERSION);                    \
+> +       echo \#define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL);            \
+> +       echo \#define LINUX_VERSION_SUBLEVEL $(SUBLEVEL)
+>  endef
 >
->> @@ -123,7 +137,6 @@ struct idtcm_channel {
->>  	enum pll_mode		pll_mode;
->>  	u8			pll;
->>  	u16			output_mask;
->> -	u8			output_phase_adj[MAX_OUTPUT][4];
->>  };
+>  $(version_h): FORCE
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> index ca6f2fc39ea0a..29f886263dc52 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> @@ -235,8 +235,8 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
+>         remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
 >
->Looks like this removal is unrelated to the patch subject, and so it
->deserves its own small patch.
+>         snprintf(string + strlen(string), remaining_size, "%u.%u.%u",
+> -                (u8)((LINUX_VERSION_CODE >> 16) & 0xff), (u8)((LINUX_VERSION_CODE >> 8) & 0xff),
+> -                (u16)(LINUX_VERSION_CODE & 0xffff));
+> +               LINUX_VERSION_MAJOR, LINUX_VERSION_PATCHLEVEL,
+> +               LINUX_VERSION_SUBLEVEL);
+>
+>         /*Send the command*/
+>         MLX5_SET(set_driver_version_in, in, opcode,
+> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+> index ad5a0f405a75c..3f0381344221e 100644
+> --- a/drivers/usb/core/hcd.c
+> +++ b/drivers/usb/core/hcd.c
+> @@ -111,8 +111,8 @@ DECLARE_WAIT_QUEUE_HEAD(usb_kill_urb_queue);
+>   */
+>
+>  /*-------------------------------------------------------------------------*/
+> -#define KERNEL_REL     bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
+> -#define KERNEL_VER     bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
+> +#define KERNEL_REL     bin2bcd(LINUX_VERSION_MAJOR)
+> +#define KERNEL_VER     bin2bcd(LINUX_VERSION_PATCHLEVEL)
+>
+>  /* usb 3.1 root hub device descriptor */
+>  static const u8 usb31_rh_dev_descriptor[18] = {
+> diff --git a/drivers/usb/gadget/udc/aspeed-vhub/hub.c b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
+> index bfd8e77788e29..5c7dea5e0ff16 100644
+> --- a/drivers/usb/gadget/udc/aspeed-vhub/hub.c
+> +++ b/drivers/usb/gadget/udc/aspeed-vhub/hub.c
+> @@ -46,8 +46,8 @@
+>   *    - Make vid/did overridable
+>   *    - make it look like usb1 if usb1 mode forced
+>   */
+> -#define KERNEL_REL     bin2bcd(((LINUX_VERSION_CODE >> 16) & 0x0ff))
+> -#define KERNEL_VER     bin2bcd(((LINUX_VERSION_CODE >> 8) & 0x0ff))
+> +#define KERNEL_REL     bin2bcd(LINUX_VERSION_MAJOR)
+> +#define KERNEL_VER     bin2bcd(LINUX_VERSION_PATCHLEVEL)
+>
+>  enum {
+>         AST_VHUB_STR_INDEX_MAX = 4,
+> diff --git a/include/linux/usb/composite.h b/include/linux/usb/composite.h
+> index a2d229ab63ba5..7531ce7233747 100644
+> --- a/include/linux/usb/composite.h
+> +++ b/include/linux/usb/composite.h
+> @@ -573,8 +573,8 @@ static inline u16 get_default_bcdDevice(void)
+>  {
+>         u16 bcdDevice;
+>
+> -       bcdDevice = bin2bcd((LINUX_VERSION_CODE >> 16 & 0xff)) << 8;
+> -       bcdDevice |= bin2bcd((LINUX_VERSION_CODE >> 8 & 0xff));
+> +       bcdDevice = bin2bcd(LINUX_VERSION_MAJOR) << 8;
+> +       bcdDevice |= bin2bcd(LINUX_VERSION_PATCHLEVEL);
+>         return bcdDevice;
+>  }
+>
+> diff --git a/kernel/sys.c b/kernel/sys.c
+> index 51f00fe20e4d1..c2225bd405d58 100644
+> --- a/kernel/sys.c
+> +++ b/kernel/sys.c
+> @@ -1243,7 +1243,7 @@ static int override_release(char __user *release, size_t len)
+>                                 break;
+>                         rest++;
+>                 }
+> -               v = ((LINUX_VERSION_CODE >> 8) & 0xff) + 60;
+> +               v = LINUX_VERSION_PATCHLEVEL + 60;
+>                 copy = clamp_t(size_t, len, 1, sizeof(buf));
+>                 copy = scnprintf(buf, copy, "2.6.%u%s", v, rest);
+>                 ret = copy_to_user(release, buf, copy + 1);
+> --
+> 2.27.0
+>
 
-Ok, will separate into separate patch for V2.
 
-Vincent
-
+-- 
+Best Regards
+Masahiro Yamada
