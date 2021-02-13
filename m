@@ -2,331 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559E731AAEE
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 11:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C7131AAF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 11:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhBMKx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 05:53:28 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:14161 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhBMKxY (ORCPT
+        id S229649AbhBMKzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 05:55:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhBMKzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 05:53:24 -0500
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id CC2B9240007;
-        Sat, 13 Feb 2021 10:52:36 +0000 (UTC)
-Subject: Re: [PATCH v2 1/1] riscv/kasan: add KASAN_VMALLOC support
-From:   Alex Ghiti <alex@ghiti.fr>
-To:     Palmer Dabbelt <palmer@dabbelt.com>, nylon7@andestech.com
-Cc:     aou@eecs.berkeley.edu, nickhu@andestech.com, alankao@andestech.com,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        nylon7717@gmail.com, glider@google.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aryabinin@virtuozzo.com, linux-riscv@lists.infradead.org,
-        dvyukov@google.com
-References: <mhng-443fd141-b9a3-4be6-a056-416877f99ea4@palmerdabbelt-glaptop>
- <2b2f3038-3e27-8763-cf78-3fbbfd2100a0@ghiti.fr>
-Message-ID: <4fa97788-157c-4059-ae3f-28ab074c5836@ghiti.fr>
-Date:   Sat, 13 Feb 2021 05:52:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Sat, 13 Feb 2021 05:55:46 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744A3C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 02:55:05 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id g10so2577101wrx.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 02:55:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p7aJCQPOAWhA7x4o25lcJFhvX0SrgHfv80XtgRDoDP4=;
+        b=wLgGZeVFTkNo/KYwPBF7sQ4JU6KMzh3rUFRnZsXataO9rNbkboX3IS3ML/eQ3sdn9c
+         3BpDHqu4bJ43peaZEjoAJX/QKxsxxt3B0CNeC0I+FKW4j83W6qBpTxayn+iLs0eZgjaR
+         cWuQvJKxyoHo+UdxxmhX+zCTmyVI6Ju1eH+fVbfDnBn5lbxQUlXD8tzUYOkLgvr2zOP5
+         InwqsN56moapHKC8xretWr6F5p3WWlAe4bNsrvm3CniXUTUtwj2PbqIx0NbRGQwjIIA2
+         gSxeq3rzdiW7AkjZn5xE0V+Dk5RWnc7hL2RxN1WXIl4k7vSgqSE99Ama8srX7MQJXgd/
+         jXkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p7aJCQPOAWhA7x4o25lcJFhvX0SrgHfv80XtgRDoDP4=;
+        b=H174kgXoyB2UFU5jqU6tbVZcmTHEBnD3DKRHAYxhrLDpKCg202RDgOO+mfCqDhc8+q
+         zwkdT18+tUcb+hCipCslVq56muSFK8Pp9zzVpa7rWgkI0ZNWpVfUI+ZINx4gl28KEZYQ
+         d1Umxj+MO08yzd9W1fiNTKBZkwYW3c2S/rjZPijy5k0CrRnOVPPHK616ULoM/thhQB0m
+         EVw4PRZcJStQa1vPsXEhJX4r+uqGoetILUSdQw+Usr++lgkazoriZDH3n4a+7TxVaa+G
+         sPEO/CpGssprwE6MjB8pJoWtdbflwbbGjxl1Og+FztmDNR3CEYGc+Zv1CRunkQ/UEJXH
+         foBg==
+X-Gm-Message-State: AOAM5319yyYRKhdaZRaqMQZMgvhpCSm+CGaTcPDTFaMbKgD2ROiWKqFS
+        Ilm0yzlonlGUiUnhqmvYciEPax/gHUzvWnmeSjFtYDCmnhD7yA==
+X-Google-Smtp-Source: ABdhPJx6AtGx/GgpqQgbBTpHd04etQqgxM8y1ZKKYsczFDKKXWnhl/Vn66Xlhx3En73obdX4RK9nbVYmFwVErzpnIcc=
+X-Received: by 2002:adf:e884:: with SMTP id d4mr7991020wrm.275.1613213704109;
+ Sat, 13 Feb 2021 02:55:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2b2f3038-3e27-8763-cf78-3fbbfd2100a0@ghiti.fr>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210212172336.20550-1-saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <20210212172336.20550-1-saiprakash.ranjan@codeaurora.org>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Sat, 13 Feb 2021 10:54:53 +0000
+Message-ID: <CAJ9a7VgDxgVUhgrcZc7jX3psWrxWoqHOJ+O36eQf7+-MjVOVeQ@mail.gmail.com>
+Subject: Re: [PATCH] coresight: etm4x: Add ETM PIDs for Cortex-A55 and Cortex-A78
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nylon, Palmer,
+Hi Sai,
 
-Le 2/8/21 à 1:28 AM, Alex Ghiti a écrit :
-> Hi Nylon,
-> 
-> Le 1/22/21 à 10:56 PM, Palmer Dabbelt a écrit :
->> On Fri, 15 Jan 2021 21:58:35 PST (-0800), nylon7@andestech.com wrote:
->>> It references to x86/s390 architecture.
->>> >> So, it doesn't map the early shadow page to cover VMALLOC space.
->>>
->>> Prepopulate top level page table for the range that would otherwise be
->>> empty.
->>>
->>> lower levels are filled dynamically upon memory allocation while
->>> booting.
-> 
-> I think we can improve the changelog a bit here with something like that:
-> 
-> "KASAN vmalloc space used to be mapped using kasan early shadow page. 
-> KASAN_VMALLOC requires the top-level of the kernel page table to be 
-> properly populated, lower levels being filled dynamically upon memory 
-> allocation at runtime."
-> 
->>>
->>> Signed-off-by: Nylon Chen <nylon7@andestech.com>
->>> Signed-off-by: Nick Hu <nickhu@andestech.com>
->>> ---
->>>  arch/riscv/Kconfig         |  1 +
->>>  arch/riscv/mm/kasan_init.c | 57 +++++++++++++++++++++++++++++++++++++-
->>>  2 files changed, 57 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->>> index 81b76d44725d..15a2c8088bbe 100644
->>> --- a/arch/riscv/Kconfig
->>> +++ b/arch/riscv/Kconfig
->>> @@ -57,6 +57,7 @@ config RISCV
->>>      select HAVE_ARCH_JUMP_LABEL
->>>      select HAVE_ARCH_JUMP_LABEL_RELATIVE
->>>      select HAVE_ARCH_KASAN if MMU && 64BIT
->>> +    select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
->>>      select HAVE_ARCH_KGDB
->>>      select HAVE_ARCH_KGDB_QXFER_PKT
->>>      select HAVE_ARCH_MMAP_RND_BITS if MMU
->>> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
->>> index 12ddd1f6bf70..4b9149f963d3 100644
->>> --- a/arch/riscv/mm/kasan_init.c
->>> +++ b/arch/riscv/mm/kasan_init.c
->>> @@ -9,6 +9,19 @@
->>>  #include <linux/pgtable.h>
->>>  #include <asm/tlbflush.h>
->>>  #include <asm/fixmap.h>
->>> +#include <asm/pgalloc.h>
->>> +
->>> +static __init void *early_alloc(size_t size, int node)
->>> +{
->>> +    void *ptr = memblock_alloc_try_nid(size, size,
->>> +        __pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
->>> +
->>> +    if (!ptr)
->>> +        panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d 
->>> from=%llx\n",
->>> +            __func__, size, size, node, (u64)__pa(MAX_DMA_ADDRESS));
->>> +
->>> +    return ptr;
->>> +}
->>>
->>>  extern pgd_t early_pg_dir[PTRS_PER_PGD];
->>>  asmlinkage void __init kasan_early_init(void)
->>> @@ -83,6 +96,40 @@ static void __init populate(void *start, void *end)
->>>      memset(start, 0, end - start);
->>>  }
->>>
->>> +void __init kasan_shallow_populate(void *start, void *end)
->>> +{
->>> +    unsigned long vaddr = (unsigned long)start & PAGE_MASK;
->>> +    unsigned long vend = PAGE_ALIGN((unsigned long)end);
->>> +    unsigned long pfn;
->>> +    int index;
->>> +    void *p;
->>> +    pud_t *pud_dir, *pud_k;
->>> +    pgd_t *pgd_dir, *pgd_k;
->>> +    p4d_t *p4d_dir, *p4d_k;
->>> +
->>> +    while (vaddr < vend) {
->>> +        index = pgd_index(vaddr);
->>> +        pfn = csr_read(CSR_SATP) & SATP_PPN;
-> 
-> At this point in the boot process, we know that we use swapper_pg_dir so 
-> no need to read SATP.
-> 
->>> +        pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
-> 
-> Here, this pgd_dir assignment is overwritten 2 lines below, so no need 
-> for it.
-> 
->>> +        pgd_k = init_mm.pgd + index;
->>> +        pgd_dir = pgd_offset_k(vaddr);
-> 
-> pgd_offset_k(vaddr) = init_mm.pgd + pgd_index(vaddr) so pgd_k == pgd_dir.
-> 
->>> +        set_pgd(pgd_dir, *pgd_k);
->>> +
->>> +        p4d_dir = p4d_offset(pgd_dir, vaddr);
->>> +        p4d_k  = p4d_offset(pgd_k, vaddr);
->>> +
->>> +        vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
-> 
-> Why do you increase vaddr *before* populating the first one ? And 
-> pud_addr_end does that properly: it returns the next pud address if it 
-> does not go beyond end address to map.
-> 
->>> +        pud_dir = pud_offset(p4d_dir, vaddr);
->>> +        pud_k = pud_offset(p4d_k, vaddr);
->>> +
->>> +        if (pud_present(*pud_dir)) {
->>> +            p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
->>> +            pud_populate(&init_mm, pud_dir, p);
-> 
-> init_mm is not needed here.
-> 
->>> +        }
->>> +        vaddr += PAGE_SIZE;
-> 
-> Why do you need to add PAGE_SIZE ? vaddr already points to the next pud.
-> 
-> It seems like this patch tries to populate userspace page table whereas 
-> at this point in the boot process, only swapper_pg_dir is used or am I 
-> missing something ?
-> 
-> Thanks,
-> 
-> Alex
+This patch does not apply to coresight/next - possibly because the PID
+for A55 has been added in an earlier patch ( [b8336ad947e19 ]
+coresight: etm4x: add AMBA id for Cortex-A55 and Cortex-A75).
 
-I implemented this morning a version that fixes all the comments I made 
-earlier. I was able to insert test_kasan_module on both sv39 and sv48 
-without any modification: set_pgd "goes through" all the unused page 
-table levels, whereas p*d_populate are noop for unused levels.
+Regards
 
-If you have any comment, do not hesitate.
+Mike
 
-diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c 
 
-index adbf94b7e68a..d643b222167c 100644 
 
---- a/arch/riscv/mm/kasan_init.c 
+On Fri, 12 Feb 2021 at 17:23, Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> Add ETM PIDs for Cortex-A55 and Cortex-A78 to the list of
+> supported ETMs.
+>
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>  drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index b20b6ff17cf6..193233792ab5 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -1713,7 +1713,9 @@ static const struct amba_id etm4_ids[] = {
+>         CS_AMBA_ID(0x000bb95a),                 /* Cortex-A72 */
+>         CS_AMBA_ID(0x000bb959),                 /* Cortex-A73 */
+>         CS_AMBA_UCI_ID(0x000bb9da, uci_id_etm4),/* Cortex-A35 */
+> +       CS_AMBA_UCI_ID(0x000bbd05, uci_id_etm4),/* Cortex-A55 */
+>         CS_AMBA_UCI_ID(0x000bbd0c, uci_id_etm4),/* Neoverse N1 */
+> +       CS_AMBA_UCI_ID(0x000bbd41, uci_id_etm4),/* Cortex-A78 */
+>         CS_AMBA_UCI_ID(0x000f0205, uci_id_etm4),/* Qualcomm Kryo */
+>         CS_AMBA_UCI_ID(0x000f0211, uci_id_etm4),/* Qualcomm Kryo */
+>         CS_AMBA_UCI_ID(0x000bb802, uci_id_etm4),/* Qualcomm Kryo 385 Cortex-A55 */
+>
+> base-commit: 1efbcec2ef8c037f1e801c76e4b9434ee2400be7
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
 
-+++ b/arch/riscv/mm/kasan_init.c 
 
-@@ -195,6 +195,31 @@ static void __init kasan_populate(void *start, void 
-*end)
-         memset(start, KASAN_SHADOW_INIT, end - start); 
-
-  } 
-
- 
-
-+void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsigned 
-long end)
-+{ 
-
-+       unsigned long next; 
-
-+       void *p; 
-
-+       pgd_t *pgd_k = pgd_offset_k(vaddr); 
-
-+ 
-
-+       do { 
-
-+               next = pgd_addr_end(vaddr, end); 
-
-+               if (pgd_page_vaddr(*pgd_k) == (unsigned 
-long)lm_alias(kasan_early_shadow_pgd_next)) {
-+                       p = memblock_alloc(PAGE_SIZE, PAGE_SIZE); 
-
-+                       set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)), 
-PAGE_TABLE));
-+               } 
-
-+       } while (pgd_k++, vaddr = next, vaddr != end); 
-
-+} 
-
-+ 
-
-+void __init kasan_shallow_populate(void *start, void *end) 
-
-+{ 
-
-+       unsigned long vaddr = (unsigned long)start & PAGE_MASK; 
-
-+       unsigned long vend = PAGE_ALIGN((unsigned long)end); 
-
-+ 
-
-+       kasan_shallow_populate_pgd(vaddr, vend); 
-
-+ 
-
-+       local_flush_tlb_all(); 
-
-+} 
-
-+ 
-
-  void __init kasan_init(void) 
-
-  { 
-
-         phys_addr_t _start, _end; 
-
-@@ -206,7 +231,15 @@ void __init kasan_init(void) 
-
-          */ 
-
-         kasan_populate_early_shadow((void *)KASAN_SHADOW_START, 
-
-                                     (void *)kasan_mem_to_shadow((void 
-*)
-- 
-VMALLOC_END));
-+ 
-VMEMMAP_END));
-+       if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) 
-
-+               kasan_shallow_populate( 
-
-+                       (void *)kasan_mem_to_shadow((void 
-*)VMALLOC_START),
-+                       (void *)kasan_mem_to_shadow((void 
-*)VMALLOC_END));
-+       else 
-
-+               kasan_populate_early_shadow( 
-
-+                       (void *)kasan_mem_to_shadow((void 
-*)VMALLOC_START),
-+                       (void *)kasan_mem_to_shadow((void 
-*)VMALLOC_END));
- 
-
-         /* Populate the linear mapping */ 
-
-         for_each_mem_range(i, &_start, &_end) { 
-
--- 
-
-2.20.1
-
-Thanks,
-
-Alex
-
-> 
->>> +    }
->>> +}
->>> +
->>>  void __init kasan_init(void)
->>>  {
->>>      phys_addr_t _start, _end;
->>> @@ -90,7 +137,15 @@ void __init kasan_init(void)
->>>
->>>      kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
->>>                      (void *)kasan_mem_to_shadow((void *)
->>> -                                VMALLOC_END));
->>> +                                VMEMMAP_END));
->>> +    if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
->>> +        kasan_shallow_populate(
->>> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_START),
->>> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_END));
->>> +    else
->>> +        kasan_populate_early_shadow(
->>> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_START),
->>> +            (void *)kasan_mem_to_shadow((void *)VMALLOC_END));
->>>
->>>      for_each_mem_range(i, &_start, &_end) {
->>>          void *start = (void *)_start; >
->> Thanks, this is on for-next.
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+--
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
