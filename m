@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D7E31ADC5
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 20:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA8D31ADCA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 20:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhBMTZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 14:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
+        id S229712AbhBMTeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 14:34:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhBMTZV (ORCPT
+        with ESMTP id S229690AbhBMTeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 14:25:21 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007C3C061574;
-        Sat, 13 Feb 2021 11:24:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=FZmTWkQpPPUjaypmE2NG1hSiBy9OhkCuVXbI21b0Gy0=; b=XzSFkSNazb/c2JqWMPG557BDnj
-        XMxC43oU97id9L/waWzw5ux2v830SxpFU2ytTUCx2Yx/SNMMYihLVEnGud4EY6/HphmTj4++3rco3
-        RINLuB6j+cbSLxmHFDWoVOHSSXjvHhJPoK3oD5mdjxrJckaKfN0BIzMrWT5erBH/Te/SyGLzWAN4e
-        bmv8BULeCtibT6Gg+DdJxhw18o9bThyGmF/fsDvR9uVBhCZYUJCHi/i0Dy7LDa3xev3Rx2PcXLJIf
-        yP+x43MIsXKHQVr6vUjGNXF24cEWtFwF66n7vOjFiLdHZM8+Lfc3KhsWqT2xL8V1cp9xjQ1qp9H7P
-        p9tERYEg==;
-Received: from [2601:1c0:6280:3f0::1d53] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lB0Ww-0004x7-LH; Sat, 13 Feb 2021 19:24:35 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH] SCSI: bnx2fc: fix Kconfig warning & CNIC build errors
-Date:   Sat, 13 Feb 2021 11:24:28 -0800
-Message-Id: <20210213192428.22537-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sat, 13 Feb 2021 14:34:19 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF08C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 11:33:39 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id d20so2321015ilo.4
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 11:33:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=3Z2f5M1oWl6Ax7p7CpNaAL+WfzFzmC6OAVotzJGMVDI=;
+        b=uGB/Il/48lj049pcFAgL8gma1bnbMpVFN428zMdPFr1U8FP1om7w7PbG4HrLdOYCiC
+         DlmsytBbLWNqDs7F5BJopXJL4QSvCr8AMja4yqpdlsmAypPgO7l8OjsEDJRTKyD8vcd3
+         DsblPgd1Gl3w11lpLNbY8E0AIlSa/ag2ilLw8U3T5Dk9rsLWT0gNQff3J8Rgt+wWRwLl
+         IxkybkajJYhAtlFNsDDQwAHMi35Tlo1HN3x7tekhYNB4f4qpctPlzlU9SPQ30CyyG6Ki
+         WMnnJcNnuQlIHZEP3fyOpEbkLnY4pFK9gXWE9XL631ONWpcwtfNaEqVIC8Xl0RSwYuYq
+         2+zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=3Z2f5M1oWl6Ax7p7CpNaAL+WfzFzmC6OAVotzJGMVDI=;
+        b=f2PYU6z5K9AZ+QXAE/L05Xk5piU7ukOScGH6rMEnYIuLmtop8/Djba+rCq5nS2bf91
+         slPd227bCN/YUuvejfiABSAD2ugWJ2WRW97PlHSU/A5W1ygYp/0G7wr9W1QDb7kUb9OQ
+         N3HP6ZPtet2de8YPuNhL890lxvUjPpgcgNfAYRIrQcEaZOW5f2sKqezNVNAY1kxIPAhB
+         y7Ukvt937iV0ALtw8q7GSEeVdKRcx9syW4EDZa7tp+IiqbFKJFke2YCr8ANdrV1WsPxv
+         cKhO5yRx/S1/mtKdlVDHsG1w8yCMNSprrhB9Dmc6Zc62LzZkClmGXwIjhm+lDRShidyy
+         veQw==
+X-Gm-Message-State: AOAM531+LfERJf7/t3LLbNDGdWfo6H7bYegTDHoIuUqoG6O1k8qJg05T
+        RifYdfarfufc5mNEDykZ8j5fqgN9Xkx/ay9RxP4=
+X-Google-Smtp-Source: ABdhPJwt0gME5KRiRK+XCCSp+brLUGrqmiAlbUO9mGM0KR/jLiFPNkbSEjpvwazut+igzIjgyP6d1zzjOFY5QvB9Vj4=
+X-Received: by 2002:a92:d8c5:: with SMTP id l5mr7370379ilo.209.1613244818740;
+ Sat, 13 Feb 2021 11:33:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1613243844.git.luto@kernel.org>
+In-Reply-To: <cover.1613243844.git.luto@kernel.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 13 Feb 2021 20:33:27 +0100
+Message-ID: <CA+icZUUHu6Qm_xNyXdumi0WjGZn1NQt8CSj=pkh4-2qLxg-n7Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Clean up x86_32 stackprotector
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Brian Gerst <brgerst@gmail.com>, Joerg Roedel <jroedel@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CNIC depends on MMU, but since 'select' does not follow any
-dependency chains, SCSI_BNX2X_FCOE also needs to depend on MMU,
-so that erroneous configs are not generated, which cause build
-errors in cnic.
+On Sat, Feb 13, 2021 at 8:19 PM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> x86_32 stackprotector is a maintenance nightmare.  Clean it up.  This
+> disables stackprotector on x86_32 on GCC 8.1 and on all clang
+> versions.  Some clang people are cc'd.
+>
+> Changes from v1:
+>  - Changelog fixes.
+>  - Comment fixes (mostly from Sean).
+>  - Fix the !SMP case.
+>
+> Andy Lutomirski (2):
+>   x86/stackprotector/32: Make the canary into a regular percpu variable
+>   x86/entry/32: Remove leftover macros after stackprotector cleanups
+>
 
-WARNING: unmet direct dependencies detected for CNIC
-  Depends on [n]: NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_BROADCOM [=y] && PCI [=y] && (IPV6 [=n] || IPV6 [=n]=n) && MMU [=n]
-  Selected by [y]:
-  - SCSI_BNX2X_FCOE [=y] && SCSI_LOWLEVEL [=y] && SCSI [=y] && PCI [=y] && (IPV6 [=n] || IPV6 [=n]=n) && LIBFC [=y] && LIBFCOE [=y]
+Thanks Andy for bringing this up as v2.
 
+AFAICS, LLVM bug #47479 was involved here (see [1]).
+Maybe Nick can say some words.
 
-riscv64-linux-ld: drivers/net/ethernet/broadcom/cnic.o: in function `.L154':
-cnic.c:(.text+0x1094): undefined reference to `uio_event_notify'
-riscv64-linux-ld: cnic.c:(.text+0x10bc): undefined reference to `uio_event_notify'
-riscv64-linux-ld: drivers/net/ethernet/broadcom/cnic.o: in function `.L1442':
-cnic.c:(.text+0x96a8): undefined reference to `__uio_register_device'
-riscv64-linux-ld: drivers/net/ethernet/broadcom/cnic.o: in function `.L0 ':
-cnic.c:(.text.unlikely+0x68): undefined reference to `uio_unregister_device'
+After patching my LLVM toolchain I decided to drop this and integrated
+the (kernel-side) diff from Nick (see [1]) in my custom patch-series.
 
-Fixes: 853e2bd2103a ("[SCSI] bnx2fc: Broadcom FCoE offload driver")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Saurav Kashyap <skashyap@marvell.com>
-Cc: Javed Hasan <jhasan@marvell.com>
-Cc: GR-QLogic-Storage-Upstream@marvell.com
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: linux-scsi@vger.kernel.org
----
- drivers/scsi/bnx2fc/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+Is this your x86/unify_stack_canary Git branch (see [2])?
 
---- linux-next-20210212.orig/drivers/scsi/bnx2fc/Kconfig
-+++ linux-next-20210212/drivers/scsi/bnx2fc/Kconfig
-@@ -5,6 +5,7 @@ config SCSI_BNX2X_FCOE
- 	depends on (IPV6 || IPV6=n)
- 	depends on LIBFC
- 	depends on LIBFCOE
-+	depends on MMU
- 	select NETDEVICES
- 	select ETHERNET
- 	select NET_VENDOR_BROADCOM
+- Sedat -
+
+[1] https://bugs.llvm.org/show_bug.cgi?id=47479
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/log/?h=x86/unify_stack_canary
+
+>  arch/x86/Kconfig                          |  7 +-
+>  arch/x86/Makefile                         |  8 ++
+>  arch/x86/entry/entry_32.S                 | 95 +----------------------
+>  arch/x86/include/asm/processor.h          | 15 +---
+>  arch/x86/include/asm/ptrace.h             |  5 +-
+>  arch/x86/include/asm/segment.h            | 30 ++-----
+>  arch/x86/include/asm/stackprotector.h     | 79 ++++---------------
+>  arch/x86/include/asm/suspend_32.h         |  6 +-
+>  arch/x86/kernel/asm-offsets_32.c          |  5 --
+>  arch/x86/kernel/cpu/common.c              |  5 +-
+>  arch/x86/kernel/doublefault_32.c          |  4 +-
+>  arch/x86/kernel/head_32.S                 | 18 +----
+>  arch/x86/kernel/setup_percpu.c            |  1 -
+>  arch/x86/kernel/tls.c                     |  8 +-
+>  arch/x86/kvm/svm/svm.c                    | 10 +--
+>  arch/x86/lib/insn-eval.c                  |  4 -
+>  arch/x86/platform/pvh/head.S              | 14 ----
+>  arch/x86/power/cpu.c                      |  6 +-
+>  arch/x86/xen/enlighten_pv.c               |  1 -
+>  scripts/gcc-x86_32-has-stack-protector.sh |  6 +-
+>  20 files changed, 62 insertions(+), 265 deletions(-)
+>
+> --
+> 2.29.2
+>
