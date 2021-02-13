@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3928D31AB30
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AA131AB34
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhBMMHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 07:07:54 -0500
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:36399 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhBMMHv (ORCPT
+        id S229702AbhBMMKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 07:10:13 -0500
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:45779 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhBMMKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 07:07:51 -0500
-Received: by mail-lj1-f176.google.com with SMTP id k22so1527181ljg.3;
-        Sat, 13 Feb 2021 04:07:34 -0800 (PST)
+        Sat, 13 Feb 2021 07:10:10 -0500
+Received: by mail-lf1-f45.google.com with SMTP id j19so3242738lfr.12;
+        Sat, 13 Feb 2021 04:09:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=TnTBU1+fTq7WCrFIKnTtQ8WkLlihATaeGTPRkGLiE34=;
-        b=X4+7ifdtP3CY8HxOOkPjJuUeEccJ2msPjjf5JAmM3txVLgivL2QpWnZrmM44v1hynf
-         ZD0Fm86L8tZJR84roMWGuqoAtZkfBanDMVSB2B0msIAN0ybBG9P7Qso06zlsWIt+dOdj
-         RTrREOBUSoH6UmG+8OyXK7NFNfyEGvzrDgIlJbF21S7JmOo3i+h/dqDs7iMhSE1lOdIl
-         8S1YoILTjxRagmlC79pvrQ6J7JGqKD3bnKuxoY1MrBg/MXa/Dku0lQPJf9aAa5Xdlk4o
-         pRFRSeR0yoLZhrWyeeotTYcpHRS7BppB71U2XabmJAt/z9kL4K0EsFloHBan7dNkycTs
-         p8Dg==
-X-Gm-Message-State: AOAM531vJqBwgnbnz9u5ndBrHo/jJfWCk0eiIBzFwIzgNogWVY5vefh0
-        +B3xQBGg1u42AT0p07onRTw=
-X-Google-Smtp-Source: ABdhPJymzneR3YwaNqRS8ezgKX9krTo8PVlWLJhEHOaQ2poYAdT31jq/OmB2MJP2z4m1qRk5Js1wEw==
-X-Received: by 2002:a2e:89d0:: with SMTP id c16mr4373471ljk.206.1613218029069;
-        Sat, 13 Feb 2021 04:07:09 -0800 (PST)
+        bh=F2M4fwXTZ4NN1Bg53CXaHkkwr7HGRZgG2bHGtuIrCq0=;
+        b=hHHdM1jxFkIGBBSnM1w2tik6ueyJU5uLJpt2LZG61BNj3vVwKf4o+lK5989audQfKJ
+         SIa6b0sB9/owf+b8rn62oGajsgckvU9tJIBq0YB8WGgTl2uZoWqhX5RqOEGxIbsbzrq+
+         7BCSHz27O6O4j3i91+v8Mnjiy6rRFDF3kRxhiCRR4S6UnVBpqZWjqWa8Vdy4sPZImPxY
+         gYAls7bPhfcn+revvn/0ebQl48oCPdkOX7XAdnXZICPsfVU1DDOdMOHjpAumXf6axVim
+         76y4ausBnEmpq53sZng97vkuxn3vegDyiCVIXqUMIA/nwXLaZicLRasA7qCi0iNtU0UT
+         t2Jg==
+X-Gm-Message-State: AOAM533UehVMlBUGIuOfUoV7AN3cWHCMVDNnExI7TL3ClwLNd7xXQYXz
+        2EC/RbTggHPWqVl+CACN9vcbCATavNs7NA==
+X-Google-Smtp-Source: ABdhPJxH4aNBcGs6uz6cVC6DgK16LqoBHD+aGQkoN9amHEZjpc6DigqKnYOj/7CtGHf3sFYLmelkaw==
+X-Received: by 2002:ac2:4257:: with SMTP id m23mr3752595lfl.99.1613218167576;
+        Sat, 13 Feb 2021 04:09:27 -0800 (PST)
 Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id h15sm1272111lfc.279.2021.02.13.04.07.08
+        by smtp.gmail.com with ESMTPSA id r186sm1846172lff.169.2021.02.13.04.09.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 04:07:08 -0800 (PST)
-Date:   Sat, 13 Feb 2021 14:07:02 +0200
+        Sat, 13 Feb 2021 04:09:27 -0800 (PST)
+Date:   Sat, 13 Feb 2021 14:09:20 +0200
 From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Subject: [RFC PATCH 3/7] hwmon: raspberry-pi: Clean-up few drivers by using
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [RFC PATCH 4/7] platform/x86: gpd pocket fan: Clean-up by using
  managed work init
-Message-ID: <1ee4b1bcc926b60e513e8f5cd586e744de2cb12d.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
+Message-ID: <8f29fefce4b7413742e18514bf10fee5bece81ef.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
 References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -60,52 +60,57 @@ This change is compile-tested only. All testing is appreciated.
 
 Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
- drivers/hwmon/raspberrypi-hwmon.c | 16 +++++-----------
+ drivers/platform/x86/gpd-pocket-fan.c | 16 +++++-----------
  1 file changed, 5 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/hwmon/raspberrypi-hwmon.c b/drivers/hwmon/raspberrypi-hwmon.c
-index d3a64a35f7a9..acfa674932bc 100644
---- a/drivers/hwmon/raspberrypi-hwmon.c
-+++ b/drivers/hwmon/raspberrypi-hwmon.c
-@@ -106,6 +106,7 @@ static int rpi_hwmon_probe(struct platform_device *pdev)
+diff --git a/drivers/platform/x86/gpd-pocket-fan.c b/drivers/platform/x86/gpd-pocket-fan.c
+index 5b516e4c2bfb..271ab902f046 100644
+--- a/drivers/platform/x86/gpd-pocket-fan.c
++++ b/drivers/platform/x86/gpd-pocket-fan.c
+@@ -124,7 +124,7 @@ static void gpd_pocket_fan_force_update(struct gpd_pocket_fan_data *fan)
+ static int gpd_pocket_fan_probe(struct platform_device *pdev)
  {
- 	struct device *dev = &pdev->dev;
- 	struct rpi_hwmon_data *data;
-+	int ret;
+ 	struct gpd_pocket_fan_data *fan;
+-	int i;
++	int i, ret;
  
- 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
- 	if (!data)
-@@ -119,7 +120,10 @@ static int rpi_hwmon_probe(struct platform_device *pdev)
- 							       &rpi_chip_info,
- 							       NULL);
+ 	for (i = 0; i < ARRAY_SIZE(temp_limits); i++) {
+ 		if (temp_limits[i] < 20000 || temp_limits[i] > 90000) {
+@@ -152,7 +152,10 @@ static int gpd_pocket_fan_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
--	INIT_DELAYED_WORK(&data->get_values_poll_work, get_values_poll);
-+	ret = devm_delayed_work_autocancel(dev, &data->get_values_poll_work,
-+					   get_values_poll);
+ 	fan->dev = &pdev->dev;
+-	INIT_DELAYED_WORK(&fan->work, gpd_pocket_fan_worker);
++	ret = devm_delayed_work_autocancel(&pdev->dev, &fan->work,
++					   gpd_pocket_fan_worker);
 +	if (ret)
 +		return ret;
- 	platform_set_drvdata(pdev, data);
  
- 	if (!PTR_ERR_OR_ZERO(data->hwmon_dev))
-@@ -128,18 +132,8 @@ static int rpi_hwmon_probe(struct platform_device *pdev)
- 	return PTR_ERR_OR_ZERO(data->hwmon_dev);
+ 	/* Note this returns a "weak" reference which we don't need to free */
+ 	fan->dts0 = thermal_zone_get_zone_by_name("soc_dts0");
+@@ -177,14 +180,6 @@ static int gpd_pocket_fan_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
--static int rpi_hwmon_remove(struct platform_device *pdev)
+-static int gpd_pocket_fan_remove(struct platform_device *pdev)
 -{
--	struct rpi_hwmon_data *data = platform_get_drvdata(pdev);
+-	struct gpd_pocket_fan_data *fan = platform_get_drvdata(pdev);
 -
--	cancel_delayed_work_sync(&data->get_values_poll_work);
--
+-	cancel_delayed_work_sync(&fan->work);
 -	return 0;
 -}
 -
- static struct platform_driver rpi_hwmon_driver = {
- 	.probe = rpi_hwmon_probe,
--	.remove = rpi_hwmon_remove,
- 	.driver = {
- 		.name = "raspberrypi-hwmon",
- 	},
+ #ifdef CONFIG_PM_SLEEP
+ static int gpd_pocket_fan_suspend(struct device *dev)
+ {
+@@ -215,7 +210,6 @@ MODULE_DEVICE_TABLE(acpi, gpd_pocket_fan_acpi_match);
+ 
+ static struct platform_driver gpd_pocket_fan_driver = {
+ 	.probe	= gpd_pocket_fan_probe,
+-	.remove	= gpd_pocket_fan_remove,
+ 	.driver	= {
+ 		.name			= "gpd_pocket_fan",
+ 		.acpi_match_table	= gpd_pocket_fan_acpi_match,
 -- 
 2.25.4
 
