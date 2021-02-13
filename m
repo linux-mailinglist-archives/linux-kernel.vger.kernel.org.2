@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250BA31A955
+	by mail.lfdr.de (Postfix) with ESMTP id 9865131A956
 	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 02:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbhBMBJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 20:09:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33190 "EHLO
+        id S232160AbhBMBJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 20:09:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232339AbhBMBHI (ORCPT
+        with ESMTP id S232242AbhBMBHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 20:07:08 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7787C06121D
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:05:46 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id u17so1600962ybi.10
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:05:46 -0800 (PST)
+        Fri, 12 Feb 2021 20:07:09 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B86DC06121F
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:05:49 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id l13so881567qvt.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:05:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=4l7lJ89dUN/mDifctyjmka3i9z9nrBYEG0xhjmdSUUo=;
-        b=YuUYSqFaQ2X/0AytqcSo2UGtMt7JtxTw3r9Xzk7NzwzyffwnESubnEoE7LsExZarvt
-         8+srTOrLYWx8VNCnh+NMkLm8HBBYc1aW8jDYfjBjnNkbW2s58daTr3p+gHwV0OxNV4Sy
-         hdMM2vEhrY+wf282MZxoJGM4ELVodFjb7XGiRYxSVFYFPhMv9IfdS1QpJBg37RLjdTaS
-         Buc7LUfI+pockTKv0tdUNTVMnQEvhEy6Y6evVbg5LUTcpDwaFrNuNyICJdyXI3KOy5Dz
-         HFreFKXVzbUi+HaSHgAEDNC4ycPviQrRrczVyEzojLuex32wF3Q5yVCFbp69zythHxiO
-         pEhg==
+        bh=GxRBYEs4CWruEYRrtfSKHL2sbkupVmuIYWg19YRJTeE=;
+        b=tAORAmccBwtfDWDhkawqa8cU8ojcedEsrhUixpTf5QdFmHVDSKBZyAeNrFo9/ztSlK
+         6lXXruk94Ka9i7EBZXRDZ3R3MH/PPzra+CEyyq5rpqxD9TVIfGVZK1nfXpTJkmCtr/X2
+         5JT1y4gSq6EjbERzpgy+kqs4qy2iLDG5GH3hCywBVKmWAMI6nxb6SC4ovu1wOrvtloMg
+         APQxY7wUuIc9yaBgbsZjX3Dz0yxcECv3RSAXNnaV5l8vl+fDw/lU22HpNuK4Z1YSSRcf
+         XZbpB+Fdm3go9bnDeQnxuhCcIotQ+rW4gxZZfzUWCVzXbvFduMrtiFR/bYjp1/NpiBLW
+         QBbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=4l7lJ89dUN/mDifctyjmka3i9z9nrBYEG0xhjmdSUUo=;
-        b=mxfiiiUjVPOEDI0TRysAzDWwAqCAm8i8rhQLPz+23ii/Ts0GLvQ91UfDppbI1ytStg
-         3YHSXrZDvF6XlKa2UCTNZV5+U7BDWDOvgaKAk10bDB7G27ZAJ3E056d+9OJle7g/k28U
-         Uj5mvrNQtHr4VBRD5xv3xbjvnRK566iyz5T0KUiewgt4ijBsr1Xhuq4B4uXmKl4NmlkD
-         0F2eXmt8wvx4lmA5njqdVDYhH5Kvp0c9jF7AuI+c5rWhe+jcl9dXaWMNZYAEqU3RIsnQ
-         40kTqeg/QAfLrOAugda3cqsBBezuSXV/g+2kTc2Urjvet8AeKj8K0zHUgqoqR2fawI18
-         L1oA==
-X-Gm-Message-State: AOAM533w1eQtfOXP6/MpsbxutbshPEps6iFavqinahFqUmXD9ZV9KfV2
-        ToY3lEZB1tnUkOe1qawpdwtUw3AZsww=
-X-Google-Smtp-Source: ABdhPJwRv7XF/pVWzpewg9HbbCCXg2ivDZcIqXVajCZywXnqWbM7K4Of/uyX2s/OJKRsluXzj0diKX6QMO0=
+        bh=GxRBYEs4CWruEYRrtfSKHL2sbkupVmuIYWg19YRJTeE=;
+        b=Fmrfh8bRC6WdWbcNeBMU7fZv/dHcBsNSptDyTq8HytaXErqdpy3B4DnfdqIeXbbiDD
+         lpgFakXWgNV+SGtOPTIW1HBSVg7kcDnrc3mTF2tg38F0nsmjaKo9qPGFLJxq5Bbk4sa7
+         JieGHFjGADVmkdDw3lblv3lXUrT6ItkZhpXoYKfasGJclw8vKF9zePTZ4QfR83gFqmwp
+         Wbw+8dmSjY370xThnmeD90YOaLxFkV3mhlT0420wA/VMy6m8eOQOekjl/5AGkdGnZ6DL
+         LrNftWvCiV4U1KoR/hIymPrfdnLpCIbHQGDG3x9zGOF4vMlQKeZfx8bT5X5U0W43Zhg8
+         S8uQ==
+X-Gm-Message-State: AOAM533pBPQep09K4gclBmUTfJ9DBnOPmRcEdXYcGumWW8P2Awn7t70n
+        ekU5ModTYst7JSmK4iX5Ah0Tz+cyE5Q=
+X-Google-Smtp-Source: ABdhPJyKLwZoEBRJ36RbXivN6C+aGywSGAgjsVtG0ymGdiyD/xd5LCqkYdu/GmD11UBmFe3spDJkjVoEOxk=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b407:1780:13d2:b27])
- (user=seanjc job=sendgmr) by 2002:a25:b904:: with SMTP id x4mr7134861ybj.189.1613178346051;
- Fri, 12 Feb 2021 17:05:46 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a0c:e38c:: with SMTP id a12mr5121096qvl.38.1613178348349;
+ Fri, 12 Feb 2021 17:05:48 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 12 Feb 2021 17:05:17 -0800
+Date:   Fri, 12 Feb 2021 17:05:18 -0800
 In-Reply-To: <20210213010518.1682691-1-seanjc@google.com>
-Message-Id: <20210213010518.1682691-9-seanjc@google.com>
+Message-Id: <20210213010518.1682691-10-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210213010518.1682691-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH 8/9] KVM: SVM: Use default rAX size for INVLPGA emulation
+Subject: [PATCH 9/9] KVM: x86: Rename GPR accessors to make mode-aware
+ variants the defaults
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,52 +70,331 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop bits 63:32 of RAX when grabbing the address for INVLPGA emulation
-outside of 64-bit mode to make KVM's emulation slightly less wrong.  The
-address for INVLPGA is determined by the effective address size, i.e.
-it's not hardcoded to 64/32 bits for a given mode.  Add a FIXME to call
-out that the emulation is wrong.
+Append raw to the direct variants of kvm_register_read/write(), and
+drop the "l" from the mode-aware variants.  I.e. make the mode-aware
+variants the default, and make the direct variants scary sounding so as
+to discourage use.  Accessing the full 64-bit values irrespective of
+mode is rarely the desired behavior.
 
-Opportunistically tweak the ASID handling to make it clear that it's
-defined by ECX, not rCX.
-
-Per the APM:
-   The portion of rAX used to form the address is determined by the
-   effective address size (current execution mode and optional address
-   size prefix). The ASID is taken from ECX.
-
-Fixes: ff092385e828 ("KVM: SVM: Implement INVLPGA")
-Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/svm.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ arch/x86/kvm/kvm_cache_regs.h | 19 ++++++++++++-------
+ arch/x86/kvm/svm/svm.c        |  8 ++++----
+ arch/x86/kvm/vmx/nested.c     | 20 ++++++++++----------
+ arch/x86/kvm/vmx/vmx.c        | 12 ++++++------
+ arch/x86/kvm/x86.c            |  8 ++++----
+ arch/x86/kvm/x86.h            |  8 ++++----
+ arch/x86/kvm/xen.c            |  2 +-
+ 7 files changed, 41 insertions(+), 36 deletions(-)
 
+diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
+index 2e11da2f5621..3db5c42c9ecd 100644
+--- a/arch/x86/kvm/kvm_cache_regs.h
++++ b/arch/x86/kvm/kvm_cache_regs.h
+@@ -62,7 +62,12 @@ static inline void kvm_register_mark_dirty(struct kvm_vcpu *vcpu,
+ 	__set_bit(reg, (unsigned long *)&vcpu->arch.regs_dirty);
+ }
+ 
+-static inline unsigned long kvm_register_read(struct kvm_vcpu *vcpu, int reg)
++/*
++ * The "raw" register helpers are only for cases where the full 64 bits of a
++ * register are read/written irrespective of current vCPU mode.  In other words,
++ * odds are good you shouldn't be using the raw variants.
++ */
++static inline unsigned long kvm_register_read_raw(struct kvm_vcpu *vcpu, int reg)
+ {
+ 	if (WARN_ON_ONCE((unsigned int)reg >= NR_VCPU_REGS))
+ 		return 0;
+@@ -73,8 +78,8 @@ static inline unsigned long kvm_register_read(struct kvm_vcpu *vcpu, int reg)
+ 	return vcpu->arch.regs[reg];
+ }
+ 
+-static inline void kvm_register_write(struct kvm_vcpu *vcpu, int reg,
+-				      unsigned long val)
++static inline void kvm_register_write_raw(struct kvm_vcpu *vcpu, int reg,
++					  unsigned long val)
+ {
+ 	if (WARN_ON_ONCE((unsigned int)reg >= NR_VCPU_REGS))
+ 		return;
+@@ -85,22 +90,22 @@ static inline void kvm_register_write(struct kvm_vcpu *vcpu, int reg,
+ 
+ static inline unsigned long kvm_rip_read(struct kvm_vcpu *vcpu)
+ {
+-	return kvm_register_read(vcpu, VCPU_REGS_RIP);
++	return kvm_register_read_raw(vcpu, VCPU_REGS_RIP);
+ }
+ 
+ static inline void kvm_rip_write(struct kvm_vcpu *vcpu, unsigned long val)
+ {
+-	kvm_register_write(vcpu, VCPU_REGS_RIP, val);
++	kvm_register_write_raw(vcpu, VCPU_REGS_RIP, val);
+ }
+ 
+ static inline unsigned long kvm_rsp_read(struct kvm_vcpu *vcpu)
+ {
+-	return kvm_register_read(vcpu, VCPU_REGS_RSP);
++	return kvm_register_read_raw(vcpu, VCPU_REGS_RSP);
+ }
+ 
+ static inline void kvm_rsp_write(struct kvm_vcpu *vcpu, unsigned long val)
+ {
+-	kvm_register_write(vcpu, VCPU_REGS_RSP, val);
++	kvm_register_write_raw(vcpu, VCPU_REGS_RSP, val);
+ }
+ 
+ static inline u64 kvm_pdptr_read(struct kvm_vcpu *vcpu, int index)
 diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index d077584d45ec..4dc64ebaa756 100644
+index 4dc64ebaa756..55afe41b4102 100644
 --- a/arch/x86/kvm/svm/svm.c
 +++ b/arch/x86/kvm/svm/svm.c
-@@ -2327,12 +2327,17 @@ static int clgi_interception(struct vcpu_svm *svm)
- static int invlpga_interception(struct vcpu_svm *svm)
+@@ -2531,7 +2531,7 @@ static int cr_interception(struct vcpu_svm *svm)
+ 	err = 0;
+ 	if (cr >= 16) { /* mov to cr */
+ 		cr -= 16;
+-		val = kvm_register_readl(&svm->vcpu, reg);
++		val = kvm_register_read(&svm->vcpu, reg);
+ 		trace_kvm_cr_write(cr, val);
+ 		switch (cr) {
+ 		case 0:
+@@ -2577,7 +2577,7 @@ static int cr_interception(struct vcpu_svm *svm)
+ 			kvm_queue_exception(&svm->vcpu, UD_VECTOR);
+ 			return 1;
+ 		}
+-		kvm_register_writel(&svm->vcpu, reg, val);
++		kvm_register_write(&svm->vcpu, reg, val);
+ 		trace_kvm_cr_read(cr, val);
+ 	}
+ 	return kvm_complete_insn_gp(&svm->vcpu, err);
+@@ -2642,11 +2642,11 @@ static int dr_interception(struct vcpu_svm *svm)
+ 	dr = svm->vmcb->control.exit_code - SVM_EXIT_READ_DR0;
+ 	if (dr >= 16) { /* mov to DRn  */
+ 		dr -= 16;
+-		val = kvm_register_readl(&svm->vcpu, reg);
++		val = kvm_register_read(&svm->vcpu, reg);
+ 		err = kvm_set_dr(&svm->vcpu, dr, val);
+ 	} else {
+ 		kvm_get_dr(&svm->vcpu, dr, &val);
+-		kvm_register_writel(&svm->vcpu, reg, val);
++		kvm_register_write(&svm->vcpu, reg, val);
+ 	}
+ 
+ 	return kvm_complete_insn_gp(&svm->vcpu, err);
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index a02d8744ca66..358747586037 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -4601,9 +4601,9 @@ int get_vmx_mem_address(struct kvm_vcpu *vcpu, unsigned long exit_qualification,
+ 	else if (addr_size == 0)
+ 		off = (gva_t)sign_extend64(off, 15);
+ 	if (base_is_valid)
+-		off += kvm_register_readl(vcpu, base_reg);
++		off += kvm_register_read(vcpu, base_reg);
+ 	if (index_is_valid)
+-		off += kvm_register_readl(vcpu, index_reg) << scaling;
++		off += kvm_register_read(vcpu, index_reg) << scaling;
+ 	vmx_get_segment(vcpu, &s, seg_reg);
+ 
+ 	/*
+@@ -5005,7 +5005,7 @@ static int handle_vmread(struct kvm_vcpu *vcpu)
+ 		return nested_vmx_failInvalid(vcpu);
+ 
+ 	/* Decode instruction info and find the field to read */
+-	field = kvm_register_readl(vcpu, (((instr_info) >> 28) & 0xf));
++	field = kvm_register_read(vcpu, (((instr_info) >> 28) & 0xf));
+ 
+ 	offset = vmcs_field_to_offset(field);
+ 	if (offset < 0)
+@@ -5023,7 +5023,7 @@ static int handle_vmread(struct kvm_vcpu *vcpu)
+ 	 * on the guest's mode (32 or 64 bit), not on the given field's length.
+ 	 */
+ 	if (instr_info & BIT(10)) {
+-		kvm_register_writel(vcpu, (((instr_info) >> 3) & 0xf), value);
++		kvm_register_write(vcpu, (((instr_info) >> 3) & 0xf), value);
+ 	} else {
+ 		len = is_64_bit_mode(vcpu) ? 8 : 4;
+ 		if (get_vmx_mem_address(vcpu, exit_qualification,
+@@ -5097,7 +5097,7 @@ static int handle_vmwrite(struct kvm_vcpu *vcpu)
+ 		return nested_vmx_failInvalid(vcpu);
+ 
+ 	if (instr_info & BIT(10))
+-		value = kvm_register_readl(vcpu, (((instr_info) >> 3) & 0xf));
++		value = kvm_register_read(vcpu, (((instr_info) >> 3) & 0xf));
+ 	else {
+ 		len = is_64_bit_mode(vcpu) ? 8 : 4;
+ 		if (get_vmx_mem_address(vcpu, exit_qualification,
+@@ -5108,7 +5108,7 @@ static int handle_vmwrite(struct kvm_vcpu *vcpu)
+ 			return kvm_handle_memory_failure(vcpu, r, &e);
+ 	}
+ 
+-	field = kvm_register_readl(vcpu, (((instr_info) >> 28) & 0xf));
++	field = kvm_register_read(vcpu, (((instr_info) >> 28) & 0xf));
+ 
+ 	offset = vmcs_field_to_offset(field);
+ 	if (offset < 0)
+@@ -5305,7 +5305,7 @@ static int handle_invept(struct kvm_vcpu *vcpu)
+ 		return 1;
+ 
+ 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
+-	type = kvm_register_readl(vcpu, (vmx_instruction_info >> 28) & 0xf);
++	type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
+ 
+ 	types = (vmx->nested.msrs.ept_caps >> VMX_EPT_EXTENT_SHIFT) & 6;
+ 
+@@ -5385,7 +5385,7 @@ static int handle_invvpid(struct kvm_vcpu *vcpu)
+ 		return 1;
+ 
+ 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
+-	type = kvm_register_readl(vcpu, (vmx_instruction_info >> 28) & 0xf);
++	type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
+ 
+ 	types = (vmx->nested.msrs.vpid_caps &
+ 			VMX_VPID_EXTENT_SUPPORTED_MASK) >> 8;
+@@ -5646,7 +5646,7 @@ static bool nested_vmx_exit_handled_cr(struct kvm_vcpu *vcpu,
+ 	switch ((exit_qualification >> 4) & 3) {
+ 	case 0: /* mov to cr */
+ 		reg = (exit_qualification >> 8) & 15;
+-		val = kvm_register_readl(vcpu, reg);
++		val = kvm_register_read(vcpu, reg);
+ 		switch (cr) {
+ 		case 0:
+ 			if (vmcs12->cr0_guest_host_mask &
+@@ -5717,7 +5717,7 @@ static bool nested_vmx_exit_handled_vmcs_access(struct kvm_vcpu *vcpu,
+ 
+ 	/* Decode instruction info and find the field to access */
+ 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
+-	field = kvm_register_readl(vcpu, (((vmx_instruction_info) >> 28) & 0xf));
++	field = kvm_register_read(vcpu, (((vmx_instruction_info) >> 28) & 0xf));
+ 
+ 	/* Out-of-range fields always cause a VM exit from L2 to L1 */
+ 	if (field >> 15)
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 115826a020ff..03cc2b236d9a 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -5025,7 +5025,7 @@ static int handle_cr(struct kvm_vcpu *vcpu)
+ 	reg = (exit_qualification >> 8) & 15;
+ 	switch ((exit_qualification >> 4) & 3) {
+ 	case 0: /* mov to cr */
+-		val = kvm_register_readl(vcpu, reg);
++		val = kvm_register_read(vcpu, reg);
+ 		trace_kvm_cr_write(cr, val);
+ 		switch (cr) {
+ 		case 0:
+@@ -5067,12 +5067,12 @@ static int handle_cr(struct kvm_vcpu *vcpu)
+ 		case 3:
+ 			WARN_ON_ONCE(enable_unrestricted_guest);
+ 			val = kvm_read_cr3(vcpu);
+-			kvm_register_writel(vcpu, reg, val);
++			kvm_register_write(vcpu, reg, val);
+ 			trace_kvm_cr_read(cr, val);
+ 			return kvm_skip_emulated_instruction(vcpu);
+ 		case 8:
+ 			val = kvm_get_cr8(vcpu);
+-			kvm_register_writel(vcpu, reg, val);
++			kvm_register_write(vcpu, reg, val);
+ 			trace_kvm_cr_read(cr, val);
+ 			return kvm_skip_emulated_instruction(vcpu);
+ 		}
+@@ -5145,10 +5145,10 @@ static int handle_dr(struct kvm_vcpu *vcpu)
+ 		unsigned long val;
+ 
+ 		kvm_get_dr(vcpu, dr, &val);
+-		kvm_register_writel(vcpu, reg, val);
++		kvm_register_write(vcpu, reg, val);
+ 		err = 0;
+ 	} else {
+-		err = kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg));
++		err = kvm_set_dr(vcpu, dr, kvm_register_read(vcpu, reg));
+ 	}
+ 
+ out:
+@@ -5565,7 +5565,7 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
+ 	}
+ 
+ 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
+-	type = kvm_register_readl(vcpu, (vmx_instruction_info >> 28) & 0xf);
++	type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
+ 
+ 	if (type > 3) {
+ 		kvm_inject_gp(vcpu, 0);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 72fd8d384df7..37ad41a63a33 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -6873,12 +6873,12 @@ static bool emulator_guest_has_fxsr(struct x86_emulate_ctxt *ctxt)
+ 
+ static ulong emulator_read_gpr(struct x86_emulate_ctxt *ctxt, unsigned reg)
  {
- 	struct kvm_vcpu *vcpu = &svm->vcpu;
-+	gva_t gva = kvm_rax_read(vcpu);
-+	u32 asid = kvm_rcx_read(vcpu);
- 
--	trace_kvm_invlpga(svm->vmcb->save.rip, kvm_rcx_read(&svm->vcpu),
--			  kvm_rax_read(&svm->vcpu));
-+	/* FIXME: Handle an address size prefix. */
-+	if (!is_long_mode(vcpu))
-+		gva = (u32)gva;
-+
-+	trace_kvm_invlpga(svm->vmcb->save.rip, asid, gva);
- 
- 	/* Let's treat INVLPGA the same as INVLPG (can be optimized!) */
--	kvm_mmu_invlpg(vcpu, kvm_rax_read(&svm->vcpu));
-+	kvm_mmu_invlpg(vcpu, gva);
- 
- 	return kvm_skip_emulated_instruction(&svm->vcpu);
+-	return kvm_register_read(emul_to_vcpu(ctxt), reg);
++	return kvm_register_read_raw(emul_to_vcpu(ctxt), reg);
  }
+ 
+ static void emulator_write_gpr(struct x86_emulate_ctxt *ctxt, unsigned reg, ulong val)
+ {
+-	kvm_register_write(emul_to_vcpu(ctxt), reg, val);
++	kvm_register_write_raw(emul_to_vcpu(ctxt), reg, val);
+ }
+ 
+ static void emulator_set_nmi_mask(struct x86_emulate_ctxt *ctxt, bool masked)
+@@ -8524,7 +8524,7 @@ static void enter_smm_save_state_32(struct kvm_vcpu *vcpu, char *buf)
+ 	put_smstate(u32, buf, 0x7ff0, kvm_rip_read(vcpu));
+ 
+ 	for (i = 0; i < 8; i++)
+-		put_smstate(u32, buf, 0x7fd0 + i * 4, kvm_register_read(vcpu, i));
++		put_smstate(u32, buf, 0x7fd0 + i * 4, kvm_register_read_raw(vcpu, i));
+ 
+ 	kvm_get_dr(vcpu, 6, &val);
+ 	put_smstate(u32, buf, 0x7fcc, (u32)val);
+@@ -8570,7 +8570,7 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu, char *buf)
+ 	int i;
+ 
+ 	for (i = 0; i < 16; i++)
+-		put_smstate(u64, buf, 0x7ff8 - i * 8, kvm_register_read(vcpu, i));
++		put_smstate(u64, buf, 0x7ff8 - i * 8, kvm_register_read_raw(vcpu, i));
+ 
+ 	put_smstate(u64, buf, 0x7f78, kvm_rip_read(vcpu));
+ 	put_smstate(u32, buf, 0x7f70, kvm_get_rflags(vcpu));
+diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+index 39eb04887141..ddf47a59054d 100644
+--- a/arch/x86/kvm/x86.h
++++ b/arch/x86/kvm/x86.h
+@@ -222,19 +222,19 @@ static inline bool vcpu_match_mmio_gpa(struct kvm_vcpu *vcpu, gpa_t gpa)
+ 	return false;
+ }
+ 
+-static inline unsigned long kvm_register_readl(struct kvm_vcpu *vcpu, int reg)
++static inline unsigned long kvm_register_read(struct kvm_vcpu *vcpu, int reg)
+ {
+-	unsigned long val = kvm_register_read(vcpu, reg);
++	unsigned long val = kvm_register_read_raw(vcpu, reg);
+ 
+ 	return is_64_bit_mode(vcpu) ? val : (u32)val;
+ }
+ 
+-static inline void kvm_register_writel(struct kvm_vcpu *vcpu,
++static inline void kvm_register_write(struct kvm_vcpu *vcpu,
+ 				       int reg, unsigned long val)
+ {
+ 	if (!is_64_bit_mode(vcpu))
+ 		val = (u32)val;
+-	return kvm_register_write(vcpu, reg, val);
++	return kvm_register_write_raw(vcpu, reg, val);
+ }
+ 
+ static inline bool kvm_check_has_quirk(struct kvm *kvm, u64 quirk)
+diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+index 5bfed72edd07..af8f6562fce4 100644
+--- a/arch/x86/kvm/xen.c
++++ b/arch/x86/kvm/xen.c
+@@ -383,7 +383,7 @@ int kvm_xen_hypercall(struct kvm_vcpu *vcpu)
+ 	bool longmode;
+ 	u64 input, params[6];
+ 
+-	input = (u64)kvm_register_readl(vcpu, VCPU_REGS_RAX);
++	input = (u64)kvm_register_read(vcpu, VCPU_REGS_RAX);
+ 
+ 	/* Hyper-V hypercalls get bit 31 set in EAX */
+ 	if ((input & 0x80000000) &&
 -- 
 2.30.0.478.g8a0d178c01-goog
 
