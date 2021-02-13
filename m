@@ -2,291 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E171A31A8B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 01:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2977A31A92C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 02:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhBMAQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 19:16:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
+        id S229980AbhBMA7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 19:59:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbhBMAPy (ORCPT
+        with ESMTP id S232134AbhBMA6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 19:15:54 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD46C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:15:11 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id t14so1016281plr.15
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:15:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=LFYECqnkpVnS9ezPEnkkGsIKGemq65IEfeP4v4FCXC0=;
-        b=MNJaPCb6kCwQDqWE0VHDBWLh/jpZooOs4BybtKx0hSsGmWH2dSznyNmvm+qKf3ZdsL
-         BvMMcNNILVaCUuAysU3V9NkNcV5Vfk0XUYnuvkpqedOgOwQMSzUmaqfPG9CI8pzG4Yk+
-         pcYbLHCV0CPfWXhXiURTZR2eoW+EFlReBpX8ob392Cr0s6wfzsq4+S16MBcEfPA2gM7q
-         32C/aYhTo0QEE75SU4pjwqlyrMNmbuxe+DBeNmlkudmt+sB7cMOveagRIJ1+4LGL1Sdl
-         NwCfB46R+51EH50MjffcfFu5WNbGWqkcHD1TLQ0LUVrLfVbU2J1DFq33Z2s8kz+B2C7N
-         5qSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=LFYECqnkpVnS9ezPEnkkGsIKGemq65IEfeP4v4FCXC0=;
-        b=AJJn4SxYgkuN9td30tTmt7bapcU7VHDM0hzvfJtpZLZTjV9PSXgFa42oDCU6oiuPyj
-         BaGMzyp3SYhFk344p5a3LbJe8/0QMW0S51BWI9u6bjFjt1b6pkTHbC3mW/viIlDBP4XJ
-         3JcfV+6mwDCeeL2ivZm6Mj8buQH4MxX09V717ZK8WyQrhh/kcSvAUZS4wGilDiFPw0pP
-         xhfZ/gmAtwkuk7Gu1sZpcAWKzIRgFsxdBpSoea8QAKQzvtYTqu4s4M6zVxxw1l/km3iY
-         RbH0U7Dr7P91tSUiMytSizOqItnAQpFGr84tPiXTSpsy7Ho1fJsz98uLQu27drKIjSTy
-         GvSA==
-X-Gm-Message-State: AOAM532zQHxigM6md0CZaqcb7xNAtoIre5ZbWUUidH1TwxG64oH/bCmF
-        sLvcSKkTomYJ894iND/Ecg24jBEhlVlT
-X-Google-Smtp-Source: ABdhPJwK7FIiWqa0ahuLvd8FzrmfmaE3R47CXzIOG11ep2x3akfjtG1jGl1a3i/2TYw6gn210AVTmbmdlvYN
-Sender: "marcorr via sendgmr" <marcorr@marcorr-sp.c.googlers.com>
-X-Received: from marcorr-sp.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:e50])
- (user=marcorr job=sendgmr) by 2002:aa7:86d8:0:b029:1b5:1121:729a with SMTP id
- h24-20020aa786d80000b02901b51121729amr5213353pfo.57.1613175310890; Fri, 12
- Feb 2021 16:15:10 -0800 (PST)
-Date:   Sat, 13 Feb 2021 00:14:52 +0000
-Message-Id: <20210213001452.1719001-1-marcorr@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] selftests: kvm: add hardware_disable test
-From:   Marc Orr <marcorr@google.com>
-To:     ikalvarado@google.com, pbonzini@redhat.com, huah@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, brijesh.singh@amd.com,
-        Thomas.Lendacky@amd.com, jmattson@google.com
-Cc:     Marc Orr <marcorr@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 12 Feb 2021 19:58:41 -0500
+X-Greylist: delayed 1721 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 12 Feb 2021 16:55:13 PST
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A008C061224
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:55:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:From:Cc:To;
+        bh=JGQd2Cous/HruplA1vEiD9rmCfWsV8SoYGgBeyWEeos=; b=Zsu2Nl1AFYgE21lvba39bhKT0j
+        rziHx2/+3jANq3LfJs8qfv0UaVk7suqOC7xSx8ljew5KLOQ2VMU9TORt0rPTtk19i76QIhrSz6Oi6
+        Z2Huvr9w6ttWhP6Oc1knWkQ3+EVE8MKqr3PaVrtZpHVkoZMEYMn67Zecr2kD79MAKBgwkPvpoTRHi
+        fBOMs13LrT8w2JAva7RMlODVMZBL52tFdGE4a3oPTw4OGaQQCoWS3eAits29oQAqgPUnZ1cDTSsIB
+        rOx1+QNH15TMRF6d1ePisB6chG/iQYbrQM+MhNu1OODcDg7amL5rDNTMhEDu5GSJhAN7RFr54dUNz
+        HAz5lgtC9yCnRo+5HM/b8PTUhzpQ39b3kYDg/e82MmzlpANliit59KW0kiAAabI1B6NyNe6LLh1DC
+        iP3LNhDQKsJbm14mQTkfeUAF5qoiFrP6smHmsR3q1MVoyey9Yd6Hbdd5c1AWr6IuMQEeggJJqnzp+
+        xRodnKENfd7RD7njVasFgCEJ;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lAilZ-0005O0-QK; Sat, 13 Feb 2021 00:26:29 +0000
+Subject: Re: [GIT PULL] cifs fixes
+To:     Steve French <smfrench@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?Bj=c3=b6rn_JACKE?= <bjacke@samba.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CAH2r5mtYEj+WLy+oPSXEwS5sZ8+TNk_dU3PVx3ieBz2DFS94Sg@mail.gmail.com>
+ <CAHk-=wja1Y8r5UKrmXcMFrS=VPkTPbkyK-vt8B9MBkEU4+-WLw@mail.gmail.com>
+ <CAH2r5mtj+-xGDy-YN0JwSJAsgvB+HpQFCBi-zdTNXTRBY_Mteg@mail.gmail.com>
+From:   Stefan Metzmacher <metze@samba.org>
+Autocrypt: addr=metze@samba.org; prefer-encrypt=mutual; keydata=
+ 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
+ uAMlsTqBMFOwuvAcYAj2bwl7QQU6yhU=
+Message-ID: <592ad76a-866e-f932-5a82-1af4a2ba4880@samba.org>
+Date:   Sat, 13 Feb 2021 01:26:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAH2r5mtj+-xGDy-YN0JwSJAsgvB+HpQFCBi-zdTNXTRBY_Mteg@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="OqxO8FuE7l0hV399CnX1DuQiix1IawcgL"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ignacio Alvarado <ikalvarado@google.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--OqxO8FuE7l0hV399CnX1DuQiix1IawcgL
+Content-Type: multipart/mixed; boundary="1sQhfqo0jP88m6tOXmci5TvNQFwOzjDdj";
+ protected-headers="v1"
+From: Stefan Metzmacher <metze@samba.org>
+To: Steve French <smfrench@gmail.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ =?UTF-8?Q?Bj=c3=b6rn_JACKE?= <bjacke@samba.org>
+Cc: CIFS <linux-cifs@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Message-ID: <592ad76a-866e-f932-5a82-1af4a2ba4880@samba.org>
+Subject: Re: [GIT PULL] cifs fixes
+References: <CAH2r5mtYEj+WLy+oPSXEwS5sZ8+TNk_dU3PVx3ieBz2DFS94Sg@mail.gmail.com>
+ <CAHk-=wja1Y8r5UKrmXcMFrS=VPkTPbkyK-vt8B9MBkEU4+-WLw@mail.gmail.com>
+ <CAH2r5mtj+-xGDy-YN0JwSJAsgvB+HpQFCBi-zdTNXTRBY_Mteg@mail.gmail.com>
+In-Reply-To: <CAH2r5mtj+-xGDy-YN0JwSJAsgvB+HpQFCBi-zdTNXTRBY_Mteg@mail.gmail.com>
 
-This test launches 512 VMs in serial and kills them after a random
-amount of time.
+--1sQhfqo0jP88m6tOXmci5TvNQFwOzjDdj
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-The test was original written to exercise KVM user notifiers in
-the context of1650b4ebc99d:
-- KVM: Disable irq while unregistering user notifier
-- https://lore.kernel.org/kvm/CACXrx53vkO=HKfwWwk+fVpvxcNjPrYmtDZ10qWxFvVX_PTGp3g@mail.gmail.com/
+Am 12.02.21 um 21:39 schrieb Steve French:
+> Metze/Bjorn,
+> Linus is right - samba.org is down for me (I also verified with JRA).
+> Any ETA on when it gets back up?
+>=20
+> On Fri, Feb 12, 2021 at 2:05 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> On Fri, Feb 12, 2021 at 10:16 AM Steve French <smfrench@gmail.com> wro=
+te:
+>>>
+>>>   git://git.samba.org/sfrench/cifs-2.6.git tags/5.11-rc7-smb3
+>>
+>> It looks like git.samba.org is feeling very sick and is not answering.=
 
-Recently, this test piqued my interest because it proved useful to
-for AMD SNP in exercising the "in-use" pages, described in APM section
-15.36.12, "Running SNP-Active Virtual Machines".
+>> Not git, not ping (but maybe icmp ping is blocked).
+>>
+>> Please give it a kick, or provide some other hosting mirror?
 
-To run the test, first compile:
-$ make "CPPFLAGS=-static -Wl,--whole-archive -lpthread -Wl,--no-whole-archive" \
-    -C tools/testing/selftests/kvm/
 
-Then, copy the test over to a machine with the kernel and run:
-$ ./hardware_disable_test
+It's online again.
 
-Signed-off-by: Ignacio Alvarado <ikalvarado@google.com>
-Signed-off-by: Marc Orr <marcorr@google.com>
----
- tools/testing/selftests/kvm/.gitignore        |   1 +
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/hardware_disable_test.c     | 165 ++++++++++++++++++
- 3 files changed, 167 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/hardware_disable_test.c
+The machine is running a 'AMD Ryzen Threadripper 2950X 16-Core Processor'=
 
-diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-index ce8f4ad39684..d631e111441a 100644
---- a/tools/testing/selftests/kvm/.gitignore
-+++ b/tools/testing/selftests/kvm/.gitignore
-@@ -28,6 +28,7 @@
- /demand_paging_test
- /dirty_log_test
- /dirty_log_perf_test
-+/hardware_disable_test
- /kvm_create_max_vcpus
- /set_memory_region_test
- /steal_time
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index fe41c6a0fa67..c1c403d878f6 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -62,6 +62,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
- TEST_GEN_PROGS_x86_64 += demand_paging_test
- TEST_GEN_PROGS_x86_64 += dirty_log_test
- TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
-+TEST_GEN_PROGS_x86_64 += hardware_disable_test
- TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
- TEST_GEN_PROGS_x86_64 += set_memory_region_test
- TEST_GEN_PROGS_x86_64 += steal_time
-diff --git a/tools/testing/selftests/kvm/hardware_disable_test.c b/tools/testing/selftests/kvm/hardware_disable_test.c
-new file mode 100644
-index 000000000000..2f2eeb8a1d86
---- /dev/null
-+++ b/tools/testing/selftests/kvm/hardware_disable_test.c
-@@ -0,0 +1,165 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * This test is intended to reproduce a crash that happens when
-+ * kvm_arch_hardware_disable is called and it attempts to unregister the user
-+ * return notifiers.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <fcntl.h>
-+#include <pthread.h>
-+#include <semaphore.h>
-+#include <stdint.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <sys/wait.h>
-+
-+#include <test_util.h>
-+
-+#include "kvm_util.h"
-+
-+#define VCPU_NUM 4
-+#define SLEEPING_THREAD_NUM (1 << 4)
-+#define FORK_NUM (1ULL << 9)
-+#define DELAY_US_MAX 2000
-+#define GUEST_CODE_PIO_PORT 4
-+
-+sem_t *sem;
-+
-+/* Arguments for the pthreads */
-+struct payload {
-+	struct kvm_vm *vm;
-+	uint32_t index;
-+};
-+
-+static void guest_code(void)
-+{
-+	for (;;)
-+		;  /* Some busy work */
-+	printf("Should not be reached.\n");
-+}
-+
-+static void *run_vcpu(void *arg)
-+{
-+	struct payload *payload = (struct payload *)arg;
-+	struct kvm_run *state = vcpu_state(payload->vm, payload->index);
-+
-+	vcpu_run(payload->vm, payload->index);
-+
-+	TEST_ASSERT(false, "%s: exited with reason %d: %s\n",
-+		    __func__, state->exit_reason,
-+		    exit_reason_str(state->exit_reason));
-+	pthread_exit(NULL);
-+}
-+
-+static void *sleeping_thread(void *arg)
-+{
-+	int fd;
-+
-+	while (true) {
-+		fd = open("/dev/null", O_RDWR);
-+		close(fd);
-+	}
-+	TEST_ASSERT(false, "%s: exited\n", __func__);
-+	pthread_exit(NULL);
-+}
-+
-+static inline void check_create_thread(pthread_t *thread, pthread_attr_t *attr,
-+				       void *(*f)(void *), void *arg)
-+{
-+	int r;
-+
-+	r = pthread_create(thread, attr, f, arg);
-+	TEST_ASSERT(r == 0, "%s: failed to create thread", __func__);
-+}
-+
-+static inline void check_set_affinity(pthread_t thread, cpu_set_t *cpu_set)
-+{
-+	int r;
-+
-+	r = pthread_setaffinity_np(thread, sizeof(cpu_set_t), cpu_set);
-+	TEST_ASSERT(r == 0, "%s: failed set affinity", __func__);
-+}
-+
-+static inline void check_join(pthread_t thread, void **retval)
-+{
-+	int r;
-+
-+	r = pthread_join(thread, retval);
-+	TEST_ASSERT(r == 0, "%s: failed to join thread", __func__);
-+}
-+
-+static void run_test(uint32_t run)
-+{
-+	struct kvm_vm *vm;
-+	cpu_set_t cpu_set;
-+	pthread_t threads[VCPU_NUM];
-+	pthread_t throw_away;
-+	struct payload payloads[VCPU_NUM];
-+	void *b;
-+	uint32_t i, j;
-+
-+	CPU_ZERO(&cpu_set);
-+	for (i = 0; i < VCPU_NUM; i++)
-+		CPU_SET(i, &cpu_set);
-+
-+	vm = vm_create(VM_MODE_DEFAULT, DEFAULT_GUEST_PHY_PAGES, O_RDWR);
-+	kvm_vm_elf_load(vm, program_invocation_name, 0, 0);
-+	vm_create_irqchip(vm);
-+
-+	fprintf(stderr, "%s: [%d] start vcpus\n", __func__, run);
-+	for (i = 0; i < VCPU_NUM; ++i) {
-+		vm_vcpu_add_default(vm, i, guest_code);
-+		payloads[i].vm = vm;
-+		payloads[i].index = i;
-+
-+		check_create_thread(&threads[i], NULL, run_vcpu,
-+				    (void *)&payloads[i]);
-+		check_set_affinity(threads[i], &cpu_set);
-+
-+		for (j = 0; j < SLEEPING_THREAD_NUM; ++j) {
-+			check_create_thread(&throw_away, NULL, sleeping_thread,
-+					    (void *)NULL);
-+			check_set_affinity(throw_away, &cpu_set);
-+		}
-+	}
-+	fprintf(stderr, "%s: [%d] all threads launched\n", __func__, run);
-+	sem_post(sem);
-+	for (i = 0; i < VCPU_NUM; ++i)
-+		check_join(threads[i], &b);
-+	/* Should not be reached */
-+	TEST_ASSERT(false, "%s: [%d] child escaped the ninja\n", __func__, run);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	uint32_t i;
-+	int s, r;
-+	pid_t pid;
-+
-+	sem = sem_open("vm_sem", O_CREAT | O_EXCL, 0644, 0);
-+	sem_unlink("vm_sem");
-+
-+	for (i = 0; i < FORK_NUM; ++i) {
-+		pid = fork();
-+		TEST_ASSERT(pid >= 0, "%s: unable to fork", __func__);
-+		if (pid == 0)
-+			run_test(i); /* This function always exits */
-+
-+		fprintf(stderr, "%s: [%d] waiting semaphore\n", __func__, i);
-+		sem_wait(sem);
-+		r = (rand() % DELAY_US_MAX) + 1;
-+		fprintf(stderr, "%s: [%d] waiting %dus\n", __func__, i, r);
-+		usleep(r);
-+		r = waitpid(pid, &s, WNOHANG);
-+		TEST_ASSERT(r != pid,
-+			    "%s: [%d] child exited unexpectedly status: [%d]",
-+			    __func__, i, s);
-+		fprintf(stderr, "%s: [%d] killing child\n", __func__, i);
-+		kill(pid, SIGKILL);
-+	}
-+
-+	sem_destroy(sem);
-+	exit(0);
-+}
--- 
-2.30.0.478.g8a0d178c01-goog
+and is freezing without any trace every view days.
 
+We played with various boot parameters (currently we're using
+'mem_encrypt=3Doff rcu_nocbs=3D0-31 processor.max_cstate=3D1 idle=3Dnomwa=
+it nomodeset consoleblank=3D0',
+with the ubuntu 20.04 5.8 kernel, we also tried 5.4 before), but nothing =
+seems to help.
+
+metze
+
+
+
+--1sQhfqo0jP88m6tOXmci5TvNQFwOzjDdj--
+
+--OqxO8FuE7l0hV399CnX1DuQiix1IawcgL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEfFbGo3YXpfgryIw9DbX1YShpvVYFAmAnHLAACgkQDbX1YShp
+vVaoARAAoVDfDAxb6sG2Ad2Kt1KQJHUXCwdNa83txDdhtCDouDoHplcG1GYonhrl
+IaqO8bdQOrbkEldJ3ABodDuOIxL2R24ID4D6NaU7x1pWCBbHuAjBe0EqHqplR7/0
+N/Abq9ZykDkiGxhXGZWbxwRI+zdm8CgFRYDhc8kQW+QHRgBJOObBF/pXfj4NfH5h
+fDz/l3zUr4aTnoAxWdLMqMFelZgKPP7KW7HOODWAUj0IjVXmjQwyHjzhAztgjAJt
+6uN9mk5zT/LoesuLvlDiVL0SpXGV03eaDf1cueHC/klhX7W4/rzMEnvbB/yc5YDY
+vZih4lGDd50z+jy3mLUTwvi8V+o0m+4eJZq3SovjZU61FhDI+MsOWhKujTG5So0t
+GRncJ5kVNFXRJ+KedXbNvixO4EIyCBDbi4zem64tzPf+DnzUGBVQ+pQlQG+aiK/6
+IKXi0xFTXxe2LyjpPz8eh8p5ePalTM5B3aeTNgmlNu8hG8+vGGWO/xsL0CTG/UVY
+/DZ/vQApONs1ZIM5Pk+sUltZqWZpSoRyQ3uqaYVvivFDJU56Q32pvFNQY0yonqCa
+jB5+xSfsRvmpxsqTYE/n/jEbs3QdlU37VwfsQodF/Y+dEMUEM1J8G1pTgACPAMbp
+DtRv+UzEgfHjA+jJpV35YoDnQ9qcTv/cd0AzxsXwrEYCO7wIfaw=
+=D3y3
+-----END PGP SIGNATURE-----
+
+--OqxO8FuE7l0hV399CnX1DuQiix1IawcgL--
