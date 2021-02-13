@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE2A31ACB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD0531ACBF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhBMPxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 10:53:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57310 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229584AbhBMPxi (ORCPT
+        id S229712AbhBMP5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 10:57:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhBMP5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 10:53:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613231530;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4yQoeB9+5T4l5A6cJhLBs5pW8o2Xp0pgWwvHBZnCN4Q=;
-        b=HD58oDb9bAQLM2BLupg2ov22T7nTiutCZY8eLwSEAFk/S3kMMAhlZ1Ykdb3I3ynhMZVLDY
-        GuJkniIw2qI9INkz7XkNv3lyl7sGlbErp4rhWXVuMhE3cji+o45UhFAVSjVI0ClBWicdxD
-        CMjurv785jgDrJclGZAYrcUFdUc5atQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-L75yiQJHMvqpF1X5XtNc0w-1; Sat, 13 Feb 2021 10:52:08 -0500
-X-MC-Unique: L75yiQJHMvqpF1X5XtNc0w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D665E192CC43;
-        Sat, 13 Feb 2021 15:52:06 +0000 (UTC)
-Received: from treble (ovpn-120-169.rdu2.redhat.com [10.10.120.169])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 81ADC1F0;
-        Sat, 13 Feb 2021 15:52:05 +0000 (UTC)
-Date:   Sat, 13 Feb 2021 09:52:03 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Xi Ruoyao <xry111@mengyan1223.wang>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org
-Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
- non-section symbols
-Message-ID: <20210213155203.lehuegwc3h42nebs@treble>
-References: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
- <160812658044.3364.4188208281079332844.tip-bot2@tip-bot2>
- <dded80b60d9136ea90987516c28f93273385651f.camel@mengyan1223.wang>
- <YCU3Vdoqd+EI+zpv@kroah.com>
- <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
- <YCafKVSTX9MxDBMd@kroah.com>
- <20210212170750.y7xtitigfqzpchqd@treble>
- <20210212124547.1dcf067e@gandalf.local.home>
- <YCfdfkoeh8i0baCj@kroah.com>
- <20210213091304.2dd51e5f@oasis.local.home>
+        Sat, 13 Feb 2021 10:57:11 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99FDC061574;
+        Sat, 13 Feb 2021 07:56:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=CEyXeoNTaz3XbI92wKE/JqnYXrD1vSkpetze3AUboaY=; b=D5NYkqVbrl1OGutqjclXUgKuAQ
+        ZfZEPJQvm7X+t9Dhdc2FFPTP4tOTa3XhvC6ZnjcdMGbwH9Nd+hQK00e6HFVwZVUYEJNUdJviRzgTY
+        e2DqAc6rTI9a5OrIdW6asnKa/ZxbifpQr0pgKRbneGNEYsB31VswXyaurON6zzjkXAoL0yBqgXy7q
+        wn47vAriL+RyCvpLi+iyoupTZOqi/beQtmBrWwF1rzwOKiTnF+5J4SRb9vS8aUZGaZgF8AkcIiO2n
+        EpugEJx2/xhbTFGQeHk+A9uSqJxg0Tmr/oFX7sQnqLtf9vyYUzjmLPmHB2ZYp5uXfhbD3qMyHko35
+        XOMRNo/Q==;
+Received: from [2601:1c0:6280:3f0::6444]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lAxHX-0007oc-Ji; Sat, 13 Feb 2021 15:56:28 +0000
+Subject: Re: [PATCH] docs: ABI: Fix the spelling oustanding to outstanding in
+ the file sysfs-fs-xfs
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, djwong@kernel.org,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210213152436.1639458-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <65a0531d-84b4-0f7f-df5c-ec154af810b8@infradead.org>
+Date:   Sat, 13 Feb 2021 07:56:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210213152436.1639458-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210213091304.2dd51e5f@oasis.local.home>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 09:13:04AM -0500, Steven Rostedt wrote:
-> On Sat, 13 Feb 2021 15:09:02 +0100
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On 2/13/21 7:24 AM, Bhaskar Chowdhury wrote:
 > 
-> > Thanks for the patch, but no, still fails with:
-> > 
-> > Cannot find symbol for section 8: .text.unlikely.
-> > kernel/kexec_file.o: failed
-> > make[1]: *** [scripts/Makefile.build:277: kernel/kexec_file.o] Error 1
-> > make[1]: *** Deleting file 'kernel/kexec_file.o'
+> s/oustanding/outstanding/
 > 
-> It was just a guess.
-> 
-> I guess I'll need to find some time next week to set up a VM with
-> binutils 2.36 (I just checked, and all my development machines have
-> 2.35). Then I'll be able to try and debug it.
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-FWIW, I wasn't able to recreate.   I tried both binutils 2.36 and
-2.36.1, with gcc 11 and a 'make allmodconfig' kernel.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> ---
+>  Documentation/ABI/testing/sysfs-fs-xfs | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-xfs b/Documentation/ABI/testing/sysfs-fs-xfs
+> index ea0cc8c42093..f704925f6fe9 100644
+> --- a/Documentation/ABI/testing/sysfs-fs-xfs
+> +++ b/Documentation/ABI/testing/sysfs-fs-xfs
+> @@ -33,7 +33,7 @@ Contact:	xfs@oss.sgi.com
+>  Description:
+>  		The current state of the log write grant head. It
+>  		represents the total log reservation of all currently
+> -		oustanding transactions, including regrants due to
+> +		outstanding transactions, including regrants due to
+>  		rolling transactions. The grant head is exported in
+>  		"cycle:bytes" format.
+>  Users:		xfstests
+> --
+> 2.30.1
+> 
+
 
 -- 
-Josh
+~Randy
 
