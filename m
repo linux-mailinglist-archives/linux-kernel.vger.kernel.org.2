@@ -2,136 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1145131AB01
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F206E31AAFE
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbhBMLZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 06:25:36 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:43074 "EHLO z11.mailgun.us"
+        id S229649AbhBMLVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 06:21:03 -0500
+Received: from mout01.posteo.de ([185.67.36.65]:40810 "EHLO mout01.posteo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229574AbhBMLZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 06:25:31 -0500
-X-Greylist: delayed 348 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Feb 2021 06:25:30 EST
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613215510; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=WwWdTqspb8dts3dfTnbbRXtTvtaMdbxt2Yfgj+sc2Sg=;
- b=kzsBFjMJyj7uvxr3LBhDzlW2oh1HetmOdmFJLIS6481Xpfa2ZT5TDEsiei/kSXHE8vd3O8hH
- 6zThNobMWq1v6w7nkipgSd7ZWtqKv0ztjZub6Q0EqJyix1XJYx1V9cOny/WATn0ASVrR9cC1
- twQTfg1ovf1BPX9YmW8lV9jBeZE=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 6027b59b8e43a988b74ca40b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 13 Feb 2021 11:18:51
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7DEDCC43462; Sat, 13 Feb 2021 11:18:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B8F2BC433CA;
-        Sat, 13 Feb 2021 11:18:50 +0000 (UTC)
+        id S229478AbhBMLU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 06:20:59 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 0D58A160060
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 12:20:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1613215201; bh=LdSMwsAk/xXFN+Y8P4/lPu3FFkk8ht3k2CuANxWxN+o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=iaGM7XellNK3d19UKPxI4hcjnGbZil9+IdvlOJC4FQTqgHLMK8trHef86O2MRskSZ
+         i5o+eqlhApBxe994DAjAuQ9xvfqv5LApquFrxCrMNsRG90BlkaSiRL6TmdoSKZa62F
+         9Mgm6+xUmAIQ9OYhZfptSyQ88k4FNMG/iNlb1gPlvMWedkjiM3SxgAJs4moZI4JUPh
+         TGuC11Wj9qY/z3zRPErEvV/x+QuDe0KB67H8B7R80QshrQ27hnJI4avNXO53Hj7sEa
+         gtEEt2e9M22RWThMcT/sLZkhWq5dxL7fKzYenuBgKUPVex4m4CWBxzM0uF5C2mpYvj
+         pAinXfMuh+XlQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Dd7FB123Zz6tmJ;
+        Sat, 13 Feb 2021 12:19:58 +0100 (CET)
+Date:   Sat, 13 Feb 2021 12:19:57 +0100
+From:   Sebastian Fricke <sebastian.fricke@posteo.net>
+To:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        hjc@rock-chips.com, robh+dt@kernel.org,
+        linux-media@vger.kernel.org, dafna.hirschfeld@collabora.com,
+        helen.koike@collabora.com, ezequiel@collabora.com,
+        cmuellner@linux.com
+Subject: Re: [PATCH 0/6] Support second Image Signal Processor on rk3399
+Message-ID: <20210213111957.3ocxgcyno6ent4vt@basti-TUXEDO-Book-XA1510>
+References: <20210202145632.1263136-1-heiko@sntech.de>
+ <808992741.0ifERbkFSE@diego>
+ <20210211052515.qdqe256cipdwwrz6@basti-TUXEDO-Book-XA1510>
+ <16789691.tv2OnDr8pf@diego>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 13 Feb 2021 16:48:50 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] coresight: etm4x: Add ETM PIDs for Cortex-A55 and
- Cortex-A78
-In-Reply-To: <CAJ9a7VgDxgVUhgrcZc7jX3psWrxWoqHOJ+O36eQf7+-MjVOVeQ@mail.gmail.com>
-References: <20210212172336.20550-1-saiprakash.ranjan@codeaurora.org>
- <CAJ9a7VgDxgVUhgrcZc7jX3psWrxWoqHOJ+O36eQf7+-MjVOVeQ@mail.gmail.com>
-Message-ID: <a0f2a95c4e4d3d079cf8379bd49b527a@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <16789691.tv2OnDr8pf@diego>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+Hey Heiko,
 
-On 2021-02-13 16:24, Mike Leach wrote:
-> Hi Sai,
-> 
-> This patch does not apply to coresight/next - possibly because the PID
-> for A55 has been added in an earlier patch ( [b8336ad947e19 ]
-> coresight: etm4x: add AMBA id for Cortex-A55 and Cortex-A75).
-> 
+On 11.02.2021 15:42, Heiko Stübner wrote:
+>Hi Sebastian,
+>
+>Am Donnerstag, 11. Februar 2021, 06:25:15 CET schrieb Sebastian Fricke:
+>> Hey Heiko,
+>>
+>> On 10.02.2021 12:15, Heiko Stübner wrote:
+>> >Hi Sebastian,
+>> >
+>> >Am Freitag, 5. Februar 2021, 15:55:56 CET schrieb Heiko Stübner:
+>> >> Hi Sebastian,
+>> >>
+>> >> I did some tests myself today as well and can confirm your
+>> >> hdmi related finding - at least when plugged in on boot.
+>> >>
+>> >> I tried some combinations of camera vs. hdmi and it seems
+>> >> really only when hdmi is plugged in on boot
+>> >
+>> >as you can see in v2, it should work now even with hdmi
+>> >connected on boot. My patch ignored the grf-clock when
+>> >doing the grf-based init.
+>> >
+>> >All clocks are on during boot and I guess the hdmi-driver
+>> >did disable it after its probe. The phy_power_on functions
+>> >did handle it correctly already, so it was only happening
+>> >with hdmi connected on boot.
+>>
+>> Thank you very much for solving that problem, I've tested the scenarios
+>> described below and it works like a charm. (With your V2)
+>> >
+>> >
+>> >Btw. do you plan on submitting your ov13850 driver
+>> >soonish?
+>>
+>> Actually, I have posted the patch already see here:
+>> https://patchwork.kernel.org/project/linux-media/patch/20210130182313.32903-2-sebastian.fricke@posteo.net/
+>
+>very cool to see
+>
+>> I currently review the requested changes and questions and will soon
+>> post a second version, but I expect quite some time until it is actually
+>> merged.
+>
+>could you Cc me on future versions?
 
-Apologies, my remote was still pointing to linaro coresight repo,
-https://git.linaro.org/kernel/coresight.git, I have now updated
-the remote to a proper kernel.org coresight repo and will post
-the updated patchset.
+Sure will do :)
 
-Thanks,
-Sai
+>
+>
+>Thanks
+>Heiko
 
-> 
-> 
-> 
-> On Fri, 12 Feb 2021 at 17:23, Sai Prakash Ranjan
-> <saiprakash.ranjan@codeaurora.org> wrote:
->> 
->> Add ETM PIDs for Cortex-A55 and Cortex-A78 to the list of
->> supported ETMs.
->> 
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->>  drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 ++
->>  1 file changed, 2 insertions(+)
->> 
->> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c 
->> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> index b20b6ff17cf6..193233792ab5 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->> @@ -1713,7 +1713,9 @@ static const struct amba_id etm4_ids[] = {
->>         CS_AMBA_ID(0x000bb95a),                 /* Cortex-A72 */
->>         CS_AMBA_ID(0x000bb959),                 /* Cortex-A73 */
->>         CS_AMBA_UCI_ID(0x000bb9da, uci_id_etm4),/* Cortex-A35 */
->> +       CS_AMBA_UCI_ID(0x000bbd05, uci_id_etm4),/* Cortex-A55 */
->>         CS_AMBA_UCI_ID(0x000bbd0c, uci_id_etm4),/* Neoverse N1 */
->> +       CS_AMBA_UCI_ID(0x000bbd41, uci_id_etm4),/* Cortex-A78 */
->>         CS_AMBA_UCI_ID(0x000f0205, uci_id_etm4),/* Qualcomm Kryo */
->>         CS_AMBA_UCI_ID(0x000f0211, uci_id_etm4),/* Qualcomm Kryo */
->>         CS_AMBA_UCI_ID(0x000bb802, uci_id_etm4),/* Qualcomm Kryo 385 
->> Cortex-A55 */
->> 
->> base-commit: 1efbcec2ef8c037f1e801c76e4b9434ee2400be7
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
->> member
->> of Code Aurora Forum, hosted by The Linux Foundation
->> 
-> 
-> 
-> --
-> Mike Leach
-> Principal Engineer, ARM Ltd.
-> Manchester Design Centre. UK
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Sebastian
+>>
+>> Greetings,
+>> Sebastian
+>>
+>> >
+>> >
+>> >>
+>> >> (1)
+>> >> - boot
+>> >> - camera
+>> >> --> works
+>> >>
+>> >> (2)
+>> >> - boot
+>> >> - camera
+>> >> - hdmi plugged in
+>> >> - hdmi works
+>> >> - camera
+>> >> --> works
+>> >>
+>> >> (3)
+>> >> - hdmi plugged in
+>> >> - boot
+>> >> - hdmi works
+>> >> - camera
+>> >> --> camera doesn't work
+>> >>
+>> >> (4)
+>> >> - boot
+>> >> - hdmi plugged in
+>> >> - hdmi works
+>> >> - camera
+>> >> -> camera works
+>> >>
+>> >>
+>> >> With a bit of brute-force [0] it seems the camera also works again even
+>> >> with hdmi connected on boot. So conclusion would be that some clock
+>> >> is misbehaving.
+>> >>
+>> >> Now we'll "only" need to find out which one that is.
+>> >>
+>> >>
+>> >> Heiko
+>> >>
+>> >>
+>> >> [0]
+>> >> Don't disable any clock gates
+>> >>
+>> >> diff --git a/drivers/clk/clk-gate.c b/drivers/clk/clk-gate.c
+>> >> index 070dc47e95a1..8daf1fc3388c 100644
+>> >> --- a/drivers/clk/clk-gate.c
+>> >> +++ b/drivers/clk/clk-gate.c
+>> >> @@ -61,6 +61,9 @@ static void clk_gate_endisable(struct clk_hw *hw, int enable)
+>> >>
+>> >>         set ^= enable;
+>> >>
+>> >> +if (!enable)
+>> >> +return;
+>> >> +
+>> >>         if (gate->lock)
+>> >>                 spin_lock_irqsave(gate->lock, flags);
+>> >>         else
+>> >>
+>> >>
+>> >>
+>> >> Am Freitag, 5. Februar 2021, 09:15:47 CET schrieb Heiko Stübner:
+>> >> > Hi Sebastian,
+>> >> >
+>> >> > Am Freitag, 5. Februar 2021, 07:43:35 CET schrieb Sebastian Fricke:
+>> >> > > On 03.02.2021 20:54, Heiko Stübner wrote:
+>> >> > > >Am Mittwoch, 3. Februar 2021, 19:14:22 CET schrieb Sebastian Fricke:
+>> >> > > >> I have tested your patch set on my nanoPC-T4, here is a complete log
+>> >> > > >> with:
+>> >> > > >> - relevant kernel log entries
+>> >> > > >> - system information
+>> >> > > >> - media ctl output
+>> >> > > >> - sysfs entry information
+>> >> > > >>
+>> >> > > >> https://paste.debian.net/1183874/
+>> >> > > >>
+>> >> > > >> Additionally, to your patchset I have applied the following patches:
+>> >> > > >> https://github.com/initBasti/Linux_kernel_media_tree_fork/commits/dual_cam_setup
+>> >> > > >>
+>> >> > > >> And just to not cause confusion the `media_dev` entries come from this
+>> >> > > >> unmerged series:
+>> >> > > >> https://patchwork.kernel.org/project/linux-media/list/?series=426269
+>> >> > > >>
+>> >> > > >> I have actually been able to stream with both of my cameras at the same
+>> >> > > >> time using the libcamera cam command.
+>> >> > > >> I would like to thank you a lot for making this possible.
+>> >> > > >
+>> >> > > >Thanks for testing a dual camera setup. On my board I could only test
+>> >> > > >the second ISP. And really glad it works for you tool :-) .
+>> >> > > >
+>> >> > > >Out of curiosity, do you also see that green tint in the images the cameras
+>> >> > > >produce?
+>> >> > >
+>> >> > > Yes, I do. Actually, I currently have two forms of a green tint, on my
+>> >> > > OV13850 everything is quite dark and greenish, which is caused by the
+>> >> > > missing 3A algorithms. On my OV4689, I have big patches of the image
+>> >> > > with bright green color and flickering, I investigated if this is
+>> >> > > connected to the 2nd ISP instance, but that doesn't seem to be the case
+>> >> > > as I have the same results when I switch the CSI ports of the cameras.
+>> >> > >
+>> >> > > I have found another issue, while testing I discovered following
+>> >> > > issue:
+>> >> > > When I start the system with an HDMI monitor connected, then the camera
+>> >> > > on the 2nd port doesn't work. This is probably because the RX/TX is
+>> >> > > reserved as a TX.
+>> >> > > But it made me wonder because if the system has an RX, a TX, and
+>> >> > > an RX/TX, why isn't the pure TX used by the monitor and the
+>> >> > > cameras take RX and RX/TX?
+>> >> > > Or do you think that this is maybe a malfunction of this patch?
+>> >> >
+>> >> > I don't think it is an issue with this specific series, but still puzzling.
+>> >> >
+>> >> > I.e. the DPHYs are actually only relevant to the DSI controllers,
+>> >> > with TX0 being connected to DSI0 and TX1RX1 being connected
+>> >> > to DSI1. So having an hdmi display _in theory_ shouldn't matter at all.
+>> >> >
+>> >> > Out of curiosity what happens, when you boot without hdmi connected
+>> >> > turn on the cameras, connect the hdmi after this, try the cameras again?
+>> >> >
+>> >> >
+>> >> > Heiko
+>> >> >
+>> >> > >
+>> >> > > >
+>> >> > > >Thanks
+>> >> > > >Heiko
+>> >> > >
+>> >> > > Greetings,
+>> >> > > Sebastian
+>> >> > >
+>> >> > > >
+>> >> > > >
+>> >> > > >> If you like to you can add:
+>> >> > > >> Tested-by: Sebastian Fricke <sebastian.fricke@posteo.net>
+>> >> > > >>
+>> >> > > >> On 02.02.2021 15:56, Heiko Stuebner wrote:
+>> >> > > >> >The rk3399 has two ISPs and right now only the first one is usable.
+>> >> > > >> >The second ISP is connected to the TXRX dphy on the soc.
+>> >> > > >> >
+>> >> > > >> >The phy of ISP1 is only accessible through the DSI controller's
+>> >> > > >> >io-memory, so this series adds support for simply using the dsi
+>> >> > > >> >controller is a phy if needed.
+>> >> > > >> >
+>> >> > > >> >That solution is needed at least on rk3399 and rk3288 but no-one
+>> >> > > >> >has looked at camera support on rk3288 at all, so right now
+>> >> > > >> >only implement the rk3399 specifics.
+>> >> > > >> >
+>> >> > > >> >
+>> >> > > >> >Heiko Stuebner (6):
+>> >> > > >> >  drm/rockchip: dsi: add own additional pclk handling
+>> >> > > >> >  dt-bindings: display: rockchip-dsi: add optional #phy-cells property
+>> >> > > >> >  drm/rockchip: dsi: add ability to work as a phy instead of full dsi
+>> >> > > >> >  arm64: dts: rockchip: add #phy-cells to mipi-dsi1
+>> >> > > >> >  arm64: dts: rockchip: add cif clk-control pinctrl for rk3399
+>> >> > > >> >  arm64: dts: rockchip: add isp1 node on rk3399
+>> >> > > >> >
+>> >> > > >> > .../display/rockchip/dw_mipi_dsi_rockchip.txt |   1 +
+>> >> > > >> > arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  39 ++
+>> >> > > >> > drivers/gpu/drm/rockchip/Kconfig              |   2 +
+>> >> > > >> > .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 342 ++++++++++++++++++
+>> >> > > >> > 4 files changed, 384 insertions(+)
+>> >> > > >> >
+>> >> > > >>
+>> >> > > >
+>> >> > > >
+>> >> > > >
+>> >> > > >
+>> >> > >
+>> >> >
+>> >> >
+>> >>
+>> >>
+>> >
+>> >
+>> >
+>> >
+>>
+>
+>
+>
+>
