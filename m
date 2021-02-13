@@ -2,102 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC7B31AA51
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 07:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A4C31AA57
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 08:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhBMGwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 01:52:20 -0500
-Received: from wilbur.contactoffice.com ([212.3.242.68]:56712 "EHLO
-        wilbur.contactoffice.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBMGwR (ORCPT
+        id S229651AbhBMHJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 02:09:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhBMHJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 01:52:17 -0500
-Received: from ichabod.co-bxl (ichabod.co-bxl [10.2.0.36])
-        by wilbur.contactoffice.com (Postfix) with ESMTP id C5F80827;
-        Sat, 13 Feb 2021 07:51:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailfence.com;
-        s=20160819-nLV10XS2; t=1613199094;
-        bh=c7eHNOeudtFYB2ia1pCjZOnK2D0HGHskQSrZBEiyRZA=;
-        h=Date:From:Reply-To:To:Cc:In-Reply-To:References:Subject:From;
-        b=n3zxpQcBif6MD7GWsE6xsAt54uBoHMOtgRrnnbnt1t8MObHLQhJmqHZxLMOKvURMd
-         P5mcTW2OmdcYJavjSQJngJRGWjQ2Ligb7QDr/YQqbXC0ZI99TejVnld0m/U6yQsXsE
-         6tRsCqayWn8WU5hHXxkMgEUALtjv8ZK3cvA9EMAMnIvMRuADyh+YAj5hM8Z3jymGzs
-         UTV1G4JDGHMetoISGdc+Mt9zU01EakFxNFusNRk/1GnWC3Dc0sa/Zk9imOhbc51yhH
-         PlMotha88JKufV7XefyY4JJoaaA2CJe5+K45v0YbITekCJUgn3TopQwVVLHQqkVTQG
-         JkSR4CbXdEi9Q==
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1613199094;
-        s=20210208-e7xh; d=mailfence.com; i=broake@mailfence.com;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        l=1807; bh=c7eHNOeudtFYB2ia1pCjZOnK2D0HGHskQSrZBEiyRZA=;
-        b=haxJ6a6w2Puj2RiKYXykGyc/9dmbEeuWX4ddxFSCX45AlIr+Boz02pJNdCInMINK
-        vLB7IBx3lRMjROH2Y37loSnfGn/SVxkKtujtfXyZaKp3M8Qw3rSmnIyGDqOl2SeYw3J
-        WqMwrBI/k0qHfaSEh3zvMANOfw962a8e7QRQojVwPWbqVD1zG/VimTRCOHYu5QRebmX
-        1XVBI/621PvJrCtw2sW03zRy6HQ8NsNJdLCuOvdrRozqEzlfsOQAyknjHPW4eF3Tu75
-        fADMNIKDhGzC4761+2Sse6kroe/1NdB+o9BaUwFnLcUEq2e9qGtBCwJch/xH0iLQk1H
-        93npB9bBOA==
-Date:   Sat, 13 Feb 2021 07:51:32 +0100 (CET)
-From:   "B.R. Oake" <broake@mailfence.com>
-Reply-To: "B.R. Oake" <broake@mailfence.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Chen-Yu Tsai <wens@kernel.org>, linux-sunxi@googlegroups.com,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Message-ID: <1719200956.433094.1613199092092@ichabod.co-bxl>
-In-Reply-To: <20210210150118.ly252i37eykayrcb@gilmour>
-References: <1243888060.510560.1612783497400@ichabod.co-bxl> <20210210150118.ly252i37eykayrcb@gilmour>
-Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix Ethernet PHY
- mode
+        Sat, 13 Feb 2021 02:09:21 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0D6C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 23:08:41 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id o38so1094724pgm.9
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 23:08:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zDy6QKCa+RVR/NM5Rdt2ekYrIEZ99lrar03e/i4SbqA=;
+        b=Xq7vjH+Yt5HnZXuBWqLOOeedf34oL8xeI9GRwj5m6nNVLD2kwORCGCY99o8t3wXd4s
+         KF2JVb4UQJvSqZkeoHLAEQL85gbAqEdWb9Bg4B7K9VwhXxGFilPL8bLk4g78ZmAtkj4q
+         b3FrK4U5k4eSMvz3A4HHzmhZwPebQryrSR+CM8S5/FlfUnGZMP5I4dRVK/Pn02QsV3Tm
+         GKLC9o92EKrLzEedvrR2HYbaA2C1DcGtxdjgMjFYMm7DJpgQ1O7YAtpRr0wXCmKcd65h
+         ZNa8e5e7BoKasumvgDv1RVI2NW/hVBw96c4zpoMVTTEkYOgPdBSdJ9JiQL/dwUv3x6mL
+         Jg6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zDy6QKCa+RVR/NM5Rdt2ekYrIEZ99lrar03e/i4SbqA=;
+        b=X9DXgfP3PoDLDcwpPEMds8TLU5iD6qNcev1JzscfFFLw9yrCPOlthXtgE9YImSUJSK
+         JsXUyxC9RlCorOk011Yfs8HpcIqbHz6dmfsQ24zEtkDedK89EpvHOwF2e2d9s2LLV7UZ
+         04MnmRyhU+1YKPvcUgy3TvSeD4MhZ59IbrkZlq5H6/DzJhDsw6yBbhZ9AoxB44EbDdFl
+         DXLLDhmETg5WnVdN5xeasrUV6qhA6m+eO3cOLJ6Kr6coW5iueRazdXsVKTUkqgjzS8EK
+         82F+DS/PcBPAJTpxzVXmWf0ZLUk+axECpR+27mK8AhR/TVgilJ1KSw/++l4+oqJZI0f7
+         VJOw==
+X-Gm-Message-State: AOAM530f46oL06Eco5sX+I1xBupC2xZaBmEnqGuUZQUqVRMp/mdLfJvW
+        M2pyYGqWEn/M6pqYdD7F57eYNw==
+X-Google-Smtp-Source: ABdhPJwdMhcWHD+R5/QzHkgpKUru9dGEyiejH4XYb5cR9CaQqAs1Gq8PjReSj6usoBeFpGIu5Sp64w==
+X-Received: by 2002:a63:e0c:: with SMTP id d12mr6686959pgl.67.1613200121047;
+        Fri, 12 Feb 2021 23:08:41 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([202.155.204.36])
+        by smtp.gmail.com with ESMTPSA id t21sm10710009pfe.174.2021.02.12.23.08.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 23:08:40 -0800 (PST)
+Date:   Sat, 13 Feb 2021 15:08:35 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Al Grant <al.grant@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Wei Li <liwei391@huawei.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH v2 1/6] perf arm-spe: Enable sample type
+ PERF_SAMPLE_DATA_SRC
+Message-ID: <20210213070825.GD103221@leoy-ThinkPad-X240s>
+References: <20210211133856.2137-1-james.clark@arm.com>
+ <20210212204340.GJ1398414@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-Mailer: ContactOffice Mail
-X-ContactOffice-Account: com:276068926
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212204340.GJ1398414@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Feb 10 at 16:01:18 CET 2021, Maxime Ripard wrote:
-> Unfortunately we can't take this patch as is, this needs to be your real name, see:
-> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
+On Fri, Feb 12, 2021 at 05:43:40PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Feb 11, 2021 at 03:38:51PM +0200, James Clark escreveu:
+> > From: Leo Yan <leo.yan@linaro.org>
+> > 
+> > This patch is to enable sample type PERF_SAMPLE_DATA_SRC for Arm SPE in
+> > the perf data, when output the tracing data, it tells tools that it
+> > contains data source in the memory event.
+> 
+> Thanks, series applied.
 
-Dear Maxime,
-
-Thank you very much for considering my contribution and for all your 
-work on supporting sunxi-based hardware; I appreciate it.
-
-Thank you for referring me to the Developer's Certificate of Origin, but 
-I had already read it before submitting (I had to do so in order to know 
-what I was saying by "Signed-off-by:") and I do certify what it says.
-
-Looking through recent entries in the commit log of the mainline kernel, 
-I see several patches from authors such as:
-
-  H.J. Lu <hjl.tools@gmail.com>
-  B K Karthik <karthik.bk2000@live.com>
-  JC Kuo <jckuo@nvidia.com>
-  EJ Hsu <ejh@nvidia.com>
-  LH Lin <lh.lin@mediatek.com>
-  KP Singh <kpsingh@kernel.org>
-  Karthik B S <karthik.b.s@intel.com>
-  Shreyas NC <shreyas.nc@intel.com>
-  Vandana BN <bnvandana@gmail.com>
-
-so I believe names of this form are in fact acceptable, even if the 
-style might seem a little old-fashioned to some.
-
-I would like to add that I have met many people with names such as C.J., 
-A A, TC, MG, etc. That is what everybody calls them and it would be 
-natural for them to sign themselves that way. Some of them might want to 
-contribute to Linux some day, and I think it would be a great shame and 
-a loss to all of us if they were discouraged from doing so by reading 
-our conversation in the archives and concluding that any contribution 
-from them, however small, would be summarily refused simply because of 
-their name. Please could you ensure that does not happen?
-
-Thank you again for your consideration.
-
-Yours sincerely,
-B.R. Oake.
+Thanks a lot, James and Arnaldo.
