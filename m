@@ -2,133 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EBA31ACB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE2A31ACB9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhBMPv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 10:51:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhBMPv0 (ORCPT
+        id S229741AbhBMPxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 10:53:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57310 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229584AbhBMPxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 10:51:26 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61486C061574;
-        Sat, 13 Feb 2021 07:50:44 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id y18so3273743edw.13;
-        Sat, 13 Feb 2021 07:50:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Tlv0Bk04Vbqv9/ybuzyPTe5LdOVFwHd7RnmbI+YE1kA=;
-        b=hkV9exA+5v9d3FKUlzRTKkmqbsnMpEZlRgn65k+21cHmJBFUpPnOhguohcKoQgyXyk
-         c6/tgbdhnnE0Qq5GC42xuUw/VBnfDOSTzTcJefRZxa/Ihm1EAduI0m3m/sOvn4xme1UC
-         AmYu0KdNSAc5TNxkin8n2qSi7j4UvNomnMxF4sd0UzRVdOWyO7x/+quYhc3vcIZxFxuV
-         i9MiI0I+pbEDwl7ClYkDXAN6V3zb7Vx2sWv1QDrbIymUYh9bhByYfBcUV18rQFK1Tk/p
-         KM1WDgaAl5C9fduVb4WyY9I31z6NZx+/5eZgODnOpSM/KGp403E1HOguwpNXjOVMqGZS
-         KTrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Tlv0Bk04Vbqv9/ybuzyPTe5LdOVFwHd7RnmbI+YE1kA=;
-        b=q4jcMEU9bYF7aM5nEajTdkkdKOQ9TCg+4BkAls3vwr0HqziH5SvgsUH4fIUJu1GVRc
-         B34RYurhnI1NNIiVvNWTN9QACMLj0WurExIOXF6fnHHUrWqaAK5L1zzOTbi2eKcLLGUt
-         4hwsyL2n/cQh2tEoyftTi3oQAonMwxgncF9LL8f2z+G1ZSuZf8j8Dk2jjGCIQ8k52/bZ
-         jhdZfUjiHh0sqAK6sECmw9+SEIBykYuPCi7663EgIwv2oYMF5Hb3poXvlgOct5msgOF0
-         9fdnZjChkZ9iZfbWPVmaCDBDMzaG0MMSCy/HFUalu5t2udUyBgI2rH8Mz0xNFyhqUBeU
-         zBrg==
-X-Gm-Message-State: AOAM531qxv7ATCCiiwYfoUfIBTugQjjTeWVcjuIjzfnYF/3xA7sUXK2R
-        KPdCalEkcascmMv/koEVAmWl+TVVKsg=
-X-Google-Smtp-Source: ABdhPJxlkaVHVHuTNHirCAARP7AneWOVVWeZcTvR4EYzaz1ETHnpKmw+vttpybRUWB0x0EzcnC+pVQ==
-X-Received: by 2002:aa7:d98f:: with SMTP id u15mr8180514eds.267.1613231443060;
-        Sat, 13 Feb 2021 07:50:43 -0800 (PST)
-Received: from localhost.localdomain ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id f22sm7939244eje.34.2021.02.13.07.50.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 07:50:42 -0800 (PST)
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     linux-leds@vger.kernel.org
-Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] leds: trigger: timer: Optionally stop timer trigger on reboot
-Date:   Sat, 13 Feb 2021 16:47:36 +0100
-Message-Id: <20210213154736.2905933-1-alexander.sverdlin@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Sat, 13 Feb 2021 10:53:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613231530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4yQoeB9+5T4l5A6cJhLBs5pW8o2Xp0pgWwvHBZnCN4Q=;
+        b=HD58oDb9bAQLM2BLupg2ov22T7nTiutCZY8eLwSEAFk/S3kMMAhlZ1Ykdb3I3ynhMZVLDY
+        GuJkniIw2qI9INkz7XkNv3lyl7sGlbErp4rhWXVuMhE3cji+o45UhFAVSjVI0ClBWicdxD
+        CMjurv785jgDrJclGZAYrcUFdUc5atQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-L75yiQJHMvqpF1X5XtNc0w-1; Sat, 13 Feb 2021 10:52:08 -0500
+X-MC-Unique: L75yiQJHMvqpF1X5XtNc0w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D665E192CC43;
+        Sat, 13 Feb 2021 15:52:06 +0000 (UTC)
+Received: from treble (ovpn-120-169.rdu2.redhat.com [10.10.120.169])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 81ADC1F0;
+        Sat, 13 Feb 2021 15:52:05 +0000 (UTC)
+Date:   Sat, 13 Feb 2021 09:52:03 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Xi Ruoyao <xry111@mengyan1223.wang>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-tip-commits@vger.kernel.org
+Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
+ non-section symbols
+Message-ID: <20210213155203.lehuegwc3h42nebs@treble>
+References: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
+ <160812658044.3364.4188208281079332844.tip-bot2@tip-bot2>
+ <dded80b60d9136ea90987516c28f93273385651f.camel@mengyan1223.wang>
+ <YCU3Vdoqd+EI+zpv@kroah.com>
+ <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
+ <YCafKVSTX9MxDBMd@kroah.com>
+ <20210212170750.y7xtitigfqzpchqd@treble>
+ <20210212124547.1dcf067e@gandalf.local.home>
+ <YCfdfkoeh8i0baCj@kroah.com>
+ <20210213091304.2dd51e5f@oasis.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210213091304.2dd51e5f@oasis.local.home>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This functionality is similar to heartbeat and activity triggers and
-turns the timer-triggered LEDs off right before reboot. It's configurable
-via new module parameter "reboot_off" to preserve original behaviour.
+On Sat, Feb 13, 2021 at 09:13:04AM -0500, Steven Rostedt wrote:
+> On Sat, 13 Feb 2021 15:09:02 +0100
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> 
+> > Thanks for the patch, but no, still fails with:
+> > 
+> > Cannot find symbol for section 8: .text.unlikely.
+> > kernel/kexec_file.o: failed
+> > make[1]: *** [scripts/Makefile.build:277: kernel/kexec_file.o] Error 1
+> > make[1]: *** Deleting file 'kernel/kexec_file.o'
+> 
+> It was just a guess.
+> 
+> I guess I'll need to find some time next week to set up a VM with
+> binutils 2.36 (I just checked, and all my development machines have
+> 2.35). Then I'll be able to try and debug it.
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
----
- drivers/leds/trigger/ledtrig-timer.c | 39 +++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+FWIW, I wasn't able to recreate.   I tried both binutils 2.36 and
+2.36.1, with gcc 11 and a 'make allmodconfig' kernel.
 
-diff --git a/drivers/leds/trigger/ledtrig-timer.c b/drivers/leds/trigger/ledtrig-timer.c
-index 7c14983781ee..3eadcb0a629a 100644
---- a/drivers/leds/trigger/ledtrig-timer.c
-+++ b/drivers/leds/trigger/ledtrig-timer.c
-@@ -16,6 +16,11 @@
- #include <linux/device.h>
- #include <linux/ctype.h>
- #include <linux/leds.h>
-+#include <linux/reboot.h>
-+
-+static bool reboot_off;
-+module_param(reboot_off, bool, 0444);
-+MODULE_PARM_DESC(reboot_off, "Switch LED off on reboot");
- 
- static ssize_t led_delay_on_show(struct device *dev,
- 		struct device_attribute *attr, char *buf)
-@@ -97,7 +102,39 @@ static struct led_trigger timer_led_trigger = {
- 	.deactivate = timer_trig_deactivate,
- 	.groups = timer_trig_groups,
- };
--module_led_trigger(timer_led_trigger);
-+
-+static int timer_reboot_notifier(struct notifier_block *nb, unsigned long code,
-+				 void *unused)
-+{
-+	led_trigger_unregister(&timer_led_trigger);
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block timer_reboot_nb = {
-+	.notifier_call = timer_reboot_notifier,
-+};
-+
-+static int __init timer_trig_init(void)
-+{
-+	int ret;
-+
-+	ret = led_trigger_register(&timer_led_trigger);
-+	if (ret)
-+		return ret;
-+	if (reboot_off)
-+		register_reboot_notifier(&timer_reboot_nb);
-+	return 0;
-+}
-+
-+static void __exit timer_trig_exit(void)
-+{
-+	/* Not afraid of -ENOENT */
-+	unregister_reboot_notifier(&timer_reboot_nb);
-+	led_trigger_unregister(&timer_led_trigger);
-+}
-+
-+module_init(timer_trig_init);
-+module_exit(timer_trig_exit);
- 
- MODULE_AUTHOR("Richard Purdie <rpurdie@openedhand.com>");
- MODULE_DESCRIPTION("Timer LED trigger");
 -- 
-2.19.1
+Josh
 
