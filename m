@@ -2,125 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E632031AB47
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF8A31AB4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhBMMTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 07:19:43 -0500
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:41776 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhBMMTi (ORCPT
+        id S229703AbhBMMXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 07:23:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229646AbhBMMXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 07:19:38 -0500
-Received: by mail-lf1-f41.google.com with SMTP id d24so3313555lfs.8;
-        Sat, 13 Feb 2021 04:19:21 -0800 (PST)
+        Sat, 13 Feb 2021 07:23:14 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7AEC061574;
+        Sat, 13 Feb 2021 04:22:34 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id gx20so1163263pjb.1;
+        Sat, 13 Feb 2021 04:22:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=+ROuDXHApQcQIhQjqFc317qqeK0woD/n7w4itNrUPxk=;
+        b=G9r1c9e7jUppWlnzvJNbts6jR+OAjitQcQt5rZGJFXSnws/II+AK8QpB0EgKzHb6Eq
+         GRnPxy1jmS4LeJ9T52CGxeN0MncMUBaTHAtKu5pqvj9jlmRtr5aISlGvjS8vOMmgTbIF
+         s2H4zxLDxalA591+AgRK2l73L3dGqVQTBLkLpRU4LipCmt3D6jwNzkncL4G3b8Wm4h7U
+         XQ5XMbJiTzHQJ/Lvbd1Qx5HybqZbEGTtflEJRFhDIr5kK28jt2YAXEuDidLZg+NjJH7a
+         jo9AKJpmsjF0rtdTXkbLNLjqoLi03xlFwGdvtNjRLMAEnA7Q07j0Yjq40inJhwyUYe2D
+         h6gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WcoOJgJsCus9j+z1oc3UJY2GBbxvXHxxloSoBiuOvOQ=;
-        b=ALyUcmchCotpVZiWEHetCgW5V8s/vFLxzeI19cBzEuhGO1K9G0x47C4RcfUQ3Ks5Ga
-         L5lHrS6B8BkxdixZBJcfkEku4Ccnx7C6pOfBqr1UHnpL/naYiVI3H34eUKb3rv5CyDW+
-         IdtXu8tfy9Gm5rc7H5iuYJpw0coU2kJVyLhhAiwZnKIGSIhFHCkHdsEgH2kk2kR4Glea
-         ygGrl+/9S5yTdvfJV/m4EjQY0rZTeq0Q8dFPIoEIBG/r8mZTjCbYiGCW/kRqJ5tV/1aX
-         vUbudVwdY9xzwD4fv1NHC08Cn0HhU9Fo/V4GMzPJu8RbCdnMvJviDyXfbGGA/3vjRBkv
-         JSLg==
-X-Gm-Message-State: AOAM5333NjPkPT5UE5MAiVV4YSexGoQ1aln5vtNyq02Wrl/oY7O41Eec
-        wHfzelKjSTPo4qOpLuy2od6yOTLZIWtsOg==
-X-Google-Smtp-Source: ABdhPJyzMxI8YixWXUsIVFeJM31vUFpyRSqjH+GUJFxCARCLS7L5vpJN4Y7JSBaPCVH30CtVdV9WBw==
-X-Received: by 2002:a05:6512:1094:: with SMTP id j20mr4105261lfg.442.1613218735504;
-        Sat, 13 Feb 2021 04:18:55 -0800 (PST)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id z8sm1330907lfr.124.2021.02.13.04.18.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 04:18:55 -0800 (PST)
-Date:   Sat, 13 Feb 2021 14:18:48 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [RFC PATCH 7/7] watchdog: retu_wdt: Clean-up by using managed work
- init
-Message-ID: <f157b14a3bd03cb94c9d11e3a6fc995bf4245edf.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=+ROuDXHApQcQIhQjqFc317qqeK0woD/n7w4itNrUPxk=;
+        b=iKnSy3eVlA9/HMnMXvOWnTYxFP5JByYY5yZuwwS6IPZ70Rz5EUeAjjhq1/1YBAMEhS
+         oijt1BVetbScMjLJe/eudbqmFJH3dn3DhViWd6YtT9+YgsflcxLW+tTrtZrDQXULIyVE
+         uvmlhl2YAXMjn1+cA0F35/prOtAP5atGEB9lyYR4atQ47mt0+B1nGO/oGNyOcM8eehIB
+         ++NtfRIlpXx95E7L3J7UvsQ/nnIFplImpYFio2mJv2ebjDPykSbdyopKQgq5m0UY5paQ
+         bH7vBs2noaIRUWw9/ZxAOx3Na0pBnbkT3MJM8Vpycs8EiMlo9qPCTfq4DhMtcKw94Xu5
+         qh8A==
+X-Gm-Message-State: AOAM5316sl+S3zaC+nliVdlSirsnIAxvFu2Pq07arD5wgvO2yZl+PAkX
+        b8anR6mb2YYQ2orS3ZwhiWk=
+X-Google-Smtp-Source: ABdhPJzy0uaTL1u9QU/uOqysklBO7PYmqZ0XN0qndGLpF6r0onKpYmMV97SlVrGcG6cjTNCy9vk3Aw==
+X-Received: by 2002:a17:902:e80b:b029:e3:3df1:5e93 with SMTP id u11-20020a170902e80bb02900e33df15e93mr1060938plg.80.1613218953899;
+        Sat, 13 Feb 2021 04:22:33 -0800 (PST)
+Received: from localhost (li1438-199.members.linode.com. [45.33.111.199])
+        by smtp.gmail.com with ESMTPSA id j4sm11041517pfa.131.2021.02.13.04.22.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 13 Feb 2021 04:22:33 -0800 (PST)
+From:   Orson Zhai <orsonzhai@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Orson Zhai <orsonzhai@gmail.com>, Mark Brown <broonie@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Haidong Yao <yaohaidong369@gmail.com>
+Subject: [PATCH v2 0/3] Fixes & a new supplementary feature to SPRD mailbox driver
+Date:   Sat, 13 Feb 2021 20:21:40 +0800
+Message-Id: <20210213122143.19240-1-orsonzhai@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Few drivers implement remove call-back only for ensuring a delayed
-work gets cancelled prior driver removal. Clean-up these by switching
-to use devm_delayed_work_autocancel() instead.
+Fix a real problem fot SPRD's mailbox driver in patch 1/3.
+Add supplementary inbox support for newly added sc9863a in patch 3/3 and
+change dt bindings yaml accordingly in patch 2/3.
 
-This change is compile-tested only. All testing is appreciated.
+Changes Log:
+V2:
+- Change patches order. (Yaml go to the head of dirver)
+- Remove unnecessary initializing refcnt to zero. 
+- Add fix of possible crash caused by NULL of chan->cl. (Actually move from
+  changes to sprd-mailbox.c of patch v1)
+- Remove unnecessary "inline" for do_inbox_isr().
+- Fix yaml errors from Rob's robot checking.
+- Add sc9863a compatible string for real supplementary inbox usage. (sc9860
+  is not supported by supp-inbox)
+- Add more details to supp-inbox in commit messages.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/watchdog/retu_wdt.c | 21 +++++----------------
- 1 file changed, 5 insertions(+), 16 deletions(-)
+Orson Zhai (3):
+  mailbox: sprd: Introduce refcnt when clients requests/free channels
+  dt-bindings: mailbox: Add interrupt-names to SPRD mailbox
+  mailbox: sprd: Add supplementary inbox support
 
-diff --git a/drivers/watchdog/retu_wdt.c b/drivers/watchdog/retu_wdt.c
-index 258dfcf9cbda..3b65bdaf54b4 100644
---- a/drivers/watchdog/retu_wdt.c
-+++ b/drivers/watchdog/retu_wdt.c
-@@ -127,9 +127,12 @@ static int retu_wdt_probe(struct platform_device *pdev)
- 	wdev->rdev		= rdev;
- 	wdev->dev		= &pdev->dev;
- 
--	INIT_DELAYED_WORK(&wdev->ping_work, retu_wdt_ping_work);
-+	ret = devm_delayed_work_autocancel(&pdev->dev, &wdev->ping_work,
-+					   retu_wdt_ping_work);
-+	if (ret)
-+		return ret;
- 
--	ret = watchdog_register_device(retu_wdt);
-+	ret = devm_watchdog_register_device(&pdev->dev, retu_wdt);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -138,25 +141,11 @@ static int retu_wdt_probe(struct platform_device *pdev)
- 	else
- 		retu_wdt_ping_enable(wdev);
- 
--	platform_set_drvdata(pdev, retu_wdt);
--
--	return 0;
--}
--
--static int retu_wdt_remove(struct platform_device *pdev)
--{
--	struct watchdog_device *wdog = platform_get_drvdata(pdev);
--	struct retu_wdt_dev *wdev = watchdog_get_drvdata(wdog);
--
--	watchdog_unregister_device(wdog);
--	cancel_delayed_work_sync(&wdev->ping_work);
--
- 	return 0;
- }
- 
- static struct platform_driver retu_wdt_driver = {
- 	.probe		= retu_wdt_probe,
--	.remove		= retu_wdt_remove,
- 	.driver		= {
- 		.name	= "retu-wdt",
- 	},
--- 
-2.25.4
-
+ .../bindings/mailbox/sprd-mailbox.yaml        |  18 ++-
+ drivers/mailbox/sprd-mailbox.c                | 135 +++++++++++++-----
+ 2 files changed, 117 insertions(+), 36 deletions(-)
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+2.17.1
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
