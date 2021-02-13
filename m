@@ -2,343 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E2C31A9D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 05:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F5631A9D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 05:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhBMENB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 23:13:01 -0500
-Received: from mail-am6eur05on2083.outbound.protection.outlook.com ([40.107.22.83]:41504
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        id S231960AbhBMESw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 23:18:52 -0500
+Received: from mail-eopbgr1410130.outbound.protection.outlook.com ([40.107.141.130]:53532
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229650AbhBMEM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 23:12:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zo/mwwYMVVd45SPJlljwhLt8aeVG7Twnx4Advj8BOA8=;
- b=g6CT8XMuzjYAgTFIQ9Ln/jEWtxkQxy7M9vOfe1XNRzLvUqCJilrs9ejbhND7xna85KoHIfkfprqzDyLjK6D6nrs1Q7hcMOVs2a79Hgsn2KsVQwOB+IsAylyttJCVz+6vCjsXbok3/3nXm/nuKTs2uTI/vim6DK/bNILtLYjyliU=
-Received: from DB6PR07CA0050.eurprd07.prod.outlook.com (2603:10a6:6:2a::12) by
- VI1PR0801MB2014.eurprd08.prod.outlook.com (2603:10a6:800:8d::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.25; Sat, 13 Feb
- 2021 04:12:03 +0000
-Received: from DB5EUR03FT061.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:6:2a:cafe::ef) by DB6PR07CA0050.outlook.office365.com
- (2603:10a6:6:2a::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.12 via Frontend
- Transport; Sat, 13 Feb 2021 04:12:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
- header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- DB5EUR03FT061.mail.protection.outlook.com (10.152.21.234) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3846.25 via Frontend Transport; Sat, 13 Feb 2021 04:12:03 +0000
-Received: ("Tessian outbound 4d8113405d55:v71"); Sat, 13 Feb 2021 04:12:03 +0000
-X-CR-MTA-TID: 64aa7808
-Received: from ac18dafde195.2
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 7D84270D-603B-4BDC-A2BF-93FD33EA3B9D.1;
-        Sat, 13 Feb 2021 04:11:58 +0000
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id ac18dafde195.2
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Sat, 13 Feb 2021 04:11:58 +0000
+        id S229570AbhBMESs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 23:18:48 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WVuQQnjjzbOkZBrPJGWP7608pkw4+1jUQyrI8Q9Uukc7KWYiiAukoMJFhIz9ZoE+baDnbCxKADLk8A2KTiJIcfsk0BBiB0Ss9FBh+IBzDjoZJZV3tCVcVV2xgGUQi+wWk+gV4v4YHHvUsBiPb2aNcqD8o732Y4M7q/Hzlut8gAA+CLrRSaDXuPJIxB+Gakbv/dWVdFGpz3Ew+11oxGzsp4olf06X4P3BthGg9AJZojTSgXQQo+Awl0R+BJZaEfX9BBlLoiiN6Ax/O+gcDprIQg8YAGzXXArDpxGNDZM/1UN9qnktPs5QqNzPADx4KMctq+xgGBRRtiGGjP/9AEt5Mw==
+ b=FY4FneK/L3Ha81pgiZ8fn+Yhls3fJqUcZNn1QekprEgaBHfOSm3Bb5ouIlWhQeHHuGBBeVVxpBI0lYDdJoUVvaVW/p8EfboU5FAnxA6cHfxf0o1aglSJFMebxU++QQg3eFI+X8Y58sIYpXBSo2ZB06cpWmRdOKrHNrpPHaFGy5mttDEd92ctjI8h02cBW3QWKwN05sHexPmdsdkgNs15Qp9CmuS3R+5PCne7OW0v9g1eC+lzqg5L6HYP1msGDHYxwOyptRJJJoIm35lmenVUpHxhDVN6Y3kYz1xSplsp9bsDqGPFTK7Bshbxaub2veJX6WmaYBEMDXY697geYm2gEw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zo/mwwYMVVd45SPJlljwhLt8aeVG7Twnx4Advj8BOA8=;
- b=F0lTllUy4Lu3NypEUjgjn2CR6C6zMJYqZwBAHqoso9vM2F9H4BKucf8qPSOW9j9BQoZc1+tVz1NRr+xifXz6/hOd97fKHO0zdOUrmwjvXbqP2qYzZdEwbhFVo6NBzdjo+z8GOeadcMoIINA6eTVKiEIAGwmu1zNrurdX6ymEU7cwpUZc5vApGmAEDuNqUUP8g2lAN9OGkz/VauKEl/w7jiyAZTZhL2YujcA8bs9pi8ljhzbx73aegoBnQDMTj/GQUNplimAVIbfdCs/LGZvp73I7up6D2PpdmOribmmEv5VJXaWNu8koSzqA+94+XZevQMk2QZySaBULEWrR2J928A==
+ bh=yWVQbwUeR7xa/vRZ6uEadnmrQvIm79GhxfWotQmkJzs=;
+ b=It+cvkF6h8PpP3R2/tsSg/oy6ueylsd2ns70sPcxR53oIMGum09zjDElwCk+d8JfjLi4+R2X66gWFwrXu881u6kPU3gyd/iVNwkmpfhxHs3CukCcR6u8w/F1R0wg2upelML6CqkUXkhpmxXcGeAo3aJoU2rZeujxaUmDBDFTibnG9Rw6bfOu88wKgQhA5Aj4auG4RvHds6LfP+dMSGialWfWNMA0d/1ThluKzSJQQWP++4o1IAp+FY99wuNRgWmwao0Nw0Im0c9gXVTzETqhRk/GJl8e68i5cD/lEaXD/w3cOvY3WfSxOp3PHjDVB7Jufgu8Gw7SAvBrD/d/37BCsw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zo/mwwYMVVd45SPJlljwhLt8aeVG7Twnx4Advj8BOA8=;
- b=g6CT8XMuzjYAgTFIQ9Ln/jEWtxkQxy7M9vOfe1XNRzLvUqCJilrs9ejbhND7xna85KoHIfkfprqzDyLjK6D6nrs1Q7hcMOVs2a79Hgsn2KsVQwOB+IsAylyttJCVz+6vCjsXbok3/3nXm/nuKTs2uTI/vim6DK/bNILtLYjyliU=
-Received: from AM6PR08MB3589.eurprd08.prod.outlook.com (2603:10a6:20b:46::17)
- by AM6PR08MB4312.eurprd08.prod.outlook.com (2603:10a6:20b:72::13) with
+ bh=yWVQbwUeR7xa/vRZ6uEadnmrQvIm79GhxfWotQmkJzs=;
+ b=I8wrkg+vzu0LCnHuzxc4TTDwqrDmq20TsidhFlwcsbhZZA7JP+bUJLs/UMU9ZpKGSHhstdRlTwUSJwTHtuq9s+cbTUkmEYi9sa7ARhgpfBEZiXwg7NrScSNW6I2EwJof4zT5QDIJzoT/IQoB6Dv1jMt6R7NdRvp7cf1BQSx1Ggw=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=renesas.com;
+Received: from OSAPR01MB5137.jpnprd01.prod.outlook.com (2603:1096:604:6d::17)
+ by OSBPR01MB4262.jpnprd01.prod.outlook.com (2603:1096:604:4f::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Sat, 13 Feb
- 2021 04:11:45 +0000
-Received: from AM6PR08MB3589.eurprd08.prod.outlook.com
- ([fe80::d4d5:2dd2:1ac5:ba34]) by AM6PR08MB3589.eurprd08.prod.outlook.com
- ([fe80::d4d5:2dd2:1ac5:ba34%4]) with mapi id 15.20.3825.030; Sat, 13 Feb 2021
- 04:11:44 +0000
-From:   Jianlin Lv <Jianlin.Lv@arm.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "fche@redhat.com" <fche@redhat.com>,
-        "irogers@google.com" <irogers@google.com>,
-        "sumanthk@linux.ibm.com" <sumanthk@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH v2] perf probe: fix kretprobe issue caused by GCC bug
-Thread-Topic: [PATCH v2] perf probe: fix kretprobe issue caused by GCC bug
-Thread-Index: AQHW/3XNvm0aeC2DrEW7u2Af0oYL66pVDqeAgABthgA=
-Importance: low
-X-Priority: 5
-Date:   Sat, 13 Feb 2021 04:11:44 +0000
-Message-ID: <AM6PR08MB3589C4AEE6A498780DBBFC76988A9@AM6PR08MB3589.eurprd08.prod.outlook.com>
-References: <20210210062646.2377995-1-Jianlin.Lv@arm.com>
- <20210212213405.GM1398414@kernel.org>
-In-Reply-To: <20210212213405.GM1398414@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ts-tracking-id: BED7862F2A6C9E46AA60087890BFAE30.0
-x-checkrecipientchecked: true
-Authentication-Results-Original: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=arm.com;
-x-originating-ip: [2409:8a1e:6f2d:b50:7014:e115:bf10:1974]
-x-ms-publictraffictype: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 28b9c29c-4445-4eff-4842-08d8cfd584a6
-x-ms-traffictypediagnostic: AM6PR08MB4312:|VI1PR0801MB2014:
-x-ms-exchange-transport-forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0801MB201421EEF2D0A6D9B75BEFD7988A9@VI1PR0801MB2014.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-nodisclaimer: true
-x-ms-oob-tlc-oobclassifiers: OLM:397;OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: mHCFwCi5nYef3/V6SaxVlXgRxHZsGlYrZOjDR7mUQN4NiugfKTUzd7KgqhUaoRae2Srz0hCQcFUntVDg+kMvv1PTpQX6lLGliX5YQ5VasZQJXZAgaj5bm4UVT/LCxaKeQlvjHHxAx/mVGQQV/9Gvi1IE0nhM1th6YUKijvSmS3LVOnT/RaCyuUeR4mI1RKKgWGPNGRWTKElxe4BpsgCYWImKLpzJIACs2SfFRLfgldVTwrdI9K+3iF6TmGiITW7ZLD4b/p15UNGQpthWaT5A5fFR78S7shVl3vaclbjjulv5Fk2PndDX7Vy59ETwMazUe2DhacgvHzBHc/9CKbZ5i7j6HmyHU6qC7qh1l0SA7hk6GcnQSJaiuUXNUni3Yi2K+0+awaBekTFLlk++1IBINtqJPxEZxek/5XhIi/bE5FY/YKhfnsOqXmyn6HaF0eG90ymZk7vrRYk01mk/bYgE+GtrlZCbB1N+m8mU6vuHikB1YUAdPrALyuGe1W2FVfaRTms4WozLGV/k8nUIfVHGWIu8qaxm3F/PrKe4jkVEFP4OfFKeOLryA5N0DIqNjUhGY7ENR2PD/+SUznVsR3gpfvuPvtGMFarlvCHz0WYFzhY=
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB3589.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(966005)(64756008)(66446008)(52536014)(2906002)(186003)(66476007)(6506007)(6916009)(53546011)(7696005)(66556008)(66946007)(8936002)(86362001)(71200400001)(498600001)(76116006)(4326008)(7416002)(33656002)(83380400001)(9686003)(8676002)(5660300002)(54906003)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?SISJujBrVrF/dt+rEFeTGA05adJUYQDdo7le6/5qAXOWyWwEORg55QZ9Lcwa?=
- =?us-ascii?Q?tB3CKAvrbGqgwRnL+yBeLoFtjDrGneaxgsciIr879alP61j6hRUR4fDgvf9K?=
- =?us-ascii?Q?9T6nTTY1IMCJ7TunhjCnRa7Ax/8atQrrcgQy5bWsKHeKsfzP3/ImRk7Jb1+U?=
- =?us-ascii?Q?sIZDYCMg1f05A1q/vnawuPj6ejHyy7Zpfe8GZTVAez/mA/WX0tH0fG16O8C1?=
- =?us-ascii?Q?i9Lk9cmj2S18HksY/6As5gBud3pgUCFLjL1SFMRxuCF34Xr24VuSaearcnyi?=
- =?us-ascii?Q?2IDdoJ/jK5D9Ix0q/X0bAN+SCorMwksUOsg7SYcNd9dCI/KS/pcsy2YpsikM?=
- =?us-ascii?Q?9cosOf1qGAaqi/QiFGCTaxj22Ng1FDwPO9gy0YhbRmPBFrjTmoX9gtfR7ikS?=
- =?us-ascii?Q?+bstg8hbfW4x+nl5yP9o2414Yod6xX/tdoog1WiBD+WjTiR/dfHQV81Od8l/?=
- =?us-ascii?Q?OYqgpZMTOoxZP1H2oIq1x4BIzSrorEMdRTA+USCsdOJRKjLg3syCvF4+gcsL?=
- =?us-ascii?Q?KQ2bDCud3mMGWLCs0Aum8Fh8Vl4A3h8YlViEIPj/wNWaWoEAXXsaLXHMI8Fn?=
- =?us-ascii?Q?FEYq8alWI9HDM89txlS6cxrfN8C9bSSndwqInVpDbGEsyO9bz93ow9gmI8Wb?=
- =?us-ascii?Q?HptjiqziM5LlIXAvh0yAlVdpvCK1SVg4glq4fRzcBkj3koD8z6ps9Sg0vU90?=
- =?us-ascii?Q?2AhvQWsiyilCSP6ekXsuv0mEtAZ33KrUFudtnVtrLHdPg/Hqm6X7+6qKujWO?=
- =?us-ascii?Q?/FMQMTwj7YiawwLEcl4omee68Awv5R0Gl9SDyczXk4N+F7ZjQQk9gnaZOZNe?=
- =?us-ascii?Q?6RBcboy7A8QRyZByfJuQ+bX9aJona1ggXjAWOPCiDUB9X5m/qZJ4TmvyTBy4?=
- =?us-ascii?Q?DO1fmlSAp7v2udNbD9xaFaWXwBoejm3BhfJKqQTibWTTCFAQZ48keEmDACX5?=
- =?us-ascii?Q?5VjNTRS7Uf35JIFlGodJ8kKRnq/Dr+UwT8PWuy5NPyUZI9V+X4VRGOiX8W3s?=
- =?us-ascii?Q?lvCqfqU4xH5MuUFTSxcvF2mg5I2RB/WKl1DhCoydcRl5B2gBuvIs2MfmASsj?=
- =?us-ascii?Q?glI8zObWAEOFnAqQZkA4oyYv3PQr02qCNH1HFH1oRHWVK9iTOtOOp9tQ9jng?=
- =?us-ascii?Q?Eu5QPWcx/eflWfvvqBfts+T2lKCNyE77JtOcDeea2XZxhcy5Sdpfd1d78HIX?=
- =?us-ascii?Q?yTsPK+27xdAk+2e6nZU7KOoUzVfKTN8bodAYLPyxixGN6zC0t9cgofxx2DuH?=
- =?us-ascii?Q?zXXYJNbf6l3lfuiJaaYJGuTV6M/bT23qeNJO6Q3tqo40Ic0pP+ce1lb7GDVU?=
- =?us-ascii?Q?CgfLtcqCAYe3vIEDeRmKj2jiLFaGwnH/vOZAkOJm//THLb+eCus5hMXxGtxL?=
- =?us-ascii?Q?OIzSEOh5l0OyfRAM6lMt3+0aysjQ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26; Sat, 13 Feb
+ 2021 04:17:58 +0000
+Received: from OSAPR01MB5137.jpnprd01.prod.outlook.com
+ ([fe80::d46f:1a71:68ad:42a4]) by OSAPR01MB5137.jpnprd01.prod.outlook.com
+ ([fe80::d46f:1a71:68ad:42a4%7]) with mapi id 15.20.3846.030; Sat, 13 Feb 2021
+ 04:17:58 +0000
+Date:   Fri, 12 Feb 2021 23:17:45 -0500
+From:   Vincent Cheng <vincent.cheng.xh@renesas.com>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/2] ptp: ptp_clockmatrix: Add
+ wait_for_sys_apll_dpll_lock.
+Message-ID: <20210213041742.GA14189@renesas.com>
+References: <1613104725-22056-1-git-send-email-vincent.cheng.xh@renesas.com>
+ <1613104725-22056-2-git-send-email-vincent.cheng.xh@renesas.com>
+ <20210212153140.GB23246@hoboy.vegasvil.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210212153140.GB23246@hoboy.vegasvil.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [173.195.53.163]
+X-ClientProxiedBy: BN9PR03CA0239.namprd03.prod.outlook.com
+ (2603:10b6:408:f8::34) To OSAPR01MB5137.jpnprd01.prod.outlook.com
+ (2603:1096:604:6d::17)
 MIME-Version: 1.0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB4312
-Original-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: DB5EUR03FT061.eop-EUR03.prod.protection.outlook.com
-X-MS-Office365-Filtering-Correlation-Id-Prvs: 14c70cfa-702d-48a6-0adc-08d8cfd579a2
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from renesas.com (173.195.53.163) by BN9PR03CA0239.namprd03.prod.outlook.com (2603:10b6:408:f8::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Sat, 13 Feb 2021 04:17:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 8349e046-384f-43d3-89e4-08d8cfd65823
+X-MS-TrafficTypeDiagnostic: OSBPR01MB4262:
+X-Microsoft-Antispam-PRVS: <OSBPR01MB4262D482007317103C641557D28A9@OSBPR01MB4262.jpnprd01.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V1r7fl78dV59bt1BsvKX68g2m42/ZuIydI8809KI6fNjbu7vwTHglxe2+RCtcaGoc8V68SjAPn0p5I0kefdBbZEIsf9Hs+SqHuIHWOfJtu7P6HDUDMJYsFjY9SLjRxvFjGzPyAyycQQvkdTwmM1VpKsfWSPPN6V+ZIUKC6EODEBPiHLSA11JIaMuahuK3vSdbcqljJT5LYM6GuUrC+wJy+o/tHdA5RCSfoT8Iqr61h05rX0CQdiY9oxx9o0B8F3paoVbDm7hwBcyzWB6RjT25y8uej5p8HE/SFmhQs9kjwDHkia5u0ZcM9RGwfpdu94iJBSnPJqUtzY6/wuDB6PJPzQcMmvqnDWjIH5Sy5HWWcvuorvTCs2YcS5ftyEuERAXC4NAsQpLj0EfvckzRqFNEHY/uqIxjszNaoeZv4cuGGUd37VALXPceCjuQ8Mvucc2XgXyTxv/IRUEypHGDzcfUJ4A/9rGFewuw0D3uJLXu7ovFEcRp6ewZF2oscef6/03KboRvR/Ckh7VWsIJtCT1BAE9yskNmvjzv0naA40x1EDKHY4MRe0uzCn2pXhlNR6FQVp1k1xXiA2fkxyb6rpCU8GmOrKTWYLrCkLMto+dOOuyXvswufnDRHlVtYKt5xvpsWIDi8+cSpEJ6JlSFKwz8HNmWQRRGsIZvs08904wqM1kcOdAPckxCAY4cic4eZXbTgk22TTnqfi83SVXkBUyH9AhT7ZOU7FADIallZhe0uA=
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(376002)(39850400004)(36840700001)(46966006)(33656002)(316002)(107886003)(82310400003)(336012)(70586007)(52536014)(8676002)(2906002)(47076005)(6862004)(9686003)(5660300002)(55016002)(4326008)(966005)(54906003)(6506007)(356005)(36860700001)(26005)(86362001)(82740400003)(7696005)(53546011)(81166007)(83380400001)(478600001)(186003)(70206006)(8936002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2021 04:12:03.3338
+X-Microsoft-Antispam-Message-Info: vLUeN8ceuW38Rvg0cc7zeWnSWXmWEgQEh3fT0tfF3nzo3B9dzsAdC9uv9sbeFJof6VI7CAXrey+Yz+cCuRR9nAYDhLCO5nzq7/Nu30q15mUdVeLt7tJhg84N5ScY1eJuFc33h6EL+4vuP9sW/NNxg+h96zOtCreIcE86udC7Zhux12IBkwHit5EaCkxKhFr8gYnwakNBqG5MwVPGA2wl81Ly/ijVFjzzNgBotoYbcsbr8VcjokEeGdtpJCZCwU8QeQNyRM4h5gzbHgEOjE2QoJ7cFSbwuGkATx9Sh1HS1njSqlOjiZGE1Yi3Hrns24Y87mVlOJWx8PK6qoCiCRmFzYVOjnwKpuNYdjSmBvHERuWLYbuGqCYs6T3T5FfuDKgfws8qxW0eKDqhKaCsjIjKch4WPjgL33NuClQUSX8TF9EbqQ2qCMWnAVNBa8LX8LQXjHpMnKVHwgyYxt0Yde3g2CMZkLiy3eHG++cAlNn2WBo9Hpwn+8qmx5cvvmnDnsXm1etgtga/0D5SxgJyA5S0sw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB5137.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(39860400002)(136003)(366004)(66476007)(83380400001)(186003)(66556008)(33656002)(8676002)(8886007)(8936002)(6666004)(7696005)(956004)(52116002)(6916009)(316002)(66946007)(2616005)(4744005)(86362001)(478600001)(26005)(1076003)(16526019)(2906002)(4326008)(36756003)(55016002)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Y3ZOOVcvd0hkWXJ1RTNtTkM2S1Z4cmd1cmN2dW1PMjR4bTFRaVFNMW82eUM4?=
+ =?utf-8?B?YXVZNWg3cndyVkpST3c3Sm40cEY2NzVtQlZmeVVlMG5QUngxcFJ1Rk9TNjRF?=
+ =?utf-8?B?R2dsbDAzT2laRmk3eHQ3TzlkVEloeGttT2lRS1VXQmtFVjBQL0NXdk9BU3N6?=
+ =?utf-8?B?Yk4wR1BhazNZSWpHNzJTL01xM3ZTd3JrT1huY0VRTS9ZaXhGVzhOUisxbzNq?=
+ =?utf-8?B?SnNMN2Z2ZEVoNlVSbXJMWDFHandOenVLRzdiWVU0cWFvcGwzci9OWkNvdk1C?=
+ =?utf-8?B?dmw0THZvUlczSUc3bnZyTlI3WU9vWnE0UldZWE1seXgvWHBESy8waldVNXhT?=
+ =?utf-8?B?T1lDcExzWkFseEFSc3pTZEtCdTZZaW8vYlpheWpSM0pPcEltYkhBbFVLR2hv?=
+ =?utf-8?B?SU1HVTZsM1U0Ym03MXJKbW9MVk5TTFp1UkVhalhHNk1uZDdQZ1lFMk5CTHVo?=
+ =?utf-8?B?TjNHcXlWQzM3R0tHdzBkbjJoNHpkM1lyWVl6cEp2ZndCYnZ1OEtJWVVkdFJ3?=
+ =?utf-8?B?VlZPNFJvaU53ZGorSEpxZjE1aHVmeGczemZ2Ukl1Z1NTM1A2RVNPUkg0a0xB?=
+ =?utf-8?B?U2NSSnlYVUYzSFUvdStNU3dnUWdtaWdNUEc3cGtoSE1nTUpzbk1qNlJRS0pJ?=
+ =?utf-8?B?bGlQaXJqMzA4alYrQUROcmtnSHJwVHNOS3VDNlQ3RVBleEJuQ2JOcDYwK3Nr?=
+ =?utf-8?B?dFA5Z3FaempBQlkwTXRjOS9HYWUvNktlMVFKUk9VN3dySXc4NytKNHp4K3pi?=
+ =?utf-8?B?M3RQd1pIb2NYdG1lL0wzUE5TVTJocmphNzk3dUZIT2NGMWlDTEc2aUNFblFq?=
+ =?utf-8?B?dDB5V1RkRHJ1MndBNzNhL1o0aDFzVWQvWW1NcnVNeURiKy9XeHdHMVVzeklI?=
+ =?utf-8?B?U0RSdHBLcENsNm8wUFN1YVRsRFlraDhETE40b2Q3UWJncVhNNFd4S2VieTZG?=
+ =?utf-8?B?cHFzQmRxQzcyT0UxdWZzM2xZSEI4MkVQQ214Z1ZWVzB5NU4xMGgwaXNxQWtW?=
+ =?utf-8?B?WXZjMVgxVVdZTGZOVmd6aDRjVktPa3pZVjA3Nk91ckRETlU3YVJvd1JocTc1?=
+ =?utf-8?B?SkQxQk16TVJjbVhtQy9WRHRpL1ZzWk5VZHJCMWpaR25DWk8weHhaWGxla2xu?=
+ =?utf-8?B?WG96Nmw2eWE1bE5OZjhqdlZhZmZkcmZLcUJJeTRJdkNLbEllYm01QXJPdmpM?=
+ =?utf-8?B?Y211YUJvcFk5VXZDUlZtSmFMbVRiOUdDY1lzeW9aMmZzRlRrSzNHMURJVmVM?=
+ =?utf-8?B?MTRNWklnWmtySDRwY1ZpUzhXQVBvQ2plWkZzMTg2QXZza2JPdWtGNlFpWjh5?=
+ =?utf-8?B?UVQrL2ZRbWE4dHVNYXBLQXhSaW9UTWs2RUFSZi9tYTVZYlFINGV2UUNESzN6?=
+ =?utf-8?B?eUh5OFJ4RmF5VjNCMWxMdXhoK085cTl0bExKQXZwYVhoc3JoeW5nUEtnQnh0?=
+ =?utf-8?B?MGpnWTJSc2duaXpzZm4vTzNZeG9nRFNMQTlGZTdiQ2VJMHA3VTd0Tit6UFh0?=
+ =?utf-8?B?VmpIZndMOSt6eThZck5TVjhLVnVpejdmZFRSRzVZTy9scDhLdHN1N2hiRDVS?=
+ =?utf-8?B?aS9DSmo0QWd1QWlFNGhoYlQ2S1pXcEFoS2Ivd3pTVHJRV1BCR3RFQ1FRZFli?=
+ =?utf-8?B?VHpDM1ZKWjRyeWRJRHFTSDJRNVIvRjZSVE1vcVZYdDJadkZMWFdTd3MwZW1J?=
+ =?utf-8?B?R1JibnFrZ2lnUnNRZ2ZUbC9vakd2STJ3bnBxaWZIa3ZFQ21pcjA2WjRWUlJX?=
+ =?utf-8?Q?eJHl3aAlqUXcsrvB473x/QNJTQ8PY4LY6DMpDKR?=
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8349e046-384f-43d3-89e4-08d8cfd65823
+X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB5137.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2021 04:17:58.5178
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28b9c29c-4445-4eff-4842-08d8cfd584a6
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: DB5EUR03FT061.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0801MB2014
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5Iin5S9yMOvywrakpAF2fQ8xj9GOM5r14mZR/68eqyteJO1iVwzqkMfltYgkJc04pkXGeMzlpShvIQtWPAoNwLDNAInnrlFCCdipF8sMFVQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB4262
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 12, 2021 at 10:31:40AM EST, Richard Cochran wrote:
 
+>On Thu, Feb 11, 2021 at 11:38:44PM -0500, vincent.cheng.xh@renesas.com wrote:
+>
+>> +static int wait_for_sys_apll_dpll_lock(struct idtcm *idtcm)
+>> +{
+>> +	char *fmt = "%d ms SYS lock timeout: APLL Loss Lock %d  DPLL state %d";
+>
+>Probably you want: const char *fmt
 
-> -----Original Message-----
-> From: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Sent: Saturday, February 13, 2021 5:34 AM
-> To: Jianlin Lv <Jianlin.Lv@arm.com>
-> Cc: peterz@infradead.org; mingo@redhat.com; Mark Rutland
-> <Mark.Rutland@arm.com>; alexander.shishkin@linux.intel.com;
-> jolsa@redhat.com; namhyung@kernel.org; nathan@kernel.org;
-> ndesaulniers@google.com; mhiramat@kernel.org; fche@redhat.com;
-> irogers@google.com; sumanthk@linux.ibm.com; linux-
-> kernel@vger.kernel.org; clang-built-linux@googlegroups.com
-> Subject: Re: [PATCH v2] perf probe: fix kretprobe issue caused by GCC bug
->
-> Em Wed, Feb 10, 2021 at 02:26:46PM +0800, Jianlin Lv escreveu:
-> > Perf failed to add kretprobe event with debuginfo of vmlinux which is
-> > compiled by gcc with -fpatchable-function-entry option enabled.
-> > The same issue with kernel module.
-> >
-> > Issue:
-> >
-> >   # perf probe  -v 'kernel_clone%return $retval'
-> >   ......
-> >   Writing event: r:probe/kernel_clone__return _text+599624 $retval
-> >   Failed to write event: Invalid argument
-> >     Error: Failed to add events. Reason: Invalid argument (Code: -22)
-> >
-> >   # cat /sys/kernel/debug/tracing/error_log
-> >   [156.75] trace_kprobe: error: Retprobe address must be an function en=
-try
-> >   Command: r:probe/kernel_clone__return _text+599624 $retval
-> >                                         ^
-> >
-> >   # llvm-dwarfdump  vmlinux |grep  -A 10  -w 0x00df2c2b
-> >   0x00df2c2b:   DW_TAG_subprogram
-> >                 DW_AT_external  (true)
-> >                 DW_AT_name      ("kernel_clone")
-> >                 DW_AT_decl_file ("/home/code/linux-next/kernel/fork.c")
-> >                 DW_AT_decl_line (2423)
-> >                 DW_AT_decl_column       (0x07)
-> >                 DW_AT_prototyped        (true)
-> >                 DW_AT_type      (0x00dcd492 "pid_t")
-> >                 DW_AT_low_pc    (0xffff800010092648)
-> >                 DW_AT_high_pc   (0xffff800010092b9c)
-> >                 DW_AT_frame_base        (DW_OP_call_frame_cfa)
-> >
-> >   # cat /proc/kallsyms |grep kernel_clone
-> >   ffff800010092640 T kernel_clone
-> >   # readelf -s vmlinux |grep -i kernel_clone
-> >   183173: ffff800010092640  1372 FUNC    GLOBAL DEFAULT    2 kernel_clo=
-ne
-> >
-> >   # objdump -d vmlinux |grep -A 10  -w \<kernel_clone\>:
-> >   ffff800010092640 <kernel_clone>:
-> >   ffff800010092640:       d503201f        nop
-> >   ffff800010092644:       d503201f        nop
-> >   ffff800010092648:       d503233f        paciasp
-> >   ffff80001009264c:       a9b87bfd        stp     x29, x30, [sp, #-128]=
-!
-> >   ffff800010092650:       910003fd        mov     x29, sp
-> >   ffff800010092654:       a90153f3        stp     x19, x20, [sp, #16]
-> >
-> > The entry address of kernel_clone converted by debuginfo is
-> > _text+599624 (0x92648), which is consistent with the value of
-> DW_AT_low_pc attribute.
-> > But the symbolic address of kernel_clone from /proc/kallsyms is
-> > ffff800010092640.
-> >
-> > This issue is found on arm64, -fpatchable-function-entry=3D2 is enabled
-> > when CONFIG_DYNAMIC_FTRACE_WITH_REGS=3Dy;
-> > Just as objdump displayed the assembler contents of kernel_clone, GCC
-> > generate 2 NOPs  at the beginning of each function.
-> >
-> > kprobe_on_func_entry detects that (_text+599624) is not the entry
-> > address of the function, which leads to the failure of adding kretprobe
-> event.
-> >
-> > ---
-> > kprobe_on_func_entry
-> > ->_kprobe_addr
-> > ->kallsyms_lookup_size_offset
-> > ->arch_kprobe_on_func_entry// FALSE
-> > ---
->
-> Please don't use --- at the start of a line, it is used to separate from =
-the patch
-> itself, later down your message.
->
-> It causes this:
->
-> [acme@five perf]$ am /wb/1.patch
-> Traceback (most recent call last):
->   File "/home/acme/bin/ksoff.py", line 180, in <module>
->     sign_msg(sys.stdin, sys.stdout)
->   File "/home/acme/bin/ksoff.py", line 142, in sign_msg
->     sob.remove(last_sob[0])
-> TypeError: 'NoneType' object is not subscriptable [acme@five perf]$
->
-> I'm fixing this by removing that --- markers
->
+Good point, will change in V2 patch.
 
-Sorry for the inconvenience?
-Should I commit another version to fix this issue?
-
-Jianlin
-
-> > The cause of the issue is that the first instruction in the compile
-> > unit indicated by DW_AT_low_pc does not include NOPs.
-> > This issue exists in all gcc versions that support
-> > -fpatchable-function-entry option.
-> >
-> > I have reported it to the GCC community:
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D98776
-> >
-> > Currently arm64 and PA-RISC may enable fpatchable-function-entry option=
-.
-> > The kernel compiled with clang does not have this issue.
-> >
-> > FIX:
-> >
-> > This GCC issue only cause the registration failure of the kretprobe
-> > event which doesn't need debuginfo. So, stop using debuginfo for retpro=
-be.
-> > map will be used to query the probe function address.
-> >
-> > Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
-> > ---
-> > v2: stop using debuginfo for retprobe, and update changelog.
-> > ---
-> >  tools/perf/util/probe-event.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/tools/perf/util/probe-event.c
-> > b/tools/perf/util/probe-event.c index 8eae2afff71a..a59d3268adb0
-> > 100644
-> > --- a/tools/perf/util/probe-event.c
-> > +++ b/tools/perf/util/probe-event.c
-> > @@ -894,6 +894,16 @@ static int try_to_find_probe_trace_events(struct
-> perf_probe_event *pev,
-> >  struct debuginfo *dinfo;
-> >  int ntevs, ret =3D 0;
-> >
-> > +/* Workaround for gcc #98776 issue.
-> > + * Perf failed to add kretprobe event with debuginfo of vmlinux which
-> is
-> > + * compiled by gcc with -fpatchable-function-entry option enabled.
-> The
-> > + * same issue with kernel module. The retprobe doesn`t need
-> debuginfo.
-> > + * This workaround solution use map to query the probe function
-> address
-> > + * for retprobe event.
-> > + */
-> > +if (pev->point.retprobe)
-> > +return 0;
-> > +
-> >  dinfo =3D open_debuginfo(pev->target, pev->nsi, !need_dwarf);
-> >  if (!dinfo) {
-> >  if (need_dwarf)
-> > --
-> > 2.25.1
-> >
 >
-> --
+>> diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
+>> index 645de2c..fb32327 100644
+>> --- a/drivers/ptp/ptp_clockmatrix.h
+>...
 >
-> - Arnaldo
-IMPORTANT NOTICE: The contents of this email and any attachments are confid=
-ential and may also be privileged. If you are not the intended recipient, p=
-lease notify the sender immediately and do not disclose the contents to any=
- other person, use it for any purpose, or store or copy the information in =
-any medium. Thank you.
+>> @@ -123,7 +137,6 @@ struct idtcm_channel {
+>>  	enum pll_mode		pll_mode;
+>>  	u8			pll;
+>>  	u16			output_mask;
+>> -	u8			output_phase_adj[MAX_OUTPUT][4];
+>>  };
+>
+>Looks like this removal is unrelated to the patch subject, and so it
+>deserves its own small patch.
+
+Ok, will separate into separate patch for V2.
+
+Vincent
+
