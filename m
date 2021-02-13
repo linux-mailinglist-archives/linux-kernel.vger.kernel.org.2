@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F06731AD25
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 17:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E289A31AD33
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 17:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhBMQdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 11:33:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59808 "EHLO mail.kernel.org"
+        id S229758AbhBMQpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 11:45:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229574AbhBMQc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 11:32:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9940964E2C
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 16:32:17 +0000 (UTC)
+        id S229625AbhBMQo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 11:44:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A161B64E3B;
+        Sat, 13 Feb 2021 16:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613233937;
-        bh=nfPivI676TW1Vyh+48AYclAWuVpk7t0piH1yKqAy+T4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kgnasnZBwka5FrcUtUMuzU5alzSSg7eCcCSdRhZZK/X2J0KEnAKwzVO/MdIAQKNdl
-         PQcL2ouGanAk7OCCUAHXFEFw3cMrQpbs2LYKVUokZxACJrD086k21C/PXxaBPBeLO4
-         Bn9v0Xv86blzlepR/Zhd5R7telTrUvyxNvYMFd2RtXVru02c2QEZ779IMhWcxqo0rl
-         si7W0IIefQLaCEU347Kv+O917oiouzte9AKckt/CeRPprMkhecZsB4w4oAHIBma52k
-         AbZ2p9N/ZsxmaD76q3j9f9jE0xZ0jK2+o0lvXZge0xbSJNQEUAdY45a15pdCyPJY5q
-         1urhH7NZEGrKw==
-Received: by mail-oi1-f180.google.com with SMTP id f3so3160649oiw.13
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 08:32:17 -0800 (PST)
-X-Gm-Message-State: AOAM531GT95zz81bWLAF7IIENyzo6/Pl/HF907Y9IYlrWMf6NApURwGO
-        FiuW1dkKRietgwkMel+UIZFJhmU57UrMOa3skOY=
-X-Google-Smtp-Source: ABdhPJxu9CAbLoK/yoJdEoMHdvhxaDAU66vTbDCG+Q0e+t1pnRuMtUkIFbROtKSMN4VqXn/nJMFIw60amkYm558mfwc=
-X-Received: by 2002:aca:d908:: with SMTP id q8mr3115221oig.67.1613233936881;
- Sat, 13 Feb 2021 08:32:16 -0800 (PST)
+        s=k20201202; t=1613234658;
+        bh=hBqZYS1HKSB8x0IF79tmfO8p4Il0RAPTJUBhjQOOphM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=f/pXY/oSoT9fS+4YyM/Mn9Eq8Bd/3Vhde7nRnat5O/mjaRlac98nkDHGB/SyIIh7P
+         z4EDXEMwVTYGSRdo3P0gODcPUqz7t0ZlS8qHNLCf/LfC8eVu7lg3AXRj4Y30pm4V/d
+         coVul4B0hoHgWf1fItUVP9IUZJd6xkMkUQ2fqvt5BuJUR3ZPMOhQadjuGyYq2zS/N3
+         VwsHnhxYK09kER8O6v2uyY6LJbqHbC17rE+tgy9q+vwWu7paiYIKRIUFxMYOdMrEZo
+         rknLQ4G/H6kSYtCTJf9bo2L/IvlCvuGpB4gTE9Coy75hdw4C0vrJ8htJRa7hXMi9F4
+         ZWVVeXaNwSqeg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 65BA53522F70; Sat, 13 Feb 2021 08:44:18 -0800 (PST)
+Date:   Sat, 13 Feb 2021 08:44:18 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        kernel-team@fb.com
+Subject: "Single user mode" initrd [ Was: [GIT PULL tip/core/rcu] RCU, LKMM,
+ and KCSAN commits for v5.12 ]
+Message-ID: <20210213164418.GR2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210128010437.GA32221@paulmck-ThinkPad-P72>
+ <20210212123109.GB2185387@gmail.com>
+ <20210212150705.GO2743@paulmck-ThinkPad-P72>
+ <20210213123658.GA3500@1wt.eu>
 MIME-Version: 1.0
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
-In-Reply-To: <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 13 Feb 2021 17:32:01 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
-Message-ID: <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "fthain@telegraphics.com.au" <fthain@telegraphics.com.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210213123658.GA3500@1wt.eu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 12:50 AM Song Bao Hua (Barry Song)
-<song.bao.hua@hisilicon.com> wrote:
+[ Dropping non-list CCs. ]
 
-> So I was actually trying to warn this unusual case - interrupts
-> get nested while both in_hardirq() and irqs_disabled() are true.
->
-> diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
-> index 7c9d6a2d7e90..b8ca27555c76 100644
-> --- a/include/linux/hardirq.h
-> +++ b/include/linux/hardirq.h
-> @@ -32,6 +32,7 @@ static __always_inline void rcu_irq_enter_check_tick(void)
->   */
->  #define __irq_enter()                                  \
->         do {                                            \
-> +               WARN_ONCE(in_hardirq() && irqs_disabled(), "nested
-> interrupts\n"); \
->                 preempt_count_add(HARDIRQ_OFFSET);      \
+On Sat, Feb 13, 2021 at 01:36:58PM +0100, Willy Tarreau wrote:
+> Hi Paul,
+> 
+> On Fri, Feb 12, 2021 at 07:07:05AM -0800, Paul E. McKenney wrote:
+> > Thank you, Ingo!  In the future, I will group nolibc with RCU.  But there
+> > has to be something other than RCU that needs it.  I will take a look. ;-)
+> 
+> All my kernels boot using a "preinit" that is built with nolibc and
+> integrated into the initramfs. Historically it used to just create /dev
+> entries and mount the rootfs, nowadays it's used to untar modules and
+> finish the boot so that I can have a clean separation between a kernel
+> image and a rootfs. It even allows to perform some minimal debugging as
+> it includes a minimalistic shell. Do you think something like this could
+> be of any use in your development sessions ? If so I can discuss this
+> with you in a separate thread so as not to annoy everyone. Just let me
+> know :-)
 
-That seems to be a rather heavyweight change in a critical path.
+I currently use virtme when I need to poke around in userspace, which
+has been working well so far.
 
-A more useful change might be to implement lockdep support for m68k
-and see if that warns about any actual problems. I'm not sure
-what is actually missing for that, but these are the commits that
-added it for other architectures in the past:
+I suspect that your preinit could be used to make a boot-loader that
+automatically knows the needed Linux-kernel filesystems, thus avoiding
+the long series of bugs due to filesystem mismatches between the Linux
+kernel and the boot loader.  In the old days, the larger size of the
+Linux kernel would have been a problem, but given the size of firmware
+these days, this should no longer be a problem.
 
-3c4697982982 ("riscv: Enable LOCKDEP_SUPPORT & fixup TRACE_IRQFLAGS_SUPPORT")
-000591f1ca33 ("csky: Enable LOCKDEP_SUPPORT")
-78cdfb5cf15e ("openrisc: enable LOCKDEP_SUPPORT and irqflags tracing")
-8f371c752154 ("xtensa: enable lockdep support")
-bf2d80966890 ("microblaze: Lockdep support")
+But my guess is that this has already been tried.  Plus there would have
+to be someone quite excited about doing a large body of boot-loader work.
 
-> And I also think it is better for m68k's arch_irqs_disabled() to
-> return true only when both low and high priority interrupts are
-> disabled rather than try to mute this warn in genirq by a weaker
-> condition:
->              if (WARN_ONCE(!irqs_disabled(),"irq %u handler %pS enabled interrupts\n",
->                              irq, action->handler))
->                        local_irq_disable();
-> }
->
-> This warn is not activated on m68k because its arch_irqs_disabled() return
-> true though its high-priority interrupts are still enabled.
+Thoughts?
 
-Then it would just end up always warning when a nested hardirq happens,
-right? That seems no different to dropping support for nested hardirqs
-on m68k altogether, which of course is what you suggested already.
-
-       Arnd
+							Thanx, Paul
