@@ -2,224 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9586A31AAF5
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1145131AB01
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbhBMLCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 06:02:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53310 "EHLO mail.kernel.org"
+        id S229660AbhBMLZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 06:25:36 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:43074 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhBMLCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 06:02:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F41FC64E44
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 11:01:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613214083;
-        bh=G71u7RTd4A+rBB1I9GNDIIEuu107tc6tTr/aifGEocg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GxERvQ0VZIYnBHwi/rOGp9DB578dL+KH+k7p8P662CGeWvdboRzfuzLuCr5sfmEgv
-         kWmT5MswkYSl2Ws4Xctgd6mpy4+2ilQmFBOa/qXQc0Rl2CSLsZ/Fccvyp5/Uu1+rj/
-         3rFHXqglXncFU7yoMyYc2JGJvuiWjwIT19EuRqCkFUyxmlvLTdgIBUZg7VWIMLPefh
-         VitmMS4egfS7kwjcsF4QMuMoxuMv9NeLnnwQMQlIqBDQyhnczuu/z/oKzFj+kT1n7/
-         KqzCF1E4Wir/qJY2512e6WhkcrgPJLew/1xm+YnimDrPJbfAMwH9RDIkbzOZqhq52l
-         yzv3X8rb4uo1g==
-Received: by mail-ot1-f49.google.com with SMTP id y11so1720957otq.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 03:01:22 -0800 (PST)
-X-Gm-Message-State: AOAM5317hk0LW2Uwe/gHstOtleq6CgRvDB8WkRRcOzoakBm+0xxGNTFZ
-        0ilLqVeXsNN+/QthyqNKc2A2aKt4i2Zd/sLCnU8=
-X-Google-Smtp-Source: ABdhPJwbPg/JYsOrKxV0akZHoER+jZQufik0pH+YRE9RS6ub2wS5g0Dx/2q5znjGky9VctmOud4xL7YUR21sYDAMGVU=
-X-Received: by 2002:a05:6830:13ce:: with SMTP id e14mr4959394otq.108.1613214082190;
- Sat, 13 Feb 2021 03:01:22 -0800 (PST)
+        id S229574AbhBMLZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 06:25:31 -0500
+X-Greylist: delayed 348 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Feb 2021 06:25:30 EST
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613215510; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WwWdTqspb8dts3dfTnbbRXtTvtaMdbxt2Yfgj+sc2Sg=;
+ b=kzsBFjMJyj7uvxr3LBhDzlW2oh1HetmOdmFJLIS6481Xpfa2ZT5TDEsiei/kSXHE8vd3O8hH
+ 6zThNobMWq1v6w7nkipgSd7ZWtqKv0ztjZub6Q0EqJyix1XJYx1V9cOny/WATn0ASVrR9cC1
+ twQTfg1ovf1BPX9YmW8lV9jBeZE=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6027b59b8e43a988b74ca40b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 13 Feb 2021 11:18:51
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7DEDCC43462; Sat, 13 Feb 2021 11:18:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B8F2BC433CA;
+        Sat, 13 Feb 2021 11:18:50 +0000 (UTC)
 MIME-Version: 1.0
-References: <CAK8P3a0MbxMC9iLe0NGR0ttLY7sZDjsrgKvfRZOXVJLjzDNKmA@mail.gmail.com>
- <20210128193422.241155-1-ndesaulniers@google.com> <CAMj1kXE5uw4+zV3JVpfA2drOD5TZVMs5a_E5wrrnzjEYc=E_fA@mail.gmail.com>
- <CAK8P3a0CTUh=4h=U6S5A_tqHxYEyO52HTropAV9mKh2hwJvi0g@mail.gmail.com> <CAMj1kXEx-mUCgX5F6xg8-6jKtpqQ=sRosmo4u-0jhW5zu9A-fw@mail.gmail.com>
-In-Reply-To: <CAMj1kXEx-mUCgX5F6xg8-6jKtpqQ=sRosmo4u-0jhW5zu9A-fw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 13 Feb 2021 12:01:10 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF3Xiveq_ih=5yD5CUdG8r=FXGTdN+qT0Rpgsx_8qi7Hg@mail.gmail.com>
-Message-ID: <CAMj1kXF3Xiveq_ih=5yD5CUdG8r=FXGTdN+qT0Rpgsx_8qi7Hg@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: kprobes: rewrite test-[arm|thumb].c in UAL
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 13 Feb 2021 16:48:50 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] coresight: etm4x: Add ETM PIDs for Cortex-A55 and
+ Cortex-A78
+In-Reply-To: <CAJ9a7VgDxgVUhgrcZc7jX3psWrxWoqHOJ+O36eQf7+-MjVOVeQ@mail.gmail.com>
+References: <20210212172336.20550-1-saiprakash.ranjan@codeaurora.org>
+ <CAJ9a7VgDxgVUhgrcZc7jX3psWrxWoqHOJ+O36eQf7+-MjVOVeQ@mail.gmail.com>
+Message-ID: <a0f2a95c4e4d3d079cf8379bd49b527a@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 at 00:30, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Thu, 28 Jan 2021 at 23:28, Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > On Thu, Jan 28, 2021 at 10:03 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > On Thu, 28 Jan 2021 at 20:34, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > > > @@ -468,15 +468,15 @@ void kprobe_thumb32_test_cases(void)
-> > > >
-> > > >         TEST_UNSUPPORTED("strexb        r0, r1, [r2]")
-> > > >         TEST_UNSUPPORTED("strexh        r0, r1, [r2]")
-> > > > -       TEST_UNSUPPORTED("strexd        r0, r1, [r2]")
-> > > > +       TEST_UNSUPPORTED("strexd        r0, r1, r2, [r2]")
-> > > >         TEST_UNSUPPORTED("ldrexb        r0, [r1]")
-> > > >         TEST_UNSUPPORTED("ldrexh        r0, [r1]")
-> > > > -       TEST_UNSUPPORTED("ldrexd        r0, [r1]")
-> > > > +       TEST_UNSUPPORTED("ldrexd        r0, r1, [r1]")
-> > > >
-> > > >         TEST_GROUP("Data-processing (shifted register) and (modified immediate)")
-> > > >
-> > > >  #define _DATA_PROCESSING32_DNM(op,s,val)                                       \
-> > > > -       TEST_RR(op s".w r0,  r",1, VAL1,", r",2, val, "")                       \
-> > > > +       TEST_RR(op s"   r0,  r",1, VAL1,", r",2, val, "")                       \
-> > >
-> > > What is wrong with these .w suffixes? Shouldn't the assembler accept
-> > > these even on instructions that only exist in a wide encoding?
-> >
-> > I don't know if that is a bug in the integrated assembler or
-> > intentional behavior, but it may be easier to just change the
-> > kernel than the compiler in this case, as it also makes it work
-> > for older versions.
-> >
-> > FWIW, I needed a related change in a couple of other files:
-> >
->
-> For fully specified test cases, I suppose removing the .w is fine. But
-> for the macros below, it really isn't: it depends on the actual
-> register assignment whether narrow encodings exist or not, and in that
-> case, we definitely want the wide one. The fact that instantiating the
-> macro in a different way can only produce wide encodings in the first
-> place should really not trigger an error.
->
-> Things like this can break the Thumb2 build very subtly, so if the
-> integrated assembler is not up to that, we should simply disable it
-> for Thumb2 builds.
->
+Hi Mike,
 
-As mentioned in issue #1271, my observation here is not entirely accurate.
+On 2021-02-13 16:24, Mike Leach wrote:
+> Hi Sai,
+> 
+> This patch does not apply to coresight/next - possibly because the PID
+> for A55 has been added in an earlier patch ( [b8336ad947e19 ]
+> coresight: etm4x: add AMBA id for Cortex-A55 and Cortex-A75).
+> 
 
-In the general case, macros that take register names as inputs can
-produce narrow or wide opcodes depending on which exact registers are
-being used (narrow opcodes mostly only support registers r0-r7)
+Apologies, my remote was still pointing to linaro coresight repo,
+https://git.linaro.org/kernel/coresight.git, I have now updated
+the remote to a proper kernel.org coresight repo and will post
+the updated patchset.
 
-However, in this particular case, all the ldr/str instructions are
-either the pre-indexed or the post-indexed variants, for which only a
-wide encoding exists, and so omitting the .w suffix is safe here.
+Thanks,
+Sai
 
-However, if we apply the change below, can we please document this in
-a comment, i.e., that encoding T4 is used for LDR/STR, and so the
-result is guaranteed to be wide in spite of the missing suffix?
+> 
+> 
+> 
+> On Fri, 12 Feb 2021 at 17:23, Sai Prakash Ranjan
+> <saiprakash.ranjan@codeaurora.org> wrote:
+>> 
+>> Add ETM PIDs for Cortex-A55 and Cortex-A78 to the list of
+>> supported ETMs.
+>> 
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
+>>  drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>> 
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c 
+>> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> index b20b6ff17cf6..193233792ab5 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> @@ -1713,7 +1713,9 @@ static const struct amba_id etm4_ids[] = {
+>>         CS_AMBA_ID(0x000bb95a),                 /* Cortex-A72 */
+>>         CS_AMBA_ID(0x000bb959),                 /* Cortex-A73 */
+>>         CS_AMBA_UCI_ID(0x000bb9da, uci_id_etm4),/* Cortex-A35 */
+>> +       CS_AMBA_UCI_ID(0x000bbd05, uci_id_etm4),/* Cortex-A55 */
+>>         CS_AMBA_UCI_ID(0x000bbd0c, uci_id_etm4),/* Neoverse N1 */
+>> +       CS_AMBA_UCI_ID(0x000bbd41, uci_id_etm4),/* Cortex-A78 */
+>>         CS_AMBA_UCI_ID(0x000f0205, uci_id_etm4),/* Qualcomm Kryo */
+>>         CS_AMBA_UCI_ID(0x000f0211, uci_id_etm4),/* Qualcomm Kryo */
+>>         CS_AMBA_UCI_ID(0x000bb802, uci_id_etm4),/* Qualcomm Kryo 385 
+>> Cortex-A55 */
+>> 
+>> base-commit: 1efbcec2ef8c037f1e801c76e4b9434ee2400be7
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
+> 
+> 
+> --
+> Mike Leach
+> Principal Engineer, ARM Ltd.
+> Manchester Design Centre. UK
 
-
-
-> > diff --git a/arch/arm/lib/copy_from_user.S b/arch/arm/lib/copy_from_user.S
-> > index 6acdfde56849..3ced01d9afe4 100644
-> > --- a/arch/arm/lib/copy_from_user.S
-> > +++ b/arch/arm/lib/copy_from_user.S
-> > @@ -60,7 +60,7 @@
-> >  #define LDR1W_SHIFT 0
-> >
-> >   .macro ldr1w ptr reg abort
-> > - USERL(\abort, W(ldr) \reg, [\ptr], #4)
-> > + USERL(\abort, ldr \reg, [\ptr], #4)
-> >   .endm
-> >
-> >   .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
-> > @@ -80,7 +80,7 @@
-> >  #define STR1W_SHIFT 0
-> >
-> >   .macro str1w ptr reg abort
-> > - W(str) \reg, [\ptr], #4
-> > + str \reg, [\ptr], #4
-> >   .endm
-> >
-> >   .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
-> > diff --git a/arch/arm/lib/copy_to_user.S b/arch/arm/lib/copy_to_user.S
-> > index 485fa3cffdbe..a6a96f814720 100644
-> > --- a/arch/arm/lib/copy_to_user.S
-> > +++ b/arch/arm/lib/copy_to_user.S
-> > @@ -34,7 +34,7 @@
-> >  #define LDR1W_SHIFT 0
-> >
-> >   .macro ldr1w ptr reg abort
-> > - W(ldr) \reg, [\ptr], #4
-> > + ldr \reg, [\ptr], #4
-> >   .endm
-> >
-> >   .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
-> > @@ -77,7 +77,7 @@
-> >  #define STR1W_SHIFT 0
-> >
-> >   .macro str1w ptr reg abort
-> > - USERL(\abort, W(str) \reg, [\ptr], #4)
-> > + USERL(\abort, str \reg, [\ptr], #4)
-> >   .endm
-> >
-> >   .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
-> > diff --git a/arch/arm/lib/memcpy.S b/arch/arm/lib/memcpy.S
-> > index e4caf48c089f..7b980a1a4227 100644
-> > --- a/arch/arm/lib/memcpy.S
-> > +++ b/arch/arm/lib/memcpy.S
-> > @@ -15,7 +15,7 @@
-> >  #define STR1W_SHIFT 0
-> >
-> >   .macro ldr1w ptr reg abort
-> > - W(ldr) \reg, [\ptr], #4
-> > + ldr \reg, [\ptr], #4
-> >   .endm
-> >
-> >   .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
-> > @@ -31,7 +31,7 @@
-> >   .endm
-> >
-> >   .macro str1w ptr reg abort
-> > - W(str) \reg, [\ptr], #4
-> > + str \reg, [\ptr], #4
-> >   .endm
-> >
-> >   .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
-> > diff --git a/arch/arm/lib/memmove.S b/arch/arm/lib/memmove.S
-> > index 6fecc12a1f51..35c5c06b7588 100644
-> > --- a/arch/arm/lib/memmove.S
-> > +++ b/arch/arm/lib/memmove.S
-> > @@ -84,24 +84,24 @@ WEAK(memmove)
-> >   addne pc, pc, ip @ C is always clear here
-> >   b 7f
-> >  6: W(nop)
-> > - W(ldr) r3, [r1, #-4]!
-> > - W(ldr) r4, [r1, #-4]!
-> > - W(ldr) r5, [r1, #-4]!
-> > - W(ldr) r6, [r1, #-4]!
-> > - W(ldr) r7, [r1, #-4]!
-> > - W(ldr) r8, [r1, #-4]!
-> > - W(ldr) lr, [r1, #-4]!
-> > + ldr r3, [r1, #-4]!
-> > + ldr r4, [r1, #-4]!
-> > + ldr r5, [r1, #-4]!
-> > + ldr r6, [r1, #-4]!
-> > + ldr r7, [r1, #-4]!
-> > + ldr r8, [r1, #-4]!
-> > + ldr lr, [r1, #-4]!
-> >
-> >   add pc, pc, ip
-> >   nop
-> >   W(nop)
-> > - W(str) r3, [r0, #-4]!
-> > - W(str) r4, [r0, #-4]!
-> > - W(str) r5, [r0, #-4]!
-> > - W(str) r6, [r0, #-4]!
-> > - W(str) r7, [r0, #-4]!
-> > - W(str) r8, [r0, #-4]!
-> > - W(str) lr, [r0, #-4]!
-> > + str r3, [r0, #-4]!
-> > + str r4, [r0, #-4]!
-> > + str r5, [r0, #-4]!
-> > + str r6, [r0, #-4]!
-> > + str r7, [r0, #-4]!
-> > + str r8, [r0, #-4]!
-> > + str lr, [r0, #-4]!
-> >
-> >   CALGN( bcs 2b )
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
