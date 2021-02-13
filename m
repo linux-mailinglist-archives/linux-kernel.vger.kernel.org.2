@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BF731B047
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 12:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC4131B056
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 13:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhBNLuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 06:50:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhBNLuO (ORCPT
+        id S229759AbhBNM2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 07:28:35 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:43687 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229720AbhBNM2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 06:50:14 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1640CC061574;
-        Sun, 14 Feb 2021 03:49:34 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id 133so4367333ybd.5;
-        Sun, 14 Feb 2021 03:49:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YbYZAdSVhVuJNoAtWccCf/rL4wPcvTLqCtelTv8zP+0=;
-        b=tIfW9jhPos2FN4wybEValTe3L0GwaS4QasOe7OesU6SBJKghvCL4FHbCN3D6d740Tp
-         XL+GfjnmGjBQUM7haFOs6T6LA2IJQDGHba5b5DrvIMl1bwzlb7XA/TzR4JBbdKK3u78E
-         nIJouAQSNb5qD7VMkhI5gMNXoYxPl7Gngp13t8Y3EnxaWwHj+0g9UHtp1/8Vlvd+vB64
-         E+Mzl+SkgvNVMx26CgR3DgeUsMpGN9Zdd2qEq1kcup8k9bhw+vR2a7T5nNZkla3Vnyi8
-         sEUwDnWPPinlkiGjWNStGmyGKYJMXk2rmn1mDMQ+3YC8p/pE0uNFFcNLfbSt38rjqLM/
-         IMTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YbYZAdSVhVuJNoAtWccCf/rL4wPcvTLqCtelTv8zP+0=;
-        b=DpjSxpiVCHdnYNJGkE1af4Tt2AEii8XG+887bRBs44+2Cn9G0m/kCvqVV/pXYB0gUP
-         CeWOLUwntDv81/U4VmDLD7iicMnpJEyUbUtnn+grhHKjPguVbpnX9pcyJnmDhwUGHaeP
-         0E357KEy6pm4sCrwwVWD4cA+jsLIIFN4n82cLXJpk9GJQ8Svn2BI8pa9gx5Lpr6TIR+t
-         GGmqXe2fyfur6J+btJM7ePp+1Y15L1XHxuNVtrfe3cswRaSC8rDlCur/PD16nH/CK7CF
-         M5LkpxuRWPxeghL02LkVo85SK4Uu6LNBnhpB+t1NPsQjhRb/goPzEdhAKv9/EhhZk138
-         GjLw==
-X-Gm-Message-State: AOAM531XSGIdmDAatZDjudxCKSWbQflHnvD60JshB7MLXXUCl86WosJa
-        +7KUrHEzlr7B6bXJQkhkvr3QXsO2x/EYE8IqPO0=
-X-Google-Smtp-Source: ABdhPJxBXprXfO+zHFZQa26UWH9ERnKFBq5or7C0kRpR48smN3Yt6/llKsTVLFlxS0b5Sv1xBBoD58Rt2xfUegBkY24=
-X-Received: by 2002:a25:7312:: with SMTP id o18mr16101845ybc.352.1613303373113;
- Sun, 14 Feb 2021 03:49:33 -0800 (PST)
-MIME-Version: 1.0
-References: <1612783737-3512-1-git-send-email-stephenzhangzsd@gmail.com>
- <20210208195439.GA1097868@ubuntu-m3-large-x86> <CALuz2=d-ENRbWgGYaO_ESEaw5eOVSwkQmkeYBJ-w0Vb3zZ+REg@mail.gmail.com>
- <20210209192729.GA820978@ubuntu-m3-large-x86> <CALuz2=dyA_ki98t8VNe2L1UcBXrSoJT1r6j1puEmLn7WrX87XQ@mail.gmail.com>
- <20210210182400.GA3502674@ubuntu-m3-large-x86> <CALuz2=eSv2N2Qp7GimLgdWjvWDwDh1Dj0Q7Czm4Br5a50rs4ew@mail.gmail.com>
- <CAK7LNAT+CG9zqPpYLoy9_1eA4caZWzxyQACcOrhbg9zfArEwPQ@mail.gmail.com>
- <CALuz2=ck_=M6Dd8oFgWxnRGdipWOsdL2KODZQSmodh2N7Z8T-w@mail.gmail.com> <CAK7LNAR06H3Ue5SG3=6u1veyjg+kXXb2isEBsHVQEtMMJ3d2Tw@mail.gmail.com>
-In-Reply-To: <CAK7LNAR06H3Ue5SG3=6u1veyjg+kXXb2isEBsHVQEtMMJ3d2Tw@mail.gmail.com>
-From:   Stephen Zhang <stephenzhangzsd@gmail.com>
-Date:   Sun, 14 Feb 2021 19:49:22 +0800
-Message-ID: <CALuz2=fHXZ=NrVdRNzyromD88wp9pAzYC9nffPt6y5YM=sJniw@mail.gmail.com>
-Subject: Re: [PATCH v1] clang_tools:gen_compile_commands: Change the default
- source directory
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Roeder <tmroeder@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 14 Feb 2021 07:28:33 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 233145C00BD;
+        Sun, 14 Feb 2021 07:27:47 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 14 Feb 2021 07:27:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
+        :to:cc:subject:date:message-id; s=fm2; bh=1VY33AhqE1N3y4vDykDeA1
+        +0wGn/+EB7Iplukdy4obA=; b=SZAiM3Rhb0Fo3fgLHpldcppOsou5eOtIyzZIHT
+        vIpoYjbKWe5ta8vnrYmL+YVIJ1XHHbGm2helky84Fp579SmZdjPTNoIgfarMU5TL
+        m/hTb60Ec8S/9lQ3l5bu9EXnaIAGb8+qR4kAbdOIsak2MoRtSxFzbY4/CGba1ePH
+        bppGqBJQBbd090zep2LMKgD0mMKTcIeu4x+zcjmt1iRvqNkKnH09nLCP1rWsZCgi
+        LXR5ifIgY1PCJ9SFTYN83R6S786RHHcxvoPzyNT9RxyqPeBpJLoDC5J0ix2Vfc4u
+        EKcMBnpXd30RvUlWnQo8Y620ji8inwfxmUaixGH25in71hvg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:date:from:message-id:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=1VY33AhqE1N3y4vDykDeA1+0wGn/+EB7Iplukdy4obA=; b=ClQ8i0ge
+        HG0GGGRopeLXJjpQWic7HXOgt3J1vWYxEYn98D24w2w/dYej0RLRBHvbHFMqlBLz
+        erQa5Q7qn+1lKpOlTkKBU87VJ1OKCsGP3HNlUGFFkA8fiWmyqXqw18NzV1yFzohq
+        mUyCrg2xK92VoI0IHDmkX2QuVHoS89AR7qsbYoWJoENCIWHDFTNI9FtaGXZtIMj5
+        lNyky/gwCQln7rQoECj0GQG/bn9UnzO+G/uFvJVQn1/omdzV1zsyhgTl4avxiJj0
+        LYONfBkMiVBWhqXnkTsGunTOR9kkwlMh+5HFYlv4zxCiv8lHWwZl5NkpjpA1Bw9g
+        2evK0fEu62ZQZQ==
+X-ME-Sender: <xms:QhcpYLZ-5sfYdC9EcjdrsAbw2ayTOy2PbJqkCeBVzk5mw5lXdg07jg>
+    <xme:QhcpYKaTuR67vySwASo-7r1qjB8o4qdG3fkpFbmm2VELAqtQc03bWTz0oIbBHYLYX
+    nDDxW8yoGgeVOCUqQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrieehgdegtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofestddtredtredttdenucfhrhhomhephghilhhlihgrmhcuffhu
+    rhgrnhguuceofihilhhlodhgihhtsegurhhnugdrmhgvqeenucggtffrrghtthgvrhhnpe
+    ejteduieevjeefudeuhefgvdevgeehgeehgfdtueeuteevleeuhedtueekvdegteenucfk
+    phepvddujedrvdefkedrvddtkedrjeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepfihilhhlodhgihhtsegurhhnugdrmhgv
+X-ME-Proxy: <xmx:QhcpYN9ZE9gRrxbkEfcWvfbBJMpVGKA460XwVD7suI1B9ID8acSdlQ>
+    <xmx:QhcpYBoKc-NSchqjwJJQybah2c_OAHrq32z8OgwBA4ZqrR2fvNy4zg>
+    <xmx:QhcpYGptSkub9ovFKUuEc3zJ7fImtfW4Pi6xzvfpFC1C0YkfyeMWZQ>
+    <xmx:QxcpYNQz2IWlEhLl18O-3QlOOcQi12Ge63DVkslNMuY30zXWZGcAgA>
+Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1610A108005C;
+        Sun, 14 Feb 2021 07:27:45 -0500 (EST)
+From:   William Durand <will+git@drnd.me>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8192e: fix typo in a comment
+Date:   Sat, 13 Feb 2021 09:01:12 +0000
+Message-Id: <20210213090112.24616-1-will+git@drnd.me>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masahiro Yamada <masahiroy@kernel.org> =E4=BA=8E2021=E5=B9=B42=E6=9C=8813=
-=E6=97=A5=E5=91=A8=E5=85=AD =E4=B8=8B=E5=8D=888:46=E5=86=99=E9=81=93=EF=BC=
-=9A
-> This is the steps I tested.
->
->
-> masahiro@oscar:~/ref/linux$ make O=3Dbuild  defconfig all -j24
->   [ snip ]
-> masahiro@oscar:~/ref/linux$
-> ./scripts/clang-tools/gen_compile_commands.py  -d build
-> masahiro@oscar:~/ref/linux$ grep '"file":' compile_commands.json |
-> grep scripts/ | head -n5
->     "file": "/home/masahiro/ref/linux/scripts/mod/empty.c"
->     "file": "/home/masahiro/ref/linux/scripts/mod/sumversion.c"
->     "file": "/home/masahiro/ref/linux/scripts/mod/file2alias.c"
->     "file": "/home/masahiro/ref/linux/scripts/mod/modpost.c"
->     "file": "/home/masahiro/ref/linux/build/scripts/kconfig/parser.tab.c"
->
-> --
-> Best Regards
-> Masahiro Yamada
+This patch fixes a checkpatch warning by deleting a repeated word.
 
-Thanks. Nathan had a detailed description about  this:
+Signed-off-by: William Durand <will+git@drnd.me>
+---
+ drivers/staging/rtl8192e/rtllib_softmac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> $ make O=3Dbuild
->
-> will work with '-d .' because the .cmd files are in '.' and the source
-> files will be placed relative to '.', which is correct. Your command
-> does not work for two reasons:
->
-> 1. You are using a build directory that is not a subpath of the source
-> directory. In other words, this script would not work for
->
-> $ make O=3D/tmp/build
->
-> because '-d /tmp/build' needs to be used to find the .cmd files but then
-> the relative path of the source files is messed up, as you point out.
-
-This may help you reproduce the problem. So you shoud try:
-
->masahiro@oscar:~/ref/linux$ make O=3D/tmp/build  defconfig all -j24
-
-where the build directory  is not a subpath of the source directory.
-
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index 2d3be91b113d..ab4b9817888c 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -2443,7 +2443,7 @@ inline int rtllib_rx_frame_softmac(struct rtllib_device *ieee,
+  * N = MAX_PACKET_SIZE / MIN_FRAG_TRESHOLD
+  * In this way you need just one and the 802.11 stack
+  * will take care of buffering fragments and pass them to
+- * to the driver later, when it wakes the queue.
++ * the driver later, when it wakes the queue.
+  */
+ void rtllib_softmac_xmit(struct rtllib_txb *txb, struct rtllib_device *ieee)
+ {
 --
-Best Regards
-Stephen Zhang
+2.17.1
+
