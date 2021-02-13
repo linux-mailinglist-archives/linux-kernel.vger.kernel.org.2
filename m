@@ -2,292 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F206E31AAFE
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD9D31AB07
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhBMLVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 06:21:03 -0500
-Received: from mout01.posteo.de ([185.67.36.65]:40810 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhBMLU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 06:20:59 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 0D58A160060
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 12:20:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1613215201; bh=LdSMwsAk/xXFN+Y8P4/lPu3FFkk8ht3k2CuANxWxN+o=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iaGM7XellNK3d19UKPxI4hcjnGbZil9+IdvlOJC4FQTqgHLMK8trHef86O2MRskSZ
-         i5o+eqlhApBxe994DAjAuQ9xvfqv5LApquFrxCrMNsRG90BlkaSiRL6TmdoSKZa62F
-         9Mgm6+xUmAIQ9OYhZfptSyQ88k4FNMG/iNlb1gPlvMWedkjiM3SxgAJs4moZI4JUPh
-         TGuC11Wj9qY/z3zRPErEvV/x+QuDe0KB67H8B7R80QshrQ27hnJI4avNXO53Hj7sEa
-         gtEEt2e9M22RWThMcT/sLZkhWq5dxL7fKzYenuBgKUPVex4m4CWBxzM0uF5C2mpYvj
-         pAinXfMuh+XlQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4Dd7FB123Zz6tmJ;
-        Sat, 13 Feb 2021 12:19:58 +0100 (CET)
-Date:   Sat, 13 Feb 2021 12:19:57 +0100
-From:   Sebastian Fricke <sebastian.fricke@posteo.net>
-To:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hjc@rock-chips.com, robh+dt@kernel.org,
-        linux-media@vger.kernel.org, dafna.hirschfeld@collabora.com,
-        helen.koike@collabora.com, ezequiel@collabora.com,
-        cmuellner@linux.com
-Subject: Re: [PATCH 0/6] Support second Image Signal Processor on rk3399
-Message-ID: <20210213111957.3ocxgcyno6ent4vt@basti-TUXEDO-Book-XA1510>
-References: <20210202145632.1263136-1-heiko@sntech.de>
- <808992741.0ifERbkFSE@diego>
- <20210211052515.qdqe256cipdwwrz6@basti-TUXEDO-Book-XA1510>
- <16789691.tv2OnDr8pf@diego>
+        id S229713AbhBML13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 06:27:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhBML1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 06:27:12 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE328C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 03:26:30 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id j11so2003345wmi.3
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 03:26:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k/YMRgzTFrs6z62URGG8KDtcSToOtuKZn+r+kNRlu3Y=;
+        b=gmCvzE9rR946iY1RLr1aaI+s8qM0QQfOH8/UD1RPsDhqxWbwXYyu5fY30ac0LB1AY9
+         WpK3W7lI5EUNNi3c64WO8QNNVpzD5Iqe4IdeSVmu7ef/tE47got2F/LKtg50uDAP/EbL
+         e4LjzuwmMxhGf52K0uH1z882RAEJMG4gJRNBs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k/YMRgzTFrs6z62URGG8KDtcSToOtuKZn+r+kNRlu3Y=;
+        b=g/G0WtL9h2HSy8o2mvbuA/Tg3rh+O/gBqXpqiceUPEWNoQlCQsxn3dtSgsJgX5YZ97
+         45+R4FoLynDqGdtbemPlFqZyLmv/mSZhp3UtLOGhvrddfjgJKsxNADbLF+JVAKmJex0T
+         xsnDvsqHikayI6BgX9LHgApm1kKoC9dM3ywOagF5lglhYAL3yZ66xgM0UrgllSFXHUHy
+         mRW/ZTZEHuOmwQE6vsZ19vUdpjS8v41gbwyS3zi1nzMP/D/eVUOgFwVFc5b+HYfNlQ7w
+         EKOI/bNoK/bLVzIqZGIV8UZJB+x/Rcdoh6H5VlVJLJZu69zdQkJ5yxevYF/yl3fm+DPz
+         Ckwg==
+X-Gm-Message-State: AOAM530slxRkHYw0eHaY3Org4dlJjh4fsbx8g1r5vJ79lofcDR8V+mEJ
+        CbaJH2kjiI3ZeK/hMqUgdmLPaV45sKqmOERcyRQXcD4r3PLooA==
+X-Google-Smtp-Source: ABdhPJxg57H5gBCt+CFRR+XKNceZnnXN7lDrf+njVXGixPWG60cuQXEmRR3WzORqbQhd01PWI2R3kIE1HO6tZLuqMZo=
+X-Received: by 2002:a1c:40d4:: with SMTP id n203mr6410811wma.46.1613215589262;
+ Sat, 13 Feb 2021 03:26:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <16789691.tv2OnDr8pf@diego>
+References: <20210130082128.3778939-1-michael@amarulasolutions.com>
+ <CAOMZO5DyKDj_RjHM-qwcU9gcuROL6OYzDj3a_fdRRqCwOxWcdw@mail.gmail.com>
+ <CAOf5uwmSR1MjGdFd2ShHWchrdL6Kxo1HJOys9JoVP1vCDX57Lw@mail.gmail.com>
+ <CACRpkdbmZY-v4PD5MieT63uCTTzoYb8CbwWE7rrCCELjCUzrug@mail.gmail.com> <CAOf5uw=JbB_hyxvcbLVz9_N0-T-ogXReNeY15VF5rETggnA1+Q@mail.gmail.com>
+In-Reply-To: <CAOf5uw=JbB_hyxvcbLVz9_N0-T-ogXReNeY15VF5rETggnA1+Q@mail.gmail.com>
+From:   Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Date:   Sat, 13 Feb 2021 12:26:17 +0100
+Message-ID: <CAOf5uwnCQ0um3Ya=wD2H_uBGHrEUoXt925eA2OLxY+b6oKqYcQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: Support pin that does not support configuration option
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Angelo Compagnucci <angelo@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Heiko,
+Hi Fabio
 
-On 11.02.2021 15:42, Heiko Stübner wrote:
->Hi Sebastian,
+On Fri, Feb 12, 2021 at 9:31 AM Michael Nazzareno Trimarchi
+<michael@amarulasolutions.com> wrote:
 >
->Am Donnerstag, 11. Februar 2021, 06:25:15 CET schrieb Sebastian Fricke:
->> Hey Heiko,
->>
->> On 10.02.2021 12:15, Heiko Stübner wrote:
->> >Hi Sebastian,
->> >
->> >Am Freitag, 5. Februar 2021, 15:55:56 CET schrieb Heiko Stübner:
->> >> Hi Sebastian,
->> >>
->> >> I did some tests myself today as well and can confirm your
->> >> hdmi related finding - at least when plugged in on boot.
->> >>
->> >> I tried some combinations of camera vs. hdmi and it seems
->> >> really only when hdmi is plugged in on boot
->> >
->> >as you can see in v2, it should work now even with hdmi
->> >connected on boot. My patch ignored the grf-clock when
->> >doing the grf-based init.
->> >
->> >All clocks are on during boot and I guess the hdmi-driver
->> >did disable it after its probe. The phy_power_on functions
->> >did handle it correctly already, so it was only happening
->> >with hdmi connected on boot.
->>
->> Thank you very much for solving that problem, I've tested the scenarios
->> described below and it works like a charm. (With your V2)
->> >
->> >
->> >Btw. do you plan on submitting your ov13850 driver
->> >soonish?
->>
->> Actually, I have posted the patch already see here:
->> https://patchwork.kernel.org/project/linux-media/patch/20210130182313.32903-2-sebastian.fricke@posteo.net/
+> Hi
 >
->very cool to see
+> On Fri, Feb 12, 2021 at 9:26 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> >
+> > On Mon, Feb 1, 2021 at 12:54 PM Michael Nazzareno Trimarchi
+> > <michael@amarulasolutions.com> wrote:
+> > > On Mon, Feb 1, 2021 at 12:47 PM Fabio Estevam <festevam@gmail.com> wrote:
+> > > >
+> > > > Hi Michael,
+> > > >
+> > > > On Sat, Jan 30, 2021 at 5:21 AM Michael Trimarchi
+> > > > <michael@amarulasolutions.com> wrote:
+> > > > >
+> > > > > Some of the iMX25 pins have not an associated configuration register so
+> > > > > when they are configured the standard way through the device tree the
+> > > > > kernel complains with:
+> > > > >
+> > > > > imx25-pinctrl 43fac000.iomuxc: Pin(MX25_PAD_EXT_ARMCLK) does not support
+> > > > > config function
+> > > >
+> > > > Could you please share your device tree that causes this warning?
+> > > >
+> > > > Shouldn't you pass 0x80000000 in the devicetree for this pad then?
+> > > >
+> > > > 0x80000000 means that the kernel should not touch the PAD_CTL register
+> > > > and use the default configuration from the bootloader/POR.
+> > >
+> > > arch/arm/boot/dts/imx25-lisa.dts:
+> > > MX25_PAD_EXT_ARMCLK__GPIO_3_15  0x80000000
+> > >
+> > > The problem that exists pad that can be muxed but not configured
+> >
+> > Did you reach any conclusion on this?
+> >
+> > I need Fabio's consent to apply the patch, but it seems maybe the
+> > DTS should be changed instead?
+> >
 >
->> I currently review the requested changes and questions and will soon
->> post a second version, but I expect quite some time until it is actually
->> merged.
->
->could you Cc me on future versions?
+> Let me re-check with the latest linux code. I did not find any change
+> there. It's on my side
+> now
 
-Sure will do :)
+Looking at the code (I will ask to check on real hw) seems that
+conf_reg is -1 when there is no conf_reg.
+the pinmux core set_state just calls the pin_config_set and one pin
+can have the mux supported and the config
+not supported. And imx25 has several of them that are only muxed.
+Seems that this NO_CTL_PAD is something
+that is nxp
+
+ clk_osc_audio: clk-osc-audio {
+                compatible = "gpio-gate-clock";
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_clk26mhz_osc>;
+                clocks = <&clksis>;
+                #clock-cells = <0>;
+                enable-gpios = <&gpio3 15 GPIO_ACTIVE_LOW>;
+        };
+
+this is my use case
+ pinctrl_clk26mhz_osc: clk26mhzosc {
+                        fsl,pins = <
+                                MX25_PAD_EXT_ARMCLK__GPIO_3_15  0x80000000
+                        >;
+                };
+
+Michael
+
+
+
 
 >
+> Michael
 >
->Thanks
->Heiko
+> > Yours,
+> > Linus Walleij
+>
+>
+>
+> --
+> Michael Nazzareno Trimarchi
+> Amarula Solutions BV
+> COO Co-Founder
+> Cruquiuskade 47 Amsterdam 1018 AM NL
+> T. +31(0)851119172
+> M. +39(0)3479132170
+> [`as] https://www.amarulasolutions.com
 
-Sebastian
->>
->> Greetings,
->> Sebastian
->>
->> >
->> >
->> >>
->> >> (1)
->> >> - boot
->> >> - camera
->> >> --> works
->> >>
->> >> (2)
->> >> - boot
->> >> - camera
->> >> - hdmi plugged in
->> >> - hdmi works
->> >> - camera
->> >> --> works
->> >>
->> >> (3)
->> >> - hdmi plugged in
->> >> - boot
->> >> - hdmi works
->> >> - camera
->> >> --> camera doesn't work
->> >>
->> >> (4)
->> >> - boot
->> >> - hdmi plugged in
->> >> - hdmi works
->> >> - camera
->> >> -> camera works
->> >>
->> >>
->> >> With a bit of brute-force [0] it seems the camera also works again even
->> >> with hdmi connected on boot. So conclusion would be that some clock
->> >> is misbehaving.
->> >>
->> >> Now we'll "only" need to find out which one that is.
->> >>
->> >>
->> >> Heiko
->> >>
->> >>
->> >> [0]
->> >> Don't disable any clock gates
->> >>
->> >> diff --git a/drivers/clk/clk-gate.c b/drivers/clk/clk-gate.c
->> >> index 070dc47e95a1..8daf1fc3388c 100644
->> >> --- a/drivers/clk/clk-gate.c
->> >> +++ b/drivers/clk/clk-gate.c
->> >> @@ -61,6 +61,9 @@ static void clk_gate_endisable(struct clk_hw *hw, int enable)
->> >>
->> >>         set ^= enable;
->> >>
->> >> +if (!enable)
->> >> +return;
->> >> +
->> >>         if (gate->lock)
->> >>                 spin_lock_irqsave(gate->lock, flags);
->> >>         else
->> >>
->> >>
->> >>
->> >> Am Freitag, 5. Februar 2021, 09:15:47 CET schrieb Heiko Stübner:
->> >> > Hi Sebastian,
->> >> >
->> >> > Am Freitag, 5. Februar 2021, 07:43:35 CET schrieb Sebastian Fricke:
->> >> > > On 03.02.2021 20:54, Heiko Stübner wrote:
->> >> > > >Am Mittwoch, 3. Februar 2021, 19:14:22 CET schrieb Sebastian Fricke:
->> >> > > >> I have tested your patch set on my nanoPC-T4, here is a complete log
->> >> > > >> with:
->> >> > > >> - relevant kernel log entries
->> >> > > >> - system information
->> >> > > >> - media ctl output
->> >> > > >> - sysfs entry information
->> >> > > >>
->> >> > > >> https://paste.debian.net/1183874/
->> >> > > >>
->> >> > > >> Additionally, to your patchset I have applied the following patches:
->> >> > > >> https://github.com/initBasti/Linux_kernel_media_tree_fork/commits/dual_cam_setup
->> >> > > >>
->> >> > > >> And just to not cause confusion the `media_dev` entries come from this
->> >> > > >> unmerged series:
->> >> > > >> https://patchwork.kernel.org/project/linux-media/list/?series=426269
->> >> > > >>
->> >> > > >> I have actually been able to stream with both of my cameras at the same
->> >> > > >> time using the libcamera cam command.
->> >> > > >> I would like to thank you a lot for making this possible.
->> >> > > >
->> >> > > >Thanks for testing a dual camera setup. On my board I could only test
->> >> > > >the second ISP. And really glad it works for you tool :-) .
->> >> > > >
->> >> > > >Out of curiosity, do you also see that green tint in the images the cameras
->> >> > > >produce?
->> >> > >
->> >> > > Yes, I do. Actually, I currently have two forms of a green tint, on my
->> >> > > OV13850 everything is quite dark and greenish, which is caused by the
->> >> > > missing 3A algorithms. On my OV4689, I have big patches of the image
->> >> > > with bright green color and flickering, I investigated if this is
->> >> > > connected to the 2nd ISP instance, but that doesn't seem to be the case
->> >> > > as I have the same results when I switch the CSI ports of the cameras.
->> >> > >
->> >> > > I have found another issue, while testing I discovered following
->> >> > > issue:
->> >> > > When I start the system with an HDMI monitor connected, then the camera
->> >> > > on the 2nd port doesn't work. This is probably because the RX/TX is
->> >> > > reserved as a TX.
->> >> > > But it made me wonder because if the system has an RX, a TX, and
->> >> > > an RX/TX, why isn't the pure TX used by the monitor and the
->> >> > > cameras take RX and RX/TX?
->> >> > > Or do you think that this is maybe a malfunction of this patch?
->> >> >
->> >> > I don't think it is an issue with this specific series, but still puzzling.
->> >> >
->> >> > I.e. the DPHYs are actually only relevant to the DSI controllers,
->> >> > with TX0 being connected to DSI0 and TX1RX1 being connected
->> >> > to DSI1. So having an hdmi display _in theory_ shouldn't matter at all.
->> >> >
->> >> > Out of curiosity what happens, when you boot without hdmi connected
->> >> > turn on the cameras, connect the hdmi after this, try the cameras again?
->> >> >
->> >> >
->> >> > Heiko
->> >> >
->> >> > >
->> >> > > >
->> >> > > >Thanks
->> >> > > >Heiko
->> >> > >
->> >> > > Greetings,
->> >> > > Sebastian
->> >> > >
->> >> > > >
->> >> > > >
->> >> > > >> If you like to you can add:
->> >> > > >> Tested-by: Sebastian Fricke <sebastian.fricke@posteo.net>
->> >> > > >>
->> >> > > >> On 02.02.2021 15:56, Heiko Stuebner wrote:
->> >> > > >> >The rk3399 has two ISPs and right now only the first one is usable.
->> >> > > >> >The second ISP is connected to the TXRX dphy on the soc.
->> >> > > >> >
->> >> > > >> >The phy of ISP1 is only accessible through the DSI controller's
->> >> > > >> >io-memory, so this series adds support for simply using the dsi
->> >> > > >> >controller is a phy if needed.
->> >> > > >> >
->> >> > > >> >That solution is needed at least on rk3399 and rk3288 but no-one
->> >> > > >> >has looked at camera support on rk3288 at all, so right now
->> >> > > >> >only implement the rk3399 specifics.
->> >> > > >> >
->> >> > > >> >
->> >> > > >> >Heiko Stuebner (6):
->> >> > > >> >  drm/rockchip: dsi: add own additional pclk handling
->> >> > > >> >  dt-bindings: display: rockchip-dsi: add optional #phy-cells property
->> >> > > >> >  drm/rockchip: dsi: add ability to work as a phy instead of full dsi
->> >> > > >> >  arm64: dts: rockchip: add #phy-cells to mipi-dsi1
->> >> > > >> >  arm64: dts: rockchip: add cif clk-control pinctrl for rk3399
->> >> > > >> >  arm64: dts: rockchip: add isp1 node on rk3399
->> >> > > >> >
->> >> > > >> > .../display/rockchip/dw_mipi_dsi_rockchip.txt |   1 +
->> >> > > >> > arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  39 ++
->> >> > > >> > drivers/gpu/drm/rockchip/Kconfig              |   2 +
->> >> > > >> > .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 342 ++++++++++++++++++
->> >> > > >> > 4 files changed, 384 insertions(+)
->> >> > > >> >
->> >> > > >>
->> >> > > >
->> >> > > >
->> >> > > >
->> >> > > >
->> >> > >
->> >> >
->> >> >
->> >>
->> >>
->> >
->> >
->> >
->> >
->>
->
->
->
->
+
+
+-- 
+Michael Nazzareno Trimarchi
+Amarula Solutions BV
+COO Co-Founder
+Cruquiuskade 47 Amsterdam 1018 AM NL
+T. +31(0)851119172
+M. +39(0)3479132170
+[`as] https://www.amarulasolutions.com
