@@ -2,146 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CAF31AB69
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E7531AB6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbhBMMq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 07:46:59 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:22838 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhBMMq5 (ORCPT
+        id S229617AbhBMMvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 07:51:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhBMMvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 07:46:57 -0500
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 11DCk1gw020296;
-        Sat, 13 Feb 2021 21:46:02 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 11DCk1gw020296
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613220362;
-        bh=KdXBt186v51HmgRvEE2352D3Kz6v3BiRQbc1mVmCOVk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=O+cAFE31DZpGZ3jMpIA2p+4QZ4TO/TEyVpBEGczKjTykbC8GWur5rgzeQADU3XGBB
-         jRqJKm96BXdp+wb6W9o44fKBILeRzrqaPduwVQYXN+migUw1TuRnPyledBqQ1q9olN
-         eK9sVqLGW+Vwj9oEq/yd2bjfYKfB9dgJRL4gOvYd36dUAgPyHn1Ebun6R4zaPa75Ur
-         Cb15t107+2FbxAtefOQqQGF1KtNXFkt9pHyxtSqHR05+8hUT6xDkIPQ2ypzmz/sL9K
-         3RMNC4hJgTsY408i5MDwvKH2yYIpqQSLGDWR21ubccmKARAIi3EN7Cn1zHO+qg4QZ2
-         C8TBEFHKpCGuw==
-X-Nifty-SrcIP: [209.85.210.171]
-Received: by mail-pf1-f171.google.com with SMTP id z6so1320258pfq.0;
-        Sat, 13 Feb 2021 04:46:02 -0800 (PST)
-X-Gm-Message-State: AOAM532cVOntleqTCaMcquJagDjWiDuMU32SYbd6xogN9XnTlBkMRup2
-        8Tx9dLoxQuQBmUoYw6T4GQyn6kbs7x+zukKPtY0=
-X-Google-Smtp-Source: ABdhPJz99A7le2TYhlGfirnnIHVPF7lDpuc4jAZSS8YwXwPFfO++WtvKcSd9gLtFM9uQRJjFmqeM2ig+6UQKCPc4h+o=
-X-Received: by 2002:a62:e804:0:b029:1dd:cf18:bdee with SMTP id
- c4-20020a62e8040000b02901ddcf18bdeemr7492308pfi.63.1613220361343; Sat, 13 Feb
- 2021 04:46:01 -0800 (PST)
+        Sat, 13 Feb 2021 07:51:39 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E91C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 04:50:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=mHNhPIEf/fEyqa/Be3w7fBiVCejj5m5z2qT7VKg/VmI=; b=F7/Gskr/psRk37VtC0K9DzD3OU
+        ugR8RAj9/XQHHc4J30UuWoJ4vyFgoZMLEzAXGN1W6W/WrWFYJqTzK9AjlbYUEovkpYVDKJVd2i10y
+        WEWTF7m7+7dNeePU5QTVSq/VPXpZIFmt1Vlu+v/uxIzRfRocBqlW66PbKMsAfQuIVuSi+Zi7ysZQc
+        FyecH2TFs2APRbFLtQeK6iJOqe51qVa3IBStZMCwUm3XCmXYfZcvpBdQkOlEcEtu/634kzHRYPyGp
+        32FbTqBXhuFE/TbA7cbbfexPz/dGkybOwkmaOpqbh88Xog5BJH9+ovV0AVz5nWwMisCux34i7diez
+        3mNE19sA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lAuNn-00CvXq-2Z; Sat, 13 Feb 2021 12:50:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E2F52300446;
+        Sat, 13 Feb 2021 13:50:39 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A35D320299B4B; Sat, 13 Feb 2021 13:50:39 +0100 (CET)
+Date:   Sat, 13 Feb 2021 13:50:39 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC][PATCH] sched: Fix affine_move_task()
+Message-ID: <YCfLHxpL+L0BYEyG@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <1612783737-3512-1-git-send-email-stephenzhangzsd@gmail.com>
- <20210208195439.GA1097868@ubuntu-m3-large-x86> <CALuz2=d-ENRbWgGYaO_ESEaw5eOVSwkQmkeYBJ-w0Vb3zZ+REg@mail.gmail.com>
- <20210209192729.GA820978@ubuntu-m3-large-x86> <CALuz2=dyA_ki98t8VNe2L1UcBXrSoJT1r6j1puEmLn7WrX87XQ@mail.gmail.com>
- <20210210182400.GA3502674@ubuntu-m3-large-x86> <CALuz2=eSv2N2Qp7GimLgdWjvWDwDh1Dj0Q7Czm4Br5a50rs4ew@mail.gmail.com>
- <CAK7LNAT+CG9zqPpYLoy9_1eA4caZWzxyQACcOrhbg9zfArEwPQ@mail.gmail.com> <CALuz2=ck_=M6Dd8oFgWxnRGdipWOsdL2KODZQSmodh2N7Z8T-w@mail.gmail.com>
-In-Reply-To: <CALuz2=ck_=M6Dd8oFgWxnRGdipWOsdL2KODZQSmodh2N7Z8T-w@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 13 Feb 2021 21:45:24 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR06H3Ue5SG3=6u1veyjg+kXXb2isEBsHVQEtMMJ3d2Tw@mail.gmail.com>
-Message-ID: <CAK7LNAR06H3Ue5SG3=6u1veyjg+kXXb2isEBsHVQEtMMJ3d2Tw@mail.gmail.com>
-Subject: Re: [PATCH v1] clang_tools:gen_compile_commands: Change the default
- source directory
-To:     Stephen Zhang <stephenzhangzsd@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tom Roeder <tmroeder@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 8:20 PM Stephen Zhang <stephenzhangzsd@gmail.com> w=
-rote:
->
-> Masahiro Yamada <masahiroy@kernel.org> =E4=BA=8E2021=E5=B9=B42=E6=9C=8811=
-=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:16=E5=86=99=E9=81=93=EF=BC=
-=9A
-> > Please stop.
-> >
-> >
-> > Commit 6ca4c6d25949117dc5b4845612e290b6d89e70a8
-> > removed the tools/ support.
-> >
-> >
-> > There exist two build systems in the Linux source tree.
-> > Kbuild covers the entire tree except tools/.
-> > The tools/ directory adopts a different build system.
-> >
-> > It is a pity that the tools/ directory
-> > went in a wrong direction, and people
-> > try to fix problems in a wrong layer.
-> >
-> >
-> > You are not the first person to send to
-> > tweak obj/source trees of this script.
-> >
-> > You can not do this correctly
-> > without terribly messing up the code.
-> >
-> > Please do not try to support tools/.
-> >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
->
-> Thanks for the suggestion.But what we try to support is scripts/
-> instead of tools/. 'tools/' here is to help explaining the problem.
-> Or am I just misunderstanding your words?
+
+When affine_move_task(p) is called on a running task @p, which is not
+otherwise already changing affinity, we'll first set
+p->migration_pending and then do:
+
+	 stop_one_cpu(cpu_of_rq(rq), migration_cpu_stop, &arg);
+
+This then gets us to migration_cpu_stop() running on the CPU that was
+previously running our victim task @p.
+
+If we find that our task is no longer on that runqueue (this can
+happen because of a concurrent migration due to load-balance etc.),
+then we'll end up at the:
+
+	} else if (dest_cpu < 1 || pending) {
+
+branch. Which we'll take because we set pending earlier. Here we first
+check if the task @p has already satisfied the affinity constraints,
+if so we bail early [A]. Otherwise we'll reissue migration_cpu_stop()
+onto the CPU that is now hosting our task @p:
+
+	stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+			    &pending->arg, &pending->stop_work);
+
+Except, we've never initialized pending->arg, which will be all 0s.
+
+This then results in running migration_cpu_stop() on the next CPU with
+arg->p == NULL, which gives the by now obvious result of fireworks.
+
+The cure is to change affine_move_task() to always use pending->arg,
+furthermore we can use the exact same pattern as the
+SCA_MIGRATE_ENABLE case, since we'll block on the pending->done
+completion anyway, no point in adding yet another completion in
+stop_one_cpu().
+
+This then gives a clear distinction between the two
+migration_cpu_stop() use cases:
+
+  - sched_exec() / migrate_task_to() : arg->pending == NULL
+  - affine_move_task() : arg->pending != NULL;
+
+And we can have it ignore p->migration_pending when !arg->pending. Any
+stop work from sched_exec() / migrate_task_to() is in addition to stop
+works from affine_move_task(), which will be sufficient to issue the
+completion.
 
 
+NOTES:
 
-You took 'tools/perf' as an example,
-so I just thought you were trying to fix the tools/.
+ - I've not been able to reproduce this crash on any of my machines
+   without first removing the early termination condition [A] above.
+   Doing this is a functional NOP but obviously widens up the window.
 
+ - With the check [A] removed I can consistently hit the NULL deref
+   and the below patch reliably cures it.
 
+ - The original reporter says that this patch cures the NULL deref
+   but results in another problem, which I've not yet been able to
+   make sense of and obviously have failed at reproduction as well :/
 
-I can get scripts/ entries without any problem.
+Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/sched/core.c |   39 ++++++++++++++++++++++++++++-----------
+ 1 file changed, 28 insertions(+), 11 deletions(-)
 
-If you do O=3D build, you can pass that directory
-to the -d option of gen_compile_commands.py
-
-  -d DIRECTORY, --directory DIRECTORY
-                        specify the output directory used for the
-kernel build (defaults to the working
-                        directory)
-
-
-This is the steps I tested.
-
-
-masahiro@oscar:~/ref/linux$ make O=3Dbuild  defconfig all -j24
-  [ snip ]
-masahiro@oscar:~/ref/linux$
-./scripts/clang-tools/gen_compile_commands.py  -d build
-masahiro@oscar:~/ref/linux$ grep '"file":' compile_commands.json |
-grep scripts/ | head -n5
-    "file": "/home/masahiro/ref/linux/scripts/mod/empty.c"
-    "file": "/home/masahiro/ref/linux/scripts/mod/sumversion.c"
-    "file": "/home/masahiro/ref/linux/scripts/mod/file2alias.c"
-    "file": "/home/masahiro/ref/linux/scripts/mod/modpost.c"
-    "file": "/home/masahiro/ref/linux/build/scripts/kconfig/parser.tab.c"
-
-
-
-
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1924,6 +1924,24 @@ static int migration_cpu_stop(void *data
+ 	rq_lock(rq, &rf);
+ 
+ 	pending = p->migration_pending;
++	if (pending && !arg->pending) {
++		/*
++		 * This happens from sched_exec() and migrate_task_to(),
++		 * neither of them care about pending and just want a task to
++		 * maybe move about.
++		 *
++		 * Even if there is a pending, we can ignore it, since
++		 * affine_move_task() will have it's own stop_work's in flight
++		 * which will manage the completion.
++		 *
++		 * Notably, pending doesn't need to match arg->pending. This can
++		 * happen when tripple concurrent affine_move_task() first sets
++		 * pending, then clears pending and eventually sets another
++		 * pending.
++		 */
++		pending = NULL;
++	}
++
+ 	/*
+ 	 * If task_rq(p) != rq, it cannot be migrated here, because we're
+ 	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
+@@ -2196,10 +2214,6 @@ static int affine_move_task(struct rq *r
+ 			    int dest_cpu, unsigned int flags)
+ {
+ 	struct set_affinity_pending my_pending = { }, *pending = NULL;
+-	struct migration_arg arg = {
+-		.task = p,
+-		.dest_cpu = dest_cpu,
+-	};
+ 	bool complete = false;
+ 
+ 	/* Can the task run on the task's current CPU? If so, we're done */
+@@ -2237,6 +2251,12 @@ static int affine_move_task(struct rq *r
+ 			/* Install the request */
+ 			refcount_set(&my_pending.refs, 1);
+ 			init_completion(&my_pending.done);
++			my_pending.arg = (struct migration_arg) {
++				.task = p,
++				.dest_cpu = -1,
++				.pending = &my_pending,
++			};
++
+ 			p->migration_pending = &my_pending;
+ 		} else {
+ 			pending = p->migration_pending;
+@@ -2267,12 +2287,6 @@ static int affine_move_task(struct rq *r
+ 		p->migration_flags &= ~MDF_PUSH;
+ 		task_rq_unlock(rq, p, rf);
+ 
+-		pending->arg = (struct migration_arg) {
+-			.task = p,
+-			.dest_cpu = -1,
+-			.pending = pending,
+-		};
+-
+ 		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+ 				    &pending->arg, &pending->stop_work);
+ 
+@@ -2285,8 +2299,11 @@ static int affine_move_task(struct rq *r
+ 		 * is_migration_disabled(p) checks to the stopper, which will
+ 		 * run on the same CPU as said p.
+ 		 */
++		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
+ 		task_rq_unlock(rq, p, rf);
+-		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
++
++		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
++				    &pending->arg, &pending->stop_work);
+ 
+ 	} else {
+ 
