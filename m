@@ -2,222 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9799B31A881
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 00:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 451DD31A894
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 01:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbhBLX4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 18:56:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229679AbhBLX4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 18:56:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFA3364E25;
-        Fri, 12 Feb 2021 23:55:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613174137;
-        bh=qB6dyxCgCs6hpdMfaqAM+5cZxOG0rVPh2DI+4rxPH7U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BZyoiIUmJE83cjcXVkT2x2L9I+aJLnwkubehxYHjFxjKKutrqtjYlojrVKQgUoIDE
-         jLdcQ/lLzERk+34spSAWv8NFJfj6RCNOf2pA+uGcGv8rPV50tfu4Ydn40skRHi3+Hw
-         WkLc4apR0X0QTBMBeEZCyz/mlBIPWREr2VeahlftsEmfQB3ff94d+hGm5zOe4TQfNq
-         /HOiBjCyf9qDLOijlpkf1k0jYRGKS8jlrQ8/w9Zk/rIRSCFFhm0Q74BOdFH0N5NRW9
-         Np416mQ48jXj4nqFTR6etvjsT2u9WBwBFHKP8hJcRb5RFSBBs9iZnppw1UOy9R/hvT
-         pSO4KaEM5dWbg==
-Date:   Sat, 13 Feb 2021 01:55:28 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lukasz Majczak <lma@semihalf.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Tj <ml.linux@elloe.vision>, Dirk Gouders <dirk@gouders.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>, upstream@semihalf.com
-Subject: Re: [PATCH v5] tpm_tis: Add missing
- tpm_request/relinquish_locality() calls
-Message-ID: <YCcVcA876iJesEW5@kernel.org>
-References: <20210212110600.19216-1-lma@semihalf.com>
+        id S232084AbhBMAEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 19:04:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231977AbhBMAEB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 12 Feb 2021 19:04:01 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C430C061756;
+        Fri, 12 Feb 2021 16:03:20 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id l12so1811293edt.3;
+        Fri, 12 Feb 2021 16:03:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jq2Xmh4pkVtak+Gm3s4V3U7P6sDJYHZgeNfNcYHeOyc=;
+        b=AlP+yW1OiHRgoGJBLvQMCisbKMf67PEmBEp4emzb+qYmlAV40f6jFfNtqpEPvfl3b8
+         DXxWVSN+5K8/2MSoJG9pSbGo1r5IESKvkd7s63+RKttYfW3bZgVJsdb3Q61eJ7SdSuk5
+         ygNk38CyHhDVUP6YOmGGJAwb+omkXnOZazKOjUkP9QWwnzoNYQk7T6veS+9/++MGIwyJ
+         aZQsoGlDwTor0yiYF7mvYYSWDre5F61xrnMSV8RRpHAkFwwGHVO/hGi+ZVdcn2V94C7O
+         8c5wgY9mHHNaDorbSt6ahC0sV06T4N6vX+Tu/aT9hVKejvnHt0M4S02qA6Q7haybB1xq
+         GSng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jq2Xmh4pkVtak+Gm3s4V3U7P6sDJYHZgeNfNcYHeOyc=;
+        b=L1HTAn8V1RFCER0kt2uFcdX5Fzz7wVSEfMDYOU94ht2qwdzxUgfQmi8rayUhBWGGyl
+         z/ncbubJOMaMBIJaXlLAsdEXHQvPyMPr/uPOOyqpuMxFp9YA1VJekRn3WFhe9q2HBHAm
+         Yjh6hUd0d9719Kx5SBN89vIPhXZZRK2o6ZoWOd+qY7Fi4fxFLmHD+W46Q6drxNrDLZir
+         zjgaGmykbrU/fCp8+CpE4Thrr3m/Nc6gZ7zLi8FvrUqila/PoTmT7oD0mwua3IeLwoGu
+         6RAiROhdUX1YDnx/D8r4+j0jI9zLv3JAa3mpz0zT+ELpycmS4y59kTKyLUZH0cF+z9xN
+         xDDA==
+X-Gm-Message-State: AOAM5338+urptWpQUJduDpev9HR8f9gxHYJNExIOOqA6HrGroOTta4YC
+        fM7Ko/vk2kUxpFVUGnBFueQ=
+X-Google-Smtp-Source: ABdhPJzU2mKAEa3jHaukRTI/pZwoEeDb8+WA2tmcoJ2Ay5QSrhEdoH1rXdQbrQLhBTUqJajR/5SmWQ==
+X-Received: by 2002:a50:9e01:: with SMTP id z1mr5809641ede.44.1613174599256;
+        Fri, 12 Feb 2021 16:03:19 -0800 (PST)
+Received: from localhost.localdomain (89-139-118-26.bb.netvision.net.il. [89.139.118.26])
+        by smtp.googlemail.com with ESMTPSA id hb38sm6602567ejc.75.2021.02.12.16.03.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 16:03:18 -0800 (PST)
+From:   Michael Zaidman <michael.zaidman@gmail.com>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com, wsa@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Michael Zaidman <michael.zaidman@gmail.com>
+Subject: [PATCH 0/1] HID: ft260: add usb hid to i2c host bridge driver
+Date:   Sat, 13 Feb 2021 02:02:33 +0200
+Message-Id: <20210213000234.14948-1-michael.zaidman@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212110600.19216-1-lma@semihalf.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:06:00PM +0100, Lukasz Majczak wrote:
-> There are missing calls to tpm_request_locality() before the calls to
-> the tpm_get_timeouts() and tpm_tis_probe_irq_single() - both functions
-> internally send commands to the tpm using tpm_tis_send_data()
-> which in turn, at the very beginning, calls the tpm_tis_status().
-> This one tries to read TPM_STS register, what fails and propagates
-> this error upward. The read fails due to lack of acquired locality,
-> as it is described in
-> TCG PC Client Platform TPM Profile (PTP) Specification,
-> paragraph 6.1 FIFO Interface Locality Usage per Register,
-> Table 39 Register Behavior Based on Locality Setting for FIFO
-> - a read attempt to TPM_STS_x Registers returns 0xFF in case of lack
-> of locality. The described situation manifests itself with
-> the following warning trace:
-> 
-> [    4.324298] TPM returned invalid status
-> [    4.324806] WARNING: CPU: 2 PID: 1 at drivers/char/tpm/tpm_tis_core.c:275 tpm_tis_status+0x86/0x8f
+The FT260 is a USB device that implements USB to I2C/UART bridges
+through two USB HID class interfaces. The first - for I2C, and the
+second for UART. Each interface is independent, and the kernel
+detects it as a separate hidraw device.
 
-The commit message is has great description  of the background, but
-it does not have description what the commit does. Please describe
-this in imperative form, e.g. "Export tpm_request_locality() and ..."
-and "Call tpm_request_locality() before ...". You get the idea.
+This commit adds I2C host adapter support, enabling a wide range of
+standard userspace tools and applications that do not implement HID
+protocol, to access the I2C client devices via FT260 I2C controller.     
 
-It's also lacking expalanation of the implementation path, i.e.
-why you are not using tpm_chip_start() and tpm_chip_stop().
+The driver was tested with different I2C client devices, Linux
+kernels, and Linux userspace tools.
 
-> 
-> Tested on Samsung Chromebook Pro (Caroline), TPM 1.2 (SLB 9670)
+For data transfer, the FT260 implements one Interrupt IN and one
+Interrupt OUT pipes per interface. For configuration and control,
+the FT260 exposes the HID class commands through the Control pipe.
 
-Empty line here.
+Commands and responses are FT260 specific and documented in the
+AN_394_User_Guide_for_FT260.pdf on the https://www.ftdichip.com.
 
-Also, add:
+Michael Zaidman (1):
+  HID: ft260: add usb hid to i2c host bridge driver
 
-Cc: stable@vger.kernel.org
-
-> Fixes: a3fbfae82b4c ("tpm: take TPM chip power gating out of tpm_transmit()")
-
-Remove empty line.
-
-> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+ MAINTAINERS             |    7 +
+ drivers/hid/Kconfig     |   11 +
+ drivers/hid/Makefile    |    2 +
+ drivers/hid/hid-ft260.c | 1097 +++++++++++++++++++++++++++++++++++++++
+ drivers/hid/hid-ids.h   |    1 +
+ 5 files changed, 1118 insertions(+)
+ create mode 100644 drivers/hid/hid-ft260.c
 
 
-> ---
-> 
-> Hi
-> 
-> I have tried to clean all the pointed issues, but decided to stay with 
-> tpm_request/relinquish_locality() calls instead of using tpm_chip_start/stop(),
-> the rationale behind this is that, in this case only locality is requested, there
-> is no need to enable/disable the clock, the similar case is present in
-> the probe_itpm() function.
+base-commit: 07f7e57c63aaa2afb4ea31edef05e08699a63a00
+-- 
+2.25.1
 
-I would prefer to use the "same same" if it does not cause any extra harm
-instead of new exports. That will also make the fix more compact. So don't
-agree with this reasoning. Also the commit message lacks *any* reasoning.
-
-> One more clarification is that, the TPM present on my test machine is the SLB 9670
-> (not Cr50).
-> 
-> Best regards,
-> Lukasz
-> 
-> Changes:
-> v4->v5:
-> * Fixed style, typos, clarified commit message
-> 
->  drivers/char/tpm/tpm-chip.c      |  6 ++++--
->  drivers/char/tpm/tpm-interface.c | 13 ++++++++++---
->  drivers/char/tpm/tpm.h           |  2 ++
->  drivers/char/tpm/tpm_tis_core.c  | 14 +++++++++++---
->  4 files changed, 27 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index ddaeceb7e109..ce9c2650fbe5 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -32,7 +32,7 @@ struct class *tpm_class;
->  struct class *tpmrm_class;
->  dev_t tpm_devt;
->  
-> -static int tpm_request_locality(struct tpm_chip *chip)
-> +int tpm_request_locality(struct tpm_chip *chip)
->  {
->  	int rc;
->  
-> @@ -46,8 +46,9 @@ static int tpm_request_locality(struct tpm_chip *chip)
->  	chip->locality = rc;
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(tpm_request_locality);
->  
-> -static void tpm_relinquish_locality(struct tpm_chip *chip)
-> +void tpm_relinquish_locality(struct tpm_chip *chip)
->  {
->  	int rc;
->  
-> @@ -60,6 +61,7 @@ static void tpm_relinquish_locality(struct tpm_chip *chip)
->  
->  	chip->locality = -1;
->  }
-> +EXPORT_SYMBOL_GPL(tpm_relinquish_locality);
->  
->  static int tpm_cmd_ready(struct tpm_chip *chip)
->  {
-> diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-interface.c
-> index 1621ce818705..2a9001d329f2 100644
-> --- a/drivers/char/tpm/tpm-interface.c
-> +++ b/drivers/char/tpm/tpm-interface.c
-> @@ -241,10 +241,17 @@ int tpm_get_timeouts(struct tpm_chip *chip)
->  	if (chip->flags & TPM_CHIP_FLAG_HAVE_TIMEOUTS)
->  		return 0;
->  
-> -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
-> +	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
->  		return tpm2_get_timeouts(chip);
-> -	else
-> -		return tpm1_get_timeouts(chip);
-> +	} else {
-> +		ssize_t ret = tpm_request_locality(chip);
-> +
-> +		if (ret)
-> +			return ret;
-> +		ret = tpm1_get_timeouts(chip);
-> +		tpm_relinquish_locality(chip);
-> +		return ret;
-> +	}
->  }
->  EXPORT_SYMBOL_GPL(tpm_get_timeouts);
->  
-> diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
-> index 947d1db0a5cc..8c13008437dd 100644
-> --- a/drivers/char/tpm/tpm.h
-> +++ b/drivers/char/tpm/tpm.h
-> @@ -193,6 +193,8 @@ static inline void tpm_msleep(unsigned int delay_msec)
->  
->  int tpm_chip_start(struct tpm_chip *chip);
->  void tpm_chip_stop(struct tpm_chip *chip);
-> +int tpm_request_locality(struct tpm_chip *chip);
-> +void tpm_relinquish_locality(struct tpm_chip *chip);
->  struct tpm_chip *tpm_find_get_ops(struct tpm_chip *chip);
->  __must_check int tpm_try_get_ops(struct tpm_chip *chip);
->  void tpm_put_ops(struct tpm_chip *chip);
-> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-> index 431919d5f48a..d4f381d6356e 100644
-> --- a/drivers/char/tpm/tpm_tis_core.c
-> +++ b/drivers/char/tpm/tpm_tis_core.c
-> @@ -708,11 +708,19 @@ static int tpm_tis_gen_interrupt(struct tpm_chip *chip)
->  	u32 cap2;
->  	cap_t cap;
->  
-> -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
-> +	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
->  		return tpm2_get_tpm_pt(chip, 0x100, &cap2, desc);
-> -	else
-> -		return tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc,
-> +	} else {
-> +		ssize_t ret = tpm_request_locality(chip);
-> +
-> +		if (ret)
-> +			return ret;
-> +		ret = tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, desc,
->  				  0);
-> +		tpm_relinquish_locality(chip);
-> +		return ret;
-> +	}
-> +
->  }
->  
->  /* Register the IRQ and issue a command that will cause an interrupt. If an
-> -- 
-> 2.25.1
-> 
-> 
