@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517EF31AC8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:15:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6655031AC8F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhBMPOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 10:14:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43980 "EHLO
+        id S229716AbhBMPQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 10:16:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhBMPOQ (ORCPT
+        with ESMTP id S229702AbhBMPQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 10:14:16 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DCFC061756;
-        Sat, 13 Feb 2021 07:13:36 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id c5so1907812qth.2;
-        Sat, 13 Feb 2021 07:13:36 -0800 (PST)
+        Sat, 13 Feb 2021 10:16:19 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0A7C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 07:15:39 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id v7so3235426eds.10
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 07:15:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ocIx/G7/Jnzz+gEWsAtuPQ/Ye7m/wMJ05Oo10vMA7dI=;
-        b=OeJYIHav0iGFcMtwvC5ofaqn8AIfHYl7tk3QlYwSSuZruY8K8okTBB8RPPnuT8XjP6
-         pgjxKVg/kfYfpyAnAk520SAWNOrAGIy3PIdwF6ZyRBOx0KtDqThA3PEKm/qEESMwgOaa
-         InoZQhkyKMF7m7ofDAfhFae3yuYA6s0dRrIWDicu5UNnEZ1w44+sbVKAXBg68g2ByLhH
-         diT9ZJVYsmk9Wp70wCjMjxpn7SrNUddopSuSbQVCu+uLLhpGMsuEVxXQqetXtV3j0k0R
-         oLhYJDhHV7344NMl9VZOg6Lw7EcSnITIG0p95oLxVLIupOiyaQ9MEEfDQQvtkktwgtPQ
-         wkLw==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+53dwZq7zsOO2pgcY0g5mhQkV+ogJkALjGneKeNgxcg=;
+        b=jawz1GjvM04O15Neojs9DXosrwwzyBWno6vjqMUD3vTZ49QwGdlpYxfxHsM6JfUwGP
+         XjbW+hNGnGEnMX56sK6rQ864PvVStpp1S3F/SpBFMxWrRRov6STvv8iQL/ht4aPMBfki
+         CbQGCbKVoBwJHcaduKxpX57E7YJGlxvIL9SOU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ocIx/G7/Jnzz+gEWsAtuPQ/Ye7m/wMJ05Oo10vMA7dI=;
-        b=HMv3qARqWLcoI5sEkWR2XoSiKWU+JPRc71AVxQdkK/AukTO3zN0g3NZDBuAMMmL3IS
-         oqP7cbbngg4VqshgKrZbQNYIR3kyqWBJTiMo2nEtkhHR5+JryAweiITIrtT4MscJPkoZ
-         SvQ1YIiKSGHnhNwOeAQNtGeoU306SfRZL4rJe+9x7CgVQNWoo/1XsykBSvRDycmL25R5
-         8cZWj6lVZCalmXvOeEBW7vc2NvtuQx3WrI37bxilMSXb05yeMsML/b9kPAoMh/9TXwim
-         /4YVbqJclvtL9nz0c/oaOtInyKNkHfG/tL4MmADfXcJaGJSz+kzWuxtTjLRp778Rj3Nw
-         NRuA==
-X-Gm-Message-State: AOAM5327kN7Lg+FIwQ2YTGk+9SFqR4DyJZ5+HY+Dihae1P4UfsoGdaz5
-        EWwH6dt7vGBOES1IeQ5Yh6o=
-X-Google-Smtp-Source: ABdhPJw7bh3XnZtC08JHxcx/It6Bn2rvm3HHF1zHZPDBI5fXDNm8uuQ8yjHZS63YJinLER3cxtrYBw==
-X-Received: by 2002:ac8:661a:: with SMTP id c26mr6993424qtp.126.1613229215635;
-        Sat, 13 Feb 2021 07:13:35 -0800 (PST)
-Received: from localhost.localdomain ([156.146.55.129])
-        by smtp.gmail.com with ESMTPSA id 80sm8266783qkj.128.2021.02.13.07.13.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+53dwZq7zsOO2pgcY0g5mhQkV+ogJkALjGneKeNgxcg=;
+        b=O0IfFyDsYRL66ZRl2HHFJx+UJN8JNygxwhy18XuYwLO12uelgekuXAv1h19g6U9esP
+         gWEXStv2BYqsxv5ngir4XKHbmWYnRjJVnxJq9DNdDLU4LATEHLFzfuhz0mc469b44RAL
+         Njo6D2IwRf/mTrnLFWQxIMipxpcQu1onGCXwweU3WbvJlMgtHhSfAHeUsal4v6ZEK6qV
+         Nc9t2eWJ1nbZsn9VnheG8sBc0n+WZ+yrSiBYQJBuYGS2o3pib96dwjqsYdFhy2j6ogBj
+         3aYbUCwhqTHgQwisgPWvXTzgFCQIk3WHlhxGwRdyBj27w/4czTaSMmscLTkMYjJVnB0V
+         y+iQ==
+X-Gm-Message-State: AOAM533PVE7t7i3qEDaGeftUXHapS81KlHKvBChN+6Zv4K4oUx+BqlPa
+        2K6NBPU8VQyQ9oXB7wyEHq+o1Q==
+X-Google-Smtp-Source: ABdhPJyS1xTR/auRilP5asQTKC5DJi0vP+fInYFjo5PXFzCSI2uj25o9lT4UXgNA7pT4BkVZj787AQ==
+X-Received: by 2002:a05:6402:3553:: with SMTP id f19mr8199580edd.271.1613229337967;
+        Sat, 13 Feb 2021 07:15:37 -0800 (PST)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id b6sm8150659ejb.8.2021.02.13.07.15.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 07:13:35 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     awalls@md.metrocast.net, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: media: pci: cx18: Spelling fix of minimze to minimize in the file cx18-av-audio.c
-Date:   Sat, 13 Feb 2021 20:43:20 +0530
-Message-Id: <20210213151320.1607665-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        Sat, 13 Feb 2021 07:15:37 -0800 (PST)
+Date:   Sat, 13 Feb 2021 15:15:37 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v4] printk: Userspace format enumeration support
+Message-ID: <YCftGWAKe1rUbWll@chrisdown.name>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <202102130158.8qvFdZvE-lkp@intel.com>
+ <YCfiYKvuW4DxgICH@chrisdown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YCfiYKvuW4DxgICH@chrisdown.name>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Chris Down writes:
+>kernel test robot writes:
+>>Hi Chris,
+>>
+>>Thank you for the patch! Yet something to improve:
+>
+>I'm pretty sure !CONFIG_PRINTK && CONFIG_IA64_DEBUG_CMPXCHG has been 
+>broken like this long before this change.
 
-s/minimze/minimize/
+I sent "ia64: Depend on non-static printk for cmpxchg debug"[0] to ia64 folks.  
+It shouldn't block this patch, this is already broken.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/media/pci/cx18/cx18-av-audio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/pci/cx18/cx18-av-audio.c b/drivers/media/pci/cx18/cx18-av-audio.c
-index ee2b802d2895..833baa934448 100644
---- a/drivers/media/pci/cx18/cx18-av-audio.c
-+++ b/drivers/media/pci/cx18/cx18-av-audio.c
-@@ -46,7 +46,7 @@ static int set_audclk_freq(struct cx18 *cx, u32 freq)
- 	 * an error of less than 0.13 ppm which is way, way better than any off
- 	 * the shelf crystal will have for accuracy anyway.
- 	 *
--	 * Below I aim to run the PLLs' VCOs near 400 MHz to minimze error.
-+	 * Below I aim to run the PLLs' VCOs near 400 MHz to minimize error.
- 	 *
- 	 * Many thanks to Jeff Campbell and Mike Bradley for their extensive
- 	 * investigation, experimentation, testing, and suggested solutions of
---
-2.30.1
-
+0: https://lore.kernel.org/patchwork/patch/1380380/
