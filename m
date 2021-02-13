@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD0431A903
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 01:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4F731A906
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 01:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbhBMAwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 19:52:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
+        id S232333AbhBMAw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 19:52:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbhBMAv6 (ORCPT
+        with ESMTP id S232273AbhBMAwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 19:51:58 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC45BC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:50:28 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id l197so1526923ybf.17
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:50:28 -0800 (PST)
+        Fri, 12 Feb 2021 19:52:00 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC79C061794
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:50:31 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id w3so1318850qti.17
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:50:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=Xy8pCiIvuQawQkMclMW43HMKCXEyM/TQwcT6KDk/2UM=;
-        b=wAQXnTKYjLxM1KYKu3MpoFcyTfkTRoWBI/P4nnUbtn5uFdGazTlZ/tQmAEDPSN5e4f
-         2Qw8cmxwdgv1EX2K7PAHEJKBwFzo7EquKs8O3k4PnRz3TZlsDFntv0rsaUobpVkVQymQ
-         Muir3noWpX10lSYdLXkmj0GB5z2n4VcE80nwlnPhWZiI7mXNEzEIT2IDP+CRytEUxg4f
-         +k0OUV480QFbzGGqHkod6rO364qj6ok5PwjyQMBvoYQXXkCna5kgqS+JjttwZdMRwNgK
-         BGinmZ64cdSJXMHL8um8Y4vQSRdmykd2r7NexzT94OH48N96aCEec9ddZ6fWqeEMaeju
-         Fi3Q==
+        bh=/pgObbPbQ4Sej93TFL9Cnuu26Kb3Ki6jPLia3nFiTXA=;
+        b=AIjpzv6+8htZQRayxywmziLjdvR/NzxH2IuQBza8yuJn07/odsujV31NpiUWeXOUTR
+         TWWVdISqcXa5wxiCREFw94UIWTxqqN2Mw+LFesqMB4trjM0A1MRQ/ytXfmUOlg7PCjUs
+         rZ1pVuSQWUaXIVj6k15m0/KxMQIJiVTLV26bPf7q/+qsbvAQMT+j4xsSA95gRnUeKkUM
+         tzoXrFFDFRYy/oqZ5OuDDW7BdWQ0BQj3DMZJ7DewX6yfnuzQcuU1Bwg1bGGJHx9SDNt/
+         NAbTAqW1brL5l30WBhFjQgOWD1AdFU9C5MUiM4/WzDDQ5l+hWQ2iFAdp/p+l4U6avkh1
+         jxnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=Xy8pCiIvuQawQkMclMW43HMKCXEyM/TQwcT6KDk/2UM=;
-        b=qdXSACfe7VtNYJ99OI28fP9lzcragAEMOAA65HTKAeG+Crddi9Szu7O8MK0EIHVz7c
-         rVSjHa/0qmmWBMwKGZG6qpZwGiw+5qhBnTxh4Onb5SGR47UDThsDYN6RKg6VziYjrjMX
-         7tqoaowluIAx/gjXTVyhFoMUeFJt+EyGQrfzHRKld2TftJlXvLFXk11aWUyfdhNExdXg
-         ULZ7iK4oqbnsrN1MF9sO432Ug1cZk9bHxPA+gXccawbezZcMk7qdHE1D0bTqitXa6QId
-         oXbP0JhnTjmPwwdixlP02A4hU7BxdsE5HOAM4x/mlCHE/yvRJmSQ9PRDU1YCOP8mMVBh
-         qk1A==
-X-Gm-Message-State: AOAM5338I05dN7mdBgHTpvUAGKKMlYQIZ4PVpb8Q6eB1xasdzHMY2Cxr
-        HtSmSp2eAMG0FGhC4FETDYxMBav1PHk=
-X-Google-Smtp-Source: ABdhPJwipfwSvALM02NbIZU9hDEBvvc702cNbC3lBfKrkGF50eyli8r9WWdXlfcLpzEkVEMNgm685llCU3c=
+        bh=/pgObbPbQ4Sej93TFL9Cnuu26Kb3Ki6jPLia3nFiTXA=;
+        b=VsIzsf5+Rd1bVABjKp+/KuK2kEw0mMPwbLZPqrXbz3J+3Rk+BGFdCE0iWVT6M8N09e
+         r8e62LgNgsofT0NDa0dVO2Ncf9XkEBGopiKS4z20vZ4NUMeNwYtPU7HQNsFm65rtr+3/
+         OS89ekxXHtQ0oCnD0KgLrJwdWzBNy03eEmIX8PeINm1qCo85b3YhGCEXWqJ/bxK0nj+l
+         J+CQxS1+tz1YRa4+uM2lmuFBg5VUnwMw8MypLS8fEa97Y6zjYvtpSysFyNzzUqZAyhU3
+         DB7bM02IfTaaA6HfwOD/UlYUl68AOuER1+HKsre2XGTmY4rdvBZMqrPiznGGw4s7rvEN
+         /wuQ==
+X-Gm-Message-State: AOAM531nmeAdix+Ajzr+bbWYOd9xNQPSu4auY5i7nb6h3tufmAQEhAYV
+        W3C9lPH7p5/9sPPVZTIrsWM9t8keljU=
+X-Google-Smtp-Source: ABdhPJzLCM67nkU5MoKMf58mtdWJl/IRwyhumZ+dwwpFdhfFlqR/KeLI9I3s95s5+hJtmi7nEYAAtpjwqTA=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b407:1780:13d2:b27])
- (user=seanjc job=sendgmr) by 2002:a5b:410:: with SMTP id m16mr8127952ybp.451.1613177428230;
- Fri, 12 Feb 2021 16:50:28 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:ad4:55aa:: with SMTP id f10mr5145395qvx.46.1613177430549;
+ Fri, 12 Feb 2021 16:50:30 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 12 Feb 2021 16:50:04 -0800
+Date:   Fri, 12 Feb 2021 16:50:05 -0800
 In-Reply-To: <20210213005015.1651772-1-seanjc@google.com>
-Message-Id: <20210213005015.1651772-4-seanjc@google.com>
+Message-Id: <20210213005015.1651772-5-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210213005015.1651772-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH 03/14] KVM: x86/mmu: Split out max mapping level calculation
- to helper
+Subject: [PATCH 04/14] KVM: x86/mmu: Pass the memslot to the rmap callbacks
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,105 +68,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Factor out the logic for determining the maximum mapping level given a
-memslot and a gpa.  The helper will be used when zapping collapsible
-SPTEs when disabling dirty logging, e.g. to avoid zapping SPTEs that
-can't possibly be rebuilt as hugepages.
+Pass the memslot to the rmap callbacks, it will be used when zapping
+collapsible SPTEs to verify the memslot is compatible with hugepages
+before zapping its SPTEs.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c          | 37 ++++++++++++++++++++-------------
- arch/x86/kvm/mmu/mmu_internal.h |  2 ++
- 2 files changed, 24 insertions(+), 15 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 24325bdcd387..9be7fd474b2d 100644
+index 9be7fd474b2d..fb719e7a0cbb 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2756,8 +2756,8 @@ static void direct_pte_prefetch(struct kvm_vcpu *vcpu, u64 *sptep)
- 	__direct_pte_prefetch(vcpu, sp, sptep);
+@@ -1165,7 +1165,8 @@ static bool spte_wrprot_for_clear_dirty(u64 *sptep)
+  *	- W bit on ad-disabled SPTEs.
+  * Returns true iff any D or W bits were cleared.
+  */
+-static bool __rmap_clear_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head)
++static bool __rmap_clear_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
++			       struct kvm_memory_slot *slot)
+ {
+ 	u64 *sptep;
+ 	struct rmap_iterator iter;
+@@ -1196,7 +1197,8 @@ static bool spte_set_dirty(u64 *sptep)
+ 	return mmu_spte_update(sptep, spte);
  }
  
--static int host_pfn_mapping_level(struct kvm_vcpu *vcpu, gfn_t gfn,
--				  kvm_pfn_t pfn, struct kvm_memory_slot *slot)
-+static int host_pfn_mapping_level(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn,
-+				  struct kvm_memory_slot *slot)
+-static bool __rmap_set_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head)
++static bool __rmap_set_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
++			     struct kvm_memory_slot *slot)
  {
- 	unsigned long hva;
- 	pte_t *pte;
-@@ -2776,19 +2776,36 @@ static int host_pfn_mapping_level(struct kvm_vcpu *vcpu, gfn_t gfn,
- 	 */
- 	hva = __gfn_to_hva_memslot(slot, gfn);
+ 	u64 *sptep;
+ 	struct rmap_iterator iter;
+@@ -1260,7 +1262,7 @@ void kvm_mmu_clear_dirty_pt_masked(struct kvm *kvm,
+ 	while (mask) {
+ 		rmap_head = __gfn_to_rmap(slot->base_gfn + gfn_offset + __ffs(mask),
+ 					  PG_LEVEL_4K, slot);
+-		__rmap_clear_dirty(kvm, rmap_head);
++		__rmap_clear_dirty(kvm, rmap_head, slot);
  
--	pte = lookup_address_in_mm(vcpu->kvm->mm, hva, &level);
-+	pte = lookup_address_in_mm(kvm->mm, hva, &level);
- 	if (unlikely(!pte))
- 		return PG_LEVEL_4K;
- 
- 	return level;
+ 		/* clear the first set bit */
+ 		mask &= mask - 1;
+@@ -1325,7 +1327,8 @@ static bool rmap_write_protect(struct kvm_vcpu *vcpu, u64 gfn)
+ 	return kvm_mmu_slot_gfn_write_protect(vcpu->kvm, slot, gfn);
  }
  
-+int kvm_mmu_max_mapping_level(struct kvm *kvm, struct kvm_memory_slot *slot,
-+			      gfn_t gfn, kvm_pfn_t pfn, int max_level)
-+{
-+	struct kvm_lpage_info *linfo;
-+
-+	max_level = min(max_level, max_huge_page_level);
-+	for ( ; max_level > PG_LEVEL_4K; max_level--) {
-+		linfo = lpage_info_slot(gfn, slot, max_level);
-+		if (!linfo->disallow_lpage)
-+			break;
-+	}
-+
-+	if (max_level == PG_LEVEL_4K)
-+		return PG_LEVEL_4K;
-+
-+	return host_pfn_mapping_level(kvm, gfn, pfn, slot);
-+}
-+
- int kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, gfn_t gfn,
- 			    int max_level, kvm_pfn_t *pfnp,
- 			    bool huge_page_disallowed, int *req_level)
+-static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head)
++static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
++			  struct kvm_memory_slot *slot)
  {
- 	struct kvm_memory_slot *slot;
--	struct kvm_lpage_info *linfo;
- 	kvm_pfn_t pfn = *pfnp;
- 	kvm_pfn_t mask;
- 	int level;
-@@ -2805,17 +2822,7 @@ int kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, gfn_t gfn,
- 	if (!slot)
- 		return PG_LEVEL_4K;
+ 	u64 *sptep;
+ 	struct rmap_iterator iter;
+@@ -1345,7 +1348,7 @@ static int kvm_unmap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+ 			   struct kvm_memory_slot *slot, gfn_t gfn, int level,
+ 			   unsigned long data)
+ {
+-	return kvm_zap_rmapp(kvm, rmap_head);
++	return kvm_zap_rmapp(kvm, rmap_head, slot);
+ }
  
--	max_level = min(max_level, max_huge_page_level);
--	for ( ; max_level > PG_LEVEL_4K; max_level--) {
--		linfo = lpage_info_slot(gfn, slot, max_level);
--		if (!linfo->disallow_lpage)
--			break;
--	}
--
--	if (max_level == PG_LEVEL_4K)
--		return PG_LEVEL_4K;
--
--	level = host_pfn_mapping_level(vcpu, gfn, pfn, slot);
-+	level = kvm_mmu_max_mapping_level(vcpu->kvm, slot, gfn, pfn, max_level);
- 	if (level == PG_LEVEL_4K)
- 		return level;
+ static int kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+@@ -5189,7 +5192,8 @@ void kvm_configure_mmu(bool enable_tdp, int tdp_max_root_level,
+ EXPORT_SYMBOL_GPL(kvm_configure_mmu);
  
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 9e38d3c5daad..0b55aa561ec8 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -138,6 +138,8 @@ enum {
- #define SET_SPTE_NEED_REMOTE_TLB_FLUSH	BIT(1)
- #define SET_SPTE_SPURIOUS		BIT(2)
+ /* The return value indicates if tlb flush on all vcpus is needed. */
+-typedef bool (*slot_level_handler) (struct kvm *kvm, struct kvm_rmap_head *rmap_head);
++typedef bool (*slot_level_handler) (struct kvm *kvm, struct kvm_rmap_head *rmap_head,
++				    struct kvm_memory_slot *slot);
  
-+int kvm_mmu_max_mapping_level(struct kvm *kvm, struct kvm_memory_slot *slot,
-+			      gfn_t gfn, kvm_pfn_t pfn, int max_level);
- int kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, gfn_t gfn,
- 			    int max_level, kvm_pfn_t *pfnp,
- 			    bool huge_page_disallowed, int *req_level);
+ /* The caller should hold mmu-lock before calling this function. */
+ static __always_inline bool
+@@ -5203,7 +5207,7 @@ slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
+ 	for_each_slot_rmap_range(memslot, start_level, end_level, start_gfn,
+ 			end_gfn, &iterator) {
+ 		if (iterator.rmap)
+-			flush |= fn(kvm, iterator.rmap);
++			flush |= fn(kvm, iterator.rmap, memslot);
+ 
+ 		if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
+ 			if (flush && lock_flush_tlb) {
+@@ -5492,7 +5496,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+ }
+ 
+ static bool slot_rmap_write_protect(struct kvm *kvm,
+-				    struct kvm_rmap_head *rmap_head)
++				    struct kvm_rmap_head *rmap_head,
++				    struct kvm_memory_slot *slot)
+ {
+ 	return __rmap_write_protect(kvm, rmap_head, false);
+ }
+@@ -5526,7 +5531,8 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+ }
+ 
+ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
+-					 struct kvm_rmap_head *rmap_head)
++					 struct kvm_rmap_head *rmap_head,
++					 struct kvm_memory_slot *slot)
+ {
+ 	u64 *sptep;
+ 	struct rmap_iterator iter;
 -- 
 2.30.0.478.g8a0d178c01-goog
 
