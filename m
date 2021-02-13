@@ -2,168 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCB631AC2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 15:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADF831AC3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 15:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhBMOQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 09:16:44 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:46364 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhBMOOA (ORCPT
+        id S229691AbhBMO10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 09:27:26 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:51639 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229651AbhBMO1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 09:14:00 -0500
-Date:   Sat, 13 Feb 2021 14:13:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613225597; bh=wLqNe1V/JXPVogyy1vgzidOihnW8r5KVyZjTCq70nMY=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=e/xy0IYCa1GYe0sA5hMJ1cIMChs2ZV8qdGnhUodNMK2Yvrx5SQwHTzx5JDfR+399v
-         Jq1MP9s4AeygOC1EMVYQXv2o4Y7QQPbJ5A0M/DU0OEOf9KwWtMW5fV/o12tkUZ8Y+1
-         QTOMw6B62RJQTfopedmxA7mgLJH6KG9tGOzO2Q1bvcymKtTeVL6+Mr/u4FgzTwv3FR
-         5cs1hBkgBl30cVzPKd/d0AwwODoOmDWGePOwxLwHqEfzLIBCDvTZp9USLM0dV1vs2+
-         QrxjlwubMQfwqp6PKPxSzMzCVlMqno/DQmzzqMV3EIuKuOfF8pF39O0wTCchgDRJcj
-         g4OYhfbszjJyQ==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Taehee Yoo <ap420073@gmail.com>, Wei Wang <weiwan@google.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v6 net-next 11/11] skbuff: queue NAPI_MERGED_FREE skbs into NAPI cache instead of freeing
-Message-ID: <20210213141021.87840-12-alobakin@pm.me>
-In-Reply-To: <20210213141021.87840-1-alobakin@pm.me>
-References: <20210213141021.87840-1-alobakin@pm.me>
+        Sat, 13 Feb 2021 09:27:24 -0500
+Received: from fsav402.sakura.ne.jp (fsav402.sakura.ne.jp [133.242.250.101])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11DEQeXB006750;
+        Sat, 13 Feb 2021 23:26:40 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav402.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp);
+ Sat, 13 Feb 2021 23:26:40 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav402.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11DEQeQ5006747
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 13 Feb 2021 23:26:40 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: possible deadlock in start_this_handle (2)
+To:     Jan Kara <jack@suse.cz>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, mhocko@suse.cz, linux-mm@kvack.org,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>
+References: <000000000000563a0205bafb7970@google.com>
+ <20210211104947.GL19070@quack2.suse.cz>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <bf1088e3-b051-6361-57dd-6b836b1c3b46@i-love.sakura.ne.jp>
+Date:   Sat, 13 Feb 2021 23:26:37 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210211104947.GL19070@quack2.suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-napi_frags_finish() and napi_skb_finish() can only be called inside
-NAPI Rx context, so we can feed NAPI cache with skbuff_heads that
-got NAPI_MERGED_FREE verdict instead of immediate freeing.
-Replace __kfree_skb() with __kfree_skb_defer() in napi_skb_finish()
-and move napi_skb_free_stolen_head() to skbuff.c, so it can drop skbs
-to NAPI cache.
-As many drivers call napi_alloc_skb()/napi_get_frags() on their
-receive path, this becomes especially useful.
+On 2021/02/11 19:49, Jan Kara wrote:
+> This stacktrace should never happen. ext4_xattr_set() starts a transaction.
+> That internally goes through start_this_handle() which calls:
+> 
+> 	handle->saved_alloc_context = memalloc_nofs_save();
+> 
+> and we restore the allocation context only in stop_this_handle() when
+> stopping the handle. And with this fs_reclaim_acquire() should remove
+> __GFP_FS from the mask and not call __fs_reclaim_acquire().
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- include/linux/skbuff.h |  1 +
- net/core/dev.c         |  9 +--------
- net/core/skbuff.c      | 12 +++++++++---
- 3 files changed, 11 insertions(+), 11 deletions(-)
+Excuse me, but it seems to me that nothing prevents ext4_xattr_set_handle() from reaching
+ext4_xattr_inode_lookup_create() without memalloc_nofs_save() when hitting ext4_get_nojournal() path.
+Will you explain when ext4_get_nojournal() path is executed?
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 906122eac82a..6d0a33d1c0db 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -2921,6 +2921,7 @@ static inline struct sk_buff *napi_alloc_skb(struct n=
-api_struct *napi,
- }
- void napi_consume_skb(struct sk_buff *skb, int budget);
-=20
-+void napi_skb_free_stolen_head(struct sk_buff *skb);
- void __kfree_skb_defer(struct sk_buff *skb);
-=20
- /**
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 631807c196ad..ea9b46318d23 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -6095,13 +6095,6 @@ struct packet_offload *gro_find_complete_by_type(__b=
-e16 type)
- }
- EXPORT_SYMBOL(gro_find_complete_by_type);
-=20
--static void napi_skb_free_stolen_head(struct sk_buff *skb)
--{
--=09skb_dst_drop(skb);
--=09skb_ext_put(skb);
--=09kmem_cache_free(skbuff_head_cache, skb);
--}
--
- static gro_result_t napi_skb_finish(struct napi_struct *napi,
- =09=09=09=09    struct sk_buff *skb,
- =09=09=09=09    gro_result_t ret)
-@@ -6115,7 +6108,7 @@ static gro_result_t napi_skb_finish(struct napi_struc=
-t *napi,
- =09=09if (NAPI_GRO_CB(skb)->free =3D=3D NAPI_GRO_FREE_STOLEN_HEAD)
- =09=09=09napi_skb_free_stolen_head(skb);
- =09=09else
--=09=09=09__kfree_skb(skb);
-+=09=09=09__kfree_skb_defer(skb);
- =09=09break;
-=20
- =09case GRO_HELD:
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 875e1a453f7e..545a472273a5 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -916,9 +916,6 @@ static void napi_skb_cache_put(struct sk_buff *skb)
- =09struct napi_alloc_cache *nc =3D this_cpu_ptr(&napi_alloc_cache);
- =09u32 i;
-=20
--=09/* drop skb->head and call any destructors for packet */
--=09skb_release_all(skb);
--
- =09kasan_poison_object_data(skbuff_head_cache, skb);
- =09nc->skb_cache[nc->skb_count++] =3D skb;
-=20
-@@ -935,6 +932,14 @@ static void napi_skb_cache_put(struct sk_buff *skb)
-=20
- void __kfree_skb_defer(struct sk_buff *skb)
- {
-+=09skb_release_all(skb);
-+=09napi_skb_cache_put(skb);
-+}
-+
-+void napi_skb_free_stolen_head(struct sk_buff *skb)
-+{
-+=09skb_dst_drop(skb);
-+=09skb_ext_put(skb);
- =09napi_skb_cache_put(skb);
- }
-=20
-@@ -960,6 +965,7 @@ void napi_consume_skb(struct sk_buff *skb, int budget)
- =09=09return;
- =09}
-=20
-+=09skb_release_all(skb);
- =09napi_skb_cache_put(skb);
- }
- EXPORT_SYMBOL(napi_consume_skb);
---=20
-2.30.1
-
+ext4_xattr_set() {
+  handle = ext4_journal_start(inode, EXT4_HT_XATTR, credits) == __ext4_journal_start() {
+      return __ext4_journal_start_sb() {
+        journal = EXT4_SB(sb)->s_journal;
+        if (!journal || (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY))
+          return ext4_get_nojournal(); // Never calls memalloc_nofs_save() despite returning !IS_ERR() value.
+        return jbd2__journal_start(journal, blocks, rsv_blocks, revoke_creds, GFP_NOFS, type, line); // Calls memalloc_nofs_save() when start_this_handle() returns 0.
+      }
+    }
+  }
+  error = ext4_xattr_set_handle(handle, inode, name_index, name, value, value_len, flags); {
+    ext4_write_lock_xattr(inode, &no_expand); // Grabs &ei->xattr_sem
+    error = ext4_xattr_ibody_set(handle, inode, &i, &is) {
+      error = ext4_xattr_set_entry(i, s, handle, inode, false /* is_block */) {
+        ret = ext4_xattr_inode_lookup_create(handle, inode, i->value, i->value_len, &new_ea_inode); // Using GFP_KERNEL based on assumption that ext4_journal_start() called memalloc_nofs_save().
+      }
+    }
+  }
+}
 
