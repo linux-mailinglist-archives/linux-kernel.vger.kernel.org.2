@@ -2,156 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB0131AB11
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 998F131AB19
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbhBMLg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 06:36:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhBMLdw (ORCPT
+        id S229608AbhBMLyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 06:54:12 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:51124 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhBMLyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 06:33:52 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22007C06178A
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 03:32:46 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id o21so1338391pgn.12
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 03:32:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=e6PPt6Q0w52SGlwi3jxuH8NHG7/r6cFxIksj0jvT04Q=;
-        b=EK00jZd7fBhtvrpq7rFToPozxX5PBjsyyvinkOIjI1day/gxjnZkqCmytiP4amIwqe
-         gnfIqYMxZn4AOsME89943ha25ss38ujXrb5spdOoYsh25ZIXFltRUddFisUW2HrHg7v/
-         DSauF4g7TnwfVb29tt/EKxuL4ukugNq4jnwfbyzeCrQxx68DLbYxlVE5TTl6YlYsHGYw
-         dXU+UkwoQQghzTi8iImr5rUYL5QfWbz1NSGVksfbDfsgLE7sFn6KMY820GYv2h5Cx2Od
-         QoHLfbtlZvXO2DVZXrxsRD/iHPh4FAVnO57cXl4vBJY91PaT21Jcrm8KlKZMiiOZi0ba
-         fxNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=e6PPt6Q0w52SGlwi3jxuH8NHG7/r6cFxIksj0jvT04Q=;
-        b=sBtED/Yb8yCrbR0Dt9ZLjM+zDAHa+2ddYMf+TKgEo3V4w+mWGi0Zep50/bxK6AOZ6V
-         F98QMNMGsmNDZM2BAF0dfndogESsxplt6fw7JUFaTzHbnRhaWVhCDvYtFXqL4M0bzeca
-         UBwMWjgnVYHeKBZ2NKoJXhzIb/t5dhfLrDr6hzFCfqQRgeERtSR+H7T5dxcUyE/uIapt
-         /RLFHGpvlNp/7K2ySNfvGvaj6QgDX0s8AcNy/OaY67Lqg8iTvF0hzN+ky+I30aoMkQYq
-         bNPF+IZ/Vs9Z82mM0zPTwUAW/4R7qPMPld18UAUnrRG4/uXSqU31ddsria20/bK8updp
-         a79w==
-X-Gm-Message-State: AOAM530F5BZ95oiJUR/6bTH3zPPxCTTcrnZrn+v7yZgh9jXhJkc/MgSh
-        UF9lA0OxY6KolEIBYdOvpavmuQ==
-X-Google-Smtp-Source: ABdhPJwo1LlrC26KOPPXr+TQvOf0ij8fmS73jkfYqITgdzmieo3kXeHK4EIaOYc9g1iYgnYeYkFSqg==
-X-Received: by 2002:a63:9811:: with SMTP id q17mr7275763pgd.238.1613215965600;
-        Sat, 13 Feb 2021 03:32:45 -0800 (PST)
-Received: from localhost ([45.137.216.202])
-        by smtp.gmail.com with ESMTPSA id f28sm13056434pfk.182.2021.02.13.03.32.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 03:32:45 -0800 (PST)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Al Grant <al.grant@arm.com>, Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 5/5] perf cs-etm: Detect pid in VMID for kernel running at EL2
-Date:   Sat, 13 Feb 2021 19:32:20 +0800
-Message-Id: <20210213113220.292229-6-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210213113220.292229-1-leo.yan@linaro.org>
-References: <20210213113220.292229-1-leo.yan@linaro.org>
+        Sat, 13 Feb 2021 06:54:09 -0500
+Date:   Sat, 13 Feb 2021 11:53:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1613217205; bh=U9h7ecCA02bgXdLGxxosUvrTLcI+jIc/SZnrWbn3k90=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=ZMq4DHhrTAzzviEoROqpXjW+tTJgetKNneTLYWBIlq1hjBTgqXgIdVKLHdwApgF7D
+         v6L+0+0nn2UAdmV3DHCnIKrIcYo3rYVJfsas0IkWgFG1DFZ4ISVs+MUGiqZikiQ5cu
+         zgqi1RJsyMOhvehrQ0f88EyM8+UGaK/FXcLBFOtbzEfdNQ50aP3QQzCevV27iIoNk3
+         lWwWv3QRAwYmKvAA823cwxis7+DpyMK6eB0dh9BfcGG0sZlxUwme2Y41HSFgbrci0Y
+         +YCAKrVwxz45r9IAYqW+hXstZ1PBaISrHf+hxT5PA5XPhcCA3C91XpOaKUCTJBUl5y
+         YyC7MAAwCewEg==
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yonghong Song <yhs@fb.com>, zhudi <zhudi21@huawei.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Florian Westphal <fw@strlen.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v5 net-next 09/11] skbuff: allow to optionally use NAPI cache from __alloc_skb()
+Message-ID: <20210213115229.2728-1-alobakin@pm.me>
+In-Reply-To: <CAKgT0UejU=YC-3xnORHh8uj_uuf79yYMGTdFvo9o7aY03eGeqA@mail.gmail.com>
+References: <20210211185220.9753-1-alobakin@pm.me> <20210211185220.9753-10-alobakin@pm.me> <CAKgT0UejU=YC-3xnORHh8uj_uuf79yYMGTdFvo9o7aY03eGeqA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+From: Alexander Duyck <alexander.duyck@gmail.com>
+Date: Thu, 11 Feb 2021 19:18:45 -0800
 
-The PID of the task could be traced as VMID when the kernel is running
-at EL2.  Teach the decoder to look for VMID when the CONTEXTIDR (Arm32)
-or CONTEXTIDR_EL1 (Arm64) is invalid but we have a valid VMID.
+> On Thu, Feb 11, 2021 at 11:00 AM Alexander Lobakin <alobakin@pm.me> wrote=
+:
+> >
+> > Reuse the old and forgotten SKB_ALLOC_NAPI to add an option to get
+> > an skbuff_head from the NAPI cache instead of inplace allocation
+> > inside __alloc_skb().
+> > This implies that the function is called from softirq or BH-off
+> > context, not for allocating a clone or from a distant node.
+> >
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  net/core/skbuff.c | 13 +++++++++----
+> >  1 file changed, 9 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > index 9e1a8ded4acc..a0b457ae87c2 100644
+> > --- a/net/core/skbuff.c
+> > +++ b/net/core/skbuff.c
+> > @@ -397,15 +397,20 @@ struct sk_buff *__alloc_skb(unsigned int size, gf=
+p_t gfp_mask,
+> >         struct sk_buff *skb;
+> >         u8 *data;
+> >         bool pfmemalloc;
+> > +       bool clone;
+> >
+> > -       cache =3D (flags & SKB_ALLOC_FCLONE)
+> > -               ? skbuff_fclone_cache : skbuff_head_cache;
+> > +       clone =3D !!(flags & SKB_ALLOC_FCLONE);
+>=20
+> The boolean conversion here is probably unnecessary. I would make
+> clone an int like flags and work with that. I suspect the compiler is
+> doing it already, but it is better to be explicit.
+>=20
+> > +       cache =3D clone ? skbuff_fclone_cache : skbuff_head_cache;
+> >
+> >         if (sk_memalloc_socks() && (flags & SKB_ALLOC_RX))
+> >                 gfp_mask |=3D __GFP_MEMALLOC;
+> >
+> >         /* Get the HEAD */
+> > -       skb =3D kmem_cache_alloc_node(cache, gfp_mask & ~__GFP_DMA, nod=
+e);
+> > +       if ((flags & SKB_ALLOC_NAPI) && !clone &&
+>=20
+> Rather than having to do two checks you could just check for
+> SKB_ALLOC_NAPI and SKB_ALLOC_FCLONE in a single check. You could just
+> do something like:
+>     if ((flags & (SKB_ALLOC_FCLONE | SKB_ALLOC_NAPI) =3D=3D SKB_ALLOC_NAP=
+I)
+>=20
+> That way you can avoid the extra conditional jumps and can start
+> computing the flags value sooner.
 
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Al Grant <al.grant@arm.com>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Co-developed-by: Leo Yan <leo.yan@linaro.org>
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
- .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 38 +++++++++++++++++--
- 1 file changed, 34 insertions(+), 4 deletions(-)
+I thought about combined check for two flags yesterday, so yeah, that
+probably should be better than the current version.
 
-diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-index 3f4bc4050477..4052c9ce6e2f 100644
---- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-+++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-@@ -6,6 +6,7 @@
-  * Author: Mathieu Poirier <mathieu.poirier@linaro.org>
-  */
- 
-+#include <linux/coresight-pmu.h>
- #include <linux/err.h>
- #include <linux/list.h>
- #include <linux/zalloc.h>
-@@ -491,13 +492,42 @@ cs_etm_decoder__set_tid(struct cs_etm_queue *etmq,
- 			const ocsd_generic_trace_elem *elem,
- 			const uint8_t trace_chan_id)
- {
--	pid_t tid;
-+	pid_t tid = -1;
-+	static u64 pid_fmt;
-+	int ret;
- 
--	/* Ignore PE_CONTEXT packets that don't have a valid contextID */
--	if (!elem->context.ctxt_id_valid)
-+	/*
-+	 * As all the ETMs run at the same exception level, the system should
-+	 * have the same PID format crossing CPUs.  So cache the PID format
-+	 * and reuse it for sequential decoding.
-+	 */
-+	if (!pid_fmt) {
-+		ret = cs_etm__get_pid_fmt(trace_chan_id, &pid_fmt);
-+		if (ret)
-+			return OCSD_RESP_FATAL_SYS_ERR;
-+	}
-+
-+	/*
-+	 * Process the PE_CONTEXT packets if we have a valid contextID or VMID.
-+	 * If the kernel is running at EL2, the PID is traced in CONTEXTIDR_EL2
-+	 * as VMID, Bit ETM_OPT_CTXTID2 is set in this case.
-+	 */
-+	switch (pid_fmt) {
-+	case BIT(ETM_OPT_CTXTID):
-+		if (elem->context.ctxt_id_valid)
-+			tid = elem->context.context_id;
-+		break;
-+	case BIT(ETM_OPT_CTXTID2):
-+		if (elem->context.vmid_valid)
-+			tid = elem->context.vmid;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (tid == -1)
- 		return OCSD_RESP_CONT;
- 
--	tid =  elem->context.context_id;
- 	if (cs_etm__etmq_set_tid(etmq, tid, trace_chan_id))
- 		return OCSD_RESP_FATAL_SYS_ERR;
- 
--- 
-2.25.1
+> > +           likely(node =3D=3D NUMA_NO_NODE || node =3D=3D numa_mem_id(=
+)))
+> > +               skb =3D napi_skb_cache_get();
+> > +       else
+> > +               skb =3D kmem_cache_alloc_node(cache, gfp_mask & ~GFP_DM=
+A, node);
+> >         if (unlikely(!skb))
+> >                 return NULL;
+> >         prefetchw(skb);
+> > @@ -436,7 +441,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_=
+t gfp_mask,
+> >         __build_skb_around(skb, data, 0);
+> >         skb->pfmemalloc =3D pfmemalloc;
+> >
+> > -       if (flags & SKB_ALLOC_FCLONE) {
+> > +       if (clone) {
+> >                 struct sk_buff_fclones *fclones;
+> >
+> >                 fclones =3D container_of(skb, struct sk_buff_fclones, s=
+kb1);
+> > --
+> > 2.30.1
+
+Thanks,
+Al
 
