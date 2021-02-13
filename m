@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E5131A8E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 01:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7D131A8E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 01:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhBMAlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 19:41:24 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:11157 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229718AbhBMAlW (ORCPT
+        id S232057AbhBMAnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 19:43:04 -0500
+Received: from smtprelay0251.hostedemail.com ([216.40.44.251]:38212 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229718AbhBMAm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 19:41:22 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613176860; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=Cck1QrwRGtEz4wQz0BHETOps/FNBT1eplTNtHgE5sro=; b=eV7/fwfhTmhp2RAM26kemNoKd+S48ifLyn3b09R8Z+JTgPhGhklFVo+aJkvNQ4fNCYj3JCqs
- XhQ31A9FKTWS2CuumfhzJNPjdBhHzfwSdxJ8bLNWfmkqSwGi2K8EoKBd0FEcT1aj9m+FQ6c4
- 6TZA67kiJsuB1+rxJXknrtN6kr8=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60271ffd81f6c45dce33270b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 13 Feb 2021 00:40:29
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7600BC43462; Sat, 13 Feb 2021 00:40:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3063AC433C6;
-        Sat, 13 Feb 2021 00:40:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3063AC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [PATCH] bus: mhi: core: Use current ee in intvec handler for syserr
-Date:   Fri, 12 Feb 2021 17:40:14 -0700
-Message-Id: <1613176814-29171-1-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Fri, 12 Feb 2021 19:42:59 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 94826183F96AD;
+        Sat, 13 Feb 2021 00:42:17 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2692:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6691:7522:7576:7652:7914:10004:10400:10848:10967:11232:11658:11783:11914:12043:12262:12297:12438:12555:12679:12740:12895:13095:13161:13181:13229:13439:13894:14096:14097:14181:14659:14721:21080:21324:21433:21451:21611:21627:21795:30003:30030:30034:30051:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: eggs62_5c0b6cc27625
+X-Filterd-Recvd-Size: 3191
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 13 Feb 2021 00:42:16 +0000 (UTC)
+Message-ID: <daf1eeca2d1176bbd53a1f84b5289addb6381814.camel@perches.com>
+Subject: Re: [PATCH] proc: Convert S_<FOO> permission uses to octal
+From:   Joe Perches <joe@perches.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Fri, 12 Feb 2021 16:42:15 -0800
+In-Reply-To: <m1ft20zw3j.fsf@fess.ebiederm.org>
+References: <85ff6fd6b26aafdf6087666629bad3acc29258d8.camel@perches.com>
+         <m1im6x0wtv.fsf@fess.ebiederm.org>
+         <20210212221918.GA2858050@casper.infradead.org>
+         <m1ft20zw3j.fsf@fess.ebiederm.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The intvec handler stores the caches ee in a local variable for use in
-processing the intvec.  When determining if a syserr is a fatal error or
-not, the intvec handler is using the cached version, when it should be
-using the current ee read from the device.  Currently, the device could
-be in the PBL ee as the result of a fatal error, but the cached ee might
-be AMSS, which would cause the intvec handler to incorrectly signal a
-non-fatal syserr.
+On Fri, 2021-02-12 at 17:48 -0600, Eric W. Biederman wrote:
+> Matthew Wilcox <willy@infradead.org> writes:
+> > On Fri, Feb 12, 2021 at 04:01:48PM -0600, Eric W. Biederman wrote:
+> > > Perhaps we can do something like:
+> > > 
+> > > #define S_IRWX 7
+> > > #define S_IRW_ 6
+> > > #define S_IR_X 5
+> > > #define S_IR__ 4
+> > > #define S_I_WX 3
+> > > #define S_I_W_ 2
+> > > #define S_I__X 1
+> > > #define S_I___ 0
+> > > 
+> > > #define MODE(TYPE, USER, GROUP, OTHER) \
+> > > 	(((S_IF##TYPE) << 9) | \
+> > >          ((S_I##USER)  << 6) | \
+> > >          ((S_I##GROUP) << 3) | \
+> > >          (S_I##OTHER))
+> > > 
+> > > Which would be used something like:
+> > > MODE(DIR, RWX, R_X, R_X)
+> > > MODE(REG, RWX, R__, R__)
+> > > 
+> > > Something like that should be able to address the readability while
+> > > still using symbolic constants.
+> > 
+> > I think that's been proposed before.
+> 
+> I don't think it has ever been shot down.  Just no one care enough to
+> implement it.
 
-Fixes: 3000f85b8f47 ("bus: mhi: core: Add support for basic PM operations")
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
----
- drivers/bus/mhi/core/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 2 Aug 2016 16:58:29 -0400
+Message-ID: <CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ@mail.gmail.com> (raw)
 
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index 4e0131b..f182736 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -448,7 +448,7 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 		wake_up_all(&mhi_cntrl->state_event);
- 
- 		/* For fatal errors, we let controller decide next step */
--		if (MHI_IN_PBL(ee))
-+		if (MHI_IN_PBL(mhi_cntrl->ee))
- 			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
- 		else
- 			mhi_pm_sys_err_handler(mhi_cntrl);
--- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+[ So I answered similarly to another patch, but I'll just re-iterate
+and change the subject line so that it stands out a bit from the
+millions of actual patches ]
+
+On Tue, Aug 2, 2016 at 1:42 PM, Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Everyone knows what 0644 is, but noone can read S_IRUSR | S_IWUSR |
+> S_IRCRP | S_IROTH (*). Please don't do this.
+
+Absolutely. It's *much* easier to parse and understand the octal
+numbers, while the symbolic macro names are just random line noise and
+hard as hell to understand. You really have to think about it.
+
+So we should rather go the other way: convert existing bad symbolic
+permission bit macro use to just use the octal numbers.
+
+The symbolic names are good for the *other* bits (ie sticky bit, and
+the inode mode _type_ numbers etc), but for the permission bits, the
+symbolic names are just insane crap. Nobody sane should ever use them.
+Not in the kernel, not in user space.
+
 
