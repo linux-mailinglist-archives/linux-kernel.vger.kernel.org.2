@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812AD31A934
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 02:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8770331A938
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 02:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbhBMBDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 20:03:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60710 "EHLO
+        id S232174AbhBMBGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 20:06:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhBMBDe (ORCPT
+        with ESMTP id S231273AbhBMBGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 20:03:34 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B919DC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:02:53 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id f1so2064427lfu.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:02:53 -0800 (PST)
+        Fri, 12 Feb 2021 20:06:08 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489D4C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:05:28 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 127so1546177ybc.19
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:05:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ug7HArqGmF1vWBXzbZZtTb4cswmqCb7RnJ5VpB42MFk=;
-        b=CzASO3uZRA9mULKSb2Xk4vctqLx9m57xjZ/1jQnWrTk2/27hzIlTZfMQwR3I5PEdes
-         aE8oyFOhfvB80kSaMpp9Yb5ARtlz8x5M2QRJI44mcuQmFnA8X4SbFxEFLcX029G6OFJ+
-         LcCvdR9L9FxvZ/Tw5v2D2uOlo/jgRmT3ciroA=
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=QgASd7HymXzjEEBUQWt6fGnHVl+PB7ICzUP2iM3Rrog=;
+        b=Tgygxik75WgrNARZrV/5F5ho2r1q1SBdQNic9CuSEBlCZFZP8DCDksNswPV0ke0Wrk
+         3TdJSbrmfHLFiOPpsnA9jvJTdt/t2tSp5HZIT2tGjnQleO1DHaoVhO6EYO9uyKBZdxMR
+         v2mBO6bq4otn26wi7JIzl3iCdfCPZIogwL9AhPwg8OAokLcIxFAj2GEvZ/iGjJv/QZsf
+         AazciC9HWQ9px4fYON8kQyfB7/Ihe+M5hw9rVy9Ug4Go0DDUerKKRDYhlcLYPabvcWdU
+         VLcZcdrMwPAdZjqY5gqtMfRH4IEe2CB3RLMR12WAO17pWkG7IMp4YtKqpOih8fKeC8A4
+         iIMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ug7HArqGmF1vWBXzbZZtTb4cswmqCb7RnJ5VpB42MFk=;
-        b=TqLZx7LZbHqRt4R+rQDXT14oDAuYA3g0Q9MsgeEywAm1x3gxWwWJ4/0nD1FdSp4faH
-         2i5yuQF76qYrGZLdq+cSF5Eyaur1ouHwfnAiO3BiQi3utscO6HqWILB35RehQ7Z22jb9
-         B+NvQOOf+tDo5pzdAHFVI8yCx1HcPAzZ5sD9ZiWxorvw1gLaJkELxxxkoWeZ2I0k59Ej
-         0xFe33dvv6qCK8X9zr3dJ//7TeZNOowcELRHOSJtKBpGrWR8o/H9IM7oTXudVLaD/CKg
-         Lu/dIWa50Nwc2OtUxggf5lRcyTBIqoqB8y3v+2fNitrn+7j2bgMDTVaPEsgs6RdHqch3
-         JoDA==
-X-Gm-Message-State: AOAM533pDbm7FVEzbYFHi0yE1aCj4Y7CmBoQPOIt2Psec2eRJ5ZKNzGy
-        KCZ/KxJvyWqyfn9Emy3Mvqpiyp+MPBqYtA==
-X-Google-Smtp-Source: ABdhPJzyXkt0hJ5XXkvx5pX8pP6xIjKpD3UXKJYrtypKM/Ddr01MVcXrVFqAv1awUbT9hpB/+Fzn3Q==
-X-Received: by 2002:a19:ec1a:: with SMTP id b26mr2833968lfa.123.1613178171855;
-        Fri, 12 Feb 2021 17:02:51 -0800 (PST)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id u12sm805617lfb.16.2021.02.12.17.02.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 17:02:51 -0800 (PST)
-Received: by mail-lf1-f54.google.com with SMTP id v30so2027574lfq.6
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:02:50 -0800 (PST)
-X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr2767877lfu.40.1613178170443;
- Fri, 12 Feb 2021 17:02:50 -0800 (PST)
-MIME-Version: 1.0
-References: <CAH2r5mtYEj+WLy+oPSXEwS5sZ8+TNk_dU3PVx3ieBz2DFS94Sg@mail.gmail.com>
- <CAHk-=wja1Y8r5UKrmXcMFrS=VPkTPbkyK-vt8B9MBkEU4+-WLw@mail.gmail.com>
- <CAH2r5mtj+-xGDy-YN0JwSJAsgvB+HpQFCBi-zdTNXTRBY_Mteg@mail.gmail.com> <592ad76a-866e-f932-5a82-1af4a2ba4880@samba.org>
-In-Reply-To: <592ad76a-866e-f932-5a82-1af4a2ba4880@samba.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 12 Feb 2021 17:02:34 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh8n15NOcHkuxD=rXnMZCcsYD316JjRDdHUFwcFi8vq6g@mail.gmail.com>
-Message-ID: <CAHk-=wh8n15NOcHkuxD=rXnMZCcsYD316JjRDdHUFwcFi8vq6g@mail.gmail.com>
-Subject: Re: [GIT PULL] cifs fixes
-To:     Stefan Metzmacher <metze@samba.org>
-Cc:     Steve French <smfrench@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIEpBQ0tF?= <bjacke@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=QgASd7HymXzjEEBUQWt6fGnHVl+PB7ICzUP2iM3Rrog=;
+        b=e8+zh+dGGMJct//EZsFLWOJ6HWLHHtiSQpyaJM03pHj9Xe37RiRsM04C/sD8xcye4/
+         C12+U99utfWcTdqPQGhy4syf2Y3UlUx3zVeJAJVTKFyW1LmZBYCq7QKQNpr/87lyJEHn
+         2tZHqA37JB0AVHn2FWS4RHjIfUMytUvKjgUWp9VM7s+b8Hr9XDsHft9K/BUHk/XqXQMS
+         TAbq5e1Xlh0eTTzdtFJEwrddBMVhYRAT3UbmWELTkcKi1+WrTlLoot2FN8tskNi4XL+1
+         0t1dRbHz/Gn+/VMKETFOoaXTK95F8YRIDAPW0aw2iwqU6NGKuLaL2Uft7QuyVYt+ewY7
+         LXCA==
+X-Gm-Message-State: AOAM533UkxcGe7ODwIdlyOiqjg0pQpp3xwowxPDM785G6S7Oh1n00mHh
+        K6A3IlbI0YvCtMLBjqb39kaKkhG8Y78=
+X-Google-Smtp-Source: ABdhPJwYPLHaHaSEOaf5FEJAASrdsX6q+bTh8H9y+wEWFBwMBk5QOY6FIa2H9hhe7TWUMlnMPGrYPUVKHyU=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b407:1780:13d2:b27])
+ (user=seanjc job=sendgmr) by 2002:a25:b41:: with SMTP id 62mr7713296ybl.34.1613178327442;
+ Fri, 12 Feb 2021 17:05:27 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 12 Feb 2021 17:05:09 -0800
+Message-Id: <20210213010518.1682691-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH 0/9] KVM: x86: Fixes for (benign?) truncation bugs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        David Woodhouse <dwmw@amazon.co.uk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 4:26 PM Stefan Metzmacher <metze@samba.org> wrote:
->
-> The machine is running a 'AMD Ryzen Threadripper 2950X 16-Core Processor'
-> and is freezing without any trace every view days.
+Patches 01 and 02 fix theoretical bugs related to loading CRs through
+the emulator.  The rest of the patches are a bunch of small fixes for
+cases where KVM reads/writes a 64-bit register outside of 64-bit mode.
 
-I don't think the first-gen Zen issues ever really got solved. There
-were multiple ones, with random segfaults for the early ones (but
-afaik those were fixed by an RMA process with AMD), but the "it
-randomly locks up" ones never had a satisfactory resolution afaik.
+I stumbled on this when puzzling over commit 0107973a80ad ("KVM: x86:
+Introduce cr3_lm_rsvd_bits in kvm_vcpu_arch"), which stated that SEV
+guests failed to boot on PCID-enabled hosts.  Why only PCID hosts?
 
-There were lots of random workarounds, but judging by your email:
+After much staring, I realized that the initial CR3 load in
+rsm_enter_protected_mode() would skip the MAXPHYADDR check due to the
+vCPU not being in long mode.  But due to the ordering problems with
+PCID, when PCID is enabled in the guest, the second load of CR3 would
+be done with long mode enabled and thus hit the SEV C-bit bug.
 
-> We played with various boot parameters (currently we're using
-> 'mem_encrypt=off rcu_nocbs=0-31 processor.max_cstate=1 idle=nomwait nomodeset consoleblank=0',
+Changing kvm_set_cr3() made me look at the callers, and seeing that
+SVM didn't properly truncate the value made me look at everything else,
+and here we are.
 
-I suspect you've seen all the bugzilla threads on this issue (kernel
-bugzilla 196683 is probably the main one, but it was discussed
-elsewhere too).
+Note, I strongly suspect the emulator still has bugs.  But, unless the
+guest is deliberately trying to hit these types of bugs, even the ones
+fixed here, they're likely benign.  I figured I was more likely to break
+something than I was to fix something by diving into the emulator, so I
+left it alone.  For now. :-)
 
-I assume you've updated to latest BIOS and looked at various BIOS
-power management settings too?
+P.S. A few of the segmentation tests in kvm-unit-tests fail with
+     unrestricted guest disabled, but those failure go back to at least
+     v5.9.  I'll bisect 'em next week.
 
-Zen 2 seems to have fixed things (knock wood - it's certainly working
-for me), But many people obviously never saw any issues with Zen 1
-either.
+Sean Christopherson (9):
+  KVM: x86: Remove emulator's broken checks on CR0/CR3/CR4 loads
+  KVM: x86: Check CR3 GPA for validity regardless of vCPU mode
+  KVM: SVM: Truncate GPR value for DR and CR accesses in !64-bit mode
+  KVM: VMX: Truncate GPR value for DR and CR reads in !64-bit mode
+  KVM: nVMX: Truncate bits 63:32 of VMCS field on nested check in
+    !64-bit
+  KVM: nVMX: Truncate base/index GPR value on address calc in !64-bit
+  KVM: x86/xen: Drop RAX[63:32] when processing hypercall
+  KVM: SVM: Use default rAX size for INVLPGA emulation
+  KVM: x86: Rename GPR accessors to make mode-aware variants the
+    defaults
 
-           Linus
+ arch/x86/kvm/emulate.c        | 68 +----------------------------------
+ arch/x86/kvm/kvm_cache_regs.h | 19 ++++++----
+ arch/x86/kvm/svm/svm.c        | 11 ++++--
+ arch/x86/kvm/vmx/nested.c     | 14 ++++----
+ arch/x86/kvm/vmx/vmx.c        |  6 ++--
+ arch/x86/kvm/x86.c            | 19 ++++++----
+ arch/x86/kvm/x86.h            |  8 ++---
+ 7 files changed, 47 insertions(+), 98 deletions(-)
+
+-- 
+2.30.0.478.g8a0d178c01-goog
+
