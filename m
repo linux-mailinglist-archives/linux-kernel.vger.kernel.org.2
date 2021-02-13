@@ -2,160 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E754131AAF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9586A31AAF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhBMK7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 05:59:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhBMK73 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 05:59:29 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A096C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 02:58:48 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id f17so2141472qkl.5
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 02:58:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IpE0yQR+r9TZYKB7SOgK9TDG3SDQRc6/EdWKyoqtYyE=;
-        b=TpklhvP9JfuDBxHn2I3a5Czxo0QLDVJk590yNeMrhm/7AfqgRxG2Yz6j2K0ePngkcK
-         36eQEV+FsXe+MYP7CeUrtWvmSmJ7KJRLbl4s0vyhSPWexVHpyvgvggop5oEB/zhTADtX
-         sAJppDn5uad6XoGeoHhT292p/tosHlO9LIzkKTS0k5PPVAD//XP8224R8zJoFZy0r9HC
-         gTfBBG77pNRyb55g2w6o9A65mNzSfsbNEFf0bjkZsfGJ7E9C8NoyJ0csCP9hLhnVIbB8
-         YbNrqMbyWsZm16BbY4r6oSF0rvyDRmFC/QzDs3qUM0YIHkBUC7D4MZsFGuUhuikJ9DWL
-         +ySw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IpE0yQR+r9TZYKB7SOgK9TDG3SDQRc6/EdWKyoqtYyE=;
-        b=butyUEsj6CX6RsDRB1JQ470rfcbIAM4UQrO2HpmagNGNxdsE1p2erOvHFypRTGZsd2
-         oI2eN5CLV9CqZiDfaponjvE3qXXoAmfqSq6+3mCYCdy651v8mLHSdoh5pUpT7iL5f06p
-         gxOikik6I2ibpc6pqwBSqQdkIsPiKo744LLO7zb2LBw2QPDriNCcxp7revnhE2N2Q6CQ
-         CHhsyQedR6YPVHFbWaD5B5Yb19MXft1bU3JXuKVv/PUSIHGBaeAb6g24FQlQrjGe4xqr
-         HbCtJUNmUbIKZ4O5LudkTVmltSluvyrQ7pI+7c2VXznPqaTOb/ub3UrtUZthkYXJoMdE
-         mJqQ==
-X-Gm-Message-State: AOAM532hh+/fhITz8KLLwzWrF9VGznSSWVyCqfvHMjao0C5k/Ez8BRQ2
-        JiVTfUN6Z82n/nDWnJhOBzYWw+vEw5pPfSgTP9geVw==
-X-Google-Smtp-Source: ABdhPJyiAR9TdBbuhnelWfP1ti2thf0+q9WpLfxdUaZskEcbXoxYjf1Inq7VahxEH/4Z+rYbayGvK2xRS/8FSHV7Hg0=
-X-Received: by 2002:a05:620a:1351:: with SMTP id c17mr6679766qkl.350.1613213925899;
- Sat, 13 Feb 2021 02:58:45 -0800 (PST)
+        id S229665AbhBMLCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 06:02:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhBMLCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 06:02:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F41FC64E44
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 11:01:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613214083;
+        bh=G71u7RTd4A+rBB1I9GNDIIEuu107tc6tTr/aifGEocg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GxERvQ0VZIYnBHwi/rOGp9DB578dL+KH+k7p8P662CGeWvdboRzfuzLuCr5sfmEgv
+         kWmT5MswkYSl2Ws4Xctgd6mpy4+2ilQmFBOa/qXQc0Rl2CSLsZ/Fccvyp5/Uu1+rj/
+         3rFHXqglXncFU7yoMyYc2JGJvuiWjwIT19EuRqCkFUyxmlvLTdgIBUZg7VWIMLPefh
+         VitmMS4egfS7kwjcsF4QMuMoxuMv9NeLnnwQMQlIqBDQyhnczuu/z/oKzFj+kT1n7/
+         KqzCF1E4Wir/qJY2512e6WhkcrgPJLew/1xm+YnimDrPJbfAMwH9RDIkbzOZqhq52l
+         yzv3X8rb4uo1g==
+Received: by mail-ot1-f49.google.com with SMTP id y11so1720957otq.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 03:01:22 -0800 (PST)
+X-Gm-Message-State: AOAM5317hk0LW2Uwe/gHstOtleq6CgRvDB8WkRRcOzoakBm+0xxGNTFZ
+        0ilLqVeXsNN+/QthyqNKc2A2aKt4i2Zd/sLCnU8=
+X-Google-Smtp-Source: ABdhPJwbPg/JYsOrKxV0akZHoER+jZQufik0pH+YRE9RS6ub2wS5g0Dx/2q5znjGky9VctmOud4xL7YUR21sYDAMGVU=
+X-Received: by 2002:a05:6830:13ce:: with SMTP id e14mr4959394otq.108.1613214082190;
+ Sat, 13 Feb 2021 03:01:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20210211125717.GH308988@casper.infradead.org> <YCUr99//z8hJmnDH@dhcp22.suse.cz>
- <20210211132533.GI308988@casper.infradead.org> <YCU9OR7SfRpwl4+4@dhcp22.suse.cz>
- <20210211142630.GK308988@casper.infradead.org> <YCVeLF8aZGfRVY3C@dhcp22.suse.cz>
- <9cff0fbf-b6e7-1166-e4ba-d4573aef0c82@i-love.sakura.ne.jp>
- <20210212122207.GM308988@casper.infradead.org> <YCZ056SJDGrgXCss@dhcp22.suse.cz>
- <2b90c488-a6b9-2565-bd3a-e4f8bf8404e9@i-love.sakura.ne.jp> <YCaiIGE69ps3m8OO@dhcp22.suse.cz>
-In-Reply-To: <YCaiIGE69ps3m8OO@dhcp22.suse.cz>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sat, 13 Feb 2021 11:58:34 +0100
-Message-ID: <CACT4Y+Z1yUxb5DQuQ4AqW2NypUkeYTmQm7rMAgG34fmdv1_CtA@mail.gmail.com>
-Subject: Re: possible deadlock in start_this_handle (2)
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Linux-MM <linux-mm@kvack.org>
+References: <CAK8P3a0MbxMC9iLe0NGR0ttLY7sZDjsrgKvfRZOXVJLjzDNKmA@mail.gmail.com>
+ <20210128193422.241155-1-ndesaulniers@google.com> <CAMj1kXE5uw4+zV3JVpfA2drOD5TZVMs5a_E5wrrnzjEYc=E_fA@mail.gmail.com>
+ <CAK8P3a0CTUh=4h=U6S5A_tqHxYEyO52HTropAV9mKh2hwJvi0g@mail.gmail.com> <CAMj1kXEx-mUCgX5F6xg8-6jKtpqQ=sRosmo4u-0jhW5zu9A-fw@mail.gmail.com>
+In-Reply-To: <CAMj1kXEx-mUCgX5F6xg8-6jKtpqQ=sRosmo4u-0jhW5zu9A-fw@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 13 Feb 2021 12:01:10 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF3Xiveq_ih=5yD5CUdG8r=FXGTdN+qT0Rpgsx_8qi7Hg@mail.gmail.com>
+Message-ID: <CAMj1kXF3Xiveq_ih=5yD5CUdG8r=FXGTdN+qT0Rpgsx_8qi7Hg@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: kprobes: rewrite test-[arm|thumb].c in UAL
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 4:43 PM Michal Hocko <mhocko@suse.com> wrote:
+On Fri, 29 Jan 2021 at 00:30, Ard Biesheuvel <ardb@kernel.org> wrote:
 >
-> On Fri 12-02-21 21:58:15, Tetsuo Handa wrote:
-> > On 2021/02/12 21:30, Michal Hocko wrote:
-> > > On Fri 12-02-21 12:22:07, Matthew Wilcox wrote:
-> > >> On Fri, Feb 12, 2021 at 08:18:11PM +0900, Tetsuo Handa wrote:
-> > >>> On 2021/02/12 1:41, Michal Hocko wrote:
-> > >>>> But I suspect we have drifted away from the original issue. I thought
-> > >>>> that a simple check would help us narrow down this particular case and
-> > >>>> somebody messing up from the IRQ context didn't sound like a completely
-> > >>>> off.
-> > >>>>
-> > >>>
-> > >>>  From my experience at https://lkml.kernel.org/r/201409192053.IHJ35462.JLOMOSOFFVtQFH@I-love.SAKURA.ne.jp ,
-> > >>> I think we can replace direct PF_* manipulation with macros which do not receive "struct task_struct *" argument.
-> > >>> Since TASK_PFA_TEST()/TASK_PFA_SET()/TASK_PFA_CLEAR() are for manipulating PFA_* flags on a remote thread, we can
-> > >>> define similar ones for manipulating PF_* flags on current thread. Then, auditing dangerous users becomes easier.
-> > >>
-> > >> No, nobody is manipulating another task's GFP flags.
-> > >
-> > > Agreed. And nobody should be manipulating PF flags on remote tasks
-> > > either.
-> > >
+> On Thu, 28 Jan 2021 at 23:28, Arnd Bergmann <arnd@kernel.org> wrote:
 > >
-> > No. You are misunderstanding. The bug report above is an example of
-> > manipulating PF flags on remote tasks.
+> > On Thu, Jan 28, 2021 at 10:03 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > On Thu, 28 Jan 2021 at 20:34, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > > > @@ -468,15 +468,15 @@ void kprobe_thumb32_test_cases(void)
+> > > >
+> > > >         TEST_UNSUPPORTED("strexb        r0, r1, [r2]")
+> > > >         TEST_UNSUPPORTED("strexh        r0, r1, [r2]")
+> > > > -       TEST_UNSUPPORTED("strexd        r0, r1, [r2]")
+> > > > +       TEST_UNSUPPORTED("strexd        r0, r1, r2, [r2]")
+> > > >         TEST_UNSUPPORTED("ldrexb        r0, [r1]")
+> > > >         TEST_UNSUPPORTED("ldrexh        r0, [r1]")
+> > > > -       TEST_UNSUPPORTED("ldrexd        r0, [r1]")
+> > > > +       TEST_UNSUPPORTED("ldrexd        r0, r1, [r1]")
+> > > >
+> > > >         TEST_GROUP("Data-processing (shifted register) and (modified immediate)")
+> > > >
+> > > >  #define _DATA_PROCESSING32_DNM(op,s,val)                                       \
+> > > > -       TEST_RR(op s".w r0,  r",1, VAL1,", r",2, val, "")                       \
+> > > > +       TEST_RR(op s"   r0,  r",1, VAL1,", r",2, val, "")                       \
+> > >
+> > > What is wrong with these .w suffixes? Shouldn't the assembler accept
+> > > these even on instructions that only exist in a wide encoding?
+> >
+> > I don't know if that is a bug in the integrated assembler or
+> > intentional behavior, but it may be easier to just change the
+> > kernel than the compiler in this case, as it also makes it work
+> > for older versions.
+> >
+> > FWIW, I needed a related change in a couple of other files:
+> >
 >
-> The bug report you are referring to is ancient. And the cpuset code
-> doesn't touch task->flags for a long time. I haven't checked exactly but
-> it is years since regular and atomic flags have been separated unless I
-> misremember.
+> For fully specified test cases, I suppose removing the .w is fine. But
+> for the macros below, it really isn't: it depends on the actual
+> register assignment whether narrow encodings exist or not, and in that
+> case, we definitely want the wide one. The fact that instantiating the
+> macro in a different way can only produce wide encodings in the first
+> place should really not trigger an error.
 >
-> > You say "nobody should", but the reality is "there indeed was". There
-> > might be unnoticed others. The point of this proposal is to make it
-> > possible to "find such unnoticed users who are manipulating PF flags
-> > on remote tasks".
+> Things like this can break the Thumb2 build very subtly, so if the
+> integrated assembler is not up to that, we should simply disable it
+> for Thumb2 builds.
 >
-> I am really confused what you are proposing here TBH and referring to an
-> ancient bug doesn't really help. task->flags are _explicitly_ documented
-> to be only used for _current_. Is it possible that somebody writes a
-> buggy code? Sure, should we build a whole infrastructure around that to
-> catch such a broken code? I am not really sure. One bug 6 years ago
-> doesn't sound like a good reason for that.
 
-Another similar one was just reported:
+As mentioned in issue #1271, my observation here is not entirely accurate.
 
-https://syzkaller.appspot.com/bug?extid=1b2c6989ec12e467d65c
+In the general case, macros that take register names as inputs can
+produce narrow or wide opcodes depending on which exact registers are
+being used (narrow opcodes mostly only support registers r0-r7)
 
-WARNING: possible circular locking dependency detected
-5.11.0-rc7-syzkaller #0 Not tainted
-------------------------------------------------------
-kswapd0/2232 is trying to acquire lock:
-ffff88801f552650 (sb_internal){.+.+}-{0:0}, at: evict+0x2ed/0x6b0 fs/inode.c:577
+However, in this particular case, all the ldr/str instructions are
+either the pre-indexed or the post-indexed variants, for which only a
+wide encoding exists, and so omitting the .w suffix is safe here.
 
-but task is already holding lock:
-ffffffff8be89240 (fs_reclaim){+.+.}-{0:0}, at:
-__fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
+However, if we apply the change below, can we please document this in
+a comment, i.e., that encoding T4 is used for LDR/STR, and so the
+result is guaranteed to be wide in spite of the missing suffix?
 
-which lock already depends on the new lock.
 
-the existing dependency chain (in reverse order) is:
 
--> #3 (fs_reclaim){+.+.}-{0:0}:
-       __fs_reclaim_acquire mm/page_alloc.c:4326 [inline]
-       fs_reclaim_acquire+0x117/0x150 mm/page_alloc.c:4340
-       might_alloc include/linux/sched/mm.h:193 [inline]
-       slab_pre_alloc_hook mm/slab.h:493 [inline]
-       slab_alloc_node mm/slab.c:3221 [inline]
-       kmem_cache_alloc_node_trace+0x48/0x520 mm/slab.c:3596
-       __do_kmalloc_node mm/slab.c:3618 [inline]
-       __kmalloc_node+0x38/0x60 mm/slab.c:3626
-       kmalloc_node include/linux/slab.h:575 [inline]
-       kvmalloc_node+0x61/0xf0 mm/util.c:587
-       kvmalloc include/linux/mm.h:781 [inline]
-       ext4_xattr_inode_cache_find fs/ext4/xattr.c:1465 [inline]
-       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1508 [inline]
-       ext4_xattr_set_entry+0x1ce6/0x3780 fs/ext4/xattr.c:1649
-       ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
-       ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
-       ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
-       __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
-       __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
-       __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
-       vfs_setxattr+0x135/0x320 fs/xattr.c:291
-       setxattr+0x1ff/0x290 fs/xattr.c:553
-       path_setxattr+0x170/0x190 fs/xattr.c:572
-       __do_sys_setxattr fs/xattr.c:587 [inline]
-       __se_sys_setxattr fs/xattr.c:583 [inline]
-       __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:583
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> > diff --git a/arch/arm/lib/copy_from_user.S b/arch/arm/lib/copy_from_user.S
+> > index 6acdfde56849..3ced01d9afe4 100644
+> > --- a/arch/arm/lib/copy_from_user.S
+> > +++ b/arch/arm/lib/copy_from_user.S
+> > @@ -60,7 +60,7 @@
+> >  #define LDR1W_SHIFT 0
+> >
+> >   .macro ldr1w ptr reg abort
+> > - USERL(\abort, W(ldr) \reg, [\ptr], #4)
+> > + USERL(\abort, ldr \reg, [\ptr], #4)
+> >   .endm
+> >
+> >   .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
+> > @@ -80,7 +80,7 @@
+> >  #define STR1W_SHIFT 0
+> >
+> >   .macro str1w ptr reg abort
+> > - W(str) \reg, [\ptr], #4
+> > + str \reg, [\ptr], #4
+> >   .endm
+> >
+> >   .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
+> > diff --git a/arch/arm/lib/copy_to_user.S b/arch/arm/lib/copy_to_user.S
+> > index 485fa3cffdbe..a6a96f814720 100644
+> > --- a/arch/arm/lib/copy_to_user.S
+> > +++ b/arch/arm/lib/copy_to_user.S
+> > @@ -34,7 +34,7 @@
+> >  #define LDR1W_SHIFT 0
+> >
+> >   .macro ldr1w ptr reg abort
+> > - W(ldr) \reg, [\ptr], #4
+> > + ldr \reg, [\ptr], #4
+> >   .endm
+> >
+> >   .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
+> > @@ -77,7 +77,7 @@
+> >  #define STR1W_SHIFT 0
+> >
+> >   .macro str1w ptr reg abort
+> > - USERL(\abort, W(str) \reg, [\ptr], #4)
+> > + USERL(\abort, str \reg, [\ptr], #4)
+> >   .endm
+> >
+> >   .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
+> > diff --git a/arch/arm/lib/memcpy.S b/arch/arm/lib/memcpy.S
+> > index e4caf48c089f..7b980a1a4227 100644
+> > --- a/arch/arm/lib/memcpy.S
+> > +++ b/arch/arm/lib/memcpy.S
+> > @@ -15,7 +15,7 @@
+> >  #define STR1W_SHIFT 0
+> >
+> >   .macro ldr1w ptr reg abort
+> > - W(ldr) \reg, [\ptr], #4
+> > + ldr \reg, [\ptr], #4
+> >   .endm
+> >
+> >   .macro ldr4w ptr reg1 reg2 reg3 reg4 abort
+> > @@ -31,7 +31,7 @@
+> >   .endm
+> >
+> >   .macro str1w ptr reg abort
+> > - W(str) \reg, [\ptr], #4
+> > + str \reg, [\ptr], #4
+> >   .endm
+> >
+> >   .macro str8w ptr reg1 reg2 reg3 reg4 reg5 reg6 reg7 reg8 abort
+> > diff --git a/arch/arm/lib/memmove.S b/arch/arm/lib/memmove.S
+> > index 6fecc12a1f51..35c5c06b7588 100644
+> > --- a/arch/arm/lib/memmove.S
+> > +++ b/arch/arm/lib/memmove.S
+> > @@ -84,24 +84,24 @@ WEAK(memmove)
+> >   addne pc, pc, ip @ C is always clear here
+> >   b 7f
+> >  6: W(nop)
+> > - W(ldr) r3, [r1, #-4]!
+> > - W(ldr) r4, [r1, #-4]!
+> > - W(ldr) r5, [r1, #-4]!
+> > - W(ldr) r6, [r1, #-4]!
+> > - W(ldr) r7, [r1, #-4]!
+> > - W(ldr) r8, [r1, #-4]!
+> > - W(ldr) lr, [r1, #-4]!
+> > + ldr r3, [r1, #-4]!
+> > + ldr r4, [r1, #-4]!
+> > + ldr r5, [r1, #-4]!
+> > + ldr r6, [r1, #-4]!
+> > + ldr r7, [r1, #-4]!
+> > + ldr r8, [r1, #-4]!
+> > + ldr lr, [r1, #-4]!
+> >
+> >   add pc, pc, ip
+> >   nop
+> >   W(nop)
+> > - W(str) r3, [r0, #-4]!
+> > - W(str) r4, [r0, #-4]!
+> > - W(str) r5, [r0, #-4]!
+> > - W(str) r6, [r0, #-4]!
+> > - W(str) r7, [r0, #-4]!
+> > - W(str) r8, [r0, #-4]!
+> > - W(str) lr, [r0, #-4]!
+> > + str r3, [r0, #-4]!
+> > + str r4, [r0, #-4]!
+> > + str r5, [r0, #-4]!
+> > + str r6, [r0, #-4]!
+> > + str r7, [r0, #-4]!
+> > + str r8, [r0, #-4]!
+> > + str lr, [r0, #-4]!
+> >
+> >   CALGN( bcs 2b )
