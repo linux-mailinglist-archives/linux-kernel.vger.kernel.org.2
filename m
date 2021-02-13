@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC9531A8FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 01:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE1231A8FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 01:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhBMAvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 19:51:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
+        id S232255AbhBMAvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 19:51:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232035AbhBMAvE (ORCPT
+        with ESMTP id S232224AbhBMAvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 19:51:04 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73316C061788
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:50:24 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id f81so1542712yba.8
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:50:24 -0800 (PST)
+        Fri, 12 Feb 2021 19:51:41 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA992C06178B
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:50:26 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 11so1515876ybl.21
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 16:50:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=4X8Xawmkqq6JrMI8EQ6Ez131d+8bBQcFXdbpvRYDUz4=;
-        b=GnlMk7vhQFA5V4yJOVvifabbC2ElQwDOtmcUG44rof+fgdTrwGAFwFX4p3LG9fLNL1
-         WaxcclGNJu64urykhUWGvJ++jy5bkggdIO7iB0nOvezt1DQxBx70ZyzB109ZGWQ1KRko
-         xZsW64uIrhXxCvXyhiJx0h7L9Uk00AEvRY166UfiWKCjhiiylBRnm1R2ZpOX5tDzX5zp
-         NGGTV/eaLw78lGrN8y9luYglA6il47mudOSGjs0bmXxZE8aqUeEyjJucAdH9kbulQwob
-         TdW9q/RIhC7ZZxuXKxHk127puPNTRLP8Xmmyd5SNT83kU/GrswKAKKeqb5+lePK25SbG
-         d+JQ==
+        bh=i+ZGhrnKuPWM2EUTyjRTEqFvmRgkb+1SD/2rklmgcTk=;
+        b=KqaYODfcV7nggQfaJ4scLLVmaifGfME/RMcIJIdgowvyGEWXW9E8lqApJYsKmfDrlF
+         rjLe25VECS2mTpwRLbDq1JHOKHjlQUvkCf0nGaanW2J8XmTGoTHrQGgc1pu19DeG8QdM
+         i4EQaOC2+MzIa22bqqVekL/UoA6S6HGSPFnYfPgxaeVK4ZATE/ItsocqH3HJdT9kOlF9
+         XsRxpBvtjQunUw4OW98zBktnPUK4Ml4EW+cgBF3AMsaRxVkY9KcVdjSIV6sOEfnkCEjC
+         Z0D2mcMiOSjglDyPduEYnkyBwib9myX0ATDli2qavK69zmg/dpL29Y0u/JcAX/gx2z0p
+         qgrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=4X8Xawmkqq6JrMI8EQ6Ez131d+8bBQcFXdbpvRYDUz4=;
-        b=N/jcJ9K/UrTh4kAKWGwUj+KYjT2ZfMJP7wZLEQ6EuQaUpFW1yvQwePH0fs6UyOJPyL
-         Xa1esSJJ63ECQj6X1Bs9MgS5OUsaqT/SoGLlSzDQOuLIcK8p8a4a7n9STpgrdFE5pfDq
-         UutYaouJQOi3shjP06/gBHc7xarDXEfPIuIz1Jn7gql7YNqesKcKFUgHWGMBk7d2eBwV
-         AMMD6P0ktXgo4X0ifpprtlRUKg13KM00u6SByyrinLi/ZCsf/KK5ee2MXz8DEmRdDRio
-         dIJElIxzVBeiew41cB84v1AWk3A7rP3D7M9LQfBJR5y5h6qNK47Pwk6D3+cjLYfTABPF
-         V9hw==
-X-Gm-Message-State: AOAM5305CmV7BmmquTGOTc2rQNtotkt0uIGasy7F19Zt7ZkcBopeNMTH
-        HjlHdkPJ7iOb4aJdKGJPkrhiI/31WwU=
-X-Google-Smtp-Source: ABdhPJwisJLVUO82g7ZpXF02safHacPg3WhZ69zQ2JPkhSdW2WAFwkbFqEizlPxxQ/9Fc1CQ+oCBmi5Py7E=
+        bh=i+ZGhrnKuPWM2EUTyjRTEqFvmRgkb+1SD/2rklmgcTk=;
+        b=SxpgRAXSBryZutmWYEW/wXdPgSICVDb9rKf9BDEYJCwDv3h2w1RiXzxbOCWt29SYaZ
+         OJ7Ubk1a0lGNLcVKNJnkxgDyEx8wABYIJFYO0LyolGl9JBSGzTC9DAFDP9lS//iOwcUM
+         1hLX6JvFj/n7IlrpX37eH8+s+D2GrT70Z8nrd1BTw/FS8E2aNfZMxpylQFNIL7Ou0gAl
+         GGUV7NBcrVIG1vISXuHgUaRm/zCyh+w6EBLin9MwNt/F2YWrC58Liat9i1YuN8xdCIx+
+         v/m2PbwZvqsbyPDf/+ClOb//KREbjaq3u9/l2CPqTR5hvhT2zocCNwBhdrL+WZsEMZlk
+         cYUA==
+X-Gm-Message-State: AOAM530O45pndt2M9bSJVUbix8Mg8458pyOUO8UgCpwwWd/cY8lP1RXa
+        6rtzQRYLxbpjrr2pFVSQmRr9U5gS0zg=
+X-Google-Smtp-Source: ABdhPJydadXiqwiePPV/u2nRZxbP9oNG8qal8CxU4l+Y3inZUDXFtfyb9NoV3cZws6bGobKUJ1RK+HH9dPk=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b407:1780:13d2:b27])
- (user=seanjc job=sendgmr) by 2002:a25:e010:: with SMTP id x16mr7990153ybg.17.1613177423616;
- Fri, 12 Feb 2021 16:50:23 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a5b:44f:: with SMTP id s15mr7978526ybp.85.1613177425898;
+ Fri, 12 Feb 2021 16:50:25 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 12 Feb 2021 16:50:02 -0800
+Date:   Fri, 12 Feb 2021 16:50:03 -0800
 In-Reply-To: <20210213005015.1651772-1-seanjc@google.com>
-Message-Id: <20210213005015.1651772-2-seanjc@google.com>
+Message-Id: <20210213005015.1651772-3-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210213005015.1651772-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH 01/14] KVM: x86/mmu: Expand collapsible SPTE zap for TDP MMU
- to ZONE_DEVICE pages
+Subject: [PATCH 02/14] KVM: x86/mmu: Don't unnecessarily write-protect small
+ pages in TDP MMU
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,31 +69,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zap SPTEs that are backed by ZONE_DEVICE pages when zappings SPTEs to
-rebuild them as huge pages in the TDP MMU.  ZONE_DEVICE huge pages are
-managed differently than "regular" pages and are not compound pages.
+Respect start_level when write-protect pages in the TDP MMU for dirty
+logging.  When the dirty bitmaps are initialized with all bits set, small
+pages don't need to be write-protected as they've already been marked
+dirty.
 
-Cc: Ben Gardon <bgardon@google.com>
-Fixes: 14881998566d ("kvm: x86/mmu: Support disabling dirty logging for the tdp MMU")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 71e100a5670f..3cc332ed099d 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1348,7 +1348,8 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index e507568cd55d..24325bdcd387 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5500,7 +5500,7 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+ 	flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
+ 				start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
+ 	if (is_tdp_mmu_enabled(kvm))
+-		flush |= kvm_tdp_mmu_wrprot_slot(kvm, memslot, PG_LEVEL_4K);
++		flush |= kvm_tdp_mmu_wrprot_slot(kvm, memslot, start_level);
+ 	write_unlock(&kvm->mmu_lock);
  
- 		pfn = spte_to_pfn(iter.old_spte);
- 		if (kvm_is_reserved_pfn(pfn) ||
--		    !PageTransCompoundMap(pfn_to_page(pfn)))
-+		    (!PageTransCompoundMap(pfn_to_page(pfn)) &&
-+		     !kvm_is_zone_device_pfn(pfn)))
- 			continue;
- 
- 		tdp_mmu_set_spte(kvm, &iter, 0);
+ 	/*
 -- 
 2.30.0.478.g8a0d178c01-goog
 
