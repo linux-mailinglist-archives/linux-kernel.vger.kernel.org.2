@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA82731AB0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C78D331AB0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbhBMLdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 06:33:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        id S229662AbhBMLfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 06:35:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhBMLdN (ORCPT
+        with ESMTP id S229717AbhBMLdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 06:33:13 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB14C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 03:32:33 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id e9so1120099pjj.0
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 03:32:33 -0800 (PST)
+        Sat, 13 Feb 2021 06:33:22 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADADBC0613D6
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 03:32:36 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id e9so1120139pjj.0
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 03:32:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4svOvLw3+LGXfw76WgcnaPgI6C2/qj0owFvWH3CaT/w=;
-        b=klgAYQ8urs+Z9pTTeF0cHKBNnpCuQbfKbCg3waHodKRyplqtTmwLy+ykFOmBsu/IY/
-         rCgS5OxaN4tM8pT8N/ZNMcSBAin/tAxaQxpPlW/wHZUhcXHwGMGJhnhxFDwPbP1YCgWs
-         IDK5bVAxB4x97GRnBUk6l0ndFzqveXKBB9C9ORTponUWHwS5JCLRZ26gieWoINm27LQl
-         lVOG9jWWVzQb6xVI6/NbTyyZy19il8jr+dkT24cp5i/Fh/0O54UzGyrd0ZZAl7nr1cyy
-         Z1XGCIglUgCGd2JEN9DZTGEbfO0pky7Lbmam0bWZSxLAPgZ4Up8S2BPlabrFnuciEOu4
-         v47w==
+        bh=lf5+wHFh/Uek5hfHg7++IxniwiE0WRCCl0ivatRXUfQ=;
+        b=lUtUrdV8F5yVgAvbTvW16yTgqa31k6nD3PABB/VX6Ie5khOCXRKBppUv2Eh7zoKY40
+         PCNC5YXN0Enb/LRKTLPnTQcPkEDLHIX98rurIsPZFLK36JbPj8I/9OJ8VKqLmGKZ6oaZ
+         RV0LfgPu2wy/n6Ftcze5XJREfSfz2k2rPOsaYDv5rgNw5KDd5+87VGCL6WhveJeQFcDY
+         R90CpjYBQdVHmyeLk+nt/SKckLl0CpE8eKED+ZE+t5QDu6SgbYiR+/5cnARsUPxoQGDW
+         0WtX8fDpervJet2IhXJE3EVr5IPnR7EmriG1RT1SpdRbi/afHUUnUmXpcIiTCihI1BQ8
+         3+Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4svOvLw3+LGXfw76WgcnaPgI6C2/qj0owFvWH3CaT/w=;
-        b=D544UjecGj2QXmrPTlU4C4N07Ho3JXbQRMGIBbBDRHUre/H4NOKDWR8I3wrnJzrRyd
-         MIY8pBLAZG/jef8MtzUUcs1AIj8hjfhFX7WceHB5ic+se3cMTCkt7/dhtY+QBvubeaF0
-         dF0xrU3rVv2PQowd/iAxwfSrNX01PxjcULVOo45LJpu3A3j5MuuE/EHrWuX3MwhXsAWb
-         7wL1IrrB3IuCj4s7gTGs1sycKLTGQMhWcJgKjR2Oct1d9TbbcuUZjr/YXewN7S9jfwpe
-         fiif7623MM9ggvvNJP8RNKcE9Vcm2epUaaUbU5hfM6DK/7jxuk4T5eNCoGWAxHihJm81
-         YEwQ==
-X-Gm-Message-State: AOAM533CXoggIsXfDUBE8IzHsp+fX0k8IRfu30Fv1V5MQ2CWo61QQIRy
-        kwrsqZ9bq08Ajdbb+3zo00WBxQ==
-X-Google-Smtp-Source: ABdhPJzWGXNDxoCjpGl4zvQIDpdvppBpCUhLgBJ/C9h/NzBw8/h1jUPof5vYAR+bNsVY3xcwObxL0A==
-X-Received: by 2002:a17:902:a40b:b029:e0:1096:7fb with SMTP id p11-20020a170902a40bb02900e0109607fbmr6507000plq.40.1613215953090;
-        Sat, 13 Feb 2021 03:32:33 -0800 (PST)
+        bh=lf5+wHFh/Uek5hfHg7++IxniwiE0WRCCl0ivatRXUfQ=;
+        b=B6sk12EYsL/XCtyo2FZlDvhpJ5RkTaRrFh1iiqJaUQWrObZn2ocKfvep5kKx8LOCFM
+         guS7JjRcFVp28dDB96demMv8HapDz9zuVOr5UOy7cj8ETUj5PVzCrqkuV8JvyT4HHR14
+         TxSm4vi2KUj2t6oL9P8/inrb9zcT0YAZkgVQuS13Ozr7neyNgXqXduaOhNy4oJ5pyvu5
+         5M9tkmRYmWKZaFIYgsqlH4FnTbOZPwiTqzNzYPSSk8aWPm4Z9C8PlBV/Ab6dXttOInUO
+         qZhpJwLtrZM6ijRLrhcvHikoR7WemA6SZHyHKTukti980poD3fliTN3olyQBmaOokwTb
+         nB+w==
+X-Gm-Message-State: AOAM532l9GuVrHg5YY40wfPQvLOTYIlf4U9hfB6HUlhsfEhiBzHGampr
+        2ZzOqGGdwhL4U4zOBaHm5bYTPQ==
+X-Google-Smtp-Source: ABdhPJxT28EgGbln89SxHYgR1TIwNUs6SMv9hpBmGRLMkrHW9XauOOndQ/Qoc2uCFGD5cxNRM88avQ==
+X-Received: by 2002:a17:902:e74b:b029:df:e5d6:c35f with SMTP id p11-20020a170902e74bb02900dfe5d6c35fmr6473691plf.57.1613215956235;
+        Sat, 13 Feb 2021 03:32:36 -0800 (PST)
 Received: from localhost ([45.137.216.202])
-        by smtp.gmail.com with ESMTPSA id i1sm12259852pfq.158.2021.02.13.03.32.32
+        by smtp.gmail.com with ESMTPSA id z125sm13997662pgz.45.2021.02.13.03.32.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 03:32:32 -0800 (PST)
+        Sat, 13 Feb 2021 03:32:35 -0800 (PST)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
@@ -64,9 +64,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 1/5] tools headers UAPI: Update tools' copy of linux/coresight-pmu.h
-Date:   Sat, 13 Feb 2021 19:32:16 +0800
-Message-Id: <20210213113220.292229-2-leo.yan@linaro.org>
+Subject: [PATCH v4 2/5] perf cs-etm: Fix bitmap for option
+Date:   Sat, 13 Feb 2021 19:32:17 +0800
+Message-Id: <20210213113220.292229-3-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210213113220.292229-1-leo.yan@linaro.org>
 References: <20210213113220.292229-1-leo.yan@linaro.org>
@@ -76,45 +76,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To get the changes in the commit:
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-  "coresight: etm-perf: Clarify comment on perf options".
+When set option with macros ETM_OPT_CTXTID and ETM_OPT_TS, it wrongly
+takes these two values (14 and 28 prespectively) as bit masks, but
+actually both are the offset for bits.  But this doesn't lead to
+further failure due to the AND logic operation will be always true for
+ETM_OPT_CTXTID / ETM_OPT_TS.
 
+This patch uses the BIT() macro for option bits, thus it can request the
+correct bitmaps for "contextid" and "timestamp" when calling
+cs_etm_set_option().
+
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+[Extract the change as a separate patch for easier review]
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
 Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- tools/include/linux/coresight-pmu.h | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ tools/perf/arch/arm/util/cs-etm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/include/linux/coresight-pmu.h b/tools/include/linux/coresight-pmu.h
-index b0e35eec6499..5dc47cfdcf07 100644
---- a/tools/include/linux/coresight-pmu.h
-+++ b/tools/include/linux/coresight-pmu.h
-@@ -10,11 +10,18 @@
- #define CORESIGHT_ETM_PMU_NAME "cs_etm"
- #define CORESIGHT_ETM_PMU_SEED  0x10
+diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+index bd446aba64f7..ad8421e8b651 100644
+--- a/tools/perf/arch/arm/util/cs-etm.c
++++ b/tools/perf/arch/arm/util/cs-etm.c
+@@ -169,17 +169,17 @@ static int cs_etm_set_option(struct auxtrace_record *itr,
+ 		    !cpu_map__has(online_cpus, i))
+ 			continue;
  
--/* ETMv3.5/PTM's ETMCR config bit */
--#define ETM_OPT_CYCACC  12
--#define ETM_OPT_CTXTID	14
--#define ETM_OPT_TS      28
--#define ETM_OPT_RETSTK	29
-+/*
-+ * Below are the definition of bit offsets for perf option, and works as
-+ * arbitrary values for all ETM versions.
-+ *
-+ * Most of them are orignally from ETMv3.5/PTM's ETMCR config, therefore,
-+ * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
-+ * directly use below macros as config bits.
-+ */
-+#define ETM_OPT_CYCACC		12
-+#define ETM_OPT_CTXTID		14
-+#define ETM_OPT_TS		28
-+#define ETM_OPT_RETSTK		29
+-		if (option & ETM_OPT_CTXTID) {
++		if (option & BIT(ETM_OPT_CTXTID)) {
+ 			err = cs_etm_set_context_id(itr, evsel, i);
+ 			if (err)
+ 				goto out;
+ 		}
+-		if (option & ETM_OPT_TS) {
++		if (option & BIT(ETM_OPT_TS)) {
+ 			err = cs_etm_set_timestamp(itr, evsel, i);
+ 			if (err)
+ 				goto out;
+ 		}
+-		if (option & ~(ETM_OPT_CTXTID | ETM_OPT_TS))
++		if (option & ~(BIT(ETM_OPT_CTXTID) | BIT(ETM_OPT_TS)))
+ 			/* Nothing else is currently supported */
+ 			goto out;
+ 	}
+@@ -406,7 +406,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
+ 		evsel__set_sample_bit(cs_etm_evsel, CPU);
  
- /* ETMv4 CONFIGR programming bits for the ETM OPTs */
- #define ETM4_CFG_BIT_CYCACC	4
+ 		err = cs_etm_set_option(itr, cs_etm_evsel,
+-					ETM_OPT_CTXTID | ETM_OPT_TS);
++					BIT(ETM_OPT_CTXTID) | BIT(ETM_OPT_TS));
+ 		if (err)
+ 			goto out;
+ 	}
 -- 
 2.25.1
 
