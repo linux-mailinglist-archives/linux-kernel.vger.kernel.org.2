@@ -2,91 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A4C31AA57
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 08:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D201831AA5F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 08:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhBMHJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 02:09:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhBMHJV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 02:09:21 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0D6C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 23:08:41 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id o38so1094724pgm.9
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 23:08:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zDy6QKCa+RVR/NM5Rdt2ekYrIEZ99lrar03e/i4SbqA=;
-        b=Xq7vjH+Yt5HnZXuBWqLOOeedf34oL8xeI9GRwj5m6nNVLD2kwORCGCY99o8t3wXd4s
-         KF2JVb4UQJvSqZkeoHLAEQL85gbAqEdWb9Bg4B7K9VwhXxGFilPL8bLk4g78ZmAtkj4q
-         b3FrK4U5k4eSMvz3A4HHzmhZwPebQryrSR+CM8S5/FlfUnGZMP5I4dRVK/Pn02QsV3Tm
-         GKLC9o92EKrLzEedvrR2HYbaA2C1DcGtxdjgMjFYMm7DJpgQ1O7YAtpRr0wXCmKcd65h
-         ZNa8e5e7BoKasumvgDv1RVI2NW/hVBw96c4zpoMVTTEkYOgPdBSdJ9JiQL/dwUv3x6mL
-         Jg6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zDy6QKCa+RVR/NM5Rdt2ekYrIEZ99lrar03e/i4SbqA=;
-        b=X9DXgfP3PoDLDcwpPEMds8TLU5iD6qNcev1JzscfFFLw9yrCPOlthXtgE9YImSUJSK
-         JsXUyxC9RlCorOk011Yfs8HpcIqbHz6dmfsQ24zEtkDedK89EpvHOwF2e2d9s2LLV7UZ
-         04MnmRyhU+1YKPvcUgy3TvSeD4MhZ59IbrkZlq5H6/DzJhDsw6yBbhZ9AoxB44EbDdFl
-         DXLLDhmETg5WnVdN5xeasrUV6qhA6m+eO3cOLJ6Kr6coW5iueRazdXsVKTUkqgjzS8EK
-         82F+DS/PcBPAJTpxzVXmWf0ZLUk+axECpR+27mK8AhR/TVgilJ1KSw/++l4+oqJZI0f7
-         VJOw==
-X-Gm-Message-State: AOAM530f46oL06Eco5sX+I1xBupC2xZaBmEnqGuUZQUqVRMp/mdLfJvW
-        M2pyYGqWEn/M6pqYdD7F57eYNw==
-X-Google-Smtp-Source: ABdhPJwdMhcWHD+R5/QzHkgpKUru9dGEyiejH4XYb5cR9CaQqAs1Gq8PjReSj6usoBeFpGIu5Sp64w==
-X-Received: by 2002:a63:e0c:: with SMTP id d12mr6686959pgl.67.1613200121047;
-        Fri, 12 Feb 2021 23:08:41 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id t21sm10710009pfe.174.2021.02.12.23.08.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 23:08:40 -0800 (PST)
-Date:   Sat, 13 Feb 2021 15:08:35 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Al Grant <al.grant@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH v2 1/6] perf arm-spe: Enable sample type
- PERF_SAMPLE_DATA_SRC
-Message-ID: <20210213070825.GD103221@leoy-ThinkPad-X240s>
-References: <20210211133856.2137-1-james.clark@arm.com>
- <20210212204340.GJ1398414@kernel.org>
+        id S229592AbhBMHmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 02:42:32 -0500
+Received: from mout.gmx.net ([212.227.17.20]:53751 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229469AbhBMHm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 02:42:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613202041;
+        bh=idfUTHJbaeMOGlDzM/voRhw1ltbh15PMEFZKiKzTAPs=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=JvXINMWHgICui2DfZnF6uZtu8EjoplXTn8cQHvzTA1FP7IxlhcWLpfD4BCb33J/N9
+         kYRaVZCHNVdzGPlCsZ33NIMeQK+DJVchqz2e0Z9oJBaOfI3PiDKa7OW9627bZzGON4
+         UV8cFsNXD421PX8KjP4Hw2rLEhYlm9Xb3XdXUjl4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.134.198]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N7R1J-1ly36K1VAT-017jIf; Sat, 13
+ Feb 2021 08:40:41 +0100
+Subject: Re: [PATCH v3] binfmt_misc: pass binfmt_misc flags to the interpreter
+To:     Laurent Vivier <laurent@vivier.eu>, linux-kernel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, YunQiang Su <ysu@wavecomp.com>,
+        YunQiang Su <syq@debian.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+References: <20200128132539.782286-1-laurent@vivier.eu>
+ <348e8e7a-3a2c-23b7-4a2e-d3f5e8a62173@vivier.eu>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <743e8674-fd7e-c7e1-aa7e-6674a9e9e116@gmx.de>
+Date:   Sat, 13 Feb 2021 08:40:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212204340.GJ1398414@kernel.org>
+In-Reply-To: <348e8e7a-3a2c-23b7-4a2e-d3f5e8a62173@vivier.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tNN6y8RrOyL4oqriF6kWbj3PAmTZD3EldR1GcyI27YaDsmm+v98
+ hAEs2FDJTCCjDS+U0Q9x5ifJP75vP/hmOwTiZoz1W/1NjMkTeOKpELrf9fzQqLPZIdPNDK9
+ WhWatPOk7diTEPUcxuiBO56ySNSooqOymxbZkqhKKO3PJEbf3z+yXiE859VmjfTSkxvvMBL
+ BdQvWQnig486dAzg1PcJg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7pgY0p06W6I=:3+UKSLTCcshE+0EtahTc/e
+ fLni0WucStIMOqg/7l9JRg/P6TkLEeAAEkAStpKyGpTLTa6ew5JHURfb7854wcFBhe8j+D6ww
+ rn79RWOi3ifiBeLnyow7JJOz6VaO4uPVo0YFbGoicnesgDiIsAm+ByFob6CAcnTOjf0Vzcymp
+ FSRBdzgbU9dqoYoVzYc4BD4jttEWyfZp4GIZ3t1uAuxtkY3Ktvv9K42voDypmHbTPzYUMW2MI
+ JKQ3T/NQeM/AyShh7/nwnfcbA1cubkRmN/jvNdFJKn5v/cVqSwdvRLQK31BGV2Bc2UubAeyCg
+ 09uEmQ/mvIseuyTsocTZi4T8Y4hveHHisQE8Va3cRDuXLk8F3zfrRGjhYKzwr6JhtoO5BLo7b
+ EWBCCZ1VVIVLZYAGDqc1DdMgUJg1mpHY9Ykzv1GUhitkvlvKJcXoP2sdoq6m5QQVOZYO5Nx5x
+ Uy+LM4J51Y5KOPjdcwOmi3QAB5tbmOhXeL/ZaYSjXyRErMDQ3H6gugXZW+HOgbV3nXzEwcdZW
+ 1hBm2UxRCqXMK9S2n84w/sSnzm5ZGmvJTshpGR6l0rYOmzcUC4BDqhbWdXAFU5OOvBp1Mwd6e
+ vZ8gwGGhkf7blZ3D3+q4r6MfoobFoKM/3oWGx2N4NtO9Afh0Ipb+FMcQr4zXYfErg3q13/iu8
+ EoSfR25cZJkl+oVcOxXBD5ArqWxj8JK9xdsg5QQW7xfK+vnYqucmL527ckBl7Pi78mJsk/lPD
+ zHLDntjqskYW2xloh5yoCP6Olaf+xiBYhv/ORJoZjqjdcKl4MM3FTygehxiXY6dfOdT0zD9or
+ GSk1fNigGIIuJaUVbObRQ6HNZKRITSqXFpuBpOBnf6K4nGaVdcqySGArOjEyiXbHmQRXiYoi0
+ qPFc6nOFcedpV24P4Kfw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 05:43:40PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Feb 11, 2021 at 03:38:51PM +0200, James Clark escreveu:
-> > From: Leo Yan <leo.yan@linaro.org>
-> > 
-> > This patch is to enable sample type PERF_SAMPLE_DATA_SRC for Arm SPE in
-> > the perf data, when output the tracing data, it tells tools that it
-> > contains data source in the memory event.
-> 
-> Thanks, series applied.
+On 6/5/20 6:20 PM, Laurent Vivier wrote:
+> Le 28/01/2020 =C3=A0 14:25, Laurent Vivier a =C3=A9crit=C2=A0:
+>> It can be useful to the interpreter to know which flags are in use.
+>>
+>> For instance, knowing if the preserve-argv[0] is in use would
+>> allow to skip the pathname argument.
+>>
+>> This patch uses an unused auxiliary vector, AT_FLAGS, to add a
+>> flag to inform interpreter if the preserve-argv[0] is enabled.
+>>
+>> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
 
-Thanks a lot, James and Arnaldo.
+Acked-by: Helge Deller <deller@gmx.de>
+
+If nobody objects, I'd like to take this patch through the
+parisc arch git tree.
+
+It fixes a real-world problem with qemu-user which fails to
+preserve the argv[0] argument when the callee of an exec is a
+qemu-user target.
+This problem leads to build errors on multiple Debian buildd servers
+which are using qemu-user as emulation for the target machines.
+
+For details see Debian bug:
+http://bugs.debian.org/970460
+
+
+Helge
+
+
+>> ---
+>>
+>> Notes:
+>>      This can be tested with QEMU from my branch:
+>>
+>>        https://github.com/vivier/qemu/commits/binfmt-argv0
+>>
+>>      With something like:
+>>
+>>        # cp ..../qemu-ppc /chroot/powerpc/jessie
+>>
+>>        # qemu-binfmt-conf.sh --qemu-path / --systemd ppc --credential y=
+es \
+>>                              --persistent no --preserve-argv0 yes
+>>        # systemctl restart systemd-binfmt.service
+>>        # cat /proc/sys/fs/binfmt_misc/qemu-ppc
+>>        enabled
+>>        interpreter //qemu-ppc
+>>        flags: POC
+>>        offset 0
+>>        magic 7f454c4601020100000000000000000000020014
+>>        mask ffffffffffffff00fffffffffffffffffffeffff
+>>        # chroot /chroot/powerpc/jessie  sh -c 'echo $0'
+>>        sh
+>>
+>>        # qemu-binfmt-conf.sh --qemu-path / --systemd ppc --credential y=
+es \
+>>                              --persistent no --preserve-argv0 no
+>>        # systemctl restart systemd-binfmt.service
+>>        # cat /proc/sys/fs/binfmt_misc/qemu-ppc
+>>        enabled
+>>        interpreter //qemu-ppc
+>>        flags: OC
+>>        offset 0
+>>        magic 7f454c4601020100000000000000000000020014
+>>        mask ffffffffffffff00fffffffffffffffffffeffff
+>>        # chroot /chroot/powerpc/jessie  sh -c 'echo $0'
+>>        /bin/sh
+>>
+>>      v3: mix my patch with one from YunQiang Su and my comments on it
+>>          introduce a new flag in the uabi for the AT_FLAGS
+>>      v2: only pass special flags (remove Magic and Enabled flags)
+>>
+>>   fs/binfmt_elf.c              | 5 ++++-
+>>   fs/binfmt_elf_fdpic.c        | 5 ++++-
+>>   fs/binfmt_misc.c             | 4 +++-
+>>   include/linux/binfmts.h      | 4 ++++
+>>   include/uapi/linux/binfmts.h | 4 ++++
+>>   5 files changed, 19 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+>> index ecd8d2698515..ff918042ceed 100644
+>> --- a/fs/binfmt_elf.c
+>> +++ b/fs/binfmt_elf.c
+>> @@ -176,6 +176,7 @@ create_elf_tables(struct linux_binprm *bprm, struct=
+ elfhdr *exec,
+>>   	unsigned char k_rand_bytes[16];
+>>   	int items;
+>>   	elf_addr_t *elf_info;
+>> +	elf_addr_t flags =3D 0;
+>>   	int ei_index =3D 0;
+>>   	const struct cred *cred =3D current_cred();
+>>   	struct vm_area_struct *vma;
+>> @@ -250,7 +251,9 @@ create_elf_tables(struct linux_binprm *bprm, struct=
+ elfhdr *exec,
+>>   	NEW_AUX_ENT(AT_PHENT, sizeof(struct elf_phdr));
+>>   	NEW_AUX_ENT(AT_PHNUM, exec->e_phnum);
+>>   	NEW_AUX_ENT(AT_BASE, interp_load_addr);
+>> -	NEW_AUX_ENT(AT_FLAGS, 0);
+>> +	if (bprm->interp_flags & BINPRM_FLAGS_PRESERVE_ARGV0)
+>> +		flags |=3D AT_FLAGS_PRESERVE_ARGV0;
+>> +	NEW_AUX_ENT(AT_FLAGS, flags);
+>>   	NEW_AUX_ENT(AT_ENTRY, exec->e_entry);
+>>   	NEW_AUX_ENT(AT_UID, from_kuid_munged(cred->user_ns, cred->uid));
+>>   	NEW_AUX_ENT(AT_EUID, from_kuid_munged(cred->user_ns, cred->euid));
+>> diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
+>> index 240f66663543..abb90d82aa58 100644
+>> --- a/fs/binfmt_elf_fdpic.c
+>> +++ b/fs/binfmt_elf_fdpic.c
+>> @@ -507,6 +507,7 @@ static int create_elf_fdpic_tables(struct linux_bin=
+prm *bprm,
+>>   	char __user *u_platform, *u_base_platform, *p;
+>>   	int loop;
+>>   	int nr;	/* reset for each csp adjustment */
+>> +	unsigned long flags =3D 0;
+>>
+>>   #ifdef CONFIG_MMU
+>>   	/* In some cases (e.g. Hyper-Threading), we want to avoid L1 evictio=
+ns
+>> @@ -647,7 +648,9 @@ static int create_elf_fdpic_tables(struct linux_bin=
+prm *bprm,
+>>   	NEW_AUX_ENT(AT_PHENT,	sizeof(struct elf_phdr));
+>>   	NEW_AUX_ENT(AT_PHNUM,	exec_params->hdr.e_phnum);
+>>   	NEW_AUX_ENT(AT_BASE,	interp_params->elfhdr_addr);
+>> -	NEW_AUX_ENT(AT_FLAGS,	0);
+>> +	if (bprm->interp_flags & BINPRM_FLAGS_PRESERVE_ARGV0)
+>> +		flags |=3D AT_FLAGS_PRESERVE_ARGV0;
+>> +	NEW_AUX_ENT(AT_FLAGS,	flags);
+>>   	NEW_AUX_ENT(AT_ENTRY,	exec_params->entry_addr);
+>>   	NEW_AUX_ENT(AT_UID,	(elf_addr_t) from_kuid_munged(cred->user_ns, cre=
+d->uid));
+>>   	NEW_AUX_ENT(AT_EUID,	(elf_addr_t) from_kuid_munged(cred->user_ns, cr=
+ed->euid));
+>> diff --git a/fs/binfmt_misc.c b/fs/binfmt_misc.c
+>> index cdb45829354d..b9acdd26a654 100644
+>> --- a/fs/binfmt_misc.c
+>> +++ b/fs/binfmt_misc.c
+>> @@ -154,7 +154,9 @@ static int load_misc_binary(struct linux_binprm *bp=
+rm)
+>>   	if (bprm->interp_flags & BINPRM_FLAGS_PATH_INACCESSIBLE)
+>>   		goto ret;
+>>
+>> -	if (!(fmt->flags & MISC_FMT_PRESERVE_ARGV0)) {
+>> +	if (fmt->flags & MISC_FMT_PRESERVE_ARGV0) {
+>> +		bprm->interp_flags |=3D BINPRM_FLAGS_PRESERVE_ARGV0;
+>> +	} else {
+>>   		retval =3D remove_arg_zero(bprm);
+>>   		if (retval)
+>>   			goto ret;
+>> diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
+>> index b40fc633f3be..265b80d5fd6f 100644
+>> --- a/include/linux/binfmts.h
+>> +++ b/include/linux/binfmts.h
+>> @@ -78,6 +78,10 @@ struct linux_binprm {
+>>   #define BINPRM_FLAGS_PATH_INACCESSIBLE_BIT 2
+>>   #define BINPRM_FLAGS_PATH_INACCESSIBLE (1 << BINPRM_FLAGS_PATH_INACCE=
+SSIBLE_BIT)
+>>
+>> +/* if preserve the argv0 for the interpreter  */
+>> +#define BINPRM_FLAGS_PRESERVE_ARGV0_BIT 3
+>> +#define BINPRM_FLAGS_PRESERVE_ARGV0 (1 << BINPRM_FLAGS_PRESERVE_ARGV0_=
+BIT)
+>> +
+>>   /* Function parameter for binfmt->coredump */
+>>   struct coredump_params {
+>>   	const kernel_siginfo_t *siginfo;
+>> diff --git a/include/uapi/linux/binfmts.h b/include/uapi/linux/binfmts.=
+h
+>> index 689025d9c185..a70747416130 100644
+>> --- a/include/uapi/linux/binfmts.h
+>> +++ b/include/uapi/linux/binfmts.h
+>> @@ -18,4 +18,8 @@ struct pt_regs;
+>>   /* sizeof(linux_binprm->buf) */
+>>   #define BINPRM_BUF_SIZE 256
+>>
+>> +/* if preserve the argv0 for the interpreter  */
+>> +#define AT_FLAGS_PRESERVE_ARGV0_BIT 0
+>> +#define AT_FLAGS_PRESERVE_ARGV0 (1 << AT_FLAGS_PRESERVE_ARGV0_BIT)
+>> +
+>>   #endif /* _UAPI_LINUX_BINFMTS_H */
+>>
+>
+
