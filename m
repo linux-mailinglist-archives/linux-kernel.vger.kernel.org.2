@@ -2,60 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E392331AE88
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 00:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E976D31AE8B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 00:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhBMXe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 18:34:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58104 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhBMXe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 18:34:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id C038364E3D;
-        Sat, 13 Feb 2021 23:33:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613259225;
-        bh=48BTI87qPxYwZwb0+TlbgSOrURgCaQ7hgYp6X1cvtXs=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=lsfUMDbgbrwTj81LSnJuy8NaqhIzWDf+qSFDBps8HRfAGaxs5eeQ0J3Jgr2eKdpVz
-         65FKpBaM6hicxyv42Je/9yXIuOgA7Trc93tnEl/nFo5/h8xqnmyUlRJhMe2XK0KE4X
-         uBL5Tuv1qiS32l8tcDFZkcu/Y6o0TCvRGRBNc49yFICa9FBPmKfrUDpL+LeFHgBhXF
-         539nF02lPyJ1DoOGBTI6t60AkfBOPeAlVf4hFzKS1Kj9s1eSUqLZMcy0hqh4k2D2jf
-         LfXS7zYV/8PcSn38ts+5HxCMVoEpc2KG4HWmLM1s0vG5RD2aScJxSznMjmA+7G7373
-         2MpUXGuzn8U2g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BAE4560A2A;
-        Sat, 13 Feb 2021 23:33:45 +0000 (UTC)
-Subject: Re: [GIT PULL] clk fix for v5.11-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210213211952.1071982-1-sboyd@kernel.org>
-References: <20210213211952.1071982-1-sboyd@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210213211952.1071982-1-sboyd@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
-X-PR-Tracked-Commit-Id: 245090ab2636c0869527ce563afbfb8aff29e825
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 358feceebbf68f33c44c6650d14455389e65282d
-Message-Id: <161325922575.6166.15566733362572520126.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Feb 2021 23:33:45 +0000
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S229733AbhBMXuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 18:50:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhBMXuh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 18:50:37 -0500
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 344A5C061574;
+        Sat, 13 Feb 2021 15:49:57 -0800 (PST)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id C588A92009D; Sun, 14 Feb 2021 00:49:53 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id BF24092009C;
+        Sun, 14 Feb 2021 00:49:53 +0100 (CET)
+Date:   Sun, 14 Feb 2021 00:49:53 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     Bert Vermeulen <bert@biot.com>, tsbogend@alpha.franken.de,
+        peterz@infradead.org, frederic@kernel.org, mingo@kernel.org,
+        peterx@redhat.com, afzal.mohd.ma@gmail.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] arch: mips: kernel: Made couple of spelling fixes and
+ a sentence construction in smp.c
+In-Reply-To: <YBiQ+8GDeyS79+hZ@Gentoo>
+Message-ID: <alpine.DEB.2.21.2102140046160.9829@angie.orcam.me.uk>
+References: <20210201111757.8019-1-unixbhaskar@gmail.com> <48dfc60a-c03c-f9d8-a9aa-268f6ae252eb@biot.com> <YBiQ+8GDeyS79+hZ@Gentoo>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 13 Feb 2021 13:19:52 -0800:
+On Tue, 2 Feb 2021, Bhaskar Chowdhury wrote:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
+> On 17:51 Mon 01 Feb 2021, Bert Vermeulen wrote:
+> > On 2/1/21 12:17 PM, Bhaskar Chowdhury wrote:
+> > > s/debugees/debuge's/
+> > 
+> > Definitely not.
+> > 
+> > 
+> hmmmm
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/358feceebbf68f33c44c6650d14455389e65282d
+ Obviously "debuggees", e.g.: <https://en.wiktionary.org/wiki/debuggee>.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+  Maciej
