@@ -2,99 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC15E31AE62
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 23:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9C531AE7D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 00:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhBMWux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 17:50:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229647AbhBMWuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 17:50:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8F71F64E3D;
-        Sat, 13 Feb 2021 22:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613256609;
-        bh=JurtvsBujxDb0e6Wm8m1j9eTnFYrYJ0yxwhTLqxaG/Y=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Q51srIelC2qWwx0tmnmJp1BDwYJDDQuN6cd/2tEtkOEwz0yVlE3mSOeXe6gaLM4j0
-         6kfdryqn2y3wDhGJZLtGCcQtfSB8YiLJlBbA+8sR1ewT2vjdWq7zdmfq8dcOELIuTP
-         TeRan5f4TMRA84qwG2O0sayJTBoXUHc0c5e2Yy+IxvY8Kf28WexEp3I/r1KRm8YDjb
-         R9eIO7YC/zFF525td99M6UioeJqQfF11uPz5p/L9ZC5wX5eQQiBqGP43IVygNUj0Ba
-         SirhiFheWCsynqvjWYCTYFx65uqw48HIAhvZbacUyRjhuCAi/gcxZL5tJ7CEn+h6sV
-         5DcfAaEoN81rA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7A48760A2A;
-        Sat, 13 Feb 2021 22:50:09 +0000 (UTC)
+        id S229718AbhBMXUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 18:20:32 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2900 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229694AbhBMXUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 18:20:13 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DdR9G2Xfpz598g;
+        Sun, 14 Feb 2021 07:17:38 +0800 (CST)
+Received: from dggemi710-chm.china.huawei.com (10.3.20.109) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Sun, 14 Feb 2021 07:19:28 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi710-chm.china.huawei.com (10.3.20.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Sun, 14 Feb 2021 07:18:52 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Sun, 14 Feb 2021 07:18:52 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "fthain@telegraphics.com.au" <fthain@telegraphics.com.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+Thread-Topic: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+Thread-Index: AdcA2xDwQTa7W6j6SmS4J3iBnsSynAAcRXSAABFJYBD//354gP//dYEggAGu1ID//yBa4P/+Ln+A
+Date:   Sat, 13 Feb 2021 23:18:52 +0000
+Message-ID: <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com>
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+ <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+ <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com>
+ <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
+ <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com> 
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.102]
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6 net-next 00/11] skbuff: introduce skbuff_heads bulking and
- reusing
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161325660949.21142.16715175107984485367.git-patchwork-notify@kernel.org>
-Date:   Sat, 13 Feb 2021 22:50:09 +0000
-References: <20210213141021.87840-1-alobakin@pm.me>
-In-Reply-To: <20210213141021.87840-1-alobakin@pm.me>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     davem@davemloft.net, kuba@kernel.org, jonathan.lemon@gmail.com,
-        edumazet@google.com, dvyukov@google.com, willemb@google.com,
-        rdunlap@infradead.org, haokexin@gmail.com, pablo@netfilter.org,
-        jakub@cloudflare.com, elver@google.com, decui@microsoft.com,
-        pabeni@redhat.com, brouer@redhat.com, alexanderduyck@fb.com,
-        alexander.duyck@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, ap420073@gmail.com, weiwan@google.com,
-        xiyou.wangcong@gmail.com, bjorn@kernel.org, linmiaohe@huawei.com,
-        gnault@redhat.com, fw@strlen.de, ecree.xilinx@gmail.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Sat, 13 Feb 2021 14:10:43 +0000 you wrote:
-> Currently, all sorts of skb allocation always do allocate
-> skbuff_heads one by one via kmem_cache_alloc().
-> On the other hand, we have percpu napi_alloc_cache to store
-> skbuff_heads queued up for freeing and flush them by bulks.
-> 
-> We can use this cache not only for bulk-wiping, but also to obtain
-> heads for new skbs and avoid unconditional allocations, as well as
-> for bulk-allocating (like XDP's cpumap code and veth driver already
-> do).
-> 
-> [...]
-
-Here is the summary with links:
-  - [v6,net-next,01/11] skbuff: move __alloc_skb() next to the other skb allocation functions
-    https://git.kernel.org/netdev/net-next/c/5381b23d5bf9
-  - [v6,net-next,02/11] skbuff: simplify kmalloc_reserve()
-    https://git.kernel.org/netdev/net-next/c/ef28095fce66
-  - [v6,net-next,03/11] skbuff: make __build_skb_around() return void
-    https://git.kernel.org/netdev/net-next/c/483126b3b2c6
-  - [v6,net-next,04/11] skbuff: simplify __alloc_skb() a bit
-    https://git.kernel.org/netdev/net-next/c/df1ae022af2c
-  - [v6,net-next,05/11] skbuff: use __build_skb_around() in __alloc_skb()
-    https://git.kernel.org/netdev/net-next/c/f9d6725bf44a
-  - [v6,net-next,06/11] skbuff: remove __kfree_skb_flush()
-    https://git.kernel.org/netdev/net-next/c/fec6e49b6398
-  - [v6,net-next,07/11] skbuff: move NAPI cache declarations upper in the file
-    https://git.kernel.org/netdev/net-next/c/50fad4b543b3
-  - [v6,net-next,08/11] skbuff: introduce {,__}napi_build_skb() which reuses NAPI cache heads
-    https://git.kernel.org/netdev/net-next/c/f450d539c05a
-  - [v6,net-next,09/11] skbuff: allow to optionally use NAPI cache from __alloc_skb()
-    https://git.kernel.org/netdev/net-next/c/d13612b58e64
-  - [v6,net-next,10/11] skbuff: allow to use NAPI cache from __napi_alloc_skb()
-    https://git.kernel.org/netdev/net-next/c/cfb8ec659521
-  - [v6,net-next,11/11] skbuff: queue NAPI_MERGED_FREE skbs into NAPI cache instead of freeing
-    https://git.kernel.org/netdev/net-next/c/9243adfc311a
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU29uZyBCYW8gSHVhIChC
+YXJyeSBTb25nKQ0KPiBTZW50OiBTdW5kYXksIEZlYnJ1YXJ5IDE0LCAyMDIxIDExOjEzIEFNDQo+
+IFRvOiAnQXJuZCBCZXJnbWFubicgPGFybmRAa2VybmVsLm9yZz4NCj4gQ2M6IHRnbHhAbGludXRy
+b25peC5kZTsgZ3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc7IGFybmRAYXJuZGIuZGU7DQo+IGdl
+ZXJ0QGxpbnV4LW02OGsub3JnOyBmdW5haG9AanVyYWkub3JnOyBwaGlsYkBnbnUub3JnOyBjb3Ji
+ZXRAbHduLm5ldDsNCj4gbWluZ29AcmVkaGF0LmNvbTsgbGludXgtbTY4a0BsaXN0cy5saW51eC1t
+NjhrLm9yZzsNCj4gZnRoYWluQHRlbGVncmFwaGljcy5jb20uYXU7IGxpbnV4LWtlcm5lbEB2Z2Vy
+Lmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUkU6IFtSRkNdIElSUSBoYW5kbGVycyBydW4gd2l0aCBz
+b21lIGhpZ2gtcHJpb3JpdHkgaW50ZXJydXB0cyhub3QgTk1JKQ0KPiBlbmFibGVkIG9uIHNvbWUg
+cGxhdGZvcm0NCj4gDQo+IA0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+
+IEZyb206IEFybmQgQmVyZ21hbm4gW21haWx0bzphcm5kQGtlcm5lbC5vcmddDQo+ID4gU2VudDog
+U3VuZGF5LCBGZWJydWFyeSAxNCwgMjAyMSA1OjMyIEFNDQo+ID4gVG86IFNvbmcgQmFvIEh1YSAo
+QmFycnkgU29uZykgPHNvbmcuYmFvLmh1YUBoaXNpbGljb24uY29tPg0KPiA+IENjOiB0Z2x4QGxp
+bnV0cm9uaXguZGU7IGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnOyBhcm5kQGFybmRiLmRlOw0K
+PiA+IGdlZXJ0QGxpbnV4LW02OGsub3JnOyBmdW5haG9AanVyYWkub3JnOyBwaGlsYkBnbnUub3Jn
+OyBjb3JiZXRAbHduLm5ldDsNCj4gPiBtaW5nb0ByZWRoYXQuY29tOyBsaW51eC1tNjhrQGxpc3Rz
+LmxpbnV4LW02OGsub3JnOw0KPiA+IGZ0aGFpbkB0ZWxlZ3JhcGhpY3MuY29tLmF1OyBsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+ID4gU3ViamVjdDogUmU6IFtSRkNdIElSUSBoYW5kbGVy
+cyBydW4gd2l0aCBzb21lIGhpZ2gtcHJpb3JpdHkgaW50ZXJydXB0cyhub3QNCj4gTk1JKQ0KPiA+
+IGVuYWJsZWQgb24gc29tZSBwbGF0Zm9ybQ0KPiA+DQo+ID4gT24gU2F0LCBGZWIgMTMsIDIwMjEg
+YXQgMTI6NTAgQU0gU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKQ0KPiA+IDxzb25nLmJhby5odWFA
+aGlzaWxpY29uLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiA+IFNvIEkgd2FzIGFjdHVhbGx5IHRyeWlu
+ZyB0byB3YXJuIHRoaXMgdW51c3VhbCBjYXNlIC0gaW50ZXJydXB0cw0KPiA+ID4gZ2V0IG5lc3Rl
+ZCB3aGlsZSBib3RoIGluX2hhcmRpcnEoKSBhbmQgaXJxc19kaXNhYmxlZCgpIGFyZSB0cnVlLg0K
+PiA+ID4NCj4gPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2hhcmRpcnEuaCBiL2luY2x1
+ZGUvbGludXgvaGFyZGlycS5oDQo+ID4gPiBpbmRleCA3YzlkNmEyZDdlOTAuLmI4Y2EyNzU1NWM3
+NiAxMDA2NDQNCj4gPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvaGFyZGlycS5oDQo+ID4gPiArKysg
+Yi9pbmNsdWRlL2xpbnV4L2hhcmRpcnEuaA0KPiA+ID4gQEAgLTMyLDYgKzMyLDcgQEAgc3RhdGlj
+IF9fYWx3YXlzX2lubGluZSB2b2lkIHJjdV9pcnFfZW50ZXJfY2hlY2tfdGljayh2b2lkKQ0KPiA+
+ID4gICAqLw0KPiA+ID4gICNkZWZpbmUgX19pcnFfZW50ZXIoKSAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBcDQo+ID4gPiAgICAgICAgIGRvIHsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIFwNCj4gPiA+ICsgICAgICAgICAgICAgICBXQVJOX09OQ0Uo
+aW5faGFyZGlycSgpICYmIGlycXNfZGlzYWJsZWQoKSwgIm5lc3RlZA0KPiA+ID4gaW50ZXJydXB0
+c1xuIik7IFwNCj4gPiA+ICAgICAgICAgICAgICAgICBwcmVlbXB0X2NvdW50X2FkZChIQVJESVJR
+X09GRlNFVCk7ICAgICAgXA0KPiA+DQo+ID4gVGhhdCBzZWVtcyB0byBiZSBhIHJhdGhlciBoZWF2
+eXdlaWdodCBjaGFuZ2UgaW4gYSBjcml0aWNhbCBwYXRoLg0KPiA+DQo+ID4gQSBtb3JlIHVzZWZ1
+bCBjaGFuZ2UgbWlnaHQgYmUgdG8gaW1wbGVtZW50IGxvY2tkZXAgc3VwcG9ydCBmb3IgbTY4aw0K
+PiA+IGFuZCBzZWUgaWYgdGhhdCB3YXJucyBhYm91dCBhbnkgYWN0dWFsIHByb2JsZW1zLiBJJ20g
+bm90IHN1cmUNCj4gPiB3aGF0IGlzIGFjdHVhbGx5IG1pc3NpbmcgZm9yIHRoYXQsIGJ1dCB0aGVz
+ZSBhcmUgdGhlIGNvbW1pdHMgdGhhdA0KPiA+IGFkZGVkIGl0IGZvciBvdGhlciBhcmNoaXRlY3R1
+cmVzIGluIHRoZSBwYXN0Og0KPiA+DQo+ID4gM2M0Njk3OTgyOTgyICgicmlzY3Y6IEVuYWJsZSBM
+T0NLREVQX1NVUFBPUlQgJiBmaXh1cA0KPiBUUkFDRV9JUlFGTEFHU19TVVBQT1JUIikNCj4gPiAw
+MDA1OTFmMWNhMzMgKCJjc2t5OiBFbmFibGUgTE9DS0RFUF9TVVBQT1JUIikNCj4gPiA3OGNkZmI1
+Y2YxNWUgKCJvcGVucmlzYzogZW5hYmxlIExPQ0tERVBfU1VQUE9SVCBhbmQgaXJxZmxhZ3MgdHJh
+Y2luZyIpDQo+ID4gOGYzNzFjNzUyMTU0ICgieHRlbnNhOiBlbmFibGUgbG9ja2RlcCBzdXBwb3J0
+IikNCj4gPiBiZjJkODA5NjY4OTAgKCJtaWNyb2JsYXplOiBMb2NrZGVwIHN1cHBvcnQiKQ0KPiA+
+DQo+IA0KPiBZZXMuIE02OGsgbGFja3MgbG9ja2RlcCBzdXBwb3J0IHdoaWNoIG1pZ2h0IGJlIGFk
+ZGVkLg0KDQpCVFcsIHByb2JhYmx5IG02OGsgd29uJ3QgcnVuIGludG8gYW55IHByb2JsZW0gd2l0
+aCBsb2NrZGVwDQphcyBpdCBoYXMgYmVlbiBydW5uaW5nIGZvciBkZWNhZGVzLiBKdXN0IGxpa2Ug
+aW50ZXJydXB0cw0Kd2VyZSB3aWRlbHkgYWxsb3dlZCB0byBwcmVlbXB0IGlycSBoYW5kbGVycyBv
+biBhbGwgcGxhdGZvcm1zDQpiZWZvcmUgSVJRRl9ESVNBQkxFRCB3YXMgZHJvcHBlZCBhbmQgY29t
+bWl0IGU1OGFhM2QyZDBjYyAoIg0KZ2VuaXJxOiBSdW4gaXJxIGhhbmRsZXJzIHdpdGggaW50ZXJy
+dXB0cyBkaXNhYmxlZCIpLg0KUmFyZWx5IHdlIGNvdWxkIHJlYWxseSBydW4gaW50byB0aGUgc3Rh
+Y2sgb3ZlcmZsb3cNCmlzc3VlIGNvbW1pdCBlNThhYTNkMmQwY2MgbWVudGlvbmVkIGF0IHRoYXQg
+dGltZS4NCkJlZm9yZSB0aG9zZSBjb21taXRzIHdlIGhhZCBhbHJlYWR5IG1hZGUgdGhvdXNhbmRz
+IG9mDQpzdWNjZXNzZnVsIExpbnV4IHByb2R1Y3RzIHJ1bm5pbmcgaXJxIGhhbmRsZXJzIHdpdGgN
+CmludGVycnVwdHMgZW5hYmxlZC4NCg0KU28gd2hhdCBpcyByZWFsbHkgY29uZnVzaW5nIGFuZCBh
+IHBhaW4gdG8gbWUgaXMgdGhhdDoNCkZvciB5ZWFycyBwZW9wbGUgbGlrZSBtZSBoYXZlIGJlZW4g
+d3JpdGluZyBkZXZpY2UgZHJpdmVycw0Kd2l0aCB0aGUgaWRlYSB0aGF0IGlycSBoYW5kbGVycyBy
+dW4gd2l0aCBpbnRlcnJ1cHRzDQpkaXNhYmxlZCBhZnRlciB0aG9zZSBjb21taXRzIGluIGdlbmly
+cS4gU28gSSBkb24ndCBuZWVkDQp0byBjYXJlIGFib3V0IGlmIHNvbWUgb3RoZXIgSVJRcyBvbiB0
+aGUgc2FtZSBjcHUgd2lsbA0KanVtcCBvdXQgdG8gYWNjZXNzIHRoZSBkYXRhIHRoZSBjdXJyZW50
+IElSUSBoYW5kbGVyDQppcyBhY2Nlc3NpbmcuDQoNCmJ1dCBpdCB0dXJucyBvdXQgdGhlIGFzc3Vt
+cHRpb24gaXMgbm90IHRydWUgb24gc29tZSBwbGF0Zm9ybS4NClNvIHNob3VsZCBJIHN0YXJ0IHRv
+IHByb2dyYW0gZGV2aWNlcyBkcml2ZXIgd2l0aCB0aGUgbmV3IGlkZWENCmludGVycnVwdHMgY2Fu
+IGFjdHVhbGx5IGNvbWUgd2hpbGUgaXJxaGFuZGxlciBpcyBydW5uaW5nPw0KDQpUaGF0J3MgdGhl
+IHF1ZXN0aW9uIHdoaWNoIHJlYWxseSBib3RoZXJzIG1lLg0KDQo+IA0KPiA+ID4gQW5kIEkgYWxz
+byB0aGluayBpdCBpcyBiZXR0ZXIgZm9yIG02OGsncyBhcmNoX2lycXNfZGlzYWJsZWQoKSB0bw0K
+PiA+ID4gcmV0dXJuIHRydWUgb25seSB3aGVuIGJvdGggbG93IGFuZCBoaWdoIHByaW9yaXR5IGlu
+dGVycnVwdHMgYXJlDQo+ID4gPiBkaXNhYmxlZCByYXRoZXIgdGhhbiB0cnkgdG8gbXV0ZSB0aGlz
+IHdhcm4gaW4gZ2VuaXJxIGJ5IGEgd2Vha2VyDQo+ID4gPiBjb25kaXRpb246DQo+ID4gPiAgICAg
+ICAgICAgICAgaWYgKFdBUk5fT05DRSghaXJxc19kaXNhYmxlZCgpLCJpcnEgJXUgaGFuZGxlciAl
+cFMgZW5hYmxlZA0KPiA+IGludGVycnVwdHNcbiIsDQo+ID4gPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGlycSwgYWN0aW9uLT5oYW5kbGVyKSkNCj4gPiA+ICAgICAgICAgICAgICAgICAg
+ICAgICAgbG9jYWxfaXJxX2Rpc2FibGUoKTsNCj4gPiA+IH0NCj4gPiA+DQo+ID4gPiBUaGlzIHdh
+cm4gaXMgbm90IGFjdGl2YXRlZCBvbiBtNjhrIGJlY2F1c2UgaXRzIGFyY2hfaXJxc19kaXNhYmxl
+ZCgpIHJldHVybg0KPiA+ID4gdHJ1ZSB0aG91Z2ggaXRzIGhpZ2gtcHJpb3JpdHkgaW50ZXJydXB0
+cyBhcmUgc3RpbGwgZW5hYmxlZC4NCj4gPg0KPiA+IFRoZW4gaXQgd291bGQganVzdCBlbmQgdXAg
+YWx3YXlzIHdhcm5pbmcgd2hlbiBhIG5lc3RlZCBoYXJkaXJxIGhhcHBlbnMsDQo+ID4gcmlnaHQ/
+IFRoYXQgc2VlbXMgbm8gZGlmZmVyZW50IHRvIGRyb3BwaW5nIHN1cHBvcnQgZm9yIG5lc3RlZCBo
+YXJkaXJxcw0KPiA+IG9uIG02OGsgYWx0b2dldGhlciwgd2hpY2ggb2YgY291cnNlIGlzIHdoYXQg
+eW91IHN1Z2dlc3RlZCBhbHJlYWR5Lg0KPiANCj4gVGhpcyB3b24ndCBlbmQgdXAgYSB3YXJuaW5n
+IG9uIG90aGVyIGFyY2hpdGVjdHVyZXMgbGlrZSBhcm0sYXJtNjQsIHg4NiBldGMNCj4gYXMgaW50
+ZXJydXB0cyB3b24ndCBjb21lIHdoaWxlIGFyY2hfaXJxc19kaXNhYmxlZCgpIGlzIHRydWUgaW4g
+aGFyZElSUS4NCj4gRm9yIGV4YW1wbGUsIElfQklUIG9mIENQU1Igb2YgQVJNIGlzIHNldDoNCj4g
+c3RhdGljIGlubGluZSBpbnQgYXJjaF9pcnFzX2Rpc2FibGVkX2ZsYWdzKHVuc2lnbmVkIGxvbmcg
+ZmxhZ3MpDQo+IHsNCj4gCXJldHVybiBmbGFncyAmIElSUU1BU0tfSV9CSVQ7DQo+IH0NCj4gDQo+
+IFNvIGl0IHdvdWxkIG9ubHkgZ2l2ZSBhIGJhY2t0cmFjZSBvbiBwbGF0Zm9ybXMgd2hvc2UgYXJj
+aF9pcnFzX2Rpc2FibGVkKCkNCj4gcmV0dXJuIHRydWUgd2hpbGUgb25seSBzb21lIGludGVycnVw
+dHMgYXJlIGRpc2FibGVkIGFuZCBzb21lIG90aGVycw0KPiBhcmUgc3RpbGwgb3BlbiwgdGh1cyBu
+ZXN0ZWQgaW50ZXJydXB0cyBjYW4gY29tZSB3aXRob3V0IGFueSBleHBsaWNpdA0KPiBjb2RlIHRv
+IGVuYWJsZSBpbnRlcnJ1cHRzLg0KPiANCj4gVGhpcyB3YXJuIHNlZW1zIHRvIGdpdmUgY29uc2lz
+dGVudCBpbnRlcnByZXRhdGlvbiBvbiB3aGF0J3MgIlJ1biBpcnENCj4gaGFuZGxlcnMgd2l0aCBp
+bnRlcnJ1cHRzIGRpc2FibGVkIiBpbiBjb21taXQgZTU4YWEzZDJkMGNjICgiIGdlbmlycToNCj4g
+UnVuIGlycSBoYW5kbGVycyB3aXRoIGludGVycnVwdHMgZGlzYWJsZWQiKQ0KPiANCj4gPg0KPiA+
+ICAgICAgICBBcm5kDQo+IA0KDQpUaGFua3MNCkJhcnJ5DQo=
