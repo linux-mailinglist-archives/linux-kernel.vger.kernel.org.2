@@ -2,234 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C299231AE40
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 23:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8E131AE44
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 23:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhBMWFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 17:05:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhBMWFI (ORCPT
+        id S229703AbhBMWTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 17:19:55 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2840 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229647AbhBMWTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 17:05:08 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB41C061574;
-        Sat, 13 Feb 2021 14:04:28 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id n8so4149504wrm.10;
-        Sat, 13 Feb 2021 14:04:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8QdWTAJ+beg12quntIhZalfc07GrzP+2YyUm2HopaRE=;
-        b=SDV1e/8p0mhz8BYGtaU8iXpVNnzGc/lsF99FH6PlV6Frz34BSC/wr9tOlTwd5C3qKN
-         JpRnsYIYL1Y0dZLvlX078YM39xoN9Zp9XL+23x8RfR0tB2LrlPgEnUncmxTDqM59VTQA
-         kmBF8JAxAXOGfDFGE9DLJ/fLJQdVFU6kyWA+Sk/WLWIuNal/oijtFn/7nI9ZAbD2qO8K
-         f9a5muDX+ywFF9T/Paz2QiKGuVCRuIcEVB+1/kZEhJyKA5ua4EJtAJ+0Qv0RiaKZ4Ko0
-         zq6al7Wa/ITyzyz3bDJcRhEbBgCy326AtHgR5u4snp9eCx1/cmImE4iHi8ovwUkNPsNC
-         GGoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8QdWTAJ+beg12quntIhZalfc07GrzP+2YyUm2HopaRE=;
-        b=QSuAnJbFDXUAt1jt6Ktl5azWCKO+AfJZpkBH++pfoKEBbFpnWNnxNy8/NBZ8qaEd7b
-         Xs8x7K5vAlT8Un9a9Hp0UzHWsCzFJl3gcQ1lLT+Qy1sAb+2byEsYB9OnWrujjf0fjjdG
-         5Bqf0waLF61zaofnow/spxTYR5EDmWCr38YtWY4Yo/CjRxd7PwZPxrq0J/ww/kMQiKkk
-         rfv7mCvgo0GQuwmKMw/d1JuHAI2e+2NvVpYGxKpHaGR1y739yQnusggcDATI9W5JSPZL
-         MlyEIv3A9Mor8t2vj0rOuG4uC3RCya+aatoAvxKffLiHFEciiKQOa+pbFyZM9JKQ7Nhe
-         /ygw==
-X-Gm-Message-State: AOAM531BabjrgApEVWi66QGo7Fe+IJYBQzUECnc3w9fDOIZcXtVSUFsn
-        e5vPygFw5PcsNw3ErwkJfB7Oxgx0IRyu5A==
-X-Google-Smtp-Source: ABdhPJyK3AQIsJbi2V5mWgsIJwWnJfg9UssexqDTKfiEhKzTFbke9lDM1hFwoWdxJRbg6g+V5Or4sA==
-X-Received: by 2002:adf:ef86:: with SMTP id d6mr6449258wro.419.1613253867076;
-        Sat, 13 Feb 2021 14:04:27 -0800 (PST)
-Received: from ?IPv6:2001:a61:3a2d:1d01:99ab:4f20:ed7f:402b? ([2001:a61:3a2d:1d01:99ab:4f20:ed7f:402b])
-        by smtp.gmail.com with ESMTPSA id o18sm17971832wmp.19.2021.02.13.14.04.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Feb 2021 14:04:26 -0800 (PST)
-Cc:     mtk.manpages@gmail.com, linux-man <linux-man@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=c3=ada?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v3 1/1] process_madvise.2: Add process_madvise man page
-To:     Suren Baghdasaryan <surenb@google.com>
-References: <20210202053046.1653012-1-surenb@google.com>
- <079db245-a08c-0dbd-01d4-8065f533652e@gmail.com>
- <CAJuCfpGotx_04Stn5Nw6Au+TVG9LuAJ=CB_s7uxjMLOLerw-GA@mail.gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <2d303517-cdcd-9ec8-e57d-3d065edb573c@gmail.com>
-Date:   Sat, 13 Feb 2021 23:04:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAJuCfpGotx_04Stn5Nw6Au+TVG9LuAJ=CB_s7uxjMLOLerw-GA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        Sat, 13 Feb 2021 17:19:52 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DdPq42815z13tD9;
+        Sun, 14 Feb 2021 06:16:48 +0800 (CST)
+Received: from dggemi712-chm.china.huawei.com (10.3.20.111) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Sun, 14 Feb 2021 06:19:08 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi712-chm.china.huawei.com (10.3.20.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Sun, 14 Feb 2021 06:18:31 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Sun, 14 Feb 2021 06:18:31 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "fthain@telegraphics.com.au" <fthain@telegraphics.com.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+Thread-Topic: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+Thread-Index: AdcA2xDwQTa7W6j6SmS4J3iBnsSynAAcRXSAABFJYBD//354gP//dYEggAGu1ID//yBa4A==
+Date:   Sat, 13 Feb 2021 22:18:31 +0000
+Message-ID: <5961c215d36244a6ad5854ee17f2f496@hisilicon.com>
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+ <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+ <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com>
+ <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
+ <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.102]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Suren,
-
-On 2/2/21 11:12 PM, Suren Baghdasaryan wrote:
-> Hi Michael,
-> 
-> On Tue, Feb 2, 2021 at 2:45 AM Michael Kerrisk (man-pages)
-> <mtk.manpages@gmail.com> wrote:
->>
->> Hello Suren (and Minchan and Michal)
->>
->> Thank you for the revisions!
->>
->> I've applied this patch, and done a few light edits.
-> 
-> Thanks!
-> 
->>
->> However, I have a questions about undocumented pieces in *madvise(2)*,
->> as well as one other question. See below.
->>
->> On 2/2/21 6:30 AM, Suren Baghdasaryan wrote:
->>> Initial version of process_madvise(2) manual page. Initial text was
->>> extracted from [1], amended after fix [2] and more details added using
->>> man pages of madvise(2) and process_vm_read(2) as examples. It also
->>> includes the changes to required permission proposed in [3].
->>>
->>> [1] https://lore.kernel.org/patchwork/patch/1297933/
->>> [2] https://lkml.org/lkml/2020/12/8/1282
->>> [3] https://patchwork.kernel.org/project/selinux/patch/20210111170622.2613577-1-surenb@google.com/#23888311
->>>
->>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->>> Reviewed-by: Michal Hocko <mhocko@suse.com>
->>> ---
->>> changes in v2:
->>> - Changed description of MADV_COLD per Michal Hocko's suggestion
->>> - Applied fixes suggested by Michael Kerrisk
->>> changes in v3:
->>> - Added Michal's Reviewed-by
->>> - Applied additional fixes suggested by Michael Kerrisk
->>>
->>> NAME
->>>     process_madvise - give advice about use of memory to a process
->>>
->>> SYNOPSIS
->>>     #include <sys/uio.h>
->>>
->>>     ssize_t process_madvise(int pidfd,
->>>                            const struct iovec *iovec,
->>>                            unsigned long vlen,
->>>                            int advice,
->>>                            unsigned int flags);
->>>
->>> DESCRIPTION
->>>     The process_madvise() system call is used to give advice or directions
->>>     to the kernel about the address ranges of another process or the calling
->>>     process. It provides the advice to the address ranges described by iovec
->>>     and vlen. The goal of such advice is to improve system or application
->>>     performance.
->>>
->>>     The pidfd argument is a PID file descriptor (see pidfd_open(2)) that
->>>     specifies the process to which the advice is to be applied.
->>>
->>>     The pointer iovec points to an array of iovec structures, defined in
->>>     <sys/uio.h> as:
->>>
->>>     struct iovec {
->>>         void  *iov_base;    /* Starting address */
->>>         size_t iov_len;     /* Number of bytes to transfer */
->>>     };
->>>
->>>     The iovec structure describes address ranges beginning at iov_base address
->>>     and with the size of iov_len bytes.
->>>
->>>     The vlen represents the number of elements in the iovec structure.
->>>
->>>     The advice argument is one of the values listed below.
->>>
->>>   Linux-specific advice values
->>>     The following Linux-specific advice values have no counterparts in the
->>>     POSIX-specified posix_madvise(3), and may or may not have counterparts
->>>     in the madvise(2) interface available on other implementations.
->>>
->>>     MADV_COLD (since Linux 5.4.1)
->>
->> I just noticed these version numbers now, and thought: they can't be
->> right (because the system call appeared only in v5.11). So I removed
->> them. But, of course in another sense the version numbers are (nearly)
->> right, since these advice values were added for madvise(2) in Linux 5.4.
->> However, they are not documented in the madvise(2) manual page. Is it
->> correct to assume that MADV_COLD and MADV_PAGEOUT have exactly the same
->> meaning in madvise(2) (but just for the calling process, of course)?
-> 
-> Correct. They should be added in the madvise(2) man page as well IMHO.
-
-So, I decided to move the description of MADV_COLD and MADV_PAGEOUT
-to madvise(2) and refer to that page from the process_madvise(2)
-page. This avoids repeating the same information in two places.
-
->>>         Deactive a given range of pages which will make them a more probable
->>
->> I changed: s/Deactive/Deactivate/
-> 
-> thanks!
-> 
->>
->>>         reclaim target should there be a memory pressure. This is a
->>>         nondestructive operation. The advice might be ignored for some pages
->>>         in the range when it is not applicable.
->>>
->>>     MADV_PAGEOUT (since Linux 5.4.1)
->>>         Reclaim a given range of pages. This is done to free up memory occupied
->>>         by these pages. If a page is anonymous it will be swapped out. If a
->>>         page is file-backed and dirty it will be written back to the backing
->>>         storage. The advice might be ignored for some pages in the range when
->>>         it is not applicable.
->>
->> [...]
->>
->>>     The hint might be applied to a part of iovec if one of its elements points
->>>     to an invalid memory region in the remote process. No further elements will
->>>     be processed beyond that point.
->>
->> Is the above scenario the one that leads to the partial advice case described in
->> RETURN VALUE? If yes, perhaps I should add some words to make that clearer.
-> 
-> Correct. This describes the case when partial advice happens.
-
-Thanks. I added a few words to clarify this.
-
-
->> You can see the light edits that I made in
->> https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=e3ce016472a1b3ec5dffdeb23c98b9fef618a97b
->> and following that I restructured DESCRIPTION a little in
->> https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=3aac0708a9acee5283e091461de6a8410bc921a6
-> 
-> The edits LGTM.
-
-Thanks for checking them.
-
-Cheers,
-
-Michael
-
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQXJuZCBCZXJnbWFubiBb
+bWFpbHRvOmFybmRAa2VybmVsLm9yZ10NCj4gU2VudDogU3VuZGF5LCBGZWJydWFyeSAxNCwgMjAy
+MSA1OjMyIEFNDQo+IFRvOiBTb25nIEJhbyBIdWEgKEJhcnJ5IFNvbmcpIDxzb25nLmJhby5odWFA
+aGlzaWxpY29uLmNvbT4NCj4gQ2M6IHRnbHhAbGludXRyb25peC5kZTsgZ3JlZ2toQGxpbnV4Zm91
+bmRhdGlvbi5vcmc7IGFybmRAYXJuZGIuZGU7DQo+IGdlZXJ0QGxpbnV4LW02OGsub3JnOyBmdW5h
+aG9AanVyYWkub3JnOyBwaGlsYkBnbnUub3JnOyBjb3JiZXRAbHduLm5ldDsNCj4gbWluZ29AcmVk
+aGF0LmNvbTsgbGludXgtbTY4a0BsaXN0cy5saW51eC1tNjhrLm9yZzsNCj4gZnRoYWluQHRlbGVn
+cmFwaGljcy5jb20uYXU7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDog
+UmU6IFtSRkNdIElSUSBoYW5kbGVycyBydW4gd2l0aCBzb21lIGhpZ2gtcHJpb3JpdHkgaW50ZXJy
+dXB0cyhub3QgTk1JKQ0KPiBlbmFibGVkIG9uIHNvbWUgcGxhdGZvcm0NCj4gDQo+IE9uIFNhdCwg
+RmViIDEzLCAyMDIxIGF0IDEyOjUwIEFNIFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykNCj4gPHNv
+bmcuYmFvLmh1YUBoaXNpbGljb24uY29tPiB3cm90ZToNCj4gDQo+ID4gU28gSSB3YXMgYWN0dWFs
+bHkgdHJ5aW5nIHRvIHdhcm4gdGhpcyB1bnVzdWFsIGNhc2UgLSBpbnRlcnJ1cHRzDQo+ID4gZ2V0
+IG5lc3RlZCB3aGlsZSBib3RoIGluX2hhcmRpcnEoKSBhbmQgaXJxc19kaXNhYmxlZCgpIGFyZSB0
+cnVlLg0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvaGFyZGlycS5oIGIvaW5j
+bHVkZS9saW51eC9oYXJkaXJxLmgNCj4gPiBpbmRleCA3YzlkNmEyZDdlOTAuLmI4Y2EyNzU1NWM3
+NiAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2hhcmRpcnEuaA0KPiA+ICsrKyBiL2lu
+Y2x1ZGUvbGludXgvaGFyZGlycS5oDQo+ID4gQEAgLTMyLDYgKzMyLDcgQEAgc3RhdGljIF9fYWx3
+YXlzX2lubGluZSB2b2lkIHJjdV9pcnFfZW50ZXJfY2hlY2tfdGljayh2b2lkKQ0KPiA+ICAgKi8N
+Cj4gPiAgI2RlZmluZSBfX2lycV9lbnRlcigpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIFwNCj4gPiAgICAgICAgIGRvIHsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIFwNCj4gPiArICAgICAgICAgICAgICAgV0FSTl9PTkNFKGluX2hhcmRpcnEoKSAm
+JiBpcnFzX2Rpc2FibGVkKCksICJuZXN0ZWQNCj4gPiBpbnRlcnJ1cHRzXG4iKTsgXA0KPiA+ICAg
+ICAgICAgICAgICAgICBwcmVlbXB0X2NvdW50X2FkZChIQVJESVJRX09GRlNFVCk7ICAgICAgXA0K
+PiANCj4gVGhhdCBzZWVtcyB0byBiZSBhIHJhdGhlciBoZWF2eXdlaWdodCBjaGFuZ2UgaW4gYSBj
+cml0aWNhbCBwYXRoLg0KPiANCj4gQSBtb3JlIHVzZWZ1bCBjaGFuZ2UgbWlnaHQgYmUgdG8gaW1w
+bGVtZW50IGxvY2tkZXAgc3VwcG9ydCBmb3IgbTY4aw0KPiBhbmQgc2VlIGlmIHRoYXQgd2FybnMg
+YWJvdXQgYW55IGFjdHVhbCBwcm9ibGVtcy4gSSdtIG5vdCBzdXJlDQo+IHdoYXQgaXMgYWN0dWFs
+bHkgbWlzc2luZyBmb3IgdGhhdCwgYnV0IHRoZXNlIGFyZSB0aGUgY29tbWl0cyB0aGF0DQo+IGFk
+ZGVkIGl0IGZvciBvdGhlciBhcmNoaXRlY3R1cmVzIGluIHRoZSBwYXN0Og0KPiANCj4gM2M0Njk3
+OTgyOTgyICgicmlzY3Y6IEVuYWJsZSBMT0NLREVQX1NVUFBPUlQgJiBmaXh1cCBUUkFDRV9JUlFG
+TEFHU19TVVBQT1JUIikNCj4gMDAwNTkxZjFjYTMzICgiY3NreTogRW5hYmxlIExPQ0tERVBfU1VQ
+UE9SVCIpDQo+IDc4Y2RmYjVjZjE1ZSAoIm9wZW5yaXNjOiBlbmFibGUgTE9DS0RFUF9TVVBQT1JU
+IGFuZCBpcnFmbGFncyB0cmFjaW5nIikNCj4gOGYzNzFjNzUyMTU0ICgieHRlbnNhOiBlbmFibGUg
+bG9ja2RlcCBzdXBwb3J0IikNCj4gYmYyZDgwOTY2ODkwICgibWljcm9ibGF6ZTogTG9ja2RlcCBz
+dXBwb3J0IikNCj4gDQoNClllcy4gTTY4ayBsYWNrcyBsb2NrZGVwIHN1cHBvcnQgd2hpY2ggbWln
+aHQgYmUgYWRkZWQuDQoNCj4gPiBBbmQgSSBhbHNvIHRoaW5rIGl0IGlzIGJldHRlciBmb3IgbTY4
+aydzIGFyY2hfaXJxc19kaXNhYmxlZCgpIHRvDQo+ID4gcmV0dXJuIHRydWUgb25seSB3aGVuIGJv
+dGggbG93IGFuZCBoaWdoIHByaW9yaXR5IGludGVycnVwdHMgYXJlDQo+ID4gZGlzYWJsZWQgcmF0
+aGVyIHRoYW4gdHJ5IHRvIG11dGUgdGhpcyB3YXJuIGluIGdlbmlycSBieSBhIHdlYWtlcg0KPiA+
+IGNvbmRpdGlvbjoNCj4gPiAgICAgICAgICAgICAgaWYgKFdBUk5fT05DRSghaXJxc19kaXNhYmxl
+ZCgpLCJpcnEgJXUgaGFuZGxlciAlcFMgZW5hYmxlZA0KPiBpbnRlcnJ1cHRzXG4iLA0KPiA+ICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgaXJxLCBhY3Rpb24tPmhhbmRsZXIpKQ0KPiA+ICAg
+ICAgICAgICAgICAgICAgICAgICAgbG9jYWxfaXJxX2Rpc2FibGUoKTsNCj4gPiB9DQo+ID4NCj4g
+PiBUaGlzIHdhcm4gaXMgbm90IGFjdGl2YXRlZCBvbiBtNjhrIGJlY2F1c2UgaXRzIGFyY2hfaXJx
+c19kaXNhYmxlZCgpIHJldHVybg0KPiA+IHRydWUgdGhvdWdoIGl0cyBoaWdoLXByaW9yaXR5IGlu
+dGVycnVwdHMgYXJlIHN0aWxsIGVuYWJsZWQuDQo+IA0KPiBUaGVuIGl0IHdvdWxkIGp1c3QgZW5k
+IHVwIGFsd2F5cyB3YXJuaW5nIHdoZW4gYSBuZXN0ZWQgaGFyZGlycSBoYXBwZW5zLA0KPiByaWdo
+dD8gVGhhdCBzZWVtcyBubyBkaWZmZXJlbnQgdG8gZHJvcHBpbmcgc3VwcG9ydCBmb3IgbmVzdGVk
+IGhhcmRpcnFzDQo+IG9uIG02OGsgYWx0b2dldGhlciwgd2hpY2ggb2YgY291cnNlIGlzIHdoYXQg
+eW91IHN1Z2dlc3RlZCBhbHJlYWR5Lg0KDQpUaGlzIHdvbid0IGVuZCB1cCBhIHdhcm5pbmcgb24g
+b3RoZXIgYXJjaGl0ZWN0dXJlcyBsaWtlIGFybSxhcm02NCwgeDg2IGV0Yw0KYXMgaW50ZXJydXB0
+cyB3b24ndCBjb21lIHdoaWxlIGFyY2hfaXJxc19kaXNhYmxlZCgpIGlzIHRydWUgaW4gaGFyZElS
+US4NCkZvciBleGFtcGxlLCBJX0JJVCBvZiBDUFNSIG9mIEFSTSBpcyBzZXQ6DQpzdGF0aWMgaW5s
+aW5lIGludCBhcmNoX2lycXNfZGlzYWJsZWRfZmxhZ3ModW5zaWduZWQgbG9uZyBmbGFncykNCnsN
+CglyZXR1cm4gZmxhZ3MgJiBJUlFNQVNLX0lfQklUOw0KfQ0KDQpTbyBpdCB3b3VsZCBvbmx5IGdp
+dmUgYSBiYWNrdHJhY2Ugb24gcGxhdGZvcm1zIHdob3NlIGFyY2hfaXJxc19kaXNhYmxlZCgpDQpy
+ZXR1cm4gdHJ1ZSB3aGlsZSBvbmx5IHNvbWUgaW50ZXJydXB0cyBhcmUgZGlzYWJsZWQgYW5kIHNv
+bWUgb3RoZXJzDQphcmUgc3RpbGwgb3BlbiwgdGh1cyBuZXN0ZWQgaW50ZXJydXB0cyBjYW4gY29t
+ZSB3aXRob3V0IGFueSBleHBsaWNpdA0KY29kZSB0byBlbmFibGUgaW50ZXJydXB0cy4NCg0KVGhp
+cyB3YXJuIHNlZW1zIHRvIGdpdmUgY29uc2lzdGVudCBpbnRlcnByZXRhdGlvbiBvbiB3aGF0J3Mg
+IlJ1biBpcnENCmhhbmRsZXJzIHdpdGggaW50ZXJydXB0cyBkaXNhYmxlZCIgaW4gY29tbWl0IGU1
+OGFhM2QyZDBjYyAoIiBnZW5pcnE6DQpSdW4gaXJxIGhhbmRsZXJzIHdpdGggaW50ZXJydXB0cyBk
+aXNhYmxlZCIpDQoNCj4gDQo+ICAgICAgICBBcm5kDQoNClRoYW5rcw0KQmFycnkNCg==
