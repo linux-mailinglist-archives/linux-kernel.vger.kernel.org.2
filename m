@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FB531ADBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 20:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456A431ADBE
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 20:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhBMTUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 14:20:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhBMTUE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 14:20:04 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E40C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 11:19:24 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id o15so2289993ilt.6
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 11:19:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=UHr0V2pEeNmhieOwBwecUglE7wnegkRieoaAKsSRabU=;
-        b=M5KHPRkMMJckXl3Q0wiXCj8V+EQdrZ/zInGaqvqS2e2mSawE1PYFm4lCLkLNTqLDfr
-         uRIV2n+uEpFZXGwg4bmdHIK4hwpifPR6BdRe96D+aTiBJT8yozcCPpl+RC/QIuQs4Gku
-         Ipx0BGXK/n7T17g57B2Q4QSkaeJtVgImmSOnlriBl1jG8VA7vXMWpPXG1ufH8wYvZ9wT
-         dhcFEOda9p8Gr2LRExPtbhr227N/9UaEm/UQjbcwYC7Q0I923cvIVrJgNKCwtsAFF7+l
-         f5DKyADIJ+KyDLDak4Lrcs1kTv7mPgtbxvkGKTkulhIO3ePqrPmwAiP8T1Sw6xVjd6On
-         pmkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=UHr0V2pEeNmhieOwBwecUglE7wnegkRieoaAKsSRabU=;
-        b=tIHi2YzMb65zgiDHnDm8VnQob9x8sWH/qLYC+zqF70QeWag6l5e0saGRj8DXBA1C6X
-         5ihOauYE4T/b6Dm91ySkC+62sIy2Owf5Y4QlU9NFUK4qHgnm9vWNjFhycWngN1NCejDG
-         AtJix00aFGX7riPB1bKNxIH47ErZnpGL/teulGN/BAWn8BLHtc0Da0OXRPrYwWHZOfns
-         AxuZX2dyxuZSfWFyaMGpm5bpf5K/HrNf/hP4qO8QWtRW/8wJMj20HRnLFuusBdbDgeok
-         X1bRJceOolVRknaSnmbQb6Fm5jK7QxKOUhY8KzWmJ3agCDZjojJriZGScgyTSSRcUvOJ
-         I4QQ==
-X-Gm-Message-State: AOAM531VmHYbnxX2sqlVIqVRZa3zzf2dvCpxcfDlNtn30F27lNyoq5zp
-        bTYjvHPO38IkIVB48s6sRMCQNkswXLZHa/9TJp2tEp1+Q5TzLQ==
-X-Google-Smtp-Source: ABdhPJy+oIeUjK60BpRIaON9DX/zul5GY52TB7KXxIgi3fDPFEbcgbiCw+8j7oSuikUV+Vu+wfZxaJLttk+wR34HCL0=
-X-Received: by 2002:a92:ce46:: with SMTP id a6mr7441756ilr.10.1613243964394;
- Sat, 13 Feb 2021 11:19:24 -0800 (PST)
+        id S229733AbhBMTUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 14:20:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229665AbhBMTU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 14:20:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F330364DCF;
+        Sat, 13 Feb 2021 19:19:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613243987;
+        bh=pZBO4rvpEitfkDSjUhW3j10U+pt1UxIvnooDAWdRuzs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=U2oBxlAwzHS/2pvENZ/dcSEcSpcu38NhLg5wiI2TIOg9q6BRGSaTSI97rTu0vs3DC
+         z9AQSJuHpASYQbV5lUkVkf0l6U76ctrBCAZNWivEhOjktvOfTUpRPaOLuXSNOvoIwj
+         Zn16sf/YN4C40MWslyvXzmxCf45A05v/+NDxH9SC9PyDu37PN2PQ+oe40PER0FUedC
+         PfaKec2Xh564jwgqqgk0aczgGqWPft95F+o01Idk0kI39NcjU9fKbxyzraHVMrGNG5
+         gHR1NzLIK0gpeUaw3E3vwnefOOcDpGU16qqvQT0S4KeTem2azUkAcHRpRSVuOLk4Kz
+         b0ha58pYX8dNg==
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH v2 0/2] Clean up x86_32 stackprotector
+Date:   Sat, 13 Feb 2021 11:19:43 -0800
+Message-Id: <cover.1613243844.git.luto@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210208214327.65287-1-sedat.dilek@gmail.com> <CAP045Ar1MvSGSrL9gL3YzSbGJvs4Xt0MMuAahLZz2_B6y0UbzQ@mail.gmail.com>
-In-Reply-To: <CAP045Ar1MvSGSrL9gL3YzSbGJvs4Xt0MMuAahLZz2_B6y0UbzQ@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 13 Feb 2021 20:19:13 +0100
-Message-ID: <CA+icZUXj2ew2zPpBBk989i-o49Rz4sb0JpdBH_CtmbSqcwsEJg@mail.gmail.com>
-Subject: Re: [PATCH] x86: entry: Remove _TIF_SINGLESTEP define leftover
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 11:01 PM Kyle Huey <me@kylehuey.com> wrote:
->
-> Looks good to me.
->
+x86_32 stackprotector is a maintenance nightmare.  Clean it up.  This
+disables stackprotector on x86_32 on GCC 8.1 and on all clang
+versions.  Some clang people are cc'd.
 
-Any other comments on this patch v2?
+Changes from v1:
+ - Changelog fixes.
+ - Comment fixes (mostly from Sean).
+ - Fix the !SMP case.
 
-Thanks.
+Andy Lutomirski (2):
+  x86/stackprotector/32: Make the canary into a regular percpu variable
+  x86/entry/32: Remove leftover macros after stackprotector cleanups
 
-- Sedat -
+ arch/x86/Kconfig                          |  7 +-
+ arch/x86/Makefile                         |  8 ++
+ arch/x86/entry/entry_32.S                 | 95 +----------------------
+ arch/x86/include/asm/processor.h          | 15 +---
+ arch/x86/include/asm/ptrace.h             |  5 +-
+ arch/x86/include/asm/segment.h            | 30 ++-----
+ arch/x86/include/asm/stackprotector.h     | 79 ++++---------------
+ arch/x86/include/asm/suspend_32.h         |  6 +-
+ arch/x86/kernel/asm-offsets_32.c          |  5 --
+ arch/x86/kernel/cpu/common.c              |  5 +-
+ arch/x86/kernel/doublefault_32.c          |  4 +-
+ arch/x86/kernel/head_32.S                 | 18 +----
+ arch/x86/kernel/setup_percpu.c            |  1 -
+ arch/x86/kernel/tls.c                     |  8 +-
+ arch/x86/kvm/svm/svm.c                    | 10 +--
+ arch/x86/lib/insn-eval.c                  |  4 -
+ arch/x86/platform/pvh/head.S              | 14 ----
+ arch/x86/power/cpu.c                      |  6 +-
+ arch/x86/xen/enlighten_pv.c               |  1 -
+ scripts/gcc-x86_32-has-stack-protector.sh |  6 +-
+ 20 files changed, 62 insertions(+), 265 deletions(-)
 
-> - Kyle
->
-> On Mon, Feb 8, 2021 at 1:43 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > After commit 6342adcaa683 ("entry: Ensure trap after single-step on
-> > system call return") a _TIF_SINGLESTEP define is obsolete for arch/x86.
-> >
-> > So, remove the leftover in arch/x86/include/asm/thread_info.h file.
-> >
-> > Fixes: 6342adcaa683 ("entry: Ensure trap after single-step on system call return"
-> > CC: Kyle Huey <me@kylehuey.com>
-> > Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > ---
-> >  arch/x86/include/asm/thread_info.h | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-> > index 0d751d5da702..8861967e0305 100644
-> > --- a/arch/x86/include/asm/thread_info.h
-> > +++ b/arch/x86/include/asm/thread_info.h
-> > @@ -101,7 +101,6 @@ struct thread_info {
-> >  #define _TIF_NOTIFY_RESUME     (1 << TIF_NOTIFY_RESUME)
-> >  #define _TIF_SIGPENDING                (1 << TIF_SIGPENDING)
-> >  #define _TIF_NEED_RESCHED      (1 << TIF_NEED_RESCHED)
-> > -#define _TIF_SINGLESTEP                (1 << TIF_SINGLESTEP)
-> >  #define _TIF_SSBD              (1 << TIF_SSBD)
-> >  #define _TIF_SPEC_IB           (1 << TIF_SPEC_IB)
-> >  #define _TIF_SPEC_FORCE_UPDATE (1 << TIF_SPEC_FORCE_UPDATE)
-> > --
-> > 2.30.0
-> >
+-- 
+2.29.2
+
