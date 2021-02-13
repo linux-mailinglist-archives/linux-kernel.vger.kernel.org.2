@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D830231ADDF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 21:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5502D31ADE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 21:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhBMUE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 15:04:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54424 "EHLO mail.kernel.org"
+        id S229848AbhBMUEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 15:04:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229694AbhBMUEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 15:04:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6F7C164E29;
-        Sat, 13 Feb 2021 20:03:43 +0000 (UTC)
+        id S229742AbhBMUEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 15:04:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6549E64E00;
+        Sat, 13 Feb 2021 20:03:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613246623;
-        bh=hZnvRJr3oD9IDR8yD3jP5BPGlWkf1jcsDop0WiXLF58=;
+        s=k20201202; t=1613246624;
+        bh=Mi2e3XpMsFLpQL40uqcrnqIGq07lJDUBvfHRdmeez5I=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KVZwBfO2A8hMBELKkMFr47VE18Ou5RP843wd3hrtDOXaYequXXbVhZ5SGb9/TBbVO
-         dhi5Jcp1CfmAhJJc5M8dr2DiOseFevsCxk48YfBXTNBbjx2xkXeRlcxV25cn0QLGra
-         Td3Y1gVYF+HLxCbJbzBKfGzd5zg/2F+zp/3SEY40t8dpKYjztHbgJcT3tvbFiKHN8d
-         9kK68w2ie0j3YqBBe4Nc9ZvgZhjiPofEBlpn2NTnaElxrFvmQVfo4aSof92Ju1jGTp
-         bWjT7BFbdAfuK5U+V1AW7Ls5XQXzdgEuHT6lme/aJd6Nmd7DRbCaCIY6W9p7xOu7R3
-         IZdd6hj7u9Lrg==
+        b=UvRJcuVnnaHWElWzCH9CQACj6y0NBClxW50D+oUXLQfXQBQNROpBZOYj09+2Pob2q
+         L1sLwJSHxurtRtzCS1sn/HFbAbu/l7Po10wTMF8AwyCAUIgPlYhdGZUX5j5wK4c5xq
+         7lOzdfuZskUJ3e0YuqnVaml63G/3vJEuuBdmJfUxDjmy3HRwDgtYiubk0HXA4cAoho
+         dkVUZPmVL3AhzE9dq8sf3A7qfsw3bWSGycud4r7iYjpR7V3G5qsEkJ2Z2c0NER5ozb
+         sRcIgNDCQ9FoMqVwFht4o1/8xvB69191OlBFldovAIiGaU7b/TmQyL4ry4JSww45GR
+         mqjQHh403Nyyg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 61CF660A2F;
-        Sat, 13 Feb 2021 20:03:43 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fix for 5.11-rc8
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 604AE60970;
+        Sat, 13 Feb 2021 20:03:44 +0000 (UTC)
+Subject: Re: [GIT PULL] cifs fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1613141613.git.dsterba@suse.com>
-References: <cover.1613141613.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1613141613.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc7-tag
-X-PR-Tracked-Commit-Id: 83c68bbcb6ac2dbbcaf12e2281a29a9f73b97d0f
+In-Reply-To: <CAH2r5mtYEj+WLy+oPSXEwS5sZ8+TNk_dU3PVx3ieBz2DFS94Sg@mail.gmail.com>
+References: <CAH2r5mtYEj+WLy+oPSXEwS5sZ8+TNk_dU3PVx3ieBz2DFS94Sg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5mtYEj+WLy+oPSXEwS5sZ8+TNk_dU3PVx3ieBz2DFS94Sg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.11-rc7-smb3
+X-PR-Tracked-Commit-Id: a738c93fb1c17e386a09304b517b1c6b2a6a5a8b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e42ee56fe59759023cb252fabb3d6f279fe8cec8
-Message-Id: <161324662334.16511.11554487863932417402.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Feb 2021 20:03:43 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 7989807dc0c95c4b787698eba10905a5baac42e8
+Message-Id: <161324662438.16511.16513100434895733477.pr-tracker-bot@kernel.org>
+Date:   Sat, 13 Feb 2021 20:03:44 +0000
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 13 Feb 2021 14:02:31 +0100:
+The pull request you sent on Fri, 12 Feb 2021 12:15:57 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc7-tag
+> git://git.samba.org/sfrench/cifs-2.6.git tags/5.11-rc7-smb3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e42ee56fe59759023cb252fabb3d6f279fe8cec8
+https://git.kernel.org/torvalds/c/7989807dc0c95c4b787698eba10905a5baac42e8
 
 Thank you!
 
