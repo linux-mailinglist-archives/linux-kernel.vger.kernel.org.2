@@ -2,103 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9287D31ADE3
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 21:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D830231ADDF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 21:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhBMUFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 15:05:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhBMUFK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 15:05:10 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97585C061574;
-        Sat, 13 Feb 2021 12:04:30 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id h8so3008606qkk.6;
-        Sat, 13 Feb 2021 12:04:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=azyACAaeZShtsPZdyQW2VyvY2tG9ZntNC6GHA++ns2w=;
-        b=OyomVyPvZfw5zGvSFus9OI5F6tzFKAtlT5VWC7UweDSxLTakygbtbFgB8nCZwaYh07
-         DdITPm83zYamYoYM63myil3QkKBcMQDlClpGzDGGFDeVjxL4sH9RS8vWn9McdgTlRMDS
-         Wjg3/LjCtowT/PoowJCqaUq7Ys4mtwvFaOlayHEkg4gxeolCnTdtGMISgWpgtPkqHdlb
-         Je5qb7sACQXd9otY2qcpM1Y/EH0+N4A8kkFEC2s0WbEjdhyyYWqDPu9Al2CCkuH3qTxb
-         l+0frEutZpH98vUNuZxFj8sJaXDaKw8JLn+5wc+2KIlkqB6/DgCsrXv2GY/D+/KT+sTZ
-         S7Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=azyACAaeZShtsPZdyQW2VyvY2tG9ZntNC6GHA++ns2w=;
-        b=dx97jXnV/LitWEdhsCkbZZx1Y5odsWa3mMLhFBz6Sg0YgTWbpj+Rqior2OEftd2eZg
-         1IwlJbBXQ9ZnkU91BGmaz4s0a2Ld1A1fMm4VVCah2c/KpDk6EDZRrCmdhqWdGnmSthM8
-         i2wNXX/EniBJ2VmDV0Qb4vZg+3ozqD1H9tq2pHtrdApTMUHayYShC1M1INQ+aRdatK0d
-         ptercNcwlLNYkc7dZILm4IKmOJ9meU6VSgau+9iTdVqqkih846h3sKFaGMCLIWUbdzoP
-         uX0b538f7SvT/fO2CLitSxvTwnqqqC8n+8p1qarCQLXi6SqMzt6HmqPYTP+bUoynkfre
-         3a9g==
-X-Gm-Message-State: AOAM531NrHupxicLZ9Sma1QJXblc6sSjprhbVdxipdEc7bxFm1ytmS2p
-        iP/EtsMoypje3q5cWz1aY08YdQnYGr0=
-X-Google-Smtp-Source: ABdhPJz5bcVcYxYyJeObTKfkmXJZJ9mVxCe+TIqlra3+I4z8f+Bq/0wA4tstAGIVMCY4n7VqJR0OOw==
-X-Received: by 2002:a37:7b02:: with SMTP id w2mr8360045qkc.291.1613246669625;
-        Sat, 13 Feb 2021 12:04:29 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:8a63])
-        by smtp.gmail.com with ESMTPSA id n67sm8844617qkb.35.2021.02.13.12.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 12:04:29 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sat, 13 Feb 2021 15:03:31 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] cgroup fixes for v5.11-rc7
-Message-ID: <YCgwkyRWS5fM0Xtj@mtj.duckdns.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S229832AbhBMUE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 15:04:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229694AbhBMUEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 15:04:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6F7C164E29;
+        Sat, 13 Feb 2021 20:03:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613246623;
+        bh=hZnvRJr3oD9IDR8yD3jP5BPGlWkf1jcsDop0WiXLF58=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=KVZwBfO2A8hMBELKkMFr47VE18Ou5RP843wd3hrtDOXaYequXXbVhZ5SGb9/TBbVO
+         dhi5Jcp1CfmAhJJc5M8dr2DiOseFevsCxk48YfBXTNBbjx2xkXeRlcxV25cn0QLGra
+         Td3Y1gVYF+HLxCbJbzBKfGzd5zg/2F+zp/3SEY40t8dpKYjztHbgJcT3tvbFiKHN8d
+         9kK68w2ie0j3YqBBe4Nc9ZvgZhjiPofEBlpn2NTnaElxrFvmQVfo4aSof92Ju1jGTp
+         bWjT7BFbdAfuK5U+V1AW7Ls5XQXzdgEuHT6lme/aJd6Nmd7DRbCaCIY6W9p7xOu7R3
+         IZdd6hj7u9Lrg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 61CF660A2F;
+        Sat, 13 Feb 2021 20:03:43 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fix for 5.11-rc8
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1613141613.git.dsterba@suse.com>
+References: <cover.1613141613.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1613141613.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc7-tag
+X-PR-Tracked-Commit-Id: 83c68bbcb6ac2dbbcaf12e2281a29a9f73b97d0f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e42ee56fe59759023cb252fabb3d6f279fe8cec8
+Message-Id: <161324662334.16511.11554487863932417402.pr-tracker-bot@kernel.org>
+Date:   Sat, 13 Feb 2021 20:03:43 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Linus.
+The pull request you sent on Sat, 13 Feb 2021 14:02:31 +0100:
 
-Two cgroup fixes: 1. Fix the NULL deref when trying to poll PSI in the root
-cgroup and 2. fix confusing controller parsing corner case when mounting
-cgroup v1 hierarchies. And doc / maintainer file updates.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc7-tag
 
-Thanks.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e42ee56fe59759023cb252fabb3d6f279fe8cec8
 
-The following changes since commit f4e087c666f54559cb4e530af1fbfc9967e14a15:
-
-  Merge tag 'acpi-5.11-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm (2021-01-15 10:55:33 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.11-fixes
-
-for you to fetch changes up to 74bdd45c85d02f695a1cd1c3dccf8b3960a86d8f:
-
-  cgroup: update PSI file description in docs (2021-01-19 12:03:07 -0500)
-
-----------------------------------------------------------------
-Chen Zhou (1):
-      cgroup-v1: add disabled controller check in cgroup1_parse_param()
-
-Odin Ugedal (2):
-      cgroup: fix psi monitor for root cgroup
-      cgroup: update PSI file description in docs
-
-Zefan Li (2):
-      MAINTAINERS: Remove stale URLs for cpuset
-      MAINTAINERS: Update my email address
-
- Documentation/admin-guide/cgroup-v2.rst | 6 +++---
- MAINTAINERS                             | 6 ++----
- kernel/cgroup/cgroup-v1.c               | 3 +++
- kernel/cgroup/cgroup.c                  | 4 +++-
- 4 files changed, 11 insertions(+), 8 deletions(-)
+Thank you!
 
 -- 
-tejun
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
