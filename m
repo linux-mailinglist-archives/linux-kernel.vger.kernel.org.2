@@ -2,253 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CF731AB2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E29AA31AB32
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:11:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhBMMEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 07:04:04 -0500
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:34902 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhBMMEA (ORCPT
+        id S229647AbhBMMJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 07:09:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhBMMJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 07:04:00 -0500
-Received: by mail-lj1-f176.google.com with SMTP id a17so2203533ljq.2;
-        Sat, 13 Feb 2021 04:03:42 -0800 (PST)
+        Sat, 13 Feb 2021 07:09:43 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAA1C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 04:09:03 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id z9so1136531pjl.5
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 04:09:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oO7vMSW0bfsJGTS5Qqt+bC8w+pkLjeLaJvk90+zKPLE=;
+        b=GoQUPu9CaYvcu1GOJ9LBhCTwuu/1xBbtZrbhMjLjs9jVEJCDnivL4IPsVqJIvCB2ik
+         wqq8Fs2UP/ucjrrtlqPPqNSSNunw47guJ0vj5RP6Yktrxk7VHaJoIkLDeUl6Bt06VDHl
+         W0lsjD4+QUL9C0UUn2NUJVQsXgGoFMihrA0X7gFgSSNmqMAFwr1MeJpikLrBjqyf8fSR
+         izp9r9X+jEpiXFt3Pt98Aoa8GXiOprlupuuIIWc5DD+Z07rjrylblkEPcFPf3gceSacJ
+         8Y52f9Tk+q3npTZFwUIyMOK54OQ/B8sQU9nXLd0bx4Op5aDlPyaMM8bhrxY7FUkA7OYK
+         OKkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WY1NnsH30Be8VVli1iUXQg5r7coQiLhOd+l5J1iwT2s=;
-        b=OZX9jKsC+nbrJggk+7jJhVeFYgylAInj0RpmVWEyPpXLi+Ev1V+TeGtOyI+1FTV0Vb
-         rtbZIsJqDOKDSBfzPzVQxm9nHH315pJoBb/TUExcIWpeITFwPwAZogvRxWIFiuYpgFhl
-         8obQkzgISAjshN5U8ucLKOxkEltU+q2NXHcHF5ZB3BS6j65N56tW5NSiOMnVNpJAT+2M
-         ldfQAiU054miXipBffhJGwp9+HifvE8WNq/DyxhSrN7pwL2UnFvgA0Ml3GzM2omyWb4l
-         CGPNmK0VG3TFOZx8vShu7ppGKQNToOF2xWwhYTTNlFae8wFMZlelztpWTGjyHJHaIDEe
-         HBcQ==
-X-Gm-Message-State: AOAM532ByVzifZEFvmZ+sBGNvm6GCVRapAegS86c3noponKAxBqYd0nP
-        9m26UVg+uCN856DKlmGNi/g=
-X-Google-Smtp-Source: ABdhPJxUdeaMmTYzA7YQVQxceXoNkiGOX3StpS6KDXnwCWU7vfPj2QjyndWprvgIyvffCm27kLu5rg==
-X-Received: by 2002:a2e:3207:: with SMTP id y7mr4170152ljy.190.1613217796566;
-        Sat, 13 Feb 2021 04:03:16 -0800 (PST)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id y5sm1834900lfg.138.2021.02.13.04.03.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oO7vMSW0bfsJGTS5Qqt+bC8w+pkLjeLaJvk90+zKPLE=;
+        b=XW7Qzvw6rep1l5Quva1a/RZVUOBkJFjIBVIvp9eODAK1V4QhLO7YdH6Ic56mm82i7J
+         ngrJomDDcHPAQ9TY0BX3ejqpm/+xziOuD303EoMB0c//160Szdr2d3eHw2BADuqeTYuK
+         VN3UwzXQNiI66u3Uzffh/fMpbqnXdSxOEGr2gq/ZLTG0M7pfltPXvEG2lz4p5y7jykaX
+         hZxEkR5742zziMVkXKg2+AFuaxXFGzSXz1aHW3kAl4+WN5gDu/ZqJkdEqQSJbzN3dSPf
+         kpcK+Qlf0OsyDNMVQ3E/aNbAD16Csbp5TBXkkZfxsyMQ0LSIHwvgCv7XSEmi+47eK/Pk
+         no4w==
+X-Gm-Message-State: AOAM5329CKClG31xo9hDq84/hUEyNew8iaa5Y1Dvolhf1JkdGjm62tKV
+        GNyyCrEpGEi57yi4Sa6f6Kw=
+X-Google-Smtp-Source: ABdhPJzUs5hnvIVxNPFD/RV2FAt44Ws9Cuiv/FRwlwtBLt8MnWLlpM+onpPR4m/5Qf7kmKeUk8JSxg==
+X-Received: by 2002:a17:902:e309:b029:e2:86e9:cc75 with SMTP id q9-20020a170902e309b02900e286e9cc75mr6532272plc.59.1613218143063;
+        Sat, 13 Feb 2021 04:09:03 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:5c0a:f013:e601:5200:b1d8:3ee7])
+        by smtp.gmail.com with ESMTPSA id gt2sm154470pjb.0.2021.02.13.04.09.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 04:03:16 -0800 (PST)
-Date:   Sat, 13 Feb 2021 14:03:09 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [RFC PATCH 2/7] extconn: Clean-up few drivers by using managed work
- init
-Message-ID: <2268e68a236bee165b5af245754249fa93ce4669.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
+        Sat, 13 Feb 2021 04:09:02 -0800 (PST)
+From:   Mukul Mehar <mukulmehar02@gmail.com>
+To:     mchehab+huawei@kernel.org, gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Mukul Mehar <mukulmehar02@gmail.com>
+Subject: [PATCH]: staging: hikey9xx: Fix alignment of function parameters
+Date:   Sat, 13 Feb 2021 17:35:59 +0530
+Message-Id: <20210213120556.73579-1-mukulmehar02@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Few drivers implement remove call-back only for ensuring a delayed
-work gets cancelled prior driver removal. Clean-up these by switching
-to use devm_delayed_work_autocancel() instead.
+This patch fixes the following checkpatch.pl check:
 
-This change is compile-tested only. All testing is appreciated.
+CHECK: Alignment should match open parenthesis
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Signed-off-by: Mukul Mehar <mukulmehar02@gmail.com>
 ---
- drivers/extcon/extcon-gpio.c           | 14 +++-----------
- drivers/extcon/extcon-intel-int3496.c  | 15 +++------------
- drivers/extcon/extcon-palmas.c         | 16 +++++-----------
- drivers/extcon/extcon-qcom-spmi-misc.c | 16 +++++-----------
- 4 files changed, 16 insertions(+), 45 deletions(-)
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/extcon/extcon-gpio.c b/drivers/extcon/extcon-gpio.c
-index c211222f5d0c..7a45610e6c59 100644
---- a/drivers/extcon/extcon-gpio.c
-+++ b/drivers/extcon/extcon-gpio.c
-@@ -112,7 +112,9 @@ static int gpio_extcon_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
+diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+index 9c5e113e1a81..4ebcfea9f3bf 100644
+--- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
++++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+@@ -177,7 +177,7 @@ static void hi6421_spmi_pmic_irq_init(struct hi6421_spmi_pmic *ddata)
  
--	INIT_DELAYED_WORK(&data->work, gpio_extcon_work);
-+	ret = devm_delayed_work_autocancel(dev, &data->work, gpio_extcon_work);
-+	if (ret)
-+		return ret;
+ 	for (i = 0; i < HISI_IRQ_ARRAY; i++)
+ 		regmap_write(ddata->regmap, SOC_PMIC_IRQ_MASK_0_ADDR + i,
+-					HISI_MASK);
++			     HISI_MASK);
  
- 	/*
- 	 * Request the interrupt of gpio to detect whether external connector
-@@ -131,15 +133,6 @@ static int gpio_extcon_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int gpio_extcon_remove(struct platform_device *pdev)
--{
--	struct gpio_extcon_data *data = platform_get_drvdata(pdev);
--
--	cancel_delayed_work_sync(&data->work);
--
--	return 0;
--}
--
- #ifdef CONFIG_PM_SLEEP
- static int gpio_extcon_resume(struct device *dev)
- {
-@@ -158,7 +151,6 @@ static SIMPLE_DEV_PM_OPS(gpio_extcon_pm_ops, NULL, gpio_extcon_resume);
- 
- static struct platform_driver gpio_extcon_driver = {
- 	.probe		= gpio_extcon_probe,
--	.remove		= gpio_extcon_remove,
- 	.driver		= {
- 		.name	= "extcon-gpio",
- 		.pm	= &gpio_extcon_pm_ops,
-diff --git a/drivers/extcon/extcon-intel-int3496.c b/drivers/extcon/extcon-intel-int3496.c
-index 80c9abcc3f97..508a63dae3b4 100644
---- a/drivers/extcon/extcon-intel-int3496.c
-+++ b/drivers/extcon/extcon-intel-int3496.c
-@@ -101,7 +101,9 @@ static int int3496_probe(struct platform_device *pdev)
+ 	for (i = 0; i < HISI_IRQ_ARRAY; i++) {
+ 		regmap_read(ddata->regmap, SOC_PMIC_IRQ0_ADDR + i, &pending);
+@@ -235,7 +235,7 @@ static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
  		return -ENOMEM;
  
- 	data->dev = dev;
--	INIT_DELAYED_WORK(&data->work, int3496_do_usb_id);
-+	ret = devm_delayed_work_autocancel(dev, &data->work, int3496_do_usb_id);
-+	if (ret)
-+		return ret;
- 
- 	data->gpio_usb_id = devm_gpiod_get(dev, "id", GPIOD_IN);
- 	if (IS_ERR(data->gpio_usb_id)) {
-@@ -155,16 +157,6 @@ static int int3496_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int int3496_remove(struct platform_device *pdev)
--{
--	struct int3496_data *data = platform_get_drvdata(pdev);
--
--	devm_free_irq(&pdev->dev, data->usb_id_irq, data);
--	cancel_delayed_work_sync(&data->work);
--
--	return 0;
--}
--
- static const struct acpi_device_id int3496_acpi_match[] = {
- 	{ "INT3496" },
- 	{ }
-@@ -177,7 +169,6 @@ static struct platform_driver int3496_driver = {
- 		.acpi_match_table = int3496_acpi_match,
- 	},
- 	.probe = int3496_probe,
--	.remove = int3496_remove,
- };
- 
- module_platform_driver(int3496_driver);
-diff --git a/drivers/extcon/extcon-palmas.c b/drivers/extcon/extcon-palmas.c
-index a2852bcc5f0d..1c48094bcf68 100644
---- a/drivers/extcon/extcon-palmas.c
-+++ b/drivers/extcon/extcon-palmas.c
-@@ -237,7 +237,11 @@ static int palmas_usb_probe(struct platform_device *pdev)
- 			palmas_usb->sw_debounce_jiffies = msecs_to_jiffies(debounce);
- 	}
- 
--	INIT_DELAYED_WORK(&palmas_usb->wq_detectid, palmas_gpio_id_detect);
-+	status = devm_delayed_work_autocancel(&pdev->dev,
-+					      &palmas_usb->wq_detectid,
-+					      palmas_gpio_id_detect);
-+	if (status)
-+		return status;
- 
- 	palmas->usb = palmas_usb;
- 	palmas_usb->palmas = palmas;
-@@ -359,15 +363,6 @@ static int palmas_usb_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int palmas_usb_remove(struct platform_device *pdev)
--{
--	struct palmas_usb *palmas_usb = platform_get_drvdata(pdev);
--
--	cancel_delayed_work_sync(&palmas_usb->wq_detectid);
--
--	return 0;
--}
--
- #ifdef CONFIG_PM_SLEEP
- static int palmas_usb_suspend(struct device *dev)
- {
-@@ -422,7 +417,6 @@ static const struct of_device_id of_palmas_match_tbl[] = {
- 
- static struct platform_driver palmas_usb_driver = {
- 	.probe = palmas_usb_probe,
--	.remove = palmas_usb_remove,
- 	.driver = {
- 		.name = "palmas-usb",
- 		.of_match_table = of_palmas_match_tbl,
-diff --git a/drivers/extcon/extcon-qcom-spmi-misc.c b/drivers/extcon/extcon-qcom-spmi-misc.c
-index 6b836ae62176..82a7498951d2 100644
---- a/drivers/extcon/extcon-qcom-spmi-misc.c
-+++ b/drivers/extcon/extcon-qcom-spmi-misc.c
-@@ -80,7 +80,11 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
- 	}
- 
- 	info->debounce_jiffies = msecs_to_jiffies(USB_ID_DEBOUNCE_MS);
--	INIT_DELAYED_WORK(&info->wq_detcable, qcom_usb_extcon_detect_cable);
-+
-+	ret = devm_delayed_work_autocancel(dev, &info->wq_detcable,
-+					   qcom_usb_extcon_detect_cable);
-+	if (ret)
-+		return ret;
- 
- 	info->irq = platform_get_irq_byname(pdev, "usb_id");
- 	if (info->irq < 0)
-@@ -105,15 +109,6 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int qcom_usb_extcon_remove(struct platform_device *pdev)
--{
--	struct qcom_usb_extcon_info *info = platform_get_drvdata(pdev);
--
--	cancel_delayed_work_sync(&info->wq_detcable);
--
--	return 0;
--}
--
- #ifdef CONFIG_PM_SLEEP
- static int qcom_usb_extcon_suspend(struct device *dev)
- {
-@@ -149,7 +144,6 @@ MODULE_DEVICE_TABLE(of, qcom_usb_extcon_dt_match);
- 
- static struct platform_driver qcom_usb_extcon_driver = {
- 	.probe		= qcom_usb_extcon_probe,
--	.remove		= qcom_usb_extcon_remove,
- 	.driver		= {
- 		.name	= "extcon-pm8941-misc",
- 		.pm	= &qcom_usb_extcon_pm_ops,
+ 	ddata->domain = irq_domain_add_simple(np, HISI_IRQ_NUM, 0,
+-					     &hi6421_spmi_domain_ops, ddata);
++					      &hi6421_spmi_domain_ops, ddata);
+ 	if (!ddata->domain) {
+ 		dev_err(dev, "Failed to create IRQ domain\n");
+ 		return -ENODEV;
 -- 
-2.25.4
+2.25.1
 
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
