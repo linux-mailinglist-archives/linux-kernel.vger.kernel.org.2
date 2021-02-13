@@ -2,818 +2,660 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535EB31ADD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 20:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D676D31ADD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 21:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbhBMTuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 14:50:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhBMTuS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 14:50:18 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389BDC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 11:49:38 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id p132so2785208iod.11
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 11:49:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=VJE27f2ld3/c6DTQ5JO93eoY3WPCtbVli6l/ITpTYqk=;
-        b=MKNHKD+lCp7ijlwnOEjXBwL7QDVXQRFK0JxD8jKQLVpUmxBFhitVyUcZdSvUjfe7JO
-         /Rmhr2L0IV0pmXZoE8qs6RLKAC3ujEkcPDHo/XL43yVZ+glOLsJ7733WTPMg/agXLA6s
-         xPSP7NexdGuH+K12xOO3AMMxRrGIuMBTHqqCT+mrdbEjB+CWVIaO7DNR6AD7ciT/5hcQ
-         aoaOjpizv1XmCwER/WhpKki1d7g05NETE2IOrv5U4gxIYfVfv5qUVKwn3klwtwKoPY9u
-         3vPHXta2zFKQ3M/40+7R+v3o9gwTPyn/iV9w+TQfIOFRzqhgdkww9vWDxzRKQ2rmHHZE
-         v2lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=VJE27f2ld3/c6DTQ5JO93eoY3WPCtbVli6l/ITpTYqk=;
-        b=t481kS86plucb+RjeRF+ZxHl8x+rpYtbmP3ChOlWpb7b0KCRtt7/o2yCYYB48lu8pf
-         ouSZuS5I+MtDr4ZEal1pg76ZKpPUd4fK9QGXfjVrWDOJzl7jnEyCUd1I/kwqI3yYbeJE
-         Pi6tKULNJeG7s0XdzrpMU/sNcBoZoX3N978WTToJHX9zh0uHpbwpgRSl8ExjusnIQigk
-         URJCZJtmdM4GZTwZagm50H0I27AwCvhe8rlwVkhFWM0fMYPTHc/LieZuNf4AU9J/Qx10
-         1lYN2Cd6w24cWfChOH/LAJSbUGNJp1yXPmJvsFo7y/mbVXlPwsla/W/Fg+eu3A0LS/js
-         WcxQ==
-X-Gm-Message-State: AOAM533RiTXQm90Kt51zPAqcdDPl+csvJyC8f920rRd1YEpXrUVxqoLc
-        ZwDE2YY27Y2hfLWx0fkUTR8guq5pmmD1IXDJzJ0=
-X-Google-Smtp-Source: ABdhPJwD8qz18w1suDKhA13rBJUPJXiHlPJZkl/8PI8Qd7bAhrIkGQF23gCkggVDdSygIT6W7bMm/6vqdA+dtVBQfXY=
-X-Received: by 2002:a02:9308:: with SMTP id d8mr8055713jah.138.1613245777117;
- Sat, 13 Feb 2021 11:49:37 -0800 (PST)
+        id S229741AbhBMT7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 14:59:31 -0500
+Received: from mga05.intel.com ([192.55.52.43]:55762 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229665AbhBMT7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 14:59:24 -0500
+IronPort-SDR: GR74sKFMY2ogMwTgT96FiYf5tlRynl8lwuO63/RsxCmlO4bCPBxYN8jNx3fqEQ8tmxeeoij5ue
+ /Ft82wWCacWw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9894"; a="267389447"
+X-IronPort-AV: E=Sophos;i="5.81,176,1610438400"; 
+   d="gz'50?scan'50,208,50";a="267389447"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Feb 2021 11:58:42 -0800
+IronPort-SDR: y/3GGNsgI+vEQXEiTqGeO9aapOSHm4WeeuxKi7DCbpn2aZJl/FVCiAck44nj3mzMP7cxTydZad
+ ouHG7HNo23tQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,176,1610438400"; 
+   d="gz'50?scan'50,208,50";a="438008846"
+Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 13 Feb 2021 11:58:40 -0800
+Received: from kbuild by cd560a204411 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lB13w-0005sE-2I; Sat, 13 Feb 2021 19:58:40 +0000
+Date:   Sun, 14 Feb 2021 03:57:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: include/linux/compiler_types.h:315:38: error: call to
+ '__compiletime_assert_515' declared with attribute error: BUILD_BUG_ON
+ failed: offsetof(struct can_frame, len) != offsetof(struct canfd_frame, len)
+ || offsetof(struct can_frame, data) != offsetof(struc...
+Message-ID: <202102140356.yeQQNGjV-lkp@intel.com>
 MIME-Version: 1.0
-References: <cover.1613243844.git.luto@kernel.org> <c0ff7dba14041c7e5d1cae5d4df052f03759bef3.1613243844.git.luto@kernel.org>
-In-Reply-To: <c0ff7dba14041c7e5d1cae5d4df052f03759bef3.1613243844.git.luto@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 13 Feb 2021 20:49:25 +0100
-Message-ID: <CA+icZUVu6GNchey37y8OBpZYYaFaS11wKan8zzudj8nz6CKsBA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] x86/stackprotector/32: Make the canary into a
- regular percpu variable
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Brian Gerst <brgerst@gmail.com>, Joerg Roedel <jroedel@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="LQksG6bCIzRHxTLp"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 8:19 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On 32-bit kernels, the stackprotector canary is quite nasty -- it is
-> stored at %gs:(20), which is nasty because 32-bit kernels use %fs for
-> percpu storage.  It's even nastier because it means that whether %gs
-> contains userspace state or kernel state while running kernel code
-> depends on whether stackprotector is enabled (this is
-> CONFIG_X86_32_LAZY_GS), and this setting radically changes the way
-> that segment selectors work.  Supporting both variants is a
-> maintenance and testing mess.
->
-> Merely rearranging so that percpu and the stack canary
-> share the same segment would be messy as the 32-bit percpu address
-> layout isn't currently compatible with putting a variable at a fixed
-> offset.
->
-> Fortunately, GCC 8.1 added options that allow the stack canary to be
-> accessed as %fs:__stack_chk_guard, effectively turning it into an ordinary
-> percpu variable.  This lets us get rid of all of the code to manage the
-> stack canary GDT descriptor and the CONFIG_X86_32_LAZY_GS mess.
->
-> (That name is special.  We could use any symbol we want for the
->  %fs-relative mode, but for CONFIG_SMP=n, gcc refuses to let us use any
->  name other than __stack_chk_guard.)
->
-> This patch forcibly disables stackprotector on older compilers that
-> don't support the new options and makes the stack canary into a
-> percpu variable.  The "lazy GS" approach is now used for all 32-bit
-> configurations.
->
-> This patch also makes load_gs_index() work on 32-bit kernels.  On
-> 64-bit kernels, it loads the GS selector and updates the user
-> GSBASE accordingly.  (This is unchanged.)  On 32-bit kernels,
-> it loads the GS selector and updates GSBASE, which is now
-> always the user base.  This means that the overall effect is
-> the same on 32-bit and 64-bit, which avoids some ifdeffery.
->
-> Cc: Sedat Dilek <sedat.dilek@gmail.com>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> ---
->  arch/x86/Kconfig                          |  7 +-
->  arch/x86/Makefile                         |  8 +++
->  arch/x86/entry/entry_32.S                 | 56 ++--------------
->  arch/x86/include/asm/processor.h          | 15 ++---
->  arch/x86/include/asm/ptrace.h             |  5 +-
->  arch/x86/include/asm/segment.h            | 30 +++------
->  arch/x86/include/asm/stackprotector.h     | 79 +++++------------------
->  arch/x86/include/asm/suspend_32.h         |  6 +-
->  arch/x86/kernel/asm-offsets_32.c          |  5 --
->  arch/x86/kernel/cpu/common.c              |  5 +-
->  arch/x86/kernel/doublefault_32.c          |  4 +-
->  arch/x86/kernel/head_32.S                 | 18 +-----
->  arch/x86/kernel/setup_percpu.c            |  1 -
->  arch/x86/kernel/tls.c                     |  8 +--
->  arch/x86/kvm/svm/svm.c                    | 10 +--
->  arch/x86/lib/insn-eval.c                  |  4 --
->  arch/x86/platform/pvh/head.S              | 14 ----
->  arch/x86/power/cpu.c                      |  6 +-
->  arch/x86/xen/enlighten_pv.c               |  1 -
->  scripts/gcc-x86_32-has-stack-protector.sh |  6 +-
->  20 files changed, 62 insertions(+), 226 deletions(-)
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 21f851179ff0..12d8bf011d08 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -353,10 +353,6 @@ config X86_64_SMP
->         def_bool y
->         depends on X86_64 && SMP
->
-> -config X86_32_LAZY_GS
-> -       def_bool y
-> -       depends on X86_32 && !STACKPROTECTOR
-> -
->  config ARCH_SUPPORTS_UPROBES
->         def_bool y
->
-> @@ -379,7 +375,8 @@ config CC_HAS_SANE_STACKPROTECTOR
->         default $(success,$(srctree)/scripts/gcc-x86_32-has-stack-protector.sh $(CC))
->         help
->            We have to make sure stack protector is unconditionally disabled if
-> -          the compiler produces broken code.
-> +          the compiler produces broken code or if it does not let us control
-> +          the segment on 32-bit kernels.
->
->  menu "Processor type and features"
->
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 7116da3980be..0b5cd8c49ccb 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -76,6 +76,14 @@ ifeq ($(CONFIG_X86_32),y)
->
->          # temporary until string.h is fixed
->          KBUILD_CFLAGS += -ffreestanding
-> +
-> +       ifeq ($(CONFIG_STACKPROTECTOR),y)
-> +               ifeq ($(CONFIG_SMP),y)
-> +                       KBUILD_CFLAGS += -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard
-> +               else
-> +                       KBUILD_CFLAGS += -mstack-protector-guard=global
-> +               endif
-> +       endif
 
-Just FYI:
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-According to [1] the following clang compiler flags are available:
+Hi Oliver,
 
--mstack-protector-guard-offset=<arg>
-Use the given offset for addressing the stack-protector guard
+FYI, the error/warning still remains.
 
--mstack-protector-guard-reg=<arg>
-Use the given reg for addressing the stack-protector guard
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   dcc0b49040c70ad827a7f3d58a21b01fdb14e749
+commit: c7b74967799b1af52b3045d69d4c26836b2d41de can: replace can_dlc as variable/element for payload length
+date:   3 months ago
+config: arm-randconfig-r013-20210214 (attached as .config)
+compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c7b74967799b1af52b3045d69d4c26836b2d41de
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout c7b74967799b1af52b3045d69d4c26836b2d41de
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm 
 
--mstack-protector-guard=<arg>
-Use the given guard (global, tls) for addressing the stack-protector guard
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Looks like -mstack-protector-guard-symbol=<arg> is not (yet) available.
+All errors (new ones prefixed by >>):
 
-- Sedat -
+   In file included from <command-line>:
+   net/can/af_can.c: In function 'can_init':
+>> include/linux/compiler_types.h:315:38: error: call to '__compiletime_assert_515' declared with attribute error: BUILD_BUG_ON failed: offsetof(struct can_frame, len) != offsetof(struct canfd_frame, len) || offsetof(struct can_frame, data) != offsetof(struct canfd_frame, data)
+     315 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                      ^
+   include/linux/compiler_types.h:296:4: note: in definition of macro '__compiletime_assert'
+     296 |    prefix ## suffix();    \
+         |    ^~~~~~
+   include/linux/compiler_types.h:315:2: note: in expansion of macro '_compiletime_assert'
+     315 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |  ^~~~~~~~~~~~~~~~
+   net/can/af_can.c:891:2: note: in expansion of macro 'BUILD_BUG_ON'
+     891 |  BUILD_BUG_ON(offsetof(struct can_frame, len) !=
+         |  ^~~~~~~~~~~~
 
-[1] https://clang.llvm.org/docs/ClangCommandLineReference.html
 
->  else
->          BITS := 64
->          UTS_MACHINE := x86_64
-> diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-> index df8c017e6161..eb0cb662bca5 100644
-> --- a/arch/x86/entry/entry_32.S
-> +++ b/arch/x86/entry/entry_32.S
-> @@ -20,7 +20,7 @@
->   *     1C(%esp) - %ds
->   *     20(%esp) - %es
->   *     24(%esp) - %fs
-> - *     28(%esp) - %gs          saved iff !CONFIG_X86_32_LAZY_GS
-> + *     28(%esp) - unused -- was %gs on old stackprotector kernels
->   *     2C(%esp) - orig_eax
->   *     30(%esp) - %eip
->   *     34(%esp) - %cs
-> @@ -56,14 +56,9 @@
->  /*
->   * User gs save/restore
->   *
-> - * %gs is used for userland TLS and kernel only uses it for stack
-> - * canary which is required to be at %gs:20 by gcc.  Read the comment
-> - * at the top of stackprotector.h for more info.
-> - *
-> - * Local labels 98 and 99 are used.
-> + * This is leftover junk from CONFIG_X86_32_LAZY_GS.  A subsequent patch
-> + * will remove it entirely.
->   */
-> -#ifdef CONFIG_X86_32_LAZY_GS
-> -
->   /* unfortunately push/pop can't be no-op */
->  .macro PUSH_GS
->         pushl   $0
-> @@ -86,49 +81,6 @@
->  .macro SET_KERNEL_GS reg
->  .endm
->
-> -#else  /* CONFIG_X86_32_LAZY_GS */
-> -
-> -.macro PUSH_GS
-> -       pushl   %gs
-> -.endm
-> -
-> -.macro POP_GS pop=0
-> -98:    popl    %gs
-> -  .if \pop <> 0
-> -       add     $\pop, %esp
-> -  .endif
-> -.endm
-> -.macro POP_GS_EX
-> -.pushsection .fixup, "ax"
-> -99:    movl    $0, (%esp)
-> -       jmp     98b
-> -.popsection
-> -       _ASM_EXTABLE(98b, 99b)
-> -.endm
-> -
-> -.macro PTGS_TO_GS
-> -98:    mov     PT_GS(%esp), %gs
-> -.endm
-> -.macro PTGS_TO_GS_EX
-> -.pushsection .fixup, "ax"
-> -99:    movl    $0, PT_GS(%esp)
-> -       jmp     98b
-> -.popsection
-> -       _ASM_EXTABLE(98b, 99b)
-> -.endm
-> -
-> -.macro GS_TO_REG reg
-> -       movl    %gs, \reg
-> -.endm
-> -.macro REG_TO_PTGS reg
-> -       movl    \reg, PT_GS(%esp)
-> -.endm
-> -.macro SET_KERNEL_GS reg
-> -       movl    $(__KERNEL_STACK_CANARY), \reg
-> -       movl    \reg, %gs
-> -.endm
-> -
-> -#endif /* CONFIG_X86_32_LAZY_GS */
->
->  /* Unconditionally switch to user cr3 */
->  .macro SWITCH_TO_USER_CR3 scratch_reg:req
-> @@ -779,7 +731,7 @@ SYM_CODE_START(__switch_to_asm)
->
->  #ifdef CONFIG_STACKPROTECTOR
->         movl    TASK_stack_canary(%edx), %ebx
-> -       movl    %ebx, PER_CPU_VAR(stack_canary)+stack_canary_offset
-> +       movl    %ebx, PER_CPU_VAR(__stack_chk_guard)
->  #endif
->
->  #ifdef CONFIG_RETPOLINE
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-> index c20a52b5534b..c59dff4bbc38 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -441,6 +441,9 @@ struct fixed_percpu_data {
->          * GCC hardcodes the stack canary as %gs:40.  Since the
->          * irq_stack is the object at %gs:0, we reserve the bottom
->          * 48 bytes of the irq stack for the canary.
-> +        *
-> +        * Once we are willing to require -mstack-protector-guard-symbol=
-> +        * support for x86_64 stackprotector, we can get rid of this.
->          */
->         char            gs_base[40];
->         unsigned long   stack_canary;
-> @@ -461,17 +464,7 @@ extern asmlinkage void ignore_sysret(void);
->  void current_save_fsgs(void);
->  #else  /* X86_64 */
->  #ifdef CONFIG_STACKPROTECTOR
-> -/*
-> - * Make sure stack canary segment base is cached-aligned:
-> - *   "For Intel Atom processors, avoid non zero segment base address
-> - *    that is not aligned to cache line boundary at all cost."
-> - * (Optim Ref Manual Assembly/Compiler Coding Rule 15.)
-> - */
-> -struct stack_canary {
-> -       char __pad[20];         /* canary at %gs:20 */
-> -       unsigned long canary;
-> -};
-> -DECLARE_PER_CPU_ALIGNED(struct stack_canary, stack_canary);
-> +DECLARE_PER_CPU(unsigned long, __stack_chk_guard);
->  #endif
->  /* Per CPU softirq stack pointer */
->  DECLARE_PER_CPU(struct irq_stack *, softirq_stack_ptr);
-> diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
-> index d8324a236696..b2c4c12d237c 100644
-> --- a/arch/x86/include/asm/ptrace.h
-> +++ b/arch/x86/include/asm/ptrace.h
-> @@ -37,7 +37,10 @@ struct pt_regs {
->         unsigned short __esh;
->         unsigned short fs;
->         unsigned short __fsh;
-> -       /* On interrupt, gs and __gsh store the vector number. */
-> +       /*
-> +        * On interrupt, gs and __gsh store the vector number.  They never
-> +        * store gs any more.
-> +        */
->         unsigned short gs;
->         unsigned short __gsh;
->         /* On interrupt, this is the error code. */
-> diff --git a/arch/x86/include/asm/segment.h b/arch/x86/include/asm/segment.h
-> index 7fdd4facfce7..72044026eb3c 100644
-> --- a/arch/x86/include/asm/segment.h
-> +++ b/arch/x86/include/asm/segment.h
-> @@ -95,7 +95,7 @@
->   *
->   *  26 - ESPFIX small SS
->   *  27 - per-cpu                       [ offset to per-cpu data area ]
-> - *  28 - stack_canary-20               [ for stack protector ]         <=== cacheline #8
-> + *  28 - unused
->   *  29 - unused
->   *  30 - unused
->   *  31 - TSS for double fault handler
-> @@ -118,7 +118,6 @@
->
->  #define GDT_ENTRY_ESPFIX_SS            26
->  #define GDT_ENTRY_PERCPU               27
-> -#define GDT_ENTRY_STACK_CANARY         28
->
->  #define GDT_ENTRY_DOUBLEFAULT_TSS      31
->
-> @@ -158,12 +157,6 @@
->  # define __KERNEL_PERCPU               0
->  #endif
->
-> -#ifdef CONFIG_STACKPROTECTOR
-> -# define __KERNEL_STACK_CANARY         (GDT_ENTRY_STACK_CANARY*8)
-> -#else
-> -# define __KERNEL_STACK_CANARY         0
-> -#endif
-> -
->  #else /* 64-bit: */
->
->  #include <asm/cache.h>
-> @@ -364,22 +357,15 @@ static inline void __loadsegment_fs(unsigned short value)
->         asm("mov %%" #seg ",%0":"=r" (value) : : "memory")
->
->  /*
-> - * x86-32 user GS accessors:
-> + * x86-32 user GS accessors.  This is ugly and could do with some cleaning up.
->   */
->  #ifdef CONFIG_X86_32
-> -# ifdef CONFIG_X86_32_LAZY_GS
-> -#  define get_user_gs(regs)            (u16)({ unsigned long v; savesegment(gs, v); v; })
-> -#  define set_user_gs(regs, v)         loadsegment(gs, (unsigned long)(v))
-> -#  define task_user_gs(tsk)            ((tsk)->thread.gs)
-> -#  define lazy_save_gs(v)              savesegment(gs, (v))
-> -#  define lazy_load_gs(v)              loadsegment(gs, (v))
-> -# else /* X86_32_LAZY_GS */
-> -#  define get_user_gs(regs)            (u16)((regs)->gs)
-> -#  define set_user_gs(regs, v)         do { (regs)->gs = (v); } while (0)
-> -#  define task_user_gs(tsk)            (task_pt_regs(tsk)->gs)
-> -#  define lazy_save_gs(v)              do { } while (0)
-> -#  define lazy_load_gs(v)              do { } while (0)
-> -# endif        /* X86_32_LAZY_GS */
-> +# define get_user_gs(regs)             (u16)({ unsigned long v; savesegment(gs, v); v; })
-> +# define set_user_gs(regs, v)          loadsegment(gs, (unsigned long)(v))
-> +# define task_user_gs(tsk)             ((tsk)->thread.gs)
-> +# define lazy_save_gs(v)               savesegment(gs, (v))
-> +# define lazy_load_gs(v)               loadsegment(gs, (v))
-> +# define load_gs_index(v)              loadsegment(gs, (v))
->  #endif /* X86_32 */
->
->  #endif /* !__ASSEMBLY__ */
-> diff --git a/arch/x86/include/asm/stackprotector.h b/arch/x86/include/asm/stackprotector.h
-> index 7fb482f0f25b..b6ffe58c70fa 100644
-> --- a/arch/x86/include/asm/stackprotector.h
-> +++ b/arch/x86/include/asm/stackprotector.h
-> @@ -5,30 +5,23 @@
->   * Stack protector works by putting predefined pattern at the start of
->   * the stack frame and verifying that it hasn't been overwritten when
->   * returning from the function.  The pattern is called stack canary
-> - * and unfortunately gcc requires it to be at a fixed offset from %gs.
-> - * On x86_64, the offset is 40 bytes and on x86_32 20 bytes.  x86_64
-> - * and x86_32 use segment registers differently and thus handles this
-> - * requirement differently.
-> + * and unfortunately gcc historically required it to be at a fixed offset
-> + * from the percpu segment base.  On x86_64, the offset is 40 bytes.
->   *
-> - * On x86_64, %gs is shared by percpu area and stack canary.  All
-> - * percpu symbols are zero based and %gs points to the base of percpu
-> - * area.  The first occupant of the percpu area is always
-> - * fixed_percpu_data which contains stack_canary at offset 40.  Userland
-> - * %gs is always saved and restored on kernel entry and exit using
-> - * swapgs, so stack protector doesn't add any complexity there.
-> + * The same segment is shared by percpu area and stack canary.  On
-> + * x86_64, percpu symbols are zero based and %gs (64-bit) points to the
-> + * base of percpu area.  The first occupant of the percpu area is always
-> + * fixed_percpu_data which contains stack_canary at the approproate
-> + * offset.  On x86_32, the stack canary is just a regular percpu
-> + * variable.
->   *
-> - * On x86_32, it's slightly more complicated.  As in x86_64, %gs is
-> - * used for userland TLS.  Unfortunately, some processors are much
-> - * slower at loading segment registers with different value when
-> - * entering and leaving the kernel, so the kernel uses %fs for percpu
-> - * area and manages %gs lazily so that %gs is switched only when
-> - * necessary, usually during task switch.
-> + * Putting percpu data in %fs on 32-bit is a minor optimization compared to
-> + * using %gs.  Since 32-bit userspace normally has %fs == 0, we are likely
-> + * to load 0 into %fs on exit to usermode, whereas with percpu data in
-> + * %gs, we are likely to load a non-null %gs on return to user mode.
->   *
-> - * As gcc requires the stack canary at %gs:20, %gs can't be managed
-> - * lazily if stack protector is enabled, so the kernel saves and
-> - * restores userland %gs on kernel entry and exit.  This behavior is
-> - * controlled by CONFIG_X86_32_LAZY_GS and accessors are defined in
-> - * system.h to hide the details.
-> + * Once we are willing to require GCC 8.1 or better for 64-bit stackprotector
-> + * support, we can remove some of this complexity.
->   */
->
->  #ifndef _ASM_STACKPROTECTOR_H
-> @@ -44,14 +37,6 @@
->  #include <linux/random.h>
->  #include <linux/sched.h>
->
-> -/*
-> - * 24 byte read-only segment initializer for stack canary.  Linker
-> - * can't handle the address bit shifting.  Address will be set in
-> - * head_32 for boot CPU and setup_per_cpu_areas() for others.
-> - */
-> -#define GDT_STACK_CANARY_INIT                                          \
-> -       [GDT_ENTRY_STACK_CANARY] = GDT_ENTRY_INIT(0x4090, 0, 0x18),
-> -
->  /*
->   * Initialize the stackprotector canary value.
->   *
-> @@ -86,7 +71,7 @@ static __always_inline void boot_init_stack_canary(void)
->  #ifdef CONFIG_X86_64
->         this_cpu_write(fixed_percpu_data.stack_canary, canary);
->  #else
-> -       this_cpu_write(stack_canary.canary, canary);
-> +       this_cpu_write(__stack_chk_guard, canary);
->  #endif
->  }
->
-> @@ -95,48 +80,16 @@ static inline void cpu_init_stack_canary(int cpu, struct task_struct *idle)
->  #ifdef CONFIG_X86_64
->         per_cpu(fixed_percpu_data.stack_canary, cpu) = idle->stack_canary;
->  #else
-> -       per_cpu(stack_canary.canary, cpu) = idle->stack_canary;
-> -#endif
-> -}
-> -
-> -static inline void setup_stack_canary_segment(int cpu)
-> -{
-> -#ifdef CONFIG_X86_32
-> -       unsigned long canary = (unsigned long)&per_cpu(stack_canary, cpu);
-> -       struct desc_struct *gdt_table = get_cpu_gdt_rw(cpu);
-> -       struct desc_struct desc;
-> -
-> -       desc = gdt_table[GDT_ENTRY_STACK_CANARY];
-> -       set_desc_base(&desc, canary);
-> -       write_gdt_entry(gdt_table, GDT_ENTRY_STACK_CANARY, &desc, DESCTYPE_S);
-> -#endif
-> -}
-> -
-> -static inline void load_stack_canary_segment(void)
-> -{
-> -#ifdef CONFIG_X86_32
-> -       asm("mov %0, %%gs" : : "r" (__KERNEL_STACK_CANARY) : "memory");
-> +       per_cpu(__stack_chk_guard, cpu) = idle->stack_canary;
->  #endif
->  }
->
->  #else  /* STACKPROTECTOR */
->
-> -#define GDT_STACK_CANARY_INIT
-> -
->  /* dummy boot_init_stack_canary() is defined in linux/stackprotector.h */
->
-> -static inline void setup_stack_canary_segment(int cpu)
-> -{ }
-> -
->  static inline void cpu_init_stack_canary(int cpu, struct task_struct *idle)
->  { }
->
-> -static inline void load_stack_canary_segment(void)
-> -{
-> -#ifdef CONFIG_X86_32
-> -       asm volatile ("mov %0, %%gs" : : "r" (0));
-> -#endif
-> -}
-> -
->  #endif /* STACKPROTECTOR */
->  #endif /* _ASM_STACKPROTECTOR_H */
-> diff --git a/arch/x86/include/asm/suspend_32.h b/arch/x86/include/asm/suspend_32.h
-> index fdbd9d7b7bca..7b132d0312eb 100644
-> --- a/arch/x86/include/asm/suspend_32.h
-> +++ b/arch/x86/include/asm/suspend_32.h
-> @@ -13,12 +13,10 @@
->  /* image of the saved processor state */
->  struct saved_context {
->         /*
-> -        * On x86_32, all segment registers, with the possible exception of
-> -        * gs, are saved at kernel entry in pt_regs.
-> +        * On x86_32, all segment registers except gs are saved at kernel
-> +        * entry in pt_regs.
->          */
-> -#ifdef CONFIG_X86_32_LAZY_GS
->         u16 gs;
-> -#endif
->         unsigned long cr0, cr2, cr3, cr4;
->         u64 misc_enable;
->         bool misc_enable_saved;
-> diff --git a/arch/x86/kernel/asm-offsets_32.c b/arch/x86/kernel/asm-offsets_32.c
-> index 6e043f295a60..2b411cd00a4e 100644
-> --- a/arch/x86/kernel/asm-offsets_32.c
-> +++ b/arch/x86/kernel/asm-offsets_32.c
-> @@ -53,11 +53,6 @@ void foo(void)
->                offsetof(struct cpu_entry_area, tss.x86_tss.sp1) -
->                offsetofend(struct cpu_entry_area, entry_stack_page.stack));
->
-> -#ifdef CONFIG_STACKPROTECTOR
-> -       BLANK();
-> -       OFFSET(stack_canary_offset, stack_canary, canary);
-> -#endif
-> -
->         BLANK();
->         DEFINE(EFI_svam, offsetof(efi_runtime_services_t, set_virtual_address_map));
->  }
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index 35ad8480c464..f208569d2d3b 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -161,7 +161,6 @@ DEFINE_PER_CPU_PAGE_ALIGNED(struct gdt_page, gdt_page) = { .gdt = {
->
->         [GDT_ENTRY_ESPFIX_SS]           = GDT_ENTRY_INIT(0xc092, 0, 0xfffff),
->         [GDT_ENTRY_PERCPU]              = GDT_ENTRY_INIT(0xc092, 0, 0xfffff),
-> -       GDT_STACK_CANARY_INIT
->  #endif
->  } };
->  EXPORT_PER_CPU_SYMBOL_GPL(gdt_page);
-> @@ -599,7 +598,6 @@ void load_percpu_segment(int cpu)
->         __loadsegment_simple(gs, 0);
->         wrmsrl(MSR_GS_BASE, cpu_kernelmode_gs_base(cpu));
->  #endif
-> -       load_stack_canary_segment();
->  }
->
->  #ifdef CONFIG_X86_32
-> @@ -1793,7 +1791,8 @@ DEFINE_PER_CPU(unsigned long, cpu_current_top_of_stack) =
->  EXPORT_PER_CPU_SYMBOL(cpu_current_top_of_stack);
->
->  #ifdef CONFIG_STACKPROTECTOR
-> -DEFINE_PER_CPU_ALIGNED(struct stack_canary, stack_canary);
-> +DEFINE_PER_CPU(unsigned long, __stack_chk_guard);
-> +EXPORT_PER_CPU_SYMBOL(__stack_chk_guard);
->  #endif
->
->  #endif /* CONFIG_X86_64 */
-> diff --git a/arch/x86/kernel/doublefault_32.c b/arch/x86/kernel/doublefault_32.c
-> index 759d392cbe9f..d1d49e3d536b 100644
-> --- a/arch/x86/kernel/doublefault_32.c
-> +++ b/arch/x86/kernel/doublefault_32.c
-> @@ -100,9 +100,7 @@ DEFINE_PER_CPU_PAGE_ALIGNED(struct doublefault_stack, doublefault_stack) = {
->                 .ss             = __KERNEL_DS,
->                 .ds             = __USER_DS,
->                 .fs             = __KERNEL_PERCPU,
-> -#ifndef CONFIG_X86_32_LAZY_GS
-> -               .gs             = __KERNEL_STACK_CANARY,
-> -#endif
-> +               .gs             = 0,
->
->                 .__cr3          = __pa_nodebug(swapper_pg_dir),
->         },
-> diff --git a/arch/x86/kernel/head_32.S b/arch/x86/kernel/head_32.S
-> index 7ed84c282233..67f590425d90 100644
-> --- a/arch/x86/kernel/head_32.S
-> +++ b/arch/x86/kernel/head_32.S
-> @@ -318,8 +318,8 @@ SYM_FUNC_START(startup_32_smp)
->         movl $(__KERNEL_PERCPU), %eax
->         movl %eax,%fs                   # set this cpu's percpu
->
-> -       movl $(__KERNEL_STACK_CANARY),%eax
-> -       movl %eax,%gs
-> +       xorl %eax,%eax
-> +       movl %eax,%gs                   # clear possible garbage in %gs
->
->         xorl %eax,%eax                  # Clear LDT
->         lldt %ax
-> @@ -339,20 +339,6 @@ SYM_FUNC_END(startup_32_smp)
->   */
->  __INIT
->  setup_once:
-> -#ifdef CONFIG_STACKPROTECTOR
-> -       /*
-> -        * Configure the stack canary. The linker can't handle this by
-> -        * relocation.  Manually set base address in stack canary
-> -        * segment descriptor.
-> -        */
-> -       movl $gdt_page,%eax
-> -       movl $stack_canary,%ecx
-> -       movw %cx, 8 * GDT_ENTRY_STACK_CANARY + 2(%eax)
-> -       shrl $16, %ecx
-> -       movb %cl, 8 * GDT_ENTRY_STACK_CANARY + 4(%eax)
-> -       movb %ch, 8 * GDT_ENTRY_STACK_CANARY + 7(%eax)
-> -#endif
-> -
->         andl $0,setup_once_ref  /* Once is enough, thanks */
->         ret
->
-> diff --git a/arch/x86/kernel/setup_percpu.c b/arch/x86/kernel/setup_percpu.c
-> index fd945ce78554..0941d2f44f2a 100644
-> --- a/arch/x86/kernel/setup_percpu.c
-> +++ b/arch/x86/kernel/setup_percpu.c
-> @@ -224,7 +224,6 @@ void __init setup_per_cpu_areas(void)
->                 per_cpu(this_cpu_off, cpu) = per_cpu_offset(cpu);
->                 per_cpu(cpu_number, cpu) = cpu;
->                 setup_percpu_segment(cpu);
-> -               setup_stack_canary_segment(cpu);
->                 /*
->                  * Copy data used in early init routines from the
->                  * initial arrays to the per cpu data areas.  These
-> diff --git a/arch/x86/kernel/tls.c b/arch/x86/kernel/tls.c
-> index 64a496a0687f..3c883e064242 100644
-> --- a/arch/x86/kernel/tls.c
-> +++ b/arch/x86/kernel/tls.c
-> @@ -164,17 +164,11 @@ int do_set_thread_area(struct task_struct *p, int idx,
->                 savesegment(fs, sel);
->                 if (sel == modified_sel)
->                         loadsegment(fs, sel);
-> -
-> -               savesegment(gs, sel);
-> -               if (sel == modified_sel)
-> -                       load_gs_index(sel);
->  #endif
->
-> -#ifdef CONFIG_X86_32_LAZY_GS
->                 savesegment(gs, sel);
->                 if (sel == modified_sel)
-> -                       loadsegment(gs, sel);
-> -#endif
-> +                       load_gs_index(sel);
->         } else {
->  #ifdef CONFIG_X86_64
->                 if (p->thread.fsindex == modified_sel)
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index f923e14e87df..ec39073b4897 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1467,12 +1467,8 @@ static void svm_vcpu_put(struct kvm_vcpu *vcpu)
->  #ifdef CONFIG_X86_64
->                 loadsegment(fs, svm->host.fs);
->                 wrmsrl(MSR_KERNEL_GS_BASE, current->thread.gsbase);
-> -               load_gs_index(svm->host.gs);
-> -#else
-> -#ifdef CONFIG_X86_32_LAZY_GS
-> -               loadsegment(gs, svm->host.gs);
-> -#endif
->  #endif
-> +               load_gs_index(svm->host.gs);
->
->                 for (i = 0; i < NR_HOST_SAVE_USER_MSRS; i++)
->                         wrmsrl(host_save_user_msrs[i].index,
-> @@ -3705,13 +3701,11 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu,
->         } else {
->                 __svm_vcpu_run(svm->vmcb_pa, (unsigned long *)&svm->vcpu.arch.regs);
->
-> +               /* Restore the percpu segment immediately. */
->  #ifdef CONFIG_X86_64
->                 native_wrmsrl(MSR_GS_BASE, svm->host.gs_base);
->  #else
->                 loadsegment(fs, svm->host.fs);
-> -#ifndef CONFIG_X86_32_LAZY_GS
-> -               loadsegment(gs, svm->host.gs);
-> -#endif
->  #endif
->         }
->
-> diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-> index 4229950a5d78..7f89a091f1fb 100644
-> --- a/arch/x86/lib/insn-eval.c
-> +++ b/arch/x86/lib/insn-eval.c
-> @@ -404,10 +404,6 @@ static short get_segment_selector(struct pt_regs *regs, int seg_reg_idx)
->         case INAT_SEG_REG_FS:
->                 return (unsigned short)(regs->fs & 0xffff);
->         case INAT_SEG_REG_GS:
-> -               /*
-> -                * GS may or may not be in regs as per CONFIG_X86_32_LAZY_GS.
-> -                * The macro below takes care of both cases.
-> -                */
->                 return get_user_gs(regs);
->         case INAT_SEG_REG_IGNORE:
->         default:
-> diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-> index 43b4d864817e..afbf0bb252da 100644
-> --- a/arch/x86/platform/pvh/head.S
-> +++ b/arch/x86/platform/pvh/head.S
-> @@ -45,10 +45,8 @@
->
->  #define PVH_GDT_ENTRY_CS       1
->  #define PVH_GDT_ENTRY_DS       2
-> -#define PVH_GDT_ENTRY_CANARY   3
->  #define PVH_CS_SEL             (PVH_GDT_ENTRY_CS * 8)
->  #define PVH_DS_SEL             (PVH_GDT_ENTRY_DS * 8)
-> -#define PVH_CANARY_SEL         (PVH_GDT_ENTRY_CANARY * 8)
->
->  SYM_CODE_START_LOCAL(pvh_start_xen)
->         cld
-> @@ -109,17 +107,6 @@ SYM_CODE_START_LOCAL(pvh_start_xen)
->
->  #else /* CONFIG_X86_64 */
->
-> -       /* Set base address in stack canary descriptor. */
-> -       movl $_pa(gdt_start),%eax
-> -       movl $_pa(canary),%ecx
-> -       movw %cx, (PVH_GDT_ENTRY_CANARY * 8) + 2(%eax)
-> -       shrl $16, %ecx
-> -       movb %cl, (PVH_GDT_ENTRY_CANARY * 8) + 4(%eax)
-> -       movb %ch, (PVH_GDT_ENTRY_CANARY * 8) + 7(%eax)
-> -
-> -       mov $PVH_CANARY_SEL,%eax
-> -       mov %eax,%gs
-> -
->         call mk_early_pgtbl_32
->
->         mov $_pa(initial_page_table), %eax
-> @@ -163,7 +150,6 @@ SYM_DATA_START_LOCAL(gdt_start)
->         .quad GDT_ENTRY(0xc09a, 0, 0xfffff) /* PVH_CS_SEL */
->  #endif
->         .quad GDT_ENTRY(0xc092, 0, 0xfffff) /* PVH_DS_SEL */
-> -       .quad GDT_ENTRY(0x4090, 0, 0x18)    /* PVH_CANARY_SEL */
->  SYM_DATA_END_LABEL(gdt_start, SYM_L_LOCAL, gdt_end)
->
->         .balign 16
-> diff --git a/arch/x86/power/cpu.c b/arch/x86/power/cpu.c
-> index db1378c6ff26..ef4329d67a5f 100644
-> --- a/arch/x86/power/cpu.c
-> +++ b/arch/x86/power/cpu.c
-> @@ -99,11 +99,8 @@ static void __save_processor_state(struct saved_context *ctxt)
->         /*
->          * segment registers
->          */
-> -#ifdef CONFIG_X86_32_LAZY_GS
->         savesegment(gs, ctxt->gs);
-> -#endif
->  #ifdef CONFIG_X86_64
-> -       savesegment(gs, ctxt->gs);
->         savesegment(fs, ctxt->fs);
->         savesegment(ds, ctxt->ds);
->         savesegment(es, ctxt->es);
-> @@ -232,7 +229,6 @@ static void notrace __restore_processor_state(struct saved_context *ctxt)
->         wrmsrl(MSR_GS_BASE, ctxt->kernelmode_gs_base);
->  #else
->         loadsegment(fs, __KERNEL_PERCPU);
-> -       loadsegment(gs, __KERNEL_STACK_CANARY);
->  #endif
->
->         /* Restore the TSS, RO GDT, LDT, and usermode-relevant MSRs. */
-> @@ -255,7 +251,7 @@ static void notrace __restore_processor_state(struct saved_context *ctxt)
->          */
->         wrmsrl(MSR_FS_BASE, ctxt->fs_base);
->         wrmsrl(MSR_KERNEL_GS_BASE, ctxt->usermode_gs_base);
-> -#elif defined(CONFIG_X86_32_LAZY_GS)
-> +#else
->         loadsegment(gs, ctxt->gs);
->  #endif
->
-> diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-> index 9a5a50cdaab5..e18235a6390d 100644
-> --- a/arch/x86/xen/enlighten_pv.c
-> +++ b/arch/x86/xen/enlighten_pv.c
-> @@ -1190,7 +1190,6 @@ static void __init xen_setup_gdt(int cpu)
->         pv_ops.cpu.write_gdt_entry = xen_write_gdt_entry_boot;
->         pv_ops.cpu.load_gdt = xen_load_gdt_boot;
->
-> -       setup_stack_canary_segment(cpu);
->         switch_to_new_gdt(cpu);
->
->         pv_ops.cpu.write_gdt_entry = xen_write_gdt_entry;
-> diff --git a/scripts/gcc-x86_32-has-stack-protector.sh b/scripts/gcc-x86_32-has-stack-protector.sh
-> index f5c119495254..825c75c5b715 100755
-> --- a/scripts/gcc-x86_32-has-stack-protector.sh
-> +++ b/scripts/gcc-x86_32-has-stack-protector.sh
-> @@ -1,4 +1,8 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0
->
-> -echo "int foo(void) { char X[200]; return 3; }" | $* -S -x c -c -m32 -O0 -fstack-protector - -o - 2> /dev/null | grep -q "%gs"
-> +# This requires GCC 8.1 or better.  Specifically, we require
-> +# -mstack-protector-guard-reg, added by
-> +# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81708
-> +
-> +echo "int foo(void) { char X[200]; return 3; }" | $* -S -x c -c -m32 -O0 -fstack-protector -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard - -o - 2> /dev/null | grep -q "%fs"
-> --
-> 2.29.2
->
+vim +/__compiletime_assert_515 +315 include/linux/compiler_types.h
+
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  301  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  302  #define _compiletime_assert(condition, msg, prefix, suffix) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  303  	__compiletime_assert(condition, msg, prefix, suffix)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  304  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  305  /**
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  306   * compiletime_assert - break build and emit msg if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  307   * @condition: a compile-time constant condition to check
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  308   * @msg:       a message to emit if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  309   *
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  310   * In tradition of POSIX assert, this macro will break the build if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  311   * supplied condition is *false*, emitting the supplied error message if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  312   * compiler has support to do so.
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  313   */
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  314  #define compiletime_assert(condition, msg) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21 @315  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  316  
+
+:::::: The code at line 315 was first introduced by commit
+:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
+
+:::::: TO: Will Deacon <will@kernel.org>
+:::::: CC: Will Deacon <will@kernel.org>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--LQksG6bCIzRHxTLp
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+rQEA
+
+--LQksG6bCIzRHxTLp--
