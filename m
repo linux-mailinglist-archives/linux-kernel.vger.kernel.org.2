@@ -2,136 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CB231A9CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 04:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7090031A9D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 05:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbhBMDsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 22:48:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
+        id S229798AbhBMEDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 23:03:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbhBMDrU (ORCPT
+        with ESMTP id S229570AbhBMEDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 22:47:20 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CE5C061786;
-        Fri, 12 Feb 2021 19:46:40 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d13so857337plg.0;
-        Fri, 12 Feb 2021 19:46:40 -0800 (PST)
+        Fri, 12 Feb 2021 23:03:31 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D757C061574;
+        Fri, 12 Feb 2021 20:02:50 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id r23so1463493ljh.1;
+        Fri, 12 Feb 2021 20:02:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ycEZD6+lGycl7jzGlqgxg/WeXj7vcT8Oor6/VJW+6Uo=;
-        b=sDXdUOIqZLgSJqhQUBczAKHhu+hl3H/sBr7LzBsLxZPXox9Xt7u85ytWM2OYL84gxz
-         IcePSId8RJ0Jf/73iTEiLPuggDaQzSYs3qwnyfJuImPb0pg9l2MaIEdKLT/GPY6u6lPY
-         hOtKhw1AJbJbmIs/zJV1aK/MaO2e2MqTVwXbrPgbtEP/fp1yEWKrQtszyGgO0ybrB+x9
-         +A+n5d33CuPHG27mRRS6hhoeNb2Ln2DAcB4KYE/8gp8BZoMnfV0NlfGltEymmRny6plZ
-         z6YYt292YFru7e4g4OKn+Fg7bP+LIEDzrJrh9rVoNUoI9BHcxa6Mf8tQk5n7CjgE8Z2P
-         Xq0w==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=gP7IqI+KSRQ8YYDG8RyAx/kpPeOQvqa8JBkLTrClz0w=;
+        b=Z9xhNYeJH7YTCKckNsXg2g0ZdR97Kj6kfEppFnqgL8n0VaQCG8WVrnPYn/dpAVMZqb
+         DPFG+o7A0kUaOrH5HO1dNS5bNn9jKE0GlNaE3IlLNe8kWlWWKvtnvA4d4eIgB2ofESu/
+         TdZmxZwABtfaOeRAgGDFlmXCwJQ4mnhAtha1bumNXOa2AXFmJ03scSo/MU7rFanB6xhg
+         sXIbXdIIrBEwrn1VcgBR6kjq/xGGWW0OsjCq/k+I1a5yas4c/UscpAkrLYqaTArZr/xF
+         yVRo97K+T1ePkWlLN7gqR128r9UtpJdcjohiQX6M+aGk9TWZ3XuuaysJqOzhJ38ZZxm9
+         WjjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ycEZD6+lGycl7jzGlqgxg/WeXj7vcT8Oor6/VJW+6Uo=;
-        b=WiIAJTxja4tjp4tpu0bvZsCS4ZGHvPblEgQCvqTrNLrXw96XielHkRM2koiS8BZK4P
-         j78LJDzKbWCib/kHIq8Vm0iGwbT8L54X7fxlX8stxDv3NAxWoLwndFHdqvaYiC3j/Alu
-         VcVtsFu1owfIOA/VdIhEjXDyHaB9cCf4OPpOARsHGj+BPWQuskN/hbRdkIENFn4vGK8x
-         yDIQkjc+Qko92chvv5TT1aGC750yHV74xnFYgysZzHDmMSYqIF0L9bBKkM0nhkFhdQsX
-         5xkQyKR1NevpsTyySY2WdvP4733TPFbbv7WCF1sAFDnm9WEi96RQdQqw6+iQCvyU1tax
-         JE8Q==
-X-Gm-Message-State: AOAM530dnTGueda5phSd1LIwlnFs4vb5azUwr05fI4w37m5JkPCJ8TPf
-        lzbko1DudrwMA2qGtUopzKnk226Weqw=
-X-Google-Smtp-Source: ABdhPJye//t3e87Yz+o9cWwSYRA2jTLHXEzAfT7+CdXS/C7TF+jq+OKmtgiwTsR6xfSqFEX31ygKXw==
-X-Received: by 2002:a17:90a:4d88:: with SMTP id m8mr5605649pjh.45.1613187999699;
-        Fri, 12 Feb 2021 19:46:39 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y14sm10399057pfg.9.2021.02.12.19.46.38
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=gP7IqI+KSRQ8YYDG8RyAx/kpPeOQvqa8JBkLTrClz0w=;
+        b=YfVTswtl+A6OJ0hCem6KNdaealx1MY0+EhRRGxllWdkp1YghtH03zjq8+hV4pnHNc+
+         LFvi5EnsyihAny7hAVbPK9wlPg4zH1jbY5GMRPhUJ77dDAZrv6r14HFY2nRVSwWDaENy
+         zULAy320oYFmQgn9TsitWpC3VtU+zTFrMbulkbiLwUut39xO70nmo9QzGqou2hf+nZ24
+         Z8lZJdkSJgm2cZfXfhsyVTu3XoC5Y3kuY9mBSz4P2Coa6+gNlFKO0SQDfaCO+kFS/RZi
+         U8ORIfieLb595mlc1miKMU+ER3ikc7aunpbBYOIdpweK3TxnLTyD+dKR8VkiTXnEUgLy
+         ptFQ==
+X-Gm-Message-State: AOAM533BDbwzbFDC1pxaz0TjpJ8Npuba1HXyfyziLGrjdeH9yE2bFrUq
+        DuQFr5zzUthLlje1WvPNuP4=
+X-Google-Smtp-Source: ABdhPJzAkBIKz5z8E3qmxrMKC0kqU66FARshfkHPvTdVc8a8jdkLvCi3h5m+xzURUtXhxRkCCpoXtg==
+X-Received: by 2002:a2e:97c3:: with SMTP id m3mr3337412ljj.286.1613188968240;
+        Fri, 12 Feb 2021 20:02:48 -0800 (PST)
+Received: from [192.168.42.148] (pool-109-191-157-213.is74.ru. [109.191.157.213])
+        by smtp.gmail.com with ESMTPSA id t1sm716034ljk.104.2021.02.12.20.02.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 19:46:39 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Chan <mchan@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
-        DRIVERS), linux-kernel@vger.kernel.org (open list),
-        olteanv@gmail.com, michael@walle.cc
-Subject: [PATCH net-next v2 3/3] net: phy: broadcom: Allow BCM54210E to configure APD
-Date:   Fri, 12 Feb 2021 19:46:32 -0800
-Message-Id: <20210213034632.2420998-4-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210213034632.2420998-1-f.fainelli@gmail.com>
-References: <20210213034632.2420998-1-f.fainelli@gmail.com>
+        Fri, 12 Feb 2021 20:02:47 -0800 (PST)
+Message-ID: <8a2463a97af411e4167f3c4abc2d4be6447e51ac.camel@gmail.com>
+Subject: Re: [PATCH] HID: sony: Support for DS4 clones that do not implement
+ feature report 0x81
+From:   Ivan Mironov <mironov.ivan@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 13 Feb 2021 09:02:45 +0500
+In-Reply-To: <20210113173402.17030-1-mironov.ivan@gmail.com>
+References: <20210113173402.17030-1-mironov.ivan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BCM54210E/BCM50212E has been verified to work correctly with the
-auto-power down configuration done by bcm54xx_adjust_rxrefclk(), add it
-to the list of PHYs working.
+Ignore this patch, I am working on a better one.
 
-While we are at it, provide an appropriate name for the bit we are
-changing which disables the RXC and TXC during auto-power down when
-there is no energy on the cable.
+On Wed, 2021-01-13 at 22:34 +0500, Ivan Mironov wrote:
+> There are clones of DualShock 4 that are very similar to the originals,
+> except of 1) they do not support HID feature report 0x81 and 2) they do
+> not have any USB Audio interfaces despite they physically have audio
+> jack.
+> 
+> Such controllers are working fine with Linux when connected via
+> Bluetooth, but not when connected via USB. Here is how failed USB
+> connection attempt looks in log:
+> 
+> 	usb 1-5: New USB device found, idVendor=054c, idProduct=05c4, bcdDevice= 1.00
+> 	usb 1-5: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+> 	usb 1-5: Product: Wireless Controller
+> 	usb 1-5: Manufacturer: Sony Computer Entertainment
+> 	sony 0003:054C:05C4.0007: failed to retrieve feature report 0x81 with the DualShock 4 MAC address
+> 	sony 0003:054C:05C4.0007: hidraw6: USB HID v81.11 Gamepad [Sony Computer Entertainment Wireless Controller] on usb-0000:00:14.0-5/input0
+> 	sony 0003:054C:05C4.0007: failed to claim input
+> 
+> This patch adds support of using feature report 0x12 as a fallback for
+> Bluetooth MAC address retrieval. Feature report 0x12 also seems to be
+> used by DS4Windows[1] for all DS4 controllers.
+> 
+> [1] https://github.com/Ryochan7/DS4Windows/blob/1b74a4440089f38a24ee2c2483c1d733a0692b8f/DS4Windows/HidLibrary/HidDevice.cs#L479
+> 
+> Signed-off-by: Ivan Mironov <mironov.ivan@gmail.com>
+> ---
+>  drivers/hid/hid-sony.c | 72 ++++++++++++++++++++++++++++++------------
+>  1 file changed, 52 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
+> index e3a557dc9ffd..97df12180e45 100644
+> --- a/drivers/hid/hid-sony.c
+> +++ b/drivers/hid/hid-sony.c
+> @@ -491,6 +491,7 @@ struct motion_output_report_02 {
+>  
+> 
+>  #define DS4_FEATURE_REPORT_0x02_SIZE 37
+>  #define DS4_FEATURE_REPORT_0x05_SIZE 41
+> +#define DS4_FEATURE_REPORT_0x12_SIZE 16
+>  #define DS4_FEATURE_REPORT_0x81_SIZE 7
+>  #define DS4_FEATURE_REPORT_0xA3_SIZE 49
+>  #define DS4_INPUT_REPORT_0x11_SIZE 78
+> @@ -2593,6 +2594,53 @@ static int sony_get_bt_devaddr(struct sony_sc *sc)
+>  	return 0;
+>  }
+>  
+> 
+> +static int sony_get_usb_ds4_devaddr(struct sony_sc *sc)
+> +{
+> +	u8 *buf = NULL;
+> +	int ret;
+> +
+> +	buf = kmalloc(max(DS4_FEATURE_REPORT_0x12_SIZE, DS4_FEATURE_REPORT_0x81_SIZE), GFP_KERNEL);
+> +	if (!buf)
+> +		return -ENOMEM;
+> +
+> +	/*
+> +	 * The MAC address of a DS4 controller connected via USB can be
+> +	 * retrieved with feature report 0x81. The address begins at
+> +	 * offset 1.
+> +	 */
+> +	ret = hid_hw_raw_request(sc->hdev, 0x81, buf,
+> +			DS4_FEATURE_REPORT_0x81_SIZE, HID_FEATURE_REPORT,
+> +			HID_REQ_GET_REPORT);
+> +	if (ret == DS4_FEATURE_REPORT_0x81_SIZE) {
+> +		memcpy(sc->mac_address, &buf[1], sizeof(sc->mac_address));
+> +		goto out_free;
+> +	}
+> +	dbg_hid("%s: hid_hw_raw_request(..., 0x81, ...) returned %d\n", __func__, ret);
+> +
+> +	/*
+> +	 * Some variants do not implement feature report 0x81 at all.
+> +	 * Fortunately, feature report 0x12 also contains the MAC address of
+> +	 * a controller.
+> +	 */
+> +	ret = hid_hw_raw_request(sc->hdev, 0x12, buf,
+> +			DS4_FEATURE_REPORT_0x12_SIZE, HID_FEATURE_REPORT,
+> +			HID_REQ_GET_REPORT);
+> +	if (ret == DS4_FEATURE_REPORT_0x12_SIZE) {
+> +		memcpy(sc->mac_address, &buf[1], sizeof(sc->mac_address));
+> +		goto out_free;
+> +	}
+> +	dbg_hid("%s: hid_hw_raw_request(..., 0x12, ...) returned %d\n", __func__, ret);
+> +
+> +	hid_err(sc->hdev, "failed to retrieve feature reports 0x81 and 0x12 with the DualShock 4 MAC address\n");
+> +	ret = ret < 0 ? ret : -EINVAL;
+> +
+> +out_free:
+> +
+> +	kfree(buf);
+> +
+> +	return ret;
+> +}
+> +
+>  static int sony_check_add(struct sony_sc *sc)
+>  {
+>  	u8 *buf = NULL;
+> @@ -2613,26 +2661,9 @@ static int sony_check_add(struct sony_sc *sc)
+>  			return 0;
+>  		}
+>  	} else if (sc->quirks & (DUALSHOCK4_CONTROLLER_USB | DUALSHOCK4_DONGLE)) {
+> -		buf = kmalloc(DS4_FEATURE_REPORT_0x81_SIZE, GFP_KERNEL);
+> -		if (!buf)
+> -			return -ENOMEM;
+> -
+> -		/*
+> -		 * The MAC address of a DS4 controller connected via USB can be
+> -		 * retrieved with feature report 0x81. The address begins at
+> -		 * offset 1.
+> -		 */
+> -		ret = hid_hw_raw_request(sc->hdev, 0x81, buf,
+> -				DS4_FEATURE_REPORT_0x81_SIZE, HID_FEATURE_REPORT,
+> -				HID_REQ_GET_REPORT);
+> -
+> -		if (ret != DS4_FEATURE_REPORT_0x81_SIZE) {
+> -			hid_err(sc->hdev, "failed to retrieve feature report 0x81 with the DualShock 4 MAC address\n");
+> -			ret = ret < 0 ? ret : -EINVAL;
+> -			goto out_free;
+> -		}
+> -
+> -		memcpy(sc->mac_address, &buf[1], sizeof(sc->mac_address));
+> +		ret = sony_get_usb_ds4_devaddr(sc);
+> +		if (ret < 0)
+> +			return ret;
+>  
+> 
+>  		snprintf(sc->hdev->uniq, sizeof(sc->hdev->uniq),
+>  			 "%pMR", sc->mac_address);
+> @@ -2670,6 +2701,7 @@ static int sony_check_add(struct sony_sc *sc)
+>  		return 0;
+>  	}
+>  
+> 
+> +	dbg_hid("%s: retrieved MAC address: %s\n", __func__, sc->hdev->uniq);
+>  	ret = sony_check_add_dev_list(sc);
+>  
+> 
+>  out_free:
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/phy/broadcom.c | 8 +++++---
- include/linux/brcmphy.h    | 2 +-
- 2 files changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-index 3ce266ab521b..91fbd26c809e 100644
---- a/drivers/net/phy/broadcom.c
-+++ b/drivers/net/phy/broadcom.c
-@@ -193,6 +193,7 @@ static void bcm54xx_adjust_rxrefclk(struct phy_device *phydev)
- 	if (BRCM_PHY_MODEL(phydev) != PHY_ID_BCM57780 &&
- 	    BRCM_PHY_MODEL(phydev) != PHY_ID_BCM50610 &&
- 	    BRCM_PHY_MODEL(phydev) != PHY_ID_BCM50610M &&
-+	    BRCM_PHY_MODEL(phydev) != PHY_ID_BCM54210E &&
- 	    BRCM_PHY_MODEL(phydev) != PHY_ID_BCM54810 &&
- 	    BRCM_PHY_MODEL(phydev) != PHY_ID_BCM54811)
- 		return;
-@@ -227,9 +228,10 @@ static void bcm54xx_adjust_rxrefclk(struct phy_device *phydev)
- 		val |= BCM54XX_SHD_SCR3_DLLAPD_DIS;
- 
- 	if (phydev->dev_flags & PHY_BRCM_DIS_TXCRXC_NOENRGY) {
--		if (BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54810 ||
--		    BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54811)
--			val |= BCM54810_SHD_SCR3_TRDDAPD;
-+		if (BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54210E ||
-+		    BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54810 ||
-+		    BRCM_PHY_MODEL(phydev) == PHY_ID_BCM54210E)
-+			val |= BCM54XX_SHD_SCR3_RXCTXC_DIS;
- 		else
- 			val |= BCM54XX_SHD_SCR3_TRDDAPD;
- 	}
-diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
-index 844dcfe789a2..16597d3fa011 100644
---- a/include/linux/brcmphy.h
-+++ b/include/linux/brcmphy.h
-@@ -193,6 +193,7 @@
- #define  BCM54XX_SHD_SCR3_DEF_CLK125	0x0001
- #define  BCM54XX_SHD_SCR3_DLLAPD_DIS	0x0002
- #define  BCM54XX_SHD_SCR3_TRDDAPD	0x0004
-+#define  BCM54XX_SHD_SCR3_RXCTXC_DIS	0x0100
- 
- /* 01010: Auto Power-Down */
- #define BCM54XX_SHD_APD			0x0a
-@@ -253,7 +254,6 @@
- #define BCM54810_EXP_BROADREACH_LRE_MISC_CTL_EN	(1 << 0)
- #define BCM54810_SHD_CLK_CTL			0x3
- #define BCM54810_SHD_CLK_CTL_GTXCLK_EN		(1 << 9)
--#define BCM54810_SHD_SCR3_TRDDAPD		0x0100
- 
- /* BCM54612E Registers */
- #define BCM54612E_EXP_SPARE0		(MII_BCM54XX_EXP_SEL_ETC + 0x34)
--- 
-2.25.1
 
