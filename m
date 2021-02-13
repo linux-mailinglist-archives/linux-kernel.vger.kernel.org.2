@@ -2,191 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9629631AB63
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CAF31AB69
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhBMMje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 07:39:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229584AbhBMMjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 07:39:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50FBC64E43;
-        Sat, 13 Feb 2021 12:38:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613219924;
-        bh=o/zZqrT6O6iNIwheMyFEI2jvfg6vVZr9nbqaV+htoIs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=txF6bHj3jHmk4gL5sOVuT0ldolnX3VYX3sFEh4LrwrU1+F4hJWITuI3BK6TLmPX4i
-         1l77sxrHhIUjd/uYPUUUWc16kNVseZQ/lNRnOLQYpbu90g/0ihX87LUQw25ma5kLM/
-         KcuInp3QIDAlSQH6EI154VQQ99pQxZZUv/gCtNO0=
-Date:   Sat, 13 Feb 2021 13:38:42 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "sre@kernel.org" <sre@kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "wens@csie.org" <wens@csie.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "saravanak@google.com" <saravanak@google.com>,
-        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "myungjoo.ham@samsung.com" <myungjoo.ham@samsung.com>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "cw00.choi@samsung.com" <cw00.choi@samsung.com>,
-        "broonie@kernel.org" <broonie@kernel.org>
-Subject: Re: [RFC PATCH 1/7] drivers: base: Add resource managed version of
- delayed work init
-Message-ID: <YCfIUliPU1No7SuN@kroah.com>
-References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
- <1230b0d2ba99ad546d72ab079e76cb1b3df32afb.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
- <YCfDAly9b0zHMpJT@kroah.com>
- <0bf56f1c5eb8262bd734ceb81fc832655253adc0.camel@fi.rohmeurope.com>
+        id S229647AbhBMMq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 07:46:59 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:22838 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhBMMq5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 07:46:57 -0500
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 11DCk1gw020296;
+        Sat, 13 Feb 2021 21:46:02 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 11DCk1gw020296
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613220362;
+        bh=KdXBt186v51HmgRvEE2352D3Kz6v3BiRQbc1mVmCOVk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=O+cAFE31DZpGZ3jMpIA2p+4QZ4TO/TEyVpBEGczKjTykbC8GWur5rgzeQADU3XGBB
+         jRqJKm96BXdp+wb6W9o44fKBILeRzrqaPduwVQYXN+migUw1TuRnPyledBqQ1q9olN
+         eK9sVqLGW+Vwj9oEq/yd2bjfYKfB9dgJRL4gOvYd36dUAgPyHn1Ebun6R4zaPa75Ur
+         Cb15t107+2FbxAtefOQqQGF1KtNXFkt9pHyxtSqHR05+8hUT6xDkIPQ2ypzmz/sL9K
+         3RMNC4hJgTsY408i5MDwvKH2yYIpqQSLGDWR21ubccmKARAIi3EN7Cn1zHO+qg4QZ2
+         C8TBEFHKpCGuw==
+X-Nifty-SrcIP: [209.85.210.171]
+Received: by mail-pf1-f171.google.com with SMTP id z6so1320258pfq.0;
+        Sat, 13 Feb 2021 04:46:02 -0800 (PST)
+X-Gm-Message-State: AOAM532cVOntleqTCaMcquJagDjWiDuMU32SYbd6xogN9XnTlBkMRup2
+        8Tx9dLoxQuQBmUoYw6T4GQyn6kbs7x+zukKPtY0=
+X-Google-Smtp-Source: ABdhPJz99A7le2TYhlGfirnnIHVPF7lDpuc4jAZSS8YwXwPFfO++WtvKcSd9gLtFM9uQRJjFmqeM2ig+6UQKCPc4h+o=
+X-Received: by 2002:a62:e804:0:b029:1dd:cf18:bdee with SMTP id
+ c4-20020a62e8040000b02901ddcf18bdeemr7492308pfi.63.1613220361343; Sat, 13 Feb
+ 2021 04:46:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0bf56f1c5eb8262bd734ceb81fc832655253adc0.camel@fi.rohmeurope.com>
+References: <1612783737-3512-1-git-send-email-stephenzhangzsd@gmail.com>
+ <20210208195439.GA1097868@ubuntu-m3-large-x86> <CALuz2=d-ENRbWgGYaO_ESEaw5eOVSwkQmkeYBJ-w0Vb3zZ+REg@mail.gmail.com>
+ <20210209192729.GA820978@ubuntu-m3-large-x86> <CALuz2=dyA_ki98t8VNe2L1UcBXrSoJT1r6j1puEmLn7WrX87XQ@mail.gmail.com>
+ <20210210182400.GA3502674@ubuntu-m3-large-x86> <CALuz2=eSv2N2Qp7GimLgdWjvWDwDh1Dj0Q7Czm4Br5a50rs4ew@mail.gmail.com>
+ <CAK7LNAT+CG9zqPpYLoy9_1eA4caZWzxyQACcOrhbg9zfArEwPQ@mail.gmail.com> <CALuz2=ck_=M6Dd8oFgWxnRGdipWOsdL2KODZQSmodh2N7Z8T-w@mail.gmail.com>
+In-Reply-To: <CALuz2=ck_=M6Dd8oFgWxnRGdipWOsdL2KODZQSmodh2N7Z8T-w@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 13 Feb 2021 21:45:24 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR06H3Ue5SG3=6u1veyjg+kXXb2isEBsHVQEtMMJ3d2Tw@mail.gmail.com>
+Message-ID: <CAK7LNAR06H3Ue5SG3=6u1veyjg+kXXb2isEBsHVQEtMMJ3d2Tw@mail.gmail.com>
+Subject: Re: [PATCH v1] clang_tools:gen_compile_commands: Change the default
+ source directory
+To:     Stephen Zhang <stephenzhangzsd@gmail.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tom Roeder <tmroeder@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 12:26:59PM +0000, Vaittinen, Matti wrote:
-> 
-> On Sat, 2021-02-13 at 13:16 +0100, Greg Kroah-Hartman wrote:
-> > On Sat, Feb 13, 2021 at 01:58:44PM +0200, Matti Vaittinen wrote:
-> > > A few drivers which need a delayed work-queue must cancel work at
-> > > exit.
-> > > Some of those implement remove solely for this purpose. Help
-> > > drivers
-> > > to avoid unnecessary remove and error-branch implementation by
-> > > adding
-> > > managed verision of delayed work initialization
-> > > 
-> > > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > 
-> > That's not a good idea.  As this would kick in when the device is
-> > removed from the system, not when it is unbound from the driver,
-> > right?
-> > 
-> > > ---
-> > >  drivers/base/devres.c  | 33 +++++++++++++++++++++++++++++++++
-> > >  include/linux/device.h |  5 +++++
-> > >  2 files changed, 38 insertions(+)
-> > > 
-> > > diff --git a/drivers/base/devres.c b/drivers/base/devres.c
-> > > index fb9d5289a620..2879595bb5a4 100644
-> > > --- a/drivers/base/devres.c
-> > > +++ b/drivers/base/devres.c
-> > > @@ -1231,3 +1231,36 @@ void devm_free_percpu(struct device *dev,
-> > > void __percpu *pdata)
-> > >  			       (void *)pdata));
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(devm_free_percpu);
-> > > +
-> > > +static void dev_delayed_work_drop(struct device *dev, void *res)
-> > > +{
-> > > +	cancel_delayed_work_sync(*(struct delayed_work **)res);
-> > > +}
-> > > +
-> > > +/**
-> > > + * devm_delayed_work_autocancel - Resource-managed work allocation
-> > > + * @dev: Device which lifetime work is bound to
-> > > + * @pdata: work to be cancelled when device exits
-> > > + *
-> > > + * Initialize work which is automatically cancelled when device
-> > > exits.
-> > 
-> > There is no such thing in the driver model as "when device exits".
-> > Please use the proper terminology as I do not understand what you
-> > think
-> > this is doing here...
-> > 
-> > > + * A few drivers need delayed work which must be cancelled before
-> > > driver
-> > > + * is unload to avoid accessing removed resources.
-> > > + * devm_delayed_work_autocancel() can be used to omit the explicit
-> > > + * cancelleation when driver is unload.
-> > > + */
-> > > +int devm_delayed_work_autocancel(struct device *dev, struct
-> > > delayed_work *w,
-> > > +				 void (*worker)(struct work_struct
-> > > *work))
-> > > +{
-> > > +	struct delayed_work **ptr;
-> > > +
-> > > +	ptr = devres_alloc(dev_delayed_work_drop, sizeof(*ptr),
-> > > GFP_KERNEL);
-> > > +	if (!ptr)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	INIT_DELAYED_WORK(w, worker);
-> > > +	*ptr = w;
-> > > +	devres_add(dev, ptr);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(devm_delayed_work_autocancel);
-> > > diff --git a/include/linux/device.h b/include/linux/device.h
-> > > index 1779f90eeb4c..192456198de7 100644
-> > > --- a/include/linux/device.h
-> > > +++ b/include/linux/device.h
-> > > @@ -27,6 +27,7 @@
-> > >  #include <linux/uidgid.h>
-> > >  #include <linux/gfp.h>
-> > >  #include <linux/overflow.h>
-> > > +#include <linux/workqueue.h>
-> > >  #include <linux/device/bus.h>
-> > >  #include <linux/device/class.h>
-> > >  #include <linux/device/driver.h>
-> > > @@ -249,6 +250,10 @@ void __iomem *devm_of_iomap(struct device
-> > > *dev,
-> > >  			    struct device_node *node, int index,
-> > >  			    resource_size_t *size);
-> > >  
-> > > +/* delayed work which is cancelled when driver exits */
-> > 
-> > Not when the "driver exits".
-> > 
-> > There is two different lifespans here (well 3).  Code and
-> > data*2.  Don't
-> > confuse them as that will just cause lots of problems.
-> > 
-> > The move toward more and more "devm" functions is not the way to go
-> > as
-> > they just more and more make things easier to get wrong.
-> > 
-> > APIs should be impossible to get wrong, this one is going to be
-> > almost
-> > impossible to get right.
-> 
-> Thanks for prompt reply. I guess I must've misunderstood some of this
-> concept. Frankly to say, I don't understand how the devm based irq
-> management works and this does not. Maybe I'd better study this further
-> then.
+On Fri, Feb 12, 2021 at 8:20 PM Stephen Zhang <stephenzhangzsd@gmail.com> w=
+rote:
+>
+> Masahiro Yamada <masahiroy@kernel.org> =E4=BA=8E2021=E5=B9=B42=E6=9C=8811=
+=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:16=E5=86=99=E9=81=93=EF=BC=
+=9A
+> > Please stop.
+> >
+> >
+> > Commit 6ca4c6d25949117dc5b4845612e290b6d89e70a8
+> > removed the tools/ support.
+> >
+> >
+> > There exist two build systems in the Linux source tree.
+> > Kbuild covers the entire tree except tools/.
+> > The tools/ directory adopts a different build system.
+> >
+> > It is a pity that the tools/ directory
+> > went in a wrong direction, and people
+> > try to fix problems in a wrong layer.
+> >
+> >
+> > You are not the first person to send to
+> > tweak obj/source trees of this script.
+> >
+> > You can not do this correctly
+> > without terribly messing up the code.
+> >
+> > Please do not try to support tools/.
+> >
+> >
+> >
+> > --
+> > Best Regards
+> > Masahiro Yamada
+>
+> Thanks for the suggestion.But what we try to support is scripts/
+> instead of tools/. 'tools/' here is to help explaining the problem.
+> Or am I just misunderstanding your words?
 
-The devm based irq management works horribly and should not be used at
-all.  That is the main offender in the "an api that is impossible to use
-correctly" category.
 
-Honestly, I think it should just be removed as there is almost no real
-need for it that I can determine, other than to cause bugs.
 
-thanks,
+You took 'tools/perf' as an example,
+so I just thought you were trying to fix the tools/.
 
-greg k-h
+
+
+I can get scripts/ entries without any problem.
+
+If you do O=3D build, you can pass that directory
+to the -d option of gen_compile_commands.py
+
+  -d DIRECTORY, --directory DIRECTORY
+                        specify the output directory used for the
+kernel build (defaults to the working
+                        directory)
+
+
+This is the steps I tested.
+
+
+masahiro@oscar:~/ref/linux$ make O=3Dbuild  defconfig all -j24
+  [ snip ]
+masahiro@oscar:~/ref/linux$
+./scripts/clang-tools/gen_compile_commands.py  -d build
+masahiro@oscar:~/ref/linux$ grep '"file":' compile_commands.json |
+grep scripts/ | head -n5
+    "file": "/home/masahiro/ref/linux/scripts/mod/empty.c"
+    "file": "/home/masahiro/ref/linux/scripts/mod/sumversion.c"
+    "file": "/home/masahiro/ref/linux/scripts/mod/file2alias.c"
+    "file": "/home/masahiro/ref/linux/scripts/mod/modpost.c"
+    "file": "/home/masahiro/ref/linux/build/scripts/kconfig/parser.tab.c"
+
+
+
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
