@@ -2,180 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189C831AB25
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 12:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0A831AB2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbhBML7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 06:59:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhBML7Q (ORCPT
+        id S229775AbhBML76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 06:59:58 -0500
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:41921 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhBML7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 06:59:16 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB6FC061574;
-        Sat, 13 Feb 2021 03:58:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=XLP55EATsSO4oRJZjhOd8usd4mNT0ulbG8E51An8HnI=; b=BU3GnddsLCGvq0a0oc79kjsc6z
-        aLy9XFRpygGDBY7jDMPvPibG6D17Kkf/MWy7mQHBE0OtstIQE7cNLqwOWmRHc68vkaR0VybPoRrbN
-        ZYAgZ78fgxLjB+odGcwoVFmXe8Dwvw0Yg8oGyeUR7J4KQlcVWI6p4e+ykjHe+/RKCV6yGpxO/BHTb
-        4YJ1Bq387cwK7lc0OouamY+BME8IbwSCghnWujdd1+L6/9s+U3j+QjDEnV4x/3AjXTt9asNFOk9YE
-        hXc5jvjp2Q+o2jBEFsKKBc3n6F1KHFfC4/MzITOaAn9aKrvH35KabwITw0CxxG7jN6900KuznkPnB
-        ZreqbEcQ==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <mperttunen@nvidia.com>)
-        id 1lAtZF-0004O8-3c; Sat, 13 Feb 2021 13:58:29 +0200
-From:   Mikko Perttunen <mperttunen@nvidia.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Subject: [PATCH] tty: serial: Add earlycon driver for Tegra Combined UART
-Date:   Sat, 13 Feb 2021 13:58:24 +0200
-Message-Id: <20210213115824.3306965-1-mperttunen@nvidia.com>
-X-Mailer: git-send-email 2.30.0
+        Sat, 13 Feb 2021 06:59:36 -0500
+Received: by mail-lj1-f181.google.com with SMTP id e17so2145556ljl.8;
+        Sat, 13 Feb 2021 03:59:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Og3EKyxPUKMGfzz8yqu0JBwP+v96RpWUBQsEZbrHD+8=;
+        b=inRjugq8dZYlJ6CKvLuFRZuygDwWgg/eI1qK0UtvZC5aXeTHWXAZnh4CmXIvaUpdET
+         RZbmyLvO2Jgjrc8l/m7pxQ6AQfapVpdoTDVR72Z3a3f2BFyr5+VCS57NzbTlVjVIKga6
+         PWwfLi6Ytk0GX9K3QgfsxOUXNqecAQaYp8Ri+Z0dNzn9zCQd5KJ9+TTG7fZ973FNzx6k
+         d/hPzIS96BCawHPV9lkFNxvvqKXl7tnRfA12eivyl0Zn56uwyCHdacF0JNqDawGw395+
+         X3reRIZlP3l4ffScErusYdied3SeyAqU1qQEBxYPIsBUMPKUkViW4qjtO8v51+ZvPj2l
+         vIHg==
+X-Gm-Message-State: AOAM5311BlORlGJ4wtfdqkHqgDcrgZjlZFL437zEnwtxdQcCWfr5k3Je
+        sarltkWfCO+KaWsm9Jx+z1g=
+X-Google-Smtp-Source: ABdhPJxj3xe2a6po48BGrT8aKajunBGOzOMxU/3dhpzzTPYFHT/e8seZG86Yo2/QJ4xnTqfESId53w==
+X-Received: by 2002:a2e:7a18:: with SMTP id v24mr4030132ljc.55.1613217533531;
+        Sat, 13 Feb 2021 03:58:53 -0800 (PST)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id v72sm1838780lfa.77.2021.02.13.03.58.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Feb 2021 03:58:52 -0800 (PST)
+Date:   Sat, 13 Feb 2021 13:58:44 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     mazziesaccount@gmail.com, matti.vaittinen@fi.rohmeurope.com
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: [RFC PATCH 1/7] drivers: base: Add resource managed version of
+ delayed work init
+Message-ID: <1230b0d2ba99ad546d72ab079e76cb1b3df32afb.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: mperttunen@nvidia.com
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an earlycon driver for platforms with TCU, namely Tegra194.
-The driver is compatible with boot parameters passed by NVIDIA
-boot chains.
+A few drivers which need a delayed work-queue must cancel work at exit.
+Some of those implement remove solely for this purpose. Help drivers
+to avoid unnecessary remove and error-branch implementation by adding
+managed verision of delayed work initialization
 
-Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
- drivers/tty/serial/Kconfig              | 12 +++++
- drivers/tty/serial/Makefile             |  1 +
- drivers/tty/serial/tegra-tcu-earlycon.c | 72 +++++++++++++++++++++++++
- 3 files changed, 85 insertions(+)
- create mode 100644 drivers/tty/serial/tegra-tcu-earlycon.c
+ drivers/base/devres.c  | 33 +++++++++++++++++++++++++++++++++
+ include/linux/device.h |  5 +++++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 34a2899e69c0..d941785e3f46 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -331,6 +331,18 @@ config SERIAL_TEGRA_TCU_CONSOLE
- 
- 	  If unsure, say Y.
- 
-+config SERIAL_TEGRA_TCU_EARLYCON
-+	bool "Earlycon on NVIDIA Tegra Combined UART"
-+	depends on ARCH_TEGRA || COMPILE_TEST
-+	select SERIAL_EARLYCON
-+	select SERIAL_CORE_CONSOLE
-+	default y if SERIAL_TEGRA_TCU_CONSOLE
-+	help
-+	  If you say Y here, TCU output will be supported during the earlycon
-+	  phase of the boot.
+diff --git a/drivers/base/devres.c b/drivers/base/devres.c
+index fb9d5289a620..2879595bb5a4 100644
+--- a/drivers/base/devres.c
++++ b/drivers/base/devres.c
+@@ -1231,3 +1231,36 @@ void devm_free_percpu(struct device *dev, void __percpu *pdata)
+ 			       (void *)pdata));
+ }
+ EXPORT_SYMBOL_GPL(devm_free_percpu);
 +
-+	  If unsure, say Y.
-+
- config SERIAL_MAX3100
- 	tristate "MAX3100 support"
- 	depends on SPI
-diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-index b85d53f9e9ff..408144326fed 100644
---- a/drivers/tty/serial/Makefile
-+++ b/drivers/tty/serial/Makefile
-@@ -72,6 +72,7 @@ obj-$(CONFIG_SERIAL_XILINX_PS_UART) += xilinx_uartps.o
- obj-$(CONFIG_SERIAL_SIRFSOC) += sirfsoc_uart.o
- obj-$(CONFIG_SERIAL_TEGRA) += serial-tegra.o
- obj-$(CONFIG_SERIAL_TEGRA_TCU) += tegra-tcu.o
-+obj-$(CONFIG_SERIAL_TEGRA_TCU_EARLYCON) += tegra-tcu-earlycon.o
- obj-$(CONFIG_SERIAL_AR933X)   += ar933x_uart.o
- obj-$(CONFIG_SERIAL_EFM32_UART) += efm32-uart.o
- obj-$(CONFIG_SERIAL_ARC)	+= arc_uart.o
-diff --git a/drivers/tty/serial/tegra-tcu-earlycon.c b/drivers/tty/serial/tegra-tcu-earlycon.c
-new file mode 100644
-index 000000000000..9decfbced0a7
---- /dev/null
-+++ b/drivers/tty/serial/tegra-tcu-earlycon.c
-@@ -0,0 +1,72 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2017-2021, NVIDIA CORPORATION.  All rights reserved.
-+ */
-+
-+#include <linux/console.h>
-+#include <linux/io.h>
-+#include <linux/serial_core.h>
-+
-+#define NUM_BYTES_FIELD_BIT	24
-+#define FLUSH_BIT		26
-+#define INTR_TRIGGER_BIT	31
-+
-+static u32 update_and_send_mbox(u8 __iomem *addr, u32 mbox_val, char c)
++static void dev_delayed_work_drop(struct device *dev, void *res)
 +{
-+	int bytes = bytes = (mbox_val >> NUM_BYTES_FIELD_BIT) & 0x3;
-+
-+	mbox_val |= BIT(INTR_TRIGGER_BIT);
-+	mbox_val |= c << (bytes * 8);
-+	bytes++;
-+	mbox_val = (mbox_val & ~(3 << NUM_BYTES_FIELD_BIT)) |
-+		(bytes << NUM_BYTES_FIELD_BIT);
-+
-+	if (bytes == 3) {
-+		/* Send current packet to SPE */
-+		while (readl(addr) & BIT(INTR_TRIGGER_BIT))
-+			cpu_relax();
-+		writel(mbox_val, addr);
-+		mbox_val = BIT(INTR_TRIGGER_BIT);
-+	}
-+
-+	return mbox_val;
++	cancel_delayed_work_sync(*(struct delayed_work **)res);
 +}
 +
-+/*
-+ * This function splits the string to be printed (const char *s) into multiple
-+ * packets. Each packet contains a max of 3 characters. Packets are sent to the
-+ * SPE-based combined UART server for printing. Communication with SPE is done
-+ * through mailbox registers which can generate interrupts for SPE.
++/**
++ * devm_delayed_work_autocancel - Resource-managed work allocation
++ * @dev: Device which lifetime work is bound to
++ * @pdata: work to be cancelled when device exits
++ *
++ * Initialize work which is automatically cancelled when device exits.
++ * A few drivers need delayed work which must be cancelled before driver
++ * is unload to avoid accessing removed resources.
++ * devm_delayed_work_autocancel() can be used to omit the explicit
++ * cancelleation when driver is unload.
 + */
-+static void early_tcu_write(struct console *console, const char *s, unsigned int count)
++int devm_delayed_work_autocancel(struct device *dev, struct delayed_work *w,
++				 void (*worker)(struct work_struct *work))
 +{
-+	struct earlycon_device *device = console->data;
-+	u8 __iomem *addr = device->port.membase;
-+	u32 mbox_val = BIT(INTR_TRIGGER_BIT);
-+	unsigned int i;
++	struct delayed_work **ptr;
 +
-+	/* Loop for processing each 3 char packet */
-+	for (i = 0; i < count; i++) {
-+		if (s[i] == '\n')
-+			mbox_val = update_and_send_mbox(addr, mbox_val, '\r');
-+		mbox_val = update_and_send_mbox(addr, mbox_val, s[i]);
-+	}
++	ptr = devres_alloc(dev_delayed_work_drop, sizeof(*ptr), GFP_KERNEL);
++	if (!ptr)
++		return -ENOMEM;
 +
-+	if ((mbox_val >> NUM_BYTES_FIELD_BIT) & 0x3) {
-+		while (readl(addr) & BIT(INTR_TRIGGER_BIT))
-+			cpu_relax();
-+		writel(mbox_val, addr);
-+	}
-+}
-+
-+int __init early_tegra_combined_uart_setup(struct earlycon_device *device, const char *options)
-+{
-+	if (!(device->port.membase))
-+		return -ENODEV;
-+
-+	device->con->write = early_tcu_write;
++	INIT_DELAYED_WORK(w, worker);
++	*ptr = w;
++	devres_add(dev, ptr);
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(devm_delayed_work_autocancel);
+diff --git a/include/linux/device.h b/include/linux/device.h
+index 1779f90eeb4c..192456198de7 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -27,6 +27,7 @@
+ #include <linux/uidgid.h>
+ #include <linux/gfp.h>
+ #include <linux/overflow.h>
++#include <linux/workqueue.h>
+ #include <linux/device/bus.h>
+ #include <linux/device/class.h>
+ #include <linux/device/driver.h>
+@@ -249,6 +250,10 @@ void __iomem *devm_of_iomap(struct device *dev,
+ 			    struct device_node *node, int index,
+ 			    resource_size_t *size);
+ 
++/* delayed work which is cancelled when driver exits */
++int devm_delayed_work_autocancel(struct device *dev, struct delayed_work *w,
++				 void (*worker)(struct work_struct *work));
 +
-+EARLYCON_DECLARE(tegra_comb_uart, early_tegra_combined_uart_setup);
+ /* allows to add/remove a custom action to devres stack */
+ int devm_add_action(struct device *dev, void (*action)(void *), void *data);
+ void devm_remove_action(struct device *dev, void (*action)(void *), void *data);
 -- 
-2.30.0
+2.25.4
 
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
