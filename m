@@ -2,147 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802FC31ACA8
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:43:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDAC31ACAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:46:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbhBMPmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 10:42:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40384 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229531AbhBMPmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 10:42:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C1DE9AC69;
-        Sat, 13 Feb 2021 15:41:20 +0000 (UTC)
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dongdong tao <dongdong.tao@canonical.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Christina Jacob <cjacob@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-References: <20210212125028.GA264620@embeddedor>
- <ea24a361-ab1f-a330-b5e6-007bb9a1013b@suse.de>
- <0a2eb2e143ad480cbce3f84c3c920b5f@AcuMS.aculab.com>
- <cb3ffad1-e877-c6f9-168e-da7f55c59485@suse.de>
- <468c8699c8ea445cac433406be983e79@AcuMS.aculab.com>
-From:   Coly Li <colyli@suse.de>
-Subject: Re: [PATCH][next] bcache: Use 64-bit arithmetic instead of 32-bit
-Message-ID: <72d76785-3a03-78f4-bb80-ba1f4306d720@suse.de>
-Date:   Sat, 13 Feb 2021 23:41:11 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        id S229710AbhBMPot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 10:44:49 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17438 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhBMPoq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 10:44:46 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6027f3c40003>; Sat, 13 Feb 2021 07:44:04 -0800
+Received: from [10.2.62.148] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 13 Feb
+ 2021 15:44:03 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+CC:     Joao Martins <joao.m.martins@oracle.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 2/2] mm/hugetlb: refactor subpage recording
+Date:   Sat, 13 Feb 2021 10:44:01 -0500
+X-Mailer: MailMate (1.14r5757)
+Message-ID: <16F7C58B-4D79-41C5-9B64-A1A1628F4AF2@nvidia.com>
+In-Reply-To: <07b6b61a-2a78-4f49-70f8-e387462a95cc@oracle.com>
+References: <20210128182632.24562-1-joao.m.martins@oracle.com>
+ <20210128182632.24562-3-joao.m.martins@oracle.com>
+ <b550e766-b0fd-2c99-c82f-80e770e8a496@oracle.com>
+ <68570840-78E9-4B32-BE0B-B6DC60479DB0@nvidia.com>
+ <07b6b61a-2a78-4f49-70f8-e387462a95cc@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <468c8699c8ea445cac433406be983e79@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed;
+        boundary="=_MailMate_96F6469A-4C8D-4F0E-97F7-490F2651EC01_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613231044; bh=QXX+CV5QfFm0oPQgkKRV3hzs1IcvASz4ufSN9DIKVbw=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=jSy+TG6CRKyLKh+FwiPOPLAS8jtAtgbZkY1qTpO7FgUl6bfrnbw5TVxSZMun+lp9J
+         YyIfayJ4/X+gZ0xSv+qGSv4kKdowuB1QhllY317fngm+i19KuQ+frfYn6vrRWcHRRZ
+         xf/Opd0Dw3X/q+HUug/226kB5Ax1CjxMjAVwH1QOKyc2GKyKqlE03IdDgxszKia0b0
+         iuecd55zp5S1ldJ2puFfSAgrIdS6TMqktQqvsHMpczHo0ikV3kO2yt6pjCzgT+OZGV
+         0aRFXrawNze9DA4bQl2YNIYBsIbNVBjk1HTAufgzOIW+omQDinKGnGPjGUVSnesxcb
+         IHiQT6rQ0Z81A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/13/21 12:42 AM, David Laight wrote:
-> From: Coly Li <colyli@suse.de>
->> Sent: 12 February 2021 16:02
+--=_MailMate_96F6469A-4C8D-4F0E-97F7-490F2651EC01_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On 11 Feb 2021, at 18:44, Mike Kravetz wrote:
+
+> On 2/11/21 12:47 PM, Zi Yan wrote:
+>> On 28 Jan 2021, at 16:53, Mike Kravetz wrote:
 >>
->> On 2/12/21 11:31 PM, David Laight wrote:
->>>>>  		if (c->gc_stats.in_use <= BCH_WRITEBACK_FRAGMENT_THRESHOLD_MID) {
->>>>> -			fp_term = dc->writeback_rate_fp_term_low *
->>>>> +			fp_term = (int64_t)dc->writeback_rate_fp_term_low *
->>>>>  			(c->gc_stats.in_use - BCH_WRITEBACK_FRAGMENT_THRESHOLD_LOW);
->>>>>  		} else if (c->gc_stats.in_use <= BCH_WRITEBACK_FRAGMENT_THRESHOLD_HIGH) {
->>>>> -			fp_term = dc->writeback_rate_fp_term_mid *
->>>>> +			fp_term = (int64_t)dc->writeback_rate_fp_term_mid *
->>>>>  			(c->gc_stats.in_use - BCH_WRITEBACK_FRAGMENT_THRESHOLD_MID);
->>>>>  		} else {
->>>>> -			fp_term = dc->writeback_rate_fp_term_high *
->>>>> +			fp_term = (int64_t)dc->writeback_rate_fp_term_high *
->>>>>  			(c->gc_stats.in_use - BCH_WRITEBACK_FRAGMENT_THRESHOLD_HIGH);
->>>>>  		}
->>>>>  		fps = div_s64(dirty, dirty_buckets) * fp_term;
->>>>>
+>>> On 1/28/21 10:26 AM, Joao Martins wrote:
+>>>> For a given hugepage backing a VA, there's a rather ineficient
+>>>> loop which is solely responsible for storing subpages in GUP
+>>>> @pages/@vmas array. For each subpage we check whether it's within
+>>>> range or size of @pages and keep increment @pfn_offset and a couple
+>>>> other variables per subpage iteration.
 >>>>
->>>> Hmm, should such thing be handled by compiler ?  Otherwise this kind of
->>>> potential overflow issue will be endless time to time.
+>>>> Simplify this logic and minimize the cost of each iteration to just
+>>>> store the output page/vma. Instead of incrementing number of @refs
+>>>> iteratively, we do it through pre-calculation of @refs and only
+>>>> with a tight loop for storing pinned subpages/vmas.
 >>>>
->>>> I am not a compiler expert, should we have to do such explicit type cast
->>>> all the time ?
+>>>> Additionally, retain existing behaviour with using mem_map_offset()
+>>>> when recording the subpages for configurations that don't have a
+>>>> contiguous mem_map.
+>>>>
+>>>> pinning consequently improves bringing us close to
+>>>> {pin,get}_user_pages_fast:
+>>>>
+>>>>   - 16G with 1G huge page size
+>>>>   gup_test -f /mnt/huge/file -m 16384 -r 30 -L -S -n 512 -w
+>>>>
+>>>> PIN_LONGTERM_BENCHMARK: ~12.8k us -> ~5.8k us
+>>>> PIN_FAST_BENCHMARK: ~3.7k us
+>>>>
+>>>> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+>>>> ---
+>>>>  mm/hugetlb.c | 49 ++++++++++++++++++++++++++++---------------------=
+
+>>>>  1 file changed, 28 insertions(+), 21 deletions(-)
 >>>
+>>> Thanks for updating this.
+>>>
+>>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>>
+>>> I think there still is an open general question about whether we can =
+always
+>>> assume page structs are contiguous for really big pages.  That is out=
+side
 >>
->> Hi David,
->>
->> I add Dongdong Tao Cced, who is author of this patch.
->>
->> Could you please offer me more information about the following lines?
->> Let me ask more for my questions.
->>
->>> We do to get a 64bit product from two 32bit values.
->>> An alternative for the above would be:
->>> 		fp_term = c->gc_stats.in_use - BCH_WRITEBACK_FRAGMENT_THRESHOLD_HIGH;
->>> 		fp_term *= dc->writeback_rate_fp_term_high;
->>
->> The original line is,
->> fp_term = dc->writeback_rate_fp_term_high * (c->gc_stats.in_use -
->> BCH_WRITEBACK_FRAGMENT_THRESHOLD_HIGH)
->>
->> The first value dc->writeback_rate_fp_term_high is unsigned int (32bit),
->> and the second value (c->gc_stats.in_use -
->> BCH_WRITEBACK_FRAGMENT_THRESHOLD_HIGH) is unsigned int (32bit) too. And
->> fp_term is 64bit, if the product is larger than 32bits, the compiler
->> should know fp_term is 64bit and upgrade the product to 64bit.
->>
->> The above is just my guess, because I feel compiling should have the
->> clue for the product upgrade to avoid overflow. But I almost know
->> nothing about compiler internal ....
-> 
-> No, the expression is evaluated as 32bit and then extended for the assignment.
+>> I do not think page structs need to be contiguous, but PFNs within a b=
+ig page
+>> need to be contiguous, at least based on existing code like mem_map_of=
+fset() we have.
+>
+> Thanks for looking Zi,
+> Yes, PFNs need to be contiguous.  Also, as you say page structs do not =
+need
+> to be contiguous.  The issue is that there is code that assumes page st=
+ructs
+> are contiguous for gigantic pages.  hugetlb code does not make this ass=
+umption
+> and does a pfn_to_page() when looping through page structs for gigantic=
+ pages.
+>
+> I do not believe this to be a huge issue.  In most cases CONFIG_VIRTUAL=
+_MEM_MAP
+> is defined and struct pages can be accessed contiguously.  I 'think' we=
+ could
+> run into problems with CONFIG_SPARSEMEM and without CONFIG_VIRTUAL_MEM_=
+MAP
+> and doing hotplug operations.  However, I still need to look into more.=
 
-I do some test, and you are right. I am so surprised that the product
-does not extended and the overflowed result is 0. Thank you for letting
-me know this, and I correct my mistaken concept not too late :-)
 
-If you want me to take this patch, it is OK to me. I will have it in
-v5.12. If you want to handle this patch to upstream in your track, you
-may have my
-	Acked-by: Coly Li <colyli@suse.de>
+Yeah, you are right about this. The combination of CONFIG_SPARSEMEM,
+!CONFIG_SPARSEMEM_VMEMMAP and doing hotplug does cause errors, as simple =
+as
+dynamically reserving gigantic hugetlb pages then freeing them in a syste=
+m
+with CONFIG_SPARSEMEM_VMEMMAP not set and some hotplug memory.
 
-Thanks for your patient explaining.
+Here are the steps to reproduce:
+0. Configure a kernel with CONFIG_SPARSEMEM_VMEMMAP not set.
+1. Create a VM using qemu with =E2=80=9C-m size=3D8g,slots=3D16,maxmem=3D=
+16g=E2=80=9D to enable hotplug.
+2. After boot the machine, add large enough memory using
+   =E2=80=9Cobject_add memory-backend-ram,id=3Dmem1,size=3D7g=E2=80=9D an=
+d
+   =E2=80=9Cdevice_add pc-dimm,id=3Ddimm1,memdev=3Dmem1=E2=80=9D.
+3. In the guest OS, online all hot-plugged memory. My VM has 128MB memory=
+ block size.
+If you have larger memory block size, I think you will need to plug in mo=
+re memory.
+4. Reserve gigantic hugetlb pages so that hot-plugged memory will be used=
+=2E I reserved
+12GB, like =E2=80=9Cecho 12 | sudo tee /sys/kernel/mm/hugepages/hugepages=
+-1048576kB/nr_hugepages=E2=80=9D.
+5. Free all hugetlb gigantic pages,
+=E2=80=9Cecho 0 | sudo tee /sys/kernel/mm/hugepages/hugepages-1048576kB/n=
+r_hugepages=E2=80=9D.
+6. You will get =E2=80=9CBUG: Bad page state in process =E2=80=A6=E2=80=9D=
+ errors.
 
-> 
-> Or, more correctly, integer variables smaller than int (usually short and char)
-> are extended to int prior to any arithmetic.
-> If one argument to an operator is larger than int it is extended.
-> If there is a sign v unsigned mismatch the signed value is cast to unsigned
-> (same bit pattern on 2's compliment systems).
-> 
-> There are some oddities:
-> - 'unsigned char/short' gets converted to 'signed int' unless
->   char/short and int are the same size (which is allowed).
->   (Although if char and int are the same size there are issues
->   with the value for EOF.)
-> - (1 << 31) is a signed integer, it will get sign extended if used
->   to mask a 64bit value.
-> 
-> K&R C converted 'unsigned char' to 'unsigned int' - but the ANSI
-> standards body decided otherwise.
-> 
-> The compiler is allowed to use an 'as if' rule to use the 8bit and
-> 16bit arithmetic/registers on x86.
-> But on almost everything else arithmetic on char/short local variables
-> requires the compiler repeatedly mask the value back to 8/16 bits.
-> 
-> The C language has some other oddities - that are allowed but never done.
-> (Except for 'thought-machines' in comp.lang.c)
+The patch below can fix the error, but I suspect there might be other pla=
+ces missing
+the necessary mem_map_next() too.
 
-I know the above things, but I DO NOT know product of two 32bit values
-multiplying does not extend to 64bit. Good to know the compiling is not
-that smart.
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 4bdb58ab14cb..aae99c6984f3 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1319,7 +1319,8 @@ static void update_and_free_page(struct hstate *h, =
+struct page *page)
+        h->nr_huge_pages--;
+        h->nr_huge_pages_node[page_to_nid(page)]--;
+        for (i =3D 0; i < pages_per_huge_page(h); i++) {
+-               page[i].flags &=3D ~(1 << PG_locked | 1 << PG_error |
++               struct page *subpage =3D mem_map_next(subpage, page, i);
++               subpage->flags &=3D ~(1 << PG_locked | 1 << PG_error |
+                                1 << PG_referenced | 1 << PG_dirty |
+                                1 << PG_active | 1 << PG_private |
+                                1 << PG_writeback);
 
-Thank you!
 
-Coly Li
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_96F6469A-4C8D-4F0E-97F7-490F2651EC01_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmAn88EPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKVSMP/2jOJVjmdWmlSYcxtk/H0i/RS2wS2qGHxZ5a
+0R90w4fAO37OHNQzlPKVOh+kTacOl1hK4q1Rbhk1HgZtvbVXcSOrmijR+0vJbpSh
+BiVYcBUjvUO8BtIrLP+ndEBNHDqnqSEpcrW1ia/mhKsQq7S2OmGYQPlDs8ES3cIq
+MzUd+ewsk6vPCiloqEaN1xIpDgNoWP9TALSR/BAlHmt0ij+ejQc9uOZ/11P2IBqk
+kAwCi/tRcgrfUJn/FKQFpUhuGWpFWL2AxFsnPdZd1eYOIosPZQFcYCOC4q5HDzNE
+ANXcHtEYugMGP1fmBnIiE3ERqMH8ZUlYgxU5KGIrSVckqBhu7ElHM1X8137sGSyK
+/RrXz7zOb/2RAjKVA0mabbppZGDMyfOF1IPLqr/P21H3IgHAvU3esGqHUqmQzsa0
+YX2ndCQ8VRPkwn7phzu8M1xUZzESO9jJjt2ZBYN85QWHESyx0UBb4x4xdMg0TfIi
+jnrVk+nfKA79pQIhkFIeyC17rii+jcLo7YHScQfHIs19rZhgWCxB9iTzGIS9YPRm
+V8vnaspyz9sz99XyQgZ5tRaRBE4V38qfsu9C6uVFH5zxRnT/i08rC7LWxYIlUFoE
+CjBr7jP2cTu0uOPvqPOoD9MJKlb9KNu7VRLOHw4glZpI2l4MRq5PSgI8FrMf662N
+RNPwtL04
+=Ct5t
+-----END PGP SIGNATURE-----
+
+--=_MailMate_96F6469A-4C8D-4F0E-97F7-490F2651EC01_=--
