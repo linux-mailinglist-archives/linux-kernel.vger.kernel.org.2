@@ -2,84 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C143931ACB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EBA31ACB6
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 16:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhBMPrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 10:47:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        id S229694AbhBMPv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 10:51:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhBMPrc (ORCPT
+        with ESMTP id S229574AbhBMPv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 10:47:32 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A67C061756;
-        Sat, 13 Feb 2021 07:46:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=tsPf35Vf/yQbIvsw12o9I+1Qj/BI510C23AGErC7pXQ=; b=HURQ50e4cazpBr0VcvOlxvxY1R
-        xbbp1WDL5PVDnG9ymIspc8u1ACihJ6WiHqvGoYZzXVj/HhL6a83+RbKXw/CSU+BfCDmNIcrAaANTv
-        Wu8rPmTlFw+Lm/6dKz04vm6qUqya/+95lrw3obcm4g+OwgxIh5cT4cm/zSXiZnbJHFFSEzbVE+CBU
-        dsP8JH/7Juf0F6178wu7rWRhVUPTqOgxI0J6j3YMc/4d/ZOJe9yUHdO/B9+4LmYcrpUj1w8j+uhsR
-        fGoHfr9lL2BShOixsa/3idqucKfqLZMt+eq+r6rBBzsvdMe5ddn+87zclwum8J1kXC/cY+N3aRYcm
-        V2nzT2MQ==;
-Received: from [2601:1c0:6280:3f0::6444]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lAx8B-0007Ji-9H; Sat, 13 Feb 2021 15:46:47 +0000
-Subject: Re: [PATCH] arch: s390: kvm: Fix oustanding to outstanding in the
- file kvm-s390.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        Sat, 13 Feb 2021 10:51:26 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61486C061574;
+        Sat, 13 Feb 2021 07:50:44 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id y18so3273743edw.13;
+        Sat, 13 Feb 2021 07:50:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tlv0Bk04Vbqv9/ybuzyPTe5LdOVFwHd7RnmbI+YE1kA=;
+        b=hkV9exA+5v9d3FKUlzRTKkmqbsnMpEZlRgn65k+21cHmJBFUpPnOhguohcKoQgyXyk
+         c6/tgbdhnnE0Qq5GC42xuUw/VBnfDOSTzTcJefRZxa/Ihm1EAduI0m3m/sOvn4xme1UC
+         AmYu0KdNSAc5TNxkin8n2qSi7j4UvNomnMxF4sd0UzRVdOWyO7x/+quYhc3vcIZxFxuV
+         i9MiI0I+pbEDwl7ClYkDXAN6V3zb7Vx2sWv1QDrbIymUYh9bhByYfBcUV18rQFK1Tk/p
+         KM1WDgaAl5C9fduVb4WyY9I31z6NZx+/5eZgODnOpSM/KGp403E1HOguwpNXjOVMqGZS
+         KTrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tlv0Bk04Vbqv9/ybuzyPTe5LdOVFwHd7RnmbI+YE1kA=;
+        b=q4jcMEU9bYF7aM5nEajTdkkdKOQ9TCg+4BkAls3vwr0HqziH5SvgsUH4fIUJu1GVRc
+         B34RYurhnI1NNIiVvNWTN9QACMLj0WurExIOXF6fnHHUrWqaAK5L1zzOTbi2eKcLLGUt
+         4hwsyL2n/cQh2tEoyftTi3oQAonMwxgncF9LL8f2z+G1ZSuZf8j8Dk2jjGCIQ8k52/bZ
+         jhdZfUjiHh0sqAK6sECmw9+SEIBykYuPCi7663EgIwv2oYMF5Hb3poXvlgOct5msgOF0
+         9fdnZjChkZ9iZfbWPVmaCDBDMzaG0MMSCy/HFUalu5t2udUyBgI2rH8Mz0xNFyhqUBeU
+         zBrg==
+X-Gm-Message-State: AOAM531qxv7ATCCiiwYfoUfIBTugQjjTeWVcjuIjzfnYF/3xA7sUXK2R
+        KPdCalEkcascmMv/koEVAmWl+TVVKsg=
+X-Google-Smtp-Source: ABdhPJxlkaVHVHuTNHirCAARP7AneWOVVWeZcTvR4EYzaz1ETHnpKmw+vttpybRUWB0x0EzcnC+pVQ==
+X-Received: by 2002:aa7:d98f:: with SMTP id u15mr8180514eds.267.1613231443060;
+        Sat, 13 Feb 2021 07:50:43 -0800 (PST)
+Received: from localhost.localdomain ([195.245.17.255])
+        by smtp.gmail.com with ESMTPSA id f22sm7939244eje.34.2021.02.13.07.50.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Feb 2021 07:50:42 -0800 (PST)
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     linux-leds@vger.kernel.org
+Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
         linux-kernel@vger.kernel.org
-References: <20210213153227.1640682-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f588a2dd-d562-d8a8-ec8f-9121ec42c38c@infradead.org>
-Date:   Sat, 13 Feb 2021 07:46:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+Subject: [PATCH] leds: trigger: timer: Optionally stop timer trigger on reboot
+Date:   Sat, 13 Feb 2021 16:47:36 +0100
+Message-Id: <20210213154736.2905933-1-alexander.sverdlin@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210213153227.1640682-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/13/21 7:32 AM, Bhaskar Chowdhury wrote:
-> 
-> s/oustanding/outstanding/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+This functionality is similar to heartbeat and activity triggers and
+turns the timer-triggered LEDs off right before reboot. It's configurable
+via new module parameter "reboot_off" to preserve original behaviour.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+ drivers/leds/trigger/ledtrig-timer.c | 39 +++++++++++++++++++++++++++-
+ 1 file changed, 38 insertions(+), 1 deletion(-)
 
-> ---
->  arch/s390/kvm/kvm-s390.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index dbafd057ca6a..1d01afaca9fe 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -4545,7 +4545,7 @@ int kvm_s390_vcpu_start(struct kvm_vcpu *vcpu)
->  		/*
->  		 * As we are starting a second VCPU, we have to disable
->  		 * the IBS facility on all VCPUs to remove potentially
-> -		 * oustanding ENABLE requests.
-> +		 * outstanding ENABLE requests.
->  		 */
->  		__disable_ibs_on_all_vcpus(vcpu->kvm);
->  	}
-> --
-> 2.30.1
-> 
-
-
+diff --git a/drivers/leds/trigger/ledtrig-timer.c b/drivers/leds/trigger/ledtrig-timer.c
+index 7c14983781ee..3eadcb0a629a 100644
+--- a/drivers/leds/trigger/ledtrig-timer.c
++++ b/drivers/leds/trigger/ledtrig-timer.c
+@@ -16,6 +16,11 @@
+ #include <linux/device.h>
+ #include <linux/ctype.h>
+ #include <linux/leds.h>
++#include <linux/reboot.h>
++
++static bool reboot_off;
++module_param(reboot_off, bool, 0444);
++MODULE_PARM_DESC(reboot_off, "Switch LED off on reboot");
+ 
+ static ssize_t led_delay_on_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+@@ -97,7 +102,39 @@ static struct led_trigger timer_led_trigger = {
+ 	.deactivate = timer_trig_deactivate,
+ 	.groups = timer_trig_groups,
+ };
+-module_led_trigger(timer_led_trigger);
++
++static int timer_reboot_notifier(struct notifier_block *nb, unsigned long code,
++				 void *unused)
++{
++	led_trigger_unregister(&timer_led_trigger);
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block timer_reboot_nb = {
++	.notifier_call = timer_reboot_notifier,
++};
++
++static int __init timer_trig_init(void)
++{
++	int ret;
++
++	ret = led_trigger_register(&timer_led_trigger);
++	if (ret)
++		return ret;
++	if (reboot_off)
++		register_reboot_notifier(&timer_reboot_nb);
++	return 0;
++}
++
++static void __exit timer_trig_exit(void)
++{
++	/* Not afraid of -ENOENT */
++	unregister_reboot_notifier(&timer_reboot_nb);
++	led_trigger_unregister(&timer_led_trigger);
++}
++
++module_init(timer_trig_init);
++module_exit(timer_trig_exit);
+ 
+ MODULE_AUTHOR("Richard Purdie <rpurdie@openedhand.com>");
+ MODULE_DESCRIPTION("Timer LED trigger");
 -- 
-~Randy
+2.19.1
 
