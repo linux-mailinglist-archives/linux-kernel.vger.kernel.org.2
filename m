@@ -2,167 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BAD31AB6C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DC431AB6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 13:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBMM5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 07:57:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhBMM5i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 07:57:38 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4D1C061574;
-        Sat, 13 Feb 2021 04:56:58 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id n10so1430422pgl.10;
-        Sat, 13 Feb 2021 04:56:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qWsg69klgTq0z5peBmz3Nu2NfWKwsbvB2uqhVC/C6s4=;
-        b=NEWkRNaiKUDw4mfcStj5Cc1nf4lZFfhPpwDmoryH157v3eMuAY1TeUsNXdOvGNwzQP
-         ma65G8berz4a0XRW8OdojSkUDOAPOReNRU2Un0lctBFlQYmG6lCuI4LQeq71juWqZNm5
-         KxhnxkbH4tX6VCKVjWoZWQauu9y2JIGK2TmoaeDPBB6PChH2mYO7LAG04Bh1xujIBJ/O
-         b75H4y4sogPjTIFzcRND+oWoUXNTyryfs0Nxtm+K99tl2+lSVjUvKcCK+kHQVQvB+K/r
-         kSRkjO2rr/JfdRVFV6omCoamdvBJPNEZ+OT5SdA/Esrr14AHWMbYoXgDVQRj8VZ8FoNj
-         HTrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qWsg69klgTq0z5peBmz3Nu2NfWKwsbvB2uqhVC/C6s4=;
-        b=Vzy6k3oYt7iAAJQIadTjvwrIwtiLqRqaJFpg3o8/yInOr2pAJyiHzy1k+NXVOYLFJQ
-         CSZZCfLWSrmHsBja59pvw/qH6ZhQWnQNWZXeSJtVoFxaB3uoYYNt/7/KxWIjmlB1xCNE
-         D40dz/iPIbcdRn3z75LOrsgsmGGF1TQkwg8eVOSzalbjt9v/M9mVXuHd7ABD0pppLWZG
-         7bqOJ9jws8EQ2JwUBwruX65cE5naAhDD9yql+dpaS8uFJPVtiCY90Ir/rltAUue5ICZh
-         K7qCPtTDyeWWd/adSwrBGOHxJJlcNkPWgOWxK8I5sETxyB74GhCBPiQJO+BrCc+Xcv43
-         he6Q==
-X-Gm-Message-State: AOAM530pe+IQ2sy1K3iNN2p9C0N8ltvAzXLxvEhVc0BfEZTYAkmd1CwW
-        fxqtceSDuCEpZvifkDzhRXXUyMOJO3YLv7FHAM8=
-X-Google-Smtp-Source: ABdhPJxOAeI9XvercNV8R3F3WRxSBZlUmQgnkCELR0fva9tLJx+AkX3phlZ54ZU7zT4ZArZHy7OM3xl03XwWv2tB+hs=
-X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
- q20-20020a056a000854b02901b762330c5fmr7505905pfk.73.1613221017699; Sat, 13
- Feb 2021 04:56:57 -0800 (PST)
+        id S229672AbhBMM6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 07:58:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhBMM6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 07:58:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E37D864E3C;
+        Sat, 13 Feb 2021 12:57:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613221073;
+        bh=n9Kc6qtE8zZ7Uco+k2p1ZsHLcXmmAFKB942FmcmmFMw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QzBOdW/c2/JrNI5htnMSw5gAb0epUNTeJxFtkmUJYhEn67L/GxfYNdAyT4kO7wYWS
+         wk70aHzMeQryGE7/wLYq7dOygl5w7J+NQpb2Ievc0czNg4vIXXd0mhc+8+cIyOERWr
+         ZaJ9s8a/0b0b/ALH8LUHI624QpmqND7Gzk3e2dgU=
+Date:   Sat, 13 Feb 2021 13:57:51 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ross Schmidt <ross.schm.dev@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/54] 5.10.16-rc1 review
+Message-ID: <YCfMz1UUp0y61/IJ@kroah.com>
+References: <20210211150152.885701259@linuxfoundation.org>
+ <20210213032005.GC7927@book>
 MIME-Version: 1.0
-References: <20210212223015.727608-1-drew@beagleboard.org> <20210212223015.727608-2-drew@beagleboard.org>
-In-Reply-To: <20210212223015.727608-2-drew@beagleboard.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 13 Feb 2021 14:56:41 +0200
-Message-ID: <CAHp75VdzbX7=n17xcdK6_fLwv5OmOePUkf3b0VZvpLDSZ947qQ@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] pinctrl: use to octal permissions for debugfs files
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210213032005.GC7927@book>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 12:30 AM Drew Fustini <drew@beagleboard.org> wrote:
->
-> Switch over pinctrl debugfs files to use octal permissions as they are
-> preferred over symbolic permissions. Refer to commit f90774e1fd27
-> ("checkpatch: look for symbolic permissions and suggest octal instead").
->
-> Note: S_IFREG flag is added to the mode by __debugfs_create_file()
-> in fs/debugfs/inode.c
+On Fri, Feb 12, 2021 at 09:20:05PM -0600, Ross Schmidt wrote:
+> On Thu, Feb 11, 2021 at 04:01:44PM +0100, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.16 release.
+> > There are 54 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> 
+> Compiled and booted with no regressions on x86_64.
+> 
+> Tested-by: Ross Schmidt <ross.schm.dev@gmail.com>
+> 
 
-I guess it also needs Suggested-by: Joe (IIRC he proposed to convert the rest).
-Nevertheless,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Thanks!
+Thanks for testing them all and letting me know.
 
-
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
->  drivers/pinctrl/core.c    | 12 ++++++------
->  drivers/pinctrl/pinconf.c |  4 ++--
->  drivers/pinctrl/pinmux.c  |  4 ++--
->  3 files changed, 10 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-> index 3663d87f51a0..07458742bc0f 100644
-> --- a/drivers/pinctrl/core.c
-> +++ b/drivers/pinctrl/core.c
-> @@ -1888,11 +1888,11 @@ static void pinctrl_init_device_debugfs(struct pinctrl_dev *pctldev)
->                         dev_name(pctldev->dev));
->                 return;
->         }
-> -       debugfs_create_file("pins", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pins", 0444,
->                             device_root, pctldev, &pinctrl_pins_fops);
-> -       debugfs_create_file("pingroups", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pingroups", 0444,
->                             device_root, pctldev, &pinctrl_groups_fops);
-> -       debugfs_create_file("gpio-ranges", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("gpio-ranges", 0444,
->                             device_root, pctldev, &pinctrl_gpioranges_fops);
->         if (pctldev->desc->pmxops)
->                 pinmux_init_device_debugfs(device_root, pctldev);
-> @@ -1914,11 +1914,11 @@ static void pinctrl_init_debugfs(void)
->                 return;
->         }
->
-> -       debugfs_create_file("pinctrl-devices", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pinctrl-devices", 0444,
->                             debugfs_root, NULL, &pinctrl_devices_fops);
-> -       debugfs_create_file("pinctrl-maps", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pinctrl-maps", 0444,
->                             debugfs_root, NULL, &pinctrl_maps_fops);
-> -       debugfs_create_file("pinctrl-handles", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pinctrl-handles", 0444,
->                             debugfs_root, NULL, &pinctrl_fops);
->  }
->
-> diff --git a/drivers/pinctrl/pinconf.c b/drivers/pinctrl/pinconf.c
-> index 02c075cc010b..d9d54065472e 100644
-> --- a/drivers/pinctrl/pinconf.c
-> +++ b/drivers/pinctrl/pinconf.c
-> @@ -370,9 +370,9 @@ DEFINE_SHOW_ATTRIBUTE(pinconf_groups);
->  void pinconf_init_device_debugfs(struct dentry *devroot,
->                          struct pinctrl_dev *pctldev)
->  {
-> -       debugfs_create_file("pinconf-pins", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pinconf-pins", 0444,
->                             devroot, pctldev, &pinconf_pins_fops);
-> -       debugfs_create_file("pinconf-groups", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pinconf-groups", 0444,
->                             devroot, pctldev, &pinconf_groups_fops);
->  }
->
-> diff --git a/drivers/pinctrl/pinmux.c b/drivers/pinctrl/pinmux.c
-> index bab888fe3f8e..c651b2db0925 100644
-> --- a/drivers/pinctrl/pinmux.c
-> +++ b/drivers/pinctrl/pinmux.c
-> @@ -676,9 +676,9 @@ DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
->  void pinmux_init_device_debugfs(struct dentry *devroot,
->                          struct pinctrl_dev *pctldev)
->  {
-> -       debugfs_create_file("pinmux-functions", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pinmux-functions", 0444,
->                             devroot, pctldev, &pinmux_functions_fops);
-> -       debugfs_create_file("pinmux-pins", S_IFREG | S_IRUGO,
-> +       debugfs_create_file("pinmux-pins", 0444,
->                             devroot, pctldev, &pinmux_pins_fops);
->  }
->
-> --
-> 2.25.1
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+greg k-h
