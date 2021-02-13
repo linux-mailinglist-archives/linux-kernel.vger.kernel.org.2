@@ -2,178 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31C531AD9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 19:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B5131ADA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 20:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhBMSzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 13:55:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34512 "EHLO
+        id S229780AbhBMTBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 14:01:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhBMSzG (ORCPT
+        with ESMTP id S229653AbhBMTBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 13:55:06 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAFFC061756;
-        Sat, 13 Feb 2021 10:54:26 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id x10so657658oor.3;
-        Sat, 13 Feb 2021 10:54:26 -0800 (PST)
+        Sat, 13 Feb 2021 14:01:18 -0500
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DA8C061574;
+        Sat, 13 Feb 2021 11:00:38 -0800 (PST)
+Received: by mail-vs1-xe34.google.com with SMTP id q23so1389209vsg.4;
+        Sat, 13 Feb 2021 11:00:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yEKNNEKnkLgSvJYomQ7ArLDNCQcwq8od634EP/lBxr0=;
-        b=SZtD//sERVc3we2PKNfu8kltMbidBi5bAE0A5Ix1j7I0rJaF5FEBdzK95uOvFsgwGQ
-         zpSK4j+G6io3FpST18xzqm1+v0k2gorvXfBPy+SQCTl9Yp834ziTnHWbEUCUsRKtolFz
-         MycgquFZpxkoRrPo8N2Hazq3k57gCEoFrFx2eVVKXdH5l3xSrrTni3ezvDt0t11LYF7p
-         0VxMF4VVaVGa+yC4pU1NTq8Fm0ee0xLjLXrNbkyklUxmMnS35SHiCNhCqzLJkbOrDC1y
-         e81Dsq+Ua+sE6PxT0djFRWaABrgwsVxpqRFPn4dV9NwbBeK53HfoZvGZwRgJ43otvew7
-         F0ug==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EMAUY9hS4bc4jUz/i8HmaZkUrdp7bHScBNSf6T3QN0Q=;
+        b=IYPmykXjaJ+of/tsfhz0Qxd+UuprM9HQudcUmoCT7r7Wkl7k/IXPKHqFFarPMNhUdn
+         HA3dg0a5wI7SrwY95vrZOHBRyciQR+t7vsAW2COeTr3TWy0hVHVTgjGYnKxt1U8t13fy
+         +6caiJgI4relL342+VB5IT76x6yUzkj/LuIQwj7YMYfLS4aRWdlyvS1qllr7kM+DBOk7
+         ZsNfmkuD/MfKNJpWB+GMp1cOWutJjaWqjelj2peq+Hu0LNiLIy7DbDr5tey9zpxbOFRX
+         iltD6KqlF4s1Ao7IHLgTi10RG0veiZ968b9/AAKZ5+S1P/OqdDjH4+HnTFdAHRvVGXO9
+         aZDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yEKNNEKnkLgSvJYomQ7ArLDNCQcwq8od634EP/lBxr0=;
-        b=nfNhKhhzFqHmV0QXY4ZJRtb9fVoLi2YWtT/VB3S3XTDl8KEvEHbVVyGqAwlEyRnto/
-         xaWr3hmcwNGB7ro46+9skGGF+vVcxuDvAofYiOjDEjVaEXMXRapzjyB5m6hzU0n4CHkD
-         gG4FHOct6l8Vx4vUUObh01kmZIwkseTkapHZFT9W0EpMXFeLGSmNk1NxER7tHzcI0iaz
-         Qdy1FEA5YQwL+Q71vwZbU8wXggAW18j2sLIj11pzxpEsqEN94GdHV97NwFBXXOve/h5N
-         MJzA8F6puaSkcCY3m2GPe+R//AP0f/g8tOtXoG+xQ765trWCcmoHddZVVk/kUZ+buCy7
-         ES3Q==
-X-Gm-Message-State: AOAM532UPl2XBYmS1Sqrz9w2XiVGbpAifbRwoJYfjCMbAeViZyze9W+I
-        VXBR+5++eKx44IJcW7Pt5uw=
-X-Google-Smtp-Source: ABdhPJzhjErbLWLdvSj9t/4+cZdxLj8EJ162VROcMzEuK78/ZJOG8+mKrG+EpKk4f7KRbR2EjCEa6w==
-X-Received: by 2002:a4a:4c17:: with SMTP id a23mr5940532oob.16.1613242463925;
-        Sat, 13 Feb 2021 10:54:23 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f1sm1556012otq.10.2021.02.13.10.54.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 13 Feb 2021 10:54:23 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 13 Feb 2021 10:54:22 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
-        Rob Herring <robh@kernel.org>,
-        Thierry Reding <treding@nvidia.com>
-Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for
- interrupts
-Message-ID: <20210213185422.GA195733@roeck-us.net>
-References: <20210121225712.1118239-1-saravanak@google.com>
- <20210121225712.1118239-3-saravanak@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EMAUY9hS4bc4jUz/i8HmaZkUrdp7bHScBNSf6T3QN0Q=;
+        b=m58uH0pgc34FxuvB25Ny4FBnYxSvFSZMT/mB5CUm7sQ4sPzJYboePJfpoXjgAyhpqq
+         /dmXH8qcCtY/L9ZK0/mFXvJp0z/rKJCAnsJW9nBez6a3lHpO48kSQyjyxn+WWnJtjXze
+         eeJ+KtUIWuohsKldK1Y+GE/NV9hrhLHc6qRfJjxmRIqj6AaTay/pcvHG9z+ilo2X0mDh
+         C6WDYCRUC37aVYCcjAOnm2fV/rNownCFnxNp9oyM6X14+8bbrtNwMveBwAtNuMvxAaF2
+         rj6eK4mogxJcetIbG2PdomSXE05gsuQxgQEuRKKhIBHzO8x2G0R45sz1rEov5BZQGhA8
+         xYTA==
+X-Gm-Message-State: AOAM531NgOO2JsO7XNdxgCTXYtAKhsQOyk99RufVKSr1lpw5OD97OMrp
+        9TUBAJIMNt+APTuJG3oLFx+sQuKCpWowlxoDZ1o=
+X-Google-Smtp-Source: ABdhPJxuna/b0FVJqzqRMmhj9/Uu7T/5ErOJjpQ8Izpc4OEQ8PPC371waXzT28SB9tlED9KTyyj25ZcdG3s3AahCnN0=
+X-Received: by 2002:a67:f87:: with SMTP id 129mr4967716vsp.24.1613242837017;
+ Sat, 13 Feb 2021 11:00:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121225712.1118239-3-saravanak@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210212162416.2756937-1-almaz.alexandrovich@paragon-software.com>
+ <20210212212737.d4fwocea3rbxbfle@spock.localdomain>
+In-Reply-To: <20210212212737.d4fwocea3rbxbfle@spock.localdomain>
+From:   Hanabishi Recca <irecca.kun@gmail.com>
+Date:   Sun, 14 Feb 2021 00:00:26 +0500
+Message-ID: <CAOehnrMK_9uP5j+QCF2qy_08yJEr_u9TEPwJJFogXQCeNFm6Gg@mail.gmail.com>
+Subject: Re: [PATCH v21 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com, kasep pisan <babam.yes@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Feb 13, 2021 at 2:27 AM Oleksandr Natalenko
+<oleksandr@natalenko.name> wrote:
 
-On Thu, Jan 21, 2021 at 02:57:12PM -0800, Saravana Kannan wrote:
-> This allows fw_devlink to create device links between consumers of an
-> interrupt and the supplier of the interrupt.
-> 
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Kevin Hilman <khilman@baylibre.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Thierry Reding <treding@nvidia.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Hanabishi, babam (both in Cc), here [2] you've reported some issues with
+> accessing some files and with hidden attributes. You may reply to this
+> email of mine with detailed description of your issues, and maybe
+> developers will answer you.
 
-This patch causes all ppc64:powernv qemu emulations to fail.
-The problem is always the same: The root file system can not be mounted.
+There is strange files access issue since v18 update. Some random
+files on partition became inaccessible, can't be read or even deleted.
+For example:
 
-Example:
+# ls -la
+ls: cannot access 'NlsStrings.js': No such file or directory
+total 176
+drwxrwxrwx 1 root root  4096 Oct 20 10:41 .
+drwxrwxrwx 1 root root 12288 Oct 20 10:42 ..
+-rwxrwxrwx 1 root root  8230 Oct 19 17:02 Layer.js < this file is ok
+-????????? ? ?    ?        ?            ? NlsStrings.js < this file is
+inaccessible
+...
 
-[   14.245672][    T1] VFS: Cannot open root device "sda" or unknown-block(0,0): error -6
-[   14.246063][    T1] Please append a correct "root=" boot option; here are the available partitions:
-[   14.246609][    T1] 1f00          131072 mtdblock0
-[   14.246648][    T1]  (driver?)
-[   14.247137][    T1] Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
-[   14.247631][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc7-next-20210212 #1
-[   14.248166][    T1] Call Trace:
-[   14.248344][    T1] [c000000002c07a70] [c0000000008f052c] dump_stack+0x100/0x174 (unreliable)
-[   14.248780][    T1] [c000000002c07ab0] [c00000000010d0e0] panic+0x190/0x450
-[   14.249097][    T1] [c000000002c07b50] [c0000000014d1af8] mount_block_root+0x320/0x430
-[   14.249442][    T1] [c000000002c07c50] [c0000000014d1e64] prepare_namespace+0x1b0/0x204
-[   14.249798][    T1] [c000000002c07cc0] [c0000000014d1544] kernel_init_freeable+0x3dc/0x438
-[   14.250145][    T1] [c000000002c07da0] [c000000000012b7c] kernel_init+0x2c/0x170
-[   14.250466][    T1] [c000000002c07e10] [c00000000000d56c] ret_from_kernel_thread+0x5c/0x70
-[   28.068945385,5] OPAL: Reboot request...
-
-Another:
-
-[   14.273398][    T1] md: Autodetecting RAID arrays.
-[   14.273665][    T1] md: autorun ...
-[   14.273860][    T1] md: ... autorun DONE.
-[   14.275078][    T1] Waiting for root device /dev/mmcblk0...
-
-[ waits until terminated ]
-
-Key difference seems to be that PCI devices are no longer instantiated
-with this patch applied. Specifically, I see
-
-[    1.153780][    T1] pci 0005:01     : [PE# fd] Setting up window#0 0..7fffffff pg=10000^M
-[    1.154475][    T1] pci 0005:01     : [PE# fd] Enabling 64-bit DMA bypass^M
-[    1.155749][    T1] pci 0005:01:00.0: Adding to iommu group 0^M
-[    1.160543][    T1] pci 0005:00:00.0: enabling device (0105 -> 0107)^M
-
-in both cases, but (exmple nvme) I don't see
-
-[   13.520561][   T11] nvme nvme0: pci function 0005:01:00.0^M
-[   13.521747][   T45] nvme 0005:01:00.0: enabling device (0100 -> 0102)^M
-
-after this patch has been applied.
-
-Reverting th patch plus its fix resolves the problem.
-
-Bisect log attached.
-
-Guenter
-
----
-# bad: [07f7e57c63aaa2afb4ea31edef05e08699a63a00] Add linux-next specific files for 20210212
-# good: [92bf22614b21a2706f4993b278017e437f7785b3] Linux 5.11-rc7
-git bisect start 'HEAD' 'v5.11-rc7'
-# good: [987d576a592082b8e0e499990236f49ad655f5dc] Merge remote-tracking branch 'crypto/master'
-git bisect good 987d576a592082b8e0e499990236f49ad655f5dc
-# good: [e254726a51e0440c05eb4606215772c34b77a53f] Merge remote-tracking branch 'spi/for-next'
-git bisect good e254726a51e0440c05eb4606215772c34b77a53f
-# bad: [309b7dce497b1ce820b2afb13a19b0ad39b23a4a] Merge remote-tracking branch 'char-misc/char-misc-next'
-git bisect bad 309b7dce497b1ce820b2afb13a19b0ad39b23a4a
-# good: [5c45f9ce2ad5c4abf79baf114e42620da77c84fe] Merge remote-tracking branch 'chrome-platform/for-next'
-git bisect good 5c45f9ce2ad5c4abf79baf114e42620da77c84fe
-# bad: [b45d849cd57bf11d1824f68d92404ceea1293886] Merge remote-tracking branch 'usb/usb-next'
-git bisect bad b45d849cd57bf11d1824f68d92404ceea1293886
-# good: [89451aabea5f91a6c1b6dc4c52cac4caffecbc8a] Merge tag 'tag-ib-usb-typec-chrome-platform-cros-ec-typec-clear-pd-discovery-events-for-5.12' of git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux into usb-next
-git bisect good 89451aabea5f91a6c1b6dc4c52cac4caffecbc8a
-# good: [43861d29c0810a70792bf69d37482efb7bb6677d] USB: quirks: sort quirk entries
-git bisect good 43861d29c0810a70792bf69d37482efb7bb6677d
-# good: [08f4a6b903369ee0147b557931b7075c17e015f6] dt-bindings: usb: dwc3: add description for rk3328
-git bisect good 08f4a6b903369ee0147b557931b7075c17e015f6
-# bad: [1753c4d1edbcf1b35e585ff76777d09434344c8f] of: property: Don't add links to absent suppliers
-git bisect bad 1753c4d1edbcf1b35e585ff76777d09434344c8f
-# good: [072a51be8ecfb84e15b27b7f80a601560f386788] Merge 5.11-rc5 into driver-core-next
-git bisect good 072a51be8ecfb84e15b27b7f80a601560f386788
-# bad: [4731210c09f5977300f439b6c56ba220c65b2348] gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default
-git bisect bad 4731210c09f5977300f439b6c56ba220c65b2348
-# bad: [4044b2fcfb2048a256529ecbd869b43713982006] drivers: base: change 'driver_create_groups' to 'driver_add_groups' in printk
-git bisect bad 4044b2fcfb2048a256529ecbd869b43713982006
-# bad: [4104ca776ba38d81bd6610256d3b0d7e6a058067] of: property: Add fw_devlink support for interrupts
-git bisect bad 4104ca776ba38d81bd6610256d3b0d7e6a058067
-# good: [e13f5b7a130f7b6d4d34be27a87393890b5ee2ba] of: property: Add fw_devlink support for "gpio" and "gpios" binding
-git bisect good e13f5b7a130f7b6d4d34be27a87393890b5ee2ba
-# first bad commit: [4104ca776ba38d81bd6610256d3b0d7e6a058067] of: property: Add fw_devlink support for interrupts
+To reproduce the issue try to mount a NTFS partition with deep
+structure and large files amout. Then run on it some recursive file
+command, e.g. 'du -sh', it will list all access errors.
+Can't say what exactly causes it. Filesystem itself is not damaged,
+when mounting it via ntfs-3g, ntfs3 <18 or in Windows it works
+normally. The files is not damaged and chkdsk report no errors.
