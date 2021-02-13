@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E50F31A96B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 02:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5980531A96D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 02:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhBMBQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 20:16:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhBMBQs (ORCPT
+        id S232425AbhBMBRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 20:17:16 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:43284 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229648AbhBMBRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 20:16:48 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2809BC061756;
-        Fri, 12 Feb 2021 17:16:08 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id z7so725575plk.7;
-        Fri, 12 Feb 2021 17:16:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+iBCVfCBjrMgs5a9o2EKnVJAAnesaHogIEXgXYwhMSY=;
-        b=jOyBDv9ORy2bAnO5OGjhG5CfwW9mE7+6i4IehDMYZMgStncmfsTx5Gi940QSCan0iA
-         Aakp3sHMgYudRsohQ+ZZChKohJj64TWqntg0DZQm2b63KC5tOi4qzdOc1IAm2Qf4HG1Q
-         ahXSj54tUdHmhNIPmQvLrdN0sC6augXBIbrGpwUtRsb9Itr8EHXPoT9zBBDul8BZ1xnq
-         7z/CSUR5YuMl0JVKWsZBSwd6cS25UK2fQ19MOxZfmD9Zs5p+4/otaIR7XyvL1vnSmitA
-         CGoz/SYQhgffg4D9Ao07AMDy/fKS0v7PnB5qVqgWYrjXUklyToyw2pjjic22OxNr1akq
-         z63w==
+        Fri, 12 Feb 2021 20:17:07 -0500
+Received: by mail-ot1-f41.google.com with SMTP id l23so935223otn.10;
+        Fri, 12 Feb 2021 17:16:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+iBCVfCBjrMgs5a9o2EKnVJAAnesaHogIEXgXYwhMSY=;
-        b=peJRKiSvngEKFKvhCTeE4z0AyVDgtGerfZOd/9DUrtPAAsANIVe5N5rs8q2LLjjuCe
-         AEowLAWCmti/TBJWf+F+jgFTV4w7SVJHlnvodvSAnTBdFA+hSgUnKt3gAJT2V/9sjYiN
-         aCTimifHdeJRWc5b4/P3IvvxXJIX3atlKeuCO5HQmGtVkOGaMnII4TbwHpeat5Gzqgqf
-         9Mt5n6KXhEgLnbB06QQbNCDckVoYC4OT9dTlmxUiB+QPiAR7VTbGze2TuaLJ23JKjRJv
-         tHbbTWc8bmvNOzqZSw6yPmzIQSqFHj+gIluqYv79CVYC47vDJYvCM1h2TNgg/ab5aJ0v
-         L1iQ==
-X-Gm-Message-State: AOAM530QHk6qKLKsZo9q7qk8QoKYz+BFvHnoxNqW8zY5yffGcTN58XLN
-        Rex7mT9GNL0/xlRBEkB+40R0cYNn0Js=
-X-Google-Smtp-Source: ABdhPJyfveU7yQ5Oc5hILlr54w5SH93A5DOebsIcPc+UtY7+URe/6NHJaYFH4la4J36KUQnJoIXyJg==
-X-Received: by 2002:a17:903:22cc:b029:de:191c:1bdb with SMTP id y12-20020a17090322ccb02900de191c1bdbmr5331519plg.14.1613178967704;
-        Fri, 12 Feb 2021 17:16:07 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id t21sm9897850pfe.174.2021.02.12.17.16.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Feb 2021 17:16:07 -0800 (PST)
-Subject: Re: [PATCH net-next 1/3] net: phy: broadcom: Remove unused flags
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Chan <mchan@broadcom.com>,
-        "open list:BROADCOM ETHERNET PHY DRIVERS" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>, michael@walle.cc
-References: <20210212205721.2406849-1-f.fainelli@gmail.com>
- <20210212205721.2406849-2-f.fainelli@gmail.com>
- <20210213005659.enht5gsrh5dgmd7h@skbuf>
- <5cd03eea-ece8-7a81-2edc-ed74a76090ba@gmail.com>
- <20210213011453.k7mwchp6nxo5iks6@skbuf>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <b0fc0d82-36d0-7d54-c17c-ac4475fd0d21@gmail.com>
-Date:   Fri, 12 Feb 2021 17:16:04 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        bh=378QAQ4bK+x4rxGe6jOYIRjyUvbnNgGahQKoi2qE1ek=;
+        b=cqYnF/pYZxHlWf3JbjSbAcFXUCijZ2ZwzEWgaGfaJhHDVN5w0vNLsAoJ6ePu61nDf2
+         CD2QNdKRB5jqdZrgPJk54Ck+DH20nAeXHJjgji7926OQtl5ONpYHPr1AXzJQpEUTlMmv
+         BYGbJIEeu/wYDIZuRCgFOx/d9xfoNZuEuDRvs4LaVuRu33XNf9TAMglHgg8AH1HIwOF7
+         RQk5thpd7mlXEesBMqDJ9hw8grQQWJmJiIJo0Br6DSiUUEjfyZzO3DV04hdAH6BXFTq7
+         X/6xhmmwvf+emUklzFF71cDP30sRfZHwTRTiHP9oJAi56Mew1mIDBytc4K5OVaOuns4d
+         nmPg==
+X-Gm-Message-State: AOAM531HQbohK2/XLJW22KhKS3a+IF15uE9u8R+Ke1PzUIPoovk3QERu
+        a8JxpBQl2QJUrh2EbfQ4Yf1+Az/9/Q==
+X-Google-Smtp-Source: ABdhPJyMVHPveHs5txHzOVjexHBwRd+NzFpzxOOF1zuyzA0re0picRMlSxNYDZEspQoiEM9q6DnJLQ==
+X-Received: by 2002:a9d:70d7:: with SMTP id w23mr4246596otj.352.1613178986121;
+        Fri, 12 Feb 2021 17:16:26 -0800 (PST)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id x16sm1519848otp.81.2021.02.12.17.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 17:16:25 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Michal Simek <monstr@monstr.eu>
+Subject: [PATCH] microblaze: Fix built-in DTB alignment to be 8-byte aligned
+Date:   Fri, 12 Feb 2021 19:16:24 -0600
+Message-Id: <20210213011624.251838-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210213011453.k7mwchp6nxo5iks6@skbuf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 79edff12060f ("scripts/dtc: Update to upstream version
+v1.6.0-51-g183df9e9c2b9") broke booting on Microblaze systems depending on
+the build. The problem is libfdt gained an 8-byte starting alignment check,
+but the Microblaze built-in DTB area is only 4-byte aligned. This affected
+not just built-in DTBs as bootloader passed DTBs are copied into the
+built-in DTB region.
 
+Other arches using built-in DTBs use a common linker macro which has
+sufficient alignment.
 
-On 2/12/2021 5:14 PM, Vladimir Oltean wrote:
-> On Fri, Feb 12, 2021 at 05:08:58PM -0800, Florian Fainelli wrote:
->> That's right, tg3 drove a lot of the Broadcom PHY driver changes back
->> then, I also would like to rework the way we pass flags towards PHY
->> drivers because tg3 is basically the only driver doing it right, where
->> it checks the PHY ID first, then sets appropriate flags during connect.
-> 
-> Why does the tg3 controller need to enable the auto power down PHY
-> feature in the first place and the PHY driver can't just enable it by
-> itself?
-> 
+Fixes: 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+Cc: Michal Simek <monstr@monstr.eu>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+As the commit is in my tree, I'll take this via the DT tree.
 
-That would be a question for Michael if he remembers those details from
-12 years ago.
+ arch/microblaze/kernel/vmlinux.lds.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/microblaze/kernel/vmlinux.lds.S b/arch/microblaze/kernel/vmlinux.lds.S
+index df07b3d06cd6..fb31747ec092 100644
+--- a/arch/microblaze/kernel/vmlinux.lds.S
++++ b/arch/microblaze/kernel/vmlinux.lds.S
+@@ -45,7 +45,7 @@ SECTIONS {
+ 		_etext = . ;
+ 	}
+ 
+-	. = ALIGN (4) ;
++	. = ALIGN (8) ;
+ 	__fdt_blob : AT(ADDR(__fdt_blob) - LOAD_OFFSET) {
+ 		_fdt_start = . ;		/* place for fdt blob */
+ 		*(__fdt_blob) ;			/* Any link-placed DTB */
 -- 
-Florian
+2.27.0
+
