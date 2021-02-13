@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D540831A97A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 02:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8F831A97F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 02:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhBMBYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 12 Feb 2021 20:24:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
+        id S232224AbhBMB3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 12 Feb 2021 20:29:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhBMBX7 (ORCPT
+        with ESMTP id S229693AbhBMB3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 12 Feb 2021 20:23:59 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CA6C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:23:19 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id r77so1423221qka.12
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:23:19 -0800 (PST)
+        Fri, 12 Feb 2021 20:29:37 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52ADDC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:28:57 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id b16so1165884lji.13
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:28:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NEklPruRwHnzdB6BiLjyxJgAELcX7pwjnZyGp7KbdM8=;
-        b=KkoSsN4QzI935NbGZf/zZOfNBQn/mXT/6eQ99NSHnNWydOpLe7Odb9OQScSdxH2Ta7
-         ouKi3esRtSy30M4iHh/c9dMdwz69ar9oaYdruLllzvOssAzoT7kuQuefj/DcfTqzvvYF
-         pa+7Z6Nd5vdDI7RGLRd5ddYThJqGsaWuu0KHq2gqbPByeTjicXkqpThIPeHvlahpp7RE
-         bxkksOtEKwYKcl42jiCfXEH4OAzjUBLzLIdCnMRFWd5B9RiABBpcUiU9ERwNrGYVSkFM
-         KWBgYshwsvH2E9ecjRsBeDbvqNw+91isL4Ik33fkMAlM9c/a7LnAfEsSIWryakMsW7tV
-         iWNQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CiqXRmojC4JwBHhoVk4DYTWwIEbtC25jfG/VbdzJc2Y=;
+        b=AVywlp9EKlBrA8lARvxt1258Gw3mHl0ZnHD9XiNJzUvYfdkbG+QmOVQLlbsKR61LjF
+         sY1meUqr3pjxgqJuzwwqAjhmF30pGYmJAFlE9ANktxg9lxd24G8n9Z8uAsPu94c6CPFf
+         eIiws2pR5nz43eMT/uYQnZ2lVgVYzWs6pmB24=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NEklPruRwHnzdB6BiLjyxJgAELcX7pwjnZyGp7KbdM8=;
-        b=Wb3TY7eP82HGmsgUgaTGYPSZbTaAd8nGPbpXmM0jgRX2DMYBZkrSVUkXD/CyWeX/uT
-         2LefunWgNzGBasr2kjgAu8EiK/l0sjhJxei70F0mSFn8O9kHuHKKxKwXACpXOgldwKza
-         VkMrkcpGFF9j3/6n7hcI2bHOLVSwzm47dwUzDDtOCJ+IqHF98sLku+fYzXo3LNVr5Q81
-         9k+Ahktg3Ec+O/K4d0EJaF7FYr7K0t/cf/TQZCN10ejkcOdcCFjft8BMg+FyyPNBn9ZC
-         49xYvCdrpSIufOIJqn5y71hwRuFBE0Wk2EWVsMVOz7BDBG2hye+QOEmN3nPbdSlt6qwK
-         sH0w==
-X-Gm-Message-State: AOAM530cXRtJcO3ryeI/QTIN+R8B4G81Wo49a6q48/aAEUT4ftvK9te+
-        iJ7Em7TJbYZRp3IejU+EUmwwGg==
-X-Google-Smtp-Source: ABdhPJyUj/byycWSZvEKqv1kcYlwMXA854ADSxDmK8Ojmk5DFLenn+sXu4Exhn9FyK09WvXJ9tgTXg==
-X-Received: by 2002:a05:620a:48c:: with SMTP id 12mr5324955qkr.290.1613179398441;
-        Fri, 12 Feb 2021 17:23:18 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id k187sm7477484qkc.74.2021.02.12.17.23.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 17:23:17 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, tyhicks@linux.microsoft.com,
-        jmorris@namei.org, catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        rppt@kernel.org, logang@deltatee.com, ardb@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: mm: correct the start of physical address in linear map
-Date:   Fri, 12 Feb 2021 20:23:16 -0500
-Message-Id: <20210213012316.1525419-1-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CiqXRmojC4JwBHhoVk4DYTWwIEbtC25jfG/VbdzJc2Y=;
+        b=himPlMPV551Fkcp1zVXwXcyc54H84k0cKjsqAiPQkqkcvWHCa9BulOyp2fq3hx9A71
+         gHACFz7sDVfayuRliPPUk5t3Ja4JWhcXfnB8GWw5xE1zxOKYeb9AJ9IDU1fxUc0eQ8yX
+         Estns/5SG7sD4GJmwzrGBzBb7s0rDkluOXQdr1Gy/uK6zncpTxqXjjMVB4Qg0ichb9YN
+         Zy35mUeOcqxydybWIBPd/c7TVByaZrn2+tCl3NP5UV0AyMWAP4wStxH+ssb37bvlDK89
+         IqHs5lRHt8NDPPi78AgNj5IEQtcOfrvoH25ez0ll+hdLowui0snD+Gr2as/fYDlyBlRt
+         FnMQ==
+X-Gm-Message-State: AOAM5320ne6O5jf5DDfWUMPcwjnwAIwdYLTpbaxt31dHoRtJFRH452EI
+        S/olOULPQJNfwJqLrjDCXr/l0GdEQHqPzg==
+X-Google-Smtp-Source: ABdhPJzx+RdNPWCRzpePD8Gru3ZaTNHJcXwvx8NSCIL7x1nRn6Wg3qIA86gz5cAMUQYI3Ewg3SEgEQ==
+X-Received: by 2002:a2e:7a05:: with SMTP id v5mr3060609ljc.402.1613179735321;
+        Fri, 12 Feb 2021 17:28:55 -0800 (PST)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id p14sm1846646ljg.103.2021.02.12.17.28.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Feb 2021 17:28:54 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id f1so2120666lfu.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 17:28:53 -0800 (PST)
+X-Received: by 2002:a19:7f44:: with SMTP id a65mr2786768lfd.41.1613179733615;
+ Fri, 12 Feb 2021 17:28:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAH2r5mtYEj+WLy+oPSXEwS5sZ8+TNk_dU3PVx3ieBz2DFS94Sg@mail.gmail.com>
+ <CAHk-=wja1Y8r5UKrmXcMFrS=VPkTPbkyK-vt8B9MBkEU4+-WLw@mail.gmail.com>
+ <CAH2r5mtj+-xGDy-YN0JwSJAsgvB+HpQFCBi-zdTNXTRBY_Mteg@mail.gmail.com>
+ <592ad76a-866e-f932-5a82-1af4a2ba4880@samba.org> <CAHk-=wh8n15NOcHkuxD=rXnMZCcsYD316JjRDdHUFwcFi8vq6g@mail.gmail.com>
+ <cb3740c6-6413-8411-e141-798e9dadc6d1@samba.org>
+In-Reply-To: <cb3740c6-6413-8411-e141-798e9dadc6d1@samba.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 12 Feb 2021 17:28:37 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whOXR8ha7Zjzn2UPM8Ka-X1VSY7R07Pv-Fxeb3iKjKK3A@mail.gmail.com>
+Message-ID: <CAHk-=whOXR8ha7Zjzn2UPM8Ka-X1VSY7R07Pv-Fxeb3iKjKK3A@mail.gmail.com>
+Subject: Re: [GIT PULL] cifs fixes
+To:     Stefan Metzmacher <metze@samba.org>
+Cc:     Steve French <smfrench@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIEpBQ0tF?= <bjacke@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory hotplug may fail on systems with CONFIG_RANDOMIZE_BASE because the
-linear map range is not checked correctly.
+On Fri, Feb 12, 2021 at 5:08 PM Stefan Metzmacher <metze@samba.org> wrote:
+>
+> > Zen 2 seems to have fixed things (knock wood - it's certainly working
+> > for me), But many people obviously never saw any issues with Zen 1
+> > either.
+>
+> Do you know about the Zen3 status, I was thinking to replace the system
+> by this one with AMD Ryzen 9 5950X:
 
-The start physical address that linear map covers can be actually at the
-end of the range because of randmomization. Check that and if so reduce it
-to 0.
+I have heard nothing but good things about Zen3 so far (apart from
+apparently people complaining about availability), but it's only been
+out a few months, so obviously coverage is somewhat limited.
 
-This can be verified on QEMU with setting kaslr-seed to ~0ul:
+I wish AMD hadn't decimated their Linux team (several years ago), and
+they definitely had some embarrassing issues early on with Zen (apart
+from the Zen 1 stability issues, they've screwed up rdrand at least
+three times, iirc). But I've yet to hear of any Zen 3 issues, and I
+suspect I'll upgrade when Threadripper comes out (I've become quite
+spoiled by the build speeds of my Threadripper 3970X - the only thing
+I miss is the better 'perf' support from Intel PEBS).
 
-memstart_offset_seed = 0xffff
-START: __pa(_PAGE_OFFSET(vabits_actual)) = ffff9000c0000000
-END:   __pa(PAGE_END - 1) =  1000bfffffff
+Note that I'm not necessarily the person who would hear about any
+issues first, though, so take the above with a pinch of salt.
 
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Fixes: 58284a901b42 ("arm64/mm: Validate hotplug range before creating linear mapping")
----
- arch/arm64/mm/mmu.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index ae0c3d023824..6057ecaea897 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1444,14 +1444,25 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
- 
- static bool inside_linear_region(u64 start, u64 size)
- {
-+	u64 start_linear_pa = __pa(_PAGE_OFFSET(vabits_actual));
-+	u64 end_linear_pa = __pa(PAGE_END - 1);
-+
-+	/*
-+	 * Check for a wrap, it is possible because of randomized linear mapping
-+	 * the start physical address is actually bigger than the end physical
-+	 * address. In this case set start to zero because [0, end_linear_pa]
-+	 * range must still be able to cover all addressable physical addresses.
-+	 */
-+	if (start_linear_pa > end_linear_pa)
-+		start_linear_pa = 0;
-+
- 	/*
- 	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
- 	 * accommodating both its ends but excluding PAGE_END. Max physical
- 	 * range which can be mapped inside this linear mapping range, must
- 	 * also be derived from its end points.
- 	 */
--	return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
--	       (start + size - 1) <= __pa(PAGE_END - 1);
-+	return start >= start_linear_pa && (start + size - 1) <= end_linear_pa;
- }
- 
- int arch_add_memory(int nid, u64 start, u64 size,
--- 
-2.25.1
-
+       Linus
