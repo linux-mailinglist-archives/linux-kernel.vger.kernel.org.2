@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8404C31AA89
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 09:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F04031AA8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 09:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbhBMIja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 03:39:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42188 "EHLO mail.kernel.org"
+        id S229625AbhBMInb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 03:43:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60436 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229469AbhBMIj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 03:39:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E49264E00;
-        Sat, 13 Feb 2021 08:38:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613205527;
-        bh=30CrHCumhUGMHavhG3IzYfh7g5G9PLDoLDPao3PDxTs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yvVcJShU4u6MSogQNXiG1BTN0dbZ5pGX7Q0XQJmYe3wBbPIarQoph59tYyxHEZqIA
-         727YANtpda49Lin7dQB7ZqDE6SLvoSoWta2H0Pd9XkM9uerD0seFekIBeAm34UMpRE
-         esGOT9eXwRRbTrA3Lkiz7l+14kvmvJ+xHB71hGuI=
-Date:   Sat, 13 Feb 2021 09:38:45 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Ken Moffat <zarniwhoop73@googlemail.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: objtool segfault in 5.10 kernels with binutils-2.36.1
-Message-ID: <YCeQFYFpxBxsUYZK@kroah.com>
-References: <CANVEwpb2oyYFbXkCaeuhnr0s1LH8ojf_WDoStcLYoB1eXWhgRw@mail.gmail.com>
- <20210212235145.t4jgnkyiztrbqlnp@treble>
+        id S229469AbhBMIn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 03:43:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5F7D1AC32;
+        Sat, 13 Feb 2021 08:42:47 +0000 (UTC)
+Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
+ it
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@fb.com>,
+        Keith Busch <kbusch@kernel.org>
+References: <20210212181738.79274-1-dwagner@suse.de>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <3f183393-cc1e-3d03-3074-40c18f3cb9cc@suse.de>
+Date:   Sat, 13 Feb 2021 09:42:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212235145.t4jgnkyiztrbqlnp@treble>
+In-Reply-To: <20210212181738.79274-1-dwagner@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 05:51:45PM -0600, Josh Poimboeuf wrote:
-> On Thu, Feb 11, 2021 at 05:16:56PM +0000, Ken Moffat wrote:
-> > Hi,
-> > 
-> > in 5.10 kernels up to and including 5.10.15 when trying to build the
-> > kernel for an x86_64 skylake using binutils-2.36.1, gcc-10.2 and
-> > glibic-2.33 I get a segfault in objtool if the orc unwinder is
-> > enabled.
-> > 
-> > This has already been fixed in 5.11 by ''objtool: Fix seg fault with
-> > Clang non-section symbols'
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/patch/?id=44f6a7c0755d8dd453c70557e11687bb080a6f21
-> > 
-> > So can this be added to 5.10 stable, please ?
-> > 
-> > Please CC me as I am no-longer subscribed.
+On 2/12/21 7:17 PM, Daniel Wagner wrote:
+> blk_mq_tag_to_rq() will always return a request if the command_id is
+> in the valid range. Check if the request has been started. If we
+> blindly process the request we might double complete a request which
+> can be fatal.
 > 
-> Hi Ken,
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
 > 
-> I agree that needs to be backported (and my bad for not marking it as
-> stable to begin with).
+> This patch is against nvme-5.12.
 > 
-> Greg, this also came up in another thread, are you pulling that one in,
-> or do you want me to send it to stable list?
+> There is one blk_mq_tag_to_rq() in nvme_tcp_recv_ddgst() which I
+> didn't update as I am not sure if it's also needed.
+> 
+I guess it is; this patch is essentially a protection against invalid 
+frames, and as such affects all places.
 
-I will pull it in after the next release happens in a few hours, thanks.
+Cheers,
 
-greg k-h
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
