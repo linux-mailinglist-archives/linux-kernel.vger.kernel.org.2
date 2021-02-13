@@ -2,110 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93D331AC2B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 15:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FEE31AC2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 15:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhBMOQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 09:16:11 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:24691 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhBMONh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 09:13:37 -0500
-Date:   Sat, 13 Feb 2021 14:12:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613225574; bh=HLAVfjIlwGNW478FWp4tyY59eFbEvOz5vX71ZQBVijk=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=OX2dhEc9PulcqcVVekXlCqwMCvOCBQJU+xltx3p2J181V/lZ2211AdiQihOqP6gd0
-         o4rv90C/zI7jaWCvNdMaCTs6OTq9UIHEi6pRaVOO60tk83d+HlNK68l7jIl40PVxAy
-         LOON0Hdhvm9OJz7VQgie2Au+6IpzDYOT2gu8F/1CcVUwFIQZI+ZUSDFg+Q3sIIRIfB
-         yX7x2SpHplFN7UhwRyh38JOSsVib+EXwrHjs3+NK+ZvysCbnXbLiJ0ErnbPb7/Cy94
-         poIC6l8hRSK3JQb8vD7tiCTMjliBKFys1ZYH5oDatMtz813RNCCLmy3V+CVZY0uBsN
-         8ldqkdAyJVmCQ==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Taehee Yoo <ap420073@gmail.com>, Wei Wang <weiwan@google.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v6 net-next 10/11] skbuff: allow to use NAPI cache from __napi_alloc_skb()
-Message-ID: <20210213141021.87840-11-alobakin@pm.me>
-In-Reply-To: <20210213141021.87840-1-alobakin@pm.me>
-References: <20210213141021.87840-1-alobakin@pm.me>
+        id S229861AbhBMOQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 09:16:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229896AbhBMONs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 13 Feb 2021 09:13:48 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6115064E35;
+        Sat, 13 Feb 2021 14:13:06 +0000 (UTC)
+Date:   Sat, 13 Feb 2021 09:13:04 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Xi Ruoyao <xry111@mengyan1223.wang>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-tip-commits@vger.kernel.org
+Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
+ non-section symbols
+Message-ID: <20210213091304.2dd51e5f@oasis.local.home>
+In-Reply-To: <YCfdfkoeh8i0baCj@kroah.com>
+References: <ba6b6c0f0dd5acbba66e403955a967d9fdd1726a.1607983452.git.jpoimboe@redhat.com>
+        <160812658044.3364.4188208281079332844.tip-bot2@tip-bot2>
+        <dded80b60d9136ea90987516c28f93273385651f.camel@mengyan1223.wang>
+        <YCU3Vdoqd+EI+zpv@kroah.com>
+        <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
+        <YCafKVSTX9MxDBMd@kroah.com>
+        <20210212170750.y7xtitigfqzpchqd@treble>
+        <20210212124547.1dcf067e@gandalf.local.home>
+        <YCfdfkoeh8i0baCj@kroah.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-{,__}napi_alloc_skb() is mostly used either for optional non-linear
-receive methods (usually controlled via Ethtool private flags and off
-by default) and/or for Rx copybreaks.
-Use __napi_build_skb() here for obtaining skbuff_heads from NAPI cache
-instead of inplace allocations. This includes both kmalloc and page
-frag paths.
+On Sat, 13 Feb 2021 15:09:02 +0100
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/core/skbuff.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> Thanks for the patch, but no, still fails with:
+> 
+> Cannot find symbol for section 8: .text.unlikely.
+> kernel/kexec_file.o: failed
+> make[1]: *** [scripts/Makefile.build:277: kernel/kexec_file.o] Error 1
+> make[1]: *** Deleting file 'kernel/kexec_file.o'
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index a80581eed7fc..875e1a453f7e 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -562,7 +562,8 @@ struct sk_buff *__napi_alloc_skb(struct napi_struct *na=
-pi, unsigned int len,
- =09if (len <=3D SKB_WITH_OVERHEAD(1024) ||
- =09    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
- =09    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
--=09=09skb =3D __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
-+=09=09skb =3D __alloc_skb(len, gfp_mask, SKB_ALLOC_RX | SKB_ALLOC_NAPI,
-+=09=09=09=09  NUMA_NO_NODE);
- =09=09if (!skb)
- =09=09=09goto skb_fail;
- =09=09goto skb_success;
-@@ -579,7 +580,7 @@ struct sk_buff *__napi_alloc_skb(struct napi_struct *na=
-pi, unsigned int len,
- =09if (unlikely(!data))
- =09=09return NULL;
-=20
--=09skb =3D __build_skb(data, len);
-+=09skb =3D __napi_build_skb(data, len);
- =09if (unlikely(!skb)) {
- =09=09skb_free_frag(data);
- =09=09return NULL;
---=20
-2.30.1
+It was just a guess.
 
+I guess I'll need to find some time next week to set up a VM with
+binutils 2.36 (I just checked, and all my development machines have
+2.35). Then I'll be able to try and debug it.
 
+-- Steve
