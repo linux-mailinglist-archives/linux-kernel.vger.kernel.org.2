@@ -2,144 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0341631AA4F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 07:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC7B31AA51
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Feb 2021 07:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbhBMGtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 01:49:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBMGte (ORCPT
+        id S229617AbhBMGwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 01:52:20 -0500
+Received: from wilbur.contactoffice.com ([212.3.242.68]:56712 "EHLO
+        wilbur.contactoffice.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhBMGwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 01:49:34 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FE4C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 22:48:54 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id z6so954390pfq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Feb 2021 22:48:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SvQPbY0JLL8of3BGGDOMIdtAbjg+M4/SFz/IP/02qIQ=;
-        b=Qmi3QON0oQEQ54YUbGatNEp0xc3/YNtLOTVVx5KzgbwD6xLzcXH/g0Co9uJ4dpyYop
-         wCV9HN1/bZZtAG7NippRen0hStG1KmbBWuUhyoPCUPn0aVe76tYiOAJRG2YYt6hRQtKv
-         Bx6NTRQBgq79QZVKQHdOufm5Xia6818VExEwaGiI+EqLuZfqqdfab+u/NcZ0IK2NeM7V
-         SXIbsxeWwFN8VB7pcGuHkvYGNVhb9kVO695jHYGzPvZrQEaTmOiyCfe28kfQGRN5NYPm
-         KFtsQOlyUxqbSqeq9FONIci5vl5CNHjpXEZpy6cOU+C1ILj9zOOagrDctqSrFJdxYJ4W
-         hyaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SvQPbY0JLL8of3BGGDOMIdtAbjg+M4/SFz/IP/02qIQ=;
-        b=ePXGRi83sSgRvDw6nWIARp6xIjSbidQXrnZ/vAGr7D+EU390kHPqkMIegRewHoKKDh
-         i/E32SFQp6LtMdn7z+gcw0703/qpeS1kAcFefLqoC/b0flsBRfqKfG5wfjZ3U3OyKM6X
-         fAGU2Uj6cd8ViljXicbHIGVkaeC+YvxaWMl0+KPvUpk4Ph3Rd9KcQ9reSlFtgywzjEOR
-         W+y6Fo4G+kTvH5/pXckzdwrf/W7OKdi3Qv1TO430SqWDkxVZDNrbC66BAVQEdeBDZoNQ
-         64Aa/q3dP0qZWfJuBmP9h1sK4OQHvplJGL5FU3BwXHed7cl6zuRSzBHY0avt176icI3O
-         fbuQ==
-X-Gm-Message-State: AOAM530jGwa/RDg7wrVizIdUhex6BEB+AXAC8Qwn5+JWg+PSidGF5DW6
-        Xpb2YS5hIL05K2r9mPJsIPl833v6BQU0tUrJK0l7uw==
-X-Google-Smtp-Source: ABdhPJxFm5ytrRIuo5OjrqHSAJy0svKyn32Z3N76DjduuptVRhBbBAX9PzKNFsNshl5LDiFRrqXBfTlYJZrJPN0ykdg=
-X-Received: by 2002:a63:480f:: with SMTP id v15mr6451732pga.341.1613198933433;
- Fri, 12 Feb 2021 22:48:53 -0800 (PST)
+        Sat, 13 Feb 2021 01:52:17 -0500
+Received: from ichabod.co-bxl (ichabod.co-bxl [10.2.0.36])
+        by wilbur.contactoffice.com (Postfix) with ESMTP id C5F80827;
+        Sat, 13 Feb 2021 07:51:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailfence.com;
+        s=20160819-nLV10XS2; t=1613199094;
+        bh=c7eHNOeudtFYB2ia1pCjZOnK2D0HGHskQSrZBEiyRZA=;
+        h=Date:From:Reply-To:To:Cc:In-Reply-To:References:Subject:From;
+        b=n3zxpQcBif6MD7GWsE6xsAt54uBoHMOtgRrnnbnt1t8MObHLQhJmqHZxLMOKvURMd
+         P5mcTW2OmdcYJavjSQJngJRGWjQ2Ligb7QDr/YQqbXC0ZI99TejVnld0m/U6yQsXsE
+         6tRsCqayWn8WU5hHXxkMgEUALtjv8ZK3cvA9EMAMnIvMRuADyh+YAj5hM8Z3jymGzs
+         UTV1G4JDGHMetoISGdc+Mt9zU01EakFxNFusNRk/1GnWC3Dc0sa/Zk9imOhbc51yhH
+         PlMotha88JKufV7XefyY4JJoaaA2CJe5+K45v0YbITekCJUgn3TopQwVVLHQqkVTQG
+         JkSR4CbXdEi9Q==
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1613199094;
+        s=20210208-e7xh; d=mailfence.com; i=broake@mailfence.com;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        l=1807; bh=c7eHNOeudtFYB2ia1pCjZOnK2D0HGHskQSrZBEiyRZA=;
+        b=haxJ6a6w2Puj2RiKYXykGyc/9dmbEeuWX4ddxFSCX45AlIr+Boz02pJNdCInMINK
+        vLB7IBx3lRMjROH2Y37loSnfGn/SVxkKtujtfXyZaKp3M8Qw3rSmnIyGDqOl2SeYw3J
+        WqMwrBI/k0qHfaSEh3zvMANOfw962a8e7QRQojVwPWbqVD1zG/VimTRCOHYu5QRebmX
+        1XVBI/621PvJrCtw2sW03zRy6HQ8NsNJdLCuOvdrRozqEzlfsOQAyknjHPW4eF3Tu75
+        fADMNIKDhGzC4761+2Sse6kroe/1NdB+o9BaUwFnLcUEq2e9qGtBCwJch/xH0iLQk1H
+        93npB9bBOA==
+Date:   Sat, 13 Feb 2021 07:51:32 +0100 (CET)
+From:   "B.R. Oake" <broake@mailfence.com>
+Reply-To: "B.R. Oake" <broake@mailfence.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-arm-kernel@lists.infradead.org,
+        Chen-Yu Tsai <wens@kernel.org>, linux-sunxi@googlegroups.com,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Message-ID: <1719200956.433094.1613199092092@ichabod.co-bxl>
+In-Reply-To: <20210210150118.ly252i37eykayrcb@gilmour>
+References: <1243888060.510560.1612783497400@ichabod.co-bxl> <20210210150118.ly252i37eykayrcb@gilmour>
+Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix Ethernet PHY
+ mode
 MIME-Version: 1.0
-References: <20210212170159.32153-1-songmuchun@bytedance.com>
- <20210212170159.32153-4-songmuchun@bytedance.com> <CALvZod6tXn9qrRmzyspp+7usB-Xx4ayu6KrzmKvoU7zWajx85g@mail.gmail.com>
-In-Reply-To: <CALvZod6tXn9qrRmzyspp+7usB-Xx4ayu6KrzmKvoU7zWajx85g@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 13 Feb 2021 14:48:16 +0800
-Message-ID: <CAMZfGtUpsbiVW7AtBtfYjFvppv+7MmAcff_x872gbeMuv8zs3Q@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on
- cgroup v2
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Huang Ying <ying.huang@intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-Mailer: ContactOffice Mail
+X-ContactOffice-Account: com:276068926
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 2:57 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> CCing more folks.
->
-> On Fri, Feb 12, 2021 at 9:14 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > The swap charges the actual number of swap entries on cgroup v2.
-> > If a swap cache page is charged successful, and then we uncharge
-> > the swap counter. It is wrong on cgroup v2. Because the swap
-> > entry is not freed.
-> >
-> > Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->
-> What's the user visible impact of this change?
+On Wed Feb 10 at 16:01:18 CET 2021, Maxime Ripard wrote:
+> Unfortunately we can't take this patch as is, this needs to be your real name, see:
+> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
 
-IIUC, I think that we cannot limit the swap to memory.swap.max
-on cgroup v2.
+Dear Maxime,
 
-  cd /sys/fs/cgroup/
-  mkdir test
-  cd test
-  echo 8192 > memory.max
-  echo 4096 > memory.swap.max
+Thank you very much for considering my contribution and for all your 
+work on supporting sunxi-based hardware; I appreciate it.
 
-OK. Now we limit swap to 1 page and memory to 2 pages.
-Firstly, we allocate 1 page from this memory cgroup and
-swap this page to swap disk. We can see:
+Thank you for referring me to the Developer's Certificate of Origin, but 
+I had already read it before submitting (I had to do so in order to know 
+what I was saying by "Signed-off-by:") and I do certify what it says.
 
-  memory.current: 0
-  memory.swap.current: 1
+Looking through recent entries in the commit log of the mainline kernel, 
+I see several patches from authors such as:
 
-Then we touch this page, we will swap in and charge
-the swap cache page to the memory counter and uncharge
-the swap counter.
+  H.J. Lu <hjl.tools@gmail.com>
+  B K Karthik <karthik.bk2000@live.com>
+  JC Kuo <jckuo@nvidia.com>
+  EJ Hsu <ejh@nvidia.com>
+  LH Lin <lh.lin@mediatek.com>
+  KP Singh <kpsingh@kernel.org>
+  Karthik B S <karthik.b.s@intel.com>
+  Shreyas NC <shreyas.nc@intel.com>
+  Vandana BN <bnvandana@gmail.com>
 
-  memory.current: 1
-  memory.swap.current: 0 (but actually we use a swap entry)
+so I believe names of this form are in fact acceptable, even if the 
+style might seem a little old-fashioned to some.
 
-Then we allocate another 1 page from this memory cgroup.
+I would like to add that I have met many people with names such as C.J., 
+A A, TC, MG, etc. That is what everybody calls them and it would be 
+natural for them to sign themselves that way. Some of them might want to 
+contribute to Linux some day, and I think it would be a great shame and 
+a loss to all of us if they were discouraged from doing so by reading 
+our conversation in the archives and concluding that any contribution 
+from them, however small, would be summarily refused simply because of 
+their name. Please could you ensure that does not happen?
 
-  memory.current: 2
-  memory.swap.current: 0 (but actually we use a swap entry)
+Thank you again for your consideration.
 
-If we swap those 2 pages to swap disk. We can charge and swap
-those 2 pages successfully. Right? Maybe I am wrong.
-
->
-> One impact I can see is that without this patch meminfo's (SwapTotal -
-> SwapFree) is larger than the sum of top level memory.swap.current.
-> This change will reduce that gap.
->
-> BTW what about per-cpu slots_ret cache? Should we call
-> mem_cgroup_uncharge_swap() before putting in the cache after this
-> change?
->
-> > ---
-> >  mm/memcontrol.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index c737c8f05992..be6bc5044150 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -6753,7 +6753,7 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
-> >         memcg_check_events(memcg, page);
-> >         local_irq_enable();
-> >
-> > -       if (PageSwapCache(page)) {
-> > +       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && PageSwapCache(page)) {
-> >                 swp_entry_t entry = { .val = page_private(page) };
-> >                 /*
-> >                  * The swap entry might not get freed for a long time,
-> > --
-> > 2.11.0
-> >
+Yours sincerely,
+B.R. Oake.
