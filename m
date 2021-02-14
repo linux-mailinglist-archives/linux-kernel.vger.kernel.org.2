@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CBB31B299
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 21:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB39431B298
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 21:59:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhBNU7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 15:59:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50676 "EHLO mail.kernel.org"
+        id S229993AbhBNU7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 15:59:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229935AbhBNU71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229934AbhBNU71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 14 Feb 2021 15:59:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B573F64E4E;
+Received: by mail.kernel.org (Postfix) with ESMTPS id AFD1164E26;
         Sun, 14 Feb 2021 20:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1613336326;
-        bh=8bUdXuZuWAQIT5Kom7OKGmPPUQ+ugfoqxtA6QU3Q+2U=;
+        bh=D3MtH14xAs+6VQhzCzLGa/rzuf0ai+XYgOkcn3O0qIM=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=it7uy/TGrDfHE/Lk8dowJDM9RmIj4iDWRD+wtRASUZeDQ1qHjqxnoG3mYppBNFkJz
-         oLfsQGIeQODIjZjW3ABrZWeYp8SL5WsahG+X9qICOT3ej8PAUSMhHPubBSP5WLnmtB
-         CdI28aecTP22XXSZZEPl0DpifostqDHTITK5sA5SZrmU6/FmhI5iTJwyTUqTN9dUrw
-         agnyiCmti59xI4VFp+sMQ/JHG7W6d3C0QDiSiQHf/lZe9x3VOlWtJzMySczxAFjoJG
-         N8pDkiunqoX3ZeXjc87BFFSv9ArexfxwQXfkIicLsHWnsjSRpqoS4DYpnOgcqs/CLA
-         Jw/vXFCHweQMg==
+        b=mgaKNfvsw53clonZvO2CR10P3JyCMifJ/m00eMJmmvzbhw6blkPTIMGqqeckM44VT
+         32ZqBPhsh1kp96PR9xue8vRZiM14A8FJ75gwNLPEGZMkcxDzapXzBOi01MSr5J76YV
+         GVSFf1OUnztBwL+5xzy9mIkD84EdIIQszEOt106fp2Kp7kA40JXklW/MpMzbTa49wO
+         t8W4feNm8nGfpvI/7ye84WAAghewuu0GRyUKYq2Drq4WsWqX2zyPjECwRQE2Tu5rEZ
+         SmO+IYxlHmdYH3VOPrLPMoPaLvsKlDwPbbzXu9tM/LHqvYrWfsjyM3N9ZqVqF1S8jk
+         W2ig7W7OyyvYA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A2A5D60971;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 979C060A47;
         Sun, 14 Feb 2021 20:58:46 +0000 (UTC)
-Subject: Re: [GIT PULL 5.11-rc8] LED fix
+Subject: Re: [GIT PULL] Kbuild fixes for v5.11
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210214171328.GA5314@duo.ucw.cz>
-References: <20210214171328.GA5314@duo.ucw.cz>
+In-Reply-To: <CAK7LNASpVZdyiN4Ug5zujSFnX5OesaVkFX7aP0feZHEF4DVHWQ@mail.gmail.com>
+References: <CAK7LNASpVZdyiN4Ug5zujSFnX5OesaVkFX7aP0feZHEF4DVHWQ@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210214171328.GA5314@duo.ucw.cz>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ for-rc8-5.11
-X-PR-Tracked-Commit-Id: dbeb02a0bc41b9e9b9c05e460890351efecf1352
+X-PR-Tracked-Message-Id: <CAK7LNASpVZdyiN4Ug5zujSFnX5OesaVkFX7aP0feZHEF4DVHWQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.11-3
+X-PR-Tracked-Commit-Id: fe968c41ac4f4ec9ffe3c4cf16b72285f5e9674f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 28a17338738839494752c5da3e12c889a55219db
-Message-Id: <161333632666.25612.17400157940923623653.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: ab30c7f9c3ca2599f5ab3e4d29ae56453c8668e5
+Message-Id: <161333632661.25612.9584045402779873330.pr-tracker-bot@kernel.org>
 Date:   Sun, 14 Feb 2021 20:58:46 +0000
-To:     Pavel Machek <pavel@ucw.cz>
+To:     Masahiro Yamada <masahiroy@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 14 Feb 2021 18:13:28 +0100:
+The pull request you sent on Mon, 15 Feb 2021 02:02:19 +0900:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ for-rc8-5.11
+> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.11-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/28a17338738839494752c5da3e12c889a55219db
+https://git.kernel.org/torvalds/c/ab30c7f9c3ca2599f5ab3e4d29ae56453c8668e5
 
 Thank you!
 
