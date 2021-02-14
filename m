@@ -2,225 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70A031B114
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D6131B119
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhBNQBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 11:01:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:46718 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhBNQBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 11:01:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F5431FB;
-        Sun, 14 Feb 2021 08:00:13 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.80])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13FEA3F73D;
-        Sun, 14 Feb 2021 08:00:11 -0800 (PST)
-Date:   Sun, 14 Feb 2021 16:00:09 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Joerg Roedel <joro@8bytes.org>,
-        Damian Tometzki <linux@tometzki.de>
-Subject: Re: [PATCH] docs: reporting-issues.rst: explain how to decode stack
- traces
-Message-ID: <20210214160009.lxonvxg4qyj6ygbk@e107158-lin.cambridge.arm.com>
-References: <20210210054823.242262-1-linux@leemhuis.info>
+        id S229873AbhBNQCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 11:02:32 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:43904 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229818AbhBNQC1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 11:02:27 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11EG1GEU021788;
+        Sun, 14 Feb 2021 08:01:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=ogSuRtTToDxm0KLDyCBxSkm64HdwCCcJDDXpIYcxEww=;
+ b=CP2jAmYtexe057KcyKfykr1152lXqdloEw1u3qjJnMo0s2xSgp6GhzU0uiX8S8oWIch7
+ jVDuiZhv5bkE2bWghOWIaNPOh7RY2p4NddKycZOFfWgtg9OAziWApKYrdh03qG7J6kd2
+ rCrWcCqhw+yJryEXn+lnXGA4l7P/ETuXIHgOd+e0FZXGXtP48IbF759BksQ9QEdF6vcs
+ j1qH7b59jWsKBH3nJhMuTs6WcOgnV1Qr0j0dVUY+Sxz0M4D7Epx5BgjErxGKNcAApIh9
+ Ak5JSvwOINrDHEeqZT4KEiHsOC/ZQX88UK6QtGbuvFd0daPF+/y+oInA/V0ELEcTKO4w ng== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 36pd0vj6g4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 14 Feb 2021 08:01:16 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 14 Feb
+ 2021 08:01:14 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 14 Feb 2021 08:01:14 -0800
+Received: from octopus.marvell.com (octopus.marvell.com [10.5.24.3])
+        by maili.marvell.com (Postfix) with ESMTP id A24073F703F;
+        Sun, 14 Feb 2021 08:01:10 -0800 (PST)
+From:   <kostap@marvell.com>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <lkundrak@v3.sk>, <linux@armlinux.org.uk>,
+        <sebastian.hesselbarth@gmail.com>, <gregory.clement@bootlin.com>,
+        <andrew@lunn.ch>, <robh+dt@kernel.org>, <vkoul@kernel.org>,
+        <kishon@ti.com>, <miquel.raynal@bootlin.com>, <mw@semihalf.com>,
+        <jaz@semihalf.com>, <nadavh@marvell.com>, <stefanc@marvell.com>,
+        <bpeled@marvell.com>, "Konstantin Porotchkin" <kostap@marvell.com>
+Subject: [PATCH v2 0/4] Add support for CP110 UTMI PHY
+Date:   Sun, 14 Feb 2021 18:01:04 +0200
+Message-ID: <20210214160108.3879-1-kostap@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210210054823.242262-1-linux@leemhuis.info>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-14_04:2021-02-12,2021-02-14 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/21 06:48, Thorsten Leemhuis wrote:
-> Replace placeholder text about decoding stack traces with a section that
-> properly describes what a typical user should do these days. To make
-> it works for them, add a paragraph in an earlier section to ensure
-> people build their kernels with everything that's needed to decode stack
-> traces later.
-> 
-> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> ---
-> Reminder: This is not my area of expertise. Hopefully I didn't write anything
-> stupid or omitted something people find important. If I did, please let me know,
-> ideally suggesting what to write; bonus points for people sending text I can
-> simply include in the next revision.
+From: Konstantin Porotchkin <kostap@marvell.com>
 
-Thanks for your effort :-)
+This series of patches adds a new PHY driver for supporting CP110 UTMI
+PHY in Linux. Currently the functionality of USB ports connected to
+this PHY depends on boot loader setup.
+The new driver eliminates kernel configuration dependency from the boot
+loader. 
 
-> 
-> I CCed Sasha, because he wrote decode_stacktrace.sh; I also CCed a bunch of
-> people that showed interest in this topic when I asked for help on Twitter.
-> 
-> I'm still unsure if linking to admin-guide/bug-hunting.rst is a good idea, as it
-> seems quite outdated; reporting-bugs did that, but for now I settled on 'don't
-> do that'.
-> 
-> Ciao, Thorsten
-> ---
->  .../admin-guide/reporting-issues.rst          | 77 +++++++++++++------
->  1 file changed, 55 insertions(+), 22 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
-> index 07879d01fe68..b9c07d8e3141 100644
-> --- a/Documentation/admin-guide/reporting-issues.rst
-> +++ b/Documentation/admin-guide/reporting-issues.rst
-> @@ -154,8 +154,8 @@ After these preparations you'll now enter the main part:
->     that hear about it for the first time. And if you learned something in this
->     process, consider searching again for existing reports about the issue.
->  
-> - * If the failure includes a stack dump, like an Oops does, consider decoding
-> -   it to find the offending line of code.
-> + * If your failure involves a 'panic', 'oops', or 'warning', consider decoding
+v2:
+- extend the comment about reference clock 
+- fix driver probe function, add some prints
+- move to usage of dr_mode from connected USB controller instead of
+  dedicated device tree property
 
-or 'BUG'? There are similar other places below that could benefit from this
-addition too.
+Konstantin Porotchkin (4):
+  drivers: phy: add support for Armada CP110 UTMI PHY
+  devicetree/bindings: add support for CP110 UTMI driver
+  arch/arm64: dts: add support for Marvell CP110 UTMI driver
+  arch/arm64: dts: enable CP110 UTMI driver
 
-> +   the kernel log to find the line of code that trigger the error.
->  
->   * If your problem is a regression, try to narrow down when the issue was
->     introduced as much as possible.
-> @@ -869,6 +869,15 @@ pick up the configuration of your current kernel and then tries to adjust it
->  somewhat for your system. That does not make the resulting kernel any better,
->  but quicker to compile.
->  
-> +Note: If you are dealing with a kernel panic, oops, or warning, please make
-> +sure to enable CONFIG_KALLSYMS when configuring your kernel. Additionally,
+ .../bindings/phy/phy-mvebu-utmi.txt           |  78 +++-
+ .../arm64/boot/dts/marvell/armada-7040-db.dts |  14 +-
+ .../arm64/boot/dts/marvell/armada-8040-db.dts |  21 +-
+ .../boot/dts/marvell/armada-8040-mcbin.dtsi   |  19 +-
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |  19 +
+ arch/arm64/boot/dts/marvell/cn9130-db.dts     |  12 +-
+ arch/arm64/boot/dts/marvell/cn9131-db.dts     |   9 +-
+ arch/arm64/boot/dts/marvell/cn9132-db.dts     |  11 +-
+ drivers/phy/marvell/Kconfig                   |   8 +
+ drivers/phy/marvell/Makefile                  |   1 +
+ drivers/phy/marvell/phy-mvebu-cp110-utmi.c    | 384 ++++++++++++++++++
+ 11 files changed, 556 insertions(+), 20 deletions(-)
+ create mode 100644 drivers/phy/marvell/phy-mvebu-cp110-utmi.c
 
-s/make sure/try/
+-- 
+2.17.1
 
-s/kernel./kernel if you can./
-
-Less demanding wording in case the user doesn't have the capability to rebuild
-or deploy such a kernel where the problem happens. Maybe you can tweak it more
-if you like too :-)
-
-> +enable CONFIG_DEBUG_KERNEL and CONFIG_DEBUG_INFO, too; the latter is the
-> +relevant one of those two, but can only be reached if you enable the former. Be
-> +aware CONFIG_DEBUG_INFO increases the storage space required to build a kernel
-> +by quite a bit. But that's worth it, as these options will allow you later to
-> +pinpoint the exact line of code that triggers your issue. The section 'Decode
-> +failure messages' below explains this in more detail.
-> +
-
-I think worth mentioning too that the user should keep a log of the problem
-when first encountered and then attempt the above. Just in case the problem is
-not reproducible easily so the info is not lost.
-
-Maybe something like below:
-
-'''
-Always keep a record of the issue encountered in case it is hard to reproduce.
-Sending undecoded report is better than not sending a report at all.
-'''
-
->  
->  Check 'taint' flag
->  ------------------
-> @@ -923,31 +932,55 @@ instead you can join.
->  Decode failure messages
->  -----------------------
->  
-> -.. note::
-> +    *If your failure involves a 'panic', 'oops', or 'warning', consider
-
-Thanks for choosing the word consider, it shouldn't be compulsory IMO.
-
-> +    decoding the kernel log to find the line of code that trigger the error.*
->  
-> -   FIXME: The text in this section is a placeholder for now and quite similar to
-> -   the old text found in 'Documentation/admin-guide/reporting-bugs.rst'
-> -   currently. It and the document it references are known to be outdated and
-> -   thus need to be revisited. Thus consider this note a request for help: if you
-> -   are familiar with this topic, please write a few lines that would fit here.
-> -   Alternatively, simply outline the current situation roughly to the main
-> -   authors of this document (see intro), as they might be able to write
-> -   something then.
-> +When the kernel detects an internal problem, it will log some information about
-> +the executed code. This makes it possible to pinpoint the exact line in the
-> +source code that triggered the issue and shows how it was called. But that only
-> +works if you enabled CONFIG_DEBUG_INFO and CONFIG_KALLSYMS when configuring
-> +your kernel. If you did so, consider to decode the information from the
-> +kernel's log. That will make it a lot easier to understand what lead to the
-> +'panic', 'oops', or 'warning', which increases the chances enormously that
-> +someone can provide a fix.
-
-I suggest removing the word enormously. It helps, but it all depends on the
-particular circumstances. Sometimes it does, others it doesn't.
-
->  
-> -   This section in the end should answer questions like "when is this actually
-> -   needed", "what .config options to ideally set earlier to make this step easy
-> -   or unnecessary?" (likely CONFIG_UNWINDER_ORC when it's available, otherwise
-> -   CONFIG_UNWINDER_FRAME_POINTER; but is there anything else needed?).
-> +Decoding can be done with a script you find in the Linux source tree. If you
-> +are running a kernel you compiled yourself earlier, call it like this::
->  
-> -..
-> +       [user@something ~]$ sudo dmesg | ./linux-5.10.5/scripts/decode_stacktrace.sh ./linux-5.10.5/vmlinux
-> +
-> +If you are running a packaged vanilla kernel, you will likely have to install
-> +the corresponding packages with debug symbols. Then call the script (which you
-> +might need to get from the Linux sources if your distro does not package it)
-> +like this::
-> +
-> +       [user@something ~]$ sudo dmesg | ./linux-5.10.5/scripts/decode_stacktrace.sh \
-> +        /usr/lib/debug/lib/modules/5.10.10-4.1.x86_64/vmlinux /usr/src/kernels/5.10.10-4.1.x86_64/
-> +
-> +The script will work on log lines like the following, which show the address of
-> +the code the kernel was executing when the error occurred::
-> +
-> +       [   68.387301] RIP: 0010:test_module_init+0x5/0xffa [test_module]
-> +
-> +Once decoded, these lines will look like this::
-> +
-> +       [   68.387301] RIP: 0010:test_module_init (/home/username/linux-5.10.5/test-module/test-module.c:16) test_module
-> +
-> +In this case the executed code was built from the file
-> +'~/linux-5.10.5/test-module/test-module.c' and the error occurred by the
-> +instructions found in line '16'.
->  
-> -    *If the failure includes a stack dump, like an Oops does, consider decoding
-> -    it to find the offending line of code.*
-> +The script will similarly decode the addresses mentioned in the section
-> +starting with 'Call trace', which show the path to the function where the
-> +problem occurred. Additionally, the script will show the assembler output for
-> +the code section the kernel was executing.
->  
-> -When the kernel detects an error, it will print a stack dump that allows to
-> -identify the exact line of code where the issue happens. But that information
-> -sometimes needs to get decoded to be readable, which is explained in
-> -admin-guide/bug-hunting.rst.
-> +Note, if you can't get this to work, simply skip this step and mention the
-> +reason for it in the report. If you're lucky, it might not be needed. And if it
-> +is, someone might help you to get things going. Also be aware this is just one
-> +of several ways to decode kernel stack traces. Sometimes different steps will
-> +be required to retrieve the relevant details. Don't worry about that, if that's
-> +needed in your case, developers will tell you what to do.
-
-Ah you already clarify nicely here this is a good-to-have rather than
-a must-have as I was trying to elude to above :-)
-
-This looks good to me in general. With the above minor nits fixed, feel free to
-add my
-
-Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-
-Thanks!
-
---
-Qais Yousef
-
->  
->  
->  Special care for regressions
-> -- 
-> 2.29.2
-> 
