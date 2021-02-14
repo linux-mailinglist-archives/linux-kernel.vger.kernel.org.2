@@ -2,84 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A89A31B1A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D585A31B1B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhBNRtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 12:49:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43882 "EHLO
+        id S229928AbhBNRy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 12:54:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhBNRtm (ORCPT
+        with ESMTP id S229901AbhBNRyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 12:49:42 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09F0C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 09:49:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=fG95AsdhfqTCBtkTC9tiNH/lyJiww81oZ3ce5gIpPSk=; b=p4KB0e7UqyehkHMRk4pRAuJ7NV
-        BBKx8c/LJBOtURur2ZktgVN7BeV2bq88Og3hWuVKMmVbbdAWGaS8GaoleHipDzeXZZUehRBDJhNRO
-        d3H1qC9Hucimf6uXnlvB1MGPwuqwh1nJbTNFOqt89eMr8u9jmD5NckI44OO6aaoVYsOyX8+k832l1
-        I8TRK0HgnoG5OOCVVp9FVzySnntsQTpUdxekaT4BvTz3caN9CSJ9s7ZHDAu4CpKgcXU/i9qtoqDOs
-        vqne5mI3htlU+1OXeO499SFDiHoM+WgwX95OKrnujvc9zzDSS1GvcQMsSKiCr6/USpEheDRlSbdvQ
-        kt96DdiQ==;
-Received: from [2601:1c0:6280:3f0::6444]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lBLW0-0005Yq-7m; Sun, 14 Feb 2021 17:49:00 +0000
-Subject: Re: [PATCH v6 34/34] misc: HDDL device management for IA host
-To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>
-References: <20210212222304.110194-1-mgross@linux.intel.com>
- <20210212222304.110194-35-mgross@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <bf135165-35c3-002f-305a-33019fb52b44@infradead.org>
-Date:   Sun, 14 Feb 2021 09:48:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sun, 14 Feb 2021 12:54:19 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA438C0613D6
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 09:53:39 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d26so2829534pfn.5
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 09:53:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/pwXbJYXJ/XEybu75dwMk2OD1xq/y6MntgB8eUFgtCM=;
+        b=Ke27OPgqd7Xm+2DvA6biiNBQqcB7WOB1Pf1acOXZZffpCWn2ZP+qJcXh9ksmIPNiI8
+         0YzBEqDP40R0edRJQWbMtX7+JcDhtlU7oSs0NiQOvoROCILKOf7iqQ6xdJAPwS6KnNnT
+         b5tdvxLFJHwh2nAf+0I197VKBJDW7uxR58LI4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/pwXbJYXJ/XEybu75dwMk2OD1xq/y6MntgB8eUFgtCM=;
+        b=Ksm0jMk1OuINAyKvKuZzr2aPFZ4B2RZBS1fzOL0esYKPjyFEukbnbwrhS+sLTfXU2q
+         yCRy7SS+9S3aRclqpiU7dFMmferm9GtEtFFqgAJCQ0M51UWr1t29z1JBKzhTVIVKfhwx
+         htH3JHp9LXbCw3xgH1jbBPAtsqm3nktcOTXW6UjMA7ZkwHqD9OHVmHGc7/p+v4gubSk7
+         YXEjzlza45bFBiS314dx/bcBag7eySFA3PbxuBgDl26IE01oelmiPOEnrpey4x2xbVJy
+         0Dd0AnoBJ2vvx0hi4gRvd7NjYD8ppsIyPHNViFk+BA/mDB1t3irFIQU0y6HqWkowGtew
+         rJ9g==
+X-Gm-Message-State: AOAM532YjIZZRTBeIwLw46GnoRUebR+1IibFYdsDli8tkrJjjoLpjqFO
+        45mBPXMF74JiKXTnRYWBdJS4Zg==
+X-Google-Smtp-Source: ABdhPJxPpuCp8VeWMJFfHNYkSYT/BDlow0ANd3LBdQeBXx9d/b6U2FYcI1KwPG27rotwu9YDzN/BNA==
+X-Received: by 2002:aa7:9549:0:b029:1df:14f8:1e2d with SMTP id w9-20020aa795490000b02901df14f81e2dmr12043592pfq.55.1613325219228;
+        Sun, 14 Feb 2021 09:53:39 -0800 (PST)
+Received: from ub-XPS-13-9350.domain.name ([45.249.78.214])
+        by smtp.gmail.com with ESMTPSA id h17sm15094443pfr.200.2021.02.14.09.53.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 09:53:38 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH v3 1/2] dt-bindings: display: bridge: Add bindings for Chipone ICN6211
+Date:   Sun, 14 Feb 2021 23:22:10 +0530
+Message-Id: <20210214175211.105107-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210212222304.110194-35-mgross@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/21 2:23 PM, mgross@linux.intel.com wrote:
-> diff --git a/drivers/misc/hddl_device/Kconfig b/drivers/misc/hddl_device/Kconfig
-> index e1ae81fdf177..7f9a6a685275 100644
-> --- a/drivers/misc/hddl_device/Kconfig
-> +++ b/drivers/misc/hddl_device/Kconfig
-> @@ -12,3 +12,15 @@ config HDDL_DEVICE_CLIENT
->  	  the device connect/disconnect programming sequence.
->  	  Say Y if using a processor that includes the Intel VPU such as
->  	  Keem Bay.  If unsure, say N.
-> +
-> +config HDDL_DEVICE_SERVER
-> +	tristate "Support for hddl device server"
+ICN6211 is MIPI-DSI to RGB Convertor bridge from Chipone.
 
-Please use "HDDL" consistently.
+It has a flexible configuration of MIPI DSI signal input and
+produce RGB565, RGB666, RGB888 output format.
 
-> +	depends on XLINK_CORE && !HDDL_DEVICE_CLIENT
-> +	help
-> +	  This option enables HDDL device server module.
-> +
-> +	  This driver is used for sharing time sync data to local host and
-> +	  retrives the sensors available on the platform. This also handles
-> +	  the device connect/disconnect programming sequence.
-> +	  Say Y if using a processor that includes the Intel VPU such as
-> +	  Keem Bay.  If unsure, say N.
+Add dt-bingings for it.
 
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
+Changes for v3:
+- updated to new dt-bindings style
 
-thanks.
+ .../display/bridge/chipone,icn6211.yaml       | 90 +++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
+
+diff --git a/Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml b/Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
+new file mode 100644
+index 000000000000..13764f13fe46
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
+@@ -0,0 +1,90 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/chipone,icn6211.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Chipone ICN6211 MIPI-DSI to RGB Converter bridge
++
++maintainers:
++  - Jagan Teki <jagan@amarulasolutions.com>
++
++description: |
++  ICN6211 is MIPI-DSI to RGB Convertor bridge from chipone.
++
++  It has a flexible configuration of MIPI DSI signal input and
++  produce RGB565, RGB666, RGB888 output format.
++
++properties:
++  compatible:
++    enum:
++      - chipone,icn6211
++
++  reg:
++    maxItems: 1
++    description: virtual channel number of a DSI peripheral
++
++  reset-gpios:
++    description: GPIO connected for the reset pin
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for MIPI DSI input
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Video port for MIPI DPI output (panel or connector).
++
++    required:
++      - port@0
++      - port@1
++
++required:
++  - compatible
++  - reg
++  - reset-gpios
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    dsi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      bridge@0 {
++        compatible = "chipone,icn6211";
++        reg = <0>;
++        reset-gpios = <&r_pio 0 5 GPIO_ACTIVE_HIGH>; /* LCD-RST: PL5 */
++
++        ports {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          bridge_in: port@0 {
++            reg = <0>;
++
++            bridge_out_dsi: endpoint {
++              remote-endpoint = <&dsi_out_bridge>;
++            };
++          };
++
++          bridge_out: port@1 {
++            reg = <1>;
++
++            bridge_out_panel: endpoint {
++              remote-endpoint = <&panel_out_bridge>;
++            };
++          };
++        };
++      };
++    };
 -- 
-~Randy
+2.25.1
 
