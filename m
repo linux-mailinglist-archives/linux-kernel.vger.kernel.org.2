@@ -2,651 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CDF31B126
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD85831B129
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhBNQKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 11:10:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38684 "EHLO mail.kernel.org"
+        id S229875AbhBNQKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 11:10:55 -0500
+Received: from mga17.intel.com ([192.55.52.151]:57356 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhBNQKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 11:10:02 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22B1F64DD1;
-        Sun, 14 Feb 2021 16:09:18 +0000 (UTC)
-Date:   Sun, 14 Feb 2021 16:09:11 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
-Subject: Re: [PATCH v2 2/3] iio: buffer-dma: Add mmap support
-Message-ID: <20210214160911.5f6e6fb3@archlinux>
-In-Reply-To: <20210212101143.18993-3-alexandru.ardelean@analog.com>
-References: <20210212101143.18993-1-alexandru.ardelean@analog.com>
-        <20210212101143.18993-3-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229642AbhBNQKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 11:10:52 -0500
+IronPort-SDR: VKolQJHBminJ1ux97bGZz3PpSRDalh6DhKNs/ZOVpwdckO0TR6Mt/E9DZAbFS/rrMX4OEMf6g2
+ 4xPIqtpNvsqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="162341291"
+X-IronPort-AV: E=Sophos;i="5.81,178,1610438400"; 
+   d="scan'208";a="162341291"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2021 08:10:10 -0800
+IronPort-SDR: r6F4AEuKrAN+B7VXuNBTq4Q9GuII41szV0iGe3RwS1LJ+iwj9JA1/SvuOpoAksveKLCpk6UEz1
+ CE8qWE7mPeyA==
+X-IronPort-AV: E=Sophos;i="5.81,178,1610438400"; 
+   d="scan'208";a="398714898"
+Received: from huiwanlx-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.230])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2021 08:10:09 -0800
+Date:   Sun, 14 Feb 2021 08:10:08 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v4 06/09] cxl/mem: Enable commands via CEL
+Message-ID: <20210214161008.6okjgsyppt7mekld@intel.com>
+References: <20210212222541.2123505-7-ben.widawsky@intel.com>
+ <20210214054633.243676-1-ben.widawsky@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210214054633.243676-1-ben.widawsky@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021 12:11:42 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-
-> From: Lars-Peter Clausen <lars@metafoo.de>
+On 21-02-13 21:46:33, Ben Widawsky wrote:
+> CXL devices identified by the memory-device class code must implement
+> the Device Command Interface (described in 8.2.9 of the CXL 2.0 spec).
+> While the driver already maintains a list of commands it supports, there
+> is still a need to be able to distinguish between commands that the
+> driver knows about from commands that are optionally supported by the
+> hardware.
 > 
-> Add support for the new mmap interface to IIO DMA buffer. This interface
-> allows to directly map the backing memory of a block to userspace. This is
-> especially advantageous for high-speed devices where the extra copy from
-> kernel space to userspace of the data incurs a significant overhead.
+> The Command Effects Log (CEL) is specified in the CXL 2.0 specification.
+> The CEL is one of two types of logs, the other being vendor specific.
+> They are distinguished in hardware/spec via UUID. The CEL is useful for
+> 2 things:
+> 1. Determine which optional commands are supported by the CXL device.
+> 2. Enumerate any vendor specific commands
 > 
-> In addition this interface allows more fine grained control over how many
-> blocks are allocated and their size.
+> The CEL is used by the driver to determine which commands are available
+> in the hardware and therefore which commands userspace is allowed to
+> execute. The set of enabled commands might be a subset of commands which
+> are advertised in UAPI via CXL_MEM_SEND_COMMAND IOCTL.
 > 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> With the CEL enabling comes a internal flag to indicate a base set of
+> commands that are enabled regardless of CEL. Such commands are required
+> for basic interaction with the hardware and thus can be useful in debug
+> cases, for example if the CEL is corrupted.
+> 
+> The implementation leaves the statically defined table of commands and
+> supplements it with a bitmap to determine commands that are enabled.
+> This organization was chosen for the following reasons:
+> - Smaller memory footprint. Doesn't need a table per device.
+> - Reduce memory allocation complexity.
+> - Fixed command IDs to opcode mapping for all devices makes development
+>   and debugging easier.
+> - Certain helpers are easily achievable, like cxl_for_each_cmd().
+> 
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 
-There are a few changes in here that could have been prequel noop patches
-and made this easier to review.
-
-factoring out iio_dma_buffer_fileio_free() for example
-
-A few questions inline.
-
-I'll admit I haven't followed every detail of what this is doing, but
-in general it looks sensible.
-
-Jonathan
-
+See below for explanation on why the v4...
 
 > ---
->  drivers/iio/buffer/industrialio-buffer-dma.c  | 314 ++++++++++++++++--
->  .../buffer/industrialio-buffer-dmaengine.c    |  22 +-
->  drivers/iio/industrialio-buffer.c             |   1 +
->  include/linux/iio/buffer-dma.h                |  20 +-
->  4 files changed, 321 insertions(+), 36 deletions(-)
+>  drivers/cxl/cxl.h            |   2 +
+>  drivers/cxl/mem.c            | 213 ++++++++++++++++++++++++++++++++++-
+>  include/uapi/linux/cxl_mem.h |   1 +
+>  3 files changed, 213 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c b/drivers/iio/buffer/industrialio-buffer-dma.c
-> index d348af8b9705..befb0a3d2def 100644
-> --- a/drivers/iio/buffer/industrialio-buffer-dma.c
-> +++ b/drivers/iio/buffer/industrialio-buffer-dma.c
-> @@ -90,6 +90,9 @@
->   * callback is called from within the custom callback.
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index 63d7f7e01b83..a1aa9f787a2a 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -67,6 +67,7 @@ struct cxl_memdev;
+>   *                (CXL 2.0 8.2.8.4.3 Mailbox Capabilities Register)
+>   * @mbox_mutex: Mutex to synchronize mailbox access.
+>   * @firmware_version: Firmware version for the memory device.
+> + * @enabled_commands: Hardware commands found enabled in CEL.
+>   * @pmem: Persistent memory capacity information.
+>   * @ram: Volatile memory capacity information.
 >   */
+> @@ -82,6 +83,7 @@ struct cxl_mem {
+>  	size_t payload_size;
+>  	struct mutex mbox_mutex; /* Protects device mailbox and firmware */
+>  	char firmware_version[0x10];
+> +	unsigned long *enabled_cmds;
 >  
-> +static unsigned int iio_dma_buffer_max_block_size = SZ_16M;
-> +module_param_named(max_block_size, iio_dma_buffer_max_block_size, uint, 0644);
+>  	struct range pmem_range;
+>  	struct range ram_range;
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index a819f090ffe2..712a8ccc496a 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -45,6 +45,8 @@ enum opcode {
+>  	CXL_MBOX_OP_INVALID		= 0x0000,
+>  	CXL_MBOX_OP_RAW			= CXL_MBOX_OP_INVALID,
+>  	CXL_MBOX_OP_ACTIVATE_FW		= 0x0202,
+> +	CXL_MBOX_OP_GET_SUPPORTED_LOGS	= 0x0400,
+> +	CXL_MBOX_OP_GET_LOG		= 0x0401,
+>  	CXL_MBOX_OP_IDENTIFY		= 0x4000,
+>  	CXL_MBOX_OP_SET_PARTITION_INFO	= 0x4101,
+>  	CXL_MBOX_OP_SET_LSA		= 0x4103,
+> @@ -103,10 +105,28 @@ static DEFINE_IDA(cxl_memdev_ida);
+>  static struct dentry *cxl_debugfs;
+>  static bool cxl_raw_allow_all;
+>  
+> +enum {
+> +	CEL_UUID,
+> +	VENDOR_DEBUG_UUID,
+> +};
 > +
->  static void iio_buffer_block_release(struct kref *kref)
->  {
->  	struct iio_dma_buffer_block *block = container_of(kref,
-> @@ -97,7 +100,7 @@ static void iio_buffer_block_release(struct kref *kref)
+> +/* See CXL 2.0 Table 170. Get Log Input Payload */
+> +static const uuid_t log_uuid[] = {
+> +	[CEL_UUID] = UUID_INIT(0xda9c0b5, 0xbf41, 0x4b78, 0x8f, 0x79, 0x96,
+> +			       0xb1, 0x62, 0x3b, 0x3f, 0x17),
+> +	[VENDOR_DEBUG_UUID] = UUID_INIT(0xe1819d9, 0x11a9, 0x400c, 0x81, 0x1f,
+> +					0xd6, 0x07, 0x19, 0x40, 0x3d, 0x86),
+> +};
+> +
+>  /**
+>   * struct cxl_mem_command - Driver representation of a memory device command
+>   * @info: Command information as it exists for the UAPI
+>   * @opcode: The actual bits used for the mailbox protocol
+> + * @flags: Set of flags effecting driver behavior.
+> + *
+> + *  * %CXL_CMD_FLAG_FORCE_ENABLE: In cases of error, commands with this flag
+> + *    will be enabled by the driver regardless of what hardware may have
+> + *    advertised.
+>   *
+>   * The cxl_mem_command is the driver's internal representation of commands that
+>   * are supported by the driver. Some of these commands may not be supported by
+> @@ -118,9 +138,12 @@ static bool cxl_raw_allow_all;
+>  struct cxl_mem_command {
+>  	struct cxl_command_info info;
+>  	enum opcode opcode;
+> +	u32 flags;
+> +#define CXL_CMD_FLAG_NONE 0
+> +#define CXL_CMD_FLAG_FORCE_ENABLE BIT(0)
+>  };
 >  
->  	WARN_ON(block->state != IIO_BLOCK_STATE_DEAD);
->  
-> -	dma_free_coherent(block->queue->dev, PAGE_ALIGN(block->size),
-> +	dma_free_coherent(block->queue->dev, PAGE_ALIGN(block->block.size),
->  					block->vaddr, block->phys_addr);
->  
->  	iio_buffer_put(&block->queue->buffer);
-> @@ -178,7 +181,7 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
->  		return NULL;
+> -#define CXL_CMD(_id, sin, sout)                                                \
+> +#define CXL_CMD(_id, sin, sout, _flags)                                        \
+>  	[CXL_MEM_COMMAND_ID_##_id] = {                                         \
+>  	.info =	{                                                              \
+>  			.id = CXL_MEM_COMMAND_ID_##_id,                        \
+> @@ -128,6 +151,7 @@ struct cxl_mem_command {
+>  			.size_out = sout,                                      \
+>  		},                                                             \
+>  	.opcode = CXL_MBOX_OP_##_id,                                           \
+> +	.flags = _flags,                                                       \
 >  	}
 >  
-> -	block->size = size;
-> +	block->block.size = size;
->  	block->state = IIO_BLOCK_STATE_DEQUEUED;
->  	block->queue = queue;
->  	INIT_LIST_HEAD(&block->head);
-> @@ -243,7 +246,7 @@ void iio_dma_buffer_block_list_abort(struct iio_dma_buffer_queue *queue,
->  	spin_lock_irqsave(&queue->list_lock, flags);
->  	list_for_each_entry_safe(block, _block, list, head) {
->  		list_del(&block->head);
-> -		block->bytes_used = 0;
-> +		block->block.bytes_used = 0;
->  		_iio_dma_buffer_block_done(block);
->  		iio_buffer_block_put_atomic(block);
->  	}
-> @@ -296,6 +299,10 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
+>  /*
+> @@ -137,10 +161,11 @@ struct cxl_mem_command {
+>   * 0, and the user passed in 1, it is an error.
+>   */
+>  static struct cxl_mem_command mem_commands[] = {
+> -	CXL_CMD(IDENTIFY, 0, 0x43),
+> +	CXL_CMD(IDENTIFY, 0, 0x43, CXL_CMD_FLAG_FORCE_ENABLE),
+>  #ifdef CONFIG_CXL_MEM_RAW_COMMANDS
+> -	CXL_CMD(RAW, ~0, ~0),
+> +	CXL_CMD(RAW, ~0, ~0, 0),
+>  #endif
+> +	CXL_CMD(GET_SUPPORTED_LOGS, 0, ~0, CXL_CMD_FLAG_FORCE_ENABLE),
+>  };
 >  
->  	mutex_lock(&queue->lock);
+>  /*
+> @@ -619,6 +644,10 @@ static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
+>  	c = &mem_commands[send_cmd->id];
+>  	info = &c->info;
 >  
-> +	/* If in mmap mode dont do anything */
-> +	if (queue->num_blocks)
-> +		goto out_unlock;
+> +	/* Check that the command is enabled for hardware */
+> +	if (!test_bit(info->id, cxlm->enabled_cmds))
+> +		return -ENOTTY;
 > +
->  	/* Allocations are page aligned */
->  	if (PAGE_ALIGN(queue->fileio.block_size) == PAGE_ALIGN(size))
->  		try_reuse = true;
-> @@ -330,7 +337,7 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
->  				iio_buffer_block_put(block);
->  				block = NULL;
->  			} else {
-> -				block->size = size;
-> +				block->block.size = size;
->  			}
->  		} else {
->  			block = NULL;
-> @@ -345,6 +352,8 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
->  			queue->fileio.blocks[i] = block;
->  		}
+>  	/* Check the input buffer is the expected size */
+>  	if (info->size_in >= 0 && info->size_in != send_cmd->in.size)
+>  		return -ENOMEM;
+> @@ -915,6 +944,14 @@ static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo,
+>  	mutex_init(&cxlm->mbox_mutex);
+>  	cxlm->pdev = pdev;
+>  	cxlm->regs = regs + offset;
+> +	cxlm->enabled_cmds =
+> +		devm_kmalloc_array(dev, BITS_TO_LONGS(cxl_cmd_count),
+> +				   sizeof(unsigned long),
+> +				   GFP_KERNEL | __GFP_ZERO);
+> +	if (!cxlm->enabled_cmds) {
+> +		dev_err(dev, "No memory available for bitmap\n");
+> +		return NULL;
+> +	}
 >  
-> +		block->block.id = i;
-> +
->  		block->state = IIO_BLOCK_STATE_QUEUED;
->  		list_add_tail(&block->head, &queue->incoming);
->  	}
-> @@ -356,6 +365,30 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
+>  	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
+>  	return cxlm;
+> @@ -1134,6 +1171,172 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+>  	return rc;
 >  }
->  EXPORT_SYMBOL_GPL(iio_dma_buffer_request_update);
 >  
-> +static void iio_dma_buffer_fileio_free(struct iio_dma_buffer_queue *queue)
+> +static int cxl_xfer_log(struct cxl_mem *cxlm, uuid_t *uuid, u32 size, u8 *out)
 > +{
-> +	unsigned int i;
+> +	u32 remaining = size;
+> +	u32 offset = 0;
 > +
-> +	spin_lock_irq(&queue->list_lock);
-> +	for (i = 0; i < ARRAY_SIZE(queue->fileio.blocks); i++) {
-> +		if (!queue->fileio.blocks[i])
-> +			continue;
-> +		queue->fileio.blocks[i]->state = IIO_BLOCK_STATE_DEAD;
+> +	while (remaining) {
+> +		u32 xfer_size = min_t(u32, remaining, cxlm->payload_size);
+> +		struct cxl_mbox_get_log {
+> +			uuid_t uuid;
+> +			__le32 offset;
+> +			__le32 length;
+> +		} __packed log = {
+> +			.uuid = *uuid,
+> +			.offset = cpu_to_le32(offset),
+> +			.length = cpu_to_le32(xfer_size)
+> +		};
+> +		int rc;
+> +
+> +		rc = cxl_mem_mbox_send_cmd(cxlm, CXL_MBOX_OP_GET_LOG,
+> +					   (u8 *)&log, sizeof(log), out,
+> +					   xfer_size);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		out += xfer_size;
+> +		remaining -= xfer_size;
+> +		offset += xfer_size;
 > +	}
-> +	INIT_LIST_HEAD(&queue->outgoing);
-> +	spin_unlock_irq(&queue->list_lock);
-> +
-> +	INIT_LIST_HEAD(&queue->incoming);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(queue->fileio.blocks); i++) {
-> +		if (!queue->fileio.blocks[i])
-> +			continue;
-> +		iio_buffer_block_put(queue->fileio.blocks[i]);
-> +		queue->fileio.blocks[i] = NULL;
-> +	}
-> +	queue->fileio.active_block = NULL;
-> +}
-> +
->  static void iio_dma_buffer_submit_block(struct iio_dma_buffer_queue *queue,
->  	struct iio_dma_buffer_block *block)
->  {
-> @@ -404,6 +437,7 @@ int iio_dma_buffer_enable(struct iio_buffer *buffer,
->  	struct iio_dma_buffer_block *block, *_block;
->  
->  	mutex_lock(&queue->lock);
-> +	queue->fileio.enabled = !queue->num_blocks;
->  	queue->active = true;
->  	list_for_each_entry_safe(block, _block, &queue->incoming, head) {
->  		list_del(&block->head);
-> @@ -429,6 +463,7 @@ int iio_dma_buffer_disable(struct iio_buffer *buffer,
->  	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
->  
->  	mutex_lock(&queue->lock);
-> +	queue->fileio.enabled = false;
->  	queue->active = false;
->  
->  	if (queue->ops && queue->ops->abort)
-> @@ -490,6 +525,11 @@ int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
->  
->  	mutex_lock(&queue->lock);
->  
-> +	if (!queue->fileio.enabled) {
-> +		ret = -EBUSY;
-> +		goto out_unlock;
-> +	}
-> +
->  	if (!queue->fileio.active_block) {
->  		block = iio_dma_buffer_dequeue(queue);
->  		if (block == NULL) {
-> @@ -503,8 +543,8 @@ int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
->  	}
->  
->  	n = rounddown(n, buffer->bytes_per_datum);
-> -	if (n > block->bytes_used - queue->fileio.pos)
-> -		n = block->bytes_used - queue->fileio.pos;
-> +	if (n > block->block.bytes_used - queue->fileio.pos)
-> +		n = block->block.bytes_used - queue->fileio.pos;
->  
->  	if (copy_to_user(user_buffer, block->vaddr + queue->fileio.pos, n)) {
->  		ret = -EFAULT;
-> @@ -513,7 +553,7 @@ int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
->  
->  	queue->fileio.pos += n;
->  
-> -	if (queue->fileio.pos == block->bytes_used) {
-> +	if (queue->fileio.pos == block->block.bytes_used) {
->  		queue->fileio.active_block = NULL;
->  		iio_dma_buffer_enqueue(queue, block);
->  	}
-> @@ -549,11 +589,11 @@ size_t iio_dma_buffer_data_available(struct iio_buffer *buf)
->  
->  	mutex_lock(&queue->lock);
->  	if (queue->fileio.active_block)
-> -		data_available += queue->fileio.active_block->size;
-> +		data_available += queue->fileio.active_block->block.size;
->  
->  	spin_lock_irq(&queue->list_lock);
->  	list_for_each_entry(block, &queue->outgoing, head)
-> -		data_available += block->size;
-> +		data_available += block->block.size;
->  	spin_unlock_irq(&queue->list_lock);
->  	mutex_unlock(&queue->lock);
->  
-> @@ -561,6 +601,241 @@ size_t iio_dma_buffer_data_available(struct iio_buffer *buf)
->  }
->  EXPORT_SYMBOL_GPL(iio_dma_buffer_data_available);
->  
-> +int iio_dma_buffer_alloc_blocks(struct iio_buffer *buffer,
-> +				struct iio_buffer_block_alloc_req *req)
-> +{
-> +	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-> +	struct iio_dma_buffer_block **blocks;
-> +	unsigned int num_blocks;
-> +	unsigned int i;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&queue->lock);
-> +
-> +	/*
-> +	 * If the buffer is enabled and in fileio mode new blocks can't be
-> +	 * allocated.
-> +	 */
-> +	if (queue->fileio.enabled) {
-> +		ret = -EBUSY;
-> +		goto err_unlock;
-> +	}
-> +
-> +	/* Free memory that might be in use for fileio mode */
-> +	iio_dma_buffer_fileio_free(queue);
-> +
-> +	/* 64 blocks ought to be enough for anybody ;) */
-> +	if (req->count > 64 - queue->num_blocks)
-> +		req->count = 64 - queue->num_blocks;
-> +	if (req->size > iio_dma_buffer_max_block_size)
-> +		req->size = iio_dma_buffer_max_block_size;
-> +
-> +	req->id = queue->num_blocks;
-> +
-> +	if (req->count == 0 || req->size == 0) {
-> +		ret = 0;
-> +		goto err_unlock;
-> +	}
-> +
-> +	num_blocks = req->count + queue->num_blocks;
-> +
-> +	blocks = krealloc(queue->blocks, sizeof(*blocks) * num_blocks,
-> +		GFP_KERNEL);
-> +	if (!blocks) {
-> +		ret = -ENOMEM;
-> +		goto err_unlock;
-> +	}
-> +
-> +	for (i = queue->num_blocks; i < num_blocks; i++) {
-> +		blocks[i] = iio_dma_buffer_alloc_block(queue, req->size);
-> +		if (!blocks[i])
-
-Is this an error path?  ret isn't set but I can't see why iio_dma_buffer_alloc_block()
-would fail in a 'good' way.
-
-> +			break;
-> +		blocks[i]->block.id = i;
-> +		blocks[i]->block.data.offset = queue->max_offset;
-> +		queue->max_offset += PAGE_ALIGN(req->size);
-> +	}
-> +
-> +	req->count = i - queue->num_blocks;
-> +	queue->num_blocks = i;
-> +	queue->blocks = blocks;
-> +
-> +err_unlock:
-> +	mutex_unlock(&queue->lock);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(iio_dma_buffer_alloc_blocks);
-> +
-> +int iio_dma_buffer_free_blocks(struct iio_buffer *buffer)
-> +{
-> +	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-> +	unsigned int i;
-> +
-> +	mutex_lock(&queue->lock);
-> +
-> +	spin_lock_irq(&queue->list_lock);
-> +	INIT_LIST_HEAD(&queue->incoming);
-> +	INIT_LIST_HEAD(&queue->outgoing);
-> +
-> +	for (i = 0; i < queue->num_blocks; i++)
-> +		queue->blocks[i]->state = IIO_BLOCK_STATE_DEAD;
-> +	spin_unlock_irq(&queue->list_lock);
-> +
-> +	for (i = 0; i < queue->num_blocks; i++)
-> +		iio_buffer_block_put(queue->blocks[i]);
-> +
-> +	kfree(queue->blocks);
-> +	queue->blocks = NULL;
-> +	queue->num_blocks = 0;
-> +	queue->max_offset = 0;
-> +
-> +	mutex_unlock(&queue->lock);
 > +
 > +	return 0;
 > +}
-> +EXPORT_SYMBOL_GPL(iio_dma_buffer_free_blocks);
 > +
-> +int iio_dma_buffer_query_block(struct iio_buffer *buffer,
-> +			       struct iio_buffer_block *block)
+> +static inline struct cxl_mem_command *cxl_mem_find_command(u16 opcode)
 > +{
-> +	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-> +	int ret = 0;
+> +	struct cxl_mem_command *c;
 > +
-> +	mutex_lock(&queue->lock);
+> +	cxl_for_each_cmd(c)
+> +		if (c->opcode == opcode)
+> +			return c;
 > +
-> +	if (block->id >= queue->num_blocks) {
-> +		ret = -EINVAL;
-> +		goto out_unlock;
-> +	}
-> +
-> +	*block = queue->blocks[block->id]->block;
-> +
-> +out_unlock:
-> +	mutex_unlock(&queue->lock);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(iio_dma_buffer_query_block);
-> +
-> +int iio_dma_buffer_enqueue_block(struct iio_buffer *buffer,
-> +				 struct iio_buffer_block *block)
-> +{
-> +	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-> +	struct iio_dma_buffer_block *dma_block;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&queue->lock);
-> +
-> +	if (block->id >= queue->num_blocks) {
-> +		ret = -EINVAL;
-> +		goto out_unlock;
-> +	}
-> +
-> +	dma_block = queue->blocks[block->id];
-> +	dma_block->block.bytes_used = block->bytes_used;
-> +	dma_block->block.flags = block->flags;
-> +
-> +	switch (dma_block->state) {
-> +	case IIO_BLOCK_STATE_DONE:
-> +		list_del_init(&dma_block->head);
-> +		break;
-> +	case IIO_BLOCK_STATE_QUEUED:
-> +		/* Nothing to do */
-> +		goto out_unlock;
-> +	case IIO_BLOCK_STATE_DEQUEUED:
-> +		break;
-> +	default:
-> +		ret = -EBUSY;
-> +		goto out_unlock;
-> +	}
-> +
-> +	iio_dma_buffer_enqueue(queue, dma_block);
-> +
-> +out_unlock:
-> +	mutex_unlock(&queue->lock);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(iio_dma_buffer_enqueue_block);
-> +
-> +int iio_dma_buffer_dequeue_block(struct iio_buffer *buffer,
-> +				 struct iio_buffer_block *block)
-> +{
-> +	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-> +	struct iio_dma_buffer_block *dma_block;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&queue->lock);
-> +
-> +	dma_block = iio_dma_buffer_dequeue(queue);
-> +	if (!dma_block) {
-> +		ret = -EAGAIN;
-> +		goto out_unlock;
-> +	}
-> +
-> +	*block = dma_block->block;
-> +
-> +out_unlock:
-> +	mutex_unlock(&queue->lock);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(iio_dma_buffer_dequeue_block);
-> +
-> +static void iio_dma_buffer_mmap_open(struct vm_area_struct *area)
-> +{
-> +	struct iio_dma_buffer_block *block = area->vm_private_data;
-> +
-> +	iio_buffer_block_get(block);
+> +	return NULL;
 > +}
 > +
-> +static void iio_dma_buffer_mmap_close(struct vm_area_struct *area)
+> +/**
+> + * cxl_walk_cel() - Walk through the Command Effects Log.
+> + * @cxlm: Device.
+> + * @size: Length of the Command Effects Log.
+> + * @cel: CEL
+> + *
+> + * Iterate over each entry in the CEL and determine if the driver supports the
+> + * command. If so, the command is enabled for the device and can be used later.
+> + */
+> +static void cxl_walk_cel(struct cxl_mem *cxlm, size_t size, u8 *cel)
 > +{
-> +	struct iio_dma_buffer_block *block = area->vm_private_data;
+> +	struct cel_entry {
+> +		__le16 opcode;
+> +		__le16 effect;
+> +	} __packed * cel_entry;
+> +	const int cel_entries = size / sizeof(*cel_entry);
+> +	int i;
 > +
-> +	iio_buffer_block_put(block);
-> +}
+> +	cel_entry = (struct cel_entry *)cel;
 > +
-> +static const struct vm_operations_struct iio_dma_buffer_vm_ops = {
-> +	.open = iio_dma_buffer_mmap_open,
-> +	.close = iio_dma_buffer_mmap_close,
-> +};
+> +	for (i = 0; i < cel_entries; i++) {
+> +		u16 opcode = le16_to_cpu(cel_entry[i].opcode);
+> +		struct cxl_mem_command *cmd = cxl_mem_find_command(opcode);
 > +
-> +int iio_dma_buffer_mmap(struct iio_buffer *buffer, struct vm_area_struct *vma)
-> +{
-> +	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
-> +	struct iio_dma_buffer_block *block = NULL;
-> +	size_t vm_offset;
-> +	unsigned int i;
-> +
-> +	vm_offset = vma->vm_pgoff << PAGE_SHIFT;
-> +
-> +	for (i = 0; i < queue->num_blocks; i++) {
-I wonder if we should be using a better search structure here than linear
-
-search.  I guess mostly we are dealing with a small number of blocks though
-so this should be fine.
-
-> +		if (queue->blocks[i]->block.data.offset == vm_offset) {
-> +			block = queue->blocks[i];
-> +			break;
+> +		if (!cmd) {
+> +			dev_dbg(&cxlm->pdev->dev,
+> +				"Opcode 0x%04x unsupported by driver", opcode);
+> +			continue;
 > +		}
+> +
+> +		set_bit(cmd->info.id, cxlm->enabled_cmds);
 > +	}
-> +
-> +	if (block == NULL)
-> +		return -EINVAL;
-> +
-> +	if (PAGE_ALIGN(block->block.size) < vma->vm_end - vma->vm_start)
-> +		return -EINVAL;
-> +
-> +	vma->vm_pgoff = 0;
-> +
-> +	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
-> +	vma->vm_ops = &iio_dma_buffer_vm_ops;
-> +	vma->vm_private_data = block;
-> +
-> +	vma->vm_ops->open(vma);
-> +
-> +	return dma_mmap_coherent(queue->dev, vma, block->vaddr,
-> +		block->phys_addr, vma->vm_end - vma->vm_start);
 > +}
-> +EXPORT_SYMBOL_GPL(iio_dma_buffer_mmap);
 > +
->  /**
->   * iio_dma_buffer_set_bytes_per_datum() - DMA buffer set_bytes_per_datum callback
->   * @buffer: Buffer to set the bytes-per-datum for
-> @@ -635,28 +910,9 @@ EXPORT_SYMBOL_GPL(iio_dma_buffer_init);
->   */
->  void iio_dma_buffer_exit(struct iio_dma_buffer_queue *queue)
->  {
-> -	unsigned int i;
-> -
->  	mutex_lock(&queue->lock);
->  
-> -	spin_lock_irq(&queue->list_lock);
-> -	for (i = 0; i < ARRAY_SIZE(queue->fileio.blocks); i++) {
-> -		if (!queue->fileio.blocks[i])
-> -			continue;
-> -		queue->fileio.blocks[i]->state = IIO_BLOCK_STATE_DEAD;
-> -	}
-> -	INIT_LIST_HEAD(&queue->outgoing);
-> -	spin_unlock_irq(&queue->list_lock);
-> -
-> -	INIT_LIST_HEAD(&queue->incoming);
-> -
-> -	for (i = 0; i < ARRAY_SIZE(queue->fileio.blocks); i++) {
-> -		if (!queue->fileio.blocks[i])
-> -			continue;
-> -		iio_buffer_block_put(queue->fileio.blocks[i]);
-> -		queue->fileio.blocks[i] = NULL;
-> -	}
-> -	queue->fileio.active_block = NULL;
-> +	iio_dma_buffer_fileio_free(queue);
->  	queue->ops = NULL;
->  
->  	mutex_unlock(&queue->lock);
-> diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> index 8ecdbae83414..bb022922ec23 100644
-> --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> @@ -54,7 +54,7 @@ static void iio_dmaengine_buffer_block_done(void *data,
->  	spin_lock_irqsave(&block->queue->list_lock, flags);
->  	list_del(&block->head);
->  	spin_unlock_irqrestore(&block->queue->list_lock, flags);
-> -	block->bytes_used -= result->residue;
-> +	block->block.bytes_used -= result->residue;
->  	iio_dma_buffer_block_done(block);
->  }
->  
-> @@ -66,12 +66,17 @@ static int iio_dmaengine_buffer_submit_block(struct iio_dma_buffer_queue *queue,
->  	struct dma_async_tx_descriptor *desc;
->  	dma_cookie_t cookie;
->  
-> -	block->bytes_used = min(block->size, dmaengine_buffer->max_size);
-> -	block->bytes_used = rounddown(block->bytes_used,
-> -			dmaengine_buffer->align);
-> +	block->block.bytes_used = min(block->block.size,
-> +		dmaengine_buffer->max_size);
-> +	block->block.bytes_used = rounddown(block->block.bytes_used,
-> +		dmaengine_buffer->align);
-> +	if (block->block.bytes_used == 0) {
-> +		iio_dma_buffer_block_done(block);
-> +		return 0;
+> +struct cxl_mbox_get_supported_logs {
+> +	__le16 entries;
+> +	u8 rsvd[6];
+> +	struct gsl_entry {
+> +		uuid_t uuid;
+> +		__le32 size;
+> +	} __packed entry[];
+> +} __packed;
+> +
+> +static struct cxl_mbox_get_supported_logs *cxl_get_gsl(struct cxl_mem *cxlm)
+> +{
+> +	struct cxl_mbox_get_supported_logs *ret;
+> +	int rc;
+> +
+> +	ret = kvmalloc(cxlm->payload_size, GFP_KERNEL);
+> +	if (!ret)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	rc = cxl_mem_mbox_send_cmd(cxlm, CXL_MBOX_OP_GET_SUPPORTED_LOGS, NULL,
+> +				   0, (u8 *)ret, sizeof(*ret));
+> +	if (rc < 0) {
+> +		kvfree(ret);
+> +		return ERR_PTR(rc);
 > +	}
->  
->  	desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
-> -		block->phys_addr, block->bytes_used, DMA_DEV_TO_MEM,
-> +		block->phys_addr, block->block.bytes_used, DMA_DEV_TO_MEM,
->  		DMA_PREP_INTERRUPT);
->  	if (!desc)
->  		return -ENOMEM;
-> @@ -120,6 +125,13 @@ static const struct iio_buffer_access_funcs iio_dmaengine_buffer_ops = {
->  	.data_available = iio_dma_buffer_data_available,
->  	.release = iio_dmaengine_buffer_release,
->  
-> +	.alloc_blocks = iio_dma_buffer_alloc_blocks,
-> +	.free_blocks = iio_dma_buffer_free_blocks,
-> +	.query_block = iio_dma_buffer_query_block,
-> +	.enqueue_block = iio_dma_buffer_enqueue_block,
-> +	.dequeue_block = iio_dma_buffer_dequeue_block,
-> +	.mmap = iio_dma_buffer_mmap,
 > +
->  	.modes = INDIO_BUFFER_HARDWARE,
->  	.flags = INDIO_BUFFER_FLAG_FIXED_WATERMARK,
->  };
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 50228df0b09f..a0d1ad86022f 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -19,6 +19,7 @@
->  #include <linux/mm.h>
->  #include <linux/poll.h>
->  #include <linux/sched/signal.h>
-> +#include <linux/mm.h>
+> +	return ret;
+> +}
 
-Double include - guessing you rebase issues.
+In v3 the logic here got reworked and it attempted to get the actual size of the
+get_supported_logs payload. The way I wrote it, if there was even 1 supported
+log (CEL is required, so there would be), it would overrun the stack variable
+'temp'. This was trying to be too miserly and this version simply allocates the
+full payload amount.
 
->  
->  #include <linux/iio/iio.h>
->  #include <linux/iio/iio-opaque.h>
-> diff --git a/include/linux/iio/buffer-dma.h b/include/linux/iio/buffer-dma.h
-> index 6564bdcdac66..315a8d750986 100644
-> --- a/include/linux/iio/buffer-dma.h
-> +++ b/include/linux/iio/buffer-dma.h
-> @@ -47,7 +47,7 @@ enum iio_block_state {
->  struct iio_dma_buffer_block {
->  	/* May only be accessed by the owner of the block */
->  	struct list_head head;
-> -	size_t bytes_used;
-> +	struct iio_buffer_block block;
+Userspace commands were already guarded against this issue both logically, and
+they never use stack variables.
 
-Docs update
+You might be wondering, how do you know the max payload size is enough to hold
+all the supported logs? You do not. I'd call this a spec bug and I'll work that
+separately. Unlike other commands, there is no way to provide an offset into the
+output here. While unlikely this will happen in practice, the spec should
+address it.
 
->  
->  	/*
->  	 * Set during allocation, constant thereafter. May be accessed read-only
-> @@ -55,7 +55,6 @@ struct iio_dma_buffer_block {
->  	 */
->  	void *vaddr;
->  	dma_addr_t phys_addr;
-> -	size_t size;
-
-Structure has docs that need updating.  However, size is documented
-in the wrong place (order wise) so not easily missed!
-
->  	struct iio_dma_buffer_queue *queue;
->  
->  	/* Must not be accessed outside the core. */
-> @@ -73,12 +72,14 @@ struct iio_dma_buffer_block {
->   * @active_block: Block being used in read()
->   * @pos: Read offset in the active block
->   * @block_size: Size of each block
-> + * @enabled: Whether the buffer is operating in fileio mode
->   */
->  struct iio_dma_buffer_queue_fileio {
->  	struct iio_dma_buffer_block *blocks[2];
->  	struct iio_dma_buffer_block *active_block;
->  	size_t pos;
->  	size_t block_size;
-> +	bool enabled;
->  };
->  
+> +
+> +/**
+> + * cxl_mem_enumerate_cmds() - Enumerate commands for a device.
+> + * @cxlm: The device.
+> + *
+> + * Returns 0 if enumerate completed successfully.
+> + *
+> + * CXL devices have optional support for certain commands. This function will
+> + * determine the set of supported commands for the hardware and update the
+> + * enabled_cmds bitmap in the @cxlm.
+> + */
+> +static int cxl_mem_enumerate_cmds(struct cxl_mem *cxlm)
+> +{
+> +	struct cxl_mbox_get_supported_logs *gsl;
+> +	struct device *dev = &cxlm->pdev->dev;
+> +	struct cxl_mem_command *cmd;
+> +	int i, rc;
+> +
+> +	gsl = cxl_get_gsl(cxlm);
+> +	if (IS_ERR(gsl))
+> +		return PTR_ERR(gsl);
+> +
+> +	rc = -ENOENT;
+> +	for (i = 0; i < le16_to_cpu(gsl->entries); i++) {
+> +		u32 size = le32_to_cpu(gsl->entry[i].size);
+> +		uuid_t uuid = gsl->entry[i].uuid;
+> +		u8 *log;
+> +
+> +		dev_dbg(dev, "Found LOG type %pU of size %d", &uuid, size);
+> +
+> +		if (!uuid_equal(&uuid, &log_uuid[CEL_UUID]))
+> +			continue;
+> +
+> +		log = kvmalloc(size, GFP_KERNEL);
+> +		if (!log) {
+> +			rc = -ENOMEM;
+> +			goto out;
+> +		}
+> +
+> +		rc = cxl_xfer_log(cxlm, &uuid, size, log);
+> +		if (rc) {
+> +			kvfree(log);
+> +			goto out;
+> +		}
+> +
+> +		cxl_walk_cel(cxlm, size, log);
+> +		kvfree(log);
+> +
+> +		/* In case CEL was bogus, enable some default commands. */
+> +		cxl_for_each_cmd(cmd)
+> +			if (cmd->flags & CXL_CMD_FLAG_FORCE_ENABLE)
+> +				set_bit(cmd->info.id, cxlm->enabled_cmds);
+> +
+> +		/* Found the required CEL */
+> +		rc = 0;
+> +	}
+> +
+> +out:
+> +	kvfree(gsl);
+> +	return rc;
+> +}
+> +
 >  /**
-> @@ -109,6 +110,10 @@ struct iio_dma_buffer_queue {
+>   * cxl_mem_identify() - Send the IDENTIFY command to the device.
+>   * @cxlm: The device to identify.
+> @@ -1233,6 +1436,10 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	if (rc)
+>  		return rc;
 >  
->  	bool active;
->  
-> +	unsigned int num_blocks;
-> +	struct iio_dma_buffer_block **blocks;
-> +	unsigned int max_offset;
+> +	rc = cxl_mem_enumerate_cmds(cxlm);
+> +	if (rc)
+> +		return rc;
 > +
->  	struct iio_dma_buffer_queue_fileio fileio;
->  };
+>  	rc = cxl_mem_identify(cxlm);
+>  	if (rc)
+>  		return rc;
+> diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
+> index 8eb669150ecb..3b5bf4b58fb4 100644
+> --- a/include/uapi/linux/cxl_mem.h
+> +++ b/include/uapi/linux/cxl_mem.h
+> @@ -23,6 +23,7 @@
+>  	___C(INVALID, "Invalid Command"),                                 \
+>  	___C(IDENTIFY, "Identify Command"),                               \
+>  	___C(RAW, "Raw device command"),                                  \
+> +	___C(GET_SUPPORTED_LOGS, "Get Supported Logs"),                   \
+>  	___C(MAX, "invalid / last command")
 >  
-> @@ -143,4 +148,15 @@ int iio_dma_buffer_init(struct iio_dma_buffer_queue *queue,
->  void iio_dma_buffer_exit(struct iio_dma_buffer_queue *queue);
->  void iio_dma_buffer_release(struct iio_dma_buffer_queue *queue);
->  
-> +int iio_dma_buffer_alloc_blocks(struct iio_buffer *buffer,
-> +				struct iio_buffer_block_alloc_req *req);
-> +int iio_dma_buffer_free_blocks(struct iio_buffer *buffer);
-> +int iio_dma_buffer_query_block(struct iio_buffer *buffer,
-> +			       struct iio_buffer_block *block);
-> +int iio_dma_buffer_enqueue_block(struct iio_buffer *buffer,
-> +				 struct iio_buffer_block *block);
-> +int iio_dma_buffer_dequeue_block(struct iio_buffer *buffer,
-> +				 struct iio_buffer_block *block);
-> +int iio_dma_buffer_mmap(struct iio_buffer *buffer, struct vm_area_struct *vma);
-> +
->  #endif
-
+>  #define ___C(a, b) CXL_MEM_COMMAND_ID_##a
+> -- 
+> 2.30.1
+> 
