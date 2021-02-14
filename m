@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B6531B262
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 21:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2266A31B269
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 21:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhBNUSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 15:18:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhBNUSd (ORCPT
+        id S229951AbhBNU3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 15:29:33 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:37260 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229938AbhBNU32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 15:18:33 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B666AC061574;
-        Sun, 14 Feb 2021 12:17:53 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id q9so3912634ilo.1;
-        Sun, 14 Feb 2021 12:17:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UtL4Z7oV84D0lqSajYeR5hxfxbfYpsIfNN/c8hJ+Ehk=;
-        b=iS3oxrVSiC849d7n6oYw9555IAEPtpeVSMTrLenLnUDhtNsHsGU6ZDG5XNL5T557Gj
-         OmXz0z5EWSYCTgd/v5bHYXYc7MFy8i/c7D6bu6zTuLauDyF+IQ+h9zGRIh8ZHbykZVd9
-         vljhIKdpGKX+de/tLBklNZp/oZc4EHVIXieyGJaMT5kQUA74Jbw4BeGCO5LD0aS9yRmK
-         TGQXqIIfe+N8vgfXyq2HptzqpJzo4pSYpUX/Wn/aVLX1YVaWfL3QmmX71U7xn3ekmEfU
-         +ytKIDgUgy7mQm/umL7sAY03vf0Vy6bwcWM63s0fPcXnG2TXXoRfNSssftMW14A7CKxa
-         +oTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UtL4Z7oV84D0lqSajYeR5hxfxbfYpsIfNN/c8hJ+Ehk=;
-        b=fOV/hlaIUY534bkgXZ3VbDmdkW0rNwEY7RPt/KKZWUNIbJY8kUF0KMlqRMNAqBkrI4
-         cO3MbIFCxrP5urYCdoa2JbIoZvKlXU5yf6eoKY+u/a49QjKarcEEopYBuhTugGbB26D3
-         bzLKGASLKTcLmkKdk2jev44Nsrjxgg+H1P3HYtk6GrlkKSbMTeDe3/yngiIWMhEivccM
-         I5FBUZnEzlLMOQuNndjQD4ujz0hbsG7tLlive2Djwm6ypvgHNlUuXs3zeSrJmPYcQtB6
-         RaGWpnlc8pdjrjd5kfsFePL4EigqFTFEikspkNavKhAxvsDqhbBMDhPsM4mEItdbAg8t
-         147w==
-X-Gm-Message-State: AOAM533Z1XT0A0PK9wyB34x++yZlkZgSHR/zy2ouD+Xez21k9mIvg41p
-        HXx69sZxBDTe5qpLeB47Yh8=
-X-Google-Smtp-Source: ABdhPJwxr8/B5f8+wJqTLPlZtDF0nFduROoaSQ6kx511pu6OMbZFLI60S7DlgVU4t6hOPou85iR4Hg==
-X-Received: by 2002:a05:6e02:144d:: with SMTP id p13mr10186654ilo.41.1613333872866;
-        Sun, 14 Feb 2021 12:17:52 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:76d1:e2bd:f122:8b2a])
-        by smtp.gmail.com with ESMTPSA id f14sm8286506ilr.14.2021.02.14.12.17.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Feb 2021 12:17:52 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mn-beacon: Enable SDR104 on WiFi SDIO interface
-Date:   Sun, 14 Feb 2021 14:17:42 -0600
-Message-Id: <20210214201742.300344-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 14 Feb 2021 15:29:28 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id BBB431C0B76; Sun, 14 Feb 2021 21:31:38 +0100 (CET)
+Date:   Sun, 14 Feb 2021 21:31:38 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>
+Subject: Re: [GIT PULL 5.11-rc8] LED fix
+Message-ID: <20210214203138.GA22191@amd>
+References: <20210214171328.GA5314@duo.ucw.cz>
+ <CAHk-=wgCp5n3sB_hDmOLSPiJcwJm9RErBHN_6ABhRWyVEkY4Xw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="sdtB3X0nJg68CQEu"
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgCp5n3sB_hDmOLSPiJcwJm9RErBHN_6ABhRWyVEkY4Xw@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable 100Mhz and 200MHz pinmux and corrsesponding voltage supplies
-to enable SDR104 on usdhc1 connecting the WiFi chip.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+--sdtB3X0nJg68CQEu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
-index de2cd0e3201c..c35eeaff958f 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
-@@ -262,8 +262,12 @@ bluetooth {
- &usdhc1 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
- 	pinctrl-0 = <&pinctrl_usdhc1>;
-+	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
-+	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
-+	vmmc-supply = <&buck4_reg>;
-+	vqmmc-supply = <&buck5_reg>;
- 	bus-width = <4>;
- 	non-removable;
- 	cap-power-off-card;
--- 
-2.25.1
+Hi!
 
+> > Unfortunately, for some reason request-pull is not willing to
+> > cooperate, so I'm just doing this manually.
+>=20
+> The reason request-pull doesn't cooperate is actually spelled out explici=
+tly:
+>=20
+> > pavel@duo:/data/l/linux-leds$ git request-pull master git://git.kernel.=
+org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ 92bf22614b21a2706f4993b2=
+78017e437f7785b3 > /tmp/delme for-rc8-5.11
+> > warn: No match for commit 92bf22614b21a2706f4993b278017e437f7785b3 foun=
+d at git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/
+> > warn: Are you sure you pushed '92bf22614b21a2706f4993b278017e437f7785b3=
+' there?
+>=20
+> Commit 92bf22614b21 is my rc7 commit. And it's not in your tree (which
+> is based on rc1).
+>=20
+> Why are you giving raw commit ID's to git request-pull? Particularly
+> ones that aren't even in your upstream tree? Git figures things out on
+> its own, why do you point to the rc7 commit that has nothing to do
+> with what you're pushing?
+
+I find raw commit IDs easier to work with than the tags.
+
+> And yes, that commit exists on kernel.org through my tree, but it's
+> not reachable from any tips in yours (because your work was based on
+> earlier state - which is as it should be).
+
+I don't understand.
+
+I want you to apply dbeb02a0bc41b9e9b9c05e460890351efecf1352 .
+
+92bf22614b21 is my rc7, and it is parent of the commit I want you to
+apply. It is listed as so on
+https://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/commit=
+/?h=3Dfor-rc8-5.11 . I would call that "reachable"...?
+
+So I guess I could update master to rc7 to get rid of this error and
+retry request-pull?
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--sdtB3X0nJg68CQEu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmApiKkACgkQMOfwapXb+vJJTQCfdZOxWiYsUTU5b35sCoSqBhMR
+61oAnAyCKZM4c9cfCb9AKQOd0E1sUmZ5
+=N5Wa
+-----END PGP SIGNATURE-----
+
+--sdtB3X0nJg68CQEu--
