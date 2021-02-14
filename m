@@ -2,98 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4839C31B225
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B265131B220
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 19:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhBNTAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 14:00:30 -0500
-Received: from mail1.perex.cz ([77.48.224.245]:52362 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229642AbhBNTA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 14:00:28 -0500
-X-Greylist: delayed 473 seconds by postgrey-1.27 at vger.kernel.org; Sun, 14 Feb 2021 14:00:27 EST
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 5E495A0042;
-        Sun, 14 Feb 2021 19:51:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 5E495A0042
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1613328711; bh=cvdjkRHWFkzG1lLfAFQoWXRELwhjh9aZAgl/H1YhF18=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=shMZT7rji9g0Qza6xyS5aIMcHpz4YS2/4/dcUoAH3CcWxdJkioPpRZ7uUADD1y7XZ
-         Pq1Zbh3YLDrArISiKbUvm5hyoUXCPA4h5NbzKv+U3a9wMFODe5bhs/B5Wn23KaPxY1
-         qDn4xzoaUGOjpF3t6tQ8njru35ulewub33j2YS8w=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Sun, 14 Feb 2021 19:51:39 +0100 (CET)
-Subject: Re: [PATCH v3 3/3] ASoC: rt715:add micmute led state control supports
-To:     Perry Yuan <perry979106@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Perry Yuan <Perry.Yuan@dell.com>
-Cc:     oder_chiou@realtek.com, tiwai@suse.com, hdegoede@redhat.com,
-        mgross@linux.intel.com, lgirdwood@gmail.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, Mario.Limonciello@dell.com
-References: <20210112171814.5404-1-Perry_Yuan@Dell.com>
- <20210112175406.GF4646@sirena.org.uk>
- <43507ba7-74b8-2d18-57ca-271f89a752de@gmail.com>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <4a79cb14-4c71-8bd8-9c8c-ab2421e97e0b@perex.cz>
-Date:   Sun, 14 Feb 2021 19:51:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S229829AbhBNSxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 13:53:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhBNSxM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 13:53:12 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A33C061574;
+        Sun, 14 Feb 2021 10:52:32 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id v7so6222948wrr.12;
+        Sun, 14 Feb 2021 10:52:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rNJlO4/q80kk+PEPtW5ue8B+S2Qcu1i/6aKbO8a3aoI=;
+        b=bx6N/zlcgRi5zdZ/cjquy23J2U2n1vLRNMidwTOw7hdPk2zRIHlSPvGQpxW/9b7Abj
+         2rBATWkzqPYzVdWaig9DVzQZwbCzcNHOuhx3CEhiTiJrlWFKXtXnuNsFSWCT3nBb+FWl
+         F6zj5r0HvOT/q4H4vLxJHF7ooXLEIoTUtVDPfatL4dOO3u4KgNvqVe/dlFz4jmb2ElBz
+         pqdUtkdzUALbh1/xbPB4Cprf4dO33CSE/UycxsnC/190WtqwHp1Yv1eVJ2ALStS3PhGF
+         v3iAqyxJKaId/8BgRLlo6DDqWfbhWOPw5YrMaLoMN/o/8U7wL2iKWBhensyorrXmyuFX
+         vYfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rNJlO4/q80kk+PEPtW5ue8B+S2Qcu1i/6aKbO8a3aoI=;
+        b=bOcAsCFmRy6I/ptnbxDlfPWwrwOyeo9j+T9aYt5KEMq88tB8Pd+GsBvioKplxzRwUM
+         NeHjYMzWenqfhUt1WNgks0FB5mj461k+1iK6kFV58mMN38Wg5kjW/t/KTeH8v5TkQoG6
+         GclgjEfJHdbhMqfkm+ZbbkCssXB9VJTgrwm/qXw7MvJ6Xq6h9bZjC3mbeNu1+24VMcdK
+         RjqQuvBo3JR3wpphFIwWZU5wIdF/B8X33uWqlzMj3Pp8QBJqpY1JNjHXSqiWMd65FtdS
+         zGM8DbWS/QeU1uBSwDWha2sUzxvmU27yIzcHBoo2eLt56y+lr6Dzoopqokn7D+GJLVzw
+         9frg==
+X-Gm-Message-State: AOAM531xYY/pZbEZS7/p637Yb5bcAV6Mq2LCpzb5Qch5Zgtdw6tEof4V
+        cIzoYA7n8J52zOZSfa4sl7Y=
+X-Google-Smtp-Source: ABdhPJxLKBVvb1Ntc7rF6UdNd008RcNdXhIcLWjwVtinrhOQ+FmeZFuB/Gf3WVkK44vMd7+iJPvNOQ==
+X-Received: by 2002:a5d:66c5:: with SMTP id k5mr15398342wrw.302.1613328751005;
+        Sun, 14 Feb 2021 10:52:31 -0800 (PST)
+Received: from localhost.localdomain (bzq-79-182-30-18.red.bezeqint.net. [79.182.30.18])
+        by smtp.googlemail.com with ESMTPSA id e16sm25785306wrt.36.2021.02.14.10.52.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 10:52:30 -0800 (PST)
+From:   Lior Ribak <liorribak@gmail.com>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        liorribak@gmail.com
+Subject: Re: [PATCH] binfmt_misc: Fix possible deadlock in bm_register_write
+Date:   Sun, 14 Feb 2021 10:52:21 -0800
+Message-Id: <20210214185221.4793-1-liorribak@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201224111533.24719-1-liorribak@gmail.com>
+References: <20201224111533.24719-1-liorribak@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <43507ba7-74b8-2d18-57ca-271f89a752de@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 14. 02. 21 v 7:43 Perry Yuan napsal(a):
-
->>> @@ -287,6 +291,18 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
->>>   			return err;
->>>   	}
->>>   
->>> +#if IS_ENABLED(CONFIG_DELL_PRIVACY)
->>> +	/* dell privacy LED trigger state changed by muted/unmute switch */
->>> +	if (mc->invert) {
->>> +		if (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1]) {
->>> +			rt715->micmute_led = LED_OFF;
->>> +		} else {
->>> +			rt715->micmute_led = LED_ON;
->>> +		}
->>> +		ledtrig_audio_set(LED_AUDIO_MICMUTE, rt715->micmute_led);
->>> +	}
->>> +#endif
->>> +
-
-My question is, how do we know that the rt715 codec has connected internal
-microphone to this input? I believe that this should be covered in the machine
-specific code (runtime check), not in the codec code. #if CONFIG is not
-sufficient here.
-
-> I have moved this part code to the local definition of 
-> rt715_set_amp_gain_put and removed from rt715_priv.
-> new code will be like this in V4.
-> 
-> @@ -88,6 +89,7 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol 
-> *kcontrol,
->                  RT715_SET_GAIN_MIX_ADC2_L};
->          unsigned int addr_h, addr_l, val_h, val_ll, val_lr;
->          unsigned int read_ll, read_rl, i, j, loop_cnt;
-> +       bool micmute_led;
-> 
-
-The whole LED trigger mechanism for the sound is covered in my LED generic
-code : https://lore.kernel.org/alsa-devel/20210211111400.1131020-1-perex@perex.cz/
-
-						Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Thank you!
