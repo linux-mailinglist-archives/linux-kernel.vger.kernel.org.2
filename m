@@ -2,461 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C227B31B1E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 19:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AEB31B1EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 19:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbhBNSUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 13:20:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229792AbhBNSUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 13:20:33 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93DD264E4E;
-        Sun, 14 Feb 2021 18:19:49 +0000 (UTC)
-Date:   Sun, 14 Feb 2021 18:19:46 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de
-Subject: Re: [PATCH v8 21/22] counter: 104-quad-8: Replace mutex with
- spinlock
-Message-ID: <20210214181946.1d2f7e78@archlinux>
-In-Reply-To: <d2e72eac404ca5b7c99d8a642f2c07ebb2eb240a.1613131238.git.vilhelm.gray@gmail.com>
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
-        <d2e72eac404ca5b7c99d8a642f2c07ebb2eb240a.1613131238.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229861AbhBNSWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 13:22:46 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26318 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229793AbhBNSWl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 13:22:41 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11EI1vZ9026468;
+        Sun, 14 Feb 2021 13:21:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=eQlUZqwI30ecnU8cuNANWm8C/Zc1V971Hnwfp7kViGQ=;
+ b=Bd9kDnLFAuQ+ncwti52rjP0GaPfiRrx/l0VEYv53suLHSXUvX8b6+YVTQUL2IKf/Rrr9
+ FRSGrg3Of6KQWuWUpoHkNDfhfxWLLJEKcvpItcwqXVlIoWYmuvfLDNfQEt4cEP5ECJdj
+ cL+f7NsrZ1w4TdKkKkN13bfaN5hnWsmc/fUzDBtAuRx/yen5XLYAZEi8tRWPWeXjzdyu
+ OSxBL6OiCxgZB6/yK8jZA/JEYQqPcIyghYy5eeOFhXidBcAyVQS4XBtG/pui8Cmst9og
+ q6d7JOjcxbgCR5EJEr0dDB2XW6mowb2b3n3/aSrTuInP/Kd5SEHJ8ccPqwQis9SaseuI 8Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36q82bry0x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 14 Feb 2021 13:21:50 -0500
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11EILnh6129569;
+        Sun, 14 Feb 2021 13:21:49 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36q82bry05-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 14 Feb 2021 13:21:49 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11EIHZeS012548;
+        Sun, 14 Feb 2021 18:21:47 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 36p6d895sf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 14 Feb 2021 18:21:47 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11EILj4I12648826
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 14 Feb 2021 18:21:45 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0AB955204F;
+        Sun, 14 Feb 2021 18:21:45 +0000 (GMT)
+Received: from sig-9-65-223-148.ibm.com (unknown [9.65.223.148])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 30F985204E;
+        Sun, 14 Feb 2021 18:21:42 +0000 (GMT)
+Message-ID: <693f81d9d2f50a920cafbbc8d1d634598b99081a.camel@linux.ibm.com>
+Subject: Re: [PATCH v24 04/25] IMA: avoid label collisions with stacked LSMs
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 14 Feb 2021 13:21:41 -0500
+In-Reply-To: <20210126164108.1958-5-casey@schaufler-ca.com>
+References: <20210126164108.1958-1-casey@schaufler-ca.com>
+         <20210126164108.1958-5-casey@schaufler-ca.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-14_04:2021-02-12,2021-02-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ phishscore=0 impostorscore=0 spamscore=0 mlxscore=0 bulkscore=0
+ adultscore=0 mlxlogscore=999 suspectscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102140151
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021 21:13:45 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+Hi Casey,
 
-> This patch replaces the mutex I/O lock with a spinlock. This is in
-> preparation for a subsequent patch adding IRQ support for 104-QUAD-8
-> devices; we can't sleep in an interrupt context, so we'll need to use a
-> spinlock instead.
+On Tue, 2021-01-26 at 08:40 -0800, Casey Schaufler wrote:
+> Integrity measurement may filter on security module information
+> and needs to be clear in the case of multiple active security
+> modules which applies. Provide a boot option ima_rules_lsm= to
+> allow the user to specify an active securty module to apply
+> filters to. If not specified, use the first registered module
+> that supports the audit_rule_match() LSM hook. Allow the user
+> to specify in the IMA policy an lsm= option to specify the
+> security module to use for a particular rule.
+
+Thanks, Casey.
+
+(This patch description line length seems short.)
+
 > 
-> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-
-Why do these need to be raw_spin_locks?
-Normally only need to do that if in code related to interrupt chips etc,
-not their use.
-
-Jonathan
-
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> To: Mimi Zohar <zohar@linux.ibm.com>
+> To: linux-integrity@vger.kernel.org
 > ---
->  drivers/counter/104-quad-8.c | 90 +++++++++++++++++++++---------------
->  1 file changed, 53 insertions(+), 37 deletions(-)
+>  Documentation/ABI/testing/ima_policy |  8 +++-
+>  security/integrity/ima/ima_policy.c  | 64 ++++++++++++++++++++++------
+>  2 files changed, 57 insertions(+), 15 deletions(-)
 > 
-> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
-> index 41fdbd228be3..2b47f9991acc 100644
-> --- a/drivers/counter/104-quad-8.c
-> +++ b/drivers/counter/104-quad-8.c
-> @@ -16,6 +16,7 @@
->  #include <linux/module.h>
->  #include <linux/moduleparam.h>
->  #include <linux/types.h>
-> +#include <linux/spinlock.h>
->  
->  #define QUAD8_EXTENT 32
->  
-> @@ -28,6 +29,7 @@ MODULE_PARM_DESC(base, "ACCES 104-QUAD-8 base addresses");
->  
+> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+> index e35263f97fc1..a7943d40466f 100644
+> --- a/Documentation/ABI/testing/ima_policy
+> +++ b/Documentation/ABI/testing/ima_policy
+> @@ -25,7 +25,7 @@ Description:
+>  			base:	[[func=] [mask=] [fsmagic=] [fsuuid=] [uid=]
+>  				[euid=] [fowner=] [fsname=]]
+>  			lsm:	[[subj_user=] [subj_role=] [subj_type=]
+> -				 [obj_user=] [obj_role=] [obj_type=]]
+> +				 [obj_user=] [obj_role=] [obj_type=] [lsm=]]
+
+"[lsm=]" either requires all LSM rules types (e.g. {subj/obj}_user,
+role, type) to be exactly the same for multiple LSMs or all of the LSM
+rule types are applicable to only a single LSM.  Supporting multiple
+LSMs with exactly the same LSM labels doesn't seem worth the effort.  
+Keep it simple - a single rule, containing any LSM rule types, is
+applicable to a single LSM.
+
+>  			option:	[[appraise_type=]] [template=] [permit_directio]
+>  				[appraise_flag=] [keyrings=]
+>  		  base:
+> @@ -114,6 +114,12 @@ Description:
+> 
+>  			measure subj_user=_ func=FILE_CHECK mask=MAY_READ
+> 
+> +		It is possible to explicitly specify which security
+> +		module a rule applies to using lsm=.  If the security
+> +		modules specified is not active on the system the rule
+> +		will be rejected.  If lsm= is not specified the first
+> +		security module registered on the system will be assumed.
+> +
+>  		Example of measure rules using alternate PCRs::
+> 
+>  			measure func=KEXEC_KERNEL_CHECK pcr=4
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 8002683003e6..de72b719c90c 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -82,6 +82,7 @@ struct ima_rule_entry {
+>  		void *rules[LSMBLOB_ENTRIES]; /* LSM file metadata specific */
+>  		char *args_p;	/* audit value */
+>  		int type;	/* audit type */
+> +		int which_lsm; /* which of the rules to use */
+>  	} lsm[MAX_LSM_RULES];
+
+Even if we wanted to support multiple LSMs within the same rule having
+both "rules[LSMBLOB_ENTRIES]" and "which_lsm" shouldn't be necessary.  
+The LSMBLOB_ENTRIES should already identify the LSM.
+
+To support a single LSM per policy rule, "which_lsm" should be defined
+outside of lsm[MAX_LSM_RULES].  This will simplify the rest of the code
+(e.g. matching/freeing rules).
+
+	int which_lsm;          /* which of the rules to use */
+	struct {
+                void *rule;        /* LSM file metadata specific */
+                char *args_p;   /* audit value */
+                int type;       /* audit type */
+        } lsm[MAX_LSM_RULES];
+
+
+>  	char *fsname;
+>  	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
+> @@ -90,17 +91,15 @@ struct ima_rule_entry {
+> 
 >  /**
->   * struct quad8 - device private data structure
-> + * @lock:		synchronization lock to prevent I/O race conditions
->   * @counter:		instance of the counter_device
->   * @fck_prescaler:	array of filter clock prescaler configurations
->   * @preset:		array of preset values
-> @@ -42,7 +44,7 @@ MODULE_PARM_DESC(base, "ACCES 104-QUAD-8 base addresses");
->   * @base:		base port address of the device
+>   * ima_lsm_isset - Is a rule set for any of the active security modules
+> - * @rules: The set of IMA rules to check
+> + * @entry: the rule entry to examine
+> + * @lsm_rule: the specific rule type in question
+>   *
+> - * If a rule is set for any LSM return true, otherwise return false.
+> + * If a rule is set return true, otherwise return false.
 >   */
->  struct quad8 {
-> -	struct mutex lock;
-> +	raw_spinlock_t lock;
->  	struct counter_device counter;
->  	unsigned int fck_prescaler[QUAD8_NUM_COUNTERS];
->  	unsigned int preset[QUAD8_NUM_COUNTERS];
-> @@ -123,6 +125,7 @@ static int quad8_count_read(struct counter_device *counter,
->  	unsigned int flags;
->  	unsigned int borrow;
->  	unsigned int carry;
-> +	unsigned long irqflags;
->  	int i;
->  
->  	flags = inb(base_offset + 1);
-> @@ -132,7 +135,7 @@ static int quad8_count_read(struct counter_device *counter,
->  	/* Borrow XOR Carry effectively doubles count range */
->  	*val = (unsigned long)(borrow ^ carry) << 24;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	/* Reset Byte Pointer; transfer Counter to Output Latch */
->  	outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_BP | QUAD8_RLD_CNTR_OUT,
-> @@ -141,7 +144,7 @@ static int quad8_count_read(struct counter_device *counter,
->  	for (i = 0; i < 3; i++)
->  		*val |= (unsigned long)inb(base_offset) << (8 * i);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -151,13 +154,14 @@ static int quad8_count_write(struct counter_device *counter,
+> -static inline bool ima_lsm_isset(void *rules[])
+> +static inline bool ima_lsm_isset(struct ima_rule_entry *entry, int lsm_rule)
 >  {
->  	struct quad8 *const priv = counter->priv;
->  	const int base_offset = priv->base + 2 * count->id;
-> +	unsigned long irqflags;
->  	int i;
->  
->  	/* Only 24-bit values are supported */
->  	if (val > 0xFFFFFF)
->  		return -ERANGE;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	/* Reset Byte Pointer */
->  	outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_BP, base_offset + 1);
-> @@ -182,7 +186,7 @@ static int quad8_count_write(struct counter_device *counter,
->  	/* Reset Error flag */
->  	outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_E, base_offset + 1);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
+> -	int i;
+> -
+> -	for (i = 0; i < LSMBLOB_ENTRIES; i++)
+> -		if (rules[i])
+> -			return true;
+> +	if (entry->lsm[lsm_rule].rules[entry->lsm[lsm_rule].which_lsm])
+> +		return true;
+
+If each IMA policy rule is limited to a specific LSM, then the test
+would be "entry->which_lsm".
+
+>  	return false;
 >  }
-> @@ -200,8 +204,9 @@ static int quad8_function_read(struct counter_device *counter,
->  {
->  	struct quad8 *const priv = counter->priv;
->  	const int id = count->id;
-> +	unsigned long irqflags;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	if (priv->quadrature_mode[id])
->  		switch (priv->quadrature_scale[id]) {
-> @@ -218,7 +223,7 @@ static int quad8_function_read(struct counter_device *counter,
->  	else
->  		*function = COUNTER_FUNCTION_PULSE_DIRECTION;
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
+> 
+> @@ -273,6 +272,20 @@ static int __init default_appraise_policy_setup(char *str)
 >  }
-> @@ -233,10 +238,11 @@ static int quad8_function_write(struct counter_device *counter,
->  	unsigned int *const scale = priv->quadrature_scale + id;
->  	unsigned int *const synchronous_mode = priv->synchronous_mode + id;
->  	const int base_offset = priv->base + 2 * id + 1;
-> +	unsigned long irqflags;
->  	unsigned int mode_cfg;
->  	unsigned int idr_cfg;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	mode_cfg = priv->count_mode[id] << 1;
->  	idr_cfg = priv->index_polarity[id] << 1;
-> @@ -271,7 +277,7 @@ static int quad8_function_write(struct counter_device *counter,
->  			break;
->  		default:
->  			/* should never reach this path */
-> -			mutex_unlock(&priv->lock);
-> +			raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  			return -EINVAL;
->  		}
->  	}
-> @@ -279,7 +285,7 @@ static int quad8_function_write(struct counter_device *counter,
->  	/* Load mode configuration to Counter Mode Register */
->  	outb(QUAD8_CTR_CMR | mode_cfg, base_offset);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -407,9 +413,10 @@ static int quad8_index_polarity_set(struct counter_device *counter,
->  	struct quad8 *const priv = counter->priv;
->  	const size_t channel_id = signal->id - 16;
->  	const int base_offset = priv->base + 2 * channel_id + 1;
-> +	unsigned long irqflags;
->  	unsigned int idr_cfg = index_polarity << 1;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	idr_cfg |= priv->synchronous_mode[channel_id];
->  
-> @@ -418,7 +425,7 @@ static int quad8_index_polarity_set(struct counter_device *counter,
->  	/* Load Index Control configuration to Index Control Register */
->  	outb(QUAD8_CTR_IDR | idr_cfg, base_offset);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -447,15 +454,16 @@ static int quad8_synchronous_mode_set(struct counter_device *counter,
->  	struct quad8 *const priv = counter->priv;
->  	const size_t channel_id = signal->id - 16;
->  	const int base_offset = priv->base + 2 * channel_id + 1;
-> +	unsigned long irqflags;
->  	unsigned int idr_cfg = synchronous_mode;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	idr_cfg |= priv->index_polarity[channel_id] << 1;
->  
->  	/* Index function must be non-synchronous in non-quadrature mode */
->  	if (synchronous_mode && !priv->quadrature_mode[channel_id]) {
-> -		mutex_unlock(&priv->lock);
-> +		raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  		return -EINVAL;
->  	}
->  
-> @@ -464,7 +472,7 @@ static int quad8_synchronous_mode_set(struct counter_device *counter,
->  	/* Load Index Control configuration to Index Control Register */
->  	outb(QUAD8_CTR_IDR | idr_cfg, base_offset);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -511,6 +519,7 @@ static int quad8_count_mode_write(struct counter_device *counter,
->  	unsigned int count_mode;
->  	unsigned int mode_cfg;
->  	const int base_offset = priv->base + 2 * count->id + 1;
-> +	unsigned long irqflags;
->  
->  	/* Map Generic Counter count mode to 104-QUAD-8 count mode */
->  	switch (cnt_mode) {
-> @@ -531,7 +540,7 @@ static int quad8_count_mode_write(struct counter_device *counter,
->  		return -EINVAL;
->  	}
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	priv->count_mode[count->id] = count_mode;
->  
-> @@ -545,7 +554,7 @@ static int quad8_count_mode_write(struct counter_device *counter,
->  	/* Load mode configuration to Counter Mode Register */
->  	outb(QUAD8_CTR_CMR | mode_cfg, base_offset);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -565,9 +574,10 @@ static int quad8_count_enable_write(struct counter_device *counter,
->  {
->  	struct quad8 *const priv = counter->priv;
->  	const int base_offset = priv->base + 2 * count->id;
-> +	unsigned long irqflags;
->  	unsigned int ior_cfg;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	priv->ab_enable[count->id] = enable;
->  
-> @@ -576,7 +586,7 @@ static int quad8_count_enable_write(struct counter_device *counter,
->  	/* Load I/O control configuration */
->  	outb(QUAD8_CTR_IOR | ior_cfg, base_offset + 1);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -627,16 +637,17 @@ static int quad8_count_preset_write(struct counter_device *counter,
->  				    struct counter_count *count, u64 preset)
->  {
->  	struct quad8 *const priv = counter->priv;
-> +	unsigned long irqflags;
->  
->  	/* Only 24-bit values are supported */
->  	if (preset > 0xFFFFFF)
->  		return -ERANGE;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	quad8_preset_register_set(priv, count->id, preset);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -645,8 +656,9 @@ static int quad8_count_ceiling_read(struct counter_device *counter,
->  				    struct counter_count *count, u64 *ceiling)
->  {
->  	struct quad8 *const priv = counter->priv;
-> +	unsigned long irqflags;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	/* Range Limit and Modulo-N count modes use preset value as ceiling */
->  	switch (priv->count_mode[count->id]) {
-> @@ -660,7 +672,7 @@ static int quad8_count_ceiling_read(struct counter_device *counter,
->  		break;
->  	}
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -669,23 +681,24 @@ static int quad8_count_ceiling_write(struct counter_device *counter,
->  				     struct counter_count *count, u64 ceiling)
->  {
->  	struct quad8 *const priv = counter->priv;
-> +	unsigned long irqflags;
->  
->  	/* Only 24-bit values are supported */
->  	if (ceiling > 0xFFFFFF)
->  		return -ERANGE;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	/* Range Limit and Modulo-N count modes use preset value as ceiling */
->  	switch (priv->count_mode[count->id]) {
->  	case 1:
->  	case 3:
-> -		mutex_unlock(&priv->lock);
-> +		raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  		quad8_preset_register_set(priv, count->id, ceiling);
->  		return 0;
->  	}
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return -EINVAL;
->  }
-> @@ -707,12 +720,13 @@ static int quad8_count_preset_enable_write(struct counter_device *counter,
->  {
->  	struct quad8 *const priv = counter->priv;
->  	const int base_offset = priv->base + 2 * count->id + 1;
-> +	unsigned long irqflags;
->  	unsigned int ior_cfg;
->  
->  	/* Preset enable is active low in Input/Output Control register */
->  	preset_enable = !preset_enable;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	priv->preset_enable[count->id] = preset_enable;
->  
-> @@ -721,7 +735,7 @@ static int quad8_count_preset_enable_write(struct counter_device *counter,
->  	/* Load I/O control configuration to Input / Output Control Register */
->  	outb(QUAD8_CTR_IOR | ior_cfg, base_offset);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -732,22 +746,23 @@ static int quad8_signal_cable_fault_read(struct counter_device *counter,
->  {
->  	struct quad8 *const priv = counter->priv;
->  	const size_t channel_id = signal->id / 2;
-> +	unsigned long irqflags;
->  	bool disabled;
->  	unsigned int status;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	disabled = !(priv->cable_fault_enable & BIT(channel_id));
->  
->  	if (disabled) {
-> -		mutex_unlock(&priv->lock);
-> +		raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  		return -EINVAL;
->  	}
->  
->  	/* Logic 0 = cable fault */
->  	status = inb(priv->base + QUAD8_DIFF_ENCODER_CABLE_STATUS);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	/* Mask respective channel and invert logic */
->  	*cable_fault = !(status & BIT(channel_id));
-> @@ -773,9 +788,10 @@ static int quad8_signal_cable_fault_enable_write(struct counter_device *counter,
->  {
->  	struct quad8 *const priv = counter->priv;
->  	const size_t channel_id = signal->id / 2;
-> +	unsigned long irqflags;
->  	unsigned int cable_fault_enable;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	if (enable)
->  		priv->cable_fault_enable |= BIT(channel_id);
-> @@ -787,7 +803,7 @@ static int quad8_signal_cable_fault_enable_write(struct counter_device *counter,
->  
->  	outb(cable_fault_enable, priv->base + QUAD8_DIFF_ENCODER_CABLE_STATUS);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -810,8 +826,9 @@ static int quad8_signal_fck_prescaler_write(struct counter_device *counter,
->  	struct quad8 *const priv = counter->priv;
->  	const size_t channel_id = signal->id / 2;
->  	const int base_offset = priv->base + 2 * channel_id;
-> +	unsigned long irqflags;
->  
-> -	mutex_lock(&priv->lock);
-> +	raw_spin_lock_irqsave(&priv->lock, irqflags);
->  
->  	priv->fck_prescaler[channel_id] = prescaler;
->  
-> @@ -823,7 +840,7 @@ static int quad8_signal_fck_prescaler_write(struct counter_device *counter,
->  	outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_BP | QUAD8_RLD_PRESET_PSC,
->  	     base_offset + 1);
->  
-> -	mutex_unlock(&priv->lock);
-> +	raw_spin_unlock_irqrestore(&priv->lock, irqflags);
->  
->  	return 0;
->  }
-> @@ -992,8 +1009,7 @@ static int quad8_probe(struct device *dev, unsigned int id)
->  	priv->counter.priv = priv;
->  	priv->base = base[id];
->  
-> -	/* Initialize mutex */
-> -	mutex_init(&priv->lock);
-> +	raw_spin_lock_init(&priv->lock);
->  
->  	/* Reset all counters and disable interrupt function */
->  	outb(QUAD8_CHAN_OP_RESET_COUNTERS, base[id] + QUAD8_REG_CHAN_OP);
+>  __setup("ima_appraise_tcb", default_appraise_policy_setup);
+> 
+> +static int ima_rule_lsm __ro_after_init;
+> +
+> +static int __init ima_rule_lsm_init(char *str)
+> +{
+> +	ima_rule_lsm = lsm_name_to_slot(str);
+> +	if (ima_rule_lsm < 0) {
+> +		ima_rule_lsm = 0;
+> +		pr_err("rule lsm \"%s\" not registered", str);
+> +	}
+> +
+> +	return 1;
+> +}
+> +__setup("ima_rule_lsm=", ima_rule_lsm_init);
+
+The patch description refers to "ima_rules_lsm=".  Please update one or
+the other.
+
+thanks,
+
+Mimi
 
