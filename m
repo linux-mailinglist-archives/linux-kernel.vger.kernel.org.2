@@ -2,115 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564F031B1C0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 19:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8CA31B1C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 19:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhBNSBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 13:01:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229758AbhBNSBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 13:01:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F32C64E29;
-        Sun, 14 Feb 2021 18:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613325628;
-        bh=S06n2PIbfTRsWDpKfciyrnvAy2tq5pxRfgmsWuW/vZo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZDJeMVMx2d4ArohXm+c0OnCzB+MT/r5PvXgFkRNUujN/Q04nD8wqPHtp9oQMQvI2L
-         ytg3BEA5sNzTurBf4LohDGmuHJeLogFx9OK1pDYGBnJoIaJ6lhBG+jE0PXjECP8nWY
-         kG/8SAGVk7KKqriq74P+6j0vLAV68RtpqPHOQPU/uZygBXl40SF+bqLBh7R9vVEyl7
-         lwslILKLjBROR5FEl7UwdxDjFUb3llUhRzMwaXX/pYoAnvTedGLEe+KsxEakzHrFi8
-         IczE92l+WzqfUnpKyQeWl7lGZk+q7wrVcKBNDTo5NxKpYqWxGlzW8ntgBhBb+fBO6g
-         Q7nKwklF5BGjg==
-Date:   Sun, 14 Feb 2021 20:00:16 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
- holes in memory layout
-Message-ID: <20210214180016.GO242749@kernel.org>
-References: <20210208110820.6269-1-rppt@kernel.org>
- <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
- <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
- <YCaAHI/rFp1upRLc@dhcp22.suse.cz>
+        id S229809AbhBNSG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 13:06:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229768AbhBNSGz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 13:06:55 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B120C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 10:06:15 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id u5so1459572wmj.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 10:06:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iK9yYr+JABuVqPrNZO7z5D//Vz9aBBLMOlTC/uk3m6I=;
+        b=DHBr9+PBs4YMHPq/LhqY2hDYb+7qDtCwQWnjwdjPG4hSfrWXkdB4MK3fIDSfAVCbRz
+         nv9vMYAXFmQ9GVS3bvPkeSfZ8USMexRA0yCQdaycdr8uH+wMrOkExCSoC0jeaH/DS7eX
+         DRJ/uUBj+4KBF947qyqIWoxGRvM2Rxc5nrNY3bn+jbJ8AUQJKdl0k5OGztBUPFCHBcwT
+         TZTqbvgZcvLwFLduaG6WZo+7ZiN2/lE8A1Lq636S1315Bi3B0MkDy5g0khiW8jpndHr0
+         bvCASRkdidXde/yMbNSlJAelgwx7592qQTuyOxq7TsI4YonpmtaDDnXxYlkUzQ5eA/QA
+         SkUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iK9yYr+JABuVqPrNZO7z5D//Vz9aBBLMOlTC/uk3m6I=;
+        b=jGnFN8ETxBHrtbW0PPZ3N5+E/El65DIWWkd1N2E8n56VvwDCiWcV94M3WPUgIj1P9v
+         +YHylVr4mmtAdKif2xV5D7ld8cw9gNh3WX9hJ8y3wDoWRYpwANL45iqaEuHv8b5buxEQ
+         nNFrVHdYUmoEsrLVKLKlJMCBuHz25e9Jmph0u/nZ0UBzAigXEK8SbO93ABg7YmWPcJkG
+         Q/T9iUSnap3ypacuZys6JcLwq8ceHAcUXvrGdty7PsrKgRHCMls0wVo80vt2bXDNOOFk
+         UbmoK+bfO8IirAfLpOgDeuhiuL0eVGOYQOjrRhSWp14PDJSE3aplzZ2QCZjkb6i25Qio
+         3JIA==
+X-Gm-Message-State: AOAM532KLhgYaojOdE5HbtOWpMumrpvDwMpQAjvcLh+d7GPNngNpAAn+
+        FaRmbwxJez4GwWANYhfimSoFAGW8PgY/Qw==
+X-Google-Smtp-Source: ABdhPJz851Gs652OcKUG4wxADms3P+y/eCKYDu2zBfpJ+QmygBdJ+0+jVIPepiwnlMPVUo7Qc2oFTQ==
+X-Received: by 2002:a1c:b0c2:: with SMTP id z185mr10818017wme.67.1613325973902;
+        Sun, 14 Feb 2021 10:06:13 -0800 (PST)
+Received: from alaa ([197.57.74.212])
+        by smtp.gmail.com with ESMTPSA id d20sm20994413wrc.12.2021.02.14.10.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 10:06:13 -0800 (PST)
+From:   Alaa Emad <alaaemadhossney.ae@gmail.com>
+To:     mchehab+huawei@kernel.org, gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Alaa Emad <alaaemadhossney.ae@gmail.com>
+Subject: [PATCH 1/1] staging: hikey9xx: hi6421-spmi-pmic.c: removing
+Date:   Sun, 14 Feb 2021 20:06:08 +0200
+Message-Id: <20210214180608.8890-1-alaaemadhossney.ae@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCaAHI/rFp1upRLc@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 02:18:20PM +0100, Michal Hocko wrote:
-> On Fri 12-02-21 11:42:15, David Hildenbrand wrote:
-> > On 12.02.21 11:33, Michal Hocko wrote:
-> [...]
-> > > I have to digest this but my first impression is that this is more heavy
-> > > weight than it needs to. Pfn walkers should normally obey node range at
-> > > least. The first pfn is usually excluded but I haven't seen real
-> > 
-> > We've seen examples where this is not sufficient. Simple example:
-> > 
-> > Have your physical memory end within a memory section. Easy via QEMU, just
-> > do a "-m 4000M". The remaining part of the last section has fake/wrong
-> > node/zone info.
-> 
-> Does this really matter though. If those pages are reserved then nobody
-> will touch them regardless of their node/zone ids.
->
-> > Hotplug memory. The node/zone gets resized such that PFN walkers might
-> > stumble over it.
-> > 
-> > The basic idea is to make sure that any initialized/"online" pfn belongs to
-> > exactly one node/zone and that the node/zone spans that PFN.
-> 
-> Yeah, this sounds like a good idea but what is the poper node for hole
-> between two ranges associated with a different nodes/zones? This will
-> always be a random number. We should have a clear way to tell "do not
-> touch those pages" and PageReserved sounds like a good way to tell that.
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:51: WARNING: please, no space before tabs
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:52: WARNING: please, no space before tabs
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:53: WARNING: please, no space before tabs
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:69: WARNING: please, no space before tabs
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:180: CHECK: Alignment should match open parenthesis
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:238: CHECK: Alignment should match open parenthesis
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:281: WARNING: DT compatible string "hisilicon,hi6421-spmi" appears un-documented -- check ./Documentation/devicetree/bindings/
+total: 0 errors, 5 warnings, 2 checks, 297 lines checked
+
+Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+
+---
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+index 9c5e113e1a81..626140cb96f2 100644
+--- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
++++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+@@ -48,9 +48,9 @@ enum hi6421_spmi_pmic_irq_list {
+ /*
+  * The IRQs are mapped as:
+  *
+- * 	======================  =============   ============	=====
+- *	IRQ			MASK REGISTER 	IRQ REGISTER	BIT
+- * 	======================  =============   ============	=====
++ *	======================  =============   ============	=====
++ *	IRQ			MASK REGISTER	IRQ REGISTER	BIT
++ *	======================  =============   ============	=====
+  *	OTMP			0x0202		0x212		bit 0
+  *	VBUS_CONNECT		0x0202		0x212		bit 1
+  *	VBUS_DISCONNECT		0x0202		0x212		bit 2
+@@ -66,7 +66,7 @@ enum hi6421_spmi_pmic_irq_list {
+  *	SIM0_HPD_F		0x0203		0x213		bit 3
+  *	SIM1_HPD_R		0x0203		0x213		bit 4
+  *	SIM1_HPD_F		0x0203		0x213		bit 5
+- * 	======================  =============   ============	=====
++ *	======================  =============   ============	=====
+  */
+ #define SOC_PMIC_IRQ_MASK_0_ADDR	0x0202
+ #define SOC_PMIC_IRQ0_ADDR		0x0212
+@@ -177,7 +177,7 @@ static void hi6421_spmi_pmic_irq_init(struct hi6421_spmi_pmic *ddata)
  
-Nobody should touch reserved pages, but I don't think we can ensure that.
-
-We can correctly set the zone links for the reserved pages for holes in the
-middle of a zone based on the architecture constraints and with only the
-holes in the beginning/end of the memory will be not spanned by any
-node/zone which in practice does not seem to be a problem as the VM_BUG_ON
-in set_pfnblock_flags_mask() never triggered on pfn 0.
-
-I believe that any improvement in memory map consistency is a step forward.
-
-> > > problems with that. The VM_BUG_ON blowing up is really bad but as said
-> > > above we can simply make it less offensive in presence of reserved pages
-> > > as those shouldn't reach that path AFAICS normally.
-> > 
-> > Andrea tried tried working around if via PG_reserved pages and it resulted
-> > in quite some ugly code. Andrea also noted that we cannot rely on any random
-> > page walker to do the right think when it comes to messed up node/zone info.
-> 
-> I am sorry, I haven't followed previous discussions. Has the removal of
-> the VM_BUG_ON been considered as an immediate workaround?
-
-It was never discussed, but I'm not sure it's a good idea.
-
-Judging by the commit message that introduced the VM_BUG_ON (commit
-86051ca5eaf5 ("mm: fix usemap initialization")) there was yet another
-inconsistency in the memory map that required a special care.
-
-
+ 	for (i = 0; i < HISI_IRQ_ARRAY; i++)
+ 		regmap_write(ddata->regmap, SOC_PMIC_IRQ_MASK_0_ADDR + i,
+-					HISI_MASK);
++			     HISI_MASK);
+ 
+ 	for (i = 0; i < HISI_IRQ_ARRAY; i++) {
+ 		regmap_read(ddata->regmap, SOC_PMIC_IRQ0_ADDR + i, &pending);
+@@ -235,7 +235,7 @@ static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	ddata->domain = irq_domain_add_simple(np, HISI_IRQ_NUM, 0,
+-					     &hi6421_spmi_domain_ops, ddata);
++					      &hi6421_spmi_domain_ops, ddata);
+ 	if (!ddata->domain) {
+ 		dev_err(dev, "Failed to create IRQ domain\n");
+ 		return -ENODEV;
 -- 
-Sincerely yours,
-Mike.
+2.25.1
+
