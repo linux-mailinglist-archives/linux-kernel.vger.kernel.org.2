@@ -2,303 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED6A31B11F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC3031B123
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhBNQDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 11:03:39 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:8222 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229821AbhBNQC3 (ORCPT
+        id S229792AbhBNQIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 11:08:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhBNQH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 11:02:29 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11EG06PX025336;
-        Sun, 14 Feb 2021 08:01:34 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=K5pAJPG0vHisE+TG3mImKVMHniXfDzQH2Ef4aoca4vw=;
- b=PB7QZzVWSIOxsvs8zsusXBZNM2mvnHdEWUM6ukH7dsRCN3uR5H4LkxDlPu0HWWUEiwe7
- /92kJIlxTAIOBRpVSF+OhIE5OEjk5vEOG/bIyyUv+lqVArwMW9195adleWzzvSg3WlYc
- v0iNQWReovPnnZRfJi6ewCjlHSVCqJBGl94nYHt8eUr+jPaAo50WvLMpIwiwNUl0EOIH
- iSYBc640PxBYT6W11dmrbBCiprYnSM87QgmmOZeMrjUj3uN8xDszqK9RKInE28nSN2Gu
- /Rf0lhjfqC8mK928W4EAuS1RTuJoDaZJiXib6VP+w0+DEs6gxugp148NuES9sq6JtdKM oA== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36pf5tswnw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 14 Feb 2021 08:01:34 -0800
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 14 Feb
- 2021 08:01:32 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 14 Feb
- 2021 08:01:31 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 14 Feb 2021 08:01:32 -0800
-Received: from octopus.marvell.com (octopus.marvell.com [10.5.24.3])
-        by maili.marvell.com (Postfix) with ESMTP id 1BDA73F704A;
-        Sun, 14 Feb 2021 08:01:27 -0800 (PST)
-From:   <kostap@marvell.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lkundrak@v3.sk>, <linux@armlinux.org.uk>,
-        <sebastian.hesselbarth@gmail.com>, <gregory.clement@bootlin.com>,
-        <andrew@lunn.ch>, <robh+dt@kernel.org>, <vkoul@kernel.org>,
-        <kishon@ti.com>, <miquel.raynal@bootlin.com>, <mw@semihalf.com>,
-        <jaz@semihalf.com>, <nadavh@marvell.com>, <stefanc@marvell.com>,
-        <bpeled@marvell.com>, "Konstantin Porotchkin" <kostap@marvell.com>
-Subject: [PATCH v2 4/4] arch/arm64: dts: enable CP110 UTMI driver
-Date:   Sun, 14 Feb 2021 18:01:08 +0200
-Message-ID: <20210214160108.3879-5-kostap@marvell.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210214160108.3879-1-kostap@marvell.com>
-References: <20210214160108.3879-1-kostap@marvell.com>
+        Sun, 14 Feb 2021 11:07:58 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAC9C061574;
+        Sun, 14 Feb 2021 08:07:18 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id d20so3565608ilo.4;
+        Sun, 14 Feb 2021 08:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j43SN5cTGwbFepjivf2mTzr9OeHytVIZCxVbFj4YgF4=;
+        b=EvKocTGw8iZrVs6lBIG8cI94ofaZ3PSlqkAmvqNNZY9uxz44MEhmqsoIkZOhRDZZBl
+         M3TuhsewzczthHGdLcCsNVWczoV2MIVtjRlw1ruZ27YbHg+z0GTmhOwkHo4W98qKtZqi
+         u0PYa5JwCzv2hjfMCGYFIHEeGpDt5WxP9b647WXMMVzgxSXcaED8Ha3GnyINtO3rBSDG
+         gdCvCBFFx/zXaKJF48pWRCdxr3vSmqzjFc7kAHh1WpVjzYojAvcDRcHpJv9ALrjlQc6G
+         3H1ruxifURyrBjSjEvUfIUbSG2WQOkTSBYBGtngGi+JyPXY6EzxCYr+oWwJ4MOHgJY66
+         lHyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j43SN5cTGwbFepjivf2mTzr9OeHytVIZCxVbFj4YgF4=;
+        b=T9Ofm5Ynef4o5T2KCBwPZynaqQ8oMoIwU6ePpA+Gh2PxGRT2k/W4iOCFntq8nKhCa/
+         37+rkFM5S1t0uC4k3JTt4KhYxOd1Ht96b8usB2yUEIF+dCDLknIIn+8K3USZUYatCwVS
+         k6W/odU5bIV1+GqMfqlN9Jkjsu0l43Od/FjBaAu44GJYpALMgyfsmOR7yWN7KKTufjN/
+         0ONEglwxnhhVc5i/Fexf78clS47ZcaoOCnsAaR5jWcyDY7bZXBfdinezVRK4ZxDXW6XE
+         6K6PqVce85GK1K11fCtpsnd5321zoOmJpZN0fRfPN0yRFUUstL7dfCM8SNy/EhI33YHG
+         oYuw==
+X-Gm-Message-State: AOAM531W5odE5H2rRs8WqOaHWWfdLm9IVYSVaFqBm8u2ZjJSov2uyc3x
+        XUqUY+0E+NYYLco1sc99ebeIEEkz6Ngn01WZ9tY=
+X-Google-Smtp-Source: ABdhPJzXvMRYDgXcy4aBJ71sb0VyX4MsIx6GlmucJLqgO9CzsU0SgPNZy7RQlEjohm+FbZ0zK0mvipsM1u5ue2r+4I8=
+X-Received: by 2002:a92:ab10:: with SMTP id v16mr9964048ilh.100.1613318837938;
+ Sun, 14 Feb 2021 08:07:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-14_04:2021-02-12,2021-02-14 signatures=0
+References: <20210214143313.67202-1-alexandru.ardelean@analog.com> <20210214150516.785503e9@archlinux>
+In-Reply-To: <20210214150516.785503e9@archlinux>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Sun, 14 Feb 2021 18:07:06 +0200
+Message-ID: <CA+U=Dso4k3ct-DvbKQRA9LnQ1yZ6C7OccO+m+mJaoLW4jX6X=Q@mail.gmail.com>
+Subject: Re: [PATCH 0/5] iio: kfifo: define a devm_iio_kfifo_buffer_setup helper
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Porotchkin <kostap@marvell.com>
+On Sun, Feb 14, 2021 at 5:06 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sun, 14 Feb 2021 16:33:08 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > This is a re-spin of an older set [1]:
+> >  https://patchwork.kernel.org/project/linux-iio/patch/20200401125936.6398-1-alexandru.ardelean@analog.com/
+> >
+> > Patch 'iio: adc: ti_am335x_adc: remove omitted iio_kfifo_free()' is
+> > already be present in a fixes-togreg path. It did not make it yet
+> > downstream in the iio-togreg path.
+> >
+> > Following [1], where there was a suggestion to name this
+> > 'devm_iio_device_attach_new_kfifo_buffer()', I took another look and
+> > devm_iio_kfifo_buffer_setup() made more sense, since there is already a
+> > '{devm_}iio_triggered_buffer_setup()' helper.
+> >
+> > This reduces the usage of the iio_device_attach_buffer() helper to a
+> > more manage-able state.
+> > This is related to comment:
+> >   https://lore.kernel.org/linux-iio/CA+U=Dsp5hxd9=rNbigUMFALBpPVBqDZDRq_Pe69ggKak7p46=w@mail.gmail.com/T/#u
+> This definitely reduces where we need to handle errors from iio_device_attach_buffer() which
+> is good.  I guess we need a rebase of one or the other series though to make
+> this all fit together.
+>
+> >
+> > This should have gone before the multibuffer patch-set, but I was still
+> > waiting on patch 'iio: adc: ti_am335x_adc: remove omitted iio_kfifo_free()'
+> > to make it downstream in iio-togreg.
+>
+> Oops. I've been a touch slow sending things onwards recently.
+>
+> >
+> > Regarding patch 'iio: kfifo: un-export devm_iio_kfifo_allocate() function'
+> > I would have also wanted to un-export iio_kfifo_allocate() &
+> > iio_kfifo_free(), but that still needs a bit of work to cleanup the IIO
+> > dummy buffer.
+>
+> Yup. The lack of having a parent is a bit of pain.  We just need to fake one
+> I guess however silly that seems.
 
-Enable support for CP110 UTMI driver in Armada SoC family platform
-device trees.
+I tried faking it, but it needs a rework of the
+drivers/iio/industrialio-sw-device.c logic.
+The whole IIO dummy driver is an IIO SW device, so maybe the sanest
+thing, is to create platform devices or just parent devices in there,
+and pass the parent to the IIO device.
+I tried making the IIO dummy a standalone platform driver, but then
+you end up having to probe() paths, 1 via platform_driver and one via
+iio-sw-device.
 
-Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
----
- arch/arm64/boot/dts/marvell/armada-7040-db.dts     | 14 +++++++++----
- arch/arm64/boot/dts/marvell/armada-8040-db.dts     | 21 ++++++++++++++++++--
- arch/arm64/boot/dts/marvell/armada-8040-mcbin.dtsi | 19 ++++++++++++++++--
- arch/arm64/boot/dts/marvell/cn9130-db.dts          | 12 +++++++++--
- arch/arm64/boot/dts/marvell/cn9131-db.dts          |  9 +++++++--
- arch/arm64/boot/dts/marvell/cn9132-db.dts          | 11 ++++++++--
- 6 files changed, 72 insertions(+), 14 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/marvell/armada-7040-db.dts b/arch/arm64/boot/dts/marvell/armada-7040-db.dts
-index a7eb4e7697a2..51f3e2907597 100644
---- a/arch/arm64/boot/dts/marvell/armada-7040-db.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-7040-db.dts
-@@ -218,6 +218,10 @@
- 	};
- };
- 
-+&cp0_utmi {
-+	status = "okay";
-+};
-+
- &cp0_comphy1 {
- 	cp0_usbh0_con: connector {
- 		compatible = "usb-a-connector";
-@@ -226,8 +230,9 @@
- };
- 
- &cp0_usb3_0 {
--	phys = <&cp0_comphy1 0>;
--	phy-names = "cp0-usb3h0-comphy";
-+	phys = <&cp0_comphy1 0>, <&cp0_utmi0>;
-+	phy-names = "cp0-usb3h0-comphy", "utmi";
-+	dr_mode = "host";
- 	status = "okay";
- };
- 
-@@ -239,8 +244,9 @@
- };
- 
- &cp0_usb3_1 {
--	phys = <&cp0_comphy4 1>;
--	phy-names = "cp0-usb3h1-comphy";
-+	phys = <&cp0_comphy4 1>, <&cp0_utmi1>;
-+	phy-names = "cp0-usb3h1-comphy", "utmi";
-+	dr_mode = "host";
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/marvell/armada-8040-db.dts b/arch/arm64/boot/dts/marvell/armada-8040-db.dts
-index 09fb5256f1db..e39e1efc95b6 100644
---- a/arch/arm64/boot/dts/marvell/armada-8040-db.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-8040-db.dts
-@@ -154,8 +154,15 @@
- };
- 
- /* CON9 on CP0 expansion */
-+&cp0_utmi {
-+	status = "okay";
-+};
-+
- &cp0_usb3_0 {
- 	usb-phy = <&cp0_usb3_0_phy>;
-+	phys = <&cp0_utmi0>;
-+	phy-names = "utmi";
-+	dr_mode = "host";
- 	status = "okay";
- };
- 
-@@ -168,8 +175,9 @@
- 
- /* CON10 on CP0 expansion */
- &cp0_usb3_1 {
--	phys = <&cp0_comphy4 1>;
--	phy-names = "cp0-usb3h1-comphy";
-+	phys = <&cp0_comphy4 1>, <&cp0_utmi1>;
-+	phy-names = "usb", "utmi";
-+	dr_mode = "host";
- 	status = "okay";
- };
- 
-@@ -306,14 +314,23 @@
- 	};
- };
- 
-+&cp1_utmi {
-+	status = "okay";
-+};
-+
- /* CON9 on CP1 expansion */
- &cp1_usb3_0 {
- 	usb-phy = <&cp1_usb3_0_phy>;
-+	phys = <&cp1_utmi0>;
-+	phy-names = "utmi";
-+	dr_mode = "host";
- 	status = "okay";
- };
- 
- /* CON10 on CP1 expansion */
- &cp1_usb3_1 {
-+	phys = <&cp1_utmi1>;
-+	phy-names = "utmi";
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/marvell/armada-8040-mcbin.dtsi b/arch/arm64/boot/dts/marvell/armada-8040-mcbin.dtsi
-index cbcb210cb6d8..adbfecc678b5 100644
---- a/arch/arm64/boot/dts/marvell/armada-8040-mcbin.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-8040-mcbin.dtsi
-@@ -259,13 +259,23 @@
- 	vqmmc-supply = <&v_3_3>;
- };
- 
-+&cp0_utmi {
-+	status = "okay";
-+};
-+
- &cp0_usb3_0 {
- 	/* J38? - USB2.0 only */
-+	phys = <&cp0_utmi0>;
-+	phy-names = "utmi";
-+	dr_mode = "host";
- 	status = "okay";
- };
- 
- &cp0_usb3_1 {
- 	/* J38? - USB2.0 only */
-+	phys = <&cp0_utmi1>;
-+	phy-names = "utmi";
-+	dr_mode = "host";
- 	status = "okay";
- };
- 
-@@ -364,9 +374,14 @@
- 	};
- };
- 
-+&cp1_utmi {
-+	status = "okay";
-+};
-+
- &cp1_usb3_0 {
- 	/* CPS Lane 2 - CON7 */
--	phys = <&cp1_comphy2 0>;
--	phy-names = "cp1-usb3h0-comphy";
-+	phys = <&cp1_comphy2 0>, <&cp1_utmi0>;
-+	phy-names = "cp1-usb3h0-comphy", "utmi";
-+	dr_mode = "host";
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/marvell/cn9130-db.dts b/arch/arm64/boot/dts/marvell/cn9130-db.dts
-index ce49a70d88a0..62fa6ecc0acd 100644
---- a/arch/arm64/boot/dts/marvell/cn9130-db.dts
-+++ b/arch/arm64/boot/dts/marvell/cn9130-db.dts
-@@ -390,14 +390,22 @@
- 	};
- };
- 
-+&cp0_utmi {
-+	status = "okay";
-+};
-+
- &cp0_usb3_0 {
- 	status = "okay";
- 	usb-phy = <&cp0_usb3_0_phy0>;
--	phy-names = "usb";
-+	phys = <&cp0_utmi0>;
-+	phy-names = "utmi";
-+	dr_mode = "host";
- };
- 
- &cp0_usb3_1 {
- 	status = "okay";
- 	usb-phy = <&cp0_usb3_0_phy1>;
--	phy-names = "usb";
-+	phys =  <&cp0_utmi1>;
-+	phy-names = "utmi";
-+	dr_mode = "host";
- };
-diff --git a/arch/arm64/boot/dts/marvell/cn9131-db.dts b/arch/arm64/boot/dts/marvell/cn9131-db.dts
-index 3c975f98b2a3..ba2d4e1da159 100644
---- a/arch/arm64/boot/dts/marvell/cn9131-db.dts
-+++ b/arch/arm64/boot/dts/marvell/cn9131-db.dts
-@@ -193,10 +193,15 @@
- };
- 
- /* CON58 */
-+&cp1_utmi {
-+	status = "okay";
-+};
-+
- &cp1_usb3_1 {
- 	status = "okay";
- 	usb-phy = <&cp1_usb3_0_phy0>;
- 	/* Generic PHY, providing serdes lanes */
--	phys = <&cp1_comphy3 1>;
--	phy-names = "usb";
-+	phys = <&cp1_comphy3 1>, <&cp1_utmi1>;
-+	phy-names = "usb", "utmi";
-+	dr_mode = "host";
- };
-diff --git a/arch/arm64/boot/dts/marvell/cn9132-db.dts b/arch/arm64/boot/dts/marvell/cn9132-db.dts
-index 4ef0df3097ca..81fba024b22d 100644
---- a/arch/arm64/boot/dts/marvell/cn9132-db.dts
-+++ b/arch/arm64/boot/dts/marvell/cn9132-db.dts
-@@ -205,17 +205,24 @@
- 	};
- };
- 
-+&cp2_utmi {
-+	status = "okay";
-+};
-+
- &cp2_usb3_0 {
- 	status = "okay";
- 	usb-phy = <&cp2_usb3_0_phy0>;
-+	phys = <&cp2_utmi0>;
- 	phy-names = "usb";
-+	dr_mode = "host";
- };
- 
- /* SLM-1521-V2, CON11 */
- &cp2_usb3_1 {
- 	status = "okay";
- 	usb-phy = <&cp2_usb3_0_phy1>;
--	phy-names = "usb";
- 	/* Generic PHY, providing serdes lanes */
--	phys = <&cp2_comphy3 1>;
-+	phys = <&cp2_comphy3 1>, <&cp2_utmi1>;
-+	phy-names = "usb", "utmi";
-+	dr_mode = "host";
- };
--- 
-2.17.1
-
+>
+> Mind you, I'd also like to see this go over to the triggered_buffer stuff
+> if possible.
+>
+>
+> > Related to patchset:
+> >   https://lore.kernel.org/linux-iio/20201203095005.72252-1-alexandru.ardelean@analog.com/
+> >
+> > The IIO dummy driver seems to be one of those blockers in cleaning up
+> > some IIO API.
+> >
+>
+> Jonathan
+>
+> > Alexandru Ardelean (5):
+> >   iio: adc: ti_am335x_adc: remove omitted iio_kfifo_free()
+> >   iio: kfifo: add devm_iio_kfifo_buffer_setup() helper
+> >   iio: make use of devm_iio_kfifo_buffer_setup() helper
+> >   iio: accel: sca3000: use devm_iio_kfifo_buffer_setup() helper
+> >   iio: kfifo: un-export devm_iio_kfifo_allocate() function
+> >
+> >  .../driver-api/driver-model/devres.rst        |  2 +-
+> >  drivers/iio/accel/sca3000.c                   | 19 ++-------
+> >  drivers/iio/accel/ssp_accel_sensor.c          | 14 +++----
+> >  drivers/iio/adc/ina2xx-adc.c                  | 14 +++----
+> >  drivers/iio/adc/ti_am335x_adc.c               | 24 +++--------
+> >  drivers/iio/buffer/kfifo_buf.c                | 42 ++++++++++++++++++-
+> >  .../cros_ec_sensors/cros_ec_sensors_core.c    | 13 +++---
+> >  drivers/iio/gyro/ssp_gyro_sensor.c            | 14 +++----
+> >  drivers/iio/health/max30100.c                 | 16 ++++---
+> >  drivers/iio/health/max30102.c                 | 16 ++++---
+> >  .../iio/imu/inv_icm42600/inv_icm42600_accel.c | 14 +++----
+> >  .../iio/imu/inv_icm42600/inv_icm42600_gyro.c  | 13 +++---
+> >  .../iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c    | 15 +++----
+> >  drivers/iio/light/acpi-als.c                  | 12 +++---
+> >  drivers/iio/light/apds9960.c                  | 16 ++++---
+> >  .../staging/iio/impedance-analyzer/ad5933.c   | 23 ++--------
+> >  include/linux/iio/kfifo_buf.h                 |  7 +++-
+> >  17 files changed, 125 insertions(+), 149 deletions(-)
+> >
+>
