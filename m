@@ -2,88 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC4131B056
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 13:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C734731B04C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 13:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbhBNM2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 07:28:35 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:43687 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229720AbhBNM2d (ORCPT
+        id S229768AbhBNMPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 07:15:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhBNMPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 07:28:33 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 233145C00BD;
-        Sun, 14 Feb 2021 07:27:47 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sun, 14 Feb 2021 07:27:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
-        :to:cc:subject:date:message-id; s=fm2; bh=1VY33AhqE1N3y4vDykDeA1
-        +0wGn/+EB7Iplukdy4obA=; b=SZAiM3Rhb0Fo3fgLHpldcppOsou5eOtIyzZIHT
-        vIpoYjbKWe5ta8vnrYmL+YVIJ1XHHbGm2helky84Fp579SmZdjPTNoIgfarMU5TL
-        m/hTb60Ec8S/9lQ3l5bu9EXnaIAGb8+qR4kAbdOIsak2MoRtSxFzbY4/CGba1ePH
-        bppGqBJQBbd090zep2LMKgD0mMKTcIeu4x+zcjmt1iRvqNkKnH09nLCP1rWsZCgi
-        LXR5ifIgY1PCJ9SFTYN83R6S786RHHcxvoPzyNT9RxyqPeBpJLoDC5J0ix2Vfc4u
-        EKcMBnpXd30RvUlWnQo8Y620ji8inwfxmUaixGH25in71hvg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:date:from:message-id:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=1VY33AhqE1N3y4vDykDeA1+0wGn/+EB7Iplukdy4obA=; b=ClQ8i0ge
-        HG0GGGRopeLXJjpQWic7HXOgt3J1vWYxEYn98D24w2w/dYej0RLRBHvbHFMqlBLz
-        erQa5Q7qn+1lKpOlTkKBU87VJ1OKCsGP3HNlUGFFkA8fiWmyqXqw18NzV1yFzohq
-        mUyCrg2xK92VoI0IHDmkX2QuVHoS89AR7qsbYoWJoENCIWHDFTNI9FtaGXZtIMj5
-        lNyky/gwCQln7rQoECj0GQG/bn9UnzO+G/uFvJVQn1/omdzV1zsyhgTl4avxiJj0
-        LYONfBkMiVBWhqXnkTsGunTOR9kkwlMh+5HFYlv4zxCiv8lHWwZl5NkpjpA1Bw9g
-        2evK0fEu62ZQZQ==
-X-ME-Sender: <xms:QhcpYLZ-5sfYdC9EcjdrsAbw2ayTOy2PbJqkCeBVzk5mw5lXdg07jg>
-    <xme:QhcpYKaTuR67vySwASo-7r1qjB8o4qdG3fkpFbmm2VELAqtQc03bWTz0oIbBHYLYX
-    nDDxW8yoGgeVOCUqQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrieehgdegtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofestddtredtredttdenucfhrhhomhephghilhhlihgrmhcuffhu
-    rhgrnhguuceofihilhhlodhgihhtsegurhhnugdrmhgvqeenucggtffrrghtthgvrhhnpe
-    ejteduieevjeefudeuhefgvdevgeehgeehgfdtueeuteevleeuhedtueekvdegteenucfk
-    phepvddujedrvdefkedrvddtkedrjeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepfihilhhlodhgihhtsegurhhnugdrmhgv
-X-ME-Proxy: <xmx:QhcpYN9ZE9gRrxbkEfcWvfbBJMpVGKA460XwVD7suI1B9ID8acSdlQ>
-    <xmx:QhcpYBoKc-NSchqjwJJQybah2c_OAHrq32z8OgwBA4ZqrR2fvNy4zg>
-    <xmx:QhcpYGptSkub9ovFKUuEc3zJ7fImtfW4Pi6xzvfpFC1C0YkfyeMWZQ>
-    <xmx:QxcpYNQz2IWlEhLl18O-3QlOOcQi12Ge63DVkslNMuY30zXWZGcAgA>
-Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1610A108005C;
-        Sun, 14 Feb 2021 07:27:45 -0500 (EST)
-From:   William Durand <will+git@drnd.me>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8192e: fix typo in a comment
-Date:   Sat, 13 Feb 2021 09:01:12 +0000
-Message-Id: <20210213090112.24616-1-will+git@drnd.me>
-X-Mailer: git-send-email 2.17.1
+        Sun, 14 Feb 2021 07:15:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFC8C061574;
+        Sun, 14 Feb 2021 04:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cO4TJQiLzSJvyzQhBBsyceVZexbL8Li+rkU5IQoUjek=; b=quJ48Y+XnK1GYayG0Hgxm3hCkV
+        iKMWge/aVkCbxqxWT35slYvdE8xSdW8MMH72RImumL9ouvnVD5ZsvM7upKoRYjcLIbjP0O7oEdMTf
+        spLwPXTyqtKgWv48Juzydxkl+rWjnrmVFH3zE5fVnv0cke1PAXZCkqOFyOpi3GnZGiOOpTm+tp44q
+        t2FjExjwNt23HOFRs1q/cQFzQZSFuqxYx8QPfleaZdVYuUXI0NjJFiL+SgYp56fjjXmNQFEqu78wO
+        4ZxFd+zvwuktqH1NOy3dfDMMYo5gBj7XOzGPNyIsfXc8H2hO9bkHaUVHWjTLYmEO8a0oZJcuKnRfo
+        KZHcS01w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lBGIn-00EAjO-GG; Sun, 14 Feb 2021 12:15:01 +0000
+Date:   Sun, 14 Feb 2021 12:15:01 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     joe@perches.com, linux-doc@vger.kernel.org,
+        lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v3 2/3] docs: add documentation for checkpatch
+Message-ID: <20210214121501.GC2858050@casper.infradead.org>
+References: <20210213131513.51386-1-dwaipayanray1@gmail.com>
+ <20210213131513.51386-3-dwaipayanray1@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210213131513.51386-3-dwaipayanray1@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a checkpatch warning by deleting a repeated word.
+On Sat, Feb 13, 2021 at 06:45:12PM +0530, Dwaipayan Ray wrote:
+> +Checkpatch (scripts/checkpatch.pl) is a perl script which checks for trivial style
 
-Signed-off-by: William Durand <will+git@drnd.me>
----
- drivers/staging/rtl8192e/rtllib_softmac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It's quite amusing that this patch contains lines > 80 columns.
 
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 2d3be91b113d..ab4b9817888c 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -2443,7 +2443,7 @@ inline int rtllib_rx_frame_softmac(struct rtllib_device *ieee,
-  * N = MAX_PACKET_SIZE / MIN_FRAG_TRESHOLD
-  * In this way you need just one and the 802.11 stack
-  * will take care of buffering fragments and pass them to
-- * to the driver later, when it wakes the queue.
-+ * the driver later, when it wakes the queue.
-  */
- void rtllib_softmac_xmit(struct rtllib_txb *txb, struct rtllib_device *ieee)
- {
---
-2.17.1
+Also patches 2 & 3 can be combined into a single patch.
 
