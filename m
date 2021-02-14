@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E04331AEBE
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 03:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F8431AEC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 03:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhBNCZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 21:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
+        id S229744AbhBNCc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 13 Feb 2021 21:32:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbhBNCZW (ORCPT
+        with ESMTP id S229694AbhBNCcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 21:25:22 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB73C061574;
-        Sat, 13 Feb 2021 18:24:42 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id y18so4217909edw.13;
-        Sat, 13 Feb 2021 18:24:42 -0800 (PST)
+        Sat, 13 Feb 2021 21:32:55 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527F6C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 18:32:15 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id b14so3546849qkk.0
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 18:32:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f45bxa+6F5a5L8NPuEqVx9SSK6PBkhxMAl0f7anaJW0=;
-        b=itchvTjJBfnpN9YpOw6n6U0TOPafmLFEws6/f8mZ5AL//l+cY2IebMCuYz6KfD9RYq
-         OimY+titWxZDmvRs1nILKZihBxMxIQdDT27Yei7/b7Zy9XAD3+cvEan9QURDY1at1rZp
-         HzOUTXtbFtjsmNAuzJ5Lj7R6UjEkKLDwkARTkpS52Hb7x0wynvM1P905SHVqM16Rb+pY
-         sBu4oM/pY74KnCyXlG9ng+5F1yzdIv/tnLGmtgO5CUwZfawEBxFMB1d+pbDM4xzQdXrc
-         sCIF1duW37LeJYals8W107Mxz8clIzBoZFwH/FD/zelfxxhJICX2TB9FsMLSpYf1gag+
-         Yr5w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5nauxxSDPnHhem4yrY0quLuUuFJ464qNAf4sHAAntik=;
+        b=HMoWZ9abbHnuLDOT9j0RNWwTCGEaBBlgemSa3Pa11PU9rHpK9Ai9sXT+9sOQoZ3PDO
+         LNLNXENeDRYOks4rd1WHPYxzBjjcaKmcm+pyf4yScoFHlJqe64hRpmEx1Om17XiO84Nu
+         D5p/jnHEBgCuMsx6Q0sjwO2fVwtKeFIUH7AiK+SA3B18lB9fiQNPUx0n2oCnzECi6soo
+         20sMbAvOyHlvKWZUSVGJG1IYbxqOkVYOyuGPH7zAbA4m+4oyMpvPvIimwtCQj2h/wJFl
+         X6Yygl0gHkmfYYgdBEPbPB6wNLdjSz+Xw+0sFWPojjVWbCrGP81ZIZJ4HAkSZB4l+9li
+         iGWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f45bxa+6F5a5L8NPuEqVx9SSK6PBkhxMAl0f7anaJW0=;
-        b=MWQoJq14AAdDk1HHB54jazVziIqn0sTKOplEgwLkMN5Nz591qrTng6LA1r8/G/yDgd
-         xpqiDpDvbwVZXsK9kqnUMnB83VNR5/kbUuffj0NBQDeBRolxr7DcdA3KFU6HzEwdhTBe
-         KtnGcUmkbZptYOAep3/Pgvb+atUA/xiGM+u/IYsDiAzp35RAlRRC1srjZFG2AjQGvKyn
-         tTZJ7DFXl051Ja7zN/AdIuRPm9o8h6kHzsLKzNzNdKgFZPSurnnHShIelch9NxqAnnZ4
-         30xlNhqyLHuiGErhm/9ZwkjhgJggUbaWCFs8o6chEKAD0GULlZRi7z43NG34hTTR+vEh
-         sgNA==
-X-Gm-Message-State: AOAM533BAMs5Z6sEPNP2iofOdw8RtPKWRHDeciYrHTLtEtkgauRSUKHg
-        ZVhJjRwvK2vMdF+QKeg/3GY=
-X-Google-Smtp-Source: ABdhPJx7BLs+08eVy+iq4A2K9puZvK/xotvE8V0/Uz1Uj+K3fgNNdJtqZcBqqW61AP+CU316gMH1gA==
-X-Received: by 2002:a50:bb05:: with SMTP id y5mr2965358ede.307.1613269480993;
-        Sat, 13 Feb 2021 18:24:40 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id k13sm1126728edq.81.2021.02.13.18.24.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5nauxxSDPnHhem4yrY0quLuUuFJ464qNAf4sHAAntik=;
+        b=jAnLBoCXVVbV4dx5nUaZbRvw/e0PQlZrQJ//6wZvhr2Gpba/BPKC1l8nSnwhFZsIR6
+         4JypZ37wXSnUSAIr47vV+c+jeB5bQj7twY2SHC/T6lbSQICdSS2SSmr+3YpyYX629mhD
+         aQwte37vrhy1rp/4AlAcgB5nLdDLKsO5mtiJZPOQmGklntu7IlYafYH9ACbp6UsVFvXx
+         1cslIeLx02YbtIemDJAXwkxfp+dIXMtT4nu0mDc5gw6Vq4jrJG5bTpgJYPzWDN/wSaWZ
+         R55BV/QK8NlGEct6n6xMTkmTGFro3osa/zewov3o7S/srdu1dIw+UZEsoxXI2MpqS+xw
+         VUEw==
+X-Gm-Message-State: AOAM533F+IZLN0c6xtG7YU7zrPZvn81q8NzLCLFjkVQkDD39YmofxLpN
+        DJzN8g/rcRBeCNDkHGjvOdU=
+X-Google-Smtp-Source: ABdhPJzNPSa4QgnRqT7WPMFO0sltX5eMmi84ovRgaxh/CjvWR+U8WRqSoZoYmWAzMUU5qtzVsb4fsA==
+X-Received: by 2002:a37:e4d:: with SMTP id 74mr9549037qko.109.1613269934578;
+        Sat, 13 Feb 2021 18:32:14 -0800 (PST)
+Received: from localhost.localdomain ([186.225.140.135])
+        by smtp.gmail.com with ESMTPSA id k4sm6371491qth.40.2021.02.13.18.32.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 18:24:40 -0800 (PST)
-Date:   Sun, 14 Feb 2021 04:24:39 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next 2/2] net: phy: at803x: use proper locking in
- at803x_aneg_done()
-Message-ID: <20210214022439.cyrfud4ahj4fzk7e@skbuf>
-References: <20210214010405.32019-1-michael@walle.cc>
- <20210214010405.32019-3-michael@walle.cc>
- <20210214015733.tfodqglq4djj2h44@skbuf>
- <4ABD9AA0-94A3-4417-B6B2-996D193FB670@walle.cc>
+        Sat, 13 Feb 2021 18:32:14 -0800 (PST)
+From:   Thais Camacho <thaiscamachoo@gmail.com>
+Cc:     thaiscamachoo@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: android: ashmem: Declared file operation with const keyword
+Date:   Sat, 13 Feb 2021 23:31:36 -0300
+Message-Id: <20210214023136.8916-1-thaiscamachoo@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ABD9AA0-94A3-4417-B6B2-996D193FB670@walle.cc>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 03:18:49AM +0100, Michael Walle wrote:
-> Am 14. Februar 2021 02:57:33 MEZ schrieb Vladimir Oltean <olteanv@gmail.com>:
-> >Hi Michael,
-> >
-> >On Sun, Feb 14, 2021 at 02:04:05AM +0100, Michael Walle wrote:
-> >> at803x_aneg_done() checks if auto-negotiation is completed on the
-> >SGMII
-> >> side. This doesn't take the mdio bus lock and the page switching is
-> >> open-coded. Now that we have proper page support, just use
-> >> phy_read_paged(). Also use phydev->interface to check if we have an
-> >> SGMII link instead of reading the mode register and be a bit more
-> >> precise on the warning message.
-> >>
-> >> Signed-off-by: Michael Walle <michael@walle.cc>
-> >> ---
-> >
-> >How did you test this patch?
->
-> I'm afraid it's just compile time tested.
+Warning found by checkpatch.pl script
 
-I'm asking because at803x_aneg_done has been dead code for more than 2
-years now. Unreachable. And while it was reachable it was buggy and an
-abuse of the phylib API. So you might want to just delete this function
-instead. Context:
-https://lkml.org/lkml/2020/5/30/375
+Signed-off-by: Thais Camacho <thaiscamachoo@gmail.com>
+---
+ drivers/staging/android/ashmem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
+index 4789d36ddfd3..2cb665e0228c 100644
+--- a/drivers/staging/android/ashmem.c
++++ b/drivers/staging/android/ashmem.c
+@@ -376,7 +376,7 @@ ashmem_vmfile_get_unmapped_area(struct file *file, unsigned long addr,
+ 
+ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+-	static struct file_operations vmfile_fops;
++	static const struct file_operations vmfile_fops;
+ 	struct ashmem_area *asma = file->private_data;
+ 	int ret = 0;
+ 
+-- 
+2.20.1
+
