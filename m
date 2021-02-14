@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B27131B297
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 21:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CBB31B299
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 21:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhBNU7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 15:59:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50654 "EHLO mail.kernel.org"
+        id S230010AbhBNU7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 15:59:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229793AbhBNU70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 15:59:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 98B7864E29;
+        id S229935AbhBNU71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 15:59:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id B573F64E4E;
         Sun, 14 Feb 2021 20:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1613336326;
-        bh=j3ZyQfQbzeDQswUrtelK8BQP9QE01rydCKXVTpQTq2U=;
+        bh=8bUdXuZuWAQIT5Kom7OKGmPPUQ+ugfoqxtA6QU3Q+2U=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=VwrST00jJ1UpZoRD61/NLptRfQhqAe3Rjv9lYvCElUbMIPvemS5q6Ap7RuWvaIHCy
-         lQyN9XASmF3mV5/szdzBGmbP3smf3s8bTHLVtrWMOYoqCmu8QlxOvWl3NuTa6k342A
-         mqjP4TdXBxhHhmPzqGPfiAe9RZJ57TZslWZvlSe28E6TCgwUiwJczK3AheENkCNwQC
-         +l3W+bixChVRRYBhMwL5Ry7HGG+erodTGqIXvv9TAF/I8TAfgQSQZ8JgRyDMevfFki
-         w6m5vTGGu4CUZDpIhiLaOqFMVf7xUoMyCkP2nIRr1FM/WxmiasDBcsrQjaHqxwDhPy
-         hgSAE5UgmHpow==
+        b=it7uy/TGrDfHE/Lk8dowJDM9RmIj4iDWRD+wtRASUZeDQ1qHjqxnoG3mYppBNFkJz
+         oLfsQGIeQODIjZjW3ABrZWeYp8SL5WsahG+X9qICOT3ej8PAUSMhHPubBSP5WLnmtB
+         CdI28aecTP22XXSZZEPl0DpifostqDHTITK5sA5SZrmU6/FmhI5iTJwyTUqTN9dUrw
+         agnyiCmti59xI4VFp+sMQ/JHG7W6d3C0QDiSiQHf/lZe9x3VOlWtJzMySczxAFjoJG
+         N8pDkiunqoX3ZeXjc87BFFSv9ArexfxwQXfkIicLsHWnsjSRpqoS4DYpnOgcqs/CLA
+         Jw/vXFCHweQMg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8578060A37;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A2A5D60971;
         Sun, 14 Feb 2021 20:58:46 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/urgent for v5.11
+Subject: Re: [GIT PULL 5.11-rc8] LED fix
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210214103414.GA29103@zn.tnic>
-References: <20210214103414.GA29103@zn.tnic>
+In-Reply-To: <20210214171328.GA5314@duo.ucw.cz>
+References: <20210214171328.GA5314@duo.ucw.cz>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210214103414.GA29103@zn.tnic>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.11
-X-PR-Tracked-Commit-Id: 70245f86c109e0eafb92ea9653184c0e44b4b35c
+X-PR-Tracked-Message-Id: <20210214171328.GA5314@duo.ucw.cz>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ for-rc8-5.11
+X-PR-Tracked-Commit-Id: dbeb02a0bc41b9e9b9c05e460890351efecf1352
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c553021498640050340924bd62fa580e253467ac
-Message-Id: <161333632648.25612.16779176634718949865.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 28a17338738839494752c5da3e12c889a55219db
+Message-Id: <161333632666.25612.17400157940923623653.pr-tracker-bot@kernel.org>
 Date:   Sun, 14 Feb 2021 20:58:46 +0000
-To:     Borislav Petkov <bp@suse.de>
+To:     Pavel Machek <pavel@ucw.cz>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+        kernel list <linux-kernel@vger.kernel.org>,
+        jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 14 Feb 2021 11:34:14 +0100:
+The pull request you sent on Sun, 14 Feb 2021 18:13:28 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.11
+> git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ for-rc8-5.11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c553021498640050340924bd62fa580e253467ac
+https://git.kernel.org/torvalds/c/28a17338738839494752c5da3e12c889a55219db
 
 Thank you!
 
