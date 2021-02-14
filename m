@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DBA31B23F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C16E31B24A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbhBNTgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 14:36:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
+        id S229922AbhBNTmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 14:42:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbhBNTgg (ORCPT
+        with ESMTP id S229783AbhBNTl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 14:36:36 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A0EC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:35:55 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id c8so3106155ljd.12
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:35:55 -0800 (PST)
+        Sun, 14 Feb 2021 14:41:58 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC175C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:41:18 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id t2so2627710pjq.2
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:41:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RbvCfMxOWqMpSP+VwP8T3vlMh+uVuY1n7ujnc/XcM88=;
-        b=ccjzpZtHRJY+es2JuDho5q0htQTKjsB1P/wHbFNcnHGiaQCwf/BlM3TdHld1OGor2E
-         KacLI5WAD7LkqPBFeOKwHjZtwYGCxiPFhUU/GMbN7N+O7oGc/+syYfbFYh6a4dcqR+Ln
-         hX2gIyJ65bNumi31UoWqq8c4UoQzdQtXppA1w=
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OEU9K8O8lr+3rHXwRQA55P8y6nBOsd6z61f8CIpxwRw=;
+        b=F0Qgyf6v2tiZz7YJnxvZ8eJHpLZZL5anVhqVpyWbyWbL0II9dBc6u/HvOM2jr5iVe6
+         72nvcuVeFokurb2dJiyhOkaW/kZ/Hz2ZMBlVZ5MY5Vn9AELfyVaA3bXomHFZdVTCZjEF
+         hnwLFmiIHcOEXarki46T+SdiRs3IcxQXk2ILA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RbvCfMxOWqMpSP+VwP8T3vlMh+uVuY1n7ujnc/XcM88=;
-        b=TDTCCcdEi7WbMcuEcBuExvPsc6Ff27IqYq6jCLReWJBHHC22Zwdx7d0xyP0vKX886X
-         dW6PWpfsEXP6lbEHQGnKm180vaRcnTK/EfYPg/HpCjXOh2t86zTwbfOxdv5NaNo/eGXq
-         AVzIqT8TW0wtO6MPoskOfumaWWsdPvp4oQVQOHYPL7emvpS0SO68f3WjfEe0CLzSq74s
-         nAhTxFd5qxnlSqIBLWYOVcWpnMVmN19SHxZDySKQD0lFyH7p77bVD05VPgt/5LbZ3Yv6
-         tzGBnBnuREHiJN1kZVyfOGbfe/zQFceuEVfPOUhyu1G0YKu9kJAM2RzO5JhqXroqQr+t
-         Ot1A==
-X-Gm-Message-State: AOAM533nadPcdR0wLHT55Uqxx2Ve8DzAGS9040eHWyGu2xxh3V2XIW2G
-        b3dWejG7Zvbr5X0OXyteXT7W26aFZ2utmQ==
-X-Google-Smtp-Source: ABdhPJznGHvvIunTFXM58TFsxHcv9o6XOO7AEXIKvu1o7Pox4OhERNIvAdNJHh3TCCapRzMcQqtRYA==
-X-Received: by 2002:a05:651c:10b:: with SMTP id a11mr7729242ljb.352.1613331352862;
-        Sun, 14 Feb 2021 11:35:52 -0800 (PST)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id y15sm3355763ljn.97.2021.02.14.11.35.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Feb 2021 11:35:52 -0800 (PST)
-Received: by mail-lf1-f49.google.com with SMTP id d24so7092045lfs.8
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:35:52 -0800 (PST)
-X-Received: by 2002:ac2:54ac:: with SMTP id w12mr6606496lfk.487.1613331352177;
- Sun, 14 Feb 2021 11:35:52 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OEU9K8O8lr+3rHXwRQA55P8y6nBOsd6z61f8CIpxwRw=;
+        b=j4fY94/qNS6nko13YQeZFfeCc42kIRnbv81yfenAy8gz6ooeWTr1nraMDxuB1N7xtC
+         TAI25VfO7JdPRx0ch+YtKrPNr3lXvjfBwSulUhw/NNb/Oxmhh0OM08oPIf1AxLc2otIU
+         xKrftnNrImtUw++y5otPH12o1vasbVK5W0+G4t3jBhWplVhTVnxVpsn4THf3LhWIpgVN
+         dJOkHHQ6THyShOSKhgglluf4dJill67pHei38N+xIUBUMnnfxbdvTUgjoZQdyIxHm+U2
+         0jZw9dRmJEIADch8eUwPGcbwZf5hJC7L8ijCGHGqMj3tXAc8quySeM2oKdHnTIVhmgRI
+         Nwgg==
+X-Gm-Message-State: AOAM533+qxIwmd3Ur0okmXDBUAaZgk/vdxFnmtkV15bylGduX4AQaTOW
+        +eZz51QNcVONm3MfFeg943yNzA==
+X-Google-Smtp-Source: ABdhPJzuRDJWAxPCuSeDZkNIGM/J3GwrRrwVFw+NjiOftQtrJh5oLckq92dQmblysU6ylnUPSswJKA==
+X-Received: by 2002:a17:90a:dc82:: with SMTP id j2mr1522625pjv.99.1613331678340;
+        Sun, 14 Feb 2021 11:41:18 -0800 (PST)
+Received: from ub-XPS-13-9350.domain.name ([45.249.78.214])
+        by smtp.gmail.com with ESMTPSA id 125sm15129247pfu.7.2021.02.14.11.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 11:41:17 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH v3 0/7] drm: sun4i: dsi: Convert drm bridge
+Date:   Mon, 15 Feb 2021 01:10:55 +0530
+Message-Id: <20210214194102.126146-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <YCk/f0efY5OhibCn@zeniv-ca.linux.org.uk>
-In-Reply-To: <YCk/f0efY5OhibCn@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 14 Feb 2021 11:35:36 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiyaja6TKL1+HGXMXNE2EkqfjjKV6oQAOKfTTacc=mq5Q@mail.gmail.com>
-Message-ID: <CAHk-=wiyaja6TKL1+HGXMXNE2EkqfjjKV6oQAOKfTTacc=mq5Q@mail.gmail.com>
-Subject: Re: [git pull] sendfile fixes
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 7:19 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
->         Making sendfile() to pipe destination do the right thing, should
-> make "fs/pipe: allow sendfile() to pipe again" redundant.  Sat in -next
-> for 3 weeks...
+This series convert Allwinner DSI controller to full functional 
+drm bridge driver for supporting slave panel, bridges.
 
-Just to clarify: this says "fixes", but I get the feeling that you
-meant for me to pull tomorrow in the 5.12 merge window?
+Here, are the previous version changes[1].
 
-I like the patches, but they don't seem to be anything hugely urgent.
-They should make "sendfile to pipe" more efficient, but the current
-hack is _workable_ (and not any worse than what we historically did)
-even if it's not optimal.
+The key concern about these changes is about kms hotplug which 
+indeed not compatible with bridge conversion.  However, I did 
+try several ways to support hotplug with the bridge but it's 
+resulting in a deadlock where bind never attach bridge until 
+bridge pointer found and bridge pointer cannot found until bind 
+finishes. Any inputs on this would be appreciated.
 
-Right?
+[1] https://lwn.net/Articles/783127/
 
-Oh, and it looks like the first line of the commit message of
-313d64a35d36 ("do_splice_to(): move the logics for limiting the read
-length in") got truncated somehow..
+Any inputs?
+Jagan.
 
-          Linus
+Jagan Teki (7):
+  drm: sun4i: dsi: Use drm_of_find_panel_or_bridge
+  drm: sun4i: dsi: Add bridge support
+  drm: sun4i: dsi: Convert to bridge driver
+  drm: sun4i: dsi: Separate code for bridge pre_enable
+  drm: bridge: Queue the bridge chain instead of stacking
+  drm: sun4i: dsi: Use drm_panel_bridge, connector API
+  [DO NOT MERGE] ARM: dts: sun8i: bananapi-m2m: Enable S070WV20-CT16 panel
+
+ arch/arm/boot/dts/sun8i-r16-bananapi-m2m.dts |  85 ++++++++++++
+ drivers/gpu/drm/drm_bridge.c                 |   4 +-
+ drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c       | 128 +++++++++----------
+ drivers/gpu/drm/sun4i/sun6i_mipi_dsi.h       |  11 +-
+ 4 files changed, 150 insertions(+), 78 deletions(-)
+
+-- 
+2.25.1
+
