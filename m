@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC5431B142
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF6831B14E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhBNQdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 11:33:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229788AbhBNQde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 11:33:34 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D0A160232;
-        Sun, 14 Feb 2021 16:32:52 +0000 (UTC)
-Date:   Sun, 14 Feb 2021 16:32:48 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
-Subject: Re: [RFC PATCH 0/5] iio: buffer: add output buffer and cyclic mode
-Message-ID: <20210214163248.03d19fe1@archlinux>
-In-Reply-To: <20210212102021.47276-1-alexandru.ardelean@analog.com>
-References: <20210212102021.47276-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229783AbhBNQs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 11:48:59 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:40510 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhBNQs4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 11:48:56 -0500
+Received: by mail-io1-f69.google.com with SMTP id x26so5051831ior.7
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 08:48:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=cjRr4E3Q5PJcPyCBurqL2Ci6PgHAtJp8Ej4wKqKs3Q8=;
+        b=IhcLMwpfuREixIE3/vMGgyoEbo+atrOlj9ploDg1luP4OjgUonz0Oi0Ih248trK1yV
+         P57PW57FMyrM3UYw9IJrAZbieOe0XoNlWtLR1Edv1LtZt8EDEPZdqHprCIYG6Iw8W/CZ
+         NxiecoGJD9wUM9XyQomdWSWwTEpQx+D2X6wtlQM9Y4rIIzVQZtCeto1PsCjX5FveIQjN
+         L5lseAnQD0C+KioEnkvHMumTLFkgMwu7KICbPkVboRN0J7qUzWYXfJcreapzca/2QXto
+         DBkYDwzO8OWKCLPwFcLDVPtDouQiHbZzoNjtXFfbEJz3FQxwSsL4f6NX5tB+5gVCMuDV
+         yz7w==
+X-Gm-Message-State: AOAM530Fs7mIibk7cycfYVi4mOSB/r8HfH3xHP4yftl1LpOsy9+fGmVV
+        cvm2ioRI1CMCvlRssDyhItrenH5kftJFyHPt+fJgQvGeohmM
+X-Google-Smtp-Source: ABdhPJyJ87IQaRDjxAanOnbFiERX2+Tsk9m3VOkrA1L0JF7KF7TQJ1DWvIicDE/P3WFZvYTct88nAIIDh095IIW7bNs1pGt6uQUe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:3306:: with SMTP id a6mr9662869ilf.55.1613321296071;
+ Sun, 14 Feb 2021 08:48:16 -0800 (PST)
+Date:   Sun, 14 Feb 2021 08:48:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c2d2c005bb4ea200@google.com>
+Subject: WARNING in mark_buffer_dirty (3)
+From:   syzbot <syzbot+7d5c3e0439dc861b68fc@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021 12:20:16 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+Hello,
 
-> Largely, an adaptation of Lars' work, applied on the IIO multi-buffer
-> support + high-speed/mmap support [1].
-> Found here:
->   https://github.com/larsclausen/linux/commits/iio-high-speed-5.10
-> But this isn't tested.
-> 
-> [1] Requires that these sets be applied (in this order):
-> * https://lore.kernel.org/linux-iio/20210211122452.78106-1-alexandru.ardelean@analog.com/T/#t
-> * https://lore.kernel.org/linux-iio/20210212101143.18993-1-alexandru.ardelean@analog.com/T/#t
-> 
-> Some of the variation from the original work are:
-> 1. It's applied on top of the multibuffer support; so the direction of the
->    data is set per iio_buffer, and not iio_dev
-> 2. Cyclic mode is a separate patch
-> 3. devm_iio_dmaengine_buffer_alloc() requires the definition of
->    'enum iio_buffer_direction'; which means that 'linux/iio/buffer.h'
->    needs to be included in  buffer-dma.h; Lars tried to use a bool, but
->    using the enum seems a bit more consistent and allows us to maybe
->    go down the route of both I/O buffers (some day); not sure if
->    that's sane or not (you never know)
-> 4. Various re-formatting; and added some docstrings where I remembered
->    to so so
+syzbot found the following issue on:
 
-Just thinking about how this is different from input buffers.
-For now at least I guess we can assume there is no equivalent of multiple
-consumers and the mux logic needed to support them.
-However I can definitely see we may get inkernel 'consumers' of these
-output buffers.
+HEAD commit:    e0756cfc Merge tag 'trace-v5.11-rc7' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14d0f814d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a53fd47f16f22f8c
+dashboard link: https://syzkaller.appspot.com/bug?extid=7d5c3e0439dc861b68fc
 
-Come to think of it, we probably need to rework the inkern logic anyway
-to deal with multiple buffer input devices.  Hopefully it just continues
-working with the single buffer cases so there won't be any regressions
-on that front.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Largest issue with this series is lack of users.  It all seems good
-in principal but until drivers are making use of it, I'm not keen
-on merging this extra infrastructure.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7d5c3e0439dc861b68fc@syzkaller.appspotmail.com
 
-Jonathan
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 5031 at fs/buffer.c:1113 mark_buffer_dirty+0x488/0x5d0 fs/buffer.c:1113
+Modules linked in:
+CPU: 3 PID: 5031 Comm: jbd2/sda1-8 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+RIP: 0010:mark_buffer_dirty+0x488/0x5d0 fs/buffer.c:1113
+Code: c1 ea 03 80 3c 02 00 0f 85 52 01 00 00 48 8b 3b be 04 00 00 00 e8 b8 ac fc ff 5b 5d 41 5c 41 5d e9 2d 9d a2 ff e8 28 9d a2 ff <0f> 0b e9 bf fb ff ff e8 1c 9d a2 ff 0f 0b e9 e3 fb ff ff e8 10 9d
+RSP: 0018:ffffc9000df3fa20 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888017d0b698 RCX: 0000000000000000
+RDX: ffff888014b420c0 RSI: ffffffff81d039a8 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81d03565 R11: 0000000000000000 R12: ffff888017d0b698
+R13: ffff88801ad9e980 R14: ffff888022e8ea50 R15: ffff888022e8ea50
+FS:  0000000000000000(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557ba7d6b967 CR3: 000000000ba8e000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __jbd2_journal_temp_unlink_buffer+0x3ba/0x500 fs/jbd2/transaction.c:2021
+ __jbd2_journal_unfile_buffer+0x60/0xb0 fs/jbd2/transaction.c:2035
+ __jbd2_journal_refile_buffer+0x3d2/0x4a0 fs/jbd2/transaction.c:2581
+ jbd2_journal_commit_transaction+0x43ef/0x6b90 fs/jbd2/commit.c:1084
+ kjournald2+0x1d0/0x930 fs/jbd2/journal.c:213
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-> 
-> Lars-Peter Clausen (5):
->   iio: Add output buffer support
->   iio: kfifo-buffer: Add output buffer support
->   iio: buffer-dma: Allow to provide custom buffer ops
->   iio: buffer-dma: Add output buffer support
->   iio: buffer-dma: add support for cyclic DMA transfers
-> 
->  drivers/iio/adc/adi-axi-adc.c                 |   5 +-
->  drivers/iio/buffer/industrialio-buffer-dma.c  | 120 ++++++++++++++++--
->  .../buffer/industrialio-buffer-dmaengine.c    |  57 +++++++--
->  drivers/iio/buffer/kfifo_buf.c                |  50 ++++++++
->  drivers/iio/industrialio-buffer.c             | 110 +++++++++++++++-
->  include/linux/iio/buffer-dma.h                |  11 +-
->  include/linux/iio/buffer-dmaengine.h          |   7 +-
->  include/linux/iio/buffer.h                    |   7 +
->  include/linux/iio/buffer_impl.h               |  11 ++
->  include/uapi/linux/iio/buffer.h               |   1 +
->  10 files changed, 348 insertions(+), 31 deletions(-)
-> 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
