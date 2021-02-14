@@ -2,86 +2,646 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A1231B19E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 720CA31B1A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhBNRpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 12:45:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
+        id S229913AbhBNRqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 12:46:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhBNRpq (ORCPT
+        with ESMTP id S229880AbhBNRqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 12:45:46 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5615C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 09:45:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=a+g8rWWli1xRnu3cTWg/CqMbNvnaPWcyQ5daAg9Tj7Q=; b=v8dEM+s6JaWqrEb/cQAzVKiBGZ
-        FBbZYHJzJb+P0lHkHzdl0FIbBUStEPqMEAsL861yk2rNcxpadom+NRBRBSH8/QuTKgWk/2+mokzOf
-        W3fDAjTEQ92RoXr0ImPDkCEvdQw+bMK+DGFLSgMdUBasqUvDIDqg3SA6XTlPi5IHjC6Tj6QF7HqOx
-        UI6BEi7uMZ/XAkA76Kjn1f9jVvOEfIl1ZXBE6sbGmyIYprPwo1oejf5cVVjrwVJFzShnG77kSZ9V/
-        Q1RW276fwbZEmnTZYmYgBhfY5R7SB7thAG4C+fsBgfrs9X2mhwkYGyV5QHn3/ymxo3792rZqVNGYB
-        gyEipMDg==;
-Received: from [2601:1c0:6280:3f0::6444]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lBLS8-0005JB-V4; Sun, 14 Feb 2021 17:45:01 +0000
-Subject: Re: [PATCH v6 27/34] misc: Tsens ARM host thermal driver.
-To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>
-References: <20210212222304.110194-1-mgross@linux.intel.com>
- <20210212222304.110194-28-mgross@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <79f17b05-897c-6851-072b-682932057577@infradead.org>
-Date:   Sun, 14 Feb 2021 09:44:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sun, 14 Feb 2021 12:46:01 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FEDC061786
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 09:45:21 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id nm1so2390875pjb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 09:45:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ng0W1Nk0EegwQaCt+ydmCGWyZfnrPwexHGB3ueCiciE=;
+        b=mpijZKKLsjbArxzpn5/07j11FLCwVRjxFlljDQ5LimUVFTwgm8rIhN3VPgZxiY9Spi
+         fNddcIamdwDzQIQ56UiL8wvMqx0UIoyswLvQOEgHvkbCEhsScTzCE7oyMTRmGqaf2t7q
+         ltuI2rjiewb7gHebhc3lks6F5VT5sW0s9oKkM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ng0W1Nk0EegwQaCt+ydmCGWyZfnrPwexHGB3ueCiciE=;
+        b=uKrIzqwLW6FIQI1h2fYG8KIStVwdbREPm0gIalK1lHAHAZtkp4MPpKRLP1tUYnDqzt
+         QxdgOAHTSYPq1zjzZsN9GQ0k7Cy3CghGjadlHbXOgdCCooiz4T/pd1NHSMWuOSQ0wtZC
+         Wp2zMB848bK6ioscZ/OntaqJLtMedk7KNqNu3fJNvltEj27D508FXG06v2gunzaIoxKE
+         VsDmFNL2iyAhSpBiWA3Vk86FRQlWQVDDOHt/a1bqTRwbg7EFfQCFdP3GB8zb2rM7BYsr
+         A8LhUjV2YrE2y8lapx1HpyvSZyyOJHHpGn8Sp6O+i3pM/o5o6HRN2OTyMGqTQizIOSIo
+         DEEg==
+X-Gm-Message-State: AOAM532ccX0DDYa9n76tzxtoCv6eUCho72LxB69zYKy1W1vGLC/7MmJt
+        L4AYjSYwCRfVaueRDz8PO0qshQ==
+X-Google-Smtp-Source: ABdhPJxjJAahI3qcPi8H8ceOgWoECdGB0l1PRCA8/ookzuQXMy3ok8xlc16XlyDU0ldpkyJJiLOgVg==
+X-Received: by 2002:a17:90a:43a7:: with SMTP id r36mr12559857pjg.189.1613324721048;
+        Sun, 14 Feb 2021 09:45:21 -0800 (PST)
+Received: from ub-XPS-13-9350.domain.name ([45.249.78.214])
+        by smtp.gmail.com with ESMTPSA id r205sm4794137pfr.128.2021.02.14.09.45.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 09:45:20 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Vasut <marex@denx.de>
+Subject: [PATCH v3 2/2] drm: bridge: Add TI SN65DSI83/84/85 DSI to LVDS bridge
+Date:   Sun, 14 Feb 2021 23:14:53 +0530
+Message-Id: <20210214174453.104616-2-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210214174453.104616-1-jagan@amarulasolutions.com>
+References: <20210214174453.104616-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
-In-Reply-To: <20210212222304.110194-28-mgross@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/21 2:22 PM, mgross@linux.intel.com wrote:
-> diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
-> new file mode 100644
-> index 000000000000..bfb8fe1997f4
-> --- /dev/null
-> +++ b/drivers/misc/intel_tsens/Kconfig
-> @@ -0,0 +1,15 @@
-> +# Copyright (C) 2020 Intel Corporation
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +config INTEL_TSENS_LOCAL_HOST
-> +	bool "Temperature sensor driver for intel tsens"
+SN65DSI83/84/85 devices are MIPI DSI to LVDS based bridge
+controller IC's from Texas Instruments.
 
-s/intel/Intel/ ?
+SN65DSI83 - Single Channel DSI to Single-link LVDS bridge
+SN65DSI84 - Single Channel DSI to Dual-link LVDS bridge
+SN65DSI85 - Dual Channel DSI to Dual-link LVDS bridge
 
-as below.
+Driver is adding bridge configuration for Channel A, which
+is a common configuration across all the bridge variants.
 
-> +	select THERMAL
-> +	help
-> +	  This option enables tsens thermal local Host driver.
-> +
-> +	  This driver is used for reporting thermal data via thermal
-> +	  framework.
-> +	  Enable this option if you want to have support for thermal
-> +	  management controller.
-> +	  Say Y if using a processor that includes the Intel VPU such as
-> +	  Keem Bay.  If unsure, say N.
+Add bridge driver for it.
 
+Cc: Marek Vasut <marex@denx.de>
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
+Changes for v3:
+- updated macro names to reflect datasheet
+- add compatible for 83, 84 variants
+- updated comments, kconfig
+- fixed few Michael comments
+Changes for v2:
+- dropped the mdelays between commands as delays in init script in
+  datasheet is based Aardvark I2C host adaptor.
+  https://e2e.ti.com/support/interface/f/138/t/974276
 
+ MAINTAINERS                           |   6 +
+ drivers/gpu/drm/bridge/Kconfig        |  20 ++
+ drivers/gpu/drm/bridge/Makefile       |   1 +
+ drivers/gpu/drm/bridge/ti-sn65dsi8x.c | 475 ++++++++++++++++++++++++++
+ 4 files changed, 502 insertions(+)
+ create mode 100644 drivers/gpu/drm/bridge/ti-sn65dsi8x.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4f1084aae50d..2af01632f557 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6017,6 +6017,12 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/display/ti/
+ F:	drivers/gpu/drm/omapdrm/
+ 
++DRM DRIVERS FOR TI SN65DSI84 DSI TO LVDS BRIDGE
++M:	Jagan Teki <jagan@amarulasolutions.com>
++S:	Maintained
++F:	Documentation/devicetree/bindings/display/bridge/ti,sn65dsi8x.yaml
++F:	drivers/gpu/drm/bridge/ti-sn65dsi8x.c
++
+ DRM DRIVERS FOR V3D
+ M:	Eric Anholt <eric@anholt.net>
+ S:	Supported
+diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+index 49d1565b7f25..8273a66c0eed 100644
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -253,6 +253,26 @@ config DRM_TI_SN65DSI86
+ 	help
+ 	  Texas Instruments SN65DSI86 DSI to eDP Bridge driver
+ 
++config DRM_TI_SN65DSI8X
++	tristate "TI SN65DSI83/84/85 DSI to LVDS bridge"
++	depends on OF
++	select DRM_KMS_HELPER
++	select DRM_MIPI_DSI
++	select DRM_PANEL_BRIDGE
++	select REGMAP_I2C
++	help
++	  SN65DSI83/84/85 devices are MIPI DSI to LVDS based bridge controller
++	  IC's from Texas Instruments.
++
++	  SN65DSI83 - Single Channel DSI to Single-link LVDS bridge
++	  SN65DSI84 - Single Channel DSI to Dual-link LVDS bridge
++	  SN65DSI85 - Dual Channel DSI to Dual-link LVDS bridge
++
++	  Bridge decodes MIPI DSI 18bpp RGB666 and 240bpp RG888 packets and
++	  converts the formatted video data stream to a FlatLink compatible
++	  LVDS output operating at pixel clocks operating from 25 MHx to
++	  154 MHz.
++
+ config DRM_TI_TPD12S015
+ 	tristate "TI TPD12S015 HDMI level shifter and ESD protection"
+ 	depends on OF
+diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
+index 3eb84b638988..e3d0dad9be30 100644
+--- a/drivers/gpu/drm/bridge/Makefile
++++ b/drivers/gpu/drm/bridge/Makefile
+@@ -22,6 +22,7 @@ obj-$(CONFIG_DRM_TOSHIBA_TC358768) += tc358768.o
+ obj-$(CONFIG_DRM_TOSHIBA_TC358775) += tc358775.o
+ obj-$(CONFIG_DRM_I2C_ADV7511) += adv7511/
+ obj-$(CONFIG_DRM_TI_SN65DSI86) += ti-sn65dsi86.o
++obj-$(CONFIG_DRM_TI_SN65DSI8X) += ti-sn65dsi8x.o
+ obj-$(CONFIG_DRM_TI_TFP410) += ti-tfp410.o
+ obj-$(CONFIG_DRM_TI_TPD12S015) += ti-tpd12s015.o
+ obj-$(CONFIG_DRM_NWL_MIPI_DSI) += nwl-dsi.o
+diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi8x.c b/drivers/gpu/drm/bridge/ti-sn65dsi8x.c
+new file mode 100644
+index 000000000000..9b05b9295cbd
+--- /dev/null
++++ b/drivers/gpu/drm/bridge/ti-sn65dsi8x.c
+@@ -0,0 +1,475 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2021 Engicam srl
++ * Copyright (C) 2021 Amarula Solutions(India)
++ * Author: Jagan Teki <jagan@amarulasolutions.com>
++ */
++
++#include <drm/drm_of.h>
++#include <drm/drm_panel.h>
++#include <drm/drm_print.h>
++#include <drm/drm_mipi_dsi.h>
++
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++
++/* registers */
++#define SN65DSI_SOFT_RESET		0x09
++#define SN65DSI_LVDS_CLK		0x0a
++#define SN65DSI_CLK_DIV			0x0b
++#define SN65DSI_CLK_PLL			0x0d
++#define SN65DSI_DSI_CFG			0x10
++#define SN65DSI_DSI_CLK_EQ		0x11
++#define SN65DSI_DSI_CLK_RANGE		0x12
++#define SN65DSI_LVDS_MODE		0x18
++#define SN65DSI_CHA_LINE_LO		0x20
++#define SN65DSI_CHA_LINE_HI		0x21
++#define SN65DSI_CHA_VIRT_LO		0x24
++#define SN65DSI_CHA_VIRT_HI		0x25
++#define SN65DSI_CHA_SYNC_DELAY_LO	0x28
++#define SN65DSI_CHA_SYNC_DELAY_HI	0x29
++#define SN65DSI_CHA_HSYNC_WIDTH_LO	0x2c
++#define SN65DSI_CHA_HSYNC_WIDTH_HI	0x2d
++#define SN65DSI_CHA_VSYNC_WIDTH_LO	0x30
++#define SN65DSI_CHA_VSYNC_WIDTH_HI	0x31
++#define SN65DSI_CHA_HBACK_PORCH		0x34
++#define SN65DSI_CHA_VBACK_PORCH		0x36
++#define SN65DSI_CHA_HFRONT_PORCH	0x38
++#define SN65DSI_CHA_VFRONT_PORCH	0x3a
++#define SN65DSI_CHA_ERR			0xe5
++
++/* register bits */
++#define SOFT_RESET			BIT(0)
++#define PLL_EN				BIT(0)
++#define LVDS_CLK_RANGE_MASK		GENMASK(3, 1)
++#define LVDS_CLK_RANGE_SHIFT		1
++#define HS_CLK_SRC			BIT(0)
++#define DSI_CLK_DIV_MASK		GENMASK(7, 3)
++#define DSI_CLK_DIV_SHIFT		3
++#define CHA_DSI_LANES_MASK		GENMASK(4, 3)
++#define CHA_DSI_LANES_SHIFT		3
++#define HS_NEG_POLARITY			BIT(6)
++#define VS_NEG_POLARITY			BIT(5)
++#define LVDS_LINK_CFG			BIT(4)
++#define CHA_24BPP_MODE			BIT(3)
++#define CHA_SYNC_DELAY_LO		0x20
++#define CHA_SYNC_DELAY_HI		0x00
++
++enum sn65dsi_ports {
++	SN65DSI_IN_DSI,
++	SN65DSI_OUT0_LVDS,
++	SN65DSI_OUT1_LVDS,
++};
++
++struct sn65dsi {
++	struct device			*dev;
++	struct drm_bridge		bridge;
++	struct drm_bridge		*panel_bridge;
++
++	struct device_node		*host_node;
++	struct mipi_dsi_device		*dsi;
++	u8				dsi_lanes;
++
++	struct regmap			*regmap;
++	struct gpio_desc		*enable;
++};
++
++static const struct regmap_config sn65dsi_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.max_register = SN65DSI_CHA_ERR,
++	.name = "sn65dsi",
++	.cache_type = REGCACHE_RBTREE,
++};
++
++static inline struct sn65dsi *bridge_to_sn65dsi(struct drm_bridge *bridge)
++{
++	return container_of(bridge, struct sn65dsi, bridge);
++}
++
++static struct drm_display_mode *bridge_to_mode(struct drm_bridge *bridge)
++{
++	return &bridge->encoder->crtc->state->mode;
++}
++
++static void sn65dsi_configure_cha(struct sn65dsi *sn, struct drm_display_mode *mode)
++{
++	u32 hsync_len, hfront_porch, hback_porch;
++	u32 vsync_len, vfront_porch, vback_porch;
++
++	hfront_porch = mode->hsync_start - mode->hdisplay;
++	hsync_len = mode->hsync_end - mode->hsync_start;
++	hback_porch = mode->htotal - mode->hsync_end;
++
++	vfront_porch = mode->vsync_start - mode->vdisplay;
++	vsync_len = mode->vsync_end - mode->vsync_start;
++	vback_porch = mode->vtotal - mode->vsync_end;
++
++	/* cha, lower 8-bits of hdisplay */
++	regmap_write(sn->regmap, SN65DSI_CHA_LINE_LO, mode->hdisplay & 0xff);
++
++	/* cha, upper 4-bits of hdisplay */
++	regmap_write(sn->regmap, SN65DSI_CHA_LINE_HI, (mode->hdisplay >> 8) & 0xff);
++
++	/* cha, lower 8-bits of vdisplay */
++	regmap_write(sn->regmap, SN65DSI_CHA_VIRT_LO, mode->vdisplay & 0xff);
++
++	/* cha, upper 4-bits of vdisplay */
++	regmap_write(sn->regmap, SN65DSI_CHA_VIRT_HI, (mode->vdisplay >> 8) & 0xff);
++
++	/*cha, lower sync delay */
++	regmap_write(sn->regmap, SN65DSI_CHA_SYNC_DELAY_LO, CHA_SYNC_DELAY_LO);
++
++	/*cha, upper sync delay */
++	regmap_write(sn->regmap, SN65DSI_CHA_SYNC_DELAY_HI, CHA_SYNC_DELAY_HI);
++
++	/* cha, lower 8-bits of hsync_len */
++	regmap_write(sn->regmap, SN65DSI_CHA_HSYNC_WIDTH_LO, hsync_len & 0xff);
++
++	/* cha, upper 2-bits of hsync_len */
++	regmap_write(sn->regmap, SN65DSI_CHA_HSYNC_WIDTH_HI, (hsync_len >> 8) & 0xff);
++
++	/* cha, lower 8-bits of vsync_len */
++	regmap_write(sn->regmap, SN65DSI_CHA_VSYNC_WIDTH_LO, vsync_len & 0xff);
++
++	/* cha, upper 2-bits of vsync_len */
++	regmap_write(sn->regmap, SN65DSI_CHA_VSYNC_WIDTH_HI, (vsync_len >> 8) & 0xff);
++
++	/* cha, hback_porch */
++	regmap_write(sn->regmap, SN65DSI_CHA_HBACK_PORCH, hback_porch & 0xff);
++
++	/* cha, vback_porch */
++	regmap_write(sn->regmap, SN65DSI_CHA_VBACK_PORCH, vback_porch & 0xff);
++
++	/* cha, hfront_porch */
++	regmap_write(sn->regmap, SN65DSI_CHA_HFRONT_PORCH, hfront_porch & 0xff);
++
++	/* cha, vfront_porch */
++	regmap_write(sn->regmap, SN65DSI_CHA_VFRONT_PORCH, vfront_porch & 0xff);
++}
++
++static int sn65dsi_get_clk_range(int min, int max, unsigned long clock,
++				 unsigned long start, unsigned long diff)
++{
++	unsigned long next;
++	int i;
++
++	for (i = min; i <= max; i++) {
++		next = start + diff;
++		if (start <= clock && clock < next)
++			return i;
++
++		start += diff;
++	}
++
++	return -EINVAL;
++}
++
++static void sn65dsi_enable(struct drm_bridge *bridge)
++{
++	struct sn65dsi *sn = bridge_to_sn65dsi(bridge);
++	struct drm_display_mode *mode = bridge_to_mode(bridge);
++	int bpp = mipi_dsi_pixel_format_to_bpp(sn->dsi->format);
++	unsigned int lanes = sn->dsi->lanes;
++	unsigned int pixel_clk = mode->clock * 1000;
++	unsigned int dsi_clk = pixel_clk * bpp / (lanes * 2);
++	unsigned int val;
++
++	/* reset SOFT_RESET bit */
++	regmap_write(sn->regmap, SN65DSI_SOFT_RESET, 0x0);
++
++	msleep(10);
++
++	/* reset PLL_EN bit */
++	regmap_write(sn->regmap, SN65DSI_CLK_PLL, 0x0);
++
++	msleep(10);
++
++	/* setup lvds clock */
++	val = sn65dsi_get_clk_range(0, 5, pixel_clk, 25000000, 25000000);
++	if (val < 0) {
++		DRM_DEV_ERROR(sn->dev, "invalid LVDS clock range %d\n", val);
++		return;
++	}
++
++	regmap_update_bits(sn->regmap, SN65DSI_LVDS_CLK,
++			   LVDS_CLK_RANGE_MASK, val << LVDS_CLK_RANGE_SHIFT);
++
++	regmap_update_bits(sn->regmap, SN65DSI_LVDS_CLK, HS_CLK_SRC, HS_CLK_SRC);
++
++	/* setup bridge clock divider */
++	val = (dsi_clk / pixel_clk) - 1;
++	regmap_update_bits(sn->regmap, SN65DSI_CLK_DIV,
++			   DSI_CLK_DIV_MASK, val << DSI_CLK_DIV_SHIFT);
++
++	/* configure dsi */
++	regmap_update_bits(sn->regmap, SN65DSI_DSI_CFG,
++			   CHA_DSI_LANES_MASK, lanes << CHA_DSI_LANES_SHIFT);
++
++	/* dsi clock range */
++	val = sn65dsi_get_clk_range(8, 100, dsi_clk, 40000000, 5000000);
++	if (val < 0) {
++		DRM_DEV_ERROR(sn->dev, "invalid DSI clock range %d\n", val);
++		return;
++	}
++
++	regmap_write(sn->regmap, SN65DSI_DSI_CLK_RANGE, val);
++
++	/* setup lvds modes */
++	regmap_read(sn->regmap, SN65DSI_LVDS_MODE, &val);
++	if (mode->flags & DRM_MODE_FLAG_PVSYNC)
++		val |= VS_NEG_POLARITY;
++	if (mode->flags & DRM_MODE_FLAG_PHSYNC)
++		val |= HS_NEG_POLARITY;
++	if (bpp == 24) /* Channel A mode */
++		val |= CHA_24BPP_MODE;
++	regmap_write(sn->regmap, SN65DSI_LVDS_MODE, val);
++
++	/* TODO Channel B is not configure yet */
++	sn65dsi_configure_cha(sn, mode);
++
++	/* set PLL_EN bit */
++	regmap_write(sn->regmap, SN65DSI_CLK_PLL, PLL_EN);
++
++	msleep(10);
++
++	/* set SOFT_RESET bit */
++	regmap_write(sn->regmap, SN65DSI_SOFT_RESET, SOFT_RESET);
++
++	msleep(10);
++}
++
++static void sn65dsi_disable(struct drm_bridge *bridge)
++{
++	struct sn65dsi *sn = bridge_to_sn65dsi(bridge);
++
++	/* set PLL_EN bit */
++	regmap_write(sn->regmap, SN65DSI_CLK_PLL, 0x0);
++
++	msleep(10);
++
++	/* set SOFT_RESET bit */
++	regmap_write(sn->regmap, SN65DSI_SOFT_RESET, 0x0);
++
++	msleep(10);
++}
++
++static void sn65dsi_post_disable(struct drm_bridge *bridge)
++{
++	struct sn65dsi *sn = bridge_to_sn65dsi(bridge);
++
++	gpiod_set_value_cansleep(sn->enable, 1);
++
++	msleep(10);
++
++	gpiod_set_value_cansleep(sn->enable, 0);
++
++	msleep(10);
++}
++
++static void sn65dsi_pre_enable(struct drm_bridge *bridge)
++{
++	struct sn65dsi *sn = bridge_to_sn65dsi(bridge);
++
++	gpiod_set_value_cansleep(sn->enable, 0);
++
++	msleep(10);
++
++	gpiod_set_value_cansleep(sn->enable, 1);
++
++	msleep(10);
++}
++
++static int sn65dsi_attach(struct drm_bridge *bridge, enum drm_bridge_attach_flags flags)
++{
++	struct sn65dsi *sn = bridge_to_sn65dsi(bridge);
++	struct mipi_dsi_host *host;
++	const struct mipi_dsi_device_info info = { .type = "sn65dsi",
++						   .channel = 0,
++						   .node = NULL,
++						 };
++	int ret;
++
++	host = of_find_mipi_dsi_host_by_node(sn->host_node);
++	if (!host) {
++		DRM_DEV_ERROR(sn->dev, "failed to find dsi host\n");
++		return -EPROBE_DEFER;
++	}
++
++	sn->dsi = mipi_dsi_device_register_full(host, &info);
++	if (IS_ERR(sn->dsi)) {
++		DRM_DEV_ERROR(sn->dev, "failed to create dsi device\n");
++		return PTR_ERR(sn->dsi);
++	}
++
++	sn->dsi->lanes = sn->dsi_lanes;
++	sn->dsi->format = MIPI_DSI_FMT_RGB888;
++	sn->dsi->mode_flags = MIPI_DSI_MODE_VIDEO;
++
++	ret = mipi_dsi_attach(sn->dsi);
++	if (ret) {
++		DRM_DEV_ERROR(sn->dev, "failed to attach dsi host\n");
++		goto err_dsi_attach;
++	}
++
++	return drm_bridge_attach(bridge->encoder, sn->panel_bridge,
++				 &sn->bridge, flags);
++
++err_dsi_attach:
++	mipi_dsi_device_unregister(sn->dsi);
++	return ret;
++}
++
++static void sn65dsi_detach(struct drm_bridge *bridge)
++{
++	struct sn65dsi *sn = bridge_to_sn65dsi(bridge);
++
++	mipi_dsi_detach(sn->dsi);
++	mipi_dsi_device_unregister(sn->dsi);
++}
++
++static const struct drm_bridge_funcs sn65dsi_bridge_funcs = {
++	.attach		= sn65dsi_attach,
++	.detach		= sn65dsi_detach,
++	.disable	= sn65dsi_disable,
++	.post_disable	= sn65dsi_post_disable,
++	.pre_enable	= sn65dsi_pre_enable,
++	.enable		= sn65dsi_enable,
++};
++
++static int sn65dsi_parse_dt(struct sn65dsi *sn)
++{
++	struct device *dev = sn->dev;
++	struct device_node *endpoint, *parent;
++	struct property *prop;
++	struct drm_panel *panel;
++	int len = 0;
++	int ret;
++
++	sn->enable = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
++	if (IS_ERR(sn->enable)) {
++		DRM_DEV_ERROR(dev, "failed to get enable gpio\n");
++		return PTR_ERR(sn->enable);
++	}
++
++	ret = drm_of_find_panel_or_bridge(dev->of_node, SN65DSI_OUT0_LVDS,
++					  0, &panel, NULL);
++	if (ret < 0)
++		return ret;
++	if (!panel)
++		return -ENODEV;
++
++	sn->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
++	if (IS_ERR(sn->panel_bridge))
++		return PTR_ERR(sn->panel_bridge);
++
++	/*
++	 * To get the data-lanes of dsi, we need to access the port1 of dsi_out
++	 * from the port0 of bridge.
++	 */
++	endpoint = of_graph_get_endpoint_by_regs(dev->of_node, SN65DSI_IN_DSI, -1);
++	if (endpoint) {
++		/* dsi_out node */
++		parent = of_graph_get_remote_port_parent(endpoint);
++		of_node_put(endpoint);
++		if (parent) {
++			/* dsi port 1 */
++			endpoint = of_graph_get_endpoint_by_regs(parent, 1, -1);
++			of_node_put(parent);
++			if (endpoint) {
++				prop = of_find_property(endpoint, "data-lanes", &len);
++				of_node_put(endpoint);
++				if (!prop) {
++					DRM_DEV_ERROR(dev, "failed to find data lane\n");
++					return -EPROBE_DEFER;
++				}
++			}
++		}
++	}
++
++	sn->dsi_lanes = len / sizeof(u32);
++	if (sn->dsi_lanes < 1 || sn->dsi_lanes > 4)
++		return -EINVAL;
++
++	sn->host_node = of_graph_get_remote_node(dev->of_node, 0, 0);
++	if (!sn->host_node)
++		return -ENODEV;
++
++	of_node_put(sn->host_node);
++
++	/* TODO OUT1_LVDS is not parsed yet */
++
++	return 0;
++}
++
++static int sn65dsi_probe(struct i2c_client *client)
++{
++	struct sn65dsi *sn;
++	int ret;
++
++	sn = devm_kzalloc(&client->dev, sizeof(*sn), GFP_KERNEL);
++	if (!sn)
++		return -ENOMEM;
++
++	i2c_set_clientdata(client, sn);
++	sn->dev = &client->dev;
++
++	sn->regmap = devm_regmap_init_i2c(client, &sn65dsi_regmap_config);
++	if (IS_ERR(sn->regmap)) {
++		DRM_DEV_ERROR(&client->dev,
++			      "regmap allocation failed (ret = %d)\n", ret);
++		return PTR_ERR(sn->regmap);
++	}
++
++	ret = sn65dsi_parse_dt(sn);
++	if (ret)
++		return ret;
++
++	sn->bridge.funcs = &sn65dsi_bridge_funcs;
++	sn->bridge.of_node = client->dev.of_node;
++
++	drm_bridge_add(&sn->bridge);
++
++	return 0;
++}
++
++static int sn65dsi_remove(struct i2c_client *client)
++{
++	struct sn65dsi *sn = i2c_get_clientdata(client);
++
++	drm_bridge_remove(&sn->bridge);
++
++	return 0;
++}
++
++static struct i2c_device_id sn65dsi_i2c_id[] = {
++	{ "sn65dsi83", 0},
++	{ "sn65dsi84", 0},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(i2c, sn65dsi_i2c_id);
++
++static const struct of_device_id sn65dsi_match_table[] = {
++	{.compatible = "ti,sn65dsi83"},
++	{.compatible = "ti,sn65dsi84"},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, sn65dsi_match_table);
++
++static struct i2c_driver sn65dsi_driver = {
++	.driver = {
++		.name = "ti-sn65dsi8x",
++		.of_match_table = sn65dsi_match_table,
++	},
++	.probe_new = sn65dsi_probe,
++	.remove = sn65dsi_remove,
++	.id_table = sn65dsi_i2c_id,
++};
++module_i2c_driver(sn65dsi_driver);
++
++MODULE_AUTHOR("Jagan Teki <jagan@amarulasolutions.com>");
++MODULE_DESCRIPTION("SN65DSI83/84/85 DSI to LVDS bridge");
++MODULE_LICENSE("GPL v2");
 -- 
-~Randy
+2.25.1
 
