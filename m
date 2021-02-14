@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D4031AEF2
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 05:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9B231AEF7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 06:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhBNExS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 13 Feb 2021 23:53:18 -0500
-Received: from mout01.posteo.de ([185.67.36.65]:51324 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229783AbhBNExH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 13 Feb 2021 23:53:07 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 1A7BC160063
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 05:52:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1613278329; bh=N2OFag51Yk707V6y0F3zYvO9dt8D3xrSs1fvn36Gyis=;
-        h=Date:From:To:Cc:Subject:From;
-        b=IziuXCnWpKYaoaVXJKT+kkTieF8H5YnmT0pAs4epzJThVbqDDYiwKI2KEL9kRhZ33
-         0dnh+TMSMX4r+ndVuS/v+I/2iLFnR1JrH8AumHf7JRsmmjdsDDQ+9tSKatbgrAWNHI
-         26ynq8McsRJKhYjxmm3g0QPPKECFm4Wz1ASoDWM4FPNEJiPjeSmo50MYDU36i39Rit
-         Ro+YsGPy1nVJ/VNZ2EBvyLnGkaGYoeLrJNSZwxB+0E43reO1hwUVVXLVpsU71mWS4X
-         VzIGuOxu+B67caK2mZ7q2NOl73OqBTbGK1x91BYhaOjz9Nwk+X+yfW4shggf6OEsXw
-         G66+f0mnfnYsg==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4DdZbB5ZDhz9rxH;
-        Sun, 14 Feb 2021 05:52:06 +0100 (CET)
-Date:   Sun, 14 Feb 2021 05:52:06 +0100
-From:   Sebastian Fricke <sebastian.fricke@posteo.net>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hjc@rock-chips.com, robh+dt@kernel.org,
-        linux-media@vger.kernel.org, dafna.hirschfeld@collabora.com,
-        helen.koike@collabora.com, ezequiel@collabora.com,
-        cmuellner@linux.com
-Subject: Re: [PATCH v2 0/6] Support second Image Signal Processor on rk3399
-Message-ID: <20210214045206.4jqae2yuolgdxwad@basti-TUXEDO-Book-XA1510>
-References: <20210210111020.2476369-1-heiko@sntech.de>
+        id S229615AbhBNFE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 00:04:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhBNFEz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 00:04:55 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CC7C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 21:04:11 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id v10so2727082qtq.7
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Feb 2021 21:04:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LV3NAM+JFALnOTUNar5n1Yl4C1DQTr41LXCyFf7ukxE=;
+        b=EA8H6qz7V6zi/F9x6BuiQ1e3FILgnhE97QsuIp+9jgwCcK3QSHuw3LlCAERUov5yVX
+         tUe9C8+eZksP8K5HSsHRVgWgnlIMtAUp6JJJfkAueTRQSqiLY49prEItBqLzVWmOjhgj
+         dH8K7gi/FLsmd1BRxz3bBmepKHFCXwxFuXyF5ivYhIOwiBr0DfOAZ3JrWrtYdaAyIGwx
+         kb92NitosS3DSCAkWBAH7dByYrK3q8BFTdPdL0mzJIdq7gCl6p0R7iV1VhUns/JnreJ7
+         PWx2VQL+76RSdb+hrj8XkCG3CCK6w6tZtdwjXMYYsemrOUJrPZNoRNcsvB546/hC1ddc
+         BvEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LV3NAM+JFALnOTUNar5n1Yl4C1DQTr41LXCyFf7ukxE=;
+        b=DjguAfMp5avpztXtYAkTGA+m0AZ38jihArdCKgUP2PSDzFw8ObPaRsHKcTGLq8uPrw
+         a6oTO81zXA3OIy6md/Sr4neH3KBgsTqs9jq1NeiBmttTjdOT70VNhq4LrW+7G3ZtETWm
+         6yDdX6W7+CPyJlRKwBRUKndyr6ZPYZzTNKPwKMoXpApzZIpyVtiGSBstE2sE/sNxHPUr
+         SLtalMH39OvWabRGx1OnrzfmhZgtG6e/sgows0yu0BoWWBi2OIAhFvWDmfRHCNixCmtR
+         x1BuqpGXwIFbsQQzWbYtiyCXAyq8Bl/zGVmLtdWujeyMVyTWhHhnfVTtgziJnFNjz34C
+         h4dQ==
+X-Gm-Message-State: AOAM530TeWMKBe3qQo6zrNBLjnDLCobX3yZKeCktvxgifG9Mj3MY5ili
+        O0DPfG3DVc47AvEYpv5Ljv/zKmisA9InhQ==
+X-Google-Smtp-Source: ABdhPJzvCvv1GoL3vGozTHFgwak9TLbk5kgs7/l57vf3VROkHTgr2DUaz0Kc8Ibn/6ej3WKxgXcu7w==
+X-Received: by 2002:ac8:6e9a:: with SMTP id c26mr9215430qtv.220.1613279048737;
+        Sat, 13 Feb 2021 21:04:08 -0800 (PST)
+Received: from localhost.localdomain ([187.39.20.240])
+        by smtp.gmail.com with ESMTPSA id s129sm9737158qkh.37.2021.02.13.21.04.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Feb 2021 21:04:08 -0800 (PST)
+From:   Diego Viola <diego.viola@gmail.com>
+To:     bskeggs@redhat.com
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        nouveau@spliet.org, gnurou@gmail.com,
+        Diego Viola <diego.viola@gmail.com>
+Subject: [PATCH] drm/nouveau/pmu: fix timeout on GP108
+Date:   Sun, 14 Feb 2021 02:03:09 -0300
+Message-Id: <20210214050309.2395-1-diego.viola@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210210111020.2476369-1-heiko@sntech.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Heiko,
+This code times out on GP108, probably because the BIOS puts it into a
+bad state.
 
-I have tested your series and it successfully fixes the problem with the
-2nd camera when HDMI is connected at boot. Besides that the patch looks
-good and my tests have confirmed that both cameras have the same output
-quality when I exchange the connected ISP instances.
+Since we reset the PMU on driver load anyway, we are at no risk from
+missing a response from it since we are not waiting for one to begin
+with.
 
-Tested-by: Sebastian Fricke <sebastian.fricke@posteo.net>
+Signed-off-by: Diego Viola <diego.viola@gmail.com>
+---
+ drivers/gpu/drm/nouveau/nvkm/subdev/pmu/base.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Greetings,
-Sebastian
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/base.c b/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/base.c
+index a0fe607c9c07..4f02c4f14f04 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/base.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/pmu/base.c
+@@ -104,10 +104,6 @@ nvkm_pmu_reset(struct nvkm_pmu *pmu)
+ 
+ 	/* Inhibit interrupts, and wait for idle. */
+ 	nvkm_wr32(device, 0x10a014, 0x0000ffff);
+-	nvkm_msec(device, 2000,
+-		if (!nvkm_rd32(device, 0x10a04c))
+-			break;
+-	);
+ 
+ 	/* Reset. */
+ 	if (pmu->func->reset)
+-- 
+2.30.1
 
-On 10.02.2021 12:10, Heiko Stuebner wrote:
->The rk3399 has two ISPs and right now only the first one is usable.
->The second ISP is connected to the TXRX dphy on the soc.
->
->The phy of ISP1 is only accessible through the DSI controller's
->io-memory, so this series adds support for simply using the dsi
->controller is a phy if needed.
->
->That solution is needed at least on rk3399 and rk3288 but no-one
->has looked at camera support on rk3288 at all, so right now
->only implement the rk3399 specifics.
->
->changes in v2:
->- enable grf-clock also for init callback
->  to not break if for example hdmi is connected on boot
->  and disabled the grf clock during its probe
->- add Sebastian's Tested-by
->- add Rob's Ack for the phy-cells property
->
->Heiko Stuebner (6):
->  drm/rockchip: dsi: add own additional pclk handling
->  dt-bindings: display: rockchip-dsi: add optional #phy-cells property
->  drm/rockchip: dsi: add ability to work as a phy instead of full dsi
->  arm64: dts: rockchip: add #phy-cells to mipi-dsi1
->  arm64: dts: rockchip: add cif clk-control pinctrl for rk3399
->  arm64: dts: rockchip: add isp1 node on rk3399
->
-> .../display/rockchip/dw_mipi_dsi_rockchip.txt |   1 +
-> arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  39 ++
-> drivers/gpu/drm/rockchip/Kconfig              |   2 +
-> .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 349 ++++++++++++++++++
-> 4 files changed, 391 insertions(+)
->
->-- 
->2.29.2
->
