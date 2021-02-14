@@ -2,226 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82ED731B251
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B564C31B257
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbhBNTnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 14:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhBNTms (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 14:42:48 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A48EC06178C
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:41:49 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id gb24so2482750pjb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:41:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PjDic6T8CX1s3JQ+rCi0YZO3YnZwESEKbfpyyMhv06I=;
-        b=IB0GXfTI23zPCdLey3dgL1oxizKborBIIOJn6Y3bG3GnJOXQ6Jw2rapttjw94GXHax
-         4Qf+zQgtIGQbcpMfsWk7r8TtZl7XQFhqZgytPTnDQshyHGaw9IKLJLap2on299oR1L5o
-         MZMAxnnV87a5W1qDBu7jSmbvEcPikFtYQBiqI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PjDic6T8CX1s3JQ+rCi0YZO3YnZwESEKbfpyyMhv06I=;
-        b=EyxJHQ6IgGUiKV1h6VxObAUPf0Haigqg+ugFMnSFy988HVDNhtHxpb9G7DqSKr+hu7
-         unOF5Y4YMe5dKrl80FUoBjXbGKKKyGnTb+sXYwEGPJpwJK49fWPKLX4QV8TvzbFnWX4P
-         POnVYVAJ0GDG+PRF6TpIEtYm2wmfQtGl/x7U2EITLvZlTlDBepJ9q2e8V2wxLRL/s1UU
-         e5FniJmCWPqCMdCyLiYjYVyhygnd/okgMsp+DrHXO4mMBCXqjtjwOf0hcn7FaWxkvu/x
-         W6VHGJzi/VQMz9pbOnOK6iPOPz8o9BRByjNAribeMYtOUk2KpxMsKI990493Ops0ZJSr
-         i92Q==
-X-Gm-Message-State: AOAM531RbXv6Y/847VMY1y59BTHjKR88l6cvKCqibGIbG4OebUXR8Viq
-        IkM/5CDMPOUc/SUsscMQzoaF4w==
-X-Google-Smtp-Source: ABdhPJzZ1JR/ha5Z93FWa6lTvn9Kwpxf8X7vB5LWvc9yuHeekMW0I4odGZA8uAVUEIgF4q0vwJ3Z1Q==
-X-Received: by 2002:a17:90a:d590:: with SMTP id v16mr8459529pju.116.1613331708894;
-        Sun, 14 Feb 2021 11:41:48 -0800 (PST)
-Received: from ub-XPS-13-9350.domain.name ([45.249.78.214])
-        by smtp.gmail.com with ESMTPSA id 125sm15129247pfu.7.2021.02.14.11.41.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Feb 2021 11:41:48 -0800 (PST)
-From:   Jagan Teki <jagan@amarulasolutions.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amarula@amarulasolutions.com,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [DO NOT MERGE] [PATCH v3 7/7] ARM: dts: sun8i: bananapi-m2m: Enable S070WV20-CT16 panel
-Date:   Mon, 15 Feb 2021 01:11:02 +0530
-Message-Id: <20210214194102.126146-8-jagan@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210214194102.126146-1-jagan@amarulasolutions.com>
-References: <20210214194102.126146-1-jagan@amarulasolutions.com>
+        id S229818AbhBNTzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 14:55:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229772AbhBNTzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 14:55:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D6A064E64
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 19:55:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613332506;
+        bh=fOho7G1cVTuDwmrGQ/ZxbP6bqnmh0teCq4WFoGAu3Ak=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EV1JLZuGyY0/d12dNOzYIehuHPJbPYcayzWcToJUTnK4nyQj+CsTPWQ0HBA20Zum2
+         0Ip/fGkvUUOENXDwmvbwVXCwq2GoacID27xkv0GhoqF/fHPpMqCrUFzKYYO/CRwAxA
+         sBsF+QhAAGX3c2xTgTk6RBt2qYgSn97LkNkaQXZGsq/Fnnk3ink8y6dhiuc8aJ5Ytr
+         3G0+CO/zp38eBVRq/uFS1QAfMT7j7pcBlUu+z8957F11mRTAHcfcYGJ9yzEIrZZuZy
+         scIkTcOovtB0ITp5+L6p/qnaZ2hRdEYyuYl8Z84VFlKrydFYcepP/yZQDC+GHkXoz9
+         eC/fREdV+TCDQ==
+Received: by mail-ed1-f45.google.com with SMTP id g3so3300211edb.11
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:55:06 -0800 (PST)
+X-Gm-Message-State: AOAM533yj7xEmaxKgXriKaLktuCTJOcgwixqDhpLG06rJa3qQI1H0evY
+        SLS/GhyxJRHWn9L/ovXqF1m1yNLw1LMrE+3zeXhI5A==
+X-Google-Smtp-Source: ABdhPJwsznfo1JxuneQA6tEySA1VZy5/4vy5ABAsRDAuHyPuNse+EHjsaAl9fE1LtKl7a3HV8fvvjS7tYLwXW+3f6k8=
+X-Received: by 2002:a05:6402:3585:: with SMTP id y5mr12399375edc.97.1613332504559;
+ Sun, 14 Feb 2021 11:55:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CALCETrWPCTmoeFBEJvw98zwNpw316Xii_16COZAWoYNC=obF+w@mail.gmail.com>
+ <YCbfyde9jl7ti0Oz@google.com> <8c23bbfd-e371-a7cf-7f77-ec744181547b@intel.com>
+ <YCbm/umiGUS7UuVb@google.com> <514734d9-d8be-03ee-417e-4d0ad2f56276@intel.com>
+ <YCbq+UEMIsE0NIWI@google.com> <7d0b08c4-5ae7-f914-e217-767a9fae7b78@intel.com>
+ <YCb0/Dg28uI7TRD/@google.com> <CALCETrUnOVvC4d8c_Z=5ZDefAo+0t6-9hadttOjTypJykN6_3A@mail.gmail.com>
+ <caa0b029-038c-cb59-6a69-70c84922fc6f@intel.com> <20210214193320.GH365765@tassilo.jf.intel.com>
+In-Reply-To: <20210214193320.GH365765@tassilo.jf.intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sun, 14 Feb 2021 11:54:53 -0800
+X-Gmail-Original-Message-ID: <CALCETrU9XypKbj-TrXLB3CPW6=MZ__5ifLz0ckbB=c=Myegn9Q@mail.gmail.com>
+Message-ID: <CALCETrU9XypKbj-TrXLB3CPW6=MZ__5ifLz0ckbB=c=Myegn9Q@mail.gmail.com>
+Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add support for Bananapi S070WV20-CT16 panel to
-BPI-M2M board.
+On Sun, Feb 14, 2021 at 11:33 AM Andi Kleen <ak@linux.intel.com> wrote:
+>
+> On Fri, Feb 12, 2021 at 01:48:36PM -0800, Dave Hansen wrote:
+> > On 2/12/21 1:47 PM, Andy Lutomirski wrote:
+> > >> What about adding a property to the TD, e.g. via a flag set during TD creation,
+> > >> that controls whether unaccepted accesses cause #VE or are, for all intents and
+> > >> purposes, fatal?  That would allow Linux to pursue treating EPT #VEs for private
+> > >> GPAs as fatal, but would give us a safety and not prevent others from utilizing
+> > >> #VEs.
+> > > That seems reasonable.
+> >
+> > Ditto.
+> >
+> > We first need to double check to see if the docs are right, though.
+>
+> I confirmed with the TDX module owners that #VE can only happen for:
+> - unaccepted pages
 
-Bananapi S070WV20-CT16 is a pure RGB output panel with ICN6211 DSI/RGB
-convertor bridge, so enable bridge along with associated panel.
+Can the hypervisor cause an already-accepted secure-EPT page to
+transition to the unaccepted state?  If so, NAK.  Sorry, upstream
+Linux does not need yet more hacks to make it kind-of-sort-of work on
+the broken x86 exception architecture, especially for a feature that
+is marketed for security.
 
-DSI panel connected via board DSI port with,
-- DCDC1 as VCC-DSI supply
-- PL5 gpio for bridge reset gpio pin
-- PB7 gpio for lcd enable gpio pin
-- PL4 gpio for backlight enable pin
+As I understand it, the entire point of the TDX modular design is to
+make it possible to fix at least some amount of architectural error
+without silicon revisions.  If it is indeed the case that an access to
+an unaccepted secure-EPT page will cause #VE, then Intel needs to take
+the following actions:
 
-Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
----
-Changes for v3:
-- none 
+1. Update the documentation to make the behavior comprehensible to
+mere mortals.  Right now, this information appears to exist in the
+form of emails and is, as far as I can tell, not present in the
+documentation in a way that we can understand.  Keep in mind that this
+discussion includes a number of experts on the software aspects of the
+x86 architecture, and the fact that none of us who don't work for
+Intel can figure out, authoritatively, what the spec is trying to tell
+us should be a huge red flag.
 
- arch/arm/boot/dts/sun8i-r16-bananapi-m2m.dts | 85 ++++++++++++++++++++
- 1 file changed, 85 insertions(+)
+2. Fix the architecture.  Barring some unexpected discovery, some
+highly compelling reason, or a design entailing a number of
+compromises that will, frankly, be rather embarrassing, upstream Linux
+will not advertise itself as a secure implementation of a TDX guest
+with the architecture in its current state.  If you would like Linux
+to print a giant message along the lines of "WARNING: The TDX
+architecture is defective and, as a result, your system is vulnerable
+to compromise attack by a malicious hypervisor that uses the
+TDH.PAGE.MEM.REMOVE operation.  The advertised security properties of
+the Intel TDX architecture are not available.  Use TDX at your own
+risk.", we could consider that.  I think it would look pretty bad.
 
-diff --git a/arch/arm/boot/dts/sun8i-r16-bananapi-m2m.dts b/arch/arm/boot/dts/sun8i-r16-bananapi-m2m.dts
-index e1c75f7fa3ca..f3f63187badc 100644
---- a/arch/arm/boot/dts/sun8i-r16-bananapi-m2m.dts
-+++ b/arch/arm/boot/dts/sun8i-r16-bananapi-m2m.dts
-@@ -44,6 +44,7 @@
- #include "sun8i-a33.dtsi"
- 
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/pwm/pwm.h>
- 
- / {
- 	model = "BananaPi M2 Magic";
-@@ -55,12 +56,21 @@ aliases {
- 		i2c2 = &i2c2;
- 		serial0 = &uart0;
- 		serial1 = &uart1;
-+		mmc0 = &mmc0;
- 	};
- 
- 	chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
- 
-+	backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&pwm 0 50000 PWM_POLARITY_INVERTED>;
-+		brightness-levels = <1 2 4 8 16 32 64 128 255>;
-+		default-brightness-level = <8>;
-+		enable-gpios = <&r_pio 0 4 GPIO_ACTIVE_HIGH>; /* LCD-BL-EN: PL4 */
-+	};
-+
- 	leds {
- 		compatible = "gpio-leds";
- 
-@@ -81,6 +91,18 @@ red {
- 		};
- 	};
- 
-+	panel {
-+		compatible = "bananapi,s070wv20-ct16", "simple-panel";
-+		enable-gpios = <&pio 1 7 GPIO_ACTIVE_HIGH>; /* LCD-PWR-EN: PB7 */
-+		backlight = <&backlight>;
-+
-+		port {
-+			panel_out_bridge: endpoint {
-+				remote-endpoint = <&bridge_out_panel>;
-+			};
-+		};
-+	};
-+
- 	reg_vcc5v0: vcc5v0 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc5v0";
-@@ -122,6 +144,59 @@ &dai {
- 	status = "okay";
- };
- 
-+&de {
-+	status = "okay";
-+};
-+
-+&dphy {
-+	status = "okay";
-+};
-+
-+&dsi {
-+	vcc-dsi-supply = <&reg_dcdc1>;		/* VCC-DSI */
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		dsi_out: port@0 {
-+			reg = <0>;
-+
-+			dsi_out_bridge: endpoint {
-+				remote-endpoint = <&bridge_out_dsi>;
-+			};
-+		};
-+	};
-+
-+	bridge@0 {
-+		compatible = "chipone,icn6211";
-+		reg = <0>;
-+		reset-gpios = <&r_pio 0 5 GPIO_ACTIVE_HIGH>; /* LCD-RST: PL5 */
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			bridge_in: port@0 {
-+				reg = <0>;
-+
-+				bridge_out_dsi: endpoint {
-+					remote-endpoint = <&dsi_out_bridge>;
-+				};
-+			};
-+
-+			bridge_out: port@1 {
-+				reg = <1>;
-+
-+				bridge_out_panel: endpoint {
-+					remote-endpoint = <&panel_out_bridge>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
- &ehci0 {
- 	status = "okay";
- };
-@@ -157,6 +232,12 @@ &ohci0 {
- 	status = "okay";
- };
- 
-+&pwm {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pwm0_pin>;
-+	status = "okay";
-+};
-+
- &r_rsb {
- 	status = "okay";
- 
-@@ -269,6 +350,10 @@ &sound {
- 	status = "okay";
- };
- 
-+&tcon0 {
-+	status = "okay";
-+};
-+
- &uart0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&uart0_pb_pins>;
--- 
-2.25.1
+3. Engage with the ISV community, including Linux, to meaningfully
+review new Intel designs for software usability.  Meaningful review
+does not mean that you send us a spec, we tell you that it's broken,
+and you ship it anyway.  Meaningful review also means that the
+questions that the software people ask you need to be answered in a
+public, authoritative location, preferably the primary spec publicly
+available at Intel's website.  Emails don't count for this purpose.
 
+There is no particular shortage of CVEs of varying degrees of severity
+due to nonsensical warts in the x86 architecture causing CPL 0 kernels
+to malfunction and become subject to privilege escalation.  We are
+telling you loud and clear that the current TDX architecture appears
+to be a minefield and that it is *specifically* vulnerable to an
+attack in which a page accessed early in SYSCALL path (or late in the
+SYSRET path) causes #VE. You need to take this seriously.
+
+--Andy
