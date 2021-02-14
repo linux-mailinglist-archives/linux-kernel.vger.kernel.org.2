@@ -2,161 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A404B31B2D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 22:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7011531B2DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 22:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhBNVfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 16:35:31 -0500
-Received: from mail.xenproject.org ([104.130.215.37]:39614 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230042AbhBNVfU (ORCPT
+        id S230019AbhBNVlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 16:41:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229827AbhBNVlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 16:35:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=sr90ghnrrGFMQJUJbkuM9kxkBCV/fRb8wi8FFVB7UVM=; b=zYsYKWf6svYxuu2NL22bZxT/Ki
-        lWJTcTuHslPksK7qPqnxkie4ebX1D1ya7QT4OZX3xO0iYKAn+GNR+CLRzAyCVlTJcgxXjka4p3ijV
-        X28cbCzHUG8LUdXlGxuGd0XUvOAZrdLuVW0hJt7Ro21kji+Nwi8ZZPg1kTL68MNE2ouI=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1lBP2H-00039D-1g; Sun, 14 Feb 2021 21:34:33 +0000
-Received: from [54.239.6.185] (helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1lBP2G-0008FF-Pr; Sun, 14 Feb 2021 21:34:32 +0000
-Subject: Re: [PATCH v2 3/8] xen/events: avoid handling the same event on two
- cpus at the same time
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <20210211101616.13788-1-jgross@suse.com>
- <20210211101616.13788-4-jgross@suse.com>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <eed12192-a740-e767-1762-828c75de66ce@xen.org>
-Date:   Sun, 14 Feb 2021 21:34:31 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Sun, 14 Feb 2021 16:41:35 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1531FC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 13:40:50 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id nm1so2584049pjb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 13:40:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PiG6cYoVsBFCEBxVL/MHzdKRIBPAg+eCl4dTqw4n41o=;
+        b=hR0QP9L9vXHRLCGVv4CmmoNvHih4aDAmCL/YFKNhdrXKHRBmLrOrp8+0nfeauwgRBA
+         99RKyjgRdcWAXGfM7rubvvxsyuoUHn9TFohn4RQjtapAsYm8sT+ZRX6GfHWpa/3aJNV4
+         EYzRT3vvx4h84CbaTpZOHSzYqG/1o9G+1WCET0lWEuFXGT/0PqobgCic8ynnvnPQTtij
+         noWtNnjWu7ev2qZCZkh2i+r0h+FYDo/8M1U1iRIX1u0BoY+MM2Zbv0/f34lUDSzkH1OH
+         G59nKEhBFANPj88fkej01MbTGm1Is93aM+gN3bkPfrLXP0Zp0J+OeMjs6B+v4pOHTga0
+         tLDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PiG6cYoVsBFCEBxVL/MHzdKRIBPAg+eCl4dTqw4n41o=;
+        b=W3EUlIkCo/yshgEVYgG1xcD4IAEif9XuSXW1XPzuoTyiJ6WPtKUVcFwB0IAGNE6DEN
+         GlXyjHK4yxVPMWAJezEygTIzWknBewzZMByX5bOHggUfC9R+RJ90KQC/ZdOw4oythWpw
+         OEea/JwGweBnVQ4/euBYv7q46O6Ne4K01LthPUnhhH8jn8Ntv2vfr78gDTmroC74wc0L
+         GLTj/cn2gQAi8WQUrEZzlMpNWTrEMG+BHi9DGm5ksYtWpnT9E69qVLT+SvlYW8XVw2m/
+         3+S9/hiAQRTGvLM4yehi2/W49dMTQ0+zs50//bMp3FGNUGlkrJR1lk0WGIH5uJ3XkyI+
+         YtkA==
+X-Gm-Message-State: AOAM531Z+fM3VrWSldiETFhJsGhJA7z2sY3yf5gVXWDGmHYQSws2LIfU
+        zw68k3C6kLCmLmeQpTw0dAV+7PVFEKWX/oAwmR7L2R4QG40=
+X-Google-Smtp-Source: ABdhPJwbaMnJq9+uWRBDq60rh+blroXEPgnFdWwqqdaQzQ2UGXLZ6zmWeP26EPkd2ceb5KbOQglxK0zu1EXa5QSSmfQ=
+X-Received: by 2002:a17:90b:4b02:: with SMTP id lx2mr13268074pjb.178.1613338849352;
+ Sun, 14 Feb 2021 13:40:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210211101616.13788-4-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210125111223.2540294c@canb.auug.org.au> <20210215081250.19bc8921@canb.auug.org.au>
+In-Reply-To: <20210215081250.19bc8921@canb.auug.org.au>
+From:   Arjun Roy <arjunroy@google.com>
+Date:   Sun, 14 Feb 2021 13:40:38 -0800
+Message-ID: <CAOFY-A2sLGQHpBp79f2bQ-2hgQDbu04e+7uC9+E3vSo7Cqq5=A@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the net-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juergen,
+On Sun, Feb 14, 2021 at 1:13 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> On Mon, 25 Jan 2021 11:12:23 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Today's linux-next merge of the bpf-next tree got a conflict in:
+> >
+> >   net/ipv4/tcp.c
+> >
+> > between commit:
+> >
+> >   7eeba1706eba ("tcp: Add receive timestamp support for receive zerocopy.")
+> >
+> > from the net-next tree and commit:
+> >
+> >   9cacf81f8161 ("bpf: Remove extra lock_sock for TCP_ZEROCOPY_RECEIVE")
+> >
+> > from the bpf-next tree.
+> >
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> >
+> > diff --cc net/ipv4/tcp.c
+> > index e1a17c6b473c,26aa923cf522..000000000000
+> > --- a/net/ipv4/tcp.c
+> > +++ b/net/ipv4/tcp.c
+> > @@@ -4160,18 -4098,13 +4160,20 @@@ static int do_tcp_getsockopt(struct soc
+> >               if (copy_from_user(&zc, optval, len))
+> >                       return -EFAULT;
+> >               lock_sock(sk);
+> >  -            err = tcp_zerocopy_receive(sk, &zc);
+> >  +            err = tcp_zerocopy_receive(sk, &zc, &tss);
+> > +             err = BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sk, level, optname,
+> > +                                                       &zc, &len, err);
+> >               release_sock(sk);
+> >  -            if (len >= offsetofend(struct tcp_zerocopy_receive, err))
+> >  -                    goto zerocopy_rcv_sk_err;
+> >  +            if (len >= offsetofend(struct tcp_zerocopy_receive, msg_flags))
+> >  +                    goto zerocopy_rcv_cmsg;
+> >               switch (len) {
+> >  +            case offsetofend(struct tcp_zerocopy_receive, msg_flags):
+> >  +                    goto zerocopy_rcv_cmsg;
+> >  +            case offsetofend(struct tcp_zerocopy_receive, msg_controllen):
+> >  +            case offsetofend(struct tcp_zerocopy_receive, msg_control):
+> >  +            case offsetofend(struct tcp_zerocopy_receive, flags):
+> >  +            case offsetofend(struct tcp_zerocopy_receive, copybuf_len):
+> >  +            case offsetofend(struct tcp_zerocopy_receive, copybuf_address):
+> >               case offsetofend(struct tcp_zerocopy_receive, err):
+> >                       goto zerocopy_rcv_sk_err;
+> >               case offsetofend(struct tcp_zerocopy_receive, inq):
+>
+> With the merge window about to open, this is a reminder that this
+> conflict still exists.
+>
+Sorry, I was confused from the prior email. Is any action required at
+the moment, or not?
 
-On 11/02/2021 10:16, Juergen Gross wrote:
-> When changing the cpu affinity of an event it can happen today that
-> (with some unlucky timing) the same event will be handled on the old
-> and the new cpu at the same time.
-> 
-> Avoid that by adding an "event active" flag to the per-event data and
-> call the handler only if this flag isn't set.
-> 
-> Reported-by: Julien Grall <julien@xen.org>
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
-> V2:
-> - new patch
-> ---
->   drivers/xen/events/events_base.c | 19 +++++++++++++++----
->   1 file changed, 15 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
-> index e157e7506830..f7e22330dcef 100644
-> --- a/drivers/xen/events/events_base.c
-> +++ b/drivers/xen/events/events_base.c
-> @@ -102,6 +102,7 @@ struct irq_info {
->   #define EVT_MASK_REASON_EXPLICIT	0x01
->   #define EVT_MASK_REASON_TEMPORARY	0x02
->   #define EVT_MASK_REASON_EOI_PENDING	0x04
-> +	u8 is_active;		/* Is event just being handled? */
->   	unsigned irq;
->   	evtchn_port_t evtchn;   /* event channel */
->   	unsigned short cpu;     /* cpu bound */
-> @@ -622,6 +623,7 @@ static void xen_irq_lateeoi_locked(struct irq_info *info, bool spurious)
->   	}
->   
->   	info->eoi_time = 0;
-> +	smp_store_release(&info->is_active, 0);
->   	do_unmask(info, EVT_MASK_REASON_EOI_PENDING);
->   }
->   
-> @@ -809,13 +811,15 @@ static void pirq_query_unmask(int irq)
->   
->   static void eoi_pirq(struct irq_data *data)
->   {
-> -	evtchn_port_t evtchn = evtchn_from_irq(data->irq);
-> +	struct irq_info *info = info_for_irq(data->irq);
-> +	evtchn_port_t evtchn = info ? info->evtchn : 0;
->   	struct physdev_eoi eoi = { .irq = pirq_from_irq(data->irq) };
->   	int rc = 0;
->   
->   	if (!VALID_EVTCHN(evtchn))
->   		return;
->   
-> +	smp_store_release(&info->is_active, 0);
+Thanks,
+-Arjun
 
-Would you mind to explain why you are using the release semantics?
-
-It is also not clear to me if there are any expected ordering between 
-clearing is_active and clearing the pending bit.
-
->   	clear_evtchn(evtchn);
-
-
-The 2 lines here seems to be a common pattern in this patch. So I would 
-suggest to create a new helper.
-
->   
->   	if (pirq_needs_eoi(data->irq)) {
-> @@ -1640,6 +1644,8 @@ void handle_irq_for_port(evtchn_port_t port, struct evtchn_loop_ctrl *ctrl)
->   	}
->   
->   	info = info_for_irq(irq);
-> +	if (xchg_acquire(&info->is_active, 1))
-> +		return;
->   
->   	if (ctrl->defer_eoi) {
->   		info->eoi_cpu = smp_processor_id();
-> @@ -1823,11 +1829,13 @@ static void disable_dynirq(struct irq_data *data)
->   
->   static void ack_dynirq(struct irq_data *data)
->   {
-> -	evtchn_port_t evtchn = evtchn_from_irq(data->irq);
-> +	struct irq_info *info = info_for_irq(data->irq);
-> +	evtchn_port_t evtchn = info ? info->evtchn : 0;
->   
->   	if (!VALID_EVTCHN(evtchn))
->   		return;
->   
-> +	smp_store_release(&info->is_active, 0);
->   	clear_evtchn(evtchn);
->   }
->   
-> @@ -1969,10 +1977,13 @@ static void restore_cpu_ipis(unsigned int cpu)
->   /* Clear an irq's pending state, in preparation for polling on it */
->   void xen_clear_irq_pending(int irq)
->   {
-> -	evtchn_port_t evtchn = evtchn_from_irq(irq);
-> +	struct irq_info *info = info_for_irq(irq);
-> +	evtchn_port_t evtchn = info ? info->evtchn : 0;
->   
-> -	if (VALID_EVTCHN(evtchn))
-> +	if (VALID_EVTCHN(evtchn)) {
-> +		smp_store_release(&info->is_active, 0);
->   		clear_evtchn(evtchn);
-> +	}
->   }
->   EXPORT_SYMBOL(xen_clear_irq_pending);
->   void xen_set_irq_pending(int irq)
-> 
-
--- 
-Julien Grall
+> --
+> Cheers,
+> Stephen Rothwell
