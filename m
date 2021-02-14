@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9D531B228
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1F631B22B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhBNTBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 14:01:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        id S229881AbhBNTIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 14:08:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhBNTBr (ORCPT
+        with ESMTP id S229789AbhBNTIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 14:01:47 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFB4C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:01:07 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id c17so4235787ljn.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:01:07 -0800 (PST)
+        Sun, 14 Feb 2021 14:08:16 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBE4C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:07:36 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id h26so7102735lfm.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:07:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=M+PrlagK3FXPEbDOZIY/ECRbDBZyE6NRnFmFq47XoKo=;
-        b=e8vgrlaDAszZNUkNayc/bQhGtTDVv2JWQ2vcikOXiPfOvXZyT7o6vWAx5IiBM+Q5aK
-         xdHDapKbzufyKmtn2WyIcyjmXvK9/AY/sW/TaHGzXucoZnioLMvlxwq5wCIBY1xjxt3H
-         8t/fXMkN3hYAEKXFusstufxRxZGE6gAS/rk1k=
+        bh=+iR6zFaRNY/fhsrzqmwn/JVZVFCvk6DBCPYDYIQyHfo=;
+        b=RI+o6311ff6/KY2oB1MDn2aYFIZ37ZO7+ElRP2boyLDgrEezQY2kcJmhjWwQssySKS
+         o3jxGgKHe3icceIXdUvRBS4zM10EMA0Sff4F62aHaU4ESBBDXYXw4cash1EmqdeDAWhj
+         SSPqJrJI3i2beVLxhS1rUn455sMCpu97c6TWM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=M+PrlagK3FXPEbDOZIY/ECRbDBZyE6NRnFmFq47XoKo=;
-        b=eEyaw3RD2tZUywPazx+T8SeJKk58EXUAFnDPy4IN264C3Omho2T4FIWgWvcKr9M85C
-         loK+elTN1EpUq9CVAUaEqKqVoGKjDZ16C7J4tBD6/GcVpCJ/EtBbafNdcXSiaoAZiJDi
-         OH/QD6OOZ2vybCXRJ8t0qh9Czxck9U8aq2RInO5XZp6YPoTNgRKdJLCtAGyJorDhaVPb
-         Ux7MImlxwxB1VTic7fKfdWuI/VtZzK1PpMta/vOOmtkN18kmWIwhoud5qKqoe1ircgwX
-         86X5rAWD8bIGzg7DY0LPAGjpJQxBV6Lo7Z707ElnN+RDqKwarnhMwwBfjGIegBS8X23k
-         WSrg==
-X-Gm-Message-State: AOAM532/5VqVCvwBJQcneQBiJmue7A16XlkFaRNeau3nJfjyY6BKME9r
-        3KO+ZuGvjOoYVloeP5CbPn9BpF9C2EtqAw==
-X-Google-Smtp-Source: ABdhPJxKIRNyOEXre5I2D03isbc+JY5IFQ8mdWU8Bbjxx622dIE8k73MFYNt+YsYbjZgltLhpAto6Q==
-X-Received: by 2002:a2e:8855:: with SMTP id z21mr7581893ljj.472.1613329265291;
-        Sun, 14 Feb 2021 11:01:05 -0800 (PST)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id g8sm3302895ljl.26.2021.02.14.11.01.04
+        bh=+iR6zFaRNY/fhsrzqmwn/JVZVFCvk6DBCPYDYIQyHfo=;
+        b=RTVGGKGxLSSYwRIcvY546b7R7NmikbORTqeQy9OehcWmTboxUWl2AtVjMU+ilxS3LP
+         Ern/LQHoTnvBqHtYQGz1uSdCjvdgJ2txafTinVD7zr0mEbQZsmLFlUNgtxXOZuVc/l1j
+         NlwamER4ownOt+z+2WESgERs9uZgA2Q+Fc9XEda5SFl3Qm+S+Ow6vcad94undVRsBIG3
+         9hH3zXeqzkSRHmZqDIXl4k6wcocoCoCiRtuX8ujPEf27zwM8SD8m9jh2FwnVj5K9Rxet
+         P1ih/siUiJu36KDqsF29p9Uqn7+BEk0HnGI0qcOO0wBswWbjjM60rwwmvvYBFeH1+5p/
+         oIdQ==
+X-Gm-Message-State: AOAM532fMrwPZW+Q9vpF0zOXND6qo5Ss7ev9p5+zy3ttLA4OLd+1YTq/
+        A5U9UvNJvMeMj4KrCzGhwQJ9tbkmqtZYTw==
+X-Google-Smtp-Source: ABdhPJw7n3wp5HWrLoq+MeCXkNMip7J4BSlP7eVGQaxcRu6uzMHNhvx1gorlQGPprrTPkQaYTpkrNQ==
+X-Received: by 2002:a05:6512:358d:: with SMTP id m13mr7097554lfr.238.1613329654507;
+        Sun, 14 Feb 2021 11:07:34 -0800 (PST)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id m10sm2309292ljj.127.2021.02.14.11.07.33
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Feb 2021 11:01:04 -0800 (PST)
-Received: by mail-lf1-f48.google.com with SMTP id j19so6973395lfr.12
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:01:04 -0800 (PST)
-X-Received: by 2002:a19:7f44:: with SMTP id a65mr6579147lfd.41.1613329264262;
- Sun, 14 Feb 2021 11:01:04 -0800 (PST)
+        Sun, 14 Feb 2021 11:07:33 -0800 (PST)
+Received: by mail-lj1-f181.google.com with SMTP id a22so5253379ljp.10
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:07:33 -0800 (PST)
+X-Received: by 2002:a05:651c:112:: with SMTP id a18mr7593997ljb.465.1613329653401;
+ Sun, 14 Feb 2021 11:07:33 -0800 (PST)
 MIME-Version: 1.0
 References: <651ac50b9ff6ed3db8cab9f176514900f6a02a0c.1613131413.git.agx@sigxcpu.org>
- <20210213031237.GP219708@shao2-debian> <YClYh7pqDlbXy8qh@bogon.m.sigxcpu.org> <6a8eb07f-16d5-f461-cf0b-6c4aaf93b014@ramsayjones.plus.com>
-In-Reply-To: <6a8eb07f-16d5-f461-cf0b-6c4aaf93b014@ramsayjones.plus.com>
+ <20210213031237.GP219708@shao2-debian> <YClYh7pqDlbXy8qh@bogon.m.sigxcpu.org>
+ <6a8eb07f-16d5-f461-cf0b-6c4aaf93b014@ramsayjones.plus.com> <CAHk-=wjCAVj7J+KAC1pvtdeM-c76oXZq7k=v40-maKjTo6qfVw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjCAVj7J+KAC1pvtdeM-c76oXZq7k=v40-maKjTo6qfVw@mail.gmail.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 14 Feb 2021 11:00:48 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjCAVj7J+KAC1pvtdeM-c76oXZq7k=v40-maKjTo6qfVw@mail.gmail.com>
-Message-ID: <CAHk-=wjCAVj7J+KAC1pvtdeM-c76oXZq7k=v40-maKjTo6qfVw@mail.gmail.com>
+Date:   Sun, 14 Feb 2021 11:07:17 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjvoGNnqWQiz3js43fiXf9kcAfCbABaHdz98Q+3-3zg6A@mail.gmail.com>
+Message-ID: <CAHk-=wjvoGNnqWQiz3js43fiXf9kcAfCbABaHdz98Q+3-3zg6A@mail.gmail.com>
 Subject: Re: [PATCH v2 2/4] usb: typec: tps6598x: Add trace event for status register
 To:     Ramsay Jones <ramsay@ramsayjones.plus.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -71,34 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 10:42 AM Ramsay Jones
-<ramsay@ramsayjones.plus.com> wrote:
+On Sun, Feb 14, 2021 at 11:00 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> >
-> > I looked around but didn't find any hints how to fix this. Any pointers
-> > I missed (added the sparse list to cc:)?
+> The C89 standard actually says that a string literal can be at most
+> 509 characters to be portable. C99 increased it to 4095 characters.
 >
-> This is a limitation of sparse; when using the 'stringize' pre-processor
-> operator #, the maximum size of the resulting string is about 8k (if I
-> remember correctly).
+> Sparse makes the limit higher, and the limit could easily be expanded
+> way past 8kB - but the point is that large string literals are
+> actually not guaranteed to be valid C.
 
-Well, yes and no.
+Looking around, there's a couple of other similar cases:
 
-The C89 standard actually says that a string literal can be at most
-509 characters to be portable. C99 increased it to 4095 characters.
+  drivers/infiniband/hw/hfi1/./trace_tx.h:727:1: error: too long token expansion
+  arch/x86/purgatory/kexec-purgatory.c:1340:9: warning: trying to
+concatenate 21400-character string (8191 bytes max)
+  drivers/scsi/constants.c:318:9: warning: trying to concatenate
+26550-character string (8191 bytes max)
+  kernel/trace/trace.c:5290:1: warning: trying to concatenate
+10842-character string (8191 bytes max)
 
-Sparse makes the limit higher, and the limit could easily be expanded
-way past 8kB - but the point is that large string literals are
-actually not guaranteed to be valid C.
+but those four are the only ones I see from a quick x86-64 allmodconfig build.
 
-So honestly, it really sounds like that TRACE_EVENT() thing is doing
-something it shouldn't be doing.
+Please try to avoid it.
 
-I don't think there's any fundamental limit why sparse does 8kB as a
-limit (just a few random buffers). Making sparse accept larger ones
-should be as simple as just increasing MAX_STRING, but I really don't
-think the kernel should encourage that kind of excessive string sizes.
-
-I wouldn't be surprised if tracing buffers etc make such strings useless anyway.
-
-               Linus
+          Linus
