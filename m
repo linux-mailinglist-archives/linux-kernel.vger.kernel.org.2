@@ -2,138 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEE931B2FB
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 23:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 396A231B2FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 23:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhBNWMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 17:12:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
+        id S230094AbhBNWNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 17:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhBNWMR (ORCPT
+        with ESMTP id S229976AbhBNWNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 17:12:17 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B11C061574;
-        Sun, 14 Feb 2021 14:11:37 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Df1fP271Rz9sBJ;
-        Mon, 15 Feb 2021 09:11:25 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613340695;
-        bh=2VBHLAm0gcOLzgX3KbA/12sDRFF4VuLYTHh+5XsshGI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Zytu0o2zbVFBwKdAEfr/7IDkO8FudNnJ6Y2wISo5ZMvK9G/oKxbPLtVJ9RlHvDIo9
-         jE4adBlviOuRbCBhTpwUqpkG5HTq57LtpGM2ZkfExubuSL5y0dBPHtzEcmeq2Tzi95
-         QBqYXYVquYiUye+EQSt+8FvByIODNafQmIw0uRUgVBAQ/eLFeM9t25Kbc8oW/VeklJ
-         UwgGU40XvLNfI04nV7XoWRJzdImfmcbOrAaa5vJcDHSPiuQdSOwy7LdpIu+rAT+Pqg
-         VeRirTf0R895b5yWH/8mtm5gQ96traqF4bj1h1WCxgR+7jVbUujm/gV+ij5r0fCt7Q
-         H8QhWJvS/QQUQ==
-Date:   Mon, 15 Feb 2021 09:11:24 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Paul Kocialkowski <contact@paulk.fr>,
-        Samuel Holland <samuel@sholland.org>
-Subject: Re: linux-next: manual merge of the irqchip tree with the sunxi
- tree
-Message-ID: <20210215091124.46c005ad@canb.auug.org.au>
-In-Reply-To: <20210201144259.102ae6ab@canb.auug.org.au>
-References: <20210201144259.102ae6ab@canb.auug.org.au>
+        Sun, 14 Feb 2021 17:13:17 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433FBC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 14:12:37 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id f6so4981613ioz.5
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 14:12:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=YwaYOR6smcnC1fdwtfgVkGEp6bB82XTtb8+PRtT3+Lk=;
+        b=BlITmRbvzOb88BrfBUp8KwYYWl/t33jgHRJQS2SXBbjKtLAE+4sPTe+nF5Q8cFkKP+
+         Uf2l2SMvl1e6ANKqWySxYtckt0V25OcXaWFI/q0bq9I/W1bBBqJhBOxTxDDM6nV6SNxd
+         1h7jHrxecGbCBKBCprpVAWOaIMEpeMtMa0sLN0kmtfCFonmDV40oJSlSC/JeKDLZ38hw
+         3tBVE51MS9mqAu2MIYcCE38kCUSaVZGyGYBjdcctWVuUMKlmtTdABTzuWJkHJADdcLYb
+         we/aUA58PEMPZDX74seVlXn7cqWtKCrFTwtW3NPTBhHqiuI3SVfhdWBUjXYqV2RWKkif
+         eEyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=YwaYOR6smcnC1fdwtfgVkGEp6bB82XTtb8+PRtT3+Lk=;
+        b=d/9psK3R5QrB3CJ6MUrcaMdSCyueXp1RJzpjqWUTtHp1HJNTmN9E7rEa31ZghoE/ml
+         4oJXlUqCSdXzh4MYV568eCwHRS1du/ZpljDxXUmbwjduMEnxj3EPRbJNp2L9UZo0IMyP
+         +uvTrxDBRW71IaznINGb0QveoYDQQ4lx9+VegP6+6Cvx6F9H0J7D1n21A65VsifrasM5
+         2xvpzBM6BsAeExDYQGPTTR4adWB+fOFvkI4ogLyAUieAXxDhH2uNwbwrEBHCDDbRcjIE
+         P4cq57x8RAbj3wnNlXs4xsSiUFhhhpcBCQMwGSIQYBZvObU/vBFZYkNe3etZVjtbnaIz
+         4NUw==
+X-Gm-Message-State: AOAM531X1tVma5oSzcM1ONb8KhwmT0AFsiZwNzfuBgMJo9rjx+EcpVKO
+        9itk4uAXABpCHQLMv6GKczZV/lI2+ZBJEFThURWessoi0s8=
+X-Google-Smtp-Source: ABdhPJx0PKd815rdvR01iY+xbgJ5R4BYbX3ETgdTmw18/UcD1fEr+MReNjaYCSK6kuF1UUoT8rNZiPBcU3uFs2PAnIE=
+X-Received: by 2002:a05:6602:22d7:: with SMTP id e23mr10646282ioe.156.1613340756761;
+ Sun, 14 Feb 2021 14:12:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/h8Cej0=nYg1drUa691HRZPR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <CA+icZUUGO0__SEZ7YvuQzfSdaWfTnCHW=73-3W4X=Vz51wHd+w@mail.gmail.com>
+ <CAHk-=wiR+uHUyp3=Nf1aiNjmg0ZekaQJupLRguFNZ=MreuGhfg@mail.gmail.com>
+ <CA+icZUXRjrX+1NAZy4As_ficD4aHRAZWHRj5hrE+D6E5zEKXHw@mail.gmail.com> <CAMuHMdU-XugrkfM-9tQLrOJ_E1Of1Zf-DJZeSXJwkhw0Q9YoPA@mail.gmail.com>
+In-Reply-To: <CAMuHMdU-XugrkfM-9tQLrOJ_E1Of1Zf-DJZeSXJwkhw0Q9YoPA@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sun, 14 Feb 2021 23:12:26 +0100
+Message-ID: <CA+icZUXh7TNQU2EUch0XyBxhY8LWRD==98+jNNKtOpij+0bwCg@mail.gmail.com>
+Subject: Re: Linux 5.8-rc6
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/h8Cej0=nYg1drUa691HRZPR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Mon, 1 Feb 2021 14:42:59 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
+On Mon, Aug 10, 2020 at 5:30 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> Today's linux-next merge of the irqchip tree got a conflict in:
->=20
->   Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-=
-a20-sc-nmi.yaml
->=20
-> between commit:
->=20
->   752b0aac99c7 ("dt-bindings: irq: sun7i-nmi: Add binding documentation f=
-or the V3s NMI")
->=20
-> from the sunxi tree and commit:
->=20
->   ad6b47cdef76 ("dt-bindings: irq: sun6i-r: Split the binding from sun7i-=
-nmi")
->=20
-> from the irqchip tree.
->=20
-> I fixed it up (I think - see below) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
->=20
-> diff --cc Documentation/devicetree/bindings/interrupt-controller/allwinne=
-r,sun7i-a20-sc-nmi.yaml
-> index 4fd1e2780026,f34ecc8c7093..000000000000
-> --- a/Documentation/devicetree/bindings/interrupt-controller/allwinner,su=
-n7i-a20-sc-nmi.yaml
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/allwinner,su=
-n7i-a20-sc-nmi.yaml
-> @@@ -25,17 -25,7 +25,10 @@@ properties
->         - const: allwinner,sun6i-a31-sc-nmi
->           deprecated: true
->         - const: allwinner,sun7i-a20-sc-nmi
-> -       - items:
-> -           - const: allwinner,sun8i-a83t-r-intc
-> -           - const: allwinner,sun6i-a31-r-intc
->  +      - items:
->  +          - const: allwinner,sun8i-v3s-nmi
->  +          - const: allwinner,sun9i-a80-nmi
->         - const: allwinner,sun9i-a80-nmi
-> -       - items:
-> -           - const: allwinner,sun50i-a64-r-intc
-> -           - const: allwinner,sun6i-a31-r-intc
->         - items:
->             - const: allwinner,sun50i-a100-nmi
->             - const: allwinner,sun9i-a80-nmi
+> Hi Sedat,
+>
+> On Tue, Jul 21, 2020 at 10:19 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > You happen to know if I can configure in my ~/.gitconfig to pull
+> > linux-git stuff from two repositories - check first git.kernel.org
+> > then GitHub.
+> >
+> > Some days ago GitHub had some maintenance issues and I was not able to pull.
+> > Means I trust more the security and integrity concept of git.kernel.org.
+> >
+> > To pull from GitHub - saved 15-16mins of my life-time - meant
+> > 15-16mins go earlier to sleep - as said I started my build 01:02a.m.
+> > (German local-time).
+>
+> Assumed your cloned from kernel.org:
+>
+>     git remote add github https://github.com/torvalds/linux
+>
+> After that:
+>   1. "git remote update" will fetch data from both origin and github,
+>   2. "git merge $(git tag | grep -v rc | sort -n | tail -1)" will
+>      merge in the latest release, if you don't have it merged already.
+>
 
-With the merge window about to open, this is a reminder that this
-conflict still exists.  It is now between the arm-soc tree and the
-irqchip tree.
+Last week or so I really used your recommendation.
+Thanks Geert.
 
---=20
-Cheers,
-Stephen Rothwell
+- Sedat -
 
---Sig_/h8Cej0=nYg1drUa691HRZPR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmApoAwACgkQAVBC80lX
-0GyvdQf/ZYGtB+JyRJNftVlhiweZaLh9ab6YXSL/BeFq5PlyahID57qAgVzfXJCy
-5ekIgNiQGPL3QqfvTYVFHeoP4QU3RVJbPhchpi//gYBe4mFpEFcfQ793ezEi3ghU
-+81/OuAcz6bsu0njJUVIKzhFuupnRdbIs3ypYNkyZOJaotCyQwTeNPIM6+5gQzM/
-vh4FIg39h7oZxsA/zeImlDpr3lHeLx4eqY14Ei6IL4d98ZLn1yJzQN9f5/Vmq8GH
-KjOG6dgngf8TN7b4RUHJ8mwIZ8kAhNZ2EtmHvKg439yKwJHV/k3YhK1XogrP5DbY
-ua8WzRKOZo/gbYjJHf4KLjNFKzPnug==
-=g1UE
------END PGP SIGNATURE-----
-
---Sig_/h8Cej0=nYg1drUa691HRZPR--
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
