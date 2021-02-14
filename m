@@ -2,125 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134DE31B372
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 00:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 712C031B375
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 00:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhBNXip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 18:38:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229881AbhBNXin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 18:38:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AB1F64DEA;
-        Sun, 14 Feb 2021 23:38:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613345882;
-        bh=1mL3FqIW/Z1riGHUFrBcsw/2g74ZNcTC1MqizKwV19w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WjiMcPyCy45EoxTMt1Ljqlw7WOkm8rKVrzJVhNGDlOL4IaJVeE2Nsf88qw/SGnN1c
-         v8/IK8PmVhcj984yYj7dxjy05U/yJKVpSLh3Vf3hsgCyDsJNey3DwcsA4okE0xA731
-         6Dc+Em0hPRnfEYOkmBU8sDlUzbifSKnzE8DAr8m8IRx36v9YhqJIMQurII6EHxa5br
-         o+dlxGosGEqktna/DQR6VknJCiOIr/y+jqN5w07JcKS6ROJEZW/GgfNibOKvUv2jW6
-         BkBNQmT1mkvEZ2J30wv8tDzYLPz4hxDSUJG7qMct85rU5eS68XKT+7LnZjMrkFEy1l
-         2wNtU29qrsNYA==
-Date:   Sun, 14 Feb 2021 15:38:01 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the xfs tree with the pidfd tree
-Message-ID: <20210214233801.GP7193@magnolia>
-References: <20210208103348.1a0beef9@canb.auug.org.au>
- <20210215094131.7b47c1c5@canb.auug.org.au>
+        id S229981AbhBNXoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 18:44:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhBNXoJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 18:44:09 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D3DC061574;
+        Sun, 14 Feb 2021 15:43:29 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id m144so5012228qke.10;
+        Sun, 14 Feb 2021 15:43:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g51sb7f8Ru24KB1O9CC1p/nfwLPwMBUXtIRefVZqVLY=;
+        b=LgAdkOGtUJrMwau46ostm3EyetfaF61qoYheeArqNx/mafRfRGKnlMAdKFbzKHjn5J
+         quqUdYKWP1VBUeVYr9eAfq6jWi5CFGdXiNGSQuvB6l7kQe2sv81X9zj70t3QgSug95hK
+         0/qToaCXk/OMoPXgdctHG8d/O8GTniTSNads7xzNnTBRulAnLsiZutswqz/NbkOXAPqZ
+         nWhamtJzQSF6e2uEI220aSl7KssuUTUiCFQ+6jt91joPo3Tpj9naWgA9kac23+BQqX6s
+         MihWBU7iw+XlF/c96+FgaNDq0IYz8Ikap9leBZz7CX1m2EnhPKvilQVpl54uSfHLLR5R
+         iJLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g51sb7f8Ru24KB1O9CC1p/nfwLPwMBUXtIRefVZqVLY=;
+        b=uNpOl2WOdy6bxkDUPHvS8CgiHlSOFRDEUO71KStAh/iKswV8dbqTWVK4FErzEmFa+I
+         ZShQf6OOkDEpIHZe+aVtOjeGjobFrFt0J295fWScfJg1vtWfMHyexvyXtWKOyQyX9M8O
+         jpGA9ot8UD/JFbzyJ5+CyHMcKhNEGFIXjPJ9F8I5fDIJs/GnAV30LRg4KZnbfzJ4VXHx
+         9xe+x3rT5mV1F8UWTbLP5e+ApgVCienJhAwh6grfPawkmUJNZ5opUwa2/p7/nDTgv03Q
+         2ZeQdxOhIbRIAtB8r+PvOKRovnMEf+kti7AyIkspeU+xum+GokaHlc+TB9QWuduy7/pW
+         fSkQ==
+X-Gm-Message-State: AOAM530Vq2oeVHq/qNmwo7aU7wXaBjwPbIKUmrCs0Br5zL88OptY1hnk
+        EeTGj8jEVecK2/kWRQcQsYQ=
+X-Google-Smtp-Source: ABdhPJw2kHWXJ8q+VkyKpttfMAnzuk6ht5f6OEJcmLul2LckaVJixYjCyKiD1gIaH6g2MJ4+qt1zpQ==
+X-Received: by 2002:a37:4589:: with SMTP id s131mr12773257qka.269.1613346207969;
+        Sun, 14 Feb 2021 15:43:27 -0800 (PST)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:48a6:eef1:8ac9:fd76])
+        by smtp.googlemail.com with ESMTPSA id x4sm10669469qkx.136.2021.02.14.15.43.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 15:43:27 -0800 (PST)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ztong0001@gmail.com
+Subject: [PATCH v1] atm: idt77252: fix build broken on amd64
+Date:   Sun, 14 Feb 2021 18:43:08 -0500
+Message-Id: <20210214234308.1524014-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210215094131.7b47c1c5@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 09:41:31AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Mon, 8 Feb 2021 10:33:48 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Today's linux-next merge of the xfs tree got a conflict in:
-> > 
-> >   fs/xfs/xfs_ioctl.c
-> > 
-> > between commit:
-> > 
-> >   f736d93d76d3 ("xfs: support idmapped mounts")
-> > 
-> > from the pidfd tree and commit:
-> > 
-> >   7317a03df703 ("xfs: refactor inode ownership change transaction/inode/quota allocation idiom")
-> > 
-> > from the xfs tree.
-> > 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
+  idt77252 is broken and wont load on amd64 systems
+  modprobe idt77252 shows the following
 
-Oops, sorry, this email fell off my radar.  Your fixup looks good to me;
-thanks for the reminder.
+    idt77252_init: skb->cb is too small (48 < 56)
 
---D
+  Add packed attribute to struct idt77252_skb_prv and struct atm_skb_data
+  so that the total size can be <= sizeof(skb->cb)
+  Also convert runtime size check to buildtime size check in
+  idt77252_init()
 
-> > 
-> > diff --cc fs/xfs/xfs_ioctl.c
-> > index 3d4c7ca080fb,248083ea0276..000000000000
-> > --- a/fs/xfs/xfs_ioctl.c
-> > +++ b/fs/xfs/xfs_ioctl.c
-> > @@@ -1280,9 -1275,9 +1280,10 @@@ xfs_ioctl_setattr_prepare_dax
-> >    */
-> >   static struct xfs_trans *
-> >   xfs_ioctl_setattr_get_trans(
-> > - 	struct file		*file)
-> >  -	struct xfs_inode	*ip,
-> > ++	struct file		*file,
-> > + 	struct xfs_dquot	*pdqp)
-> >   {
-> >  +	struct xfs_inode	*ip = XFS_I(file_inode(file));
-> >   	struct xfs_mount	*mp = ip->i_mount;
-> >   	struct xfs_trans	*tp;
-> >   	int			error = -EROFS;
-> > @@@ -1470,9 -1461,9 +1469,9 @@@ xfs_ioctl_setattr
-> >   
-> >   	xfs_ioctl_setattr_prepare_dax(ip, fa);
-> >   
-> > - 	tp = xfs_ioctl_setattr_get_trans(file);
-> >  -	tp = xfs_ioctl_setattr_get_trans(ip, pdqp);
-> > ++	tp = xfs_ioctl_setattr_get_trans(file, pdqp);
-> >   	if (IS_ERR(tp)) {
-> > - 		code = PTR_ERR(tp);
-> > + 		error = PTR_ERR(tp);
-> >   		goto error_free_dquots;
-> >   	}
-> >   
-> > @@@ -1615,7 -1599,7 +1606,7 @@@ xfs_ioc_setxflags
-> >   
-> >   	xfs_ioctl_setattr_prepare_dax(ip, &fa);
-> >   
-> > - 	tp = xfs_ioctl_setattr_get_trans(filp);
-> >  -	tp = xfs_ioctl_setattr_get_trans(ip, NULL);
-> > ++	tp = xfs_ioctl_setattr_get_trans(filp, NULL);
-> >   	if (IS_ERR(tp)) {
-> >   		error = PTR_ERR(tp);
-> >   		goto out_drop_write;
-> 
-> With the merge window about to open, this is a reminder that this
-> conflict still exists.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ drivers/atm/idt77252.c | 11 +----------
+ drivers/atm/idt77252.h |  2 +-
+ include/linux/atmdev.h |  2 +-
+ 3 files changed, 3 insertions(+), 12 deletions(-)
 
+diff --git a/drivers/atm/idt77252.c b/drivers/atm/idt77252.c
+index 5f0472c18bcb..0c13cac903de 100644
+--- a/drivers/atm/idt77252.c
++++ b/drivers/atm/idt77252.c
+@@ -3743,16 +3743,7 @@ static int __init idt77252_init(void)
+ 	struct sk_buff *skb;
+ 
+ 	printk("%s: at %p\n", __func__, idt77252_init);
+-
+-	if (sizeof(skb->cb) < sizeof(struct atm_skb_data) +
+-			      sizeof(struct idt77252_skb_prv)) {
+-		printk(KERN_ERR "%s: skb->cb is too small (%lu < %lu)\n",
+-		       __func__, (unsigned long) sizeof(skb->cb),
+-		       (unsigned long) sizeof(struct atm_skb_data) +
+-				       sizeof(struct idt77252_skb_prv));
+-		return -EIO;
+-	}
+-
++	BUILD_BUG_ON(sizeof(skb->cb) < sizeof(struct idt77252_skb_prv) + sizeof(struct atm_skb_data));
+ 	return pci_register_driver(&idt77252_driver);
+ }
+ 
+diff --git a/drivers/atm/idt77252.h b/drivers/atm/idt77252.h
+index 9339197d701c..b059d31364dd 100644
+--- a/drivers/atm/idt77252.h
++++ b/drivers/atm/idt77252.h
+@@ -789,7 +789,7 @@ struct idt77252_skb_prv {
+ 	struct scqe	tbd;	/* Transmit Buffer Descriptor */
+ 	dma_addr_t	paddr;	/* DMA handle */
+ 	u32		pool;	/* sb_pool handle */
+-};
++} __packed;
+ 
+ #define IDT77252_PRV_TBD(skb)	\
+ 	(((struct idt77252_skb_prv *)(ATM_SKB(skb)+1))->tbd)
+diff --git a/include/linux/atmdev.h b/include/linux/atmdev.h
+index d7493016cd46..60cd25c0461b 100644
+--- a/include/linux/atmdev.h
++++ b/include/linux/atmdev.h
+@@ -207,7 +207,7 @@ struct atm_skb_data {
+ 	struct atm_vcc	*vcc;		/* ATM VCC */
+ 	unsigned long	atm_options;	/* ATM layer options */
+ 	unsigned int	acct_truesize;  /* truesize accounted to vcc */
+-};
++} __packed;
+ 
+ #define VCC_HTABLE_SIZE 32
+ 
+-- 
+2.25.1
 
