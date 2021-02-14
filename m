@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4209931B11D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D9931B11C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhBNQCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 11:02:52 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:23036 "EHLO
+        id S229892AbhBNQCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 11:02:36 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:38458 "EHLO
         mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229813AbhBNQC2 (ORCPT
+        by vger.kernel.org with ESMTP id S229798AbhBNQC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 14 Feb 2021 11:02:28 -0500
 Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11EG027d025106;
-        Sun, 14 Feb 2021 08:01:21 -0800
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11EG05Jr025333;
+        Sun, 14 Feb 2021 08:01:25 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=LduXRH90HEGD1oSAxrThkO0gxz+sIG+UPswSTbAM0t4=;
- b=X7/fX0ptfVkGe1+Beyla7fTmSAHaAu1e9oD7lIB3+lRuER2m+JH3966z7iXzaBdzBrU6
- U96UWS3GAXar33k8xf5YjTcH+OLRFJts1URfgnrPjujFesUOkVIMb6M46HkDP355pWma
- mKWGoiiiwXdFDi/1N+2+ysQZkmkuMlBbodvGIUy4RjuABreZ3hs0hgGcDI7gSF1UvQmP
- IkaJjHIrOc1ct+X4xqVnMss0RZlalVIOkIdbVmg97P5RMzbEGby8caUbh6xgPSkhLOVA
- tVMAQ7NLEi9dsGPXQgVGjX1EYzjkjxWG/hWSPEixb2VLrUEP++DgDRs/tgopoFC5wc4D 0w== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36pf5tswnc-2
+ content-type; s=pfpt0220; bh=n9zf8QHFLUqQTf8PitdGZPwDZP8tkX3o5L3QGJdyvD4=;
+ b=VjGyL9k20JVROA6mAtAqmJegxdtQWbB5Ymo2e66tOKsn5w9sYdSsxrOj/4AET6upDItx
+ HcSbx8vB4GtJcOCofVJuDbm5l+9CHRoG1TP51b+YGVVFAUJZKAoFEj/U95A7pE9YNdyR
+ tFK+DaM2PlYqHybhDXN6vOVkv8SOLSDLfcxUDvPfQxS9qqOCz8LmJyJideeJgWGHJfID
+ Qk23gsH5rPW0s6YKdBqdcHq/jxaEyGuto9G6+gVyLkRZZsrsLPUAsl4QSguL5IYT+TVv
+ cUF2bXxwTYEVtGu3tVPAePA4lDj7kRem2j5Chzn0p9RCYPthFTeQoP+rY0aOlloz+xYI cw== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36pf5tswnh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 14 Feb 2021 08:01:21 -0800
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 14 Feb
- 2021 08:01:19 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 14 Feb
- 2021 08:01:18 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 14 Feb 2021 08:01:18 -0800
+        Sun, 14 Feb 2021 08:01:25 -0800
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 14 Feb
+ 2021 08:01:23 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 14 Feb
+ 2021 08:01:23 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 14 Feb 2021 08:01:23 -0800
 Received: from octopus.marvell.com (octopus.marvell.com [10.5.24.3])
-        by maili.marvell.com (Postfix) with ESMTP id 051CA3F7044;
-        Sun, 14 Feb 2021 08:01:14 -0800 (PST)
+        by maili.marvell.com (Postfix) with ESMTP id 5B2693F7043;
+        Sun, 14 Feb 2021 08:01:19 -0800 (PST)
 From:   <kostap@marvell.com>
 To:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
@@ -48,9 +48,9 @@ CC:     <lkundrak@v3.sk>, <linux@armlinux.org.uk>,
         <kishon@ti.com>, <miquel.raynal@bootlin.com>, <mw@semihalf.com>,
         <jaz@semihalf.com>, <nadavh@marvell.com>, <stefanc@marvell.com>,
         <bpeled@marvell.com>, "Konstantin Porotchkin" <kostap@marvell.com>
-Subject: [PATCH v2 1/4] drivers: phy: add support for Armada CP110 UTMI PHY
-Date:   Sun, 14 Feb 2021 18:01:05 +0200
-Message-ID: <20210214160108.3879-2-kostap@marvell.com>
+Subject: [PATCH v2 2/4] devicetree/bindings: add support for CP110 UTMI driver
+Date:   Sun, 14 Feb 2021 18:01:06 +0200
+Message-ID: <20210214160108.3879-3-kostap@marvell.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210214160108.3879-1-kostap@marvell.com>
 References: <20210214160108.3879-1-kostap@marvell.com>
@@ -64,444 +64,124 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Konstantin Porotchkin <kostap@marvell.com>
 
-Add support for Marvell CP110 UTMI PHY driver allowing the USB2
-port configuration independently from the boot loader setup.
-The CP110/CP115 dies have 2 UTMI PHYs that could be connected
-to two USB host controllers or to single USB device controller.
-Since there is only one USB device controller on die, only one
-of the UTMI PHYs could work in USB device mode.
-The CONFIG_PHY_MVEBU_CP110_UTMI should be enabled for usage of
-this driver.
+Add DTS binding for Marvell CP110 UTMI driver
 
 Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
 ---
- drivers/phy/marvell/Kconfig                |   8 +
- drivers/phy/marvell/Makefile               |   1 +
- drivers/phy/marvell/phy-mvebu-cp110-utmi.c | 384 ++++++++++++++++++++
- 3 files changed, 393 insertions(+)
- create mode 100644 drivers/phy/marvell/phy-mvebu-cp110-utmi.c
+ Documentation/devicetree/bindings/phy/phy-mvebu-utmi.txt | 78 ++++++++++++++++++--
+ 1 file changed, 72 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/phy/marvell/Kconfig b/drivers/phy/marvell/Kconfig
-index 6c96f2bf5266..9208839019bd 100644
---- a/drivers/phy/marvell/Kconfig
-+++ b/drivers/phy/marvell/Kconfig
-@@ -67,6 +67,14 @@ config PHY_MVEBU_CP110_COMPHY
- 	  lanes can be used by various controllers (Ethernet, sata, usb,
- 	  PCIe...).
+diff --git a/Documentation/devicetree/bindings/phy/phy-mvebu-utmi.txt b/Documentation/devicetree/bindings/phy/phy-mvebu-utmi.txt
+index aa99ceec73b0..b66066249861 100644
+--- a/Documentation/devicetree/bindings/phy/phy-mvebu-utmi.txt
++++ b/Documentation/devicetree/bindings/phy/phy-mvebu-utmi.txt
+@@ -1,30 +1,56 @@
+-MVEBU A3700 UTMI PHY
+---------------------
++MVEBU UTMI PHY
++---------------
  
-+config PHY_MVEBU_CP110_UTMI
-+	tristate "Marvell CP110 UTMI driver"
-+	depends on ARCH_MVEBU || COMPILE_TEST
-+	depends on OF
-+	select GENERIC_PHY
-+	help
-+	  Enable this to support Marvell CP110 UTMI PHY driver.
+ USB2 UTMI+ PHY controllers can be found on the following Marvell MVEBU SoCs:
+ * Armada 3700
++* Armada 7k/8k (on the CP110)
++* Armada CN913x (on the CP115)
+ 
+ On Armada 3700, there are two USB controllers, one is compatible with the USB2
+ and USB3 specifications and supports OTG. The other one is USB2 compliant and
+ only supports host mode. Both of these controllers come with a slightly
+ different UTMI PHY.
+ 
++On Armada 7k/8k and CN913x, there are two host and one device USB controllers.
++Each of two exiting UTMI PHYs could be connected to either USB host or USB device
++controller.
++The USB device controller can only be connected to a single UTMI PHY port:
++                    0.H----- USB HOST0
++UTMI PHY0  --------/
++                    0.D-----0
++                             \------ USB DEVICE
++                    1.D-----1
++UTMI PHY1  --------\
++                    1.H----- USB HOST1
 +
- config PHY_MVEBU_SATA
- 	def_bool y
- 	depends on ARCH_DOVE || MACH_DOVE || MACH_KIRKWOOD
-diff --git a/drivers/phy/marvell/Makefile b/drivers/phy/marvell/Makefile
-index 7f296ef02829..90862c4daa26 100644
---- a/drivers/phy/marvell/Makefile
-+++ b/drivers/phy/marvell/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_PHY_MVEBU_A3700_COMPHY)	+= phy-mvebu-a3700-comphy.o
- obj-$(CONFIG_PHY_MVEBU_A3700_UTMI)	+= phy-mvebu-a3700-utmi.o
- obj-$(CONFIG_PHY_MVEBU_A38X_COMPHY)	+= phy-armada38x-comphy.o
- obj-$(CONFIG_PHY_MVEBU_CP110_COMPHY)	+= phy-mvebu-cp110-comphy.o
-+obj-$(CONFIG_PHY_MVEBU_CP110_UTMI)	+= phy-mvebu-cp110-utmi.o
- obj-$(CONFIG_PHY_MVEBU_SATA)		+= phy-mvebu-sata.o
- obj-$(CONFIG_PHY_PXA_28NM_HSIC)		+= phy-pxa-28nm-hsic.o
- obj-$(CONFIG_PHY_PXA_28NM_USB2)		+= phy-pxa-28nm-usb2.o
-diff --git a/drivers/phy/marvell/phy-mvebu-cp110-utmi.c b/drivers/phy/marvell/phy-mvebu-cp110-utmi.c
-new file mode 100644
-index 000000000000..08d178a4dc13
---- /dev/null
-+++ b/drivers/phy/marvell/phy-mvebu-cp110-utmi.c
-@@ -0,0 +1,384 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2021 Marvell
-+ *
-+ * Authors:
-+ *   Konstantin Porotchkin <kostap@marvell.com>
-+ *
-+ * Marvell CP110 UTMI PHY driver
-+ */
 +
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/usb/of.h>
-+#include <linux/usb/otg.h>
+ Required Properties:
+ 
+ - compatible: Should be one of:
+ 	      * "marvell,a3700-utmi-host-phy" for the PHY connected to
+-	        the USB2 host-only controller.
++	        the USB2 host-only controller (for Armada3700 only).
+ 	      * "marvell,a3700-utmi-otg-phy" for the PHY connected to
+-	        the USB3 and USB2 OTG capable controller.
++	        the USB3 and USB2 OTG capable controller (for Armada3700 only.
++	      * "marvell,cp110-utmi-phy" (for Armada 7k/8k or CN913x only).
+ - reg: PHY IP register range.
+ - marvell,usb-misc-reg: handle on the "USB miscellaneous registers" shared
+ 			region covering registers related to both the host
+-			controller and the PHY.
+-- #phy-cells: Standard property (Documentation: phy-bindings.txt) Should be 0.
++			controller and the PHY (for Armada3700 only).
++- marvell,system-controller: should contain a phandle to the system
++			     controller node (for Armada 7k/8k or CN913x only)
++- #phy-cells: Standard property (Documentation: phy-bindings.txt.
++		Should be 0 (for Armada3700 only).
 +
-+#define UTMI_PHY_PORTS				2
 +
-+/* CP110 UTMI register macro definetions */
-+#define SYSCON_USB_CFG_REG			0x420
-+#define   USB_CFG_DEVICE_EN_MASK		BIT(0)
-+#define   USB_CFG_DEVICE_MUX_OFFSET		1
-+#define   USB_CFG_DEVICE_MUX_MASK		BIT(1)
-+#define   USB_CFG_PLL_MASK			BIT(25)
++Required properties (child nodes, for Armada 7k/8k/CN913x only):
 +
-+#define SYSCON_UTMI_CFG_REG(id)			(0x440 + (id) * 4)
-+#define   UTMI_PHY_CFG_PU_MASK			BIT(5)
++- reg: UTMI PHY port ID (0 or 1).
++- #phy-cells : Should be 0.
+ 
+ 
+ Example:
+ 
++Armada3700
+ 	usb2_utmi_host_phy: phy@5f000 {
+ 		compatible = "marvell,armada-3700-utmi-host-phy";
+ 		reg = <0x5f000 0x800>;
+@@ -36,3 +62,43 @@ Example:
+ 		compatible = "marvell,armada-3700-usb2-host-misc", "syscon";
+ 		reg = <0x5f800 0x800>;
+ 	};
 +
-+#define UTMI_PLL_CTRL_REG			0x0
-+#define   PLL_REFDIV_OFFSET			0
-+#define   PLL_REFDIV_MASK			GENMASK(6, 0)
-+#define   PLL_REFDIV_VAL			0x5
-+#define   PLL_FBDIV_OFFSET			16
-+#define   PLL_FBDIV_MASK			GENMASK(24, 16)
-+#define   PLL_FBDIV_VAL				0x60
-+#define   PLL_SEL_LPFR_MASK			GENMASK(29, 28)
-+#define   PLL_RDY				BIT(31)
-+#define UTMI_CAL_CTRL_REG			0x8
-+#define   IMPCAL_VTH_OFFSET			8
-+#define   IMPCAL_VTH_MASK			GENMASK(10, 8)
-+#define   IMPCAL_VTH_VAL			0x7
-+#define   IMPCAL_DONE				BIT(23)
-+#define   PLLCAL_DONE				BIT(31)
-+#define UTMI_TX_CH_CTRL_REG			0xC
-+#define   DRV_EN_LS_OFFSET			12
-+#define   DRV_EN_LS_MASK			GENMASK(15, 12)
-+#define   IMP_SEL_LS_OFFSET			16
-+#define   IMP_SEL_LS_MASK			GENMASK(19, 16)
-+#define   TX_AMP_OFFSET				20
-+#define   TX_AMP_MASK				GENMASK(22, 20)
-+#define   TX_AMP_VAL				0x4
-+#define UTMI_RX_CH_CTRL0_REG			0x14
-+#define   SQ_DET_EN				BIT(15)
-+#define   SQ_ANA_DTC_SEL			BIT(28)
-+#define UTMI_RX_CH_CTRL1_REG			0x18
-+#define   SQ_AMP_CAL_OFFSET			0
-+#define   SQ_AMP_CAL_MASK			GENMASK(2, 0)
-+#define   SQ_AMP_CAL_VAL			1
-+#define   SQ_AMP_CAL_EN				BIT(3)
-+#define UTMI_CTRL_STATUS0_REG			0x24
-+#define   SUSPENDM				BIT(22)
-+#define   TEST_SEL				BIT(25)
-+#define UTMI_CHGDTC_CTRL_REG			0x38
-+#define   VDAT_OFFSET				8
-+#define   VDAT_MASK				GENMASK(9, 8)
-+#define   VDAT_VAL				1
-+#define   VSRC_OFFSET				10
-+#define   VSRC_MASK				GENMASK(11, 10)
-+#define   VSRC_VAL				1
++Armada 7k/8k/CN913x
 +
-+#define PLL_LOCK_DELAY_US			10000
-+#define PLL_LOCK_TIMEOUT_US			1000000
++	cp0_utmi: utmi@580000 {
++		compatible = "marvell,cp110-utmi-phy";
++		reg = <0x580000 0x2000>;
++		marvell,system-controller = <&cp0_syscon0>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		status = "disabled";
 +
-+#define PORT_REGS(p)				((p)->priv->regs + (p)->id * 0x1000)
++		cp0_utmi0: phy@0 {
++			reg = <0>;
++			#phy-cells = <0>;
++		};
 +
-+/**
-+ * struct mvebu_cp110_utmi - PHY driver data
-+ *
-+ * @regs: PHY registers
-+ * @syscom: Regmap with system controller registers
-+ * @dev: device driver handle
-+ * @caps: PHY capabilities
-+ */
-+struct mvebu_cp110_utmi {
-+	void __iomem *regs;
-+	struct regmap *syscon;
-+	struct device *dev;
-+	const struct phy_ops *ops;
-+};
++		cp0_utmi1: phy@1 {
++			reg = <1>;
++			#phy-cells = <0>;
++		};
++	};
 +
-+/**
-+ * struct mvebu_cp110_utmi_port - PHY port data
-+ *
-+ * @priv: PHY driver data
-+ * @id: PHY port ID
-+ * @dr_mode: PHY connection: USB_DR_MODE_HOST or USB_DR_MODE_PERIPHERAL
-+ */
-+struct mvebu_cp110_utmi_port {
-+	struct mvebu_cp110_utmi *priv;
-+	u32 id;
-+	enum usb_dr_mode dr_mode;
-+};
++	cp0_usb3_0 {
++		status = "okay";
++		usb-phy = <&cp0_usb3_0_phy0>;
++		phys = <&cp0_utmi0>;
++		phy-names = "utmi";
++		/* UTMI0 is connected to USB host controller (default mode) */
++		dr_mode = "host";
++	};
 +
-+static void mvebu_cp110_utmi_port_setup(struct mvebu_cp110_utmi_port *port)
-+{
-+	u32 reg;
++	cp0_usb3_1 {
++		status = "okay";
++		usb-phy = <&cp0_usb3_0_phy1>;
++		phys = <&cp0_utmi1>;
++		phy-names = "utmi";
++		/* UTMI1 is connected to USB device controller */
++		dr_mode = "peripheral";
++	};
 +
-+	/*
-+	 * Setup PLL.
-+	 * The reference clock is the frequency of quartz resonator
-+	 * connected to pins REFCLK_XIN and REFCLK_XOUT of the SoC.
-+	 * Register init values are matching the 40MHz default clock.
-+	 * The crystal used for all platform boards is now 25MHz.
-+	 * See the functional specification for details.
-+	 */
-+	reg = readl(PORT_REGS(port) + UTMI_PLL_CTRL_REG);
-+	reg &= ~(PLL_REFDIV_MASK | PLL_FBDIV_MASK | PLL_SEL_LPFR_MASK);
-+	reg |= (PLL_REFDIV_VAL << PLL_REFDIV_OFFSET) |
-+	       (PLL_FBDIV_VAL << PLL_FBDIV_OFFSET);
-+	writel(reg, PORT_REGS(port) + UTMI_PLL_CTRL_REG);
-+
-+	/* Impedance Calibration Threshold Setting */
-+	reg = readl(PORT_REGS(port) + UTMI_CAL_CTRL_REG);
-+	reg &= ~IMPCAL_VTH_MASK;
-+	reg |= IMPCAL_VTH_VAL << IMPCAL_VTH_OFFSET;
-+	writel(reg, PORT_REGS(port) + UTMI_CAL_CTRL_REG);
-+
-+	/* Set LS TX driver strength coarse control */
-+	reg = readl(PORT_REGS(port) + UTMI_TX_CH_CTRL_REG);
-+	reg &= ~TX_AMP_MASK;
-+	reg |= TX_AMP_VAL << TX_AMP_OFFSET;
-+	writel(reg, PORT_REGS(port) + UTMI_TX_CH_CTRL_REG);
-+
-+	/* Disable SQ and enable analog squelch detect */
-+	reg = readl(PORT_REGS(port) + UTMI_RX_CH_CTRL0_REG);
-+	reg &= ~SQ_DET_EN;
-+	reg |= SQ_ANA_DTC_SEL;
-+	writel(reg, PORT_REGS(port) + UTMI_RX_CH_CTRL0_REG);
-+
-+	/*
-+	 * Set External squelch calibration number and
-+	 * enable the External squelch calibration
-+	 */
-+	reg = readl(PORT_REGS(port) + UTMI_RX_CH_CTRL1_REG);
-+	reg &= ~SQ_AMP_CAL_MASK;
-+	reg |= (SQ_AMP_CAL_VAL << SQ_AMP_CAL_OFFSET) | SQ_AMP_CAL_EN;
-+	writel(reg, PORT_REGS(port) + UTMI_RX_CH_CTRL1_REG);
-+
-+	/*
-+	 * Set Control VDAT Reference Voltage - 0.325V and
-+	 * Control VSRC Reference Voltage - 0.6V
-+	 */
-+	reg = readl(PORT_REGS(port) + UTMI_CHGDTC_CTRL_REG);
-+	reg &= ~(VDAT_MASK | VSRC_MASK);
-+	reg |= (VDAT_VAL << VDAT_OFFSET) | (VSRC_VAL << VSRC_OFFSET);
-+	writel(reg, PORT_REGS(port) + UTMI_CHGDTC_CTRL_REG);
-+}
-+
-+static int mvebu_cp110_utmi_phy_power_off(struct phy *phy)
-+{
-+	struct mvebu_cp110_utmi_port *port = phy_get_drvdata(phy);
-+	struct mvebu_cp110_utmi *utmi = port->priv;
-+	int i;
-+
-+	/* Power down UTMI PHY port */
-+	regmap_clear_bits(utmi->syscon, SYSCON_UTMI_CFG_REG(port->id),
-+			  UTMI_PHY_CFG_PU_MASK);
-+
-+	for (i = 0; i < UTMI_PHY_PORTS; i++) {
-+		int test = regmap_test_bits(utmi->syscon,
-+					    SYSCON_UTMI_CFG_REG(i),
-+					    UTMI_PHY_CFG_PU_MASK);
-+		/* skip PLL shutdown if there are active UTMI PHY ports */
-+		if (test != 0)
-+			return 0;
-+	}
-+
-+	/* PLL Power down if all UTMI PHYs are down */
-+	regmap_clear_bits(utmi->syscon, SYSCON_USB_CFG_REG, USB_CFG_PLL_MASK);
-+
-+	return 0;
-+}
-+
-+static int mvebu_cp110_utmi_phy_power_on(struct phy *phy)
-+{
-+	struct mvebu_cp110_utmi_port *port = phy_get_drvdata(phy);
-+	struct mvebu_cp110_utmi *utmi = port->priv;
-+	struct device *dev = &phy->dev;
-+	int ret;
-+	u32 reg;
-+
-+	/* It is necessary to power off UTMI before configuration */
-+	ret = mvebu_cp110_utmi_phy_power_off(phy);
-+	if (ret) {
-+		dev_err(dev, "UTMI power OFF before power ON failed\n");
-+		return ret;
-+	}
-+
-+	/*
-+	 * If UTMI port is connected to USB Device controller,
-+	 * configure the USB MUX prior to UTMI PHY initialization.
-+	 * The single USB device controller can be connected
-+	 * to UTMI0 or to UTMI1 PHY port, but not to both.
-+	 */
-+	if (port->dr_mode == USB_DR_MODE_PERIPHERAL) {
-+		regmap_update_bits(utmi->syscon, SYSCON_USB_CFG_REG,
-+				   USB_CFG_DEVICE_EN_MASK | USB_CFG_DEVICE_MUX_MASK,
-+				   USB_CFG_DEVICE_EN_MASK |
-+				   (port->id << USB_CFG_DEVICE_MUX_OFFSET));
-+	}
-+
-+	/* Set Test suspendm mode and enable Test UTMI select */
-+	reg = readl(PORT_REGS(port) + UTMI_CTRL_STATUS0_REG);
-+	reg |= SUSPENDM | TEST_SEL;
-+	writel(reg, PORT_REGS(port) + UTMI_CTRL_STATUS0_REG);
-+
-+	/* Wait for UTMI power down */
-+	mdelay(1);
-+
-+	/* PHY port setup first */
-+	mvebu_cp110_utmi_port_setup(port);
-+
-+	/* Power UP UTMI PHY */
-+	regmap_set_bits(utmi->syscon, SYSCON_UTMI_CFG_REG(port->id),
-+			UTMI_PHY_CFG_PU_MASK);
-+
-+	/* Disable Test UTMI select */
-+	reg = readl(PORT_REGS(port) + UTMI_CTRL_STATUS0_REG);
-+	reg &= ~TEST_SEL;
-+	writel(reg, PORT_REGS(port) + UTMI_CTRL_STATUS0_REG);
-+
-+	/* Wait for impedance calibration */
-+	ret = readl_poll_timeout(PORT_REGS(port) + UTMI_CAL_CTRL_REG, reg,
-+				 reg & IMPCAL_DONE,
-+				 PLL_LOCK_DELAY_US, PLL_LOCK_TIMEOUT_US);
-+	if (ret) {
-+		dev_err(dev, "Failed to end UTMI impedance calibration\n");
-+		return ret;
-+	}
-+
-+	/* Wait for PLL calibration */
-+	ret = readl_poll_timeout(PORT_REGS(port) + UTMI_CAL_CTRL_REG, reg,
-+				 reg & PLLCAL_DONE,
-+				 PLL_LOCK_DELAY_US, PLL_LOCK_TIMEOUT_US);
-+	if (ret) {
-+		dev_err(dev, "Failed to end UTMI PLL calibration\n");
-+		return ret;
-+	}
-+
-+	/* Wait for PLL ready */
-+	ret = readl_poll_timeout(PORT_REGS(port) + UTMI_PLL_CTRL_REG, reg,
-+				 reg & PLL_RDY,
-+				 PLL_LOCK_DELAY_US, PLL_LOCK_TIMEOUT_US);
-+	if (ret) {
-+		dev_err(dev, "PLL is not ready\n");
-+		return ret;
-+	}
-+
-+	/* PLL Power up */
-+	regmap_set_bits(utmi->syscon, SYSCON_USB_CFG_REG, USB_CFG_PLL_MASK);
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops mvebu_cp110_utmi_phy_ops = {
-+	.power_on = mvebu_cp110_utmi_phy_power_on,
-+	.power_off = mvebu_cp110_utmi_phy_power_off,
-+	.owner = THIS_MODULE,
-+};
-+
-+static const struct of_device_id mvebu_cp110_utmi_of_match[] = {
-+	{ .compatible = "marvell,cp110-utmi-phy" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, mvebu_cp110_utmi_of_match);
-+
-+static int mvebu_cp110_utmi_phy_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct mvebu_cp110_utmi *utmi;
-+	struct phy_provider *provider;
-+	struct device_node *child;
-+	u32 usb_devices = 0;
-+
-+	utmi = devm_kzalloc(dev, sizeof(*utmi), GFP_KERNEL);
-+	if (!utmi)
-+		return -ENOMEM;
-+
-+	utmi->dev = dev;
-+
-+	/* Get system controller region */
-+	utmi->syscon = syscon_regmap_lookup_by_phandle(dev->of_node,
-+						       "marvell,system-controller");
-+	if (IS_ERR(utmi->syscon)) {
-+		dev_err(dev, "Missing UTMI system controller\n");
-+		return PTR_ERR(utmi->syscon);
-+	}
-+
-+	/* Get UTMI memory region */
-+	utmi->regs = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(utmi->regs))
-+		return PTR_ERR(utmi->regs);
-+
-+	for_each_available_child_of_node(dev->of_node, child) {
-+		struct mvebu_cp110_utmi_port *port;
-+		struct phy *phy;
-+		int ret;
-+		u32 port_id;
-+
-+		ret = of_property_read_u32(child, "reg", &port_id);
-+		if ((ret < 0) || (port_id >= UTMI_PHY_PORTS)) {
-+			dev_err(dev,
-+				"invalid 'reg' property on child %pOF\n",
-+				child);
-+			continue;
-+		}
-+
-+		port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
-+		if (!port) {
-+			of_node_put(child);
-+			return -ENOMEM;
-+		}
-+
-+		port->dr_mode = of_usb_get_dr_mode_by_phy(child, -1);
-+		if ((port->dr_mode != USB_DR_MODE_HOST) &&
-+		    (port->dr_mode != USB_DR_MODE_PERIPHERAL)) {
-+			dev_err(&pdev->dev,
-+				"Missing dual role setting of the port%d, will use HOST mode\n",
-+				port_id);
-+			port->dr_mode = USB_DR_MODE_HOST;
-+		}
-+
-+		if (port->dr_mode == USB_DR_MODE_PERIPHERAL) {
-+			usb_devices++;
-+			if (usb_devices > 1) {
-+				dev_err(dev,
-+					"Single USB device allowed! Port%d will use HOST mode\n",
-+					port_id);
-+				port->dr_mode = USB_DR_MODE_HOST;
-+			}
-+		}
-+
-+		/* Retrieve PHY capabilities */
-+		utmi->ops = &mvebu_cp110_utmi_phy_ops;
-+
-+		/* Instantiate the PHY */
-+		phy = devm_phy_create(dev, child, utmi->ops);
-+		if (IS_ERR(phy)) {
-+			dev_err(dev, "Failed to create the UTMI PHY\n");
-+			of_node_put(child);
-+			return PTR_ERR(phy);
-+		}
-+
-+		port->priv = utmi;
-+		port->id = port_id;
-+		phy_set_drvdata(phy, port);
-+
-+		/* Ensure the PHY is powered off */
-+		mvebu_cp110_utmi_phy_power_off(phy);
-+	}
-+
-+	dev_set_drvdata(dev, utmi);
-+	provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-+
-+	return PTR_ERR_OR_ZERO(provider);
-+}
-+
-+static struct platform_driver mvebu_cp110_utmi_driver = {
-+	.probe	= mvebu_cp110_utmi_phy_probe,
-+	.driver	= {
-+		.name		= "mvebu-cp110-utmi-phy",
-+		.of_match_table	= mvebu_cp110_utmi_of_match,
-+	 },
-+};
-+module_platform_driver(mvebu_cp110_utmi_driver);
-+
-+MODULE_AUTHOR("Konstatin Porotchkin <kostap@marvell.com>");
-+MODULE_DESCRIPTION("Marvell Armada CP110 UTMI PHY driver");
-+MODULE_LICENSE("GPL v2");
 -- 
 2.17.1
 
