@@ -2,90 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF5531B18F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3338631B194
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhBNRaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 12:30:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49562 "EHLO mail.kernel.org"
+        id S229873AbhBNRc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 12:32:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229759AbhBNR36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 12:29:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F4D064E08;
-        Sun, 14 Feb 2021 17:29:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613323757;
-        bh=Jg/hxcmrt1OLpohmuaNMK3aXYRGAXzsF42r6hglIF5s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UsGftF9PDGm67w/5WT5j8t9iMoWYfNaHNsd5R6HJFCxy0YVyqILNCEKKf+d7cOYj7
-         RcW4fl3ClLfNcL/105tTwVg5ULS4lTZfmul2g5sDYU1SZZkaxg4gPI/cO+EgQSjEXZ
-         NABBFOxxa9NirbHNGN9B2GeXGwBBiHd1OjbLAWVABjXfUihVIaktXF6VYqAxOMGbQJ
-         JJavbprWtSxWSQzG33x3pZMRpH504tAJpRkhTNBU53HXgtFJqoyFVOD4P7upxSqexG
-         T/JwZ8eIn+HFTDki9X1mCfZFeMJwWwJArgd2wmDwdZBDzqIEj3paOekTgAXD7oJMsx
-         G0Gxbav60HoZg==
-Date:   Sun, 14 Feb 2021 19:29:06 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
- holes in memory layout
-Message-ID: <20210214172906.GN242749@kernel.org>
-References: <20210208110820.6269-1-rppt@kernel.org>
- <5dccbc93-f260-7f14-23bc-6dee2dff6c13@redhat.com>
- <a6cf3a26-a174-abab-a5a0-6cf89ebe4af7@redhat.com>
+        id S229758AbhBNRcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 12:32:55 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C518760235;
+        Sun, 14 Feb 2021 17:32:10 +0000 (UTC)
+Date:   Sun, 14 Feb 2021 17:32:07 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v8 13/22] counter: Internalize sysfs interface code
+Message-ID: <20210214173207.19fc810b@archlinux>
+In-Reply-To: <3fc2580af0efd6312a64a0e107bd6fa758f0d466.1613131238.git.vilhelm.gray@gmail.com>
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+        <3fc2580af0efd6312a64a0e107bd6fa758f0d466.1613131238.git.vilhelm.gray@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6cf3a26-a174-abab-a5a0-6cf89ebe4af7@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 10:56:19AM +0100, David Hildenbrand wrote:
-> On 12.02.21 10:55, David Hildenbrand wrote:
-> > On 08.02.21 12:08, Mike Rapoport wrote:
-> > > +#ifdef CONFIG_SPARSEMEM
-> > > +	/*
-> > > +	 * Sections in the memory map may not match actual populated
-> > > +	 * memory, extend the node span to cover the entire section.
-> > > +	 */
-> > > +	*start_pfn = round_down(*start_pfn, PAGES_PER_SECTION);
-> > > +	*end_pfn = round_up(*end_pfn, PAGES_PER_SECTION);
-> > 
-> > Does that mean that we might create overlapping zones when one node
+On Fri, 12 Feb 2021 21:13:37 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+
+> This is a reimplementation of the Generic Counter driver interface.
+> There are no modifications to the Counter subsystem userspace interface,
+> so existing userspace applications should continue to run seamlessly.
 > 
-> s/overlapping zones/overlapping nodes/
+> The purpose of this patch is to internalize the sysfs interface code
+> among the various counter drivers into a shared module. Counter drivers
+> pass and take data natively (i.e. u8, u64, etc.) and the shared counter
+> module handles the translation between the sysfs interface and the
+> device drivers. This guarantees a standard userspace interface for all
+> counter drivers, and helps generalize the Generic Counter driver ABI in
+> order to support the Generic Counter chrdev interface (introduced in a
+> subsequent patch) without significant changes to the existing counter
+> drivers.
 > 
-> > starts in the middle of a section and the other one ends in the middle
-> > of a section?
+> Note, Counter device registration is the same as before: drivers
+> populate a struct counter_device with components and callbacks, then
+> pass the structure to the devm_counter_register function. However,
+> what's different now is how the Counter subsystem code handles this
+> registration internally.
 > 
-> > Could it be a problem? (e.g., would we have to look at neighboring nodes
-> > when making the decision to extend, and how far to extend?)
+> Whereas before callbacks would interact directly with sysfs data, this
+> interaction is now abstracted and instead callbacks interact with native
+> C data types. The counter_comp structure forms the basis for Counter
+> extensions.
+> 
+> The counter-sysfs.c file contains the code to parse through the
+> counter_device structure and register the requested components and
+> extensions. Attributes are created and populated based on type, with
+> respective translation functions to handle the mapping between sysfs and
+> the counter driver callbacks.
+> 
+> The translation performed for each attribute is straightforward: the
+> attribute type and data is parsed from the counter_attribute structure,
+> the respective counter driver read/write callback is called, and sysfs
+> I/O is handled before or after the driver read/write function is called.
+> 
+> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+> Cc: Patrick Havelange <patrick.havelange@essensium.com>
+> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@st.com>
+> Cc: David Lechner <david@lechnology.com>
+> Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 
-Having a node end/start in a middle of a section would be a problem, but in
-this case I don't see a way to detect how a node should be extended :(
+A few minor comments inline.
 
-We can return to a v4 [1] without x86 modifications.
-With that we'll have struct pages corresponding to a hole in a middle of a
-zone with correct zone link and a good guess for the node.
+This set is still huge, so I've only looked at the core code
+for this version.  Hopefully driver maintainers will do the thorough
+review of how it effects the individual drivers!
 
-As for the pfn 0 on x86, it'll remain outside any node and zone, but since
-it was the case since, like forever, I think we can live with it.
+Jonathan
 
-[1] https://lore.kernel.org/lkml/20210130221035.4169-1-rppt@kernel.org
+> ---
+>  MAINTAINERS                             |    1 -
+>  drivers/counter/104-quad-8.c            |  449 +++----
+>  drivers/counter/Makefile                |    1 +
+>  drivers/counter/counter-core.c          |  153 +++
+>  drivers/counter/counter-sysfs.c         |  833 +++++++++++++
+>  drivers/counter/counter-sysfs.h         |   13 +
+>  drivers/counter/counter.c               | 1496 -----------------------
+>  drivers/counter/ftm-quaddec.c           |   56 +-
+>  drivers/counter/microchip-tcb-capture.c |   87 +-
+>  drivers/counter/stm32-lptimer-cnt.c     |  164 ++-
+>  drivers/counter/stm32-timer-cnt.c       |  142 +--
+>  drivers/counter/ti-eqep.c               |  211 ++--
+>  include/linux/counter.h                 |  631 +++++-----
+>  include/linux/counter_enum.h            |   45 -
+>  14 files changed, 1816 insertions(+), 2466 deletions(-)
+>  create mode 100644 drivers/counter/counter-core.c
+>  create mode 100644 drivers/counter/counter-sysfs.c
+>  create mode 100644 drivers/counter/counter-sysfs.h
+>  delete mode 100644 drivers/counter/counter.c
+>  delete mode 100644 include/linux/counter_enum.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d858582c917b..94a19606d947 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4543,7 +4543,6 @@ F:	Documentation/ABI/testing/sysfs-bus-counter
+>  F:	Documentation/driver-api/generic-counter.rst
+>  F:	drivers/counter/
+>  F:	include/linux/counter.h
+> -F:	include/linux/counter_enum.h
+>  
+>  CPMAC ETHERNET DRIVER
+>  M:	Florian Fainelli <f.fainelli@gmail.com>
+> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+> index eca3f6482719..41fdbd228be3 100644
+> --- a/drivers/counter/104-quad-8.c
+> +++ b/drivers/counter/104-quad-8.c
+> @@ -116,7 +116,7 @@ static int quad8_signal_read(struct counter_device *counter,
+...
 
--- 
-Sincerely yours,
-Mike.
+> diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-sysfs.c
+> new file mode 100644
+> index 000000000000..52513a213cc5
+> --- /dev/null
+> +++ b/drivers/counter/counter-sysfs.c
+> @@ -0,0 +1,833 @@
+
+...
+
+> +
+> +static ssize_t counter_comp_u8_show(struct device *dev,
+> +				    struct device_attribute *attr, char *buf)
+> +{
+> +	const struct counter_attribute *const a = to_counter_attribute(attr);
+> +	struct counter_device *const counter = dev_get_drvdata(dev);
+> +	int err;
+> +	u8 data = 0;
+> +
+> +	switch (a->scope) {
+> +	case COUNTER_SCOPE_DEVICE:
+> +		err = a->comp.device_u8_read(counter, &data);
+> +		break;
+> +	case COUNTER_SCOPE_SIGNAL:
+> +		err = a->comp.signal_u8_read(counter, a->parent, &data);
+> +		break;
+> +	case COUNTER_SCOPE_COUNT:
+> +		err = a->comp.count_u8_read(counter, a->parent, &data);
+> +		break;
+
+I'd add a default in here just to make it obvious anything else is
+an error.  Same in other similar cases that follow.
+
+> +	}
+> +	if (err < 0)
+> +		return err;
+> +
+> +	if (a->comp.type == COUNTER_COMP_BOOL)
+> +		data = !!data;
+> +
+> +	return sprintf(buf, "%u\n", (unsigned int)data);
+> +}
+> +
+
+
+...
+
+> +
+> +static int counter_name_attr_create(struct device *const dev,
+> +				    struct counter_attribute_group *const group,
+> +				    const char *const name)
+> +{
+> +	struct counter_attribute *counter_attr;
+> +
+> +	/* Allocate Counter attribute */
+> +	counter_attr = devm_kzalloc(dev, sizeof(*counter_attr), GFP_KERNEL);
+> +	if (!counter_attr)
+> +		return -ENOMEM;
+> +
+> +	/* Configure Counter attribute */
+> +	counter_attr->comp.name = name;
+> +
+> +	/* Configure device attribute */
+> +	sysfs_attr_init(&counter_attr->dev_attr.attr);
+> +	counter_attr->dev_attr.attr.name = "name";
+> +	counter_attr->dev_attr.attr.mode = 0444;
+> +	counter_attr->dev_attr.show = counter_comp_name_show;
+> +
+> +	/* Store list node */
+> +	list_add(&counter_attr->l, &group->attr_list);
+> +	group->num_attr++;
+> +
+> +	return 0;
+> +}
+
+Trivial but one too many blank lines.
+
+> +
+> +
+> +static struct counter_comp counter_signal_comp = {
+> +	.type = COUNTER_COMP_SIGNAL_LEVEL,
+> +	.name = "signal",
+> +};
+
+...
+
+
+>  static struct counter_synapse ti_eqep_position_synapses[] = {
+> diff --git a/include/linux/counter.h b/include/linux/counter.h
+> index d16ce2819b48..76b0b06dd5db 100644
+> --- a/include/linux/counter.h
+> +++ b/include/linux/counter.h
+> @@ -6,42 +6,184 @@
+>  #ifndef _COUNTER_H_
+>  #define _COUNTER_H_
+>  
+...
