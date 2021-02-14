@@ -2,139 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FF131B101
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 16:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D7931B10C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 16:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhBNPxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 10:53:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27306 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229730AbhBNPx0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 10:53:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613317918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b0So7W4a4U2tcf26Y/zPdxj6J7yWSOARMMAY/QxHwq8=;
-        b=OB44cxlpxPgOAoKgJhgBG7IEzuJb4g92Y41ieE9YUN/ZKqjfN+B7IbmiXNoIgTYYi7JXiL
-        6sYguT83JRAzQh6z0oBdlKh9zRvxdxx7ue0W2sTC32VVj7xzMe+MK9PivP9v+ih9+Iist0
-        UqWFGGFaH+gmNZu5HqezpCkBbbDgmUo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-svSsil19MpCJuxoQ9NQ19Q-1; Sun, 14 Feb 2021 10:51:53 -0500
-X-MC-Unique: svSsil19MpCJuxoQ9NQ19Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S229919AbhBNP5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 10:57:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229911AbhBNP5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 10:57:16 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECA46192AB79;
-        Sun, 14 Feb 2021 15:51:51 +0000 (UTC)
-Received: from treble (ovpn-120-169.rdu2.redhat.com [10.10.120.169])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2BA9B10021AA;
-        Sun, 14 Feb 2021 15:51:49 +0000 (UTC)
-Date:   Sun, 14 Feb 2021 09:51:47 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Xi Ruoyao <xry111@mengyan1223.wang>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org
-Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
- non-section symbols
-Message-ID: <20210214155147.3owdimqv2lyhu6by@treble>
-References: <dded80b60d9136ea90987516c28f93273385651f.camel@mengyan1223.wang>
- <YCU3Vdoqd+EI+zpv@kroah.com>
- <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
- <YCafKVSTX9MxDBMd@kroah.com>
- <20210212170750.y7xtitigfqzpchqd@treble>
- <20210212124547.1dcf067e@gandalf.local.home>
- <YCfdfkoeh8i0baCj@kroah.com>
- <20210213091304.2dd51e5f@oasis.local.home>
- <20210213155203.lehuegwc3h42nebs@treble>
- <YCf9bnsmXqRGMn+j@kroah.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9600364DCF;
+        Sun, 14 Feb 2021 15:56:31 +0000 (UTC)
+Date:   Sun, 14 Feb 2021 15:56:28 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
+Subject: Re: [PATCH v2 3/3] tools: iio: add example for high-speed buffer
+ support
+Message-ID: <20210214155628.0986a678@archlinux>
+In-Reply-To: <20210212101143.18993-4-alexandru.ardelean@analog.com>
+References: <20210212101143.18993-1-alexandru.ardelean@analog.com>
+        <20210212101143.18993-4-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YCf9bnsmXqRGMn+j@kroah.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 05:25:18PM +0100, Greg Kroah-Hartman wrote:
-> On Sat, Feb 13, 2021 at 09:52:03AM -0600, Josh Poimboeuf wrote:
-> > On Sat, Feb 13, 2021 at 09:13:04AM -0500, Steven Rostedt wrote:
-> > > On Sat, 13 Feb 2021 15:09:02 +0100
-> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > > 
-> > > > Thanks for the patch, but no, still fails with:
-> > > > 
-> > > > Cannot find symbol for section 8: .text.unlikely.
-> > > > kernel/kexec_file.o: failed
-> > > > make[1]: *** [scripts/Makefile.build:277: kernel/kexec_file.o] Error 1
-> > > > make[1]: *** Deleting file 'kernel/kexec_file.o'
-> > > 
-> > > It was just a guess.
-> > > 
-> > > I guess I'll need to find some time next week to set up a VM with
-> > > binutils 2.36 (I just checked, and all my development machines have
-> > > 2.35). Then I'll be able to try and debug it.
-> > 
-> > FWIW, I wasn't able to recreate.   I tried both binutils 2.36 and
-> > 2.36.1, with gcc 11 and a 'make allmodconfig' kernel.
+On Fri, 12 Feb 2021 12:11:43 +0200
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+
+> Following a recent update to the IIO buffer infrastructure, this change
+> adds a basic example on how to access an IIO buffer via the new mmap()
+> interface.
 > 
-> I'm using whatever the latest is in Arch, which is gcc 10.2 and binutils
-> 2.36.  My config is here:
-> 	https://github.com/gregkh/gregkh-linux/blob/master/stable/configs/4.4.y
+> The ioctl() for the high-speed mode needs to be enabled right from the
+> start, before setting any parameters via sysfs (length, enable, etc), to
+> make sure that the mmap mode is used and not the fileio mode.
+> 
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 
-Ok, I was able to recreate with that config.
+Just one small question on error handling. Otherwise this looks fine to me.
 
-GCC places two weak functions (arch_kexec_apply_relocations_add() and
-arch_kexec_apply_relocations()) in .text.unlikely (probably because
-printk() is __cold), and then the assembler doesn't generate the
-'.text.unlikely' symbol because no other code references it.
+thanks,
 
-Steve, looks like recordmcount avoids referencing weak symbols directly
-by their function symbol.  Maybe it can just skip weak symbols which
-don't have a section symbol, since this seems like a rare scenario.
+Jonathan
 
-Here's a total hack fix.  Just remove the functions, awkwardly avoiding
-the problem.
+> ---
+>  tools/iio/iio_generic_buffer.c | 183 +++++++++++++++++++++++++++++++--
+>  1 file changed, 177 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
+> index fdd08514d556..675a7e6047e0 100644
+> --- a/tools/iio/iio_generic_buffer.c
+> +++ b/tools/iio/iio_generic_buffer.c
+> @@ -31,6 +31,7 @@
+>  #include <stdbool.h>
+>  #include <signal.h>
+>  #include <sys/ioctl.h>
+> +#include <sys/mman.h>
+>  #include <linux/iio/buffer.h>
+>  #include "iio_utils.h"
+>  
+> @@ -239,6 +240,132 @@ static int enable_disable_all_channels(char *dev_dir_name, int buffer_idx, int e
+>  	return 0;
+>  }
+>  
+> +struct mmap_block {
+> +	struct iio_buffer_block block;
+> +	void *addr;
+> +};
+> +
+> +static struct mmap_block *enable_high_speed(int buf_fd, unsigned int block_size,
+> +					    int nblocks)
+> +{
+> +	struct iio_buffer_block_alloc_req req = { 0 };
+> +	struct mmap_block *mmaps = NULL;
+> +	int mmaps_cnt = 0;
+> +	int i, ret;
+> +
+> +	/**
+> +	 * Validate we can do high-speed by issuing BLOCK_FREE ioctl.
+> +	 * If using just BLOCK_ALLOC it's distinguish between ENOSYS
+> +	 * and other error types.
+> +	 */
+> +	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
+> +	if (ret < 0) {
+> +		errno = ENOSYS;
+> +		return NULL;
+> +	}
+> +
+> +	/* for now, this */
+> +	req.id = 0;
+> +	req.type = 0;
+> +	req.size = block_size;
+> +	req.count = nblocks;
+> +
+> +	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ALLOC_IOCTL, &req);
+> +	if (ret < 0)
+> +		return NULL;
+> +
+> +	if (req.count == 0) {
+> +		errno = ENOMEM;
+> +		return NULL;
+> +	}
+> +
+> +	if (req.count < nblocks) {
+> +		fprintf(stderr, "Requested %d blocks, got %d\n",
+> +			nblocks, req.count);
+> +		errno = ENOMEM;
+> +		return NULL;
+> +	}
+> +
+> +	mmaps = calloc(req.count, sizeof(*mmaps));
+> +	if (!mmaps) {
+> +		errno = ENOMEM;
+> +		return NULL;
+> +	}
+> +
+> +	for (i = 0; i < req.count; i++) {
+> +		mmaps[i].block.id = i;
+> +		ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_QUERY_IOCTL, &mmaps[i].block);
+> +		if (ret < 0)
+> +			goto error;
+> +
+> +		ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ENQUEUE_IOCTL, &mmaps[i].block);
+> +		if (ret < 0)
+> +			goto error;
 
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index 6030efd4a188..456e3427c5e5 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -115,24 +115,6 @@ int __weak arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
- 	return -EKEYREJECTED;
- }
- 
--/* Apply relocations of type RELA */
--int __weak
--arch_kexec_apply_relocations_add(const Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
--				 unsigned int relsec)
--{
--	pr_err("RELA relocation unsupported.\n");
--	return -ENOEXEC;
--}
--
--/* Apply relocations of type REL */
--int __weak
--arch_kexec_apply_relocations(const Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
--			     unsigned int relsec)
--{
--	pr_err("REL relocation unsupported.\n");
--	return -ENOEXEC;
--}
--
- /*
-  * Free up memory used by kernel, initrd, and command line. This is temporary
-  * memory allocation which is not needed any more after these buffers have
+> +
+> +		mmaps[i].addr = mmap(0, mmaps[i].block.size,
+> +				      PROT_READ | PROT_WRITE, MAP_SHARED,
+> +				      buf_fd, mmaps[i].block.data.offset);
+> +
+> +		if (mmaps[i].addr == MAP_FAILED)
+> +			goto error;
+> +
+> +		mmaps_cnt++;
+> +	}
+> +
+> +	return mmaps;
+> +
+> +error:
+> +	for (i = 0; i < mmaps_cnt; i++)
+> +		munmap(mmaps[i].addr, mmaps[i].block.size);
+> +	free(mmaps);
+
+No free of the blocks?  We have unmapped them but I'd imagine we'd also
+need to free them from the driver side.
+
+> +	return NULL;
+> +}
+> +
+> +static int read_high_speed(int buf_fd, char *data, unsigned int block_size,
+> +			   struct mmap_block *mmaps, unsigned int mmaps_cnt)
+> +{
+> +	struct iio_buffer_block block;
+> +	int ret;
+> +
+> +	/**
+> +	 * This is where some buffer-pool management can do wonders,
+> +	 * but for the sake of this sample-code, we're just going to
+> +	 * copy the data and re-enqueue it back
+> +	 */
+> +	memset(&block, 0, sizeof(block));
+> +	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_DEQUEUE_IOCTL, &block);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* check for weird conditions */
+> +	if (block.bytes_used > block_size) {
+> +		fprintf(stderr,
+> +			"Got a bigger block (%u) than expected (%u)\n",
+> +			block.bytes_used, block_size);
+> +		return -EFBIG;
+> +	}
+> +
+> +	if (block.bytes_used < block_size) {
+> +		/**
+> +		 * This can be normal, with some real-world data
+> +		 * terminating abruptly. But log it.
+> +		 */
+> +		fprintf(stderr,
+> +			"Got a smaller block (%u) than expected (%u)\n",
+> +			block.bytes_used, block_size);
+> +	}
+> +
+> +	/* memcpy() the data, we lose some more performance here :p */
+> +	memcpy(data, mmaps[block.id].addr, block.bytes_used);
+> +
+> +	/* and re-queue this back */
+> +	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ENQUEUE_IOCTL, &mmaps[block.id].block);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return block.bytes_used;
+> +}
+> +
+>  static void print_usage(void)
+>  {
+>  	fprintf(stderr, "Usage: generic_buffer [options]...\n"
+> @@ -249,6 +376,7 @@ static void print_usage(void)
+>  		"  -c <n>     Do n conversions, or loop forever if n < 0\n"
+>  		"  -e         Disable wait for event (new data)\n"
+>  		"  -g         Use trigger-less mode\n"
+> +		"  -h         Use high-speed buffer access\n"
+>  		"  -l <n>     Set buffer length to n samples\n"
+>  		"  --device-name -n <name>\n"
+>  		"  --device-num -N <num>\n"
+> @@ -356,9 +484,15 @@ int main(int argc, char **argv)
+>  
+>  	struct iio_channel_info *channels = NULL;
+>  
+> +	static bool use_high_speed = false;
+> +	unsigned int block_size;
+> +	int nblocks = 16; /* default */
+> +	int mmaps_cnt = 0;
+> +	struct mmap_block *mmaps = NULL;
+> +
+>  	register_cleanup();
+>  
+> -	while ((c = getopt_long(argc, argv, "aAb:c:egl:n:N:t:T:w:?", longopts,
+> +	while ((c = getopt_long(argc, argv, "aAb:c:eghl:n:N:t:T:w:?", longopts,
+>  				NULL)) != -1) {
+>  		switch (c) {
+>  		case 'a':
+> @@ -396,6 +530,9 @@ int main(int argc, char **argv)
+>  		case 'g':
+>  			notrigger = 1;
+>  			break;
+> +		case 'h':
+> +			use_high_speed = true;
+> +			break;
+>  		case 'l':
+>  			errno = 0;
+>  			buf_len = strtoul(optarg, &dummy, 10);
+> @@ -661,6 +798,29 @@ int main(int argc, char **argv)
+>  		goto error;
+>  	}
+>  
+> +	scan_size = size_from_channelarray(channels, num_channels);
+> +	block_size = scan_size * buf_len;
+> +	/**
+> +	 * Need to enable high-speed before configuring length/enable.
+> +	 * Otherwise, the DMA buffer will work in fileio mode,
+> +	 * and mmap won't work.
+> +	 */
+> +	if (use_high_speed) {
+> +		/**
+> +		 * The block_size for one block is the same as 'data', but it
+> +		 * doesn't need to be the same size. It is easier for the sake
+> +		 * of this example.
+> +		 */
+> +		mmaps = enable_high_speed(buf_fd, block_size, nblocks);
+> +		if (!mmaps) {
+> +			fprintf(stderr, "Could not enable high-speed mode\n");
+> +			ret = -errno;
+> +			goto error;
+> +		}
+> +		mmaps_cnt = nblocks;
+> +		printf("Using high-speed mode\n");
+> +	}
+> +
+>  	/* Setup ring buffer parameters */
+>  	ret = write_sysfs_int("length", buf_dir_name, buf_len);
+>  	if (ret < 0)
+> @@ -675,8 +835,7 @@ int main(int argc, char **argv)
+>  		goto error;
+>  	}
+>  
+> -	scan_size = size_from_channelarray(channels, num_channels);
+> -	data = malloc(scan_size * buf_len);
+> +	data = malloc(block_size);
+>  	if (!data) {
+>  		ret = -ENOMEM;
+>  		goto error;
+> @@ -719,7 +878,13 @@ int main(int argc, char **argv)
+>  			toread = 64;
+>  		}
+>  
+> -		read_size = read(buf_fd, data, toread * scan_size);
+> +		if (use_high_speed) {
+> +			read_size = read_high_speed(buf_fd, data, block_size,
+> +						    mmaps, mmaps_cnt);
+> +		} else {
+> +			read_size = read(buf_fd, data, toread * scan_size);
+> +		}
+> +
+>  		if (read_size < 0) {
+>  			if (errno == EAGAIN) {
+>  				fprintf(stderr, "nothing available\n");
+> @@ -738,8 +903,14 @@ int main(int argc, char **argv)
+>  
+>  	if (fd >= 0 && close(fd) == -1)
+>  		perror("Failed to close character device");
+> -	if (buf_fd >= 0 && close(buf_fd) == -1)
+> -		perror("Failed to close buffer");
+> +	for (i = 0; i < mmaps_cnt; i++)
+> +		munmap(mmaps[i].addr, mmaps[i].block.size);
+> +	free(mmaps);
+> +	if (buf_fd >= 0) {
+> +		ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
+> +		if (close(buf_fd) == -1)
+> +			perror("Failed to close buffer");
+> +	}
+>  	free(buffer_access);
+>  	free(data);
+>  	free(buf_dir_name);
 
