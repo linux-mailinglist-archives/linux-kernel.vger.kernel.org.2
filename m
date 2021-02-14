@@ -2,298 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED05C31B2B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 22:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9C931B2B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 22:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhBNVSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 16:18:43 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:12409 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhBNVSk (ORCPT
+        id S230063AbhBNVSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 16:18:51 -0500
+Received: from mail.xenproject.org ([104.130.215.37]:39560 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhBNVSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 16:18:40 -0500
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 14 Feb 2021 13:17:59 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 14 Feb 2021 13:17:58 -0800
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 15 Feb 2021 02:47:33 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-        id 27FA921D7C; Mon, 15 Feb 2021 02:47:34 +0530 (IST)
-From:   Md Sadre Alam <mdalam@codeaurora.org>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        boris.brezillon@collabora.com, mani@kernel.org, krzk@kernel.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
-Subject: [PATCH] mtd: rawnand: qcom: update last code word register
-Date:   Mon, 15 Feb 2021 02:47:31 +0530
-Message-Id: <1613337451-8002-1-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Sun, 14 Feb 2021 16:18:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
+        bh=/QYTDglDUzmSr9H0s41Nh/i0d4YrXWxPDKOebpqx8dE=; b=NcY8RSnZ3LKaGcib3T0HtChLhF
+        M1sLaMxJGp/Kp2l4MeydJBd2feanETtRQcVu06AuiG4/2zW30vwcvB+BBKHyQJrkYanE817356IgL
+        8AoJUiKNh+Lp/4nQUrIV37x4O/nhjAkAEWpn2K/Ca8ELj/RVIL+ETmjzuONRlMF2jgK0=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1lBOmF-0002tO-Rd; Sun, 14 Feb 2021 21:17:59 +0000
+Received: from [54.239.6.185] (helo=a483e7b01a66.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1lBOmF-0006vA-Ir; Sun, 14 Feb 2021 21:17:59 +0000
+Subject: Re: [PATCH v2 1/8] xen/events: reset affinity of 2-level event when
+ tearing it down
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org
+References: <20210211101616.13788-1-jgross@suse.com>
+ <20210211101616.13788-2-jgross@suse.com>
+From:   Julien Grall <julien@xen.org>
+Message-ID: <2abf73b0-ec8d-8e9a-665a-1adc47972fe7@xen.org>
+Date:   Sun, 14 Feb 2021 21:17:57 +0000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210211101616.13788-2-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From QPIC version 2.0 onwards new register got added to
-read last codeword. This change will add the READ_LOCATION_LAST_CW_n
-register.
+Hi Juergen,
 
-For first three code word READ_LOCATION_n register will be
-use.For last code word READ_LOCATION_LAST_CW_n register will be
-use.
+On 11/02/2021 10:16, Juergen Gross wrote:
+> When creating a new event channel with 2-level events the affinity
+> needs to be reset initially in order to avoid using an old affinity
+> from earlier usage of the event channel port. So when tearing an event
+> channel down reset all affinity bits.
+> 
+> The same applies to the affinity when onlining a vcpu: all old
+> affinity settings for this vcpu must be reset. As percpu events get
+> initialized before the percpu event channel hook is called,
+> resetting of the affinities happens after offlining a vcpu (this is
+> working, as initial percpu memory is zeroed out).
+> 
+> Cc: stable@vger.kernel.org
+> Reported-by: Julien Grall <julien@xen.org>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
-[V5]
- * Added helper function to update location register value.
- drivers/mtd/nand/raw/qcom_nandc.c | 136 ++++++++++++++++++++++++++++++--------
- 1 file changed, 107 insertions(+), 29 deletions(-)
+Reviewed-by: Julien Grall <jgrall@amazon.com>
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 667e4bf..6d66dd1 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -48,6 +48,10 @@
- #define	NAND_READ_LOCATION_1		0xf24
- #define	NAND_READ_LOCATION_2		0xf28
- #define	NAND_READ_LOCATION_3		0xf2c
-+#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
-+#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
-+#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
-+#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
- 
- /* dummy register offsets, used by write_reg_dma */
- #define	NAND_DEV_CMD1_RESTORE		0xdead
-@@ -181,8 +185,14 @@
- #define	ECC_BCH_4BIT	BIT(2)
- #define	ECC_BCH_8BIT	BIT(3)
- 
--#define nandc_set_read_loc(nandc, reg, offset, size, is_last)	\
--nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
-+#define nandc_set_read_loc_first(nandc, reg, offset, size, is_last)	\
-+nandc_set_reg(nandc, reg,					\
-+	      ((offset) << READ_LOCATION_OFFSET) |		\
-+	      ((size) << READ_LOCATION_SIZE) |			\
-+	      ((is_last) << READ_LOCATION_LAST))
-+
-+#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
-+nandc_set_reg(nandc, reg,					\
- 	      ((offset) << READ_LOCATION_OFFSET) |		\
- 	      ((size) << READ_LOCATION_SIZE) |			\
- 	      ((is_last) << READ_LOCATION_LAST))
-@@ -316,6 +326,10 @@ struct nandc_regs {
- 	__le32 read_location1;
- 	__le32 read_location2;
- 	__le32 read_location3;
-+	__le32 read_location_last0;
-+	__le32 read_location_last1;
-+	__le32 read_location_last2;
-+	__le32 read_location_last3;
- 
- 	__le32 erased_cw_detect_cfg_clr;
- 	__le32 erased_cw_detect_cfg_set;
-@@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
- 		return &regs->read_location2;
- 	case NAND_READ_LOCATION_3:
- 		return &regs->read_location3;
-+	case NAND_READ_LOCATION_LAST_CW_0:
-+		return &regs->read_location_last0;
-+	case NAND_READ_LOCATION_LAST_CW_1:
-+		return &regs->read_location_last1;
-+	case NAND_READ_LOCATION_LAST_CW_2:
-+		return &regs->read_location_last2;
-+	case NAND_READ_LOCATION_LAST_CW_3:
-+		return &regs->read_location_last3;
- 	default:
- 		return NULL;
- 	}
-@@ -661,6 +683,26 @@ static void nandc_set_reg(struct qcom_nand_controller *nandc, int offset,
- 		*reg = cpu_to_le32(val);
- }
- 
-+/* helper to configure location register values */
-+static void nandc_set_read_loc(struct nand_chip *chip, int cw, int reg,
-+			       int offset, int size, int is_last)
-+{
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+
-+	int loc = NAND_READ_LOCATION_0;
-+
-+	if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
-+		loc = NAND_READ_LOCATION_LAST_CW_0;
-+
-+	loc += reg * 4;
-+
-+	if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
-+		return nandc_set_read_loc_last(nandc, loc, offset, size, is_last);
-+	else
-+		return nandc_set_read_loc_first(nandc, loc, offset, size, is_last);
-+}
-+
- /* helper to configure address register values */
- static void set_address(struct qcom_nand_host *host, u16 column, int page)
- {
-@@ -719,9 +761,14 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
- 	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
- 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
- 
--	if (read)
--		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
--				   host->cw_data : host->cw_size, 1);
-+	if (read) {
-+		if (nandc->props->qpic_v2)
-+			nandc_set_read_loc(chip, 3, 0, 0, host->use_ecc ?
-+					host->cw_data : host->cw_size, 1);
-+		else
-+			nandc_set_read_loc(chip, 0, 0, 0, host->use_ecc ?
-+					host->cw_data : host->cw_size, 1);
-+	}
- }
- 
- /*
-@@ -1094,11 +1141,16 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
-  * before reading each codeword in NAND page.
-  */
- static void
--config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
-+config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc, bool last_cw)
- {
--	if (nandc->props->is_bam)
--		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
--			      NAND_BAM_NEXT_SGL);
-+	if (nandc->props->is_bam) {
-+		if (nandc->props->qpic_v2 && last_cw)
-+			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0, 4,
-+				      NAND_BAM_NEXT_SGL);
-+		else
-+			write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
-+				      NAND_BAM_NEXT_SGL);
-+	}
- 
- 	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
- 	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-@@ -1118,10 +1170,10 @@ config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
-  */
- static void
- config_nand_single_cw_page_read(struct qcom_nand_controller *nandc,
--				bool use_ecc)
-+				bool use_ecc, bool last_cw)
- {
- 	config_nand_page_read(nandc);
--	config_nand_cw_read(nandc, use_ecc);
-+	config_nand_cw_read(nandc, use_ecc, last_cw);
- }
- 
- /*
-@@ -1205,7 +1257,7 @@ static int nandc_param(struct qcom_nand_host *host)
- 		nandc_set_reg(nandc, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
- 	}
- 
--	nandc_set_read_loc(nandc, 0, 0, 512, 1);
-+	nandc_set_read_loc(chip, 0, 0, 0, 512, 1);
- 
- 	if (!nandc->props->qpic_v2) {
- 		write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
-@@ -1215,7 +1267,7 @@ static int nandc_param(struct qcom_nand_host *host)
- 	nandc->buf_count = 512;
- 	memset(nandc->data_buffer, 0xff, nandc->buf_count);
- 
--	config_nand_single_cw_page_read(nandc, false);
-+	config_nand_single_cw_page_read(nandc, false, false);
- 
- 	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
- 		      nandc->buf_count, 0);
-@@ -1633,19 +1685,32 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	}
- 
- 	if (nandc->props->is_bam) {
--		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
--		read_loc += data_size1;
-+		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1)) {
-+			nandc_set_read_loc(chip, cw, 0, read_loc, data_size1, 0);
-+			read_loc += data_size1;
-+
-+			nandc_set_read_loc(chip, cw, 1, read_loc, oob_size1, 0);
-+			read_loc += oob_size1;
-+
-+			nandc_set_read_loc(chip, cw, 2, read_loc, data_size2, 0);
-+			read_loc += data_size2;
- 
--		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
--		read_loc += oob_size1;
-+			nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
-+		} else {
-+			nandc_set_read_loc(chip, cw, 0, read_loc, data_size1, 0);
-+			read_loc += data_size1;
-+
-+			nandc_set_read_loc(chip, cw, 1, read_loc, oob_size1, 0);
-+			read_loc += oob_size1;
- 
--		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
--		read_loc += data_size2;
-+			nandc_set_read_loc(chip, cw, 2, read_loc, data_size2, 0);
-+			read_loc += data_size2;
- 
--		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
-+			nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
-+		}
- 	}
- 
--	config_nand_cw_read(nandc, false);
-+	config_nand_cw_read(nandc, false, cw == ecc->steps - 1 ? true : false);
- 
- 	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
- 	reg_off += data_size1;
-@@ -1873,18 +1938,31 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 
- 		if (nandc->props->is_bam) {
- 			if (data_buf && oob_buf) {
--				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
--				nandc_set_read_loc(nandc, 1, data_size,
--						   oob_size, 1);
-+				if (nandc->props->qpic_v2 && i == (ecc->steps - 1)) {
-+					nandc_set_read_loc(chip, i, 0, 0, data_size, 0);
-+					nandc_set_read_loc(chip, i, 1, data_size,
-+							   oob_size, 1);
-+				} else {
-+					nandc_set_read_loc(chip, i, 0, 0, data_size, 0);
-+					nandc_set_read_loc(chip, i, 1, data_size,
-+							   oob_size, 1);
-+				}
- 			} else if (data_buf) {
--				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
-+				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
-+					nandc_set_read_loc(chip, i, 0, 0, data_size, 1);
-+				else
-+					nandc_set_read_loc(chip, i, 0, 0, data_size, 1);
- 			} else {
--				nandc_set_read_loc(nandc, 0, data_size,
--						   oob_size, 1);
-+				if (nandc->props->qpic_v2 && i == (ecc->steps - 1))
-+					nandc_set_read_loc(chip, i, 0, data_size,
-+							   oob_size, 1);
-+				else
-+					nandc_set_read_loc(chip, i, 0, data_size,
-+							   oob_size, 1);
- 			}
- 		}
- 
--		config_nand_cw_read(nandc, true);
-+		config_nand_cw_read(nandc, true, i == ecc->steps - 1 ? true : false);
- 
- 		if (data_buf)
- 			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
-@@ -1946,7 +2024,7 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
- 	set_address(host, host->cw_size * (ecc->steps - 1), page);
- 	update_rw_regs(host, 1, true);
- 
--	config_nand_single_cw_page_read(nandc, host->use_ecc);
-+	config_nand_single_cw_page_read(nandc, host->use_ecc, true);
- 
- 	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
- 
+Cheers,
+
+> ---
+> V2:
+> - reset affinity when tearing down the event (Julien Grall)
+> ---
+>   drivers/xen/events/events_2l.c       | 15 +++++++++++++++
+>   drivers/xen/events/events_base.c     |  1 +
+>   drivers/xen/events/events_internal.h |  8 ++++++++
+>   3 files changed, 24 insertions(+)
+> 
+> diff --git a/drivers/xen/events/events_2l.c b/drivers/xen/events/events_2l.c
+> index da87f3a1e351..a7f413c5c190 100644
+> --- a/drivers/xen/events/events_2l.c
+> +++ b/drivers/xen/events/events_2l.c
+> @@ -47,6 +47,11 @@ static unsigned evtchn_2l_max_channels(void)
+>   	return EVTCHN_2L_NR_CHANNELS;
+>   }
+>   
+> +static void evtchn_2l_remove(evtchn_port_t evtchn, unsigned int cpu)
+> +{
+> +	clear_bit(evtchn, BM(per_cpu(cpu_evtchn_mask, cpu)));
+> +}
+> +
+>   static void evtchn_2l_bind_to_cpu(evtchn_port_t evtchn, unsigned int cpu,
+>   				  unsigned int old_cpu)
+>   {
+> @@ -355,9 +360,18 @@ static void evtchn_2l_resume(void)
+>   				EVTCHN_2L_NR_CHANNELS/BITS_PER_EVTCHN_WORD);
+>   }
+>   
+> +static int evtchn_2l_percpu_deinit(unsigned int cpu)
+> +{
+> +	memset(per_cpu(cpu_evtchn_mask, cpu), 0, sizeof(xen_ulong_t) *
+> +			EVTCHN_2L_NR_CHANNELS/BITS_PER_EVTCHN_WORD);
+> +
+> +	return 0;
+> +}
+> +
+>   static const struct evtchn_ops evtchn_ops_2l = {
+>   	.max_channels      = evtchn_2l_max_channels,
+>   	.nr_channels       = evtchn_2l_max_channels,
+> +	.remove            = evtchn_2l_remove,
+>   	.bind_to_cpu       = evtchn_2l_bind_to_cpu,
+>   	.clear_pending     = evtchn_2l_clear_pending,
+>   	.set_pending       = evtchn_2l_set_pending,
+> @@ -367,6 +381,7 @@ static const struct evtchn_ops evtchn_ops_2l = {
+>   	.unmask            = evtchn_2l_unmask,
+>   	.handle_events     = evtchn_2l_handle_events,
+>   	.resume	           = evtchn_2l_resume,
+> +	.percpu_deinit     = evtchn_2l_percpu_deinit,
+>   };
+>   
+>   void __init xen_evtchn_2l_init(void)
+> diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+> index e850f79351cb..6c539db81f8f 100644
+> --- a/drivers/xen/events/events_base.c
+> +++ b/drivers/xen/events/events_base.c
+> @@ -368,6 +368,7 @@ static int xen_irq_info_pirq_setup(unsigned irq,
+>   static void xen_irq_info_cleanup(struct irq_info *info)
+>   {
+>   	set_evtchn_to_irq(info->evtchn, -1);
+> +	xen_evtchn_port_remove(info->evtchn, info->cpu);
+>   	info->evtchn = 0;
+>   	channels_on_cpu_dec(info);
+>   }
+> diff --git a/drivers/xen/events/events_internal.h b/drivers/xen/events/events_internal.h
+> index 0a97c0549db7..18a4090d0709 100644
+> --- a/drivers/xen/events/events_internal.h
+> +++ b/drivers/xen/events/events_internal.h
+> @@ -14,6 +14,7 @@ struct evtchn_ops {
+>   	unsigned (*nr_channels)(void);
+>   
+>   	int (*setup)(evtchn_port_t port);
+> +	void (*remove)(evtchn_port_t port, unsigned int cpu);
+>   	void (*bind_to_cpu)(evtchn_port_t evtchn, unsigned int cpu,
+>   			    unsigned int old_cpu);
+>   
+> @@ -54,6 +55,13 @@ static inline int xen_evtchn_port_setup(evtchn_port_t evtchn)
+>   	return 0;
+>   }
+>   
+> +static inline void xen_evtchn_port_remove(evtchn_port_t evtchn,
+> +					  unsigned int cpu)
+> +{
+> +	if (evtchn_ops->remove)
+> +		evtchn_ops->remove(evtchn, cpu);
+> +}
+> +
+>   static inline void xen_evtchn_port_bind_to_cpu(evtchn_port_t evtchn,
+>   					       unsigned int cpu,
+>   					       unsigned int old_cpu)
+> 
+
 -- 
-2.7.4
-
+Julien Grall
