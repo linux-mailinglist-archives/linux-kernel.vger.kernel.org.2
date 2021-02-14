@@ -2,161 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D39131AFF9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 11:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464B131B01E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 11:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhBNKA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 05:00:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46433 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229637AbhBNKAY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 05:00:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613296736;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FB1Zi7Y2SkOv/JvlFfpIv8DdC9H5NuowZUsuUzsgYnw=;
-        b=BaundisF4ulMmQwWvQ0c0Fpd3RzbBXPaf1xxDkX9S4P5ijRJ4g+4N0sgI/Dn5A/OqlKzxY
-        8drf6t58AIflRiWK59Jm7Gfn4T5bmNcuvk1RYm0W9uF4lI9M3pjVeIM3WdK1r9Sl4Zm2Ke
-        GzO4cJKcUAwGj4QEJWZOPiodVM7rNdA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-GWL1iqKhPqeMxQjNrCzZ8w-1; Sun, 14 Feb 2021 04:58:54 -0500
-X-MC-Unique: GWL1iqKhPqeMxQjNrCzZ8w-1
-Received: by mail-wr1-f72.google.com with SMTP id h20so6076312wrb.12
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 01:58:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=FB1Zi7Y2SkOv/JvlFfpIv8DdC9H5NuowZUsuUzsgYnw=;
-        b=ojcjJj7WrOJBk2at7EMXPlUbScCKfm1/jbfBIc2eYrJdkj3J7nlIQ63xIinS7a5v6S
-         wTz84GKhMCmTdbfH3JQirCQLuC2P8h8OKp5Y51RTJGTs2GBBnt7Nu111fXI8Q231WKYT
-         vPnigjX9MZheoLOt9DivFQAKFBpmCb7QUUgmQhMpLuQPiDhPG895cpcdAC1U1+89/bwz
-         ADhe/T/JpHtYHeurO7AjJr8oZzO0AElJH5DGt3L3Pff8sQ7AZToxJx6TUmNwUBXIGmKs
-         t49cM/TDXxPryufLjgGntqsZjVUlKOkQKPxa+nY95MyMLxNW2pUb0qBJRmfAOQfpphzP
-         chLg==
-X-Gm-Message-State: AOAM531MjCDb9IjFjEQrIHcDM9I/K+DKbeajclw9iqrBopwBWWIOB7SG
-        pVkxu44enqYdkVMquFfDaZZUwSKZDyOiyDlJUAN1mvzW/E2e5hNMknbOE6f9PvsJijJDg2SR+dv
-        hkdKRbyZNFMlYbTPbeCJJ+2W4
-X-Received: by 2002:a7b:c5c1:: with SMTP id n1mr9687105wmk.163.1613296732928;
-        Sun, 14 Feb 2021 01:58:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy6AiGKsLxdVOEv3lcfmH3b0B76nApmRsRYcgYL0hyAbXvIT8wdTN/HlT3/mJBi3lug6LzkMg==
-X-Received: by 2002:a7b:c5c1:: with SMTP id n1mr9687058wmk.163.1613296732697;
-        Sun, 14 Feb 2021 01:58:52 -0800 (PST)
-Received: from [192.168.3.108] (p4ff23363.dip0.t-ipconnect.de. [79.242.51.99])
-        by smtp.gmail.com with ESMTPSA id x15sm18554557wro.66.2021.02.14.01.58.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Feb 2021 01:58:52 -0800 (PST)
+        id S229798AbhBNKhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 05:37:20 -0500
+Received: from [43.250.32.171] ([43.250.32.171]:58126 "EHLO email.cn"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229714AbhBNKhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 05:37:18 -0500
+X-Greylist: delayed 333 seconds by postgrey-1.27 at vger.kernel.org; Sun, 14 Feb 2021 05:37:11 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=Nhqx3Tsf3nCnYmN2GKXUM+VMW4GOQ/CYGcPD9
+        p9AsMg=; b=O+/pM9Y1ruXygZpcRtcMfkIVepMjYV+TckVAJ/vneJNyVkxjAshbe
+        tePYhvb53LhlTQ1kgCUxFeJlm6jQYV8qjWCSazPKdIfNImXk45c0B4kWGROgqbOW
+        2PK+dttanE6eOdd33FmU9Q1bwzjQyEs6Dsxn/ClCGif3UOtsrRgYQU=
+Received: from mipc (unknown [120.242.68.139])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgDnbznd+yhgfFAIAA--.21933S2;
+        Sun, 14 Feb 2021 18:30:54 +0800 (CST)
+Date:   Sun, 14 Feb 2021 18:30:52 +0800
+From:   Wu XiangCheng <bobwxc@email.cn>
+To:     alex.shi@linux.alibaba.com
+Cc:     harryxiyou@gmail.com, corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bobwxc@email.cn
+Subject: [PATCH] doc/zh_CN: impove process/index & 1.Intro.rst
+Message-ID: <20210214103051.GA20398@mipc>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to create "secret" memory areas
-Date:   Sun, 14 Feb 2021 10:58:44 +0100
-Message-Id: <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
-References: <20210214091954.GM242749@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-In-Reply-To: <20210214091954.GM242749@kernel.org>
-To:     Mike Rapoport <rppt@kernel.org>
-X-Mailer: iPhone Mail (18D52)
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: LCKnCgDnbznd+yhgfFAIAA--.21933S2
+X-Coremail-Antispam: 1UD129KBjvAXoWfAw4rWr4kCw4xXry5Xr4rGrg_yoW5JF1DKo
+        WFy3WF9wsrAwsFqa4Ykw4DGr97WrnYyF43urs3Gr13ur4DWr1Yy3Z5JrnrXF98ZrZ0k3Zx
+        t3s3JFySvFy5A3W3n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUY17AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xva
+        j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
+        x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWU
+        JVW8JwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8JV
+        W8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4DMxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU5pBTUUUUU
+X-Originating-IP: [120.242.68.139]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Improve language and typography of process/index and 1.Intro.rst.
 
-> Am 14.02.2021 um 10:20 schrieb Mike Rapoport <rppt@kernel.org>:
->=20
-> =EF=BB=BFOn Fri, Feb 12, 2021 at 10:18:19AM +0100, David Hildenbrand wrote=
-:
->>> On 12.02.21 00:09, Mike Rapoport wrote:
->>> On Thu, Feb 11, 2021 at 01:07:10PM +0100, David Hildenbrand wrote:
->>>> On 11.02.21 12:27, Mike Rapoport wrote:
->>>>> On Thu, Feb 11, 2021 at 10:01:32AM +0100, David Hildenbrand wrote:
->>>>=20
->>>> So let's talk about the main user-visible differences to other memfd fi=
-les
->>>> (especially, other purely virtual files like hugetlbfs). With secretmem=
-:
->>>>=20
->>>> - File content can only be read/written via memory mappings.
->>>> - File content cannot be swapped out.
->>>>=20
->>>> I think there are still valid ways to modify file content using syscall=
-s:
->>>> e.g., fallocate(PUNCH_HOLE). Things like truncate also seems to work ju=
-st
->>>> fine.
->>> These work perfectly with any file, so maybe we should have added
->>> memfd_create as a flag to open(2) back then and now the secretmem file
->>> descriptors?
->>=20
->> I think open() vs memfd_create() makes sense: for open, the path specifie=
-s
->> main properties (tmpfs, hugetlbfs, filesystem). On memfd, there is no suc=
-h
->> path and the "type" has to be specified differently.
->>=20
->> Also, open() might open existing files - memfd always creates new files.
->=20
-> Yes, but still open() returns a handle to a file and memfd_create() return=
-s
-> a handle to a file. The differences may be well hidden by e.g. O_MEMORY an=
-d
-> than features unique to memfd files will have their set of O_SOMETHING
-> flags.
->=20
+Signed-off-by: Wu XiangCheng <bobwxc@email.cn>
+---
+Request for comments on preliminary work.
 
-Let=E2=80=98s agree to disagree.
+ .../translations/zh_CN/process/1.Intro.rst    | 146 +++++++++---------
+ .../translations/zh_CN/process/index.rst      |  10 +-
+ 2 files changed, 79 insertions(+), 77 deletions(-)
 
-> It's the same logic that says "we already have an interface that's close
-> enough and it's fine to add a bunch of new flags there".
-
-No, not quite. But let=E2=80=98s agree to disagree.
-
->=20
-> And here we come to the question "what are the differences that justify a
-> new system call?" and the answer to this is very subjective. And as such w=
-e
-> can continue bikeshedding forever.
-
-I think this fits into the existing memfd_create() syscall just fine, and I h=
-eard no compelling argument why it shouldn=E2=80=98t. That=E2=80=98s all I c=
-an say.=
+diff --git a/Documentation/translations/zh_CN/process/1.Intro.rst b/Documentation/translations/zh_CN/process/1.Intro.rst
+index 10a15f3dc282..abbd6d6d51d6 100644
+--- a/Documentation/translations/zh_CN/process/1.Intro.rst
++++ b/Documentation/translations/zh_CN/process/1.Intro.rst
+@@ -5,76 +5,77 @@
+ 
+ .. _cn_development_process_intro:
+ 
+-介绍
++引言
+ ====
+ 
+-执行摘要
++内容提要
+ --------
+ 
+-本节的其余部分涵盖了内核开发过程的范围，以及开发人员及其雇主在这方面可能遇
+-到的各种挫折。内核代码应该合并到正式的（“主线”）内核中有很多原因，包括对用
++本节的其余部分涵盖了内核开发的过程，以及开发人员及其雇主在这方面可能遇到
++的各种挫折。有很多原因使内核代码应被合并到正式的（“主线”）内核中，包括对用
+ 户的自动可用性、多种形式的社区支持以及影响内核开发方向的能力。提供给Linux
+ 内核的代码必须在与GPL兼容的许可证下可用。
+ 
+ :ref:`cn_development_process` 介绍了开发过程、内核发布周期和合并窗口的机制。
+-涵盖了补丁开发、审查和合并周期中的各个阶段。有一些关于工具和邮件列表的讨论。
+-鼓励希望开始内核开发的开发人员作为初始练习跟踪并修复bug。
++涵盖了补丁开发、审查和合并周期中的各个阶段。还介绍了一些工具和邮件列表。
++鼓励希望开始内核开发的开发人员跟踪并修复缺陷以作为初步练习。
+ 
+ 
+-:ref:`cn_development_early_stage` 包括早期项目规划，重点是尽快让开发社区参与
++:ref:`cn_development_early_stage` 包括早期的项目规划，重点是尽快让开发社区
++参与进来。
+ 
+-:ref:`cn_development_coding` 是关于编码过程的；讨论了其他开发人员遇到的几个
+-陷阱。对补丁的一些要求已经涵盖，并且介绍了一些工具，这些工具有助于确保内核
++:ref:`cn_development_coding` 是关于编程过程的；介绍了其他开发人员遇到的几个
++陷阱。也涵盖了对补丁的一些要求，并且介绍了一些工具，这些工具有助于确保内核
+ 补丁是正确的。
+ 
+-:ref:`cn_development_posting` 讨论发布补丁以供评审的过程。为了让开发社区
+-认真对待，补丁必须正确格式化和描述，并且必须发送到正确的地方。遵循本节中的
+-建议有助于确保为您的工作提供最好的接纳。
++:ref:`cn_development_posting` 描述发布补丁以供评审的过程。为了让开发社区能
++认真对待，补丁必须被正确格式化和描述，并且必须发送到正确的地方。遵循本节中的
++建议有助于确保您的工作能被较好地接纳。
+ 
+-:ref:`cn_development_followthrough` 介绍了发布补丁之后发生的事情；该工作
+-在这一点上还远远没有完成。与审阅者一起工作是开发过程中的一个重要部分；本节
++:ref:`cn_development_followthrough` 介绍了发布补丁之后发生的事情；工作
++在这时还远远没有完成。与审阅者一起工作是开发过程中的一个重要部分；本节
+ 提供了一些关于如何在这个重要阶段避免问题的提示。当补丁被合并到主线中时，
+-开发人员要注意不要假定任务已经完成。
++开发人员要注意不要认为任务已经完成。
+ 
+-:ref:`cn_development_advancedtopics` 介绍了两个“高级”主题：
++:ref:`cn_development_advancedtopics` 介绍了两个“进阶”主题：
+ 使用Git管理补丁和查看其他人发布的补丁。
+ 
+-:ref:`cn_development_conclusion` 总结了有关内核开发的更多信息，附带有带有
+-指向资源的链接.
++:ref:`cn_development_conclusion` 总结了有关内核开发的更多信息，附带有
++资源链接。
+ 
+ 这个文件是关于什么的
+ --------------------
+ 
+ Linux内核有超过800万行代码，每个版本的贡献者超过1000人，是现存最大、最活跃
+ 的免费软件项目之一。从1991年开始，这个内核已经发展成为一个最好的操作系统
+-组件，运行在袖珍数字音乐播放器、台式PC、现存最大的超级计算机以及所有类型的
++组件，运行在袖珍数字音乐播放器、台式电脑、现存最大的超级计算机以及所有类型的
+ 系统上。它是一种适用于几乎任何情况的健壮、高效和可扩展的解决方案。
+ 
+ 随着Linux的发展，希望参与其开发的开发人员（和公司）的数量也在增加。硬件供应商
+ 希望确保Linux能够很好地支持他们的产品，使这些产品对Linux用户具有吸引力。嵌入
+ 式系统供应商使用Linux作为集成产品的组件，希望Linux能够尽可能地胜任手头的任务。
+-分销商和其他基于Linux的软件供应商对Linux内核的功能、性能和可靠性有着明确的
+-兴趣。最终用户也常常希望修改Linux，使之更好地满足他们的需求。
++分销商和其他基于Linux的软件供应商切实关心Linux内核的功能、性能和可靠性。
++最终用户也常常希望修改Linux，使之年能更好地满足他们的需求。
+ 
+ Linux最引人注目的特性之一是这些开发人员可以访问它；任何具备必要技能的人都可以
+ 改进Linux并影响其开发方向。专有产品不能提供这种开放性，这是自由软件的一个特点。
+-但是，如果有什么不同的话，内核比大多数其他自由软件项目更开放。一个典型的三个月
++如果有什么不同的话，那就是内核比大多数其他自由软件项目更开放。一个典型的三个月
+ 内核开发周期可以涉及1000多个开发人员，他们为100多个不同的公司
+-（或者根本没有公司）工作。
++（或者根本不隶属公司）工作。
+ 
+-与内核开发社区合作并不是特别困难。但是，尽管如此，许多潜在的贡献者在尝试做
+-内核工作时遇到了困难。内核社区已经发展了自己独特的操作方式，使其能够在每天
++与内核开发社区合作并不是特别困难。但尽管如此，仍有许多潜在的贡献者在尝试做
++内核工作时遇到了困难。内核社区已经发展出自己独特的操作方式，使其能够在每天
+ 都要更改数千行代码的环境中顺利运行（并生成高质量的产品）。因此，Linux内核开发
+-过程与专有的开发方法有很大的不同也就不足为奇了。
++过程与专有的开发模式有很大的不同也就不足为奇了。
+ 
+-对于新开发人员来说，内核的开发过程可能会让人感到奇怪和恐惧，但这个背后有充分的
+-理由和坚实的经验。一个不了解内核社区的方式的开发人员（或者更糟的是，他们试图
+-抛弃或规避内核社区的方式）会有一个令人沮丧的体验。开发社区, 在帮助那些试图学习
++对于新开发人员来说，内核的开发过程可能会让人感到奇怪和恐惧，但这背后有充分的
++理由和坚实的经验。一个不了解内核社区工作方式的开发人员（或者更糟的是，他们
++试图抛弃或规避之）会得到令人沮丧的体验。开发社区在帮助那些试图学习
+ 的人的同时，没有时间帮助那些不愿意倾听或不关心开发过程的人。
+ 
+-希望阅读本文的人能够避免这种令人沮丧的经历。这里有很多材料，但阅读时所做的
++希望阅读本文的人能够避免这种令人沮丧的经历。这些材料很长，但阅读它们时所做的
+ 努力会在短时间内得到回报。开发社区总是需要能让内核变更好的开发人员；下面的
+-文本应该帮助您或为您工作的人员加入我们的社区。
++文字应该帮助您或为您工作的人员加入我们的社区。
+ 
+ 致谢
+ ----
+@@ -85,77 +86,77 @@ Jake Edge, Jiri Kosina, Matt Mackall, Arthur Marsh, Amanda McPherson,
+ Andrew Morton, Andrew Price, Tsugikazu Shibata, 和 Jochen Voß.
+ 
+ 这项工作得到了Linux基金会的支持，特别感谢Amanda McPherson，他看到了这项工作
+-的价值并把它变成现实。
++的价值并将其变成现实。
+ 
+ 代码进入主线的重要性
+ --------------------
+ 
+ 有些公司和开发人员偶尔会想，为什么他们要费心学习如何与内核社区合作，并将代码
+ 放入主线内核（“主线”是由Linus Torvalds维护的内核，Linux发行商将其用作基础）。
+-在短期内，贡献代码看起来像是一种可以避免的开销；仅仅将代码分开并直接支持用户
++在短期内，贡献代码看起来像是一种可以避免的开销；维护独立代码并直接支持用户
+ 似乎更容易。事实上，保持代码独立（“树外”）是在经济上是错误的。
+ 
+-作为说明树外代码成本的一种方法，下面是内核开发过程的一些相关方面；本文稍后将
+-更详细地讨论其中的大部分内容。考虑：
++为了说明树外代码成本，下面给出内核开发过程的一些相关方面；本文稍后将
++更详细地讨论其中的大部分内容。请考虑：
+ 
+ - 所有Linux用户都可以使用合并到主线内核中的代码。它将自动出现在所有启用它的
+-  发行版上。不需要驱动程序磁盘、下载，也不需要为多个发行版的多个版本提供支持；
+-  对于开发人员和用户来说，这一切都是可行的。并入主线解决了大量的分布和支持问题
++  发行版上。无需驱动程序磁盘、额外下载，也不需要为多个发行版的多个版本提供
++  支持；这一切将方便所有开发人员和用户。并入主线解决了大量的分发和支持问题。
+ 
+-- 当内核开发人员努力维护一个稳定的用户空间接口时，内部内核API处于不断变化之中.
+-  缺乏一个稳定的内部接口是一个深思熟虑的设计决策；它允许在任何时候进行基本的改
+-  进，并产生更高质量的代码。但该策略的一个结果是，如果要使用新的内核，任何树外
+-  代码都需要持续的维护。维护树外代码需要大量的工作才能使代码保持工作状态。
++- 当内核开发人员努力维护一个稳定的用户空间接口时，内核内部API处于不断变化之中。
++  不维持稳定的内部接口是一个慎重的设计决策；它允许在任何时候进行基本的改
++  进，并产出更高质量的代码。但该策略导致结果是，若要使用新的内核，任何树外
++  代码都需要持续的维护。维护树外代码会需要大量的工作才能使代码保持正常运行。
+ 
+-  相反，位于主线中的代码不需要这样做，因为一个简单的规则要求进行API更改的任何
++  相反，位于主线中的代码不需要这样做，因为基本规则要求进行API更改的任何
+   开发人员也必须修复由于该更改而破坏的任何代码。因此，合并到主线中的代码大大
+   降低了维护成本。
+ 
+-- 除此之外，内核中的代码通常会被其他开发人员改进。令人惊讶的结果可能来自授权
+-  您的用户社区和客户改进您的产品。
++- 除此之外，内核中的代码通常会被其他开发人员改进。您授权的用户社区和客户
++  对您产品的改进可能会令人惊喜。
+ 
+-- 内核代码在合并到主线之前和之后都要经过审查。不管原始开发人员的技能有多强，
++- 内核代码在合并到主线之前和之后都要经过审查。无论原始开发人员的技能有多强，
+   这个审查过程总是能找到改进代码的方法。审查经常发现严重的错误和安全问题。
+-  这对于在封闭环境中开发的代码尤其如此；这种代码从外部开发人员的审查中获益
++  对于在封闭环境中开发的代码尤其如此；这种代码从外部开发人员的审查中获益
+   匪浅。树外代码是低质量代码。
+ 
+ - 参与开发过程是您影响内核开发方向的方式。旁观者的抱怨会被听到，但是活跃的
+   开发人员有更强的声音——并且能够实现使内核更好地满足其需求的更改。
+ 
+ - 当单独维护代码时，总是存在第三方为类似功能提供不同实现的可能性。如果发生
+-  这种情况，合并代码将变得更加困难——甚至到了不可能的地步。然后，您将面临以下
++  这种情况，合并代码将变得更加困难——甚至成为不可能。之后，您将面临以下
+   令人不快的选择：（1）无限期地维护树外的非标准特性，或（2）放弃代码并将用户
+   迁移到树内版本。
+ 
+-- 代码的贡献是使整个过程工作的根本。通过贡献代码，您可以向内核添加新功能，并
++- 代码的贡献是使整个流程顺畅的根本。通过贡献代码，您可以向内核添加新功能，并
+   提供其他内核开发人员使用的功能和示例。如果您已经为Linux开发了代码（或者
+   正在考虑这样做），那么您显然对这个平台的持续成功感兴趣；贡献代码是确保成功
+   的最好方法之一。
+ 
+ 上述所有理由都适用于任何树外内核代码，包括以专有的、仅二进制形式分发的代码。
+-然而，在考虑任何类型的纯二进制内核代码分布之前，还需要考虑其他因素。这些包括：
++然而，在考虑任何类型的纯二进制内核代码分布之前，还需要考虑其他因素。包括：
+ 
+-- 围绕专有内核模块分发的法律问题充其量是模糊的；相当多的内核版权所有者认为，
+-  大多数仅限二进制的模块是内核的派生产品，因此，它们的分发违反了GNU通用公共
+-  许可证（下面将详细介绍）。您的作者不是律师，本文档中的任何内容都不可能被
++- 围绕专有内核模块分发的法律问题其实较为模糊；相当多的内核版权所有者认为，
++  大多数仅二进制的模块是内核的派生产品，因此，它们的分发违反了GNU通用公共
++  许可证（下面将详细介绍）。本文作者不是律师，本文档中的任何内容都不可能被
+   视为法律建议。封闭源代码模块的真实法律地位只能由法院决定。但不管怎样，困扰
+   这些模块的不确定性仍然存在。
+ 
+ - 二进制模块大大增加了调试内核问题的难度，以至于大多数内核开发人员甚至都不会
+   尝试。因此，只分发二进制模块将使您的用户更难从社区获得支持。
+ 
+-- 对于只支持二进制的模块的发行者来说，支持也更加困难，他们必须为他们希望支持
+-  的每个发行版和每个内核版本提供一个版本的模块。为了提供相当全面的覆盖范围，
++- 对于仅二进制的模块的发行者来说，支持也更加困难，他们必须为他们希望支持
++  的每个发行版和每个内核版本提供不同版本的模块。为了提供较为全面的覆盖范围，
+   可能需要一个模块的几十个构建，并且每次升级内核时，您的用户都必须单独升级
+-  您的模块。
++  这些模块。
+ 
+-- 上面提到的关于代码评审的所有问题都更加存在于封闭源代码。由于该代码根本不可
+-  用，因此社区无法对其进行审查，毫无疑问，它将存在严重问题。
++- 上面提到的关于代码评审的所有问题都无疑存在于封闭源代码中。由于该代码根本
++  不可得，因此社区无法对其进行审查，毫无疑问，它将存在严重问题。
+ 
+-尤其是嵌入式系统的制造商，可能会倾向于忽视本节中所说的大部分内容，因为他们
++尤其是嵌入式系统的制造商，可能会倾向于忽视本节中所说的大部分内容；因为他们
+ 相信自己正在商用一种使用冻结内核版本的独立产品，在发布后不需要再进行开发。
+ 这个论点忽略了广泛的代码审查的价值以及允许用户向产品添加功能的价值。但这些
+-产品也有有限的商业寿命，之后必须发布新版本的产品。在这一点上，代码在主线上
++产品的商业寿命有限，之后必须发布新版本的产品。在这一点上，代码在主线上
+ 并得到良好维护的供应商将能够更好地占位，以使新产品快速上市。
+ 
+ 许可
+@@ -163,24 +164,25 @@ Andrew Morton, Andrew Price, Tsugikazu Shibata, 和 Jochen Voß.
+ 
+ 代码是根据一些许可证提供给Linux内核的，但是所有代码都必须与GNU通用公共许可
+ 证（GPLV2）的版本2兼容，该版本是覆盖整个内核分发的许可证。在实践中，这意味
+-着所有代码贡献都由GPLv2（可选地，语言允许在更高版本的GPL下分发）或3子句BSD
+-许可（New BSD License, 译者注）覆盖。任何不包含在兼容许可证中的贡献都不会
++着所有代码贡献都由GPLv2（原则上允许在更高版本的GPL下分发，可选）或3子句BSD
++许可（New BSD License，译者注）覆盖。任何不包含在兼容许可证中的贡献都不会
+ 被接受到内核中。
+ 
+ 贡献给内核的代码不需要（或请求）版权分配。合并到主线内核中的所有代码都保留
+ 其原始所有权；因此，内核现在拥有数千个所有者。
+ 
+-这种所有权结构的一个暗示是，任何改变内核许可的尝试都注定会失败。很少有实际
+-的场景可以获得所有版权所有者的同意（或者从内核中删除他们的代码）。因此，特
+-别是，在可预见的将来，不可能迁移到GPL的版本3。
++这种所有权结构也暗示着，任何改变内核许可的尝试都注定会失败。很少有实际
++情况可以获得所有版权所有者的同意（或者从内核中删除他们的代码）。因此，尤其
++是在可预见的将来，许可证不大可能迁移到GPL的版本3。
+ 
+-所有贡献给内核的代码都必须是合法的免费软件。因此，不接受匿名（或匿名）贡献
+-者的代码。所有贡献者都需要在他们的代码上“sign off”，声明代码可以在GPL下与内
+-核一起分发。无法提供未被其所有者许可为免费软件的代码，或可能为内核造成版权
+-相关问题的代码（例如，由缺乏适当保护的反向工程工作派生的代码）不能被接受。
++所有贡献给内核的代码都必须是合法的免费软件。因此，不接受匿名（或化名）贡献
++者的代码。所有贡献者都需要在他们的代码上“sign off（签发）”，声明代码可以
++在GPL下与内核一起分发。无法提供未被其所有者许可为免费软件的代码，或可能为
++内核造成版权相关问题的代码（例如，由缺乏适当保护的逆向工程工作派生的代码）
++不能被接受。
+ 
+-有关版权相关问题的问题在Linux开发邮件列表中很常见。这样的问题通常会得到不少
+-答案，但要记住，回答这些问题的人不是律师，不能提供法律咨询。如果您有关于
+-Linux源代码的法律问题，那么与了解该领域的律师交流是无法替代的。依靠从技术
+-邮件列表中获得的答案是一件冒险的事情。
++有关版权问题的提问在Linux开发邮件列表中很常见。这样的问题通常会得到不少
++答案，但请记住，回答这些问题的人不是律师，不能提供法律咨询。如果您有关于
++Linux源代码的法律问题，没有什么可以代替咨询了解这一领域的律师。依赖从
++技术邮件列表中获得的答案是一件冒险的事情。
+ 
+diff --git a/Documentation/translations/zh_CN/process/index.rst b/Documentation/translations/zh_CN/process/index.rst
+index 8051a7b322c5..995e1e508d9c 100644
+--- a/Documentation/translations/zh_CN/process/index.rst
++++ b/Documentation/translations/zh_CN/process/index.rst
+@@ -13,11 +13,11 @@
+ 与Linux 内核社区一起工作
+ ========================
+ 
+-那么你想成为Linux内核开发人员？ 欢迎！ 不但从技术意义上讲有很多关于内核的知识
+-需要学，而且了解我们社区的工作方式也很重要。 阅读这些文章可以让您以更轻松地,
+-麻烦最少的方式将更改合并到内核。
++你想成为Linux内核开发人员吗？ 欢迎之至！ 在学习许多关于内核的技术知识的同时，
++了解我们社区的工作方式也很重要。 阅读这些文档可以让您以更轻松的、麻烦更少的
++方式将更改合并到内核。
+ 
+-以下是每位开发人员应阅读的基本指南。
++以下是每位开发人员都应阅读的基本指南：
+ 
+ .. toctree::
+    :maxdepth: 1
+@@ -47,7 +47,7 @@
+    management-style
+    embargoed-hardware-issues
+ 
+-这些是一些总体技术指南，由于缺乏更好的地方，现在已经放在这里
++这些是一些总体性技术指南，由于不大好分类而放在这里：
+ 
+ .. toctree::
+    :maxdepth: 1
+-- 
+2.20.1
 
