@@ -2,129 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0173E31AF84
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 07:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F280D31AF88
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 07:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhBNGqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 01:46:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
+        id S229889AbhBNGrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 01:47:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbhBNGqP (ORCPT
+        with ESMTP id S229563AbhBNGrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 01:46:15 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83ED3C061574;
-        Sat, 13 Feb 2021 22:45:35 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id m2so2408978pgq.5;
-        Sat, 13 Feb 2021 22:45:35 -0800 (PST)
+        Sun, 14 Feb 2021 01:47:02 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91969C061574;
+        Sat, 13 Feb 2021 22:46:22 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id z6so2274744pfq.0;
+        Sat, 13 Feb 2021 22:46:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kxieg2fYbmNp08HkGfhgbIDiBi4p+VeYpKohIERpFA8=;
-        b=cK5/G+LROFF73yYorWUTE9ddeKSLK1MjoIvVAuAuaBOZfnEDGu4aJcUFFY3rkzTQb/
-         qxES8JqFUjhEhH1n65QjaMBh5GUnLEztMLVwD6ITj3F0CbUfMKHRyvruMUZFiJVleq+C
-         GFJrcokvWrlqgg0gM1MTh+KNe2glT8eNzhMS3wfpDBFfBC4VyZces0RtKQhzi+yHh4Aj
-         BrJ9muaLabfKRpOhbJiL1MsBPh6oMJUuafST/sZw4nTHpuNnbBGet4o/iJ1eUN5v5jbZ
-         KCv4VKpDesOLs6U75jse3fYp9yOKwBD8njcvOF33KHDw9QvyrWPEvTyzqy9lcFnStmtQ
-         N7SA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jSknlKAGtVAQZKJexv2SwPUPcsYU9dgMwmRxYZKua5A=;
+        b=u3V+OXBr/hDtXGHxKdN5ilavow4B7YndNtx/q3MEVTIAMDSEAhGHcXtYoS3wSY+k0X
+         p8qpt4MAnaFAPvY3rpK2wkvZNOF5AU2AoFdtS3IOTfgPnySrXbF0NFmhc7X44e+pKT+D
+         dfkWx/U+zGd9iuEe/pIx+KDJdTPSelJeg3wgI/B2EiXFb/AGDm8J1dfjoYCNOC8XFH02
+         E/c0KreuW8V6L//V/59amtMmrDB28o+5OHwACPFB27/bgPiQ/x2W23oDLi7ahUGwIfDX
+         p7V72PtTDmvecLCPyV3hUXG1W8oL8+uIE0/iEJakeVzAybe/q+LBscFGsKWlvZ3DytQL
+         UMgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kxieg2fYbmNp08HkGfhgbIDiBi4p+VeYpKohIERpFA8=;
-        b=D4bMUS52n8XxGc3UktAnFsSQna1L9vS/zoFksMydlXYEPB4A57Y9bpNb6L5HzRb8cI
-         j7Jxez5ATyM8x9rEVr6gz+xq+9ULDnUDkjDPwLqDiAiZb/wrXnEs7zGntvCpVeFHrofo
-         Rg2VZUlJtB3JaTeqLuz/pE/06V0xXcPICNTXDDi3/dFoY60E4BIOzYMH7E4JpKF3BcgZ
-         UOu3u1MJbk7mQdb0Vx4za1b9dBGpSd7iay+2YUxug4pOCZxZfZ4MjfCk4MDN/+/aMWsD
-         HSM3pfgdnJg4A0Wk4gxfBZDbSwt9oIeBq/gNZnEukBb/DTl/lnBFpQ1xvzxJvruKd9Y0
-         8aeg==
-X-Gm-Message-State: AOAM532Bfo8NvyUYCXKhJa+/Yota2Mn90xX3tgMPmITf5KGr5L7v6Vgq
-        Ls8aIoqFfYZk5F3VsJ6Pqe4=
-X-Google-Smtp-Source: ABdhPJzCNsO51oIyLjKKKo5lArer/lVABNVDwsQaayiH336EQFIH4xLhymm37Cq/09KzzibntLDz9Q==
-X-Received: by 2002:a65:6706:: with SMTP id u6mr10378754pgf.26.1613285134998;
-        Sat, 13 Feb 2021 22:45:34 -0800 (PST)
-Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
-        by smtp.gmail.com with ESMTPSA id o11sm11736110pjo.43.2021.02.13.22.45.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jSknlKAGtVAQZKJexv2SwPUPcsYU9dgMwmRxYZKua5A=;
+        b=lvyrDZ5vtRhKFWVymJjMusvCYshZi/9FuwuhyvnrwYxemTCO3CS3KoHGgmlnwNFFVI
+         CZ5xoijXL3Q+J4xSPhkjhm7gH/W8EVWt9fYYQ0uXMCXt7akPyj8ZJmOy41oTPPBEcT2r
+         S2fKEajCE2QSQc/HVFoScPYKlxmLVY52WWjWTI2qkzgfc4KbeNXf9MfqqeajO9N7SNnv
+         8BFsbMIgE2nFRmnWiYOGpkg2L5D5kQMluSFNZXbqUVNqBL2Yhk7lTfENEq4JeveyrAtw
+         BXerUR4OEvpVfzaspfQ4c1hnGg6Sg96N1cA+XBEVVQe/rx8nrN0Hzo0JqSCBHH5zZBP5
+         8l9w==
+X-Gm-Message-State: AOAM53388bKq0LAXW/DEFZZPi8eevTnFUN7+lgyscrrgLgRayTjeQCeu
+        UNDQYXcAFHcnfEBpepZcq3A=
+X-Google-Smtp-Source: ABdhPJx8bOj1wN7D6ynfHAq8AGifhMXi+3jvu1kIVav5rvxZOoPO4BsqC9fT408hyH1mLOSQt1wXBQ==
+X-Received: by 2002:a63:63c1:: with SMTP id x184mr6878707pgb.283.1613285182169;
+        Sat, 13 Feb 2021 22:46:22 -0800 (PST)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id b20sm13770107pfo.109.2021.02.13.22.46.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Feb 2021 22:45:34 -0800 (PST)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        mika.westerberg@linux.intel.com, wsa@kernel.org,
-        linux-i2c@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
-Subject: [PATCH i2c-next] i2c: designware: Consolidate pci_free_irq_vectors to a single place
-Date:   Sun, 14 Feb 2021 14:45:29 +0800
-Message-Id: <20210214064529.481341-1-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.25.0
+        Sat, 13 Feb 2021 22:46:21 -0800 (PST)
+Date:   Sun, 14 Feb 2021 15:46:14 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     bgolaszewski@baylibre.com, andriy.shevchenko@linux.intel.com,
+        michal.simek@xilinx.com, arnd@arndb.de, rrichter@marvell.com,
+        linus.walleij@linaro.org, yamada.masahiro@socionext.com,
+        akpm@linux-foundation.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
+        linux-arch@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] gpio: thunderx: Utilize for_each_set_clump macro
+Message-ID: <YCjHNgZt8vn1bTAQ@shinobu>
+References: <cover.1613134924.git.syednwaris@gmail.com>
+ <3fc5bd83322c94eb2a4f48677f6d762bf81d0652.1613134924.git.syednwaris@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="se7pS8+DlUJjaBax"
+Content-Disposition: inline
+In-Reply-To: <3fc5bd83322c94eb2a4f48677f6d762bf81d0652.1613134924.git.syednwaris@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consolidate pci_free_irq_vectors to a single place using "goto free_irq"
-for simplify the code.
 
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
----
- drivers/i2c/busses/i2c-designware-pcidrv.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+--se7pS8+DlUJjaBax
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
-index 55c83a7a24f3..f0c82e91870a 100644
---- a/drivers/i2c/busses/i2c-designware-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
-@@ -234,10 +234,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
- 
- 	if (controller->setup) {
- 		r = controller->setup(pdev, controller);
--		if (r) {
--			pci_free_irq_vectors(pdev);
--			return r;
--		}
-+		if (r)
-+			goto free_irq;
- 	}
- 
- 	i2c_dw_adjust_bus_speed(dev);
-@@ -246,10 +244,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
- 		i2c_dw_acpi_configure(&pdev->dev);
- 
- 	r = i2c_dw_validate_speed(dev);
--	if (r) {
--		pci_free_irq_vectors(pdev);
--		return r;
--	}
-+	if (r)
-+		goto free_irq;
- 
- 	i2c_dw_configure(dev);
- 
-@@ -269,10 +265,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
- 	adap->nr = controller->bus_num;
- 
- 	r = i2c_dw_probe(dev);
--	if (r) {
--		pci_free_irq_vectors(pdev);
--		return r;
--	}
-+	if (r)
-+		goto free_irq;
- 
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
- 	pm_runtime_use_autosuspend(&pdev->dev);
-@@ -280,6 +274,10 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
- 	pm_runtime_allow(&pdev->dev);
- 
- 	return 0;
-+
-+free_irq:
-+	pci_free_irq_vectors(pdev);
-+	return r;
- }
- 
- static void i2c_dw_pci_remove(struct pci_dev *pdev)
--- 
-2.25.0
+On Fri, Feb 12, 2021 at 06:51:04PM +0530, Syed Nayyar Waris wrote:
+> This patch reimplements the thunderx_gpio_set_multiple function in
+> drivers/gpio/gpio-thunderx.c to use the new for_each_set_clump macro.
+> Instead of looping for each bank in thunderx_gpio_set_multiple
+> function, now we can skip bank which is not set and save cycles.
+>=20
+> Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
+> Cc: Robert Richter <rrichter@marvell.com>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
 
+Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+
+> ---
+>  drivers/gpio/gpio-thunderx.c | 13 ++++++++-----
+>  1 file changed, 8 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/gpio/gpio-thunderx.c b/drivers/gpio/gpio-thunderx.c
+> index 9f66deab46ea..0398b2d2af4b 100644
+> --- a/drivers/gpio/gpio-thunderx.c
+> +++ b/drivers/gpio/gpio-thunderx.c
+> @@ -16,7 +16,7 @@
+>  #include <linux/pci.h>
+>  #include <linux/spinlock.h>
+>  #include <asm-generic/msi.h>
+> -
+> +#include "gpiolib.h"
+> =20
+>  #define GPIO_RX_DAT	0x0
+>  #define GPIO_TX_SET	0x8
+> @@ -275,12 +275,15 @@ static void thunderx_gpio_set_multiple(struct gpio_=
+chip *chip,
+>  				       unsigned long *bits)
+>  {
+>  	int bank;
+> -	u64 set_bits, clear_bits;
+> +	unsigned long set_bits, clear_bits, gpio_mask;
+> +	unsigned long offset;
+> +
+>  	struct thunderx_gpio *txgpio =3D gpiochip_get_data(chip);
+> =20
+> -	for (bank =3D 0; bank <=3D chip->ngpio / 64; bank++) {
+> -		set_bits =3D bits[bank] & mask[bank];
+> -		clear_bits =3D ~bits[bank] & mask[bank];
+> +	for_each_set_clump(offset, gpio_mask, mask, chip->ngpio, 64) {
+> +		bank =3D offset / 64;
+> +		set_bits =3D bits[bank] & gpio_mask;
+> +		clear_bits =3D ~bits[bank] & gpio_mask;
+>  		writeq(set_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO=
+_TX_SET);
+>  		writeq(clear_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GP=
+IO_TX_CLR);
+>  	}
+> --=20
+> 2.29.0
+>=20
+
+--se7pS8+DlUJjaBax
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmAoxzYACgkQhvpINdm7
+VJIbiQ/+ICxmJVJ1eLuf5r+9JrFTo+uIbt9EDs9pQpW9l7BEjTsVQa4ALyElS9lH
+8WUP2VX2ZeqVNV4UFRw8sW4BtUFaREdoaJMsfdHAHK+OfCJlyuMvNw+Jxa3Sl5AI
+OWavxf8pUAaO1u+gGE7VwM/FxscUocTJQy859hx0DXVVNiqvo10a3bzzxHkuX+PT
+UDVt1oB9Y7lc6WigV1uI6518Tcoi9VX59c/f10s01NJqfZnMhfOen9c5DTfZjkvC
+fvbZRjkbQXdUln7yJrzTYIPzsmeqSRSDqh7y/GAmmy9ETUhS9KfeHHDQzuvy1gr9
+XSfleyHM10pqVWo8ePEEPFxkJc8cSg4RpXaDJHQAhAELc354xPr6IEj2vfVVw/YO
+Jjr09zLmB3+IsJVZFTml2AA5O6zQBPZxvvUa05Peet+C0mFTkxjqBg1adqJKvvVu
+F2phAvkq2a+yKjQC+wHMdQj67grkSheE1x10R7lu+MB3UTDme/E1a8wbEogHwBv2
+/iiweVQ6iY4Q+NJ85FH8vzvbovIvQJvR54JDKfiBLdkW+qONDGZ/aTl1kUs/wBXn
+e4SgIun/pAIskTc1IiobPPeZYKZk2IpRNNpEeIwEt/oeD0hnZQ7oQIL+ZfDQM2Nh
+j3/N2x4+mAptTomv9AacIBjCiwhMbJgenw8C82HltPv6IRAqgPU=
+=ms+c
+-----END PGP SIGNATURE-----
+
+--se7pS8+DlUJjaBax--
