@@ -2,133 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBF531B30A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 23:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4C731B30C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 23:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhBNWcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 17:32:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhBNWcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 17:32:46 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E368C061574;
-        Sun, 14 Feb 2021 14:32:05 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Df26C2Wqjz9rx8;
-        Mon, 15 Feb 2021 09:32:03 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613341923;
-        bh=EZJjS3Rdzb3J6Gii2gqmr3BEC88ZK2mpSjbYiSFtcmU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hcisl3n9eBfpAMQElMiMDmOBofU2iKBJUr/Cnsy4WbbD5nKLJA07J0yszoMH3g9yT
-         zKMDolJ3tLsSoBEzFkAcqmtPWQRRh4FxVesOxxDhx9rt89ORsz6i448gr7yM3zAYxL
-         quvVF8YFocCjG7kmR0ooklxLtj7a5Gx+6KLGbLMLqN+wSeO2kFWQB2MH/X+RWuCMsf
-         28XWeGnNtZBWv2bfmeWxrkGFORDHEN5Qp1Vsna8m1WTzHnS1ddGoRLGwH/KNSOqPw6
-         k4EDH4EzPdiXvUo+CKF3SV00ooC4EIQc4XPqFkkAj3+N5YZcvCnu6PXYCAzS/x08J8
-         +qvHw8pS43DLg==
-Date:   Mon, 15 Feb 2021 09:32:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robherring2@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: linux-next: manual merge of the devicetree tree with the kbuild
- tree
-Message-ID: <20210215093202.36611afd@canb.auug.org.au>
-In-Reply-To: <20210205144540.1438cc3c@canb.auug.org.au>
-References: <20210205144540.1438cc3c@canb.auug.org.au>
+        id S230107AbhBNWdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 17:33:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229789AbhBNWdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 17:33:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E78FD64E29;
+        Sun, 14 Feb 2021 22:32:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613341979;
+        bh=IQr5Zi4JcZ0zY+DGjxnDqEW3QO4XRZ6h92GpBYhGKk4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tWyU9U5euuHNkxkgv2Yj87Q0OVrT3gyxOPrYWLccOLWYGGj4yAmG4Mw7n3jVURwJT
+         7FY/jHyuyvUuw/PbsA6cbpvcg9q+uYMOLj9A8Q9tJ51Ytoch8Ijsa9t9Zd7ZMji8B3
+         qToxJZzZIVSJ3ssF90rljP4Jvbz5WnjWbk0WByxptGMT65HV6q9eOUf062xZ3TfyOu
+         9+d3pgsPmt687m2jpFuIyO607m53U7wFrk0jaFn4RojkgP2uze0ni68/xqfrC41i2R
+         W3fp01Y87MPmz/LSCTpcW9qQAE7MWtLLtnY9AjKC+DqfT7v+gX6aQQHXJtH18JYRxA
+         tvBtr9T+ps2lA==
+Date:   Sun, 14 Feb 2021 17:32:57 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] lkdtm: don't move ctors to .rodata
+Message-ID: <20210214223257.GA2858@sasha-vm>
+References: <20201207170533.10738-1-mark.rutland@arm.com>
+ <202012081319.D5827CF@keescook>
+ <X9DkdTGAiAEfUvm5@kroah.com>
+ <161300376813.1254594.5196098885798133458@swboyd.mtv.corp.google.com>
+ <YCU9zoiw8EZktw5U@kroah.com>
+ <161306959090.1254594.16358795480052823449@swboyd.mtv.corp.google.com>
+ <YCla7cNQxBoG2KCr@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+FhRm9KLzqSbGbpch4vcisr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YCla7cNQxBoG2KCr@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+FhRm9KLzqSbGbpch4vcisr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Feb 14, 2021 at 06:16:29PM +0100, Greg Kroah-Hartman wrote:
+>On Thu, Feb 11, 2021 at 10:53:10AM -0800, Stephen Boyd wrote:
+>> Sorry for the confusion. Can commit 655389666643 ("vmlinux.lds.h: Create
+>> section for protection against instrumentation") and commit 3f618ab33234
+>> ("lkdtm: don't move ctors to .rodata") be backported to 5.4.y and only
+>> commit 3f618ab3323407ee4c6a6734a37eb6e9663ebfb9 be backported to 5.10.y?
+>
+>655389666643 ("vmlinux.lds.h: Create section for protection against
+>instrumentation") does not apply cleanly to 5.4.y, so can you provide a
+>working backport for both of those patches to 5.4.y that you have
+>tested?
 
-Hi all,
+It was due to a backport of eff8728fe698 ("vmlinux.lds.h: Add PGO and
+AutoFDO input sections"). Taking 655389666643 and 3f618ab33234 converged
+us back with Linus's tree as eff8728fe698 worked around not having those
+in 5.4.
 
-On Fri, 5 Feb 2021 14:45:40 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->=20
-> Today's linux-next merge of the devicetree tree got a conflict in:
->=20
->   scripts/Makefile.lib
->=20
-> between commit:
->=20
->   d73a6a04c76a ("kbuild: use always-y instead of extra-y")
->=20
-> from the kbuild tree and commit:
->=20
->   ce88c9c79455 ("kbuild: Add support to build overlays (%.dtbo)")
->=20
-> from the devicetree tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc scripts/Makefile.lib
-> index 6f248ff91982,b00855b247e0..000000000000
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@@ -85,12 -81,14 +85,14 @@@ always-y +=3D $(userprogs-always-y) $(use
->  =20
->   # DTB
->   # If CONFIG_OF_ALL_DTBS is enabled, all DT blobs are built
->  -extra-y				+=3D $(dtb-y)
->  -extra-$(CONFIG_OF_ALL_DTBS)	+=3D $(dtb-)
->  +always-y			+=3D $(dtb-y)
->  +always-$(CONFIG_OF_ALL_DTBS)	+=3D $(dtb-)
->  =20
->   ifneq ($(CHECK_DTBS),)
->  -extra-y +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
->  -extra-y +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
->  -extra-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-))
->  -extra-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
->  +always-y +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
-> ++always-y +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
->  +always-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-))
-> ++always-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
->   endif
->  =20
->   # Add subdir path
+I've fixed it up and queued both of those patches.
 
-With the merge window about to open, this is a reminder that this
-conflict still exists.
-
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+FhRm9KLzqSbGbpch4vcisr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAppOIACgkQAVBC80lX
-0Gz4gAf/ZCXGdW/QXP3Q3ZGRRQ9+4512u8mTGkkLfhY8QvJPwplR6bUOcl+CJmDP
-jwYRM64bCiokxTubimeI2GcnE3jeHjVkxZEkZQmFRPcoa4AUkCcD2hp1f6tw2Bxm
-wytHIUd5Ev4qFA3IQSRkI251NmQwAKV0bSDSfOGm/O4Z7zIV+0altOett6VdeI6e
-LE5rYRzRQOCBoMoReaWWyFzkR74OMCLsXjvj30Ztw5emIrUZ/5yaE92RMfxkunm2
-GTYBDrsOJCzeO06re7OgaFomi0qRIu34M9dNF6wPsQb4QTRnBHksQxV/og4ev+DX
-GBys99RDHLxNSpIGOJ4VRgAqaJe2aQ==
-=tYhV
------END PGP SIGNATURE-----
-
---Sig_/+FhRm9KLzqSbGbpch4vcisr--
+-- 
+Thanks,
+Sasha
