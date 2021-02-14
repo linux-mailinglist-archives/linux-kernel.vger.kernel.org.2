@@ -2,204 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9EA31B0B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 15:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB4631B0C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 15:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhBNOWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 09:22:15 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:3666 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhBNOWL (ORCPT
+        id S229789AbhBNOcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 09:32:03 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:14614 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229576AbhBNOcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 09:22:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1613312531; x=1644848531;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=L+Ty76Ij4ZnGxwdHclLP47sk1M2heWO2vWPP3Lrs05c=;
-  b=Ylr7DoR3Q0E0kfGN88QpbfGU+DijCLrasLfmcB6G/fgDw3zkPJRBk3vk
-   yfVYxzhDJMwBUDdHbU+3FXtVsL4uLC8EcRzOgL1n1uwtIiEPkozBb4NhT
-   Ryl0kiGilzrMn9Bnv/bhrsBoohuKdJEAR7NurnehRX7K7TOjU6b3uUTQQ
-   p+NO9xC6CgC+dGYJGCwWf9F6N1F89happozh2hjtnsTEEIrPEwGVcPyux
-   Jf6nb7KV6mMPZUBMoEsNAyc76bLSmoaW1dFXWv8KiJzMvPsBZ5RIq2dJM
-   d6hs9C+GIp8t2mr/eF55V7MrLqkS36ZCKJAe3YIMg/pNhF1D8D1taZQjV
-   g==;
-IronPort-SDR: I+uZuJaJPhUwEtGPHRHOIm9IjKyDuJWfxVKHB7i6q3Zu/0vGKgrbYg3/g/o1lZr0+/UW5CWpMO
- FXqi2JU/w/Pok8+GLPh6kR/DIuTClxehV6nwh3kF2NEopo2vfeLUyv9VxQI6lDk6FNkPkxOjKd
- Ig9eEAcpnQQGSsJRddwFRez4LzQnyuh/LLSBhJWL/WXIMU0s4hG8vtW8Jqw0/mO8Ag1ux182+Z
- MbOHcTFA1od+8eXbISm9vS8jm1Ij2PUIlXulyp7WlxM/+aDLAx9GMUXItJilrerByVphypJzc9
- Cpk=
-X-IronPort-AV: E=Sophos;i="5.81,178,1610380800"; 
-   d="scan'208";a="159925796"
-Received: from mail-bl2nam02lp2050.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.50])
-  by ob1.hgst.iphmx.com with ESMTP; 14 Feb 2021 22:21:04 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l5OwAGpsJtgYhVKYUsv/vZMYrZ5kfYBhq70DlyK4cI88alxyDmiBiqU6cvKh6aGvBkosWrjBFlRv098e6sNiS3L072psYy8/P0h8/i2scEz3ASi9SNqPTCh5HHAxypkmbYh0M9tZx0oTcgcQAR1PSCIHcXsHSUqHUXvTOgvFQQDq2Snp8G5sqUZ/1y8MIyKwgEcTzcoBb0y11ujL/mc+BCgNr7nQUPZWrFXsWZraUJzJp9V4WIbGn80xf5zM2cR+sjBdXSlrPPAUCuSSuFEe4hGK6i/cjbDA2yLeAscJ+qjpZTzQMe3u4l6672q/2lYWMJpCQe1lm8OzZiJL0RhKXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PZy+DrkC6V84wSrkL+VTy5dl5h9m42mhpGqCe5xaxlQ=;
- b=odkjZuIW2XtmWcKckjbakS3jgILQBaVjjYntVblro8AOHDCq2drhRi3a207vz7QRvXWR3vQ52v79fNjZ7piByGVJvXNBWGMcFuS/VQP6EE1tYs4J7DWozFVZv9KDXbdcu888uiIIashOQE+fIVV5RcUj0//ig+LBhlOMgg2y/aaKwqM1lZQ+565tKkBPtYr96YVS6CAk7gR5LLJqrQgxqBC4jM7Q5swJNFP1qqw9D6zH/kyTD/aDph1QaNqxeVOEnaHjzl+tsm82kwbEhqfXJrCbF4IfWVb1MEVsVFqrVlf2tecIsbxZYb66hDfXkKgknkXdr3AbILLeu1NDsRsRRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PZy+DrkC6V84wSrkL+VTy5dl5h9m42mhpGqCe5xaxlQ=;
- b=kBVJoH1BH+648RS+G7IPAkA+r+oKSyOI31g9syr8pNDRaNFbTu2Ug0NOh/rnQy14Qu3atVJLbqsf+s61WZn7n0lYCYCdxwRNgkfUuArEMNwXy+GhrX5/keE1MS36sWMTYQ1XMdJcU9T5JHcZZt79PRsEclGnPBNRg3flIREcCrk=
-Received: from CY4PR04MB0632.namprd04.prod.outlook.com (2603:10b6:903:e1::13)
- by CY4PR04MB0392.namprd04.prod.outlook.com (2603:10b6:903:b5::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.31; Sun, 14 Feb
- 2021 14:21:02 +0000
-Received: from CY4PR04MB0632.namprd04.prod.outlook.com
- ([fe80::6088:d16e:1b49:6c1a]) by CY4PR04MB0632.namprd04.prod.outlook.com
- ([fe80::6088:d16e:1b49:6c1a%3]) with mapi id 15.20.3846.031; Sun, 14 Feb 2021
- 14:21:02 +0000
-From:   Arthur Simchaev <Arthur.Simchaev@wdc.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Bart Van Assche <bvanassche@acm.org>
-CC:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        Bean Huo <beanhuo@micron.com>
-Subject: RE: [PATCH] scsi: ufs: sysfs: add is_ascii_output entry
-Thread-Topic: [PATCH] scsi: ufs: sysfs: add is_ascii_output entry
-Thread-Index: AQHW/5sHTsWV8bv5R0C33pPiphtkYqpSTqiAgAUgsQCAAEppMA==
-Date:   Sun, 14 Feb 2021 14:21:01 +0000
-Message-ID: <CY4PR04MB0632E76E54562E36707B4BA3ED899@CY4PR04MB0632.namprd04.prod.outlook.com>
-References: <1612954425-6705-1-git-send-email-Arthur.Simchaev@sandisk.com>
- <4bba4245-df01-f23d-65ba-4ff133cae0bc@acm.org> <YCjzKOEV9fUPf3Ja@kroah.com>
-In-Reply-To: <YCjzKOEV9fUPf3Ja@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=wdc.com;
-x-originating-ip: [199.255.44.250]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: bc5dabe9-5825-4452-56c8-08d8d0f3c1d4
-x-ms-traffictypediagnostic: CY4PR04MB0392:
-x-microsoft-antispam-prvs: <CY4PR04MB0392C73FD3B42D1DD4CE02FCED899@CY4PR04MB0392.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1148;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oWhOGuTy7MtievfjFHi9cf2WX1zSJeM1VkqeU/ZbgQ5YqYv1uMACXyfMKCpXUfx5ViaDBceF2kXLK406H/ov2gPv/NNs8zBEg7KyomOzw5JkJbbjoMgLH0C5GnBNWmg/Ic5wp4th1GBA48BFT+Um13vhs/wwUxW9LBzbvUDRPguBtohEuQR3VZA2DlFSKlrnYzZ7GKK6JllIxzmq6hWHbnxRDU4os4mLhkPv/Gt0qpxGuzj8FH7kh5ZU9aXOg3Gp3fpHkUfLYTOVgMeeUofZs+0nFOgcgN5ZAyyQErTwwOo5XTU5Ikqfq7XiBwc2Do8ebBRYhe0CyTzk2ELi0vIzPUYl6t6GtbIC3K5ovoMUp33bmnIojxhREuuKQ15VJH67nIkU4AB6tfMKqq+ASOK+JMYJrmhq8AipCU3eKvg8bmYIQ1KQGhhvVv17/Uh01yyXBLIBjiPrbB7lrnZ93kfDJ6x0Jf7PHPPj+Xx0vZnHaHCBTtTCqnzqqx+kxTu+MEr6rLyEVw3klqu+Y9DZWJBu5g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB0632.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(136003)(346002)(39860400002)(66946007)(66556008)(9686003)(66476007)(55016002)(64756008)(66446008)(76116006)(8936002)(8676002)(110136005)(86362001)(6506007)(7696005)(71200400001)(54906003)(26005)(316002)(52536014)(5660300002)(4326008)(186003)(53546011)(2906002)(478600001)(33656002)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?uhcJmr/l83TqgdfA1lGfBKzilNOIcOnTMZ4m+iptXXS2Km3s/IH1vHaModF/?=
- =?us-ascii?Q?BbQ/wMGM6nQK6H1Obo5sSOWrbdAWWrBzNE7JdgORn+NJIZzsMSgSnED+8xR9?=
- =?us-ascii?Q?0/jIqlwoOx/WL4bgC9LzM1sIaDgTBQXSFP2TS2tm8/mRVHw53QQarvMV+JsL?=
- =?us-ascii?Q?hKiCGx+5u3uTgIWjM78jPHTEzL+xo4lLwDL9ExL1Fz2A0YFZnvqhoknBC+sw?=
- =?us-ascii?Q?cyN7wYdF5ce91FIT3JaPSsTfuvnn5btHQPz3xoEI/9fPiTg5U4qLps3dPi0W?=
- =?us-ascii?Q?y5UVGNifU5YA5OL/G+O+0LAVsrwDEuJAKoAFUkp02xCQF88G6DlQlYqsOkO8?=
- =?us-ascii?Q?FMw6YnbAFeqE9jWWMkfsn9uid6sRxgAeUPuSkaoQAv3wndLSitwduVwytBP5?=
- =?us-ascii?Q?RwU3wrUAJeZo5bRDf4af4aJBaZ3/a7v5OmB39NcPEKqIxQ35xKfF03kZzBCn?=
- =?us-ascii?Q?/eO1KBBOq8YjkuXZkamt9/YSvWpTDFwyQpj10y/2O0xkOubUgwQPj/jbAQZc?=
- =?us-ascii?Q?V9fYDuLiteWJeb3ZEtQ6CBybyZJRF/yK9rI45v3fyZOylwGBD86bLoDE3oRc?=
- =?us-ascii?Q?MBCg6uLpB+woOM6AHTH5+hIdrOpbNhwazQn6H0OjUYNGJFqTEUcGGNRPi0yk?=
- =?us-ascii?Q?jHBMnXCfRW5reLhxtYqYIY90gBTSYiZOpyWCFaf12BXtuzGljZdqD7+Lga2c?=
- =?us-ascii?Q?deGTYIdIx/P9Ui7BjWVD4DRfk/NLHWhvsOsh/Kkt2i7XirVY8bww52PLghvb?=
- =?us-ascii?Q?+QqQRcZapvPev6zczyWlLdHhEoW+7CeS1gDY7yI099TdFWE48hR9h2ObpJ/8?=
- =?us-ascii?Q?aKQzUTnCZmTggrhj8g4cl9FDykYybH4RRhErvLfJcmJQVUUB/N1xmXFQSyyN?=
- =?us-ascii?Q?ZzA11lSu/wENgP9FLVtueDvTuqwT+TzPY7+JkPqMxzPkTDMI9MuPjnSVQT+6?=
- =?us-ascii?Q?KHeaQGyUa/PH50aGZNgiuuktJkwJfanWJ7WikEeZNrTzfGSZKY+XEsh28fGX?=
- =?us-ascii?Q?20T1F2wSV10cHgLBUpK0ZKeC5FnA28hRQcAx3CGTCHFBaAhfkrAeH96a/FQC?=
- =?us-ascii?Q?38L0ZQN+Ql5xMj5kaEpadbVKC8Px1Zpm9SHicEOD5E0LHrEZoBGZBVYRw/Yd?=
- =?us-ascii?Q?ijwQMJWgb4vr7igoiCuYRZz286KBXYwb0CtqOzL9eeL+RiFeXzU0KoEMiyZw?=
- =?us-ascii?Q?7dCxAjP12gROzbxuERWH86s4sXN0T0w5VLmpgo6MHwpt15MLKvh2fUPVqxc2?=
- =?us-ascii?Q?/a5OImIFzDF9qlCcnzLffp5q+Sp8Mh4EGxa58Zk0TXtC3M8eYIVvnEMh6Q+V?=
- =?us-ascii?Q?SB43eiQUy/UQ+LpfstVvxPno?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 14 Feb 2021 09:32:01 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11EET6mu013816;
+        Sun, 14 Feb 2021 09:31:09 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 36p9gathfy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 14 Feb 2021 09:31:09 -0500
+Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 11EEV7sr007466
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 14 Feb 2021 09:31:08 -0500
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
+ Sun, 14 Feb 2021 06:31:06 -0800
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
+ Sun, 14 Feb 2021 06:31:06 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Sun, 14 Feb 2021 06:31:05 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11EEV2tp027551;
+        Sun, 14 Feb 2021 09:31:03 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH 0/5] iio: kfifo: define a devm_iio_kfifo_buffer_setup helper
+Date:   Sun, 14 Feb 2021 16:33:08 +0200
+Message-ID: <20210214143313.67202-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB0632.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc5dabe9-5825-4452-56c8-08d8d0f3c1d4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Feb 2021 14:21:01.9344
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3YQXF7VbDVN/kPC1kkthpcrKbY0K0QCFwJ6uxVdXVT3vkSz/V7uxdkqZKDeGeB6WxLOhqfmHKiwfzdx342SbgQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB0392
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-14_04:2021-02-12,2021-02-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=725 phishscore=0 clxscore=1015
+ mlxscore=0 priorityscore=1501 impostorscore=0 adultscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102140120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Done.
+This is a re-spin of an older set [1]:
+ https://patchwork.kernel.org/project/linux-iio/patch/20200401125936.6398-1-alexandru.ardelean@analog.com/
 
-Regards
-Arthur
+Patch 'iio: adc: ti_am335x_adc: remove omitted iio_kfifo_free()' is
+already be present in a fixes-togreg path. It did not make it yet
+downstream in the iio-togreg path.
 
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org>
-> Sent: Sunday, February 14, 2021 11:54 AM
-> To: Bart Van Assche <bvanassche@acm.org>
-> Cc: Arthur Simchaev <Arthur.Simchaev@wdc.com>; James E . J . Bottomley
-> <jejb@linux.vnet.ibm.com>; Martin K . Petersen
-> <martin.petersen@oracle.com>; linux-scsi@vger.kernel.org; linux-
-> kernel@vger.kernel.org; alim.akhtar@samsung.com; Bean Huo
-> <beanhuo@micron.com>; Arthur Simchaev <Arthur.Simchaev@wdc.com>
-> Subject: Re: [PATCH] scsi: ufs: sysfs: add is_ascii_output entry
->=20
-> CAUTION: This email originated from outside of Western Digital. Do not cl=
-ick
-> on links or open attachments unless you recognize the sender and know tha=
-t
-> the content is safe.
->=20
->=20
-> On Wed, Feb 10, 2021 at 07:35:25PM -0800, Bart Van Assche wrote:
-> > On 2/10/21 2:53 AM, Arthur Simchaev wrote:
-> > > +static bool is_ascii_output =3D true;
-> >
-> > [ ... ]
-> >
-> > >  static const char *ufschd_uic_link_state_to_string(
-> > >                     enum uic_link_state state)
-> > >  {
-> > > @@ -693,7 +695,15 @@ static ssize_t _name##_show(struct device *dev,
-> \
-> > >                                   SD_ASCII_STD);                    \
-> > >     if (ret < 0)                                                    \
-> > >             goto out;                                               \
-> > > -   ret =3D sysfs_emit(buf, "%s\n", desc_buf);                       =
- \
-> > > +   if (is_ascii_output) {                                          \
-> > > +           ret =3D sysfs_emit(buf, "%s\n", desc_buf);               =
- \
-> > > +   } else {                                                        \
-> > > +           int i;                                                  \
-> > > +                                                                   \
-> > > +           for (i =3D 0; i < desc_buf[0]; i++)                      =
- \
-> > > +                   hex_byte_pack(buf + i * 2, desc_buf[i]);        \
-> > > +           ret =3D sysfs_emit(buf, "%s\n", buf);                    =
- \
-> > > +   }                                                               \
-> > >  out:                                                                =
-       \
-> > >     pm_runtime_put_sync(hba->dev);                                  \
-> > >     kfree(desc_buf);                                                \
-> >
-> > Please do not introduce a mode variable but instead introduce a new
-> > attribute such that there is one attribute for the unicode output and
-> > one attribute for the ASCII output. Mode variables are troublesome when
-> > e.g. two scripts try to set the mode attribute concurrently.
->=20
-> Agreed, just make a new sysfs file, please never change the output of an
-> existing sysfs file, that way will guarantee confusion in userspace.
->=20
-> thanks,
->=20
-> greg k-h
+Following [1], where there was a suggestion to name this
+'devm_iio_device_attach_new_kfifo_buffer()', I took another look and
+devm_iio_kfifo_buffer_setup() made more sense, since there is already a
+'{devm_}iio_triggered_buffer_setup()' helper.
+
+This reduces the usage of the iio_device_attach_buffer() helper to a
+more manage-able state.
+This is related to comment:
+  https://lore.kernel.org/linux-iio/CA+U=Dsp5hxd9=rNbigUMFALBpPVBqDZDRq_Pe69ggKak7p46=w@mail.gmail.com/T/#u
+
+This should have gone before the multibuffer patch-set, but I was still
+waiting on patch 'iio: adc: ti_am335x_adc: remove omitted iio_kfifo_free()'
+to make it downstream in iio-togreg.
+
+Regarding patch 'iio: kfifo: un-export devm_iio_kfifo_allocate() function'
+I would have also wanted to un-export iio_kfifo_allocate() &
+iio_kfifo_free(), but that still needs a bit of work to cleanup the IIO
+dummy buffer.
+Related to patchset:
+  https://lore.kernel.org/linux-iio/20201203095005.72252-1-alexandru.ardelean@analog.com/
+
+The IIO dummy driver seems to be one of those blockers in cleaning up
+some IIO API.
+
+Alexandru Ardelean (5):
+  iio: adc: ti_am335x_adc: remove omitted iio_kfifo_free()
+  iio: kfifo: add devm_iio_kfifo_buffer_setup() helper
+  iio: make use of devm_iio_kfifo_buffer_setup() helper
+  iio: accel: sca3000: use devm_iio_kfifo_buffer_setup() helper
+  iio: kfifo: un-export devm_iio_kfifo_allocate() function
+
+ .../driver-api/driver-model/devres.rst        |  2 +-
+ drivers/iio/accel/sca3000.c                   | 19 ++-------
+ drivers/iio/accel/ssp_accel_sensor.c          | 14 +++----
+ drivers/iio/adc/ina2xx-adc.c                  | 14 +++----
+ drivers/iio/adc/ti_am335x_adc.c               | 24 +++--------
+ drivers/iio/buffer/kfifo_buf.c                | 42 ++++++++++++++++++-
+ .../cros_ec_sensors/cros_ec_sensors_core.c    | 13 +++---
+ drivers/iio/gyro/ssp_gyro_sensor.c            | 14 +++----
+ drivers/iio/health/max30100.c                 | 16 ++++---
+ drivers/iio/health/max30102.c                 | 16 ++++---
+ .../iio/imu/inv_icm42600/inv_icm42600_accel.c | 14 +++----
+ .../iio/imu/inv_icm42600/inv_icm42600_gyro.c  | 13 +++---
+ .../iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c    | 15 +++----
+ drivers/iio/light/acpi-als.c                  | 12 +++---
+ drivers/iio/light/apds9960.c                  | 16 ++++---
+ .../staging/iio/impedance-analyzer/ad5933.c   | 23 ++--------
+ include/linux/iio/kfifo_buf.h                 |  7 +++-
+ 17 files changed, 125 insertions(+), 149 deletions(-)
+
+-- 
+2.17.1
+
