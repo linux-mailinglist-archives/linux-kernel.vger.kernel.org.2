@@ -2,94 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417AA31B169
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B1E31B16B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhBNREV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 12:04:21 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:58936 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhBNREK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 12:04:10 -0500
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 11EH2tJ2003874;
-        Mon, 15 Feb 2021 02:02:56 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 11EH2tJ2003874
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613322176;
-        bh=9P9gW0FejU9AqllvKh/W7ry9uxtyXcglrhbf/Rv4S5Q=;
-        h=From:Date:Subject:To:Cc:From;
-        b=OIM66JPOP5b+exkFzq2vTRraAs7ZKgvqkUhXoJopfoP86tUCADI95b46AjWdhVlac
-         pVR/POLR7zy0l8RdIvVXlOQpn5SLioQDvu8Ukt+8gLQLH1Z04FgxEPXcr/yL4ocqwn
-         2j8EkVeLPcZo00gxKNtleT029Ced3BlwMha5IQqfXqpx4cTTsOxRidKQ1KYL//ER95
-         aeKkwgsv2FZuqAKymHwqdeE6zKlesbVpoR97yxMQJ6AE8TD8lFrKuYcSYheKMdQPsw
-         mvmHjY8mFHfV52eCD9ULI/CCeYn5z1flvwOnCg3tDlHZ4wLFtLMJaHVCE/DCOs2+nI
-         8jbLhuXinqvTQ==
-X-Nifty-SrcIP: [209.85.210.178]
-Received: by mail-pf1-f178.google.com with SMTP id 189so2773858pfy.6;
-        Sun, 14 Feb 2021 09:02:56 -0800 (PST)
-X-Gm-Message-State: AOAM530lYcpfbwAHNP6vJnG9x50KN2kIZAsUKsU0jFXiq/874LaGB7fN
-        BWjQjCUmMnUKVKqtYdecprkh+QdWqWI9bWc1/dM=
-X-Google-Smtp-Source: ABdhPJwqaJ68LH7/bMJ/hFQnqSMVHi/zZualzYgDlrC8b0mqF5fvUm8VFhbcmSMfhRiZGOLAWIVJR/sqpIJDaoOuCjk=
-X-Received: by 2002:a63:1f1d:: with SMTP id f29mr11950956pgf.47.1613322175451;
- Sun, 14 Feb 2021 09:02:55 -0800 (PST)
+        id S229837AbhBNRHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 12:07:10 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:49364 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhBNRHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 12:07:02 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id CB983FB03;
+        Sun, 14 Feb 2021 18:06:18 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3oNCoDZm0plg; Sun, 14 Feb 2021 18:06:16 +0100 (CET)
+Date:   Sun, 14 Feb 2021 18:06:15 +0100
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     kernel test robot <rong.a.chen@intel.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        kbuild-all@lists.01.org, linux-sparse@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] usb: typec: tps6598x: Add trace event for status
+ register
+Message-ID: <YClYh7pqDlbXy8qh@bogon.m.sigxcpu.org>
+References: <651ac50b9ff6ed3db8cab9f176514900f6a02a0c.1613131413.git.agx@sigxcpu.org>
+ <20210213031237.GP219708@shao2-debian>
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 15 Feb 2021 02:02:19 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASpVZdyiN4Ug5zujSFnX5OesaVkFX7aP0feZHEF4DVHWQ@mail.gmail.com>
-Message-ID: <CAK7LNASpVZdyiN4Ug5zujSFnX5OesaVkFX7aP0feZHEF4DVHWQ@mail.gmail.com>
-Subject: [GIT PULL] Kbuild fixes for v5.11
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210213031237.GP219708@shao2-debian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi ,
+On Sat, Feb 13, 2021 at 11:12:37AM +0800, kernel test robot wrote:
+> Hi "Guido,
+> 
+> I love your patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on usb/usb-testing]
+> [also build test WARNING on v5.11-rc7 next-20210211]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Guido-G-nther/usb-typec-tps6598x-Add-IRQ-flag-and-register-tracing/20210212-200855
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> config: openrisc-randconfig-s032-20210209 (attached as .config)
+> compiler: or1k-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-215-g0fb77bb6-dirty
+>         # https://github.com/0day-ci/linux/commit/ba45e1d5e1fd25b6aed8724106e6c7d5adef7a20
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Guido-G-nther/usb-typec-tps6598x-Add-IRQ-flag-and-register-tracing/20210212-200855
+>         git checkout ba45e1d5e1fd25b6aed8724106e6c7d5adef7a20
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=openrisc 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> 
+> 
+> "sparse warnings: (new ones prefixed by >>)"
+>    drivers/usb/typec/tps6598x.c: note: in included file (through include/trace/trace_events.h, include/trace/define_trace.h, drivers/usb/typec/tps6598x_trace.h):
+> >> drivers/usb/typec/./tps6598x_trace.h:157:1: sparse: sparse: too long token expansion
+> 
 
-Please pull Kbuild fixes.
-Thanks.
+I looked around but didn't find any hints how to fix this. Any pointers
+I missed (added the sparse list to cc:)?
 
-The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
+Cheers,
+ -- Guido
 
-  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+> vim +157 drivers/usb/typec/./tps6598x_trace.h
+> 
+> c90c0282e4ce33 Guido Günther 2021-02-12  156  
+> ba45e1d5e1fd25 Guido Günther 2021-02-12 @157  TRACE_EVENT(tps6598x_status,
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  158  	    TP_PROTO(u32 status),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  159  	    TP_ARGS(status),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  160  
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  161  	    TP_STRUCT__entry(
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  162  			     __field(u32, status)
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  163  			     ),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  164  
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  165  	    TP_fast_assign(
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  166  			   __entry->status = status;
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  167  			   ),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  168  
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  169  	    TP_printk("conn: %s, pp_5v0: %s, pp_hv: %s, pp_ext: %s, pp_cable: %s, "
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  170  		      "pwr-src: %s, vbus: %s, usb-host: %s, legacy: %s, flags: %s",
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  171  		      show_status_conn_state(__entry->status),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  172  		      show_status_pp_switch_state(TPS_STATUS_PP_5V0_SWITCH(__entry->status)),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  173  		      show_status_pp_switch_state(TPS_STATUS_PP_HV_SWITCH(__entry->status)),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  174  		      show_status_pp_switch_state(TPS_STATUS_PP_EXT_SWITCH(__entry->status)),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  175  		      show_status_pp_switch_state(TPS_STATUS_PP_CABLE_SWITCH(__entry->status)),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  176  		      show_status_power_sources(__entry->status),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  177  		      show_status_vbus_status(__entry->status),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  178  		      show_status_usb_host_present(__entry->status),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  179  		      show_status_legacy(__entry->status),
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  180  		      show_status_flags(__entry->status)
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  181  		    )
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  182  );
+> ba45e1d5e1fd25 Guido Günther 2021-02-12  183  
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-fixes-v5.11-3
+> _______________________________________________
+> kbuild mailing list -- kbuild@lists.01.org
+> To unsubscribe send an email to kbuild-leave@lists.01.org
 
-for you to fetch changes up to fe968c41ac4f4ec9ffe3c4cf16b72285f5e9674f:
-
-  scripts: set proper OpenSSL include dir also for sign-file
-(2021-02-15 01:54:11 +0900)
-
-----------------------------------------------------------------
-Kbuild fixes for v5.11 (3rd)
-
- - Fix CONFIG_TRIM_UNUSED_KSYMS build for ppc64
-
- - Use pkg-config for scripts/sign-file.c CFLAGS
-
-----------------------------------------------------------------
-Masahiro Yamada (2):
-      kbuild: fix CONFIG_TRIM_UNUSED_KSYMS build for ppc64
-      sparc: remove wrong comment from arch/sparc/include/asm/Kbuild
-
-Rolf Eike Beer (1):
-      scripts: set proper OpenSSL include dir also for sign-file
-
- arch/sparc/include/asm/Kbuild | 2 --
- scripts/Makefile              | 1 +
- scripts/gen_autoksyms.sh      | 3 +++
- 3 files changed, 4 insertions(+), 2 deletions(-)
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
