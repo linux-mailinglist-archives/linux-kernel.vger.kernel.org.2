@@ -2,108 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26A831B07A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 14:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3018E31B07B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 14:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhBNNRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 08:17:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
+        id S229906AbhBNNRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 08:17:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhBNNQv (ORCPT
+        with ESMTP id S229875AbhBNNQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 08:16:51 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAA8C061574;
-        Sun, 14 Feb 2021 05:16:10 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id o3so2932232edv.4;
-        Sun, 14 Feb 2021 05:16:10 -0800 (PST)
+        Sun, 14 Feb 2021 08:16:59 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DE3C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 05:16:18 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id m2so2712676pgq.5
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 05:16:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=zZO1qCnhN92Jv14VX9jv9bkb4bvx0bzbNxASm7AgENY=;
-        b=LDkhBDZwQuIV2Xxypx7HxidP+aJ2BSRfH+igHFhtqgLg4OdVfCFOHjbPYlLHA9cRJV
-         jgI1aH9qlqKt5D0Jkh6TbOg5z2vqdTStFkpsBLE8fMHh07y3g4H9/wvSmIHiQTIVGoGp
-         eld62W83P844OP7LE5WWLA2y+TOoq/ncmxnYfwjFPJMYC2HX5r1q2IoEzl0vI+zI/MGb
-         nOO8Fe1/IzWkmEErpjOXNa7SweDhHQ3/qo/ElsE5362+7hLIiGGY96lpUjaD1aghqSEa
-         H49YepbOkuWruUmFUkBoiWJE96sr9M1lKEc93czCVWuQm/wPT660WNUhN1Rx5UVEngk0
-         OQVQ==
+        bh=UOKkIESa+1l6tDO7IwKvBCYjTQ2JXj8kdAURTiXPxqk=;
+        b=s2QG+peNg54RW8TjZ2ocQPwXkt+lU6accdFnZISh1sEGOZw0GIrXL54BjozEt87CEx
+         6MsJ0YwKOUTh7R7BprK0jBY7hnsWf5ejM7d8jxBWPbsTELzPjBQKrH1Ka6HvMjIp/R1x
+         Pzsy8ry7Zg1Kr9AjqJOwgOqB9dVrZDPq/Zgn+gfYJBC/1Ukr3BWWhrtFB+4/oSkMsdsi
+         7UQEu0xfHlR2t9v0/NEVhgrEKLlAgF6znd/mWf4V8OoLdiu6omRRw9a8JF5ski2dyZd+
+         2N94S4JuQCa0cVHAUQgSrkht4RaKm8FcztMT36UPTsGpjn+5+oroUMmj34JxXGhdWJQ6
+         rrnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=zZO1qCnhN92Jv14VX9jv9bkb4bvx0bzbNxASm7AgENY=;
-        b=tla5nZmc9Mk+wNRjEGggje3gqb0/BooPAIYzKYr4eJhbNHtmYvbhrlNLu2Em554J5f
-         PO2suzzDch6/2yqE0I5wmoGzfAg4UEmcDMPN9PDSp3oVXklO6BEt7JIprmagXY3yxAuo
-         X+mTAOpLxwt8daMJ5XSkMqj5PLeV/mKPOIB3TlVr8DPuZu7A/4hZHqQ9JGGzD9s7LSXv
-         +OT0l3dKx0WZ0c6aw7jDKEQxfxtJQZ8xV64z0dsX8/1v0gM43RYmQ5V2bjWuI74bP64w
-         EvQeoKTZvJmimMcEwFPQd7XaSmiLMxxsljnAQ82aL957xy3vDHnIzOQW0nHgYkAVpTsZ
-         gP+w==
-X-Gm-Message-State: AOAM531oKJRGHEdBiu57+8Sd9J7y1/+eDORrsbqOeWEHFDCSXgg80aVv
-        EIu1EfhnXuMFJtVi8iDM4Aw=
-X-Google-Smtp-Source: ABdhPJwoSEqYkCgIEFdX4hk+vu4m0g2+2ehxcyjgTB3HKxCX+VLaF84uSmXA4q4rn8W8/IoSK6G/iw==
-X-Received: by 2002:aa7:dd4c:: with SMTP id o12mr11368832edw.180.1613308569140;
-        Sun, 14 Feb 2021 05:16:09 -0800 (PST)
-Received: from localhost (ipv6-31ee9f1acdb5aef4.ost.clients.hamburg.freifunk.net. [2a03:2267:4:0:31ee:9f1a:cdb5:aef4])
-        by smtp.gmail.com with ESMTPSA id b6sm9389044ejb.8.2021.02.14.05.16.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 14 Feb 2021 05:16:08 -0800 (PST)
-From:   Oliver Graute <oliver.graute@gmail.com>
-To:     shawnguo@kernel.org
-Cc:     m.felsch@pengutronix.de, festevam@gmail.com,
-        narmstrong@baylibre.com, Oliver Graute <oliver.graute@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 3/3] dt-bindings: arm: fsl: Add Variscite i.MX6UL compatibles
-Date:   Sun, 14 Feb 2021 14:13:50 +0100
-Message-Id: <1613308450-27958-4-git-send-email-oliver.graute@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1613308450-27958-1-git-send-email-oliver.graute@gmail.com>
-References: <1613308450-27958-1-git-send-email-oliver.graute@gmail.com>
-X-Patchwork-Bot: notify
+        bh=UOKkIESa+1l6tDO7IwKvBCYjTQ2JXj8kdAURTiXPxqk=;
+        b=YUZuWr4SrGCmVIpN0jrntN2mseZvT45smzLdTS7KfcyYAxzgN1Pag0hJRQBWnU0SsF
+         KIuHKJUkFFg0b311ZhccOSW07qBE5Rx1okLocRv3f5NsLu45MvoHcGxJwM6STsdEV8vu
+         DpkbQlOS3YiWaDKDC534ymHm6MvjH7lEKYujtYBTS8rclte8ybqW+bWWtTKe+6Oy4mMO
+         Se2Dk4yUeYW+hd0O/um4sPSJgC+gtRlKGt6YbB3PD8ERc+L555rHBj7tUUVvHmTv32hh
+         mm7fuwcqJCY4F5fitRgcw3Z0JU9GPATk80yrcUcr4MFo5/lyxmFS241OdgJNxjqgWTqp
+         nTMw==
+X-Gm-Message-State: AOAM531fZLQdDro7MChC4DThuPWFzcwxehXQTTcM1a+FNP7q12VCAQLQ
+        XmZcrGXAfEByoVmXUOkMO8WSd92uBdjCiUZ98cX3FQ==
+X-Google-Smtp-Source: ABdhPJycqFS1bHAf7kwjytC57TzvGIgE2cXkwMSE5Iqx82KXRREJgJ5+AqpF5P+tR9B9sGl8KqvNyA==
+X-Received: by 2002:a62:f942:0:b029:1c0:aed6:fd57 with SMTP id g2-20020a62f9420000b02901c0aed6fd57mr11733121pfm.70.1613308577942;
+        Sun, 14 Feb 2021 05:16:17 -0800 (PST)
+Received: from ubuntu.huaqin.com ([101.78.151.214])
+        by smtp.gmail.com with ESMTPSA id c4sm15224625pfj.113.2021.02.14.05.16.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 05:16:17 -0800 (PST)
+From:   Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
+To:     sam@ravnborg.org, thierry.reding@gmail.com, airlied@linux.ie,
+        daniel@ffwll.ch, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
+Subject: Re: drm/panel: Add inx Himax8279d MIPI-DSI LCD panel
+Date:   Sun, 14 Feb 2021 21:16:12 +0800
+Message-Id: <20210214131612.30491-1-xiazhengqiao@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210208162453.7319-1-xiazhengqiao@huaqin.corp-partner.google.com>
+References: <20210208162453.7319-1-xiazhengqiao@huaqin.corp-partner.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the compatibles for Variscite i.MX6UL compatibles
+Hi,
 
-Signed-off-by: Oliver Graute <oliver.graute@gmail.com>
----
+	
+I am sorry that I am the first time to upload codes, and I mean to 
+upload codes to kernel branch v4.19, Do we have to upload the code 
+to upstream/master?
 
-Changelog:
-
-v4:
- - added missing 6 in i.MX6
-
- v3:
- - rebased
-
- v2:
- - renamed binding
- - removed superflous "
-
- Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 297c87f..e67b622 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -499,6 +499,7 @@ properties:
-               - technexion,imx6ul-pico-dwarf   # TechNexion i.MX6UL Pico-Dwarf
-               - technexion,imx6ul-pico-hobbit  # TechNexion i.MX6UL Pico-Hobbit
-               - technexion,imx6ul-pico-pi      # TechNexion i.MX6UL Pico-Pi
-+              - variscite,imx6ul-var-6ulcustomboard # i.MX6 UltraLite Carrier-board
-           - const: fsl,imx6ul
- 
-       - description: i.MX6UL Armadeus Systems OPOS6UL SoM Board
--- 
-2.7.4
+	zhengqiao
 
