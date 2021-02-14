@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51AD31AF7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 07:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E52731AF7C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 07:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbhBNGnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 01:43:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        id S229815AbhBNGoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 01:44:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhBNGno (ORCPT
+        with ESMTP id S229790AbhBNGoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 01:43:44 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03438C061574;
-        Sat, 13 Feb 2021 22:43:03 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id u14so4844319wmq.4;
-        Sat, 13 Feb 2021 22:43:03 -0800 (PST)
+        Sun, 14 Feb 2021 01:44:05 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9525C061756;
+        Sat, 13 Feb 2021 22:43:24 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id n4so1817951wrx.1;
+        Sat, 13 Feb 2021 22:43:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding;
         bh=aUQN0SZkwCC+2sHkMRBo4eVveaM2m59ClyPi/TCSgJI=;
-        b=lONEfYJPUrLz5RDAOZS2qSR+fbN2nlHvin68WfMaf3E1IJ6M+G1Z555jS9N+iasaNg
-         /Tb06GEyFyOySORkE3gJcvZDr8Bjg8W5Yf3uklS7Sz5MTc9uMjsn6a/TBwzoCLs7eDEu
-         7K+gkflquhfbVj3SMqZxT5V895G8rCuSZU0O7jgJHeT/pukTeFrsVARPWOytTUpVjcAa
-         YlTmMFNqpJrihrpuUbyq3n2Cs5DB2Xs4235iMQJVkezstXUe1ikd612BSYn+32wgzF31
-         9Zc4dLs6ITH8eqBVO8m8Ng7mNvNTog73Codg88VC3xA4dq0E69wbLBjJ5NfgJEWwIFPj
-         zG8g==
+        b=h/mDIbriPlQZGWb9Eb+iLQ2zUlvMmcy9awHJpqDHlnzTnWOsQH0vqNZO0tg7gvYlh3
+         h1HoSIjmKogwHw8RFpjBJ7uocWEfbdZjB1koiQq6K76Qh8VztTJUIE0XDc3dVr3bDXvB
+         Qvr8BMnXtxJCREViPxKu4XP4vecJXZaj9I0dv1Nn/mzvM8XGc91//KKyg9RTyvDAYjgj
+         iqDAUkXf4jncjNS8Pqr9fGbDuFGrAssQYNlIR/K8zW7W+rL9+EEmKdg0yCPavKc30FCK
+         GPt3DR3382ijOTCvAEqAyCDomOVT6W889vWolxIP2H+Saoq5w9y1TvNITlaZ/TnqXhPK
+         mJgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding;
         bh=aUQN0SZkwCC+2sHkMRBo4eVveaM2m59ClyPi/TCSgJI=;
-        b=KjRwA1NgOP3i0iQkjvvT5BaT/0z2+h1AYmElsntGhnL94inpT20dnU0IkC5/+0R9BX
-         6wZn9tUSiRYy+s5Fl8ukyKz/O6t3g5cUzR5wASVgixxDNb3KuJu0hGIK09pNny/O0VBc
-         Yg6rf44YEc67sHsfT8BPXlSlstEPzhxWU9lCe+G9FoMhPhGI6OVwzey4n3WkuOOhZofZ
-         Vsyh6T9PJAETZTKt5GW66iXudFZKHYoZhDXYoZ20Zc4Xzs+UM+o16M+9jOMSYrOq6AyN
-         QK41t680eOESVIbMOzRsZZfmS9YaOO/Vm5tf7y6nWauJfNV/6v4pBBrKhbmZ3PSFMrXA
-         Y+rw==
-X-Gm-Message-State: AOAM533KHvf3C0ZVqHN7uimlm9fpIJjUtVDN9wNj3pYEAOnkrbHPcNvW
-        kqCGAUh+gHo6TTYNEg6+uQ0=
-X-Google-Smtp-Source: ABdhPJxUwqq6xODqw/+vkq1hdQjPuAD84Fy0EPAcABxWLmYvuBqPgDfL8/4lq97lUQETtqDhXSwU8g==
-X-Received: by 2002:a7b:c355:: with SMTP id l21mr9283477wmj.61.1613284982503;
-        Sat, 13 Feb 2021 22:43:02 -0800 (PST)
+        b=hngI7kOwJYAtoS3hwBTOZLOBSr/+aB5e6WYK3okjwMWHc1aUdsUXIvAdWAmbdMutTU
+         uTueMrBkTT40E4QRdquXl4oqLP+1wQ+hUsIbmiPmXAgXtumSRAw9pXi/0JI2PzpPNFY4
+         nPf37jrRhQjIF2kEajW+R4FdUz/cI+gahLP0rNg7HzcKAxx3V8OUO/8ev8sbxwNCJfen
+         ViaOW+60pofap6Wl0lp1fbYDp5vKmvZagHUi70xBwvoi0bmG0gG0Mwo/oYYgj+z2arwA
+         DRA4I7QUwuZO5RpZNXn2tPodfw7dz+2KsWMipgtCmSfTQQ8p29NOlMdcGUXQyqJBLCeJ
+         ZzgA==
+X-Gm-Message-State: AOAM531B3DlI9500FGANGciOF7Wc8UU5CPkl4QoDRJUFNdAZGHnRxxAd
+        rYh6xfA7DzgqDHaX9NaO/5DpMgrvfBAppOEHq+Y=
+X-Google-Smtp-Source: ABdhPJzLImN7rJllYpBrWPP1f3SYUf5vt7xMMJv7VCxJ7SlRdTVlcugQRaTGfUIvH4oKVMuw12jVhg==
+X-Received: by 2002:a5d:4849:: with SMTP id n9mr12536800wrs.159.1613285001726;
+        Sat, 13 Feb 2021 22:43:21 -0800 (PST)
 Received: from [0.0.0.0] ([2a01:4f8:c17:e10a::1])
-        by smtp.gmail.com with ESMTPSA id f14sm20469280wmc.32.2021.02.13.22.42.57
+        by smtp.gmail.com with ESMTPSA id z15sm4013712wrs.72.2021.02.13.22.43.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Feb 2021 22:43:02 -0800 (PST)
+        Sat, 13 Feb 2021 22:43:21 -0800 (PST)
 Subject: Re: [PATCH v3 3/3] ASoC: rt715:add micmute led state control supports
 To:     Mark Brown <broonie@kernel.org>, Perry Yuan <Perry.Yuan@dell.com>
 Cc:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
@@ -57,8 +57,8 @@ Cc:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
 References: <20210112171814.5404-1-Perry_Yuan@Dell.com>
  <20210112175406.GF4646@sirena.org.uk>
 From:   Perry Yuan <perry979106@gmail.com>
-Message-ID: <6d705d1e-9fe2-86fa-4c6a-270bf6039a3f@gmail.com>
-Date:   Sun, 14 Feb 2021 14:42:51 +0800
+Message-ID: <43507ba7-74b8-2d18-57ca-271f89a752de@gmail.com>
+Date:   Sun, 14 Feb 2021 14:43:10 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
