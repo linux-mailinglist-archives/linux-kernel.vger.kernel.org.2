@@ -2,73 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C0131B13D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8090B31B13F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhBNQbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 11:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhBNQbJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 11:31:09 -0500
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD9DC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 08:30:29 -0800 (PST)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lBKHh-00DvRy-5S; Sun, 14 Feb 2021 16:30:09 +0000
-Date:   Sun, 14 Feb 2021 16:30:09 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Williams <dan.j.willams@intel.com>
-Subject: Re: [PATCH v2 4/8] cxl/mem: Add basic IOCTL interface
-Message-ID: <YClQEefYBR+YKBUv@zeniv-ca.linux.org.uk>
-References: <20210210000259.635748-1-ben.widawsky@intel.com>
- <20210210000259.635748-5-ben.widawsky@intel.com>
+        id S229848AbhBNQca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 11:32:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhBNQc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 11:32:28 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03AFF60232;
+        Sun, 14 Feb 2021 16:31:45 +0000 (UTC)
+Date:   Sun, 14 Feb 2021 16:31:42 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
+Subject: Re: [RFC PATCH 5/5] iio: buffer-dma: add support for cyclic DMA
+ transfers
+Message-ID: <20210214163142.52263d58@archlinux>
+In-Reply-To: <20210212102021.47276-6-alexandru.ardelean@analog.com>
+References: <20210212102021.47276-1-alexandru.ardelean@analog.com>
+        <20210212102021.47276-6-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210000259.635748-5-ben.widawsky@intel.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 04:02:55PM -0800, Ben Widawsky wrote:
+On Fri, 12 Feb 2021 12:20:21 +0200
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-> +static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
-> +					const struct cxl_mem_command *cmd,
-> +					u64 in_payload, u64 out_payload,
-> +					struct cxl_send_command __user *s)
-> +{
-> +	struct cxl_mem *cxlm = cxlmd->cxlm;
-> +	struct device *dev = &cxlmd->dev;
-> +	struct mbox_cmd mbox_cmd = {
-> +		.opcode = cmd->opcode,
-> +		.size_in = cmd->info.size_in,
-> +	};
-> +	s32 user_size_out;
-> +	int rc;
+> From: Lars-Peter Clausen <lars@metafoo.de>
+> 
+> This change adds support for cyclic DMA transfers using the IIO buffer DMA
+> infrastructure.
+> To do this, userspace must set the IIO_BUFFER_BLOCK_FLAG_CYCLIC flag on the
+> block when enqueueing them via the ENQUEUE_BLOCK ioctl().
+
+We should have more than that in the way of documentation!
+
+What is the dataflow that we end up with as a result of this?
+
+Jonathan
+
+
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  .../buffer/industrialio-buffer-dmaengine.c    | 24 ++++++++++++-------
+>  include/uapi/linux/iio/buffer.h               |  1 +
+>  2 files changed, 17 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> index 013cc7c1ecf4..94c93a636ad4 100644
+> --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> @@ -82,14 +82,22 @@ static int iio_dmaengine_buffer_submit_block(struct iio_dma_buffer_queue *queue,
+>  
+>  	direction = dmaengine_buffer->is_tx ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
+>  
+> -	desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
+> -		block->phys_addr, block->block.bytes_used, direction,
+> -		DMA_PREP_INTERRUPT);
+> -	if (!desc)
+> -		return -ENOMEM;
+> -
+> -	desc->callback_result = iio_dmaengine_buffer_block_done;
+> -	desc->callback_param = block;
+> +	if (block->block.flags & IIO_BUFFER_BLOCK_FLAG_CYCLIC) {
+> +		desc = dmaengine_prep_dma_cyclic(dmaengine_buffer->chan,
+> +			block->phys_addr, block->block.bytes_used,
+> +			block->block.bytes_used, direction, 0);
+> +		if (!desc)
+> +			return -ENOMEM;
+> +	} else {
+> +		desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
+> +			block->phys_addr, block->block.bytes_used, direction,
+> +			DMA_PREP_INTERRUPT);
+> +		if (!desc)
+> +			return -ENOMEM;
 > +
-> +	if (get_user(user_size_out, &s->out.size))
-> +		return -EFAULT;
+> +		desc->callback_result = iio_dmaengine_buffer_block_done;
+> +		desc->callback_param = block;
+> +	}
+>  
+>  	cookie = dmaengine_submit(desc);
+>  	if (dma_submit_error(cookie))
+> diff --git a/include/uapi/linux/iio/buffer.h b/include/uapi/linux/iio/buffer.h
+> index 70ad3aea01ea..0e0c95f1c38b 100644
+> --- a/include/uapi/linux/iio/buffer.h
+> +++ b/include/uapi/linux/iio/buffer.h
+> @@ -13,6 +13,7 @@ struct iio_buffer_block_alloc_req {
+>  };
+>  
+>  #define IIO_BUFFER_BLOCK_FLAG_TIMESTAMP_VALID	(1 << 0)
+> +#define IIO_BUFFER_BLOCK_FLAG_CYCLIC		(1 << 1)
+>  
+>  struct iio_buffer_block {
+>  	__u32 id;
 
-You have already copied it in.  Never reread stuff from userland - it *can*
-change under you.
