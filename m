@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EFD31E17C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C1431E175
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbhBQVfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:35:39 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:55035 "EHLO
+        id S231998AbhBQVfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:35:02 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:46569 "EHLO
         out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232336AbhBQVeq (ORCPT
+        by vger.kernel.org with ESMTP id S232339AbhBQVeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Feb 2021 16:34:46 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id C971F5C00E8;
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id D4BFF5C00F9;
         Wed, 17 Feb 2021 16:33:54 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 17 Feb 2021 16:33:54 -0500
+  by compute3.internal (MEProxy); Wed, 17 Feb 2021 16:33:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
         :to:cc:subject:date:message-id:in-reply-to:references; s=fm2;
-         bh=D7bpP2gYtN8wyNdN6IquuCbwgH9A4L1H/A5WFmvvdW4=; b=uYV9HKWr+mID
-        8MYucH0LsGw6Cfdy/IhE0QBXzW2KN2yah3YlG5FNkLOZwR7NV9c6Bzs6s/QsAjLi
-        cSQi0j1613QDm7i7wMuLNv4HJBIMu4MrIz1n3krsIRbbUcFmFGWPEkBIPAEn+Paw
-        Tj91Wjuk/keVsBx+sbiQ9c5NEh+Z1YLcx2mR+QiOLQiyWY2xXFbc/EtYGW23w7mT
-        Lq/uy3tFxWDqWkP5snS2q2oisp9OD5SXs3jnw3B2hXs534XuAtMoo0u0eCAUYPcO
-        +KoxBxmV9zDtuj5slyZNcM4tPU0y8lAxPOXpENc/AwohS7qFlPdCTbzkrF7QLY9i
-        R+Qo1NXQng==
+         bh=0DPt8T+IrQKOkEiQ1EPlTZOferGKmocm4fwWAE5D5bs=; b=bKvX3COYgLTR
+        sXoB8fJlRlnbjvYP/Ed8QRLW1Z2ischDqBdgHvzSHQhgMCD7W5BW2kyMvt1UUsvU
+        ssf5YV98UoOQzn7c0JkJbwzFJyi9zQTNVzfMZ6reThTFBFXwcTvcaLD2R7lvTZvt
+        vw9EUfWzSgjOyIfSaEl2K75O86KkrdwkzoIPjaR2qfzFWWX84TwpiUMIPkhHoZ6h
+        gSoZVaVV+AbWH5O3rVMscVlV03/h6kKo55g2XJyElbEpVys+dxznw3noPVfpncsY
+        +aH7MKixmfpQb2/I95Vp0UGn855y2jesvDm8WQBKf7UAQ/38inAG+tey/4wJ9X3m
+        6wElwJJhHw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:date:from:in-reply-to:message-id
         :references:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; bh=D7bpP2gYtN8wyNdN6IquuCbwgH9A4
-        L1H/A5WFmvvdW4=; b=Y91v5Z/yRQ5xZ06ET4kkfuESNaNzbCyLnvB0zm5haYC+1
-        ezbXM5TwBXBd4ABdJhzrqjfo71WdCF2pjFKnBmgL7GQpIJ+/+svvEQ8Nub88nX7U
-        ljmHRN9VKAc1WPoCQmXoA0ArVywyL4b79HRG/t5t4m83IbHBXEpnObDFZPXceO7t
-        LDvFkGHX1mBzazALd8ZvImTvoVK8Hxbpmy6cILFJ78QyHdsGm5iCGeA7Tba95Od2
-        QvKXv+93jZjjiMkstQ5snBpmo7ssD4O0DA+F86ojyfD0bh3icgQV3hQOKBXC0z0a
-        OLxnDcT8Y3ysESCHKkO8RHCj1MrMhb/aF2AqShe2g==
-X-ME-Sender: <xms:wostYEJ0Wxt9V-iup356j987kTbxvfiSIuxbkryLuUhP9e_x8pDEYw>
-    <xme:wostYEFNsaEAPzp6Ve6z1wc8zfhGmiwagHKso13Mv-OVevkD9tj8hL_QDhYkicZBz
-    kuSfBo0HC-VZMIaGA>
+        :x-me-sender:x-sasl-enc; s=fm2; bh=0DPt8T+IrQKOkEiQ1EPlTZOferGKm
+        ocm4fwWAE5D5bs=; b=PxhZSFhPJxer46Xo1H2DS/cDc3nDPTQrq24dqB6PRrCkC
+        yjjLnt20xKYJVnNLAEWR7UGLNLMgZPnx+JnDh+vxk29lU1ruEgB++qCua0Zak/mt
+        5JDgq7rFKe2w6radFwCbTtbUuh9wBmU3PcnJ+bOBtJVZrdAukmPPKsCWDcFRK4XR
+        pWBOBEGkIpTZ7/C2fw6lGbjUfxrtE8SUjT1MMlnKFRnViagkZ5I1bpzqvpdXjZx6
+        IE0w9ZcORGF6qByIehHKljItKdSfrDmN59SlZT4r2shvTPv4y7eyY+Ts+ntXpRnI
+        d/6BfRQooVtYWLDZFJG1rG0BiqBWzUEUZIvAbJdxQ==
+X-ME-Sender: <xms:wostYIL1aQ-UdEwPtAyTZpu87wtuuq9hBA5kfdjLjH3ai-4aXvuUFw>
+    <xme:wostYO6kS1VKDqcmxXLaeC9OSKTS3gV0iQPWqUHdAmvpMlbDMzCKreURItStQy5M3
+    bkTtHYR-JFOTrKzDg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjedvgdduvdegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -47,19 +47,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjedvgdduvdegucetufdoteggod
     hrnhepfffgkeduffdtieeltddtgeetgfdujeekhfegfeegudduffffgedtvddufeelveev
     necukfhppedvudejrddvfeekrddvtdekrdejgeenucevlhhushhtvghrufhiiigvpedtne
     curfgrrhgrmhepmhgrihhlfhhrohhmpeifihhllhdoghhithesughrnhgurdhmvg
-X-ME-Proxy: <xmx:wostYBlA91qOG0oe5LzVgY1hjQFzlmJephNa4pWbCG2b_Pk-1AG5jA>
-    <xmx:wostYJKtk2VIytQ431vuC7OQXRyibMj4iARaivFZXOM5_6J45vEm3Q>
-    <xmx:wostYKYcaZsfvlEmiALDYbhP1dYEG2RmQm-02Af1U3YZBtODCc3RAQ>
-    <xmx:wostYOYKsI5rpfyoe9s6ojGZ0iGzJ9_YR1Nk4qQfHXrGbyIAQzg5fQ>
+X-ME-Proxy: <xmx:wostYKftfuljmnLLipbBGMkb9dZ5nLsV-FSWq_ExArwHHqXZf66pyA>
+    <xmx:wostYBEPoeNmDBAbEJbZO-JeardBbE0LeL2_RxaaV6NPSTukvED86Q>
+    <xmx:wostYLRlVU6rHExCkExRfJ9yQ5vFzKmEcPlgEzl9EAw0Ueu2b8Hb0g>
+    <xmx:wostYAs0ErD68Y_OljXZLovZSndulMUdip46yXNjGogQE-1mW1b8jw>
 Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BA849240062;
-        Wed, 17 Feb 2021 16:33:53 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5FD3A240057;
+        Wed, 17 Feb 2021 16:33:54 -0500 (EST)
 From:   William Durand <will+git@drnd.me>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] staging: rtl8192e: rename ShortData to short_data in sequence_control union
-Date:   Sun, 14 Feb 2021 14:03:30 +0000
-Message-Id: <20210214140332.16175-2-will+git@drnd.me>
+Subject: [PATCH 2/3] staging: rtl8192e: rename FragNum to frag_num in sequence_control union
+Date:   Sun, 14 Feb 2021 14:03:31 +0000
+Message-Id: <20210214140332.16175-3-will+git@drnd.me>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210214140332.16175-1-will+git@drnd.me>
 References: <20210214140332.16175-1-will+git@drnd.me>
@@ -71,36 +71,22 @@ Fixes a checkpatch CHECK message.
 
 Signed-off-by: William Durand <will+git@drnd.me>
 ---
- drivers/staging/rtl8192e/rtl819x_BA.h     | 2 +-
- drivers/staging/rtl8192e/rtl819x_BAProc.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_BA.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_BA.h b/drivers/staging/rtl8192e/rtl819x_BA.h
-index 8b6e4c26f0fb..34d66b8f5155 100644
+index 34d66b8f5155..3e5bd3fc78ce 100644
 --- a/drivers/staging/rtl8192e/rtl819x_BA.h
 +++ b/drivers/staging/rtl8192e/rtl819x_BA.h
-@@ -20,7 +20,7 @@
- #define	DELBA_REASON_UNKNOWN_BA	38
- #define	DELBA_REASON_TIMEOUT			39
+@@ -22,7 +22,7 @@
  union sequence_control {
--	u16 ShortData;
-+	u16 short_data;
+ 	u16 short_data;
  	struct {
- 		u16	FragNum:4;
+-		u16	FragNum:4;
++		u16	frag_num:4;
  		u16	SeqNum:12;
-diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-index 2d5e4a0330c6..b3f0f64c7711 100644
---- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-@@ -61,7 +61,7 @@ void ResetBaEntry(struct ba_record *pBA)
- 	pBA->BaParamSet.shortData	= 0;
- 	pBA->BaTimeoutValue		= 0;
- 	pBA->DialogToken		= 0;
--	pBA->BaStartSeqCtrl.ShortData	= 0;
-+	pBA->BaStartSeqCtrl.short_data	= 0;
- }
- static struct sk_buff *rtllib_ADDBA(struct rtllib_device *ieee, u8 *Dst,
- 				    struct ba_record *pBA,
+ 	} field;
+ };
 --
 2.17.1
 
