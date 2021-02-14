@@ -2,292 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559B931B15A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD8231B166
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229821AbhBNQ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 11:58:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhBNQ6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 11:58:46 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43E00614A7;
-        Sun, 14 Feb 2021 16:57:59 +0000 (UTC)
-Date:   Sun, 14 Feb 2021 16:57:52 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de
-Subject: Re: [PATCH v8 01/22] docs: counter: Consolidate Counter sysfs
- attributes documentation
-Message-ID: <20210214165752.59d41f98@archlinux>
-In-Reply-To: <362a71a1eba98108d009db8c929170a6ed8cf110.1613131238.git.vilhelm.gray@gmail.com>
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
-        <362a71a1eba98108d009db8c929170a6ed8cf110.1613131238.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229870AbhBNRCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 12:02:20 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:58612 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhBNRCP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 12:02:15 -0500
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 11EH1DmW022819;
+        Mon, 15 Feb 2021 02:01:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 11EH1DmW022819
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613322074;
+        bh=SP1sGJk9Sz6Zv6lJ9Wi/Vff8sScxvUIuNUkChOHpFR8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eW5SCVd/ORO2ykDHxnNRrd0j5pNeofX24lJWfc1sAWEZK87VwCvlyBONkk1p+q0pw
+         n9urDcCM7JXO/83SDgjvjWIuq0kCzJpxghQ0kdEY/9lSUqF57fsB4kVM44LTekaoBL
+         2K5usgTVkdb+i9kzobmJV+tecZNrbgkAygUEWwX3cvMZxzFNtx08+4IWsN9L58B4V9
+         msLNld5lBI4A8trmLyO3EgTzKOINsLN5xgyvh+eWnDvPTyAVb6rNcHXCo6xnYQ8S9l
+         7hdmlhpR1RGeMV1AEHEn5ADueffOKPk44du6buIJ89LAEEs34fToTGEhTLY+vWrQY3
+         BiMMNZH6MaRbw==
+X-Nifty-SrcIP: [209.85.210.181]
+Received: by mail-pf1-f181.google.com with SMTP id d26so2778301pfn.5;
+        Sun, 14 Feb 2021 09:01:13 -0800 (PST)
+X-Gm-Message-State: AOAM533clch37dk64kSPjlB2+UzCYJ2WwCkw3YGVARLYTXnzf3SZiAY5
+        Tzj3X9RmE4N8rzRkjvZlSrTCVbRotG+c+HSmbvQ=
+X-Google-Smtp-Source: ABdhPJynyvRuko2AvW0s/Rsmpz6hR6NWNFNxrImHm+1o7F+Y7g0dNzPk8oFZuEX0oJ2YCILzMn7MQK6BnXeqMrnP+x0=
+X-Received: by 2002:a63:1f1d:: with SMTP id f29mr11945438pgf.47.1613322073045;
+ Sun, 14 Feb 2021 09:01:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210128005110.2613902-1-masahiroy@kernel.org> <20210128005110.2613902-22-masahiroy@kernel.org>
+In-Reply-To: <20210128005110.2613902-22-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 15 Feb 2021 02:00:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQDcfqSCsCeG9+ytrJNfD5mS8OLS2uZS8WRBuTHRL1qRg@mail.gmail.com>
+Message-ID: <CAK7LNAQDcfqSCsCeG9+ytrJNfD5mS8OLS2uZS8WRBuTHRL1qRg@mail.gmail.com>
+Subject: Re: [PATCH 21/27] sparc: remove wrong comment from arch/sparc/include/asm/Kbuild
+To:     linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-alpha@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-um@lists.infradead.org,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021 21:13:25 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+On Thu, Jan 28, 2021 at 9:52 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> These are NOT exported to userspace.
+>
+> The headers listed in arch/sparc/include/uapi/asm/Kbuild are exported.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-> Duplicate ABIs are not valid, so let's consolidate these sysfs
-> attributes into the main sysfs-bus-counter documentation file.
+Applied to linux-kbuild/fixes.
 
-This is sensible to do, but is there any duplicate ABI?  I went
-looking for any resulting build problems and couldn't see what was
-actually duplicated.
 
-Jonathan
-> 
-> Cc: Patrick Havelange <patrick.havelange@essensium.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 > ---
->  Documentation/ABI/testing/sysfs-bus-counter   | 76 ++++++++++++++++++-
->  .../ABI/testing/sysfs-bus-counter-104-quad-8  | 61 ---------------
->  .../ABI/testing/sysfs-bus-counter-ftm-quaddec | 16 ----
->  MAINTAINERS                                   |  4 +-
->  4 files changed, 75 insertions(+), 82 deletions(-)
->  delete mode 100644 Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
->  delete mode 100644 Documentation/ABI/testing/sysfs-bus-counter-ftm-quaddec
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentation/ABI/testing/sysfs-bus-counter
-> index 566bd99fe0a5..29f54484183f 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-counter
-> +++ b/Documentation/ABI/testing/sysfs-bus-counter
-> @@ -57,6 +57,7 @@ Description:
->  What:		/sys/bus/counter/devices/counterX/countY/count_mode_available
->  What:		/sys/bus/counter/devices/counterX/countY/error_noise_available
->  What:		/sys/bus/counter/devices/counterX/countY/function_available
-> +What:		/sys/bus/counter/devices/counterX/countY/prescaler_available
->  What:		/sys/bus/counter/devices/counterX/countY/signalZ_action_available
->  KernelVersion:	5.2
->  Contact:	linux-iio@vger.kernel.org
-> @@ -154,6 +155,15 @@ Description:
->  		Count Y. If possible, this should match the name of the
->  		respective channel as it appears in the device datasheet.
->  
-> +What:		/sys/bus/counter/devices/counterX/countY/prescaler
-> +KernelVersion:	5.2
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Configure the prescaler value associated with Count Y.
-> +		On the FlexTimer, the counter clock source passes through a
-> +		prescaler (i.e. a counter). This acts like a clock
-> +		divider.
-> +
->  What:		/sys/bus/counter/devices/counterX/countY/preset
->  KernelVersion:	5.2
->  Contact:	linux-iio@vger.kernel.org
-> @@ -215,11 +225,45 @@ Description:
->  		Read-only attribute that indicates the total number of Signals
->  		belonging to the Counter.
->  
-> -What:		/sys/bus/counter/devices/counterX/signalY/signal
-> +What:		/sys/bus/counter/devices/counterX/signalY/cable_fault
-> +KernelVersion:	5.7
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Read-only attribute that indicates whether a differential
-> +		encoder cable fault (not connected or loose wires) is detected
-> +		for the respective channel of Signal Y. Valid attribute values
-> +		are boolean. Detection must first be enabled via the
-> +		corresponding cable_fault_enable attribute.
-> +
-> +What:		/sys/bus/counter/devices/counterX/signalY/cable_fault_enable
-> +KernelVersion:	5.7
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Whether detection of differential encoder cable faults for the
-> +		respective channel of Signal Y is enabled. Valid attribute
-> +		values are boolean.
-> +
-> +What:		/sys/bus/counter/devices/counterX/signalY/filter_clock_prescaler
-> +KernelVersion:	5.7
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Filter clock factor for input Signal Y. This prescaler value
-> +		affects the inputs of both quadrature pair signals.
-> +
-> +What:		/sys/bus/counter/devices/counterX/signalY/index_polarity
->  KernelVersion:	5.2
->  Contact:	linux-iio@vger.kernel.org
->  Description:
-> -		Signal data of Signal Y represented as a string.
-> +		Active level of index input Signal Y; irrelevant in
-> +		non-synchronous load mode.
-> +
-> +What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_available
-> +What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_available
-> +KernelVersion:	5.2
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Discrete set of available values for the respective Signal Y
-> +		configuration are listed in this file.
->  
->  What:		/sys/bus/counter/devices/counterX/signalY/name
->  KernelVersion:	5.2
-> @@ -228,3 +272,31 @@ Description:
->  		Read-only attribute that indicates the device-specific name of
->  		Signal Y. If possible, this should match the name of the
->  		respective signal as it appears in the device datasheet.
-> +
-> +What:		/sys/bus/counter/devices/counterX/signalY/signal
-> +KernelVersion:	5.2
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Signal data of Signal Y represented as a string.
-> +
-> +What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode
-> +KernelVersion:	5.2
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Configure the counter associated with Signal Y for
-> +		non-synchronous or synchronous load mode. Synchronous load mode
-> +		cannot be selected in non-quadrature (Pulse-Direction) clock
-> +		mode.
-> +
-> +		non-synchronous:
-> +			A logic low level is the active level at this index
-> +			input. The index function (as enabled via preset_enable)
-> +			is performed directly on the active level of the index
-> +			input.
-> +
-> +		synchronous:
-> +			Intended for interfacing with encoder Index output in
-> +			quadrature clock mode. The active level is configured
-> +			via index_polarity. The index function (as enabled via
-> +			preset_enable) is performed synchronously with the
-> +			quadrature clock on the active level of the index input.
-> diff --git a/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8 b/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
-> deleted file mode 100644
-> index eac32180c40d..000000000000
-> --- a/Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
-> +++ /dev/null
-> @@ -1,61 +0,0 @@
-> -What:		/sys/bus/counter/devices/counterX/signalY/cable_fault
-> -KernelVersion:	5.7
-> -Contact:	linux-iio@vger.kernel.org
-> -Description:
-> -		Read-only attribute that indicates whether a differential
-> -		encoder cable fault (not connected or loose wires) is detected
-> -		for the respective channel of Signal Y. Valid attribute values
-> -		are boolean. Detection must first be enabled via the
-> -		corresponding cable_fault_enable attribute.
+>
+>  arch/sparc/include/asm/Kbuild | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/arch/sparc/include/asm/Kbuild b/arch/sparc/include/asm/Kbuild
+> index 3688fdae50e4..aec20406145e 100644
+> --- a/arch/sparc/include/asm/Kbuild
+> +++ b/arch/sparc/include/asm/Kbuild
+> @@ -1,6 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -# User exported sparc header files
 > -
-> -What:		/sys/bus/counter/devices/counterX/signalY/cable_fault_enable
-> -KernelVersion:	5.7
-> -Contact:	linux-iio@vger.kernel.org
-> -Description:
-> -		Whether detection of differential encoder cable faults for the
-> -		respective channel of Signal Y is enabled. Valid attribute
-> -		values are boolean.
-> -
-> -What:		/sys/bus/counter/devices/counterX/signalY/filter_clock_prescaler
-> -KernelVersion:	5.7
-> -Contact:	linux-iio@vger.kernel.org
-> -Description:
-> -		Filter clock factor for input Signal Y. This prescaler value
-> -		affects the inputs of both quadrature pair signals.
-> -
-> -What:		/sys/bus/counter/devices/counterX/signalY/index_polarity
-> -KernelVersion:	5.2
-> -Contact:	linux-iio@vger.kernel.org
-> -Description:
-> -		Active level of index input Signal Y; irrelevant in
-> -		non-synchronous load mode.
-> -
-> -What:		/sys/bus/counter/devices/counterX/signalY/index_polarity_available
-> -What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode_available
-> -KernelVersion:	5.2
-> -Contact:	linux-iio@vger.kernel.org
-> -Description:
-> -		Discrete set of available values for the respective Signal Y
-> -		configuration are listed in this file.
-> -
-> -What:		/sys/bus/counter/devices/counterX/signalY/synchronous_mode
-> -KernelVersion:	5.2
-> -Contact:	linux-iio@vger.kernel.org
-> -Description:
-> -		Configure the counter associated with Signal Y for
-> -		non-synchronous or synchronous load mode. Synchronous load mode
-> -		cannot be selected in non-quadrature (Pulse-Direction) clock
-> -		mode.
-> -
-> -		non-synchronous:
-> -			A logic low level is the active level at this index
-> -			input. The index function (as enabled via preset_enable)
-> -			is performed directly on the active level of the index
-> -			input.
-> -
-> -		synchronous:
-> -			Intended for interfacing with encoder Index output in
-> -			quadrature clock mode. The active level is configured
-> -			via index_polarity. The index function (as enabled via
-> -			preset_enable) is performed synchronously with the
-> -			quadrature clock on the active level of the index input.
-> diff --git a/Documentation/ABI/testing/sysfs-bus-counter-ftm-quaddec b/Documentation/ABI/testing/sysfs-bus-counter-ftm-quaddec
-> deleted file mode 100644
-> index 7d2e7b363467..000000000000
-> --- a/Documentation/ABI/testing/sysfs-bus-counter-ftm-quaddec
-> +++ /dev/null
-> @@ -1,16 +0,0 @@
-> -What:		/sys/bus/counter/devices/counterX/countY/prescaler_available
-> -KernelVersion:	5.2
-> -Contact:	linux-iio@vger.kernel.org
-> -Description:
-> -		Discrete set of available values for the respective Count Y
-> -		configuration are listed in this file. Values are delimited by
-> -		newline characters.
-> -
-> -What:		/sys/bus/counter/devices/counterX/countY/prescaler
-> -KernelVersion:	5.2
-> -Contact:	linux-iio@vger.kernel.org
-> -Description:
-> -		Configure the prescaler value associated with Count Y.
-> -		On the FlexTimer, the counter clock source passes through a
-> -		prescaler (i.e. a counter). This acts like a clock
-> -		divider.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e697044d34d6..d858582c917b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -297,7 +297,6 @@ M:	William Breathitt Gray <vilhelm.gray@gmail.com>
->  M:	Syed Nayyar Waris <syednwaris@gmail.com>
->  L:	linux-iio@vger.kernel.org
->  S:	Maintained
-> -F:	Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
->  F:	drivers/counter/104-quad-8.c
->  
->  ACCES PCI-IDIO-16 GPIO DRIVER
-> @@ -4540,7 +4539,7 @@ COUNTER SUBSYSTEM
->  M:	William Breathitt Gray <vilhelm.gray@gmail.com>
->  L:	linux-iio@vger.kernel.org
->  S:	Maintained
-> -F:	Documentation/ABI/testing/sysfs-bus-counter*
-> +F:	Documentation/ABI/testing/sysfs-bus-counter
->  F:	Documentation/driver-api/generic-counter.rst
->  F:	drivers/counter/
->  F:	include/linux/counter.h
-> @@ -6925,7 +6924,6 @@ FLEXTIMER FTM-QUADDEC DRIVER
->  M:	Patrick Havelange <patrick.havelange@essensium.com>
->  L:	linux-iio@vger.kernel.org
->  S:	Maintained
-> -F:	Documentation/ABI/testing/sysfs-bus-counter-ftm-quaddec
->  F:	Documentation/devicetree/bindings/counter/ftm-quaddec.txt
->  F:	drivers/counter/ftm-quaddec.c
->  
+>  generated-y += syscall_table_32.h
+>  generated-y += syscall_table_64.h
+>  generated-y += syscall_table_c32.h
+> --
+> 2.27.0
+>
 
+
+-- 
+Best Regards
+Masahiro Yamada
