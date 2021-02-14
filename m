@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D91631B23D
+	by mail.lfdr.de (Postfix) with ESMTP id F1DBA31B23F
 	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhBNTfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 14:35:10 -0500
-Received: from mga12.intel.com ([192.55.52.136]:53951 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229642AbhBNTfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 14:35:08 -0500
-IronPort-SDR: O9MjSacBhjWCgLheiIbex1RVbMh2ZZmKyzfMbHuZ7FsoQb69tWnDcH7WBb3L4S0B+YV5JvDnTl
- pmIa0sQMwqnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="161736102"
-X-IronPort-AV: E=Sophos;i="5.81,179,1610438400"; 
-   d="scan'208";a="161736102"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2021 11:33:22 -0800
-IronPort-SDR: V2grEBjIPBMLQfK0YatjbkaTnDA5f3Ijs8X5sKxsnCJ6c3Kkf0XqQ0YrVNYTefrvBZKIwoq8D/
- uOxLM2jO5kSg==
-X-IronPort-AV: E=Sophos;i="5.81,179,1610438400"; 
-   d="scan'208";a="376990409"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2021 11:33:22 -0800
-Date:   Sun, 14 Feb 2021 11:33:20 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC v1 05/26] x86/traps: Add #VE support for TDX guest
-Message-ID: <20210214193320.GH365765@tassilo.jf.intel.com>
-References: <CALCETrWPCTmoeFBEJvw98zwNpw316Xii_16COZAWoYNC=obF+w@mail.gmail.com>
- <YCbfyde9jl7ti0Oz@google.com>
- <8c23bbfd-e371-a7cf-7f77-ec744181547b@intel.com>
- <YCbm/umiGUS7UuVb@google.com>
- <514734d9-d8be-03ee-417e-4d0ad2f56276@intel.com>
- <YCbq+UEMIsE0NIWI@google.com>
- <7d0b08c4-5ae7-f914-e217-767a9fae7b78@intel.com>
- <YCb0/Dg28uI7TRD/@google.com>
- <CALCETrUnOVvC4d8c_Z=5ZDefAo+0t6-9hadttOjTypJykN6_3A@mail.gmail.com>
- <caa0b029-038c-cb59-6a69-70c84922fc6f@intel.com>
+        id S229899AbhBNTgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 14:36:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229827AbhBNTgg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 14:36:36 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A0EC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:35:55 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id c8so3106155ljd.12
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:35:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RbvCfMxOWqMpSP+VwP8T3vlMh+uVuY1n7ujnc/XcM88=;
+        b=ccjzpZtHRJY+es2JuDho5q0htQTKjsB1P/wHbFNcnHGiaQCwf/BlM3TdHld1OGor2E
+         KacLI5WAD7LkqPBFeOKwHjZtwYGCxiPFhUU/GMbN7N+O7oGc/+syYfbFYh6a4dcqR+Ln
+         hX2gIyJ65bNumi31UoWqq8c4UoQzdQtXppA1w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RbvCfMxOWqMpSP+VwP8T3vlMh+uVuY1n7ujnc/XcM88=;
+        b=TDTCCcdEi7WbMcuEcBuExvPsc6Ff27IqYq6jCLReWJBHHC22Zwdx7d0xyP0vKX886X
+         dW6PWpfsEXP6lbEHQGnKm180vaRcnTK/EfYPg/HpCjXOh2t86zTwbfOxdv5NaNo/eGXq
+         AVzIqT8TW0wtO6MPoskOfumaWWsdPvp4oQVQOHYPL7emvpS0SO68f3WjfEe0CLzSq74s
+         nAhTxFd5qxnlSqIBLWYOVcWpnMVmN19SHxZDySKQD0lFyH7p77bVD05VPgt/5LbZ3Yv6
+         tzGBnBnuREHiJN1kZVyfOGbfe/zQFceuEVfPOUhyu1G0YKu9kJAM2RzO5JhqXroqQr+t
+         Ot1A==
+X-Gm-Message-State: AOAM533nadPcdR0wLHT55Uqxx2Ve8DzAGS9040eHWyGu2xxh3V2XIW2G
+        b3dWejG7Zvbr5X0OXyteXT7W26aFZ2utmQ==
+X-Google-Smtp-Source: ABdhPJznGHvvIunTFXM58TFsxHcv9o6XOO7AEXIKvu1o7Pox4OhERNIvAdNJHh3TCCapRzMcQqtRYA==
+X-Received: by 2002:a05:651c:10b:: with SMTP id a11mr7729242ljb.352.1613331352862;
+        Sun, 14 Feb 2021 11:35:52 -0800 (PST)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id y15sm3355763ljn.97.2021.02.14.11.35.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Feb 2021 11:35:52 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id d24so7092045lfs.8
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:35:52 -0800 (PST)
+X-Received: by 2002:ac2:54ac:: with SMTP id w12mr6606496lfk.487.1613331352177;
+ Sun, 14 Feb 2021 11:35:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <caa0b029-038c-cb59-6a69-70c84922fc6f@intel.com>
+References: <YCk/f0efY5OhibCn@zeniv-ca.linux.org.uk>
+In-Reply-To: <YCk/f0efY5OhibCn@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 14 Feb 2021 11:35:36 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiyaja6TKL1+HGXMXNE2EkqfjjKV6oQAOKfTTacc=mq5Q@mail.gmail.com>
+Message-ID: <CAHk-=wiyaja6TKL1+HGXMXNE2EkqfjjKV6oQAOKfTTacc=mq5Q@mail.gmail.com>
+Subject: Re: [git pull] sendfile fixes
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 01:48:36PM -0800, Dave Hansen wrote:
-> On 2/12/21 1:47 PM, Andy Lutomirski wrote:
-> >> What about adding a property to the TD, e.g. via a flag set during TD creation,
-> >> that controls whether unaccepted accesses cause #VE or are, for all intents and
-> >> purposes, fatal?  That would allow Linux to pursue treating EPT #VEs for private
-> >> GPAs as fatal, but would give us a safety and not prevent others from utilizing
-> >> #VEs.
-> > That seems reasonable.
-> 
-> Ditto.
-> 
-> We first need to double check to see if the docs are right, though.
+On Sun, Feb 14, 2021 at 7:19 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+>         Making sendfile() to pipe destination do the right thing, should
+> make "fs/pipe: allow sendfile() to pipe again" redundant.  Sat in -next
+> for 3 weeks...
 
-I confirmed with the TDX module owners that #VE can only happen for:
-- unaccepted pages
-- instructions like MSR access or CPUID
-- specific instructions that are no in the syscall gap
+Just to clarify: this says "fixes", but I get the feeling that you
+meant for me to pull tomorrow in the 5.12 merge window?
 
-Also if there are future asynchronous #VEs they would only happen
-with IF=1, which would also protect the gap.
+I like the patches, but they don't seem to be anything hugely urgent.
+They should make "sendfile to pipe" more efficient, but the current
+hack is _workable_ (and not any worse than what we historically did)
+even if it's not optimal.
 
-So no need to make #VE an IST.
+Right?
 
--Andi
+Oh, and it looks like the first line of the commit message of
+313d64a35d36 ("do_splice_to(): move the logics for limiting the read
+length in") got truncated somehow..
 
+          Linus
