@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF6831B14E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FE231B158
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbhBNQs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 11:48:59 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:40510 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhBNQs4 (ORCPT
+        id S229792AbhBNQ60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 11:58:26 -0500
+Received: from smtprelay0168.hostedemail.com ([216.40.44.168]:43844 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229637AbhBNQ6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 11:48:56 -0500
-Received: by mail-io1-f69.google.com with SMTP id x26so5051831ior.7
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 08:48:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cjRr4E3Q5PJcPyCBurqL2Ci6PgHAtJp8Ej4wKqKs3Q8=;
-        b=IhcLMwpfuREixIE3/vMGgyoEbo+atrOlj9ploDg1luP4OjgUonz0Oi0Ih248trK1yV
-         P57PW57FMyrM3UYw9IJrAZbieOe0XoNlWtLR1Edv1LtZt8EDEPZdqHprCIYG6Iw8W/CZ
-         NxiecoGJD9wUM9XyQomdWSWwTEpQx+D2X6wtlQM9Y4rIIzVQZtCeto1PsCjX5FveIQjN
-         L5lseAnQD0C+KioEnkvHMumTLFkgMwu7KICbPkVboRN0J7qUzWYXfJcreapzca/2QXto
-         DBkYDwzO8OWKCLPwFcLDVPtDouQiHbZzoNjtXFfbEJz3FQxwSsL4f6NX5tB+5gVCMuDV
-         yz7w==
-X-Gm-Message-State: AOAM530Fs7mIibk7cycfYVi4mOSB/r8HfH3xHP4yftl1LpOsy9+fGmVV
-        cvm2ioRI1CMCvlRssDyhItrenH5kftJFyHPt+fJgQvGeohmM
-X-Google-Smtp-Source: ABdhPJyJ87IQaRDjxAanOnbFiERX2+Tsk9m3VOkrA1L0JF7KF7TQJ1DWvIicDE/P3WFZvYTct88nAIIDh095IIW7bNs1pGt6uQUe
+        Sun, 14 Feb 2021 11:58:24 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id EDC4B18029299;
+        Sun, 14 Feb 2021 16:57:42 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:2895:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6117:6119:6120:7652:7901:7903:8784:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12679:12740:12760:12895:13069:13095:13138:13231:13311:13357:13439:14181:14659:14721:21080:21433:21451:21611:21627:21939:30012:30034:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: place77_161588327634
+X-Filterd-Recvd-Size: 2333
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 14 Feb 2021 16:57:41 +0000 (UTC)
+Message-ID: <b2e25e683a3e2f31d4dc2d666e082634e30643b3.camel@perches.com>
+Subject: Re: [PATCH RFC v3 2/3] docs: add documentation for checkpatch
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-doc@vger.kernel.org, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 14 Feb 2021 08:57:40 -0800
+In-Reply-To: <20210213131513.51386-3-dwaipayanray1@gmail.com>
+References: <20210213131513.51386-1-dwaipayanray1@gmail.com>
+         <20210213131513.51386-3-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-X-Received: by 2002:a92:3306:: with SMTP id a6mr9662869ilf.55.1613321296071;
- Sun, 14 Feb 2021 08:48:16 -0800 (PST)
-Date:   Sun, 14 Feb 2021 08:48:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c2d2c005bb4ea200@google.com>
-Subject: WARNING in mark_buffer_dirty (3)
-From:   syzbot <syzbot+7d5c3e0439dc861b68fc@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, 2021-02-13 at 18:45 +0530, Dwaipayan Ray wrote:
+> Add documentation for kernel script checkpatch.pl.
+> This documentation is also parsed by checkpatch to
+> enable a verbose mode.
+> 
+> The message types in checkpatch are documented with rst
+> field lists. A total of 33 checkpatch type descriptions
+> are added.
 
-syzbot found the following issue on:
+Alphabetic ordering isn't that great for these entries.
+Please group them by use:
 
-HEAD commit:    e0756cfc Merge tag 'trace-v5.11-rc7' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d0f814d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a53fd47f16f22f8c
-dashboard link: https://syzkaller.appspot.com/bug?extid=7d5c3e0439dc861b68fc
+whitespace/code layout style:
+SPACING, TRAILING_WHITESPACE, LINE_SPACING
 
-Unfortunately, I don't have any reproducer for this issue yet.
+commit message defects:
+BAD_SIGN_OFF, BAD_STABLE_ADDRESS_STYLE, COMMIT_COMMENT_SYMBOL, COMMIT_MESSAGE
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7d5c3e0439dc861b68fc@syzkaller.appspotmail.com
+Allocation style:
+group: ALLOC_ARRAY_ARGS, ALLOC_SIZEOF_STRUCT, ALLOC_WITH_MULTIPLY
 
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 5031 at fs/buffer.c:1113 mark_buffer_dirty+0x488/0x5d0 fs/buffer.c:1113
-Modules linked in:
-CPU: 3 PID: 5031 Comm: jbd2/sda1-8 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-RIP: 0010:mark_buffer_dirty+0x488/0x5d0 fs/buffer.c:1113
-Code: c1 ea 03 80 3c 02 00 0f 85 52 01 00 00 48 8b 3b be 04 00 00 00 e8 b8 ac fc ff 5b 5d 41 5c 41 5d e9 2d 9d a2 ff e8 28 9d a2 ff <0f> 0b e9 bf fb ff ff e8 1c 9d a2 ff 0f 0b e9 e3 fb ff ff e8 10 9d
-RSP: 0018:ffffc9000df3fa20 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888017d0b698 RCX: 0000000000000000
-RDX: ffff888014b420c0 RSI: ffffffff81d039a8 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81d03565 R11: 0000000000000000 R12: ffff888017d0b698
-R13: ffff88801ad9e980 R14: ffff888022e8ea50 R15: ffff888022e8ea50
-FS:  0000000000000000(0000) GS:ffff88802cd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000557ba7d6b967 CR3: 000000000ba8e000 CR4: 0000000000150ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __jbd2_journal_temp_unlink_buffer+0x3ba/0x500 fs/jbd2/transaction.c:2021
- __jbd2_journal_unfile_buffer+0x60/0xb0 fs/jbd2/transaction.c:2035
- __jbd2_journal_refile_buffer+0x3d2/0x4a0 fs/jbd2/transaction.c:2581
- jbd2_journal_commit_transaction+0x43ef/0x6b90 fs/jbd2/commit.c:1084
- kjournald2+0x1d0/0x930 fs/jbd2/journal.c:213
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+[]
+> +4 Type Descriptions
+> +-------------------
+> +
+> +This section contains a description of all the message types in checkpatch.
+> +
+> +.. Types in this section are also parsed by checkpatch.
+> +.. Please keep the types sorted alphabetically.
+> +
+> +:ALLOC_ARRAY_ARGS:
+> +  The first argument for kcalloc or kmalloc_array should be the
+> +  number of elements.  sizeof() as the first argument is generally
+> +  wrong.
 
+If you look at the generated .html file, the output format  is poor.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+It would probably be better to use
+**<TYPE>**
+for each of these blocks instead of
+:<TYPE>:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+and update the script appropriately.
+
