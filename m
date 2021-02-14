@@ -2,146 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA6331B239
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F6B31B249
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhBNTWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 14:22:51 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52572 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229789AbhBNTWr (ORCPT
+        id S229912AbhBNTl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 14:41:29 -0500
+Received: from avasout02.plus.net ([212.159.14.17]:38023 "EHLO
+        avasout02.plus.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbhBNTl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 14:22:47 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11EJ2Rjv004234;
-        Sun, 14 Feb 2021 14:21:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=2HSfs+PHnEoAspVggOn3BgvrrXw9WRy1/NNpdkKxiCQ=;
- b=AZF0XAteS7BybRomRYX1JsIb2ozox9iZcsuANYL0RXt1DOGpH5dDZncHkhOo1MmCqO6N
- bN9wDwYuysQC6qwZbZvf0iJ5XmeNG1OR+xeJIVS2mYsLLxHM6iTaq0y08eK4tADF0CEA
- fkKoOtagmhJTVKNKvvgmVoCVGUffCCrVq0F4GQp/Z4xrqebHU1nVIEsLWO+HWe+bCS6r
- bxMHJhhpU5/ixYri+C6GmE6c9iFjLYxsnQtsC23Dv5jV6sm/gZX8ewVelDj99njvNoVd
- /xsREIEyrQHhgvKq8L1FVYyY6/sCJqI4CmD3ZR5qi97i+5qF8aX1c+uVIqwzH+Ok2HJK Dw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36q9nk09b6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Feb 2021 14:21:13 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11EJ2LTu003594;
-        Sun, 14 Feb 2021 14:21:12 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36q9nk09ar-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Feb 2021 14:21:12 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11EJHkRa014564;
-        Sun, 14 Feb 2021 19:21:11 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma04wdc.us.ibm.com with ESMTP id 36p6d8j9rj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Feb 2021 19:21:11 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11EJLAVZ11862324
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 14 Feb 2021 19:21:10 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B369B7805E;
-        Sun, 14 Feb 2021 19:21:10 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 372EB7805C;
-        Sun, 14 Feb 2021 19:21:04 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.199.127])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sun, 14 Feb 2021 19:21:03 +0000 (GMT)
-Message-ID: <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Date:   Sun, 14 Feb 2021 11:21:02 -0800
-In-Reply-To: <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
-References: <20210214091954.GM242749@kernel.org>
-         <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Sun, 14 Feb 2021 14:41:26 -0500
+Received: from [10.0.2.15] ([147.147.167.73])
+        by smtp with ESMTPA
+        id BN7JlWwUqjOtyBN7KlyjNE; Sun, 14 Feb 2021 19:31:39 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plus.com; s=042019;
+        t=1613331099; bh=rbBTkQvF1/bHKKJPCULfkb7AgNO6MtpJ1dpZEYcT4v4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=KgyiiVzXLbMdFHwjT7zzZyt1Q0Ig8zL2Gox3iU2hCMfAbtOVbzEGVt+Uldoo56rwD
+         80XucEghPm55KJVYMogSTWC6kWLgrH4Xbb4HGQqz9WIgMbsUxKWOKePtiECQ2Fz6WG
+         21nPGQPOL0TxS8Tr63wmN6GJJu1eau5RAta0qUtEtJOC1WWZhHTuevaA3qJbkVSdyV
+         h6s5paFEly9fwj0+snCb/kXq11mVVU1YwdfwC7PMT8wpqrogYIr95BpY3IEYVVuljP
+         wi9aLD5t5KBdy1ZslTjK0YfnGvDudPztKyFy4IwI9Wso+lQSHiwb385Q7wZH372tX2
+         A/0emcUVTNVcw==
+X-Clacks-Overhead: "GNU Terry Pratchett"
+X-CM-Score: 0.00
+X-CNFS-Analysis: v=2.3 cv=UcTKtJaN c=1 sm=1 tr=0
+ a=nK5asC+3lBOC3EoKtwbYYg==:117 a=nK5asC+3lBOC3EoKtwbYYg==:17
+ a=IkcTkHD0fZMA:10 a=EBOSESyhAAAA:8 a=Wm_VZl6z05tM19AFg1QA:9 a=QEXdDO2ut3YA:10
+ a=yJM6EZoI5SlJf8ks9Ge_:22
+X-AUTH: ramsayjones@:2500
+Subject: Re: [PATCH v2 2/4] usb: typec: tps6598x: Add trace event for status
+ register
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org
+Cc:     =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+References: <651ac50b9ff6ed3db8cab9f176514900f6a02a0c.1613131413.git.agx@sigxcpu.org>
+ <20210213031237.GP219708@shao2-debian> <YClYh7pqDlbXy8qh@bogon.m.sigxcpu.org>
+ <6a8eb07f-16d5-f461-cf0b-6c4aaf93b014@ramsayjones.plus.com>
+ <CAHk-=wjCAVj7J+KAC1pvtdeM-c76oXZq7k=v40-maKjTo6qfVw@mail.gmail.com>
+From:   Ramsay Jones <ramsay@ramsayjones.plus.com>
+Message-ID: <c48e4250-a42a-9f99-1280-69b0b5cfb69d@ramsayjones.plus.com>
+Date:   Sun, 14 Feb 2021 19:31:37 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-14_06:2021-02-12,2021-02-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=828 clxscore=1015
- mlxscore=0 bulkscore=0 spamscore=0 suspectscore=0 impostorscore=0
- phishscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102140159
+In-Reply-To: <CAHk-=wjCAVj7J+KAC1pvtdeM-c76oXZq7k=v40-maKjTo6qfVw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfBvUKy+/UU37fBEWzQ/KjFKosH1t/3bIq/BfPSWlxeukQnoMzNc8lnoL2gM4TAmRVH09SSy8xwu2MHUoVt8SZt8BpHZw6cPCB4Q0EtkJypwRTa6jnXfE
+ L3IcorPRfPRAlQmbbHhJyoHXtIRWH6B0qfADMnof3vBgDeuyyP4MpohyOaZ0V+pfYU6gxsPQbOJSEw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-02-14 at 10:58 +0100, David Hildenbrand wrote:
-[...]
-> > And here we come to the question "what are the differences that
-> > justify a new system call?" and the answer to this is very
-> > subjective. And as such we can continue bikeshedding forever.
+
+
+On 14/02/2021 19:00, Linus Torvalds wrote:
+> On Sun, Feb 14, 2021 at 10:42 AM Ramsay Jones
+> <ramsay@ramsayjones.plus.com> wrote:
+>>
+>>>
+>>> I looked around but didn't find any hints how to fix this. Any pointers
+>>> I missed (added the sparse list to cc:)?
+>>
+>> This is a limitation of sparse; when using the 'stringize' pre-processor
+>> operator #, the maximum size of the resulting string is about 8k (if I
+>> remember correctly).
 > 
-> I think this fits into the existing memfd_create() syscall just fine,
-> and I heard no compelling argument why it shouldn‘t. That‘s all I can
-> say.
+> Well, yes and no.
+> 
+> The C89 standard actually says that a string literal can be at most
+> 509 characters to be portable. C99 increased it to 4095 characters.
+> 
+> Sparse makes the limit higher, and the limit could easily be expanded
+> way past 8kB - but the point is that large string literals are
+> actually not guaranteed to be valid C.
+> 
+> So honestly, it really sounds like that TRACE_EVENT() thing is doing
+> something it shouldn't be doing.
 
-OK, so let's review history.  In the first two incarnations of the
-patch, it was an extension of memfd_create().  The specific objection
-by Kirill Shutemov was that it doesn't share any code in common with
-memfd and so should be a separate system call:
+Yep, as I said, I didn't submit the patch - rather I changed the source
+so as not to need such a long string.
 
-https://lore.kernel.org/linux-api/20200713105812.dnwtdhsuyj3xbh4f@box/
+> I don't think there's any fundamental limit why sparse does 8kB as a
+> limit (just a few random buffers). Making sparse accept larger ones
+> should be as simple as just increasing MAX_STRING, but I really don't
+> think the kernel should encourage that kind of excessive string sizes.
 
-The other objection raised offlist is that if we do use memfd_create,
-then we have to add all the secret memory flags as an additional ioctl,
-whereas they can be specified on open if we do a separate system call. 
-The container people violently objected to the ioctl because it can't
-be properly analysed by seccomp and much preferred the syscall version.
+I agree, but I wiggled my patch (which doesn't increase MAX_STRING) to
+apply to the current codebase, and ... it now fails two tests! ;-)
+(It seems, in the intervening 9 years, the show_token_sequence() function
+fixed the quoting of double-quotes in the resulting strings, which
+my patch fails to do).
 
-Since we're dumping the uncached variant, the ioctl problem disappears
-but so does the possibility of ever adding it back if we take on the
-container peoples' objection.  This argues for a separate syscall
-because we can add additional features and extend the API with flags
-without causing anti-ioctl riots.
+Sorry for the noise.
 
-James
-
+ATB,
+Ramsay Jones
 
