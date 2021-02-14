@@ -2,199 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BC131B10A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 16:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70A031B114
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 17:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhBNP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 10:57:14 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:26900 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229758AbhBNP5G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 10:57:06 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11EFovBN020903;
-        Sun, 14 Feb 2021 10:56:12 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 36p9gatp9a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Feb 2021 10:56:12 -0500
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 11EFuAMN015190
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 14 Feb 2021 10:56:10 -0500
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Sun, 14 Feb 2021 07:56:09 -0800
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
- Sun, 14 Feb 2021 07:56:09 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Sun, 14 Feb 2021 07:56:09 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11EFu6gr004472;
-        Sun, 14 Feb 2021 10:56:06 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <dragos.bogdan@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] iio: buffer-dma,adi-axi-adc: introduce devm_iio_dmaengine_buffer_setup()
-Date:   Sun, 14 Feb 2021 17:58:17 +0200
-Message-ID: <20210214155817.68678-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
+        id S229789AbhBNQBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 11:01:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:46718 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhBNQBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 11:01:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F5431FB;
+        Sun, 14 Feb 2021 08:00:13 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.80])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13FEA3F73D;
+        Sun, 14 Feb 2021 08:00:11 -0800 (PST)
+Date:   Sun, 14 Feb 2021 16:00:09 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Joerg Roedel <joro@8bytes.org>,
+        Damian Tometzki <linux@tometzki.de>
+Subject: Re: [PATCH] docs: reporting-issues.rst: explain how to decode stack
+ traces
+Message-ID: <20210214160009.lxonvxg4qyj6ygbk@e107158-lin.cambridge.arm.com>
+References: <20210210054823.242262-1-linux@leemhuis.info>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-14_04:2021-02-12,2021-02-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 clxscore=1015
- mlxscore=0 priorityscore=1501 impostorscore=0 adultscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102140134
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210210054823.242262-1-linux@leemhuis.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change does a conversion of the devm_iio_dmaengine_buffer_alloc() to
-devm_iio_dmaengine_buffer_setup(). This will allocate an IIO DMA buffer and
-attach it to the IIO device, similar to devm_iio_triggered_buffer_setup()
-(though the underlying code is different, the final logic is the same).
+On 02/10/21 06:48, Thorsten Leemhuis wrote:
+> Replace placeholder text about decoding stack traces with a section that
+> properly describes what a typical user should do these days. To make
+> it works for them, add a paragraph in an earlier section to ensure
+> people build their kernels with everything that's needed to decode stack
+> traces later.
+> 
+> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+> ---
+> Reminder: This is not my area of expertise. Hopefully I didn't write anything
+> stupid or omitted something people find important. If I did, please let me know,
+> ideally suggesting what to write; bonus points for people sending text I can
+> simply include in the next revision.
 
-Since the only user of the devm_iio_dmaengine_buffer_alloc() was the
-adi-axi-adc driver, this change does the replacement in a single go in the
-driver.
+Thanks for your effort :-)
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
+> 
+> I CCed Sasha, because he wrote decode_stacktrace.sh; I also CCed a bunch of
+> people that showed interest in this topic when I asked for help on Twitter.
+> 
+> I'm still unsure if linking to admin-guide/bug-hunting.rst is a good idea, as it
+> seems quite outdated; reporting-bugs did that, but for now I settled on 'don't
+> do that'.
+> 
+> Ciao, Thorsten
+> ---
+>  .../admin-guide/reporting-issues.rst          | 77 +++++++++++++------
+>  1 file changed, 55 insertions(+), 22 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
+> index 07879d01fe68..b9c07d8e3141 100644
+> --- a/Documentation/admin-guide/reporting-issues.rst
+> +++ b/Documentation/admin-guide/reporting-issues.rst
+> @@ -154,8 +154,8 @@ After these preparations you'll now enter the main part:
+>     that hear about it for the first time. And if you learned something in this
+>     process, consider searching again for existing reports about the issue.
+>  
+> - * If the failure includes a stack dump, like an Oops does, consider decoding
+> -   it to find the offending line of code.
+> + * If your failure involves a 'panic', 'oops', or 'warning', consider decoding
 
-Related to
-  https://lore.kernel.org/linux-iio/20210214143313.67202-2-alexandru.ardelean@analog.com/T/
+or 'BUG'? There are similar other places below that could benefit from this
+addition too.
 
+> +   the kernel log to find the line of code that trigger the error.
+>  
+>   * If your problem is a regression, try to narrow down when the issue was
+>     introduced as much as possible.
+> @@ -869,6 +869,15 @@ pick up the configuration of your current kernel and then tries to adjust it
+>  somewhat for your system. That does not make the resulting kernel any better,
+>  but quicker to compile.
+>  
+> +Note: If you are dealing with a kernel panic, oops, or warning, please make
+> +sure to enable CONFIG_KALLSYMS when configuring your kernel. Additionally,
 
- .../driver-api/driver-model/devres.rst        |  1 +
- drivers/iio/adc/adi-axi-adc.c                 | 12 ++-----
- .../buffer/industrialio-buffer-dmaengine.c    | 33 +++++++++++++++++--
- include/linux/iio/buffer-dmaengine.h          |  7 ++--
- 4 files changed, 38 insertions(+), 15 deletions(-)
+s/make sure/try/
 
-diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
-index 4b15b3e9358b..5f8c6c303ff2 100644
---- a/Documentation/driver-api/driver-model/devres.rst
-+++ b/Documentation/driver-api/driver-model/devres.rst
-@@ -285,6 +285,7 @@ I2C
- IIO
-   devm_iio_device_alloc()
-   devm_iio_device_register()
-+  devm_iio_dmaengine_buffer_setup()
-   devm_iio_kfifo_buffer_setup()
-   devm_iio_triggered_buffer_setup()
-   devm_iio_trigger_alloc()
-diff --git a/drivers/iio/adc/adi-axi-adc.c b/drivers/iio/adc/adi-axi-adc.c
-index 9109da2d2e15..2e84623f732e 100644
---- a/drivers/iio/adc/adi-axi-adc.c
-+++ b/drivers/iio/adc/adi-axi-adc.c
-@@ -104,7 +104,6 @@ static unsigned int adi_axi_adc_read(struct adi_axi_adc_state *st,
- static int adi_axi_adc_config_dma_buffer(struct device *dev,
- 					 struct iio_dev *indio_dev)
- {
--	struct iio_buffer *buffer;
- 	const char *dma_name;
- 
- 	if (!device_property_present(dev, "dmas"))
-@@ -113,15 +112,8 @@ static int adi_axi_adc_config_dma_buffer(struct device *dev,
- 	if (device_property_read_string(dev, "dma-names", &dma_name))
- 		dma_name = "rx";
- 
--	buffer = devm_iio_dmaengine_buffer_alloc(indio_dev->dev.parent,
--						 dma_name);
--	if (IS_ERR(buffer))
--		return PTR_ERR(buffer);
--
--	indio_dev->modes |= INDIO_BUFFER_HARDWARE;
--	iio_device_attach_buffer(indio_dev, buffer);
--
--	return 0;
-+	return devm_iio_dmaengine_buffer_setup(indio_dev->dev.parent,
-+					       indio_dev, dma_name);
- }
- 
- static int adi_axi_adc_read_raw(struct iio_dev *indio_dev,
-diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-index b0cb9a35f5cd..9981896e1495 100644
---- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-+++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-@@ -244,7 +244,7 @@ static void __devm_iio_dmaengine_buffer_free(struct device *dev, void *res)
-  *
-  * The buffer will be automatically de-allocated once the device gets destroyed.
-  */
--struct iio_buffer *devm_iio_dmaengine_buffer_alloc(struct device *dev,
-+static struct iio_buffer *devm_iio_dmaengine_buffer_alloc(struct device *dev,
- 	const char *channel)
- {
- 	struct iio_buffer **bufferp, *buffer;
-@@ -265,7 +265,36 @@ struct iio_buffer *devm_iio_dmaengine_buffer_alloc(struct device *dev,
- 
- 	return buffer;
- }
--EXPORT_SYMBOL_GPL(devm_iio_dmaengine_buffer_alloc);
-+
-+/**
-+ * devm_iio_dmaengine_buffer_setup() - Setup a DMA buffer for an IIO device
-+ * @dev: Parent device for the buffer
-+ * @indio_dev: IIO device to which to attach this buffer.
-+ * @channel: DMA channel name, typically "rx".
-+ *
-+ * This allocates a new IIO buffer with devm_iio_dmaengine_buffer_alloc()
-+ * and attaches it to an IIO device with iio_device_attach_buffer().
-+ * It also appends the INDIO_BUFFER_HARDWARE mode to the supported modes of the
-+ * IIO device.
-+ */
-+int devm_iio_dmaengine_buffer_setup(struct device *dev,
-+				    struct iio_dev *indio_dev,
-+				    const char *channel)
-+{
-+	struct iio_buffer *buffer;
-+
-+	buffer = devm_iio_dmaengine_buffer_alloc(indio_dev->dev.parent,
-+						 channel);
-+	if (IS_ERR(buffer))
-+		return PTR_ERR(buffer);
-+
-+	indio_dev->modes |= INDIO_BUFFER_HARDWARE;
-+
-+	iio_device_attach_buffer(indio_dev, buffer);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(devm_iio_dmaengine_buffer_setup);
- 
- MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
- MODULE_DESCRIPTION("DMA buffer for the IIO framework");
-diff --git a/include/linux/iio/buffer-dmaengine.h b/include/linux/iio/buffer-dmaengine.h
-index 5b502291d6a4..5c355be89814 100644
---- a/include/linux/iio/buffer-dmaengine.h
-+++ b/include/linux/iio/buffer-dmaengine.h
-@@ -7,10 +7,11 @@
- #ifndef __IIO_DMAENGINE_H__
- #define __IIO_DMAENGINE_H__
- 
--struct iio_buffer;
-+struct iio_dev;
- struct device;
- 
--struct iio_buffer *devm_iio_dmaengine_buffer_alloc(struct device *dev,
--						   const char *channel);
-+int devm_iio_dmaengine_buffer_setup(struct device *dev,
-+				    struct iio_dev *indio_dev,
-+				    const char *channel);
- 
- #endif
--- 
-2.17.1
+s/kernel./kernel if you can./
 
+Less demanding wording in case the user doesn't have the capability to rebuild
+or deploy such a kernel where the problem happens. Maybe you can tweak it more
+if you like too :-)
+
+> +enable CONFIG_DEBUG_KERNEL and CONFIG_DEBUG_INFO, too; the latter is the
+> +relevant one of those two, but can only be reached if you enable the former. Be
+> +aware CONFIG_DEBUG_INFO increases the storage space required to build a kernel
+> +by quite a bit. But that's worth it, as these options will allow you later to
+> +pinpoint the exact line of code that triggers your issue. The section 'Decode
+> +failure messages' below explains this in more detail.
+> +
+
+I think worth mentioning too that the user should keep a log of the problem
+when first encountered and then attempt the above. Just in case the problem is
+not reproducible easily so the info is not lost.
+
+Maybe something like below:
+
+'''
+Always keep a record of the issue encountered in case it is hard to reproduce.
+Sending undecoded report is better than not sending a report at all.
+'''
+
+>  
+>  Check 'taint' flag
+>  ------------------
+> @@ -923,31 +932,55 @@ instead you can join.
+>  Decode failure messages
+>  -----------------------
+>  
+> -.. note::
+> +    *If your failure involves a 'panic', 'oops', or 'warning', consider
+
+Thanks for choosing the word consider, it shouldn't be compulsory IMO.
+
+> +    decoding the kernel log to find the line of code that trigger the error.*
+>  
+> -   FIXME: The text in this section is a placeholder for now and quite similar to
+> -   the old text found in 'Documentation/admin-guide/reporting-bugs.rst'
+> -   currently. It and the document it references are known to be outdated and
+> -   thus need to be revisited. Thus consider this note a request for help: if you
+> -   are familiar with this topic, please write a few lines that would fit here.
+> -   Alternatively, simply outline the current situation roughly to the main
+> -   authors of this document (see intro), as they might be able to write
+> -   something then.
+> +When the kernel detects an internal problem, it will log some information about
+> +the executed code. This makes it possible to pinpoint the exact line in the
+> +source code that triggered the issue and shows how it was called. But that only
+> +works if you enabled CONFIG_DEBUG_INFO and CONFIG_KALLSYMS when configuring
+> +your kernel. If you did so, consider to decode the information from the
+> +kernel's log. That will make it a lot easier to understand what lead to the
+> +'panic', 'oops', or 'warning', which increases the chances enormously that
+> +someone can provide a fix.
+
+I suggest removing the word enormously. It helps, but it all depends on the
+particular circumstances. Sometimes it does, others it doesn't.
+
+>  
+> -   This section in the end should answer questions like "when is this actually
+> -   needed", "what .config options to ideally set earlier to make this step easy
+> -   or unnecessary?" (likely CONFIG_UNWINDER_ORC when it's available, otherwise
+> -   CONFIG_UNWINDER_FRAME_POINTER; but is there anything else needed?).
+> +Decoding can be done with a script you find in the Linux source tree. If you
+> +are running a kernel you compiled yourself earlier, call it like this::
+>  
+> -..
+> +       [user@something ~]$ sudo dmesg | ./linux-5.10.5/scripts/decode_stacktrace.sh ./linux-5.10.5/vmlinux
+> +
+> +If you are running a packaged vanilla kernel, you will likely have to install
+> +the corresponding packages with debug symbols. Then call the script (which you
+> +might need to get from the Linux sources if your distro does not package it)
+> +like this::
+> +
+> +       [user@something ~]$ sudo dmesg | ./linux-5.10.5/scripts/decode_stacktrace.sh \
+> +        /usr/lib/debug/lib/modules/5.10.10-4.1.x86_64/vmlinux /usr/src/kernels/5.10.10-4.1.x86_64/
+> +
+> +The script will work on log lines like the following, which show the address of
+> +the code the kernel was executing when the error occurred::
+> +
+> +       [   68.387301] RIP: 0010:test_module_init+0x5/0xffa [test_module]
+> +
+> +Once decoded, these lines will look like this::
+> +
+> +       [   68.387301] RIP: 0010:test_module_init (/home/username/linux-5.10.5/test-module/test-module.c:16) test_module
+> +
+> +In this case the executed code was built from the file
+> +'~/linux-5.10.5/test-module/test-module.c' and the error occurred by the
+> +instructions found in line '16'.
+>  
+> -    *If the failure includes a stack dump, like an Oops does, consider decoding
+> -    it to find the offending line of code.*
+> +The script will similarly decode the addresses mentioned in the section
+> +starting with 'Call trace', which show the path to the function where the
+> +problem occurred. Additionally, the script will show the assembler output for
+> +the code section the kernel was executing.
+>  
+> -When the kernel detects an error, it will print a stack dump that allows to
+> -identify the exact line of code where the issue happens. But that information
+> -sometimes needs to get decoded to be readable, which is explained in
+> -admin-guide/bug-hunting.rst.
+> +Note, if you can't get this to work, simply skip this step and mention the
+> +reason for it in the report. If you're lucky, it might not be needed. And if it
+> +is, someone might help you to get things going. Also be aware this is just one
+> +of several ways to decode kernel stack traces. Sometimes different steps will
+> +be required to retrieve the relevant details. Don't worry about that, if that's
+> +needed in your case, developers will tell you what to do.
+
+Ah you already clarify nicely here this is a good-to-have rather than
+a must-have as I was trying to elude to above :-)
+
+This looks good to me in general. With the above minor nits fixed, feel free to
+add my
+
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+
+Thanks!
+
+--
+Qais Yousef
+
+>  
+>  
+>  Special care for regressions
+> -- 
+> 2.29.2
+> 
