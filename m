@@ -2,123 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B1E31B16B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1888731B16E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 18:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhBNRHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 12:07:10 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:49364 "EHLO honk.sigxcpu.org"
+        id S229861AbhBNRIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 12:08:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhBNRHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 12:07:02 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id CB983FB03;
-        Sun, 14 Feb 2021 18:06:18 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3oNCoDZm0plg; Sun, 14 Feb 2021 18:06:16 +0100 (CET)
-Date:   Sun, 14 Feb 2021 18:06:15 +0100
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     kernel test robot <rong.a.chen@intel.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        kbuild-all@lists.01.org, linux-sparse@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] usb: typec: tps6598x: Add trace event for status
- register
-Message-ID: <YClYh7pqDlbXy8qh@bogon.m.sigxcpu.org>
-References: <651ac50b9ff6ed3db8cab9f176514900f6a02a0c.1613131413.git.agx@sigxcpu.org>
- <20210213031237.GP219708@shao2-debian>
+        id S229758AbhBNRIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 12:08:32 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05ECA64DBA;
+        Sun, 14 Feb 2021 17:07:47 +0000 (UTC)
+Date:   Sun, 14 Feb 2021 17:07:43 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de
+Subject: Re: [PATCH v8 09/22] counter: Return error code on invalid modes
+Message-ID: <20210214170743.090e8b60@archlinux>
+In-Reply-To: <58e7c59bb7c7bb94c8655903308842d9d9e9907a.1613131238.git.vilhelm.gray@gmail.com>
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+        <58e7c59bb7c7bb94c8655903308842d9d9e9907a.1613131238.git.vilhelm.gray@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210213031237.GP219708@shao2-debian>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi ,
-On Sat, Feb 13, 2021 at 11:12:37AM +0800, kernel test robot wrote:
-> Hi "Guido,
-> 
-> I love your patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on usb/usb-testing]
-> [also build test WARNING on v5.11-rc7 next-20210211]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Guido-G-nther/usb-typec-tps6598x-Add-IRQ-flag-and-register-tracing/20210212-200855
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-> config: openrisc-randconfig-s032-20210209 (attached as .config)
-> compiler: or1k-linux-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-215-g0fb77bb6-dirty
->         # https://github.com/0day-ci/linux/commit/ba45e1d5e1fd25b6aed8724106e6c7d5adef7a20
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Guido-G-nther/usb-typec-tps6598x-Add-IRQ-flag-and-register-tracing/20210212-200855
->         git checkout ba45e1d5e1fd25b6aed8724106e6c7d5adef7a20
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=openrisc 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> 
-> 
-> "sparse warnings: (new ones prefixed by >>)"
->    drivers/usb/typec/tps6598x.c: note: in included file (through include/trace/trace_events.h, include/trace/define_trace.h, drivers/usb/typec/tps6598x_trace.h):
-> >> drivers/usb/typec/./tps6598x_trace.h:157:1: sparse: sparse: too long token expansion
-> 
+On Fri, 12 Feb 2021 21:13:33 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-I looked around but didn't find any hints how to fix this. Any pointers
-I missed (added the sparse list to cc:)?
+> Only a select set of modes (function, action, etc.) are valid for a
+> given device configuration. This patch ensures that invalid modes result
+> in a return -EINVAL. Such a situation should never occur in reality, but
+> it's good to define a default switch cases for the sake of making the
+> intent of the code clear.
 
-Cheers,
- -- Guido
+In many of these cases it may make sense to also return early
+in the good paths rather than share a return 0 at the
+end of the function?
 
-> vim +157 drivers/usb/typec/./tps6598x_trace.h
+
 > 
-> c90c0282e4ce33 Guido Günther 2021-02-12  156  
-> ba45e1d5e1fd25 Guido Günther 2021-02-12 @157  TRACE_EVENT(tps6598x_status,
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  158  	    TP_PROTO(u32 status),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  159  	    TP_ARGS(status),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  160  
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  161  	    TP_STRUCT__entry(
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  162  			     __field(u32, status)
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  163  			     ),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  164  
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  165  	    TP_fast_assign(
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  166  			   __entry->status = status;
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  167  			   ),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  168  
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  169  	    TP_printk("conn: %s, pp_5v0: %s, pp_hv: %s, pp_ext: %s, pp_cable: %s, "
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  170  		      "pwr-src: %s, vbus: %s, usb-host: %s, legacy: %s, flags: %s",
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  171  		      show_status_conn_state(__entry->status),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  172  		      show_status_pp_switch_state(TPS_STATUS_PP_5V0_SWITCH(__entry->status)),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  173  		      show_status_pp_switch_state(TPS_STATUS_PP_HV_SWITCH(__entry->status)),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  174  		      show_status_pp_switch_state(TPS_STATUS_PP_EXT_SWITCH(__entry->status)),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  175  		      show_status_pp_switch_state(TPS_STATUS_PP_CABLE_SWITCH(__entry->status)),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  176  		      show_status_power_sources(__entry->status),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  177  		      show_status_vbus_status(__entry->status),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  178  		      show_status_usb_host_present(__entry->status),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  179  		      show_status_legacy(__entry->status),
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  180  		      show_status_flags(__entry->status)
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  181  		    )
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  182  );
-> ba45e1d5e1fd25 Guido Günther 2021-02-12  183  
-> 
+> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@st.com>
+> Cc: David Lechner <david@lechnology.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  drivers/counter/104-quad-8.c            | 10 ++++++++++
+>  drivers/counter/microchip-tcb-capture.c |  6 ++++++
+>  drivers/counter/stm32-lptimer-cnt.c     | 10 ++++++----
+>  drivers/counter/stm32-timer-cnt.c       |  3 +++
+>  drivers/counter/ti-eqep.c               |  3 +++
+>  5 files changed, 28 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+> index 9a96296b0625..674263b4d2c4 100644
+> --- a/drivers/counter/104-quad-8.c
+> +++ b/drivers/counter/104-quad-8.c
+> @@ -273,6 +273,10 @@ static int quad8_function_set(struct counter_device *counter,
+>  			*scale = 2;
+>  			mode_cfg |= QUAD8_CMR_QUADRATURE_X4;
+>  			break;
+> +		default:
+> +			/* should never reach this path */
+> +			mutex_unlock(&priv->lock);
+> +			return -EINVAL;
+>  		}
+>  	}
+>  
+> @@ -367,6 +371,9 @@ static int quad8_action_get(struct counter_device *counter,
+>  	case QUAD8_COUNT_FUNCTION_QUADRATURE_X4:
+>  		*action = QUAD8_SYNAPSE_ACTION_BOTH_EDGES;
+>  		break;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+>  
+>  	return 0;
+> @@ -529,6 +536,9 @@ static int quad8_count_mode_set(struct counter_device *counter,
+>  	case COUNTER_COUNT_MODE_MODULO_N:
+>  		cnt_mode = 3;
+>  		break;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+>  
+>  	mutex_lock(&priv->lock);
+> diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
+> index 710acc0a3704..ee979b011012 100644
+> --- a/drivers/counter/microchip-tcb-capture.c
+> +++ b/drivers/counter/microchip-tcb-capture.c
+> @@ -133,6 +133,9 @@ static int mchp_tc_count_function_set(struct counter_device *counter,
+>  		bmr |= ATMEL_TC_QDEN | ATMEL_TC_POSEN;
+>  		cmr |= ATMEL_TC_ETRGEDG_RISING | ATMEL_TC_ABETRG | ATMEL_TC_XC0;
+>  		break;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+>  
+>  	regmap_write(priv->regmap, ATMEL_TC_BMR, bmr);
+> @@ -226,6 +229,9 @@ static int mchp_tc_count_action_set(struct counter_device *counter,
+>  	case MCHP_TC_SYNAPSE_ACTION_BOTH_EDGE:
+>  		edge = ATMEL_TC_ETRGEDG_BOTH;
+>  		break;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+>  
+>  	return regmap_write_bits(priv->regmap,
+> diff --git a/drivers/counter/stm32-lptimer-cnt.c b/drivers/counter/stm32-lptimer-cnt.c
+> index 937439635d53..daf988e7b208 100644
+> --- a/drivers/counter/stm32-lptimer-cnt.c
+> +++ b/drivers/counter/stm32-lptimer-cnt.c
+> @@ -206,9 +206,10 @@ static int stm32_lptim_cnt_function_set(struct counter_device *counter,
+>  		priv->quadrature_mode = 1;
+>  		priv->polarity = STM32_LPTIM_SYNAPSE_ACTION_BOTH_EDGES;
+>  		return 0;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+> -
+> -	return -EINVAL;
+>  }
+>  
+>  static ssize_t stm32_lptim_cnt_enable_read(struct counter_device *counter,
+> @@ -326,9 +327,10 @@ static int stm32_lptim_cnt_action_get(struct counter_device *counter,
+>  	case STM32_LPTIM_ENCODER_BOTH_EDGE:
+>  		*action = priv->polarity;
+>  		return 0;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+> -
+> -	return -EINVAL;
+>  }
+>  
+>  static int stm32_lptim_cnt_action_set(struct counter_device *counter,
+> diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+> index ef2a974a2f10..431a3d08ed6c 100644
+> --- a/drivers/counter/stm32-timer-cnt.c
+> +++ b/drivers/counter/stm32-timer-cnt.c
+> @@ -296,6 +296,9 @@ static int stm32_action_get(struct counter_device *counter,
+>  		/* counts up/down on both TI1FP1 and TI2FP2 edges */
+>  		*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
+>  		break;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+>  
+>  	return 0;
+> diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
+> index a60aee1a1a29..7844fdf78a97 100644
+> --- a/drivers/counter/ti-eqep.c
+> +++ b/drivers/counter/ti-eqep.c
+> @@ -192,6 +192,9 @@ static int ti_eqep_action_get(struct counter_device *counter,
+>  			break;
+>  		}
+>  		break;
+> +	default:
+> +		/* should never reach this path */
+> +		return -EINVAL;
+>  	}
+>  
+>  	return 0;
 
-
-> _______________________________________________
-> kbuild mailing list -- kbuild@lists.01.org
-> To unsubscribe send an email to kbuild-leave@lists.01.org
 
