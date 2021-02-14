@@ -2,81 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E3631B27B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 21:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F24E31B27D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 21:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbhBNUma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 15:42:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
+        id S229974AbhBNUmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 15:42:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhBNUlw (ORCPT
+        with ESMTP id S229881AbhBNUmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 15:41:52 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD1AC0613D6
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 12:41:09 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id n10so3082309pgl.10
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 12:41:09 -0800 (PST)
+        Sun, 14 Feb 2021 15:42:13 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7904C061574;
+        Sun, 14 Feb 2021 12:41:29 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id v9so1494864edw.8;
+        Sun, 14 Feb 2021 12:41:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=oYWxFLLPa20HjzofwDUkJ1EEbixGS+NkoQgDgfKUETc=;
-        b=I7TWaZ0IQ/mcqitf4XKHiE0MDu82wOyAOt7KflGP4IbCgV8a8C11FQ0AVN0RioMV4L
-         gSvTo5PklY3swS5HCsxJnBq5LvbsRH0FSejiB08PUlEOLSjmYAsObgaQMn4VQVZWCT5t
-         /4gUvtmkZr7oNdlAru+OOBZFou85YY7ZartPc=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KDcTJbYVBqjxtWBYJMrAm8lX3M9uPlglIDxfV1YFvj8=;
+        b=JZhXGU7P/V1+TT/yLZELapCCPW4GQMsCAHhqsmDr+uHyw7GjSd81Rd8W96blnCNozm
+         V1FDtM5ZkM+aRAvAyEHyNllsrlKIVu2UPQUpmVjUyQsrgWLKduKLUf4S2UPK92Fasqo1
+         wV02AoChHhlYWVkGQ4UKt3lMp/D8yisjxIrEls6JEB1yJhuA6b0gV5zxEwDOb4IQubp9
+         /lFfYzhv6oUGfVApr2O516sTUQr81FvfKdsZdhao4VMM6x8ayCg4lLs+i2mJaZDBdHWw
+         sZguvPKpV8poFLNSitfO2p1D+jxW2aJEEa0uShXmxcbR5qJTJVkIjpe3qHkw2w+3rB1e
+         ppzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=oYWxFLLPa20HjzofwDUkJ1EEbixGS+NkoQgDgfKUETc=;
-        b=rlnIu9UvZnCa0ms0kM2T7xdFWywmeKHQrm6rvy/+tO8HPA7srnrYCdCwr8Yj/MUHhz
-         dkxqY8xMMnOs6/b70GBmwVXc7gc4Whaxmxcy3s0vLY1cipn2XKU1EMcLg3i+tU8dRVMT
-         0989kvVkk0WfK2OcxkThp+4vJ87S12PbLGBKOXiqm1MvjdMC3LpCeLRHHppAJ/4VeYOW
-         yhoLIgCLTt2d1jyCWrYMWxAEcmPHcqPQUuTOGyVGDOSuawT7C7DIIk3gmbR8idW3OUBI
-         6yTtI9HnnGXViDrprajxCn8qUKo1mNqpR5VT4rRpYykXVugbtQFqXrq0JDQdgtE3Z4Mm
-         Wjkw==
-X-Gm-Message-State: AOAM532pG5nWzpoMZ5oCdzkE0D3RBBHgzrsIscJ+YOHAM8zLX10764Fo
-        L3sdVFYWyVLRUnLmRoU99VFIBBxmd45aLg==
-X-Google-Smtp-Source: ABdhPJwU1CEqdqXbPVs359oHWT23f41TunkKUGhcpUDmdM0EpMyqFOwzRty8kv7MzmvBty9gvumwYw==
-X-Received: by 2002:a63:f956:: with SMTP id q22mr4584400pgk.115.1613335269610;
-        Sun, 14 Feb 2021 12:41:09 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:5849:e2a:a78c:51ce])
-        by smtp.gmail.com with ESMTPSA id 137sm9922709pgb.80.2021.02.14.12.41.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KDcTJbYVBqjxtWBYJMrAm8lX3M9uPlglIDxfV1YFvj8=;
+        b=b/f0YWB3AP8SiUsiL69idgRsK+e8vi9sdnlNqRUInaMFPdavHpVMjWwTPrlWTHxKCg
+         PNV/sbEqCxVS8eDu93/kMBEPdmls8fJy4Nkg0IyyPHL0OmvnqiJ9w5rI5SfYaQJxzQ7+
+         Z21QTg6h/vPVjD9Ndl1ezeyEto0Uw2EG+j/vRQx+k92EGZu3r9Z/cAEYUiixsgke65KD
+         SfWw460ZKOCzgaxCCC7hHlqwi7kHHFmJUOarEhxi8s3M4Q9aO2qcWE0LXMSSTEa7xPol
+         44/8QGN9trCi4yFNc9ckRW3HrFNnv44+SApeOn0HqAWGtPr4w/3216C/U+Q1yutOZCEp
+         emhQ==
+X-Gm-Message-State: AOAM5332OiflNyBKjJkRll+fc3tEXU/UMPSLf6UE7LVIWerwbQwH1lxC
+        +ra7aU3Qu9YXyC41UDQ+v5HzipO5+Ko=
+X-Google-Smtp-Source: ABdhPJxd+6/th/057yvcsS26fXVMGOYRmLKwBeP/WHRtVNjcXteOrgShvw42vCiZRH9A3CROb2D22w==
+X-Received: by 2002:a05:6402:558:: with SMTP id i24mr12807371edx.190.1613335288737;
+        Sun, 14 Feb 2021 12:41:28 -0800 (PST)
+Received: from mail ([2a02:a03f:b7fe:f700:8c5d:a37a:9f02:aeed])
+        by smtp.gmail.com with ESMTPSA id z13sm8876848edc.73.2021.02.14.12.41.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Feb 2021 12:41:09 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Sun, 14 Feb 2021 12:41:28 -0800 (PST)
+Date:   Sun, 14 Feb 2021 21:41:27 +0100
+From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ramsay Jones <ramsay@ramsayjones.plus.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org,
+        Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] usb: typec: tps6598x: Add trace event for status
+ register
+Message-ID: <20210214204127.ezrlr4u76onqcxl7@mail>
+References: <651ac50b9ff6ed3db8cab9f176514900f6a02a0c.1613131413.git.agx@sigxcpu.org>
+ <20210213031237.GP219708@shao2-debian>
+ <YClYh7pqDlbXy8qh@bogon.m.sigxcpu.org>
+ <6a8eb07f-16d5-f461-cf0b-6c4aaf93b014@ramsayjones.plus.com>
+ <CAHk-=wjCAVj7J+KAC1pvtdeM-c76oXZq7k=v40-maKjTo6qfVw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YCla7cNQxBoG2KCr@kroah.com>
-References: <20201207170533.10738-1-mark.rutland@arm.com> <202012081319.D5827CF@keescook> <X9DkdTGAiAEfUvm5@kroah.com> <161300376813.1254594.5196098885798133458@swboyd.mtv.corp.google.com> <YCU9zoiw8EZktw5U@kroah.com> <161306959090.1254594.16358795480052823449@swboyd.mtv.corp.google.com> <YCla7cNQxBoG2KCr@kroah.com>
-Subject: Re: [PATCH] lkdtm: don't move ctors to .rodata
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        stable@vger.kernel.org
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Sun, 14 Feb 2021 12:41:07 -0800
-Message-ID: <161333526750.1254594.7267322236004310547@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjCAVj7J+KAC1pvtdeM-c76oXZq7k=v40-maKjTo6qfVw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Greg Kroah-Hartman (2021-02-14 09:16:29)
-> On Thu, Feb 11, 2021 at 10:53:10AM -0800, Stephen Boyd wrote:
-> >=20
-> > Sorry for the confusion. Can commit 655389666643 ("vmlinux.lds.h: Create
-> > section for protection against instrumentation") and commit 3f618ab33234
-> > ("lkdtm: don't move ctors to .rodata") be backported to 5.4.y and only
-> > commit 3f618ab3323407ee4c6a6734a37eb6e9663ebfb9 be backported to 5.10.y?
->=20
-> 655389666643 ("vmlinux.lds.h: Create section for protection against
-> instrumentation") does not apply cleanly to 5.4.y, so can you provide a
-> working backport for both of those patches to 5.4.y that you have
-> tested?
->=20
+On Sun, Feb 14, 2021 at 11:00:48AM -0800, Linus Torvalds wrote:
+> On Sun, Feb 14, 2021 at 10:42 AM Ramsay Jones
+> <ramsay@ramsayjones.plus.com> wrote:
+> >
+> > >
+> > > I looked around but didn't find any hints how to fix this. Any pointers
+> > > I missed (added the sparse list to cc:)?
+> >
+> > This is a limitation of sparse; when using the 'stringize' pre-processor
+> > operator #, the maximum size of the resulting string is about 8k (if I
+> > remember correctly).
+> 
+> Well, yes and no.
+> 
+> The C89 standard actually says that a string literal can be at most
+> 509 characters to be portable. C99 increased it to 4095 characters.
+> 
+> Sparse makes the limit higher, and the limit could easily be expanded
+> way past 8kB - but the point is that large string literals are
+> actually not guaranteed to be valid C.
+> 
+> So honestly, it really sounds like that TRACE_EVENT() thing is doing
+> something it shouldn't be doing.
 
-Ok, will do.
+In itself, it's OKish but it does a lot of macro expansions and most
+arguments are macros of macros of ... but the problem seems to be
+limited to TP_printk().
+
+In the current case, the offender is the string 'print_fmt_tps6598x_status'
+which is just under 26K long especially because it expand
+TPS6598X_STATUS_FLAGS_MASK but also because the arguments use FIELD_GET()
+and thus __BF_FIELD_CHECK().
+> 
+> I don't think there's any fundamental limit why sparse does 8kB as a
+> limit (just a few random buffers). Making sparse accept larger ones
+> should be as simple as just increasing MAX_STRING, but I really don't
+> think the kernel should encourage that kind of excessive string sizes.
+
+Like you noted, there are just a few cases in the kernel and IIRC
+there is or was one case in it too.
+I would tend to increase MAX_STRING to something like 32 or 64K,
+in order to keep it reasonable but let sparse to continue its processing,
+but add a warning when the string/token is bigger than the current 8K.
+
+-- Luc
