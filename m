@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8C431B24E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4929F31B24F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Feb 2021 20:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhBNTmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 14:42:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
+        id S229945AbhBNTmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 14:42:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbhBNTmQ (ORCPT
+        with ESMTP id S229974AbhBNTml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 14:42:16 -0500
+        Sun, 14 Feb 2021 14:42:41 -0500
 Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB14C061788
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:41:35 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id q72so2489574pjq.2
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:41:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656BAC06178A
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:41:40 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id gb24so2482643pjb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 11:41:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SRxs/aOjY1GsbWu/T3aB0+EANdf6JlXR2K+G27uoYio=;
-        b=lR/8/4IFFoTMpCeL7fiEaAelu4F/iUPDfjwLukR0qPIqJVMN0UQICGWjJdI/ISNDZ0
-         mwO0IcLS/PQ+cfrs3T+K0QEgmQjPMAacO0StWVDksWF7BGvK+kfP5qYZBPNnWn/45Joj
-         zSfCKXtsvHFxb7rfHwyUBpOYvVvHxXjqv01dY=
+        bh=uYz3kOtrZ6Hf5DjXT1UkBRogQ4J1lPOvWIWH1kd6QXA=;
+        b=aO2QjQGa2mG9vCy1BwYu3zPMtnftm5Mg2AM9uV8EZImKreIS9VatNBo8bb0qRtNplE
+         3OBD8aDO1PGAaH8XGG16wdFBOCLqqTx5nMR5pn1I8GBZO4l4CssVedKyRpXL6TVYrtw6
+         TcovWJ3IIlzD1+m8i7Q6j4uqUZI5AThOLWvR4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SRxs/aOjY1GsbWu/T3aB0+EANdf6JlXR2K+G27uoYio=;
-        b=J1EVxir8wPjrKoPcYmW8VJAUiafVcLrIWgZzKwbt5PrDh23Yx6h7MpFn9iJU8fjWzn
-         GngpR0JJYZgJN50K5yIaqL1m1GyUHdtaJkOP348vQDT5bBoKmMOTWZJ246c9P92VuJOp
-         9DrJWizkMR9T1mYogTM+hCOYNB3UysR4KIfMIuuGiZJnayXpsanBiKUq4I5F9VnARoBZ
-         XwQWA8KAuWig6pO1FjIqzXDaOuJRe8OI8tqAUg/qpInsudwl1u0ElM5KJPlkfObWn619
-         j1BiKOnSUf0dEjG241Y0jAuLPW1WEONG5aMFmMkc6yV7856jk1/2ivcKQz/kyuS8tWuP
-         CAFw==
-X-Gm-Message-State: AOAM531qeHwJZelv0jCJGX4QIkYcbrgqTExBvgRklav6fvM28jQzNbu2
-        sdgZjWfv3d1rhsop3G44rymCyw==
-X-Google-Smtp-Source: ABdhPJx7aJtbIv9KAW+oJiidaq/ehl3ZHXkulFd2VYinMmQZVn+HjeAEbrtWl9HLM99JJZ6vYfsw2g==
-X-Received: by 2002:a17:902:7c83:b029:e2:b157:e25c with SMTP id y3-20020a1709027c83b02900e2b157e25cmr12216978pll.32.1613331695308;
-        Sun, 14 Feb 2021 11:41:35 -0800 (PST)
+        bh=uYz3kOtrZ6Hf5DjXT1UkBRogQ4J1lPOvWIWH1kd6QXA=;
+        b=Z+Q5J4e1NyKCDa++UmNJugReIbmvq+DhLZuThVaAu0kOpeuztznccgXwbAli50gAHQ
+         3hkm4saFmJObDWsjXQnIWwRo557l/bb/PDOAO/UI74bw4Bm83vGpakc/UKUlLcBRo5Mt
+         Nolni6/KYDau24qmr3Q2LH1lR5aLk0exeSF2oLPLCWS4mdkjPgST0B6jKlY2+473UT8A
+         DA13DUs4JrlI07bewB7t6lT2d12mjEoQ2zM4adS8V0K7rYd2rDZhZ+5MfzTaWuGkPTZ2
+         GFUDrFAbCy5kH+4ojjiksrJTWrpdrbSqscxcVg+jn7GZotHBMrzIrEs4zUdb9fawdLWM
+         BYDQ==
+X-Gm-Message-State: AOAM532rfnztPWzEmuoxz9/7bGHvJCUSKDArbxQcirSLLn/6we+J8LjA
+        wYgsGo/wSrZxax59GTMIdzWkMw==
+X-Google-Smtp-Source: ABdhPJzLLpSe6h6YLhCLR1f9osYYHY7qcokxZFU5wgjVcteYh/v71KLAWqCEIpbS89QnvAza0juNXg==
+X-Received: by 2002:a17:90b:4d06:: with SMTP id mw6mr12223997pjb.24.1613331699994;
+        Sun, 14 Feb 2021 11:41:39 -0800 (PST)
 Received: from ub-XPS-13-9350.domain.name ([45.249.78.214])
-        by smtp.gmail.com with ESMTPSA id 125sm15129247pfu.7.2021.02.14.11.41.31
+        by smtp.gmail.com with ESMTPSA id 125sm15129247pfu.7.2021.02.14.11.41.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Feb 2021 11:41:34 -0800 (PST)
+        Sun, 14 Feb 2021 11:41:39 -0800 (PST)
 From:   Jagan Teki <jagan@amarulasolutions.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
@@ -52,10 +52,12 @@ To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
 Cc:     dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-amarula@amarulasolutions.com,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH v3 4/7] drm: sun4i: dsi: Separate code for bridge pre_enable
-Date:   Mon, 15 Feb 2021 01:10:59 +0530
-Message-Id: <20210214194102.126146-5-jagan@amarulasolutions.com>
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v3 5/7] drm: bridge: Queue the bridge chain instead of stacking
+Date:   Mon, 15 Feb 2021 01:11:00 +0530
+Message-Id: <20210214194102.126146-6-jagan@amarulasolutions.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210214194102.126146-1-jagan@amarulasolutions.com>
 References: <20210214194102.126146-1-jagan@amarulasolutions.com>
@@ -65,58 +67,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing driver has an enablement code for initializing
-clock, reset, PHY, DSI timings, and finally switching to HS
-mode.
+drm_bridge_attach has stacked the bridge chain, so the bridge
+that gets pushed last can trigger its bridge function pre_enable
+first from drm_atomic_bridge_chain_pre_enable.
 
-Move the clock, reset. PHY and DSI timings code into bridge
-pre_enable and keep HS mode switch in enable.
+This indeed gives a chance to trigger slave bridge pre_enable
+first without triggering its host bridge pre_enable for the
+usual host to slave device model like DSI host with panel slave.
 
-As the driver supports fully enabled bridge functionalities,
-this new enablement code separation will help to initialize
-the host and slave bridge pre_enable, enable functions properly.
+For fully enabled bridge drivers, host bridge pre_enable has all
+host related clock, reset, PHY configuration code that needs to
+initialized before sending commands or configuration from a slave
+to communicate its host.
 
+Queue the bridge chain instead of stacking it so-that the bridges
+that got enqueued first can have a chance to trigger first.
+
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
 Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 ---
 Changes for v3:
 - new patch
 
- drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/drm_bridge.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-index 6f3c5330a468..3cdc14daf25c 100644
---- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-+++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
-@@ -714,7 +714,7 @@ static int sun6i_dsi_start(struct sun6i_dsi *dsi,
- 	return 0;
- }
+diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+index 64f0effb52ac..e75d1a080c55 100644
+--- a/drivers/gpu/drm/drm_bridge.c
++++ b/drivers/gpu/drm/drm_bridge.c
+@@ -191,9 +191,9 @@ int drm_bridge_attach(struct drm_encoder *encoder, struct drm_bridge *bridge,
+ 	bridge->encoder = encoder;
  
--static void sun6i_dsi_bridge_enable(struct drm_bridge *bridge)
-+static void sun6i_dsi_bridge_pre_enable(struct drm_bridge *bridge)
- {
- 	struct drm_display_mode *mode = &bridge->encoder->crtc->state->adjusted_mode;
- 	struct sun6i_dsi *dsi = bridge_to_sun6i_dsi(bridge);
-@@ -775,6 +775,11 @@ static void sun6i_dsi_bridge_enable(struct drm_bridge *bridge)
+ 	if (previous)
+-		list_add(&bridge->chain_node, &previous->chain_node);
++		list_add_tail(&bridge->chain_node, &previous->chain_node);
+ 	else
+-		list_add(&bridge->chain_node, &encoder->bridge_chain);
++		list_add_tail(&bridge->chain_node, &encoder->bridge_chain);
  
- 	if (dsi->panel_bridge)
- 		dsi->panel_bridge->funcs->pre_enable(dsi->panel_bridge);
-+}
-+
-+static void sun6i_dsi_bridge_enable(struct drm_bridge *bridge)
-+{
-+	struct sun6i_dsi *dsi = bridge_to_sun6i_dsi(bridge);
- 
- 	/*
- 	 * FIXME: This should be moved after the switch to HS mode.
-@@ -883,6 +888,7 @@ static int sun6i_dsi_bridge_attach(struct drm_bridge *bridge,
- }
- 
- static const struct drm_bridge_funcs sun6i_dsi_bridge_funcs = {
-+	.pre_enable	= sun6i_dsi_bridge_pre_enable,
- 	.enable		= sun6i_dsi_bridge_enable,
- 	.disable	= sun6i_dsi_bridge_disable,
- 	.attach		= sun6i_dsi_bridge_attach,
+ 	if (bridge->funcs->attach) {
+ 		ret = bridge->funcs->attach(bridge, flags);
 -- 
 2.25.1
 
