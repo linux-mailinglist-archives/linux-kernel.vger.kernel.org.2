@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB6031BE62
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FA131BE63
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhBOQIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:08:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45570 "EHLO mail.kernel.org"
+        id S232459AbhBOQIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:08:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231231AbhBOPdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231376AbhBOPdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 10:33:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2DFA64DC3;
-        Mon, 15 Feb 2021 15:30:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 891C864E64;
+        Mon, 15 Feb 2021 15:30:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403043;
-        bh=7r2slUzHjXhtR3I88T96YfUhJ/cqHH7y2q3RscEMlgw=;
+        s=korg; t=1613403046;
+        bh=r2yip97vPP4YlZD2qpuCsmsTqFzhko98rZRcExv9fjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ToiBGUFvMytrg7tRWPZSCg4QcIdPwlM//SfzcT7tFEpiE6QkpdeeACmjx6qe5FsKF
-         cHJjApv9hYTt1PCyN9BCNyV6FGaqwsjVBiPv6ozSWuY3B2b2EV0OUrnvtuobv38GTL
-         aNb4kZBE2e9iExkLbzWgjMu97FlkeLOKSPDqyNQs=
+        b=enI9cw1Xz+FMvO2mQWkTALmoipHLemgWgsFq5M8FgUr95U/TzBOgtC0JiEfz2DzV7
+         1InSzc0gkOVE1kPQvysgS6fO+okBGuXqlIyp/XO+Bc0tBQ4RyvyIdh/q0+fIN9qV/G
+         j6+uak/GBRvNvfXsL3A6FqNeU7cnb9FL4dEeR5KQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 57/60] vsock: fix locking in vsock_shutdown()
-Date:   Mon, 15 Feb 2021 16:27:45 +0100
-Message-Id: <20210215152717.203922591@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+1bd2b07f93745fa38425@syzkaller.appspotmail.com,
+        Sabyrzhan Tasbolatov <snovitoll@gmail.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 58/60] net/rds: restrict iovecs length for RDS_CMSG_RDMA_ARGS
+Date:   Mon, 15 Feb 2021 16:27:46 +0100
+Message-Id: <20210215152717.240042606@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -39,86 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 
-commit 1c5fae9c9a092574398a17facc31c533791ef232 upstream.
+commit a11148e6fcce2ae53f47f0a442d098d860b4f7db upstream.
 
-In vsock_shutdown() we touched some socket fields without holding the
-socket lock, such as 'state' and 'sk_flags'.
+syzbot found WARNING in rds_rdma_extra_size [1] when RDS_CMSG_RDMA_ARGS
+control message is passed with user-controlled
+0x40001 bytes of args->nr_local, causing order >= MAX_ORDER condition.
 
-Also, after the introduction of multi-transport, we are accessing
-'vsk->transport' in vsock_send_shutdown() without holding the lock
-and this call can be made while the connection is in progress, so
-the transport can change in the meantime.
+The exact value 0x40001 can be checked with UIO_MAXIOV which is 0x400.
+So for kcalloc() 0x400 iovecs with sizeof(struct rds_iovec) = 0x10
+is the closest limit, with 0x10 leftover.
 
-To avoid issues, we hold the socket lock when we enter in
-vsock_shutdown() and release it when we leave.
+Same condition is currently done in rds_cmsg_rdma_args().
 
-Among the transports that implement the 'shutdown' callback, only
-hyperv_transport acquired the lock. Since the caller now holds it,
-we no longer take it.
+[1] WARNING: mm/page_alloc.c:5011
+[..]
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
+ kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
+ kmalloc_array include/linux/slab.h:592 [inline]
+ kcalloc include/linux/slab.h:621 [inline]
+ rds_rdma_extra_size+0xb2/0x3b0 net/rds/rdma.c:568
+ rds_rm_size net/rds/send.c:928 [inline]
 
-Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: syzbot+1bd2b07f93745fa38425@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Link: https://lore.kernel.org/r/20210201203233.1324704-1-snovitoll@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/vmw_vsock/af_vsock.c         |    8 +++++---
- net/vmw_vsock/hyperv_transport.c |    4 ----
- 2 files changed, 5 insertions(+), 7 deletions(-)
+ net/rds/rdma.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -808,10 +808,12 @@ static int vsock_shutdown(struct socket
- 	 */
+--- a/net/rds/rdma.c
++++ b/net/rds/rdma.c
+@@ -532,6 +532,9 @@ int rds_rdma_extra_size(struct rds_rdma_
+ 	if (args->nr_local == 0)
+ 		return -EINVAL;
  
- 	sk = sock->sk;
++	if (args->nr_local > UIO_MAXIOV)
++		return -EMSGSIZE;
 +
-+	lock_sock(sk);
- 	if (sock->state == SS_UNCONNECTED) {
- 		err = -ENOTCONN;
- 		if (sk->sk_type == SOCK_STREAM)
--			return err;
-+			goto out;
- 	} else {
- 		sock->state = SS_DISCONNECTING;
- 		err = 0;
-@@ -820,10 +822,8 @@ static int vsock_shutdown(struct socket
- 	/* Receive and send shutdowns are treated alike. */
- 	mode = mode & (RCV_SHUTDOWN | SEND_SHUTDOWN);
- 	if (mode) {
--		lock_sock(sk);
- 		sk->sk_shutdown |= mode;
- 		sk->sk_state_change(sk);
--		release_sock(sk);
- 
- 		if (sk->sk_type == SOCK_STREAM) {
- 			sock_reset_flag(sk, SOCK_DONE);
-@@ -831,6 +831,8 @@ static int vsock_shutdown(struct socket
- 		}
- 	}
- 
-+out:
-+	release_sock(sk);
- 	return err;
- }
- 
---- a/net/vmw_vsock/hyperv_transport.c
-+++ b/net/vmw_vsock/hyperv_transport.c
-@@ -464,14 +464,10 @@ static void hvs_shutdown_lock_held(struc
- 
- static int hvs_shutdown(struct vsock_sock *vsk, int mode)
- {
--	struct sock *sk = sk_vsock(vsk);
--
- 	if (!(mode & SEND_SHUTDOWN))
- 		return 0;
- 
--	lock_sock(sk);
- 	hvs_shutdown_lock_held(vsk->trans, mode);
--	release_sock(sk);
- 	return 0;
- }
- 
+ 	iov->iov = kcalloc(args->nr_local,
+ 			   sizeof(struct rds_iovec),
+ 			   GFP_KERNEL);
 
 
