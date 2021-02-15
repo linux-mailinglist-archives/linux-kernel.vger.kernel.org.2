@@ -2,116 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2570331C0A8
+	by mail.lfdr.de (Postfix) with ESMTP id A0F3331C0A9
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbhBORcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:32:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbhBOQa5 (ORCPT
+        id S232494AbhBORct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:32:49 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:53024 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231366AbhBOQeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:30:57 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6D0C061756;
-        Mon, 15 Feb 2021 08:30:16 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id h38so1645229ooi.8;
-        Mon, 15 Feb 2021 08:30:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xZjHpynkO+jEqpoKJ7WUe4G5S6bqtxbRdwfSHl/HMrc=;
-        b=jFo/wSwluSwMjlgb2z0JQRyhDpb3qIx8XNZ8qwfCj6NbhGG1ZoZO/yFSb3g3yGhis0
-         5AReuZqH6EfN/tfoCx32nOFo7Ig9SCuPm2MtrLbfPjvh2KMpDLuajyIvdOWnVVfkhXrY
-         XjwbovzeG4Mv96pwlYJ5AbIcAByssG1DRoO3CXM3zhprfBHdaOfBqu+hKinQAT7TxfBA
-         bkhJNH6aEVGgs2F9y8QtbTnYy0QLgPY5rrAdzUTpbcTNvRpXCdiuwY7njJfwsAOAfSg9
-         OoIjvVGnuZM5vxGZoIeW4W9rSz4TqN8/0nFKFCoHU8i94rRrFKn5I7f2X1bC5CDLbgqM
-         go6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xZjHpynkO+jEqpoKJ7WUe4G5S6bqtxbRdwfSHl/HMrc=;
-        b=QwCV3JqBZrSBCWoqE9HTNJr6zNACFX1ClV7vzXv2KoGKLdi27qbixi1XUi9212u0nM
-         ycsvHczTUOaZlbspDsD1gAk6i3eji07at0Wx5NU2mRViC0dWTQu/3gCbZeR1arPWWA5i
-         97s245IPj+PUSHZSTWwv9V4+HjPOPrA6aSfQlbYkvGrGlgXqT2uKTckKKjHR0LkW2SoM
-         bG7vTY1X2CsH8O2tdLuoUOfpgOaB4gqxY9xuL4GmJ0K/kvXUHaz8kNsdxDoFILLNYf1n
-         iD5XBqE46LYQzvuVzazp2fC62iJDc/DoQRXZdYQslJlmqmWQkKOK39Sy1a73mUjugaWY
-         fgVA==
-X-Gm-Message-State: AOAM532Adb1Kt+KcVMSAdR2PCWO0jUv44TUfR+0TkIcqdSVM//EjFri5
-        Asq3pHvmmq0uEolM2aYX92M=
-X-Google-Smtp-Source: ABdhPJxFxNxXETq3ks4F+XSxZSd8J7B6SpNWE+i6QDVDnydfjooydiKQhpY7tRCSKEA/Q+tkXCXvtg==
-X-Received: by 2002:a4a:a105:: with SMTP id i5mr11372483ool.54.1613406615929;
-        Mon, 15 Feb 2021 08:30:15 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f76sm2183491oig.52.2021.02.15.08.30.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 15 Feb 2021 08:30:15 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 15 Feb 2021 08:30:14 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH v3 3/9] cxl/mem: Register CXL memX devices
-Message-ID: <20210215163014.GA116265@roeck-us.net>
-References: <20210212222541.2123505-1-ben.widawsky@intel.com>
- <20210212222541.2123505-4-ben.widawsky@intel.com>
+        Mon, 15 Feb 2021 11:34:22 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lBgoD-0000F5-G2; Mon, 15 Feb 2021 16:33:13 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ASoC: codecs: lpass-rx-macro: Fix uninitialized variable ec_tx
+Date:   Mon, 15 Feb 2021 16:33:13 +0000
+Message-Id: <20210215163313.84026-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212222541.2123505-4-ben.widawsky@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 02:25:35PM -0800, Ben Widawsky wrote:
-> From: Dan Williams <dan.j.williams@intel.com>
-> 
-> Create the /sys/bus/cxl hierarchy to enumerate:
-> 
-> * Memory Devices (per-endpoint control devices)
-> 
-> * Memory Address Space Devices (platform address ranges with
->   interleaving, performance, and persistence attributes)
-> 
-> * Memory Regions (active provisioned memory from an address space device
->   that is in use as System RAM or delegated to libnvdimm as Persistent
->   Memory regions).
-> 
-> For now, only the per-endpoint control devices are registered on the
-> 'cxl' bus. However, going forward it will provide a mechanism to
-> coordinate cross-device interleave.
-> 
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> (v2)
+From: Colin Ian King <colin.king@canonical.com>
 
-arm:allmodconfig, i386:allyesconfig, mips:allmodconfig:
+There is potential read of the uninitialized variable ec_tx if the call
+to snd_soc_component_read fails or returns an unrecognized w->name. To
+avoid this corner case, initialize ec_tx to -1 so that it is caught
+later when ec_tx is bounds checked.
 
-drivers/cxl/mem.c:335:2: error: implicit declaration of function 'writeq'; did you mean 'writel'? [-Werror=implicit-function-declaration]
-  335 |  writeq(cmd_reg, cxlm->mbox_regs + CXLDEV_MBOX_CMD_OFFSET);
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: 4f692926f562 ("ASoC: codecs: lpass-rx-macro: add dapm widgets and route")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/codecs/lpass-rx-macro.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In file included from <command-line>:
-drivers/cxl/mem.c: In function '__cxl_mem_mbox_send_cmd':
-include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_266' declared with attribute error: FIELD_GET: mask is zero
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index c9c21d22c2c4..8c04b3b2c907 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -2895,7 +2895,7 @@ static int rx_macro_enable_echo(struct snd_soc_dapm_widget *w,
+ {
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+ 	u16 val, ec_hq_reg;
+-	int ec_tx;
++	int ec_tx = -1;
+ 
+ 	val = snd_soc_component_read(component,
+ 			CDC_RX_INP_MUX_RX_MIX_CFG4);
+-- 
+2.30.0
 
-and many similar errors.
-
-Guenter
