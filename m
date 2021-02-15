@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446DA31C279
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7C231C27B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhBOTbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:31:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
+        id S230314AbhBOTcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:32:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhBOTbb (ORCPT
+        with ESMTP id S229764AbhBOTcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:31:31 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D644C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:30:51 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id jj19so13117272ejc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:30:51 -0800 (PST)
+        Mon, 15 Feb 2021 14:32:47 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55CBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:32:07 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id 189so4754941pfy.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:32:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lxiR1WoWj9GLqb+ePEA+WtEnFI2j4eHKFsXpipKpgxM=;
-        b=JQ1hu1pDBShq9ZJiN4qvnQMFVY+EZcb/Uyc3r0pIKJdLe+Es6BFcZvO+kQ88XfZcIO
-         0vMejIWduLsOH4CyVxjG1/uB/5b+zV/id11vujkfp8afDTJCMucuJA4hmTgPqqEU3XLH
-         xnml37igKv6E+M5bm1CJB4dC5x0cxXaE3j6mYOynmdzBXgp5n2KeXT4V20DE/qovu5bk
-         KCrCWUoYBbbwt6hVNuD08PNrYC8iTjDyqoUdZf3eLs3y9NuDX6bdp5dAfDExVPj7GWuN
-         /lpsT+Ma1l45fyzEDihaAImboBQeBobEkPtNiWGttTafajhigvUceqscEFGJjdYY1RgR
-         DLXQ==
+        d=gimpelevich-san-francisco-ca-us.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=L3nj9/R/NkkK99k6HujqpUsnIKZSJ7ODAWop9jG8uEo=;
+        b=rlpr9Y17GqcS3VcCW+l+bS1nW3xiXbddJLqCQV49EqcSpGV+KSbl8a+FrYFs9PvSYs
+         it8iWSpJw1gsM6AGOhmH5Acw2KmSdULF0CtLUbpv1I2R6STtXs02IIl8hkKiuQrTcClp
+         gnpNivl1Mi0M80qg3y9K82mqykBBymTRSXTNI+7NyuKpk2tirw6/VycnssOaap/hbbRM
+         aoyntdpV8PSwl9fmqwLS6X81BO88m0k21D/riSbB2g+a2Jud+lXOz+nB4Ew3UND3WIr2
+         OpusKjkcH5p5Sf2vfYR7Obk5HSn1xhQe1A1Xn5XMmt5nQ6eZnXSjlWHxq4HTxliPGZwx
+         aMBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lxiR1WoWj9GLqb+ePEA+WtEnFI2j4eHKFsXpipKpgxM=;
-        b=aHRRmdcK/Hi/tPiEIJ91c0KKeDREod7T3FQWxvcxXXan0UJaNDoWwfjN/az7tXGt6w
-         awniGL/GT5E2IgX6H4xaDJj7DPZgOsTgfC4UdtwLfW5d4Bc6fUJtFbx1AJLtU5wyW1Ix
-         Egm//4pDqjkkCFC010SbIjRYh/6zeJbRbzDNJkfdfMTfP6nTlYwNTdKm6NkzbBsxqgqX
-         6CfmEl1FUM0Wiiw01CZnwukwfY6jVe35EAaHKgPkuMmgmCTjLOne1/7l1Fhbt6Am5HVR
-         AbrlaViWvghgNF5XyJRfmA4gD2ev9IpCaTMhnyOgjzqkcXkUcfDx3lq+PiM8+vDHrAv8
-         ppRQ==
-X-Gm-Message-State: AOAM530HYIl7rPXmUq0bjVdz7A3pfp9emw1BuKpZV0nSLKTjz0fHnaij
-        7QUIwo+KGnxrIJR603Dr9yvnj6wQ7rTP3iVeyeDFJQ==
-X-Google-Smtp-Source: ABdhPJyPCL6TJC2gNc7DODe1EIjIDra2NShX7mUuisIJb/VCfbgQL6ETyHhzUNp0n7JS/DZgRLAM+HV7IKzVVKiS/EU=
-X-Received: by 2002:a17:906:43d7:: with SMTP id j23mr17038690ejn.519.1613417450162;
- Mon, 15 Feb 2021 11:30:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20210215192237.362706-1-pasha.tatashin@soleen.com>
- <20210215192237.362706-2-pasha.tatashin@soleen.com> <CAMj1kXGxyV0=s6jVZ674O_2amkYSnwSnubnozbzD6g6GOMJE-A@mail.gmail.com>
-In-Reply-To: <CAMj1kXGxyV0=s6jVZ674O_2amkYSnwSnubnozbzD6g6GOMJE-A@mail.gmail.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Mon, 15 Feb 2021 14:30:14 -0500
-Message-ID: <CA+CK2bA7Xz0Zg5phsQi3mhnp+_PHLAAGRLgFTQNw1FjBHaXsHA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] arm64: mm: correct the inside linear map
- boundaries during hotplug check
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        James Morris <jmorris@namei.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=L3nj9/R/NkkK99k6HujqpUsnIKZSJ7ODAWop9jG8uEo=;
+        b=ixoYRrM4wdpWD5uOvYTISYprJ+EBHFBNtR+KBXw1KwenxkZ6M/f7J1jkZNBhYdswKF
+         SWdAFu6Jb8Ug5dJeUTcrc0DtirDTp74MuvyGBhgBE+A0KGyFRMQBy6aBmSFHmpL97EZ3
+         rMXK5jibfyZ05rM1wVP2aECKPqllzeGiupix4Qu0ZSFw3sBCpM1lYrqqBnpBHbO2vyJP
+         l0xxdEg53qprxWoojht/xElv5ACD/suR0X+xyWKqlTg8SLV3Mux9AK8v9xZH1FGcuoQo
+         NAXsPAMSnW80sp83tJWldaK8iSQe+UDBSTt32zfv31r2NJ00O0hU8T99HqDvUflFWsoL
+         HFxg==
+X-Gm-Message-State: AOAM532MdXG4MnAPCeLekWIFuXd85zQqmkgFAhrUN2lMJ9vvs3HYSMVi
+        voOVbZyEBGYpSTLd+O/nEm1L4A==
+X-Google-Smtp-Source: ABdhPJwYGpgEV2/GV9/dgnc2/rEWjl2dK3GYAnKQrXXgndNQF0w/cYvidbBIhC5ZupXR2KlChWCpFA==
+X-Received: by 2002:a63:181e:: with SMTP id y30mr15574858pgl.324.1613417527139;
+        Mon, 15 Feb 2021 11:32:07 -0800 (PST)
+Received: from [192.168.72.184] (157-131-244-194.fiber.dynamic.sonic.net. [157.131.244.194])
+        by smtp.gmail.com with ESMTPSA id y1sm196040pjt.37.2021.02.15.11.32.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Feb 2021 11:32:06 -0800 (PST)
+Message-ID: <1613417521.3853.5.camel@chimera>
+Subject: Re: [PATCH 1/4] add generic builtin command line
+From:   Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Daniel Walker <danielwa@cisco.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Rob Herring <robh+dt@kernel.org>, xe-linux-external@cisco.com,
+        linuxppc-dev@lists.ozlabs.org, Daniel Walker <dwalker@fifo99.com>,
+        Maksym Kokhan <maksym.kokhan@globallogic.com>,
+        linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Date:   Mon, 15 Feb 2021 11:32:01 -0800
+In-Reply-To: <20190321151519.1f4479d92228c8a8738e02cf@linux-foundation.org>
+References: <20190319232448.45964-2-danielwa@cisco.com>
+         <20190320155319.2cd3c0f73ef3cdefb65d5d1e@linux-foundation.org>
+         <20190320232328.3bijcxek2yg43a25@zorba>
+         <20190320201433.6c5c4782f4432d280c0e8361@linux-foundation.org>
+         <20190321151308.yt6uc3mxgppm5zko@zorba>
+         <20190321151519.1f4479d92228c8a8738e02cf@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Can't we simply use signed arithmetic here? This expression works fine
-> if the quantities are all interpreted as s64 instead of u64
+On Thu, 2019-03-21 at 15:15 -0700, Andrew Morton wrote:
+> On Thu, 21 Mar 2019 08:13:08 -0700 Daniel Walker <danielwa@cisco.com> wrote:
+> > On Wed, Mar 20, 2019 at 08:14:33PM -0700, Andrew Morton wrote:
+> > > The patches (or some version of them) are already in linux-next,
+> > > which messes me up.  I'll disable them for now.
+> >  
+> > Those are from my tree, but I remove them when you picked up the series. The
+> > next linux-next should not have them.
+> 
+> Yup, thanks, all looks good now.
 
-I was thinking about that, but I do not like the idea of using sign
-arithmetics for physical addresses. Also, I am worried that someone in
-the future will unknowingly change it to unsigns or to phys_addr_t. It
-is safer to have start explicitly set to 0 in case of wrap.
+This patchset is currently neither in mainline nor in -next. May I ask
+what happened to it? Thanks.
+
