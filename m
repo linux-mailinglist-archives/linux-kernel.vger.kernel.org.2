@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E992631B659
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6563931B65A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhBOJXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:23:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54664 "EHLO mail.kernel.org"
+        id S230081AbhBOJY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:24:56 -0500
+Received: from lizzard.sbs.de ([194.138.37.39]:55851 "EHLO lizzard.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229597AbhBOJXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:23:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07AE364E02;
-        Mon, 15 Feb 2021 09:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613380957;
-        bh=xd8bZcaDbO5f52i56dPShfWe0KatiGLNJgnknX+pjYY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DXDLCGaUD+eHBlXw3jpImAWESxqz+GW25G/L1KTcErrsJ05Mr3vNnQUoTwcFRpFN8
-         IhFv9Gu9Nk7GUGaD3gT8JU3rhuuSCSds1EnPCnjIsGISPsGGs18+jjx6cPvAZmZrSm
-         qTXDTQzjlGcFolDd+8yI/BeucmgrspgHEZkhpkPK6oq8QR9W6j5/UUv/Nso9VszZYS
-         ep1kT8I1LC6+HzCPedCLJw0KRiOYnEWDo2iS805a0I2/5+POJ/hbExstsuXaRg5ZPG
-         x1c6Ro/1Vdm/ZQ/qhrcysbc72nYb3BPFUJzdhzkaZzQfgf+xnMv57QCAM3Zea/SoB1
-         XW0opUOYxxLsw==
-Date:   Mon, 15 Feb 2021 11:22:33 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>, arnd@kernel.org,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] net: stmmac: Add Toshiba Visconti SoCs glue driver
-Message-ID: <YCo9WVvtAeozE42k@unreal>
-References: <20210215050655.2532-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210215050655.2532-3-nobuhiro1.iwamatsu@toshiba.co.jp>
- <YCoPmfunGmu0E8IT@unreal>
- <20210215072809.n3r5rdswookzri6j@toshiba.co.jp>
+        id S229597AbhBOJYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 04:24:54 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 11F9Nuvm020273
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Feb 2021 10:23:56 +0100
+Received: from [139.22.41.241] ([139.22.41.241])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 11F9NtlX003811;
+        Mon, 15 Feb 2021 10:23:55 +0100
+Subject: Re: [PATCH] spi: pca2xx-pci: Fix an issue about missing call to
+ 'pci_free_irq_vectors()'
+To:     Dejin Zheng <zhengdejin5@gmail.com>, daniel@zonque.org,
+        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+        broonie@kernel.org, andriy.shevchenko@linux.intel.com,
+        jarkko.nikula@linux.intel.com, linux-spi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20210214145746.602770-1-zhengdejin5@gmail.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <d113b6f5-d234-452e-3e82-90c5237eff0e@siemens.com>
+Date:   Mon, 15 Feb 2021 10:23:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210215072809.n3r5rdswookzri6j@toshiba.co.jp>
+In-Reply-To: <20210214145746.602770-1-zhengdejin5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 04:28:09PM +0900, Nobuhiro Iwamatsu wrote:
-> Hi,
->
-> Thanks for your review.
->
-> On Mon, Feb 15, 2021 at 08:07:21AM +0200, Leon Romanovsky wrote:
-> > On Mon, Feb 15, 2021 at 02:06:53PM +0900, Nobuhiro Iwamatsu wrote:
-> > > Add dwmac-visconti to the stmmac driver in Toshiba Visconti ARM SoCs.
-> > > This patch contains only the basic function of the device. There is no
-> > > clock control, PM, etc. yet. These will be added in the future.
-> > >
-> > > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> > > ---
-> > >  drivers/net/ethernet/stmicro/stmmac/Kconfig   |   8 +
-> > >  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
-> > >  .../ethernet/stmicro/stmmac/dwmac-visconti.c  | 285 ++++++++++++++++++
-> > >  3 files changed, 294 insertions(+)
-> > >  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
-> > >
-> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> > > index 53f14c5a9e02..55ba67a550b9 100644
-> > > --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> > > +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> > > @@ -219,6 +219,14 @@ config DWMAC_INTEL_PLAT
-> > >  	  This selects the Intel platform specific glue layer support for
-> > >  	  the stmmac device driver. This driver is used for the Intel Keem Bay
-> > >  	  SoC.
-> > > +
-> > > +config DWMAC_VISCONTI
-> > > +	bool "Toshiba Visconti DWMAC support"
-> > > +	def_bool y
-> >
->
-> Sorry, I sent the wrong patchset that didn't fix this point out.
->
-> > I asked it before, but never received an answer.
->
-> I have received your point out and have sent an email with the content
-> to remove this line. But it may not have arrived yet...
->
-> > Why did you use "def_bool y" and not "default y"? Isn't it supposed to be
-> > "depends on STMMAC_ETH"? And probably it shouldn't be set as a default as "y".
-> >
->
-> The reason why "def_bool y" was set is that the wrong fix was left when
-> debugging. Also, I don't think it is necessary to set "default y".
-> This is also incorrect because it says "bool" Toshiba Visconti DWMAC
-> support "". I change it to trustate in the new patch.
->
-> And this driver is enabled when STMMAC_PLATFORM was Y. And STMMAC_PLATFORM
-> depends on STMMAC_ETH.
-> So I understand that STMMAC_ETH does not need to be dependents. Is this
-> understanding wrong?
+On 14.02.21 15:57, Dejin Zheng wrote:
+> Call to 'pci_free_irq_vectors()' are missing both in the error handling
+> path of the probe function, and in the remove function. So add them.
+> 
+> Fixes: 64e02cb0bdfc7c ("spi: pca2xx-pci: Allow MSI")
+> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> ---
+>  drivers/spi/spi-pxa2xx-pci.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
+> index 14fc41ed2361..1ec840e78ff4 100644
+> --- a/drivers/spi/spi-pxa2xx-pci.c
+> +++ b/drivers/spi/spi-pxa2xx-pci.c
+> @@ -254,8 +254,10 @@ static int pxa2xx_spi_pci_probe(struct pci_dev *dev,
+>  	snprintf(buf, sizeof(buf), "pxa2xx-spi.%d", ssp->port_id);
+>  	ssp->clk = clk_register_fixed_rate(&dev->dev, buf , NULL, 0,
+>  					   c->max_clk_rate);
+> -	 if (IS_ERR(ssp->clk))
+> -		return PTR_ERR(ssp->clk);
+> +	if (IS_ERR(ssp->clk)) {
+> +		ret = PTR_ERR(ssp->clk);
+> +		goto err_irq;
+> +	}
+>  
+>  	memset(&pi, 0, sizeof(pi));
+>  	pi.fwnode = dev->dev.fwnode;
+> @@ -268,12 +270,16 @@ static int pxa2xx_spi_pci_probe(struct pci_dev *dev,
+>  	pdev = platform_device_register_full(&pi);
+>  	if (IS_ERR(pdev)) {
+>  		clk_unregister(ssp->clk);
+> -		return PTR_ERR(pdev);
+> +		ret = PTR_ERR(pdev);
+> +		goto err_irq;
+>  	}
+>  
+>  	pci_set_drvdata(dev, pdev);
+>  
+>  	return 0;
+> +err_irq:
+> +	pci_free_irq_vectors(dev);
+> +	return ret;
+>  }
+>  
+>  static void pxa2xx_spi_pci_remove(struct pci_dev *dev)
+> @@ -283,6 +289,7 @@ static void pxa2xx_spi_pci_remove(struct pci_dev *dev)
+>  
+>  	spi_pdata = dev_get_platdata(&pdev->dev);
+>  
+> +	pci_free_irq_vectors(dev);
+>  	platform_device_unregister(pdev);
+>  	clk_unregister(spi_pdata->ssp.clk);
+>  }
+> 
 
-This is correct understanding, just need to clean other entries in that
-Kconfig that depends on STMMAC_ETH.
+Reviewed-by: Jan Kiszka <jan.kiszka@siemens.com>
 
-Thanks
+Thanks!
+Jan
 
->
-> > Thanks
-> >
->
-> Best regards,
->   Nobuhiro
+-- 
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
