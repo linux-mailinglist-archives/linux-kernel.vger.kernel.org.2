@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB5731BDB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAE931BDBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhBOPw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:52:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45434 "EHLO mail.kernel.org"
+        id S232400AbhBOPxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:53:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231243AbhBOPbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:31:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FE4C64E9E;
-        Mon, 15 Feb 2021 15:29:47 +0000 (UTC)
+        id S231217AbhBOPcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:32:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2092C64EA7;
+        Mon, 15 Feb 2021 15:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613402988;
-        bh=bhDqEH9zOJRCMqDkygcw2XwdvM5ZzSlCwdfVnG58tRA=;
+        s=korg; t=1613402993;
+        bh=v/gQGnMSyBOWAGIrp2ZGq93+zdde1cBJ8dwXtt1HroE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MWQHZZDOLDAZAc7T1ieF8awFAl4j1BVsY+LTVBq8h9435oWTAfPOj3/mA20m0XHSk
-         ZE3txc0va1ATRfdyrAi4gKEIazjPqFbglUUUORtqgPJt3NDyUxzHhu9t4jMDBwLdkU
-         nyKzsUTD1AgVicQIHrW4uAm+Jkhy0xv0i9jJNufY=
+        b=vqbmE7bOejbG2jCpG5JpdQNKwYYMgq4Q5F02yM3HnF0e6DrBARVDNjIYdEXGFd59V
+         bAaOswe7YGFKUg2qEvXQjK0dZjQFIHL6bclgdEJGrJDu6haX4CZ04BbWqliIELzfje
+         c/kIArSsDlIbsedH/ValCrUm19Lp7xtxqhz8kZfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Andre Heider <a.heider@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 44/60] clk: sunxi-ng: mp: fix parent rate change flag check
-Date:   Mon, 15 Feb 2021 16:27:32 +0100
-Message-Id: <20210215152716.779645484@linuxfoundation.org>
+Subject: [PATCH 5.4 46/60] h8300: fix PREEMPTION build, TI_PRE_COUNT undefined
+Date:   Mon, 15 Feb 2021 16:27:34 +0100
+Message-Id: <20210215152716.839317042@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -43,38 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 245090ab2636c0869527ce563afbfb8aff29e825 ]
+[ Upstream commit ade9679c159d5bbe14fb7e59e97daf6062872e2b ]
 
-CLK_SET_RATE_PARENT flag is checked on parent clock instead of current
-one. Fix that.
+Fix a build error for undefined 'TI_PRE_COUNT' by adding it to
+asm-offsets.c.
 
-Fixes: 3f790433c3cb ("clk: sunxi-ng: Adjust MP clock parent rate when allowed")
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-Tested-by: Andre Heider <a.heider@gmail.com>
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://lore.kernel.org/r/20210209175900.7092-2-jernej.skrabec@siol.net
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+  h8300-linux-ld: arch/h8300/kernel/entry.o: in function `resume_kernel': (.text+0x29a): undefined reference to `TI_PRE_COUNT'
+
+Link: https://lkml.kernel.org/r/20210212021650.22740-1-rdunlap@infradead.org
+Fixes: df2078b8daa7 ("h8300: Low level entry")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/sunxi-ng/ccu_mp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/h8300/kernel/asm-offsets.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/clk/sunxi-ng/ccu_mp.c b/drivers/clk/sunxi-ng/ccu_mp.c
-index fa4ecb9155909..9d3a76604d94c 100644
---- a/drivers/clk/sunxi-ng/ccu_mp.c
-+++ b/drivers/clk/sunxi-ng/ccu_mp.c
-@@ -108,7 +108,7 @@ static unsigned long ccu_mp_round_rate(struct ccu_mux_internal *mux,
- 	max_m = cmp->m.max ?: 1 << cmp->m.width;
- 	max_p = cmp->p.max ?: 1 << ((1 << cmp->p.width) - 1);
+diff --git a/arch/h8300/kernel/asm-offsets.c b/arch/h8300/kernel/asm-offsets.c
+index 85e60509f0a83..d4b53af657c84 100644
+--- a/arch/h8300/kernel/asm-offsets.c
++++ b/arch/h8300/kernel/asm-offsets.c
+@@ -63,6 +63,9 @@ int main(void)
+ 	OFFSET(TI_FLAGS, thread_info, flags);
+ 	OFFSET(TI_CPU, thread_info, cpu);
+ 	OFFSET(TI_PRE, thread_info, preempt_count);
++#ifdef CONFIG_PREEMPTION
++	DEFINE(TI_PRE_COUNT, offsetof(struct thread_info, preempt_count));
++#endif
  
--	if (!(clk_hw_get_flags(hw) & CLK_SET_RATE_PARENT)) {
-+	if (!clk_hw_can_set_rate_parent(&cmp->common.hw)) {
- 		ccu_mp_find_best(*parent_rate, rate, max_m, max_p, &m, &p);
- 		rate = *parent_rate / p / m;
- 	} else {
+ 	return 0;
+ }
 -- 
 2.27.0
 
