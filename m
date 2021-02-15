@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF36331BF64
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BF431BF8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231862AbhBOQch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:32:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50308 "EHLO mail.kernel.org"
+        id S231767AbhBOQkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:40:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231390AbhBOPhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:37:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20C5F64E94;
-        Mon, 15 Feb 2021 15:32:28 +0000 (UTC)
+        id S229931AbhBOPgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:36:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B6DB64ED7;
+        Mon, 15 Feb 2021 15:32:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403149;
-        bh=N7iQosL3JKwRkW9ldYYAmSXSbyFJasnEVSlivJd289U=;
+        s=korg; t=1613403154;
+        bh=LnPdiWxmYswvudyCPnAmeCke0qm0uWWt2RBavlq4lGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cRhmDT4XcTNkx+GTKs3m+RgRkH9762IbpJaWmPnlz22ZaLv1FxVBhFlhaIgjzSX3c
-         xRqZJxom8BbSiCu2rdyb0I34dadg76ffvoDEBHDpWntzb6AMltEacSyogq43mRcLDG
-         8xYn5cFnH+lZjXKJ3xvDr6NR7tboR79VxEzGg7v0=
+        b=srq2uu2yQzRpu4EVOyzQMWVZtDgAVLfazGvsKUA7xOYLiSTWDhndJR0CgLi0dSe4C
+         dIIWTbkigzmHft6jC5HLCtGC68GVSjLXe6O1+Do4esXYk7LlXAZZCBG0HHRArRMW/d
+         XsmIESq3/wIki/Ks7r/1oLoNmzIKTcj89jpw0eVI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: [PATCH 5.10 047/104] lkdtm: dont move ctors to .rodata
-Date:   Mon, 15 Feb 2021 16:27:00 +0100
-Message-Id: <20210215152720.995680282@linuxfoundation.org>
+        stable@vger.kernel.org, Chen Zhou <chenzhou10@huawei.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 049/104] cgroup-v1: add disabled controller check in cgroup1_parse_param()
+Date:   Mon, 15 Feb 2021 16:27:02 +0100
+Message-Id: <20210215152721.061913782@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,100 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Chen Zhou <chenzhou10@huawei.com>
 
-commit 3f618ab3323407ee4c6a6734a37eb6e9663ebfb9 upstream.
+[ Upstream commit 61e960b07b637f0295308ad91268501d744c21b5 ]
 
-When building with KASAN and LKDTM, clang may implictly generate an
-asan.module_ctor function in the LKDTM rodata object. The Makefile moves
-the lkdtm_rodata_do_nothing() function into .rodata by renaming the
-file's .text section to .rodata, and consequently also moves the ctor
-function into .rodata, leading to a boot time crash (splat below) when
-the ctor is invoked by do_ctors().
+When mounting a cgroup hierarchy with disabled controller in cgroup v1,
+all available controllers will be attached.
+For example, boot with cgroup_no_v1=cpu or cgroup_disable=cpu, and then
+mount with "mount -t cgroup -ocpu cpu /sys/fs/cgroup/cpu", then all
+enabled controllers will be attached except cpu.
 
-Let's prevent this by marking the function as noinstr rather than
-notrace, and renaming the file's .noinstr.text to .rodata. Marking the
-function as noinstr will prevent tracing and kprobes, and will inhibit
-any undesireable compiler instrumentation.
+Fix this by adding disabled controller check in cgroup1_parse_param().
+If the specified controller is disabled, just return error with information
+"Disabled controller xx" rather than attaching all the other enabled
+controllers.
 
-The ctor function (if any) will be placed in .text and will work
-correctly.
-
-Example splat before this patch is applied:
-
-[    0.916359] Unable to handle kernel execute from non-executable memory at virtual address ffffa0006b60f5ac
-[    0.922088] Mem abort info:
-[    0.922828]   ESR = 0x8600000e
-[    0.923635]   EC = 0x21: IABT (current EL), IL = 32 bits
-[    0.925036]   SET = 0, FnV = 0
-[    0.925838]   EA = 0, S1PTW = 0
-[    0.926714] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000427b3000
-[    0.928489] [ffffa0006b60f5ac] pgd=000000023ffff003, p4d=000000023ffff003, pud=000000023fffe003, pmd=0068000042000f01
-[    0.931330] Internal error: Oops: 8600000e [#1] PREEMPT SMP
-[    0.932806] Modules linked in:
-[    0.933617] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc7 #2
-[    0.935620] Hardware name: linux,dummy-virt (DT)
-[    0.936924] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-[    0.938609] pc : asan.module_ctor+0x0/0x14
-[    0.939759] lr : do_basic_setup+0x4c/0x70
-[    0.940889] sp : ffff27b600177e30
-[    0.941815] x29: ffff27b600177e30 x28: 0000000000000000
-[    0.943306] x27: 0000000000000000 x26: 0000000000000000
-[    0.944803] x25: 0000000000000000 x24: 0000000000000000
-[    0.946289] x23: 0000000000000001 x22: 0000000000000000
-[    0.947777] x21: ffffa0006bf4a890 x20: ffffa0006befb6c0
-[    0.949271] x19: ffffa0006bef9358 x18: 0000000000000068
-[    0.950756] x17: fffffffffffffff8 x16: 0000000000000000
-[    0.952246] x15: 0000000000000000 x14: 0000000000000000
-[    0.953734] x13: 00000000838a16d5 x12: 0000000000000001
-[    0.955223] x11: ffff94000da74041 x10: dfffa00000000000
-[    0.956715] x9 : 0000000000000000 x8 : ffffa0006b60f5ac
-[    0.958199] x7 : f9f9f9f9f9f9f9f9 x6 : 000000000000003f
-[    0.959683] x5 : 0000000000000040 x4 : 0000000000000000
-[    0.961178] x3 : ffffa0006bdc15a0 x2 : 0000000000000005
-[    0.962662] x1 : 00000000000000f9 x0 : ffffa0006bef9350
-[    0.964155] Call trace:
-[    0.964844]  asan.module_ctor+0x0/0x14
-[    0.965895]  kernel_init_freeable+0x158/0x198
-[    0.967115]  kernel_init+0x14/0x19c
-[    0.968104]  ret_from_fork+0x10/0x30
-[    0.969110] Code: 00000003 00000000 00000000 00000000 (00000000)
-[    0.970815] ---[ end trace b5339784e20d015c ]---
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Kees Cook <keescook@chromium.org>
-Acked-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/20201207170533.10738-1-mark.rutland@arm.com
-Cc: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: f5dfb5315d34 ("cgroup: take options parsing into ->parse_monolithic()")
+Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+Reviewed-by: Zefan Li <lizefan.x@bytedance.com>
+Reviewed-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/lkdtm/Makefile |    2 +-
- drivers/misc/lkdtm/rodata.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/cgroup/cgroup-v1.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/misc/lkdtm/Makefile
-+++ b/drivers/misc/lkdtm/Makefile
-@@ -16,7 +16,7 @@ KCOV_INSTRUMENT_rodata.o	:= n
- 
- OBJCOPYFLAGS :=
- OBJCOPYFLAGS_rodata_objcopy.o	:= \
--			--rename-section .text=.rodata,alloc,readonly,load
-+			--rename-section .noinstr.text=.rodata,alloc,readonly,load
- targets += rodata.o rodata_objcopy.o
- $(obj)/rodata_objcopy.o: $(obj)/rodata.o FORCE
- 	$(call if_changed,objcopy)
---- a/drivers/misc/lkdtm/rodata.c
-+++ b/drivers/misc/lkdtm/rodata.c
-@@ -5,7 +5,7 @@
-  */
- #include "lkdtm.h"
- 
--void notrace lkdtm_rodata_do_nothing(void)
-+void noinstr lkdtm_rodata_do_nothing(void)
- {
- 	/* Does nothing. We just want an architecture agnostic "return". */
- }
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 32596fdbcd5b8..a5751784ad740 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -917,6 +917,9 @@ int cgroup1_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 		for_each_subsys(ss, i) {
+ 			if (strcmp(param->key, ss->legacy_name))
+ 				continue;
++			if (!cgroup_ssid_enabled(i) || cgroup1_ssid_disabled(i))
++				return invalfc(fc, "Disabled controller '%s'",
++					       param->key);
+ 			ctx->subsys_mask |= (1 << i);
+ 			return 0;
+ 		}
+-- 
+2.27.0
+
 
 
