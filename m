@@ -2,149 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B99B431B7A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD9E31B7A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhBOKu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:50:58 -0500
-Received: from mail-eopbgr680083.outbound.protection.outlook.com ([40.107.68.83]:58599
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230055AbhBOKof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:44:35 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KlVLC+b3+Kzy4RbxCwBNVt8eWW728+dQSC9YgpacCmPGMcikPfG6OFL0Q7uUvLjnsHJj1fMR9HFT6A4SksYaagjIg/NfjWd/tg1demI4xAJpj93tl2Jf/I61kdAzXEJ7ByQZOB03SXFl+eUhDKLZygO/woRB0SBwScHrlAI4BTuBxBye9PKkQrfb29XCTOIpOVnH3ezWMGQr8LQoK41/PSve2GcKQwCLGSCBLN8XT+xrkkeGCbXIWQ5BrjhAiPy0YKJyvWTTpF4QkIxoNuLGNqPS2L1+/mLlcyQ5gg/8N9+RDlhyH3FWwsApOvrXR4PtvEJTM63/EFOTYgeW0wgjRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=86sp+52zSvbD7jDG3vteE7BLVNH+Mrd8kK6ooB82VI4=;
- b=dvk3aKnpz+IcCs6He+jjJrDnxwh4QykA7wfJ3+ow6vDCcm7uUV/3f+kzvgAI0r6Ze7IGiFa9ENKFG3ckj8f8RuzQVCtGGmwWsqXaeuKehdyzFx8fSySiefvrEzdRN7GyqhG54kHexNSXu2b2M9E5Czm0wKMNj5xrgh5oHfYUSXHTXIOSK6q1CiXuArMy79D+/8AUDwUdJAttxgFwtc7pkOLqMGukqLsqJ65/tZInJCAhajFjxVXyYYVfy4YFqzxHGg1k7urP0RzRkkb2Js4ptDInLBSmE81dSywAwY6uHCHM0oAenao2+Pkkypo9XVm1D9YUlgP2MW1vnCU2j5eHsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=86sp+52zSvbD7jDG3vteE7BLVNH+Mrd8kK6ooB82VI4=;
- b=oJcNHu9qX0M+ksDCq9Sit+HTuLcis8+y8c3dHii/+AepbybeuILF25DZ0eNVjFTBLnxRgt9cg7tQ64NNgv7t4L5/ZYrLuh+UYJG0+psWJVjKjSJNk1LoKNvXjRRGXJw1ygeHmvBDDE9yFUmT3Q4TS8zrERkTEjwRID0ayf1jOjs=
-Authentication-Results: zte.com.cn; dkim=none (message not signed)
- header.d=none;zte.com.cn; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4111.namprd12.prod.outlook.com (2603:10b6:208:1de::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Mon, 15 Feb
- 2021 10:43:47 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3846.038; Mon, 15 Feb 2021
- 10:43:47 +0000
-Subject: Re: [PATCH] drm/radeon: Remove unused function pointer typedef
- radeon_packet3_check_t
-To:     Chen Lin <chen45464546@163.com>, airlied@linux.ie, daniel@ffwll.ch
-Cc:     alexander.deucher@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Chen Lin <chen.lin5@zte.com.cn>
-References: <1613384489-3102-1-git-send-email-chen45464546@163.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <e045d7ad-c9a5-e956-7efc-b0b1a7db1247@amd.com>
-Date:   Mon, 15 Feb 2021 11:43:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <1613384489-3102-1-git-send-email-chen45464546@163.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:e074:3b37:7224:b69f]
-X-ClientProxiedBy: AM3PR05CA0116.eurprd05.prod.outlook.com
- (2603:10a6:207:2::18) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S229652AbhBOKvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:51:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230042AbhBOKo7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 05:44:59 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89878C061574;
+        Mon, 15 Feb 2021 02:44:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=V15Ko0jDRPYeN/67QW78zQNnD8VcExjAsz8XTcjzpH0=; b=FQLYNszvDOtdGWgZii+WiBb+r2
+        fQYSdW1pQgcjxIeHKsYCBPXYDfjrGgSYz1rtEucTGaAG6dX+cej25NinPNM71gm5N9Q5aaSGizgA3
+        tZLza6Lmq3tTUF9yhpPqntfDryVkavGkkudpzJv7eQRJ5GVNkLsP8QNWVA1rgmNXTKHE5+WFlxU2W
+        d4YrJCxMgsSxe/KdxlBHdUrKWhtJ3D9hVvfNIWNvQ753sMvOF3O1oSf1RR6fV5a/dFeENJ7VLQved
+        4/LCeINLWhTmnHk28Aljj0dDCd8Dn9MbqL8uP+TIJD0H6vKOHRzmDjx0rGOoDfD1SWB1nepAmrd6z
+        HyHahSCg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lBbMN-0006hm-9U; Mon, 15 Feb 2021 10:44:07 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7CE01981573; Mon, 15 Feb 2021 11:44:02 +0100 (CET)
+Date:   Mon, 15 Feb 2021 11:44:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     mingo@redhat.com, will@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] lockdep: add lockdep_assert_not_held()
+Message-ID: <20210215104402.GC4507@worktop.programming.kicks-ass.net>
+References: <cover.1613171185.git.skhan@linuxfoundation.org>
+ <37a29c383bff2fb1605241ee6c7c9be3784fb3c6.1613171185.git.skhan@linuxfoundation.org>
+ <YCljfeNr4m5mZa4N@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:e074:3b37:7224:b69f] (2a02:908:1252:fb60:e074:3b37:7224:b69f) by AM3PR05CA0116.eurprd05.prod.outlook.com (2603:10a6:207:2::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.35 via Frontend Transport; Mon, 15 Feb 2021 10:43:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 52ca4302-eb54-41f6-7190-08d8d19e9326
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4111:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4111473852E831E37C4CC80B83889@MN2PR12MB4111.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:949;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jRqYp6th6fsHiqT6LUPtxrjGCY2klsxlbEfn49SUNzD3pnu2CRO3ro/pVMwXgivXpNDnsShY6rRmCFN+Kb6f2oL9rXa1Wca8KF3wxKVi4qREbHt5FgqtujDmkWmbTj+pPFnYcYghABc42BiW6ixjTMq82kpgyoTtx82/gi898zhvpkrZog5i7Tn4os98bR5ug+G9AKChtcWh8HSrs5/XlLs9R8j1zfcup7u7ZZX3Zq+pSg82FkOZayA+L/clyttTFmm2gYUZ9f/0LhMd+GVeNbdB6v3NX6lBXCkCsl5OJoqzXVSGjx5KDoaMn8lSMUoEN6jM/2Yk1WG5knvu9dbzVJocPZ1KnA3xHro5UqrU5a8NLyDprG2aOixiMkG7QEgL2Ggs6GlmQ1bQWIOu9Q37dLFwic4wY4i6gex0XZKjuqFxu22IJo1Z1FDRhgfbHuEBRHKZb5f0ig5UOYSyy7QmjSN+FWjB6YS9HKSwWzHri5VRDci3J+bHZSqqv3h0NigbxRZXNetUvlN5T3CJgQ5AAHbMPzG+7z4yYtn8fAg5Gf2oLQF9FDK3t5pTznG8esiyw/hT2RwIosWNl3872dAhUTADxovvhoPRnprDRyF2PdE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(39860400002)(396003)(346002)(4744005)(52116002)(478600001)(4326008)(86362001)(316002)(2616005)(5660300002)(2906002)(8936002)(31696002)(6486002)(8676002)(6666004)(36756003)(66556008)(66476007)(31686004)(66946007)(83380400001)(186003)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c1p2dnprbXdHdGFpRzNoVjZKUHVjV3h3WW4ySTZ2Zit2WE85ZisyM2pYOWVn?=
- =?utf-8?B?QkFPRWlpTFJ5ZmJYQVl6OVlJU21RQjNQU2tzbk4rRjBBSEVLVW9mN1VqdDli?=
- =?utf-8?B?bGVCUVFvN2IzaWdaZjhxOE1qOWhDbW8wWkNBVG1CNzFHL28rYUkwNTF2a3Z2?=
- =?utf-8?B?M2JHVTBiRTNBRUdnSThRK0tyeDVoSzd4UHRrZDUzbVZQL3dXNCtZeEI5aWM3?=
- =?utf-8?B?WHEzL09mUllBK3NuTDFKUStReWI5Mys4eWVBV0xkWlJZZnBGWGpNa2JrSnpv?=
- =?utf-8?B?azc4V2I2K1dWZXNQRHJNOFVsUmtUdG5YbGp3Yk1hZnM4bmQ0RGE4bmd6YnIz?=
- =?utf-8?B?OGZTdUtnd0ZLS3hhTmY5K0xodS9oeXRzRjk5MjdMbVpWNjM4SmQ0SWJWTjdY?=
- =?utf-8?B?cnhqTVJpSWlUbUJIZksxUzdtbk94cnJrWnhiSlFCSy9tblFyZ3doa1UvTUpV?=
- =?utf-8?B?VGhXTXJRYXhBT2src2pBYU9TT3E1RGZzR3N4MVhzcHJwalhKNVlPaEJya2Rt?=
- =?utf-8?B?RitBVUIrZ1lMckNESUQzZHpVMXVkZmZoZ1E1dlk5ejVpYkFqc1NwSFBBa2FE?=
- =?utf-8?B?bmlQTFp6QStsTHk4OFJmT29MUE04RWVza2xEYnR3dWozdG82UXZtbTIyVnQ5?=
- =?utf-8?B?dnlHbjBYV0c5TTk4Rmg3Tm01NzAyc0FEcEFycEtRQkhNanlOZlNtV1dqMmJJ?=
- =?utf-8?B?ZzlCc2RCMStoNkdWa3BzSGdjMkhFbGlvdFBCRHR4WDRUa2dHaHN1UittMy9L?=
- =?utf-8?B?K3ZZZVBDSEhneUhhbmhJZFF0NzNkVkNXa3BEblBMT0wrQ0UxSU1JVXpEUmRZ?=
- =?utf-8?B?T0JZWjlSMXNjMTVwdkZpTldlQ09xTEJrQXJ5c2ErV01NWWdtb2RZTDZkVzRr?=
- =?utf-8?B?cnJxV21oUW1JdGdUWkxUR25PTHVJYlIvc3cvTEZVaEIyTDl6V2c2MlgyMUh4?=
- =?utf-8?B?U3ZNTTVSa1RuaDhsTFBFOVBvcmJxTjZDV1pQNTQ3QVBFeTJsR0tJL001Mi8z?=
- =?utf-8?B?M3BmT0JGNVZxSE10eWErN1FoM0dUNjFlYmxUOVQwSGhha2JMWDFZQU85WXpM?=
- =?utf-8?B?WHUyT3F1R0xtRmJOQUxwM1dCU3ZQaEtXRCtMNWVvSDVVUlphclo2RXlDZUxo?=
- =?utf-8?B?VTZFcG9EcjkwOWdCeGQxajlBV1I1VnVOdU9vYUJxL25CeDZqaWx3djZrODZT?=
- =?utf-8?B?dkpyc2NSVXQ5RU5iMGpremRKM0NsczczSFVXRGpTUDFkVlg4TWFlOERaTmxD?=
- =?utf-8?B?RjczVk5GcjBqS0hjazNCSElmWUo1bmdjVWE2NmkyZUJ4S1JVM2JscjRrdEIw?=
- =?utf-8?B?Rnc5WHlOYlg2bDZ4Yjg3SEJ4WGdIbEc3TlhmTTlMRDBUYm9XbytrMlR4dXY1?=
- =?utf-8?B?SUJzNjdoUTZYSGdxVmZUNzBJc2NlMUdtUGI0bTdLT244a0tJU3d4N0hGNnU3?=
- =?utf-8?B?YjBxdDVLYUgvWXNtVTI5NEM0bGxIZ1ppbVFvV1NBcWhzbVNBL256UHNmYnp2?=
- =?utf-8?B?NUZKaTZSZkRhbUR3bHdXOCtLR2lNMlFaM1NCSFJtUW53RVg0MVhtRWRqSk9r?=
- =?utf-8?B?Z0lpUXhoYmxLdGZhbGgzcVVjdGE2bll6aTRvUUxVNk5MT21md1d0TjlFWGI1?=
- =?utf-8?B?b0p1ejBKVlN4blBWdGg1ZWkzNXAxTDVFdVZBZW52SnBWdTRQSFM2MWo5R0hw?=
- =?utf-8?B?akUwMGNmZlp2dnlXMGlwYWpwZit5YU1OZVVHeVpXRmdLTURZU1p2czdvcEdR?=
- =?utf-8?B?V294K0svOGY4WkNBT3IwNFR4RDRCNjJ5VTBENmxWanBpU2J4a2F2aHFyZ2oz?=
- =?utf-8?B?MkZKalYvTUQrU0ZrNXl6T1VOSXVkTXVJRGE3RXpodzdwcFFRTElIVThBUWhz?=
- =?utf-8?Q?RaD8CB/nRtfxu?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52ca4302-eb54-41f6-7190-08d8d19e9326
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2021 10:43:47.8392
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XJQRKnpx6kIOcAX/TzXKf5uXrAt1ni+vivbI0Q+UoeCuzOzose4yw0AwqHCw1WGn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4111
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCljfeNr4m5mZa4N@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Feb 14, 2021 at 06:53:01PM +0100, Peter Zijlstra wrote:
+> On Fri, Feb 12, 2021 at 04:28:42PM -0700, Shuah Khan wrote:
+> 
+> > +#define lockdep_assert_not_held(l)	do {			\
+> > +		WARN_ON(debug_locks && lockdep_is_held(l));	\
+> > +	} while (0)
+> > +
+> 
+> This thing isn't as straight forward as you might think, but it'll
+> mostly work.
+> 
+> Notably this thing will misfire when lockdep_off() is employed. It
+> certainyl needs a comment to explain the subtleties.
 
+I think something like so will work, but please double check.
 
-Am 15.02.21 um 11:21 schrieb Chen Lin:
-> From: Chen Lin <chen.lin5@zte.com.cn>
->
-> Remove the 'radeon_packet3_check_t' typedef as it is not used.
->
-> Signed-off-by: Chen Lin <chen.lin5@zte.com.cn>
-
-Reviewed-by: Christian König <christian.koenig@amd.com>
-
-> ---
->   drivers/gpu/drm/radeon/radeon.h |    3 ---
->   1 file changed, 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
-> index 5f3adba..a1c38b5 100644
-> --- a/drivers/gpu/drm/radeon/radeon.h
-> +++ b/drivers/gpu/drm/radeon/radeon.h
-> @@ -1111,9 +1111,6 @@ struct radeon_cs_packet {
->   typedef int (*radeon_packet0_check_t)(struct radeon_cs_parser *p,
->   				      struct radeon_cs_packet *pkt,
->   				      unsigned idx, unsigned reg);
-> -typedef int (*radeon_packet3_check_t)(struct radeon_cs_parser *p,
-> -				      struct radeon_cs_packet *pkt);
-> -
->   
->   /*
->    * AGP
-
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index b9e9adec73e8..c8b0d292bf8e 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -294,11 +294,15 @@ extern void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie);
+ 
+ #define lockdep_depth(tsk)	(debug_locks ? (tsk)->lockdep_depth : 0)
+ 
+-#define lockdep_assert_held(l)	do {				\
+-		WARN_ON(debug_locks && !lockdep_is_held(l));	\
++#define lockdep_assert_held(l)	do {					\
++		WARN_ON(debug_locks && lockdep_is_held(l) == 0));	\
+ 	} while (0)
+ 
+-#define lockdep_assert_held_write(l)	do {			\
++#define lockdep_assert_not_held(l)	do {				\
++		WARN_ON(debug_locks && lockdep_is_held(l) == 1));	\
++	} while (0)
++
++#define lockdep_assert_held_write(l)	do {				\
+ 		WARN_ON(debug_locks && !lockdep_is_held_type(l, 0));	\
+ 	} while (0)
+ 
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index c1418b47f625..983ba206f7b2 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5467,7 +5467,7 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
+ 	int ret = 0;
+ 
+ 	if (unlikely(!lockdep_enabled()))
+-		return 1; /* avoid false negative lockdep_assert_held() */
++		return -1; /* avoid false negative lockdep_assert_held() */
+ 
+ 	raw_local_irq_save(flags);
+ 	check_flags(flags);
