@@ -2,177 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716DA31B57B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 07:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A000031B580
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 08:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbhBOG7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 01:59:20 -0500
-Received: from mail-lf1-f49.google.com ([209.85.167.49]:36292 "EHLO
-        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229836AbhBOG7Q (ORCPT
+        id S229946AbhBOHBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 02:01:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhBOHBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 01:59:16 -0500
-Received: by mail-lf1-f49.google.com with SMTP id f1so8635269lfu.3;
-        Sun, 14 Feb 2021 22:58:58 -0800 (PST)
+        Mon, 15 Feb 2021 02:01:02 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BDEC061574;
+        Sun, 14 Feb 2021 23:00:22 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id cv23so3166739pjb.5;
+        Sun, 14 Feb 2021 23:00:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MLQN9t84WZNNwMBeSpSegbk2anC6/0CnhIjVKrMRW54=;
+        b=CFeCL4lmp6j1rJ631/DYI4jxYOOXS3k735zBKpRs1937uFBu/I7d43iRwHcudtVEb3
+         0/WyDNTf2PLMFrmkk8oGVZsIncvDU44urhIwRYD7kmHOtKYM+pZhZPEXJdf63agc1e6Q
+         /hGuHrwA/hJGh/EWJ7+1QVgvOhlCveKsC8B6iu9OQdmXTibRqo+ENR7XtsPt83VbsPgE
+         gNX3ekZ9tO2GdVFScVuxR/vXUN9iW3UhAsKztULuAxP5MqzifX+r4ZGi3VBTf6qZVeGC
+         4OyvAJQkJCSu5BdZb1w+hZ6FCtrh/c7jbiSmZbtvFE/qNHUOvN2dSKdm4NRASz6GnFwX
+         zcbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=4BH4r71LEBLN/FYC56Md53GFBHnSsqrv3bI2bMVLjMY=;
-        b=NWdVM1yfucxAPBxRS7RY/nxtQPhmSEOJplKZCNyY1xSR1uGQssZ+nzutaabPBKdRoG
-         1cWU1F48Nveu7EkOjtRp5znhupdKMEZ47r3DotwIG7XOEl6YIvo0+lHvKu6JT0t/2pTd
-         XGdhNGJC7ofiFICqIZZRMyEcxBeUmOi3HT/uW6/Hfga1O4R3Rj8dk8Ae5U/cgrSHQFk+
-         VemG1dyy3gA4a6/R81uzfirulFiTF6KVoB6TTlrOSpQ5pZQN8ato888yEqf/kybSlSMc
-         NDRG1lkB2MJO0JkPPGvnvHndhENQtvbJbX0B8eicyd2zTgeuEB8Z7MkiMXqymmveN493
-         JElw==
-X-Gm-Message-State: AOAM5334EmO1CLsdt0iczOHQto4TTDahnv2pcekAWQP69nazG9y5z6CH
-        OYKjlk/U8wLfph0t/MR0wCBkuMdiCz8kbA==
-X-Google-Smtp-Source: ABdhPJxoO4MrtauooOlxH50TwCbt0pujKzTLH9TqAOrNw1CHA0Xl/TC5vi4pS4C/ggVj7vcnRHPNyg==
-X-Received: by 2002:a19:10:: with SMTP id 16mr7936722lfa.497.1613372313252;
-        Sun, 14 Feb 2021 22:58:33 -0800 (PST)
-Received: from dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id d14sm2653860lfg.128.2021.02.14.22.58.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Feb 2021 22:58:32 -0800 (PST)
-Message-ID: <4fb3a4c93d3db8640deeface4478ab057a3e3f78.camel@fi.rohmeurope.com>
-Subject: Re: [RFC PATCH 1/7] drivers: base: Add resource managed version of
- delayed work init
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Gross <mgross@linux.intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-In-Reply-To: <284d4a13-5cc8-e23c-7e99-c03db5415bf1@redhat.com>
-References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
-         <1230b0d2ba99ad546d72ab079e76cb1b3df32afb.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
-         <YCfDAly9b0zHMpJT@kroah.com>
-         <284d4a13-5cc8-e23c-7e99-c03db5415bf1@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MLQN9t84WZNNwMBeSpSegbk2anC6/0CnhIjVKrMRW54=;
+        b=FcAe275LKooqXrbd5N5mZsARp4aQZ3+Mzf4x0P/8b8FOAqhkP2rWOd+FV8dailKsxN
+         U9jpSPfA+aLqUBdKio5+D6qq4yEECVKgm/HNZstBhm97w9qhddZzvQlQoEHx0pI+zdbn
+         ojOyWKq4rF3Z3girPJ9rIdYLtGqfcaSPXASwNCcqr7C4123Q0hrM9j5L/OeIjyS0/8xL
+         9ZNZmKjjaAGF8fMXv5z8OwmtfNtb4bonC8aYKYiuCDdDdO3pJzJAl6YCMeuQWoOVq9ks
+         UnLGKBHqDkgeAOCZdmqoJRx2tpMsZg1xqEHDQ88z/ZPTU8lxbHWVBQX87HbCJpPqVbhN
+         GHOw==
+X-Gm-Message-State: AOAM533InF4vsST7HrbQqOVuWRnV56ikIoIkfmrjEMTfuTt7J0gcoIiP
+        NkVKHWHvAH16Ql0N9/zTvig+PizAySk7sHBlrKRBkCowY6I=
+X-Google-Smtp-Source: ABdhPJyWzW2R32V2f7jZZO1++ndm77nKnJgmX7CGD6JZFxrZUgU+WpY9Ej730UNU+W0MrHewW2Gs2cA8sR4gDiHOJbA=
+X-Received: by 2002:a17:902:9a46:b029:e2:f97b:47da with SMTP id
+ x6-20020a1709029a46b02900e2f97b47damr13898523plv.77.1613372421849; Sun, 14
+ Feb 2021 23:00:21 -0800 (PST)
 MIME-Version: 1.0
-Date:   Mon, 15 Feb 2021 08:58:24 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+References: <20210210173532.370914-1-xie.he.0141@gmail.com> <f701aad45e35579c8b79836ffeb86ea9@dev.tdt.de>
+In-Reply-To: <f701aad45e35579c8b79836ffeb86ea9@dev.tdt.de>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Sun, 14 Feb 2021 23:00:10 -0800
+Message-ID: <CAJht_EOrNaavomac8OVv8i0YxMgsX7oWAFDDRUzWTjpNhWpCcg@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC v2] net: hdlc_x25: Queue outgoing LAPB frames
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Feb 14, 2021 at 10:27 PM Martin Schiller <ms@dev.tdt.de> wrote:
+>
+> At first glance, the patch looks quite reasonable. The only thing I
+> noticed right away is that you also included the changes of your patch
+> "Return meaningful error code in x25_open".
 
-On Sat, 2021-02-13 at 14:18 +0100, Hans de Goede wrote:
-> Hi,
-> 
-> On 2/13/21 1:16 PM, Greg Kroah-Hartman wrote:
-> > On Sat, Feb 13, 2021 at 01:58:44PM +0200, Matti Vaittinen wrote:
-> > > +/**
-> > > + * devm_delayed_work_autocancel - Resource-managed work
-> > > allocation
-> > > + * @dev: Device which lifetime work is bound to
-> > > + * @pdata: work to be cancelled when device exits
-> > > + *
-> > > + * Initialize work which is automatically cancelled when device
-> > > exits.
-> > 
-> > There is no such thing in the driver model as "when device exits".
-> > Please use the proper terminology as I do not understand what you
-> > think
-> > this is doing here...
-> 
-> I agree that this needs better wording I always talk about driver-
-> unbinding
-> because sysfs has /sys/bus/*/drivers/*/bind and
-> /sys/bus/*/drivers/*/unbind
-> attributes. But I see that the relevant driver-core functions all
-> call it
-> driver detaching, so lets be consistent and use that here too.
+Thanks! It was because this patch was sent before that fix got merged
+into "net-next". I will drop that part now.
 
-//Snip
+I will also make the MTU of the virtual X.25 device be HDLC_MAX_MTU
+(instead of HDLC_MAX_MTU - 2), because I see other HDLC Protocol
+Drivers seem to also use this value as MTU (without subtracting the
+header length).
 
-> > > @@ -249,6 +250,10 @@ void __iomem *devm_of_iomap(struct device
-> > > *dev,
-> > >  			    struct device_node *node, int index,
-> > >  			    resource_size_t *size);
-> > >  
-> > > +/* delayed work which is cancelled when driver exits */
-> > 
-> > Not when the "driver exits".
-> 
-> Right this should be detached not exits.
-> 
+> I hope to get back to the office this week and test it.
 
-Thanks guys.
-I am poor with the terminology so I do appreciate your help in getting
-this right. I can change this for the v2.
-
-
-> > There is two different lifespans here (well 3).  Code and
-> > data*2.  Don't
-> > confuse them as that will just cause lots of problems.
-> > 
-> > The move toward more and more "devm" functions is not the way to go
-> > as
-> > they just more and more make things easier to get wrong.
-> > 
-> > APIs should be impossible to get wrong, this one is going to be
-> > almost
-> > impossible to get right.
-> 
-> I have to disagree here devm generally makes it easier to get things
-> right,
-> it is when some devm functions are missing and devm and non devm
-> resources
-> are mixed that things get tricky.
-
-Thanks for the discussion. I hope we can come to some conclusion here.
-Unsurprisingly I agree with Hans here. I did after all send this patch
-series :) I guess I am mostly just repeating what he said.
-
-As Hans pointed out, when all calls are 'undone' by devm the order of
-'undoing' is highly likely to be correct as the unwinding is done in
-reverse order to initializations. I think it is sane to assume in most
-case things are initiated in order where operations which depend on
-something are done last - and when 'unwinding' things those are
-'undone' first. 
-
-My 'gut feeling' for probe / remove related errors is that the most
-usual errors I've seen have been:
-
-a) Tear-down completely forgotten
-b) Tear-down forgotten at error path
-c) Wrong order of initiating things (IRQ requested prior resource
-initialization)
-d) Wrong order of cleann-up at remove.
-
-a) and b) class errors have been the most common ones I've seen. They
-can be completely avoided when devm is used.
-c) is there no matter if we use devm or not.
-d) is mostly avoided when only devm is used - mixing devm and manual
-operations make this more likely as Hans pointed out. As long as we
-have some devm operations we should help avoid mixing devm and manual
-clean-up.
-
-Best Regards
-	Matti Vaittinen
-
-
-
+Thanks!
