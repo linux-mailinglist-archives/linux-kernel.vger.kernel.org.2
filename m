@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4D231C395
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F8D31C3D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhBOV3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:29:51 -0500
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:41499 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhBOV3s (ORCPT
+        id S229881AbhBOVzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 16:55:55 -0500
+Received: from 1.mo1.mail-out.ovh.net ([178.32.127.22]:54162 "EHLO
+        1.mo1.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhBOVzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:29:48 -0500
-Received: by mail-lf1-f47.google.com with SMTP id d24so12701416lfs.8;
-        Mon, 15 Feb 2021 13:29:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yMya29PG04OtYlPhJZ9gQ9s2018PVhvFg4KgHYMuBIk=;
-        b=gtbVmeaN4yrr4uUtj81i90OnNpSWXsmILD/pNMzISHyDMVDAT3M528GQ3n6awiXLOo
-         sbDs+Up5GIEFT/pNAM0hLF1URfsihZqWiawFFq8CLNfY1DZ3y2Z6fDBD77OIbM5kHYdd
-         isDA6pmm/QdBHYiQZNu5CYxVzbw52sQhX82tNLrMS8jyaca41L4jj5VqqFYiz3YUE0zl
-         hF5XsFKULIn5F1yHvuYaboXGaC+w4YZxRnLcJfOcOpCZ+0x0RZ7e4+tjjZs545vBe4t5
-         8s0XDzAbH4Y6XXWse+gSHKgvCGb72rpjSAjHCrRIKu4CflhhA63IRPoDozzBJMl2ziNF
-         Ma+Q==
-X-Gm-Message-State: AOAM532MlCQUqahdIN8cElta30DXO6nNeXe1Lvr/6uYBxy2o9XnZAbwP
-        CDiu+8wN2eqgMNLX7lNeaV0=
-X-Google-Smtp-Source: ABdhPJy3F5BLiaJqLKLJJFL0LdFlNbb1FCGHW6EhaQDMOTrKTlILCkSvcnqcTCtt161Y1Mr1fzZfmw==
-X-Received: by 2002:a05:6512:308f:: with SMTP id z15mr6897976lfd.409.1613424545614;
-        Mon, 15 Feb 2021 13:29:05 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id c13sm2557641ljd.4.2021.02.15.13.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 13:29:05 -0800 (PST)
-Date:   Mon, 15 Feb 2021 22:29:03 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
-        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/4] i2c: thunderx: Use the correct name of
- device-managed function
-Message-ID: <YCrnn+L42SR4N1PA@rocinante>
-References: <20210215181550.714101-1-zhengdejin5@gmail.com>
- <20210215181550.714101-5-zhengdejin5@gmail.com>
+        Mon, 15 Feb 2021 16:55:53 -0500
+X-Greylist: delayed 4201 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Feb 2021 16:55:52 EST
+Received: from player798.ha.ovh.net (unknown [10.108.54.72])
+        by mo1.mail-out.ovh.net (Postfix) with ESMTP id 97A811F4459
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 18:08:59 +0100 (CET)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player798.ha.ovh.net (Postfix) with ESMTPSA id F06BF1B2BA2CF;
+        Mon, 15 Feb 2021 17:08:54 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-99G0039a594b61-676e-43c5-8ca7-d80a602cbb63,
+                    C16AD3286F4283AA50684BE431D994343DAE27DC) smtp.auth=steve@sk2.org
+X-OVh-ClientIp: 82.65.25.201
+From:   Stephen Kitt <steve@sk2.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH] vgacon: drop unused vga_init_done
+Date:   Mon, 15 Feb 2021 18:08:37 +0100
+Message-Id: <20210215170837.1599706-1-steve@sk2.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210215181550.714101-5-zhengdejin5@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 12297923209508638069
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrieekgdelfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucfuphgrmhfkphfpvghtfihorhhkpeekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejleekrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dejin,
+Commit 973c096f6a85 ("vgacon: remove software scrollback support")
+removed all uses of vga_init_done, so let's get rid of it entirely.
 
-> Use the correct name of device-managed function to alloc irq vectors,
-> the pcim_alloc_irq_vectors() function, a explicit device-managed version
-> of pci_alloc_irq_vectors().
-[...]
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ drivers/video/console/vgacon.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-It would be "IRQ" in the sentence above.
+diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
+index 17876f0179b5..36bded9c9876 100644
+--- a/drivers/video/console/vgacon.c
++++ b/drivers/video/console/vgacon.c
+@@ -79,7 +79,6 @@ static struct uni_pagedir *vgacon_uni_pagedir;
+ static int vgacon_refcount;
+ 
+ /* Description of the hardware situation */
+-static bool		vga_init_done;
+ static unsigned long	vga_vram_base		__read_mostly;	/* Base of video memory */
+ static unsigned long	vga_vram_end		__read_mostly;	/* End of video memory */
+ static unsigned int	vga_vram_size		__read_mostly;	/* Size of video memory */
+@@ -360,8 +359,6 @@ static const char *vgacon_startup(void)
+ 	vgacon_xres = screen_info.orig_video_cols * VGA_FONTWIDTH;
+ 	vgacon_yres = vga_scan_lines;
+ 
+-	vga_init_done = true;
+-
+ 	return display_desc;
+ }
+ 
 
-Perhaps the "Use the new function pcim_alloc_irq_vectors() to allocate
-IRQ vectors ..." would read a little better - generally, the above
-sentence could be improved.  You might also want to add a more details
-about why to use this new function instead of the previous one, etc.
+base-commit: f40ddce88593482919761f74910f42f4b84c004b
+-- 
+2.29.2
 
-Krzysztof
