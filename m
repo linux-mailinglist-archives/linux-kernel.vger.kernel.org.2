@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCEC31B7AB
+	by mail.lfdr.de (Postfix) with ESMTP id 6D97431B7AA
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhBOKxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:53:19 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:42442 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbhBOKxG (ORCPT
+        id S229873AbhBOKxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:53:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230318AbhBOKwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:53:06 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11FAorwY042406;
-        Mon, 15 Feb 2021 10:52:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=fMoM8Ix0x/Dbh2zsKueaLXLFv/J/pF55/FcnlbqQ4OU=;
- b=JXuB0yZMVhUlrYljM9aq0DvYcy+9jSnmnGodCSjee2WXcJ5KieE4apcWZDrFhCbr3puB
- 4Fu0XH8+mEpeXVTgp1rzW4f9npC1XVFBieYxGLzeQHwsqIXsvECmAnGjfkLdrDVWxJK/
- lYuE2k16aS/w1q+zbf4mZkRbLNzi+qxyrq0zQfgPZfLbt0A5yzKAmS5FiVVdUik9VkPy
- nh9HdWEhLQYGUJNJy8Nv8PEseu+6VwZknD/n9POMKgpgRRhsH2t2qRydZOWXjt6z2lFB
- ZdRBnzWiKpAWtbaOnCJF6ddV5mV5BtZ6ZIK5/mvZN8xqtprbhkyVkRhv239rEzOMnDCL IQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 36p7dnbkew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 10:52:16 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11FAntIZ167407;
-        Mon, 15 Feb 2021 10:52:15 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 36prpvevdv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 10:52:15 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11FAqBlX027234;
-        Mon, 15 Feb 2021 10:52:12 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 15 Feb 2021 02:52:11 -0800
-Date:   Mon, 15 Feb 2021 13:52:02 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
-        elder@kernel.org, linux-kernel@vger.kernel.org, johan@kernel.org,
-        greybus-dev@lists.linaro.org,
-        Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
-Subject: Re: [greybus-dev] [PATCH 1/1] staging: greybus: Added do - while in
- multi statement macro
-Message-ID: <20210215105202.GA2087@kadam>
-References: <20210211095444.54447-1-hemanshagnihotri27@gmail.com>
- <YCUAMgFa6i9vl9An@kroah.com>
- <20210211101039.m5q26qgxififotqp@vireshk-i7>
+        Mon, 15 Feb 2021 05:52:47 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17B0C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:52:06 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id z32so4510838qtd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:52:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DCasf8LNJD3cpLAIKwcnQnDK/FG08P6hSVCIDrM0RYw=;
+        b=bR3APCUVPyfLWINvrsY4rBV0tJPJ2vJxl2MMA4PfaJ9+ToWe+gmABk6gZvl30hLPiT
+         Q34qAj8AovuCyXI6WNPkM8emBbiL1eVMqTYKLakHTfx7Z2S/QZ6QhkbLxpeiX3plotSj
+         2RvernIzAgYaTwhQ2V1J8vPJl8dDd8BV/yiak=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DCasf8LNJD3cpLAIKwcnQnDK/FG08P6hSVCIDrM0RYw=;
+        b=uDJv2N4w1u6JjUUZq/uZ+yf//ieZuDl0e726YfQ+bZY0lJPBUTwoMerTAvfP1DgXOX
+         /3FQ897uubr2KBm/BfrlTsZmpszUB2DBFaXy4mjM232h+XKWJF79Pz4idE+MRSe/aUcU
+         2WIJlNOsoO49tyHMRxErQXZvNiaHvcgFwIkRq3FJueOZPeBUMubQ4pvC/o2/0q2A79O8
+         PaXUGyBO/qOFmOJjtyM1UJXRQouy4jwszZLLvbETj6Qgipc6AoG2zwQPkmteQB+X5E3t
+         5fAbJRvZ4aQMMfbNPW6j/0xfcaDEzXA+AuXIjQHRX9prj9roaFGnk15zCewxeJDFChrs
+         HZqg==
+X-Gm-Message-State: AOAM530aiaPzk68FVdFipWYihgrCQpbgkjzYfxC/BlgblNt/9nnT4b61
+        mZRYP4FeZ8e/tDjmEjs41eYzqqM6MHOp1oizTzrczg==
+X-Google-Smtp-Source: ABdhPJxBW6NjQrjDEqO6MyiBnClPreVbGfoQc5q2VUQgBvJ8XJWDhokzI83V1C9hl0pmFiDPDXNm4SEGE/ZEEXaT0bU=
+X-Received: by 2002:ac8:5dc8:: with SMTP id e8mr13664866qtx.249.1613386325969;
+ Mon, 15 Feb 2021 02:52:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211101039.m5q26qgxififotqp@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9895 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102150089
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9895 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102150089
+References: <20210213095724.3411058-1-daniel@0x0f.com> <20210215112409.1a755bf0@xps13>
+In-Reply-To: <20210215112409.1a755bf0@xps13>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Mon, 15 Feb 2021 19:53:13 +0900
+Message-ID: <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-mtd@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 03:40:39PM +0530, Viresh Kumar wrote:
-> On 11-02-21, 11:00, Greg KH wrote:
-> > On Thu, Feb 11, 2021 at 03:24:44PM +0530, Hemansh Agnihotri wrote:
-> > > This patch add fixes an checkpatch error for "Macros with multiple statements
-> > > should be enclosed in a do - while loop"
-> > > 
-> > > Signed-off-by: Hemansh Agnihotri <hemanshagnihotri27@gmail.com>
-> > 
-> > Any reason you didn't test-build your patch before sending it out?
-> > 
-> > That's a bit rude to reviewers :(
-> 
-> I also wonder how two people stumbled upon the exact same thing at the
-> same time. Copy/paste ?
-> 
+Hi Miquel,
 
-Those things are pretty common where people try to fix the first
-checkpatch warning they find.  There was one time some years back when 5
-people sent the same patch.
+On Mon, 15 Feb 2021 at 19:24, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> Can you please add a changelog here when you send a new version of a
+> patch?
 
-regards,
-dan carpenter
+Sorry, I was going to add a cover letter but elsewhere got told that
+one isn't needed for a single patch..
 
+Basically I changed FS35ND01G to FS35ND01G-S1Y2 as that's the proper
+part number for the chip I have and there seem to be a few variations
+of this.
+Aside from that I fixed up the hex numbers to be uppercase and added
+the oob layout callbacks.
+
+> > +static int fs35nd01g_s1y2_ooblayout_free(struct mtd_info *mtd, int section,
+> > +                                 struct mtd_oob_region *region)
+> > +{
+> > +     if (section > 3)
+> > +             return -ERANGE;
+> > +
+> > +     /*
+> > +      * No ECC data is stored in the accessible OOB so the full 16 bytes
+> > +      * of each spare region is available to the user. Apparently also
+> > +      * covered by the internal ECC.
+>
+> How is this even possible? ECC must be stored somewhere, maybe it is
+> not possible to retrieve it but I guess you cannot use the 32 bytes of
+> OOB for user data. Can you please verify that?
+
+This worried me too as I could not find the OOB layout anywhere.
+They simply list there being 4 512 byte main areas and then 4 16 byte
+spare areas. The only other note is that the first byte of spare0 is
+used for the bad block marker.
+
+I contacted Longsys but they didn't get back to me.
+So what I did here was I started googling strings within the datasheet
+to find other chips that are probably the same IP inside and I found
+the FM25G01.
+It's datasheet shares a lot of the same text and the flash layout
+diagrams etc are the same.
+It has the same table for the flash layout. 4 512 byte areas and 4 16
+byte spare areas. It has the same note for the bad block marker and
+then one additional note:
+
+"2. Spare area 800H to 83FH is all available for user.
+ ECC parity codes are programmed in
+additional space and not user accessible."
+
+It would seem that the pages are actually bigger than 2K + 64 or there
+is some other place they keep the ECC.
+Or both datasheets are lying. Somewhere else in the datasheets it says
+that writes to the ECC area will be ignored but that doesn't make a
+lot of sense if the ECC area isn't user accessible in the first place.
+
+I didn't think about it at the time but I can take a dump of the OOB
+area of my FS35ND01G-S1Y2 to confirm it's all 0xff except for any
+factory marked bad blocks.
+
+Thanks,
+
+Daniel
