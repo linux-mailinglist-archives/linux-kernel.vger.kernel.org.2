@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184A431BF8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F1D31BF81
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231350AbhBOQiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:38:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50206 "EHLO mail.kernel.org"
+        id S232193AbhBOQiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:38:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231490AbhBOPhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231514AbhBOPhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 10:37:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2929464EE7;
-        Mon, 15 Feb 2021 15:33:31 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAB2064EAD;
+        Mon, 15 Feb 2021 15:33:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403212;
-        bh=4p7+N+6bGP8zeHfJrVntL64zZgTx+xM4Q/GXNBJRB9Q=;
+        s=korg; t=1613403215;
+        bh=oottzwMwE9LU5zEDtqqbkNl1S94kxsMjf4g8+8diCFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tCf5mjh+B576P3kakigXuwW3q9DaTG982Pume50cc1Oc8uQ8P+udc8A1KRfQ0/Avc
-         L6PuRqoBqv9g36pITy9hsi48GpkCtybh2y4aaFngOmXZQpYjzhctn2TphSURAPYsIY
-         2cP/UgCPQlJyO1B2lot+npVbor1EEzJfEE5lrnvc=
+        b=OjNehNTIALh+x//I7m+inkOZOuGzStpctJL316m4wfzEA2Mpl16cswOsO+KoGZHb0
+         ZCsVYPiwOYvhtz4FzIjHyjFaYt4gUoC/CWS4YccaMVCjStr9wTFq85IMHAqox8UpXU
+         GODl5BC5rSsPWZPxSxzno8LBwcoUAqSFDyvgycVc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Douglas Gilbert <dgilbert@interlog.com>,
+        Maurizio Lombardi <mlombard@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 069/104] netfilter: conntrack: skip identical origin tuple in same zone only
-Date:   Mon, 15 Feb 2021 16:27:22 +0100
-Message-Id: <20210215152721.690083805@linuxfoundation.org>
+Subject: [PATCH 5.10 070/104] scsi: scsi_debug: Fix a memory leak
+Date:   Mon, 15 Feb 2021 16:27:23 +0100
+Message-Id: <20210215152721.720212090@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -40,41 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Maurizio Lombardi <mlombard@redhat.com>
 
-[ Upstream commit 07998281c268592963e1cd623fe6ab0270b65ae4 ]
+[ Upstream commit f852c596f2ee6f0eb364ea8f28f89da6da0ae7b5 ]
 
-The origin skip check needs to re-test the zone. Else, we might skip
-a colliding tuple in the reply direction.
+The sdebug_q_arr pointer must be freed when the module is unloaded.
 
-This only occurs when using 'directional zones' where origin tuples
-reside in different zones but the reply tuples share the same zone.
+$ cat /sys/kernel/debug/kmemleak
+unreferenced object 0xffff888e1cfb0000 (size 4096):
+  comm "modprobe", pid 165555, jiffies 4325987516 (age 685.194s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000458f4f5d>] 0xffffffffc06702d9
+    [<000000003edc4b1f>] do_one_initcall+0xe9/0x57d
+    [<00000000da7d518c>] do_init_module+0x1d1/0x6f0
+    [<000000009a6a9248>] load_module+0x36bd/0x4f50
+    [<00000000ddb0c3ce>] __do_sys_init_module+0x1db/0x260
+    [<000000009532db57>] do_syscall_64+0xa5/0x420
+    [<000000002916b13d>] entry_SYSCALL_64_after_hwframe+0x6a/0xdf
 
-This causes the new conntrack entry to be dropped at confirmation time
-because NAT clash resolution was elided.
-
-Fixes: 4e35c1cb9460240 ("netfilter: nf_nat: skip nat clash resolution for same-origin entries")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 87c715dcde63 ("scsi: scsi_debug: Add per_host_store option")
+Link: https://lore.kernel.org/r/20210208111734.34034-1-mlombard@redhat.com
+Acked-by: Douglas Gilbert <dgilbert@interlog.com>
+Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_conntrack_core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/scsi_debug.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 234b7cab37c30..ff0168736f6ea 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -1229,7 +1229,8 @@ nf_conntrack_tuple_taken(const struct nf_conntrack_tuple *tuple,
- 			 * Let nf_ct_resolve_clash() deal with this later.
- 			 */
- 			if (nf_ct_tuple_equal(&ignored_conntrack->tuplehash[IP_CT_DIR_ORIGINAL].tuple,
--					      &ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple))
-+					      &ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple) &&
-+					      nf_ct_zone_equal(ct, zone, IP_CT_DIR_ORIGINAL))
- 				continue;
+diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+index 4a08c450b756f..b6540b92f5661 100644
+--- a/drivers/scsi/scsi_debug.c
++++ b/drivers/scsi/scsi_debug.c
+@@ -6881,6 +6881,7 @@ static void __exit scsi_debug_exit(void)
  
- 			NF_CT_STAT_INC_ATOMIC(net, found);
+ 	sdebug_erase_all_stores(false);
+ 	xa_destroy(per_store_ap);
++	kfree(sdebug_q_arr);
+ }
+ 
+ device_initcall(scsi_debug_init);
 -- 
 2.27.0
 
