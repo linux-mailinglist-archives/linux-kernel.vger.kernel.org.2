@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5AB31C2B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA3F31C2B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhBOT4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:56:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48934 "EHLO mail.kernel.org"
+        id S230376AbhBOT4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:56:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230090AbhBOT4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230098AbhBOT4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 14:56:39 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E05564E2C;
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EF3464E2B;
         Mon, 15 Feb 2021 19:55:59 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lBjyQ-0009Tl-48; Mon, 15 Feb 2021 14:55:58 -0500
-Message-ID: <20210215195558.014071661@goodmis.org>
+        id 1lBjyQ-0009UF-8b; Mon, 15 Feb 2021 14:55:58 -0500
+Message-ID: <20210215195558.150797411@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 15 Feb 2021 14:55:36 -0500
+Date:   Mon, 15 Feb 2021 14:55:37 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 3/5] tracing: Add ptr-hash option to show the hashed pointer value
+Subject: [for-next][PATCH 4/5] tracing: Make hash-ptr option default
 References: <20210215195533.101751000@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -35,72 +35,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Add tracefs/options/hash-ptr option to show hashed pointer
-value by %p in event printk format string.
+Since the original behavior of the trace events is to hash the %p pointers,
+make that the default, and have developers have to enable the option in
+order to have them unhashed.
 
-For the security reason, normal printk will show the hashed
-pointer value (encrypted by random number) with %p to printk
-buffer to hide the real address. But the tracefs/trace always
-shows real address for debug. To bridge those outputs, add an
-option to switch the output format. Ftrace users can use it
-to find the hashed value corresponding to the real address
-in trace log.
-
-Link: https://lkml.kernel.org/r/160277372504.29307.14909828808982012211.stgit@devnote2
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- Documentation/trace/ftrace.rst | 6 ++++++
- kernel/trace/trace.c           | 3 +++
- kernel/trace/trace.h           | 1 +
- 3 files changed, 10 insertions(+)
+ kernel/trace/trace.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-index 87cf5c010d5d..62c98e9bbdd9 100644
---- a/Documentation/trace/ftrace.rst
-+++ b/Documentation/trace/ftrace.rst
-@@ -1159,6 +1159,12 @@ Here are the available options:
- 	This simulates the original behavior of the trace file.
- 	When the file is closed, tracing will be enabled again.
- 
-+  hash-ptr
-+        When set, "%p" in the event printk format displays the
-+        hashed pointer value instead of real address.
-+        This will be useful if you want to find out which hashed
-+        value is corresponding to the real value in trace log.
-+
-   record-cmd
- 	When any event or tracer is enabled, a hook is enabled
- 	in the sched_switch trace point to fill comm cache
 diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 39f8a537196e..16e252d39016 100644
+index 16e252d39016..f5e8e39d6f57 100644
 --- a/kernel/trace/trace.c
 +++ b/kernel/trace/trace.c
-@@ -3558,6 +3558,9 @@ const char *trace_event_format(struct trace_iterator *iter, const char *fmt)
- 	if (WARN_ON_ONCE(!fmt))
- 		return fmt;
+@@ -408,7 +408,8 @@ EXPORT_SYMBOL_GPL(unregister_ftrace_export);
+ 	 TRACE_ITER_PRINT_PARENT | TRACE_ITER_PRINTK |			\
+ 	 TRACE_ITER_ANNOTATE | TRACE_ITER_CONTEXT_INFO |		\
+ 	 TRACE_ITER_RECORD_CMD | TRACE_ITER_OVERWRITE |			\
+-	 TRACE_ITER_IRQ_INFO | TRACE_ITER_MARKERS)
++	 TRACE_ITER_IRQ_INFO | TRACE_ITER_MARKERS |			\
++	 TRACE_ITER_HASH_PTR)
  
-+	if (iter->tr->trace_flags & TRACE_ITER_HASH_PTR)
-+		return fmt;
-+
- 	p = fmt;
- 	new_fmt = q = iter->fmt;
- 	while (*p) {
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 6c3ea6f95e68..dec13ff66077 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1175,6 +1175,7 @@ extern int trace_get_user(struct trace_parser *parser, const char __user *ubuf,
- 		C(MARKERS,		"markers"),		\
- 		C(EVENT_FORK,		"event-fork"),		\
- 		C(PAUSE_ON_TRACE,	"pause-on-trace"),	\
-+		C(HASH_PTR,		"hash-ptr"),	/* Print hashed pointer */ \
- 		FUNCTION_FLAGS					\
- 		FGRAPH_FLAGS					\
- 		STACK_FLAGS					\
+ /* trace_options that are only supported by global_trace */
+ #define TOP_LEVEL_TRACE_FLAGS (TRACE_ITER_PRINTK |			\
 -- 
 2.30.0
 
