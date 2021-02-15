@@ -2,87 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF2F31C343
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A0E31C34A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhBOUxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 15:53:25 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59830 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229675AbhBOUxW (ORCPT
+        id S229717AbhBOUz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 15:55:56 -0500
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:46200 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229469AbhBOUzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 15:53:22 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11FKlcOH080060;
-        Mon, 15 Feb 2021 15:52:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ix5xI4eV4ktS+Si1szwX06PnD5N08iIL8loUbC9USd4=;
- b=WgI1rCnu55qJBxYlo2+anOSbJE3qo/wP+I5mUyI38JAHlQ9CphTjNZlljRVUKRcmzjJo
- E5FkxrH1tDzo7OvVlCOdFK1N+CPIGtjpzgy42BbdH0wY+SWnz+0GqUSWXh/6chnSN6Jc
- /6XE31qElrQxKhxjAYL89QMl6Zeqfrm2+rclDXOTWREr087Ja6MW1QLmklKM0d46dmoc
- m8WPAkBNaqHBZEbE6pyJZjNDVPWA3Qo2EvLvSpECnTSyFaIAeMnjJPpCr0HUTyAwEOjj
- ty7M6jRwagt2hDlEdD3r4XN3w2HiAb4HX3V+ErmwynAA8v8H3OwtGPN4vHN0T6e9O7O6 Ww== 
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36r0a9g23a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 15:52:34 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11FKlfxL007425;
-        Mon, 15 Feb 2021 20:52:33 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03wdc.us.ibm.com with ESMTP id 36p6d8skr7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 20:52:33 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11FKqW7v11600228
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 20:52:32 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 062B978060;
-        Mon, 15 Feb 2021 20:52:32 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 895A37805E;
-        Mon, 15 Feb 2021 20:52:31 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.211.130.226])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Feb 2021 20:52:31 +0000 (GMT)
-Subject: Re: [PATCH 1/4] ibmvfc: simplify handling of sub-CRQ initialization
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20210211185742.50143-1-tyreld@linux.ibm.com>
- <20210211185742.50143-2-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <a3a7b428-3225-0645-0621-fc4b1c5ec618@linux.vnet.ibm.com>
-Date:   Mon, 15 Feb 2021 14:52:31 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 15 Feb 2021 15:55:50 -0500
+Received: by mail-lf1-f52.google.com with SMTP id v5so12523407lft.13;
+        Mon, 15 Feb 2021 12:55:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=whwMqTlS1WBk9AS5zpBCAK3G8DSK1CxTvfiZRNL1dTI=;
+        b=k1HeO8dLyXkPikOGp8cuKd5IS2IQX6E9lpvA99tqqGcZI26e/NiknPZEpmHeaB+N0r
+         NWuk01l+XRvYH/KSpbXYF6jMb5uqnvAUuxUn/aZM3Tc+xdZoIZbfS+TTFMxp/1FU9YJm
+         TLz3iYmAhwbx2o6u98f4Ul837tTvSmbRphjsVgLhVuGhabhFoErEp6ZqUkhx7FSM83VK
+         6GIhc1T0klpnQql9jV+KlXNTFQS05nJkmPyWzH5f1e+l10B17/TL11/k7h4On50EpyEv
+         wcBzAsXblRAE0JWNsLuNIxL38SWdq9qIKtntBkofjV+VKXCTyKJyYIli6sjruynuZ6nu
+         x72Q==
+X-Gm-Message-State: AOAM530EeIQ5bZFVFHXtK5xwECuIgHFGbrYUxTmWs3bD6CgxKLLMVYhU
+        ryMNU4xcS8eJriLr8Gja2CE=
+X-Google-Smtp-Source: ABdhPJzl4f8o29TEkIis3q7JbqLJp6lJCJmwVeq0HyGGLbB9OVwiNeC/gqum50UkbyjMTg9eFj74uw==
+X-Received: by 2002:a19:6b17:: with SMTP id d23mr2984143lfa.103.1613422507756;
+        Mon, 15 Feb 2021 12:55:07 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id d4sm2898773lfi.117.2021.02.15.12.55.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 12:55:07 -0800 (PST)
+Date:   Mon, 15 Feb 2021 21:55:06 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        rric@kernel.org, helgaas@kernel.org, wsa@kernel.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <YCrfqungNSSxe5lK@rocinante>
+References: <20210215181550.714101-1-zhengdejin5@gmail.com>
+ <20210215181550.714101-2-zhengdejin5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210211185742.50143-2-tyreld@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-15_16:2021-02-12,2021-02-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- clxscore=1011 mlxscore=0 bulkscore=0 mlxlogscore=999 priorityscore=1501
- malwarescore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102150156
+Content-Disposition: inline
+In-Reply-To: <20210215181550.714101-2-zhengdejin5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
+Hi Dejin,
 
+Thank you for all the work here!
 
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
+The subject and the commit message could be improved to include a little
+more details about why do you want to do it, and what problems does it
+aims to solve.
 
+> Introduce pcim_alloc_irq_vectors(), a explicit device-managed version of
+> pci_alloc_irq_vectors().
+
+You can probably drop the "explicit" word from the sentence above.
+ 
+> +/**
+> + * pcim_alloc_irq_vectors - a device-managed pci_alloc_irq_vectors()
+> + *
+> + * It depends on calling pcim_enable_device() to make irq resources manageable.
+> + */
+
+It would be "IRQ" in the sentence above.  Also see [1] for more details
+about how to make a patch ready to be accepted.
+
+Also, this comment looks like it's intended to be compliant with the
+kernel-doc format, and if so, then you should describe each argument as
+the bare minimum, so that the entire comment would become this function
+documentation making it also a little more useful.  See [2] for an
+example of how to use kernel-doc.
+
+> +int pcim_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
+> +				unsigned int max_vecs, unsigned int flags)
+> +{
+> +	struct pci_devres *dr;
+> +
+> +       /*Ensure that the pcim_enable_device() function has been called*/
+
+The comment above has to be correctly aligned and it's also missing
+spaces around the sentence to be properly formatted, see [3].
+
+> +	dr = find_pci_dr(dev);
+> +	if (!dr || !dr->enabled)
+> +		return -EINVAL;
+> +
+> +	return pci_alloc_irq_vectors(dev, min_vecs, max_vecs, flags);
+> +}
+
+Question: wouldn't you need to call pci_free_irq_vectors() somewhere,
+possibly to pcim_release() callback?  Although, I am not sure where the
+right place would be.
+
+I am asking, as the documentation (see [4]) suggests that one would have
+to release allocated IRQ vectors (relevant exceprt):
+
+>> To automatically use MSI or MSI-X interrupt vectors, use the following
+>> function:
+>>
+>>  int pci_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
+>>		unsigned int max_vecs, unsigned int flags);
+>>
+>> which allocates up to max_vecs interrupt vectors for a PCI device.
+>>
+>> (...)
+>>
+>> Any allocated resources should be freed before removing the device using
+>> the following function:
+>>
+>>  void pci_free_irq_vectors(struct pci_dev *dev);
+
+What do you think?
+
+1. https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com/
+2. https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html
+3. https://www.kernel.org/doc/html/latest/process/coding-style.html
+4. https://www.kernel.org/doc/html/latest/PCI/msi-howto.html
+
+Krzysztof
