@@ -2,230 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E301D31B640
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C835631B647
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhBOJMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:12:47 -0500
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:26078 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbhBOJMl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:12:41 -0500
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id D167C521847;
-        Mon, 15 Feb 2021 12:11:55 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1613380315;
-        bh=wl5bInwndQYHnhr0/slUsUtb2bYyEjBdhWRXtViAFy8=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=xWtSehnCkFk9xqGuSFItfDrxBQgvhHALiWpaEwIZRxU8sXfePDQpBakQjOntylZSc
-         jEl9a6L2XjswWTE4Mj16OvE+CtVPbT3W74FjO9I4Jxm2+doJG4kO5ToXxbiAm5Pn8g
-         viTnlH5AgAk00rpPGXgG59ibt22G0lX9xXHWVCT0p7BD4sP7yjT+T8JXfRzpVblwCJ
-         aPP3XQFEIOkVFs2RmqF/F5pVXtJCbk4b1qnh4fwlsAgdYm5nwjV/3fMbA/zrK3n93b
-         uN6LMfN8opGq3fcgvO9lZRU8o2Ransa6+MLxxOpW4S/GeLeZ4/mMhFzJslQj0aJFkg
-         4jI1kom4g2bLg==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 02721521853;
-        Mon, 15 Feb 2021 12:11:55 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Mon, 15
- Feb 2021 12:11:54 +0300
-Subject: Re: [RFC PATCH v4 07/17] af_vsock: rest of SEQPACKET support
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210207151259.803917-1-arseny.krasnov@kaspersky.com>
- <20210207151615.805115-1-arseny.krasnov@kaspersky.com>
- <20210211122714.rqiwg3qp3kuprktb@steredhat>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <53525ac0-1632-1a49-5c80-9ed2aa0012e0@kaspersky.com>
-Date:   Mon, 15 Feb 2021 12:11:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230019AbhBOJOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:14:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33862 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230088AbhBOJOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 04:14:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613380431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=miCNDkPWZZBRVJ8Jtr1LFzD24yWA9N0KNTV3BkO+MBs=;
+        b=TETHPiEq8kl7uQEKm1Aff4L3NsQE0DM02/lfPkpKudaCI6/5lNvCven/uHuRT24qzIXWlb
+        R5BxAqdLhSywOBM2nG5lWN1rFZRScNEvDlYO6zf3OlgEc7VuRTl3HqG4uIymDgc/8zHABu
+        C6iAKZCoFVJI6hxssRHEbP17I8dvFo0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9278BAD19;
+        Mon, 15 Feb 2021 09:13:51 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 10:13:50 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <YCo7TqUnBdgJGkwN@dhcp22.suse.cz>
+References: <20210214091954.GM242749@kernel.org>
+ <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
+ <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210211122714.rqiwg3qp3kuprktb@steredhat>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.64.68.128]
-X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 02/06/2021 23:52:08
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 161679 [Feb 06 2021]
-X-KSE-AntiSpam-Info: LuaCore: 422 422 763e61bea9fcfcd94e075081cb96e065bc0509b4
-X-KSE-AntiSpam-Info: Version: 5.9.16.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
-X-KSE-AntiSpam-Info: {Tracking_date, moscow}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 02/06/2021 23:55:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 06.02.2021 21:17:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/02/15 08:17:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/02/15 05:13:00 #16229789
-X-KLMS-AntiVirus-Status: Clean, skipped
+In-Reply-To: <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun 14-02-21 11:21:02, James Bottomley wrote:
+> On Sun, 2021-02-14 at 10:58 +0100, David Hildenbrand wrote:
+> [...]
+> > > And here we come to the question "what are the differences that
+> > > justify a new system call?" and the answer to this is very
+> > > subjective. And as such we can continue bikeshedding forever.
+> > 
+> > I think this fits into the existing memfd_create() syscall just fine,
+> > and I heard no compelling argument why it shouldnâ€˜t. Thatâ€˜s all I can
+> > say.
+> 
+> OK, so let's review history.  In the first two incarnations of the
+> patch, it was an extension of memfd_create().  The specific objection
+> by Kirill Shutemov was that it doesn't share any code in common with
+> memfd and so should be a separate system call:
+> 
+> https://lore.kernel.org/linux-api/20200713105812.dnwtdhsuyj3xbh4f@box/
 
-On 11.02.2021 15:27, Stefano Garzarella wrote:
-> On Sun, Feb 07, 2021 at 06:16:12PM +0300, Arseny Krasnov wrote:
->> This does rest of SOCK_SEQPACKET support:
->> 1) Adds socket ops for SEQPACKET type.
->> 2) Allows to create socket with SEQPACKET type.
->>
->> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->> ---
->> net/vmw_vsock/af_vsock.c | 37 ++++++++++++++++++++++++++++++++++++-
->> 1 file changed, 36 insertions(+), 1 deletion(-)
->>
->> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->> index a033d3340ac4..c77998a14018 100644
->> --- a/net/vmw_vsock/af_vsock.c
->> +++ b/net/vmw_vsock/af_vsock.c
->> @@ -452,6 +452,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
->> 		new_transport = transport_dgram;
->> 		break;
->> 	case SOCK_STREAM:
->> +	case SOCK_SEQPACKET:
->> 		if (vsock_use_local_transport(remote_cid))
->> 			new_transport = transport_local;
->> 		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
->> @@ -459,6 +460,15 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
->> 			new_transport = transport_g2h;
->> 		else
->> 			new_transport = transport_h2g;
->> +
->> +		if (sk->sk_type == SOCK_SEQPACKET) {
->> +			if (!new_transport ||
->> +			    !new_transport->seqpacket_seq_send_len ||
->> +			    !new_transport->seqpacket_seq_send_eor ||
->> +			    !new_transport->seqpacket_seq_get_len ||
->> +			    !new_transport->seqpacket_dequeue)
->> +				return -ESOCKTNOSUPPORT;
->> +		}
-> Maybe we should move this check after the try_module_get() call, since 
-> the memory pointed by 'new_transport' pointer can be deallocated in the 
-> meantime.
->
-> Also, if the socket had a transport before, we should deassign it before 
-> returning an error.
+Thanks for the pointer. But this argument hasn't been challenged at all.
+It hasn't been brought up that the overlap would be considerable higher
+by the hugetlb/sealing support. And so far nobody has claimed those
+combinations as unviable.
 
-I think previous transport is deassigned immediately after this
+> The other objection raised offlist is that if we do use memfd_create,
+> then we have to add all the secret memory flags as an additional ioctl,
+> whereas they can be specified on open if we do a separate system call. 
+> The container people violently objected to the ioctl because it can't
+> be properly analysed by seccomp and much preferred the syscall version.
+> 
+> Since we're dumping the uncached variant, the ioctl problem disappears
+> but so does the possibility of ever adding it back if we take on the
+> container peoples' objection.  This argues for a separate syscall
+> because we can add additional features and extend the API with flags
+> without causing anti-ioctl riots.
 
-'switch()' on sk->sk_type:
-
-if (vsk->transport) {
-
-    ...
-
-    vsock_deassign_transport(vsk);
-
-}
-
-
-Ok, check will be moved after 'try_module_get()'.
-
->
->> 		break;
->> 	default:
->> 		return -ESOCKTNOSUPPORT;
->> @@ -684,6 +694,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
->>
->> 	switch (sk->sk_socket->type) {
->> 	case SOCK_STREAM:
->> +	case SOCK_SEQPACKET:
->> 		spin_lock_bh(&vsock_table_lock);
->> 		retval = __vsock_bind_connectible(vsk, addr);
->> 		spin_unlock_bh(&vsock_table_lock);
->> @@ -769,7 +780,7 @@ static struct sock *__vsock_create(struct net *net,
->>
->> static bool sock_type_connectible(u16 type)
->> {
->> -	return type == SOCK_STREAM;
->> +	return (type == SOCK_STREAM) || (type == SOCK_SEQPACKET);
->> }
->>
->> static void __vsock_release(struct sock *sk, int level)
->> @@ -2199,6 +2210,27 @@ static const struct proto_ops vsock_stream_ops = {
->> 	.sendpage = sock_no_sendpage,
->> };
->>
->> +static const struct proto_ops vsock_seqpacket_ops = {
->> +	.family = PF_VSOCK,
->> +	.owner = THIS_MODULE,
->> +	.release = vsock_release,
->> +	.bind = vsock_bind,
->> +	.connect = vsock_connect,
->> +	.socketpair = sock_no_socketpair,
->> +	.accept = vsock_accept,
->> +	.getname = vsock_getname,
->> +	.poll = vsock_poll,
->> +	.ioctl = sock_no_ioctl,
->> +	.listen = vsock_listen,
->> +	.shutdown = vsock_shutdown,
->> +	.setsockopt = vsock_connectible_setsockopt,
->> +	.getsockopt = vsock_connectible_getsockopt,
->> +	.sendmsg = vsock_connectible_sendmsg,
->> +	.recvmsg = vsock_connectible_recvmsg,
->> +	.mmap = sock_no_mmap,
->> +	.sendpage = sock_no_sendpage,
->> +};
->> +
->> static int vsock_create(struct net *net, struct socket *sock,
->> 			int protocol, int kern)
->> {
->> @@ -2219,6 +2251,9 @@ static int vsock_create(struct net *net, struct socket *sock,
->> 	case SOCK_STREAM:
->> 		sock->ops = &vsock_stream_ops;
->> 		break;
->> +	case SOCK_SEQPACKET:
->> +		sock->ops = &vsock_seqpacket_ops;
->> +		break;
->> 	default:
->> 		return -ESOCKTNOSUPPORT;
->> 	}
->> -- 
->> 2.25.1
->>
->
+I am sorry but I do not understand this argument. What kind of flags are
+we talking about and why would that be a problem with memfd_create
+interface? Could you be more specific please?
+-- 
+Michal Hocko
+SUSE Labs
