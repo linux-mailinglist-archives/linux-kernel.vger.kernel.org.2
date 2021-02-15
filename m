@@ -2,375 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3399231BB05
+	by mail.lfdr.de (Postfix) with ESMTP id F12D131BB06
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhBOOZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:25:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230247AbhBOOZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:25:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07D5664DDA;
-        Mon, 15 Feb 2021 14:24:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613399058;
-        bh=WzRlqDb+KM3KnQQxdMe8yShHTmNhXGHIiMbPcaisIkI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=o6Bzm7kthOh9mtl5NgrmwUfR6+T0V4AiAiajgHdDcdec+Wpbm8LfZyXLx0vkVEliR
-         Gb4Vy1VFQHGK9Ds1TfoSpWisNS2bNGNcr7HTdpHlfg5kKnevs7pJfcy0RxObraSrel
-         ZEDbazby4CR9LOcjfWFupZzoXXwEpQ82b108l7Q9BZrhKiASdovBagatf8Am1vLmut
-         53yRuZWrBCefVJKoZbFfohik+iD3qJ/bWQFoRUpr+z08MCiecFUydPIuuKRNCrOs3J
-         KeZq+pUvX70fUt1vrCeEvLgP9KWMSNhMwrDF8m3gLrU8XjUNWF+CWBLCYvJxpUHyKm
-         6525R7D7NwpZQ==
-Date:   Mon, 15 Feb 2021 14:24:12 +0000
-From:   Will Deacon <will@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     catalin.marinas@arm.com, maz@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, tytso@mit.edu, ardb@kernel.org
-Subject: [GIT PULL] arm64 updates for 5.12
-Message-ID: <20210215142412.GA1644@willie-the-truck>
+        id S230100AbhBOO1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:27:15 -0500
+Received: from mail-mw2nam12on2085.outbound.protection.outlook.com ([40.107.244.85]:32864
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229670AbhBOO1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:27:11 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VlxSotLv6OECl+JnlX9bfjPiku9Yqo/R8VxXonfucN9MV13QGg472JedaNU0R3dHUPq1xvZHcQoh04TPAuverRAnn19nSCXH67brD8DxUo5gKRM+OgeXyjlMy3LYJHphMOwNubkgXt5Fi5xkBiAuDtwrwguM/WiYp4X7U9BxQmY6/Z3cJSn1uTmIWDez/S3S6Sr56Lk2sTGLvq2evVR32gPZtMbkLgVH2dKN8HgFP+5ixtOhp6L/IFyPIY5TbKSwIYFVX1AkQcG74xtOmgQ9WCuAJtSeynzWnpYFGWvqyb/bptc+saEMo+NCSHdPEBLm0Fs0HhBqoW+ssXFssYdcfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kEPCJpwUacu5aR2jhd5tpwqz0a7bZLdP6xbT0Qt4Rkw=;
+ b=Uc56oFrd9vIPa4wLLNbiKwQqBBJS9YS6n9ZJuqk9FhhJPefuEbEb9ebt5RJXAmws7uHVgyvG/zwF60WurQsnJY9pQSeL1UUnWctp+FCSlUINY6FAbRfZ+pfjVstx4xpOZWX9FG2lSz5dnnGB5Uh+ACi1HPyIvXAMNrwdDR2pTnmhRg5lkCxRXJZjg8IAGtWDfZ6L8KVSuVeY36BoNUxAHf/utv3hycKsG7dQfETsJ2jIIFtS1IdBWNcCCiqi368iwa/wzPhIx13NSCQESwQZ6sVePP5LMaV3lqjM1pZt5wqLYbfqEA72KSSefdc2GUbMRgXiApd4cdpJzwizFQhpwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kEPCJpwUacu5aR2jhd5tpwqz0a7bZLdP6xbT0Qt4Rkw=;
+ b=wEA6EyQ8iPdIx8ujPGQK6tluBNgfZBSl+A0s9OO1CB3zGSmEK6UEOTpYmjWjFPdjCsMx/UJMzyW0lF9FWKLukwoltrNqQ6yGVZae6eN4UfF9gP6/SsH1v9Fttr15yePvxclc4iCXNFWB157E5ohWkroiBtGuM5elDE6pycS34UY=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4223.namprd12.prod.outlook.com (2603:10b6:208:1d3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Mon, 15 Feb
+ 2021 14:26:16 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3846.038; Mon, 15 Feb 2021
+ 14:26:16 +0000
+Subject: Re: [PATCH v1 1/3] string: Consolidate yesno() helpers under string.h
+ hood
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        netdev@vger.kernel.org
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <43456ba7-c372-84cc-4949-dcb817188e21@amd.com>
+Date:   Mon, 15 Feb 2021 15:26:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:83c6:b72d:87bd:4259]
+X-ClientProxiedBy: AM0PR01CA0086.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:10e::27) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:83c6:b72d:87bd:4259] (2a02:908:1252:fb60:83c6:b72d:87bd:4259) by AM0PR01CA0086.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Mon, 15 Feb 2021 14:26:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ac94fef5-e2bd-474b-8a5e-08d8d1bda799
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4223:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4223CCD1DB73BD57D9D89FE683889@MN2PR12MB4223.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zNmks1hC0bG4XZViiAJ6og59UUCwHWsDwGLvopN0x0AoN8HHR8yRjmRdryhoDEqDOMOM+c2nKlOC2sKJ7YXcbFqM1fMiRacWvHVGJUR5g05QFCg48c1GjLVt8BPmb5mqWogaRZmf4uCk9Z1fvAB0EsIoix5VomRVErCj9tRmGMILwA7SClR/wfBWXqYSyJo3FNXLFt7Hm2MNn9NN+wSF4T/6nGLX7+cs1XxT3hSD0CPQwr5EYmuxgFWwmGInvU+kTxDuGOXUvxTNS5GE1//kr9aYG3nriJ/mqyXdQSLIXTz/vdfUWJko0A7Ztf3/n6aZQ+29jSo5JNZ+7QXMdDwANl456R6SsdxeLAWEY5o9h5bR2Xm4CoQd4ygRt7eGtEgvZnAcX/odW2PMb3GskBw6Xt7kRu3eSYch54m9ZFnMsy1z9Bs72P9QLAQ3R0/QNQPeKXAnmM7GrWAEAJIZ8+HxCRvv9HoZnfk5Vac08PKfNnOOZ6Whm+Gc2QonXuGxJyF9Zp2R8w3Q8+jbyvMgI6L3xavKiY/R5bfcALjB+TG4eTbRCTv870n5L5RR9DldDwW5Hh96TDXdgCcyxdkvXpB8ZUNZzcqLfNAAMyw3h6qNV78=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(6486002)(7416002)(5660300002)(2616005)(66946007)(36756003)(52116002)(31696002)(54906003)(4326008)(478600001)(16526019)(8936002)(86362001)(186003)(2906002)(83380400001)(31686004)(921005)(6666004)(66476007)(66556008)(316002)(8676002)(110136005)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dDBnMzZiMTAxM1c1RVpQa0l3amdBa1luekI3TXNJSWVscmhqeVcvNHM3OXhL?=
+ =?utf-8?B?Y0lqTE9sQmt0d1ZzT1BxbXBDNGltMHJoUm9PdXFQS2pDSkpOVUIwZGFQSlJU?=
+ =?utf-8?B?WWRHSGR3T1Erb1VlclBiaVFTSTZQK3g1VDlyWUR6Ukt3RDltaHZsMTllVUsr?=
+ =?utf-8?B?MEtrNlloSFB6cEN3TlZoeFA0RmxIZUZpZXFnWDlnVXZ6VEY2OHJ0a0d1Z1Nq?=
+ =?utf-8?B?OVVBSHdQNWd6WDlUdjlKV3FTZjFqRURYemJsRU92eEo1WHBsWlNmdGRBNVJ1?=
+ =?utf-8?B?Qm1Kc0J1ZDhKTDRob1VaNElTL21WdUVNbTRqc0dxU2xTK3RlTmhPVENrZUMx?=
+ =?utf-8?B?Y215VWc4dFV3Y2F0MTJQQ1F1S3R1ait3SlkxVUNYbHVXSFNhT1cwQWRrS2JT?=
+ =?utf-8?B?QnlVVTJLRFpPT2E4cVlJWmZRbStLMEF4ek1Ub3QxT3Erak11ZXdMcDZxVzEy?=
+ =?utf-8?B?RkFaUTdBaFJHZFhNNkRZa21xRWlYRkR4cVJIalRPd3czZU5nTkYzenp0VGVw?=
+ =?utf-8?B?ZWUrTWo2dnFGb0Z5M1plbzNWdE9RTnlrMEZaaFRCeU1tUXFhWHV5aFpObk92?=
+ =?utf-8?B?NDVMdzJzcFAyb1pTL2ZSVE1td0NEbkp1ZTBaakI4QjhzWm9abG5Db3dudExx?=
+ =?utf-8?B?ektjbXJPZ2RJZ3p2dFZKTkNuVlJKb296d2E4WW9TUkE5L2FVNWI1VkJQcFd2?=
+ =?utf-8?B?YlR3UHN3b01KdE5wQ0t2MVhnMldGRWl5ODl3Z05RZnlpckpsUzJ1Z3lBWExn?=
+ =?utf-8?B?QmdkcmY2UmJlRkFiSm9yTUlZZThZVEw3aVl2T21iZjBEWTlpYzBkMEZzVm5R?=
+ =?utf-8?B?K0FwZWZTWnpVQkJQYWNWT1RmNFNFOFNWczVSTjZZakJqUzI3UndHMEVweVFi?=
+ =?utf-8?B?SGg5Ry8vcFZiL2JoM3d2cDE4VlNmUWI2L2NGUVBSUnduc0c1R05pZnFCNER0?=
+ =?utf-8?B?WXp2SVhoY0xNQkIrUkxFamVldkMyR2gzek5sRkNCc01tdkc3MjgvTExnUTlw?=
+ =?utf-8?B?dEc2TWxFTTBZL3R3cTF1UDl0MUJhbUxRZlQ3Ni8xS0RDZC9ObGpXSm4veDU2?=
+ =?utf-8?B?eERtVUl4WnhmdEtFOFpyU21mWWRCQm5FZ1FiamE1dzJMWUxkUGJwUmhlR1lK?=
+ =?utf-8?B?S3VPY3h4WlA2aEpCZUVYNkFvZ0MvWWtYcGJvSTRYSnFyMUE5c1RxVkpydWNF?=
+ =?utf-8?B?Umc1Sm4wdjJLQkVvaW0xT2pOUFN5RlFJbXhoSmdNS05DNFp0SnJlazg0L0Fu?=
+ =?utf-8?B?Zk9Id0o3dXBlaXcxWktzZ3J2di9zekw4Z2ZNRnNGU1JBNkZUMi9ObXpUdVVE?=
+ =?utf-8?B?U0x5M2dxUVZmdVhNdEMwWmYyY1dMSlFDMVQxQnVVTTRMY2s5cm5DcDQ3MnVi?=
+ =?utf-8?B?RSt4bHdjL3F1bnVJTWZHUW1rSzFWZkwwbXMrTHliTDU0SHRER3UzN0NLT0pP?=
+ =?utf-8?B?VFIwZHFJRThtSVBVT21oQzB2S2VXYk5YRmFMaXU3OWpRWFVRU0gyeXZLSXp0?=
+ =?utf-8?B?K05tRHNPZDhPc2JqSXVKdDNwaHBOWGlQVFpicHQxbWJsWFUzQldGK29JazlR?=
+ =?utf-8?B?dEw2TkF3b2Y1RVJTbDJnRlllVnpqdkxTYUd6TnUyNTJBQkJ4L0J4UloxWXAy?=
+ =?utf-8?B?WHZOcnlPZ1pNSUFiTUZialNHMkVMWFkxMkFjSElsRXk0N0d2bUEvcjRQb3lR?=
+ =?utf-8?B?WkZmWi9PY0Ywb2lVYjYrNlZ1M1FMU1FyaFdvYkE5N2h3UEp2M2dTNTBTWWM4?=
+ =?utf-8?B?dklLcWRkdlgvYUs2VS94SmdOUjVVVStNNENlWkJIMk5SM0J5aDY2U1IwMUlV?=
+ =?utf-8?B?aDVtTlZYaC9WVjlrOEh4dTVsMDhkWnBzVThMNEJ1eVhwa0xEd1dqVFJlb0ho?=
+ =?utf-8?Q?tW6z0X2w8/vPO?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac94fef5-e2bd-474b-8a5e-08d8d1bda799
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2021 14:26:16.6915
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LIKjwn4Dp9M7WBLkT9H72QotDkZ3XLQ820usZ6NPvMJ9HikIyOJykFAW15ltd7iY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4223
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Am 15.02.21 um 15:21 schrieb Andy Shevchenko:
+> We have already few similar implementation and a lot of code that can benefit
+> of the yesno() helper.  Consolidate yesno() helpers under string.h hood.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Please pull these arm64 updates for 5.12. There's a summary in the tag
-and we've only had a couple of trivial conflicts reported in -next, so
-it should be plain sailing.
+Looks like a good idea to me, feel free to add an Acked-by: Christian 
+König <christian.koenig@amd.com> to the series.
 
-In terms of the diffstat, a couple of things stand out:
+But looking at the use cases for this, wouldn't it make more sense to 
+teach kprintf some new format modifier for this?
 
-  - The faultaround patches to initialise prefaulted PTEs as 'old'
-    bring in a bunch of changes to mm/, largely due to the rework from
-    Kirill.
+Christian.
 
-  - We have a change to drivers/char/random.c to avoid calling
-    arch_get_random_seed_long() from add_interrupt_randomness(). We
-    didn't have any luck getting a response from Ted on this [1], but
-    since we need this change in order to enable the firmware-backed
-    TRNG service, I've ended up including it here.
+> ---
+>   .../drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c    |  6 +-----
+>   drivers/gpu/drm/i915/i915_utils.h                    |  6 +-----
+>   drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c   | 12 +-----------
+>   include/linux/string.h                               |  5 +++++
+>   4 files changed, 8 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> index 360952129b6d..7fde4f90e513 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> @@ -23,6 +23,7 @@
+>    *
+>    */
+>   
+> +#include <linux/string.h>
+>   #include <linux/uaccess.h>
+>   
+>   #include <drm/drm_debugfs.h>
+> @@ -49,11 +50,6 @@ struct dmub_debugfs_trace_entry {
+>   	uint32_t param1;
+>   };
+>   
+> -static inline const char *yesno(bool v)
+> -{
+> -	return v ? "yes" : "no";
+> -}
+> -
+>   /* parse_write_buffer_into_params - Helper function to parse debugfs write buffer into an array
+>    *
+>    * Function takes in attributes passed to debugfs write entry
+> diff --git a/drivers/gpu/drm/i915/i915_utils.h b/drivers/gpu/drm/i915/i915_utils.h
+> index abd4dcd9f79c..e6da5a951132 100644
+> --- a/drivers/gpu/drm/i915/i915_utils.h
+> +++ b/drivers/gpu/drm/i915/i915_utils.h
+> @@ -27,6 +27,7 @@
+>   
+>   #include <linux/list.h>
+>   #include <linux/overflow.h>
+> +#include <linux/string.h>
+>   #include <linux/sched.h>
+>   #include <linux/types.h>
+>   #include <linux/workqueue.h>
+> @@ -408,11 +409,6 @@ wait_remaining_ms_from_jiffies(unsigned long timestamp_jiffies, int to_wait_ms)
+>   #define MBps(x) KBps(1000 * (x))
+>   #define GBps(x) ((u64)1000 * MBps((x)))
+>   
+> -static inline const char *yesno(bool v)
+> -{
+> -	return v ? "yes" : "no";
+> -}
+> -
+>   static inline const char *onoff(bool v)
+>   {
+>   	return v ? "on" : "off";
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+> index 7d49fd4edc9e..c857d73abbd7 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+> @@ -34,6 +34,7 @@
+>   
+>   #include <linux/seq_file.h>
+>   #include <linux/debugfs.h>
+> +#include <linux/string.h>
+>   #include <linux/string_helpers.h>
+>   #include <linux/sort.h>
+>   #include <linux/ctype.h>
+> @@ -2015,17 +2016,6 @@ static const struct file_operations rss_debugfs_fops = {
+>   /* RSS Configuration.
+>    */
+>   
+> -/* Small utility function to return the strings "yes" or "no" if the supplied
+> - * argument is non-zero.
+> - */
+> -static const char *yesno(int x)
+> -{
+> -	static const char *yes = "yes";
+> -	static const char *no = "no";
+> -
+> -	return x ? yes : no;
+> -}
+> -
+>   static int rss_config_show(struct seq_file *seq, void *v)
+>   {
+>   	struct adapter *adapter = seq->private;
+> diff --git a/include/linux/string.h b/include/linux/string.h
+> index 9521d8cab18e..fd946a5e18c8 100644
+> --- a/include/linux/string.h
+> +++ b/include/linux/string.h
+> @@ -308,4 +308,9 @@ static __always_inline size_t str_has_prefix(const char *str, const char *prefix
+>   	return strncmp(str, prefix, len) == 0 ? len : 0;
+>   }
+>   
+> +static inline const char *yesno(bool yes)
+> +{
+> +	return yes ? "yes" : "no";
+> +}
+> +
+>   #endif /* _LINUX_STRING_H_ */
 
-Cheers,
-
-Will
-
-[1] https://lore.kernel.org/linux-arm-kernel/CAMj1kXH2N_e722TiSU6_uUs_arjkBipwUnfD8=xj1etKE11DRQ@mail.gmail.com/
-
---->8
-
-The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
-
-  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-upstream
-
-for you to fetch changes up to 1ffa9763828cf73a4d4eaa04c29a4a89fb0708c7:
-
-  Merge branch 'for-next/vdso' into for-next/core (2021-02-12 15:17:42 +0000)
-
-----------------------------------------------------------------
-arm64 updates for 5.12
-
- - vDSO build improvements including support for building with BSD.
-
- - Cleanup to the AMU support code and initialisation rework to support
-   cpufreq drivers built as modules.
-
- - Removal of synthetic frame record from exception stack when entering
-   the kernel from EL0.
-
- - Add support for the TRNG firmware call introduced by Arm spec
-   DEN0098.
-
- - Cleanup and refactoring across the board.
-
- - Avoid calling arch_get_random_seed_long() from
-   add_interrupt_randomness()
-
- - Perf and PMU updates including support for Cortex-A78 and the v8.3
-   SPE extensions.
-
- - Significant steps along the road to leaving the MMU enabled during
-   kexec relocation.
-
- - Faultaround changes to initialise prefaulted PTEs as 'old' when
-   hardware access-flag updates are supported, which drastically
-   improves vmscan performance.
-
- - CPU errata updates for Cortex-A76 (#1463225) and Cortex-A55
-   (#1024718)
-
- - Preparatory work for yielding the vector unit at a finer granularity
-   in the crypto code, which in turn will one day allow us to defer
-   softirq processing when it is in use.
-
- - Support for overriding CPU ID register fields on the command-line.
-
-----------------------------------------------------------------
-Andre Przywara (2):
-      firmware: smccc: Introduce SMCCC TRNG framework
-      arm64: Add support for SMCCC TRNG entropy source
-
-Anshuman Khandual (1):
-      arm64/mm: Add warning for outside range requests in vmemmap_populate()
-
-Ard Biesheuvel (3):
-      firmware: smccc: Add SMCCC TRNG function call IDs
-      random: avoid arch_get_random_seed_long() when collecting IRQ randomness
-      arm64: assembler: add cond_yield macro
-
-Geert Uytterhoeven (1):
-      mm/nommu: Fix return type of filemap_map_pages()
-
-Hailong Liu (1):
-      arm64/ptdump:display the Linear Mapping start marker
-
-James Morse (2):
-      arm64: mm: Always update TCR_EL1 from __cpu_set_tcr_t0sz()
-      arm64: trans_pgd: hibernate: idmap the single page that holds the copy page routines
-
-Joey Gouly (2):
-      arm64: vmlinux.ld.S: add assertion for reserved_pg_dir offset
-      arm64: vmlinux.ld.S: add assertion for tramp_pg_dir offset
-
-John Millikin (1):
-      arm64: Support running gen_vdso_offsets.sh with BSD userland.
-
-Keno Fischer (1):
-      arm64: ptrace: Fix missing return in hw breakpoint code
-
-Kirill A. Shutemov (1):
-      mm: Cleanup faultaround and finish_fault() codepaths
-
-Marc Zyngier (22):
-      arm64: Drop workaround for broken 'S' constraint with GCC 4.9
-      arm64: Fix labels in el2_setup macros
-      arm64: Fix outdated TCR setup comment
-      arm64: Turn the MMU-on sequence into a macro
-      arm64: Provide an 'upgrade to VHE' stub hypercall
-      arm64: Initialise as nVHE before switching to VHE
-      arm64: Drop early setting of MDSCR_EL2.TPMS
-      arm64: Move VHE-specific SPE setup to mutate_to_vhe()
-      arm64: Simplify init_el2_state to be non-VHE only
-      arm64: Move SCTLR_EL1 initialisation to EL-agnostic code
-      arm64: cpufeature: Add global feature override facility
-      arm64: cpufeature: Use IDreg override in __read_sysreg_by_encoding()
-      arm64: Extract early FDT mapping from kaslr_early_init()
-      arm64: cpufeature: Add an early command-line cpufeature override facility
-      arm64: Allow ID_AA64MMFR1_EL1.VH to be overridden from the command line
-      arm64: Honor VHE being disabled from the command-line
-      arm64: Add an aliasing facility for the idreg override
-      arm64: Make kvm-arm.mode={nvhe, protected} an alias of id_aa64mmfr1.vh=0
-      KVM: arm64: Document HVC_VHE_RESTART stub hypercall
-      arm64: Move "nokaslr" over to the early cpufeature infrastructure
-      arm64: cpufeatures: Allow disabling of BTI from the command-line
-      arm64: cpufeatures: Allow disabling of Pointer Auth from the command-line
-
-Mark Rutland (2):
-      arm64: remove EL0 exception frame record
-      arm64: entry: consolidate Cortex-A76 erratum 1463225 workaround
-
-Masahiro Yamada (1):
-      arm64: do not descend to vdso directories twice
-
-Miaohe Lin (1):
-      mm/arm64: Correct obsolete comment in do_page_fault()
-
-Nathan Chancellor (1):
-      arm64: Make CPU_BIG_ENDIAN depend on ld.bfd or ld.lld 13.0.0+
-
-Pavel Tatashin (11):
-      arm64: kexec: make dtb_mem always enabled
-      arm64: hibernate: variable pudp is used instead of pd4dp
-      arm64: hibernate: move page handling function to new trans_pgd.c
-      arm64: trans_pgd: make trans_pgd_map_page generic
-      arm64: trans_pgd: pass allocator trans_pgd_create_copy
-      arm64: trans_pgd: pass NULL instead of init_mm to *_populate functions
-      arm64: kexec: move relocation function setup
-      arm64: kexec: call kexec_image_info only once
-      arm64: kexec: arm64_relocate_new_kernel clean-ups and optimizations
-      arm64: kexec: arm64_relocate_new_kernel don't use x0 as temp
-      arm64: hibernate: add __force attribute to gfp_t casting
-
-Qi Liu (2):
-      drivers/perf: Prevent forced unbinding of ARM_DMC620_PMU drivers
-      drivers/perf: Replace spin_lock_irqsave to spin_lock
-
-Quentin Perret (1):
-      KVM: arm64: Move __hyp_set_vectors out of .hyp.text
-
-Rikard Falkeborn (5):
-      perf: qcom: Constify static struct attribute_group
-      perf/imx_ddr: Constify static struct attribute_group
-      perf: hisi: Constify static struct attribute_group
-      perf: Constify static struct attribute_group
-      arm64: perf: Constify static attribute_group structs
-
-Robin Murphy (2):
-      perf/arm-cmn: Fix PMU instance naming
-      perf/arm-cmn: Move IRQs when migrating context
-
-Seiya Wang (2):
-      arm64: perf: add support for Cortex-A78
-      dt-bindings: arm: add Cortex-A78 binding
-
-Shaokun Zhang (2):
-      arm64: mm: Remove unused header file
-      arm64: cacheflush: Remove stale comment
-
-Srinivas Ramana (1):
-      arm64: Defer enabling pointer authentication on boot core
-
-Sudarshan Rajagopalan (1):
-      arm64/sparsemem: reduce SECTION_SIZE_BITS
-
-Suzuki K Poulose (1):
-      arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
-
-Viresh Kumar (3):
-      arm64: topology: Avoid the have_policy check
-      arm64: topology: Reorder init_amu_fie() a bit
-      arm64: topology: Make AMUs work with modular cpufreq drivers
-
-Wei Li (1):
-      drivers/perf: Add support for ARMv8.3-SPE
-
-Will Deacon (23):
-      mm: Allow architectures to request 'old' entries when prefaulting
-      arm64: mm: Implement arch_wants_old_prefaulted_pte()
-      mm: Move immutable fields of 'struct vm_fault' into anonymous struct
-      mm: Pass 'address' to map to do_set_pte() and drop FAULT_FLAG_PREFAULT
-      mm: Avoid modifying vmf.address in __collapse_huge_page_swapin()
-      mm: Use static initialisers for immutable fields of 'struct vm_fault'
-      mm: Mark anonymous struct field of 'struct vm_fault' as 'const'
-      arm64: Include linux/io.h in mm/mmap.c
-      mm: filemap: Fix microblaze build failure with 'mmu_defconfig'
-      Merge branch 'for-next/cosmetic' into for-next/core
-      Merge branch 'for-next/cpufeature' into for-next/core
-      Merge branch 'for-next/crypto' into for-next/core
-      Merge branch 'for-next/errata' into for-next/core
-      Merge branch 'for-next/faultaround' into for-next/core
-      Merge branch 'for-next/kexec' into for-next/core
-      Merge branch 'for-next/misc' into for-next/core
-      Merge branch 'for-next/perf' into for-next/core
-      Merge branch 'for-next/random' into for-next/core
-      Merge branch 'for-next/rng' into for-next/core
-      Merge branch 'for-next/selftests' into for-next/core
-      Merge branch 'for-next/stacktrace' into for-next/core
-      Merge branch 'for-next/topology' into for-next/core
-      Merge branch 'for-next/vdso' into for-next/core
-
-YANG LI (1):
-      arm64: mte: style: Simplify bool comparison
-
-Zhiyuan Dai (1):
-      arm64: improve whitespace
-
- Documentation/admin-guide/kernel-parameters.txt    |   9 +
- Documentation/admin-guide/perf/arm-cmn.rst         |   2 +-
- Documentation/devicetree/bindings/arm/pmu.yaml     |   1 +
- Documentation/virt/kvm/arm/hyp-abi.rst             |   9 +
- arch/arm/include/asm/archrandom.h                  |  10 +
- arch/arm64/Kconfig                                 |  11 +-
- arch/arm64/Makefile                                |  10 +-
- arch/arm64/include/asm/archrandom.h                |  82 +++++-
- arch/arm64/include/asm/asm-uaccess.h               |   4 +-
- arch/arm64/include/asm/assembler.h                 |  33 +++
- arch/arm64/include/asm/cacheflush.h                |   5 -
- arch/arm64/include/asm/cpufeature.h                |  11 +
- arch/arm64/include/asm/el2_setup.h                 |  60 ++--
- arch/arm64/include/asm/kexec.h                     |   5 +-
- arch/arm64/include/asm/kvm_asm.h                   |   8 +-
- arch/arm64/include/asm/memory.h                    |  12 +
- arch/arm64/include/asm/mmu_context.h               |   7 +-
- arch/arm64/include/asm/pgtable.h                   |  12 +-
- arch/arm64/include/asm/pointer_auth.h              |  10 +
- arch/arm64/include/asm/setup.h                     |  11 +
- arch/arm64/include/asm/sparsemem.h                 |  23 +-
- arch/arm64/include/asm/stackprotector.h            |   1 +
- arch/arm64/include/asm/sysreg.h                    |   9 +-
- arch/arm64/include/asm/trans_pgd.h                 |  39 +++
- arch/arm64/include/asm/uaccess.h                   |   2 +-
- arch/arm64/include/asm/virt.h                      |   7 +-
- arch/arm64/kernel/Makefile                         |   7 +-
- arch/arm64/kernel/alternative.c                    |   2 +-
- arch/arm64/kernel/asm-offsets.c                    |   3 +
- arch/arm64/kernel/cpu_errata.c                     |   2 -
- arch/arm64/kernel/cpufeature.c                     |  75 ++++-
- arch/arm64/kernel/entry-common.c                   |  54 +++-
- arch/arm64/kernel/entry.S                          |  14 +-
- arch/arm64/kernel/head.S                           |  75 +----
- arch/arm64/kernel/hibernate.c                      | 271 ++---------------
- arch/arm64/kernel/hyp-stub.S                       | 115 +++++++-
- arch/arm64/kernel/idreg-override.c                 | 216 ++++++++++++++
- arch/arm64/kernel/kaslr.c                          |  43 +--
- arch/arm64/kernel/machine_kexec.c                  |  57 ++--
- arch/arm64/kernel/module-plts.c                    |   2 +-
- arch/arm64/kernel/perf_event.c                     |  15 +-
- arch/arm64/kernel/process.c                        |   4 +-
- arch/arm64/kernel/ptrace.c                         |   1 +
- arch/arm64/kernel/relocate_kernel.S                |  48 +--
- arch/arm64/kernel/setup.c                          |  15 +
- arch/arm64/kernel/sleep.S                          |   1 +
- arch/arm64/kernel/stacktrace.c                     |  13 +-
- arch/arm64/kernel/syscall.c                        |  30 --
- arch/arm64/kernel/topology.c                       | 115 ++++----
- arch/arm64/kernel/traps.c                          |   2 +-
- arch/arm64/kernel/{vdso/vdso.S => vdso-wrap.S}     |   0
- arch/arm64/kernel/vdso/Makefile                    |   1 -
- arch/arm64/kernel/vdso/gen_vdso_offsets.sh         |   2 +-
- arch/arm64/kernel/{vdso32/vdso.S => vdso32-wrap.S} |   0
- arch/arm64/kernel/vdso32/Makefile                  |   1 -
- arch/arm64/kernel/vmlinux.lds.S                    |   8 +
- arch/arm64/kvm/arm.c                               |   3 +
- arch/arm64/kvm/hyp/nvhe/hyp-init.S                 |   2 +-
- arch/arm64/mm/Makefile                             |   1 +
- arch/arm64/mm/fault.c                              |  34 +--
- arch/arm64/mm/mmap.c                               |  15 +-
- arch/arm64/mm/mmu.c                                |   4 +-
- arch/arm64/mm/proc.S                               |  16 +-
- arch/arm64/mm/ptdump.c                             |   1 +
- arch/arm64/mm/trans_pgd.c                          | 324 +++++++++++++++++++++
- drivers/char/random.c                              |  15 +-
- drivers/firmware/smccc/smccc.c                     |   6 +
- drivers/perf/arm-cci.c                             |   7 +-
- drivers/perf/arm-cmn.c                             |  19 +-
- drivers/perf/arm_dmc620_pmu.c                      |   5 +-
- drivers/perf/arm_pmu.c                             |   2 +-
- drivers/perf/arm_smmuv3_pmu.c                      |   8 +-
- drivers/perf/arm_spe_pmu.c                         |  23 +-
- drivers/perf/fsl_imx8_ddr_perf.c                   |  10 +-
- drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c      |   2 +-
- drivers/perf/hisilicon/hisi_uncore_hha_pmu.c       |   2 +-
- drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c       |   2 +-
- drivers/perf/qcom_l2_pmu.c                         |   6 +-
- drivers/perf/qcom_l3_pmu.c                         |   6 +-
- drivers/perf/xgene_pmu.c                           |   5 +-
- fs/xfs/xfs_file.c                                  |   6 +-
- include/linux/arm-smccc.h                          |  31 ++
- include/linux/mm.h                                 |  25 +-
- include/linux/pgtable.h                            |  11 +
- mm/filemap.c                                       | 179 +++++++++---
- mm/khugepaged.c                                    |  37 ++-
- mm/memory.c                                        | 223 +++++---------
- mm/nommu.c                                         |   3 +-
- mm/shmem.c                                         |   6 +-
- mm/swapfile.c                                      |  11 +-
- .../selftests/arm64/mte/check_buffer_fill.c        |   2 +-
- 91 files changed, 1652 insertions(+), 985 deletions(-)
- create mode 100644 arch/arm/include/asm/archrandom.h
- create mode 100644 arch/arm64/include/asm/setup.h
- create mode 100644 arch/arm64/include/asm/trans_pgd.h
- create mode 100644 arch/arm64/kernel/idreg-override.c
- rename arch/arm64/kernel/{vdso/vdso.S => vdso-wrap.S} (100%)
- rename arch/arm64/kernel/{vdso32/vdso.S => vdso32-wrap.S} (100%)
- create mode 100644 arch/arm64/mm/trans_pgd.c
