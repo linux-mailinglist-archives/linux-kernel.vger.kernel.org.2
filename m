@@ -2,175 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8239031B9A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C96631B998
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhBOMrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:47:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhBOMqO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:46:14 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B42C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:45:33 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id z68so4177384pgz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:45:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B/Q6VwPDe6I6EirNcsyicnPy138BEVcOe0YKhiLSwKI=;
-        b=bFnBs52Ad4AzO3WrtmP1t4dKywjpPzK+A482Eht6ojz0TpmO7rLiExFrSiXmi1S2/N
-         JVPugG3EVQe37M9ZZbqQbe3vnUWlJ02gF52OhqtjzccwxgbMqN7glFsab53y34iAsFbL
-         4kjXYxYj4ufcMKtowhp4K7R5ARxG1wIl53SN1GNMvPvMAMKzWhz6Z+F9q9iOjCnhqXEO
-         hfWRa/ZSRjqL+PRzodxE8JEJzZg0064aea6im6iFOGyV3tcqTSjWLMisoHnAe4KdD2lI
-         4nfmAWUZN/9VffDyOGlST7TAebdEl3HRz5sKQJHvXGJxwQT0NXRV4c1fT6gYDqLv/YA2
-         QAHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B/Q6VwPDe6I6EirNcsyicnPy138BEVcOe0YKhiLSwKI=;
-        b=BsnSR8LVfhMIjOQW0eNL/7960/KT9UrL/6wPhBoV19apBbQREcULIx6AqYD1WX6Xby
-         idDifhb0Ko0S36gcxPSqicHGN5+pkC8KgAJfqVtnd/+wA2QrivKIsaqOkUKEw4BeaiJE
-         sO12z2ICVaykkesBGruLhmEUyIxwNPPdY59ljE8kpG2HrFGhfm5ASXxNfBmbSg11kRIp
-         cA0dmSHXdSPi0jSePA/kD3BCTVCz3B9k8GABsI8BTUvBQ5GjpzWiVS44deOHhnTZijCp
-         CUVGDYBKIseRUgm2DihcQdI9e1t2W4Pubm6Tz7yQTPrcJX24FBMyFLmhmPcgKj97Vrh/
-         BqeA==
-X-Gm-Message-State: AOAM5300nMCEvlvdv0cSmxytrFAu4KjW5pedn0Ds3c+uojZN6qnf83Bh
-        MuAcWYBf1c5qtp/0rlvfD22LTLNLjtqx4yn7wHbGcw==
-X-Google-Smtp-Source: ABdhPJyq6XwxGiX9i2zyXPYTiHNrGd98hXjL3RiX/v0CDPtNUnDm8UIfyWi8yX3TRZ6m+4rmLlNJOKb3zXYFAt+3B1c=
-X-Received: by 2002:a63:de0e:: with SMTP id f14mr14400347pgg.273.1613393133150;
- Mon, 15 Feb 2021 04:45:33 -0800 (PST)
+        id S230396AbhBOMqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:46:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41286 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230145AbhBOMqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 07:46:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7449CAC32;
+        Mon, 15 Feb 2021 12:45:20 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id ECF951E6305; Mon, 15 Feb 2021 13:45:19 +0100 (CET)
+Date:   Mon, 15 Feb 2021 13:45:19 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Jan Kara <jack@suse.cz>, jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, mhocko@suse.cz, linux-mm@kvack.org,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>
+Subject: Re: possible deadlock in start_this_handle (2)
+Message-ID: <20210215124519.GA22417@quack2.suse.cz>
+References: <000000000000563a0205bafb7970@google.com>
+ <20210211104947.GL19070@quack2.suse.cz>
+ <bf1088e3-b051-6361-57dd-6b836b1c3b46@i-love.sakura.ne.jp>
 MIME-Version: 1.0
-References: <20210208085013.89436-1-songmuchun@bytedance.com>
- <20210208085013.89436-5-songmuchun@bytedance.com> <YCafit5ruRJ+SL8I@dhcp22.suse.cz>
- <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
- <YCpN38i75olgispI@dhcp22.suse.cz> <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
- <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com> <YCpmlGuoTakPJs1u@dhcp22.suse.cz>
-In-Reply-To: <YCpmlGuoTakPJs1u@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 15 Feb 2021 20:44:57 +0800
-Message-ID: <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf1088e3-b051-6361-57dd-6b836b1c3b46@i-love.sakura.ne.jp>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 8:18 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 15-02-21 20:00:07, Muchun Song wrote:
-> > On Mon, Feb 15, 2021 at 7:51 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >
-> > > On Mon, Feb 15, 2021 at 6:33 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Mon 15-02-21 18:05:06, Muchun Song wrote:
-> > > > > On Fri, Feb 12, 2021 at 11:32 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > [...]
-> > > > > > > +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
-> > > > > > > +{
-> > > > > > > +     int ret;
-> > > > > > > +     unsigned long vmemmap_addr = (unsigned long)head;
-> > > > > > > +     unsigned long vmemmap_end, vmemmap_reuse;
-> > > > > > > +
-> > > > > > > +     if (!free_vmemmap_pages_per_hpage(h))
-> > > > > > > +             return 0;
-> > > > > > > +
-> > > > > > > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-> > > > > > > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-> > > > > > > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
-> > > > > > > +
-> > > > > > > +     /*
-> > > > > > > +      * The pages which the vmemmap virtual address range [@vmemmap_addr,
-> > > > > > > +      * @vmemmap_end) are mapped to are freed to the buddy allocator, and
-> > > > > > > +      * the range is mapped to the page which @vmemmap_reuse is mapped to.
-> > > > > > > +      * When a HugeTLB page is freed to the buddy allocator, previously
-> > > > > > > +      * discarded vmemmap pages must be allocated and remapping.
-> > > > > > > +      */
-> > > > > > > +     ret = vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
-> > > > > > > +                               GFP_ATOMIC | __GFP_NOWARN | __GFP_THISNODE);
-> > > > > >
-> > > > > > I do not think that this is a good allocation mode. GFP_ATOMIC is a non
-> > > > > > sleeping allocation and a medium memory pressure might cause it to
-> > > > > > fail prematurely. I do not think this is really an atomic context which
-> > > > > > couldn't afford memory reclaim. I also do not think we want to grant
-> > > > >
-> > > > > Because alloc_huge_page_vmemmap is called under hugetlb_lock
-> > > > > now. So using GFP_ATOMIC indeed makes the code more simpler.
-> > > >
-> > > > You can have a preallocated list of pages prior taking the lock.
-> > >
-> > > A discussion about this can refer to here:
-> > >
-> > > https://patchwork.kernel.org/project/linux-mm/patch/20210117151053.24600-5-songmuchun@bytedance.com/
-> > >
-> > > > Moreover do we want to manipulate vmemmaps from under spinlock in
-> > > > general. I have to say I have missed that detail when reviewing. Need to
-> > > > think more.
-> > > >
-> > > > > From the document of the kernel, I learned that __GFP_NOMEMALLOC
-> > > > > can be used to explicitly forbid access to emergency reserves. So if
-> > > > > we do not want to use the reserve memory. How about replacing it to
-> > > > >
-> > > > > GFP_ATOMIC | __GFP_NOMEMALLOC | __GFP_NOWARN | __GFP_THISNODE
-> > > >
-> > > > The whole point of GFP_ATOMIC is to grant access to memory reserves so
-> > > > the above is quite dubious. If you do not want access to memory reserves
-> > >
-> > > Look at the code of gfp_to_alloc_flags().
-> > >
-> > > static inline unsigned int gfp_to_alloc_flags(gfp_t gfp_mask)
-> > > {
-> > >         [...]
-> > >         if (gfp_mask & __GFP_ATOMIC) {
-> > >         /*
-> > >          * Not worth trying to allocate harder for __GFP_NOMEMALLOC even
-> > >          * if it can't schedule.
-> > >          */
-> > >         if (!(gfp_mask & __GFP_NOMEMALLOC))
-> > >                 alloc_flags |= ALLOC_HARDER;
-> > >        [...]
-> > > }
-> > >
-> > > Seems to allow this operation (GFP_ATOMIC | __GFP_NOMEMALLOC).
->
-> Please read my response again more carefully. I am not claiming that
-> combination is not allowed. I have said it doesn't make any sense in
-> this context.
+On Sat 13-02-21 23:26:37, Tetsuo Handa wrote:
+> On 2021/02/11 19:49, Jan Kara wrote:
+> > This stacktrace should never happen. ext4_xattr_set() starts a transaction.
+> > That internally goes through start_this_handle() which calls:
+> > 
+> > 	handle->saved_alloc_context = memalloc_nofs_save();
+> > 
+> > and we restore the allocation context only in stop_this_handle() when
+> > stopping the handle. And with this fs_reclaim_acquire() should remove
+> > __GFP_FS from the mask and not call __fs_reclaim_acquire().
+> 
+> Excuse me, but it seems to me that nothing prevents
+> ext4_xattr_set_handle() from reaching ext4_xattr_inode_lookup_create()
+> without memalloc_nofs_save() when hitting ext4_get_nojournal() path.
+> Will you explain when ext4_get_nojournal() path is executed?
 
-I see you are worried that using GFP_ATOMIC will use reverse memory
-unlimited. So I think that __GFP_NOMEMALLOC may be suitable for us.
-Sorry, I may not understand the point you said. What I missed?
+That's a good question but sadly I don't think that's it.
+ext4_get_nojournal() is called when the filesystem is created without a
+journal. In that case we also don't acquire jbd2_handle lockdep map. In the
+syzbot report we can see:
 
->
-> --
-> Michal Hocko
-> SUSE Labs
+kswapd0/2246 is trying to acquire lock:
+ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
+
+but task is already holding lock:
+ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
+
+So this filesystem has very clearly been created with a journal. Also the
+journal lockdep tracking machinery uses:
+
+rwsem_acquire_read(&journal->j_trans_commit_map, 0, 0, _THIS_IP_);
+
+so a lockdep key is per-filesystem. Thus it is not possible that lockdep
+would combine lock dependencies from two different filesystems.
+
+But I guess we could narrow the search for this problem by adding WARN_ONs
+to ext4_xattr_set_handle() and ext4_xattr_inode_lookup_create() like:
+
+WARN_ON(ext4_handle_valid(handle) && !(current->flags & PF_MEMALLOC_NOFS));
+
+It would narrow down a place in which PF_MEMALLOC_NOFS flag isn't set
+properly... At least that seems like the most plausible way forward to me.
+
+								Honza
+
+> 
+> ext4_xattr_set() {
+>   handle = ext4_journal_start(inode, EXT4_HT_XATTR, credits) == __ext4_journal_start() {
+>       return __ext4_journal_start_sb() {
+>         journal = EXT4_SB(sb)->s_journal;
+>         if (!journal || (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY))
+>           return ext4_get_nojournal(); // Never calls memalloc_nofs_save() despite returning !IS_ERR() value.
+>         return jbd2__journal_start(journal, blocks, rsv_blocks, revoke_creds, GFP_NOFS, type, line); // Calls memalloc_nofs_save() when start_this_handle() returns 0.
+>       }
+>     }
+>   }
+>   error = ext4_xattr_set_handle(handle, inode, name_index, name, value, value_len, flags); {
+>     ext4_write_lock_xattr(inode, &no_expand); // Grabs &ei->xattr_sem
+>     error = ext4_xattr_ibody_set(handle, inode, &i, &is) {
+>       error = ext4_xattr_set_entry(i, s, handle, inode, false /* is_block */) {
+>         ret = ext4_xattr_inode_lookup_create(handle, inode, i->value, i->value_len, &new_ea_inode); // Using GFP_KERNEL based on assumption that ext4_journal_start() called memalloc_nofs_save().
+>       }
+>     }
+>   }
+> }
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
