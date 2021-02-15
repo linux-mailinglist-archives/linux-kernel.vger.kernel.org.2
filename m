@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878EC31BFEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BB931BFD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhBOQ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:57:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
+        id S231644AbhBOQyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:54:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbhBOPrv (ORCPT
+        with ESMTP id S231555AbhBOPnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:47:51 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E041DC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:40:02 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id cv23so3932778pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:40:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=f/c7AxopKhgYq88HVbiWCjUeAUJ0dBNhFHxmGHWwwbM=;
-        b=lox8j19K1I2RLIUQAKWZo4RSE0Eim5iLn/iLoRZRo6jme5BlD7Boqsu2md07tsUcmZ
-         9JNPfViaalFm/vAoi8fh3JMFlkcdSRZ5OzWFNA4bynzwQ+iuUkVBvneJ7uokkfNEl3mM
-         rHA336fWS4dYY2DrciTZEARLxwxrW8ewb3vF9dyMkg9S4XesxmmXSgT/zQobqvuQZxfX
-         pDXM75WcCW0x+U+QYN5RWCeGr7ROoa1CX2HG1OQgf+5ywKbF8NyxGTrgenR5wYxq7Hdf
-         1VYMW8U40P3AEelYxrjrIhk1qZm50GOY7iPhlsGh1p+9lHC8tTTg4WM0zmJ29Q6jQcOb
-         kebA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f/c7AxopKhgYq88HVbiWCjUeAUJ0dBNhFHxmGHWwwbM=;
-        b=O/03qsVqmRhU41ZifuYtFGRS4CgdFpzPnswX/7xbY1a3Cqk+AbY6cNYrxh/iBHyd0t
-         waDxjCD9tQVvdQvSsHZkG1JAOdeIfhHscUQJMiJmqML4A++xwhZdYli9t9sZjd8UicO3
-         yEpA5oV2gmfezRd4bIbL1N40rYoJjl450iTZs0z4moQZBo1PeqRQ9uBiuReI1COWQzO/
-         79at+Usubw3gBXZ7oJhq5n9uLD03/RVrb40S0CjlEiVilwP2Tnq7mcBfEShMdqEJ237F
-         bx0mKr4F5MMUdG1gSvLNWFZycc0elLnbu9Xob5AYIeWtIW8OYdxTZP7ED4WlfGLCTbkD
-         Fq4g==
-X-Gm-Message-State: AOAM531BrJwRySUoxdiLJSIBB25mlKCLRDAeCWTBQy9IjQs3UjtE/rui
-        o6Yw1eM3Me7l9djyKVJRhj0AHQ==
-X-Google-Smtp-Source: ABdhPJwdUr95NCcg5kbIW6KVmAsIJ80h1I+klbqvOnKaiv1Vk1+0vQaSydRrGvkrmrJ8s8D4O68cOw==
-X-Received: by 2002:a17:902:f702:b029:e3:5e25:85bb with SMTP id h2-20020a170902f702b02900e35e2585bbmr3618147plo.56.1613403602362;
-        Mon, 15 Feb 2021 07:40:02 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id b25sm19162358pfp.26.2021.02.15.07.40.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Feb 2021 07:40:02 -0800 (PST)
-Subject: Re: [btrfs] 3d6ef82805:
- WARNING:at_fs/btrfs/extent-tree.c:#btrfs_reserve_extent[btrfs]
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ltp@lists.linux.it, linux-btrfs@vger.kernel.org
-References: <20210215132734.GA15834@xsang-OptiPlex-9020>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8fec3d91-fd37-0159-7417-0661659e2e02@kernel.dk>
-Date:   Mon, 15 Feb 2021 08:40:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 15 Feb 2021 10:43:25 -0500
+Received: from smtp-42a9.mail.infomaniak.ch (smtp-42a9.mail.infomaniak.ch [IPv6:2001:1600:3:17::42a9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F8FC0617A9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:41:32 -0800 (PST)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DfSw063mzzMprKn;
+        Mon, 15 Feb 2021 16:39:44 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DfSvz3vM9zlh8TM;
+        Mon, 15 Feb 2021 16:39:43 +0100 (CET)
+Subject: Re: [PATCH v1 2/3] kconfig: Ask user if string needs to be changed
+ when dependency changed
+To:     Boris Kolpackov <boris@codesynthesis.com>
+Cc:     James Morris <jmorris@namei.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Nicolas Iooss <nicolas.iooss@m4x.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20210215122513.1773897-1-mic@digikod.net>
+ <20210215122513.1773897-3-mic@digikod.net>
+ <boris.20210215155804@codesynthesis.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <ad0cc042-f192-f85b-5fd6-9d99ad3d8c6a@digikod.net>
+Date:   Mon, 15 Feb 2021 16:40:34 +0100
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <20210215132734.GA15834@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <boris.20210215155804@codesynthesis.com>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/15/21 6:27 AM, kernel test robot wrote:
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 3d6ef82805958611e8ffa0a901c014b6f066c3e6 ("btrfs: relax memory alignment restriction for O_DIRECT")
-> https://git.kernel.org/cgit/linux/kernel/git/axboe/linux-block.git dio-mem-align
 
-This patch has been dropped, we did identify last week that btrfs
-needs more work to support sub bs memory alignment for dio.
+On 15/02/2021 15:13, Boris Kolpackov wrote:
+> Mickaël Salaün <mic@digikod.net> writes:
+> 
+>> Content of string configuration may depend on related kernel
+>> configurations.  Modify oldconfig and syncconfig to inform users about
+>> possible required configuration update and give them the opportunity to
+>> update it:
+>> * if dependencies of this string has changed (e.g. enabled or disabled),
+>> * and if the current value of this string is different than the (new)
+>>   default one.
+> 
+> I have a number of questions:
+> 
+> 1. Why is a change in dependencies necessarily means that the dependent's
+>    value must be revised? Here is a specific example (to make sure we are
+>    talking about the same things):
+> 
+>    config FOO
+>      string "Foo value"
+>      depends on BAR || BAZ
+> 
+>    Why, in the general case, when I disable BAR and enable BAZ I must
+>    also revise the value of FOO?
 
--- 
-Jens Axboe
+It may be necessary, or not, depending of the use of the string. This
+semantic is not clearly expressed by kconfig but looking at the current
+configuration, there is only 4 strings depending on more than one
+dependency:
+* SIMDISK1_FILENAME for arch/xtensa
+* CMDLINE for arch/sh
+* SECURITY_TOMOYO_POLICY_LOADER
+* SECURITY_TOMOYO_ACTIVATION_TRIGGER
 
+Such patterns seem in line with this patch.
+
+> 
+> 2. How do you know that what's in the user's .config is the old default
+>    and in Kconfig -- the new default value? What if in the user's .config
+>    is a custom value (with which the user is perfectly happy) and what's
+>    in Kconfig is the old default (which the user has already seen)?
+
+The current behavior (i.e. keeping the current user config) is not
+changed. The oldconfig target only stops when a string may require an
+update, shows to the user the (potentially new but not necessary best)
+default value along with the value already in place in the .config file,
+and if the user just type enter this current value will not be changed.
+
+> 
+> 3. Why limit this to strings only?
+
+Strings contain configuration blobs that may be interpreted by the
+kernel but not by kconfig (cf. CONFIG_LSM). It will still be possible to
+handle other types if there is some related use cases.
+
+> 
+> 
+>> This is particularly relevant for CONFIG_LSM which contains a list of
+>> LSMs enabled at boot, but users will not have a chance to update this
+>> list with a make oldconfig.
+> 
+> If my understanding above is correct, this feels like it's been purpose-
+> made to address whatever issue you are having with CONFIG_LSM. If so,
+> what about potential numerous other options that don't have this issue
+> but will now be presented to the user for modification?
+
+This patch series helps address the LSM stacking issue. The 4 other
+cases may benefit from this patch too.
