@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7134631C32C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8660731C32E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhBOUp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 15:45:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54504 "EHLO mail.kernel.org"
+        id S229651AbhBOUqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 15:46:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229744AbhBOUpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 15:45:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B9DE64DF4;
-        Mon, 15 Feb 2021 20:45:10 +0000 (UTC)
+        id S229771AbhBOUqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 15:46:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC35B64DF0;
+        Mon, 15 Feb 2021 20:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613421911;
-        bh=2HkmB4VAQx9NGbvvLKS4kUfeuqrfh4POMtyy/yZL710=;
+        s=k20201202; t=1613421933;
+        bh=wau8Ed2DmmRd12M9HZuBtrzDRBepMcAbXGtWcZONCxs=;
         h=From:To:Cc:Subject:Date:From;
-        b=L9GPHPRZmIHEnVvfk0cSGAjCwN/NtSMdxAZaJkPYK6Mcr/4yfC+79edepCn3zxS+O
-         RoxgB3hs9F2oR74fMD8duaXki87R3RdRjpIim5y7VzkY3RlbioIIoncVF8ZIMfuBSb
-         8kVmKI8HrsR9vapaaXM6NWbjXQHMzhqxKL6vboNSmS+mHk5i/VFr+boXAlrMKrsUqC
-         Zg7EhORHcJR6MSh7bSmrx9rYa6VCNb6wKxRgIYO8Qbqv3jmT+plJEpCrEWZgpBHmtI
-         yw6lJwPPZ1VDD8d/iv4hZ+ID92pQEFQLDYfg4gV/YA8lB+7fXxk3eicIbVPub+6kME
-         cXWl5tLGJY6EA==
+        b=D75YW44F9p9q3NH6eg04eO8/JTwnv6mm6IQx6t/hpY6b1VNQoDckhMy7R2Ro3epCp
+         X+sHd9fVD5GmeR9LhV6YpKm7XS8GZr6r7cN7qAAuiA/OfWqmnsza7pqLDCvmsrCaLy
+         EyI2yEhWAYgLKAEyjfgSmd9cOOnzPmtSRQ3Z7I6kxtT9dFEyARwOU/mRPw2PnVtZfh
+         VD2WSvBF8nGljbXQmWwMJE9QsodsQ9B7x89U4sbCyIGNDtshKaDOz4Su8SYfE45TRn
+         MhBRb1QzDE2bioD42RwRgr0kUrBkmS5xfU2uVG07vsZCKCe385Y7Hy4ZvA8ZlbjpZ9
+         6jNfIHRpE4kjg==
 From:   Mark Brown <broonie@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
         Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] regulator updates for v5.12
-Date:   Mon, 15 Feb 2021 20:44:00 +0000
-Message-Id: <20210215204511.0B9DE64DF4@mail.kernel.org>
+Subject: [GIT PULL] SPI updates for v5.12
+Date:   Mon, 15 Feb 2021 20:44:23 +0000
+Message-Id: <20210215204532.AC35B64DF0@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -40,177 +40,250 @@ The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-v5.12
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-v5.12
 
-for you to fetch changes up to f03e2a72e5e8772ba0c2a0fc4539e4ffd03d411b:
+for you to fetch changes up to eec262d179ff60e8d12298ab2f118661040e0bf5:
 
-  Merge remote-tracking branch 'regulator/for-5.12' into regulator-next (2021-02-12 14:00:07 +0000)
-
-----------------------------------------------------------------
-regulator: Updates for v5.12
-
-Quite an active release for driver specific updates but very little
-going on at the subsystem level this time for the regulator API.
-
- - Overhaul of the Qualcomm LABIBB driver.
- - Allow use of regulator_sync_voltage() on coupled regulators.
- - Support for Action ATC260x, Mediatek DVSRC and MT6315, Qualcomm
-   PCM8180/c and PM8009-1 and Richtek RT4831
- - Removal of the AB3100 driver.
+  Merge remote-tracking branch 'spi/for-5.12' into spi-next (2021-02-12 14:00:22 +0000)
 
 ----------------------------------------------------------------
-Adrien Grassein (6):
-      regulator: pf8x00: add a doc for the module
-      regulator: dt-bindings: pf8x00: fix nxp,phase-shift doc
-      regulator: dt-bindings: pf8x00: mark nxp,ilim-ma property as deprecated
-      regulator: pf8x00: mark nxp,ilim-ma property as deprecated
-      regulator: pf8x00: use linear range for buck 1-6
-      regulator: pf8x00: fix nxp,phase-shift
+spi: Updates for v5.12
 
-AngeloGioacchino Del Regno (7):
-      regulator: qcom-labibb: Implement voltage selector ops
-      regulator: qcom-labibb: Switch voltage ops from linear_range to linear
-      regulator: qcom-labibb: Implement current limiting
-      regulator: qcom-labibb: Implement pull-down, softstart, active discharge
-      regulator: qcom-labibb: Implement short-circuit and over-current IRQs
-      regulator: qcom-labibb: Document soft start properties
-      regulator: qcom-labibb: Document SCP/OCP interrupts
+The main focus of this release from a framework point of view has been
+spi-mem where we've acquired support for a few new hardware features
+which enable better performance on suitable hardware.  Otherwise mostly
+thanks to Arnd's cleanup efforts on old platforms we've removed several
+obsolete drivers which just about balance out the newer drivers we've
+added this cycle.
+
+ - Allow drivers to flag if they are unidirectional.
+ - Support for DTR mode and hardware acceleration of dummy cycles in spi-mem.
+ - Support for Allwinder H616, Intel Lightning Mountain, nVidia Tegra
+   QuadSPI, Realtek RTL838x and RTL839x.
+ - Removal of obsolute EFM32, Txx9 and SIRF Prima and Atlas drivers.
+
+----------------------------------------------------------------
+Adam Ford (1):
+      spi: renesas rpc-if: Update Add RZ/G2 to Kconfig description
+
+Alain Volmat (5):
+      spi: stm32: properly handle 0 byte transfer
+      spi: stm32: do not mandate cs_gpio
+      spi: stm32h7: ensure message are smaller than max size
+      spi: stm32: defer probe for reset
+      spi: stm32: make spurious and overrun interrupts visible
+
+Alexandru Ardelean (3):
+      spi: uapi: unify SPI modes into a single spi.h header
+      spi: dt-bindings: document zero value for spi-{rx,tx}-bus-width properties
+      spi: stm32: update dev_dbg() print format for SPI params
+
+Amelie Delaunay (2):
+      spi: stm32: use bitfield macros
+      spi: stm32h7: replace private SPI_1HZ_NS with NSEC_PER_SEC
+
+Andre Przywara (1):
+      dt-bindings: spi: sunxi: Add H616 compatible string
+
+Andy Shevchenko (2):
+      spi: pxa2xx: Fix the controller numbering for Wildcat Point
+      spi: pxa2xx: Add IDs for the controllers found on Intel Lynxpoint
 
 Arnd Bergmann (1):
-      regulator: remove ab3100 driver
+      spi: remove sirf prima/atlas driver
 
-Axel Lin (1):
-      regulator: pf8x00: Fix typo for PF8200 chip name
+Bert Vermeulen (2):
+      spi: realtek-rtl: Add support for Realtek RTL838x/RTL839x SPI controllers
+      spi: Realtek RTL838x/RTL839x SPI controller
 
-Bjorn Andersson (2):
-      regulator: qcom-rpmh: Add pmc8180 and pmc8180c
-      regulator: qcom-rpmh: Add pmc8180 and pmc8180c
+Bhaskar Chowdhury (1):
+      spi: Change provied to provided in the file spi.h
 
-ChiYuan Huang (2):
-      regulator: rt4831: Adds DT binding document for Richtek RT4831 DSV regulator
-      regulator: rt4831: Adds support for Richtek RT4831 DSV regulator
+Dragos Bogdan (1):
+      spi: Add SPI_NO_TX/RX support
 
-Christoph Fritz (2):
-      regulator: pf8x00: Add suspend support
-      regulator: pf8x00: set ramp_delay for bucks
+Etienne Carriere (1):
+      spi: stm32: driver uses reset controller only at init
 
-Claudiu Beznea (3):
-      regulator: mcp16502: lpm pin can be optional on some platforms
-      MAINTAINERS: add myself as maintainer for mcp16502
-      regulator: mcp16502: document lpm as optional
+Geert Uytterhoeven (2):
+      spi: sh-msiof: Fill in spi_transfer.effective_speed_hz
+      spi: sh-msiof: Fill in controller speed limits
 
-Cristian Ciocaltea (1):
-      regulator: Add regulator driver for ATC260x PMICs
+Guido Günther (1):
+      spi: imx: Don't print error on -EPROBEDEFER
 
-Daniel Scally (1):
-      regulator: core.c: Replace references to non-existent function
+Jarkko Nikula (1):
+      spi: pxa2xx: Add support for Intel Alder Lake PCH-P
 
-Dmitry Baryshkov (2):
-      regulator: qcom-rpmh-regulator: add pm8009-1 chip revision
-      arm64: dts: qcom: qrb5165-rb5: fix pm8009 regulators
+Junhao He (1):
+      spi: clps711xx: remove redundant white-space
 
-Dmitry Osipenko (1):
-      regulator: Make regulator_sync_voltage() usable by coupled regulators
+Kees Cook (1):
+      spi: dw: Avoid stack content exposure
 
-Frieder Schrempf (3):
-      regulator: pca9450: Add SD_VSEL GPIO for LDO5
-      regulator: pca9450: Enable system reset on WDOG_B assertion
-      regulator: pca9450: Add sd-vsel GPIO
+Lad Prabhakar (2):
+      spi: rpc-if: Remove CONFIG_PM_SLEEP ifdefery
+      spi: rpc-if: Gaurd .pm assignment with CONFIG_PM_SLEEP #ifdef check
 
-Hans de Goede (1):
-      regulator: core: Avoid debugfs: Directory ... already present! error
+Marcin Wojtas (2):
+      spi: orion: enable clocks before spi_setup
+      spi: orion: enable support for switching CS every transferred byte
 
-Hsin-Hsiung Wang (2):
-      regulator: document binding for MT6315 regulator
-      regulator: mt6315: Add support for MT6315 regulator
-
-Jonathan Marek (1):
-      regulator: qcom-rpmh: fix pm8009 ldo7
-
-Krzysztof Kozlowski (1):
-      regulator: s5m8767: Drop regulators OF node reference
-
-Linus Walleij (2):
-      regulator: ab8500: Remove unused platform data
-      regulator: ab8500: Decomission platform data header
+Marek Vasut (1):
+      spi: stm32: Simplify stm32h7_spi_prepare_fthlv()
 
 Mark Brown (10):
-      Merge existing fixes from regulator/for-5.11
-      Merge series "regulator: fix pm8009 bindings on sm8250" from Dmitry Baryshkov <dmitry.baryshkov@linaro.org>:
-      Merge branch 'regulator-5.11' into regulator-5.12
-      Merge series "Add driver for dvfsrc, support for active state of scpsys" from Henry Chen <henryc.chen@mediatek.com>:
-      Merge series "regulator: mcp16502: make lpm pin optional" from Claudiu Beznea <claudiu.beznea@microchip.com>:
+      Merge existing fixes from spi/for-5.11
+      Merge series "Add Tegra Quad SPI driver" from Sowjanya Komatineni <skomatineni@nvidia.com>:
+      Merge series "spi: cadence-quadspi: Add QSPI controller support for Intel LGM SoC" from "Ramuthevar, Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>:
+      Merge series "spi: sh-msiof: Advertize bit rate limits and actual speed" from Geert Uytterhoeven <geert+renesas@glider.be>:
       Merge v5.11-rc3
-      Merge series "Really implement Qualcomm LAB/IBB regulators" from AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>:
-      Merge series "Really implement Qualcomm LAB/IBB regulators" from AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>:
-      Merge remote-tracking branch 'regulator/for-5.11' into regulator-linus
-      Merge remote-tracking branch 'regulator/for-5.12' into regulator-next
+      Merge series "Remove ARM platform efm32" from Uwe Kleine-König <u.kleine-koenig@pengutronix.de> Uwe Kleine-König <uwe.kleine-koenig@pengutronix.de>:
+      Merge series "spi: Add support for Realtek RTL838x/RTL839x SoC SPI" from Bert Vermeulen <bert@biot.com>:
+      Merge series "spi: add set_cs_timing support for HW/SW CS mode" from Leilk Liu <leilk.liu@mediatek.com>:
+      Merge remote-tracking branch 'spi/for-5.11' into spi-linus
+      Merge remote-tracking branch 'spi/for-5.12' into spi-next
 
-Matti Vaittinen (4):
-      regulator: ROHM bd7xxxx: Do not depend on parent driver data
-      regulator: bd718x7: Stop using parent data
-      regulator: qcom-labibb: Use disable_irq_nosync from isr
-      regulator: bd718x7, bd71828, Fix dvs voltage levels
+Masahisa Kojima (1):
+      spi: spi-synquacer: fix set_cs handling
 
-Pan Bian (2):
-      regulator: axp20x: Fix reference cout leak
-      regulator: s5m8767: Fix reference count leak
+Nicolas Saenz Julienne (1):
+      spi: Skip zero-length transfers in spi_transfer_one_message()
 
-Randy Dunlap (2):
-      lib/linear_ranges: fix repeated words & one typo
-      regulator: qcom-rpmh: fix build after QCOM_COMMAND_DB is tristate
+Pan Bian (1):
+      spi: atmel: Put allocated master before return
 
-Timon Baetz (1):
-      regulator: dt-bindings: Document charger-supply for max8997
+Pratyush Yadav (10):
+      spi: cadence-quadspi: Set master max_speed_hz
+      spi: cadence-quadspi: Abort read if dummy cycles required are too many
+      spi: cadence-quadspi: Set dummy cycles from STIG commands
+      spi: cadence-quadspi: Fix dummy cycle calculation when buswidth > 1
+      spi: cadence-quadspi: Implement a simple supports_op hook
+      spi: cadence-quadspi: Wait at least 500 ms for direct reads
+      spi: cadence-quadspi: Add DTR support
+      spi: cadence-quadspi: Fix build warning on 32-bit platforms
+      spi: spi-mem: add spi_mem_dtr_supports_op()
+      spi: cadence-quadspi: Use spi_mem_dtr_supports_op()
 
-henryc.chen (1):
-      regulator: Regulator driver for the Mediatek DVFSRC
+Ramuthevar Vadivel Murugan (5):
+      spi: cadence-quadspi: Add QSPI support for Intel LGM SoC
+      spi: cadence-quadspi: Disable the DAC for Intel LGM SoC
+      spi: cadence-quadspi: Add multi-chipselect support for Intel LGM SoC
+      spi: Move cadence-quadspi.txt to Documentation/devicetree/bindings/spi
+      dt-bindings: spi: cadence-qspi: Add support for Intel lgm-qspi
 
- .../bindings/regulator/max8997-regulator.txt       |   1 +
- .../bindings/regulator/mcp16502-regulator.txt      |   3 +-
- .../bindings/regulator/mt6315-regulator.yaml       |  69 ++
- .../bindings/regulator/nxp,pca9450-regulator.yaml  |   5 +
- .../bindings/regulator/nxp,pf8x00-regulator.yaml   |  17 +-
- .../bindings/regulator/qcom,rpmh-regulator.txt     |   2 +
- .../bindings/regulator/qcom-labibb-regulator.yaml  |  30 +-
- .../regulator/richtek,rt4831-regulator.yaml        |  35 +
- MAINTAINERS                                        |   4 +-
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts           |   9 +-
- drivers/mfd/ab8500-core.c                          |   1 -
- drivers/regulator/Kconfig                          |  51 +-
- drivers/regulator/Makefile                         |   5 +-
- drivers/regulator/ab3100.c                         | 724 --------------------
- drivers/regulator/ab8500-ext.c                     | 422 +-----------
- drivers/regulator/ab8500.c                         | 116 +++-
- drivers/regulator/atc260x-regulator.c              | 539 +++++++++++++++
- drivers/regulator/axp20x-regulator.c               |   7 +-
- drivers/regulator/bd70528-regulator.c              |  11 +-
- drivers/regulator/bd71828-regulator.c              |  13 +-
- drivers/regulator/bd718x7-regulator.c              |  20 +-
- drivers/regulator/core.c                           |  18 +-
- drivers/regulator/mcp16502.c                       |   2 +-
- drivers/regulator/mt6315-regulator.c               | 299 +++++++++
- drivers/regulator/mtk-dvfsrc-regulator.c           | 215 ++++++
- drivers/regulator/pca9450-regulator.c              |  22 +
- drivers/regulator/pf8x00-regulator.c               | 278 +++++---
- drivers/regulator/qcom-labibb-regulator.c          | 728 ++++++++++++++++++++-
- drivers/regulator/qcom-rpmh-regulator.c            |  34 +
- drivers/regulator/rohm-regulator.c                 |   9 +-
- drivers/regulator/rt4831-regulator.c               | 198 ++++++
- drivers/regulator/s5m8767.c                        |  15 +-
- include/linux/mfd/abx500/ab8500.h                  |   3 -
- include/linux/mfd/rohm-generic.h                   |  14 +-
- include/linux/regulator/ab8500.h                   | 166 -----
- include/linux/regulator/mt6315-regulator.h         |  44 ++
- include/linux/regulator/pca9450.h                  |   7 +
- lib/linear_ranges.c                                |   8 +-
- 38 files changed, 2661 insertions(+), 1483 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/regulator/mt6315-regulator.yaml
- create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rt4831-regulator.yaml
- delete mode 100644 drivers/regulator/ab3100.c
- create mode 100644 drivers/regulator/atc260x-regulator.c
- create mode 100644 drivers/regulator/mt6315-regulator.c
- create mode 100644 drivers/regulator/mtk-dvfsrc-regulator.c
- create mode 100644 drivers/regulator/rt4831-regulator.c
- delete mode 100644 include/linux/regulator/ab8500.h
- create mode 100644 include/linux/regulator/mt6315-regulator.h
+Rasmus Villemoes (1):
+      spi: fsl: invert spisel_boot signal on MPC8309
+
+Richard Fitzgerald (1):
+      spi: bcm2835: Set controller max_speed_hz
+
+Sergiu Cuciurean (1):
+      spi: spi-mpc52xx: Use new structure for SPI transfer delays
+
+Sowjanya Komatineni (6):
+      dt-bindings: clock: tegra: Add clock ID TEGRA210_CLK_QSPI_PM
+      dt-bindings: spi: Add Tegra Quad SPI device tree binding
+      MAINTAINERS: Add Tegra Quad SPI driver section
+      spi: tegra210-quad: Add support for Tegra210 QSPI controller
+      spi: spi-mem: Mark dummy transfers by setting dummy_data bit
+      spi: tegra210-quad: Add support for hardware dummy cycles transfer
+
+Stephen Boyd (1):
+      spi: spi-qcom-qspi: Use irq trigger flags from firmware
+
+Thomas Bogendoerfer (1):
+      spi: txx9: Remove driver
+
+Tudor Ambarus (1):
+      spi: atmel-quadspi: Disable the QSPI IP at suspend()
+
+Uwe Kleine-König (1):
+      spi: Drop unused efm32 bus driver
+
+Vincent Pelletier (3):
+      spi: bcm2835: Call the dedicated transfer completion function.
+      spi: rockchip: Call the dedicated transfer completion function.
+      spi: bcm2835aux: Call the dedicated transfer completion function.
+
+Wolfram Sang (1):
+      spi: renesas,sh-msiof: Add r8a779a0 support
+
+YANG LI (1):
+      spi: spi-bcm-qspi: style: Simplify bool comparison
+
+Yanteng Si (1):
+      spi: Fix distinct pointer types warning for ARCH=mips
+
+Yicong Yang (2):
+      spi: hisi-sfc-v3xx: extend version checking compatibility
+      spi: hisi-sfc-v3xx: add address mode check
+
+corentin (3):
+      spi: spi-au1550: Add suffix "int" to all "unsigned"
+      spi: spi-au1550: quoted string break
+      spi: spi-au1550: Fix various whitespace warnings
+
+leilk.liu (3):
+      spi: add power control when set_cs_timing
+      spi: support CS timing for HW & SW mode
+      spi: mediatek: add set_cs_timing support
+
+ .../bindings/spi/allwinner,sun6i-a31-spi.yaml      |    1 +
+ .../bindings/{mtd => spi}/cadence-quadspi.txt      |    1 +
+ .../bindings/spi/nvidia,tegra210-quad.yaml         |  117 ++
+ .../devicetree/bindings/spi/realtek,rtl-spi.yaml   |   41 +
+ .../devicetree/bindings/spi/renesas,sh-msiof.yaml  |    1 +
+ .../devicetree/bindings/spi/spi-controller.yaml    |    6 +-
+ Documentation/devicetree/bindings/spi/spi-sirf.txt |   42 -
+ MAINTAINERS                                        |    8 +
+ drivers/spi/Kconfig                                |   33 +-
+ drivers/spi/Makefile                               |    5 +-
+ drivers/spi/atmel-quadspi.c                        |    1 +
+ drivers/spi/spi-atmel.c                            |    2 +-
+ drivers/spi/spi-au1550.c                           |   53 +-
+ drivers/spi/spi-bcm-qspi.c                         |    2 +-
+ drivers/spi/spi-bcm2835.c                          |    8 +-
+ drivers/spi/spi-bcm2835aux.c                       |    2 +-
+ drivers/spi/spi-cadence-quadspi.c                  |  333 ++++-
+ drivers/spi/spi-clps711x.c                         |    2 +-
+ drivers/spi/spi-dw-bt1.c                           |    2 +-
+ drivers/spi/spi-efm32.c                            |  462 -------
+ drivers/spi/spi-fsl-spi.c                          |    2 +-
+ drivers/spi/spi-hisi-sfc-v3xx.c                    |   33 +-
+ drivers/spi/spi-imx.c                              |    2 +-
+ drivers/spi/spi-mem.c                              |   23 +-
+ drivers/spi/spi-mpc52xx.c                          |    4 +-
+ drivers/spi/spi-mt65xx.c                           |   72 +-
+ drivers/spi/spi-orion.c                            |   55 +-
+ drivers/spi/spi-pxa2xx-pci.c                       |   29 +-
+ drivers/spi/spi-pxa2xx.c                           |    4 +
+ drivers/spi/spi-qcom-qspi.c                        |    3 +-
+ drivers/spi/spi-realtek-rtl.c                      |  209 +++
+ drivers/spi/spi-rockchip.c                         |    2 +-
+ drivers/spi/spi-rpc-if.c                           |   13 +-
+ drivers/spi/spi-sh-msiof.c                         |   14 +-
+ drivers/spi/spi-sirf.c                             | 1236 -----------------
+ drivers/spi/spi-stm32.c                            |  150 +--
+ drivers/spi/spi-synquacer.c                        |    4 +
+ drivers/spi/spi-tegra210-quad.c                    | 1410 ++++++++++++++++++++
+ drivers/spi/spi-txx9.c                             |  477 -------
+ drivers/spi/spi.c                                  |   59 +-
+ include/dt-bindings/clock/tegra210-car.h           |    2 +-
+ include/linux/platform_data/efm32-spi.h            |   15 -
+ include/linux/spi/spi-mem.h                        |    9 +
+ include/linux/spi/spi.h                            |   44 +-
+ include/uapi/linux/spi/spi.h                       |   41 +
+ include/uapi/linux/spi/spidev.h                    |   30 +-
+ 46 files changed, 2519 insertions(+), 2545 deletions(-)
+ rename Documentation/devicetree/bindings/{mtd => spi}/cadence-quadspi.txt (97%)
+ create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+ create mode 100644 Documentation/devicetree/bindings/spi/realtek,rtl-spi.yaml
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-sirf.txt
+ delete mode 100644 drivers/spi/spi-efm32.c
+ create mode 100644 drivers/spi/spi-realtek-rtl.c
+ delete mode 100644 drivers/spi/spi-sirf.c
+ create mode 100644 drivers/spi/spi-tegra210-quad.c
+ delete mode 100644 drivers/spi/spi-txx9.c
+ delete mode 100644 include/linux/platform_data/efm32-spi.h
+ create mode 100644 include/uapi/linux/spi/spi.h
