@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C021631BB11
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F70531BAE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhBOOaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:30:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42140 "EHLO mx2.suse.de"
+        id S230048AbhBOOWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:22:23 -0500
+Received: from mga14.intel.com ([192.55.52.115]:20528 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229784AbhBOOaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:30:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C4E2BB1AC;
-        Mon, 15 Feb 2021 14:29:35 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8D22C1E6305; Mon, 15 Feb 2021 15:29:35 +0100 (CET)
-Date:   Mon, 15 Feb 2021 15:29:35 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Jan Kara <jack@suse.cz>, jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu, mhocko@suse.cz, linux-mm@kvack.org,
-        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>
-Subject: Re: possible deadlock in start_this_handle (2)
-Message-ID: <20210215142935.GB22417@quack2.suse.cz>
-References: <000000000000563a0205bafb7970@google.com>
- <20210211104947.GL19070@quack2.suse.cz>
- <bf1088e3-b051-6361-57dd-6b836b1c3b46@i-love.sakura.ne.jp>
- <20210215124519.GA22417@quack2.suse.cz>
- <aaee5d61-f988-84c3-4d16-f8b7987f3a83@i-love.sakura.ne.jp>
+        id S229802AbhBOOWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:22:21 -0500
+IronPort-SDR: lzTps7Z5axOVXNWefUwjhDbC/z9UIv0h+c9IImMvUgJkuUPN0kkZWdq4Mg6LMQCIealolUF+s3
+ 7U3ZO7br7YYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="181914565"
+X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
+   d="scan'208";a="181914565"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 06:20:36 -0800
+IronPort-SDR: JP3GDrYHwJVSWw0VW0CVDQX6PFwg51MbXkTFzNTFyAJcEjGfcgei7PyaqumADIaf700t75O7i+
+ YJhEFDEoHQQg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
+   d="scan'208";a="383386972"
+Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Feb 2021 06:20:35 -0800
+Subject: Re: [PATCHv5 1/7] firmware: stratix10-svc: reset
+ COMMAND_RECONFIG_FLAG_PARTIAL to 0
+To:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
+        gregkh@linuxfoundation.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Richard Gong <richard.gong@intel.com>
+References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
+ <1612909233-13867-2-git-send-email-richard.gong@linux.intel.com>
+ <bc43e8ab-b8df-fd2f-31e4-02cdc48cadff@redhat.com>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <3ff3e9ca-cdca-796e-0b57-5010963e7ee1@linux.intel.com>
+Date:   Mon, 15 Feb 2021 08:41:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aaee5d61-f988-84c3-4d16-f8b7987f3a83@i-love.sakura.ne.jp>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <bc43e8ab-b8df-fd2f-31e4-02cdc48cadff@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 15-02-21 23:06:15, Tetsuo Handa wrote:
-> On 2021/02/15 21:45, Jan Kara wrote:
-> > On Sat 13-02-21 23:26:37, Tetsuo Handa wrote:
-> >> Excuse me, but it seems to me that nothing prevents
-> >> ext4_xattr_set_handle() from reaching ext4_xattr_inode_lookup_create()
-> >> without memalloc_nofs_save() when hitting ext4_get_nojournal() path.
-> >> Will you explain when ext4_get_nojournal() path is executed?
-> > 
-> > That's a good question but sadly I don't think that's it.
-> > ext4_get_nojournal() is called when the filesystem is created without a
-> > journal. In that case we also don't acquire jbd2_handle lockdep map. In the
-> > syzbot report we can see:
-> 
-> Since syzbot can test filesystem images, syzbot might have tested a filesystem
-> image created both with and without journal within this boot.
+Hi Tom,
 
-a) I think that syzbot reboots the VM between executing different tests to
-get reproducible conditions. But in theory I agree the test may have
-contained one image with and one image without a journal.
+On 2/13/21 9:44 AM, Tom Rix wrote:
+> 
+> On 2/9/21 2:20 PM, richard.gong@linux.intel.com wrote:
+>> From: Richard Gong <richard.gong@intel.com>
+>>
+>> Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
+>> aligns with the firmware settings.
+>>
+>> Fixes: 36847f9e3e56 ("firmware: stratix10-svc: correct reconfig flag and timeout values")
+>> Signed-off-by: Richard Gong <richard.gong@intel.com>
+>> ---
+>> v5: new add, add the missing standalone patch
+>> ---
+>>   include/linux/firmware/intel/stratix10-svc-client.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
+>> index a93d859..f843c6a 100644
+>> --- a/include/linux/firmware/intel/stratix10-svc-client.h
+>> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
+>> @@ -56,7 +56,7 @@
+>>    * COMMAND_RECONFIG_FLAG_PARTIAL:
+>>    * Set to FPGA configuration type (full or partial).
+>>    */
+>> -#define COMMAND_RECONFIG_FLAG_PARTIAL	1
+>> +#define COMMAND_RECONFIG_FLAG_PARTIAL	0
+> 
+> Is this the stand alone fix split from v3's patch 1 ?
+> 
+> https://lore.kernel.org/linux-fpga/YBFW50LPP%2FyEbvEW@kroah.com/
+>Yes, it is a stand-alone patch.
 
-*but*
-
-b) as I wrote in the email you are replying to, the jbd2_handle key is
-private per filesystem. Thus for lockdep to complain about
-jbd2_handle->fs_reclaim->jbd2_handle deadlock, those jbd2_handle lockdep
-maps must come from the same filesystem.
-
-*and*
-
-c) filesystem without journal doesn't use jbd2_handle lockdep map at all so
-for such filesystems lockdep creates no dependency for jbd2_handle map.
-
-								Honza
-
+> Tom
 > 
-> > 
-> > kswapd0/2246 is trying to acquire lock:
-> > ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
-> > 
-> > but task is already holding lock:
-> > ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
-> > 
-> > So this filesystem has very clearly been created with a journal. Also the
-> > journal lockdep tracking machinery uses:
+>>   
+>>   /**
+>>    * Timeout settings for service clients:
 > 
-> While locks held by kswapd0/2246 are fs_reclaim, shrinker_rwsem, &type->s_umount_key#38
-> and jbd2_handle, isn't the dependency lockdep considers problematic is
-> 
->   Chain exists of:
->     jbd2_handle --> &ei->xattr_sem --> fs_reclaim
-> 
->    Possible unsafe locking scenario:
-> 
->          CPU0                    CPU1
->          ----                    ----
->     lock(fs_reclaim);
->                                  lock(&ei->xattr_sem);
->                                  lock(fs_reclaim);
->     lock(jbd2_handle);
-> 
-> where CPU0 is kswapd/2246 and CPU1 is the case of ext4_get_nojournal() path?
-> If someone has taken jbd2_handle and &ei->xattr_sem in this order, isn't this
-> dependency true?
-> 
-> > 
-> > rwsem_acquire_read(&journal->j_trans_commit_map, 0, 0, _THIS_IP_);
-> > 
-> > so a lockdep key is per-filesystem. Thus it is not possible that lockdep
-> > would combine lock dependencies from two different filesystems.
-> > 
-> > But I guess we could narrow the search for this problem by adding WARN_ONs
-> > to ext4_xattr_set_handle() and ext4_xattr_inode_lookup_create() like:
-> > 
-> > WARN_ON(ext4_handle_valid(handle) && !(current->flags & PF_MEMALLOC_NOFS));
-> > 
-> > It would narrow down a place in which PF_MEMALLOC_NOFS flag isn't set
-> > properly... At least that seems like the most plausible way forward to me.
-> 
-> You can use CONFIG_DEBUG_AID_FOR_SYZBOT for adding such WARN_ONs on linux-next.
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards,
+Richard
