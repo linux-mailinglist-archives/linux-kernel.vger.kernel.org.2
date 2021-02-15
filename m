@@ -2,95 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3146E31C361
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE49831C370
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhBOVDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:03:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
+        id S229782AbhBOVKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 16:10:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhBOVDm (ORCPT
+        with ESMTP id S229717AbhBOVKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:03:42 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7D7C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:03:02 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id d184so8477948ybf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:03:02 -0800 (PST)
+        Mon, 15 Feb 2021 16:10:42 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C36C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:09:52 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id ba1so4383015plb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:09:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mkAE5GZrxiH2vo58IArjoyNpu2OSH2wS3QmdhBJRxPw=;
-        b=fBiYM/8cpwWuNzjfET79wMLq2L1C9j1U+JdBXA2SsIS5rSyQlK6tMGLPNIGjZ/CBlc
-         FMX//k/KWtsHxZsxU51KogB7ZGwS1iSrz7k7c9oTxLCKr+jJZqEZCMHF91ClWGeqb6Qk
-         DvXdXbjNkd+ARkJEZiF19lfISZRJMGLLjfkAMBdbYrPQZBzsJa3M3ITWYAs9j07wCY4F
-         4dz1HQJtWW/HJ9JcpTMGRL3RgC0IoBthqOMdCGR5Nkvte6hkREdsTscaqxTMpfVImDL3
-         EoO2S7tG6EGs2L3w/urnzimTI6j7iAlXLBbrJFuTejHJCX76jDp89qi4WqmP4loVUkSy
-         2pmQ==
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ou8P1Li7E2gyeKtwfnYhdaQdgF2O0F8yVAbqRLCEDE8=;
+        b=E1IHFqJBAhABl3o3qXIIXC/7j+N9OPZcNtf8P1Afsfz8RvG/bSRLhSEjRBA/9S5w7q
+         jhCC+F3CB0G3LAGdmylE3Re7XOYvLpxv+1/u/Q7Hzg788gaxaEYCUgJl2yS4ttaMEBfs
+         ll1VfIwhczN1r8mZRJ0nEdy2UJou7RY4Hg7XCOKkSAJak7CUv2s6F8LZqEKUH7vRv/8J
+         tiTq8E28dH96z7IfrRSSbsL+7aAj/qXeVK3LiTDZr6K9zsQq2r0JWR5gDA+s4aF9+Ufx
+         FctwvHyMrokBS8KEGb/HQrEUqGZAi6+ozPHHV7YObpTsxlvSa/iGFMesmuZBJLGgLL1H
+         2i8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mkAE5GZrxiH2vo58IArjoyNpu2OSH2wS3QmdhBJRxPw=;
-        b=lv8DhVwWWaCM5TuM5ceW1c0AIzWcTQg7STvSNxOU2pbFti0merzOQ8NIYjoLrorPh8
-         UHta6/bNltiry8j0/glRcEM1K64+SI3A1PQTf8+yiV6wk0lkJrBSB6oXJNx0mgkpQh7b
-         X4+Iffvm9mySvyt0dDriP/btcSnKg7WI4S7Wjpj97vLT84NjX5QhjtQEMu+QXvovgdoU
-         KDIdLrOApHO8EkqTVYPceSrhnsdGutgVpMt3lcksCZS4B4GrZ+7GjZsGif750G2gwFkR
-         WI/g3kvLwOk4wGE0PtG2KNPNVFGDlaOf9LIhp7zMDVVexT0+lULhcNHG6J9kyQ40cEWl
-         ZEkw==
-X-Gm-Message-State: AOAM531nN+Q5EAdP89XENXJaOI9l/ptSDcm84FsM/OvzuXJ4PtWN3QCo
-        Pqs76pRcSo2nAj3QWJmConCnUKK3tO1kHe9hnizA3A==
-X-Google-Smtp-Source: ABdhPJyxcd5wnEwohM0LtCiiq5LvJ4rEK948KUqaCPyWoHRQNCoIgCY/DDbEww3kFcj7AQbM8yQNeaTdIB3rxf5mdXI=
-X-Received: by 2002:a25:dc94:: with SMTP id y142mr14822772ybe.346.1613422981325;
- Mon, 15 Feb 2021 13:03:01 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ou8P1Li7E2gyeKtwfnYhdaQdgF2O0F8yVAbqRLCEDE8=;
+        b=AOqVe3mZfz5H8iCR+w3UDXdHdDoC2xTX63o+V/3VL0z1ILdGskRtX+qcNCZscgyyYh
+         MtM01IDcnN9MHTm8ABERS/gGPdmwQuyEaUT9Wg1FZm7zYBdfpYRPEmfxDVy9THhbnG+w
+         t7q9le+XnE1D2zom/QUXp+pEZTyH46TtY0OiHG55ZuqdjERPGxW0XqX0EguAoncZFNHT
+         8ukCHh/HkyVapiwakun88RCWnYOiNIEb3K7BvLeAE6CmDQ5Ymui1158REj+P5f3usjs7
+         YYTxffXLZdrC5vVP0i9+TnbWcbC5dTVErt29uBPKeGvw43h4pCCeJ2IcABeujyyzBsnb
+         pCvQ==
+X-Gm-Message-State: AOAM5330GIJCklX8NdIPB2dH3iPmJBwTxPdtU2CnMhzOLFZPzP72TqCv
+        LosRGF/2smQmeAkcLFhwhwAW4A==
+X-Google-Smtp-Source: ABdhPJzPv8GpdagdwQO8hWEQDmYqvev39zfpfDqqhw3o5h5pjW+8z3S9DYWJ4RxZeKRtCIYi3ksmAw==
+X-Received: by 2002:a17:90a:de8d:: with SMTP id n13mr477375pjv.136.1613423391915;
+        Mon, 15 Feb 2021 13:09:51 -0800 (PST)
+Received: from x1 ([2601:1c0:4701:ae70:7fd3:1922:5d5d:c85b])
+        by smtp.gmail.com with ESMTPSA id n1sm3308579pgi.78.2021.02.15.13.09.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 13:09:51 -0800 (PST)
+Date:   Mon, 15 Feb 2021 13:09:49 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v5 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
+Message-ID: <20210215210949.GA1012667@x1>
+References: <20210212223015.727608-1-drew@beagleboard.org>
+ <20210212223015.727608-3-drew@beagleboard.org>
+ <CAHp75VeqbKjg7pLCgO9-vd2NnqQy6VPaRFKrAWn-1TaJgi1-SA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210215151405.2551143-1-geert+renesas@glider.be>
- <CAGETcx-c5P76JkB-upi8ArDqa=TrR3bJMnpDTO-59sh83opW8g@mail.gmail.com> <CAMuHMdVXCH+27cpC=-viQev1HeN_DkU0=7Dydp4G50z0bB2Ang@mail.gmail.com>
-In-Reply-To: <CAMuHMdVXCH+27cpC=-viQev1HeN_DkU0=7Dydp4G50z0bB2Ang@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 15 Feb 2021 13:02:25 -0800
-Message-ID: <CAGETcx_B7r6DErnxzDngh_KW9a33f4+cHhvthzfEHX8pO0et8w@mail.gmail.com>
-Subject: Re: [PATCH] staging: board: Fix uninitialized spinlock when attaching genpd
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeqbKjg7pLCgO9-vd2NnqQy6VPaRFKrAWn-1TaJgi1-SA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 11:10 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Mon, Feb 15, 2021 at 7:37 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Mon, Feb 15, 2021 at 7:14 AM Geert Uytterhoeven
-> > > @@ -148,7 +149,11 @@ static int board_staging_add_dev_domain(struct platform_device *pdev,
-> > >         pd_args.np = np;
-> > >         pd_args.args_count = 0;
-> > >
-> > > -       return of_genpd_add_device(&pd_args, &pdev->dev);
-> > > +       /* Cfr. device_pm_init_common() */
+On Mon, Feb 15, 2021 at 09:04:20PM +0200, Andy Shevchenko wrote:
+> On Sat, Feb 13, 2021 at 12:30 AM Drew Fustini <drew@beagleboard.org> wrote:
 > >
-> > What's Cfr?
->
-> "compare to" (from Latin "confer").
+> > Add "pinmux-select" to debugfs which will activate a function and group
+> > when "<function-name group-name>" are written to the file. The write
+> 
+> The non-standard way of showing parameters, I would write that as
+>  "<function-name> <group-name>".
 
-Can you please change this to "refer to" or "similar to"? Also, not
-sure if this comment is even adding anything useful even if you switch
-the words.
+Sorry for your comments, but I don't understand what you mean by this
+one.  I think we wrote ""<function-name> <group-name>" the same way, no?
 
-Also, device_pm_init_common() is used in two places outside of
-drivers/base/ with this change. Maybe better to move it to
-linux/device.h?
+> 
+> > operation pinmux_select() handles this by checking that the names map to
+> > valid selectors and then calling ops->set_mux().
+> >
+> > The existing "pinmux-functions" debugfs file lists the pin functions
+> > registered for the pin controller. For example:
+> >
+> > function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
+> > function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
+> > function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
+> > function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
+> > function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
+> > function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
+> 
+> Format this...
+> 
+> > To activate function pinmux-i2c1 and group pinmux-i2c1-pins:
+> >
+> > echo "pinmux-i2c1 pinmux-i2c1-pins" > pinmux-select
+> 
+> ...and this with two leading spaces (for example) to make sure that
+> people will understand that these lines are part of the example.
 
--Saravana
+Ok, thanks.
+
+> 
+> ...
+> 
+> >  drivers/pinctrl/pinmux.c | 99 ++++++++++++++++++++++++++++++++++++++++
+> 
+> Still needs a documentation update.
+
+There is no documentation for any of the existing pinctrl debugfs files.
+I was planning to do this as part of a seperate patch, but I can make it
+part of this series instead.
+
+> 
+> ...
+> 
+> > +       const char *usage =
+> > +               "usage: echo '<function-name> <group-name>' > pinmux-select";
+> 
+> This is quite unusual to have in the kernel. Just return an error
+> code, everything else should be simply documented.
+> 
+> ...
+> 
+> > +       if (len > PINMUX_SELECT_MAX) {
+> 
+> > +               dev_err(pctldev->dev, "write too big for buffer");
+> 
+> Noisy, the user will get an error code and interpret it properly.
+> So, please drop them all. Otherwise it would be quite easy to exhaust
+> kernel buffer with this noise and lost the important messages.
+> 
+> > +               return -EINVAL;
+> 
+> To achieve the above, this rather should be -ENOMEM.
+> 
+> > +       }
+
+Thanks, I will remove the usage message and change the return value.
+
+> 
+> ...
+> 
+> > +       gname = strchr(fname, ' ');
+> > +       if (!gname) {
+> > +               dev_err(pctldev->dev, usage);
+> > +               ret = -EINVAL;
+> > +               goto free_buf;
+> > +       }
+> > +       *gname++ = '\0';
+> 
+> I was thinking about this again and I guess we may allow any amount of
+> spaces in between and any kind of  (like newline or TAB).
+> So, taking above into consideration the code may look like this:
+> 
+> /* Take the input and remove leading and trailing spaces of entire buffer */
+> fname = strstrip(buf);
+> /* Find a separator, i.e. a space character */
+> for (gname = fname; !isspace(gname); gname++)
+>   if (*gname == '\0')
+>     return -EINVAL;
+> /* Replace separator with %NUL to terminate first word */
+> *gname = '\0';
+> /* Drop space characters between first and second words */
+> gname = skip_spaces(gname + 1);
+> if (*gname == '\0')
+>   return -EINVAL;
+> 
+> But please double check the logic.
+> 
+> ...
+
+
+Thanks for the example code.  I'll test it out.
+
+
+> 
+> > +free_buf:
+> 
+> exit_free_buf:
+> 
+
+Ok, thanks.
+
+> > +       kfree(buf);
+> > +
+> > +       return ret;
+> > +}
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
