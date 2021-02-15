@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F61831BF36
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6143A31BE7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhBOQ2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:28:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50182 "EHLO mail.kernel.org"
+        id S231406AbhBOQLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:11:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230003AbhBOPhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:37:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3057764ED3;
-        Mon, 15 Feb 2021 15:32:07 +0000 (UTC)
+        id S231382AbhBOPdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:33:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0792064EC0;
+        Mon, 15 Feb 2021 15:30:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403128;
-        bh=X7wy2ezr0jlJfmnwzBG6RnKatBfbh3Fb17dTcH/L8KI=;
+        s=korg; t=1613403053;
+        bh=azSWMhK/85TBgZhtkkvaPSQQo3xqmuXWTz+WyZTE/pQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ExFxECLeWnrOw6fWls+zOlqXY7Ohi7zq9AGE/k0rdvmRItwuk3vwMtLAadDGb26EW
-         uzgI0v6prMyESvY6huG6AqnqHSztIGE5/5dhjXiKI5HiXRUQpv+hRohWSKE1dgkM6t
-         2XoJrzprYvohxhCPilaz2npo3yf4g/NaxkguHj+o=
+        b=BoIuAnH5olIasDN6Oy+l32uT+4eL5SNqlo7YA93q+OiZ/JVqfGjVVNMXCFY6X325p
+         h3k1rb3yBr4I1S1ufuu5U7UAr2Ti4ANgiHhW6ibNWx5Tyx4oHnSJxorju/0+Na7x7K
+         Jatzd/zVdDyrSlDfK0jPECgOhiPeruFfkcc/8Ijw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikita Shubin <nikita.shubin@maquefel.me>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 5.10 005/104] gpio: ep93xx: Fix single irqchip with multi gpiochips
-Date:   Mon, 15 Feb 2021 16:26:18 +0100
-Message-Id: <20210215152719.643118977@linuxfoundation.org>
+        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Schatzberg <dschatzberg@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>
+Subject: [PATCH 5.10 010/104] cgroup: fix psi monitor for root cgroup
+Date:   Mon, 15 Feb 2021 16:26:23 +0100
+Message-Id: <20210215152719.797201363@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -40,102 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikita Shubin <nikita.shubin@maquefel.me>
+From: Odin Ugedal <odin@uged.al>
 
-commit 28dc10eb77a2db7681b08e3b109764bbe469e347 upstream.
+commit 385aac1519417b89cb91b77c22e4ca21db563cd0 upstream.
 
-Fixes the following warnings which results in interrupts disabled on
-port B/F:
+Fix NULL pointer dereference when adding new psi monitor to the root
+cgroup. PSI files for root cgroup was introduced in df5ba5be742 by using
+system wide psi struct when reading, but file write/monitor was not
+properly fixed. Since the PSI config for the root cgroup isn't
+initialized, the current implementation tries to lock a NULL ptr,
+resulting in a crash.
 
-gpio gpiochip1: (B): detected irqchip that is shared with multiple gpiochips: please fix the driver.
-gpio gpiochip5: (F): detected irqchip that is shared with multiple gpiochips: please fix the driver.
+Can be triggered by running this as root:
+$ tee /sys/fs/cgroup/cpu.pressure <<< "some 10000 1000000"
 
-- added separate irqchip for each interrupt capable gpiochip
-- provided unique names for each irqchip
-
-Fixes: d2b091961510 ("gpio: ep93xx: Pass irqchip when adding gpiochip")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Odin Ugedal <odin@uged.al>
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+Acked-by: Dan Schatzberg <dschatzberg@fb.com>
+Fixes: df5ba5be7425 ("kernel/sched/psi.c: expose pressure metrics on root cgroup")
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: stable@vger.kernel.org # 5.2+
+Signed-off-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpio/gpio-ep93xx.c |   30 +++++++++++++++++++-----------
- 1 file changed, 19 insertions(+), 11 deletions(-)
+ kernel/cgroup/cgroup.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/gpio/gpio-ep93xx.c
-+++ b/drivers/gpio/gpio-ep93xx.c
-@@ -38,6 +38,7 @@
- #define EP93XX_GPIO_F_IRQ_BASE 80
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3567,6 +3567,7 @@ static ssize_t cgroup_pressure_write(str
+ {
+ 	struct psi_trigger *new;
+ 	struct cgroup *cgrp;
++	struct psi_group *psi;
  
- struct ep93xx_gpio_irq_chip {
-+	struct irq_chip ic;
- 	u8 irq_offset;
- 	u8 int_unmasked;
- 	u8 int_enabled;
-@@ -263,15 +264,6 @@ static int ep93xx_gpio_irq_type(struct i
- 	return 0;
- }
+ 	cgrp = cgroup_kn_lock_live(of->kn, false);
+ 	if (!cgrp)
+@@ -3575,7 +3576,8 @@ static ssize_t cgroup_pressure_write(str
+ 	cgroup_get(cgrp);
+ 	cgroup_kn_unlock(of->kn);
  
--static struct irq_chip ep93xx_gpio_irq_chip = {
--	.name		= "GPIO",
--	.irq_ack	= ep93xx_gpio_irq_ack,
--	.irq_mask_ack	= ep93xx_gpio_irq_mask_ack,
--	.irq_mask	= ep93xx_gpio_irq_mask,
--	.irq_unmask	= ep93xx_gpio_irq_unmask,
--	.irq_set_type	= ep93xx_gpio_irq_type,
--};
--
- /*************************************************************************
-  * gpiolib interface for EP93xx on-chip GPIOs
-  *************************************************************************/
-@@ -331,6 +323,15 @@ static int ep93xx_gpio_f_to_irq(struct g
- 	return EP93XX_GPIO_F_IRQ_BASE + offset;
- }
- 
-+static void ep93xx_init_irq_chip(struct device *dev, struct irq_chip *ic)
-+{
-+	ic->irq_ack = ep93xx_gpio_irq_ack;
-+	ic->irq_mask_ack = ep93xx_gpio_irq_mask_ack;
-+	ic->irq_mask = ep93xx_gpio_irq_mask;
-+	ic->irq_unmask = ep93xx_gpio_irq_unmask;
-+	ic->irq_set_type = ep93xx_gpio_irq_type;
-+}
-+
- static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
- 				struct platform_device *pdev,
- 				struct ep93xx_gpio *epg,
-@@ -352,6 +353,8 @@ static int ep93xx_gpio_add_bank(struct e
- 
- 	girq = &gc->irq;
- 	if (bank->has_irq || bank->has_hierarchical_irq) {
-+		struct irq_chip *ic;
-+
- 		gc->set_config = ep93xx_gpio_set_config;
- 		egc->eic = devm_kcalloc(dev, 1,
- 					sizeof(*egc->eic),
-@@ -359,7 +362,12 @@ static int ep93xx_gpio_add_bank(struct e
- 		if (!egc->eic)
- 			return -ENOMEM;
- 		egc->eic->irq_offset = bank->irq;
--		girq->chip = &ep93xx_gpio_irq_chip;
-+		ic = &egc->eic->ic;
-+		ic->name = devm_kasprintf(dev, GFP_KERNEL, "gpio-irq-%s", bank->label);
-+		if (!ic->name)
-+			return -ENOMEM;
-+		ep93xx_init_irq_chip(dev, ic);
-+		girq->chip = ic;
- 	}
- 
- 	if (bank->has_irq) {
-@@ -401,7 +409,7 @@ static int ep93xx_gpio_add_bank(struct e
- 			gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
- 			irq_set_chip_data(gpio_irq, &epg->gc[5]);
- 			irq_set_chip_and_handler(gpio_irq,
--						 &ep93xx_gpio_irq_chip,
-+						 girq->chip,
- 						 handle_level_irq);
- 			irq_clear_status_flags(gpio_irq, IRQ_NOREQUEST);
- 		}
+-	new = psi_trigger_create(&cgrp->psi, buf, nbytes, res);
++	psi = cgroup_ino(cgrp) == 1 ? &psi_system : &cgrp->psi;
++	new = psi_trigger_create(psi, buf, nbytes, res);
+ 	if (IS_ERR(new)) {
+ 		cgroup_put(cgrp);
+ 		return PTR_ERR(new);
 
 
