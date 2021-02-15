@@ -2,206 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219D931B956
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69D031B9B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhBOMe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:34:28 -0500
-Received: from mail-am6eur05on2061.outbound.protection.outlook.com ([40.107.22.61]:46208
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        id S230460AbhBOMso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:48:44 -0500
+Received: from mail-db8eur05on2076.outbound.protection.outlook.com ([40.107.20.76]:27782
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229652AbhBOMeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:34:21 -0500
+        id S230397AbhBOMrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 07:47:09 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fJkr8el+tsK7+Kvkyfl3PCnwMdZCt6cJcXqkj8WdHKKVKpNJPr2ciWrg99Ag4alZz/8FCPP1BXtDv8T/lgtjTSd09IYj5TWnry0l6iObB/MCEVvsv8VYtyEjvRGDZRnZsFz4I7qn49cMAAX8t+4oOcV4JtMl16MukCev5+OjcfNezJzT2RBWfpMLT5LVPBkN1CLZOlruuyFLoQnrt7zba4y1FTSIyNFjXzBArvKEd5L7miu15SauYuYS/YQoxaysA7El/r6oO3QnzPzH5+Qpq/2NB+LhPgAeKk/dYYReFqHsTPddEte96vYfByoi3fAApyTVr7tGMB9RWaBzIWuSTA==
+ b=Qfywkcr51nfK/nKk6phHkMCrU8V5FvHGG8sqWMuYAraZXL6G7vV5IMSWK3/uUhAbX8AtRN4yyPf9FsI5FlJOvEYsGErCtFO0KfLyEU+jbARjesgtUbORrb+Jka3Lmkd54JesfgHl7TTaCP8h3/JwNzIYrq7Rg//k28iZDy79l3/ww4sRw7yKE8fu7D24n0VqA0N9fSRp2vm7wYczllQjQo7q9GqLn5uvL17OOz8rbCgZTCsHOU8gZQ8hXLhnSlwNR+wo72HuGKZtsaPgYSjTk/cnHxaK9+4IFquMU6VIq1PTjFVKVlbQnksagiTwb6JjkCLuMUWQXM/T02MNl0k2DA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p26gYdlFWpDSUEZJiaReevvAvYAda7mxD2GRMVux/mY=;
- b=KC8wEqdoIX0zw23jAk0uf7dqQPyQjyfdNWxo5FN3cnc9n0gh9Amym/S3Y9flJR3njHoYGkqrwIi1JIoxAIEziKBlg9eauSgVmax1XvcdnoVu5pZUrL2vQY/4DG5TLSSZr/5gU74Rok05cCUsoBGPduTnR3zR1lfnRVvv0Jsc79rESCrVxGXzCyyFk8Ep8vTua4d7hTfj6KoLj3D6hd8Sz/mNMfNSBUaMQkch2NYQf+wY4VRblT0OSr2E5uKop+pJpAwUb2XRJ9uHd7gxixZmKdlXdRiKnbdtCZ/hluApe6lcr+X/WY3ODseKx06i5Wa8rOp71IalYcv6MG7OXk67XA==
+ bh=Bw6qdWEjO7pS0I7AeO/4Rp9HIpEHn3VBbnU2UcSJQZE=;
+ b=LDmUQRz/lQvXCjvtQnyDk3H/7z194Cg5Orqk4McymCp12rxOaoipJb3HQE+EEZk0yKEQoLBrCPWDa0SyFtgBkfDFafAYdt8dVHcOkaJ1aDkUNXOJo3Sg6xttTIo9J9tyPPM+rflwxdR+0Kwg9PbgozgCsw/Dg8wueW65O3rTMh6LIkBCqp0IwxF15n/cHerAZ7B9Rt7fy6F8gFOq0wRJOeaLdZ3trJmKGU3Bq2ZhFyk71SdBS2pRG8q3K3peULc3O7jLHstbRDXtpFmW6lbitWrOVGPo1sxb/VUJvt3fe1ge9vO0+I7FLrKP0uX/ancgOk8QgnzgI3QLYzDnK+AFlA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p26gYdlFWpDSUEZJiaReevvAvYAda7mxD2GRMVux/mY=;
- b=WOBi4o//M7dkvuk4NKgUjlME1rXoNntXj6LwInVaGBySvfqX5xvr5AY+UdC20krl9nrC/jDwQx1d+IqgeT+nvNnxH4UjChQFQ1tv0YmkItVmr2KJrSb4b8tIZFMB1wEdjsmucKM7ppoC5UD1ZxOQm49ZhHNnlw8jfo3iGegKYu0=
-Authentication-Results: armlinux.org.uk; dkim=none (message not signed)
- header.d=none;armlinux.org.uk; dmarc=none action=none
- header.from=oss.nxp.com;
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
- by AM0PR04MB4594.eurprd04.prod.outlook.com (2603:10a6:208:74::20) with
+ bh=Bw6qdWEjO7pS0I7AeO/4Rp9HIpEHn3VBbnU2UcSJQZE=;
+ b=c94CqRYdvAu4ovEymQ2QKl1micxt5D4vsWtKdQP3z4SpWVO/+ZqTJS5Bim7fqb/STxMYX7Scui8mJ8MuSUGD/S+oeFXYr0v8psm5u4PMKaJf21D7umpN7+wlW/ME0z4kkvJjB29o/r+edd+m2DGujF8eJiFycVdOL8HdB0YataM=
+Authentication-Results: wizery.com; dkim=none (message not signed)
+ header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB5081.eurprd04.prod.outlook.com (2603:10a6:10:23::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.39; Mon, 15 Feb
- 2021 12:33:31 +0000
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::e90e:b1d6:18a2:2d42]) by AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::e90e:b1d6:18a2:2d42%6]) with mapi id 15.20.3846.042; Mon, 15 Feb 2021
- 12:33:31 +0000
-Date:   Mon, 15 Feb 2021 18:03:09 +0530
-From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-kernel@vger.kernel.org, linux.cj@gmail.com,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [net-next PATCH v5 15/15] net: dpaa2-mac: Add ACPI support for
- DPAA2 MAC driver
-Message-ID: <20210215123309.GA5067@lsv03152.swis.in-blr01.nxp.com>
-References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com>
- <20210208151244.16338-16-calvin.johnson@oss.nxp.com>
- <20210208162831.GM1463@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208162831.GM1463@shell.armlinux.org.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: SG2PR04CA0167.apcprd04.prod.outlook.com (2603:1096:4::29)
- To AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.36; Mon, 15 Feb
+ 2021 12:46:18 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d58c:d479:d094:43d0]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d58c:d479:d094:43d0%9]) with mapi id 15.20.3846.027; Mon, 15 Feb 2021
+ 12:46:18 +0000
+From:   peng.fan@oss.nxp.com
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
+        patrice.chotard@st.com, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V10 00/10] remoteproc: imx_rproc: support iMX8MQ/M 
+Date:   Mon, 15 Feb 2021 20:34:13 +0800
+Message-Id: <1613392463-9676-1-git-send-email-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR0302CA0019.apcprd03.prod.outlook.com
+ (2603:1096:3:2::29) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR04CA0167.apcprd04.prod.outlook.com (2603:1096:4::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Mon, 15 Feb 2021 12:33:25 +0000
+Received: from localhost.localdomain (119.31.174.66) by SG2PR0302CA0019.apcprd03.prod.outlook.com (2603:1096:3:2::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3868.12 via Frontend Transport; Mon, 15 Feb 2021 12:46:12 +0000
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 8e0fd77b-5d39-4869-6bc6-08d8d1ade730
-X-MS-TrafficTypeDiagnostic: AM0PR04MB4594:
+X-MS-Office365-Filtering-Correlation-Id: 09c89f3b-6a92-4a74-dc12-08d8d1afb029
+X-MS-TrafficTypeDiagnostic: DB7PR04MB5081:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB4594B3A0268C29779B19F4B9D2889@AM0PR04MB4594.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-Microsoft-Antispam-PRVS: <DB7PR04MB508155925DC1E94E5CE0D9F8C9889@DB7PR04MB5081.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZRPXBpva7wf89nx54nC6uCFcaXoztZhJNq27ujclfrXxrgBN4qLGkjbZNX4CNWK8SrAnVhQzqsAczLcAiOyOILLveEkTuc7pxh2YWa2RoTY3oiamb3zxp4QfputWByJ3RSMHXzwH/O6Ctgw4vCM3HHFZlCS4B8MLNA98529nVRH9FNLjJsVc60NlHRClmbMWIMoU6q5CnJGN87sz/dU8JMMw0kyu13uSRZHubg0tXrkYrwnTXdYANTkzWTf0HEpu9ICqVzEej6z+Qli5yfASsQt24VTYvShptYGVgQNXh7dmDU7Rbab/TGHks+6LxyBEbu7+u5dccUT7f8XXVkwyATQj6Ky0bg5W+vx06cbunD1V1OoC99YmGlFMI93KkLT3S6PUByP8dYnXqlNYRFc++fv+a6WXpBU2SzaqjqBpQaBmAfoIQCLRT1eINOE4plk4C3sHzk0T91hE3BZ/LKBjiVO6cMNvjupwTErppUJdYFPTEJ9YlaJ8DH+npyTbIvz+COQlTIO7M7azN0mhGpqwUamkyz3PaIx5BUVrAKrp3NurwLlRQmK33LWJ65TwJ0RV7wLAlbG8m5i6583+2ulo8w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(376002)(366004)(136003)(8936002)(6506007)(7696005)(52116002)(55016002)(2906002)(8676002)(478600001)(956004)(6916009)(54906003)(44832011)(26005)(186003)(83380400001)(16526019)(4326008)(316002)(86362001)(5660300002)(1006002)(6666004)(66946007)(66476007)(7416002)(9686003)(66556008)(55236004)(33656002)(1076003)(110426009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?IEp49oU2V+uUbIYYHXucko43aHOVsXY/I8PDMUk8e00aZW4dCM0IxFmMurLN?=
- =?us-ascii?Q?W6Mq0W74klrFDhZ5ZqPzsGfqDhzSB9K3mnv1bc7efi5Jmq0uMIep469P3i9Z?=
- =?us-ascii?Q?p9jcr/k3rK/3Sbif601VZG1ubZzQhb8HVaDmpUNkY+tiR3PERwzLbTspwwWF?=
- =?us-ascii?Q?RR/D9Cqi/hbvot1Xeo8aJ4L9daEIrjnUrUzfbDF9pRk/XpoQuac5BIPmR6rk?=
- =?us-ascii?Q?O3acsYq9HfG9oxhyS0vEnwkvYNIZ7E/WbuvNQI1IE0aL9j/ZdPF9K64cF0YH?=
- =?us-ascii?Q?T4O5ziJNDcM4fT5UrOcD67HFrwVXvVjtf+67chaHlZVi/OfXqQWaW4jIEU6b?=
- =?us-ascii?Q?P/BQwugpQiQ3cWSwK3QtTpMLxiY77nA1xsxhKlQioFLXxYLx4oJdMvis6aom?=
- =?us-ascii?Q?4j2h+QwpbNr7LNTcUhkxfiqCKBfodaPhJPhYGf2X2YVEfXRA0NOsLJ6vk5PJ?=
- =?us-ascii?Q?1wtWUcaxyHYq9RNuoxZv+uvce96A0DWMW+7d3amkp7cJZDZC4xiQbZeKc0xU?=
- =?us-ascii?Q?NH/k5AI2wMbznZTsNMX/GWCeKIoFXQT9wD15W+SVFM3Fw1Ek7HQcti4Km8ZV?=
- =?us-ascii?Q?foae/x2ktGUYHuFZtyXC6Om3eYSdlnL7R4V/YBtRZ+rioaPVwpvvksTe1kVF?=
- =?us-ascii?Q?EAdE13tLnY/y9WFkNyHEJNtcEGDqP3T7hJCjmRywALnzHkUaV3g9eNQH8q8j?=
- =?us-ascii?Q?dELw3w/trWf9ey3IO4GZ03jBvlMV7Di7ceTr0EOESKZAGachmq0GMn637TJV?=
- =?us-ascii?Q?NOnzxu73+GMx50eq4PiJWw9HQpdOvJWf1gOutBHxpRFx/vpwGqBLdOfVUSdD?=
- =?us-ascii?Q?zb0bJwU+LWfkpghf/IpGEPvwqac4S6g2O1SFQ46busNLTgWufLgzRXU7Ic5D?=
- =?us-ascii?Q?n1/CqTGGLdS225IO1NXv9OEsAADGIZc78bSrS3UhaHT52TVw0nOkJJBkUm5S?=
- =?us-ascii?Q?vbH6o+YC4sjV5mLDD9zUJbrTvxIanloHqV1BATLKHsWM5iVijSA1P1tlcKZs?=
- =?us-ascii?Q?lwvIflIaiZ9oheqlW4VslQUhvxaEwCG/gjyTZBpsFXg12y4uetWQ3IHMXvws?=
- =?us-ascii?Q?80CnYNwksanC/9c2lDcxHlgNTBAGoJeuS4zcy2WOh3G9KfVtsw1Cz1MGFj57?=
- =?us-ascii?Q?LLPw8nifwALDecdHaS/1VkmFfJga9lG9JMRJLDsHCsQ+A81pPY7YSKys/SY7?=
- =?us-ascii?Q?gxlAHjRr+oGCKq/sE2fkKf4G6FVMa73Ka6uQdGWjX5ZUzX2DyOR+4U2idGDK?=
- =?us-ascii?Q?b6ss7phgGvWch0mbaTNsp0HeCUR1RbjWjW0/QGJXhvsrnykidtaU0q5DyqL6?=
- =?us-ascii?Q?mwBAxT18RVenIpFV+q0altuP?=
+X-Microsoft-Antispam-Message-Info: lIN2hQr2lifOnPDTA4nZ6gFAJJ+60h10C37YKN++fjkvCY2y8wpDnL5KzkyRvGEQSXeCPhrMM387xI4gaRYmfHiOlWj1Zjlz2pzSiktwuG65mVd+UafnbWJPKhyYFHhq+zOAMOFM461bMJt+f1AnQjJwzG2xhWqvJjkdwYHaz/bx21PQ0hJJwZMgqPZZ0joUrzoGUgaY/5R09FvMynHWQRFKGIWsZvysZ1FxR3BH0TSoRoa3SwamfvW88wwXoZMr4L2JeRp3EaQ484ADRVht1iGvN4lrp8KyU78+GTmS5nXj/Aidz6eF7nF+d+Gx1ozYN61n0LlQtp2IcrhJ7+p1K3N/QxQP4vuVciCJ2uAPodXqetkDb6GvMPS7ugh0W9PL2sWaNGUtxu8RLOsInhcxW9xo8zFJ3UCZxXY93hsZHeCOGYGF0CZ2AkCdgzl2aPk2/iag3qVhWE1iaoWqDxf1IIBTGnd1nkeUCPEpK0EVRKKjUYm6EqpJt8yWyOFDG3ZrO7sGRWxeh4haY5Rre639mcQjHTEbwzNiqm/2xwdHXrbalsZgtbNbXvuIfUM7ZdC4wgLrIayZOEvPIBzULEU+8oA9/u/x+NcNRLr3pQR99O1M5/Ix5rVZGzwSx2Czni4EU/nc2K3I94m2paqEyJGVcpJBJWyibk9IYhj8VIlzvOhuByj978ONtNYyWu5JGNoA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(39860400002)(396003)(4326008)(86362001)(16526019)(186003)(66556008)(6486002)(69590400012)(66946007)(2906002)(66476007)(7416002)(956004)(2616005)(26005)(83380400001)(8936002)(8676002)(9686003)(6512007)(52116002)(5660300002)(316002)(966005)(4743002)(6506007)(478600001)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?gAwjP/wrgJnkpWoqaM4dexp28RgvIKwHlIjVkPIPT02sQeYCVEgQyATKuQ+4?=
+ =?us-ascii?Q?/8lgGXei6UeMTYFhy2X100jDdQOYkkXWnLKTs8bHkX+PzNXj4m2OGPq4aLMH?=
+ =?us-ascii?Q?TzeYn4f4oyXzgN2yxCPTDt+UmR3ChFxJLpq36OVrwlTlhof5Hf7XgN1VksJU?=
+ =?us-ascii?Q?srDH1djqgUvbxCTSLLq1yAFxQttmy3shcZmbje8naWglV4ImKH70sod6YzN8?=
+ =?us-ascii?Q?FtEPYONYT0H93iOtFRuxBYnlMeuWm1o8isOObZZaPgluN+N2NFJ+UkqV8F48?=
+ =?us-ascii?Q?j4Y2O0NcCT9BsOjEVdNamQz16RFAf6XY6e1+v0y1EID/zm/c4K3eAObq0aCy?=
+ =?us-ascii?Q?GPXbD4IPRLgCW3F/Go3Z4aQrPTzVKVz9WHbO+wtz4nJKFlC671pNrMab+8eJ?=
+ =?us-ascii?Q?6zLjht6RAO+rcZjlWJ2T0RuWI5veWlaw7RxleNXVpkqfmuqTGPZ1cMCJ2elk?=
+ =?us-ascii?Q?UXMDN+7HJrYx47dDvhpZogc/Onj2htV3MRxsvMxaulRc1dLiACsy8XcLNzQ/?=
+ =?us-ascii?Q?c6nqeXVDuut/J21fwMWRFYSZMxPfdVOJrSzcUfNoMxvBg4ZkGsZWzGxVLSe9?=
+ =?us-ascii?Q?N+VS+9fzeiWYs5SjW8a+pjYoOauDy2Gz6mLVrFunVGLnsdtADWrJHauAtnLM?=
+ =?us-ascii?Q?4BmWoyXcc+eGXabJcxrhG6SImpk062Tq5bteezyiIugaHH2curShBXXQjIZ/?=
+ =?us-ascii?Q?w3r4cSChpHste/3Hn4ltl0MoGkzaS4Czv9VE+11wm3qbphEqpdzlQFaMSnti?=
+ =?us-ascii?Q?vh/EQlSkdMCdPZfsusRSvkv1Jt/BTHDEihepsGRLKlrz9tpj9d7lsx974ILa?=
+ =?us-ascii?Q?1oL62XaRIo9fI172ZyQ9dUX/SyeP5QvNpN3Dlhgn1jsrFWRl/fHk0Agfffbh?=
+ =?us-ascii?Q?3wgKgPo9GTZ5V816Fcq8mcBfC0lmtxgxBYJz0CUf/E7je0sVETQigOwMsaFv?=
+ =?us-ascii?Q?ARi6Pw9Ru7cM2P5hpumM6lb3eceJ557fS5G4MFBGYIVzNR+e1Weq4wqoYuSm?=
+ =?us-ascii?Q?3GhtG7XGZOpeJ1kSDSu2JSzxF+IJoM48XuXiZ7YmwEcWi5vA5BPjt1lBqixP?=
+ =?us-ascii?Q?6RdSGySmkU1LCgXUc08F7DQtkum3Qj7LOI9SDYLH1Nkpxg4cE2MS1hj8fRr6?=
+ =?us-ascii?Q?sqNtMjlJpg/0OPV6GxplJrrsXkoeUfPllzvvGTfFr1mhNGbOedOahB+1M2XL?=
+ =?us-ascii?Q?lwugHrvtWHfs5vw8kefzvqs1RiQx1kIp2Mf+D41qplAr+dqKrkQ25HepS8qh?=
+ =?us-ascii?Q?y6XKBW0qbpdrwwglINLoH4wpTxLb46YxnjQro7KVynqva/rObpHi1DMJyt8k?=
+ =?us-ascii?Q?rMbS5g86SYOEFc2WTMwkZ4n8?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e0fd77b-5d39-4869-6bc6-08d8d1ade730
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09c89f3b-6a92-4a74-dc12-08d8d1afb029
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2021 12:33:31.4770
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2021 12:46:18.1878
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wdps6zMvu7ta+6OKFQFzIjYtemtHdlaAp+hFYjKOpMRfHICOySkiLcQQLokhVhB7F38HpIXSdq+PKBUD+gazfQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4594
+X-MS-Exchange-CrossTenant-UserPrincipalName: Uu1VMxCWAh3DREqBgYdKpvKKW3PtxJIimbjh6NroA4ldyso85mSosz1YnQ9IPEEvz+SOy0cFcwBwZuHcnMiDlA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 04:28:31PM +0000, Russell King - ARM Linux admin wrote:
-> On Mon, Feb 08, 2021 at 08:42:44PM +0530, Calvin Johnson wrote:
-> > Modify dpaa2_mac_connect() to support ACPI along with DT.
-> > Modify dpaa2_mac_get_node() to get the dpmac fwnode from either
-> > DT or ACPI.
-> > 
-> > Replace of_get_phy_mode with fwnode_get_phy_mode to get
-> > phy-mode for a dpmac_node.
-> > 
-> > Use helper function phylink_fwnode_phy_connect() to find phy_dev and
-> > connect to mac->phylink.
-> > 
-> > Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> 
-> I don't think this does the full job.
-> 
-> >  static int dpaa2_pcs_create(struct dpaa2_mac *mac,
-> > -			    struct device_node *dpmac_node, int id)
-> > +			    struct fwnode_handle *dpmac_node,
-> > +			    int id)
-> >  {
-> >  	struct mdio_device *mdiodev;
-> > -	struct device_node *node;
-> > +	struct fwnode_handle *node;
-> >  
-> > -	node = of_parse_phandle(dpmac_node, "pcs-handle", 0);
-> > -	if (!node) {
-> > +	node = fwnode_find_reference(dpmac_node, "pcs-handle", 0);
-> > +	if (IS_ERR(node)) {
-> >  		/* do not error out on old DTS files */
-> >  		netdev_warn(mac->net_dev, "pcs-handle node not found\n");
-> >  		return 0;
-> >  	}
-> >  
-> > -	if (!of_device_is_available(node)) {
-> > +	if (!of_device_is_available(to_of_node(node))) {
-> 
-> If "node" is an ACPI node, then to_of_node() returns NULL, and
-> of_device_is_available(NULL) is false. So, if we're using ACPI
-> and we enter this path, we will always hit the error below:
-> 
-> >  		netdev_err(mac->net_dev, "pcs-handle node not available\n");
-> > -		of_node_put(node);
-> > +		of_node_put(to_of_node(node));
-> >  		return -ENODEV;
-> >  	}
-> 
-> > @@ -306,7 +321,7 @@ int dpaa2_mac_connect(struct dpaa2_mac *mac)
-> >  	 * error out if the interface mode requests them and there is no PHY
-> >  	 * to act upon them
-> >  	 */
-> > -	if (of_phy_is_fixed_link(dpmac_node) &&
-> > +	if (of_phy_is_fixed_link(to_of_node(dpmac_node)) &&
-> 
-> If "dpmac_node" is an ACPI node, to_of_node() will return NULL, and
-> of_phy_is_fixed_link() will oops.
+From: Peng Fan <peng.fan@nxp.com>
 
-I think of_phy_is_fixed_link() needs to be fixed. I'll add below fix.
+V11:
+ Per Rob's comments, fix memory-region in patch 1/10
+ Rebased on top of Linux-next
 
---- a/drivers/net/mdio/of_mdio.c
-+++ b/drivers/net/mdio/of_mdio.c
-@@ -439,6 +439,9 @@ bool of_phy_is_fixed_link(struct device_node *np)
-        int len, err;
-        const char *managed;
+V10:
+ Per Rob's comments, fix patch 1/10
 
-+       if (!np)
-+               return false;
-+
-        /* New binding */
-        dn = of_get_child_by_name(np, "fixed-link");
-        if (dn) {
+V9:
+ Per Mathieu's comments,
+   update the tile of yaml in patch 2/10
+   update the Kconfig and MODULE_DESCRIPTION, I merge this change in patch 8/10,
+   since this is a minor change, I still keep Mathieu's R-b tag. If any objection, I could remove.
+   Add R-b tag in Patch 10/10
 
-Regards
-Calvin
+ Rob, please help review patch 1/10 and 2/10
+
+V8:
+ Address sparse warning in patch 4/10 reported by kernel test robot
+
+V7:
+ Add R-b tag from Mathieu
+ vdevbuffer->vdev0buffer in patch 1/10, 7/10
+ correct err msg and shutdown seq per Mathieu's comments in patch 10/10
+ Hope this version is ok to be merged.
+ 
+V6:
+ Add R-b tag from Mathieu
+ Convert imx-rproc.txt to yaml and add dt-bindings support for i.MX8MQ/M, patch 1/10 2/10
+ No other changes.
+
+V5:
+ Apply on Linux next
+ Add V5 subject prefix
+ Add R-b tag from Bjorn for 1/8, 2/8, 3/8
+ https://patchwork.kernel.org/project/linux-remoteproc/cover/20201229033019.25899-1-peng.fan@nxp.com/
+
+V4:
+ According to Bjorn's comments, add is_iomem for da to va usage
+ 1/8, 2/8 is new patch
+ 3/8, follow Bjorn's comments to correct/update the err msg.
+ 6/8, new patch
+ 8/8, use dev_err_probe to simplify code, use queue_work instead schedule_delayed_work
+
+V3:
+ Since I was quite busy in the past days, V3 is late
+ Rebased on Linux-next
+ Add R-b tags
+ 1/7: Add R-b tag of Mathieu, add comments
+ 4/7: Typo fix
+ 5/7: Add R-b tag of Mathieu, drop index Per Mathieu's comments
+ 6/7: Add R-b tag of Mathieu
+ 7/7: Add comment for vqid << 16, drop unneeded timeout settings of mailbox
+      Use queue_work instead of schedule_delayed_work
+      free mbox channels when remove
+ https://lkml.org/lkml/2020/12/4/82
+
+V2:
+ Rebased on linux-next
+ Dropped early boot feature to make patchset simple.
+ Drop rsc-da
+ https://patchwork.kernel.org/project/linux-remoteproc/cover/20200927064131.24101-1-peng.fan@nxp.com/
+
+V1:
+ https://patchwork.kernel.org/cover/11682461/
+
+This patchset is to support i.MX8MQ/M coproc.
+The early boot feature was dropped to make the patchset small in V2.
+
+Since i.MX specific TCM memory requirement, add elf platform hook.
+Several patches have got reviewed by Oleksij and Mathieu in v1.
+
+
+Peng Fan (10):
+  dt-bindings: remoteproc: convert imx rproc bindings to json-schema
+  dt-bindings: remoteproc: imx_rproc: add i.MX8MQ/M support
+  remoteproc: introduce is_iomem to rproc_mem_entry
+  remoteproc: add is_iomem to da_to_va
+  remoteproc: imx_rproc: correct err message
+  remoteproc: imx_rproc: use devm_ioremap
+  remoteproc: imx_rproc: add i.MX specific parse fw hook
+  remoteproc: imx_rproc: support i.MX8MQ/M
+  remoteproc: imx_rproc: ignore mapping vdev regions
+  remoteproc: imx_proc: enable virtio/mailbox
+
+ .../bindings/remoteproc/fsl,imx-rproc.yaml    | 109 ++++++++
+ .../bindings/remoteproc/imx-rproc.txt         |  33 ---
+ drivers/remoteproc/Kconfig                    |   6 +-
+ drivers/remoteproc/imx_rproc.c                | 262 +++++++++++++++++-
+ drivers/remoteproc/ingenic_rproc.c            |   2 +-
+ drivers/remoteproc/keystone_remoteproc.c      |   2 +-
+ drivers/remoteproc/mtk_scp.c                  |   6 +-
+ drivers/remoteproc/omap_remoteproc.c          |   2 +-
+ drivers/remoteproc/pru_rproc.c                |   2 +-
+ drivers/remoteproc/qcom_q6v5_adsp.c           |   2 +-
+ drivers/remoteproc/qcom_q6v5_pas.c            |   2 +-
+ drivers/remoteproc/qcom_q6v5_wcss.c           |   2 +-
+ drivers/remoteproc/qcom_wcnss.c               |   2 +-
+ drivers/remoteproc/remoteproc_core.c          |   7 +-
+ drivers/remoteproc/remoteproc_coredump.c      |   8 +-
+ drivers/remoteproc/remoteproc_debugfs.c       |   2 +-
+ drivers/remoteproc/remoteproc_elf_loader.c    |  21 +-
+ drivers/remoteproc/remoteproc_internal.h      |   2 +-
+ drivers/remoteproc/st_slim_rproc.c            |   2 +-
+ drivers/remoteproc/ti_k3_dsp_remoteproc.c     |   2 +-
+ drivers/remoteproc/ti_k3_r5_remoteproc.c      |   2 +-
+ drivers/remoteproc/wkup_m3_rproc.c            |   2 +-
+ include/linux/remoteproc.h                    |   4 +-
+ 23 files changed, 412 insertions(+), 72 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
+
+-- 
+2.30.0
+
