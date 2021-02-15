@@ -2,154 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540CC31C3DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 23:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709BE31C3E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 23:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhBOV7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:59:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhBOV67 (ORCPT
+        id S229864AbhBOWAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 17:00:21 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40310 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229662AbhBOWAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:58:59 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6120C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:57:50 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id hs11so13673620ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:57:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=wZJvIiq3Ed1jabdaDHfcdY3De/LneLLvMaYX01zmAAg=;
-        b=vDM1O1mTMdZuKB3Fp7Vvkb8srDgTqgkArUaHOmqlpF8yhpkD1qNvfDQ3W4CVzgvgZs
-         wNTGPTUUu0aCQ337Si+Ois2wh+Fxk6J43IUkQzE+tJgY/uZ3bTSNlN1Abvc9FnV0vp9y
-         mAoT3QlUIz5AgoICh/2ehI0pYR9n6LQBnaUMmN6Xj7ikPcy+PXY8UjxqcOnHkXshl963
-         XpBBUMbnbv5UaqJv2+McxUR/tz5ynGSfC137aSl8W7Nnf9caZTnU/JI5e/Qp44j3BtGY
-         Wfejbo6EXBCn+YMmYLzwOPrBs4XegDgFFSOHWY5xYyTm4pCVwZdip9HBK1xB+rc4A4TV
-         MPOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=wZJvIiq3Ed1jabdaDHfcdY3De/LneLLvMaYX01zmAAg=;
-        b=J6WLSTwNBHthEzTj8Q85xSBVvZPY/QGVr7rObtyZ1NPOqOCMzYe4i8+ITJKs280FgV
-         EdKhDKTb1O93oVo/qEwCr0FChGxnemikBac7E95Sy3RCvqUqc+3nVYRXUWI994KxuHKp
-         eVvsLIi1k2rfYxak7MskWOIGx2KLrTWd5M2yIFNnhKrgcPWBZrOOS/fAwA0UZvRuoqiY
-         S+E23g1gxduyOyiKZZAkI/qR8dV8z2GO4UiLD81TgOAGrZvFvJ+6z7cJuelx2AnN52TC
-         qqll2UQNJFRb0b/GD3UujKuCtFoQeLICkUgC95R9km7X1e79DhdqjPw4fAvkZ2wrG5s6
-         5xag==
-X-Gm-Message-State: AOAM530OuIXyHJ/LYE/4/QEaA47uUNaT8E7e2DoZN40i0sVD9SpH5UEd
-        /0KAl+XdtqkAGklbhEErXUqfV0RJyE7HoOgzHdsW
-X-Google-Smtp-Source: ABdhPJxilRQvUaZKed8QSlP5ewVgT0/coAnH9EKex1Mf+tJHJSqmzycPvKi002dEwuYsJzFjkqar40LXkZ/99vbAaZY=
-X-Received: by 2002:a17:906:8890:: with SMTP id ak16mr11761146ejc.398.1613426269419;
- Mon, 15 Feb 2021 13:57:49 -0800 (PST)
+        Mon, 15 Feb 2021 17:00:12 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11FLgr0N062512;
+        Mon, 15 Feb 2021 16:58:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=/oRTogH8po3yrn0yk1VD9C6sW7iDA6T0y17mhJA1WJo=;
+ b=IqHTfUVme3a04JuafM75XANvIB90U3EKdFBBMX+qzHAUatGh5sWkpEz1B/i+oLiLtErk
+ j2NJ/Xc3oxJyVb32NMNhFhIeMXkRENqauQAWcInw4o7qOdjcHIcArXqzO6ismtWmQ/Br
+ 28fOnQMoSe1e1Z2KDylxsK7fPN6JHn2rDKDNs3qLYdgsmreKiLq2uOABGDee+lPn9xrY
+ 4kKf/jZaK5mQ1W+Q+K8N0xhBSoWOnUdMmDTrK5t2SeIkYKbJTuEn/pZmSiKLLX++rTzJ
+ faU3mZK9Cpg6Bppn0Cvy2criJ5FmwGUMG54b4Zx/YmTdvKQrGkP691UsqGgLgrpxtU+Y Sg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36r13w8994-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 16:58:54 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11FLk07d070184;
+        Mon, 15 Feb 2021 16:58:53 -0500
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36r13w898k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 16:58:53 -0500
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11FLtFlC032460;
+        Mon, 15 Feb 2021 21:58:52 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma01wdc.us.ibm.com with ESMTP id 36p6d8hxcb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 21:58:52 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11FLwn8L21692706
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Feb 2021 21:58:49 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B8224C605D;
+        Mon, 15 Feb 2021 21:58:49 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7983FC6055;
+        Mon, 15 Feb 2021 21:58:41 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.85.173.121])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Mon, 15 Feb 2021 21:58:41 +0000 (GMT)
+References: <20210213161049.6190-1-nramas@linux.microsoft.com>
+ <20210213161049.6190-7-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v18 06/11] powerpc: Move ima buffer fields to struct kimage
+In-reply-to: <20210213161049.6190-7-nramas@linux.microsoft.com>
+Date:   Mon, 15 Feb 2021 18:58:37 -0300
+Message-ID: <87r1lhq9gy.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 15 Feb 2021 16:57:38 -0500
-Message-ID: <CAHC9VhRkn65jgVW5fTRWOrDe+dXQD-_-BTN+rZ8Kcq5qxFi45Q@mail.gmail.com>
-Subject: [GIT PULL] SELinux patches for v5.12
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-15_16:2021-02-12,2021-02-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 phishscore=0 impostorscore=0 suspectscore=0 priorityscore=1501
+ adultscore=0 spamscore=0 mlxlogscore=889 malwarescore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102150160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-We've got a good handful of patches for SELinux this time around; with
-everything passing the selinux-testsuite and applying cleanly to your
-tree as of a few minutes ago.  The highlights are below:
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-- Add support for labeling anonymous inodes, and extend this new
-support to userfaultfd.
+> The fields ima_buffer_addr and ima_buffer_size in "struct kimage_arch"
+> for powerpc are used to carry forward the IMA measurement list across
+> kexec system call.  These fields are not architecture specific, but are
+> currently limited to powerpc.
+>
+> arch_ima_add_kexec_buffer() defined in "arch/powerpc/kexec/ima.c"
+> sets ima_buffer_addr and ima_buffer_size for the kexec system call.
+> This function does not have architecture specific code, but is
+> currently limited to powerpc.
+>
+> Move ima_buffer_addr and ima_buffer_size to "struct kimage".
+> Set ima_buffer_addr and ima_buffer_size in ima_add_kexec_buffer()
+> in security/integrity/ima/ima_kexec.c.
+>
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Suggested-by: Will Deacon <will@kernel.org>
+> ---
+>  arch/powerpc/include/asm/ima.h     |  3 ---
+>  arch/powerpc/include/asm/kexec.h   |  5 -----
+>  arch/powerpc/kexec/ima.c           | 29 ++++++-----------------------
+>  include/linux/kexec.h              |  3 +++
+>  security/integrity/ima/ima_kexec.c |  8 ++------
+>  5 files changed, 11 insertions(+), 37 deletions(-)
 
-- Fallback to SELinux genfs file labeling if the filesystem does not
-have xattr support.  This is useful for virtiofs which can vary in its
-xattr support depending on the backing filesystem.
-
-- Classify and handle MPTCP the same as TCP in SELinux.
-
-- Ensure consistent behavior between inode_getxattr and
-inode_listsecurity when the SELinux policy is not loaded.  This fixes
-a known problem with overlayfs.
-
-- A couple of patches to prune some unused variables from the SELinux
-code, mark private variables as static, and mark other variables as
-__ro_after_init or __read_mostly.
-
-Thanks,
--Paul
-
---
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
-
- Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
-
-are available in the Git repository at:
-
- git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
-   tags/selinux-pr-20210215
-
-for you to fetch changes up to 365982aba1f264dba26f0908700d62bfa046918c:
-
- fs: anon_inodes: rephrase to appropriate kernel-doc
-   (2021-01-15 12:17:25 -0500)
-
-----------------------------------------------------------------
-selinux/stable-5.12 PR 20210215
-
-----------------------------------------------------------------
-Amir Goldstein (1):
-     selinux: fix inconsistency between inode_getxattr and inode_listsecurity
-
-Daniel Colascione (3):
-     fs: add LSM-supporting anon-inode interface
-     selinux: teach SELinux about anonymous inodes
-     userfaultfd: use secure anon inodes for userfaultfd
-
-Lokesh Gidra (1):
-     security: add inode_init_security_anon() LSM hook
-
-Lukas Bulwahn (1):
-     fs: anon_inodes: rephrase to appropriate kernel-doc
-
-Ondrej Mosnacek (6):
-     selinux: remove unused global variables
-     selinux: drop the unnecessary aurule_callback variable
-     selinux: make selinuxfs_mount static
-     selinux: mark some global variables __ro_after_init
-     selinux: mark selinux_xfrm_refcount as __read_mostly
-     selinux: fall back to SECURITY_FS_USE_GENFS if no xattr support
-
-Paolo Abeni (1):
-     selinux: handle MPTCP consistently with TCP
-
-fs/anon_inodes.c                    | 157 +++++++++++++++++++++++++--------
-fs/libfs.c                          |   5 --
-fs/userfaultfd.c                    |  19 ++---
-include/linux/anon_inodes.h         |   5 ++
-include/linux/lsm_hook_defs.h       |   2 +
-include/linux/lsm_hooks.h           |   9 +++
-include/linux/security.h            |  10 +++
-security/security.c                 |   8 ++
-security/selinux/avc.c              |  10 +--
-security/selinux/hooks.c            | 141 ++++++++++++++++++++++++-----
-security/selinux/ibpkey.c           |   1 -
-security/selinux/include/classmap.h |   2 +
-security/selinux/include/security.h |   1 -
-security/selinux/netif.c            |   1 -
-security/selinux/netlink.c          |   2 +-
-security/selinux/netnode.c          |   1 -
-security/selinux/netport.c          |   1 -
-security/selinux/selinuxfs.c        |   4 +-
-security/selinux/ss/avtab.c         |   4 +-
-security/selinux/ss/ebitmap.c       |   2 +-
-security/selinux/ss/hashtab.c       |   2 +-
-security/selinux/ss/services.c      |  10 +--
-security/selinux/xfrm.c             |   2 +-
-23 files changed, 294 insertions(+), 105 deletions(-)
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 
 -- 
-paul moore
-www.paul-moore.com
+Thiago Jung Bauermann
+IBM Linux Technology Center
