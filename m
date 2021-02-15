@@ -2,111 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519B931B561
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 07:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215C031B565
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 07:29:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhBOG07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 01:26:59 -0500
-Received: from mga07.intel.com ([134.134.136.100]:44573 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhBOG0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 01:26:55 -0500
-IronPort-SDR: cPU903P6yZrfpxA+6zHKa2QPbmLhByKQB8AMYaFyvqU5WkOr3aZ2Lp7jnVJUcERs5M73ma4ESd
- OLGd1xcOrVNA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="246690438"
-X-IronPort-AV: E=Sophos;i="5.81,179,1610438400"; 
-   d="scan'208";a="246690438"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2021 22:26:11 -0800
-IronPort-SDR: Yw7eB/ypS+B6kCv/SY4jILLEHSHTj630omnK82lbZSKWG2i9QcENN149E6CrYmGv52KbstOSwC
- PGtrjfHZGdKA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,179,1610438400"; 
-   d="scan'208";a="425356345"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
-  by fmsmga002.fm.intel.com with ESMTP; 14 Feb 2021 22:26:09 -0800
-Subject: Re: [PATCH] perf test: Fix unaligned access in sample parsing test
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-References: <20210214091638.519643-1-namhyung@kernel.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <870d16e1-30dc-161d-33bf-e35428260ec6@intel.com>
-Date:   Mon, 15 Feb 2021 08:26:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S229917AbhBOG3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 01:29:43 -0500
+Received: from mxout70.expurgate.net ([91.198.224.70]:13036 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhBOG3i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 01:29:38 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1lBXM9-0006BJ-Pi; Mon, 15 Feb 2021 07:27:37 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1lBXM8-000C30-TE; Mon, 15 Feb 2021 07:27:36 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 5A51E240041;
+        Mon, 15 Feb 2021 07:27:36 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id CB479240040;
+        Mon, 15 Feb 2021 07:27:35 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 2AD58200AB;
+        Mon, 15 Feb 2021 07:27:35 +0100 (CET)
 MIME-Version: 1.0
-In-Reply-To: <20210214091638.519643-1-namhyung@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 15 Feb 2021 07:27:35 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Subject: Re: [PATCH net-next RFC v2] net: hdlc_x25: Queue outgoing LAPB frames
+Organization: TDT AG
+In-Reply-To: <20210210173532.370914-1-xie.he.0141@gmail.com>
+References: <20210210173532.370914-1-xie.he.0141@gmail.com>
+Message-ID: <f701aad45e35579c8b79836ffeb86ea9@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.16
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-type: clean
+X-purgate-ID: 151534::1613370457-00012C54-D7DCE341/0/0
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/02/21 11:16 am, Namhyung Kim wrote:
-> The ubsan reported the following error.  It was because sample's raw
-> data missed u32 padding at the end.  So it broke the alignment of the
-> array after it.
+On 2021-02-10 18:35, Xie He wrote:
+> When sending packets, we will first hand over the (L3) packets to the
+> LAPB module, then the LAPB module will hand over the corresponding LAPB
+> (L2) frames back to us for us to transmit.
 > 
-> The raw data contains an u32 size prefix so the data size should have
-> an u32 padding after 8-byte aligned data.
+> The LAPB module can also emit LAPB (L2) frames at any time without an
+> (L3) packet currently being sent, when it is trying to send (L3) 
+> packets
+> queued up in its internal queue, or when it decides to send some (L2)
+> control frame.
 > 
-> 27: Sample parsing  :util/synthetic-events.c:1539:4:
->   runtime error: store to misaligned address 0x62100006b9bc for type
->   '__u64' (aka 'unsigned long long'), which requires 8 byte alignment
-> 0x62100006b9bc: note: pointer points here
->   00 00 00 00 ff ff ff ff  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
->               ^
->     #0 0x561532a9fc96 in perf_event__synthesize_sample util/synthetic-events.c:1539:13
->     #1 0x5615327f4a4f in do_test tests/sample-parsing.c:284:8
->     #2 0x5615327f3f50 in test__sample_parsing tests/sample-parsing.c:381:9
->     #3 0x56153279d3a1 in run_test tests/builtin-test.c:424:9
->     #4 0x56153279c836 in test_and_print tests/builtin-test.c:454:9
->     #5 0x56153279b7eb in __cmd_test tests/builtin-test.c:675:4
->     #6 0x56153279abf0 in cmd_test tests/builtin-test.c:821:9
->     #7 0x56153264e796 in run_builtin perf.c:312:11
->     #8 0x56153264cf03 in handle_internal_command perf.c:364:8
->     #9 0x56153264e47d in run_argv perf.c:408:2
->     #10 0x56153264c9a9 in main perf.c:538:3
->     #11 0x7f137ab6fbbc in __libc_start_main (/lib64/libc.so.6+0x38bbc)
->     #12 0x561532596828 in _start ...
+> This means we need have a queue for these outgoing LAPB (L2) frames to
+> avoid congestion. This queue needs to be controlled by the hardware
+> drivers' netif_stop_queue and netif_wake_queue calls. So we need to use
+> a qdisc TX queue for this purpose.
 > 
-> SUMMARY: UndefinedBehaviorSanitizer: misaligned-pointer-use
->  util/synthetic-events.c:1539:4 in
+> On the other hand, the outgoing (L3) packets don't need to be queued,
+> because the LAPB module already has an internal queue for them.
 > 
-> Fixes: 045f8cd8542d ("perf tests: Add a sample parsing test")
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> However, currently the outgoing LAPB (L2) frames are not queued. This
+> can cause frames to be dropped by hardware drivers when they are busy.
+> At the same time the (L3) packets are being queued and controlled by
+> hardware drivers' netif_stop_queue and netif_wake_queue calls. This is
+> unnecessary and meaningless.
+> 
+> To solve this problem, we can split the HDLC device into two devices:
+> a virtual X.25 device and an actual HDLC device, using the virtual
+> X.25 device to send (L3) packets and using the actual HDLC device to
+> queue LAPB (L2) frames. The outgoing LAPB queue will be controlled by
+> hardware drivers' netif_stop_queue and netif_wake_queue calls, while
+> outgoing (L3) packets will not be affected by these calls.
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+At first glance, the patch looks quite reasonable. The only thing I
+noticed right away is that you also included the changes of your patch
+"Return meaningful error code in x25_open".
 
+I hope to get back to the office this week and test it.
+
+> 
+> Cc: Martin Schiller <ms@dev.tdt.de>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
 > ---
->  tools/perf/tests/sample-parsing.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
-> index f506eabfc269..0dbe3aa99853 100644
-> --- a/tools/perf/tests/sample-parsing.c
-> +++ b/tools/perf/tests/sample-parsing.c
-> @@ -202,7 +202,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
->  		.data = {1, -1ULL, 211, 212, 213},
+> Change from RFC v1:
+> Properly initialize state(hdlc)->x25_dev and state(hdlc)->x25_dev_lock.
+> 
+> ---
+>  drivers/net/wan/hdlc_x25.c | 158 ++++++++++++++++++++++++++++++-------
+>  1 file changed, 129 insertions(+), 29 deletions(-)
+> 
+> diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
+> index bb164805804e..2a7b3c3d0c05 100644
+> --- a/drivers/net/wan/hdlc_x25.c
+> +++ b/drivers/net/wan/hdlc_x25.c
+> @@ -23,6 +23,13 @@
+> 
+>  struct x25_state {
+>  	x25_hdlc_proto settings;
+> +	struct net_device *x25_dev;
+> +	spinlock_t x25_dev_lock; /* Protects the x25_dev pointer */
+> +};
+> +
+> +/* Pointed to by netdev_priv(x25_dev) */
+> +struct x25_device {
+> +	struct net_device *hdlc_dev;
+>  };
+> 
+>  static int x25_ioctl(struct net_device *dev, struct ifreq *ifr);
+> @@ -32,6 +39,11 @@ static struct x25_state *state(hdlc_device *hdlc)
+>  	return hdlc->state;
+>  }
+> 
+> +static struct x25_device *dev_to_x25(struct net_device *dev)
+> +{
+> +	return netdev_priv(dev);
+> +}
+> +
+>  /* These functions are callbacks called by LAPB layer */
+> 
+>  static void x25_connect_disconnect(struct net_device *dev, int
+> reason, int code)
+> @@ -89,15 +101,10 @@ static int x25_data_indication(struct net_device
+> *dev, struct sk_buff *skb)
+> 
+>  static void x25_data_transmit(struct net_device *dev, struct sk_buff 
+> *skb)
+>  {
+> -	hdlc_device *hdlc = dev_to_hdlc(dev);
+> -
+> +	skb->dev = dev_to_x25(dev)->hdlc_dev;
+> +	skb->protocol = htons(ETH_P_HDLC);
+>  	skb_reset_network_header(skb);
+> -	skb->protocol = hdlc_type_trans(skb, dev);
+> -
+> -	if (dev_nit_active(dev))
+> -		dev_queue_xmit_nit(skb, dev);
+> -
+> -	hdlc->xmit(skb, dev); /* Ignore return value :-( */
+> +	dev_queue_xmit(skb);
+>  }
+> 
+> 
+> @@ -163,17 +170,18 @@ static int x25_open(struct net_device *dev)
+>  		.data_indication = x25_data_indication,
+>  		.data_transmit = x25_data_transmit,
 >  	};
->  	u64 regs[64];
-> -	const u64 raw_data[] = {0x123456780a0b0c0dULL, 0x1102030405060708ULL};
-> +	const u32 raw_data[] = {0x12345678, 0x0a0b0c0d, 0x11020304, 0x05060708, 0 };
->  	const u64 data[] = {0x2211443366558877ULL, 0, 0xaabbccddeeff4321ULL};
->  	const u64 aux_data[] = {0xa55a, 0, 0xeeddee, 0x0282028202820282};
->  	struct perf_sample sample = {
+> -	hdlc_device *hdlc = dev_to_hdlc(dev);
+> +	struct net_device *hdlc_dev = dev_to_x25(dev)->hdlc_dev;
+> +	hdlc_device *hdlc = dev_to_hdlc(hdlc_dev);
+>  	struct lapb_parms_struct params;
+>  	int result;
 > 
-
+>  	result = lapb_register(dev, &cb);
+>  	if (result != LAPB_OK)
+> -		return result;
+> +		return -ENOMEM;
+> 
+>  	result = lapb_getparms(dev, &params);
+>  	if (result != LAPB_OK)
+> -		return result;
+> +		return -EINVAL;
+> 
+>  	if (state(hdlc)->settings.dce)
+>  		params.mode = params.mode | LAPB_DCE;
+> @@ -188,16 +196,104 @@ static int x25_open(struct net_device *dev)
+> 
+>  	result = lapb_setparms(dev, &params);
+>  	if (result != LAPB_OK)
+> -		return result;
+> +		return -EINVAL;
+> 
+>  	return 0;
+>  }
+> 
+> 
+> 
+> -static void x25_close(struct net_device *dev)
+> +static int x25_close(struct net_device *dev)
+>  {
+>  	lapb_unregister(dev);
+> +	return 0;
+> +}
+> +
+> +static const struct net_device_ops hdlc_x25_netdev_ops = {
+> +	.ndo_open       = x25_open,
+> +	.ndo_stop       = x25_close,
+> +	.ndo_start_xmit = x25_xmit,
+> +};
+> +
+> +static void x25_setup_virtual_dev(struct net_device *dev)
+> +{
+> +	dev->netdev_ops	     = &hdlc_x25_netdev_ops;
+> +	dev->type            = ARPHRD_X25;
+> +	dev->addr_len        = 0;
+> +	dev->hard_header_len = 0;
+> +}
+> +
+> +static int x25_hdlc_open(struct net_device *dev)
+> +{
+> +	struct hdlc_device *hdlc = dev_to_hdlc(dev);
+> +	struct net_device *x25_dev;
+> +	char x25_dev_name[sizeof(x25_dev->name)];
+> +	int result;
+> +
+> +	if (strlen(dev->name) + 4 >= sizeof(x25_dev_name))
+> +		return -EINVAL;
+> +
+> +	strcpy(x25_dev_name, dev->name);
+> +	strcat(x25_dev_name, "_x25");
+> +
+> +	x25_dev = alloc_netdev(sizeof(struct x25_device), x25_dev_name,
+> +			       NET_NAME_PREDICTABLE, x25_setup_virtual_dev);
+> +	if (!x25_dev)
+> +		return -ENOMEM;
+> +
+> +	/* When transmitting data:
+> +	 * first we'll remove a pseudo header of 1 byte,
+> +	 * then the LAPB module will prepend an LAPB header of at most 3 
+> bytes.
+> +	 */
+> +	x25_dev->needed_headroom = 3 - 1;
+> +	x25_dev->mtu = dev->mtu - (3 - 1);
+> +	dev_to_x25(x25_dev)->hdlc_dev = dev;
+> +
+> +	result = register_netdevice(x25_dev);
+> +	if (result) {
+> +		free_netdev(x25_dev);
+> +		return result;
+> +	}
+> +
+> +	spin_lock_bh(&state(hdlc)->x25_dev_lock);
+> +	state(hdlc)->x25_dev = x25_dev;
+> +	spin_unlock_bh(&state(hdlc)->x25_dev_lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static void x25_hdlc_close(struct net_device *dev)
+> +{
+> +	struct hdlc_device *hdlc = dev_to_hdlc(dev);
+> +	struct net_device *x25_dev = state(hdlc)->x25_dev;
+> +
+> +	if (x25_dev->flags & IFF_UP)
+> +		dev_close(x25_dev);
+> +
+> +	spin_lock_bh(&state(hdlc)->x25_dev_lock);
+> +	state(hdlc)->x25_dev = NULL;
+> +	spin_unlock_bh(&state(hdlc)->x25_dev_lock);
+> +
+> +	unregister_netdevice(x25_dev);
+> +	free_netdev(x25_dev);
+> +}
+> +
+> +static void x25_hdlc_start(struct net_device *dev)
+> +{
+> +	struct hdlc_device *hdlc = dev_to_hdlc(dev);
+> +	struct net_device *x25_dev = state(hdlc)->x25_dev;
+> +
+> +	/* hdlc.c guarantees no racing so we're sure x25_dev is valid */
+> +	netif_carrier_on(x25_dev);
+> +}
+> +
+> +static void x25_hdlc_stop(struct net_device *dev)
+> +{
+> +	struct hdlc_device *hdlc = dev_to_hdlc(dev);
+> +	struct net_device *x25_dev = state(hdlc)->x25_dev;
+> +
+> +	/* hdlc.c guarantees no racing so we're sure x25_dev is valid */
+> +	netif_carrier_off(x25_dev);
+>  }
+> 
+> 
+> @@ -205,27 +301,38 @@ static void x25_close(struct net_device *dev)
+>  static int x25_rx(struct sk_buff *skb)
+>  {
+>  	struct net_device *dev = skb->dev;
+> +	struct hdlc_device *hdlc = dev_to_hdlc(dev);
+> +	struct net_device *x25_dev;
+> 
+>  	if ((skb = skb_share_check(skb, GFP_ATOMIC)) == NULL) {
+>  		dev->stats.rx_dropped++;
+>  		return NET_RX_DROP;
+>  	}
+> 
+> -	if (lapb_data_received(dev, skb) == LAPB_OK)
+> -		return NET_RX_SUCCESS;
+> -
+> -	dev->stats.rx_errors++;
+> +	spin_lock_bh(&state(hdlc)->x25_dev_lock);
+> +	x25_dev = state(hdlc)->x25_dev;
+> +	if (!x25_dev)
+> +		goto drop;
+> +	if (lapb_data_received(x25_dev, skb) != LAPB_OK)
+> +		goto drop;
+> +	spin_unlock_bh(&state(hdlc)->x25_dev_lock);
+> +	return NET_RX_SUCCESS;
+> +
+> +drop:
+> +	spin_unlock_bh(&state(hdlc)->x25_dev_lock);
+> +	dev->stats.rx_dropped++;
+>  	dev_kfree_skb_any(skb);
+>  	return NET_RX_DROP;
+>  }
+> 
+> 
+>  static struct hdlc_proto proto = {
+> -	.open		= x25_open,
+> -	.close		= x25_close,
+> +	.open		= x25_hdlc_open,
+> +	.close		= x25_hdlc_close,
+> +	.start		= x25_hdlc_start,
+> +	.stop		= x25_hdlc_stop,
+>  	.ioctl		= x25_ioctl,
+>  	.netif_rx	= x25_rx,
+> -	.xmit		= x25_xmit,
+>  	.module		= THIS_MODULE,
+>  };
+> 
+> @@ -298,16 +405,9 @@ static int x25_ioctl(struct net_device *dev,
+> struct ifreq *ifr)
+>  			return result;
+> 
+>  		memcpy(&state(hdlc)->settings, &new_settings, size);
+> +		state(hdlc)->x25_dev = NULL;
+> +		spin_lock_init(&state(hdlc)->x25_dev_lock);
+> 
+> -		/* There's no header_ops so hard_header_len should be 0. */
+> -		dev->hard_header_len = 0;
+> -		/* When transmitting data:
+> -		 * first we'll remove a pseudo header of 1 byte,
+> -		 * then we'll prepend an LAPB header of at most 3 bytes.
+> -		 */
+> -		dev->needed_headroom = 3 - 1;
+> -
+> -		dev->type = ARPHRD_X25;
+>  		call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE, dev);
+>  		netif_dormant_off(dev);
+>  		return 0;
