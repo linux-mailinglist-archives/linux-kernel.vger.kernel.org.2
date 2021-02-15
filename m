@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CFC31B6B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4941B31B6CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbhBOJuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:50:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41250 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230345AbhBOJuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:50:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8E166ADDB;
-        Mon, 15 Feb 2021 09:49:52 +0000 (UTC)
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org, lkml <linux-kernel@vger.kernel.org>
-Cc:     "Sharma, Shashank" <Shashank.Sharma@amd.com>
-References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: DMA-buf and uncached system memory
-Message-ID: <e6897f92-4c61-cd42-2822-43c50a744d4c@suse.de>
-Date:   Mon, 15 Feb 2021 10:49:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230195AbhBOJ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:57:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230124AbhBOJ5f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 04:57:35 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82ADBC061574;
+        Mon, 15 Feb 2021 01:56:55 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id jj19so10171157ejc.4;
+        Mon, 15 Feb 2021 01:56:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bY7m25ZVeWy0RWxqayXMpdGxKqC+fwIQk1tUVdalj2I=;
+        b=LHkAY749Kd43D7spoZSHGOz96FLgJrSJ8WrBDwPTcGw29s2IrUka3qCCbDk7VM8Stg
+         MQeMkZSfZYoiFLwOv7NJ6KLwwlzwj+zIaCJVgQ0TkL6L3TiYEkKNWhPv3SrSJrjICbXw
+         IUEesaDT6xCJjItBXqq2shRWowyiRdFDRJwkUSmcDBJdSbCBzUFq70WQafeBbROTTvfq
+         yfNxDSdE2vuN5Hjz2NOg6JXyx0fY8GzpwjSWgXFlXAL1Rzg6HpC34MIUPKIccQA0MIOX
+         7VQt4ozSEAdHx11EnVSz8fO4uk5gJEp5vqpPVbjFSuiWb6R2YHMrQwS/NO9/8BsyO2Vp
+         MeYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=bY7m25ZVeWy0RWxqayXMpdGxKqC+fwIQk1tUVdalj2I=;
+        b=pUNXcW5pmttDkEfVrA67fI+ONa/GHqUDonBwxqLzCeDwpwKBznt109khT6qM8vhJ12
+         972xoXdJ9t5WLbmtrZYv0m0iEYxKMPJux1jDHOvazaXabpgR5rALy7lNdBe8A+bF6P/A
+         9ll0YBQ81rqQ47V841Je3CW84ce39CVOOds3po7oT9Y3iCx6yHObrX9+k49f9LlZgrag
+         AMnLKUJjnlLHWpPmOaJemMHfoexPY0ru58Eq4gjV6jd/JfM4VHkplxB3cGaFRQ2VSowZ
+         iYfiaRxnVOpKyNNPftbJjaI/I+Z1RA1nBvl6x+fuohqYmKylhZee4IvYvEIvGOYtWnAX
+         ZAnQ==
+X-Gm-Message-State: AOAM533DSLYKE4yOum26wqJkPW+o3yBbN/g1ugJUotqElXhAniL6nM9X
+        hIrNxGmHAFd+eh+CPrILkDg=
+X-Google-Smtp-Source: ABdhPJwuZXHgTI2yf2Bf/NJeBrgxC1znLfXsW1wpaES4PKB0rpHPQs0V+3dQQAPfXSwHYN32twMRCw==
+X-Received: by 2002:a17:907:2159:: with SMTP id rk25mr15177523ejb.551.1613383014281;
+        Mon, 15 Feb 2021 01:56:54 -0800 (PST)
+Received: from gmail.com (20014C4E1C814B00E3E7080063F66787.dsl.pool.telekom.hu. [2001:4c4e:1c81:4b00:e3e7:800:63f6:6787])
+        by smtp.gmail.com with ESMTPSA id hy24sm10376931ejc.40.2021.02.15.01.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 01:56:53 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 15 Feb 2021 10:56:51 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: qemu boot failure after merge of the tip tree
+Message-ID: <20210215095651.GC2185387@gmail.com>
+References: <20210201200918.386682c5@canb.auug.org.au>
+ <jhjv9bcym5d.mognet@arm.com>
+ <YBgSzPcVILEtk4Yy@hirez.programming.kicks-ass.net>
+ <20210210155339.49415f2e@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="LluPYbmWKdgRFCbIZHJRJ0mnf2n5y8vWh"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210155339.49415f2e@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---LluPYbmWKdgRFCbIZHJRJ0mnf2n5y8vWh
-Content-Type: multipart/mixed; boundary="WqE607JVvyKj3o3LH8LRRld6sBuAbrkEo";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
- linux-media <linux-media@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>, linaro-mm-sig@lists.linaro.org,
- lkml <linux-kernel@vger.kernel.org>
-Cc: "Sharma, Shashank" <Shashank.Sharma@amd.com>
-Message-ID: <e6897f92-4c61-cd42-2822-43c50a744d4c@suse.de>
-Subject: Re: DMA-buf and uncached system memory
-References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
-In-Reply-To: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
 
---WqE607JVvyKj3o3LH8LRRld6sBuAbrkEo
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+* Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-Hi
+> Hi Peter,
+> 
+> On Mon, 1 Feb 2021 15:40:12 +0100 Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Mon, Feb 01, 2021 at 01:04:30PM +0000, Valentin Schneider wrote:
+> > > On 01/02/21 20:09, Stephen Rothwell wrote:  
+> > > > Hi all,
+> > > >  
+> > > 
+> > > Hi Stephen,
+> > >   
+> > > > After merging the tip tree, today's linux-next qemu boot test (powerpc
+> > > > pseries_le_defconfig) failed like this:  
+> > > 
+> > > In case you haven't seen it, Dietmar did the dirty work and fixed my fail
+> > > at
+> > > 
+> > >   http://lore.kernel.org/r/6000e39e-7d28-c360-9cd6-8798fd22a9bf@arm.com  
+> > 
+> > Right, picked that up, I'll try and push it before the next next ;-)
+> 
+> This fix has not reached the tip auto-latest branch yet and so is not in 
+> linux-next.
 
-Am 15.02.21 um 09:58 schrieb Christian K=C3=B6nig:
-> Hi guys,
->=20
-> we are currently working an Freesync and direct scan out from system=20
-> memory on AMD APUs in A+A laptops.
->=20
-> On problem we stumbled over is that our display hardware needs to scan =
+This fix should be there now as:
 
-> out from uncached system memory and we currently don't have a way to=20
-> communicate that through DMA-buf.
->=20
-> For our specific use case at hand we are going to implement something=20
-> driver specific, but the question is should we have something more=20
-> generic for this?
+  e972d92d52a1: ("sched/topology: Fix sched_domain_topology_level alloc in sched_init_numa()")
 
-For vmap operations, we return the address as struct dma_buf_map, which=20
-contains additional information about the memory buffer. In vram=20
-helpers, we have the interface drm_gem_vram_offset() that returns the=20
-offset of the GPU device memory.
+Thanks,
 
-Would it be feasible to combine both concepts into a dma-buf interface=20
-that returns the device-memory offset plus the additional caching flag?
-
-There'd be a structure and a getter function returning the structure.
-
-struct dma_buf_offset {
-	bool cached;
-	u64 address;
-};
-
-// return offset in *off
-int dma_buf_offset(struct dma_buf *buf, struct dma_buf_off *off);
-
-Whatever settings are returned by dma_buf_offset() are valid while the=20
-dma_buf is pinned.
-
-Best regards
-Thomas
-
->=20
-> After all the system memory access pattern is a PCIe extension and as=20
-> such something generic.
->=20
-> Regards,
-> Christian.
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---WqE607JVvyKj3o3LH8LRRld6sBuAbrkEo--
-
---LluPYbmWKdgRFCbIZHJRJ0mnf2n5y8vWh
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAqQ78FAwAAAAAACgkQlh/E3EQov+DT
-8RAAgPMFZgw0YGSkfKlQB+8K2KbUEA9pbSX/KVkX7kscn7E54s4ESbQmqNM8DTnKiBiHtHY1wa22
-LkgLGAqngffUNHLaPPCB1dcf7xhT2NhpDjDPoGRQ44sWuJEPmlE+i4EzLeqqRtK/FB0U+KKziSIP
-rANbiI5osQeldOw1B/8tsGuYC2ylk4zCACMIgQJJGggXDxzChBb4Ax+SWVNRcFWMvUYTnKbsb1kB
-l6HSWDqM3BjggMk8G6rniidWjEI7iz9cDNUZEU4GYNKN4ug34Y9ulXtynw65xLh8M6CXP3sZ1yi2
-pKUjzMPosxq2RDB+PB6SJSfqcyHdbSaFpV25nPY9STkwGAdUU9hob/HDiu3R0K1yth32MF3ebGwX
-744d3JhA13Q81iJQczCUEDSL7KQHqFOpGizuMfEnes9jEAKDxnHC/RDkZ8rRPFKa8fUV2tuiDycP
-GtG2HoO49xrB6pJ8VJrxizBicE7u9QFS6QLDRSidG9WK0f0g1SKcbu4e/GhWNuBCQyBd2ptxq8B+
-Eq+PdGQRQAG3Gq+knZwDhnYw/tiI+Yt72w9Wrfe8Q9nxobQr+tZigsASNJZlhZpTWVpafS8q+0jJ
-WfuHfL/wvYK96x4a4pLSp6uSR3lhzRMwT+gNDMMlr0Y5HxWg2YyK7cqgYCNF5QFDEOmQokjE+26S
-idA=
-=YHd/
------END PGP SIGNATURE-----
-
---LluPYbmWKdgRFCbIZHJRJ0mnf2n5y8vWh--
+	Ingo
