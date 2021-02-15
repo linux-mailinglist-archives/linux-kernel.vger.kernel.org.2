@@ -2,211 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E5531C293
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D704C31C29F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhBOToA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:44:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
+        id S230000AbhBOTqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:46:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhBOTnz (ORCPT
+        with ESMTP id S229925AbhBOTp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:43:55 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8DEC061574;
-        Mon, 15 Feb 2021 11:43:15 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id f20so7857633ioo.10;
-        Mon, 15 Feb 2021 11:43:15 -0800 (PST)
+        Mon, 15 Feb 2021 14:45:57 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5D1C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:45:16 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id z190so1510841qka.9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:45:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qH4peM2xuF2HppqCjD19tPbOHZlqzT1b+rbmSIfxtYQ=;
-        b=bEk2xN+rcd/TU9m1ZQu8SNvyXLSXoWYaL21tuQseUI1vMcBA5+lsJ5iGWwGJXMEVfd
-         8B5AkB+vOR6eLr02oa12r96dFyCmy1V0bub9l+rmT+eUkRTVUNmKgg9fLArabfpqADbI
-         q+y2TRdTWB+o3CZ1rIMUGh6ndEWB8EOvSVTAyAwp+t5SAGD4uBoyHp41tJLVSItzesrD
-         LFPAWOlBD0/008QOBeAwbjGEeW45bPOzOBgLsQ3Xj7i4embdnpsjj7F260pxnvtCAoi7
-         bV8NJe7MioB/S9VvCVMTQLV0U3Wqx1jWgi1iZ1INcGlcbqo8Wb9zKLicm8vN+ziAK+tZ
-         V/8A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5dqyGvIHoacEP1moj9V+kZ65LXd0117/1bf4nofJZRQ=;
+        b=QHU5M6dRg5rLgbKNrrCWFRjK0HJ6G8FvXG4kwExlCx4hvYNVbp/uSChWtM1zpmW6BG
+         gnCjuTsuLx8BSktmal6LXg3vpU09kSI5M+2dVzskjs9D4tu3R4aVlTljTzY8bMaZSkjq
+         BFvcFXgSwlte84eHffGxw76fddbmR0iJnNy40Wajchw7Kjyw55mZbtmyakwBSyb3Es/Q
+         TtU5dK8TWRQtgQctqTPbstOptpVCq87H08ChHSzh8KOO3/7xcB4cg6hcYAApUbIoQVfZ
+         bMPs6NLyFixZ1LJ6+8uKpet3moQeEbEd7DVuyITHbxJ1dioejxikmdFHITNIylYk1rXg
+         xfrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qH4peM2xuF2HppqCjD19tPbOHZlqzT1b+rbmSIfxtYQ=;
-        b=BZgiPqb3PYnjMngx1PakGKn/h1OxIbwa07xT2fIGNm/up9DTmkSfBdWb/q6pKtrHpb
-         Hl33m/W7uKhZAA/xmqcW6hRIvKEWyc/w8AKLQWACfN8zWG+IG07ZT1Yvt6hwa0+ELiPe
-         l4lYtbyrQPDlfAEmeeBnTB6GkBp1Y1LOp+IP13+ImDF+Mjmxh1vwMkvaOU9He9WUDif3
-         FIKGEkojNQPPU2s5Upc625o96vWA5EcwafPEjX5wn9e36VFUdZ7BpCDfoF7w8OQcyuLw
-         lT622cmwmWyv4CErwa6qparWfAfSSWbXHn6WFRA92u3UnpMo75/BKW5OFoRl1D/VrDm8
-         uB9g==
-X-Gm-Message-State: AOAM530rGFy+aLcjhEbwOxytO/krB6JoixWKbUQzRWqypu+8rbEVFBGd
-        StMqSDzaU5vASta2Ei0Q5mddo/UNPBUDDABZDoM=
-X-Google-Smtp-Source: ABdhPJyouPXW7yfx7UpPKow3Z3T5iiAur2fNdcwgEnSjCz7s7V8M3IwNKM1kmOPmYW+/Q2AxNYLTb/Qx25/bO9BNeic=
-X-Received: by 2002:a05:6602:2c52:: with SMTP id x18mr14319886iov.5.1613418194594;
- Mon, 15 Feb 2021 11:43:14 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5dqyGvIHoacEP1moj9V+kZ65LXd0117/1bf4nofJZRQ=;
+        b=snMv6XSAEYQqVOxG4foGBRxw83huK0EUrH8bvqvkSBbyPUfCHq6aniSMkZ366Aw/gb
+         INSjxOKJNYS6sV/Ck6P+31zMH2vCZtCH8/7/xHtY58fF8hNs/64mCwDcxjb7QWkBT0+2
+         M5FFD6V++a1ls/0iu+NNflI9SOnV0HeL2u4481bhB1XfycJrP/nvCOlrSt9lsr4WINul
+         OFtsWgxB/LuXW0YWr40/Pl9JctqWRH4QyfjB8tsH3pYGFDc77OKigrr6JjWiwm4O/oup
+         3WJOoU1ZTFwndD/yv5tkkJQA6s0KQXdLcAvXMQk1dCPbxnurZe5V6JjVZTvFIip1Hnoj
+         iDqw==
+X-Gm-Message-State: AOAM531sgRRgqaoI4M3XFZCC8B+WkdiI94Rr1+CAAB8sAFrBV5zS+0SO
+        1MiZz+r30W5HUBotqpxvvqE=
+X-Google-Smtp-Source: ABdhPJyb3H3IAWNHJz7yNmekzuS9Zs7saDQRdVsI+JfhcbGZ73I7H47M/NeIkT/KtJ0vYZV7XdaSww==
+X-Received: by 2002:a05:620a:4016:: with SMTP id h22mr16530732qko.491.1613418316059;
+        Mon, 15 Feb 2021 11:45:16 -0800 (PST)
+Received: from darkstar.example.net ([2804:d45:9905:9600:c57:100:d8b8:6ad3])
+        by smtp.gmail.com with ESMTPSA id q12sm5795179qki.91.2021.02.15.11.45.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 11:45:15 -0800 (PST)
+From:   Davidson Francis <davidsondfgl@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Davidson Francis <davidsondfgl@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8192e: Fix comparisons to NULL
+Date:   Mon, 15 Feb 2021 16:44:41 -0300
+Message-Id: <20210215194441.11430-1-davidsondfgl@gmail.com>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
- <20210215154317.8590-1-lhenriques@suse.de> <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
- <73ab4951f48d69f0183548c7a82f7ae37e286d1c.camel@hammerspace.com>
- <CAOQ4uxgPtqG6eTi2AnAV4jTAaNDbeez+Xi2858mz1KLGMFntfg@mail.gmail.com> <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
-In-Reply-To: <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 15 Feb 2021 21:43:03 +0200
-Message-ID: <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com>
-Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "drinkcat@chromium.org" <drinkcat@chromium.org>,
-        "iant@google.com" <iant@google.com>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "lhenriques@suse.de" <lhenriques@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "llozano@chromium.org" <llozano@chromium.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "miklos@szeredi.hu" <miklos@szeredi.hu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "dchinner@redhat.com" <dchinner@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "sfrench@samba.org" <sfrench@samba.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 8:57 PM Trond Myklebust <trondmy@hammerspace.com> wrote:
->
-> On Mon, 2021-02-15 at 19:24 +0200, Amir Goldstein wrote:
-> > On Mon, Feb 15, 2021 at 6:53 PM Trond Myklebust <
-> > trondmy@hammerspace.com> wrote:
-> > >
-> > > On Mon, 2021-02-15 at 18:34 +0200, Amir Goldstein wrote:
-> > > > On Mon, Feb 15, 2021 at 5:42 PM Luis Henriques <
-> > > > lhenriques@suse.de>
-> > > > wrote:
-> > > > >
-> > > > > Nicolas Boichat reported an issue when trying to use the
-> > > > > copy_file_range
-> > > > > syscall on a tracefs file.  It failed silently because the file
-> > > > > content is
-> > > > > generated on-the-fly (reporting a size of zero) and
-> > > > > copy_file_range
-> > > > > needs
-> > > > > to know in advance how much data is present.
-> > > > >
-> > > > > This commit restores the cross-fs restrictions that existed
-> > > > > prior
-> > > > > to
-> > > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> > > > > devices")
-> > > > > and
-> > > > > removes generic_copy_file_range() calls from ceph, cifs, fuse,
-> > > > > and
-> > > > > nfs.
-> > > > >
-> > > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> > > > > devices")
-> > > > > Link:
-> > > > > https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-> > > > > Cc: Nicolas Boichat <drinkcat@chromium.org>
-> > > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> > > >
-> > > > Code looks ok.
-> > > > You may add:
-> > > >
-> > > > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> > > >
-> > > > I agree with Trond that the first paragraph of the commit message
-> > > > could
-> > > > be improved.
-> > > > The purpose of this change is to fix the change of behavior that
-> > > > caused the regression.
-> > > >
-> > > > Before v5.3, behavior was -EXDEV and userspace could fallback to
-> > > > read.
-> > > > After v5.3, behavior is zero size copy.
-> > > >
-> > > > It does not matter so much what makes sense for CFR to do in this
-> > > > case (generic cross-fs copy).  What matters is that nobody asked
-> > > > for
-> > > > this change and that it caused problems.
-> > > >
-> > >
-> > > No. I'm saying that this patch should be NACKed unless there is a
-> > > real
-> > > explanation for why we give crap about this tracefs corner case and
-> > > why
-> > > it can't be fixed.
-> > >
-> > > There are plenty of reasons why copy offload across filesystems
-> > > makes
-> > > sense, and particularly when you're doing NAS. Clone just doesn't
-> > > cut
-> > > it when it comes to disaster recovery (whereas backup to a
-> > > different
-> > > storage unit does). If the client has to do the copy, then you're
-> > > effectively doubling the load on the server, and you're adding
-> > > potentially unnecessary network traffic (or at the very least you
-> > > are
-> > > doubling that traffic).
-> > >
-> >
-> > I don't understand the use case you are describing.
-> >
-> > Which filesystem types are you talking about for source and target
-> > of copy_file_range()?
-> >
-> > To be clear, the original change was done to support NFS/CIFS server-
-> > side
-> > copy and those should not be affected by this change.
-> >
->
-> That is incorrect:
->
-> ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file
-> *dst,
->  u64 dst_pos, u64 count)
-> {
->
->  /*
->  * Limit copy to 4MB to prevent indefinitely blocking an nfsd
->  * thread and client rpc slot. The choice of 4MB is somewhat
->  * arbitrary. We might instead base this on r/wsize, or make it
->  * tunable, or use a time instead of a byte limit, or implement
->  * asynchronous copy. In theory a client could also recognize a
->  * limit like this and pipeline multiple COPY requests.
->  */
->  count = min_t(u64, count, 1 << 22);
->  return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-> }
->
-> You are now explicitly changing the behaviour of knfsd when the source
-> and destination filesystem differ.
->
-> For one thing, you are disallowing the NFSv4.2 copy offload use case of
-> copying from a local filesystem to a remote NFS server. However you are
-> also disallowing the copy from, say, an XFS formatted partition to an
-> ext4 partition.
->
+Checkpatch prefers the shorter version (x / !x) over
+(!= NULL / == NULL), respectively.
 
-Got it.
-This is easy to solve with a flag COPY_FILE_SPLICE (or something)
-that is internal to kernel users.
+Signed-off-by: Davidson Francis <davidsondfgl@gmail.com>
+---
+ drivers/staging/rtl8192e/rtllib_wx.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-FWIW, you may want to look at the loop in ovl_copy_up_data()
-for improvements to nfsd_copy_file_range().
+diff --git a/drivers/staging/rtl8192e/rtllib_wx.c b/drivers/staging/rtl8192e/rtllib_wx.c
+index 2e486ccb6432..ecd472baee16 100644
+--- a/drivers/staging/rtl8192e/rtllib_wx.c
++++ b/drivers/staging/rtl8192e/rtllib_wx.c
+@@ -324,7 +324,7 @@ int rtllib_wx_set_encode(struct rtllib_device *ieee,
+ 		 * and if no key index was provided, de-init them all
+ 		 */
+ 		for (i = 0; i < NUM_WEP_KEYS; i++) {
+-			if (ieee->crypt_info.crypt[i] != NULL) {
++			if (ieee->crypt_info.crypt[i]) {
+ 				if (key_provided)
+ 					break;
+ 				lib80211_crypt_delayed_deinit(&ieee->crypt_info,
+@@ -344,7 +344,7 @@ int rtllib_wx_set_encode(struct rtllib_device *ieee,
+ 	sec.enabled = 1;
+ 	sec.flags |= SEC_ENABLED;
+ 
+-	if (*crypt != NULL && (*crypt)->ops != NULL &&
++	if (*crypt && (*crypt)->ops &&
+ 	    strcmp((*crypt)->ops->name, "R-WEP") != 0) {
+ 		/* changing to use WEP; deinit previously used algorithm
+ 		 * on this key
+@@ -352,12 +352,12 @@ int rtllib_wx_set_encode(struct rtllib_device *ieee,
+ 		lib80211_crypt_delayed_deinit(&ieee->crypt_info, crypt);
+ 	}
+ 
+-	if (*crypt == NULL) {
++	if (!*crypt) {
+ 		struct lib80211_crypt_data *new_crypt;
+ 
+ 		/* take WEP into use */
+ 		new_crypt = kzalloc(sizeof(*new_crypt), GFP_KERNEL);
+-		if (new_crypt == NULL)
++		if (!new_crypt)
+ 			return -ENOMEM;
+ 		new_crypt->ops = lib80211_get_crypto_ops("R-WEP");
+ 		if (!new_crypt->ops) {
+@@ -484,7 +484,7 @@ int rtllib_wx_get_encode(struct rtllib_device *ieee,
+ 
+ 	erq->flags = key + 1;
+ 
+-	if (crypt == NULL || crypt->ops == NULL) {
++	if (!crypt || !crypt->ops) {
+ 		erq->length = 0;
+ 		erq->flags |= IW_ENCODE_DISABLED;
+ 		return 0;
+@@ -549,7 +549,7 @@ int rtllib_wx_set_encode_ext(struct rtllib_device *ieee,
+ 			lib80211_crypt_delayed_deinit(&ieee->crypt_info, crypt);
+ 
+ 		for (i = 0; i < NUM_WEP_KEYS; i++) {
+-			if (ieee->crypt_info.crypt[i] != NULL)
++			if (ieee->crypt_info.crypt[i])
+ 				break;
+ 		}
+ 		if (i == NUM_WEP_KEYS) {
+@@ -582,7 +582,7 @@ int rtllib_wx_set_encode_ext(struct rtllib_device *ieee,
+ 	netdev_dbg(dev, "alg name:%s\n", alg);
+ 
+ 	ops = lib80211_get_crypto_ops(alg);
+-	if (ops == NULL) {
++	if (!ops) {
+ 		char tempbuf[100];
+ 
+ 		memset(tempbuf, 0x00, 100);
+@@ -590,19 +590,19 @@ int rtllib_wx_set_encode_ext(struct rtllib_device *ieee,
+ 		request_module("%s", tempbuf);
+ 		ops = lib80211_get_crypto_ops(alg);
+ 	}
+-	if (ops == NULL) {
++	if (!ops) {
+ 		netdev_info(dev, "========>unknown crypto alg %d\n", ext->alg);
+ 		ret = -EINVAL;
+ 		goto done;
+ 	}
+ 
+-	if (*crypt == NULL || (*crypt)->ops != ops) {
++	if (!*crypt || (*crypt)->ops != ops) {
+ 		struct lib80211_crypt_data *new_crypt;
+ 
+ 		lib80211_crypt_delayed_deinit(&ieee->crypt_info, crypt);
+ 
+ 		new_crypt = kzalloc(sizeof(*new_crypt), GFP_KERNEL);
+-		if (new_crypt == NULL) {
++		if (!new_crypt) {
+ 			ret = -ENOMEM;
+ 			goto done;
+ 		}
+@@ -610,7 +610,7 @@ int rtllib_wx_set_encode_ext(struct rtllib_device *ieee,
+ 		if (new_crypt->ops && try_module_get(new_crypt->ops->owner))
+ 			new_crypt->priv = new_crypt->ops->init(idx);
+ 
+-		if (new_crypt->priv == NULL) {
++		if (!new_crypt->priv) {
+ 			kfree(new_crypt);
+ 			ret = -EINVAL;
+ 			goto done;
+@@ -766,7 +766,7 @@ int rtllib_wx_set_gen_ie(struct rtllib_device *ieee, u8 *ie, size_t len)
+ 	u8 *buf;
+ 	u8 eid, wps_oui[4] = {0x0, 0x50, 0xf2, 0x04};
+ 
+-	if (len > MAX_WPA_IE_LEN || (len && ie == NULL))
++	if (len > MAX_WPA_IE_LEN || (len && !ie))
+ 		return -EINVAL;
+ 
+ 	if (len) {
+@@ -776,7 +776,7 @@ int rtllib_wx_set_gen_ie(struct rtllib_device *ieee, u8 *ie, size_t len)
+ 
+ 			ieee->wps_ie_len = min_t(size_t, len, MAX_WZC_IE_LEN);
+ 			buf = kmemdup(ie, ieee->wps_ie_len, GFP_KERNEL);
+-			if (buf == NULL)
++			if (!buf)
+ 				return -ENOMEM;
+ 			ieee->wps_ie = buf;
+ 			return 0;
+@@ -789,7 +789,7 @@ int rtllib_wx_set_gen_ie(struct rtllib_device *ieee, u8 *ie, size_t len)
+ 		if (len != ie[1]+2)
+ 			return -EINVAL;
+ 		buf = kmemdup(ie, len, GFP_KERNEL);
+-		if (buf == NULL)
++		if (!buf)
+ 			return -ENOMEM;
+ 		kfree(ieee->wpa_ie);
+ 		ieee->wpa_ie = buf;
+-- 
+2.29.1
 
-We can move the check out to copy_file_range syscall:
-
-        if (flags != 0)
-                return -EINVAL;
-
-Leave the fallback from all filesystems and check for the
-COPY_FILE_SPLICE flag inside generic_copy_file_range().
-
-Thanks,
-Amir.
