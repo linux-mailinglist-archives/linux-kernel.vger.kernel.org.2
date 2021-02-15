@@ -2,186 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD5231C218
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6057E31C21F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhBOTAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:00:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhBOTAa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:00:30 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 881DCC0613D6;
-        Mon, 15 Feb 2021 10:59:49 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id s107so6935199otb.8;
-        Mon, 15 Feb 2021 10:59:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3X1XsNstRQL1WuFYlu8xsGr7F4oO4915n9l7ICDbNJc=;
-        b=ijbDE8T+6hMwQkB7YtZfsrwTUXMkA40VHqTtLgkX+SpejZr2FXaiSWKcEZFQ+Q7ZAb
-         m5YIn1Piclp1rFKqj/5QqUnUJS/U5AwqlnWd6MYMj/ywAqE/u1/6llFicvdsLtxpAFD0
-         uIKYUmHQGyni4fKHZKX8HwZvKORfZGj/XIVTFUyF4zXbhHHfs+rm8S70RbHYJaddcZpn
-         waVPbRVmAtMDDOxWWyMos+rNJvCyObHTG3bzx6uLhC9ETQnUxaKGHvu+wG158mORL+gJ
-         uHut6PZ97L6Pqcj0bup7zC650WvlLNmI9F/xnP1Ax08VynkJEvkMJakUayuH8+2sL3bG
-         aTEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3X1XsNstRQL1WuFYlu8xsGr7F4oO4915n9l7ICDbNJc=;
-        b=UfeC4JMWmtyP0GTiSu6Ka4M/DPeJb3kfKUEPyFRZREvH6fveSNOzrBNg2U4kysIxT4
-         +L4BNdexI5XaidqwfSu35YNgTBhGPiZ3BbYKzvwNHR/F2IT5D6Wk4IAKWb8zWRfD2i0F
-         XOwmeIDG1dPDtqSJHjmFcn/fOxqYXpD6zDFGYwr1CRO/xLA39augWkm3QX12omwygWeC
-         ARnSYON6dleaXNhxBkWh+cX1F+ODFjK8AzSILHkQqmYBKyBUgC6FfXdmK1N9JJi9amj+
-         A9ihLVgesN9XLZ1CC/5zQkOSwfR6dio5z48fI+zsNoga9CAJzTMX9dwkKK2AZ+/sd6gz
-         /lYQ==
-X-Gm-Message-State: AOAM530XL+q+r5+q6ssSbRjETKPYQ2kD6YDx79pI6tWHl1TPjPmimvAN
-        jHZR1R9VWhcvntSE6GBxDXY/4z2X2k0dO4MYloF1m3Lo
-X-Google-Smtp-Source: ABdhPJxZ/l9Glmq2B/ll9Rne/71EAAOPsrnC19WDBNhkBmmZM+3dkyVXeylQO4TogazhV72/FnMuquUuIvVF3iui9ak=
-X-Received: by 2002:a9d:ec7:: with SMTP id 65mr12345634otj.311.1613415588997;
- Mon, 15 Feb 2021 10:59:48 -0800 (PST)
+        id S230105AbhBOTEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:04:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43338 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229908AbhBOTD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 14:03:58 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613415792; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+fd7ihZjbhcZ8UUvdOazTdIjmKtVbqj7x1WqiHSTYpo=;
+        b=PWlJyJF9epJo/+kqbywJfNJKobXG+JhtYEtY1HliEUOiac+chaXYl2jiGSBLMu7eV4qsCa
+        oxm2AsOwKtBTAcXzOj2fFapPWffqp3ihTo3iFgaLcpwm1sYA2IAjf/3Fc8imYtbLQekL7R
+        CF282g/eNl+JimV7h/fWNdWrWJpxnGY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DBB47ACD4;
+        Mon, 15 Feb 2021 19:03:11 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 20:02:59 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+Message-ID: <YCrFY4ODu/O9KSND@dhcp22.suse.cz>
+References: <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
+ <YCpN38i75olgispI@dhcp22.suse.cz>
+ <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
+ <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
+ <YCpmlGuoTakPJs1u@dhcp22.suse.cz>
+ <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
+ <YCp04NVBZpZZ5k7G@dhcp22.suse.cz>
+ <CAMZfGtV8-yJa_eGYtSXc0YY8KhYpgUo=pfj6TZ9zMo8fbz8nWA@mail.gmail.com>
+ <YCqhDZ0EAgvCz+wX@dhcp22.suse.cz>
+ <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210210234927.GA68137@embeddedor>
-In-Reply-To: <20210210234927.GA68137@embeddedor>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 15 Feb 2021 13:59:38 -0500
-Message-ID: <CADnq5_NjBspgusW73UNXb2sLiOtsKiAvXTby0zg+OiL1DuEXFA@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/radeon/nislands_smc.h: Replace one-element
- array with flexible-array member in struct NISLANDS_SMC_SWSTATE
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-hardening@vger.kernel.org,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 6:49 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use =E2=80=9Cflexible array members=E2=80=9D[1] for these c=
-ases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
->
-> Use flexible-array member in struct NISLANDS_SMC_SWSTATE, instead of
-> one-element array.
->
-> Also, this helps with the ongoing efforts to enable -Warray-bounds by
-> fixing the following warnings:
->
-> drivers/gpu/drm/radeon/ni_dpm.c: In function =E2=80=98ni_convert_power_st=
-ate_to_smc=E2=80=99:
-> drivers/gpu/drm/radeon/ni_dpm.c:2521:20: warning: array subscript 1 is ab=
-ove array bounds of =E2=80=98NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99 =
-{aka =E2=80=98struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99} [-Warra=
-y-bounds]
->  2521 |   smc_state->levels[i].dpm2.MaxPS =3D
->       |   ~~~~~~~~~~~~~~~~~^~~
-> drivers/gpu/drm/radeon/ni_dpm.c:2523:20: warning: array subscript 1 is ab=
-ove array bounds of =E2=80=98NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99 =
-{aka =E2=80=98struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99} [-Warra=
-y-bounds]
->  2523 |   smc_state->levels[i].dpm2.NearTDPDec =3D NISLANDS_DPM2_NEAR_TDP=
-_DEC;
->       |   ~~~~~~~~~~~~~~~~~^~~
-> drivers/gpu/drm/radeon/ni_dpm.c:2524:20: warning: array subscript 1 is ab=
-ove array bounds of =E2=80=98NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99 =
-{aka =E2=80=98struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99} [-Warra=
-y-bounds]
->  2524 |   smc_state->levels[i].dpm2.AboveSafeInc =3D NISLANDS_DPM2_ABOVE_=
-SAFE_INC;
->       |   ~~~~~~~~~~~~~~~~~^~~
-> drivers/gpu/drm/radeon/ni_dpm.c:2525:20: warning: array subscript 1 is ab=
-ove array bounds of =E2=80=98NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99 =
-{aka =E2=80=98struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99} [-Warra=
-y-bounds]
->  2525 |   smc_state->levels[i].dpm2.BelowSafeInc =3D NISLANDS_DPM2_BELOW_=
-SAFE_INC;
->       |   ~~~~~~~~~~~~~~~~~^~~
-> drivers/gpu/drm/radeon/ni_dpm.c:2526:35: warning: array subscript 1 is ab=
-ove array bounds of =E2=80=98NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99 =
-{aka =E2=80=98struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99} [-Warra=
-y-bounds]
->  2526 |   smc_state->levels[i].stateFlags |=3D
->       |                                   ^~
-> drivers/gpu/drm/radeon/ni_dpm.c:2526:35: warning: array subscript 1 is ab=
-ove array bounds of =E2=80=98NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99 =
-{aka =E2=80=98struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99} [-Warra=
-y-bounds]
->  2526 |   smc_state->levels[i].stateFlags |=3D
->       |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
->  2527 |    ((i !=3D (state->performance_level_count - 1)) && power_boost_=
-limit) ?
->       |    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~
->  2528 |    PPSMC_STATEFLAG_POWERBOOST : 0;
->       |    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/radeon/ni_dpm.c:2442:20: warning: array subscript 1 is ab=
-ove array bounds of =E2=80=98NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99 =
-{aka =E2=80=98struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]=E2=80=99} [-Warra=
-y-bounds]
->  2442 |   smc_state->levels[i + 1].aT =3D cpu_to_be32(a_t);
->
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-len=
-gth-and-one-element-arrays
->
-> Link: https://github.com/KSPP/linux/issues/79
-> Link: https://github.com/KSPP/linux/issues/109
-> Build-tested-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/6023ed54.BfIY+9Uz81I6nq19%25lkp@intel.=
-com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On Tue 16-02-21 01:48:29, Muchun Song wrote:
+> On Tue, Feb 16, 2021 at 12:28 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Mon 15-02-21 23:36:49, Muchun Song wrote:
+> > [...]
+> > > > There shouldn't be any real reason why the memory allocation for
+> > > > vmemmaps, or handling vmemmap in general, has to be done from within the
+> > > > hugetlb lock and therefore requiring a non-sleeping semantic. All that
+> > > > can be deferred to a more relaxed context. If you want to make a
+> > >
+> > > Yeah, you are right. We can put the freeing hugetlb routine to a
+> > > workqueue. Just like I do in the previous version (before v13) patch.
+> > > I will pick up these patches.
+> >
+> > I haven't seen your v13 and I will unlikely have time to revisit that
+> > version. I just wanted to point out that the actual allocation doesn't
+> > have to happen from under the spinlock. There are multiple ways to go
+> > around that. Dropping the lock would be one of them. Preallocation
+> > before the spin lock is taken is another. WQ is certainly an option but
+> > I would take it as the last resort when other paths are not feasible.
+> >
+> 
+> "Dropping the lock" and "Preallocation before the spin lock" can limit
+> the context of put_page to non-atomic context. I am not sure if there
+> is a page puted somewhere under an atomic context. e.g. compaction.
+> I am not an expert on this.
 
-Applied.  Thanks!
+Then do a due research or ask for a help from the MM community. Do
+not just try to go around harder problems and somehow duct tape a
+solution. I am sorry for sounding harsh here but this is a repetitive
+pattern.
 
-Alex
+Now to the merit. put_page can indeed be called from all sorts of
+contexts. And it might be indeed impossible to guarantee that hugetlb
+pages are never freed up from an atomic context. Requiring that would be
+even hard to maintain longterm. There are ways around that, I believe,
+though.
 
-> ---
->  drivers/gpu/drm/radeon/nislands_smc.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/nislands_smc.h b/drivers/gpu/drm/rade=
-on/nislands_smc.h
-> index 3cf8fc0d83f4..7395cb6b3cac 100644
-> --- a/drivers/gpu/drm/radeon/nislands_smc.h
-> +++ b/drivers/gpu/drm/radeon/nislands_smc.h
-> @@ -134,11 +134,11 @@ typedef struct NISLANDS_SMC_HW_PERFORMANCE_LEVEL NI=
-SLANDS_SMC_HW_PERFORMANCE_LEV
->
->  struct NISLANDS_SMC_SWSTATE
->  {
-> -    uint8_t                             flags;
-> -    uint8_t                             levelCount;
-> -    uint8_t                             padding2;
-> -    uint8_t                             padding3;
-> -    NISLANDS_SMC_HW_PERFORMANCE_LEVEL   levels[1];
-> +       uint8_t                             flags;
-> +       uint8_t                             levelCount;
-> +       uint8_t                             padding2;
-> +       uint8_t                             padding3;
-> +       NISLANDS_SMC_HW_PERFORMANCE_LEVEL   levels[];
->  };
->
->  typedef struct NISLANDS_SMC_SWSTATE NISLANDS_SMC_SWSTATE;
-> --
-> 2.27.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+The most simple one that I can think of right now would be using
+in_atomic() rather than in_task() check free_huge_page. IIRC recent
+changes would allow in_atomic to be reliable also on !PREEMPT kernels
+(via RCU tree, not sure where this stands right now). That would make
+__free_huge_page always run in a non-atomic context which sounds like an
+easy enough solution.
+Another way would be to keep a pool of ready pages to use in case of
+GFP_NOWAIT allocation fails and have means to keep that pool replenished
+when needed. Would it be feasible to reused parts of the freed page in
+the worst case?
+
+-- 
+Michal Hocko
+SUSE Labs
