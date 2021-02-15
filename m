@@ -2,96 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9ADC31C388
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2820931C38B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhBOVZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:25:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229662AbhBOVZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:25:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7930B64DF0;
-        Mon, 15 Feb 2021 21:24:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613424292;
-        bh=NP7OZUIQV/dje06OdQt5TFb4vM8T/LsPqUZ2gqmBI/4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mLNfURDgfVU5V4mSwtJ4K4GTVBCSN8MHS69bE0Yu8ALlAHrDMn9VADZXn2hwGMsXi
-         m/1Fko5D9P5r3vA12HEOSGdA6/tnfiwrWGrhmLhzt4nDTpgIFRBiOtt6G4kxwK39N3
-         kxqeq+iUoqBCG78EcF9n72X4E3FqbnMBC3qMYSxMBXqFCA9URMxzLOA3hn4BAV3CUb
-         Rcns3zFZJSzB4sF2RJKQWEUejb10BJrzL2Ru07ZLHjza8iykuFMgx6/at9cSxQhEpE
-         dziA8uWuD/ibQKF3QxlALWP//zGeFQkIB4t5ho4upuPDEEKfm3PBOxdBIOYuNGSyIR
-         QXTWUd06bnzMg==
-Date:   Mon, 15 Feb 2021 23:24:40 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mel Gorman <mgorman@suse.de>, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
- holes in memory layout
-Message-ID: <20210215212440.GA1307762@kernel.org>
-References: <20210208110820.6269-1-rppt@kernel.org>
- <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
- <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
- <YCaAHI/rFp1upRLc@dhcp22.suse.cz>
- <20210214180016.GO242749@kernel.org>
- <YCo4Lyio1h2Heixh@dhcp22.suse.cz>
+        id S229779AbhBOV1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 16:27:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229682AbhBOV1s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 16:27:48 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C353BC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:27:07 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id k4so8504466ybp.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:27:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t3E5HIvJpmCJKKGhV4yDRws8HLa9LQ9/qceNMUiRu8c=;
+        b=bBgXGWTdYcTDa8t6fcMwsRlWYc5Y1TndEDFz/4eUixRrAgdkN6ePgJPXLrrmqIxYLw
+         O5MoN8JfVBRNfEIhRNi/KBC742zudWpRI+9MhLKpaQNk6wWiXhIhRgFrimbPfkANmE2c
+         BraA/rL0wKABCMoJqHk8DujPL3of9VYIU/8liiheFaU4qONbc88zCdUs7n2iYYA3dWD1
+         v3zMpC38CXHGX/+UhDhge2zo58nLARKKkBmSLiaTeAfVCGuYHTBXLOaQrQYf3LPmfvSd
+         yGTSvYpRXgTYiu7L/tvsRDR+M7ETuPeR+khsiLlhCsCUW+BSb0mBpaF1C5U9NLOGzzx6
+         qTXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t3E5HIvJpmCJKKGhV4yDRws8HLa9LQ9/qceNMUiRu8c=;
+        b=nY2JXXBsKMBfRJf90sENoY2HkMBrOKjsP3v9jbo1IPZSfcYRPfTqWRpZa6WSj6uzDD
+         iORj66auz8kSPStzex30ywzu//z7GAsGe37wqwG9c2MzQE2UKpTCHcpPnGwAb4rmwY58
+         AAOm7JR7OwVFL/syRIbXMSZnE5reH8PqeNu740VBbzrGRGNwS5Xra/Y7W6bBMkqAiutM
+         xCmDy9yotyjtG/sqzK35GMbh4g73p/s3Bxav9lhUJ6//Ug2CPq7kx3+0UDKidkPCWagN
+         YVYHG1oO828KeVKnmDzd1kZ5bxPzHm7/a6C1qN5vyclxgQ3+78a/HnbKx2xFboa3bpY6
+         ZmhQ==
+X-Gm-Message-State: AOAM532fELao2Vt92FOtrd8jhujF5zMM3wh3e1JWR+fpXilgVByvsawk
+        wsI+HQ5cQkxOoDHYl3GbVl6l76D7dvyqrXE9E7ncUQ==
+X-Google-Smtp-Source: ABdhPJxX0RZwX9HWNB/HlZa/4ApbKsvCwfTglop0LrMflmMdROIaq+FilrrCNr6DVAAhj4RkRzXxMPx0xYtjVuYe/xg=
+X-Received: by 2002:a05:6902:1025:: with SMTP id x5mr25256350ybt.96.1613424426724;
+ Mon, 15 Feb 2021 13:27:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCo4Lyio1h2Heixh@dhcp22.suse.cz>
+References: <20210205222644.2357303-1-saravanak@google.com>
+ <CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com>
+ <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com> <CAMuHMdXduvBqjAqraXkEKErNJFyN6JNq5wqagc4yHHPpH5SPGQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdXduvBqjAqraXkEKErNJFyN6JNq5wqagc4yHHPpH5SPGQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 15 Feb 2021 13:26:30 -0800
+Message-ID: <CAGETcx_4FGa-rzLp6bjXbm4F4R6H2W78+nM_kN=XPz5hswzANA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 10:00:31AM +0100, Michal Hocko wrote:
-> On Sun 14-02-21 20:00:16, Mike Rapoport wrote:
-> > On Fri, Feb 12, 2021 at 02:18:20PM +0100, Michal Hocko wrote:
-> 
-> > We can correctly set the zone links for the reserved pages for holes in the
-> > middle of a zone based on the architecture constraints and with only the
-> > holes in the beginning/end of the memory will be not spanned by any
-> > node/zone which in practice does not seem to be a problem as the VM_BUG_ON
-> > in set_pfnblock_flags_mask() never triggered on pfn 0.
-> 
-> I really fail to see what you mean by correct zone/node for a memory
-> range which is not associated with any real node.
+On Mon, Feb 15, 2021 at 4:38 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Fri, Feb 12, 2021 at 4:00 AM Saravana Kannan <saravanak@google.com> wrote:
+> > On Thu, Feb 11, 2021 at 5:00 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > >       - I2C on R-Car Gen3 does not seem to use DMA, according to
+> > >         /sys/kernel/debug/dmaengine/summary:
+> > >
+> > >             -dma4chan0    | e66d8000.i2c:tx
+> > >             -dma4chan1    | e66d8000.i2c:rx
+> > >             -dma5chan0    | e6510000.i2c:tx
+> >
+> > I think I need more context on the problem before I can try to fix it.
+> > I'm also very unfamiliar with that file. With fw_devlink=permissive,
+> > I2C was using DMA? If so, the next step is to see if the I2C relative
+> > probe order with DMA is getting changed and if so, why.
+>
+> More detailed log:
+>
+>     platform e66d8000.i2c: Linked as a consumer to e6150000.clock-controller
+>     platform e66d8000.i2c: Linked as a sync state only consumer to e6055400.gpio
+>
+> Why is e66d8000.i2c not linked as a consumer to e6700000.dma-controller?
 
-We know architectural zone constraints, so we can have always have 1:1
-match from pfn to zone. Node indeed will be a guess.
-  
-> > > I am sorry, I haven't followed previous discussions. Has the removal of
-> > > the VM_BUG_ON been considered as an immediate workaround?
-> > 
-> > It was never discussed, but I'm not sure it's a good idea.
-> > 
-> > Judging by the commit message that introduced the VM_BUG_ON (commit
-> > 86051ca5eaf5 ("mm: fix usemap initialization")) there was yet another
-> > inconsistency in the memory map that required a special care.
-> 
-> Can we actually explore that path before adding yet additional
-> complexity and potentially a very involved fix for a subtle problem?
+Because fw_devlink.strict=1 is not set and dma/iommu is considered an
+"optional"/"driver decides" dependency.
 
-This patch was intended as a fix for inconsistency of the memory map that
-is the root cause for triggering this VM_BUG_ON and other corner case
-problems. 
+>     platform e6700000.dma-controller: Linked as a consumer to
+> e6150000.clock-controller
 
-The previous version [1] is less involved as it does not extend node/zone
-spans.
+Is this the only supplier of dma-controller?
 
-[1] https://lore.kernel.org/lkml/20210130221035.4169-3-rppt@kernel.org
--- 
-Sincerely yours,
-Mike.
+>     platform e66d8000.i2c: Added to deferred list
+>     platform e6700000.dma-controller: Added to deferred list
+>
+>     bus: 'platform': driver_probe_device: matched device
+> e6700000.dma-controller with driver rcar-dmac
+>     bus: 'platform': really_probe: probing driver rcar-dmac with
+> device e6700000.dma-controller
+>     platform e6700000.dma-controller: Driver rcar-dmac requests probe deferral
+>
+>     bus: 'platform': driver_probe_device: matched device e66d8000.i2c
+> with driver i2c-rcar
+>     bus: 'platform': really_probe: probing driver i2c-rcar with device
+> e66d8000.i2c
+>
+> I2C becomes available...
+>
+>     i2c-rcar e66d8000.i2c: request_channel failed for tx (-517)
+>     [...]
+>
+> but DMA is not available yet, so the driver falls back to PIO.
+>
+>     driver: 'i2c-rcar': driver_bound: bound to device 'e66d8000.i2c'
+>     bus: 'platform': really_probe: bound device e66d8000.i2c to driver i2c-rcar
+>
+>     platform e6700000.dma-controller: Retrying from deferred list
+>     bus: 'platform': driver_probe_device: matched device
+> e6700000.dma-controller with driver rcar-dmac
+>     bus: 'platform': really_probe: probing driver rcar-dmac with
+> device e6700000.dma-controller
+>     platform e6700000.dma-controller: Driver rcar-dmac requests probe deferral
+>     platform e6700000.dma-controller: Added to deferred list
+>     platform e6700000.dma-controller: Retrying from deferred list
+>     bus: 'platform': driver_probe_device: matched device
+> e6700000.dma-controller with driver rcar-dmac
+>     bus: 'platform': really_probe: probing driver rcar-dmac with
+> device e6700000.dma-controller
+>     driver: 'rcar-dmac': driver_bound: bound to device 'e6700000.dma-controller'
+>     bus: 'platform': really_probe: bound device
+> e6700000.dma-controller to driver rcar-dmac
+>
+> DMA becomes available.
+>
+> Here userspace is entered. /sys/kernel/debug/dmaengine/summary shows
+> that the I2C controllers do not have DMA channels allocated, as the
+> kernel has performed no more I2C transfers after DMA became available.
+>
+> Using i2cdetect shows that DMA is used, which is good:
+>
+>     i2c-rcar e66d8000.i2c: got DMA channel for rx
+>
+> With permissive devlinks, the clock controller consumers are not added
+> to the deferred probing list, and probe order is slightly different.
+> The I2C controllers are still probed before the DMA controllers.
+> But DMA becomes available a bit earlier, before the probing of the last
+> I2C slave driver.
+
+This seems like a race? I'm guessing it's two different threads
+probing those two devices? And it just happens to work for
+"permissive" assuming the boot timing doesn't change?
+
+> Hence /sys/kernel/debug/dmaengine/summary shows that
+> some I2C transfers did use DMA.
+>
+> So the real issue is that e66d8000.i2c not linked as a consumer to
+> e6700000.dma-controller.
+
+That's because fw_devlink.strict=1 isn't set. If you need DMA to be
+treated as a mandatory supplier, you'll need to set the flag.
+
+Is fw_devlink=on really breaking anything here? It just seems like
+"permissive" got lucky with the timing and it could break at any point
+in the future. Thought?
+
+-Saravana
