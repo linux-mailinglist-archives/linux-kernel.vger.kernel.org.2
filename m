@@ -2,55 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A018F31C024
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:11:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B8131C026
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231821AbhBORIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:08:54 -0500
-Received: from smtprelay0117.hostedemail.com ([216.40.44.117]:43762 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232138AbhBOP4h (ORCPT
+        id S230021AbhBORJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:09:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230232AbhBOP5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:56:37 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A69D0180FAA81;
-        Mon, 15 Feb 2021 15:55:52 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3867:3870:3871:3872:3874:4321:5007:6119:6120:7652:7901:9010:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21611:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: shelf27_160c8202763c
-X-Filterd-Recvd-Size: 1433
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 15 Feb 2021 15:55:51 +0000 (UTC)
-Message-ID: <0db021ca12f6a25861ea941f7ad7c9b9be968076.camel@perches.com>
-Subject: Re: [PATCH RFC v3 2/3] docs: add documentation for checkpatch
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Mon, 15 Feb 2021 07:55:50 -0800
-In-Reply-To: <CABJPP5As+68yMdX1CafXsam4rg56aCWUzsSNx6kHjtQnaJ_ofQ@mail.gmail.com>
-References: <20210213131513.51386-1-dwaipayanray1@gmail.com>
-         <20210213131513.51386-3-dwaipayanray1@gmail.com>
-         <b2e25e683a3e2f31d4dc2d666e082634e30643b3.camel@perches.com>
-         <CABJPP5As+68yMdX1CafXsam4rg56aCWUzsSNx6kHjtQnaJ_ofQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 15 Feb 2021 10:57:35 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE62C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:56:47 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id l23so6412895otn.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:56:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tVRxOWQGs4gFZYzB77EOG1YDIE4NKBpSovtJYt/WT6Y=;
+        b=PdpPlec3It+OUT+a+pn8aTMutRpDQIqUdkitzv5ZpSqCHsK6Ty8ql4Y8YgE+KDsdah
+         JaOBdS9ELXriDUUYiHNOz1wpSLV7p7cBfUUjN+aFtEfrI7QG0IG1RaqMJmDbVax7Es+z
+         ar593lv/jNJxPOnI+PpzEFYDjY+ICORnxb04kHr7kTObyPqDcLUhoBJUMPu0mjmfWaMt
+         Ev8NsAVtA6gxBcTR2tJaKmn56BgFSAEZi7907B1XpOA5/WMRNKH4YLn474LTYA2yIeQE
+         QmAd5trT5uLzewTZwxBnr55TL8cYN828DA8W1BmvMV1jC2fBqamd9mH3LwXTB8m1RDLS
+         +iRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tVRxOWQGs4gFZYzB77EOG1YDIE4NKBpSovtJYt/WT6Y=;
+        b=Hm7Emqx4x234nZXTmtbeEeEP/TCuzj22cdwj7sI+j5p+7vvt4ucjSyJs8jiLxf1HW6
+         1tXNdpuL/JSyz5jKnadShSQQKYEwCFd+sSkVqQV9LQ+YJwpbLGYI9V1tw0WDaXupDvrQ
+         1tbKAEEtJOMrOwo6zjZLPpQxe8FFXHLoTA11cf4R1wsyrGZQpT2F6T2PA/3MYtKC7aN6
+         3k8wEkQXHBDra+m2MtnnVfSh2QyYvFp3q0oA75SGKakVorcbM+jvx4Uidtf0EkivU0NM
+         n3FdVoXO8YY/7UaA76XP84oJdhcTwbkzCmHjflSccgknClgBY0EQyRroqqWa3qd9EGgw
+         yn1A==
+X-Gm-Message-State: AOAM532aFdh2A+FL9w4lD6hlbZ0Aedc882wu6aZWKOIzcCizHO7qtTFh
+        q2j4j2kUJtWZEV+Uc2pYdCTJ2ZqlKFPegZV+2Y6u
+X-Google-Smtp-Source: ABdhPJyiYhFCshoCwdxjY8Ab8Kny7g2Frfd2DDdlb6v66NODKy4ENGVVrpBg4rw2onGBEIWgwHa5+nLpb5H23wjGvF4=
+X-Received: by 2002:a9d:7dda:: with SMTP id k26mr11942219otn.284.1613404606483;
+ Mon, 15 Feb 2021 07:56:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210211232312.2082334-1-iwamatsu@nigauri.org> <81880da7-3a9d-cb6b-1391-b8f59fcd1a37@xilinx.com>
+In-Reply-To: <81880da7-3a9d-cb6b-1391-b8f59fcd1a37@xilinx.com>
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Date:   Tue, 16 Feb 2021 00:56:20 +0900
+Message-ID: <CABMQnV+UHyuC6y345BnFcqeDkBWrp9+Xn27GXQPAPvediwcFPg@mail.gmail.com>
+Subject: Re: [PATCH v2] firmware: xilinx: Remove zynqmp_pm_get_eemi_ops() in IS_REACHABLE(CONFIG_ZYNQMP_FIRMWARE)
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-15 at 21:20 +0530, Dwaipayan Ray wrote:
+Hi,
 
-> Also someone pointed out in the list that some lines in the patch contained > 80
-> columns. Checkpatch doesn't generate any warning for that. Is it something that
-> could be added to checkpatch or was it decided against at some point?
+2021=E5=B9=B42=E6=9C=8812=E6=97=A5(=E9=87=91) 21:53 Michal Simek <michal.si=
+mek@xilinx.com>:
+>
+>
+>
+> On 2/12/21 12:23 AM, Nobuhiro Iwamatsu wrote:
+> > zynqmp_pm_get_eemi_ops() was removed in commit 4db8180ffe7c: "Firmware:=
+ xilinx:
+> > Remove eemi ops for fpga related APIs", but not in IS_REACHABLE(CONFIG_=
+ZYNQMP_FIRMWARE).
+> > Any driver who want to communicate with PMC using EEMI APIs use the fun=
+ctions provided
+> > for each function.
+> > This removed zynqmp_pm_get_eemi_ops() in IS_REACHABLE(CONFIG_ZYNQMP_FIR=
+MWARE), and also
+> > modify the documentation for this driver.
+> >
+> > Fixes: 4db8180ffe7c ("firmware: xilinx: Remove eemi ops for fpga relate=
+d APIs")
+> > Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+> > ---
+> >  v2: Added the comment pointed out by Michal.
+> >
+> >  Documentation/driver-api/xilinx/eemi.rst | 27 +-----------------------
+> >  include/linux/firmware/xlnx-zynqmp.h     |  5 -----
+> >  2 files changed, 1 insertion(+), 31 deletions(-)
+> >
+> > diff --git a/Documentation/driver-api/xilinx/eemi.rst b/Documentation/d=
+river-api/xilinx/eemi.rst
+> > index 9dcbc6f18d75df..53416d25d309a8 100644
+> > --- a/Documentation/driver-api/xilinx/eemi.rst
+> > +++ b/Documentation/driver-api/xilinx/eemi.rst
+> > @@ -19,32 +19,7 @@ device to issue or respond to power management reque=
+sts.
+> >  EEMI ops is a structure containing all eemi APIs supported by Zynq MPS=
+oC.
+> >  The zynqmp-firmware driver maintain all EEMI APIs in zynqmp_eemi_ops
+> >  structure. Any driver who want to communicate with PMC using EEMI APIs
+> > -can call zynqmp_pm_get_eemi_ops().
+> > -
+> > -Example of EEMI ops::
+> > -
+> > -     /* zynqmp-firmware driver maintain all EEMI APIs */
+> > -     struct zynqmp_eemi_ops {
+> > -             int (*get_api_version)(u32 *version);
+> > -             int (*query_data)(struct zynqmp_pm_query_data qdata, u32 =
+*out);
+> > -     };
+> > -
+> > -     static const struct zynqmp_eemi_ops eemi_ops =3D {
+> > -             .get_api_version =3D zynqmp_pm_get_api_version,
+> > -             .query_data =3D zynqmp_pm_query_data,
+> > -     };
+> > -
+> > -Example of EEMI ops usage::
+> > -
+> > -     static const struct zynqmp_eemi_ops *eemi_ops;
+> > -     u32 ret_payload[PAYLOAD_ARG_CNT];
+> > -     int ret;
+> > -
+> > -     eemi_ops =3D zynqmp_pm_get_eemi_ops();
+> > -     if (IS_ERR(eemi_ops))
+> > -             return PTR_ERR(eemi_ops);
+> > -
+> > -     ret =3D eemi_ops->query_data(qdata, ret_payload);
+> > +use the functions provided for each function.
+> >
+> >  IOCTL
+> >  ------
+> > diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmw=
+are/xlnx-zynqmp.h
+> > index 2a0da841c942f6..4ef77deaf7918c 100644
+> > --- a/include/linux/firmware/xlnx-zynqmp.h
+> > +++ b/include/linux/firmware/xlnx-zynqmp.h
+> > @@ -355,11 +355,6 @@ int zynqmp_pm_read_pggs(u32 index, u32 *value);
+> >  int zynqmp_pm_system_shutdown(const u32 type, const u32 subtype);
+> >  int zynqmp_pm_set_boot_health_status(u32 value);
+> >  #else
+> > -static inline struct zynqmp_eemi_ops *zynqmp_pm_get_eemi_ops(void)
+> > -{
+> > -     return ERR_PTR(-ENODEV);
+> > -}
+> > -
+> >  static inline int zynqmp_pm_get_api_version(u32 *version)
+> >  {
+> >       return -ENODEV;
+> >
+>
+> I can't see any difference compare to v1. Don't you forget to commit
+> your changes?
 
-decided against.
-checkpatch isn't useful for .rst files.
+Oh, sorry. I will resend with update.
+
+Best regards,
+  Nobuhiro
 
 
+--=20
+Nobuhiro Iwamatsu
+   iwamatsu at {nigauri.org / debian.org}
+   GPG ID: 40AD1FA6
