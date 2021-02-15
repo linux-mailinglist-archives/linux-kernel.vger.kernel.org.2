@@ -2,273 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADCE31B8C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FD031B8CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhBOMKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:10:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhBOMKN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:10:13 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20D6C061574;
-        Mon, 15 Feb 2021 04:09:32 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id l12so8601376wry.2;
-        Mon, 15 Feb 2021 04:09:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kpEy6lOwP0QHLFzXWaV+idBpODtSq1roPIWRmlASS8o=;
-        b=DeJT68C+xUcRQx4Nz4qUdOGLkRAdzrHZsnOGyrtK8Yn9gCRR4HMpGI+TM6qupM+HvT
-         AWnJdHCuaROBlsG0oaFcbJvX1d7TlnFqdyanvf1/osIC7XXOjN2QORRHJuU00nboendM
-         40zqr+Q4X9mlEPniOu+blGOaHllv7qE2KVF9vqeNRg1rIIE1e8WhGffI1CaVUYY9dCjm
-         Vzs1KVe6/2/wjT2zUQcQERmfOWphNSfAvMrJ35amRA4HbATrhDVLQLSzVtzHxLJNlpw7
-         ehsBSDTjo09o+EdyFtXALYIqitqzToo8YFh/1kpW4AV3X/piVs6xGDEeN30ugBaIhlVU
-         1DxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kpEy6lOwP0QHLFzXWaV+idBpODtSq1roPIWRmlASS8o=;
-        b=qfopYv5gCG7FIqdq33CWnPnFGGs04ts3+O0tdN+Hd9yAEjek4LKJ7b3zH0HxNyIs/W
-         REoZJn7ZHvFOSEX1SPVdWmgOcwLMac7+B8rDZ56yP2akTizSXvtHBu0MYRlw67Q3NC0D
-         TnwilwfDf/cmk2Amv4ePycj+d5Yp/1Wz5ERUZ+YmNStNw2FRD9O9gjBXdM82nkOR1SG0
-         EdeHeZRpTHWmK+3OaouzlnWuh41bUpl3nXKrDwk/D1lUFHzMAxkJRHB1DR+h0qVA3Hem
-         Fm2eNToyxfzaOzyjigdxSWO3dCsmbzrVIuRRnNb4Z9RR+VaAOWmrwVc3O3x8+d0izg3y
-         rhzw==
-X-Gm-Message-State: AOAM532UbY7NThDFw3F6/unuHDqWbSjWJesVPHpOwsBH85GP1hb6K57N
-        arS7zdvvE7JJyqlV35GrDx4=
-X-Google-Smtp-Source: ABdhPJw59lbY+urTEa6bFKku7XtTJOTbzTpklDmeiB6f4cQujXDmx0MR4nchH4xAHaCUxhIq2DI0CA==
-X-Received: by 2002:a5d:6d06:: with SMTP id e6mr18476698wrq.425.1613390971629;
-        Mon, 15 Feb 2021 04:09:31 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id c6sm19700482wrt.26.2021.02.15.04.09.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 04:09:30 -0800 (PST)
-Date:   Mon, 15 Feb 2021 13:09:28 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Mikko Perttunen <cyndis@kapsi.fi>
-Cc:     Mikko Perttunen <mperttunen@nvidia.com>,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH] tty: serial: Add earlycon driver for Tegra Combined UART
-Message-ID: <YCpkeJKs/ZnTwgXJ@ulmo.localdomain>
-References: <20210213115824.3306965-1-mperttunen@nvidia.com>
- <YCpMF7MyJYB8x7Zi@ulmo.localdomain>
- <2cdba410-7cc8-6ad3-53ab-d9c24e58a028@kapsi.fi>
+        id S229981AbhBOMLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:11:19 -0500
+Received: from mail-bn8nam11on2045.outbound.protection.outlook.com ([40.107.236.45]:54462
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229738AbhBOMLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 07:11:15 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d451ugoTJKWIfVM+OL/xKpBU8cuC1vRtIOP8cfxcPex1He0w70fUCXSSvF5Bd57tdVX5duESPd7OjeaRuMnbP/KNqca7I87d9SfLV/QXivJqyBqUujySkLpG+BUcYJYVpOT2+srlO2vO6Tr4cMGwZRvCtdW8FI2yzKat9RKNPjCMUoNJ9xBD3ypW8UdtAGJ4WhTmPtGxvlv8kmuOok92Q55hQMlrtPNhjDefpy7s/gFYIhBe8gRzZ6ngkWpwl9j0+0hVxNfxmiysYhkt6sciI+Mj4t9KuLtdwW9ALOM4xdFT93vMh4avVFOCRxrcJJ4up4K1H8ZQH/YUH7MQqHf59A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cQRgbhmFdA7RPj4GwlHs/L351IfylaAsY7zg/BQogmQ=;
+ b=hproz+3Zlz0HX73oMQCStnT9BwOaFtKaKjE4Kn2gcd3kDQaRTcn5dFas5gdxzkZtq5zWrkyO6cNn21TFQAfLm4ammCEBndo4Ky4XKyUXe+guCjd1EcazBaG04sQnqQMc7MKImYbnuJM43X9V/oSD3KGTyWrs2211LkSitkH2YvHVpNUBgCbT7G7j40ILYIG0pdjg2DSsXiBSbz5zFOLnorlHjfjv3vMcsnraZCZRUVlI5GhpJbU4lqmjQV5usvw+GgfaVCntKtlGklSulPDE70zZ3Kn9w9qBV7mrZzpE9V9JLYCHAQ12xfrxowQArcxxodL527Z0jqxSyXzoHpIW3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cQRgbhmFdA7RPj4GwlHs/L351IfylaAsY7zg/BQogmQ=;
+ b=Y+pJQM2OxIiDUiGK6o2RG5fqgxKJmqexZPNqZGPEnMgwSdt0au3/ZUctLyNx/8MrRsC+MGXKlUgs5TBr5lsaPxzztgRBn1g0JMd0UIsD6Rux/hwQVssDi5u8pNgUUYYxFQ87kXLEJS5396jJoxkJEtza89YpP4sZuEJXc0a3TSs=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4336.namprd12.prod.outlook.com (2603:10b6:208:1df::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Mon, 15 Feb
+ 2021 12:10:19 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3846.038; Mon, 15 Feb 2021
+ 12:10:19 +0000
+Subject: Re: DMA-buf and uncached system memory
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org, lkml <linux-kernel@vger.kernel.org>
+Cc:     "Sharma, Shashank" <Shashank.Sharma@amd.com>
+References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
+ <e6897f92-4c61-cd42-2822-43c50a744d4c@suse.de>
+ <302e06ad-f979-dc77-5d84-fa0923aa4632@suse.de>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <80c42ce0-6df1-71ab-81ec-e46cc56840ba@amd.com>
+Date:   Mon, 15 Feb 2021 13:10:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <302e06ad-f979-dc77-5d84-fa0923aa4632@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:3e90:5494:cc4a:73e5]
+X-ClientProxiedBy: FR2P281CA0035.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::22) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6eptjk77NuY8zBiU"
-Content-Disposition: inline
-In-Reply-To: <2cdba410-7cc8-6ad3-53ab-d9c24e58a028@kapsi.fi>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:3e90:5494:cc4a:73e5] (2a02:908:1252:fb60:3e90:5494:cc4a:73e5) by FR2P281CA0035.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:14::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.11 via Frontend Transport; Mon, 15 Feb 2021 12:10:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 7174aca6-b803-43eb-3187-08d8d1aaa96c
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4336:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB43369DE3146253E70EE3A47A83889@MN2PR12MB4336.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L3ekg0GQQ/LKr8mvNw2aXxQohA3zhUvVuoX+jGaOnMcMU3b7bjDBfPCzwSRofOidtxSBe8TYfFEoZxUfLHr2EQD//A/DW8ZTCvsmbZ/GFtNKXX13yphIbER6D9Bknst7FRhoQs21NrVOeEB7oYyb/DgKQzxjaZiPm7kbbmDH5rjHNpE4Wh6WhTdjgD+HAsLKv4XLeVzMp8BWsFlFEiSdYpXE+b74Bmg2fVIvfh4RTDgTUkdFpKbPtv4eEJI+hK5uNwNpjcQ0WCRpGJcTBPCKE70OqYfCHYY8EFzW5BOXg1STBssymBmhRLMxnLA6WCwSHPUCnZCJ7RX+9qsq+JgHRKtoSFwMRx9GDXC3qYuf6uBnk01XxRHS4Z59CV3t3OJvjGRoh+3GqcMcJqT7nGA1juomDF45RijJTHiyEwuT7rTtxmnM/BlFe0hC4+3CfqOw7FJ6NR6DCyi+5bzbUJN7Ei+5V6L8LFjcb4Zi8BTInyRxXelVjHKCwnzCk8IYMEiYs2mzEAvaxtY40K8vLp1xNL8IEiLqBnjryHhzdJWIX6oEfVTYAVyF48hRdK5i+twFHtvwQbVt0RMOUbE/wLBhwR+t1PLrRYk5MMAoCufI7xr2vWH2CD2KGfRufObEpeg4dyHICgNUAufcCB+3xLSvCg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(376002)(346002)(396003)(110136005)(83380400001)(316002)(66476007)(66946007)(66556008)(2616005)(52116002)(86362001)(8936002)(36756003)(31696002)(6486002)(31686004)(5660300002)(478600001)(4326008)(66574015)(6666004)(186003)(16526019)(2906002)(966005)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eFpTRVZ6VU9mR0UzcXpqZEI1NGhteWN3RnRHc2o5bHh5Q1M3cDJUYVB0ZzNK?=
+ =?utf-8?B?QzJtZFJ3N1E4S0F5YVJVTGt2NFkxYUd5ODZ5Q3ZXbm9EQTFtdElxQ3dvSmZR?=
+ =?utf-8?B?N01Xa0FnaVNjUWFBYmMraFRzd1lIUTQvKzlRYTNLbStSNUl4M1dZM1ZWTXdG?=
+ =?utf-8?B?YW0zaXdqUEdOckpYbFU4SUhYVWgzbjF5RGd1UUVjaS9Xam01c0ZFY0tzdnRK?=
+ =?utf-8?B?dWFTckppWnZlZnhGaThhV2Fta1VIUWlPa01oL29Uaisyc09oUGNKUXhTZ2Nr?=
+ =?utf-8?B?RTVaTmpFWFA1L1F1WEF2YzM0b2NjWDFrbmFRNlJxRTM5SnRRWm9lSHp0eUxr?=
+ =?utf-8?B?ZFNoYllDTGVheGNwa2ZJNDAxZnVUQmxVWFp2MmVJb0N3R1VwNUFnQm0zY05p?=
+ =?utf-8?B?UkdPd3ROanhobUVCcDBqdWVoOWFTR24zbVFKSHBFVUY2eVhwRjZnNnhyVlU1?=
+ =?utf-8?B?Y2NSbVlQd2phUmdDVG95ZjZ4d1MvZlJtOWZ5TWNUZEp2eHhFSG9kODd3LzdB?=
+ =?utf-8?B?ZDJQTUFadm51U2k4bHRHNVBDTGxRbXI4SXJEWHJ4dzRGd1lrWFE4NGQ4QUp6?=
+ =?utf-8?B?c3dQRjZ0V3FDemdOU2FUd2g4ZEp6NE9lZitwMWZMRjIxN0h3VTkrMlMySzZ3?=
+ =?utf-8?B?b25DWUlEek9FMFNBVm5zUDNBUmJkdE5YNXd5MjVueVN6V2x2L283bk5IdzZO?=
+ =?utf-8?B?UW0xSkp0SEhyczNoS1VFTlZTNi9sVGJBelBJdXV2akp3K085SWp5SjRMdUsy?=
+ =?utf-8?B?Z1FYSHhjdWF0R1A0bWRlUUR0SXd6MXJOb2FETjlWdUc1eFpkdlF3Y1dOWHdB?=
+ =?utf-8?B?cERVWnA2bkVNdHI0ZWlzNGZsYVROSnF2cVhueDdVQWpWUVdXNzMrNTk4Unly?=
+ =?utf-8?B?amFPRGk4d3lUY3gwTXJkdmVubkZHYjJLajRFbk9vTi9YZlFvKzk1ZGV5djRN?=
+ =?utf-8?B?YkRJS0xNaFMzVDl1b0xFRGc5d25xbXgzSExxRlNyUngrQVBTN0FtZTIzR1VT?=
+ =?utf-8?B?Zk9iaDVZMWtpVVJWdXUrRDJBWGVzWnhlZVZHaVNtNm56QmdNTFhVMnM1Z1Zv?=
+ =?utf-8?B?dk05T00rWjZmT0d0cDR0bENGWWllWHVPL3k0S0FzbVdPYUNIVDFUWmZ1NExn?=
+ =?utf-8?B?SWs2Y0hMM2tYRVBVUGhaRXZVTlhoTC92d1BGL002b3VNdS93RkdlM0NoS25j?=
+ =?utf-8?B?Vmk3cUZ2V2I4ZjhqVWZka202dHdjVktRUEErZ2w4cHZ6MUpiaHV0MGs2cXBs?=
+ =?utf-8?B?cjV0SjVzakYxOW4vekRiOWMyb0xHenlOa0tIRWVTZmxLS0lwRWJmNTBvT0NJ?=
+ =?utf-8?B?blZwUlpkRUhCdEZXSXhaMTJwU1pIN3NpV0g3c1ltbS9RV1RqSWVFNjl1aDhq?=
+ =?utf-8?B?Q1RES1UxdWRKQ1Yybk96aGtDdWg3MGttSWtZZjF6emVhM3hYQnllR2pRckN4?=
+ =?utf-8?B?NWlZUHdHYTlnaG9DM3Qxd0VSOHJzNzFXdFFoWVY1YVRES3V1b01zdllBNG80?=
+ =?utf-8?B?cmF5WVd2bXM2ZFVudi83T0hOWjlXelh3ZEszWVVnMTdVbTF3elFCeC9jeXFZ?=
+ =?utf-8?B?M25DNk5GdlJvT1hYTHZxL1RqZmRCQ3cxVWpxMkFCS2IrVmpETUdkYitRQTds?=
+ =?utf-8?B?RUZ2WWk2aW0wblBUR1MvWXM2NXlTN25UcEVsMmk2d1Z1bVFaRnRlazVrRHJL?=
+ =?utf-8?B?VnYrQTJRNFBUTTNxVlhTa25PSlJCdXA3TUlnaTB1MTVTTFlLeTlSRFBKRWdj?=
+ =?utf-8?B?TC9WTXBHUUNGWExhUCt4M0RhcURjUDBNNlR5dUMyRzJDZW9BSkVGblBMa3oz?=
+ =?utf-8?B?Ym1EV1RySVlCdWN2Njl3VGtwTVhjUWlNZzgvZjNwd2ttQ05MbERqOU1QWTNC?=
+ =?utf-8?Q?DenRz48PduoMD?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7174aca6-b803-43eb-3187-08d8d1aaa96c
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2021 12:10:19.1240
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SH+3EjADKYNE7CmJnXGaLfR2pq1I024x/AqPTAHuN4Pqpg5TIYTbCf7DknIryaic
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4336
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---6eptjk77NuY8zBiU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 15, 2021 at 12:35:31PM +0200, Mikko Perttunen wrote:
-> On 2/15/21 12:25 PM, Thierry Reding wrote:
-> > On Sat, Feb 13, 2021 at 01:58:24PM +0200, Mikko Perttunen wrote:
-> > > Add an earlycon driver for platforms with TCU, namely Tegra194.
-> > > The driver is compatible with boot parameters passed by NVIDIA
-> > > boot chains.
-> >=20
-> > I'm not sure I understand the latter part of this description. What boot
-> > parameters is this compatible with? Looking at the setup function there
-> > doesn't seem to be anything out of the ordinary here, so I'm wondering
-> > if that's just confusing. If there's anything special, it might be worth
-> > specifically pointing out what that is. Perhaps both in the commit
-> > message and in a code comment, so it's properly documented.
->=20
-> It's that the name of the driver 'tegra_comb_uart' matches what the boot
-> chain passes; and that OF_EARLYCON_DECLARE is not used. (OF_EARLYCON_DECL=
-ARE
-> cannot anyway be used due to the mailbox indirection in device tree).
+Am 15.02.21 um 13:00 schrieb Thomas Zimmermann:
+> Hi
+>
+> Am 15.02.21 um 10:49 schrieb Thomas Zimmermann:
+>> Hi
+>>
+>> Am 15.02.21 um 09:58 schrieb Christian König:
+>>> Hi guys,
+>>>
+>>> we are currently working an Freesync and direct scan out from system 
+>>> memory on AMD APUs in A+A laptops.
+>>>
+>>> On problem we stumbled over is that our display hardware needs to 
+>>> scan out from uncached system memory and we currently don't have a 
+>>> way to communicate that through DMA-buf.
+>
+> Re-reading this paragrah, it sounds more as if you want to let the 
+> exporter know where to move the buffer. Is this another case of the 
+> missing-pin-flag problem?
 
-This is all not immediately obvious. Perhaps you can add more of this
-into the commit message and perhaps provide an example of how this would
-be used on the kernel command-line.
+No, your original interpretation was correct. Maybe my writing is a bit 
+unspecific.
 
-You say "mailbox indirection" and looking at the implementation this
-does seem to use the mailbox's base address as a sort of TX FIFO, which
-I think is all good. However, I'm wondering if we couldn't somehow
-detect this all dynamically at runtime. Don't we have access to the
-device tree node at this point? If so, couldn't we parse all the
-necessary information from the DT instead of relying on the user
-providing the mailbox address on the command-line?
+The real underlying issue is that our display hardware has a problem 
+with latency when accessing system memory.
 
-I realize that this would all make things a bit more complicated in this
-driver, but at the same time it'd make life so much easier for users, so
-I think it's worth at least considering.
+So the question is if that also applies to for example Intel hardware or 
+other devices as well or if it is just something AMD specific?
 
-To elaborate on this a bit, I think it'd be much more useful if users
-could specify something like this:
+Regards,
+Christian.
 
-	earlycon=3Dtegra-tcu
+>
+> Best regards
+> Thomas
+>
+>>>
+>>> For our specific use case at hand we are going to implement 
+>>> something driver specific, but the question is should we have 
+>>> something more generic for this?
+>>
+>> For vmap operations, we return the address as struct dma_buf_map, 
+>> which contains additional information about the memory buffer. In 
+>> vram helpers, we have the interface drm_gem_vram_offset() that 
+>> returns the offset of the GPU device memory.
+>>
+>> Would it be feasible to combine both concepts into a dma-buf 
+>> interface that returns the device-memory offset plus the additional 
+>> caching flag?
+>>
+>> There'd be a structure and a getter function returning the structure.
+>>
+>> struct dma_buf_offset {
+>>      bool cached;
+>>      u64 address;
+>> };
+>>
+>> // return offset in *off
+>> int dma_buf_offset(struct dma_buf *buf, struct dma_buf_off *off);
+>>
+>> Whatever settings are returned by dma_buf_offset() are valid while 
+>> the dma_buf is pinned.
+>>
+>> Best regards
+>> Thomas
+>>
+>>>
+>>> After all the system memory access pattern is a PCIe extension and 
+>>> as such something generic.
+>>>
+>>> Regards,
+>>> Christian.
+>>> _______________________________________________
+>>> dri-devel mailing list
+>>> dri-devel@lists.freedesktop.org
+>>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>>
+>>
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>>
+>
 
-rather than:
-
-	earlycon=3Dtegra_comb_uart,0xc150000
-
-Note that I'm not even sure if that's a correct address. It'd be even
-better if all of this can just be derived from the device tree. My
-recollection is that earlycon always needs to be explicitly enabled, but
-I thought it was also possible to derive which console to use from the
-/chose/stdout-path property in device tree.
-
-> > > Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
-> > > ---
-> > >   drivers/tty/serial/Kconfig              | 12 +++++
-> > >   drivers/tty/serial/Makefile             |  1 +
-> > >   drivers/tty/serial/tegra-tcu-earlycon.c | 72 ++++++++++++++++++++++=
-+++
-> > >   3 files changed, 85 insertions(+)
-> > >   create mode 100644 drivers/tty/serial/tegra-tcu-earlycon.c
-> > >=20
-> > > diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> > > index 34a2899e69c0..d941785e3f46 100644
-> > > --- a/drivers/tty/serial/Kconfig
-> > > +++ b/drivers/tty/serial/Kconfig
-> > > @@ -331,6 +331,18 @@ config SERIAL_TEGRA_TCU_CONSOLE
-> > >   	  If unsure, say Y.
-> > > +config SERIAL_TEGRA_TCU_EARLYCON
-> > > +	bool "Earlycon on NVIDIA Tegra Combined UART"
-> > > +	depends on ARCH_TEGRA || COMPILE_TEST
-> > > +	select SERIAL_EARLYCON
-> > > +	select SERIAL_CORE_CONSOLE
-> > > +	default y if SERIAL_TEGRA_TCU_CONSOLE
-> > > +	help
-> > > +	  If you say Y here, TCU output will be supported during the earlyc=
-on
-> > > +	  phase of the boot.
-> > > +
-> > > +	  If unsure, say Y.
-> > > +
-> > >   config SERIAL_MAX3100
-> > >   	tristate "MAX3100 support"
-> > >   	depends on SPI
-> > > diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-> > > index b85d53f9e9ff..408144326fed 100644
-> > > --- a/drivers/tty/serial/Makefile
-> > > +++ b/drivers/tty/serial/Makefile
-> > > @@ -72,6 +72,7 @@ obj-$(CONFIG_SERIAL_XILINX_PS_UART) +=3D xilinx_uar=
-tps.o
-> > >   obj-$(CONFIG_SERIAL_SIRFSOC) +=3D sirfsoc_uart.o
-> > >   obj-$(CONFIG_SERIAL_TEGRA) +=3D serial-tegra.o
-> > >   obj-$(CONFIG_SERIAL_TEGRA_TCU) +=3D tegra-tcu.o
-> > > +obj-$(CONFIG_SERIAL_TEGRA_TCU_EARLYCON) +=3D tegra-tcu-earlycon.o
-> > >   obj-$(CONFIG_SERIAL_AR933X)   +=3D ar933x_uart.o
-> > >   obj-$(CONFIG_SERIAL_EFM32_UART) +=3D efm32-uart.o
-> > >   obj-$(CONFIG_SERIAL_ARC)	+=3D arc_uart.o
-> > > diff --git a/drivers/tty/serial/tegra-tcu-earlycon.c b/drivers/tty/se=
-rial/tegra-tcu-earlycon.c
-> > > new file mode 100644
-> > > index 000000000000..9decfbced0a7
-> > > --- /dev/null
-> > > +++ b/drivers/tty/serial/tegra-tcu-earlycon.c
-> > > @@ -0,0 +1,72 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * Copyright (c) 2017-2021, NVIDIA CORPORATION.  All rights reserved.
-> > > + */
-> > > +
-> > > +#include <linux/console.h>
-> > > +#include <linux/io.h>
-> > > +#include <linux/serial_core.h>
-> > > +
-> > > +#define NUM_BYTES_FIELD_BIT	24
-> > > +#define FLUSH_BIT		26
-> >=20
-> > This one seems to be unused.
->=20
-> True, I'll remove it.
->=20
-> >=20
-> > > +#define INTR_TRIGGER_BIT	31
-> >=20
-> > I wonder if this could somehow be integrated with the existing TCU
-> > driver since we have these bits defined there already. And really this
-> > is basically a skeleton version of the same driver.
-> >=20
-> > > +/*
-> > > + * This function splits the string to be printed (const char *s) int=
-o multiple
-> > > + * packets. Each packet contains a max of 3 characters. Packets are =
-sent to the
-> > > + * SPE-based combined UART server for printing. Communication with S=
-PE is done
-> > > + * through mailbox registers which can generate interrupts for SPE.
-> > > + */
-> > > +static void early_tcu_write(struct console *console, const char *s, =
-unsigned int count)
-> > > +{
-> > > +	struct earlycon_device *device =3D console->data;
-> > > +	u8 __iomem *addr =3D device->port.membase;
-> > > +	u32 mbox_val =3D BIT(INTR_TRIGGER_BIT);
-> > > +	unsigned int i;
-> > > +
-> > > +	/* Loop for processing each 3 char packet */
-> > > +	for (i =3D 0; i < count; i++) {
-> > > +		if (s[i] =3D=3D '\n')
-> > > +			mbox_val =3D update_and_send_mbox(addr, mbox_val, '\r');
-> > > +		mbox_val =3D update_and_send_mbox(addr, mbox_val, s[i]);
-> > > +	}
-> > > +
-> > > +	if ((mbox_val >> NUM_BYTES_FIELD_BIT) & 0x3) {
-> > > +		while (readl(addr) & BIT(INTR_TRIGGER_BIT))
-> > > +			cpu_relax();
-> > > +		writel(mbox_val, addr);
-> > > +	}
-> > > +}
-> >=20
-> > For example this function already exists in the Tegra TCU driver and
-> > perhaps some of that could be refactored to work for both cases.
->=20
-> This is very similar to the main tegra_tcu driver, but considering how
-> simple this driver is, and the main driver using the mailbox framework
-> making the actual implementation incompatible, I was thinking that it's
-> easier to just have this be independent.
-
-I don't have a strong objection to keeping these functions separate,
-especially since they are fairly small and not likely to ever change, so
-the maintenance burden is going to be small in any case.
-
-But even so it might be nice to stash this all into the same file. After
-all, people aren't going to enable this configuration option if they
-have the Tegra TCU driver disabled. Once these are integrated, it's also
-likely not worth even having a separate Kconfig option because the added
-code is so little.
-
-Thierry
-
---6eptjk77NuY8zBiU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAqZHUACgkQ3SOs138+
-s6H52A//R/nUqjFNAtDEACMsOalOHV0DE/oDBuQK98TzswVWyXBy2KqgPtJFLVFs
-rvc59lfZueCDbSLQns3CtnvxQsG/c7FDZLyutXLZdo7LLJPtYgDW44WVKsVST5di
-F3USltTbb/dv0hM/ASzE3kJuBHGOHd/qwGc740HDqwNTKi3C+Zszi4am4FmrOKFI
-SpUW3WEn1pyxxBo54KTko0lOVl8EWiavMa9SQFun+BlLE2VuGpapq8M5AOZaKrER
-n7BcmEmDssUM3MJNPdLNqgqLZgp3mB1I/WsCHKCvjHlQd+RTBTneH6dKOgD0SQlR
-f+Nuhpga/zo/p6fZNT8hW7sbRYSf2gldFvNOQgVcsswigpWAkfUTB4zmOxKeODWx
-m1F5Q5qUkEEv4EFmaO5aZadRg/guwiU8JdonCf4YjeEaJ6mBKC3k9UHxBmJPhk8R
-Pd+nubaqd7vEoMOyOHoV8DQMstQgdRgWxb26IVpVFDw68f6xhIptZ8R9JQ8rb2Oc
-SlvOeJMybn80+j9Y+D4pLvH3xVCyC7XOn8XRC+Q5kqKUY29v+/IdzpXSCYd7e9G3
-m/uyNsAi/UF0ycqoDWeCEAVJ4MUI1o4lTV+DFEHy1o+vCI23lSM5GVDv6TND094E
-809s+tzkmb0PWFEgWjWCjukQSXqNr1a/Y8nfXh9jXA6/Wq/es9c=
-=KIp4
------END PGP SIGNATURE-----
-
---6eptjk77NuY8zBiU--
