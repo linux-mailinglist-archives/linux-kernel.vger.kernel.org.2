@@ -2,87 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B751C31BA48
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEA431BA55
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhBON0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 08:26:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38100 "EHLO mail.kernel.org"
+        id S230243AbhBON1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 08:27:45 -0500
+Received: from mga11.intel.com ([192.55.52.93]:35389 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230160AbhBONXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 08:23:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AE0A64DF0;
-        Mon, 15 Feb 2021 13:22:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613395370;
-        bh=FhCmQwKltXlewXN8BYTXPAp/o1kYguxQ89M5HonSGq4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FM1/iqq3ZHy2ksIoZWnwxxgAw6yOwiqBR01KLjivOn3iN2GKRSPLIPyZlMN4N6Dce
-         zWAQkeJe2oYvpa/UX1jQkKRQBznYnNm5ulGqCrmM7BYrwSQu8WLpZiqdINQ9QkUQep
-         ey4Dq+7oJg0WqYWc+SmhIdimBalErLKU+OPKzG34=
-Date:   Mon, 15 Feb 2021 14:22:47 +0100
-From:   gregkh <gregkh@linuxfoundation.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2 00/25] Apple M1 SoC platform bring-up
-Message-ID: <YCp1p1tRHF6OyR0C@kroah.com>
-References: <20210215121713.57687-1-marcan@marcan.st>
- <CAK8P3a1bXiWcieqTSZARN+to=J5RjC2cwbn_8ZOCYw2hhyyBYw@mail.gmail.com>
+        id S230390AbhBON0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 08:26:17 -0500
+IronPort-SDR: nh6QijjbTkyXDnKHS5En0JXD4cELcgi1O5jaLSM7gBNp71kiu+5SMvGPWY5vTgpszbY5Lz/ydc
+ U4N1idhFLoJg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="179175498"
+X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
+   d="scan'208";a="179175498"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 05:23:40 -0800
+IronPort-SDR: aLuQiNsTdW+Q6rKbONj7+mIfbiM2U7QPSampCExo58PpTQIAeLTkcodHSLF4zeg8qtMZ9FwL7C
+ WM/euuJ8BtfA==
+X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
+   d="scan'208";a="425460527"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 05:23:38 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lBdqh-005CSJ-J3; Mon, 15 Feb 2021 15:23:35 +0200
+Date:   Mon, 15 Feb 2021 15:23:35 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     daniel@zonque.org, haojian.zhuang@gmail.com,
+        robert.jarzmik@free.fr, broonie@kernel.org, jan.kiszka@siemens.com,
+        jarkko.nikula@linux.intel.com, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] spi: pxa2xx-pci: Fix an issue about missing call to
+ 'pci_free_irq_vectors()'
+Message-ID: <YCp11zuXjbPvQlG0@smile.fi.intel.com>
+References: <20210215124429.618582-1-zhengdejin5@gmail.com>
+ <20210215125927.GA618796@nuc8i5>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a1bXiWcieqTSZARN+to=J5RjC2cwbn_8ZOCYw2hhyyBYw@mail.gmail.com>
+In-Reply-To: <20210215125927.GA618796@nuc8i5>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 01:57:39PM +0100, Arnd Bergmann wrote:
-> On Mon, Feb 15, 2021 at 1:16 PM Hector Martin <marcan@marcan.st> wrote:
-> >
-> > This series brings up initial support for the Apple M1 SoC, used in the
-> > 2020 Mac Mini, MacBook Pro, and MacBook Air models.
-> >
-> > The following features are supported in this initial port:
-> >
-> > - UART (samsung-style) with earlycon support
-> > - Interrupts, including affinity and IPIs (Apple Interrupt Controller)
-> > - SMP (through standard spin-table support)
-> > - simplefb-based framebuffer
-> > - Devicetree for the Mac Mini (should work for the others too at this
-> >   stage)
+On Mon, Feb 15, 2021 at 08:59:27PM +0800, Dejin Zheng wrote:
+> On Mon, Feb 15, 2021 at 08:44:29PM +0800, Dejin Zheng wrote:
 > 
-> I am essentially happy with the state of this series, the comments I had
-> in v1 by email and IRC are all addressed, but of course with the timing
-> during the merge window, it is not going to be in v5.12.
+> Hi All:
 > 
-> (adding maintainers for the serial/irqchip/clocksource drivers and
-> arch/arm64 to cc)
+> I'm very sorry forgot to add change list in patch v2.
 > 
-> I would suggest merging it together as a series through the soc tree for
-> v5.13, once each patch has been reviewed by the respective subsystem
-> maintainers, with possible add-on patches on the same branch for
-> additional drivers that may become ready during the 5.12-rc cycle.
-> After the initial merge, driver patches will of course go through subsystem
-> trees as normal.
-> 
-> Let me know if that works for everyone.
+> v1 -> v2:
+> 	* modify subject name  pca2xx-pci to pxa2xx-pci.
+> 	* add jan and Jarkko's review tag.
 
-Sure, as long as the maintainers get to see the patches, I don't think
-I've seen the serial ones at all...
+Can you read my comment to v1, please?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
