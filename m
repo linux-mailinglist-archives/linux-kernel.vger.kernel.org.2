@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4900131B7DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D82431B7E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhBOLSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 06:18:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:35826 "EHLO foss.arm.com"
+        id S229991AbhBOLTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 06:19:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229779AbhBOLSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 06:18:39 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99FF01FB;
-        Mon, 15 Feb 2021 03:17:52 -0800 (PST)
-Received: from bogus (unknown [10.57.11.176])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 40CA13F40C;
-        Mon, 15 Feb 2021 03:17:50 -0800 (PST)
-Date:   Mon, 15 Feb 2021 11:17:30 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        Jyoti Bhayana <jbhayana@google.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Enrico Granata <egranata@google.com>,
-        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
-        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
-        Peter Hilber <Peter.hilber@opensynergy.com>,
-        Ankit Arora <ankitarora@google.com>
-Subject: Re: [PATCH v5 1/1] iio/scmi: Adding support for IIO SCMI Based
- Sensors
-Message-ID: <20210215111730.4tuuuxhjcyqrobea@bogus>
-References: <20210208211918.1280588-1-jbhayana@google.com>
- <20210208211918.1280588-2-jbhayana@google.com>
- <20210209115639.GC6873@e120937-lin>
- <CA+=V6c12nRxLCxM2DPst8RV=i+1WatPyHcQQZp4xAzuoN0vKaw@mail.gmail.com>
- <20210210214619.GD6873@e120937-lin>
- <20210212191850.0748ccdb@archlinux>
- <20210215092526.GA29356@e120937-lin>
- <20210215110756.28567df8@archlinux>
+        id S229811AbhBOLTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 06:19:40 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CDF3764E52;
+        Mon, 15 Feb 2021 11:18:58 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 11:18:48 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
+Subject: Re: [PATCH v6 01/24] iio: adc: ti_am335x_adc: remove omitted
+ iio_kfifo_free()
+Message-ID: <20210215111848.6312b026@archlinux>
+In-Reply-To: <20210215104043.91251-2-alexandru.ardelean@analog.com>
+References: <20210215104043.91251-1-alexandru.ardelean@analog.com>
+        <20210215104043.91251-2-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210215110756.28567df8@archlinux>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 11:07:56AM +0000, Jonathan Cameron wrote:
-> Hi Cristian,
->
-> So this driver will also be 5.13 material now (merge window for IIO effectively
-> closes 1-2 weeks before Linus opens the main one).
->
+On Mon, 15 Feb 2021 12:40:20 +0200
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-I guessed so.
+> When the conversion was done to use devm_iio_kfifo_allocate(), a call to
+> iio_kfifo_free() was omitted (to be removed).
+> This change removes it.
+> 
+> Fixes: 3c5308058899 ("iio: adc: ti_am335x_adc: alloc kfifo & IRQ via devm_ functions")
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 
-> The way we normally handle cases like this where we likely to have dependencies
-> on a patch set from two separate directions is to do what is known as an
-> immutable branch.  This is a branch that would probably be based on 5.12-rc1
-> containing just this driver.
->
+Hi Alex,
 
-Make sense.
+I'm going to work my way through the series - may get to the end, but if
+not hopefully we can at least reduce the number of outstanding patches. 
 
-> Then both trees, in this case IIO and scmi merge that branch.  The magic
-> of git then means that when Linus gets the eventual pull requests for
-> the two trees, the git IDs and content will be the same and the history
-> of that particular set of files will be cleanly maintained.
->
-> This happens quite a lot for certain parts of the kernel because there are
-> a lot of cross dependencies.
->
-> @Sudeep, that work for you?  Have to wait for 5.12-rc1 though to give
-> us a sensible base.
->
+To enable that I've rebased my togreg branch of staging/staging-next
+(I hadn't pushed it out as a non rebasing tree so this shouldn't impact anyone too
+badly).
 
-Since this is just one patch, I can pull in the immutable branch if you
-could share and then Cristian can make appropriate changes needed for his
-series on top of that unless you want to merge 30+ patches that I might
-have with Cristain series 😉.
+Therefore, dropping this patch as it's already there.
 
-In short I am happy to pull in your immutable branch and I agree 5.12-rc1
-is sensible base.
+Jonathan
 
---
-Regards,
-Sudeep
+
+> ---
+>  drivers/iio/adc/ti_am335x_adc.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ti_am335x_adc.c b/drivers/iio/adc/ti_am335x_adc.c
+> index b11c8c47ba2a..e946903b0993 100644
+> --- a/drivers/iio/adc/ti_am335x_adc.c
+> +++ b/drivers/iio/adc/ti_am335x_adc.c
+> @@ -397,16 +397,12 @@ static int tiadc_iio_buffered_hardware_setup(struct device *dev,
+>  	ret = devm_request_threaded_irq(dev, irq, pollfunc_th, pollfunc_bh,
+>  				flags, indio_dev->name, indio_dev);
+>  	if (ret)
+> -		goto error_kfifo_free;
+> +		return ret;
+>  
+>  	indio_dev->setup_ops = setup_ops;
+>  	indio_dev->modes |= INDIO_BUFFER_SOFTWARE;
+>  
+>  	return 0;
+> -
+> -error_kfifo_free:
+> -	iio_kfifo_free(indio_dev->buffer);
+> -	return ret;
+>  }
+>  
+>  static const char * const chan_name_ain[] = {
+
