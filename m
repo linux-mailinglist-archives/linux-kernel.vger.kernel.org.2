@@ -2,22 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677FD31B90E
+	by mail.lfdr.de (Postfix) with ESMTP id D7D2F31B90F
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhBOMVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:21:16 -0500
-Received: from marcansoft.com ([212.63.210.85]:42626 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230134AbhBOMTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:19:07 -0500
+        id S230059AbhBOMVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:21:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230165AbhBOMTJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 07:19:09 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2378DC061574;
+        Mon, 15 Feb 2021 04:18:25 -0800 (PST)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 913F8424A1;
-        Mon, 15 Feb 2021 12:18:13 +0000 (UTC)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id C7179424A4;
+        Mon, 15 Feb 2021 12:18:18 +0000 (UTC)
 From:   Hector Martin <marcan@marcan.st>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
@@ -33,9 +37,9 @@ Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         Mark Rutland <mark.rutland@arm.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 08/25] arm64: Always keep DAIF.[IF] in sync
-Date:   Mon, 15 Feb 2021 21:16:56 +0900
-Message-Id: <20210215121713.57687-9-marcan@marcan.st>
+Subject: [PATCH v2 09/25] arm64: entry: Map the FIQ vector to IRQ on NEEDS_FIQ platforms
+Date:   Mon, 15 Feb 2021 21:16:57 +0900
+Message-Id: <20210215121713.57687-10-marcan@marcan.st>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210215121713.57687-1-marcan@marcan.st>
 References: <20210215121713.57687-1-marcan@marcan.st>
@@ -45,138 +49,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apple SoCs (A11 and newer) have some interrupt sources hardwired to the
-FIQ line. We implement support for this by simply treating IRQs and FIQs
-the same way in the interrupt vectors.
+From: Marc Zyngier <maz@kernel.org>
 
-To support these systems, the FIQ mask bit needs to be kept in sync with
-the IRQ mask bit, so both kinds of exceptions are masked together. No
-other platforms should be delivering FIQ exceptions right now, and we
-already unmask FIQ in normal process context, so this should not have an
-effect on other systems - if spurious FIQs were arriving, they would
-already panic the kernel.
+By default, FIQ exceptions trigger a panic. On platforms that need to
+deliver interrupts via FIQ, this gets redirected via an alternative to
+instead handle FIQ the same way as IRQ. It is up to the irqchip handler
+to discriminate between the two.
 
-Root irqchip drivers can discriminate between IRQs and FIQs by checking
-the ISR_EL1 system register.
-
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
- arch/arm64/include/asm/assembler.h |  6 +++---
- arch/arm64/include/asm/daifflags.h |  4 ++--
- arch/arm64/include/asm/irqflags.h  | 19 +++++++++++--------
- arch/arm64/kernel/entry.S          |  6 +++---
- 4 files changed, 19 insertions(+), 16 deletions(-)
+ arch/arm64/kernel/entry.S | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index bf125c591116..ac4c823bf2b6 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -40,9 +40,9 @@
- 	msr	daif, \flags
- 	.endm
- 
--	/* IRQ is the lowest priority flag, unconditionally unmask the rest. */
--	.macro enable_da_f
--	msr	daifclr, #(8 | 4 | 1)
-+	/* IRQ/FIQ are the lowest priority flags, unconditionally unmask the rest. */
-+	.macro enable_da
-+	msr	daifclr, #(8 | 4)
- 	.endm
- 
- /*
-diff --git a/arch/arm64/include/asm/daifflags.h b/arch/arm64/include/asm/daifflags.h
-index 1c26d7baa67f..9d1d4ab98585 100644
---- a/arch/arm64/include/asm/daifflags.h
-+++ b/arch/arm64/include/asm/daifflags.h
-@@ -13,8 +13,8 @@
- #include <asm/ptrace.h>
- 
- #define DAIF_PROCCTX		0
--#define DAIF_PROCCTX_NOIRQ	PSR_I_BIT
--#define DAIF_ERRCTX		(PSR_I_BIT | PSR_A_BIT)
-+#define DAIF_PROCCTX_NOIRQ	(PSR_I_BIT | PSR_F_BIT)
-+#define DAIF_ERRCTX		(PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
- #define DAIF_MASK		(PSR_D_BIT | PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
- 
- 
-diff --git a/arch/arm64/include/asm/irqflags.h b/arch/arm64/include/asm/irqflags.h
-index ff328e5bbb75..125201dced5f 100644
---- a/arch/arm64/include/asm/irqflags.h
-+++ b/arch/arm64/include/asm/irqflags.h
-@@ -12,15 +12,18 @@
- 
- /*
-  * Aarch64 has flags for masking: Debug, Asynchronous (serror), Interrupts and
-- * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'dai'
-+ * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'daif'
-  * order:
-  * Masking debug exceptions causes all other exceptions to be masked too/
-- * Masking SError masks irq, but not debug exceptions. Masking irqs has no
-- * side effects for other flags. Keeping to this order makes it easier for
-- * entry.S to know which exceptions should be unmasked.
-+ * Masking SError masks IRQ/FIQ, but not debug exceptions. IRQ and FIQ are
-+ * always masked and unmasked together, and have no side effects for other
-+ * flags. Keeping to this order makes it easier for entry.S to know which
-+ * exceptions should be unmasked.
-  *
-- * FIQ is never expected, but we mask it when we disable debug exceptions, and
-- * unmask it at all other times.
-+ * FIQ is never expected on most platforms, but we keep it synchronized
-+ * with the IRQ mask status. On platforms that do not expect FIQ, that vector
-+ * triggers a kernel panic. On platforms that do, the FIQ vector is unified
-+ * with the IRQ vector.
-  */
- 
- /*
-@@ -35,7 +38,7 @@ static inline void arch_local_irq_enable(void)
- 	}
- 
- 	asm volatile(ALTERNATIVE(
--		"msr	daifclr, #2		// arch_local_irq_enable",
-+		"msr	daifclr, #3		// arch_local_irq_enable",
- 		__msr_s(SYS_ICC_PMR_EL1, "%0"),
- 		ARM64_HAS_IRQ_PRIO_MASKING)
- 		:
-@@ -54,7 +57,7 @@ static inline void arch_local_irq_disable(void)
- 	}
- 
- 	asm volatile(ALTERNATIVE(
--		"msr	daifset, #2		// arch_local_irq_disable",
-+		"msr	daifset, #3		// arch_local_irq_disable",
- 		__msr_s(SYS_ICC_PMR_EL1, "%0"),
- 		ARM64_HAS_IRQ_PRIO_MASKING)
- 		:
 diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index c9bae73f2621..ba5f9aa379ce 100644
+index ba5f9aa379ce..bcfd1ac72636 100644
 --- a/arch/arm64/kernel/entry.S
 +++ b/arch/arm64/kernel/entry.S
-@@ -661,7 +661,7 @@ SYM_CODE_END(el1_sync)
+@@ -547,18 +547,18 @@ SYM_CODE_START(vectors)
+ 
+ 	kernel_ventry	1, sync				// Synchronous EL1h
+ 	kernel_ventry	1, irq				// IRQ EL1h
+-	kernel_ventry	1, fiq_invalid			// FIQ EL1h
++	kernel_ventry	1, fiq				// FIQ EL1h
+ 	kernel_ventry	1, error			// Error EL1h
+ 
+ 	kernel_ventry	0, sync				// Synchronous 64-bit EL0
+ 	kernel_ventry	0, irq				// IRQ 64-bit EL0
+-	kernel_ventry	0, fiq_invalid			// FIQ 64-bit EL0
++	kernel_ventry	0, fiq				// FIQ 64-bit EL0
+ 	kernel_ventry	0, error			// Error 64-bit EL0
+ 
+ #ifdef CONFIG_COMPAT
+ 	kernel_ventry	0, sync_compat, 32		// Synchronous 32-bit EL0
+ 	kernel_ventry	0, irq_compat, 32		// IRQ 32-bit EL0
+-	kernel_ventry	0, fiq_invalid_compat, 32	// FIQ 32-bit EL0
++	kernel_ventry	0, fiq_compat, 32		// FIQ 32-bit EL0
+ 	kernel_ventry	0, error_compat, 32		// Error 32-bit EL0
+ #else
+ 	kernel_ventry	0, sync_invalid, 32		// Synchronous 32-bit EL0
+@@ -658,6 +658,10 @@ SYM_CODE_START_LOCAL_NOALIGN(el1_sync)
+ SYM_CODE_END(el1_sync)
+ 
+ 	.align	6
++SYM_CODE_START_LOCAL_NOALIGN(el1_fiq)
++alternative_if_not ARM64_NEEDS_FIQ
++	b	el1_fiq_invalid
++alternative_else_nop_endif
  SYM_CODE_START_LOCAL_NOALIGN(el1_irq)
  	kernel_entry 1
  	gic_prio_irq_setup pmr=x20, tmp=x1
--	enable_da_f
-+	enable_da
+@@ -688,6 +692,7 @@ alternative_else_nop_endif
  
- 	mov	x0, sp
- 	bl	enter_el1_irq_or_nmi
-@@ -727,7 +727,7 @@ SYM_CODE_START_LOCAL_NOALIGN(el0_irq)
+ 	kernel_exit 1
+ SYM_CODE_END(el1_irq)
++SYM_CODE_END(el1_fiq)
+ 
+ /*
+  * EL0 mode handlers.
+@@ -710,10 +715,15 @@ SYM_CODE_START_LOCAL_NOALIGN(el0_sync_compat)
+ SYM_CODE_END(el0_sync_compat)
+ 
+ 	.align	6
++SYM_CODE_START_LOCAL_NOALIGN(el0_fiq_compat)
++alternative_if_not ARM64_NEEDS_FIQ
++	b	el0_fiq_invalid_compat
++alternative_else_nop_endif
+ SYM_CODE_START_LOCAL_NOALIGN(el0_irq_compat)
+ 	kernel_entry 0, 32
+ 	b	el0_irq_naked
+ SYM_CODE_END(el0_irq_compat)
++SYM_CODE_END(el0_fiq_compat)
+ 
+ SYM_CODE_START_LOCAL_NOALIGN(el0_error_compat)
+ 	kernel_entry 0, 32
+@@ -722,6 +732,10 @@ SYM_CODE_END(el0_error_compat)
+ #endif
+ 
+ 	.align	6
++SYM_CODE_START_LOCAL_NOALIGN(el0_fiq)
++alternative_if_not ARM64_NEEDS_FIQ
++	b	el0_fiq_invalid
++alternative_else_nop_endif
+ SYM_CODE_START_LOCAL_NOALIGN(el0_irq)
+ 	kernel_entry 0
  el0_irq_naked:
- 	gic_prio_irq_setup pmr=x20, tmp=x0
- 	user_exit_irqoff
--	enable_da_f
-+	enable_da
+@@ -736,6 +750,7 @@ el0_irq_naked:
  
- 	tbz	x22, #55, 1f
- 	bl	do_el0_irq_bp_hardening
-@@ -757,7 +757,7 @@ el0_error_naked:
- 	mov	x0, sp
- 	mov	x1, x25
- 	bl	do_serror
--	enable_da_f
-+	enable_da
  	b	ret_to_user
- SYM_CODE_END(el0_error)
+ SYM_CODE_END(el0_irq)
++SYM_CODE_END(el0_fiq)
  
+ SYM_CODE_START_LOCAL(el1_error)
+ 	kernel_entry 1
 -- 
 2.30.0
 
