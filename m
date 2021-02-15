@@ -2,145 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D99131BC2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B6231BC30
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhBOPV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:21:26 -0500
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:33653 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230362AbhBOPRT (ORCPT
+        id S229908AbhBOPWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:22:22 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:35652 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230241AbhBOPSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:17:19 -0500
-Received: by mail-oi1-f170.google.com with SMTP id g84so8087251oib.0;
-        Mon, 15 Feb 2021 07:17:03 -0800 (PST)
+        Mon, 15 Feb 2021 10:18:02 -0500
+Received: by mail-il1-f198.google.com with SMTP id i7so5605807ilu.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:17:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C2sgcKj98aThSkMnimZCE29PrKW4uLBphZONfs+K+xs=;
-        b=GL8qVu/2QTBsfRdMoMIHvkUU4iUVXOha82kbYR9qN8Nf8b6gTPQhfUdHU0I1bwRlKF
-         t20BYYJwqe7QKtWoVUg5zw6yQxCxaodAYL9nBasg5lcRE7iv/YqxWm6CFFTiqfMi3Uf/
-         ZvtLMfDYV5uFmYmvRZVSug5JXOwZTTeLzgGkWA7pOWNRaJf3BX8dxq6ZEO7VDRwimhTE
-         i1TsszyPdRm7vAdOrYNR7SdlSX52bRePCYQ/G2DzLPIjxLJB0sQm6JqEKmZnvYt80aGz
-         0D57e8wDeSF+jOgJpDGx/sygdw8qf1edXmUNKVHJkeeL/WibEoVOvM3pUddlAE9eIyFg
-         fd3Q==
-X-Gm-Message-State: AOAM5326NBA5QrFmJN1zf2V8wLD4mUAsN9Peu3tTwRM6txwul3Cqdn1o
-        zxtKdnFNRt8qStDt33NUYzVGuUKMk7FiPBlhpUM=
-X-Google-Smtp-Source: ABdhPJwotWAB2xGmxfLxbGS5Z/LD74rUcKxjHXAATycJb1YqtCg3KBlKdm2uoXg7aAcGCZii1QJxuPu4F9CREIowcj4=
-X-Received: by 2002:aca:744:: with SMTP id 65mr8563823oih.153.1613402198301;
- Mon, 15 Feb 2021 07:16:38 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Ik+zbkUUT7o5CXIWisz6oWxrHhb0QPnBkokiBVI2sAM=;
+        b=fa+Nnr7RHKOXq8HoXGMYMuMZkGGpALuBIzPE96lBop4D3e/vYQJEK7rKx0by47X3Be
+         qdgdZtwgC2p8CbNjFhF+7qDoJKGVXxjTTvDbGYpNBCuC+p5ZOKYbVzIhIBhc3Z0kggkK
+         nnKlnRtVicmWU104MpKY4VsuxQrE7p/F5rr9gpSYbWI/+pEmY3GorYwATePXy5sKxhcT
+         FQUsmIzhLEMVeCfcH/EZSw9AGXhPWyNv45isDcRu3Z8Ow4agU6Jj6fe8S9vR+BeBvvw9
+         K75j1b2y/fcTR102GZeDzLwjqZK9z2r7L6Voj8sPPBw/dl445DN7CacQCLAqKMHLtFKF
+         7k3w==
+X-Gm-Message-State: AOAM531FkkkfiXkvTzM1i/1pWzQkpIZDxwAb/b387LYlE18QCzkFAtXH
+        MbxGp1eM5s1XQCZypxiycZbe1P8gDCo6ww38imhXbJ8/uS4N
+X-Google-Smtp-Source: ABdhPJyUvm9QRSyLtDmlJSFIa6Q6kBIndzWPojWxEe5oc8YXRaPi0Q+gt53AaYhpCUllswdtzXt0C8KYrsfsFCSivjy95ds4c1Nf
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
- <CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com> <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com>
-In-Reply-To: <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 15 Feb 2021 16:16:27 +0100
-Message-ID: <CAMuHMdWFp_teT5Lgxe6BOpOb4UMM2_4FrKJm-2C6kuCH2YUMrw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+X-Received: by 2002:a5e:dd09:: with SMTP id t9mr7237557iop.57.1613402240583;
+ Mon, 15 Feb 2021 07:17:20 -0800 (PST)
+Date:   Mon, 15 Feb 2021 07:17:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006e0bfa05bb617b2b@google.com>
+Subject: KMSAN: kernel-infoleak in fb_cmap_to_user
+From:   syzbot <syzbot+47fa9c9c648b765305b9@syzkaller.appspotmail.com>
+To:     daniel.vetter@ffwll.ch, dri-devel@lists.freedesktop.org,
+        glider@google.com, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mchehab+huawei@kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+Hello,
 
-On Fri, Feb 12, 2021 at 4:00 AM Saravana Kannan <saravanak@google.com> wrote:
-> On Thu, Feb 11, 2021 at 5:00 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >   1. R-Car Gen2 (Koelsch), R-Car Gen3 (Salvator-X(S), Ebisu).
-> >
-> >       - Commit 2dfc564bda4a31bc ("soc: renesas: rcar-sysc: Mark device
-> >         node OF_POPULATED after init") is no longer needed (but already
-> >         queued for v5.12 anyway)
->
-> Rob doesn't like the proliferation of OF_POPULATED and we don't need
-> it anymore, so maybe work it out with him? It's a balance between some
-> wasted memory (struct device(s)) vs not proliferating OF_POPULATED.
+syzbot found the following issue on:
 
-> >   2. SH/R-Mobile AG5 (kzm9g), APE6 (ape6evm), A1 (armadillo800-eva)
-> >
-> >       - "PATCH] soc: renesas: rmobile-sysc: Set OF_POPULATED and absorb
-> >         reset handling" is no longer needed
-> >         https://lore.kernel.org/linux-arm-kernel/20210205133319.1921108-1-geert+renesas@glider.be/
->
-> Good to see more evidence that this series is fixing things at a more
-> generic level.
+HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1001ac60d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c8e3b38ca92283e
+dashboard link: https://syzkaller.appspot.com/bug?extid=47fa9c9c648b765305b9
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ffe738d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ca2914d00000
 
-I spoke too soon: if CONFIG_POWER_RESET_RMOBILE=n,
-booting fails again, as everything is waiting on the system controller,
-which never becomes available.
-Rcar-sysc doesn't suffer from this problem, cfr. above.
-Perhaps because the rmobile-sysc bindings use a hierarchical instead
-of a linear PM domain description, and thus consumers point to the
-children of the system controller node?
-Cfr. system-controller@e6180000 in arch/arm/boot/dts/r8a7740.dtsi.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+47fa9c9c648b765305b9@syzkaller.appspotmail.com
 
-> >       - On R-Mobile A1, I get a BUG and a memory leak:
-> >
-> >             BUG: spinlock bad magic on CPU#0, swapper/1
-> >              lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner:
-> > <none>/-1, .owner_cpu: 0
-> >             CPU: 0 PID: 1 Comm: swapper Not tainted
-> > 5.11.0-rc5-armadillo-00032-gf0a85c26907e #266
-> >             Hardware name: Generic R8A7740 (Flattened Device Tree)
-> >             [<c010c3c8>] (unwind_backtrace) from [<c010a49c>]
-> > (show_stack+0x10/0x14)
-> >             [<c010a49c>] (show_stack) from [<c0159534>]
-> > (do_raw_spin_lock+0x20/0x94)
-> >             [<c0159534>] (do_raw_spin_lock) from [<c04089d8>]
-> > (dev_pm_get_subsys_data+0x30/0xa0)
-> >             [<c04089d8>] (dev_pm_get_subsys_data) from [<c0413698>]
-> > (genpd_add_device+0x34/0x1c0)
-> >             [<c0413698>] (genpd_add_device) from [<c041389c>]
-> > (of_genpd_add_device+0x34/0x4c)
-> >             [<c041389c>] (of_genpd_add_device) from [<c0a1e9bc>]
-> > (board_staging_register_device+0xf8/0x118)
-> >             [<c0a1e9bc>] (board_staging_register_device) from
+=====================================================
+BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
+CPU: 1 PID: 8225 Comm: syz-executor269 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ kmsan_internal_check_memory+0x484/0x520 mm/kmsan/kmsan.c:437
+ kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
+ instrument_copy_to_user include/linux/instrumented.h:121 [inline]
+ _copy_to_user+0x1ac/0x270 lib/usercopy.c:33
+ copy_to_user include/linux/uaccess.h:209 [inline]
+ fb_cmap_to_user+0x40a/0x990 drivers/video/fbdev/core/fbcmap.c:208
+ do_fb_ioctl+0xc53/0x1090 drivers/video/fbdev/core/fbmem.c:1136
+ fb_ioctl+0x1e4/0x210 drivers/video/fbdev/core/fbmem.c:1185
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0x311/0x4d0 fs/ioctl.c:739
+ __x64_sys_ioctl+0x4a/0x70 fs/ioctl.c:739
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x43fbd9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc68acbf98 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043fbd9
+RDX: 0000000020007400 RSI: 0000000000004604 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00007ffc68acc138 R09: 00007ffc68acc138
+R10: 00007ffc68acba10 R11: 0000000000000246 R12: 0000000000403460
+R13: 431bde82d7b634db R14: 00000000004ad018 R15: 0000000000400488
 
-This is indeed a pre-existing problem.
-of_genpd_add_device() is called before platform_device_register(),
-as it needs to attach the genpd before the device is probed.
-But the spinlock is only initialized when the device is registered.
-This was masked before due to an unrelated wait context check failure,
-which disabled any further spinlock checks, and exposed by fw_devlinks
-changing probe order.
-Patch sent.
-"[PATCH] staging: board: Fix uninitialized spinlock when attaching genpd"
-https://lore.kernel.org/r/20210215151405.2551143-1-geert+renesas@glider.be
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
+ kmsan_slab_alloc+0x8d/0xe0 mm/kmsan/kmsan_hooks.c:76
+ slab_alloc_node mm/slub.c:2907 [inline]
+ slab_alloc mm/slub.c:2916 [inline]
+ __kmalloc+0x378/0x560 mm/slub.c:3998
+ kmalloc include/linux/slab.h:557 [inline]
+ fb_alloc_cmap_gfp+0x39b/0xa70 drivers/video/fbdev/core/fbcmap.c:104
+ fb_alloc_cmap+0x95/0xb0 drivers/video/fbdev/core/fbcmap.c:135
+ drm_fb_helper_alloc_fbi+0x106/0x3f0 drivers/gpu/drm/drm_fb_helper.c:563
+ drm_fb_helper_generic_probe+0x4f3/0xc70 drivers/gpu/drm/drm_fb_helper.c:2320
+ drm_fb_helper_single_fb_probe drivers/gpu/drm/drm_fb_helper.c:1658 [inline]
+ __drm_fb_helper_initial_config_and_unlock+0x1cac/0x26c0 drivers/gpu/drm/drm_fb_helper.c:1816
+ drm_fb_helper_initial_config drivers/gpu/drm/drm_fb_helper.c:1911 [inline]
+ drm_fbdev_client_hotplug+0xbb8/0xd70 drivers/gpu/drm/drm_fb_helper.c:2413
+ drm_fbdev_generic_setup+0x39d/0xa00 drivers/gpu/drm/drm_fb_helper.c:2495
+ vkms_init+0x880/0xa02 drivers/gpu/drm/vkms/vkms_drv.c:168
+ do_one_initcall+0x362/0x8d0 init/main.c:1226
+ do_initcall_level+0x1e7/0x35a init/main.c:1299
+ do_initcalls+0x127/0x1cb init/main.c:1315
+ do_basic_setup+0x33/0x36 init/main.c:1335
+ kernel_init_freeable+0x23d/0x390 init/main.c:1536
+ kernel_init+0x1f/0x840 init/main.c:1424
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Bytes 0-1 of 2 are uninitialized
+Memory access of size 2 starts at ffff8881455651c0
+Data copied to user address 0000000020007300
+=====================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
