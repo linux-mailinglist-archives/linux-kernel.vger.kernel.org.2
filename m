@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E0831B708
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8591E31B705
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:25:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBOKY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:24:29 -0500
-Received: from mout.kundenserver.de ([212.227.126.130]:37177 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbhBOKY0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:24:26 -0500
-Received: from weisslap.aisec.fraunhofer.de ([146.52.20.127]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MhlCa-1lpLfJ1vyi-00doH6; Mon, 15 Feb 2021 11:21:17 +0100
-From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-integrity@vger.kernel.org,
-        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: ABI: testing: ima_policy: Fixed missing bracket
-Date:   Mon, 15 Feb 2021 11:20:29 +0100
-Message-Id: <20210215102031.10622-1-michael.weiss@aisec.fraunhofer.de>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:sV9ASGHGqk2dLjVSZn2f7NG6tXo64D/g8/2vIEtGItfqCwuLF/z
- a8FToVNrj/UCEEuA9WF+pIJO+vWnlen0AbQENd49oGIG3Vgo5/S1QvsQxGdJfKXh5sgkVkb
- 3tnKgZzMuQR7ahZOdujgHgoRkRlNFZNrMw3EcyiNP3srI/Mcrzv4GZMlgqLBG+10HDdOvQq
- xBy18SMXJlYTuigOHojGA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6lAVGVWW4xI=:fwrKdCzi1moqoOgEvVFfer
- t+b231Nxhx5PRx3YqWJZWleuq15/ek2TCxpK8nqZ2eabzRUr03hJ84hRRmF+FWan8PRVNCFVH
- G8tVfgIWza6I4dbmGwQiaQZyzec3Vp4NYUr/NeExuD0OwahJqQDP5tYA0nyxQp7PrRw0uXPcI
- s/PnBmxC7CXL8s4DT+Vje3RHPsZkB6+yjwxz3NtI7IWhJquar45x4eWMFNFW4SzIjoLOnHP6u
- JE9IJZ00b55NyjCpYX3zMOs3pKkGP5QG3oDHMVq6XTFyEcwgHdQ/UYdxhAyVVs4ldnxM4pRzS
- Lty6kpk9+43a+KeOEP8iSfGaNgYE8CWlk+H4o7AZFdEEl2MDOKhZL9eq6mYPNdPhztZ9gmmSN
- I03bsSAFCRYnpkQo3lwA0tQarxY3gbK7VsT/FxdgRZ/PNBt3V/VhdW20bX7U/kp7n+VLV0601
- 3lyg2zXWYelnbm2KLYOMUXGZCOooPR5CmdvIsgw6T2AxO6P8caYQKDB/CiKqPybjX9igz5bNu
- w==
+        id S229916AbhBOKXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:23:52 -0500
+Received: from m12-11.163.com ([220.181.12.11]:46163 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229627AbhBOKXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 05:23:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=qILXK4GORBkA7fjOMr
+        MyU72nwmgjVF7Si6pXWrVEMZU=; b=Nx1c/GJQpxF9wDcInVh27Undlz2HAywEjs
+        HZjIn2kzhlrj2E/RUgocfdTUjExJyS769GRsCs4e/f9wbbwqt9e7SVen5T9bMQxg
+        cH+d8B3VbJbdi8i70f11r+sZNTskBrDJqYVOreJys/r3rzT5AcCkwjgKLvowSs0c
+        s95mB//So=
+Received: from localhost.localdomain (unknown [125.70.196.55])
+        by smtp7 (Coremail) with SMTP id C8CowACnI7Q8SypgiR08Nw--.5666S2;
+        Mon, 15 Feb 2021 18:21:52 +0800 (CST)
+From:   Chen Lin <chen45464546@163.com>
+To:     airlied@linux.ie, daniel@ffwll.ch
+Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Chen Lin <chen.lin5@zte.com.cn>
+Subject: [PATCH] drm/radeon: Remove unused function pointer typedef radeon_packet3_check_t
+Date:   Mon, 15 Feb 2021 18:21:29 +0800
+Message-Id: <1613384489-3102-1-git-send-email-chen45464546@163.com>
+X-Mailer: git-send-email 1.7.9.5
+X-CM-TRANSID: C8CowACnI7Q8SypgiR08Nw--.5666S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKw1UZr4DuryxJw4DGw4rKrg_yoW3Wrc_Kr
+        10q34aqa4kArs2q3W5uFsrJFyjkrW09r48Gw1Fqr93tayqqr1rZFySkr1xZrs8Aa1SgFnx
+        J3ykXF13Aws3tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0_ucJUUUUU==
+X-Originating-IP: [125.70.196.55]
+X-CM-SenderInfo: hfkh0kqvuwkkiuw6il2tof0z/1tbiXAA6nlXlytycbQAAsv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes a minor typo introduced by commit 34433332841d:
-"docs: ABI: testing: make the files compatible with ReST output"
+From: Chen Lin <chen.lin5@zte.com.cn>
 
-Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
+Remove the 'radeon_packet3_check_t' typedef as it is not used.
+
+Signed-off-by: Chen Lin <chen.lin5@zte.com.cn>
 ---
- Documentation/ABI/testing/ima_policy | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/radeon/radeon.h |    3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-index e35263f97fc1..2617c21ab843 100644
---- a/Documentation/ABI/testing/ima_policy
-+++ b/Documentation/ABI/testing/ima_policy
-@@ -29,7 +29,7 @@ Description:
- 			option:	[[appraise_type=]] [template=] [permit_directio]
- 				[appraise_flag=] [keyrings=]
- 		  base:
--			func:= [BPRM_CHECK][MMAP_CHECK][CREDS_CHECK][FILE_CHECK]MODULE_CHECK]
-+			func:= [BPRM_CHECK][MMAP_CHECK][CREDS_CHECK][FILE_CHECK][MODULE_CHECK]
- 			        [FIRMWARE_CHECK]
- 				[KEXEC_KERNEL_CHECK] [KEXEC_INITRAMFS_CHECK]
- 				[KEXEC_CMDLINE] [KEY_CHECK]
+diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
+index 5f3adba..a1c38b5 100644
+--- a/drivers/gpu/drm/radeon/radeon.h
++++ b/drivers/gpu/drm/radeon/radeon.h
+@@ -1111,9 +1111,6 @@ struct radeon_cs_packet {
+ typedef int (*radeon_packet0_check_t)(struct radeon_cs_parser *p,
+ 				      struct radeon_cs_packet *pkt,
+ 				      unsigned idx, unsigned reg);
+-typedef int (*radeon_packet3_check_t)(struct radeon_cs_parser *p,
+-				      struct radeon_cs_packet *pkt);
+-
+ 
+ /*
+  * AGP
 -- 
-2.20.1
+1.7.9.5
 
