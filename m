@@ -2,139 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93BC31B6F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F2431B6FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhBOKQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:16:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhBOKQx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:16:53 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3A9C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:16:13 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id q20so3891160pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:16:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u1c7h/mK6g+ogVZX7ggIUmGlrcBSJghu81rDVUuKJeo=;
-        b=0FW5axmzuWLUD9WPtpoYRed/CptLJiwqxxA0oC3HxYlqxYr6uBNojbzJPsUS8mQmkN
-         vDFuP6SBiWLEd/VrJ+S/uJSQAFLY4Ou/4VgcHFNVse+ImTNKDedz2knB9JWla6RAZvG4
-         lr8hpfYy6vGcOCg28Kh7laHBDZ1r4Fc966DYiIwHqveX9UJb6Tn+PrW7IFxOmNEG+Qmy
-         CELGwkYpG5+N3Z9/e7kkZF01HzyQnlM9RAXis+9nKiHiGKOLRp+FRGv29Wz3cU/ks2TL
-         WLofAn/LIf3heA08rlSbJDpfaDFRBu5ZxClran+mrYIagZ7NE1v75Ep3V9JAmUPnuY8N
-         2Ogw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u1c7h/mK6g+ogVZX7ggIUmGlrcBSJghu81rDVUuKJeo=;
-        b=eVd/iruV1bdaofqxOleV9+fb/w5pnDqp9xrae2exmCmbyufFYUERzaCRmzZeO5n5ac
-         ga2BT6dCIHuwNSPFHLMP7xfL+ujtkPlA4pw7XXxdpllEAFfTi1T0ZslaO2fl7ACBhjbx
-         VJeM1QfMd/Ospx+BlY7vgSOTruNRrmS2urgWydsgz28WIOgzGTouPtpYa1jaU9O1dYts
-         m9ScdD5rsC8ALg3FHENrk2IYMvVKA4tUgckMYtoQ9jcncSTIA1W03TT0W+hycYDi+JeZ
-         syyMcJgzgCy4OxAufXwmgibiSkx24asnezHbp4Mbjka6/mnrFcZQrdb7n9QkOdjxbJBB
-         58Mw==
-X-Gm-Message-State: AOAM5337+RVpHY+84hAp6W/xYTrzHDXtzHeaXbUeczi48ksfcsnTbpDP
-        vgcpjWJl6iNViiTg+emCBclOF0uKnoHp7tCiC9PLhg==
-X-Google-Smtp-Source: ABdhPJxXBRGesU5JU+bVoojrO9fDffFKJjc/jDshJpJ/mTgNuxqojW5PyGi2EYKVx7xEuXMzUYS0AgT4FZp6AbjIgl0=
-X-Received: by 2002:a63:1f21:: with SMTP id f33mr14468774pgf.31.1613384172566;
- Mon, 15 Feb 2021 02:16:12 -0800 (PST)
+        id S229811AbhBOKVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:21:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229652AbhBOKVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 05:21:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5866364E04;
+        Mon, 15 Feb 2021 10:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613384428;
+        bh=8fmGuYCepzo057o2HdF+G6HtxzzEWteZ/F4yOiJ1bQo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k0C1KAAuD9r1Zs0Skc5I5IrIudzGnot1vVC0dt47Jj1nI+19TfeB2qntrmaGWviGy
+         1/fyqa+ZqYq4RU5N3+N/IMvUu/4CuaYyedNJx3gaVFEtZTKbhp9+Ez+ohFD6c9CXUX
+         2b3NnTJXyQvXKCiA+eAeb98ZhTtI101keQTbtUn4m7kPvvLpT3Nbfd92IIf+f8AFI1
+         cQbCw/Rh2rOeJ60K0CjCrZahpfG2GuXNmPdnj6I03WWuzSWiMxj5vAgooLgTX2HelQ
+         Lp1KmvQsDPK9ihWiWcpPrF2gGhoHKaOa8BQIqtSv7mvgT2tcd5YtQMKfAomqGZzh/8
+         6vj7+oEbIl7NA==
+Date:   Mon, 15 Feb 2021 11:20:24 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
+Message-ID: <20210215112024.22ebdd4c@coco.lan>
+In-Reply-To: <fa453b6516f709b23bb046a1d956f0598966cd99.camel@collabora.com>
+References: <20210208233716.16d962ad@canb.auug.org.au>
+        <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
+        <20210208164618.GY32460@paasikivi.fi.intel.com>
+        <4af499f5931d6b04a42787ae17525c63247573e6.camel@collabora.com>
+        <20210208184014.55128fb5@coco.lan>
+        <fa453b6516f709b23bb046a1d956f0598966cd99.camel@collabora.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210212170159.32153-1-songmuchun@bytedance.com>
- <20210212170159.32153-4-songmuchun@bytedance.com> <YCpDSnLSDoE/FHK5@dhcp22.suse.cz>
-In-Reply-To: <YCpDSnLSDoE/FHK5@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 15 Feb 2021 18:15:36 +0800
-Message-ID: <CAMZfGtVSXG5BRR9R3_+eeoCCWBW87GLVNLPwZCyDUHNeAPrXUw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on
- cgroup v2
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 5:47 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Sat 13-02-21 01:01:59, Muchun Song wrote:
-> > The swap charges the actual number of swap entries on cgroup v2.
-> > If a swap cache page is charged successful, and then we uncharge
-> > the swap counter. It is wrong on cgroup v2. Because the swap
-> > entry is not freed.
->
-> Is there any actual problem though? Can you describe the specific
-> scenario please? Swap cache charge life time is a bit tricky and I have
-> to confess I have to relearn it every time I need to understand it. The
-> patch would be much more easier to review if the changelog was much more
-> specific.
+Em Mon, 08 Feb 2021 15:53:00 -0300
+Ezequiel Garcia <ezequiel@collabora.com> escreveu:
 
-I copied the reply to Shakeel here. :-)
+> On Mon, 2021-02-08 at 18:40 +0100, Mauro Carvalho Chehab wrote:
+> > Em Mon, 08 Feb 2021 13:57:56 -0300
+> > Ezequiel Garcia <ezequiel@collabora.com> escreveu:
+> >  =20
+> > > On Mon, 2021-02-08 at 18:46 +0200, Sakari Ailus wrote: =20
+> > > > Hi Ezequiel,
+> > > >=20
+> > > > Thanks for addressing this.
+> > > >=20
+> > > > On Mon, Feb 08, 2021 at 01:42:21PM -0300, Ezequiel Garcia wrote:=C2=
+=A0  =20
+> > > > > Hi Stephen,
+> > > > >=20
+> > > > > On Mon, 2021-02-08 at 23:37 +1100, Stephen Rothwell wrote:=C2=A0 =
+ =20
+> > > > > > Hi all,
+> > > > > >=20
+> > > > > > After merging the v4l-dvb tree, today's linux-next build (htmld=
+ocs)
+> > > > > > produced this warning:
+> > > > > >=20
+> > > > > > include/media/v4l2-async.h:178: warning: expecting prototype fo=
+r v4l2_async_notifier_add_fwnode_subdev(). Prototype was for
+> > > > > > __v4l2_async_notifier_add_fwnode_subdev() instead
+> > > > > > include/media/v4l2-async.h:207: warning: expecting prototype fo=
+r v4l2_async_notifier_add_fwnode_remote_subdev(). Prototype was for
+> > > > > > __v4l2_async_notifier_add_fwnode_remote_subdev() instead
+> > > > > > include/media/v4l2-async.h:230: warning: expecting prototype fo=
+r v4l2_async_notifier_add_i2c_subdev(). Prototype was for
+> > > > > > __v4l2_async_notifier_add_i2c_subdev() instead
+> > > > > >=20
+> > > > > > Maybe introduced by commit
+> > > > > >=20
+> > > > > > =C2=A0 c1cc23625062 ("media: v4l2-async: Discourage use of v4l2=
+_async_notifier_add_subdev")
+> > > > > > =C2=A0  =20
+> > > > >=20
+> > > > > Thanks for spotting this. Should be fixed by:
+> > > > >=20
+> > > > > diff --git a/include/media/v4l2-async.h b/include/media/v4l2-asyn=
+c.h
+> > > > > index 6f22daa6f067..3785445282fc 100644
+> > > > > --- a/include/media/v4l2-async.h
+> > > > > +++ b/include/media/v4l2-async.h
+> > > > > @@ -157,7 +157,7 @@ int __v4l2_async_notifier_add_subdev(struct v=
+4l2_async_notifier *notifier,
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct v=
+4l2_async_subdev *asd);
+> > > > > =C2=A0
+> > > > > =C2=A0/**
+> > > > > - * v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fw=
+node async
+> > > > > + * __v4l2_async_notifier_add_fwnode_subdev - Allocate and add a =
+fwnode async=C2=A0  =20
+> > > >=20
+> > > > The problem with the approach is that this no longer documents the =
+API that
+> > > > drivers are intended to use, but the intermediate one. =20
+> >=20
+> > Yep. the better would be to keep documenting what will be used.
+> >  =20
+>=20
+> Is there a way to silence/ignore the warning for a specific function(s)?
 
-IIUC, I think that we cannot limit the swap to memory.swap.max
-on cgroup v2.
+No. The warning is there for a very good reason: if you do something like:
 
-  cd /sys/fs/cgroup/
-  mkdir test
-  cd test
-  echo 8192 > memory.max
-  echo 4096 > memory.swap.max
 
-OK. Now we limit swap to 1 page and memory to 2 pages.
-Firstly, we allocate 1 page from this memory cgroup and
-swap this page to swap disk. We can see:
+	/**
+	 * delete - delete some file
+	 *
+	 * This function deletes something.
+	 */
+	void insert() {}
+	/**
+	 * insert - creates a new file
+	 *
+	 * This function creates a file and inserts something.
+	 */
+	void delete() {}
 
-  memory.current: 0
-  memory.swap.current: 1
+the output of it will be:
 
-Then we touch this page, we will swap in and charge
-the swap cache page to the memory counter and uncharge
-the swap counter.
+	$ ./scripts/kernel-doc -sphinx-version 3.0.0 silly.c
+	.. c:function:: void insert ()
+=09
+	   delete some file
+=09
+	**Parameters**
+=09
+	**Description**
+=09
+=09
+	This function deletes something.
+=09
+=09
+	.. c:function:: void delete ()
+=09
+	   creates a new file
+=09
+	**Parameters**
+=09
+	**Description**
+=09
+=09
+	This function creates a file and inserts something.
 
-  memory.current: 1
-  memory.swap.current: 0 (but actually we use a swap entry)
+Which is completely wrong. If someone tries to write a code using the
+above, the result will be just the opposite than what it was documented.
 
-Then we allocate another 1 page from this memory cgroup.
+Btw, I noticed several places where things like that happened, because
+some code were added between a Kernel-doc markup and some function.
 
-  memory.current: 2
-  memory.swap.current: 0 (but actually we use a swap entry)
-
-If we swap those 2 pages to swap disk. We can charge and swap
-those 2 pages successfully. Right? Maybe I am wrong.
-
->
-> > Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/memcontrol.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index c737c8f05992..be6bc5044150 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -6753,7 +6753,7 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
-> >       memcg_check_events(memcg, page);
-> >       local_irq_enable();
-> >
-> > -     if (PageSwapCache(page)) {
-> > +     if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && PageSwapCache(page)) {
-> >               swp_entry_t entry = { .val = page_private(page) };
-> >               /*
-> >                * The swap entry might not get freed for a long time,
-> > --
-> > 2.11.0
->
-> --
-> Michal Hocko
-> SUSE Labs
+Thanks,
+Mauro
