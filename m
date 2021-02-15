@@ -2,166 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6371D31C331
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B20F31C33E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhBOUr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 15:47:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhBOUrW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 15:47:22 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04370C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 12:46:41 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id c1so5747925qtc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 12:46:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=3vnbyd+FSQ7JLkQZLcxkUBRVmalOAVC3JmRRBLUbqks=;
-        b=esWzugW0DKNBhrEoOD3RZZJolEW7Ikdy5h5A40L1tqevvbAOT0V/axZemZNOQYOsnx
-         ZqD3ZNUy7by/NGsHl09vQs2I9j3jVNSSq/5jppK8df5zAjh2YbuB92wVmlkE6owxZt6Z
-         fwPkbPpOrOtuUOH/tqvvcYAUJ7p8hpPxFMCbkziFPOS2od1Xdv+xAzbaRryT395mvWIA
-         QyyYXiKXhyZNlxJBfjOYZS5ljhuVQqbKjm+x0+mXk6Y6fxHbxD/TWeJerjITehGHcVPB
-         pxTKBBtJtVVSfRfx3vwnolnX6XUXAf2UOCCWDeKRGFqpkPkgkyir6U39VbeZbqeRFUQ0
-         u1Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=3vnbyd+FSQ7JLkQZLcxkUBRVmalOAVC3JmRRBLUbqks=;
-        b=R2wy+VuLU7dcr3JbuQ/pas9qOzU97UTEYwlWE17w7vKYePd+AD6DEoidlfjkUz7Y0U
-         Aif1hkh1+OCJo0v4H8IXcitQqXTDXCDt7zkSN2CGTcivuG8W5NZKGZrP/SX/QI/7KS6M
-         dTSIX8+WP+RILvjyN34f1HNo0wedyyWVlVlbIgMxPLZynFDYlg/AJMaOX/VZXiGHRZim
-         p1YPfj14AvPIxy/1rk+McSh/Zkni6vuk7Vv/edn2nHzTO3G/LlLqSXlGtzkf0kS/KuWG
-         47TBqRLPc4ClRBcVwOEr0sj1DaSsNJJXwWt4AJvdhg8ybHNJIzOnWSk4P/gUauG8mQ+U
-         01Yg==
-X-Gm-Message-State: AOAM532tBxvNukATY1qwYMaXgBHW8sL0nv9FkOCgYZ6UzB7SEaWdVxA7
-        Pm+uovVzRtYjZZk0g7JXJeNhHg==
-X-Google-Smtp-Source: ABdhPJxFh3xw6PwIlF1Y7XPVhEvBoCKjuezA7yM/mz2kCLQ8EzJp2uMSCiO+RZLY6uXhugkk3quoNg==
-X-Received: by 2002:ac8:1009:: with SMTP id z9mr15996768qti.347.1613422001232;
-        Mon, 15 Feb 2021 12:46:41 -0800 (PST)
-Received: from nicolas-tpx395.lan (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id k187sm13020361qkc.74.2021.02.15.12.46.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 12:46:40 -0800 (PST)
-Message-ID: <6e107811295b7fdd96525453ea5587ee6adc1b06.camel@ndufresne.ca>
-Subject: Re: DMA-buf and uncached system memory
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org, lkml <linux-kernel@vger.kernel.org>
-Cc:     "Sharma, Shashank" <Shashank.Sharma@amd.com>
-Date:   Mon, 15 Feb 2021 15:46:39 -0500
-In-Reply-To: <80c42ce0-6df1-71ab-81ec-e46cc56840ba@amd.com>
-References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
-         <e6897f92-4c61-cd42-2822-43c50a744d4c@suse.de>
-         <302e06ad-f979-dc77-5d84-fa0923aa4632@suse.de>
-         <80c42ce0-6df1-71ab-81ec-e46cc56840ba@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+        id S229903AbhBOUvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 15:51:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229670AbhBOUus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 15:50:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 79DD364DF4;
+        Mon, 15 Feb 2021 20:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613422207;
+        bh=ZbVRoniy+F6CqyrHfhMJYE9GgnAPQy2n0jsNWFufrtM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GSlg0SJrZvdnvqvUedmRR6Cyg+mCGVvoIPpzgX9s2s+n59fnOp6TQ+fTvINWVkWmR
+         MYtYRUbzcMuC7NRRYRSud7BqanF5X1rGqa0R8E+QCImX4gsJz8lNE+VXa5tC9y5VT5
+         7p8jau/TD2C+7Bnrc82Nw5ibd6+joGb/WxsacJR+6psx2Igh+TNQxT/qDuJny+wclk
+         vcbjo+ze+Yr1+oZQC4ncpcqhedfaJ7PFRDRJm+7URwlPXIjqQBBadBOZQc3xul5neX
+         KbbKX+TvdczOmx/zw65dAQIoiu+aWEPKbtzY3y9+NzsTfmdEvdM59SI9pi956DgCkN
+         SpVq3eGg3w95g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 69C0C609ED;
+        Mon, 15 Feb 2021 20:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] b43: N-PHY: Fix the update of coef for the PHY revision >=
+ 3case
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161342220742.9745.8382671351408094694.git-patchwork-notify@kernel.org>
+Date:   Mon, 15 Feb 2021 20:50:07 +0000
+References: <20210215120532.76889-1-colin.king@canonical.com>
+In-Reply-To: <20210215120532.76889-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        zajec5@gmail.com, linville@tuxdriver.com,
+        linux-wireless@vger.kernel.org, b43-dev@lists.infradead.org,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le lundi 15 février 2021 à 13:10 +0100, Christian König a écrit :
-> 
-> 
-> Am 15.02.21 um 13:00 schrieb Thomas Zimmermann:
-> > Hi
-> > 
-> > Am 15.02.21 um 10:49 schrieb Thomas Zimmermann:
-> > > Hi
-> > > 
-> > > Am 15.02.21 um 09:58 schrieb Christian König:
-> > > > Hi guys,
-> > > > 
-> > > > we are currently working an Freesync and direct scan out from system 
-> > > > memory on AMD APUs in A+A laptops.
-> > > > 
-> > > > On problem we stumbled over is that our display hardware needs to 
-> > > > scan out from uncached system memory and we currently don't have a 
-> > > > way to communicate that through DMA-buf.
-> > 
-> > Re-reading this paragrah, it sounds more as if you want to let the 
-> > exporter know where to move the buffer. Is this another case of the 
-> > missing-pin-flag problem?
-> 
-> No, your original interpretation was correct. Maybe my writing is a bit 
-> unspecific.
-> 
-> The real underlying issue is that our display hardware has a problem 
-> with latency when accessing system memory.
-> 
-> So the question is if that also applies to for example Intel hardware or 
-> other devices as well or if it is just something AMD specific?
+Hello:
 
-I do believe that the answer is yes, Intel display have similar issue with
-latency, hence requires un-cached memory.
+This patch was applied to netdev/net.git (refs/heads/master):
 
+On Mon, 15 Feb 2021 12:05:32 +0000 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Regards,
-> Christian.
+> The documentation for the PHY update [1] states:
 > 
-> > 
-> > Best regards
-> > Thomas
-> > 
-> > > > 
-> > > > For our specific use case at hand we are going to implement 
-> > > > something driver specific, but the question is should we have 
-> > > > something more generic for this?
-> > > 
-> > > For vmap operations, we return the address as struct dma_buf_map, 
-> > > which contains additional information about the memory buffer. In 
-> > > vram helpers, we have the interface drm_gem_vram_offset() that 
-> > > returns the offset of the GPU device memory.
-> > > 
-> > > Would it be feasible to combine both concepts into a dma-buf 
-> > > interface that returns the device-memory offset plus the additional 
-> > > caching flag?
-> > > 
-> > > There'd be a structure and a getter function returning the structure.
-> > > 
-> > > struct dma_buf_offset {
-> > >      bool cached;
-> > >      u64 address;
-> > > };
-> > > 
-> > > // return offset in *off
-> > > int dma_buf_offset(struct dma_buf *buf, struct dma_buf_off *off);
-> > > 
-> > > Whatever settings are returned by dma_buf_offset() are valid while 
-> > > the dma_buf is pinned.
-> > > 
-> > > Best regards
-> > > Thomas
-> > > 
-> > > > 
-> > > > After all the system memory access pattern is a PCIe extension and 
-> > > > as such something generic.
-> > > > 
-> > > > Regards,
-> > > > Christian.
-> > > > _______________________________________________
-> > > > dri-devel mailing list
-> > > > dri-devel@lists.freedesktop.org
-> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > > 
-> > > 
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > > 
-> > 
+> Loop 4 times with index i
 > 
+>     If PHY Revision >= 3
+>         Copy table[i] to coef[i]
+>     Otherwise
+>         Set coef[i] to 0
+> 
+> [...]
+
+Here is the summary with links:
+  - b43: N-PHY: Fix the update of coef for the PHY revision >= 3case
+    https://git.kernel.org/netdev/net/c/4773acf3d4b5
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
