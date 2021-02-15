@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1A531B589
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 08:11:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A3331B58B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 08:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhBOHLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 02:11:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
+        id S229936AbhBOHOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 02:14:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhBOHL2 (ORCPT
+        with ESMTP id S229899AbhBOHOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 02:11:28 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DD8C061574;
-        Sun, 14 Feb 2021 23:10:46 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id u11so3181525plg.13;
-        Sun, 14 Feb 2021 23:10:46 -0800 (PST)
+        Mon, 15 Feb 2021 02:14:50 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD6EC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 23:14:09 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id r17so241728edy.10
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 23:14:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kG7o9TXRTb0hxLW0YdJ/y+yccAFjnMWzFB3U1A5mywg=;
-        b=n5uPaAdphFj4QWOsQ7YE0k42JmJVn0KpHhmDasMqYLqOUBk0hvpreMVp2XlINgmS8m
-         D0DhLKdlO3Uyg70oqbZEHBqfrnlS8ZXrjbCmm8mQaC8GQ8V5aIEx91jzJiSd2nCNfpcF
-         PmmFGHsy6EoT/VfaMCh61U/NpED90ecdAvGikCT4XvuRo0Wubm3tUkPLzDelCAFFUkho
-         gBnO9J4oTs+hQD3aHSoc0Vuyzi2JHcX0F8Eaq+ZmFvjhkIzsIlvN2hLsIDMhZgjt3v+A
-         IDIfQWAXMVvJHwQVByHWHp7LeiX2k8Y3ZtnDfrz3Te1YrGL4Tn2Ag1Ss0mJwuuWiSdAV
-         xhMA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CefDFEkybrGN+T0rEOjeJyX9h7vbSSt5IaSGMgW0+xo=;
+        b=f5Wwm1hWE+mDtDxQ+nbbthGdlpMHLlmM1euLBrGWWdIrnY6G74c9RYVywxJr2uc7L9
+         2OcvsjJTFjiaCavupGY0u7Xxth2iCWqM8wwcL5ZBwJqs13YTrvI838RuLaSQwJx835j6
+         5rw3a6zi7+iwTD9ecpN3ybmaOPveo/rT47OvcdZLP1Olj5rWl86MJXi4EUGaMzcJ4z+f
+         IAjRnpM6iJ7zPcgvyJTE1Qo59aFfH+5HL5mermNRKytDCa1dKLSn+tUMLlpNSMlq2SP4
+         aU361Tbfw+Edd26882xCMXCBrwZim/ij6wlRgaxdDc+aR+KjmeDBi3J+wztm3KHt+zNN
+         F/Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kG7o9TXRTb0hxLW0YdJ/y+yccAFjnMWzFB3U1A5mywg=;
-        b=EJlqXkqHAqiC3HnIoA2r6wk2VxPnEqNe8G9VZfwhFXOmpseuWQm9Q7x5QF0TvZNIgB
-         Sdvo/0kM9cU5vZxHJxiEsO7rH8cOebhPLqfi5M1GM69VALJKsLn4qhWQP1gnn2KduRFJ
-         ZIybEER+ff1amW28YDj/6XfZt/5BjHXdaeYrzZprQQvKTKjFq/2ZTfkE9f7zhuiY5RLH
-         3MU0Lqeb0t/3vmUJ8OOZhARoviC6ZRq3WuVqTUKyzaYPvhcSztI3dcWpN8Z6fasfJqUh
-         fkdVcboUHV6eXfggJzvOOASiYKkFpV3LMJrGvbPM8FPM+mkLLOlPR5qo2tWrH+04n+V7
-         ZUPw==
-X-Gm-Message-State: AOAM531mhx0kK64H/EHF9jOon7ZEuFJpH09Lz9nl7S3CGmaNbadAiTSR
-        X984NTyfxGtCLdzTSqC9ono=
-X-Google-Smtp-Source: ABdhPJwUCe1VPM98AwqzG6U1jkQqxJaLEIGzqICJmJISQUn7jriEXteS7abf5wkCrIv0rdNo2D+LSA==
-X-Received: by 2002:a17:902:bccc:b029:de:8483:506d with SMTP id o12-20020a170902bcccb02900de8483506dmr13959966pls.53.1613373046565;
-        Sun, 14 Feb 2021 23:10:46 -0800 (PST)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id x20sm16191527pfi.115.2021.02.14.23.10.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 14 Feb 2021 23:10:46 -0800 (PST)
-Date:   Mon, 15 Feb 2021 15:10:46 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Yue Hu <zbestahu@163.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yue Hu <huyue2@yulong.com>, zhangwen@yulong.com
-Subject: Re: [PATCH] cpufreq: schedutil: Don't use the limits_changed flag
- any more
-Message-ID: <20210215151046.00001894.zbestahu@gmail.com>
-In-Reply-To: <20210215063008.hsdkrs4bw7wt3wye@vireshk-i7>
-References: <20210208030723.781-1-zbestahu@gmail.com>
-        <CAJZ5v0hmgQp--uhRMZbqZnOvQPy9zLfQx_u=xAewmV=LgT6rPA@mail.gmail.com>
-        <20210214114421.00000550.zbestahu@163.com>
-        <20210215063008.hsdkrs4bw7wt3wye@vireshk-i7>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CefDFEkybrGN+T0rEOjeJyX9h7vbSSt5IaSGMgW0+xo=;
+        b=OjSEKzfxoq8mf4RETKv5vJm2jw300bXnLT9y4+3MyjuLpGWS6a1efPQLSdWTLPfmr9
+         ZVv6Zb3f4z6trrY91e2kB+WIdR5ST1YTGOn+ib4QeW2+ih+v7TEgDw0GDZp7rhto3qd8
+         jCcmQS4oANt2I3P0LsYCNKSMnq6sGNfPqEYqncANoZhfzA3mhJWON30CS6rknEDhKwsW
+         eH0SLA6onMmRBNAyCQOupUQAojrgNz0frJbwfUl1eUVeQPL62gGwVb3S62JHhA9FsE5w
+         RrhTuRvieeXKVnVxVF1M1MAS1hfkcFhLUgd1/nN3R+KKGu4I8MmpPbni61eSpHKKTgWF
+         jn5w==
+X-Gm-Message-State: AOAM530x//P29RCR5e8CjWDhbwZY0gssirgG5rQB1WZ0Zrb1E5HqJxmp
+        lTtqJhTtJTFMpITb9sIZbG+tj3P+yzu9THUiVajuwQ==
+X-Google-Smtp-Source: ABdhPJzIsth1gsdugeCLLoJgTgiNWZTF2WcqLI2r3yh5TzjlOIcaBmKjSd9FcsEPjXKzYZuBgByPYVCc06Fc+mIiXtI=
+X-Received: by 2002:aa7:c308:: with SMTP id l8mr6661209edq.366.1613373248473;
+ Sun, 14 Feb 2021 23:14:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1613176814-29171-1-git-send-email-jhugo@codeaurora.org>
+In-Reply-To: <1613176814-29171-1-git-send-email-jhugo@codeaurora.org>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Mon, 15 Feb 2021 08:21:46 +0100
+Message-ID: <CAMZdPi_xpDmGRWP7TObR-Sj45pAiUK9YXoSXQgEnfoL6YQy4Fw@mail.gmail.com>
+Subject: Re: [PATCH] bus: mhi: core: Use current ee in intvec handler for syserr
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 12:00:08 +0530
-Viresh Kumar <viresh.kumar@linaro.org> wrote:
+On Sat, 13 Feb 2021 at 01:41, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
+>
+> The intvec handler stores the caches ee in a local variable for use in
+> processing the intvec.  When determining if a syserr is a fatal error or
+> not, the intvec handler is using the cached version, when it should be
+> using the current ee read from the device.  Currently, the device could
+> be in the PBL ee as the result of a fatal error, but the cached ee might
+> be AMSS, which would cause the intvec handler to incorrectly signal a
+> non-fatal syserr.
+>
+> Fixes: 3000f85b8f47 ("bus: mhi: core: Add support for basic PM operations")
+> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 
-> On 14-02-21, 11:44, Yue Hu wrote:
-> > On Fri, 12 Feb 2021 17:14:03 +0100
-> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:  
-> > > This may be running in parallel with sugov_update_next_freq() on a
-> > > different CPU, so the latter may clear need_freq_update right
-> > > after it has been set here unless I'm overlooking something.  
-> > 
-> > Whether this logic is also happening for limits_changed in
-> > sugo_should_update_freq() or not?  
-> 
-> It is but it shouldn't have any side effects as we calculate the next
-> frequency after cleaning the limits_changed flag. Your patch would
-> have been fine, but it is not anymore because of commit 23a881852f3e
-> ("cpufreq: schedutil: Don't skip freq update if need_freq_update is
-> set").
-> 
-> It made a considerable change after which your patch adds a bug. With
-> 23a881852f3e, need_freq_update is updated/cleared after the next
-> frequency is calculated, while earlier it was cleared before it. And
-> so even with the race condition taking place, there were no issues.
-> 
+So in that function, 'ee' should be 'previous_ee', right?
 
-Okay, clear.
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
