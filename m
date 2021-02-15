@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2630F31BC3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DADE531BBCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhBOPYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:24:52 -0500
-Received: from mail-m974.mail.163.com ([123.126.97.4]:59642 "EHLO
-        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbhBOPYA (ORCPT
+        id S230384AbhBOPDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:03:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229989AbhBOO47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:24:00 -0500
-X-Greylist: delayed 1543 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Feb 2021 10:23:56 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=2u28/
-        RAEUFHNKG6HiuW32yeDuQc7WB7a627x1KD2BKU=; b=XwLokUvt0TMajRGlNpxGU
-        HfR4JWCNyVMEY3efPI3uZyp1VMIvmxJrzMP47bc+4+U6pH+F2kltIqzDSxsE42xq
-        uW8yG+yIfKr6V+ah6sWKXHrWotSRi6fSoug9wf0+KqC1Wqmy3hhCuMab4C9th1Oo
-        0v+JQTdN334J1pEGWuK4Ig=
-Received: from yangjunlin.ccdomain.com (unknown [119.137.55.63])
-        by smtp4 (Coremail) with SMTP id HNxpCgDXSVxSVSpgL8h0Aw--.36796S2;
-        Mon, 15 Feb 2021 19:04:51 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     broonie@kernel.org
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: [PATCH] spi: cadence-quadspi: add missing of_node_put
-Date:   Mon, 15 Feb 2021 19:04:25 +0800
-Message-Id: <20210215110425.1012-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        Mon, 15 Feb 2021 09:56:59 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3422C061794;
+        Mon, 15 Feb 2021 06:55:46 -0800 (PST)
+Date:   Mon, 15 Feb 2021 14:55:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613400944;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=OjVWjq6gXeDPHDXjgjInSRgDTDPKt0ZTThByaLI6PvE=;
+        b=D6l3Hi2/4SNhMR1DByys3Y6ouhp96WxyfZwO1qpAR01QC3Piwfg8CokOUj3HPOO3g/4vQQ
+        kPIsEu/bZNhGJD9CuwSGgTlD0h8tugiN86XOMtBVpNLQXCE4b3Bj6MYA6uuLZRmLoKSRxp
+        Ue2PZLZ6wJgU/Iq0/8n+AfHO44ncMzBcm97iUqXDKzFV6bQr75v9rztvfZHVO9P2/68VGc
+        nIYzV869tWGyobF132SqR4zUUuJXk29bAIUEpFYPxTm9+xOdu+yATDZWWsVLuBU4QQnOdH
+        ICfBW2Zp1cm67N99fZO/SWousdbfsGTn6e52tjhrV5/WgNo8TsAaAHqcmK/hbQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613400944;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=OjVWjq6gXeDPHDXjgjInSRgDTDPKt0ZTThByaLI6PvE=;
+        b=5csS7f1TBQ860VtP508JOfZwd9iOu2jEwFTqPcDpukjmZEWUTtg+qAoNgaP+2JdylkucM2
+        FqQhiGtU7MmTcTBg==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/rcu] rcutorture: Prepare for ->start_gp_poll and ->poll_gp_state
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: HNxpCgDXSVxSVSpgL8h0Aw--.36796S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1kur15GryDZw1kCryUZFb_yoWktFb_CF
-        n29F9rGFs8KF43ZF12q34UZF9Fga15urWfGFn7tFW3XryDAw17CFn5ZFyDG34jy3yj9r93
-        Cr47C3Z3Cr13KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU13C75UUUUU==
-X-Originating-IP: [119.137.55.63]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbBFBM6I1aD+ZcgKwAAsu
+Message-ID: <161340094370.20312.3003706215276999562.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+The following commit has been merged into the core/rcu branch of tip:
 
-Fix OF node leaks by calling of_node_put in
-for_each_available_child_of_node when the cycle returns.
+Commit-ID:     fd56f64b4e3b9c53fbb12ef74c6f1f5fde4cc1c8
+Gitweb:        https://git.kernel.org/tip/fd56f64b4e3b9c53fbb12ef74c6f1f5fde4cc1c8
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Fri, 13 Nov 2020 20:14:27 -08:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Mon, 04 Jan 2021 13:53:39 -08:00
 
-Generated by: scripts/coccinelle/iterators/for_each_child.cocci
+rcutorture: Prepare for ->start_gp_poll and ->poll_gp_state
 
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+The new get_state_synchronize_srcu(), start_poll_synchronize_srcu() and
+poll_state_synchronize_srcu() functions need to be tested, and so this
+commit prepares by renaming the rcu_torture_ops field ->get_state to
+->get_gp_state in order to be consistent with the upcoming ->start_gp_poll
+and ->poll_gp_state fields.
+
+Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- drivers/spi/spi-cadence-quadspi.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/rcu/rcutorture.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index 442cc7c..14a7120 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -1389,11 +1389,13 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi)
- 		ret = of_property_read_u32(np, "reg", &cs);
- 		if (ret) {
- 			dev_err(dev, "Couldn't determine chip select.\n");
-+			of_node_put(np);
- 			return ret;
- 		}
- 
- 		if (cs >= CQSPI_MAX_CHIPSELECT) {
- 			dev_err(dev, "Chip select %d out of range.\n", cs);
-+			of_node_put(np);
- 			return -EINVAL;
- 		}
- 
-@@ -1402,8 +1404,10 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi)
- 		f_pdata->cs = cs;
- 
- 		ret = cqspi_of_get_flash_pdata(pdev, f_pdata, np);
--		if (ret)
-+		if (ret) {
-+			of_node_put(np);
- 			return ret;
-+		}
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 528ed10..bcea23c 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -311,7 +311,7 @@ struct rcu_torture_ops {
+ 	void (*deferred_free)(struct rcu_torture *p);
+ 	void (*sync)(void);
+ 	void (*exp_sync)(void);
+-	unsigned long (*get_state)(void);
++	unsigned long (*get_gp_state)(void);
+ 	void (*cond_sync)(unsigned long oldstate);
+ 	call_rcu_func_t call;
+ 	void (*cb_barrier)(void);
+@@ -461,7 +461,7 @@ static struct rcu_torture_ops rcu_ops = {
+ 	.deferred_free	= rcu_torture_deferred_free,
+ 	.sync		= synchronize_rcu,
+ 	.exp_sync	= synchronize_rcu_expedited,
+-	.get_state	= get_state_synchronize_rcu,
++	.get_gp_state	= get_state_synchronize_rcu,
+ 	.cond_sync	= cond_synchronize_rcu,
+ 	.call		= call_rcu,
+ 	.cb_barrier	= rcu_barrier,
+@@ -1050,10 +1050,10 @@ rcu_torture_writer(void *arg)
+ 	/* Initialize synctype[] array.  If none set, take default. */
+ 	if (!gp_cond1 && !gp_exp1 && !gp_normal1 && !gp_sync1)
+ 		gp_cond1 = gp_exp1 = gp_normal1 = gp_sync1 = true;
+-	if (gp_cond1 && cur_ops->get_state && cur_ops->cond_sync) {
++	if (gp_cond1 && cur_ops->get_gp_state && cur_ops->cond_sync) {
+ 		synctype[nsynctypes++] = RTWS_COND_GET;
+ 		pr_info("%s: Testing conditional GPs.\n", __func__);
+-	} else if (gp_cond && (!cur_ops->get_state || !cur_ops->cond_sync)) {
++	} else if (gp_cond && (!cur_ops->get_gp_state || !cur_ops->cond_sync)) {
+ 		pr_alert("%s: gp_cond without primitives.\n", __func__);
  	}
- 
- 	return 0;
--- 
-1.9.1
-
+ 	if (gp_exp1 && cur_ops->exp_sync) {
+@@ -1119,7 +1119,7 @@ rcu_torture_writer(void *arg)
+ 				break;
+ 			case RTWS_COND_GET:
+ 				rcu_torture_writer_state = RTWS_COND_GET;
+-				gp_snap = cur_ops->get_state();
++				gp_snap = cur_ops->get_gp_state();
+ 				i = torture_random(&rand) % 16;
+ 				if (i != 0)
+ 					schedule_timeout_interruptible(i);
