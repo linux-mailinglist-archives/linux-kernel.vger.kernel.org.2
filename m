@@ -2,69 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CB231BAC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4358631BAC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhBOOIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:08:36 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:42564 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229816AbhBOOId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:08:33 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lBeXR-006RWz-Jq; Mon, 15 Feb 2021 15:07:45 +0100
-Date:   Mon, 15 Feb 2021 15:07:45 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v14 2/4] phy: Add media type and speed serdes
- configuration interfaces
-Message-ID: <YCqAMUfinMsnZnrq@lunn.ch>
-References: <20210210085255.2006824-1-steen.hegelund@microchip.com>
- <20210210085255.2006824-3-steen.hegelund@microchip.com>
- <04d91f6b-775a-8389-b813-31f7b4a778cb@ti.com>
- <ffa00a2bf83ffa21ffdc61b380ab800c31f8cf28.camel@microchip.com>
- <704b850f-9345-2e36-e84b-b332fed22270@ti.com>
+        id S230376AbhBOOJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:09:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229910AbhBOOJB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:09:01 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C5CC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:08:19 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id u14so9069222wri.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:08:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=27DpGwBB/wI2padVaE2BnXak1fcyjtvGY6z2Yt5/H14=;
+        b=C8xSV8JFv0iZuqjCFXfUxA9uvCxJok3K0mVlRXq9s9wG1TU0VP/GIbw1PVECQ5qWAn
+         7+BcMbwo0XJQoT5MLrgR0uOP5P5kfav3OVz9g66eUOcSh88T+L7f/bG6gFbOi5P1Gtwo
+         +4Ym46WODw3crM66xeV8sG8ijpZgEs/RZgHnA+fH+KdjxvBDEtFUL5+bxjgq4cYg4tn7
+         8CEAf6ShAWjeFEkHk3yyGxovNzQAaE0vORHzD1PPgJUby3pL2J6pwAoydGfLghoGWW62
+         9e5yFt9wNbwjtRC8U3uEXOSyYX/pcGB+sjEOBKdyt3tbsiL6TyLQFgbHUxLTUn17SWon
+         1EKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=27DpGwBB/wI2padVaE2BnXak1fcyjtvGY6z2Yt5/H14=;
+        b=nEaFKgkCkJfwNi4bxEBTqvBjvjEynlVZEmZf6xshuusjPBxtQJ7b42XG8UC/IaE3eD
+         Sn4gIuqMMtMGzcmhYGysmvnz/ByKywY3hbEMIT7s4VQURAzaGhPO3sSktdlL0A75vOK4
+         4r4Hu4F8bAOXmax3W/XOxrJQJ/w+SuqokiIHnRyeY24MELhSTUYIvLOEBpSA5fvh42R8
+         jj5Tb/xB1ufqB3eQXHnBNFD+R/Y9twLCa6do0Tq/YtmcvPEB9lxmVrNe4KVmV3QAkA1r
+         uxOQMMFnRrKwiSJtt+CPIBCHFzqAFAZoIO21CGAHz1J+3kwni59Dj0YL8ZBfQZvQtKUN
+         2r9g==
+X-Gm-Message-State: AOAM533ROiTkIQqqXeCOW/ccim8gSa8Fsij5WxmZmlgHzCQhFBPvznDY
+        /53Zm8ekpfuSoPBhbnLOQ5p8dkRMqRnCDS6F2RUzrA==
+X-Google-Smtp-Source: ABdhPJxbHRnhWxRcJ2EzK+uAoAPFgP3pP8md70AzxmGMc8Jv08zsnZs84Ua2PNNl6q3U2P6AJF4HUmg/UyalSTrU2yo=
+X-Received: by 2002:adf:e884:: with SMTP id d4mr18313083wrm.275.1613398097448;
+ Mon, 15 Feb 2021 06:08:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <704b850f-9345-2e36-e84b-b332fed22270@ti.com>
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-6-git-send-email-anshuman.khandual@arm.com>
+ <20210202185639.GE1536093@xps15> <CAJ9a7VjzRMt5Pkbw4idxh7hp1rYAjUJmkkri_a71prhUqQbnkQ@mail.gmail.com>
+In-Reply-To: <CAJ9a7VjzRMt5Pkbw4idxh7hp1rYAjUJmkkri_a71prhUqQbnkQ@mail.gmail.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Mon, 15 Feb 2021 14:08:06 +0000
+Message-ID: <CAJ9a7VhtYWOmBHa1L9xJ6fDXJPx3tC9=FXKHjhOqdMAchaBJ=Q@mail.gmail.com>
+Subject: Re: [PATCH V3 05/14] coresight: ete: Add support for ETE tracing
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 05:25:10PM +0530, Kishon Vijay Abraham I wrote:
-> Okay. Is it going to be some sort of manual negotiation where the
-> Ethernet controller invokes set_speed with different speeds? Or the
-> Ethernet controller will get the speed using some out of band mechanism
-> and invokes set_speed once with the actual speed?
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
 
-Hi Kishon
+On Mon, 15 Feb 2021 at 13:21, Mike Leach <mike.leach@linaro.org> wrote:
+>
+> HI,
+>
+> On Tue, 2 Feb 2021 at 18:56, Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+> >
+> > On Wed, Jan 27, 2021 at 02:25:29PM +0530, Anshuman Khandual wrote:
+> > > From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > >
+> > > Add ETE as one of the supported device types we support
+> > > with ETM4x driver. The devices are named following the
+> > > existing convention as ete<N>.
+> > >
+> > > ETE mandates that the trace resource status register is programmed
+> > > before the tracing is turned on. For the moment simply write to
+> > > it indicating TraceActive.
+> > >
+> > > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > Cc: Mike Leach <mike.leach@linaro.org>
+> > > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > ---
+> > >  drivers/hwtracing/coresight/Kconfig                | 10 ++--
+> > >  drivers/hwtracing/coresight/coresight-etm4x-core.c | 56 +++++++++++++++++-----
+> > >  .../hwtracing/coresight/coresight-etm4x-sysfs.c    | 19 ++++++--
+> > >  drivers/hwtracing/coresight/coresight-etm4x.h      | 16 ++++++-
+> > >  4 files changed, 79 insertions(+), 22 deletions(-)
+> > >
+> > > diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+> > > index 7b44ba2..f154ae7 100644
+> > > --- a/drivers/hwtracing/coresight/Kconfig
+> > > +++ b/drivers/hwtracing/coresight/Kconfig
+> > > @@ -97,15 +97,15 @@ config CORESIGHT_SOURCE_ETM3X
+> > >         module will be called coresight-etm3x.
+> > >
+> > >  config CORESIGHT_SOURCE_ETM4X
+> > > -     tristate "CoreSight Embedded Trace Macrocell 4.x driver"
+> > > +     tristate "CoreSight ETMv4.x / ETE driver"
+> > >       depends on ARM64
+> > >       select CORESIGHT_LINKS_AND_SINKS
+> > >       select PID_IN_CONTEXTIDR
+> > >       help
+> > > -       This driver provides support for the ETM4.x tracer module, tracing the
+> > > -       instructions that a processor is executing. This is primarily useful
+> > > -       for instruction level tracing. Depending on the implemented version
+> > > -       data tracing may also be available.
+> > > +       This driver provides support for the CoreSight Embedded Trace Macrocell
+> > > +       version 4.x and the Embedded Trace Extensions (ETE). Both are CPU tracer
+> > > +       modules, tracing the instructions that a processor is executing. This is
+> > > +       primarily useful for instruction level tracing.
+> > >
+> > >         To compile this driver as a module, choose M here: the
+> > >         module will be called coresight-etm4x.
+> > > diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> > > index 9e92d2a..b40e3c2 100644
+> > > --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> > > +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> > > @@ -431,6 +431,13 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
+> > >               etm4x_relaxed_write32(csa, trcpdcr | TRCPDCR_PU, TRCPDCR);
+> > >       }
+> > >
+> > > +     /*
+> > > +      * ETE mandates that the TRCRSR is written to before
+> > > +      * enabling it.
+> > > +      */
+> > > +     if (etm4x_is_ete(drvdata))
+> > > +             etm4x_relaxed_write32(csa, TRCRSR_TA, TRCRSR);
+> > > +
+> > >       /* Enable the trace unit */
+> > >       etm4x_relaxed_write32(csa, 1, TRCPRGCTLR);
+> > >
+> > > @@ -864,13 +871,24 @@ static bool etm4_init_sysreg_access(struct etmv4_drvdata *drvdata,
+> > >        * ETMs implementing sysreg access must implement TRCDEVARCH.
+> > >        */
+> > >       devarch = read_etm4x_sysreg_const_offset(TRCDEVARCH);
+> > > -     if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH)
+> > > +     switch (devarch & ETM_DEVARCH_ID_MASK) {
+> > > +     case ETM_DEVARCH_ETMv4x_ARCH:
+> > > +             *csa = (struct csdev_access) {
+> > > +                     .io_mem = false,
+> > > +                     .read   = etm4x_sysreg_read,
+> > > +                     .write  = etm4x_sysreg_write,
+> > > +             };
+> > > +             break;
+> > > +     case ETM_DEVARCH_ETE_ARCH:
+> > > +             *csa = (struct csdev_access) {
+> > > +                     .io_mem = false,
+> > > +                     .read   = ete_sysreg_read,
+> > > +                     .write  = ete_sysreg_write,
+> > > +             };
+> > > +             break;
+> > > +     default:
+> > >               return false;
+> > > -     *csa = (struct csdev_access) {
+> > > -             .io_mem = false,
+> > > -             .read   = etm4x_sysreg_read,
+> > > -             .write  = etm4x_sysreg_write,
+> > > -     };
+> > > +     }
+> > >
+> > >       drvdata->arch = etm_devarch_to_arch(devarch);
+> > >       return true;
+> > > @@ -1808,6 +1826,8 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
+> > >       struct etmv4_drvdata *drvdata;
+> > >       struct coresight_desc desc = { 0 };
+> > >       struct etm4_init_arg init_arg = { 0 };
+> > > +     u8 major, minor;
+> > > +     char *type_name;
+> > >
+> > >       drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+> > >       if (!drvdata)
+> > > @@ -1834,10 +1854,6 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
+> > >       if (drvdata->cpu < 0)
+> > >               return drvdata->cpu;
+> > >
+> > > -     desc.name = devm_kasprintf(dev, GFP_KERNEL, "etm%d", drvdata->cpu);
+> > > -     if (!desc.name)
+> > > -             return -ENOMEM;
+> > > -
+> > >       init_arg.drvdata = drvdata;
+> > >       init_arg.csa = &desc.access;
+> > >       init_arg.pid = etm_pid;
+> > > @@ -1853,6 +1869,20 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
+> > >       if (!desc.access.io_mem ||
+> > >           fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
+> > >               drvdata->skip_power_up = true;
+> >
+> > Add a space here...
+> >
+> > > +     major = ETM_ARCH_MAJOR_VERSION(drvdata->arch);
+> > > +     minor = ETM_ARCH_MINOR_VERSION(drvdata->arch);
+> >
+> > And here too.  Othersiwe it makes a big blob in the middle of the function.
+> >
+> > > +     if (etm4x_is_ete(drvdata)) {
+> > > +             type_name = "ete";
+> > > +             /* ETE v1 has major version == 5. Adjust this for logging.*/
+> > > +             major -= 4;
+> >
+> > I don't have the documentation for the ETE but I would not adjust @major.  I
+> > would simply leave it to what the HW gives us since regardless of the name, the
+> > major revision of the IP block is 5.
+> >
+>
+> For consistency this adjustment should be retained. All the prior
+> drivers reported the protocol version related to this.
+> For ETM3.x this value was 0x2 - logging printed "ETMv3.x", for PTM
+> this value was 0x3 - logging printed "PTM 1.x".
+> Only for ETMv4 is this value the same as the protocol version.
+>
+> Mike
+>
+>
+> > > +     } else {
+> > > +             type_name = "etm";
+> > > +     }
+> > > +
+> > > +     desc.name = devm_kasprintf(dev, GFP_KERNEL,
+> > > +                                "%s%d", type_name, drvdata->cpu);
+> > > +     if (!desc.name)
+> > > +             return -ENOMEM;
+> > >
+> > >       etm4_init_trace_id(drvdata);
+> > >       etm4_set_default(&drvdata->config);
+> > > @@ -1881,9 +1911,8 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
+> > >
+> > >       etmdrvdata[drvdata->cpu] = drvdata;
+> > >
+> > > -     dev_info(&drvdata->csdev->dev, "CPU%d: ETM v%d.%d initialized\n",
+> > > -              drvdata->cpu, ETM_ARCH_MAJOR_VERSION(drvdata->arch),
+> > > -              ETM_ARCH_MINOR_VERSION(drvdata->arch));
+> > > +     dev_info(&drvdata->csdev->dev, "CPU%d: %s v%d.%d initialized\n",
+> > > +              drvdata->cpu, type_name, major, minor);
+> > >
+> > >       if (boot_enable) {
+> > >               coresight_enable(drvdata->csdev);
+> > > @@ -2027,6 +2056,7 @@ static struct amba_driver etm4x_amba_driver = {
+> > >
+> > >  static const struct of_device_id etm4_sysreg_match[] = {
+> > >       { .compatible   = "arm,coresight-etm4x-sysreg" },
+> > > +     { .compatible   = "arm,embedded-trace-extension" },
+> > >       {}
+> > >  };
+> > >
+> > > diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> > > index b646d53..1c490bc 100644
+> > > --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> > > +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> > > @@ -2374,12 +2374,20 @@ static inline bool
+> > >  etm4x_register_implemented(struct etmv4_drvdata *drvdata, u32 offset)
+> > >  {
+> > >       switch (offset) {
+> > > -     ETM4x_SYSREG_LIST_CASES
+> > > +     ETM_COMMON_SYSREG_LIST_CASES
+> > >               /*
+> > > -              * Registers accessible via system instructions are always
+> > > -              * implemented.
+> > > +              * Common registers to ETE & ETM4x accessible via system
+> > > +              * instructions are always implemented.
+> > >                */
+> > >               return true;
+> > > +
+> > > +     ETM4x_ONLY_SYSREG_LIST_CASES
+> > > +             /*
+> > > +              * We only support etm4x and ete. So if the device is not
+> > > +              * ETE, it must be ETMv4x.
+> > > +              */
+> > > +             return !etm4x_is_ete(drvdata);
+> > > +
+> > >       ETM4x_MMAP_LIST_CASES
+> > >               /*
+> > >                * Registers accessible only via memory-mapped registers
+> > > @@ -2389,8 +2397,13 @@ etm4x_register_implemented(struct etmv4_drvdata *drvdata, u32 offset)
+> > >                * coresight_register() and the csdev is not initialized
+> > >                * until that is done. So rely on the drvdata->base to
+> > >                * detect if we have a memory mapped access.
+> > > +              * Also ETE doesn't implement memory mapped access, thus
+> > > +              * it is sufficient to check that we are using mmio.
+> > >                */
+> > >               return !!drvdata->base;
+> > > +
+> > > +     ETE_ONLY_SYSREG_LIST_CASES
+> > > +             return etm4x_is_ete(drvdata);
+> > >       }
+> > >
+> > >       return false;
+> > > diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+> > > index ca24ac5..8b90de5 100644
+> > > --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+> > > +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+> > > @@ -128,6 +128,8 @@
+> > >  #define TRCCIDR2                     0xFF8
+> > >  #define TRCCIDR3                     0xFFC
+> > >
+> > > +#define TRCRSR_TA                    BIT(12)
+> > > +
+> > >  /*
+> > >   * System instructions to access ETM registers.
+> > >   * See ETMv4.4 spec ARM IHI0064F section 4.3.6 System instructions
+> > > @@ -390,6 +392,9 @@
+> > >  #define ETM_COMMON_SYSREG_LIST_CASES         \
+> > >       ETM_COMMON_SYSREG_LIST(NOP, __unused)
+> > >
+> > > +#define ETM4x_ONLY_SYSREG_LIST_CASES         \
+> > > +     ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
+> > > +
+> > >  #define ETM4x_SYSREG_LIST_CASES                      \
+> > >       ETM_COMMON_SYSREG_LIST_CASES            \
+> > >       ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
+> > > @@ -406,7 +411,6 @@
+> > >       ETE_ONLY_SYSREG_LIST(WRITE, (val))
+> > >
+> > >  #define ETE_ONLY_SYSREG_LIST_CASES           \
+> > > -     ETM_COMMON_SYSREG_LIST_CASES            \
+> >
+> > This goes in patch 04.
+> >
+> > With the above:
+> >
+> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> >
+> > >       ETE_ONLY_SYSREG_LIST(NOP, __unused)
+> > >
+> > >  #define read_etm4x_sysreg_offset(offset, _64bit)                             \
+> > > @@ -589,11 +593,14 @@
+> > >       ((ETM_DEVARCH_MAKE_ARCHID_ARCH_VER(major)) | ETM_DEVARCH_ARCHID_ARCH_PART(0xA13))
+> > >
+> > >  #define ETM_DEVARCH_ARCHID_ETMv4x            ETM_DEVARCH_MAKE_ARCHID(0x4)
+> > > +#define ETM_DEVARCH_ARCHID_ETE                       ETM_DEVARCH_MAKE_ARCHID(0x5)
+> > >
+> > >  #define ETM_DEVARCH_ID_MASK                                          \
+> > >       (ETM_DEVARCH_ARCHITECT_MASK | ETM_DEVARCH_ARCHID_MASK | ETM_DEVARCH_PRESENT)
+> > >  #define ETM_DEVARCH_ETMv4x_ARCH                                              \
+> > >       (ETM_DEVARCH_ARCHITECT_ARM | ETM_DEVARCH_ARCHID_ETMv4x | ETM_DEVARCH_PRESENT)
+> > > +#define ETM_DEVARCH_ETE_ARCH                                         \
+> > > +     (ETM_DEVARCH_ARCHITECT_ARM | ETM_DEVARCH_ARCHID_ETE | ETM_DEVARCH_PRESENT)
+> > >
+> > >  #define TRCSTATR_IDLE_BIT            0
+> > >  #define TRCSTATR_PMSTABLE_BIT                1
+> > > @@ -683,6 +690,8 @@
+> > >  #define ETM_ARCH_MINOR_VERSION(arch) ((arch) & 0xfU)
+> > >
+> > >  #define ETM_ARCH_V4  ETM_ARCH_VERSION(4, 0)
+> > > +#define ETM_ARCH_ETE ETM_ARCH_VERSION(5, 0)
+> > > +
+> > >  /* Interpretation of resource numbers change at ETM v4.3 architecture */
+> > >  #define ETM_ARCH_V4_3        ETM_ARCH_VERSION(4, 3)
+> > >
+> > > @@ -989,4 +998,9 @@ void etm4_config_trace_mode(struct etmv4_config *config);
+> > >
+> > >  u64 etm4x_sysreg_read(u32 offset, bool _relaxed, bool _64bit);
+> > >  void etm4x_sysreg_write(u64 val, u32 offset, bool _relaxed, bool _64bit);
+> > > +
+> > > +static inline bool etm4x_is_ete(struct etmv4_drvdata *drvdata)
+> > > +{
+> > > +     return drvdata->arch >= ETM_ARCH_ETE;
+> > > +}
+> > >  #endif
+> > > --
+> > > 2.7.4
+> > >
+>
+>
+>
+> --
+> Mike Leach
+> Principal Engineer, ARM Ltd.
+> Manchester Design Centre. UK
 
-There are a few different mechanism possible.
 
-The SFP has an EEPROM which contains lots of parameters. One is the
-maximum baud rate the module supports. PHYLINK will combine this
-information with the MAC capabilities to determine the default speed.
 
-The users can select the mode the MAC works in, e.g. 1000BaseX vs
-2500BaseX, via ethtool -s. Different modes needs different speeds.
-
-Some copper PHYs will change there host side interface baud rate when
-the media side interface changes mode. 10GBASE-X for 10G copper,
-5GBase-X for 5G COPPER, 2500Base-X for 2.5G copper, and SGMII for
-old school 10/100/1G Ethernet.
-
-Mainline Linux has no support for it, but some 'vendor crap' will do a
-manual negotiation, simply trying different speeds and see if the
-SERDES establishes link. There is nothing standardised for this, as
-far as i know.
-
-    Andrew
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
