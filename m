@@ -2,76 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5D931C0EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDA031C0DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhBORqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:46:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232685AbhBOR2L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:28:11 -0500
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B282C061574;
-        Mon, 15 Feb 2021 09:19:29 -0800 (PST)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lBhWs-00EJN2-TZ; Mon, 15 Feb 2021 17:19:23 +0000
-Date:   Mon, 15 Feb 2021 17:19:22 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [git pull] namei stuff
-Message-ID: <YCqtGm78miQQVJ7n@zeniv-ca.linux.org.uk>
+        id S232137AbhBORmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:42:47 -0500
+Received: from mga06.intel.com ([134.134.136.31]:41954 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230418AbhBORXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 12:23:31 -0500
+IronPort-SDR: c7saTC4Hoxn0Ow8Ey35yhqMKKF6wdAD0TgtD8L2/DoapXTK1i9U7Z/SHwUWNe+j+b0GUJQGwYM
+ 7yc8gUl2wY6Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="244206736"
+X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
+   d="scan'208";a="244206736"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 09:21:40 -0800
+IronPort-SDR: geRpXhgmUT9FMi4UccziIcMxaTZyiBds3SjXanW6DPrJxmk0e5swhB0HicfkwGS4oAhIIEeQTL
+ su/W5+KEreZg==
+X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
+   d="scan'208";a="588917260"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 09:21:35 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 2A17320518;
+        Mon, 15 Feb 2021 19:21:03 +0200 (EET)
+Date:   Mon, 15 Feb 2021 19:21:03 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v7 1/3] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+Message-ID: <20210215172103.GJ3@paasikivi.fi.intel.com>
+References: <20210215114030.11862-1-sakari.ailus@linux.intel.com>
+ <20210215114030.11862-2-sakari.ailus@linux.intel.com>
+ <YCp3sdZoalFSUS7u@smile.fi.intel.com>
+ <20210215135650.GI3@paasikivi.fi.intel.com>
+ <YCqZR5N6ktABHXNf@smile.fi.intel.com>
+ <YCqmnG9r2gogFPsH@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <YCqmnG9r2gogFPsH@alley>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Most of that pile is LOOKUP_CACHED series; the rest is a couple of
-misc cleanups in the general area...
+Hi Petr,
 
-	There's a minor bisect hazard in the end of series, and normally
-I would've just folded the fix into the previous commit, but this branch is
-shared with Jens' tree, with stuff on top of it in there, so that would've
-required rebases outside of vfs.git.
+On Mon, Feb 15, 2021 at 05:51:40PM +0100, Petr Mladek wrote:
+> On Mon 2021-02-15 17:54:47, Andy Shevchenko wrote:
+> > On Mon, Feb 15, 2021 at 03:56:50PM +0200, Sakari Ailus wrote:
+> > > On Mon, Feb 15, 2021 at 03:31:29PM +0200, Andy Shevchenko wrote:
+> > > > On Mon, Feb 15, 2021 at 01:40:28PM +0200, Sakari Ailus wrote:
+> > > > > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
+> > > > > pixel formats denoted by fourccs. The fourcc encoding is the same for both
+> > > > > so the same implementation can be used.
+> > > > 
+> > > > This version I almost like, feel free to add
+> > > > Reviewed-by: From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > after considering addressing below nit-picks.
+> > 
+> > > > > +Examples::
+> > > > > +
+> > > > > +	%p4cc	BG12 little-endian (0x32314742)
+> > > > 
+> > > > No examples with spaces / non-printable / non-ascii characters
+> > > 
+> > > I can sure add an example that has a space. But do you think I really
+> > > should add an example where invalid information is being printed?
+> > 
+> > I think you have to provide better coverage of what user can get out of this.
+> > Perhaps one example with space and non-printable character is enough.
+> > 
+> > > > > +	char output[sizeof("1234 little-endian (0x01234567)")];
+> > > > 
+> > > > 1234 -> ABCD ? (Or XY12 to be closer to the reality)
+> > > 
+> > > I count in numbers... albeit the hexadecimal number there starts from zero.
+> > > 
+> > > I guess both would work though.
+> > > 
+> > > 0123 would be consistent.
+> > 
+> > Since letters can be printed the above is confusing a bit. I think XY12 is
+> > closer to the reality than 0123.
+> 
+> Ailus, are you going to send v8 with the two small changes? I mean a
+> selftest with the space and the above sample code.
 
-	NOTE: I'm less than thrilled by the "let's allow offloading pathwalks
-to helper threads" push, but LOOKUP_CACHED is useful on its own.
+Yes, and a few more examples.
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+> 
+> Anyway, feel free to add:
+> 
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+Thank you.
 
-are available in the git repository at:
+It'd be great if we could merge this through the printk tree. Acks are
+needed from the DRM people first.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.namei
+-- 
+Regards,
 
-for you to fetch changes up to 1bef30105aefa3aaa7fb0de046c35d37ad5201aa:
-
-  fix handling of nd->depth on LOOKUP_CACHED failures in try_to_unlazy* (2021-02-15 12:11:40 -0500)
-
-----------------------------------------------------------------
-Al Viro (3):
-      do_tmpfile(): don't mess with finish_open()
-      saner calling conventions for unlazy_child()
-      fix handling of nd->depth on LOOKUP_CACHED failures in try_to_unlazy*
-
-Jens Axboe (3):
-      fs: make unlazy_walk() error handling consistent
-      fs: add support for LOOKUP_CACHED
-      fs: expose LOOKUP_CACHED through openat2() RESOLVE_CACHED
-
-Steven Rostedt (VMware) (1):
-      fs/namei.c: Remove unlikely of status being -ECHILD in lookup_fast()
-
- fs/namei.c                   | 88 ++++++++++++++++++++++----------------------
- fs/open.c                    |  6 +++
- include/linux/fcntl.h        |  2 +-
- include/linux/namei.h        |  1 +
- include/uapi/linux/openat2.h |  4 ++
- 5 files changed, 55 insertions(+), 46 deletions(-)
+Sakari Ailus
