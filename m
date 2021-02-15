@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7B631BD46
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C671A31BD42
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbhBOPnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:43:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45562 "EHLO mail.kernel.org"
+        id S231634AbhBOPnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:43:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230364AbhBOPau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:30:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D21D564E6D;
-        Mon, 15 Feb 2021 15:28:52 +0000 (UTC)
+        id S230160AbhBOPat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:30:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A24564E7B;
+        Mon, 15 Feb 2021 15:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613402933;
-        bh=8uz61srI5MpGZlQlk5XsysikPJubFMCHy6yVxUdvUds=;
+        s=korg; t=1613402936;
+        bh=4Bi+YtUSMojEFvriuXcLkjj3Lnw4Zl2BmQopFeoNn8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NUlE9Y8sQ6X7pWq4qt0NAlbMgnIh11XamzRRb0L0krfqk0gu7nufRX3dF+CJzi+t/
-         8o5L/ZQbOqzqe/TnQI0XrPwN1x1cpF86bLJ6qsF1gOiv+an8UwFajO6oLM9K6tycKf
-         IZL63SeazC47PQKjWny5f4gBEdBKd5jSzxMMP6+k=
+        b=V09svDXIVW7O6sQi6EjPPXonLTBebeYIQ1G0MzXKtXglSWY6Hk5ZOqHgM5AlF+tMb
+         Lr/eShRgjzyeTKsDDuq9fWkjoAnpw1ApeJep7BXrpJNBMIkzq2l0f0o5UTA6Qx7MVy
+         Uxww8kfNkf6JKH/HMfm3j64+oL5wX7byctUcu5vw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 25/60] lkdtm: dont move ctors to .rodata
-Date:   Mon, 15 Feb 2021 16:27:13 +0100
-Message-Id: <20210215152716.160248805@linuxfoundation.org>
+Subject: [PATCH 5.4 26/60] mt76: dma: fix a possible memory leak in mt76_add_fragment()
+Date:   Mon, 15 Feb 2021 16:27:14 +0100
+Message-Id: <20210215152716.189203864@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -41,105 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 3f618ab3323407ee4c6a6734a37eb6e9663ebfb9 ]
+[ Upstream commit 93a1d4791c10d443bc67044def7efee2991d48b7 ]
 
-When building with KASAN and LKDTM, clang may implictly generate an
-asan.module_ctor function in the LKDTM rodata object. The Makefile moves
-the lkdtm_rodata_do_nothing() function into .rodata by renaming the
-file's .text section to .rodata, and consequently also moves the ctor
-function into .rodata, leading to a boot time crash (splat below) when
-the ctor is invoked by do_ctors().
+Fix a memory leak in mt76_add_fragment routine returning the buffer
+to the page_frag_cache when we receive a new fragment and the
+skb_shared_info frag array is full.
 
-Let's prevent this by marking the function as noinstr rather than
-notrace, and renaming the file's .noinstr.text to .rodata. Marking the
-function as noinstr will prevent tracing and kprobes, and will inhibit
-any undesireable compiler instrumentation.
-
-The ctor function (if any) will be placed in .text and will work
-correctly.
-
-Example splat before this patch is applied:
-
-[    0.916359] Unable to handle kernel execute from non-executable memory at virtual address ffffa0006b60f5ac
-[    0.922088] Mem abort info:
-[    0.922828]   ESR = 0x8600000e
-[    0.923635]   EC = 0x21: IABT (current EL), IL = 32 bits
-[    0.925036]   SET = 0, FnV = 0
-[    0.925838]   EA = 0, S1PTW = 0
-[    0.926714] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000427b3000
-[    0.928489] [ffffa0006b60f5ac] pgd=000000023ffff003, p4d=000000023ffff003, pud=000000023fffe003, pmd=0068000042000f01
-[    0.931330] Internal error: Oops: 8600000e [#1] PREEMPT SMP
-[    0.932806] Modules linked in:
-[    0.933617] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc7 #2
-[    0.935620] Hardware name: linux,dummy-virt (DT)
-[    0.936924] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-[    0.938609] pc : asan.module_ctor+0x0/0x14
-[    0.939759] lr : do_basic_setup+0x4c/0x70
-[    0.940889] sp : ffff27b600177e30
-[    0.941815] x29: ffff27b600177e30 x28: 0000000000000000
-[    0.943306] x27: 0000000000000000 x26: 0000000000000000
-[    0.944803] x25: 0000000000000000 x24: 0000000000000000
-[    0.946289] x23: 0000000000000001 x22: 0000000000000000
-[    0.947777] x21: ffffa0006bf4a890 x20: ffffa0006befb6c0
-[    0.949271] x19: ffffa0006bef9358 x18: 0000000000000068
-[    0.950756] x17: fffffffffffffff8 x16: 0000000000000000
-[    0.952246] x15: 0000000000000000 x14: 0000000000000000
-[    0.953734] x13: 00000000838a16d5 x12: 0000000000000001
-[    0.955223] x11: ffff94000da74041 x10: dfffa00000000000
-[    0.956715] x9 : 0000000000000000 x8 : ffffa0006b60f5ac
-[    0.958199] x7 : f9f9f9f9f9f9f9f9 x6 : 000000000000003f
-[    0.959683] x5 : 0000000000000040 x4 : 0000000000000000
-[    0.961178] x3 : ffffa0006bdc15a0 x2 : 0000000000000005
-[    0.962662] x1 : 00000000000000f9 x0 : ffffa0006bef9350
-[    0.964155] Call trace:
-[    0.964844]  asan.module_ctor+0x0/0x14
-[    0.965895]  kernel_init_freeable+0x158/0x198
-[    0.967115]  kernel_init+0x14/0x19c
-[    0.968104]  ret_from_fork+0x10/0x30
-[    0.969110] Code: 00000003 00000000 00000000 00000000 (00000000)
-[    0.970815] ---[ end trace b5339784e20d015c ]---
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Kees Cook <keescook@chromium.org>
-Acked-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/20201207170533.10738-1-mark.rutland@arm.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b102f0c522cf6 ("mt76: fix array overflow on receiving too many fragments for a packet")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Acked-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/4f9dd73407da88b2a552517ce8db242d86bf4d5c.1611616130.git.lorenzo@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/lkdtm/Makefile | 2 +-
- drivers/misc/lkdtm/rodata.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/mediatek/mt76/dma.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
-index c70b3822013f4..30c8ac24635d4 100644
---- a/drivers/misc/lkdtm/Makefile
-+++ b/drivers/misc/lkdtm/Makefile
-@@ -16,7 +16,7 @@ KCOV_INSTRUMENT_rodata.o	:= n
- 
- OBJCOPYFLAGS :=
- OBJCOPYFLAGS_rodata_objcopy.o	:= \
--			--rename-section .text=.rodata,alloc,readonly,load
-+			--rename-section .noinstr.text=.rodata,alloc,readonly,load
- targets += rodata.o rodata_objcopy.o
- $(obj)/rodata_objcopy.o: $(obj)/rodata.o FORCE
- 	$(call if_changed,objcopy)
-diff --git a/drivers/misc/lkdtm/rodata.c b/drivers/misc/lkdtm/rodata.c
-index 58d180af72cf0..baacb876d1d94 100644
---- a/drivers/misc/lkdtm/rodata.c
-+++ b/drivers/misc/lkdtm/rodata.c
-@@ -5,7 +5,7 @@
-  */
- #include "lkdtm.h"
- 
--void notrace lkdtm_rodata_do_nothing(void)
-+void noinstr lkdtm_rodata_do_nothing(void)
+diff --git a/drivers/net/wireless/mediatek/mt76/dma.c b/drivers/net/wireless/mediatek/mt76/dma.c
+index 026d996612fbe..781952b686ed2 100644
+--- a/drivers/net/wireless/mediatek/mt76/dma.c
++++ b/drivers/net/wireless/mediatek/mt76/dma.c
+@@ -452,15 +452,17 @@ static void
+ mt76_add_fragment(struct mt76_dev *dev, struct mt76_queue *q, void *data,
+ 		  int len, bool more)
  {
- 	/* Does nothing. We just want an architecture agnostic "return". */
- }
+-	struct page *page = virt_to_head_page(data);
+-	int offset = data - page_address(page);
+ 	struct sk_buff *skb = q->rx_head;
+ 	struct skb_shared_info *shinfo = skb_shinfo(skb);
+ 
+ 	if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags)) {
+-		offset += q->buf_offset;
++		struct page *page = virt_to_head_page(data);
++		int offset = data - page_address(page) + q->buf_offset;
++
+ 		skb_add_rx_frag(skb, shinfo->nr_frags, page, offset, len,
+ 				q->buf_size);
++	} else {
++		skb_free_frag(data);
+ 	}
+ 
+ 	if (more)
 -- 
 2.27.0
 
