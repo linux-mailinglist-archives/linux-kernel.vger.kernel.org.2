@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CAE31BE1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F193031BF35
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhBOP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:59:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45592 "EHLO mail.kernel.org"
+        id S232006AbhBOQ17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:27:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhBOPdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:33:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D0264EAD;
-        Mon, 15 Feb 2021 15:30:16 +0000 (UTC)
+        id S231195AbhBOPgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:36:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B789E64E95;
+        Mon, 15 Feb 2021 15:32:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403017;
-        bh=/WPAYCPcBpyTcmkwy/aSFnnUajeeQC5eHR35ZVtn90Q=;
+        s=korg; t=1613403152;
+        bh=Z6zA4YjEHvL5sTyAuNPMYVZfJqzVp0yb+RJGVduycbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k2UPvSjQBNJ2B/4tzg5iOg/yqfD57aQlmqOe73Bv2OFjMAhvv4WJ0pwSMzKsWPxmA
-         Zctjo8SmHRC3szjfUCgjUgX1eh1e0LMVylQV87wTruQqjpllVThrQKl3cXYJRww+nR
-         DRWdintMlyTysPpgV/vcPFYxrSOMaHDCrbRyVttY=
+        b=NLUymA6RPphiTrBUZ4No6ov+3Ao1dcUlSclfW8/EU7VV6vaFxrznnqL4/VNRmOzFH
+         4EqGtbuZFfZaJ6nYOeTXbn4dz7E6d3fEN3YwRlfFEg7Icjo3XSDYMbC7v9YB+wyrEN
+         N6CB26Nzt1movYWJfYZnTYgxVlkaiPiOWLc0G0lA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 11/60] ovl: perform vfs_getxattr() with mounter creds
-Date:   Mon, 15 Feb 2021 16:26:59 +0100
-Message-Id: <20210215152715.740229487@linuxfoundation.org>
+Subject: [PATCH 5.10 048/104] KVM: x86: cleanup CR3 reserved bits checks
+Date:   Mon, 15 Feb 2021 16:27:01 +0100
+Message-Id: <20210215152721.031370031@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
-References: <20210215152715.401453874@linuxfoundation.org>
+In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
+References: <20210215152719.459796636@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit 554677b97257b0b69378bd74e521edb7e94769ff ]
+[ Upstream commit c1c35cf78bfab31b8cb455259524395c9e4c7cd6 ]
 
-The vfs_getxattr() in ovl_xattr_set() is used to check whether an xattr
-exist on a lower layer file that is to be removed.  If the xattr does not
-exist, then no need to copy up the file.
+If not in long mode, the low bits of CR3 are reserved but not enforced to
+be zero, so remove those checks.  If in long mode, however, the MBZ bits
+extend down to the highest physical address bit of the guest, excluding
+the encryption bit.
 
-This call of vfs_getxattr() wasn't wrapped in credential override, and this
-is probably okay.  But for consitency wrap this instance as well.
+Make the checks consistent with the above, and match them between
+nested_vmcb_checks and KVM_SET_SREGS.
 
-Reported-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Cc: stable@vger.kernel.org
+Fixes: 761e41693465 ("KVM: nSVM: Check that MBZ bits in CR3 and CR4 are not set on vmrun of nested guests")
+Fixes: a780a3ea6282 ("KVM: X86: Fix reserved bits check for MOV to CR3")
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/overlayfs/inode.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/svm/nested.c | 13 +++----------
+ arch/x86/kvm/svm/svm.h    |  3 ---
+ arch/x86/kvm/x86.c        |  2 ++
+ 3 files changed, 5 insertions(+), 13 deletions(-)
 
-diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
-index bb980721502dd..56b55397a7a00 100644
---- a/fs/overlayfs/inode.c
-+++ b/fs/overlayfs/inode.c
-@@ -337,7 +337,9 @@ int ovl_xattr_set(struct dentry *dentry, struct inode *inode, const char *name,
- 		goto out;
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 65e40acde71aa..4fbe190c79159 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -231,6 +231,7 @@ static bool nested_vmcb_check_controls(struct vmcb_control_area *control)
  
- 	if (!value && !upperdentry) {
-+		old_cred = ovl_override_creds(dentry->d_sb);
- 		err = vfs_getxattr(realdentry, name, NULL, 0);
-+		revert_creds(old_cred);
- 		if (err < 0)
- 			goto out_drop_write;
+ static bool nested_vmcb_checks(struct vcpu_svm *svm, struct vmcb *vmcb12)
+ {
++	struct kvm_vcpu *vcpu = &svm->vcpu;
+ 	bool vmcb12_lma;
+ 
+ 	if ((vmcb12->save.efer & EFER_SVME) == 0)
+@@ -244,18 +245,10 @@ static bool nested_vmcb_checks(struct vcpu_svm *svm, struct vmcb *vmcb12)
+ 
+ 	vmcb12_lma = (vmcb12->save.efer & EFER_LME) && (vmcb12->save.cr0 & X86_CR0_PG);
+ 
+-	if (!vmcb12_lma) {
+-		if (vmcb12->save.cr4 & X86_CR4_PAE) {
+-			if (vmcb12->save.cr3 & MSR_CR3_LEGACY_PAE_RESERVED_MASK)
+-				return false;
+-		} else {
+-			if (vmcb12->save.cr3 & MSR_CR3_LEGACY_RESERVED_MASK)
+-				return false;
+-		}
+-	} else {
++	if (vmcb12_lma) {
+ 		if (!(vmcb12->save.cr4 & X86_CR4_PAE) ||
+ 		    !(vmcb12->save.cr0 & X86_CR0_PE) ||
+-		    (vmcb12->save.cr3 & MSR_CR3_LONG_MBZ_MASK))
++		    (vmcb12->save.cr3 & vcpu->arch.cr3_lm_rsvd_bits))
+ 			return false;
  	}
+ 	if (kvm_valid_cr4(&svm->vcpu, vmcb12->save.cr4))
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 1d853fe4c778b..be74e22b82ea7 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -346,9 +346,6 @@ static inline bool gif_set(struct vcpu_svm *svm)
+ }
+ 
+ /* svm.c */
+-#define MSR_CR3_LEGACY_RESERVED_MASK		0xfe7U
+-#define MSR_CR3_LEGACY_PAE_RESERVED_MASK	0x7U
+-#define MSR_CR3_LONG_MBZ_MASK			0xfff0000000000000U
+ #define MSR_INVALID				0xffffffffU
+ 
+ u32 svm_msrpm_offset(u32 msr);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 18a315bbcb79e..3bcde449938e6 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9558,6 +9558,8 @@ static int kvm_valid_sregs(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs)
+ 		if (!(sregs->cr4 & X86_CR4_PAE)
+ 		    || !(sregs->efer & EFER_LMA))
+ 			return -EINVAL;
++		if (sregs->cr3 & vcpu->arch.cr3_lm_rsvd_bits)
++			return false;
+ 	} else {
+ 		/*
+ 		 * Not in 64-bit mode: EFER.LMA is clear and the code
 -- 
 2.27.0
 
