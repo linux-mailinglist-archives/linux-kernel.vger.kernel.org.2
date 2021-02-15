@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415F131BE3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA8231BE4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232845AbhBOQD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:03:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47012 "EHLO mail.kernel.org"
+        id S231574AbhBOQGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:06:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231371AbhBOPdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:33:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6CAA64E52;
-        Mon, 15 Feb 2021 15:30:37 +0000 (UTC)
+        id S231373AbhBOPdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:33:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C40A64E51;
+        Mon, 15 Feb 2021 15:30:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403038;
-        bh=klZW4V3EPZDlo0Bsg6QbybOANQ4eI5sriq/4SYKrtqo=;
+        s=korg; t=1613403040;
+        bh=Z6RFs8Me67B4sK8KIuAnCOPl1Ow0W+abCs+UwuYJBec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aMWCOhNP/B++fku1k0gnN6gWdxm6s19ex6xHKF0UfKYdAX/VzaA4zxHqpTymeVUS6
-         fl46BffocyyV46U03Zh5giHCdI7/+jWOzrerwLpsiIu5gdVQaYagm31y36gYA4XgJ/
-         RsTQvXrpzU88HIwvFBU/fNRNGg/TedQLVO/H0ZBE=
+        b=YmmUA2Nngz8FEv0i04ipEZxwkA/ibJTCE0TOdbnm1yhcZIzHc1N+73TPFxYTJ1g24
+         N9UZOFakq1wxzra9d/DXb19Lz7m1UJF8zNC1ap/l7a2JbCrt+g/KpFSlL9j4Q/L2R5
+         pvycR0ZyTqVXptwCuT37gUh7+5QXL+LDuGRgz3MY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 55/60] net: watchdog: hold device global xmit lock during tx disable
-Date:   Mon, 15 Feb 2021 16:27:43 +0100
-Message-Id: <20210215152717.142354296@linuxfoundation.org>
+        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 56/60] vsock/virtio: update credit only if socket is not closed
+Date:   Mon, 15 Feb 2021 16:27:44 +0100
+Message-Id: <20210215152717.172203374@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -40,47 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Edwin Peer <edwin.peer@broadcom.com>
+From: Stefano Garzarella <sgarzare@redhat.com>
 
-commit 3aa6bce9af0e25b735c9c1263739a5639a336ae8 upstream.
+commit ce7536bc7398e2ae552d2fabb7e0e371a9f1fe46 upstream.
 
-Prevent netif_tx_disable() running concurrently with dev_watchdog() by
-taking the device global xmit lock. Otherwise, the recommended:
+If the socket is closed or is being released, some resources used by
+virtio_transport_space_update() such as 'vsk->trans' may be released.
 
-	netif_carrier_off(dev);
-	netif_tx_disable(dev);
+To avoid a use after free bug we should only update the available credit
+when we are sure the socket is still open and we have the lock held.
 
-driver shutdown sequence can happen after the watchdog has already
-checked carrier, resulting in possible false alarms. This is because
-netif_tx_lock() only sets the frozen bit without maintaining the locks
-on the individual queues.
-
-Fixes: c3f26a269c24 ("netdev: Fix lockdep warnings in multiqueue configurations.")
-Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 06a8fc78367d ("VSOCK: Introduce virtio_vsock_common.ko")
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Link: https://lore.kernel.org/r/20210208144454.84438-1-sgarzare@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/netdevice.h |    2 ++
- 1 file changed, 2 insertions(+)
+ net/vmw_vsock/virtio_transport_common.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -4044,6 +4044,7 @@ static inline void netif_tx_disable(stru
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -1100,10 +1100,10 @@ void virtio_transport_recv_pkt(struct vi
  
- 	local_bh_disable();
- 	cpu = smp_processor_id();
-+	spin_lock(&dev->tx_global_lock);
- 	for (i = 0; i < dev->num_tx_queues; i++) {
- 		struct netdev_queue *txq = netdev_get_tx_queue(dev, i);
+ 	vsk = vsock_sk(sk);
  
-@@ -4051,6 +4052,7 @@ static inline void netif_tx_disable(stru
- 		netif_tx_stop_queue(txq);
- 		__netif_tx_unlock(txq);
- 	}
-+	spin_unlock(&dev->tx_global_lock);
- 	local_bh_enable();
- }
+-	space_available = virtio_transport_space_update(sk, pkt);
+-
+ 	lock_sock(sk);
+ 
++	space_available = virtio_transport_space_update(sk, pkt);
++
+ 	/* Update CID in case it has changed after a transport reset event */
+ 	vsk->local_addr.svm_cid = dst.svm_cid;
  
 
 
