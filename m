@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B63F31BBDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE1E31BBDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbhBOPHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:07:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
+        id S230147AbhBOPH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:07:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbhBOO5I (ORCPT
+        with ESMTP id S230219AbhBOO5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:57:08 -0500
+        Mon, 15 Feb 2021 09:57:07 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B83C06121D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F39CC06121C;
         Mon, 15 Feb 2021 06:55:49 -0800 (PST)
 Date:   Mon, 15 Feb 2021 14:55:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -21,30 +21,32 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=MxKvaSUApfwKbW8/5xPx1DyewACqSMC6MYWumJd9TUU=;
-        b=I18zItnSf+kHkPzxKRvlQ2bv00iZ2cDWU267c/leCCeiBRvhB877/i8jA8GhWSHM343Afn
-        xxg+W9todvPRPQheXTNr0B+ZX0dOwz4fGUa22xBqGLEsyHWQePeyI7uUMmXhT8GkjbF49F
-        aE2rmAYcSBS7EMWUzibDdg8nKChIwluzV/9eVSbWAOE9wvrIJWZPwKOMePnBeh8HCCU4MI
-        Hzi210xjllD9irqn7Cq+pPX2XNNmkrTPOvDTGXGrj+zSvNVzxXGDRK1wVmqKjqoRETjxa1
-        lU47kIGB9GQhyhNUCROHQXr/L2qFCIZnFEFMYcblq9tNe4jKlwNIH46rS161ZQ==
+        bh=hmO4mWjh6yOf5Xot7X8WbrytRizbCGjcY1rgh6W4dmM=;
+        b=HXR+fq07++o/PTjFyIVnxLEVob33VPMmmXuHax1kBQxA4zhVmDg3xsJxscPLdZwrYtU1+Z
+        qjUmJxwt0mWY7bNmskxZYejjwFDP7lhGaFhmsiHkIpOvDk6eDOrzwHAPvNPyHgAfQfONzS
+        pPJlCb5vTJhMCnWRRs6M+8sx0VLAkl1Shw6JAJ8/N5wdyLvLybvye635xSTuKhyhJeGzVS
+        AAyRgjkhlfHivbhJoCnVkTTBKjKiy7gtbV4sLB4mrCJaAQz7jIF+9WD45mfmT/0qCRzsgO
+        ibEx8OOQsszgH8LWAoyg/vMJAM977T8JjnilxEeRSLi7kHQtlySsqLQXLQOZoA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1613400947;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=MxKvaSUApfwKbW8/5xPx1DyewACqSMC6MYWumJd9TUU=;
-        b=LIykZ9kQ6UNC7fdWArC1k1JYohNqHHL+4pC3bEYiDyfgn+Lkhhi0o93RfaH6iZiHlpvlGe
-        NduAj0Xqpj8UK/DQ==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+        bh=hmO4mWjh6yOf5Xot7X8WbrytRizbCGjcY1rgh6W4dmM=;
+        b=8qTmC/82V8zeH4l2tmEWadvFl5rU7YXSjJyim5ni06c/ivlrhKVtRr37Qs0phBEDA861PF
+        kaIT3rsd23RZ9HDA==
+From:   "tip-bot2 for Zqiang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] doc: Remove obsolete rcutree.rcu_idle_lazy_gp_delay
- boot parameter
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+Subject: [tip: core/rcu] rcu: Record kvfree_call_rcu() call stack for KASAN
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Zqiang <qiang.zhang@windriver.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161340094740.20312.2053972766807992089.tip-bot2@tip-bot2>
+Message-ID: <161340094719.20312.17749393458245052832.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,38 +57,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     2252ec1464730ce718dc8087c13a419b9aa58758
-Gitweb:        https://git.kernel.org/tip/2252ec1464730ce718dc8087c13a419b9aa58758
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 10 Dec 2020 09:53:50 -08:00
+Commit-ID:     84109ab58590dc6c4e7eb36329fdc7ec121ed5a5
+Gitweb:        https://git.kernel.org/tip/84109ab58590dc6c4e7eb36329fdc7ec121ed5a5
+Author:        Zqiang <qiang.zhang@windriver.com>
+AuthorDate:    Fri, 20 Nov 2020 06:53:11 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 04 Jan 2021 13:35:15 -08:00
+CommitterDate: Mon, 04 Jan 2021 13:42:04 -08:00
 
-doc: Remove obsolete rcutree.rcu_idle_lazy_gp_delay boot parameter
+rcu: Record kvfree_call_rcu() call stack for KASAN
 
-This commit removes documentation for the rcutree.rcu_idle_lazy_gp_delay
-kernel boot parameter given that this parameter no longer exists.
+This commit adds a call to kasan_record_aux_stack() in kvfree_call_rcu()
+in order to record the call stack of the code that caused the object
+to be freed.  Please note that this function does not update the
+allocated/freed state, which is important because RCU readers might
+still be referencing this object.
 
-Fixes: 77a40f97030b ("rcu: Remove kfree_rcu() special casing and lazy-callback handling")
+Acked-by: Dmitry Vyukov <dvyukov@google.com>
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 6 ------
- 1 file changed, 6 deletions(-)
+ kernel/rcu/tree.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index c722ec1..b5baa8a 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4179,12 +4179,6 @@
- 			Set wakeup interval for idle CPUs that have
- 			RCU callbacks (RCU_FAST_NO_HZ=y).
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 40e5e3d..2db736c 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3498,6 +3498,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 		goto unlock_return;
+ 	}
  
--	rcutree.rcu_idle_lazy_gp_delay= [KNL]
--			Set wakeup interval for idle CPUs that have
--			only "lazy" RCU callbacks (RCU_FAST_NO_HZ=y).
--			Lazy RCU callbacks are those which RCU can
--			prove do nothing more than free memory.
--
- 	rcutree.rcu_kick_kthreads= [KNL]
- 			Cause the grace-period kthread to get an extra
- 			wake_up() if it sleeps three times longer than
++	kasan_record_aux_stack(ptr);
+ 	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
+ 	if (!success) {
+ 		run_page_cache_worker(krcp);
