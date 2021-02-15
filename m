@@ -2,134 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4479B31C0F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4293E31C0F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhBORrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:47:45 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:45605 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232733AbhBORd2 (ORCPT
+        id S232415AbhBORrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:47:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231660AbhBORg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:33:28 -0500
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 0C6B3100002;
-        Mon, 15 Feb 2021 17:32:32 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 18:32:32 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] dt-bindings: reset: microchip sparx5 reset driver
- bindings
-Message-ID: <20210215173232.GM6798@piout.net>
-References: <20210210091952.2013027-1-steen.hegelund@microchip.com>
- <20210210091952.2013027-2-steen.hegelund@microchip.com>
+        Mon, 15 Feb 2021 12:36:28 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A716C061574;
+        Mon, 15 Feb 2021 09:35:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=WfBdv0XlEnpVSGZr2AxzwUYGmxRIbjsFvHnItDviNQ0=; b=QgwXQoDqR0KCo9Z7aDGKq5nnVP
+        jExeJ5b00Lcjjj2InVNMrMEhTuqNu10gkVGIn4FDVZxnDpIOWj6MMg+psHP8TvJVqjNakMjrveHHF
+        ScCocLAFsfUl1xgbgF18zD7Prb1A3hRrXGNR5nRxeuWtprzLJzQyEdULiKdITIk80FLiW5HN+1GvM
+        Gf4P5G0cRieS6ha33tlZY3eDIQUjlAnkUvfwCHXWwRAOt5CU9j2JdaasmdFPaP85P89dmzWYmrvEB
+        wjgWTJr24PxvmsDQ6ZqHkDv3C19NqZKLQY5iluwCScVZTCAtnBh/u4oxt3SASv2bUhwyb5jHoD4DQ
+        lHMf78sQ==;
+Received: from [2601:1c0:6280:3f0::6444]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lBhmg-0006cD-T7; Mon, 15 Feb 2021 17:35:43 +0000
+Subject: Re: linux-next: Tree for Feb 15 (CXL on i386)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20210215203421.43cc2a4a@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f6121dec-1a65-bd25-03b7-bcaf22d0f3b2@infradead.org>
+Date:   Mon, 15 Feb 2021 09:35:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210091952.2013027-2-steen.hegelund@microchip.com>
+In-Reply-To: <20210215203421.43cc2a4a@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/02/2021 10:19:50+0100, Steen Hegelund wrote:
-> Document the Sparx5 reset device driver bindings
+On 2/15/21 1:34 AM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> The driver uses two IO ranges on sparx5 for access to
-> the reset control and the reset status.
+> Changes since 20210212:
 > 
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> ---
->  .../bindings/reset/microchip,rst.yaml         | 55 +++++++++++++++++++
->  1 file changed, 55 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/reset/microchip,rst.yaml b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> new file mode 100644
-> index 000000000000..80046172c9f8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/reset/microchip,rst.yaml
-> @@ -0,0 +1,55 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/reset/microchip,rst.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Microchip Sparx5 Switch Reset Controller
-> +
-> +maintainers:
-> +  - Steen Hegelund <steen.hegelund@microchip.com>
-> +  - Lars Povlsen <lars.povlsen@microchip.com>
-> +
-> +description: |
-> +  The Microchip Sparx5 Switch provides reset control and implements the following
-> +  functions
-> +    - One Time Switch Core Reset (Soft Reset)
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^reset-controller@[0-9a-f]+$"
-> +
-> +  compatible:
-> +    const: microchip,sparx5-switch-reset
-> +
-> +  reg:
-> +    items:
-> +      - description: cpu block registers
-> +      - description: global control block registers
-> +
-> +  reg-names:
-> +    items:
-> +      - const: cpu
-> +      - const: gcb
-> +
-
-I still think this is not right because then you will be mapping the
-same set of register using multiple drivers without any form of
-synchronisation which will work because you are mapping the region
-without requesting it. But this may lead to issues later.
-
-At least, you should make cpu start at 0x80 and of size 4. Else, you
-won't be able to define and use the GPRs that are in front of
-CPU_REGS:RESET.
-
-I would still keep DEVCPU_GCB:CHIP_REGS as a syscon, especially since
-you are mapping the whole set of registers.
 
 
-> +  "#reset-cells":
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - "#reset-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    reset: reset-controller@0 {
-> +        compatible = "microchip,sparx5-switch-reset";
-> +        #reset-cells = <1>;
-> +        reg = <0x0 0xd0>,
-> +              <0x11010000 0x10000>;
-> +        reg-names = "cpu", "gcb";
-> +    };
-> +
-> -- 
-> 2.30.0
-> 
+CXL on i386 has these issue:
+
+../drivers/cxl/mem.c:335:2: error: implicit declaration of function ‘writeq’; did you mean ‘writel’? [-Werror=implicit-function-declaration]
+  writeq(cmd_reg, cxlm->mbox_regs + CXLDEV_MBOX_CMD_OFFSET);
+  ^~~~~~
+
+../drivers/cxl/mem.c:350:15: error: implicit declaration of function ‘readq’; did you mean ‘readl’? [-Werror=implicit-function-declaration]
+  status_reg = readq(cxlm->mbox_regs + CXLDEV_MBOX_STATUS_OFFSET);
+
+
+and lots of these (just one example here):
+
+../drivers/cxl/cxl.h:29:47: note: in expansion of macro ‘GENMASK’
+ #define   CXLDEV_MBOX_CMD_PAYLOAD_LENGTH_MASK GENMASK(36, 16)
+                                               ^~~~~~~
+../drivers/cxl/mem.c:329:25: note: in expansion of macro ‘CXLDEV_MBOX_CMD_PAYLOAD_LENGTH_MASK’
+   cmd_reg |= FIELD_PREP(CXLDEV_MBOX_CMD_PAYLOAD_LENGTH_MASK,
+                         ^
+../include/linux/bits.h:36:11: warning: right shift count is negative [-Wshift-count-negative]
+   (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+           ^
+../include/linux/bitfield.h:95:49: note: in definition of macro ‘FIELD_PREP’
+   ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask); \
+                                                 ^~~~~
+../include/linux/bits.h:38:31: note: in expansion of macro ‘__GENMASK’
+  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+                               ^~~~~~~~~
+
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
