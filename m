@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C7231BBDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2BD31BBEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhBOPHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59582 "EHLO
+        id S230443AbhBOPJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:09:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbhBOO5I (ORCPT
+        with ESMTP id S230245AbhBOO5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:57:08 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E65C06121F;
-        Mon, 15 Feb 2021 06:55:50 -0800 (PST)
-Date:   Mon, 15 Feb 2021 14:55:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613400948;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=mvKAky/yxwGAKGQxIKqxnof75vjnOWApgfR0xI95IUQ=;
-        b=aJ9HlA+SyYINBzeCgDpj0FJC7lgUVqo1+ccVSaOhE2Muhhwsp39kaFnJuLdvsHw2ZiDO0y
-        rdswDbKw2fWpM5KlQ1UrXilZi457znPzpRM4tL2dxbmMgFoSQTksnv0t4V2yZLp+r8t7Tt
-        4785RwxvAusEVriobM35wIe+bhUebGnwCw0RaR6ZLfPPv/uM5jMvRNg2pghMRElt99iJuM
-        cioyyJBm0oZXns61svDGgGW1nCFDNNXUGd1Ml3943d6VLC/A/je+TTsPsWxtAgJJkmn65q
-        d7dnTPVEJNmGYFzPd60oLxs+I160A+i0Qg0Wl7xUqFKuJfl4io4xNgcoJjiC5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613400948;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=mvKAky/yxwGAKGQxIKqxnof75vjnOWApgfR0xI95IUQ=;
-        b=i1jf6/WA1qA9cFv1fNZm0B0kV72XDqw8qkH11NCJax3/qZvGxa/Xedb/3OQONUhwJmF+wC
-        PRwsBvjfdsjiG+DA==
-From:   "tip-bot2 for Mauro Carvalho Chehab" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] list: Fix a typo at the kernel-doc markup
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Mon, 15 Feb 2021 09:57:21 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6742EC061574;
+        Mon, 15 Feb 2021 06:56:05 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id t11so4338623pgu.8;
+        Mon, 15 Feb 2021 06:56:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TC76k1Y6MEUMK5bwvqZnuZ4cNnJ6i3Vn0Cs2byfJ32g=;
+        b=j6DeoGWARdpxArhNU0TsAnh8ZO1FyY4F3L8CA5ZLX5E2YTmMTCl+nduZBB/20quxel
+         ogChmfFYU6Z/L+4U5WxhGnOTmTIFi4jX6JrThPMmhCzzgcbdwCokAUioqVFbC+Hxi7tg
+         cra9whC14u/kPo7P80dbNs5frpyTGeNrkkPY4iCINCzRfEiIe88zUcu4H29N4n0BiSda
+         tgymyKZ2UV93Qgx8L0BwdjX9CE7soahwKI/f7kAs6vqLtgbdDjMV3vB4fpovwtbtW9VL
+         GIbg0fEKDnZQcl5wferHr9NtkSo0hEJcsbMnCKG3+w3/dE6VjucSpETZOqz3mzjy7TFk
+         ubcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TC76k1Y6MEUMK5bwvqZnuZ4cNnJ6i3Vn0Cs2byfJ32g=;
+        b=QN6TO5P0N69iE9/TMjMrx0bmG33rxnmubPwQIky4EyzQ1kT73MaH3a8IdjZp8Qsr+w
+         s0uXD5N0lVXscS6xgtNpDIc2H0ZQPo71vrAUOkTf006oM2vc3psRvcdENofUiaOtydIt
+         r++9vNLvacCJ65WvC/I9HoJA+Xo9gKLGMlDMr/9zHBu7NdUJkkue5bUH7an6lszdsCrd
+         qK+8cLCXyyWTBlrgxd70GkpPIxGgaFn7PKfeCnQvilsoAXMYF2JPb6hJfbOyTf6AhfAB
+         Y1dv1OLGCvq7UesyML0YEx3DcPswkMSGHqPSKXMwUC+XJ010WWgToiH2y6tu9TZhTYl6
+         5nZg==
+X-Gm-Message-State: AOAM532SLsJAGdyJcRPUxnunKQedD3Vzo/EuC/rMwJykryQ7HmooMolU
+        65rCZIOHKP/k7VG3Y5rHZfqdJVluscH8A4lpyNLNPOhu+1pPEQ==
+X-Google-Smtp-Source: ABdhPJx7tU0s5oAzlCX6KcObAw7pnXe+OUlgIPaSYeanS0I8tIXJCe8bQ9bJp+Qnx650w5yUvGMOyjPhwCs+z0gzmLk=
+X-Received: by 2002:a63:3d0:: with SMTP id 199mr15238146pgd.4.1613400964989;
+ Mon, 15 Feb 2021 06:56:04 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <161340094810.20312.9272140883207592077.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210214145746.602770-1-zhengdejin5@gmail.com>
+ <YCp1nh2ZEBvvB+lC@smile.fi.intel.com> <10fa1c64-6a7d-e995-f292-20dc6ce5ed62@siemens.com>
+In-Reply-To: <10fa1c64-6a7d-e995-f292-20dc6ce5ed62@siemens.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 15 Feb 2021 16:55:48 +0200
+Message-ID: <CAHp75VdcsnPxOLmHcwVSJn2c9jn2dFuWdyb-hiXaz4iUm2yYgA@mail.gmail.com>
+Subject: Re: [PATCH] spi: pca2xx-pci: Fix an issue about missing call to 'pci_free_irq_vectors()'
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dejin Zheng <zhengdejin5@gmail.com>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Mark Brown <broonie@kernel.org>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/rcu branch of tip:
+On Mon, Feb 15, 2021 at 3:52 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
+> On 15.02.21 14:22, Andy Shevchenko wrote:
+> > On Sun, Feb 14, 2021 at 10:57:46PM +0800, Dejin Zheng wrote:
+> >> Call to 'pci_free_irq_vectors()' are missing both in the error handling
+> >> path of the probe function, and in the remove function. So add them.
+> >
+> > I'm wondering if you noticed that it's done by pcim_* API.
+> > Perhaps you can introduce pcim_alloc_irq_vectors() or so and do not add these
+> > calls at all?
+>
+> You mean as plain wrapper for pci_alloc_irq_vectors, just to document
+> it's managed?
 
-Commit-ID:     4704bd317108c94b6e2d8309f3dbb70d2015568a
-Gitweb:        https://git.kernel.org/tip/4704bd317108c94b6e2d8309f3dbb70d2015568a
-Author:        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-AuthorDate:    Mon, 16 Nov 2020 11:18:16 +01:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 04 Jan 2021 13:35:14 -08:00
+Last time we discussed that with Christoph Hellwig he was on the side
+that naming is problematic. So he insisted that it's pure luck that it
+works like this. And IIUC his point, we need to create an explicit
+managed version of pci_alloc_irq_vectorrs() that the caller will have
+clear understanding what it does.
 
-list: Fix a typo at the kernel-doc markup
+> >> Fixes: 64e02cb0bdfc7c ("spi: pca2xx-pci: Allow MSI")
+> >
+> > No, it doesn't fix anything.
+>
+> Ah, now I recall: imbalanced APIs.
 
-hlist_add_behing -> hlist_add_behind
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- include/linux/list.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/list.h b/include/linux/list.h
-index 89bdc92..f2af4b4 100644
---- a/include/linux/list.h
-+++ b/include/linux/list.h
-@@ -901,7 +901,7 @@ static inline void hlist_add_before(struct hlist_node *n,
- }
- 
- /**
-- * hlist_add_behing - add a new entry after the one specified
-+ * hlist_add_behind - add a new entry after the one specified
-  * @n: new entry to be added
-  * @prev: hlist node to add it after, which must be non-NULL
-  */
+-- 
+With Best Regards,
+Andy Shevchenko
