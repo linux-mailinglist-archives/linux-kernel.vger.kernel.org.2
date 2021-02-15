@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FE531C43E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 00:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4171131C445
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 00:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhBOXTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 18:19:00 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:50164 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhBOXS6 (ORCPT
+        id S229881AbhBOXUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 18:20:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229646AbhBOXUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 18:18:58 -0500
-Received: by mail-il1-f199.google.com with SMTP id q3so6410206ilv.16
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 15:18:42 -0800 (PST)
+        Mon, 15 Feb 2021 18:20:33 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C1DC061574;
+        Mon, 15 Feb 2021 15:19:52 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id o82so168598wme.1;
+        Mon, 15 Feb 2021 15:19:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hb33F88LVPtKllDV+VocMmBqPskM1NoJ9tknfCCxZb0=;
+        b=WW7R1OkRwvE80hpNJNPgl9Vor3WDSQhfWTbL64mlfHqufSWbbUDhaKBAIL4f6LydHY
+         vSW6zD0+W4lKC0ND2h9TSztYFGY91W3P7Y8kRMHk3nmOao6LHjvihq2cQeTsuqZ8D/dQ
+         mUv23Guwm+WucibtEWJM45HUTJpZYbf6EBd05MRS3Ugc/8XjCUqHSLBKHOEKpCLl/dU1
+         SoCRlpFcL7BkwUGIVknA0D0yc6yyelg8pw4NfoV8tr61kIo8OR5gb6luxAVtwmvv+Civ
+         czQLTpq7YwX2i26qbBqSs1rB7+xs0kSWvSuXDTu80kzvHp2buIwhLBdivui5Dgvn0rjO
+         oRQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=RhDtHpOLvv7u6BJ1lSgPY8LsKAeZXSIEoChoNXHhq+c=;
-        b=Ejamfm0QCl51+pfsjPVY7AcOhxTP4N5ej2SfCAD5w1jOfX5ZDBucWcCSQAWkmyT6T+
-         yJVUMOfd4PYaVIkhbs1zdSLd0BdZU0ymTbee3AG4rQtk6foP0HzSACRsu/k0uY7YNfZ5
-         drnV0MMv1gkYM+qL5syjSTe6XUCKuTkMBHWS/m+CYGwd9fcllL0/yd79jooMiUR9kST3
-         aFy3kcBzIjEFdzxldsk/VbxX5tW1+mdYHX82B4Tgou3wr1jnIGFtxpO4oQDpuLGQmxLS
-         6aFPYLSTlduTGGcj+Us8nc3tvlbAJ7f1B+KggaNqMR1mkAZlCMLSzpWVUXu/jZfqo/En
-         ynaQ==
-X-Gm-Message-State: AOAM532alkQMWpjObkPuvAFYRkX/yIEy1AOt2Obw6e9m9Rn0AE9uZjiO
-        r41f2FaMgxKQBmQJ2zO7DCs6t2zw4ABSW2dhGLv/H4YwJrb+
-X-Google-Smtp-Source: ABdhPJzXWtHUmy25Bth3OwNjK0uKAdxuBCagcjFJODWydCEc8L4B1+4x0BxzfngVQy45JYld0t8US1bOaSdNq4z2kCtV1Ep2txS3
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hb33F88LVPtKllDV+VocMmBqPskM1NoJ9tknfCCxZb0=;
+        b=qB/QdHFi3wucHC18lZeiq3sRHqheZupzFTfJI8d9zAE+ldbF8UiHcekHE9A5Yb/LP3
+         1+0mP150HWJXrrweiCJ140cR/N1QRfyOXbgVgTUfY8aHtrgagGs6UmXDeoke2v5guMC4
+         Ss5tpao04AakcHL9Y2aeYkvr7zfrCqZ8wCyGGjybnRDfmxddg0MYTxrwJmb/ITq9usdn
+         MUz5AiOLW2aV3/DScmwjeKZGYTalk2jOTWqpQJJvGppk4z92NDpZLuE6zCI9FS4n1ZXw
+         IQ5azVrHMDOLKPHlEOIjbSGBdcTDvcYwdQzos7MeSLwB2IGrv40yGCPN9NWf5bk9gw5c
+         pJ4A==
+X-Gm-Message-State: AOAM533sLj2dkWfXYtpD6YxYlWFfoVvCzWi0qFK/4cJDDN1eTgVmcJim
+        PLLQmoSo02fiH55oLgG879g=
+X-Google-Smtp-Source: ABdhPJzlqgKQVX+8XDLJssuzBMQLfNH+ivWyTKt6e5R5yNHmJ3k92p9LDZdmElvo+2hZOM57AJU57A==
+X-Received: by 2002:a1c:98d4:: with SMTP id a203mr901335wme.10.1613431191637;
+        Mon, 15 Feb 2021 15:19:51 -0800 (PST)
+Received: from adgra-XPS-15-9570.home (2a01cb0008bd27008c8ad15d1b12a6b4.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:8c8a:d15d:1b12:a6b4])
+        by smtp.gmail.com with ESMTPSA id f5sm963158wmf.15.2021.02.15.15.19.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 15:19:51 -0800 (PST)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        catalin.marinas@arm.com, will@kernel.org, krzk@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH 0/8] Add peripheral support for imx8mm-nitrogen-r2 board
+Date:   Tue, 16 Feb 2021 00:19:35 +0100
+Message-Id: <20210215231943.36910-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:b008:: with SMTP id x8mr14945864ilh.297.1613431097349;
- Mon, 15 Feb 2021 15:18:17 -0800 (PST)
-Date:   Mon, 15 Feb 2021 15:18:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006d5e6f05bb6833c3@google.com>
-Subject: UBSAN: shift-out-of-bounds in hid_report_raw_event
-From:   syzbot <syzbot+ee5ce0deec4ff5aa64e1@syzkaller.appspotmail.com>
-To:     benjamin.tissoires@redhat.com, jikos@kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+this patch set is to add several peripheral support for the
+imx8mm-nitrogen-r2 board.
 
-HEAD commit:    291009f6 Merge tag 'pm-5.11-rc8' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17cd1098d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6a218c95bd23063a
-dashboard link: https://syzkaller.appspot.com/bug?extid=ee5ce0deec4ff5aa64e1
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10410288d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13642124d00000
+Thanks, 
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ee5ce0deec4ff5aa64e1@syzkaller.appspotmail.com
+Adrien Grassein (8):
+  arm64: dts: imx8mm-nitrogen-r2: add wifi/bt chip
+  arm64: dts: imx8mm-nitrogen-r2: add USB support
+  arm64: dts: imx8mm-nitrogen-r2: add espi2 support
+  arm64: dts: imx8mm-nitrogen-r2: add uarts
+  arm64: dts: imx8mm-nitrogen-r2: add pwms
+  arm64: dts: imx8mm-nitrogen-r2: add flexspi
+  arm64: dts: imx8mm-nitrogen-r2: add sai
+  arm64: defconfig: Enable wm8960 audio driver.
 
-================================================================================
-UBSAN: shift-out-of-bounds in drivers/hid/hid-core.c:1315:20
-shift exponent 4294967295 is too large for 32-bit type 'int'
-CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x137/0x1be lib/dump_stack.c:120
- ubsan_epilogue lib/ubsan.c:148 [inline]
- __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
- snto32 drivers/hid/hid-core.c:1315 [inline]
- hid_input_field drivers/hid/hid-core.c:1548 [inline]
- hid_report_raw_event+0xa9d/0x1480 drivers/hid/hid-core.c:1783
- hid_input_report+0x3f6/0x4d0 drivers/hid/hid-core.c:1850
- hid_irq_in+0x48d/0x690 drivers/hid/usbhid/hid-core.c:284
- __usb_hcd_giveback_urb+0x375/0x520 drivers/usb/core/hcd.c:1656
- dummy_timer+0xa22/0x2e70 drivers/usb/gadget/udc/dummy_hcd.c:1971
- call_timer_fn+0x91/0x160 kernel/time/timer.c:1417
- expire_timers kernel/time/timer.c:1462 [inline]
- __run_timers+0x6c0/0x8a0 kernel/time/timer.c:1731
- run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
- __do_softirq+0x318/0x714 kernel/softirq.c:343
- asm_call_irq_on_stack
+ .../boot/dts/freescale/imx8mm-nitrogen-r2.dts | 308 ++++++++++++++++++
+ arch/arm64/configs/defconfig                  |   1 +
+ 2 files changed, 309 insertions(+)
 
+-- 
+2.25.1
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
