@@ -2,208 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502BF31B74F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4640931B751
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhBOKjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230198AbhBOKjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:39:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44206 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhBOKjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 05:39:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21895 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229979AbhBOKi6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:38:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613385451;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qc6c5uDkuHKyGcgNcwsQu/75zJZpP0qScLTmIXfkA7E=;
-        b=RxMAgqsVcqV/6MO24WgOaaC8wzdSNXL1qUewpfOEWSkrl7swn0ouLyxAwss5uhkNHuDX1r
-        AMKVHyB4AZynPXK/QV9hbKElu7R2gxq3w9JA7nuwf95wCHmcEZMmOkGBY1J5lh+QTtIREW
-        O6dwvN45244fegtjVi29TC4OHtF/rRQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-b27hpJc-MFSR4oG8dddQlQ-1; Mon, 15 Feb 2021 05:37:29 -0500
-X-MC-Unique: b27hpJc-MFSR4oG8dddQlQ-1
-Received: by mail-ej1-f71.google.com with SMTP id 7so4086808ejh.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:37:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qc6c5uDkuHKyGcgNcwsQu/75zJZpP0qScLTmIXfkA7E=;
-        b=CU7nl4VJpO6XghB8Z4o62UBndNItMS6JoteLyB+1NKnD1k2GkUx06zkIVIHAwCuzhh
-         QMPe+qgVQtVFXfFlinE4EV8/H+a36yHKiODx9BxBDjFxpv/Kmmj1LLKLbUuEuxZCOPau
-         5TfldrLBdNRi1BHhsAdXYwgn/7HwJd/KPjoK8h8q7+6gTdi03ZW6SLoaYg8+exM510nf
-         z5OdxfkLKvVCpUVq6DWm2aPAeFytApXeF2HfQZG49Gc2Vl57nN0DiuJxV9RGXyoFX7Dn
-         7855Oi2YIby6LnTD8aX15S3YPQZu0yVKvuhzIRvivKvps8jFHoTPM+wFPminLUYw++88
-         oqRg==
-X-Gm-Message-State: AOAM531I1Bog1RyhXBUwLf215Y9LfGHK8LtMEmhQliGy+rrcTryr6SjO
-        laehY8Lguz0KdAy8+0NKIygXN+uFcR1kAqvIuFFM1Z2kBsvEavkl7ITeuCna2zXV8og6Fzb89Lc
-        viad4H970vpxEXFwHk9kRJ9Ww
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr14729122eju.375.1613385448065;
-        Mon, 15 Feb 2021 02:37:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz48iDFT6icNz/G5V8W+1Gbn7S+71yinDSb0pE+yIHXEoPgTdlObwbV19LXrzwB8QNHY2LTFQ==
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr14729106eju.375.1613385447894;
-        Mon, 15 Feb 2021 02:37:27 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id o4sm9693499edw.78.2021.02.15.02.37.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Feb 2021 02:37:27 -0800 (PST)
-Subject: Re: [RFC PATCH 1/7] drivers: base: Add resource managed version of
- delayed work init
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>
-Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "sre@kernel.org" <sre@kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "wens@csie.org" <wens@csie.org>,
-        "saravanak@google.com" <saravanak@google.com>,
-        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "myungjoo.ham@samsung.com" <myungjoo.ham@samsung.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "cw00.choi@samsung.com" <cw00.choi@samsung.com>
-References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
- <1230b0d2ba99ad546d72ab079e76cb1b3df32afb.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
- <2fb4b305-a93f-f91e-3001-dab5057e39cc@redhat.com>
- <084893a3-0071-13e9-5ce6-b7b027e6cd2a@roeck-us.net>
- <16140f5b-c504-1c07-9f0c-3813d686d157@redhat.com>
- <74ec29cb5780e93cca3d4cdec221c65e764c8a3e.camel@fi.rohmeurope.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <400d3e82-a76e-136c-0e03-ed7e40608e2a@redhat.com>
-Date:   Mon, 15 Feb 2021 11:37:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6C69FAC32;
+        Mon, 15 Feb 2021 10:38:20 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 3e5d9e0a;
+        Mon, 15 Feb 2021 10:39:22 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate
+ content is generated
+References: <20210212044405.4120619-1-drinkcat@chromium.org>
+        <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
+        <YCYybUg4d3+Oij4N@kroah.com>
+        <CAOQ4uxhovoZ4S3WhXwgYDeOeomBxfQ1BdzSyGdqoVX6boDOkeA@mail.gmail.com>
+        <YCY+tjPgcDmgmVD1@kroah.com> <871rdljxtx.fsf@suse.de>
+        <YCZyBZ1iT+MUXLu1@kroah.com> <87sg61ihkj.fsf@suse.de>
+        <CAOQ4uxi-VuBmE8Ej_B3xmBnn1nmp9qpiA-BkNpPcrE0PCRp1UA@mail.gmail.com>
+Date:   Mon, 15 Feb 2021 10:39:22 +0000
+In-Reply-To: <CAOQ4uxi-VuBmE8Ej_B3xmBnn1nmp9qpiA-BkNpPcrE0PCRp1UA@mail.gmail.com>
+        (Amir Goldstein's message of "Mon, 15 Feb 2021 08:12:03 +0200")
+Message-ID: <87h7mdvcmd.fsf@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <74ec29cb5780e93cca3d4cdec221c65e764c8a3e.camel@fi.rohmeurope.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Amir Goldstein <amir73il@gmail.com> writes:
 
-On 2/15/21 8:22 AM, Vaittinen, Matti wrote:
-> 
-> On Sat, 2021-02-13 at 16:59 +0100, Hans de Goede wrote:
->> Hi,
+> On Fri, Feb 12, 2021 at 2:40 PM Luis Henriques <lhenriques@suse.de> wrote:
+...
+>> Sure, I just wanted to point out that *maybe* there are other options than
+>> simply reverting that commit :-)
 >>
->> On 2/13/21 4:27 PM, Guenter Roeck wrote:
->>> On 2/13/21 7:03 AM, Hans de Goede wrote:
->>> [ ... ]
->>>> I think something like this should work:
->>>>
->>>> static int devm_delayed_work_autocancel(struct device *dev,
->>>> struct delayed_work *w,
->>>> 					void (*worker)(struct
->>>> work_struct *work)) {
->>>> 	INIT_DELAYED_WORK(w, worker);
->>>> 	return devm_add_action(dev, (void (*action)(void
->>>> *))cancel_delayed_work_sync, w);
->>>> }
->>>>
->>>> I'm not sure about the cast, that may need something like this
->>>> instead:
->>>>
->>>> typedef void (*devm_action_func)(void *);
->>>>
->>>> static int devm_delayed_work_autocancel(struct device *dev,
->>>> struct delayed_work *w,
->>>> 					void (*worker)(struct
->>>> work_struct *work)) {
->>>> 	INIT_DELAYED_WORK(w, worker);
->>>> 	return devm_add_action(dev,
->>>> (devm_action_func)cancel_delayed_work_sync, w);
->>>
->>> Unfortunately, you can not type cast function pointers in C. It is
->>> against the C ABI.
->>> I am sure it is done in a few places in the kernel anyway, but
->>> those are wrong.
+>> Something like the patch below (completely untested!) should revert to the
+>> old behaviour in filesystems that don't implement the CFR syscall.
 >>
->> I see, bummer.
-> 
-> I think using devm_add_action() is still a good idea.
-
-Yes, we could also just have a 1 line static inline function to do
-the function-cast. Like this:
-
-static inline void devm_delayed_work_autocancel_func(void *work)
-{
-	cancel_delayed_work_sync(work);
-}
-
-static inline int devm_delayed_work_autocancel(struct device *dev, struct delayed_work *w, void (*worker)(struct work_struct *work))
-{
-	INIT_DELAYED_WORK(w, worker);
-	return devm_add_action(dev, devm_delayed_work_autocancel_func, w);
-}
-
-Both functions will then simply be compiled out in files which do not
-use them.
-
->> If we add a devm_clk_prepare_enable() helper that should probably be
->> added
->> to drivers/clk/clk-devres.c and not to drivers/base/devres.c .
+>> Cheers,
+>> --
+>> Luis
 >>
->> I also still wonder if we cannot find a better place for this new
->> devm_delayed_work_autocancel() helper but nothing comes to mind.
-> 
-> I don't like the idea of including device.h from workqueue.h - and I
-> think this would be necessary if we added
-> devm_delayed_work_autocancel() as inline in workqueue.h, right?
+>> diff --git a/fs/read_write.c b/fs/read_write.c
+>> index 75f764b43418..bf5dccc43cc9 100644
+>> --- a/fs/read_write.c
+>> +++ b/fs/read_write.c
+>> @@ -1406,8 +1406,11 @@ static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
+>>                                                        file_out, pos_out,
+>>                                                        len, flags);
+>>
+>> -       return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+>> -                                      flags);
+>> +       if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
+>> +               return -EXDEV;
+>> +       else
+>> +               generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+>> +                                       flags);
+>>  }
+>>
+>
+> Which kernel is this patch based on?
 
-Yes.
+It was v5.11-rc7.
 
-> I also see strong objection towards the devm managed clean-ups.
+> At this point, I am with Dave and Darrick on not falling back to
+> generic_copy_file_range() at all.
+>
+> We do not have proof of any workload that benefits from it and the
+> above patch does not protect from a wierd use case of trying to copy a file
+> from sysfs to sysfs.
+>
 
-Yes it seems that there are some people who don't like this, where as
-others do like them.
+Ok, cool.  I can post a new patch doing just that.  I guess that function
+do_copy_file_range() can be dropped in that case.
 
-> How about adding some devm-helpers.c in drivers/base - where we could
-> collect devm-based helpers - and which could be enabled by own CONFIG -
-> and left out by those who dislike it?
+> I am indecisive about what should be done with generic_copy_file_range()
+> called as fallback from within filesystems.
+>
+> I think the wise choice is to not do the fallback in any case, but this is up
+> to the specific filesystem maintainers to decide.
 
-I would make this something configurable through Kconfig, but if
-go the static inline route, which I'm in favor of then we could just
-have a:
+I see what you mean.  You're suggesting to have userspace handle all the
+-EOPNOTSUPP and -EXDEV errors.  Would you rather have a patch that also
+removes all the calls to generic_copy_file_range() function?  And that
+function can also be deleted too, of course.
 
-include/linux/devm-cleanup-helpers.h
-
-And put everything (including kdoc texts) there.
-
-This way the functionality is 100% opt-in (by explicitly including
-the header if you want the helpers) which hopefully makes this a
-bit more acceptable to people who don't like this style of cleanups.
-
-I would be even happy to act as the upstream maintainer for such a
-include/linux/devm-cleanup-helpers.h file, I can maintain it as part
-of the platform-drivers-x86 tree (with its own MAINTAINERS entry).
-
-Greg, would this be an acceptable solution to you ?
-
-Regards,
-
-Hans
-
+Cheers,
+-- 
+Luis
