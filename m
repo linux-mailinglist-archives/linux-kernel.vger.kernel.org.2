@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6057E31C21F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E4C31C249
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhBOTEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:04:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43338 "EHLO mx2.suse.de"
+        id S231177AbhBOTNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:13:41 -0500
+Received: from smtp1.axis.com ([195.60.68.17]:5355 "EHLO smtp1.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229908AbhBOTD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:03:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613415792; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+fd7ihZjbhcZ8UUvdOazTdIjmKtVbqj7x1WqiHSTYpo=;
-        b=PWlJyJF9epJo/+kqbywJfNJKobXG+JhtYEtY1HliEUOiac+chaXYl2jiGSBLMu7eV4qsCa
-        oxm2AsOwKtBTAcXzOj2fFapPWffqp3ihTo3iFgaLcpwm1sYA2IAjf/3Fc8imYtbLQekL7R
-        CF282g/eNl+JimV7h/fWNdWrWJpxnGY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DBB47ACD4;
-        Mon, 15 Feb 2021 19:03:11 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 20:02:59 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-Message-ID: <YCrFY4ODu/O9KSND@dhcp22.suse.cz>
-References: <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
- <YCpN38i75olgispI@dhcp22.suse.cz>
- <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
- <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
- <YCpmlGuoTakPJs1u@dhcp22.suse.cz>
- <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
- <YCp04NVBZpZZ5k7G@dhcp22.suse.cz>
- <CAMZfGtV8-yJa_eGYtSXc0YY8KhYpgUo=pfj6TZ9zMo8fbz8nWA@mail.gmail.com>
- <YCqhDZ0EAgvCz+wX@dhcp22.suse.cz>
- <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
+        id S230048AbhBOTNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 14:13:17 -0500
+X-Greylist: delayed 509 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Feb 2021 14:13:15 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1613416396;
+  x=1644952396;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=wFNT4rSQCM8LHPCDltTRqOCKD9W6vi98OPConvKvLXY=;
+  b=MQ4bh4Ox9dnYXEryFOKVd5d9KjEAu+73/+YTglVvwMUQ1xUAkVVuFZ5O
+   bZPZIjyqES0kLONLIoApks/CKaa81TXpg/SIXaPPx/WZXG8toVuTfL5aL
+   noy2jm0evg/Jo35Qkmw+ZNEXHxB188oeiTDakCo3lz3wD+E9H0EX8hafm
+   zV1FoBpm891YNi/XVaZrfS+2LMQCez6NXevcmAkakoY06k2lY2VBx8h+H
+   7J8xgSm16VMoX0OsVXUy3hl2wxwazb9j8LhbuBwwv7n/jeD9D34KTuEgW
+   1v+vu6oFjYN5h4PF4uKHfxiGteO+UvR90h0O9UWowa5oq+uInE1x9cu+a
+   A==;
+From:   =?UTF-8?q?M=C3=A5rten=20Lindahl?= <marten.lindahl@axis.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     <kernel@axis.com>,
+        =?UTF-8?q?M=C3=A5rten=20Lindahl?= <martenli@axis.com>,
+        <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] i2c: exynos5: Preserve high speed master code
+Date:   Mon, 15 Feb 2021 20:03:21 +0100
+Message-ID: <20210215190322.22094-1-marten.lindahl@axis.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 16-02-21 01:48:29, Muchun Song wrote:
-> On Tue, Feb 16, 2021 at 12:28 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 15-02-21 23:36:49, Muchun Song wrote:
-> > [...]
-> > > > There shouldn't be any real reason why the memory allocation for
-> > > > vmemmaps, or handling vmemmap in general, has to be done from within the
-> > > > hugetlb lock and therefore requiring a non-sleeping semantic. All that
-> > > > can be deferred to a more relaxed context. If you want to make a
-> > >
-> > > Yeah, you are right. We can put the freeing hugetlb routine to a
-> > > workqueue. Just like I do in the previous version (before v13) patch.
-> > > I will pick up these patches.
-> >
-> > I haven't seen your v13 and I will unlikely have time to revisit that
-> > version. I just wanted to point out that the actual allocation doesn't
-> > have to happen from under the spinlock. There are multiple ways to go
-> > around that. Dropping the lock would be one of them. Preallocation
-> > before the spin lock is taken is another. WQ is certainly an option but
-> > I would take it as the last resort when other paths are not feasible.
-> >
-> 
-> "Dropping the lock" and "Preallocation before the spin lock" can limit
-> the context of put_page to non-atomic context. I am not sure if there
-> is a page puted somewhere under an atomic context. e.g. compaction.
-> I am not an expert on this.
+From: Mårten Lindahl <martenli@axis.com>
 
-Then do a due research or ask for a help from the MM community. Do
-not just try to go around harder problems and somehow duct tape a
-solution. I am sorry for sounding harsh here but this is a repetitive
-pattern.
+When the controller starts to send a message with the MASTER_ID field
+set (high speed), the whole I2C_ADDR register is overwritten including
+MASTER_ID as the SLV_ADDR_MAS field is set.
 
-Now to the merit. put_page can indeed be called from all sorts of
-contexts. And it might be indeed impossible to guarantee that hugetlb
-pages are never freed up from an atomic context. Requiring that would be
-even hard to maintain longterm. There are ways around that, I believe,
-though.
+This patch preserves already written fields in I2C_ADDR when writing
+SLV_ADDR_MAS.
 
-The most simple one that I can think of right now would be using
-in_atomic() rather than in_task() check free_huge_page. IIRC recent
-changes would allow in_atomic to be reliable also on !PREEMPT kernels
-(via RCU tree, not sure where this stands right now). That would make
-__free_huge_page always run in a non-atomic context which sounds like an
-easy enough solution.
-Another way would be to keep a pool of ready pages to use in case of
-GFP_NOWAIT allocation fails and have means to keep that pool replenished
-when needed. Would it be feasible to reused parts of the freed page in
-the worst case?
+Signed-off-by: Mårten Lindahl <martenli@axis.com>
+---
+ drivers/i2c/busses/i2c-exynos5.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
+index 20a9881a0d6c..f2d04c241299 100644
+--- a/drivers/i2c/busses/i2c-exynos5.c
++++ b/drivers/i2c/busses/i2c-exynos5.c
+@@ -606,6 +606,7 @@ static void exynos5_i2c_message_start(struct exynos5_i2c *i2c, int stop)
+ 	u32 i2c_ctl;
+ 	u32 int_en = 0;
+ 	u32 i2c_auto_conf = 0;
++	u32 i2c_addr = 0;
+ 	u32 fifo_ctl;
+ 	unsigned long flags;
+ 	unsigned short trig_lvl;
+@@ -640,7 +641,12 @@ static void exynos5_i2c_message_start(struct exynos5_i2c *i2c, int stop)
+ 		int_en |= HSI2C_INT_TX_ALMOSTEMPTY_EN;
+ 	}
+ 
+-	writel(HSI2C_SLV_ADDR_MAS(i2c->msg->addr), i2c->regs + HSI2C_ADDR);
++	i2c_addr = HSI2C_SLV_ADDR_MAS(i2c->msg->addr);
++
++	if (i2c->op_clock >= I2C_MAX_FAST_MODE_PLUS_FREQ)
++		i2c_addr |= readl(i2c->regs + HSI2C_ADDR);
++
++	writel(i2c_addr, i2c->regs + HSI2C_ADDR);
+ 
+ 	writel(fifo_ctl, i2c->regs + HSI2C_FIFO_CTL);
+ 	writel(i2c_ctl, i2c->regs + HSI2C_CTL);
 -- 
-Michal Hocko
-SUSE Labs
+2.11.0
+
