@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1A631BF38
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFD831BE0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbhBOQ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:28:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49638 "EHLO mail.kernel.org"
+        id S232421AbhBOP6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:58:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231318AbhBOPhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:37:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 178C664EDF;
-        Mon, 15 Feb 2021 15:32:41 +0000 (UTC)
+        id S231264AbhBOPcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:32:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE8AB64EA8;
+        Mon, 15 Feb 2021 15:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403162;
-        bh=d1CUVYk0SC2MJPPsLMtuThawV9TOFuQjU/XcEX12xzA=;
+        s=korg; t=1613403009;
+        bh=U/xZuhGbzwadAV7+Puhex6iA6fGUFDhUDxhnIODlcAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tnI+SDvZ0hFGgfApVqxFZvpO6NzCP+EG6KKjI5aaXL135dxMrrf3Kix2CT2pOQNCz
-         F+C/USR8dSUVp1TCuy0rJ3iMnG6hnSaotTfyLRY7vOjxO/yz7vV71HEIFAKE78BPMb
-         Sw/bOgWt8rrHeIgco1H0DIDuHpzyb0hMuC0BL1zA=
+        b=HGRhxqOVPmvdAofxishl7H6P6VMc4lqlrd+RQ10oyU19qH/geJ6eUTjzEuKJkplyx
+         YyZk1tZK/SX++bI8H6nrZhogyILoO1RJvKZG8tmXtmkjTuMvNNwDIc/0ghYgkJrLh8
+         6y+ph0rv8hXbtOnMVo27YLuB3zCvV/B5ED//S8hw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Victor Lu <victorchengchi.lu@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Anson Jacob <Anson.Jacob@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 052/104] mt76: dma: fix a possible memory leak in mt76_add_fragment()
-Date:   Mon, 15 Feb 2021 16:27:05 +0100
-Message-Id: <20210215152721.159111487@linuxfoundation.org>
+Subject: [PATCH 5.4 18/60] drm/amd/display: Decrement refcount of dc_sink before reassignment
+Date:   Mon, 15 Feb 2021 16:27:06 +0100
+Message-Id: <20210215152715.955636732@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
-References: <20210215152719.459796636@linuxfoundation.org>
+In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
+References: <20210215152715.401453874@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Victor Lu <victorchengchi.lu@amd.com>
 
-[ Upstream commit 93a1d4791c10d443bc67044def7efee2991d48b7 ]
+[ Upstream commit 8e92bb0fa75bca9a57e4aba2e36f67d8016a3053 ]
 
-Fix a memory leak in mt76_add_fragment routine returning the buffer
-to the page_frag_cache when we receive a new fragment and the
-skb_shared_info frag array is full.
+[why]
+An old dc_sink state is causing a memory leak because it is missing a
+dc_sink_release before a new dc_sink is assigned back to
+aconnector->dc_sink.
 
-Fixes: b102f0c522cf6 ("mt76: fix array overflow on receiving too many fragments for a packet")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Acked-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/4f9dd73407da88b2a552517ce8db242d86bf4d5c.1611616130.git.lorenzo@kernel.org
+[how]
+Decrement the dc_sink refcount before reassigning it to a new dc_sink.
+
+Signed-off-by: Victor Lu <victorchengchi.lu@amd.com>
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Acked-by: Anson Jacob <Anson.Jacob@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/dma.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/dma.c b/drivers/net/wireless/mediatek/mt76/dma.c
-index 145e839fea4e5..917617aad8d3c 100644
---- a/drivers/net/wireless/mediatek/mt76/dma.c
-+++ b/drivers/net/wireless/mediatek/mt76/dma.c
-@@ -519,15 +519,17 @@ static void
- mt76_add_fragment(struct mt76_dev *dev, struct mt76_queue *q, void *data,
- 		  int len, bool more)
- {
--	struct page *page = virt_to_head_page(data);
--	int offset = data - page_address(page);
- 	struct sk_buff *skb = q->rx_head;
- 	struct skb_shared_info *shinfo = skb_shinfo(skb);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index b4da8d1e4fb87..fbbe611d4873f 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -1417,8 +1417,10 @@ amdgpu_dm_update_connector_after_detect(struct amdgpu_dm_connector *aconnector)
+ 		 * TODO: check if we still need the S3 mode update workaround.
+ 		 * If yes, put it here.
+ 		 */
+-		if (aconnector->dc_sink)
++		if (aconnector->dc_sink) {
+ 			amdgpu_dm_update_freesync_caps(connector, NULL);
++			dc_sink_release(aconnector->dc_sink);
++		}
  
- 	if (shinfo->nr_frags < ARRAY_SIZE(shinfo->frags)) {
--		offset += q->buf_offset;
-+		struct page *page = virt_to_head_page(data);
-+		int offset = data - page_address(page) + q->buf_offset;
-+
- 		skb_add_rx_frag(skb, shinfo->nr_frags, page, offset, len,
- 				q->buf_size);
-+	} else {
-+		skb_free_frag(data);
- 	}
- 
- 	if (more)
+ 		aconnector->dc_sink = sink;
+ 		dc_sink_retain(aconnector->dc_sink);
 -- 
 2.27.0
 
