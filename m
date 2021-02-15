@@ -2,188 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E5931B80E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CA431B815
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhBOLdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 06:33:54 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:49044 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbhBOLdv (ORCPT
+        id S229979AbhBOLfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 06:35:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhBOLfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 06:33:51 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8E421743;
-        Mon, 15 Feb 2021 12:33:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613388787;
-        bh=BSgf0lC6W+ct3DtqLQSUhG6tO3u7JlCBUaYD+QzMLM0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EgmmopHf3kv7TTNawif/+EmlpdCSDo47+mb7iaF061ccajG0OBzJWsU4PdRxuWaOf
-         +9pQNVksrZh4rGKm/H7yo83wluOvxiHwGhDVm9DCdn8JfOvCBpTe20OgvDz4r10YSA
-         NsMjd/tXZmAeh14fMAkEW9j0V8I82GJb5dkuAMuw=
-Date:   Mon, 15 Feb 2021 13:32:41 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Vincent Abriou <vincent.abriou@st.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-amarula@amarulasolutions.com
-Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: Move drm_bridge_add into probe
-Message-ID: <YCpb2b8TskrKQBYY@pendragon.ideasonboard.com>
-References: <20210203091306.140518-1-jagan@amarulasolutions.com>
- <1660529.M3retTD8dW@diego>
+        Mon, 15 Feb 2021 06:35:31 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8E1C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:34:50 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id gx20so3751122pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:34:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l865vVupJANTr8r5LWdTPagS4MMpwqLzjm7i9kZsffo=;
+        b=DIldKF3h+HGUTTkXdgO1HcOE27rqK13KgreCr9rYNZM8vICXYReY2h1jmZuKluHWy6
+         u0OVEHaui4daB/x4TMYYhtClWcVjd1m0fdqohXkkGUvciosAGNz19JMJKwZjpgsgVYun
+         on/KKfyItRgN7nvYufhX57/gHvVHvbYZ85k5wudAbXNnIkIYvWm3I+a1huWJHa/WETt+
+         T3XhrQqmyWPiGhhIldBpdvNYQe8AVk5kWi2g7mr8bcIlLaXchSl9uV+bYshA2SdQP43t
+         LhLaWW0/L8V7oh/rZ7cmJNLPSF9/zdfqgLlci7t0NEXtRvi0YuqKCmENP0WrKrJ+Awnv
+         5k7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l865vVupJANTr8r5LWdTPagS4MMpwqLzjm7i9kZsffo=;
+        b=WYo0Ebp2sNj/YQuX3Eo2FzzLYizSc52a1MABHKIRKwWbf1u6dWbDmykCWZ38723n/X
+         SEhFBU4nn6bnZY7tv3GRSCWS3ts7x4IuMYhSEUmr+H0w+Di1hNRnW+qJKXuZSMibxIGZ
+         K/7W/IF042rj3S1Oyxk/pRkYwDrxHvW1RpCq4eMuHvfKwiOdWS7CcHEGWklkIkf985CZ
+         YitXv/QjpEVxtVUYLWKWoGRWr0Rlgf8XJp02B2bCmjQpXGMHu+b9RZoUNgwhE5O+auqA
+         R83ugO8lDzKwUICDeYfohkaleLznwthKQQtHUoXVOFZ+H7iKGSc+mvy5jSundbUk2KbW
+         Q8xg==
+X-Gm-Message-State: AOAM5338OHNYjhYDGL5Oc+fCjSD+6bMHYIYFApryBqSQ7i0TTC0lo/5e
+        32VArpDtKKY8AtcBuZ4abBquoA9i1yaDw+xIP9uJ/A==
+X-Google-Smtp-Source: ABdhPJwxcxvwODy8C+DbFH/mkU9NvXGvPpfF0/C61BusA2btA/ciWluIl8Up2QQUeiwNml5TBWl1KweOn9KuNLOY9fs=
+X-Received: by 2002:a17:902:9341:b029:e1:7b4e:57a8 with SMTP id
+ g1-20020a1709029341b02900e17b4e57a8mr14845364plp.34.1613388890312; Mon, 15
+ Feb 2021 03:34:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1660529.M3retTD8dW@diego>
+References: <20210212170159.32153-1-songmuchun@bytedance.com>
+ <20210212170159.32153-3-songmuchun@bytedance.com> <YCpBUm2N4Bqm5PM5@dhcp22.suse.cz>
+ <CAMZfGtVkh-DeYLLo8Nn7kHMCq055RSvL03eON1iqmhydYiQ-iQ@mail.gmail.com> <YCpMo6gLFyqANsgd@dhcp22.suse.cz>
+In-Reply-To: <YCpMo6gLFyqANsgd@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 15 Feb 2021 19:34:13 +0800
+Message-ID: <CAMZfGtUD3H6e+s_n+2q9aE3ABKJaooRj_vyELBaTTVUssSK-NA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 3/4] mm: memcontrol: bail out early when id
+ is zero
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+On Mon, Feb 15, 2021 at 6:27 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 15-02-21 18:09:44, Muchun Song wrote:
+> > On Mon, Feb 15, 2021 at 5:39 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Sat 13-02-21 01:01:58, Muchun Song wrote:
+> > > > The memcg ID cannot be zero, but we can pass zero to mem_cgroup_from_id,
+> > > > so idr_find() is pointless and wastes CPU cycles.
+> > >
+> > > Is this possible at all to happen? If not why should we add a test for
+> > > _all_ invocations?
+> >
+> > Yeah, this indeed can happen. If we allocate a new swap cache page
+> > and charge it via mem_cgroup_charge, then the page will uncharge
+> > the swap counter via mem_cgroup_uncharge_swap. When the swap
+> > entry is indeed freed, we will call mem_cgroup_uncharge_swap again,
+> > In this routine, we can pass zero to mem_cgroup_from_id. Right?
+>
+> If the above claim is correct, which I would need to double check then
+> it should have been part of the changelog! Please think of your poor
+> reviewers and the time they have to invest into the review.
 
-On Wed, Feb 03, 2021 at 01:05:43PM +0100, Heiko Stübner wrote:
-> Am Mittwoch, 3. Februar 2021, 10:13:06 CET schrieb Jagan Teki:
-> > Usual I2C configured DSI bridge drivers have drm_bridge_add
-> > in probe and mipi_dsi_attach in bridge attach functions.
-> > 
-> > With, this approach the drm pipeline is unable to find the
-> > dsi bridge in stm drm drivers since the dw-mipi-dsi bridge is
-> > adding drm bridge during bridge attach operations instead of
-> > the probe.
-> 
-> Shouldn't the STM drm driver not simply defer if it's missing
-> a bridge that is referenced in the devicetree or somewhere?
-> 
-> > This specific issue may not encounter for rockchip drm dsi
-> > drivers, since rockchip drm uses component binding operations,
-> > unlike stm drm drivers.
-> > 
-> > So, possible solutions are
-> > 1. Move drm_bridge_add into the dw-mipi-dsi probe.
-> > 2. Add mipi_dsi_attach in the bridge drivers probe.
-> > 3. Add component binding operations for stm drm drivers.
-> 
-> personally I'd like number (3) a lot ;-) .
+The easy way may be adding a printk to mem_cgroup_from_id when
+the parameter is zero.
 
-We have different opinions on this topic :-) The component framework
-adds a layer of complexity that can be avoided with probe deferral in
-most cases. The main reason why probe deferral isn't always enough is
-circular dependencies, which unless I'm mistaken isn't an issue here.
+>
+> I would also like to see your waste of CPU cycles argument to be backed
+> by something. Are we talking about cycles due to an additional function
 
-> With your approach, at least the component-based variants would
-> end up with multiple probe cycles, getting clocks etc until at some point
-> the panel has probed, where in the current way of things, the probe is
-> done once and we continue bringup once the panel has probed and called
-> dsi-attach to signal it is present.
-> 
-> Which was actually what Andrzej wished for, when I moved the Rockchip
-> dsi to the common driver.
-> 
-> Or at least make it configurable via a param to the common dw-dsi probe
-> function. Especially as I also need the dsi bridge-less when used as a
-> simple means for the configuring the internal dphy to rx-mode, see [0]
-> 
-> Heiko
-> 
-> [0] https://lore.kernel.org/dri-devel/20210202145632.1263136-1-heiko@sntech.de/
-> 
-> > Option 1 is a relatively possible solution as most of the
-> > mainline drm dsi with bridge drivers have a similar approach
-> > to their dsi host vs bridge registration.
-> > 
-> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> > ---
-> >  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 35 +++++++++----------
-> >  1 file changed, 17 insertions(+), 18 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> > index 6b268f9445b3..8a535041f071 100644
-> > --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> > +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> > @@ -314,8 +314,6 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
-> >  {
-> >  	struct dw_mipi_dsi *dsi = host_to_dsi(host);
-> >  	const struct dw_mipi_dsi_plat_data *pdata = dsi->plat_data;
-> > -	struct drm_bridge *bridge;
-> > -	struct drm_panel *panel;
-> >  	int ret;
-> >  
-> >  	if (device->lanes > dsi->plat_data->max_data_lanes) {
-> > @@ -329,22 +327,6 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
-> >  	dsi->format = device->format;
-> >  	dsi->mode_flags = device->mode_flags;
-> >  
-> > -	ret = drm_of_find_panel_or_bridge(host->dev->of_node, 1, 0,
-> > -					  &panel, &bridge);
-> > -	if (ret)
-> > -		return ret;
-> > -
-> > -	if (panel) {
-> > -		bridge = drm_panel_bridge_add_typed(panel,
-> > -						    DRM_MODE_CONNECTOR_DSI);
-> > -		if (IS_ERR(bridge))
-> > -			return PTR_ERR(bridge);
-> > -	}
-> > -
-> > -	dsi->panel_bridge = bridge;
-> > -
-> > -	drm_bridge_add(&dsi->bridge);
-> > -
-> >  	if (pdata->host_ops && pdata->host_ops->attach) {
-> >  		ret = pdata->host_ops->attach(pdata->priv_data, device);
-> >  		if (ret < 0)
-> > @@ -1105,6 +1087,8 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
-> >  	struct device *dev = &pdev->dev;
-> >  	struct reset_control *apb_rst;
-> >  	struct dw_mipi_dsi *dsi;
-> > +	struct drm_bridge *bridge;
-> > +	struct drm_panel *panel;
-> >  	int ret;
-> >  
-> >  	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-> > @@ -1167,6 +1151,20 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
-> >  	dw_mipi_dsi_debugfs_init(dsi);
-> >  	pm_runtime_enable(dev);
-> >  
-> > +	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0,
-> > +					  &panel, &bridge);
-> > +	if (ret)
-> > +		return ERR_PTR(ret);
-> > +
-> > +	if (panel) {
-> > +		bridge = drm_panel_bridge_add_typed(panel,
-> > +						    DRM_MODE_CONNECTOR_DSI);
-> > +		if (IS_ERR(bridge))
-> > +			return ERR_PTR(-ENODEV);
-> > +	}
-> > +
-> > +	dsi->panel_bridge = bridge;
-> > +
-> >  	dsi->dsi_host.ops = &dw_mipi_dsi_host_ops;
-> >  	dsi->dsi_host.dev = dev;
-> >  	ret = mipi_dsi_host_register(&dsi->dsi_host);
-> > @@ -1181,6 +1179,7 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
-> >  #ifdef CONFIG_OF
-> >  	dsi->bridge.of_node = pdev->dev.of_node;
-> >  #endif
-> > +	drm_bridge_add(&dsi->bridge);
-> >  
-> >  	return dsi;
-> >  }
+Yeah, when the parameter is already zero, idr_find() must return zero.
+So I think that the additional function call is unnecessary. I have added
+a printk to mem_cgroup_from_id, I found the parameter can be zero
+several times.
 
--- 
-Regards,
+> call? Is this really something we should even care about?
 
-Laurent Pinchart
+Maybe not. Just my thoughts.
+
+Thanks.
+
+>
+> > > >
+> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > ---
+> > > >  mm/memcontrol.c | 3 +++
+> > > >  1 file changed, 3 insertions(+)
+> > > >
+> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > > index a3f26522765a..68ed4b297c13 100644
+> > > > --- a/mm/memcontrol.c
+> > > > +++ b/mm/memcontrol.c
+> > > > @@ -5173,6 +5173,9 @@ static inline void mem_cgroup_id_put(struct mem_cgroup *memcg)
+> > > >  struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
+> > > >  {
+> > > >       WARN_ON_ONCE(!rcu_read_lock_held());
+> > > > +     /* The memcg ID cannot be zero. */
+> > > > +     if (id == 0)
+> > > > +             return NULL;
+> > > >       return idr_find(&mem_cgroup_idr, id);
+> > > >  }
+> > > >
+> > > > --
+> > > > 2.11.0
+> > >
+> > > --
+> > > Michal Hocko
+> > > SUSE Labs
+>
+> --
+> Michal Hocko
+> SUSE Labs
