@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD0931B65E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF49431B661
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:26:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhBOJZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:25:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50880 "EHLO mx2.suse.de"
+        id S230172AbhBOJ0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:26:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230046AbhBOJZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:25:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613381086; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xB5MBNbB1QLYYTbvCj1weox/L1QyvBLNycXdZJ/J33s=;
-        b=msIiFaMGkdJ4pDCv0zyVzZbaNCFRTvzOfXRSNRzqy3NRtv9ZBePOOmmS5Aicny13IwoBJR
-        cOnnBmTXrlauKa0ifYK8IfQd8C24XTIjw4Y7qX0E0tuRGrIu60sL/0UThYl+CsPbdYZWsm
-        sfYS0TqbdIhAmdfPROvuM5Tk0ePE4OU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B5BA5AD19;
-        Mon, 15 Feb 2021 09:24:46 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 10:24:45 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] mm: memcontrol: remove memcg check from
- memcg_oom_recover
-Message-ID: <YCo93axI0xUMbM4I@dhcp22.suse.cz>
-References: <20210212170159.32153-1-songmuchun@bytedance.com>
+        id S230138AbhBOJZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 04:25:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C18D64DEE;
+        Mon, 15 Feb 2021 09:25:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613381104;
+        bh=bfvSPlI4bOZ5PvYmk6nN5TYccj5PzjzSAJoKeX5M+pw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IsVSG/ZQlyd3wQIjwsnY7ygCfS7ysRv9A+Ob9FzgzshzMdDYHLLkq1fMqfY9V4Eh+
+         krxug0eXpQ8WUGpTDTadVv8b1g5VmtMXJJUxMdqvGt9Bd18vAg4vuGO4zorNFKsoXC
+         6ggLrJgwjwm5aCJCyivNtnA/NeilemdN/K6Rhzv9TenICLwmknzcFQoNxUXxh67gFp
+         Vl4DPPVbcHJTFmNujzI48TeJwYL9r8kVjYYUu+i5rPC8LLNhiG4Fj3umATIHDzHaC0
+         hMsgPacItYgC3UBFeUmOrzL5TnDzy03/frRDtMOVdqJa/i9/NkgbiP1dd4YjSV2sJ2
+         Fv01A+YBJF6wA==
+Date:   Mon, 15 Feb 2021 11:24:59 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Subject: Re: [PATCH net-next RFC v3] net: hdlc_x25: Queue outgoing LAPB frames
+Message-ID: <YCo96zjXHyvKpbUM@unreal>
+References: <20210215072703.43952-1-xie.he.0141@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210212170159.32153-1-songmuchun@bytedance.com>
+In-Reply-To: <20210215072703.43952-1-xie.he.0141@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 13-02-21 01:01:56, Muchun Song wrote:
-> The memcg_oom_recover() almost never do anything but the test (because
-> oom_disabled is a rarely used) is just waste of cycles in some hot
-> paths (e.g. kmem uncharge). And it is very small, so it is better to
-> make it inline. Also, the parameter of memcg cannot be NULL, so removing
-> the check can reduce useless check.
-
-You probably wanted to make this patch follow the second one in the
-series. As there is no oom recover form the kmem uncharge path now. Also
-I believe that I've asked you to split the memcg check to its separate
-patch.
-
-Regarding the inlining, I would add it along with a static key check in
-memcg_oom_recover.
-
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+On Sun, Feb 14, 2021 at 11:27:03PM -0800, Xie He wrote:
+> When sending packets, we will first hand over the (L3) packets to the
+> LAPB module. The LAPB module will then hand over the corresponding LAPB
+> (L2) frames back to us for us to transmit.
+>
+> The LAPB module can also emit LAPB (L2) frames at any time, even without
+> an (L3) packet currently being sent on the device. This happens when the
+> LAPB module tries to send (L3) packets queued up in its internal queue,
+> or when the LAPB module decides to send some (L2) control frame.
+>
+> This means we need to have a queue for these outgoing LAPB (L2) frames,
+> otherwise frames can be dropped if sent when the hardware driver is
+> already busy in transmitting. The queue needs to be controlled by
+> the hardware driver's netif_stop_queue and netif_wake_queue calls.
+> Therefore, we need to use the device's qdisc TX queue for this purpose.
+> However, currently outgoing LAPB (L2) frames are not queued.
+>
+> On the other hand, outgoing (L3) packets (before they are handed over
+> to the LAPB module) don't need to be queued, because the LAPB module
+> already has an internal queue for them, and is able to queue new outgoing
+> (L3) packets at any time. However, currently outgoing (L3) packets are
+> being queued in the device's qdisc TX queue, which is controlled by
+> the hardware driver's netif_stop_queue and netif_wake_queue calls.
+> This is unnecessary and meaningless.
+>
+> To fix these issues, we can split the HDLC device into two devices -
+> a virtual X.25 device and the actual HDLC device, use the virtual X.25
+> device to send (L3) packets and then use the actual HDLC device to
+> queue LAPB (L2) frames. The outgoing (L2) LAPB queue will be controlled
+> by the hardware driver's netif_stop_queue and netif_wake_queue calls,
+> while outgoing (L3) packets will not be affected by these calls.
+>
+> Cc: Martin Schiller <ms@dev.tdt.de>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
 > ---
->  mm/memcontrol.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8c035846c7a4..7afca9677693 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1925,7 +1925,7 @@ static int memcg_oom_wake_function(wait_queue_entry_t *wait,
->  	return autoremove_wake_function(wait, mode, sync, arg);
->  }
->  
-> -static void memcg_oom_recover(struct mem_cgroup *memcg)
-> +static inline void memcg_oom_recover(struct mem_cgroup *memcg)
->  {
->  	/*
->  	 * For the following lockless ->under_oom test, the only required
-> @@ -1935,7 +1935,7 @@ static void memcg_oom_recover(struct mem_cgroup *memcg)
->  	 * achieved by invoking mem_cgroup_mark_under_oom() before
->  	 * triggering notification.
->  	 */
-> -	if (memcg && memcg->under_oom)
-> +	if (memcg->under_oom)
->  		__wake_up(&memcg_oom_waitq, TASK_NORMAL, 0, memcg);
->  }
->  
-> -- 
-> 2.11.0
+>
+> Change from RFC v2:
+> Simplified the commit message.
+> Dropped the x25_open fix which is already merged into net-next now.
+> Use HDLC_MAX_MTU as the mtu of the X.25 virtual device.
+> Add an explanation to the documentation about the X.25 virtual device.
+>
+> Change from RFC v1:
+> Properly initialize state(hdlc)->x25_dev and state(hdlc)->x25_dev_lock.
+>
+> ---
+>  Documentation/networking/generic-hdlc.rst |   3 +
+>  drivers/net/wan/hdlc_x25.c                | 153 ++++++++++++++++++----
+>  2 files changed, 130 insertions(+), 26 deletions(-)
 
--- 
-Michal Hocko
-SUSE Labs
+<...>
+
+> +static void x25_setup_virtual_dev(struct net_device *dev)
+> +{
+> +	dev->netdev_ops	     = &hdlc_x25_netdev_ops;
+> +	dev->type            = ARPHRD_X25;
+> +	dev->addr_len        = 0;
+> +	dev->hard_header_len = 0;
+> +	dev->mtu             = HDLC_MAX_MTU;
+> +
+> +	/* When transmitting data:
+> +	 * first we'll remove a pseudo header of 1 byte,
+> +	 * then the LAPB module will prepend an LAPB header of at most 3 bytes.
+> +	 */
+> +	dev->needed_headroom = 3 - 1;
+
+3 - 1 = 2
+
+Thanks
+
+> +}
+> +
