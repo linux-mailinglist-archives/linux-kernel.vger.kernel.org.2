@@ -2,77 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B6931C0FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C189E31C0FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhBORtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:49:43 -0500
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:40397 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232288AbhBORpV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:45:21 -0500
-Received: by mail-wm1-f52.google.com with SMTP id o24so10040328wmh.5;
-        Mon, 15 Feb 2021 09:45:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PnA3I4tNzKQkmDNsKQRjhd/8+Vk4a9EnP1XaMm5fKQ8=;
-        b=PSFeeUA1EQVH0I5PaKYP+LuYafA7uvQSMxp4kwEDl4vL5Giczx2+oojAoOJUwGrleS
-         EsCZZW8aEHVhqW/uYlyaz9dnnPg5mC8orUNPatMbM9SNr3VIHmeaA2xxIGejKs8O+JxZ
-         23tnfTxFJHNU1x3s2fgtwUkk7eLnRgHOfYi8N8goPbvcQoX4MHJ/CNn16AjPupz8Rzjv
-         RcTAhevA8rvubW5uk5I/F9tfL7+M2bmzRKemOgt/vrhpb6rCfcVxlc9ScUYDhYWjhIX6
-         YWDggDm4cxtIACRHAA/38jeRSY77hG4s+goBl/sk9zWiIxlq7OJA5ta0wQHyDNLaKsKi
-         CqkQ==
-X-Gm-Message-State: AOAM530mJTAAD34YpAdDpn5P2PKBDnpLv29bsRJLp/3zu3fnH2oXjrSm
-        7X1MtAm+LFlbdS19/VKNl+Y=
-X-Google-Smtp-Source: ABdhPJw1TLASUhuhatOOQUpk+ZB7iEl8DLP1WzOMmJV1LOPG7BUTtHEWBR2KXSvTcq+Aa379IZtToA==
-X-Received: by 2002:a1c:25c2:: with SMTP id l185mr43489wml.62.1613411079487;
-        Mon, 15 Feb 2021 09:44:39 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id n187sm29953wmf.29.2021.02.15.09.44.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 09:44:38 -0800 (PST)
-Date:   Mon, 15 Feb 2021 18:44:37 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/25] dt-bindings: vendor-prefixes: Add apple prefix
-Message-ID: <20210215174437.5bly3owzhxweudwt@kozik-lap>
-References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-2-marcan@marcan.st>
+        id S231480AbhBORuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:50:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232184AbhBORpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 12:45:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EAEA60C3D;
+        Mon, 15 Feb 2021 17:45:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613411111;
+        bh=H142txNXU7FRt9uW2Sv16n19CyrevXPqFbx8ThdGOrI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uglK3kwezVaW8PF9O7FxFnlzq7edOQYRV4JhCChBfp7IC1sZiO5UIKu4xOQ6CEbW0
+         9xuJibheu2jwvY9Fk3sEeGOyqm9b9LEUm3T7vPODQumpsqGUaGbMWpwakK5tdZRLh1
+         FsNuf+PV84M6z3tZ3okItznTl+4JAB0yOYeo3t1y+v8MvauJ89KKKgCMB+tqVRnAiC
+         4rXdPqCkNqgMoVW068L3bL/2Z7i5JSJoqmsEdsMsvAQ5RAsgsjvO+7jHs+gsVpMxXY
+         BOgODid5IqWfH0ncdktLpmuQr59nm0hZpCcT8hBeZWUwySMhkBk8M9e+yLrhjzfbZC
+         lDA4fVbX9OE7g==
+Date:   Mon, 15 Feb 2021 09:45:09 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Stephen Boyd <sboyd@kernel.org>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+        Jan Kotas <jank@cadence.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
+        Boris BREZILLON <boris.brezillon@free-electrons.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Emilio =?UTF-8?B?TMOzcGV6?= <emilio@elopez.com.ar>,
+        Viresh Kumar <vireshk@kernel.org>, openbmc@lists.ozlabs.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nancy Yuen <yuenn@google.com>, Chen-Yu Tsai <wens@csie.org>,
+        Andy Gross <agross@kernel.org>, Loc Ho <lho@apm.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Richard Woodruff <r-woodruff2@ti.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-msm@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        =?UTF-8?B?U8O2cmVu?= Brinkmann <soren.brinkmann@xilinx.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Tero Kristo <kristo@kernel.org>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Nuvoton Technologies <tali.perry@nuvoton.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
+Message-ID: <20210215094509.0b1f0bbf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210215084952.GF179940@dell>
+References: <20210212092016.GF4572@dell>
+        <161316374113.1254594.14156657225822268891@swboyd.mtv.corp.google.com>
+        <20210212212503.GC179940@dell>
+        <20210212212630.GD179940@dell>
+        <161316754567.1254594.9542583200097699504@swboyd.mtv.corp.google.com>
+        <20210212223739.GE179940@dell>
+        <161317480301.1254594.16648868282165823277@swboyd.mtv.corp.google.com>
+        <YCf4kkMsX+Ymgy6N@lunn.ch>
+        <161333644244.1254594.4498059850307971318@swboyd.mtv.corp.google.com>
+        <YCmUOHTtc+j4eLkO@lunn.ch>
+        <20210215084952.GF179940@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210215121713.57687-2-marcan@marcan.st>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 09:16:49PM +0900, Hector Martin wrote:
-> This is different from the legacy AAPL prefix used on PPC, but
-> consensus is that we prefer `apple` for these new platforms.
+On Mon, 15 Feb 2021 08:49:52 +0000 Lee Jones wrote:
+> > Jakub can explain how he added these checks.  
 > 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+> Yes, please share.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Best regards,
-Krzysztof
+https://github.com/kuba-moo/nipa
