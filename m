@@ -2,547 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF50D31BB2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 946D231BB2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhBOOfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:35:45 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:59418 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhBOOeg (ORCPT
+        id S229991AbhBOOfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:35:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229652AbhBOOfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:34:36 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id C14871F44DE7
-Subject: Re: [PATCH 3/6] drm/rockchip: dsi: add ability to work as a phy
- instead of full dsi
-To:     Heiko Stuebner <heiko@sntech.de>, dri-devel@lists.freedesktop.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hjc@rock-chips.com, robh+dt@kernel.org,
-        sebastian.fricke@posteo.net, linux-media@vger.kernel.org,
-        dafna.hirschfeld@collabora.com, ezequiel@collabora.com,
-        cmuellner@linux.com,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-References: <20210210111020.2476369-1-heiko@sntech.de>
- <20210210111020.2476369-4-heiko@sntech.de>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <d7b8137c-66ce-935a-c8d7-e507146143d7@collabora.com>
-Date:   Mon, 15 Feb 2021 11:33:19 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 15 Feb 2021 09:35:22 -0500
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0964C061756;
+        Mon, 15 Feb 2021 06:34:41 -0800 (PST)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lBewx-00EHAn-AI; Mon, 15 Feb 2021 14:34:07 +0000
+Date:   Mon, 15 Feb 2021 14:34:07 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org,
+        chrubis <chrubis@suse.cz>, Jan Stancek <jstancek@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian@brauner.io>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Vorel <pvorel@suse.cz>,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        Joerg.Vehlow@aox-tech.de
+Subject: Re: LTP: madvise08.c:203: TFAIL: No sequence in dump after
+ MADV_DODUMP.
+Message-ID: <YCqGX36I+KR7SoA8@zeniv-ca.linux.org.uk>
+References: <CA+G9fYsvDWDogC+xgeG2V9MMofV5svTipDigDiUBje+2jSRK8g@mail.gmail.com>
+ <CAK8P3a2OeeW29ekbD70Ns4LTjGRJRT9P0wM-SAxUin1zAxP7TA@mail.gmail.com>
+ <CA+G9fYv89bfbixjuudPWkBAucTYg7qhNxcV54RMEkRP5is-bnQ@mail.gmail.com>
+ <YCmAGNyFAOZs7GCG@zeniv-ca.linux.org.uk>
+ <CA+G9fYsZnBv4wAEKYb0mgMd-BsgXcPUGBQ=VRKcONqAZry_4XQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210210111020.2476369-4-heiko@sntech.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYsZnBv4wAEKYb0mgMd-BsgXcPUGBQ=VRKcONqAZry_4XQ@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 15, 2021 at 02:11:15PM +0530, Naresh Kamboju wrote:
 
+> fs/coredump.c:903:9: error: 'return' with a value, in function
+> returning void [-Werror=return-type]
+>  903 | return 0;
+>         | ^
+> 
+> Build failed due to above error.
 
-On 2/10/21 8:10 AM, Heiko Stuebner wrote:
-> From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-> 
-> SoCs like the rk3288 and rk3399 have 3 mipi dphys on them. One is TX-
-> only, one is RX-only and one can be configured to do either TX or RX.
-> 
-> The RX phy is statically connected to the first Image Signal Processor,
-> the TX phy is statically connected to the first DSI controller and
-> the TXRX phy is connected to both the second DSI controller as well
-> as the second ISP.
-> 
-> The RX dphy is controlled externally through registers in the "General
-> Register Files", while the other two are controlled through the
-> "Configuration and Test Interface" inside their DSI controller's
-> io-memory area.
-> 
-> The Rockchip dw-dsi controller already controls these dphys for the
-> TX case in the driver, but when we want to also allow configuration
-> for RX to the ISP from the media subsystem we need to expose phy-
-> functionality instead.
-> 
-> So add a bit of infrastructure to allow the dsi driver to work as a
-> phy and make sure it can be only one or the other at a time.
-> 
-> Similarly as the dsi-controller will be part of the drm-graph when
-> active, add an empty component to the drm-graph when in phy-mode
-> to make the rest of the drm-graph not wait for it.
-> 
-> Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-> Tested-by: Sebastian Fricke <sebastian.fricke@posteo.net>
-> ---
->   drivers/gpu/drm/rockchip/Kconfig              |   2 +
->   .../gpu/drm/rockchip/dw-mipi-dsi-rockchip.c   | 341 ++++++++++++++++++
->   2 files changed, 343 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/rockchip/Kconfig b/drivers/gpu/drm/rockchip/Kconfig
-> index cb25c0e8fc9b..3094d4533ad6 100644
-> --- a/drivers/gpu/drm/rockchip/Kconfig
-> +++ b/drivers/gpu/drm/rockchip/Kconfig
-> @@ -9,6 +9,8 @@ config DRM_ROCKCHIP
->   	select DRM_ANALOGIX_DP if ROCKCHIP_ANALOGIX_DP
->   	select DRM_DW_HDMI if ROCKCHIP_DW_HDMI
->   	select DRM_DW_MIPI_DSI if ROCKCHIP_DW_MIPI_DSI
-> +	select GENERIC_PHY if ROCKCHIP_DW_MIPI_DSI
-> +	select GENERIC_PHY_MIPI_DPHY if ROCKCHIP_DW_MIPI_DSI
+FWIW, here the test results in
+Running tests.......
+<<<test_start>>>
+tag=madvise08 stime=1613398818
+cmdline="madvise08"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
+madvise08.c:78: TINFO: Temporary core pattern is '/tmp/ltp-tgvQ3Lz1UZ/B6lwy6/dump-%p'                              
+madvise08.c:117: TINFO: Dump file should be dump-2276
+madvise08.c:201: TPASS: madvise(..., MADV_DONTDUMP)
+madvise08.c:117: TINFO: Dump file should be dump-2277
+madvise08.c:205: TPASS: madvise(..., MADV_DODUMP)
 
-maybe alphabetical order?
+Summary:
+passed   2
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
 
->   	select DRM_RGB if ROCKCHIP_RGB
->   	select SND_SOC_HDMI_CODEC if ROCKCHIP_CDN_DP && SND_SOC
->   	help
-> diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-> index 18e112e30f6e..e322749a5279 100644
-> --- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-> +++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-> @@ -14,6 +14,7 @@
->   #include <linux/of_device.h>
->   #include <linux/phy/phy.h>
->   #include <linux/pm_runtime.h>
-> +#include <linux/phy/phy.h>
->   #include <linux/regmap.h>
->   
->   #include <video/mipi_display.h>
-> @@ -125,7 +126,9 @@
->   #define BANDGAP_AND_BIAS_CONTROL			0x20
->   #define TERMINATION_RESISTER_CONTROL			0x21
->   #define AFE_BIAS_BANDGAP_ANALOG_PROGRAMMABILITY		0x22
-> +#define HS_RX_CONTROL_OF_LANE_CLK			0x34
->   #define HS_RX_CONTROL_OF_LANE_0				0x44
-> +#define HS_RX_CONTROL_OF_LANE_1				0x54
->   #define HS_TX_CLOCK_LANE_REQUEST_STATE_TIME_CONTROL	0x60
->   #define HS_TX_CLOCK_LANE_PREPARE_STATE_TIME_CONTROL	0x61
->   #define HS_TX_CLOCK_LANE_HS_ZERO_STATE_TIME_CONTROL	0x62
-> @@ -137,6 +140,9 @@
->   #define HS_TX_DATA_LANE_HS_ZERO_STATE_TIME_CONTROL	0x72
->   #define HS_TX_DATA_LANE_TRAIL_STATE_TIME_CONTROL	0x73
->   #define HS_TX_DATA_LANE_EXIT_STATE_TIME_CONTROL		0x74
-> +#define HS_RX_DATA_LANE_THS_SETTLE_CONTROL		0x75
-> +#define HS_RX_CONTROL_OF_LANE_2				0x84
-> +#define HS_RX_CONTROL_OF_LANE_3				0x94
->   
->   #define DW_MIPI_NEEDS_PHY_CFG_CLK	BIT(0)
->   #define DW_MIPI_NEEDS_GRF_CLK		BIT(1)
-> @@ -171,11 +177,19 @@
->   #define RK3399_TXRX_MASTERSLAVEZ	BIT(7)
->   #define RK3399_TXRX_ENABLECLK		BIT(6)
->   #define RK3399_TXRX_BASEDIR		BIT(5)
-> +#define RK3399_TXRX_SRC_SEL_ISP0	BIT(4)
-> +#define RK3399_TXRX_TURNREQUEST		GENMASK(3, 0)
->   
->   #define HIWORD_UPDATE(val, mask)	(val | (mask) << 16)
->   
->   #define to_dsi(nm)	container_of(nm, struct dw_mipi_dsi_rockchip, nm)
->   
-> +enum {
-> +	DW_DSI_USAGE_IDLE,
-> +	DW_DSI_USAGE_DSI,
-> +	DW_DSI_USAGE_PHY,
-> +};
-> +
->   enum {
->   	BANDGAP_97_07,
->   	BANDGAP_98_05,
-> @@ -213,6 +227,10 @@ struct rockchip_dw_dsi_chip_data {
->   	u32 lanecfg2_grf_reg;
->   	u32 lanecfg2;
->   
-> +	int (*dphy_rx_init)(struct phy *phy);
-> +	int (*dphy_rx_power_on)(struct phy *phy);
-> +	int (*dphy_rx_power_off)(struct phy *phy);
-> +
->   	unsigned int flags;
->   	unsigned int max_data_lanes;
->   };
-> @@ -236,6 +254,12 @@ struct dw_mipi_dsi_rockchip {
->   	struct phy *phy;
->   	union phy_configure_opts phy_opts;
->   
-> +	/* being a phy for other mipi hosts */
-> +	unsigned int usage_mode;
-> +	struct mutex usage_mutex;
-> +	struct phy *dphy;
-> +	struct phy_configure_opts_mipi_dphy dphy_config;
-> +
->   	unsigned int lane_mbps; /* per lane */
->   	u16 input_div;
->   	u16 feedback_div;
-> @@ -965,6 +989,17 @@ static int dw_mipi_dsi_rockchip_host_attach(void *priv_data,
->   	struct device *second;
->   	int ret;
->   
-> +	mutex_lock(&dsi->usage_mutex);
-> +
-> +	if (dsi->usage_mode != DW_DSI_USAGE_IDLE) {
-> +		DRM_DEV_ERROR(dsi->dev, "dsi controller already in use\n");
-> +		mutex_unlock(&dsi->usage_mutex);
-> +		return -EBUSY;
-> +	}
-> +
-> +	dsi->usage_mode = DW_DSI_USAGE_DSI;
-> +	mutex_unlock(&dsi->usage_mutex);
-> +
->   	ret = component_add(dsi->dev, &dw_mipi_dsi_rockchip_ops);
->   	if (ret) {
->   		DRM_DEV_ERROR(dsi->dev, "Failed to register component: %d\n",
-> @@ -1000,6 +1035,10 @@ static int dw_mipi_dsi_rockchip_host_detach(void *priv_data,
->   
->   	component_del(dsi->dev, &dw_mipi_dsi_rockchip_ops);
->   
-> +	mutex_lock(&dsi->usage_mutex);
-> +	dsi->usage_mode = DW_DSI_USAGE_IDLE;
-> +	mutex_unlock(&dsi->usage_mutex);
-> +
->   	return 0;
->   }
->   
-> @@ -1008,11 +1047,227 @@ static const struct dw_mipi_dsi_host_ops dw_mipi_dsi_rockchip_host_ops = {
->   	.detach = dw_mipi_dsi_rockchip_host_detach,
->   };
->   
-> +static int dw_mipi_dsi_rockchip_dphy_bind(struct device *dev,
-> +					  struct device *master,
-> +					  void *data)
-> +{
-> +	/*
-> +	 * Nothing to do when used as a dphy.
-> +	 * Just make the rest of Rockchip-DRM happy
-> +	 * by being here.
-> +	 */
-> +
-> +	return 0;
-> +}
-> +
-> +static void dw_mipi_dsi_rockchip_dphy_unbind(struct device *dev,
-> +					     struct device *master,
-> +					     void *data)
-> +{
-> +	/* Nothing to do when used as a dphy. */
-> +}
-> +
-> +static const struct component_ops dw_mipi_dsi_rockchip_dphy_ops = {
-> +	.bind	= dw_mipi_dsi_rockchip_dphy_bind,
-> +	.unbind	= dw_mipi_dsi_rockchip_dphy_unbind,
-> +};
-> +
-> +static int dw_mipi_dsi_dphy_init(struct phy *phy)
-> +{
-> +	struct dw_mipi_dsi_rockchip *dsi = phy_get_drvdata(phy);
-> +	int ret;
-> +
-> +	mutex_lock(&dsi->usage_mutex);
-> +
-> +	if (dsi->usage_mode != DW_DSI_USAGE_IDLE) {
-> +		DRM_DEV_ERROR(dsi->dev, "dsi controller already in use\n");
-> +		mutex_unlock(&dsi->usage_mutex);
-> +		return -EBUSY;
-> +	}
-> +
-> +	dsi->usage_mode = DW_DSI_USAGE_PHY;
-> +	mutex_unlock(&dsi->usage_mutex);
-> +
-> +	ret = component_add(dsi->dev, &dw_mipi_dsi_rockchip_dphy_ops);
-> +	if (ret < 0)
-> +		goto err_graph;
-> +
-> +	if (dsi->cdata->dphy_rx_init) {
-> +		ret = clk_prepare_enable(dsi->pclk);
-> +		if (ret < 0)
-> +			goto err_init;
-> +
-> +		ret = clk_prepare_enable(dsi->grf_clk);
-> +		if (ret) {
-> +			clk_disable_unprepare(dsi->pclk);
-> +			goto err_init;
-> +		}
-> +
-> +		ret = dsi->cdata->dphy_rx_init(phy);
-> +		clk_disable_unprepare(dsi->grf_clk);
-> +		clk_disable_unprepare(dsi->pclk);
-> +		if (ret < 0)
-> +			goto err_init;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_init:
-> +	component_del(dsi->dev, &dw_mipi_dsi_rockchip_dphy_ops);
-> +err_graph:
-> +	mutex_lock(&dsi->usage_mutex);
-> +	dsi->usage_mode = DW_DSI_USAGE_IDLE;
-> +	mutex_unlock(&dsi->usage_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static int dw_mipi_dsi_dphy_exit(struct phy *phy)
-> +{
-> +	struct dw_mipi_dsi_rockchip *dsi = phy_get_drvdata(phy);
-> +
-> +	component_del(dsi->dev, &dw_mipi_dsi_rockchip_dphy_ops);
-> +
-> +	mutex_lock(&dsi->usage_mutex);
-> +	dsi->usage_mode = DW_DSI_USAGE_IDLE;
-> +	mutex_unlock(&dsi->usage_mutex);
-> +
-> +	return 0;
-> +}
-> +
-> +static int dw_mipi_dsi_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
-> +{
-> +	struct phy_configure_opts_mipi_dphy *config = &opts->mipi_dphy;
-> +	struct dw_mipi_dsi_rockchip *dsi = phy_get_drvdata(phy);
-> +	int ret;
-> +
-> +	ret = phy_mipi_dphy_config_validate(&opts->mipi_dphy);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dsi->dphy_config = *config;
-> +	dsi->lane_mbps = div_u64(config->hs_clk_rate, 1000 * 1000 * 1);
-> +
-> +	return 0;
-> +}
-> +
-> +static int dw_mipi_dsi_dphy_power_on(struct phy *phy)
-> +{
-> +	struct dw_mipi_dsi_rockchip *dsi = phy_get_drvdata(phy);
-> +	int i, ret;
+(built without -Werror=return-type, so I'd missed the warnings)
 
-It seems "i" could be removed, use ret instead.
-
-In general, the patch doesn't look wrong to me.
-
-For the whole serie:
-Acked-by: Helen Koike <helen.koike@collabora.com>
-
-Thanks
-Helen
-
-> +
-> +	DRM_DEV_DEBUG(dsi->dev, "lanes %d - data_rate_mbps %u\n",
-> +		      dsi->dphy_config.lanes, dsi->lane_mbps);
-> +
-> +	i = max_mbps_to_parameter(dsi->lane_mbps);
-> +	if (i < 0) {
-> +		DRM_DEV_ERROR(dsi->dev, "failed to get parameter for %dmbps clock\n",
-> +			      dsi->lane_mbps);
-> +		return i;
-> +	}
-> +
-> +	ret = pm_runtime_get_sync(dsi->dev);
-> +	if (ret < 0) {
-> +		DRM_DEV_ERROR(dsi->dev, "failed to enable device: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_prepare_enable(dsi->pclk);
-> +	if (ret) {
-> +		DRM_DEV_ERROR(dsi->dev, "Failed to enable pclk: %d\n", ret);
-> +		goto err_pclk;
-> +	}
-> +
-> +	ret = clk_prepare_enable(dsi->grf_clk);
-> +	if (ret) {
-> +		DRM_DEV_ERROR(dsi->dev, "Failed to enable grf_clk: %d\n", ret);
-> +		goto err_grf_clk;
-> +	}
-> +
-> +	ret = clk_prepare_enable(dsi->phy_cfg_clk);
-> +	if (ret) {
-> +		DRM_DEV_ERROR(dsi->dev, "Failed to enable phy_cfg_clk: %d\n", ret);
-> +		goto err_phy_cfg_clk;
-> +	}
-> +
-> +	/* do soc-variant specific init */
-> +	if (dsi->cdata->dphy_rx_power_on) {
-> +		ret = dsi->cdata->dphy_rx_power_on(phy);
-> +		if (ret < 0) {
-> +			DRM_DEV_ERROR(dsi->dev, "hardware-specific phy bringup failed: %d\n", ret);
-> +			goto err_pwr_on;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * Configure hsfreqrange according to frequency values
-> +	 * Set clock lane and hsfreqrange by lane0(test code 0x44)
-> +	 */
-> +	dw_mipi_dsi_phy_write(dsi, HS_RX_CONTROL_OF_LANE_CLK, 0);
-> +	dw_mipi_dsi_phy_write(dsi, HS_RX_CONTROL_OF_LANE_0,
-> +			      HSFREQRANGE_SEL(dppa_map[i].hsfreqrange));
-> +	dw_mipi_dsi_phy_write(dsi, HS_RX_CONTROL_OF_LANE_1, 0);
-> +	dw_mipi_dsi_phy_write(dsi, HS_RX_CONTROL_OF_LANE_2, 0);
-> +	dw_mipi_dsi_phy_write(dsi, HS_RX_CONTROL_OF_LANE_3, 0);
-> +
-> +	/* Normal operation */
-> +	dw_mipi_dsi_phy_write(dsi, 0x0, 0);
-> +
-> +	clk_disable_unprepare(dsi->phy_cfg_clk);
-> +	clk_disable_unprepare(dsi->grf_clk);
-> +
-> +	return ret;
-> +
-> +err_pwr_on:
-> +	clk_disable_unprepare(dsi->phy_cfg_clk);
-> +err_phy_cfg_clk:
-> +	clk_disable_unprepare(dsi->grf_clk);
-> +err_grf_clk:
-> +	clk_disable_unprepare(dsi->pclk);
-> +err_pclk:
-> +	pm_runtime_put(dsi->dev);
-> +	return ret;
-> +}
-> +
-> +static int dw_mipi_dsi_dphy_power_off(struct phy *phy)
-> +{
-> +	struct dw_mipi_dsi_rockchip *dsi = phy_get_drvdata(phy);
-> +	int ret;
-> +
-> +	ret = clk_prepare_enable(dsi->grf_clk);
-> +	if (ret) {
-> +		DRM_DEV_ERROR(dsi->dev, "Failed to enable grf_clk: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	if (dsi->cdata->dphy_rx_power_off) {
-> +		ret = dsi->cdata->dphy_rx_power_off(phy);
-> +		if (ret < 0)
-> +			DRM_DEV_ERROR(dsi->dev, "hardware-specific phy shutdown failed: %d\n", ret);
-> +	}
-> +
-> +	clk_disable_unprepare(dsi->grf_clk);
-> +	clk_disable_unprepare(dsi->pclk);
-> +
-> +	pm_runtime_put(dsi->dev);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct phy_ops dw_mipi_dsi_dphy_ops = {
-> +	.configure	= dw_mipi_dsi_dphy_configure,
-> +	.power_on	= dw_mipi_dsi_dphy_power_on,
-> +	.power_off	= dw_mipi_dsi_dphy_power_off,
-> +	.init		= dw_mipi_dsi_dphy_init,
-> +	.exit		= dw_mipi_dsi_dphy_exit,
-> +};
-> +
->   static int dw_mipi_dsi_rockchip_probe(struct platform_device *pdev)
->   {
->   	struct device *dev = &pdev->dev;
->   	struct device_node *np = dev->of_node;
->   	struct dw_mipi_dsi_rockchip *dsi;
-> +	struct phy_provider *phy_provider;
->   	struct resource *res;
->   	const struct rockchip_dw_dsi_chip_data *cdata =
->   				of_device_get_match_data(dev);
-> @@ -1109,6 +1364,19 @@ static int dw_mipi_dsi_rockchip_probe(struct platform_device *pdev)
->   	dsi->pdata.priv_data = dsi;
->   	platform_set_drvdata(pdev, dsi);
->   
-> +	mutex_init(&dsi->usage_mutex);
-> +
-> +	dsi->dphy = devm_phy_create(dev, NULL, &dw_mipi_dsi_dphy_ops);
-> +	if (IS_ERR(dsi->dphy)) {
-> +		DRM_DEV_ERROR(&pdev->dev, "failed to create PHY\n");
-> +		return PTR_ERR(dsi->dphy);
-> +	}
-> +
-> +	phy_set_drvdata(dsi->dphy, dsi);
-> +	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-> +	if (IS_ERR(phy_provider))
-> +		return PTR_ERR(phy_provider);
-> +
->   	dsi->dmd = dw_mipi_dsi_probe(pdev, &dsi->pdata);
->   	if (IS_ERR(dsi->dmd)) {
->   		ret = PTR_ERR(dsi->dmd);
-> @@ -1175,6 +1443,75 @@ static const struct rockchip_dw_dsi_chip_data rk3288_chip_data[] = {
->   	{ /* sentinel */ }
->   };
->   
-> +static int rk3399_dphy_tx1rx1_init(struct phy *phy)
-> +{
-> +	struct dw_mipi_dsi_rockchip *dsi = phy_get_drvdata(phy);
-> +
-> +	/*
-> +	 * Set TX1RX1 source to isp1.
-> +	 * Assume ISP0 is supplied by the RX0 dphy.
-> +	 */
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON24,
-> +		     HIWORD_UPDATE(0, RK3399_TXRX_SRC_SEL_ISP0));
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON24,
-> +		     HIWORD_UPDATE(0, RK3399_TXRX_MASTERSLAVEZ));
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON24,
-> +		     HIWORD_UPDATE(0, RK3399_TXRX_BASEDIR));
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON23,
-> +		     HIWORD_UPDATE(0, RK3399_DSI1_ENABLE));
-> +
-> +	return 0;
-> +}
-> +
-> +static int rk3399_dphy_tx1rx1_power_on(struct phy *phy)
-> +{
-> +	struct dw_mipi_dsi_rockchip *dsi = phy_get_drvdata(phy);
-> +
-> +	/* tester reset pulse */
-> +	dsi_write(dsi, DSI_PHY_TST_CTRL0, PHY_TESTCLK | PHY_TESTCLR);
-> +	usleep_range(100, 150);
-> +
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON24,
-> +		     HIWORD_UPDATE(0, RK3399_TXRX_MASTERSLAVEZ));
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON24,
-> +		     HIWORD_UPDATE(RK3399_TXRX_BASEDIR, RK3399_TXRX_BASEDIR));
-> +
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON23,
-> +		     HIWORD_UPDATE(0, RK3399_DSI1_FORCERXMODE));
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON23,
-> +		     HIWORD_UPDATE(0, RK3399_DSI1_FORCETXSTOPMODE));
-> +
-> +	/* Disable lane turn around, which is ignored in receive mode */
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON24,
-> +		     HIWORD_UPDATE(0, RK3399_TXRX_TURNREQUEST));
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON23,
-> +		     HIWORD_UPDATE(RK3399_DSI1_TURNDISABLE,
-> +				   RK3399_DSI1_TURNDISABLE));
-> +	usleep_range(100, 150);
-> +
-> +	dsi_write(dsi, DSI_PHY_TST_CTRL0, PHY_TESTCLK | PHY_UNTESTCLR);
-> +	usleep_range(100, 150);
-> +
-> +	/* Enable dphy lanes */
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON23,
-> +		     HIWORD_UPDATE(GENMASK(dsi->dphy_config.lanes - 1, 0),
-> +				   RK3399_DSI1_ENABLE));
-> +
-> +	usleep_range(100, 150);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rk3399_dphy_tx1rx1_power_off(struct phy *phy)
-> +{
-> +	struct dw_mipi_dsi_rockchip *dsi = phy_get_drvdata(phy);
-> +
-> +	regmap_write(dsi->grf_regmap, RK3399_GRF_SOC_CON23,
-> +		     HIWORD_UPDATE(0, RK3399_DSI1_ENABLE));
-> +
-> +	return 0;
-> +}
-> +
->   static const struct rockchip_dw_dsi_chip_data rk3399_chip_data[] = {
->   	{
->   		.reg = 0xff960000,
-> @@ -1217,6 +1554,10 @@ static const struct rockchip_dw_dsi_chip_data rk3399_chip_data[] = {
->   
->   		.flags = DW_MIPI_NEEDS_PHY_CFG_CLK | DW_MIPI_NEEDS_GRF_CLK,
->   		.max_data_lanes = 4,
-> +
-> +		.dphy_rx_init = rk3399_dphy_tx1rx1_init,
-> +		.dphy_rx_power_on = rk3399_dphy_tx1rx1_power_on,
-> +		.dphy_rx_power_off = rk3399_dphy_tx1rx1_power_off,
->   	},
->   	{ /* sentinel */ }
->   };
-> 
+Anyway, I've folded the fix (with those stray return 0 removed, of course)
+into #work.coredump and #for-next; works here.  Could you test either
+branch (in git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git)?
