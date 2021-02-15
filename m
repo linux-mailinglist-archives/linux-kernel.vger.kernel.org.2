@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928DF31BC2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DCC31BC31
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBOPVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:21:53 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:33610 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhBOPSC (ORCPT
+        id S230108AbhBOPWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:22:36 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:51625 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhBOPTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:18:02 -0500
-Received: by mail-io1-f69.google.com with SMTP id m3so6998155ioy.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:17:46 -0800 (PST)
+        Mon, 15 Feb 2021 10:19:03 -0500
+Received: by mail-il1-f198.google.com with SMTP id c7so5566568ilm.18
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:18:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6Yl9t4gdd2YVth0q3BHMCtt6ZKFt8W/B/gJwsLbv9dc=;
-        b=d8xJnDbQfo+viS5lYW4FQzLYa5bNJ9xSQntHOM8RCtmh+3a2R5ZehY9Xcso4MiAAi4
-         SYTRsShwsDnHgWT4PSz1y4jrVDvT5ImiLklgPuFVJBHrhH/jiQ9tHoK4vSsCuNJkd2M4
-         MLr6w9Ws38Ju/uexRU4UT46d7IZd8yXwZefYQNvcYtJ0k811Ns4uGhpStvoQqiT+r/CA
-         Kdvhth4z1Gf9t+zFVrthgddM0Q7n3mFdgw569Wv+Ij6umT4COMdVOdJyoU9LQGaAKqTF
-         Vad4hoZj5LHB+cbSRHLwKu1V3YYFf+gqNJXieXPCnM1KstrcydI+nXxyldjwhFbHN4UC
-         LIEw==
-X-Gm-Message-State: AOAM530Bj4C6i07wtN+csz15UMJGNps9LN8x1GgOAWrgrzvQzm6CDoJK
-        2IWUSy5Yu4dWk2nZX2jNuzJLBRVUFhAEPiJqudBG+NCvXbLo
-X-Google-Smtp-Source: ABdhPJwtT5ZSMT9DFRY8v/G8IhAUDwB6SAPYdqmGoTJG8o3l6Ljxie90N0nF1pSBoC5Ur1Cdr2zg+h4PeH+rOfM30Oa7c6WnVt85
+        bh=G3OO12fHeu5/ZsKky77dakeCnb4d7ffwzbB89AJlTcE=;
+        b=oILiCanRZW+Zcz4lrr5yDjL4PcGgAiDfh8GSN6r1jdFIOAk10tRCysxFMhtteLQIMa
+         KRZpiY2rTNL1EFBadxWMwDqo6xT8wLDPWoYsGjDzf9Fmd0kKd+YLXnDozxQcevb1SxLu
+         fn2koXcLQlEZogsOqBJzI5GkZwFBscXDGc8L6HcfAUFuBXOKbdiDOJ6SB5Q+aJ/jGlwu
+         85qvhlwBvp8ZeCpy+B7vDXLwl2dhRelATgs+CIkuLsM+CDaik9s+zD2qrIXv9J2x/bQ3
+         lBdFrjHZWxRfdcorCbpEB3SHxWQ6bcGbhfgAErz5CKrQchpFZaMM0bKQ6/bxDK2S0Y8O
+         VwXQ==
+X-Gm-Message-State: AOAM5336OnHD1/DBjC5Uezj1TEISfdUnOZupz3dOIL0y2gD9BAmS6PAw
+        zs1WWs9B6J/YknhVzJC70vKYEmu3fohoGx5BjlughIYmKF1h
+X-Google-Smtp-Source: ABdhPJzzqJWM+IoVdr+w0tJnO1rmZDKuYfc1BKxX9v+EyRrjqBqtctATVTL7fQ/E4fxJyBHfG8ssxOZbqDoQmtUOZ+PJ3AgNnz7C
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2411:: with SMTP id z17mr5241927jat.29.1613402240800;
- Mon, 15 Feb 2021 07:17:20 -0800 (PST)
-Date:   Mon, 15 Feb 2021 07:17:20 -0800
+X-Received: by 2002:a05:6602:5de:: with SMTP id w30mr12934814iox.36.1613402302024;
+ Mon, 15 Feb 2021 07:18:22 -0800 (PST)
+Date:   Mon, 15 Feb 2021 07:18:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000715bd105bb617b44@google.com>
-Subject: general protection fault in nl802154_add_llsec_key
-From:   syzbot <syzbot+ce4e062c2d51977ddc50@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000017937c05bb617f1d@google.com>
+Subject: KASAN: use-after-free Read in v4l2_fh_open
+From:   syzbot <syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        mchehab@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,77 +47,71 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    57baf8cc net: axienet: Handle deferred probe on clock prop..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c84ed2d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8cb23303ddb9411f
-dashboard link: https://syzkaller.appspot.com/bug?extid=ce4e062c2d51977ddc50
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1332a822d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12760822d00000
+HEAD commit:    291009f6 Merge tag 'pm-5.11-rc8' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17260814d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6a218c95bd23063a
+dashboard link: https://syzkaller.appspot.com/bug?extid=b2391895514ed9ef4a8e
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ec5814d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17179dd4d00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ce4e062c2d51977ddc50@syzkaller.appspotmail.com
+Reported-by: syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 8444 Comm: syz-executor279 Not tainted 5.11.0-rc7-syzkaller #0
+==================================================================
+BUG: KASAN: use-after-free in v4l2_fh_init drivers/media/v4l2-core/v4l2-fh.c:25 [inline]
+BUG: KASAN: use-after-free in v4l2_fh_open+0xc7/0x430 drivers/media/v4l2-core/v4l2-fh.c:63
+Read of size 8 at addr ffff8880228b88b8 by task v4l_id/18349
+
+CPU: 1 PID: 18349 Comm: v4l_id Not tainted 5.11.0-rc7-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:nla_len include/net/netlink.h:1148 [inline]
-RIP: 0010:nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
-RIP: 0010:nl802154_add_llsec_key+0x1f7/0x560 net/ieee802154/nl802154.c:1547
-Code: 00 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 2f 03 00 00 48 8b 93 28 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 d1 48 c1 e9 03 <0f> b6 0c 01 48 89 d0 83 e0 07 83 c0 01 38 c8 7c 08 84 c9 0f 85 c9
-RSP: 0018:ffffc90001adf4a0 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffff88802117c000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff88892195 RDI: ffff88802117c128
-RBP: 1ffff9200035be95 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff87315ffa R11: 0000000000000000 R12: ffff88801c222000
-R13: ffff88801bb34bd0 R14: ffffc90001adf8b0 R15: 0000000000000000
-FS:  0000000001dcd300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200006c8 CR3: 000000002146a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x137/0x1be lib/dump_stack.c:120
+ print_address_description+0x5f/0x3a0 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report+0x15e/0x200 mm/kasan/report.c:413
+ v4l2_fh_init drivers/media/v4l2-core/v4l2-fh.c:25 [inline]
+ v4l2_fh_open+0xc7/0x430 drivers/media/v4l2-core/v4l2-fh.c:63
+ em28xx_v4l2_open+0x15c/0xa60 drivers/media/usb/em28xx/em28xx-video.c:2163
+ v4l2_open+0x229/0x360 drivers/media/v4l2-core/v4l2-dev.c:423
+ chrdev_open+0x4a0/0x570 fs/char_dev.c:414
+ do_dentry_open+0x7cb/0x1010 fs/open.c:817
+ do_open fs/namei.c:3254 [inline]
+ path_openat+0x2791/0x37a0 fs/namei.c:3371
+ do_filp_open+0x191/0x3a0 fs/namei.c:3398
+ do_sys_openat2+0xba/0x380 fs/open.c:1172
+ do_sys_open fs/open.c:1188 [inline]
+ __do_sys_open fs/open.c:1196 [inline]
+ __se_sys_open fs/open.c:1192 [inline]
+ __x64_sys_open+0x1af/0x1e0 fs/open.c:1192
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x43f8a9
-Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe56c91f68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 000000000043f8a9
-RDX: 0000000000000000 RSI: 0000000020000a00 RDI: 0000000000000004
-RBP: 0000000000403310 R08: 00000000004004a0 R09: 00000000004004a0
-R10: 0000000000000003 R11: 0000000000000246 R12: 00000000004033a0
-R13: 0000000000000000 R14: 00000000004ad018 R15: 00000000004004a0
-Modules linked in:
----[ end trace 1844a7d5c231fd88 ]---
-RIP: 0010:nla_len include/net/netlink.h:1148 [inline]
-RIP: 0010:nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
-RIP: 0010:nl802154_add_llsec_key+0x1f7/0x560 net/ieee802154/nl802154.c:1547
-Code: 00 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 2f 03 00 00 48 8b 93 28 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 d1 48 c1 e9 03 <0f> b6 0c 01 48 89 d0 83 e0 07 83 c0 01 38 c8 7c 08 84 c9 0f 85 c9
-RSP: 0018:ffffc90001adf4a0 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffff88802117c000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff88892195 RDI: ffff88802117c128
-RBP: 1ffff9200035be95 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff87315ffa R11: 0000000000000000 R12: ffff88801c222000
-R13: ffff88801bb34bd0 R14: ffffc90001adf8b0 R15: 0000000000000000
-FS:  0000000001dcd300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200006c8 CR3: 000000002146a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+RIP: 0033:0x7fdd62b00840
+Code: 73 01 c3 48 8b 0d 68 77 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 89 bb 20 00 00 75 10 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 1e f6 ff ff 48 89 04 24
+RSP: 002b:00007ffe8bb255b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 00007ffe8bb25728 RCX: 00007fdd62b00840
+RDX: 00007fdd62aecea0 RSI: 0000000000000000 RDI: 00007ffe8bb26f1c
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 000055f8a7dee8d0
+R13: 00007ffe8bb25720 R14: 0000000000000000 R15: 0000000000000000
+
+The buggy address belongs to the page:
+page:00000000b7dd9778 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn:0x228b8
+flags: 0xfff00000000000()
+raw: 00fff00000000000 ffffea0000580108 ffff88813fffb910 0000000000000000
+raw: 0000000000000000 0000000000000002 00000000ffffff7f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880228b8780: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880228b8800: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff8880228b8880: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                        ^
+ ffff8880228b8900: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880228b8980: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
 
 
 ---
