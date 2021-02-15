@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13AF31BF9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5B631BF66
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232347AbhBOQni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:43:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49602 "EHLO mail.kernel.org"
+        id S232198AbhBOQdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:33:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231621AbhBOPiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:38:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35D9564EEE;
-        Mon, 15 Feb 2021 15:34:04 +0000 (UTC)
+        id S231430AbhBOPhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:37:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 371EF64E34;
+        Mon, 15 Feb 2021 15:32:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403244;
-        bh=cxKqO7/u5wHEciAat0FsEJjw9iDvaNGyv4dBpPqcfIs=;
+        s=korg; t=1613403172;
+        bh=xS1Pt+PYfKUTxEyXn4PYk1P4+dKudPioyWkc7c3XnTw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VpVeLQOJnyZ+Da7WJXhie9XnXmwMDsNcjW71JTDrmgpkt4i5Fh4qrSlErZ5pHn9H/
-         zS6dXurBk7wCm7FTbjh9VFBo/LwQ+wO7OtmYEcC2yIj8N+DVoOEUVyuxyAPcSKTAZt
-         S4/6r82oANSNuaWck7qg1pWpdx1XmHfWTAoAlRtc=
+        b=ijhbXGzHvVg6T+qF3n8gekTuJeZMpY3dhkrxDXU0z+WN8XLAijrfdT+TQ9/7T7dw3
+         lAp6l3EAYQW4wZxWNktfEJfXVCVttKhivZIUXkejeiPTERNPkimgjKmHYvUBCyyOeg
+         EZ6w9UNQm+Jpk9HuSJqf0t4miQ3sTTcFEtjrHGGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Victor Lu <victorchengchi.lu@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Anson Jacob <Anson.Jacob@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Lin Feng <linf@wangsu.com>,
+        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 036/104] drm/amd/display: Decrement refcount of dc_sink before reassignment
-Date:   Mon, 15 Feb 2021 16:26:49 +0100
-Message-Id: <20210215152720.650614905@linuxfoundation.org>
+Subject: [PATCH 5.10 038/104] bfq-iosched: Revert "bfq: Fix computation of shallow depth"
+Date:   Mon, 15 Feb 2021 16:26:51 +0100
+Message-Id: <20210215152720.711381389@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -43,44 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Victor Lu <victorchengchi.lu@amd.com>
+From: Lin Feng <linf@wangsu.com>
 
-[ Upstream commit 8e92bb0fa75bca9a57e4aba2e36f67d8016a3053 ]
+[ Upstream commit 388c705b95f23f317fa43e6abf9ff07b583b721a ]
 
-[why]
-An old dc_sink state is causing a memory leak because it is missing a
-dc_sink_release before a new dc_sink is assigned back to
-aconnector->dc_sink.
+This reverts commit 6d4d273588378c65915acaf7b2ee74e9dd9c130a.
 
-[how]
-Decrement the dc_sink refcount before reassigning it to a new dc_sink.
+bfq.limit_depth passes word_depths[] as shallow_depth down to sbitmap core
+sbitmap_get_shallow, which uses just the number to limit the scan depth of
+each bitmap word, formula:
+scan_percentage_for_each_word = shallow_depth / (1 << sbimap->shift) * 100%
 
-Signed-off-by: Victor Lu <victorchengchi.lu@amd.com>
-Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Acked-by: Anson Jacob <Anson.Jacob@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+That means the comments's percentiles 50%, 75%, 18%, 37% of bfq are correct.
+But after commit patch 'bfq: Fix computation of shallow depth', we use
+sbitmap.depth instead, as a example in following case:
+
+sbitmap.depth = 256, map_nr = 4, shift = 6; sbitmap_word.depth = 64.
+The resulsts of computed bfqd->word_depths[] are {128, 192, 48, 96}, and
+three of the numbers exceed core dirver's 'sbitmap_word.depth=64' limit
+nothing.
+
+Signed-off-by: Lin Feng <linf@wangsu.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ block/bfq-iosched.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 321df20fcdb99..fdca76fc598c0 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -2261,8 +2261,10 @@ void amdgpu_dm_update_connector_after_detect(
- 		 * TODO: check if we still need the S3 mode update workaround.
- 		 * If yes, put it here.
- 		 */
--		if (aconnector->dc_sink)
-+		if (aconnector->dc_sink) {
- 			amdgpu_dm_update_freesync_caps(connector, NULL);
-+			dc_sink_release(aconnector->dc_sink);
-+		}
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 9e4eb0fc1c16e..9e81d1052091f 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -6332,13 +6332,13 @@ static unsigned int bfq_update_depths(struct bfq_data *bfqd,
+ 	 * limit 'something'.
+ 	 */
+ 	/* no more than 50% of tags for async I/O */
+-	bfqd->word_depths[0][0] = max(bt->sb.depth >> 1, 1U);
++	bfqd->word_depths[0][0] = max((1U << bt->sb.shift) >> 1, 1U);
+ 	/*
+ 	 * no more than 75% of tags for sync writes (25% extra tags
+ 	 * w.r.t. async I/O, to prevent async I/O from starving sync
+ 	 * writes)
+ 	 */
+-	bfqd->word_depths[0][1] = max((bt->sb.depth * 3) >> 2, 1U);
++	bfqd->word_depths[0][1] = max(((1U << bt->sb.shift) * 3) >> 2, 1U);
  
- 		aconnector->dc_sink = sink;
- 		dc_sink_retain(aconnector->dc_sink);
+ 	/*
+ 	 * In-word depths in case some bfq_queue is being weight-
+@@ -6348,9 +6348,9 @@ static unsigned int bfq_update_depths(struct bfq_data *bfqd,
+ 	 * shortage.
+ 	 */
+ 	/* no more than ~18% of tags for async I/O */
+-	bfqd->word_depths[1][0] = max((bt->sb.depth * 3) >> 4, 1U);
++	bfqd->word_depths[1][0] = max(((1U << bt->sb.shift) * 3) >> 4, 1U);
+ 	/* no more than ~37% of tags for sync writes (~20% extra tags) */
+-	bfqd->word_depths[1][1] = max((bt->sb.depth * 6) >> 4, 1U);
++	bfqd->word_depths[1][1] = max(((1U << bt->sb.shift) * 6) >> 4, 1U);
+ 
+ 	for (i = 0; i < 2; i++)
+ 		for (j = 0; j < 2; j++)
 -- 
 2.27.0
 
