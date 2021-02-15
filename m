@@ -2,168 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F69431B89E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F1F31B8AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhBOMCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:02:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39046 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230184AbhBOMBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:01:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7F02BACD4;
-        Mon, 15 Feb 2021 12:00:48 +0000 (UTC)
-Subject: Re: DMA-buf and uncached system memory
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org, lkml <linux-kernel@vger.kernel.org>
-Cc:     "Sharma, Shashank" <Shashank.Sharma@amd.com>
-References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
- <e6897f92-4c61-cd42-2822-43c50a744d4c@suse.de>
-Message-ID: <302e06ad-f979-dc77-5d84-fa0923aa4632@suse.de>
-Date:   Mon, 15 Feb 2021 13:00:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229805AbhBOMFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:05:45 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:64105 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhBOMFV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 07:05:21 -0500
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 11FC4JgH005056;
+        Mon, 15 Feb 2021 21:04:19 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 11FC4JgH005056
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613390660;
+        bh=t+cDCI9ijwWCflMyf3HDaiArNB9qVsEf2A2CaoV+044=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=v9acLhbXPPB+XF0EA8XDIgH7r3wlY83CiYt6x+cqseVMlte0TA3RtTnirrlnNjiTr
+         jA68dM/v07+mFKYr5hhJJ86sLpsw1zXAAFWG0nZmD2UgbdqI5dP+4gqjF1Qz7xbVfa
+         TYfiSHRgbmbc9lW8zQRzsdMz3jjzYVDKfFB4cxTgYynvM51/dVbyA9i2oOH7gV2ovM
+         YtIWQQNzBAV80fb0gzeEX8gtOpBFZ35VCH4Vwyh7yA0R4ZVlykAJvDHNQVEJvjuJ9i
+         HE2MhAudNBtepEg/tb2vcKjd/p8qpJ98nhcyuqlk4YI7eTVYjVMGPnzoxSWA17pJYO
+         YzUleR5my8veQ==
+X-Nifty-SrcIP: [209.85.210.175]
+Received: by mail-pf1-f175.google.com with SMTP id k13so4033606pfh.13;
+        Mon, 15 Feb 2021 04:04:19 -0800 (PST)
+X-Gm-Message-State: AOAM533P7+Vr3H1h0x8Q1YoCUIfoUjqGcgaRU6QnBdJ5EHIogHhMyydM
+        6rmHKAMnqMAq0J966TVtYBvI6yQfpcWrPmRbAgQ=
+X-Google-Smtp-Source: ABdhPJy8ziEWdbM9CrYgfTkv/bGLkaQWPoSZQQUddzH9UeCJB7fr30mJz6zKbkpruiTgtMQliWenGO50uCpdbS2IR0g=
+X-Received: by 2002:a63:1f1d:: with SMTP id f29mr14654997pgf.47.1613390659105;
+ Mon, 15 Feb 2021 04:04:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <e6897f92-4c61-cd42-2822-43c50a744d4c@suse.de>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="8ejIhBaoaH74EllZioVxmsx5UYclcyGPJ"
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
+In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 15 Feb 2021 21:03:42 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATgZ2xYFV-ow2VrSn_-NWZOjPeZRzrXLdCP8t5OQbC4+w@mail.gmail.com>
+Message-ID: <CAK7LNATgZ2xYFV-ow2VrSn_-NWZOjPeZRzrXLdCP8t5OQbC4+w@mail.gmail.com>
+Subject: Re: [PATCH 00/27] arch: syscalls: unifiy all syscalltbl.sh into scripts/syscalltbl.sh
+To:     linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-alpha@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-ia64@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-um@lists.infradead.org,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8ejIhBaoaH74EllZioVxmsx5UYclcyGPJ
-Content-Type: multipart/mixed; boundary="jpBOcMfQ4Rk9pKdZviZiesqHtZrYP8I7j";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
- linux-media <linux-media@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>, linaro-mm-sig@lists.linaro.org,
- lkml <linux-kernel@vger.kernel.org>
-Cc: "Sharma, Shashank" <Shashank.Sharma@amd.com>
-Message-ID: <302e06ad-f979-dc77-5d84-fa0923aa4632@suse.de>
-Subject: Re: DMA-buf and uncached system memory
-References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
- <e6897f92-4c61-cd42-2822-43c50a744d4c@suse.de>
-In-Reply-To: <e6897f92-4c61-cd42-2822-43c50a744d4c@suse.de>
-
---jpBOcMfQ4Rk9pKdZviZiesqHtZrYP8I7j
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 15.02.21 um 10:49 schrieb Thomas Zimmermann:
-> Hi
->=20
-> Am 15.02.21 um 09:58 schrieb Christian K=C3=B6nig:
->> Hi guys,
->>
->> we are currently working an Freesync and direct scan out from system=20
->> memory on AMD APUs in A+A laptops.
->>
->> On problem we stumbled over is that our display hardware needs to scan=
-=20
->> out from uncached system memory and we currently don't have a way to=20
->> communicate that through DMA-buf.
-
-Re-reading this paragrah, it sounds more as if you want to let the=20
-exporter know where to move the buffer. Is this another case of the=20
-missing-pin-flag problem?
-
-Best regards
-Thomas
-
->>
->> For our specific use case at hand we are going to implement something =
-
->> driver specific, but the question is should we have something more=20
->> generic for this?
->=20
-> For vmap operations, we return the address as struct dma_buf_map, which=
-=20
-> contains additional information about the memory buffer. In vram=20
-> helpers, we have the interface drm_gem_vram_offset() that returns the=20
-> offset of the GPU device memory.
->=20
-> Would it be feasible to combine both concepts into a dma-buf interface =
-
-> that returns the device-memory offset plus the additional caching flag?=
-
->=20
-> There'd be a structure and a getter function returning the structure.
->=20
-> struct dma_buf_offset {
->  =C2=A0=C2=A0=C2=A0=C2=A0bool cached;
->  =C2=A0=C2=A0=C2=A0=C2=A0u64 address;
-> };
->=20
-> // return offset in *off
-> int dma_buf_offset(struct dma_buf *buf, struct dma_buf_off *off);
->=20
-> Whatever settings are returned by dma_buf_offset() are valid while the =
-
-> dma_buf is pinned.
->=20
-> Best regards
-> Thomas
->=20
->>
->> After all the system memory access pattern is a PCIe extension and as =
-
->> such something generic.
->>
->> Regards,
->> Christian.
->> _______________________________________________
->> dri-devel mailing list
->> dri-devel@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->=20
->=20
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+On Thu, Jan 28, 2021 at 9:51 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+>
+> As of v5.11-rc1, 12 architectures duplicate similar shell scripts:
+>
+>   $ find arch -name syscalltbl.sh | sort
+>   arch/alpha/kernel/syscalls/syscalltbl.sh
+>   arch/arm/tools/syscalltbl.sh
+>   arch/ia64/kernel/syscalls/syscalltbl.sh
+>   arch/m68k/kernel/syscalls/syscalltbl.sh
+>   arch/microblaze/kernel/syscalls/syscalltbl.sh
+>   arch/mips/kernel/syscalls/syscalltbl.sh
+>   arch/parisc/kernel/syscalls/syscalltbl.sh
+>   arch/powerpc/kernel/syscalls/syscalltbl.sh
+>   arch/sh/kernel/syscalls/syscalltbl.sh
+>   arch/sparc/kernel/syscalls/syscalltbl.sh
+>   arch/x86/entry/syscalls/syscalltbl.sh
+>   arch/xtensa/kernel/syscalls/syscalltbl.sh
+>
+> This patch set unifies all of them into a single file,
+> scripts/syscalltbl.sh.
+>
+> The code-diff is attractive:
+>
+>  51 files changed, 254 insertions(+), 674 deletions(-)
+>  delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/arm/tools/syscalltbl.sh
+>  delete mode 100644 arch/ia64/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/m68k/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/microblaze/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/powerpc/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/sh/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/sparc/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
+>  create mode 100644 scripts/syscalltbl.sh
+>
+> Also, this includes Makefile fixes, and some x86 fixes and cleanups.
+>
+> My question is, how to merge this series.
+>
+> I am touching all architectures, but the first patch is a prerequisite
+> of the rest of this series.
+>
+> One possibility is to ask the x86 maintainers to pickup the first 5
+> patches for v5.12-rc1, and then send the rest for v5.13-rc1,
+> splitting per-arch.
+>
+> I want the x86 maintainers to check the first 5 patches because
+> I cleaned up the x32 code.
 
 
---jpBOcMfQ4Rk9pKdZviZiesqHtZrYP8I7j--
+Never mind.
 
---8ejIhBaoaH74EllZioVxmsx5UYclcyGPJ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Sending too big patch set tends to fail.
 
------BEGIN PGP SIGNATURE-----
+I will apply the generic script parts to my tree,
+then split the rest per arch in the next development cycle
+(aim for v5.13-rc1)
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAqYm4FAwAAAAAACgkQlh/E3EQov+CM
-OQ/9H7AYQ1xEe3151Vo7dWI+/gR1rlw3WGzPnRdx+eIaBeNgNERC4eOnalzj/yovVjPQis6HVWIg
-wfQ4BFIvwLKml+RSHEqJGbmAKly3J8NJCFyGk6E+de83sAENt9kqZSkXJpggzI3ZAjLDBB9L9Uff
-LglN6XzVNgiW3TFN+2CkqPzIC+xoTcHhRvJpPyHB+geUHrjvd15hdIVcl4kbkOGe4+llrQgmw5m3
-n9jz3oRhFHgd53G+ZipWlnPigd3RP4fb5+aVofSowQXeQYe6lI6J+Cf60Frc4So7I1lyfgwSr6tY
-v8MSW5+F4ua1AKA2uDS/9eoYkyqB4N9amaLnTBJ0Q5DER9xXmfLHZCk2JlViTW/bAbhg5kB6EHxy
-8GtBWvyQupA53nATzkipM6LNClAt47lh8vGH1hV8PiirSSETLtJ53/UccaqWag41WaWlfQAsbe0g
-cZ+EgZvCkjuf3iTVF0OFs0nz2cXJcdnnI3u0u+BvrSFv50pvJ+mNSvJNtIE5Ew69e6ldLQe5UKXQ
-ku0aXBtFP1MWo72Y5IKaHWJmoJyYWL5Y/9UucBILAsGBaJu8YKBDIEcVqjLNNjRxb/TUFRgA5NEv
-UC5aI+2CsGLxy350LmncNZk2L/xJzIwpe3hhuuRZf+TgNoJfn3ibNLdzGyEVi8MJPXPXuzm8NPs4
-iw8=
-=W8bt
------END PGP SIGNATURE-----
 
---8ejIhBaoaH74EllZioVxmsx5UYclcyGPJ--
+
+
+
+
+
+
+
+> I know x32 was considered for deprecation, but my motivation is to
+> clean-up scripts across the tree without changing the functionality.
+>
+>
+>
+> Masahiro Yamada (27):
+>   scripts: add generic syscalltbl.sh
+>   x86/syscalls: fix -Wmissing-prototypes warnings from COND_SYSCALL()
+>   x86/build: add missing FORCE and fix 'targets' to make if_changed work
+>   x86/entry/x32: rename __x32_compat_sys_* to __x64_compat_sys_*
+>   x86/syscalls: switch to generic syscalltbl.sh
+>   ARM: syscalls: switch to generic syscalltbl.sh
+>   alpha: add missing FORCE and fix 'targets' to make if_changed work
+>   alpha: syscalls: switch to generic syscalltbl.sh
+>   ia64: add missing FORCE and fix 'targets' to make if_changed work
+>   ia64: syscalls: switch to generic syscalltbl.sh
+>   m68k: add missing FORCE and fix 'targets' to make if_changed work
+>   m68k: syscalls: switch to generic syscalltbl.sh
+>   microblaze: add missing FORCE and fix 'targets' to make if_changed
+>     work
+>   microblaze: syscalls: switch to generic syscalltbl.sh
+>   mips: add missing FORCE and fix 'targets' to make if_changed work
+>   mips: syscalls: switch to generic syscalltbl.sh
+>   parisc: add missing FORCE and fix 'targets' to make if_changed work
+>   parisc: syscalls: switch to generic syscalltbl.sh
+>   sh: add missing FORCE and fix 'targets' to make if_changed work
+>   sh: syscalls: switch to generic syscalltbl.sh
+>   sparc: remove wrong comment from arch/sparc/include/asm/Kbuild
+>   sparc: add missing FORCE and fix 'targets' to make if_changed work
+>   sparc: syscalls: switch to generic syscalltbl.sh
+>   powerpc: add missing FORCE and fix 'targets' to make if_changed work
+>   powerpc: syscalls: switch to generic syscalltbl.sh
+>   xtensa: add missing FORCE and fix 'targets' to make if_changed work
+>   xtensa: syscalls: switch to generic syscalltbl.sh
+>
+>  arch/alpha/kernel/syscalls/Makefile           | 18 +++----
+>  arch/alpha/kernel/syscalls/syscalltbl.sh      | 32 -----------
+>  arch/alpha/kernel/systbls.S                   |  3 +-
+>  arch/arm/kernel/entry-common.S                |  8 +--
+>  arch/arm/tools/Makefile                       |  9 ++--
+>  arch/arm/tools/syscalltbl.sh                  | 22 --------
+>  arch/ia64/kernel/entry.S                      |  3 +-
+>  arch/ia64/kernel/syscalls/Makefile            | 19 +++----
+>  arch/ia64/kernel/syscalls/syscalltbl.sh       | 32 -----------
+>  arch/m68k/kernel/syscalls/Makefile            | 18 +++----
+>  arch/m68k/kernel/syscalls/syscalltbl.sh       | 32 -----------
+>  arch/m68k/kernel/syscalltable.S               |  3 +-
+>  arch/microblaze/kernel/syscall_table.S        |  3 +-
+>  arch/microblaze/kernel/syscalls/Makefile      | 18 +++----
+>  arch/microblaze/kernel/syscalls/syscalltbl.sh | 32 -----------
+>  arch/mips/include/asm/Kbuild                  |  7 ++-
+>  arch/mips/kernel/scall32-o32.S                |  4 +-
+>  arch/mips/kernel/scall64-n32.S                |  3 +-
+>  arch/mips/kernel/scall64-n64.S                |  3 +-
+>  arch/mips/kernel/scall64-o32.S                |  4 +-
+>  arch/mips/kernel/syscalls/Makefile            | 53 ++++++++-----------
+>  arch/mips/kernel/syscalls/syscalltbl.sh       | 36 -------------
+>  arch/parisc/include/asm/Kbuild                |  1 -
+>  arch/parisc/kernel/syscall.S                  | 16 +++---
+>  arch/parisc/kernel/syscalls/Makefile          | 34 +++++-------
+>  arch/parisc/kernel/syscalls/syscalltbl.sh     | 36 -------------
+>  arch/powerpc/include/asm/Kbuild               |  1 -
+>  arch/powerpc/kernel/syscalls/Makefile         | 39 +++++---------
+>  arch/powerpc/kernel/syscalls/syscalltbl.sh    | 36 -------------
+>  arch/powerpc/kernel/systbl.S                  |  5 +-
+>  arch/powerpc/platforms/cell/spu_callbacks.c   |  2 +-
+>  arch/sh/kernel/syscalls/Makefile              | 18 +++----
+>  arch/sh/kernel/syscalls/syscalltbl.sh         | 32 -----------
+>  arch/sparc/include/asm/Kbuild                 |  3 --
+>  arch/sparc/kernel/syscalls/Makefile           | 34 +++++-------
+>  arch/sparc/kernel/syscalls/syscalltbl.sh      | 36 -------------
+>  arch/sparc/kernel/systbls_32.S                |  4 +-
+>  arch/sparc/kernel/systbls_64.S                |  8 +--
+>  arch/x86/entry/syscall_32.c                   | 12 +++--
+>  arch/x86/entry/syscall_64.c                   |  9 ++--
+>  arch/x86/entry/syscall_x32.c                  | 27 ++--------
+>  arch/x86/entry/syscalls/Makefile              | 33 +++++++-----
+>  arch/x86/entry/syscalls/syscalltbl.sh         | 46 ----------------
+>  arch/x86/include/asm/Kbuild                   |  1 +
+>  arch/x86/include/asm/syscall_wrapper.h        | 11 ++--
+>  arch/x86/um/sys_call_table_32.c               |  8 +--
+>  arch/x86/um/sys_call_table_64.c               |  9 ++--
+>  arch/xtensa/kernel/syscall.c                  |  3 +-
+>  arch/xtensa/kernel/syscalls/Makefile          | 18 +++----
+>  arch/xtensa/kernel/syscalls/syscalltbl.sh     | 32 -----------
+>  scripts/syscalltbl.sh                         | 52 ++++++++++++++++++
+>  51 files changed, 254 insertions(+), 674 deletions(-)
+>  delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/arm/tools/syscalltbl.sh
+>  delete mode 100644 arch/ia64/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/m68k/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/microblaze/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/powerpc/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/sh/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/sparc/kernel/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
+>  delete mode 100644 arch/xtensa/kernel/syscalls/syscalltbl.sh
+>  create mode 100644 scripts/syscalltbl.sh
+>
+> --
+> 2.27.0
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
