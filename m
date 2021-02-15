@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DE731B72C
+	by mail.lfdr.de (Postfix) with ESMTP id 733B331B72D
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhBOK3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
+        id S230261AbhBOK3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:29:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhBOK1a (ORCPT
+        with ESMTP id S230219AbhBOK1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:27:30 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750F3C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:26:50 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id x4so8819186wmi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:26:50 -0800 (PST)
+        Mon, 15 Feb 2021 05:27:41 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFF6C0613D6;
+        Mon, 15 Feb 2021 02:26:59 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id v1so8224987wrd.6;
+        Mon, 15 Feb 2021 02:26:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V3M/xiqC8wV/3y9yM6WJrdsmEi1wT28KwJ+diusuGyE=;
-        b=jWG7bLz+T1/EUxodu4l9HMpKg7v6tgRITknDTZbLkGgl+ZXymPK+ipJvYAvVwWdNCe
-         lHbFNEXpxyGcomfDlP6ihC0SSO7MMSIKFdLOklsh7FDM4xmvjIv4w2HkTwd4zxzmiIZd
-         6hvUB6uvH6TSPMf7SyTBxd8wWKMA5RbYkZ/bR5dIv1lZ+ustBpK7ZAz5NdWVrRs8Hrwi
-         5VBY7KplDF2Y2I3sTGcvyBlRRVpuaaD2aZEnceichN/YP9KZUhSRJ0/LE7AGZkjGFbaq
-         UK7pFDAEOy69AdsobcIDZDEEV+FTBg1n79i08LujIUAjYHnHSLQtqynUMMIJZ1LJxUst
-         TY2g==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UjqtMJ/BPQOo38rVa7F/L+SU7hZ/Rce9Dqnw1PVPXeM=;
+        b=fJbTkrV7F3MwrD5/oI9C62wtXakxZN5dtv3K9UqDoPDVqy36ayjVqyTn+Al7EUhC+n
+         Uk0BARCJ539ABJsH11EGVhfnpdpp/JR9AGtWfBvHEu5kAOolBJMEEs4+OOk6Ns7QMdsV
+         ZkJhzI5h/JUo+/S8rRGCI3U+9o9IRVOI+1k6hmcr5+pOLr3977TSI1Hl5/X7/GRhnCXg
+         8Rf8K4XmhR/mYKUwRsa62Fe/HKdFUC2Vm9xcQbgyIDRCaiJOc+pAYzbcmE2uh3No8Syw
+         qg5pZ3HND0GBPXFtsIrwHcWXzYmGi7nudwOvLX5KiOuSvaS63a2mzLY9HFYVtZGv1+w5
+         hgDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V3M/xiqC8wV/3y9yM6WJrdsmEi1wT28KwJ+diusuGyE=;
-        b=p3KuBNkEvYr7+MiG3i596WsMKo0Cfh4AWHzMDIupzXCs35ka76aLZBKBrqSLQgYJxS
-         9shA9jiTG5n2pVyK8ek6u9RcJmF9fw6RXgfd+gEWkuIxdW9hzYZk/HdkVznmw5mM9702
-         XIWSMwPbZW4cVEDDZcxJ3HRZT/42v9sXSQGunX9Tj4V1L7JepHj+jsoGTTBdNyEfIh+A
-         SjgCB8xS5JxmMyp1/g3J44Sywffj9gzYSh5lb6dLRYbeWkfxacwyCBy3pBqpAdlEi9su
-         kgDFiyp0Y+B6y37cecfumaUquRlgv+UZbuKFocdMEY372xTrlJVz8bPtRcOIEGIiBLNi
-         Ttcw==
-X-Gm-Message-State: AOAM530KdVHab/t21Say04HrIitv/l1ADPhHwndCT0MDcFfOAmyh0zAR
-        eYiN2hpsIghcsJWGhtpzUzT1MWcphfgGbfMPI0/xRg==
-X-Google-Smtp-Source: ABdhPJxsAjvcE+uYtuJqM2TlAiSIbcNkuW6sJZJAOd/JN52Hk6NPuR78ITJ3OQz+VJXpVDOnlwVVFLak5p2/ImqKlFA=
-X-Received: by 2002:a1c:7e85:: with SMTP id z127mr13758695wmc.131.1613384809179;
- Mon, 15 Feb 2021 02:26:49 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UjqtMJ/BPQOo38rVa7F/L+SU7hZ/Rce9Dqnw1PVPXeM=;
+        b=LTjm/t2vTiRuOLzFV0L5PYzig9xwpwHmLnW+GoKxt+rrKVIKxdJbMVKsp/UMSKtQUt
+         JnB3HotEN06Z1vreAYe+7zOzQboH+U+x7YINvS2C4hH+BVHH6gG/oz6hwNI/oMMCcMOg
+         nnJxN0tl07rDFk5A5y/FS0JRjQbUq9t0NOU/sPdbYHufJtLEC/OxXYHygMaWUcvsP13S
+         XLlUAtCHOGB6Nnjs16HPuzrAvQ6Q2+Mwr0e5CM8eM4zgiiTTLNWdG16F5k0OjgOoS9Ds
+         jyoAfJ29MgTW6VyuQ7SnmmIQiAdrdHVhD+3QIaxcykx2SYHA9L4r2CmIctprd/v7PwD9
+         QWyg==
+X-Gm-Message-State: AOAM532wiTuBim/6ptv25sQt/LDmHgeYx9xEtlkTumF/QxFvt1t8pPhO
+        Dpe2FwLQ/9Jiz0QCFU0lsDk=
+X-Google-Smtp-Source: ABdhPJwGEiRJr044XgRWa8oweqQYTPi09ZE3zXgUZwpN0S+a4cg3LWdHftzoBy5KV3LWLUBeR0wMig==
+X-Received: by 2002:adf:f609:: with SMTP id t9mr15637344wrp.57.1613384818692;
+        Mon, 15 Feb 2021 02:26:58 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id f7sm22795333wre.78.2021.02.15.02.26.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 02:26:57 -0800 (PST)
+Date:   Mon, 15 Feb 2021 11:26:56 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     jassisinghbrar@gmail.com, jonathanh@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] mailbox: tegra-hsp: Set lockdep class dynamically
+Message-ID: <YCpMcNRgq43FIPJH@ulmo.localdomain>
+References: <20210210134945.2699170-1-mperttunen@nvidia.com>
 MIME-Version: 1.0
-References: <20210213112829.26834-1-saiprakash.ranjan@codeaurora.org>
-In-Reply-To: <20210213112829.26834-1-saiprakash.ranjan@codeaurora.org>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Mon, 15 Feb 2021 10:26:38 +0000
-Message-ID: <CAJ9a7VgwxXgs+Zrb2LgX=E7i1+0wpqiL6gOyktPF7_0eojeVNw@mail.gmail.com>
-Subject: Re: [PATCHv2] coresight: etm4x: Add ETM PID for Cortex-A78
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="M97IL2++JHsy/uxf"
+Content-Disposition: inline
+In-Reply-To: <20210210134945.2699170-1-mperttunen@nvidia.com>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Mike Leach <mike.leach@linaro.org>
 
-On Sat, 13 Feb 2021 at 11:28, Sai Prakash Ranjan
-<saiprakash.ranjan@codeaurora.org> wrote:
->
-> Add ETM PID for Cortex-A78 to the list of supported ETMs.
->
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+--M97IL2++JHsy/uxf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Feb 10, 2021 at 03:49:45PM +0200, Mikko Perttunen wrote:
+> On Tegra194, due to both BPMP and TCU using mailboxes, we get a
+> lockdep spew at boot. Both are using different instances of HSP,
+> so this is harmless. As such give each HSP instance a different
+> lockdep class.
+>=20
+> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
 > ---
->
-> Changes in v2:
->  * Rebased on top of coresight/next from kernel.org coresight repo.
->
-> ---
->  drivers/hwtracing/coresight/coresight-etm4x-core.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 15016f757828..a5b13a7779c3 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -1951,6 +1951,7 @@ static const struct amba_id etm4_ids[] = {
->         CS_AMBA_UCI_ID(0x000bbd05, uci_id_etm4),/* Cortex-A55 */
->         CS_AMBA_UCI_ID(0x000bbd0a, uci_id_etm4),/* Cortex-A75 */
->         CS_AMBA_UCI_ID(0x000bbd0c, uci_id_etm4),/* Neoverse N1 */
-> +       CS_AMBA_UCI_ID(0x000bbd41, uci_id_etm4),/* Cortex-A78 */
->         CS_AMBA_UCI_ID(0x000f0205, uci_id_etm4),/* Qualcomm Kryo */
->         CS_AMBA_UCI_ID(0x000f0211, uci_id_etm4),/* Qualcomm Kryo */
->         CS_AMBA_UCI_ID(0x000bb802, uci_id_etm4),/* Qualcomm Kryo 385 Cortex-A55 */
->
-> base-commit: 06c18e28c402ecfb842df8e22a19a097c35ffca9
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
->
+>  drivers/mailbox/tegra-hsp.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
 
+Acked-by: Thierry Reding <treding@nvidia.com>
 
--- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+--M97IL2++JHsy/uxf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAqTG8ACgkQ3SOs138+
+s6H36w//VpEeJOLqr5R2/G7lWsaqrrQz2CdoFNoFRbyvxw4c14XBtl14jT6SOhgb
+JKAE+ODffe5XWrdvq93ttUr1w8m1vX/Up1oSpWVtmXBrbM/yBLqn+jX6d8y+/8Mw
+740nO80xUSJFkl9/JnWo9opMZ5VwsvNa7uAJv+gZs77cgLm5N2mDkDvkbClTRhaB
+mzbuPGbRoIqj9uPgykfxfTYKgi7Ad1VcnEhKtjPJ6BWhPSY/wHNlmmLYxDLSsphl
++1bLvr7jrK6R4JUkY+2JYrWP9VI9lF8SiXiuBY8gNHvFrbsxt4tTufz8lJwlrBKO
+qMC49Yu7Bnp15Rb2piB3MuIitJLvm2pGliLJuKv2lOFFfjs8XJkCW53qcvXLfz3i
+p3ztrMtKSJrxZcr5F3USU/Eq3fGjFailBCo6i/Iph6VE/Fzn63m+xVg23usArn9b
+uOsqSWogj2Nq7Oiaw3FUdaRdWFhNYtd8i7p3Bn35U3A0ywKOwjvBfQFAFBTSwu5Z
+qi/ezQHr/2tRB1rP8xGAtIWkx1SZsM3sCzN6DqCfuQYdRUmP/I3Ob2aGFQQOaOf8
+Fpj+QEtlWiaPKEDP7c8jLYCoU4d2pa6XCTH0If3ogu4UjBwHmyW702fqN6oqzGkE
+hIbxwwj7ccxkL2SGHjrhgwWhMx7YH8KDiGI/SDg14QXQYpW/kRw=
+=zP8b
+-----END PGP SIGNATURE-----
+
+--M97IL2++JHsy/uxf--
