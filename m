@@ -2,569 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4D631B8CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B474531B8D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhBOMMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:12:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229666AbhBOMMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:12:09 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B5EE60230;
-        Mon, 15 Feb 2021 12:11:24 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 12:11:19 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH v6 03/24] iio: make use of devm_iio_kfifo_buffer_setup()
- helper
-Message-ID: <20210215121119.2a047f99@archlinux>
-In-Reply-To: <20210215104043.91251-4-alexandru.ardelean@analog.com>
-References: <20210215104043.91251-1-alexandru.ardelean@analog.com>
-        <20210215104043.91251-4-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229908AbhBOMPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:15:45 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:42357 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229627AbhBOMPn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 07:15:43 -0500
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id DD275D4F;
+        Mon, 15 Feb 2021 07:14:57 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Mon, 15 Feb 2021 07:14:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=WT+xHf4HDpWUDkEJS4BLE3/HYUb
+        ZfnbMJhfjR/ecjmQ=; b=Lz55wQd4ObqFUMt1hEOvO4kpur3t0TfGbQkz1HAN7Gd
+        X6iyiHSSrF7VmeskTAR2coDd0i8wqFFqWGnwh8qeCkxRM+VLilcHkg3mQUFRqHPa
+        GJAuYWiOYiJVraBnZbAFhovjbezCHnKq5i0UndRFGfOJdiOmvFSmLvQf/qrQAMrw
+        tluYwzNnbCOF3QJZCsIJvMRIhdq9rU1z7dqH8C4iWC3Ns3EKdB7cxyR8JoslkVwy
+        fLdbCh2PGYy+PkhEfCr+DC4kah/K3ZqjVWSoS9ZocHeuFZiPrQPK/ex5vXQFn6q1
+        WaS4cvW2bMS68fsnfDHHwKtbV0ujPNvmNCn2gDmCc1w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=WT+xHf
+        4HDpWUDkEJS4BLE3/HYUbZfnbMJhfjR/ecjmQ=; b=MRcbPe8jlg7du1Jw7YQsWS
+        O9g4tj/fzl1UMu5tOzcunLUmJvsJC5vVST097I/sEzmNd62MuzE56FKRysdOTAlX
+        vscuhaF5Yg5W0Y/3wZ7hMmOz25Kix8TAx4mfDd/+NM4yA80iz37XU63EE2eMfcxX
+        RFilywDmvhWC++klx1nVd69eKkWGww9Zp/Z6vSfGnhE1FpmDCsDTXEwxR2C+Olo0
+        lCiEPTV9IbaIXccujyBN5yAKRjsxucZNPkVlLIhAuao9K8KSeA68LLy06q6F8DFU
+        QgHUHowIVrZvBTSFLLRjUINxPx2chYDWoKRuKCxtnl/Pffo7K+dohwRA34a2CJ4g
+        ==
+X-ME-Sender: <xms:wGUqYKtOngAdQ82G1p2A0vRAbzl5PWF0ILG6GCBNo6D2Jw6OXEd4-Q>
+    <xme:wGUqYDwMUesSkVvy1UwB65tL19B6THUPIPtuYT7LqIxyjA4yc_BH9HjlI-vwr80JZ
+    3HjOsKp-4TrKg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrieekgdefhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttdertd
+    dttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeen
+    ucggtffrrghtthgvrhhnpeeuleeltdehkeeltefhleduuddvhfffuedvffduveegheekge
+    eiffevheegfeetgfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeekfedr
+    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:wGUqYE7QZC2s6jAkDCuHkxgZelaHrYFZYmCOrU7OGCe9bP5SDr2xyA>
+    <xmx:wGUqYNW8zERbS_bjb8zfBA1Xx3YX3uI-eaGKLpY4JVVJ2xxoL3zYew>
+    <xmx:wGUqYA3NrTvJGgGemUsDMU5BSE-rJiQoqAdZqeuENxhmVEmy6ztpdw>
+    <xmx:wWUqYLCntyDvv_rZp2iADwxpMdf88fECGjCAwMduA5g1LJu_ndQzQw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3212E24005D;
+        Mon, 15 Feb 2021 07:14:56 -0500 (EST)
+Date:   Mon, 15 Feb 2021 13:14:54 +0100
+From:   Greg KH <greg@kroah.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     pablo@netfilter.org, stable-commits@vger.kernel.org
+Subject: Re: Patch "netfilter: nftables: fix possible UAF over chains from
+ packet path in netns" has been added to the 4.19-stable tree
+Message-ID: <YCplvtJjUZc0TK1P@kroah.com>
+References: <20210215042956.9644064EC3@mail.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215042956.9644064EC3@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 12:40:22 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-
-> All drivers that already call devm_iio_kfifo_allocate() &
-> iio_device_attach_buffer() are simple to convert to
-> iio_device_attach_kfifo_buffer() in a single go.
+On Sun, Feb 14, 2021 at 11:29:55PM -0500, Sasha Levin wrote:
+> This is a note to let you know that I've just added the patch titled
 > 
-> This change does that; the unwind order is preserved.
-> What is important, is that the devm_iio_kfifo_buffer_setup() be called
-> after the indio_dev->modes is assigned, to make sure that
-> INDIO_BUFFER_SOFTWARE flag is set and not overridden by the assignment to
-> indio_dev->modes.
+>     netfilter: nftables: fix possible UAF over chains from packet path in netns
 > 
-> Also, the INDIO_BUFFER_SOFTWARE has been removed from the assignments of
-> 'indio_dev->modes' because it is set by devm_iio_kfifo_buffer_setup().
+> to the 4.19-stable tree which can be found at:
+>     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 > 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-I 'think' this one is is in the obviously correct category so I've
-applied it to the togreg branch of iio.git and pushed out as testing.
-Note there is still plenty of time for any additional feedback,
-particularly as the CC list was a little sparse.
-
-I've +CCd those who I know are still active maintainers of some
-of the affected drivers. 
-
-Jonathan
-
-> ---
->  drivers/iio/accel/ssp_accel_sensor.c          | 14 ++++-------
->  drivers/iio/adc/ina2xx-adc.c                  | 14 +++++------
->  drivers/iio/adc/ti_am335x_adc.c               | 18 ++++-----------
->  .../cros_ec_sensors/cros_ec_sensors_core.c    | 13 ++++-------
->  drivers/iio/gyro/ssp_gyro_sensor.c            | 14 ++++-------
->  drivers/iio/health/max30100.c                 | 16 ++++++-------
->  drivers/iio/health/max30102.c                 | 16 ++++++-------
->  .../iio/imu/inv_icm42600/inv_icm42600_accel.c | 14 +++++------
->  .../iio/imu/inv_icm42600/inv_icm42600_gyro.c  | 13 +++++------
->  .../iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c    | 15 +++++-------
->  drivers/iio/light/acpi-als.c                  | 12 ++++------
->  drivers/iio/light/apds9960.c                  | 16 ++++++-------
->  .../staging/iio/impedance-analyzer/ad5933.c   | 23 ++++---------------
->  13 files changed, 74 insertions(+), 124 deletions(-)
+> The filename of the patch is:
+>      netfilter-nftables-fix-possible-uaf-over-chains-from.patch
+> and it can be found in the queue-4.19 subdirectory.
 > 
-> diff --git a/drivers/iio/accel/ssp_accel_sensor.c b/drivers/iio/accel/ssp_accel_sensor.c
-> index 474477e91b5e..04dcb2b657ee 100644
-> --- a/drivers/iio/accel/ssp_accel_sensor.c
-> +++ b/drivers/iio/accel/ssp_accel_sensor.c
-> @@ -96,7 +96,6 @@ static int ssp_accel_probe(struct platform_device *pdev)
->  	int ret;
->  	struct iio_dev *indio_dev;
->  	struct ssp_sensor_data *spd;
-> -	struct iio_buffer *buffer;
->  
->  	indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(*spd));
->  	if (!indio_dev)
-> @@ -109,18 +108,15 @@ static int ssp_accel_probe(struct platform_device *pdev)
->  
->  	indio_dev->name = ssp_accel_device_name;
->  	indio_dev->info = &ssp_accel_iio_info;
-> -	indio_dev->modes = INDIO_BUFFER_SOFTWARE;
->  	indio_dev->channels = ssp_acc_channels;
->  	indio_dev->num_channels = ARRAY_SIZE(ssp_acc_channels);
->  	indio_dev->available_scan_masks = ssp_accel_scan_mask;
->  
-> -	buffer = devm_iio_kfifo_allocate(&pdev->dev);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> -
-> -	indio_dev->setup_ops = &ssp_accel_buffer_ops;
-> +	ret = devm_iio_kfifo_buffer_setup(&pdev->dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE,
-> +					  &ssp_accel_buffer_ops);
-> +	if (ret)
-> +		return ret;
->  
->  	platform_set_drvdata(pdev, indio_dev);
->  
-> diff --git a/drivers/iio/adc/ina2xx-adc.c b/drivers/iio/adc/ina2xx-adc.c
-> index b573ec60a8b8..2ae54258b221 100644
-> --- a/drivers/iio/adc/ina2xx-adc.c
-> +++ b/drivers/iio/adc/ina2xx-adc.c
-> @@ -953,7 +953,6 @@ static int ina2xx_probe(struct i2c_client *client,
->  {
->  	struct ina2xx_chip_info *chip;
->  	struct iio_dev *indio_dev;
-> -	struct iio_buffer *buffer;
->  	unsigned int val;
->  	enum ina2xx_ids type;
->  	int ret;
-> @@ -1017,7 +1016,7 @@ static int ina2xx_probe(struct i2c_client *client,
->  		return ret;
->  	}
->  
-> -	indio_dev->modes = INDIO_DIRECT_MODE | INDIO_BUFFER_SOFTWARE;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
->  	if (id->driver_data == ina226) {
->  		indio_dev->channels = ina226_channels;
->  		indio_dev->num_channels = ARRAY_SIZE(ina226_channels);
-> @@ -1028,13 +1027,12 @@ static int ina2xx_probe(struct i2c_client *client,
->  		indio_dev->info = &ina219_info;
->  	}
->  	indio_dev->name = id->name;
-> -	indio_dev->setup_ops = &ina2xx_setup_ops;
->  
-> -	buffer = devm_iio_kfifo_allocate(&indio_dev->dev);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> +	ret = devm_iio_kfifo_buffer_setup(&client->dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE,
-> +					  &ina2xx_setup_ops);
-> +	if (ret)
-> +		return ret;
->  
->  	return iio_device_register(indio_dev);
+> If you, or anyone else, feels it should not be added to the stable tree,
+> please let <stable@vger.kernel.org> know about it.
+> 
+> 
+> 
+> commit 142e293ce46a1c63cb167af6743e2b8abb6581df
+> Author: Pablo Neira Ayuso <pablo@netfilter.org>
+> Date:   Tue Feb 2 16:07:37 2021 +0100
+> 
+>     netfilter: nftables: fix possible UAF over chains from packet path in netns
+>     
+>     [ Upstream commit 767d1216bff82507c945e92fe719dff2083bb2f4 ]
+>     
+>     Although hooks are released via call_rcu(), chain and rule objects are
+>     immediately released while packets are still walking over these bits.
+>     
+>     This patch adds the .pre_exit callback which is invoked before
+>     synchronize_rcu() in the netns framework to stay safe.
+>     
+>     Remove a comment which is not valid anymore since the core does not use
+>     synchronize_net() anymore since 8c873e219970 ("netfilter: core: free
+>     hooks with call_rcu").
+>     
+>     Suggested-by: Florian Westphal <fw@strlen.de>
+>     Fixes: df05ef874b28 ("netfilter: nf_tables: release objects on netns destruction")
+>     Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+>     Signed-off-by: Sasha Levin <sashal@kernel.org>
+> 
+> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> index 9cc8e92f4b000..e669e20120446 100644
+> --- a/net/netfilter/nf_tables_api.c
+> +++ b/net/netfilter/nf_tables_api.c
+> @@ -7303,6 +7303,17 @@ int __nft_release_basechain(struct nft_ctx *ctx)
 >  }
-> diff --git a/drivers/iio/adc/ti_am335x_adc.c b/drivers/iio/adc/ti_am335x_adc.c
-> index e946903b0993..855cc2d64ac8 100644
-> --- a/drivers/iio/adc/ti_am335x_adc.c
-> +++ b/drivers/iio/adc/ti_am335x_adc.c
-> @@ -385,24 +385,16 @@ static int tiadc_iio_buffered_hardware_setup(struct device *dev,
->  	unsigned long flags,
->  	const struct iio_buffer_setup_ops *setup_ops)
->  {
-> -	struct iio_buffer *buffer;
->  	int ret;
+>  EXPORT_SYMBOL_GPL(__nft_release_basechain);
 >  
-> -	buffer = devm_iio_kfifo_allocate(dev);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> -
-> -	ret = devm_request_threaded_irq(dev, irq, pollfunc_th, pollfunc_bh,
-> -				flags, indio_dev->name, indio_dev);
-> +	ret = devm_iio_kfifo_buffer_setup(dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE,
-> +					  setup_ops);
->  	if (ret)
->  		return ret;
->  
-> -	indio_dev->setup_ops = setup_ops;
-> -	indio_dev->modes |= INDIO_BUFFER_SOFTWARE;
-> -
-> -	return 0;
-> +	return devm_request_threaded_irq(dev, irq, pollfunc_th, pollfunc_bh,
-> +				flags, indio_dev->name, indio_dev);
->  }
->  
->  static const char * const chan_name_ain[] = {
-> diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> index c833ec0ef214..f8824afe595e 100644
-> --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> @@ -334,14 +334,11 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
->  			 * We can not use trigger here, as events are generated
->  			 * as soon as sample_frequency is set.
->  			 */
-> -			struct iio_buffer *buffer;
-> -
-> -			buffer = devm_iio_kfifo_allocate(dev);
-> -			if (!buffer)
-> -				return -ENOMEM;
-> -
-> -			iio_device_attach_buffer(indio_dev, buffer);
-> -			indio_dev->modes = INDIO_BUFFER_SOFTWARE;
-> +			ret = devm_iio_kfifo_buffer_setup(dev, indio_dev,
-> +							  INDIO_BUFFER_SOFTWARE,
-> +							  NULL);
-> +			if (ret)
-> +				return ret;
->  
->  			ret = cros_ec_sensorhub_register_push_data(
->  					sensor_hub, sensor_platform->sensor_num,
-> diff --git a/drivers/iio/gyro/ssp_gyro_sensor.c b/drivers/iio/gyro/ssp_gyro_sensor.c
-> index ac7c170a20de..46ed12771d2f 100644
-> --- a/drivers/iio/gyro/ssp_gyro_sensor.c
-> +++ b/drivers/iio/gyro/ssp_gyro_sensor.c
-> @@ -96,7 +96,6 @@ static int ssp_gyro_probe(struct platform_device *pdev)
->  	int ret;
->  	struct iio_dev *indio_dev;
->  	struct ssp_sensor_data *spd;
-> -	struct iio_buffer *buffer;
->  
->  	indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(*spd));
->  	if (!indio_dev)
-> @@ -109,18 +108,15 @@ static int ssp_gyro_probe(struct platform_device *pdev)
->  
->  	indio_dev->name = ssp_gyro_name;
->  	indio_dev->info = &ssp_gyro_iio_info;
-> -	indio_dev->modes = INDIO_BUFFER_SOFTWARE;
->  	indio_dev->channels = ssp_gyro_channels;
->  	indio_dev->num_channels = ARRAY_SIZE(ssp_gyro_channels);
->  	indio_dev->available_scan_masks = ssp_gyro_scan_mask;
->  
-> -	buffer = devm_iio_kfifo_allocate(&pdev->dev);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> -
-> -	indio_dev->setup_ops = &ssp_gyro_buffer_ops;
-> +	ret = devm_iio_kfifo_buffer_setup(&pdev->dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE,
-> +					  &ssp_gyro_buffer_ops);
-> +	if (ret)
-> +		return ret;
->  
->  	platform_set_drvdata(pdev, indio_dev);
->  
-> diff --git a/drivers/iio/health/max30100.c b/drivers/iio/health/max30100.c
-> index 38aa2030f3c6..36ba7611d9ce 100644
-> --- a/drivers/iio/health/max30100.c
-> +++ b/drivers/iio/health/max30100.c
-> @@ -418,7 +418,6 @@ static int max30100_probe(struct i2c_client *client,
->  			  const struct i2c_device_id *id)
->  {
->  	struct max30100_data *data;
-> -	struct iio_buffer *buffer;
->  	struct iio_dev *indio_dev;
->  	int ret;
->  
-> @@ -426,19 +425,18 @@ static int max30100_probe(struct i2c_client *client,
->  	if (!indio_dev)
->  		return -ENOMEM;
->  
-> -	buffer = devm_iio_kfifo_allocate(&client->dev);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> -
->  	indio_dev->name = MAX30100_DRV_NAME;
->  	indio_dev->channels = max30100_channels;
->  	indio_dev->info = &max30100_info;
->  	indio_dev->num_channels = ARRAY_SIZE(max30100_channels);
->  	indio_dev->available_scan_masks = max30100_scan_masks;
-> -	indio_dev->modes = (INDIO_BUFFER_SOFTWARE | INDIO_DIRECT_MODE);
-> -	indio_dev->setup_ops = &max30100_buffer_setup_ops;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
+> +static void __nft_release_hooks(struct net *net)
+> +{
+> +	struct nft_table *table;
+> +	struct nft_chain *chain;
 > +
-> +	ret = devm_iio_kfifo_buffer_setup(&client->dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE,
-> +					  &max30100_buffer_setup_ops);
-> +	if (ret)
-> +		return ret;
->  
->  	data = iio_priv(indio_dev);
->  	data->indio_dev = indio_dev;
-> diff --git a/drivers/iio/health/max30102.c b/drivers/iio/health/max30102.c
-> index b35557a54ee2..2292876c55e2 100644
-> --- a/drivers/iio/health/max30102.c
-> +++ b/drivers/iio/health/max30102.c
-> @@ -506,7 +506,6 @@ static int max30102_probe(struct i2c_client *client,
->  			  const struct i2c_device_id *id)
->  {
->  	struct max30102_data *data;
-> -	struct iio_buffer *buffer;
->  	struct iio_dev *indio_dev;
->  	int ret;
->  	unsigned int reg;
-> @@ -515,16 +514,9 @@ static int max30102_probe(struct i2c_client *client,
->  	if (!indio_dev)
->  		return -ENOMEM;
->  
-> -	buffer = devm_iio_kfifo_allocate(&client->dev);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> -
->  	indio_dev->name = MAX30102_DRV_NAME;
->  	indio_dev->info = &max30102_info;
-> -	indio_dev->modes = (INDIO_BUFFER_SOFTWARE | INDIO_DIRECT_MODE);
-> -	indio_dev->setup_ops = &max30102_buffer_setup_ops;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
->  
->  	data = iio_priv(indio_dev);
->  	data->indio_dev = indio_dev;
-> @@ -549,6 +541,12 @@ static int max30102_probe(struct i2c_client *client,
->  		return -ENODEV;
->  	}
->  
-> +	ret = devm_iio_kfifo_buffer_setup(&client->dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE,
-> +					  &max30102_buffer_setup_ops);
-> +	if (ret)
-> +		return ret;
+> +	list_for_each_entry(table, &net->nft.tables, list) {
+> +		list_for_each_entry(chain, &table->chains, list)
+> +			nf_tables_unregister_hook(net, table, chain);
+> +	}
+> +}
 > +
->  	data->regmap = devm_regmap_init_i2c(client, &max30102_regmap_config);
->  	if (IS_ERR(data->regmap)) {
->  		dev_err(&client->dev, "regmap initialization failed\n");
-> diff --git a/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c b/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
-> index 3441b0d61c5d..383cc3250342 100644
-> --- a/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
-> +++ b/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
-> @@ -709,7 +709,6 @@ struct iio_dev *inv_icm42600_accel_init(struct inv_icm42600_state *st)
->  	const char *name;
->  	struct inv_icm42600_timestamp *ts;
->  	struct iio_dev *indio_dev;
-> -	struct iio_buffer *buffer;
->  	int ret;
->  
->  	name = devm_kasprintf(dev, GFP_KERNEL, "%s-accel", st->name);
-> @@ -720,23 +719,22 @@ struct iio_dev *inv_icm42600_accel_init(struct inv_icm42600_state *st)
->  	if (!indio_dev)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	buffer = devm_iio_kfifo_allocate(dev);
-> -	if (!buffer)
-> -		return ERR_PTR(-ENOMEM);
-> -
->  	ts = iio_priv(indio_dev);
->  	inv_icm42600_timestamp_init(ts, inv_icm42600_odr_to_period(st->conf.accel.odr));
->  
->  	iio_device_set_drvdata(indio_dev, st);
->  	indio_dev->name = name;
->  	indio_dev->info = &inv_icm42600_accel_info;
-> -	indio_dev->modes = INDIO_DIRECT_MODE | INDIO_BUFFER_SOFTWARE;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
->  	indio_dev->channels = inv_icm42600_accel_channels;
->  	indio_dev->num_channels = ARRAY_SIZE(inv_icm42600_accel_channels);
->  	indio_dev->available_scan_masks = inv_icm42600_accel_scan_masks;
-> -	indio_dev->setup_ops = &inv_icm42600_buffer_ops;
->  
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> +	ret = devm_iio_kfifo_buffer_setup(dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE,
-> +					  &inv_icm42600_buffer_ops);
-> +	if (ret)
-> +		return ERR_PTR(ret);
->  
->  	ret = devm_iio_device_register(dev, indio_dev);
->  	if (ret)
-> diff --git a/drivers/iio/imu/inv_icm42600/inv_icm42600_gyro.c b/drivers/iio/imu/inv_icm42600/inv_icm42600_gyro.c
-> index aee7b9ff4bf4..cec1dd0e0464 100644
-> --- a/drivers/iio/imu/inv_icm42600/inv_icm42600_gyro.c
-> +++ b/drivers/iio/imu/inv_icm42600/inv_icm42600_gyro.c
-> @@ -720,7 +720,6 @@ struct iio_dev *inv_icm42600_gyro_init(struct inv_icm42600_state *st)
->  	const char *name;
->  	struct inv_icm42600_timestamp *ts;
->  	struct iio_dev *indio_dev;
-> -	struct iio_buffer *buffer;
->  	int ret;
->  
->  	name = devm_kasprintf(dev, GFP_KERNEL, "%s-gyro", st->name);
-> @@ -731,23 +730,23 @@ struct iio_dev *inv_icm42600_gyro_init(struct inv_icm42600_state *st)
->  	if (!indio_dev)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	buffer = devm_iio_kfifo_allocate(dev);
-> -	if (!buffer)
-> -		return ERR_PTR(-ENOMEM);
-> -
->  	ts = iio_priv(indio_dev);
->  	inv_icm42600_timestamp_init(ts, inv_icm42600_odr_to_period(st->conf.gyro.odr));
->  
->  	iio_device_set_drvdata(indio_dev, st);
->  	indio_dev->name = name;
->  	indio_dev->info = &inv_icm42600_gyro_info;
-> -	indio_dev->modes = INDIO_DIRECT_MODE | INDIO_BUFFER_SOFTWARE;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
->  	indio_dev->channels = inv_icm42600_gyro_channels;
->  	indio_dev->num_channels = ARRAY_SIZE(inv_icm42600_gyro_channels);
->  	indio_dev->available_scan_masks = inv_icm42600_gyro_scan_masks;
->  	indio_dev->setup_ops = &inv_icm42600_buffer_ops;
->  
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> +	ret = devm_iio_kfifo_buffer_setup(dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE,
-> +					  &inv_icm42600_buffer_ops);
-> +	if (ret)
-> +		return ERR_PTR(ret);
->  
->  	ret = devm_iio_device_register(dev, indio_dev);
->  	if (ret)
-> diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-> index f1103ecedd64..16730a780964 100644
-> --- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-> +++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-> @@ -739,20 +739,17 @@ static const struct iio_buffer_setup_ops st_lsm6dsx_buffer_ops = {
->  
->  int st_lsm6dsx_fifo_setup(struct st_lsm6dsx_hw *hw)
+>  static void __nft_release_tables(struct net *net)
 >  {
-> -	struct iio_buffer *buffer;
-> -	int i;
-> +	int i, ret;
+>  	struct nft_flowtable *flowtable, *nf;
+> @@ -7318,10 +7329,6 @@ static void __nft_release_tables(struct net *net)
 >  
->  	for (i = 0; i < ST_LSM6DSX_ID_MAX; i++) {
->  		if (!hw->iio_devs[i])
->  			continue;
->  
-> -		buffer = devm_iio_kfifo_allocate(hw->dev);
-> -		if (!buffer)
-> -			return -ENOMEM;
+>  	list_for_each_entry_safe(table, nt, &net->nft.tables, list) {
+>  		ctx.family = table->family;
 > -
-> -		iio_device_attach_buffer(hw->iio_devs[i], buffer);
-> -		hw->iio_devs[i]->modes |= INDIO_BUFFER_SOFTWARE;
-> -		hw->iio_devs[i]->setup_ops = &st_lsm6dsx_buffer_ops;
-> +		ret = devm_iio_kfifo_buffer_setup(hw->dev, hw->iio_devs[i],
-> +						  INDIO_BUFFER_SOFTWARE,
-> +						  &st_lsm6dsx_buffer_ops);
-> +		if (ret)
-> +			return ret;
->  	}
->  
+> -		list_for_each_entry(chain, &table->chains, list)
+> -			nf_tables_unregister_hook(net, table, chain);
+> -		/* No packets are walking on these chains anymore. */
+>  		ctx.table = table;
+>  		list_for_each_entry(chain, &table->chains, list) {
+>  			ctx.chain = chain;
+> @@ -7368,6 +7375,11 @@ static int __net_init nf_tables_init_net(struct net *net)
 >  	return 0;
-> diff --git a/drivers/iio/light/acpi-als.c b/drivers/iio/light/acpi-als.c
-> index 2be7180e2cbf..f8e547fd35e7 100644
-> --- a/drivers/iio/light/acpi-als.c
-> +++ b/drivers/iio/light/acpi-als.c
-> @@ -165,7 +165,7 @@ static int acpi_als_add(struct acpi_device *device)
->  {
->  	struct acpi_als *als;
->  	struct iio_dev *indio_dev;
-> -	struct iio_buffer *buffer;
-> +	int ret;
->  
->  	indio_dev = devm_iio_device_alloc(&device->dev, sizeof(*als));
->  	if (!indio_dev)
-> @@ -179,15 +179,13 @@ static int acpi_als_add(struct acpi_device *device)
->  
->  	indio_dev->name = ACPI_ALS_DEVICE_NAME;
->  	indio_dev->info = &acpi_als_info;
-> -	indio_dev->modes = INDIO_BUFFER_SOFTWARE;
->  	indio_dev->channels = acpi_als_channels;
->  	indio_dev->num_channels = ARRAY_SIZE(acpi_als_channels);
->  
-> -	buffer = devm_iio_kfifo_allocate(&device->dev);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> +	ret = devm_iio_kfifo_buffer_setup(&device->dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE, NULL);
-> +	if (ret)
-> +		return ret;
->  
->  	return devm_iio_device_register(&device->dev, indio_dev);
 >  }
-> diff --git a/drivers/iio/light/apds9960.c b/drivers/iio/light/apds9960.c
-> index df0647856e5d..4141c0fa7bc4 100644
-> --- a/drivers/iio/light/apds9960.c
-> +++ b/drivers/iio/light/apds9960.c
-> @@ -988,7 +988,6 @@ static int apds9960_probe(struct i2c_client *client,
->  			  const struct i2c_device_id *id)
->  {
->  	struct apds9960_data *data;
-> -	struct iio_buffer *buffer;
->  	struct iio_dev *indio_dev;
->  	int ret;
 >  
-> @@ -996,19 +995,18 @@ static int apds9960_probe(struct i2c_client *client,
->  	if (!indio_dev)
->  		return -ENOMEM;
->  
-> -	buffer = devm_iio_kfifo_allocate(&client->dev);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> -
->  	indio_dev->info = &apds9960_info;
->  	indio_dev->name = APDS9960_DRV_NAME;
->  	indio_dev->channels = apds9960_channels;
->  	indio_dev->num_channels = ARRAY_SIZE(apds9960_channels);
->  	indio_dev->available_scan_masks = apds9960_scan_masks;
-> -	indio_dev->modes = (INDIO_BUFFER_SOFTWARE | INDIO_DIRECT_MODE);
-> -	indio_dev->setup_ops = &apds9960_buffer_setup_ops;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
+> +static void __net_exit nf_tables_pre_exit_net(struct net *net)
+> +{
+> +	__nft_release_hooks(net);
+> +}
 > +
-> +	ret = devm_iio_kfifo_buffer_setup(&client->dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE,
-> +					  &apds9960_buffer_setup_ops);
-> +	if (ret)
-> +		return ret;
+>  static void __net_exit nf_tables_exit_net(struct net *net)
+>  {
+>  	mutex_lock(&net->nft.commit_mutex);
+> @@ -7379,8 +7391,9 @@ static void __net_exit nf_tables_exit_net(struct net *net)
+>  }
 >  
->  	data = iio_priv(indio_dev);
->  	i2c_set_clientdata(client, indio_dev);
-> diff --git a/drivers/staging/iio/impedance-analyzer/ad5933.c b/drivers/staging/iio/impedance-analyzer/ad5933.c
-> index dba78896ea8f..793918e1c45f 100644
-> --- a/drivers/staging/iio/impedance-analyzer/ad5933.c
-> +++ b/drivers/staging/iio/impedance-analyzer/ad5933.c
-> @@ -602,23 +602,6 @@ static const struct iio_buffer_setup_ops ad5933_ring_setup_ops = {
->  	.postdisable = ad5933_ring_postdisable,
+>  static struct pernet_operations nf_tables_net_ops = {
+> -	.init	= nf_tables_init_net,
+> -	.exit	= nf_tables_exit_net,
+> +	.init		= nf_tables_init_net,
+> +	.pre_exit	= nf_tables_pre_exit_net,
+> +	.exit		= nf_tables_exit_net,
 >  };
 >  
-> -static int ad5933_register_ring_funcs_and_init(struct device *dev,
-> -					       struct iio_dev *indio_dev)
-> -{
-> -	struct iio_buffer *buffer;
-> -
-> -	buffer = devm_iio_kfifo_allocate(dev);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
-> -	iio_device_attach_buffer(indio_dev, buffer);
-> -
-> -	/* Ring buffer functions - here trigger setup related */
-> -	indio_dev->setup_ops = &ad5933_ring_setup_ops;
-> -
-> -	return 0;
-> -}
-> -
->  static void ad5933_work(struct work_struct *work)
->  {
->  	struct ad5933_state *st = container_of(work,
-> @@ -761,11 +744,13 @@ static int ad5933_probe(struct i2c_client *client,
->  
->  	indio_dev->info = &ad5933_info;
->  	indio_dev->name = id->name;
-> -	indio_dev->modes = (INDIO_BUFFER_SOFTWARE | INDIO_DIRECT_MODE);
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
->  	indio_dev->channels = ad5933_channels;
->  	indio_dev->num_channels = ARRAY_SIZE(ad5933_channels);
->  
-> -	ret = ad5933_register_ring_funcs_and_init(&client->dev, indio_dev);
-> +	ret = devm_iio_kfifo_buffer_setup(&client->dev, indio_dev,
-> +					  INDIO_BUFFER_SOFTWARE,
-> +					  &ad5933_ring_setup_ops);
->  	if (ret)
->  		return ret;
->  
+>  static int __init nf_tables_module_init(void)
 
+This breaks the build in 4.19.y, so I've dropped it.
+
+Sasha, did it pass your builders?
+
+thanks,
+
+greg k-h
