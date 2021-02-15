@@ -2,181 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C8D31C3D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 540CC31C3DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 23:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbhBOV6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:58:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
+        id S229907AbhBOV7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 16:59:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbhBOV6b (ORCPT
+        with ESMTP id S229702AbhBOV67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:58:31 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA17FC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:57:38 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id y128so8529851ybf.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:57:38 -0800 (PST)
+        Mon, 15 Feb 2021 16:58:59 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6120C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:57:50 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id hs11so13673620ejc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:57:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6sRa/U5Kzs1JI5RnyoYklyv1NRbU9v8LrTPHarr/PE8=;
-        b=gJEho7HAFjs40VouEGob2eg5Oy9aEdcZUBjHihE6mZQzi6czZHwv0m73BpYkXKdo5q
-         68ZV+goSq9Fae1dld8Dj2zZYLuDTZktAzE0ZwFkpES3da8W1hs5RObUljgUwwZubEMQR
-         Ca4nrFf96n+Kq21fygN6AVWqtnC1b+1lh90Ad/OFDLwRqlp57eBni+kkmVmwYsQmfAjJ
-         NcDt4L5//G6ue+WDbsA4Z4M/o7lFxOzbQQJ4D6/zpk72I1HGrEAZGi0vXqowaDBLiSCa
-         tPx3s6gkUPD/Kyv6NGu1ljv+0hfUIqhnOIrU799/0jGVFl7RUVlE+Da+9mHdD+VFVUH6
-         Lj/Q==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=wZJvIiq3Ed1jabdaDHfcdY3De/LneLLvMaYX01zmAAg=;
+        b=vDM1O1mTMdZuKB3Fp7Vvkb8srDgTqgkArUaHOmqlpF8yhpkD1qNvfDQ3W4CVzgvgZs
+         wNTGPTUUu0aCQ337Si+Ois2wh+Fxk6J43IUkQzE+tJgY/uZ3bTSNlN1Abvc9FnV0vp9y
+         mAoT3QlUIz5AgoICh/2ehI0pYR9n6LQBnaUMmN6Xj7ikPcy+PXY8UjxqcOnHkXshl963
+         XpBBUMbnbv5UaqJv2+McxUR/tz5ynGSfC137aSl8W7Nnf9caZTnU/JI5e/Qp44j3BtGY
+         Wfejbo6EXBCn+YMmYLzwOPrBs4XegDgFFSOHWY5xYyTm4pCVwZdip9HBK1xB+rc4A4TV
+         MPOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6sRa/U5Kzs1JI5RnyoYklyv1NRbU9v8LrTPHarr/PE8=;
-        b=C2MeeNnBniYwfgX1yXV7Wf5SptvZwepOd1SDyOeOpiNrbkpTwQg+C9NW4A+nlBY0nR
-         ZAfZvr4tCj1GtcrBgvgDpwUvIbfR3anaeu9dluWILpSKpjenrQGUpdxfLzJGhmBsyuFe
-         e25MQiUY4x3b6q8erAsWF4fPXKGo552Ufm5SLnhPdnjFxDftBcDmjelOjkPp/K8bedM4
-         u+edXu1My3TgyzMOZ6lKKF9tmL5E1w/s2tebgFvlLaaChJjKYshdqiVdxxgDzn1pwF7M
-         7XtoHRo4t6zzbYfCX3Nxy3gZ8THVzMMGfTUac2ADk36J/VUMs26zFw45IOR8lLiBc8sB
-         NyyQ==
-X-Gm-Message-State: AOAM531pl6XcJiRCND86OeKop1GClJQF0FtiMULXdC7Elu2uTkxP5dgJ
-        YLVwJm5esDVdqI8wdDCKh6mennUYIGxNw/0nGLStzA==
-X-Google-Smtp-Source: ABdhPJwKttGJ/WSxMO3AOYN0BMrFeAFmWmg7rlKUzB3nt2oaOmB07PQ56EVlNxhui2daNXPCPW1sMy0iGvA9c5ZrRD4=
-X-Received: by 2002:a25:aa43:: with SMTP id s61mr27067882ybi.32.1613426257227;
- Mon, 15 Feb 2021 13:57:37 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=wZJvIiq3Ed1jabdaDHfcdY3De/LneLLvMaYX01zmAAg=;
+        b=J6WLSTwNBHthEzTj8Q85xSBVvZPY/QGVr7rObtyZ1NPOqOCMzYe4i8+ITJKs280FgV
+         EdKhDKTb1O93oVo/qEwCr0FChGxnemikBac7E95Sy3RCvqUqc+3nVYRXUWI994KxuHKp
+         eVvsLIi1k2rfYxak7MskWOIGx2KLrTWd5M2yIFNnhKrgcPWBZrOOS/fAwA0UZvRuoqiY
+         S+E23g1gxduyOyiKZZAkI/qR8dV8z2GO4UiLD81TgOAGrZvFvJ+6z7cJuelx2AnN52TC
+         qqll2UQNJFRb0b/GD3UujKuCtFoQeLICkUgC95R9km7X1e79DhdqjPw4fAvkZ2wrG5s6
+         5xag==
+X-Gm-Message-State: AOAM530OuIXyHJ/LYE/4/QEaA47uUNaT8E7e2DoZN40i0sVD9SpH5UEd
+        /0KAl+XdtqkAGklbhEErXUqfV0RJyE7HoOgzHdsW
+X-Google-Smtp-Source: ABdhPJxilRQvUaZKed8QSlP5ewVgT0/coAnH9EKex1Mf+tJHJSqmzycPvKi002dEwuYsJzFjkqar40LXkZ/99vbAaZY=
+X-Received: by 2002:a17:906:8890:: with SMTP id ak16mr11761146ejc.398.1613426269419;
+ Mon, 15 Feb 2021 13:57:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
- <CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com>
- <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com> <CAMuHMdWFp_teT5Lgxe6BOpOb4UMM2_4FrKJm-2C6kuCH2YUMrw@mail.gmail.com>
-In-Reply-To: <CAMuHMdWFp_teT5Lgxe6BOpOb4UMM2_4FrKJm-2C6kuCH2YUMrw@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 15 Feb 2021 13:57:00 -0800
-Message-ID: <CAGETcx9AZct4h0AdjbNzF5vjoYxT+M+zJ2ddsEN5SV9ALqV48A@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 15 Feb 2021 16:57:38 -0500
+Message-ID: <CAHC9VhRkn65jgVW5fTRWOrDe+dXQD-_-BTN+rZ8Kcq5qxFi45Q@mail.gmail.com>
+Subject: [GIT PULL] SELinux patches for v5.12
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi Linus,
 
-On Mon, Feb 15, 2021 at 7:16 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Fri, Feb 12, 2021 at 4:00 AM Saravana Kannan <saravanak@google.com> wrote:
-> > On Thu, Feb 11, 2021 at 5:00 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > >   1. R-Car Gen2 (Koelsch), R-Car Gen3 (Salvator-X(S), Ebisu).
-> > >
-> > >       - Commit 2dfc564bda4a31bc ("soc: renesas: rcar-sysc: Mark device
-> > >         node OF_POPULATED after init") is no longer needed (but already
-> > >         queued for v5.12 anyway)
-> >
-> > Rob doesn't like the proliferation of OF_POPULATED and we don't need
-> > it anymore, so maybe work it out with him? It's a balance between some
-> > wasted memory (struct device(s)) vs not proliferating OF_POPULATED.
->
-> > >   2. SH/R-Mobile AG5 (kzm9g), APE6 (ape6evm), A1 (armadillo800-eva)
-> > >
-> > >       - "PATCH] soc: renesas: rmobile-sysc: Set OF_POPULATED and absorb
-> > >         reset handling" is no longer needed
-> > >         https://lore.kernel.org/linux-arm-kernel/20210205133319.1921108-1-geert+renesas@glider.be/
-> >
-> > Good to see more evidence that this series is fixing things at a more
-> > generic level.
->
-> I spoke too soon: if CONFIG_POWER_RESET_RMOBILE=n,
-> booting fails again, as everything is waiting on the system controller,
-> which never becomes available.
-> Rcar-sysc doesn't suffer from this problem, cfr. above.
-> Perhaps because the rmobile-sysc bindings use a hierarchical instead
-> of a linear PM domain description, and thus consumers point to the
-> children of the system controller node?
-> Cfr. system-controller@e6180000 in arch/arm/boot/dts/r8a7740.dtsi.
+We've got a good handful of patches for SELinux this time around; with
+everything passing the selinux-testsuite and applying cleanly to your
+tree as of a few minutes ago.  The highlights are below:
 
-Ok, I see what's going on. The problem is that the "power domain"
-fwnode being registered is not the node that contains the "compatible"
-property and becomes a device. So this patch[1] is not helping here.
-Fix is to do something like this (to avoid using OF_POPULATED flag and
-breaking reset):
+- Add support for labeling anonymous inodes, and extend this new
+support to userfaultfd.
 
-diff --git a/drivers/soc/renesas/rmobile-sysc.c
-b/drivers/soc/renesas/rmobile-sysc.c
-index 9046b8c933cb..b7e66139ef7d 100644
---- a/drivers/soc/renesas/rmobile-sysc.c
-+++ b/drivers/soc/renesas/rmobile-sysc.c
-@@ -344,6 +344,7 @@ static int __init rmobile_init_pm_domains(void)
-                        of_node_put(np);
-                        break;
-                }
-+               fwnode_dev_initialized(&np->fwnode, true);
-        }
+- Fallback to SELinux genfs file labeling if the filesystem does not
+have xattr support.  This is useful for virtiofs which can vary in its
+xattr support depending on the backing filesystem.
 
-        put_special_pds();
+- Classify and handle MPTCP the same as TCP in SELinux.
 
-Can you give it a shot?
+- Ensure consistent behavior between inode_getxattr and
+inode_listsecurity when the SELinux policy is not loaded.  This fixes
+a known problem with overlayfs.
 
-[1] - https://lore.kernel.org/lkml/20210205222644.2357303-8-saravanak@google.com/
-
-> > >       - On R-Mobile A1, I get a BUG and a memory leak:
-> > >
-> > >             BUG: spinlock bad magic on CPU#0, swapper/1
-> > >              lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner:
-> > > <none>/-1, .owner_cpu: 0
-> > >             CPU: 0 PID: 1 Comm: swapper Not tainted
-> > > 5.11.0-rc5-armadillo-00032-gf0a85c26907e #266
-> > >             Hardware name: Generic R8A7740 (Flattened Device Tree)
-> > >             [<c010c3c8>] (unwind_backtrace) from [<c010a49c>]
-> > > (show_stack+0x10/0x14)
-> > >             [<c010a49c>] (show_stack) from [<c0159534>]
-> > > (do_raw_spin_lock+0x20/0x94)
-> > >             [<c0159534>] (do_raw_spin_lock) from [<c04089d8>]
-> > > (dev_pm_get_subsys_data+0x30/0xa0)
-> > >             [<c04089d8>] (dev_pm_get_subsys_data) from [<c0413698>]
-> > > (genpd_add_device+0x34/0x1c0)
-> > >             [<c0413698>] (genpd_add_device) from [<c041389c>]
-> > > (of_genpd_add_device+0x34/0x4c)
-> > >             [<c041389c>] (of_genpd_add_device) from [<c0a1e9bc>]
-> > > (board_staging_register_device+0xf8/0x118)
-> > >             [<c0a1e9bc>] (board_staging_register_device) from
->
-> This is indeed a pre-existing problem.
-> of_genpd_add_device() is called before platform_device_register(),
-> as it needs to attach the genpd before the device is probed.
-> But the spinlock is only initialized when the device is registered.
-> This was masked before due to an unrelated wait context check failure,
-> which disabled any further spinlock checks, and exposed by fw_devlinks
-> changing probe order.
-> Patch sent.
-> "[PATCH] staging: board: Fix uninitialized spinlock when attaching genpd"
-> https://lore.kernel.org/r/20210215151405.2551143-1-geert+renesas@glider.be
->
-
-Great!
+- A couple of patches to prune some unused variables from the SELinux
+code, mark private variables as static, and mark other variables as
+__ro_after_init or __read_mostly.
 
 Thanks,
-Saravana
+-Paul
+
+--
+The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+
+ Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+
+are available in the Git repository at:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+   tags/selinux-pr-20210215
+
+for you to fetch changes up to 365982aba1f264dba26f0908700d62bfa046918c:
+
+ fs: anon_inodes: rephrase to appropriate kernel-doc
+   (2021-01-15 12:17:25 -0500)
+
+----------------------------------------------------------------
+selinux/stable-5.12 PR 20210215
+
+----------------------------------------------------------------
+Amir Goldstein (1):
+     selinux: fix inconsistency between inode_getxattr and inode_listsecurity
+
+Daniel Colascione (3):
+     fs: add LSM-supporting anon-inode interface
+     selinux: teach SELinux about anonymous inodes
+     userfaultfd: use secure anon inodes for userfaultfd
+
+Lokesh Gidra (1):
+     security: add inode_init_security_anon() LSM hook
+
+Lukas Bulwahn (1):
+     fs: anon_inodes: rephrase to appropriate kernel-doc
+
+Ondrej Mosnacek (6):
+     selinux: remove unused global variables
+     selinux: drop the unnecessary aurule_callback variable
+     selinux: make selinuxfs_mount static
+     selinux: mark some global variables __ro_after_init
+     selinux: mark selinux_xfrm_refcount as __read_mostly
+     selinux: fall back to SECURITY_FS_USE_GENFS if no xattr support
+
+Paolo Abeni (1):
+     selinux: handle MPTCP consistently with TCP
+
+fs/anon_inodes.c                    | 157 +++++++++++++++++++++++++--------
+fs/libfs.c                          |   5 --
+fs/userfaultfd.c                    |  19 ++---
+include/linux/anon_inodes.h         |   5 ++
+include/linux/lsm_hook_defs.h       |   2 +
+include/linux/lsm_hooks.h           |   9 +++
+include/linux/security.h            |  10 +++
+security/security.c                 |   8 ++
+security/selinux/avc.c              |  10 +--
+security/selinux/hooks.c            | 141 ++++++++++++++++++++++++-----
+security/selinux/ibpkey.c           |   1 -
+security/selinux/include/classmap.h |   2 +
+security/selinux/include/security.h |   1 -
+security/selinux/netif.c            |   1 -
+security/selinux/netlink.c          |   2 +-
+security/selinux/netnode.c          |   1 -
+security/selinux/netport.c          |   1 -
+security/selinux/selinuxfs.c        |   4 +-
+security/selinux/ss/avtab.c         |   4 +-
+security/selinux/ss/ebitmap.c       |   2 +-
+security/selinux/ss/hashtab.c       |   2 +-
+security/selinux/ss/services.c      |  10 +--
+security/selinux/xfrm.c             |   2 +-
+23 files changed, 294 insertions(+), 105 deletions(-)
+
+-- 
+paul moore
+www.paul-moore.com
