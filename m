@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A1131BD67
+	by mail.lfdr.de (Postfix) with ESMTP id 0037531BD69
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbhBOPrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:47:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46646 "EHLO mail.kernel.org"
+        id S231819AbhBOPrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:47:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231214AbhBOPbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231209AbhBOPbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 10:31:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A081664E73;
-        Mon, 15 Feb 2021 15:29:00 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D0B064E94;
+        Mon, 15 Feb 2021 15:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613402941;
-        bh=ThCW5h/ivFEqJnOLqJsAg6AO9Oe0MmGyUOz/J2rwNYc=;
+        s=korg; t=1613402943;
+        bh=16jE04B3ZlS9IJ8ggLjrq7M7ViurPTWv6vSVW9LC03M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ehr1V4SrFXLfajT39GvjV/92v1RSHiAViyO6N24wEwMfxNo5mWntgfbhbcHfdD1db
-         cQAQa4oCUo8gq2jiL7+mtefSuA139lmZiND3t1L6tw0JRJ1yRLz0Hsu3riuOAVvgJn
-         IZnhstduzOMOM9/dAIVEPO9DAOINjrMSS/Ecldro=
+        b=QvOc6A0FqRHhm0NPj3Fl1Kq8WOz5U2YJRSM3Yy9eGQPGxURDFqO07LhSh+n1wUZRk
+         WFRQ9Ff3EQlws3hOOsc/TniG2bC1wq8mPBy7IpYEFes6k7Pz2OIawsmmonC/H67LE6
+         AHqESfG/LnzgSrgXXLZdhbLM42EEARzMjY+yTYXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bui Quang Minh <minhquangbui99@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org, Reindl Harald <h.reindl@thelounge.net>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 28/60] bpf: Check for integer overflow when using roundup_pow_of_two()
-Date:   Mon, 15 Feb 2021 16:27:16 +0100
-Message-Id: <20210215152716.249107879@linuxfoundation.org>
+Subject: [PATCH 5.4 29/60] netfilter: xt_recent: Fix attempt to update deleted entry
+Date:   Mon, 15 Feb 2021 16:27:17 +0100
+Message-Id: <20210215152716.285572820@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -40,35 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bui Quang Minh <minhquangbui99@gmail.com>
+From: Jozsef Kadlecsik <kadlec@mail.kfki.hu>
 
-[ Upstream commit 6183f4d3a0a2ad230511987c6c362ca43ec0055f ]
+[ Upstream commit b1bdde33b72366da20d10770ab7a49fe87b5e190 ]
 
-On 32-bit architecture, roundup_pow_of_two() can return 0 when the argument
-has upper most bit set due to resulting 1UL << 32. Add a check for this case.
+When both --reap and --update flag are specified, there's a code
+path at which the entry to be updated is reaped beforehand,
+which then leads to kernel crash. Reap only entries which won't be
+updated.
 
-Fixes: d5a3b1f69186 ("bpf: introduce BPF_MAP_TYPE_STACK_TRACE")
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210127063653.3576-1-minhquangbui99@gmail.com
+Fixes kernel bugzilla #207773.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=207773
+Reported-by: Reindl Harald <h.reindl@thelounge.net>
+Fixes: 0079c5aee348 ("netfilter: xt_recent: add an entry reaper")
+Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/stackmap.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/netfilter/xt_recent.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 173e983619d77..fba2ade28fb3a 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -112,6 +112,8 @@ static struct bpf_map *stack_map_alloc(union bpf_attr *attr)
+diff --git a/net/netfilter/xt_recent.c b/net/netfilter/xt_recent.c
+index 6c2582a197667..3469b60736103 100644
+--- a/net/netfilter/xt_recent.c
++++ b/net/netfilter/xt_recent.c
+@@ -152,7 +152,8 @@ static void recent_entry_remove(struct recent_table *t, struct recent_entry *e)
+ /*
+  * Drop entries with timestamps older then 'time'.
+  */
+-static void recent_entry_reap(struct recent_table *t, unsigned long time)
++static void recent_entry_reap(struct recent_table *t, unsigned long time,
++			      struct recent_entry *working, bool update)
+ {
+ 	struct recent_entry *e;
  
- 	/* hash table size must be power of 2 */
- 	n_buckets = roundup_pow_of_two(attr->max_entries);
-+	if (!n_buckets)
-+		return ERR_PTR(-E2BIG);
+@@ -161,6 +162,12 @@ static void recent_entry_reap(struct recent_table *t, unsigned long time)
+ 	 */
+ 	e = list_entry(t->lru_list.next, struct recent_entry, lru_list);
  
- 	cost = n_buckets * sizeof(struct stack_map_bucket *) + sizeof(*smap);
- 	cost += n_buckets * (value_size + sizeof(struct stack_map_bucket));
++	/*
++	 * Do not reap the entry which are going to be updated.
++	 */
++	if (e == working && update)
++		return;
++
+ 	/*
+ 	 * The last time stamp is the most recent.
+ 	 */
+@@ -303,7 +310,8 @@ recent_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ 
+ 		/* info->seconds must be non-zero */
+ 		if (info->check_set & XT_RECENT_REAP)
+-			recent_entry_reap(t, time);
++			recent_entry_reap(t, time, e,
++				info->check_set & XT_RECENT_UPDATE && ret);
+ 	}
+ 
+ 	if (info->check_set & XT_RECENT_SET ||
 -- 
 2.27.0
 
