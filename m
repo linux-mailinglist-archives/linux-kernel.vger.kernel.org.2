@@ -2,87 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE59731B5C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 08:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6142931B5D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 09:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhBOH7B convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Feb 2021 02:59:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhBOH66 (ORCPT
+        id S229913AbhBOIKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 03:10:40 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:2660 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229597AbhBOIKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 02:58:58 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F51C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 23:58:18 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lBYll-0005Rw-TF; Mon, 15 Feb 2021 08:58:09 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lBYlk-0006DX-NP; Mon, 15 Feb 2021 08:58:08 +0100
-Date:   Mon, 15 Feb 2021 08:58:08 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v5 2/2] counter: add IRQ or GPIO based event counter
-Message-ID: <20210215075808.cir3smhrikrxfv76@pengutronix.de>
-References: <20210208135347.18494-1-o.rempel@pengutronix.de>
- <20210208135347.18494-3-o.rempel@pengutronix.de>
- <CACRpkdZ5ZQDcy5RP=CVPJ14Lyktw_4yOuELJRweeDpPKRL3RVA@mail.gmail.com>
+        Mon, 15 Feb 2021 03:10:36 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11F7vobR007207;
+        Mon, 15 Feb 2021 09:09:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : subject : to
+ : cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=HOKWY9ja0XIA6P079lELOlmBVjhPUFu51o8zyaRJWOI=;
+ b=FP3e2OQFOY6I5ccWP3JEkKPfznJxyTW3ozVr8iAAo/+q14uiiRG7EVQZzC+gRrypU5ad
+ u/oDIBLyNLiwNCwSPAuFj1cHWQzogQA06miU50Qi227Q3lM0nuBFw7htfMBErgCj5mO8
+ 6oLF/wZ7LXOiRIs8EXz5nAoLmhYzM2LXQJoYWBFXkescRjk769fT381TkXig3KTGB5R1
+ VLGqt0JELRUhqkJf3ZE1GX9FWm6FOTFZzyo9QY2e0P0w5P/pnPB8C64Fwa2EqDGcEpIA
+ GVrnY9drLRMZeH8o5GM7d7HEubXcTfKjOFlaTBAq4hbllCla5JEsHmB9np7criiU/7Sx aA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36p54792v2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 09:09:21 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EB50B10002A;
+        Mon, 15 Feb 2021 09:09:18 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BE482211F0E;
+        Mon, 15 Feb 2021 09:09:18 +0100 (CET)
+Received: from lmecxl0951.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 15 Feb
+ 2021 09:09:17 +0100
+From:   yannick Fertre <yannick.fertre@foss.st.com>
+Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: Move drm_bridge_add into probe
+To:     Jagan Teki <jagan@amarulasolutions.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        "Laurent Pinchart" <Laurent.pinchart@ideasonboard.com>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Heiko Stubner <heiko@sntech.de>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe Cornu <philippe.cornu@st.com>
+CC:     Marek Vasut <marex@denx.de>,
+        Vincent Abriou <vincent.abriou@st.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-amarula@amarulasolutions.com>
+References: <20210203091306.140518-1-jagan@amarulasolutions.com>
+Message-ID: <f9cfa159-ac88-325b-d971-7c860fa722ff@foss.st.com>
+Date:   Mon, 15 Feb 2021 09:09:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CACRpkdZ5ZQDcy5RP=CVPJ14Lyktw_4yOuELJRweeDpPKRL3RVA@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 08:57:30 up 74 days, 22:03, 40 users,  load average: 0.08, 0.02,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210203091306.140518-1-jagan@amarulasolutions.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-15_02:2021-02-12,2021-02-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 10:26:39AM +0100, Linus Walleij wrote:
-> On Mon, Feb 8, 2021 at 2:53 PM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> 
-> > Add simple IRQ or GPIO base event counter. This device is used to measure
-> > rotation speed of some agricultural devices, so no high frequency on the
-> > counter pin is expected.
-> >
-> > The maximal measurement frequency depends on the CPU and system load. On
-> > the idle iMX6S I was able to measure up to 20kHz without count drops.
-> >
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> 
-> From GPIO and interrupt point of view this driver looks good to me.
-> I don't know about the userspace interface etc.
+Hello Jagan, I tested your patch on the stm32mp1 board.
+Unfortunately, the dsi panel does not probe well with this patch. The 
+problem is due to the panel which is placed in the node of the dsi 
+bridge (no problem with i2c devices).
 
-May I have your Reviewed-by?
+Regarding component bindings for stm drivers, I am currently working on 
+a new version.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Best regards
+
+Yannick
+
+
+
+On 2/3/21 10:13 AM, Jagan Teki wrote:
+> Usual I2C configured DSI bridge drivers have drm_bridge_add
+> in probe and mipi_dsi_attach in bridge attach functions.
+> 
+> With, this approach the drm pipeline is unable to find the
+> dsi bridge in stm drm drivers since the dw-mipi-dsi bridge is
+> adding drm bridge during bridge attach operations instead of
+> the probe.
+> 
+> This specific issue may not encounter for rockchip drm dsi
+> drivers, since rockchip drm uses component binding operations,
+> unlike stm drm drivers.
+> 
+> So, possible solutions are
+> 1. Move drm_bridge_add into the dw-mipi-dsi probe.
+> 2. Add mipi_dsi_attach in the bridge drivers probe.
+> 3. Add component binding operations for stm drm drivers.
+> 
+> Option 1 is a relatively possible solution as most of the
+> mainline drm dsi with bridge drivers have a similar approach
+> to their dsi host vs bridge registration.
+> 
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> ---
+>   drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 35 +++++++++----------
+>   1 file changed, 17 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> index 6b268f9445b3..8a535041f071 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> @@ -314,8 +314,6 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+>   {
+>   	struct dw_mipi_dsi *dsi = host_to_dsi(host);
+>   	const struct dw_mipi_dsi_plat_data *pdata = dsi->plat_data;
+> -	struct drm_bridge *bridge;
+> -	struct drm_panel *panel;
+>   	int ret;
+>   
+>   	if (device->lanes > dsi->plat_data->max_data_lanes) {
+> @@ -329,22 +327,6 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+>   	dsi->format = device->format;
+>   	dsi->mode_flags = device->mode_flags;
+>   
+> -	ret = drm_of_find_panel_or_bridge(host->dev->of_node, 1, 0,
+> -					  &panel, &bridge);
+> -	if (ret)
+> -		return ret;
+> -
+> -	if (panel) {
+> -		bridge = drm_panel_bridge_add_typed(panel,
+> -						    DRM_MODE_CONNECTOR_DSI);
+> -		if (IS_ERR(bridge))
+> -			return PTR_ERR(bridge);
+> -	}
+> -
+> -	dsi->panel_bridge = bridge;
+> -
+> -	drm_bridge_add(&dsi->bridge);
+> -
+>   	if (pdata->host_ops && pdata->host_ops->attach) {
+>   		ret = pdata->host_ops->attach(pdata->priv_data, device);
+>   		if (ret < 0)
+> @@ -1105,6 +1087,8 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+>   	struct device *dev = &pdev->dev;
+>   	struct reset_control *apb_rst;
+>   	struct dw_mipi_dsi *dsi;
+> +	struct drm_bridge *bridge;
+> +	struct drm_panel *panel;
+>   	int ret;
+>   
+>   	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
+> @@ -1167,6 +1151,20 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+>   	dw_mipi_dsi_debugfs_init(dsi);
+>   	pm_runtime_enable(dev);
+>   
+> +	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0,
+> +					  &panel, &bridge);
+> +	if (ret)
+> +		return ERR_PTR(ret);
+> +
+> +	if (panel) {
+> +		bridge = drm_panel_bridge_add_typed(panel,
+> +						    DRM_MODE_CONNECTOR_DSI);
+> +		if (IS_ERR(bridge))
+> +			return ERR_PTR(-ENODEV);
+> +	}
+> +
+> +	dsi->panel_bridge = bridge;
+> +
+>   	dsi->dsi_host.ops = &dw_mipi_dsi_host_ops;
+>   	dsi->dsi_host.dev = dev;
+>   	ret = mipi_dsi_host_register(&dsi->dsi_host);
+> @@ -1181,6 +1179,7 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+>   #ifdef CONFIG_OF
+>   	dsi->bridge.of_node = pdev->dev.of_node;
+>   #endif
+> +	drm_bridge_add(&dsi->bridge);
+>   
+>   	return dsi;
+>   }
+> 
