@@ -2,162 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41D731BBE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6AA31BBF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhBOPIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:08:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbhBOO5S (ORCPT
+        id S230335AbhBOPLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:11:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44842 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230280AbhBOO5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:57:18 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB6DC0611C1;
-        Mon, 15 Feb 2021 06:55:57 -0800 (PST)
-Date:   Mon, 15 Feb 2021 14:55:55 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613400956;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=wsxnDcMlpJkki1bD+3EV0U8LME79Eq3IinY7kBnm7Zw=;
-        b=b3zLXgzoCdj9dwokAbKGnv+WIX2vC9FCnmmE7k7qUACxhJfPnYs+mQIvGqJezpHqwi/OqP
-        24WXZiOryUvlRehOdubn3dSET/ut/UiOu5Ex9m6WFrHmjpIj9NfGzEzd+s40ezKHoboe7v
-        wTjeXmXagI2ogL5T2QQyRUevGRFDIBQI+Jgv3AG6wgibDa9LLFuqSwzv7Dl7alauE6ZOtA
-        70lwnLESKeuMgcgpdVxTnGFedVZy06hyePTuxUeMgQdHacnPoC7843dW052wbHo03stJTy
-        rJnTK582UO6nVjEP6R2HdhoC1iGoVz8dViLH3NCOY8t96zO5GjQ3Q6E4KxTMgg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613400956;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=wsxnDcMlpJkki1bD+3EV0U8LME79Eq3IinY7kBnm7Zw=;
-        b=J2oQ5LHUFmml+53bbNepPelis5VKb0/7J3jpIhew0e4Ey0MWih4TJN2n5SwAELDIcgWblO
-        iI5HkMWtkq0JjNAw==
-From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] kcsan: Rewrite kcsan_prandom_u32_max() without
- prandom_u32_state()
-Cc:     Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Mon, 15 Feb 2021 09:57:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613400979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JrRM1QxfnrMrYFQsps5k5W6ePiGa4SMjmwwhDFeB+aw=;
+        b=d4aeNR5ibW4LJitWEeqgydYRWo+7pz8/NQbCweW2nfr4S80k2wDTvcuD/ZbHKwgjeamlUH
+        /eWyQrxd2lSyT8hcDZ45kFmveUE4yww7JB43v5b4oDdu3OHUJEeASd9Vn9tNX4dL8j2rLD
+        qLQZ8CgUjCfkHQ/rC3/X4hbau305zsI=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-20-KI7_9jzUMzW1OwJGWIDqPA-1; Mon, 15 Feb 2021 09:56:17 -0500
+X-MC-Unique: KI7_9jzUMzW1OwJGWIDqPA-1
+Received: by mail-qk1-f200.google.com with SMTP id k1so3066176qkc.20
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:56:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=JrRM1QxfnrMrYFQsps5k5W6ePiGa4SMjmwwhDFeB+aw=;
+        b=Y22F7qlEgL3lYFPjDr6MYz4GN6QXoQYLfXhlkQ6/csCz1wg2/w6hoINneXcut9/6z+
+         PRCCcyX/MyLXC6jf402hRra5FpCwjzdDY4E9tSRSdNJr56eNOBEAUQJskQaGUw7HfNB4
+         /UO56zNGO1fSSUoXMLDrKI2ODuafmLmiKNyVDke1HNGNUPlNaQGIG+C1HRqD8I/y/fqj
+         UlL+GPEnREE0JAkFqGk7pitNQr+xj5Us5OBzAdeKFx+2DYZ+gOQH7Cv4h4z4aEetL+8w
+         6XQnHImDMkfl2o+aDIZhjzxQW3gXVU/gcA+X0Prsd0FeL+RMpTV54hkBiWFQrdDdn+rl
+         GaCQ==
+X-Gm-Message-State: AOAM531gmcBf3/rO9hoRVJPGzBeO8HjSfNyfa2wAhTkwnClqPcpXjEra
+        hoJw8n+Qa+0+8lOF2HRjlyVxdj8DLF56T3T94nUdDTLWuqM7zNmgITNOIIIGzm7XduXgyNS1EM4
+        2W518CDM4y1obf66SfTmfQFsJ
+X-Received: by 2002:a37:4c09:: with SMTP id z9mr8851900qka.9.1613400976738;
+        Mon, 15 Feb 2021 06:56:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwAbZIRzXhEKW5+XNMv3+ptZvSCtEfKDkun5PSz6GwXN+Gen4qxjlQDPRfDrdOZ0yYIUswT7g==
+X-Received: by 2002:a37:4c09:: with SMTP id z9mr8851879qka.9.1613400976502;
+        Mon, 15 Feb 2021 06:56:16 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id d22sm11361098qtp.34.2021.02.15.06.56.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Feb 2021 06:56:16 -0800 (PST)
+Subject: Re: [PATCH v9 0/7] FPGA Security Manager Class Driver
+To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+References: <20210105225924.14573-1-russell.h.weight@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <a9705da0-1ed0-8d9a-8eea-f04d7b9b471c@redhat.com>
+Date:   Mon, 15 Feb 2021 06:56:14 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Message-ID: <161340095583.20312.15815240255763140896.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210105225924.14573-1-russell.h.weight@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+Russ, Moritz
 
-Commit-ID:     71a076f4a61a6c779794ad286f356b39725edc3b
-Gitweb:        https://git.kernel.org/tip/71a076f4a61a6c779794ad286f356b39725edc3b
-Author:        Marco Elver <elver@google.com>
-AuthorDate:    Tue, 24 Nov 2020 12:02:09 +01:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 04 Jan 2021 14:39:07 -08:00
+This patchset still applies.
 
-kcsan: Rewrite kcsan_prandom_u32_max() without prandom_u32_state()
+Updating the fpga is a fairly important feature.
 
-Rewrite kcsan_prandom_u32_max() to not depend on code that might be
-instrumented, removing any dependency on lib/random32.c. The rewrite
-implements a simple linear congruential generator, that is sufficient
-for our purposes (for udelay() and skip_watch counter randomness).
+Are there any dependencies we are waiting on ?
 
-The initial motivation for this was to allow enabling KCSAN for
-kernel/sched (remove KCSAN_SANITIZE := n from kernel/sched/Makefile),
-with CONFIG_DEBUG_PREEMPT=y. Without this change, we could observe
-recursion:
+Tom
 
-	check_access() [via instrumentation]
-	  kcsan_setup_watchpoint()
-	    reset_kcsan_skip()
-	      kcsan_prandom_u32_max()
-	        get_cpu_var()
-		  preempt_disable()
-		    preempt_count_add() [in kernel/sched/core.c]
-		      check_access() [via instrumentation]
+On 1/5/21 2:59 PM, Russ Weight wrote:
+> The FPGA Security Manager class driver provides a common
+> API for user-space tools to manage updates for secure FPGA
+> devices. Device drivers that instantiate the FPGA Security
+> Manager class driver will interact with a HW secure update
+> engine in order to transfer new FPGA and BMC images to FLASH so
+> that they will be automatically loaded when the FPGA card reboots.
+>
+> A significant difference between the FPGA Manager and the FPGA 
+> Security Manager is that the FPGA Manager does a live update (Partial
+> Reconfiguration) to a device whereas the FPGA Security Manager
+> updates the FLASH images for the Static Region and the BMC so that
+> they will be loaded the next time the FPGA card boots. Security is
+> enforced by hardware and firmware. The security manager interacts
+> with the firmware to initiate an update, pass in the necessary data,
+> and collect status on the update.
+>
+> The n3000bmc-secure driver is the first driver to use the FPGA
+> Security Manager. This driver was previously submitted in the same
+> patch set, but has been split out into a separate patch set starting
+> with V2. Future devices will also make use of this common API for
+> secure updates.
+>
+> In addition to managing secure updates of the FPGA and BMC images,
+> the FPGA Security Manager update process may also be used to
+> program root entry hashes and cancellation keys for the FPGA static
+> region, the FPGA partial reconfiguration region, and the BMC.
+> The image files are self-describing, and contain a header describing
+> the image type.
+>
+> Secure updates make use of the request_firmware framework, which
+> requires that image files are accessible under /lib/firmware. A request
+> for a secure update returns immediately, while the update itself
+> proceeds in the context of a kernel worker thread. Sysfs files provide
+> a means for monitoring the progress of a secure update and for
+> retrieving error information in the event of a failure.
+>
+> The API includes a "name" sysfs file to export the name of the parent
+> driver. It also includes an "update" sub-directory containing files that
+> that can be used to instantiate and monitor a secure update.
+>
+> Changelog v8 -> v9:
+>   - Rebased patches for 5.11-rc2
+>   - Updated Date and KernelVersion in ABI documentation
+>
+> Changelog v7 -> v8:
+>   - Fixed grammatical error in Documentation/fpga/fpga-sec-mgr.rst
+>
+> Changelog v6 -> v7:
+>   - Changed dates in documentation file to December 2020
+>   - Changed filename_store() to use kmemdup_nul() instead of
+>     kstrndup() and changed the count to not assume a line-return.
+>
+> Changelog v5 -> v6:
+>   - Removed sysfs support and documentation for the display of the
+>     flash count, root entry hashes, and code-signing-key cancelation
+>     vectors from the class driver. This information can vary by device
+>     and will instead be displayed by the device-specific parent driver.
+>
+> Changelog v4 -> v5:
+>   - Added the devm_fpga_sec_mgr_unregister() function, following recent
+>     changes to the fpga_manager() implementation.
+>   - Changed most of the *_show() functions to use sysfs_emit()
+>     instead of sprintf(
+>   - When checking the return values for functions of type enum
+>     fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
+>
+> Changelog v3 -> v4:
+>   - This driver is generic enough that it could be used for non Intel
+>     FPGA devices. Changed from "Intel FPGA Security Manager" to FPGA
+>     Security Manager" and removed unnecessary references to "Intel".
+>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+>     Note that this also affects some filenames.
+>
+> Changelog v2 -> v3:
+>   - Use dev_err() to report invalid progress in sec_progress()
+>   - Use dev_err() to report invalid error code in sec_error()
+>   - Modified sysfs handler check in check_sysfs_handler() to make
+>     it more readable.
+>   - Removed unnecessary "goto done"
+>   - Added a comment to explain imgr->driver_unload in
+>     ifpga_sec_mgr_unregister()
+>
+> Changelog v1 -> v2:
+>   - Separated out the MAX10 BMC Security Engine to be submitted in
+>     a separate patch-set.
+>   - Bumped documentation dates and versions
+>   - Split ifpga_sec_mgr_register() into create() and register() functions
+>   - Added devm_ifpga_sec_mgr_create()
+>   - Added Documentation/fpga/ifpga-sec-mgr.rst 
+>   - Changed progress state "read_file" to "reading"
+>   - Added sec_error() function (similar to sec_progress())
+>   - Removed references to bmc_flash_count & smbus_flash_count (not supported)
+>   - Removed typedefs for imgr ops
+>   - Removed explicit value assignments in enums
+>   - Other minor code cleanup per review comments 
+>
+> Russ Weight (7):
+>   fpga: sec-mgr: fpga security manager class driver
+>   fpga: sec-mgr: enable secure updates
+>   fpga: sec-mgr: expose sec-mgr update status
+>   fpga: sec-mgr: expose sec-mgr update errors
+>   fpga: sec-mgr: expose sec-mgr update size
+>   fpga: sec-mgr: enable cancel of secure update
+>   fpga: sec-mgr: expose hardware error info
+>
+>  .../ABI/testing/sysfs-class-fpga-sec-mgr      |  81 +++
+>  Documentation/fpga/fpga-sec-mgr.rst           |  44 ++
+>  Documentation/fpga/index.rst                  |   1 +
+>  MAINTAINERS                                   |   9 +
+>  drivers/fpga/Kconfig                          |   9 +
+>  drivers/fpga/Makefile                         |   3 +
+>  drivers/fpga/fpga-sec-mgr.c                   | 652 ++++++++++++++++++
+>  include/linux/fpga/fpga-sec-mgr.h             | 100 +++
+>  8 files changed, 899 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+>  create mode 100644 Documentation/fpga/fpga-sec-mgr.rst
+>  create mode 100644 drivers/fpga/fpga-sec-mgr.c
+>  create mode 100644 include/linux/fpga/fpga-sec-mgr.h
+>
 
-Note, while this currently does not affect an unmodified kernel, it'd be
-good to keep a KCSAN kernel working when KCSAN_SANITIZE := n is removed
-from kernel/sched/Makefile to permit testing scheduler code with KCSAN
-if desired.
-
-Fixes: cd290ec24633 ("kcsan: Use tracing-safe version of prandom")
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/kcsan/core.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 3994a21..3bf98db 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -12,7 +12,6 @@
- #include <linux/moduleparam.h>
- #include <linux/percpu.h>
- #include <linux/preempt.h>
--#include <linux/random.h>
- #include <linux/sched.h>
- #include <linux/uaccess.h>
- 
-@@ -101,7 +100,7 @@ static atomic_long_t watchpoints[CONFIG_KCSAN_NUM_WATCHPOINTS + NUM_SLOTS-1];
- static DEFINE_PER_CPU(long, kcsan_skip);
- 
- /* For kcsan_prandom_u32_max(). */
--static DEFINE_PER_CPU(struct rnd_state, kcsan_rand_state);
-+static DEFINE_PER_CPU(u32, kcsan_rand_state);
- 
- static __always_inline atomic_long_t *find_watchpoint(unsigned long addr,
- 						      size_t size,
-@@ -275,20 +274,17 @@ should_watch(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *
- }
- 
- /*
-- * Returns a pseudo-random number in interval [0, ep_ro). See prandom_u32_max()
-- * for more details.
-- *
-- * The open-coded version here is using only safe primitives for all contexts
-- * where we can have KCSAN instrumentation. In particular, we cannot use
-- * prandom_u32() directly, as its tracepoint could cause recursion.
-+ * Returns a pseudo-random number in interval [0, ep_ro). Simple linear
-+ * congruential generator, using constants from "Numerical Recipes".
-  */
- static u32 kcsan_prandom_u32_max(u32 ep_ro)
- {
--	struct rnd_state *state = &get_cpu_var(kcsan_rand_state);
--	const u32 res = prandom_u32_state(state);
-+	u32 state = this_cpu_read(kcsan_rand_state);
-+
-+	state = 1664525 * state + 1013904223;
-+	this_cpu_write(kcsan_rand_state, state);
- 
--	put_cpu_var(kcsan_rand_state);
--	return (u32)(((u64) res * ep_ro) >> 32);
-+	return state % ep_ro;
- }
- 
- static inline void reset_kcsan_skip(void)
-@@ -639,10 +635,14 @@ static __always_inline void check_access(const volatile void *ptr, size_t size,
- 
- void __init kcsan_init(void)
- {
-+	int cpu;
-+
- 	BUG_ON(!in_task());
- 
- 	kcsan_debugfs_init();
--	prandom_seed_full_state(&kcsan_rand_state);
-+
-+	for_each_possible_cpu(cpu)
-+		per_cpu(kcsan_rand_state, cpu) = (u32)get_cycles();
- 
- 	/*
- 	 * We are in the init task, and no other tasks should be running;
