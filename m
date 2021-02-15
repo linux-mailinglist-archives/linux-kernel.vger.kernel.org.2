@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D36E31BF79
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5BC31BF71
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhBOQgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:36:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49600 "EHLO mail.kernel.org"
+        id S231723AbhBOQfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:35:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231462AbhBOPht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231463AbhBOPht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 10:37:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B5FD64EA1;
-        Mon, 15 Feb 2021 15:33:08 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 456A664EA3;
+        Mon, 15 Feb 2021 15:33:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403189;
-        bh=qgzS7wxRx3dLglzG4utUzIJH1AUFn3MhFa/oV2d+NK0=;
+        s=korg; t=1613403191;
+        bh=2d82ML/lsPXn5JpjMp119lFurxZ44IhVjiVuGINp/T8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wr1ODP/I9XVweCS6YC+hxzrFDdP1LhjwSaqKsYBiGV88Uu04BtWXlEgDcPz24LJHi
-         NHvmeCwZqciEgZ4K675zlpQXBGt2BIf9so5Af/SjxrI+uH2Q4tUC2cH4JpB5b70Utc
-         rpwHsyELYwjLDgd49TcasOcNgfVKoyZkHxPJhtAo=
+        b=IOPUSQF8XRdhHPKp9w9xHiWjcAcJtt9WtrHpdxvjJ7dbv4z3eF0Bliq1WX0vPxkCv
+         pCcOGDOguooHw9HBNAt+ALeBJ1RMjDKlcBF3OBUd2r0uWhBpbeY/KO1SHGWdcspq/R
+         u19Q9mEwTYW+fxkg/C8dWmqU8rXZRfatkvVybFV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Igor Druzhinin <igor.druzhinin@citrix.com>,
-        Juergen Gross <jgross@suse.com>, Wei Liu <wl@xen.org>,
+        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
+        Martin Schiller <ms@dev.tdt.de>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 061/104] xen/netback: avoid race in xenvif_rx_ring_slots_available()
-Date:   Mon, 15 Feb 2021 16:27:14 +0100
-Message-Id: <20210215152721.443983403@linuxfoundation.org>
+Subject: [PATCH 5.10 062/104] net: hdlc_x25: Return meaningful error code in x25_open
+Date:   Mon, 15 Feb 2021 16:27:15 +0100
+Message-Id: <20210215152721.473422296@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,56 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit ec7d8e7dd3a59528e305a18e93f1cb98f7faf83b ]
+[ Upstream commit 81b8be68ef8e8915d0cc6cedd2ac425c74a24813 ]
 
-Since commit 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-xenvif_rx_ring_slots_available() is no longer called only from the rx
-queue kernel thread, so it needs to access the rx queue with the
-associated queue held.
+It's not meaningful to pass on LAPB error codes to HDLC code or other
+parts of the system, because they will not understand the error codes.
 
-Reported-by: Igor Druzhinin <igor.druzhinin@citrix.com>
-Fixes: 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Acked-by: Wei Liu <wl@xen.org>
-Link: https://lore.kernel.org/r/20210202070938.7863-1-jgross@suse.com
+Instead, use system-wide recognizable error codes.
+
+Fixes: f362e5fe0f1f ("wan/hdlc_x25: make lapb params configurable")
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Acked-by: Martin Schiller <ms@dev.tdt.de>
+Link: https://lore.kernel.org/r/20210203071541.86138-1-xie.he.0141@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/xen-netback/rx.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/wan/hdlc_x25.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/xen-netback/rx.c b/drivers/net/xen-netback/rx.c
-index b8febe1d1bfd3..accc991d153f7 100644
---- a/drivers/net/xen-netback/rx.c
-+++ b/drivers/net/xen-netback/rx.c
-@@ -38,10 +38,15 @@ static bool xenvif_rx_ring_slots_available(struct xenvif_queue *queue)
- 	RING_IDX prod, cons;
- 	struct sk_buff *skb;
- 	int needed;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&queue->rx_queue.lock, flags);
+diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
+index f52b9fed05931..34bc53facd11c 100644
+--- a/drivers/net/wan/hdlc_x25.c
++++ b/drivers/net/wan/hdlc_x25.c
+@@ -171,11 +171,11 @@ static int x25_open(struct net_device *dev)
  
- 	skb = skb_peek(&queue->rx_queue);
--	if (!skb)
-+	if (!skb) {
-+		spin_unlock_irqrestore(&queue->rx_queue.lock, flags);
- 		return false;
-+	}
+ 	result = lapb_register(dev, &cb);
+ 	if (result != LAPB_OK)
+-		return result;
++		return -ENOMEM;
  
- 	needed = DIV_ROUND_UP(skb->len, XEN_PAGE_SIZE);
- 	if (skb_is_gso(skb))
-@@ -49,6 +54,8 @@ static bool xenvif_rx_ring_slots_available(struct xenvif_queue *queue)
- 	if (skb->sw_hash)
- 		needed++;
+ 	result = lapb_getparms(dev, &params);
+ 	if (result != LAPB_OK)
+-		return result;
++		return -EINVAL;
  
-+	spin_unlock_irqrestore(&queue->rx_queue.lock, flags);
-+
- 	do {
- 		prod = queue->rx.sring->req_prod;
- 		cons = queue->rx.req_cons;
+ 	if (state(hdlc)->settings.dce)
+ 		params.mode = params.mode | LAPB_DCE;
+@@ -190,7 +190,7 @@ static int x25_open(struct net_device *dev)
+ 
+ 	result = lapb_setparms(dev, &params);
+ 	if (result != LAPB_OK)
+-		return result;
++		return -EINVAL;
+ 
+ 	return 0;
+ }
 -- 
 2.27.0
 
