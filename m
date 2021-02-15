@@ -2,260 +2,534 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5BC31C111
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD4531C117
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhBOR7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:59:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbhBOR7a (ORCPT
+        id S230163AbhBOSD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 13:03:27 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2565 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230120AbhBOSDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:59:30 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BC9C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:58:49 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id 7so10059870wrz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:58:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qhhKdBuhEEookMaS37LIoVT3IsjzKnUX0O3XiL1iwho=;
-        b=HKsT81xm45z0VFhcKM7uKe0ncwcP7vvV6z1QSf2rZM549u3Ge78ouOC7LvqS+ggACf
-         Ey64BZ8tnhRRKlX2zJMLfRzp7Ul7EUI7CIE79kdGG8D+lGHYnfaCsbWTgZl70/W+plbW
-         hjv3odtj3Z8FfDm1MUiPHYO3hC68RygmPvWJQhkd/wmk//CjLj8L4BdpI87aItqhbeqd
-         QYaJdhUEEdgD50Rk0Tbwd5LJm8P3q7F/JptaQxa+IsjoLodJzNI2T44JXbgt45DgUmrc
-         a/O7guSCZysKR3qG+KGdy8ZjHlqTTX1b7zc8ZOw0qI7gPUSjkDFD2dgQvPeixO1HGE7n
-         KMVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qhhKdBuhEEookMaS37LIoVT3IsjzKnUX0O3XiL1iwho=;
-        b=hL6r+6CKiDa+g0aM4/OGmqEDZJhKhosntsWO6wkye/ECtT/wyWZlCgr++Pb7CQqX6n
-         I+AjvYKpMJ6Y+fPxIhDRTEC92ixZIEmN8vj89AUtGiEFkifY7mivAa2I9Mv9RSv2OUeT
-         c/+VTNTbO2lp+pPJssPNUBgrXd40L52OvcIkarqHpOwwTGZDH+e0VLdd3bD1QLiozEt0
-         xzGbRI/UNlSeMDRmSeoEgZ7SNwU3eYEP4JCLw73AjhNJcXrh5Vh6Rjb+x00uK+0uUbBv
-         Og71RWXGaVgYmHZsJKC2gl155PQzJIY19oABXJhUSSbWHw/uM4rJJCFdo+tcu/0Zsq3p
-         hCAQ==
-X-Gm-Message-State: AOAM533iP3yEs4ojcQeXc+1d7OfwoNISyQvfU8wkzZngwThx4Pc0DjIN
-        r0ck59+M4lTF3wj1/0fu46R4l5At7ZnDmORys2dSVA==
-X-Google-Smtp-Source: ABdhPJyZVBm2X17EAUK7vktTfVAOik/5/hH5Dvmda0dph+Y3QZK6QBh4KmTcGdvX2vIlh0oA6sIbgrpwZ0wJ3UdqttM=
-X-Received: by 2002:a5d:4c8c:: with SMTP id z12mr10404593wrs.176.1613411928666;
- Mon, 15 Feb 2021 09:58:48 -0800 (PST)
+        Mon, 15 Feb 2021 13:03:17 -0500
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DfWwt47KHz67pJ1;
+        Tue, 16 Feb 2021 01:55:42 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 15 Feb 2021 19:02:34 +0100
+Received: from [10.210.166.238] (10.210.166.238) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 15 Feb 2021 18:02:32 +0000
+Subject: Re: [RFC/RFT PATCH] scsi: pm8001: Expose HW queues for pm80xx hw
+To:     "Viswas.G@microchip.com" <Viswas.G@microchip.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "akshatzen@google.com" <akshatzen@google.com>,
+        "Ruksar.devadi@microchip.com" <Ruksar.devadi@microchip.com>,
+        "radha@google.com" <radha@google.com>,
+        "bjashnani@google.com" <bjashnani@google.com>,
+        "vishakhavc@google.com" <vishakhavc@google.com>,
+        "jinpu.wang@cloud.ionos.com" <jinpu.wang@cloud.ionos.com>,
+        "Ashokkumar.N@microchip.com" <Ashokkumar.N@microchip.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hare@suse.de" <hare@suse.de>,
+        "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>
+References: <1609845423-110410-1-git-send-email-john.garry@huawei.com>
+ <SN6PR11MB34882CBBF9CF1C6EA2C50EB29DB79@SN6PR11MB3488.namprd11.prod.outlook.com>
+ <0a20dc79-a462-f3fb-14af-db151b688e5a@huawei.com>
+ <SN6PR11MB34882607FCD824C9C790AEFC9DB69@SN6PR11MB3488.namprd11.prod.outlook.com>
+ <1b491d44-996c-2131-2eb6-5348460f9b5b@huawei.com>
+ <SN6PR11MB3488932892D5F34FEE6984499D889@SN6PR11MB3488.namprd11.prod.outlook.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <fc62409c-bc1f-58d5-4094-0ad07a5de58c@huawei.com>
+Date:   Mon, 15 Feb 2021 18:00:52 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-9-git-send-email-anshuman.khandual@arm.com>
- <CAJ9a7VgC0j4TmOYXdUVd19sQqxWOk-tsvv3r5DQzmY59ZptzDQ@mail.gmail.com> <20210215165606.GB2770547@xps15>
-In-Reply-To: <20210215165606.GB2770547@xps15>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Mon, 15 Feb 2021 17:58:37 +0000
-Message-ID: <CAJ9a7VimBJkeFVaYmW+jTGYH9EsDbUX_Wbf5P_bTicFqsSFJkg@mail.gmail.com>
-Subject: Re: [PATCH V3 08/14] coresight: core: Add support for dedicated
- percpu sinks
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <SN6PR11MB3488932892D5F34FEE6984499D889@SN6PR11MB3488.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.166.238]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+Hi Viswas,
 
-On Mon, 15 Feb 2021 at 16:56, Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
->
-> On Mon, Feb 15, 2021 at 04:27:26PM +0000, Mike Leach wrote:
-> > HI Anshuman
-> >
-> > On Wed, 27 Jan 2021 at 08:55, Anshuman Khandual
-> > <anshuman.khandual@arm.com> wrote:
-> > >
-> > > Add support for dedicated sinks that are bound to individual CPUs. (e.g,
-> > > TRBE). To allow quicker access to the sink for a given CPU bound source,
-> > > keep a percpu array of the sink devices. Also, add support for building
-> > > a path to the CPU local sink from the ETM.
-> > >
-> >
-> > Really need to tighten up the terminology here - I think what you mean
-> > is a PE architecturally defined sink - i.e. one that can be determined
-> > by reading the feature registers on the PE, rather than an ETR which
-> > cannot.
-> > However, the Coresight Base System Architecture specification does
-> > recommend a per cpu design using an ETR per CPU - now I assume that
-> > this case is not catered for in this patch?
-> >
-> > > This adds a new percpu sink type CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM.
-> > > This new sink type is exclusively available and can only work with percpu
-> > > source type device CORESIGHT_DEV_SUBTYPE_SOURCE_PERCPU_PROC.
-> > >
-> >
-> > CORESIGHT_DEV_SUBTYPE_SOURCE_PERCPU_PROC - this does not exist.
-> >
-> > >
-> > > This defines a percpu structure that accommodates a single coresight_device
-> > > which can be used to store an initialized instance from a sink driver. As
-> > > these sinks are exclusively linked and dependent on corresponding percpu
-> > > sources devices, they should also be the default sink device during a perf
-> > > session.
-> > >
-> > > Outwards device connections are scanned while establishing paths between a
-> > > source and a sink device. But such connections are not present for certain
-> > > percpu source and sink devices which are exclusively linked and dependent.
-> > > Build the path directly and skip connection scanning for such devices.
-> > >
-> > > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > > Cc: Mike Leach <mike.leach@linaro.org>
-> > > Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> > > ---
-> > > Changes in V3:
-> > >
-> > > - Updated coresight_find_default_sink()
-> > >
-> > >  drivers/hwtracing/coresight/coresight-core.c | 16 ++++++++++++++--
-> > >  include/linux/coresight.h                    | 12 ++++++++++++
-> > >  2 files changed, 26 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> > > index 0062c89..4795e28 100644
-> > > --- a/drivers/hwtracing/coresight/coresight-core.c
-> > > +++ b/drivers/hwtracing/coresight/coresight-core.c
-> > > @@ -23,6 +23,7 @@
-> > >  #include "coresight-priv.h"
-> > >
-> > >  static DEFINE_MUTEX(coresight_mutex);
-> > > +DEFINE_PER_CPU(struct coresight_device *, csdev_sink);
-> > >
-> >
-> > If you do indeed mean the architecturally defined sinks then this
-> > could be 'csdev_pe_arch_sink' - or something similar to indicate the
-> > reliance on the PE architecture, unless per-cpu ETR topologies are
-> > also handled here.
->
-> I would like to treat systems with one ETR per CPU the same way we do for TRBEs.
-> That way we have two distinct way of working, i.e topologies where the sink is
-> shared and 1:1 topologies.  As such moving forward with "csdev_pe_arch_sink"
-> could become misleading when 1:1 ETR topologies are supported.
->
-> Mathieu
->
+> 
+> We could test this patch and it works fine. 
 
-I believe that In terms of connecting source -> sink for 1:1 ETM:ETR,
-then the existing code will already work via the normal build path and
-ports declarations. Suzukis changes in coresight-etm-perf to allow
-multiple sinks of the same type to be active for ETE:TRBE will also
-work for ETx:ETR. (at least in terms of path building - there may
-still be other issues that come into play about buffers etc).
+Good to know.
 
-The TRBE .dts doesn''t have any ports and is as such outside this
-framework. This patch appears to be making it detectable when
-connecting source -> sink where we have ETE:TRBE on a given CPU - as
-in the subsequent patches, the TRBE driver registers in the per cpu
-sink array.
+> Regarding the usage of request->tag, We have some challenges there. Pm80xx driver need tag for internal command as well.
 
-So these changes are not really related to 1:1 specifically, but the
-detectability of PE architected sinks. There is a need for the per cpu
-array for TRBE as there is no other way of finding them - but not for
-ETR - which should work just fine without changes I think.
+> Tag is controller wide and we need to assign unique tag for internal command as well. 
 
-Regards
+This is not a problem unique to pm8001.
 
-Mike
+> If we use request->tag, how can we get tag for internal commands ? 
 
+This same problem is currently solved for hisi_sas driver by reserving a 
+small amount of tags for internal commands, which are managed by the driver.
 
-> >
-> > >  /**
-> > >   * struct coresight_node - elements of a path, from source to sink
-> > > @@ -784,6 +785,13 @@ static int _coresight_build_path(struct coresight_device *csdev,
-> > >         if (csdev == sink)
-> > >                 goto out;
-> > >
-> > > +       if (coresight_is_percpu_source(csdev) && coresight_is_percpu_sink(sink) &&
-> > > +           sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev))) {
-> > > +               _coresight_build_path(sink, sink, path);
-> > > +               found = true;
-> > > +               goto out;
-> > > +       }
-> > > +
-> > >         /* Not a sink - recursively explore each port found on this element */
-> > >         for (i = 0; i < csdev->pdata->nr_outport; i++) {
-> > >                 struct coresight_device *child_dev;
-> > > @@ -999,8 +1007,12 @@ coresight_find_default_sink(struct coresight_device *csdev)
-> > >         int depth = 0;
-> > >
-> > >         /* look for a default sink if we have not found for this device */
-> > > -       if (!csdev->def_sink)
-> > > -               csdev->def_sink = coresight_find_sink(csdev, &depth);
-> > > +       if (!csdev->def_sink) {
-> > > +               if (coresight_is_percpu_source(csdev))
-> > > +                       csdev->def_sink = per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
-> > > +               if (!csdev->def_sink)
-> > > +                       csdev->def_sink = coresight_find_sink(csdev, &depth);
-> > > +       }
-> > >         return csdev->def_sink;
-> > >  }
-> > >
-> > > diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> > > index 976ec26..bc3a5ca 100644
-> > > --- a/include/linux/coresight.h
-> > > +++ b/include/linux/coresight.h
-> > > @@ -50,6 +50,7 @@ enum coresight_dev_subtype_sink {
-> > >         CORESIGHT_DEV_SUBTYPE_SINK_PORT,
-> > >         CORESIGHT_DEV_SUBTYPE_SINK_BUFFER,
-> > >         CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM,
-> > > +       CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM,
-> >
-> > If this is needed then could it not be ..._SINK_SYSMEM_PROC - to be
-> > consistent with ..._SOURCE_PROC?
-> >
-> > >  };
-> > >
-> > >  enum coresight_dev_subtype_link {
-> > > @@ -428,6 +429,17 @@ static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 o
-> > >                 csa->write(val, offset, false, true);
-> > >  }
-> > >
-> > > +static inline bool coresight_is_percpu_source(struct coresight_device *csdev)
-> >
-> > All cpu sources are per cpu - that is ETMv3, ETMv4, PTM, ETE - this
-> > might be better as simply coresight_is_cpu_source() as all the
-> > aforementioned types will return true.
-> >
-> > > +{
-> > > +       return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
-> > > +              csdev->subtype.source_subtype == CORESIGHT_DEV_SUBTYPE_SOURCE_PROC;
-> > > +}
-> > > +
-> > > +static inline bool coresight_is_percpu_sink(struct coresight_device *csdev)
-> > > +{
-> > > +       return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SINK) &&
-> > > +              csdev->subtype.sink_subtype == CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
-> > > +}
-> > >  #else  /* !CONFIG_64BIT */
-> > >
-> > >  static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
-> > > --
-> > > 2.7.4
-> > >
-> >
-> > Regards
-> >
-> > Mike
-> > --
-> > Mike Leach
-> > Principal Engineer, ARM Ltd.
-> > Manchester Design Centre. UK
+For example, we support 4096 hostwide tags for hisi_sas. However we tell 
+scsi midlayer that we support 4000 (in scsi_host.can_queue), and then 
+use the other 96 for internal commands.
 
+See scsi/hisi_sas/hisi_sas_main.c::hisi_sas_slot_index_alloc() and 
+hisi_sas_slot_index_free() for how we maintain these tags.
 
+Having said that, there was a series to allow the block layer manage 
+these internal commands, but it is not merged yet:
+https://lore.kernel.org/linux-scsi/20200703130122.111448-1-hare@suse.de/
 
---
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+Having this would mean that the driver no longer needs to manage these 
+tags internally.
+
+Thanks,
+John
+
+If driver allocate that, how can we make sure it will not conflict with 
+the request->tag ?
+> 
+> Regards,
+> Viswas G
+> 
+>> -----Original Message-----
+>> From: John Garry <john.garry@huawei.com>
+>> Sent: Monday, February 1, 2021 10:46 PM
+>> To: Viswas G - I30667 <Viswas.G@microchip.com>; jejb@linux.ibm.com;
+>> martin.petersen@oracle.com; akshatzen@google.com; Ruksar Devadi -
+>> I52327 <Ruksar.devadi@microchip.com>; radha@google.com;
+>> bjashnani@google.com; vishakhavc@google.com;
+>> jinpu.wang@cloud.ionos.com; Ashokkumar N - X53535
+>> <Ashokkumar.N@microchip.com>
+>> Cc: linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org; hare@suse.de;
+>> kashyap.desai@broadcom.com; ming.lei@redhat.com
+>> Subject: Re: [RFC/RFT PATCH] scsi: pm8001: Expose HW queues for pm80xx
+>> hw
+>>
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+>> content is safe
+>>
+>> On 01/02/2021 17:08, Viswas.G@microchip.com wrote:
+>>> Hi John,
+>>>
+>>> AFAIK, there is no such restrictions. Any queue can be used for
+>> internal/external commands.
+>>>
+>>
+>> ok, understood.
+>>
+>> BTW, to see even more performance improvement, it would be good to use
+>> request->tag for ccb tag, rather that the LLDD manage this itself. I
+>> mentioned this perviously elsewhere. Do you plan to make that change?
+>> hisi_sas and megaraid sas are examples of drivers who do this.
+>>
+>> Thanks,
+>> John
+>>
+>>> Regards,
+>>> Viswas G
+>>>
+>>>> -----Original Message-----
+>>>> From: John Garry <john.garry@huawei.com>
+>>>> Sent: Monday, February 1, 2021 4:53 PM
+>>>> To: Viswas G - I30667 <Viswas.G@microchip.com>; jejb@linux.ibm.com;
+>>>> martin.petersen@oracle.com; akshatzen@google.com; Ruksar Devadi -
+>>>> I52327 <Ruksar.devadi@microchip.com>; radha@google.com;
+>>>> bjashnani@google.com; vishakhavc@google.com;
+>>>> jinpu.wang@cloud.ionos.com; Ashokkumar N - X53535
+>>>> <Ashokkumar.N@microchip.com>
+>>>> Cc: linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org;
+>>>> hare@suse.de; kashyap.desai@broadcom.com; ming.lei@redhat.com
+>>>> Subject: Re: [RFC/RFT PATCH] scsi: pm8001: Expose HW queues for
+>>>> pm80xx hw
+>>>>
+>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+>>>> know the content is safe
+>>>>
+>>>> On 31/01/2021 07:19, Viswas.G@microchip.com wrote:
+>>>>> Thanks Johns.
+>>>>>
+>>>>> We could see a kernel crash while testing this patch.
+>>>>
+>>>> Thanks for testing.
+>>>>
+>>>>>
+>>>>> [  246.724632] scsi host10: pm80xx
+>>>>> [  248.005258] sas: Enter sas_scsi_recover_host busy: 0 failed: 0 [
+>>>>> 248.168973] BUG: kernel NULL pointer dereference, address:
+>>>>> 0000000000000110 [  248.175926] #PF: supervisor read access in
+>>>>> kernel mode [  248.181065] #PF: error_code(0x0000) - not-present
+>>>>> page [ 248.186196] PGD 0 P4D 0 [  248.188736] Oops: 0000 [#1] SMP
+>>>>> PTI [  248.192230] CPU: 10 PID: 77 Comm: kworker/u26:2 Kdump: loaded
+>>>> Tainted: G S         OE     5.11.0-rc3 #2
+>>>>> [  248.201614] Hardware name: Supermicro Super Server/X10DRi-LN4+,
+>>>>> BIOS 3.1 06/08/2018 [  248.209258] Workqueue: events_unbound
+>>>>> async_run_entry_fn [  248.214571] RIP:
+>>>>> 0010:pm80xx_chip_sata_req+0x7f/0x5e0 [pm80xx] [  248.220413] Code:
+>>>>> c1 7c c1 e9 03 4d 8b ac 24 80 01 00 00 48 c7 44 24 14 00 00 00 00 89
+>>>>> 04
+>>>>> 24 31 c0 48 c7 84 24 88 00 00 00 00 00 00 00 f3 48 ab <48> 8b ba 10
+>>>>> 01
+>>>>> 00 00 e8 35 35 c6 ef c1 e8 10 89 44 24 04 0f b6 43 [  248.239157] RSP:
+>>>>> 0018:ffffb98d834979f0 EFLAGS: 00010046 [  248.244384] RAX:
+>>>>> 0000000000000000 RBX: ffff9523c321c000 RCX: 0000000000000000 [
+>>>>> 248.251516] RDX: 0000000000000000 RSI: ffff952450720048 RDI:
+>>>>> ffffb98d83497a80 [  248.258641] RBP: ffff9523c7420000 R08:
+>>>>> 0000000000000100 R09: 0000000000000001 [  248.265764] R10:
+>>>>> 0000000000000001 R11: ffff9523c9e40000 R12: ffff9523ca1c3600 [
+>>>>> 248.272887] R13: ffff9523c9e40000 R14: ffffb98d83497a04 R15:
+>>>> ffff952450720048 [  248.280013] FS:  0000000000000000(0000)
+>>>> GS:ffff9527afd00000(0000) knlGS:0000000000000000 [  248.288090] CS:
+>>>> 0010
+>>>> DS: 0000 ES: 0000 CR0: 0000000080050033 [  248.293826] CR2:
+>>>> 0000000000000110 CR3: 000000029ac10001 CR4: 00000000001706e0 [
+>>>> 248.300952] Call Trace:
+>>>>
+>>>> I think that the problem here is that ata_queued_cmd->scmd is NULL
+>>>> for the ata internal command.
+>>>>
+>>>> Please try this fix:
+>>>>
+>>>> ---->8-----
+>>>>
+>>>> @@ -4451,7 +4451,7 @@ static int pm80xx_chip_sata_req(struct
+>>>> pm8001_hba_info *pm8001_ha,
+>>>>           struct scsi_cmnd *scmd = qc->scsicmd;
+>>>>           u32 tag = ccb->ccb_tag;
+>>>>           int ret;
+>>>> -       u32 q_index, blk_tag;
+>>>> +       u32 q_index = 0, blk_tag;
+>>>>           struct sata_start_req sata_cmd;
+>>>>           u32 hdr_tag, ncg_tag = 0;
+>>>>           u64 phys_addr, start_addr, end_addr; @@ -4463,8 +4463,10 @@
+>>>> static int pm80xx_chip_sata_req(struct pm8001_hba_info *pm8001_ha,
+>>>>           u32 opc = OPC_INB_SATA_HOST_OPSTART;
+>>>>           memset(&sata_cmd, 0, sizeof(sata_cmd));
+>>>>
+>>>> -       blk_tag = blk_mq_unique_tag(scmd->request);
+>>>> -       q_index = blk_mq_unique_tag_to_hwq(blk_tag);
+>>>> +       if (scmd) {
+>>>> +               blk_tag = blk_mq_unique_tag(scmd->request);
+>>>> +               q_index = blk_mq_unique_tag_to_hwq(blk_tag);
+>>>> +       }
+>>>>           circularQ = &pm8001_ha->inbnd_q_tbl[q_index];
+>>>>
+>>>> ----8<-----
+>>>>
+>>>> You may need similar for other dispatch paths also - like smp - but I
+>>>> don't think that you will.
+>>>>
+>>>> BTW, do you know if there is actually a limitation on the HW that
+>>>> queue
+>>>> #0 is used for all "internal" IO (mpi), like phy control operation? Jack?
+>>>>
+>>>> Thanks,
+>>>> John
+>>>>
+>>>>
+>>>>> [  248.303402]  pm8001_task_exec.isra.9+0x2a4/0x460 [pm80xx] [
+>>>>> 248.308805]  sas_ata_qc_issue+0x187/0x220 [libsas] [  248.313607]
+>>>>> ata_qc_issue+0x107/0x1e0 [libata] [  248.318069]
+>>>>> ata_exec_internal_sg+0x2c8/0x580 [libata] [  248.323217]
+>>>>> ata_exec_internal+0x5f/0x90 [libata] [  248.327931]
+>>>>> ata_dev_read_id+0x306/0x480 [libata] [  248.332647]
+>>>>> ata_eh_recover+0x7ea/0x12a0 [libata] [  248.337369]  ?
+>>>>> vprintk_emit+0x114/0x220 [  248.341208]  ?
+>>>>> sas_ata_sched_eh+0x60/0x60 [libsas] [  248.346002]  ?
+>>>>> sas_ata_prereset+0x50/0x50 [libsas] [ 248.350795]  ? printk+0x58/0x6f [
+>> 248.353941]  ?
+>>>>> sas_ata_sched_eh+0x60/0x60 [libsas] [  248.358733]  ?
+>>>>> sas_ata_prereset+0x50/0x50 [libsas] [  248.363525]
+>>>>> ata_do_eh+0x40/0xb0 [libata] [  248.367556]
+>>>>> ata_scsi_port_error_handler+0x354/0x770 [libata] [  248.373318]
+>>>>> async_sas_ata_eh+0x44/0x7b [libsas] [  248.377938]
+>>>>> async_run_entry_fn+0x39/0x160 [  248.382040]
+>>>>> process_one_work+0x1cb/0x360 [  248.386050]
+>>>> worker_thread+0x30/0x370
+>>>>> [  248.389706]  ? processe_work+0x360/0x360 [  248.393884]
+>>>>> kthread+0x116/0x130 [  248.397116]  ? kthread_park+0x80/0x80 [
+>>>>> 248.400773]  ret_from_fork+0x22/0x30 [  248.404355] Modules linked in:
+>>>>> pm80xx(OE) libsas scsi_transport_sas xt_CHECKSUM xt_MASQUERADE
+>>>>> xt_conntrack ipt_REJECT nf_reject_ipv4 nft_compat nft_counter
+>>>> nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4
+>>>> nf_tables nfnetlink tun bridge stp llc rfkill sunrpc vfat fat
+>>>> intel_rapl_msr intel_rapl_common sb_edac x86_pkg_temp_thermal
+>>>> intel_powerclamp coretemp kvm_intel kvm irqbypass joydev
+>>>> crct10dif_pclmul crc32_pclmul ghash_clmulni_intel ipmi_ssif iTCO_wdt
+>>>> iTCO_vendor_support mei_me rapl
+>>>> i2c_i801 intel_cstate mei acpi_ipmi lpc_ich intel_uncore pcspkr
+>>>> ipmi_si i2c_smbus ipmi_devintf ipmi_msghandler acpi_power_meter
+>>>> acpi_pad ioatdma ip_tables xfs libcrc32c sr_mod sd_mod cdrom t10_pi
+>>>> sg ast drm_vram_helper drm_kms_helper syscopyarea igb sysfillrect
+>>>> sysimgblt fb_sys_fops drm_ttm_helper ttm ahci libahci dca drm
+>>>> crc32c_intel libata i2c_algo_bit wmi dm_mirror dm_region_hash dm_log
+>>>> dm_mod fuse [ 248.483431] CR2: 0000000000000110
+>>>>> [    0.000000] Linux version 5.11.0-rc3 (root@localhost.localdomain) (gcc
+>>>> (GCC) 8.3.1 20191121 (Red Hat 8.3.1-5), GNU ld version 2.30-79.el8)
+>>>> #2 SMP Mon Jan 25 23:56:12 IST 2021
+>>>>> [    0.000000] Command line: elfcorehr=0x45000000
+>>>> BOOT_IMAGE=(hd14,gpt2)/vmlinuz-5.11.0-rc3 ro
+>>>> resume=/dev/mapper/rhel-swap rhgb console=ttyS1,115200 loglevel=7
+>>>> irqpoll nr_cpus=1 reset_devices cgroup_disable=memory mce=off
+>>>> numa=off
+>>>> udev.children-max=2 panic=10 rootflags=nofail acpi_no_memhotplug
+>>>> transparent_hugepage=never nokaslr novmcoredd hest_disable
+>>>> disable_cpu_apicid=0
+>>>>>
+>>>>>
+>>>>>> -----Original Message-----
+>>>>>> From: John Garry <john.garry@huawei.com>
+>>>>>> Sent: Tuesday, January 5, 2021 4:47 PM
+>>>>>> To: jejb@linux.ibm.com; martin.petersen@oracle.com;
+>>>>>> akshatzen@google.com; Viswas G - I30667
+>> <Viswas.G@microchip.com>;
+>>>>>> Ruksar Devadi - I52327 <Ruksar.devadi@microchip.com>;
+>>>>>> radha@google.com; bjashnani@google.com; vishakhavc@google.com;
+>>>>>> jinpu.wang@cloud.ionos.com; Ashokkumar N - X53535
+>>>>>> <Ashokkumar.N@microchip.com>
+>>>>>> Cc: linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org;
+>>>>>> hare@suse.de; kashyap.desai@broadcom.com; ming.lei@redhat.com;
+>>>> John
+>>>>>> Garry <john.garry@huawei.com>
+>>>>>> Subject: [RFC/RFT PATCH] scsi: pm8001: Expose HW queues for pm80xx
+>>>> hw
+>>>>>>
+>>>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+>>>>>> know the content is safe
+>>>>>>
+>>>>>> In commit 05c6c029a44d ("scsi: pm80xx: Increase number of supported
+>>>>>> queues"), support for 80xx chip was improved by enabling multiple
+>>>>>> HW queues.
+>>>>>>
+>>>>>> In this, like other SCSI MQ HBA drivers, the HW queues were not
+>>>>>> exposed to upper layer, and instead the driver managed the queues
+>>>> internally.
+>>>>>>
+>>>>>> However, this management duplicates blk-mq code. In addition, the
+>>>>>> HW queue management is sub-optimal for a system where the number
+>> of
+>>>> CPUs
+>>>>>> exceeds the HW queues - this is because queues are selected in a
+>>>>>> round- robin fashion, when it would be better to make adjacent CPUs
+>>>>>> submit on the same queue. And finally, the affinity of the
+>>>>>> completion queue interrupts is not set to mirror the cpu<->HQ queue
+>>>>>> mapping, which
+>>>> is suboptimal.
+>>>>>>
+>>>>>> As such, for when MSIX is supported, expose HW queues to upper
+>> layer.
+>>>>>> Flag PCI_IRQ_AFFINITY is set for allocating the MSIX vectors to
+>>>>>> automatically assign affinity for the completion queue interrupts.
+>>>>>>
+>>>>>> Signed-off-by: John Garry <john.garry@huawei.com>
+>>>>>>
+>>>>>> ---
+>>>>>> I sent as an RFC/RFT as I have no HW to test. In addition, since HW
+>>>>>> queue
+>>>>>> #0 is used always for internal commands (like in
+>>>>>> send_task_abort()), if all CPUs associated with HW queue #0 are
+>>>>>> offlined, the interrupt for that queue will be shutdown, and no
+>>>>>> CPUs would be available to service any internal commands
+>>>>>> completion. To solve that, we need [0] merged first and switch over
+>>>>>> to use the new API. But we can still test
+>>>> performance in the meantime.
+>>>>>>
+>>>>>> I assume someone else is making the change to use the request tag
+>>>>>> for IO tag management.
+>>>>>>
+>>>>>> [0] https://lore.kernel.org/linux-scsi/47ba045e-a490-198b-1744-
+>>>>>> 529f97192d3b@suse.de/
+>>>>>>
+>>>>>> diff --git a/drivers/scsi/pm8001/pm8001_init.c
+>>>>>> b/drivers/scsi/pm8001/pm8001_init.c
+>>>>>> index ee2de177d0d0..73479803a23e 100644
+>>>>>> --- a/drivers/scsi/pm8001/pm8001_init.c
+>>>>>> +++ b/drivers/scsi/pm8001/pm8001_init.c
+>>>>>> @@ -81,6 +81,15 @@ LIST_HEAD(hba_list);
+>>>>>>
+>>>>>>     struct workqueue_struct *pm8001_wq;
+>>>>>>
+>>>>>> +static int pm8001_map_queues(struct Scsi_Host *shost) {
+>>>>>> +       struct sas_ha_struct *sha = SHOST_TO_SAS_HA(shost);
+>>>>>> +       struct pm8001_hba_info *pm8001_ha = sha->lldd_ha;
+>>>>>> +       struct blk_mq_queue_map *qmap =
+>>>>>> +&shost->tag_set.map[HCTX_TYPE_DEFAULT];
+>>>>>> +
+>>>>>> +       return blk_mq_pci_map_queues(qmap, pm8001_ha->pdev, 0); }
+>>>>>> +
+>>>>>>     /*
+>>>>>>      * The main structure which LLDD must register for scsi core.
+>>>>>>      */
+>>>>>> @@ -106,6 +115,7 @@ static struct scsi_host_template pm8001_sht = {
+>>>>>> #ifdef CONFIG_COMPAT
+>>>>>>            .compat_ioctl           = sas_ioctl,
+>>>>>>     #endif
+>>>>>> +       .map_queues                     = pm8001_map_queues,
+>>>>>>            .shost_attrs            = pm8001_host_attrs,
+>>>>>>            .track_queue_depth      = 1,
+>>>>>>     };
+>>>>>> @@ -923,9 +933,8 @@ static int
+>> pm8001_configure_phy_settings(struct
+>>>>>> pm8001_hba_info *pm8001_ha)  static u32 pm8001_setup_msix(struct
+>>>>>> pm8001_hba_info *pm8001_ha)  {
+>>>>>>            u32 number_of_intr;
+>>>>>> -       int rc, cpu_online_count;
+>>>>>> +       int rc;
+>>>>>>            unsigned int allocated_irq_vectors;
+>>>>>> -
+>>>>>>            /* SPCv controllers supports 64 msi-x */
+>>>>>>            if (pm8001_ha->chip_id == chip_8001) {
+>>>>>>                    number_of_intr = 1; @@ -933,16 +942,15 @@ static
+>>>>>> u32 pm8001_setup_msix(struct pm8001_hba_info *pm8001_ha)
+>>>>>>                    number_of_intr = PM8001_MAX_MSIX_VEC;
+>>>>>>            }
+>>>>>>
+>>>>>> -       cpu_online_count = num_online_cpus();
+>>>>>> -       number_of_intr = min_t(int, cpu_online_count, number_of_intr);
+>>>>>> -       rc = pci_alloc_irq_vectors(pm8001_ha->pdev, number_of_intr,
+>>>>>> -                       number_of_intr, PCI_IRQ_MSIX);
+>>>>>> +       /* Use default affinity descriptor, which spreads *all* vectors */
+>>>>>> +       rc = pci_alloc_irq_vectors(pm8001_ha->pdev, 1,
+>>>>>> +                       number_of_intr, PCI_IRQ_MSIX |
+>>>>>> + PCI_IRQ_AFFINITY);
+>>>>>>            allocated_irq_vectors = rc;
+>>>>>>            if (rc < 0)
+>>>>>>                    return rc;
+>>>>>>
+>>>>>>            /* Assigns the number of interrupts */
+>>>>>> -       number_of_intr = min_t(int, allocated_irq_vectors,
+>> number_of_intr);
+>>>>>> +       number_of_intr = allocated_irq_vectors;
+>>>>>>            pm8001_ha->number_of_intr = number_of_intr;
+>>>>>>
+>>>>>>            /* Maximum queue number updating in HBA structure */ @@
+>>>>>> -1113,6
+>>>>>> +1121,16 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
+>>>>>>            if (rc)
+>>>>>>                    goto err_out_enable;
+>>>>>>
+>>>>>> +       if (pm8001_ha->number_of_intr > 1) {
+>>>>>> +               shost->nr_hw_queues = pm8001_ha->number_of_intr;
+>>>>>> +               /*
+>>>>>> +                * For now, ensure we're not sent too many commands
+>>>>>> + by
+>>>> setting
+>>>>>> +                * host_tagset. This is also required if we start using request
+>>>>>> +                * tag.
+>>>>>> +                */
+>>>>>> +               shost->host_tagset = 1;
+>>>>>> +       }
+>>>>>> +
+>>>>>>            rc = scsi_add_host(shost, &pdev->dev);
+>>>>>>            if (rc)
+>>>>>>                    goto err_out_ha_free; diff --git
+>>>>>> a/drivers/scsi/pm8001/pm8001_sas.h
+>>>>>> b/drivers/scsi/pm8001/pm8001_sas.h
+>>>>>> index f2c8cbad3853..74bc6fed693e 100644
+>>>>>> --- a/drivers/scsi/pm8001/pm8001_sas.h
+>>>>>> +++ b/drivers/scsi/pm8001/pm8001_sas.h
+>>>>>> @@ -55,6 +55,8 @@
+>>>>>>     #include <scsi/scsi_tcq.h>
+>>>>>>     #include <scsi/sas_ata.h>
+>>>>>>     #include <linux/atomic.h>
+>>>>>> +#include <linux/blk-mq.h>
+>>>>>> +#include <linux/blk-mq-pci.h>
+>>>>>>     #include "pm8001_defs.h"
+>>>>>>
+>>>>>>     #define DRV_NAME               "pm80xx"
+>>>>>> diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c
+>>>>>> b/drivers/scsi/pm8001/pm80xx_hwi.c
+>>>>>> index 6772b0924dac..31d65ce91e7d 100644
+>>>>>> --- a/drivers/scsi/pm8001/pm80xx_hwi.c
+>>>>>> +++ b/drivers/scsi/pm8001/pm80xx_hwi.c
+>>>>>> @@ -4299,12 +4299,13 @@ static int pm80xx_chip_ssp_io_req(struct
+>>>>>> pm8001_hba_info *pm8001_ha,
+>>>>>>            struct domain_device *dev = task->dev;
+>>>>>>            struct pm8001_device *pm8001_dev = dev->lldd_dev;
+>>>>>>            struct ssp_ini_io_start_req ssp_cmd;
+>>>>>> +       struct scsi_cmnd *scmd = task->uldd_task;
+>>>>>>            u32 tag = ccb->ccb_tag;
+>>>>>>            int ret;
+>>>>>>            u64 phys_addr, start_addr, end_addr;
+>>>>>>            u32 end_addr_high, end_addr_low;
+>>>>>>            struct inbound_queue_table *circularQ;
+>>>>>> -       u32 q_index, cpu_id;
+>>>>>> +       u32 blk_tag, q_index;
+>>>>>>            u32 opc = OPC_INB_SSPINIIOSTART;
+>>>>>>            memset(&ssp_cmd, 0, sizeof(ssp_cmd));
+>>>>>>            memcpy(ssp_cmd.ssp_iu.lun, task->ssp_task.LUN, 8); @@
+>>>>>> -4323,8
+>>>>>> +4324,8 @@ static int pm80xx_chip_ssp_io_req(struct
+>> pm8001_hba_info
+>>>>>> *pm8001_ha,
+>>>>>>            ssp_cmd.ssp_iu.efb_prio_attr |= (task->ssp_task.task_attr & 7);
+>>>>>>            memcpy(ssp_cmd.ssp_iu.cdb, task->ssp_task.cmd->cmnd,
+>>>>>>                           task->ssp_task.cmd->cmd_len);
+>>>>>> -       cpu_id = smp_processor_id();
+>>>>>> -       q_index = (u32) (cpu_id) % (pm8001_ha->max_q_num);
+>>>>>> +       blk_tag = blk_mq_unique_tag(scmd->request);
+>>>>>> +       q_index = blk_mq_unique_tag_to_hwq(blk_tag);
+>>>>>>            circularQ = &pm8001_ha->inbnd_q_tbl[q_index];
+>>>>>>
+>>>>>>            /* Check if encryption is set */ @@ -4446,9 +4447,11 @@
+>>>>>> static int pm80xx_chip_sata_req(struct pm8001_hba_info
+>> *pm8001_ha,
+>>>>>>            struct sas_task *task = ccb->task;
+>>>>>>            struct domain_device *dev = task->dev;
+>>>>>>            struct pm8001_device *pm8001_ha_dev = dev->lldd_dev;
+>>>>>> +       struct ata_queued_cmd *qc = task->uldd_task;
+>>>>>> +       struct scsi_cmnd *scmd = qc->scsicmd;
+>>>>>>            u32 tag = ccb->ccb_tag;
+>>>>>>            int ret;
+>>>>>> -       u32 q_index, cpu_id;
+>>>>>> +       u32 q_index, blk_tag;
+>>>>>>            struct sata_start_req sata_cmd;
+>>>>>>            u32 hdr_tag, ncg_tag = 0;
+>>>>>>            u64 phys_addr, start_addr, end_addr; @@ -4459,8 +4462,9
+>>>>>> @@ static int pm80xx_chip_sata_req(struct pm8001_hba_info
+>> *pm8001_ha,
+>>>>>>            unsigned long flags;
+>>>>>>            u32 opc = OPC_INB_SATA_HOST_OPSTART;
+>>>>>>            memset(&sata_cmd, 0, sizeof(sata_cmd));
+>>>>>> -       cpu_id = smp_processor_id();
+>>>>>> -       q_index = (u32) (cpu_id) % (pm8001_ha->max_q_num);
+>>>>>> +
+>>>>>> +       blk_tag = blk_mq_unique_tag(scmd->request);
+>>>>>
+>>>>> Here the scsi command is NULL.
+>>>>>
+>>>>>      if(scmd) {
+>>>>>                    blk_tag = blk_mq_unique_tag(scmd->request);
+>>>>>                    q_index = blk_mq_unique_tag_to_hwq(blk_tag);
+>>>>>            } else {
+>>>>>                    q_index = 0;
+>>>>>      }
+>>>>>
+>>>>> With this change, we have started our testing. We will update you
+>>>>> the
+>>>> result soon.
+>>>>>
+>>>>>> +       q_index = blk_mq_unique_tag_to_hwq(blk_tag);
+>>>>>>            circularQ = &pm8001_ha->inbnd_q_tbl[q_index];
+>>>>>>
+>>>>>>            if (task->data_dir == DMA_NONE) {
+>>>>>> --
+>>>>>> 2.26.2
+>>>>>
+>>>>> .
+>>>>>
+>>>
+> 
+
