@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDC531C26E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1F031C217
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhBOTYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:24:46 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:40901 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231168AbhBOTYF (ORCPT
+        id S230502AbhBOTAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:00:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230021AbhBOS75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:24:05 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 89351F11;
-        Mon, 15 Feb 2021 14:23:19 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 15 Feb 2021 14:23:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
-        :to:cc:subject:date:message-id; s=fm2; bh=qtZ88+eccUpDy/N+YVtKwx
-        /Db1dOaYm7Hq3J1rmzqh4=; b=KFhp97DQaqFzDIbMjDm63fdF7BQ+RMdq5B6gHu
-        Cp4D2pt0OlbKvVGe7Tp4DsHCbbdCao/UM0ON2Z3uBAPtCPf114wIScSRW3gDn5d9
-        bDwutnK4Dz8uje/IQnBD79gi15LOFgnjyd1EY/5kWRJe3XgwCb232rlRXPOS7hlO
-        Xo2WFOqtr229hw85O0srJ6p2JV47sZ2H8qsTMMJEfHJ2mxYB/BiSDty2b8Zj68ZQ
-        zyxMjR0fEunyDRLp8Zf5CpMRbge/iWLfdIEAl76rPw8MiquDqKO7VLldvF8JA67Y
-        3iSYWsCI+h30MyytLRk5moXq+qnnipi9Vj+SkE3oj9HLEEdw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:date:from:message-id:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=qtZ88+eccUpDy/N+YVtKwx/Db1dOaYm7Hq3J1rmzqh4=; b=L3XQYYMr
-        emVS+nG6F+KBb1ir6/DgVbX8+Jne8+EA9xEDkTFe+JFaHp2WrLiSuLt+GYDXplPG
-        52i2m4M2gFI9mgn5gz8KCyf6Dv0rimJULJZbCdl5y/47FRf1yauSmJtdUqSzo1mT
-        M5KR2VPiochdGLbZDY3thK+MWIy6NcEAKwullzuShVJHmErXV5/iyYzdIxINmNUD
-        ZxHCGlRxKnQybGuu7WYYOe20UytuVPHmlpgjN4JPZhUJd3HXQqQ/hsOGbOBDbSrC
-        Jr/mLmPoMYTVsSS7/+QiGVaM2Gb7fSJBpe82Wy0TtF3RRv4TC4s8ppau8N2+9nY0
-        YmxOuvamKBDeAg==
-X-ME-Sender: <xms:JsoqYH5MOA5pnvT2KUbJvZKgSxu3vdp-tLD6sSbiKwNW_RTcceDMQA>
-    <xme:JsoqYM7hz7I1WXcsSagpAPIdXhWDNsTv_JR1MPOEyeP-j4uAUo5FSaXmY9ZN1cPfR
-    hPHVt1F6AsY8QpHlQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrieekgdduudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffosedttdertdertddtnecuhfhrohhmpeghihhllhhirghmucff
-    uhhrrghnugcuoeifihhllhdoghhithesughrnhgurdhmvgeqnecuggftrfgrthhtvghrnh
-    epjeetudeiveejfeduueehgfdvveegheeghefgtdeuueetveelueehtdeukedvgeetnecu
-    kfhppedvudejrddvfeekrddvtdekrdejgeenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpeifihhllhdoghhithesughrnhgurdhmvg
-X-ME-Proxy: <xmx:JsoqYOeQqqz9iNJl2DZlubX5G_nxqge4Rd4c2qcKp-v1pINPeG6Iow>
-    <xmx:JsoqYIKopu4oeOH3rOpQkmg_8NZuafzk6prW753-kmyEQCoVzgBkVQ>
-    <xmx:JsoqYLJPdqj883BaI8yNKMDX_pBbluttUvrhA95m0CiRj6dIRbr6eQ>
-    <xmx:J8oqYNxDrMSyq5HRY84RUTFqAje6Tr6mL8ekCXoZUWOUeJON9q3wag>
-Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 18A521080059;
-        Mon, 15 Feb 2021 14:23:18 -0500 (EST)
-From:   William Durand <will+git@drnd.me>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: rtl8192e: fix typo in a function name
-Date:   Sat, 13 Feb 2021 14:54:21 +0000
-Message-Id: <20210213145421.31031-1-will+git@drnd.me>
-X-Mailer: git-send-email 2.17.1
+        Mon, 15 Feb 2021 13:59:57 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32053C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:59:11 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id g24so2992455qts.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:59:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VLi1cAVxQP0XEts9J9hmyT1b9JpU8SbEP6ObLPtMdVk=;
+        b=g+1PSz+YvWUDyE746jB8jc3O7ygSAaIAk88hp1P8F1Re/AOnP+TGlr1rkTnvUKYGyR
+         3SoW6ET4b4NhpC62LzX1WQpwVA2V2pHIZv2/D8hz3aKNA3DD7Un4Cus9vrcqjQ8B5SxI
+         pNCE16VCyMBBz/z6b8cHh7mP08V7WrlApNTZeKlybmAtGTGE/gxPUCuBFH4fheFSJciX
+         9eZ48xCyQ2ZegftD/HLZu2mDKoeTuXpqEMV8sPo/HfQ6cZpqRtE0JR4Cdl8ZA9MMaSkh
+         dLvuPFAGHtZI/VWedkVrPGBVPjDu1Ez8ZshJ52T0k1dpoSydKRn9tV2+03HjHC6GLo1+
+         roPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VLi1cAVxQP0XEts9J9hmyT1b9JpU8SbEP6ObLPtMdVk=;
+        b=sf04zmP4GiS10odj4ugD2DiHtC9eBEoqHq6th1e9xwaBodlR9IQbPna05M8SpJCqBq
+         514bz1q1MaD4GDYs/yQbqhlQU8/lO+MkWaGaIHKu68SIg6WQesiSkyynnT3P2mVSR+eO
+         7IVv1vu6ig/P7btZ5KTeu7pHb0RH0pxioOXDdwkR6ohlkV9UlVRgbn3aYKRn946JauPU
+         FkdfeUs99bqzT3ifFaThPKGAhdrJKHrco1YsDfPEop5LQ9d/pjLH8OuWXwHF6IC8AYeg
+         XWetFyhecdH9Ts6qOh3BWkUy+KxHwN2C9MDkuXW19ysnSCHmUo4wQ6T3idG5YSjT+SAY
+         ZpAg==
+X-Gm-Message-State: AOAM5321dPXaZvQyZs2gXNWSIrOSaVQUC72hbLq2/cHSxifzON6pOtl5
+        7A/GVhfMqW3cv028xOjYySbrqQ==
+X-Google-Smtp-Source: ABdhPJxJ8epjzr+kRTeRdKmmTxD52c8LN/gqM9fRMtaKrLDIFcwBqL/PhO0ZuO6UU9vajvZvIum3xQ==
+X-Received: by 2002:a05:622a:109:: with SMTP id u9mr15385994qtw.116.1613415550412;
+        Mon, 15 Feb 2021 10:59:10 -0800 (PST)
+Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id z28sm8173017qkj.72.2021.02.15.10.59.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 10:59:09 -0800 (PST)
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        jmorris@namei.org, linux-kernel@vger.kernel.org,
+        tyhicks@linux.microsoft.com, will@kernel.org, james.morse@arm.com,
+        ebiederm@xmission.com, kexec@lists.infradead.org
+Subject: [PATCH 0/1] fix machine_kexec_post_load prototype.
+Date:   Mon, 15 Feb 2021 13:59:07 -0500
+Message-Id: <20210215185908.257724-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a typo here where it says "qurey" but "query" was intended.
+This is against for-next/kexec, fix for machine_kexec_post_load
+warning.
 
-Signed-off-by: William Durand <will+git@drnd.me>
----
- drivers/staging/rtl8192e/rtllib_tx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reported by kernel test robot [1].
 
-diff --git a/drivers/staging/rtl8192e/rtllib_tx.c b/drivers/staging/rtl8192e/rtllib_tx.c
-index 8add17752eed..50cf10201fdd 100644
---- a/drivers/staging/rtl8192e/rtllib_tx.c
-+++ b/drivers/staging/rtl8192e/rtllib_tx.c
-@@ -339,7 +339,7 @@ static void rtllib_tx_query_agg_cap(struct rtllib_device *ieee,
- 	}
- }
+[1] https://lore.kernel.org/linux-arm-kernel/202102030727.gqTokACH-lkp@intel.com
 
--static void rtllib_qurey_ShortPreambleMode(struct rtllib_device *ieee,
-+static void rtllib_query_ShortPreambleMode(struct rtllib_device *ieee,
- 					   struct cb_desc *tcb_desc)
- {
- 	tcb_desc->bUseShortPreamble = false;
-@@ -928,7 +928,7 @@ static int rtllib_xmit_inter(struct sk_buff *skb, struct net_device *dev)
- 				tcb_desc->bdhcp = 1;
- 			}
+Pavel Tatashin (1):
+  kexec: move machine_kexec_post_load() to public interface
 
--			rtllib_qurey_ShortPreambleMode(ieee, tcb_desc);
-+			rtllib_query_ShortPreambleMode(ieee, tcb_desc);
- 			rtllib_tx_query_agg_cap(ieee, txb->fragments[0],
- 						tcb_desc);
- 			rtllib_query_HTCapShortGI(ieee, tcb_desc);
---
-2.17.1
+ include/linux/kexec.h   | 2 ++
+ kernel/kexec_internal.h | 2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
 
