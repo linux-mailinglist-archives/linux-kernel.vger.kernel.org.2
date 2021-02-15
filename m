@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F193031BF35
+	by mail.lfdr.de (Postfix) with ESMTP id 10C4231BF34
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbhBOQ17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:27:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49598 "EHLO mail.kernel.org"
+        id S231796AbhBOQ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:27:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231195AbhBOPgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:36:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B789E64E95;
-        Mon, 15 Feb 2021 15:32:31 +0000 (UTC)
+        id S230459AbhBOPg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:36:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B988364E8E;
+        Mon, 15 Feb 2021 15:32:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403152;
-        bh=Z6zA4YjEHvL5sTyAuNPMYVZfJqzVp0yb+RJGVduycbs=;
+        s=korg; t=1613403157;
+        bh=nKIGJtfqLEwveiYn9Xc73rQHQjsxo+hapHWA2sKcDIo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NLUymA6RPphiTrBUZ4No6ov+3Ao1dcUlSclfW8/EU7VV6vaFxrznnqL4/VNRmOzFH
-         4EqGtbuZFfZaJ6nYOeTXbn4dz7E6d3fEN3YwRlfFEg7Icjo3XSDYMbC7v9YB+wyrEN
-         N6CB26Nzt1movYWJfYZnTYgxVlkaiPiOWLc0G0lA=
+        b=v/s1ioYmelxLbcsG5BI97urxpXpmB8uBbSuh+a0QmoIwwxjb2ekC1uMGLQnkIasZI
+         JmImis/ZH5dCqvWGm/JeJOApzwjJMjH4A+sBSWboaJKU3jmHaEPpeZtoKeJGp5FRVY
+         E19otseZkTX5o6OBwnbpOC6WIlBAXrIQG9eUOck0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 048/104] KVM: x86: cleanup CR3 reserved bits checks
-Date:   Mon, 15 Feb 2021 16:27:01 +0100
-Message-Id: <20210215152721.031370031@linuxfoundation.org>
+        stable@vger.kernel.org, Nikhil Rao <nikhil.rao@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 050/104] dmaengine: idxd: fix misc interrupt completion
+Date:   Mon, 15 Feb 2021 16:27:03 +0100
+Message-Id: <20210215152721.092303584@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -40,90 +40,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Dave Jiang <dave.jiang@intel.com>
 
-[ Upstream commit c1c35cf78bfab31b8cb455259524395c9e4c7cd6 ]
+[ Upstream commit f5cc9ace24fbdf41b4814effbb2f9bad7046e988 ]
 
-If not in long mode, the low bits of CR3 are reserved but not enforced to
-be zero, so remove those checks.  If in long mode, however, the MBZ bits
-extend down to the highest physical address bit of the guest, excluding
-the encryption bit.
+Nikhil reported the misc interrupt handler can sometimes miss handling
+the command interrupt when an error interrupt happens near the same time.
+Have the irq handling thread continue to process the misc interrupts until
+all interrupts are processed. This is a low usage interrupt and is not
+expected to handle high volume traffic. Therefore there is no concern of
+this thread running for a long time.
 
-Make the checks consistent with the above, and match them between
-nested_vmcb_checks and KVM_SET_SREGS.
-
-Cc: stable@vger.kernel.org
-Fixes: 761e41693465 ("KVM: nSVM: Check that MBZ bits in CR3 and CR4 are not set on vmrun of nested guests")
-Fixes: a780a3ea6282 ("KVM: X86: Fix reserved bits check for MOV to CR3")
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 0d5c10b4c84d ("dmaengine: idxd: add work queue drain support")
+Reported-by: Nikhil Rao <nikhil.rao@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+Link: https://lore.kernel.org/r/161074755329.2183844.13295528344116907983.stgit@djiang5-desk3.ch.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/svm/nested.c | 13 +++----------
- arch/x86/kvm/svm/svm.h    |  3 ---
- arch/x86/kvm/x86.c        |  2 ++
- 3 files changed, 5 insertions(+), 13 deletions(-)
+ drivers/dma/idxd/irq.c | 36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 65e40acde71aa..4fbe190c79159 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -231,6 +231,7 @@ static bool nested_vmcb_check_controls(struct vmcb_control_area *control)
- 
- static bool nested_vmcb_checks(struct vcpu_svm *svm, struct vmcb *vmcb12)
- {
-+	struct kvm_vcpu *vcpu = &svm->vcpu;
- 	bool vmcb12_lma;
- 
- 	if ((vmcb12->save.efer & EFER_SVME) == 0)
-@@ -244,18 +245,10 @@ static bool nested_vmcb_checks(struct vcpu_svm *svm, struct vmcb *vmcb12)
- 
- 	vmcb12_lma = (vmcb12->save.efer & EFER_LME) && (vmcb12->save.cr0 & X86_CR0_PG);
- 
--	if (!vmcb12_lma) {
--		if (vmcb12->save.cr4 & X86_CR4_PAE) {
--			if (vmcb12->save.cr3 & MSR_CR3_LEGACY_PAE_RESERVED_MASK)
--				return false;
--		} else {
--			if (vmcb12->save.cr3 & MSR_CR3_LEGACY_RESERVED_MASK)
--				return false;
--		}
--	} else {
-+	if (vmcb12_lma) {
- 		if (!(vmcb12->save.cr4 & X86_CR4_PAE) ||
- 		    !(vmcb12->save.cr0 & X86_CR0_PE) ||
--		    (vmcb12->save.cr3 & MSR_CR3_LONG_MBZ_MASK))
-+		    (vmcb12->save.cr3 & vcpu->arch.cr3_lm_rsvd_bits))
- 			return false;
- 	}
- 	if (kvm_valid_cr4(&svm->vcpu, vmcb12->save.cr4))
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 1d853fe4c778b..be74e22b82ea7 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -346,9 +346,6 @@ static inline bool gif_set(struct vcpu_svm *svm)
+diff --git a/drivers/dma/idxd/irq.c b/drivers/dma/idxd/irq.c
+index 17a65a13fb649..552e2e2707058 100644
+--- a/drivers/dma/idxd/irq.c
++++ b/drivers/dma/idxd/irq.c
+@@ -53,19 +53,14 @@ irqreturn_t idxd_irq_handler(int vec, void *data)
+ 	return IRQ_WAKE_THREAD;
  }
  
- /* svm.c */
--#define MSR_CR3_LEGACY_RESERVED_MASK		0xfe7U
--#define MSR_CR3_LEGACY_PAE_RESERVED_MASK	0x7U
--#define MSR_CR3_LONG_MBZ_MASK			0xfff0000000000000U
- #define MSR_INVALID				0xffffffffU
+-irqreturn_t idxd_misc_thread(int vec, void *data)
++static int process_misc_interrupts(struct idxd_device *idxd, u32 cause)
+ {
+-	struct idxd_irq_entry *irq_entry = data;
+-	struct idxd_device *idxd = irq_entry->idxd;
+ 	struct device *dev = &idxd->pdev->dev;
+ 	union gensts_reg gensts;
+-	u32 cause, val = 0;
++	u32 val = 0;
+ 	int i;
+ 	bool err = false;
  
- u32 svm_msrpm_offset(u32 msr);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 18a315bbcb79e..3bcde449938e6 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9558,6 +9558,8 @@ static int kvm_valid_sregs(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs)
- 		if (!(sregs->cr4 & X86_CR4_PAE)
- 		    || !(sregs->efer & EFER_LMA))
- 			return -EINVAL;
-+		if (sregs->cr3 & vcpu->arch.cr3_lm_rsvd_bits)
-+			return false;
- 	} else {
- 		/*
- 		 * Not in 64-bit mode: EFER.LMA is clear and the code
+-	cause = ioread32(idxd->reg_base + IDXD_INTCAUSE_OFFSET);
+-	iowrite32(cause, idxd->reg_base + IDXD_INTCAUSE_OFFSET);
+-
+ 	if (cause & IDXD_INTC_ERR) {
+ 		spin_lock_bh(&idxd->dev_lock);
+ 		for (i = 0; i < 4; i++)
+@@ -123,7 +118,7 @@ irqreturn_t idxd_misc_thread(int vec, void *data)
+ 			      val);
+ 
+ 	if (!err)
+-		goto out;
++		return 0;
+ 
+ 	gensts.bits = ioread32(idxd->reg_base + IDXD_GENSTATS_OFFSET);
+ 	if (gensts.state == IDXD_DEVICE_STATE_HALT) {
+@@ -144,10 +139,33 @@ irqreturn_t idxd_misc_thread(int vec, void *data)
+ 				gensts.reset_type == IDXD_DEVICE_RESET_FLR ?
+ 				"FLR" : "system reset");
+ 			spin_unlock_bh(&idxd->dev_lock);
++			return -ENXIO;
+ 		}
+ 	}
+ 
+- out:
++	return 0;
++}
++
++irqreturn_t idxd_misc_thread(int vec, void *data)
++{
++	struct idxd_irq_entry *irq_entry = data;
++	struct idxd_device *idxd = irq_entry->idxd;
++	int rc;
++	u32 cause;
++
++	cause = ioread32(idxd->reg_base + IDXD_INTCAUSE_OFFSET);
++	if (cause)
++		iowrite32(cause, idxd->reg_base + IDXD_INTCAUSE_OFFSET);
++
++	while (cause) {
++		rc = process_misc_interrupts(idxd, cause);
++		if (rc < 0)
++			break;
++		cause = ioread32(idxd->reg_base + IDXD_INTCAUSE_OFFSET);
++		if (cause)
++			iowrite32(cause, idxd->reg_base + IDXD_INTCAUSE_OFFSET);
++	}
++
+ 	idxd_unmask_msix_vector(idxd, irq_entry->id);
+ 	return IRQ_HANDLED;
+ }
 -- 
 2.27.0
 
