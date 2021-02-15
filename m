@@ -2,161 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F3831C357
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830C431C35C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhBOVAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:00:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
+        id S229871AbhBOVBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 16:01:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhBOVAd (ORCPT
+        with ESMTP id S229782AbhBOVBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:00:33 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8E0C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 12:59:53 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id f4so8398790ybk.11
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 12:59:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3dLgveZdM46x2bbwg0HqxOz9RVwmEkJteT9c43w2RHs=;
-        b=SPONsPUWVt8jXmzvcypXB2jQqpK3eFXkZUNBCSIDdaqTC7/FdkjuFaFJSA+tC7aBK3
-         juscsNZufCi9yDHiFPIc3jEmB12dCLvZHGxN8qTIxEGQC8T4+Tj5KBgjYVxCZvYJ08zV
-         TpCEDRjY0Cn764gGGuzDGN6JdAUEZvhnBh78QgSnZITZkHD8wzSHmHSYman3GvS/PQ4B
-         /A4W3S8lv3hN0PvaocLDCzWX+6OuOrN5kPV+bUVJDs0vdQp0YCGu7+DAATUHmSwq24tb
-         MGXsu/qO2cCs2lqFKhNT4LWh9PTNHNGMuqmAQx0PkGhuWxDvRtrbr0QJt18vPciIXesV
-         ZalQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3dLgveZdM46x2bbwg0HqxOz9RVwmEkJteT9c43w2RHs=;
-        b=N7vkH/XeRp0i6YeJQrpRNH2vRDIdS+qZJsQuNP2wV7QD2mOAkyJdTRyVD9kRB9kN2y
-         Wf9Ah4EvghPNDMPdBJqkXbmNbkQVyY0k4m7JAlcrsyCQNgS4kKqwclWgTJvmG0lVQaff
-         Gb5zq3g5lfPXaWT3rPxaBzvW2jfLQf3cRvPg3D7tOA1GWehVywsSuo/VH6pe7nnR0LvB
-         y/1+K/nBYzhRtCLTgtru7Pq+lf+4lOOz1ROHrJ6KVOOUaqvHsCzbZ5x7WBAK/7gUKKax
-         awTU0Yaict88DXritmWssGA+m48nakPgLvJlHL4UoeNhA3x1GIhCeam1BYravWn41uzY
-         OPLw==
-X-Gm-Message-State: AOAM5303dZia+Ay1yWisquhc2jER4yQHjE8HRpaaZRw3n/x1RxExAZus
-        mB6bdaArS+imoMuaCcfkt5ohCINS77U7GXBHUWf1Mg==
-X-Google-Smtp-Source: ABdhPJxdBJn00t260+EU9W6ab+mrqb6SJOPbOyq4TlRcLive6b7K4hJBfBra7aqPTVcGhSYq1Eh4KZDTEoiqgB83IXQ=
-X-Received: by 2002:a25:af0b:: with SMTP id a11mr24804601ybh.228.1613422792220;
- Mon, 15 Feb 2021 12:59:52 -0800 (PST)
+        Mon, 15 Feb 2021 16:01:52 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B54C061574;
+        Mon, 15 Feb 2021 13:01:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=bkf1wtr5hHvAMJ6KcVEaAvu26TZYq3kxwEwKiBWYxdg=; b=rDy/0sCwM5eJKU6XpTzrxv7ZbS
+        XScDIGSRWRhANlq4WHbdMaYT566UEAoclzz9B90k0o3cYFCzqH+miOm+Ifrd77106zEZTT34HQUs3
+        s0ZtxFcxFGhlOegqrj400UaRuXsZExbyz/xi55fUmLIzXwW/dzZlSXYlS/OR9kqBm1GRGHGI1Gqq7
+        UIlrS8nZZauZAfLVZ62HhvhCI847eav4MHa99QKsA3Xpp0q7wgtx3SXmM8t1uSA7OwapJgCoOaRJr
+        xjIDhlmxE7jGGaMIyHPWZMufS3ExQkEZsgknK6vzhZY0URuXXcK/0Mkd6PSoqR3fIEELBD7y8LYe0
+        cKsls3JA==;
+Received: from [2601:1c0:6280:3f0::b669]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lBkzS-0008Se-LS; Mon, 15 Feb 2021 21:01:06 +0000
+Subject: Re: [PATCH v2 25/25] arm64: apple: Add initial Mac Mini 2020 (M1)
+ devicetree
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210215121713.57687-1-marcan@marcan.st>
+ <20210215121713.57687-26-marcan@marcan.st>
+ <20210215192906.7k3unuhph5wnkj5g@kozik-lap>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9dd4731c-7826-c1f5-3ce4-831d5186d270@infradead.org>
+Date:   Mon, 15 Feb 2021 13:00:58 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210215111619.2385030-1-geert+renesas@glider.be>
- <CAJZ5v0ikVbMX0R9e_=wOxKfJX5X322AipmpWy-7wVnWE7Ogc9A@mail.gmail.com>
- <CAGETcx94nNjduOuYKVBZOC9Gm4yfyb9x92ddznyxK4BnDby4PA@mail.gmail.com> <CAMuHMdWm9FiJHWTzGqqNa-ggt9WTpS6Hg2WthNW86p_WpvPUtw@mail.gmail.com>
-In-Reply-To: <CAMuHMdWm9FiJHWTzGqqNa-ggt9WTpS6Hg2WthNW86p_WpvPUtw@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 15 Feb 2021 12:59:16 -0800
-Message-ID: <CAGETcx8N5QmR5V_mrv5tHmARsnWrLbH+N_Ay_pBqV9HJkpHJzQ@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Fix double failed probing with fw_devlink=on
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210215192906.7k3unuhph5wnkj5g@kozik-lap>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 11:08 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Mon, Feb 15, 2021 at 7:27 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Mon, Feb 15, 2021 at 6:59 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > On Mon, Feb 15, 2021 at 12:16 PM Geert Uytterhoeven
-> > > <geert+renesas@glider.be> wrote:
-> > > > With fw_devlink=permissive, devices are added to the deferred probe
-> > > > pending list if their driver's .probe() method returns -EPROBE_DEFER.
-> > > >
-> > > > With fw_devlink=on, devices are added to the deferred probe pending list
-> > > > if they are determined to be a consumer,
-> >
-> > If they are determined to be a consumer or if they are determined to
-> > have a supplier that hasn't probed yet?
->
-> When the supplier has probed:
->
->     bus: 'platform': driver_probe_device: matched device
-> e6150000.clock-controller with driver renesas-cpg-mssr
->     bus: 'platform': really_probe: probing driver renesas-cpg-mssr
-> with device e6150000.clock-controller
->     PM: Added domain provider from /soc/clock-controller@e6150000
->     driver: 'renesas-cpg-mssr': driver_bound: bound to device
-> 'e6150000.clock-controller'
->     platform e6055800.gpio: Added to deferred list
->     [...]
->     platform e6020000.watchdog: Added to deferred list
->     [...]
->     platform fe000000.pcie: Added to deferred list
->
-> > > > which happens before their
-> > > > driver's .probe() method is called.  If the actual probe fails later
-> > > > (real failure, not -EPROBE_DEFER), the device will still be on the
-> > > > deferred probe pending list, and it will be probed again when deferred
-> > > > probing kicks in, which is futile.
-> > > >
-> > > > Fix this by explicitly removing the device from the deferred probe
-> > > > pending list in case of probe failures.
-> > > >
-> > > > Fixes: e590474768f1cc04 ("driver core: Set fw_devlink=on by default")
-> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > >
-> > > Good catch:
-> > >
-> > > Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > The issue is real and needs to be fixed. But I'm confused how this can
-> > happen. We won't even enter really_probe() if the driver isn't ready.
-> > We also won't get to run the driver's .probe() if the suppliers aren't
-> > ready. So how does the device get added to the deferred probe list
-> > before the driver is ready? Is this due to device_links_driver_bound()
-> > on the supplier?
-> >
-> > Can you give a more detailed step by step on the case you are hitting?
->
-> The device is added to the list due to device_links_driver_bound()
-> calling driver_deferred_probe_add() on all consumer devices.
+On 2/15/21 11:29 AM, Krzysztof Kozlowski wrote:
+>> diff --git a/arch/arm64/boot/dts/apple/apple-j274.dts b/arch/arm64/boot/dts/apple/apple-j274.dts
+>> new file mode 100644
+>> index 000000000000..9a1be91a2cf0
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/apple/apple-j274.dts
+>> @@ -0,0 +1,41 @@
+>> +// SPDX-License-Identifier: GPL-2.0+ OR MIT
+> () around licenses, so:
+> (GPL-2.0+ OR MIT)
 
-Thanks for the explanation. Maybe add more details like this to the
-commit text or in the code?
+Hi,
+When/where does that "() around licenses" apply, please?
 
-For the code:
-Reviewed-by: Saravana Kanna <saravanak@google.com>
+thanks.
+-- 
+~Randy
 
--Saravana
-
->
-> > > > +++ b/drivers/base/dd.c
-> > > > @@ -639,11 +639,13 @@ static int really_probe(struct device *dev, struct device_driver *drv)
-> > > >         case -ENXIO:
-> > > >                 pr_debug("%s: probe of %s rejects match %d\n",
-> > > >                          drv->name, dev_name(dev), ret);
-> > > > +               driver_deferred_probe_del(dev);
-> > > >                 break;
-> > > >         default:
-> > > >                 /* driver matched but the probe failed */
-> > > >                 pr_warn("%s: probe of %s failed with error %d\n",
-> > > >                         drv->name, dev_name(dev), ret);
-> > > > +               driver_deferred_probe_del(dev);
-> > > >         }
-> > > >         /*
-> > > >          * Ignore errors returned by ->probe so that the next driver can try
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
