@@ -2,45 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C7931BF97
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A7A31BF9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbhBOQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:42:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49638 "EHLO mail.kernel.org"
+        id S231263AbhBOQo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:44:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231603AbhBOPiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:38:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 337D464EEB;
-        Mon, 15 Feb 2021 15:33:55 +0000 (UTC)
+        id S231616AbhBOPiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:38:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FCD964EEA;
+        Mon, 15 Feb 2021 15:33:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403236;
-        bh=iNhBaqcKo5xlqkXO9BkzW2PKLCoLecJSEpmH4XRm8xQ=;
+        s=korg; t=1613403239;
+        bh=FydyvUabgfSj0tpi0vAQQgW4003YdZy9X1JeOpqxO58=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U8sDA6q9YKdvxGpdH1T9VNVLAIOBGUy7QcXIABM2/lVs/4cgiHw6SV70JaGXc0jst
-         SB8aFcaTrC9YFAknSIV04kQYAQnFhotJX8TUHZG2Y7LiZMGG7GQGOynFNasnGd8hEX
-         mePPm2BL6CddIngbQE1f8pG3FcXYAMj/SexGeG+4=
+        b=R6kXfWqx8zgydPAa919nOAzZkKL4eF0+l3X6QGU4/RXiArPLo8BaPqWEJSzx3Nn3K
+         5vPRZf7bGMi9lq/eZjZrGtiNvp+27J/LeoLEJZJLlR+2l8QIsF7AMx2klKx+bSJ1N8
+         whlc1CESZnSm8lypSLuDzLuffJ3OMpa00UNlfhno=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 043/104] kasan: add explicit preconditions to kasan_report()
-Date:   Mon, 15 Feb 2021 16:26:56 +0100
-Message-Id: <20210215152720.867409732@linuxfoundation.org>
+Subject: [PATCH 5.10 044/104] ubsan: implement __ubsan_handle_alignment_assumption
+Date:   Mon, 15 Feb 2021 16:26:57 +0100
+Message-Id: <20210215152720.898348168@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -52,106 +43,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 49c6631d3b4f61a7b5bb0453a885a12bfa06ffd8 ]
+[ Upstream commit 28abcc963149e06d956d95a18a85f4ba26af746f ]
 
-Patch series "kasan: Fix metadata detection for KASAN_HW_TAGS", v5.
+When building ARCH=mips 32r2el_defconfig with CONFIG_UBSAN_ALIGNMENT:
 
-With the introduction of KASAN_HW_TAGS, kasan_report() currently assumes
-that every location in memory has valid metadata associated.  This is
-due to the fact that addr_has_metadata() returns always true.
+  ld.lld: error: undefined symbol: __ubsan_handle_alignment_assumption
+     referenced by slab.h:557 (include/linux/slab.h:557)
+                   main.o:(do_initcalls) in archive init/built-in.a
+     referenced by slab.h:448 (include/linux/slab.h:448)
+                   do_mounts_rd.o:(rd_load_image) in archive init/built-in.a
+     referenced by slab.h:448 (include/linux/slab.h:448)
+                   do_mounts_rd.o:(identify_ramdisk_image) in archive init/built-in.a
+     referenced 1579 more times
 
-As a consequence of this, an invalid address (e.g.  NULL pointer
-address) passed to kasan_report() when KASAN_HW_TAGS is enabled, leads
-to a kernel panic.
+Implement this for the kernel based on LLVM's
+handleAlignmentAssumptionImpl because the kernel is not linked against
+the compiler runtime.
 
-Example below, based on arm64:
-
-   BUG: KASAN: invalid-access in 0x0
-   Read at addr 0000000000000000 by task swapper/0/1
-   Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-   Mem abort info:
-     ESR = 0x96000004
-     EC = 0x25: DABT (current EL), IL = 32 bits
-     SET = 0, FnV = 0
-     EA = 0, S1PTW = 0
-   Data abort info:
-     ISV = 0, ISS = 0x00000004
-     CM = 0, WnR = 0
-
-  ...
-
-   Call trace:
-    mte_get_mem_tag+0x24/0x40
-    kasan_report+0x1a4/0x410
-    alsa_sound_last_init+0x8c/0xa4
-    do_one_initcall+0x50/0x1b0
-    kernel_init_freeable+0x1d4/0x23c
-    kernel_init+0x14/0x118
-    ret_from_fork+0x10/0x34
-   Code: d65f03c0 9000f021 f9428021 b6cfff61 (d9600000)
-   ---[ end trace 377c8bb45bdd3a1a ]---
-   hrtimer: interrupt took 48694256 ns
-   note: swapper/0[1] exited with preempt_count 1
-   Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-   SMP: stopping secondary CPUs
-   Kernel Offset: 0x35abaf140000 from 0xffff800010000000
-   PHYS_OFFSET: 0x40000000
-   CPU features: 0x0a7e0152,61c0a030
-   Memory Limit: none
-   ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-
-This series fixes the behavior of addr_has_metadata() that now returns
-true only when the address is valid.
-
-This patch (of 2):
-
-With the introduction of KASAN_HW_TAGS, kasan_report() accesses the
-metadata only when addr_has_metadata() succeeds.
-
-Add a comment to make sure that the preconditions to the function are
-explicitly clarified.
-
-Link: https://lkml.kernel.org/r/20210126134409.47894-1-vincenzo.frascino@arm.com
-Link: https://lkml.kernel.org/r/20210126134409.47894-2-vincenzo.frascino@arm.com
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Leon Romanovsky <leonro@mellanox.com>
-Cc: Andrey Konovalov <andreyknvl@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1245
+Link: https://github.com/llvm/llvm-project/blob/llvmorg-11.0.1/compiler-rt/lib/ubsan/ubsan_handlers.cpp#L151-L190
+Link: https://lkml.kernel.org/r/20210127224451.2587372-1-nathan@kernel.org
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Acked-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/kasan.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ lib/ubsan.c | 31 +++++++++++++++++++++++++++++++
+ lib/ubsan.h |  6 ++++++
+ 2 files changed, 37 insertions(+)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 30d343b4a40a5..646fa165d2cce 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -196,6 +196,13 @@ void kasan_init_tags(void);
+diff --git a/lib/ubsan.c b/lib/ubsan.c
+index cb9af3f6b77e3..adf8dcf3c84e6 100644
+--- a/lib/ubsan.c
++++ b/lib/ubsan.c
+@@ -427,3 +427,34 @@ void __ubsan_handle_load_invalid_value(void *_data, void *val)
+ 	ubsan_epilogue();
+ }
+ EXPORT_SYMBOL(__ubsan_handle_load_invalid_value);
++
++void __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
++					 unsigned long align,
++					 unsigned long offset);
++void __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
++					 unsigned long align,
++					 unsigned long offset)
++{
++	struct alignment_assumption_data *data = _data;
++	unsigned long real_ptr;
++
++	if (suppress_report(&data->location))
++		return;
++
++	ubsan_prologue(&data->location, "alignment-assumption");
++
++	if (offset)
++		pr_err("assumption of %lu byte alignment (with offset of %lu byte) for pointer of type %s failed",
++		       align, offset, data->type->type_name);
++	else
++		pr_err("assumption of %lu byte alignment for pointer of type %s failed",
++		       align, data->type->type_name);
++
++	real_ptr = ptr - offset;
++	pr_err("%saddress is %lu aligned, misalignment offset is %lu bytes",
++	       offset ? "offset " : "", BIT(real_ptr ? __ffs(real_ptr) : 0),
++	       real_ptr & (align - 1));
++
++	ubsan_epilogue();
++}
++EXPORT_SYMBOL(__ubsan_handle_alignment_assumption);
+diff --git a/lib/ubsan.h b/lib/ubsan.h
+index 7b56c09473a98..9a0b71c5ff9fb 100644
+--- a/lib/ubsan.h
++++ b/lib/ubsan.h
+@@ -78,6 +78,12 @@ struct invalid_value_data {
+ 	struct type_descriptor *type;
+ };
  
- void *kasan_reset_tag(const void *addr);
- 
-+/**
-+ * kasan_report - print a report about a bad memory access detected by KASAN
-+ * @addr: address of the bad access
-+ * @size: size of the bad access
-+ * @is_write: whether the bad access is a write or a read
-+ * @ip: instruction pointer for the accessibility check or the bad access itself
-+ */
- bool kasan_report(unsigned long addr, size_t size,
- 		bool is_write, unsigned long ip);
- 
++struct alignment_assumption_data {
++	struct source_location location;
++	struct source_location assumption_location;
++	struct type_descriptor *type;
++};
++
+ #if defined(CONFIG_ARCH_SUPPORTS_INT128)
+ typedef __int128 s_max;
+ typedef unsigned __int128 u_max;
 -- 
 2.27.0
 
