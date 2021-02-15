@@ -2,105 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FB131BA20
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F47431BA2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhBONQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 08:16:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbhBONQa (ORCPT
+        id S230165AbhBONTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 08:19:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49232 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229802AbhBONSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 08:16:30 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF22C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 05:15:49 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id o12so5967959ote.12
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 05:15:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wjkmpaYZoqx/V1g1zz+czC2mkPWLKmCPi8XRW5kwt2k=;
-        b=sW8ddk78wC92DDQQdxE8WF+dOauJhXi1LbD1xIXzT6L1YeF1OG9PSiXLJ0pVRUassZ
-         dkR4Jxwt2bfAYmV87Q3MIbnrxZkmgVcFXUMxOrvB6cM1KZAnI7iqktTl+6FNUyou8uX6
-         OVE0SphXFSKygugrXvX0O+t41AHttbMULv+EfvxXs/UZ8nvUaQyxrpykGo11CFLnP9gC
-         xt1g6oPutDrbKADy0Szff2ibMI8j8swDJi2rp+WnIbSdbdRRIXYLDH5c1hnqpcBsPUMJ
-         Bt19yLZnIb8aIZy+5emYaaoaw3wU/dPAygvn0+NsMifvG9dUjrzlCubaTReLbWD9JMCI
-         pNpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wjkmpaYZoqx/V1g1zz+czC2mkPWLKmCPi8XRW5kwt2k=;
-        b=IO29Frr65xKi2P2p/EUHYe9mlLdNqqNS0u76tIcMXpq3tJJCTTj4MI2D6/uO8HTgib
-         lwyaA1bYqrUuZLb+ZcRwFWJkNXi8pqhXP6Gp/Y/iEsIGNB+FnfbX+rA8a+LK0fdKgVLg
-         bdXHubda7jh/CGO1dIpvNImHzTgmuoYflRmGYB+j7SeKjHEzvbKIzEuN8vQ/doMrMqgP
-         Fbri7H1xFlZPM5seRlfxoMVlqjJTU5JRtP5M+mp2yylAvJF9/G7hfVOapA14tSm45ML9
-         3f72Be+4+BDE4WdUAMirNExwm0JLqTMx3lWoaHG3EdztAo/XznUztI6Jaw28gERi+jEq
-         fcuw==
-X-Gm-Message-State: AOAM5325cbIbFJcFGU58EoyDNfZU14d4q7lk2wVrkhqWfeT5tCn68C7k
-        7X4VPqMtcCpMhL4LFEg6KBD/yQmeDFe6b4NsoKHfqg==
-X-Google-Smtp-Source: ABdhPJz+NdmUWLoic5UHuHWoJUetVrsNxk5tUkDarWb7HobYfKENt4CK5ToR507PIEx8KQnsL2oGfCTAfzhZ6h7Mfe0=
-X-Received: by 2002:a9d:701c:: with SMTP id k28mr12052248otj.79.1613394948898;
- Mon, 15 Feb 2021 05:15:48 -0800 (PST)
+        Mon, 15 Feb 2021 08:18:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613395047;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h54p7eSoqjSAmVfvcPSfZz+3iobn0f7oTIY4AbSr0ms=;
+        b=Pm00+zhC+Y09XSNpS/7Q4+NIWxmloyJZlIcwQQQTQTpWYp0zjvRzsmxxAPiJ1Kd1gs9hct
+        jKCLlzrS6KtGQVN7CtE7Mo2u0qxmg7rtGqdncWPuvzRpBLbYZ6JAqC9xFREoVch7m+OKMA
+        4ANNR3vavc5hDFE2sbR51uz0eKso5ZY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-409-G6ulSkeZNoaGcyXJbfBRZQ-1; Mon, 15 Feb 2021 08:17:22 -0500
+X-MC-Unique: G6ulSkeZNoaGcyXJbfBRZQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAE7D801962;
+        Mon, 15 Feb 2021 13:17:19 +0000 (UTC)
+Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 05D885C233;
+        Mon, 15 Feb 2021 13:17:11 +0000 (UTC)
+Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+ unmanaged ASIDs
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        wangxingang <wangxingang5@huawei.com>
+Cc:     Xieyingtai <xieyingtai@huawei.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        qubingbing <qubingbing@hisilicon.com>
+References: <20201118112151.25412-8-eric.auger@redhat.com>
+ <1606829590-25924-1-git-send-email-wangxingang5@huawei.com>
+ <2e69adf5-8207-64f7-fa8e-9f2bd3a3c4e3@redhat.com>
+ <e10ad90dc5144c0d9df98a9a078091af@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <dae77da3-527a-9737-fe2b-c4a0af081321@redhat.com>
+Date:   Mon, 15 Feb 2021 14:17:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <1604419306-26105-1-git-send-email-sumit.garg@linaro.org>
- <1604419306-26105-2-git-send-email-sumit.garg@linaro.org> <YCQRPo0o6MZ0pcUa@kernel.org>
-In-Reply-To: <YCQRPo0o6MZ0pcUa@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon, 15 Feb 2021 18:45:37 +0530
-Message-ID: <CAFA6WYPrNPMZFA+u0fMo8T1DBFxu6XAVC4KySP53BarjDhfBQA@mail.gmail.com>
-Subject: Re: [PATCH v8 1/4] KEYS: trusted: Add generic trusted keys framework
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Markus Wamser <Markus.Wamser@mixed-mode.de>,
-        Luke Hinds <lhinds@redhat.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e10ad90dc5144c0d9df98a9a078091af@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 at 22:30, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> On Tue, Nov 03, 2020 at 09:31:43PM +0530, Sumit Garg wrote:
-> > +     case Opt_new:
-> > +             key_len = payload->key_len;
-> > +             ret = static_call(trusted_key_get_random)(payload->key,
-> > +                                                       key_len);
-> > +             if (ret != key_len) {
-> > +                     pr_info("trusted_key: key_create failed (%d)\n", ret);
-> > +                     goto out;
-> > +             }
->
-> This repeats a regression in existing code, i.e. does not check
-> "ret < 0" condition. I noticed this now when I rebased the code
-> on top of my fixes.
->
-> I.e. it's fixed in my master branch, which caused a merge conflict,
-> and I found this.
->
+Hi Shameer,
 
-Okay, I will rebase the next version to your master branch.
+On 12/3/20 7:42 PM, Shameerali Kolothum Thodi wrote:
+> Hi Eric,
+> 
+>> -----Original Message-----
+>> From: kvmarm-bounces@lists.cs.columbia.edu
+>> [mailto:kvmarm-bounces@lists.cs.columbia.edu] On Behalf Of Auger Eric
+>> Sent: 01 December 2020 13:59
+>> To: wangxingang <wangxingang5@huawei.com>
+>> Cc: Xieyingtai <xieyingtai@huawei.com>; jean-philippe@linaro.org;
+>> kvm@vger.kernel.org; maz@kernel.org; joro@8bytes.org; will@kernel.org;
+>> iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
+>> vivek.gautam@arm.com; alex.williamson@redhat.com;
+>> zhangfei.gao@linaro.org; robin.murphy@arm.com;
+>> kvmarm@lists.cs.columbia.edu; eric.auger.pro@gmail.com
+>> Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
+>> unmanaged ASIDs
+>>
+>> Hi Xingang,
+>>
+>> On 12/1/20 2:33 PM, Xingang Wang wrote:
+>>> Hi Eric
+>>>
+>>> On  Wed, 18 Nov 2020 12:21:43, Eric Auger wrote:
+>>>> @@ -1710,7 +1710,11 @@ static void arm_smmu_tlb_inv_context(void
+>> *cookie)
+>>>> 	 * insertion to guarantee those are observed before the TLBI. Do be
+>>>> 	 * careful, 007.
+>>>> 	 */
+>>>> -	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+>>>> +	if (ext_asid >= 0) { /* guest stage 1 invalidation */
+>>>> +		cmd.opcode	= CMDQ_OP_TLBI_NH_ASID;
+>>>> +		cmd.tlbi.asid	= ext_asid;
+>>>> +		cmd.tlbi.vmid	= smmu_domain->s2_cfg.vmid;
+>>>> +	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+>>>
+>>> Found a problem here, the cmd for guest stage 1 invalidation is built,
+>>> but it is not delivered to smmu.
+>>>
+>>
+>> Thank you for the report. I will fix that soon. With that fixed, have
+>> you been able to run vSVA on top of the series. Do you need other stuff
+>> to be fixed at SMMU level? 
+> 
+> I am seeing another issue with this series. This is when you have the vSMMU
+> in non-strict mode(iommu.strict=0). Any network pass-through dev with iperf run 
+> will be enough to reproduce the issue. It may randomly stop/hang.
+> 
+> It looks like the .flush_iotlb_all from guest is not propagated down to the host
+> correctly. I have a temp hack to fix this in Qemu wherein CMDQ_OP_TLBI_NH_ASID
+> will result in a CACHE_INVALIDATE with IOMMU_INV_GRANU_PASID flag and archid
+> set.
 
--Sumit
+Thank you for the analysis. Indeed the NH_ASID was not properly handled
+as asid info was not passed down. I fixed domain invalidation and added
+asid based invalidation.
 
-> /Jarkko
+Thanks
+
+Eric
+> 
+> Please take a look and let me know. 
+> 
+> As I am going to respin soon, please let me
+>> know what is the best branch to rebase to alleviate your integration.
+> 
+> Please find the latest kernel and Qemu branch with vSVA support added here,
+> 
+> https://github.com/hisilicon/kernel-dev/tree/5.10-rc4-2stage-v13-vsva
+> https://github.com/hisilicon/qemu/tree/v5.2.0-rc1-2stage-rfcv7-vsva
+> 
+> I have done some basic minimum vSVA tests on a HiSilicon D06 board with
+> a zip dev that supports STALL. All looks good so far apart from the issues
+> that have been already reported/discussed.
+> 
+> The kernel branch is actually a rebase of sva/uacce related patches from a
+> Linaro branch here,
+> 
+> https://github.com/Linaro/linux-kernel-uadk/tree/uacce-devel-5.10
+> 
+> I think going forward it will be good(if possible) to respin your series on top of
+> a sva branch with STALL/PRI support added. 
+> 
+> Hi Jean/zhangfei,
+> Is it possible to have a branch with minimum required SVA/UACCE related patches
+> that are already public and can be a "stable" candidate for future respin of Eric's series?
+> Please share your thoughts.
+> 
+> Thanks,
+> Shameer 
+> 
+>> Best Regards
+>>
+>> Eric
+>>
+>> _______________________________________________
+>> kvmarm mailing list
+>> kvmarm@lists.cs.columbia.edu
+>> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
+> 
+
