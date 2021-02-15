@@ -2,198 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACA731C24E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDA231C257
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhBOTP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:15:29 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:37960 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhBOTPQ (ORCPT
+        id S230407AbhBOTR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:17:57 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:12126 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhBOTRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:15:16 -0500
-Received: by mail-ot1-f51.google.com with SMTP id e4so6976319ote.5;
-        Mon, 15 Feb 2021 11:14:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=00EmQHzX4sZufaQFF5R24gjltgDu0t0mr5R0bJKyjJo=;
-        b=mFmEui1h0/xYtIZVbpdi4Xj1lgnPJdLKtweQlFPja9BbDf07IJ0A1/8mmV9npdlTxN
-         Bb6P5fwvPACzy5BIHBgFlxQww+6yk2zv13ZdjK+6q2wbAApYhrwaw+5M4YLbcFQMXc++
-         fil67eOmMcYX1dpic9AnddlcLdjelFl3kRuvoA3APu/JMPQ3ebtmIeLEbKU0DwYOs734
-         PmSRLVMcrPajDDRq3TLkq9dXH0npION4PcjdVD/G5tParfu4qh96WdFrH91tqUSkcds4
-         +6cI/SpVruJG6qIFDZrTEKor5W2BxODRq7xxVun+JigsulGDeufcTP0HThesGoY2V4DF
-         nLKw==
-X-Gm-Message-State: AOAM531iK1U2cFM67ho5sWWTtqutsNaHkrif2SgFEsZuYfxDPPLeyYWO
-        jRfHz/bgeGOdgJT6n658BBaIpuCIGy8+7pXxC8g=
-X-Google-Smtp-Source: ABdhPJzk0DPRbPzCT7ELSyRaBgVkAid2pvZ+wAQ6LIA0uO2RD2Er+cFD8JhUb/hVfB/Sg5MEnGFzNwuaErXFLdRu5pw=
-X-Received: by 2002:a9d:a2d:: with SMTP id 42mr12759242otg.321.1613416474101;
- Mon, 15 Feb 2021 11:14:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20210211134008.38282-1-andriy.shevchenko@linux.intel.com>
- <CAJZ5v0gzd0Xwd006P3PUutKcVRqLNxmREBB-QW85BRMBArbBVw@mail.gmail.com> <bf10026f-13bb-c1c6-2787-d8c9520f8401@redhat.com>
-In-Reply-To: <bf10026f-13bb-c1c6-2787-d8c9520f8401@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 15 Feb 2021 20:14:23 +0100
-Message-ID: <CAJZ5v0jwtkLP9K=3iUFNUU_wMSW8-OSfUZH8EtMa2SJUfnvZrw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/9] x86/platform: Remove SFI framework and users
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Rapoport <rppt@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-        Sumit Gupta <sumitg@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@driverdev.osuosl.org, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 15 Feb 2021 14:17:55 -0500
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 15 Feb 2021 11:17:08 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Feb 2021 11:17:06 -0800
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 16 Feb 2021 00:46:46 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+        id A368421D78; Tue, 16 Feb 2021 00:46:44 +0530 (IST)
+From:   Md Sadre Alam <mdalam@codeaurora.org>
+To:     miquel.raynal@bootlin.com, richard@nod.at,
+        boris.brezillon@collabora.com, mani@kernel.org, krzk@kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
+Subject: [PATCH] mtd: rawnand: qcom: update last code word register
+Date:   Tue, 16 Feb 2021 00:46:42 +0530
+Message-Id: <1613416602-1175-1-git-send-email-mdalam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 4:45 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi,
->
-> On 2/11/21 4:24 PM, Rafael J. Wysocki wrote:
-> > On Thu, Feb 11, 2021 at 2:50 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> >>
-> >> This is last part of Intel MID (SFI based) removal. We have no more users of it
-> >> in the kernel and since SFI has been marked Obsolete for a few years already,
-> >> Remove all the stuff altogether.
-> >>
-> >> Note, the more recent platforms (Intel Merrifield and Moorefield) still work as
-> >> long as they provide correct ACPI tables.
-> >>
-> >> The series requires two prerequisite branches to be pulled first, i.e.
-> >> - one form Rafael's PM tree (currently bleeding-edge)
-> >> - one form TIP tree (x86/platform), actually only one patch is needed from it
-> >>
-> >> Due to above it's convenient to proceed all of these via Rafael's PM tree,
-> >>
-> >> Note, atomisp change is tagged by Sakari on behalf of media tree maintainers.
-> >>
-> >> Andy Shevchenko (9):
-> >>   media: atomisp: Remove unused header
-> >>   cpufreq: sfi-cpufreq: Remove driver for deprecated firmware
-> >>   sfi: Remove framework for deprecated firmware
-> >>   x86/PCI: Get rid of custom x86 model comparison
-> >>   x86/PCI: Describe @reg for type1_access_ok()
-> >>   x86/platform/intel-mid: Get rid of intel_scu_ipc_legacy.h
-> >>   x86/platform/intel-mid: Drop unused __intel_mid_cpu_chip and Co.
-> >>   x86/platform/intel-mid: Remove unused header inclusion in intel-mid.h
-> >>   x86/platform/intel-mid: Update Copyright year and drop file names
-> >>
-> >>  Documentation/ABI/testing/sysfs-firmware-sfi  |  15 -
-> >>  Documentation/ABI/testing/sysfs-platform-kim  |   2 +-
-> >>  MAINTAINERS                                   |   7 -
-> >>  arch/x86/Kconfig                              |   7 +-
-> >>  arch/x86/include/asm/intel-mid.h              |  65 +--
-> >>  arch/x86/include/asm/intel_scu_ipc.h          |   2 -
-> >>  arch/x86/include/asm/intel_scu_ipc_legacy.h   |  74 ---
-> >>  arch/x86/include/asm/platform_sst_audio.h     |   2 -
-> >>  arch/x86/kernel/apic/io_apic.c                |   4 +-
-> >>  arch/x86/kernel/setup.c                       |   2 -
-> >>  arch/x86/pci/intel_mid_pci.c                  |  18 +-
-> >>  arch/x86/pci/mmconfig-shared.c                |   6 +-
-> >>  arch/x86/platform/Makefile                    |   1 -
-> >>  arch/x86/platform/intel-mid/Makefile          |   5 -
-> >>  .../platform/intel-mid/device_libs/Makefile   |  23 -
-> >>  .../intel-mid/device_libs/platform_bcm43xx.c  | 101 ----
-> >>  .../intel-mid/device_libs/platform_bma023.c   |  16 -
-> >>  .../intel-mid/device_libs/platform_bt.c       | 101 ----
-> >>  .../intel-mid/device_libs/platform_emc1403.c  |  39 --
-> >>  .../device_libs/platform_gpio_keys.c          |  81 ---
-> >>  .../intel-mid/device_libs/platform_lis331.c   |  37 --
-> >>  .../intel-mid/device_libs/platform_max7315.c  |  77 ---
-> >>  .../intel-mid/device_libs/platform_mpu3050.c  |  32 --
-> >>  .../device_libs/platform_mrfld_pinctrl.c      |  39 --
-> >>  .../device_libs/platform_mrfld_rtc.c          |  44 --
-> >>  .../intel-mid/device_libs/platform_mrfld_sd.c |  43 --
-> >>  .../device_libs/platform_mrfld_spidev.c       |  50 --
-> >>  .../device_libs/platform_pcal9555a.c          |  95 ----
-> >>  .../intel-mid/device_libs/platform_tc35876x.c |  42 --
-> >>  .../intel-mid/device_libs/platform_tca6416.c  |  53 --
-> >>  arch/x86/platform/intel-mid/intel-mid.c       |  27 +-
-> >>  arch/x86/platform/intel-mid/sfi.c             | 419 --------------
-> >>  arch/x86/platform/sfi/Makefile                |   2 -
-> >>  arch/x86/platform/sfi/sfi.c                   | 100 ----
-> >>  drivers/Makefile                              |   2 +-
-> >>  drivers/cpufreq/Kconfig.x86                   |  10 -
-> >>  drivers/cpufreq/Makefile                      |   1 -
-> >>  drivers/cpufreq/sfi-cpufreq.c                 | 127 -----
-> >>  drivers/platform/x86/intel_scu_pcidrv.c       |  22 +-
-> >>  drivers/sfi/Kconfig                           |  18 -
-> >>  drivers/sfi/Makefile                          |   4 -
-> >>  drivers/sfi/sfi_acpi.c                        | 214 -------
-> >>  drivers/sfi/sfi_core.c                        | 522 ------------------
-> >>  drivers/sfi/sfi_core.h                        |  81 ---
-> >>  .../atomisp/include/linux/atomisp_platform.h  |   1 -
-> >>  include/linux/sfi.h                           | 210 -------
-> >>  include/linux/sfi_acpi.h                      |  93 ----
-> >>  init/main.c                                   |   2 -
-> >>  48 files changed, 37 insertions(+), 2901 deletions(-)
-> >>  delete mode 100644 Documentation/ABI/testing/sysfs-firmware-sfi
-> >>  delete mode 100644 arch/x86/include/asm/intel_scu_ipc_legacy.h
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/Makefile
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_bcm43xx.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_bma023.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_bt.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_emc1403.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_gpio_keys.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_lis331.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_max7315.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_mpu3050.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_mrfld_pinctrl.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_mrfld_rtc.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_mrfld_sd.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_mrfld_spidev.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_pcal9555a.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_tc35876x.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_tca6416.c
-> >>  delete mode 100644 arch/x86/platform/intel-mid/sfi.c
-> >>  delete mode 100644 arch/x86/platform/sfi/Makefile
-> >>  delete mode 100644 arch/x86/platform/sfi/sfi.c
-> >>  delete mode 100644 drivers/cpufreq/sfi-cpufreq.c
-> >>  delete mode 100644 drivers/sfi/Kconfig
-> >>  delete mode 100644 drivers/sfi/Makefile
-> >>  delete mode 100644 drivers/sfi/sfi_acpi.c
-> >>  delete mode 100644 drivers/sfi/sfi_core.c
-> >>  delete mode 100644 drivers/sfi/sfi_core.h
-> >>  delete mode 100644 include/linux/sfi.h
-> >>  delete mode 100644 include/linux/sfi_acpi.h
-> >>
-> >> --
-> >
-> > All of this looks good to me, so I'm going to queue it up for 5.12
-> > unless there are objections against doing that.
->
-> That is fine by me (for the drivers/platform/x86 bits) :
->
-> Acked-by: Hans de Goede <hdegoede@redhat.com>
+From QPIC version 2.0 onwards new register got added to
+read last codeword. This change will add the READ_LOCATION_LAST_CW_n
+register.
 
-Thanks!
+For first three code word READ_LOCATION_n register will be
+use.For last code word READ_LOCATION_LAST_CW_n register will be
+use.
 
-Applied as 5.12 material now.
+Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+---
+[V6]
+ * Updated write_reg_dma() function in "v6"
+ * Removed extra indentation level in read_page_ecc() to read last code word in "v6"
+ * Removed boolean check in config_nand_cw_read() in "v6"
+ drivers/mtd/nand/raw/qcom_nandc.c | 118 ++++++++++++++++++++++++++++----------
+ 1 file changed, 87 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 667e4bf..bae352f 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -48,6 +48,10 @@
+ #define	NAND_READ_LOCATION_1		0xf24
+ #define	NAND_READ_LOCATION_2		0xf28
+ #define	NAND_READ_LOCATION_3		0xf2c
++#define	NAND_READ_LOCATION_LAST_CW_0	0xf40
++#define	NAND_READ_LOCATION_LAST_CW_1	0xf44
++#define	NAND_READ_LOCATION_LAST_CW_2	0xf48
++#define	NAND_READ_LOCATION_LAST_CW_3	0xf4c
+ 
+ /* dummy register offsets, used by write_reg_dma */
+ #define	NAND_DEV_CMD1_RESTORE		0xdead
+@@ -181,8 +185,14 @@
+ #define	ECC_BCH_4BIT	BIT(2)
+ #define	ECC_BCH_8BIT	BIT(3)
+ 
+-#define nandc_set_read_loc(nandc, reg, offset, size, is_last)	\
+-nandc_set_reg(nandc, NAND_READ_LOCATION_##reg,			\
++#define nandc_set_read_loc_first(nandc, reg, offset, size, is_last)	\
++nandc_set_reg(nandc, reg,					\
++	      ((offset) << READ_LOCATION_OFFSET) |		\
++	      ((size) << READ_LOCATION_SIZE) |			\
++	      ((is_last) << READ_LOCATION_LAST))
++
++#define nandc_set_read_loc_last(nandc, reg, offset, size, is_last)	\
++nandc_set_reg(nandc, reg,					\
+ 	      ((offset) << READ_LOCATION_OFFSET) |		\
+ 	      ((size) << READ_LOCATION_SIZE) |			\
+ 	      ((is_last) << READ_LOCATION_LAST))
+@@ -316,6 +326,10 @@ struct nandc_regs {
+ 	__le32 read_location1;
+ 	__le32 read_location2;
+ 	__le32 read_location3;
++	__le32 read_location_last0;
++	__le32 read_location_last1;
++	__le32 read_location_last2;
++	__le32 read_location_last3;
+ 
+ 	__le32 erased_cw_detect_cfg_clr;
+ 	__le32 erased_cw_detect_cfg_set;
+@@ -644,6 +658,14 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
+ 		return &regs->read_location2;
+ 	case NAND_READ_LOCATION_3:
+ 		return &regs->read_location3;
++	case NAND_READ_LOCATION_LAST_CW_0:
++		return &regs->read_location_last0;
++	case NAND_READ_LOCATION_LAST_CW_1:
++		return &regs->read_location_last1;
++	case NAND_READ_LOCATION_LAST_CW_2:
++		return &regs->read_location_last2;
++	case NAND_READ_LOCATION_LAST_CW_3:
++		return &regs->read_location_last3;
+ 	default:
+ 		return NULL;
+ 	}
+@@ -661,6 +683,26 @@ static void nandc_set_reg(struct qcom_nand_controller *nandc, int offset,
+ 		*reg = cpu_to_le32(val);
+ }
+ 
++/* helper to configure location register values */
++static void nandc_set_read_loc(struct nand_chip *chip, int cw, int reg,
++			       int offset, int size, int is_last)
++{
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
++
++	int loc = NAND_READ_LOCATION_0;
++
++	if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
++		loc = NAND_READ_LOCATION_LAST_CW_0;
++
++	loc += reg * 4;
++
++	if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
++		return nandc_set_read_loc_last(nandc, loc, offset, size, is_last);
++	else
++		return nandc_set_read_loc_first(nandc, loc, offset, size, is_last);
++}
++
+ /* helper to configure address register values */
+ static void set_address(struct qcom_nand_host *host, u16 column, int page)
+ {
+@@ -685,6 +727,7 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	u32 cmd, cfg0, cfg1, ecc_bch_cfg;
+ 
+ 	if (read) {
+@@ -719,9 +762,14 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read)
+ 	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
+ 	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
+ 
+-	if (read)
+-		nandc_set_read_loc(nandc, 0, 0, host->use_ecc ?
+-				   host->cw_data : host->cw_size, 1);
++	if (read) {
++		if (nandc->props->qpic_v2)
++			nandc_set_read_loc(chip, ecc->steps - 1, 0, 0, host->use_ecc ?
++					host->cw_data : host->cw_size, 1);
++		else
++			nandc_set_read_loc(chip, 0, 0, 0, host->use_ecc ?
++					host->cw_data : host->cw_size, 1);
++	}
+ }
+ 
+ /*
+@@ -1079,8 +1127,10 @@ static int write_data_dma(struct qcom_nand_controller *nandc, int reg_off,
+  * Helper to prepare DMA descriptors for configuring registers
+  * before reading a NAND page.
+  */
+-static void config_nand_page_read(struct qcom_nand_controller *nandc)
++static void config_nand_page_read(struct nand_chip *chip)
+ {
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++
+ 	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
+ 	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
+ 	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
+@@ -1094,11 +1144,19 @@ static void config_nand_page_read(struct qcom_nand_controller *nandc)
+  * before reading each codeword in NAND page.
+  */
+ static void
+-config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
++config_nand_cw_read(struct nand_chip *chip, bool use_ecc, int cw)
+ {
+-	if (nandc->props->is_bam)
+-		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+-			      NAND_BAM_NEXT_SGL);
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
++
++	if (nandc->props->is_bam) {
++		if (nandc->props->qpic_v2 && cw == (ecc->steps - 1))
++			write_reg_dma(nandc, NAND_READ_LOCATION_LAST_CW_0, 4,
++				      NAND_BAM_NEXT_SGL);
++		else
++			write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
++				      NAND_BAM_NEXT_SGL);
++	}
+ 
+ 	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+ 	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+@@ -1117,11 +1175,11 @@ config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
+  * single codeword in page
+  */
+ static void
+-config_nand_single_cw_page_read(struct qcom_nand_controller *nandc,
+-				bool use_ecc)
++config_nand_single_cw_page_read(struct nand_chip *chip,
++				bool use_ecc, int cw)
+ {
+-	config_nand_page_read(nandc);
+-	config_nand_cw_read(nandc, use_ecc);
++	config_nand_page_read(chip);
++	config_nand_cw_read(chip, use_ecc, cw);
+ }
+ 
+ /*
+@@ -1205,7 +1263,7 @@ static int nandc_param(struct qcom_nand_host *host)
+ 		nandc_set_reg(nandc, NAND_DEV_CMD_VLD_RESTORE, nandc->vld);
+ 	}
+ 
+-	nandc_set_read_loc(nandc, 0, 0, 512, 1);
++	nandc_set_read_loc(chip, 0, 0, 0, 512, 1);
+ 
+ 	if (!nandc->props->qpic_v2) {
+ 		write_reg_dma(nandc, NAND_DEV_CMD_VLD, 1, 0);
+@@ -1215,7 +1273,7 @@ static int nandc_param(struct qcom_nand_host *host)
+ 	nandc->buf_count = 512;
+ 	memset(nandc->data_buffer, 0xff, nandc->buf_count);
+ 
+-	config_nand_single_cw_page_read(nandc, false);
++	config_nand_single_cw_page_read(chip, false, 0);
+ 
+ 	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
+ 		      nandc->buf_count, 0);
+@@ -1617,7 +1675,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	clear_bam_transaction(nandc);
+ 	set_address(host, host->cw_size * cw, page);
+ 	update_rw_regs(host, 1, true);
+-	config_nand_page_read(nandc);
++	config_nand_page_read(chip);
+ 
+ 	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+ 	oob_size1 = host->bbm_size;
+@@ -1633,19 +1691,19 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	}
+ 
+ 	if (nandc->props->is_bam) {
+-		nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
++		nandc_set_read_loc(chip, cw, 0, read_loc, data_size1, 0);
+ 		read_loc += data_size1;
+ 
+-		nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
++		nandc_set_read_loc(chip, cw, 1, read_loc, oob_size1, 0);
+ 		read_loc += oob_size1;
+ 
+-		nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
++		nandc_set_read_loc(chip, cw, 2, read_loc, data_size2, 0);
+ 		read_loc += data_size2;
+ 
+-		nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
++		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
+ 	}
+ 
+-	config_nand_cw_read(nandc, false);
++	config_nand_cw_read(chip, false, cw);
+ 
+ 	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+ 	reg_off += data_size1;
+@@ -1856,7 +1914,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+ 	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
+ 	int i, ret;
+ 
+-	config_nand_page_read(nandc);
++	config_nand_page_read(chip);
+ 
+ 	/* queue cmd descs for each codeword */
+ 	for (i = 0; i < ecc->steps; i++) {
+@@ -1873,18 +1931,16 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+ 
+ 		if (nandc->props->is_bam) {
+ 			if (data_buf && oob_buf) {
+-				nandc_set_read_loc(nandc, 0, 0, data_size, 0);
+-				nandc_set_read_loc(nandc, 1, data_size,
+-						   oob_size, 1);
++				nandc_set_read_loc(chip, i, 0, 0, data_size, 0);
++				nandc_set_read_loc(chip, i, 1, data_size, oob_size, 1);
+ 			} else if (data_buf) {
+-				nandc_set_read_loc(nandc, 0, 0, data_size, 1);
++				nandc_set_read_loc(chip, i, 0, 0, data_size, 1);
+ 			} else {
+-				nandc_set_read_loc(nandc, 0, data_size,
+-						   oob_size, 1);
++				nandc_set_read_loc(chip, i, 0, data_size, oob_size, 1);
+ 			}
+ 		}
+ 
+-		config_nand_cw_read(nandc, true);
++		config_nand_cw_read(chip, true, i);
+ 
+ 		if (data_buf)
+ 			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
+@@ -1946,7 +2002,7 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
+ 	set_address(host, host->cw_size * (ecc->steps - 1), page);
+ 	update_rw_regs(host, 1, true);
+ 
+-	config_nand_single_cw_page_read(nandc, host->use_ecc);
++	config_nand_single_cw_page_read(chip, host->use_ecc, ecc->steps - 1);
+ 
+ 	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
+ 
+-- 
+2.7.4
+
