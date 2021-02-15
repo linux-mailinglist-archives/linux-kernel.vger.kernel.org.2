@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491F131BB51
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9F631BB57
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhBOOlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:41:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49828 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229866AbhBOOlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:41:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 785F1AC69;
-        Mon, 15 Feb 2021 14:40:27 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 14:40:26 +0000
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 4/6] btrfs: Check if the filesystem is has mixed type
- of devices
-Message-ID: <20210215144026.GB21872@wotan.suse.de>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-5-mrostecki@suse.de>
- <20210210040805.GB12086@qmqm.qmqm.pl>
- <20210212182641.GB20817@wotan.suse.de>
- <20210212233602.GA30441@qmqm.qmqm.pl>
+        id S230162AbhBOOnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:43:37 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:39166 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230106AbhBOOne (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:43:34 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-1-3w3CI_4oMWS3JDUYMjvGuQ-1; Mon, 15 Feb 2021 14:41:54 +0000
+X-MC-Unique: 3w3CI_4oMWS3JDUYMjvGuQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 15 Feb 2021 14:41:52 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 15 Feb 2021 14:41:52 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     =?utf-8?B?J0NocmlzdGlhbiBLw7ZuaWcn?= <christian.koenig@amd.com>,
+        "Lucas Stach" <l.stach@pengutronix.de>,
+        Simon Ser <contact@emersion.fr>
+CC:     "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "Sharma, Shashank" <Shashank.Sharma@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-media <linux-media@vger.kernel.org>
+Subject: RE: DMA-buf and uncached system memory
+Thread-Topic: DMA-buf and uncached system memory
+Thread-Index: AQHXA5L/eppUoUE81k6k7v7UJlaBDapZRehQ
+Date:   Mon, 15 Feb 2021 14:41:52 +0000
+Message-ID: <fa3f6eefc0a940b38448b0efd4b3f4e3@AcuMS.aculab.com>
+References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
+ <GUuZYSQk2hxgykDhSxfB2GWo47lQlVrKBtWMwQUG7Ar2GAag5WQDxBI0zq6nDTooPBzTktyRpnu25Ju1UKE3FYD9yHbkNMAHcmSI96hoJhA=@emersion.fr>
+ <da9edfa0-8a18-44a2-fa79-83b4177afd8e@amd.com>
+ <8d23f1ca6fe76d8971365bf54ca71ba71698980d.camel@pengutronix.de>
+ <7ecf008d-a1f5-ddff-c8ac-8e7bfaf9c680@amd.com>
+In-Reply-To: <7ecf008d-a1f5-ddff-c8ac-8e7bfaf9c680@amd.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210212233602.GA30441@qmqm.qmqm.pl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 12:36:02AM +0100, Michał Mirosław wrote:
-> On Fri, Feb 12, 2021 at 06:26:41PM +0000, Michal Rostecki wrote:
-> > On Wed, Feb 10, 2021 at 05:08:05AM +0100, Michał Mirosław wrote:
-> > > On Tue, Feb 09, 2021 at 09:30:38PM +0100, Michal Rostecki wrote:
-> > > > From: Michal Rostecki <mrostecki@suse.com>
-> > > > 
-> > > > Add the btrfs_check_mixed() function which checks if the filesystem has
-> > > > the mixed type of devices (non-rotational and rotational). This
-> > > > information is going to be used in roundrobin raid1 read policy.a
-> > > [...]
-> > > > @@ -669,8 +699,12 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
-> > > >  	}
-> > > >  
-> > > >  	q = bdev_get_queue(bdev);
-> > > > -	if (!blk_queue_nonrot(q))
-> > > > +	rotating = !blk_queue_nonrot(q);
-> > > > +	device->rotating = rotating;
-> > > > +	if (rotating)
-> > > >  		fs_devices->rotating = true;
-> > > > +	if (!fs_devices->mixed)
-> > > > +		fs_devices->mixed = btrfs_check_mixed(fs_devices, rotating);
-> > > [...]
-> > > 
-> > > Since this is adding to a set, a faster way is:
-> > > 
-> > > if (fs_devices->rotating != rotating)
-> > > 	fs_devices->mixed = true;
-> > > 
-> > > The scan might be necessary on device removal, though.
-> > Actually, that's not going to work in case of appenging a rotational
-> > device when all previous devices are non-rotational.
-> [...]
-> > Inverting the order of those `if` checks would break the other
-> > permuitations which start with rotational disks.
-> 
-> But not if you would add:
-> 
-> if (adding first device)
-> 	fs_devices->rotating = rotating;
-> 
-> before the checks.
-> 
-> But them, there is a simpler way: count how many rotating vs non-rotating
-> devices there are while adding them. Like:
-> 
-> rotating ? ++n_rotating : ++n_fixed;
-> 
-> And then on remove you'd have it covered.
+RnJvbTogQ2hyaXN0aWFuIEvDtm5pZw0KPiBTZW50OiAxNSBGZWJydWFyeSAyMDIxIDEyOjA1DQou
+Li4NCj4gU25vb3BpbmcgdGhlIENQVSBjYWNoZXMgaW50cm9kdWNlcyBzb21lIGV4dHJhIGxhdGVu
+Y3ksIHNvIHdoYXQgY2FuDQo+IGhhcHBlbiBpcyB0aGF0IHRoZSByZXNwb25zZSB0byB0aGUgUENJ
+ZSByZWFkIGNvbWVzIHRvIGxhdGUgZm9yIHRoZQ0KPiBzY2Fub3V0LiBUaGUgcmVzdWx0IGlzIGFu
+IHVuZGVyZmxvdyBhbmQgZmxpY2tlcmluZyB3aGVuZXZlciBzb21ldGhpbmcgaXMNCj4gaW4gdGhl
+IGNhY2hlIHdoaWNoIG5lZWRzIHRvIGJlIGZsdXNoZWQgZmlyc3QuDQoNCkFyZW4ndCB5b3UgZ29p
+bmcgdG8gZ2V0IHRoZSBzYW1lIHByb2JsZW0gaWYgYW55IG90aGVyIGVuZHBvaW50cyBhcmUNCmRv
+aW5nIG1lbW9yeSByZWFkcz8NClBvc3NpYmx5IGV2ZW4gb25lcyB0aGF0IGRvbid0IHJlcXVpcmUg
+YSBjYWNoZSBzbm9vcCBhbmQgZmx1c2guDQoNCldoYXQgYWJvdXQganVzdCB0aGUgY3B1IGRvaW5n
+IGEgcmVhbCBtZW1vcnkgdHJhbnNmZXI/DQoNCk9yIGEgY29tYmluYXRpb24gb2YgdGhlIHR3byBh
+Ym92ZSBoYXBwZW5pbmcganVzdCBiZWZvcmUgeW91ciByZXF1ZXN0Lg0KDQpJZiB5b3UgZG9uJ3Qg
+aGF2ZSBhIGJpZyBlbm91Z2ggZmlmbyB5b3UnbGwgbG9zZS4NCg0KSSBkaWQgJ2ZpeCcgYSBzaW1p
+bGFyKGlzaCkgaXNzdWUgd2l0aCB2aWRlbyBETUEgbGF0ZW5jeSBvbiBhbiBlbWJlZGRlZA0Kc3lz
+dGVtIGJhc2VkIHRoZSBvbiBTQTExMDAvU0ExMTAxIGJ5IHNpZ25pZmljYW50bHkgcmVkdWNpbmcg
+dGhlIGNsb2NrDQp0byB0aGUgVkdBIHBhbmVsIHdoZW5ldmVyIHRoZSBjcHUgd2FzIGRvaW5nICdz
+bG93IGlvJy4NCihJbnRlcmxlYXZpbmcgYW4gdW5jYWNoZWQgY3B1IERSQU0gd3JpdGUgYmV0d2Vl
+biB0aGUgc2xvdyBpbyBjeWNsZXMNCmFsc28gZml4ZWQgaXQuKQ0KQnV0IHRoZSB2aWRlbyB3YXMg
+dGhlIG9ubHkgRE1BIGRldmljZSBhbmQgdGhhdCB3YXMgYW4gZW1iZWRkZWQgc3lzdGVtLg0KR2l2
+ZW4gdGhlIGFwcGxpY2F0aW9uIG5vdGUgYWJvdXQgdmlkZW8gbGF0ZW5jeSBkaWRuJ3QgbWVudGlv
+biB3aGF0IHdhcw0KYWN0dWFsbHkgaGFwcGVuaW5nLCBJJ20gbm90IHN1cmUgaG93IG1hbnkgcGVv
+cGxlIGFjdHVhbGx5IGdvdCBpdCB3b3JraW5nIQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBB
+ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
+IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-I like the idea of storing numbers and simply checking them. I use it in
-v2 - though probably in a different form, and I will most likely move
-the whole logic around checking device types to separate functions, to
-not bloat btrfs_open_one_device() and the others too much.
