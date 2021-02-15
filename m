@@ -2,81 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791D431B816
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2069A31B81A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhBOLfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 06:35:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhBOLfp (ORCPT
+        id S230005AbhBOLhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 06:37:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26522 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229870AbhBOLhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 06:35:45 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78A4C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:35:04 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id o21so4604261qtr.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:35:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LWrT8fZ201oRUWB5SANs4J6J66fxCMxMhnS4qgTBh3w=;
-        b=i5xjhDLNkMrL//Xp50xS/bfVCwM3dBlG4QTulJZQ+Nb1tIZTYqaF0+DlWviGe7/tZT
-         dnxmX7TQHx/vegReqj6uOjsDj8lxussCU29kWRFSAOb7qJzuveCI9YDsKwbin2UNJ1Dg
-         v+Dktuqu/4ovnxFUxlr9tHIc3/wEUvCKuxJhc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LWrT8fZ201oRUWB5SANs4J6J66fxCMxMhnS4qgTBh3w=;
-        b=DZ3W03rN8Rwd4po/zF3F7MLn+x8y9q0IrbxdQIvItZXhxE8ImBkJIiuOiFXHIpg2p8
-         /cLUKF/OSBaNdRG0jPGF6uXA7s3YFB+/ZK4D99N4cFYmCQuTmtTvgapJ9Z0mc3NBbDQi
-         RiCfnsaX+tYYcr07VFQBQTJhNu+5xHdI4AzQmOSkLJUhHzVagzaNP0j6Zb+0er2wCL8Y
-         jKNUxK0hHmWCaUadbuWUpX+PmuWvrP0BY07CJcny2JpzrxGTLTH7auNUP85PQDsZTuNw
-         29PPD1hIkX+Bw0jq6NtyjovXUg1ztdNztdnkoLGgH3VC+nKqntzuU8HwY1gwa4FgsvdV
-         hRdQ==
-X-Gm-Message-State: AOAM532KF3lGwbqA59Vb1A+b/sUX1MMrbQ/+299ScjIA3rEDLw7EoIfm
-        g+WVgzX3EEbRCnyL3tjJDHP9qdNbFRNrN2gbujzTtA==
-X-Google-Smtp-Source: ABdhPJyadDYkgRM4Ru/vdhJiHMG8Mk2MVykrG8xexKVBuTXrk3Wj1k22YIM5G9DsfHe+fBHAcZUMJnrGMhX43ZIjs/k=
-X-Received: by 2002:aed:2845:: with SMTP id r63mr13568740qtd.386.1613388904137;
- Mon, 15 Feb 2021 03:35:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20210213095724.3411058-1-daniel@0x0f.com> <20210215112409.1a755bf0@xps13>
- <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com> <20210215121653.4edd86c4@xps13>
-In-Reply-To: <20210215121653.4edd86c4@xps13>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Mon, 15 Feb 2021 20:34:53 +0900
-Message-ID: <CAFr9PXmc09zkXfhxPmPADuZE=EPZg=8kaWhc1oeNRbnzSLqqgA@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-mtd@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Mon, 15 Feb 2021 06:37:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613388943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sF9dZJuqlvEevgCfQYdSkQXkmgKjtqzSRW7Dqt0w1yM=;
+        b=XTl0Ergn2+3T6CSludaMIAcnTF4zbMFXfWtAehZM3fRQlEhy/XM0FdJCGg3Qjk1oORHT2U
+        T8Eg5QyK3Yf4pgYfSEqGgs1L6ZZ+eyCQajR9DP/aVSLEiDp83Newy6k71JBvcLwQilLb0r
+        PWTNWLcSzhabVN7iHR7UsJBEwt3m1vo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-vHJ4j4Z-Me2HQsaEmEXUpA-1; Mon, 15 Feb 2021 06:35:42 -0500
+X-MC-Unique: vHJ4j4Z-Me2HQsaEmEXUpA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D8BF910066EF;
+        Mon, 15 Feb 2021 11:35:40 +0000 (UTC)
+Received: from [10.40.194.204] (unknown [10.40.194.204])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 09D285C3F8;
+        Mon, 15 Feb 2021 11:35:38 +0000 (UTC)
+Message-ID: <72bb7b9fc0cf7afc308e284c72c363e80df8e734.camel@redhat.com>
+Subject: Re: linux-next: manual merge of the net-next tree with the net tree
+From:   Davide Caratti <dcaratti@redhat.com>
+To:     Guillaume Nault <gnault@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+In-Reply-To: <20210215110154.GA28453@linux.home>
+References: <20210215114354.6ddc94c7@canb.auug.org.au>
+         <20210215110154.GA28453@linux.home>
+Organization: red hat
 Content-Type: text/plain; charset="UTF-8"
+Date:   Mon, 15 Feb 2021 12:35:37 +0100
+MIME-Version: 1.0
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+On Mon, 2021-02-15 at 12:01 +0100, Guillaume Nault wrote:
+> Before these commits, ALL_TESTS listed the tests in the order they were
+> implemented in the rest of the file. So I'd rather continue following
+> this implicit rule, if at all possible. Also it makes sense to keep
+> grouping all match_ip_*_test together.
 
-On Mon, 15 Feb 2021 at 20:16, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> But a changelog should always be added when you change something
-> between two versions. And the changelog can be located below the three
-> dashes ("---") without being part of the final commit message, it does
-> not need to be in a separate cover letter.
+yes, it makes sense. I can follow-up with a commit for net-next (when
+tree re-opens), where the "ordering" in ALL_TESTS is restored. Ok?
 
-Oh. I didn't even realise that feature existed. :)
+thanks,
+-- 
+davide
 
-> I see. Can you please try the following:
->
-> nandwrite -o /dev/mtdx /dev/zero
-> nanddump -ol1 /dev/mtdx
->
-> If the entire area is effectively free to be used, you should see 0's
-> everywhere. Otherwise you should have ff's somewhere.
-
-Ok, I will confirm this and get back to you.
-
-Thanks,
-
-Daniel
