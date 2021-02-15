@@ -2,272 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22ACF31B575
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 07:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 716DA31B57B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 07:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbhBOG4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 01:56:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51806 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhBOG4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 01:56:02 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613372115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gb2YctauaZwx1wpb7VFmE/CdTXsDy0TKF2f3m6ky/to=;
-        b=IQ0cjTrz20AhAVvJ2K+wanLj3F/5JLuQJvUBuMSW9EdUMgSwHK8yJ8yeibvVEmDOHsSlhp
-        jc43rB2SAM0oPnVSOGncHvIp6rG1B38sZRwuKpspDqiOKfUe82ragNpfDL/VNLXybFn3Yh
-        BjmwQBUiqRWEbOewn4ToXQxrn2lPL5s=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 998F8ADDB;
-        Mon, 15 Feb 2021 06:55:15 +0000 (UTC)
-To:     Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <20210211101616.13788-1-jgross@suse.com>
- <20210211101616.13788-4-jgross@suse.com>
- <eed12192-a740-e767-1762-828c75de66ce@xen.org>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Subject: Re: [PATCH v2 3/8] xen/events: avoid handling the same event on two
- cpus at the same time
-Message-ID: <c4d930c1-331f-6a1e-7d26-cf066cecda33@suse.com>
-Date:   Mon, 15 Feb 2021 07:55:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229927AbhBOG7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 01:59:20 -0500
+Received: from mail-lf1-f49.google.com ([209.85.167.49]:36292 "EHLO
+        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229836AbhBOG7Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 01:59:16 -0500
+Received: by mail-lf1-f49.google.com with SMTP id f1so8635269lfu.3;
+        Sun, 14 Feb 2021 22:58:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=4BH4r71LEBLN/FYC56Md53GFBHnSsqrv3bI2bMVLjMY=;
+        b=NWdVM1yfucxAPBxRS7RY/nxtQPhmSEOJplKZCNyY1xSR1uGQssZ+nzutaabPBKdRoG
+         1cWU1F48Nveu7EkOjtRp5znhupdKMEZ47r3DotwIG7XOEl6YIvo0+lHvKu6JT0t/2pTd
+         XGdhNGJC7ofiFICqIZZRMyEcxBeUmOi3HT/uW6/Hfga1O4R3Rj8dk8Ae5U/cgrSHQFk+
+         VemG1dyy3gA4a6/R81uzfirulFiTF6KVoB6TTlrOSpQ5pZQN8ato888yEqf/kybSlSMc
+         NDRG1lkB2MJO0JkPPGvnvHndhENQtvbJbX0B8eicyd2zTgeuEB8Z7MkiMXqymmveN493
+         JElw==
+X-Gm-Message-State: AOAM5334EmO1CLsdt0iczOHQto4TTDahnv2pcekAWQP69nazG9y5z6CH
+        OYKjlk/U8wLfph0t/MR0wCBkuMdiCz8kbA==
+X-Google-Smtp-Source: ABdhPJxoO4MrtauooOlxH50TwCbt0pujKzTLH9TqAOrNw1CHA0Xl/TC5vi4pS4C/ggVj7vcnRHPNyg==
+X-Received: by 2002:a19:10:: with SMTP id 16mr7936722lfa.497.1613372313252;
+        Sun, 14 Feb 2021 22:58:33 -0800 (PST)
+Received: from dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id d14sm2653860lfg.128.2021.02.14.22.58.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 22:58:32 -0800 (PST)
+Message-ID: <4fb3a4c93d3db8640deeface4478ab057a3e3f78.camel@fi.rohmeurope.com>
+Subject: Re: [RFC PATCH 1/7] drivers: base: Add resource managed version of
+ delayed work init
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mark Gross <mgross@linux.intel.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
+In-Reply-To: <284d4a13-5cc8-e23c-7e99-c03db5415bf1@redhat.com>
+References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
+         <1230b0d2ba99ad546d72ab079e76cb1b3df32afb.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
+         <YCfDAly9b0zHMpJT@kroah.com>
+         <284d4a13-5cc8-e23c-7e99-c03db5415bf1@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-In-Reply-To: <eed12192-a740-e767-1762-828c75de66ce@xen.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="7zfISEbWiXTW2yLiOjoHHWptpgt3WYDwu"
+Date:   Mon, 15 Feb 2021 08:58:24 +0200
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---7zfISEbWiXTW2yLiOjoHHWptpgt3WYDwu
-Content-Type: multipart/mixed; boundary="PN3jkXVSs90bn2otpr7vqVYheMbLKyUDx";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Julien Grall <julien@xen.org>, xen-devel@lists.xenproject.org,
- linux-kernel@vger.kernel.org
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>
-Message-ID: <c4d930c1-331f-6a1e-7d26-cf066cecda33@suse.com>
-Subject: Re: [PATCH v2 3/8] xen/events: avoid handling the same event on two
- cpus at the same time
-References: <20210211101616.13788-1-jgross@suse.com>
- <20210211101616.13788-4-jgross@suse.com>
- <eed12192-a740-e767-1762-828c75de66ce@xen.org>
-In-Reply-To: <eed12192-a740-e767-1762-828c75de66ce@xen.org>
 
---PN3jkXVSs90bn2otpr7vqVYheMbLKyUDx
-Content-Type: multipart/mixed;
- boundary="------------E8383365BF43AE4646CD0A35"
-Content-Language: en-US
+On Sat, 2021-02-13 at 14:18 +0100, Hans de Goede wrote:
+> Hi,
+> 
+> On 2/13/21 1:16 PM, Greg Kroah-Hartman wrote:
+> > On Sat, Feb 13, 2021 at 01:58:44PM +0200, Matti Vaittinen wrote:
+> > > +/**
+> > > + * devm_delayed_work_autocancel - Resource-managed work
+> > > allocation
+> > > + * @dev: Device which lifetime work is bound to
+> > > + * @pdata: work to be cancelled when device exits
+> > > + *
+> > > + * Initialize work which is automatically cancelled when device
+> > > exits.
+> > 
+> > There is no such thing in the driver model as "when device exits".
+> > Please use the proper terminology as I do not understand what you
+> > think
+> > this is doing here...
+> 
+> I agree that this needs better wording I always talk about driver-
+> unbinding
+> because sysfs has /sys/bus/*/drivers/*/bind and
+> /sys/bus/*/drivers/*/unbind
+> attributes. But I see that the relevant driver-core functions all
+> call it
+> driver detaching, so lets be consistent and use that here too.
 
-This is a multi-part message in MIME format.
---------------E8383365BF43AE4646CD0A35
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+//Snip
 
-On 14.02.21 22:34, Julien Grall wrote:
-> Hi Juergen,
->=20
-> On 11/02/2021 10:16, Juergen Gross wrote:
->> When changing the cpu affinity of an event it can happen today that
->> (with some unlucky timing) the same event will be handled on the old
->> and the new cpu at the same time.
->>
->> Avoid that by adding an "event active" flag to the per-event data and
->> call the handler only if this flag isn't set.
->>
->> Reported-by: Julien Grall <julien@xen.org>
->> Signed-off-by: Juergen Gross <jgross@suse.com>
->> ---
->> V2:
->> - new patch
->> ---
->> =C2=A0 drivers/xen/events/events_base.c | 19 +++++++++++++++----
->> =C2=A0 1 file changed, 15 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/xen/events/events_base.c=20
->> b/drivers/xen/events/events_base.c
->> index e157e7506830..f7e22330dcef 100644
->> --- a/drivers/xen/events/events_base.c
->> +++ b/drivers/xen/events/events_base.c
->> @@ -102,6 +102,7 @@ struct irq_info {
->> =C2=A0 #define EVT_MASK_REASON_EXPLICIT=C2=A0=C2=A0=C2=A0 0x01
->> =C2=A0 #define EVT_MASK_REASON_TEMPORARY=C2=A0=C2=A0=C2=A0 0x02
->> =C2=A0 #define EVT_MASK_REASON_EOI_PENDING=C2=A0=C2=A0=C2=A0 0x04
->> +=C2=A0=C2=A0=C2=A0 u8 is_active;=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 /* Is event just being handled? */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned irq;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 evtchn_port_t evtchn;=C2=A0=C2=A0 /* ev=
-ent channel */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned short cpu;=C2=A0=C2=A0=C2=A0=C2=
-=A0 /* cpu bound */
->> @@ -622,6 +623,7 @@ static void xen_irq_lateeoi_locked(struct irq_info=
-=20
->> *info, bool spurious)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 info->eoi_time =3D 0;
->> +=C2=A0=C2=A0=C2=A0 smp_store_release(&info->is_active, 0);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 do_unmask(info, EVT_MASK_REASON_EOI_PEN=
-DING);
->> =C2=A0 }
->> @@ -809,13 +811,15 @@ static void pirq_query_unmask(int irq)
->> =C2=A0 static void eoi_pirq(struct irq_data *data)
->> =C2=A0 {
->> -=C2=A0=C2=A0=C2=A0 evtchn_port_t evtchn =3D evtchn_from_irq(data->irq=
-);
->> +=C2=A0=C2=A0=C2=A0 struct irq_info *info =3D info_for_irq(data->irq);=
+> > > @@ -249,6 +250,10 @@ void __iomem *devm_of_iomap(struct device
+> > > *dev,
+> > >  			    struct device_node *node, int index,
+> > >  			    resource_size_t *size);
+> > >  
+> > > +/* delayed work which is cancelled when driver exits */
+> > 
+> > Not when the "driver exits".
+> 
+> Right this should be detached not exits.
+> 
 
->> +=C2=A0=C2=A0=C2=A0 evtchn_port_t evtchn =3D info ? info->evtchn : 0;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct physdev_eoi eoi =3D { .irq =3D p=
-irq_from_irq(data->irq) };
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int rc =3D 0;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!VALID_EVTCHN(evtchn))
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
->> +=C2=A0=C2=A0=C2=A0 smp_store_release(&info->is_active, 0);
->=20
-> Would you mind to explain why you are using the release semantics?
-
-It is basically releasing a lock. So release semantics seem to be
-appropriate.
-
-> It is also not clear to me if there are any expected ordering between=20
-> clearing is_active and clearing the pending bit.
-
-No, I don't think there is a specific ordering required. is_active is
-just guarding against two simultaneous IRQ handler calls for the same
-event being active. Clearing the pending bit is not part of the guarded
-section.
-
->=20
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clear_evtchn(evtchn);
->=20
->=20
-> The 2 lines here seems to be a common pattern in this patch. So I would=
-=20
-> suggest to create a new helper.
-
-Okay.
+Thanks guys.
+I am poor with the terminology so I do appreciate your help in getting
+this right. I can change this for the v2.
 
 
-Juergen
+> > There is two different lifespans here (well 3).  Code and
+> > data*2.  Don't
+> > confuse them as that will just cause lots of problems.
+> > 
+> > The move toward more and more "devm" functions is not the way to go
+> > as
+> > they just more and more make things easier to get wrong.
+> > 
+> > APIs should be impossible to get wrong, this one is going to be
+> > almost
+> > impossible to get right.
+> 
+> I have to disagree here devm generally makes it easier to get things
+> right,
+> it is when some devm functions are missing and devm and non devm
+> resources
+> are mixed that things get tricky.
 
---------------E8383365BF43AE4646CD0A35
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Thanks for the discussion. I hope we can come to some conclusion here.
+Unsurprisingly I agree with Hans here. I did after all send this patch
+series :) I guess I am mostly just repeating what he said.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+As Hans pointed out, when all calls are 'undone' by devm the order of
+'undoing' is highly likely to be correct as the unwinding is done in
+reverse order to initializations. I think it is sane to assume in most
+case things are initiated in order where operations which depend on
+something are done last - and when 'unwinding' things those are
+'undone' first. 
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+My 'gut feeling' for probe / remove related errors is that the most
+usual errors I've seen have been:
 
---------------E8383365BF43AE4646CD0A35--
+a) Tear-down completely forgotten
+b) Tear-down forgotten at error path
+c) Wrong order of initiating things (IRQ requested prior resource
+initialization)
+d) Wrong order of cleann-up at remove.
 
---PN3jkXVSs90bn2otpr7vqVYheMbLKyUDx--
+a) and b) class errors have been the most common ones I've seen. They
+can be completely avoided when devm is used.
+c) is there no matter if we use devm or not.
+d) is mostly avoided when only devm is used - mixing devm and manual
+operations make this more likely as Hans pointed out. As long as we
+have some devm operations we should help avoid mixing devm and manual
+clean-up.
 
---7zfISEbWiXTW2yLiOjoHHWptpgt3WYDwu
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Best Regards
+	Matti Vaittinen
 
------BEGIN PGP SIGNATURE-----
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAqGtIFAwAAAAAACgkQsN6d1ii/Ey89
-Bgf/YqzP0frmMc/MfBd2/G9qz9UanDcIsq9kBPzvF1wZyxZ0ez80TwRXnTVCVNxpvVQnoWmCAMUO
-jLlR6BdcrM8lhsOUHYfldjFD7mVPf1MeOjhGRcCUEsorosjAljfnkIv0YTLUkJsvhX7G4vafiLwg
-VHpGrueqrDg/yf5N1UiuWJT83GsK4UA95I7f+23ox0a96XxnfKVmXxHRt2DPLU8OzK5/4yTWc0Bu
-FoxuNchoAoz/4PH0s0d5Ai1iVVyEGxBu9+gyU8+ar4C46Q6bT8JpxpOPMBOFoDNdnZfDEu7n+V7/
-LgGyXwFdl99HrQghEeJTuO2RzUQbx8tSU8rYQ+ZOGQ==
-=Q2NO
------END PGP SIGNATURE-----
 
---7zfISEbWiXTW2yLiOjoHHWptpgt3WYDwu--
