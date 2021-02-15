@@ -2,109 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6DD31BC34
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8CFA31BC3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhBOPXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:23:11 -0500
-Received: from mo-csw1115.securemx.jp ([210.130.202.157]:47520 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhBOPWq (ORCPT
+        id S230119AbhBOPYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:24:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230429AbhBOPX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:22:46 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1115) id 11FFKG6n024333; Tue, 16 Feb 2021 00:20:16 +0900
-X-Iguazu-Qid: 2wGqn5DuWuqX2Ss3iz
-X-Iguazu-QSIG: v=2; s=0; t=1613402415; q=2wGqn5DuWuqX2Ss3iz; m=/wKFgwyBTwVVVznr0ILCXsnu0TO+86riP91KaZy3nkg=
-Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
-        by relay.securemx.jp (mx-mr1113) id 11FFKDcG038195;
-        Tue, 16 Feb 2021 00:20:14 +0900
-Received: from enc01.toshiba.co.jp ([106.186.93.100])
-        by imx2.toshiba.co.jp  with ESMTP id 11FFKD2G008102;
-        Tue, 16 Feb 2021 00:20:13 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 11FFKCeJ017228;
-        Tue, 16 Feb 2021 00:20:13 +0900
-Date:   Tue, 16 Feb 2021 00:20:11 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/4] net: stmmac: Add Toshiba Visconti SoCs glue driver
-X-TSB-HOP: ON
-Message-ID: <20210215152011.5q7eudtfzn7afmfi@toshiba.co.jp>
-References: <20210215050655.2532-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210215050655.2532-3-nobuhiro1.iwamatsu@toshiba.co.jp>
- <YCoPmfunGmu0E8IT@unreal>
- <20210215072809.n3r5rdswookzri6j@toshiba.co.jp>
- <YCo9WVvtAeozE42k@unreal>
- <CAK8P3a391547zH=bYXbLzttP9ehFK=OzcM_XkSJs92dA1z4DGQ@mail.gmail.com>
+        Mon, 15 Feb 2021 10:23:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613402552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fJz8YgaK9JiINlO/a+xlVgWJntkGKx0HDC2HE+3srwg=;
+        b=DYpj5ujPAglcb12jtsN8mIGBU5CvF8SO3hLSLpupgp2devT9rTS7r27SjivakX0QQcLePn
+        Qqt+u3IN03jR+1kDMLlfksxtzUg40ebp64pcNt8MLi8flaEK5YNx8BEKTTf5wG9HEEvSty
+        Mj2nS2a6HOibj5f27qjjvZhYU0K7EWc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-mKddZN6JNyeVRN9lz9sKPg-1; Mon, 15 Feb 2021 10:22:31 -0500
+X-MC-Unique: mKddZN6JNyeVRN9lz9sKPg-1
+Received: by mail-ed1-f71.google.com with SMTP id x13so5263027edi.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:22:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fJz8YgaK9JiINlO/a+xlVgWJntkGKx0HDC2HE+3srwg=;
+        b=DRzy6pVFESP3rQK4kci1Y88dHUxwgGfAECwAU+HA/JjA4ROHynVLVwrJWl4m0449jn
+         BXXuIBFrNvQljqC1vLJ9tHIHcqerJY8fTNBLIzFmOlqsMJGpjpFdxwvf6Gqkt6ao7lFv
+         kC+2ziZbmycSOzgOvOPEaTzgeRbQNIhEKKEkurcIDZsaSDsWJX+VnJaEwBrdYQma8ZEk
+         Fibip41fsvXydYwTaxvMh/tILCdlLGVwRsckXb/dC+2u1MvOxMCZyTcbi9ER+UciRkUu
+         sXMhwrqaYV5Ma/kNB2nihuOvcZtBWpfrBhjsg8Kw0L77rM8wB00/g5MY7DWCITeRurK8
+         k+Iw==
+X-Gm-Message-State: AOAM5318piZYLKIqG976aK8Gh/nIeGGxjs15+y0jH+MXDvgNpvP5Ljk6
+        vzZiB+PQz6cSr9xtw//XuV5TKfcUdeTQ2Pg5k7pPReL91PTrVYBrYegoh+98fMscAdaAl3Jjpg+
+        7EyjG/DaRtkc7fliptIIYgU46kpzeVjOF5w2+dPQw2RaGaYisPlVYGQg6wgzRsEzhKfwZYthwdL
+        YY
+X-Received: by 2002:a17:906:4050:: with SMTP id y16mr1830500ejj.203.1613402549505;
+        Mon, 15 Feb 2021 07:22:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy+zjwVtuh7Fqdmsz92FGNGYl8ZNQsHVtJy7xb1/oGQop9MCGMwieZLXoXsr8wv3IpM9z9ZOQ==
+X-Received: by 2002:a17:906:4050:: with SMTP id y16mr1830452ejj.203.1613402549050;
+        Mon, 15 Feb 2021 07:22:29 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id op10sm1052452ejb.98.2021.02.15.07.22.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Feb 2021 07:22:28 -0800 (PST)
+Subject: Re: [PATCH v2 0/4] platform/surface: Add platform profile driver for
+ Surface devices
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <mgross@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Mark Pearson <markpearson@lenovo.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210211201703.658240-1-luzmaximilian@gmail.com>
+ <898aa498-8256-d59f-9e72-0e1199b3a62a@redhat.com>
+ <CAJZ5v0jGUgHsNaqLarf=YLwjtOe-mQB48LkOQLi7FcZyW1Qchg@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <510803ab-b5b8-ce2c-e956-5539874d00bf@redhat.com>
+Date:   Mon, 15 Feb 2021 16:22:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a391547zH=bYXbLzttP9ehFK=OzcM_XkSJs92dA1z4DGQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jGUgHsNaqLarf=YLwjtOe-mQB48LkOQLi7FcZyW1Qchg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Mon, Feb 15, 2021 at 01:19:18PM +0100, Arnd Bergmann wrote:
-> On Mon, Feb 15, 2021 at 10:23 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > On Mon, Feb 15, 2021 at 04:28:09PM +0900, Nobuhiro Iwamatsu wrote:
-> > >
-> > > Sorry, I sent the wrong patchset that didn't fix this point out.
-> > >
-> > > > I asked it before, but never received an answer.
-> > >
-> > > I have received your point out and have sent an email with the content
-> > > to remove this line. But it may not have arrived yet...
-> > >
-> > > > Why did you use "def_bool y" and not "default y"? Isn't it supposed to be
-> > > > "depends on STMMAC_ETH"? And probably it shouldn't be set as a default as "y".
-> > > >
-> > >
-> > > The reason why "def_bool y" was set is that the wrong fix was left when
-> > > debugging. Also, I don't think it is necessary to set "default y".
-> > > This is also incorrect because it says "bool" Toshiba Visconti DWMAC
-> > > support "". I change it to trustate in the new patch.
-> > >
-> > > And this driver is enabled when STMMAC_PLATFORM was Y. And STMMAC_PLATFORM
-> > > depends on STMMAC_ETH.
-> > > So I understand that STMMAC_ETH does not need to be dependents. Is this
-> > > understanding wrong?
-> >
-> > This is correct understanding, just need to clean other entries in that
-> > Kconfig that depends on STMMAC_ETH.
+On 2/15/21 3:54 PM, Rafael J. Wysocki wrote:
+> On Mon, Feb 15, 2021 at 3:36 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi,
+>>
+>> On 2/11/21 9:16 PM, Maximilian Luz wrote:
+>>> This series adds a driver to provide platform profile support on 5th-
+>>> and later generation Microsoft Surface devices with a Surface System
+>>> Aggregator Module. On those devices, the platform profile can be used to
+>>> influence cooling behavior and power consumption.
+>>>
+>>> To achieve this, a new platform profile is introduced: the
+>>> 'balanced-performance' profile.
+>>>
+>>> In addition, a couple of fix-ups are performed:
+>>> - Hide CONFIG_ACPI_PLATFORM_PROFILE and change drivers so that it is
+>>>   selected instead of depended on.
+>>> - Fix some references to documentation in a comment.
+>>>
+>>> Note: This series (or more specifically "platform/surface: Add platform
+>>> profile driver") depends on the "platform/surface: Add Surface
+>>> Aggregator device registry" series.
+>>>
+>>> Changes in v2:
+>>>  - Introduce new 'balanced-performance' platform profile and change
+>>>    profile mapping in driver.
+>>>  - Perform some fix-ups for the ACPI platform profile implementation:
+>>>    - Fix some references to documentation in a comment.
+>>>    - Hide CONFIG_ACPI_PLATFORM_PROFILE
+>>
+>> Thanks, the entire series looks good to me, so for the series:
+>>
+>> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>>
+>> Rafael, can you (once 5.12-rc1 is out) pick 1-3/4 and then provide a
+>> stable branch for me to merge?
 > 
-> 'tristate' with no default sounds right. I see that some platforms have a
-> default according to the platform, which also makes sense but isn't
-> required. What I would suggest though is a dependency on the platform,
-> to make it easier to disable the front-end based on which platforms
-> are enabled. This would end up as
-> 
-> config DWMAC_VISCONTI
->         tristate "Toshiba Visconti DWMAC support"
->         depends on ARCH_VISCONTI || COMPILE_TEST
->         depends on OF && COMMON_CLK # only add this line if it's
-> required for compilation
->         default ARCH_VISCONTI
->
+> Since [1-3/4] appear to be uncontroversial, so IMO it would be better
+> to merge them during the merge window, so they are present in
+> 5.12-rc1.
 
-The fix at hand is the same as your suggestion.
-Thank you for your comment.
+So I just realized one problem with this plan, patch 1/4 depends
+on (modifies) Kconfig bits which are only in my tree / my 5.12 pull-req
+(which I send out earlier today).
 
->       Arnd
-> 
+One option here would be for me pickup 1-3/4 and send a second
+pull-req during the merge-window, with your ack as these are
+touching files under drivers/acpi ?
 
-Best regards,
-  Nobuhiro
+Regards,
+
+Hans
+
