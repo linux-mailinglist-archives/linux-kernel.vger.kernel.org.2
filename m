@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C4D31C0C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD3F31C0CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhBORj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:39:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232508AbhBORDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:03:33 -0500
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5FFC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:02:38 -0800 (PST)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lBhGX-00EJ5M-IB; Mon, 15 Feb 2021 17:02:29 +0000
-Date:   Mon, 15 Feb 2021 17:02:29 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: [git pull] saner ELF compat handling
-Message-ID: <YCqpJZxNrb7+O8Ns@zeniv-ca.linux.org.uk>
+        id S231929AbhBORkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:40:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231982AbhBORGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 12:06:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51DC961493;
+        Mon, 15 Feb 2021 17:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613408751;
+        bh=qlDEjTny/wih/sMMQqRl+8DVcQluidusnPRkNYSDRK0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Z+zD1bzotvDEc5rnwTtfxq3cpHiWjbnHJ1ikgNfgV7uzxHVq5/JhTLf6L/pGHCVqK
+         RtttacCk4yzbTNBjpe4TxYQRwh1Lu5bNCeiZLPVQX0NRjT8FliRnnxq76hpqF/lsT4
+         j85GWP0KYWrHYyJ9qhqQBDX1aYZY4U7ltdN6VfLlvamJGxHJg6ga/6tFodxcGlLh9F
+         akb8jUyQ+q8UubxPudJCRCov2h/94HIkAsOwDahsjixOQ9VfgObkWgT3TCwX1knfGt
+         vxRgDQym4qXq78NVzDcaW4k7FfGm7VEs73gQuO+4BWquWaUnbFrB5Wk+7vaQUMDimD
+         rIqaIRBWp9QDQ==
+Date:   Mon, 15 Feb 2021 18:05:45 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
+        laurent.pinchart@ideasonboard.com,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v7 2/3] v4l: ioctl: Use %p4cc printk modifier to print
+ FourCC codes
+Message-ID: <20210215180545.7178e180@coco.lan>
+In-Reply-To: <YCqnu61J2Q8rsrZa@alley>
+References: <20210215114030.11862-1-sakari.ailus@linux.intel.com>
+        <20210215114030.11862-3-sakari.ailus@linux.intel.com>
+        <YCqnu61J2Q8rsrZa@alley>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Sanitizing ELF compat support, especially for triarch architectures:
-* X32 handling cleaned up
-* MIPS64 uses compat_binfmt_elf.c both for O32 and N32 now
-* Kconfig side of things regularized
-	Eventually I hope to have compat_binfmt_elf.c killed, with
-both native and compat built from fs/binfmt_elf.c, with -DELF_BITS={64,32}
-passed by kbuild, but that's a separate story - not included here.
-	Sat in -next for the entire cycle, no problems reported...
+Em Mon, 15 Feb 2021 17:56:27 +0100
+Petr Mladek <pmladek@suse.com> escreveu:
 
-The following changes since commit 698222457465ce343443be81c5512edda86e5914:
+> On Mon 2021-02-15 13:40:29, Sakari Ailus wrote:
+> > Now that we can print FourCC codes directly using printk, make use of the
+> > feature in V4L2 core.
+> > 
+> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>  
+> 
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> 
+> I am curious whether I could take this via printk tree or if Mauro
+> would prefer to take this via his tree.
 
-  MIPS: Fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps (2020-12-28 23:26:17 +0100)
+IMO, the best would be if the entire series gets merged via a single
+tree.
 
-are available in the git repository at:
+Feel free to merge via the printk one.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.elf-compat
+Acked-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-for you to fetch changes up to e565d89e4aa07e3f20ac5e8757b1da24b5878e69:
+> 
+> Anyway, there will be v8 with small changes in the 1st patch.
+> 
+> Best Regards,
+> Petr
 
-  get rid of COMPAT_ELF_EXEC_PAGESIZE (2021-01-06 08:42:51 -0500)
 
-----------------------------------------------------------------
-Al Viro (14):
-      binfmt_elf: partially sanitize PRSTATUS_SIZE and SET_PR_FPVALID
-      elf_prstatus: collect the common part (everything before pr_reg) into a struct
-      [amd64] clean PRSTATUS_SIZE/SET_PR_FPVALID up properly
-      x32: make X32, !IA32_EMULATION setups able to execute x32 binaries
-      Merge remote-tracking branch 'mips/mips-fixes' into work.elf-compat
-      mips binfmt_elf*32.c: use elfcore-compat.h
-      mips: kill unused definitions in binfmt_elf[on]32.c
-      mips: KVM_GUEST makes no sense for 64bit builds...
-      mips compat: don't bother with ELF_ET_DYN_BASE
-      mips: don't bother with ELF_CORE_EFLAGS
-      mips compat: switch to compat_binfmt_elf.c
-      Kconfig: regularize selection of CONFIG_BINFMT_ELF
-      compat_binfmt_elf: don't bother with undef of ELF_ARCH
-      get rid of COMPAT_ELF_EXEC_PAGESIZE
 
- arch/Kconfig                               |   3 +
- arch/arm64/Kconfig                         |   1 -
- arch/ia64/kernel/crash.c                   |   2 +-
- arch/mips/Kconfig                          |   8 +-
- arch/mips/include/asm/elf.h                |  56 +++++---------
- arch/mips/include/asm/elfcore-compat.h     |  29 ++++++++
- arch/mips/kernel/Makefile                  |   4 +-
- arch/mips/kernel/binfmt_elfn32.c           | 113 ----------------------------
- arch/mips/kernel/binfmt_elfo32.c           | 116 -----------------------------
- arch/mips/kernel/scall64-n64.S             |   2 +-
- arch/parisc/Kconfig                        |   1 -
- arch/powerpc/Kconfig                       |   1 -
- arch/powerpc/platforms/powernv/opal-core.c |   6 +-
- arch/s390/Kconfig                          |   1 -
- arch/s390/kernel/crash_dump.c              |   2 +-
- arch/sparc/Kconfig                         |   1 -
- arch/x86/Kconfig                           |   2 +-
- arch/x86/include/asm/compat.h              |  11 ---
- arch/x86/include/asm/elf.h                 |   2 +-
- arch/x86/include/asm/elfcore-compat.h      |  31 ++++++++
- fs/Kconfig.binfmt                          |   2 +-
- fs/binfmt_elf.c                            |  21 +++---
- fs/binfmt_elf_fdpic.c                      |  22 ++----
- fs/compat_binfmt_elf.c                     |   7 +-
- include/linux/elfcore-compat.h             |  15 +++-
- include/linux/elfcore.h                    |   7 +-
- kernel/kexec_core.c                        |   2 +-
- 27 files changed, 129 insertions(+), 339 deletions(-)
- create mode 100644 arch/mips/include/asm/elfcore-compat.h
- delete mode 100644 arch/mips/kernel/binfmt_elfn32.c
- delete mode 100644 arch/mips/kernel/binfmt_elfo32.c
- create mode 100644 arch/x86/include/asm/elfcore-compat.h
+Thanks,
+Mauro
