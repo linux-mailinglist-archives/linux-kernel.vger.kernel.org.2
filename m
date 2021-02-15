@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1760B31BF92
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCC131BFA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhBOQlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:41:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50042 "EHLO mail.kernel.org"
+        id S231508AbhBOQpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:45:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231557AbhBOPiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:38:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 361D164EB1;
-        Mon, 15 Feb 2021 15:33:45 +0000 (UTC)
+        id S231622AbhBOPiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:38:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C016564EAE;
+        Mon, 15 Feb 2021 15:34:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403225;
-        bh=2hljRmYRsaCubJA6yh5FcPHKxO/+/e/4mzZZ0NUXBqw=;
+        s=korg; t=1613403247;
+        bh=opld9oAUueE/UtPsLkCaovX/xlFdQ0kq3owAKA89sFo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O3E17FKS5MHYwsRqFofuwvNASKQTVTcnrx1eyLHXPKO8hkGHtA2fT5JBWh2gK3QHt
-         aDl5aounkbBC79ZLGgcwhS/wWeVR5b5AM/rfmiFSlmag02lGonvFS94vxh24B6yrK+
-         wwwlCQlzAU4lIaFcp9+0J4ZQwlOCvuaUU/JHBmsM=
+        b=gh6OuDypxfjOhlIh4UC/AJZDngdELXRe3Z2Rh6syNuysM0DGg0iDgBXR6OP7Wm9Ql
+         CkrlUnenGS7z5LSczsusZJ57RxpdMYqonVXXaWWFZhh0lnO9hU3kRxhkZfIJuLQDxZ
+         DV6qvIafEqpZBQui7+ydDgCmdFNxw/MlHhi0aSFQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Fangrui Song <maskray@google.com>,
+        kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 074/104] net: hns3: add a check for tqp_index in hclge_get_ring_chain_from_mbx()
-Date:   Mon, 15 Feb 2021 16:27:27 +0100
-Message-Id: <20210215152721.840893688@linuxfoundation.org>
+Subject: [PATCH 5.10 076/104] firmware_loader: align .builtin_fw to 8
+Date:   Mon, 15 Feb 2021 16:27:29 +0100
+Message-Id: <20210215152721.908597101@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,63 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufeng Mo <moyufeng@huawei.com>
+From: Fangrui Song <maskray@google.com>
 
-[ Upstream commit 326334aad024a60f46dc5e7dbe1efe32da3ca66f ]
+[ Upstream commit 793f49a87aae24e5bcf92ad98d764153fc936570 ]
 
-The tqp_index is received from vf, if use it directly,
-an out-of-bound issue may be caused, so add a check for
-this tqp_index before using it in hclge_get_ring_chain_from_mbx().
+arm64 references the start address of .builtin_fw (__start_builtin_fw)
+with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
+relocations.  The compiler is allowed to emit the
+R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
+include/linux/firmware.h is 8-byte aligned.
 
-Fixes: 84e095d64ed9 ("net: hns3: Change PF to add ring-vect binding & resetQ to mailbox")
-Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
+multiple of 8, which may not be the case if .builtin_fw is empty.
+Unconditionally align .builtin_fw to fix the linker error.  32-bit
+architectures could use ALIGN(4) but that would add unnecessary
+complexity, so just use ALIGN(8).
+
+Link: https://lkml.kernel.org/r/20201208054646.2913063-1-maskray@google.com
+Link: https://github.com/ClangBuiltLinux/linux/issues/1204
+Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
+Signed-off-by: Fangrui Song <maskray@google.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ include/asm-generic/vmlinux.lds.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-index 3ab6db2588d31..c997c90371550 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-@@ -158,21 +158,31 @@ static int hclge_get_ring_chain_from_mbx(
- 			struct hclge_vport *vport)
- {
- 	struct hnae3_ring_chain_node *cur_chain, *new_chain;
-+	struct hclge_dev *hdev = vport->back;
- 	int ring_num;
--	int i = 0;
-+	int i;
- 
- 	ring_num = req->msg.ring_num;
- 
- 	if (ring_num > HCLGE_MBX_MAX_RING_CHAIN_PARAM_NUM)
- 		return -ENOMEM;
- 
-+	for (i = 0; i < ring_num; i++) {
-+		if (req->msg.param[i].tqp_index >= vport->nic.kinfo.rss_size) {
-+			dev_err(&hdev->pdev->dev, "tqp index(%u) is out of range(0-%u)\n",
-+				req->msg.param[i].tqp_index,
-+				vport->nic.kinfo.rss_size - 1);
-+			return -EINVAL;
-+		}
-+	}
-+
- 	hnae3_set_bit(ring_chain->flag, HNAE3_RING_TYPE_B,
--		      req->msg.param[i].ring_type);
-+		      req->msg.param[0].ring_type);
- 	ring_chain->tqp_index =
- 		hclge_get_queue_id(vport->nic.kinfo.tqp
--				   [req->msg.param[i].tqp_index]);
-+				   [req->msg.param[0].tqp_index]);
- 	hnae3_set_field(ring_chain->int_gl_idx, HNAE3_RING_GL_IDX_M,
--			HNAE3_RING_GL_IDX_S, req->msg.param[i].int_gl_index);
-+			HNAE3_RING_GL_IDX_S, req->msg.param[0].int_gl_index);
- 
- 	cur_chain = ring_chain;
- 
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index b2b3d81b1535a..b97c628ad91ff 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -459,7 +459,7 @@
+ 	}								\
+ 									\
+ 	/* Built-in firmware blobs */					\
+-	.builtin_fw        : AT(ADDR(.builtin_fw) - LOAD_OFFSET) {	\
++	.builtin_fw : AT(ADDR(.builtin_fw) - LOAD_OFFSET) ALIGN(8) {	\
+ 		__start_builtin_fw = .;					\
+ 		KEEP(*(.builtin_fw))					\
+ 		__end_builtin_fw = .;					\
 -- 
 2.27.0
 
