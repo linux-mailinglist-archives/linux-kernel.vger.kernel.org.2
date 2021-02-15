@@ -2,159 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC96C31B3DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 02:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4584E31B3E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 02:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhBOBM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 20:12:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
+        id S230106AbhBOBNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 20:13:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhBOBMx (ORCPT
+        with ESMTP id S229875AbhBOBNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 20:12:53 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149C1C061574;
-        Sun, 14 Feb 2021 17:12:13 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id b24so3861074qtp.13;
-        Sun, 14 Feb 2021 17:12:12 -0800 (PST)
+        Sun, 14 Feb 2021 20:13:41 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5E1C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 17:13:01 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id ot7so5974850ejb.9
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 17:13:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=u/P+klsYT+3oCQuRx6zNma6AUAUqrQJf7IT/OG3OTCY=;
-        b=ffmR4pdedM1f3Qslw6Y8/WUmFQ/vzJTIyFZhbX3cQf5JOPGSgUs53Fpf/ajtN8hIhp
-         EEzADtiWXdpTcZHe/IcCgOviVxpu86jHgHAdYFtKtSAAEip+Y5WO/onaF3AKD4hIiJGK
-         rEhJ4dimvY2Y8GQqFwrPbzBMRiSqX23cY3pbTHicwFtYE2ID3L1CGch1qAxCaq5gyz9/
-         LXGYGVMBX0w8BzOiIlUe5ykbEXvJTXIPtvL83NXVMbDMbfvHvczodFGZA/SrB19cI4PS
-         piRpJj6sd71JlGTxyDpcq5y6bzcVp031ZtYzo61qTPm468Z+BxrN7Gxg+SeXRLHSNrcz
-         rsYA==
+        d=golang-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cY17sg8S71FdSn0fjawRFa+xVg7WnNBoI/+IkEhD4Os=;
+        b=VkF2aNUtGx0+uHVXB/4FJsHcU4FPR81RzZpop2ZMocnYIIHzX/NeChRlOajUrcQ2aC
+         AnJHPRtImJTlcrpBzGRdgx5fRvicfQMQiMbYnznS2mzcAAJskYeT9g8UZ8N6DxCmyUYW
+         9yNWOB+5FOwnyVAACfh4dI6HBE/TOKsf8j5uG6mz82BzEewDKtsU23Rztf0mnHryfGhi
+         8uKsqDN5yIX6u/miVK8rn1NPP/vGoZFQ/sx2E1a47XQPcapaGJZ3v3wTFydAV6FGz7Ps
+         y+5Acn/HB1hNatrDouN2WH0MX1pFMSPKeoqvRxXC+leE8uH+LtALM3xXvdHf4Z7gPMLH
+         qk3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u/P+klsYT+3oCQuRx6zNma6AUAUqrQJf7IT/OG3OTCY=;
-        b=MqnJ6DV8pAVOKSFm2nGP+aoDqwYxz7vfWdO87vh9NvUJ437KvndpZvA7E5+BUslOxE
-         RezOpHkfvQO3B+L46krdeVSxPy7Eu2pyCFVjKuvxjbsFwphBJpVJ7ywjca6a76SUB+GQ
-         z7N3YcAHI1RV7Ukmfmd6WCHAqQB0TMrkcuHCVIX8OZ5+oX948iWfpB7U2URxNQ0u/0h2
-         48N1Ai8Vj0vyXWCxhy0ICVfupNPHIxV7mLBFvOdkcxROfWRlzxVEUqdTHxPwtfMfOwWG
-         5Sd9Swn57S10pg4aSMaYokMGAF5CwoRP45Woooj1uE93IRSyqbq0il0IKqfYrJW2Ba8Q
-         4juw==
-X-Gm-Message-State: AOAM530a7DQagQeaAwZC5kWXEBoXlv8XhtEjuY4TR+HKtgf+EBsH/O3p
-        Oeyv5p+J4kAcdHVpd3tiw3E=
-X-Google-Smtp-Source: ABdhPJwZMz5lUnadRv1zcJOSM2ZY+QzmwkAhtI1lcOaNSV4PBlPT4f61wh+ACE4/TfwwUqbqR5T90g==
-X-Received: by 2002:ac8:6c5c:: with SMTP id z28mr8752586qtu.371.1613351532141;
-        Sun, 14 Feb 2021 17:12:12 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id o13sm3521268qkj.130.2021.02.14.17.12.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Feb 2021 17:12:11 -0800 (PST)
-Subject: Re: RFC: oftree based setup of composite board devices
-To:     Rob Herring <robh+dt@kernel.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org, Johan Hovold <johan@kernel.org>
-References: <20210208222203.22335-1-info@metux.net>
- <CAL_JsqJ-bz35mUM3agYjq5x+Y+u9rL1RwesCaA-x=MW8uv5CrA@mail.gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <76bf0f7c-9477-f370-8fbd-ce8ef15188b1@gmail.com>
-Date:   Sun, 14 Feb 2021 19:12:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cY17sg8S71FdSn0fjawRFa+xVg7WnNBoI/+IkEhD4Os=;
+        b=gAZyzqWJI6WvngEWqvsBnkaoNtUFERV1f6LTam7xFJB6Ahz9CBTO5Um8tFeyXoffOh
+         Vm6GIn4uZMpKz5AhJnbXVHUyAtRl8cna4fyLmjuxDeSQz5w7sMrE8l/+iA6yBooYgX58
+         g/ntTbrfwJjqIRSy4R7h2xL7gAsWGqNAn1ProRW6u9J6UH9vc6pp41WPy3VaeMemWSTk
+         9uzoEQCytQt1wlCTrqfsh4PvplrYKlkkhjufpFaW+BvCOmA8stfpo3j7fgp+tE6qM/3W
+         lc6rfQHMnwFRvQFfLAAnpHxT6ek8tQWfwwyZCKy+7uUjWtBGBbe4gWXReMlaIuD4YenT
+         /lbg==
+X-Gm-Message-State: AOAM531cf2ExuAvdyMEs6fDMWWyIPshZaSxvIoYFqpycfUBthau1WaaK
+        0NVX5i5VSWt2rNeZA7mPVLhHUXK6SroyOI+W1mEYLA==
+X-Google-Smtp-Source: ABdhPJxb6bpR3iYUtSchKq0DDC6Q4/vuSnaE/VibZttbylvQuVec+Qc/zCmxbK1BUx1hec9xTU5U4XAClnOyC//UqtY=
+X-Received: by 2002:a17:906:7cb:: with SMTP id m11mr13771299ejc.332.1613351578887;
+ Sun, 14 Feb 2021 17:12:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJ-bz35mUM3agYjq5x+Y+u9rL1RwesCaA-x=MW8uv5CrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
+ <YCYybUg4d3+Oij4N@kroah.com> <CANMq1KBuPaU5UtRR8qTgdf+J3pt-xAQq69kCVBdaYGx8F+WmFA@mail.gmail.com>
+ <YCY+Ytr2J2R5Vh0+@kroah.com> <CAKOQZ8zPFM29DYPwbnUJEhf+a8kPSJ5E_W06JLFjn-5Fy-ZWWw@mail.gmail.com>
+ <YCaipZ+iY65iSrui@kroah.com> <20210212230346.GU4626@dread.disaster.area>
+ <CAOyqgcX_wN2RGunDix5rSWxtp3pvSpFy2Stx-Ln4GozgSeS2LQ@mail.gmail.com>
+ <20210212232726.GW4626@dread.disaster.area> <20210212235448.GH7187@magnolia> <20210215003855.GY4626@dread.disaster.area>
+In-Reply-To: <20210215003855.GY4626@dread.disaster.area>
+From:   Ian Lance Taylor <iant@golang.org>
+Date:   Sun, 14 Feb 2021 17:12:47 -0800
+Message-ID: <CAOyqgcX6HrbPU39nznmRMXJXtMWA0giYNRsio1jt1p5OU1jvOA@mail.gmail.com>
+Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
+ is generated
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luis Lozano <llozano@chromium.org>,
+        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/21 5:48 PM, Rob Herring wrote:
-> +Johan H
-> 
-> On Mon, Feb 8, 2021 at 4:22 PM Enrico Weigelt, metux IT consult
-> <info@metux.net> wrote:
->>
->> Hello folks,
->>
->> here's an RFC for using compiled-in dtb's for initializing board devices
->> that can't be probed via bus'es or firmware.
+On Sun, Feb 14, 2021 at 4:38 PM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Fri, Feb 12, 2021 at 03:54:48PM -0800, Darrick J. Wong wrote:
+> > On Sat, Feb 13, 2021 at 10:27:26AM +1100, Dave Chinner wrote:
+> >
+> > > If you can't tell from userspace that a file has data in it other
+> > > than by calling read() on it, then you can't use cfr on it.
+> >
+> > I don't know how to do that, Dave. :)
+>
+> If stat returns a non-zero size, then userspace knows it has at
+> least that much data in it, whether it be zeros or previously
+> written data. cfr will copy that data. The special zero length
+> regular pipe files fail this simple "how much data is there to copy
+> in this file" check...
 
-I've just been monitoring this thread for several days, hoping that the
-discussion would make things more clear for me.
+This suggests that if the Go standard library sees that
+copy_file_range reads zero bytes, we should assume that it failed, and
+should use the fallback path as though copy_file_range returned
+EOPNOTSUPP or EINVAL.  This will cause an extra system call for an
+empty file, but as long as copy_file_range does not return an error
+for cases that it does not support we are going to need an extra
+system call anyhow.
 
-Disclaimer: I know essentially nothing about ACPI, please excuse improper
-naming and misunderstandings on my part.
+Does that seem like a possible mitigation?  That is, are there cases
+where copy_file_range will fail to do a correct copy, and will return
+success, and will not return zero?
 
-Why not compile in ACPI data (tables?) instead of devicetree description?
-
-> 
-> I'm not convinced compiled in is the mechanism we want.
-> 
->> Use cases are boards with non-oftree firmware (ACPI, etc) where certain
->> platform devices can't be directly enumerated via firmware. Traditionally
->> we had to write board specific drivers that check for board identification
->> (DMI strings, etc), then initialize the actual devices and their links
->> (eg. gpio<->leds/buttons, ...). Often this can be expressed just by DT.
-> 
-> This is something I've wanted to see for a while. There's use cases
-> for DT based systems too. The example I'd like to see supported are
-> USB serial adapters with downstream serdev, GPIO, I2C, SPI, etc. Then
-> plug more than one of those in.
-
-My understanding from the past is that the experts (those who understand both
-devicetree and ACPI) regard trying to mix devicetree and ACPI in a single
-running Linux kernel image is insanity, or at least likely to be confusing,
-difficult, and problematic.
-
-From the devicetree side, I expect nightmares for me if devicetree and ACPI
-are mixed in a single running kernel image.
-
-> 
->> This patch queue does a bunch of preparations in oftree code, so we can
->> support multiple fully independent DT's (not using DT overlays). And then
->> adds a generic driver parses compiled-in fdt blobs, checks for mathing
->> DMI strings and initializes the devices. As an example, the last patch
->> adds an alternative implementation for the PC engines APU2/3/4 board
->> family based on device tree.
-> 
-> I think there's a couple of approaches we could take. Either support
-> multiple root nodes as you have done or keep a single root and add
-> child nodes to them. I think the latter would be less invasive. In the
-> non-DT cases, we'd just always create an empty skeleton DT. A 3rd
-> variation on a DT system is we could want to create parent nodes if
-> they don't exist to attach this DT to so we have a full hierarchy.
-> 
-> I'm not saying which one we should do, just laying out some of the options.
-> 
-
-Multiple root nodes and disjoint trees both seem problematic.  Existing
-subsystems and drivers expect a single cohesive tree.  Changing that
-architecture looks to me to be a painful exercise.
-
->> The approach can be easily be extended to other kinds of composite devices,
->> eg. PCI cards or USB dongles.
->>
->>
->> Yet some drawbacks of the current implementation:
->>
->>  * individual FDT's can't be modularized yet (IMHO, we don't have DMI-based
->>    modprobing anyways)
-> 
-> I think we need to use either firmware loading or udev mechanisms to
-> load the FDTs.
-> 
->>  * can't reconfigure or attach to devices outside the individual DT's
->>    (eg. probed by PCI, etc)
-> 
-> Not sure I follow.
-> 
-> Rob
-> 
-
+Ian
