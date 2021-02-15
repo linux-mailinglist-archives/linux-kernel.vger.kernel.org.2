@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB22031B697
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7879731B6A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhBOJnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:43:45 -0500
-Received: from mga11.intel.com ([192.55.52.93]:32705 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230124AbhBOJnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:43:40 -0500
-IronPort-SDR: MMWHYJNJAjJgjzvEDIy0srb8pPLvkmKgYxjH0vOhJc3K4mZN2NjP4dNte1L1lzUX5ee1AxeUHP
- QCSdHK23gwXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="179143295"
-X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
-   d="scan'208";a="179143295"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 01:41:54 -0800
-IronPort-SDR: Dk/069UiJ4MpefNYiPyQnQG7aruGvEhg7HrUNxureNlfXmPZ1icBfJEHPQx3m7nt/yT7ENMdYa
- coAEQtYVnQdQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
-   d="scan'208";a="398994579"
-Received: from mylly.fi.intel.com (HELO [10.237.72.57]) ([10.237.72.57])
-  by orsmga008.jf.intel.com with ESMTP; 15 Feb 2021 01:41:51 -0800
-Subject: Re: [PATCH] spi: pca2xx-pci: Fix an issue about missing call to
- 'pci_free_irq_vectors()'
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Dejin Zheng <zhengdejin5@gmail.com>, daniel@zonque.org,
-        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
-        broonie@kernel.org, andriy.shevchenko@linux.intel.com,
-        linux-spi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20210214145746.602770-1-zhengdejin5@gmail.com>
- <d113b6f5-d234-452e-3e82-90c5237eff0e@siemens.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <88dff093-b18f-e23c-9cec-b8623da5857b@linux.intel.com>
-Date:   Mon, 15 Feb 2021 11:41:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230265AbhBOJqK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Feb 2021 04:46:10 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:34777 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230226AbhBOJqG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 04:46:06 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-ZB_QKXmkNjamOMswugvV1Q-1; Mon, 15 Feb 2021 04:45:11 -0500
+X-MC-Unique: ZB_QKXmkNjamOMswugvV1Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 753B91934100;
+        Mon, 15 Feb 2021 09:45:09 +0000 (UTC)
+Received: from bahia.redhat.com (ovpn-113-119.ams2.redhat.com [10.36.113.119])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BA8A4682AC;
+        Mon, 15 Feb 2021 09:45:07 +0000 (UTC)
+From:   Greg Kurz <groug@kaod.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        Greg Kurz <groug@kaod.org>, lvivier@redhat.com,
+        stable@vger.kernel.org
+Subject: [PATCH v2] powerpc/pseries: Don't enforce MSI affinity with kdump
+Date:   Mon, 15 Feb 2021 10:45:06 +0100
+Message-Id: <20210215094506.1196119-1-groug@kaod.org>
 MIME-Version: 1.0
-In-Reply-To: <d113b6f5-d234-452e-3e82-90c5237eff0e@siemens.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kaod.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/15/21 11:23 AM, Jan Kiszka wrote:
-> On 14.02.21 15:57, Dejin Zheng wrote:
->> Call to 'pci_free_irq_vectors()' are missing both in the error handling
->> path of the probe function, and in the remove function. So add them.
->>
->> Fixes: 64e02cb0bdfc7c ("spi: pca2xx-pci: Allow MSI")
->> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
->> ---
->>   drivers/spi/spi-pxa2xx-pci.c | 13 ++++++++++---
->>   1 file changed, 10 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
->> index 14fc41ed2361..1ec840e78ff4 100644
->> --- a/drivers/spi/spi-pxa2xx-pci.c
->> +++ b/drivers/spi/spi-pxa2xx-pci.c
->> @@ -254,8 +254,10 @@ static int pxa2xx_spi_pci_probe(struct pci_dev *dev,
->>   	snprintf(buf, sizeof(buf), "pxa2xx-spi.%d", ssp->port_id);
->>   	ssp->clk = clk_register_fixed_rate(&dev->dev, buf , NULL, 0,
->>   					   c->max_clk_rate);
->> -	 if (IS_ERR(ssp->clk))
->> -		return PTR_ERR(ssp->clk);
->> +	if (IS_ERR(ssp->clk)) {
->> +		ret = PTR_ERR(ssp->clk);
->> +		goto err_irq;
->> +	}
->>   
->>   	memset(&pi, 0, sizeof(pi));
->>   	pi.fwnode = dev->dev.fwnode;
->> @@ -268,12 +270,16 @@ static int pxa2xx_spi_pci_probe(struct pci_dev *dev,
->>   	pdev = platform_device_register_full(&pi);
->>   	if (IS_ERR(pdev)) {
->>   		clk_unregister(ssp->clk);
->> -		return PTR_ERR(pdev);
->> +		ret = PTR_ERR(pdev);
->> +		goto err_irq;
->>   	}
->>   
->>   	pci_set_drvdata(dev, pdev);
->>   
->>   	return 0;
->> +err_irq:
->> +	pci_free_irq_vectors(dev);
->> +	return ret;
->>   }
->>   
->>   static void pxa2xx_spi_pci_remove(struct pci_dev *dev)
->> @@ -283,6 +289,7 @@ static void pxa2xx_spi_pci_remove(struct pci_dev *dev)
->>   
->>   	spi_pdata = dev_get_platdata(&pdev->dev);
->>   
->> +	pci_free_irq_vectors(dev);
->>   	platform_device_unregister(pdev);
->>   	clk_unregister(spi_pdata->ssp.clk);
->>   }
->>
-> 
-> Reviewed-by: Jan Kiszka <jan.kiszka@siemens.com>
-> 
-Please fix pca2xx-pci -> pxa2xx-pci in the subject line. With that 
-change you may add:
+Depending on the number of online CPUs in the original kernel, it is
+likely for CPU #0 to be offline in a kdump kernel. The associated IRQs
+in the affinity mappings provided by irq_create_affinity_masks() are
+thus not started by irq_startup(), as per-design with managed IRQs.
 
-Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+This can be a problem with multi-queue block devices driven by blk-mq :
+such a non-started IRQ is very likely paired with the single queue
+enforced by blk-mq during kdump (see blk_mq_alloc_tag_set()). This
+causes the device to remain silent and likely hangs the guest at
+some point.
+
+This is a regression caused by commit 9ea69a55b3b9 ("powerpc/pseries:
+Pass MSI affinity to irq_create_mapping()"). Note that this only happens
+with the XIVE interrupt controller because XICS has a workaround to bypass
+affinity, which is activated during kdump with the "noirqdistrib" kernel
+parameter.
+
+The issue comes from a combination of factors:
+- discrepancy between the number of queues detected by the multi-queue
+  block driver, that was used to create the MSI vectors, and the single
+  queue mode enforced later on by blk-mq because of kdump (i.e. keeping
+  all queues fixes the issue)
+- CPU#0 offline (i.e. kdump always succeed with CPU#0)
+
+Given that I couldn't reproduce on x86, which seems to always have CPU#0
+online even during kdump, I'm not sure where this should be fixed. Hence
+going for another approach : fine-grained affinity is for performance
+and we don't really care about that during kdump. Simply revert to the
+previous working behavior of ignoring affinity masks in this case only.
+
+Fixes: 9ea69a55b3b9 ("powerpc/pseries: Pass MSI affinity to irq_create_mapping()")
+Cc: lvivier@redhat.com
+Cc: stable@vger.kernel.org
+Reviewed-by: Laurent Vivier <lvivier@redhat.com>
+Reviewed-by: Cédric Le Goater <clg@kaod.org>
+Signed-off-by: Greg Kurz <groug@kaod.org>
+---
+
+v2: - added missing #include <linux/crash_dump.h>
+
+ arch/powerpc/platforms/pseries/msi.c | 25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/arch/powerpc/platforms/pseries/msi.c b/arch/powerpc/platforms/pseries/msi.c
+index b3ac2455faad..637300330507 100644
+--- a/arch/powerpc/platforms/pseries/msi.c
++++ b/arch/powerpc/platforms/pseries/msi.c
+@@ -4,6 +4,7 @@
+  * Copyright 2006-2007 Michael Ellerman, IBM Corp.
+  */
+ 
++#include <linux/crash_dump.h>
+ #include <linux/device.h>
+ #include <linux/irq.h>
+ #include <linux/msi.h>
+@@ -458,8 +459,28 @@ static int rtas_setup_msi_irqs(struct pci_dev *pdev, int nvec_in, int type)
+ 			return hwirq;
+ 		}
+ 
+-		virq = irq_create_mapping_affinity(NULL, hwirq,
+-						   entry->affinity);
++		/*
++		 * Depending on the number of online CPUs in the original
++		 * kernel, it is likely for CPU #0 to be offline in a kdump
++		 * kernel. The associated IRQs in the affinity mappings
++		 * provided by irq_create_affinity_masks() are thus not
++		 * started by irq_startup(), as per-design for managed IRQs.
++		 * This can be a problem with multi-queue block devices driven
++		 * by blk-mq : such a non-started IRQ is very likely paired
++		 * with the single queue enforced by blk-mq during kdump (see
++		 * blk_mq_alloc_tag_set()). This causes the device to remain
++		 * silent and likely hangs the guest at some point.
++		 *
++		 * We don't really care for fine-grained affinity when doing
++		 * kdump actually : simply ignore the pre-computed affinity
++		 * masks in this case and let the default mask with all CPUs
++		 * be used when creating the IRQ mappings.
++		 */
++		if (is_kdump_kernel())
++			virq = irq_create_mapping(NULL, hwirq);
++		else
++			virq = irq_create_mapping_affinity(NULL, hwirq,
++							   entry->affinity);
+ 
+ 		if (!virq) {
+ 			pr_debug("rtas_msi: Failed mapping hwirq %d\n", hwirq);
+-- 
+2.26.2
+
