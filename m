@@ -2,184 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0BB31C09F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044A931C097
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhBOR3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:29:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhBOQ2p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:28:45 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00428C061356
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:28:03 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id b14so6899768qkk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:28:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aHVGjnALiPOPuXgV6m+MnfzuhBOeAsUFyy/oek+FHJo=;
-        b=ZvC8pnKKDKcOXwEdfbjC06uVi29fZeu3OMd/DmkmWkDrKXDYGWSGTDKcwsCnItAZHu
-         ewLFBJAUzoQW/ts4Qg0D1sVtlHNOhnhxZ9J3PXD0ujy/RLt3+PILSPC1Vnj6pzb+KjcH
-         xQrhCE8SYnQowxzg1VOG08/bxj+8dYfOf1CfpU786ZsZut26DSgZgdiYu/+gvIN2kdxx
-         wWvC9JlpyQpF5bgyGnXbMgTwSvX8ns0pIiX2aL+Zxkc+UZrF/NmHycbLCNPmE6AZwvZI
-         pTVwSfs9eeVNTVa0MttiMZOrk1GCtQ33/I21EWBHiHHnAb7CcGQVc3ckN0WO7BaXmaEr
-         f9Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aHVGjnALiPOPuXgV6m+MnfzuhBOeAsUFyy/oek+FHJo=;
-        b=lyO1PYeL+2hUCWkXKg36xCPuLHUinbEkQRG3TbmBecVnGcQPfu7et0tGK5Xqsw6fy9
-         eDb5i4C1sw5Ye2fDxctddIyvy8nVgtE619unmY1NGKYUhIOF5AaNdvWFtKfaFhOALKJE
-         1VVQiJKXnBxcPFBhpeVDw6+qMGkL6GVMPuftrc8Me1ubpO3Bn3Xrlzp+aldUqJ8oyKya
-         kFzZydusGyoa/CA48I4okCgpq9PaLhjrnZ73YZFZyRkcEapgWOMuZQQq87J1R/5yn2/A
-         +25x9nTtqhmzqBuNAXdVZ+3HKMlOmMzcBRdWBrfScNDCgZIRELVir2y8Tmu0XrQfznWZ
-         loCQ==
-X-Gm-Message-State: AOAM531pygh6sxcP+782TfSOqCmbdSLuHAfcWEr6ee2+wPLhr3b2r2tS
-        oPndIZqh+Gw/9akCRPn3o5lxKtIZY9JGKnp7
-X-Google-Smtp-Source: ABdhPJzMS67fLAlNCW6fQIRfEaMEyptuQBJjy1DW374IA0mimUFgrA0sIJYoLtOjoxK0tCBV1kHFUQ==
-X-Received: by 2002:a05:620a:557:: with SMTP id o23mr727395qko.28.1613406482967;
-        Mon, 15 Feb 2021 08:28:02 -0800 (PST)
-Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id i23sm11319717qtq.42.2021.02.15.08.28.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Feb 2021 08:28:02 -0800 (PST)
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8250: fix display nodes
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210211181002.22922-1-jonathan@marek.ca>
- <20210211181002.22922-3-jonathan@marek.ca>
- <CAA8EJprpkvRG79PXkEYUkK1rcyrXFtS39yyquucooiXaxuP_HQ@mail.gmail.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <30a1b3ab-0876-a134-2fbe-073a8e8f60c5@marek.ca>
-Date:   Mon, 15 Feb 2021 11:27:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S232848AbhBOR21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:28:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232049AbhBOQ2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 11:28:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC30460200;
+        Mon, 15 Feb 2021 16:27:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613406441;
+        bh=BliUV72ji+FDfrLN09W99a1LVlldaxjMnaHHvvvEdwE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fT4Gf596fMrFBXuMQ3nRd1zF3Y4b7CNYi9Izdzvvp6jaBxtQyg3SIPEh0QpRN9js+
+         aOEdteq98jmFx8T3Qvaxtrrr6MbeYvDQGFoxee6Oko3Oq8RSpcRf6OlqhOk8M7nySa
+         nnHNd6tDp+TU088aMD/z2iumylegg5jQaGf9pgNI=
+Date:   Mon, 15 Feb 2021 17:27:18 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jiri Slaby <jslaby@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [GIT PULL] TTY / Serial driver changes for 5.12-rc1
+Message-ID: <YCqg5ufpr1yD9tvk@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <CAA8EJprpkvRG79PXkEYUkK1rcyrXFtS39yyquucooiXaxuP_HQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 3:05 PM, Dmitry Baryshkov wrote:
-> On Thu, 11 Feb 2021 at 21:11, Jonathan Marek <jonathan@marek.ca> wrote:
->>
->> Apply these fixes to the newly added sm8250 display ndoes
->>   - Use sm8250 compatibles instead of sdm845 compatibles
->>   - Remove "notused" interconnect (which apparently was blindly copied from
->>     my old patches)
->>   - Use dispcc node example from dt-bindings, removing clocks which aren't
->>     documented or used by the driver and fixing the region size.
->>
->> Note: also removed the mmcx-supply for dispcc which wasn't documented when
->> it was added. I would have left it there but it is also breaking my
->> use-case (setting a lower power level than what the bootloader sets?).
-> 
-> In our use case dispcc does not work w/o mmcx-supply. Compare this
-> with the downstream kernel, which actively uses MMCX domain.
-> 
+The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
 
-I sent a v2/v3 leaving the mmcx-supply untouched (I can fix my problem 
-by using rpmhpd_opp_nom in the mmcx-supply instead, so its not a problem 
-with adding it to dispcc). But mmcx-supply still needs to be added to 
-documentation.
+  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
 
->> Fixes: 7c1dffd471b1 ("arm64: dts: qcom: sm8250.dtsi: add display system nodes")
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
->>   arch/arm64/boot/dts/qcom/sm8250.dtsi | 34 ++++++++--------------------
->>   1 file changed, 9 insertions(+), 25 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> index 947e1accae3a..20a3ff30e924 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> @@ -2323,14 +2323,13 @@ usb_2_dwc3: dwc3@a800000 {
->>                  };
->>
->>                  mdss: mdss@ae00000 {
->> -                       compatible = "qcom,sdm845-mdss";
->> +                       compatible = "qcom,sm8250-mdss";
->>                          reg = <0 0x0ae00000 0 0x1000>;
->>                          reg-names = "mdss";
->>
->> -                       interconnects = <&gem_noc MASTER_AMPSS_M0 &config_noc SLAVE_DISPLAY_CFG>,
->> -                                       <&mmss_noc MASTER_MDP_PORT0 &mc_virt SLAVE_EBI_CH0>,
->> +                       interconnects = <&mmss_noc MASTER_MDP_PORT0 &mc_virt SLAVE_EBI_CH0>,
->>                                          <&mmss_noc MASTER_MDP_PORT1 &mc_virt SLAVE_EBI_CH0>;
->> -                       interconnect-names = "notused", "mdp0-mem", "mdp1-mem";
->> +                       interconnect-names = "mdp0-mem", "mdp1-mem";
->>
->>                          power-domains = <&dispcc MDSS_GDSC>;
->>
->> @@ -2356,7 +2355,7 @@ mdss: mdss@ae00000 {
->>                          ranges;
->>
->>                          mdss_mdp: mdp@ae01000 {
->> -                               compatible = "qcom,sdm845-dpu";
->> +                               compatible = "qcom,sm8250-dpu";
->>                                  reg = <0 0x0ae01000 0 0x8f000>,
->>                                        <0 0x0aeb0000 0 0x2008>;
->>                                  reg-names = "mdp", "vbif";
->> @@ -2580,36 +2579,21 @@ opp-358000000 {
->>
->>                  dispcc: clock-controller@af00000 {
->>                          compatible = "qcom,sm8250-dispcc";
->> -                       reg = <0 0x0af00000 0 0x20000>;
->> -                       mmcx-supply = <&mmcx_reg>;
->> +                       reg = <0 0x0af00000 0 0x10000>;
->>                          clocks = <&rpmhcc RPMH_CXO_CLK>,
->>                                   <&dsi0_phy 0>,
->>                                   <&dsi0_phy 1>,
->>                                   <&dsi1_phy 0>,
->>                                   <&dsi1_phy 1>,
->> -                                <0>,
->> -                                <0>,
->> -                                <0>,
->> -                                <0>,
->> -                                <0>,
->> -                                <0>,
->> -                                <0>,
->> -                                <0>,
->> -                                <&sleep_clk>;
->> +                                <&dp_phy 0>,
->> +                                <&dp_phy 1>;
-> 
-> There is no dp_phy on sm8250 yet.
-> 
->>                          clock-names = "bi_tcxo",
->>                                        "dsi0_phy_pll_out_byteclk",
->>                                        "dsi0_phy_pll_out_dsiclk",
->>                                        "dsi1_phy_pll_out_byteclk",
->>                                        "dsi1_phy_pll_out_dsiclk",
->> -                                     "dp_link_clk_divsel_ten",
->> -                                     "dp_vco_divided_clk_src_mux",
->> -                                     "dptx1_phy_pll_link_clk",
->> -                                     "dptx1_phy_pll_vco_div_clk",
->> -                                     "dptx2_phy_pll_link_clk",
->> -                                     "dptx2_phy_pll_vco_div_clk",
->> -                                     "edp_phy_pll_link_clk",
->> -                                     "edp_phy_pll_vco_div_clk",
->> -                                     "sleep_clk";
->> +                                     "dp_phy_pll_link_clk",
->> +                                     "dp_phy_pll_vco_div_clk";
->>                          #clock-cells = <1>;
->>                          #reset-cells = <1>;
->>                          #power-domain-cells = <1>;
-> 
-> 
-> 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.12-rc1
+
+for you to fetch changes up to a157270fbf37f822e1fa9e9faa8ed8c81da1eb28:
+
+  serial: core: Remove BUG_ON(in_interrupt()) check (2021-02-09 11:45:04 +0100)
+
+----------------------------------------------------------------
+TTY/Serial driver changes for 5.12-rc1
+
+Here is the big set of tty/serial driver changes for 5.12-rc1.
+
+Nothing huge, just lots of good cleanups and additions:
+	- Your n_tty line discipline cleanups
+	- vt core cleanups and reworks to make the code more "modern"
+	- stm32 driver additions
+	- tty led support added to the tty core and led layer
+	- minor serial driver fixups and additions
+
+All of these have been in linux-next for a while with no reported
+issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Ahmed S. Darwish (2):
+      vt_ioctl: Remove in_interrupt() check
+      serial: core: Remove BUG_ON(in_interrupt()) check
+
+Andy Shevchenko (1):
+      serial: ifx6x60: Remove driver for deprecated platform
+
+Arnd Bergmann (1):
+      serial: remove sirf prima/atlas driver
+
+Christophe Leroy (1):
+      tty: serial: cpm_uart: Add udbg support for enabling xmon
+
+Corey Minyard (2):
+      tty: Export redirect release
+      drivers:tty:pty: Fix a race causing data loss on close
+
+Cristian Ciocaltea (1):
+      tty: serial: owl: Add support for kernel debugger
+
+Emil Renner Berthing (1):
+      vt: keyboard, use new API for keyboard_tasklet
+
+Erwan Le Ray (9):
+      serial: stm32: fix DMA initialization error handling
+      serial: stm32: fix code cleaning warnings and checks
+      serial: stm32: add "_usart" prefix in functions name
+      serial: stm32: add author
+      dt-bindings: serial: stm32: update rts-gpios and cts-gpios
+      serial: stm32: update conflicting RTS/CTS config comment
+      serial: stm32: clean probe and remove port deinit
+      serial: stm32: update transmission complete error message in shutdown
+      serial: stm32: improve platform_get_irq condition handling in init_port
+
+Fabio Estevam (4):
+      serial: fsl_lpuart: Use of_device_get_match_data()
+      serial: mxs-auart: Remove serial_mxs_probe_dt()
+      serial: mxs-auart: Remove <asm/cacheflush.h>
+      dt-bindings: serial: imx: Switch to my personal address
+
+Greg Kroah-Hartman (2):
+      Merge branch 'tty-splice' of git://git.kernel.org/.../torvalds/linux into tty-next
+      Merge 5.11-rc5 into tty-next
+
+Jiri Slaby (12):
+      vt: move set_leds to keyboard.c
+      vt: keyboard, make keyboard_tasklet local
+      vt: keyboard, defkeymap.c_shipped, approach the definitions
+      vt: keyboard, defkeymap.c_shipped, approach the unicode table
+      tty: pty, remove BUG_ON from pty_close
+      8250_tegra: clean up tegra_uart_handle_break
+      vt/consolemap: do font sum unsigned
+      vt: drop old FONT ioctls
+      vgacon: drop BROKEN_GRAPHICS_PROGRAMS
+      tty: cpm_uart, use port->flags instead of low_latency
+      tty_port: drop last traces of low_latency
+      tty: drop termiox user definitions
+
+Linus Torvalds (8):
+      tty: convert tty_ldisc_ops 'read()' function to take a kernel pointer
+      tty: implement read_iter
+      tty: clean up legacy leftovers from n_tty line discipline
+      tty: teach n_tty line discipline about the new "cookie continuations"
+      tty: teach the n_tty ICANON case about the new "cookie continuations" too
+      tty: fix up hung_up_tty_write() conversion
+      tty: fix up hung_up_tty_read() conversion
+      tty: fix up iterate_tty_read() EOVERFLOW handling
+
+Uwe Kleine-König (7):
+      tty: rename tty_kopen() and add new function tty_kopen_shared()
+      tty: new helper function tty_get_icount()
+      tty: hvcs: Drop unnecessary if block
+      tty: vcc: Drop unnecessary if block
+      tty: vcc: Drop impossible to hit WARN_ON
+      leds: trigger: implement a tty trigger
+      tty: serial: Drop unused efm32 serial driver
+
+Wolfram Sang (1):
+      dt-bindings: serial: renesas,hscif: Add r8a779a0 support
+
+Yan.Gao (1):
+      tty: Protect disc_data in n_tty_close and n_tty_flush_buffer
+
+Zheng Yongjun (3):
+      tty/serial/imx: convert comma to semicolon
+      tty/serial/lantiq: convert comma to semicolon
+      tty: serial: icom: Use DEFINE_SPINLOCK() for spinlock
+
+ .../ABI/testing/sysfs-class-led-trigger-tty        |    6 +
+ .../devicetree/bindings/serial/fsl-imx-uart.yaml   |    2 +-
+ .../devicetree/bindings/serial/fsl-mxs-auart.yaml  |    2 +-
+ .../devicetree/bindings/serial/renesas,hscif.yaml  |    1 +
+ .../devicetree/bindings/serial/sirf-uart.txt       |   34 -
+ .../devicetree/bindings/serial/st,stm32-uart.yaml  |   13 +-
+ Documentation/networking/caif/caif.rst             |    1 -
+ drivers/accessibility/speakup/spk_ttyio.c          |    2 +-
+ drivers/bluetooth/hci_ldisc.c                      |   34 +-
+ drivers/char/pcmcia/synclink_cs.c                  |    2 -
+ drivers/input/serio/serport.c                      |    4 +-
+ drivers/leds/trigger/Kconfig                       |    9 +
+ drivers/leds/trigger/Makefile                      |    1 +
+ drivers/leds/trigger/ledtrig-tty.c                 |  183 +++
+ drivers/net/caif/caif_serial.c                     |    3 +-
+ drivers/net/ppp/ppp_async.c                        |    3 +-
+ drivers/net/ppp/ppp_synctty.c                      |    3 +-
+ drivers/s390/char/con3215.c                        |    1 -
+ drivers/s390/char/sclp_tty.c                       |    1 -
+ drivers/s390/char/sclp_vt220.c                     |    1 -
+ drivers/s390/char/tty3270.c                        |    2 -
+ drivers/tty/amiserial.c                            |    3 -
+ drivers/tty/hvc/hvcs.c                             |    5 +-
+ drivers/tty/ipwireless/tty.c                       |    1 -
+ drivers/tty/mxser.c                                |    1 -
+ drivers/tty/n_gsm.c                                |    3 +-
+ drivers/tty/n_hdlc.c                               |   60 +-
+ drivers/tty/n_null.c                               |    3 +-
+ drivers/tty/n_r3964.c                              |   10 +-
+ drivers/tty/n_tracerouter.c                        |    4 +-
+ drivers/tty/n_tracesink.c                          |    4 +-
+ drivers/tty/n_tty.c                                |  153 +-
+ drivers/tty/pty.c                                  |   16 +-
+ drivers/tty/serial/8250/8250_tegra.c               |   11 +-
+ drivers/tty/serial/Kconfig                         |   42 -
+ drivers/tty/serial/Makefile                        |    3 -
+ drivers/tty/serial/cpm_uart/cpm_uart_core.c        |   43 +-
+ drivers/tty/serial/efm32-uart.c                    |  852 -----------
+ drivers/tty/serial/fsl_lpuart.c                    |    4 +-
+ drivers/tty/serial/icom.c                          |    4 +-
+ drivers/tty/serial/ifx6x60.c                       | 1390 ------------------
+ drivers/tty/serial/ifx6x60.h                       |  118 --
+ drivers/tty/serial/imx.c                           |    2 +-
+ drivers/tty/serial/lantiq.c                        |    2 +-
+ drivers/tty/serial/max3100.c                       |    3 -
+ drivers/tty/serial/mxs-auart.c                     |   45 +-
+ drivers/tty/serial/owl-uart.c                      |   38 +
+ drivers/tty/serial/serial_core.c                   |   11 +-
+ drivers/tty/serial/sirfsoc_uart.c                  | 1503 --------------------
+ drivers/tty/serial/sirfsoc_uart.h                  |  447 ------
+ drivers/tty/serial/stm32-usart.c                   |  419 +++---
+ drivers/tty/synclink_gt.c                          |    1 -
+ drivers/tty/tty_io.c                               |  210 ++-
+ drivers/tty/vcc.c                                  |   10 +-
+ drivers/tty/vt/consolemap.c                        |    2 +-
+ drivers/tty/vt/defkeymap.c_shipped                 |   82 +-
+ drivers/tty/vt/keyboard.c                          |   18 +-
+ drivers/tty/vt/vt.c                                |   42 +-
+ drivers/tty/vt/vt_ioctl.c                          |  154 +-
+ drivers/video/console/vgacon.c                     |   19 -
+ include/linux/kbd_kern.h                           |   10 +-
+ include/linux/kd.h                                 |    8 -
+ include/linux/platform_data/efm32-uart.h           |   19 -
+ include/linux/spi/ifx_modem.h                      |   15 -
+ include/linux/tty.h                                |   11 +-
+ include/linux/tty_ldisc.h                          |    3 +-
+ include/linux/vt_kern.h                            |   12 -
+ include/uapi/linux/serial_core.h                   |    3 -
+ include/uapi/linux/termios.h                       |   15 -
+ net/nfc/nci/uart.c                                 |    3 +-
+ 70 files changed, 958 insertions(+), 5187 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-led-trigger-tty
+ delete mode 100644 Documentation/devicetree/bindings/serial/sirf-uart.txt
+ create mode 100644 drivers/leds/trigger/ledtrig-tty.c
+ delete mode 100644 drivers/tty/serial/efm32-uart.c
+ delete mode 100644 drivers/tty/serial/ifx6x60.c
+ delete mode 100644 drivers/tty/serial/ifx6x60.h
+ delete mode 100644 drivers/tty/serial/sirfsoc_uart.c
+ delete mode 100644 drivers/tty/serial/sirfsoc_uart.h
+ delete mode 100644 include/linux/kd.h
+ delete mode 100644 include/linux/platform_data/efm32-uart.h
+ delete mode 100644 include/linux/spi/ifx_modem.h
