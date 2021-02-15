@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A99031BC17
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5E731BC1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhBOPRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:17:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34568 "EHLO
+        id S230038AbhBOPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhBOPMS (ORCPT
+        with ESMTP id S230015AbhBOPOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:12:18 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB934C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:11:31 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed60:c5d6:9422:c618:ee58])
-        by albert.telenet-ops.be with bizsmtp
-        id VTBV2400C2PLE0706TBVM1; Mon, 15 Feb 2021 16:11:29 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lBfX7-0079P7-6N; Mon, 15 Feb 2021 16:11:29 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lBfX6-00AhbW-Dn; Mon, 15 Feb 2021 16:11:28 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for 5.12
-Date:   Mon, 15 Feb 2021 16:11:27 +0100
-Message-Id: <20210215151127.2550851-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 15 Feb 2021 10:14:33 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5344C061574;
+        Mon, 15 Feb 2021 07:13:52 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 9357A419B4;
+        Mon, 15 Feb 2021 15:13:46 +0000 (UTC)
+Subject: Re: [PATCH v2 06/25] arm64: arch_timer: implement support for
+ interrupt-names
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, Alexander Graf <graf@amazon.com>,
+        Olof Johansson <olof@lixom.net>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Kettenis <mark.kettenis@xs4all.nl>
+References: <20210215121713.57687-1-marcan@marcan.st>
+ <20210215121713.57687-7-marcan@marcan.st> <87tuqdpije.wl-maz@kernel.org>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <152b52a4-b035-a416-4a78-f7fc7c970e95@marcan.st>
+Date:   Tue, 16 Feb 2021 00:13:44 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87tuqdpije.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Hi Linus,
+On 15/02/2021 22.28, Marc Zyngier wrote:
+> nit: I'd prefer it if the array was described as:
+> 
+> 	[ARCH_TIMER_PHYS_SECURE_PPI] = "phys-secure",
+> 	[...]
+> 
+> just to avoid that the two get out of sync.
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+Good point, changed it for v3.
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+>>   
+>> -	arch_timers_present |= ARCH_TIMER_TYPE_CP15;
+> 
+> You probably didn't want to drop this line, did you?
 
-are available in the Git repository at:
+Ouch. Thanks for catching that.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.12-tag1
-
-for you to fetch changes up to c396dd2ec5bbd1cb80eafe32a72ab6bd6b17cb5a:
-
-  macintosh/adb-iop: Use big-endian autopoll mask (2021-01-25 13:23:38 +0100)
-
-----------------------------------------------------------------
-m68k updates for v5.11
-
-  - Fix ADB autopoll regression,
-  - Defconfig updates.
-
-----------------------------------------------------------------
-Finn Thain (1):
-      macintosh/adb-iop: Use big-endian autopoll mask
-
-Geert Uytterhoeven (1):
-      m68k: defconfig: Update defconfigs for v5.11-rc1
-
- arch/m68k/configs/amiga_defconfig    | 3 +++
- arch/m68k/configs/apollo_defconfig   | 3 +++
- arch/m68k/configs/atari_defconfig    | 3 +++
- arch/m68k/configs/bvme6000_defconfig | 3 +++
- arch/m68k/configs/hp300_defconfig    | 3 +++
- arch/m68k/configs/mac_defconfig      | 3 +++
- arch/m68k/configs/multi_defconfig    | 3 +++
- arch/m68k/configs/mvme147_defconfig  | 3 +++
- arch/m68k/configs/mvme16x_defconfig  | 3 +++
- arch/m68k/configs/q40_defconfig      | 3 +++
- arch/m68k/configs/sun3_defconfig     | 3 +++
- arch/m68k/configs/sun3x_defconfig    | 3 +++
- drivers/macintosh/adb-iop.c          | 6 +++---
- 13 files changed, 39 insertions(+), 3 deletions(-)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
