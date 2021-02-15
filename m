@@ -2,187 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2A031C406
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 23:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB1031C40F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 23:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhBOW0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 17:26:18 -0500
-Received: from mail-yb1-f173.google.com ([209.85.219.173]:38847 "EHLO
-        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhBOW0O (ORCPT
+        id S229745AbhBOWai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 17:30:38 -0500
+Received: from mail-ej1-f51.google.com ([209.85.218.51]:40069 "EHLO
+        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229662AbhBOWag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 17:26:14 -0500
-Received: by mail-yb1-f173.google.com with SMTP id 133so8619173ybd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 14:25:58 -0800 (PST)
+        Mon, 15 Feb 2021 17:30:36 -0500
+Received: by mail-ej1-f51.google.com with SMTP id b14so7725420eju.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 14:30:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=soleen.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WCYjBj19j1mBgoUgFAPx3GRqxMEDCFPUmgnbsB//gL4=;
-        b=oiEC2/2OMUPQ8FofQhJj5TF/v8RcIGyWdLp1COtoqmIUZpcsb99BTkmkTNjpXe/+PH
-         fCiBLptsPUMudu8VwUaiAy0MkQTJesz/DpSmZKJfoQjJvTkDNPWQKpnrJOZdehsLTOQF
-         CWK8lzVhk8AHmdLWFVYkzi9VxSEkwUmZffCzjJUv0PbFFPuEa3s5oTvFF4d/Nd3BrRMT
-         yCYdC5SsDF82ZYxyYWLDu6FoWsqDLNn7M3FexUKFLdBgW6pJfPCd5Y4wTL5HvqvNWWfr
-         n05M+aDh4i7y5RqdqnbxaF4fdVl5iZHeUFX5zdHoD3XG2mXWzWNjucMPlGOX/whAamFY
-         Kx6Q==
+        bh=05sKoXexSadkBXq5ZLjKbpzzvxIWvEZ9WIX+KtkpeFk=;
+        b=hbEm1biyfMPQ9xoQ/26FfJzhfO5zc00EskdHHaT7wcWjPapSTYbJ+2p38X78sho2Zc
+         ZSF8Y2wdnem5naK4FiKeqj4nQdJ/XRIxIT6vyUD/QuH0nmThAd1x29pG+TBitmMvaifh
+         vA86bOc/XNw7W0I0uFIN9cOry/+MisZf1khg7bpn2gLXxMen+X/5yzs/XF6LTwFWuGjg
+         AEXDBQTiGrf8dWpsicuKBc4Qlr7TPLAQSN6myNk3xdXXWmemFFTiBtq7sxDZa2MGvWkX
+         39J+cYJgU4gccTpFiyYEUrNNDjLOWWZMWK0oNeDrwsB2K/mYVSbroOhR8lreknwFvgVp
+         bojA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WCYjBj19j1mBgoUgFAPx3GRqxMEDCFPUmgnbsB//gL4=;
-        b=KYe8OUWn0eea2E5i1BN4Pevh562MpuRg4xUKB7/Gctosbmv+1wtoGRedkjlhpxw2/Y
-         6YlJYlj+mjcHNgWvjnwHhiV3MberdVyn70I3kxqP7Sc54wVeHhajXo4QOezCDj2ECB1z
-         kby8VY9fEG8NZX44mnJfpDtGuPeQYsTbd0q/nCn7H2zwRAH8Mr3SRgN+YV9CbE/HvVzG
-         827f9q+1nuUzAic95Jrkz0nYqyqBX0wlKJnT/a3gbuwiv64H+FbaOGRrjdKjFzdXN/5T
-         dfON+O1hS85ZWq3rqgkNYv8fYQfgS3h+lawr0ShW2U+Jm1IlS7CdHE1oslYN9/3OS/Zg
-         +WXw==
-X-Gm-Message-State: AOAM530L3sK/LHvAHTxU8hrqvm+NebvgsYtuYfBXkBl9Wyj5/qha29yG
-        EL22PdW5mquFlF6NJKCIqzytVAS5UI2smM9hfYwYbQ==
-X-Google-Smtp-Source: ABdhPJzI25brqTRNPiKDbaw8zxs/3dnPSzw2CkyA2hA+yWam9mqbXj74HyGpnIFgah+oTmvic3SS4tAP2Nj47L0hJvw=
-X-Received: by 2002:a25:dc94:: with SMTP id y142mr15188087ybe.346.1613427873211;
- Mon, 15 Feb 2021 14:24:33 -0800 (PST)
+        bh=05sKoXexSadkBXq5ZLjKbpzzvxIWvEZ9WIX+KtkpeFk=;
+        b=XaokAtJ6uKbttdT9kckRD4mGxdYQsKcPDyyuYSzjoDJMR/3G8znckh6C3n02m/slXB
+         lCdACLzQuSdTjvBbIUsiai/6efFwhceImgZ+kGWM+vs6CmmMCXkveudOO0tKE6CqW65x
+         gUQmHCFwlsDI+HFlKpREjyZwOJOUxbR9MpNZwHkqlrZBEWAjk6XgbKmRQ8c3k3Rnq9qg
+         afUL4y3LDvLd3wHB2Og+p5Cn8z6D6oE8DzPluyVpQxtvuzzUZ0VPqZoyHB0uDYQjNqbn
+         A8IKBH7WuRwX/xRs09fmUIGYjx3K1JDSTtLZqgfh/u9juZweJry4HW6YzHKYdCwcOipb
+         aAag==
+X-Gm-Message-State: AOAM533exvKwPis4UyUI4cCcRhxg0LgrvCDRxiy6wiWXgjzy9g66Htv8
+        d+SY2h8HMiqsugN6VFyfVwX2a7bfBPbHhHqC74ugGQ==
+X-Google-Smtp-Source: ABdhPJwo6M51ZPNwR1JeEZZAoGD7aJzC15GZYcmvrLuRs7Mg0ECy/y7xCy7b9S+7FWMZGLydULUFXPaiPHns2xt4ags=
+X-Received: by 2002:a17:906:f1d0:: with SMTP id gx16mr9784520ejb.383.1613428134360;
+ Mon, 15 Feb 2021 14:28:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20210121225712.1118239-1-saravanak@google.com>
- <20210121225712.1118239-3-saravanak@google.com> <20210213185422.GA195733@roeck-us.net>
- <CAGETcx_RpG45Fwhty1Uj34Mv01qkH5vFv0J6jVtJgTBFQinOBA@mail.gmail.com>
- <a76a73e4-f7ba-4893-14b8-01d21943241a@roeck-us.net> <CAGETcx9mzYbujVW8ALrNvs1FabvuUpZpChxBb0Tp8q7w+TY4=A@mail.gmail.com>
- <87v9atpujb.wl-maz@kernel.org>
-In-Reply-To: <87v9atpujb.wl-maz@kernel.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 15 Feb 2021 14:23:57 -0800
-Message-ID: <CAGETcx8msCsFnPk2SV-r2QfVDPBY2RvJQumd9RzbrFCvVUxCXA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Rob Herring <robh@kernel.org>,
-        Thierry Reding <treding@nvidia.com>
+References: <20210215192237.362706-1-pasha.tatashin@soleen.com>
+ <20210215192237.362706-2-pasha.tatashin@soleen.com> <CAMj1kXGxyV0=s6jVZ674O_2amkYSnwSnubnozbzD6g6GOMJE-A@mail.gmail.com>
+ <CA+CK2bA7Xz0Zg5phsQi3mhnp+_PHLAAGRLgFTQNw1FjBHaXsHA@mail.gmail.com>
+ <CAMj1kXESuD-von_dtzYcUMwK7TLF=qTki9bd8_iTo_isBwj13g@mail.gmail.com> <CA+CK2bDJ7Y2-vEpZrZ0fzigAfDgcJOmjhmin_GjTqioYXAYB3Q@mail.gmail.com>
+In-Reply-To: <CA+CK2bDJ7Y2-vEpZrZ0fzigAfDgcJOmjhmin_GjTqioYXAYB3Q@mail.gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Mon, 15 Feb 2021 17:28:18 -0500
+Message-ID: <CA+CK2bDX9X+SdHOB=dd2kvsYfQwPvhuVNRByZW8sENuzuHRZyQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] arm64: mm: correct the inside linear map
+ boundaries during hotplug check
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        James Morris <jmorris@namei.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 1:09 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > Btw, the KASLR check is incorrect: memstart_addr could also be
+> > negative when running the 52-bit VA kernel on hardware that is only
+> > 48-bit VA capable.
 >
-> Hi Saravana,
+> Good point!
 >
-> On Mon, 15 Feb 2021 08:29:53 +0000,
-> Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Sun, Feb 14, 2021 at 7:58 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > >
-> > > On 2/14/21 1:12 PM, Saravana Kannan wrote:
-> > > [ ... ]
-> > > >
-> > > > Can you please give me the following details:
-> > > > * The DTS file for the board (not the SoC).
-> > >
-> > > The devicetree file extracted from the running system is attached.
-> > > Hope it helps.
-> >
-> > Hi Guenter,
-> >
-> > Thanks for the DTS file and logs. That helps a lot.
-> >
-> > Looking at the attachment and this line from the earlier email:
-> > [   14.084606][   T11] pci 0005:01:00.0: probe deferral - wait for
-> > supplier interrupt-controller@0
-> >
-> > It's clear the PCI node is waiting on:
-> >         interrupt-controller@0 {
-> >                 #address-cells = <0x00>;
-> >                 device_type = "PowerPC-Interrupt-Source-Controller";
-> >                 compatible = "ibm,opal-xive-vc\0IBM,opal-xics";
-> >                 #interrupt-cells = <0x02>;
-> >                 reg = <0x00 0x00 0x00 0x00>;
-> >                 phandle = <0x804b>;
-> >                 interrupt-controller;
-> >         };
-> >
-> > If I grep for "ibm,opal-xive-vc", I see only one instance of it in the
-> > code. And that eventually ends up getting called like this:
-> > irq_find_matching_fwspec() -> xive_irq_domain_match() -> xive_native_match()
-> >
-> > static bool xive_native_match(struct device_node *node)
-> > {
-> >         return of_device_is_compatible(node, "ibm,opal-xive-vc");
-> > }
-> >
-> > However, when the IRQ domain are first registered, in xive_init_host()
-> > the "np" passed in is NOT the same node that xive_native_match() would
-> > match.
-> > static void __init xive_init_host(struct device_node *np)
-> > {
-> >         xive_irq_domain = irq_domain_add_nomap(np, XIVE_MAX_IRQ,
-> >                                                &xive_irq_domain_ops, NULL);
-> >         if (WARN_ON(xive_irq_domain == NULL))
-> >                 return;
-> >         irq_set_default_host(xive_irq_domain);
-> > }
-> >
-> > Instead, the "np" here is:
-> >         interrupt-controller@6030203180000 {
-> >                 ibm,xive-provision-page-size = <0x10000>;
-> >                 ibm,xive-eq-sizes = <0x0c 0x10 0x15 0x18>;
-> >                 single-escalation-support;
-> >                 ibm,xive-provision-chips = <0x00>;
-> >                 ibm,xive-#priorities = <0x08>;
-> >                 compatible = "ibm,opal-xive-pe\0ibm,opal-intc";
-> >                 reg = <0x60302 0x3180000 0x00 0x10000 0x60302
-> > 0x3190000 0x00 0x10000 0x60302 0x31a0000 0x00 0x10000 0x60302
-> > 0x31b0000 0x00 0x10000>;
-> >                 phandle = <0x8051>;
-> >         };
-> >
-> > There are many ways to fix this, but I first want to make sure this is
-> > a valid way to register irqdomains before trying to fix it. I just
-> > find it weird that the node that's registered is unrelated (not a
-> > parent/child) of the node that matches.
-> >
-> > Marc,
-> >
-> > Is this a valid way to register irqdomains? Just registering
-> > interrupt-controller@6030203180000 DT node where there are multiple
-> > interrupt controllers?
+> if (IS_ENABLED(CONFIG_ARM64_VA_BITS_52) && (vabits_actual != 52))
+>     memstart_addr -= _PAGE_OFFSET(48) - _PAGE_OFFSET(52);
 >
-> Absolutely.
->
-> The node is only one of the many possible ways to retrieve a
-> domain. In general, what you pass as the of_node/fwnode_handle can be
-> anything you want. It doesn't have to represent anything in the system
-> (we even create then ex-nihilo in some cases), and the match/select
-> callbacks are authoritative when they exist.
->
-> There is also the use of a default domain, which is used as a fallback
-> when no domain is found via the normal matching procedure.
->
-> PPC has established a way of dealing with domains long before ARM did,
-> closer to the board files of old than what we would do today (code
-> driven rather than data structure driven).
->
-> Strictly mapping domains onto HW blocks is a desirable property, but
-> that is all it is. That doesn't affect the very purpose of the IRQ
-> domains, which is to translate numbers from one context into another.
->
-> I'd be all for rationalising this, but it is pretty hard to introduce
-> semantic where there is none.
+> So, I will remove IS_ENABLED(CONFIG_RANDOMIZE_BASE) again.
 
-Ok, I'm going to disable parsing "interrupts" for PPC. It doesn't look
-like any of the irq drivers are even remotely ready to be converted to
-a proper device driver anyway.
+Hi Ard,
 
-And if this continues for other properties, I'll just disable
-fw_devlink for PPC entirely.
+Actually, looking more at this, I do not see how with 52VA on a 48VA
+processor start offset can become negative unless randomization is
+involved.
+The start of the linear map will point to the first physical address
+that is reported by memblock_start_of_DRAM(). However, memstart_addr
+will be negative. So, I think the current approach using
+IS_ENABLED(CONFIG_RANDOMIZE_BASE) is good.
 
--Saravana
+48VA processor with VA_BITS_48:
+memstart_addr 40000000
+start_linear_pa 40000000
+end_linear_pa 80003fffffff
+
+48VA processor with VA_BITS_52:
+memstart_addr fff1000040000000   <- Negative
+start_linear_pa 40000000  <- positive, and the first PA address
+end_linear_pa 80003fffffff
+
+Thank you,
+Pasha
