@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC42A31B725
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D5831B72B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbhBOK1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:27:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
+        id S230090AbhBOK2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:28:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbhBOK0Y (ORCPT
+        with ESMTP id S229913AbhBOK0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:26:24 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03DCC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:25:42 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id k22so3475179pll.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:25:42 -0800 (PST)
+        Mon, 15 Feb 2021 05:26:39 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CD4C061786;
+        Mon, 15 Feb 2021 02:25:58 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id r21so8197255wrr.9;
+        Mon, 15 Feb 2021 02:25:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=timesys-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=5QNtL/QJMKYTcCcpXwyC4qEWlr5o4t0EK/CSxuKil3o=;
-        b=allR8ueCxcSNegm7Gn+qidsAEGcOtrJyQt+4UYvGX55E6Xdi1PWKtgJcjns6mIMFqR
-         FL8o3w5LK1D6vX57fAJ164giA8Jkq6WIa++GPhHIOcuqZ/fMpbKpRxUXxxYHsSTotRrS
-         5YHSHWxwTKxpthKx63PjOtskQzyi9cjZXst1cmyVTFbdkB86aoQCTn4GQNJLurSqkXiQ
-         UHQvoy0xCSArkj2zu08KUPxBr3l3/7AAxgvG3Vak52x01AHBnqK6nX0UVLiVfpLDXfPn
-         99FvvM0xs4IUx+EmpvtS26qkjwuFsY7UZFURCnARkRFc/MblHTLBjanbKj+5ThpYMKMI
-         ZtgQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=z9SliCCRum/3A2E2ZMNlI9m+hPoUUx4IbBiUL26CGt4=;
+        b=XmYapkqPECCZQ2urP7izpjxwLyQJGPa8zDUV3C5e8uDSsQB6IFaZE8Ld7RFtvmEdLC
+         +IMr0tT7+eve+w26+I/NErozvBO8U3PwdPvpmvtwN+cTaHKUf/meRJCmnnTR9KPXD4Bc
+         vvJQkfqcvu4L02plGHnXIrzbgRqs9zQ/UaUyZBlfFrDIKY9lwFOrQrzhFw3Xk+c8tEua
+         LSRDeoTQPz4vQTjTydCHi3x7CuaISpuj+M9OsOOvz/MslR6G5deopedI4gqFxSvVP2+f
+         /zzrE4G30+pdmtJlL1L3l+ebqai06+Y4Sjhu1YBwK3vfnVS16n0u4fGCE4RYX+KAjOEc
+         jG4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5QNtL/QJMKYTcCcpXwyC4qEWlr5o4t0EK/CSxuKil3o=;
-        b=UbV9REcyftA5jloqrGDD9sf/4+jPYyxMGvucPBxNMRxKFqHR216fDCSdtl582CKA//
-         DygJ21ULy81tuZg62LyXjS9M5oTULA0DsW5m7RiJf4m7m53Wf7bQaMNHc9fd98OCzLr5
-         kMH5qBDzw+vyf7t0ltRZHGRyhZAwkerRTweb/sba4oO7wwihLr2lTzmpCT5N/n4Q/KMJ
-         u0QNYwc64cXhiId3k2pd3Ttc928FgC62e+t2chwqnJBFFoPLNjXnHZr59AdVS4DZrgJX
-         taSuRwbIKAhi7RbGV2ukzFextSq6PvrFxrXZM0bzBjkQxmzu+2xz/D/Mx583TTZdAjRc
-         E+JA==
-X-Gm-Message-State: AOAM530/h5efVtAutRM4UJekJ5Zw6n0a/ATBAMPCMueOptxcyywLYFlX
-        RDocyGE47Dw7ja1T47m+G6+MhQ==
-X-Google-Smtp-Source: ABdhPJy+60W6ok2/zY3nob6ijfUXD2FXktLLBG1JJc7q8yF1H0737pObi07IBdmUDDckhLzZCXafzQ==
-X-Received: by 2002:a17:90a:4306:: with SMTP id q6mr15201645pjg.138.1613384742448;
-        Mon, 15 Feb 2021 02:25:42 -0800 (PST)
-Received: from prasanth.timesys.com ([59.97.51.145])
-        by smtp.gmail.com with ESMTPSA id g3sm18402396pfq.42.2021.02.15.02.25.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Feb 2021 02:25:42 -0800 (PST)
-From:   prasanth.r@timesys.com
-To:     michal.lkml@markovi.net, masahiroy@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Prasanth R <prasanth.r@timesys.com>
-Subject: [PATCH] kbuild: use shorthand operator for compiler
-Date:   Mon, 15 Feb 2021 15:55:36 +0530
-Message-Id: <1613384736-31129-1-git-send-email-prasanth.r@timesys.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=z9SliCCRum/3A2E2ZMNlI9m+hPoUUx4IbBiUL26CGt4=;
+        b=miORlS2QrJkYZCekEQ2VqrSRuBC1Zb7busc5VXcYiMByBEVHhdRK/iz05YFcNL3/DH
+         YoT79/LkvPKpYmHQ1K9e/MlLx0cqwtbAfsnsC8gYp3Vfby0oQZGaDfSt06kYdPC/5Zpm
+         /IxHqNMfAeWAYRxbAmYFA6T1mFWrYhesezYdkKjw2S+7TyB3RMjqj24LnOlBygZt7lOI
+         YpszGbwYBXpmt2ch3AjrnqQZVWnS9oPedRgZx7XbdBZxH/A2J+KJXV1oxku5poEYp6JO
+         KW/YnUijjIlk6aOm8qtU7NXlh7kxIuvpZcRHmjbebr7kcL0jU3PC0wOn4dUFh6GMbCnv
+         Th0Q==
+X-Gm-Message-State: AOAM532CLmpGEDiEp8A4fY7GIysIqSChIZ2XKvRAFEwGRkW9hRc/TzPS
+        rGAAb2L7mZYRRSqcDlnluHqqfI/Xsz8=
+X-Google-Smtp-Source: ABdhPJxjPOB8Gm2aMkGNZx+mNq7QWQir4NmLrHP2dOTubysE7eypcREIqAJZbaCXxS9zmJnTV7aZtw==
+X-Received: by 2002:adf:f7c5:: with SMTP id a5mr18324488wrq.243.1613384757517;
+        Mon, 15 Feb 2021 02:25:57 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id g136sm10467906wme.10.2021.02.15.02.25.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 02:25:56 -0800 (PST)
+Date:   Mon, 15 Feb 2021 11:25:55 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Fatih Yildirim <yildirim.fatih@gmail.com>
+Cc:     marvin24@gmx.de, gregkh@linuxfoundation.org,
+        ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH -next] staging: nvec: minor coding style fix
+Message-ID: <YCpMM4HhAGkpHIX7@ulmo.localdomain>
+References: <20210212073423.20562-1-yildirim.fatih@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Umw6Y6994BHCIjmo"
+Content-Disposition: inline
+In-Reply-To: <20210212073423.20562-1-yildirim.fatih@gmail.com>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prasanth R <prasanth.r@timesys.com>
 
-Despite making the gcc as default let the user fix the
-HOST values or we need to point the /usr/bin/gcc
+--Umw6Y6994BHCIjmo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Prasanth R <prasanth.r@timesys.com>
----
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Fri, Feb 12, 2021 at 10:34:23AM +0300, Fatih Yildirim wrote:
+> Fix for the below coding style warning.
+> Warning: Move const after static - use 'static const int'
+>=20
+> Signed-off-by: Fatih Yildirim <yildirim.fatih@gmail.com>
+> ---
+>  drivers/staging/nvec/nvec_power.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index de1acae..46301a6 100644
---- a/Makefile
-+++ b/Makefile
-@@ -410,8 +410,8 @@ ifneq ($(LLVM),)
- HOSTCC	= clang
- HOSTCXX	= clang++
- else
--HOSTCC	= gcc
--HOSTCXX	= g++
-+HOSTCC	?= gcc
-+HOSTCXX	?= g++
- endif
- 
- export KBUILD_USERCFLAGS := -Wall -Wmissing-prototypes -Wstrict-prototypes \
--- 
-2.7.4
+Acked-by: Thierry Reding <treding@nvidia.com>
 
+--Umw6Y6994BHCIjmo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAqTDIACgkQ3SOs138+
+s6GukQ//RtPgmq0gdQENuJQ8oYCYYuLbk/GyI6GciGBnKVAXRMaj1d0TmhVmEF0s
+aB871tDOVfpuQwCl4wyCKSdcKR0ABq2mS0S04KHqP6vP7yQJTAjLLqzQLy7oLjAJ
+R8un8u9upWqK8xGdL9nCiD5CRWCRX9TZ6CG6IV8Xw6mTefz3zrBwmwc3hmXJjLlQ
+AyM8nGUU0FZVPa4Pvzu6d2oIPoZNdbIJSduz8Qo3yI7Cwhr3+9Qhrl0WgHSCWHKU
+QOnr8SPmw+zEegpOJFCfpg7TlxR8EDvnrPLVCOQLMznkyIws8uVv/kLjoSmHDIEv
+2WHthxJtyis/TxLlbbpE4tUHiJ5bg0JZdx50ssweJmtxBYp9FI97S3UTPXBViGZ1
+PxrfIdFyW6zO5npGKP80Es0S/HnhznbVUljucwWk5vquDWQERDffkIDGD3ApBHxc
+OVb6DaKHboha3YgQnqnFaJ+q1oHJ0Tu4k0unOjz8KKkTkSLNsfJfW/jxnsr491Fl
+9VEqo7LpquJyqwcr0/Fto0YBPhC90uJKM2do1tuDb2m1k0QeFf4gg2dLwR9uYDGk
+E8PfgH34Uyqomytd3cNuge60VO5U1Af3Drzm661cHkjtlX9HC1cnbavzrKiRbw8t
+OtnuZv0dGkQQPWO/A154IUXZVAwZRFJTN4vvLThW8y6J6ia7f90=
+=XqYj
+-----END PGP SIGNATURE-----
+
+--Umw6Y6994BHCIjmo--
