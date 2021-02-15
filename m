@@ -2,204 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6AA31BBF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:12:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3789931BBF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhBOPLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:11:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44842 "EHLO
+        id S230184AbhBOPMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:12:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31906 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230280AbhBOO5x (ORCPT
+        by vger.kernel.org with ESMTP id S230379AbhBOO6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:57:53 -0500
+        Mon, 15 Feb 2021 09:58:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613400979;
+        s=mimecast20190719; t=1613401004;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JrRM1QxfnrMrYFQsps5k5W6ePiGa4SMjmwwhDFeB+aw=;
-        b=d4aeNR5ibW4LJitWEeqgydYRWo+7pz8/NQbCweW2nfr4S80k2wDTvcuD/ZbHKwgjeamlUH
-        /eWyQrxd2lSyT8hcDZ45kFmveUE4yww7JB43v5b4oDdu3OHUJEeASd9Vn9tNX4dL8j2rLD
-        qLQZ8CgUjCfkHQ/rC3/X4hbau305zsI=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-KI7_9jzUMzW1OwJGWIDqPA-1; Mon, 15 Feb 2021 09:56:17 -0500
-X-MC-Unique: KI7_9jzUMzW1OwJGWIDqPA-1
-Received: by mail-qk1-f200.google.com with SMTP id k1so3066176qkc.20
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:56:17 -0800 (PST)
+        bh=C7/6SkhZj68izBGsG8/2xbdZJ41s18nIem3iu9qGMRY=;
+        b=ehjL7hdcqWzK6pSew7N3rtTQym3lfC2SFx+P2tKhLoYEVlu+0t1BmPFTFHG3x8wZfDWCbe
+        dGDsb1s+InQ49UIjEKvlWQR4ariRXKfRYgJ09ya5lhNjgngNBxrfAES2ifJFggmMmgVmKu
+        XPa+TfjJv52gUDmi8VK0XYCY2VkEQ1U=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-aljfW_Z4PrSiNof2MM7lhA-1; Mon, 15 Feb 2021 09:56:42 -0500
+X-MC-Unique: aljfW_Z4PrSiNof2MM7lhA-1
+Received: by mail-ed1-f69.google.com with SMTP id i4so5233071edt.11
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:56:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=JrRM1QxfnrMrYFQsps5k5W6ePiGa4SMjmwwhDFeB+aw=;
-        b=Y22F7qlEgL3lYFPjDr6MYz4GN6QXoQYLfXhlkQ6/csCz1wg2/w6hoINneXcut9/6z+
-         PRCCcyX/MyLXC6jf402hRra5FpCwjzdDY4E9tSRSdNJr56eNOBEAUQJskQaGUw7HfNB4
-         /UO56zNGO1fSSUoXMLDrKI2ODuafmLmiKNyVDke1HNGNUPlNaQGIG+C1HRqD8I/y/fqj
-         UlL+GPEnREE0JAkFqGk7pitNQr+xj5Us5OBzAdeKFx+2DYZ+gOQH7Cv4h4z4aEetL+8w
-         6XQnHImDMkfl2o+aDIZhjzxQW3gXVU/gcA+X0Prsd0FeL+RMpTV54hkBiWFQrdDdn+rl
-         GaCQ==
-X-Gm-Message-State: AOAM531gmcBf3/rO9hoRVJPGzBeO8HjSfNyfa2wAhTkwnClqPcpXjEra
-        hoJw8n+Qa+0+8lOF2HRjlyVxdj8DLF56T3T94nUdDTLWuqM7zNmgITNOIIIGzm7XduXgyNS1EM4
-        2W518CDM4y1obf66SfTmfQFsJ
-X-Received: by 2002:a37:4c09:: with SMTP id z9mr8851900qka.9.1613400976738;
-        Mon, 15 Feb 2021 06:56:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwAbZIRzXhEKW5+XNMv3+ptZvSCtEfKDkun5PSz6GwXN+Gen4qxjlQDPRfDrdOZ0yYIUswT7g==
-X-Received: by 2002:a37:4c09:: with SMTP id z9mr8851879qka.9.1613400976502;
-        Mon, 15 Feb 2021 06:56:16 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id d22sm11361098qtp.34.2021.02.15.06.56.15
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=C7/6SkhZj68izBGsG8/2xbdZJ41s18nIem3iu9qGMRY=;
+        b=Gz1BKpVSpHnzGLaMIvm53cVOyviGtD7llalwgyT82Lf95yRtygzGZ9NcuUCjA4NNgJ
+         rmi3jWeiMrtZ5pX9QuJcgrP31C7Z3sXKQZm6LXuIiqQHNGE/hReTsf1CV/hR585vYIfB
+         3WBp/k+aZ/ArTaAciye9mGdnt9BHtGhFj61UncJSKffKMB31ozF6IMkkvAWX+zmreB8V
+         Dmu5qrrpKyRLy0eweJdZ6x4twWNmyBl6Hw/s7PDAtkkiZtbN9osGWfoDLDNYa5G9IMhY
+         2CSSlH/qWZra5RI2E4AdQphkJxuQdpALFIuutviQw4ZBr2KqkH32k3/hK78+oY9sPlqr
+         LV6A==
+X-Gm-Message-State: AOAM532SUgjV1/UjN9bUPfJf4UQDW1d9uUyEA5mjIxVxmQtdE+fs7x7K
+        KjkIxBYyRS6EN1/TkqQsbfFzDctuCBa0iKVQopjt97xJ+i3NfoC30q1E6WtRWcM5y/VpQw75FBy
+        LxYFVonatlTIx8cH9alIDKAtEXsQrtXz3UfssxSwb70TeSZEKjfD1INMWfq7FvkzHHbvgc42t46
+        HS
+X-Received: by 2002:a05:6402:4391:: with SMTP id o17mr15955800edc.196.1613401001476;
+        Mon, 15 Feb 2021 06:56:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx38aACQ1U8wXIdboC62So4saijuy0+ev58xJuDHDrRQG8u+e9kOHHOzX4gXPbl+KjSoRIXng==
+X-Received: by 2002:a05:6402:4391:: with SMTP id o17mr15955778edc.196.1613401001326;
+        Mon, 15 Feb 2021 06:56:41 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id o26sm2174323edr.16.2021.02.15.06.56.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Feb 2021 06:56:16 -0800 (PST)
-Subject: Re: [PATCH v9 0/7] FPGA Security Manager Class Driver
-To:     Russ Weight <russell.h.weight@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20210105225924.14573-1-russell.h.weight@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <a9705da0-1ed0-8d9a-8eea-f04d7b9b471c@redhat.com>
-Date:   Mon, 15 Feb 2021 06:56:14 -0800
+        Mon, 15 Feb 2021 06:56:40 -0800 (PST)
+Subject: Re: [PATCH v2 0/4] platform/surface: Add platform profile driver for
+ Surface devices
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <mgross@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Mark Pearson <markpearson@lenovo.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210211201703.658240-1-luzmaximilian@gmail.com>
+ <898aa498-8256-d59f-9e72-0e1199b3a62a@redhat.com>
+ <CAJZ5v0jGUgHsNaqLarf=YLwjtOe-mQB48LkOQLi7FcZyW1Qchg@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <1d4b3de2-6b05-ef17-2489-db8fb2dfd371@redhat.com>
+Date:   Mon, 15 Feb 2021 15:56:40 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210105225924.14573-1-russell.h.weight@intel.com>
+In-Reply-To: <CAJZ5v0jGUgHsNaqLarf=YLwjtOe-mQB48LkOQLi7FcZyW1Qchg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Russ, Moritz
+Hi,
 
-This patchset still applies.
+On 2/15/21 3:54 PM, Rafael J. Wysocki wrote:
+> On Mon, Feb 15, 2021 at 3:36 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi,
+>>
+>> On 2/11/21 9:16 PM, Maximilian Luz wrote:
+>>> This series adds a driver to provide platform profile support on 5th-
+>>> and later generation Microsoft Surface devices with a Surface System
+>>> Aggregator Module. On those devices, the platform profile can be used to
+>>> influence cooling behavior and power consumption.
+>>>
+>>> To achieve this, a new platform profile is introduced: the
+>>> 'balanced-performance' profile.
+>>>
+>>> In addition, a couple of fix-ups are performed:
+>>> - Hide CONFIG_ACPI_PLATFORM_PROFILE and change drivers so that it is
+>>>   selected instead of depended on.
+>>> - Fix some references to documentation in a comment.
+>>>
+>>> Note: This series (or more specifically "platform/surface: Add platform
+>>> profile driver") depends on the "platform/surface: Add Surface
+>>> Aggregator device registry" series.
+>>>
+>>> Changes in v2:
+>>>  - Introduce new 'balanced-performance' platform profile and change
+>>>    profile mapping in driver.
+>>>  - Perform some fix-ups for the ACPI platform profile implementation:
+>>>    - Fix some references to documentation in a comment.
+>>>    - Hide CONFIG_ACPI_PLATFORM_PROFILE
+>>
+>> Thanks, the entire series looks good to me, so for the series:
+>>
+>> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>>
+>> Rafael, can you (once 5.12-rc1 is out) pick 1-3/4 and then provide a
+>> stable branch for me to merge?
+> 
+> Since [1-3/4] appear to be uncontroversial, so IMO it would be better
+> to merge them during the merge window, so they are present in
+> 5.12-rc1.
+> 
+> The extra stable branch wouldn't be necessary in that case.
 
-Updating the fpga is a fairly important feature.
+That works for me, thanks.
 
-Are there any dependencies we are waiting on ?
+Regards,
 
-Tom
+Hans
 
-On 1/5/21 2:59 PM, Russ Weight wrote:
-> The FPGA Security Manager class driver provides a common
-> API for user-space tools to manage updates for secure FPGA
-> devices. Device drivers that instantiate the FPGA Security
-> Manager class driver will interact with a HW secure update
-> engine in order to transfer new FPGA and BMC images to FLASH so
-> that they will be automatically loaded when the FPGA card reboots.
->
-> A significant difference between the FPGA Manager and the FPGA 
-> Security Manager is that the FPGA Manager does a live update (Partial
-> Reconfiguration) to a device whereas the FPGA Security Manager
-> updates the FLASH images for the Static Region and the BMC so that
-> they will be loaded the next time the FPGA card boots. Security is
-> enforced by hardware and firmware. The security manager interacts
-> with the firmware to initiate an update, pass in the necessary data,
-> and collect status on the update.
->
-> The n3000bmc-secure driver is the first driver to use the FPGA
-> Security Manager. This driver was previously submitted in the same
-> patch set, but has been split out into a separate patch set starting
-> with V2. Future devices will also make use of this common API for
-> secure updates.
->
-> In addition to managing secure updates of the FPGA and BMC images,
-> the FPGA Security Manager update process may also be used to
-> program root entry hashes and cancellation keys for the FPGA static
-> region, the FPGA partial reconfiguration region, and the BMC.
-> The image files are self-describing, and contain a header describing
-> the image type.
->
-> Secure updates make use of the request_firmware framework, which
-> requires that image files are accessible under /lib/firmware. A request
-> for a secure update returns immediately, while the update itself
-> proceeds in the context of a kernel worker thread. Sysfs files provide
-> a means for monitoring the progress of a secure update and for
-> retrieving error information in the event of a failure.
->
-> The API includes a "name" sysfs file to export the name of the parent
-> driver. It also includes an "update" sub-directory containing files that
-> that can be used to instantiate and monitor a secure update.
->
-> Changelog v8 -> v9:
->   - Rebased patches for 5.11-rc2
->   - Updated Date and KernelVersion in ABI documentation
->
-> Changelog v7 -> v8:
->   - Fixed grammatical error in Documentation/fpga/fpga-sec-mgr.rst
->
-> Changelog v6 -> v7:
->   - Changed dates in documentation file to December 2020
->   - Changed filename_store() to use kmemdup_nul() instead of
->     kstrndup() and changed the count to not assume a line-return.
->
-> Changelog v5 -> v6:
->   - Removed sysfs support and documentation for the display of the
->     flash count, root entry hashes, and code-signing-key cancelation
->     vectors from the class driver. This information can vary by device
->     and will instead be displayed by the device-specific parent driver.
->
-> Changelog v4 -> v5:
->   - Added the devm_fpga_sec_mgr_unregister() function, following recent
->     changes to the fpga_manager() implementation.
->   - Changed most of the *_show() functions to use sysfs_emit()
->     instead of sprintf(
->   - When checking the return values for functions of type enum
->     fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
->
-> Changelog v3 -> v4:
->   - This driver is generic enough that it could be used for non Intel
->     FPGA devices. Changed from "Intel FPGA Security Manager" to FPGA
->     Security Manager" and removed unnecessary references to "Intel".
->   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
->     Note that this also affects some filenames.
->
-> Changelog v2 -> v3:
->   - Use dev_err() to report invalid progress in sec_progress()
->   - Use dev_err() to report invalid error code in sec_error()
->   - Modified sysfs handler check in check_sysfs_handler() to make
->     it more readable.
->   - Removed unnecessary "goto done"
->   - Added a comment to explain imgr->driver_unload in
->     ifpga_sec_mgr_unregister()
->
-> Changelog v1 -> v2:
->   - Separated out the MAX10 BMC Security Engine to be submitted in
->     a separate patch-set.
->   - Bumped documentation dates and versions
->   - Split ifpga_sec_mgr_register() into create() and register() functions
->   - Added devm_ifpga_sec_mgr_create()
->   - Added Documentation/fpga/ifpga-sec-mgr.rst 
->   - Changed progress state "read_file" to "reading"
->   - Added sec_error() function (similar to sec_progress())
->   - Removed references to bmc_flash_count & smbus_flash_count (not supported)
->   - Removed typedefs for imgr ops
->   - Removed explicit value assignments in enums
->   - Other minor code cleanup per review comments 
->
-> Russ Weight (7):
->   fpga: sec-mgr: fpga security manager class driver
->   fpga: sec-mgr: enable secure updates
->   fpga: sec-mgr: expose sec-mgr update status
->   fpga: sec-mgr: expose sec-mgr update errors
->   fpga: sec-mgr: expose sec-mgr update size
->   fpga: sec-mgr: enable cancel of secure update
->   fpga: sec-mgr: expose hardware error info
->
->  .../ABI/testing/sysfs-class-fpga-sec-mgr      |  81 +++
->  Documentation/fpga/fpga-sec-mgr.rst           |  44 ++
->  Documentation/fpga/index.rst                  |   1 +
->  MAINTAINERS                                   |   9 +
->  drivers/fpga/Kconfig                          |   9 +
->  drivers/fpga/Makefile                         |   3 +
->  drivers/fpga/fpga-sec-mgr.c                   | 652 ++++++++++++++++++
->  include/linux/fpga/fpga-sec-mgr.h             | 100 +++
->  8 files changed, 899 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
->  create mode 100644 Documentation/fpga/fpga-sec-mgr.rst
->  create mode 100644 drivers/fpga/fpga-sec-mgr.c
->  create mode 100644 include/linux/fpga/fpga-sec-mgr.h
->
+
 
