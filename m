@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACD431BE61
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA8A31BE36
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232303AbhBOQID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:08:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45568 "EHLO mail.kernel.org"
+        id S232746AbhBOQDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:03:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231379AbhBOPdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:33:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EBF264EB4;
-        Mon, 15 Feb 2021 15:30:47 +0000 (UTC)
+        id S230438AbhBOPdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:33:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A054764EAF;
+        Mon, 15 Feb 2021 15:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403048;
-        bh=IyfM8QAqxdmKj3ed2+J8pq6AN14oeZqETF42m9dQf5Y=;
+        s=korg; t=1613403020;
+        bh=xYSyYs1Q1r9aVnYKzKuFGV7yvk31Rvzr/CGCdDIT7RE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BtT4362cvuwVZh3gEwm/38iVBxDNRG//3jiceNc/xwlRHK6bb4H50fhDiQloszuy4
-         e6Kryl03LmW92FeTOzBJSgihONOQsCYXUibUj0IBhjvz7JMqFxG90aVcQUDkSfPXpc
-         Xoszs02XsTirkP2NzcA2/2l3bICIv6+ekNDA1aQM=
+        b=XM7iGTVeW71jFBbhPF6wJbQzmDY8cd6ZkRVqysTPqxFdDjg53YH78BXVfA/PJlt7b
+         bFHK9Hm/VCIYm9sndsh9TwImuiJsYRjbnAFA4kCmyI3Is2dGGz/XcJELlXz1aRqnDP
+         LHk+4ICcYjdIDZZXn96XvoN7FSs4u/++7AUfp41Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+174de899852504e4a74a@syzkaller.appspotmail.com,
-        syzbot+3d1c772efafd3c38d007@syzkaller.appspotmail.com,
-        David Howells <dhowells@redhat.com>,
-        Hillf Danton <hdanton@sina.com>,
+        stable@vger.kernel.org, Oliver Graute <oliver.graute@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 49/60] rxrpc: Fix clearance of Tx/Rx ring when releasing a call
-Date:   Mon, 15 Feb 2021 16:27:37 +0100
-Message-Id: <20210215152716.946569241@linuxfoundation.org>
+Subject: [PATCH 5.4 50/60] udp: fix skb_copy_and_csum_datagram with odd segment sizes
+Date:   Mon, 15 Feb 2021 16:27:38 +0100
+Message-Id: <20210215152716.980123815@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -43,85 +42,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Willem de Bruijn <willemb@google.com>
 
-commit 7b5eab57cac45e270a0ad624ba157c5b30b3d44d upstream.
+commit 52cbd23a119c6ebf40a527e53f3402d2ea38eccb upstream.
 
-At the end of rxrpc_release_call(), rxrpc_cleanup_ring() is called to clear
-the Rx/Tx skbuff ring, but this doesn't lock the ring whilst it's accessing
-it.  Unfortunately, rxrpc_resend() might be trying to retransmit a packet
-concurrently with this - and whilst it does lock the ring, this isn't
-protection against rxrpc_cleanup_call().
+When iteratively computing a checksum with csum_block_add, track the
+offset "pos" to correctly rotate in csum_block_add when offset is odd.
 
-Fix this by removing the call to rxrpc_cleanup_ring() from
-rxrpc_release_call().  rxrpc_cleanup_ring() will be called again anyway
-from rxrpc_cleanup_call().  The earlier call is just an optimisation to
-recycle skbuffs more quickly.
+The open coded implementation of skb_copy_and_csum_datagram did this.
+With the switch to __skb_datagram_iter calling csum_and_copy_to_iter,
+pos was reinitialized to 0 on each call.
 
-Alternative solutions include rxrpc_release_call() could try to cancel the
-work item or wait for it to complete or rxrpc_cleanup_ring() could lock
-when accessing the ring (which would require a bh lock).
+Bring back the pos by passing it along with the csum to the callback.
 
-This can produce a report like the following:
+Changes v1->v2
+  - pass csum value, instead of csump pointer (Alexander Duyck)
 
-  BUG: KASAN: use-after-free in rxrpc_send_data_packet+0x19b4/0x1e70 net/rxrpc/output.c:372
-  Read of size 4 at addr ffff888011606e04 by task kworker/0:0/5
-  ...
-  Workqueue: krxrpcd rxrpc_process_call
-  Call Trace:
-   ...
-   kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
-   rxrpc_send_data_packet+0x19b4/0x1e70 net/rxrpc/output.c:372
-   rxrpc_resend net/rxrpc/call_event.c:266 [inline]
-   rxrpc_process_call+0x1634/0x1f60 net/rxrpc/call_event.c:412
-   process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
-   ...
-
-  Allocated by task 2318:
-   ...
-   sock_alloc_send_pskb+0x793/0x920 net/core/sock.c:2348
-   rxrpc_send_data+0xb51/0x2bf0 net/rxrpc/sendmsg.c:358
-   rxrpc_do_sendmsg+0xc03/0x1350 net/rxrpc/sendmsg.c:744
-   rxrpc_sendmsg+0x420/0x630 net/rxrpc/af_rxrpc.c:560
-   ...
-
-  Freed by task 2318:
-   ...
-   kfree_skb+0x140/0x3f0 net/core/skbuff.c:704
-   rxrpc_free_skb+0x11d/0x150 net/rxrpc/skbuff.c:78
-   rxrpc_cleanup_ring net/rxrpc/call_object.c:485 [inline]
-   rxrpc_release_call+0x5dd/0x860 net/rxrpc/call_object.c:552
-   rxrpc_release_calls_on_socket+0x21c/0x300 net/rxrpc/call_object.c:579
-   rxrpc_release_sock net/rxrpc/af_rxrpc.c:885 [inline]
-   rxrpc_release+0x263/0x5a0 net/rxrpc/af_rxrpc.c:916
-   __sock_release+0xcd/0x280 net/socket.c:597
-   ...
-
-  The buggy address belongs to the object at ffff888011606dc0
-   which belongs to the cache skbuff_head_cache of size 232
-
-Fixes: 248f219cb8bc ("rxrpc: Rewrite the data and ack handling code")
-Reported-by: syzbot+174de899852504e4a74a@syzkaller.appspotmail.com
-Reported-by: syzbot+3d1c772efafd3c38d007@syzkaller.appspotmail.com
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Hillf Danton <hdanton@sina.com>
-Link: https://lore.kernel.org/r/161234207610.653119.5287360098400436976.stgit@warthog.procyon.org.uk
+Link: https://lore.kernel.org/netdev/20210128152353.GB27281@optiplex/
+Fixes: 950fcaecd5cc ("datagram: consolidate datagram copy to iter helpers")
+Reported-by: Oliver Graute <oliver.graute@gmail.com>
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20210203192952.1849843-1-willemdebruijn.kernel@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/rxrpc/call_object.c |    2 --
- 1 file changed, 2 deletions(-)
+ include/linux/uio.h |    8 +++++++-
+ lib/iov_iter.c      |   24 ++++++++++++++----------
+ net/core/datagram.c |   12 ++++++++++--
+ 3 files changed, 31 insertions(+), 13 deletions(-)
 
---- a/net/rxrpc/call_object.c
-+++ b/net/rxrpc/call_object.c
-@@ -507,8 +507,6 @@ void rxrpc_release_call(struct rxrpc_soc
- 		rxrpc_disconnect_call(call);
- 	if (call->security)
- 		call->security->free_call_crypto(call);
--
--	rxrpc_cleanup_ring(call);
- 	_leave("");
+--- a/include/linux/uio.h
++++ b/include/linux/uio.h
+@@ -261,7 +261,13 @@ static inline void iov_iter_reexpand(str
+ {
+ 	i->count = count;
+ }
+-size_t csum_and_copy_to_iter(const void *addr, size_t bytes, void *csump, struct iov_iter *i);
++
++struct csum_state {
++	__wsum csum;
++	size_t off;
++};
++
++size_t csum_and_copy_to_iter(const void *addr, size_t bytes, void *csstate, struct iov_iter *i);
+ size_t csum_and_copy_from_iter(void *addr, size_t bytes, __wsum *csum, struct iov_iter *i);
+ bool csum_and_copy_from_iter_full(void *addr, size_t bytes, __wsum *csum, struct iov_iter *i);
+ size_t hash_and_copy_to_iter(const void *addr, size_t bytes, void *hashp,
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -570,12 +570,13 @@ static __wsum csum_and_memcpy(void *to,
  }
  
+ static size_t csum_and_copy_to_pipe_iter(const void *addr, size_t bytes,
+-				__wsum *csum, struct iov_iter *i)
++					 struct csum_state *csstate,
++					 struct iov_iter *i)
+ {
+ 	struct pipe_inode_info *pipe = i->pipe;
++	__wsum sum = csstate->csum;
++	size_t off = csstate->off;
+ 	size_t n, r;
+-	size_t off = 0;
+-	__wsum sum = *csum;
+ 	int idx;
+ 
+ 	if (!sanity(i))
+@@ -596,7 +597,8 @@ static size_t csum_and_copy_to_pipe_iter
+ 		addr += chunk;
+ 	}
+ 	i->count -= bytes;
+-	*csum = sum;
++	csstate->csum = sum;
++	csstate->off = off;
+ 	return bytes;
+ }
+ 
+@@ -1484,18 +1486,19 @@ bool csum_and_copy_from_iter_full(void *
+ }
+ EXPORT_SYMBOL(csum_and_copy_from_iter_full);
+ 
+-size_t csum_and_copy_to_iter(const void *addr, size_t bytes, void *csump,
++size_t csum_and_copy_to_iter(const void *addr, size_t bytes, void *_csstate,
+ 			     struct iov_iter *i)
+ {
++	struct csum_state *csstate = _csstate;
+ 	const char *from = addr;
+-	__wsum *csum = csump;
+ 	__wsum sum, next;
+-	size_t off = 0;
++	size_t off;
+ 
+ 	if (unlikely(iov_iter_is_pipe(i)))
+-		return csum_and_copy_to_pipe_iter(addr, bytes, csum, i);
++		return csum_and_copy_to_pipe_iter(addr, bytes, _csstate, i);
+ 
+-	sum = *csum;
++	sum = csstate->csum;
++	off = csstate->off;
+ 	if (unlikely(iov_iter_is_discard(i))) {
+ 		WARN_ON(1);	/* for now */
+ 		return 0;
+@@ -1524,7 +1527,8 @@ size_t csum_and_copy_to_iter(const void
+ 		off += v.iov_len;
+ 	})
+ 	)
+-	*csum = sum;
++	csstate->csum = sum;
++	csstate->off = off;
+ 	return bytes;
+ }
+ EXPORT_SYMBOL(csum_and_copy_to_iter);
+--- a/net/core/datagram.c
++++ b/net/core/datagram.c
+@@ -700,8 +700,16 @@ static int skb_copy_and_csum_datagram(co
+ 				      struct iov_iter *to, int len,
+ 				      __wsum *csump)
+ {
+-	return __skb_datagram_iter(skb, offset, to, len, true,
+-			csum_and_copy_to_iter, csump);
++	struct csum_state csdata = { .csum = *csump };
++	int ret;
++
++	ret = __skb_datagram_iter(skb, offset, to, len, true,
++				  csum_and_copy_to_iter, &csdata);
++	if (ret)
++		return ret;
++
++	*csump = csdata.csum;
++	return 0;
+ }
+ 
+ /**
 
 
