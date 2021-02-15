@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD3F31C0CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B61E231C0D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbhBORkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:40:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231982AbhBORGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:06:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51DC961493;
-        Mon, 15 Feb 2021 17:05:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613408751;
-        bh=qlDEjTny/wih/sMMQqRl+8DVcQluidusnPRkNYSDRK0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Z+zD1bzotvDEc5rnwTtfxq3cpHiWjbnHJ1ikgNfgV7uzxHVq5/JhTLf6L/pGHCVqK
-         RtttacCk4yzbTNBjpe4TxYQRwh1Lu5bNCeiZLPVQX0NRjT8FliRnnxq76hpqF/lsT4
-         j85GWP0KYWrHYyJ9qhqQBDX1aYZY4U7ltdN6VfLlvamJGxHJg6ga/6tFodxcGlLh9F
-         akb8jUyQ+q8UubxPudJCRCov2h/94HIkAsOwDahsjixOQ9VfgObkWgT3TCwX1knfGt
-         vxRgDQym4qXq78NVzDcaW4k7FfGm7VEs73gQuO+4BWquWaUnbFrB5Wk+7vaQUMDimD
-         rIqaIRBWp9QDQ==
-Date:   Mon, 15 Feb 2021 18:05:45 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
-        laurent.pinchart@ideasonboard.com,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v7 2/3] v4l: ioctl: Use %p4cc printk modifier to print
- FourCC codes
-Message-ID: <20210215180545.7178e180@coco.lan>
-In-Reply-To: <YCqnu61J2Q8rsrZa@alley>
-References: <20210215114030.11862-1-sakari.ailus@linux.intel.com>
-        <20210215114030.11862-3-sakari.ailus@linux.intel.com>
-        <YCqnu61J2Q8rsrZa@alley>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232068AbhBORlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:41:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231952AbhBORLE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 12:11:04 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E9AC061574;
+        Mon, 15 Feb 2021 09:10:24 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id z22so8936130edb.9;
+        Mon, 15 Feb 2021 09:10:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NOxuPvdl3adnseOS0zir9JAd/6pRHQV8bpyRj8Y5/dU=;
+        b=ZxSikTfHITLybPXlf2dSB2rpsC0vveAOGNMXuRm9/lAS3RV5+CCa8YSDKJRBMgi1HA
+         8Kot76/XdQPRI2c0sMmDNrjvHLwuVNtjPVJDCi5wJSeW4i2mLhiSEqbspLYYv3jXjiwd
+         9kvThjpu7/zgpH8nFQPzLzCwo5Dvx6GAB+sf4GmNZvkzAofDYzy7/dsDNksEzWx3CJr+
+         PPXeQuqT9806UE2GYMHEu/vXiwa5KrNHgHwG+oQ2ytmjWXmloG5GLYbYoSpt7f5k5ZwN
+         hXS6sxVECYih1d3fCGjBO+U2BW70P1W6iqxqJonrq3YSBhFKumDLXPrdRNXaBUcHH9Zl
+         1oJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NOxuPvdl3adnseOS0zir9JAd/6pRHQV8bpyRj8Y5/dU=;
+        b=HIHhEjlfivwHtf4YTd3xcaL87qOiqPfzUKj4c1FLBpfnyUoRI7jxgAJvuyewwZz2Mg
+         474G0b4v7J6Fyz374Vogdp7hyzTOmuXFc5ftcxex8sETttOIfGZtoXfjneSwyLPoc2Wo
+         2rn2se/VPip5dd9+2nTMBNkg1xcdtwukmGI/Qt03oQIvJfBQAmbmtCjUsOt0LPAI5nW3
+         6gG7x9EQcgdqz1yCtMK+UGLBSk1lzQPSOOxHOmUazf2WjVk/HedFzBEsAOf2uLI1tomO
+         y6DEbFgxuy1y1YapYRAxcl06HHcSIa6KfQILvNnW7a5mXNvFAKXxTv5oB+LM5n5j6nOV
+         BkSQ==
+X-Gm-Message-State: AOAM530hy7LcPjkGm82ZO8McBmRoBmjIFFyxVTOMUE8wjR7TprzUOirI
+        YHNo2zduLbdjwY2DLp1tmos=
+X-Google-Smtp-Source: ABdhPJwSDftHAs/uhYHf2xRzb5qW9EyWoZR2KMW7rWQF+Ep2cFcDsrGjzEhNPIJhEHr2qSAWSKpEYg==
+X-Received: by 2002:a05:6402:11d3:: with SMTP id j19mr16591525edw.314.1613409023654;
+        Mon, 15 Feb 2021 09:10:23 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bec65.dynamic.kabel-deutschland.de. [95.91.236.101])
+        by smtp.googlemail.com with ESMTPSA id x25sm10480712edv.65.2021.02.15.09.10.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 15 Feb 2021 09:10:23 -0800 (PST)
+Message-ID: <0b400e9e2d49f4ad14e873a3f4bb59aa099a5e7e.camel@gmail.com>
+Subject: Re: [PATCH V2 3/4] scsi: ufs-debugfs: Add user-defined
+ exception_event_mask
+From:   Bean Huo <huobean@gmail.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Date:   Mon, 15 Feb 2021 18:10:21 +0100
+In-Reply-To: <20210209062437.6954-4-adrian.hunter@intel.com>
+References: <20210209062437.6954-1-adrian.hunter@intel.com>
+         <20210209062437.6954-4-adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 15 Feb 2021 17:56:27 +0100
-Petr Mladek <pmladek@suse.com> escreveu:
-
-> On Mon 2021-02-15 13:40:29, Sakari Ailus wrote:
-> > Now that we can print FourCC codes directly using printk, make use of the
-> > feature in V4L2 core.
-> > 
-> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>  
+On Tue, 2021-02-09 at 08:24 +0200, Adrian Hunter wrote:
+> Allow users to enable specific exception events via debugfs.
 > 
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> The bits enabled by the driver ee_drv_ctrl are separated from the
+> bits
+> enabled by the user ee_usr_ctrl. The control mask ee_mask_ctrl is the
+> logical-or of those two. A mutex is needed to ensure that the masks
+> match
+> what was written to the device.
 > 
-> I am curious whether I could take this via printk tree or if Mauro
-> would prefer to take this via his tree.
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Hi Adrian,
+I tested this series patch on my platform, and you can add:
 
-IMO, the best would be if the entire series gets merged via a single
-tree.
-
-Feel free to merge via the printk one.
-
-Acked-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-> 
-> Anyway, there will be v8 with small changes in the 1st patch.
-> 
-> Best Regards,
-> Petr
+Acked-by: Bean Huo <beanhuo@micron.com>
 
 
+Bean
 
-Thanks,
-Mauro
