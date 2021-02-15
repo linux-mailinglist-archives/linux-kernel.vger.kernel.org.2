@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CB631BBC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6A431BBF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhBOPCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:02:54 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:33292 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhBOO4i (ORCPT
+        id S230253AbhBOPLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:11:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230255AbhBOO5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:56:38 -0500
+        Mon, 15 Feb 2021 09:57:42 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB66C0611C0;
+        Mon, 15 Feb 2021 06:55:57 -0800 (PST)
 Date:   Mon, 15 Feb 2021 14:55:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613400955;
+        s=2020; t=1613400956;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JsaoZCB9zSWouNLOeT/XvD1H+a5WgTq8/fZupRieDR4=;
-        b=eNzLR9mJx0YSNDjY04tbJ5spHM04AqTIATPSxhF2rKIrqIJSsFRPSlL5RJTX54x+nwIxei
-        FS26nytMH20ak9LkUZUhDgyacjy5UJWqQL5BaLXqHTSdFOXiZ3ij8BJIAP1SlZviiOTx6a
-        bG5thfPCQIueuHm+hecNXh00qxGnV/v8NMiXHZzdP2nvpv5s7h2QIHwGuRwHwMj/pCaV1V
-        nq+MchDFUDnBFRYymglBwaJo5T607ziVrkubQz0NasQB8McGxx+WNnGEqECyf5rm1ftXkR
-        HmupQxMxctPAiNQC3HpLmcanGa4QmL6kLp1GmYdI21d8Lo8AX/U2B30ILB/vog==
+        bh=8OP2kNk3YYts3rJN5GAH8YtyLFaTtysFHVN3S8CJDeg=;
+        b=T/+1dJ4rFiAcC3C+smLuqUfiDsdSWYI39lEdWyrciybrdPtvQCHbqlBeGjtbNrAop3c7x9
+        oCd3QsN2a9WJqdZJPiayfXahbJEZJ2mYIHU6oYgGCb1MT5iwobnCeAQjT4slUXn9pqZxoV
+        1LHJUqMwNhVv8WPMUnq//RRnjdL6vy+ikZRxuZHa0RlldtyW6vcwAXEGeZD4R9gM1Rpkm9
+        n2shO3h0Vc7llhDj1XfKZkF1jMgSa8vfFLSqsy/A1ZZwPlnLLvCCce0OmwoLsRwjKURzM1
+        qhUC4Scfq+7xWU0WfhXb9vL4CHQ1cWu5+oakPHQlqk+uNoNX6gtP3H7RaeuaoQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613400955;
+        s=2020e; t=1613400956;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=JsaoZCB9zSWouNLOeT/XvD1H+a5WgTq8/fZupRieDR4=;
-        b=lXS8M5Nn0BNE2fCewuzr3mlHJ9JTF5NKOe7uhzEEnfrFTbcVmyWCO9VgB8prl8FlHd59R0
-        xh9NFPPwoWqH2yCg==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+        bh=8OP2kNk3YYts3rJN5GAH8YtyLFaTtysFHVN3S8CJDeg=;
+        b=q5Vrhn9ftf9luAatO6+B8SsMT0RwWaBcR8SEsrqFLc3/B+TnkhXJ02iDmDu9ReViyehkPv
+        KJsluiScAm1YLiAQ==
+From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] tools/memory-model: Tie acquire loads to reads-from
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
+Subject: [tip: locking/core] random32: Re-enable KCSAN instrumentation
+Cc:     Marco Elver <elver@google.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161340095527.20312.14396173781027795750.tip-bot2@tip-bot2>
+Message-ID: <161340095553.20312.14429902541087017215.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -52,53 +55,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     8881e7a774a8d14088d6c6fde8730660f74a3642
-Gitweb:        https://git.kernel.org/tip/8881e7a774a8d14088d6c6fde8730660f74a3642
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Fri, 06 Nov 2020 09:58:01 -08:00
+Commit-ID:     567a83e6872c15b2080d1d03de71868cd0ae7cea
+Gitweb:        https://git.kernel.org/tip/567a83e6872c15b2080d1d03de71868cd0ae7cea
+Author:        Marco Elver <elver@google.com>
+AuthorDate:    Tue, 24 Nov 2020 12:02:10 +01:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 04 Jan 2021 14:40:49 -08:00
+CommitterDate: Mon, 04 Jan 2021 14:39:07 -08:00
 
-tools/memory-model: Tie acquire loads to reads-from
+random32: Re-enable KCSAN instrumentation
 
-This commit explicitly makes the connection between acquire loads and
-the reads-from relation.  It also adds an entry for happens-before,
-and refers to the corresponding section of explanation.txt.
+Re-enable KCSAN instrumentation, now that KCSAN no longer relies on code
+in lib/random32.c.
 
-Reported-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/memory-model/Documentation/glossary.txt | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ lib/Makefile | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
-index 79acb75..b2da636 100644
---- a/tools/memory-model/Documentation/glossary.txt
-+++ b/tools/memory-model/Documentation/glossary.txt
-@@ -33,10 +33,11 @@ Acquire:  With respect to a lock, acquiring that lock, for example,
- 	acquire loads.
+diff --git a/lib/Makefile b/lib/Makefile
+index afeff05..dc09208 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -27,9 +27,6 @@ KASAN_SANITIZE_string.o := n
+ CFLAGS_string.o += -fno-stack-protector
+ endif
  
- 	When an acquire load returns the value stored by a release store
--	to that same variable, then all operations preceding that store
--	happen before any operations following that load acquire.
-+	to that same variable, (in other words, the acquire load "reads
-+	from" the release store), then all operations preceding that
-+	store "happen before" any operations following that load acquire.
- 
--	See also "Relaxed" and "Release".
-+	See also "Happens-Before", "Reads-From", "Relaxed", and "Release".
- 
- Coherence (co):  When one CPU's store to a given variable overwrites
- 	either the value from another CPU's store or some later value,
-@@ -119,6 +120,11 @@ Fully Ordered:  An operation such as smp_mb() that orders all of
- 	that orders all of its CPU's prior accesses, itself, and
- 	all of its CPU's subsequent accesses.
- 
-+Happens-Before (hb): A relation between two accesses in which LKMM
-+	guarantees the first access precedes the second.  For more
-+	detail, please see the "THE HAPPENS-BEFORE RELATION: hb"
-+	section of explanation.txt.
-+
- Marked Access:  An access to a variable that uses an special function or
- 	macro such as "r1 = READ_ONCE(x)" or "smp_store_release(&a, 1)".
- 
+-# Used by KCSAN while enabled, avoid recursion.
+-KCSAN_SANITIZE_random32.o := n
+-
+ lib-y := ctype.o string.o vsprintf.o cmdline.o \
+ 	 rbtree.o radix-tree.o timerqueue.o xarray.o \
+ 	 idr.o extable.o sha1.o irq_regs.o argv_split.o \
