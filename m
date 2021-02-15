@@ -2,130 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7424231C16F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD2031C175
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhBOSUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 13:20:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhBOSUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 13:20:37 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BA4C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:19:56 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id k22so4156770pll.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:19:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=USwR3sUAh3X/IQIe8yfKo61p7LMNkKqO4NUHOz8c8WU=;
-        b=jyMGqHpGp1yPvi1APhdJZWbix/DfwuVSfSYSpVglMTqJ2ePgxDrDjxZantLX5K5tp9
-         n7ZUC8D5N4xr1g3Mb5W+idJIfbZdmDnv9HC/eFjwlzHzN9A5DSjix6uCPcNJv8PjrwG+
-         yLNqluW5wWq6fOIJFpBPFssdSRXJoD5bcidRkT2q8i6j7KrYu9pnJPo+T7oDX/zvATF6
-         UVoIf8f1xGPUIvjYjzmpTGKAOmFzixi8lNF8bPLGwc2TDGHOWxWo4Ye3+FGNHu/+aBDg
-         n1o7CTOEuUyFRXrOoRTr7DO/yUEjrwekxD8doXyuN3Kn/zyO0EZZuc7xLoIriak3o6oj
-         2iIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=USwR3sUAh3X/IQIe8yfKo61p7LMNkKqO4NUHOz8c8WU=;
-        b=jqo5LkyY4gcbQQB0VA8A5Fcdy8ozDecLDqunjD1VJIlyZ46LxhT9D99SAVo19H7uwI
-         dh4Kh2A/AvcE18TeixplEx9iHUMg98xaB1XmKC8yvmPCCpSIQX4iEZGRR+NedY9FaZe4
-         bcEa5AvIC/9UWqwaERjiDIBWfj8vALgLiQUY6vF0gyQLl5ABRuZxyalKwJTJ3KxQA0Nj
-         sxpYoEgMklxyf7h7+wm/pZscXlsxKPMFpPVwV/Lhim0zE54vDrybEPASQ0G3kv4YjFRp
-         aCVGAbK0ZzGidiyers8g7d2T7m0bQ1xu8/p9s2NMepaWvTNmt24hT8vqVFrNiWmsd8ue
-         iQdg==
-X-Gm-Message-State: AOAM532th0JgAQ6lw+ICZPLpu4ToQFo1lKabYWaKo2Fss6ekLVKAzdyp
-        KBpiOJwYDOXMBNrV7BSyXjCH2bqmlGjtmrVfw4L05w==
-X-Google-Smtp-Source: ABdhPJy/NfIbAZY8/WKidLiAfmiqQ4UOgwQAs69wL7Uen0KC9xCwXgsZkScddOlYw0iSM1IFQFbdq/LfWOFFCVgTyfY=
-X-Received: by 2002:a17:90b:1096:: with SMTP id gj22mr109592pjb.229.1613413196531;
- Mon, 15 Feb 2021 10:19:56 -0800 (PST)
+        id S230119AbhBOSY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 13:24:27 -0500
+Received: from muru.com ([72.249.23.125]:33832 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229954AbhBOSYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 13:24:25 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 63CEA80CE;
+        Mon, 15 Feb 2021 18:24:04 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 20:23:38 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/25] arm64: arch_timer: implement support for
+ interrupt-names
+Message-ID: <YCq8Kl8KYQzpBEy0@atomide.com>
+References: <20210215121713.57687-1-marcan@marcan.st>
+ <20210215121713.57687-7-marcan@marcan.st>
 MIME-Version: 1.0
-References: <20210208085013.89436-5-songmuchun@bytedance.com>
- <YCafit5ruRJ+SL8I@dhcp22.suse.cz> <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
- <YCpN38i75olgispI@dhcp22.suse.cz> <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
- <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
- <YCpmlGuoTakPJs1u@dhcp22.suse.cz> <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
- <YCp04NVBZpZZ5k7G@dhcp22.suse.cz> <CAMZfGtV8-yJa_eGYtSXc0YY8KhYpgUo=pfj6TZ9zMo8fbz8nWA@mail.gmail.com>
- <YCqhDZ0EAgvCz+wX@dhcp22.suse.cz> <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
-In-Reply-To: <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 16 Feb 2021 02:19:20 +0800
-Message-ID: <CAMZfGtWVwEdBfiof3=wW2-FUN4PU-N5J=HfiAETVbwbEzdvAGQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215121713.57687-7-marcan@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 1:48 AM Muchun Song <songmuchun@bytedance.com> wrot=
-e:
->
-> On Tue, Feb 16, 2021 at 12:28 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 15-02-21 23:36:49, Muchun Song wrote:
-> > [...]
-> > > > There shouldn't be any real reason why the memory allocation for
-> > > > vmemmaps, or handling vmemmap in general, has to be done from withi=
-n the
-> > > > hugetlb lock and therefore requiring a non-sleeping semantic. All t=
-hat
-> > > > can be deferred to a more relaxed context. If you want to make a
-> > >
-> > > Yeah, you are right. We can put the freeing hugetlb routine to a
-> > > workqueue. Just like I do in the previous version (before v13) patch.
-> > > I will pick up these patches.
-> >
-> > I haven't seen your v13 and I will unlikely have time to revisit that
-> > version. I just wanted to point out that the actual allocation doesn't
-> > have to happen from under the spinlock. There are multiple ways to go
-> > around that. Dropping the lock would be one of them. Preallocation
-> > before the spin lock is taken is another. WQ is certainly an option but
-> > I would take it as the last resort when other paths are not feasible.
-> >
->
-> "Dropping the lock" and "Preallocation before the spin lock" can limit
-> the context of put_page to non-atomic context. I am not sure if there
-> is a page puted somewhere under an atomic context. e.g. compaction.
-> I am not an expert on this.
+* Hector Martin <marcan@marcan.st> [210215 12:18]:
+> This allows the devicetree to correctly represent the available set of
+> timers, which varies from device to device, without the need for fake
+> dummy interrupts for unavailable slots.
 
-Using GFP_KERNEL will also use the current task cpuset to allocate
-memory. Do we have an interface to ignore current task cpuset=EF=BC=9FIf no=
-t,
-WQ may be the only option and it also will not limit the context of
-put_page. Right?
+I like the idea of using interrupt-names property for mapping timers :)
 
->
-> > --
-> > Michal Hocko
-> > SUSE Labs
+Similar approach might help other SoCs too. And clocksources never really
+had similar issues.
+
+With Marc's comments addressed, please feel free to add:
+
+Reviewed-by: Tony Lindgren <tony@atomide.com>
