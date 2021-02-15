@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB1F31BB4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 491F131BB51
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhBOOkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhBOOkX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:40:23 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AD6C061574;
-        Mon, 15 Feb 2021 06:39:43 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id lw17so2745540pjb.0;
-        Mon, 15 Feb 2021 06:39:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4k/YlfJBwWB/CB9z3j4IwxeWRKuiJsOpEaK3C24WkHk=;
-        b=k0cKC4YN6xyUE2B/OZFXTOW9hvFzaOa/URb+GHSCBxTTmvHlMC9Eta86bh6fCS9h2p
-         y66p0KfJrrfzJdHwjKlIKVB09VTVbd8uO5LXSTfEckTSNA43ibpSr8FxWBvDdzmW/BWP
-         D111hPR6Xc8SNuwH0bo7QeN6FPMIDV5Y47SI04WrnHpsqUW7Pn19GxIBUPAD78SOfWtE
-         LysnRjPtGWRF1ja99qJEZ6qCT91Y+1p89jqnovBYM8L3YBS6mmwrAIHWcWUHvpfD2Por
-         THlYbftsWLvbsoIK6qHMb55DNXsFpGqLgZr/IxGSdJOXdfxUNuqxPX8Wt22SgCOeFLSW
-         hJMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4k/YlfJBwWB/CB9z3j4IwxeWRKuiJsOpEaK3C24WkHk=;
-        b=etxD76IHjYoaFPmTv7P9BOfwDxHDzdw4H1cJbdN4APskpfst9V1nL02pa3agWQgHgC
-         Zpeqp2zEC/5KVrBZO1Ux6XGlaghnQWFnVMU2eDYi2jEEazHrWw/KdrfhQZkPFXCFq1uG
-         Y20xCuhGZHE5laTDuR36P79Qgx780X+Yvci0GTa06IfFDS5HNCn1eCbpnafcac3Sz+g4
-         4bcLukIH/9u75bgIuCwYIisXaacJqoAM/5F4tG3cA0+HyM4Kw53VetC5iX0FPHQczivU
-         KLnv2LFdEC8V5TBViH8oUrP5mj2dnN0W4/hwas5zxzn46TUOmo3caws8TsfOOoUSUaBk
-         GTnQ==
-X-Gm-Message-State: AOAM530MJyjm8bvQ8wyv1aGlGSfHL7SasDGiAGB+3vb0mj9yTmzEpoWa
-        AtOwjVezIKpqMAXOOl8el06PelRFGJLPIq03mOc=
-X-Google-Smtp-Source: ABdhPJy9SDAXtfrqtid4Hgf/WmX56bcIzMX0hLwcVyFTihSbcDK6SFjwAfBNq9cDuyKpg4C7ydYrGf9glnfzwN5MZwk=
-X-Received: by 2002:a17:90a:1b23:: with SMTP id q32mr16831579pjq.181.1613399982663;
- Mon, 15 Feb 2021 06:39:42 -0800 (PST)
+        id S229930AbhBOOlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:41:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49828 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229866AbhBOOlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:41:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 785F1AC69;
+        Mon, 15 Feb 2021 14:40:27 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 14:40:26 +0000
+From:   Michal Rostecki <mrostecki@suse.de>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH RFC 4/6] btrfs: Check if the filesystem is has mixed type
+ of devices
+Message-ID: <20210215144026.GB21872@wotan.suse.de>
+References: <20210209203041.21493-1-mrostecki@suse.de>
+ <20210209203041.21493-5-mrostecki@suse.de>
+ <20210210040805.GB12086@qmqm.qmqm.pl>
+ <20210212182641.GB20817@wotan.suse.de>
+ <20210212233602.GA30441@qmqm.qmqm.pl>
 MIME-Version: 1.0
-References: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com> <43456ba7-c372-84cc-4949-dcb817188e21@amd.com>
-In-Reply-To: <43456ba7-c372-84cc-4949-dcb817188e21@amd.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 15 Feb 2021 16:39:26 +0200
-Message-ID: <CAHp75VfVXnqdVRAPQ36vZeD-ZMCjWmjA_-6T=jnOEVMne4bv0g@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] string: Consolidate yesno() helpers under string.h hood
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mikita Lipski <mikita.lipski@amd.com>,
-        Eryk Brol <eryk.brol@amd.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        amd-gfx@lists.freedesktop.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        netdev <netdev@vger.kernel.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210212233602.GA30441@qmqm.qmqm.pl>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Sakari and printk people
+On Sat, Feb 13, 2021 at 12:36:02AM +0100, Michał Mirosław wrote:
+> On Fri, Feb 12, 2021 at 06:26:41PM +0000, Michal Rostecki wrote:
+> > On Wed, Feb 10, 2021 at 05:08:05AM +0100, Michał Mirosław wrote:
+> > > On Tue, Feb 09, 2021 at 09:30:38PM +0100, Michal Rostecki wrote:
+> > > > From: Michal Rostecki <mrostecki@suse.com>
+> > > > 
+> > > > Add the btrfs_check_mixed() function which checks if the filesystem has
+> > > > the mixed type of devices (non-rotational and rotational). This
+> > > > information is going to be used in roundrobin raid1 read policy.a
+> > > [...]
+> > > > @@ -669,8 +699,12 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+> > > >  	}
+> > > >  
+> > > >  	q = bdev_get_queue(bdev);
+> > > > -	if (!blk_queue_nonrot(q))
+> > > > +	rotating = !blk_queue_nonrot(q);
+> > > > +	device->rotating = rotating;
+> > > > +	if (rotating)
+> > > >  		fs_devices->rotating = true;
+> > > > +	if (!fs_devices->mixed)
+> > > > +		fs_devices->mixed = btrfs_check_mixed(fs_devices, rotating);
+> > > [...]
+> > > 
+> > > Since this is adding to a set, a faster way is:
+> > > 
+> > > if (fs_devices->rotating != rotating)
+> > > 	fs_devices->mixed = true;
+> > > 
+> > > The scan might be necessary on device removal, though.
+> > Actually, that's not going to work in case of appenging a rotational
+> > device when all previous devices are non-rotational.
+> [...]
+> > Inverting the order of those `if` checks would break the other
+> > permuitations which start with rotational disks.
+> 
+> But not if you would add:
+> 
+> if (adding first device)
+> 	fs_devices->rotating = rotating;
+> 
+> before the checks.
+> 
+> But them, there is a simpler way: count how many rotating vs non-rotating
+> devices there are while adding them. Like:
+> 
+> rotating ? ++n_rotating : ++n_fixed;
+> 
+> And then on remove you'd have it covered.
 
-On Mon, Feb 15, 2021 at 4:28 PM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
-> Am 15.02.21 um 15:21 schrieb Andy Shevchenko:
-> > We have already few similar implementation and a lot of code that can b=
-enefit
-> > of the yesno() helper.  Consolidate yesno() helpers under string.h hood=
-.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> Looks like a good idea to me, feel free to add an Acked-by: Christian
-> K=C3=B6nig <christian.koenig@amd.com> to the series.
-
-Thanks.
-
-> But looking at the use cases for this, wouldn't it make more sense to
-> teach kprintf some new format modifier for this?
-
-As a next step? IIRC Sakari has at some point the series converted
-yesno and Co. to something which I don't remember the details of.
-
-Guys, what do you think?
-
---=20
-With Best Regards,
-Andy Shevchenko
+I like the idea of storing numbers and simply checking them. I use it in
+v2 - though probably in a different form, and I will most likely move
+the whole logic around checking device types to separate functions, to
+not bloat btrfs_open_one_device() and the others too much.
