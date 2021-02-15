@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1102F31BFCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13AF431BFA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbhBOQxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:53:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50208 "EHLO mail.kernel.org"
+        id S230170AbhBOQpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:45:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231630AbhBOPmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:42:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77F3764EBE;
-        Mon, 15 Feb 2021 15:35:15 +0000 (UTC)
+        id S230396AbhBOPiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:38:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C8B64EEF;
+        Mon, 15 Feb 2021 15:34:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403316;
-        bh=pZ7TnNK5FWqXQ/Iyb7sLO3lT8Uu4DIWCxjevEDk4xhY=;
+        s=korg; t=1613403250;
+        bh=rJ3cqbEgNSmAErDCZ7J+vtEJej8rLb/DxMwN4DWhHaA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GLd5ro6b1+FHpf95w3dSMBxwVk+w5fZhUEdxl1ulNNE3L/IdR1V0ErHjf4yN8A7jL
-         ZVh4keHWsTAoQTUOpY4aFTfyIvbIf0jCAqzwiuP0D73EuET5LF5qydGmcjHGxmN60o
-         TI2UOe6xRd4trrPowfpLT5v5i6r9G1RoCGrQtpjc=
+        b=J1gZXAKgJZOfsHRsMW2Nf2nVJ7s81rnG5T3nT7rZ2Wyyv+ti71arLYb4rXNLlbItL
+         mHljBYdk8zJIbBDwZ4rRUgsQnH0HGp2WjclguqnwDwYwH8hiAkt+GPD3iibuESdgvn
+         dRhlFZhfB8XMQMJmkzeEMpY6ni5bZCx80+EE8zCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alain Volmat <alain.volmat@foss.st.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 082/104] i2c: stm32f7: fix configuration of the digital filter
-Date:   Mon, 15 Feb 2021 16:27:35 +0100
-Message-Id: <20210215152722.097073003@linuxfoundation.org>
+        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 5.10 085/104] x86/pci: Create PCI/MSI irqdomain after x86_init.pci.arch_init()
+Date:   Mon, 15 Feb 2021 16:27:38 +0100
+Message-Id: <20210215152722.200008050@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -40,62 +39,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 3d6a3d3a2a7a3a60a824e7c04e95fd50dec57812 ]
+commit 70245f86c109e0eafb92ea9653184c0e44b4b35c upstream.
 
-The digital filter related computation are present in the driver
-however the programming of the filter within the IP is missing.
-The maximum value for the DNF is wrong and should be 15 instead of 16.
+Invoking x86_init.irqs.create_pci_msi_domain() before
+x86_init.pci.arch_init() breaks XEN PV.
 
-Fixes: aeb068c57214 ("i2c: i2c-stm32f7: add driver")
+The XEN_PV specific pci.arch_init() function overrides the default
+create_pci_msi_domain() which is obviously too late.
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+As a consequence the XEN PV PCI/MSI allocation goes through the native
+path which runs out of vectors and causes malfunction.
+
+Invoke it after x86_init.pci.arch_init().
+
+Fixes: 6b15ffa07dc3 ("x86/irq: Initialize PCI/MSI domain at PCI init time")
+Reported-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Juergen Gross <jgross@suse.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/87pn18djte.fsf@nanos.tec.linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-stm32f7.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ arch/x86/pci/init.c |   15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index f41f51a176a1d..6747353345475 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -57,6 +57,8 @@
- #define STM32F7_I2C_CR1_RXDMAEN			BIT(15)
- #define STM32F7_I2C_CR1_TXDMAEN			BIT(14)
- #define STM32F7_I2C_CR1_ANFOFF			BIT(12)
-+#define STM32F7_I2C_CR1_DNF_MASK		GENMASK(11, 8)
-+#define STM32F7_I2C_CR1_DNF(n)			(((n) & 0xf) << 8)
- #define STM32F7_I2C_CR1_ERRIE			BIT(7)
- #define STM32F7_I2C_CR1_TCIE			BIT(6)
- #define STM32F7_I2C_CR1_STOPIE			BIT(5)
-@@ -160,7 +162,7 @@ enum {
- };
+--- a/arch/x86/pci/init.c
++++ b/arch/x86/pci/init.c
+@@ -9,16 +9,23 @@
+    in the right sequence from here. */
+ static __init int pci_arch_init(void)
+ {
+-	int type;
+-
+-	x86_create_pci_msi_domain();
++	int type, pcbios = 1;
  
- #define STM32F7_I2C_DNF_DEFAULT			0
--#define STM32F7_I2C_DNF_MAX			16
-+#define STM32F7_I2C_DNF_MAX			15
+ 	type = pci_direct_probe();
  
- #define STM32F7_I2C_ANALOG_FILTER_ENABLE	1
- #define STM32F7_I2C_ANALOG_FILTER_DELAY_MIN	50	/* ns */
-@@ -725,6 +727,13 @@ static void stm32f7_i2c_hw_config(struct stm32f7_i2c_dev *i2c_dev)
- 	else
- 		stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
- 				     STM32F7_I2C_CR1_ANFOFF);
+ 	if (!(pci_probe & PCI_PROBE_NOEARLY))
+ 		pci_mmcfg_early_init();
+ 
+-	if (x86_init.pci.arch_init && !x86_init.pci.arch_init())
++	if (x86_init.pci.arch_init)
++		pcbios = x86_init.pci.arch_init();
 +
-+	/* Program the Digital Filter */
-+	stm32f7_i2c_clr_bits(i2c_dev->base + STM32F7_I2C_CR1,
-+			     STM32F7_I2C_CR1_DNF_MASK);
-+	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
-+			     STM32F7_I2C_CR1_DNF(i2c_dev->setup.dnf));
++	/*
++	 * Must happen after x86_init.pci.arch_init(). Xen sets up the
++	 * x86_init.irqs.create_pci_msi_domain there.
++	 */
++	x86_create_pci_msi_domain();
 +
- 	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
- 			     STM32F7_I2C_CR1_PE);
- }
--- 
-2.27.0
-
++	if (!pcbios)
+ 		return 0;
+ 
+ 	pci_pcbios_init();
 
 
