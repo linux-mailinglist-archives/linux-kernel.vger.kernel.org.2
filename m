@@ -2,66 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E581C31BADE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773CC31BAF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhBOOU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:20:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52666 "EHLO mail.kernel.org"
+        id S230098AbhBOOXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:23:51 -0500
+Received: from mga11.intel.com ([192.55.52.93]:39382 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229811AbhBOOU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:20:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F1964D73
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 14:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613398814;
-        bh=q0JlYlCf2nyiA49eTd+sXAKopkQYFgdklHf+ZkCGemM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NEfB7ZW9pIJeG+Nikm2OzURIn1fPaBViGYL/EyGkzYCTtr6oUQ17y/qjThkMqCI5q
-         oDi5NQSFwNoEXt1XPdyQhYthz4Pp3/6UjPR2s473G8wLuk/PmDwX2LOWwEvpMqa22z
-         IonNY7DhIiFGI+7mLAIgIYDG8gxnSUVBBmrTRBOmmEXrt6IS1bbOYw4KSpwePKH+8B
-         EcLQUamp/gSZrroI2jlyDx7W28Pg0ZxRWrp4f3w2Du6jLDc8+9azfsv9VYzMga58MT
-         jSVa+0YJp1vFTso19XPahybuaUOTSoPSCIMHrJbytAlleswwbG8tN6XNzjhwwK73l5
-         j2vyzCMG6ri8A==
-Received: by mail-ot1-f47.google.com with SMTP id w26so403160otm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:20:14 -0800 (PST)
-X-Gm-Message-State: AOAM531gkwgfHTSApCPCDTZauEEOVCIE6ncIMwbZTm4zq2xl8R/qx6Os
-        bIoR3itiHPbnxUm7M0zwjAokBJrq62t+ENxOznw=
-X-Google-Smtp-Source: ABdhPJzHQ3ZNhQdVjpHCzKDTmD8iRPGe94g3oXTpYq1d+qvMC4dpWDMBG8GCdrpjz6sVW5GoJiDBdWhIiIxlKrDY4wc=
-X-Received: by 2002:a9d:3403:: with SMTP id v3mr11497589otb.305.1613398814038;
- Mon, 15 Feb 2021 06:20:14 -0800 (PST)
+        id S229604AbhBOOXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:23:46 -0500
+IronPort-SDR: zRN+L/5X7Vz6AKVSoVFsyAGvpMY7lATcljCPKpB5V1Csbw84oE5IsnjijBb0RjfZM1j4kgTpmU
+ AVPNeMH+BmbA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="179190196"
+X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
+   d="scan'208";a="179190196"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 06:21:59 -0800
+IronPort-SDR: FCMRpCe1wqWToEDOuR4p3xD8eTrfb+0xgVw9TpJbJnhvdWYjZa/OlhEhZBil5dSPZAi0g5Ubji
+ syY4bvn1+o6g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
+   d="scan'208";a="361288896"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 15 Feb 2021 06:21:54 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 3C7F914A; Mon, 15 Feb 2021 16:21:52 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        netdev@vger.kernel.org
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/3] string: Consolidate yesno() helpers under string.h hood
+Date:   Mon, 15 Feb 2021 16:21:35 +0200
+Message-Id: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210201100023.10985-1-patrice.chotard@foss.st.com> <800f8dfa-0949-ddf8-1635-15311c2c9623@foss.st.com>
-In-Reply-To: <800f8dfa-0949-ddf8-1635-15311c2c9623@foss.st.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 15 Feb 2021 15:19:58 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1Xqd0LijMhoms8vdS8zNDP-r=d7i1XL=kOk606Quo-xg@mail.gmail.com>
-Message-ID: <CAK8P3a1Xqd0LijMhoms8vdS8zNDP-r=d7i1XL=kOk606Quo-xg@mail.gmail.com>
-Subject: Re: [PATCH 0/3] MAINTAINERS: update STMicroelectronics email
-To:     Patrice CHOTARD <patrice.chotard@foss.st.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        "khilman@baylibre.com" <khilman@baylibre.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 2:17 PM Patrice CHOTARD
-<patrice.chotard@foss.st.com> wrote:
->
-> Hi Arnd, Olof, Kevin
->
-> What is the best way to get this series merged ?
-> Do you pick it and apply it directly, or do we integrate it in the next STM32 pull request ?
+We have already few similar implementation and a lot of code that can benefit
+of the yesno() helper.  Consolidate yesno() helpers under string.h hood.
 
-I usually pick up updates to the MAINTAINERS file as bugfixes, so
-either send them as part of the fixes pull request, or forward them
-to soc@kernel.org to apply directly.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ .../drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c    |  6 +-----
+ drivers/gpu/drm/i915/i915_utils.h                    |  6 +-----
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c   | 12 +-----------
+ include/linux/string.h                               |  5 +++++
+ 4 files changed, 8 insertions(+), 21 deletions(-)
 
-If you cc me on patches for a particular platform, I usually just ignore them,
-unless they get sent to soc@kernel.org, and in that case I will either apply
-them or ask back if they were meant for us.
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+index 360952129b6d..7fde4f90e513 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+@@ -23,6 +23,7 @@
+  *
+  */
+ 
++#include <linux/string.h>
+ #include <linux/uaccess.h>
+ 
+ #include <drm/drm_debugfs.h>
+@@ -49,11 +50,6 @@ struct dmub_debugfs_trace_entry {
+ 	uint32_t param1;
+ };
+ 
+-static inline const char *yesno(bool v)
+-{
+-	return v ? "yes" : "no";
+-}
+-
+ /* parse_write_buffer_into_params - Helper function to parse debugfs write buffer into an array
+  *
+  * Function takes in attributes passed to debugfs write entry
+diff --git a/drivers/gpu/drm/i915/i915_utils.h b/drivers/gpu/drm/i915/i915_utils.h
+index abd4dcd9f79c..e6da5a951132 100644
+--- a/drivers/gpu/drm/i915/i915_utils.h
++++ b/drivers/gpu/drm/i915/i915_utils.h
+@@ -27,6 +27,7 @@
+ 
+ #include <linux/list.h>
+ #include <linux/overflow.h>
++#include <linux/string.h>
+ #include <linux/sched.h>
+ #include <linux/types.h>
+ #include <linux/workqueue.h>
+@@ -408,11 +409,6 @@ wait_remaining_ms_from_jiffies(unsigned long timestamp_jiffies, int to_wait_ms)
+ #define MBps(x) KBps(1000 * (x))
+ #define GBps(x) ((u64)1000 * MBps((x)))
+ 
+-static inline const char *yesno(bool v)
+-{
+-	return v ? "yes" : "no";
+-}
+-
+ static inline const char *onoff(bool v)
+ {
+ 	return v ? "on" : "off";
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+index 7d49fd4edc9e..c857d73abbd7 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+@@ -34,6 +34,7 @@
+ 
+ #include <linux/seq_file.h>
+ #include <linux/debugfs.h>
++#include <linux/string.h>
+ #include <linux/string_helpers.h>
+ #include <linux/sort.h>
+ #include <linux/ctype.h>
+@@ -2015,17 +2016,6 @@ static const struct file_operations rss_debugfs_fops = {
+ /* RSS Configuration.
+  */
+ 
+-/* Small utility function to return the strings "yes" or "no" if the supplied
+- * argument is non-zero.
+- */
+-static const char *yesno(int x)
+-{
+-	static const char *yes = "yes";
+-	static const char *no = "no";
+-
+-	return x ? yes : no;
+-}
+-
+ static int rss_config_show(struct seq_file *seq, void *v)
+ {
+ 	struct adapter *adapter = seq->private;
+diff --git a/include/linux/string.h b/include/linux/string.h
+index 9521d8cab18e..fd946a5e18c8 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -308,4 +308,9 @@ static __always_inline size_t str_has_prefix(const char *str, const char *prefix
+ 	return strncmp(str, prefix, len) == 0 ? len : 0;
+ }
+ 
++static inline const char *yesno(bool yes)
++{
++	return yes ? "yes" : "no";
++}
++
+ #endif /* _LINUX_STRING_H_ */
+-- 
+2.30.0
 
-      Arnd
