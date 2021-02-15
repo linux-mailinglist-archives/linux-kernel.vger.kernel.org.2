@@ -2,80 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968F031C31C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B03B131C328
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbhBOUk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 15:40:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53664 "EHLO mail.kernel.org"
+        id S229716AbhBOUpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 15:45:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhBOUkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 15:40:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id BB54064DE0;
-        Mon, 15 Feb 2021 20:40:08 +0000 (UTC)
+        id S229660AbhBOUpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 15:45:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F085864DF0;
+        Mon, 15 Feb 2021 20:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613421608;
-        bh=L6EiOcCQUysvHdkTDhzvQP2HWY3qW0TmmQBGZa+cY1s=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=aMtqKak2C1V5nRRpUs1hKH1UtzD+72iQ3Z6JLgTBntjXsqAsmATDw7JJNXTwcOUwb
-         er0kvh85ALXbU0vYpL2XXzOV07Yvay7AUjJHSdT1dw7Qa2kNR2EwM+71bo6YRaHmM4
-         OPEm0okJMW4uhN9gouTGwTYDTo8tZ2JXmndIRef6zkz2OcU1Y3RQGkpN9Au8xmtEFT
-         uX52nNlmBTzNbfwVBzRZSgJG+2UVY3r1aP55hh3jgi4U0ZHOPWiOVfhh2j4DTRmbXc
-         X5j5CCZXbKCQtTGdNlKnlZpr6/KANR/n05XuM83kCuvMcHx0idhNBXGfVJpZyGDoDr
-         8vtLM2uZz9qDA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AA246609EA;
-        Mon, 15 Feb 2021 20:40:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1613421859;
+        bh=BnsvQV2bdkDvPdcHnrU1YlHZ7QeSAQIz9cXX9Wf+6OU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uswIQDVlkY/w75GG80UZj2JtwPdKb2VECCVNrPA/m+2aror+NBBM2s+V3BAbk9pfW
+         W+e861uqfGj0odvw799QiQ65mIg05UXWHc92/1crEiDrUZmraYIhaJV9l8bPqhFWjj
+         pMTQAJXx0blpwixXtg2fr7zR4vCvRiS7Uk+pJz32OMG+iZmhG3EyxwGn6f9T6zJT3c
+         NL18y/RY6jjDYYmvaCvHiZrGCV6Vmh82T0ET3xVOGx1mmI+AKv+vHa3qKNST/ftEV7
+         AQq9uO3rEGICZdfSEf5+vJgblQuh71nfFOuqBBoPtyR+rNWpqI5hzIwYBar95icX53
+         PC7pQMtYPTHJw==
+Date:   Mon, 15 Feb 2021 20:43:22 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/3] spi: butterfly: Switch to use
+ module_parport_driver()
+Message-ID: <20210215204322.GA4378@sirena.org.uk>
+References: <20210215202353.18515-1-andriy.shevchenko@linux.intel.com>
+ <20210215202353.18515-2-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next 0/4] net: mvpp2: Minor non functional driver code
- improvements
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161342160869.4070.12270754155424060613.git-patchwork-notify@kernel.org>
-Date:   Mon, 15 Feb 2021 20:40:08 +0000
-References: <1613309917-17569-1-git-send-email-stefanc@marvell.com>
-In-Reply-To: <1613309917-17569-1-git-send-email-stefanc@marvell.com>
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org,
-        linux@armlinux.org.uk, mw@semihalf.com, andrew@lunn.ch,
-        rmk+kernel@armlinux.org.uk, atenart@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
+In-Reply-To: <20210215202353.18515-2-andriy.shevchenko@linux.intel.com>
+X-Cookie: Serenity through viciousness.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sun, 14 Feb 2021 15:38:33 +0200 you wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
-> 
-> The patch series contains minor code improvements and did not change any functionality.
-> 
-> Stefan Chulski (4):
->   net: mvpp2: simplify PPv2 version ID read
->   net: mvpp2: improve Packet Processor version check
->   net: mvpp2: improve mvpp2_get_sram return
->   net: mvpp2: improve Networking Complex Control register naming
-> 
-> [...]
+On Mon, Feb 15, 2021 at 10:23:52PM +0200, Andy Shevchenko wrote:
+> Switch to use module_parport_driver() to reduce boilerplate code.
+> Note, device_initcall() is a default for module_init().
 
-Here is the summary with links:
-  - [net-next,1/4] net: mvpp2: simplify PPv2 version ID read
-    https://git.kernel.org/netdev/net-next/c/8b986866b252
-  - [net-next,2/4] net: mvpp2: improve Packet Processor version check
-    https://git.kernel.org/netdev/net-next/c/f704177e4721
-  - [net-next,3/4] net: mvpp2: improve mvpp2_get_sram return
-    https://git.kernel.org/netdev/net-next/c/9ad78d81cb76
-  - [net-next,4/4] net: mvpp2: improve Networking Complex Control register naming
-    https://git.kernel.org/netdev/net-next/c/935a11845aef
+Acked-by: Mark Brown <broonie@kernel.org>
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAq3OkACgkQJNaLcl1U
+h9DOPQf9FqpvmTWWFBe/gn7sh4aD9oHcrR7VkbKN8rkDd0r+NgRPppOaOokKdyoQ
+e24StEgGbWaIgSRk+2/c9W+wmk30IfbZoNjoz/aM5My6k/NEIaFl+5Wa/72JUFqc
+vJARGCJ42SQRlX9eAug/Giq0/taClEqoXiu0KfKZfRGylFD7kCtCZjDAlXTjoTqX
+G9aGeyjIHnJDCQROQ/FxEma0ZmqtbrvNP+5I33BXpAiGP2MdMqSO3kGo9P/Mp9UM
+NKUYbC8xjS+nYYrumFjDjpCryLkVTs0fDqknrN+Ls3MfvayXRxwNxfdHtXNnl39w
+Zbs11EtkbrSAoCClTj2aJKoBI52zSQ==
+=+ZwN
+-----END PGP SIGNATURE-----
+
+--envbJBWh7q8WU6mo--
