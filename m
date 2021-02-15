@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8484531B916
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF5331B918
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhBOMXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:23:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
+        id S230175AbhBOMXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:23:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbhBOMTY (ORCPT
+        with ESMTP id S230221AbhBOMT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:19:24 -0500
+        Mon, 15 Feb 2021 07:19:29 -0500
 Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281CEC0613D6;
-        Mon, 15 Feb 2021 04:18:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4279C061786;
+        Mon, 15 Feb 2021 04:18:48 -0800 (PST)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 686E4424CF;
-        Mon, 15 Feb 2021 12:18:38 +0000 (UTC)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 39A7B424C5;
+        Mon, 15 Feb 2021 12:18:43 +0000 (UTC)
 From:   Hector Martin <marcan@marcan.st>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
@@ -37,9 +37,9 @@ Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         Mark Rutland <mark.rutland@arm.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 13/25] arm64: Add Apple vendor-specific system registers
-Date:   Mon, 15 Feb 2021 21:17:01 +0900
-Message-Id: <20210215121713.57687-14-marcan@marcan.st>
+Subject: [PATCH v2 14/25] dt-bindings: interrupt-controller: Add DT bindings for apple-aic
+Date:   Mon, 15 Feb 2021 21:17:02 +0900
+Message-Id: <20210215121713.57687-15-marcan@marcan.st>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210215121713.57687-1-marcan@marcan.st>
 References: <20210215121713.57687-1-marcan@marcan.st>
@@ -49,105 +49,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apple ARM64 SoCs have a ton of vendor-specific registers we're going to
-have to deal with, and those don't really belong in sysreg.h with all
-the architectural registers. Make a new home for them, and add some
-registers which are useful for early bring-up.
+AIC is the Apple Interrupt Controller found on Apple ARM SoCs, such as
+the M1.
 
 Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
- MAINTAINERS                           |  1 +
- arch/arm64/include/asm/sysreg_apple.h | 69 +++++++++++++++++++++++++++
- 2 files changed, 70 insertions(+)
- create mode 100644 arch/arm64/include/asm/sysreg_apple.h
+ .../interrupt-controller/apple,aic.yaml       | 88 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ .../interrupt-controller/apple-aic.h          | 15 ++++
+ 3 files changed, 104 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+ create mode 100644 include/dt-bindings/interrupt-controller/apple-aic.h
 
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml b/Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+new file mode 100644
+index 000000000000..8e61b59802a8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+@@ -0,0 +1,88 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/interrupt-controller/apple,aic.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Apple Interrupt Controller
++
++maintainers:
++  - Hector Martin <marcan@marcan.st>
++
++description: |
++  The Apple Interrupt Controller is a simple interrupt controller present on
++  Apple ARM SoC platforms, including various iPhone and iPad devices and the
++  "Apple Silicon" M1 Macs.
++
++  It provides the following features:
++
++  - Level-triggered hardware IRQs wired to SoC blocks
++    - Single mask bit per IRQ
++    - Per-IRQ affinity setting
++    - Automatic masking on event delivery (auto-ack)
++    - Software triggering (ORed with hw line)
++  - 2 per-CPU IPIs (meant as "self" and "other", but they are interchangeable
++    if not symmetric)
++  - Automatic prioritization (single event/ack register per CPU, lower IRQs =
++    higher priority)
++  - Automatic masking on ack
++  - Default "this CPU" register view and explicit per-CPU views
++
++  This device also represents the FIQ interrupt sources on platforms using AIC,
++  which do not go through a discrete interrupt controller.
++
++allOf:
++  - $ref: /schemas/interrupt-controller.yaml#
++
++properties:
++  compatible:
++    items:
++      - const: apple,m1-aic
++      - const: apple,aic
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    const: 3
++    description: |
++      The 1st cell contains the interrupt type:
++        - 0: Hardware IRQ
++        - 1: FIQ
++
++      The 2nd cell contains the interrupt number.
++        - HW IRQs: interrupt number
++        - FIQs:
++          - 0: physical HV timer
++          - 1: virtual HV timer
++          - 2: physical guest timer
++          - 3: virtual guest timer
++
++      The 3rd cell contains the interrupt flags. This is normally
++      IRQ_TYPE_LEVEL_HIGH (4).
++
++  reg:
++    description: |
++      Specifies base physical address and size of the AIC registers.
++    maxItems: 1
++
++required:
++  - compatible
++  - '#interrupt-cells'
++  - interrupt-controller
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        aic: interrupt-controller@23b100000 {
++            compatible = "apple,m1-aic", "apple,aic";
++            #interrupt-cells = <3>;
++            interrupt-controller;
++            reg = <0x2 0x3b100000 0x0 0x8000>;
++        };
++    };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 4eba6ab16bd9..1431fd59025f 100644
+index 1431fd59025f..9fe723033e63 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -1634,6 +1634,7 @@ B:	https://github.com/AsahiLinux/linux/issues
  C:	irc://chat.freenode.net/asahi-dev
  T:	git https://github.com/AsahiLinux/linux.git
  F:	Documentation/devicetree/bindings/arm/apple.yaml
-+F:	arch/arm64/include/asm/sysreg_apple.h
++F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+ F:	arch/arm64/include/asm/sysreg_apple.h
  
  ARM/ARTPEC MACHINE SUPPORT
- M:	Jesper Nilsson <jesper.nilsson@axis.com>
-diff --git a/arch/arm64/include/asm/sysreg_apple.h b/arch/arm64/include/asm/sysreg_apple.h
+diff --git a/include/dt-bindings/interrupt-controller/apple-aic.h b/include/dt-bindings/interrupt-controller/apple-aic.h
 new file mode 100644
-index 000000000000..2068a3436a70
+index 000000000000..9ac56a7e6d3f
 --- /dev/null
-+++ b/arch/arm64/include/asm/sysreg_apple.h
-@@ -0,0 +1,69 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Apple SoC vendor-defined system register definitions
-+ *
-+ * Copyright The Asahi Linux Contributors
++++ b/include/dt-bindings/interrupt-controller/apple-aic.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
++#ifndef _DT_BINDINGS_INTERRUPT_CONTROLLER_APPLE_AIC_H
++#define _DT_BINDINGS_INTERRUPT_CONTROLLER_APPLE_AIC_H
 +
-+ * This file contains only well-understood registers that are useful to
-+ * Linux. If you are looking for things to add here, you should visit:
-+ *
-+ * https://github.com/AsahiLinux/docs/wiki/HW:ARM-System-Registers
-+ */
++#include <dt-bindings/interrupt-controller/irq.h>
 +
-+#ifndef __ASM_SYSREG_APPLE_H
-+#define __ASM_SYSREG_APPLE_H
++#define AIC_IRQ	0
++#define AIC_FIQ	1
 +
-+#include <asm/sysreg.h>
-+#include <linux/bits.h>
-+#include <linux/bitfield.h>
++#define AIC_TMR_HV_PHYS		0
++#define AIC_TMR_HV_VIRT		1
++#define AIC_TMR_GUEST_PHYS	2
++#define AIC_TMR_GUEST_VIRT	3
 +
-+/*
-+ * Keep these registers in encoding order, except for register arrays;
-+ * those should be listed in array order starting from the position of
-+ * the encoding of the first register.
-+ */
-+
-+#define SYS_APL_PMCR0			sys_reg(3, 1, 15, 0, 0)
-+#define PMCR0_IMODE			GENMASK(10, 8)
-+#define PMCR0_IMODE_OFF			0
-+#define PMCR0_IMODE_PMI			1
-+#define PMCR0_IMODE_AIC			2
-+#define PMCR0_IMODE_HALT		3
-+#define PMCR0_IMODE_FIQ			4
-+#define PMCR0_IACT			BIT(11)
-+
-+/* IPI request registers */
-+#define SYS_APL_IPI_RR_LOCAL		sys_reg(3, 5, 15, 0, 0)
-+#define SYS_APL_IPI_RR_GLOBAL		sys_reg(3, 5, 15, 0, 1)
-+#define IPI_RR_CPU			GENMASK(7, 0)
-+/* Cluster only used for the GLOBAL register */
-+#define IPI_RR_CLUSTER			GENMASK(23, 16)
-+#define IPI_RR_TYPE			GENMASK(29, 28)
-+#define IPI_RR_IMMEDIATE		0
-+#define IPI_RR_RETRACT			1
-+#define IPI_RR_DEFERRED			2
-+#define IPI_RR_NOWAKE			3
-+
-+/* IPI status register */
-+#define SYS_APL_IPI_SR			sys_reg(3, 5, 15, 1, 1)
-+#define IPI_SR_PENDING			BIT(0)
-+
-+/* Guest timer FIQ mask register */
-+#define SYS_APL_VM_TMR_MASK		sys_reg(3, 5, 15, 1, 3)
-+#define VM_TMR_MASK_V			BIT(0)
-+#define VM_TMR_MASK_P			BIT(1)
-+
-+/* Deferred IPI countdown register */
-+#define SYS_APL_IPI_CR			sys_reg(3, 5, 15, 3, 1)
-+
-+#define SYS_APL_UPMCR0			sys_reg(3, 7, 15, 0, 4)
-+#define UPMCR0_IMODE			GENMASK(18, 16)
-+#define UPMCR0_IMODE_OFF		0
-+#define UPMCR0_IMODE_AIC		2
-+#define UPMCR0_IMODE_HALT		3
-+#define UPMCR0_IMODE_FIQ		4
-+
-+#define SYS_APL_UPMSR			sys_reg(3, 7, 15, 6, 4)
-+#define UPMSR_IACT			BIT(0)
-+
-+#endif	/* __ASM_SYSREG_APPLE_H */
++#endif
 -- 
 2.30.0
 
