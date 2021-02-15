@@ -2,64 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351B231BB70
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A345F31BB79
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhBOOx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:53:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229907AbhBOOxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:53:50 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98A9264D9F;
-        Mon, 15 Feb 2021 14:53:08 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 09:53:07 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Xi Ruoyao <xry111@mengyan1223.wang>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org
-Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
- non-section symbols
-Message-ID: <20210215095307.6f5fb12f@gandalf.local.home>
-In-Reply-To: <20210214155147.3owdimqv2lyhu6by@treble>
-References: <dded80b60d9136ea90987516c28f93273385651f.camel@mengyan1223.wang>
-        <YCU3Vdoqd+EI+zpv@kroah.com>
-        <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
-        <YCafKVSTX9MxDBMd@kroah.com>
-        <20210212170750.y7xtitigfqzpchqd@treble>
-        <20210212124547.1dcf067e@gandalf.local.home>
-        <YCfdfkoeh8i0baCj@kroah.com>
-        <20210213091304.2dd51e5f@oasis.local.home>
-        <20210213155203.lehuegwc3h42nebs@treble>
-        <YCf9bnsmXqRGMn+j@kroah.com>
-        <20210214155147.3owdimqv2lyhu6by@treble>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230000AbhBOOzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:55:10 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:46190 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229907AbhBOOy7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:54:59 -0500
+Received: by mail-oi1-f177.google.com with SMTP id f3so7924716oiw.13;
+        Mon, 15 Feb 2021 06:54:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9JKsmQvDQuJ7SXoDUysYvZz5JWsAqxGnNy9od5oFkcQ=;
+        b=OMMaX64o4mPp15u74VK9VLMzv/sWOMuUdKE390rlvLWsr1E5JNtvy1v48K4DlcO3zl
+         xRbVV0nosf41KFBPaxpSI2bb/O+UEhEydpP7hyZfTSK7ITrZNMbZk+gnOqMk6oJJpNHl
+         RIM0sfy3uYIGJrWgysYrA9KQRpa8MdlQKtMOAZ6oAbzmb7w3m5rfwjo0c2dIIx0dJagC
+         kqPr45NCoemRMyrtoFy/ifR9Z1z85Vo4laDvwy2EWkbXdUMaVU3msZZSK2TGyr+2JsMP
+         Ca+EZkBLGWdelHRtu2ppQOueHgehleNmxGxRKaF6ZWMoxsj1yxhAnFEB+gDFBnUlGCzy
+         nqag==
+X-Gm-Message-State: AOAM532SSmLStFb4E+2GGoYX6t7bNAJ9yTZ8yjEwLwbT0hDvslLVhmbB
+        JHMBCBihOIYSSE/qUxIcEhHUyyCwwRwqWjHtxDk=
+X-Google-Smtp-Source: ABdhPJz3NPKU0XxjlO97K+uOSpkRk9KXI05zuK6U5l7L2COytWxMtF1rAU//vQapJsGEIu2lu9WpFf7szKed1cuN/8Q=
+X-Received: by 2002:a05:6808:5cf:: with SMTP id d15mr8192480oij.69.1613400858625;
+ Mon, 15 Feb 2021 06:54:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210211201703.658240-1-luzmaximilian@gmail.com> <898aa498-8256-d59f-9e72-0e1199b3a62a@redhat.com>
+In-Reply-To: <898aa498-8256-d59f-9e72-0e1199b3a62a@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 15 Feb 2021 15:54:03 +0100
+Message-ID: <CAJZ5v0jGUgHsNaqLarf=YLwjtOe-mQB48LkOQLi7FcZyW1Qchg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] platform/surface: Add platform profile driver for
+ Surface devices
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <mgross@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Mark Pearson <markpearson@lenovo.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 14 Feb 2021 09:51:47 -0600
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On Mon, Feb 15, 2021 at 3:36 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 2/11/21 9:16 PM, Maximilian Luz wrote:
+> > This series adds a driver to provide platform profile support on 5th-
+> > and later generation Microsoft Surface devices with a Surface System
+> > Aggregator Module. On those devices, the platform profile can be used to
+> > influence cooling behavior and power consumption.
+> >
+> > To achieve this, a new platform profile is introduced: the
+> > 'balanced-performance' profile.
+> >
+> > In addition, a couple of fix-ups are performed:
+> > - Hide CONFIG_ACPI_PLATFORM_PROFILE and change drivers so that it is
+> >   selected instead of depended on.
+> > - Fix some references to documentation in a comment.
+> >
+> > Note: This series (or more specifically "platform/surface: Add platform
+> > profile driver") depends on the "platform/surface: Add Surface
+> > Aggregator device registry" series.
+> >
+> > Changes in v2:
+> >  - Introduce new 'balanced-performance' platform profile and change
+> >    profile mapping in driver.
+> >  - Perform some fix-ups for the ACPI platform profile implementation:
+> >    - Fix some references to documentation in a comment.
+> >    - Hide CONFIG_ACPI_PLATFORM_PROFILE
+>
+> Thanks, the entire series looks good to me, so for the series:
+>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>
+> Rafael, can you (once 5.12-rc1 is out) pick 1-3/4 and then provide a
+> stable branch for me to merge?
 
-> Steve, looks like recordmcount avoids referencing weak symbols directly
-> by their function symbol.  Maybe it can just skip weak symbols which
-> don't have a section symbol, since this seems like a rare scenario.
+Since [1-3/4] appear to be uncontroversial, so IMO it would be better
+to merge them during the merge window, so they are present in
+5.12-rc1.
 
-When does the .text.unlikely section disappear? During the creation of the
-object, or later in the linker stage?
+The extra stable branch wouldn't be necessary in that case.
 
--- Steve
+> Then I will pick up 4/4.
