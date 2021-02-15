@@ -2,135 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0475A31B6BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7BE31B6BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhBOJuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:50:51 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:36286 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhBOJuh (ORCPT
+        id S230407AbhBOJvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:51:22 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:10448 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230346AbhBOJui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:50:37 -0500
+        Mon, 15 Feb 2021 04:50:38 -0500
 Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210215094954epoutp045b2260be66890acbf86482824cb301f7~j4uwIpGhU0801308013epoutp04-
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:49:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210215094954epoutp045b2260be66890acbf86482824cb301f7~j4uwIpGhU0801308013epoutp04-
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210215094953epoutp02d6fcb85b39421793ab61ece14a0917dc~j4uunz-5T1517115171epoutp02C
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:49:53 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210215094953epoutp02d6fcb85b39421793ab61ece14a0917dc~j4uunz-5T1517115171epoutp02C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1613382594;
-        bh=PVFbZ93e8iqMlDddHz6oMLG2JQ3zqy5IKMRcv/tLRNA=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=aCV7fGdRWNQCjUODZSv/sxaEwSuWJP7ETmfbUlECPSK1AABzvcYhko2/Cfz4BXO7f
-         XTBPdMuTraSgpobXqP0/zuAKGr0tkqnriDe6NM5c/wWOa2AVB+6I8xmhK/XxGDbbXo
-         BPrGTb5t/0Q0e8P3jWBGAZ3/c8MjuKHFu4D9F8og=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        s=mail20170921; t=1613382593;
+        bh=DuMVsjTdIq8Ninv/gh53/PXRPNYeEjpqeD/BhRip6hE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YvnBTqYNdwNoUw/8Eq+OcxIx4ndjPqnTDDy3R8rDeGISwlLj/YpfvEAzzZ/nHwSjp
+         nHy8tqdzJvFtu8AAXt45iolCZzAPs1AhpOdAh0L9MZt33Xk4vpTaAMeqn4oAmSm+D4
+         TIIva8wBw/qCY+wVFg2EH5pdiacKVTB/L8H9HjsM=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
         epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210215094954epcas1p3bd5b2f90e800f2589f1aedff73d19645~j4uv4wE3b0273302733epcas1p30;
-        Mon, 15 Feb 2021 09:49:54 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.154]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DfK8H2wV8z4x9QD; Mon, 15 Feb
+        20210215094952epcas1p34646834d3a8b1b116d6f5e8b9f43a0da~j4uuJVJ6Z0273302733epcas1p3u;
+        Mon, 15 Feb 2021 09:49:52 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.155]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DfK8H58Mdz4x9Pv; Mon, 15 Feb
         2021 09:49:51 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A8.F5.10463.FB34A206; Mon, 15 Feb 2021 18:49:51 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        95.D3.63458.FB34A206; Mon, 15 Feb 2021 18:49:51 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
         epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210215094951epcas1p1f9ab27ece5ee0deaf64ac1f593bdc976~j4uslQBHl0465304653epcas1p1l;
+        20210215094951epcas1p1dd89e994519ae901dcbc743d0a9ae669~j4usr75aY0975909759epcas1p18;
         Mon, 15 Feb 2021 09:49:51 +0000 (GMT)
 Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210215094951epsmtrp159e419e6faebbe7b6469535b5a12ca76~j4uskkCcT2219322193epsmtrp19;
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210215094951epsmtrp2e17085a89420eba6223ba25d2e43b701~j4usrOuME2912229122epsmtrp2O;
         Mon, 15 Feb 2021 09:49:51 +0000 (GMT)
-X-AuditID: b6c32a38-f11ff700000028df-8a-602a43bf8633
+X-AuditID: b6c32a36-6dfff7000000f7e2-dd-602a43bf749f
 Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
         epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        70.2E.13470.EB34A206; Mon, 15 Feb 2021 18:49:51 +0900 (KST)
+        80.2E.13470.FB34A206; Mon, 15 Feb 2021 18:49:51 +0900 (KST)
 Received: from localhost.localdomain (unknown [10.113.221.102]) by
         epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210215094950epsmtip22b963f92fe72e716ed684e15edc3abd7~j4usZTJXb1840318403epsmtip2I;
+        20210215094950epsmtip26a80a7796ce475ca81465112b502ac20~j4use0BTj1775517755epsmtip2I;
         Mon, 15 Feb 2021 09:49:50 +0000 (GMT)
 From:   Chanwoo Choi <cw00.choi@samsung.com>
 To:     gregkh@linuxfoundation.org
 Cc:     cw00.choi@samsung.com, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] extcon: Add missing function defintion and update
- extcon driver
-Date:   Mon, 15 Feb 2021 19:06:07 +0900
-Message-Id: <20210215100610.19911-1-cw00.choi@samsung.com>
+        myungjoo.ham@samsung.com, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/3] extcon: Add stubs for extcon_register_notifier_all()
+ functions
+Date:   Mon, 15 Feb 2021 19:06:08 +0900
+Message-Id: <20210215100610.19911-2-cw00.choi@samsung.com>
 X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAKsWRmVeSWpSXmKPExsWy7bCmnu5+Z60EgyezRCwm3rjCYnH9y3NW
-        i+bF69ksLu+aw2Zxu3EFmwOrx6ZVnWwe++euYffo27KK0ePzJrkAlqhsm4zUxJTUIoXUvOT8
-        lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygvUoKZYk5pUChgMTiYiV9O5ui
-        /NKSVIWM/OISW6XUgpScAssCveLE3OLSvHS95PxcK0MDAyNToMKE7IyGu/+YC05yVjReusvY
-        wPiNvYuRk0NCwETiwNaNzF2MXBxCAjsYJS59aGSBcD4xShz7Mh0q841RYsaX60xdjBxgLeff
-        V0HE9zJKzJ59kBXC+cIocednHxPIXDYBLYn9L26wgdgiAnIST27/YQaxmQXSJX7/XscGMkhY
-        IExi+ksjkDCLgKrE2saPYCfxClhJzOtewQRxnrzE6g0HwI6QEJjHLnHz4mlWiISLxJ3l26F+
-        EJZ4dXwLlC0l8bK/Dcqullh58ggbRHMHo8SW/Regmo0l9i+dDPYNs4CmxPpd+hBhRYmdv+cy
-        QtzJJ/Huaw8rxMO8Eh1tQhAlyhKXH9yFuk1SYnF7JxuE7SHx698CsOlCArESWz/3sU9glJ2F
-        sGABI+MqRrHUguLc9NRiwwIT5EjaxAhOSloWOxjnvv2gd4iRiYPxEKMEB7OSCO9VCY0EId6U
-        xMqq1KL8+KLSnNTiQ4ymwACbyCwlmpwPTIt5JfGGpkbGxsYWJoZmpoaGSuK8SQYP4oUE0hNL
-        UrNTUwtSi2D6mDg4pRqYuBt33OSPL2w4nVyibJV8pe/BVObqZ39WPnHYLn376ncOcfYH3B+D
-        413KBX/Fzjv4mzVKP+E8f/6mLNPu0G0Xkyd97tz6+6rChv0Z+6Rec5k8frqgLOX/YabJwfXt
-        W/QWHFmy83uCkVlA0fPlq1bOXjinhY2b5Uj/9y3xduI2Ny77XuNVPqYr02HDdddw6goT48Kb
-        4ssO/bBPnpBk3Xim4nJ1VKVSoa3oq1fVhV/Wl0jdPlDe7/AyiS/mpNtC4zVdkxSr5nhnrb+2
-        55SY6rr7D1dNDvz2IvHzJOU/mgIv1k70vrvYaRm31oqiw1a1gYF22/SFf23QexvJveg+c59q
-        rWbQBbZXP3Z6Md5Y2rnOVImlOCPRUIu5qDgRANjUNd7TAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHJMWRmVeSWpSXmKPExsWy7bCSvO5+Z60Eg94NTBYTb1xhsbj+5Tmr
-        RfPi9WwWl3fNYbO43biCzYHVY9OqTjaP/XPXsHv0bVnF6PF5k1wASxSXTUpqTmZZapG+XQJX
-        RsPdf8wFJzkrGi/dZWxg/MbexcjBISFgInH+fVUXIxeHkMBuRokHc16xdDFyAsUlJaZdPMoM
-        USMscfhwMUTNJ0aJW+uPMILUsAloSex/cYMNxBYRkJN4cvsPM4jNLJAtMfnNelYQW1ggROLu
-        3VtgM1kEVCXWNn5kB7F5Bawk5nWvYILYJS+xesMB5gmMPAsYGVYxSqYWFOem5xYbFhjmpZbr
-        FSfmFpfmpesl5+duYgQHiZbmDsbtqz7oHWJk4mA8xCjBwawkwntVQiNBiDclsbIqtSg/vqg0
-        J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6pBqbeJUwzk2ws979OcdReKu4TcvbJ
-        Dq4NhjOsL/6r5f5i3zjD7Pm7WSXHHl74eXwNw2rD3pM1/1/N9vr5bjq//sZYOYvX0w378uVf
-        RAdMWShwnGNu+sXHTyy701kj1yvHXeXsidPwmSwWdTOmgLW2pkeNXVGw78DEGZn3Uswf3lh8
-        T/ac5J7/P6x+plVZpi5qndzzLWPGvYfXC31OGwpPVv30IuJ8//wJQTOyeXpcWNdyV73jXiGc
-        /4n768x8X+a30u85724LvyAUX626eOHlrzFHFn19YjCnsihQ5YulML/1lDAz1TvrHHcu2sP/
-        QPS+tFx0Scay1ve5X1ufvUzWv9b/ZUrc1Bm7RHe9Zj2/uqJLiaU4I9FQi7moOBEAmBWmM4EC
-        AAA=
-X-CMS-MailID: 20210215094951epcas1p1f9ab27ece5ee0deaf64ac1f593bdc976
+In-Reply-To: <20210215100610.19911-1-cw00.choi@samsung.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMKsWRmVeSWpSXmKPExsWy7bCmge5+Z60Eg0UHlC0m3rjCYnH9y3NW
+        i+bF69kszp/fwG5xedccNovbjSvYHNg8Nq3qZPPYP3cNu0ffllWMHp83yQWwRGXbZKQmpqQW
+        KaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gAtV1IoS8wpBQoFJBYX
+        K+nb2RTll5akKmTkF5fYKqUWpOQUWBboFSfmFpfmpesl5+daGRoYGJkCFSZkZ5z58J25YCNv
+        xfdFe5gaGL9wdTFyckgImEh8nrOEsYuRi0NIYAejxKHlk1hAEkICnxglbm7xhbC/MUqcmcsJ
+        0/BrcxMTRMNeRokb509CdX9hlHi5r5kVpIpNQEti/4sbbCC2iICcxJPbf5hBipgF+hglTrw7
+        wQiSEBYIlbj++Aw7iM0ioCrRuOgLmM0rYCXxeupXdoh18hKrNxxgBrE5Bawlds5rBdsmIbCP
+        XeL84/tsEEUuEpPfvmSFsIUlXh3fAtUsJfH53V6ommqJlSePsEE0dzBKbNl/AarBWGL/0slA
+        D3EAnacpsX6XPkRYUWLn77lghzIL8Em8+9rDClIiIcAr0dEmBFGiLHH5wV0mCFtSYnF7J9Qq
+        D4meZZOhQQT08M69r1gnMMrNQtiwgJFxFaNYakFxbnpqsWGBEXKUbWIEpy4tsx2Mk95+0DvE
+        yMTBeIhRgoNZSYT3qoRGghBvSmJlVWpRfnxRaU5q8SFGU2DoTWSWEk3OBybPvJJ4Q1MjY2Nj
+        CxNDM1NDQyVx3kSDB/FCAumJJanZqakFqUUwfUwcnFINTDodzFFNX6MLK06xpd95G3/KfoW9
+        UuGWVQfmXznevvL3oqIbetv3bjFqmRwWq8fOociq0nn06wRp575ToTrrt0ZG3bNYOC13+eK+
+        XWWevZETJRO1V8kdV52cWcH+45rsVdOri91/WKU3lPTsla1Ji+Xc17X+3kLV21N95pvElW93
+        c7TVjg1UMt8vOW3JsgNb3ynqiH1gXVibXR0f/XI3+/P9kalyp+6dtp9wc1u7y8MSAc7Qo6v/
+        stx7+Htx18pXqzL3bnD+q/hzZaOI27mfZ5JuTzdwCl5y/hhvkwDrz12MMvq/pv74tGdepIhM
+        BcNXzsN2m9fLrHK6scC7f5GAkjfn+dPfDM0vMEhfsJn7basSS3FGoqEWc1FxIgAdAJhR5gMA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphluLIzCtJLcpLzFFi42LZdlhJXne/s1aCQcNrVouJN66wWFz/8pzV
+        onnxejaL8+c3sFtc3jWHzeJ24wo2BzaPTas62Tz2z13D7tG3ZRWjx+dNcgEsUVw2Kak5mWWp
+        Rfp2CVwZZz58Zy7YyFvxfdEepgbGL1xdjJwcEgImEr82NzF1MXJxCAnsZpSYvW0NG0RCUmLa
+        xaPMXYwcQLawxOHDxSBhIYFPjBITeqNAbDYBLYn9L26AlYsIyEk8uf2HGWQOs8AURoldBxrY
+        QRLCAsESe48tYQaxWQRUJRoXfQGL8wpYSbye+pUdYpe8xOoNB8BqOAWsJXbOa2WEWGYlsWz6
+        cqYJjHwLGBlWMUqmFhTnpucWGxYY5qWW6xUn5haX5qXrJefnbmIEB5iW5g7G7as+6B1iZOJg
+        PMQowcGsJMJ7VUIjQYg3JbGyKrUoP76oNCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZ
+        Jg5OqQammqIenn93JVpqzZd+8lv0tJZnN2eh8/SKoi3O/lzsv7gmTOzYvaCrfOnChcfcxTbf
+        lqy+E7XZLMQ8MVnDW2X6BJHZ6zYFTEu7eZ+9TDVqrXSZmHpeeuSOu0XLd7YuvllZUV/yKtLO
+        jkfd5vqZY537Ohrqw86c1jrDVTIj4MIj2R25nosEN/sGxD37W8DIsvZbQYCoztVvNgx+fodD
+        bTZP0a/JMjNN3XnC6t1V1XWTxZl4f2/v+/AvIOVdJDP79tux4l2BH6epcxvrSwRFJbHPaTv4
+        4OqzNaHbVKx1r518kHvAtG/dzcgCi4lGsZvvaT8olNW+PlFMrnrSsmciiYfDzaqsKtkrEjac
+        YvDff1+JpTgj0VCLuag4EQBsD+fynwIAAA==
+X-CMS-MailID: 20210215094951epcas1p1dd89e994519ae901dcbc743d0a9ae669
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: SVC_REQ_APPROVE
 CMS-TYPE: 101P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210215094951epcas1p1f9ab27ece5ee0deaf64ac1f593bdc976
-References: <CGME20210215094951epcas1p1f9ab27ece5ee0deaf64ac1f593bdc976@epcas1p1.samsung.com>
+X-CMS-RootMailID: 20210215094951epcas1p1dd89e994519ae901dcbc743d0a9ae669
+References: <20210215100610.19911-1-cw00.choi@samsung.com>
+        <CGME20210215094951epcas1p1dd89e994519ae901dcbc743d0a9ae669@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of pull request for extcon next of v5.12, send the patches
-because the pull request was too late for merging them.
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-Detailed description of this patchset as following:
-- Add missing function definitions for extcon_register_notifier()
-- Add charging interrupt handling such as CHGINS and CHGRM interrupt for extcon-max8997.c
-- Detect OTG when USB_ID is connected to ground for extcon-sm5502.c
+Add stubs for extcon_register_notifier_all() function for !CONFIG_EXTCON
+case.  This is useful for compile testing and for drivers which use
+EXTCON but do not require it (therefore do not depend on CONFIG_EXTCON).
 
-Reference of previous pull request,
-[1] [GIT PULL ,v3] extcon next for v5.12
-- https://lore.kernel.org/patchwork/patch/1380533/
-[2] [GIT PULL v2] extcon next for v5.12
-- https://lore.kernel.org/patchwork/patch/1379836/
-[3] [GIT PULL] extcon next for v5.12
-- https://lore.kernel.org/patchwork/patch/1378261/
+Fixes: 815429b39d94 ("extcon: Add new extcon_register_notifier_all() to monitor all external connectors")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+---
+ include/linux/extcon.h | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-Krzysztof Kozlowski (1):
-  extcon: Add stubs for extcon_register_notifier_all() functions
-
-Nikita Travkin (1):
-  extcon: sm5502: Detect OTG when USB_ID is connected to ground
-
-Timon Baetz (1):
-  extcon: max8997: Add CHGINS and CHGRM interrupt handling
-
- drivers/extcon/extcon-max8997.c |  4 ++++
- drivers/extcon/extcon-sm5502.c  | 22 ++++++++++++++++++++--
- include/linux/extcon.h          | 23 +++++++++++++++++++++++
- 3 files changed, 47 insertions(+), 2 deletions(-)
-
+diff --git a/include/linux/extcon.h b/include/linux/extcon.h
+index fd183fb9c20f..0c19010da77f 100644
+--- a/include/linux/extcon.h
++++ b/include/linux/extcon.h
+@@ -271,6 +271,29 @@ static inline  void devm_extcon_unregister_notifier(struct device *dev,
+ 				struct extcon_dev *edev, unsigned int id,
+ 				struct notifier_block *nb) { }
+ 
++static inline int extcon_register_notifier_all(struct extcon_dev *edev,
++					       struct notifier_block *nb)
++{
++	return 0;
++}
++
++static inline int extcon_unregister_notifier_all(struct extcon_dev *edev,
++						 struct notifier_block *nb)
++{
++	return 0;
++}
++
++static inline int devm_extcon_register_notifier_all(struct device *dev,
++						    struct extcon_dev *edev,
++						    struct notifier_block *nb)
++{
++	return 0;
++}
++
++static inline void devm_extcon_unregister_notifier_all(struct device *dev,
++						       struct extcon_dev *edev,
++						       struct notifier_block *nb) { }
++
+ static inline struct extcon_dev *extcon_get_extcon_dev(const char *extcon_name)
+ {
+ 	return ERR_PTR(-ENODEV);
 -- 
 2.17.1
 
