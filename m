@@ -2,100 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4986131B92A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCCD31B93C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhBOM01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:26:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229979AbhBOMUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:20:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA33E64DAF;
-        Mon, 15 Feb 2021 12:19:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613391575;
-        bh=j4+qHpzxfQVCPvLlgnEKk88hXfHOqWs3cPLcjDCIWTY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Sb94YUQ1YJ4uhfz1veFgsop4HGoC3Rn5p8G9gSsEVB/GH/Kz46j7HJQwhZiDFGI85
-         l/U5ECuLcoW5elOOH8JvvdEg542mGdlBBj45tnRkkedll5G9yzICS4qrV+gHpKXz/G
-         TOCOc2Gre9LlY4qXI/Aa0wb7//BhinJSpyIJDycyRtN/RPyQQWdOIM9O3dhlFjcCHr
-         6i6uySiOXPC0oGMtEpELymuqUGYWmfwqEQAsZwAICRFWgyff+xxheWQx13coMG5HTQ
-         x2Ko/reM1JO67GyTwoVFVHCOH8U/T61C3GP1SfMeLFcsGfYN75kObUmxpWKr4AJHyK
-         tNquZFxB82zsQ==
-Received: by mail-ot1-f54.google.com with SMTP id d7so5858106otq.6;
-        Mon, 15 Feb 2021 04:19:35 -0800 (PST)
-X-Gm-Message-State: AOAM531KWhzBwVjpRUMQd/CKVH+wBP6flwiSkG7XESWiYCLsgqmnJBck
-        +lAAEgfI6PmBIH0/LLz0BUJ/3ZahR4tYEqn1VZo=
-X-Google-Smtp-Source: ABdhPJxuyiL/8nGRH3dyNyB0gtDY++9QyKg4dKnSds6MwewtsSMksWyunCksV3BGpgTO0qxlzOXwpnp+VkidxtKsY/g=
-X-Received: by 2002:a9d:6c11:: with SMTP id f17mr11168000otq.210.1613391574856;
- Mon, 15 Feb 2021 04:19:34 -0800 (PST)
+        id S230059AbhBOM3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:29:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20268 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230389AbhBOMXZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 07:23:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613391718;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=y+tCfh7p5rS93AyYcRTEfar0U9kSrmpYDnZc3YNOM60=;
+        b=adUrT3kfc/I+0OJyJj8sD3gHHHfHegmBKfMTPmd79pMGhOG9ZhUkGn6EY5sYfi6VfBRUnq
+        1oOcKww97UScqWng5crfCDL5HgQHhFg8HdtE/XM1a9lVr/Z8T1T7x/3aZNkupYQ9KRncDe
+        UrKVRf/BlK7cJo9WrKNfsLkqaBfFkas=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-zZCEY8pSOaaGROwdy9wW1Q-1; Mon, 15 Feb 2021 07:21:54 -0500
+X-MC-Unique: zZCEY8pSOaaGROwdy9wW1Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88A32192CC45;
+        Mon, 15 Feb 2021 12:21:52 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-114-89.ams2.redhat.com [10.36.114.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A0362BFEC;
+        Mon, 15 Feb 2021 12:21:44 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        David Hildenbrand <david@redhat.com>,
+        "Boeuf, Sebastien" <sebastien.boeuf@intel.com>,
+        Hui Zhu <teawater@gmail.com>, Jason Wang <jasowang@redhat.com>,
+        Marek Kedzierski <mkedzier@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH v1 0/2] virito-mem: one fix and VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE
+Date:   Mon, 15 Feb 2021 13:21:41 +0100
+Message-Id: <20210215122143.27608-1-david@redhat.com>
 MIME-Version: 1.0
-References: <20210215050655.2532-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210215050655.2532-3-nobuhiro1.iwamatsu@toshiba.co.jp> <YCoPmfunGmu0E8IT@unreal>
- <20210215072809.n3r5rdswookzri6j@toshiba.co.jp> <YCo9WVvtAeozE42k@unreal>
-In-Reply-To: <YCo9WVvtAeozE42k@unreal>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 15 Feb 2021 13:19:18 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a391547zH=bYXbLzttP9ehFK=OzcM_XkSJs92dA1z4DGQ@mail.gmail.com>
-Message-ID: <CAK8P3a391547zH=bYXbLzttP9ehFK=OzcM_XkSJs92dA1z4DGQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] net: stmmac: Add Toshiba Visconti SoCs glue driver
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 10:23 AM Leon Romanovsky <leon@kernel.org> wrote:
-> On Mon, Feb 15, 2021 at 04:28:09PM +0900, Nobuhiro Iwamatsu wrote:
-> >
-> > Sorry, I sent the wrong patchset that didn't fix this point out.
-> >
-> > > I asked it before, but never received an answer.
-> >
-> > I have received your point out and have sent an email with the content
-> > to remove this line. But it may not have arrived yet...
-> >
-> > > Why did you use "def_bool y" and not "default y"? Isn't it supposed to be
-> > > "depends on STMMAC_ETH"? And probably it shouldn't be set as a default as "y".
-> > >
-> >
-> > The reason why "def_bool y" was set is that the wrong fix was left when
-> > debugging. Also, I don't think it is necessary to set "default y".
-> > This is also incorrect because it says "bool" Toshiba Visconti DWMAC
-> > support "". I change it to trustate in the new patch.
-> >
-> > And this driver is enabled when STMMAC_PLATFORM was Y. And STMMAC_PLATFORM
-> > depends on STMMAC_ETH.
-> > So I understand that STMMAC_ETH does not need to be dependents. Is this
-> > understanding wrong?
->
-> This is correct understanding, just need to clean other entries in that
-> Kconfig that depends on STMMAC_ETH.
+One minor fix and introduction of / support for
+VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE.
 
-'tristate' with no default sounds right. I see that some platforms have a
-default according to the platform, which also makes sense but isn't
-required. What I would suggest though is a dependency on the platform,
-to make it easier to disable the front-end based on which platforms
-are enabled. This would end up as
+Looking into supporting file-based memory backends (shmem, hugetlbfs, ...)
+for virtio-mem in QEMU cleanly, I realized that we have to indicate that
+unplugged memory is completely inaccessible. Otherwise, Linux might in
+corner cases read unplugged memory, which is harder to support (and harder
+to protect from) in a hypervisor than with anonymous memory where we have
+a shared zeropage.
 
-config DWMAC_VISCONTI
-        tristate "Toshiba Visconti DWMAC support"
-        depends on ARCH_VISCONTI || COMPILE_TEST
-        depends on OF && COMMON_CLK # only add this line if it's
-required for compilation
-        default ARCH_VISCONTI
+To support VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE cleanly, we cannot (un)plug
+memory in SBM (Sub Block Mode) and instead, can only support adding/
+removing individual Linux memory blocks (e.g., 128MB on x86-64).
 
-      Arnd
+While we might still be able to allow for reading unplugged memory with
+file-based memory backends in the future (and I have plans/prototypes for
+it), at least in the near future we cannot support it.
+
+David Hildenbrand (2):
+  virtio-mem: don't read big block size in SBM
+  virtio-mem: support VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE
+
+ drivers/virtio/virtio_mem.c     | 27 ++++++++++++++++++++-------
+ include/uapi/linux/virtio_mem.h | 10 +++++++---
+ 2 files changed, 27 insertions(+), 10 deletions(-)
+
+-- 
+2.29.2
+
