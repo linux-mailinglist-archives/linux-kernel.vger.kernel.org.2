@@ -2,98 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191F231C232
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 041EE31C239
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhBOTI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:08:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhBOTIy (ORCPT
+        id S230475AbhBOTJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:09:28 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:44526 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhBOTJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:08:54 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E2CC061574;
-        Mon, 15 Feb 2021 11:08:13 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id z9so4442112pjl.5;
-        Mon, 15 Feb 2021 11:08:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4wSIIQAoU/qUrHpFtDE4/r1lSSmKppFfAx3tPckyTMg=;
-        b=WbZcgfONHMSwsib7jyirAckorAOZ9aIz8BGaGHSxzE9IBK0w2zS4RqERyv2kXqLehJ
-         3t8lWW9K6eT2uy0zdiiz5yw0F973t4nNTNikpF/3wmhOu4W+uyQhaNPTzHPv6VQ/2hUY
-         KnTwYi3LIV47D4qZMGp4KzyAZ5M5bA3FNgErZoYU6Jgld4bPjW3+WRUSdght+GGuXTZp
-         daPGMuEim6QxghMcWiixp9ekOdJZUBSvPyCR3vEmPtVYD0uvuYoCgON6wsyhzteVgbij
-         yi8/6n0rOG9nERGp9qWfRIavxLSavRIlWxuocVYOSKY7Xp42kWhkmvRtGstyQJR3MyiF
-         /Ncg==
+        Mon, 15 Feb 2021 14:09:22 -0500
+Received: by mail-ot1-f44.google.com with SMTP id e5so6937589otb.11;
+        Mon, 15 Feb 2021 11:09:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4wSIIQAoU/qUrHpFtDE4/r1lSSmKppFfAx3tPckyTMg=;
-        b=A5IsLRspe+UuP//qIrGmUFgiAN9k2BPqYZocqxEJeFTXpukzu7ek+mIQS0M4zJd1Gx
-         XzZSvzVFpcKr1w67iBinFhXoV5qCf1ze70KqHsgzOoYMhiR6JEq5wHJ6FHWELHH8CocY
-         sBya1M4/C1H/sUTfG3i3dfnXQAhGEtSmyVoxoxh20b7pmPLWnwWBS+S12kOT9MGA9v7I
-         9eEBLQ0DnH4GW3ZFyNZnSTxn6z8WG5x6f8vNRMxRuSGKFNoWxhqHOsc5iBvgb9xpRbGn
-         zBW+v9GyATqcoW2IQmTYRGoJPkYgp8fnViSIhROaLQh/a7vaFq6l9MQ0uNZWSfSjz69V
-         AHWw==
-X-Gm-Message-State: AOAM530MtjHReV0iQ90QWYzojAWkmwEwAn4fWXtiIDHtxtIT7YeP3dYm
-        Hk8HocUN9YgqYNv83+czL7exOPNRu4WxebvIYXkYDo7O
-X-Google-Smtp-Source: ABdhPJxDZr+X+ZsMEuCZzWkgLuUXSqSIjI3o/9+cA1CacZg3xnxdlHN5Yv/Z3oJQVozefnLe/dMGd0jGtjOZgc/zmwI=
-X-Received: by 2002:a17:903:310f:b029:e3:53e8:bfe6 with SMTP id
- w15-20020a170903310fb02900e353e8bfe6mr6541429plc.78.1613416093556; Mon, 15
- Feb 2021 11:08:13 -0800 (PST)
+        bh=Fngrg/WHYlhlxWa8+hf+0PTGq5DsLjbMv81QOG2P/go=;
+        b=WvDLdQTgI3oukNSVOBRQnmOanbK1k24gPMtA0iMTps1Q3ltHZJL9AquDs3y3W0Z77O
+         kTQkzYQnOYF8vbNXhNpuAGhkW2PUA0zUcf0hAODxJlngkI92puNZob9tuOtF1VhEMmHy
+         mcfaKSekZ+f0QCnPf3RDoUnIE2uAS1Gm3xl96mtY7gTToIKUTStL8lW3MR+ykcyT9V/r
+         L3kYbCyn//WTjXvwqKJKoQB69S2DaiiGDAEcq7JDfc2UyQunKhsh4DLupWexGLo27G3D
+         184nwWFCIhyjmmyln0fFDgj/JAyfGY1Y8XgdxFh3qJDeQTOgaheGboCvcPSixmO61V9C
+         G3iw==
+X-Gm-Message-State: AOAM533cT76skx+vgIjTqkFOeEn24S1OU+kegLX8GUu1f9eFkYN2US/1
+        witr84fR7mRkwZ3j2zFad800aVv2uLWacZOt6Tc=
+X-Google-Smtp-Source: ABdhPJynUEnxA8NjQ9hcCKR6ycrigP4iFglicdGPK8cp2FKtT0YAPC253Anh8Rkpod0lKr7kwdcwRxSHDtyNpR1nnw0=
+X-Received: by 2002:a05:6830:148d:: with SMTP id s13mr12299201otq.250.1613416120234;
+ Mon, 15 Feb 2021 11:08:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20210215072703.43952-1-xie.he.0141@gmail.com> <YCo96zjXHyvKpbUM@unreal>
- <CAJht_EOQBDdwa0keS9XTKZgXE44_b5cHJt=fFaKy-wFDpe6iaw@mail.gmail.com> <YCrDcMYgSgdKp4eX@unreal>
-In-Reply-To: <YCrDcMYgSgdKp4eX@unreal>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Mon, 15 Feb 2021 11:08:02 -0800
-Message-ID: <CAJht_EPy1Us72YGMune2G3s1TLB4TOCBFJpZt+KbVUV8uoFbfA@mail.gmail.com>
-Subject: Re: [PATCH net-next RFC v3] net: hdlc_x25: Queue outgoing LAPB frames
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Krzysztof Halasa <khc@pm.waw.pl>
+References: <20210215111619.2385030-1-geert+renesas@glider.be>
+ <CAJZ5v0ikVbMX0R9e_=wOxKfJX5X322AipmpWy-7wVnWE7Ogc9A@mail.gmail.com> <CAGETcx94nNjduOuYKVBZOC9Gm4yfyb9x92ddznyxK4BnDby4PA@mail.gmail.com>
+In-Reply-To: <CAGETcx94nNjduOuYKVBZOC9Gm4yfyb9x92ddznyxK4BnDby4PA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 15 Feb 2021 20:08:29 +0100
+Message-ID: <CAMuHMdWm9FiJHWTzGqqNa-ggt9WTpS6Hg2WthNW86p_WpvPUtw@mail.gmail.com>
+Subject: Re: [PATCH] driver core: Fix double failed probing with fw_devlink=on
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 10:54 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Mon, Feb 15, 2021 at 09:23:32AM -0800, Xie He wrote:
-> > On Mon, Feb 15, 2021 at 1:25 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > > +     /* When transmitting data:
-> > > > +      * first we'll remove a pseudo header of 1 byte,
-> > > > +      * then the LAPB module will prepend an LAPB header of at most 3 bytes.
-> > > > +      */
-> > > > +     dev->needed_headroom = 3 - 1;
-> > >
-> > > 3 - 1 = 2
-> > >
-> > > Thanks
-> >
-> > Actually this is intentional. It makes the numbers more meaningful.
-> >
-> > The compiler should automatically generate the "2" so there would be
-> > no runtime penalty.
->
-> If you want it intentional, write it in the comment.
->
-> /* When transmitting data, we will need extra 2 bytes headroom,
->  * which are 3 bytes of LAPB header minus one byte of pseudo header.
->  */
->  dev->needed_headroom = 2;
+Hi Saravana,
 
-I think this is unnecessary. The current comment already explains the
-meaning of the "1" and the "3". There's no need for a reader of this
-code to understand what a "2" is. That is the job of the compiler, not
-the human reader.
+On Mon, Feb 15, 2021 at 7:27 PM Saravana Kannan <saravanak@google.com> wrote:
+> On Mon, Feb 15, 2021 at 6:59 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > On Mon, Feb 15, 2021 at 12:16 PM Geert Uytterhoeven
+> > <geert+renesas@glider.be> wrote:
+> > > With fw_devlink=permissive, devices are added to the deferred probe
+> > > pending list if their driver's .probe() method returns -EPROBE_DEFER.
+> > >
+> > > With fw_devlink=on, devices are added to the deferred probe pending list
+> > > if they are determined to be a consumer,
+>
+> If they are determined to be a consumer or if they are determined to
+> have a supplier that hasn't probed yet?
+
+When the supplier has probed:
+
+    bus: 'platform': driver_probe_device: matched device
+e6150000.clock-controller with driver renesas-cpg-mssr
+    bus: 'platform': really_probe: probing driver renesas-cpg-mssr
+with device e6150000.clock-controller
+    PM: Added domain provider from /soc/clock-controller@e6150000
+    driver: 'renesas-cpg-mssr': driver_bound: bound to device
+'e6150000.clock-controller'
+    platform e6055800.gpio: Added to deferred list
+    [...]
+    platform e6020000.watchdog: Added to deferred list
+    [...]
+    platform fe000000.pcie: Added to deferred list
+
+> > > which happens before their
+> > > driver's .probe() method is called.  If the actual probe fails later
+> > > (real failure, not -EPROBE_DEFER), the device will still be on the
+> > > deferred probe pending list, and it will be probed again when deferred
+> > > probing kicks in, which is futile.
+> > >
+> > > Fix this by explicitly removing the device from the deferred probe
+> > > pending list in case of probe failures.
+> > >
+> > > Fixes: e590474768f1cc04 ("driver core: Set fw_devlink=on by default")
+> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> >
+> > Good catch:
+> >
+> > Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> The issue is real and needs to be fixed. But I'm confused how this can
+> happen. We won't even enter really_probe() if the driver isn't ready.
+> We also won't get to run the driver's .probe() if the suppliers aren't
+> ready. So how does the device get added to the deferred probe list
+> before the driver is ready? Is this due to device_links_driver_bound()
+> on the supplier?
+>
+> Can you give a more detailed step by step on the case you are hitting?
+
+The device is added to the list due to device_links_driver_bound()
+calling driver_deferred_probe_add() on all consumer devices.
+
+> > > +++ b/drivers/base/dd.c
+> > > @@ -639,11 +639,13 @@ static int really_probe(struct device *dev, struct device_driver *drv)
+> > >         case -ENXIO:
+> > >                 pr_debug("%s: probe of %s rejects match %d\n",
+> > >                          drv->name, dev_name(dev), ret);
+> > > +               driver_deferred_probe_del(dev);
+> > >                 break;
+> > >         default:
+> > >                 /* driver matched but the probe failed */
+> > >                 pr_warn("%s: probe of %s failed with error %d\n",
+> > >                         drv->name, dev_name(dev), ret);
+> > > +               driver_deferred_probe_del(dev);
+> > >         }
+> > >         /*
+> > >          * Ignore errors returned by ->probe so that the next driver can try
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
