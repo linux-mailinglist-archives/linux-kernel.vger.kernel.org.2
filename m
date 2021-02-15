@@ -2,185 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D072831B691
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595F131B690
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhBOJjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:39:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbhBOJii (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:38:38 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B600AC061574;
-        Mon, 15 Feb 2021 01:37:57 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id v6so6920733ljh.9;
-        Mon, 15 Feb 2021 01:37:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j3ckuPrqHhj+a9wM1FpqARhpl+yXkW6M1ONJjD4HIFU=;
-        b=MTsSPieEeX4km2tagPGx8RvLv5f+XB7O2V2K2REq8f/x+EqJW31CA0aYINGF49Di6E
-         xylN3jtjbn18pW9Tzfn5iJiAeSRFJTPFJQ+Tj45xqZ7+eOneojyqhsAkhEfINWf6PFUU
-         Ug71oVnaT5McTA+cPrYVX2RFwZhW9Jw5XrN+A7qFWOHdRp8oUAYbfCGO3t4NJHRmPUY9
-         10vRn/BLgwPDfzL9hzmM7q18UXNJLbb7APR4BLzNoGTeNnL8uI16wFeWRUrfLAnKIUmQ
-         XEja8KcjWSKkllNC/k0bteEQfldN54ZdOy3nWKZZg1nzHl5PbxExI4ykabdN0akIbch1
-         h9QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j3ckuPrqHhj+a9wM1FpqARhpl+yXkW6M1ONJjD4HIFU=;
-        b=FfAur0gdCvN98QvlHSuGi5fVaa+0nTWbFR430UvawIjpJ7a7IoyvnzY1anldnPgsBT
-         rIaTG693UVUmuQVDH9y4/FmT+G/HN9qwZTcaboCgeLjzQihY6qk6h1/dMMuN4Y5MNmOz
-         3t9tJzzHPK8r6EhtGSl7NogdWtxu0+7R8EInVXfBuNnWqtU7U9L2uJmwCK177NiCze5q
-         UYkgzMcAqqvSiIYA3coOfihQlyc9XxpLtynJKZjwIhkxq9lUq7ljStmRLuQVCYNnorPg
-         /YcpDM3VKSvQOn9ypCtFnOHjS/j1OXpzXB/PCnsFh+g5VhvMwD74B5a5NMri53CKpdWB
-         IaSA==
-X-Gm-Message-State: AOAM533NbIRBjU/b6sl2G0dqETk6qqQsXFmPPY5uJNPwYP3tP0tAt8ej
-        +7nBmIeeYNXXTVnfymISgRA=
-X-Google-Smtp-Source: ABdhPJyrlMXsFhRD4Hwqt37Q625ONHuhehs+5US0UQ2P7CRdqld15xiv38CJ1dOSAsR9o9VVkkCOWQ==
-X-Received: by 2002:a2e:730f:: with SMTP id o15mr9360582ljc.145.1613381876281;
-        Mon, 15 Feb 2021 01:37:56 -0800 (PST)
-Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.gmail.com with ESMTPSA id i21sm2733258lfe.102.2021.02.15.01.37.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 01:37:55 -0800 (PST)
-From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] mtd: parsers: add MTD_OF_PARTS_BCM4908 config option
-Date:   Mon, 15 Feb 2021 10:37:40 +0100
-Message-Id: <20210215093740.20080-1-zajec5@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S230088AbhBOJiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:38:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:32834 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229948AbhBOJig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 04:38:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613381870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XuaD4qfV4mnOvBqozHEgf1LOzpJnPhnAAtC97LcZGCk=;
+        b=CtjGqMQAdl3bX8gk24RXRcfb1vzr7ejVovQ5dy3zYQPS92ojUHyx58gd/mPqesbnhYBhRI
+        Nl0YE7gjJflJWnHS420wujgmc+H1PDNYKh7T0dk1k0HioJZaZqBEmg69kH/C9v/q3jU/Ng
+        yTFf3dXJ15zn2BZEeCSxlVayWoauMcw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 08165AD3E;
+        Mon, 15 Feb 2021 09:37:50 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 10:37:49 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] mm: memcontrol: add missing memcg_oom_recover() when
+ uncharge slab page
+Message-ID: <YCpA7XMV6oIQkcUs@dhcp22.suse.cz>
+References: <20210212170159.32153-1-songmuchun@bytedance.com>
+ <20210212170159.32153-2-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212170159.32153-2-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Sat 13-02-21 01:01:57, Muchun Song wrote:
+> When we uncharge a page, we wake up oom victims when the memcg oom
+> handling is outsourced to the userspace. The uncharge_batch do that
+> for normal and kmem pages but not slab pages. It is likely an
+> omission. So add the missing memcg_oom_recover() to
+> __memcg_kmem_uncharge(). And the function of memory.oom_control
+> is only suitable for cgroup v1. So guard this test (memcg->under_oom)
+> by the cgroup_subsys_on_dfl(memory_cgrp_subsys).
 
-Right now ofpart parser gets always compiled with the BCM4908 support.
-It's not a big issue at this point as BCM4908 partitioning support comes
-at close-to-zero cost. It may differ for possible further ofpart quirks
-though.
+User visible effects please? I believe there are unlikely any. I do not
+have any data at hands but I would expect that slab pages freeing
+wouldn't really contribute much to help a memcg out of oom without an
+external intervention for oom_disabled case. If that is the case then
+make it explicit to the changelog. If you have workloads which do see a
+suboptimal behavior then please mention that as well. This is important
+for future readers to understand the code and motivation behind it.
 
-Make BCM4908 support selectable to set a clean pattern for adding further
-quirks.
+Also, now I guess I can see why you have decided to not do cgroup v2
+check directly in memcg_oom_recover. You do not want to repeat the check
+in paths which already do do check for you. That is fine. Appart from
+the uncharging path, none of the others is really a hot path so this is
+likely a reasonable decision.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-This is NOT urgent and is NOT intended for the 5.12. Please review this
-change in a free moment, probably after merge window closes.
----
- drivers/mtd/parsers/Kconfig                              | 9 +++++++++
- drivers/mtd/parsers/Makefile                             | 3 ++-
- .../parsers/{bcm4908-partitions.c => ofpart_bcm4908.c}   | 2 +-
- .../parsers/{bcm4908-partitions.h => ofpart_bcm4908.h}   | 8 ++++++++
- drivers/mtd/parsers/{ofpart.c => ofpart_core.c}          | 2 +-
- 5 files changed, 21 insertions(+), 3 deletions(-)
- rename drivers/mtd/parsers/{bcm4908-partitions.c => ofpart_bcm4908.c} (97%)
- rename drivers/mtd/parsers/{bcm4908-partitions.h => ofpart_bcm4908.h} (52%)
- rename drivers/mtd/parsers/{ofpart.c => ofpart_core.c} (99%)
+I have a minor comment below.
 
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-index d90c30229052..05b6a24cedd8 100644
---- a/drivers/mtd/parsers/Kconfig
-+++ b/drivers/mtd/parsers/Kconfig
-@@ -67,6 +67,15 @@ config MTD_OF_PARTS
- 	  flash memory node, as described in
- 	  Documentation/devicetree/bindings/mtd/partition.txt.
- 
-+config MTD_OF_PARTS_BCM4908
-+	bool "BCM4908 partitioning support"
-+	depends on MTD_OF_PARTS && (ARCH_BCM4908 || COMPILE_TEST)
-+	default ARCH_BCM4908
-+	help
-+	  This provides partitions parser for BCM4908 family devices
-+	  that can have multiple "firmware" partitions. It takes care of
-+	  finding currently used one and backup ones.
-+
- config MTD_PARSER_IMAGETAG
- 	tristate "Parser for BCM963XX Image Tag format partitions"
- 	depends on BCM63XX || BMIPS_GENERIC || COMPILE_TEST
-diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
-index bf58a5221730..2dfe9fb602de 100644
---- a/drivers/mtd/parsers/Makefile
-+++ b/drivers/mtd/parsers/Makefile
-@@ -4,7 +4,8 @@ obj-$(CONFIG_MTD_BCM47XX_PARTS)		+= bcm47xxpart.o
- obj-$(CONFIG_MTD_BCM63XX_PARTS)		+= bcm63xxpart.o
- obj-$(CONFIG_MTD_CMDLINE_PARTS)		+= cmdlinepart.o
- obj-$(CONFIG_MTD_OF_PARTS)		+= ofpart.o
--ofpart-objs				:= bcm4908-partitions.o
-+ofpart-y				+= ofpart_core.o
-+ofpart-$(CONFIG_MTD_OF_PARTS_BCM4908)	+= ofpart_bcm4908.o
- obj-$(CONFIG_MTD_PARSER_IMAGETAG)	+= parser_imagetag.o
- obj-$(CONFIG_MTD_AFS_PARTS)		+= afs.o
- obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
-diff --git a/drivers/mtd/parsers/bcm4908-partitions.c b/drivers/mtd/parsers/ofpart_bcm4908.c
-similarity index 97%
-rename from drivers/mtd/parsers/bcm4908-partitions.c
-rename to drivers/mtd/parsers/ofpart_bcm4908.c
-index ac69a2169763..3cfa4f4ec562 100644
---- a/drivers/mtd/parsers/bcm4908-partitions.c
-+++ b/drivers/mtd/parsers/ofpart_bcm4908.c
-@@ -10,7 +10,7 @@
- #include <linux/slab.h>
- #include <linux/mtd/partitions.h>
- 
--#include "bcm4908-partitions.h"
-+#include "ofpart_bcm4908.h"
- 
- #define BLPARAMS_FW_OFFSET		"NAND_RFS_OFS"
- 
-diff --git a/drivers/mtd/parsers/bcm4908-partitions.h b/drivers/mtd/parsers/ofpart_bcm4908.h
-similarity index 52%
-rename from drivers/mtd/parsers/bcm4908-partitions.h
-rename to drivers/mtd/parsers/ofpart_bcm4908.h
-index df25f0487d0a..80f8c086641f 100644
---- a/drivers/mtd/parsers/bcm4908-partitions.h
-+++ b/drivers/mtd/parsers/ofpart_bcm4908.h
-@@ -2,6 +2,14 @@
- #ifndef __BCM4908_PARTITIONS_H
- #define __BCM4908_PARTITIONS_H
- 
-+#ifdef CONFIG_MTD_OF_PARTS_BCM4908
- int bcm4908_partitions_post_parse(struct mtd_info *mtd, struct mtd_partition *parts, int nr_parts);
-+#else
-+static inline int bcm4908_partitions_post_parse(struct mtd_info *mtd, struct mtd_partition *parts,
-+						int nr_parts)
-+{
-+	return -EOPNOTSUPP;
-+}
-+#endif
- 
- #endif
-diff --git a/drivers/mtd/parsers/ofpart.c b/drivers/mtd/parsers/ofpart_core.c
-similarity index 99%
-rename from drivers/mtd/parsers/ofpart.c
-rename to drivers/mtd/parsers/ofpart_core.c
-index 6b221df8401c..258c06a42283 100644
---- a/drivers/mtd/parsers/ofpart.c
-+++ b/drivers/mtd/parsers/ofpart_core.c
-@@ -16,7 +16,7 @@
- #include <linux/slab.h>
- #include <linux/mtd/partitions.h>
- 
--#include "bcm4908-partitions.h"
-+#include "ofpart_bcm4908.h"
- 
- struct fixed_partitions_quirks {
- 	int (*post_parse)(struct mtd_info *mtd, struct mtd_partition *parts, int nr_parts);
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  mm/memcontrol.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 7afca9677693..a3f26522765a 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3126,8 +3126,10 @@ static int __memcg_kmem_charge(struct mem_cgroup *memcg, gfp_t gfp,
+>   */
+>  static void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  {
+> -	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+>  		page_counter_uncharge(&memcg->kmem, nr_pages);
+> +		memcg_oom_recover(memcg);
+> +	}
+>  
+>  	refill_stock(memcg, nr_pages);
+>  }
+> @@ -6806,11 +6808,15 @@ static void uncharge_batch(const struct uncharge_gather *ug)
+>  
+>  	if (!mem_cgroup_is_root(ug->memcg)) {
+>  		page_counter_uncharge(&ug->memcg->memory, ug->nr_pages);
+> -		if (do_memsw_account())
+> -			page_counter_uncharge(&ug->memcg->memsw, ug->nr_pages);
+> -		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && ug->nr_kmem)
+> -			page_counter_uncharge(&ug->memcg->kmem, ug->nr_kmem);
+> -		memcg_oom_recover(ug->memcg);
+> +		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+> +			if (!cgroup_memory_noswap)
+> +				page_counter_uncharge(&ug->memcg->memsw,
+> +						      ug->nr_pages);
+
+This is functionally equivalent but I am not sure this will make a
+further maintainability easier. do_memsw_account check is used at many
+other places and it is a general helper which you have split into its
+current implementation. This makes any future changes more tricky. Is
+this miro-optimization worth it?
+
+> +			if (ug->nr_kmem)
+> +				page_counter_uncharge(&ug->memcg->kmem,
+> +						      ug->nr_kmem);
+> +			memcg_oom_recover(ug->memcg);
+> +		}
+>  	}
+>  
+>  	local_irq_save(flags);
+> -- 
+> 2.11.0
+
 -- 
-2.26.2
-
+Michal Hocko
+SUSE Labs
