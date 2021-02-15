@@ -2,332 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CA131BD27
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A586F31BCC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhBOPlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:41:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45566 "EHLO mail.kernel.org"
+        id S230138AbhBOPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:35:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230178AbhBOP3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:29:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F1BD64E5A;
-        Mon, 15 Feb 2021 15:28:36 +0000 (UTC)
+        id S230498AbhBOP2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:28:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48E6964DBA;
+        Mon, 15 Feb 2021 15:28:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613402917;
-        bh=DwgP99DdVL1xkqq7fBg6yeL8XsZs7S1iLYE/RkYFEFQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SwJtNOiuWQrSSqIErp0l3Qk9Nd7PaA/Ns/TLTFGh9Xn1OIqUSo0XNhfD0eoxP3zli
-         z0Zy8dh85ncpbsSjx4yO2lK85+jLMV8p6Tco9UEynACHQV8w/1TMOSYDZa7eZEZxOf
-         tRM2erzQWMGoF4jqfSdi8wmRJWIpIks0R9h/SEq8=
+        s=korg; t=1613402890;
+        bh=z3642jZG6m5Jc8G1cyh8KwHoQJ3tM/lEP/YLd3LmCAk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oOa6o/KHWtgVSjYos6L/R9opNl2qo+Xht9K8bbw+ExStsycK1i0n7o0QzkiLGNtIY
+         vwQ1eWsELkuQIZqB/yE9F2brkOFQN7Ssf7GuwPR/96r5+gHcTVKFYyTpyGVH8mpzgY
+         Y9bo+WIMa3dgUBot5ZIXVrmj0hRkLl9HoYY7yVrs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Subject: [PATCH 5.4 00/60] 5.4.99-rc1 review
-Date:   Mon, 15 Feb 2021 16:26:48 +0100
-Message-Id: <20210215152715.401453874@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 5.4 01/60] gpio: ep93xx: fix BUG_ON port F usage
+Date:   Mon, 15 Feb 2021 16:26:49 +0100
+Message-Id: <20210215152715.447698210@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
+In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
+References: <20210215152715.401453874@linuxfoundation.org>
 User-Agent: quilt/0.66
 X-stable: review
 X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.4.99-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.4.99-rc1
-X-KernelTest-Deadline: 2021-02-17T15:27+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.4.99 release.
-There are 60 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
-
-Responses should be made by Wed, 17 Feb 2021 15:27:00 +0000.
-Anything received after that time might be too late.
-
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.99-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.4.99-rc1
-
-Miklos Szeredi <mszeredi@redhat.com>
-    ovl: expand warning in ovl_d_real()
-
-Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-    net/qrtr: restrict user-controlled length in qrtr_tun_write_iter()
-
-Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-    net/rds: restrict iovecs length for RDS_CMSG_RDMA_ARGS
-
-Stefano Garzarella <sgarzare@redhat.com>
-    vsock: fix locking in vsock_shutdown()
-
-Stefano Garzarella <sgarzare@redhat.com>
-    vsock/virtio: update credit only if socket is not closed
-
-Edwin Peer <edwin.peer@broadcom.com>
-    net: watchdog: hold device global xmit lock during tx disable
-
-Norbert Slusarek <nslusarek@gmx.net>
-    net/vmw_vsock: improve locking in vsock_connect_timeout()
-
-NeilBrown <neilb@suse.de>
-    net: fix iteration for sctp transport seq_files
-
-Eric Dumazet <edumazet@google.com>
-    net: gro: do not keep too many GRO packets in napi->rx_list
-
-Vladimir Oltean <vladimir.oltean@nxp.com>
-    net: dsa: call teardown method on probe failure
-
-Willem de Bruijn <willemb@google.com>
-    udp: fix skb_copy_and_csum_datagram with odd segment sizes
-
-David Howells <dhowells@redhat.com>
-    rxrpc: Fix clearance of Tx/Rx ring when releasing a call
-
-Serge Semin <Sergey.Semin@baikalelectronics.ru>
-    usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
-
-Felipe Balbi <balbi@kernel.org>
-    usb: dwc3: ulpi: fix checkpatch warning
-
-Randy Dunlap <rdunlap@infradead.org>
-    h8300: fix PREEMPTION build, TI_PRE_COUNT undefined
-
-Alain Volmat <alain.volmat@foss.st.com>
-    i2c: stm32f7: fix configuration of the digital filter
-
-Jernej Skrabec <jernej.skrabec@siol.net>
-    clk: sunxi-ng: mp: fix parent rate change flag check
-
-Jernej Skrabec <jernej.skrabec@siol.net>
-    drm/sun4i: dw-hdmi: Fix max. frequency for H6
-
-Jernej Skrabec <jernej.skrabec@siol.net>
-    drm/sun4i: Fix H6 HDMI PHY configuration
-
-Jernej Skrabec <jernej.skrabec@siol.net>
-    drm/sun4i: tcon: set sync polarity for tcon1 channel
-
-Fangrui Song <maskray@google.com>
-    firmware_loader: align .builtin_fw to 8
-
-Yufeng Mo <moyufeng@huawei.com>
-    net: hns3: add a check for queue_id in hclge_reset_vf_queue()
-
-Borislav Petkov <bp@suse.de>
-    x86/build: Disable CET instrumentation in the kernel for 32-bit too
-
-Florian Westphal <fw@strlen.de>
-    netfilter: conntrack: skip identical origin tuple in same zone only
-
-Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-    ibmvnic: Clear failover_pending if unable to schedule
-
-Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
-    net: stmmac: set TxQ mode back to DCB after disabling CBS
-
-Vadim Fedorenko <vfedorenko@novek.ru>
-    selftests: txtimestamp: fix compilation issue
-
-Vladimir Oltean <vladimir.oltean@nxp.com>
-    net: enetc: initialize the RFS and RSS memories
-
-Juergen Gross <jgross@suse.com>
-    xen/netback: avoid race in xenvif_rx_ring_slots_available()
-
-Sven Auhagen <sven.auhagen@voleatech.de>
-    netfilter: flowtable: fix tcp and udp header checksum update
-
-Pablo Neira Ayuso <pablo@netfilter.org>
-    netfilter: nftables: fix possible UAF over chains from packet path in netns
-
-Jozsef Kadlecsik <kadlec@mail.kfki.hu>
-    netfilter: xt_recent: Fix attempt to update deleted entry
-
-Bui Quang Minh <minhquangbui99@gmail.com>
-    bpf: Check for integer overflow when using roundup_pow_of_two()
-
-Maxime Ripard <maxime@cerno.tech>
-    drm/vc4: hvs: Fix buffer overflow with the dlist handling
-
-Lorenzo Bianconi <lorenzo@kernel.org>
-    mt76: dma: fix a possible memory leak in mt76_add_fragment()
-
-Mark Rutland <mark.rutland@arm.com>
-    lkdtm: don't move ctors to .rodata
-
-Thomas Gleixner <tglx@linutronix.de>
-    vmlinux.lds.h: Create section for protection against instrumentation
-
-Russell King <rmk+kernel@armlinux.org.uk>
-    ARM: kexec: fix oops after TLB are invalidated
-
-Russell King <rmk+kernel@armlinux.org.uk>
-    ARM: ensure the signal page contains defined contents
-
-Alexandre Belloni <alexandre.belloni@bootlin.com>
-    ARM: dts: lpc32xx: Revert set default clock rate of HCLK PLL
-
-Lin Feng <linf@wangsu.com>
-    bfq-iosched: Revert "bfq: Fix computation of shallow depth"
-
-Alexandre Ghiti <alex@ghiti.fr>
-    riscv: virt_addr_valid must check the address belongs to linear mapping
-
-Victor Lu <victorchengchi.lu@amd.com>
-    drm/amd/display: Decrement refcount of dc_sink before reassignment
-
-Victor Lu <victorchengchi.lu@amd.com>
-    drm/amd/display: Free atomic state after drm_atomic_commit
-
-Victor Lu <victorchengchi.lu@amd.com>
-    drm/amd/display: Fix dc_sink kref count in emulated_link_detect
-
-Sung Lee <sung.lee@amd.com>
-    drm/amd/display: Add more Clock Sources to DCN2.1
-
-Claus Stovgaard <claus.stovgaard@gmail.com>
-    nvme-pci: ignore the subsysem NQN on Phison E16
-
-Amir Goldstein <amir73il@gmail.com>
-    ovl: skip getxattr of security labels
-
-Miklos Szeredi <mszeredi@redhat.com>
-    cap: fix conversions on getxattr
-
-Miklos Szeredi <mszeredi@redhat.com>
-    ovl: perform vfs_getxattr() with mounter creds
-
-Hans de Goede <hdegoede@redhat.com>
-    platform/x86: hp-wmi: Disable tablet-mode reporting by default
-
-Tony Lindgren <tony@atomide.com>
-    ARM: OMAP2+: Fix suspcious RCU usage splats for omap_enter_idle_coupled
-
-Bjorn Andersson <bjorn.andersson@linaro.org>
-    arm64: dts: qcom: sdm845: Reserve LPASS clocks in gcc
-
-Marc Zyngier <maz@kernel.org>
-    arm64: dts: rockchip: Fix PCIe DT properties on rk3399
-
-Odin Ugedal <odin@uged.al>
-    cgroup: fix psi monitor for root cgroup
-
-Julien Grall <jgrall@amazon.com>
-    arm/xen: Don't probe xenbus as part of an early initcall
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    tracing: Check length before giving out the filter buffer
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    tracing: Do not count ftrace events in top level enable output
-
-Nikita Shubin <nikita.shubin@maquefel.me>
-    gpio: ep93xx: Fix single irqchip with multi gpiochips
-
-Nikita Shubin <nikita.shubin@maquefel.me>
-    gpio: ep93xx: fix BUG_ON port F usage
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |   4 +-
- arch/arm/boot/dts/lpc32xx.dtsi                     |   3 -
- arch/arm/include/asm/kexec-internal.h              |  12 ++
- arch/arm/kernel/asm-offsets.c                      |   5 +
- arch/arm/kernel/machine_kexec.c                    |  20 +-
- arch/arm/kernel/relocate_kernel.S                  |  38 ++--
- arch/arm/kernel/signal.c                           |  14 +-
- arch/arm/mach-omap2/cpuidle44xx.c                  |  16 +-
- arch/arm/xen/enlighten.c                           |   2 -
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts         |   4 +-
- .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts      |   4 +-
- arch/arm64/boot/dts/rockchip/rk3399.dtsi           |   2 +-
- arch/h8300/kernel/asm-offsets.c                    |   3 +
- arch/powerpc/kernel/vmlinux.lds.S                  |   1 +
- arch/riscv/include/asm/page.h                      |   5 +-
- arch/x86/Makefile                                  |   6 +-
- block/bfq-iosched.c                                |   8 +-
- drivers/clk/sunxi-ng/ccu_mp.c                      |   2 +-
- drivers/gpio/gpio-ep93xx.c                         | 216 +++++++++++----------
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  22 +--
- .../gpu/drm/amd/display/dc/dcn21/dcn21_resource.c  |  10 +
- drivers/gpu/drm/sun4i/sun4i_tcon.c                 |  25 +++
- drivers/gpu/drm/sun4i/sun4i_tcon.h                 |   6 +
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c              |   6 +-
- drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c             |  26 +--
- drivers/gpu/drm/vc4/vc4_plane.c                    |  18 +-
- drivers/i2c/busses/i2c-stm32f7.c                   |  11 +-
- drivers/misc/lkdtm/Makefile                        |   2 +-
- drivers/misc/lkdtm/rodata.c                        |   2 +-
- drivers/net/ethernet/freescale/enetc/enetc_hw.h    |   2 +
- drivers/net/ethernet/freescale/enetc/enetc_pf.c    |  59 ++++++
- .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    |   7 +
- drivers/net/ethernet/ibm/ibmvnic.c                 |  17 +-
- drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c    |   7 +-
- drivers/net/wireless/mediatek/mt76/dma.c           |   8 +-
- drivers/net/xen-netback/rx.c                       |   9 +-
- drivers/nvme/host/pci.c                            |   2 +
- drivers/platform/x86/hp-wmi.c                      |  14 +-
- drivers/usb/dwc3/ulpi.c                            |  20 +-
- drivers/xen/xenbus/xenbus.h                        |   1 -
- drivers/xen/xenbus/xenbus_probe.c                  |   2 +-
- fs/overlayfs/copy_up.c                             |  15 +-
- fs/overlayfs/inode.c                               |   2 +
- fs/overlayfs/super.c                               |  13 +-
- include/asm-generic/sections.h                     |   3 +
- include/asm-generic/vmlinux.lds.h                  |  12 +-
- include/linux/compiler.h                           |  53 +++++
- include/linux/compiler_types.h                     |   4 +
- include/linux/netdevice.h                          |   2 +
- include/linux/uio.h                                |   8 +-
- include/xen/xenbus.h                               |   2 -
- kernel/bpf/stackmap.c                              |   2 +
- kernel/cgroup/cgroup.c                             |   4 +-
- kernel/trace/trace.c                               |   2 +-
- kernel/trace/trace_events.c                        |   3 +-
- lib/iov_iter.c                                     |  24 ++-
- net/core/datagram.c                                |  12 +-
- net/core/dev.c                                     |  11 +-
- net/dsa/dsa2.c                                     |   7 +-
- net/netfilter/nf_conntrack_core.c                  |   3 +-
- net/netfilter/nf_flow_table_core.c                 |   4 +-
- net/netfilter/nf_tables_api.c                      |  25 ++-
- net/netfilter/xt_recent.c                          |  12 +-
- net/qrtr/tun.c                                     |   6 +
- net/rds/rdma.c                                     |   3 +
- net/rxrpc/call_object.c                            |   2 -
- net/sctp/proc.c                                    |  16 +-
- net/vmw_vsock/af_vsock.c                           |  13 +-
- net/vmw_vsock/hyperv_transport.c                   |   4 -
- net/vmw_vsock/virtio_transport_common.c            |   4 +-
- scripts/mod/modpost.c                              |   2 +-
- security/commoncap.c                               |  67 ++++---
- .../networking/timestamping/txtimestamp.c          |   6 +-
- 73 files changed, 666 insertions(+), 321 deletions(-)
+From: Nikita Shubin <nikita.shubin@maquefel.me>
+
+commit 8b81a7ab8055d01d827ef66374b126eeac3bd108 upstream.
+
+Two index spaces and ep93xx_gpio_port are confusing.
+
+Instead add a separate struct to store necessary data and remove
+ep93xx_gpio_port.
+
+- add struct to store IRQ related data for each IRQ capable chip
+- replace offset array with defined offsets
+- add IRQ registers offset for each IRQ capable chip into
+  ep93xx_gpio_banks
+
+------------[ cut here ]------------
+kernel BUG at drivers/gpio/gpio-ep93xx.c:64!
+---[ end trace 3f6544e133e9f5ae ]---
+
+Fixes: fd935fc421e74 ("gpio: ep93xx: Do not pingpong irq numbers")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/gpio/gpio-ep93xx.c |  186 +++++++++++++++++++++++----------------------
+ 1 file changed, 99 insertions(+), 87 deletions(-)
+
+--- a/drivers/gpio/gpio-ep93xx.c
++++ b/drivers/gpio/gpio-ep93xx.c
+@@ -25,6 +25,9 @@
+ /* Maximum value for gpio line identifiers */
+ #define EP93XX_GPIO_LINE_MAX 63
+ 
++/* Number of GPIO chips in EP93XX */
++#define EP93XX_GPIO_CHIP_NUM 8
++
+ /* Maximum value for irq capable line identifiers */
+ #define EP93XX_GPIO_LINE_MAX_IRQ 23
+ 
+@@ -34,74 +37,74 @@
+  */
+ #define EP93XX_GPIO_F_IRQ_BASE 80
+ 
++struct ep93xx_gpio_irq_chip {
++	u8 irq_offset;
++	u8 int_unmasked;
++	u8 int_enabled;
++	u8 int_type1;
++	u8 int_type2;
++	u8 int_debounce;
++};
++
++struct ep93xx_gpio_chip {
++	struct gpio_chip		gc;
++	struct ep93xx_gpio_irq_chip	*eic;
++};
++
+ struct ep93xx_gpio {
+ 	void __iomem		*base;
+-	struct gpio_chip	gc[8];
++	struct ep93xx_gpio_chip	gc[EP93XX_GPIO_CHIP_NUM];
+ };
+ 
+-/*************************************************************************
+- * Interrupt handling for EP93xx on-chip GPIOs
+- *************************************************************************/
+-static unsigned char gpio_int_unmasked[3];
+-static unsigned char gpio_int_enabled[3];
+-static unsigned char gpio_int_type1[3];
+-static unsigned char gpio_int_type2[3];
+-static unsigned char gpio_int_debounce[3];
++#define to_ep93xx_gpio_chip(x) container_of(x, struct ep93xx_gpio_chip, gc)
+ 
+-/* Port ordering is: A B F */
+-static const u8 int_type1_register_offset[3]	= { 0x90, 0xac, 0x4c };
+-static const u8 int_type2_register_offset[3]	= { 0x94, 0xb0, 0x50 };
+-static const u8 eoi_register_offset[3]		= { 0x98, 0xb4, 0x54 };
+-static const u8 int_en_register_offset[3]	= { 0x9c, 0xb8, 0x58 };
+-static const u8 int_debounce_register_offset[3]	= { 0xa8, 0xc4, 0x64 };
+-
+-static void ep93xx_gpio_update_int_params(struct ep93xx_gpio *epg, unsigned port)
++static struct ep93xx_gpio_irq_chip *to_ep93xx_gpio_irq_chip(struct gpio_chip *gc)
+ {
+-	BUG_ON(port > 2);
+-
+-	writeb_relaxed(0, epg->base + int_en_register_offset[port]);
++	struct ep93xx_gpio_chip *egc = to_ep93xx_gpio_chip(gc);
+ 
+-	writeb_relaxed(gpio_int_type2[port],
+-		       epg->base + int_type2_register_offset[port]);
+-
+-	writeb_relaxed(gpio_int_type1[port],
+-		       epg->base + int_type1_register_offset[port]);
+-
+-	writeb(gpio_int_unmasked[port] & gpio_int_enabled[port],
+-	       epg->base + int_en_register_offset[port]);
++	return egc->eic;
+ }
+ 
+-static int ep93xx_gpio_port(struct gpio_chip *gc)
+-{
+-	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = 0;
++/*************************************************************************
++ * Interrupt handling for EP93xx on-chip GPIOs
++ *************************************************************************/
++#define EP93XX_INT_TYPE1_OFFSET		0x00
++#define EP93XX_INT_TYPE2_OFFSET		0x04
++#define EP93XX_INT_EOI_OFFSET		0x08
++#define EP93XX_INT_EN_OFFSET		0x0c
++#define EP93XX_INT_STATUS_OFFSET	0x10
++#define EP93XX_INT_RAW_STATUS_OFFSET	0x14
++#define EP93XX_INT_DEBOUNCE_OFFSET	0x18
++
++static void ep93xx_gpio_update_int_params(struct ep93xx_gpio *epg,
++					  struct ep93xx_gpio_irq_chip *eic)
++{
++	writeb_relaxed(0, epg->base + eic->irq_offset + EP93XX_INT_EN_OFFSET);
+ 
+-	while (port < ARRAY_SIZE(epg->gc) && gc != &epg->gc[port])
+-		port++;
++	writeb_relaxed(eic->int_type2,
++		       epg->base + eic->irq_offset + EP93XX_INT_TYPE2_OFFSET);
+ 
+-	/* This should not happen but is there as a last safeguard */
+-	if (port == ARRAY_SIZE(epg->gc)) {
+-		pr_crit("can't find the GPIO port\n");
+-		return 0;
+-	}
++	writeb_relaxed(eic->int_type1,
++		       epg->base + eic->irq_offset + EP93XX_INT_TYPE1_OFFSET);
+ 
+-	return port;
++	writeb_relaxed(eic->int_unmasked & eic->int_enabled,
++		       epg->base + eic->irq_offset + EP93XX_INT_EN_OFFSET);
+ }
+ 
+ static void ep93xx_gpio_int_debounce(struct gpio_chip *gc,
+ 				     unsigned int offset, bool enable)
+ {
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
++	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
+ 	int port_mask = BIT(offset);
+ 
+ 	if (enable)
+-		gpio_int_debounce[port] |= port_mask;
++		eic->int_debounce |= port_mask;
+ 	else
+-		gpio_int_debounce[port] &= ~port_mask;
++		eic->int_debounce &= ~port_mask;
+ 
+-	writeb(gpio_int_debounce[port],
+-	       epg->base + int_debounce_register_offset[port]);
++	writeb(eic->int_debounce,
++	       epg->base + eic->irq_offset + EP93XX_INT_DEBOUNCE_OFFSET);
+ }
+ 
+ static void ep93xx_gpio_ab_irq_handler(struct irq_desc *desc)
+@@ -122,12 +125,12 @@ static void ep93xx_gpio_ab_irq_handler(s
+ 	 */
+ 	stat = readb(epg->base + EP93XX_GPIO_A_INT_STATUS);
+ 	for_each_set_bit(offset, &stat, 8)
+-		generic_handle_irq(irq_find_mapping(epg->gc[0].irq.domain,
++		generic_handle_irq(irq_find_mapping(epg->gc[0].gc.irq.domain,
+ 						    offset));
+ 
+ 	stat = readb(epg->base + EP93XX_GPIO_B_INT_STATUS);
+ 	for_each_set_bit(offset, &stat, 8)
+-		generic_handle_irq(irq_find_mapping(epg->gc[1].irq.domain,
++		generic_handle_irq(irq_find_mapping(epg->gc[1].gc.irq.domain,
+ 						    offset));
+ 
+ 	chained_irq_exit(irqchip, desc);
+@@ -153,52 +156,52 @@ static void ep93xx_gpio_f_irq_handler(st
+ static void ep93xx_gpio_irq_ack(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
+ 	int port_mask = BIT(d->irq & 7);
+ 
+ 	if (irqd_get_trigger_type(d) == IRQ_TYPE_EDGE_BOTH) {
+-		gpio_int_type2[port] ^= port_mask; /* switch edge direction */
+-		ep93xx_gpio_update_int_params(epg, port);
++		eic->int_type2 ^= port_mask; /* switch edge direction */
++		ep93xx_gpio_update_int_params(epg, eic);
+ 	}
+ 
+-	writeb(port_mask, epg->base + eoi_register_offset[port]);
++	writeb(port_mask, epg->base + eic->irq_offset + EP93XX_INT_EOI_OFFSET);
+ }
+ 
+ static void ep93xx_gpio_irq_mask_ack(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
+ 	int port_mask = BIT(d->irq & 7);
+ 
+ 	if (irqd_get_trigger_type(d) == IRQ_TYPE_EDGE_BOTH)
+-		gpio_int_type2[port] ^= port_mask; /* switch edge direction */
++		eic->int_type2 ^= port_mask; /* switch edge direction */
+ 
+-	gpio_int_unmasked[port] &= ~port_mask;
+-	ep93xx_gpio_update_int_params(epg, port);
++	eic->int_unmasked &= ~port_mask;
++	ep93xx_gpio_update_int_params(epg, eic);
+ 
+-	writeb(port_mask, epg->base + eoi_register_offset[port]);
++	writeb(port_mask, epg->base + eic->irq_offset + EP93XX_INT_EOI_OFFSET);
+ }
+ 
+ static void ep93xx_gpio_irq_mask(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
+ 
+-	gpio_int_unmasked[port] &= ~BIT(d->irq & 7);
+-	ep93xx_gpio_update_int_params(epg, port);
++	eic->int_unmasked &= ~BIT(d->irq & 7);
++	ep93xx_gpio_update_int_params(epg, eic);
+ }
+ 
+ static void ep93xx_gpio_irq_unmask(struct irq_data *d)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
+ 
+-	gpio_int_unmasked[port] |= BIT(d->irq & 7);
+-	ep93xx_gpio_update_int_params(epg, port);
++	eic->int_unmasked |= BIT(d->irq & 7);
++	ep93xx_gpio_update_int_params(epg, eic);
+ }
+ 
+ /*
+@@ -209,8 +212,8 @@ static void ep93xx_gpio_irq_unmask(struc
+ static int ep93xx_gpio_irq_type(struct irq_data *d, unsigned int type)
+ {
+ 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct ep93xx_gpio_irq_chip *eic = to_ep93xx_gpio_irq_chip(gc);
+ 	struct ep93xx_gpio *epg = gpiochip_get_data(gc);
+-	int port = ep93xx_gpio_port(gc);
+ 	int offset = d->irq & 7;
+ 	int port_mask = BIT(offset);
+ 	irq_flow_handler_t handler;
+@@ -219,32 +222,32 @@ static int ep93xx_gpio_irq_type(struct i
+ 
+ 	switch (type) {
+ 	case IRQ_TYPE_EDGE_RISING:
+-		gpio_int_type1[port] |= port_mask;
+-		gpio_int_type2[port] |= port_mask;
++		eic->int_type1 |= port_mask;
++		eic->int_type2 |= port_mask;
+ 		handler = handle_edge_irq;
+ 		break;
+ 	case IRQ_TYPE_EDGE_FALLING:
+-		gpio_int_type1[port] |= port_mask;
+-		gpio_int_type2[port] &= ~port_mask;
++		eic->int_type1 |= port_mask;
++		eic->int_type2 &= ~port_mask;
+ 		handler = handle_edge_irq;
+ 		break;
+ 	case IRQ_TYPE_LEVEL_HIGH:
+-		gpio_int_type1[port] &= ~port_mask;
+-		gpio_int_type2[port] |= port_mask;
++		eic->int_type1 &= ~port_mask;
++		eic->int_type2 |= port_mask;
+ 		handler = handle_level_irq;
+ 		break;
+ 	case IRQ_TYPE_LEVEL_LOW:
+-		gpio_int_type1[port] &= ~port_mask;
+-		gpio_int_type2[port] &= ~port_mask;
++		eic->int_type1 &= ~port_mask;
++		eic->int_type2 &= ~port_mask;
+ 		handler = handle_level_irq;
+ 		break;
+ 	case IRQ_TYPE_EDGE_BOTH:
+-		gpio_int_type1[port] |= port_mask;
++		eic->int_type1 |= port_mask;
+ 		/* set initial polarity based on current input level */
+ 		if (gc->get(gc, offset))
+-			gpio_int_type2[port] &= ~port_mask; /* falling */
++			eic->int_type2 &= ~port_mask; /* falling */
+ 		else
+-			gpio_int_type2[port] |= port_mask; /* rising */
++			eic->int_type2 |= port_mask; /* rising */
+ 		handler = handle_edge_irq;
+ 		break;
+ 	default:
+@@ -253,9 +256,9 @@ static int ep93xx_gpio_irq_type(struct i
+ 
+ 	irq_set_handler_locked(d, handler);
+ 
+-	gpio_int_enabled[port] |= port_mask;
++	eic->int_enabled |= port_mask;
+ 
+-	ep93xx_gpio_update_int_params(epg, port);
++	ep93xx_gpio_update_int_params(epg, eic);
+ 
+ 	return 0;
+ }
+@@ -276,17 +279,19 @@ struct ep93xx_gpio_bank {
+ 	const char	*label;
+ 	int		data;
+ 	int		dir;
++	int		irq;
+ 	int		base;
+ 	bool		has_irq;
+ 	bool		has_hierarchical_irq;
+ 	unsigned int	irq_base;
+ };
+ 
+-#define EP93XX_GPIO_BANK(_label, _data, _dir, _base, _has_irq, _has_hier, _irq_base) \
++#define EP93XX_GPIO_BANK(_label, _data, _dir, _irq, _base, _has_irq, _has_hier, _irq_base) \
+ 	{							\
+ 		.label		= _label,			\
+ 		.data		= _data,			\
+ 		.dir		= _dir,				\
++		.irq		= _irq,				\
+ 		.base		= _base,			\
+ 		.has_irq	= _has_irq,			\
+ 		.has_hierarchical_irq = _has_hier,		\
+@@ -295,16 +300,16 @@ struct ep93xx_gpio_bank {
+ 
+ static struct ep93xx_gpio_bank ep93xx_gpio_banks[] = {
+ 	/* Bank A has 8 IRQs */
+-	EP93XX_GPIO_BANK("A", 0x00, 0x10, 0, true, false, 64),
++	EP93XX_GPIO_BANK("A", 0x00, 0x10, 0x90, 0, true, false, 64),
+ 	/* Bank B has 8 IRQs */
+-	EP93XX_GPIO_BANK("B", 0x04, 0x14, 8, true, false, 72),
+-	EP93XX_GPIO_BANK("C", 0x08, 0x18, 40, false, false, 0),
+-	EP93XX_GPIO_BANK("D", 0x0c, 0x1c, 24, false, false, 0),
+-	EP93XX_GPIO_BANK("E", 0x20, 0x24, 32, false, false, 0),
++	EP93XX_GPIO_BANK("B", 0x04, 0x14, 0xac, 8, true, false, 72),
++	EP93XX_GPIO_BANK("C", 0x08, 0x18, 0x00, 40, false, false, 0),
++	EP93XX_GPIO_BANK("D", 0x0c, 0x1c, 0x00, 24, false, false, 0),
++	EP93XX_GPIO_BANK("E", 0x20, 0x24, 0x00, 32, false, false, 0),
+ 	/* Bank F has 8 IRQs */
+-	EP93XX_GPIO_BANK("F", 0x30, 0x34, 16, false, true, 0),
+-	EP93XX_GPIO_BANK("G", 0x38, 0x3c, 48, false, false, 0),
+-	EP93XX_GPIO_BANK("H", 0x40, 0x44, 56, false, false, 0),
++	EP93XX_GPIO_BANK("F", 0x30, 0x34, 0x4c, 16, false, true, 0),
++	EP93XX_GPIO_BANK("G", 0x38, 0x3c, 0x00, 48, false, false, 0),
++	EP93XX_GPIO_BANK("H", 0x40, 0x44, 0x00, 56, false, false, 0),
+ };
+ 
+ static int ep93xx_gpio_set_config(struct gpio_chip *gc, unsigned offset,
+@@ -326,13 +331,14 @@ static int ep93xx_gpio_f_to_irq(struct g
+ 	return EP93XX_GPIO_F_IRQ_BASE + offset;
+ }
+ 
+-static int ep93xx_gpio_add_bank(struct gpio_chip *gc,
++static int ep93xx_gpio_add_bank(struct ep93xx_gpio_chip *egc,
+ 				struct platform_device *pdev,
+ 				struct ep93xx_gpio *epg,
+ 				struct ep93xx_gpio_bank *bank)
+ {
+ 	void __iomem *data = epg->base + bank->data;
+ 	void __iomem *dir = epg->base + bank->dir;
++	struct gpio_chip *gc = &egc->gc;
+ 	struct device *dev = &pdev->dev;
+ 	struct gpio_irq_chip *girq;
+ 	int err;
+@@ -347,6 +353,12 @@ static int ep93xx_gpio_add_bank(struct g
+ 	girq = &gc->irq;
+ 	if (bank->has_irq || bank->has_hierarchical_irq) {
+ 		gc->set_config = ep93xx_gpio_set_config;
++		egc->eic = devm_kcalloc(dev, 1,
++					sizeof(*egc->eic),
++					GFP_KERNEL);
++		if (!egc->eic)
++			return -ENOMEM;
++		egc->eic->irq_offset = bank->irq;
+ 		girq->chip = &ep93xx_gpio_irq_chip;
+ 	}
+ 
+@@ -415,7 +427,7 @@ static int ep93xx_gpio_probe(struct plat
+ 		return PTR_ERR(epg->base);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(ep93xx_gpio_banks); i++) {
+-		struct gpio_chip *gc = &epg->gc[i];
++		struct ep93xx_gpio_chip *gc = &epg->gc[i];
+ 		struct ep93xx_gpio_bank *bank = &ep93xx_gpio_banks[i];
+ 
+ 		if (ep93xx_gpio_add_bank(gc, pdev, epg, bank))
 
 
