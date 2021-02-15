@@ -2,149 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E23331BAAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:03:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F5131BAB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhBOOD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:03:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229968AbhBOODV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:03:21 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A62FA64DCF;
-        Mon, 15 Feb 2021 14:02:39 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 14:02:36 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>
-Subject: Re: [PATCH] iio: use getter/setter functions
-Message-ID: <20210215140236.351b1941@archlinux>
-In-Reply-To: <20210209211315.1261791-1-Julia.Lawall@inria.fr>
-References: <20210209211315.1261791-1-Julia.Lawall@inria.fr>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230234AbhBOOHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:07:03 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:62456 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230042AbhBOOHA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:07:00 -0500
+Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11FE6HGh009237;
+        Mon, 15 Feb 2021 23:06:17 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
+ Mon, 15 Feb 2021 23:06:17 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11FE6HwJ009225
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 15 Feb 2021 23:06:17 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: possible deadlock in start_this_handle (2)
+To:     Jan Kara <jack@suse.cz>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, mhocko@suse.cz, linux-mm@kvack.org,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>
+References: <000000000000563a0205bafb7970@google.com>
+ <20210211104947.GL19070@quack2.suse.cz>
+ <bf1088e3-b051-6361-57dd-6b836b1c3b46@i-love.sakura.ne.jp>
+ <20210215124519.GA22417@quack2.suse.cz>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <aaee5d61-f988-84c3-4d16-f8b7987f3a83@i-love.sakura.ne.jp>
+Date:   Mon, 15 Feb 2021 23:06:15 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210215124519.GA22417@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  9 Feb 2021 22:13:15 +0100
-Julia Lawall <Julia.Lawall@inria.fr> wrote:
-
-> Use getter and setter functions, for a variety of data types.
+On 2021/02/15 21:45, Jan Kara wrote:
+> On Sat 13-02-21 23:26:37, Tetsuo Handa wrote:
+>> Excuse me, but it seems to me that nothing prevents
+>> ext4_xattr_set_handle() from reaching ext4_xattr_inode_lookup_create()
+>> without memalloc_nofs_save() when hitting ext4_get_nojournal() path.
+>> Will you explain when ext4_get_nojournal() path is executed?
 > 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> That's a good question but sadly I don't think that's it.
+> ext4_get_nojournal() is called when the filesystem is created without a
+> journal. In that case we also don't acquire jbd2_handle lockdep map. In the
+> syzbot report we can see:
 
-Hi Julia,
-
-This crossed with a change of variable name in industrialio-core.c
-so I've applied with a slight tweak to take that into account.
-
-Applied to the togreg branch of iio.git and pushed out as testing
-to let 0-day and friends poke at it.
-
-Thanks,
-
-Jonathan
+Since syzbot can test filesystem images, syzbot might have tested a filesystem
+image created both with and without journal within this boot.
 
 > 
-> ---
->  drivers/iio/adc/palmas_gpadc.c      |    2 +-
->  drivers/iio/chemical/scd30_serial.c |    2 +-
->  drivers/iio/industrialio-core.c     |    2 +-
->  drivers/iio/potentiometer/max5481.c |    4 ++--
->  drivers/iio/potentiometer/max5487.c |    4 ++--
->  5 files changed, 7 insertions(+), 7 deletions(-)
+> kswapd0/2246 is trying to acquire lock:
+> ffff888041a988e0 (jbd2_handle){++++}-{0:0}, at: start_this_handle+0xf81/0x1380 fs/jbd2/transaction.c:444
 > 
-> diff --git a/drivers/iio/potentiometer/max5487.c b/drivers/iio/potentiometer/max5487.c
-> index 7ec51976ec99..1c0d46a96200 100644
-> --- a/drivers/iio/potentiometer/max5487.c
-> +++ b/drivers/iio/potentiometer/max5487.c
-> @@ -92,7 +92,7 @@ static int max5487_spi_probe(struct spi_device *spi)
->  	if (!indio_dev)
->  		return -ENOMEM;
->  
-> -	dev_set_drvdata(&spi->dev, indio_dev);
-> +	spi_set_drvdata(spi, indio_dev);
->  	data = iio_priv(indio_dev);
->  
->  	data->spi = spi;
-> @@ -114,7 +114,7 @@ static int max5487_spi_probe(struct spi_device *spi)
->  
->  static int max5487_spi_remove(struct spi_device *spi)
->  {
-> -	struct iio_dev *indio_dev = dev_get_drvdata(&spi->dev);
-> +	struct iio_dev *indio_dev = spi_get_drvdata(spi);
->  
->  	iio_device_unregister(indio_dev);
->  
-> diff --git a/drivers/iio/potentiometer/max5481.c b/drivers/iio/potentiometer/max5481.c
-> index a88ed0eb3adc..6e22b538091f 100644
-> --- a/drivers/iio/potentiometer/max5481.c
-> +++ b/drivers/iio/potentiometer/max5481.c
-> @@ -136,7 +136,7 @@ static int max5481_probe(struct spi_device *spi)
->  	if (!indio_dev)
->  		return -ENOMEM;
->  
-> -	dev_set_drvdata(&spi->dev, indio_dev);
-> +	spi_set_drvdata(spi, indio_dev);
->  	data = iio_priv(indio_dev);
->  
->  	data->spi = spi;
-> @@ -163,7 +163,7 @@ static int max5481_probe(struct spi_device *spi)
->  
->  static int max5481_remove(struct spi_device *spi)
->  {
-> -	struct iio_dev *indio_dev = dev_get_drvdata(&spi->dev);
-> +	struct iio_dev *indio_dev = spi_get_drvdata(spi);
->  	struct max5481_data *data = iio_priv(indio_dev);
->  
->  	iio_device_unregister(indio_dev);
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 7db761afa578..4ef7a39cfb1c 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1596,7 +1596,7 @@ struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
->  	dev->dev.type = &iio_device_type;
->  	dev->dev.bus = &iio_bus_type;
->  	device_initialize(&dev->dev);
-> -	dev_set_drvdata(&dev->dev, (void *)dev);
-> +	iio_device_set_drvdata(dev, (void *)dev);
->  	mutex_init(&dev->mlock);
->  	mutex_init(&dev->info_exist_lock);
->  	INIT_LIST_HEAD(&iio_dev_opaque->channel_attr_list);
-> diff --git a/drivers/iio/adc/palmas_gpadc.c b/drivers/iio/adc/palmas_gpadc.c
-> index 889b88768b63..9ae0d7f73155 100644
-> --- a/drivers/iio/adc/palmas_gpadc.c
-> +++ b/drivers/iio/adc/palmas_gpadc.c
-> @@ -517,7 +517,7 @@ static int palmas_gpadc_probe(struct platform_device *pdev)
->  	adc->palmas = dev_get_drvdata(pdev->dev.parent);
->  	adc->adc_info = palmas_gpadc_info;
->  	init_completion(&adc->conv_completion);
-> -	dev_set_drvdata(&pdev->dev, indio_dev);
-> +	platform_set_drvdata(pdev, indio_dev);
->  
->  	adc->auto_conversion_period = gpadc_pdata->auto_conversion_period_ms;
->  	adc->irq = palmas_irq_get_virq(adc->palmas, PALMAS_GPADC_EOC_SW_IRQ);
-> diff --git a/drivers/iio/chemical/scd30_serial.c b/drivers/iio/chemical/scd30_serial.c
-> index 06f85eb1a4dd..568b34486c44 100644
-> --- a/drivers/iio/chemical/scd30_serial.c
-> +++ b/drivers/iio/chemical/scd30_serial.c
-> @@ -177,7 +177,7 @@ static int scd30_serdev_command(struct scd30_state *state, enum scd30_cmd cmd, u
->  static int scd30_serdev_receive_buf(struct serdev_device *serdev,
->  				    const unsigned char *buf, size_t size)
->  {
-> -	struct iio_dev *indio_dev = dev_get_drvdata(&serdev->dev);
-> +	struct iio_dev *indio_dev = serdev_device_get_drvdata(serdev);
->  	struct scd30_serdev_priv *priv;
->  	struct scd30_state *state;
->  	int num;
+> but task is already holding lock:
+> ffffffff8be892c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x30 mm/page_alloc.c:5195
 > 
+> So this filesystem has very clearly been created with a journal. Also the
+> journal lockdep tracking machinery uses:
+
+While locks held by kswapd0/2246 are fs_reclaim, shrinker_rwsem, &type->s_umount_key#38
+and jbd2_handle, isn't the dependency lockdep considers problematic is
+
+  Chain exists of:
+    jbd2_handle --> &ei->xattr_sem --> fs_reclaim
+
+   Possible unsafe locking scenario:
+
+         CPU0                    CPU1
+         ----                    ----
+    lock(fs_reclaim);
+                                 lock(&ei->xattr_sem);
+                                 lock(fs_reclaim);
+    lock(jbd2_handle);
+
+where CPU0 is kswapd/2246 and CPU1 is the case of ext4_get_nojournal() path?
+If someone has taken jbd2_handle and &ei->xattr_sem in this order, isn't this
+dependency true?
+
+> 
+> rwsem_acquire_read(&journal->j_trans_commit_map, 0, 0, _THIS_IP_);
+> 
+> so a lockdep key is per-filesystem. Thus it is not possible that lockdep
+> would combine lock dependencies from two different filesystems.
+> 
+> But I guess we could narrow the search for this problem by adding WARN_ONs
+> to ext4_xattr_set_handle() and ext4_xattr_inode_lookup_create() like:
+> 
+> WARN_ON(ext4_handle_valid(handle) && !(current->flags & PF_MEMALLOC_NOFS));
+> 
+> It would narrow down a place in which PF_MEMALLOC_NOFS flag isn't set
+> properly... At least that seems like the most plausible way forward to me.
+
+You can use CONFIG_DEBUG_AID_FOR_SYZBOT for adding such WARN_ONs on linux-next.
 
