@@ -2,238 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044A931C097
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:31:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFFA31C096
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbhBOR21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:28:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232049AbhBOQ2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:28:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC30460200;
-        Mon, 15 Feb 2021 16:27:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613406441;
-        bh=BliUV72ji+FDfrLN09W99a1LVlldaxjMnaHHvvvEdwE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fT4Gf596fMrFBXuMQ3nRd1zF3Y4b7CNYi9Izdzvvp6jaBxtQyg3SIPEh0QpRN9js+
-         aOEdteq98jmFx8T3Qvaxtrrr6MbeYvDQGFoxee6Oko3Oq8RSpcRf6OlqhOk8M7nySa
-         nnHNd6tDp+TU088aMD/z2iumylegg5jQaGf9pgNI=
-Date:   Mon, 15 Feb 2021 17:27:18 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jiri Slaby <jslaby@suse.cz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [GIT PULL] TTY / Serial driver changes for 5.12-rc1
-Message-ID: <YCqg5ufpr1yD9tvk@kroah.com>
+        id S232818AbhBOR2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232105AbhBOQ2T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 11:28:19 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8632AC0617A7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:27:38 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id j11so6720452wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:27:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y1rcHCUmSNtiITeSpRJjNoEPqFQsoQV92rCJkLWYkIk=;
+        b=jltdazZP6wymsmNQCETHf7PGmeyehmBd49HvkHeSiSFcSmZVLygBRXoFh3A4Nnq4Zc
+         ys8fFxc4Bijk1+uQRTQKvl7nqY/VtL9RmdHqVEg2PpVedDL8wgZy9nUaX231bikZhz1p
+         Sri/0WZZYNpN6NOsj36E2e/JRFcmKr7GnjIP2v9cGhb6S0IlEjXeTjY8KUARMLe2o8eR
+         r06jQydfllFBH5kAH5mPZBUB9kdRsm58ajxfOAcUAl4UysaoqtNYauoMkhp277gOLQRn
+         a3/+4mUVK+QieKa+fbX6KtPtJn1NZxmxnClbkU2kqJ+Sg06Ae0ZAb5WE6KnO+yxkEjyO
+         riHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y1rcHCUmSNtiITeSpRJjNoEPqFQsoQV92rCJkLWYkIk=;
+        b=Gu3yih/W4vr1537aQP2E28FskELzfYun27zmn90Im6aoar8IBq/U6ZEvl6fLJHnCPC
+         35phiqfskK4F8AunnTepy2WDVWGvHcOfICUQh2TnE/cbg3DN8TUUXXGOqA/fOxfRkeeJ
+         14uVL5rKdMl1JwjId5i5ZIIpkF9IbFXs7FAmI1SH4zd0uGUWZHI9N+3cdS8iAXOcM3lE
+         KFJjVFQXfgcwk2WYnOqKii//F0DB51wGkwvptkKvCxQjcrXTG0CVPfhrVay/ZUVfe+71
+         2OiaQGpD2G9zZFwokKE/vlFcoOrgIEsmzO6RuAjKLLyRsRgQLuvKLxUu8wihIhPrbau7
+         dJyw==
+X-Gm-Message-State: AOAM530fEZRkqwhw6I+jItwNw6IeaHeS2JUgt2CZhycD/FT11XUTKaKw
+        AtgL8FJ2RNua7I1zljEnUp94nXZz8xSP2n4Yn6Sv3g==
+X-Google-Smtp-Source: ABdhPJxk/1spqoY1Ye0kZtxe0ODquKQUd7zjwiGOvxgpnPohwchr5EGP2aBbBwm6bDIZV8u99csHaQ6ZtTT7g29srpM=
+X-Received: by 2002:a05:600c:3551:: with SMTP id i17mr14817858wmq.92.1613406457225;
+ Mon, 15 Feb 2021 08:27:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com> <1611737738-1493-9-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1611737738-1493-9-git-send-email-anshuman.khandual@arm.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Mon, 15 Feb 2021 16:27:26 +0000
+Message-ID: <CAJ9a7VgC0j4TmOYXdUVd19sQqxWOk-tsvv3r5DQzmY59ZptzDQ@mail.gmail.com>
+Subject: Re: [PATCH V3 08/14] coresight: core: Add support for dedicated
+ percpu sinks
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
+HI Anshuman
 
-  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
+On Wed, 27 Jan 2021 at 08:55, Anshuman Khandual
+<anshuman.khandual@arm.com> wrote:
+>
+> Add support for dedicated sinks that are bound to individual CPUs. (e.g,
+> TRBE). To allow quicker access to the sink for a given CPU bound source,
+> keep a percpu array of the sink devices. Also, add support for building
+> a path to the CPU local sink from the ETM.
+>
 
-are available in the Git repository at:
+Really need to tighten up the terminology here - I think what you mean
+is a PE architecturally defined sink - i.e. one that can be determined
+by reading the feature registers on the PE, rather than an ETR which
+cannot.
+However, the Coresight Base System Architecture specification does
+recommend a per cpu design using an ETR per CPU - now I assume that
+this case is not catered for in this patch?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.12-rc1
+> This adds a new percpu sink type CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM.
+> This new sink type is exclusively available and can only work with percpu
+> source type device CORESIGHT_DEV_SUBTYPE_SOURCE_PERCPU_PROC.
+>
 
-for you to fetch changes up to a157270fbf37f822e1fa9e9faa8ed8c81da1eb28:
+CORESIGHT_DEV_SUBTYPE_SOURCE_PERCPU_PROC - this does not exist.
 
-  serial: core: Remove BUG_ON(in_interrupt()) check (2021-02-09 11:45:04 +0100)
+>
+> This defines a percpu structure that accommodates a single coresight_device
+> which can be used to store an initialized instance from a sink driver. As
+> these sinks are exclusively linked and dependent on corresponding percpu
+> sources devices, they should also be the default sink device during a perf
+> session.
+>
+> Outwards device connections are scanned while establishing paths between a
+> source and a sink device. But such connections are not present for certain
+> percpu source and sink devices which are exclusively linked and dependent.
+> Build the path directly and skip connection scanning for such devices.
+>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> Changes in V3:
+>
+> - Updated coresight_find_default_sink()
+>
+>  drivers/hwtracing/coresight/coresight-core.c | 16 ++++++++++++++--
+>  include/linux/coresight.h                    | 12 ++++++++++++
+>  2 files changed, 26 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 0062c89..4795e28 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -23,6 +23,7 @@
+>  #include "coresight-priv.h"
+>
+>  static DEFINE_MUTEX(coresight_mutex);
+> +DEFINE_PER_CPU(struct coresight_device *, csdev_sink);
+>
 
-----------------------------------------------------------------
-TTY/Serial driver changes for 5.12-rc1
+If you do indeed mean the architecturally defined sinks then this
+could be 'csdev_pe_arch_sink' - or something similar to indicate the
+reliance on the PE architecture, unless per-cpu ETR topologies are
+also handled here.
 
-Here is the big set of tty/serial driver changes for 5.12-rc1.
+>  /**
+>   * struct coresight_node - elements of a path, from source to sink
+> @@ -784,6 +785,13 @@ static int _coresight_build_path(struct coresight_device *csdev,
+>         if (csdev == sink)
+>                 goto out;
+>
+> +       if (coresight_is_percpu_source(csdev) && coresight_is_percpu_sink(sink) &&
+> +           sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev))) {
+> +               _coresight_build_path(sink, sink, path);
+> +               found = true;
+> +               goto out;
+> +       }
+> +
+>         /* Not a sink - recursively explore each port found on this element */
+>         for (i = 0; i < csdev->pdata->nr_outport; i++) {
+>                 struct coresight_device *child_dev;
+> @@ -999,8 +1007,12 @@ coresight_find_default_sink(struct coresight_device *csdev)
+>         int depth = 0;
+>
+>         /* look for a default sink if we have not found for this device */
+> -       if (!csdev->def_sink)
+> -               csdev->def_sink = coresight_find_sink(csdev, &depth);
+> +       if (!csdev->def_sink) {
+> +               if (coresight_is_percpu_source(csdev))
+> +                       csdev->def_sink = per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
+> +               if (!csdev->def_sink)
+> +                       csdev->def_sink = coresight_find_sink(csdev, &depth);
+> +       }
+>         return csdev->def_sink;
+>  }
+>
+> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+> index 976ec26..bc3a5ca 100644
+> --- a/include/linux/coresight.h
+> +++ b/include/linux/coresight.h
+> @@ -50,6 +50,7 @@ enum coresight_dev_subtype_sink {
+>         CORESIGHT_DEV_SUBTYPE_SINK_PORT,
+>         CORESIGHT_DEV_SUBTYPE_SINK_BUFFER,
+>         CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM,
+> +       CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM,
 
-Nothing huge, just lots of good cleanups and additions:
-	- Your n_tty line discipline cleanups
-	- vt core cleanups and reworks to make the code more "modern"
-	- stm32 driver additions
-	- tty led support added to the tty core and led layer
-	- minor serial driver fixups and additions
+If this is needed then could it not be ..._SINK_SYSMEM_PROC - to be
+consistent with ..._SOURCE_PROC?
 
-All of these have been in linux-next for a while with no reported
-issues.
+>  };
+>
+>  enum coresight_dev_subtype_link {
+> @@ -428,6 +429,17 @@ static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 o
+>                 csa->write(val, offset, false, true);
+>  }
+>
+> +static inline bool coresight_is_percpu_source(struct coresight_device *csdev)
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+All cpu sources are per cpu - that is ETMv3, ETMv4, PTM, ETE - this
+might be better as simply coresight_is_cpu_source() as all the
+aforementioned types will return true.
 
-----------------------------------------------------------------
-Ahmed S. Darwish (2):
-      vt_ioctl: Remove in_interrupt() check
-      serial: core: Remove BUG_ON(in_interrupt()) check
+> +{
+> +       return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
+> +              csdev->subtype.source_subtype == CORESIGHT_DEV_SUBTYPE_SOURCE_PROC;
+> +}
+> +
+> +static inline bool coresight_is_percpu_sink(struct coresight_device *csdev)
+> +{
+> +       return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SINK) &&
+> +              csdev->subtype.sink_subtype == CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
+> +}
+>  #else  /* !CONFIG_64BIT */
+>
+>  static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
+> --
+> 2.7.4
+>
 
-Andy Shevchenko (1):
-      serial: ifx6x60: Remove driver for deprecated platform
+Regards
 
-Arnd Bergmann (1):
-      serial: remove sirf prima/atlas driver
-
-Christophe Leroy (1):
-      tty: serial: cpm_uart: Add udbg support for enabling xmon
-
-Corey Minyard (2):
-      tty: Export redirect release
-      drivers:tty:pty: Fix a race causing data loss on close
-
-Cristian Ciocaltea (1):
-      tty: serial: owl: Add support for kernel debugger
-
-Emil Renner Berthing (1):
-      vt: keyboard, use new API for keyboard_tasklet
-
-Erwan Le Ray (9):
-      serial: stm32: fix DMA initialization error handling
-      serial: stm32: fix code cleaning warnings and checks
-      serial: stm32: add "_usart" prefix in functions name
-      serial: stm32: add author
-      dt-bindings: serial: stm32: update rts-gpios and cts-gpios
-      serial: stm32: update conflicting RTS/CTS config comment
-      serial: stm32: clean probe and remove port deinit
-      serial: stm32: update transmission complete error message in shutdown
-      serial: stm32: improve platform_get_irq condition handling in init_port
-
-Fabio Estevam (4):
-      serial: fsl_lpuart: Use of_device_get_match_data()
-      serial: mxs-auart: Remove serial_mxs_probe_dt()
-      serial: mxs-auart: Remove <asm/cacheflush.h>
-      dt-bindings: serial: imx: Switch to my personal address
-
-Greg Kroah-Hartman (2):
-      Merge branch 'tty-splice' of git://git.kernel.org/.../torvalds/linux into tty-next
-      Merge 5.11-rc5 into tty-next
-
-Jiri Slaby (12):
-      vt: move set_leds to keyboard.c
-      vt: keyboard, make keyboard_tasklet local
-      vt: keyboard, defkeymap.c_shipped, approach the definitions
-      vt: keyboard, defkeymap.c_shipped, approach the unicode table
-      tty: pty, remove BUG_ON from pty_close
-      8250_tegra: clean up tegra_uart_handle_break
-      vt/consolemap: do font sum unsigned
-      vt: drop old FONT ioctls
-      vgacon: drop BROKEN_GRAPHICS_PROGRAMS
-      tty: cpm_uart, use port->flags instead of low_latency
-      tty_port: drop last traces of low_latency
-      tty: drop termiox user definitions
-
-Linus Torvalds (8):
-      tty: convert tty_ldisc_ops 'read()' function to take a kernel pointer
-      tty: implement read_iter
-      tty: clean up legacy leftovers from n_tty line discipline
-      tty: teach n_tty line discipline about the new "cookie continuations"
-      tty: teach the n_tty ICANON case about the new "cookie continuations" too
-      tty: fix up hung_up_tty_write() conversion
-      tty: fix up hung_up_tty_read() conversion
-      tty: fix up iterate_tty_read() EOVERFLOW handling
-
-Uwe Kleine-König (7):
-      tty: rename tty_kopen() and add new function tty_kopen_shared()
-      tty: new helper function tty_get_icount()
-      tty: hvcs: Drop unnecessary if block
-      tty: vcc: Drop unnecessary if block
-      tty: vcc: Drop impossible to hit WARN_ON
-      leds: trigger: implement a tty trigger
-      tty: serial: Drop unused efm32 serial driver
-
-Wolfram Sang (1):
-      dt-bindings: serial: renesas,hscif: Add r8a779a0 support
-
-Yan.Gao (1):
-      tty: Protect disc_data in n_tty_close and n_tty_flush_buffer
-
-Zheng Yongjun (3):
-      tty/serial/imx: convert comma to semicolon
-      tty/serial/lantiq: convert comma to semicolon
-      tty: serial: icom: Use DEFINE_SPINLOCK() for spinlock
-
- .../ABI/testing/sysfs-class-led-trigger-tty        |    6 +
- .../devicetree/bindings/serial/fsl-imx-uart.yaml   |    2 +-
- .../devicetree/bindings/serial/fsl-mxs-auart.yaml  |    2 +-
- .../devicetree/bindings/serial/renesas,hscif.yaml  |    1 +
- .../devicetree/bindings/serial/sirf-uart.txt       |   34 -
- .../devicetree/bindings/serial/st,stm32-uart.yaml  |   13 +-
- Documentation/networking/caif/caif.rst             |    1 -
- drivers/accessibility/speakup/spk_ttyio.c          |    2 +-
- drivers/bluetooth/hci_ldisc.c                      |   34 +-
- drivers/char/pcmcia/synclink_cs.c                  |    2 -
- drivers/input/serio/serport.c                      |    4 +-
- drivers/leds/trigger/Kconfig                       |    9 +
- drivers/leds/trigger/Makefile                      |    1 +
- drivers/leds/trigger/ledtrig-tty.c                 |  183 +++
- drivers/net/caif/caif_serial.c                     |    3 +-
- drivers/net/ppp/ppp_async.c                        |    3 +-
- drivers/net/ppp/ppp_synctty.c                      |    3 +-
- drivers/s390/char/con3215.c                        |    1 -
- drivers/s390/char/sclp_tty.c                       |    1 -
- drivers/s390/char/sclp_vt220.c                     |    1 -
- drivers/s390/char/tty3270.c                        |    2 -
- drivers/tty/amiserial.c                            |    3 -
- drivers/tty/hvc/hvcs.c                             |    5 +-
- drivers/tty/ipwireless/tty.c                       |    1 -
- drivers/tty/mxser.c                                |    1 -
- drivers/tty/n_gsm.c                                |    3 +-
- drivers/tty/n_hdlc.c                               |   60 +-
- drivers/tty/n_null.c                               |    3 +-
- drivers/tty/n_r3964.c                              |   10 +-
- drivers/tty/n_tracerouter.c                        |    4 +-
- drivers/tty/n_tracesink.c                          |    4 +-
- drivers/tty/n_tty.c                                |  153 +-
- drivers/tty/pty.c                                  |   16 +-
- drivers/tty/serial/8250/8250_tegra.c               |   11 +-
- drivers/tty/serial/Kconfig                         |   42 -
- drivers/tty/serial/Makefile                        |    3 -
- drivers/tty/serial/cpm_uart/cpm_uart_core.c        |   43 +-
- drivers/tty/serial/efm32-uart.c                    |  852 -----------
- drivers/tty/serial/fsl_lpuart.c                    |    4 +-
- drivers/tty/serial/icom.c                          |    4 +-
- drivers/tty/serial/ifx6x60.c                       | 1390 ------------------
- drivers/tty/serial/ifx6x60.h                       |  118 --
- drivers/tty/serial/imx.c                           |    2 +-
- drivers/tty/serial/lantiq.c                        |    2 +-
- drivers/tty/serial/max3100.c                       |    3 -
- drivers/tty/serial/mxs-auart.c                     |   45 +-
- drivers/tty/serial/owl-uart.c                      |   38 +
- drivers/tty/serial/serial_core.c                   |   11 +-
- drivers/tty/serial/sirfsoc_uart.c                  | 1503 --------------------
- drivers/tty/serial/sirfsoc_uart.h                  |  447 ------
- drivers/tty/serial/stm32-usart.c                   |  419 +++---
- drivers/tty/synclink_gt.c                          |    1 -
- drivers/tty/tty_io.c                               |  210 ++-
- drivers/tty/vcc.c                                  |   10 +-
- drivers/tty/vt/consolemap.c                        |    2 +-
- drivers/tty/vt/defkeymap.c_shipped                 |   82 +-
- drivers/tty/vt/keyboard.c                          |   18 +-
- drivers/tty/vt/vt.c                                |   42 +-
- drivers/tty/vt/vt_ioctl.c                          |  154 +-
- drivers/video/console/vgacon.c                     |   19 -
- include/linux/kbd_kern.h                           |   10 +-
- include/linux/kd.h                                 |    8 -
- include/linux/platform_data/efm32-uart.h           |   19 -
- include/linux/spi/ifx_modem.h                      |   15 -
- include/linux/tty.h                                |   11 +-
- include/linux/tty_ldisc.h                          |    3 +-
- include/linux/vt_kern.h                            |   12 -
- include/uapi/linux/serial_core.h                   |    3 -
- include/uapi/linux/termios.h                       |   15 -
- net/nfc/nci/uart.c                                 |    3 +-
- 70 files changed, 958 insertions(+), 5187 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-class-led-trigger-tty
- delete mode 100644 Documentation/devicetree/bindings/serial/sirf-uart.txt
- create mode 100644 drivers/leds/trigger/ledtrig-tty.c
- delete mode 100644 drivers/tty/serial/efm32-uart.c
- delete mode 100644 drivers/tty/serial/ifx6x60.c
- delete mode 100644 drivers/tty/serial/ifx6x60.h
- delete mode 100644 drivers/tty/serial/sirfsoc_uart.c
- delete mode 100644 drivers/tty/serial/sirfsoc_uart.h
- delete mode 100644 include/linux/kd.h
- delete mode 100644 include/linux/platform_data/efm32-uart.h
- delete mode 100644 include/linux/spi/ifx_modem.h
+Mike
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
