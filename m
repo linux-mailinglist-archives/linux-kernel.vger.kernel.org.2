@@ -2,180 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA8031B6DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E3A31B6E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhBOKG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:06:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
+        id S230100AbhBOKLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbhBOKGX (ORCPT
+        with ESMTP id S229989AbhBOKLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:06:23 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E488BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:05:42 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id q72so3433879pjq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:05:42 -0800 (PST)
+        Mon, 15 Feb 2021 05:11:01 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F26DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:10:21 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id gx20so3616090pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:10:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DmRB0K44KO7vG/sp1xtUpHVwS6fGMWfTKOE8QU8jS6g=;
-        b=EhjrjjBYBupuI5im9doAwVzO+jGLquTgwobo7U7h3v0K1j4+obz4rjNleNiQ0aPEqZ
-         IHY9+7M4Vd2XXMsNbJe5aNZpoMy2ArzXBurcksVbF1YUiMH6cgwm5mfd+RCu2K0PHI9O
-         hGXGA7Uc5JkSiWzC7Yv18dOIaqkgGJgRdDPb+vfGpEG+wi4fLoHCujyw4qC1yH2f2NID
-         LRnAWqpTTUrx1HSRDEPr9KBqy2AXz3oPQnSljzqgZXbZ5hc5MRdxm7Z16NvzEEX4OGyn
-         AAuHKLuXnOWV0VUvted7bLe42IU2y8LNp07b53RTcEthwczxVjWkAD21NW5756+5CSmx
-         vyiw==
+        bh=uUkfBcazTUCSySsbiIpdf7O4sDkmamjhiSz7LSXU/q4=;
+        b=H1TVCYlZbW83imFghMNQrgZVHaopx3G7upqnpaCf3o+DIiA7AB2ZPsVxte6UcaFTcX
+         trlyNHKP2lqVPJhwEVc3NJADj9CHjpL1Xsch5BrecHXGTg8DGaWMACtBHW/D5d1h/ab3
+         hwkpAA34c7CyoHgsja4N8BYXtgbS09kr+Nc8tDkomKLEaxh72pl/5HKUbwf50m7wg6Ha
+         sjnAGUX5OPvd86woy4ls62/I9TR7JnfTFAjB1ODQ1RlG8YFW6I6rSMiumlVg+E9FXuIe
+         7aVNrDtbVmpMzOQIQ6JMr6tCP/1m4VOC0eP9+AK/GzDTOHk52YNLBFYCEmXR4L5cFGoh
+         rTlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DmRB0K44KO7vG/sp1xtUpHVwS6fGMWfTKOE8QU8jS6g=;
-        b=elpvVP9NdvTLTLvnvAIAU8j17h8bsMq/ixpGa149bIWXvhH+QtEnvcl3nfimscbVS0
-         0G4rgqnWGt/aLgNtqKyn4zgludL1q3Y/PtdC/HvoOm+rHAOqDF7JzjWDgrj8Rg3rvsHS
-         bTKWYdjKctf+4YW4b+r9UVgb7HGk7c1UlnTxiXhsYZlZ5demxHv4/kuYG0BguiRlx/p5
-         6i4/avVG4WpAUr5jd/ZNDjcYezYTgIqInjRgAoif2Wjt/9VgnjaOH1fzGq2l9Y93fd9m
-         GKQnisJ4HExb7a8N1FJJpDjab4ol5djpf7Y5tVsmj56TVnGAhjqcYYO+OHT/h3asIAh+
-         tkzw==
-X-Gm-Message-State: AOAM533Ssq5DKC8pn/7EIEA+3BRmpPaxNE1AbSGO9ZVmkkSWWh1ZlIQ3
-        lXdoFAyi9/yXI4zNflxIqCyhxGGao9yCMEG9VVM/dA==
-X-Google-Smtp-Source: ABdhPJz3aVkYh+fCF+JZBBZYkK3dCHFrSlukd/ZQkDuxm0T341Lg/HmVz8233DOtYoTwQIYNuKyP66yVJ8zhGG9fRlE=
-X-Received: by 2002:a17:902:7290:b029:e3:1dcf:f3ec with SMTP id
- d16-20020a1709027290b02900e31dcff3ecmr14638057pll.20.1613383542493; Mon, 15
- Feb 2021 02:05:42 -0800 (PST)
+        bh=uUkfBcazTUCSySsbiIpdf7O4sDkmamjhiSz7LSXU/q4=;
+        b=G8cHisHLXhJdmRubSlNDQbSvtMfp4PKnNDRHRKC6GJt5m6djdBUdaFQ+COyq7pK0pB
+         h5v+GqoTC4DAcknfO59GAhZNq97JzfSYNkbOzx2diEXm/uWq/uu/1hlU3R4S0bsZOKjJ
+         trBaeOnY5z7BaJr4AGVbkUOLKAo9RO/1kKPcq1zKKs9pKcwuM9SspAXGvE7V6Higkox2
+         9GE6GsDbnhXLMcxFZ/M3db/7F4zBcPkpGaOI+DLqAqllfwIS+I3NjmaLwGb6ZPy7FiOJ
+         BlYVQ3a5UWADbNmHs1odi6mI/gxO1tG+fJkrVIP2iXIgoUjuHcG/BmuLbJN9OGqCg4OO
+         J4Xg==
+X-Gm-Message-State: AOAM532fN0fk4ZBBVu9n4yetCxQHeLLy7+Yolr1KMygkzY1tdiF+6k9n
+        5fRyKpI+hGzb4CqkBQrVoh+pCoUw0qDkA1VmyCz4Cg==
+X-Google-Smtp-Source: ABdhPJzmO6TWU1MkQeMZEYcgMqkOlI9BRJZd2Fv5/20y4X9tFe6U500m6dr22NKX22P40SGqOg/5qp2H0O2Uixeox+I=
+X-Received: by 2002:a17:902:9341:b029:e1:7b4e:57a8 with SMTP id
+ g1-20020a1709029341b02900e17b4e57a8mr14556708plp.34.1613383820620; Mon, 15
+ Feb 2021 02:10:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20210208085013.89436-1-songmuchun@bytedance.com>
- <20210208085013.89436-5-songmuchun@bytedance.com> <YCafit5ruRJ+SL8I@dhcp22.suse.cz>
-In-Reply-To: <YCafit5ruRJ+SL8I@dhcp22.suse.cz>
+References: <20210212170159.32153-1-songmuchun@bytedance.com>
+ <20210212170159.32153-3-songmuchun@bytedance.com> <YCpBUm2N4Bqm5PM5@dhcp22.suse.cz>
+In-Reply-To: <YCpBUm2N4Bqm5PM5@dhcp22.suse.cz>
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 15 Feb 2021 18:05:06 +0800
-Message-ID: <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
+Date:   Mon, 15 Feb 2021 18:09:44 +0800
+Message-ID: <CAMZfGtVkh-DeYLLo8Nn7kHMCq055RSvL03eON1iqmhydYiQ-iQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 3/4] mm: memcontrol: bail out early when id
+ is zero
 To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
         Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 11:32 PM Michal Hocko <mhocko@suse.com> wrote:
+On Mon, Feb 15, 2021 at 5:39 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On Mon 08-02-21 16:50:09, Muchun Song wrote:
-> > When we free a HugeTLB page to the buddy allocator, we should allocate the
-> > vmemmap pages associated with it. But we may cannot allocate vmemmap pages
-> > when the system is under memory pressure, in this case, we just refuse to
-> > free the HugeTLB page instead of looping forever trying to allocate the
-> > pages.
+> On Sat 13-02-21 01:01:58, Muchun Song wrote:
+> > The memcg ID cannot be zero, but we can pass zero to mem_cgroup_from_id,
+> > so idr_find() is pointless and wastes CPU cycles.
 >
-> Thanks for simplifying the implementation from your early proposal!
->
-> This will not be looping for ever. The allocation will usually trigger
-> the OOM killer and sooner or later there will be a memory to allocate
-> from or the system panics when there are no eligible tasks to kill. This
-> is just a side note.
->
-> I think the changelog could benefit from a more explicit documentation
-> of those error failures. There are different cases when the hugetlb page
-> is freed. It can be due to an admin intervention (decrease the pool),
-> overcommit, migration, dissolving and likely some others. Most of them
-> should be fine to stay in the pool which would just increase the surplus
-> pages in the pool. I am not so sure about dissolving path.
+> Is this possible at all to happen? If not why should we add a test for
+> _all_ invocations?
 
-Thanks. I will update the changelog.
+Yeah, this indeed can happen. If we allocate a new swap cache page
+and charge it via mem_cgroup_charge, then the page will uncharge
+the swap counter via mem_cgroup_uncharge_swap. When the swap
+entry is indeed freed, we will call mem_cgroup_uncharge_swap again,
+In this routine, we can pass zero to mem_cgroup_from_id. Right?
 
-> [...]
-> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> > index 0209b736e0b4..3d85e3ab7caa 100644
-> > --- a/mm/hugetlb_vmemmap.c
-> > +++ b/mm/hugetlb_vmemmap.c
-> > @@ -169,6 +169,8 @@
-> >   * (last) level. So this type of HugeTLB page can be optimized only when its
-> >   * size of the struct page structs is greater than 2 pages.
-> >   */
-> > +#define pr_fmt(fmt)  "HugeTLB: " fmt
-> > +
-> >  #include "hugetlb_vmemmap.h"
+
+>
 > >
-> >  /*
-> > @@ -198,6 +200,34 @@ static inline unsigned long free_vmemmap_pages_size_per_hpage(struct hstate *h)
-> >       return (unsigned long)free_vmemmap_pages_per_hpage(h) << PAGE_SHIFT;
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  mm/memcontrol.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index a3f26522765a..68ed4b297c13 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -5173,6 +5173,9 @@ static inline void mem_cgroup_id_put(struct mem_cgroup *memcg)
+> >  struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
+> >  {
+> >       WARN_ON_ONCE(!rcu_read_lock_held());
+> > +     /* The memcg ID cannot be zero. */
+> > +     if (id == 0)
+> > +             return NULL;
+> >       return idr_find(&mem_cgroup_idr, id);
 > >  }
 > >
-> > +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
-> > +{
-> > +     int ret;
-> > +     unsigned long vmemmap_addr = (unsigned long)head;
-> > +     unsigned long vmemmap_end, vmemmap_reuse;
-> > +
-> > +     if (!free_vmemmap_pages_per_hpage(h))
-> > +             return 0;
-> > +
-> > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-> > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-> > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
-> > +
-> > +     /*
-> > +      * The pages which the vmemmap virtual address range [@vmemmap_addr,
-> > +      * @vmemmap_end) are mapped to are freed to the buddy allocator, and
-> > +      * the range is mapped to the page which @vmemmap_reuse is mapped to.
-> > +      * When a HugeTLB page is freed to the buddy allocator, previously
-> > +      * discarded vmemmap pages must be allocated and remapping.
-> > +      */
-> > +     ret = vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
-> > +                               GFP_ATOMIC | __GFP_NOWARN | __GFP_THISNODE);
+> > --
+> > 2.11.0
 >
-> I do not think that this is a good allocation mode. GFP_ATOMIC is a non
-> sleeping allocation and a medium memory pressure might cause it to
-> fail prematurely. I do not think this is really an atomic context which
-> couldn't afford memory reclaim. I also do not think we want to grant
-
-Because alloc_huge_page_vmemmap is called under hugetlb_lock
-now. So using GFP_ATOMIC indeed makes the code more simpler.
-From the document of the kernel, I learned that __GFP_NOMEMALLOC
-can be used to explicitly forbid access to emergency reserves. So if
-we do not want to use the reserve memory. How about replacing it to
-
-GFP_ATOMIC | __GFP_NOMEMALLOC | __GFP_NOWARN | __GFP_THISNODE
-
-Thanks.
-
-> access to memory reserve is reasonable. Just think of a huge number of
-> hugetlb pages being freed which can deplete the memory reserve for
-> atomic allocations. I think that you want
->         GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN | __GFP_THISNODE
->
-> for an initial implementation. The justification being that the
-> allocation should at least try to reclaim but it shouldn't cause any
-> major disruption because the failure is not fatal. If the failure rate
-> would be impractically high then just drop NORETRY part. You can replace
-> it by __GFP_RETRY_MAYFAIL but that shouldn't be strictly necessary
-> because __GFP_THISNODE on its own implies on OOM killer, but that is
-> kinda ugly to rely on.
 > --
 > Michal Hocko
 > SUSE Labs
