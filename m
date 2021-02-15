@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADC531BFA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50B431BFAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbhBOQqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:46:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50214 "EHLO mail.kernel.org"
+        id S231769AbhBOQrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:47:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230353AbhBOPiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230392AbhBOPiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 10:38:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01A3164EB9;
-        Mon, 15 Feb 2021 15:34:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C60A664EF1;
+        Mon, 15 Feb 2021 15:34:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403265;
-        bh=zy1udX7Uonmn/VPosQuKRzFF8NMvD7CIT/Jg8sMmh9c=;
+        s=korg; t=1613403268;
+        bh=bZA6qMxGaBqMadWmdQSrmd9KSoH9VnCZsx1IowzvLZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fZ3Fq4ASFnQDA02P6XkPDRgdZzpCbFqWI+ilVqwYuD4vere/sBeRQm1qQjVnXAkXi
-         YDlbR2rFusGnwWKUboGR4Lo/8ngPJhVDAHLZh5a3nFm+fZZK89UIqOtSDJzYeBYPv1
-         2uE2jlCGWx75T9BsKWaj6ceZWRuiBsxIXbRk0gX4=
+        b=A0gMubGA9fM09y54Rr9AE2B7v3wcPCyUr5nG3SgI2mHOjAsF93TVxcv4a5mmejffQ
+         3kq9Cd2eMFZM+Vk9t8WAtJsyJjWaWHbUoVHTYL11GMzxH7UbX9sc370qDgWOB5MiKX
+         zZexcx8QmWFGnYVuVPZ2Jf+BaKuPkLfPr96OIXmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.10 091/104] cpufreq: ACPI: Update arch scale-invariance max perf ratio if CPPC is not there
-Date:   Mon, 15 Feb 2021 16:27:44 +0100
-Message-Id: <20210215152722.397273996@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Jian Yang <jianyang@google.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Sperbeck <jsperbeck@google.com>
+Subject: [PATCH 5.10 092/104] net: gro: do not keep too many GRO packets in napi->rx_list
+Date:   Mon, 15 Feb 2021 16:27:45 +0100
+Message-Id: <20210215152722.427768568@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,77 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit d11a1d08a082a7dc0ada423d2b2e26e9b6f2525c upstream.
+commit 8dc1c444df193701910f5e80b5d4caaf705a8fb0 upstream.
 
-If the maximum performance level taken for computing the
-arch_max_freq_ratio value used in the x86 scale-invariance code is
-higher than the one corresponding to the cpuinfo.max_freq value
-coming from the acpi_cpufreq driver, the scale-invariant utilization
-falls below 100% even if the CPU runs at cpuinfo.max_freq or slightly
-faster, which causes the schedutil governor to select a frequency
-below cpuinfo.max_freq.  That frequency corresponds to a frequency
-table entry below the maximum performance level necessary to get to
-the "boost" range of CPU frequencies which prevents "boost"
-frequencies from being used in some workloads.
+Commit c80794323e82 ("net: Fix packet reordering caused by GRO and
+listified RX cooperation") had the unfortunate effect of adding
+latencies in common workloads.
 
-While this issue is related to scale-invariance, it may be amplified
-by commit db865272d9c4 ("cpufreq: Avoid configuring old governors as
-default with intel_pstate") from the 5.10 development cycle which
-made it extremely easy to default to schedutil even if the preferred
-driver is acpi_cpufreq as long as intel_pstate is built too, because
-the mere presence of the latter effectively removes the ondemand
-governor from the defaults.  Distro kernels are likely to include
-both intel_pstate and acpi_cpufreq on x86, so their users who cannot
-use intel_pstate or choose to use acpi_cpufreq may easily be
-affectecd by this issue.
+Before the patch, GRO packets were immediately passed to
+upper stacks.
 
-If CPPC is available, it can be used to address this issue by
-extending the frequency tables created by acpi_cpufreq to cover the
-entire available frequency range (including "boost" frequencies) for
-each CPU, but if CPPC is not there, acpi_cpufreq has no idea what
-the maximum "boost" frequency is and the frequency tables created by
-it cannot be extended in a meaningful way, so in that case make it
-ask the arch scale-invariance code to to use the "nominal" performance
-level for CPU utilization scaling in order to avoid the issue at hand.
+After the patch, we can accumulate quite a lot of GRO
+packets (depdending on NAPI budget).
 
-Fixes: db865272d9c4 ("cpufreq: Avoid configuring old governors as default with intel_pstate")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Giovanni Gherdovich <ggherdovich@suse.cz>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+My fix is counting in napi->rx_count number of segments
+instead of number of logical packets.
+
+Fixes: c80794323e82 ("net: Fix packet reordering caused by GRO and listified RX cooperation")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Bisected-by: John Sperbeck <jsperbeck@google.com>
+Tested-by: Jian Yang <jianyang@google.com>
+Cc: Maxim Mikityanskiy <maximmi@mellanox.com>
+Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+Reviewed-by: Edward Cree <ecree.xilinx@gmail.com>
+Reviewed-by: Alexander Lobakin <alobakin@pm.me>
+Link: https://lore.kernel.org/r/20210204213146.4192368-1-eric.dumazet@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/smpboot.c      |    1 +
- drivers/cpufreq/acpi-cpufreq.c |    8 ++++++++
- 2 files changed, 9 insertions(+)
+ net/core/dev.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1829,6 +1829,7 @@ void arch_set_max_freq_ratio(bool turbo_
- 	arch_max_freq_ratio = turbo_disabled ? SCHED_CAPACITY_SCALE :
- 					arch_turbo_freq_ratio;
- }
-+EXPORT_SYMBOL_GPL(arch_set_max_freq_ratio);
- 
- static bool turbo_disabled(void)
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5723,10 +5723,11 @@ static void gro_normal_list(struct napi_
+ /* Queue one GRO_NORMAL SKB up for list processing. If batch size exceeded,
+  * pass the whole batch up to the stack.
+  */
+-static void gro_normal_one(struct napi_struct *napi, struct sk_buff *skb)
++static void gro_normal_one(struct napi_struct *napi, struct sk_buff *skb, int segs)
  {
---- a/drivers/cpufreq/acpi-cpufreq.c
-+++ b/drivers/cpufreq/acpi-cpufreq.c
-@@ -806,6 +806,14 @@ static int acpi_cpufreq_cpu_init(struct
- 		state_count++;
- 		valid_states++;
- 		data->first_perf_state = valid_states;
-+	} else {
-+		/*
-+		 * If the maximum "boost" frequency is unknown, ask the arch
-+		 * scale-invariance code to use the "nominal" performance for
-+		 * CPU utilization scaling so as to prevent the schedutil
-+		 * governor from selecting inadequate CPU frequencies.
-+		 */
-+		arch_set_max_freq_ratio(true);
+ 	list_add_tail(&skb->list, &napi->rx_list);
+-	if (++napi->rx_count >= gro_normal_batch)
++	napi->rx_count += segs;
++	if (napi->rx_count >= gro_normal_batch)
+ 		gro_normal_list(napi);
+ }
+ 
+@@ -5765,7 +5766,7 @@ static int napi_gro_complete(struct napi
  	}
  
- 	freq_table = kcalloc(state_count, sizeof(*freq_table), GFP_KERNEL);
+ out:
+-	gro_normal_one(napi, skb);
++	gro_normal_one(napi, skb, NAPI_GRO_CB(skb)->count);
+ 	return NET_RX_SUCCESS;
+ }
+ 
+@@ -6055,7 +6056,7 @@ static gro_result_t napi_skb_finish(stru
+ {
+ 	switch (ret) {
+ 	case GRO_NORMAL:
+-		gro_normal_one(napi, skb);
++		gro_normal_one(napi, skb, 1);
+ 		break;
+ 
+ 	case GRO_DROP:
+@@ -6143,7 +6144,7 @@ static gro_result_t napi_frags_finish(st
+ 		__skb_push(skb, ETH_HLEN);
+ 		skb->protocol = eth_type_trans(skb, skb->dev);
+ 		if (ret == GRO_NORMAL)
+-			gro_normal_one(napi, skb);
++			gro_normal_one(napi, skb, 1);
+ 		break;
+ 
+ 	case GRO_DROP:
 
 
