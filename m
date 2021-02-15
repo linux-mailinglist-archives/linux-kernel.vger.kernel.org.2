@@ -2,63 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF8631C329
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D90231C32B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhBOUpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 15:45:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54398 "EHLO mail.kernel.org"
+        id S229807AbhBOUpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 15:45:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229627AbhBOUp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 15:45:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B59CF64DEC;
-        Mon, 15 Feb 2021 20:44:47 +0000 (UTC)
+        id S229775AbhBOUph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 15:45:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4E8164DE0;
+        Mon, 15 Feb 2021 20:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613421888;
-        bh=IhUxIYqRrWYJupUnp4eR0qui80CTtQp2sirMBcAUedU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=u5aasvplMnehNunu7qVl0rS+nmDmJ/s+a06mO098K18cM0ZHUDqbkP35uqhAErii6
-         1aa28bgwS+2XOYie8JXzojCStb3SqSXH6su6tYaFSL2DNtoY0Uqfu8SyJP+gZtOwvI
-         ak2JXDWm6ZOlWu2NSzBXY6oap7/ijQYIyO7Med9o8/siHMnuFFH0tGI6Vy3ZXQ9/G2
-         5E2AnXub81wQRKmLC3uQNfmVcvkXXFrTNXKnhXqysvY401YbN7Ipc7dYdTPq6vaBbk
-         b7+4y3F37K6YKjV0mKPlHXwa/LUVkxTJ4kNSVYiETDFvdZ4cfcPHTHLLtFcVdzThiD
-         cdgI6mGUj9ztw==
+        s=k20201202; t=1613421896;
+        bh=WEEuhtnSy8VhEBxkxYgzsBN8isfWgUhZXIWaKLzfWvo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OS8Gd6PAKwsY26S3sus9oHdpR+N3J2iZFPv8zLOJvHIqbbVcfxrJcHFZjeMv6YZNx
+         bc+4LBpRlyn3jPcFxVLdOy/mg/fu9uCQ99R+W2aVA2/Zm6VtkON3IMi8qAR2l87Tu2
+         7XyRAvNnmZezICQPGrJqdVlsHvveradWn/3vfuyeabZltsqNfUbFQ0jzMZdFvQzHyc
+         StyrNIRC78ZpoIfKRGBGhXCKRUHHPNCZq3EXj3iD3of+U0HH5gal3NWl8R4wHpjNE9
+         Sbd8UPZPGTIblJBZnup204ZUreKEj9imy7tazeOJWhpfwwOfil6tVF/5HVTFCiTcP+
+         zphqKnwENW0cg==
+Date:   Mon, 15 Feb 2021 20:43:59 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] regmap updates for v5.12
-Date:   Mon, 15 Feb 2021 20:43:39 +0000
-Message-Id: <20210215204447.B59CF64DEC@mail.kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] spi: lm70llp: Switch to use
+ module_parport_driver()
+Message-ID: <20210215204359.GB4378@sirena.org.uk>
+References: <20210215202353.18515-1-andriy.shevchenko@linux.intel.com>
+ <20210215202353.18515-3-andriy.shevchenko@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UHN/qo2QbUvPLonB"
+Content-Disposition: inline
+In-Reply-To: <20210215202353.18515-3-andriy.shevchenko@linux.intel.com>
+X-Cookie: Serenity through viciousness.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
 
-  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
+--UHN/qo2QbUvPLonB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-are available in the Git repository at:
+On Mon, Feb 15, 2021 at 10:23:53PM +0200, Andy Shevchenko wrote:
+> Switch to use module_parport_driver() to reduce boilerplate code.
+> Note, device_initcall() is a default for module_init().
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-v5.12
+Acked-by: Mark Brown <broonie@kernel.org>
 
-for you to fetch changes up to aa3233086b48e5269cd0b5c16fb9711ce9341244:
+--UHN/qo2QbUvPLonB
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  Merge remote-tracking branch 'regmap/for-5.12' into regmap-next (2021-01-21 19:38:21 +0000)
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-regmap: Update for v5.12
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAq3Q4ACgkQJNaLcl1U
+h9DYJAf/fjLey2KyF6s5ITR7akoYVHeZvfrce5AFiqsvfynswypHFdPyUcszh3dY
+huCF5ttdY6m+doIfXvzdLYHFHPZA8hxyFdVfitOiIBD1dKWxWANvo5cUq1vZ39DM
+13jTgGHGkXuG4lGvE/yJYfIWR2WEeGDgkMmLxIe5GrmvkdCViSWJnNhs7DxRH4N6
+6jxYBM1D+z9yMzJReCu1IwEdnnhOq2Tcemnp2idPiBDy09d4wKiRDEa099QVaT0v
+gcIQVdwEIzRBxi4ubSEkxGNCje/hj1qLW28bC4QRsq8W74CXuVTWfcVKlrI250Ur
+PQczhjS84R8WcOXcAmVP73czK/VD6w==
+=tfJw
+-----END PGP SIGNATURE-----
 
-Just one simple code style improvement this time, no features.  There is
-an addition to add a new SoundWire regmap type but that should be coming
-via the SoundWire tree as the support for the underlying bus features
-was only added this cycle.
-
-----------------------------------------------------------------
-Jiapeng Zhong (1):
-      regmap: Assign boolean values to a bool variable
-
-Mark Brown (1):
-      Merge remote-tracking branch 'regmap/for-5.12' into regmap-next
-
- drivers/base/regmap/regcache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--UHN/qo2QbUvPLonB--
