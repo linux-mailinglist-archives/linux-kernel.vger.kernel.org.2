@@ -2,207 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4281231B55D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 07:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519B931B561
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 07:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhBOGNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 01:13:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhBOGMz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 01:12:55 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594EFC061574;
-        Sun, 14 Feb 2021 22:12:15 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id o15so4608944ilt.6;
-        Sun, 14 Feb 2021 22:12:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AIfzBFyCNv86KZ5EeKdCATv8zV74pSszmiyVwnpE6Nc=;
-        b=k0IBTbrK0ESj9dqk3Z3e4KEyh1g/vcsSuFVfp1fSer/oIilr0RdHix+c2QAgcoPE9p
-         QMFfuNTMqtPcZncO6cLPA9nlKIOr6rqGaPVVlKM1g/mUpgATLpepq4fnrX7xlzlWoPO6
-         CaChIG7Up1dRFW+7LgvDOVR97E91Tw4aJgHMErvwWBwVhW0lqJ2U6pvkK/t2TbBMyZWu
-         jaPIJhV7jBgD8aiJTU9PbiOrZry46KkC8ROXITo1ZFVVRA06KabcbK2Hi3tbxQ765Oqj
-         Y101ZFwTzkwnuv89UxKYAoTwqEcYVsnwCINgnzWXiaLKS43NZR1W3NknAr3CfzMPQUpW
-         NHyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AIfzBFyCNv86KZ5EeKdCATv8zV74pSszmiyVwnpE6Nc=;
-        b=gk1OlE1lQVCP9lusdKStgu6VTU0YDuUyq03ApKLUOZTYYziSFYbA9R0Ndt5jA+Qfzy
-         UCeZR7QvukbnnY4xAs4iu4FjmZnPBAkPPRkOs5nW2nACAoEzOIBp1X0g+qspug4PyTys
-         5EJdKPC+lAMyFh5+0WMdHjdLoilwwMABApUe4I4O+y/UikK9gX6Ix6fYpzuJGSPfGlQj
-         t8ed0igp5mQbv8kIyjwHSA0IKpgJT+xFZ8D4o+btHEP3Ro73fof90f3hcTeCkqAjwmh+
-         7lW7YswQhOqeloDZ3Lg4RbL0ILcY4XiTTRJFQV0G/uCYsMePeVMsQm5crHvW2H+yb4Je
-         BLOg==
-X-Gm-Message-State: AOAM533JE7JWzidYX338mTERhbblEf72BkgwbVlaCzaLSeoDF7gsFoJM
-        MnmOt0KPvkZJyRT2sOkdcQeDiDs3C3H/Wu8WNcI=
-X-Google-Smtp-Source: ABdhPJyb23eBt7g724jOrO2qq+oMbkHZIz8bp0GNBdYcDx3Cy3rmgj4gyvL7c1Co5feWV7tFpRi2Qd/lsAnw+J53Hp8=
-X-Received: by 2002:a92:8e42:: with SMTP id k2mr12099589ilh.250.1613369534723;
- Sun, 14 Feb 2021 22:12:14 -0800 (PST)
+        id S229890AbhBOG07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 01:26:59 -0500
+Received: from mga07.intel.com ([134.134.136.100]:44573 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhBOG0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 01:26:55 -0500
+IronPort-SDR: cPU903P6yZrfpxA+6zHKa2QPbmLhByKQB8AMYaFyvqU5WkOr3aZ2Lp7jnVJUcERs5M73ma4ESd
+ OLGd1xcOrVNA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="246690438"
+X-IronPort-AV: E=Sophos;i="5.81,179,1610438400"; 
+   d="scan'208";a="246690438"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2021 22:26:11 -0800
+IronPort-SDR: Yw7eB/ypS+B6kCv/SY4jILLEHSHTj630omnK82lbZSKWG2i9QcENN149E6CrYmGv52KbstOSwC
+ PGtrjfHZGdKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,179,1610438400"; 
+   d="scan'208";a="425356345"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Feb 2021 22:26:09 -0800
+Subject: Re: [PATCH] perf test: Fix unaligned access in sample parsing test
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+References: <20210214091638.519643-1-namhyung@kernel.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <870d16e1-30dc-161d-33bf-e35428260ec6@intel.com>
+Date:   Mon, 15 Feb 2021 08:26:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20210212044405.4120619-1-drinkcat@chromium.org>
- <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
- <YCYybUg4d3+Oij4N@kroah.com> <CAOQ4uxhovoZ4S3WhXwgYDeOeomBxfQ1BdzSyGdqoVX6boDOkeA@mail.gmail.com>
- <YCY+tjPgcDmgmVD1@kroah.com> <871rdljxtx.fsf@suse.de> <YCZyBZ1iT+MUXLu1@kroah.com>
- <87sg61ihkj.fsf@suse.de>
-In-Reply-To: <87sg61ihkj.fsf@suse.de>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 15 Feb 2021 08:12:03 +0200
-Message-ID: <CAOQ4uxi-VuBmE8Ej_B3xmBnn1nmp9qpiA-BkNpPcrE0PCRp1UA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
- is generated
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210214091638.519643-1-namhyung@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 2:40 PM Luis Henriques <lhenriques@suse.de> wrote:
->
-> Greg KH <gregkh@linuxfoundation.org> writes:
->
-> > On Fri, Feb 12, 2021 at 12:05:14PM +0000, Luis Henriques wrote:
-> >> Greg KH <gregkh@linuxfoundation.org> writes:
-> >>
-> >> > On Fri, Feb 12, 2021 at 10:22:16AM +0200, Amir Goldstein wrote:
-> >> >> On Fri, Feb 12, 2021 at 9:49 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >> >> >
-> >> >> > On Fri, Feb 12, 2021 at 12:44:00PM +0800, Nicolas Boichat wrote:
-> >> >> > > Filesystems such as procfs and sysfs generate their content at
-> >> >> > > runtime. This implies the file sizes do not usually match the
-> >> >> > > amount of data that can be read from the file, and that seeking
-> >> >> > > may not work as intended.
-> >> >> > >
-> >> >> > > This will be useful to disallow copy_file_range with input files
-> >> >> > > from such filesystems.
-> >> >> > >
-> >> >> > > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> >> >> > > ---
-> >> >> > > I first thought of adding a new field to struct file_operations,
-> >> >> > > but that doesn't quite scale as every single file creation
-> >> >> > > operation would need to be modified.
-> >> >> >
-> >> >> > Even so, you missed a load of filesystems in the kernel with this patch
-> >> >> > series, what makes the ones you did mark here different from the
-> >> >> > "internal" filesystems that you did not?
-> >> >> >
-> >> >> > This feels wrong, why is userspace suddenly breaking?  What changed in
-> >> >> > the kernel that caused this?  Procfs has been around for a _very_ long
-> >> >> > time :)
-> >> >>
-> >> >> That would be because of (v5.3):
-> >> >>
-> >> >> 5dae222a5ff0 vfs: allow copy_file_range to copy across devices
-> >> >>
-> >> >> The intention of this change (series) was to allow server side copy
-> >> >> for nfs and cifs via copy_file_range().
-> >> >> This is mostly work by Dave Chinner that I picked up following requests
-> >> >> from the NFS folks.
-> >> >>
-> >> >> But the above change also includes this generic change:
-> >> >>
-> >> >> -       /* this could be relaxed once a method supports cross-fs copies */
-> >> >> -       if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
-> >> >> -               return -EXDEV;
-> >> >> -
-> >> >>
-> >> >> The change of behavior was documented in the commit message.
-> >> >> It was also documented in:
-> >> >>
-> >> >> 88e75e2c5 copy_file_range.2: Kernel v5.3 updates
-> >> >>
-> >> >> I think our rationale for the generic change was:
-> >> >> "Why not? What could go wrong? (TM)"
-> >> >> I am not sure if any workload really gained something from this
-> >> >> kernel cross-fs CFR.
-> >> >
-> >> > Why not put that check back?
-> >> >
-> >> >> In retrospect, I think it would have been safer to allow cross-fs CFR
-> >> >> only to the filesystems that implement ->{copy,remap}_file_range()...
-> >> >
-> >> > Why not make this change?  That seems easier and should fix this for
-> >> > everyone, right?
-> >> >
-> >> >> Our option now are:
-> >> >> - Restore the cross-fs restriction into generic_copy_file_range()
-> >> >
-> >> > Yes.
-> >> >
-> >>
-> >> Restoring this restriction will actually change the current cephfs CFR
-> >> behaviour.  Since that commit we have allowed doing remote copies between
-> >> different filesystems within the same ceph cluster.  See commit
-> >> 6fd4e6348352 ("ceph: allow object copies across different filesystems in
-> >> the same cluster").
-> >>
-> >> Although I'm not aware of any current users for this scenario, the
-> >> performance impact can actually be huge as it's the difference between
-> >> asking the OSDs for copying a file and doing a full read+write on the
-> >> client side.
-> >
-> > Regression in performance is ok if it fixes a regression for things that
-> > used to work just fine in the past :)
-> >
-> > First rule, make it work.
->
-> Sure, I just wanted to point out that *maybe* there are other options than
-> simply reverting that commit :-)
->
-> Something like the patch below (completely untested!) should revert to the
-> old behaviour in filesystems that don't implement the CFR syscall.
->
-> Cheers,
-> --
-> Luis
->
-> diff --git a/fs/read_write.c b/fs/read_write.c
-> index 75f764b43418..bf5dccc43cc9 100644
-> --- a/fs/read_write.c
-> +++ b/fs/read_write.c
-> @@ -1406,8 +1406,11 @@ static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
->                                                        file_out, pos_out,
->                                                        len, flags);
->
-> -       return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
-> -                                      flags);
-> +       if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
-> +               return -EXDEV;
-> +       else
-> +               generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
-> +                                       flags);
->  }
->
+On 14/02/21 11:16 am, Namhyung Kim wrote:
+> The ubsan reported the following error.  It was because sample's raw
+> data missed u32 padding at the end.  So it broke the alignment of the
+> array after it.
+> 
+> The raw data contains an u32 size prefix so the data size should have
+> an u32 padding after 8-byte aligned data.
+> 
+> 27: Sample parsing  :util/synthetic-events.c:1539:4:
+>   runtime error: store to misaligned address 0x62100006b9bc for type
+>   '__u64' (aka 'unsigned long long'), which requires 8 byte alignment
+> 0x62100006b9bc: note: pointer points here
+>   00 00 00 00 ff ff ff ff  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+>               ^
+>     #0 0x561532a9fc96 in perf_event__synthesize_sample util/synthetic-events.c:1539:13
+>     #1 0x5615327f4a4f in do_test tests/sample-parsing.c:284:8
+>     #2 0x5615327f3f50 in test__sample_parsing tests/sample-parsing.c:381:9
+>     #3 0x56153279d3a1 in run_test tests/builtin-test.c:424:9
+>     #4 0x56153279c836 in test_and_print tests/builtin-test.c:454:9
+>     #5 0x56153279b7eb in __cmd_test tests/builtin-test.c:675:4
+>     #6 0x56153279abf0 in cmd_test tests/builtin-test.c:821:9
+>     #7 0x56153264e796 in run_builtin perf.c:312:11
+>     #8 0x56153264cf03 in handle_internal_command perf.c:364:8
+>     #9 0x56153264e47d in run_argv perf.c:408:2
+>     #10 0x56153264c9a9 in main perf.c:538:3
+>     #11 0x7f137ab6fbbc in __libc_start_main (/lib64/libc.so.6+0x38bbc)
+>     #12 0x561532596828 in _start ...
+> 
+> SUMMARY: UndefinedBehaviorSanitizer: misaligned-pointer-use
+>  util/synthetic-events.c:1539:4 in
+> 
+> Fixes: 045f8cd8542d ("perf tests: Add a sample parsing test")
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-Which kernel is this patch based on?
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-At this point, I am with Dave and Darrick on not falling back to
-generic_copy_file_range() at all.
+> ---
+>  tools/perf/tests/sample-parsing.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/tests/sample-parsing.c b/tools/perf/tests/sample-parsing.c
+> index f506eabfc269..0dbe3aa99853 100644
+> --- a/tools/perf/tests/sample-parsing.c
+> +++ b/tools/perf/tests/sample-parsing.c
+> @@ -202,7 +202,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
+>  		.data = {1, -1ULL, 211, 212, 213},
+>  	};
+>  	u64 regs[64];
+> -	const u64 raw_data[] = {0x123456780a0b0c0dULL, 0x1102030405060708ULL};
+> +	const u32 raw_data[] = {0x12345678, 0x0a0b0c0d, 0x11020304, 0x05060708, 0 };
+>  	const u64 data[] = {0x2211443366558877ULL, 0, 0xaabbccddeeff4321ULL};
+>  	const u64 aux_data[] = {0xa55a, 0, 0xeeddee, 0x0282028202820282};
+>  	struct perf_sample sample = {
+> 
 
-We do not have proof of any workload that benefits from it and the
-above patch does not protect from a wierd use case of trying to copy a file
-from sysfs to sysfs.
-
-I am indecisive about what should be done with generic_copy_file_range()
-called as fallback from within filesystems.
-
-I think the wise choice is to not do the fallback in any case, but this is up
-to the specific filesystem maintainers to decide.
-
-Thanks,
-Amir.
