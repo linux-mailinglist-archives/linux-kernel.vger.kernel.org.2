@@ -2,190 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6142931B5D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 09:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E01031B5E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 09:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhBOIKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 03:10:40 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:2660 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229597AbhBOIKg (ORCPT
+        id S229968AbhBOIbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 03:31:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229595AbhBOIbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 03:10:36 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11F7vobR007207;
-        Mon, 15 Feb 2021 09:09:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : subject : to
- : cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=HOKWY9ja0XIA6P079lELOlmBVjhPUFu51o8zyaRJWOI=;
- b=FP3e2OQFOY6I5ccWP3JEkKPfznJxyTW3ozVr8iAAo/+q14uiiRG7EVQZzC+gRrypU5ad
- u/oDIBLyNLiwNCwSPAuFj1cHWQzogQA06miU50Qi227Q3lM0nuBFw7htfMBErgCj5mO8
- 6oLF/wZ7LXOiRIs8EXz5nAoLmhYzM2LXQJoYWBFXkescRjk769fT381TkXig3KTGB5R1
- VLGqt0JELRUhqkJf3ZE1GX9FWm6FOTFZzyo9QY2e0P0w5P/pnPB8C64Fwa2EqDGcEpIA
- GVrnY9drLRMZeH8o5GM7d7HEubXcTfKjOFlaTBAq4hbllCla5JEsHmB9np7criiU/7Sx aA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36p54792v2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 09:09:21 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EB50B10002A;
-        Mon, 15 Feb 2021 09:09:18 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BE482211F0E;
-        Mon, 15 Feb 2021 09:09:18 +0100 (CET)
-Received: from lmecxl0951.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 15 Feb
- 2021 09:09:17 +0100
-From:   yannick Fertre <yannick.fertre@foss.st.com>
-Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: Move drm_bridge_add into probe
-To:     Jagan Teki <jagan@amarulasolutions.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        "Laurent Pinchart" <Laurent.pinchart@ideasonboard.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko Stubner <heiko@sntech.de>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>
-CC:     Marek Vasut <marex@denx.de>,
-        Vincent Abriou <vincent.abriou@st.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-amarula@amarulasolutions.com>
-References: <20210203091306.140518-1-jagan@amarulasolutions.com>
-Message-ID: <f9cfa159-ac88-325b-d971-7c860fa722ff@foss.st.com>
-Date:   Mon, 15 Feb 2021 09:09:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 15 Feb 2021 03:31:10 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4194AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 00:30:30 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id b10so6395343ybn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 00:30:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IosKC9haWoEFEaZa0BZbxfuLVeZ+4qcWUxhFQ2haJCg=;
+        b=tr6tzTp61UKCAo6zjUbgQjCWLVR9C3MkYtoPLEDgxQK21qGZhplxp/zzCQThUxX8p+
+         Gx0bMuurqxbRZyRrvSGp1cP+MIEk8JVudbLZuv+BYXQXH88j27X+AZkgw8StQY3Z6Qlk
+         mIMGAXMl9Bb2we03isnTNkWiO0W6DlvGr+kSYruqZ7TrJcPqpE0VckUYgQOOTk9brmt/
+         9FQKLGTpYzAacgPq/VvjIWRS+i4qM5+EOh8vZHPLja69cmNxvaF5eflA5FjGL7kGhrXb
+         ONNho7ShMEYHxu4yCY6My94qvl2lUHZ2l4ztBdxO/XqnnNbH39MPy1lqFQnbJJx3fvEo
+         C+Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IosKC9haWoEFEaZa0BZbxfuLVeZ+4qcWUxhFQ2haJCg=;
+        b=R+HFb7chtPdlsKbOqyDLeYjYM474RSXZbQdLIfJ7DlV9rEqvvp3QM8yv7gGPlmELse
+         Wd9N5tv+KpSVgB2cJfX1saHIUdrpzsrz7Ey5JTZfrryO5L8X5VRw2IMMeSnlNR3HbHmA
+         abXSZRQ8ghgSzUsQXGtxhiFabPJ+qjrFJXDWqIXTfn4OFARHmd5Rrp36f5wi4fMmQwMr
+         trUKOOrIdRRyEyY0z6xgDOei+aOq+38P8zJysA8gtr3mY3v9AfgHEfuXium2ISrOebCD
+         HQqCpUwsH25bmmh1E0wT0WPoZFjNVqlaIDifTVCfKLaPdKg7B2pPGIehCLGp0l3FwjOY
+         mmyw==
+X-Gm-Message-State: AOAM530Iy0bPGMWpMI8QDoyP7JRuV8TmNFZd0cRNZtPm0Clc1XfMYR6O
+        wDIboNMrQ65HHEUGXpyPvQ//K5VpquO+sGnX3BU6aA==
+X-Google-Smtp-Source: ABdhPJzKa3jhEnQQhhwY5N+nH8GasiMlAFPRDmalbwkm6hAFH+qDOWb86TO1KQ5bewNrePhGX/XW1FbFRlLYKdO4LsI=
+X-Received: by 2002:a25:3345:: with SMTP id z66mr21333926ybz.466.1613377829136;
+ Mon, 15 Feb 2021 00:30:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210203091306.140518-1-jagan@amarulasolutions.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-15_02:2021-02-12,2021-02-15 signatures=0
+References: <20210121225712.1118239-1-saravanak@google.com>
+ <20210121225712.1118239-3-saravanak@google.com> <20210213185422.GA195733@roeck-us.net>
+ <CAGETcx_RpG45Fwhty1Uj34Mv01qkH5vFv0J6jVtJgTBFQinOBA@mail.gmail.com> <a76a73e4-f7ba-4893-14b8-01d21943241a@roeck-us.net>
+In-Reply-To: <a76a73e4-f7ba-4893-14b8-01d21943241a@roeck-us.net>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 15 Feb 2021 00:29:53 -0800
+Message-ID: <CAGETcx9mzYbujVW8ALrNvs1FabvuUpZpChxBb0Tp8q7w+TY4=A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jagan, I tested your patch on the stm32mp1 board.
-Unfortunately, the dsi panel does not probe well with this patch. The 
-problem is due to the panel which is placed in the node of the dsi 
-bridge (no problem with i2c devices).
+On Sun, Feb 14, 2021 at 7:58 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 2/14/21 1:12 PM, Saravana Kannan wrote:
+> [ ... ]
+> >
+> > Can you please give me the following details:
+> > * The DTS file for the board (not the SoC).
+>
+> The devicetree file extracted from the running system is attached.
+> Hope it helps.
 
-Regarding component bindings for stm drivers, I am currently working on 
-a new version.
+Hi Guenter,
 
-Best regards
+Thanks for the DTS file and logs. That helps a lot.
 
-Yannick
+Looking at the attachment and this line from the earlier email:
+[   14.084606][   T11] pci 0005:01:00.0: probe deferral - wait for
+supplier interrupt-controller@0
 
+It's clear the PCI node is waiting on:
+        interrupt-controller@0 {
+                #address-cells = <0x00>;
+                device_type = "PowerPC-Interrupt-Source-Controller";
+                compatible = "ibm,opal-xive-vc\0IBM,opal-xics";
+                #interrupt-cells = <0x02>;
+                reg = <0x00 0x00 0x00 0x00>;
+                phandle = <0x804b>;
+                interrupt-controller;
+        };
 
+If I grep for "ibm,opal-xive-vc", I see only one instance of it in the
+code. And that eventually ends up getting called like this:
+irq_find_matching_fwspec() -> xive_irq_domain_match() -> xive_native_match()
 
-On 2/3/21 10:13 AM, Jagan Teki wrote:
-> Usual I2C configured DSI bridge drivers have drm_bridge_add
-> in probe and mipi_dsi_attach in bridge attach functions.
-> 
-> With, this approach the drm pipeline is unable to find the
-> dsi bridge in stm drm drivers since the dw-mipi-dsi bridge is
-> adding drm bridge during bridge attach operations instead of
-> the probe.
-> 
-> This specific issue may not encounter for rockchip drm dsi
-> drivers, since rockchip drm uses component binding operations,
-> unlike stm drm drivers.
-> 
-> So, possible solutions are
-> 1. Move drm_bridge_add into the dw-mipi-dsi probe.
-> 2. Add mipi_dsi_attach in the bridge drivers probe.
-> 3. Add component binding operations for stm drm drivers.
-> 
-> Option 1 is a relatively possible solution as most of the
-> mainline drm dsi with bridge drivers have a similar approach
-> to their dsi host vs bridge registration.
-> 
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->   drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 35 +++++++++----------
->   1 file changed, 17 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> index 6b268f9445b3..8a535041f071 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> @@ -314,8 +314,6 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
->   {
->   	struct dw_mipi_dsi *dsi = host_to_dsi(host);
->   	const struct dw_mipi_dsi_plat_data *pdata = dsi->plat_data;
-> -	struct drm_bridge *bridge;
-> -	struct drm_panel *panel;
->   	int ret;
->   
->   	if (device->lanes > dsi->plat_data->max_data_lanes) {
-> @@ -329,22 +327,6 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
->   	dsi->format = device->format;
->   	dsi->mode_flags = device->mode_flags;
->   
-> -	ret = drm_of_find_panel_or_bridge(host->dev->of_node, 1, 0,
-> -					  &panel, &bridge);
-> -	if (ret)
-> -		return ret;
-> -
-> -	if (panel) {
-> -		bridge = drm_panel_bridge_add_typed(panel,
-> -						    DRM_MODE_CONNECTOR_DSI);
-> -		if (IS_ERR(bridge))
-> -			return PTR_ERR(bridge);
-> -	}
-> -
-> -	dsi->panel_bridge = bridge;
-> -
-> -	drm_bridge_add(&dsi->bridge);
-> -
->   	if (pdata->host_ops && pdata->host_ops->attach) {
->   		ret = pdata->host_ops->attach(pdata->priv_data, device);
->   		if (ret < 0)
-> @@ -1105,6 +1087,8 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
->   	struct device *dev = &pdev->dev;
->   	struct reset_control *apb_rst;
->   	struct dw_mipi_dsi *dsi;
-> +	struct drm_bridge *bridge;
-> +	struct drm_panel *panel;
->   	int ret;
->   
->   	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-> @@ -1167,6 +1151,20 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
->   	dw_mipi_dsi_debugfs_init(dsi);
->   	pm_runtime_enable(dev);
->   
-> +	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0,
-> +					  &panel, &bridge);
-> +	if (ret)
-> +		return ERR_PTR(ret);
-> +
-> +	if (panel) {
-> +		bridge = drm_panel_bridge_add_typed(panel,
-> +						    DRM_MODE_CONNECTOR_DSI);
-> +		if (IS_ERR(bridge))
-> +			return ERR_PTR(-ENODEV);
-> +	}
-> +
-> +	dsi->panel_bridge = bridge;
-> +
->   	dsi->dsi_host.ops = &dw_mipi_dsi_host_ops;
->   	dsi->dsi_host.dev = dev;
->   	ret = mipi_dsi_host_register(&dsi->dsi_host);
-> @@ -1181,6 +1179,7 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
->   #ifdef CONFIG_OF
->   	dsi->bridge.of_node = pdev->dev.of_node;
->   #endif
-> +	drm_bridge_add(&dsi->bridge);
->   
->   	return dsi;
->   }
-> 
+static bool xive_native_match(struct device_node *node)
+{
+        return of_device_is_compatible(node, "ibm,opal-xive-vc");
+}
+
+However, when the IRQ domain are first registered, in xive_init_host()
+the "np" passed in is NOT the same node that xive_native_match() would
+match.
+static void __init xive_init_host(struct device_node *np)
+{
+        xive_irq_domain = irq_domain_add_nomap(np, XIVE_MAX_IRQ,
+                                               &xive_irq_domain_ops, NULL);
+        if (WARN_ON(xive_irq_domain == NULL))
+                return;
+        irq_set_default_host(xive_irq_domain);
+}
+
+Instead, the "np" here is:
+        interrupt-controller@6030203180000 {
+                ibm,xive-provision-page-size = <0x10000>;
+                ibm,xive-eq-sizes = <0x0c 0x10 0x15 0x18>;
+                single-escalation-support;
+                ibm,xive-provision-chips = <0x00>;
+                ibm,xive-#priorities = <0x08>;
+                compatible = "ibm,opal-xive-pe\0ibm,opal-intc";
+                reg = <0x60302 0x3180000 0x00 0x10000 0x60302
+0x3190000 0x00 0x10000 0x60302 0x31a0000 0x00 0x10000 0x60302
+0x31b0000 0x00 0x10000>;
+                phandle = <0x8051>;
+        };
+
+There are many ways to fix this, but I first want to make sure this is
+a valid way to register irqdomains before trying to fix it. I just
+find it weird that the node that's registered is unrelated (not a
+parent/child) of the node that matches.
+
+Marc,
+
+Is this a valid way to register irqdomains? Just registering
+interrupt-controller@6030203180000 DT node where there are multiple
+interrupt controllers?
+
+Thanks,
+Saravana
