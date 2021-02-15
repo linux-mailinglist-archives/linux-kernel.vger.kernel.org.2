@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D398831C04E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:18:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C3131C052
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhBORRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:17:33 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:40832 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232574AbhBOP7D (ORCPT
+        id S232663AbhBORR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:17:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232445AbhBOP6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:59:03 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11FFoBbm121923;
-        Mon, 15 Feb 2021 15:57:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=DgV2X2itjEB7vni0gXukDnNbihcxKMHYwvnAV8Y5ZW8=;
- b=EL0iVfkq1vNYRZFLSUH2rjenEeqBfKzNfUxXiC/06vxI6qTYBHz9uH1jdyRZ1z4d+3oj
- 0nvSeEKZRNzN7K+Pl9ILwppJuOcxGwkCBFgujG41f7Uf+CbdIbat0PQ8DRwagP+yYVxU
- uIHoX6IvB2UB7ybh8+9edGcShCzJx1IKaWoiuIfzhHZ1LjO654yK3/bxqiMP6itrqbju
- A97eYzH4gcHcFOrZQ/Ltsp3nhnnfRH1SqYeize2t4gUFl/i0soE6kIaHG9qA5/mXHg2q
- xD5Neo5cW3zbymz/zOxbjtcVkZz3TKpozZ//NqYkB4UOwNdeE8ZFztbB4HL2yuUFDosx vA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 36p7dnccjg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 15:57:30 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11FFnv1M009643;
-        Mon, 15 Feb 2021 15:57:28 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 36prpvsdnm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 15:57:28 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11FFvQmt002562;
-        Mon, 15 Feb 2021 15:57:26 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 15 Feb 2021 07:57:25 -0800
-Date:   Mon, 15 Feb 2021 18:57:16 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Nishad Kamdar <nishadkamdar@gmail.com>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        David Lechner <david@lechnology.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] USB: gadget: Fix a configfs return code
-Message-ID: <YCqZ3P53yyIg5cn7@mwanda>
+        Mon, 15 Feb 2021 10:58:16 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4EDC061786;
+        Mon, 15 Feb 2021 07:57:36 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id B87384216C;
+        Mon, 15 Feb 2021 15:57:29 +0000 (UTC)
+To:     gregkh <gregkh@linuxfoundation.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Alexander Graf <graf@amazon.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Olof Johansson <olof@lixom.net>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stan Skowronek <stan@corellium.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Arnd Bergmann <arnd@kernel.org>
+References: <20210215121713.57687-1-marcan@marcan.st>
+ <CAK8P3a1bXiWcieqTSZARN+to=J5RjC2cwbn_8ZOCYw2hhyyBYw@mail.gmail.com>
+ <YCp1p1tRHF6OyR0C@kroah.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH v2 00/25] Apple M1 SoC platform bring-up
+Message-ID: <7c8bcf79-233b-7ea8-4fea-2fb29ca430ef@marcan.st>
+Date:   Tue, 16 Feb 2021 00:57:27 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=994
- phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102150125
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=931
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102150125
+In-Reply-To: <YCp1p1tRHF6OyR0C@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the string is invalid, this should return -EINVAL instead of 0.
+On 15/02/2021 22.22, gregkh wrote:
+> On Mon, Feb 15, 2021 at 01:57:39PM +0100, Arnd Bergmann wrote:
+>> (adding maintainers for the serial/irqchip/clocksource drivers and
+>> arch/arm64 to cc)
+>>
+>> I would suggest merging it together as a series through the soc tree for
+>> v5.13, once each patch has been reviewed by the respective subsystem
+>> maintainers, with possible add-on patches on the same branch for
+>> additional drivers that may become ready during the 5.12-rc cycle.
+>> After the initial merge, driver patches will of course go through subsystem
+>> trees as normal.
+>>
+>> Let me know if that works for everyone.
+> 
+> Sure, as long as the maintainers get to see the patches, I don't think
+> I've seen the serial ones at all...
 
-Fixes: 73517cf49bd4 ("usb: gadget: add RNDIS configfs options for class/subclass/protocol")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/usb/gadget/function/u_ether_configfs.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Sorry, I figured Krzysztof would take a look at it first and I didn't 
+want to spam too much. I'm still getting used to figuring out who to CC...
 
-diff --git a/drivers/usb/gadget/function/u_ether_configfs.h b/drivers/usb/gadget/function/u_ether_configfs.h
-index 3dfb460908fa..f558c3139ebe 100644
---- a/drivers/usb/gadget/function/u_ether_configfs.h
-+++ b/drivers/usb/gadget/function/u_ether_configfs.h
-@@ -182,12 +182,11 @@ out:									\
- 						size_t len)		\
- 	{								\
- 		struct f_##_f_##_opts *opts = to_f_##_f_##_opts(item);	\
--		int ret;						\
-+		int ret = -EINVAL;					\
- 		u8 val;							\
- 									\
- 		mutex_lock(&opts->lock);				\
--		ret = sscanf(page, "%02hhx", &val);			\
--		if (ret > 0) {						\
-+		if (sscanf(page, "%02hhx", &val) > 0) {			\
- 			opts->_n_ = val;				\
- 			ret = len;					\
- 		}							\
+Do you want to take a look at v2, or wait for v3?
+
 -- 
-2.30.0
-
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
