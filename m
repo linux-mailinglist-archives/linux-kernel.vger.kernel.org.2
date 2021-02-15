@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952D531C0AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5F131C0B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232932AbhBORdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:33:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbhBOQoo (ORCPT
+        id S231195AbhBORfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:35:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20756 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231929AbhBOQrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:44:44 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37683C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:44:03 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id m6so4507322pfk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:44:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=33j1CgCUh3TWUoQ0xJDvwUExbx7Q5rZOkjB3QkdUKDQ=;
-        b=onFXJfeWdIwyD3pNMy9IHHdBIMyx5rIo+uuSmuEqK0oFapfbq+tc/M+/mfIABldMvK
-         XK3ypvhkrPW+q91jhhkkyB/Q7L4B6DfB1OAiEBqH22olr2Ns+08/XoaI1Wey+CjODWBU
-         LE6VdLg3dNCX825LUvz/lxIy/O557X+AfcjrltnbYZyjMNqgWvFykFrN+22NpPF1r6L9
-         JV/zIY5zUyQYbfWmAoORHilGbQJh+HWpm+u6ZvSV+5/rZmfBXXpGbkHEIl4yi6s4iWOb
-         cu95PxkROmmIlpsfpiLVo20GCHs6hd7vD7qAqEW2i2r8DflB3+tUSldyrUPeKSchd2Rr
-         mCCQ==
+        Mon, 15 Feb 2021 11:47:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613407529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v2lFUCX+4kgOW9WJ4+n8lk62Y3uHoeoTMYbOZCSXAAQ=;
+        b=b2GLpVcZTyBf4bt8r/ElESAfdq/W3HI6pAYmFl+Fot8n9sADLnmpL6cPb+PYWEVk9YeLqy
+        VRjJv7pSkeJ69xdTVYMk4dkyjPmoUoaplv82NXMxcRC98X4sxyxQVOmGilIQ9Z+UOjQFE7
+        qVYcuxsu5TSlIsQgsFIDWIVeZ1OcWGE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-462-os9IXTeZPbeOUc0AWtrn6Q-1; Mon, 15 Feb 2021 11:45:27 -0500
+X-MC-Unique: os9IXTeZPbeOUc0AWtrn6Q-1
+Received: by mail-ed1-f69.google.com with SMTP id f21so5465686edx.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:45:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=33j1CgCUh3TWUoQ0xJDvwUExbx7Q5rZOkjB3QkdUKDQ=;
-        b=S+unw5ATBUEiRD/kDlL8h9GzL8XsmoU5kcyzqy3H8L5kaalNjkbK9SM1pcpytDw7cr
-         rtwrSAa0/rwe226YLK0HenFI8FWWdcOq9fFP8SLCRKrBbFTujh6+ZQq/rPUjPJ0zA7N+
-         RPpgc4NCH5OtEgtGyH49za9KTDcPpmp7n3FBl3PDrkXk/qVvePosb8pR6aLKdna8me/M
-         IlZh1KZgITJNLt6Vj6CPNQwn7fxucZHzYPZ2XnV+aYgVGLa4m/B353KZxf9caIvbOl5H
-         qutVxvvoj/sDhZiXeTM2Vo1N8KGZGFSffTvv0PuP8/GGfNPaorWpOUtbL1UAvNlmiVkv
-         c/Pg==
-X-Gm-Message-State: AOAM531Z3QmN93vK57xEktiWorPh0jAbUpMluyx92E73VZnX/bca6Dnr
-        RpSzlX3wmggir7qqXdJ60SeE1g==
-X-Google-Smtp-Source: ABdhPJw4J4gtZMLXZERaHYawEcxlFYDMgSyAhN2XHJI0VfN07x36PQRutew8OTy+jkiQAH8ZPluKow==
-X-Received: by 2002:aa7:94b5:0:b029:1d7:f868:e48d with SMTP id a21-20020aa794b50000b02901d7f868e48dmr16215808pfl.9.1613407442601;
-        Mon, 15 Feb 2021 08:44:02 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id q13sm11919246pfg.155.2021.02.15.08.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 08:44:02 -0800 (PST)
-Date:   Mon, 15 Feb 2021 09:44:00 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCHv2] coresight: etm4x: Add ETM PID for Cortex-A78
-Message-ID: <20210215164400.GA2770547@xps15>
-References: <20210213112829.26834-1-saiprakash.ranjan@codeaurora.org>
- <CAJ9a7VgwxXgs+Zrb2LgX=E7i1+0wpqiL6gOyktPF7_0eojeVNw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=v2lFUCX+4kgOW9WJ4+n8lk62Y3uHoeoTMYbOZCSXAAQ=;
+        b=V/gFZN9Jalmw7lq98+nMXYk2VMqs1EE0mnPM4UnqRKY4UFLF0oKW3lVzLol62YW8WO
+         VdB6Lgp+y/LgUs3yJr8Yx/+bt2hadUk7nmHRd9BzZ/GiLd1uXfTp01QtZCga92ktLgrY
+         gZfuRFlpeB2bM3SaXJs5wdffVfhd4Z3G6VBOA/onTjWsRJUretnf9/QnsOOXLm69fAT7
+         YV4T1GjGwAJQtN88hz0e68C1BVuytMcxOOlYUgxhe2OyOmALn6qhNmrvuL8lJmEEFFbs
+         edg0c6bo1x5pb6Lt6xR3JOU85Hiu4FR7O+4SzVo3gXZ0wWgvc9lM1rviIULDzC96hhgn
+         eIIg==
+X-Gm-Message-State: AOAM532hh0EPKtEMFnmTGENNPFWDakH/hKlb7kz0HizCfFx+CjWDSLRV
+        593HSUK1EUq/FZgd6VNrLAp4NAqVZ9wLWQHpen6piOupCjwrfW/NsDLlOkJ469nX6fX6/m8YYPu
+        tG4Oav4LFbXoZCUTW2MAsXufC
+X-Received: by 2002:a17:907:11c7:: with SMTP id va7mr16473917ejb.351.1613407526358;
+        Mon, 15 Feb 2021 08:45:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzBfHqnRxLbv+dwOEC17d5YwjhX3h5Z8eCWeAyeZ1sOKlSQFTMM6XcrEZIe5j+tRH/AafsC8A==
+X-Received: by 2002:a17:907:11c7:: with SMTP id va7mr16473899ejb.351.1613407526163;
+        Mon, 15 Feb 2021 08:45:26 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id hc40sm10301803ejc.50.2021.02.15.08.45.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Feb 2021 08:45:25 -0800 (PST)
+Subject: Re: [PATCH 0/3] KVM: x86: SVM INVPCID fix, and cleanups
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Babu Moger <babu.moger@amd.com>
+References: <20210212003411.1102677-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <65fa42a3-4f7b-4708-ffce-e77fe32aaed7@redhat.com>
+Date:   Mon, 15 Feb 2021 17:45:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJ9a7VgwxXgs+Zrb2LgX=E7i1+0wpqiL6gOyktPF7_0eojeVNw@mail.gmail.com>
+In-Reply-To: <20210212003411.1102677-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 10:26:38AM +0000, Mike Leach wrote:
-> Reviewed-by: Mike Leach <mike.leach@linaro.org>
-
-I will pick this up when 5.12-rc1 comes out.
-
-Thanks,
-Mathieu
-
+On 12/02/21 01:34, Sean Christopherson wrote:
+> Fix an INVPCID bug on SVM where it fails to injected a #UD when INVPCID is
+> supported but not exposed to the guest.  Do a bit of cleanup in patch 02
+> now that both VMX and SVM support PCID/INVPCID.
 > 
-> On Sat, 13 Feb 2021 at 11:28, Sai Prakash Ranjan
-> <saiprakash.ranjan@codeaurora.org> wrote:
-> >
-> > Add ETM PID for Cortex-A78 to the list of supported ETMs.
-> >
-> > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> > ---
-> >
-> > Changes in v2:
-> >  * Rebased on top of coresight/next from kernel.org coresight repo.
-> >
-> > ---
-> >  drivers/hwtracing/coresight/coresight-etm4x-core.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> > index 15016f757828..a5b13a7779c3 100644
-> > --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> > +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> > @@ -1951,6 +1951,7 @@ static const struct amba_id etm4_ids[] = {
-> >         CS_AMBA_UCI_ID(0x000bbd05, uci_id_etm4),/* Cortex-A55 */
-> >         CS_AMBA_UCI_ID(0x000bbd0a, uci_id_etm4),/* Cortex-A75 */
-> >         CS_AMBA_UCI_ID(0x000bbd0c, uci_id_etm4),/* Neoverse N1 */
-> > +       CS_AMBA_UCI_ID(0x000bbd41, uci_id_etm4),/* Cortex-A78 */
-> >         CS_AMBA_UCI_ID(0x000f0205, uci_id_etm4),/* Qualcomm Kryo */
-> >         CS_AMBA_UCI_ID(0x000f0211, uci_id_etm4),/* Qualcomm Kryo */
-> >         CS_AMBA_UCI_ID(0x000bb802, uci_id_etm4),/* Qualcomm Kryo 385 Cortex-A55 */
-> >
-> > base-commit: 06c18e28c402ecfb842df8e22a19a097c35ffca9
-> > --
-> > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> > of Code Aurora Forum, hosted by The Linux Foundation
-> >
+> Patch 03 address KVM behavior that has long confused the heck out of me.
+> KVM currently allows enabling INVPCID if and only if PCID is also enabled
+> for the guest, the justification being that the guest will see incorrect
+> fault behavior (#UD instead of #GP) due to the way the VMCS control works.
 > 
+> But that makes no sense, because nothing is forcing KVM to disable INVCPID
+> in the VMCS when PCID is disabled.  AFACIT, the myth was the result of a
+> bug in the original _submission_, not even the original _commit_ was buggy.
 > 
-> -- 
-> Mike Leach
-> Principal Engineer, ARM Ltd.
-> Manchester Design Centre. UK
+> Digging back, the very original submission had this code, where
+> vmx_pcid_supported() was further conditioned on EPT being enabled.  This
+> would lead to the buggy scenario of unexpected #UD, as a host with PCID
+> and INVCPID would fail to enable INVPCID if EPT was disabled.
+> 
+>>> +	if (vmx_pcid_supported()) {
+>>> +		exec_control = vmcs_read32(SECONDARY_VM_EXEC_CONTROL);
+>>> +		if (exec_control & SECONDARY_EXEC_ENABLE_INVPCID) {
+>>> +			best = kvm_find_cpuid_entry(vcpu, 0x1, 0);
+>>> +			if (best && (best->ecx & bit(X86_FEATURE_PCID)))
+>>> +				vmx->invpcid_enabled = true;
+>>> +			else {
+>>> +				exec_control &= ~SECONDARY_EXEC_ENABLE_INVPCID;
+>>> +				vmcs_write32(SECONDARY_VM_EXEC_CONTROL,
+>>> +						exec_control);
+>>> +				best = kvm_find_cpuid_entry(vcpu, 0x7, 0);
+>>> +				best->ecx &= ~bit(X86_FEATURE_INVPCID);
+>>> +			}
+>>> +		}
+>>> +	}
+> 
+> The incorrect behavior is especially problematic now that SVM also
+> supports INVCPID, as KVM allows !PCID && INVPCID on SVM but not on VMX.
+> 
+> Patches to fix kvm-unit-tests are also incoming...
+> 
+> Sean Christopherson (3):
+>    KVM: SVM: Intercept INVPCID when it's disabled to inject #UD
+>    KVM: x86: Advertise INVPCID by default
+>    KVM: VMX: Allow INVPCID in guest without PCID
+> 
+>   arch/x86/kvm/cpuid.c   |  2 +-
+>   arch/x86/kvm/svm/svm.c | 11 ++++-------
+>   arch/x86/kvm/vmx/vmx.c | 14 ++------------
+>   3 files changed, 7 insertions(+), 20 deletions(-)
+> 
+
+Queued, thanks.
+
+Paolo
+
