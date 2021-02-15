@@ -2,131 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6361C31B4F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 06:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E7931B4FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 06:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhBOFKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 00:10:35 -0500
-Received: from mo-csw1514.securemx.jp ([210.130.202.153]:47020 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhBOFJh (ORCPT
+        id S229578AbhBOFRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 00:17:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhBOFRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 00:09:37 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 11F577JC005999; Mon, 15 Feb 2021 14:07:08 +0900
-X-Iguazu-Qid: 34tMK0YvjMT9ORWEI9
-X-Iguazu-QSIG: v=2; s=0; t=1613365627; q=34tMK0YvjMT9ORWEI9; m=ysCQuRG+tcssHoRPe7pUYd88gwDHmOhYSkUu8uv/2GE=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1510) id 11F575mV005051;
-        Mon, 15 Feb 2021 14:07:06 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 11F575x8029846;
-        Mon, 15 Feb 2021 14:07:05 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 11F5747X021279;
-        Mon, 15 Feb 2021 14:07:05 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>, leon@kernel.org,
-        arnd@kernel.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4/4] arm: dts: visconti: Add DT support for Toshiba Visconti5 ethernet controller
-Date:   Mon, 15 Feb 2021 14:06:55 +0900
-X-TSB-HOP: ON
-Message-Id: <20210215050655.2532-5-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.30.0.rc2
-In-Reply-To: <20210215050655.2532-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20210215050655.2532-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        Mon, 15 Feb 2021 00:17:04 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6FDC061574;
+        Sun, 14 Feb 2021 21:16:24 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id z68so3600213pgz.0;
+        Sun, 14 Feb 2021 21:16:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TBkqrZBLcfDTB0/M+9n3lElFVq72Vy5NJAtkuckTGN4=;
+        b=pm4fNvBwXWCxUC5cgUyImGLfR4w/yKZ/pflBxno08azXdHVjNAF7N/TiLY6z306gz/
+         NwT40nkx/FTz+vU0BOctZuzk/kvqILDE4t19NPsl6Ny9Z7uIyTkIR9JcQevyZX/WlPso
+         dlOleXIZSuXw82L96wMXWZUd9NvG8+qzzVBYdpFCPzJJflFd0uJaRuMlVBMGJ2JebX/G
+         Qsu5+rhqLnv3pDiAVLF/86KcPk5OFYdMSGyqseOouuZHe0XxiFsKO9rjFl3bxkFJfC1R
+         Lvh4o7KXBD+YBQLwSczpEhhLc1c0oP1BcrnMlNQ4x2yYjMZybNxD8GuFAaL3mTPjkB2Z
+         oOxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TBkqrZBLcfDTB0/M+9n3lElFVq72Vy5NJAtkuckTGN4=;
+        b=o8SxHp1C5BmaGNf5NdqX3vpB1XZXChDswolNPhq/2FtW0xfo42IkESDQXIRQSfmsNh
+         57cfdLlTa7TCsenFtKBBASMveDIUXTb3T2kR3E9HhmK1Ytob72TFlN0r+EQDzel37+yR
+         lZESblLnYNNK91vwKSEfc7z+zz8280oF0eqa/1ImrvZLD07a2kSyUTD45BZrdiShL5Wk
+         3t9T3lZ0JWcJPsl9tqs496b6kyBIz1uAvDNr3zw9Pg4NQKa1rcEKrt4qvOxphwVnZoNY
+         oyoIwMDT2sUAqKglOr9fgwo119iL6yA24vAV01GUZiiJ9EnIvOKARYAP6HQfSpE6xdSr
+         eOvA==
+X-Gm-Message-State: AOAM531rlJj69SCUXoVK7NBPMcci3NGJoYE53vCySdxDIF4CEKoAK4Ws
+        7+kHkDiFrasmsekGrouRgQI2VY2CCyNrWU9B57o=
+X-Google-Smtp-Source: ABdhPJwOiZw4Qqqmjkha2m3NiVtY90y2KGeUq38HkrELdAMi1GmyuchWJQIojbLcrd0WcqkoeEZZMy7VUEb0HVASvmM=
+X-Received: by 2002:a63:1519:: with SMTP id v25mr13584867pgl.217.1613366183592;
+ Sun, 14 Feb 2021 21:16:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1608712499-24956-1-git-send-email-yongqiang.niu@mediatek.com>
+ <1608712499-24956-2-git-send-email-yongqiang.niu@mediatek.com> <1610070485.1574.10.camel@mhfsdcap03>
+In-Reply-To: <1610070485.1574.10.camel@mhfsdcap03>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Sun, 14 Feb 2021 23:16:13 -0600
+Message-ID: <CABb+yY3JQUYf8b-mU_01eYR-4nswFRbBE42WS9fS8aSmk2rjmw@mail.gmail.com>
+Subject: Re: [PATCH v2] soc: mediatek: cmdq: add address shift in jump
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Damon Chu <damon.chu@mediatek.com>,
+        Dennis-YC Hsieh <dennis-yc.hsieh@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the ethernet controller node in Toshiba Visconti5 SoC-specific DT file.
-And enable this node in TMPV7708 RM main board's board-specific DT file.
+On Thu, Jan 7, 2021 at 7:48 PM Yongqiang Niu <yongqiang.niu@mediatek.com> wrote:
+>
+> On Wed, 2020-12-23 at 16:34 +0800, Yongqiang Niu wrote:
+> > Add address shift when compose jump instruction
+> > to compatible with 35bit format.
+> >
+> > Fixes: 0858fde496f8 ("mailbox: cmdq: variablize address shift in platform")
+> >
+> > Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> > Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+> > ---
+> >  drivers/mailbox/mtk-cmdq-mailbox.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+> > index 5665b6e..75378e3 100644
+> > --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+> > +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+> > @@ -168,7 +168,8 @@ static void cmdq_task_insert_into_thread(struct cmdq_task *task)
+> >       dma_sync_single_for_cpu(dev, prev_task->pa_base,
+> >                               prev_task->pkt->cmd_buf_size, DMA_TO_DEVICE);
+> >       prev_task_base[CMDQ_NUM_CMD(prev_task->pkt) - 1] =
+> > -             (u64)CMDQ_JUMP_BY_PA << 32 | task->pa_base;
+> > +             (u64)CMDQ_JUMP_BY_PA << 32 |
+> > +             (task->pa_base >> task->cmdq->shift_pa);
+> >       dma_sync_single_for_device(dev, prev_task->pa_base,
+> >                                  prev_task->pkt->cmd_buf_size, DMA_TO_DEVICE);
+> >
+>
+> hi jassi
+>
+> please confirm is there any question about this patch.
+> if not, please apply this into next version, tks
+>
+I can't locate this patch in my inbox. And I can't fwd it from lkml to
+myself. Please resend.
 
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
----
- .../boot/dts/toshiba/tmpv7708-rm-mbrc.dts     | 18 +++++++++++++
- arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     | 25 +++++++++++++++++++
- 2 files changed, 43 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-index ed0bf7f13f54..48fa8776e36f 100644
---- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-@@ -41,3 +41,21 @@ &uart1 {
- 	clocks = <&uart_clk>;
- 	clock-names = "apb_pclk";
- };
-+
-+&piether {
-+	status = "okay";
-+	phy-handle = <&phy0>;
-+	phy-mode = "rgmii-id";
-+	clocks = <&clk300mhz>, <&clk125mhz>;
-+	clock-names = "stmmaceth", "phy_ref_clk";
-+
-+	mdio0 {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		compatible = "snps,dwmac-mdio";
-+		phy0: ethernet-phy@1 {
-+			device_type = "ethernet-phy";
-+			reg = <0x1>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-index 242f25f4e12a..3366786699fc 100644
---- a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-@@ -134,6 +134,20 @@ uart_clk: uart-clk {
- 		#clock-cells = <0>;
- 	};
- 
-+	clk125mhz: clk125mhz {
-+		compatible = "fixed-clock";
-+		clock-frequency = <125000000>;
-+		#clock-cells = <0>;
-+		clock-output-names = "clk125mhz";
-+	};
-+
-+	clk300mhz: clk300mhz {
-+		compatible = "fixed-clock";
-+		clock-frequency = <300000000>;
-+		#clock-cells = <0>;
-+		clock-output-names = "clk300mhz";
-+	};
-+
- 	soc {
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -384,6 +398,17 @@ spi6: spi@28146000 {
- 			#size-cells = <0>;
- 			status = "disabled";
- 		};
-+
-+		piether: ethernet@28000000 {
-+			compatible = "toshiba,visconti-dwmac", "snps,dwmac-4.20a";
-+			reg = <0 0x28000000 0 0x10000>;
-+			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "macirq";
-+			snps,txpbl = <4>;
-+			snps,rxpbl = <4>;
-+			snps,tso;
-+			status = "disabled";
-+		};
- 	};
- };
- 
--- 
-2.30.0.rc2
-
+thnks.
