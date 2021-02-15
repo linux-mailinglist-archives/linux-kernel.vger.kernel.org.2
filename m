@@ -2,84 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B9631C1D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4687631C1D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhBOSmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 13:42:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230502AbhBOSia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230195AbhBOSlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 13:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230507AbhBOSia (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 13:38:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C885C64E36;
-        Mon, 15 Feb 2021 18:37:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613414234;
-        bh=QICwwBSsC7RqnYd6o4QdOeB7PUAqLduRYKDUc7RjMpY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lZbxKz3ZG2iskHNgB2paF/OzI+Com7+5YqGwu0dbGIGgsXAD/ruMSDqnu/80+eLxC
-         aUpxljmr58IeUlAQ+IEs4Y6kJi7Nka79tsvhUvr/JwVVB0u6RqSwVwzcU6jRG0fs5f
-         vqZ+XoVhKboASxf3GPO8ez6Zq0J93dQUvkEXhiHcMSsdWpUguC2ilJ5uref17EAEHS
-         HW+8Qk5o7GiQ/Vtnrje9NCWgtJSkTtdnBzcR/JTunPJJpeBQVLLaScxebxoHpNOZ5D
-         Mmp1xWRD5+354mlDEhXRHW+9wHaKHMJNIBf/fBycvZVKNE7f6GtIdn8n8pSOQPeFWg
-         ZFTUuNT8JFG6A==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shyam Prasad N <sprasad@microsoft.com>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org
-Subject: [PATCH AUTOSEL 4.14 2/3] cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
-Date:   Mon, 15 Feb 2021 13:37:10 -0500
-Message-Id: <20210215183711.122258-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210215183711.122258-1-sashal@kernel.org>
-References: <20210215183711.122258-1-sashal@kernel.org>
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53B1C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:37:48 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 133so8087790ybd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:37:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dlG7WSBTmTt0VpZB7OCV0qVL7K8LEJDd0nI5vTKhQZg=;
+        b=btS7zOsd8wzWdOEdLz2gpNybzWGD/BAdcRlSgW6lyo+d1eTDlo6Apq86ia5o0yvLol
+         ppNdfSG9Ew07RangzW5JjgXQTYWEJEMBS1EC/xzXNmeZuU/GmzelkZsTTN/ls7pnKGv7
+         M2JilzX+pX7HcaEPfsdGyWLo/ganbfaiisPmzPwHMH6NonEsOA9X85PVMfhfmbz43akz
+         AEe8aueXHiFPpdSsaeQJmX0UTql6yGPgx7lgFMbam7wNCucfYyvpJd8dsY8/OdXZmlHv
+         bkPDYvdNutZddnwMgv58clq+g3ZJkXrKxn3cjKmbDL47DQSeD8hoPaovvo/StdVOscKo
+         HgJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dlG7WSBTmTt0VpZB7OCV0qVL7K8LEJDd0nI5vTKhQZg=;
+        b=I81qUwBwCW9iaaFkv3gkTHh5bxr8z+4jG1SVvzXIK3IelDrkMdvZiut31rxEQF+e+Z
+         7ElBWQNp2n68s74n4kbcjz7SummEw7QDDno2Js16omkJp7shMEZwfVfZrsG1FwHYt4AG
+         et7twkDmXHWA/Sw7MYtQDQGqcgbwpjER40ToeHUw+PLiokwNy/6xHHfErg6AczncugpV
+         rEepuG+fJ+9Cqdg1mWa3i7Zo9D5a+/Q+6WU0/C+Q46IcO11XrQvK2xoPxnDw3k+zCd0a
+         KgRIKA169FsAN7Xw0FjN6V6WPOq3UYakSNLCeUko6vNATCSZujfXFn7Te2BQQun2+fa+
+         aYlw==
+X-Gm-Message-State: AOAM531TuegOtTCbTt61ssNdPUuv8K2ujWIptYqPAYvgen46QMDA2sD8
+        2Lw4t+AxLmU1dMP4wUrrVaRA0aiBryPqMX8dNTQ3uA==
+X-Google-Smtp-Source: ABdhPJyrNN8exbyo9T1MkxxXLxlRiWI1Wl1nf3PhjP4mVD6FrDEXdUPlDEuRTLmkptHAKrq7S6AmU78+qu5pBAVCeIw=
+X-Received: by 2002:a25:8b8b:: with SMTP id j11mr22476525ybl.310.1613414267730;
+ Mon, 15 Feb 2021 10:37:47 -0800 (PST)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20210215151405.2551143-1-geert+renesas@glider.be>
+In-Reply-To: <20210215151405.2551143-1-geert+renesas@glider.be>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 15 Feb 2021 10:37:11 -0800
+Message-ID: <CAGETcx-c5P76JkB-upi8ArDqa=TrR3bJMnpDTO-59sh83opW8g@mail.gmail.com>
+Subject: Re: [PATCH] staging: board: Fix uninitialized spinlock when attaching genpd
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shyam Prasad N <sprasad@microsoft.com>
+On Mon, Feb 15, 2021 at 7:14 AM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> On Armadillo-800-EVA with CONFIG_DEBUG_SPINLOCK=y:
+>
+>     BUG: spinlock bad magic on CPU#0, swapper/1
+>      lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+>     CPU: 0 PID: 1 Comm: swapper Not tainted 5.11.0-rc5-armadillo-00036-gbbca04be7a80-dirty #287
+>     Hardware name: Generic R8A7740 (Flattened Device Tree)
+>     [<c010c3c8>] (unwind_backtrace) from [<c010a49c>] (show_stack+0x10/0x14)
+>     [<c010a49c>] (show_stack) from [<c0159534>] (do_raw_spin_lock+0x20/0x94)
+>     [<c0159534>] (do_raw_spin_lock) from [<c040858c>] (dev_pm_get_subsys_data+0x8c/0x11c)
+>     [<c040858c>] (dev_pm_get_subsys_data) from [<c05fbcac>] (genpd_add_device+0x78/0x2b8)
+>     [<c05fbcac>] (genpd_add_device) from [<c0412db4>] (of_genpd_add_device+0x34/0x4c)
+>     [<c0412db4>] (of_genpd_add_device) from [<c0a1ea74>] (board_staging_register_device+0x11c/0x148)
+>     [<c0a1ea74>] (board_staging_register_device) from [<c0a1eac4>] (board_staging_register_devices+0x24/0x28)
+>
+> of_genpd_add_device() is called before platform_device_register(), as it
+> needs to attach the genpd before the device is probed.  But the spinlock
+> is only initialized when the device is registered.
+>
+> Fix this by open-coding the spinlock initialization, cfr.
+> device_pm_init_common() in the internal drivers/base code, and in the
+> SuperH early platform code.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> Exposed by fw_devlinks changing probe order.
+> Masked before due to an unrelated wait context check failure, which
+> disabled any further spinlock checks.
+> https://lore.kernel.org/linux-acpi/CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com
+> ---
+>  drivers/staging/board/board.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/staging/board/board.c b/drivers/staging/board/board.c
+> index cb6feb34dd401ae3..604612937f038e92 100644
+> --- a/drivers/staging/board/board.c
+> +++ b/drivers/staging/board/board.c
+> @@ -136,6 +136,7 @@ int __init board_staging_register_clock(const struct board_staging_clk *bsc)
+>  static int board_staging_add_dev_domain(struct platform_device *pdev,
+>                                         const char *domain)
+>  {
+> +       struct device *dev = &pdev->dev;
+>         struct of_phandle_args pd_args;
+>         struct device_node *np;
+>
+> @@ -148,7 +149,11 @@ static int board_staging_add_dev_domain(struct platform_device *pdev,
+>         pd_args.np = np;
+>         pd_args.args_count = 0;
+>
+> -       return of_genpd_add_device(&pd_args, &pdev->dev);
+> +       /* Cfr. device_pm_init_common() */
 
-[ Upstream commit a738c93fb1c17e386a09304b517b1c6b2a6a5a8b ]
+What's Cfr?
 
-While debugging another issue today, Steve and I noticed that if a
-subdir for a file share is already mounted on the client, any new
-mount of any other subdir (or the file share root) of the same share
-results in sharing the cifs superblock, which e.g. can result in
-incorrect device name.
+> +       spin_lock_init(&dev->power.lock);
+> +       dev->power.early_init = true;
 
-While setting prefix path for the root of a cifs_sb,
-CIFS_MOUNT_USE_PREFIX_PATH flag should also be set.
-Without it, prepath is not even considered in some places,
-and output of "mount" and various /proc/<>/*mount* related
-options can be missing part of the device name.
+Also, I tried looking up, but it's not exactly what this flag
+represents other than the fact the spinlock has been initialized?
+Which is weird to me. So maybe Rafael can double check this?
 
-Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/cifs/connect.c | 1 +
- 1 file changed, 1 insertion(+)
+-Saravana
 
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index 73be08ea135f6..e7c46368cf696 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -3607,6 +3607,7 @@ int cifs_setup_cifs_sb(struct smb_vol *pvolume_info,
- 		cifs_sb->prepath = kstrdup(pvolume_info->prepath, GFP_KERNEL);
- 		if (cifs_sb->prepath == NULL)
- 			return -ENOMEM;
-+		cifs_sb->mnt_cifs_flags |= CIFS_MOUNT_USE_PREFIX_PATH;
- 	}
- 
- 	return 0;
--- 
-2.27.0
-
+> +
+> +       return of_genpd_add_device(&pd_args, dev);
+>  }
+>  #else
+>  static inline int board_staging_add_dev_domain(struct platform_device *pdev,
+> --
+> 2.25.1
+>
