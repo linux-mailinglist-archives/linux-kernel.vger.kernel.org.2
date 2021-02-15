@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB5B31BC25
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784A831BC29
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhBOPTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:19:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhBOPO4 (ORCPT
+        id S230333AbhBOPUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:20:41 -0500
+Received: from mo-csw1514.securemx.jp ([210.130.202.153]:37546 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229910AbhBOPQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:14:56 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97D4C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:14:10 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed60:c5d6:9422:c618:ee58])
-        by albert.telenet-ops.be with bizsmtp
-        id VTE8240042PLE0706TE84E; Mon, 15 Feb 2021 16:14:09 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lBfZf-0079Q4-IO; Mon, 15 Feb 2021 16:14:07 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lBfZe-00AhgE-RK; Mon, 15 Feb 2021 16:14:06 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] staging: board: Fix uninitialized spinlock when attaching genpd
-Date:   Mon, 15 Feb 2021 16:14:05 +0100
-Message-Id: <20210215151405.2551143-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Mon, 15 Feb 2021 10:16:35 -0500
+Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 11FFEGmx020588; Tue, 16 Feb 2021 00:14:16 +0900
+X-Iguazu-Qid: 34tMYNXf5eaVJ6v6C8
+X-Iguazu-QSIG: v=2; s=0; t=1613402056; q=34tMYNXf5eaVJ6v6C8; m=uM2REpR00LsJgIiw9Tu2w9j02BB6yi8SVQNTaJm7Slo=
+Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
+        by relay.securemx.jp (mx-mr1511) id 11FFEEml039740;
+        Tue, 16 Feb 2021 00:14:15 +0900
+Received: from enc02.toshiba.co.jp ([61.202.160.51])
+        by imx12.toshiba.co.jp  with ESMTP id 11FFEE1b020321;
+        Tue, 16 Feb 2021 00:14:14 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 11FFEDc6007524;
+        Tue, 16 Feb 2021 00:14:14 +0900
+Date:   Tue, 16 Feb 2021 00:14:13 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>, arnd@kernel.org,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] net: stmmac: Add Toshiba Visconti SoCs glue driver
+X-TSB-HOP: ON
+Message-ID: <20210215151413.oqq5o6kzhmhlnc5d@toshiba.co.jp>
+References: <20210215050655.2532-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210215050655.2532-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <YCoPmfunGmu0E8IT@unreal>
+ <20210215072809.n3r5rdswookzri6j@toshiba.co.jp>
+ <YCo9WVvtAeozE42k@unreal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCo9WVvtAeozE42k@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Armadillo-800-EVA with CONFIG_DEBUG_SPINLOCK=y:
+Hi,
 
-    BUG: spinlock bad magic on CPU#0, swapper/1
-     lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
-    CPU: 0 PID: 1 Comm: swapper Not tainted 5.11.0-rc5-armadillo-00036-gbbca04be7a80-dirty #287
-    Hardware name: Generic R8A7740 (Flattened Device Tree)
-    [<c010c3c8>] (unwind_backtrace) from [<c010a49c>] (show_stack+0x10/0x14)
-    [<c010a49c>] (show_stack) from [<c0159534>] (do_raw_spin_lock+0x20/0x94)
-    [<c0159534>] (do_raw_spin_lock) from [<c040858c>] (dev_pm_get_subsys_data+0x8c/0x11c)
-    [<c040858c>] (dev_pm_get_subsys_data) from [<c05fbcac>] (genpd_add_device+0x78/0x2b8)
-    [<c05fbcac>] (genpd_add_device) from [<c0412db4>] (of_genpd_add_device+0x34/0x4c)
-    [<c0412db4>] (of_genpd_add_device) from [<c0a1ea74>] (board_staging_register_device+0x11c/0x148)
-    [<c0a1ea74>] (board_staging_register_device) from [<c0a1eac4>] (board_staging_register_devices+0x24/0x28)
+On Mon, Feb 15, 2021 at 11:22:33AM +0200, Leon Romanovsky wrote:
+> On Mon, Feb 15, 2021 at 04:28:09PM +0900, Nobuhiro Iwamatsu wrote:
+> >
+> > I have received your point out and have sent an email with the content
+> > to remove this line. But it may not have arrived yet...
+> >
+> > > Why did you use "def_bool y" and not "default y"? Isn't it supposed to be
+> > > "depends on STMMAC_ETH"? And probably it shouldn't be set as a default as "y".
+> > >
+> >
+> > The reason why "def_bool y" was set is that the wrong fix was left when
+> > debugging. Also, I don't think it is necessary to set "default y".
+> > This is also incorrect because it says "bool" Toshiba Visconti DWMAC
+> > support "". I change it to trustate in the new patch.
+> >
+> > And this driver is enabled when STMMAC_PLATFORM was Y. And STMMAC_PLATFORM
+> > depends on STMMAC_ETH.
+> > So I understand that STMMAC_ETH does not need to be dependents. Is this
+> > understanding wrong?
+> 
+> This is correct understanding, just need to clean other entries in that
+> Kconfig that depends on STMMAC_ETH.
 
-of_genpd_add_device() is called before platform_device_register(), as it
-needs to attach the genpd before the device is probed.  But the spinlock
-is only initialized when the device is registered.
+OK, thanks.
 
-Fix this by open-coding the spinlock initialization, cfr.
-device_pm_init_common() in the internal drivers/base code, and in the
-SuperH early platform code.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Exposed by fw_devlinks changing probe order.
-Masked before due to an unrelated wait context check failure, which
-disabled any further spinlock checks.
-https://lore.kernel.org/linux-acpi/CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com
----
- drivers/staging/board/board.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/staging/board/board.c b/drivers/staging/board/board.c
-index cb6feb34dd401ae3..604612937f038e92 100644
---- a/drivers/staging/board/board.c
-+++ b/drivers/staging/board/board.c
-@@ -136,6 +136,7 @@ int __init board_staging_register_clock(const struct board_staging_clk *bsc)
- static int board_staging_add_dev_domain(struct platform_device *pdev,
- 					const char *domain)
- {
-+	struct device *dev = &pdev->dev;
- 	struct of_phandle_args pd_args;
- 	struct device_node *np;
- 
-@@ -148,7 +149,11 @@ static int board_staging_add_dev_domain(struct platform_device *pdev,
- 	pd_args.np = np;
- 	pd_args.args_count = 0;
- 
--	return of_genpd_add_device(&pd_args, &pdev->dev);
-+	/* Cfr. device_pm_init_common() */
-+	spin_lock_init(&dev->power.lock);
-+	dev->power.early_init = true;
-+
-+	return of_genpd_add_device(&pd_args, dev);
- }
- #else
- static inline int board_staging_add_dev_domain(struct platform_device *pdev,
--- 
-2.25.1
-
+Best regards,
+  Nobuhiro
