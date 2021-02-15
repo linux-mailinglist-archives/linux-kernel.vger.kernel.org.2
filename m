@@ -2,306 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B98931C0B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952D531C0AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhBORdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:33:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49446 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231503AbhBOQp1 (ORCPT
+        id S232932AbhBORdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:33:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231618AbhBOQoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:45:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613407440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p32yrhYZRIgR/WiILityRbY8UJL08Kbup6w2UNC6/nE=;
-        b=EEkw94ddOdKPqjPREKnlNFlSI+LUpR1x9nfssc35rbWCse5Di1wkCFD0bqGo327AUqQPRX
-        hDAgxFSG6Pw9Ci/swRcYcIU5WiCN+sMoHbynnOQZ0Kk9bXviRlmpibNIjq7+necyyZjtV1
-        eRIv7/ANQeLcNri99QN92DqGv7AlSSU=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-YLSz4RYiM5u2Tmgw-RLSJg-1; Mon, 15 Feb 2021 11:43:58 -0500
-X-MC-Unique: YLSz4RYiM5u2Tmgw-RLSJg-1
-Received: by mail-ej1-f71.google.com with SMTP id ce9so4823088ejc.17
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:43:58 -0800 (PST)
+        Mon, 15 Feb 2021 11:44:44 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37683C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:44:03 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id m6so4507322pfk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:44:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=33j1CgCUh3TWUoQ0xJDvwUExbx7Q5rZOkjB3QkdUKDQ=;
+        b=onFXJfeWdIwyD3pNMy9IHHdBIMyx5rIo+uuSmuEqK0oFapfbq+tc/M+/mfIABldMvK
+         XK3ypvhkrPW+q91jhhkkyB/Q7L4B6DfB1OAiEBqH22olr2Ns+08/XoaI1Wey+CjODWBU
+         LE6VdLg3dNCX825LUvz/lxIy/O557X+AfcjrltnbYZyjMNqgWvFykFrN+22NpPF1r6L9
+         JV/zIY5zUyQYbfWmAoORHilGbQJh+HWpm+u6ZvSV+5/rZmfBXXpGbkHEIl4yi6s4iWOb
+         cu95PxkROmmIlpsfpiLVo20GCHs6hd7vD7qAqEW2i2r8DflB3+tUSldyrUPeKSchd2Rr
+         mCCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p32yrhYZRIgR/WiILityRbY8UJL08Kbup6w2UNC6/nE=;
-        b=PmWKMRmTNerYW3dlktea81ajqPQ2fheKq30KUW/Ufcmw1IAAIyS30bOed8ADycHWM1
-         6iMMWTgynSgqsusJgV4EyVNKi6S57nGOAy89Xh4msnJEXNLLO70XJW9BXE/mmHFBNk1I
-         uBdYcggE+y9kbErOKSqe36/aSqAqAJIuyq0Ti2iLgccSRKqa6X0SdbYaVGbTieGaKp2i
-         rD3WVhF8+AXtYCnFG7VKcrSNjy/zcuoeglw+zz8y5epJ/CpicbazkfVC5vvCMpq/iXrH
-         nD55rdhYs55SKkChyaz/VeG7IO3EK4PSDqwWCZ45ZCtFi7mw7TudTTrB2c7oa9mM5gOO
-         5vRw==
-X-Gm-Message-State: AOAM5311bLpnx71DApeF9jhBp3NWRmxq4+zg0GQD0Wg6SCV/Im0mCQeF
-        ueGZhpblvrpsVipq8EM+YqDVzbeGaGow0QnPKSXAPyr5Cs5QJ5RYCBTwNPH7alaRATWLrcLnIat
-        kFyU4v5K6cnG6/dipEcaFgtKX
-X-Received: by 2002:a17:906:7e42:: with SMTP id z2mr16456531ejr.177.1613407437119;
-        Mon, 15 Feb 2021 08:43:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy0PMAkrdMEdn6cfe/LUrnCCNoBVh4opo9+Wo0JLvvGKilfm04bnEdmdjBW+wfCrSzmIA9meA==
-X-Received: by 2002:a17:906:7e42:: with SMTP id z2mr16456504ejr.177.1613407436909;
-        Mon, 15 Feb 2021 08:43:56 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id di27sm10429178edb.21.2021.02.15.08.43.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Feb 2021 08:43:56 -0800 (PST)
-Subject: Re: [PATCH] selftests: kvm: add hardware_disable test
-To:     Marc Orr <marcorr@google.com>, ikalvarado@google.com,
-        huah@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, brijesh.singh@amd.com,
-        Thomas.Lendacky@amd.com, jmattson@google.com
-References: <20210213001452.1719001-1-marcorr@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c4bf9adb-e816-4532-4a8f-24242d31b55b@redhat.com>
-Date:   Mon, 15 Feb 2021 17:43:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=33j1CgCUh3TWUoQ0xJDvwUExbx7Q5rZOkjB3QkdUKDQ=;
+        b=S+unw5ATBUEiRD/kDlL8h9GzL8XsmoU5kcyzqy3H8L5kaalNjkbK9SM1pcpytDw7cr
+         rtwrSAa0/rwe226YLK0HenFI8FWWdcOq9fFP8SLCRKrBbFTujh6+ZQq/rPUjPJ0zA7N+
+         RPpgc4NCH5OtEgtGyH49za9KTDcPpmp7n3FBl3PDrkXk/qVvePosb8pR6aLKdna8me/M
+         IlZh1KZgITJNLt6Vj6CPNQwn7fxucZHzYPZ2XnV+aYgVGLa4m/B353KZxf9caIvbOl5H
+         qutVxvvoj/sDhZiXeTM2Vo1N8KGZGFSffTvv0PuP8/GGfNPaorWpOUtbL1UAvNlmiVkv
+         c/Pg==
+X-Gm-Message-State: AOAM531Z3QmN93vK57xEktiWorPh0jAbUpMluyx92E73VZnX/bca6Dnr
+        RpSzlX3wmggir7qqXdJ60SeE1g==
+X-Google-Smtp-Source: ABdhPJw4J4gtZMLXZERaHYawEcxlFYDMgSyAhN2XHJI0VfN07x36PQRutew8OTy+jkiQAH8ZPluKow==
+X-Received: by 2002:aa7:94b5:0:b029:1d7:f868:e48d with SMTP id a21-20020aa794b50000b02901d7f868e48dmr16215808pfl.9.1613407442601;
+        Mon, 15 Feb 2021 08:44:02 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id q13sm11919246pfg.155.2021.02.15.08.44.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 08:44:02 -0800 (PST)
+Date:   Mon, 15 Feb 2021 09:44:00 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCHv2] coresight: etm4x: Add ETM PID for Cortex-A78
+Message-ID: <20210215164400.GA2770547@xps15>
+References: <20210213112829.26834-1-saiprakash.ranjan@codeaurora.org>
+ <CAJ9a7VgwxXgs+Zrb2LgX=E7i1+0wpqiL6gOyktPF7_0eojeVNw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210213001452.1719001-1-marcorr@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ9a7VgwxXgs+Zrb2LgX=E7i1+0wpqiL6gOyktPF7_0eojeVNw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/02/21 01:14, Marc Orr wrote:
-> From: Ignacio Alvarado <ikalvarado@google.com>
-> 
-> This test launches 512 VMs in serial and kills them after a random
-> amount of time.
-> 
-> The test was original written to exercise KVM user notifiers in
-> the context of1650b4ebc99d:
-> - KVM: Disable irq while unregistering user notifier
-> - https://lore.kernel.org/kvm/CACXrx53vkO=HKfwWwk+fVpvxcNjPrYmtDZ10qWxFvVX_PTGp3g@mail.gmail.com/
-> 
-> Recently, this test piqued my interest because it proved useful to
-> for AMD SNP in exercising the "in-use" pages, described in APM section
-> 15.36.12, "Running SNP-Active Virtual Machines".
-> 
-> To run the test, first compile:
-> $ make "CPPFLAGS=-static -Wl,--whole-archive -lpthread -Wl,--no-whole-archive" \
->      -C tools/testing/selftests/kvm/
-> 
-> Then, copy the test over to a machine with the kernel and run:
-> $ ./hardware_disable_test
+On Mon, Feb 15, 2021 at 10:26:38AM +0000, Mike Leach wrote:
+> Reviewed-by: Mike Leach <mike.leach@linaro.org>
 
-Queued, but these two paragraphs do not belong in an upstream commit 
-message.  Thanks!
+I will pick this up when 5.12-rc1 comes out.
 
-Paolo
+Thanks,
+Mathieu
 
-> Signed-off-by: Ignacio Alvarado <ikalvarado@google.com>
-> Signed-off-by: Marc Orr <marcorr@google.com>
-> ---
->   tools/testing/selftests/kvm/.gitignore        |   1 +
->   tools/testing/selftests/kvm/Makefile          |   1 +
->   .../selftests/kvm/hardware_disable_test.c     | 165 ++++++++++++++++++
->   3 files changed, 167 insertions(+)
->   create mode 100644 tools/testing/selftests/kvm/hardware_disable_test.c
 > 
-> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-> index ce8f4ad39684..d631e111441a 100644
-> --- a/tools/testing/selftests/kvm/.gitignore
-> +++ b/tools/testing/selftests/kvm/.gitignore
-> @@ -28,6 +28,7 @@
->   /demand_paging_test
->   /dirty_log_test
->   /dirty_log_perf_test
-> +/hardware_disable_test
->   /kvm_create_max_vcpus
->   /set_memory_region_test
->   /steal_time
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index fe41c6a0fa67..c1c403d878f6 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -62,6 +62,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
->   TEST_GEN_PROGS_x86_64 += demand_paging_test
->   TEST_GEN_PROGS_x86_64 += dirty_log_test
->   TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
-> +TEST_GEN_PROGS_x86_64 += hardware_disable_test
->   TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
->   TEST_GEN_PROGS_x86_64 += set_memory_region_test
->   TEST_GEN_PROGS_x86_64 += steal_time
-> diff --git a/tools/testing/selftests/kvm/hardware_disable_test.c b/tools/testing/selftests/kvm/hardware_disable_test.c
-> new file mode 100644
-> index 000000000000..2f2eeb8a1d86
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/hardware_disable_test.c
-> @@ -0,0 +1,165 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * This test is intended to reproduce a crash that happens when
-> + * kvm_arch_hardware_disable is called and it attempts to unregister the user
-> + * return notifiers.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <fcntl.h>
-> +#include <pthread.h>
-> +#include <semaphore.h>
-> +#include <stdint.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <sys/wait.h>
-> +
-> +#include <test_util.h>
-> +
-> +#include "kvm_util.h"
-> +
-> +#define VCPU_NUM 4
-> +#define SLEEPING_THREAD_NUM (1 << 4)
-> +#define FORK_NUM (1ULL << 9)
-> +#define DELAY_US_MAX 2000
-> +#define GUEST_CODE_PIO_PORT 4
-> +
-> +sem_t *sem;
-> +
-> +/* Arguments for the pthreads */
-> +struct payload {
-> +	struct kvm_vm *vm;
-> +	uint32_t index;
-> +};
-> +
-> +static void guest_code(void)
-> +{
-> +	for (;;)
-> +		;  /* Some busy work */
-> +	printf("Should not be reached.\n");
-> +}
-> +
-> +static void *run_vcpu(void *arg)
-> +{
-> +	struct payload *payload = (struct payload *)arg;
-> +	struct kvm_run *state = vcpu_state(payload->vm, payload->index);
-> +
-> +	vcpu_run(payload->vm, payload->index);
-> +
-> +	TEST_ASSERT(false, "%s: exited with reason %d: %s\n",
-> +		    __func__, state->exit_reason,
-> +		    exit_reason_str(state->exit_reason));
-> +	pthread_exit(NULL);
-> +}
-> +
-> +static void *sleeping_thread(void *arg)
-> +{
-> +	int fd;
-> +
-> +	while (true) {
-> +		fd = open("/dev/null", O_RDWR);
-> +		close(fd);
-> +	}
-> +	TEST_ASSERT(false, "%s: exited\n", __func__);
-> +	pthread_exit(NULL);
-> +}
-> +
-> +static inline void check_create_thread(pthread_t *thread, pthread_attr_t *attr,
-> +				       void *(*f)(void *), void *arg)
-> +{
-> +	int r;
-> +
-> +	r = pthread_create(thread, attr, f, arg);
-> +	TEST_ASSERT(r == 0, "%s: failed to create thread", __func__);
-> +}
-> +
-> +static inline void check_set_affinity(pthread_t thread, cpu_set_t *cpu_set)
-> +{
-> +	int r;
-> +
-> +	r = pthread_setaffinity_np(thread, sizeof(cpu_set_t), cpu_set);
-> +	TEST_ASSERT(r == 0, "%s: failed set affinity", __func__);
-> +}
-> +
-> +static inline void check_join(pthread_t thread, void **retval)
-> +{
-> +	int r;
-> +
-> +	r = pthread_join(thread, retval);
-> +	TEST_ASSERT(r == 0, "%s: failed to join thread", __func__);
-> +}
-> +
-> +static void run_test(uint32_t run)
-> +{
-> +	struct kvm_vm *vm;
-> +	cpu_set_t cpu_set;
-> +	pthread_t threads[VCPU_NUM];
-> +	pthread_t throw_away;
-> +	struct payload payloads[VCPU_NUM];
-> +	void *b;
-> +	uint32_t i, j;
-> +
-> +	CPU_ZERO(&cpu_set);
-> +	for (i = 0; i < VCPU_NUM; i++)
-> +		CPU_SET(i, &cpu_set);
-> +
-> +	vm = vm_create(VM_MODE_DEFAULT, DEFAULT_GUEST_PHY_PAGES, O_RDWR);
-> +	kvm_vm_elf_load(vm, program_invocation_name, 0, 0);
-> +	vm_create_irqchip(vm);
-> +
-> +	fprintf(stderr, "%s: [%d] start vcpus\n", __func__, run);
-> +	for (i = 0; i < VCPU_NUM; ++i) {
-> +		vm_vcpu_add_default(vm, i, guest_code);
-> +		payloads[i].vm = vm;
-> +		payloads[i].index = i;
-> +
-> +		check_create_thread(&threads[i], NULL, run_vcpu,
-> +				    (void *)&payloads[i]);
-> +		check_set_affinity(threads[i], &cpu_set);
-> +
-> +		for (j = 0; j < SLEEPING_THREAD_NUM; ++j) {
-> +			check_create_thread(&throw_away, NULL, sleeping_thread,
-> +					    (void *)NULL);
-> +			check_set_affinity(throw_away, &cpu_set);
-> +		}
-> +	}
-> +	fprintf(stderr, "%s: [%d] all threads launched\n", __func__, run);
-> +	sem_post(sem);
-> +	for (i = 0; i < VCPU_NUM; ++i)
-> +		check_join(threads[i], &b);
-> +	/* Should not be reached */
-> +	TEST_ASSERT(false, "%s: [%d] child escaped the ninja\n", __func__, run);
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	uint32_t i;
-> +	int s, r;
-> +	pid_t pid;
-> +
-> +	sem = sem_open("vm_sem", O_CREAT | O_EXCL, 0644, 0);
-> +	sem_unlink("vm_sem");
-> +
-> +	for (i = 0; i < FORK_NUM; ++i) {
-> +		pid = fork();
-> +		TEST_ASSERT(pid >= 0, "%s: unable to fork", __func__);
-> +		if (pid == 0)
-> +			run_test(i); /* This function always exits */
-> +
-> +		fprintf(stderr, "%s: [%d] waiting semaphore\n", __func__, i);
-> +		sem_wait(sem);
-> +		r = (rand() % DELAY_US_MAX) + 1;
-> +		fprintf(stderr, "%s: [%d] waiting %dus\n", __func__, i, r);
-> +		usleep(r);
-> +		r = waitpid(pid, &s, WNOHANG);
-> +		TEST_ASSERT(r != pid,
-> +			    "%s: [%d] child exited unexpectedly status: [%d]",
-> +			    __func__, i, s);
-> +		fprintf(stderr, "%s: [%d] killing child\n", __func__, i);
-> +		kill(pid, SIGKILL);
-> +	}
-> +
-> +	sem_destroy(sem);
-> +	exit(0);
-> +}
+> On Sat, 13 Feb 2021 at 11:28, Sai Prakash Ranjan
+> <saiprakash.ranjan@codeaurora.org> wrote:
+> >
+> > Add ETM PID for Cortex-A78 to the list of supported ETMs.
+> >
+> > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> > ---
+> >
+> > Changes in v2:
+> >  * Rebased on top of coresight/next from kernel.org coresight repo.
+> >
+> > ---
+> >  drivers/hwtracing/coresight/coresight-etm4x-core.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> > index 15016f757828..a5b13a7779c3 100644
+> > --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> > +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> > @@ -1951,6 +1951,7 @@ static const struct amba_id etm4_ids[] = {
+> >         CS_AMBA_UCI_ID(0x000bbd05, uci_id_etm4),/* Cortex-A55 */
+> >         CS_AMBA_UCI_ID(0x000bbd0a, uci_id_etm4),/* Cortex-A75 */
+> >         CS_AMBA_UCI_ID(0x000bbd0c, uci_id_etm4),/* Neoverse N1 */
+> > +       CS_AMBA_UCI_ID(0x000bbd41, uci_id_etm4),/* Cortex-A78 */
+> >         CS_AMBA_UCI_ID(0x000f0205, uci_id_etm4),/* Qualcomm Kryo */
+> >         CS_AMBA_UCI_ID(0x000f0211, uci_id_etm4),/* Qualcomm Kryo */
+> >         CS_AMBA_UCI_ID(0x000bb802, uci_id_etm4),/* Qualcomm Kryo 385 Cortex-A55 */
+> >
+> > base-commit: 06c18e28c402ecfb842df8e22a19a097c35ffca9
+> > --
+> > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> > of Code Aurora Forum, hosted by The Linux Foundation
+> >
 > 
-
+> 
+> -- 
+> Mike Leach
+> Principal Engineer, ARM Ltd.
+> Manchester Design Centre. UK
