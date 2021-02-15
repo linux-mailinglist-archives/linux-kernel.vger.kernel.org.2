@@ -2,84 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564BC31BB22
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6615031BB26
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhBOOcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:32:39 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:34035 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230019AbhBOObs (ORCPT
+        id S230059AbhBOOdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:33:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36375 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229816AbhBOOdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:31:48 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id AE35CEC4;
-        Mon, 15 Feb 2021 09:30:58 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 15 Feb 2021 09:30:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=VTF+InyvJ1i+IExFvTo0zZ2GIbm
-        UxMajMuGt1DH2D0g=; b=nErQjQnLRMZq8A/zgnQvDrcIq8lB9drZzEY624c39Sx
-        AHgkX0Mu7uDpzTBbxoWF3dKWTjxCu3vULPJvBAFeviiRpMuMYyEnVFFjm7IBvoYd
-        oWNowSXy2VtJjDlXhodflNoX615DJAVmBuXmnXcoM29+HxFUAzx7+RE6GJel2rfR
-        pRaW3NiDTRgE6DiuP+9ZR/MsTCC/MkY06mDNHgJAYONIIMlLKMV3Pgx3GIyiI3Ps
-        3WkYwK1+1cnX9OnQv3ue4exALw4p3Q2OPuO1IfLUYuAe1dzk4EqqmIoivSwK6syp
-        T9WfMwHENcAwOBqs3yKdVHQ2Fd3IcaSUnQwIx0OMf4Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=VTF+In
-        yvJ1i+IExFvTo0zZ2GIbmUxMajMuGt1DH2D0g=; b=UAasazt4qrIDfv0CJtgUQp
-        8eISUDCS7p35pAPjDkdeqVUUBlYq7C6rY7MPDC/yk5AF91AvcqG/AAWJ31X69G5c
-        VV+695VJKApew1Yi+hrvynPfIkP5mESsc8TsaXdgZLZdsfpfTAqAASYaODauWNA0
-        Ea+prsSB5Msq1QAUcLVuAluDzuV4LAepOWvGaO8tpigmB0sXxdjKAXbWXBLd/Mz5
-        2k8Wcr/ARJZurra7YHlmykpVvA/b49UZA3Ou0FfGHcJz6BSHObxAB5ZboNnyj9q8
-        Xl2c6lHi/kr3F4BGwkZkBJ9GjV6BRg7ip3hPxxjKE6eZHel1RRxPnlZnrPAZakEQ
-        ==
-X-ME-Sender: <xms:oYUqYEdf1dxzdiTAtt-V6tLqrokHF2TspyFyyS5IVoCdGbLssZWRRw>
-    <xme:oYUqYP0NfP0FVYl5a8lfk0DUKUd7fBPphZH5974kRJjUscsYJOfvEcvKWsJXSH2Zd
-    1qvZSepUKWgPg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrieekgdeiudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:oYUqYFg6cV9GBNAKpBcidjPZmTiLBvFvb1l0YMSna0BbBQW-kT6C_Q>
-    <xmx:oYUqYNTvPqtVos1qhZgibTgOygnq1zvvBFmS_ZnGfLZJiogen04eTA>
-    <xmx:oYUqYOgYf00MfMxhOZoS9qy-Wg2GNLSfyxDU4IAoxF0N2U7gglEkaA>
-    <xmx:ooUqYMrgmndUSN6a_pb_Ja0nnhwCiB5qPfjohjR6dkpo3VmXSbra5A>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 657F924005D;
-        Mon, 15 Feb 2021 09:30:57 -0500 (EST)
-Date:   Mon, 15 Feb 2021 15:30:55 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     fedora.dm0@gmail.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH for 5.10] powerpc/32: Preserve cr1 in exception prolog
- stack check to fix build error
-Message-ID: <YCqFn/4YuT+445xW@kroah.com>
-References: <f6d16f3321f1dc89b77ada1c7d961fae4089766e.1613120077.git.christophe.leroy@csgroup.eu>
+        Mon, 15 Feb 2021 09:33:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613399528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NpZLtkR+4zZlDJqnNh6hJ8ZHZatL99cUiWJhPF+URCE=;
+        b=ERBf9XxjnUkvfprUwKoeY0aZtsEAnfqB384v81G4YL+TvhT0PD7dPt7moa4DdMxVqaJCIs
+        +06Z8yjr5LhIhIzCExOdpz3pJUqk0fQ2Lb+rpXfzqdhzaKyfOYCnin7SUenJYMz4nKcvzD
+        Q/mbALMan5IOIzlFKpM9cSmTAMSfKx8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-526-OdhwO8ruMyW1aS7hsqmSiw-1; Mon, 15 Feb 2021 09:32:05 -0500
+X-MC-Unique: OdhwO8ruMyW1aS7hsqmSiw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A12D801965;
+        Mon, 15 Feb 2021 14:32:01 +0000 (UTC)
+Received: from krava (unknown [10.40.195.239])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 706641B534;
+        Mon, 15 Feb 2021 14:31:57 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 15:31:56 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Nicholas Fraser <nfraser@codeweavers.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org,
+        Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+Subject: Re: [PATCH 1/4] perf buildid-cache: Don't skip 16-byte build-ids
+Message-ID: <YCqF3ENDLNLXoa2j@krava>
+References: <597788e4-661d-633f-857c-3de700115d02@codeweavers.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f6d16f3321f1dc89b77ada1c7d961fae4089766e.1613120077.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <597788e4-661d-633f-857c-3de700115d02@codeweavers.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 08:57:14AM +0000, Christophe Leroy wrote:
-> This is backport of 3642eb21256a ("powerpc/32: Preserve cr1 in
-> exception prolog stack check to fix build error") for kernel 5.10
+On Wed, Feb 10, 2021 at 02:17:25PM -0500, Nicholas Fraser wrote:
+> lsdir_bid_tail_filter() ignored any build-id that wasn't exactly 20
+> bytes. This worked only for SHA-1 build-ids. The build-id for a PE file
+> is always a 16-byte GUID and ELF files can also have MD5 or UUID
+> build-ids.
 > 
-> It fixes the build failure on v5.10 reported by kernel test robot
-> and by David Michael.
-> 
-> This fix is not in Linux tree yet, it is in next branch in powerpc tree.
+> This fix changes the filter to allow build-ids between 16 and 20 bytes.
 
-Then there's nothing I can do about it until that happens :(
+hi,
+there's tests/shell/buildid.sh test for this, please add
+testcase for this.. looks like perf buildid-cacle -l will
+end up calling this function
+
+thanks,
+jirka
+
+> 
+> Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+> ---
+>  tools/perf/util/build-id.c | 5 +++--
+>  tools/perf/util/build-id.h | 4 +++-
+>  2 files changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+> index 02df36b30ac5..e32e8f2ff3bd 100644
+> --- a/tools/perf/util/build-id.c
+> +++ b/tools/perf/util/build-id.c
+> @@ -448,7 +448,8 @@ static bool lsdir_bid_tail_filter(const char *name __maybe_unused,
+>  	int i = 0;
+>  	while (isxdigit(d->d_name[i]) && i < SBUILD_ID_SIZE - 3)
+>  		i++;
+> -	return (i == SBUILD_ID_SIZE - 3) && (d->d_name[i] == '\0');
+> +	return (i >= SBUILD_ID_MIN_SIZE - 3) && (i <= SBUILD_ID_SIZE - 3) &&
+> +		(d->d_name[i] == '\0');
+>  }
+>  
+>  struct strlist *build_id_cache__list_all(bool validonly)
+> @@ -490,7 +491,7 @@ struct strlist *build_id_cache__list_all(bool validonly)
+>  		}
+>  		strlist__for_each_entry(nd2, linklist) {
+>  			if (snprintf(sbuild_id, SBUILD_ID_SIZE, "%s%s",
+> -				     nd->s, nd2->s) != SBUILD_ID_SIZE - 1)
+> +				     nd->s, nd2->s) > SBUILD_ID_SIZE - 1)
+>  				goto err_out;
+>  			if (validonly && !build_id_cache__valid_id(sbuild_id))
+>  				continue;
+> diff --git a/tools/perf/util/build-id.h b/tools/perf/util/build-id.h
+> index 02613f4b2c29..c19617151670 100644
+> --- a/tools/perf/util/build-id.h
+> +++ b/tools/perf/util/build-id.h
+> @@ -2,8 +2,10 @@
+>  #ifndef PERF_BUILD_ID_H_
+>  #define PERF_BUILD_ID_H_ 1
+>  
+> -#define BUILD_ID_SIZE	20
+> +#define BUILD_ID_SIZE	20 /* SHA-1 length in bytes */
+> +#define BUILD_ID_MIN_SIZE	16 /* MD5/UUID/GUID length in bytes */
+>  #define SBUILD_ID_SIZE	(BUILD_ID_SIZE * 2 + 1)
+> +#define SBUILD_ID_MIN_SIZE	(BUILD_ID_MIN_SIZE * 2 + 1)
+>  
+>  #include "machine.h"
+>  #include "tool.h"
+> -- 
+> 2.30.0
+> 
 
