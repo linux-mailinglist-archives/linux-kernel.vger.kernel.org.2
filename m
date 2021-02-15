@@ -2,118 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F8931B9AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D2A31B953
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhBOMsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:48:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhBOMrD (ORCPT
+        id S229954AbhBOMeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:34:13 -0500
+Received: from 6.mo3.mail-out.ovh.net ([188.165.43.173]:49592 "EHLO
+        6.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229652AbhBOMeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:47:03 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8339C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:46:22 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id t15so8657542wrx.13
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:46:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=user-agent:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A15rY6Q2dsPIqCz33RJVqDEPuYAVE90BLBpsO2QsoA8=;
-        b=dy4ndi0FVQKHpnWLrvojYRRZ7Z0FSDpbqubvH81x2YHRlPHmYbTtqkOTMOnBqutGCj
-         BAZ/13UZ7n/rm6PlLTonfpvxq7XptthgeWpF9V4h8L8mXIEd4ZuTgWsEB38bBe8tiZrm
-         fEcQxrtunUWIP6miHGn6HGrlsUoR+DdhZKa8vVOznlgZXrHrNWfrq+B6ahocIhdTxWnZ
-         Zen4NTCO6qDdWZ7hr3JJDhAWYqYk5N4o7ZQDfteT3Qu5l3rPrujIuOQVWNayyEfb4piz
-         sCohCf8iJNLsafqyRuhaDrtaQgvHUZrLWGmPxW95JAiDeK69uoj0yggn1b6hRo82C5y2
-         X6aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:user-agent:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=A15rY6Q2dsPIqCz33RJVqDEPuYAVE90BLBpsO2QsoA8=;
-        b=IzH+95L4JZbl26MPsUgVPzr+U1ZWpwQZCEQ14nDqkemlgNEMzw6i8tdNXINk2/q/64
-         hkrmguzFKvkGzfpIuTr+Mx7maXy66A32Wtr48ajINKDnWVC5nusoc4XiBzsk8eAIiyBZ
-         PE4ZXuHQLkXvHbg0YCXPztJhafMvc6GCelY+xUJv6B/Cjxe1pmegSO6Y/vYzvbo81GrM
-         Uw304AerVGTMmWgQCHGmA9B17l2G2V6frF+Xq1fJHJwQlOtgnSYPsCcaPgFrjij6LVw5
-         m7/gf4HKHBn87fE+WJ5CU7lr9iuIA4wa7eLX83eML98q1de81iM/lG7ZEk4qEILig6YS
-         BtNg==
-X-Gm-Message-State: AOAM533hIC1QxP4soRTaD0UXZsAIK41/pQx5kF8fIfQmcHpQQCsvZ3Cy
-        dQigBaDRPijVcBAg7/HWrAXdmQ==
-X-Google-Smtp-Source: ABdhPJwBga4tSgNDKfwze/eJGnZcOM3JW+RCuJZb/Vfyqnk6s3PAP8Z6w77iJRe0ND6ZRWRMu5Z5pg==
-X-Received: by 2002:a5d:50c8:: with SMTP id f8mr5187435wrt.69.1613393181489;
-        Mon, 15 Feb 2021 04:46:21 -0800 (PST)
-Received: from zen.linaroharston ([51.148.130.216])
-        by smtp.gmail.com with ESMTPSA id j71sm25969899wmj.31.2021.02.15.04.46.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 04:46:20 -0800 (PST)
-Received: from zen (localhost [127.0.0.1])
-        by zen.linaroharston (Postfix) with ESMTP id ED01A1FF7E;
-        Mon, 15 Feb 2021 12:46:19 +0000 (GMT)
-User-agent: mu4e 1.5.8; emacs 28.0.50
-From:   Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>
-To:     linux-kernel@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
-Cc:     Tomas Winkler <tomas.winkler@intel.com>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Huang Yang <yang.huang@intel.com>,
-        Ruchika Gupta <ruchika.gupta@linaro.org>
-Subject: RPMB user space ABI
-Date:   Thu, 11 Feb 2021 14:07:00 +0000
-Message-ID: <87mtwashi4.fsf@linaro.org>
+        Mon, 15 Feb 2021 07:34:09 -0500
+X-Greylist: delayed 12598 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Feb 2021 07:34:08 EST
+Received: from player693.ha.ovh.net (unknown [10.108.42.215])
+        by mo3.mail-out.ovh.net (Postfix) with ESMTP id 8597227B5AE
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:56:02 +0100 (CET)
+Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
+        (Authenticated sender: rafal@milecki.pl)
+        by player693.ha.ovh.net (Postfix) with ESMTPSA id 18B261B083216;
+        Mon, 15 Feb 2021 08:55:52 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-104R0052bc91e7f-3b4f-47e7-9a55-0b1cfc3b4324,
+                    B556E4132F97FCF51F74662465CB03FCA76A52B8) smtp.auth=rafal@milecki.pl
+X-OVh-ClientIp: 194.187.74.233
+Subject: Re: linux-next: build failure after merge of the mtd tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210215122854.4103ef4d@canb.auug.org.au>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Message-ID: <b5b62cbc-88a3-c865-d3be-8a86018d822c@milecki.pl>
+Date:   Mon, 15 Feb 2021 09:55:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210215122854.4103ef4d@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Ovh-Tracer-Id: 3972456348547190357
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrieejgdelvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeehnecuhfhrohhmpeftrghfrghlucfoihhlvggtkhhiuceorhgrfhgrlhesmhhilhgvtghkihdrphhlqeenucggtffrrghtthgvrhhnpeehveellefgjefgtddtleeijeegudffheejudffgeeigffhjeelgfevleegheekieenucffohhmrghinhepohiilhgrsghsrdhorhhgpdhkvghrnhgvlhdrohhrghenucfkpheptddrtddrtddrtddpudelgedrudekjedrjeegrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrieelfedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Stephen!
 
-Last year while I was implementing a virtio-rpmb backend for QEMU I
-ended up using patches from the ACRN tree which was based on Thomas'
-patches last posted in 2016:
+On 15.02.2021 02:28, Stephen Rothwell wrote:
+> After merging the mtd tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+> 
+> ERROR: modpost: missing MODULE_LICENSE() in drivers/mtd/parsers/bcm4908-partitions.o
+> ERROR: modpost: "bcm4908_partitions_post_parse" [drivers/mtd/parsers/ofpart.ko] undefined!
+> 
+> Caused by commit
+> 
+>    09cf6ee6d21c ("mtd: parsers: ofpart: support BCM4908 fixed partitions")
+> 
+> I have used the mtd tree from next-20210212 for today.
 
-  https://lore.kernel.org/lkml/1478548394-8184-1-git-send-email-tomas.winkl=
-er@intel.com/
+Thank you for the report!
 
-which I bastardised into a testing tree on a more recent kernel:
-
-  https://git.linaro.org/people/alex.bennee/linux.git/log/?h=3Dtesting/virt=
-io-rpmb
-
-The main reason I hacked them around was because the VirtIO spec had
-since been finalised and had a very different framing structure. The
-original proposed ABI provided for an ioctl which sent JDEC frames to
-the underlying device. This was later expanded to support NVME style
-frames. Neither of these frame sequences matched the final VirtIO
-specification.
-
-It seems to me having the ioctl ABI at this level exposes too many
-underlying HW details to user space. With the number of HW devices that
-providing RPMB features likely to grow from the current 3 (eMMC/JDEC,
-NVME, VirtIO) it seems this ABI should operate at a higher level, e.g.:
-
-      PROGRAM_KEY
-      GET_WRITE_COUNTER
-      WRITE_DATA
-      READ_DATA
-
-and I guess some sort of asynchronous result check?
-
-It would then be for the kernel to take the higher level concepts and
-translate them to the final frames required to talk to the actual HW (if
-indeed there is some).
-
-Does this seem reasonable? Is this orthogonal to any access to RPMB
-partitions that file-systems might want to do?
-
---=20
-Alex Benn=C3=A9e
+It has been fixed by the
+[PATCH] mtd: parsers: ofpart: fix building as module
+https://patchwork.ozlabs.org/project/linux-mtd/patch/20210215072844.16136-1-zajec5@gmail.com/
+https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/commit/?h=mtd/next&id=bc6dcf44da2bea215ae3edbdac5d350e96de3996
