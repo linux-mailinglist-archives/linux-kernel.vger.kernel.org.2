@@ -2,168 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C1831B9D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A76931B9D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:54:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhBOMxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:53:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        id S230307AbhBOMxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhBOMv1 (ORCPT
+        with ESMTP id S229805AbhBOMwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:51:27 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31797C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:50:46 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id m144so6178595qke.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:50:46 -0800 (PST)
+        Mon, 15 Feb 2021 07:52:40 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D32CC061574;
+        Mon, 15 Feb 2021 04:51:58 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id p21so9872066lfu.11;
+        Mon, 15 Feb 2021 04:51:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lxLelD5sy/Kikw1flxrP1PC9JE4RpCQoIxEScGAOhpc=;
-        b=jcrHpZygZAjVrFZczEW9tTbln5Ae4GBtJ5SwQi6F35T+prwtBJMLx2TP4zKY5mQTBx
-         lLntp4zhoZfXVhUENkJ4ZTzd60rTmwDkul9sl+TLIvjap0Rh+EZ8mPWCIqfkUjj9xxvG
-         nJ/BWKhC6tfWTyGMeX4K/TBkivY9Rtxu5vKL2TkcFfLcTJyUVMPDPesBF4k5MkSc7BRx
-         ZGmlgGhqdE617n5kp7+QqYiAz9Peqs9yzFKcK/C4W77JGIGQ/P6e/yD8+yrTJVl56v+A
-         y8OuAYLwb9sy6bi8iaVysu9qYxU4PrDchKiKaS9F/4kPOqm9hRdYOYWqCn2qsL0aRznU
-         fZ5g==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KAcKBIEJHkiFFEg+eBhYyKF6mpgLJGuodnHv7wBP55o=;
+        b=do8GwdAHdZ4S6gFJ4luZv+iMpePUpfnAaldCHt2ph5JudPQ4FoDLvOtvthd1dvQlN4
+         4WcX+AXXP5LLNaj+G85Y/ec07i1YH9Dj5sSotprlFsqHUGAxqF6n+T0St31xrK/7A6cf
+         GZGWXzaJyB34RvotsoYwJZKpoTO60NfI7nSE8/HCgm3mNSl9nGw/DsP7MpsoGbM7tFJd
+         N+HScTMO9OhH2Lnj9qoBHnFa7HVwmV6aJjivRT7RKnY40y2HPc9G6pamH01yaUi96w6+
+         TEX5D0KSIBcZsZ2MInNeXBYA020G/dQA47cKxsAkqArPLC45UCuiWHEYRbE2Op+EbNBB
+         ZqNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lxLelD5sy/Kikw1flxrP1PC9JE4RpCQoIxEScGAOhpc=;
-        b=s9rbm5KWJpvU7zo/yTpV0+FnIz+zoqHYIL7YpvHF+KJm8DQxSbIodQ7T/FNXj8/WlM
-         zRZd/ZqQgthr5rTTPqv8vDTMOGxvtnqugFCYUiDX6s08kRhKu55mX2UA6CEuCRQkXLCf
-         NrO78TrFK6nitRLYIkoV3KLD7+ufojnFvp5kyqJgEbjlFBftx0SwVewo/uIjymLTMReS
-         gbLay96nCyccsPlPvgFa/t/SYhcnFS4xLoDPRHyE0Y9R/H1kokZOmtTPtdwL7KJHOz5y
-         FUr47yOQP5Tf23V+8y6HR2xPz4rBYfwWOMhffb+pjZaV7HZ0tU56mM85CsECLdkD/EtB
-         qB2g==
-X-Gm-Message-State: AOAM530FkCNFBaJHDfUkSCx6NPrV7PLKrRVQMDQoAnQ3y39YVfAQJrZx
-        wL3jlsmcpNw4V7T9woTFG6jti2RHSnGlCwCw6A3dvg==
-X-Google-Smtp-Source: ABdhPJzHqw3T9IcDdiphGKjGp0C+BYkuC3MO0JVtCQZyH+NuHRU99wuLPtB4P70cbcGErkgt9XmrGK8P2/AmV95LASE=
-X-Received: by 2002:a37:46cf:: with SMTP id t198mr7589958qka.265.1613393445059;
- Mon, 15 Feb 2021 04:50:45 -0800 (PST)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KAcKBIEJHkiFFEg+eBhYyKF6mpgLJGuodnHv7wBP55o=;
+        b=Chocy+DG23btjU8vtwBhfmX0BYW2J0QyKKacAg+T4UK/f7jXqs0KmWQ1y81a9Hex4d
+         N95BmY51LGXXbQw+khA8fsuripKdvwX1MeYEM2dJ04eM+GTsMUrJkQ6uh6pxkjKLARKi
+         6o0YdHEALThU+0g1+N6wfoZnqfOz1OcCRosDgMl7s9Y8SN1ZVtDjPohdCA+seXv+xDFn
+         uZFtUro5kdEGRILlZjePgzT7QNVxmWBbDxoIPbjZCm0dtSozwVwQ4tOdUMM2M7uXs3Rq
+         PEvM9+RHtbIHB/MV+Raz96McNagt8H1CBkzPqrnMuZ3H35ntu4voHJzkEkjQRZXghkhk
+         37cg==
+X-Gm-Message-State: AOAM533SyT5ARDcXkqn6OBbVbuonUrObnldL9U+DTc01qKXE23+gTcQ+
+        mO+OKi6ntBCCTJSrdMYU4hY=
+X-Google-Smtp-Source: ABdhPJxb3XiSBHop552bmK0mmybiubbDu9iubQJIgWo7X4Jme7oT6lUPuupRhc2C+deFXoNDbW7glQ==
+X-Received: by 2002:a19:f814:: with SMTP id a20mr8229576lff.212.1613393517119;
+        Mon, 15 Feb 2021 04:51:57 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id 3sm1891173lfr.105.2021.02.15.04.51.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 04:51:56 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 15 Feb 2021 13:51:54 +0100
+To:     Topi Miettinen <toiwoton@gmail.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        linux-hardening@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH v2] mm/vmalloc: randomize vmalloc() allocations
+Message-ID: <20210215125154.GA2259@pc638.lan>
+References: <20201212175635.4217-1-toiwoton@gmail.com>
+ <795016db-93fa-72ea-f5dd-16b9c56a62e9@gmail.com>
+ <20210213115521.GA1907@pc638.lan>
+ <8d60ba59-1d16-bb76-f3d3-f1b0c5a5b306@gmail.com>
 MIME-Version: 1.0
-References: <000000000000a05b3b05baf9a856@google.com> <20210211113718.GM19070@quack2.suse.cz>
- <CACT4Y+b7245_5yjTk5Mw1pFBdV_f2LypAVSAZVym9n1Q0v5c-Q@mail.gmail.com>
- <YCWlzl1q+eP22KVc@mit.edu> <CACT4Y+YJtk_Lb9AGB4K3pdc-1VpBV0ZzH=1oHVDA003YpAhAog@mail.gmail.com>
- <YCaoaNpF5n3nyja9@mit.edu>
-In-Reply-To: <YCaoaNpF5n3nyja9@mit.edu>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 15 Feb 2021 13:50:33 +0100
-Message-ID: <CACT4Y+b0tcLeWoA9QGBPvmf=04K3QTnoKMVALdkPgtNNb4J5ow@mail.gmail.com>
-Subject: Re: possible deadlock in dquot_commit
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>,
-        syzbot <syzbot+3b6f9218b1301ddda3e2@syzkaller.appspotmail.com>,
-        Jan Kara <jack@suse.com>, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d60ba59-1d16-bb76-f3d3-f1b0c5a5b306@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 5:10 PM Theodore Ts'o <tytso@mit.edu> wrote:
+On Sat, Feb 13, 2021 at 03:43:39PM +0200, Topi Miettinen wrote:
+> On 13.2.2021 13.55, Uladzislau Rezki wrote:
+> > > Hello,
+> > > 
+> > > Is there a chance of getting this reviewed and maybe even merged, please?
+> > > 
+> > > -Topi
+> > > 
+> > I can review it and help with it. But before that i would like to
+> > clarify if such "randomization" is something that you can not leave?
+> 
+> This happens to interest me and I don't mind the performance loss since I
+> think there's also an improvement in security. I suppose (perhaps wrongly)
+> that others may also be interested in such features. For example, also
+> `nosmt` can take away a big part of CPU processing capability.
 >
->  >From: Theodore Ts'o <tytso@mit.edu>
->
-> On Fri, Feb 12, 2021 at 12:01:51PM +0100, Dmitry Vyukov wrote:
-> > > >
-> > > > There is a reproducer for 4.19 available on the dashboard. Maybe it will help.
-> > > > I don't why it did not pop up on upstream yet, there lots of potential
-> > > > reasons for this.
-> > >
-> > > The 4.19 version of the syzbot report has a very different stack
-> > > trace.  Instead of it being related to an apparent write to the quota
-> > > file, it is apparently caused by a call to rmdir:
-> > >
-> >
-> > The 4.19 reproducer may reproducer something else, you know better. I
-> > just want to answer points re syzkaller reproducers. FTR the 4.19
-> > reproducer/reproducer is here:
-> > https://syzkaller.appspot.com/bug?id=b6cacc9fa48fea07154b8797236727de981c1e02
->
-> Yes, I know.  That was my point.  I don't think it's useful for
-> debugging the upstream dquot_commit syzbot report (for which we don't
-> have a reproducer yet).
->
-> > > there is never any attempt to run rmdir() on the corrupted file system that is mounted.
-> >
-> > Recursive rmdir happens as part of test cleanup implicitly, you can
-> > see rmdir call in remove_dir function in the C reproducer:
-> > https://syzkaller.appspot.com/text?tag=ReproC&x=12caea37900000
->
-> That rmdir() removes the mountpoint, which is *not* the fuzzed file
-> system which has the quota feature enabled.
+OK. I was thinking about if it is done for some production systems or
+some specific projects where this is highly demanded.
 
-remove_dir function is recursive, so rmdir should be called for all
-subdirectories starting from the deepest ones. At least that was the
-intention. Do you see it's not working this way? That would be
-something to fix.
+>
+> Does this
+> answer your question, I'm not sure what you mean with leaving? I hope you
+> would not want me to go away and leave?
+>
+No-no, that was a type :) Sorry for that. I just wanted to figure out
+who really needs it.
 
-> > > procid never gets incremented, so all of the threads only operate on /dev/loop0
-> >
-> > This is intentional. procid is supposed to "isolate" parallel test
-> > processes (if any). This reproducer does not use parallel test
-> > processes, thus procid has constant value.
->
-> Um... yes it does:
+> > For example on 32bit system vmalloc space is limited, such randomization
+> > can slow down it, also it will lead to failing of allocations much more,
+> > thus it will require repeating with different offset.
+> 
+> I would not use `randomize_vmalloc=1` on a 32 bit systems, because in
+> addition to slow down, the address space could become so fragmented that
+> large allocations may not fit anymore. Perhaps the documentation should warn
+> about this more clearly. I haven't tried this on a 32 bit system though and
+> there the VM layout is very different.
+> 
+For 32-bit systems that would introduce many issues not limited to fragmentations.
 
-There is waitpid before remove_dir. So these are sequential test
-processes, not parallel.
+> __alloc_vm_area() scans the vmalloc space starting from a random address up
+> to end of the area. If this fails, the scan is restarted from the bottom of
+> the area up to this random address. Thus the entire area is scanned.
+> 
+> > Second. There is a space or region for modules. Using various offsets
+> > can waste of that memory, thus can lead to failing of module loading.
+> 
+> The allocations for modules (or BPF code) are also randomized within their
+> dedicated space. I don't think other allocations should affect module space.
+> Within this module space, fragmentation may also be possible because there's
+> only 1,5GB available. The largest allocation on my system seems to be 11M at
+> the moment, others are 1M or below and most are 8k. The possibility of an
+> allocation failing probably depends on the fill ratio. In practice haven't
+> seen problems with this.
+> 
+I think it depends on how many modules your system loads. If it is a big
+system it might be that such fragmentation and wasting of module space
+may lead to modules loading.
 
-> int main(void)
-> {
->   syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->   syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
->   syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->   use_temporary_dir();
->   loop();
->   return 0;
-> }
->
-> and what is loop?
->
-> static void loop(void)
-> {
->   int iter = 0;
->   for (;; iter++) {
->         ...
->     reset_loop();
->     int pid = fork();
->     if (pid < 0)
->       exit(1);
->     if (pid == 0) {
->       if (chdir(cwdbuf))
->         exit(1);
->       setup_test();
->       execute_one();
->       exit(0);
->     }
->     ...
->     remove_dir(cwdbuf);
->   }
-> }
->
-> > > Am I correct in understanding that when syzbot is running, it uses the syzbot repro, and not the C repro?
-> >
-> > It tries both. If first tries to interpret "syzkaller program" as it
-> > was done when the bug was triggered during fuzzing. But then it tries
-> > to convert it to a corresponding stand-alone C program and confirms
-> > that it still triggers the bug. If it provides a C reproducer, it
-> > means that it did trigger the bug using this exact C program on a
-> > freshly booted kernel (and the provided kernel oops is the
-> > corresponding oops obtained on this exact program).
-> > If it fails to reproduce the bug with a C reproducer, then it provides
-> > only the "syzkaller program" to not mislead developers.
->
-> Well, looking at the C reproducer, it doesn't reproduce on upstream,
-> and the stack trace makes no sense to me.  The rmdir() executes at the
-> end of the test, as part of the cleanup, and looking at the syzkaller
-> console, the stack trace involving rmdir happens *early* while test
-> threads are still trying to mount the file system.
+> It would be possible to have finer control, for example
+> `randomize_vmalloc=3` (1 = general vmalloc, 2 = modules, bitwise ORed) or
+> `randomize_vmalloc=general,modules`.
+> 
+> I experimented by trying to change how the modules are compiled
+> (-mcmodel=medium or -mcmodel=large) so that they could be located in the
+> normal vmalloc space, but instead I found a bug in the compiler (-mfentry
+> produces incorrect code for -mcmodel=large, now fixed).
+> 
+> > On the other side there is a per-cpu allocator. Interfering with it
+> > also will increase a rate of failing.
+> 
+> I didn't notice the per-cpu allocator before. I'm probably missing
+> something, but it seems to be used for a different purpose (for allocating
+> the vmap_area structure objects instead of the address space range), so
+> where do you see interference?
+> 
 
-My assumption that the 4.19 reproducer for a somewhat similarly
-looking bug may also reproduce this upstream bug is false then.
+
+   A                       B
+ ---->                   <----
+<---------------------------><--------->
+|   vmalloc address space    |
+|<--------------------------->
+
+
+A - is a vmalloc allocations;
+B - is a percpu-allocator.
+
+--
+Vlad Rezki
