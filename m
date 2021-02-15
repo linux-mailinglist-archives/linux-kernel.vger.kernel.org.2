@@ -2,462 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1D531B79A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5255B31B79D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:50:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbhBOKta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:49:30 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:13240 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230290AbhBOKk0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:40:26 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11FAa6NL023092;
-        Mon, 15 Feb 2021 05:39:34 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 36p9gavkj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 05:39:34 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 11FAdWBT008350
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 15 Feb 2021 05:39:32 -0500
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 15 Feb 2021 02:39:31 -0800
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Mon, 15 Feb 2021 02:39:30 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Mon, 15 Feb 2021 02:39:30 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11FAcQUr017530;
-        Mon, 15 Feb 2021 05:39:27 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <dragos.bogdan@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v6 24/24] tools: iio: convert iio_generic_buffer to use new IIO buffer API
-Date:   Mon, 15 Feb 2021 12:40:43 +0200
-Message-ID: <20210215104043.91251-25-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210215104043.91251-1-alexandru.ardelean@analog.com>
-References: <20210215104043.91251-1-alexandru.ardelean@analog.com>
+        id S229993AbhBOKui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:50:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230245AbhBOKnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 05:43:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 476B264E08;
+        Mon, 15 Feb 2021 10:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613385783;
+        bh=rFDzWO+Yc0upGnKKctB4dw2q/4fjyFSfnCtQF+mJIro=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DuZnkahDGALbfhsWPRf3nHHz07TTsAjb6O7tQXgPB+Bh38SxEHQRrZDPJT+6YP8t+
+         WlnPLJOX4710DDO6IX/g6gZ9N9iDFXnxwquI1Mq5Wj0Cfx8LCKXqfgv+9FN/tU1o+N
+         w8PztBPOvNhSewMo3VPOsypNdqvnc14M6zynix5ESTLxO01t+ke1qfU6HbdHAqj5vq
+         Bg2yIYZfhxeH+ZffPIwF2OtTaNFPG8SRWpts14FxhI/YcMAWL0GLAwe33AjTgYJ8Xm
+         e5Xo96vO8BjzjKkCwu9Z03MwWBpCwQJ8m0EindGMONxhsuPBaYSTHKQc1mDlF+CfMZ
+         rBfA+EViSQl5g==
+Date:   Mon, 15 Feb 2021 11:42:57 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the v4l-dvb tree
+Message-ID: <20210215114257.5dc0fd00@coco.lan>
+In-Reply-To: <20210215112024.22ebdd4c@coco.lan>
+References: <20210208233716.16d962ad@canb.auug.org.au>
+        <56cd99bbf526b43507579b5775bac5f885319866.camel@collabora.com>
+        <20210208164618.GY32460@paasikivi.fi.intel.com>
+        <4af499f5931d6b04a42787ae17525c63247573e6.camel@collabora.com>
+        <20210208184014.55128fb5@coco.lan>
+        <fa453b6516f709b23bb046a1d956f0598966cd99.camel@collabora.com>
+        <20210215112024.22ebdd4c@coco.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-15_04:2021-02-12,2021-02-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 clxscore=1015
- mlxscore=0 priorityscore=1501 impostorscore=0 adultscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102150087
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change makes use of the new IIO buffer API to read data from an IIO
-buffer.
-It doesn't read the /sys/bus/iio/devices/iio:deviceX/scan_elements dir
-anymore, it reads /sys/bus/iio/devices/iio:deviceX/bufferY, where all the
-scan_elements have been merged together with the old/classical buffer
-attributes.
+Em Mon, 15 Feb 2021 11:20:24 +0100
+Mauro Carvalho Chehab <mchehab@kernel.org> escreveu:
 
-And it makes use of the new IIO_BUFFER_GET_FD_IOCTL ioctl to get an FD for
-the IIO buffer for which to read data from.
-It also does a quick sanity check to see that -EBUSY is returned if reading
-the chardev after the ioctl() has succeeded.
+> Em Mon, 08 Feb 2021 15:53:00 -0300
+> Ezequiel Garcia <ezequiel@collabora.com> escreveu:
+>=20
+> > On Mon, 2021-02-08 at 18:40 +0100, Mauro Carvalho Chehab wrote:
+> > > Em Mon, 08 Feb 2021 13:57:56 -0300
+> > > Ezequiel Garcia <ezequiel@collabora.com> escreveu:
+> > >  =20
+> > > > On Mon, 2021-02-08 at 18:46 +0200, Sakari Ailus wrote: =20
+> > > > > Hi Ezequiel,
+> > > > >=20
+> > > > > Thanks for addressing this.
+> > > > >=20
+> > > > > On Mon, Feb 08, 2021 at 01:42:21PM -0300, Ezequiel Garcia wrote:=
+=C2=A0  =20
+> > > > > > Hi Stephen,
+> > > > > >=20
+> > > > > > On Mon, 2021-02-08 at 23:37 +1100, Stephen Rothwell wrote:=C2=
+=A0  =20
+> > > > > > > Hi all,
+> > > > > > >=20
+> > > > > > > After merging the v4l-dvb tree, today's linux-next build (htm=
+ldocs)
+> > > > > > > produced this warning:
+> > > > > > >=20
+> > > > > > > include/media/v4l2-async.h:178: warning: expecting prototype =
+for v4l2_async_notifier_add_fwnode_subdev(). Prototype was for
+> > > > > > > __v4l2_async_notifier_add_fwnode_subdev() instead
+> > > > > > > include/media/v4l2-async.h:207: warning: expecting prototype =
+for v4l2_async_notifier_add_fwnode_remote_subdev(). Prototype was for
+> > > > > > > __v4l2_async_notifier_add_fwnode_remote_subdev() instead
+> > > > > > > include/media/v4l2-async.h:230: warning: expecting prototype =
+for v4l2_async_notifier_add_i2c_subdev(). Prototype was for
+> > > > > > > __v4l2_async_notifier_add_i2c_subdev() instead
+> > > > > > >=20
+> > > > > > > Maybe introduced by commit
+> > > > > > >=20
+> > > > > > > =C2=A0 c1cc23625062 ("media: v4l2-async: Discourage use of v4=
+l2_async_notifier_add_subdev")
+> > > > > > > =C2=A0  =20
+> > > > > >=20
+> > > > > > Thanks for spotting this. Should be fixed by:
+> > > > > >=20
+> > > > > > diff --git a/include/media/v4l2-async.h b/include/media/v4l2-as=
+ync.h
+> > > > > > index 6f22daa6f067..3785445282fc 100644
+> > > > > > --- a/include/media/v4l2-async.h
+> > > > > > +++ b/include/media/v4l2-async.h
+> > > > > > @@ -157,7 +157,7 @@ int __v4l2_async_notifier_add_subdev(struct=
+ v4l2_async_notifier *notifier,
+> > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct v=
+4l2_async_subdev *asd);
+> > > > > > =C2=A0
+> > > > > > =C2=A0/**
+> > > > > > - * v4l2_async_notifier_add_fwnode_subdev - Allocate and add a =
+fwnode async
+> > > > > > + * __v4l2_async_notifier_add_fwnode_subdev - Allocate and add =
+a fwnode async=C2=A0  =20
+> > > > >=20
+> > > > > The problem with the approach is that this no longer documents th=
+e API that
+> > > > > drivers are intended to use, but the intermediate one. =20
+> > >=20
+> > > Yep. the better would be to keep documenting what will be used.
+> > >  =20
+> >=20
+> > Is there a way to silence/ignore the warning for a specific function(s)?
+>=20
+> No. The warning is there for a very good reason: if you do something like:
+>=20
+>=20
+> 	/**
+> 	 * delete - delete some file
+> 	 *
+> 	 * This function deletes something.
+> 	 */
+> 	void insert() {}
+> 	/**
+> 	 * insert - creates a new file
+> 	 *
+> 	 * This function creates a file and inserts something.
+> 	 */
+> 	void delete() {}
+>=20
+> the output of it will be:
+>=20
+> 	$ ./scripts/kernel-doc -sphinx-version 3.0.0 silly.c
+> 	.. c:function:: void insert ()
+> =09
+> 	   delete some file
+> =09
+> 	**Parameters**
+> =09
+> 	**Description**
+> =09
+> =09
+> 	This function deletes something.
+> =09
+> =09
+> 	.. c:function:: void delete ()
+> =09
+> 	   creates a new file
+> =09
+> 	**Parameters**
+> =09
+> 	**Description**
+> =09
+> =09
+> 	This function creates a file and inserts something.
+>=20
+> Which is completely wrong. If someone tries to write a code using the
+> above, the result will be just the opposite than what it was documented.
+>=20
+> Btw, I noticed several places where things like that happened, because
+> some code were added between a Kernel-doc markup and some function.
 
-This was tested with the following cases:
- 1. Tested buffer0 works with ioctl()
- 2. Tested that buffer0 can't be opened via /dev/iio:deviceX after ioctl()
-    This check should be omitted under normal operation; it's being done
-    here to check that the driver change is sane
- 3. Moved valid buffer0 to be buffer1, and tested that data comes from it
+Btw, in the specific case of this change, something like the above
+quick hack would fix it.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+PS:  I didn't think much when I wrote the __type description.
+
+Also, keeping the symbols that should be documented as __foo
+doesn't seem the right thing to me :-)
+
+
 ---
- tools/iio/Makefile             |   1 +
- tools/iio/iio_generic_buffer.c | 122 ++++++++++++++++++++++++++-------
- tools/iio/iio_utils.c          |  13 ++--
- tools/iio/iio_utils.h          |   4 +-
- 4 files changed, 107 insertions(+), 33 deletions(-)
 
-diff --git a/tools/iio/Makefile b/tools/iio/Makefile
-index 3de763d9ab70..5d12ac4e7f8f 100644
---- a/tools/iio/Makefile
-+++ b/tools/iio/Makefile
-@@ -27,6 +27,7 @@ include $(srctree)/tools/build/Makefile.include
- #
- $(OUTPUT)include/linux/iio: ../../include/uapi/linux/iio
- 	mkdir -p $(OUTPUT)include/linux/iio 2>&1 || true
-+	ln -sf $(CURDIR)/../../include/uapi/linux/iio/buffer.h $@
- 	ln -sf $(CURDIR)/../../include/uapi/linux/iio/events.h $@
- 	ln -sf $(CURDIR)/../../include/uapi/linux/iio/types.h $@
- 
-diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
-index 7c7240553777..2491c54a5e4f 100644
---- a/tools/iio/iio_generic_buffer.c
-+++ b/tools/iio/iio_generic_buffer.c
-@@ -30,6 +30,8 @@
- #include <inttypes.h>
- #include <stdbool.h>
- #include <signal.h>
-+#include <sys/ioctl.h>
-+#include <linux/iio/buffer.h>
- #include "iio_utils.h"
- 
- /**
-@@ -197,7 +199,7 @@ static void process_scan(char *data, struct iio_channel_info *channels,
- 	printf("\n");
- }
- 
--static int enable_disable_all_channels(char *dev_dir_name, int enable)
-+static int enable_disable_all_channels(char *dev_dir_name, int buffer_idx, int enable)
- {
- 	const struct dirent *ent;
- 	char scanelemdir[256];
-@@ -205,7 +207,7 @@ static int enable_disable_all_channels(char *dev_dir_name, int enable)
- 	int ret;
- 
- 	snprintf(scanelemdir, sizeof(scanelemdir),
--		 FORMAT_SCAN_ELEMENTS_DIR, dev_dir_name);
-+		 FORMAT_SCAN_ELEMENTS_DIR, dev_dir_name, buffer_idx);
- 	scanelemdir[sizeof(scanelemdir)-1] = '\0';
- 
- 	dp = opendir(scanelemdir);
-@@ -243,6 +245,7 @@ static void print_usage(void)
- 		"Capture, convert and output data from IIO device buffer\n"
- 		"  -a         Auto-activate all available channels\n"
- 		"  -A         Force-activate ALL channels\n"
-+		"  -b <n>     The buffer which to open (by index), default 0\n"
- 		"  -c <n>     Do n conversions, or loop forever if n < 0\n"
- 		"  -e         Disable wait for event (new data)\n"
- 		"  -g         Use trigger-less mode\n"
-@@ -259,6 +262,7 @@ static void print_usage(void)
- static enum autochan autochannels = AUTOCHANNELS_DISABLED;
- static char *dev_dir_name = NULL;
- static char *buf_dir_name = NULL;
-+static int buffer_idx = 0;
- static bool current_trigger_set = false;
- 
- static void cleanup(void)
-@@ -286,7 +290,7 @@ static void cleanup(void)
- 
- 	/* Disable channels if auto-enabled */
- 	if (dev_dir_name && autochannels == AUTOCHANNELS_ACTIVE) {
--		ret = enable_disable_all_channels(dev_dir_name, 0);
-+		ret = enable_disable_all_channels(dev_dir_name, buffer_idx, 0);
- 		if (ret)
- 			fprintf(stderr, "Failed to disable all channels\n");
- 		autochannels = AUTOCHANNELS_DISABLED;
-@@ -333,7 +337,9 @@ int main(int argc, char **argv)
- 	unsigned long long j;
- 	unsigned long toread;
- 	int ret, c;
--	int fp = -1;
-+	struct stat st;
-+	int fd = -1;
-+	int buf_fd = -1;
- 
- 	int num_channels = 0;
- 	char *trigger_name = NULL, *device_name = NULL;
-@@ -352,7 +358,7 @@ int main(int argc, char **argv)
- 
- 	register_cleanup();
- 
--	while ((c = getopt_long(argc, argv, "aAc:egl:n:N:t:T:w:?", longopts,
-+	while ((c = getopt_long(argc, argv, "aAb:c:egl:n:N:t:T:w:?", longopts,
- 				NULL)) != -1) {
- 		switch (c) {
- 		case 'a':
-@@ -361,7 +367,20 @@ int main(int argc, char **argv)
- 		case 'A':
- 			autochannels = AUTOCHANNELS_ENABLED;
- 			force_autochannels = true;
--			break;	
-+			break;
-+		case 'b':
-+			errno = 0;
-+			buffer_idx = strtoll(optarg, &dummy, 10);
-+			if (errno) {
-+				ret = -errno;
-+				goto error;
-+			}
-+			if (buffer_idx < 0) {
-+				ret = -ERANGE;
-+				goto error;
-+			}
-+
-+			break;
- 		case 'c':
- 			errno = 0;
- 			num_loops = strtoll(optarg, &dummy, 10);
-@@ -518,7 +537,7 @@ int main(int argc, char **argv)
- 	 * Parse the files in scan_elements to identify what channels are
- 	 * present
- 	 */
--	ret = build_channel_array(dev_dir_name, &channels, &num_channels);
-+	ret = build_channel_array(dev_dir_name, buffer_idx, &channels, &num_channels);
- 	if (ret) {
- 		fprintf(stderr, "Problem reading scan element information\n"
- 			"diag %s\n", dev_dir_name);
-@@ -535,7 +554,7 @@ int main(int argc, char **argv)
- 	    (autochannels == AUTOCHANNELS_ENABLED && force_autochannels)) {
- 		fprintf(stderr, "Enabling all channels\n");
- 
--		ret = enable_disable_all_channels(dev_dir_name, 1);
-+		ret = enable_disable_all_channels(dev_dir_name, buffer_idx, 1);
- 		if (ret) {
- 			fprintf(stderr, "Failed to enable all channels\n");
- 			goto error;
-@@ -544,7 +563,7 @@ int main(int argc, char **argv)
- 		/* This flags that we need to disable the channels again */
- 		autochannels = AUTOCHANNELS_ACTIVE;
- 
--		ret = build_channel_array(dev_dir_name, &channels,
-+		ret = build_channel_array(dev_dir_name, buffer_idx, &channels,
- 					  &num_channels);
- 		if (ret) {
- 			fprintf(stderr, "Problem reading scan element "
-@@ -565,7 +584,7 @@ int main(int argc, char **argv)
- 		fprintf(stderr, "Enable channels manually in "
- 			FORMAT_SCAN_ELEMENTS_DIR
- 			"/*_en or pass -a to autoenable channels and "
--			"try again.\n", dev_dir_name);
-+			"try again.\n", dev_dir_name, buffer_idx);
- 		ret = -ENOENT;
- 		goto error;
- 	}
-@@ -576,12 +595,25 @@ int main(int argc, char **argv)
- 	 * be built rather than found.
- 	 */
- 	ret = asprintf(&buf_dir_name,
--		       "%siio:device%d/buffer", iio_dir, dev_num);
-+		       "%siio:device%d/buffer%d", iio_dir, dev_num, buffer_idx);
- 	if (ret < 0) {
- 		ret = -ENOMEM;
- 		goto error;
- 	}
- 
-+	if (stat(buf_dir_name, &st)) {
-+		fprintf(stderr, "Could not stat() '%s', got error %d: %s\n",
-+			buf_dir_name, errno, strerror(errno));
-+		ret = -errno;
-+		goto error;
-+	}
-+
-+	if (!S_ISDIR(st.st_mode)) {
-+		fprintf(stderr, "File '%s' is not a directory\n", buf_dir_name);
-+		ret = -EFAULT;
-+		goto error;
-+	}
-+
- 	if (!notrigger) {
- 		printf("%s %s\n", dev_dir_name, trigger_name);
- 		/*
-@@ -598,6 +630,35 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
-+	ret = asprintf(&buffer_access, "/dev/iio:device%d", dev_num);
-+	if (ret < 0) {
-+		ret = -ENOMEM;
-+		goto error;
-+	}
-+
-+	/* Attempt to open non blocking the access dev */
-+	fd = open(buffer_access, O_RDONLY | O_NONBLOCK);
-+	if (fd == -1) { /* TODO: If it isn't there make the node */
-+		ret = -errno;
-+		fprintf(stderr, "Failed to open %s\n", buffer_access);
-+		goto error;
-+	}
-+
-+	/* specify for which buffer index we want an FD */
-+	buf_fd = buffer_idx;
-+
-+	ret = ioctl(fd, IIO_BUFFER_GET_FD_IOCTL, &buf_fd);
-+	if (ret == -1 || buf_fd == -1) {
-+		ret = -errno;
-+		if (ret == -ENODEV || ret == -EINVAL)
-+			fprintf(stderr,
-+				"Device does not have this many buffers\n");
-+		else
-+			fprintf(stderr, "Failed to retrieve buffer fd\n");
-+
-+		goto error;
-+	}
-+
- 	/* Setup ring buffer parameters */
- 	ret = write_sysfs_int("length", buf_dir_name, buf_len);
- 	if (ret < 0)
-@@ -607,7 +668,8 @@ int main(int argc, char **argv)
- 	ret = write_sysfs_int("enable", buf_dir_name, 1);
- 	if (ret < 0) {
- 		fprintf(stderr,
--			"Failed to enable buffer: %s\n", strerror(-ret));
-+			"Failed to enable buffer '%s': %s\n",
-+			buf_dir_name, strerror(-ret));
- 		goto error;
- 	}
- 
-@@ -618,24 +680,30 @@ int main(int argc, char **argv)
- 		goto error;
- 	}
- 
--	ret = asprintf(&buffer_access, "/dev/iio:device%d", dev_num);
--	if (ret < 0) {
--		ret = -ENOMEM;
--		goto error;
-+	/**
-+	 * This check is being done here for sanity reasons, however it
-+	 * should be omitted under normal operation.
-+	 * If this is buffer0, we check that we get EBUSY after this point.
-+	 */
-+	if (buffer_idx == 0) {
-+		errno = 0;
-+		read_size = read(fd, data, 1);
-+		if (read_size > -1 || errno != EBUSY) {
-+			ret = -EFAULT;
-+			perror("Reading from '%s' should not be possible after ioctl()");
-+			goto error;
-+		}
- 	}
- 
--	/* Attempt to open non blocking the access dev */
--	fp = open(buffer_access, O_RDONLY | O_NONBLOCK);
--	if (fp == -1) { /* TODO: If it isn't there make the node */
--		ret = -errno;
--		fprintf(stderr, "Failed to open %s\n", buffer_access);
--		goto error;
--	}
-+	/* close now the main chardev FD and let the buffer FD work */
-+	if (close(fd) == -1)
-+		perror("Failed to close character device file");
-+	fd = -1;
- 
- 	for (j = 0; j < num_loops || num_loops < 0; j++) {
- 		if (!noevents) {
- 			struct pollfd pfd = {
--				.fd = fp,
-+				.fd = buf_fd,
- 				.events = POLLIN,
- 			};
- 
-@@ -653,7 +721,7 @@ int main(int argc, char **argv)
- 			toread = 64;
- 		}
- 
--		read_size = read(fp, data, toread * scan_size);
-+		read_size = read(buf_fd, data, toread * scan_size);
- 		if (read_size < 0) {
- 			if (errno == EAGAIN) {
- 				fprintf(stderr, "nothing available\n");
-@@ -670,7 +738,9 @@ int main(int argc, char **argv)
- error:
- 	cleanup();
- 
--	if (fp >= 0 && close(fp) == -1)
-+	if (fd >= 0 && close(fd) == -1)
-+		perror("Failed to close character device");
-+	if (buf_fd >= 0 && close(buf_fd) == -1)
- 		perror("Failed to close buffer");
- 	free(buffer_access);
- 	free(data);
-diff --git a/tools/iio/iio_utils.c b/tools/iio/iio_utils.c
-index a96002f2c2d5..aadee6d34c74 100644
---- a/tools/iio/iio_utils.c
-+++ b/tools/iio/iio_utils.c
-@@ -77,6 +77,7 @@ int iioutils_break_up_name(const char *full_name, char **generic_name)
-  * @mask: output a bit mask for the raw data
-  * @be: output if data in big endian
-  * @device_dir: the IIO device directory
-+ * @buffer_idx: the IIO buffer index
-  * @name: the channel name
-  * @generic_name: the channel type name
-  *
-@@ -85,8 +86,8 @@ int iioutils_break_up_name(const char *full_name, char **generic_name)
- static int iioutils_get_type(unsigned int *is_signed, unsigned int *bytes,
- 			     unsigned int *bits_used, unsigned int *shift,
- 			     uint64_t *mask, unsigned int *be,
--			     const char *device_dir, const char *name,
--			     const char *generic_name)
-+			     const char *device_dir, int buffer_idx,
-+			     const char *name, const char *generic_name)
- {
- 	FILE *sysfsfp;
- 	int ret;
-@@ -96,7 +97,7 @@ static int iioutils_get_type(unsigned int *is_signed, unsigned int *bytes,
- 	unsigned padint;
- 	const struct dirent *ent;
- 
--	ret = asprintf(&scan_el_dir, FORMAT_SCAN_ELEMENTS_DIR, device_dir);
-+	ret = asprintf(&scan_el_dir, FORMAT_SCAN_ELEMENTS_DIR, device_dir, buffer_idx);
- 	if (ret < 0)
- 		return -ENOMEM;
- 
-@@ -304,12 +305,13 @@ void bsort_channel_array_by_index(struct iio_channel_info *ci_array, int cnt)
- /**
-  * build_channel_array() - function to figure out what channels are present
-  * @device_dir: the IIO device directory in sysfs
-+ * @buffer_idx: the IIO buffer for this channel array
-  * @ci_array: output the resulting array of iio_channel_info
-  * @counter: output the amount of array elements
-  *
-  * Returns 0 on success, otherwise a negative error code.
-  **/
--int build_channel_array(const char *device_dir,
-+int build_channel_array(const char *device_dir, int buffer_idx,
- 			struct iio_channel_info **ci_array, int *counter)
- {
- 	DIR *dp;
-@@ -322,7 +324,7 @@ int build_channel_array(const char *device_dir,
- 	char *filename;
- 
- 	*counter = 0;
--	ret = asprintf(&scan_el_dir, FORMAT_SCAN_ELEMENTS_DIR, device_dir);
-+	ret = asprintf(&scan_el_dir, FORMAT_SCAN_ELEMENTS_DIR, device_dir, buffer_idx);
- 	if (ret < 0)
- 		return -ENOMEM;
- 
-@@ -503,6 +505,7 @@ int build_channel_array(const char *device_dir,
- 						&current->mask,
- 						&current->be,
- 						device_dir,
-+						buffer_idx,
- 						current->name,
- 						current->generic_name);
- 			if (ret < 0)
-diff --git a/tools/iio/iio_utils.h b/tools/iio/iio_utils.h
-index a5d0aa8a57d3..336752cade4f 100644
---- a/tools/iio/iio_utils.h
-+++ b/tools/iio/iio_utils.h
-@@ -12,7 +12,7 @@
- /* Made up value to limit allocation sizes */
- #define IIO_MAX_NAME_LENGTH 64
- 
--#define FORMAT_SCAN_ELEMENTS_DIR "%s/scan_elements"
-+#define FORMAT_SCAN_ELEMENTS_DIR "%s/buffer%d"
- #define FORMAT_TYPE_FILE "%s_type"
- 
- #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
-@@ -61,7 +61,7 @@ int iioutils_get_param_float(float *output, const char *param_name,
- 			     const char *device_dir, const char *name,
- 			     const char *generic_name);
- void bsort_channel_array_by_index(struct iio_channel_info *ci_array, int cnt);
--int build_channel_array(const char *device_dir,
-+int build_channel_array(const char *device_dir, int buffer_idx,
- 			struct iio_channel_info **ci_array, int *counter);
- int find_type_by_name(const char *name, const char *type);
- int write_sysfs_int(const char *filename, const char *basedir, int val);
--- 
-2.17.1
+[PATCH] v4l2-async.h: Fix kerneldoc markups
 
+Document the functions that should be used by the kAPI clients,
+instead of the internal functions.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+diff --git a/include/media/v4l2-async.h b/include/media/v4l2-async.h
+index 6f22daa6f067..91dbeaa4e6ee 100644
+--- a/include/media/v4l2-async.h
++++ b/include/media/v4l2-async.h
+@@ -156,42 +156,38 @@ void v4l2_async_notifier_init(struct v4l2_async_notif=
+ier *notifier);
+ int __v4l2_async_notifier_add_subdev(struct v4l2_async_notifier *notifier,
+ 				   struct v4l2_async_subdev *asd);
+=20
++struct v4l2_async_subdev *
++__v4l2_async_notifier_add_fwnode_subdev(struct v4l2_async_notifier *notifi=
+er,
++					struct fwnode_handle *fwnode,
++					unsigned int asd_struct_size);
+ /**
+  * v4l2_async_notifier_add_fwnode_subdev - Allocate and add a fwnode async
+  *				subdev to the notifier's master asd_list.
+  *
+- * @notifier: pointer to &struct v4l2_async_notifier
+- * @fwnode: fwnode handle of the sub-device to be matched
+- * @asd_struct_size: size of the driver's async sub-device struct, includi=
+ng
+- *		     sizeof(struct v4l2_async_subdev). The &struct
+- *		     v4l2_async_subdev shall be the first member of
+- *		     the driver's async sub-device struct, i.e. both
+- *		     begin at the same memory address.
++ * @__notifier: pointer to &struct v4l2_async_notifier
++ * @__fwnode: fwnode handle of the sub-device to be matched
++ * @__type: type of the struct that contains a struct v4l2_async_subdev.
+  *
+  * Allocate a fwnode-matched asd of size asd_struct_size, and add it to the
+  * notifiers @asd_list. The function also gets a reference of the fwnode w=
+hich
+  * is released later at notifier cleanup time.
+  */
+-struct v4l2_async_subdev *
+-__v4l2_async_notifier_add_fwnode_subdev(struct v4l2_async_notifier *notifi=
+er,
+-					struct fwnode_handle *fwnode,
+-					unsigned int asd_struct_size);
+ #define v4l2_async_notifier_add_fwnode_subdev(__notifier, __fwnode, __type=
+)	\
+ ((__type *)__v4l2_async_notifier_add_fwnode_subdev(__notifier, __fwnode,	\
+ 						   sizeof(__type)))
+=20
++struct v4l2_async_subdev *
++__v4l2_async_notifier_add_fwnode_remote_subdev(struct v4l2_async_notifier =
+*notif,
++					       struct fwnode_handle *endpoint,
++					       unsigned int asd_struct_size);
+ /**
+  * v4l2_async_notifier_add_fwnode_remote_subdev - Allocate and add a fwnode
+  *						  remote async subdev to the
+  *						  notifier's master asd_list.
+  *
+- * @notif: pointer to &struct v4l2_async_notifier
+- * @endpoint: local endpoint pointing to the remote sub-device to be match=
+ed
+- * @asd_struct_size: size of the driver's async sub-device struct, includi=
+ng
+- *		     sizeof(struct v4l2_async_subdev). The &struct
+- *		     v4l2_async_subdev shall be the first member of
+- *		     the driver's async sub-device struct, i.e. both
+- *		     begin at the same memory address.
++ * @__notifier: pointer to &struct v4l2_async_notifier
++ * @__ep: local endpoint pointing to the remote sub-device to be matched
++ * @__type: type of the struct that contains a struct v4l2_async_subdev.
+  *
+  * Gets the remote endpoint of a given local endpoint, set it up for fwnode
+  * matching and adds the async sub-device to the notifier's @asd_list. The
+@@ -201,33 +197,25 @@ __v4l2_async_notifier_add_fwnode_subdev(struct v4l2_a=
+sync_notifier *notifier,
+  * This is just like @v4l2_async_notifier_add_fwnode_subdev, but with the
+  * exception that the fwnode refers to a local endpoint, not the remote on=
+e.
+  */
+-struct v4l2_async_subdev *
+-__v4l2_async_notifier_add_fwnode_remote_subdev(struct v4l2_async_notifier =
+*notif,
+-					       struct fwnode_handle *endpoint,
+-					       unsigned int asd_struct_size);
+ #define v4l2_async_notifier_add_fwnode_remote_subdev(__notifier, __ep, __t=
+ype)	\
+ ((__type *)__v4l2_async_notifier_add_fwnode_remote_subdev(__notifier, __ep=
+,	\
+ 							  sizeof(__type)))
+=20
++struct v4l2_async_subdev *
++__v4l2_async_notifier_add_i2c_subdev(struct v4l2_async_notifier *notifier,
++				     int adapter_id, unsigned short address,
++				     unsigned int asd_struct_size);
+ /**
+  * v4l2_async_notifier_add_i2c_subdev - Allocate and add an i2c async
+  *				subdev to the notifier's master asd_list.
+  *
+- * @notifier: pointer to &struct v4l2_async_notifier
+- * @adapter_id: I2C adapter ID to be matched
+- * @address: I2C address of sub-device to be matched
+- * @asd_struct_size: size of the driver's async sub-device struct, includi=
+ng
+- *		     sizeof(struct v4l2_async_subdev). The &struct
+- *		     v4l2_async_subdev shall be the first member of
+- *		     the driver's async sub-device struct, i.e. both
+- *		     begin at the same memory address.
++ * @__notifier: pointer to &struct v4l2_async_notifier
++ * @__adap: I2C adapter ID to be matched
++ * @__addr: I2C address of sub-device to be matched
++ * @__type: type of the struct that contains a struct v4l2_async_subdev.
+  *
+  * Same as above but for I2C matched sub-devices.
+  */
+-struct v4l2_async_subdev *
+-__v4l2_async_notifier_add_i2c_subdev(struct v4l2_async_notifier *notifier,
+-				     int adapter_id, unsigned short address,
+-				     unsigned int asd_struct_size);
+ #define v4l2_async_notifier_add_i2c_subdev(__notifier, __adap, __addr, __t=
+ype)	\
+ ((__type *)__v4l2_async_notifier_add_i2c_subdev(__notifier, __adap, __addr=
+,	\
+ 						sizeof(__type)))
+
+
+Thanks,
+Mauro
