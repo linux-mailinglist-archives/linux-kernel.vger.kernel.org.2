@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D05331C1E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FDE31C1EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhBOSsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 13:48:10 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:56648 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbhBOSrm (ORCPT
+        id S230479AbhBOSsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 13:48:47 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:41256 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230021AbhBOSsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 13:47:42 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id BA50F1C0B76; Mon, 15 Feb 2021 19:46:45 +0100 (CET)
-Date:   Mon, 15 Feb 2021 19:46:44 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 048/104] KVM: x86: cleanup CR3 reserved bits checks
-Message-ID: <20210215184644.GA8689@amd>
-References: <20210215152719.459796636@linuxfoundation.org>
- <20210215152721.031370031@linuxfoundation.org>
+        Mon, 15 Feb 2021 13:48:09 -0500
+Received: by mail-ot1-f49.google.com with SMTP id s107so6904757otb.8;
+        Mon, 15 Feb 2021 10:47:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=CLi2nMYytmuw71G7e3zv1nZbTFI8Wm4xUSyCfuFPngI=;
+        b=TOVN7GDTpCGNcvuRzdxW/VIEgdoF4P4k7HhW+gSdbZDnLbl3jLBJdJed0vl779ZCur
+         38mXPpBl1tDZHqLVI3P3DOw7aOixM2CMAm9CcVO7iND+H9PWXAnt6ILiLvxdoDdsJks0
+         mIJLEe4g3XI9cNEgsuVFYFYWq8kkvWX9PACbj8J9gyq4XiBwM+knAza+kjZrUxkC2FGO
+         w7PON7g28mXlgg3pmuMbjhnAU6iDP7szENjuXjDUGXjoPduGagaEfcQO1zpByWUPsa9m
+         e2bFXFvx0Qnx2PEhCF5HENisqUfzIjEYwF7EABrg95oBwpvlcAEKcdIODDfbICjd0NbO
+         SNgA==
+X-Gm-Message-State: AOAM531mkDOOAUDt1JmjBdP3CxJ58kgEZUaeFq+asFzkrbuiCYtX6f3O
+        8R3mZPRomGNH9cGHgak7Ye/wDXU21GDsl4yrNobsyf36gso=
+X-Google-Smtp-Source: ABdhPJw9FRL9oAcZ0FSlk3flW+ksGWmTXWNn4w4kmeFmxN+l0yxp0n4gEZqcuN9EoqyikCLS6IdIVbY24WFV4AOaVgs=
+X-Received: by 2002:a05:6830:2106:: with SMTP id i6mr12154242otc.260.1613414845459;
+ Mon, 15 Feb 2021 10:47:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="0OAP2g/MAC+5xKAE"
-Content-Disposition: inline
-In-Reply-To: <20210215152721.031370031@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 15 Feb 2021 19:47:14 +0100
+Message-ID: <CAJZ5v0jJqO0FVHptaE27ovFese3wFbwQyKDYdiJB621kYg5U2g@mail.gmail.com>
+Subject: [GIT PULL] PNP updates for v5.12-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please pull from the tag
 
-Hi!
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pnp-5.12-rc1
 
-> [ Upstream commit c1c35cf78bfab31b8cb455259524395c9e4c7cd6 ]
->=20
-> If not in long mode, the low bits of CR3 are reserved but not enforced to
-> be zero, so remove those checks.  If in long mode, however, the MBZ bits
-> extend down to the highest physical address bit of the guest, excluding
-> the encryption bit.
->=20
-> Make the checks consistent with the above, and match them between
-> nested_vmcb_checks and KVM_SET_SREGS.
+with top-most commit 96228223933bf5ac920f93862c82449ec28247c0
 
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9558,6 +9558,8 @@ static int kvm_valid_sregs(struct kvm_vcpu *vcpu, s=
-truct kvm_sregs *sregs)
->  		if (!(sregs->cr4 & X86_CR4_PAE)
->  		    || !(sregs->efer & EFER_LMA))
->  			return -EINVAL;
-> +		if (sregs->cr3 & vcpu->arch.cr3_lm_rsvd_bits)
-> +			return false;
->  	} else {
+ PNP: pnpbios: Use DEFINE_SPINLOCK() for spinlock
 
-Function has different return type between 5.10 and 5.11, so this
-needs fixing.
+on top of commit 19c329f6808995b142b3966301f217c831e7cf31
 
-Best regards,
-								Pavel
+ Linux 5.11-rc4
 
---=20
-http://www.livejournal.com/~pavelmachek
+to receive PNP updates for 5.12-rc1.
 
---0OAP2g/MAC+5xKAE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+These make two janitorial changes of the code.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Specifics:
 
-iEYEARECAAYFAmAqwZQACgkQMOfwapXb+vJgkACeN1p7SnT9C+Qaj6PP66/1I7Ed
-XP8An34INGsMCRNTWHZAkXh661eaS0Ko
-=zfyL
------END PGP SIGNATURE-----
+ - Add printf annotation to a logging function (Tom Rix).
 
---0OAP2g/MAC+5xKAE--
+ - Use DEFINE_SPINLOCK() for defining a spinlock so as to initialize
+   it statically (Zheng Yongjun).
+
+Thanks!
+
+
+---------------
+
+Tom Rix (1):
+      PNP: add printf attribute to log function
+
+Zheng Yongjun (1):
+      PNP: pnpbios: Use DEFINE_SPINLOCK() for spinlock
+
+---------------
+
+ drivers/pnp/interface.c         | 1 +
+ drivers/pnp/pnpbios/bioscalls.c | 3 +--
+ 2 files changed, 2 insertions(+), 2 deletions(-)
