@@ -2,179 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B54F31B634
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBC531B63B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhBOJJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:09:27 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64846 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229595AbhBOJJM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:09:12 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11F8pYXM182157;
-        Mon, 15 Feb 2021 04:08:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=to : cc : references :
- from : subject : message-id : date : mime-version : in-reply-to :
- content-type; s=pp1; bh=zhzD6lzfk/9hR7ZxhwdE3wefpwG7G2ibfeJIZDszfjw=;
- b=VjVOuuynu40rgYoIAlF3J2Btvi+xJNbBwtlq3W0kFMAnRMt/wTj2geElUHEpW8dE38TC
- uYCZMdEU53sYwwMQuOGgOHLJd2kKz/b+NDIP6iUP/I7nvGzsTMl4fJTdsQQtHAix2Flq
- GdtzdQkW2wch9T61TDWQIWAlmEkEKviEM1IeJR6OGgA3vKr/YvM2F507XIAd+TXiMBgA
- gIuYCV7u05GK6QNKHPU9zIiTRsd6dg8vRwI2WlahZKEV7jbn5FsK+4ap2IvfDcosp1cs
- nvGdlzLXXo6tRb6FepZbAOxpKMXnir6WNbmeiiuLL8uw8tG1rXmtpgBvdg3mJhMh9UcH ig== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36qntn8dta-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 04:08:26 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11F8qTwY183967;
-        Mon, 15 Feb 2021 04:08:25 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36qntn8dss-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 04:08:25 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11F97N4T017948;
-        Mon, 15 Feb 2021 09:08:23 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 36p6d89nvm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 09:08:23 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11F98KGs39387582
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 09:08:20 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ACD3DA4060;
-        Mon, 15 Feb 2021 09:08:20 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0C7F4A405B;
-        Mon, 15 Feb 2021 09:08:20 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.82.150])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Feb 2021 09:08:19 +0000 (GMT)
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, borntraeger@de.ibm.com,
-        david@redhat.com, cohuck@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-References: <20210213153227.1640682-1-unixbhaskar@gmail.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Subject: Re: [PATCH] arch: s390: kvm: Fix oustanding to outstanding in the
- file kvm-s390.c
-Message-ID: <f90e91a5-7bc0-2489-51d4-6004eef9db7a@linux.ibm.com>
-Date:   Mon, 15 Feb 2021 10:08:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210213153227.1640682-1-unixbhaskar@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="zYdbmPEWRcp4fnBKDtNJQJxFmauwtBTRZ"
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-15_02:2021-02-12,2021-02-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
- mlxscore=0 suspectscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 malwarescore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102150072
+        id S230055AbhBOJJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:09:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229595AbhBOJJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 04:09:50 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 83D8F64E51;
+        Mon, 15 Feb 2021 09:09:09 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lBZsR-00EEeT-7d; Mon, 15 Feb 2021 09:09:07 +0000
+Date:   Mon, 15 Feb 2021 09:08:56 +0000
+Message-ID: <87v9atpujb.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
+In-Reply-To: <CAGETcx9mzYbujVW8ALrNvs1FabvuUpZpChxBb0Tp8q7w+TY4=A@mail.gmail.com>
+References: <20210121225712.1118239-1-saravanak@google.com>
+        <20210121225712.1118239-3-saravanak@google.com>
+        <20210213185422.GA195733@roeck-us.net>
+        <CAGETcx_RpG45Fwhty1Uj34Mv01qkH5vFv0J6jVtJgTBFQinOBA@mail.gmail.com>
+        <a76a73e4-f7ba-4893-14b8-01d21943241a@roeck-us.net>
+        <CAGETcx9mzYbujVW8ALrNvs1FabvuUpZpChxBb0Tp8q7w+TY4=A@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: saravanak@google.com, linux@roeck-us.net, robh+dt@kernel.org, frowand.list@gmail.com, gregkh@linuxfoundation.org, linux-tegra@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linus.walleij@linaro.org, bgolaszewski@baylibre.com, geert@linux-m68k.org, jonathanh@nvidia.com, khilman@baylibre.com, kernel-team@android.com, robh@kernel.org, treding@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---zYdbmPEWRcp4fnBKDtNJQJxFmauwtBTRZ
-Content-Type: multipart/mixed; boundary="cMR6E0UzQFHfdCrb6Mp7D2cFWBX3LPQo3";
- protected-headers="v1"
-From: Janosch Frank <frankja@linux.ibm.com>
-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>, borntraeger@de.ibm.com,
- david@redhat.com, cohuck@redhat.com, imbrenda@linux.ibm.com,
- hca@linux.ibm.com, gor@linux.ibm.com, kvm@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: rdunlap@infradead.org
-Message-ID: <f90e91a5-7bc0-2489-51d4-6004eef9db7a@linux.ibm.com>
-Subject: Re: [PATCH] arch: s390: kvm: Fix oustanding to outstanding in the
- file kvm-s390.c
-References: <20210213153227.1640682-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210213153227.1640682-1-unixbhaskar@gmail.com>
+Hi Saravana,
 
---cMR6E0UzQFHfdCrb6Mp7D2cFWBX3LPQo3
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On Mon, 15 Feb 2021 08:29:53 +0000,
+Saravana Kannan <saravanak@google.com> wrote:
+> 
+> On Sun, Feb 14, 2021 at 7:58 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > On 2/14/21 1:12 PM, Saravana Kannan wrote:
+> > [ ... ]
+> > >
+> > > Can you please give me the following details:
+> > > * The DTS file for the board (not the SoC).
+> >
+> > The devicetree file extracted from the running system is attached.
+> > Hope it helps.
+> 
+> Hi Guenter,
+> 
+> Thanks for the DTS file and logs. That helps a lot.
+> 
+> Looking at the attachment and this line from the earlier email:
+> [   14.084606][   T11] pci 0005:01:00.0: probe deferral - wait for
+> supplier interrupt-controller@0
+> 
+> It's clear the PCI node is waiting on:
+>         interrupt-controller@0 {
+>                 #address-cells = <0x00>;
+>                 device_type = "PowerPC-Interrupt-Source-Controller";
+>                 compatible = "ibm,opal-xive-vc\0IBM,opal-xics";
+>                 #interrupt-cells = <0x02>;
+>                 reg = <0x00 0x00 0x00 0x00>;
+>                 phandle = <0x804b>;
+>                 interrupt-controller;
+>         };
+> 
+> If I grep for "ibm,opal-xive-vc", I see only one instance of it in the
+> code. And that eventually ends up getting called like this:
+> irq_find_matching_fwspec() -> xive_irq_domain_match() -> xive_native_match()
+> 
+> static bool xive_native_match(struct device_node *node)
+> {
+>         return of_device_is_compatible(node, "ibm,opal-xive-vc");
+> }
+> 
+> However, when the IRQ domain are first registered, in xive_init_host()
+> the "np" passed in is NOT the same node that xive_native_match() would
+> match.
+> static void __init xive_init_host(struct device_node *np)
+> {
+>         xive_irq_domain = irq_domain_add_nomap(np, XIVE_MAX_IRQ,
+>                                                &xive_irq_domain_ops, NULL);
+>         if (WARN_ON(xive_irq_domain == NULL))
+>                 return;
+>         irq_set_default_host(xive_irq_domain);
+> }
+> 
+> Instead, the "np" here is:
+>         interrupt-controller@6030203180000 {
+>                 ibm,xive-provision-page-size = <0x10000>;
+>                 ibm,xive-eq-sizes = <0x0c 0x10 0x15 0x18>;
+>                 single-escalation-support;
+>                 ibm,xive-provision-chips = <0x00>;
+>                 ibm,xive-#priorities = <0x08>;
+>                 compatible = "ibm,opal-xive-pe\0ibm,opal-intc";
+>                 reg = <0x60302 0x3180000 0x00 0x10000 0x60302
+> 0x3190000 0x00 0x10000 0x60302 0x31a0000 0x00 0x10000 0x60302
+> 0x31b0000 0x00 0x10000>;
+>                 phandle = <0x8051>;
+>         };
+> 
+> There are many ways to fix this, but I first want to make sure this is
+> a valid way to register irqdomains before trying to fix it. I just
+> find it weird that the node that's registered is unrelated (not a
+> parent/child) of the node that matches.
+> 
+> Marc,
+> 
+> Is this a valid way to register irqdomains? Just registering
+> interrupt-controller@6030203180000 DT node where there are multiple
+> interrupt controllers?
 
-On 2/13/21 4:32 PM, Bhaskar Chowdhury wrote:
->=20
-> s/oustanding/outstanding/
+Absolutely.
 
-Hey Bhaskar,
+The node is only one of the many possible ways to retrieve a
+domain. In general, what you pass as the of_node/fwnode_handle can be
+anything you want. It doesn't have to represent anything in the system
+(we even create then ex-nihilo in some cases), and the match/select
+callbacks are authoritative when they exist.
 
-while I do encourage anyone to send in changes I'm not a big fan of
-comment fixes if they are only a couple of characters and when the
-meaning is still intact despite the spelling mistake.
+There is also the use of a default domain, which is used as a fallback
+when no domain is found via the normal matching procedure.
 
-You're creating more work for me than you had writing this patch and the
-improvement is close to zero.
+PPC has established a way of dealing with domains long before ARM did,
+closer to the board files of old than what we would do today (code
+driven rather than data structure driven).
 
-Be warned that I might not pick up such patches in the future.
+Strictly mapping domains onto HW blocks is a desirable property, but
+that is all it is. That doesn't affect the very purpose of the IRQ
+domains, which is to translate numbers from one context into another.
 
+I'd be all for rationalising this, but it is pretty hard to introduce
+semantic where there is none.
 
-If you're ok with it I'll fix up the subject to this and pick up the patc=
-h:
-"kvm: s390: Fix comment spelling in kvm_s390_vcpu_start()"
+Thanks,
 
-Cheers,
-Janosch
+	M.
 
->=20
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  arch/s390/kvm/kvm-s390.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index dbafd057ca6a..1d01afaca9fe 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -4545,7 +4545,7 @@ int kvm_s390_vcpu_start(struct kvm_vcpu *vcpu)
->  		/*
->  		 * As we are starting a second VCPU, we have to disable
->  		 * the IBS facility on all VCPUs to remove potentially
-> -		 * oustanding ENABLE requests.
-> +		 * outstanding ENABLE requests.
->  		 */
->  		__disable_ibs_on_all_vcpus(vcpu->kvm);
->  	}
-> --
-> 2.30.1
->=20
-
-
-
---cMR6E0UzQFHfdCrb6Mp7D2cFWBX3LPQo3--
-
---zYdbmPEWRcp4fnBKDtNJQJxFmauwtBTRZ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEEwGNS88vfc9+v45Yq41TmuOI4ufgFAmAqOgMFAwAAAAAACgkQ41TmuOI4ufiN
-JBAAyRHM+AND+KcsBaVD4lhw/E3DfIHRYfDsRubZlqe+wqdw7u5umTX9IY0j9tMnOy4oM7Q4UuX1
-nwHMjCNtAGqm68FkfpfxqfZfIH9fTeYpDP/iPmQqgAPuoNJoCc8vwjJm75YylQL6bfh7Q+/+tAAi
-p7fvsb7/sXVJKTl4DxAeftlbi5ObK2Y/7zDIJ1Rj9RmiUAu46kPsYHo3Lw/A7VaE/QFcfneRJGdt
-sm3Jvlc4elPO1QMU4ZE2ezekAqQSBdxNkhEDyEC92mNmujNF39/ARNYQjfS0asTjrnAaoNPAbyq0
-TnO5peeO7YBMtbRwCvVyaXVDjgirZX68Yi70ONOshAu8ckS6kJC6RmURTrZPnlnMmh0+rQOxL6eP
-OAtxd5J/34cAKGkPJnXes5qNbiI7GkfH+93wW2w7ifBjilnbIU6daOgk6rtQFAFuhoTaJx5YbhE0
-gtzZl+wF0sZ7BBCxgIC321ffXdQXUz2kiOfX1E0oQcj5613/yO7lSmvlYpC64PKBNF6bR7hSbrt+
-Y9XwUVnss9oMoqcXapLtACV/sT5oxyIohnxxpZ0N0r1VDQtLJrgW/SQlA/5GHOFsHfRhhq/cRFJW
-ZGlSBemWG7HAGounlYbQ6MAN5bm49L2OI8e7GRAJj2bxEaxHimtmWG5jCj8yctjvzSX9/BK3SLhg
-vLA=
-=g++n
------END PGP SIGNATURE-----
-
---zYdbmPEWRcp4fnBKDtNJQJxFmauwtBTRZ--
-
+-- 
+Without deviation from the norm, progress is not possible.
