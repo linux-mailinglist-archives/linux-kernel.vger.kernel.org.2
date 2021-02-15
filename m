@@ -2,279 +2,941 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C6231B6A2
+	by mail.lfdr.de (Postfix) with ESMTP id E6F4331B6A3
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhBOJqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:46:22 -0500
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:57906 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230226AbhBOJqQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:46:16 -0500
-Received: from mailhost.synopsys.com (badc-mailhost2.synopsys.com [10.192.0.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 7F7BF40131;
-        Mon, 15 Feb 2021 09:45:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1613382313; bh=mMZzVbsih+ZdwgRmcOP/9M1nI8SNpGIEWiCjkf90jds=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=b8998uqxsjovohsbglXYU76FvbexT83aNqANf+eMy2+SjojAbw7Pqlzcp+F5HW31z
-         bjtRUJcwqBaJWVnL9YVH7f3rkaHk9nWkIKVhqUTszH9My+qY/yjn+MT5u5MX77gRbS
-         ZZzKPigPgXTWq3vKOir+3gSqMMIFbwCCAd8cfR9NI4yNDu9Uam+uj/DvaYve3Rdgzq
-         ulq7OAf/D9rAHlWs2ewwVHibllJJnbhNAtYlr25B/iF3bKyXbJX4dY4WmT2aysfink
-         6R9cj60rLyQ926lf6KbgJ78zz2sgu+nx7AqGXsSq/X/yc0wrwzCd6aXIB7T3L8x+qz
-         7CdO3qKvwgZCQ==
-Received: from o365relay-in.synopsys.com (us03-o365relay3.synopsys.com [10.4.161.139])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPS id 32237A0069;
-        Mon, 15 Feb 2021 09:45:11 +0000 (UTC)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 0B825800BF;
-        Mon, 15 Feb 2021 09:45:10 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=gustavo@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="NzZewc2M";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h20U8aAF6uFT5Y4l/X02VcRufhmF6dKOcDrTo69tl7R38u/TRSlw5XZrCA88BR+FceHqOYtit35lVe4sN6ve8IMlt1cc0dffOtI346M49W7XV7jCddEhltBoF0G0rUJbhWYMkE6bJmUOmuJGYPXXOQ45Sp4qn/ilQyGK5oA9U3ifs7BDda8sjcmQORdys+0CncOSp2wNi23W5W6NuMy8UWW0HwAfVso8Cn2QfCsfOUvquNQnRNIL+18bcXuq7iXe92UCLxyzgCyy2ovmT6MHQx7QafsssbNuwAqJx9whYoj6usf0QORwDvYK1FC6VA/EkzLcPyokUu4Qn9uzEp91Qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=38dY00U0IQMqhuNFv9CHOCikdEF0TTrSoY4TCKC8a1w=;
- b=LvKrP8Kr3bFtD0DgjWY/oYG2QvrMN+ODT399Bb0LKKr1S9RxuxwAnsxb0PBNdKu8imSr5mfDawynx9JeJAd8bGepY8BsL5LLO+q9mLeixjhznd5jMHNATvNe7Umha4HVLi73+jpehZtH04F/VzUm3aTt5i1txmjnLzgtzIlkyWrrPNtxveAA7AcCyGUHP1/uXoP7RQ8c6E0ZS+8qgVMfbq0igcYAIKspKgi+NSEMIG/2Dz36FYR5kmT+RrzOh72YlSBewA4g5XizLyUIpq44JJLmm+0ZwsppuAViXHcA2rcv7xWY2GFJbtaGJwTjNLDs7MApVDa8yPju41P8221i+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=38dY00U0IQMqhuNFv9CHOCikdEF0TTrSoY4TCKC8a1w=;
- b=NzZewc2MnKTPnaA+w/WIn7o2evg12Wvg3Jt2K7W4C9R642dss+UyfD1HOy5Ox85YETQCH+D0kEMUoUOgAh7FQ0vtaE+M9LN4eiudz8+XIP6YwGGYsq0bOUAiM9JZ6uT6sHo7oqslRQ0zpcqDwE2qGOv94hFVJ2DtGdlzy0Twz6Q=
-Received: from DM5PR12MB1835.namprd12.prod.outlook.com (2603:10b6:3:10c::9) by
- DM6PR12MB4484.namprd12.prod.outlook.com (2603:10b6:5:28f::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3846.26; Mon, 15 Feb 2021 09:45:08 +0000
-Received: from DM5PR12MB1835.namprd12.prod.outlook.com
- ([fe80::508b:bdb3:d353:9052]) by DM5PR12MB1835.namprd12.prod.outlook.com
- ([fe80::508b:bdb3:d353:9052%10]) with mapi id 15.20.3846.039; Mon, 15 Feb
- 2021 09:45:08 +0000
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "wangzhou1@hisilicon.com" <wangzhou1@hisilicon.com>,
-        "ftoth@exalondelft.nl" <ftoth@exalondelft.nl>,
-        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "qiuzhenfa@hisilicon.com" <qiuzhenfa@hisilicon.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/3] dmaengine: dw-edma: Add missing call to
- 'pci_free_irq_vectors()' in probe function
-Thread-Topic: [PATCH 2/3] dmaengine: dw-edma: Add missing call to
- 'pci_free_irq_vectors()' in probe function
-Thread-Index: AQHXAtRksckgD5i8WEiw8EdykNKVE6pY+qVw
-Date:   Mon, 15 Feb 2021 09:45:07 +0000
-Message-ID: <DM5PR12MB18357590D1A8C22A1E7287BCDA889@DM5PR12MB1835.namprd12.prod.outlook.com>
-References: <20210214132153.575350-1-zhengdejin5@gmail.com>
- <20210214132153.575350-3-zhengdejin5@gmail.com>
-In-Reply-To: <20210214132153.575350-3-zhengdejin5@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcZ3VzdGF2b1xh?=
- =?us-ascii?Q?cHBkYXRhXHJvYW1pbmdcMDlkODQ5YjYtMzJkMy00YTQwLTg1ZWUtNmI4NGJh?=
- =?us-ascii?Q?MjllMzViXG1zZ3NcbXNnLTc2MjdjMjUzLTZmNzMtMTFlYi05OGU2LWY4OTRj?=
- =?us-ascii?Q?MjczODA0MlxhbWUtdGVzdFw3NjI3YzI1NS02ZjczLTExZWItOThlNi1mODk0?=
- =?us-ascii?Q?YzI3MzgwNDJib2R5LnR4dCIgc3o9IjE3ODkiIHQ9IjEzMjU3ODU2MzI2OTQx?=
- =?us-ascii?Q?MDc2NCIgaD0iUmpxZHZOSzhZU2tWa29vMTVpTW5adE1Gck5ZPSIgaWQ9IiIg?=
- =?us-ascii?Q?Ymw9IjAiIGJvPSIxIiBjaT0iY0FBQUFFUkhVMVJTUlVGTkNnVUFBQlFKQUFE?=
- =?us-ascii?Q?TVA0RTRnQVBYQWIrRGQyMTBZS0dBdjROM2JYUmdvWUFPQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUhBQUFBQ2tDQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUVBQVFBQkFBQUFOclNWM2dBQUFBQUFBQUFBQUFBQUFKNEFBQUJtQUdrQWJn?=
- =?us-ascii?Q?QmhBRzRBWXdCbEFGOEFjQUJzQUdFQWJnQnVBR2tBYmdCbkFGOEFkd0JoQUhR?=
- =?us-ascii?Q?QVpRQnlBRzBBWVFCeUFHc0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?RUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHWUFid0IxQUc0QVpBQnlBSGtBWHdC?=
- =?us-ascii?Q?d0FHRUFjZ0IwQUc0QVpRQnlBSE1BWHdCbkFHWUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFB?=
- =?us-ascii?Q?QUFBQ2VBQUFBWmdCdkFIVUFiZ0JrQUhJQWVRQmZBSEFBWVFCeUFIUUFiZ0Js?=
- =?us-ascii?Q?QUhJQWN3QmZBSE1BWVFCdEFITUFkUUJ1QUdjQVh3QmpBRzhBYmdCbUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQm1BRzhB?=
- =?us-ascii?Q?ZFFCdUFHUUFjZ0I1QUY4QWNBQmhBSElBZEFCdUFHVUFjZ0J6QUY4QWN3QmhB?=
- =?us-ascii?Q?RzBBY3dCMUFHNEFad0JmQUhJQVpRQnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdZQWJ3QjFBRzRBWkFCeUFIa0FY?=
- =?us-ascii?Q?d0J3QUdFQWNnQjBBRzRBWlFCeUFITUFYd0J6QUcwQWFRQmpBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNB?=
- =?us-ascii?Q?QUFBQUFDZUFBQUFaZ0J2QUhVQWJnQmtBSElBZVFCZkFIQUFZUUJ5QUhRQWJn?=
- =?us-ascii?Q?QmxBSElBY3dCZkFITUFkQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCbUFH?=
- =?us-ascii?Q?OEFkUUJ1QUdRQWNnQjVBRjhBY0FCaEFISUFkQUJ1QUdVQWNnQnpBRjhBZEFC?=
- =?us-ascii?Q?ekFHMEFZd0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1lBYndCMUFHNEFaQUJ5QUhr?=
- =?us-ascii?Q?QVh3QndBR0VBY2dCMEFHNEFaUUJ5QUhNQVh3QjFBRzBBWXdBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFB?=
- =?us-ascii?Q?Q0FBQUFBQUNlQUFBQVp3QjBBSE1BWHdCd0FISUFid0JrQUhVQVl3QjBBRjhB?=
- =?us-ascii?Q?ZEFCeUFHRUFhUUJ1QUdrQWJnQm5BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ6?=
- =?us-ascii?Q?QUdFQWJBQmxBSE1BWHdCaEFHTUFZd0J2QUhVQWJnQjBBRjhBY0FCc0FHRUFi?=
- =?us-ascii?Q?Z0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFITUFZUUJzQUdVQWN3QmZB?=
- =?us-ascii?Q?SEVBZFFCdkFIUUFaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFB?=
- =?us-ascii?Q?QUFDQUFBQUFBQ2VBQUFBY3dCdUFIQUFjd0JmQUd3QWFRQmpBR1VBYmdCekFH?=
- =?us-ascii?Q?VUFYd0IwQUdVQWNnQnRBRjhBTVFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFB?=
- =?us-ascii?Q?QnpBRzRBY0FCekFGOEFiQUJwQUdNQVpRQnVBSE1BWlFCZkFIUUFaUUJ5QUcw?=
- =?us-ascii?Q?QVh3QnpBSFFBZFFCa0FHVUFiZ0IwQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUhZQVp3QmZBR3NBWlFC?=
- =?us-ascii?Q?NUFIY0Fid0J5QUdRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFB?=
- =?us-ascii?Q?QUFBQUNBQUFBQUFBPSIvPjwvbWV0YT4=3D?=
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synopsys.com;
-x-originating-ip: [89.155.14.32]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9d93fd70-857a-4ebc-579d-08d8d196614f
-x-ms-traffictypediagnostic: DM6PR12MB4484:
-x-microsoft-antispam-prvs: <DM6PR12MB44846726077550FADA92CB79DA889@DM6PR12MB4484.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: O2cK316Xo9lvIGWHnER4YUw9soAqAE+PEGZtWUKN704M8tYTEJWd1cWJjkkCtTqYInZAP+TIEDT+XXvmtDgtmnym30rE8eCzyaZwCDFXr0rAph4zkJl1Zd9MIjwk/jO1jg2ljNRHh75A7rBaoFnQfrAhW85NMNJD8mrnVsNQr1f0rLYjiWiTeiN8YGR3oOhlgs8qxUhLjn/X0UrQPkhl5HmQhQTkz3JceAsu5qrN2cBYiXV0rF4NDq1XHKhsCQztp2b3W1Q1iyKp4sGrTvJfXYSZS7T1VSGiLM3nRK6h8i1fuyePsZ3jZq6/gPPL1cz70h5X/QSks2kLZSNFOig04nHI9HScFZlPujOzruMUlt0mOipsDe4GXjxlYjTX91c6zHYtgNAohzvC+V5EoCJsbi029VcEIS/ugBTkKMJ8xDorY81a7cWzbc+T7vcytedAO8nf41wD4cKGnih95X3UXv3WwtCvY+1ldouut3cxS+XaVGhPZRag1EigdGK6qbUEn58a/7btyNOa+gGUZR5hKg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1835.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(376002)(346002)(136003)(39850400004)(71200400001)(9686003)(33656002)(55016002)(316002)(478600001)(53546011)(8676002)(83380400001)(6506007)(2906002)(8936002)(186003)(4326008)(76116006)(66946007)(66476007)(66556008)(64756008)(66446008)(52536014)(110136005)(26005)(7696005)(5660300002)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?kusue432z2mfMSU7BBYrxJtT57jTC85nBgPdEj3zjeQn3DrtN9SVbqvXWBZq?=
- =?us-ascii?Q?18Q0/Ox5gUwcGlA0HSntrfTHMZUcWKgkeZSrmOKGqa5LCB7UkGVQzF5xCC2l?=
- =?us-ascii?Q?Qv28+A8WSeXeI4Axogzgd0wulnXh91zjvdSmenZO4qUbn3tKfD/hTUAdkWZG?=
- =?us-ascii?Q?Cz6Ky9A399Cqz10iv4i16kJjr3PKcBE1w2gYPibE9GC4btuEilinA1o+T4PP?=
- =?us-ascii?Q?B5+Z1iT3LICGn8WNiwSnSUr0cElbbSbEa+I4WFZH6yiyWECAFOTBwxOS3VHF?=
- =?us-ascii?Q?LD3H2R6kYoBjpWg2cR3ftSuNVOBp92bmzhJk3qSt2b7inrWch3SadGrYoIAj?=
- =?us-ascii?Q?mtuLNpxZjzeLxFVBYMxYqV9pCsoF9GeRzRu6FF3jt5fTqROR70iBN58yD4FV?=
- =?us-ascii?Q?EEE7qY030jmZA5UmIAmJk8fD6vRQnio/KC2eEgiWXa2VfUxGmQ3ULnGxdPTE?=
- =?us-ascii?Q?tuPjzbxLeqwsPWHSVjClfbE2BZTtW1Gv1uVMFXEsGpkMFJAI0egSYgxd4eBv?=
- =?us-ascii?Q?7Lesif3OYu8uebGyLzevTA0mi9W5H/EXpPUFkA11CWbVcfB/yypMxZlIRcLb?=
- =?us-ascii?Q?gVhCmFpKfeNeKKcTgYaa+bYyIQHj1frNsh7AffvyfMXvu64J9Jb7xtFW0gUw?=
- =?us-ascii?Q?QhNObsGim3UedR+la6ZOcOgwoYy//H6t4rXOGiXgZylmERn1WeCDPkn9bAG3?=
- =?us-ascii?Q?t24QjELPRB7jjwJvKw+q6C6tBy3R7DSOcRtHKPiSzNJG6AS79mwpTHQjCctx?=
- =?us-ascii?Q?aWnzN5kqj2bYsIMuxg8IvX8K4qCfRzg94McaITVQ0C2oLAEZY8I7EtseY3KT?=
- =?us-ascii?Q?S8kLJ+IrUW/8xesKUhlSeWAmyr9d6TCA6rXI9D+qX6UBBqzaKKaR/HHxwTUJ?=
- =?us-ascii?Q?bixRhsWxeVOLvdBLM+oPo7nvHci5ZiW/DJx3sKh2V/MxNPmNJAOBiDib/XUb?=
- =?us-ascii?Q?zF89gFRrdQadYdJ6coJ1f1JE0Rb8R/T+0C0nfUmgR3yMIqN7uFJWazQ570RV?=
- =?us-ascii?Q?pxpHUDFWl3j/tCxBPOJ/cd5Om+e6i505Nt1J4CFske1HeNJvwsfZDRx2iSUn?=
- =?us-ascii?Q?/7/qSBW3WuXBopmeClT9VrIYre+o2sfCvtvnC7ahris8BpvYRwqmu+bPdrEB?=
- =?us-ascii?Q?c3CsuQmlYcjtScUJ15lnxFiA9SxZTEO+SVHC+BZtZU1Ilq2P+VmEYkNGAnzT?=
- =?us-ascii?Q?7x2DaCmQS25pkYFGpoEOEEeZtNaJvtC5wr9RpB+bvv0RV4C0U3iHMkW5W5Ih?=
- =?us-ascii?Q?w5E2SJ7vapUEyF+Zl2SEwkCFtnuaegNnH/N240/WeTvimB5DRuTclVc4dA1l?=
- =?us-ascii?Q?nJw=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230295AbhBOJqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:46:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:34190 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230226AbhBOJqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 04:46:47 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CE5631B;
+        Mon, 15 Feb 2021 01:46:00 -0800 (PST)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 164FD3F40C;
+        Mon, 15 Feb 2021 01:45:57 -0800 (PST)
+Subject: Re: [PATCH V3 11/14] coresight: sink: Add TRBE driver
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        suzuki.poulose@arm.com, mike.leach@linaro.org,
+        lcherian@marvell.com, linux-kernel@vger.kernel.org
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-12-git-send-email-anshuman.khandual@arm.com>
+ <20210212202628.GC2692426@xps15>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <9ca3b9da-dded-1206-e048-835590b2265e@arm.com>
+Date:   Mon, 15 Feb 2021 15:16:18 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1835.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d93fd70-857a-4ebc-579d-08d8d196614f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Feb 2021 09:45:07.9954
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: clQ4pO5Yf5Kw1Hcy74eTXBEeretxH4+di1jf/GjPNwBpMQfusNSJmR9upbNSQNtQH9FluLh8vkw4LD15otPZog==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4484
+In-Reply-To: <20210212202628.GC2692426@xps15>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 13:21:52, Dejin Zheng <zhengdejin5@gmail.com>=20
-wrote:
 
-> Call to 'pci_free_irq_vectors()' is missing in the error handling path
-> of the probe function, So add it.
->=20
-> Fixes: 41aaff2a2ac01c5 ("dmaengine: Add Synopsys eDMA IP PCIe glue-logic"=
-)
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-> ---
->  drivers/dma/dw-edma/dw-edma-pcie.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-=
-edma-pcie.c
-> index 1eafc602e17e..c1e796bd3ee9 100644
-> --- a/drivers/dma/dw-edma/dw-edma-pcie.c
-> +++ b/drivers/dma/dw-edma/dw-edma-pcie.c
-> @@ -185,24 +185,31 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
->  	/* Validating if PCI interrupts were enabled */
->  	if (!pci_dev_msi_enabled(pdev)) {
->  		pci_err(pdev, "enable interrupt failed\n");
-> -		return -EPERM;
-> +		err =3D -EPERM;
-> +		goto err_free_irq;
->  	}
-> =20
->  	dw->irq =3D devm_kcalloc(dev, nr_irqs, sizeof(*dw->irq), GFP_KERNEL);
-> -	if (!dw->irq)
-> -		return -ENOMEM;
-> +	if (!dw->irq) {
-> +		err =3D -ENOMEM;
-> +		goto err_free_irq;
-> +	}
-> =20
->  	/* Starting eDMA driver */
->  	err =3D dw_edma_probe(chip);
->  	if (err) {
->  		pci_err(pdev, "eDMA probe failed\n");
-> -		return err;
-> +		goto err_free_irq;
->  	}
-> =20
->  	/* Saving data structure reference */
->  	pci_set_drvdata(pdev, chip);
-> =20
->  	return 0;
-> +
-> +err_free_irq:
-> +	pci_free_irq_vectors(pdev);
-> +	return err;
->  }
-> =20
->  static void dw_edma_pcie_remove(struct pci_dev *pdev)
-> --=20
-> 2.25.0
+On 2/13/21 1:56 AM, Mathieu Poirier wrote:
+> On Wed, Jan 27, 2021 at 02:25:35PM +0530, Anshuman Khandual wrote:
+>> Trace Buffer Extension (TRBE) implements a trace buffer per CPU which is
+>> accessible via the system registers. The TRBE supports different addressing
+>> modes including CPU virtual address and buffer modes including the circular
+>> buffer mode. The TRBE buffer is addressed by a base pointer (TRBBASER_EL1),
+>> an write pointer (TRBPTR_EL1) and a limit pointer (TRBLIMITR_EL1). But the
+>> access to the trace buffer could be prohibited by a higher exception level
+>> (EL3 or EL2), indicated by TRBIDR_EL1.P. The TRBE can also generate a CPU
+>> private interrupt (PPI) on address translation errors and when the buffer
+>> is full. Overall implementation here is inspired from the Arm SPE driver.
+>>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> Changes in V3:
+>>
+>> - Added new DT bindings document TRBE.yaml
+>> - Changed TRBLIMITR_TRIG_MODE_SHIFT from 2 to 3
+>> - Dropped isb() from trbe_reset_local()
+>> - Dropped gap between (void *) and buf->trbe_base
+>> - Changed 'int' to 'unsigned int' in is_trbe_available()
+>> - Dropped unused function set_trbe_running(), set_trbe_virtual_mode(),
+>>   set_trbe_enabled() and set_trbe_limit_pointer()
+>> - Changed get_trbe_flag_update(), is_trbe_programmable() and
+>>   get_trbe_address_align() to accept TRBIDR value
+>> - Changed is_trbe_running(), is_trbe_abort(), is_trbe_wrap(), is_trbe_trg(),
+>>   is_trbe_irq(), get_trbe_bsc() and get_trbe_ec() to accept TRBSR value
+>> - Dropped snapshot mode condition in arm_trbe_alloc_buffer()
+>> - Exit arm_trbe_init() when arm64_kernel_unmapped_at_el0() is enabled
+>> - Compute trbe_limit before trbe_write to get the updated handle
+>> - Added trbe_stop_and_truncate_event()
+>> - Dropped trbe_handle_fatal()
+>>
+>>  Documentation/trace/coresight/coresight-trbe.rst |   39 +
+>>  arch/arm64/include/asm/sysreg.h                  |    1 +
+>>  drivers/hwtracing/coresight/Kconfig              |   11 +
+>>  drivers/hwtracing/coresight/Makefile             |    1 +
+>>  drivers/hwtracing/coresight/coresight-trbe.c     | 1023 ++++++++++++++++++++++
+>>  drivers/hwtracing/coresight/coresight-trbe.h     |  160 ++++
+>>  6 files changed, 1235 insertions(+)
+>>  create mode 100644 Documentation/trace/coresight/coresight-trbe.rst
+>>  create mode 100644 drivers/hwtracing/coresight/coresight-trbe.c
+>>  create mode 100644 drivers/hwtracing/coresight/coresight-trbe.h
+>>
+>> diff --git a/Documentation/trace/coresight/coresight-trbe.rst b/Documentation/trace/coresight/coresight-trbe.rst
+>> new file mode 100644
+>> index 0000000..1cbb819
+>> --- /dev/null
+>> +++ b/Documentation/trace/coresight/coresight-trbe.rst
+>> @@ -0,0 +1,39 @@
+>> +.. SPDX-License-Identifier: GPL-2.0
+>> +
+>> +==============================
+>> +Trace Buffer Extension (TRBE).
+>> +==============================
+>> +
+>> +    :Author:   Anshuman Khandual <anshuman.khandual@arm.com>
+>> +    :Date:     November 2020
+>> +
+>> +Hardware Description
+>> +--------------------
+>> +
+>> +Trace Buffer Extension (TRBE) is a percpu hardware which captures in system
+>> +memory, CPU traces generated from a corresponding percpu tracing unit. This
+>> +gets plugged in as a coresight sink device because the corresponding trace
+>> +genarators (ETE), are plugged in as source device.
+>> +
+>> +The TRBE is not compliant to CoreSight architecture specifications, but is
+>> +driven via the CoreSight driver framework to support the ETE (which is
+>> +CoreSight compliant) integration.
+>> +
+>> +Sysfs files and directories
+>> +---------------------------
+>> +
+>> +The TRBE devices appear on the existing coresight bus alongside the other
+>> +coresight devices::
+>> +
+>> +	>$ ls /sys/bus/coresight/devices
+>> +	trbe0  trbe1  trbe2 trbe3
+>> +
+>> +The ``trbe<N>`` named TRBEs are associated with a CPU.::
+>> +
+>> +	>$ ls /sys/bus/coresight/devices/trbe0/
+>> +        align dbm
+>> +
+>> +*Key file items are:-*
+>> +   * ``align``: TRBE write pointer alignment
+>> +   * ``dbm``: TRBE updates memory with access and dirty flags
+>> +
+>> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+>> index 85ae4db..9e2e9b7 100644
+>> --- a/arch/arm64/include/asm/sysreg.h
+>> +++ b/arch/arm64/include/asm/sysreg.h
+>> @@ -97,6 +97,7 @@
+>>  #define SET_PSTATE_UAO(x)		__emit_inst(0xd500401f | PSTATE_UAO | ((!!x) << PSTATE_Imm_shift))
+>>  #define SET_PSTATE_SSBS(x)		__emit_inst(0xd500401f | PSTATE_SSBS | ((!!x) << PSTATE_Imm_shift))
+>>  #define SET_PSTATE_TCO(x)		__emit_inst(0xd500401f | PSTATE_TCO | ((!!x) << PSTATE_Imm_shift))
+>> +#define TSB_CSYNC			__emit_inst(0xd503225f)
+>>  
+>>  #define set_pstate_pan(x)		asm volatile(SET_PSTATE_PAN(x))
+>>  #define set_pstate_uao(x)		asm volatile(SET_PSTATE_UAO(x))
+>> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+>> index f154ae7..aa657ab 100644
+>> --- a/drivers/hwtracing/coresight/Kconfig
+>> +++ b/drivers/hwtracing/coresight/Kconfig
+>> @@ -164,6 +164,17 @@ config CORESIGHT_CTI
+>>  	  To compile this driver as a module, choose M here: the
+>>  	  module will be called coresight-cti.
+>>  
+>> +config CORESIGHT_TRBE
+>> +	bool "Trace Buffer Extension (TRBE) driver"
+>> +	depends on ARM64
+>> +	help
+>> +	  This driver provides support for percpu Trace Buffer Extension (TRBE).
+>> +	  TRBE always needs to be used along with it's corresponding percpu ETE
+>> +	  component. ETE generates trace data which is then captured with TRBE.
+>> +	  Unlike traditional sink devices, TRBE is a CPU feature accessible via
+>> +	  system registers. But it's explicit dependency with trace unit (ETE)
+>> +	  requires it to be plugged in as a coresight sink device.
+>> +
+>>  config CORESIGHT_CTI_INTEGRATION_REGS
+>>  	bool "Access CTI CoreSight Integration Registers"
+>>  	depends on CORESIGHT_CTI
+>> diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+>> index f20e357..d608165 100644
+>> --- a/drivers/hwtracing/coresight/Makefile
+>> +++ b/drivers/hwtracing/coresight/Makefile
+>> @@ -21,5 +21,6 @@ obj-$(CONFIG_CORESIGHT_STM) += coresight-stm.o
+>>  obj-$(CONFIG_CORESIGHT_CPU_DEBUG) += coresight-cpu-debug.o
+>>  obj-$(CONFIG_CORESIGHT_CATU) += coresight-catu.o
+>>  obj-$(CONFIG_CORESIGHT_CTI) += coresight-cti.o
+>> +obj-$(CONFIG_CORESIGHT_TRBE) += coresight-trbe.o
+>>  coresight-cti-y := coresight-cti-core.o	coresight-cti-platform.o \
+>>  		   coresight-cti-sysfs.o
+>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>> new file mode 100644
+>> index 0000000..1464d8b
+>> --- /dev/null
+>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>> @@ -0,0 +1,1023 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * This driver enables Trace Buffer Extension (TRBE) as a per-cpu coresight
+>> + * sink device could then pair with an appropriate per-cpu coresight source
+>> + * device (ETE) thus generating required trace data. Trace can be enabled
+>> + * via the perf framework.
+>> + *
+>> + * Copyright (C) 2020 ARM Ltd.
+>> + *
+>> + * Author: Anshuman Khandual <anshuman.khandual@arm.com>
+>> + */
+>> +#define DRVNAME "arm_trbe"
+>> +
+>> +#define pr_fmt(fmt) DRVNAME ": " fmt
+>> +
+>> +#include "coresight-trbe.h"
+>> +
+>> +#define PERF_IDX2OFF(idx, buf) ((idx) % ((buf)->nr_pages << PAGE_SHIFT))
+>> +
+>> +/*
+>> + * A padding packet that will help the user space tools
+>> + * in skipping relevant sections in the captured trace
+>> + * data which could not be decoded. TRBE doesn't support
+>> + * formatting the trace data, unlike the legacy CoreSight
+>> + * sinks and thus we use ETE trace packets to pad the
+>> + * sections of the buffer.
+>> + */
+>> +#define ETE_IGNORE_PACKET 		0x70
+>> +
+>> +/*
+>> + * Minimum amount of meaningful trace will contain:
+>> + * A-Sync, Trace Info, Trace On, Address, Atom.
+>> + * This is about 44bytes of ETE trace. To be on
+>> + * the safer side, we assume 64bytes is the minimum
+>> + * space required for a meaningful session, before
+>> + * we hit a "WRAP" event.
+>> + */
+>> +#define TRBE_TRACE_MIN_BUF_SIZE		64
+>> +
+>> +enum trbe_fault_action {
+>> +	TRBE_FAULT_ACT_WRAP,
+>> +	TRBE_FAULT_ACT_SPURIOUS,
+>> +	TRBE_FAULT_ACT_FATAL,
+>> +};
+>> +
+>> +struct trbe_buf {
+>> +	unsigned long trbe_base;
+>> +	unsigned long trbe_limit;
+>> +	unsigned long trbe_write;
+>> +	int nr_pages;
+>> +	void **pages;
+>> +	bool snapshot;
+>> +	struct trbe_cpudata *cpudata;
+>> +};
+>> +
+>> +struct trbe_cpudata {
+>> +	bool trbe_dbm;
+>> +	u64 trbe_align;
+>> +	int cpu;
+>> +	enum cs_mode mode;
+>> +	struct trbe_buf *buf;
+>> +	struct trbe_drvdata *drvdata;
+>> +};
+>> +
+>> +struct trbe_drvdata {
+>> +	struct trbe_cpudata __percpu *cpudata;
+>> +	struct perf_output_handle __percpu **handle;
+>> +	struct hlist_node hotplug_node;
+>> +	int irq;
+>> +	cpumask_t supported_cpus;
+>> +	enum cpuhp_state trbe_online;
+>> +	struct platform_device *pdev;
+>> +};
+>> +
+>> +static int trbe_alloc_node(struct perf_event *event)
+>> +{
+>> +	if (event->cpu == -1)
+>> +		return NUMA_NO_NODE;
+>> +	return cpu_to_node(event->cpu);
+>> +}
+>> +
+>> +static void trbe_drain_buffer(void)
+>> +{
+>> +	asm(TSB_CSYNC);
+>> +	dsb(nsh);
+>> +}
+>> +
+>> +static void trbe_drain_and_disable_local(void)
+>> +{
+>> +	trbe_drain_buffer();
+>> +	write_sysreg_s(0, SYS_TRBLIMITR_EL1);
+>> +	isb();
+>> +}
+>> +
+>> +static void trbe_reset_local(void)
+>> +{
+>> +	trbe_drain_and_disable_local();
+>> +	write_sysreg_s(0, SYS_TRBPTR_EL1);
+>> +	write_sysreg_s(0, SYS_TRBBASER_EL1);
+>> +	write_sysreg_s(0, SYS_TRBSR_EL1);
+>> +}
+>> +
+>> +static void trbe_stop_and_truncate_event(struct perf_output_handle *handle)
+>> +{
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +
+>> +	/*
+>> +	 * We cannot proceed with the buffer collection and we
+>> +	 * do not have any data for the current session. The
+>> +	 * etm_perf driver expects to close out the aux_buffer
+>> +	 * at event_stop(). So disable the TRBE here and leave
+>> +	 * the update_buffer() to return a 0 size.
+>> +	 */
+>> +	trbe_drain_and_disable_local();
+>> +	perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
+>> +	*this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
+>> +}
+>> +
+>> +/*
+>> + * TRBE Buffer Management
+>> + *
+>> + * The TRBE buffer spans from the base pointer till the limit pointer. When enabled,
+>> + * it starts writing trace data from the write pointer onward till the limit pointer.
+>> + * When the write pointer reaches the address just before the limit pointer, it gets
+>> + * wrapped around again to the base pointer. This is called a TRBE wrap event, which
+>> + * generates a maintenance interrupt when operated in WRAP or FILL mode. This driver
+>> + * uses FILL mode, where the TRBE stops the trace collection at wrap event. The IRQ
+>> + * handler updates the AUX buffer and re-enables the TRBE with updated WRITE and
+>> + * LIMIT pointers.
+>> + *
+>> + *	Wrap around with an IRQ
+>> + *	------ < ------ < ------- < ----- < -----
+>> + *	|					|
+>> + *	------ > ------ > ------- > ----- > -----
+>> + *
+>> + *	+---------------+-----------------------+
+>> + *	|		|			|
+>> + *	+---------------+-----------------------+
+>> + *	Base Pointer	Write Pointer		Limit Pointer
+>> + *
+>> + * The base and limit pointers always needs to be PAGE_SIZE aligned. But the write
+>> + * pointer can be aligned to the implementation defined TRBE trace buffer alignment
+>> + * as captured in trbe_cpudata->trbe_align.
+>> + *
+>> + *
+>> + *		head		tail		wakeup
+>> + *	+---------------------------------------+----- ~ ~ ------
+>> + *	|$$$$$$$|################|$$$$$$$$$$$$$$|		|
+>> + *	+---------------------------------------+----- ~ ~ ------
+>> + *	Base Pointer	Write Pointer		Limit Pointer
+>> + *
+>> + * The perf_output_handle indices (head, tail, wakeup) are monotonically increasing
+>> + * values which tracks all the driver writes and user reads from the perf auxiliary
+>> + * buffer. Generally [head..tail] is the area where the driver can write into unless
+>> + * the wakeup is behind the tail. Enabled TRBE buffer span needs to be adjusted and
+>> + * configured depending on the perf_output_handle indices, so that the driver does
+>> + * not override into areas in the perf auxiliary buffer which is being or yet to be
+>> + * consumed from the user space. The enabled TRBE buffer area is a moving subset of
+>> + * the allocated perf auxiliary buffer.
+>> + */
+>> +static void trbe_pad_buf(struct perf_output_handle *handle, int len)
+>> +{
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +	u64 head = PERF_IDX2OFF(handle->head, buf);
+>> +
+>> +	memset((void *)buf->trbe_base + head, ETE_IGNORE_PACKET, len);
+>> +	if (!buf->snapshot)
+>> +		perf_aux_output_skip(handle, len);
+>> +}
+>> +
+>> +static unsigned long trbe_snapshot_offset(struct perf_output_handle *handle)
+>> +{
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +
+>> +	/*
+>> +	 * The ETE trace has alignment synchronization packets allowing
+>> +	 * the decoder to reset in case of an overflow or corruption.
+>> +	 * So we can use the entire buffer for the snapshot mode.
+>> +	 */
+>> +	return buf->nr_pages * PAGE_SIZE;
+>> +}
+>> +
+>> +/*
+>> + * TRBE Limit Calculation
+>> + *
+>> + * The following markers are used to illustrate various TRBE buffer situations.
+>> + *
+>> + * $$$$ - Data area, unconsumed captured trace data, not to be overridden
+>> + * #### - Free area, enabled, trace will be written
+>> + * %%%% - Free area, disabled, trace will not be written
+>> + * ==== - Free area, padded with ETE_IGNORE_PACKET, trace will be skipped
+>> + */
+>> +static unsigned long __trbe_normal_offset(struct perf_output_handle *handle)
+>> +{
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +	struct trbe_cpudata *cpudata = buf->cpudata;
+>> +	const u64 bufsize = buf->nr_pages * PAGE_SIZE;
+>> +	u64 limit = bufsize;
+>> +	u64 head, tail, wakeup;
+>> +
+>> +	head = PERF_IDX2OFF(handle->head, buf);
+>> +
+>> +	/*
+>> +	 *		head
+>> +	 *	------->|
+>> +	 *	|
+>> +	 *	head	TRBE align	tail
+>> +	 * +----|-------|---------------|-------+
+>> +	 * |$$$$|=======|###############|$$$$$$$|
+>> +	 * +----|-------|---------------|-------+
+>> +	 * trbe_base				trbe_base + nr_pages
+>> +	 *
+>> +	 * Perf aux buffer output head position can be misaligned depending on
+>> +	 * various factors including user space reads. In case misaligned, head
+>> +	 * needs to be aligned before TRBE can be configured. Pad the alignment
+>> +	 * gap with ETE_IGNORE_PACKET bytes that will be ignored by user tools
+>> +	 * and skip this section thus advancing the head.
+>> +	 */
+>> +	if (!IS_ALIGNED(head, cpudata->trbe_align)) {
+>> +		unsigned long delta = roundup(head, cpudata->trbe_align) - head;
+>> +
+>> +		delta = min(delta, handle->size);
+>> +		trbe_pad_buf(handle, delta);
+>> +		head = PERF_IDX2OFF(handle->head, buf);
+>> +	}
+>> +
+>> +	/*
+>> +	 *	head = tail (size = 0)
+>> +	 * +----|-------------------------------+
+>> +	 * |$$$$|$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$	|
+>> +	 * +----|-------------------------------+
+>> +	 * trbe_base				trbe_base + nr_pages
+>> +	 *
+>> +	 * Perf aux buffer does not have any space for the driver to write into.
+>> +	 * Just communicate trace truncation event to the user space by marking
+>> +	 * it with PERF_AUX_FLAG_TRUNCATED.
+>> +	 */
+>> +	if (!handle->size) {
+>> +		perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
+>> +		return 0;
+>> +	}
+>> +
+>> +	/* Compute the tail and wakeup indices now that we've aligned head */
+>> +	tail = PERF_IDX2OFF(handle->head + handle->size, buf);
+>> +	wakeup = PERF_IDX2OFF(handle->wakeup, buf);
+>> +
+>> +	/*
+>> +	 * Lets calculate the buffer area which TRBE could write into. There
+>> +	 * are three possible scenarios here. Limit needs to be aligned with
+>> +	 * PAGE_SIZE per the TRBE requirement. Always avoid clobbering the
+>> +	 * unconsumed data.
+>> +	 *
+>> +	 * 1) head < tail
+>> +	 *
+>> +	 *	head			tail
+>> +	 * +----|-----------------------|-------+
+>> +	 * |$$$$|#######################|$$$$$$$|
+>> +	 * +----|-----------------------|-------+
+>> +	 * trbe_base			limit	trbe_base + nr_pages
+>> +	 *
+>> +	 * TRBE could write into [head..tail] area. Unless the tail is right at
+>> +	 * the end of the buffer, neither an wrap around nor an IRQ is expected
+>> +	 * while being enabled.
+>> +	 *
+>> +	 * 2) head == tail
+>> +	 *
+>> +	 *	head = tail (size > 0)
+>> +	 * +----|-------------------------------+
+>> +	 * |%%%%|###############################|
+>> +	 * +----|-------------------------------+
+>> +	 * trbe_base				limit = trbe_base + nr_pages
+>> +	 *
+>> +	 * TRBE should just write into [head..base + nr_pages] area even though
+>> +	 * the entire buffer is empty. Reason being, when the trace reaches the
+>> +	 * end of the buffer, it will just wrap around with an IRQ giving an
+>> +	 * opportunity to reconfigure the buffer.
+>> +	 *
+>> +	 * 3) tail < head
+>> +	 *
+>> +	 *	tail			head
+>> +	 * +----|-----------------------|-------+
+>> +	 * |%%%%|$$$$$$$$$$$$$$$$$$$$$$$|#######|
+>> +	 * +----|-----------------------|-------+
+>> +	 * trbe_base				limit = trbe_base + nr_pages
+>> +	 *
+>> +	 * TRBE should just write into [head..base + nr_pages] area even though
+>> +	 * the [trbe_base..tail] is also empty. Reason being, when the trace
+>> +	 * reaches the end of the buffer, it will just wrap around with an IRQ
+>> +	 * giving an opportunity to reconfigure the buffer.
+>> +	 */
+>> +	if (head < tail)
+>> +		limit = round_down(tail, PAGE_SIZE);
+>> +
+>> +	/*
+>> +	 * Wakeup may be arbitrarily far into the future. If it's not in the
+>> +	 * current generation, either we'll wrap before hitting it, or it's
+>> +	 * in the past and has been handled already.
+>> +	 *
+>> +	 * If there's a wakeup before we wrap, arrange to be woken up by the
+>> +	 * page boundary following it. Keep the tail boundary if that's lower.
+>> +	 *
+>> +	 *	head		wakeup	tail
+>> +	 * +----|---------------|-------|-------+
+>> +	 * |$$$$|###############|%%%%%%%|$$$$$$$|
+>> +	 * +----|---------------|-------|-------+
+>> +	 * trbe_base		limit		trbe_base + nr_pages
+>> +	 */
+>> +	if (handle->wakeup < (handle->head + handle->size) && head <= wakeup)
+>> +		limit = min(limit, round_up(wakeup, PAGE_SIZE));
+>> +
+>> +	/*
+>> +	 * There are two situation when this can happen i.e limit is before
+>> +	 * the head and hence TRBE cannot be configured.
+>> +	 *
+>> +	 * 1) head < tail (aligned down with PAGE_SIZE) and also they are both
+>> +	 * within the same PAGE size range.
+>> +	 *
+>> +	 *			PAGE_SIZE
+>> +	 *		|----------------------|
+>> +	 *
+>> +	 *		limit	head	tail
+>> +	 * +------------|------|--------|-------+
+>> +	 * |$$$$$$$$$$$$$$$$$$$|========|$$$$$$$|
+>> +	 * +------------|------|--------|-------+
+>> +	 * trbe_base				trbe_base + nr_pages
+>> +	 *
+>> +	 * 2) head < wakeup (aligned up with PAGE_SIZE) < tail and also both
+>> +	 * head and wakeup are within same PAGE size range.
+>> +	 *
+>> +	 *		PAGE_SIZE
+>> +	 *	|----------------------|
+>> +	 *
+>> +	 *	limit	head	wakeup  tail
+>> +	 * +----|------|-------|--------|-------+
+>> +	 * |$$$$$$$$$$$|=======|========|$$$$$$$|
+>> +	 * +----|------|-------|--------|-------+
+>> +	 * trbe_base				trbe_base + nr_pages
+>> +	 */
+>> +	if (limit > head)
+>> +		return limit;
+>> +
+>> +	trbe_pad_buf(handle, handle->size);
+>> +	perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
+>> +	return 0;
+>> +}
+>> +
+>> +static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
+>> +{
+>> +	struct trbe_buf *buf = perf_get_aux(handle);
+>> +	u64 limit = __trbe_normal_offset(handle);
+>> +	u64 head = PERF_IDX2OFF(handle->head, buf);
+>> +
+>> +	/*
+>> +	 * If the head is too close to the limit and we don't
+>> +	 * have space for a meaningful run, we rather pad it
+>> +	 * and start fresh.
+>> +	 */
+>> +	if (limit && (limit - head < TRBE_TRACE_MIN_BUF_SIZE)) {
+>> +		trbe_pad_buf(handle, limit - head);
+>> +		limit = __trbe_normal_offset(handle);
+>> +	}
+>> +	return limit;
+>> +}
+>> +
+>> +static unsigned long compute_trbe_buffer_limit(struct perf_output_handle *handle)
+>> +{
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +	unsigned long offset;
+>> +
+>> +	if (buf->snapshot)
+>> +		offset = trbe_snapshot_offset(handle);
+>> +	else
+>> +		offset = trbe_normal_offset(handle);
+>> +	return buf->trbe_base + offset;
+>> +}
+> 
+> I won't review the trace buffer management functions in this revision, I will
+> leave that for the next version.
 
-Acked-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+Okay.
 
+> 
+>> +
+>> +static void clr_trbe_status(void)
+>> +{
+>> +	u64 trbsr = read_sysreg_s(SYS_TRBSR_EL1);
+>> +
+>> +	WARN_ON(is_trbe_enabled());
+>> +	trbsr &= ~TRBSR_IRQ;
+>> +	trbsr &= ~TRBSR_TRG;
+>> +	trbsr &= ~TRBSR_WRAP;
+>> +	trbsr &= ~(TRBSR_EC_MASK << TRBSR_EC_SHIFT);
+>> +	trbsr &= ~(TRBSR_BSC_MASK << TRBSR_BSC_SHIFT);
+>> +	trbsr &= ~TRBSR_STOP;
+>> +	write_sysreg_s(trbsr, SYS_TRBSR_EL1);
+>> +}
+> 
+> I haven't read the TRBE progammer's manual but looking a the documentation the above
+> looks good.
+> 
+>> +
+>> +static void set_trbe_limit_pointer_enabled(unsigned long addr)
+>> +{
+>> +	u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+>> +
+>> +	WARN_ON(!IS_ALIGNED(addr, (1UL << TRBLIMITR_LIMIT_SHIFT)));
+>> +	WARN_ON(!IS_ALIGNED(addr, PAGE_SIZE));
+>> +
+>> +	trblimitr &= ~TRBLIMITR_NVM;
+>> +	trblimitr &= ~(TRBLIMITR_FILL_MODE_MASK << TRBLIMITR_FILL_MODE_SHIFT);
+>> +	trblimitr &= ~(TRBLIMITR_TRIG_MODE_MASK << TRBLIMITR_TRIG_MODE_SHIFT);
+>> +	trblimitr &= ~(TRBLIMITR_LIMIT_MASK << TRBLIMITR_LIMIT_SHIFT);
+>> +
+>> +	/*
+>> +	 * Fill trace buffer mode is used here while configuring the
+>> +	 * TRBE for trace capture. In this particular mode, the trace
+>> +	 * collection is stopped and a maintenance interrupt is raised
+>> +	 * when the current write pointer wraps. This pause in trace
+>> +	 * collection gives the software an opportunity to capture the
+>> +	 * trace data in the interrupt handler, before reconfiguring
+>> +	 * the TRBE.
+>> +	 */
+>> +	trblimitr |= (TRBE_FILL_MODE_FILL & TRBLIMITR_FILL_MODE_MASK) << TRBLIMITR_FILL_MODE_SHIFT;
+>> +
+>> +	/*
+>> +	 * Trigger mode is not used here while configuring the TRBE for
+>> +	 * the trace capture. Hence just keep this in the ignore mode.
+>> +	 */
+>> +	trblimitr |= (TRBE_TRIG_MODE_IGNORE & TRBLIMITR_TRIG_MODE_MASK) << TRBLIMITR_TRIG_MODE_SHIFT;
+>> +	trblimitr |= (addr & PAGE_MASK);
+>> +
+>> +	trblimitr |= TRBLIMITR_ENABLE;
+>> +	write_sysreg_s(trblimitr, SYS_TRBLIMITR_EL1);
+>> +}
+> 
+> Same here
+> 
+>> +
+>> +static void trbe_enable_hw(struct trbe_buf *buf)
+>> +{
+>> +	WARN_ON(buf->trbe_write < buf->trbe_base);
+>> +	WARN_ON(buf->trbe_write >= buf->trbe_limit);
+>> +	set_trbe_disabled();
+>> +	isb();
+>> +	clr_trbe_status();
+>> +	set_trbe_base_pointer(buf->trbe_base);
+>> +	set_trbe_write_pointer(buf->trbe_write);
+>> +
+>> +	/*
+>> +	 * Synchronize all the register updates
+>> +	 * till now before enabling the TRBE.
+>> +	 */
+>> +	isb();
+>> +	set_trbe_limit_pointer_enabled(buf->trbe_limit);
+>> +
+>> +	/* Synchronize the TRBE enable event */
+>> +	isb();
+>> +}
+> 
+> Ok
+> 
+>> +
+>> +static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
+>> +				   struct perf_event *event, void **pages,
+>> +				   int nr_pages, bool snapshot)
+>> +{
+>> +	struct trbe_buf *buf;
+>> +	struct page **pglist;
+>> +	int i;
+>> +
+>> +	/*
+>> +	 * TRBE LIMIT and TRBE WRITE pointers must be page aligned. But with
+>> +	 * just a single page, there is not much room left while writing into
+>> +	 * a partially filled TRBE buffer. Hence restrict the minimum buffer
+>> +	 * size as two pages.
+>> +	 */
+>> +	if (nr_pages < 2)
+>> +		return NULL;
+>> +
+>> +	buf = kzalloc_node(sizeof(*buf), GFP_KERNEL, trbe_alloc_node(event));
+>> +	if (IS_ERR(buf))
+>> +		return ERR_PTR(-ENOMEM);
+> 
+> You know what do to.
 
+Right, will check for NULL instead and return ERR_PTR(-ENOMEM) as
+the function return type is (void *).
+
+> 
+>> +
+>> +	pglist = kcalloc(nr_pages, sizeof(*pglist), GFP_KERNEL);
+>> +	if (IS_ERR(pglist)) {
+>> +		kfree(buf);
+>> +		return ERR_PTR(-ENOMEM);
+>> +	}
+> 
+> Here too.
+
+Yes, changed.
+
+> 
+>> +
+>> +	for (i = 0; i < nr_pages; i++)
+>> +		pglist[i] = virt_to_page(pages[i]);
+>> +
+>> +	buf->trbe_base = (unsigned long) vmap(pglist, nr_pages, VM_MAP, PAGE_KERNEL);
+>> +	if (IS_ERR((void *)buf->trbe_base)) {
+>> +		kfree(pglist);
+>> +		kfree(buf);
+>> +		return ERR_PTR(buf->trbe_base);
+>> +	}
+> 
+> Here too.
+
+Yes, changed.
+
+> 
+>> +	buf->trbe_limit = buf->trbe_base + nr_pages * PAGE_SIZE;
+>> +	buf->trbe_write = buf->trbe_base;
+>> +	buf->snapshot = snapshot;
+>> +	buf->nr_pages = nr_pages;
+>> +	buf->pages = pages;
+>> +	kfree(pglist);
+>> +	return buf;
+>> +}
+>> +
+>> +void arm_trbe_free_buffer(void *config)
+
+Added the missing 'static' here.
+
+>> +{
+>> +	struct trbe_buf *buf = config;
+>> +
+>> +	vunmap((void *)buf->trbe_base);
+>> +	kfree(buf);
+>> +}
+> 
+> Ok
+> 
+>> +
+>> +static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+>> +					    struct perf_output_handle *handle,
+>> +					    void *config)
+>> +{
+>> +	struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+>> +	struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
+>> +	struct trbe_buf *buf = config;
+>> +	unsigned long size, offset;
+>> +
+>> +	WARN_ON(buf->cpudata != cpudata);
+>> +	WARN_ON(cpudata->cpu != smp_processor_id());
+>> +	WARN_ON(cpudata->drvdata != drvdata);
+>> +	if (cpudata->mode != CS_MODE_PERF)
+>> +		return -EINVAL;
+>> +
+>> +	/*
+>> +	 * If the TRBE was disabled due to lack of space in the AUX buffer or a
+>> +	 * spurious fault, the driver leaves it disabled, truncating the buffer.
+>> +	 * Since the etm_perf driver expects to close out the AUX buffer, the
+>> +	 * driver skips it. Thus, just pass in 0 size here to indicate that the
+>> +	 * buffer was truncated.
+>> +	 */
+>> +	if (!is_trbe_enabled())
+>> +		return 0;
+>> +	/*
+>> +	 * perf handle structure needs to be shared with the TRBE IRQ handler for
+>> +	 * capturing trace data and restarting the handle. There is a probability
+>> +	 * of an undefined reference based crash when etm event is being stopped
+>> +	 * while a TRBE IRQ also getting processed. This happens due the release
+>> +	 * of perf handle via perf_aux_output_end() in etm_event_stop(). Stopping
+>> +	 * the TRBE here will ensure that no IRQ could be generated when the perf
+>> +	 * handle gets freed in etm_event_stop().
+>> +	 */
+>> +	trbe_drain_and_disable_local();
+>> +	offset = get_trbe_write_pointer() - get_trbe_base_pointer();
+>> +	size = offset - PERF_IDX2OFF(handle->head, buf);
+>> +	if (buf->snapshot)
+>> +		handle->head += size;
+>> +	return size;
+>> +}
+> 
+> Ok - I really appreciate the comments.
+> 
+>> +
+>> +static int arm_trbe_enable(struct coresight_device *csdev, u32 mode, void *data)
+>> +{
+>> +	struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+>> +	struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
+>> +	struct perf_output_handle *handle = data;
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +
+>> +	WARN_ON(cpudata->cpu != smp_processor_id());
+>> +	WARN_ON(cpudata->drvdata != drvdata);
+>> +	if (mode != CS_MODE_PERF)
+>> +		return -EINVAL;
+>> +
+>> +	*this_cpu_ptr(drvdata->handle) = handle;
+>> +	cpudata->buf = buf;
+>> +	cpudata->mode = mode;
+>> +	buf->cpudata = cpudata;
+>> +	buf->trbe_limit = compute_trbe_buffer_limit(handle);
+>> +	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+>> +	if (buf->trbe_limit == buf->trbe_base) {
+>> +		trbe_stop_and_truncate_event(handle);
+>> +		return 0;
+>> +	}
+>> +	trbe_enable_hw(buf);
+>> +	return 0;
+>> +}
+> 
+> Ok
+> 
+>> +
+>> +static int arm_trbe_disable(struct coresight_device *csdev)
+>> +{
+>> +	struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+>> +	struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
+>> +	struct trbe_buf *buf = cpudata->buf;
+>> +
+>> +	WARN_ON(buf->cpudata != cpudata);
+>> +	WARN_ON(cpudata->cpu != smp_processor_id());
+>> +	WARN_ON(cpudata->drvdata != drvdata);
+>> +	if (cpudata->mode != CS_MODE_PERF)
+>> +		return -EINVAL;
+>> +
+>> +	trbe_drain_and_disable_local();
+>> +	buf->cpudata = NULL;
+>> +	cpudata->buf = NULL;
+>> +	cpudata->mode = CS_MODE_DISABLED;
+>> +	return 0;
+>> +}
+> 
+> Ok
+> 
+>> +
+>> +static void trbe_handle_spurious(struct perf_output_handle *handle)
+>> +{
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +
+>> +	buf->trbe_limit = compute_trbe_buffer_limit(handle);
+>> +	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+>> +	if (buf->trbe_limit == buf->trbe_base) {
+>> +		trbe_drain_and_disable_local();
+>> +		return;
+>> +	}
+>> +	trbe_enable_hw(buf);
+>> +}
+>> +
+>> +static void trbe_handle_overflow(struct perf_output_handle *handle)
+>> +{
+>> +	struct perf_event *event = handle->event;
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +	unsigned long offset, size;
+>> +	struct etm_event_data *event_data;
+>> +
+>> +	offset = get_trbe_limit_pointer() - get_trbe_base_pointer();
+>> +	size = offset - PERF_IDX2OFF(handle->head, buf);
+>> +	if (buf->snapshot)
+>> +		handle->head = offset;
+>> +	perf_aux_output_end(handle, size);
+>> +
+>> +	event_data = perf_aux_output_begin(handle, event);
+>> +	if (!event_data) {
+>> +		trbe_drain_and_disable_local();
+>> +		*this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
+>> +		return;
+>> +	}
+>> +	buf->trbe_limit = compute_trbe_buffer_limit(handle);
+>> +	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
+>> +	if (buf->trbe_limit == buf->trbe_base) {
+>> +		trbe_stop_and_truncate_event(handle);
+>> +		return;
+>> +	}
+>> +	*this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
+>> +	trbe_enable_hw(buf);
+>> +}
+>> +
+>> +static bool is_perf_trbe(struct perf_output_handle *handle)
+>> +{
+>> +	struct trbe_buf *buf = etm_perf_sink_config(handle);
+>> +	struct trbe_cpudata *cpudata = buf->cpudata;
+>> +	struct trbe_drvdata *drvdata = cpudata->drvdata;
+>> +	int cpu = smp_processor_id();
+>> +
+>> +	WARN_ON(buf->trbe_base != get_trbe_base_pointer());
+>> +	WARN_ON(buf->trbe_limit != get_trbe_limit_pointer());
+>> +
+>> +	if (cpudata->mode != CS_MODE_PERF)
+>> +		return false;
+>> +
+>> +	if (cpudata->cpu != cpu)
+>> +		return false;
+>> +
+>> +	if (!cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>> +		return false;
+>> +
+>> +	return true;
+>> +}
+>> +
+>> +static enum trbe_fault_action trbe_get_fault_act(struct perf_output_handle *handle)
+> 
+> @handle isn't used for anything.
+
+Okay, will drop.
+
+> 
+>> +{
+>> +	u64 trbsr = read_sysreg_s(SYS_TRBSR_EL1);
+>> +	int ec = get_trbe_ec(trbsr);
+>> +	int bsc = get_trbe_bsc(trbsr);
+>> +
+>> +	WARN_ON(is_trbe_running(trbsr));
+>> +	if (is_trbe_trg(trbsr) || is_trbe_abort(trbsr))
+>> +		return TRBE_FAULT_ACT_FATAL;
+>> +
+>> +	if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
+>> +		return TRBE_FAULT_ACT_FATAL;
+>> +
+>> +	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
+>> +		if (get_trbe_write_pointer() == get_trbe_base_pointer())
+>> +			return TRBE_FAULT_ACT_WRAP;
+>> +	}
+>> +	return TRBE_FAULT_ACT_SPURIOUS;
+>> +}
+>> +
+>> +static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
+>> +{
+>> +	struct perf_output_handle **handle_ptr = dev;
+>> +	struct perf_output_handle *handle = *handle_ptr;
+>> +	enum trbe_fault_action act;
+>> +
+>> +	WARN_ON(!is_trbe_irq(read_sysreg_s(SYS_TRBSR_EL1)));
+>> +	clr_trbe_irq();
+>> +
+>> +	/*
+>> +	 * Ensure the trace is visible to the CPUs and
+>> +	 * any external aborts have been resolved.
+>> +	 */
+>> +	trbe_drain_buffer();
+>> +	isb();
+>> +
+>> +	if (!perf_get_aux(handle))
+>> +		return IRQ_NONE;
+>> +
+>> +	if (!is_perf_trbe(handle))
+>> +		return IRQ_NONE;
+>> +
+>> +	irq_work_run();
+> 
+> I trust Will that this is the right thing to do.
+> 
+> I will stop here for this revision.  I will dive more in the mechanic of the
+> TRBE on the next revision.
+
+Okay, will collate all the changes till now and respin sooner.
+
+- Anshuman
