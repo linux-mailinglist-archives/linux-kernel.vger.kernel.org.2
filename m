@@ -2,75 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E3131B695
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB22031B697
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhBOJkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:40:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33728 "EHLO mx2.suse.de"
+        id S230253AbhBOJnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:43:45 -0500
+Received: from mga11.intel.com ([192.55.52.93]:32705 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230100AbhBOJkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:40:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613381971; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AfxkVXqAHAm17EFwPtPwrVPHnFGJsC0+h+W+8Wzcudk=;
-        b=QpHe7YRtB8RNMZWfhyKrDekJEH7y6gOUpQo21orpdf1GlGcYRJBY+zW+QzA+lirhVWw++K
-        yOBrSPMoA3XkI+nhEojgostgEWblMww2qAUgFjp7I/jp588fiPOdtY07CLFsUCYeMLvlfa
-        ggFU0zuPhY/fGiRMc63SIu0fWrZAOKs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DC7DFAC32;
-        Mon, 15 Feb 2021 09:39:30 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 10:39:30 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] mm: memcontrol: bail out early when id is zero
-Message-ID: <YCpBUm2N4Bqm5PM5@dhcp22.suse.cz>
-References: <20210212170159.32153-1-songmuchun@bytedance.com>
- <20210212170159.32153-3-songmuchun@bytedance.com>
+        id S230124AbhBOJnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 04:43:40 -0500
+IronPort-SDR: MMWHYJNJAjJgjzvEDIy0srb8pPLvkmKgYxjH0vOhJc3K4mZN2NjP4dNte1L1lzUX5ee1AxeUHP
+ QCSdHK23gwXg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="179143295"
+X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
+   d="scan'208";a="179143295"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 01:41:54 -0800
+IronPort-SDR: Dk/069UiJ4MpefNYiPyQnQG7aruGvEhg7HrUNxureNlfXmPZ1icBfJEHPQx3m7nt/yT7ENMdYa
+ coAEQtYVnQdQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
+   d="scan'208";a="398994579"
+Received: from mylly.fi.intel.com (HELO [10.237.72.57]) ([10.237.72.57])
+  by orsmga008.jf.intel.com with ESMTP; 15 Feb 2021 01:41:51 -0800
+Subject: Re: [PATCH] spi: pca2xx-pci: Fix an issue about missing call to
+ 'pci_free_irq_vectors()'
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Dejin Zheng <zhengdejin5@gmail.com>, daniel@zonque.org,
+        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+        broonie@kernel.org, andriy.shevchenko@linux.intel.com,
+        linux-spi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20210214145746.602770-1-zhengdejin5@gmail.com>
+ <d113b6f5-d234-452e-3e82-90c5237eff0e@siemens.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <88dff093-b18f-e23c-9cec-b8623da5857b@linux.intel.com>
+Date:   Mon, 15 Feb 2021 11:41:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212170159.32153-3-songmuchun@bytedance.com>
+In-Reply-To: <d113b6f5-d234-452e-3e82-90c5237eff0e@siemens.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 13-02-21 01:01:58, Muchun Song wrote:
-> The memcg ID cannot be zero, but we can pass zero to mem_cgroup_from_id,
-> so idr_find() is pointless and wastes CPU cycles.
-
-Is this possible at all to happen? If not why should we add a test for
-_all_ invocations?
-
+On 2/15/21 11:23 AM, Jan Kiszka wrote:
+> On 14.02.21 15:57, Dejin Zheng wrote:
+>> Call to 'pci_free_irq_vectors()' are missing both in the error handling
+>> path of the probe function, and in the remove function. So add them.
+>>
+>> Fixes: 64e02cb0bdfc7c ("spi: pca2xx-pci: Allow MSI")
+>> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+>> ---
+>>   drivers/spi/spi-pxa2xx-pci.c | 13 ++++++++++---
+>>   1 file changed, 10 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
+>> index 14fc41ed2361..1ec840e78ff4 100644
+>> --- a/drivers/spi/spi-pxa2xx-pci.c
+>> +++ b/drivers/spi/spi-pxa2xx-pci.c
+>> @@ -254,8 +254,10 @@ static int pxa2xx_spi_pci_probe(struct pci_dev *dev,
+>>   	snprintf(buf, sizeof(buf), "pxa2xx-spi.%d", ssp->port_id);
+>>   	ssp->clk = clk_register_fixed_rate(&dev->dev, buf , NULL, 0,
+>>   					   c->max_clk_rate);
+>> -	 if (IS_ERR(ssp->clk))
+>> -		return PTR_ERR(ssp->clk);
+>> +	if (IS_ERR(ssp->clk)) {
+>> +		ret = PTR_ERR(ssp->clk);
+>> +		goto err_irq;
+>> +	}
+>>   
+>>   	memset(&pi, 0, sizeof(pi));
+>>   	pi.fwnode = dev->dev.fwnode;
+>> @@ -268,12 +270,16 @@ static int pxa2xx_spi_pci_probe(struct pci_dev *dev,
+>>   	pdev = platform_device_register_full(&pi);
+>>   	if (IS_ERR(pdev)) {
+>>   		clk_unregister(ssp->clk);
+>> -		return PTR_ERR(pdev);
+>> +		ret = PTR_ERR(pdev);
+>> +		goto err_irq;
+>>   	}
+>>   
+>>   	pci_set_drvdata(dev, pdev);
+>>   
+>>   	return 0;
+>> +err_irq:
+>> +	pci_free_irq_vectors(dev);
+>> +	return ret;
+>>   }
+>>   
+>>   static void pxa2xx_spi_pci_remove(struct pci_dev *dev)
+>> @@ -283,6 +289,7 @@ static void pxa2xx_spi_pci_remove(struct pci_dev *dev)
+>>   
+>>   	spi_pdata = dev_get_platdata(&pdev->dev);
+>>   
+>> +	pci_free_irq_vectors(dev);
+>>   	platform_device_unregister(pdev);
+>>   	clk_unregister(spi_pdata->ssp.clk);
+>>   }
+>>
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/memcontrol.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Reviewed-by: Jan Kiszka <jan.kiszka@siemens.com>
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index a3f26522765a..68ed4b297c13 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5173,6 +5173,9 @@ static inline void mem_cgroup_id_put(struct mem_cgroup *memcg)
->  struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
->  {
->  	WARN_ON_ONCE(!rcu_read_lock_held());
-> +	/* The memcg ID cannot be zero. */
-> +	if (id == 0)
-> +		return NULL;
->  	return idr_find(&mem_cgroup_idr, id);
->  }
->  
-> -- 
-> 2.11.0
+Please fix pca2xx-pci -> pxa2xx-pci in the subject line. With that 
+change you may add:
 
--- 
-Michal Hocko
-SUSE Labs
+Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
