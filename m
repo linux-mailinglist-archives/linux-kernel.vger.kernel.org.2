@@ -2,195 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9110831B89D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5E731B89F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhBOMCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50050 "EHLO
+        id S230253AbhBOMC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:02:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbhBOMAm (ORCPT
+        with ESMTP id S230178AbhBOMBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:00:42 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FA5C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:00:02 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id b145so4056287pfb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:00:02 -0800 (PST)
+        Mon, 15 Feb 2021 07:01:25 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A744DC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:00:44 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id e9so3625463plh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:00:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zOvGp4jRtuE/eXG6IgZ4EP0jLdXWxQUjS4sUW+QkBBM=;
-        b=F4KvXi3+He5a8coOdqSmllhCZOaPW/U1BaxMUxTRcmezcqyya++OD2qwzAObaqiU/h
-         aK9K/ZwP0wowVLEtk5oNMwbIEEdy8zOGZaTJJeMLOQRjTxsga5woJdRMXVUqOIEdtaUN
-         Y21Ggk3tcE1AI1xVDH9wis7qKhDp2/KCzu31s0ChbnoeoHgk1iG25gH0Q5FQn2Lk+via
-         +WRScQkFoM+okaf1smo5StTNJcghPoQhfa43oMRb/evkFeJ+QQt/cfvuC2SUwfOneyyP
-         JzhEteQKHtSUzXH8H5baPboFlSQ8kDe08yQn7rixzvl85bWZ5aB9I0cgfmbx5iHi/v2g
-         w4bA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=INHSTdbbMAnHJ5ngsCbA6pXfb/MxgNU1cYVOuivMAiY=;
+        b=p6AO+q/ktNMDiNWH1a7tvx6qA16y2fDrsuKOr0X1dmpkBM8j/5qcKH+w+LCRt6IMwU
+         i/cSUkqkFJMxC7+nWPyAjmy9LzTabHuWpfPF2wo0fqKYGo+3BNCr9QEP2lFwSyuZJNgl
+         PBiRexvgW9iYvqqcvBjln6Jy1PZQ7ggWFClnPzYUcBjpLUkQC5A0R93+pCB1a0NbzndF
+         x3lGiUltcjV/+jCZVaOlWCZV48YwUv94MvuPWp8on+SQiDn0o/PAuQT9Y7DgtECp0R3A
+         EVgfj8XJVEagUTzYd+IB2HvAZJpVFUzEPUZbxJquJv6HxtLtzIB8R06qwrVssAkHA5Wn
+         a45Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zOvGp4jRtuE/eXG6IgZ4EP0jLdXWxQUjS4sUW+QkBBM=;
-        b=qUQAJ5snhof2e4PJ8T4ib8Wt1S04Pj5LOt3Fg50wgOORTsafaVXojFBELELgx9yP12
-         8mBYzqnNGpiIuIgbdFCoCjmQwc/GfZgAhvw1T2hH+fCWA2tSIGbmaKY6U5XGotc/DGpt
-         5X7YXbJsQ0hjFocvaXH2SFnwU4honKActyqXiTIZwHbXnxpTnFvUJK4LSY4j2KRfdO+d
-         KYV51It5OdOTTZ5VM/2pMzW3/hCx3W4aT+k5enHHlI4FhvXSc8h3w4tkZAuH0X80GavK
-         ZTcHTPdpKUZ+jpnlqgPmaH6PXpm6bR/V4flji4FHe+Wb7rA0XKxuAHzqfkOhDtHOgd6a
-         5Aqw==
-X-Gm-Message-State: AOAM531PFjooR8zuua0rtCpW0PkeY1kQ4aB5+Smwd1bBEl+vKdrhcaPP
-        8haEQ4UIB9YcC+Oc12HyCOjgnQ==
-X-Google-Smtp-Source: ABdhPJyVsMEMR4n/+MRt01CrbfJko8ELNQB4gcY9rj0K9ocPd3i/ZSynQaCajUbypN6HF1x1g092hw==
-X-Received: by 2002:a63:f709:: with SMTP id x9mr6287184pgh.287.1613390402055;
-        Mon, 15 Feb 2021 04:00:02 -0800 (PST)
-Received: from localhost ([45.137.216.90])
-        by smtp.gmail.com with ESMTPSA id k12sm19141933pfh.123.2021.02.15.04.00.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 04:00:01 -0800 (PST)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Basil Eljuse <Basil.Eljuse@arm.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 2/2] perf test: Output the sub testing result in cs-etm
-Date:   Mon, 15 Feb 2021 19:59:44 +0800
-Message-Id: <20210215115944.535986-3-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210215115944.535986-1-leo.yan@linaro.org>
-References: <20210215115944.535986-1-leo.yan@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=INHSTdbbMAnHJ5ngsCbA6pXfb/MxgNU1cYVOuivMAiY=;
+        b=NYMWEPqudPr0aCqnaz9vOGrjxJbnw7Q66HgDDgBXrLgmvSw/MTZ+1y0GMoolEaYOks
+         6eR0xDSAMeFzTlJqsi2UDjnahb8nhWnXXA3H599UcwzsgSqDcmXrgyf2Ph3Z3I4NEDPX
+         Wz1Ow3z9JaXy+rWYiafq2/695UAaEPLM4QzVMPJHcziywC6JFIn6/U3HIqV6Bwjbr5pb
+         GPbINnCtVNsjEIdQ8WrL6ZGdUIxApAcn7fHTtm0qooz3b9bgQHUVHRjfk4vI+6T7Y1dC
+         M2qfFrPP46V6ZiKUzWOeSvS9ZYkKNB64h1Rwm07CShDix7gDwIjp0AqMoAAj3qtWf3k8
+         lfKA==
+X-Gm-Message-State: AOAM531nSkN8Cjuy5zoxFq7vVPCoQ++k/38lT2h6D+Pphwnc/IorcMHt
+        enKgRGDxB+fSDG6CO5IqDuEa1lSbV0PUPoQ9sqyFoQ==
+X-Google-Smtp-Source: ABdhPJyWMlV/mO73WwnpuLR16zCguDYlLKmFOmYmPXRr8hHb+1e2qA13X/czPsChMsuZHd+Et2QMW9S7ko3NxqnurVc=
+X-Received: by 2002:a17:902:7290:b029:e3:1dcf:f3ec with SMTP id
+ d16-20020a1709027290b02900e31dcff3ecmr15025687pll.20.1613390444235; Mon, 15
+ Feb 2021 04:00:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210208085013.89436-1-songmuchun@bytedance.com>
+ <20210208085013.89436-5-songmuchun@bytedance.com> <YCafit5ruRJ+SL8I@dhcp22.suse.cz>
+ <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
+ <YCpN38i75olgispI@dhcp22.suse.cz> <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
+In-Reply-To: <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 15 Feb 2021 20:00:07 +0800
+Message-ID: <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CoreSight testing contains sub cases, e.g. every CPU iterates the
-possible conntected sinks and tests the paths between the associated ETM
-with the found sink.  Besides the per-thread testing, it also contains
-system wide testing and snapshot testing.
+On Mon, Feb 15, 2021 at 7:51 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> On Mon, Feb 15, 2021 at 6:33 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Mon 15-02-21 18:05:06, Muchun Song wrote:
+> > > On Fri, Feb 12, 2021 at 11:32 PM Michal Hocko <mhocko@suse.com> wrote:
+> > [...]
+> > > > > +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+> > > > > +{
+> > > > > +     int ret;
+> > > > > +     unsigned long vmemmap_addr = (unsigned long)head;
+> > > > > +     unsigned long vmemmap_end, vmemmap_reuse;
+> > > > > +
+> > > > > +     if (!free_vmemmap_pages_per_hpage(h))
+> > > > > +             return 0;
+> > > > > +
+> > > > > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
+> > > > > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
+> > > > > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
+> > > > > +
+> > > > > +     /*
+> > > > > +      * The pages which the vmemmap virtual address range [@vmemmap_addr,
+> > > > > +      * @vmemmap_end) are mapped to are freed to the buddy allocator, and
+> > > > > +      * the range is mapped to the page which @vmemmap_reuse is mapped to.
+> > > > > +      * When a HugeTLB page is freed to the buddy allocator, previously
+> > > > > +      * discarded vmemmap pages must be allocated and remapping.
+> > > > > +      */
+> > > > > +     ret = vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
+> > > > > +                               GFP_ATOMIC | __GFP_NOWARN | __GFP_THISNODE);
+> > > >
+> > > > I do not think that this is a good allocation mode. GFP_ATOMIC is a non
+> > > > sleeping allocation and a medium memory pressure might cause it to
+> > > > fail prematurely. I do not think this is really an atomic context which
+> > > > couldn't afford memory reclaim. I also do not think we want to grant
+> > >
+> > > Because alloc_huge_page_vmemmap is called under hugetlb_lock
+> > > now. So using GFP_ATOMIC indeed makes the code more simpler.
+> >
+> > You can have a preallocated list of pages prior taking the lock.
+>
+> A discussion about this can refer to here:
+>
+> https://patchwork.kernel.org/project/linux-mm/patch/20210117151053.24600-5-songmuchun@bytedance.com/
+>
+> > Moreover do we want to manipulate vmemmaps from under spinlock in
+> > general. I have to say I have missed that detail when reviewing. Need to
+> > think more.
+> >
+> > > From the document of the kernel, I learned that __GFP_NOMEMALLOC
+> > > can be used to explicitly forbid access to emergency reserves. So if
+> > > we do not want to use the reserve memory. How about replacing it to
+> > >
+> > > GFP_ATOMIC | __GFP_NOMEMALLOC | __GFP_NOWARN | __GFP_THISNODE
+> >
+> > The whole point of GFP_ATOMIC is to grant access to memory reserves so
+> > the above is quite dubious. If you do not want access to memory reserves
+>
+> Look at the code of gfp_to_alloc_flags().
+>
+> static inline unsigned int gfp_to_alloc_flags(gfp_t gfp_mask)
+> {
+>         [...]
+>         if (gfp_mask & __GFP_ATOMIC) {
+>         /*
+>          * Not worth trying to allocate harder for __GFP_NOMEMALLOC even
+>          * if it can't schedule.
+>          */
+>         if (!(gfp_mask & __GFP_NOMEMALLOC))
+>                 alloc_flags |= ALLOC_HARDER;
+>        [...]
+> }
+>
+> Seems to allow this operation (GFP_ATOMIC | __GFP_NOMEMALLOC).
 
-To easier observe results for the sub cases, this patch introduces a new
-function arm_cs_report(), it outputs the result as "PASS" or "FAIL" for
-every sub case; and it records the error in the variable "glb_err" which
-is used as the final return value when exits the testing.
+I also found similar users.
 
-Before:
+netdev_alloc_frag()
+    page_frag_alloc(GFP_ATOMIC)
+        __page_frag_cache_refill(GFP_ATOMIC)
+            alloc_pages_node(GFP_ATOMIC | __GFP_COMP | __GFP_NOWARN |
+__GFP_NORETRY |
+                                                __GFP_NOMEMALLOC)
 
-  # perf test 73 -v
-  73: Check Arm CoreSight trace data recording and synthesized samples:
-  --- start ---
-  test child forked, pid 17423
-  Recording trace (only user mode) with path: CPU0 => tmc_etf0
-  Looking at perf.data file for dumping branch samples:
-  Looking at perf.data file for reporting branch samples:
-  Looking at perf.data file for instruction samples:
-  Recording trace (only user mode) with path: CPU0 => tmc_etr0
-  Looking at perf.data file for dumping branch samples:
-  Looking at perf.data file for reporting branch samples:
-  Looking at perf.data file for instruction samples:
-
-  [...]
-
-After:
-
-  # perf test 73 -v
-  73: Check Arm CoreSight trace data recording and synthesized samples:
-  --- start ---
-  test child forked, pid 17423
-  Recording trace (only user mode) with path: CPU0 => tmc_etf0
-  Looking at perf.data file for dumping branch samples:
-  Looking at perf.data file for reporting branch samples:
-  Looking at perf.data file for instruction samples:
-  CoreSight path testing (CPU0 -> tmc_etf0): PASS
-  Recording trace (only user mode) with path: CPU0 => tmc_etr0
-  Looking at perf.data file for dumping branch samples:
-  Looking at perf.data file for reporting branch samples:
-  Looking at perf.data file for instruction samples:
-  CoreSight path testing (CPU0 -> tmc_etr0): PASS
-  [...]
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/tests/shell/test_arm_coresight.sh | 24 ++++++++++++--------
- 1 file changed, 14 insertions(+), 10 deletions(-)
-
-diff --git a/tools/perf/tests/shell/test_arm_coresight.sh b/tools/perf/tests/shell/test_arm_coresight.sh
-index 59b647455ec6..c9eef0bba6f1 100755
---- a/tools/perf/tests/shell/test_arm_coresight.sh
-+++ b/tools/perf/tests/shell/test_arm_coresight.sh
-@@ -11,6 +11,7 @@
- 
- perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
- file=$(mktemp /tmp/temporary_file.XXXXX)
-+glb_err=0
- 
- skip_if_no_cs_etm_event() {
- 	perf list | grep -q 'cs_etm//' && return 0
-@@ -69,6 +70,15 @@ perf_report_instruction_samples() {
- 		egrep " +[0-9]+\.[0-9]+% +$1" > /dev/null 2>&1
- }
- 
-+arm_cs_report() {
-+	if [ $2 != 0 ]; then
-+		echo "$1: FAIL"
-+		glb_err=$2
-+	else
-+		echo "$1: PASS"
-+	fi
-+}
-+
- is_device_sink() {
- 	# If the node of "enable_sink" is existed under the device path, this
- 	# means the device is a sink device.  Need to exclude 'tpiu' since it
-@@ -113,9 +123,7 @@ arm_cs_iterate_devices() {
- 			perf_report_instruction_samples touch
- 
- 			err=$?
--
--			# Exit when find failure
--			[ $err != 0 ] && exit $err
-+			arm_cs_report "CoreSight path testing (CPU$2 -> $device_name)" $err
- 		fi
- 
- 		arm_cs_iterate_devices $dev $2
-@@ -143,9 +151,7 @@ arm_cs_etm_system_wide_test() {
- 	perf_report_instruction_samples perf
- 
- 	err=$?
--
--	# Exit when find failure
--	[ $err != 0 ] && exit $err
-+	arm_cs_report "CoreSight system wide testing" $err
- }
- 
- arm_cs_etm_snapshot_test() {
-@@ -169,12 +175,10 @@ arm_cs_etm_snapshot_test() {
- 	perf_report_instruction_samples dd
- 
- 	err=$?
--
--	# Exit when find failure
--	[ $err != 0 ] && exit $err
-+	arm_cs_report "CoreSight snapshot testing" $err
- }
- 
- arm_cs_etm_traverse_path_test
- arm_cs_etm_system_wide_test
- arm_cs_etm_snapshot_test
--exit 0
-+exit $glb_err
--- 
-2.25.1
-
+>
+> > then use GFP_NOWAIT instead. But failures are much more easier to happen
+> > then.
+> >
+> > NOMEMALLOC is meant to be used from paths which are allowed to consume
+> > memory reserves - e.g. when invoked from the memory reclaim path.
+> > --
+> > Michal Hocko
+> > SUSE Labs
