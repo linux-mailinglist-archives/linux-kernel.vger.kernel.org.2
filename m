@@ -2,67 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8591E31B705
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 865C231B729
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhBOKXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:23:52 -0500
-Received: from m12-11.163.com ([220.181.12.11]:46163 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229627AbhBOKXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:23:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=qILXK4GORBkA7fjOMr
-        MyU72nwmgjVF7Si6pXWrVEMZU=; b=Nx1c/GJQpxF9wDcInVh27Undlz2HAywEjs
-        HZjIn2kzhlrj2E/RUgocfdTUjExJyS769GRsCs4e/f9wbbwqt9e7SVen5T9bMQxg
-        cH+d8B3VbJbdi8i70f11r+sZNTskBrDJqYVOreJys/r3rzT5AcCkwjgKLvowSs0c
-        s95mB//So=
-Received: from localhost.localdomain (unknown [125.70.196.55])
-        by smtp7 (Coremail) with SMTP id C8CowACnI7Q8SypgiR08Nw--.5666S2;
-        Mon, 15 Feb 2021 18:21:52 +0800 (CST)
-From:   Chen Lin <chen45464546@163.com>
-To:     airlied@linux.ie, daniel@ffwll.ch
-Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Chen Lin <chen.lin5@zte.com.cn>
-Subject: [PATCH] drm/radeon: Remove unused function pointer typedef radeon_packet3_check_t
-Date:   Mon, 15 Feb 2021 18:21:29 +0800
-Message-Id: <1613384489-3102-1-git-send-email-chen45464546@163.com>
-X-Mailer: git-send-email 1.7.9.5
-X-CM-TRANSID: C8CowACnI7Q8SypgiR08Nw--.5666S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKw1UZr4DuryxJw4DGw4rKrg_yoW3Wrc_Kr
-        10q34aqa4kArs2q3W5uFsrJFyjkrW09r48Gw1Fqr93tayqqr1rZFySkr1xZrs8Aa1SgFnx
-        J3ykXF13Aws3tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0_ucJUUUUU==
-X-Originating-IP: [125.70.196.55]
-X-CM-SenderInfo: hfkh0kqvuwkkiuw6il2tof0z/1tbiXAA6nlXlytycbQAAsv
+        id S230200AbhBOK2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:28:39 -0500
+Received: from mout.kundenserver.de ([212.227.17.10]:39939 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhBOK0f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 05:26:35 -0500
+Received: from weisslap.aisec.fraunhofer.de ([146.52.20.127]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis)
+ id 1Mj831-1lqj5T1yVh-00f7aH; Mon, 15 Feb 2021 11:23:30 +0100
+From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     linux-integrity@vger.kernel.org,
+        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] integrity/ima: Provide Kconfig option for ima-modsig template
+Date:   Mon, 15 Feb 2021 11:23:05 +0100
+Message-Id: <20210215102305.10722-1-michael.weiss@aisec.fraunhofer.de>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:Tj1jVlPN+On9YTD2FDue8BmSoZGSwbmt9Z6n49BR9gKZiDp2aFI
+ sfSaBVdsYgtmLzMAPEQuFNl+Dl4UwL8WWz/4yTOYQQF8P/AKbtRzj8l5dej+bxrtbDGydsp
+ apHdJHqm4l4naX73lAikLOHtoLwma32gWAlmtc1DrzyTRyyroSnaKzX6tFptz2QuC7jMtHM
+ 2e9BEmkJrCuoZ96XpyFyw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:J3DaKQuyKxU=:0BiWYf46e9gBiOpinzbJT1
+ PGiZCPorWxRNz3TFFDPVejtiv7bMjJnpT4LqGS8KW1H2KV4xDAoe71UnYWBHmX0QM15H0fanC
+ jxFw8+H+8uAlMkmwvLY2bjmiK0GGfrYIGwsClkabE6FLeKUNUZNG+vt+hOYihHYQlAKd6nGJl
+ VSj4IT16bQUASGRGgD+BiaQxD/YHzVRjoXxETxgNTQuo20A9hyrzfWw5TQGyavr7YJOcJKF+E
+ O+bO0F32Z/PFW2IusZULJw3Dm/DqVs/A6zy+ik3ph2+L9CAH5D3xavwdSBT6HOivYS6w8qkWL
+ nmthSmnAKnXH7cfDzVqmf/139pVsxQQE9aQ2kH1JU62/JTQJsExw64goTDj7mpwkmSa/Tr2CN
+ V3TfhbqknvuljL5O4E1n7S93GnUb6BPiYTSzKY/G/BWUfGbayToyxfiioR3wJgX1UumhGIJEK
+ ZGnTV+JVSw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Lin <chen.lin5@zte.com.cn>
+'ima-modsig' was not in the list of selectable templates in Kconfig.
+The missing Kconfig options were added to support the ima-modsig
+template as default template.
 
-Remove the 'radeon_packet3_check_t' typedef as it is not used.
-
-Signed-off-by: Chen Lin <chen.lin5@zte.com.cn>
+Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
 ---
- drivers/gpu/drm/radeon/radeon.h |    3 ---
- 1 file changed, 3 deletions(-)
+ security/integrity/ima/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
-index 5f3adba..a1c38b5 100644
---- a/drivers/gpu/drm/radeon/radeon.h
-+++ b/drivers/gpu/drm/radeon/radeon.h
-@@ -1111,9 +1111,6 @@ struct radeon_cs_packet {
- typedef int (*radeon_packet0_check_t)(struct radeon_cs_parser *p,
- 				      struct radeon_cs_packet *pkt,
- 				      unsigned idx, unsigned reg);
--typedef int (*radeon_packet3_check_t)(struct radeon_cs_parser *p,
--				      struct radeon_cs_packet *pkt);
--
+diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
+index 12e9250c1bec..32b9325f49bf 100644
+--- a/security/integrity/ima/Kconfig
++++ b/security/integrity/ima/Kconfig
+@@ -78,6 +78,8 @@ choice
+ 		bool "ima-ng (default)"
+ 	config IMA_SIG_TEMPLATE
+ 		bool "ima-sig"
++	config IMA_MODSIG_TEMPLATE
++		bool "ima-modsig"
+ endchoice
  
- /*
-  * AGP
+ config IMA_DEFAULT_TEMPLATE
+@@ -86,6 +88,7 @@ config IMA_DEFAULT_TEMPLATE
+ 	default "ima" if IMA_TEMPLATE
+ 	default "ima-ng" if IMA_NG_TEMPLATE
+ 	default "ima-sig" if IMA_SIG_TEMPLATE
++	default "ima-modsig" if IMA_MODSIG_TEMPLATE
+ 
+ choice
+ 	prompt "Default integrity hash algorithm"
 -- 
-1.7.9.5
+2.20.1
 
