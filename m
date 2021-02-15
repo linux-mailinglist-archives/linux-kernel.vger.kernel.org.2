@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A74C31C01D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA3F31C01B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbhBORIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:08:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43538 "EHLO
+        id S232245AbhBORHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232373AbhBOPxk (ORCPT
+        with ESMTP id S232396AbhBOPxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:53:40 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85724C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:53:00 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id d2so4151969pjs.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:53:00 -0800 (PST)
+        Mon, 15 Feb 2021 10:53:47 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A45BC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:53:07 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id z15so4416833pfc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:53:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S5NBz3621tCfDoAHB0YD9Xyr4a9YK2FafwMqwj93OAQ=;
-        b=gXr622vVwD2Fq5pslnGfzGab8yOA/vH6xE2pYWeyP9+1wuj4Nurwhb1E9zx1aZ1119
-         HEqstLywmdwzE7SiOoERvmxdrqxr7x3LOIDa5RQGzitrbSqaG8e/Zjo/BAF1zbXvhrdx
-         FpqYH0Zlg93tIhIMKVGHCvUciikM6AW0NgmLbFo6Sqzn3XKpmaK4mPlyOj4atInrUl9o
-         PnJ+biAFbrZkEXZbm1pXfS9+b1y2lSTGmomkkr1nrXyrhI9cLQbDbv7kFyh7tMTV8jIO
-         sQ6/aV4aTWO1Rm8guRhEpkpyLUACNreW6vuC4bMgl8RiUqTJX26t3O+dW6kGSZwcMecj
-         uWFw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lMogc+88WyQtKfJD7auvy+h4i72decXJNUKFaJ3X740=;
+        b=f1k2NYrwwh8xNqd+o6sELNC/Xmn6BqejfYUsOdc/hz0lBUnnqJbmZ6ctx3UFqArygT
+         17RseW+oVDoiLEI7HMJNK21OEjCqDymgNg0x7NUkKvm3mqEJUMMFTqwXVTreKYEAMaVn
+         NT5WTNjazDqjE6gbKospAb/bP2MIm/2KO7K6DQSVS5pmtIVQ/fk0y3P2Z44fyk9cSNfI
+         6m8XtvcXoTYU4Ar6eV8caQZzWuWCgbAMi/hIpyAapvGN0W22M84wPxIq+wI/kmalhFX0
+         Xk5B8uoaiiAyioEjYb+3HBMPnnn5+dfTuIvRTn/InmeIAUyoc+4DkOZkJyM3wksC3W91
+         WFXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S5NBz3621tCfDoAHB0YD9Xyr4a9YK2FafwMqwj93OAQ=;
-        b=mNEqDYE7+WjSD0VI1jJIo00WKqQCj+sFDDgcHji3F5HKE/iPfZio2yaeAE7+ur9LTA
-         M/RcD4LrM31ywQgzgZ3aznb34V81YbsNoww5DwpXFa5CbZMZYdK5SKcuWeIu53XxG6Us
-         5jiQnbgyKSbmgpkQVRXQucpN043bhn7qrZQdUMUT19NcaR8ZAY7Fr9p8+lQB69JwLElK
-         AArSLZyeOYS3UK6d8NYjgarNx0JnUTLrxnureA6UWB7rv+Y+PcWI88dk/mAFWiWVUBLu
-         A5NXpyDQuU0qJH/+0Sw2jgl88Y1Kc5lJww5o4UbWWmNzIBV/L5hXiJ4C+eyHfx9/u3GG
-         nmZA==
-X-Gm-Message-State: AOAM533njl7svjgOa4S70IGBTJyfbxBkDWoFJHIu35EbZMijxRme7A2U
-        aRTGJ8XVc8aN5cpxxHBuCjY=
-X-Google-Smtp-Source: ABdhPJwHgToC2mZ6+WAa6zGR65EXNpJXug+4KzeQ0rZCr/9brvpPitO99GthcwAoRKJX5b3s+MGE0g==
-X-Received: by 2002:a17:90a:1f4c:: with SMTP id y12mr16855015pjy.52.1613404380181;
-        Mon, 15 Feb 2021 07:53:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lMogc+88WyQtKfJD7auvy+h4i72decXJNUKFaJ3X740=;
+        b=nLqDO3s/86PHNmKtp1txjYadusywSo2AxaIFa2V4uAwqYvXQTwLRm5MgVBFYjjh3ei
+         dz3aNjApDBfBaffeXmrWpBS0LthoIfPJ5W9sd9pwR/uuqJo1vqCCk1X8DmB1b3sshA3P
+         urybTyMbyKisnpLMV6ixQbOM9b9yRhI+iT9et+MP5V7aaUnWNmazRD6Tv+n6zxJbGZyE
+         mdg1qCsqD0pfkQuluwOgEhOB0+514SyYyZzRhzZaaLJuEgI2rQHenGVktQBlmZHUZ90e
+         9J50W15ryAVgSOu3IUfSHUpXhBWd7vKJjekNnYMigu77gI0qx4ztlefxuaPdF8rce2cO
+         vJiQ==
+X-Gm-Message-State: AOAM532791R8JHniIlFeCfwAx3WyZPak4aHFjcgdOTj4Ym95d465sSHA
+        aGO9ZrmM8gW3l77NLoy9hTA=
+X-Google-Smtp-Source: ABdhPJzyd3xnuMeGDrvMoMMEnluGJNTY+zKXAvszGpcjAWV7U3QqkpZ5CMs1fRYSM3tyK5jr+hTz/Q==
+X-Received: by 2002:a62:3852:0:b029:1da:7238:1cb1 with SMTP id f79-20020a6238520000b02901da72381cb1mr15988342pfa.11.1613404387231;
+        Mon, 15 Feb 2021 07:53:07 -0800 (PST)
 Received: from localhost.localdomain ([50.236.19.102])
-        by smtp.gmail.com with ESMTPSA id i1sm19771215pfq.158.2021.02.15.07.52.51
+        by smtp.gmail.com with ESMTPSA id i1sm19771215pfq.158.2021.02.15.07.53.00
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Feb 2021 07:52:59 -0800 (PST)
+        Mon, 15 Feb 2021 07:53:06 -0800 (PST)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     pmladek@suse.com, willy@infradead.org,
         andriy.shevchenko@linux.intel.com, david@redhat.com,
@@ -57,62 +57,55 @@ To:     pmladek@suse.com, willy@infradead.org,
         sergey.senozhatsky@gmail.com, joe@perches.com
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v5 0/3] mm, vsprintf: dump full information of page flags in pGp 
-Date:   Mon, 15 Feb 2021 23:51:38 +0800
-Message-Id: <20210215155141.47432-1-laoar.shao@gmail.com>
+Subject: [PATCH v5 1/3] mm, slub: use pGp to print page flags
+Date:   Mon, 15 Feb 2021 23:51:39 +0800
+Message-Id: <20210215155141.47432-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+In-Reply-To: <20210215155141.47432-1-laoar.shao@gmail.com>
+References: <20210215155141.47432-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existed pGp shows the names of page flags only, rather than the full
-information including section, node, zone, last cpuipid and kasan tag.
-While it is not easy to parse these information manually because there
-are so many flavors. We'd better interpret them in printf.
+As pGp has been already introduced in printk, we'd better use it to make
+the output human readable.
 
-To be compitable with the existed format of pGp, the new introduced ones
-also use '|' as the separator, then the user tools parsing pGp won't
-need to make change, suggested by Matthew. The new added information is
-tracked onto the end of the existed one, e.g.
-[ 8838.835456] Slab 0x000000002828b78a objects=33 used=3 fp=0x00000000d04efc88 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+Before this change, the output is,
+[ 6155.716018] INFO: Slab 0x000000004027dd4f objects=33 used=3 fp=0x000000008cd1579c flags=0x17ffffc0010200
 
-The documentation and test cases are also updated. The result of the 
-test cases as follows,
-[11585.830272] test_printf: loaded.
-[11585.830454] test_printf: all 388 tests passed
-[11585.831401] test_printf: unloaded.
+While after this change, the output is,
+[ 8846.517809] INFO: Slab 0x00000000f42a2c60 objects=33 used=3 fp=0x0000000060d32ca8 flags=0x17ffffc0010200(slab|head)
 
-This patchset also includes some code cleanup in mm/slub.c.
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Christoph Lameter <cl@linux.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ mm/slub.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-v5:
-- remove the bitmap and better name the struct, per Petr 
-
-v4:
-- extend %pGp instead of introducing new format, per Matthew
-
-v3:
-- coding improvement, per Joe and Andy
-- the possible impact on debugfs and the fix of it, per Joe and Matthew
-- introduce new format instead of changing pGp, per Andy
-
-v2:
-- various coding improvement, per Joe, Miaohe, Vlastimil and Andy
-- remove the prefix completely in patch #2, per Vlastimil
-- Update the test cases, per Andy
-
-Yafang Shao (3):
-  mm, slub: use pGp to print page flags
-  mm, slub: don't combine pr_err with INFO
-  vsprintf: dump full information of page flags in pGp
-
- Documentation/core-api/printk-formats.rst |  2 +-
- lib/test_printf.c                         | 60 +++++++++++++++++----
- lib/vsprintf.c                            | 66 +++++++++++++++++++++--
- mm/slub.c                                 | 13 ++---
- 4 files changed, 119 insertions(+), 22 deletions(-)
-
+diff --git a/mm/slub.c b/mm/slub.c
+index 7ecbbbe5bc0c..ddd429832577 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -641,8 +641,9 @@ void print_tracking(struct kmem_cache *s, void *object)
+ 
+ static void print_page_info(struct page *page)
+ {
+-	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=0x%04lx\n",
+-	       page, page->objects, page->inuse, page->freelist, page->flags);
++	pr_err("INFO: Slab 0x%p objects=%u used=%u fp=0x%p flags=%#lx(%pGp)\n",
++	       page, page->objects, page->inuse, page->freelist,
++	       page->flags, &page->flags);
+ 
+ }
+ 
 -- 
 2.18.2
 
