@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B875131C269
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BD931C26B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhBOTXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:23:21 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:58475 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230163AbhBOTXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:23:20 -0500
-Received: from [192.168.0.6] (ip5f5aea9d.dynamic.kabel-deutschland.de [95.90.234.157])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 569EB20647913;
-        Mon, 15 Feb 2021 20:22:35 +0100 (CET)
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: smpboot: CPU numbers printed as warning
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>, it+linux-x86@molgen.mpg.de,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Message-ID: <e964b2ae-7a15-a510-e76a-56d704949d62@molgen.mpg.de>
-Date:   Mon, 15 Feb 2021 20:22:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230522AbhBOTXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:23:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230484AbhBOTXW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 14:23:22 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 160E9C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:22:42 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id y10so3625829qvo.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:22:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CZE34n9hYz5SU1Put+7gb17jfhnpLjCCxD5CNJQ2yQw=;
+        b=VzPEW28qSfuTQX8GSdTH45qhuK313Kx443CZzOeXV5C/arFRf6Bn4H0eDPjE6gV58J
+         L4hbJxJEslsXIDYdeS4QVGUHzs4QwZZsQs2PmSquFlDX+jHX+KWh57BdQExZ6ZE23myj
+         fWK4PwkjQWiY7xrfbvn85o4Yz8hhNDnHqXxxSd1NCGPalZ2keFnVgBuda22LERbKr6CG
+         af2Yor8UWYEb/hu2vy/y4ZWsd3mV9wCT2fJJGwRHBK0mEM67+IVCPsRW4Kna6RfBbm27
+         lRHXfhrKAM63HPHEL6r3cww0YtSatUIOSxIAbKcSt+barjLUi60UqEjQjkVpYghtJ0to
+         Qr1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CZE34n9hYz5SU1Put+7gb17jfhnpLjCCxD5CNJQ2yQw=;
+        b=PaAjB1dyaiet9RSc6F9j4+IDYR+bt3VYqQZyW0tBzL7+/siOFe2FkY0QeZ/PL2EdAs
+         acH4U9QnhU8J1gbtBNRRifAy+sDgfuuJhCxfGGwJj/Sum2B/AMKo0msy6/a/l5vtI0GT
+         3z7Io/IS7JjoXSr4i/IJrpmO1ewNbP7IRXDV0NFf0igh5cF/FCkLlwgF9X7RM0mHFMzD
+         wMj1dy6NVnUWgGKAjma4VXDiQiUR5zjAL/t0Sji2wXBMxf3V+9AMBoXVmtSJeZFoi4H4
+         CG28ouJbGVkDFoPSdHbQ3U7vo/fIKy57RnjV0TXtS7xK3EOugNRgqBqoUZOTd/H7sac7
+         k4dQ==
+X-Gm-Message-State: AOAM532B6yZxTQDgvqMuMIxbYcDoAQP1y23hOk3QeOeAaBgigNat+isg
+        SQX7NcnkQUnU8ZVaXC4zxT5BAA==
+X-Google-Smtp-Source: ABdhPJy/TKL3Y7MKryyo5k14Om/vlqNOQCs6gq+2BRR6qmdgiYzW6H6m0flC1JJ49VbBtOoqJa4ZIw==
+X-Received: by 2002:ad4:458f:: with SMTP id x15mr16461481qvu.39.1613416959759;
+        Mon, 15 Feb 2021 11:22:39 -0800 (PST)
+Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id i20sm11631668qtv.73.2021.02.15.11.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 11:22:39 -0800 (PST)
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, tyhicks@linux.microsoft.com,
+        jmorris@namei.org, catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, anshuman.khandual@arm.com,
+        rppt@kernel.org, logang@deltatee.com, ardb@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/1] correct the inside linear map boundaries during hotplug check
+Date:   Mon, 15 Feb 2021 14:22:36 -0500
+Message-Id: <20210215192237.362706-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Linux folks,
+v2:
+	- Added test-by Tyler Hicks
+	- Addressed comments from Anshuman Khandual: moved check under
+	  IS_ENABLED(CONFIG_RANDOMIZE_BASE), added 
+	  WARN_ON(start_linear_pa > end_linear_pa);
 
+Fixes a hotplug error that may occur on systems with CONFIG_RANDOMIZE_BASE
+enabled.
 
-Using Linux 5.10.13 (and before), looking at the Linux kernel warnings, 
-the CPU numbers show up. For example with 12 cpus/threads:
+v1:
+https://lore.kernel.org/lkml/20210213012316.1525419-1-pasha.tatashin@soleen.com
 
-```
-$ sudo dmesg --level=warn
-[    0.216103]   #2
-[    0.220105]   #3
-[    0.224103]   #4
-[    0.228104]   #5
-[    0.232110]   #6
-[    0.236101]   #7
-[    0.240102]   #8
-[    0.244102]   #9
-[    0.248100]  #10
-[    0.252098]  #11
-```
+Pavel Tatashin (1):
+  arm64: mm: correct the inside linear map boundaries during hotplug
+    check
 
-If I am not mistaken, this is from `announce_cpu()` in 
-`arch/x86/kernel/smpboot.c`, and the `pr_cont()` in their “forgets” the 
-log level it belongs to, maybe because of SMP and other messages are 
-printed in between.
+ arch/arm64/mm/mmu.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-```
-         if (system_state < SYSTEM_RUNNING) {
-                 if (node != current_node) {
-                         if (current_node > (-1))
-                                 pr_cont("\n");
-                         current_node = node;
+-- 
+2.25.1
 
-                         printk(KERN_INFO ".... node %*s#%d, CPUs:  ",
-                                node_width - num_digits(node), " ", node);
-                 }
-
-                 /* Add padding for the BSP */
-                 if (cpu == 1)
-                         pr_cont("%*s", width + 1, " ");
-
-                 pr_cont("%*s#%d", width - num_digits(cpu), " ", cpu);
-
-         } else
-                 pr_info("Booting Node %d Processor %d APIC 0x%x\n",
-                         node, cpu, apicid);
-```
-
-Would using `pr_info()` instead be an acceptable fix?
-
-
-Kind regards,
-
-Paul
