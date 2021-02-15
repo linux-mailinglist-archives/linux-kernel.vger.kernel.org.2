@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE8831BF5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C13AF31BF9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:45:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhBOQbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:31:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50206 "EHLO mail.kernel.org"
+        id S232347AbhBOQni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:43:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231362AbhBOPhS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:37:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E923164E91;
-        Mon, 15 Feb 2021 15:32:18 +0000 (UTC)
+        id S231621AbhBOPiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:38:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35D9564EEE;
+        Mon, 15 Feb 2021 15:34:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403139;
-        bh=6HQyKtEMhDLbf+qDArxqy3u2PczAa9UoihEXtMgT/VY=;
+        s=korg; t=1613403244;
+        bh=cxKqO7/u5wHEciAat0FsEJjw9iDvaNGyv4dBpPqcfIs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V3phEgCcs5Kh6TEoD98fPJCABghEFnNFXgu3AoJ87yrn/4ryT86iX/rmqgYCE7YKc
-         LXEM6VeUR5wWgp7xvL/gHrNgZRHn3HUNwzEeaMn+2fYkS7csrbU+x8wJ5IjjO/RYMh
-         /9hvBddSrmnUcj25d5xyjmfZ+unnejEZV7gWkgOc=
+        b=VpVeLQOJnyZ+Da7WJXhie9XnXmwMDsNcjW71JTDrmgpkt4i5Fh4qrSlErZ5pHn9H/
+         zS6dXurBk7wCm7FTbjh9VFBo/LwQ+wO7OtmYEcC2yIj8N+DVoOEUVyuxyAPcSKTAZt
+         S4/6r82oANSNuaWck7qg1pWpdx1XmHfWTAoAlRtc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Jackson <iwj@xenproject.org>,
-        Julien Grall <jgrall@amazon.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.10 009/104] arm/xen: Dont probe xenbus as part of an early initcall
-Date:   Mon, 15 Feb 2021 16:26:22 +0100
-Message-Id: <20210215152719.767707000@linuxfoundation.org>
+        stable@vger.kernel.org, Victor Lu <victorchengchi.lu@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Anson Jacob <Anson.Jacob@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 036/104] drm/amd/display: Decrement refcount of dc_sink before reassignment
+Date:   Mon, 15 Feb 2021 16:26:49 +0100
+Message-Id: <20210215152720.650614905@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -42,82 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Grall <jgrall@amazon.com>
+From: Victor Lu <victorchengchi.lu@amd.com>
 
-commit c4295ab0b485b8bc50d2264bcae2acd06f25caaf upstream.
+[ Upstream commit 8e92bb0fa75bca9a57e4aba2e36f67d8016a3053 ]
 
-After Commit 3499ba8198cad ("xen: Fix event channel callback via
-INTX/GSI"), xenbus_probe() will be called too early on Arm. This will
-recent to a guest hang during boot.
+[why]
+An old dc_sink state is causing a memory leak because it is missing a
+dc_sink_release before a new dc_sink is assigned back to
+aconnector->dc_sink.
 
-If the hang wasn't there, we would have ended up to call
-xenbus_probe() twice (the second time is in xenbus_probe_initcall()).
+[how]
+Decrement the dc_sink refcount before reassigning it to a new dc_sink.
 
-We don't need to initialize xenbus_probe() early for Arm guest.
-Therefore, the call in xen_guest_init() is now removed.
-
-After this change, there is no more external caller for xenbus_probe().
-So the function is turned to a static one. Interestingly there were two
-prototypes for it.
-
-Cc: stable@vger.kernel.org
-Fixes: 3499ba8198cad ("xen: Fix event channel callback via INTX/GSI")
-Reported-by: Ian Jackson <iwj@xenproject.org>
-Signed-off-by: Julien Grall <jgrall@amazon.com>
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-Link: https://lore.kernel.org/r/20210210170654.5377-1-julien@xen.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Victor Lu <victorchengchi.lu@amd.com>
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Acked-by: Anson Jacob <Anson.Jacob@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/xen/enlighten.c          |    2 --
- drivers/xen/xenbus/xenbus.h       |    1 -
- drivers/xen/xenbus/xenbus_probe.c |    2 +-
- include/xen/xenbus.h              |    2 --
- 4 files changed, 1 insertion(+), 6 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/arm/xen/enlighten.c
-+++ b/arch/arm/xen/enlighten.c
-@@ -370,8 +370,6 @@ static int __init xen_guest_init(void)
- 		return -ENOMEM;
- 	}
- 	gnttab_init();
--	if (!xen_initial_domain())
--		xenbus_probe();
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 321df20fcdb99..fdca76fc598c0 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -2261,8 +2261,10 @@ void amdgpu_dm_update_connector_after_detect(
+ 		 * TODO: check if we still need the S3 mode update workaround.
+ 		 * If yes, put it here.
+ 		 */
+-		if (aconnector->dc_sink)
++		if (aconnector->dc_sink) {
+ 			amdgpu_dm_update_freesync_caps(connector, NULL);
++			dc_sink_release(aconnector->dc_sink);
++		}
  
- 	/*
- 	 * Making sure board specific code will not set up ops for
---- a/drivers/xen/xenbus/xenbus.h
-+++ b/drivers/xen/xenbus/xenbus.h
-@@ -115,7 +115,6 @@ int xenbus_probe_node(struct xen_bus_typ
- 		      const char *type,
- 		      const char *nodename);
- int xenbus_probe_devices(struct xen_bus_type *bus);
--void xenbus_probe(void);
- 
- void xenbus_dev_changed(const char *node, struct xen_bus_type *bus);
- 
---- a/drivers/xen/xenbus/xenbus_probe.c
-+++ b/drivers/xen/xenbus/xenbus_probe.c
-@@ -683,7 +683,7 @@ void unregister_xenstore_notifier(struct
- }
- EXPORT_SYMBOL_GPL(unregister_xenstore_notifier);
- 
--void xenbus_probe(void)
-+static void xenbus_probe(void)
- {
- 	xenstored_ready = 1;
- 
---- a/include/xen/xenbus.h
-+++ b/include/xen/xenbus.h
-@@ -192,8 +192,6 @@ void xs_suspend_cancel(void);
- 
- struct work_struct;
- 
--void xenbus_probe(void);
--
- #define XENBUS_IS_ERR_READ(str) ({			\
- 	if (!IS_ERR(str) && strlen(str) == 0) {		\
- 		kfree(str);				\
+ 		aconnector->dc_sink = sink;
+ 		dc_sink_retain(aconnector->dc_sink);
+-- 
+2.27.0
+
 
 
