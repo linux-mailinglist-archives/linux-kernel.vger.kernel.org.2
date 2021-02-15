@@ -2,126 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315D831BB45
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2B431BB48
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhBOOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:38:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbhBOOhj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:37:39 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961F2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:36:58 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id 7so9237779wrz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:36:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Do2tQb63bcwLymaHKmZud23cc7ctdAohkzhpdwoDJ3M=;
-        b=TXZxOMoO6m73IpOCtYlqYKg1OilB6K/peHgJVxGleqgbHnI42xxKv59/DeT+8Oy0b6
-         v+JDtsNBUfj1TErC15PmPLuLNd851IZrSBAMfWOHT6nE9lLJ6TudaRAt4eCVVEPKdjMO
-         fpRBjigw+cGCTuVuysYHIR/lgN5wa5Off7KrEwvm5bCgxRmVdeEkwv9Vi0txsX1+tOlc
-         WKUplZGX2OrsO1oTszq1iJR4sDGJfK8IzrMRIpMgmfVVM1FrRtyQTBOieso1Y5aKArUr
-         ov0/wefloQJ0VZ6haNad/2aK3fXNQoFl2jG2dDIDpTralSZRptf5DxC2/kkdcbQxgXSX
-         hqqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Do2tQb63bcwLymaHKmZud23cc7ctdAohkzhpdwoDJ3M=;
-        b=OpyvpfRpVmTN4yvdZoepdtGnRswslxIWxcgRxPazG1g0GpZ/jaZ7VMNyhNDjGZhVhj
-         n44OXAVqRuEXkHXS/DUgMDNCXltOVLM7m6zF12Vq/RRXYIlluWOnnJM8Ekkl2wQToiT2
-         I7dslAnmJQsNYX2w+YVE8jEcwot9sxdR4UdXnQZoJ6cBAg9klrc44wFjla5girZbsnS/
-         p/zT+qZdaAgLe9pq0XVYT42W/KN/XldxSzlTHyRPONmJxiF9fhC89t4vvAx7OZ5s+d78
-         Xj4GfjRzfpdiDfpWgz+HrFw0+wJ4pGUUADg32kEzGUM19XgFQj+0sha29V0eV89GnTdV
-         UObA==
-X-Gm-Message-State: AOAM532XofuZYN6T7dmBjoJO4J3jW0ur7sBdIHAQSK1BubQrxtuGOJIE
-        qmqDiLUkjCOIexxJrtrCivk=
-X-Google-Smtp-Source: ABdhPJyVrllvu0jnkSV2PuUg7VLVVBhu4Oxn4Yc5Gg9oPawn4jnCNuYSHdGS9M6Pp6GuOoFnsMt1QA==
-X-Received: by 2002:a5d:444a:: with SMTP id x10mr12782905wrr.409.1613399817374;
-        Mon, 15 Feb 2021 06:36:57 -0800 (PST)
-Received: from alaa ([197.57.74.212])
-        by smtp.gmail.com with ESMTPSA id o13sm9274347wro.15.2021.02.15.06.36.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 06:36:56 -0800 (PST)
-From:   Alaa Emad <alaaemadhossney.ae@gmail.com>
-To:     mchehab+huawei@kernel.org, gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Alaa Emad <alaaemadhossney.ae@gmail.com>
-Subject: [PATCH resend] staging: hikey9xx: hi6421-spmi-pmic: fixing 
-Date:   Mon, 15 Feb 2021 16:36:52 +0200
-Message-Id: <20210215143652.14122-1-alaaemadhossney.ae@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S230031AbhBOOj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:39:28 -0500
+Received: from mga14.intel.com ([192.55.52.115]:21619 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230124AbhBOOil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:38:41 -0500
+IronPort-SDR: 06+VMcysW8htvBSZM+hrfQtYcAMV9mRkD9itR+xLtk2wWTQFs/qR5nbY50RA7SZoWQM67tUE4h
+ FkVIcv1yRiRQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="181917719"
+X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
+   d="scan'208";a="181917719"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 06:38:00 -0800
+IronPort-SDR: 5G8UVXefhcghHCN5eZ/Jau7JxqKQnqEhDlAhzJFDDDqpdGCxOwiDwXnHQUq21bhQHRB6bO3MsA
+ uHOLp8d45o9Q==
+X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
+   d="scan'208";a="399097442"
+Received: from martincl-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.34.223])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 06:37:53 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        netdev@vger.kernel.org
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 1/3] string: Consolidate yesno() helpers under string.h hood
+In-Reply-To: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com>
+Date:   Mon, 15 Feb 2021 16:37:50 +0200
+Message-ID: <87y2fpbdmp.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fix the following issues in hi6421-spmi-pmic.c file:
+On Mon, 15 Feb 2021, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> We have already few similar implementation and a lot of code that can benefit
+> of the yesno() helper.  Consolidate yesno() helpers under string.h hood.
 
-drivers/staging/hikey9xx/hi6421-spmi-pmic.c:51: WARNING: please, no space before tabs
-drivers/staging/hikey9xx/hi6421-spmi-pmic.c:52: WARNING: please, no space before tabs
-drivers/staging/hikey9xx/hi6421-spmi-pmic.c:53: WARNING: please, no space before tabs
-drivers/staging/hikey9xx/hi6421-spmi-pmic.c:69: WARNING: please, no space before tabs
-drivers/staging/hikey9xx/hi6421-spmi-pmic.c:180: CHECK: Alignment should match open parenthesis
-drivers/staging/hikey9xx/hi6421-spmi-pmic.c:238: CHECK: Alignment should match open parenthesis
+Good luck. I gave up after just four versions. [1]
+
+Acked-by: Jani Nikula <jani.nikula@intel.com>
 
 
-Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+BR,
+Jani.
 
----
- drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-index 9c5e113e1a81..626140cb96f2 100644
---- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-+++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-@@ -48,9 +48,9 @@ enum hi6421_spmi_pmic_irq_list {
- /*
-  * The IRQs are mapped as:
-  *
-- * 	======================  =============   ============	=====
-- *	IRQ			MASK REGISTER 	IRQ REGISTER	BIT
-- * 	======================  =============   ============	=====
-+ *	======================  =============   ============	=====
-+ *	IRQ			MASK REGISTER	IRQ REGISTER	BIT
-+ *	======================  =============   ============	=====
-  *	OTMP			0x0202		0x212		bit 0
-  *	VBUS_CONNECT		0x0202		0x212		bit 1
-  *	VBUS_DISCONNECT		0x0202		0x212		bit 2
-@@ -66,7 +66,7 @@ enum hi6421_spmi_pmic_irq_list {
-  *	SIM0_HPD_F		0x0203		0x213		bit 3
-  *	SIM1_HPD_R		0x0203		0x213		bit 4
-  *	SIM1_HPD_F		0x0203		0x213		bit 5
-- * 	======================  =============   ============	=====
-+ *	======================  =============   ============	=====
-  */
- #define SOC_PMIC_IRQ_MASK_0_ADDR	0x0202
- #define SOC_PMIC_IRQ0_ADDR		0x0212
-@@ -177,7 +177,7 @@ static void hi6421_spmi_pmic_irq_init(struct hi6421_spmi_pmic *ddata)
- 
- 	for (i = 0; i < HISI_IRQ_ARRAY; i++)
- 		regmap_write(ddata->regmap, SOC_PMIC_IRQ_MASK_0_ADDR + i,
--					HISI_MASK);
-+			     HISI_MASK);
- 
- 	for (i = 0; i < HISI_IRQ_ARRAY; i++) {
- 		regmap_read(ddata->regmap, SOC_PMIC_IRQ0_ADDR + i, &pending);
-@@ -235,7 +235,7 @@ static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
- 		return -ENOMEM;
- 
- 	ddata->domain = irq_domain_add_simple(np, HISI_IRQ_NUM, 0,
--					     &hi6421_spmi_domain_ops, ddata);
-+					      &hi6421_spmi_domain_ops, ddata);
- 	if (!ddata->domain) {
- 		dev_err(dev, "Failed to create IRQ domain\n");
- 		return -ENODEV;
+[1] http://lore.kernel.org/r/20191023131308.9420-1-jani.nikula@intel.com
+
+
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  .../drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c    |  6 +-----
+>  drivers/gpu/drm/i915/i915_utils.h                    |  6 +-----
+>  drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c   | 12 +-----------
+>  include/linux/string.h                               |  5 +++++
+>  4 files changed, 8 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> index 360952129b6d..7fde4f90e513 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> @@ -23,6 +23,7 @@
+>   *
+>   */
+>  
+> +#include <linux/string.h>
+>  #include <linux/uaccess.h>
+>  
+>  #include <drm/drm_debugfs.h>
+> @@ -49,11 +50,6 @@ struct dmub_debugfs_trace_entry {
+>  	uint32_t param1;
+>  };
+>  
+> -static inline const char *yesno(bool v)
+> -{
+> -	return v ? "yes" : "no";
+> -}
+> -
+>  /* parse_write_buffer_into_params - Helper function to parse debugfs write buffer into an array
+>   *
+>   * Function takes in attributes passed to debugfs write entry
+> diff --git a/drivers/gpu/drm/i915/i915_utils.h b/drivers/gpu/drm/i915/i915_utils.h
+> index abd4dcd9f79c..e6da5a951132 100644
+> --- a/drivers/gpu/drm/i915/i915_utils.h
+> +++ b/drivers/gpu/drm/i915/i915_utils.h
+> @@ -27,6 +27,7 @@
+>  
+>  #include <linux/list.h>
+>  #include <linux/overflow.h>
+> +#include <linux/string.h>
+>  #include <linux/sched.h>
+>  #include <linux/types.h>
+>  #include <linux/workqueue.h>
+> @@ -408,11 +409,6 @@ wait_remaining_ms_from_jiffies(unsigned long timestamp_jiffies, int to_wait_ms)
+>  #define MBps(x) KBps(1000 * (x))
+>  #define GBps(x) ((u64)1000 * MBps((x)))
+>  
+> -static inline const char *yesno(bool v)
+> -{
+> -	return v ? "yes" : "no";
+> -}
+> -
+>  static inline const char *onoff(bool v)
+>  {
+>  	return v ? "on" : "off";
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+> index 7d49fd4edc9e..c857d73abbd7 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+> @@ -34,6 +34,7 @@
+>  
+>  #include <linux/seq_file.h>
+>  #include <linux/debugfs.h>
+> +#include <linux/string.h>
+>  #include <linux/string_helpers.h>
+>  #include <linux/sort.h>
+>  #include <linux/ctype.h>
+> @@ -2015,17 +2016,6 @@ static const struct file_operations rss_debugfs_fops = {
+>  /* RSS Configuration.
+>   */
+>  
+> -/* Small utility function to return the strings "yes" or "no" if the supplied
+> - * argument is non-zero.
+> - */
+> -static const char *yesno(int x)
+> -{
+> -	static const char *yes = "yes";
+> -	static const char *no = "no";
+> -
+> -	return x ? yes : no;
+> -}
+> -
+>  static int rss_config_show(struct seq_file *seq, void *v)
+>  {
+>  	struct adapter *adapter = seq->private;
+> diff --git a/include/linux/string.h b/include/linux/string.h
+> index 9521d8cab18e..fd946a5e18c8 100644
+> --- a/include/linux/string.h
+> +++ b/include/linux/string.h
+> @@ -308,4 +308,9 @@ static __always_inline size_t str_has_prefix(const char *str, const char *prefix
+>  	return strncmp(str, prefix, len) == 0 ? len : 0;
+>  }
+>  
+> +static inline const char *yesno(bool yes)
+> +{
+> +	return yes ? "yes" : "no";
+> +}
+> +
+>  #endif /* _LINUX_STRING_H_ */
+
 -- 
-2.25.1
-
+Jani Nikula, Intel Open Source Graphics Center
