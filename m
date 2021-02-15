@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF3F31C105
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8B231C106
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhBORvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:51:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbhBORts (ORCPT
+        id S231594AbhBORvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:51:45 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:41300 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231847AbhBORt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:49:48 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E54EC061786
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:49:06 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id t26so4633844pgv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:49:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0raigWBsW5BmlJVVshcrNYwzQYWZPvQmzq/5zwebTXY=;
-        b=fl6FixGKWjTID3qTSaKuX0EgetRR8QBn7aRcT3Xl+UP8cqOr6p3G+iD1eTTf0hu3ak
-         +liuII/Gu+qlMZYn4CTSKBRild3fq4iiKeEGL+8b/HMEyTkfR0lxpp1aIyP5MOkOnLHu
-         n7mDgFs4eE/SMAqzxJNbxWCbSUC+xHlWEWLG3qrIScMk/bjvOR57kk7nFY7rVn/9UiH9
-         g2pOpALQHu/15aB71vd8qzQeiPvr76pUiiibWLdgNXzIRdH3e7uN2WCmTp8lGk/ksYR7
-         ZIRk0VV4pwRJE21aYuWDbkXc3kOpnbN0CK8+C727b5npEWm2JsCj1LaBgWNXZrMEv6//
-         4r6Q==
+        Mon, 15 Feb 2021 12:49:57 -0500
+Received: by mail-io1-f70.google.com with SMTP id l16so7251472ion.8
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:49:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0raigWBsW5BmlJVVshcrNYwzQYWZPvQmzq/5zwebTXY=;
-        b=MPo/EzZcWXN9JSYhNukuIQSsO1KK09DOZxFmUCz5kvd5NP2qEOnrj8V38aMNu+daHz
-         VyvlOVb6O6S40ubkVzukwoC8CrbGzwu0wCvGxNg9JJpmLK88NsjsBU19EDZ68Y+QHLTl
-         X5ZNaebQPfwCl/NvlPMotC0GLjaY+33h+aLsaJbqPctC1qtLsXKC/8ds6jI0EvrMj6xc
-         lsOCmV8bn1F3OCD45eImGnfRKfg+ncSuRrxSMtpQuhnSxL/HCvpgjiijAHDELfDfWzL+
-         sQ/ilarLOJzg0CTu4qXcYCeieEQf30NtfyO7WBhow4skDKEwAisKij2E+MicaXZV3kyJ
-         0oFw==
-X-Gm-Message-State: AOAM530IKU6/aFM6OvddjoYKBMaBRH8INZVU8Bu9A1H380JeNgQ8/zYY
-        VAb3XnaU5wBmzFozdOaNCjolcPIozn0AIl6bRkoQDQ==
-X-Google-Smtp-Source: ABdhPJz4LqZsDGklbkN4FqRjRy8OxHw8u+JlsWDcM1+xjYoqctmuuXLbOUqvMlpcK78wa9N3DIsalYaZRJP0O/OTh7o=
-X-Received: by 2002:a63:480f:: with SMTP id v15mr15739656pga.341.1613411345880;
- Mon, 15 Feb 2021 09:49:05 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=RoXjSk9Af3jPUQTqmZVPDGkwVHOwjW/9fUaQTC8HuJ0=;
+        b=OpEnAzLRnzV3PC1O83eEvTvNvD94BC2WAWc1rWTXoh9IBqlqu8gKDsS7+/pIGaKNGG
+         yiL5nnMej3jv6ncHEBLH5z1VDCmO+bqT+jowAXrKGtuCsMzHMBiN+S3QmjNOqxZhYrHX
+         qORGEu2zJVwPNRXkuHTwYjLl7TPbyvUsvQJjwkSXY7XezKIVYc+DYnshGfVSSTyueWFN
+         z3bZBf911CUK1BwmuV7ZjFWWdyuEw0gIMdWzrmsh1LtKi4A3CQsw5TKyykaKxBHEdilF
+         Kb4tULc7xt0alU0QdT+ULI1HnxqkpdRtn9zCu0UYNdXygaB0gyuC36uJDJS80PJx86Fn
+         7x4A==
+X-Gm-Message-State: AOAM5318+DA/M0NJAMly2V7hGA9bHF4q22pgEBJYemFr/5fqpKZNjhrI
+        QyAII3KompKwsdxIFgef+FocvETkO1K795GRrNAo3Im1OJt+
+X-Google-Smtp-Source: ABdhPJwzOOxIy2iOkkChjuZZcTCvuOWkIaVMSnGKcKuT8QfwtaCwGkxJUGQdmh+AZkOM0BV9i6dS3eum4K+RDo1BujXuo+CluTlz
 MIME-Version: 1.0
-References: <20210208085013.89436-5-songmuchun@bytedance.com>
- <YCafit5ruRJ+SL8I@dhcp22.suse.cz> <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
- <YCpN38i75olgispI@dhcp22.suse.cz> <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
- <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
- <YCpmlGuoTakPJs1u@dhcp22.suse.cz> <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
- <YCp04NVBZpZZ5k7G@dhcp22.suse.cz> <CAMZfGtV8-yJa_eGYtSXc0YY8KhYpgUo=pfj6TZ9zMo8fbz8nWA@mail.gmail.com>
- <YCqhDZ0EAgvCz+wX@dhcp22.suse.cz>
-In-Reply-To: <YCqhDZ0EAgvCz+wX@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 16 Feb 2021 01:48:29 +0800
-Message-ID: <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+X-Received: by 2002:a6b:3b53:: with SMTP id i80mr13407420ioa.203.1613411355704;
+ Mon, 15 Feb 2021 09:49:15 -0800 (PST)
+Date:   Mon, 15 Feb 2021 09:49:15 -0800
+In-Reply-To: <00000000000096ae3b05b838799c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bbc2e905bb639abf@google.com>
+Subject: Re: KASAN: vmalloc-out-of-bounds Write in imageblit
+From:   syzbot <syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com>
+To:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 12:28 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 15-02-21 23:36:49, Muchun Song wrote:
-> [...]
-> > > There shouldn't be any real reason why the memory allocation for
-> > > vmemmaps, or handling vmemmap in general, has to be done from within the
-> > > hugetlb lock and therefore requiring a non-sleeping semantic. All that
-> > > can be deferred to a more relaxed context. If you want to make a
-> >
-> > Yeah, you are right. We can put the freeing hugetlb routine to a
-> > workqueue. Just like I do in the previous version (before v13) patch.
-> > I will pick up these patches.
->
-> I haven't seen your v13 and I will unlikely have time to revisit that
-> version. I just wanted to point out that the actual allocation doesn't
-> have to happen from under the spinlock. There are multiple ways to go
-> around that. Dropping the lock would be one of them. Preallocation
-> before the spin lock is taken is another. WQ is certainly an option but
-> I would take it as the last resort when other paths are not feasible.
->
+syzbot has found a reproducer for the following issue on:
 
-"Dropping the lock" and "Preallocation before the spin lock" can limit
-the context of put_page to non-atomic context. I am not sure if there
-is a page puted somewhere under an atomic context. e.g. compaction.
-I am not an expert on this.
+HEAD commit:    f40ddce8 Linux 5.11
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14216df4d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=51ab7ccaffffc30c
+dashboard link: https://syzkaller.appspot.com/bug?extid=858dc7a2f7ef07c2c219
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15f53924d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=138b494cd00000
 
-> --
-> Michal Hocko
-> SUSE Labs
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+858dc7a2f7ef07c2c219@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in fast_imageblit drivers/video/fbdev/core/sysimgblt.c:229 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in sys_imageblit+0x12f4/0x1430 drivers/video/fbdev/core/sysimgblt.c:275
+Write of size 4 at addr ffffc9000bc91000 by task syz-executor566/8649
+
+CPU: 3 PID: 8649 Comm: syz-executor566 Not tainted 5.11.0-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5/0x2c6 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+ fast_imageblit drivers/video/fbdev/core/sysimgblt.c:229 [inline]
+ sys_imageblit+0x12f4/0x1430 drivers/video/fbdev/core/sysimgblt.c:275
+ drm_fb_helper_sys_imageblit drivers/gpu/drm/drm_fb_helper.c:794 [inline]
+ drm_fbdev_fb_imageblit+0x15c/0x350 drivers/gpu/drm/drm_fb_helper.c:2266
+ bit_putcs_unaligned drivers/video/fbdev/core/bitblit.c:139 [inline]
+ bit_putcs+0x6e1/0xd20 drivers/video/fbdev/core/bitblit.c:188
+ fbcon_putcs+0x35a/0x450 drivers/video/fbdev/core/fbcon.c:1304
+ do_update_region+0x399/0x630 drivers/tty/vt/vt.c:676
+ redraw_screen+0x658/0x790 drivers/tty/vt/vt.c:1035
+ fbcon_modechanged+0x593/0x6d0 drivers/video/fbdev/core/fbcon.c:2656
+ fbcon_update_vcs+0x3a/0x50 drivers/video/fbdev/core/fbcon.c:2701
+ do_fb_ioctl+0x62e/0x690 drivers/video/fbdev/core/fbmem.c:1110
+ fb_ioctl+0xe7/0x150 drivers/video/fbdev/core/fbmem.c:1185
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x43fd49
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff0eaf1448 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000019c10 RCX: 000000000043fd49
+RDX: 0000000020000080 RSI: 0000000000004601 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00007fff0eaf15e8 R09: 00007fff0eaf15e8
+R10: 00007fff0eaf0ec0 R11: 0000000000000246 R12: 00007fff0eaf145c
+R13: 431bde82d7b634db R14: 00000000004ae018 R15: 0000000000400488
+
+
+Memory state around the buggy address:
+ ffffc9000bc90f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffc9000bc90f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffc9000bc91000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                   ^
+ ffffc9000bc91080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc9000bc91100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+==================================================================
+
