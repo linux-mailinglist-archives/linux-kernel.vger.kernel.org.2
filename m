@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3706631BAFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:25:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CA731BAEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhBOOYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:24:30 -0500
-Received: from mga09.intel.com ([134.134.136.24]:15036 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhBOOXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:23:53 -0500
-IronPort-SDR: pMgS1aanTxG0BuzUDT2Due8M+FBsLOTf9qAd5MWVDhBiEakcCQjIQrk9M+x6+cDhM+G0v2tZz8
- 6PAJMJWbT8MQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9895"; a="182823520"
-X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
-   d="scan'208";a="182823520"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 06:22:06 -0800
-IronPort-SDR: gjS+uCy1RooYV8N9lYHIdqLJT2peNhOwkX157krPVoc1icBBrMwSRfcbzevRHxh9+vpd1sj8YJ
- veRJtpYMOhPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
-   d="scan'208";a="580191385"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 15 Feb 2021 06:21:56 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 9E9A8220; Mon, 15 Feb 2021 16:21:55 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        Mikita Lipski <mikita.lipski@amd.com>,
-        Eryk Brol <eryk.brol@amd.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        netdev@vger.kernel.org
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 3/3] string: Move enableddisabled() helper under string.h hood
-Date:   Mon, 15 Feb 2021 16:21:37 +0200
-Message-Id: <20210215142137.64476-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com>
-References: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com>
+        id S230073AbhBOOXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:23:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhBOOXA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:23:00 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A0EC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:22:20 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id n8so9079567wrm.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:22:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=cNvVdIdxlGj+Sfuamem72Qeix0oXAhgklbIFT61Vzrw=;
+        b=bmcYji8KmCDbksc8hp2MPVH5eDhkXRgtiRRfCRq6DoX2SEzAHyOlzQ8MimKicYZ9xC
+         7T87ysTFuAlWQw/+jY0Gid3ydZ+2hT460y3G8h1X2uC2a78MZckm5G4Noz+gW+rkep05
+         lVKA9dNP2HfcTsfjRTtZvbrLf5wmJAOZE4k+2Dh5baeQhavOwAiNWxaC6o6QaM9+8zP/
+         54JW0GJMfUMwO2nQg8Py25NO45SApbJ8njSeJ1SDZgXnhEmwi6VtSn2qwARAwFplSZgV
+         KZrsU//AhVGco7TlybPeYe9+BZSj0rvHalZIUlQ4kyX3keUE81D19FNWvFN39+PVh+bZ
+         YcFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cNvVdIdxlGj+Sfuamem72Qeix0oXAhgklbIFT61Vzrw=;
+        b=sqJYLuo6MxWt5fvMhocn4xYKhd8sihiAj+B2UogbLMg3Ou5kI+MgHT0CtIDfyiBau4
+         UoMHFWI5daJxWxYZmnBse88nOiboMrBOJGVYpI6oPH22jDEBzSrECp/seF80h8cAGkgP
+         W1MNeQ3GAm6EPksmF43je/1RsgZPSbAwVn9VKm8PZscYJJpK37udZgEAgPSkS5iJn9Ll
+         Vj1LGFxLl0CmjZvXGSq3QIosM0ItZ2Y9RU8gC4S5mdW08uTyZKHhZQ8rvIBoDRsf9A0f
+         6K6PgorJdiBqSYjq0QyvKMqYc42OD3EMfQyE7PAU9YEObKs0cwQ2yLfj2UqME6bd2lXj
+         IB9A==
+X-Gm-Message-State: AOAM533aPxeWkqhphE3qS4Df4DKU3a95FBQCc3jW2KSaI2CW+3Tne72d
+        cw+QQCEa2MSQQavjnf9l87zgwg==
+X-Google-Smtp-Source: ABdhPJyvLoPzpqgceTkmdirn2jBoo7kyNUoI9xyniMGSW3yxHYUlh/mGG05y681DGTzNHzaIx7MD9w==
+X-Received: by 2002:adf:fc4c:: with SMTP id e12mr19808318wrs.106.1613398938553;
+        Mon, 15 Feb 2021 06:22:18 -0800 (PST)
+Received: from dell ([91.110.221.146])
+        by smtp.gmail.com with ESMTPSA id f14sm17218090wmg.28.2021.02.15.06.22.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 06:22:18 -0800 (PST)
+Date:   Mon, 15 Feb 2021 14:22:16 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Emil Velikov <emil.l.velikov@gmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>, linux-pwm@vger.kernel.org,
+        linux-fbdev <linux-fbdev@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Linux PM <linux-pm@vger.kernel.org>, linux-iio@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH v4] MAINTAINERS: move Milo Kim to credits
+Message-ID: <20210215142216.GA4770@dell>
+References: <20210212163229.68270-1-krzk@kernel.org>
+ <20210215085241.GG179940@dell>
+ <CACvgo53wn84G8wuyF++=bwtjnVzVB31BA2_JBWnihnwinSFD7A@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACvgo53wn84G8wuyF++=bwtjnVzVB31BA2_JBWnihnwinSFD7A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have already an implementation and a lot of code that can benefit
-of the enableddisabled() helper. Move it under string.h hood.
+On Mon, 15 Feb 2021, Emil Velikov wrote:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpu/drm/i915/i915_utils.h | 5 -----
- include/linux/string.h            | 5 +++++
- 2 files changed, 5 insertions(+), 5 deletions(-)
+> Greetings everyone,
+> 
+> On Mon, 15 Feb 2021 at 08:52, Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Fri, 12 Feb 2021, Krzysztof Kozlowski wrote:
+> >
+> > > Milo Kim's email in TI bounces with permanent error (550: Invalid
+> > > recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+> > > credits and remove the separate driver entries for:
+> > >  - TI LP855x backlight driver,
+> > >  - TI LP8727 charger driver,
+> > >  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
+> > >
+> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > Cc: Mark Brown <broonie@kernel.org>
+> > > Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > Cc: Jingoo Han <jingoohan1@gmail.com>
+> > > Cc: Lee Jones <lee.jones@linaro.org>
+> > > Cc: Pavel Machek <pavel@ucw.cz>
+> > > Cc: Thierry Reding <thierry.reding@gmail.com>
+> > > Cc: Sebastian Reichel <sre@kernel.org>
+> > > Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> > >
+> > > ---
+> > >
+> > > Dear Lee,
+> > >
+> > > Could you take care about this patch?
+> >
+> > Yes, but I'll be sending out my pull-request for v5.12 in the next
+> > couple of days (maybe even today if I can find some time), so this
+> > will have to wait until v5.13.
+> >
+> Would it make sense to keep the MAINTAINERS entries as "orphan"?
+> Checking with linux-next, the drivers are still present in-tree.
 
-diff --git a/drivers/gpu/drm/i915/i915_utils.h b/drivers/gpu/drm/i915/i915_utils.h
-index d2ac357896d4..b05d72b4dd93 100644
---- a/drivers/gpu/drm/i915/i915_utils.h
-+++ b/drivers/gpu/drm/i915/i915_utils.h
-@@ -409,11 +409,6 @@ wait_remaining_ms_from_jiffies(unsigned long timestamp_jiffies, int to_wait_ms)
- #define MBps(x) KBps(1000 * (x))
- #define GBps(x) ((u64)1000 * MBps((x)))
- 
--static inline const char *enableddisabled(bool v)
--{
--	return v ? "enabled" : "disabled";
--}
--
- void add_taint_for_CI(struct drm_i915_private *i915, unsigned int taint);
- static inline void __add_taint_for_CI(unsigned int taint)
- {
-diff --git a/include/linux/string.h b/include/linux/string.h
-index 2a0589e945d9..25f055aa4c31 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -318,4 +318,9 @@ static inline const char *onoff(bool on)
- 	return on ? "on" : "off";
- }
- 
-+static inline const char *enableddisabled(bool enabled)
-+{
-+	return enabled ? "enabled" : "disabled";
-+}
-+
- #endif /* _LINUX_STRING_H_ */
+Please see:
+
+ https://lore.kernel.org/patchwork/patch/1379016/
+
 -- 
-2.30.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
