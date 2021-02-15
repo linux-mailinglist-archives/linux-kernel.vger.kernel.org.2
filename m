@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E9531C37B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F36031C381
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbhBOVT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:19:28 -0500
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:35358 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBOVTZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:19:25 -0500
-Received: by mail-wm1-f52.google.com with SMTP id n10so10588861wmq.0;
-        Mon, 15 Feb 2021 13:19:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+yOtPINXmGSJ6zLfkkO0RDvqznsTi4WN8ebL5j1f6UQ=;
-        b=ddFP+xBeSs7J0XjfrdV1940GWE0ld+YYpIGULOfb7yMhLI1f8+Si8YZiPPGeW3iyex
-         b/q5MyAT/Fh0+QXTCTcN3mKzL+MSHguG7xXeLWd55ToQz72VDi9DiALxuWLpXBaF+IqT
-         T/otb7sU1JRvVVhtgneaj/4Bz3lUhZ24iAW7dbeIUH9jcYIH64aGjuOXd2V/GNfPbqK2
-         gssqVYKOm3q0c3XFAmDu8erTOPCtaROH1/yLJcfDqsWDa1UeNQdYnnvXuZY15CWQ00Wu
-         qv25lU2yd+fjCMr7ldHwkUqdu7u5g+whn13I4URKdAlqdU1zTg4gOBNP13rG3vZmLmJO
-         S4xw==
-X-Gm-Message-State: AOAM532VFC+QrBrfNIB4h0rQPlKf8pdftgTNbN+i6QPNn0FnyfOfj9en
-        m9eJLEilZrh4OikxUDMGbZE=
-X-Google-Smtp-Source: ABdhPJwQ4P2zU30+RE0qE5BIptMnwmAnTH1/os00aNtR1fjFJJo7/ZIgoEoTzpiF/5QaIOmcYOc6eQ==
-X-Received: by 2002:a05:600c:2056:: with SMTP id p22mr670780wmg.12.1613423923360;
-        Mon, 15 Feb 2021 13:18:43 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id c62sm632669wme.16.2021.02.15.13.18.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 13:18:42 -0800 (PST)
-Date:   Mon, 15 Feb 2021 22:18:41 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, helgaas@kernel.org, wsa@kernel.org,
-        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/4] Introduce pcim_alloc_irq_vectors()
-Message-ID: <YCrlMXCUWwc0fM38@rocinante>
-References: <20210215181550.714101-1-zhengdejin5@gmail.com>
+        id S229738AbhBOVWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 16:22:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229662AbhBOVWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 16:22:53 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3449364DE0;
+        Mon, 15 Feb 2021 21:22:11 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 16:22:09 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Xi Ruoyao <xry111@mengyan1223.wang>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-tip-commits@vger.kernel.org
+Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
+ non-section symbols
+Message-ID: <20210215162209.5e2a475b@gandalf.local.home>
+In-Reply-To: <20210215155806.bjcouvmkapj4pa4y@treble>
+References: <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
+        <YCafKVSTX9MxDBMd@kroah.com>
+        <20210212170750.y7xtitigfqzpchqd@treble>
+        <20210212124547.1dcf067e@gandalf.local.home>
+        <YCfdfkoeh8i0baCj@kroah.com>
+        <20210213091304.2dd51e5f@oasis.local.home>
+        <20210213155203.lehuegwc3h42nebs@treble>
+        <YCf9bnsmXqRGMn+j@kroah.com>
+        <20210214155147.3owdimqv2lyhu6by@treble>
+        <20210215095307.6f5fb12f@gandalf.local.home>
+        <20210215155806.bjcouvmkapj4pa4y@treble>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210215181550.714101-1-zhengdejin5@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dejin,
+On Mon, 15 Feb 2021 09:58:06 -0600
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-Thank you for working on this series!
+> On Mon, Feb 15, 2021 at 09:53:07AM -0500, Steven Rostedt wrote:
+> > On Sun, 14 Feb 2021 09:51:47 -0600
+> > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >   
+> > > Steve, looks like recordmcount avoids referencing weak symbols directly
+> > > by their function symbol.  Maybe it can just skip weak symbols which
+> > > don't have a section symbol, since this seems like a rare scenario.  
+> > 
+> > When does the .text.unlikely section disappear? During the creation of the
+> > object, or later in the linker stage?  
+> 
+> The section is there, but the symbol associated with the section
+> (".text.unlikely" symbol) isn't generated by the assembler.
+> 
 
-Do you have a link to the conversation that prompted addition of this
-new function?  If so, then it would be nice to include a reference to it
-here (as a link to http://lore.kernel.org/) in the cover letter for
-reference, if possible, of course.
+Greg,
 
-Generally, it would also be nice to expand on things a little bit and
-explain why do you want to add this new function, and what problems does
-it solve.
+Does this fix the issue with you? It appears to fix it for my arch linux
+VM that I created that uses binutils 2.36-3.
 
-[...]
-> Introduce pcim_alloc_irq_vectors(), a explicit device-managed version of
-> pci_alloc_irq_vectors(). and use the correct name of device-managed
-> function to alloc irq vectors in i2c drivers.
+-- Steve
 
-Did you want to use a comma, instead of a period, in the sentence
-above?  You could also probably drop the word "explicit".
-
-Krzysztof
+diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+index f9b19524da11..558b67f8364e 100644
+--- a/scripts/recordmcount.h
++++ b/scripts/recordmcount.h
+@@ -562,7 +562,7 @@ static char const * __has_rel_mcount(Elf_Shdr const *const relhdr, /* reltype */
+ 	if (w(txthdr->sh_type) != SHT_PROGBITS ||
+ 	    !(_w(txthdr->sh_flags) & SHF_EXECINSTR))
+ 		return NULL;
+-	return txtname;
++	return shdr0->sh_size ? txtname : NULL;
+ }
+ 
+ static char const *has_rel_mcount(Elf_Shdr const *const relhdr,
