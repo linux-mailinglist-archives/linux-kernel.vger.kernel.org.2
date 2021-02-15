@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86D131BFAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603E031BFB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhBOQr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:47:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49782 "EHLO mail.kernel.org"
+        id S230196AbhBOQsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:48:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230223AbhBOPiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230381AbhBOPiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 10:38:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69EF064EF5;
-        Mon, 15 Feb 2021 15:34:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F21A464EF8;
+        Mon, 15 Feb 2021 15:34:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403271;
-        bh=CqKua+9AC4BBzGT223pySJUvNsv/Q9xQ2IvYXgmVfvs=;
+        s=korg; t=1613403273;
+        bh=8yzTv+kmNL+oFvIi5QPN6VNeXCm398HTDlgtF/bf5rg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RJzlntPC3PryPfx7sJ0sRZgQkZaVxnUX/QoRdjrIQLJpURqMa5dIJPGd9+dXlRWPo
-         mGj+jsXlFXC5cVDuaNDC0BzICgfYZrBcL45Pfq0LSY/tJgHzi4LCTMdB4XtK2PE3pt
-         nw856qKnrZOpGG6Au524FIOZzyouOaId11XiDwCQ=
+        b=GPF3qkRAwM4nMFGVKQDaxdKOl4dWgUD0JioyLZ2duafepwQLy3emQ8PdLWxKR3goi
+         z6AQCCKQyJW00oApnOm9LDZDDeVympqCpqMQLI8BGiw+npgp+G5Y+/d3P6NlWrl3KM
+         nq9RfLj8DwUNNB52OTxE5NIETi+Dje2zOIgSZ8MY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        NeilBrown <neilb@suse.de>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        stable@vger.kernel.org, Norbert Slusarek <nslusarek@gmx.net>,
+        Stefano Garzarella <sgarzare@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 093/104] net: fix iteration for sctp transport seq_files
-Date:   Mon, 15 Feb 2021 16:27:46 +0100
-Message-Id: <20210215152722.460127927@linuxfoundation.org>
+Subject: [PATCH 5.10 094/104] net/vmw_vsock: fix NULL pointer dereference
+Date:   Mon, 15 Feb 2021 16:27:47 +0100
+Message-Id: <20210215152722.496048614@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,76 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.de>
+From: Norbert Slusarek <nslusarek@gmx.net>
 
-commit af8085f3a4712c57d0dd415ad543bac85780375c upstream.
+commit 5d1cbcc990f18edaddddef26677073c4e6fad7b7 upstream.
 
-The sctp transport seq_file iterators take a reference to the transport
-in the ->start and ->next functions and releases the reference in the
-->show function.  The preferred handling for such resources is to
-release them in the subsequent ->next or ->stop function call.
+In vsock_stream_connect(), a thread will enter schedule_timeout().
+While being scheduled out, another thread can enter vsock_stream_connect()
+as well and set vsk->transport to NULL. In case a signal was sent, the
+first thread can leave schedule_timeout() and vsock_transport_cancel_pkt()
+will be called right after. Inside vsock_transport_cancel_pkt(), a null
+dereference will happen on transport->cancel_pkt.
 
-Since Commit 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration
-code and interface") there is no guarantee that ->show will be called
-after ->next, so this function can now leak references.
-
-So move the sctp_transport_put() call to ->next and ->stop.
-
-Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and interface")
-Reported-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: NeilBrown <neilb@suse.de>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Fixes: c0cfa2d8a788 ("vsock: add multi-transports support")
+Signed-off-by: Norbert Slusarek <nslusarek@gmx.net>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Link: https://lore.kernel.org/r/trinity-c2d6cede-bfb1-44e2-85af-1fbc7f541715-1612535117028@3c-app-gmx-bap12
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/proc.c |   16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ net/vmw_vsock/af_vsock.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/sctp/proc.c
-+++ b/net/sctp/proc.c
-@@ -215,6 +215,12 @@ static void sctp_transport_seq_stop(stru
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1216,7 +1216,7 @@ static int vsock_transport_cancel_pkt(st
  {
- 	struct sctp_ht_iter *iter = seq->private;
+ 	const struct vsock_transport *transport = vsk->transport;
  
-+	if (v && v != SEQ_START_TOKEN) {
-+		struct sctp_transport *transport = v;
-+
-+		sctp_transport_put(transport);
-+	}
-+
- 	sctp_transport_walk_stop(&iter->hti);
- }
+-	if (!transport->cancel_pkt)
++	if (!transport || !transport->cancel_pkt)
+ 		return -EOPNOTSUPP;
  
-@@ -222,6 +228,12 @@ static void *sctp_transport_seq_next(str
- {
- 	struct sctp_ht_iter *iter = seq->private;
- 
-+	if (v && v != SEQ_START_TOKEN) {
-+		struct sctp_transport *transport = v;
-+
-+		sctp_transport_put(transport);
-+	}
-+
- 	++*pos;
- 
- 	return sctp_transport_get_next(seq_file_net(seq), &iter->hti);
-@@ -277,8 +289,6 @@ static int sctp_assocs_seq_show(struct s
- 		sk->sk_rcvbuf);
- 	seq_printf(seq, "\n");
- 
--	sctp_transport_put(transport);
--
- 	return 0;
- }
- 
-@@ -354,8 +364,6 @@ static int sctp_remaddr_seq_show(struct
- 		seq_printf(seq, "\n");
- 	}
- 
--	sctp_transport_put(transport);
--
- 	return 0;
- }
- 
+ 	return transport->cancel_pkt(vsk);
 
 
