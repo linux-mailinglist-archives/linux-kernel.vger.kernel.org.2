@@ -2,174 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E95931BBB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2630F31BC3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhBOO72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:59:28 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:33152 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbhBOO41 (ORCPT
+        id S230175AbhBOPYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:24:52 -0500
+Received: from mail-m974.mail.163.com ([123.126.97.4]:59642 "EHLO
+        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230374AbhBOPYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:56:27 -0500
-Date:   Mon, 15 Feb 2021 14:55:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613400945;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=TAkZBzhKHn6dqov3kRFxkwM0y9BMHSkNDXC2UtFtqXY=;
-        b=fTDEX4pZBntwSSEFEFQu6NKbRrLIKluPJvThDHtLROS51FG8UFn1vqUP22OQCrsXgaNOmc
-        9iJtGBbRWyhNCREkE4SCxoYDHFdF5vPXNuG6HGF4hR0zCAc1D6abHNQuBUJBP15xLOlQwC
-        HU8g6q8iipQkf7yUasHMhPKQCUSzpkf78xF7ZLbldcjfDIYMhThULLMdXNkYa1hFThadn/
-        aeReRhFDm8EWiddV9bsf2w0Ae8P2gTnvUN6ZwUyfpnKRdvzor5puad8YGd6M+D2CTVN78M
-        YduCleh7pWSCUbokEJE6X7VZeHNv4JDU4pnQK9XCerQdz6OnSw1HEMiRXwoTzA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613400945;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=TAkZBzhKHn6dqov3kRFxkwM0y9BMHSkNDXC2UtFtqXY=;
-        b=8UwjhCDIApQlaNIMom1DOYbGd9gwFj+1eTSfu8Jj/1Wb5rnGc4HOGDaUDQj8R8r6lU2pNL
-        +hExSUQJJZ+n/vAQ==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] srcu: Provide internal interface to start a Tree SRCU
- grace period
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Mon, 15 Feb 2021 10:24:00 -0500
+X-Greylist: delayed 1543 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Feb 2021 10:23:56 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=2u28/
+        RAEUFHNKG6HiuW32yeDuQc7WB7a627x1KD2BKU=; b=XwLokUvt0TMajRGlNpxGU
+        HfR4JWCNyVMEY3efPI3uZyp1VMIvmxJrzMP47bc+4+U6pH+F2kltIqzDSxsE42xq
+        uW8yG+yIfKr6V+ah6sWKXHrWotSRi6fSoug9wf0+KqC1Wqmy3hhCuMab4C9th1Oo
+        0v+JQTdN334J1pEGWuK4Ig=
+Received: from yangjunlin.ccdomain.com (unknown [119.137.55.63])
+        by smtp4 (Coremail) with SMTP id HNxpCgDXSVxSVSpgL8h0Aw--.36796S2;
+        Mon, 15 Feb 2021 19:04:51 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     broonie@kernel.org
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] spi: cadence-quadspi: add missing of_node_put
+Date:   Mon, 15 Feb 2021 19:04:25 +0800
+Message-Id: <20210215110425.1012-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
-Message-ID: <161340094498.20312.1445677559215645808.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: HNxpCgDXSVxSVSpgL8h0Aw--.36796S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1kur15GryDZw1kCryUZFb_yoWktFb_CF
+        n29F9rGFs8KF43ZF12q34UZF9Fga15urWfGFn7tFW3XryDAw17CFn5ZFyDG34jy3yj9r93
+        Cr47C3Z3Cr13KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU13C75UUUUU==
+X-Originating-IP: [119.137.55.63]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbBFBM6I1aD+ZcgKwAAsu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/rcu branch of tip:
+From: Junlin Yang <yangjunlin@yulong.com>
 
-Commit-ID:     29d2bb94a8a126ce80ffbb433b648b32fdea524e
-Gitweb:        https://git.kernel.org/tip/29d2bb94a8a126ce80ffbb433b648b32fdea524e
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Fri, 13 Nov 2020 10:08:09 -08:00
-Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 04 Jan 2021 13:53:37 -08:00
+Fix OF node leaks by calling of_node_put in
+for_each_available_child_of_node when the cycle returns.
 
-srcu: Provide internal interface to start a Tree SRCU grace period
+Generated by: scripts/coccinelle/iterators/for_each_child.cocci
 
-There is a need for a polling interface for SRCU grace periods.
-This polling needs to initiate an SRCU grace period without having
-to queue (and manage) a callback.  This commit therefore splits the
-Tree SRCU __call_srcu() function into callback-initialization and
-queuing/start-grace-period portions, with the latter in a new function
-named srcu_gp_start_if_needed().  This function may be passed a NULL
-callback pointer, in which case it will refrain from queuing anything.
-
-Why have the new function mess with queuing?  Locking considerations,
-of course!
-
-Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
-Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
 ---
- kernel/rcu/srcutree.c | 66 +++++++++++++++++++++++-------------------
- 1 file changed, 37 insertions(+), 29 deletions(-)
+ drivers/spi/spi-cadence-quadspi.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index 0f23d20..9a7b650 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -808,6 +808,42 @@ static void srcu_leak_callback(struct rcu_head *rhp)
- }
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 442cc7c..14a7120 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1389,11 +1389,13 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi)
+ 		ret = of_property_read_u32(np, "reg", &cs);
+ 		if (ret) {
+ 			dev_err(dev, "Couldn't determine chip select.\n");
++			of_node_put(np);
+ 			return ret;
+ 		}
  
- /*
-+ * Start an SRCU grace period, and also queue the callback if non-NULL.
-+ */
-+static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rhp, bool do_norm)
-+{
-+	unsigned long flags;
-+	int idx;
-+	bool needexp = false;
-+	bool needgp = false;
-+	unsigned long s;
-+	struct srcu_data *sdp;
-+
-+	idx = srcu_read_lock(ssp);
-+	sdp = raw_cpu_ptr(ssp->sda);
-+	spin_lock_irqsave_rcu_node(sdp, flags);
-+	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
-+	rcu_segcblist_advance(&sdp->srcu_cblist,
-+			      rcu_seq_current(&ssp->srcu_gp_seq));
-+	s = rcu_seq_snap(&ssp->srcu_gp_seq);
-+	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist, s);
-+	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
-+		sdp->srcu_gp_seq_needed = s;
-+		needgp = true;
-+	}
-+	if (!do_norm && ULONG_CMP_LT(sdp->srcu_gp_seq_needed_exp, s)) {
-+		sdp->srcu_gp_seq_needed_exp = s;
-+		needexp = true;
-+	}
-+	spin_unlock_irqrestore_rcu_node(sdp, flags);
-+	if (needgp)
-+		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
-+	else if (needexp)
-+		srcu_funnel_exp_start(ssp, sdp->mynode, s);
-+	srcu_read_unlock(ssp, idx);
-+}
-+
-+/*
-  * Enqueue an SRCU callback on the srcu_data structure associated with
-  * the current CPU and the specified srcu_struct structure, initiating
-  * grace-period processing if it is not already running.
-@@ -838,13 +874,6 @@ static void srcu_leak_callback(struct rcu_head *rhp)
- static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 			rcu_callback_t func, bool do_norm)
- {
--	unsigned long flags;
--	int idx;
--	bool needexp = false;
--	bool needgp = false;
--	unsigned long s;
--	struct srcu_data *sdp;
--
- 	check_init_srcu_struct(ssp);
- 	if (debug_rcu_head_queue(rhp)) {
- 		/* Probable double call_srcu(), so leak the callback. */
-@@ -853,28 +882,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
- 		return;
+ 		if (cs >= CQSPI_MAX_CHIPSELECT) {
+ 			dev_err(dev, "Chip select %d out of range.\n", cs);
++			of_node_put(np);
+ 			return -EINVAL;
+ 		}
+ 
+@@ -1402,8 +1404,10 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi)
+ 		f_pdata->cs = cs;
+ 
+ 		ret = cqspi_of_get_flash_pdata(pdev, f_pdata, np);
+-		if (ret)
++		if (ret) {
++			of_node_put(np);
+ 			return ret;
++		}
  	}
- 	rhp->func = func;
--	idx = srcu_read_lock(ssp);
--	sdp = raw_cpu_ptr(ssp->sda);
--	spin_lock_irqsave_rcu_node(sdp, flags);
--	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
--	rcu_segcblist_advance(&sdp->srcu_cblist,
--			      rcu_seq_current(&ssp->srcu_gp_seq));
--	s = rcu_seq_snap(&ssp->srcu_gp_seq);
--	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist, s);
--	if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
--		sdp->srcu_gp_seq_needed = s;
--		needgp = true;
--	}
--	if (!do_norm && ULONG_CMP_LT(sdp->srcu_gp_seq_needed_exp, s)) {
--		sdp->srcu_gp_seq_needed_exp = s;
--		needexp = true;
--	}
--	spin_unlock_irqrestore_rcu_node(sdp, flags);
--	if (needgp)
--		srcu_funnel_gp_start(ssp, sdp, s, do_norm);
--	else if (needexp)
--		srcu_funnel_exp_start(ssp, sdp->mynode, s);
--	srcu_read_unlock(ssp, idx);
-+	srcu_gp_start_if_needed(ssp, rhp, do_norm);
- }
  
- /**
+ 	return 0;
+-- 
+1.9.1
+
