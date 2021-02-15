@@ -2,49 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D7E31BBA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901EA31BBB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhBOO5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:57:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhBOO4Y (ORCPT
+        id S230110AbhBOO7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:59:12 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:33100 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230080AbhBOO40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:56:24 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3972DC061786;
-        Mon, 15 Feb 2021 06:55:44 -0800 (PST)
-Date:   Mon, 15 Feb 2021 14:55:42 -0000
+        Mon, 15 Feb 2021 09:56:26 -0500
+Date:   Mon, 15 Feb 2021 14:55:43 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613400942;
+        s=2020; t=1613400943;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=IV57XUPMn5cZuH2sSysfEKGHAfTdnmnXn1C0D+ktRi8=;
-        b=L1tXQGXhHXbxt8+Xin1VwIt4xlv/k8KYHkR1SOysA+dWQvmx6JOoBwPEIXxaxQVQfj09Ha
-        ebnBkd4diH8dawCrMC2VPxmnfAUP3E2QaEqbYfKvdXJgiQW+FOh3Uvf33rduwM7vfEWPdx
-        Sfq9OlcYd9JlJ9hy8XFOxbqXU4LEAhy4n3k+aZhR+FAaNf9Tn0GzXinJPMcDgm2CU+WNNL
-        4ctFSBpyQs0vjZmT42o9/jMCa/6OuDnUTKpXacdwdbqvQPSrhXfPa7dIm8rmbp9YJqDCLN
-        3xXoSHvDPBePsqShEhuTyR+fPnOVeaFqCO78fN93uI+t1kThWAnx6hYRSJGKfA==
+        bh=4xXGIgU2kaxNdTzlTpv0MIPJkbMjPZPxdoMjjwc9QVs=;
+        b=QP/i+UIcPeezjaWWq7skZMzGEbM7ZgHTalAnozkYd1shnkAdE3luS10jquDQMa4L5hdNQw
+        B/4pHol6znrv5NKJQ8FhJsSyhJ7338QoyUnVvBr6SYRfXFRA7s2kZuGlEaAr0iI/FFzWH5
+        9X9YnuTUjF7bX8JOgI/j2G9iGQVWSWShIVEGJ4jaT3LFylYjM8URePiD0N2AN6QvKvYa1z
+        yFI12sz4vsgRLjqN3qus/Wl6dGNC8GvBoUFZ7fw+G0r6gYhSjhDpV/b/o3oQGVTYJDdb5A
+        gLzMw3c3ou4Pse+8HpHPIRAXg51+qANmOImWZ2acs0AH0eKR1sDmPhkWTGCP0w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613400942;
+        s=2020e; t=1613400943;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=IV57XUPMn5cZuH2sSysfEKGHAfTdnmnXn1C0D+ktRi8=;
-        b=8MozNt46yap/08F1mXS6xdoH0087lOsruqlxIXK18gutEOmVp73+v1CdirBGQxqqazP2iM
-        HnlUqA/LyXpK8ACg==
+        bh=4xXGIgU2kaxNdTzlTpv0MIPJkbMjPZPxdoMjjwc9QVs=;
+        b=Gpd4SbtWQKM9SypZGX9h7MINbaSuTO+SJXe+7JN8BPcOKFGyHADGs2b/t1o8UGtFqFQfBj
+        taPIwkQKXZn7MtDg==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu: Mark obtuse portion of stall warning as internal debug
-Cc:     Jonathan Lemon <bsd@fb.com>,
+Subject: [tip: core/rcu] rcutorture: Add reader-side tests of polling grace-period API
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161340094231.20312.16236811170512592253.tip-bot2@tip-bot2>
+Message-ID: <161340094315.20312.17192020164195875784.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,40 +52,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     b08ea1de6a8f8929c7dafd6f708799365fa90c11
-Gitweb:        https://git.kernel.org/tip/b08ea1de6a8f8929c7dafd6f708799365fa90c11
+Commit-ID:     bc480a6354ef2e15c26c3bdbd0db647026e788a7
+Gitweb:        https://git.kernel.org/tip/bc480a6354ef2e15c26c3bdbd0db647026e788a7
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Fri, 06 Nov 2020 13:52:31 -08:00
+AuthorDate:    Sun, 15 Nov 2020 12:45:57 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 04 Jan 2021 13:54:40 -08:00
+CommitterDate: Mon, 04 Jan 2021 13:53:40 -08:00
 
-rcu: Mark obtuse portion of stall warning as internal debug
+rcutorture: Add reader-side tests of polling grace-period API
 
-There is a rather obtuse string that can be printed as part of an
-expedited RCU CPU stall-warning message that starts with "blocking
-rcu_node structures".  Under normal conditions, most of this message
-is just repeating the list of CPUs blocking the current expedited grace
-period, but in a manner that is rather difficult to read.  This commit
-therefore marks this message as "(internal RCU debug)" in an effort to
-give people the option of avoiding wasting time attempting to extract
-nonexistent additional meaning from this portion of the message.
+This commit adds reader-side testing of the polling grace-period API.
+This testing verifies that a cookie obtained in an SRCU read-side critical
+section does not get a true return from poll_state_synchronize_srcu()
+within that same critical section.
 
-Reported-by: Jonathan Lemon <bsd@fb.com>
+Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_exp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/rcutorture.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 8760b6e..6c6ff06 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -545,7 +545,7 @@ static void synchronize_rcu_expedited_wait(void)
- 			data_race(rnp_root->expmask),
- 			".T"[!!data_race(rnp_root->exp_tasks)]);
- 		if (ndetected) {
--			pr_err("blocking rcu_node structures:");
-+			pr_err("blocking rcu_node structures (internal RCU debug):");
- 			rcu_for_each_node_breadth_first(rnp) {
- 				if (rnp == rnp_root)
- 					continue; /* printed unconditionally */
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 78ba95d..96d55f0 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1429,6 +1429,7 @@ rcutorture_loop_extend(int *readstate, struct torture_random_state *trsp,
+  */
+ static bool rcu_torture_one_read(struct torture_random_state *trsp)
+ {
++	unsigned long cookie;
+ 	int i;
+ 	unsigned long started;
+ 	unsigned long completed;
+@@ -1444,6 +1445,8 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp)
+ 	WARN_ON_ONCE(!rcu_is_watching());
+ 	newstate = rcutorture_extend_mask(readstate, trsp);
+ 	rcutorture_one_extend(&readstate, newstate, trsp, rtrsp++);
++	if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
++		cookie = cur_ops->get_gp_state();
+ 	started = cur_ops->get_gp_seq();
+ 	ts = rcu_trace_clock_local();
+ 	p = rcu_dereference_check(rcu_torture_current,
+@@ -1480,6 +1483,13 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp)
+ 	}
+ 	__this_cpu_inc(rcu_torture_batch[completed]);
+ 	preempt_enable();
++	if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
++		WARN_ONCE(cur_ops->poll_gp_state(cookie),
++			  "%s: Cookie check 3 failed %s(%d) %lu->%lu\n",
++			  __func__,
++			  rcu_torture_writer_state_getname(),
++			  rcu_torture_writer_state,
++			  cookie, cur_ops->get_gp_state());
+ 	rcutorture_one_extend(&readstate, 0, trsp, rtrsp);
+ 	WARN_ON_ONCE(readstate & RCUTORTURE_RDR_MASK);
+ 	// This next splat is expected behavior if leakpointer, especially
