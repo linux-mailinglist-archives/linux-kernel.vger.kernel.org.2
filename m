@@ -2,245 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B299031BC01
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 392D531BC02
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhBOPNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:13:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
+        id S230186AbhBOPOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhBOPCL (ORCPT
+        with ESMTP id S230233AbhBOPDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:02:11 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB714C061574;
-        Mon, 15 Feb 2021 07:01:30 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id f20so7002060ioo.10;
-        Mon, 15 Feb 2021 07:01:30 -0800 (PST)
+        Mon, 15 Feb 2021 10:03:06 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBB6C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:02:25 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id v5so10604933lft.13
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:02:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=GSvoAkQ3BcovqwwVsAtnvZDIJz1KYWH0LnBEk95Dbto=;
-        b=YNDh//3ufklrPVrKZ6mImjdBp9OMdNlXThpgLHSNJtnzpNgio4G3pFAzfQdtuHdhY3
-         SFP5cbMcNm6Qm2S6LaBvJ6yR8prSxcSoRust0EgPKZi6a9B7cOkZidUO1vtADWRrN5mz
-         kNNzw0Ddo+Lv30RLmQohqoKrnJAtsWQ1V3MeM/igUQPbYgIwgBqpjC9pPQJtByRttUNS
-         hNdgGVSHS4EKIIZsPtP2vhcxhLlYKGEmx33yX5KOsoCFV9CwW+GrSCJ6cb/nZQ65Pf0I
-         T6kwA/lmDoG/s+tT+P+yKXyiQrr/VW8hssOddoBBD4sbg+M3+V1CNLXVkL6qzOeZbfNJ
-         hoAw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KBY4CasDBLFRa3xlpKrGTGWXThXij7fIUvpaK3E3y4s=;
+        b=vbqlAG45NScbVqUBuXUA2C2fcYzGONXld7d/KN7XZLtkJx71hU4v9pSrulebj3QQOp
+         Bcm0FgtOhnQoNlvLDOzKj2Lm55w9C0/0j2REX0EM7KRB6Sl5fzI6RcfUSAkNLNrw1H/y
+         GAStlQNmLRBJBdwrBlzZiZ4H2HR8VTGDtHZVhNuX1EGMkiV8vwe8ziCSikUDCOexjf5u
+         isdN8+jRsOUgZlELhCXQJApiQ2fEfH0IVMe1v1pVl1aACZaqFeDC/qSzyLgeYT6bEBLY
+         4KiVyMgNwBfvYRqRAmkvH3KwCttI3C150aPWWDzy3B1VTDGC29zEaIr4vSTfeFGePbt9
+         lb2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=GSvoAkQ3BcovqwwVsAtnvZDIJz1KYWH0LnBEk95Dbto=;
-        b=FwD2rVEqYtJNxGRfBRdLgz3VKIcxOd+og859n0deasOHkB+sXPqDkF/m98nYHBtLvP
-         JaWjMSHUA9u8A/mjNzkHvDI1Z3J1kb7z8kmJgm6GJtkWqBzhkcU5Q2Z7xlyZIigfuwEH
-         wJb2F7/xy9QaUGounMKjJbnGjD2bZYaMFaqQGAw5BxtT6e4AA4WWXvWwvCZ8RtXfkm5F
-         uaumLHeVAHUhlUJS0/2P8g2fIvvs1znusRLpCA6uVoFJ9oFYNZyNtV0aQclfNxGamsgB
-         nWrnB3h66J/3wg/wgSMW5L5XZo3rLigMMN+3L0XIitfw74w6ydVKqKKfJLxeD2/c81mu
-         WP3A==
-X-Gm-Message-State: AOAM533go32XplU/qdRrMzK9odJsm+x7RJMajRft92eEndigpysl0sPE
-        MoVbcvm2ABQdysJXnuJA9fOd7M/aWWVoZMLYkBw=
-X-Google-Smtp-Source: ABdhPJw+WtaUKIUCc+vjL5XjGQzpxqMC0BLm0rCrFpB7kdivYYquyqSV6ztD8c5J8XitgwQIbo03Byg1PGxLjSfK0QE=
-X-Received: by 2002:a05:6602:1608:: with SMTP id x8mr13168789iow.109.1613401290223;
- Mon, 15 Feb 2021 07:01:30 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KBY4CasDBLFRa3xlpKrGTGWXThXij7fIUvpaK3E3y4s=;
+        b=gPYNsDe62ijF5zseSdINmD4X2io0M+M6QuvUwDTDmS52FTcW297UMc1oQPUxTR+H6I
+         Pvi2CIeKC9RTLE1BZ88JK3Rx7+/89nAaDTXrDzC7Ot8bMBUZ35TAQyEWKAOgTdXQIiEN
+         m4QmE8oCUtR5161Ae8NuzG1kmV9XVWb9M+0okyrOG+V9E0BZ3tacFlUq523+MjJj8JnX
+         Wov0C71ROTgSsKmIMsbl0NB2pex+a9eb0CiHDBMVVQIy/kfDd7j+Q+aFYs76AcQSPrl4
+         EssuBeJ9pqlX00Dx3NF6l00jk3vKxV+6YdS33/6SYUhCCAa1P8yEwhPiDIRFH3AqUk7P
+         Km0g==
+X-Gm-Message-State: AOAM5310KlTaPbyXiunZI/L+2f/YSbfa1+m21jWBc5NRddpanOZOKcte
+        HWSB8fRBFAMhfyK1VdKN9NVmpYgBF8p0UDfHOX201g==
+X-Google-Smtp-Source: ABdhPJz9uvp6LftACX44h5xt7tMg7IaAt5J3Yu9FiQW8limxwrKGIm5rT0+U8Kv8zZ2BbDLqOKS69K8pW597Aio1RM4=
+X-Received: by 2002:ac2:42d5:: with SMTP id n21mr9258548lfl.154.1613401344019;
+ Mon, 15 Feb 2021 07:02:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20210126104001.20361-1-lukasz.luba@arm.com> <CGME20210126104217epcas1p349c717ccf0ea4f964153040b48c72352@epcas1p3.samsung.com>
- <20210126104001.20361-2-lukasz.luba@arm.com> <ea409e2f-f3ca-437f-d787-7ba793a2c226@samsung.com>
- <5bd13e13-202f-d059-da29-f82806c33a38@arm.com> <fe7763c8-22f7-65ad-94ee-3c4a78a3f6eb@arm.com>
- <932c04da-46bf-8867-6b10-c6af83a36588@arm.com>
-In-Reply-To: <932c04da-46bf-8867-6b10-c6af83a36588@arm.com>
-Reply-To: cwchoi00@gmail.com
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Date:   Tue, 16 Feb 2021 00:00:52 +0900
-Message-ID: <CAGTfZH12DwvKDv7aKwisL-mvx0tyMcXA96nLTbSpO5zVp5UCiA@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/3] PM /devfreq: add user frequency limits into
- devfreq struct
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+References: <20210212141744.24284-1-vincent.guittot@linaro.org>
+ <20210212141744.24284-7-vincent.guittot@linaro.org> <jhj5z2xt7oy.mognet@arm.com>
+In-Reply-To: <jhj5z2xt7oy.mognet@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 15 Feb 2021 16:02:12 +0100
+Message-ID: <CAKfTPtDpTEUdRcgJ3dwvD6Fz3D02E46xNtv9BpfFmkjCV1shyA@mail.gmail.com>
+Subject: Re: [PATCH 6/7 v3] sched/fair: trigger the update of blocked load on
+ newly idle cpu
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dietmar.Eggemann@arm.com, amitk@kernel.org,
-        Zhang Rui <rui.zhang@intel.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>
+        Joel Fernandes <joel@joelfernandes.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Qais Yousef <qais.yousef@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
-
-On Fri, Feb 12, 2021 at 7:28 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+On Fri, 12 Feb 2021 at 20:19, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
 >
->
->
-> On 2/11/21 11:07 AM, Lukasz Luba wrote:
-> > Hi Chanwoo,
+> On 12/02/21 15:17, Vincent Guittot wrote:
+> > Instead of waking up a random and already idle CPU, we can take advantage
+> > of this_cpu being about to enter idle to run the ILB and update the
+> > blocked load.
 > >
-> > On 2/3/21 10:21 AM, Lukasz Luba wrote:
-> >> Hi Chanwoo,
-> >>
-> >> Thank you for looking at this.
-> >>
-> >> On 2/3/21 10:11 AM, Chanwoo Choi wrote:
-> >>> Hi Lukasz,
-> >>>
-> >>> When accessing the max_freq and min_freq at devfreq-cooling.c,
-> >>> even if can access 'user_max_freq' and 'lock' by using the 'devfreq'
-> >>> instance,
-> >>> I think that the direct access of variables
-> >>> (lock/user_max_freq/user_min_freq)
-> >>> of struct devfreq are not good.
-> >>>
-> >>> Instead, how about using the 'DEVFREQ_TRANSITION_NOTIFIER'
-> >>> notification with following changes of 'struct devfreq_freq'?
-> >>
-> >> I like the idea with devfreq notification. I will have to go through the
-> >> code to check that possibility.
-> >>
-> >>> Also, need to add codes into devfreq_set_target() for initializing
-> >>> 'new_max_freq' and 'new_min_freq' before sending the DEVFREQ_POSTCHANGE
-> >>> notification.
-> >>>
-> >>> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
-> >>> index 147a229056d2..d5726592d362 100644
-> >>> --- a/include/linux/devfreq.h
-> >>> +++ b/include/linux/devfreq.h
-> >>> @@ -207,6 +207,8 @@ struct devfreq {
-> >>>   struct devfreq_freqs {
-> >>>          unsigned long old;
-> >>>          unsigned long new;
-> >>> +       unsigned long new_max_freq;
-> >>> +       unsigned long new_min_freq;
-> >>>   };
-> >>>
-> >>>
-> >>> And I think that new 'user_min_freq'/'user_max_freq' are not necessary.
-> >>> You can get the current max_freq/min_freq by using the following steps:
-> >>>
-> >>>     get_freq_range(devfreq, &min_freq, &max_freq);
-> >>>     dev_pm_opp_find_freq_floor(pdev, &min_freq);
-> >>>     dev_pm_opp_find_freq_floor(pdev, &max_freq);
-> >>>
-> >>> So that you can get the 'max_freq/min_freq' and then
-> >>> initialize the 'freqs.new_max_freq and freqs.new_min_freq'
-> >>> with them as following:
-> >>>
-> >>> in devfreq_set_target()
-> >>>     get_freq_range(devfreq, &min_freq, &max_freq);
-> >>>     dev_pm_opp_find_freq_floor(pdev, &min_freq);
-> >>>     dev_pm_opp_find_freq_floor(pdev, &max_freq);
-> >>>     freqs.new_max_freq = min_freq;
-> >>>     freqs.new_max_freq = max_freq;
-> >>>     devfreq_notify_transition(devfreq, &freqs, DEVFREQ_POSTCHANGE);
-> >>
-> >> I will plumb it in and check that option. My concern is that function
-> >> get_freq_range() would give me the max_freq value from PM QoS, which
-> >> might be my thermal limit - lower that user_max_freq. Then I still
-> >> need
-> >>
-> >> I've been playing with PM QoS notifications because I thought it would
-> >> be possible to be notified in thermal for all new set values - even from
-> >> devfreq sysfs user max_freq write, which has value higher that the
-> >> current limit set by thermal governor. Unfortunately PM QoS doesn't
-> >> send that information by design. PM QoS also by desing won't allow
-> >> me to check first two limits in the plist - which would be thermal
-> >> and user sysfs max_freq.
-> >>
-> >> I will experiment with this notifications and share the results.
-> >> That you for your comments.
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >  kernel/sched/fair.c  | 24 +++++++++++++++++++++---
+> >  kernel/sched/idle.c  |  6 ++++++
+> >  kernel/sched/sched.h |  5 +++++
+> >  3 files changed, 32 insertions(+), 3 deletions(-)
 > >
-> > I have experimented with your proposal. Unfortunately, the value stored
-> > in the pm_qos which is read by get_freq_range() is not the user max
-> > freq. It's the value from thermal devfreq cooling when that one is
-> > lower. Which is OK in the overall design, but not for my IPA use case.
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 5d285d93e433..cd0ea635225e 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -10453,6 +10453,24 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
+> >       return true;
+> >  }
 > >
-> > What comes to my mind is two options:
-> > 1) this patch proposal, with simple solution of two new variables
-> > protected by mutex, which would maintain user stored values
-> > 2) add a new notification chain in devfreq to notify about new
-> > user written value, to which devfreq cooling would register; that
-> > would allow devfreq cooling to get that value instantly and store
-> > locally
+> > +/*
+> > + * Check if we need to run the ILB for updating blocked load before entering
+> > + * idle state.
+> > + */
+> > +void nohz_run_idle_balance(int cpu)
+> > +{
+> > +     unsigned int flags;
+> > +
+> > +     flags = atomic_fetch_andnot(NOHZ_KICK_MASK, nohz_flags(cpu));
+> > +
+> > +     if (flags && !need_resched()) {
+> > +             struct rq *rq = cpu_rq(cpu);
+> > +
+> > +             rq->nohz_idle_balance = flags;
+> > +             nohz_idle_balance(rq, CPU_IDLE);
+> > +     }
 >
-> 3) How about new define for existing notification chain:
-> #define DEVFREQ_USER_CHANGE            (2)
+> So this can now run a full fledged nohz_idle_balance() if NOHZ_BALANCE_MASK
+> is set.
 
-I think that if we add the notification with specific actor like user change
-or OPP change or others, it is not proper. But, we can add the notification
-for min or max frequency change timing. Because the devfreq already has
-the notification for current frequency like DEVFREQ_PRECHANGE,
-DEVFREQ_POSTCHANGE.
+Yes.
+>
+> I don't think there is anything inherently wrong with it - the
+> nohz_idle_balance() call resulting from the kick_ilb() IPI will just bail
+> out due to the flags being cleared here. This wasn't immediately clear to
+> me however.
 
-Maybe, we can add the following notification for min/max_freq.
-The following min_freq and max_freq values will be calculated by
-get_freq_range().
-DEVFREQ_MIN_FREQ_PRECHANGE
-DEVFREQ_MIN_FREQ_POSTCHANGE
-DEVFREQ_MAX_FREQ_PRECHANGE
-DEVFREQ_MAX_FREQ_POSTCHANGE
-
+In fact, I forgot to replace the WARN_ON in nohz_csd_func() by a
+simple return as reported by kernel test robot / oliver.sang@intel.com
 
 >
-> Then a modified devfreq_notify_transition() would get:
-> @@ -339,6 +339,10 @@ static int devfreq_notify_transition(struct devfreq
-> *devfreq,
->
-> srcu_notifier_call_chain(&devfreq->transition_notifier_list,
->                                  DEVFREQ_POSTCHANGE, freqs);
->                  break;
-> +       case DEVFREQ_USER_CHANGE:
-> +               srcu_notifier_call_chain(&devfreq->transition_notifier_list,
-> +                               DEVFREQ_USER_CHANGE, freqs);
-> +               break;
->          default:
->                  return -EINVAL;
->          }
->
-> If that is present, I can plumb your suggestion with:
-> struct devfreq_freq {
-> +       unsigned long new_max_freq;
-> +       unsigned long new_min_freq;
->
-> and populate them with values in the max_freq_store() by adding at the
-> end:
->
-> freqs.new_max_freq = max_freq;
-> mutex_lock();
-> devfreq_notify_transition(devfreq, &freqs, DEVFREQ_USER_CHANGE);
-> mutex_unlock();
->
-> I would handle this notification in devfreq cooling and keep the
-> value there, for future IPA checks.
->
-> If you agree, I can send next version of the patch set.
->
-> >
-> > What do you think Chanwoo?
-
-I thought that your suggestion to expose the user input for min/max_freq.
-But, these values are not valid for the public user. Actually, the devfreq core
-handles these values only internally without any explicit access from outside.
-
-I'm not sure that it is right or not to expose the internal value of
-devfreq struct.
-Until now, I think that it is not proper to show the interval value outside.
-
-Because the devfreq subsystem only provides the min_freq and max_freq
-which reflect the all requirement of user input/cooling policy/OPP
-instead of user_min_freq, user_max_freq.
-
-If we provide the user_min_freq, user_max_freq via DEVFREQ notification,
-we have to make the new sysfs attributes for user_min_freq and user_max_freq
-to show the value to the user. But, it seems that it is not nice.
-
-Actually, I have no other idea how to support your feature.
-We try to find the more proper method.
-
--- 
-Best Regards,
-Chanwoo Choi
+> > +}
+> > +
