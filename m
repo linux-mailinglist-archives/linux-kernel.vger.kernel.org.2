@@ -2,132 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3646A31B9D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A467931B9E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhBOMyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:54:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhBOMyn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:54:43 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352C7C061574;
-        Mon, 15 Feb 2021 04:54:03 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id u11so3672858plg.13;
-        Mon, 15 Feb 2021 04:54:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BZgaSt3foww3LKti1xLjH9ESlqQ5fFDh0YJtrgKJLUo=;
-        b=Eeqtr7wDuFgFKopoZe3pNkVjy58jZlEpcjj+VH6zl5DsCxkPsHxgLZGZoTJK6EasEV
-         KoRDouq2BQsWF/dXRaDvUTemda5K9MuGdNql1GZRpVzVroURhG/fVODTTBWE4jpiSDYj
-         BWPoOebmkZMujAG/PpfEYX0zDLodNSRqSTbbu3ELhP6xL3gPF8hOTez56mHx8ZjP1tNX
-         ciqx5Yc38GuLAmOAcJitO9ICq4sld/DID3FS7nAWOnX92e2naxPVKxHQwcpONMRGYO43
-         stuW2shrGgT3NfkBs4gwaZ978wmrgzk18v7lDE+AIQYTHc1uV0lCiPmvj9lmNcbKtsDn
-         gkiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BZgaSt3foww3LKti1xLjH9ESlqQ5fFDh0YJtrgKJLUo=;
-        b=LnUll52wGTe89QMQWg9GNcl8+zEFS9wc4rMemL/qwQgDTATh+T0H3NUdaPQeQGkaNM
-         zKz0kNW3XsrsnwMICd44Da3v8Kyh2tdkLUP95Y8KETDJyBb2d2Si3ptUUJ8KzSdgeND2
-         brqqM7bgGJ2qj2Bdk8J/iBEU+9ec3bd15tJAuIl5jFAE9TJwiev9e4vGUGYKlDbwrym0
-         rtJUTm+tdoD5H5jc5jixPoWVitg1Zb2/sqxXcGyy29qzbmofzcQKi/Z28h12YLg0GJCw
-         L7vQrMwEXYqvEK2TZ/zZAtyef+WcG4iyPBVnY6hp0dOcAg+Igd4LJQvr7MlSVsI7oPEe
-         qytA==
-X-Gm-Message-State: AOAM531Y/eYBWP1os5hQclHIIWZPdMEVIjHuDXBO1ROg08ANstvW0uqe
-        zGmHCNHOFoyFDb1c67P+/2YP4jApnzrRNGJjJrk=
-X-Google-Smtp-Source: ABdhPJx4iLBwW3dX8rPuAiC+0iF5zsyULMLkaPC60k4/jtyHgAKkfJPWmra1H+U8qgGwcRbvgUHDkLwWX5dkuyIyU8Y=
-X-Received: by 2002:a17:902:7b96:b029:de:7ae6:b8db with SMTP id
- w22-20020a1709027b96b02900de7ae6b8dbmr15067149pll.0.1613393642679; Mon, 15
- Feb 2021 04:54:02 -0800 (PST)
+        id S229954AbhBOM6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:58:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229666AbhBOM6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 07:58:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BA5B64E32;
+        Mon, 15 Feb 2021 12:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613393876;
+        bh=JmCk3wwhPukg3kOobGn/50JTpRaSFtNqZz/tas7ch0Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fcNNq09xgLPbl466yc8rl0ZZh3SAs/MZ7x6tKJgIVDNxPxUOCD0/G4P/8jXEcrYLN
+         Zv/u/sKU3vfHG5JTURLn0GYT4+Ku0tnL0ndshz0UyhqvAH2GUpin4TdLiS4LqSyy+D
+         ULmHtoJJFOKs0eHRWp0rR+PsHbW1oiT44iQPdXYIa/3uIem6PWsTA3wIWAqB5r4hPP
+         X3auNq9EBW2ZZT1QINNhnRuml/oa11NOMaY3Eu4sNVGIxkLS0Ow5kugGQZr40tfpDl
+         GmaH4OYJs7LuvAOxfqgTJDXtmYRdTxy4mpA08pi8bNnNTgh6vavHdjS6lBSql12myd
+         5tMu0zH5WO3hA==
+Received: by mail-ot1-f43.google.com with SMTP id s107so5943915otb.8;
+        Mon, 15 Feb 2021 04:57:56 -0800 (PST)
+X-Gm-Message-State: AOAM530Eeod68VghzJLIvckAgy/46djT2WvXf5SUwCUpCR+d/M8P4QUz
+        dIFuGMBa8IrqMP0gJRztFgT/w2H5j/nFDjc+TNU=
+X-Google-Smtp-Source: ABdhPJwwXI1NUf7nwPgf6KkxASuVYd+/6NE+oIbTXzx+4RVFEeJVXTbYiqMpUvAoV3ETUwfEcq//vDUfbp3xZcsCazg=
+X-Received: by 2002:a9d:3403:: with SMTP id v3mr11259199otb.305.1613393875550;
+ Mon, 15 Feb 2021 04:57:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20210211175140.85391-1-alban.bedel@aerq.com>
-In-Reply-To: <20210211175140.85391-1-alban.bedel@aerq.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 15 Feb 2021 14:53:46 +0200
-Message-ID: <CAHp75VfUY5-VtCWjaU6Q=hJY9hyUz8B36C0528RXUxkbnL9yEA@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: pca953x: add support for open drain pins on PCAL6524
-To:     Alban Bedel <alban.bedel@aerq.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+References: <20210215121713.57687-1-marcan@marcan.st>
+In-Reply-To: <20210215121713.57687-1-marcan@marcan.st>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 15 Feb 2021 13:57:39 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1bXiWcieqTSZARN+to=J5RjC2cwbn_8ZOCYw2hhyyBYw@mail.gmail.com>
+Message-ID: <CAK8P3a1bXiWcieqTSZARN+to=J5RjC2cwbn_8ZOCYw2hhyyBYw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/25] Apple M1 SoC platform bring-up
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Catalin Marinas <catalin.marinas@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hint: don't forget to include reviewers from previous version
-
-On Thu, Feb 11, 2021 at 7:52 PM Alban Bedel <alban.bedel@aerq.com> wrote:
+On Mon, Feb 15, 2021 at 1:16 PM Hector Martin <marcan@marcan.st> wrote:
 >
-> From a quick glance at various datasheets the PCAL6524 and the
-> PCAL6534 seems to be the only chips in this family that support
-> setting the drive mode of single pins. Other chips either don't
-> support it at all, or can only set the drive mode of whole banks,
-> which doesn't map to the GPIO API.
+> This series brings up initial support for the Apple M1 SoC, used in the
+> 2020 Mac Mini, MacBook Pro, and MacBook Air models.
 >
-> Add a new flag, PCAL65xx_REGS, to mark chips that have the extra
-> registers needed for this feature. Then mark the needed register banks
-> as readable and writable, here we don't set OUT_CONF as writable,
-> although it is, as we only need to read it. Finally add a function
-> that configures the OUT_INDCONF register when the GPIO API sets the
-> drive mode of the pins.
+> The following features are supported in this initial port:
+>
+> - UART (samsung-style) with earlycon support
+> - Interrupts, including affinity and IPIs (Apple Interrupt Controller)
+> - SMP (through standard spin-table support)
+> - simplefb-based framebuffer
+> - Devicetree for the Mac Mini (should work for the others too at this
+>   stage)
 
-...
+I am essentially happy with the state of this series, the comments I had
+in v1 by email and IRC are all addressed, but of course with the timing
+during the merge window, it is not going to be in v5.12.
 
-> +#define PCAL65xx_REGS          BIT(10)
+(adding maintainers for the serial/irqchip/clocksource drivers and
+arch/arm64 to cc)
 
-Can we have it as a _TYPE, please?
+I would suggest merging it together as a series through the soc tree for
+v5.13, once each patch has been reviewed by the respective subsystem
+maintainers, with possible add-on patches on the same branch for
+additional drivers that may become ready during the 5.12-rc cycle.
+After the initial merge, driver patches will of course go through subsystem
+trees as normal.
 
-...
+Let me know if that works for everyone.
 
-> +#define PCAL65xx_BANK_INDOUT_CONF BIT(8 + 12)
-
-IND is a bit ambiguous based on the description below.
-After you elaborate, I probably can propose better naming.
-
-...
-
-> + *   - PCAL65xx with individual pin configuration
-> + *     Individual pin output config    0x40 + 12 * bank_size   RW
-
-Not sure I understand what "individual" means here (no, I haven't
-looked into the datasheet).
-
-...
-
-> +       if (config == PIN_CONFIG_DRIVE_OPEN_DRAIN)
-> +               val = mask;
-> +       else if (config == PIN_CONFIG_DRIVE_PUSH_PULL)
-> +               val = 0;
-> +       else
-> +               return -EINVAL;
-
-Switch-case will look more naturally here (despite being longer in
-terms of LOCs).
-
-...
-
-> +exit:
-
-exit_unlock:
-
-> +       mutex_unlock(&chip->i2c_lock);
-> +       return ret;
-
-...
-
-> +#define OF_L65XX(__nrgpio) OF_953X(__nrgpio, PCA_LATCH_INT | PCAL65xx_REGS)
-
-When you change to the type, it will go accordingly. Don't add
-LATCH_INT to the macro.
-
--- 
-With Best Regards,
-Andy Shevchenko
+     Arnd
