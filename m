@@ -2,95 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C189E31C0FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8F931C100
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhBORuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:50:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232184AbhBORpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:45:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EAEA60C3D;
-        Mon, 15 Feb 2021 17:45:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613411111;
-        bh=H142txNXU7FRt9uW2Sv16n19CyrevXPqFbx8ThdGOrI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uglK3kwezVaW8PF9O7FxFnlzq7edOQYRV4JhCChBfp7IC1sZiO5UIKu4xOQ6CEbW0
-         9xuJibheu2jwvY9Fk3sEeGOyqm9b9LEUm3T7vPODQumpsqGUaGbMWpwakK5tdZRLh1
-         FsNuf+PV84M6z3tZ3okItznTl+4JAB0yOYeo3t1y+v8MvauJ89KKKgCMB+tqVRnAiC
-         4rXdPqCkNqgMoVW068L3bL/2Z7i5JSJoqmsEdsMsvAQ5RAsgsjvO+7jHs+gsVpMxXY
-         BOgODid5IqWfH0ncdktLpmuQr59nm0hZpCcT8hBeZWUwySMhkBk8M9e+yLrhjzfbZC
-         lDA4fVbX9OE7g==
-Date:   Mon, 15 Feb 2021 09:45:09 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Stephen Boyd <sboyd@kernel.org>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
-        Jan Kotas <jank@cadence.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
-        Boris BREZILLON <boris.brezillon@free-electrons.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Emilio =?UTF-8?B?TMOzcGV6?= <emilio@elopez.com.ar>,
-        Viresh Kumar <vireshk@kernel.org>, openbmc@lists.ozlabs.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Nancy Yuen <yuenn@google.com>, Chen-Yu Tsai <wens@csie.org>,
-        Andy Gross <agross@kernel.org>, Loc Ho <lho@apm.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Richard Woodruff <r-woodruff2@ti.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        =?UTF-8?B?U8O2cmVu?= Brinkmann <soren.brinkmann@xilinx.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Tero Kristo <kristo@kernel.org>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Nuvoton Technologies <tali.perry@nuvoton.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
-Message-ID: <20210215094509.0b1f0bbf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210215084952.GF179940@dell>
-References: <20210212092016.GF4572@dell>
-        <161316374113.1254594.14156657225822268891@swboyd.mtv.corp.google.com>
-        <20210212212503.GC179940@dell>
-        <20210212212630.GD179940@dell>
-        <161316754567.1254594.9542583200097699504@swboyd.mtv.corp.google.com>
-        <20210212223739.GE179940@dell>
-        <161317480301.1254594.16648868282165823277@swboyd.mtv.corp.google.com>
-        <YCf4kkMsX+Ymgy6N@lunn.ch>
-        <161333644244.1254594.4498059850307971318@swboyd.mtv.corp.google.com>
-        <YCmUOHTtc+j4eLkO@lunn.ch>
-        <20210215084952.GF179940@dell>
+        id S231860AbhBORua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:50:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231660AbhBORr5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 12:47:57 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB19DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:47:16 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id f1so11761656lfu.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:47:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=ri8r0QWyV+GpeiVDFOhcmhq8RvvDVRYHrS/HSMA0tvw=;
+        b=IKAJUgCftQoBmFHgXAAxZRVH0+3pG2XISwgVJUMcwg5HKQVX2qWDCNI3428uv7bc3P
+         H2O5vlMh/KmI8dBYAgADseRk8CxU7HcFb6+ZpXGAOMt6FqGy83tT5r4Rf5RpNV7sGPsq
+         deZt//zjPn6tGJl1djc349TkpvLFTPw7CSCeoPGxoem+9r2n1HPNBpogJrYlRj12iN/6
+         KEQ8+K0PYbQt72AqOSdoV/NHgW5loY3piVea+MQvhaoRY5jlHFVP1QpExi/5jLglZcMu
+         AvsV5CzU5TQTuoAwz5l/nTeItEvIkuV9TxYhKmT0rDU2DeEFg7IFI3VdLxMhBzbwpKdC
+         qavw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=ri8r0QWyV+GpeiVDFOhcmhq8RvvDVRYHrS/HSMA0tvw=;
+        b=GQWiJLPb6ENycLA+UQsEiyDfezzmcMUgYIMSQqRhddF2cXWKgHIaPEuX8ukC+HLSQq
+         SMpLf88429iaZSdgmKo5KhaCyECwH/SEhic8gSnHDfwROpguWO8nmLCIuVhsXHapRqDf
+         ANbBaIozc0UYDd+82T+DuvfvoeVjLA3nTaDObXhbY15ReGKbhOiYEoIetZLn5lF7rOj1
+         134lWc0JoqBrZXovgAugRL3LiLkYu940smLnY0HeZ5hWD74oAYwt8LmxXhXw176Ix5po
+         qdRZJHLrKUvtYMwwdMo1/2ek2nEPm/K5UJl1DalJprV/edJpZh0RLiu36JtwU1K8cWIl
+         1mQw==
+X-Gm-Message-State: AOAM532gbDqDmJIRr61hq4yzXXY4erM6JoO+eMfyRu5W9KxbuPWACW2a
+        yy0+WrEfd9+DrOHCPCk05LYy67tWpASxkllzY15sxI8k1Ac=
+X-Google-Smtp-Source: ABdhPJwagaw9pxS+fy3PxhZBhYc4IJW/hNgnGK5Zpxd6f34j0BVuu42dI514PJ98yGNo0x4CGhi5Q+C4mqlW7ZwqIx4=
+X-Received: by 2002:a19:c70e:: with SMTP id x14mr6893382lff.62.1613411235132;
+ Mon, 15 Feb 2021 09:47:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   James Spader <jamesspader.linux@gmail.com>
+Date:   Mon, 15 Feb 2021 23:17:03 +0530
+Message-ID: <CAKpeocV5osRZL2W+rXJVOQS0vcTCBXNp4aWMsVs9TqjhpBuEBA@mail.gmail.com>
+Subject: mlx5 HW crypto offload support
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     saeedm@mellanox.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 08:49:52 +0000 Lee Jones wrote:
-> > Jakub can explain how he added these checks.  
-> 
-> Yes, please share.
+Hi All,
 
-https://github.com/kuba-moo/nipa
+Does HW crypto offload support for mlx5 work under virtualized environment?
+For e.g with PF (Physical Function) driver and VF(Virtual Function) driver.
+
+If yes, then how does the information that is required to create
+security association get passed to the PF driver?
+
+For example in rx full offload the FDB table needs to match the spi.
+As the spi is created by the VF driver, how does its value get
+communicated to PF driver...
+
+Thanks
+Best Regards
+James S
