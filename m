@@ -2,79 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C8131C433
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 00:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FE531C43E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 00:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhBOXKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 18:10:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229646AbhBOXKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 18:10:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id A17E964DF0;
-        Mon, 15 Feb 2021 23:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613430607;
-        bh=Cb4cKOI0sapXrrl14zPFqj5ElqW4HGuxtbxed4hTgpo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LwKAukORbwsDhlRDbFbwLuae9bpidylacR+WrCTVyBrqj5apizuoeb2dThJjLcCap
-         eXjgDl5rr1wdukW2zEhHoAgJh9yt5/QKL4Heibi0zNYiYy/gGgXzJRBN4WCnpDWpsV
-         wh3A/tO1gclISwLoVF9nt/XDh34bNvHzcttoAaJ0Y82k58atmKqTSFhKSsAj9BLFAm
-         6MIA+Z7YRGNZS5vpb+MTbzkXPo61jQKI/XA6q/O84NhHTw2wgKyBKQgHqrZgYHPkXo
-         01pp7oew6up8eJ7bkynkDCdaOLz6QBanXllK1QI/Nx72F1lz4Pe+GYI+MeDG2jzuLu
-         Qs+a5iVzRMGWg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8ED41609D9;
-        Mon, 15 Feb 2021 23:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229731AbhBOXTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 18:19:00 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:50164 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229646AbhBOXS6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 18:18:58 -0500
+Received: by mail-il1-f199.google.com with SMTP id q3so6410206ilv.16
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 15:18:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=RhDtHpOLvv7u6BJ1lSgPY8LsKAeZXSIEoChoNXHhq+c=;
+        b=Ejamfm0QCl51+pfsjPVY7AcOhxTP4N5ej2SfCAD5w1jOfX5ZDBucWcCSQAWkmyT6T+
+         yJVUMOfd4PYaVIkhbs1zdSLd0BdZU0ymTbee3AG4rQtk6foP0HzSACRsu/k0uY7YNfZ5
+         drnV0MMv1gkYM+qL5syjSTe6XUCKuTkMBHWS/m+CYGwd9fcllL0/yd79jooMiUR9kST3
+         aFy3kcBzIjEFdzxldsk/VbxX5tW1+mdYHX82B4Tgou3wr1jnIGFtxpO4oQDpuLGQmxLS
+         6aFPYLSTlduTGGcj+Us8nc3tvlbAJ7f1B+KggaNqMR1mkAZlCMLSzpWVUXu/jZfqo/En
+         ynaQ==
+X-Gm-Message-State: AOAM532alkQMWpjObkPuvAFYRkX/yIEy1AOt2Obw6e9m9Rn0AE9uZjiO
+        r41f2FaMgxKQBmQJ2zO7DCs6t2zw4ABSW2dhGLv/H4YwJrb+
+X-Google-Smtp-Source: ABdhPJzXWtHUmy25Bth3OwNjK0uKAdxuBCagcjFJODWydCEc8L4B1+4x0BxzfngVQy45JYld0t8US1bOaSdNq4z2kCtV1Ep2txS3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 0/4] net: stmmac: Add Toshiba Visconti SoCs glue driver
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161343060758.5525.7785837246002682841.git-patchwork-notify@kernel.org>
-Date:   Mon, 15 Feb 2021 23:10:07 +0000
-References: <20210215152438.4318-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-In-Reply-To: <20210215152438.4318-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, leon@kernel.org, arnd@kernel.org,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-Received: by 2002:a92:b008:: with SMTP id x8mr14945864ilh.297.1613431097349;
+ Mon, 15 Feb 2021 15:18:17 -0800 (PST)
+Date:   Mon, 15 Feb 2021 15:18:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006d5e6f05bb6833c3@google.com>
+Subject: UBSAN: shift-out-of-bounds in hid_report_raw_event
+From:   syzbot <syzbot+ee5ce0deec4ff5aa64e1@syzkaller.appspotmail.com>
+To:     benjamin.tissoires@redhat.com, jikos@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hello,
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+syzbot found the following issue on:
 
-On Tue, 16 Feb 2021 00:24:34 +0900 you wrote:
-> Hi,
-> 
-> This series is the ethernet driver for Toshiba's ARM SoC, Visconti[0].
-> This provides DT binding documentation, device driver, MAINTAINER files,
-> and updates to DT files.
-> 
-> Best regards,
->   Nobuhiro
-> 
-> [...]
+HEAD commit:    291009f6 Merge tag 'pm-5.11-rc8' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17cd1098d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6a218c95bd23063a
+dashboard link: https://syzkaller.appspot.com/bug?extid=ee5ce0deec4ff5aa64e1
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10410288d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13642124d00000
 
-Here is the summary with links:
-  - [v4,1/4] dt-bindings: net: Add DT bindings for Toshiba Visconti TMPV7700 SoC
-    https://git.kernel.org/netdev/net-next/c/e6a395061c3e
-  - [v4,2/4] net: stmmac: Add Toshiba Visconti SoCs glue driver
-    https://git.kernel.org/netdev/net-next/c/b38dd98ff8d0
-  - [v4,3/4] MAINTAINERS: Add entries for Toshiba Visconti ethernet controller
-    https://git.kernel.org/netdev/net-next/c/df53e4f48e8d
-  - [v4,4/4] arm: dts: visconti: Add DT support for Toshiba Visconti5 ethernet controller
-    https://git.kernel.org/netdev/net-next/c/ec8a42e73432
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ee5ce0deec4ff5aa64e1@syzkaller.appspotmail.com
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+================================================================================
+UBSAN: shift-out-of-bounds in drivers/hid/hid-core.c:1315:20
+shift exponent 4294967295 is too large for 32-bit type 'int'
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x137/0x1be lib/dump_stack.c:120
+ ubsan_epilogue lib/ubsan.c:148 [inline]
+ __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
+ snto32 drivers/hid/hid-core.c:1315 [inline]
+ hid_input_field drivers/hid/hid-core.c:1548 [inline]
+ hid_report_raw_event+0xa9d/0x1480 drivers/hid/hid-core.c:1783
+ hid_input_report+0x3f6/0x4d0 drivers/hid/hid-core.c:1850
+ hid_irq_in+0x48d/0x690 drivers/hid/usbhid/hid-core.c:284
+ __usb_hcd_giveback_urb+0x375/0x520 drivers/usb/core/hcd.c:1656
+ dummy_timer+0xa22/0x2e70 drivers/usb/gadget/udc/dummy_hcd.c:1971
+ call_timer_fn+0x91/0x160 kernel/time/timer.c:1417
+ expire_timers kernel/time/timer.c:1462 [inline]
+ __run_timers+0x6c0/0x8a0 kernel/time/timer.c:1731
+ run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
+ __do_softirq+0x318/0x714 kernel/softirq.c:343
+ asm_call_irq_on_stack
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
