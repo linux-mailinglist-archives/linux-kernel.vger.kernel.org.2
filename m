@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26C331BF95
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A5131BF96
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhBOQlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:41:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50362 "EHLO mail.kernel.org"
+        id S231269AbhBOQmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:42:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231569AbhBOPiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231567AbhBOPiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 10:38:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B819764EE5;
-        Mon, 15 Feb 2021 15:33:47 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51F3C64EE9;
+        Mon, 15 Feb 2021 15:33:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403228;
-        bh=Sg1viS9T1qX7q/DGhQ1LBwL/pdHKMdZ+oy6b1PRCgVA=;
+        s=korg; t=1613403230;
+        bh=ft4G97VhIjJwaES8UFkwK1Ab7kaT0oqcang245BltCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2M7A1NLm6pjaAm4Wyjw6wjlBvyCQsgXtpEtNzb0fwIls+pc0+iGOkiIpIDggxN0rt
-         BJOKCBJWqsdNr2Z0MIEV9G/heJ6Dq8B88QabjgL3BELXjh6wqFI6vW8ZgbGGEUeT1/
-         OOpy2Ds59eX5UMnrcmwxP5nXknf+5/RQX083rPvo=
+        b=xF0EwvTAQJvQc7BzyRaxUdpqfOvdHZX5yrtLZ262gP1z5C4SmpfyASuI+xgUWw9ym
+         hfHpFMhI034FzW0Rx0XbVM5ElKQu5SrlAGsXzV+veuSDcGAWmyZ9NuR2AlSSsYUg18
+         Fq1Kp0RAXqDqgFbVJZDq4OEQObAplcqY5wsGaQJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 040/104] kallsyms: fix nonconverging kallsyms table with lld
-Date:   Mon, 15 Feb 2021 16:26:53 +0100
-Message-Id: <20210215152720.772794406@linuxfoundation.org>
+Subject: [PATCH 5.10 041/104] ARM: ensure the signal page contains defined contents
+Date:   Mon, 15 Feb 2021 16:26:54 +0100
+Message-Id: <20210215152720.801524308@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -40,54 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit efe6e3068067212b85c2d0474b5ee3b2d0c7adab ]
+[ Upstream commit 9c698bff66ab4914bb3d71da7dc6112519bde23e ]
 
-ARM randconfig builds with lld sometimes show a build failure
-from kallsyms:
+Ensure that the signal page contains our poison instruction to increase
+the protection against ROP attacks and also contains well defined
+contents.
 
-  Inconsistent kallsyms data
-  Try make KALLSYMS_EXTRA_PASS=1 as a workaround
-
-The problem is the veneers/thunks getting added by the linker extend
-the symbol table, which in turn leads to more veneers being needed,
-so it may take a few extra iterations to converge.
-
-This bug has been fixed multiple times before, but comes back every time
-a new symbol name is used. lld uses a different set of identifiers from
-ld.bfd, so the additional ones need to be added as well.
-
-I looked through the sources and found that arm64 and mips define similar
-prefixes, so I'm adding those as well, aside from the ones I observed. I'm
-not sure about powerpc64, which seems to already be handled through a
-section match, but if it comes back, the "__long_branch_" and "__plt_"
-prefixes would have to get added as well.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Acked-by: Will Deacon <will@kernel.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/kallsyms.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm/kernel/signal.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-index 7ecd2ccba531b..54ad86d137849 100644
---- a/scripts/kallsyms.c
-+++ b/scripts/kallsyms.c
-@@ -112,6 +112,12 @@ static bool is_ignored_symbol(const char *name, char type)
- 		"__crc_",		/* modversions */
- 		"__efistub_",		/* arm64 EFI stub namespace */
- 		"__kvm_nvhe_",		/* arm64 non-VHE KVM namespace */
-+		"__AArch64ADRPThunk_",	/* arm64 lld */
-+		"__ARMV5PILongThunk_",	/* arm lld */
-+		"__ARMV7PILongThunk_",
-+		"__ThumbV7PILongThunk_",
-+		"__LA25Thunk_",		/* mips lld */
-+		"__microLA25Thunk_",
- 		NULL
- 	};
+diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
+index 585edbfccf6df..2f81d3af5f9af 100644
+--- a/arch/arm/kernel/signal.c
++++ b/arch/arm/kernel/signal.c
+@@ -693,18 +693,20 @@ struct page *get_signal_page(void)
  
+ 	addr = page_address(page);
+ 
++	/* Poison the entire page */
++	memset32(addr, __opcode_to_mem_arm(0xe7fddef1),
++		 PAGE_SIZE / sizeof(u32));
++
+ 	/* Give the signal return code some randomness */
+ 	offset = 0x200 + (get_random_int() & 0x7fc);
+ 	signal_return_offset = offset;
+ 
+-	/*
+-	 * Copy signal return handlers into the vector page, and
+-	 * set sigreturn to be a pointer to these.
+-	 */
++	/* Copy signal return handlers into the page */
+ 	memcpy(addr + offset, sigreturn_codes, sizeof(sigreturn_codes));
+ 
+-	ptr = (unsigned long)addr + offset;
+-	flush_icache_range(ptr, ptr + sizeof(sigreturn_codes));
++	/* Flush out all instructions in this page */
++	ptr = (unsigned long)addr;
++	flush_icache_range(ptr, ptr + PAGE_SIZE);
+ 
+ 	return page;
+ }
 -- 
 2.27.0
 
