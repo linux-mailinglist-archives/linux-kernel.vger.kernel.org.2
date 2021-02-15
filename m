@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5BC31BF71
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 693A531BF84
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbhBOQfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:35:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49638 "EHLO mail.kernel.org"
+        id S232455AbhBOQiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:38:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231463AbhBOPht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:37:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 456A664EA3;
-        Mon, 15 Feb 2021 15:33:11 +0000 (UTC)
+        id S231478AbhBOPhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:37:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD08764E9E;
+        Mon, 15 Feb 2021 15:33:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403191;
-        bh=2d82ML/lsPXn5JpjMp119lFurxZ44IhVjiVuGINp/T8=;
+        s=korg; t=1613403194;
+        bh=KCAOwNu5ccPs1lCxAQElK+NUIAZY9kh3m8TN7iNIFtM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IOPUSQF8XRdhHPKp9w9xHiWjcAcJtt9WtrHpdxvjJ7dbv4z3eF0Bliq1WX0vPxkCv
-         pCcOGDOguooHw9HBNAt+ALeBJ1RMjDKlcBF3OBUd2r0uWhBpbeY/KO1SHGWdcspq/R
-         u19Q9mEwTYW+fxkg/C8dWmqU8rXZRfatkvVybFV0=
+        b=IorEXmu2uICSl4Htz8c3gQPPSoyfmr4uC1L4iFEuYjB8/2qDr9qztBAuvMHGrY/cD
+         e1R2jJTABGLzO4F5D5jAsGRFBqOZOxEctpCl/hqt2dmZPDQqJtgraJgogBu0DX7S4L
+         TKI8CafQ6AoRzEp0pjySFx27QehRgFOygx/e/Tsk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
-        Martin Schiller <ms@dev.tdt.de>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Alex Elder <elder@linaro.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 062/104] net: hdlc_x25: Return meaningful error code in x25_open
-Date:   Mon, 15 Feb 2021 16:27:15 +0100
-Message-Id: <20210215152721.473422296@linuxfoundation.org>
+Subject: [PATCH 5.10 063/104] net: ipa: set error code in gsi_channel_setup()
+Date:   Mon, 15 Feb 2021 16:27:16 +0100
+Message-Id: <20210215152721.510515900@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,53 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Alex Elder <elder@linaro.org>
 
-[ Upstream commit 81b8be68ef8e8915d0cc6cedd2ac425c74a24813 ]
+[ Upstream commit 1d23a56b0296d29e7047b41fe0a42a001036160d ]
 
-It's not meaningful to pass on LAPB error codes to HDLC code or other
-parts of the system, because they will not understand the error codes.
+In gsi_channel_setup(), we check to see if the configuration data
+contains any information about channels that are not supported by
+the hardware.  If one is found, we abort the setup process, but
+the error code (ret) is not set in this case.  Fix this bug.
 
-Instead, use system-wide recognizable error codes.
-
-Fixes: f362e5fe0f1f ("wan/hdlc_x25: make lapb params configurable")
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Acked-by: Martin Schiller <ms@dev.tdt.de>
-Link: https://lore.kernel.org/r/20210203071541.86138-1-xie.he.0141@gmail.com
+Fixes: 650d1603825d8 ("soc: qcom: ipa: the generic software interface")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Alex Elder <elder@linaro.org>
+Link: https://lore.kernel.org/r/20210204010655.15619-1-elder@linaro.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/hdlc_x25.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ipa/gsi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
-index f52b9fed05931..34bc53facd11c 100644
---- a/drivers/net/wan/hdlc_x25.c
-+++ b/drivers/net/wan/hdlc_x25.c
-@@ -171,11 +171,11 @@ static int x25_open(struct net_device *dev)
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index 4a68da7115d19..2a65efd3e8da9 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -1573,6 +1573,7 @@ static int gsi_channel_setup(struct gsi *gsi, bool legacy)
+ 		if (!channel->gsi)
+ 			continue;	/* Ignore uninitialized channels */
  
- 	result = lapb_register(dev, &cb);
- 	if (result != LAPB_OK)
--		return result;
-+		return -ENOMEM;
- 
- 	result = lapb_getparms(dev, &params);
- 	if (result != LAPB_OK)
--		return result;
-+		return -EINVAL;
- 
- 	if (state(hdlc)->settings.dce)
- 		params.mode = params.mode | LAPB_DCE;
-@@ -190,7 +190,7 @@ static int x25_open(struct net_device *dev)
- 
- 	result = lapb_setparms(dev, &params);
- 	if (result != LAPB_OK)
--		return result;
-+		return -EINVAL;
- 
- 	return 0;
- }
++		ret = -EINVAL;
+ 		dev_err(gsi->dev, "channel %u not supported by hardware\n",
+ 			channel_id - 1);
+ 		channel_id = gsi->channel_count;
 -- 
 2.27.0
 
