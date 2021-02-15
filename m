@@ -2,118 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02CD31C3CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77E731C3D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhBOVwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:52:38 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59300 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229662AbhBOVwe (ORCPT
+        id S229731AbhBOVzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 16:55:13 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:51348 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229662AbhBOVzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:52:34 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11FLhE3W062034;
-        Mon, 15 Feb 2021 16:51:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=KjcWjrzpVphFTO5FFSUfC3u1TkMq+mBtwaNHZAkSXQw=;
- b=fkZfmzXSSGZ1pLt7nIAqKdphiTx2RX00y4U/2m31Ar6nmC5/jsP7RohDhhlOKWhVtwcv
- 1Z8xKf/BuE26k4Bvl6ZaZIYsXQdl2PmWG+vbM6Je/qMv7C5/ROnHkAIzv9KEPMKmRlwk
- nUB91Ib8QhrLDQUb+ATEYDuVtz/tTfWURZiaB7YVrgH8omfRqX7dbwx9KfjwTQ4pUFGm
- 9ZSCUQXybu7qoQLtCEAsmC7NO5Rz+6ijnnIQotqQ6QWcANG6fWTd83BhxDSKOguh7Et+
- 8iAyh98kj2SNEJdawkae24ypkcRkTA3ayDo9JTSBWjJe6PsqfOFM2f8I6N09kr/5aQyW gQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36r1470487-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 16:51:07 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11FLjZcl066428;
-        Mon, 15 Feb 2021 16:51:06 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36r147047q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 16:51:06 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11FLmABZ026281;
-        Mon, 15 Feb 2021 21:51:05 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma01wdc.us.ibm.com with ESMTP id 36p6d8hwjd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 21:51:05 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11FLp4TZ7537262
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 21:51:04 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F4072C6059;
-        Mon, 15 Feb 2021 21:51:03 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AC117C6057;
-        Mon, 15 Feb 2021 21:50:55 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.85.173.121])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Mon, 15 Feb 2021 21:50:55 +0000 (GMT)
-References: <20210213161049.6190-1-nramas@linux.microsoft.com>
- <20210213161049.6190-6-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        frowand.list@gmail.com, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v18 05/11] powerpc: Use common
- of_kexec_alloc_and_setup_fdt()
-In-reply-to: <20210213161049.6190-6-nramas@linux.microsoft.com>
-Date:   Mon, 15 Feb 2021 18:50:53 -0300
-Message-ID: <87tuqdq9tu.fsf@manicouagan.localdomain>
+        Mon, 15 Feb 2021 16:55:09 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11FLjSDL133829;
+        Mon, 15 Feb 2021 21:54:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=5TcrC9CRttlghKdwb1T/jMH/Irp34EOihRLM/Z4mHX4=;
+ b=czj40iN734tbMeCZq+3V1KMFMRGNV5N/MHCLJ6C1PF7CMGpUMu3bVjQIEhgAd/CTejS2
+ u2qbGARJF5kSF4tzQhUkvUau9WLhgG26jH2LpOe0UTZ1d2oAAqpA0pCUfESpfqyVi2K9
+ XriISX4EXz4AtUg8xuOmNjNaL2hgbzy+s9+oP0t72DGNvQsISYADVh+IVwVouAwDyqfW
+ aXGKoANyNInGstmhuztDTHJSjyEL4RDrE9vsdz5WkwG3/NlV+ScccDv+6pDKu5HpPCYQ
+ 4p3oOBKF6dpa8JXauXwvqVpoR+Ec1nQGlS6TS1c4IDgHElhK80uitrRPbT4IhDp5kq7k Mg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 36p66qw4cd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Feb 2021 21:54:21 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11FLk3dk072646;
+        Mon, 15 Feb 2021 21:54:20 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2055.outbound.protection.outlook.com [104.47.36.55])
+        by aserp3020.oracle.com with ESMTP id 36prnx835m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Feb 2021 21:54:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UkcAOqKxAmzYpl2tzY+z8JFdlfPvYeckKd75UukjvbjrRYy76+GtWhZgSMmc+YV+DpHjefgvIm7yDDm+oZGJ1jJVh9untA4HdSeuEvqqDufrM6lHCQfHX3c90sP12U0HOELl4wxMeZBCRP9JWyQg6kaLfqf1iZiYMKOa0LRyHuoe3lbrg/kEvgf//Qvgy1xmdSrdb/MzbQN0rSV7kdkkErtU/GfQ/lr4A0PcdB2ThOenrNtQEOro99EaByo3VXhgQ6avMpx+l2E8ufUjW5A3GQgbGv4h9yXuuozUVsHEcI0wcNQxBA90zMW80ftGAJOYkCueRLvcVbJV3VTRzVDTlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5TcrC9CRttlghKdwb1T/jMH/Irp34EOihRLM/Z4mHX4=;
+ b=cf2P/50/wB/odezndYa5vPjakowfkbjtsdPO2vFvhlQTh7saw7FhgzWwvR3RoZaAv/xNwWLbWfbMXfKMXf6JRW3OJ7FAeTWpmDWpQGP8prEvsFBTtBtGUo7j8w1CMD4TpXVQkijUhpRfrYbdwPV32WlaODSMpPOmIbHWhYiufk0XT0tGRUw/hF4+VL569st4L5Ub50gqK9N0ZIaRQWSPE7gKrzjrqjzbyzWFBXIRNMstCouvsk/wadDFcIs1Ea4fvfSQt9I7aPU8g6fJePj08ZP3j3UXPGoYnVK+WSMQBsw6/rEdiNoQaNKWu9SFHtmz3sblLcGGAIJ0FFqlSeLVKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5TcrC9CRttlghKdwb1T/jMH/Irp34EOihRLM/Z4mHX4=;
+ b=cweXIZ8A3uqyPARtmwYe4vBNHOxtv6H6DD08vp7s8vPyUvdQWaBQFRdUANICqfc5eQbHh0E5daL6+d/2625MDG1qv/wcBevd4mUxrjkvzIbf+3YmYOCYh8ro3jjnRNci0eCcAM2U+dvn9TdCY3y8QdxgWcVKfKJjU0x98/h0EcQ=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3288.namprd10.prod.outlook.com (2603:10b6:a03:156::21)
+ by SJ0PR10MB4557.namprd10.prod.outlook.com (2603:10b6:a03:2d4::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Mon, 15 Feb
+ 2021 21:54:19 +0000
+Received: from BYAPR10MB3288.namprd10.prod.outlook.com
+ ([fe80::f489:4e25:63e0:c721]) by BYAPR10MB3288.namprd10.prod.outlook.com
+ ([fe80::f489:4e25:63e0:c721%7]) with mapi id 15.20.3846.042; Mon, 15 Feb 2021
+ 21:54:19 +0000
+Subject: Re: [PATCH v2 6/8] xen/events: add per-xenbus device event statistics
+ and settings
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org
+Cc:     Stefano Stabellini <sstabellini@kernel.org>
+References: <20210211101616.13788-1-jgross@suse.com>
+ <20210211101616.13788-7-jgross@suse.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <afbd1081-53fd-2cd2-5504-a6342d38a5ae@oracle.com>
+Date:   Mon, 15 Feb 2021 16:54:15 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+In-Reply-To: <20210211101616.13788-7-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [138.3.200.49]
+X-ClientProxiedBy: BY3PR05CA0036.namprd05.prod.outlook.com
+ (2603:10b6:a03:39b::11) To BYAPR10MB3288.namprd10.prod.outlook.com
+ (2603:10b6:a03:156::21)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-15_16:2021-02-12,2021-02-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
- impostorscore=0 priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1015
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.74.96.113] (138.3.200.49) by BY3PR05CA0036.namprd05.prod.outlook.com (2603:10b6:a03:39b::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.11 via Frontend Transport; Mon, 15 Feb 2021 21:54:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: afbbd218-c6af-45e4-5216-08d8d1fc3eeb
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4557:
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB455748EE35DA12BD74E2EB678A889@SJ0PR10MB4557.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:475;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ab51Y8PflCJSeK+DTB0U7SDta1bgkp9jmz8lzVL+s9sk4BV7SV3/gh7WikdXIipMJ3RBsHUj/Qi4icbaJSGz+Xh/d/89bqKkDv+z4ZndZi0IdEVDGjGo9gT27zarBUifcsJpGQUqkF0a/wmhHkVShVBLt1Kbk54zZNQBlHabNVz7XssKsDRZpEKRLcvKwVcVcubOO0fyttKx4S6LNL5m5wxRwIcAAHL+Wgu8GpySh16mzWXgZNlgiZQUP6jzNglDVQ3yo5PEmT+SMLKSXtoHspNJOwKMLt1JOrMqi6eP/gaEV/xgCaTw3TuitSFGt39M38YLXbI7YZeY97oHdahULVMLwvFT+OFqq1GRb+h1QQMdau4XKs5WBffRRV05Q7+CdSjbBk5Hcw9DVT7DBckCEWyFX7X5zTc+Lb6HTN6R+paS4I+omnJYke6seLwx9TNfnyBWfhlGiiJ5oEumyezwz8bBBTX7d/0DEs9xcj26OR79vn/g56yH7Nnkkzc+xmrf29HOG7vXXFXBMPf+ybCENwMAhkV831OGCgcVYuiX48pW/WOfXTpsqEf8ejfBoROv7F6gX9LQvNX3AyBNuuO3e6HMRlTrOmVwT0M6nWN4h4o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3288.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(376002)(136003)(346002)(4326008)(26005)(44832011)(16526019)(6666004)(478600001)(2616005)(956004)(66556008)(31696002)(66476007)(66946007)(8676002)(186003)(8936002)(86362001)(2906002)(31686004)(5660300002)(4744005)(316002)(16576012)(6486002)(36756003)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?blVYMlRKUkhzOGphODBSY2lrVlo1TktrSVJydGRVOFRGUmE1ME51Qk5yUlNY?=
+ =?utf-8?B?QzU1bWtublpQdTJPaDFRM1hCMHU4QVU1NjFsSk9PTlBGdHBONmZ6QkkyWXlQ?=
+ =?utf-8?B?WVhySWRDZ0tWeitDT2Mzc1ZMaTFZSzFYUThWRDF0NGdXMzdwTndJaTRBalF6?=
+ =?utf-8?B?MnJIaXJBVTlPUDNWWkcvb0lvUXhpRmw2amdpMG1wT1JWdHFyY21OSGxJRE43?=
+ =?utf-8?B?ZmxXcU1VckoyUlYvamJtb3l1dDVXQjU4RVVpSjZOc3M2N01mTFZaRXI3RHhE?=
+ =?utf-8?B?M0FQSHhpZVdyUzNsdjJVTkVhNXozdUNtYzAydzVnS3dqVkkzSnJ2b01aRzJk?=
+ =?utf-8?B?L28ydEZvYnVoUzVvb25jenpCbXZwVDk3MlRLYjF2ZFQrVUgxQU1mcnQwdStp?=
+ =?utf-8?B?eU40ZlFGblkxVzRQbi9lbUt2V2MrR0xQMzBwdHFCMmZncGZPZXNISDRMYVJr?=
+ =?utf-8?B?UTYwMzVRblpURjdpOEgzOVN4TGNTSVVCSXZLeHBBKytqQWdXaUVlakwzUlhJ?=
+ =?utf-8?B?Q1p6TWZOUEVLQ01jUGpMeEFlZmVLL0drUVR3aXhqdVRwblFIUEIrV2RkcStB?=
+ =?utf-8?B?bnRxRktGZEZpVm1Pbms0SERWVmFqaWROanljYjFwMFp4bWduUFpLTGZPY3VN?=
+ =?utf-8?B?QjEwQjdoeVBmakc3TlVDZ01XN0FtN1JHUUx4dVVVbm8xcWR1OUVrWkpwam5Q?=
+ =?utf-8?B?aXo4eDZEMHBOdVhGQVRXVDlUODVDdVhJeHdMWVZPeWZ3WHRVR0tOa2VZQXBp?=
+ =?utf-8?B?cUlISFFkK1BucnVuNXZkbVoza1hmODBqcjVKZE1JYTgwVlhQQjhZRlZaMzR6?=
+ =?utf-8?B?L2VZNnpKN1MyL1RlTHp2SVo2d0JXQjJLUzVsZzByaUwxekdVVVliTmpWd1pj?=
+ =?utf-8?B?TXRaYlF3VXFKamFMVm9WaDZmZ3E4QXNpekRKeWQ5L0VZclQ2dkJtakp2dE8z?=
+ =?utf-8?B?NHVIUWhwM0w1aGFSYzk5c28rV3hZVUdJL0xkSnQvcFd4bWJ0VXhvVzkvVGFY?=
+ =?utf-8?B?NHlmNDMvSXFNMzlwblJQeUtPNFczbkFBVm14ZnQvcGJ3SlIwQ09yTVQ2dWNw?=
+ =?utf-8?B?WGVNMVpOTWcwV3N4OVpTM3M3U1pCenRPTFJjNmtCNFF4aUhTWE04MlNucFl5?=
+ =?utf-8?B?Y0RwTHRENm9JZEs0aWIrRmtwc1huRTkvelUrZ1BQWFp3NGVNV0JKRkNoRVdN?=
+ =?utf-8?B?ZkRmNWtUbThIdjRncVNiNFRqcFgxOU1JWW9ydHl4citmbGpybDR6YmJXLzlP?=
+ =?utf-8?B?MWpnVndTenJKWjI2aGVvRVBSV1BOekNGaWlMbzBINi85Z01FTEZLb0I3clkw?=
+ =?utf-8?B?WGVSTWlocU1KaDlrSERwTm9nLzRGYzBHSzVPcHM0TFNqRkQvYnVlMTZZRkoy?=
+ =?utf-8?B?U1dVaVF6OFlXckszNGxNZFZIdlFCdjNSbDJUMUIvVVV2Q0I0WUVmV0pVMDg2?=
+ =?utf-8?B?R1ZsNHphVVdFZHBBcEx5T2RYOGlOZ0p0eEc0WkMzb0xhYndTb3hiOUpmRTlU?=
+ =?utf-8?B?am9ZZTliZTBrTkRWZlQ4Y3VLai91OWJZd1NIb1JKQ2duRk1iSTRDaWtGZVpJ?=
+ =?utf-8?B?NVl4WG5DWGJXSG5KQk5rV3g3akpwQnNXWEJXUFZrUWd4WGhBNUk5ckhPbFFL?=
+ =?utf-8?B?bnpQTisvMFZ4NzY1N0hEQjdWTnd1K3F0UUFhYnEwVmo1cEhnSXJWcVpwZDJT?=
+ =?utf-8?B?TVRvQ2JpOWo5blBQZnFmd0MzWEk2UXhQblZ6SXZnUnRuODh5aG43Z0tvaHRj?=
+ =?utf-8?Q?WnIK42xs7OTdgLzhIzTkwqDBPnElkupX28unS+g?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: afbbd218-c6af-45e4-5216-08d8d1fc3eeb
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3288.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2021 21:54:19.2367
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZZ9rz2CfcbWokm7kPZfiB7bUaUxKtH5lnTNKecce84RAU2NVx+TrZqlLEwSiCOJ+XqSm5M9uqrXxsnDvI8qwxKxbEqY+xvGWooIXjCS/8GA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4557
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102150166
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102150160
+ definitions=main-2102150166
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
-
-> From: Rob Herring <robh@kernel.org>
+On 2/11/21 5:16 AM, Juergen Gross wrote:
+> Add syfs nodes for each xenbus device showing event statistics (number
+> of events and spurious events, number of associated event channels)
+> and for setting a spurious event threshold in case a frontend is
+> sending too many events without being rogue on purpose.
 >
-> The code for setting up the /chosen node in the device tree
-> and updating the memory reservation for the next kernel has been
-> moved to of_kexec_alloc_and_setup_fdt() defined in "drivers/of/kexec.c".
->
-> Use the common of_kexec_alloc_and_setup_fdt() to setup the device tree
-> and update the memory reservation for kexec for powerpc.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> ---
->  arch/powerpc/include/asm/kexec.h  |   1 +
->  arch/powerpc/kexec/elf_64.c       |  30 ++++---
->  arch/powerpc/kexec/file_load.c    | 132 +-----------------------------
->  arch/powerpc/kexec/file_load_64.c |   3 +
->  4 files changed, 26 insertions(+), 140 deletions(-)
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+
