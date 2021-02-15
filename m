@@ -2,159 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1271C31B62C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C378731B62F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhBOJGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:06:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20551 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230063AbhBOJGt (ORCPT
+        id S230107AbhBOJHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:07:11 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:34397 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhBOJG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:06:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613379922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wYf255FsvrtCNN5Ul57Yn87duN0irZY/yWNrSljvhYM=;
-        b=aMXLuoSIrZUkjQNtfgjGS/+IcdqenK8ZN5aauCGXg0Jc8Iri8irnYeR9DOe5YKKVwtRpAA
-        WXmnTKhkbYUGPMLa4D+228QB82RVkuZljcrgEBewz67BSOidHtjMVHRR7Y0l9429yiQW4Y
-        QpFcSijOTZ1JeGLEzow6i/JejlB+KKk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-DeEMrxd1MRmdBlFKPrEJbA-1; Mon, 15 Feb 2021 04:05:18 -0500
-X-MC-Unique: DeEMrxd1MRmdBlFKPrEJbA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC51A107ACC7;
-        Mon, 15 Feb 2021 09:05:15 +0000 (UTC)
-Received: from [10.36.114.89] (ovpn-114-89.ams2.redhat.com [10.36.114.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1F06360875;
-        Mon, 15 Feb 2021 09:05:10 +0000 (UTC)
-Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
- holes in memory layout
-To:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>,
-        Mel Gorman <mgorman@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-References: <20210208110820.6269-1-rppt@kernel.org>
- <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
- <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
- <YCaAHI/rFp1upRLc@dhcp22.suse.cz> <20210214180016.GO242749@kernel.org>
- <YCo4Lyio1h2Heixh@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <c2da1e76-d2ea-04df-d258-cf8a87a397d6@redhat.com>
-Date:   Mon, 15 Feb 2021 10:05:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 15 Feb 2021 04:06:57 -0500
+Date:   Mon, 15 Feb 2021 09:06:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1613379973;
+        bh=2nAm6Q9p3kMTXLrc/9PsknifgDbenAAUOXq3KGVIrtw=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=AgihlhiMBiKpn2AUSMU4MbjjTvrJBs+g1bQ2Z7b8VBvkxoiItg9javlL+V3ZfoiJg
+         IeooACpUH4OVaTrX3hHe50R7sm6h7VarQsTDXwyUY0Kv2r0T8K2L7j6BN3BGh6YmFN
+         PUlSgqUWc7yVU6DKZKu3NupB73Q44cDX7zsQhs/W7NO8/2MB231MTcFGSjaHuphS36
+         Lh6Fo5qoe2kWu5gZL9fnUkA5fFUgzM8+xnMEpFS/pw6coIuKaBSinCXUm/QS79liZU
+         c7G7x2oaubgXNU9wYybPMmwYc+gxXHoVLzrLxg6VUtykma0fnggRK7xzshR7XzIso0
+         zXx+fQn+jz0+w==
+To:     =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        "Sharma, Shashank" <Shashank.Sharma@amd.com>
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: DMA-buf and uncached system memory
+Message-ID: <GUuZYSQk2hxgykDhSxfB2GWo47lQlVrKBtWMwQUG7Ar2GAag5WQDxBI0zq6nDTooPBzTktyRpnu25Ju1UKE3FYD9yHbkNMAHcmSI96hoJhA=@emersion.fr>
+In-Reply-To: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
+References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <YCo4Lyio1h2Heixh@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.02.21 10:00, Michal Hocko wrote:
-> On Sun 14-02-21 20:00:16, Mike Rapoport wrote:
->> On Fri, Feb 12, 2021 at 02:18:20PM +0100, Michal Hocko wrote:
->>> On Fri 12-02-21 11:42:15, David Hildenbrand wrote:
->>>> On 12.02.21 11:33, Michal Hocko wrote:
->>> [...]
->>>>> I have to digest this but my first impression is that this is more heavy
->>>>> weight than it needs to. Pfn walkers should normally obey node range at
->>>>> least. The first pfn is usually excluded but I haven't seen real
->>>>
->>>> We've seen examples where this is not sufficient. Simple example:
->>>>
->>>> Have your physical memory end within a memory section. Easy via QEMU, just
->>>> do a "-m 4000M". The remaining part of the last section has fake/wrong
->>>> node/zone info.
->>>
->>> Does this really matter though. If those pages are reserved then nobody
->>> will touch them regardless of their node/zone ids.
->>>
->>>> Hotplug memory. The node/zone gets resized such that PFN walkers might
->>>> stumble over it.
->>>>
->>>> The basic idea is to make sure that any initialized/"online" pfn belongs to
->>>> exactly one node/zone and that the node/zone spans that PFN.
->>>
->>> Yeah, this sounds like a good idea but what is the poper node for hole
->>> between two ranges associated with a different nodes/zones? This will
->>> always be a random number. We should have a clear way to tell "do not
->>> touch those pages" and PageReserved sounds like a good way to tell that.
->>   
->> Nobody should touch reserved pages, but I don't think we can ensure that.
-> 
-> Touching a reserved page which doesn't belong to you is a bug. Sure we
-> cannot enforce that rule by runtime checks. But incorrect/misleading zone/node
-> association is the least of the problem when somebody already does that.
-> 
->> We can correctly set the zone links for the reserved pages for holes in the
->> middle of a zone based on the architecture constraints and with only the
->> holes in the beginning/end of the memory will be not spanned by any
->> node/zone which in practice does not seem to be a problem as the VM_BUG_ON
->> in set_pfnblock_flags_mask() never triggered on pfn 0.
-> 
-> I really fail to see what you mean by correct zone/node for a memory
-> range which is not associated with any real node.
->   
->> I believe that any improvement in memory map consistency is a step forward.
-> 
-> I do agree but we are talking about a subtle bug (VM_BUG_ON) which would
-> be better of with a simplistic fix first. You can work on consistency
-> improvements on top of that.
-> 
->>>>> problems with that. The VM_BUG_ON blowing up is really bad but as said
->>>>> above we can simply make it less offensive in presence of reserved pages
->>>>> as those shouldn't reach that path AFAICS normally.
->>>>
->>>> Andrea tried tried working around if via PG_reserved pages and it resulted
->>>> in quite some ugly code. Andrea also noted that we cannot rely on any random
->>>> page walker to do the right think when it comes to messed up node/zone info.
->>>
->>> I am sorry, I haven't followed previous discussions. Has the removal of
->>> the VM_BUG_ON been considered as an immediate workaround?
->>
->> It was never discussed, but I'm not sure it's a good idea.
->>
->> Judging by the commit message that introduced the VM_BUG_ON (commit
->> 86051ca5eaf5 ("mm: fix usemap initialization")) there was yet another
->> inconsistency in the memory map that required a special care.
-> 
-> Can we actually explore that path before adding yet additional
-> complexity and potentially a very involved fix for a subtle problem?
-> 
-> Mel who is author of this code might help us out. I have to say I do not
-> see the point for the VM_BUG_ON other than a better debuggability. If
-> there is a real incosistency problem as a result then we should be
-> handling that situation for non debugging kernels as well.
-> 
+On Monday, February 15th, 2021 at 9:58 AM, Christian K=C3=B6nig <christian.=
+koenig@amd.com> wrote:
 
-I have no time to summarize, you can find the complete discussion (also 
-involving Mel) at
+> we are currently working an Freesync and direct scan out from system
+> memory on AMD APUs in A+A laptops.
+>
+> On problem we stumbled over is that our display hardware needs to scan
+> out from uncached system memory and we currently don't have a way to
+> communicate that through DMA-buf.
+>
+> For our specific use case at hand we are going to implement something
+> driver specific, but the question is should we have something more
+> generic for this?
+>
+> After all the system memory access pattern is a PCIe extension and as
+> such something generic.
 
-https://lkml.kernel.org/r/20201121194506.13464-1-aarcange@redhat.com
+Intel also needs uncached system memory if I'm not mistaken?
 
--- 
-Thanks,
+Where are the buffers allocated? If GBM, then it needs to allocate memory t=
+hat
+can be scanned out if the USE_SCANOUT flag is set or if a scanout-capable
+modifier is picked.
 
-David / dhildenb
+If this is about communicating buffer constraints between different compone=
+nts
+of the stack, there were a few proposals about it. The most recent one is [=
+1].
 
+Simon
+
+[1]: https://xdc2020.x.org/event/9/contributions/615/
