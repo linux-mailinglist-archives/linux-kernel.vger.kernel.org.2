@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3048D31C447
+	by mail.lfdr.de (Postfix) with ESMTP id AB09431C448
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 00:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhBOXUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 18:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
+        id S229944AbhBOXUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 18:20:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhBOXUe (ORCPT
+        with ESMTP id S229812AbhBOXUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 18:20:34 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7A0C0613D6;
-        Mon, 15 Feb 2021 15:19:54 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id t15so10951014wrx.13;
-        Mon, 15 Feb 2021 15:19:54 -0800 (PST)
+        Mon, 15 Feb 2021 18:20:35 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDD4C061786;
+        Mon, 15 Feb 2021 15:19:55 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id r21so10973272wrr.9;
+        Mon, 15 Feb 2021 15:19:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=F5r0Mrwm7Ego69AW7YbQ5ctnsMQAyz04RZBJYwegDOk=;
-        b=cwK5h5FFT57d217JlokrCBRpvipiPbXtB5pY3GXYEO0TpslVDPApkCfWkGp0Cl/jrd
-         c3N1xse1Q1GPYuNC5O8Ot3Vb68cG3cYi7enIIDkerUbnyGisNG81lYIzixeh/oER+xw5
-         yUwhBWvf3WfIc0cgTfgFj80UTSvtxWyH21EC3PUi8I8MS/zk/w6J0k0YSBnf6OltT9HL
-         tjf2+HSGQDNlwxOT6U/JvcthjqYgqWz2vGsMYn5keSiQBphHTrT03Wul3V1H/wqlvfkL
-         oWWV+o1NOcU0oC9mvsUXlYAJEiWvy+bHeQntI8ZHbhaIOmJSTOvOFgi3bWd+M1yZFwYG
-         bA7w==
+        bh=/5ZniX0LykOLM7vTo98cR3yfVspFzsKulFcBGJ2QqmY=;
+        b=py4ro74w+BFtF43v7JnhRr4PfGk7QLJED54igCm9xGy3b+Q6/YYFFY7qracvSCpGU5
+         vOHruyOl6JHMNLEWfR2Gt8dVq61zvQmKRBXdNxLq6Wat6PlqmkrR1arLzYPidqLx/MC2
+         bHV8v0IwEGgEItCpAhqP3j+MCqPsPtALLnzLrb9ZDRZrYKOGXoOzaJzFjjuIrPnK97Wg
+         fve6so17J640Hxetusq8J0H2MtVpSyr2UNXgQfhHDGnAxoY6PoABp7IaZFlaoQ7n0881
+         TrpCP6MnNYX0KSiuNeJwOyM3oV9kFjHS849Sl5dO6FK2MiCanXYs3v4pnbpSb30n41RE
+         4Acw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=F5r0Mrwm7Ego69AW7YbQ5ctnsMQAyz04RZBJYwegDOk=;
-        b=Lx3BX7u4TVlCKI09lNnjMhuSp2AGGNZiboZNy8DW3/NHOn177wI2aH3C7/9J6j8/2n
-         gklX8Uem9gQ4BfXw0FzpOHAC42kwgfJnzQtQ88Ovs4LtozyzmfyJBzJIRADcqnHja3oH
-         NycXsrOqZgDpc4HFxeHIzFX7Sz4UzgJ8iBFLm1ZutuZ22Rl7tQJ9B/CPz6AoxB4DZdle
-         8Pw+RKMEX/Zbom66TJlS9IVxx/TxBPXM48xStpbJ9qoojHxLGwpF8h8O6TNZL8oJarQH
-         0XGEZvKj4rusBpLx/+Gsy8JnmkRXJM1orzWd4Tg13rKeZPtdGyRZ27O6+uXKWTYctJjM
-         14Zw==
-X-Gm-Message-State: AOAM5306t/1XVMmC2ZQHFziZPimB8lhafkjjHMClSXM8zj9rZ+5x4s4Q
-        +2AcDtxqHIV7kCEOaVr2ops=
-X-Google-Smtp-Source: ABdhPJx00cstIUhmTYiOLsSa7mQgV5LrcivPBLAxhW6CoXsaEGqzCo/NqiPzzoAN6edzj/MQIhoC4A==
-X-Received: by 2002:adf:f648:: with SMTP id x8mr20271282wrp.34.1613431193038;
+        bh=/5ZniX0LykOLM7vTo98cR3yfVspFzsKulFcBGJ2QqmY=;
+        b=ED/NksROkOoQqGUJmuhKcPyFxHfXVVReIB/hUvS1xqJa9Q4byVSC0u5ZTCLqKXCj9A
+         7gILUQbw8Vjk78uo4+isrKjbBCitCZ9PR6eBbX48v+cbjF1ZH6i8iM9DTVCtuwWPnTM1
+         SSVAG/xo4sD9eifah2HKc/RJi7UHZUqz+/XdlEYFHytkmIV35MCwerZNAcD2W83gHMUY
+         e89lbOjjRhtpJkPaHb37kfN06NIMZ+RU5H8NPoYG2KXmJL9/9LEN57qkAhuHqVnkDiow
+         LImxZ6WLm9aAB+PqZRYdm6ct1/kfnFXozE6qoKThZMC+OlQQxMu7gNf1lTVm9YLWe3sW
+         8+Zg==
+X-Gm-Message-State: AOAM531JjIWBCzMyob4aclh0wHtG3hXDDFYfnZT4TTyavcKwWfMbSU4I
+        xEh/OVuYZYNwBolJlkNVpfM=
+X-Google-Smtp-Source: ABdhPJzQ7BOvth/uQcDxwgCtiUlK2fZsKPUK/C9xKnmYUhYPUtl1CtZyo3++3ZdIHZkHSBFw6aUO/A==
+X-Received: by 2002:adf:f3c4:: with SMTP id g4mr20966511wrp.61.1613431193924;
         Mon, 15 Feb 2021 15:19:53 -0800 (PST)
 Received: from adgra-XPS-15-9570.home (2a01cb0008bd27008c8ad15d1b12a6b4.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:8c8a:d15d:1b12:a6b4])
-        by smtp.gmail.com with ESMTPSA id f5sm963158wmf.15.2021.02.15.15.19.52
+        by smtp.gmail.com with ESMTPSA id f5sm963158wmf.15.2021.02.15.15.19.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 15:19:52 -0800 (PST)
+        Mon, 15 Feb 2021 15:19:53 -0800 (PST)
 From:   Adrien Grassein <adrien.grassein@gmail.com>
 Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
@@ -55,9 +55,9 @@ Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org,
         Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH 2/8] arm64: dts: imx8mm-nitrogen-r2: add USB support
-Date:   Tue, 16 Feb 2021 00:19:37 +0100
-Message-Id: <20210215231943.36910-3-adrien.grassein@gmail.com>
+Subject: [PATCH 3/8] arm64: dts: imx8mm-nitrogen-r2: add espi2 support
+Date:   Tue, 16 Feb 2021 00:19:38 +0100
+Message-Id: <20210215231943.36910-4-adrien.grassein@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210215231943.36910-1-adrien.grassein@gmail.com>
 References: <20210215231943.36910-1-adrien.grassein@gmail.com>
@@ -68,75 +68,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add description of USB.
-usbotg2 seems to not working on all boards (including ones
-from variscite).
+Add the description for espi support.
 
 Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
 ---
- .../boot/dts/freescale/imx8mm-nitrogen-r2.dts | 42 +++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ .../boot/dts/freescale/imx8mm-nitrogen-r2.dts | 30 +++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-index bf20a40bcda0..1b29d8a12d04 100644
+index 1b29d8a12d04..22acde0f3ba8 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-@@ -231,6 +231,34 @@ &usdhc3 {
- 	status = "okay";
+@@ -10,6 +10,14 @@ / {
+ 	model = "Boundary Devices i.MX8MMini Nitrogen8MM Rev2";
+ 	compatible = "boundary,imx8mm-nitrogen8mm", "fsl,imx8mm";
+ 
++	clocks {
++		clk16m: clk16m {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <16000000>;
++		};
++	};
++
+ 	reg_wlan_vmmc: regulator-wlan-vmmc {
+ 		compatible = "regulator-fixed";
+ 		pinctrl-names = "default";
+@@ -39,6 +47,19 @@ &A53_3 {
+ 	cpu-supply = <&reg_buck3>;
  };
  
-+/* USB OTG port */
-+&usbotg1 {
-+	dr_mode = "otg";
-+	over-current-active-low;
++/* J15 */
++&ecspi2 {
++	assigned-clocks = <&clk IMX8MM_CLK_ECSPI2>;
++	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_40M>;
++	assigned-clock-rates = <40000000>;
 +	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usbotg1>;
-+	power-active-high;
++	pinctrl-0 = <&pinctrl_ecspi2>;
++	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
++	#address-cells = <1>;
++	#size-cells = <0>;
 +	status = "okay";
 +};
 +
-+/* USB Host port */
-+&usbotg2 {
-+	dr_mode = "host";
-+	over-current-active-low;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usbotg2>;
-+	power-active-high;
-+	/*
-+	 * FIXME: having USB2 enabled hangs the boot just after:
-+	 *[    1.655941] ci_hdrc ci_hdrc.1: EHCI Host Controller
-+	 *[    1.660880] ci_hdrc ci_hdrc.1: new USB bus registered, assigned bus number 2
-+	 *[    1.681505] ci_hdrc ci_hdrc.1: USB 2.0 started, EHCI 1.00
-+	 *[    1.687730] hub 2-0:1.0: USB hub found
-+	 *[    1.691528] hub 2-0:1.0: 1 port detected
-+	 */
-+	status = "disabled";
-+};
-+
- &wdog1 {
+ &fec1 {
  	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_wdog>;
-@@ -302,6 +330,20 @@ MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX 0x140
- 		>;
- 	};
+ 	pinctrl-0 = <&pinctrl_fec1>;
+@@ -270,6 +291,15 @@ &iomuxc {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_hog>;
  
-+	pinctrl_usbotg1: usbotg1grp {
++	pinctrl_ecspi2: ecspi2grp {
 +		fsl,pins = <
-+			MX8MM_IOMUXC_GPIO1_IO12_USB1_OTG_PWR	0x16
-+			MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x156
++			MX8MM_IOMUXC_ECSPI2_SS0_GPIO5_IO13	0x140
++			MX8MM_IOMUXC_ECSPI2_MISO_ECSPI2_MISO	0x19
++			MX8MM_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK	0x19
++			MX8MM_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI	0x19
 +		>;
 +	};
 +
-+	pinctrl_usbotg2: usbotg2grp {
-+		fsl,pins = <
-+			MX8MM_IOMUXC_GPIO1_IO14_USB2_OTG_PWR	0x16
-+			MX8MM_IOMUXC_GPIO1_IO15_USB2_OTG_OC	0x156
-+		>;
-+	};
-+
- 	pinctrl_usdhc1: usdhc1grp {
+ 	pinctrl_fec1: fec1grp {
  		fsl,pins = <
- 			MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK		0x190
+ 			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x3
 -- 
 2.25.1
 
