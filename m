@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7995B31BF80
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC73E31BF83
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhBOQhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:37:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49648 "EHLO mail.kernel.org"
+        id S232384AbhBOQiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:38:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231494AbhBOPhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:37:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 906D264EAC;
-        Mon, 15 Feb 2021 15:33:24 +0000 (UTC)
+        id S231508AbhBOPhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:37:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D7B364EA9;
+        Mon, 15 Feb 2021 15:33:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403205;
-        bh=DsiKUk3GygY9jko2vQZXxEPF1RWrFbhLv7k8z45r9ZY=;
+        s=korg; t=1613403207;
+        bh=RppSirFCsVPvW+Wn8oeCGsI2fjKkHITVWvdtGTMFZ0s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PHtZui+m/8AKz/f8kFzT1uAVhjpVsVNsO79/Nnq1udAsO2zPvzT/qLMDdyvjXDg+t
-         ECbSqcXzVRrio7K/cuoNUAS9ye05gmrVSN0XqJ9mW1N0tmpcsBt+LpunDxVMegswP6
-         vnRwNcYXoIX2bM5nC6r/1IKGsPCpULPbcoM6GbfE=
+        b=zz4bYIdXCfkWMhqem4qsL6vYsZGkMfZkTWx6S543hzGVWgEDhXGGKPfsKIEefiVBo
+         czlX8Hmqd/EPlSvVOPtXcrFL0I9et+FMw/ovwY55Q9J4JMgpsXcfwazGAYAbrqayVO
+         ihf1Ie0FdIzS5+KJqSzMt8+T3wdp9JdE4AmbisGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Vadim Fedorenko <vfedorenko@novek.ru>,
-        Willem de Bruijn <willemb@google.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 066/104] selftests: txtimestamp: fix compilation issue
-Date:   Mon, 15 Feb 2021 16:27:19 +0100
-Message-Id: <20210215152721.599910786@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>, Song@vger.kernel.org
+Subject: [PATCH 5.10 067/104] net: stmmac: set TxQ mode back to DCB after disabling CBS
+Date:   Mon, 15 Feb 2021 16:27:20 +0100
+Message-Id: <20210215152721.631015300@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -43,62 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Fedorenko <vfedorenko@novek.ru>
+From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
 
-[ Upstream commit 647b8dd5184665432cc8a2b5bca46a201f690c37 ]
+[ Upstream commit f317e2ea8c88737aa36228167b2292baef3f0430 ]
 
-PACKET_TX_TIMESTAMP is defined in if_packet.h but it is not included in
-test. Include it instead of <netpacket/packet.h> otherwise the error of
-redefinition arrives.
-Also fix the compiler warning about ambiguous control flow by adding
-explicit braces.
+When disable CBS, mode_to_use parameter is not updated even the operation
+mode of Tx Queue is changed to Data Centre Bridging (DCB). Therefore,
+when tc_setup_cbs() function is called to re-enable CBS, the operation
+mode of Tx Queue remains at DCB, which causing CBS fails to work.
 
-Fixes: 8fe2f761cae9 ("net-timestamp: expand documentation")
-Suggested-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Link: https://lore.kernel.org/r/1612461034-24524-1-git-send-email-vfedorenko@novek.ru
+This patch updates the value of mode_to_use parameter to MTL_QUEUE_DCB
+after operation mode of Tx Queue is changed to DCB in stmmac_dma_qmode()
+callback function.
+
+Fixes: 1f705bc61aee ("net: stmmac: Add support for CBS QDISC")
+Suggested-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+Signed-off-by: Song, Yoong Siang <yoong.siang.song@intel.com>
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Link: https://lore.kernel.org/r/1612447396-20351-1-git-send-email-yoong.siang.song@intel.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/txtimestamp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/txtimestamp.c b/tools/testing/selftests/net/txtimestamp.c
-index 490a8cca708a8..fabb1d555ee5c 100644
---- a/tools/testing/selftests/net/txtimestamp.c
-+++ b/tools/testing/selftests/net/txtimestamp.c
-@@ -26,6 +26,7 @@
- #include <inttypes.h>
- #include <linux/errqueue.h>
- #include <linux/if_ether.h>
-+#include <linux/if_packet.h>
- #include <linux/ipv6.h>
- #include <linux/net_tstamp.h>
- #include <netdb.h>
-@@ -34,7 +35,6 @@
- #include <netinet/ip.h>
- #include <netinet/udp.h>
- #include <netinet/tcp.h>
--#include <netpacket/packet.h>
- #include <poll.h>
- #include <stdarg.h>
- #include <stdbool.h>
-@@ -495,12 +495,12 @@ static void do_test(int family, unsigned int report_opt)
- 	total_len = cfg_payload_len;
- 	if (cfg_use_pf_packet || cfg_proto == SOCK_RAW) {
- 		total_len += sizeof(struct udphdr);
--		if (cfg_use_pf_packet || cfg_ipproto == IPPROTO_RAW)
-+		if (cfg_use_pf_packet || cfg_ipproto == IPPROTO_RAW) {
- 			if (family == PF_INET)
- 				total_len += sizeof(struct iphdr);
- 			else
- 				total_len += sizeof(struct ipv6hdr);
--
-+		}
- 		/* special case, only rawv6_sendmsg:
- 		 * pass proto in sin6_port if not connected
- 		 * also see ANK comment in net/ipv4/raw.c
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index 06553d028d746..6088071cb1923 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -330,7 +330,12 @@ static int tc_setup_cbs(struct stmmac_priv *priv,
+ 
+ 		priv->plat->tx_queues_cfg[queue].mode_to_use = MTL_QUEUE_AVB;
+ 	} else if (!qopt->enable) {
+-		return stmmac_dma_qmode(priv, priv->ioaddr, queue, MTL_QUEUE_DCB);
++		ret = stmmac_dma_qmode(priv, priv->ioaddr, queue,
++				       MTL_QUEUE_DCB);
++		if (ret)
++			return ret;
++
++		priv->plat->tx_queues_cfg[queue].mode_to_use = MTL_QUEUE_DCB;
+ 	}
+ 
+ 	/* Port Transmit Rate and Speed Divider */
 -- 
 2.27.0
 
