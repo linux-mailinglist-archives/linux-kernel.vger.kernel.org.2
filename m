@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C4231BF34
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E17A731BF37
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbhBOQ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:27:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49602 "EHLO mail.kernel.org"
+        id S232306AbhBOQ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:28:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230459AbhBOPg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:36:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B988364E8E;
-        Mon, 15 Feb 2021 15:32:36 +0000 (UTC)
+        id S231253AbhBOPhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:37:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69E3864EE0;
+        Mon, 15 Feb 2021 15:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403157;
-        bh=nKIGJtfqLEwveiYn9Xc73rQHQjsxo+hapHWA2sKcDIo=;
+        s=korg; t=1613403160;
+        bh=i+j9M7r7dmHplaxzYAZpfgHpxO9jZ4VTKN8GzQOZ0No=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v/s1ioYmelxLbcsG5BI97urxpXpmB8uBbSuh+a0QmoIwwxjb2ekC1uMGLQnkIasZI
-         JmImis/ZH5dCqvWGm/JeJOApzwjJMjH4A+sBSWboaJKU3jmHaEPpeZtoKeJGp5FRVY
-         E19otseZkTX5o6OBwnbpOC6WIlBAXrIQG9eUOck0=
+        b=u4HlKl10vNGAIQsHL2YrSrxhMGcAvTIk+o6+4vRQSmw1qsoaCm02vt2no8b+k4gaO
+         fcaB+Rqt6mHOxiu8bjUWbW1j4SjNZzn26N4gSOzN2yMqEX0itG25ZUzb8fA94QuM6Y
+         qrCwSw5eUNBxuFSJDw5IMyyRG+fechA3LEKCj9FA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikhil Rao <nikhil.rao@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 050/104] dmaengine: idxd: fix misc interrupt completion
-Date:   Mon, 15 Feb 2021 16:27:03 +0100
-Message-Id: <20210215152721.092303584@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 051/104] ath9k: fix build error with LEDS_CLASS=m
+Date:   Mon, 15 Feb 2021 16:27:04 +0100
+Message-Id: <20210215152721.121960495@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -40,97 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Jiang <dave.jiang@intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit f5cc9ace24fbdf41b4814effbb2f9bad7046e988 ]
+[ Upstream commit b64acb28da8394485f0762e657470c9fc33aca4d ]
 
-Nikhil reported the misc interrupt handler can sometimes miss handling
-the command interrupt when an error interrupt happens near the same time.
-Have the irq handling thread continue to process the misc interrupts until
-all interrupts are processed. This is a low usage interrupt and is not
-expected to handle high volume traffic. Therefore there is no concern of
-this thread running for a long time.
+When CONFIG_ATH9K is built-in but LED support is in a loadable
+module, both ath9k drivers fails to link:
 
-Fixes: 0d5c10b4c84d ("dmaengine: idxd: add work queue drain support")
-Reported-by: Nikhil Rao <nikhil.rao@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/161074755329.2183844.13295528344116907983.stgit@djiang5-desk3.ch.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+x86_64-linux-ld: drivers/net/wireless/ath/ath9k/gpio.o: in function `ath_deinit_leds':
+gpio.c:(.text+0x36): undefined reference to `led_classdev_unregister'
+x86_64-linux-ld: drivers/net/wireless/ath/ath9k/gpio.o: in function `ath_init_leds':
+gpio.c:(.text+0x179): undefined reference to `led_classdev_register_ext'
+
+The problem is that the 'imply' keyword does not enforce any dependency
+but is only a weak hint to Kconfig to enable another symbol from a
+defconfig file.
+
+Change imply to a 'depends on LEDS_CLASS' that prevents the incorrect
+configuration but still allows building the driver without LED support.
+
+The 'select MAC80211_LEDS' is now ensures that the LED support is
+actually used if it is present, and the added Kconfig dependency
+on MAC80211_LEDS ensures that it cannot be enabled manually when it
+has no effect.
+
+Fixes: 197f466e93f5 ("ath9k_htc: Do not select MAC80211_LEDS by default")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Johannes Berg <johannes@sipsolutions.net>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210125113654.2408057-1-arnd@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/idxd/irq.c | 36 +++++++++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath9k/Kconfig | 8 ++------
+ net/mac80211/Kconfig                   | 2 +-
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/dma/idxd/irq.c b/drivers/dma/idxd/irq.c
-index 17a65a13fb649..552e2e2707058 100644
---- a/drivers/dma/idxd/irq.c
-+++ b/drivers/dma/idxd/irq.c
-@@ -53,19 +53,14 @@ irqreturn_t idxd_irq_handler(int vec, void *data)
- 	return IRQ_WAKE_THREAD;
- }
- 
--irqreturn_t idxd_misc_thread(int vec, void *data)
-+static int process_misc_interrupts(struct idxd_device *idxd, u32 cause)
- {
--	struct idxd_irq_entry *irq_entry = data;
--	struct idxd_device *idxd = irq_entry->idxd;
- 	struct device *dev = &idxd->pdev->dev;
- 	union gensts_reg gensts;
--	u32 cause, val = 0;
-+	u32 val = 0;
- 	int i;
- 	bool err = false;
- 
--	cause = ioread32(idxd->reg_base + IDXD_INTCAUSE_OFFSET);
--	iowrite32(cause, idxd->reg_base + IDXD_INTCAUSE_OFFSET);
--
- 	if (cause & IDXD_INTC_ERR) {
- 		spin_lock_bh(&idxd->dev_lock);
- 		for (i = 0; i < 4; i++)
-@@ -123,7 +118,7 @@ irqreturn_t idxd_misc_thread(int vec, void *data)
- 			      val);
- 
- 	if (!err)
--		goto out;
-+		return 0;
- 
- 	gensts.bits = ioread32(idxd->reg_base + IDXD_GENSTATS_OFFSET);
- 	if (gensts.state == IDXD_DEVICE_STATE_HALT) {
-@@ -144,10 +139,33 @@ irqreturn_t idxd_misc_thread(int vec, void *data)
- 				gensts.reset_type == IDXD_DEVICE_RESET_FLR ?
- 				"FLR" : "system reset");
- 			spin_unlock_bh(&idxd->dev_lock);
-+			return -ENXIO;
- 		}
- 	}
- 
-- out:
-+	return 0;
-+}
-+
-+irqreturn_t idxd_misc_thread(int vec, void *data)
-+{
-+	struct idxd_irq_entry *irq_entry = data;
-+	struct idxd_device *idxd = irq_entry->idxd;
-+	int rc;
-+	u32 cause;
-+
-+	cause = ioread32(idxd->reg_base + IDXD_INTCAUSE_OFFSET);
-+	if (cause)
-+		iowrite32(cause, idxd->reg_base + IDXD_INTCAUSE_OFFSET);
-+
-+	while (cause) {
-+		rc = process_misc_interrupts(idxd, cause);
-+		if (rc < 0)
-+			break;
-+		cause = ioread32(idxd->reg_base + IDXD_INTCAUSE_OFFSET);
-+		if (cause)
-+			iowrite32(cause, idxd->reg_base + IDXD_INTCAUSE_OFFSET);
-+	}
-+
- 	idxd_unmask_msix_vector(idxd, irq_entry->id);
- 	return IRQ_HANDLED;
- }
+diff --git a/drivers/net/wireless/ath/ath9k/Kconfig b/drivers/net/wireless/ath/ath9k/Kconfig
+index a84bb9b6573f8..e150d82eddb6c 100644
+--- a/drivers/net/wireless/ath/ath9k/Kconfig
++++ b/drivers/net/wireless/ath/ath9k/Kconfig
+@@ -21,11 +21,9 @@ config ATH9K_BTCOEX_SUPPORT
+ config ATH9K
+ 	tristate "Atheros 802.11n wireless cards support"
+ 	depends on MAC80211 && HAS_DMA
++	select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
+ 	select ATH9K_HW
+ 	select ATH9K_COMMON
+-	imply NEW_LEDS
+-	imply LEDS_CLASS
+-	imply MAC80211_LEDS
+ 	help
+ 	  This module adds support for wireless adapters based on
+ 	  Atheros IEEE 802.11n AR5008, AR9001 and AR9002 family
+@@ -176,11 +174,9 @@ config ATH9K_PCI_NO_EEPROM
+ config ATH9K_HTC
+ 	tristate "Atheros HTC based wireless cards support"
+ 	depends on USB && MAC80211
++	select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
+ 	select ATH9K_HW
+ 	select ATH9K_COMMON
+-	imply NEW_LEDS
+-	imply LEDS_CLASS
+-	imply MAC80211_LEDS
+ 	help
+ 	  Support for Atheros HTC based cards.
+ 	  Chipsets supported: AR9271
+diff --git a/net/mac80211/Kconfig b/net/mac80211/Kconfig
+index cd9a9bd242bab..51ec8256b7fa9 100644
+--- a/net/mac80211/Kconfig
++++ b/net/mac80211/Kconfig
+@@ -69,7 +69,7 @@ config MAC80211_MESH
+ config MAC80211_LEDS
+ 	bool "Enable LED triggers"
+ 	depends on MAC80211
+-	depends on LEDS_CLASS
++	depends on LEDS_CLASS=y || LEDS_CLASS=MAC80211
+ 	select LEDS_TRIGGERS
+ 	help
+ 	  This option enables a few LED triggers for different
 -- 
 2.27.0
 
