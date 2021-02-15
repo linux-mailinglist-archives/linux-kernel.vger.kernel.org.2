@@ -2,288 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8660731C32E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6371D31C331
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhBOUqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 15:46:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229771AbhBOUqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 15:46:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC35B64DF0;
-        Mon, 15 Feb 2021 20:45:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613421933;
-        bh=wau8Ed2DmmRd12M9HZuBtrzDRBepMcAbXGtWcZONCxs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=D75YW44F9p9q3NH6eg04eO8/JTwnv6mm6IQx6t/hpY6b1VNQoDckhMy7R2Ro3epCp
-         X+sHd9fVD5GmeR9LhV6YpKm7XS8GZr6r7cN7qAAuiA/OfWqmnsza7pqLDCvmsrCaLy
-         EyI2yEhWAYgLKAEyjfgSmd9cOOnzPmtSRQ3Z7I6kxtT9dFEyARwOU/mRPw2PnVtZfh
-         VD2WSvBF8nGljbXQmWwMJE9QsodsQ9B7x89U4sbCyIGNDtshKaDOz4Su8SYfE45TRn
-         MhBRb1QzDE2bioD42RwRgr0kUrBkmS5xfU2uVG07vsZCKCe385Y7Hy4ZvA8ZlbjpZ9
-         6jNfIHRpE4kjg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI updates for v5.12
-Date:   Mon, 15 Feb 2021 20:44:23 +0000
-Message-Id: <20210215204532.AC35B64DF0@mail.kernel.org>
+        id S229889AbhBOUr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 15:47:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhBOUrW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 15:47:22 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04370C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 12:46:41 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id c1so5747925qtc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 12:46:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=3vnbyd+FSQ7JLkQZLcxkUBRVmalOAVC3JmRRBLUbqks=;
+        b=esWzugW0DKNBhrEoOD3RZZJolEW7Ikdy5h5A40L1tqevvbAOT0V/axZemZNOQYOsnx
+         ZqD3ZNUy7by/NGsHl09vQs2I9j3jVNSSq/5jppK8df5zAjh2YbuB92wVmlkE6owxZt6Z
+         fwPkbPpOrOtuUOH/tqvvcYAUJ7p8hpPxFMCbkziFPOS2od1Xdv+xAzbaRryT395mvWIA
+         QyyYXiKXhyZNlxJBfjOYZS5ljhuVQqbKjm+x0+mXk6Y6fxHbxD/TWeJerjITehGHcVPB
+         pxTKBBtJtVVSfRfx3vwnolnX6XUXAf2UOCCWDeKRGFqpkPkgkyir6U39VbeZbqeRFUQ0
+         u1Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=3vnbyd+FSQ7JLkQZLcxkUBRVmalOAVC3JmRRBLUbqks=;
+        b=R2wy+VuLU7dcr3JbuQ/pas9qOzU97UTEYwlWE17w7vKYePd+AD6DEoidlfjkUz7Y0U
+         Aif1hkh1+OCJo0v4H8IXcitQqXTDXCDt7zkSN2CGTcivuG8W5NZKGZrP/SX/QI/7KS6M
+         dTSIX8+WP+RILvjyN34f1HNo0wedyyWVlVlbIgMxPLZynFDYlg/AJMaOX/VZXiGHRZim
+         p1YPfj14AvPIxy/1rk+McSh/Zkni6vuk7Vv/edn2nHzTO3G/LlLqSXlGtzkf0kS/KuWG
+         47TBqRLPc4ClRBcVwOEr0sj1DaSsNJJXwWt4AJvdhg8ybHNJIzOnWSk4P/gUauG8mQ+U
+         01Yg==
+X-Gm-Message-State: AOAM532tBxvNukATY1qwYMaXgBHW8sL0nv9FkOCgYZ6UzB7SEaWdVxA7
+        Pm+uovVzRtYjZZk0g7JXJeNhHg==
+X-Google-Smtp-Source: ABdhPJxFh3xw6PwIlF1Y7XPVhEvBoCKjuezA7yM/mz2kCLQ8EzJp2uMSCiO+RZLY6uXhugkk3quoNg==
+X-Received: by 2002:ac8:1009:: with SMTP id z9mr15996768qti.347.1613422001232;
+        Mon, 15 Feb 2021 12:46:41 -0800 (PST)
+Received: from nicolas-tpx395.lan (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id k187sm13020361qkc.74.2021.02.15.12.46.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 12:46:40 -0800 (PST)
+Message-ID: <6e107811295b7fdd96525453ea5587ee6adc1b06.camel@ndufresne.ca>
+Subject: Re: DMA-buf and uncached system memory
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org, lkml <linux-kernel@vger.kernel.org>
+Cc:     "Sharma, Shashank" <Shashank.Sharma@amd.com>
+Date:   Mon, 15 Feb 2021 15:46:39 -0500
+In-Reply-To: <80c42ce0-6df1-71ab-81ec-e46cc56840ba@amd.com>
+References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
+         <e6897f92-4c61-cd42-2822-43c50a744d4c@suse.de>
+         <302e06ad-f979-dc77-5d84-fa0923aa4632@suse.de>
+         <80c42ce0-6df1-71ab-81ec-e46cc56840ba@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
+Le lundi 15 février 2021 à 13:10 +0100, Christian König a écrit :
+> 
+> 
+> Am 15.02.21 um 13:00 schrieb Thomas Zimmermann:
+> > Hi
+> > 
+> > Am 15.02.21 um 10:49 schrieb Thomas Zimmermann:
+> > > Hi
+> > > 
+> > > Am 15.02.21 um 09:58 schrieb Christian König:
+> > > > Hi guys,
+> > > > 
+> > > > we are currently working an Freesync and direct scan out from system 
+> > > > memory on AMD APUs in A+A laptops.
+> > > > 
+> > > > On problem we stumbled over is that our display hardware needs to 
+> > > > scan out from uncached system memory and we currently don't have a 
+> > > > way to communicate that through DMA-buf.
+> > 
+> > Re-reading this paragrah, it sounds more as if you want to let the 
+> > exporter know where to move the buffer. Is this another case of the 
+> > missing-pin-flag problem?
+> 
+> No, your original interpretation was correct. Maybe my writing is a bit 
+> unspecific.
+> 
+> The real underlying issue is that our display hardware has a problem 
+> with latency when accessing system memory.
+> 
+> So the question is if that also applies to for example Intel hardware or 
+> other devices as well or if it is just something AMD specific?
 
-  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+I do believe that the answer is yes, Intel display have similar issue with
+latency, hence requires un-cached memory.
 
-are available in the Git repository at:
+> 
+> Regards,
+> Christian.
+> 
+> > 
+> > Best regards
+> > Thomas
+> > 
+> > > > 
+> > > > For our specific use case at hand we are going to implement 
+> > > > something driver specific, but the question is should we have 
+> > > > something more generic for this?
+> > > 
+> > > For vmap operations, we return the address as struct dma_buf_map, 
+> > > which contains additional information about the memory buffer. In 
+> > > vram helpers, we have the interface drm_gem_vram_offset() that 
+> > > returns the offset of the GPU device memory.
+> > > 
+> > > Would it be feasible to combine both concepts into a dma-buf 
+> > > interface that returns the device-memory offset plus the additional 
+> > > caching flag?
+> > > 
+> > > There'd be a structure and a getter function returning the structure.
+> > > 
+> > > struct dma_buf_offset {
+> > >      bool cached;
+> > >      u64 address;
+> > > };
+> > > 
+> > > // return offset in *off
+> > > int dma_buf_offset(struct dma_buf *buf, struct dma_buf_off *off);
+> > > 
+> > > Whatever settings are returned by dma_buf_offset() are valid while 
+> > > the dma_buf is pinned.
+> > > 
+> > > Best regards
+> > > Thomas
+> > > 
+> > > > 
+> > > > After all the system memory access pattern is a PCIe extension and 
+> > > > as such something generic.
+> > > > 
+> > > > Regards,
+> > > > Christian.
+> > > > _______________________________________________
+> > > > dri-devel mailing list
+> > > > dri-devel@lists.freedesktop.org
+> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > 
+> > > 
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > 
+> > 
+> 
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-v5.12
 
-for you to fetch changes up to eec262d179ff60e8d12298ab2f118661040e0bf5:
-
-  Merge remote-tracking branch 'spi/for-5.12' into spi-next (2021-02-12 14:00:22 +0000)
-
-----------------------------------------------------------------
-spi: Updates for v5.12
-
-The main focus of this release from a framework point of view has been
-spi-mem where we've acquired support for a few new hardware features
-which enable better performance on suitable hardware.  Otherwise mostly
-thanks to Arnd's cleanup efforts on old platforms we've removed several
-obsolete drivers which just about balance out the newer drivers we've
-added this cycle.
-
- - Allow drivers to flag if they are unidirectional.
- - Support for DTR mode and hardware acceleration of dummy cycles in spi-mem.
- - Support for Allwinder H616, Intel Lightning Mountain, nVidia Tegra
-   QuadSPI, Realtek RTL838x and RTL839x.
- - Removal of obsolute EFM32, Txx9 and SIRF Prima and Atlas drivers.
-
-----------------------------------------------------------------
-Adam Ford (1):
-      spi: renesas rpc-if: Update Add RZ/G2 to Kconfig description
-
-Alain Volmat (5):
-      spi: stm32: properly handle 0 byte transfer
-      spi: stm32: do not mandate cs_gpio
-      spi: stm32h7: ensure message are smaller than max size
-      spi: stm32: defer probe for reset
-      spi: stm32: make spurious and overrun interrupts visible
-
-Alexandru Ardelean (3):
-      spi: uapi: unify SPI modes into a single spi.h header
-      spi: dt-bindings: document zero value for spi-{rx,tx}-bus-width properties
-      spi: stm32: update dev_dbg() print format for SPI params
-
-Amelie Delaunay (2):
-      spi: stm32: use bitfield macros
-      spi: stm32h7: replace private SPI_1HZ_NS with NSEC_PER_SEC
-
-Andre Przywara (1):
-      dt-bindings: spi: sunxi: Add H616 compatible string
-
-Andy Shevchenko (2):
-      spi: pxa2xx: Fix the controller numbering for Wildcat Point
-      spi: pxa2xx: Add IDs for the controllers found on Intel Lynxpoint
-
-Arnd Bergmann (1):
-      spi: remove sirf prima/atlas driver
-
-Bert Vermeulen (2):
-      spi: realtek-rtl: Add support for Realtek RTL838x/RTL839x SPI controllers
-      spi: Realtek RTL838x/RTL839x SPI controller
-
-Bhaskar Chowdhury (1):
-      spi: Change provied to provided in the file spi.h
-
-Dragos Bogdan (1):
-      spi: Add SPI_NO_TX/RX support
-
-Etienne Carriere (1):
-      spi: stm32: driver uses reset controller only at init
-
-Geert Uytterhoeven (2):
-      spi: sh-msiof: Fill in spi_transfer.effective_speed_hz
-      spi: sh-msiof: Fill in controller speed limits
-
-Guido Günther (1):
-      spi: imx: Don't print error on -EPROBEDEFER
-
-Jarkko Nikula (1):
-      spi: pxa2xx: Add support for Intel Alder Lake PCH-P
-
-Junhao He (1):
-      spi: clps711xx: remove redundant white-space
-
-Kees Cook (1):
-      spi: dw: Avoid stack content exposure
-
-Lad Prabhakar (2):
-      spi: rpc-if: Remove CONFIG_PM_SLEEP ifdefery
-      spi: rpc-if: Gaurd .pm assignment with CONFIG_PM_SLEEP #ifdef check
-
-Marcin Wojtas (2):
-      spi: orion: enable clocks before spi_setup
-      spi: orion: enable support for switching CS every transferred byte
-
-Marek Vasut (1):
-      spi: stm32: Simplify stm32h7_spi_prepare_fthlv()
-
-Mark Brown (10):
-      Merge existing fixes from spi/for-5.11
-      Merge series "Add Tegra Quad SPI driver" from Sowjanya Komatineni <skomatineni@nvidia.com>:
-      Merge series "spi: cadence-quadspi: Add QSPI controller support for Intel LGM SoC" from "Ramuthevar, Vadivel MuruganX" <vadivel.muruganx.ramuthevar@linux.intel.com>:
-      Merge series "spi: sh-msiof: Advertize bit rate limits and actual speed" from Geert Uytterhoeven <geert+renesas@glider.be>:
-      Merge v5.11-rc3
-      Merge series "Remove ARM platform efm32" from Uwe Kleine-König <u.kleine-koenig@pengutronix.de> Uwe Kleine-König <uwe.kleine-koenig@pengutronix.de>:
-      Merge series "spi: Add support for Realtek RTL838x/RTL839x SoC SPI" from Bert Vermeulen <bert@biot.com>:
-      Merge series "spi: add set_cs_timing support for HW/SW CS mode" from Leilk Liu <leilk.liu@mediatek.com>:
-      Merge remote-tracking branch 'spi/for-5.11' into spi-linus
-      Merge remote-tracking branch 'spi/for-5.12' into spi-next
-
-Masahisa Kojima (1):
-      spi: spi-synquacer: fix set_cs handling
-
-Nicolas Saenz Julienne (1):
-      spi: Skip zero-length transfers in spi_transfer_one_message()
-
-Pan Bian (1):
-      spi: atmel: Put allocated master before return
-
-Pratyush Yadav (10):
-      spi: cadence-quadspi: Set master max_speed_hz
-      spi: cadence-quadspi: Abort read if dummy cycles required are too many
-      spi: cadence-quadspi: Set dummy cycles from STIG commands
-      spi: cadence-quadspi: Fix dummy cycle calculation when buswidth > 1
-      spi: cadence-quadspi: Implement a simple supports_op hook
-      spi: cadence-quadspi: Wait at least 500 ms for direct reads
-      spi: cadence-quadspi: Add DTR support
-      spi: cadence-quadspi: Fix build warning on 32-bit platforms
-      spi: spi-mem: add spi_mem_dtr_supports_op()
-      spi: cadence-quadspi: Use spi_mem_dtr_supports_op()
-
-Ramuthevar Vadivel Murugan (5):
-      spi: cadence-quadspi: Add QSPI support for Intel LGM SoC
-      spi: cadence-quadspi: Disable the DAC for Intel LGM SoC
-      spi: cadence-quadspi: Add multi-chipselect support for Intel LGM SoC
-      spi: Move cadence-quadspi.txt to Documentation/devicetree/bindings/spi
-      dt-bindings: spi: cadence-qspi: Add support for Intel lgm-qspi
-
-Rasmus Villemoes (1):
-      spi: fsl: invert spisel_boot signal on MPC8309
-
-Richard Fitzgerald (1):
-      spi: bcm2835: Set controller max_speed_hz
-
-Sergiu Cuciurean (1):
-      spi: spi-mpc52xx: Use new structure for SPI transfer delays
-
-Sowjanya Komatineni (6):
-      dt-bindings: clock: tegra: Add clock ID TEGRA210_CLK_QSPI_PM
-      dt-bindings: spi: Add Tegra Quad SPI device tree binding
-      MAINTAINERS: Add Tegra Quad SPI driver section
-      spi: tegra210-quad: Add support for Tegra210 QSPI controller
-      spi: spi-mem: Mark dummy transfers by setting dummy_data bit
-      spi: tegra210-quad: Add support for hardware dummy cycles transfer
-
-Stephen Boyd (1):
-      spi: spi-qcom-qspi: Use irq trigger flags from firmware
-
-Thomas Bogendoerfer (1):
-      spi: txx9: Remove driver
-
-Tudor Ambarus (1):
-      spi: atmel-quadspi: Disable the QSPI IP at suspend()
-
-Uwe Kleine-König (1):
-      spi: Drop unused efm32 bus driver
-
-Vincent Pelletier (3):
-      spi: bcm2835: Call the dedicated transfer completion function.
-      spi: rockchip: Call the dedicated transfer completion function.
-      spi: bcm2835aux: Call the dedicated transfer completion function.
-
-Wolfram Sang (1):
-      spi: renesas,sh-msiof: Add r8a779a0 support
-
-YANG LI (1):
-      spi: spi-bcm-qspi: style: Simplify bool comparison
-
-Yanteng Si (1):
-      spi: Fix distinct pointer types warning for ARCH=mips
-
-Yicong Yang (2):
-      spi: hisi-sfc-v3xx: extend version checking compatibility
-      spi: hisi-sfc-v3xx: add address mode check
-
-corentin (3):
-      spi: spi-au1550: Add suffix "int" to all "unsigned"
-      spi: spi-au1550: quoted string break
-      spi: spi-au1550: Fix various whitespace warnings
-
-leilk.liu (3):
-      spi: add power control when set_cs_timing
-      spi: support CS timing for HW & SW mode
-      spi: mediatek: add set_cs_timing support
-
- .../bindings/spi/allwinner,sun6i-a31-spi.yaml      |    1 +
- .../bindings/{mtd => spi}/cadence-quadspi.txt      |    1 +
- .../bindings/spi/nvidia,tegra210-quad.yaml         |  117 ++
- .../devicetree/bindings/spi/realtek,rtl-spi.yaml   |   41 +
- .../devicetree/bindings/spi/renesas,sh-msiof.yaml  |    1 +
- .../devicetree/bindings/spi/spi-controller.yaml    |    6 +-
- Documentation/devicetree/bindings/spi/spi-sirf.txt |   42 -
- MAINTAINERS                                        |    8 +
- drivers/spi/Kconfig                                |   33 +-
- drivers/spi/Makefile                               |    5 +-
- drivers/spi/atmel-quadspi.c                        |    1 +
- drivers/spi/spi-atmel.c                            |    2 +-
- drivers/spi/spi-au1550.c                           |   53 +-
- drivers/spi/spi-bcm-qspi.c                         |    2 +-
- drivers/spi/spi-bcm2835.c                          |    8 +-
- drivers/spi/spi-bcm2835aux.c                       |    2 +-
- drivers/spi/spi-cadence-quadspi.c                  |  333 ++++-
- drivers/spi/spi-clps711x.c                         |    2 +-
- drivers/spi/spi-dw-bt1.c                           |    2 +-
- drivers/spi/spi-efm32.c                            |  462 -------
- drivers/spi/spi-fsl-spi.c                          |    2 +-
- drivers/spi/spi-hisi-sfc-v3xx.c                    |   33 +-
- drivers/spi/spi-imx.c                              |    2 +-
- drivers/spi/spi-mem.c                              |   23 +-
- drivers/spi/spi-mpc52xx.c                          |    4 +-
- drivers/spi/spi-mt65xx.c                           |   72 +-
- drivers/spi/spi-orion.c                            |   55 +-
- drivers/spi/spi-pxa2xx-pci.c                       |   29 +-
- drivers/spi/spi-pxa2xx.c                           |    4 +
- drivers/spi/spi-qcom-qspi.c                        |    3 +-
- drivers/spi/spi-realtek-rtl.c                      |  209 +++
- drivers/spi/spi-rockchip.c                         |    2 +-
- drivers/spi/spi-rpc-if.c                           |   13 +-
- drivers/spi/spi-sh-msiof.c                         |   14 +-
- drivers/spi/spi-sirf.c                             | 1236 -----------------
- drivers/spi/spi-stm32.c                            |  150 +--
- drivers/spi/spi-synquacer.c                        |    4 +
- drivers/spi/spi-tegra210-quad.c                    | 1410 ++++++++++++++++++++
- drivers/spi/spi-txx9.c                             |  477 -------
- drivers/spi/spi.c                                  |   59 +-
- include/dt-bindings/clock/tegra210-car.h           |    2 +-
- include/linux/platform_data/efm32-spi.h            |   15 -
- include/linux/spi/spi-mem.h                        |    9 +
- include/linux/spi/spi.h                            |   44 +-
- include/uapi/linux/spi/spi.h                       |   41 +
- include/uapi/linux/spi/spidev.h                    |   30 +-
- 46 files changed, 2519 insertions(+), 2545 deletions(-)
- rename Documentation/devicetree/bindings/{mtd => spi}/cadence-quadspi.txt (97%)
- create mode 100644 Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
- create mode 100644 Documentation/devicetree/bindings/spi/realtek,rtl-spi.yaml
- delete mode 100644 Documentation/devicetree/bindings/spi/spi-sirf.txt
- delete mode 100644 drivers/spi/spi-efm32.c
- create mode 100644 drivers/spi/spi-realtek-rtl.c
- delete mode 100644 drivers/spi/spi-sirf.c
- create mode 100644 drivers/spi/spi-tegra210-quad.c
- delete mode 100644 drivers/spi/spi-txx9.c
- delete mode 100644 include/linux/platform_data/efm32-spi.h
- create mode 100644 include/uapi/linux/spi/spi.h
