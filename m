@@ -2,197 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D704C31C29F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9618C31C2A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhBOTqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:46:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhBOTp5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:45:57 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5D1C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:45:16 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id z190so1510841qka.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:45:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5dqyGvIHoacEP1moj9V+kZ65LXd0117/1bf4nofJZRQ=;
-        b=QHU5M6dRg5rLgbKNrrCWFRjK0HJ6G8FvXG4kwExlCx4hvYNVbp/uSChWtM1zpmW6BG
-         gnCjuTsuLx8BSktmal6LXg3vpU09kSI5M+2dVzskjs9D4tu3R4aVlTljTzY8bMaZSkjq
-         BFvcFXgSwlte84eHffGxw76fddbmR0iJnNy40Wajchw7Kjyw55mZbtmyakwBSyb3Es/Q
-         TtU5dK8TWRQtgQctqTPbstOptpVCq87H08ChHSzh8KOO3/7xcB4cg6hcYAApUbIoQVfZ
-         bMPs6NLyFixZ1LJ6+8uKpet3moQeEbEd7DVuyITHbxJ1dioejxikmdFHITNIylYk1rXg
-         xfrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5dqyGvIHoacEP1moj9V+kZ65LXd0117/1bf4nofJZRQ=;
-        b=snMv6XSAEYQqVOxG4foGBRxw83huK0EUrH8bvqvkSBbyPUfCHq6aniSMkZ366Aw/gb
-         INSjxOKJNYS6sV/Ck6P+31zMH2vCZtCH8/7/xHtY58fF8hNs/64mCwDcxjb7QWkBT0+2
-         M5FFD6V++a1ls/0iu+NNflI9SOnV0HeL2u4481bhB1XfycJrP/nvCOlrSt9lsr4WINul
-         OFtsWgxB/LuXW0YWr40/Pl9JctqWRH4QyfjB8tsH3pYGFDc77OKigrr6JjWiwm4O/oup
-         3WJOoU1ZTFwndD/yv5tkkJQA6s0KQXdLcAvXMQk1dCPbxnurZe5V6JjVZTvFIip1Hnoj
-         iDqw==
-X-Gm-Message-State: AOAM531sgRRgqaoI4M3XFZCC8B+WkdiI94Rr1+CAAB8sAFrBV5zS+0SO
-        1MiZz+r30W5HUBotqpxvvqE=
-X-Google-Smtp-Source: ABdhPJyb3H3IAWNHJz7yNmekzuS9Zs7saDQRdVsI+JfhcbGZ73I7H47M/NeIkT/KtJ0vYZV7XdaSww==
-X-Received: by 2002:a05:620a:4016:: with SMTP id h22mr16530732qko.491.1613418316059;
-        Mon, 15 Feb 2021 11:45:16 -0800 (PST)
-Received: from darkstar.example.net ([2804:d45:9905:9600:c57:100:d8b8:6ad3])
-        by smtp.gmail.com with ESMTPSA id q12sm5795179qki.91.2021.02.15.11.45.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 11:45:15 -0800 (PST)
-From:   Davidson Francis <davidsondfgl@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Davidson Francis <davidsondfgl@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8192e: Fix comparisons to NULL
-Date:   Mon, 15 Feb 2021 16:44:41 -0300
-Message-Id: <20210215194441.11430-1-davidsondfgl@gmail.com>
-X-Mailer: git-send-email 2.29.1
+        id S230145AbhBOTtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:49:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhBOTtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 14:49:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80C1564DE0;
+        Mon, 15 Feb 2021 19:48:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613418503;
+        bh=7P7ywkXtXv5qTbHgZ/5qoDL3gQu62y8OrUQD7YwV8Ww=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EN1+uUrMuThAGCa+TRFQ8nQ7el4cznY5YoCViDZ5J6o3hOOkDWERJo8I4/Nv9pND1
+         ONqpVMw+gtaeX4iKCmRoLrK+Wxn7w3QWWSpeHUtD7xKmIO52FcKAmWYQuxWZAofbX/
+         1vCWwoNt1Lyv6qt6LZCqf7ybxOwYhkhdkbN6AnO2vPEoUh4W8+HnvIxTta36C4bEjA
+         8GfeVmhwfnEsqtOfKL58jAlEBKRPcz89UnNk7iXsNxyDiGvfCoECXPf5X5VISPwKHT
+         WsBi8ogACdqVsSWwqxL+Bi2sP+4egeCbk8c1rUW/I4GR7KXPfgDNIXl6+D4nhc+9ym
+         xaP5QUJoni7Ew==
+Date:   Mon, 15 Feb 2021 11:48:22 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <vincent.cheng.xh@renesas.com>
+Cc:     <richardcochran@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 net-next 1/3] ptp: ptp_clockmatrix: Add
+ wait_for_sys_apll_dpll_lock.
+Message-ID: <20210215114822.4f698920@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1613192766-14010-2-git-send-email-vincent.cheng.xh@renesas.com>
+References: <1613192766-14010-1-git-send-email-vincent.cheng.xh@renesas.com>
+        <1613192766-14010-2-git-send-email-vincent.cheng.xh@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checkpatch prefers the shorter version (x / !x) over
-(!= NULL / == NULL), respectively.
+On Sat, 13 Feb 2021 00:06:04 -0500 vincent.cheng.xh@renesas.com wrote:
+> From: Vincent Cheng <vincent.cheng.xh@renesas.com>
+> 
+> Part of the device initialization aligns the rising edge of the output
+> clock to the internal 1 PPS clock. If the system APLL and DPLL is not
+> locked, then the alignment will fail and there will be a fixed offset
+> between the internal 1 PPS clock and the output clock.
+> 
+> After loading the device firmware, poll the system APLL and DPLL for
+> locked state prior to initialization, timing out after 2 seconds.
+> 
+> Signed-off-by: Vincent Cheng <vincent.cheng.xh@renesas.com>
+> Acked-by: Richard Cochran <richardcochran@gmail.com>
 
-Signed-off-by: Davidson Francis <davidsondfgl@gmail.com>
----
- drivers/staging/rtl8192e/rtllib_wx.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+> diff --git a/drivers/ptp/idt8a340_reg.h b/drivers/ptp/idt8a340_reg.h
+> index a664dfe..ac524cf 100644
+> --- a/drivers/ptp/idt8a340_reg.h
+> +++ b/drivers/ptp/idt8a340_reg.h
+> @@ -122,6 +122,8 @@
+>  #define OTP_SCSR_CONFIG_SELECT            0x0022
+>  
+>  #define STATUS                            0xc03c
+> +#define DPLL_SYS_STATUS                   0x0020
+> +#define DPLL_SYS_APLL_STATUS              0x0021
+>  #define USER_GPIO0_TO_7_STATUS            0x008a
+>  #define USER_GPIO8_TO_15_STATUS           0x008b
+>  
+> @@ -707,4 +709,12 @@
+>  /* Bit definitions for the DPLL_CTRL_COMBO_MASTER_CFG register */
+>  #define COMBO_MASTER_HOLD                 BIT(0)
+>  
+> +/* Bit definitions for DPLL_SYS_STATUS register */
+> +#define DPLL_SYS_STATE_MASK               (0xf)
+> +
+> +/* Bit definitions for SYS_APLL_STATUS register */
+> +#define SYS_APLL_LOSS_LOCK_LIVE_MASK       BIT(0)
+> +#define SYS_APLL_LOSS_LOCK_LIVE_LOCKED     0
+> +#define SYS_APLL_LOSS_LOCK_LIVE_UNLOCKED   1
+> +
+>  #endif
+> diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
+> index 051511f..3de8411 100644
+> --- a/drivers/ptp/ptp_clockmatrix.c
+> +++ b/drivers/ptp/ptp_clockmatrix.c
+> @@ -335,6 +335,79 @@ static int wait_for_boot_status_ready(struct idtcm *idtcm)
+>  	return -EBUSY;
+>  }
+>  
+> +static int read_sys_apll_status(struct idtcm *idtcm, u8 *status)
+> +{
+> +	int err;
+> +
+> +	err = idtcm_read(idtcm, STATUS, DPLL_SYS_APLL_STATUS, status,
+> +			 sizeof(u8));
+> +	return err;
 
-diff --git a/drivers/staging/rtl8192e/rtllib_wx.c b/drivers/staging/rtl8192e/rtllib_wx.c
-index 2e486ccb6432..ecd472baee16 100644
---- a/drivers/staging/rtl8192e/rtllib_wx.c
-+++ b/drivers/staging/rtl8192e/rtllib_wx.c
-@@ -324,7 +324,7 @@ int rtllib_wx_set_encode(struct rtllib_device *ieee,
- 		 * and if no key index was provided, de-init them all
- 		 */
- 		for (i = 0; i < NUM_WEP_KEYS; i++) {
--			if (ieee->crypt_info.crypt[i] != NULL) {
-+			if (ieee->crypt_info.crypt[i]) {
- 				if (key_provided)
- 					break;
- 				lib80211_crypt_delayed_deinit(&ieee->crypt_info,
-@@ -344,7 +344,7 @@ int rtllib_wx_set_encode(struct rtllib_device *ieee,
- 	sec.enabled = 1;
- 	sec.flags |= SEC_ENABLED;
- 
--	if (*crypt != NULL && (*crypt)->ops != NULL &&
-+	if (*crypt && (*crypt)->ops &&
- 	    strcmp((*crypt)->ops->name, "R-WEP") != 0) {
- 		/* changing to use WEP; deinit previously used algorithm
- 		 * on this key
-@@ -352,12 +352,12 @@ int rtllib_wx_set_encode(struct rtllib_device *ieee,
- 		lib80211_crypt_delayed_deinit(&ieee->crypt_info, crypt);
- 	}
- 
--	if (*crypt == NULL) {
-+	if (!*crypt) {
- 		struct lib80211_crypt_data *new_crypt;
- 
- 		/* take WEP into use */
- 		new_crypt = kzalloc(sizeof(*new_crypt), GFP_KERNEL);
--		if (new_crypt == NULL)
-+		if (!new_crypt)
- 			return -ENOMEM;
- 		new_crypt->ops = lib80211_get_crypto_ops("R-WEP");
- 		if (!new_crypt->ops) {
-@@ -484,7 +484,7 @@ int rtllib_wx_get_encode(struct rtllib_device *ieee,
- 
- 	erq->flags = key + 1;
- 
--	if (crypt == NULL || crypt->ops == NULL) {
-+	if (!crypt || !crypt->ops) {
- 		erq->length = 0;
- 		erq->flags |= IW_ENCODE_DISABLED;
- 		return 0;
-@@ -549,7 +549,7 @@ int rtllib_wx_set_encode_ext(struct rtllib_device *ieee,
- 			lib80211_crypt_delayed_deinit(&ieee->crypt_info, crypt);
- 
- 		for (i = 0; i < NUM_WEP_KEYS; i++) {
--			if (ieee->crypt_info.crypt[i] != NULL)
-+			if (ieee->crypt_info.crypt[i])
- 				break;
- 		}
- 		if (i == NUM_WEP_KEYS) {
-@@ -582,7 +582,7 @@ int rtllib_wx_set_encode_ext(struct rtllib_device *ieee,
- 	netdev_dbg(dev, "alg name:%s\n", alg);
- 
- 	ops = lib80211_get_crypto_ops(alg);
--	if (ops == NULL) {
-+	if (!ops) {
- 		char tempbuf[100];
- 
- 		memset(tempbuf, 0x00, 100);
-@@ -590,19 +590,19 @@ int rtllib_wx_set_encode_ext(struct rtllib_device *ieee,
- 		request_module("%s", tempbuf);
- 		ops = lib80211_get_crypto_ops(alg);
- 	}
--	if (ops == NULL) {
-+	if (!ops) {
- 		netdev_info(dev, "========>unknown crypto alg %d\n", ext->alg);
- 		ret = -EINVAL;
- 		goto done;
- 	}
- 
--	if (*crypt == NULL || (*crypt)->ops != ops) {
-+	if (!*crypt || (*crypt)->ops != ops) {
- 		struct lib80211_crypt_data *new_crypt;
- 
- 		lib80211_crypt_delayed_deinit(&ieee->crypt_info, crypt);
- 
- 		new_crypt = kzalloc(sizeof(*new_crypt), GFP_KERNEL);
--		if (new_crypt == NULL) {
-+		if (!new_crypt) {
- 			ret = -ENOMEM;
- 			goto done;
- 		}
-@@ -610,7 +610,7 @@ int rtllib_wx_set_encode_ext(struct rtllib_device *ieee,
- 		if (new_crypt->ops && try_module_get(new_crypt->ops->owner))
- 			new_crypt->priv = new_crypt->ops->init(idx);
- 
--		if (new_crypt->priv == NULL) {
-+		if (!new_crypt->priv) {
- 			kfree(new_crypt);
- 			ret = -EINVAL;
- 			goto done;
-@@ -766,7 +766,7 @@ int rtllib_wx_set_gen_ie(struct rtllib_device *ieee, u8 *ie, size_t len)
- 	u8 *buf;
- 	u8 eid, wps_oui[4] = {0x0, 0x50, 0xf2, 0x04};
- 
--	if (len > MAX_WPA_IE_LEN || (len && ie == NULL))
-+	if (len > MAX_WPA_IE_LEN || (len && !ie))
- 		return -EINVAL;
- 
- 	if (len) {
-@@ -776,7 +776,7 @@ int rtllib_wx_set_gen_ie(struct rtllib_device *ieee, u8 *ie, size_t len)
- 
- 			ieee->wps_ie_len = min_t(size_t, len, MAX_WZC_IE_LEN);
- 			buf = kmemdup(ie, ieee->wps_ie_len, GFP_KERNEL);
--			if (buf == NULL)
-+			if (!buf)
- 				return -ENOMEM;
- 			ieee->wps_ie = buf;
- 			return 0;
-@@ -789,7 +789,7 @@ int rtllib_wx_set_gen_ie(struct rtllib_device *ieee, u8 *ie, size_t len)
- 		if (len != ie[1]+2)
- 			return -EINVAL;
- 		buf = kmemdup(ie, len, GFP_KERNEL);
--		if (buf == NULL)
-+		if (!buf)
- 			return -ENOMEM;
- 		kfree(ieee->wpa_ie);
- 		ieee->wpa_ie = buf;
--- 
-2.29.1
+Please remove the unnecessary 'err' variable:
+
+	return idtcm_read(..
+
+There are bots scanning the tree for such code simplifications, 
+better to get this right from the start than deal with flood of 
+simplifications patches.
+
+> +}
+> +
+> +static int read_sys_dpll_status(struct idtcm *idtcm, u8 *status)
+> +{
+> +	int err;
+> +
+> +	err = idtcm_read(idtcm, STATUS, DPLL_SYS_STATUS, status, sizeof(u8));
+> +
+> +	return err;
+
+same here
+
+> +}
+> +
+> +static int wait_for_sys_apll_dpll_lock(struct idtcm *idtcm)
+> +{
+> +	const char *fmt = "%d ms SYS lock timeout: APLL Loss Lock %d  DPLL state %d";
+> +	u8 i = LOCK_TIMEOUT_MS / LOCK_POLL_INTERVAL_MS;
+
+Using msleep() and loops is quite inaccurate. I'd recommend you switch
+to:
+
+	unsigned long timeout = jiffies + msecs_to_jiffies(LOCK_TIMEOUT_MS);
+
+And then use:
+
+	while (time_is_after_jiffies(timeout))
+
+For the condition.
+
+> +	u8 apll = 0;
+> +	u8 dpll = 0;
+> +
+> +	int err;
+
+No empty lines between variables, please.
+
+> +
+> +	do {
+> +		err = read_sys_apll_status(idtcm, &apll);
+> +
+
+No empty lines between call and the if, please.
+
+> +		if (err)
+> +			return err;
+> +
+> +		err = read_sys_dpll_status(idtcm, &dpll);
+> +
+> +		if (err)
+> +			return err;
+> +
+> +		apll &= SYS_APLL_LOSS_LOCK_LIVE_MASK;
+> +		dpll &= DPLL_SYS_STATE_MASK;
+> +
+> +		if ((apll == SYS_APLL_LOSS_LOCK_LIVE_LOCKED)
+
+parenthesis around a == b are unnecessary.
+
+> +		    && (dpll == DPLL_STATE_LOCKED)) {
+> +			return 0;
+> +		} else if ((dpll == DPLL_STATE_FREERUN) ||
+> +			   (dpll == DPLL_STATE_HOLDOVER) ||
+> +			   (dpll == DPLL_STATE_OPEN_LOOP)) {
+
+same here.
+
+> +			dev_warn(&idtcm->client->dev,
+> +				"No wait state: DPLL_SYS_STATE %d", dpll);
+
+It looks like other prints in this function use \n at the end of the
+lines, should we keep it consistent?
+
+> +			return -EPERM;
+> +		}
+> +
+> +		msleep(LOCK_POLL_INTERVAL_MS);
+> +		i--;
+> +
+
+unnecessary empty line
+
+> +	} while (i);
+> +
+> +	dev_warn(&idtcm->client->dev, fmt, LOCK_TIMEOUT_MS, apll, dpll);
+
+I'd recommend leaving the format in place, that way static code
+checkers can validate the arguments.
+
+> +	return -ETIME;
+
+> +}
+> +
+> +static void wait_for_chip_ready(struct idtcm *idtcm)
+> +{
+> +	if (wait_for_boot_status_ready(idtcm))
+> +		dev_warn(&idtcm->client->dev, "BOOT_STATUS != 0xA0");
+
+no new line?
+
+> +
+> +	if (wait_for_sys_apll_dpll_lock(idtcm))
+> +		dev_warn(&idtcm->client->dev,
+> +			 "Continuing while SYS APLL/DPLL is not locked");
+
+And here.
+
+> +}
+> +
+>  static int _idtcm_gettime(struct idtcm_channel *channel,
+>  			  struct timespec64 *ts)
+>  {
+> @@ -2235,8 +2308,7 @@ static int idtcm_probe(struct i2c_client *client,
+>  		dev_warn(&idtcm->client->dev,
+>  			 "loading firmware failed with %d\n", err);
+>  
+> -	if (wait_for_boot_status_ready(idtcm))
+> -		dev_warn(&idtcm->client->dev, "BOOT_STATUS != 0xA0\n");
+> +	wait_for_chip_ready(idtcm);
+>  
+>  	if (idtcm->tod_mask) {
+>  		for (i = 0; i < MAX_TOD; i++) {
+> diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
+> index 645de2c..0233236 100644
+> --- a/drivers/ptp/ptp_clockmatrix.h
+> +++ b/drivers/ptp/ptp_clockmatrix.h
+> @@ -51,6 +51,9 @@
+>  #define TOD_WRITE_OVERHEAD_COUNT_MAX		(2)
+>  #define TOD_BYTE_COUNT				(11)
+>  
+> +#define LOCK_TIMEOUT_MS			(2000)
+> +#define LOCK_POLL_INTERVAL_MS		(10)
+> +
+>  #define PEROUT_ENABLE_OUTPUT_MASK	(0xdeadbeef)
+>  
+>  #define IDTCM_MAX_WRITE_COUNT		(512)
+> @@ -105,6 +108,18 @@ enum scsr_tod_write_type_sel {
+>  	SCSR_TOD_WR_TYPE_SEL_MAX = SCSR_TOD_WR_TYPE_SEL_DELTA_MINUS,
+>  };
+>  
+> +/* Values STATUS.DPLL_SYS_STATUS.DPLL_SYS_STATE */
+> +enum dpll_state {
+> +	DPLL_STATE_MIN = 0,
+> +	DPLL_STATE_FREERUN = DPLL_STATE_MIN,
+> +	DPLL_STATE_LOCKACQ = 1,
+> +	DPLL_STATE_LOCKREC = 2,
+> +	DPLL_STATE_LOCKED = 3,
+> +	DPLL_STATE_HOLDOVER = 4,
+> +	DPLL_STATE_OPEN_LOOP = 5,
+> +	DPLL_STATE_MAX = DPLL_STATE_OPEN_LOOP,
+> +};
+> +
+>  struct idtcm;
+>  
+>  struct idtcm_channel {
 
