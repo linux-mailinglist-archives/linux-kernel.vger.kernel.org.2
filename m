@@ -2,512 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2120A31B688
+	by mail.lfdr.de (Postfix) with ESMTP id 9381131B689
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhBOJgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:36:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
+        id S230159AbhBOJg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:36:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhBOJgP (ORCPT
+        with ESMTP id S230127AbhBOJgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:36:15 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5FEC061756;
-        Mon, 15 Feb 2021 01:35:34 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id e7so4957672ile.7;
-        Mon, 15 Feb 2021 01:35:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i+J176Bf3GeDNKg7u7tOOmO+YaZhVdZulNjJHLnmc0E=;
-        b=qvuaTurJ+ZFwMCGnucFBRwun56MZNc3PBA2szQE3fsglv0TjGGx2plK1GMFnlJaPKn
-         EPOGkBZYXD9j4OMJsQez7SSIG7T98nzjmF4vAf0mU6k/7FsfesbkQV5LktFDsrWd7Kcm
-         AUxk94UmPA6mW3g2O7Rlik38/9zCG/ZuvCyhKihV/qRoeJsqA+uTq+/4hqge1q8fwZQz
-         Bm6cc4AkiTXhZKvmoS58qw/JVqpgB1T/6U0oLgZmMpn72CVKOYDP6Q7cRCCZI4J9D2vk
-         sg00NRAvnSx/ifCQeGs5Dv7JV3/xeSRAX75tTOkwle9Z53E89LlTkUePIXIKNpZtvIAa
-         rgAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i+J176Bf3GeDNKg7u7tOOmO+YaZhVdZulNjJHLnmc0E=;
-        b=CoMua4ooUx4pq3oHiEIZCDAgHPR4nzjw5mYbhAC/UMYpSwsa9nqSkpAxvWhiuy6GB6
-         b8Vk2hnm+Afz5S3kxyXEJfOgnIZAJ6tAHXHaCH0KG0fmziaDR4J4yUci6+nardqLW6Tu
-         tzx9DHUBcuIUNBw5uP/yr/PB5S8E3ME/dCc/KCqWY0MB3CRWe5jDSGzYazuc2sgtDnVf
-         PeOuFIhzOCfif0cRzsLVPkuZR1SyM7JZR944fd5dYA7krGlKB88OEXTUFdzfYaTIvJkr
-         ccGuqJvKfyTKK29cBL+v/gdNvmKLqbeEi+8V9bpTBpWpJnTso0rxb6GhxHscIR8RAZG4
-         LmOg==
-X-Gm-Message-State: AOAM532ts+mL8IkolCD30X6kqlmoCBCnaPRW9ZZhPTMHUsNmtA1ikSpz
-        imRzbiUVgnQ2gDK1NIjN7ZtGZ1E5E24Y+RyDXxU=
-X-Google-Smtp-Source: ABdhPJyvdx0i3o9yXqS1JNLPikewvCTiAdiRyzt5srKWym9cMt2Z+Sp0xQoewzmQasN7vqUnmgnZ2BTUQ1TU9SNL3n8=
-X-Received: by 2002:a05:6e02:1be1:: with SMTP id y1mr11932106ilv.101.1613381734069;
- Mon, 15 Feb 2021 01:35:34 -0800 (PST)
+        Mon, 15 Feb 2021 04:36:51 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22F2C06178B
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 01:35:52 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed60:c5d6:9422:c618:ee58])
+        by albert.telenet-ops.be with bizsmtp
+        id VMbp2400J2PLE0706MbpDq; Mon, 15 Feb 2021 10:35:49 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lBaIH-0073Fe-6n
+        for linux-kernel@vger.kernel.org; Mon, 15 Feb 2021 10:35:49 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lBaIG-008gLw-Fj
+        for linux-kernel@vger.kernel.org; Mon, 15 Feb 2021 10:35:48 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-kernel@vger.kernel.org
+Subject: Build regressions/improvements in v5.11
+Date:   Mon, 15 Feb 2021 10:35:48 +0100
+Message-Id: <20210215093548.2069319-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210211122452.78106-1-alexandru.ardelean@analog.com>
- <20210211122452.78106-14-alexandru.ardelean@analog.com> <20210214143708.030091d5@archlinux>
-In-Reply-To: <20210214143708.030091d5@archlinux>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Mon, 15 Feb 2021 11:35:22 +0200
-Message-ID: <CA+U=Dso8cukV-B2PsE2GWPBr_Mm=gwrw2rA9FGeHzjYEwBZnwg@mail.gmail.com>
-Subject: Re: [PATCH v5 13/17] iio: buffer: add ioctl() to support opening
- extra buffers for IIO device
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 4:38 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Thu, 11 Feb 2021 14:24:48 +0200
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
-> > With this change, an ioctl() call is added to open a character device for a
-> > buffer. The ioctl() number is 'i' 0x91, which follows the
-> > IIO_GET_EVENT_FD_IOCTL ioctl.
-> >
-> > The ioctl() will return an FD for the requested buffer index. The indexes
-> > are the same from the /sys/iio/devices/iio:deviceX/bufferY (i.e. the Y
-> > variable).
-> >
-> > Since there doesn't seem to be a sane way to return the FD for buffer0 to
-> > be the same FD for the /dev/iio:deviceX, this ioctl() will return another
-> > FD for buffer0 (or the first buffer). This duplicate FD will be able to
-> > access the same buffer object (for buffer0) as accessing directly the
-> > /dev/iio:deviceX chardev.
-> >
-> > Also, there is no IIO_BUFFER_GET_BUFFER_COUNT ioctl() implemented, as the
-> > index for each buffer (and the count) can be deduced from the
-> > '/sys/bus/iio/devices/iio:deviceX/bufferY' folders (i.e the number of
-> > bufferY folders).
-> >
-> > Used following C code to test this:
-> > -------------------------------------------------------------------
-> >
-> >  #include <stdio.h>
-> >  #include <stdlib.h>
-> >  #include <unistd.h>
-> >  #include <sys/ioctl.h>
-> >  #include <fcntl.h"
-> >  #include <errno.h>
-> >
-> >  #define IIO_BUFFER_GET_FD_IOCTL      _IOWR('i', 0x91, int)
-> >
-> > int main(int argc, char *argv[])
-> > {
-> >         int fd;
-> >         int fd1;
-> >         int ret;
-> >
-> >         if ((fd = open("/dev/iio:device0", O_RDWR))<0) {
-> >                 fprintf(stderr, "Error open() %d errno %d\n",fd, errno);
-> >                 return -1;
-> >         }
-> >
-> >         fprintf(stderr, "Using FD %d\n", fd);
-> >
-> >         fd1 = atoi(argv[1]);
-> >
-> >         ret = ioctl(fd, IIO_BUFFER_GET_FD_IOCTL, &fd1);
-> >         if (ret < 0) {
-> >                 fprintf(stderr, "Error for buffer %d ioctl() %d errno %d\n", fd1, ret, errno);
-> >                 close(fd);
-> >                 return -1;
-> >         }
-> >
-> >         fprintf(stderr, "Got FD %d\n", fd1);
-> >
-> >         close(fd1);
-> >         close(fd);
-> >
-> >         return 0;
-> > }
-> > -------------------------------------------------------------------
-> >
-> > Results are:
-> > -------------------------------------------------------------------
-> >  # ./test 0
-> >  Using FD 3
-> >  Got FD 4
-> >
-> >  # ./test 1
-> >  Using FD 3
-> >  Got FD 4
-> >
-> >  # ./test 2
-> >  Using FD 3
-> >  Got FD 4
-> >
-> >  # ./test 3
-> >  Using FD 3
-> >  Got FD 4
-> >
-> >  # ls /sys/bus/iio/devices/iio\:device0
-> >  buffer  buffer0  buffer1  buffer2  buffer3  dev
-> >  in_voltage_sampling_frequency  in_voltage_scale
-> >  in_voltage_scale_available
-> >  name  of_node  power  scan_elements  subsystem  uevent
-> > -------------------------------------------------------------------
-> >
-> > iio:device0 has some fake kfifo buffers attached to an IIO device.
-> >
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
->
-> There are a few corners of this that I'm not quite confident enough to just
-> 'fix up' whilst applying.
->
->
-> > ---
-> >  drivers/iio/iio_core.h            |  12 +--
-> >  drivers/iio/industrialio-buffer.c | 138 ++++++++++++++++++++++++++++--
-> >  drivers/iio/industrialio-core.c   |   1 +
-> >  include/linux/iio/buffer_impl.h   |   5 ++
-> >  include/linux/iio/iio-opaque.h    |   2 +
-> >  include/uapi/linux/iio/buffer.h   |  10 +++
-> >  6 files changed, 157 insertions(+), 11 deletions(-)
-> >  create mode 100644 include/uapi/linux/iio/buffer.h
-> >
-> > diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-> > index 4690c3240a5d..88db1feb5857 100644
-> > --- a/drivers/iio/iio_core.h
-> > +++ b/drivers/iio/iio_core.h
-> > @@ -64,16 +64,16 @@ ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals);
-> >  #ifdef CONFIG_IIO_BUFFER
-> >  struct poll_table_struct;
-> >
-> > -__poll_t iio_buffer_poll(struct file *filp,
-> > -                          struct poll_table_struct *wait);
-> > -ssize_t iio_buffer_read_outer(struct file *filp, char __user *buf,
-> > -                           size_t n, loff_t *f_ps);
-> > +__poll_t iio_buffer_poll_wrapper(struct file *filp,
-> > +                              struct poll_table_struct *wait);
-> > +ssize_t iio_buffer_read_wrapper(struct file *filp, char __user *buf,
-> > +                             size_t n, loff_t *f_ps);
-> >
-> >  int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev);
-> >  void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev);
-> >
-> > -#define iio_buffer_poll_addr (&iio_buffer_poll)
-> > -#define iio_buffer_read_outer_addr (&iio_buffer_read_outer)
-> > +#define iio_buffer_poll_addr (&iio_buffer_poll_wrapper)
-> > +#define iio_buffer_read_outer_addr (&iio_buffer_read_wrapper)
-> >
-> >  void iio_disable_all_buffers(struct iio_dev *indio_dev);
-> >  void iio_buffer_wakeup_poll(struct iio_dev *indio_dev);
-> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> > index 1e8e4c2ff00e..3aa6702a5811 100644
-> > --- a/drivers/iio/industrialio-buffer.c
-> > +++ b/drivers/iio/industrialio-buffer.c
-> > @@ -9,6 +9,7 @@
-> >   * - Better memory allocation techniques?
-> >   * - Alternative access techniques?
-> >   */
-> > +#include <linux/anon_inodes.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/export.h>
-> >  #include <linux/device.h>
-> > @@ -89,7 +90,7 @@ static bool iio_buffer_ready(struct iio_dev *indio_dev, struct iio_buffer *buf,
-> >  }
-> >
-> >  /**
-> > - * iio_buffer_read_outer() - chrdev read for buffer access
-> > + * iio_buffer_read() - chrdev read for buffer access
-> >   * @filp:    File structure pointer for the char device
-> >   * @buf:     Destination buffer for iio buffer read
-> >   * @n:               First n bytes to read
-> > @@ -101,8 +102,8 @@ static bool iio_buffer_ready(struct iio_dev *indio_dev, struct iio_buffer *buf,
-> >   * Return: negative values corresponding to error codes or ret != 0
-> >   *      for ending the reading activity
-> >   **/
-> > -ssize_t iio_buffer_read_outer(struct file *filp, char __user *buf,
-> > -                           size_t n, loff_t *f_ps)
-> > +static ssize_t iio_buffer_read(struct file *filp, char __user *buf,
-> > +                            size_t n, loff_t *f_ps)
-> >  {
-> >       struct iio_dev_buffer_pair *ib = filp->private_data;
-> >       struct iio_buffer *rb = ib->buffer;
-> > @@ -168,8 +169,8 @@ ssize_t iio_buffer_read_outer(struct file *filp, char __user *buf,
-> >   * Return: (EPOLLIN | EPOLLRDNORM) if data is available for reading
-> >   *      or 0 for other cases
-> >   */
-> > -__poll_t iio_buffer_poll(struct file *filp,
-> > -                          struct poll_table_struct *wait)
-> > +static __poll_t iio_buffer_poll(struct file *filp,
-> > +                             struct poll_table_struct *wait)
-> >  {
-> >       struct iio_dev_buffer_pair *ib = filp->private_data;
-> >       struct iio_buffer *rb = ib->buffer;
-> > @@ -184,6 +185,32 @@ __poll_t iio_buffer_poll(struct file *filp,
-> >       return 0;
-> >  }
-> >
-> > +ssize_t iio_buffer_read_wrapper(struct file *filp, char __user *buf,
-> > +                             size_t n, loff_t *f_ps)
-> > +{
-> > +     struct iio_dev_buffer_pair *ib = filp->private_data;
-> > +     struct iio_buffer *rb = ib->buffer;
-> > +
-> > +     /* check if buffer was opened through new API */
-> > +     if (test_bit(IIO_BUSY_BIT_POS, &rb->flags))
-> > +             return -EBUSY;
-> > +
-> > +     return iio_buffer_read(filp, buf, n, f_ps);
-> > +}
-> > +
-> > +__poll_t iio_buffer_poll_wrapper(struct file *filp,
-> > +                              struct poll_table_struct *wait)
-> > +{
-> > +     struct iio_dev_buffer_pair *ib = filp->private_data;
-> > +     struct iio_buffer *rb = ib->buffer;
-> > +
-> > +     /* check if buffer was opened through new API */
-> > +     if (test_bit(IIO_BUSY_BIT_POS, &rb->flags))
-> > +             return 0;
-> > +
-> > +     return iio_buffer_poll(filp, wait);
-> > +}
-> > +
-> >  /**
-> >   * iio_buffer_wakeup_poll - Wakes up the buffer waitqueue
-> >   * @indio_dev: The IIO device
-> > @@ -1343,6 +1370,91 @@ static void iio_buffer_unregister_legacy_sysfs_groups(struct iio_dev *indio_dev)
-> >       kfree(iio_dev_opaque->legacy_scan_el_group.attrs);
-> >  }
-> >
-> > +static int iio_buffer_chrdev_release(struct inode *inode, struct file *filep)
-> > +{
-> > +     struct iio_dev_buffer_pair *ib = filep->private_data;
-> > +     struct iio_dev *indio_dev = ib->indio_dev;
-> > +     struct iio_buffer *buffer = ib->buffer;
-> > +
-> > +     wake_up(&buffer->pollq);
-> > +     clear_bit(IIO_BUSY_BIT_POS, &buffer->flags);
-> > +     iio_device_put(indio_dev);
->
-> Ordering here isn't quite the reverse of that done in _getfd()
-> below.  Good to tidy that up, probably by swapping the test_and_set_bit()
-> and iio_device_get below (with additional goto needed I think).
->
-> > +     kfree(ib);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct file_operations iio_buffer_chrdev_fileops = {
-> > +     .owner = THIS_MODULE,
-> > +     .llseek = noop_llseek,
-> > +     .read = iio_buffer_read,
-> > +     .poll = iio_buffer_poll,
-> > +     .compat_ioctl = compat_ptr_ioctl,
-> > +     .release = iio_buffer_chrdev_release,
-> > +};
-> > +
-> > +static long iio_device_buffer_getfd(struct iio_dev *indio_dev, unsigned long arg)
-> > +{
-> > +     struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-> > +     int __user *ival = (int __user *)arg;
-> > +     char buf_name[sizeof("iio:buffer:xxx")];
->
-> I'm missing where this is assigned.  Also not immediately sure, but I think
-> this can just be a string used directly in anon_inode_getfd().
-> I don't think we need to be unique for the different buffers as it's
-> a 'class name' rather than needing to be specific.
->
-> > +     struct iio_dev_buffer_pair *ib;
-> > +     struct iio_buffer *buffer;
-> > +     int fd, idx;
-> > +
-> > +     if (copy_from_user(&idx, ival, sizeof(idx)))
-> > +             return -EFAULT;
-> > +
-> > +     if (idx >= iio_dev_opaque->attached_buffers_cnt)
-> > +             return -ENODEV;
-> > +
-> > +     buffer = iio_dev_opaque->attached_buffers[idx];
-> > +
-> > +     if (test_and_set_bit(IIO_BUSY_BIT_POS, &buffer->flags))
-> > +             return -EBUSY;
-> > +
-> > +     iio_device_get(indio_dev);
-> > +
-> > +     ib = kzalloc(sizeof(*ib), GFP_KERNEL);
-> > +     if (!ib) {
-> > +             fd = -ENOMEM;
-> > +             goto error_iio_dev_put;
-> > +     }
-> > +
-> > +     ib->indio_dev = indio_dev;
-> > +     ib->buffer = buffer;
-> > +
-> > +     fd = anon_inode_getfd(buf_name, &iio_buffer_chrdev_fileops,
-> > +                           ib, O_RDWR | O_CLOEXEC);
-> > +     if (fd < 0)
-> > +             goto error_free_ib;
-> > +
-> > +     if (copy_to_user(ival, &fd, sizeof(fd))) {
-> > +             fd = -EFAULT;
->
-> I suspect the iio_events equivalent of this is wrong, as we should be
-> tidying up the fd and we aren't.
->
-> put_unused_fd() I think, but not 100% sure on what the right handling is here.
+Below is the list of build error/warning regressions/improvements in
+v5.11[1] compared to v5.10[2].
 
-i'm a bit unsure here as well;
-been trying to find examples of this clean-up [on error] in other
-places, but i couldn't find any clear-to-the-point examples;
-so, put_unused_fd() should be it; looks like that should be the one;
+Summarized:
+  - build errors: +0/-3
+  - build warnings: +33/-96
+
+JFYI, when comparing v5.11[1] to v5.11-rc7[3], the summaries are:
+  - build errors: +0/-0
+  - build warnings: +2/-0
+
+Happy fixing! ;-)
+
+Thanks to the linux-next team for providing the build service.
+
+[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f40ddce88593482919761f74910f42f4b84c004b/ (all 192 configs)
+[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/2c85ebc57b3e1817b6ce1a6b703928e113a90442/ (all 192 configs)
+[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/92bf22614b21a2706f4993b278017e437f7785b3/ (all 192 configs)
 
 
->
->
-> > +             goto error_free_ib;
-> > +     }
-> > +
-> > +     return fd;
-> > +
-> > +error_free_ib:
-> > +     kfree(ib);
-> > +error_iio_dev_put:
-> > +     iio_device_put(indio_dev);
-> > +     clear_bit(IIO_BUSY_BIT_POS, &buffer->flags);
-> > +     return fd;
-> > +}
-> > +
-> > +static long iio_device_buffer_ioctl(struct iio_dev *indio_dev, struct file *filp,
-> > +                                 unsigned int cmd, unsigned long arg)
-> > +{
-> > +     switch (cmd) {
-> > +     case IIO_BUFFER_GET_FD_IOCTL:
-> > +             return iio_device_buffer_getfd(indio_dev, arg);
-> > +     default:
-> > +             return IIO_IOCTL_UNHANDLED;
-> > +     }
-> > +}
-> > +
-> >  static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
-> >                                            struct iio_dev *indio_dev,
-> >                                            int index)
-> > @@ -1472,6 +1584,7 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> >       struct iio_buffer *buffer;
-> >       int unwind_idx;
-> >       int ret, i;
-> > +     size_t sz;
-> >
-> >       channels = indio_dev->channels;
-> >       if (channels) {
-> > @@ -1493,6 +1606,18 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> >                       goto error_unwind_sysfs_and_mask;
-> >               }
-> >       }
-> > +     unwind_idx = iio_dev_opaque->attached_buffers_cnt - 1;
-> > +
-> > +     sz = sizeof(*(iio_dev_opaque->buffer_ioctl_handler));
-> > +     iio_dev_opaque->buffer_ioctl_handler = kzalloc(sz, GFP_KERNEL);
-> > +     if (!iio_dev_opaque->buffer_ioctl_handler) {
-> > +             ret = -ENOMEM;
-> > +             goto error_unwind_sysfs_and_mask;
-> > +     }
-> > +
-> > +     iio_dev_opaque->buffer_ioctl_handler->ioctl = iio_device_buffer_ioctl;
-> > +     iio_device_ioctl_handler_register(indio_dev,
-> > +                                       iio_dev_opaque->buffer_ioctl_handler);
-> >
-> >       return 0;
-> >
-> > @@ -1514,6 +1639,9 @@ void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
-> >       if (!iio_dev_opaque->attached_buffers_cnt)
-> >               return;
-> >
-> > +     iio_device_ioctl_handler_unregister(iio_dev_opaque->buffer_ioctl_handler);
-> > +     kfree(iio_dev_opaque->buffer_ioctl_handler);
-> > +
-> >       iio_buffer_unregister_legacy_sysfs_groups(indio_dev);
-> >
-> >       for (i = iio_dev_opaque->attached_buffers_cnt - 1; i >= 0; i--) {
-> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> > index 26b05dddfa71..febb3a0d91f3 100644
-> > --- a/drivers/iio/industrialio-core.c
-> > +++ b/drivers/iio/industrialio-core.c
-> > @@ -1737,6 +1737,7 @@ static int iio_chrdev_release(struct inode *inode, struct file *filp)
-> >       struct iio_dev_buffer_pair *ib = filp->private_data;
-> >       struct iio_dev *indio_dev = container_of(inode->i_cdev,
-> >                                               struct iio_dev, chrdev);
-> > +
->
-> Stray change that doesn't belong in here.
->
->
-> >       clear_bit(IIO_BUSY_BIT_POS, &indio_dev->flags);
-> >       iio_device_put(indio_dev);
-> >       kfree(ib);
-> > diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
-> > index 768b90c64412..245b32918ae1 100644
-> > --- a/include/linux/iio/buffer_impl.h
-> > +++ b/include/linux/iio/buffer_impl.h
-> > @@ -6,6 +6,8 @@
-> >
-> >  #ifdef CONFIG_IIO_BUFFER
-> >
-> > +#include <uapi/linux/iio/buffer.h>
-> > +
-> >  struct iio_dev;
-> >  struct iio_buffer;
-> >
-> > @@ -72,6 +74,9 @@ struct iio_buffer {
-> >       /** @length: Number of datums in buffer. */
-> >       unsigned int length;
-> >
-> > +     /** @flags: File ops flags including busy flag. */
-> > +     unsigned long flags;
-> > +
-> >       /**  @bytes_per_datum: Size of individual datum including timestamp. */
-> >       size_t bytes_per_datum;
-> >
-> > diff --git a/include/linux/iio/iio-opaque.h b/include/linux/iio/iio-opaque.h
-> > index c909835b6247..2c3374d465da 100644
-> > --- a/include/linux/iio/iio-opaque.h
-> > +++ b/include/linux/iio/iio-opaque.h
-> > @@ -9,6 +9,7 @@
-> >   * @event_interface:         event chrdevs associated with interrupt lines
-> >   * @attached_buffers:                array of buffers statically attached by the driver
-> >   * @attached_buffers_cnt:    number of buffers in the array of statically attached buffers
-> > + * @buffer_ioctl_handler:    ioctl() handler for this IIO device's buffer interface
-> >   * @buffer_list:             list of all buffers currently attached
-> >   * @channel_attr_list:               keep track of automatically created channel
-> >   *                           attributes
-> > @@ -28,6 +29,7 @@ struct iio_dev_opaque {
-> >       struct iio_event_interface      *event_interface;
-> >       struct iio_buffer               **attached_buffers;
-> >       unsigned int                    attached_buffers_cnt;
-> > +     struct iio_ioctl_handler        *buffer_ioctl_handler;
-> >       struct list_head                buffer_list;
-> >       struct list_head                channel_attr_list;
-> >       struct attribute_group          chan_attr_group;
-> > diff --git a/include/uapi/linux/iio/buffer.h b/include/uapi/linux/iio/buffer.h
-> > new file mode 100644
-> > index 000000000000..13939032b3f6
-> > --- /dev/null
-> > +++ b/include/uapi/linux/iio/buffer.h
-> > @@ -0,0 +1,10 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +/* industrial I/O buffer definitions needed both in and out of kernel
-> > + */
-> > +
-> > +#ifndef _UAPI_IIO_BUFFER_H_
-> > +#define _UAPI_IIO_BUFFER_H_
-> > +
-> > +#define IIO_BUFFER_GET_FD_IOCTL                      _IOWR('i', 0x91, int)
-> > +
-> > +#endif /* _UAPI_IIO_BUFFER_H_ */
->
+*** ERRORS ***
+
+3 error improvements:
+  - /kisskb/src/arch/powerpc/platforms/powermac/smp.c: error: implicit declaration of function 'cleanup_cpu_mmu_context' [-Werror=implicit-function-declaration]: 914:2 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'disable_kernel_vsx' [-Werror=implicit-function-declaration]: 676:2 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'enable_kernel_vsx' [-Werror=implicit-function-declaration]: 640:2 => 
+
+
+*** WARNINGS ***
+
+33 warning regressions:
+  + .config: warning: override: reassigning to symbol GCC_PLUGIN_CYC_COMPLEXITY:  => 4525, 4499
+  + .config: warning: override: reassigning to symbol GCC_PLUGIN_LATENT_ENTROPY:  => 4501, 4527
+  + .config: warning: override: reassigning to symbol MIPS_CPS_NS16550_SHIFT: 12729, 12743 => 12901, 12888, 12884
+  + .config: warning: override: reassigning to symbol PPC_64K_PAGES:  => 13264
+  + /kisskb/src/arch/arm/mach-omap1/board-h2.c: warning: 'isp1301_gpiod_table' defined but not used [-Wunused-variable]:  => 347:34
+  + /kisskb/src/arch/sh/kernel/traps.c: warning: unused variable 'cpu' [-Wunused-variable]:  => 183:15
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn20.c: warning: (near initialization for 'boot_options.bits') [-Wmissing-braces]:  => 326:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn20.c: warning: missing braces around initializer [-Wmissing-braces]:  => 326:8
+  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc_pf.c: warning: (near initialization for 'rfse.smac_h') [-Wmissing-braces]:  => 1004:9
+  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc_pf.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1004:9
+  + /kisskb/src/drivers/rtc/rtc-rx6110.c: warning: 'rx6110_probe' defined but not used [-Wunused-function]:  => 314:12
+  + /kisskb/src/drivers/soc/qcom/pdr_interface.c: warning: (near initialization for 'req.service_path') [-Wmissing-braces]:  => 572:9
+  + /kisskb/src/drivers/soc/qcom/pdr_interface.c: warning: missing braces around initializer [-Wmissing-braces]:  => 572:9
+  + /kisskb/src/include/linux/minmax.h: warning: comparison of distinct pointer types lacks a cast:  => 18:28
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 4200 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 4224 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7432 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7440 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7456 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1348 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 2262:1
+  + /opt/cross/kisskb/br-aarch64-glibc-2016.08-613-ge98b4dd/bin/../lib/gcc/aarch64-buildroot-linux-gnu/5.4.0/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 170:24, 102:21
+  + /opt/cross/kisskb/br-aarch64-glibc-2016.08-613-ge98b4dd/bin/../lib/gcc/aarch64-buildroot-linux-gnu/5.4.0/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
+  + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 170:24, 102:21
+  + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/config/mips/mips.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 2913:20
+  + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
+  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 170:24, 102:21
+  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
+  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 102:21, 170:24
+  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/config/mips/mips.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 2791:20
+  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
+  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 102:21, 170:24
+  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/config/s390/s390.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 836:20
+  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
+
+96 warning improvements:
+  - /kisskb/src/arch/ia64/include/uapi/asm/cmpxchg.h: warning: value computed is not used [-Wunused-value]: 57:2 => 
+  - /kisskb/src/arch/m68k/include/asm/cmpxchg.h: warning: value computed is not used [-Wunused-value]: 122:3, 79:22 => 
+  - /kisskb/src/arch/parisc/kernel/pci-dma.c: warning: 'proc_pcxl_dma_show' defined but not used [-Wunused-function]: 338:12 => 
+  - /kisskb/src/arch/s390/boot/mem_detect.c: warning: 'detect_memory' uses dynamic stack allocation: 175:1 => 
+  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2960 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 95:1, 51:1 => 
+  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2960 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 95:1 => 
+  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2976 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 51:1 => 
+  - /kisskb/src/block/genhd.c: warning: the frame size of 1688 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 1662:1 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: (near initialization for 'clock_table.DcfClocks') [-Wmissing-braces]: 846:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]: 846:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 1795:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]: 1795:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]: 1279:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: missing braces around initializer [-Wmissing-braces]: 1279:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 1200:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]: 1200:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: (near initialization for 'dcn2_0_nv12_soc.clock_limits') [-Wmissing-braces]: 451:15 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: missing braces around initializer [-Wmissing-braces]: 451:15 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]: 258:9 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: missing braces around initializer [-Wmissing-braces]: 258:9 => 
+  - /kisskb/src/drivers/media/pci/intel/ipu3/ipu3-cio2.h: warning: large integer implicitly truncated to unsigned type [-Woverflow]: 22:28 => 
+  - /kisskb/src/drivers/net/ethernet/aurora/nb8800.h: warning: "TCR_DIE" redefined: 92, 92:0 => 92
+  - /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation: 441:1 => 
+  - /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in conversion from 'long unsigned int' to 'int' changes value from '18446744073709551584' to '-32' [-Woverflow]: 760:2 => 
+  - /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in implicit constant conversion [-Woverflow]: 760:2 => 
+  - /kisskb/src/drivers/net/ethernet/neterion/vxge/vxge-config.c: warning: 'vxge_hw_device_hw_info_get' uses dynamic stack allocation: 1092:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_add_vlan_id' uses dynamic stack allocation: 317:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_del_vlan_id' uses dynamic stack allocation: 331:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_probe' uses dynamic stack allocation: 590:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_query_rgid' uses dynamic stack allocation: 216:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_register_dmb' uses dynamic stack allocation: 282:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_signal_ieq' uses dynamic stack allocation: 359:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_unregister_dmb' uses dynamic stack allocation: 303:1 => 
+  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'query_info' uses dynamic stack allocation: 85:1 => 
+  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation: 482:1 => 
+  - /kisskb/src/drivers/target/iscsi/iscsi_target.c: warning: 'iscsit_send_datain' uses dynamic stack allocation: 2886:1 => 
+  - /kisskb/src/fs/nfs/super.c: warning: 'nfs_show_stats' uses dynamic stack allocation: 704:1 => 
+  - /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2192 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 1311:1 => 
+  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.14' uses dynamic stack allocation: 295:1 => 
+  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.24' uses dynamic stack allocation: 3667:1 => 
+  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_show_fdinfo' uses dynamic stack allocation: 1819:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_free_coherent' uses dynamic stack allocation: 1439:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_cpu' uses dynamic stack allocation: 1549:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_device' uses dynamic stack allocation: 1580:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_cpu' uses dynamic stack allocation: 1498:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_device' uses dynamic stack allocation: 1517:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_page' uses dynamic stack allocation: 1290:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_resource' uses dynamic stack allocation: 1480:1 => 
+  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_sg' uses dynamic stack allocation: 1378:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: '___perf_sw_event' uses dynamic stack allocation: 9116:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_aux_event' uses dynamic stack allocation: 8303:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_bpf_output' uses dynamic stack allocation: 8600:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_cgroup_output' uses dynamic stack allocation: 7871:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_comm_output' uses dynamic stack allocation: 7649:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_ksymbol_output' uses dynamic stack allocation: 8511:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_mmap_output' uses dynamic stack allocation: 8012:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_namespaces_output' uses dynamic stack allocation: 7748:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_read_event' uses dynamic stack allocation: 7268:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_switch_output' uses dynamic stack allocation: 8395:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_task_output' uses dynamic stack allocation: 7555:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_text_poke_output' uses dynamic stack allocation: 8718:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_itrace_start' uses dynamic stack allocation: 8791:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_lost_samples' uses dynamic stack allocation: 8336:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_throttle' uses dynamic stack allocation: 8466:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_swevent_hrtimer' uses dynamic stack allocation: 10275:1 => 
+  - /kisskb/src/kernel/events/core.c: warning: 'perf_tp_event' uses dynamic stack allocation: 9430:1 => 
+  - /kisskb/src/kernel/rcu/tasks.h: warning: 'show_rcu_tasks_rude_gp_kthread' defined but not used [-Wunused-function]: 710:13 => 
+  - /kisskb/src/kernel/rseq.c: warning: '__rseq_handle_notify_resume' uses dynamic stack allocation: 281:1 => 
+  - /kisskb/src/kernel/rseq.c: warning: 'rseq_syscall' uses dynamic stack allocation: 300:1 => 
+  - /kisskb/src/kernel/smp.c: warning: 'smp_call_function_single' uses dynamic stack allocation: 517:1 => 
+  - /kisskb/src/lib/crypto/chacha20poly1305.c: warning: 'chacha20poly1305_crypt_sg_inplace' uses dynamic stack allocation: 331:1 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_all' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_partial.isra.29' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_none.isra.63' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_all.isra.49' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_partial.isra.41' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_all' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_partial.isra.17' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_zero.isra.9' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_all' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_partial' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_none' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_all' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_partial' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_all' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_partial' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_zero' uses dynamic stack allocation: 255:15 => 
+  - /kisskb/src/mm/slub.c: warning: '___slab_alloc' uses dynamic stack allocation: 2759:1 => 
+  - /kisskb/src/mm/slub.c: warning: '__slab_free' uses dynamic stack allocation: 3073:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.60' uses dynamic stack allocation: 2295:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.59' uses dynamic stack allocation: 1992:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.58' uses dynamic stack allocation: 2363:1 => 
+  - /kisskb/src/net/bridge/netfilter/ebtables.c: warning: 'compat_copy_everything_to_user' uses dynamic stack allocation: 1767:1 => 
+  - /kisskb/src/net/sched/sch_cake.c: warning: the frame size of 1480 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 2942:1 => 
+  - warning: unmet direct dependencies detected for MFD_CORE: N/A => 
+  - warning: unmet direct dependencies detected for NEED_MULTIPLE_NODES: N/A => 
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
