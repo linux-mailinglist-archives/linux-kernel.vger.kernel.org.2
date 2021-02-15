@@ -2,67 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F3331C0A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B299B31C0AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbhBORct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:32:49 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:53024 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhBOQeW (ORCPT
+        id S232667AbhBORdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:33:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231259AbhBOQfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:34:22 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lBgoD-0000F5-G2; Mon, 15 Feb 2021 16:33:13 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ASoC: codecs: lpass-rx-macro: Fix uninitialized variable ec_tx
-Date:   Mon, 15 Feb 2021 16:33:13 +0000
-Message-Id: <20210215163313.84026-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
+        Mon, 15 Feb 2021 11:35:52 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63925C061756;
+        Mon, 15 Feb 2021 08:35:09 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id w1so5918984ilm.12;
+        Mon, 15 Feb 2021 08:35:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p99Y0IizcDgJJyFvLWYBqAWdhmLE2nZ89U026tr0eGg=;
+        b=EJw3TQMaTEgxG+xxenxwXWMqxKo4ZoBtUH2h4FwcOqRV6/QtYGQwBEBxvsJv15bnRc
+         dvDPXT3Focve5ZfHuEATmhmZ2qzU8sbTrBJQ5IYViyNEfynKOwg9B7zfkwXWrocyYEKe
+         SREkY7xE+EDu0qcbWsJOXZVuN7YujE+MZniihDK+rPTt0Sasao93PZ7/aUm4d6Het5tp
+         Fh/EbSCks8NdGW17iC3KMWuCTrbtzrh7zTUnPC7IHGnSQ23voOYv10qLj4Dp8EeHfjX2
+         yJh0qkO7VsWTk9dpgx/i4a8qr6th45vFOn4lkildCUxVzOO1yRu6xCElWYoMYXSmWLGv
+         cjPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p99Y0IizcDgJJyFvLWYBqAWdhmLE2nZ89U026tr0eGg=;
+        b=QoL0AZSuEoen1k5PgAHVTv2sIFB4/ca/NYFVvQ/ne8kAWkQtvSZIxM4aF9a+GW4ubB
+         QtLwaFMdpLslfB0XMTriEHO5FsO4bXC+gIJNAuORlEde+jrWIR+GcUavXkp8J090D/k1
+         0Z5GzG1z0ah4uQPmTFNsT7XuCx+HdDjHgsspWTTi1ewPuDv7vveQTxgv5hW7A9wzWaJ3
+         N4EYzD/A3F+T6IcP55oDAFe759P72VGuseMvNztTXx6zP8GdZhrcunRL+jfRUzTOpnCn
+         35d8uv/Czf7hKy0LvD+MZUARhpLHFFuYL2VYSCwiVAxEQnGAnLAsFksFSKIpGCXqggui
+         Ppkw==
+X-Gm-Message-State: AOAM5314nj75Aa8qTD0OgA572l/MLe6o4tWLw41R+RYlc7pYsMNlAqpm
+        l+B2nEzf3M0+0O6um1f3r+ydZ+hXfTXEbwu688w=
+X-Google-Smtp-Source: ABdhPJyDVoBlsuUNOqBP2XuJTLEKAVsYIxRaxuGbff6zyiXoZeKYAHbxipf2o1BapB3mllRe50630ce+ABVmF0oL0Gk=
+X-Received: by 2002:a92:2c08:: with SMTP id t8mr13060037ile.72.1613406908904;
+ Mon, 15 Feb 2021 08:35:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+ <20210215154317.8590-1-lhenriques@suse.de>
+In-Reply-To: <20210215154317.8590-1-lhenriques@suse.de>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 15 Feb 2021 18:34:57 +0200
+Message-ID: <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
+Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Jeff Layton <jlayton@kernel.org>, Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, Feb 15, 2021 at 5:42 PM Luis Henriques <lhenriques@suse.de> wrote:
+>
+> Nicolas Boichat reported an issue when trying to use the copy_file_range
+> syscall on a tracefs file.  It failed silently because the file content is
+> generated on-the-fly (reporting a size of zero) and copy_file_range needs
+> to know in advance how much data is present.
+>
+> This commit restores the cross-fs restrictions that existed prior to
+> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") and
+> removes generic_copy_file_range() calls from ceph, cifs, fuse, and nfs.
+>
+> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+> Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+> Cc: Nicolas Boichat <drinkcat@chromium.org>
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
 
-There is potential read of the uninitialized variable ec_tx if the call
-to snd_soc_component_read fails or returns an unrecognized w->name. To
-avoid this corner case, initialize ec_tx to -1 so that it is caught
-later when ec_tx is bounds checked.
+Code looks ok.
+You may add:
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: 4f692926f562 ("ASoC: codecs: lpass-rx-macro: add dapm widgets and route")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/codecs/lpass-rx-macro.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index c9c21d22c2c4..8c04b3b2c907 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -2895,7 +2895,7 @@ static int rx_macro_enable_echo(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	u16 val, ec_hq_reg;
--	int ec_tx;
-+	int ec_tx = -1;
- 
- 	val = snd_soc_component_read(component,
- 			CDC_RX_INP_MUX_RX_MIX_CFG4);
--- 
-2.30.0
+I agree with Trond that the first paragraph of the commit message could
+be improved.
+The purpose of this change is to fix the change of behavior that
+caused the regression.
 
+Before v5.3, behavior was -EXDEV and userspace could fallback to read.
+After v5.3, behavior is zero size copy.
+
+It does not matter so much what makes sense for CFR to do in this
+case (generic cross-fs copy).  What matters is that nobody asked for
+this change and that it caused problems.
+
+Thanks,
+Amir.
