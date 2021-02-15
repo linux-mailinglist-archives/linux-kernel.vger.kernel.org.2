@@ -2,141 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512EA31C227
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC1831C229
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhBOTFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:05:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39112 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230194AbhBOTFM (ORCPT
+        id S230412AbhBOTFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:05:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230288AbhBOTFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:05:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613415825;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yjLa1ePdzOKfH1hFOxUctagsf0SqnjEtoXHUeu2nq70=;
-        b=Jg7ymGtSerp97XIAv7aKvJbT/H1QUTS5FXFeW3E63ffHy73LiabqElk93t0ppooA0Lccde
-        xaQs/4hI4l6o2iREiywqh6jkbEJGPoVqer0Mujw+jf0SfVO0k2GRE8aijdIbFlwgWJBOK6
-        kxDGUDCjFUnm6jp1NgRXktWYv2I1v2c=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-264-A3wT1FecOU2bdPSbecnRSg-1; Mon, 15 Feb 2021 14:03:43 -0500
-X-MC-Unique: A3wT1FecOU2bdPSbecnRSg-1
-Received: by mail-yb1-f197.google.com with SMTP id 6so10808877ybq.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:03:43 -0800 (PST)
+        Mon, 15 Feb 2021 14:05:17 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37848C061574;
+        Mon, 15 Feb 2021 11:04:37 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id q72so4247281pjq.2;
+        Mon, 15 Feb 2021 11:04:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UYLNhytd7v886uc63zcR0navuWwD0MBhzc/Hcb/3Fes=;
+        b=JSKxY4XB8WZHE5qtWbRYvmsVYnQRuZPNSKpgNcNrnlVqEb+6UzIbdh8qb9TgiT9iDI
+         Vot28fUfuhqOpo3alSF9jo84spixGtwyC84JeqLW3Lq2XeNhYqI8j5q84iIsLDhSPZ/k
+         aUECjf6X/N2AJM4qeU5sS2kzQUKHGwDWPFwjjnaZVVChhOkvI3FEIuMSKqG5ZOPaADS3
+         LPcEMUDUQ09UPU59skjxKeBe3x5w/8In3IWAUWyps9xPoc3fmRK+10WtMmPlOK4rCCDC
+         igNKKgjsNZL2P7AW1RcFfXBpSh2sougZCUiN3xVjZHzrc3T3wpH/WhHEs2MuHOjwQJ1z
+         jdAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yjLa1ePdzOKfH1hFOxUctagsf0SqnjEtoXHUeu2nq70=;
-        b=Qcoqz7xcIp3+8+jaybSnigaCvDDFOCfe0uT2R1O4MP5iicVKn0uqHZlpMF20AFrUiT
-         1nCCDVGw7uR2QiEaE+VpjCsY2qbnTKeVAvNjVn2ulEC/KzFqq0xAdB5k1rxVsff6AYch
-         bk0hNv5utcvCmMPDoke/N79FervFnGy48JCFiB93Ydy001d9CKlgzxKaMcDN7f8q3sD6
-         s4EA5qutQND2/HcjxlZdOXhraYTAidqwgXmYlIHLiUzweeNOMHA+cb4w+9/MCxVHFDvK
-         xwbu4Eriyo4yx7gM9NaEB8euJIMTuZhiWSAnOf9+9EyImZRo670B0vrZNJaJBmTe6XTM
-         3g1Q==
-X-Gm-Message-State: AOAM5311ZLmHzfK+9OpqxRqnFk4IdTFipXKT53j55vyK408NRS62pA5n
-        Cdpj0EWlYH2b/AVWMWj+MIwfotKlZle0KIGfx7zkCjVTk54RtEXzdHigVrOvdw/ZNZLkYt7cxVH
-        DDnD+U9XdU+JhPnhDJ6Fa5SlxFhomBFrFGzrMB+oz
-X-Received: by 2002:a5b:404:: with SMTP id m4mr24943607ybp.436.1613415822971;
-        Mon, 15 Feb 2021 11:03:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxedalHqY8rbPQisLkuArGmVarQZGazs9bCgbyFwBWzr5n/txrW6AMcFAF2u8fzpNzUhxkz8qFAkSuEWt2jT7I=
-X-Received: by 2002:a5b:404:: with SMTP id m4mr24943585ybp.436.1613415822772;
- Mon, 15 Feb 2021 11:03:42 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=UYLNhytd7v886uc63zcR0navuWwD0MBhzc/Hcb/3Fes=;
+        b=TXnXlczYJQ0hgmbiUKIHNoGyYHwBuwKK7ItaqPStcNqXP/zG7PhsoA83kMsJxB0yyJ
+         5hxm3p9ysqeE9UfxVLnke/sdAVPgAA6TyvgTLj5uSnlU0cy9GrRxEhq2XmVtgAih4NIy
+         JmwFONp4jVllbfQk9eV73cNmwhqe/UQ9jQwU8yc/PHZ95CHkE0+qzph/p/Drh1ANOP+B
+         WKtvL/KKKsN7tzaP1V4MM9Rl7o1ndywc9t+meI2CytKOBIICnQ7DMokDAI2RzxvtqiEC
+         fMxU59XiRhkjmIPovxSQ8HhG+dJCoHkEUnBcMMVmDvLjMq+/H0v/Zk7/mPwH0zZWrxPt
+         Z33w==
+X-Gm-Message-State: AOAM5334g3e/a8NcJBW/blNWt9pTuS4VOrUN27DhckBFo1HMvM276pxW
+        VbZqYP2lL3DBnyYAu3/WFjFk+BWhyKvZS/SXfzw=
+X-Google-Smtp-Source: ABdhPJzWYouTEy9alTWPz12A0fG9sL5WQUk6HAAMeSkjDHq6gen24qQK2T+1wI/b3HXKW+zB9tJteGl+aAXo+XwIaY4=
+X-Received: by 2002:a17:902:a710:b029:e3:b18:7e5b with SMTP id
+ w16-20020a170902a710b02900e30b187e5bmr16271877plq.17.1613415876685; Mon, 15
+ Feb 2021 11:04:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20210215181511.2840674-1-mic@digikod.net> <20210215181511.2840674-4-mic@digikod.net>
-In-Reply-To: <20210215181511.2840674-4-mic@digikod.net>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Mon, 15 Feb 2021 20:03:29 +0100
-Message-ID: <CAFqZXNsvqx-pbC+wzHB4aXX6h=buU3csM_a=By-zCOmx0n-xCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] security: Add LSMs dependencies to CONFIG_LSM
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Nicolas Iooss <nicolas.iooss@m4x.org>,
-        linux-kbuild@vger.kernel.org,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
+References: <20210212223015.727608-1-drew@beagleboard.org> <20210212223015.727608-3-drew@beagleboard.org>
+In-Reply-To: <20210212223015.727608-3-drew@beagleboard.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 15 Feb 2021 21:04:20 +0200
+Message-ID: <CAHp75VeqbKjg7pLCgO9-vd2NnqQy6VPaRFKrAWn-1TaJgi1-SA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 7:17 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
-wrote:
-> From: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
+On Sat, Feb 13, 2021 at 12:30 AM Drew Fustini <drew@beagleboard.org> wrote:
 >
-> Thanks to the previous commit, this gives the opportunity to users, when
-> running make oldconfig, to update the list of enabled LSMs at boot time
-> if an LSM has just been enabled or disabled in the build.  Moreover,
-> this list only makes sense if at least one LSM is enabled.
+> Add "pinmux-select" to debugfs which will activate a function and group
+> when "<function-name group-name>" are written to the file. The write
+
+The non-standard way of showing parameters, I would write that as
+ "<function-name> <group-name>".
+
+> operation pinmux_select() handles this by checking that the names map to
+> valid selectors and then calling ops->set_mux().
 >
-> Cc: Casey Schaufler <casey@schaufler-ca.com>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Serge E. Hallyn <serge@hallyn.com>
-> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
-> Link: https://lore.kernel.org/r/20210215181511.2840674-4-mic@digikod.net
-> ---
+> The existing "pinmux-functions" debugfs file lists the pin functions
+> registered for the pin controller. For example:
 >
-> Changes since v1:
-> * Add CONFIG_SECURITY as a dependency of CONFIG_LSM.  This prevent an
->   error when building without any LSMs.
-> ---
->  security/Kconfig | 4 ++++
->  1 file changed, 4 insertions(+)
+> function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
+> function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
+> function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
+> function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
+> function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
+> function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
+
+Format this...
+
+> To activate function pinmux-i2c1 and group pinmux-i2c1-pins:
 >
-> diff --git a/security/Kconfig b/security/Kconfig
-> index 7561f6f99f1d..addcc1c04701 100644
-> --- a/security/Kconfig
-> +++ b/security/Kconfig
-> @@ -277,6 +277,10 @@ endchoice
->
->  config LSM
->         string "Ordered list of enabled LSMs"
-> +       depends on SECURITY || SECURITY_LOCKDOWN_LSM || SECURITY_YAMA || =
-\
-> +               SECURITY_LOADPIN || SECURITY_SAFESETID || INTEGRITY || \
-> +               SECURITY_SELINUX || SECURITY_SMACK || SECURITY_TOMOYO || =
-\
-> +               SECURITY_APPARMOR || BPF_LSM
+> echo "pinmux-i2c1 pinmux-i2c1-pins" > pinmux-select
 
-This looks really awkward, since all of these already depend on
-SECURITY (if not, it's a bug)... I guarantee you that after some time
-someone will come, see that the weird boolean expression is equivalent
-to just SECURITY, and simplify it.
+...and this with two leading spaces (for example) to make sure that
+people will understand that these lines are part of the example.
 
-I assume the new mechanism wouldn't work as intended if there is just
-SECURITY? If not, then maybe you should rather specify this value
-dependency via some new  field rather than abusing "depends on" (say,
-"value depends on"?). The fact that a seemingly innocent change to the
-config definition breaks your mechanism suggests that the design is
-flawed.
+...
 
-I do think this would be a useful feature, but IMHO shouldn't be
-implemented like this.
+>  drivers/pinctrl/pinmux.c | 99 ++++++++++++++++++++++++++++++++++++++++
 
->         default "lockdown,yama,loadpin,safesetid,integrity,smack,selinux,=
-tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
->         default "lockdown,yama,loadpin,safesetid,integrity,apparmor,selin=
-ux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
->         default "lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if=
- DEFAULT_SECURITY_TOMOYO
-> --
-> 2.30.0
->
+Still needs a documentation update.
 
---
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
+...
 
+> +       const char *usage =
+> +               "usage: echo '<function-name> <group-name>' > pinmux-select";
+
+This is quite unusual to have in the kernel. Just return an error
+code, everything else should be simply documented.
+
+...
+
+> +       if (len > PINMUX_SELECT_MAX) {
+
+> +               dev_err(pctldev->dev, "write too big for buffer");
+
+Noisy, the user will get an error code and interpret it properly.
+So, please drop them all. Otherwise it would be quite easy to exhaust
+kernel buffer with this noise and lost the important messages.
+
+> +               return -EINVAL;
+
+To achieve the above, this rather should be -ENOMEM.
+
+> +       }
+
+...
+
+> +       gname = strchr(fname, ' ');
+> +       if (!gname) {
+> +               dev_err(pctldev->dev, usage);
+> +               ret = -EINVAL;
+> +               goto free_buf;
+> +       }
+> +       *gname++ = '\0';
+
+I was thinking about this again and I guess we may allow any amount of
+spaces in between and any kind of  (like newline or TAB).
+So, taking above into consideration the code may look like this:
+
+/* Take the input and remove leading and trailing spaces of entire buffer */
+fname = strstrip(buf);
+/* Find a separator, i.e. a space character */
+for (gname = fname; !isspace(gname); gname++)
+  if (*gname == '\0')
+    return -EINVAL;
+/* Replace separator with %NUL to terminate first word */
+*gname = '\0';
+/* Drop space characters between first and second words */
+gname = skip_spaces(gname + 1);
+if (*gname == '\0')
+  return -EINVAL;
+
+But please double check the logic.
+
+...
+
+> +free_buf:
+
+exit_free_buf:
+
+> +       kfree(buf);
+> +
+> +       return ret;
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
