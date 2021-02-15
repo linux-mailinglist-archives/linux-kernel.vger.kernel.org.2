@@ -2,83 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51CF31B7AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C278131B7BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhBOKyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:54:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52862 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229916AbhBOKyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:54:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7DEC3AC32;
-        Mon, 15 Feb 2021 10:53:22 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 11:53:24 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/paravirt for v5.12
-Message-ID: <20210215105324.GF23409@zn.tnic>
+        id S229936AbhBOLDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 06:03:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25572 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229870AbhBOLD2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 06:03:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613386921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tWBUts84ZakMrFm1RZc/6Za4l9KVFtjkE6h0wbdwb28=;
+        b=Gs2/Bmi3xVZ4nEfNxQh7gz8GjBa2qneio8C/IpZ8keuG1s/JiRZ43Sx49Fqc04oDuS9pHu
+        cIAoIptMMY7yKP3q+Xu7936oZuz9Uk0bHTgb/+Nm1P2OzNqnpAhotTJIFZ2t9GwEFA5Of9
+        TVQPvqNt0GKUDvJXHrKP0MkHt00vXtc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-7dbsYU6zN96wlzFNSuToRg-1; Mon, 15 Feb 2021 06:01:59 -0500
+X-MC-Unique: 7dbsYU6zN96wlzFNSuToRg-1
+Received: by mail-wr1-f70.google.com with SMTP id v1so3298135wru.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:01:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tWBUts84ZakMrFm1RZc/6Za4l9KVFtjkE6h0wbdwb28=;
+        b=Sc5+ytI67NSW9TGtwhttLL/oiFRfXedn+ltXpIQP08QNvVUkVdsKlN3TYhmDx5dIrU
+         TGSgFADW3tRjqNFJpiMkyOXCFrKFwgJOu7d5FDj/KPOSp90Tq82AEL6fnN9o6AcrA6Jx
+         AYs33/A0U9aOUr47Q47SKHTO1Ci1AhnFG24Inh+zyOITru/jmDTQ0NFUbT/xkG8TueQN
+         v0yAO3l9O26hWVY+c/e5zoreCp2rwFFWT6a32Xr9DZdSIJ1b45gGOWDt5yEqYDaBETcI
+         lVFcbJ5r37DHtx2r7X1Ub+LVXjV64pTng20Be+3+4uS2qD7wdahJZ7+5WemCZoGjtnzr
+         tb7Q==
+X-Gm-Message-State: AOAM53350yjF5R1gqJfqCdQ3aiK4tosky3/iIr+iUe141HgOXEFyNvID
+        sxs6lcaX5DByrEB0CmSakFB34TX785xnUf7qGT16TQOJKtC7Heb/Y1Pc9sYJgdfTGevzE92lTDN
+        GhArFqYRYGC3I9m3kWIWeoxMJ
+X-Received: by 2002:adf:9f54:: with SMTP id f20mr18149948wrg.362.1613386917372;
+        Mon, 15 Feb 2021 03:01:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwXQq08i+/RQsXj5NKZe5iGT+5VgnUN92wMUe264vdcFESWjc/jTZFgDiK6vCqqQA2VKRGdBg==
+X-Received: by 2002:adf:9f54:: with SMTP id f20mr18149925wrg.362.1613386917119;
+        Mon, 15 Feb 2021 03:01:57 -0800 (PST)
+Received: from linux.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
+        by smtp.gmail.com with ESMTPSA id x4sm22579304wrn.64.2021.02.15.03.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 03:01:56 -0800 (PST)
+Date:   Mon, 15 Feb 2021 12:01:54 +0100
+From:   Guillaume Nault <gnault@redhat.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20210215110154.GA28453@linux.home>
+References: <20210215114354.6ddc94c7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210215114354.6ddc94c7@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Feb 15, 2021 at 11:43:54AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the net-next tree got a conflict in:
+> 
+>   tools/testing/selftests/net/forwarding/tc_flower.sh
+> 
+> between commit:
+> 
+>   d2126838050c ("flow_dissector: fix TTL and TOS dissection on IPv4 fragments")
+> 
+> from the net tree and commits:
+> 
+>   203ee5cd7235 ("selftests: tc: Add basic mpls_* matching support for tc-flower")
+>   c09bfd9a5df9 ("selftests: tc: Add generic mpls matching support for tc-flower")
+> 
+> from the net-next tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc tools/testing/selftests/net/forwarding/tc_flower.sh
+> index b11d8e6b5bc1,a554838666c4..000000000000
+> --- a/tools/testing/selftests/net/forwarding/tc_flower.sh
+> +++ b/tools/testing/selftests/net/forwarding/tc_flower.sh
+> @@@ -3,7 -3,9 +3,9 @@@
+>   
+>   ALL_TESTS="match_dst_mac_test match_src_mac_test match_dst_ip_test \
+>   	match_src_ip_test match_ip_flags_test match_pcp_test match_vlan_test \
+> - 	match_ip_tos_test match_indev_test match_ip_ttl_test"
+> + 	match_ip_tos_test match_indev_test match_mpls_label_test \
+> + 	match_mpls_tc_test match_mpls_bos_test match_mpls_ttl_test \
+>  -	match_mpls_lse_test"
+> ++	match_mpls_lse_test match_ip_ttl_test"
 
-please pull the first part of the conversion of the paravirt
-infrastructure to our patching facilities.
+That's technically right. But I think it'd be nicer to have
+"match_ip_ttl_test" appear between "match_ip_tos_test" and
+"match_indev_test", rather than at the end of the list.
 
-Thx.
+Before these commits, ALL_TESTS listed the tests in the order they were
+implemented in the rest of the file. So I'd rather continue following
+this implicit rule, if at all possible. Also it makes sense to keep
+grouping all match_ip_*_test together.
 
----
+>   NUM_NETIFS=2
+>   source tc_common.sh
+>   source lib.sh
 
-The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
-
-  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_paravirt_for_v5.12
-
-for you to fetch changes up to ab234a260b1f625b26cbefa93ca365b0ae66df33:
-
-  x86/pv: Rework arch_local_irq_restore() to not use popf (2021-02-10 12:36:45 +0100)
-
-----------------------------------------------------------------
-Part une of a major conversion of the paravirt infrastructure to our
-kernel patching facilities and getting rid of the custom-grown ones.
-
-----------------------------------------------------------------
-Juergen Gross (5):
-      x86/xen: Use specific Xen pv interrupt entry for MCE
-      x86/xen: Use specific Xen pv interrupt entry for DF
-      x86/pv: Switch SWAPGS to ALTERNATIVE
-      x86/xen: Drop USERGS_SYSRET64 paravirt call
-      x86/pv: Rework arch_local_irq_restore() to not use popf
-
- arch/x86/entry/entry_64.S             | 26 ++++++++----------
- arch/x86/include/asm/idtentry.h       |  6 ++++
- arch/x86/include/asm/irqflags.h       | 46 ++++++++++---------------------
- arch/x86/include/asm/paravirt.h       | 30 --------------------
- arch/x86/include/asm/paravirt_types.h | 17 ++----------
- arch/x86/kernel/asm-offsets_64.c      |  3 --
- arch/x86/kernel/irqflags.S            | 11 --------
- arch/x86/kernel/paravirt.c            |  7 +----
- arch/x86/kernel/paravirt_patch.c      | 10 -------
- arch/x86/xen/enlighten_pv.c           | 32 +++++++++++++++------
- arch/x86/xen/irq.c                    | 23 ----------------
- arch/x86/xen/xen-asm.S                | 52 ++---------------------------------
- arch/x86/xen/xen-ops.h                |  3 --
- 13 files changed, 60 insertions(+), 206 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
