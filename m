@@ -2,100 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6B331B860
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB3431B86D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhBOLve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 06:51:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229908AbhBOLvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 06:51:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C06CE64DFD;
-        Mon, 15 Feb 2021 11:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613389826;
-        bh=1O2ZAfyhwnctNig5Kkji9nFvZQTlpIIhVaXrpX4Qd54=;
-        h=Subject:From:To:Cc:Date:From;
-        b=bfDoALhtxqsUkI5Z+E+1bklP+WEf51/Mgl8JTePLTx4vVjn97RhkSVGVOondBh6Ze
-         0m/oHxdv1w2OoHKS74SAvibSGOeIMGCsuZKj6ruxFbnx0WAfr5qll539DTfXaLLGDp
-         EtK09vly4A9ncjS4lFwZ4c5muWtUFf0OrNjSvEb89DX8pwgpdliMKIBcQHeUvon+af
-         wZmhsnm16kLXxOQ2M8eGTFcpRmG3GdAStToIGGYrPaoXX9hV9xMuB509HCK3/aqrk1
-         DU63yNlG6q9GTYcsEoLrtXiu3oJlhk+bURBjY1S6+mv9BG0seMoOjmENChTqhmSPab
-         bI3wZHbz+ik+w==
-Message-ID: <b811d76937408f4fded7314da18f770b88c83fe2.camel@kernel.org>
-Subject: [GIT PULL] fcntl fix
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 15 Feb 2021 06:50:24 -0500
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-LNHjxsThbfUszIrk08Ao"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S229880AbhBOLxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 06:53:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229925AbhBOLwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 06:52:44 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C76C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:52:03 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id q72so3590715pjq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:52:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ELXsaA6h2gd3/2XQSUpZtIfYlq6fHEtAZT6xqmaOGS4=;
+        b=Dh6h6aUxZyxT9mZOEFDApEmhokQpI3yJ+/bpvDReNio8+/wY/9QxWqG2Rf9jWS+LBm
+         WEgYVe5iGG4CVZzCxLPhdAS2BB5wSLWkyhr+/+2yug9QKh0mNDnRJH8PXryXuxT5yhhe
+         Yj/0vEXgC8cr/5h8zU+Lsup3t3R4Fxsg3+YGw7xQ+ko1nfmnuI3cWS/49c2KMuCvRFRF
+         6bwOlDCyKKfQTv8wv6j2JZ8F869L2CkSbhG8m+pkbgy+a0Dj9mojgJ+FM593mk7ohaWP
+         fGZOs7zgayE35XhJfH/Jyd4dgSMze+hzpttwNy1vXWLWm2vXB97Ydssjj6YmLk+Ic3/F
+         NUyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ELXsaA6h2gd3/2XQSUpZtIfYlq6fHEtAZT6xqmaOGS4=;
+        b=J6qIFRhxi+vAhxXu9F8NTpRKbkJQiKk3JEjc74Y4skkbPRZql3VEZGdMTmISXuU6tz
+         RB57JwfJIaDhJqBHM6VzP5fNqb9vKX3CUnRFoXzSQkLYCLlJCwb+gsOQ9o7YR6ZlYbP4
+         DD9PN7+GHvEGoGkt21e7ZU4iq+uVI71YnB/C65m1888R4J7HgCz9eomtn6VRG4RwV9cY
+         4MpjIOPaBo2WXB/5j02NeMGN+1Kc6CNST3snA2YgqA4ul+vhgNVfyARFNjNRTAtXNCkG
+         Hlz6BP5lx0DOYmxVOMsCTFR9Oo5j0RFZX9KV2DAUJZVaNG+gu6dXOC3FwdXhl1B1fRZP
+         BbEA==
+X-Gm-Message-State: AOAM532ycAwJt29u14w0RytOXw0lguID3c2tdGVkCVKl2mJafaqONTP9
+        5/tifcbU+cW9l6RzuAxyuA2/KgmSOzj/61yRo3IXVw==
+X-Google-Smtp-Source: ABdhPJzKyCtml9leEi1lmizMczQoWM9KaThCAeZnS9YTLYJ5Ia67P/pubrmRAW/pcM7dVvToP5VuRY7YIJH81Qa7d2I=
+X-Received: by 2002:a17:90b:1096:: with SMTP id gj22mr15623262pjb.229.1613389923470;
+ Mon, 15 Feb 2021 03:52:03 -0800 (PST)
 MIME-Version: 1.0
+References: <20210208085013.89436-1-songmuchun@bytedance.com>
+ <20210208085013.89436-5-songmuchun@bytedance.com> <YCafit5ruRJ+SL8I@dhcp22.suse.cz>
+ <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com> <YCpN38i75olgispI@dhcp22.suse.cz>
+In-Reply-To: <YCpN38i75olgispI@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 15 Feb 2021 19:51:26 +0800
+Message-ID: <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 15, 2021 at 6:33 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 15-02-21 18:05:06, Muchun Song wrote:
+> > On Fri, Feb 12, 2021 at 11:32 PM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > > +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+> > > > +{
+> > > > +     int ret;
+> > > > +     unsigned long vmemmap_addr = (unsigned long)head;
+> > > > +     unsigned long vmemmap_end, vmemmap_reuse;
+> > > > +
+> > > > +     if (!free_vmemmap_pages_per_hpage(h))
+> > > > +             return 0;
+> > > > +
+> > > > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
+> > > > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
+> > > > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
+> > > > +
+> > > > +     /*
+> > > > +      * The pages which the vmemmap virtual address range [@vmemmap_addr,
+> > > > +      * @vmemmap_end) are mapped to are freed to the buddy allocator, and
+> > > > +      * the range is mapped to the page which @vmemmap_reuse is mapped to.
+> > > > +      * When a HugeTLB page is freed to the buddy allocator, previously
+> > > > +      * discarded vmemmap pages must be allocated and remapping.
+> > > > +      */
+> > > > +     ret = vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
+> > > > +                               GFP_ATOMIC | __GFP_NOWARN | __GFP_THISNODE);
+> > >
+> > > I do not think that this is a good allocation mode. GFP_ATOMIC is a non
+> > > sleeping allocation and a medium memory pressure might cause it to
+> > > fail prematurely. I do not think this is really an atomic context which
+> > > couldn't afford memory reclaim. I also do not think we want to grant
+> >
+> > Because alloc_huge_page_vmemmap is called under hugetlb_lock
+> > now. So using GFP_ATOMIC indeed makes the code more simpler.
+>
+> You can have a preallocated list of pages prior taking the lock.
 
---=-LNHjxsThbfUszIrk08Ao
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
+A discussion about this can refer to here:
 
-The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3=
-:
+https://patchwork.kernel.org/project/linux-mm/patch/20210117151053.24600-5-songmuchun@bytedance.com/
 
-  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+> Moreover do we want to manipulate vmemmaps from under spinlock in
+> general. I have to say I have missed that detail when reviewing. Need to
+> think more.
+>
+> > From the document of the kernel, I learned that __GFP_NOMEMALLOC
+> > can be used to explicitly forbid access to emergency reserves. So if
+> > we do not want to use the reserve memory. How about replacing it to
+> >
+> > GFP_ATOMIC | __GFP_NOMEMALLOC | __GFP_NOWARN | __GFP_THISNODE
+>
+> The whole point of GFP_ATOMIC is to grant access to memory reserves so
+> the above is quite dubious. If you do not want access to memory reserves
 
-are available in the Git repository at:
+Look at the code of gfp_to_alloc_flags().
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jlayton/linux.git tags/lock=
-s-v5.12
+static inline unsigned int gfp_to_alloc_flags(gfp_t gfp_mask)
+{
+        [...]
+        if (gfp_mask & __GFP_ATOMIC) {
+        /*
+         * Not worth trying to allocate harder for __GFP_NOMEMALLOC even
+         * if it can't schedule.
+         */
+        if (!(gfp_mask & __GFP_NOMEMALLOC))
+                alloc_flags |= ALLOC_HARDER;
+       [...]
+}
 
-for you to fetch changes up to cc4a3f885e8f2bc3c86a265972e94fef32d68f67:
+Seems to allow this operation (GFP_ATOMIC | __GFP_NOMEMALLOC).
 
-  fcntl: make F_GETOWN(EX) return 0 on dead owner task (2021-02-08 07:36:13=
- -0500)
-
-----------------------------------------------------------------
-
-Just a single fix from Pavel for fcntl(F_GETOWN(_EX), ...), needed for
-proper functioning of CRIU.
-
-Thanks,
-Jeff
-
-----------------------------------------------------------------
-Pavel Tikhomirov (1):
-      fcntl: make F_GETOWN(EX) return 0 on dead owner task
-
- fs/fcntl.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
-
---=-LNHjxsThbfUszIrk08Ao
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAABCAAxFiEES8DXskRxsqGE6vXTAA5oQRlWghUFAmAqYAATHGpsYXl0b25A
-a2VybmVsLm9yZwAKCRAADmhBGVaCFZnkD/9byKXRJnPAcMf3UzFfP4imHyJugUxm
-+mYLKufiNRVDW8aq1bTiwVBJcqMCepTTFs9U1MgkYemNJa/myb3BMdYFgJffF27/
-NJXiccCHcZowLZKnZbsB7hn65H1QIOhCgT4ps1JCdrFJHkP3Msvco21YdsSeiepR
-Y5VXTO5aMkXS3jYJ+oDlaf0nDK1D49cdYDsiHW6i/rxonKYzuRcIADZXWWq1P67M
-yKsstp6zzk8GHjquslVXi5mLb5Eqne0xnJz4LOueBwg9EqepJtS4ZSeyFzEMYs9f
-I0XjG8et9Rn/wy/VReiMdIQrHbhCYdImOSohaCKAIW9X6hllU15TcH3sTG1Kw1/k
-MDdqRl6ETDu55oJmkAEEAT+DM0DsmiSjK6eTVsKQyjQQtoNv1xXb/qKsVgqXirID
-GVRVbFHMO/8bdVNp7ik5Vp574qgy1JePWL5YCDL+YtVkv54vNhWbUx4ZkS0mBv88
-jnI/iTcCm7IC33ejwbeCGNtz7suctpe5w0Hb6ykOYv6VDH5fK7T0Z2dK77sFkg+t
-eNos1JBYKPSEavxsfUApdkpcSoDv8/J8qZ8aUWWeisgWUt4jWiuUYfCR36nRVXqS
-x0aEF8084pJhE7EC6+4hzI7E0c3AbjCGH09oqQQlQP5ih8GPrcAMO782g4NPuyW0
-VAafUnUDFAZgJw==
-=/Q9X
------END PGP SIGNATURE-----
-
---=-LNHjxsThbfUszIrk08Ao--
-
+> then use GFP_NOWAIT instead. But failures are much more easier to happen
+> then.
+>
+> NOMEMALLOC is meant to be used from paths which are allowed to consume
+> memory reserves - e.g. when invoked from the memory reclaim path.
+> --
+> Michal Hocko
+> SUSE Labs
