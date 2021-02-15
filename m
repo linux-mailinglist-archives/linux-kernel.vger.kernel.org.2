@@ -2,152 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666CF31BA59
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8457831BA5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbhBON2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 08:28:55 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:40304 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbhBON1g (ORCPT
+        id S230142AbhBON3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 08:29:31 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28312 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229936AbhBON16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 08:27:36 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11FDKmwd078977;
-        Mon, 15 Feb 2021 13:26:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=kC3ddnFu7KnCeXK7Jaz9eWQ6Ye55HYcSZKJgSfoX+fs=;
- b=DLdDKT5PN9lNzsAfbYyaCmtyt5MC5Tux/bC4jwCvdjJG1XnFxBpMf3srXOC1vlKlxPep
- JTBdjiHbScMQcaGp7pnt5e2F4U0Q832wgj+lB7+kxWRY3aAVQl+2Xi1VJtVlEfsGfCGz
- R23XSUbg74MTGmTJ7MvB2f8C5xmxVwgbG8pmejTBod3vxmRyrGHzukMR9su7X4W8JYvP
- 09n2Y3l1f7wIZpjw5mmmpmS2xL+lH2mAnQvHiWJv+F4bop86k9zcHriq7WXNK+ImxBX/
- 0RK75vHUd4lA0V1cHJZjWK+K+2B2m7Physq2DGW8fLhrVsl9jdK3J65V4HWSbTNwIGha 7A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 36p7dnbyp4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 13:26:18 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11FDK3QN149398;
-        Mon, 15 Feb 2021 13:26:16 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 36prnwsff8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 13:26:16 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11FDQDsD005133;
-        Mon, 15 Feb 2021 13:26:13 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 15 Feb 2021 05:26:12 -0800
-Date:   Mon, 15 Feb 2021 16:26:04 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Ivan Safonov <insafonov@gmail.com>, devel@driverdev.osuosl.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Abheek Dhawan <adawesomeguy222@gmail.com>
-Subject: Re: [PATCH] staging:wlan-ng: use memdup_user instead of
- kmalloc/copy_from_user
-Message-ID: <20210215132604.GO2087@kadam>
-References: <20210213120527.451531-1-insafonov@gmail.com>
- <YCo0aAMajx0AG7JM@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCo0aAMajx0AG7JM@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9895 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102150108
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9895 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102150108
+        Mon, 15 Feb 2021 08:27:58 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11FD3Gch155296;
+        Mon, 15 Feb 2021 08:27:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=PjXolwIlShtKDbNKhuhK4DaY0JwMHRasy/IXPyZfFpY=;
+ b=o0Q/kpjvrTLYWX6+yzFkUWHSoR2Tam2SL4hi5hDeWEJPozdCTHIFyD/lNcda8W0o2oAy
+ vNnpyp67o6I6TU1nbDFvY1lpA89RmxqcZ1xWSz0jfbBZdeQ8t+GmJfWiUqp1jXwBB+ak
+ vxsMcGeZVOOjVPKHnuJXe5UTfhVubcGStDa/hG8+bqXttdLcozwWZj4XwqvcsdGU4cS3
+ 3dVfXvuPIN/vgmyg25Xn4F/T545faEOJ1jRbVQkRUA4oQNQlCSqBoKxEmw9pOMgdMWsM
+ VhH8PjxKro+qrMxBn4miZjXrui/LKa5BIi8ygotm+Du1S25TSfpBVpVLFS1/PUtstc5r UQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36qrbw46mt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 08:27:04 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11FD3hIa157570;
+        Mon, 15 Feb 2021 08:27:04 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36qrbw46kx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 08:27:03 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11FDNRxP031630;
+        Mon, 15 Feb 2021 13:27:02 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 36p61h9vga-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 13:27:02 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11FDQxcs63766796
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Feb 2021 13:27:00 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D38035204F;
+        Mon, 15 Feb 2021 13:26:59 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.59.188])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 45DF752050;
+        Mon, 15 Feb 2021 13:26:58 +0000 (GMT)
+Message-ID: <fe83fb7572e0eea7a9a9981a15c63f1f7709d714.camel@linux.ibm.com>
+Subject: Re: [PATCH] integrity/ima: Provide Kconfig option for ima-modsig
+ template
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Michael =?ISO-8859-1?Q?Wei=DF?= 
+        <michael.weiss@aisec.fraunhofer.de>
+Cc:     linux-integrity@vger.kernel.org,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 15 Feb 2021 08:26:57 -0500
+In-Reply-To: <20210215102305.10722-1-michael.weiss@aisec.fraunhofer.de>
+References: <20210215102305.10722-1-michael.weiss@aisec.fraunhofer.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-15_06:2021-02-12,2021-02-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ phishscore=0 clxscore=1011 bulkscore=0 adultscore=0 spamscore=0
+ mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102150104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 09:44:24AM +0100, Michal Hocko wrote:
-> On Sat 13-02-21 15:05:28, Ivan Safonov wrote:
-> > memdup_user() is shorter and safer equivalent
-> > of kmalloc/copy_from_user pair.
-> > 
-> > Signed-off-by: Ivan Safonov <insafonov@gmail.com>
-> > ---
-> >  drivers/staging/wlan-ng/p80211netdev.c | 28 ++++++++++++--------------
-> >  1 file changed, 13 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/drivers/staging/wlan-ng/p80211netdev.c b/drivers/staging/wlan-ng/p80211netdev.c
-> > index a15abb2c8f54..6f9666dc0277 100644
-> > --- a/drivers/staging/wlan-ng/p80211netdev.c
-> > +++ b/drivers/staging/wlan-ng/p80211netdev.c
-> > @@ -569,24 +569,22 @@ static int p80211knetdev_do_ioctl(struct net_device *dev,
-> >  		goto bail;
-> >  	}
-> >  
-> > -	/* Allocate a buf of size req->len */
-> > -	msgbuf = kmalloc(req->len, GFP_KERNEL);
-> > -	if (msgbuf) {
-> > -		if (copy_from_user(msgbuf, (void __user *)req->data, req->len))
-> > -			result = -EFAULT;
-> > -		else
-> > -			result = p80211req_dorequest(wlandev, msgbuf);
-> > +	msgbuf = memdup_user(req->data, req->len);
+Hi Michael,
+
+On Mon, 2021-02-15 at 11:23 +0100, Michael Weiﬂ wrote:
+> 'ima-modsig' was not in the list of selectable templates in Kconfig.
+> The missing Kconfig options were added to support the ima-modsig
+> template as default template.
 > 
-> Move to memdup_user is definitely a right step. What is the range of
-> req->len though? If this can be larger than PAGE_SIZE then vmemdup_user
-> would be a better alternative.
+> Signed-off-by: Michael Weiﬂ <michael.weiss@aisec.fraunhofer.de>
 
-req->len shoudn't be anywhere close to PAGE_SIZE but it's actually
-important to check req->len and this code does not do that which leads
-to memory corruption:
+Since 'ima-modsig' is only needed for appended signatures (e.g. kexec
+kernel image on powerpc, kernel modules) a per policy rule "template="
+option was defined.  There's also the 'ima_template=' boot command line
+option.   Between these two options, I didn't see the need for making
+it a build time default option.  Do you?
 
-drivers/staging/wlan-ng/p80211netdev.c
-   566                  goto bail;
-   567          } else if (cmd != P80211_IFREQ) {
-   568                  result = -EINVAL;
-   569                  goto bail;
-   570          }
-   571  
-   572          msgbuf = memdup_user(req->data, req->len);
-   573          if (IS_ERR(msgbuf)) {
-   574                  result = PTR_ERR(msgbuf);
-   575                  goto bail;
-   576          }
-   577  
-   578          result = p80211req_dorequest(wlandev, msgbuf);
+The patch itself looks good. 
 
-We don't know that "req->len" is >= sizeof(*msgbuf), and then we pass
-msgbuf top80211req_dorequest() which calls p80211req_handlemsg().  In
-p80211req_handlemsg() then "req->len" has to be larger than
-sizeof(struct p80211msg_lnxreq_hostwep).
+thanks,
 
-   579  
-   580          if (result == 0) {
-   581                  if (copy_to_user
-   582                      ((void __user *)req->data, msgbuf, req->len)) {
-   583                          result = -EFAULT;
-   584                  }
-   585          }
-   586          kfree(msgbuf);
-   587  
-   588  bail:
-   589          /* If allocate,copyfrom or copyto fails, return errno */
-   590          return result;
-   591  }
+Mimi
 
-Smatch has a problem parsing this code because struct ifreq *ifr is a
-union and Smatch gets confused.  :/
+> ---
+>  security/integrity/ima/Kconfig | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
+> index 12e9250c1bec..32b9325f49bf 100644
+> --- a/security/integrity/ima/Kconfig
+> +++ b/security/integrity/ima/Kconfig
+> @@ -78,6 +78,8 @@ choice
+>  		bool "ima-ng (default)"
+>  	config IMA_SIG_TEMPLATE
+>  		bool "ima-sig"
+> +	config IMA_MODSIG_TEMPLATE
+> +		bool "ima-modsig"
+>  endchoice
+>  
+>  config IMA_DEFAULT_TEMPLATE
+> @@ -86,6 +88,7 @@ config IMA_DEFAULT_TEMPLATE
+>  	default "ima" if IMA_TEMPLATE
+>  	default "ima-ng" if IMA_NG_TEMPLATE
+>  	default "ima-sig" if IMA_SIG_TEMPLATE
+> +	default "ima-modsig" if IMA_MODSIG_TEMPLATE
+>  
+>  choice
+>  	prompt "Default integrity hash algorithm"
 
-regards,
-dan carpenter
+
