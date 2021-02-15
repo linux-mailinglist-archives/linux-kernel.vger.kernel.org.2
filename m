@@ -2,352 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5402431B82D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F31F331B834
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhBOLkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 06:40:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbhBOLkU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 06:40:20 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A42C061574;
-        Mon, 15 Feb 2021 03:39:40 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id s24so6433914iob.6;
-        Mon, 15 Feb 2021 03:39:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oyN4jV5GXUru7tvvnvfRnlqBrGsqGmb2kviBXtv4L1A=;
-        b=EuCnbnvITADRhFXlX0FzMDWwHLQmYqqmqTHzTlPO7gjqQ60zs29iiDw3GQsBStYE+v
-         /BnNwVNWzFDKmWnYH8jAY8obDEU5P2NYVmSkotgzoe0uBzRgevSR6njpa+9efb8m0n15
-         h/tnXCw6IenQr/oA1ExCZpAfwRF7Cy76sikyzEXbR5zWak8VNXA+fhPcIaw8x+7oEJU4
-         tRgcTQls+zsoQTe6NO/+vsSK3rPkwFBuMwEbWmatHAN9qJL1dB5/zCiTs0iNq+8TaFzF
-         AEunJW7GVC8rsdw6RznA7n0chT7uEFd8sh5a+97MTviXZribjdzpR9sk2Mtwse2syuQ6
-         kbRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oyN4jV5GXUru7tvvnvfRnlqBrGsqGmb2kviBXtv4L1A=;
-        b=tK3z4SLUZSxGF/ms9UTwmrhkcjg2PWkrknwXxKZRAaCEUylxvJ5j9tPpYPpcRc6LX8
-         LniMOoCCHbKlX+9Tej6sVw5whX0OA5KbIUzamVeMvS6qSmEdmIhp6NkPBblkm9wzB6AV
-         2LasXgRk3U9pKbW8toeR2wu8Ah8hbZgKGBsBvjTdJlVSgZmRwzT3sWPxFI/gfo2JesUo
-         Zh/ZSb0k9P/a9WFZfJ76o9thXqyqJfoPcwomAID5/kjSQakNvMv+awZpVl0HU9m/+9fp
-         fC9/kMq9DXNhoNv8fZACOHA6cKl8It4rpx9Z0Yi+y56zzUNXo51mVJqftnELhc/lwMhC
-         LHvQ==
-X-Gm-Message-State: AOAM530WCA5gETup3jfbbZoFvXpt+b5zDbWlPjVPD7fdwLySQxdvXwAf
-        JdQljlbxXal/Jm63kEUtawd9t1J/jWHm0+aLHPUUWFre
-X-Google-Smtp-Source: ABdhPJzeDlrbjJFq33bOl353Sn4b1jPMBjL1JVT5VHKbKgXJxkfkihHNDlMVNni7PGHWipUFBciwxIbqgNgaOv8ISag=
-X-Received: by 2002:a5e:8e09:: with SMTP id a9mr1004992ion.98.1613389179623;
- Mon, 15 Feb 2021 03:39:39 -0800 (PST)
+        id S230049AbhBOLme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 06:42:34 -0500
+Received: from retiisi.eu ([95.216.213.190]:48260 "EHLO hillosipuli.retiisi.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229805AbhBOLmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 06:42:19 -0500
+Received: from lanttu.localdomain (lanttu-e.localdomain [192.168.1.64])
+        by hillosipuli.retiisi.eu (Postfix) with ESMTP id 270F5634C98;
+        Mon, 15 Feb 2021 13:39:32 +0200 (EET)
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-media@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH v7 0/3] Add %p4cc printk modifier for V4L2 and DRM fourcc codes
+Date:   Mon, 15 Feb 2021 13:40:27 +0200
+Message-Id: <20210215114030.11862-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210212101143.18993-1-alexandru.ardelean@analog.com>
- <20210212101143.18993-4-alexandru.ardelean@analog.com> <20210214155628.0986a678@archlinux>
-In-Reply-To: <20210214155628.0986a678@archlinux>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Mon, 15 Feb 2021 13:39:28 +0200
-Message-ID: <CA+U=Dspbu-CY9HM5ZhmXXzJP4HpQaXdN1YA1Mv+cyL3g3gBw-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] tools: iio: add example for high-speed buffer support
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 5:58 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Fri, 12 Feb 2021 12:11:43 +0200
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
-> > Following a recent update to the IIO buffer infrastructure, this change
-> > adds a basic example on how to access an IIO buffer via the new mmap()
-> > interface.
-> >
-> > The ioctl() for the high-speed mode needs to be enabled right from the
-> > start, before setting any parameters via sysfs (length, enable, etc), to
-> > make sure that the mmap mode is used and not the fileio mode.
-> >
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
->
-> Just one small question on error handling. Otherwise this looks fine to me.
->
-> thanks,
->
-> Jonathan
->
-> > ---
-> >  tools/iio/iio_generic_buffer.c | 183 +++++++++++++++++++++++++++++++--
-> >  1 file changed, 177 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
-> > index fdd08514d556..675a7e6047e0 100644
-> > --- a/tools/iio/iio_generic_buffer.c
-> > +++ b/tools/iio/iio_generic_buffer.c
-> > @@ -31,6 +31,7 @@
-> >  #include <stdbool.h>
-> >  #include <signal.h>
-> >  #include <sys/ioctl.h>
-> > +#include <sys/mman.h>
-> >  #include <linux/iio/buffer.h>
-> >  #include "iio_utils.h"
-> >
-> > @@ -239,6 +240,132 @@ static int enable_disable_all_channels(char *dev_dir_name, int buffer_idx, int e
-> >       return 0;
-> >  }
-> >
-> > +struct mmap_block {
-> > +     struct iio_buffer_block block;
-> > +     void *addr;
-> > +};
-> > +
-> > +static struct mmap_block *enable_high_speed(int buf_fd, unsigned int block_size,
-> > +                                         int nblocks)
-> > +{
-> > +     struct iio_buffer_block_alloc_req req = { 0 };
-> > +     struct mmap_block *mmaps = NULL;
-> > +     int mmaps_cnt = 0;
-> > +     int i, ret;
-> > +
-> > +     /**
-> > +      * Validate we can do high-speed by issuing BLOCK_FREE ioctl.
-> > +      * If using just BLOCK_ALLOC it's distinguish between ENOSYS
-> > +      * and other error types.
-> > +      */
-> > +     ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
-> > +     if (ret < 0) {
-> > +             errno = ENOSYS;
-> > +             return NULL;
-> > +     }
-> > +
-> > +     /* for now, this */
-> > +     req.id = 0;
-> > +     req.type = 0;
-> > +     req.size = block_size;
-> > +     req.count = nblocks;
-> > +
-> > +     ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ALLOC_IOCTL, &req);
-> > +     if (ret < 0)
-> > +             return NULL;
-> > +
-> > +     if (req.count == 0) {
-> > +             errno = ENOMEM;
-> > +             return NULL;
-> > +     }
-> > +
-> > +     if (req.count < nblocks) {
-> > +             fprintf(stderr, "Requested %d blocks, got %d\n",
-> > +                     nblocks, req.count);
-> > +             errno = ENOMEM;
-> > +             return NULL;
-> > +     }
-> > +
-> > +     mmaps = calloc(req.count, sizeof(*mmaps));
-> > +     if (!mmaps) {
-> > +             errno = ENOMEM;
-> > +             return NULL;
-> > +     }
-> > +
-> > +     for (i = 0; i < req.count; i++) {
-> > +             mmaps[i].block.id = i;
-> > +             ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_QUERY_IOCTL, &mmaps[i].block);
-> > +             if (ret < 0)
-> > +                     goto error;
-> > +
-> > +             ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ENQUEUE_IOCTL, &mmaps[i].block);
-> > +             if (ret < 0)
-> > +                     goto error;
->
-> > +
-> > +             mmaps[i].addr = mmap(0, mmaps[i].block.size,
-> > +                                   PROT_READ | PROT_WRITE, MAP_SHARED,
-> > +                                   buf_fd, mmaps[i].block.data.offset);
-> > +
-> > +             if (mmaps[i].addr == MAP_FAILED)
-> > +                     goto error;
-> > +
-> > +             mmaps_cnt++;
-> > +     }
-> > +
-> > +     return mmaps;
-> > +
-> > +error:
-> > +     for (i = 0; i < mmaps_cnt; i++)
-> > +             munmap(mmaps[i].addr, mmaps[i].block.size);
-> > +     free(mmaps);
->
-> No free of the blocks?  We have unmapped them but I'd imagine we'd also
-> need to free them from the driver side.
+Hi all,
 
-Good catch.
+This set adds support for %p4cc printk modifier for printing V4L2 and DRM
+fourcc codes. The codes are cumbersome to print manually and by adding the
+modifier, this task is saved from the V4L2 and DRM frameworks as well as
+related drivers. DRM actually had it handled in a way (see 3rd patch) but
+the printk modifier makes printing the format easier even there. On V4L2
+side it saves quite a few lines of repeating different implementations of
+printing the 4cc codes.
 
->
-> > +     return NULL;
-> > +}
-> > +
-> > +static int read_high_speed(int buf_fd, char *data, unsigned int block_size,
-> > +                        struct mmap_block *mmaps, unsigned int mmaps_cnt)
-> > +{
-> > +     struct iio_buffer_block block;
-> > +     int ret;
-> > +
-> > +     /**
-> > +      * This is where some buffer-pool management can do wonders,
-> > +      * but for the sake of this sample-code, we're just going to
-> > +      * copy the data and re-enqueue it back
-> > +      */
-> > +     memset(&block, 0, sizeof(block));
-> > +     ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_DEQUEUE_IOCTL, &block);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     /* check for weird conditions */
-> > +     if (block.bytes_used > block_size) {
-> > +             fprintf(stderr,
-> > +                     "Got a bigger block (%u) than expected (%u)\n",
-> > +                     block.bytes_used, block_size);
-> > +             return -EFBIG;
-> > +     }
-> > +
-> > +     if (block.bytes_used < block_size) {
-> > +             /**
-> > +              * This can be normal, with some real-world data
-> > +              * terminating abruptly. But log it.
-> > +              */
-> > +             fprintf(stderr,
-> > +                     "Got a smaller block (%u) than expected (%u)\n",
-> > +                     block.bytes_used, block_size);
-> > +     }
-> > +
-> > +     /* memcpy() the data, we lose some more performance here :p */
-> > +     memcpy(data, mmaps[block.id].addr, block.bytes_used);
-> > +
-> > +     /* and re-queue this back */
-> > +     ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ENQUEUE_IOCTL, &mmaps[block.id].block);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     return block.bytes_used;
-> > +}
-> > +
-> >  static void print_usage(void)
-> >  {
-> >       fprintf(stderr, "Usage: generic_buffer [options]...\n"
-> > @@ -249,6 +376,7 @@ static void print_usage(void)
-> >               "  -c <n>     Do n conversions, or loop forever if n < 0\n"
-> >               "  -e         Disable wait for event (new data)\n"
-> >               "  -g         Use trigger-less mode\n"
-> > +             "  -h         Use high-speed buffer access\n"
-> >               "  -l <n>     Set buffer length to n samples\n"
-> >               "  --device-name -n <name>\n"
-> >               "  --device-num -N <num>\n"
-> > @@ -356,9 +484,15 @@ int main(int argc, char **argv)
-> >
-> >       struct iio_channel_info *channels = NULL;
-> >
-> > +     static bool use_high_speed = false;
-> > +     unsigned int block_size;
-> > +     int nblocks = 16; /* default */
-> > +     int mmaps_cnt = 0;
-> > +     struct mmap_block *mmaps = NULL;
-> > +
-> >       register_cleanup();
-> >
-> > -     while ((c = getopt_long(argc, argv, "aAb:c:egl:n:N:t:T:w:?", longopts,
-> > +     while ((c = getopt_long(argc, argv, "aAb:c:eghl:n:N:t:T:w:?", longopts,
-> >                               NULL)) != -1) {
-> >               switch (c) {
-> >               case 'a':
-> > @@ -396,6 +530,9 @@ int main(int argc, char **argv)
-> >               case 'g':
-> >                       notrigger = 1;
-> >                       break;
-> > +             case 'h':
-> > +                     use_high_speed = true;
-> > +                     break;
-> >               case 'l':
-> >                       errno = 0;
-> >                       buf_len = strtoul(optarg, &dummy, 10);
-> > @@ -661,6 +798,29 @@ int main(int argc, char **argv)
-> >               goto error;
-> >       }
-> >
-> > +     scan_size = size_from_channelarray(channels, num_channels);
-> > +     block_size = scan_size * buf_len;
-> > +     /**
-> > +      * Need to enable high-speed before configuring length/enable.
-> > +      * Otherwise, the DMA buffer will work in fileio mode,
-> > +      * and mmap won't work.
-> > +      */
-> > +     if (use_high_speed) {
-> > +             /**
-> > +              * The block_size for one block is the same as 'data', but it
-> > +              * doesn't need to be the same size. It is easier for the sake
-> > +              * of this example.
-> > +              */
-> > +             mmaps = enable_high_speed(buf_fd, block_size, nblocks);
-> > +             if (!mmaps) {
-> > +                     fprintf(stderr, "Could not enable high-speed mode\n");
-> > +                     ret = -errno;
-> > +                     goto error;
-> > +             }
-> > +             mmaps_cnt = nblocks;
-> > +             printf("Using high-speed mode\n");
-> > +     }
-> > +
-> >       /* Setup ring buffer parameters */
-> >       ret = write_sysfs_int("length", buf_dir_name, buf_len);
-> >       if (ret < 0)
-> > @@ -675,8 +835,7 @@ int main(int argc, char **argv)
-> >               goto error;
-> >       }
-> >
-> > -     scan_size = size_from_channelarray(channels, num_channels);
-> > -     data = malloc(scan_size * buf_len);
-> > +     data = malloc(block_size);
-> >       if (!data) {
-> >               ret = -ENOMEM;
-> >               goto error;
-> > @@ -719,7 +878,13 @@ int main(int argc, char **argv)
-> >                       toread = 64;
-> >               }
-> >
-> > -             read_size = read(buf_fd, data, toread * scan_size);
-> > +             if (use_high_speed) {
-> > +                     read_size = read_high_speed(buf_fd, data, block_size,
-> > +                                                 mmaps, mmaps_cnt);
-> > +             } else {
-> > +                     read_size = read(buf_fd, data, toread * scan_size);
-> > +             }
-> > +
-> >               if (read_size < 0) {
-> >                       if (errno == EAGAIN) {
-> >                               fprintf(stderr, "nothing available\n");
-> > @@ -738,8 +903,14 @@ int main(int argc, char **argv)
-> >
-> >       if (fd >= 0 && close(fd) == -1)
-> >               perror("Failed to close character device");
-> > -     if (buf_fd >= 0 && close(buf_fd) == -1)
-> > -             perror("Failed to close buffer");
-> > +     for (i = 0; i < mmaps_cnt; i++)
-> > +             munmap(mmaps[i].addr, mmaps[i].block.size);
-> > +     free(mmaps);
-> > +     if (buf_fd >= 0) {
-> > +             ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
-> > +             if (close(buf_fd) == -1)
-> > +                     perror("Failed to close buffer");
-> > +     }
-> >       free(buffer_access);
-> >       free(data);
-> >       free(buf_dir_name);
->
+Further work will include converting the V4L2 drivers doing the same, as
+well as converting DRM drivers from drm_get_format_name() to plain %p4cc.
+I left these out from this version since individual drivers are easier
+changed without dealing with multiple trees.
+
+If DRM folks would prefer to convert drivers to %p4cc directly instead I
+have no problem dropping the 3rd patch. Nearly all uses in DRM are in
+printk family of functions that can readily use %p4cc instead of the
+current arrangement that relies on caller-allocated temporary buffer.
+
+Since v6:
+
+- Don't drop spaces in fourcc codes.
+
+- Print unprintable characters as dot ('.') instead of hexadecimal number
+  in parentheses.
+
+- Convert DRM from drm_get_format_name() to %p4cc. I wonder if this should
+  be merged through the DRM tree, albeit it's probably unlikely to
+  conflict with other changes. Further use of the function could be a
+  problem.
+
+- Make tests more realistic.
+
+Since v5:
+
+- Added V4L2 core conversion to %p4cc, as well as change the DRM
+  fourcc printing function to use %p4cc.
+
+- Add missing checkpatch.pl checks for %p4cc modifier.
+
+Sakari Ailus (3):
+  lib/vsprintf: Add support for printing V4L2 and DRM fourccs
+  v4l: ioctl: Use %p4cc printk modifier to print FourCC codes
+  drm: Switch to %p4cc format modifier
+
+ Documentation/core-api/printk-formats.rst     | 16 ++++
+ drivers/gpu/drm/amd/amdgpu/dce_v10_0.c        |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v11_0.c        |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v6_0.c         |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v8_0.c         |  5 +-
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  5 +-
+ .../arm/display/komeda/komeda_format_caps.h   | 11 ---
+ .../arm/display/komeda/komeda_framebuffer.c   |  4 +-
+ .../gpu/drm/arm/display/komeda/komeda_plane.c |  6 +-
+ drivers/gpu/drm/arm/malidp_mw.c               |  7 +-
+ drivers/gpu/drm/drm_atomic.c                  |  8 +-
+ drivers/gpu/drm/drm_crtc.c                    |  7 +-
+ drivers/gpu/drm/drm_fourcc.c                  | 25 ------
+ drivers/gpu/drm/drm_framebuffer.c             | 11 +--
+ drivers/gpu/drm/drm_mipi_dbi.c                |  5 +-
+ drivers/gpu/drm/drm_plane.c                   |  8 +-
+ .../gpu/drm/hisilicon/kirin/kirin_drm_ade.c   |  5 +-
+ drivers/gpu/drm/i915/display/intel_display.c  | 14 +--
+ .../drm/i915/display/intel_display_debugfs.c  | 19 ++---
+ drivers/gpu/drm/i915/display/intel_sprite.c   |  6 +-
+ drivers/gpu/drm/mcde/mcde_display.c           |  6 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      |  6 +-
+ drivers/gpu/drm/nouveau/nouveau_display.c     |  9 +-
+ drivers/gpu/drm/radeon/atombios_crtc.c        | 10 +--
+ drivers/gpu/drm/sun4i/sun4i_backend.c         |  6 +-
+ drivers/gpu/drm/vkms/vkms_writeback.c         |  7 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           | 15 ++--
+ drivers/media/v4l2-core/v4l2-ioctl.c          | 85 +++++--------------
+ include/drm/drm_fourcc.h                      |  1 -
+ lib/test_printf.c                             | 17 ++++
+ lib/vsprintf.c                                | 39 +++++++++
+ scripts/checkpatch.pl                         |  6 +-
+ 32 files changed, 161 insertions(+), 223 deletions(-)
+
+-- 
+2.29.2
