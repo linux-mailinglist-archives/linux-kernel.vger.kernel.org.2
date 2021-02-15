@@ -2,651 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F3D31BB5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0592E31BB67
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhBOOsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:48:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:40162 "EHLO foss.arm.com"
+        id S229981AbhBOOvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:51:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57148 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229652AbhBOOss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:48:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6046031B;
-        Mon, 15 Feb 2021 06:48:01 -0800 (PST)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 992073F40C;
-        Mon, 15 Feb 2021 06:47:58 -0800 (PST)
-Date:   Mon, 15 Feb 2021 14:47:51 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Jyoti Bhayana <jbhayana@google.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Enrico Granata <egranata@google.com>,
-        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
-        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
-        Peter Hilber <Peter.hilber@opensynergy.com>,
-        Ankit Arora <ankitarora@google.com>
-Subject: Re: [PATCH v5 1/1] iio/scmi: Adding support for IIO SCMI Based
- Sensors
-Message-ID: <20210215144737.GB29356@e120937-lin>
-References: <20210208211918.1280588-1-jbhayana@google.com>
- <20210208211918.1280588-2-jbhayana@google.com>
- <20210209115639.GC6873@e120937-lin>
- <CA+=V6c12nRxLCxM2DPst8RV=i+1WatPyHcQQZp4xAzuoN0vKaw@mail.gmail.com>
- <20210210214619.GD6873@e120937-lin>
- <20210212191850.0748ccdb@archlinux>
- <20210215092526.GA29356@e120937-lin>
- <20210215110756.28567df8@archlinux>
+        id S229802AbhBOOvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:51:07 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 57A35AC69;
+        Mon, 15 Feb 2021 14:50:25 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id f7b5e805;
+        Mon, 15 Feb 2021 14:51:27 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <Anna.Schumaker@netapp.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Steve French <sfrench@samba.org>
+Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate
+ content is generated
+References: <20210212044405.4120619-1-drinkcat@chromium.org>
+        <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
+        <YCYybUg4d3+Oij4N@kroah.com>
+        <CAOQ4uxhovoZ4S3WhXwgYDeOeomBxfQ1BdzSyGdqoVX6boDOkeA@mail.gmail.com>
+        <YCY+tjPgcDmgmVD1@kroah.com> <871rdljxtx.fsf@suse.de>
+        <YCZyBZ1iT+MUXLu1@kroah.com> <87sg61ihkj.fsf@suse.de>
+        <CAOQ4uxi-VuBmE8Ej_B3xmBnn1nmp9qpiA-BkNpPcrE0PCRp1UA@mail.gmail.com>
+        <87h7mdvcmd.fsf@suse.de> <87eehhldvu.fsf@suse.de>
+        <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+Date:   Mon, 15 Feb 2021 14:51:26 +0000
+In-Reply-To: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+        (Amir Goldstein's message of "Mon, 15 Feb 2021 16:23:03 +0200")
+Message-ID: <878s7pl6z5.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210215110756.28567df8@archlinux>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 11:07:56AM +0000, Jonathan Cameron wrote:
-> On Mon, 15 Feb 2021 09:25:26 +0000
-> Cristian Marussi <cristian.marussi@arm.com> wrote:
-> 
-> > On Fri, Feb 12, 2021 at 07:18:58PM +0000, Jonathan Cameron wrote:
-> > > On Wed, 10 Feb 2021 21:46:19 +0000
-> > > Cristian Marussi <cristian.marussi@arm.com> wrote:
-> > >   
-> > > > Hi Jyoti,
-> > > > 
-> > > > On Wed, Feb 10, 2021 at 11:19:35AM -0800, Jyoti Bhayana wrote:  
-> > > > > Hi Cristian,
-> > > > > 
-> > > > > Thanks for the feedback. Regarding registering callbacks at the probe time
-> > > > > instead of .preenable, I have tried it before but I think due to some
-> > > > > issues(don't remember it now maybe on the platform side)  I kept it at the
-> > > > > .preenable level.
-> > > > > 
-> > > > > But you are right, that it will be nice to move it at the probe level
-> > > > > instead. I will try again and test if it works and would move it at the
-> > > > > probe level. Regarding the unregistering of the notifier, is it required at
-> > > > > the remove of iio driver or scmi driver will take care of it?
-> > > > > Because if I add unregister at the iio driver remove level, I would have to
-> > > > > iterate all the sensors again and unregister them.    
-> > > > 
-> > > > Yes you are right if you move callbacks registration once for all to the
-> > > > .probe step you'll have to unregister them all in a .remove.
-> > > > 
-> > > > BUT I think instead you should stick with your current solution given
-> > > > it's working fine anyway and it's supported by the notification
-> > > > framework and also for another reason I'm going to explain down below
-> > > > (which is also the reason why I asked you this at first :D)
-> > > > 
-> > > > As you may remember I'm refactoring all the SCMI internals in a separate
-> > > > series to ease modularization and vendor protocols support, and that will
-> > > > lead also to some changes in the SCMI driver interface that you use:
-> > > > amongst other things one interesting addition will be a new devres managed
-> > > > notification registration method, something like:
-> > > > 
-> > > > handle->notify_ops->devm_register_notifier(sdev, ...);
-> > > > 
-> > > > With such method you could just move your registration to the .probe
-> > > > step and just forget about it, without the need to add any unregistration
-> > > > in the .remove step, since the core will take care to remove all the
-> > > > callbacks at driver unloading time.
-> > > > 
-> > > > Now, this series, which is here if you want to have a look:
-> > > > 
-> > > > https://lore.kernel.org/linux-arm-kernel/20210202221555.41167-1-cristian.marussi@arm.com/
-> > > > 
-> > > > is already taking care to port any existent SCMI driver to the new interface,
-> > > > so when your IIODEV SCMI driver will be finally queued somewhere for merge, I
-> > > > can in turn rebase my series on yours and take care to port your driver too to
-> > > > the new interface applying the changes above in the context of my series.
-> > > > (and ask you to review of course :D)  
-> > > 
-> > > I'm guessing you probably want this driver in an immutable branch then
-> > > rather than having to wait another cycle for it to tick through to a
-> > > a sensible upstream?
-> > >   
-> > 
-> > Hi Jonathan
-> > 
-> > the above series (still pending a final review from Sudeep) is targeted
-> > at 5.13 at this point and usually it'd be queued via Sudeep for-next/scmi
-> > which in turn goes via the ARM soc branch.
-> > 
-> > Having said that, I'm not really familiar enough with this sort of clashes
-> > to know how they should be properly handled, so I'll stick to what you
-> > and Sudeep would think it's better :D (..and I'm pinging him to have a say)
-> > 
-> > Thanks
-> > 
-> > Cristian
-> Hi Cristian,
-> 
-> So this driver will also be 5.13 material now (merge window for IIO effectively
-> closes 1-2 weeks before Linus opens the main one).
-> 
-> The way we normally handle cases like this where we likely to have dependencies
-> on a patch set from two separate directions is to do what is known as an
-> immutable branch.  This is a branch that would probably be based on 5.12-rc1
-> containing just this driver.
-> 
-> Then both trees, in this case IIO and scmi merge that branch.  The magic
-> of git then means that when Linus gets the eventual pull requests for
-> the two trees, the git IDs and content will be the same and the history
-> of that particular set of files will be cleanly maintained.
-> 
-> This happens quite a lot for certain parts of the kernel because there are
-> a lot of cross dependencies.
-> 
-Hi Jonathan
+Amir Goldstein <amir73il@gmail.com> writes:
 
-thanks for clarifying.
+> On Mon, Feb 15, 2021 at 2:21 PM Luis Henriques <lhenriques@suse.de> wrote:
+>>
+>> Luis Henriques <lhenriques@suse.de> writes:
+>>
+>> > Amir Goldstein <amir73il@gmail.com> writes:
+>> >
+>> >> On Fri, Feb 12, 2021 at 2:40 PM Luis Henriques <lhenriques@suse.de> wrote:
+>> > ...
+>> >>> Sure, I just wanted to point out that *maybe* there are other options than
+>> >>> simply reverting that commit :-)
+>> >>>
+>> >>> Something like the patch below (completely untested!) should revert to the
+>> >>> old behaviour in filesystems that don't implement the CFR syscall.
+>> >>>
+>> >>> Cheers,
+>> >>> --
+>> >>> Luis
+>> >>>
+>> >>> diff --git a/fs/read_write.c b/fs/read_write.c
+>> >>> index 75f764b43418..bf5dccc43cc9 100644
+>> >>> --- a/fs/read_write.c
+>> >>> +++ b/fs/read_write.c
+>> >>> @@ -1406,8 +1406,11 @@ static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
+>> >>>                                                        file_out, pos_out,
+>> >>>                                                        len, flags);
+>> >>>
+>> >>> -       return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+>> >>> -                                      flags);
+>> >>> +       if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
+>> >>> +               return -EXDEV;
+>> >>> +       else
+>> >>> +               generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+>> >>> +                                       flags);
+>> >>>  }
+>> >>>
+>> >>
+>> >> Which kernel is this patch based on?
+>> >
+>> > It was v5.11-rc7.
+>> >
+>> >> At this point, I am with Dave and Darrick on not falling back to
+>> >> generic_copy_file_range() at all.
+>> >>
+>> >> We do not have proof of any workload that benefits from it and the
+>> >> above patch does not protect from a wierd use case of trying to copy a file
+>> >> from sysfs to sysfs.
+>> >>
+>> >
+>> > Ok, cool.  I can post a new patch doing just that.  I guess that function
+>> > do_copy_file_range() can be dropped in that case.
+>> >
+>> >> I am indecisive about what should be done with generic_copy_file_range()
+>> >> called as fallback from within filesystems.
+>> >>
+>> >> I think the wise choice is to not do the fallback in any case, but this is up
+>> >> to the specific filesystem maintainers to decide.
+>> >
+>> > I see what you mean.  You're suggesting to have userspace handle all the
+>> > -EOPNOTSUPP and -EXDEV errors.  Would you rather have a patch that also
+>> > removes all the calls to generic_copy_file_range() function?  And that
+>> > function can also be deleted too, of course.
+>>
+>> Here's a first stab at this patch.  Hopefully I didn't forgot anything
+>> here.  Let me know if you prefer the more conservative approach, i.e. not
+>> touching any of the filesystems and let them use generic_copy_file_range.
+>>
+>
+> I'm fine with this one (modulu my comment below).
+> CC'ing fuse/cifs/nfs maintainers.
+> Though I don't think the FS maintainers should mind removing the fallback.
+> It was added by "us" (64bf5ff58dff "vfs: no fallback for ->copy_file_range()")
 
-Cristian
+Thanks for your review, Amir.  I'll be posting v2 shortly.
 
-> @Sudeep, that work for you?  Have to wait for 5.12-rc1 though to give
-> us a sensible base.
-> 
-> Jonathan
-> 
-> > 
-> > > Jonathan
-> > >   
-> > > > 
-> > > > I'm saying that is better if you keep your series as it is for now
-> > > > (old interface + .preenable/.postdisable regs/unregs) because, as said,
-> > > > with the new interface the devm_ methods will ease the registration
-> > > > @probe time, and also especially because the new interface is not (and
-> > > > most probably won't) be part of the v5.4 backport that you are testing
-> > > > against: so if you stick with your current solution you'll have a
-> > > > working patch easily backportable now, and once queued I'll port it to
-> > > > the interface using devm_ (so simplifying it)
-> > > > 
-> > > > In this context, it would be indeed important to know if in general moving
-> > > > registration to the probe phase (which should be fine by the spec) poses
-> > > > any kind of problem. (and that's reason why asked it)
-> > > > 
-> > > > Hope to have been clear despite the flood of words :D
-> > > > 
-> > > > Thanks
-> > > > 
-> > > > Cristian
-> > > >   
-> > > > > 
-> > > > > Thanks,
-> > > > > Jyoti
-> > > > > 
-> > > > > On Tue, Feb 9, 2021 at 3:56 AM Cristian Marussi <cristian.marussi@arm.com>
-> > > > > wrote:
-> > > > >     
-> > > > > > Hi Jyoti
-> > > > > >
-> > > > > > some minor things down below.
-> > > > > >
-> > > > > > Other than that, FWIW about the SCMI side of this:
-> > > > > >
-> > > > > > Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
-> > > > > >
-> > > > > > Thanks
-> > > > > >
-> > > > > > Cristian
-> > > > > >
-> > > > > > On Mon, Feb 08, 2021 at 09:19:18PM +0000, Jyoti Bhayana wrote:    
-> > > > > > > This change provides ARM SCMI Protocol based IIO device.
-> > > > > > > This driver provides support for Accelerometer and Gyroscope using
-> > > > > > > SCMI Sensor Protocol extensions added in the SCMIv3.0 ARM specification
-> > > > > > >
-> > > > > > > Signed-off-by: Jyoti Bhayana <jbhayana@google.com>
-> > > > > > > ---
-> > > > > > >  MAINTAINERS                                |   6 +
-> > > > > > >  drivers/firmware/arm_scmi/driver.c         |   2 +-
-> > > > > > >  drivers/iio/common/Kconfig                 |   1 +
-> > > > > > >  drivers/iio/common/Makefile                |   1 +
-> > > > > > >  drivers/iio/common/scmi_sensors/Kconfig    |  18 +
-> > > > > > >  drivers/iio/common/scmi_sensors/Makefile   |   5 +
-> > > > > > >  drivers/iio/common/scmi_sensors/scmi_iio.c | 673 +++++++++++++++++++++
-> > > > > > >  7 files changed, 705 insertions(+), 1 deletion(-)
-> > > > > > >  create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
-> > > > > > >  create mode 100644 drivers/iio/common/scmi_sensors/Makefile
-> > > > > > >  create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
-> > > > > > >
-> > > > > > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > > > > > index b516bb34a8d5..ccf37d43ab41 100644
-> > > > > > > --- a/MAINTAINERS
-> > > > > > > +++ b/MAINTAINERS
-> > > > > > > @@ -8567,6 +8567,12 @@ S:     Maintained
-> > > > > > >  F:    
-> > > > > >  Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt    
-> > > > > > >  F:   drivers/iio/multiplexer/iio-mux.c
-> > > > > > >
-> > > > > > > +IIO SCMI BASED DRIVER
-> > > > > > > +M:   Jyoti Bhayana <jbhayana@google.com>
-> > > > > > > +L:   linux-iio@vger.kernel.org
-> > > > > > > +S:   Maintained
-> > > > > > > +F:   drivers/iio/common/scmi_sensors/scmi_iio.c
-> > > > > > > +
-> > > > > > >  IIO SUBSYSTEM AND DRIVERS
-> > > > > > >  M:   Jonathan Cameron <jic23@kernel.org>
-> > > > > > >  R:   Lars-Peter Clausen <lars@metafoo.de>
-> > > > > > > diff --git a/drivers/firmware/arm_scmi/driver.c    
-> > > > > > b/drivers/firmware/arm_scmi/driver.c    
-> > > > > > > index 5392e1fc6b4e..248313bbd473 100644
-> > > > > > > --- a/drivers/firmware/arm_scmi/driver.c
-> > > > > > > +++ b/drivers/firmware/arm_scmi/driver.c
-> > > > > > > @@ -741,7 +741,7 @@ static struct scmi_prot_devnames devnames[] = {
-> > > > > > >       { SCMI_PROTOCOL_SYSTEM, { "syspower" },},
-> > > > > > >       { SCMI_PROTOCOL_PERF,   { "cpufreq" },},
-> > > > > > >       { SCMI_PROTOCOL_CLOCK,  { "clocks" },},
-> > > > > > > -     { SCMI_PROTOCOL_SENSOR, { "hwmon" },},
-> > > > > > > +     { SCMI_PROTOCOL_SENSOR, { "hwmon", "iiodev" },},
-> > > > > > >       { SCMI_PROTOCOL_RESET,  { "reset" },},
-> > > > > > >       { SCMI_PROTOCOL_VOLTAGE,  { "regulator" },},
-> > > > > > >  };
-> > > > > > > diff --git a/drivers/iio/common/Kconfig b/drivers/iio/common/Kconfig
-> > > > > > > index 2b9ee9161abd..0334b4954773 100644
-> > > > > > > --- a/drivers/iio/common/Kconfig
-> > > > > > > +++ b/drivers/iio/common/Kconfig
-> > > > > > > @@ -6,5 +6,6 @@
-> > > > > > >  source "drivers/iio/common/cros_ec_sensors/Kconfig"
-> > > > > > >  source "drivers/iio/common/hid-sensors/Kconfig"
-> > > > > > >  source "drivers/iio/common/ms_sensors/Kconfig"
-> > > > > > > +source "drivers/iio/common/scmi_sensors/Kconfig"
-> > > > > > >  source "drivers/iio/common/ssp_sensors/Kconfig"
-> > > > > > >  source "drivers/iio/common/st_sensors/Kconfig"
-> > > > > > > diff --git a/drivers/iio/common/Makefile b/drivers/iio/common/Makefile
-> > > > > > > index 4bc30bb548e2..fad40e1e1718 100644
-> > > > > > > --- a/drivers/iio/common/Makefile
-> > > > > > > +++ b/drivers/iio/common/Makefile
-> > > > > > > @@ -11,5 +11,6 @@
-> > > > > > >  obj-y += cros_ec_sensors/
-> > > > > > >  obj-y += hid-sensors/
-> > > > > > >  obj-y += ms_sensors/
-> > > > > > > +obj-y += scmi_sensors/
-> > > > > > >  obj-y += ssp_sensors/
-> > > > > > >  obj-y += st_sensors/
-> > > > > > > diff --git a/drivers/iio/common/scmi_sensors/Kconfig    
-> > > > > > b/drivers/iio/common/scmi_sensors/Kconfig    
-> > > > > > > new file mode 100644
-> > > > > > > index 000000000000..67e084cbb1ab
-> > > > > > > --- /dev/null
-> > > > > > > +++ b/drivers/iio/common/scmi_sensors/Kconfig
-> > > > > > > @@ -0,0 +1,18 @@
-> > > > > > > +#
-> > > > > > > +# IIO over SCMI
-> > > > > > > +#
-> > > > > > > +# When adding new entries keep the list in alphabetical order
-> > > > > > > +
-> > > > > > > +menu "IIO SCMI Sensors"
-> > > > > > > +
-> > > > > > > +config IIO_SCMI
-> > > > > > > +     tristate "IIO SCMI"
-> > > > > > > +        depends on ARM_SCMI_PROTOCOL
-> > > > > > > +        select IIO_BUFFER
-> > > > > > > +        select IIO_KFIFO_BUF
-> > > > > > > +     help
-> > > > > > > +          Say yes here to build support for IIO SCMI Driver.
-> > > > > > > +          This provides ARM SCMI Protocol based IIO device.
-> > > > > > > +          This driver provides support for accelerometer and gyroscope
-> > > > > > > +          sensors available on SCMI based platforms.
-> > > > > > > +endmenu
-> > > > > > > diff --git a/drivers/iio/common/scmi_sensors/Makefile    
-> > > > > > b/drivers/iio/common/scmi_sensors/Makefile    
-> > > > > > > new file mode 100644
-> > > > > > > index 000000000000..f13140a2575a
-> > > > > > > --- /dev/null
-> > > > > > > +++ b/drivers/iio/common/scmi_sensors/Makefile
-> > > > > > > @@ -0,0 +1,5 @@
-> > > > > > > +# SPDX - License - Identifier : GPL - 2.0 - only
-> > > > > > > +#
-> > > > > > > +# Makefile for the IIO over SCMI
-> > > > > > > +#
-> > > > > > > +obj-$(CONFIG_IIO_SCMI) += scmi_iio.o
-> > > > > > > diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c    
-> > > > > > b/drivers/iio/common/scmi_sensors/scmi_iio.c    
-> > > > > > > new file mode 100644
-> > > > > > > index 000000000000..093b1fc24e27
-> > > > > > > --- /dev/null
-> > > > > > > +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-> > > > > > > @@ -0,0 +1,673 @@
-> > > > > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > > > > +
-> > > > > > > +/*
-> > > > > > > + * System Control and Management Interface(SCMI) based IIO sensor driver
-> > > > > > > + *
-> > > > > > > + * Copyright (C) 2021 Google LLC
-> > > > > > > + */
-> > > > > > > +
-> > > > > > > +#include <linux/delay.h>
-> > > > > > > +#include <linux/err.h>
-> > > > > > > +#include <linux/iio/buffer.h>
-> > > > > > > +#include <linux/iio/iio.h>
-> > > > > > > +#include <linux/iio/kfifo_buf.h>
-> > > > > > > +#include <linux/iio/sysfs.h>
-> > > > > > > +#include <linux/kernel.h>
-> > > > > > > +#include <linux/kthread.h>
-> > > > > > > +#include <linux/module.h>
-> > > > > > > +#include <linux/scmi_protocol.h>
-> > > > > > > +#include <linux/time.h>
-> > > > > > > +#include <linux/types.h>
-> > > > > > > +
-> > > > > > > +#define SCMI_IIO_NUM_OF_AXIS 3
-> > > > > > > +
-> > > > > > > +struct scmi_iio_priv {
-> > > > > > > +     struct scmi_handle *handle;
-> > > > > > > +     const struct scmi_sensor_info *sensor_info;
-> > > > > > > +     struct iio_dev *indio_dev;
-> > > > > > > +     /* adding one additional channel for timestamp */
-> > > > > > > +     long long iio_buf[SCMI_IIO_NUM_OF_AXIS + 1];
-> > > > > > > +     struct notifier_block sensor_update_nb;
-> > > > > > > +     u32 *freq_avail;
-> > > > > > > +};
-> > > > > > > +
-> > > > > > > +static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
-> > > > > > > +                                  unsigned long event, void *data)
-> > > > > > > +{
-> > > > > > > +     struct scmi_sensor_update_report *sensor_update = data;
-> > > > > > > +     struct iio_dev *scmi_iio_dev;
-> > > > > > > +     struct scmi_iio_priv *sensor;
-> > > > > > > +     s8 tstamp_scale;
-> > > > > > > +     u64 time, time_ns;
-> > > > > > > +     int i;
-> > > > > > > +
-> > > > > > > +     if (sensor_update->readings_count == 0)
-> > > > > > > +             return NOTIFY_DONE;
-> > > > > > > +
-> > > > > > > +     sensor = container_of(nb, struct scmi_iio_priv, sensor_update_nb);
-> > > > > > > +
-> > > > > > > +     for (i = 0; i < sensor_update->readings_count; i++)
-> > > > > > > +             sensor->iio_buf[i] = sensor_update->readings[i].value;
-> > > > > > > +
-> > > > > > > +     if (!sensor->sensor_info->timestamped) {
-> > > > > > > +             time_ns = ktime_to_ns(sensor_update->timestamp);
-> > > > > > > +     } else {
-> > > > > > > +             /*
-> > > > > > > +              *  All the axes are supposed to have the same value for    
-> > > > > > timestamp.    
-> > > > > > > +              *  We are just using the values from the Axis 0 here.
-> > > > > > > +              */
-> > > > > > > +             time = sensor_update->readings[0].timestamp;
-> > > > > > > +
-> > > > > > > +             /*
-> > > > > > > +              *  Timestamp returned by SCMI is in seconds and is equal    
-> > > > > > to    
-> > > > > > > +              *  time * power-of-10 multiplier(tstamp_scale) seconds.
-> > > > > > > +              *  Converting the timestamp to nanoseconds below.
-> > > > > > > +              */
-> > > > > > > +             tstamp_scale = sensor->sensor_info->tstamp_scale +
-> > > > > > > +                            const_ilog2(NSEC_PER_SEC) / const_ilog2(10);
-> > > > > > > +             if (tstamp_scale < 0)
-> > > > > > > +                     time_ns =
-> > > > > > > +                             div64_u64(time, int_pow(10,    
-> > > > > > abs(tstamp_scale)));    
-> > > > > > > +             else
-> > > > > > > +                     time_ns = time * int_pow(10, tstamp_scale);
-> > > > > > > +     }
-> > > > > > > +
-> > > > > > > +     scmi_iio_dev = sensor->indio_dev;
-> > > > > > > +     iio_push_to_buffers_with_timestamp(scmi_iio_dev, sensor->iio_buf,
-> > > > > > > +                                        time_ns);
-> > > > > > > +     return NOTIFY_OK;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
-> > > > > > > +{
-> > > > > > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-> > > > > > > +     u32 sensor_id = sensor->sensor_info->id;
-> > > > > > > +     u32 sensor_config = 0;
-> > > > > > > +     int err;
-> > > > > > > +
-> > > > > > > +     if (sensor->sensor_info->timestamped)
-> > > > > > > +             sensor_config |=    
-> > > > > > FIELD_PREP(SCMI_SENS_CFG_TSTAMP_ENABLED_MASK,    
-> > > > > > > +                                         SCMI_SENS_CFG_TSTAMP_ENABLE);
-> > > > > > > +
-> > > > > > > +     sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-> > > > > > > +                                 SCMI_SENS_CFG_SENSOR_ENABLE);
-> > > > > > > +
-> > > > > > > +     err =    
-> > > > > > sensor->handle->notify_ops->register_event_notifier(sensor->handle,    
-> > > > > > > +                     SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
-> > > > > > > +                     &sensor_id, &sensor->sensor_update_nb);
-> > > > > > > +     if (err) {
-> > > > > > > +             dev_err(&iio_dev->dev,
-> > > > > > > +                     "Error in registering sensor update notifier for    
-> > > > > > sensor %s err %d",    
-> > > > > > > +                     sensor->sensor_info->name, err);
-> > > > > > > +             return err;
-> > > > > > > +     }
-> > > > > > > +
-> > > > > > > +     err = sensor->handle->sensor_ops->config_set(sensor->handle,
-> > > > > > > +                     sensor->sensor_info->id, sensor_config);
-> > > > > > > +     if (err) {
-> > > > > > > +    
-> > > > > >  sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,    
-> > > > > > > +                             SCMI_PROTOCOL_SENSOR,
-> > > > > > > +                             SCMI_EVENT_SENSOR_UPDATE, &sensor_id,
-> > > > > > > +                             &sensor->sensor_update_nb);
-> > > > > > > +             dev_err(&iio_dev->dev, "Error in enabling sensor %s err    
-> > > > > > %d",    
-> > > > > > > +                     sensor->sensor_info->name, err);
-> > > > > > > +     }
-> > > > > > > +
-> > > > > > > +     return err;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
-> > > > > > > +{
-> > > > > > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-> > > > > > > +     u32 sensor_id = sensor->sensor_info->id;
-> > > > > > > +     u32 sensor_config = 0;
-> > > > > > > +     int err;
-> > > > > > > +
-> > > > > > > +     sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
-> > > > > > > +                                 SCMI_SENS_CFG_SENSOR_DISABLE);
-> > > > > > > +
-> > > > > > > +     err =    
-> > > > > > sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,    
-> > > > > > > +                     SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
-> > > > > > > +                     &sensor_id, &sensor->sensor_update_nb);
-> > > > > > > +     if (err) {
-> > > > > > > +             dev_err(&iio_dev->dev,
-> > > > > > > +                     "Error in unregistering sensor update notifier for    
-> > > > > > sensor %s err %d",    
-> > > > > > > +                     sensor->sensor_info->name, err);
-> > > > > > > +             return err;
-> > > > > > > +     }
-> > > > > > > +
-> > > > > > > +     err = sensor->handle->sensor_ops->config_set(sensor->handle,    
-> > > > > > sensor_id,    
-> > > > > > > +                                                  sensor_config);
-> > > > > > > +     if (err) {
-> > > > > > > +             dev_err(&iio_dev->dev,
-> > > > > > > +                     "Error in disabling sensor %s with err %d",
-> > > > > > > +                     sensor->sensor_info->name, err);
-> > > > > > > +     }
-> > > > > > > +
-> > > > > > > +     return err;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static const struct iio_buffer_setup_ops scmi_iio_buffer_ops = {
-> > > > > > > +     .preenable = scmi_iio_buffer_preenable,
-> > > > > > > +     .postdisable = scmi_iio_buffer_postdisable,
-> > > > > > > +};    
-> > > > > >
-> > > > > > This is just a question, I'm not suggesting to change anything here at
-> > > > > > this point to be clear, since it works just fine as it is.
-> > > > > >
-> > > > > > Following up a previous email, given these are called on enable/disable
-> > > > > > by sysfs, is there a specific reason why you configure here, inside
-> > > > > > these ops, also timestamping and callbacks  i.e. each time the sensor is
-> > > > > > turned on/off by sysfs ? ... instead of just, as an example, enabling
-> > > > > > in _preenable the sensor while registering callbacks and enabling
-> > > > > > timestamping once for all earlier during probe phase ?
-> > > > > > (likewise for _postdisable -> remove)
-> > > > > >
-> > > > > > AFAIU the spec says notifications are emitted for sensors which has
-> > > > > > requested them (via SENSOR_CONTINUOUS_UPDATE_NOTIFY) BUT only if the
-> > > > > > sensor is enabled as a whole (via proper CONFIG_SET as you do), so
-> > > > > > that enabling/disabling the sensor as a whole should result in starting/
-> > > > > > stopping the notification flow without the need of unregistering the
-> > > > > > callbacks everytime. (same goes with the timestamping)
-> > > > > >
-> > > > > > In other words, I would expect the sensor to maintain its state (on the
-> > > > > > platform side) even when going through enable/disable cycles, so that
-> > > > > > it 'remembers' that timestamping/notifications were enabled across an
-> > > > > > on/off.
-> > > > > >
-> > > > > > This would reduce the number of SCMI messages exchanges between the
-> > > > > > kernel and the platform and should be supported by both, but as said,
-> > > > > > it's more of a question for the future, not necessarily for this series.
-> > > > > >    
-> > > > > > > +    
-> > > > > >
-> > > > > > [snip]
-> > > > > >    
-> > > > > > > +static int scmi_iio_set_sampling_freq_avail(struct iio_dev *iio_dev)
-> > > > > > > +{
-> > > > > > > +     u64 cur_interval_ns, low_interval_ns, high_interval_ns,    
-> > > > > > step_size_ns,    
-> > > > > > > +             hz, uhz;
-> > > > > > > +     unsigned int cur_interval, low_interval, high_interval, step_size;
-> > > > > > > +     struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-> > > > > > > +     int i;
-> > > > > > > +
-> > > > > > > +     sensor->freq_avail =
-> > > > > > > +             devm_kzalloc(&iio_dev->dev,
-> > > > > > > +                          sizeof(*sensor->freq_avail) *
-> > > > > > > +                                  (sensor->sensor_info->intervals.count    
-> > > > > > * 2),    
-> > > > > > > +                          GFP_KERNEL);
-> > > > > > > +     if (!sensor->freq_avail)
-> > > > > > > +             return -ENOMEM;
-> > > > > > > +
-> > > > > > > +     if (sensor->sensor_info->intervals.segmented) {
-> > > > > > > +             low_interval = sensor->sensor_info->intervals
-> > > > > > > +                                    .desc[SCMI_SENS_INTVL_SEGMENT_LOW];
-> > > > > > > +             low_interval_ns =    
-> > > > > > scmi_iio_convert_interval_to_ns(low_interval);    
-> > > > > > > +             convert_ns_to_freq(low_interval_ns, &hz, &uhz);
-> > > > > > > +             sensor->freq_avail[0] = hz;
-> > > > > > > +             sensor->freq_avail[1] = uhz;
-> > > > > > > +
-> > > > > > > +             step_size = sensor->sensor_info->intervals
-> > > > > > > +                                 .desc[SCMI_SENS_INTVL_SEGMENT_STEP];
-> > > > > > > +             step_size_ns = scmi_iio_convert_interval_to_ns(step_size);
-> > > > > > > +             convert_ns_to_freq(step_size_ns, &hz, &uhz);
-> > > > > > > +             sensor->freq_avail[2] = hz;
-> > > > > > > +             sensor->freq_avail[3] = uhz;
-> > > > > > > +
-> > > > > > > +             high_interval = sensor->sensor_info->intervals
-> > > > > > > +    
-> > > > > >  .desc[SCMI_SENS_INTVL_SEGMENT_HIGH];    
-> > > > > > > +             high_interval_ns =
-> > > > > > > +                     scmi_iio_convert_interval_to_ns(high_interval);
-> > > > > > > +             convert_ns_to_freq(high_interval_ns, &hz, &uhz);
-> > > > > > > +             sensor->freq_avail[4] = hz;
-> > > > > > > +             sensor->freq_avail[5] = uhz;
-> > > > > > > +     } else {
-> > > > > > > +             for (i = 0; i < sensor->sensor_info->intervals.count; i++)    
-> > > > > > {    
-> > > > > > > +                     cur_interval =    
-> > > > > > sensor->sensor_info->intervals.desc[i];    
-> > > > > > > +                     cur_interval_ns =
-> > > > > > > +    
-> > > > > >  scmi_iio_convert_interval_to_ns(cur_interval);    
-> > > > > > > +                     convert_ns_to_freq(cur_interval_ns, &hz, &uhz);
-> > > > > > > +                     sensor->freq_avail[i * 2] = hz;
-> > > > > > > +                     sensor->freq_avail[i * 2 + 1] = uhz;
-> > > > > > > +             }
-> > > > > > > +     }
-> > > > > > > +     return 0;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
-> > > > > > > +{
-> > > > > > > +     struct iio_buffer *buffer;
-> > > > > > > +
-> > > > > > > +     buffer = devm_iio_kfifo_allocate(&scmi_iiodev->dev);
-> > > > > > > +     if (!buffer)
-> > > > > > > +             return -ENOMEM;
-> > > > > > > +
-> > > > > > > +     iio_device_attach_buffer(scmi_iiodev, buffer);
-> > > > > > > +     scmi_iiodev->modes |= INDIO_BUFFER_SOFTWARE;
-> > > > > > > +     scmi_iiodev->setup_ops = &scmi_iio_buffer_ops;
-> > > > > > > +     return 0;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +struct iio_dev *scmi_alloc_iiodev(struct device *dev,
-> > > > > > > +                               struct scmi_handle *handle,
-> > > > > > > +                               const struct scmi_sensor_info    
-> > > > > > *sensor_info)    
-> > > > > > > +{
-> > > > > > > +     struct iio_chan_spec *iio_channels;
-> > > > > > > +     struct scmi_iio_priv *sensor;
-> > > > > > > +     enum iio_modifier modifier;
-> > > > > > > +     enum iio_chan_type type;
-> > > > > > > +     struct iio_dev *iiodev;
-> > > > > > > +     int i, ret;
-> > > > > > > +
-> > > > > > > +     iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
-> > > > > > > +     if (!iiodev)
-> > > > > > > +             return ERR_PTR(-ENOMEM);
-> > > > > > > +
-> > > > > > > +     iiodev->modes = INDIO_DIRECT_MODE;
-> > > > > > > +     iiodev->dev.parent = dev;
-> > > > > > > +     sensor = iio_priv(iiodev);
-> > > > > > > +     sensor->handle = handle;
-> > > > > > > +     sensor->sensor_info = sensor_info;
-> > > > > > > +     sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
-> > > > > > > +     sensor->indio_dev = iiodev;
-> > > > > > > +
-> > > > > > > +     /* adding one additional channel for timestamp */
-> > > > > > > +     iiodev->num_channels = sensor_info->num_axis + 1;
-> > > > > > > +     iiodev->name = sensor_info->name;
-> > > > > > > +     iiodev->info = &scmi_iio_info;
-> > > > > > > +
-> > > > > > > +     iio_channels =
-> > > > > > > +             devm_kzalloc(dev,
-> > > > > > > +                          sizeof(*iio_channels) *    
-> > > > > > (iiodev->num_channels),    
-> > > > > > > +                          GFP_KERNEL);
-> > > > > > > +     if (!iio_channels)
-> > > > > > > +             return ERR_PTR(-ENOMEM);
-> > > > > > > +
-> > > > > > > +     scmi_iio_set_sampling_freq_avail(iiodev);    
-> > > > > >
-> > > > > > You don't check this for retval, and it could fail with -ENOMEM.
-> > > > > >    
-> > > > > > > +
-> > > > > > > +     for (i = 0; i < sensor_info->num_axis; i++) {
-> > > > > > > +             ret = scmi_iio_get_chan_type(sensor_info->axis[i].type,    
-> > > > > > &type);    
-> > > > > > > +             if (ret < 0)
-> > > > > > > +                     return ERR_PTR(ret);
-> > > > > > > +
-> > > > > > > +             ret = scmi_iio_get_chan_modifier(sensor_info->axis[i].name,
-> > > > > > > +                                              &modifier);
-> > > > > > > +             if (ret < 0)
-> > > > > > > +                     return ERR_PTR(ret);
-> > > > > > > +
-> > > > > > > +             scmi_iio_set_data_channel(&iio_channels[i], type, modifier,
-> > > > > > > +                                       sensor_info->axis[i].id);
-> > > > > > > +     }
-> > > > > > > +
-> > > > > > > +     scmi_iio_set_timestamp_channel(&iio_channels[i], i);
-> > > > > > > +     iiodev->channels = iio_channels;
-> > > > > > > +     return iiodev;
-> > > > > > > +}
-> > > > > > > +    
-> > > > > >    
-> > >   
-> 
+Cheers,
+-- 
+Luis
+
+
+>> Once everyone agrees on the final solution, I can follow-up with the
+>> manpages update.
+>>
+>> Cheers,
+>> --
+>> Luis
+>>
+>> From e1b37e80b12601d56f792bd19377d3e5208188ef Mon Sep 17 00:00:00 2001
+>> From: Luis Henriques <lhenriques@suse.de>
+>> Date: Fri, 12 Feb 2021 18:03:23 +0000
+>> Subject: [PATCH] vfs: prevent copy_file_range to copy across devices
+>>
+>> Nicolas Boichat reported an issue when trying to use the copy_file_range
+>> syscall on a tracefs file.  It failed silently because the file content is
+>> generated on-the-fly (reporting a size of zero) and copy_file_range needs
+>> to know in advance how much data is present.
+>>
+>> This commit effectively reverts 5dae222a5ff0 ("vfs: allow copy_file_range to
+>> copy across devices").  Now the copy is done only if the filesystems for source
+>> and destination files are the same and they implement this syscall.
+>
+> This paragraph is not true and confusing.
+> This is not a revert and it does not revert the important part of cross-fs copy
+> for which the original commit was for.
+> Either rephrase this paragraph or remove it.
+>
+>>
+>> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+>
+> Please add a Link: to this discussion in lore.
+>
+>> Cc: Nicolas Boichat <drinkcat@chromium.org>
+>> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+>> ---
+>>  fs/ceph/file.c     | 21 +++------------
+>>  fs/cifs/cifsfs.c   |  3 ---
+>>  fs/fuse/file.c     | 21 +++------------
+>>  fs/nfs/nfs4file.c  | 20 +++-----------
+>>  fs/read_write.c    | 65 ++++++++--------------------------------------
+>>  include/linux/fs.h |  3 ---
+>>  6 files changed, 20 insertions(+), 113 deletions(-)
+>>
+>> diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+>> index 209535d5b8d3..639bd7bfaea9 100644
+>> --- a/fs/ceph/file.c
+>> +++ b/fs/ceph/file.c
+>> @@ -2261,9 +2261,9 @@ static ssize_t ceph_do_objects_copy(struct ceph_inode_info *src_ci, u64 *src_off
+>>         return bytes;
+>>  }
+>>
+>> -static ssize_t __ceph_copy_file_range(struct file *src_file, loff_t src_off,
+>> -                                     struct file *dst_file, loff_t dst_off,
+>> -                                     size_t len, unsigned int flags)
+>> +static ssize_t ceph_copy_file_range(struct file *src_file, loff_t src_off,
+>> +                                   struct file *dst_file, loff_t dst_off,
+>> +                                   size_t len, unsigned int flags)
+>>  {
+>>         struct inode *src_inode = file_inode(src_file);
+>>         struct inode *dst_inode = file_inode(dst_file);
+>> @@ -2456,21 +2456,6 @@ static ssize_t __ceph_copy_file_range(struct file *src_file, loff_t src_off,
+>>         return ret;
+>>  }
+>>
+>> -static ssize_t ceph_copy_file_range(struct file *src_file, loff_t src_off,
+>> -                                   struct file *dst_file, loff_t dst_off,
+>> -                                   size_t len, unsigned int flags)
+>> -{
+>> -       ssize_t ret;
+>> -
+>> -       ret = __ceph_copy_file_range(src_file, src_off, dst_file, dst_off,
+>> -                                    len, flags);
+>> -
+>> -       if (ret == -EOPNOTSUPP || ret == -EXDEV)
+>> -               ret = generic_copy_file_range(src_file, src_off, dst_file,
+>> -                                             dst_off, len, flags);
+>> -       return ret;
+>> -}
+>> -
+>>  const struct file_operations ceph_file_fops = {
+>>         .open = ceph_open,
+>>         .release = ceph_release,
+>> diff --git a/fs/cifs/cifsfs.c b/fs/cifs/cifsfs.c
+>> index e46da536ed33..8b869cc67443 100644
+>> --- a/fs/cifs/cifsfs.c
+>> +++ b/fs/cifs/cifsfs.c
+>> @@ -1229,9 +1229,6 @@ static ssize_t cifs_copy_file_range(struct file *src_file, loff_t off,
+>>                                         len, flags);
+>>         free_xid(xid);
+>>
+>> -       if (rc == -EOPNOTSUPP || rc == -EXDEV)
+>> -               rc = generic_copy_file_range(src_file, off, dst_file,
+>> -                                            destoff, len, flags);
+>>         return rc;
+>>  }
+>>
+>> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+>> index 8cccecb55fb8..0dd703278e49 100644
+>> --- a/fs/fuse/file.c
+>> +++ b/fs/fuse/file.c
+>> @@ -3330,9 +3330,9 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
+>>         return err;
+>>  }
+>>
+>> -static ssize_t __fuse_copy_file_range(struct file *file_in, loff_t pos_in,
+>> -                                     struct file *file_out, loff_t pos_out,
+>> -                                     size_t len, unsigned int flags)
+>> +static ssize_t fuse_copy_file_range(struct file *file_in, loff_t pos_in,
+>> +                                   struct file *file_out, loff_t pos_out,
+>> +                                   size_t len, unsigned int flags)
+>>  {
+>>         struct fuse_file *ff_in = file_in->private_data;
+>>         struct fuse_file *ff_out = file_out->private_data;
+>> @@ -3439,21 +3439,6 @@ static ssize_t __fuse_copy_file_range(struct file *file_in, loff_t pos_in,
+>>         return err;
+>>  }
+>>
+>> -static ssize_t fuse_copy_file_range(struct file *src_file, loff_t src_off,
+>> -                                   struct file *dst_file, loff_t dst_off,
+>> -                                   size_t len, unsigned int flags)
+>> -{
+>> -       ssize_t ret;
+>> -
+>> -       ret = __fuse_copy_file_range(src_file, src_off, dst_file, dst_off,
+>> -                                    len, flags);
+>> -
+>> -       if (ret == -EOPNOTSUPP || ret == -EXDEV)
+>> -               ret = generic_copy_file_range(src_file, src_off, dst_file,
+>> -                                             dst_off, len, flags);
+>> -       return ret;
+>> -}
+>> -
+>>  static const struct file_operations fuse_file_operations = {
+>>         .llseek         = fuse_file_llseek,
+>>         .read_iter      = fuse_file_read_iter,
+>> diff --git a/fs/nfs/nfs4file.c b/fs/nfs/nfs4file.c
+>> index 57b3821d975a..60998209e310 100644
+>> --- a/fs/nfs/nfs4file.c
+>> +++ b/fs/nfs/nfs4file.c
+>> @@ -133,9 +133,9 @@ nfs4_file_flush(struct file *file, fl_owner_t id)
+>>  }
+>>
+>>  #ifdef CONFIG_NFS_V4_2
+>> -static ssize_t __nfs4_copy_file_range(struct file *file_in, loff_t pos_in,
+>> -                                     struct file *file_out, loff_t pos_out,
+>> -                                     size_t count, unsigned int flags)
+>> +static ssize_t nfs4_copy_file_range(struct file *file_in, loff_t pos_in,
+>> +                                   struct file *file_out, loff_t pos_out,
+>> +                                   size_t count, unsigned int flags)
+>>  {
+>>         struct nfs42_copy_notify_res *cn_resp = NULL;
+>>         struct nl4_server *nss = NULL;
+>> @@ -189,20 +189,6 @@ static ssize_t __nfs4_copy_file_range(struct file *file_in, loff_t pos_in,
+>>         return ret;
+>>  }
+>>
+>> -static ssize_t nfs4_copy_file_range(struct file *file_in, loff_t pos_in,
+>> -                                   struct file *file_out, loff_t pos_out,
+>> -                                   size_t count, unsigned int flags)
+>> -{
+>> -       ssize_t ret;
+>> -
+>> -       ret = __nfs4_copy_file_range(file_in, pos_in, file_out, pos_out, count,
+>> -                                    flags);
+>> -       if (ret == -EOPNOTSUPP || ret == -EXDEV)
+>> -               ret = generic_copy_file_range(file_in, pos_in, file_out,
+>> -                                             pos_out, count, flags);
+>> -       return ret;
+>> -}
+>> -
+>>  static loff_t nfs4_file_llseek(struct file *filep, loff_t offset, int whence)
+>>  {
+>>         loff_t ret;
+>> diff --git a/fs/read_write.c b/fs/read_write.c
+>> index 75f764b43418..87bf9efd7f71 100644
+>> --- a/fs/read_write.c
+>> +++ b/fs/read_write.c
+>> @@ -1358,58 +1358,6 @@ COMPAT_SYSCALL_DEFINE4(sendfile64, int, out_fd, int, in_fd,
+>>  }
+>>  #endif
+>>
+>> -/**
+>> - * generic_copy_file_range - copy data between two files
+>> - * @file_in:   file structure to read from
+>> - * @pos_in:    file offset to read from
+>> - * @file_out:  file structure to write data to
+>> - * @pos_out:   file offset to write data to
+>> - * @len:       amount of data to copy
+>> - * @flags:     copy flags
+>> - *
+>> - * This is a generic filesystem helper to copy data from one file to another.
+>> - * It has no constraints on the source or destination file owners - the files
+>> - * can belong to different superblocks and different filesystem types. Short
+>> - * copies are allowed.
+>> - *
+>> - * This should be called from the @file_out filesystem, as per the
+>> - * ->copy_file_range() method.
+>> - *
+>> - * Returns the number of bytes copied or a negative error indicating the
+>> - * failure.
+>> - */
+>> -
+>> -ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
+>> -                               struct file *file_out, loff_t pos_out,
+>> -                               size_t len, unsigned int flags)
+>> -{
+>> -       return do_splice_direct(file_in, &pos_in, file_out, &pos_out,
+>> -                               len > MAX_RW_COUNT ? MAX_RW_COUNT : len, 0);
+>> -}
+>> -EXPORT_SYMBOL(generic_copy_file_range);
+>> -
+>> -static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
+>> -                                 struct file *file_out, loff_t pos_out,
+>> -                                 size_t len, unsigned int flags)
+>> -{
+>> -       /*
+>> -        * Although we now allow filesystems to handle cross sb copy, passing
+>> -        * a file of the wrong filesystem type to filesystem driver can result
+>> -        * in an attempt to dereference the wrong type of ->private_data, so
+>> -        * avoid doing that until we really have a good reason.  NFS defines
+>> -        * several different file_system_type structures, but they all end up
+>> -        * using the same ->copy_file_range() function pointer.
+>> -        */
+>> -       if (file_out->f_op->copy_file_range &&
+>> -           file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
+>> -               return file_out->f_op->copy_file_range(file_in, pos_in,
+>> -                                                      file_out, pos_out,
+>> -                                                      len, flags);
+>> -
+>> -       return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+>> -                                      flags);
+>
+> Please do not remove the big comment above - it is there for a reason.
+>
+> The case of !file_out->f_op->copy_file_range should return -EOPNOTSUPP
+> because the outcome of -EXDEV for copy to/from the same fs is confusing.
+>
+> Either leave this helper and only remove generic_copy_file_range() or
+> open code the same logic (including comment) in the caller.
+>
+>> -}
+>> -
+>>  /*
+>>   * Performs necessary checks before doing a file copy
+>>   *
+>> @@ -1474,6 +1422,14 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+>>  {
+>>         ssize_t ret;
+>>
+>> +       /*
+>> +        * Allow the copy only if the filesystems for file_in and file_out are
+>> +        * the same, and copy_file_range is implemented.
+>> +        */
+>
+> This comment is wrong. See the big fat comment above to understand why.
+> Also this check is in the wrong place because it misses the case of
+> file_in->f_op->remap_file_range && !file_out->f_op->copy_file_range
+>
+> As I wrote above either leave the helper do_copy_file_range() or open
+> code it in its current location.
+>
+>> +       if (!file_out->f_op->copy_file_range ||
+>> +           (file_out->f_op->copy_file_range != file_in->f_op->copy_file_range))
+>> +               return -EXDEV;
+>> +
+>>         if (flags != 0)
+>>                 return -EINVAL;
+>>
+>> @@ -1513,8 +1469,9 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+>>                 }
+>>         }
+>>
+>> -       ret = do_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+>> -                               flags);
+>> +       ret = file_out->f_op->copy_file_range(file_in, pos_in,
+>> +                                             file_out, pos_out,
+>> +                                             len, flags);
+>>         WARN_ON_ONCE(ret == -EOPNOTSUPP);
+>
+> Please remove this line.
+> filesystem ops can now return -EOPNOTSUPP.
+>
+> Thanks,
+> Amir.
