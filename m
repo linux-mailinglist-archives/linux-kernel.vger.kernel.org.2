@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAFE31BE1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACD431BE61
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhBOP73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:59:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45572 "EHLO mail.kernel.org"
+        id S232303AbhBOQID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:08:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231252AbhBOPcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:32:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5301B64EA0;
-        Mon, 15 Feb 2021 15:29:50 +0000 (UTC)
+        id S231379AbhBOPdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:33:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EBF264EB4;
+        Mon, 15 Feb 2021 15:30:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613402990;
-        bh=MLPPcXZbsWlSaHF0agCMPeNNeOmYqmvADysTAi1sqQ8=;
+        s=korg; t=1613403048;
+        bh=IyfM8QAqxdmKj3ed2+J8pq6AN14oeZqETF42m9dQf5Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QrSjeBfHQrTBRwk5uvZWfpFPxP0KXX43wgKA0J53A3hQarZ8ddsDGzNzDN/MQ4DZC
-         ZkNusdcZGKUYIWOwLQfFhYu2d2JtroxLaLqvwt1q8My8i2haNacRWwE7dHqayFIHx3
-         6TE14Bq7zKFpIF84ud3vkj6hVajZlyXVgtaPfMzM=
+        b=BtT4362cvuwVZh3gEwm/38iVBxDNRG//3jiceNc/xwlRHK6bb4H50fhDiQloszuy4
+         e6Kryl03LmW92FeTOzBJSgihONOQsCYXUibUj0IBhjvz7JMqFxG90aVcQUDkSfPXpc
+         Xoszs02XsTirkP2NzcA2/2l3bICIv6+ekNDA1aQM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alain Volmat <alain.volmat@foss.st.com>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 45/60] i2c: stm32f7: fix configuration of the digital filter
-Date:   Mon, 15 Feb 2021 16:27:33 +0100
-Message-Id: <20210215152716.810360093@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+174de899852504e4a74a@syzkaller.appspotmail.com,
+        syzbot+3d1c772efafd3c38d007@syzkaller.appspotmail.com,
+        David Howells <dhowells@redhat.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 49/60] rxrpc: Fix clearance of Tx/Rx ring when releasing a call
+Date:   Mon, 15 Feb 2021 16:27:37 +0100
+Message-Id: <20210215152716.946569241@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -40,62 +43,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit 3d6a3d3a2a7a3a60a824e7c04e95fd50dec57812 ]
+commit 7b5eab57cac45e270a0ad624ba157c5b30b3d44d upstream.
 
-The digital filter related computation are present in the driver
-however the programming of the filter within the IP is missing.
-The maximum value for the DNF is wrong and should be 15 instead of 16.
+At the end of rxrpc_release_call(), rxrpc_cleanup_ring() is called to clear
+the Rx/Tx skbuff ring, but this doesn't lock the ring whilst it's accessing
+it.  Unfortunately, rxrpc_resend() might be trying to retransmit a packet
+concurrently with this - and whilst it does lock the ring, this isn't
+protection against rxrpc_cleanup_call().
 
-Fixes: aeb068c57214 ("i2c: i2c-stm32f7: add driver")
+Fix this by removing the call to rxrpc_cleanup_ring() from
+rxrpc_release_call().  rxrpc_cleanup_ring() will be called again anyway
+from rxrpc_cleanup_call().  The earlier call is just an optimisation to
+recycle skbuffs more quickly.
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Alternative solutions include rxrpc_release_call() could try to cancel the
+work item or wait for it to complete or rxrpc_cleanup_ring() could lock
+when accessing the ring (which would require a bh lock).
+
+This can produce a report like the following:
+
+  BUG: KASAN: use-after-free in rxrpc_send_data_packet+0x19b4/0x1e70 net/rxrpc/output.c:372
+  Read of size 4 at addr ffff888011606e04 by task kworker/0:0/5
+  ...
+  Workqueue: krxrpcd rxrpc_process_call
+  Call Trace:
+   ...
+   kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+   rxrpc_send_data_packet+0x19b4/0x1e70 net/rxrpc/output.c:372
+   rxrpc_resend net/rxrpc/call_event.c:266 [inline]
+   rxrpc_process_call+0x1634/0x1f60 net/rxrpc/call_event.c:412
+   process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+   ...
+
+  Allocated by task 2318:
+   ...
+   sock_alloc_send_pskb+0x793/0x920 net/core/sock.c:2348
+   rxrpc_send_data+0xb51/0x2bf0 net/rxrpc/sendmsg.c:358
+   rxrpc_do_sendmsg+0xc03/0x1350 net/rxrpc/sendmsg.c:744
+   rxrpc_sendmsg+0x420/0x630 net/rxrpc/af_rxrpc.c:560
+   ...
+
+  Freed by task 2318:
+   ...
+   kfree_skb+0x140/0x3f0 net/core/skbuff.c:704
+   rxrpc_free_skb+0x11d/0x150 net/rxrpc/skbuff.c:78
+   rxrpc_cleanup_ring net/rxrpc/call_object.c:485 [inline]
+   rxrpc_release_call+0x5dd/0x860 net/rxrpc/call_object.c:552
+   rxrpc_release_calls_on_socket+0x21c/0x300 net/rxrpc/call_object.c:579
+   rxrpc_release_sock net/rxrpc/af_rxrpc.c:885 [inline]
+   rxrpc_release+0x263/0x5a0 net/rxrpc/af_rxrpc.c:916
+   __sock_release+0xcd/0x280 net/socket.c:597
+   ...
+
+  The buggy address belongs to the object at ffff888011606dc0
+   which belongs to the cache skbuff_head_cache of size 232
+
+Fixes: 248f219cb8bc ("rxrpc: Rewrite the data and ack handling code")
+Reported-by: syzbot+174de899852504e4a74a@syzkaller.appspotmail.com
+Reported-by: syzbot+3d1c772efafd3c38d007@syzkaller.appspotmail.com
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Hillf Danton <hdanton@sina.com>
+Link: https://lore.kernel.org/r/161234207610.653119.5287360098400436976.stgit@warthog.procyon.org.uk
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-stm32f7.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ net/rxrpc/call_object.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index b2634afe066d3..a7977eef2ead5 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -53,6 +53,8 @@
- #define STM32F7_I2C_CR1_RXDMAEN			BIT(15)
- #define STM32F7_I2C_CR1_TXDMAEN			BIT(14)
- #define STM32F7_I2C_CR1_ANFOFF			BIT(12)
-+#define STM32F7_I2C_CR1_DNF_MASK		GENMASK(11, 8)
-+#define STM32F7_I2C_CR1_DNF(n)			(((n) & 0xf) << 8)
- #define STM32F7_I2C_CR1_ERRIE			BIT(7)
- #define STM32F7_I2C_CR1_TCIE			BIT(6)
- #define STM32F7_I2C_CR1_STOPIE			BIT(5)
-@@ -151,7 +153,7 @@
- #define STM32F7_I2C_MAX_SLAVE			0x2
- 
- #define STM32F7_I2C_DNF_DEFAULT			0
--#define STM32F7_I2C_DNF_MAX			16
-+#define STM32F7_I2C_DNF_MAX			15
- 
- #define STM32F7_I2C_ANALOG_FILTER_ENABLE	1
- #define STM32F7_I2C_ANALOG_FILTER_DELAY_MIN	50	/* ns */
-@@ -657,6 +659,13 @@ static void stm32f7_i2c_hw_config(struct stm32f7_i2c_dev *i2c_dev)
- 	else
- 		stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
- 				     STM32F7_I2C_CR1_ANFOFF);
-+
-+	/* Program the Digital Filter */
-+	stm32f7_i2c_clr_bits(i2c_dev->base + STM32F7_I2C_CR1,
-+			     STM32F7_I2C_CR1_DNF_MASK);
-+	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
-+			     STM32F7_I2C_CR1_DNF(i2c_dev->setup.dnf));
-+
- 	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
- 			     STM32F7_I2C_CR1_PE);
+--- a/net/rxrpc/call_object.c
++++ b/net/rxrpc/call_object.c
+@@ -507,8 +507,6 @@ void rxrpc_release_call(struct rxrpc_soc
+ 		rxrpc_disconnect_call(call);
+ 	if (call->security)
+ 		call->security->free_call_crypto(call);
+-
+-	rxrpc_cleanup_ring(call);
+ 	_leave("");
  }
--- 
-2.27.0
-
+ 
 
 
