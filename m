@@ -2,435 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F2331B8DE
+	by mail.lfdr.de (Postfix) with ESMTP id 3584231B8DD
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhBOMRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
+        id S229977AbhBOMR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:17:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhBOMRY (ORCPT
+        with ESMTP id S229816AbhBOMRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:17:24 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2619C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:16:43 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id t2so3819036pjq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:16:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DeDYtEfRi0hJefLwRou98WAyW17C6CotjGPrIaF6Opg=;
-        b=R19TAtzhD29RvoNTbpygxJOV0JdPYzXw3XaevAa9Z77VBpcws1yAxgWOjcOEED5R/A
-         X9dccd1JhZYV+oih5RiuB7f/2tF9bbeYBuZEIaZdFS5WG5aYHbr2LVSM23QokPazttVd
-         h+bJjLNTy8mo19ohimwa/Mn7KF0iy+8Gj4GG7+CrXZJCgv5RZpizv89Ve+NrskN3eSUI
-         /ALCKS95GpmfyMVugweVtnBU5yRyNVhsKXSDQ6fQMDhuG1KQO1u/aspdnKWDNOjCg3hN
-         D6pZMKdO1WyZ5RBriFUuNVyZKFkw25BCz1fsSom7hGWYBRn7th2K2nbfJA4F7/OnarpO
-         TEmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DeDYtEfRi0hJefLwRou98WAyW17C6CotjGPrIaF6Opg=;
-        b=AcYES5f/7Zix56RoZ37eQo4Layy4aMmvFinK3pnWanVBNLiA4ttDAO4hOXPGUmLN9t
-         xz8b26vHAhYcY+wwrrpKNXd5q0kjWfWYfI3jxG64NrZvBK86DzmynfIUrGXb8Mpe4Ktt
-         BbSW03KnTikhjEpJ16kZrX4racM0saoLG4Ez1myf3w4dHQG+ZVWTOaqKG10LWaWmQpGk
-         kFQBtIbOsqBVV4p2fKuoZWc1Mw94BpKwHSXOYgxl/uTo8hftmQRpATm6jy6Knwj6L8Fg
-         Pe4LrjMMLIF0bCLac3PpSVO7YeYvnMycCZgN3p6d1LIIo3WmIKP5Pzp5p8FOmuIkZAZ7
-         8mWA==
-X-Gm-Message-State: AOAM533ZMdTVK36/cYv3/lTREkA6/HH6TVTm5/t8zAobok8wClH5zbUd
-        kCDrTSOdmBd2jV05X2y7jd8/1s/FF8tB5tygb+Bh1A==
-X-Google-Smtp-Source: ABdhPJxKJPXBIkrJvoCWKvjC0z3G5P9VbUUHAvWm84Y5OjBwtt29HQbzlUF7aOINyslFLRRuswfcwxxB/W9FM2bCC/8=
-X-Received: by 2002:a17:90a:70c1:: with SMTP id a1mr671576pjm.19.1613391403368;
- Mon, 15 Feb 2021 04:16:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20210214175211.105107-1-jagan@amarulasolutions.com> <20210214175211.105107-2-jagan@amarulasolutions.com>
-In-Reply-To: <20210214175211.105107-2-jagan@amarulasolutions.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 15 Feb 2021 13:16:32 +0100
-Message-ID: <CAG3jFyvE1K7jkyaiPDQ8XpykbLMacAZhb5i67dJE=KucQwg_Zw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] drm: bridge: Add Chipone ICN6211 MIPI-DSI to RGB bridge
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        Mon, 15 Feb 2021 07:17:23 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EA5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 04:16:42 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1lBcns-0008Lc-J4; Mon, 15 Feb 2021 13:16:36 +0100
+Message-ID: <04f2e57540896d2c51120236889a6ae293e711d8.camel@pengutronix.de>
+Subject: Re: DMA-buf and uncached system memory
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Simon Ser <contact@emersion.fr>
+Cc:     linaro-mm-sig@lists.linaro.org,
+        "Sharma, Shashank" <Shashank.Sharma@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-amarula@amarulasolutions.com
+        linux-media <linux-media@vger.kernel.org>
+Date:   Mon, 15 Feb 2021 13:16:35 +0100
+In-Reply-To: <7ecf008d-a1f5-ddff-c8ac-8e7bfaf9c680@amd.com>
+References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
+         <GUuZYSQk2hxgykDhSxfB2GWo47lQlVrKBtWMwQUG7Ar2GAag5WQDxBI0zq6nDTooPBzTktyRpnu25Ju1UKE3FYD9yHbkNMAHcmSI96hoJhA=@emersion.fr>
+         <da9edfa0-8a18-44a2-fa79-83b4177afd8e@amd.com>
+         <8d23f1ca6fe76d8971365bf54ca71ba71698980d.camel@pengutronix.de>
+         <7ecf008d-a1f5-ddff-c8ac-8e7bfaf9c680@amd.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Jagan,
+Am Montag, dem 15.02.2021 um 13:04 +0100 schrieb Christian König:
+> Am 15.02.21 um 12:53 schrieb Lucas Stach:
+> > Am Montag, dem 15.02.2021 um 10:34 +0100 schrieb Christian König:
+> > > Am 15.02.21 um 10:06 schrieb Simon Ser:
+> > > > On Monday, February 15th, 2021 at 9:58 AM, Christian König <christian.koenig@amd.com> wrote:
+> > > > 
+> > > > > we are currently working an Freesync and direct scan out from system
+> > > > > memory on AMD APUs in A+A laptops.
+> > > > > 
+> > > > > On problem we stumbled over is that our display hardware needs to scan
+> > > > > out from uncached system memory and we currently don't have a way to
+> > > > > communicate that through DMA-buf.
+> > > > > 
+> > > > > For our specific use case at hand we are going to implement something
+> > > > > driver specific, but the question is should we have something more
+> > > > > generic for this?
+> > > > > 
+> > > > > After all the system memory access pattern is a PCIe extension and as
+> > > > > such something generic.
+> > > > Intel also needs uncached system memory if I'm not mistaken?
+> > > No idea, that's why I'm asking. Could be that this is also interesting
+> > > for I+A systems.
+> > > 
+> > > > Where are the buffers allocated? If GBM, then it needs to allocate memory that
+> > > > can be scanned out if the USE_SCANOUT flag is set or if a scanout-capable
+> > > > modifier is picked.
+> > > > 
+> > > > If this is about communicating buffer constraints between different components
+> > > > of the stack, there were a few proposals about it. The most recent one is [1].
+> > > Well the problem here is on a different level of the stack.
+> > > 
+> > > See resolution, pitch etc:.. can easily communicated in userspace
+> > > without involvement of the kernel. The worst thing which can happen is
+> > > that you draw garbage into your own application window.
+> > > 
+> > > But if you get the caching attributes in the page tables (both CPU as
+> > > well as IOMMU, device etc...) wrong then ARM for example has the
+> > > tendency to just spontaneously reboot
+> > > 
+> > > X86 is fortunately a bit more gracefully and you only end up with random
+> > > data corruption, but that is only marginally better.
+> > > 
+> > > So to sum it up that is not something which we can leave in the hands of
+> > > userspace.
+> > > 
+> > > I think that exporters in the DMA-buf framework should have the ability
+> > > to tell importers if the system memory snooping is necessary or not.
+> > There is already a coarse-grained way to do so: the dma_coherent
+> > property in struct device, which you can check at dmabuf attach time.
+> > 
+> > However it may not be enough for the requirements of a GPU where the
+> > engines could differ in their dma coherency requirements. For that you
+> > need to either have fake struct devices for the individual engines or
+> > come up with a more fine-grained way to communicate those requirements.
+> 
+> Yeah, that won't work. We need this on a per buffer level.
+> 
+> > > Userspace components can then of course tell the exporter what the
+> > > importer needs, but validation if that stuff is correct and doesn't
+> > > crash the system must happen in the kernel.
+> > What exactly do you mean by "scanout requires non-coherent memory"?
+> > Does the scanout requestor always set the no-snoop PCI flag, so you get
+> > garbage if some writes to memory are still stuck in the caches, or is
+> > it some other requirement?
+> 
+> Snooping the CPU caches introduces some extra latency, so what can 
+> happen is that the response to the PCIe read comes to late for the 
+> scanout. The result is an underflow and flickering whenever something is 
+> in the cache which needs to be flushed first.
 
-Thanks for submitting this driver, it looks really nice, but
-checkpatch.pl has some minor issues with it. Again I'd suggest
-deferring to the convertor->converter spelling change even though both
-seem to be perfectly valid English.
+Okay, that confirms my theory on why this is needed. So things don't
+totally explode if you don't do it, but to in order to guarantee access
+latency you need to take the no-snoop path, which means your device
+effectively gets dma-noncoherent.
 
-With the below fixed, feel free to add my r-b.
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> On the other hand when the don't snoop the CPU caches we at least get 
+> garbage/stale data on the screen. That wouldn't be that worse, but the 
+> big problem is that we have also seen machine check exceptions when 
+> don't snoop and the cache is dirty.
 
-On Sun, 14 Feb 2021 at 18:55, Jagan Teki <jagan@amarulasolutions.com> wrote:
->
-> ICN6211 is MIPI-DSI to RGB Convertor bridge from Chipone.
+If you attach to the dma-buf with a struct device which is non-coherent
+it's the exporters job to flush any dirty caches. Unfortunately the DRM
+caching of the dma-buf attachments in the DRM framework will get a bit
+in the way here, so a DRM specific flush might be be needed. :/ Maybe
+moving the whole buffer to uncached sysmem location on first attach of
+a non-coherent importer would be enough?
 
-WARNING: 'Convertor' may be misspelled - perhaps 'Converter'?
-#6:
-ICN6211 is MIPI-DSI to RGB Convertor bridge from Chipone.
-                           ^^^^^^^^^
+> So this should better be coherent or you can crash the box. ARM seems to 
+> be really susceptible for this, x86 is fortunately much more graceful 
+> and I'm not sure about other architectures.
 
+ARM really dislikes pagetable setups with different attributes pointing
+to the same physical page, however you should be fine as long as all
+cached aliases are properly flushed from the cache before access via a
+different alias.
 
->
-> It has a flexible configuration of MIPI DSI signal input and
-> produce RGB565, RGB666, RGB888 output format.
->
-> Add bridge driver for it.
+Regards,
+Lucas
 
-Currently this driver only supports MIPI_DSI_FMT_RGB888, maybe this
-should be noted in the commit msg.
-
->
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
-> Changes for v3:
-> - updated the driver to inline with new drm bridge style
->
->  MAINTAINERS                              |   6 +
->  drivers/gpu/drm/bridge/Kconfig           |  11 ++
->  drivers/gpu/drm/bridge/Makefile          |   1 +
->  drivers/gpu/drm/bridge/chipone-icn6211.c | 222 +++++++++++++++++++++++
->  4 files changed, 240 insertions(+)
->  create mode 100644 drivers/gpu/drm/bridge/chipone-icn6211.c
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9d241b832aae..4f1084aae50d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5529,6 +5529,12 @@ S:       Maintained
->  F:     Documentation/devicetree/bindings/display/panel/boe,himax8279d.yaml
->  F:     drivers/gpu/drm/panel/panel-boe-himax8279d.c
->
-> +DRM DRIVER FOR CHIPONE ICN6211 MIPI-DSI to RGB CONVERTOR BRIDGE
-
-WARNING: 'CONVERTOR' may be misspelled - perhaps 'CONVERTER'?
-#30: FILE: MAINTAINERS:5533:
-+DRM DRIVER FOR CHIPONE ICN6211 MIPI-DSI to RGB CONVERTOR BRIDGE
-                                                ^^^^^^^^^
-
-
-> +M:     Jagan Teki <jagan@amarulasolutions.com>
-> +S:     Maintained
-> +F:     drivers/gpu/drm/bridge/chipone-icn6211.c
-> +F:     Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
-
-WARNING: Misordered MAINTAINERS entry - list file patterns in alphabetic order
-#34: FILE: MAINTAINERS:5537:
-+F:     drivers/gpu/drm/bridge/chipone-icn6211.c
-+F:     Documentation/devicetree/bindings/display/bridge/chipone,icn6211.yaml
-
-
-> +
->  DRM DRIVER FOR FARADAY TVE200 TV ENCODER
->  M:     Linus Walleij <linus.walleij@linaro.org>
->  S:     Maintained
-> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-> index e4110d6ca7b3..49d1565b7f25 100644
-> --- a/drivers/gpu/drm/bridge/Kconfig
-> +++ b/drivers/gpu/drm/bridge/Kconfig
-> @@ -27,6 +27,17 @@ config DRM_CDNS_DSI
->           Support Cadence DPI to DSI bridge. This is an internal
->           bridge and is meant to be directly embedded in a SoC.
->
-> +config DRM_CHIPONE_ICN6211
-> +       tristate "Chipone ICN6211 MIPI-DSI/RGB Convertor bridge"
-
-WARNING: 'Convertor' may be misspelled - perhaps 'Converter'?
-#48: FILE: drivers/gpu/drm/bridge/Kconfig:31:
-+       tristate "Chipone ICN6211 MIPI-DSI/RGB Convertor bridge"
-                                               ^^^^^^^^^
-
-
-> +       depends on OF
-> +       select DRM_MIPI_DSI
-> +       select DRM_PANEL_BRIDGE
-> +       help
-> +         ICN6211 is MIPI-DSI/RGB Convertor bridge from chipone.
-
-WARNING: 'Convertor' may be misspelled - perhaps 'Converter'?
-#53: FILE: drivers/gpu/drm/bridge/Kconfig:36:
-+         ICN6211 is MIPI-DSI/RGB Convertor bridge from chipone.
-                                  ^^^^^^^^^
-
-> +
-> +         It has a flexible configuration of MIPI DSI signal input
-> +         and produce RGB565, RGB666, RGB888 output format.
-> +
-
-WARNING: please write a paragraph that describes the config symbol fully
-#47: FILE: drivers/gpu/drm/bridge/Kconfig:30:
-+config DRM_CHIPONE_ICN6211
-
-
->  config DRM_CHRONTEL_CH7033
->         tristate "Chrontel CH7033 Video Encoder"
->         depends on OF
-> diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
-> index 86e7acc76f8d..3eb84b638988 100644
-> --- a/drivers/gpu/drm/bridge/Makefile
-> +++ b/drivers/gpu/drm/bridge/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-$(CONFIG_DRM_CDNS_DSI) += cdns-dsi.o
-> +obj-$(CONFIG_DRM_CHIPONE_ICN6211) += chipone-icn6211.o
->  obj-$(CONFIG_DRM_CHRONTEL_CH7033) += chrontel-ch7033.o
->  obj-$(CONFIG_DRM_DISPLAY_CONNECTOR) += display-connector.o
->  obj-$(CONFIG_DRM_LONTIUM_LT9611) += lontium-lt9611.o
-> diff --git a/drivers/gpu/drm/bridge/chipone-icn6211.c b/drivers/gpu/drm/bridge/chipone-icn6211.c
-> new file mode 100644
-> index 000000000000..3f478f21a4a5
-> --- /dev/null
-> +++ b/drivers/gpu/drm/bridge/chipone-icn6211.c
-> @@ -0,0 +1,222 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Copyright (C) 2020 Amarula Solutions(India)
-
-2020-2021?
-
-> + * Author: Jagan Teki <jagan@amarulasolutions.com>
-> + */
-> +
-> +#include <drm/drm_of.h>
-> +#include <drm/drm_print.h>
-> +#include <drm/drm_mipi_dsi.h>
-> +
-> +#include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +
-> +#include <video/mipi_display.h>
-> +
-> +struct chipone {
-> +       struct device *dev;
-> +       struct drm_bridge bridge;
-> +       struct drm_bridge *panel_bridge;
-> +       struct gpio_desc *reset_gpio;
-> +};
-> +
-> +static inline struct chipone *bridge_to_chipone(struct drm_bridge *bridge)
-> +{
-> +       return container_of(bridge, struct chipone, bridge);
-> +}
-> +
-> +static struct drm_display_mode *bridge_to_mode(struct drm_bridge *bridge)
-> +{
-> +       return &bridge->encoder->crtc->state->adjusted_mode;
-> +}
-> +
-> +static void chipone_post_disable(struct drm_bridge *bridge)
-> +{
-> +       struct chipone *icn = bridge_to_chipone(bridge);
-> +
-> +       gpiod_set_value(icn->reset_gpio, 0);
-> +
-> +       msleep(50);
-> +}
-> +
-> +static inline int chipone_dsi_write(struct chipone *icn,  const void *seq,
-> +                                   size_t len)
-> +{
-> +       struct mipi_dsi_device *dsi = to_mipi_dsi_device(icn->dev);
-> +
-> +       return mipi_dsi_generic_write(dsi, seq, len);
-> +}
-> +
-> +#define CHIPONE_DSI(icn, seq...)                               \
-> +       {                                                       \
-> +               const u8 d[] = { seq };                         \
-> +               chipone_dsi_write(icn, d, ARRAY_SIZE(d));       \
-> +       }
-> +
-> +static void chipone_enable(struct drm_bridge *bridge)
-> +{
-> +       struct chipone *icn = bridge_to_chipone(bridge);
-> +       struct drm_display_mode *mode = bridge_to_mode(bridge);
-> +
-> +       CHIPONE_DSI(icn, 0x7A, 0xC1);
-> +
-> +       /* lower 8 bits of hdisplay */
-> +       CHIPONE_DSI(icn, 0x20, mode->hdisplay & 0xff);
-> +
-> +       /* lower 8 bits of vdisplay */
-> +       CHIPONE_DSI(icn, 0x21, mode->vdisplay & 0xff);
-> +
-> +       /**
-> +        * lsb nibble: 2nd nibble of hdisplay
-> +        * msb nibble: 2nd nibble of vdisplay
-> +        */
-> +       CHIPONE_DSI(icn, 0x22, (((mode->hdisplay >> 8) & 0xf) |
-> +                   (((mode->vdisplay >> 8) & 0xf) << 4)));
-> +
-> +       /* HFP */
-> +       CHIPONE_DSI(icn, 0x23, mode->hsync_start - mode->hdisplay);
-> +
-> +       /* HSYNC */
-> +       CHIPONE_DSI(icn, 0x24, mode->hsync_end - mode->hsync_start);
-> +
-> +       /* HBP */
-> +       CHIPONE_DSI(icn, 0x25, mode->htotal - mode->hsync_end);
-> +
-> +       CHIPONE_DSI(icn, 0x26, 0x00);
-> +
-> +       /* VFP */
-> +       CHIPONE_DSI(icn, 0x27, mode->vsync_start - mode->vdisplay);
-> +
-> +       /* VSYNC */
-> +       CHIPONE_DSI(icn, 0x28, mode->vsync_end - mode->vsync_start);
-> +
-> +       /* VBP */
-> +       CHIPONE_DSI(icn, 0x29, mode->vtotal - mode->vsync_end);
-> +
-> +       /* dsi specific sequence */
-> +       CHIPONE_DSI(icn, MIPI_DCS_SET_TEAR_OFF, 0x80);
-> +       CHIPONE_DSI(icn, MIPI_DCS_SET_ADDRESS_MODE, 0x28);
-> +       CHIPONE_DSI(icn, 0xB5, 0xA0);
-> +       CHIPONE_DSI(icn, 0x5C, 0xFF);
-> +       CHIPONE_DSI(icn, MIPI_DCS_SET_COLUMN_ADDRESS, 0x01);
-> +       CHIPONE_DSI(icn, MIPI_DCS_GET_POWER_SAVE, 0x92);
-> +       CHIPONE_DSI(icn, 0x6B, 0x71);
-> +       CHIPONE_DSI(icn, 0x69, 0x2B);
-> +       CHIPONE_DSI(icn, MIPI_DCS_ENTER_SLEEP_MODE, 0x40);
-> +       CHIPONE_DSI(icn, MIPI_DCS_EXIT_SLEEP_MODE, 0x98);
-> +
-> +       /* icn6211 specific sequence */
-> +       CHIPONE_DSI(icn, 0xB6, 0x20);
-> +       CHIPONE_DSI(icn, 0x51, 0x20);
-> +       CHIPONE_DSI(icn, 0x09, 0x10);
-> +
-> +       msleep(120);
-> +}
-> +
-> +static void chipone_pre_enable(struct drm_bridge *bridge)
-> +{
-> +       struct chipone *icn = bridge_to_chipone(bridge);
-> +
-> +       gpiod_set_value(icn->reset_gpio, 1);
-> +       msleep(20);
-> +
-> +       gpiod_set_value(icn->reset_gpio, 0);
-> +       msleep(20);
-> +
-> +       gpiod_set_value(icn->reset_gpio, 1);
-> +       msleep(50);
-> +}
-> +
-> +static int chipone_attach(struct drm_bridge *bridge, enum drm_bridge_attach_flags flags)
-> +{
-> +       struct chipone *icn = bridge_to_chipone(bridge);
-> +
-> +       return drm_bridge_attach(bridge->encoder, icn->panel_bridge, bridge, flags);
-> +}
-> +
-> +static const struct drm_bridge_funcs chipone_bridge_funcs = {
-> +       .post_disable = chipone_post_disable,
-> +       .enable = chipone_enable,
-> +       .pre_enable = chipone_pre_enable,
-> +       .attach = chipone_attach,
-> +};
-> +
-> +static int chipone_probe(struct mipi_dsi_device *dsi)
-> +{
-> +       struct device *dev = &dsi->dev;
-> +       struct drm_panel *panel;
-> +       struct chipone *icn;
-> +       int ret;
-> +
-> +       icn = devm_kzalloc(dev, sizeof(struct chipone), GFP_KERNEL);
-> +       if (!icn)
-> +               return -ENOMEM;
-> +
-> +       mipi_dsi_set_drvdata(dsi, icn);
-> +       icn->dev = dev;
-> +
-> +       dsi->mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
-> +       dsi->format = MIPI_DSI_FMT_RGB888;
-> +       dsi->lanes = 4;
-> +
-> +       icn->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-> +       if (IS_ERR(icn->reset_gpio)) {
-> +               DRM_DEV_ERROR(dev, "failed to get reset GPIO\n");
-> +               return PTR_ERR(icn->reset_gpio);
-> +       }
-> +
-> +       ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0, &panel, NULL);
-> +       if (ret)
-> +               return ret;
-> +
-> +       icn->panel_bridge = devm_drm_panel_bridge_add(dev, panel);
-> +       if (IS_ERR(icn->panel_bridge))
-> +               return PTR_ERR(icn->panel_bridge);
-> +
-> +       icn->bridge.funcs = &chipone_bridge_funcs;
-> +       icn->bridge.type = DRM_MODE_CONNECTOR_DPI;
-> +       icn->bridge.of_node = dev->of_node;
-> +
-> +       drm_bridge_add(&icn->bridge);
-> +
-> +       ret = mipi_dsi_attach(dsi);
-> +       if (ret < 0) {
-> +               drm_bridge_remove(&icn->bridge);
-> +               dev_err(dev, "failed to attach dsi\n");
-> +       }
-> +
-> +       return ret;
-> +}
-> +
-> +static int chipone_remove(struct mipi_dsi_device *dsi)
-> +{
-> +       struct chipone *icn = mipi_dsi_get_drvdata(dsi);
-> +
-> +       mipi_dsi_detach(dsi);
-> +       drm_bridge_remove(&icn->bridge);
-> +
-> +       return 0;
-> +}
-> +
-> +static const struct of_device_id chipone_of_match[] = {
-> +       { .compatible = "chipone,icn6211", },
-> +       { /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, chipone_of_match);
-> +
-> +static struct mipi_dsi_driver chipone_driver = {
-> +       .probe = chipone_probe,
-> +       .remove = chipone_remove,
-> +       .driver = {
-> +               .name = "chipone-icn6211",
-> +               .owner = THIS_MODULE,
-> +               .of_match_table = chipone_of_match,
-> +       },
-> +};
-> +module_mipi_dsi_driver(chipone_driver);
-> +
-> +MODULE_AUTHOR("Jagan Teki <jagan@amarulasolutions.com>");
-> +MODULE_DESCRIPTION("Chipone ICN6211 MIPI-DSI to RGB Convertor Bridge");
-
-WARNING: 'Convertor' may be misspelled - perhaps 'Converter'?
-#298: FILE: drivers/gpu/drm/bridge/chipone-icn6211.c:221:
-+MODULE_DESCRIPTION("Chipone ICN6211 MIPI-DSI to RGB Convertor Bridge");
-                                                     ^^^^^^^^^
-
-
-> +MODULE_LICENSE("GPL");
-> --
-> 2.25.1
->
