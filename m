@@ -2,178 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B316331C03F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4058D31C041
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232066AbhBOROa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:14:30 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:38420 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231926AbhBOQHN (ORCPT
+        id S230408AbhBOROz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:14:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51718 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232592AbhBOQKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:07:13 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11FFmstb014890;
-        Mon, 15 Feb 2021 16:05:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : date : content-type : content-transfer-encoding :
- mime-version; s=corp-2020-01-29;
- bh=W9l0GEKOrqcQMLP7SSohcgV5ej71N0BUPvDhvOlwiBs=;
- b=zYXRVqotnNlBIY2b+Ilb7vad4HBxeIVwVgMNPHLXL1dznqS09lJR5W0N009qA82d3QYj
- tSeXkw+YWuhVIogyxGf5nLLPXp6yAp+JpkAXI8hzT8BhNlkoQuvpCjqrLf/0Fdl02Jbs
- xrjQGiw9p7uhfnpZSjpGX9KsqIp23Y7o31X3yk9iiWk9kxk/VH7sQMmKSj94iwnWid7H
- 53vkiPTpwPECT2Qs5Ic16fDLStAdZ/39HVpHli7ufKUR1q04mWr+9l6cvVFtTQ4U5vOp
- Dg5kuSLLrpUUS9vWgpIh6sYkOZ3//HAP97dHKTDgEGldcw3bxYvpacNNEPmraDEx3E0d wg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 36p66qvfx5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 16:05:41 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11FFpSR0063493;
-        Mon, 15 Feb 2021 16:05:41 GMT
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2047.outbound.protection.outlook.com [104.47.74.47])
-        by userp3020.oracle.com with ESMTP id 36prhqhk43-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 16:05:40 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SvMR2PPWReQMEMqDmoTuXPRNiZdR/NBqTpGB3r9VdT9UyYJdXjicdLeXgGkWhHFhE6b8pIixpSGg9tfHrMuCs1TKnKC3bGDdE4fOv/EYQq+sygZ41hGVkiOTavxWjxuKX+AGn3ckZ3Wq4sDAnk5p74KE82YCkS7kCpnvUGkZJaRE4DKZdNox2wi5zGX/FsO8PZIiy+Fj98mDklcOAOHcTkuG/j5Uh/W6ShWXC6Zro66v95ovJq0heE3f7j8xlvhAjua2Am8w/ahEPNMngVwlrr8ZYSGnwfpIcU8B5DYvz3D2dRKu/UgbFl2G4uT7WGYc3nX05tH6DyO2XcSO4e3wjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W9l0GEKOrqcQMLP7SSohcgV5ej71N0BUPvDhvOlwiBs=;
- b=VolbabaYXKmMNaWn67Y9+Y9Xloa30s7sxBOWV/NwI50jS3omCvzhrdJ9x1KeaGeFNcy4U+li2oole7yOrPuTd3I2W416oGe5p0ekFJtohVFUGLWQ5vZQL6sY65qY5J+8UuVDTPdym3KM77db2+wahsrpEFG0e3TTI1HhV+Wt3N8pCt0ZDXtQ1sRbQ9PVvu4sWhn5KyHBOvDug7WFYM6B9cRf0Co35z/g0ka3R9Gt3sIuEIx9GORBAMun58yLDJ3WE/qmZTctwL8gdziaYOn0CiYp6mANZzxnfDXAiQxtLE2IuDLTqqkZV+jWo9kU9NRXo6h8X8fm1FINr9wF+lGELg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W9l0GEKOrqcQMLP7SSohcgV5ej71N0BUPvDhvOlwiBs=;
- b=fawH6gS/RzYnfLs3sey/e3fCZ0Sfp7kw7FUkW3PWjvppJ9F60VK2CogiM8XOftswAIaI4s85EibCuC96szGV+LKSfHl78v8qSyi+85ZKpvtrh7KgCmCBhHp8fVQINEgFkVKIXwu/0shdT97t8++CmgeC+JudGDbr754VPO15iHY=
-Authentication-Results: lists.sourceforge.net; dkim=none (message not signed)
- header.d=none;lists.sourceforge.net; dmarc=none action=none
- header.from=oracle.com;
-Received: from CH2PR10MB4118.namprd10.prod.outlook.com (2603:10b6:610:a4::8)
- by CH0PR10MB5098.namprd10.prod.outlook.com (2603:10b6:610:da::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Mon, 15 Feb
- 2021 16:05:35 +0000
-Received: from CH2PR10MB4118.namprd10.prod.outlook.com
- ([fe80::b4f8:316f:3a25:faac]) by CH2PR10MB4118.namprd10.prod.outlook.com
- ([fe80::b4f8:316f:3a25:faac%7]) with mapi id 15.20.3846.039; Mon, 15 Feb 2021
- 16:05:35 +0000
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>
-Subject: [GIT PULL] jfs updates for 5.12
-From:   Dave Kleikamp <dave.kleikamp@oracle.com>
-Message-ID: <4605002a-b275-1190-c56d-7d888aa770a0@oracle.com>
-Date:   Mon, 15 Feb 2021 10:05:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [68.201.65.98]
-X-ClientProxiedBy: SA0PR11CA0019.namprd11.prod.outlook.com
- (2603:10b6:806:d3::24) To CH2PR10MB4118.namprd10.prod.outlook.com
- (2603:10b6:610:a4::8)
+        Mon, 15 Feb 2021 11:10:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613405324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VyMBZ0eAXuTWId+HRxNyOfwXxzPZ1veetkHiRKCz8bU=;
+        b=Gqmc1csXk0qJU1ORIh1fY8sNStO1fhQZmy9/Fa9C5SHSWpWUibpeR8CMOPKXbNB7F652YA
+        f0rW8bMTCBcMS4A3/1ND8SG2bVUPizeGaJogt2worHfgFYTrb9drjVYcGd/XEnwGVCrVpZ
+        b3H7eXEJLmum37gPq+BxDhG2tb1Z3D8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-qHbGjfeGOdGFFQLLRmdmJw-1; Mon, 15 Feb 2021 11:08:42 -0500
+X-MC-Unique: qHbGjfeGOdGFFQLLRmdmJw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CE64801FD8;
+        Mon, 15 Feb 2021 16:08:39 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C291F5C233;
+        Mon, 15 Feb 2021 16:08:32 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 11:08:31 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>
+Cc:     "Damien.LeMoal@wdc.com" <Damien.LeMoal@wdc.com>,
+        "hare@suse.de" <hare@suse.de>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "axboe@kernel.dk" <axboe@kernel.dk>, "jack@suse.cz" <jack@suse.cz>,
+        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Pavel Tide <Pavel.TIde@veeam.com>
+Subject: Re: [PATCH v5 5/6] dm: add 'noexcl' option for dm-linear
+Message-ID: <20210215160831.GA5371@redhat.com>
+References: <1612881028-7878-1-git-send-email-sergei.shtepa@veeam.com>
+ <1612881028-7878-6-git-send-email-sergei.shtepa@veeam.com>
+ <20210211175151.GA13839@redhat.com>
+ <20210212113438.GA9877@veeam.com>
+ <20210212160631.GA19424@redhat.com>
+ <20210215103444.GA11820@veeam.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.190] (68.201.65.98) by SA0PR11CA0019.namprd11.prod.outlook.com (2603:10b6:806:d3::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Mon, 15 Feb 2021 16:05:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1a968300-a127-4ef0-f301-08d8d1cb8741
-X-MS-TrafficTypeDiagnostic: CH0PR10MB5098:
-X-Microsoft-Antispam-PRVS: <CH0PR10MB50985844649E7512D0C55ABD87889@CH0PR10MB5098.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:393;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l2W4cOjpfc225FyLdyz8CQISfER0xfkvZEH7xtwk0WAyy54UxeOrfduX2JmFpLr5mvyQkgrwdSwphEqi1Pxu6FR45lo1kQJGbYgAqxyKk9v4/G0gqz46cV05VraGJgKla7JPeM13irqKxTQFT7xnBaWfapAr8ikaKSt8it+XI9WJRy+R+ef6kJiTTv4Dnvx+ghsmKYcxZZngYLgf+M+Yl4hzSRbO34zfNfRhnOpyWgH9KzkrcqKHpP2J8QyWsB3FBo8v0NCusRrqkM5UlThkJqfQ7NdW+w/yrgqnktEOp5hg62QHi+prjTGKNoDfx1dIL0NvgwoB67aqK+oIv+88TgC5h8yYd3GGCd0/YYYpDd6TlEOa8tT+9Whi5rOYdkKORLlzznUnLLJGIXXA5h0vNzFh19Xt3GA5xPd98mecLJYwqoD376Mr29TnJAzqBLPqZvW3z7MyhRRVrLSXhin0U0c9VtI5Ai884aL+5ceRf7xzuU0xSoqyhlGufCNWDZg5GZhB/dqq5MH+gHR/LSiVhZ56AbbhFwT0GIUDk4N/cQzCXX51XEbgPRDe5IoC2H8rFiOx3euh0Bl3zq4vmnVLQKfKKQQjwu0OjQfhF+fIPe0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4118.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(346002)(376002)(136003)(396003)(66946007)(4326008)(8676002)(36756003)(4744005)(31686004)(5660300002)(66556008)(66476007)(83380400001)(16526019)(8936002)(4001150100001)(26005)(316002)(478600001)(6486002)(2616005)(956004)(2906002)(31696002)(186003)(44832011)(6916009)(86362001)(16576012)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TkkxNEllUzlPVnRWY2VhSlJ5SDlwZTRLQ2JMUDVLYWxqMlllUzdwVTZqeVFK?=
- =?utf-8?B?U1ZQTExDZEk0K1BNK1BaeGhyUEM1Z1pqUXpNeHdOYnhvL1BJaU1EU2xta0l3?=
- =?utf-8?B?Q1JyaytlV3FIdDAzMitiQkU2aTdrS0crY0p3NGdZNjVPcnhiNkZPa29wSzRr?=
- =?utf-8?B?MTcyVjdEMGJ0bFZ6OTJQNU5xd05EWHFLdCtUOVh4Qm5jWTVIckk1RERXKzZ0?=
- =?utf-8?B?ck12VDJiQ2NMOFZqS3pSOXZLWERKcWxlL256OVd0MUNINlFMU0V1VElUSEJo?=
- =?utf-8?B?ZThjc09pelpVMVVIckZqTUNlMU1ZMnZmME9FYU5Xdmx6cTd3RUJHeDRrTjZq?=
- =?utf-8?B?WGZwTWovR3pGVkcrbnVJZVJNMVFVNkZNVWRBUkp4ckZSOE5hQ052WGRsUUFr?=
- =?utf-8?B?WXA4b0QvMmoyKzFibiswQlJhSHRTd2xZUTRiaWhoc1JoNUI0VkxsVW5CTytk?=
- =?utf-8?B?SEZhdUt4QlZ2cTFCVCtlYzFxR0xFZGtSazZDeVNBMWd5dmtCa1huUkdKL0Qw?=
- =?utf-8?B?TlBROGx5NzhXZjZZaEcycXlEZmo1WEhaZndtSDJRYzNBWk9VV28rOStDUjhQ?=
- =?utf-8?B?cmxMVFNGbVB6V01qVHMzSUptRDdpRGc0aHlRcGxTT3NUU1VSeW1Tdmw4S3FO?=
- =?utf-8?B?bDcwcEtmYkZnSEFhVHhOT3I4c29HVlJmbkpUQlJQV3lmVEJsWE54MVpYWmdR?=
- =?utf-8?B?NUVvbmIrdGdhZzhlZEVxY2J4Ynp4UW5XVWtCbWFPeWk5QjF5bEFCZHNIc0Vl?=
- =?utf-8?B?SUVnbHdUYTRMM2duMzY0enZkRnNxU2NnRlh1c3pGelZ4SWtTYkRaZnRIandZ?=
- =?utf-8?B?YzAwc1BMTTBUcndXaURoU3RFbjkyTjIyLzhDQkRnYWJ6ZE96NkpYeDVLVi9P?=
- =?utf-8?B?eW5VZHhqTGxUWW5aSzNaWEo5ajJlbDF0STFHemNGbWpRcVRPRUJiUlpJYnNX?=
- =?utf-8?B?MWpxOUIvcDFNUTM4czhtRnplWC9zSVdhSEc4TWRkaFpmVVkxdXFVNTlJYlJG?=
- =?utf-8?B?dFlKVVNpLzIzaEFJdHpBZHhLV3BWYm05NUh5ZUlRUW5vd0UxRlFqYkxBM2kw?=
- =?utf-8?B?TDM1REo4MzZCK0tWTFlORVhBNVFIUnN1ZnJSTUlKUXF1ZW9OWVNndVNmLzhE?=
- =?utf-8?B?RDllOWxqUXEzZ0hsVXJTWUlpODcyZkhjdTNFV1cvaXR1dDNMSFJteGRqakk2?=
- =?utf-8?B?aHVuOXJrM1JrR1VpUG1TWEUrZmsvVjNJYW1KSEp0dDJ1S29Ucm1JMnZZblkz?=
- =?utf-8?B?d3ZSZlhERDlOQjJ0NHBjVEtLbkVCSlBMelI3a2pZNmhaRVBodWQ4TEdXeFV4?=
- =?utf-8?B?ZDFkZzJ5VU40MEJOM0RqNUpvMUVQWmEvMEhVZGJFQWlyZDdKRUlrNkNuUWlt?=
- =?utf-8?B?MndiY0Y0YnkzTks3dk5Ra2g1dFNNRjlFNVV5NkI1akVlNFpsOVBlR2doQUNl?=
- =?utf-8?B?czU5VTR2eVBBK2tVR2VIM0NuK0RkWmtpaHEydUtKcVFNd0hTMUZmZXlQaW1T?=
- =?utf-8?B?ZnRMT2dzNll3TjVRS2tWUHZ3TUR6SGM4aUJTZnFpVVBiYU9BY2hmWDBHdDdP?=
- =?utf-8?B?RnBSZTgvSnc2dzYraVYyNTZKREtwTlJNNGJSQWd0YjNEQ3ZadUlPNTdhSGc2?=
- =?utf-8?B?NXJvbTl5aWE5ZDI3ejEyZ0krUk94c1BXWVRkaWthWjNWZ2Jjd2h2VGQ0MEp5?=
- =?utf-8?B?aVJoWDQ3M3VDMGxqZGwxRjVIcWZQNFQwcGxFVmcwcFd0aXVhS2RDS3FwVVdP?=
- =?utf-8?Q?MoIFU/IaCb4mpvCXPgi/cDX/5iJIHNhyWLUs8Ml?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a968300-a127-4ef0-f301-08d8d1cb8741
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4118.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2021 16:05:35.2141
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fj8ZmZP2y9AwNl8gO5JQJ/xxBiWEUNdtgFlS/P5iGgbpvOFDxvPKeMls3XmJjFvu73PLtr1kvyk1EJAcXQa8q9zPuzzGze6tRZBm7UL/hfM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5098
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=954 adultscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102150125
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- impostorscore=0 priorityscore=1501 clxscore=1011 spamscore=0 mlxscore=0
- phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102150125
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215103444.GA11820@veeam.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit a0b96314870f7eff6d15a242cb162dfc46b3c284:
+On Mon, Feb 15 2021 at  5:34am -0500,
+Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
 
-   Merge tag 'xfs-5.11-merge-4' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux (2020-12-18 12:50:18 -0800)
+> The 02/12/2021 19:06, Mike Snitzer wrote:
+> > On Fri, Feb 12 2021 at  6:34am -0500,
+> > Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
+> > 
+> > > The 02/11/2021 20:51, Mike Snitzer wrote:
+> > > > On Tue, Feb 09 2021 at  9:30am -0500,
+> > > > Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
+> > > > 
+> > > > > The 'noexcl' option allow to open underlying block-device
+> > > > > without FMODE_EXCL.
+> > > > > 
+> > > > > Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
+> > > > > ---
+> > > > >  drivers/md/dm-linear.c        | 14 +++++++++++++-
+> > > > >  drivers/md/dm-table.c         | 14 ++++++++------
+> > > > >  drivers/md/dm.c               | 26 +++++++++++++++++++-------
+> > > > >  drivers/md/dm.h               |  2 +-
+> > > > >  include/linux/device-mapper.h |  7 +++++++
+> > > > >  5 files changed, 48 insertions(+), 15 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/md/dm-linear.c b/drivers/md/dm-linear.c
+> > > > > index 00774b5d7668..b16d89802b9d 100644
+> > > > > --- a/drivers/md/dm-linear.c
+> > > > > +++ b/drivers/md/dm-linear.c
+> > > > > @@ -33,7 +33,7 @@ static int linear_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+> > > > >  	char dummy;
+> > > > >  	int ret;
+> > > > >  
+> > > > > -	if (argc != 2) {
+> > > > > +	if ((argc < 2) || (argc > 3)) {
+> > > > >  		ti->error = "Invalid argument count";
+> > > > >  		return -EINVAL;
+> > > > >  	}
+> > > > > @@ -51,6 +51,18 @@ static int linear_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+> > > > >  	}
+> > > > >  	lc->start = tmp;
+> > > > >  
+> > > > > +	ti->non_exclusive = false;
+> > > > > +	if (argc > 2) {
+> > > > > +		if (strcmp("noexcl", argv[2]) == 0)
+> > > > > +			ti->non_exclusive = true;
+> > > > > +		else if (strcmp("excl", argv[2]) == 0)
+> > > > > +			ti->non_exclusive = false;
+> > > > > +		else {
+> > > > > +			ti->error = "Invalid exclusive option";
+> > > > > +			return -EINVAL;
+> > > > > +		}
+> > > > > +	}
+> > > > > +
+> > > > >  	ret = dm_get_device(ti, argv[0], dm_table_get_mode(ti->table), &lc->dev);
+> > > > >  	if (ret) {
+> > > > >  		ti->error = "Device lookup failed";
+> > > > > diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+> > > > > index 4acf2342f7ad..f020459465bd 100644
+> > > > > --- a/drivers/md/dm-table.c
+> > > > > +++ b/drivers/md/dm-table.c
+> > > > > @@ -322,7 +322,7 @@ static int device_area_is_invalid(struct dm_target *ti, struct dm_dev *dev,
+> > > > >   * device and not to touch the existing bdev field in case
+> > > > >   * it is accessed concurrently.
+> > > > >   */
+> > > > > -static int upgrade_mode(struct dm_dev_internal *dd, fmode_t new_mode,
+> > > > > +static int upgrade_mode(struct dm_dev_internal *dd, fmode_t new_mode, bool non_exclusive,
+> > > > >  			struct mapped_device *md)
+> > > > >  {
+> > > > >  	int r;
+> > > > > @@ -330,8 +330,8 @@ static int upgrade_mode(struct dm_dev_internal *dd, fmode_t new_mode,
+> > > > >  
+> > > > >  	old_dev = dd->dm_dev;
+> > > > >  
+> > > > > -	r = dm_get_table_device(md, dd->dm_dev->bdev->bd_dev,
+> > > > > -				dd->dm_dev->mode | new_mode, &new_dev);
+> > > > > +	r = dm_get_table_device(md, dd->dm_dev->bdev->bd_dev, dd->dm_dev->mode | new_mode,
+> > > > > +				non_exclusive, &new_dev);
+> > > > >  	if (r)
+> > > > >  		return r;
+> > > > >  
+> > > > > @@ -387,7 +387,8 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
+> > > > >  		if (!dd)
+> > > > >  			return -ENOMEM;
+> > > > >  
+> > > > > -		if ((r = dm_get_table_device(t->md, dev, mode, &dd->dm_dev))) {
+> > > > > +		r = dm_get_table_device(t->md, dev, mode, ti->non_exclusive, &dd->dm_dev);
+> > > > > +		if (r) {
+> > > > >  			kfree(dd);
+> > > > >  			return r;
+> > > > >  		}
+> > > > > @@ -396,8 +397,9 @@ int dm_get_device(struct dm_target *ti, const char *path, fmode_t mode,
+> > > > >  		list_add(&dd->list, &t->devices);
+> > > > >  		goto out;
+> > > > >  
+> > > > > -	} else if (dd->dm_dev->mode != (mode | dd->dm_dev->mode)) {
+> > > > > -		r = upgrade_mode(dd, mode, t->md);
+> > > > > +	} else if ((dd->dm_dev->mode != (mode | dd->dm_dev->mode)) &&
+> > > > > +		   (dd->dm_dev->non_exclusive != ti->non_exclusive)) {
+> > > > > +		r = upgrade_mode(dd, mode, ti->non_exclusive, t->md);
+> > > > >  		if (r)
+> > > > >  			return r;
+> > > > >  	}
+> > > > > diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+> > > > > index 00c41aa6d092..c25dcc2fdb89 100644
+> > > > > --- a/drivers/md/dm.c
+> > > > > +++ b/drivers/md/dm.c
+> > > > > @@ -1117,33 +1117,44 @@ static void close_table_device(struct table_device *td, struct mapped_device *md
+> > > > >  	if (!td->dm_dev.bdev)
+> > > > >  		return;
+> > > > >  
+> > > > > -	bd_unlink_disk_holder(td->dm_dev.bdev, dm_disk(md));
+> > > > > -	blkdev_put(td->dm_dev.bdev, td->dm_dev.mode | FMODE_EXCL);
+> > > > > +	if (td->dm_dev.non_exclusive)
+> > > > > +		blkdev_put(td->dm_dev.bdev, td->dm_dev.mode);
+> > > > > +	else {
+> > > > > +		bd_unlink_disk_holder(td->dm_dev.bdev, dm_disk(md));
+> > > > > +		blkdev_put(td->dm_dev.bdev, td->dm_dev.mode | FMODE_EXCL);
+> > > > > +	}
+> > > > > +
+> > > > > +
+> > > > > +	blkdev_put(td->dm_dev.bdev, td->dm_dev.mode);
+> > > > > +
+> > > > >  	put_dax(td->dm_dev.dax_dev);
+> > > > >  	td->dm_dev.bdev = NULL;
+> > > > >  	td->dm_dev.dax_dev = NULL;
+> > > > > +	td->dm_dev.non_exclusive = false;
+> > > > >  }
+> > > > >  
+> > > > >  static struct table_device *find_table_device(struct list_head *l, dev_t dev,
+> > > > > -					      fmode_t mode)
+> > > > > +					      fmode_t mode, bool non_exclusive)
+> > > > >  {
+> > > > >  	struct table_device *td;
+> > > > >  
+> > > > >  	list_for_each_entry(td, l, list)
+> > > > > -		if (td->dm_dev.bdev->bd_dev == dev && td->dm_dev.mode == mode)
+> > > > > +		if (td->dm_dev.bdev->bd_dev == dev &&
+> > > > > +		    td->dm_dev.mode == mode &&
+> > > > > +		    td->dm_dev.non_exclusive == non_exclusive)
+> > > > >  			return td;
+> > > > >  
+> > > > >  	return NULL;
+> > > > >  }
+> > > > >  
+> > > > > -int dm_get_table_device(struct mapped_device *md, dev_t dev, fmode_t mode,
+> > > > > +int dm_get_table_device(struct mapped_device *md, dev_t dev, fmode_t mode, bool non_exclusive,
+> > > > >  			struct dm_dev **result)
+> > > > >  {
+> > > > >  	int r;
+> > > > >  	struct table_device *td;
+> > > > >  
+> > > > >  	mutex_lock(&md->table_devices_lock);
+> > > > > -	td = find_table_device(&md->table_devices, dev, mode);
+> > > > > +	td = find_table_device(&md->table_devices, dev, mode, non_exclusive);
+> > > > >  	if (!td) {
+> > > > >  		td = kmalloc_node(sizeof(*td), GFP_KERNEL, md->numa_node_id);
+> > > > >  		if (!td) {
+> > > > > @@ -1154,7 +1165,8 @@ int dm_get_table_device(struct mapped_device *md, dev_t dev, fmode_t mode,
+> > > > >  		td->dm_dev.mode = mode;
+> > > > >  		td->dm_dev.bdev = NULL;
+> > > > >  
+> > > > > -		if ((r = open_table_device(td, dev, md))) {
+> > > > > +		r = open_table_device(td, dev, md, non_exclusive);
+> > > > > +		if (r) {
+> > > > >  			mutex_unlock(&md->table_devices_lock);
+> > > > >  			kfree(td);
+> > > > >  			return r;
+> > > > > diff --git a/drivers/md/dm.h b/drivers/md/dm.h
+> > > > > index fffe1e289c53..7bf20fb2de74 100644
+> > > > > --- a/drivers/md/dm.h
+> > > > > +++ b/drivers/md/dm.h
+> > > > > @@ -179,7 +179,7 @@ int dm_open_count(struct mapped_device *md);
+> > > > >  int dm_lock_for_deletion(struct mapped_device *md, bool mark_deferred, bool only_deferred);
+> > > > >  int dm_cancel_deferred_remove(struct mapped_device *md);
+> > > > >  int dm_request_based(struct mapped_device *md);
+> > > > > -int dm_get_table_device(struct mapped_device *md, dev_t dev, fmode_t mode,
+> > > > > +int dm_get_table_device(struct mapped_device *md, dev_t dev, fmode_t mode, bool non_exclusive,
+> > > > >  			struct dm_dev **result);
+> > > > >  void dm_put_table_device(struct mapped_device *md, struct dm_dev *d);
+> > > > >  
+> > > > > diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
+> > > > > index 61a66fb8ebb3..70002363bfc0 100644
+> > > > > --- a/include/linux/device-mapper.h
+> > > > > +++ b/include/linux/device-mapper.h
+> > > > > @@ -150,6 +150,7 @@ struct dm_dev {
+> > > > >  	struct block_device *bdev;
+> > > > >  	struct dax_device *dax_dev;
+> > > > >  	fmode_t mode;
+> > > > > +	bool non_exclusive;
+> > > > >  	char name[16];
+> > > > >  };
+> > > > >  
+> > > > > @@ -325,6 +326,12 @@ struct dm_target {
+> > > > >  	 * whether or not its underlying devices have support.
+> > > > >  	 */
+> > > > >  	bool discards_supported:1;
+> > > > > +
+> > > > > +	/*
+> > > > > +	 * Set if this target needs to open device without FMODE_EXCL
+> > > > > +	 * mode.
+> > > > > +	 */
+> > > > > +	bool non_exclusive:1;
+> > > > >  };
+> > > > >  
+> > > > >  void *dm_per_bio_data(struct bio *bio, size_t data_size);
+> > > > > -- 
+> > > > > 2.20.1
+> > > > > 
+> > > > 
+> > > > I'm really not liking this tug-of-war about FMODE_EXCL vs not.
+> > > > Especially dislike the prospect of needing to change _every_ DM target
+> > > > that would be made to support blk_interposer.
+> > > > 
+> > > > I've said this before, private or otherwise, but: Hannes' approach that
+> > > > fell back to opening without FMODE_EXCL if FMODE_EXCL open failed.  Have
+> > > > you explored that kind of approach?
+> > > 
+> > > Of course I explored that kind of approach. The easiest thing to do
+> > > is fell back to opening without FMODE_EXCL if FMODE_EXCL open failed.
+> > > 
+> > > But I remind you once again that in this case, without changing
+> > > the code of each target, we will change the behavior of each.
+> > > Any target will open the device without the FMODE_EXCL flag if the device
+> > > is already busy. This can cause errors and cause data loss.
+> > > I would not want the device mapper to get worse when adding new functionality.
+> > 
+> > Right, but I'm not talking about a blind fallback that strips FMODE_EXCL
+> > if FMODE_EXCL open failed.
+> >  
+> > > I will do so in the next patch, as you are sure that it is better... Or
+> > > I'll think about it again and try to suggest a better implementation.
+> > > 
+> > > Thank you, Mike.
+> > > 
+> > > > 
+> > > > You _should_ be able to infer that interposer is being used given the
+> > > > requirement to use an explicit remap ioctl to establish the use of
+> > > > interposer.
+> > 
+> > I'm suggesting that open_table_device and close_table_device be made
+> > aware of the fact that they are operating on behalf of your remap ioctl
+> > (interpose).  So store state in the mapped_device that reflects a remap
+> > was used.
+> > 
+> > Still clunky but at least it confines it to an implementation detail
+> > managed by DM core rather than imposing awkward interface changes in
+> > both DM core and the DM targets.
+> > 
+> > Mike
+> > 
+> 
+> Based on your requirements, I conclude that the knowledge about the use
+> of interposer should be passed when creating target, since this is where
+> the open_table_device function is called.
+> This means that the 'noexcl' parameter is no longer needed, but will be
+> replaced with 'interposer'.
+> The ioctl is no longer needed, the target already knows that it works
+> through the interposer, and we can attach it already when creating
+> the target.
+> 
+> I like this logic, and I will implement it.
 
-are available in the Git repository at:
+Yes, I never understood why a new ioctl was introduced.  But please be
+aware that this should _not_ be implemented in terms of each DM target
+needing to handle 'interposer' being passed as a text arg to the .ctr().
 
-   git://github.com/kleikamp/linux-shaggy.git tags/jfs-5.12
+It should be an optional DM_INTERPOSER_FLAG added to DM_DEV_CREATE_CMD
+(much like optional DM_NOFLUSH_FLAG can be used with DM_DEV_SUSPEND_CMD).
 
-for you to fetch changes up to 4208c398aae4c2290864ba15c3dab7111f32bec1:
+Mike
 
-   fs/jfs: fix potential integer overflow on shift of a int (2021-02-11 11:25:54 -0600)
-
-----------------------------------------------------------------
-A few jfs fixes
-
-----------------------------------------------------------------
-Colin Ian King (1):
-       fs/jfs: fix potential integer overflow on shift of a int
-
-Randy Dunlap (1):
-       JFS: more checks for invalid superblock
-
-Yang Li (1):
-       jfs: turn diLog(), dataLog() and txLog() into void functions
-
-  fs/jfs/jfs_dmap.c   |  2 +-
-  fs/jfs/jfs_filsys.h |  1 +
-  fs/jfs/jfs_mount.c  | 10 ++++++++++
-  fs/jfs/jfs_txnmgr.c | 35 ++++++++++++++++-------------------
-  4 files changed, 28 insertions(+), 20 deletions(-)
