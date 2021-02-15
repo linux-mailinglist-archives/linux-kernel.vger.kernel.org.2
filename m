@@ -2,189 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BA231BA38
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB32D31BA3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhBONUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 08:20:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59264 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230243AbhBONUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 08:20:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613395171; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VrYszXWufgZ7DXzjszArcCUC2Xn5qCIgATXFqiBe/qM=;
-        b=rnIuwIPk7q2Bv3pei4lS7wnFxeqEn+3SK8mEAj+fsiO1AP9Z5a6ALd35VcWzcRQvWRHFO3
-        kR1XO6uKNw3JHPOayE4rlauc3Y/EViD4aEodLjdLjhK4MBg6ZLfaaiglYNUiruETpQ7JB+
-        hcqOd2U9Ti1TAmDtHq+QgD1dxwPgQ3Q=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F3691AC32;
-        Mon, 15 Feb 2021 13:19:30 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 14:19:28 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-Message-ID: <YCp04NVBZpZZ5k7G@dhcp22.suse.cz>
-References: <20210208085013.89436-1-songmuchun@bytedance.com>
- <20210208085013.89436-5-songmuchun@bytedance.com>
- <YCafit5ruRJ+SL8I@dhcp22.suse.cz>
- <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
- <YCpN38i75olgispI@dhcp22.suse.cz>
- <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
- <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
- <YCpmlGuoTakPJs1u@dhcp22.suse.cz>
- <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
+        id S229977AbhBONUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 08:20:46 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:27216 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230243AbhBONU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 08:20:27 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11FDI6u8027118;
+        Mon, 15 Feb 2021 14:19:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=V+jWO/tcnDcaOc6Qm4/CF3DPOhh2ZswEPjc7Ll+bFPA=;
+ b=leVVJctfDJk1PPk1kJ362RBi6k0nGMJJwTOer1mRLsJU+tDUoNW2Vp0BEKE7IFcpTg06
+ dvJ1RFgJfNT+l0BxF0aFcaMW1aIoQDPNZ4BXgSWzHSGpZg9Ks3id3y2Yev1kMnXn38vs
+ +JuTsX7o20LLeYhbAMOajWlHFvt9LaG66kyOZGpALBq6wOn/jLx3F711L4wmXtQyOU0E
+ kTbgXA4o3FGURPFcVQzrBI1TO8DWe8JNZ0kfZix+l5g7+J4ERBYWN6SSqI6LIsFUsp5G
+ T9BzT1woezTThZoSHInGljqb7EdnCzeVzlBar27bRarRHP5yCbzBH1/pdvh82IwEbZkG yQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36p4sf2ykp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 14:19:36 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1862D10002A;
+        Mon, 15 Feb 2021 14:19:36 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0293F239B39;
+        Mon, 15 Feb 2021 14:19:36 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 15 Feb
+ 2021 14:19:35 +0100
+Subject: Re: [PATCH v5 13/19] remoteproc: Properly deal with the resource
+ table
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <ohad@wizery.com>,
+        <bjorn.andersson@linaro.org>, <arnaud.pouliquen@st.com>
+CC:     <robh+dt@kernel.org>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@st.com>, <linux-remoteproc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210211234627.2669674-1-mathieu.poirier@linaro.org>
+ <20210211234627.2669674-14-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <9a73014f-d973-24d6-57c9-0134c0967057@foss.st.com>
+Date:   Mon, 15 Feb 2021 14:19:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
+In-Reply-To: <20210211234627.2669674-14-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-15_08:2021-02-12,2021-02-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 15-02-21 20:44:57, Muchun Song wrote:
-> On Mon, Feb 15, 2021 at 8:18 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 15-02-21 20:00:07, Muchun Song wrote:
-> > > On Mon, Feb 15, 2021 at 7:51 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> > > >
-> > > > On Mon, Feb 15, 2021 at 6:33 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Mon 15-02-21 18:05:06, Muchun Song wrote:
-> > > > > > On Fri, Feb 12, 2021 at 11:32 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > [...]
-> > > > > > > > +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
-> > > > > > > > +{
-> > > > > > > > +     int ret;
-> > > > > > > > +     unsigned long vmemmap_addr = (unsigned long)head;
-> > > > > > > > +     unsigned long vmemmap_end, vmemmap_reuse;
-> > > > > > > > +
-> > > > > > > > +     if (!free_vmemmap_pages_per_hpage(h))
-> > > > > > > > +             return 0;
-> > > > > > > > +
-> > > > > > > > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-> > > > > > > > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-> > > > > > > > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
-> > > > > > > > +
-> > > > > > > > +     /*
-> > > > > > > > +      * The pages which the vmemmap virtual address range [@vmemmap_addr,
-> > > > > > > > +      * @vmemmap_end) are mapped to are freed to the buddy allocator, and
-> > > > > > > > +      * the range is mapped to the page which @vmemmap_reuse is mapped to.
-> > > > > > > > +      * When a HugeTLB page is freed to the buddy allocator, previously
-> > > > > > > > +      * discarded vmemmap pages must be allocated and remapping.
-> > > > > > > > +      */
-> > > > > > > > +     ret = vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
-> > > > > > > > +                               GFP_ATOMIC | __GFP_NOWARN | __GFP_THISNODE);
-> > > > > > >
-> > > > > > > I do not think that this is a good allocation mode. GFP_ATOMIC is a non
-> > > > > > > sleeping allocation and a medium memory pressure might cause it to
-> > > > > > > fail prematurely. I do not think this is really an atomic context which
-> > > > > > > couldn't afford memory reclaim. I also do not think we want to grant
-> > > > > >
-> > > > > > Because alloc_huge_page_vmemmap is called under hugetlb_lock
-> > > > > > now. So using GFP_ATOMIC indeed makes the code more simpler.
-> > > > >
-> > > > > You can have a preallocated list of pages prior taking the lock.
-> > > >
-> > > > A discussion about this can refer to here:
-> > > >
-> > > > https://patchwork.kernel.org/project/linux-mm/patch/20210117151053.24600-5-songmuchun@bytedance.com/
-> > > >
-> > > > > Moreover do we want to manipulate vmemmaps from under spinlock in
-> > > > > general. I have to say I have missed that detail when reviewing. Need to
-> > > > > think more.
-> > > > >
-> > > > > > From the document of the kernel, I learned that __GFP_NOMEMALLOC
-> > > > > > can be used to explicitly forbid access to emergency reserves. So if
-> > > > > > we do not want to use the reserve memory. How about replacing it to
-> > > > > >
-> > > > > > GFP_ATOMIC | __GFP_NOMEMALLOC | __GFP_NOWARN | __GFP_THISNODE
-> > > > >
-> > > > > The whole point of GFP_ATOMIC is to grant access to memory reserves so
-> > > > > the above is quite dubious. If you do not want access to memory reserves
-> > > >
-> > > > Look at the code of gfp_to_alloc_flags().
-> > > >
-> > > > static inline unsigned int gfp_to_alloc_flags(gfp_t gfp_mask)
-> > > > {
-> > > >         [...]
-> > > >         if (gfp_mask & __GFP_ATOMIC) {
-> > > >         /*
-> > > >          * Not worth trying to allocate harder for __GFP_NOMEMALLOC even
-> > > >          * if it can't schedule.
-> > > >          */
-> > > >         if (!(gfp_mask & __GFP_NOMEMALLOC))
-> > > >                 alloc_flags |= ALLOC_HARDER;
-> > > >        [...]
-> > > > }
-> > > >
-> > > > Seems to allow this operation (GFP_ATOMIC | __GFP_NOMEMALLOC).
-> >
-> > Please read my response again more carefully. I am not claiming that
-> > combination is not allowed. I have said it doesn't make any sense in
-> > this context.
+
+
+On 2/12/21 12:46 AM, Mathieu Poirier wrote:
+> If it is possible to detach the remote processor, keep an untouched
+> copy of the resource table.  That way we can start from the same
+> resource table without having to worry about original values or what
+> elements the startup code has changed when re-attaching to the remote
+> processor.
 > 
-> I see you are worried that using GFP_ATOMIC will use reverse memory
-> unlimited. So I think that __GFP_NOMEMALLOC may be suitable for us.
-> Sorry, I may not understand the point you said. What I missed?
+> Reported-by: Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c       | 70 ++++++++++++++++++++++
+>  drivers/remoteproc/remoteproc_elf_loader.c | 24 +++++++-
+>  include/linux/remoteproc.h                 |  3 +
+>  3 files changed, 95 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 660dcc002ff6..9a77cb6d6470 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1527,7 +1527,9 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
+>  clean_up_resources:
+>  	rproc_resource_cleanup(rproc);
+>  	kfree(rproc->cached_table);
+> +	kfree(rproc->clean_table);
+>  	rproc->cached_table = NULL;
+> +	rproc->clean_table = NULL;
+>  	rproc->table_ptr = NULL;
+>  unprepare_rproc:
+>  	/* release HW resources if needed */
+> @@ -1555,6 +1557,23 @@ static int rproc_set_loaded_rsc_table(struct rproc *rproc)
+>  		return ret;
+>  	}
+>  
+> +	/*
+> +	 * If it is possible to detach the remote processor, keep an untouched
+> +	 * copy of the resource table.  That way we can start fresh again when
+> +	 * the remote processor is re-attached, that is:
+> +	 *
+> +	 *	DETACHED -> ATTACHED -> DETACHED -> ATTACHED
+> +	 *
+> +	 * A clean copy of the table is also taken in rproc_elf_load_rsc_table()
+> +	 * for cases where the remote processor is booted by the remoteproc
+> +	 * core and later detached from.
+> +	 */
+> +	if (rproc->ops->detach) {
+> +		rproc->clean_table = kmemdup(table_ptr, table_sz, GFP_KERNEL);
+> +		if (!rproc->clean_table)
+> +			return -ENOMEM;
+> +	}
+> +
+>  	/*
+>  	 * The resource table is already loaded in device memory, no need
+>  	 * to work with a cached table.
+> @@ -1566,6 +1585,40 @@ static int rproc_set_loaded_rsc_table(struct rproc *rproc)
+>  	return 0;
+>  }
+>  
+> +static int rproc_reset_loaded_rsc_table(struct rproc *rproc)
+> +{
+> +	/*
+> +	 * In order to detach() from a remote processor a clean resource table
+> +	 * _must_ have been allocated at boot time, either from rproc_fw_boot()
+> +	 * or from rproc_attach().  If one isn't present something went really
+> +	 * wrong and we must complain.
+> +	 */
+> +	if (WARN_ON(!rproc->clean_table))
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Install the clean resource table where the firmware, i.e
+> +	 * rproc_get_loaded_rsc_table(), expects it.
+> +	 */
+> +	memcpy(rproc->table_ptr, rproc->clean_table, rproc->table_sz);
+> +
+> +	/*
+> +	 * If the remote processors was started by the core then a cached_table
+> +	 * is present and we must follow the same cleanup sequence as we would
+> +	 * for a shutdown().  As it is in rproc_stop(), use the cached resource
+> +	 * table for the rest of the detach process since ->table_ptr will
+> +	 * become invalid as soon as carveouts are released in
+> +	 * rproc_resource_cleanup().
+> +	 *
+> +	 * If the remote processor was started by an external entity the
+> +	 * cached_table is NULL and the rest of the cleanup code in
+> +	 * rproc_free_vring() can deal with that.
+> +	 */
+> +	rproc->table_ptr = rproc->cached_table;
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Attach to remote processor - similar to rproc_fw_boot() but without
+>   * the steps that deal with the firmware image.
+> @@ -1947,7 +2000,10 @@ void rproc_shutdown(struct rproc *rproc)
+>  
+>  	/* Free the copy of the resource table */
+>  	kfree(rproc->cached_table);
+> +	/* Free the clean resource table */
+> +	kfree(rproc->clean_table);
+>  	rproc->cached_table = NULL;
+> +	rproc->clean_table = NULL;
+>  	rproc->table_ptr = NULL;
+>  out:
+>  	mutex_unlock(&rproc->lock);
+> @@ -2000,6 +2056,16 @@ int rproc_detach(struct rproc *rproc)
+>  		goto out;
+>  	}
+>  
+> +	/*
+> +	 * Install a clean resource table for re-attach while
+> +	 * rproc->table_ptr is still valid.
+> +	 */
+> +	ret = rproc_reset_loaded_rsc_table(rproc);
+> +	if (ret) {
+> +		atomic_inc(&rproc->power);
+> +		goto out;
+> +	}
+> +
 
-OK, let me try to explain again. GFP_ATOMIC is not only a non-sleeping
-allocation request. It also grants access to memory reserves. The later
-is a bit more involved because there are more layers of memory reserves
-to access but that is not really important. Non-sleeping semantic can be
-achieved by GFP_NOWAIT which will not grant access to reserves unless
-explicitly stated - e.g. by __GFP_HIGH or __GFP_ATOMIC.
-Is that more clear?
+Here you rewrite the initial values in the loaded resource table but then
+rproc_resource_cleanup will clean up the resource table.
+That can lead to an overwrite, and perhaps to unexpected memory access, as
+DA and PA addresses are reinitialized.
+(e.g call of rproc_vdev_release that will overwrite the resource table)
 
-Now again why I do not think access to memory reserves is suitable.
-Hugetlb pages can be released in a large batches and that might cause a
-peak depletion of memory reserves which are normally used by other
-consumers as well. Other GFP_ATOMIC users might see allocation failures.
-Those shouldn't be really fatal as nobody should be relying on those and
-a failure usually mean a hand over to a different, less constrained,
-context. So this concern is more about a more well behaved behavior from
-the hugetlb side than a correctness.
-Is that more clear?
+And because the vdev release is asynchronous, probably better to reinitialize
+the resource table on attach or in rproc_handle_resources.
 
-There shouldn't be any real reason why the memory allocation for
-vmemmaps, or handling vmemmap in general, has to be done from within the
-hugetlb lock and therefore requiring a non-sleeping semantic. All that
-can be deferred to a more relaxed context. If you want to make a
-GFP_NOWAIT optimistic attempt in the direct free path then no problem
-but you have to expect failures under memory pressure. If you want to
-have a more robust allocation request then you have to go outside of the
-spin lock and use GFP_KERNEL | __GFP_NORETRY or GFP_KERNEL |
-__GFP_RETRY_MAYFAIL depending on how hard you want to try.
-__GFP_THISNODE makes a slight difference here but something that I would
-recommend not depending on.
-Is that more clear?
--- 
-Michal Hocko
-SUSE Labs
+Regards,
+Arnaud
+
+>  	/* clean up all acquired resources */
+>  	rproc_resource_cleanup(rproc);
+>  
+> @@ -2008,10 +2074,14 @@ int rproc_detach(struct rproc *rproc)
+>  
+>  	rproc_disable_iommu(rproc);
+>  
+> +	/* Free the copy of the resource table */
+> +	kfree(rproc->cached_table);
+>  	/* Follow the same sequence as in rproc_shutdown() */
+>  	kfree(rproc->cached_table);
+>  	rproc->cached_table = NULL;
+> +	rproc->clean_table = NULL;
+>  	rproc->table_ptr = NULL;
+> +
+>  out:
+>  	mutex_unlock(&rproc->lock);
+>  	return ret;
+> diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
+> index df68d87752e4..aa09782c932d 100644
+> --- a/drivers/remoteproc/remoteproc_elf_loader.c
+> +++ b/drivers/remoteproc/remoteproc_elf_loader.c
+> @@ -17,10 +17,11 @@
+>  
+>  #define pr_fmt(fmt)    "%s: " fmt, __func__
+>  
+> -#include <linux/module.h>
+> +#include <linux/elf.h>
+>  #include <linux/firmware.h>
+> +#include <linux/module.h>
+>  #include <linux/remoteproc.h>
+> -#include <linux/elf.h>
+> +#include <linux/slab.h>
+>  
+>  #include "remoteproc_internal.h"
+>  #include "remoteproc_elf_helpers.h"
+> @@ -338,6 +339,25 @@ int rproc_elf_load_rsc_table(struct rproc *rproc, const struct firmware *fw)
+>  	if (!rproc->cached_table)
+>  		return -ENOMEM;
+>  
+> +	/*
+> +	 * If it is possible to detach the remote processor, keep an untouched
+> +	 * copy of the resource table.  That way we can start fresh again when
+> +	 * the remote processor is re-attached, that is:
+> +	 *
+> +	 *	OFFLINE -> RUNNING -> DETACHED -> ATTACHED
+> +	 *
+> +	 * A clean copy of the table is also taken in
+> +	 * rproc_set_loaded_rsc_table() for cases where the remote processor is
+> +	 * booted by an external entity and later detached from.
+> +	 */
+> +	if (rproc->ops->detach) {
+> +		rproc->clean_table = kmemdup(table, tablesz, GFP_KERNEL);
+> +		if (!rproc->clean_table) {
+> +			kfree(rproc->cached_table);
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +
+>  	rproc->table_ptr = rproc->cached_table;
+>  	rproc->table_sz = tablesz;
+>  
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index e1c843c19cc6..e5f52a12a650 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -514,6 +514,8 @@ struct rproc_dump_segment {
+>   * @recovery_disabled: flag that state if recovery was disabled
+>   * @max_notifyid: largest allocated notify id.
+>   * @table_ptr: pointer to the resource table in effect
+> + * @clean_table: copy of the resource table without modifications.  Used
+> + *		 when a remote processor is attached or detached from the core
+>   * @cached_table: copy of the resource table
+>   * @table_sz: size of @cached_table
+>   * @has_iommu: flag to indicate if remote processor is behind an MMU
+> @@ -550,6 +552,7 @@ struct rproc {
+>  	bool recovery_disabled;
+>  	int max_notifyid;
+>  	struct resource_table *table_ptr;
+> +	struct resource_table *clean_table;
+>  	struct resource_table *cached_table;
+>  	size_t table_sz;
+>  	bool has_iommu;
+> 
