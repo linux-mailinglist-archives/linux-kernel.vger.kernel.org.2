@@ -2,140 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBD131C10D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5BC31C111
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhBORzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:55:06 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:60202 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229604AbhBORy6 (ORCPT
+        id S229866AbhBOR7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:59:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229604AbhBOR7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:54:58 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11FHk2ak023127;
-        Mon, 15 Feb 2021 09:54:16 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=Yx/+lX5qolgCsudpAc5IFXP2Ew66SHSIG3lA0SX1djk=;
- b=HwUuJ8mAeSHgFC1vZHjcgqsw6pbIAT+Xrkn+se/jDHjlAWOA49E1p3c19KORGlfL8bcN
- 826ziIPmJhaHEySY5ygyjagQUG5tjnUXVrFk4wZnS+o8k3DMH7BKCs1ky5iD5DbqMmRA
- M1tzHv1WaIkGFa4IVn1pBldJ6cKW0qHhonl0s2rLf34WbQkZgaN8K/XIMMZBwIv8boQS
- LKkqapeBvPbWcVs7YBduba0bbv1AukAp84OefThsakAXzfp2ofcKw2SoLI7X+d4mwfM7
- ZMsVXLfktCQtbq+12MZfMpVYZwjX+A3jYplk+6n08YySH+KCUgVruf2gEdrfBGkEHlzX IA== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 36pd0vmys2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 09:54:16 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Feb
- 2021 09:54:15 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 15 Feb 2021 09:54:15 -0800
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 8A3A73F7040;
-        Mon, 15 Feb 2021 09:54:12 -0800 (PST)
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <hkelam@marvell.com>,
-        <sbhatta@marvell.com>, <jerinj@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>
-Subject: [net-next PATCH] octeontx2-af: cn10k: Fixes CN10K RPM reference issue
-Date:   Mon, 15 Feb 2021 23:24:00 +0530
-Message-ID: <20210215175400.13126-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 15 Feb 2021 12:59:30 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BC9C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:58:49 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id 7so10059870wrz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 09:58:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qhhKdBuhEEookMaS37LIoVT3IsjzKnUX0O3XiL1iwho=;
+        b=HKsT81xm45z0VFhcKM7uKe0ncwcP7vvV6z1QSf2rZM549u3Ge78ouOC7LvqS+ggACf
+         Ey64BZ8tnhRRKlX2zJMLfRzp7Ul7EUI7CIE79kdGG8D+lGHYnfaCsbWTgZl70/W+plbW
+         hjv3odtj3Z8FfDm1MUiPHYO3hC68RygmPvWJQhkd/wmk//CjLj8L4BdpI87aItqhbeqd
+         QYaJdhUEEdgD50Rk0Tbwd5LJm8P3q7F/JptaQxa+IsjoLodJzNI2T44JXbgt45DgUmrc
+         a/O7guSCZysKR3qG+KGdy8ZjHlqTTX1b7zc8ZOw0qI7gPUSjkDFD2dgQvPeixO1HGE7n
+         KMVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qhhKdBuhEEookMaS37LIoVT3IsjzKnUX0O3XiL1iwho=;
+        b=hL6r+6CKiDa+g0aM4/OGmqEDZJhKhosntsWO6wkye/ECtT/wyWZlCgr++Pb7CQqX6n
+         I+AjvYKpMJ6Y+fPxIhDRTEC92ixZIEmN8vj89AUtGiEFkifY7mivAa2I9Mv9RSv2OUeT
+         c/+VTNTbO2lp+pPJssPNUBgrXd40L52OvcIkarqHpOwwTGZDH+e0VLdd3bD1QLiozEt0
+         xzGbRI/UNlSeMDRmSeoEgZ7SNwU3eYEP4JCLw73AjhNJcXrh5Vh6Rjb+x00uK+0uUbBv
+         Og71RWXGaVgYmHZsJKC2gl155PQzJIY19oABXJhUSSbWHw/uM4rJJCFdo+tcu/0Zsq3p
+         hCAQ==
+X-Gm-Message-State: AOAM533iP3yEs4ojcQeXc+1d7OfwoNISyQvfU8wkzZngwThx4Pc0DjIN
+        r0ck59+M4lTF3wj1/0fu46R4l5At7ZnDmORys2dSVA==
+X-Google-Smtp-Source: ABdhPJyZVBm2X17EAUK7vktTfVAOik/5/hH5Dvmda0dph+Y3QZK6QBh4KmTcGdvX2vIlh0oA6sIbgrpwZ0wJ3UdqttM=
+X-Received: by 2002:a5d:4c8c:: with SMTP id z12mr10404593wrs.176.1613411928666;
+ Mon, 15 Feb 2021 09:58:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-15_14:2021-02-12,2021-02-15 signatures=0
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-9-git-send-email-anshuman.khandual@arm.com>
+ <CAJ9a7VgC0j4TmOYXdUVd19sQqxWOk-tsvv3r5DQzmY59ZptzDQ@mail.gmail.com> <20210215165606.GB2770547@xps15>
+In-Reply-To: <20210215165606.GB2770547@xps15>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Mon, 15 Feb 2021 17:58:37 +0000
+Message-ID: <CAJ9a7VimBJkeFVaYmW+jTGYH9EsDbUX_Wbf5P_bTicFqsSFJkg@mail.gmail.com>
+Subject: Re: [PATCH V3 08/14] coresight: core: Add support for dedicated
+ percpu sinks
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes references to uninitialized variables and
-debugfs entry name for CN10K platform and HW_TSO flag check. 
+Hi Mathieu,
 
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+On Mon, 15 Feb 2021 at 16:56, Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> On Mon, Feb 15, 2021 at 04:27:26PM +0000, Mike Leach wrote:
+> > HI Anshuman
+> >
+> > On Wed, 27 Jan 2021 at 08:55, Anshuman Khandual
+> > <anshuman.khandual@arm.com> wrote:
+> > >
+> > > Add support for dedicated sinks that are bound to individual CPUs. (e.g,
+> > > TRBE). To allow quicker access to the sink for a given CPU bound source,
+> > > keep a percpu array of the sink devices. Also, add support for building
+> > > a path to the CPU local sink from the ETM.
+> > >
+> >
+> > Really need to tighten up the terminology here - I think what you mean
+> > is a PE architecturally defined sink - i.e. one that can be determined
+> > by reading the feature registers on the PE, rather than an ETR which
+> > cannot.
+> > However, the Coresight Base System Architecture specification does
+> > recommend a per cpu design using an ETR per CPU - now I assume that
+> > this case is not catered for in this patch?
+> >
+> > > This adds a new percpu sink type CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM.
+> > > This new sink type is exclusively available and can only work with percpu
+> > > source type device CORESIGHT_DEV_SUBTYPE_SOURCE_PERCPU_PROC.
+> > >
+> >
+> > CORESIGHT_DEV_SUBTYPE_SOURCE_PERCPU_PROC - this does not exist.
+> >
+> > >
+> > > This defines a percpu structure that accommodates a single coresight_device
+> > > which can be used to store an initialized instance from a sink driver. As
+> > > these sinks are exclusively linked and dependent on corresponding percpu
+> > > sources devices, they should also be the default sink device during a perf
+> > > session.
+> > >
+> > > Outwards device connections are scanned while establishing paths between a
+> > > source and a sink device. But such connections are not present for certain
+> > > percpu source and sink devices which are exclusively linked and dependent.
+> > > Build the path directly and skip connection scanning for such devices.
+> > >
+> > > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > Cc: Mike Leach <mike.leach@linaro.org>
+> > > Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > > ---
+> > > Changes in V3:
+> > >
+> > > - Updated coresight_find_default_sink()
+> > >
+> > >  drivers/hwtracing/coresight/coresight-core.c | 16 ++++++++++++++--
+> > >  include/linux/coresight.h                    | 12 ++++++++++++
+> > >  2 files changed, 26 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> > > index 0062c89..4795e28 100644
+> > > --- a/drivers/hwtracing/coresight/coresight-core.c
+> > > +++ b/drivers/hwtracing/coresight/coresight-core.c
+> > > @@ -23,6 +23,7 @@
+> > >  #include "coresight-priv.h"
+> > >
+> > >  static DEFINE_MUTEX(coresight_mutex);
+> > > +DEFINE_PER_CPU(struct coresight_device *, csdev_sink);
+> > >
+> >
+> > If you do indeed mean the architecturally defined sinks then this
+> > could be 'csdev_pe_arch_sink' - or something similar to indicate the
+> > reliance on the PE architecture, unless per-cpu ETR topologies are
+> > also handled here.
+>
+> I would like to treat systems with one ETR per CPU the same way we do for TRBEs.
+> That way we have two distinct way of working, i.e topologies where the sink is
+> shared and 1:1 topologies.  As such moving forward with "csdev_pe_arch_sink"
+> could become misleading when 1:1 ETR topologies are supported.
+>
+> Mathieu
+>
 
-This patch fixes the bug introduced by the commit
-3ad3f8f93c81 ("octeontx2-af: cn10k: MAC internal loopback support".
-These changes are not yet merged into net branch, hence submitting
-to net-next.
+I believe that In terms of connecting source -> sink for 1:1 ETM:ETR,
+then the existing code will already work via the normal build path and
+ports declarations. Suzukis changes in coresight-etm-perf to allow
+multiple sinks of the same type to be active for ETE:TRBE will also
+work for ETx:ETR. (at least in terms of path building - there may
+still be other issues that come into play about buffers etc).
 
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c   |  2 ++
- .../net/ethernet/marvell/octeontx2/af/rvu_debugfs.c   |  2 +-
- .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c    | 11 ++++++-----
- 3 files changed, 9 insertions(+), 6 deletions(-)
+The TRBE .dts doesn''t have any ports and is as such outside this
+framework. This patch appears to be making it detectable when
+connecting source -> sink where we have ETE:TRBE on a given CPU - as
+in the subsequent patches, the TRBE driver registers in the per cpu
+sink array.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-index 3a1809c28e83..e668e482383a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-@@ -722,12 +722,14 @@ u32 rvu_cgx_get_fifolen(struct rvu *rvu)
- 
- static int rvu_cgx_config_intlbk(struct rvu *rvu, u16 pcifunc, bool en)
- {
-+	int pf = rvu_get_pf(pcifunc);
- 	struct mac_ops *mac_ops;
- 	u8 cgx_id, lmac_id;
- 
- 	if (!is_cgx_config_permitted(rvu, pcifunc))
- 		return -EPERM;
- 
-+	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
- 	mac_ops = get_mac_ops(rvu_cgx_pdata(cgx_id, rvu));
- 
- 	return mac_ops->mac_lmac_intl_lbk(rvu_cgx_pdata(cgx_id, rvu),
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index 48a84c65804c..094124b695dc 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -2432,7 +2432,7 @@ void rvu_dbg_init(struct rvu *rvu)
- 		debugfs_create_file("rvu_pf_cgx_map", 0444, rvu->rvu_dbg.root,
- 				    rvu, &rvu_dbg_rvu_pf_cgx_map_fops);
- 	else
--		debugfs_create_file("rvu_pf_cgx_map", 0444, rvu->rvu_dbg.root,
-+		debugfs_create_file("rvu_pf_rpm_map", 0444, rvu->rvu_dbg.root,
- 				    rvu, &rvu_dbg_rvu_pf_cgx_map_fops);
- 
- create:
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index 3f778fc054b5..22ec03a618b1 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -816,22 +816,23 @@ static bool is_hw_tso_supported(struct otx2_nic *pfvf,
- {
- 	int payload_len, last_seg_size;
- 
-+	if (test_bit(HW_TSO, &pfvf->hw.cap_flag))
-+		return true;
-+
-+	/* On 96xx A0, HW TSO not supported */
-+	if (!is_96xx_B0(pfvf->pdev))
-+		return false;
- 
- 	/* HW has an issue due to which when the payload of the last LSO
- 	 * segment is shorter than 16 bytes, some header fields may not
- 	 * be correctly modified, hence don't offload such TSO segments.
- 	 */
--	if (!is_96xx_B0(pfvf->pdev))
--		return true;
- 
- 	payload_len = skb->len - (skb_transport_offset(skb) + tcp_hdrlen(skb));
- 	last_seg_size = payload_len % skb_shinfo(skb)->gso_size;
- 	if (last_seg_size && last_seg_size < 16)
- 		return false;
- 
--	if (!test_bit(HW_TSO, &pfvf->hw.cap_flag))
--		return false;
--
- 	return true;
- }
- 
--- 
-2.17.1
+So these changes are not really related to 1:1 specifically, but the
+detectability of PE architected sinks. There is a need for the per cpu
+array for TRBE as there is no other way of finding them - but not for
+ETR - which should work just fine without changes I think.
 
+Regards
+
+Mike
+
+
+> >
+> > >  /**
+> > >   * struct coresight_node - elements of a path, from source to sink
+> > > @@ -784,6 +785,13 @@ static int _coresight_build_path(struct coresight_device *csdev,
+> > >         if (csdev == sink)
+> > >                 goto out;
+> > >
+> > > +       if (coresight_is_percpu_source(csdev) && coresight_is_percpu_sink(sink) &&
+> > > +           sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev))) {
+> > > +               _coresight_build_path(sink, sink, path);
+> > > +               found = true;
+> > > +               goto out;
+> > > +       }
+> > > +
+> > >         /* Not a sink - recursively explore each port found on this element */
+> > >         for (i = 0; i < csdev->pdata->nr_outport; i++) {
+> > >                 struct coresight_device *child_dev;
+> > > @@ -999,8 +1007,12 @@ coresight_find_default_sink(struct coresight_device *csdev)
+> > >         int depth = 0;
+> > >
+> > >         /* look for a default sink if we have not found for this device */
+> > > -       if (!csdev->def_sink)
+> > > -               csdev->def_sink = coresight_find_sink(csdev, &depth);
+> > > +       if (!csdev->def_sink) {
+> > > +               if (coresight_is_percpu_source(csdev))
+> > > +                       csdev->def_sink = per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
+> > > +               if (!csdev->def_sink)
+> > > +                       csdev->def_sink = coresight_find_sink(csdev, &depth);
+> > > +       }
+> > >         return csdev->def_sink;
+> > >  }
+> > >
+> > > diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+> > > index 976ec26..bc3a5ca 100644
+> > > --- a/include/linux/coresight.h
+> > > +++ b/include/linux/coresight.h
+> > > @@ -50,6 +50,7 @@ enum coresight_dev_subtype_sink {
+> > >         CORESIGHT_DEV_SUBTYPE_SINK_PORT,
+> > >         CORESIGHT_DEV_SUBTYPE_SINK_BUFFER,
+> > >         CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM,
+> > > +       CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM,
+> >
+> > If this is needed then could it not be ..._SINK_SYSMEM_PROC - to be
+> > consistent with ..._SOURCE_PROC?
+> >
+> > >  };
+> > >
+> > >  enum coresight_dev_subtype_link {
+> > > @@ -428,6 +429,17 @@ static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 o
+> > >                 csa->write(val, offset, false, true);
+> > >  }
+> > >
+> > > +static inline bool coresight_is_percpu_source(struct coresight_device *csdev)
+> >
+> > All cpu sources are per cpu - that is ETMv3, ETMv4, PTM, ETE - this
+> > might be better as simply coresight_is_cpu_source() as all the
+> > aforementioned types will return true.
+> >
+> > > +{
+> > > +       return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
+> > > +              csdev->subtype.source_subtype == CORESIGHT_DEV_SUBTYPE_SOURCE_PROC;
+> > > +}
+> > > +
+> > > +static inline bool coresight_is_percpu_sink(struct coresight_device *csdev)
+> > > +{
+> > > +       return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SINK) &&
+> > > +              csdev->subtype.sink_subtype == CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
+> > > +}
+> > >  #else  /* !CONFIG_64BIT */
+> > >
+> > >  static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
+> > > --
+> > > 2.7.4
+> > >
+> >
+> > Regards
+> >
+> > Mike
+> > --
+> > Mike Leach
+> > Principal Engineer, ARM Ltd.
+> > Manchester Design Centre. UK
+
+
+
+--
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
