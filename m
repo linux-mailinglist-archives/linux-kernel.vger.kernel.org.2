@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E92431B86E
+	by mail.lfdr.de (Postfix) with ESMTP id DF93331B86F
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhBOLxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 06:53:36 -0500
-Received: from ozlabs.org ([203.11.71.1]:54097 "EHLO ozlabs.org"
+        id S230026AbhBOLxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 06:53:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33404 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229974AbhBOLwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 06:52:49 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DfMsL06wJz9sS8;
-        Mon, 15 Feb 2021 22:52:05 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613389926;
-        bh=MsFd0H1vboXWoJgTolHQFt3c8tMk6G8b9iiP36p17kk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ie4zeLmtZsdjPF5/RkIBnRskfeMoI9LKBOH2cOTH5vKv8aoLqSbejddJNThIjo+KT
-         1pt5gpTXT5/9euKKm5sR4oxJFC/yZIihzm9MlLVjoz9YUUzhhE7juFA2zS7QIdSAje
-         O79jld2H45ZlFZhMuk3Fr/puxuVYlZWZnlO1/qeJXwDElcw41JLBwLLIwhJ9fE7Fpc
-         xc0AxLAE/1hq3WjDEVcxgYkiHTQ3i2hthWlqXcBcCHVm3eefvAJerszuO/3ncGxe80
-         QlUd0Csua7mRyRtPPnHqE/114SPVg1IQt7BGes2J01b+0WAxQ29x6j8qFY7t7+uGU1
-         U8zVAMtxf79pg==
-Date:   Mon, 15 Feb 2021 22:52:04 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Davide Caratti <dcaratti@redhat.com>
-Cc:     Guillaume Nault <gnault@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210215225204.744d43c4@canb.auug.org.au>
-In-Reply-To: <72bb7b9fc0cf7afc308e284c72c363e80df8e734.camel@redhat.com>
-References: <20210215114354.6ddc94c7@canb.auug.org.au>
-        <20210215110154.GA28453@linux.home>
-        <72bb7b9fc0cf7afc308e284c72c363e80df8e734.camel@redhat.com>
+        id S229945AbhBOLw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 06:52:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B831FAC32;
+        Mon, 15 Feb 2021 11:52:11 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 12:52:14 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/fpu for v5.12
+Message-ID: <20210215115214.GB7265@zn.tnic>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nGeH_70nOB4WzFqrUL/3fcj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nGeH_70nOB4WzFqrUL/3fcj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Linus,
 
-Hi Davide,
+please pull an x86/fpu usage optimization and cleanups for v5.12.
 
-On Mon, 15 Feb 2021 12:35:37 +0100 Davide Caratti <dcaratti@redhat.com> wro=
-te:
->
-> On Mon, 2021-02-15 at 12:01 +0100, Guillaume Nault wrote:
-> > Before these commits, ALL_TESTS listed the tests in the order they were
-> > implemented in the rest of the file. So I'd rather continue following
-> > this implicit rule, if at all possible. Also it makes sense to keep
-> > grouping all match_ip_*_test together. =20
->=20
-> yes, it makes sense. I can follow-up with a commit for net-next (when
-> tree re-opens), where the "ordering" in ALL_TESTS is restored. Ok?
+Thx.
 
-The ordering is not set in stone yet (I have only done the merge in the
-linux-next tree), just make sure that Dave knows what it should look
-like when he merges the net and net-next trees.
+---
 
---=20
-Cheers,
-Stephen Rothwell
+The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
 
---Sig_/nGeH_70nOB4WzFqrUL/3fcj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
 
------BEGIN PGP SIGNATURE-----
+are available in the Git repository at:
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAqYGQACgkQAVBC80lX
-0GwAtwf/R7yQPmv5KYJEjloWrlfUFfpTbD4F0C9RPbM9H4ckozF0WypKlfE5b6i0
-4K89y1Hoxicz1XfTkNLDIDGdgvYIp6LEX8nexv1NSZdxRBd2lhkKciA/ubAhNtxQ
-9YNi0rhIbkJ7vbOMo85xqTeYOha6/ezoeyuBpgUaCmnayYw/9s0cjBMN1N5HXkJ6
-M8nzSLdd8DmZ8+H+lboUrEzg65K6b3F5j97VGJIFFOwqWscoy2rhRZgeQo7xrtSp
-nCRHlZf5jDiQJu6DRSUFDUR5idh7vtTLOADPyGpjnXzDMVJDdc0uXHR18FiCABHD
-QSWWoIAlvEDGwdEP+2LmQ/ldRVqvgw==
-=1lUg
------END PGP SIGNATURE-----
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_fpu_for_v5.12
 
---Sig_/nGeH_70nOB4WzFqrUL/3fcj--
+for you to fetch changes up to 0a74d61c7d842b583f33f74d7a9e93201826f4c5:
+
+  x86/fpu/xstate: Use sizeof() instead of a constant (2021-01-29 12:33:17 +0100)
+
+----------------------------------------------------------------
+- Have 64-bit kernel code which uses 387 insns request a x87 init
+(FNINIT) explicitly when using the FPU + cleanups.
+
+----------------------------------------------------------------
+Andy Lutomirski (2):
+      x86/fpu: Make the EFI FPU calling convention explicit
+      x86/fpu/64: Don't FNINIT in kernel_fpu_begin()
+
+Yejune Deng (1):
+      x86/fpu/xstate: Use sizeof() instead of a constant
+
+ arch/x86/include/asm/efi.h     | 24 ++++++++++++++++++++----
+ arch/x86/include/asm/fpu/api.h | 12 ++++++++++++
+ arch/x86/kernel/fpu/xstate.c   |  4 ++--
+ arch/x86/platform/efi/efi_64.c |  4 ++--
+ 4 files changed, 36 insertions(+), 8 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
