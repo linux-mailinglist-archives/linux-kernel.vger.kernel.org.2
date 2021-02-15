@@ -2,48 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0ECA31BB54
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 564BC31BB22
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhBOOmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:42:23 -0500
-Received: from elvis.franken.de ([193.175.24.41]:56950 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229779AbhBOOmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:42:12 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lBf42-0000J2-00; Mon, 15 Feb 2021 15:41:26 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0A40BC0344; Mon, 15 Feb 2021 14:19:06 +0100 (CET)
-Date:   Mon, 15 Feb 2021 14:19:05 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: kernel: Drop kgdb_call_nmi_hook
-Message-ID: <20210215131905.GA3307@alpha.franken.de>
-References: <20210213140231.23985-1-tsbogend@alpha.franken.de>
+        id S229873AbhBOOcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:32:39 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:34035 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230019AbhBOObs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:31:48 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id AE35CEC4;
+        Mon, 15 Feb 2021 09:30:58 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 15 Feb 2021 09:30:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=VTF+InyvJ1i+IExFvTo0zZ2GIbm
+        UxMajMuGt1DH2D0g=; b=nErQjQnLRMZq8A/zgnQvDrcIq8lB9drZzEY624c39Sx
+        AHgkX0Mu7uDpzTBbxoWF3dKWTjxCu3vULPJvBAFeviiRpMuMYyEnVFFjm7IBvoYd
+        oWNowSXy2VtJjDlXhodflNoX615DJAVmBuXmnXcoM29+HxFUAzx7+RE6GJel2rfR
+        pRaW3NiDTRgE6DiuP+9ZR/MsTCC/MkY06mDNHgJAYONIIMlLKMV3Pgx3GIyiI3Ps
+        3WkYwK1+1cnX9OnQv3ue4exALw4p3Q2OPuO1IfLUYuAe1dzk4EqqmIoivSwK6syp
+        T9WfMwHENcAwOBqs3yKdVHQ2Fd3IcaSUnQwIx0OMf4Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=VTF+In
+        yvJ1i+IExFvTo0zZ2GIbmUxMajMuGt1DH2D0g=; b=UAasazt4qrIDfv0CJtgUQp
+        8eISUDCS7p35pAPjDkdeqVUUBlYq7C6rY7MPDC/yk5AF91AvcqG/AAWJ31X69G5c
+        VV+695VJKApew1Yi+hrvynPfIkP5mESsc8TsaXdgZLZdsfpfTAqAASYaODauWNA0
+        Ea+prsSB5Msq1QAUcLVuAluDzuV4LAepOWvGaO8tpigmB0sXxdjKAXbWXBLd/Mz5
+        2k8Wcr/ARJZurra7YHlmykpVvA/b49UZA3Ou0FfGHcJz6BSHObxAB5ZboNnyj9q8
+        Xl2c6lHi/kr3F4BGwkZkBJ9GjV6BRg7ip3hPxxjKE6eZHel1RRxPnlZnrPAZakEQ
+        ==
+X-ME-Sender: <xms:oYUqYEdf1dxzdiTAtt-V6tLqrokHF2TspyFyyS5IVoCdGbLssZWRRw>
+    <xme:oYUqYP0NfP0FVYl5a8lfk0DUKUd7fBPphZH5974kRJjUscsYJOfvEcvKWsJXSH2Zd
+    1qvZSepUKWgPg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrieekgdeiudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
+    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:oYUqYFg6cV9GBNAKpBcidjPZmTiLBvFvb1l0YMSna0BbBQW-kT6C_Q>
+    <xmx:oYUqYNTvPqtVos1qhZgibTgOygnq1zvvBFmS_ZnGfLZJiogen04eTA>
+    <xmx:oYUqYOgYf00MfMxhOZoS9qy-Wg2GNLSfyxDU4IAoxF0N2U7gglEkaA>
+    <xmx:ooUqYMrgmndUSN6a_pb_Ja0nnhwCiB5qPfjohjR6dkpo3VmXSbra5A>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 657F924005D;
+        Mon, 15 Feb 2021 09:30:57 -0500 (EST)
+Date:   Mon, 15 Feb 2021 15:30:55 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     fedora.dm0@gmail.com, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH for 5.10] powerpc/32: Preserve cr1 in exception prolog
+ stack check to fix build error
+Message-ID: <YCqFn/4YuT+445xW@kroah.com>
+References: <f6d16f3321f1dc89b77ada1c7d961fae4089766e.1613120077.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210213140231.23985-1-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <f6d16f3321f1dc89b77ada1c7d961fae4089766e.1613120077.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 03:02:31PM +0100, Thomas Bogendoerfer wrote:
-> With the removal of set_fs() calls kgdb_call_nmi_hook() is now the same as
-> the default implementation, so we can remove it.
+On Fri, Feb 12, 2021 at 08:57:14AM +0000, Christophe Leroy wrote:
+> This is backport of 3642eb21256a ("powerpc/32: Preserve cr1 in
+> exception prolog stack check to fix build error") for kernel 5.10
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
->  arch/mips/kernel/kgdb.c | 5 -----
->  1 file changed, 5 deletions(-)
+> It fixes the build failure on v5.10 reported by kernel test robot
+> and by David Michael.
+> 
+> This fix is not in Linux tree yet, it is in next branch in powerpc tree.
 
-applied to mips-next.
+Then there's nothing I can do about it until that happens :(
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
