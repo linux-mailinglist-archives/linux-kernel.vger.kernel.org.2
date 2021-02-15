@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935F931BE1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F4231BE15
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbhBOP6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:58:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46702 "EHLO mail.kernel.org"
+        id S232466AbhBOP6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:58:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231348AbhBOPc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:32:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C21764EAB;
-        Mon, 15 Feb 2021 15:30:13 +0000 (UTC)
+        id S231136AbhBOPbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:31:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB6B164E34;
+        Mon, 15 Feb 2021 15:29:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403014;
-        bh=nubV/1ygv6kqsM4aIbnBzomM+6P/DuLH9iUpEwabiJU=;
+        s=korg; t=1613402972;
+        bh=SKFQENu7INq7P849sQ2+kBobGSIxyjI5eJfGYtCYQqw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fWoTXTyEOlibPVOe1vLzkD3IEd7nSEBg67FeyqsISVN1JJTXOR8vif73Jmj64Pngf
-         +6k+JtlFL6NZdywntFS+csxqSl9kAShXAdTkR3FqevykAhkzuVGKHFw7mUpBtp+fU6
-         wPC/NcQ/CtvUkrb+VU9r7cVNVCMv5TM2rl4L9ykw=
+        b=iGTmO6gbij3JkkiZYNa1E1PVROIIYEiAIAFob6k+vupgrCwofeUd/2ikonPRSMv9B
+         iCWIiKqiyADtFXq/vP4g5FcPAIGe/YNb6MckG0az+hi4uMVw+0GPCcI2SNqGKe1H6e
+         xuVmRQveGxC5alTermeW2Zwzx1X8W+77D2Y8f4Jc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Feng <linf@wangsu.com>,
-        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 20/60] bfq-iosched: Revert "bfq: Fix computation of shallow depth"
-Date:   Mon, 15 Feb 2021 16:27:08 +0100
-Message-Id: <20210215152716.012942558@linuxfoundation.org>
+Subject: [PATCH 5.4 39/60] net: hns3: add a check for queue_id in hclge_reset_vf_queue()
+Date:   Mon, 15 Feb 2021 16:27:27 +0100
+Message-Id: <20210215152716.617536072@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -40,66 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Feng <linf@wangsu.com>
+From: Yufeng Mo <moyufeng@huawei.com>
 
-[ Upstream commit 388c705b95f23f317fa43e6abf9ff07b583b721a ]
+[ Upstream commit 67a69f84cab60484f02eb8cbc7a76edffbb28a25 ]
 
-This reverts commit 6d4d273588378c65915acaf7b2ee74e9dd9c130a.
+The queue_id is received from vf, if use it directly,
+an out-of-bound issue may be caused, so add a check for
+this queue_id before using it in hclge_reset_vf_queue().
 
-bfq.limit_depth passes word_depths[] as shallow_depth down to sbitmap core
-sbitmap_get_shallow, which uses just the number to limit the scan depth of
-each bitmap word, formula:
-scan_percentage_for_each_word = shallow_depth / (1 << sbimap->shift) * 100%
-
-That means the comments's percentiles 50%, 75%, 18%, 37% of bfq are correct.
-But after commit patch 'bfq: Fix computation of shallow depth', we use
-sbitmap.depth instead, as a example in following case:
-
-sbitmap.depth = 256, map_nr = 4, shift = 6; sbitmap_word.depth = 64.
-The resulsts of computed bfqd->word_depths[] are {128, 192, 48, 96}, and
-three of the numbers exceed core dirver's 'sbitmap_word.depth=64' limit
-nothing.
-
-Signed-off-by: Lin Feng <linf@wangsu.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 1a426f8b40fc ("net: hns3: fix the VF queue reset flow error")
+Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bfq-iosched.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 7d19aae015aeb..ba32adaeefdd0 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -6320,13 +6320,13 @@ static unsigned int bfq_update_depths(struct bfq_data *bfqd,
- 	 * limit 'something'.
- 	 */
- 	/* no more than 50% of tags for async I/O */
--	bfqd->word_depths[0][0] = max(bt->sb.depth >> 1, 1U);
-+	bfqd->word_depths[0][0] = max((1U << bt->sb.shift) >> 1, 1U);
- 	/*
- 	 * no more than 75% of tags for sync writes (25% extra tags
- 	 * w.r.t. async I/O, to prevent async I/O from starving sync
- 	 * writes)
- 	 */
--	bfqd->word_depths[0][1] = max((bt->sb.depth * 3) >> 2, 1U);
-+	bfqd->word_depths[0][1] = max(((1U << bt->sb.shift) * 3) >> 2, 1U);
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+index 6887b7fda6e07..08040cafc06bc 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -8563,12 +8563,19 @@ int hclge_reset_tqp(struct hnae3_handle *handle, u16 queue_id)
  
- 	/*
- 	 * In-word depths in case some bfq_queue is being weight-
-@@ -6336,9 +6336,9 @@ static unsigned int bfq_update_depths(struct bfq_data *bfqd,
- 	 * shortage.
- 	 */
- 	/* no more than ~18% of tags for async I/O */
--	bfqd->word_depths[1][0] = max((bt->sb.depth * 3) >> 4, 1U);
-+	bfqd->word_depths[1][0] = max(((1U << bt->sb.shift) * 3) >> 4, 1U);
- 	/* no more than ~37% of tags for sync writes (~20% extra tags) */
--	bfqd->word_depths[1][1] = max((bt->sb.depth * 6) >> 4, 1U);
-+	bfqd->word_depths[1][1] = max(((1U << bt->sb.shift) * 6) >> 4, 1U);
+ void hclge_reset_vf_queue(struct hclge_vport *vport, u16 queue_id)
+ {
++	struct hnae3_handle *handle = &vport->nic;
+ 	struct hclge_dev *hdev = vport->back;
+ 	int reset_try_times = 0;
+ 	int reset_status;
+ 	u16 queue_gid;
+ 	int ret;
  
- 	for (i = 0; i < 2; i++)
- 		for (j = 0; j < 2; j++)
++	if (queue_id >= handle->kinfo.num_tqps) {
++		dev_warn(&hdev->pdev->dev, "Invalid vf queue id(%u)\n",
++			 queue_id);
++		return;
++	}
++
+ 	queue_gid = hclge_covert_handle_qid_global(&vport->nic, queue_id);
+ 
+ 	ret = hclge_send_reset_tqp_cmd(hdev, queue_gid, true);
 -- 
 2.27.0
 
