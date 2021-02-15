@@ -2,109 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1778631B5A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 08:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7EC31B5A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 08:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhBOHay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 02:30:54 -0500
-Received: from mo-csw1114.securemx.jp ([210.130.202.156]:41544 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhBOHar (ORCPT
+        id S229945AbhBOHa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 02:30:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhBOHaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 02:30:47 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 11F7SD8j007731; Mon, 15 Feb 2021 16:28:14 +0900
-X-Iguazu-Qid: 2wGqsXjpwIf1LbOLGW
-X-Iguazu-QSIG: v=2; s=0; t=1613374093; q=2wGqsXjpwIf1LbOLGW; m=lVkVkCKaQ0GTmF5HnUvU37rAumj/q4/KAOhciklpZiY=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1112) id 11F7SBOk037567;
-        Mon, 15 Feb 2021 16:28:12 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 11F7SBcd018818;
-        Mon, 15 Feb 2021 16:28:11 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 11F7SAKc025869;
-        Mon, 15 Feb 2021 16:28:10 +0900
-Date:   Mon, 15 Feb 2021 16:28:09 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>, arnd@kernel.org,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] net: stmmac: Add Toshiba Visconti SoCs glue driver
-X-TSB-HOP: ON
-Message-ID: <20210215072809.n3r5rdswookzri6j@toshiba.co.jp>
-References: <20210215050655.2532-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210215050655.2532-3-nobuhiro1.iwamatsu@toshiba.co.jp>
- <YCoPmfunGmu0E8IT@unreal>
+        Mon, 15 Feb 2021 02:30:21 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22084C061756;
+        Sun, 14 Feb 2021 23:29:41 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id r23so6613225ljh.1;
+        Sun, 14 Feb 2021 23:29:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=79lwX7opGlCl6k5/gtvtF+EDAPSlvhge501UOjBBscg=;
+        b=eiC5KUj7w3Xi5LydiaVaeY2pU7nAWZNFMzNtonYi6Gj9FCa9r7bZDFBNu3uEJ24nlb
+         IVnQB2kazqrFhJP0/poOWprW7rVU1GUyivC4/Y8akCTl6KU86N656ztrv2DqH5akeVNN
+         NcnjnPlePYIiSXaABijTi0xyxWt4owXTLMGOOnPeDhVU5MSYTS1ej+I2Qasy0aTvdWgn
+         7hqpEf/Wsm7vtE1rN11JvJg3WW60iXn7w3U5Xt4+J+35Aa4Q83jxWP0frOMJxnG+evOi
+         TWJ6wY3wJQ8/bwffoOm4lz3Ir3V1EITAxmWZ/HcntwicFbVnmq/Ra/7fZknfRgPrSqJP
+         +XUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=79lwX7opGlCl6k5/gtvtF+EDAPSlvhge501UOjBBscg=;
+        b=kh6jsEoBelmbuHTsJQmqRzknO3lUFoxB0lcuY+TprRSz8QRcm8lCGYXv+XfjA0qSe4
+         81Ndr1xf7TPnxBFaiBpU8CIIEK/FmRrZN1A4S2UR9XMPRvx2i5vJJ3XyivLCQqDSFO+B
+         bvbgITknjYDACvZiwRNYLY+YPTl5RKWNyAll1MPw0bRxpfNTawKbSBIZro7uxhiF+ZAr
+         pH4pfQZQvZBxi5L4r2VzL6MxKSbP8OfP1pj3ORsi7PFY87kY26cds/MbPtzZgASiHn6u
+         yMdv8U0jFoKCz2BkHNI27EFqo1ZdfwycTeEMBicZCcFVQ9eYyTb6LjnOEQzFcpSff0t1
+         fNuQ==
+X-Gm-Message-State: AOAM530wrW1Xs7w4zjiYwG0LFmeoPny5XR8p2iyduJz9tEZ/IgyGRpdu
+        tH79uhQ01oBvCMEIgZpdUtI=
+X-Google-Smtp-Source: ABdhPJxXhZkTpdE72XrqXK28hqtTTDaRS+c9UywWe9x23DTns/PHAPvrg65zYVKRvGljJ5UDmJGQ2Q==
+X-Received: by 2002:a2e:730c:: with SMTP id o12mr3645460ljc.27.1613374179617;
+        Sun, 14 Feb 2021 23:29:39 -0800 (PST)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id l19sm3538642lji.53.2021.02.14.23.29.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 23:29:39 -0800 (PST)
+From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH] mtd: parsers: ofpart: fix building as module
+Date:   Mon, 15 Feb 2021 08:28:44 +0100
+Message-Id: <20210215072844.16136-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCoPmfunGmu0E8IT@unreal>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Thanks for your review.
+This fixes:
+ERROR: modpost: missing MODULE_LICENSE() in drivers/mtd/parsers/bcm4908-partitions.o
+ERROR: modpost: "bcm4908_partitions_post_parse" [drivers/mtd/parsers/ofpart.ko] undefined!
 
-On Mon, Feb 15, 2021 at 08:07:21AM +0200, Leon Romanovsky wrote:
-> On Mon, Feb 15, 2021 at 02:06:53PM +0900, Nobuhiro Iwamatsu wrote:
-> > Add dwmac-visconti to the stmmac driver in Toshiba Visconti ARM SoCs.
-> > This patch contains only the basic function of the device. There is no
-> > clock control, PM, etc. yet. These will be added in the future.
-> >
-> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> > ---
-> >  drivers/net/ethernet/stmicro/stmmac/Kconfig   |   8 +
-> >  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
-> >  .../ethernet/stmicro/stmmac/dwmac-visconti.c  | 285 ++++++++++++++++++
-> >  3 files changed, 294 insertions(+)
-> >  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
-> >
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> > index 53f14c5a9e02..55ba67a550b9 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> > @@ -219,6 +219,14 @@ config DWMAC_INTEL_PLAT
-> >  	  This selects the Intel platform specific glue layer support for
-> >  	  the stmmac device driver. This driver is used for the Intel Keem Bay
-> >  	  SoC.
-> > +
-> > +config DWMAC_VISCONTI
-> > +	bool "Toshiba Visconti DWMAC support"
-> > +	def_bool y
-> 
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 09cf6ee6d21c ("mtd: parsers: ofpart: support BCM4908 fixed partitions")
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ drivers/mtd/parsers/Makefile             | 2 +-
+ drivers/mtd/parsers/bcm4908-partitions.c | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-Sorry, I sent the wrong patchset that didn't fix this point out.
+diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
+index 01972a5edc5c..bf58a5221730 100644
+--- a/drivers/mtd/parsers/Makefile
++++ b/drivers/mtd/parsers/Makefile
+@@ -4,7 +4,7 @@ obj-$(CONFIG_MTD_BCM47XX_PARTS)		+= bcm47xxpart.o
+ obj-$(CONFIG_MTD_BCM63XX_PARTS)		+= bcm63xxpart.o
+ obj-$(CONFIG_MTD_CMDLINE_PARTS)		+= cmdlinepart.o
+ obj-$(CONFIG_MTD_OF_PARTS)		+= ofpart.o
+-obj-$(CONFIG_MTD_OF_PARTS)		+= bcm4908-partitions.o
++ofpart-objs				:= bcm4908-partitions.o
+ obj-$(CONFIG_MTD_PARSER_IMAGETAG)	+= parser_imagetag.o
+ obj-$(CONFIG_MTD_AFS_PARTS)		+= afs.o
+ obj-$(CONFIG_MTD_PARSER_TRX)		+= parser_trx.o
+diff --git a/drivers/mtd/parsers/bcm4908-partitions.c b/drivers/mtd/parsers/bcm4908-partitions.c
+index 40eb3b3801c3..ac69a2169763 100644
+--- a/drivers/mtd/parsers/bcm4908-partitions.c
++++ b/drivers/mtd/parsers/bcm4908-partitions.c
+@@ -62,3 +62,5 @@ int bcm4908_partitions_post_parse(struct mtd_info *mtd, struct mtd_partition *pa
+ 
+ 	return 0;
+ }
++
++MODULE_LICENSE("GPL");
+-- 
+2.26.2
 
-> I asked it before, but never received an answer.
-
-I have received your point out and have sent an email with the content
-to remove this line. But it may not have arrived yet...
-
-> Why did you use "def_bool y" and not "default y"? Isn't it supposed to be
-> "depends on STMMAC_ETH"? And probably it shouldn't be set as a default as "y".
-> 
-
-The reason why "def_bool y" was set is that the wrong fix was left when
-debugging. Also, I don't think it is necessary to set "default y".
-This is also incorrect because it says "bool" Toshiba Visconti DWMAC
-support "". I change it to trustate in the new patch.
-
-And this driver is enabled when STMMAC_PLATFORM was Y. And STMMAC_PLATFORM
-depends on STMMAC_ETH.
-So I understand that STMMAC_ETH does not need to be dependents. Is this
-understanding wrong?
-
-> Thanks
-> 
-
-Best regards,
-  Nobuhiro
