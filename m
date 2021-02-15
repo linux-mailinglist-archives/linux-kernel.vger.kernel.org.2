@@ -2,223 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D786931B5FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 09:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A96EB31B601
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 09:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhBOIrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 03:47:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53929 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229960AbhBOIrO (ORCPT
+        id S229981AbhBOIuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 03:50:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229892AbhBOIuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 03:47:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613378747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0pkjOUDVkE/MRzGwK00jh4QWH14hnNozDo7Jiu945IU=;
-        b=Q7UHO6FCVy2ddAV7iVANtQ/T1btpPyGQ23kW6VhvWQeVvZmFUWpQw+UwojhBnaAdfYJ8PM
-        4KPqlmjvb4pHvD8j5kqesdhDtaH9N7jMGcSYyZn6ghZKHXNze2jbse3O60c010NAnak5KS
-        iWC7j74WahsxTr8eYHBzPRw6Uq+ptuw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-D7aIz6oePyqRY6RpuI7yAQ-1; Mon, 15 Feb 2021 03:45:43 -0500
-X-MC-Unique: D7aIz6oePyqRY6RpuI7yAQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C07A3801965;
-        Mon, 15 Feb 2021 08:45:40 +0000 (UTC)
-Received: from [10.36.114.89] (ovpn-114-89.ams2.redhat.com [10.36.114.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 889DA5D9CA;
-        Mon, 15 Feb 2021 08:45:31 +0000 (UTC)
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-References: <20210208110820.6269-1-rppt@kernel.org>
- <5dccbc93-f260-7f14-23bc-6dee2dff6c13@redhat.com>
- <a6cf3a26-a174-abab-a5a0-6cf89ebe4af7@redhat.com>
- <20210214172906.GN242749@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
- holes in memory layout
-Message-ID: <c1559dcb-7953-fe08-604a-5eaf202bf662@redhat.com>
-Date:   Mon, 15 Feb 2021 09:45:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 15 Feb 2021 03:50:37 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC977C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 00:49:56 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id v14so7900034wro.7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 00:49:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=/rH+YIEvuGeVBC9R5oz2oGMVMVZR0r1QY2ZB5B8+/9o=;
+        b=QElcvSo2Qv1gpUhrggGEBhMfVDFIiJErGnpOzPBq7Y1hK7ebTnUVO4yrQ6+BZToA8P
+         LeBi2VldpEIICxzmwlCdbaWUYxgl6A43254lN07jWS9V4f9k9WWMl3zaK59M8ftA8kYi
+         FxX6NZUUrIeAX1NqEVylT9X9LJBoMdQeA5ZLZAmVxb4eDMcTioSMerbG6rDRRIQ8wQOg
+         GtY3lOmcmeYhT9uG2zWjqTM1DEXVN7Si2ErvqnmxKPq84J1u43yRAQcycmhMRQDJD66c
+         r2a1ekDorwBQyIFCtiRmMxy3JCieZeO97HT+zpC69Elq7MWTh5QElJKfDQZjaVcsKQk1
+         n5UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=/rH+YIEvuGeVBC9R5oz2oGMVMVZR0r1QY2ZB5B8+/9o=;
+        b=QlREIFcuFRJws1V6OSj/W8D7+LIcDnl6/xBKqenf+yftYAwwDAAfvOkM+SNvQz269r
+         Co+IybHZs6vZra59Ft0AG+7RxKlsDI58k7a5EMAxn9TZuPvhyVZOY2qjGIXg0egOQiQp
+         tdRsuuBza9qmpZldKEC3n7U5atr+ezn+PdpUS3/g9EO1rv3Gc5902r4cC910JzOtRxNh
+         9P57Y7YZmHKy6vqEYSRGQv8ovxrKezouiBMEZE4q1QVMKj+4pgnf6AzIuXQ3vH6UN1Nk
+         XV6U7ZO7tnLs42O28nYTwez+lHQhxI1UJB8HG55gkNHtBYQ8TZpjatQnQ2b9Uhgkj00y
+         CQpQ==
+X-Gm-Message-State: AOAM532O42V9En7O+aWSj2cMqkgtoQtbBEJ8kWy9goUGiyLxp8IFQOhO
+        N/LvXtYkLI3EJNJy3Qp/h03bkA==
+X-Google-Smtp-Source: ABdhPJxhaNjeFloYjkS8tVt5DeKpLQ+BaxHlwfJeH3jEEaYMRN3v4bXqekkv2M0W9w0ynZuJJwcArQ==
+X-Received: by 2002:adf:f543:: with SMTP id j3mr17591804wrp.203.1613378995318;
+        Mon, 15 Feb 2021 00:49:55 -0800 (PST)
+Received: from dell ([91.110.221.146])
+        by smtp.gmail.com with ESMTPSA id p12sm21981604wmq.1.2021.02.15.00.49.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 00:49:54 -0800 (PST)
+Date:   Mon, 15 Feb 2021 08:49:52 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+        Jan Kotas <jank@cadence.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
+        Boris BREZILLON <boris.brezillon@free-electrons.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+        Viresh Kumar <vireshk@kernel.org>, openbmc@lists.ozlabs.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nancy Yuen <yuenn@google.com>, Chen-Yu Tsai <wens@csie.org>,
+        Andy Gross <agross@kernel.org>, Loc Ho <lho@apm.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Richard Woodruff <r-woodruff2@ti.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-msm@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        =?iso-8859-1?Q?S=F6ren?= Brinkmann <soren.brinkmann@xilinx.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Tero Kristo <kristo@kernel.org>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Nuvoton Technologies <tali.perry@nuvoton.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
+Message-ID: <20210215084952.GF179940@dell>
+References: <20210212092016.GF4572@dell>
+ <161316374113.1254594.14156657225822268891@swboyd.mtv.corp.google.com>
+ <20210212212503.GC179940@dell>
+ <20210212212630.GD179940@dell>
+ <161316754567.1254594.9542583200097699504@swboyd.mtv.corp.google.com>
+ <20210212223739.GE179940@dell>
+ <161317480301.1254594.16648868282165823277@swboyd.mtv.corp.google.com>
+ <YCf4kkMsX+Ymgy6N@lunn.ch>
+ <161333644244.1254594.4498059850307971318@swboyd.mtv.corp.google.com>
+ <YCmUOHTtc+j4eLkO@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <20210214172906.GN242749@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <YCmUOHTtc+j4eLkO@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.02.21 18:29, Mike Rapoport wrote:
-> On Fri, Feb 12, 2021 at 10:56:19AM +0100, David Hildenbrand wrote:
->> On 12.02.21 10:55, David Hildenbrand wrote:
->>> On 08.02.21 12:08, Mike Rapoport wrote:
->>>> +#ifdef CONFIG_SPARSEMEM
->>>> +	/*
->>>> +	 * Sections in the memory map may not match actual populated
->>>> +	 * memory, extend the node span to cover the entire section.
->>>> +	 */
->>>> +	*start_pfn = round_down(*start_pfn, PAGES_PER_SECTION);
->>>> +	*end_pfn = round_up(*end_pfn, PAGES_PER_SECTION);
->>>
->>> Does that mean that we might create overlapping zones when one node
->>
->> s/overlapping zones/overlapping nodes/
->>
->>> starts in the middle of a section and the other one ends in the middle
->>> of a section?
->>
->>> Could it be a problem? (e.g., would we have to look at neighboring nodes
->>> when making the decision to extend, and how far to extend?)
+On Sun, 14 Feb 2021, Andrew Lunn wrote:
+
+> On Sun, Feb 14, 2021 at 01:00:42PM -0800, Stephen Boyd wrote:
+> > Quoting Andrew Lunn (2021-02-13 08:04:34)
+> > > > I'm trying to see if we can make lives better for everyone by exposing
+> > > > the warnings by default in the drivers/clk/ directory now that there are
+> > > > supposedly none left. Shouldn't we tighten the screws now that we've
+> > > > cleaned them?
+> > > 
+> > > Do you use patchwork? netdev has a bot attached which applies the
+> > > patch and does a W=1 build, and will report any new warnings. But it
+> > > does not email the developer, as far as i know. It is up to you as the
+> > > maintainer to reject the patch and say why.
+> > > 
+> > 
+> > Yes the kernel.org patchwork instance is used but I don't see any bot
+> > putting test results there. How is that done?
+> > 
+> > https://patchwork.kernel.org/project/linux-clk/list/
 > 
-> Having a node end/start in a middle of a section would be a problem, but in
-> this case I don't see a way to detect how a node should be extended :(
+> Compare this with for example:
+> 
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210213175257.28642-1-ap420073@gmail.com/
 
-Running QEMU with something like:
+Oh, that's nice.
 
-...
-     -m 8G \
-     -smp sockets=2,cores=2 \
-     -object memory-backend-ram,id=bmem0,size=4160M \
-     -object memory-backend-ram,id=bmem1,size=4032M \
-     -numa node,nodeid=0,cpus=0-1,memdev=bmem0 -numa node,nodeid=1,cpus=2-3,memdev=bmem1 \
-...
+> Jakub can explain how he added these checks.
 
-Creates such a setup.
-
-With an older kernel:
-
-[    0.000000] BIOS-provided physical RAM map:
-[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
-[    0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
-[    0.000000] BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved
-[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x00000000bffdffff] usable
-[    0.000000] BIOS-e820: [mem 0x00000000bffe0000-0x00000000bfffffff] reserved
-[    0.000000] BIOS-e820: [mem 0x00000000feffc000-0x00000000feffffff] reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fffc0000-0x00000000ffffffff] reserved
-[    0.000000] BIOS-e820: [mem 0x0000000100000000-0x000000023fffffff] usable
-[...]
-[    0.002506] ACPI: SRAT: Node 0 PXM 0 [mem 0x00000000-0x0009ffff]
-[    0.002508] ACPI: SRAT: Node 0 PXM 0 [mem 0x00100000-0xbfffffff]
-[    0.002509] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x143ffffff]
-[    0.002510] ACPI: SRAT: Node 1 PXM 1 [mem 0x144000000-0x23fffffff]
-[    0.002511] NUMA: Node 0 [mem 0x00000000-0x0009ffff] + [mem 0x00100000-0xbfffffff] -> [mem 0x00000000-0xbfffffff]
-[    0.002513] NUMA: Node 0 [mem 0x00000000-0xbfffffff] + [mem 0x100000000-0x143ffffff] -> [mem 0x00000000-0x143ffffff]
-[    0.002519] NODE_DATA(0) allocated [mem 0x143fd5000-0x143ffffff]
-[    0.002669] NODE_DATA(1) allocated [mem 0x23ffd2000-0x23fffcfff]
-[    0.017947] memblock: reserved range [0x0000000000000000-0x0000000000001000] is not in memory
-[    0.017953] memblock: reserved range [0x000000000009f000-0x0000000000100000] is not in memory
-[    0.017956] Zone ranges:
-[    0.017957]   DMA      [mem 0x0000000000000000-0x0000000000ffffff]
-[    0.017958]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
-[    0.017960]   Normal   [mem 0x0000000100000000-0x000000023fffffff]
-[    0.017961]   Device   empty
-[    0.017962] Movable zone start for each node
-[    0.017964] Early memory node ranges
-[    0.017965]   node   0: [mem 0x0000000000000000-0x00000000bffdffff]
-[    0.017966]   node   0: [mem 0x0000000100000000-0x0000000143ffffff]
-[    0.017967]   node   1: [mem 0x0000000144000000-0x000000023fffffff]
-[    0.017969] Initmem setup node 0 [mem 0x0000000000000000-0x0000000143ffffff]
-[    0.017971] On node 0 totalpages: 1064928
-[    0.017972]   DMA zone: 64 pages used for memmap
-[    0.017973]   DMA zone: 21 pages reserved
-[    0.017974]   DMA zone: 4096 pages, LIFO batch:0
-[    0.017994]   DMA32 zone: 12224 pages used for memmap
-[    0.017995]   DMA32 zone: 782304 pages, LIFO batch:63
-[    0.022281] DMA32: Zeroed struct page in unavailable ranges: 32
-[    0.022286]   Normal zone: 4352 pages used for memmap
-[    0.022287]   Normal zone: 278528 pages, LIFO batch:63
-[    0.023769] Initmem setup node 1 [mem 0x0000000144000000-0x000000023fffffff]
-[    0.023774] On node 1 totalpages: 1032192
-[    0.023775]   Normal zone: 16128 pages used for memmap
-[    0.023775]   Normal zone: 1032192 pages, LIFO batch:63
-
-
-With current next/master:
-
-[    0.000000] BIOS-provided physical RAM map:
-[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
-[    0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
-[    0.000000] BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved
-[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x00000000bffdffff] usable
-[    0.000000] BIOS-e820: [mem 0x00000000bffe0000-0x00000000bfffffff] reserved
-[    0.000000] BIOS-e820: [mem 0x00000000feffc000-0x00000000feffffff] reserved
-[    0.000000] BIOS-e820: [mem 0x00000000fffc0000-0x00000000ffffffff] reserved
-[    0.000000] BIOS-e820: [mem 0x0000000100000000-0x000000023fffffff] usable
-[...]
-[    0.002419] ACPI: SRAT: Node 0 PXM 0 [mem 0x00000000-0x0009ffff]
-[    0.002421] ACPI: SRAT: Node 0 PXM 0 [mem 0x00100000-0xbfffffff]
-[    0.002422] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x143ffffff]
-[    0.002423] ACPI: SRAT: Node 1 PXM 1 [mem 0x144000000-0x23fffffff]
-[    0.002424] NUMA: Node 0 [mem 0x00000000-0x0009ffff] + [mem 0x00100000-0xbfffffff] -> [mem 0x00000000-0xbfffffff]
-[    0.002426] NUMA: Node 0 [mem 0x00000000-0xbfffffff] + [mem 0x100000000-0x143ffffff] -> [mem 0x00000000-0x143ffffff]
-[    0.002432] NODE_DATA(0) allocated [mem 0x143fd5000-0x143ffffff]
-[    0.002583] NODE_DATA(1) allocated [mem 0x23ffd2000-0x23fffcfff]
-[    0.017722] Zone ranges:
-[    0.017726]   DMA      [mem 0x0000000000000000-0x0000000000ffffff]
-[    0.017728]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
-[    0.017729]   Normal   [mem 0x0000000100000000-0x000000023fffffff]
-[    0.017731]   Device   empty
-[    0.017732] Movable zone start for each node
-[    0.017734] Early memory node ranges
-[    0.017735]   node   0: [mem 0x0000000000001000-0x000000000009efff]
-[    0.017736]   node   0: [mem 0x0000000000100000-0x00000000bffdffff]
-[    0.017737]   node   0: [mem 0x0000000100000000-0x0000000143ffffff]
-[    0.017738]   node   1: [mem 0x0000000144000000-0x000000023fffffff]
-[    0.017741] Initmem setup node 0 [mem 0x0000000000000000-0x0000000147ffffff]
-[    0.017742] On node 0 totalpages: 1064830
-[    0.017743]   DMA zone: 64 pages used for memmap
-[    0.017744]   DMA zone: 21 pages reserved
-[    0.017745]   DMA zone: 3998 pages, LIFO batch:0
-[    0.017765]   DMA zone: 98 pages in unavailable ranges
-[    0.017766]   DMA32 zone: 12224 pages used for memmap
-[    0.017766]   DMA32 zone: 782304 pages, LIFO batch:63
-[    0.022042]   DMA32 zone: 32 pages in unavailable ranges
-[    0.022046]   Normal zone: 4608 pages used for memmap
-[    0.022047]   Normal zone: 278528 pages, LIFO batch:63
-[    0.023601]   Normal zone: 16384 pages in unavailable ranges
-[    0.023606] Initmem setup node 1 [mem 0x0000000140000000-0x000000023fffffff]
-[    0.023608] On node 1 totalpages: 1032192
-[    0.023609]   Normal zone: 16384 pages used for memmap
-[    0.023609]   Normal zone: 1032192 pages, LIFO batch:63
-[    0.029267]   Normal zone: 16384 pages in unavailable ranges
-
-
-In this setup, one node ends in the middle of a section (+64MB), the
-other one starts in the middle of the same section (+64MB).
-
-After your patch, the nodes overlap (in one section)
-
-I can spot that each node still has the same number of present pages and
-that each node now has exactly 64MB unavailable pages (the extra ones spanned).
-
-
-So at least here, it looks like the machinery is still doing the right thing?
-
+Yes, please share.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
