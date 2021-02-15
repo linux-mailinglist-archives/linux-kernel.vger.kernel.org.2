@@ -2,93 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEADE31C168
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7424231C16F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhBOSTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 13:19:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46066 "EHLO
+        id S230388AbhBOSUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 13:20:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbhBOSQq (ORCPT
+        with ESMTP id S230175AbhBOSUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 13:16:46 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E90EC06178A;
-        Mon, 15 Feb 2021 10:16:06 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id y25so1358017pfp.5;
-        Mon, 15 Feb 2021 10:16:06 -0800 (PST)
+        Mon, 15 Feb 2021 13:20:37 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BA4C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:19:56 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id k22so4156770pll.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:19:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3CVx8x/uzNXn30+T+KgGNTCM/AO8INlKriF8saOOxcg=;
-        b=HCBWxifauE/9Zl4Zp+5V+6mOAK8I1ldnH++yA+EReSYPCVgtOEt7MXSn0aP5IZ6lez
-         D14G0jPE2LPHmaoRdrhLmbCelXlAczf81A0Zbh42O6r6qkYmAgAsUcMRYQcxbhqZiPFL
-         RkzSoNCAHGWpba2SHHWsyKpaQhBHJVTQiBr0XxFCJJs/mPC85LiqE0AX8fZxBFPalcgK
-         3HEw0IhMFY/tKK03E7eQ3t18SpPh3T5ZH9l3b29a7eyRfhLBu+0EIV3eKQGDBcTFsdD9
-         vbpzDGeJTS/SMJ03UVP8l+pUE9F6Y6WS9+PR4Z/m6I6hFH4iUCiNDBeguF9gfZ7EhuIC
-         W6Gw==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=USwR3sUAh3X/IQIe8yfKo61p7LMNkKqO4NUHOz8c8WU=;
+        b=jyMGqHpGp1yPvi1APhdJZWbix/DfwuVSfSYSpVglMTqJ2ePgxDrDjxZantLX5K5tp9
+         n7ZUC8D5N4xr1g3Mb5W+idJIfbZdmDnv9HC/eFjwlzHzN9A5DSjix6uCPcNJv8PjrwG+
+         yLNqluW5wWq6fOIJFpBPFssdSRXJoD5bcidRkT2q8i6j7KrYu9pnJPo+T7oDX/zvATF6
+         UVoIf8f1xGPUIvjYjzmpTGKAOmFzixi8lNF8bPLGwc2TDGHOWxWo4Ye3+FGNHu/+aBDg
+         n1o7CTOEuUyFRXrOoRTr7DO/yUEjrwekxD8doXyuN3Kn/zyO0EZZuc7xLoIriak3o6oj
+         2iIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3CVx8x/uzNXn30+T+KgGNTCM/AO8INlKriF8saOOxcg=;
-        b=qXjSINtdhsB/jxy1eBD2w/aUKwUfBuVVOyuefE5rD2D8H3SJBapyTRaKuIJ0lq9wML
-         Yu09cA39tEVNjm1frp8hgYYMPf5HE2ep6o2AzLNqPJG9rvL/qUXqSPWMXupnV+H14vZP
-         B9IZ8EJJ9BQXZyNDDgRl0rfK17CNle+ehNBItUifk6FDjISEwdcZnKjUykzIvmBPtLlZ
-         Z0MLh+bXCPsrvH8Koom4Nd1fpZLQR4N1EhhG5hJV3P9U+6q1xYeVYH2xF8ggSetYQRJG
-         qWvbSXnlRqxlsk9mn4ZBBIrO5rsPcgUrXf2k67BY1Cpx8Z7LFm7Nrv9klO0NV0AO8epV
-         MWTw==
-X-Gm-Message-State: AOAM531gPQ11qfAId6jWNnHluUDa2AgID5ebE6kKVpDZ9eeVEL6MJzmD
-        gN4uyB+LmjXA/qnD7U8aeMA=
-X-Google-Smtp-Source: ABdhPJyNMTWJRSo/PojxXb8pkipT50qqBBezSslnxnxbGJvdpWQblCasRD3SE+VwAgU0990i2ApHwA==
-X-Received: by 2002:a05:6a00:2ac:b029:1e9:3cb7:324a with SMTP id q12-20020a056a0002acb02901e93cb7324amr15470130pfs.36.1613412966047;
-        Mon, 15 Feb 2021 10:16:06 -0800 (PST)
-Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
-        by smtp.gmail.com with ESMTPSA id g65sm19039593pfb.20.2021.02.15.10.16.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 10:16:05 -0800 (PST)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
-        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
-Subject: [PATCH v1 4/4] i2c: thunderx: Use the correct name of device-managed function
-Date:   Tue, 16 Feb 2021 02:15:50 +0800
-Message-Id: <20210215181550.714101-5-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20210215181550.714101-1-zhengdejin5@gmail.com>
-References: <20210215181550.714101-1-zhengdejin5@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=USwR3sUAh3X/IQIe8yfKo61p7LMNkKqO4NUHOz8c8WU=;
+        b=jqo5LkyY4gcbQQB0VA8A5Fcdy8ozDecLDqunjD1VJIlyZ46LxhT9D99SAVo19H7uwI
+         dh4Kh2A/AvcE18TeixplEx9iHUMg98xaB1XmKC8yvmPCCpSIQX4iEZGRR+NedY9FaZe4
+         bcEa5AvIC/9UWqwaERjiDIBWfj8vALgLiQUY6vF0gyQLl5ABRuZxyalKwJTJ3KxQA0Nj
+         sxpYoEgMklxyf7h7+wm/pZscXlsxKPMFpPVwV/Lhim0zE54vDrybEPASQ0G3kv4YjFRp
+         aCVGAbK0ZzGidiyers8g7d2T7m0bQ1xu8/p9s2NMepaWvTNmt24hT8vqVFrNiWmsd8ue
+         iQdg==
+X-Gm-Message-State: AOAM532th0JgAQ6lw+ICZPLpu4ToQFo1lKabYWaKo2Fss6ekLVKAzdyp
+        KBpiOJwYDOXMBNrV7BSyXjCH2bqmlGjtmrVfw4L05w==
+X-Google-Smtp-Source: ABdhPJy/NfIbAZY8/WKidLiAfmiqQ4UOgwQAs69wL7Uen0KC9xCwXgsZkScddOlYw0iSM1IFQFbdq/LfWOFFCVgTyfY=
+X-Received: by 2002:a17:90b:1096:: with SMTP id gj22mr109592pjb.229.1613413196531;
+ Mon, 15 Feb 2021 10:19:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210208085013.89436-5-songmuchun@bytedance.com>
+ <YCafit5ruRJ+SL8I@dhcp22.suse.cz> <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
+ <YCpN38i75olgispI@dhcp22.suse.cz> <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
+ <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
+ <YCpmlGuoTakPJs1u@dhcp22.suse.cz> <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
+ <YCp04NVBZpZZ5k7G@dhcp22.suse.cz> <CAMZfGtV8-yJa_eGYtSXc0YY8KhYpgUo=pfj6TZ9zMo8fbz8nWA@mail.gmail.com>
+ <YCqhDZ0EAgvCz+wX@dhcp22.suse.cz> <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
+In-Reply-To: <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 16 Feb 2021 02:19:20 +0800
+Message-ID: <CAMZfGtWVwEdBfiof3=wW2-FUN4PU-N5J=HfiAETVbwbEzdvAGQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the correct name of device-managed function to alloc irq vectors,
-the pcim_alloc_irq_vectors() function, a explicit device-managed version
-of pci_alloc_irq_vectors().
+On Tue, Feb 16, 2021 at 1:48 AM Muchun Song <songmuchun@bytedance.com> wrot=
+e:
+>
+> On Tue, Feb 16, 2021 at 12:28 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Mon 15-02-21 23:36:49, Muchun Song wrote:
+> > [...]
+> > > > There shouldn't be any real reason why the memory allocation for
+> > > > vmemmaps, or handling vmemmap in general, has to be done from withi=
+n the
+> > > > hugetlb lock and therefore requiring a non-sleeping semantic. All t=
+hat
+> > > > can be deferred to a more relaxed context. If you want to make a
+> > >
+> > > Yeah, you are right. We can put the freeing hugetlb routine to a
+> > > workqueue. Just like I do in the previous version (before v13) patch.
+> > > I will pick up these patches.
+> >
+> > I haven't seen your v13 and I will unlikely have time to revisit that
+> > version. I just wanted to point out that the actual allocation doesn't
+> > have to happen from under the spinlock. There are multiple ways to go
+> > around that. Dropping the lock would be one of them. Preallocation
+> > before the spin lock is taken is another. WQ is certainly an option but
+> > I would take it as the last resort when other paths are not feasible.
+> >
+>
+> "Dropping the lock" and "Preallocation before the spin lock" can limit
+> the context of put_page to non-atomic context. I am not sure if there
+> is a page puted somewhere under an atomic context. e.g. compaction.
+> I am not an expert on this.
 
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
----
- drivers/i2c/busses/i2c-thunderx-pcidrv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Using GFP_KERNEL will also use the current task cpuset to allocate
+memory. Do we have an interface to ignore current task cpuset=EF=BC=9FIf no=
+t,
+WQ may be the only option and it also will not limit the context of
+put_page. Right?
 
-diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-index 12c90aa0900e..63354e9fb726 100644
---- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-@@ -192,7 +192,7 @@ static int thunder_i2c_probe_pci(struct pci_dev *pdev,
- 	i2c->hlc_int_enable = thunder_i2c_hlc_int_enable;
- 	i2c->hlc_int_disable = thunder_i2c_hlc_int_disable;
- 
--	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSIX);
-+	ret = pcim_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSIX);
- 	if (ret < 0)
- 		goto error;
- 
--- 
-2.25.0
-
+>
+> > --
+> > Michal Hocko
+> > SUSE Labs
