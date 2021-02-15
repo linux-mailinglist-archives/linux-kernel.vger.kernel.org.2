@@ -2,96 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA6731BAD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D505731BADA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhBOOOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:14:25 -0500
-Received: from codesynthesis.com ([188.40.148.39]:52066 "EHLO
-        codesynthesis.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbhBOOOV (ORCPT
+        id S230162AbhBOOTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229802AbhBOOTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:14:21 -0500
-Received: from brak.codesynthesis.com (unknown [105.186.239.143])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by codesynthesis.com (Postfix) with ESMTPSA id A9B3E5EDB5;
-        Mon, 15 Feb 2021 14:13:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codesynthesis.com;
-        s=mail1; t=1613398415;
-        bh=QZ52mYrWtYrNNz5G+n8kvOcR+EaCKc16WZHazAaMjvc=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:From;
-        b=SUdkJitfu+StrsGa3uf+D2eMzqiQv5E3bdMR5I3xFKY+kf6Kv977jYfCfxI24q+gR
-         Bzw4ZBxgiZ8rCaC+rLlCOlByuoAYcGgNaCQ7rDUR4nw4w9R1KuYzb+Q0ihcbB37gC4
-         7/FIORv7+buxfxFROjN0FyaEttVN/WxvrS04vnmk/e3ugOT75T5MglKwDzoc5Vr8KK
-         Cd3oRLEn6S0Yk6K2VxWSjJQNJKq4aT82tt/tvhRAggTRVaTEYdnK9v7oyyEpotB7Kv
-         5H3QtTrytlCzxjAbvZyHXUoXH105uhcVsJ51IRlnKGsfkKXKbQDDDm6U1LtpktPFIa
-         7XKrpRMzn3H1g==
-Received: by brak.codesynthesis.com (Postfix, from userid 1000)
-        id 0427F1A800A2; Mon, 15 Feb 2021 16:13:29 +0200 (SAST)
-Date:   Mon, 15 Feb 2021 16:13:28 +0200
-From:   Boris Kolpackov <boris@codesynthesis.com>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Nicolas Iooss <nicolas.iooss@m4x.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v1 2/3] kconfig: Ask user if string needs to be changed
- when dependency changed
-Message-ID: <boris.20210215155804@codesynthesis.com>
-References: <20210215122513.1773897-1-mic@digikod.net>
- <20210215122513.1773897-3-mic@digikod.net>
+        Mon, 15 Feb 2021 09:19:08 -0500
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A64EC061574;
+        Mon, 15 Feb 2021 06:18:28 -0800 (PST)
+Received: by mail-ua1-x92f.google.com with SMTP id c44so2411120uad.12;
+        Mon, 15 Feb 2021 06:18:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JkNyAS6eMcPhEpMPKFlNgf2kOWM3dGOcbf1ISpcwe/c=;
+        b=jGZyyVVCYMk0D78xryAnvDALibBeg4qMklKuLcrr12J8ReHaXad2+IHXRrFKFUZb/i
+         DeKddPdxdk3ie2ope8DivM/4H2ebX88PjicM50fmm6dK9kAStN3NAkYRXzsw8pvY8y0g
+         3c/tyd5xCYQd9XF99JvigikmhQYrEzRGa+iaxcyTMz68t9O5P5J+/Lk+x8PRAx5jJEe5
+         ORQNmoHumTAJBzSQkHc4HQmqoK2MJe135Vjx6dWSwrEV/RYlW7w1XWhApmJwr34Yoa9N
+         LSYPO82fyPgdoopQihoHWuwPkFTgj9swrEPLPN22kgRfJOCbbIjIB3gqNtvQDFUeyruX
+         xEeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JkNyAS6eMcPhEpMPKFlNgf2kOWM3dGOcbf1ISpcwe/c=;
+        b=pPPsgNEqwZqoac9545Hj8pdHm2ZwrE9HI1i2PwoovSSzGovh550m8cQeRuwx1indAR
+         V71Q85MemIUfyIkPH6nnZpSqZmQCXVuIWAksu8xovHhSxkFR8K2ChJN8G5VlJh4vLbgU
+         G+iS2B48EyV6pNnbiQ5BXYVCyNStbN4tNW2YSHr8V1G9l7dH2oJPn3zz7hjKGhJoRQak
+         /k7j1PIkmYrVWnuO+UCZUKy0jxGPmmNRLrsCnEkGbOmXDuJxH9I+uiDOGyp2IQYk2wsU
+         jxCvysLKcnutzwHwh/I73ac+I0aTc23B1wSul2mM3CuayVIGM9TjAZwxcadl6jy4aRpq
+         od+g==
+X-Gm-Message-State: AOAM530zDPtlbTK5Z7NlQ0OtY92lFzlB5bNt6OF784Qj/aG+AGlwGnij
+        ZrjG6P/givH2QzYq3+Uqocl0cud9BHEaWBDCckY=
+X-Google-Smtp-Source: ABdhPJxu3LvnHPyEAD8T9tnva6iCu0otMcb/YaxTz98zbbc5OoSlhfJkCg/5MtqtrqsJew8ycUpaymlmtDUYA4Ygsz8=
+X-Received: by 2002:ab0:5b0e:: with SMTP id u14mr8636749uae.19.1613398706639;
+ Mon, 15 Feb 2021 06:18:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210215122513.1773897-3-mic@digikod.net>
-Organization: Code Synthesis
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20210212163229.68270-1-krzk@kernel.org> <20210215085241.GG179940@dell>
+In-Reply-To: <20210215085241.GG179940@dell>
+From:   Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Mon, 15 Feb 2021 14:18:15 +0000
+Message-ID: <CACvgo53wn84G8wuyF++=bwtjnVzVB31BA2_JBWnihnwinSFD7A@mail.gmail.com>
+Subject: Re: [PATCH v4] MAINTAINERS: move Milo Kim to credits
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>, linux-pwm@vger.kernel.org,
+        linux-fbdev <linux-fbdev@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Linux PM <linux-pm@vger.kernel.org>, linux-iio@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-leds@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mickaël Salaün <mic@digikod.net> writes:
+Greetings everyone,
 
-> Content of string configuration may depend on related kernel
-> configurations.  Modify oldconfig and syncconfig to inform users about
-> possible required configuration update and give them the opportunity to
-> update it:
-> * if dependencies of this string has changed (e.g. enabled or disabled),
-> * and if the current value of this string is different than the (new)
->   default one.
+On Mon, 15 Feb 2021 at 08:52, Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Fri, 12 Feb 2021, Krzysztof Kozlowski wrote:
+>
+> > Milo Kim's email in TI bounces with permanent error (550: Invalid
+> > recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
+> > credits and remove the separate driver entries for:
+> >  - TI LP855x backlight driver,
+> >  - TI LP8727 charger driver,
+> >  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Cc: Jingoo Han <jingoohan1@gmail.com>
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > Cc: Pavel Machek <pavel@ucw.cz>
+> > Cc: Thierry Reding <thierry.reding@gmail.com>
+> > Cc: Sebastian Reichel <sre@kernel.org>
+> > Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> >
+> > ---
+> >
+> > Dear Lee,
+> >
+> > Could you take care about this patch?
+>
+> Yes, but I'll be sending out my pull-request for v5.12 in the next
+> couple of days (maybe even today if I can find some time), so this
+> will have to wait until v5.13.
+>
+Would it make sense to keep the MAINTAINERS entries as "orphan"?
+Checking with linux-next, the drivers are still present in-tree.
 
-I have a number of questions:
-
-1. Why is a change in dependencies necessarily means that the dependent's
-   value must be revised? Here is a specific example (to make sure we are
-   talking about the same things):
-
-   config FOO
-     string "Foo value"
-     depends on BAR || BAZ
-
-   Why, in the general case, when I disable BAR and enable BAZ I must
-   also revise the value of FOO?
-
-2. How do you know that what's in the user's .config is the old default
-   and in Kconfig -- the new default value? What if in the user's .config
-   is a custom value (with which the user is perfectly happy) and what's
-   in Kconfig is the old default (which the user has already seen)?
-
-3. Why limit this to strings only?
-
-
-> This is particularly relevant for CONFIG_LSM which contains a list of
-> LSMs enabled at boot, but users will not have a chance to update this
-> list with a make oldconfig.
-
-If my understanding above is correct, this feels like it's been purpose-
-made to address whatever issue you are having with CONFIG_LSM. If so,
-what about potential numerous other options that don't have this issue
-but will now be presented to the user for modification?
+HTH
+-Emil
