@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1404E31BB7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C446E31BB8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhBOO4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:56:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        id S230171AbhBOO4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:56:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhBOO4P (ORCPT
+        with ESMTP id S230059AbhBOO4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:56:15 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE50C061756;
-        Mon, 15 Feb 2021 06:55:34 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id gb24so3870446pjb.4;
-        Mon, 15 Feb 2021 06:55:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=crMLEXxlV/fSKAwiZ26UATqiqjpkjoYP4iHWFZruEcQ=;
-        b=QNLoXIxG6kM73gPVUafR/x123vFdPakFYSkdJEj1X2WMUU8ryyVKIiW3IWrzt2bJQA
-         6SUookPfcqobIcLsQRFI0+wzUozFCkl419hAeUkKYC2XpCiSgsQj+uL4YU+r8znDKBfD
-         UB6GsQlMINQLE3UVlvLHxrM592pbteidmBCzxhsgp1/dgxbik8as8wwBjKY8mzsF5Qk5
-         zbeZYg2xgz7jojSYQcHO35pQs9vfSrESDyq+7aT+YiKHIcFndLJ4Uf7ECaMNqTkqF/35
-         J+d1p7FForY9IXkMKVNvqgLU+Ric64qfTQkme42eVTc7BWgWNCI/wSiotzge4gFuaUlK
-         2ksw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=crMLEXxlV/fSKAwiZ26UATqiqjpkjoYP4iHWFZruEcQ=;
-        b=ramsHMgrpNuDugT2XhhqQG20kac5J9/Nv5cils8P84AKQ1r7V0oByrY3JCyXXTnebs
-         udtotMOVWr6Z/G+EaK3J2kReENxXIssJPvbpAbyqawPS+8pBThg+LO+7FzZbO1tPus3y
-         zuYAB+Te9NfOPBlm9C7rLIVBGbguc0PgC1bcipSa9N/OO7lRpsiU3caQYeELhV3qSdlG
-         oDPL2+cFqPwjfHsP6r6jBF/NuTuqLe3MXCK4LBtQHcMfOcSwnkJhsnj3r/FIA8R57LN4
-         ptFwnmlH3N5YvfAdhryA4Xi9HG/d6cc6Z8g7XF/ShzbljgaTM+f062fagUPq87XVOeod
-         eSWQ==
-X-Gm-Message-State: AOAM531HowqP98pT0vJUk2elZ3ufrJgt5bMk+OtgojPJzlFCX7zUrqBT
-        jA2KKZIBqUv6Adr2IoRiU8sjGrDxukUpSQ==
-X-Google-Smtp-Source: ABdhPJzNdEUOjzPdDG7/Gx8FQQnKh86ys1iBfdVIVan0+e4BhTWTUWcJFkjfBEFLLP/vl0Qi/GxovA==
-X-Received: by 2002:a17:90b:368f:: with SMTP id mj15mr6362177pjb.139.1613400934486;
-        Mon, 15 Feb 2021 06:55:34 -0800 (PST)
-Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
-        by smtp.gmail.com with ESMTPSA id 6sm18165460pgv.70.2021.02.15.06.55.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 06:55:34 -0800 (PST)
-Date:   Mon, 15 Feb 2021 22:55:32 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     daniel@zonque.org, haojian.zhuang@gmail.com,
-        robert.jarzmik@free.fr, broonie@kernel.org, jan.kiszka@siemens.com,
-        jarkko.nikula@linux.intel.com, linux-spi@vger.kernel.org,
+        Mon, 15 Feb 2021 09:56:24 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84ABC0613D6;
+        Mon, 15 Feb 2021 06:55:43 -0800 (PST)
+Date:   Mon, 15 Feb 2021 14:55:40 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613400941;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=YwylC7H9y2dHbUKW3sryi8KSUnemkleFDQwMzzrV3qw=;
+        b=Fhjub7ykWl/SPI4quqKU/xfImfBHtnNK2HcRMGticCoWLbHJu2fPc12IWgH452wftzCM1O
+        cYGqxzeVYjKPtbQFnoibni7wbOIXvVrt/gpgyML9AZPOav7WF+8hyVmiewmFSOEsgWD6JM
+        HLe3F7wMi/E8IPI1WJjTY/jTt3xWLvKWbouVAMk7GeXn6u7QLPdAKjq2hFZVLM47n5fa6f
+        9YueY+U5DEKZzVmkXaAVnksWb5PlBJ36qN0AK5SSVASoV/Okw+09e4+LrVrsNoPM/Gx4WO
+        VROvqwq14QHBIpepfKGI5WPjoYPq8EZf1+d2O1YVF2pbGF7yToS1P5eXSddwjg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613400941;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=YwylC7H9y2dHbUKW3sryi8KSUnemkleFDQwMzzrV3qw=;
+        b=OYvvasKkQ+dGVO09WoOGd5zWVPQipkZCcqJ+DX1G+AkwNXCt/kvvSE6DiYCgSzO4MKvigu
+        Xe4JTQVITXvPjwCQ==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/rcu] torture: Make kvm.sh "--dryrun sched" summarize
+ number of batches
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: pca2xx-pci: Fix an issue about missing call to
- 'pci_free_irq_vectors()'
-Message-ID: <20210215145532.GA620097@nuc8i5>
-References: <20210214145746.602770-1-zhengdejin5@gmail.com>
- <YCp1nh2ZEBvvB+lC@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCp1nh2ZEBvvB+lC@smile.fi.intel.com>
+Message-ID: <161340094117.20312.12013223493780764290.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 03:22:38PM +0200, Andy Shevchenko wrote:
-> On Sun, Feb 14, 2021 at 10:57:46PM +0800, Dejin Zheng wrote:
-> > Call to 'pci_free_irq_vectors()' are missing both in the error handling
-> > path of the probe function, and in the remove function. So add them.
-> 
-> I'm wondering if you noticed that it's done by pcim_* API.
-> Perhaps you can introduce pcim_alloc_irq_vectors() or so and do not add these
-> calls at all?
-Andy, Thanks for your reminder, You mean introduce
-pcim_alloc_irq_vectors() as like pcim_set_mwi() and free irq vectors by
-pcim_release()?
+The following commit has been merged into the core/rcu branch of tip:
 
-> 
-> > Fixes: 64e02cb0bdfc7c ("spi: pca2xx-pci: Allow MSI")
-> 
-> No, it doesn't fix anything.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Commit-ID:     1f947be7f9696fca36e67f0897bc239b4755ae55
+Gitweb:        https://git.kernel.org/tip/1f947be7f9696fca36e67f0897bc239b4755ae55
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Sun, 08 Nov 2020 15:38:26 -08:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Mon, 04 Jan 2021 14:01:18 -08:00
+
+torture: Make kvm.sh "--dryrun sched" summarize number of batches
+
+Knowing the number of batches that kvm.sh will split a run into allows
+estimation of the duration of a test, give or take the number of builds.
+This commit therefore adds a line of output to "--dryrun sched" that
+gives the number of batches that will be run.
+
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ tools/testing/selftests/rcutorture/bin/kvm.sh | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index bd07df7..1078be1 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -536,6 +536,8 @@ then
+ 	egrep 'Start batch|Starting build\.' $T/script |
+ 		grep -v ">>" |
+ 		sed -e 's/:.*$//' -e 's/^echo //'
++	nbatches="`grep 'Start batch' $T/script | grep -v ">>" | wc -l`"
++	echo Total number of batches: $nbatches
+ 	exit 0
+ else
+ 	# Not a dryrun, so run the script.
