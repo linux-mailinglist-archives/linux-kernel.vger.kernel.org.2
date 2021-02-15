@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB2531B921
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E5331B927
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhBOMZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:25:19 -0500
-Received: from marcansoft.com ([212.63.210.85]:43072 "EHLO mail.marcansoft.com"
+        id S230355AbhBOMZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:25:52 -0500
+Received: from marcansoft.com ([212.63.210.85]:43122 "EHLO mail.marcansoft.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230254AbhBOMUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:20:06 -0500
+        id S230263AbhBOMUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 07:20:16 -0500
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 9A32542527;
-        Mon, 15 Feb 2021 12:19:03 +0000 (UTC)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 5D4D542529;
+        Mon, 15 Feb 2021 12:19:08 +0000 (UTC)
 From:   Hector Martin <marcan@marcan.st>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
@@ -33,9 +33,9 @@ Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         Mark Rutland <mark.rutland@arm.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 18/25] tty: serial: samsung_tty: add s3c24xx_port_type
-Date:   Mon, 15 Feb 2021 21:17:06 +0900
-Message-Id: <20210215121713.57687-19-marcan@marcan.st>
+Subject: [PATCH v2 19/25] tty: serial: samsung_tty: IRQ rework
+Date:   Mon, 15 Feb 2021 21:17:07 +0900
+Message-Id: <20210215121713.57687-20-marcan@marcan.st>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210215121713.57687-1-marcan@marcan.st>
 References: <20210215121713.57687-1-marcan@marcan.st>
@@ -45,331 +45,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This decouples the TTY layer PORT_ types, which are exposed to
-userspace, from the driver-internal flag of what kind of port this is.
+* Split out s3c24xx_serial_tx_chars from s3c24xx_serial_tx_irq,
+  where only the latter acquires the port lock.
 
-This removes s3c24xx_serial_has_interrupt_mask, which was just checking
-for a specific type anyway, and adds the ucon_mask port info member to
-avoid having S3C2440 as a distinct type.
+* For S3C64xx, return IRQ_NONE if no flag bits were set, so the
+  interrupt core can detect IRQ storms. Note that both IRQ handlers
+  always return IRQ_HANDLED anyway, so 'or' logic isn't necessary here,
+  if either handler ran we are always going to return IRQ_HANDLED.
+
+* Rename s3c24xx_serial_rx_chars to s3c24xx_serial_rx_irq for
+  consistency with the above. All it does now is call two other
+  functions anyway.
 
 Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
- drivers/tty/serial/samsung_tty.c | 131 ++++++++++++++++++-------------
- 1 file changed, 77 insertions(+), 54 deletions(-)
+ drivers/tty/serial/samsung_tty.c | 41 +++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-index 6b661f3ec1ae..21955be680a4 100644
+index 21955be680a4..821cd0e4f870 100644
 --- a/drivers/tty/serial/samsung_tty.c
 +++ b/drivers/tty/serial/samsung_tty.c
-@@ -56,9 +56,15 @@
- /* flag to ignore all characters coming in */
- #define RXSTAT_DUMMY_READ (0x10000000)
+@@ -151,6 +151,9 @@ struct s3c24xx_uart_port {
+ #endif
+ };
  
-+enum s3c24xx_port_type {
-+	TYPE_S3C24XX,
-+	TYPE_S3C6400,
-+};
++static void s3c24xx_serial_start_next_tx(struct s3c24xx_uart_port *ourport);
++static void s3c24xx_serial_tx_chars(struct s3c24xx_uart_port *ourport);
 +
- struct s3c24xx_uart_info {
- 	char			*name;
--	unsigned int		type;
-+	enum s3c24xx_port_type	type;
-+	unsigned int		port_type;
- 	unsigned int		fifosize;
- 	unsigned long		rx_fifomask;
- 	unsigned long		rx_fifoshift;
-@@ -70,6 +76,7 @@ struct s3c24xx_uart_info {
- 	unsigned long		num_clks;
- 	unsigned long		clksel_mask;
- 	unsigned long		clksel_shift;
-+	unsigned long		ucon_mask;
+ /* conversion functions */
  
- 	/* uart port features */
- 
-@@ -228,16 +235,6 @@ static int s3c24xx_serial_txempty_nofifo(struct uart_port *port)
- 	return rd_regl(port, S3C2410_UTRSTAT) & S3C2410_UTRSTAT_TXE;
+ #define s3c24xx_dev_to_port(__dev) dev_get_drvdata(__dev)
+@@ -316,8 +319,6 @@ static void s3c24xx_serial_stop_tx(struct uart_port *port)
+ 	ourport->tx_mode = 0;
  }
  
--/*
-- * s3c64xx and later SoC's include the interrupt mask and status registers in
-- * the controller itself, unlike the s3c24xx SoC's which have these registers
-- * in the interrupt controller. Check if the port type is s3c64xx or higher.
-- */
--static int s3c24xx_serial_has_interrupt_mask(struct uart_port *port)
--{
--	return to_ourport(port)->info->type == PORT_S3C6400;
--}
+-static void s3c24xx_serial_start_next_tx(struct s3c24xx_uart_port *ourport);
 -
- static void s3c24xx_serial_rx_enable(struct uart_port *port)
+ static void s3c24xx_serial_tx_dma_complete(void *args)
  {
- 	struct s3c24xx_uart_port *ourport = to_ourport(port);
-@@ -289,10 +286,14 @@ static void s3c24xx_serial_stop_tx(struct uart_port *port)
- 	if (!ourport->tx_enabled)
- 		return;
- 
--	if (s3c24xx_serial_has_interrupt_mask(port))
-+	switch (ourport->info->type) {
-+	case TYPE_S3C6400:
- 		s3c24xx_set_bit(port, S3C64XX_UINTM_TXD, S3C64XX_UINTM);
--	else
-+		break;
-+	default:
- 		disable_irq_nosync(ourport->tx_irq);
-+		break;
-+	}
- 
- 	if (dma && dma->tx_chan && ourport->tx_in_progress == S3C24XX_TX_DMA) {
- 		dmaengine_pause(dma->tx_chan);
-@@ -353,10 +354,14 @@ static void enable_tx_dma(struct s3c24xx_uart_port *ourport)
- 	u32 ucon;
- 
- 	/* Mask Tx interrupt */
--	if (s3c24xx_serial_has_interrupt_mask(port))
-+	switch (ourport->info->type) {
-+	case TYPE_S3C6400:
- 		s3c24xx_set_bit(port, S3C64XX_UINTM_TXD, S3C64XX_UINTM);
--	else
-+		break;
-+	default:
- 		disable_irq_nosync(ourport->tx_irq);
-+		break;
-+	}
- 
- 	/* Enable tx dma mode */
- 	ucon = rd_regl(port, S3C2410_UCON);
-@@ -386,11 +391,14 @@ static void enable_tx_pio(struct s3c24xx_uart_port *ourport)
- 	wr_regl(port,  S3C2410_UCON, ucon);
- 
- 	/* Unmask Tx interrupt */
--	if (s3c24xx_serial_has_interrupt_mask(port))
--		s3c24xx_clear_bit(port, S3C64XX_UINTM_TXD,
--				  S3C64XX_UINTM);
--	else
-+	switch (ourport->info->type) {
-+	case TYPE_S3C6400:
-+		s3c24xx_clear_bit(port, S3C64XX_UINTM_TXD, S3C64XX_UINTM);
-+		break;
-+	default:
- 		enable_irq(ourport->tx_irq);
-+		break;
-+	}
- 
- 	ourport->tx_mode = S3C24XX_TX_PIO;
- }
-@@ -513,11 +521,14 @@ static void s3c24xx_serial_stop_rx(struct uart_port *port)
- 
- 	if (ourport->rx_enabled) {
- 		dev_dbg(port->dev, "stopping rx\n");
--		if (s3c24xx_serial_has_interrupt_mask(port))
--			s3c24xx_set_bit(port, S3C64XX_UINTM_RXD,
--					S3C64XX_UINTM);
--		else
--			disable_irq_nosync(ourport->rx_irq);
-+		switch (ourport->info->type) {
-+		case TYPE_S3C6400:
-+			s3c24xx_set_bit(port, S3C64XX_UINTM_RXD, S3C64XX_UINTM);
-+			break;
-+		default:
-+			disable_irq_nosync(ourport->tx_irq);
-+			break;
-+		}
- 		ourport->rx_enabled = 0;
- 	}
- 	if (dma && dma->rx_chan) {
-@@ -1542,14 +1553,12 @@ static void s3c24xx_serial_set_termios(struct uart_port *port,
- 
- static const char *s3c24xx_serial_type(struct uart_port *port)
- {
--	switch (port->type) {
--	case PORT_S3C2410:
--		return "S3C2410";
--	case PORT_S3C2440:
--		return "S3C2440";
--	case PORT_S3C2412:
--		return "S3C2412";
--	case PORT_S3C6400:
-+	struct s3c24xx_uart_port *ourport = to_ourport(port);
-+
-+	switch (ourport->info->type) {
-+	case TYPE_S3C24XX:
-+		return "S3C24XX";
-+	case TYPE_S3C6400:
- 		return "S3C6400/10";
- 	default:
- 		return NULL;
-@@ -1576,7 +1585,7 @@ static void s3c24xx_serial_config_port(struct uart_port *port, int flags)
- 
- 	if (flags & UART_CONFIG_TYPE &&
- 	    s3c24xx_serial_request_port(port) == 0)
--		port->type = info->type;
-+		port->type = info->port_type;
+ 	struct s3c24xx_uart_port *ourport = args;
+@@ -825,7 +826,7 @@ static irqreturn_t s3c24xx_serial_rx_chars_pio(void *dev_id)
+ 	return IRQ_HANDLED;
  }
  
- /*
-@@ -1587,7 +1596,7 @@ s3c24xx_serial_verify_port(struct uart_port *port, struct serial_struct *ser)
+-static irqreturn_t s3c24xx_serial_rx_chars(int irq, void *dev_id)
++static irqreturn_t s3c24xx_serial_rx_irq(int irq, void *dev_id)
  {
- 	struct s3c24xx_uart_info *info = s3c24xx_port_to_info(port);
+ 	struct s3c24xx_uart_port *ourport = dev_id;
  
--	if (ser->type != PORT_UNKNOWN && ser->type != info->type)
-+	if (ser->type != PORT_UNKNOWN && ser->type != info->port_type)
- 		return -EINVAL;
+@@ -834,16 +835,12 @@ static irqreturn_t s3c24xx_serial_rx_chars(int irq, void *dev_id)
+ 	return s3c24xx_serial_rx_chars_pio(dev_id);
+ }
  
- 	return 0;
-@@ -1736,14 +1745,9 @@ static void s3c24xx_serial_resetport(struct uart_port *port,
+-static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
++static void s3c24xx_serial_tx_chars(struct s3c24xx_uart_port *ourport)
  {
- 	struct s3c24xx_uart_info *info = s3c24xx_port_to_info(port);
- 	unsigned long ucon = rd_regl(port, S3C2410_UCON);
--	unsigned int ucon_mask;
+-	struct s3c24xx_uart_port *ourport = id;
+ 	struct uart_port *port = &ourport->port;
+ 	struct circ_buf *xmit = &port->state->xmit;
+-	unsigned long flags;
+ 	int count, dma_count = 0;
  
--	ucon_mask = info->clksel_mask;
--	if (info->type == PORT_S3C2440)
--		ucon_mask |= S3C2440_UCON0_DIVMASK;
+-	spin_lock_irqsave(&port->lock, flags);
 -
--	ucon &= ucon_mask;
--	wr_regl(port, S3C2410_UCON,  ucon | cfg->ucon);
-+	ucon &= (info->clksel_mask | info->ucon_mask);
-+	wr_regl(port, S3C2410_UCON, ucon | cfg->ucon);
+ 	count = CIRC_CNT_TO_END(xmit->head, xmit->tail, UART_XMIT_SIZE);
  
- 	/* reset both fifos */
- 	wr_regl(port, S3C2410_UFCON, cfg->ufcon | S3C2410_UFCON_RESETBOTH);
-@@ -1931,11 +1935,16 @@ static int s3c24xx_serial_init_port(struct s3c24xx_uart_port *ourport,
- 		ourport->tx_irq = ret + 1;
+ 	if (ourport->dma && ourport->dma->tx_chan &&
+@@ -860,7 +857,7 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
+ 		wr_reg(port, S3C2410_UTXH, port->x_char);
+ 		port->icount.tx++;
+ 		port->x_char = 0;
+-		goto out;
++		return;
  	}
  
--	if (!s3c24xx_serial_has_interrupt_mask(port)) {
-+	switch (ourport->info->type) {
-+	case TYPE_S3C24XX:
- 		ret = platform_get_irq(platdev, 1);
- 		if (ret > 0)
- 			ourport->tx_irq = ret;
-+		break;
-+	default:
-+		break;
+ 	/* if there isn't anything more to transmit, or the uart is now
+@@ -869,7 +866,7 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
+ 
+ 	if (uart_circ_empty(xmit) || uart_tx_stopped(port)) {
+ 		s3c24xx_serial_stop_tx(port);
+-		goto out;
++		return;
  	}
+ 
+ 	/* try and drain the buffer... */
+@@ -891,7 +888,7 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
+ 
+ 	if (!count && dma_count) {
+ 		s3c24xx_serial_start_tx_dma(ourport, dma_count);
+-		goto out;
++		return;
+ 	}
+ 
+ 	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS) {
+@@ -902,8 +899,18 @@ static irqreturn_t s3c24xx_serial_tx_chars(int irq, void *id)
+ 
+ 	if (uart_circ_empty(xmit))
+ 		s3c24xx_serial_stop_tx(port);
++}
 +
- 	/*
- 	 * DMA is currently supported only on DT platforms, if DMA properties
- 	 * are specified.
-@@ -1971,10 +1980,14 @@ static int s3c24xx_serial_init_port(struct s3c24xx_uart_port *ourport,
- 		pr_warn("uart: failed to enable baudclk\n");
++static irqreturn_t s3c24xx_serial_tx_irq(int irq, void *id)
++{
++	struct s3c24xx_uart_port *ourport = id;
++	struct uart_port *port = &ourport->port;
++	unsigned long flags;
++
++	spin_lock_irqsave(&port->lock, flags);
++
++	s3c24xx_serial_tx_chars(ourport);
  
- 	/* Keep all interrupts masked and cleared */
--	if (s3c24xx_serial_has_interrupt_mask(port)) {
-+	switch (ourport->info->type) {
-+	case TYPE_S3C6400:
- 		wr_regl(port, S3C64XX_UINTM, 0xf);
- 		wr_regl(port, S3C64XX_UINTP, 0xf);
- 		wr_regl(port, S3C64XX_UINTSP, 0xf);
-+		break;
-+	default:
-+		break;
+-out:
+ 	spin_unlock_irqrestore(&port->lock, flags);
+ 	return IRQ_HANDLED;
+ }
+@@ -914,14 +921,14 @@ static irqreturn_t s3c64xx_serial_handle_irq(int irq, void *id)
+ 	struct s3c24xx_uart_port *ourport = id;
+ 	struct uart_port *port = &ourport->port;
+ 	unsigned int pend = rd_regl(port, S3C64XX_UINTP);
+-	irqreturn_t ret = IRQ_HANDLED;
++	irqreturn_t ret = IRQ_NONE;
+ 
+ 	if (pend & S3C64XX_UINTM_RXD_MSK) {
+-		ret = s3c24xx_serial_rx_chars(irq, id);
++		ret = s3c24xx_serial_rx_irq(irq, id);
+ 		wr_regl(port, S3C64XX_UINTP, S3C64XX_UINTM_RXD_MSK);
  	}
- 
- 	dev_dbg(port->dev, "port: map=%pa, mem=%p, irq=%d (%d,%d), clock=%u\n",
-@@ -2046,12 +2059,10 @@ static int s3c24xx_serial_probe(struct platform_device *pdev)
- 			ourport->drv_data->def_cfg;
- 
- 	switch (ourport->info->type) {
--	case PORT_S3C2410:
--	case PORT_S3C2412:
--	case PORT_S3C2440:
-+	case TYPE_S3C24XX:
- 		ourport->port.ops = &s3c24xx_serial_ops;
- 		break;
--	case PORT_S3C6400:
-+	case TYPE_S3C6400:
- 		ourport->port.ops = &s3c64xx_serial_ops;
- 		break;
+ 	if (pend & S3C64XX_UINTM_TXD_MSK) {
+-		ret = s3c24xx_serial_tx_chars(irq, id);
++		ret = s3c24xx_serial_tx_irq(irq, id);
+ 		wr_regl(port, S3C64XX_UINTP, S3C64XX_UINTM_TXD_MSK);
  	}
-@@ -2179,7 +2190,8 @@ static int s3c24xx_serial_resume_noirq(struct device *dev)
+ 	return ret;
+@@ -1153,7 +1160,7 @@ static int s3c24xx_serial_startup(struct uart_port *port)
  
- 	if (port) {
- 		/* restore IRQ mask */
--		if (s3c24xx_serial_has_interrupt_mask(port)) {
-+		switch (ourport->info->type) {
-+		case TYPE_S3C6400: {
- 			unsigned int uintm = 0xf;
+ 	ourport->rx_enabled = 1;
  
- 			if (ourport->tx_enabled)
-@@ -2193,6 +2205,10 @@ static int s3c24xx_serial_resume_noirq(struct device *dev)
- 			if (!IS_ERR(ourport->baudclk))
- 				clk_disable_unprepare(ourport->baudclk);
- 			clk_disable_unprepare(ourport->clk);
-+			break;
-+		}
-+		default:
-+			break;
- 		}
- 	}
+-	ret = request_irq(ourport->rx_irq, s3c24xx_serial_rx_chars, 0,
++	ret = request_irq(ourport->rx_irq, s3c24xx_serial_rx_irq, 0,
+ 			  s3c24xx_serial_portname(port), ourport);
  
-@@ -2417,7 +2433,8 @@ static struct console s3c24xx_serial_console = {
- static struct s3c24xx_serial_drv_data s3c2410_serial_drv_data = {
- 	.info = &(struct s3c24xx_uart_info) {
- 		.name		= "Samsung S3C2410 UART",
--		.type		= PORT_S3C2410,
-+		.type		= TYPE_S3C24XX,
-+		.port_type	= PORT_S3C2410,
- 		.fifosize	= 16,
- 		.rx_fifomask	= S3C2410_UFSTAT_RXMASK,
- 		.rx_fifoshift	= S3C2410_UFSTAT_RXSHIFT,
-@@ -2444,7 +2461,8 @@ static struct s3c24xx_serial_drv_data s3c2410_serial_drv_data = {
- static struct s3c24xx_serial_drv_data s3c2412_serial_drv_data = {
- 	.info = &(struct s3c24xx_uart_info) {
- 		.name		= "Samsung S3C2412 UART",
--		.type		= PORT_S3C2412,
-+		.type		= TYPE_S3C24XX,
-+		.port_type	= PORT_S3C2412,
- 		.fifosize	= 64,
- 		.has_divslot	= 1,
- 		.rx_fifomask	= S3C2440_UFSTAT_RXMASK,
-@@ -2473,7 +2491,8 @@ static struct s3c24xx_serial_drv_data s3c2412_serial_drv_data = {
- static struct s3c24xx_serial_drv_data s3c2440_serial_drv_data = {
- 	.info = &(struct s3c24xx_uart_info) {
- 		.name		= "Samsung S3C2440 UART",
--		.type		= PORT_S3C2440,
-+		.type		= TYPE_S3C24XX,
-+		.port_type	= PORT_S3C2440,
- 		.fifosize	= 64,
- 		.has_divslot	= 1,
- 		.rx_fifomask	= S3C2440_UFSTAT_RXMASK,
-@@ -2486,6 +2505,7 @@ static struct s3c24xx_serial_drv_data s3c2440_serial_drv_data = {
- 		.num_clks	= 4,
- 		.clksel_mask	= S3C2412_UCON_CLKMASK,
- 		.clksel_shift	= S3C2412_UCON_CLKSHIFT,
-+		.ucon_mask	= S3C2440_UCON0_DIVMASK,
- 	},
- 	.def_cfg = &(struct s3c2410_uartcfg) {
- 		.ucon		= S3C2410_UCON_DEFAULT,
-@@ -2501,7 +2521,8 @@ static struct s3c24xx_serial_drv_data s3c2440_serial_drv_data = {
- static struct s3c24xx_serial_drv_data s3c6400_serial_drv_data = {
- 	.info = &(struct s3c24xx_uart_info) {
- 		.name		= "Samsung S3C6400 UART",
--		.type		= PORT_S3C6400,
-+		.type		= TYPE_S3C6400,
-+		.port_type	= PORT_S3C6400,
- 		.fifosize	= 64,
- 		.has_divslot	= 1,
- 		.rx_fifomask	= S3C2440_UFSTAT_RXMASK,
-@@ -2529,7 +2550,8 @@ static struct s3c24xx_serial_drv_data s3c6400_serial_drv_data = {
- static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
- 	.info = &(struct s3c24xx_uart_info) {
- 		.name		= "Samsung S5PV210 UART",
--		.type		= PORT_S3C6400,
-+		.type		= TYPE_S3C6400,
-+		.port_type	= PORT_S3C6400,
- 		.has_divslot	= 1,
- 		.rx_fifomask	= S5PV210_UFSTAT_RXMASK,
- 		.rx_fifoshift	= S5PV210_UFSTAT_RXSHIFT,
-@@ -2557,7 +2579,8 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
- #define EXYNOS_COMMON_SERIAL_DRV_DATA				\
- 	.info = &(struct s3c24xx_uart_info) {			\
- 		.name		= "Samsung Exynos UART",	\
--		.type		= PORT_S3C6400,			\
-+		.type		= TYPE_S3C6400,			\
-+		.port_type	= PORT_S3C6400,			\
- 		.has_divslot	= 1,				\
- 		.rx_fifomask	= S5PV210_UFSTAT_RXMASK,	\
- 		.rx_fifoshift	= S5PV210_UFSTAT_RXSHIFT,	\
+ 	if (ret != 0) {
+@@ -1167,7 +1174,7 @@ static int s3c24xx_serial_startup(struct uart_port *port)
+ 
+ 	ourport->tx_enabled = 1;
+ 
+-	ret = request_irq(ourport->tx_irq, s3c24xx_serial_tx_chars, 0,
++	ret = request_irq(ourport->tx_irq, s3c24xx_serial_tx_irq, 0,
+ 			  s3c24xx_serial_portname(port), ourport);
+ 
+ 	if (ret) {
 -- 
 2.30.0
 
