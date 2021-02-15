@@ -2,195 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFF831C160
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D001F31C14C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhBOSRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 13:17:30 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41900 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230462AbhBOSQP (ORCPT
+        id S230464AbhBOSQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 13:16:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229981AbhBOSPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 13:16:15 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11FI3keQ089147;
-        Mon, 15 Feb 2021 13:14:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=oGpfBMoJflzNtTxXhAAqknfbJZwwOWhWibJHXOD15mY=;
- b=B/bnia+10Cs1nS5Q/upnquv2ZqXghmk3a6oXvIJu1bYAT9fq48cugx6TbeiTQlsj7qZM
- r9narncQVfykPHEyJHuo45qRrCnDhJP4fLWXNTzh+wRkWX5CekXlUGk5CLJznaZt6huP
- QS1lVTZ4HiwSm6Zccy5axTKKb4qK9kdk4mVKgXfsgW4HArxGrxT1EA/Pn6mTps4Vjfvm
- m0YOQFc0aWwzXwNK3mVbIys228lxpSUTYg08cJcpzpHT4PcHyChXHf6by4iByZs77BV9
- yKmIzsatDpKh4JWGLHQGoDjjCqXOeQXIJU15C840vpqciQ/nRrzDNGV2nbGbjXU11G1r lA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36qww5gb83-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 13:14:55 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11FI4Lrj090689;
-        Mon, 15 Feb 2021 13:14:54 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36qww5gb7m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 13:14:54 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11FICq9U024338;
-        Mon, 15 Feb 2021 18:14:53 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02dal.us.ibm.com with ESMTP id 36p6d9d37g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 18:14:53 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11FIEph216515450
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 18:14:51 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C21B67806A;
-        Mon, 15 Feb 2021 18:14:51 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CA8027805E;
-        Mon, 15 Feb 2021 18:14:44 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.199.127])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Feb 2021 18:14:44 +0000 (GMT)
-Message-ID: <be1d821d3f0aec24ad13ca7126b4359822212eb0.camel@linux.ibm.com>
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Date:   Mon, 15 Feb 2021 10:14:43 -0800
-In-Reply-To: <YCo7TqUnBdgJGkwN@dhcp22.suse.cz>
-References: <20210214091954.GM242749@kernel.org>
-         <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
-         <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
-         <YCo7TqUnBdgJGkwN@dhcp22.suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Mon, 15 Feb 2021 13:15:55 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD068C061574;
+        Mon, 15 Feb 2021 10:15:14 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id w1so3569564ejk.6;
+        Mon, 15 Feb 2021 10:15:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2OD7Oc4ulM3X8ouS1/vJUS6vCduQdV8B7cQgskKhcDc=;
+        b=inrkHH3bnH/oh8dpYhSj7C7mkInLB2gqXT9VzUwWY8N/Q/MEsWYnjTWcScvQmeNk+C
+         xuGbFq8g2XtnbOYSUuC93EUEfuo4xAOX/wS64UWE0Ew1kJVJGKCYldhpRaodRYXt6UwG
+         0gXRpzueGUIGufDhrmFne8uwiptbs82Kgo0tuq0GsRfGM/Dm9pl6HrTGl9jH3Kq44hEH
+         gtFOPEmK6j0egOa9MMz6Mi1GtN0hZzi9KQLauKpAhcDzljZDVqW1fGID+rr+frS3iqqg
+         15Y8XPvW/t2cIBTmGTBxqzCNGqdNY2TfMeHsGpZQqSzMhpggENt/m7qCXaBD8PcvXlhT
+         6fYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2OD7Oc4ulM3X8ouS1/vJUS6vCduQdV8B7cQgskKhcDc=;
+        b=MvderKbaJYdpu/v+zRdaXnX+ytXh0uVPS9LPMQ8q0l2akWwOvEtPG/077iJu5IaaoB
+         x6ek2jL1nkLIzM/T664WKGJ7VdeHmm6YiJWH/1+wAAQdrSRZnOuD5ZKZ6hf4vvs/40mR
+         SkuOzH/neNj4D04uPGFbE9mJOe3k3E6eoSMxCvMUr3xQg2NJVStvk0lruCLxpQ3k6elO
+         dqMAuk/vu1nWY4AoKme0iMcA2FmJTUxhub6BNq2I4s3wSkOHsQJCiB82AKG9X7oAaPPq
+         ZRPMJB1DUzj/7J9D9dFnGuRCb9KUzfz+AQLfOtkFyTBL432eIqNc+oUDzUuY10HvDgBi
+         iljw==
+X-Gm-Message-State: AOAM533+xQ9yXInY5HMWvo/dwqUHEOFveuWWptLbE7ey28bvQ6RTFnIH
+        /+maJaz3AAfj9sg7NER4p7XnRCCg/dBuuJ/fWLA=
+X-Google-Smtp-Source: ABdhPJxEA+Mq4DrMcvXfk2Rn30RtAx8eLOFCtu1ZgYxPTL+5HaaRvMwLSO/IhyyAfYPF+lciX5yMEz73+0RlSAzuW+Q=
+X-Received: by 2002:a17:906:33c5:: with SMTP id w5mr16980889eja.319.1613412913669;
+ Mon, 15 Feb 2021 10:15:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-15_14:2021-02-12,2021-02-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 suspectscore=0 clxscore=1015 adultscore=0 phishscore=0
- priorityscore=1501 bulkscore=0 impostorscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102150137
+References: <20210215175400.13126-1-gakula@marvell.com>
+In-Reply-To: <20210215175400.13126-1-gakula@marvell.com>
+From:   Sunil Kovvuri <sunil.kovvuri@gmail.com>
+Date:   Mon, 15 Feb 2021 23:45:02 +0530
+Message-ID: <CA+sq2Cc5d4oJUNA96wMgEf3jgf4500Yu2G9TKA=cHuG8oyHtZw@mail.gmail.com>
+Subject: Re: [net-next PATCH] octeontx2-af: cn10k: Fixes CN10K RPM reference issue
+To:     Geetha sowjanya <gakula@marvell.com>
+Cc:     Linux Netdev List <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-15 at 10:13 +0100, Michal Hocko wrote:
-> On Sun 14-02-21 11:21:02, James Bottomley wrote:
-> > On Sun, 2021-02-14 at 10:58 +0100, David Hildenbrand wrote:
-> > [...]
-> > > > And here we come to the question "what are the differences that
-> > > > justify a new system call?" and the answer to this is very
-> > > > subjective. And as such we can continue bikeshedding forever.
-> > > 
-> > > I think this fits into the existing memfd_create() syscall just
-> > > fine, and I heard no compelling argument why it shouldn‘t. That‘s
-> > > all I can say.
-> > 
-> > OK, so let's review history.  In the first two incarnations of the
-> > patch, it was an extension of memfd_create().  The specific
-> > objection by Kirill Shutemov was that it doesn't share any code in
-> > common with memfd and so should be a separate system call:
-> > 
-> > https://lore.kernel.org/linux-api/20200713105812.dnwtdhsuyj3xbh4f@box/
-> 
-> Thanks for the pointer. But this argument hasn't been challenged at
-> all. It hasn't been brought up that the overlap would be considerable
-> higher by the hugetlb/sealing support. And so far nobody has claimed
-> those combinations as unviable.
+On Mon, Feb 15, 2021 at 11:27 PM Geetha sowjanya <gakula@marvell.com> wrote:
+>
+> This patch fixes references to uninitialized variables and
+> debugfs entry name for CN10K platform and HW_TSO flag check.
+>
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+>
+> This patch fixes the bug introduced by the commit
+> 3ad3f8f93c81 ("octeontx2-af: cn10k: MAC internal loopback support".
+> These changes are not yet merged into net branch, hence submitting
+> to net-next.
+>
+> ---
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c   |  2 ++
+>  .../net/ethernet/marvell/octeontx2/af/rvu_debugfs.c   |  2 +-
+>  .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c    | 11 ++++++-----
+>  3 files changed, 9 insertions(+), 6 deletions(-)
+>
 
-Kirill is actually interested in the sealing path for his KVM code so
-we took a look.  There might be a two line overlap in memfd_create for
-the seal case, but there's no real overlap in memfd_add_seals which is
-the bulk of the code.  So the best way would seem to lift the inode ...
--> seals helpers to be non-static so they can be reused and roll our
-own add_seals.
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> index 3f778fc054b5..22ec03a618b1 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> @@ -816,22 +816,23 @@ static bool is_hw_tso_supported(struct otx2_nic *pfvf,
+>  {
+>         int payload_len, last_seg_size;
+>
+> +       if (test_bit(HW_TSO, &pfvf->hw.cap_flag))
+> +               return true;
+> +
+> +       /* On 96xx A0, HW TSO not supported */
+> +       if (!is_96xx_B0(pfvf->pdev))
+> +               return false;
+>
+>         /* HW has an issue due to which when the payload of the last LSO
+>          * segment is shorter than 16 bytes, some header fields may not
+>          * be correctly modified, hence don't offload such TSO segments.
+>          */
+> -       if (!is_96xx_B0(pfvf->pdev))
+> -               return true;
+>
+>         payload_len = skb->len - (skb_transport_offset(skb) + tcp_hdrlen(skb));
+>         last_seg_size = payload_len % skb_shinfo(skb)->gso_size;
+>         if (last_seg_size && last_seg_size < 16)
+>                 return false;
+>
+> -       if (!test_bit(HW_TSO, &pfvf->hw.cap_flag))
+> -               return false;
+> -
+>         return true;
+>  }
 
-I can't see a use case at all for hugetlb support, so it seems to be a
-bit of an angels on pin head discussion.  However, if one were to come
-along handling it in the same way seems reasonable.
+The HW_TSO flag should not be set for B0 silicon as well, otherwise
+the checks related to
+HW issue mentioned above will not come into effect.
 
-> > The other objection raised offlist is that if we do use
-> > memfd_create, then we have to add all the secret memory flags as an
-> > additional ioctl, whereas they can be specified on open if we do a
-> > separate system call.  The container people violently objected to
-> > the ioctl because it can't be properly analysed by seccomp and much
-> > preferred the syscall version.
-> > 
-> > Since we're dumping the uncached variant, the ioctl problem
-> > disappears but so does the possibility of ever adding it back if we
-> > take on the container peoples' objection.  This argues for a
-> > separate syscall because we can add additional features and extend
-> > the API with flags without causing anti-ioctl riots.
-> 
-> I am sorry but I do not understand this argument.
-
-You don't understand why container guarding technology doesn't like
-ioctls?  The problem is each ioctl is the multiplexor is specific to
-the particular fd implementation, so unlike fcntl you don't have global
-ioctl numbers (although we do try to separate the space somewhat with
-the _IO macros).  This makes analysis and blocking a hard problem for
-container seccomp.
-
->  What kind of flags are we talking about and why would that be a
-> problem with memfd_create interface? Could you be more specific
-> please?
-
-You mean what were the ioctl flags in the patch series linked above? 
-They were SECRETMEM_EXCLUSIVE and SECRETMEM_UNCACHED in patch 3/5. 
-They were eventually dropped after v10, because of problems with
-architectural semantics, with the idea that it could be added back
-again if a compelling need arose:
-
-https://lore.kernel.org/linux-api/20201123095432.5860-1-rppt@kernel.org/
-
-In theory the extra flags could be multiplexed into the memfd_create
-flags like hugetlbfs is but with 32 flags and a lot already taken it
-gets messy for expansion.  When we run out of flags the first question
-people will ask is "why didn't you do separate system calls?".
-
-James
-
-
-
+Thanks,
+Sunil.
