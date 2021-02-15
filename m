@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF8F31B539
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 06:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA6C31B54E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 06:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhBOF1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 00:27:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:58382 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229486AbhBOF1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 00:27:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7718101E;
-        Sun, 14 Feb 2021 21:26:16 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4487E3F73B;
-        Sun, 14 Feb 2021 21:26:12 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH] arm64: mm: correct the start of physical address in
- linear map
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        tyhicks@linux.microsoft.com, jmorris@namei.org,
-        catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, rppt@kernel.org, logang@deltatee.com,
-        ardb@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210213012316.1525419-1-pasha.tatashin@soleen.com>
-Message-ID: <06b7bfd1-99cd-a9be-e3cc-9fe13f2cf2a6@arm.com>
-Date:   Mon, 15 Feb 2021 10:56:15 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229627AbhBOFzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 00:55:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhBOFzr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 00:55:47 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74741C061574;
+        Sun, 14 Feb 2021 21:55:07 -0800 (PST)
+Received: from ip4d149f6e.dynamic.kabel-deutschland.de ([77.20.159.110] helo=[192.168.66.101]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1lBWqe-0006ec-G8; Mon, 15 Feb 2021 06:55:04 +0100
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Joerg Roedel <joro@8bytes.org>,
+        Damian Tometzki <linux@tometzki.de>
+References: <20210210054823.242262-1-linux@leemhuis.info>
+ <20210214160009.lxonvxg4qyj6ygbk@e107158-lin.cambridge.arm.com>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [PATCH] docs: reporting-issues.rst: explain how to decode stack
+ traces
+Message-ID: <7f75a923-7aab-5546-102b-a8a6eb882cc9@leemhuis.info>
+Date:   Mon, 15 Feb 2021 06:55:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210213012316.1525419-1-pasha.tatashin@soleen.com>
+In-Reply-To: <20210214160009.lxonvxg4qyj6ygbk@e107158-lin.cambridge.arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1613368507;f7d8888f;
+X-HE-SMSGID: 1lBWqe-0006ec-G8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pavel,
+Hi! Many thx for looking into this, much appreciated!
 
-On 2/13/21 6:53 AM, Pavel Tatashin wrote:
-> Memory hotplug may fail on systems with CONFIG_RANDOMIZE_BASE because the
-> linear map range is not checked correctly.
+Am 14.02.21 um 17:00 schrieb Qais Yousef:
+> On 02/10/21 06:48, Thorsten Leemhuis wrote:
+>
+>> - * If the failure includes a stack dump, like an Oops does, consider decoding
+>> -   it to find the offending line of code.
+>> + * If your failure involves a 'panic', 'oops', or 'warning', consider decoding
+> or 'BUG'? There are similar other places below that could benefit from this
+> addition too.
+
+Good point. In fact there are other places in the document where this is
+needed as well. Will address those in another patch.
+
+>> +   the kernel log to find the line of code that trigger the error.
+>>  
+>>   * If your problem is a regression, try to narrow down when the issue was
+>>     introduced as much as possible.
+>> @@ -869,6 +869,15 @@ pick up the configuration of your current kernel and then tries to adjust it
+>>  somewhat for your system. That does not make the resulting kernel any better,
+>>  but quicker to compile.
+>>  
+>> +Note: If you are dealing with a kernel panic, oops, or warning, please make
+>> +sure to enable CONFIG_KALLSYMS when configuring your kernel. Additionally,
 > 
-> The start physical address that linear map covers can be actually at the
-> end of the range because of randmomization. Check that and if so reduce it
-> to 0.
+> s/make sure/try/
 
-Looking at the code, this seems possible if memstart_addr which is a signed
-value becomes large (after falling below 0) during arm64_memblock_init().
+I did that, but ignored...
 
+> s/kernel./kernel if you can./
+
+...this. Yes, you have a point with...
+
+> Less demanding wording in case the user doesn't have the capability to rebuild
+> or deploy such a kernel where the problem happens. Maybe you can tweak it more
+> if you like too :-)
+
+...that, but that section in the document is about building your own
+kernel, so I'd say we don't have to be that careful here.
+
+>> +enable CONFIG_DEBUG_KERNEL and CONFIG_DEBUG_INFO, too; the latter is the
+>> +relevant one of those two, but can only be reached if you enable the former. Be
+>> +aware CONFIG_DEBUG_INFO increases the storage space required to build a kernel
+>> +by quite a bit. But that's worth it, as these options will allow you later to
+>> +pinpoint the exact line of code that triggers your issue. The section 'Decode
+>> +failure messages' below explains this in more detail.
+>
+> I think worth mentioning too that the user should keep a log of the problem
+> when first encountered and then attempt the above. Just in case the problem is
+> not reproducible easily so the info is not lost.
 > 
-> This can be verified on QEMU with setting kaslr-seed to ~0ul:
+> Maybe something like below:
 > 
-> memstart_offset_seed = 0xffff
-> START: __pa(_PAGE_OFFSET(vabits_actual)) = ffff9000c0000000
-> END:   __pa(PAGE_END - 1) =  1000bfffffff
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Fixes: 58284a901b42 ("arm64/mm: Validate hotplug range before creating linear mapping")
-> ---
->  arch/arm64/mm/mmu.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index ae0c3d023824..6057ecaea897 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1444,14 +1444,25 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
->  
->  static bool inside_linear_region(u64 start, u64 size)
->  {
-> +	u64 start_linear_pa = __pa(_PAGE_OFFSET(vabits_actual));
-> +	u64 end_linear_pa = __pa(PAGE_END - 1);
-> +
-> +	/*
-> +	 * Check for a wrap, it is possible because of randomized linear mapping
-> +	 * the start physical address is actually bigger than the end physical
-> +	 * address. In this case set start to zero because [0, end_linear_pa]
-> +	 * range must still be able to cover all addressable physical addresses.
-> +	 */
+> '''
+> Always keep a record of the issue encountered in case it is hard to reproduce.
+> Sending undecoded report is better than not sending a report at all.
+> '''
 
-If this is possible only with randomized linear mapping, could you please
-add IS_ENABLED(CONFIG_RANDOMIZED_BASE) during the switch over. Wondering
-if WARN_ON(start_linear_pa > end_linear_pa) should be added otherwise i.e
-when linear mapping randomization is not enabled.
+Very good point, added.
 
-> +	if (start_linear_pa > end_linear_pa)
-> +		start_linear_pa = 0;
+>> +your kernel. If you did so, consider to decode the information from the
+>> +kernel's log. That will make it a lot easier to understand what lead to the
+>> +'panic', 'oops', or 'warning', which increases the chances enormously that
+>> +someone can provide a fix.
+> I suggest removing the word enormously. It helps, but it all depends on the
+> particular circumstances. Sometimes it does, others it doesn't.
 
-This looks okay but will double check and give it some more testing.
+Done.
 
-> +
->  	/*
->  	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
->  	 * accommodating both its ends but excluding PAGE_END. Max physical
->  	 * range which can be mapped inside this linear mapping range, must
->  	 * also be derived from its end points.
->  	 */
-> -	return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
-> -	       (start + size - 1) <= __pa(PAGE_END - 1);
-> +	return start >= start_linear_pa && (start + size - 1) <= end_linear_pa;
->  }
->  
->  int arch_add_memory(int nid, u64 start, u64 size,
-> 
+> This looks good to me in general. With the above minor nits fixed, feel free to
+> add my
+> Reviewed-by: Qais Yousef <qais.yousef@arm.com>
 
-- Anshuman
+Great, thx, will do!
+
+Ciao, Thorsten
