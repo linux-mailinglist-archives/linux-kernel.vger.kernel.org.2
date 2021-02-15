@@ -2,176 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F47431BA2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B07631BA2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhBONTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 08:19:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49232 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229802AbhBONSz (ORCPT
+        id S230106AbhBONSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 08:18:52 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:1527 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229802AbhBONSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 08:18:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613395047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h54p7eSoqjSAmVfvcPSfZz+3iobn0f7oTIY4AbSr0ms=;
-        b=Pm00+zhC+Y09XSNpS/7Q4+NIWxmloyJZlIcwQQQTQTpWYp0zjvRzsmxxAPiJ1Kd1gs9hct
-        jKCLlzrS6KtGQVN7CtE7Mo2u0qxmg7rtGqdncWPuvzRpBLbYZ6JAqC9xFREoVch7m+OKMA
-        4ANNR3vavc5hDFE2sbR51uz0eKso5ZY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-409-G6ulSkeZNoaGcyXJbfBRZQ-1; Mon, 15 Feb 2021 08:17:22 -0500
-X-MC-Unique: G6ulSkeZNoaGcyXJbfBRZQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAE7D801962;
-        Mon, 15 Feb 2021 13:17:19 +0000 (UTC)
-Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 05D885C233;
-        Mon, 15 Feb 2021 13:17:11 +0000 (UTC)
-Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
- unmanaged ASIDs
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        wangxingang <wangxingang5@huawei.com>
-Cc:     Xieyingtai <xieyingtai@huawei.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        qubingbing <qubingbing@hisilicon.com>
-References: <20201118112151.25412-8-eric.auger@redhat.com>
- <1606829590-25924-1-git-send-email-wangxingang5@huawei.com>
- <2e69adf5-8207-64f7-fa8e-9f2bd3a3c4e3@redhat.com>
- <e10ad90dc5144c0d9df98a9a078091af@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <dae77da3-527a-9737-fe2b-c4a0af081321@redhat.com>
-Date:   Mon, 15 Feb 2021 14:17:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 15 Feb 2021 08:18:48 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11FDHwmI009467;
+        Mon, 15 Feb 2021 14:17:58 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=E5obh1h20v4bvprIe4TXMd89+JhUEv4uPNW7pZZM+fo=;
+ b=r+IkvzdJAz2Q1adOcgWIPnuY/E1/Y6HxCV0/ulpDGFFq2POCmKUyKGVcAyue9rUFyO0Z
+ lvas48HJQ+ya1gPwKgUT1YSOKWMo/jjasL9Ryjb9DAHLhmIKmJ5PTAz4V/IdFOe3SU6p
+ z8Sk/kf46ODRAHADuSzL/ZfpXdqT2MG9G7YSfGhwdlJcypyD3XKLxK/S3qr1Fn/Q7UWg
+ nmMtyol9pDK0hFu7WBgIpVd+6+W+GRCAybkhGiE/PuyIwH8k3grbtiM3b/izjfbgkAdT
+ tOzhlqdck2OSDHCByQevML1T91NNya88rmISTjmGIkXf1S/6dEYiAtLHbcPI3lrZeEFT kQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36p547aj3a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 14:17:58 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E642010002A;
+        Mon, 15 Feb 2021 14:17:57 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C0D6622B3D3;
+        Mon, 15 Feb 2021 14:17:57 +0100 (CET)
+Received: from lmecxl0573.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 15 Feb
+ 2021 14:17:57 +0100
+Subject: Re: [PATCH 0/3] MAINTAINERS: update STMicroelectronics email
+To:     <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Olof Johansson" <olof@lixom.net>,
+        "khilman@baylibre.com" <khilman@baylibre.com>
+CC:     Alexandre TORGUE <alexandre.torgue@st.com>
+References: <20210201100023.10985-1-patrice.chotard@foss.st.com>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <800f8dfa-0949-ddf8-1635-15311c2c9623@foss.st.com>
+Date:   Mon, 15 Feb 2021 14:17:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <e10ad90dc5144c0d9df98a9a078091af@huawei.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210201100023.10985-1-patrice.chotard@foss.st.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-15_08:2021-02-12,2021-02-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shameer,
+Hi Arnd, Olof, Kevin
 
-On 12/3/20 7:42 PM, Shameerali Kolothum Thodi wrote:
-> Hi Eric,
-> 
->> -----Original Message-----
->> From: kvmarm-bounces@lists.cs.columbia.edu
->> [mailto:kvmarm-bounces@lists.cs.columbia.edu] On Behalf Of Auger Eric
->> Sent: 01 December 2020 13:59
->> To: wangxingang <wangxingang5@huawei.com>
->> Cc: Xieyingtai <xieyingtai@huawei.com>; jean-philippe@linaro.org;
->> kvm@vger.kernel.org; maz@kernel.org; joro@8bytes.org; will@kernel.org;
->> iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
->> vivek.gautam@arm.com; alex.williamson@redhat.com;
->> zhangfei.gao@linaro.org; robin.murphy@arm.com;
->> kvmarm@lists.cs.columbia.edu; eric.auger.pro@gmail.com
->> Subject: Re: [PATCH v13 07/15] iommu/smmuv3: Allow stage 1 invalidation with
->> unmanaged ASIDs
->>
->> Hi Xingang,
->>
->> On 12/1/20 2:33 PM, Xingang Wang wrote:
->>> Hi Eric
->>>
->>> On  Wed, 18 Nov 2020 12:21:43, Eric Auger wrote:
->>>> @@ -1710,7 +1710,11 @@ static void arm_smmu_tlb_inv_context(void
->> *cookie)
->>>> 	 * insertion to guarantee those are observed before the TLBI. Do be
->>>> 	 * careful, 007.
->>>> 	 */
->>>> -	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
->>>> +	if (ext_asid >= 0) { /* guest stage 1 invalidation */
->>>> +		cmd.opcode	= CMDQ_OP_TLBI_NH_ASID;
->>>> +		cmd.tlbi.asid	= ext_asid;
->>>> +		cmd.tlbi.vmid	= smmu_domain->s2_cfg.vmid;
->>>> +	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
->>>
->>> Found a problem here, the cmd for guest stage 1 invalidation is built,
->>> but it is not delivered to smmu.
->>>
->>
->> Thank you for the report. I will fix that soon. With that fixed, have
->> you been able to run vSVA on top of the series. Do you need other stuff
->> to be fixed at SMMU level? 
-> 
-> I am seeing another issue with this series. This is when you have the vSMMU
-> in non-strict mode(iommu.strict=0). Any network pass-through dev with iperf run 
-> will be enough to reproduce the issue. It may randomly stop/hang.
-> 
-> It looks like the .flush_iotlb_all from guest is not propagated down to the host
-> correctly. I have a temp hack to fix this in Qemu wherein CMDQ_OP_TLBI_NH_ASID
-> will result in a CACHE_INVALIDATE with IOMMU_INV_GRANU_PASID flag and archid
-> set.
-
-Thank you for the analysis. Indeed the NH_ASID was not properly handled
-as asid info was not passed down. I fixed domain invalidation and added
-asid based invalidation.
+What is the best way to get this series merged ?
+Do you pick it and apply it directly, or do we integrate it in the next STM32 pull request ?
 
 Thanks
+Patrice
 
-Eric
+On 2/1/21 11:00 AM, patrice.chotard@foss.st.com wrote:
+> From: Patrice Chotard <patrice.chotard@foss.st.com>
 > 
-> Please take a look and let me know. 
+> This series:
+>   _ Update st.com to foss.st.com email for some maintainers.
+>   _ Remove Vincent Abriou as STI/STM DRM driver
+>   _ Add Alain Volmat as I2C/SMBUS driver maintainer
 > 
-> As I am going to respin soon, please let me
->> know what is the best branch to rebase to alleviate your integration.
+> Patrice Chotard (3):
+>   MAINTAINERS: Update some st.com email addresses to foss.st.com
+>   MAINTAINERS: Remove Vincent Abriou for STM/STI DRM drivers.
+>   MAINTAINERS: Add Alain Volmat as STM32 I2C/SMBUS maintainer
 > 
-> Please find the latest kernel and Qemu branch with vSVA support added here,
+>  MAINTAINERS | 31 +++++++++++++++----------------
+>  1 file changed, 15 insertions(+), 16 deletions(-)
 > 
-> https://github.com/hisilicon/kernel-dev/tree/5.10-rc4-2stage-v13-vsva
-> https://github.com/hisilicon/qemu/tree/v5.2.0-rc1-2stage-rfcv7-vsva
-> 
-> I have done some basic minimum vSVA tests on a HiSilicon D06 board with
-> a zip dev that supports STALL. All looks good so far apart from the issues
-> that have been already reported/discussed.
-> 
-> The kernel branch is actually a rebase of sva/uacce related patches from a
-> Linaro branch here,
-> 
-> https://github.com/Linaro/linux-kernel-uadk/tree/uacce-devel-5.10
-> 
-> I think going forward it will be good(if possible) to respin your series on top of
-> a sva branch with STALL/PRI support added. 
-> 
-> Hi Jean/zhangfei,
-> Is it possible to have a branch with minimum required SVA/UACCE related patches
-> that are already public and can be a "stable" candidate for future respin of Eric's series?
-> Please share your thoughts.
-> 
-> Thanks,
-> Shameer 
-> 
->> Best Regards
->>
->> Eric
->>
->> _______________________________________________
->> kvmarm mailing list
->> kvmarm@lists.cs.columbia.edu
->> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
-> 
-
