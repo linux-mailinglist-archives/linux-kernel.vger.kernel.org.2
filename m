@@ -2,114 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D505731BADA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2FD31BADD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhBOOTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51418 "EHLO
+        id S229983AbhBOOUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:20:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhBOOTI (ORCPT
+        with ESMTP id S229811AbhBOOUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:19:08 -0500
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A64EC061574;
-        Mon, 15 Feb 2021 06:18:28 -0800 (PST)
-Received: by mail-ua1-x92f.google.com with SMTP id c44so2411120uad.12;
-        Mon, 15 Feb 2021 06:18:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JkNyAS6eMcPhEpMPKFlNgf2kOWM3dGOcbf1ISpcwe/c=;
-        b=jGZyyVVCYMk0D78xryAnvDALibBeg4qMklKuLcrr12J8ReHaXad2+IHXRrFKFUZb/i
-         DeKddPdxdk3ie2ope8DivM/4H2ebX88PjicM50fmm6dK9kAStN3NAkYRXzsw8pvY8y0g
-         3c/tyd5xCYQd9XF99JvigikmhQYrEzRGa+iaxcyTMz68t9O5P5J+/Lk+x8PRAx5jJEe5
-         ORQNmoHumTAJBzSQkHc4HQmqoK2MJe135Vjx6dWSwrEV/RYlW7w1XWhApmJwr34Yoa9N
-         LSYPO82fyPgdoopQihoHWuwPkFTgj9swrEPLPN22kgRfJOCbbIjIB3gqNtvQDFUeyruX
-         xEeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JkNyAS6eMcPhEpMPKFlNgf2kOWM3dGOcbf1ISpcwe/c=;
-        b=pPPsgNEqwZqoac9545Hj8pdHm2ZwrE9HI1i2PwoovSSzGovh550m8cQeRuwx1indAR
-         V71Q85MemIUfyIkPH6nnZpSqZmQCXVuIWAksu8xovHhSxkFR8K2ChJN8G5VlJh4vLbgU
-         G+iS2B48EyV6pNnbiQ5BXYVCyNStbN4tNW2YSHr8V1G9l7dH2oJPn3zz7hjKGhJoRQak
-         /k7j1PIkmYrVWnuO+UCZUKy0jxGPmmNRLrsCnEkGbOmXDuJxH9I+uiDOGyp2IQYk2wsU
-         jxCvysLKcnutzwHwh/I73ac+I0aTc23B1wSul2mM3CuayVIGM9TjAZwxcadl6jy4aRpq
-         od+g==
-X-Gm-Message-State: AOAM530zDPtlbTK5Z7NlQ0OtY92lFzlB5bNt6OF784Qj/aG+AGlwGnij
-        ZrjG6P/givH2QzYq3+Uqocl0cud9BHEaWBDCckY=
-X-Google-Smtp-Source: ABdhPJxu3LvnHPyEAD8T9tnva6iCu0otMcb/YaxTz98zbbc5OoSlhfJkCg/5MtqtrqsJew8ycUpaymlmtDUYA4Ygsz8=
-X-Received: by 2002:ab0:5b0e:: with SMTP id u14mr8636749uae.19.1613398706639;
- Mon, 15 Feb 2021 06:18:26 -0800 (PST)
+        Mon, 15 Feb 2021 09:20:36 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FF2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:19:55 -0800 (PST)
+Received: from zn.tnic (p200300ec2f043400c4db7402f90f0bee.dip0.t-ipconnect.de [IPv6:2003:ec:2f04:3400:c4db:7402:f90f:bee])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 404D01EC0521;
+        Mon, 15 Feb 2021 15:19:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1613398792;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=6bvkc1xgd09yvB3hbFh73PwazLv4WCVUMzuzPCEt3Hg=;
+        b=iHgIMKgpkvHF2v5s9cs8zLVwEPUOe4+KKTBLh1gezzcoEpkdBxnYTB/W4LOgHTNcllkOal
+        Pp9S/smL6ZAZXniDRu+gn/xzLeh7ywY9xI6GiqoUoDT2EvIfrizUs5D5VWMYFXRvZGgDR1
+        WxCdpSAg7YmJ2+2hGCnw0tZezn2rO1M=
+Date:   Mon, 15 Feb 2021 15:19:49 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] Documentation/submitting-patches: Extend commit message
+ layout description
+Message-ID: <20210215141949.GB21734@zn.tnic>
+References: <20201217183756.GE23634@zn.tnic>
 MIME-Version: 1.0
-References: <20210212163229.68270-1-krzk@kernel.org> <20210215085241.GG179940@dell>
-In-Reply-To: <20210215085241.GG179940@dell>
-From:   Emil Velikov <emil.l.velikov@gmail.com>
-Date:   Mon, 15 Feb 2021 14:18:15 +0000
-Message-ID: <CACvgo53wn84G8wuyF++=bwtjnVzVB31BA2_JBWnihnwinSFD7A@mail.gmail.com>
-Subject: Re: [PATCH v4] MAINTAINERS: move Milo Kim to credits
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>, linux-pwm@vger.kernel.org,
-        linux-fbdev <linux-fbdev@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Linux PM <linux-pm@vger.kernel.org>, linux-iio@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-leds@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201217183756.GE23634@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings everyone,
+From: Borislav Petkov <bp@suse.de>
+Subject: [PATCH] Documentation/submitting-patches: Extend commit message layout description
 
-On Mon, 15 Feb 2021 at 08:52, Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Fri, 12 Feb 2021, Krzysztof Kozlowski wrote:
->
-> > Milo Kim's email in TI bounces with permanent error (550: Invalid
-> > recipient).  Last email from him on LKML was in 2017.  Move Milo Kim to
-> > credits and remove the separate driver entries for:
-> >  - TI LP855x backlight driver,
-> >  - TI LP8727 charger driver,
-> >  - TI LP8788 MFD (ADC, LEDs, charger and regulator) drivers.
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > Cc: Mark Brown <broonie@kernel.org>
-> > Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > Cc: Jingoo Han <jingoohan1@gmail.com>
-> > Cc: Lee Jones <lee.jones@linaro.org>
-> > Cc: Pavel Machek <pavel@ucw.cz>
-> > Cc: Thierry Reding <thierry.reding@gmail.com>
-> > Cc: Sebastian Reichel <sre@kernel.org>
-> > Cc: Daniel Thompson <daniel.thompson@linaro.org>
-> >
-> > ---
-> >
-> > Dear Lee,
-> >
-> > Could you take care about this patch?
->
-> Yes, but I'll be sending out my pull-request for v5.12 in the next
-> couple of days (maybe even today if I can find some time), so this
-> will have to wait until v5.13.
->
-Would it make sense to keep the MAINTAINERS entries as "orphan"?
-Checking with linux-next, the drivers are still present in-tree.
+Add more blurb about the level of detail that should be contained in a
+patch's commit message. Extend and make more explicit what text should
+be added under the --- line. Extend examples and split into more easily
+palatable paragraphs.
 
-HTH
--Emil
+This has been partially carved out from a tip subsystem handbook
+patchset by Thomas Gleixner:
+
+  https://lkml.kernel.org/r/20181107171010.421878737@linutronix.de
+
+and incorporates follow-on comments.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+
+/me sends the next generic topic blurb.
+
+ Documentation/process/submitting-patches.rst | 89 ++++++++++++--------
+ 1 file changed, 56 insertions(+), 33 deletions(-)
+
+diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+index 5ca072f9ecb7..403784aca1f2 100644
+--- a/Documentation/process/submitting-patches.rst
++++ b/Documentation/process/submitting-patches.rst
+@@ -623,16 +623,19 @@ not considered part of the summary phrase, but describe how the patch
+ should be treated.  Common tags might include a version descriptor if
+ the multiple versions of the patch have been sent out in response to
+ comments (i.e., "v1, v2, v3"), or "RFC" to indicate a request for
+-comments.  If there are four patches in a patch series the individual
+-patches may be numbered like this: 1/4, 2/4, 3/4, 4/4.  This assures
+-that developers understand the order in which the patches should be
+-applied and that they have reviewed or applied all of the patches in
+-the patch series.
++comments.
++
++If there are four patches in a patch series the individual patches may
++be numbered like this: 1/4, 2/4, 3/4, 4/4. This assures that developers
++understand the order in which the patches should be applied and that
++they have reviewed or applied all of the patches in the patch series.
+ 
+ A couple of example Subjects::
+ 
+     Subject: [PATCH 2/5] ext2: improve scalability of bitmap searching
+     Subject: [PATCH v2 01/27] x86: fix eflags tracking
++    Subject: [PATCH v2] sub/sys: Condensed patch summary
++    Subject: [PATCH v2 M/N] sub/sys: Condensed patch summary
+ 
+ The ``from`` line must be the very first line in the message body,
+ and has the form:
+@@ -645,34 +648,54 @@ then the ``From:`` line from the email header will be used to determine
+ the patch author in the changelog.
+ 
+ The explanation body will be committed to the permanent source
+-changelog, so should make sense to a competent reader who has long
+-since forgotten the immediate details of the discussion that might
+-have led to this patch.  Including symptoms of the failure which the
+-patch addresses (kernel log messages, oops messages, etc.) is
+-especially useful for people who might be searching the commit logs
+-looking for the applicable patch.  If a patch fixes a compile failure,
+-it may not be necessary to include _all_ of the compile failures; just
+-enough that it is likely that someone searching for the patch can find
+-it.  As in the ``summary phrase``, it is important to be both succinct as
+-well as descriptive.
+-
+-The ``---`` marker line serves the essential purpose of marking for patch
+-handling tools where the changelog message ends.
+-
+-One good use for the additional comments after the ``---`` marker is for
+-a ``diffstat``, to show what files have changed, and the number of
+-inserted and deleted lines per file.  A ``diffstat`` is especially useful
+-on bigger patches.  Other comments relevant only to the moment or the
+-maintainer, not suitable for the permanent changelog, should also go
+-here.  A good example of such comments might be ``patch changelogs``
+-which describe what has changed between the v1 and v2 version of the
+-patch.
+-
+-If you are going to include a ``diffstat`` after the ``---`` marker, please
+-use ``diffstat`` options ``-p 1 -w 70`` so that filenames are listed from
+-the top of the kernel source tree and don't use too much horizontal
+-space (easily fit in 80 columns, maybe with some indentation).  (``git``
+-generates appropriate diffstats by default.)
++changelog, so should make sense to a competent reader who has long since
++forgotten the immediate details of the discussion that might have led to
++this patch. Including symptoms of the failure which the patch addresses
++(kernel log messages, oops messages, etc.) are especially useful for
++people who might be searching the commit logs looking for the applicable
++patch. The text should be written in such detail so that when read
++weeks, months or even years later, it can give the reader the needed
++details to grasp the reasoning for **why** the patch was created.
++
++If a patch fixes a compile failure, it may not be necessary to include
++_all_ of the compile failures; just enough that it is likely that
++someone searching for the patch can find it. As in the ``summary
++phrase``, it is important to be both succinct as well as descriptive.
++
++The ``---`` marker line serves the essential purpose of marking for
++patch handling tools where the changelog message ends.
++
++One good use for the additional comments after the ``---`` marker is
++for a ``diffstat``, to show what files have changed, and the number of
++inserted and deleted lines per file. A ``diffstat`` is especially useful
++on bigger patches. If you are going to include a ``diffstat`` after the
++``---`` marker, please use ``diffstat`` options ``-p 1 -w 70`` so that
++filenames are listed from the top of the kernel source tree and don't
++use too much horizontal space (easily fit in 80 columns, maybe with some
++indentation). (``git`` generates appropriate diffstats by default.)
++
++Other comments relevant only to the moment or the maintainer, not
++suitable for the permanent changelog, should also go here. A good
++example of such comments might be ``patch changelogs`` which describe
++what has changed between the v1 and v2 version of the patch.
++
++Please put this information **after** the ``---`` line which separates
++the changelog from the rest of the patch. The version information is
++not part of the changelog which gets committed to the git tree. It is
++additional information for the reviewers. If it's placed above the
++commit tags, it needs manual interaction to remove it. If it is below
++the separator line, it gets automatically stripped off when applying the
++patch::
++
++  <commit message>
++  ...
++  Signed-off-by: Author <author@mail>
++  ---
++  V2 -> V3: Removed redundant helper function
++  V1 -> V2: Cleaned up coding style and addressed review comments
++
++  path/to/file | 5+++--
++  ...
+ 
+ See more details on the proper patch format in the following
+ references.
+-- 
+2.29.2
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
