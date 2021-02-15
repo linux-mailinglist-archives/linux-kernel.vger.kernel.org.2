@@ -2,100 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C6431BBFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CC631BBFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:15:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhBOPM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:12:29 -0500
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:42037 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbhBOO7t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:59:49 -0500
-Received: by mail-oi1-f170.google.com with SMTP id u66so7962810oig.9;
-        Mon, 15 Feb 2021 06:59:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1WJpZ9O/FoeicwL4UCLrmDh0RgytifRYxcFX1UoCRxE=;
-        b=BC3zpJKGcRQIpdScxn9naf2Ps6uqBtIlD45mDs+6iZziX6XMF1BEHwzxnGNQGz0NUQ
-         YHX+JAh1TsCwztgMo3wpKgTUcCnBaE52jil+/ODIKeAlnoaIjKO3nFXHyg2fZWy+LU7C
-         0vBTQYLo4K4I2pbk5AQozkEpeKgqJsbuH5JG3tCreR1kDI5RsZm5ucaIMXtF740DUFio
-         cz+r+3m4SoWCnfvz1MGE5ykxTL3IaqU8ltkQ4sWlEBhX3yrkHVkcd/Vvl/1LHWH1Zsmd
-         yJFS9aNRy+9BXgXRvBLa6VrM02CxJTb82q4ytxz2evNZkfM+8/KMqOzf9+zcdVCSOn6t
-         4phA==
-X-Gm-Message-State: AOAM532R89fuVG9lQhxn0OjFTncLTtXR8Yc01HhZ2G58u2A4sRZARyzp
-        IhFACm/2QvnKVhX6hwxc0shSau2I714rSahQR3Q=
-X-Google-Smtp-Source: ABdhPJxd8tpEbuaPWJqYrslxV6jJQ6R8HT+eQvaK/uBUprXuVs1u1BjcQP0r7Mzi+i10csNjwDuL4s1KenrxQTdo7DI=
-X-Received: by 2002:a05:6808:5cf:: with SMTP id d15mr8201933oij.69.1613401147730;
- Mon, 15 Feb 2021 06:59:07 -0800 (PST)
+        id S230384AbhBOPMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:12:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230306AbhBOPBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:01:44 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5095E64EA8;
+        Mon, 15 Feb 2021 14:59:15 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 09:59:13 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     <Viktor.Rosendahl@bmw.de>
+Cc:     <mingo@redhat.com>, <joel@joelfernandes.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Add the latency-collector to tools
+Message-ID: <20210215095913.40bbfb99@gandalf.local.home>
+In-Reply-To: <d68f3fca6e72e090b56d7097884ac1a3f50f4a18.camel@bmw.de>
+References: <20210126142652.41b961f2@gandalf.local.home>
+        <20210211161742.25386-1-Viktor.Rosendahl@bmw.de>
+        <20210211145648.1e1e1325@gandalf.local.home>
+        <d2a434e4dfa012dcfdf6525f26ffaa04671fcab9.camel@bmw.de>
+        <d68f3fca6e72e090b56d7097884ac1a3f50f4a18.camel@bmw.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210215111619.2385030-1-geert+renesas@glider.be>
-In-Reply-To: <20210215111619.2385030-1-geert+renesas@glider.be>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 15 Feb 2021 15:58:52 +0100
-Message-ID: <CAJZ5v0ikVbMX0R9e_=wOxKfJX5X322AipmpWy-7wVnWE7Ogc9A@mail.gmail.com>
-Subject: Re: [PATCH] driver core: Fix double failed probing with fw_devlink=on
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 12:16 PM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->
-> With fw_devlink=permissive, devices are added to the deferred probe
-> pending list if their driver's .probe() method returns -EPROBE_DEFER.
->
-> With fw_devlink=on, devices are added to the deferred probe pending list
-> if they are determined to be a consumer, which happens before their
-> driver's .probe() method is called.  If the actual probe fails later
-> (real failure, not -EPROBE_DEFER), the device will still be on the
-> deferred probe pending list, and it will be probed again when deferred
-> probing kicks in, which is futile.
->
-> Fix this by explicitly removing the device from the deferred probe
-> pending list in case of probe failures.
->
-> Fixes: e590474768f1cc04 ("driver core: Set fw_devlink=on by default")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Mon, 15 Feb 2021 11:54:08 +0000
+<Viktor.Rosendahl@bmw.de> wrote:
 
-Good catch:
+> Just a quick update: I was able to reproduce this weird behavior that I wrote
+> about but it turned out to be a problem with my testing.
+> 
+> The test was faulty because of a mistake that I had made.
+> 
+> Sorry for the extra noise.
 
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+No problem. Thanks for letting me know.
 
-> ---
-> Seen on various Renesas R-Car platforms, cfr.
-> https://lore.kernel.org/linux-acpi/CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com
-> ---
->  drivers/base/dd.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 9179825ff646f4e3..91c4181093c43709 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -639,11 +639,13 @@ static int really_probe(struct device *dev, struct device_driver *drv)
->         case -ENXIO:
->                 pr_debug("%s: probe of %s rejects match %d\n",
->                          drv->name, dev_name(dev), ret);
-> +               driver_deferred_probe_del(dev);
->                 break;
->         default:
->                 /* driver matched but the probe failed */
->                 pr_warn("%s: probe of %s failed with error %d\n",
->                         drv->name, dev_name(dev), ret);
-> +               driver_deferred_probe_del(dev);
->         }
->         /*
->          * Ignore errors returned by ->probe so that the next driver can try
-> --
-> 2.25.1
->
+-- Steve
