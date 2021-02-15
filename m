@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD5831B479
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 05:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F29BB31B47B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 05:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbhBOED5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 23:03:57 -0500
-Received: from ozlabs.org ([203.11.71.1]:41259 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhBOEDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 23:03:54 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S229917AbhBOEFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 23:05:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36126 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229875AbhBOEFW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 23:05:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613361835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oCto3KUpwXFxwoednmXXEKQgbQd1P3MF48qpfH2u8IE=;
+        b=Day63ZwE3IKhmc0Cp8yeLbVLtyVgBWu/LTixwr6CKWfdV8MOX4isxrkD0GHhrRNIiIkVam
+        Ff+N8UPW34na5gANxuiZgUp/fNLZGL6YIoNexDaM7kM5CD3qhUfDl8lUXoLspBMXtP9SUv
+        pC0T5LWjBa/Vxj63RbwHZwn3iwwq4D0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-403-tUl8xXvKOxeZFKsCuGbBmg-1; Sun, 14 Feb 2021 23:03:52 -0500
+X-MC-Unique: tUl8xXvKOxeZFKsCuGbBmg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Df9SG3pfxz9sBJ;
-        Mon, 15 Feb 2021 15:03:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613361792;
-        bh=OXH6hdeidcLRK2UHO5Rlipgo2NHJfCGt+TPjjT2FPg4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=g13Vn+lJgT00BnBDyOrkbZexRqtMoAD7yL75fg+ZZjyTSCq75O1z5B4+o5p9eR7ig
-         aDNWp2Wnk0oT0zY34DjWL8B22nqOfXIqHZ2TZeaIeA0CuyULru42RoS4TSjOhIMtcf
-         A9BZBgacQR5Fgfsoc2CrApnp8Sw9DVdNbseMIr9qGo0c/SUvnfbJbvVafYqL6QeUa+
-         oGHLcOplH5s+bw9G0Tx0rKpAO7fFGuU4kn+OVWKEArFzwql7eiflRKgzlHdVEpvv24
-         yd0xre083bhIxTRr1f8YQTbHqFkkiEtmp+NFk3D3XZq6KxqEQ5wOgaXX0Q9FE04uP1
-         UoDwllrSsZQ3Q==
-Date:   Mon, 15 Feb 2021 15:03:08 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: linux-next: manual merge of the ftrace tree with Linus' tree
-Message-ID: <20210215150308.52dfc519@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6762A1005501;
+        Mon, 15 Feb 2021 04:03:51 +0000 (UTC)
+Received: from T590 (ovpn-12-71.pek2.redhat.com [10.72.12.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 757351002391;
+        Mon, 15 Feb 2021 04:03:44 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 12:03:41 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Ewan D . Milne" <emilne@redhat.com>
+Subject: Re: [PATCH 0/2] block: avoid to drop & re-add partitions if
+ partitions aren't changed
+Message-ID: <20210215040341.GA257964@T590>
+References: <20210205021708.1498711-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YBh_Wk77iNjkx5_DnZhu8D_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205021708.1498711-1-ming.lei@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/YBh_Wk77iNjkx5_DnZhu8D_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Feb 05, 2021 at 10:17:06AM +0800, Ming Lei wrote:
+> Hi Guys,
+> 
+> The two patches changes block ioctl(BLKRRPART) for avoiding drop &
+> re-add partitions if partitions state isn't changed. The current
+> behavior confuses userspace because partitions can disappear anytime
+> when ioctl(BLKRRPART).
+> 
+> Ming Lei (2):
+>   block: move partitions check code into single helper
+>   block: avoid to drop & re-add partitions if partitions aren't changed
+> 
+>  block/genhd.c            |   2 +
+>  block/partitions/check.h |   2 +
+>  block/partitions/core.c  | 101 ++++++++++++++++++++++++++++++++-------
+>  fs/block_dev.c           |  28 +++++++++--
+>  include/linux/genhd.h    |   4 ++
+>  5 files changed, 118 insertions(+), 19 deletions(-)
+> 
+> Cc: Ewan D. Milne <emilne@redhat.com>
+> -- 
+> 2.29.2
+> 
 
-Hi all,
+Hello,
 
-Today's linux-next merge of the ftrace tree got a conflict in:
+Ping...
 
-  kernel/trace/trace.c
+-- 
+Ming
 
-between commit:
-
-  b220c049d519 ("tracing: Check length before giving out the filter buffer")
-
-from Linus' tree and commit:
-
-  36590c50b2d0 ("tracing: Merge irqflags + preempt counter.")
-
-from the ftrace tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc kernel/trace/trace.c
-index b5815a022ecc,b79bcacdd6f9..000000000000
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@@ -2745,8 -2739,8 +2739,8 @@@ trace_event_buffer_lock_reserve(struct=20
-  	    (entry =3D this_cpu_read(trace_buffered_event))) {
-  		/* Try to use the per cpu buffer first */
-  		val =3D this_cpu_inc_return(trace_buffered_event_cnt);
- -		if (val =3D=3D 1) {
- +		if ((len < (PAGE_SIZE - sizeof(*entry))) && val =3D=3D 1) {
-- 			trace_event_setup(entry, type, flags, pc);
-+ 			trace_event_setup(entry, type, trace_ctx);
-  			entry->array[0] =3D len;
-  			return entry;
-  		}
-
---Sig_/YBh_Wk77iNjkx5_DnZhu8D_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAp8nwACgkQAVBC80lX
-0GxHVQgAljNDRsk7Lh4YLIWd8bYs/zDAcdsVGwL8lbRAkB7+6QpXwb9VGLBIW3tZ
-ElXo6K8bwFBcqokB+bN81KNdBDOJrcyuWrtovGe6AqlO3gBoUlLOfbCJaTc+L7wS
-vlGwk+fDovuAOoXWNEDlvNT5sqUBPDLIK9fv+gzxREOQkPFE7/SoJbDkCzn2HZ5/
-L3CPpXXe2TaBPOF1zFfTXKP3G8NMadql0iocAc/1LamWfOT5Y3LmzxATqJmzmZDx
-2eDBwr8/9jRHv+MBYEGsjX2ixdo6gnt71FGBe3z6XP6DAl1+Styxd+tnDoC98Ig2
-AJczvQqZ6yir19Ot/TMIECNo8811RA==
-=i5aZ
------END PGP SIGNATURE-----
-
---Sig_/YBh_Wk77iNjkx5_DnZhu8D_--
