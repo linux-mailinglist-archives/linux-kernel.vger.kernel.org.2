@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7C231C27B
+	by mail.lfdr.de (Postfix) with ESMTP id C048231C27C
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhBOTcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:32:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34084 "EHLO
+        id S230105AbhBOTdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:33:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhBOTcr (ORCPT
+        with ESMTP id S229764AbhBOTdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:32:47 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55CBC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:32:07 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id 189so4754941pfy.6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:32:07 -0800 (PST)
+        Mon, 15 Feb 2021 14:33:01 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12A3C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:32:20 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id s24so7865832iob.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:32:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gimpelevich-san-francisco-ca-us.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L3nj9/R/NkkK99k6HujqpUsnIKZSJ7ODAWop9jG8uEo=;
-        b=rlpr9Y17GqcS3VcCW+l+bS1nW3xiXbddJLqCQV49EqcSpGV+KSbl8a+FrYFs9PvSYs
-         it8iWSpJw1gsM6AGOhmH5Acw2KmSdULF0CtLUbpv1I2R6STtXs02IIl8hkKiuQrTcClp
-         gnpNivl1Mi0M80qg3y9K82mqykBBymTRSXTNI+7NyuKpk2tirw6/VycnssOaap/hbbRM
-         aoyntdpV8PSwl9fmqwLS6X81BO88m0k21D/riSbB2g+a2Jud+lXOz+nB4Ew3UND3WIr2
-         OpusKjkcH5p5Sf2vfYR7Obk5HSn1xhQe1A1Xn5XMmt5nQ6eZnXSjlWHxq4HTxliPGZwx
-         aMBw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=+xis++iP1cf+iLoqXe2mOcEArpbUTK16jTIPVdM5D6w=;
+        b=h9al+AVWBinlxzRcHnoshF3W1Z7pEVTZXUgZtA5VQcjF5JQn49LGWU02nAjBH83sXL
+         VkruDWprWVmo3TABtwUdV2Mf483rBU4fsNVoghSVb8i5gTHa/LvQVIL1jJ7DYLKFigpW
+         pU5kOGATy1rHczLRxrNUVO1YDOc3x1TG89EuMZ/Sjm0prCXSGeiZ7AP3eZpBGlS0ocw5
+         ClRNARqV0NcR6hCfMY+7ECluRxLMELunOBSZVSD4QAzDTgwbUH7vaKomI/AlCvcqwwc7
+         ylREAoAk6/YEKYSKsfa/OvBHG/xrvBCNfugb3RNE0TgI4dOtmLdXwA7oLmpWV3cH5wv5
+         4WPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L3nj9/R/NkkK99k6HujqpUsnIKZSJ7ODAWop9jG8uEo=;
-        b=ixoYRrM4wdpWD5uOvYTISYprJ+EBHFBNtR+KBXw1KwenxkZ6M/f7J1jkZNBhYdswKF
-         SWdAFu6Jb8Ug5dJeUTcrc0DtirDTp74MuvyGBhgBE+A0KGyFRMQBy6aBmSFHmpL97EZ3
-         rMXK5jibfyZ05rM1wVP2aECKPqllzeGiupix4Qu0ZSFw3sBCpM1lYrqqBnpBHbO2vyJP
-         l0xxdEg53qprxWoojht/xElv5ACD/suR0X+xyWKqlTg8SLV3Mux9AK8v9xZH1FGcuoQo
-         NAXsPAMSnW80sp83tJWldaK8iSQe+UDBSTt32zfv31r2NJ00O0hU8T99HqDvUflFWsoL
-         HFxg==
-X-Gm-Message-State: AOAM532MdXG4MnAPCeLekWIFuXd85zQqmkgFAhrUN2lMJ9vvs3HYSMVi
-        voOVbZyEBGYpSTLd+O/nEm1L4A==
-X-Google-Smtp-Source: ABdhPJwYGpgEV2/GV9/dgnc2/rEWjl2dK3GYAnKQrXXgndNQF0w/cYvidbBIhC5ZupXR2KlChWCpFA==
-X-Received: by 2002:a63:181e:: with SMTP id y30mr15574858pgl.324.1613417527139;
-        Mon, 15 Feb 2021 11:32:07 -0800 (PST)
-Received: from [192.168.72.184] (157-131-244-194.fiber.dynamic.sonic.net. [157.131.244.194])
-        by smtp.gmail.com with ESMTPSA id y1sm196040pjt.37.2021.02.15.11.32.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Feb 2021 11:32:06 -0800 (PST)
-Message-ID: <1613417521.3853.5.camel@chimera>
-Subject: Re: [PATCH 1/4] add generic builtin command line
-From:   Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Daniel Walker <danielwa@cisco.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rob Herring <robh+dt@kernel.org>, xe-linux-external@cisco.com,
-        linuxppc-dev@lists.ozlabs.org, Daniel Walker <dwalker@fifo99.com>,
-        Maksym Kokhan <maksym.kokhan@globallogic.com>,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Date:   Mon, 15 Feb 2021 11:32:01 -0800
-In-Reply-To: <20190321151519.1f4479d92228c8a8738e02cf@linux-foundation.org>
-References: <20190319232448.45964-2-danielwa@cisco.com>
-         <20190320155319.2cd3c0f73ef3cdefb65d5d1e@linux-foundation.org>
-         <20190320232328.3bijcxek2yg43a25@zorba>
-         <20190320201433.6c5c4782f4432d280c0e8361@linux-foundation.org>
-         <20190321151308.yt6uc3mxgppm5zko@zorba>
-         <20190321151519.1f4479d92228c8a8738e02cf@linux-foundation.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=+xis++iP1cf+iLoqXe2mOcEArpbUTK16jTIPVdM5D6w=;
+        b=UxYM740mFc28oB/CSuLBEETmr9PMnVWwLwt9GsIGqHsbblMbMWmRAb9tkO6Z+kzqqR
+         5opHg9Sh/cN41mAr4Or79qeVBQjF1JOBF8hrBryd0mXqe/6Cy7sDhqYPm3wFYVYZkau/
+         rQqDBBggwlNzKnxNh5wyPBFJ1yJPgWv2B3/ZWdBID2mZqb5fukHQsMvZQBwCxcFoig82
+         LVuDt80i7O7z0UT6mYWOlFof68G/EU/d8BRP49q8tfC/r2qrplmfJZpvNwdgi+WBfPHg
+         mptOfmEpRbL+9rc+8kPGnAjiPRyokmgFusqQ4N9tApLHiuS+do95HsGWg1qzQVDToSEF
+         LsYw==
+X-Gm-Message-State: AOAM533n2FkLUUpH2E8Ff5NGt2rGZZHU1fxPjWhTtAG8xziHhJpMSDwg
+        U8iCwHOyYzlU6YMgEIyass4fH9hfoG0CIvoqDfc=
+X-Google-Smtp-Source: ABdhPJxXoasHNvaK/klMCTWHqo1+0Amif+C+Ci/LdPAcVa9SeyvEKzGdcSbwqZkdGcDz9mNKxzVhOya4AopfxgvS+nk=
+X-Received: by 2002:a05:6638:2411:: with SMTP id z17mr6174453jat.29.1613417540394;
+ Mon, 15 Feb 2021 11:32:20 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a4f:ac6:0:0:0:0:0 with HTTP; Mon, 15 Feb 2021 11:32:19 -0800 (PST)
+Reply-To: lisacoulibaly023@gmail.com
+From:   Miss Lisa Ibrahim Coulibaly <kingobo47@gmail.com>
+Date:   Mon, 15 Feb 2021 11:32:19 -0800
+Message-ID: <CALgYwVT7NCt9Y=qAnR0qjqPr4DEvtjCPxbz-cR6GpwL5_Pwx6A@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2019-03-21 at 15:15 -0700, Andrew Morton wrote:
-> On Thu, 21 Mar 2019 08:13:08 -0700 Daniel Walker <danielwa@cisco.com> wrote:
-> > On Wed, Mar 20, 2019 at 08:14:33PM -0700, Andrew Morton wrote:
-> > > The patches (or some version of them) are already in linux-next,
-> > > which messes me up.  I'll disable them for now.
-> >  
-> > Those are from my tree, but I remove them when you picked up the series. The
-> > next linux-next should not have them.
-> 
-> Yup, thanks, all looks good now.
+Hello Dearest,
 
-This patchset is currently neither in mainline nor in -next. May I ask
-what happened to it? Thanks.
+I know this mail will come to you as a surprise since we haven't known or
+come across each other before considering the fact that I sourced your
+email contact through the Internet in search of a trusted person who can
+assist me.
 
+I am Miss Lisa Ibrahim Coulibaly 24 years old female from the Republic of
+Ivory Coast, West Africa, am the Daughter of Late Chief Sgt. Warlord
+Ibrahim Coulibaly (a.k.a General IB). My late father was a well known Ivory
+Coast militia leader. He died on Thursday 28 April 2011 following a fight
+with the Republican Forces of Ivory Coast (FRCI). I am constrained to
+contact you because of the maltreatment which I am receiving from my step
+mother, you can read more about my late Father death through the below
+links:
+
+
+https://www.theguardian.com/world/2011/apr/28/ivory-coast-renegade-warlord-ibrahim-coulibaly
+.
+
+
+My step Mother planned to take away all my late father's treasury and
+properties from me since the unexpected death of my beloved Father.
+Meanwhile I wanted to travel to Europe, but she hides away my international
+passport and other valuable documents. Luckily she did not discover where I
+kept my father's File which contained important documents. Now I am
+presently staying in the Mission Camp in Burkina Faso.
+
+I am seeking a long term relationship and investment assistance. My father
+of blessed memory deposited the sum of US$ 9.5 Million in one bank in
+Burkina Faso with my name as the next of kin. I had contacted the Bank to
+clear the deposit but the Branch Manager told me that my status according
+to the law does not authorize me to carry out the operation. However, he
+advised me to provide a trustee who will stand on my behalf. I had wanted
+to inform my stepmother about this deposit but I am afraid that she will
+not offer me anything after the release of the money.
+
+Therefore, I decide to seek your help in transferring the money into your
+bank account while I will relocate to your country and settle down with
+you. As you indicated your interest to help me I will give you the account
+number and the contact of the bank where my late beloved father deposited
+the money with my name as the next of kin. It is my intention to compensate
+you with 20% of the total money for your assistance and the balance shall
+be my investment in any profitable venture which you will recommend to me
+as I have no any idea about foreign investment. Please all communications
+should be through this email address for confidential purposes.
+
+Please all communications should be through this email address for
+confidential purposes. (lisacoulibaly023@gmail.com)
+
+Thanking you a lot in anticipation of your quick response. I will give you
+details in my next mail after receiving your acceptance mail to help me,
+
+Yours sincerely
+Miss Lisa Ibrahim Coulibaly
+(lisacoulibaly023@gmail.com)
