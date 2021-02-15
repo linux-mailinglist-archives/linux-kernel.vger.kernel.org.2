@@ -2,127 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3535431C26A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD6B31C26D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbhBOTX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:23:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60304 "EHLO
+        id S231172AbhBOTYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbhBOTXV (ORCPT
+        with ESMTP id S230377AbhBOTX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:23:21 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E925C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:22:41 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id 81so7382901qkf.4
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:22:41 -0800 (PST)
+        Mon, 15 Feb 2021 14:23:57 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40F8C0613D6;
+        Mon, 15 Feb 2021 11:23:16 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id x3so5565792qti.5;
+        Mon, 15 Feb 2021 11:23:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=jQ/sRmVJLQf6vZhL8n+vvwrkXkH2FJ5o+f5Rn4ud6SM=;
-        b=KnI7VDWwFDBXDNaQ/PgxE3dGe4hVu2B1QGjEVaOCQyYDQO/6aaU26Zi0D5LHshGxqk
-         p2BD42e+v3UB3x0GFRdBrRfraXuk1Bbl2rWEVJ9UowYK8KBaQOKllTCcK0zZZFpMKmHC
-         9h5Ct9kF2s73QIW9UcMt8z1ArHi6VOmL5IJ/1FdRrqf+raowzM643IRtaMUeV1Z48hPy
-         bOF6i+xj1+4QlsRLrbtXiY3CzLqD5kPGtNcutvvyGOoHMmGaYD9c5RY1MKIUTXAPh1Lx
-         TSa06GUlsPPDhZ7ASD5fupqGDOapQbB/2H/rWGV+yK6P+O42psyarwJGAuT5vRUbN3dO
-         YO0g==
+        bh=WLfHN6LcDUzKrVZ3/a8BfPtAMufAeFUsNalZ5o2tDws=;
+        b=is6E/bzAxVUziPgetRNnBsHKtwmlfrGyLgpOk+08tUx566mBZJaasFmvB2C66fhOVy
+         6cjv06D5Wp1LAmHAtVV50SUrYTRbXD9pYMa2qUUOiLilJBVa1Ax8XjCFju5A9oiGjlCh
+         WII8M9BkMkF8Dv2n6X1bjC+LAZ4KDfIOhbbNCPirIAHBFBanNg3xJRDbfpQbl7PWzuhP
+         Cc/HwS2rBjJ+ILZyodm5XbdFZUD4+t9pobVzgo9+08wyL+Ip7746/33QA6gXxctZ/JNc
+         pwhABwWuoE5lsgMLOedKjLCU/InmmyvGKHFs7Cd6Ffrk/hTLf1yIX2+fAn3pQSy0ZqAb
+         ToGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jQ/sRmVJLQf6vZhL8n+vvwrkXkH2FJ5o+f5Rn4ud6SM=;
-        b=Y0pbNkRJp02GAcHAzvdnr9CpHKQ0pngo9Bl08cI0ZNUQzvF+UgXx52UaOHaXY/YQGJ
-         DTHkFQ6RsSpXSBumjhPtIQq9oW1NDGx2WhkGEQKXpg0Cd5y+nNcDkKW/w+dqW+dHPBRM
-         6glnZ8/IGbENCMuTcfzPCJePSuIcMWKx5QGVPyOKDKMITQfXqScSPINo1/ek3WRzsOHA
-         SdfCG1bWNYh4cueTXWNcPby0xVss+5uY5T/wJVn2rf2fzVuaZbevFDLnRTDIq0vh5Qsb
-         2GBiMDKDMVnFb6jaAvy9eSonxmaRVpe3RWgGqtefawmwK6Y2rtSw0YlMgodxycgd7M8c
-         NnQw==
-X-Gm-Message-State: AOAM530fEKmNOgoTWIJfW5QrodVBS8zsTgUnDsav9sW/+SuXrlDkl/sq
-        J3Spc2Uzq2DEBlEQq6TUva70dg==
-X-Google-Smtp-Source: ABdhPJzZRJRjqasuMeS1hejv+g7Zzm/rLY4SFGdLLz4dzY/2fE1iICmzvOZ9haQyadjzj2HTShxJoQ==
-X-Received: by 2002:a37:6358:: with SMTP id x85mr3630382qkb.70.1613416960788;
-        Mon, 15 Feb 2021 11:22:40 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id i20sm11631668qtv.73.2021.02.15.11.22.39
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WLfHN6LcDUzKrVZ3/a8BfPtAMufAeFUsNalZ5o2tDws=;
+        b=b5gMHP7thq96gLAs9IKg+JVAp9tc7g5+06lMy9eoIFFweCYONq9pDj5ARt1XngnNhg
+         lLVthf6CwjetouP/unMTle6TR9g3C6Ac/IgIaSA37y6VQSm8ZpxfIYRjscXD6t8p44oJ
+         ZMTJ3kqH0zpk2BY5b0CHOQVs0vLze1GCOvTjJACuRJk3qyt+RLEEa1BeJWLPBD7Mik6+
+         RE3cvRzqWfc8YiPjjQrjH9yVKc4LWRiOAfHTx5Ow58MuxNC8OXiQs+d8jNmJCIfti3lg
+         PLl4J3nWEcD2stT7fRiXIs2VJn++KbYxjVfmq9WYWkIX4kjVLVfE/JRV/LfkNAj+bZTW
+         xlUg==
+X-Gm-Message-State: AOAM530EHC4QV311D4jBLb274MhVbrwjl7quenKeEIy+nVCd63M1oV2Q
+        KhTlsqJy1HQM++bqdQIzVZ8=
+X-Google-Smtp-Source: ABdhPJxc6wsNPqjAraN+xwMTNx5Bvy7sj29Wi2KI4AloenZaP7+XKMe+GohyMzPkUDC5jek/l52HLw==
+X-Received: by 2002:ac8:4751:: with SMTP id k17mr15867074qtp.46.1613416995971;
+        Mon, 15 Feb 2021 11:23:15 -0800 (PST)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:48a6:eef1:8ac9:fd76])
+        by smtp.googlemail.com with ESMTPSA id f128sm4131085qkj.45.2021.02.15.11.23.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 11:22:40 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, tyhicks@linux.microsoft.com,
-        jmorris@namei.org, catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        rppt@kernel.org, logang@deltatee.com, ardb@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/1] arm64: mm: correct the inside linear map boundaries during hotplug check
-Date:   Mon, 15 Feb 2021 14:22:37 -0500
-Message-Id: <20210215192237.362706-2-pasha.tatashin@soleen.com>
+        Mon, 15 Feb 2021 11:23:15 -0800 (PST)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: wan/lmc: dont print format string when not available
+Date:   Mon, 15 Feb 2021 14:23:07 -0500
+Message-Id: <20210215192308.2668609-1-ztong0001@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210215192237.362706-1-pasha.tatashin@soleen.com>
-References: <20210215192237.362706-1-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory hotplug may fail on systems with CONFIG_RANDOMIZE_BASE because the
-linear map range is not checked correctly.
+dev->name is determined only after calling register_hdlc_device(),
+however ,it is used by printk before the name is fully determined.
 
-The start physical address that linear map covers can be actually at the
-end of the range because of randomization. Check that and if so reduce it
-to 0.
+  [    4.565137] hdlc%d: detected at e8000000, irq 11
 
-This can be verified on QEMU with setting kaslr-seed to ~0ul:
+Instead of printing out a %d, print hdlc directly
 
-memstart_offset_seed = 0xffff
-START: __pa(_PAGE_OFFSET(vabits_actual)) = ffff9000c0000000
-END:   __pa(PAGE_END - 1) =  1000bfffffff
-
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Fixes: 58284a901b42 ("arm64/mm: Validate hotplug range before creating linear mapping")
-Tested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 ---
- arch/arm64/mm/mmu.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ drivers/net/wan/lmc/lmc_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index ae0c3d023824..cc16443ea67f 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1444,14 +1444,30 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
+diff --git a/drivers/net/wan/lmc/lmc_main.c b/drivers/net/wan/lmc/lmc_main.c
+index ebb568f9bc66..6c163db52835 100644
+--- a/drivers/net/wan/lmc/lmc_main.c
++++ b/drivers/net/wan/lmc/lmc_main.c
+@@ -854,7 +854,7 @@ static int lmc_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	spin_lock_init(&sc->lmc_lock);
+ 	pci_set_master(pdev);
  
- static bool inside_linear_region(u64 start, u64 size)
- {
-+	u64 start_linear_pa = __pa(_PAGE_OFFSET(vabits_actual));
-+	u64 end_linear_pa = __pa(PAGE_END - 1);
-+
-+	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE)) {
-+		/*
-+		 * Check for a wrap, it is possible because of randomized linear
-+		 * mapping the start physical address is actually bigger than
-+		 * the end physical address. In this case set start to zero
-+		 * because [0, end_linear_pa] range must still be able to cover
-+		 * all addressable physical addresses.
-+		 */
-+		if (start_linear_pa > end_linear_pa)
-+			start_linear_pa = 0;
-+	}
-+
-+	WARN_ON(start_linear_pa > end_linear_pa);
-+
- 	/*
- 	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
- 	 * accommodating both its ends but excluding PAGE_END. Max physical
- 	 * range which can be mapped inside this linear mapping range, must
- 	 * also be derived from its end points.
- 	 */
--	return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
--	       (start + size - 1) <= __pa(PAGE_END - 1);
-+	return start >= start_linear_pa && (start + size - 1) <= end_linear_pa;
- }
+-	printk(KERN_INFO "%s: detected at %lx, irq %d\n", dev->name,
++	printk(KERN_INFO "hdlc: detected at %lx, irq %d\n",
+ 	       dev->base_addr, dev->irq);
  
- int arch_add_memory(int nid, u64 start, u64 size,
+ 	err = register_hdlc_device(dev);
 -- 
 2.25.1
 
