@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738B331C051
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAAD31C053
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbhBORRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:17:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
+        id S232719AbhBORSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:18:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhBOQOf (ORCPT
+        with ESMTP id S232068AbhBOQQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:14:35 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D17C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:13:53 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id a1so3326724qvd.13
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:13:53 -0800 (PST)
+        Mon, 15 Feb 2021 11:16:08 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBBCC0617A7
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:13:55 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id p12so3350611qvv.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:13:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=7vhkaFBd5aVLg+EiVqDFYdlu6KAvATuHV48NAuG9s4U=;
-        b=FywcUj6ct0QTnpDPy8lzzH7x1K66FMG6qQTU3im2GB8CWoLMq/TDlcCOnPXsoVk4Uo
-         /ccMXbZM8gpaTE2NiqsIH49FrSxMFj0h9Tf41irzLmI1YiuP50CAJdo/pq8XQB8ThEiK
-         zek3+g/0Dg2+hoBdU2MIsSmf+vmxUSDQoOs+LMl6JifDaDMG6nLbiR6/8aIPKuCDXC6i
-         E65s2mATnNNP79AW8TObMspNmeaW9UtbIhrgz6MknOLoAT18wTHiYQcyUQlhu3+VaHJX
-         rL8pKigaqw6j04/B0PU3nSDZwvcA4wMgY9bDOyC8AU3+U0wGYp1/NVEjJHTil6AVQIto
-         RIlA==
+        bh=wbKChk2S6INWVHujUhFrYBg8HdmXN2ULiFT8EAgmMTM=;
+        b=jVWwBWAt+XJBmDPeGDR7OktAAl46lGJUU9XsLgPbd0vvVehIA+qph4Nxq3xseZ+5p+
+         HkyL7jClveN4M3Ei8sP0yLwv+XSjchVVqsOjvfhPnX476cryjhVA8QEOi3CknsvicSdr
+         w/JPlXf7S0RnG+oiq2Rpb0pZGaO4unwHVWXtrMr7NcROg534k4pesxPm1Vf9MMK/hjsp
+         cFlotnbr1SE5GTxv/zLCJaZmxwkL3iPquTz3znjxKGVknfOeFyktYXDF32zdHOAab6fB
+         kXeemFTdekLeujeT26xJf2ktxwoEAvtLdQ8bXcCfskdR0jVXjbZtCXLsLX/aJK6rLn5P
+         9hLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7vhkaFBd5aVLg+EiVqDFYdlu6KAvATuHV48NAuG9s4U=;
-        b=lIlFMMx87+AKUVmUFNmxhTqqjo9rSIn8RSBnZBjRwhThG+EkAr8L0IorwX5X1cKPqQ
-         9tPRniSVTN2Y3QeqY3hcTDnacyWqRjTxA6CfZP7dwPq3Eqw+1pcdom4c67HZgCtAcLbg
-         rThEuDacHMdBQs8Yuj+rJGsjk+mrXDgsumUigMLXcapHdtfJjF5nPIMPXT5qAY7EeKjW
-         Z+IUkqY7twOQpsBknLuTd0uZktiWe1rphwFFq4FKCOOp3906BGdUa+YSbwIFviGWBtn4
-         5XsDSRl8bwZUlPaZyFb8fNPWV1ARk/3dn6K5sAr4z6guIIumubUu/4YI281CUlMTaNqv
-         SEnw==
-X-Gm-Message-State: AOAM530MTcrd2/heJtCB4R1iYXgOHaX3KTO+YP7YhaPNEje9XGJVh5h0
-        lwjAs8XFQ+N1VJo6ZumF8Ksi/yMeVfPY8s5O
-X-Google-Smtp-Source: ABdhPJzgy3c8eHGQYHWnWy7dklXzD+wnVi3JsMAEz3Tuu6ovJUqSSVfElA+GFD7VdaJGS9cNQw4Kxw==
-X-Received: by 2002:ad4:4644:: with SMTP id y4mr15440502qvv.31.1613405633174;
-        Mon, 15 Feb 2021 08:13:53 -0800 (PST)
+        bh=wbKChk2S6INWVHujUhFrYBg8HdmXN2ULiFT8EAgmMTM=;
+        b=X3knzRCrL0SMt4Ez1XiA6X/zH05A6H0DVCdr9MSXqvmT96E+yMpI14/aHO9lOAO9ix
+         nCdvjm3BidoB1cq0rCGd+kvVCxt17UVet7KzT7Cd7z1cxExrbdJ1NofPAL6/DXZljAW5
+         Vb8OsbtemloGQiL/UPp81k0bzm9Kvk8DuJBOAM6UAfznRqybJmGTyruhYVIFgpTXoRDO
+         AWxrtcotpmy8NFXlPaRm2arEt7sfh3eBMyon04nkLMp7xL64++bLJRa9dn749OK7RW60
+         Qrfl+OH/9Jq86ZWpUfvkCFS8Pr+2DU/BcIYIpRerJJkodkItFH5WcplVzf6s5hFi73V/
+         XoUw==
+X-Gm-Message-State: AOAM5316fcdOkxNGwaW2f/IwCaGMmk+v25O7jbMLIth3U6ndG67ib56q
+        TQmkSzRhnqGU7xHAKzfPWyHMiw==
+X-Google-Smtp-Source: ABdhPJxlq253kavqQUAIWhTMqplKiGCG184qHWdu/ph3bS8U0nsZsvorlETMdgWLFMhxvFrAmN9pNw==
+X-Received: by 2002:a0c:aa44:: with SMTP id e4mr12595374qvb.49.1613405634747;
+        Mon, 15 Feb 2021 08:13:54 -0800 (PST)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id u7sm10909213qta.75.2021.02.15.08.13.51
+        by smtp.gmail.com with ESMTPSA id u7sm10909213qta.75.2021.02.15.08.13.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 08:13:52 -0800 (PST)
+        Mon, 15 Feb 2021 08:13:54 -0800 (PST)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
@@ -59,9 +59,9 @@ To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
         willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
         linux-doc@vger.kernel.org, ira.weiny@intel.com,
         linux-kselftest@vger.kernel.org, jmorris@namei.org
-Subject: [PATCH v11 01/14] mm/gup: don't pin migrated cma pages in movable zone
-Date:   Mon, 15 Feb 2021 11:13:36 -0500
-Message-Id: <20210215161349.246722-2-pasha.tatashin@soleen.com>
+Subject: [PATCH v11 02/14] mm/gup: check every subpage of a compound page during isolation
+Date:   Mon, 15 Feb 2021 11:13:37 -0500
+Message-Id: <20210215161349.246722-3-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210215161349.246722-1-pasha.tatashin@soleen.com>
 References: <20210215161349.246722-1-pasha.tatashin@soleen.com>
@@ -71,33 +71,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order not to fragment CMA the pinned pages are migrated. However,
-they are migrated to ZONE_MOVABLE, which also should not have pinned pages.
+When pages are isolated in check_and_migrate_movable_pages() we skip
+compound number of pages at a time. However, as Jason noted, it is
+not necessary correct that pages[i] corresponds to the pages that
+we skipped. This is because it is possible that the addresses in
+this range had split_huge_pmd()/split_huge_pud(), and these functions
+do not update the compound page metadata.
 
-Remove __GFP_MOVABLE, so pages can be migrated to zones where pinning
-is allowed.
+The problem can be reproduced if something like this occurs:
 
+1. User faulted huge pages.
+2. split_huge_pmd() was called for some reason
+3. User has unmapped some sub-pages in the range
+4. User tries to longterm pin the addresses.
+
+The resulting pages[i] might end-up having pages which are not compound
+size page aligned.
+
+Fixes: aa712399c1e8 ("mm/gup: speed up check_and_migrate_cma_pages() on huge page")
+Reported-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- mm/gup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/gup.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
 diff --git a/mm/gup.c b/mm/gup.c
-index e4c224cd9661..df92170e3730 100644
+index df92170e3730..11ca49f3f11d 100644
 --- a/mm/gup.c
 +++ b/mm/gup.c
-@@ -1556,7 +1556,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+@@ -1549,26 +1549,23 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 					unsigned int gup_flags)
+ {
+ 	unsigned long i;
+-	unsigned long step;
+ 	bool drain_allow = true;
+ 	bool migrate_allow = true;
+ 	LIST_HEAD(cma_page_list);
  	long ret = nr_pages;
++	struct page *prev_head, *head;
  	struct migration_target_control mtc = {
  		.nid = NUMA_NO_NODE,
--		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_NOWARN,
-+		.gfp_mask = GFP_USER | __GFP_NOWARN,
+ 		.gfp_mask = GFP_USER | __GFP_NOWARN,
  	};
  
  check_again:
+-	for (i = 0; i < nr_pages;) {
+-
+-		struct page *head = compound_head(pages[i]);
+-
+-		/*
+-		 * gup may start from a tail page. Advance step by the left
+-		 * part.
+-		 */
+-		step = compound_nr(head) - (pages[i] - head);
++	prev_head = NULL;
++	for (i = 0; i < nr_pages; i++) {
++		head = compound_head(pages[i]);
++		if (head == prev_head)
++			continue;
++		prev_head = head;
+ 		/*
+ 		 * If we get a page from the CMA zone, since we are going to
+ 		 * be pinning these entries, we might as well move them out
+@@ -1592,8 +1589,6 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 				}
+ 			}
+ 		}
+-
+-		i += step;
+ 	}
+ 
+ 	if (!list_empty(&cma_page_list)) {
 -- 
 2.25.1
 
