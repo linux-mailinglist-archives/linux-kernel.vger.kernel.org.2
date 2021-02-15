@@ -2,98 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F51731C025
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A018F31C024
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhBORJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:09:29 -0500
-Received: from mga01.intel.com ([192.55.52.88]:47735 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231907AbhBOP4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:56:50 -0500
-IronPort-SDR: kA08KHtOQ8BX2+qApDy7cGEYJ3pB2xMsvWLkidqgFH1o+mhGjaXhx3IK1q3toWVwUbT+NU+Ocu
- JdUb3+/yBZiw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="201886113"
-X-IronPort-AV: E=Sophos;i="5.81,180,1610438400"; 
-   d="scan'208";a="201886113"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 07:54:55 -0800
-IronPort-SDR: 8ShrDZEX1xRfNPtXowVlgGEsUgQdW6OsYFrW5szNG2KuWQ5PSEcOxw8GcckjNBocJqT6yMSutm
- bzCD86KeOoDg==
-X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
-   d="scan'208";a="580212299"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 07:54:51 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lBgD1-005GGC-W7; Mon, 15 Feb 2021 17:54:47 +0200
-Date:   Mon, 15 Feb 2021 17:54:47 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v7 1/3] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-Message-ID: <YCqZR5N6ktABHXNf@smile.fi.intel.com>
-References: <20210215114030.11862-1-sakari.ailus@linux.intel.com>
- <20210215114030.11862-2-sakari.ailus@linux.intel.com>
- <YCp3sdZoalFSUS7u@smile.fi.intel.com>
- <20210215135650.GI3@paasikivi.fi.intel.com>
+        id S231821AbhBORIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:08:54 -0500
+Received: from smtprelay0117.hostedemail.com ([216.40.44.117]:43762 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232138AbhBOP4h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:56:37 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A69D0180FAA81;
+        Mon, 15 Feb 2021 15:55:52 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3867:3870:3871:3872:3874:4321:5007:6119:6120:7652:7901:9010:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21611:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: shelf27_160c8202763c
+X-Filterd-Recvd-Size: 1433
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 15 Feb 2021 15:55:51 +0000 (UTC)
+Message-ID: <0db021ca12f6a25861ea941f7ad7c9b9be968076.camel@perches.com>
+Subject: Re: [PATCH RFC v3 2/3] docs: add documentation for checkpatch
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Mon, 15 Feb 2021 07:55:50 -0800
+In-Reply-To: <CABJPP5As+68yMdX1CafXsam4rg56aCWUzsSNx6kHjtQnaJ_ofQ@mail.gmail.com>
+References: <20210213131513.51386-1-dwaipayanray1@gmail.com>
+         <20210213131513.51386-3-dwaipayanray1@gmail.com>
+         <b2e25e683a3e2f31d4dc2d666e082634e30643b3.camel@perches.com>
+         <CABJPP5As+68yMdX1CafXsam4rg56aCWUzsSNx6kHjtQnaJ_ofQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210215135650.GI3@paasikivi.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 03:56:50PM +0200, Sakari Ailus wrote:
-> On Mon, Feb 15, 2021 at 03:31:29PM +0200, Andy Shevchenko wrote:
-> > On Mon, Feb 15, 2021 at 01:40:28PM +0200, Sakari Ailus wrote:
-> > > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
-> > > pixel formats denoted by fourccs. The fourcc encoding is the same for both
-> > > so the same implementation can be used.
-> > 
-> > This version I almost like, feel free to add
-> > Reviewed-by: From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > after considering addressing below nit-picks.
+On Mon, 2021-02-15 at 21:20 +0530, Dwaipayan Ray wrote:
 
-> > > +Examples::
-> > > +
-> > > +	%p4cc	BG12 little-endian (0x32314742)
-> > 
-> > No examples with spaces / non-printable / non-ascii characters
-> 
-> I can sure add an example that has a space. But do you think I really
-> should add an example where invalid information is being printed?
+> Also someone pointed out in the list that some lines in the patch contained > 80
+> columns. Checkpatch doesn't generate any warning for that. Is it something that
+> could be added to checkpatch or was it decided against at some point?
 
-I think you have to provide better coverage of what user can get out of this.
-Perhaps one example with space and non-printable character is enough.
-
-> > > +	char output[sizeof("1234 little-endian (0x01234567)")];
-> > 
-> > 1234 -> ABCD ? (Or XY12 to be closer to the reality)
-> 
-> I count in numbers... albeit the hexadecimal number there starts from zero.
-> 
-> I guess both would work though.
-> 
-> 0123 would be consistent.
-
-Since letters can be printed the above is confusing a bit. I think XY12 is
-closer to the reality than 0123.
-
--- 
-With Best Regards,
-Andy Shevchenko
+decided against.
+checkpatch isn't useful for .rst files.
 
 
