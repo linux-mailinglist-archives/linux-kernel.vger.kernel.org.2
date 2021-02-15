@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F1D31BF81
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9022A31BF91
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbhBOQiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:38:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50210 "EHLO mail.kernel.org"
+        id S231585AbhBOQkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:40:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231514AbhBOPhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:37:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAB2064EAD;
-        Mon, 15 Feb 2021 15:33:34 +0000 (UTC)
+        id S231531AbhBOPh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:37:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77D8664EB6;
+        Mon, 15 Feb 2021 15:33:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403215;
-        bh=oottzwMwE9LU5zEDtqqbkNl1S94kxsMjf4g8+8diCFU=;
+        s=korg; t=1613403218;
+        bh=RsVJ3ZzbahlO33rvIw90SxfYRw4YLDY5kLKyW79RwKQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OjNehNTIALh+x//I7m+inkOZOuGzStpctJL316m4wfzEA2Mpl16cswOsO+KoGZHb0
-         ZCsVYPiwOYvhtz4FzIjHyjFaYt4gUoC/CWS4YccaMVCjStr9wTFq85IMHAqox8UpXU
-         GODl5BC5rSsPWZPxSxzno8LBwcoUAqSFDyvgycVc=
+        b=K6aDbQ284u3+bWrKH2PHTo0bPF/H1gopDUvyWF/T9rvlJEF083a849Y2P0afu79b6
+         LegaRDDzsNS7d/7YHbyckzmdBG/NPce957yJSVgt+aWQJHZmav6IrPZ+ECN1nUP4MX
+         r4g3R2wEhzmhhkPVEYKHXH1GfspwJTqGibhbJYgA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Gilbert <dgilbert@interlog.com>,
-        Maurizio Lombardi <mlombard@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, AC <achirvasub@gmail.com>,
+        Borislav Petkov <bp@suse.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 070/104] scsi: scsi_debug: Fix a memory leak
-Date:   Mon, 15 Feb 2021 16:27:23 +0100
-Message-Id: <20210215152721.720212090@linuxfoundation.org>
+Subject: [PATCH 5.10 071/104] x86/build: Disable CET instrumentation in the kernel for 32-bit too
+Date:   Mon, 15 Feb 2021 16:27:24 +0100
+Message-Id: <20210215152721.750388925@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,49 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maurizio Lombardi <mlombard@redhat.com>
+From: Borislav Petkov <bp@suse.de>
 
-[ Upstream commit f852c596f2ee6f0eb364ea8f28f89da6da0ae7b5 ]
+[ Upstream commit 256b92af784d5043eeb7d559b6d5963dcc2ecb10 ]
 
-The sdebug_q_arr pointer must be freed when the module is unloaded.
+Commit
 
-$ cat /sys/kernel/debug/kmemleak
-unreferenced object 0xffff888e1cfb0000 (size 4096):
-  comm "modprobe", pid 165555, jiffies 4325987516 (age 685.194s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000458f4f5d>] 0xffffffffc06702d9
-    [<000000003edc4b1f>] do_one_initcall+0xe9/0x57d
-    [<00000000da7d518c>] do_init_module+0x1d1/0x6f0
-    [<000000009a6a9248>] load_module+0x36bd/0x4f50
-    [<00000000ddb0c3ce>] __do_sys_init_module+0x1db/0x260
-    [<000000009532db57>] do_syscall_64+0xa5/0x420
-    [<000000002916b13d>] entry_SYSCALL_64_after_hwframe+0x6a/0xdf
+  20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
 
-Fixes: 87c715dcde63 ("scsi: scsi_debug: Add per_host_store option")
-Link: https://lore.kernel.org/r/20210208111734.34034-1-mlombard@redhat.com
-Acked-by: Douglas Gilbert <dgilbert@interlog.com>
-Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+disabled CET instrumentation which gets added by default by the Ubuntu
+gcc9 and 10 by default, but did that only for 64-bit builds. It would
+still fail when building a 32-bit target. So disable CET for all x86
+builds.
+
+Fixes: 20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
+Reported-by: AC <achirvasub@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Tested-by: AC <achirvasub@gmail.com>
+Link: https://lkml.kernel.org/r/YCCIgMHkzh/xT4ex@arch-chirva.localdomain
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_debug.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
-index 4a08c450b756f..b6540b92f5661 100644
---- a/drivers/scsi/scsi_debug.c
-+++ b/drivers/scsi/scsi_debug.c
-@@ -6881,6 +6881,7 @@ static void __exit scsi_debug_exit(void)
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 6a7efa78eba22..0a6d497221e49 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -57,6 +57,9 @@ export BITS
+ KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow
+ KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
  
- 	sdebug_erase_all_stores(false);
- 	xa_destroy(per_store_ap);
-+	kfree(sdebug_q_arr);
- }
++# Intel CET isn't enabled in the kernel
++KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
++
+ ifeq ($(CONFIG_X86_32),y)
+         BITS := 32
+         UTS_MACHINE := i386
+@@ -127,9 +130,6 @@ else
  
- device_initcall(scsi_debug_init);
+         KBUILD_CFLAGS += -mno-red-zone
+         KBUILD_CFLAGS += -mcmodel=kernel
+-
+-	# Intel CET isn't enabled in the kernel
+-	KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+ endif
+ 
+ ifdef CONFIG_X86_X32
 -- 
 2.27.0
 
