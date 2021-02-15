@@ -2,240 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF6E31C187
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9937931C18E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhBOSbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 13:31:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229925AbhBOSbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 13:31:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAEDC64DFF;
-        Mon, 15 Feb 2021 18:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613413826;
-        bh=x8OxQwBZU/RMhOy2ja6Kw/wOYNKkNQjVc5rU0UqZG+M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Gs5LrN00HgTFTez20C8HCFDIK/PAum6DpmR/YHl05Wa2GOB41YJFnP09BAHsDkPz7
-         Uc7sHhE9jMvx5JtvXm6RLg8xKhlQV/KpJeIpId3bfS5ruhoN4qFhDWwzQ3DRhi3sDA
-         YK5iiEUZeJQLpmsI7FISl1Y6ij1C/zo1xOO9tHD2i4dKrduwIRnCHCaxnXYcwpTBRD
-         0FKrGvDWSbszos1oUwGThI9YeWlGJMFGHTEYTWd8kcg3ES+nqa9oHK22KVeeCyt55g
-         B5/AJjhgcQ2q2i41IFdRAGeibYiXN5sHlS3hPwHAZ020kYjrArzXma8LL5pyjBG1yu
-         4OiMdci8657AA==
-Received: by mail-oi1-f170.google.com with SMTP id u66so8647037oig.9;
-        Mon, 15 Feb 2021 10:30:26 -0800 (PST)
-X-Gm-Message-State: AOAM531I21qfaZBkxqsLLPd2iN23xCFeKmHGmhN5pv+mr3SKyML79MsW
-        jyRE8Xf0lKCNso4IOKguxAq3oLtpS16FC3BqvZQ=
-X-Google-Smtp-Source: ABdhPJw76QW9zNZ/GOns4eLwvlpysOkkbtSN4hGo0lfMTUYwSaAKviPX1TneTGOiNC1a7zI/M5jdoD82HEOl6nPln5c=
-X-Received: by 2002:aca:b6c1:: with SMTP id g184mr142752oif.47.1613413825941;
- Mon, 15 Feb 2021 10:30:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20201218170106.23280-1-ardb@kernel.org> <20201218170106.23280-5-ardb@kernel.org>
- <20210119160045.GA1684@arm.com> <CAMj1kXGSB8AJRhftUxabQhaggWHukiVwrSkUR2i=XQcZ3dqynQ@mail.gmail.com>
- <20210120154422.GB1684@arm.com>
-In-Reply-To: <20210120154422.GB1684@arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 15 Feb 2021 19:30:14 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEO1+JNQH5R-SAx73TWcuOA4ZtejobhO=9B5o---h5oVg@mail.gmail.com>
-Message-ID: <CAMj1kXEO1+JNQH5R-SAx73TWcuOA4ZtejobhO=9B5o---h5oVg@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/5] arm64: fpsimd: run kernel mode NEON with softirqs disabled
-To:     Dave Martin <Dave.Martin@arm.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230412AbhBOScw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 13:32:52 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:48453 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229652AbhBOSct (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 13:32:49 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 400C7F7F;
+        Mon, 15 Feb 2021 13:31:43 -0500 (EST)
+Received: from imap22 ([10.202.2.72])
+  by compute3.internal (MEProxy); Mon, 15 Feb 2021 13:31:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=0qCRLx0h2AKsHxckh5wv5Va15TvWqZZ
+        LVNedxRK01Us=; b=R4gkr88Bdqm/LpB+5hgG8cbkA91QotWhE/lNlW/qWr0ZwqU
+        gYFKIY/mJqVxZYyXshAWiSXNUq4+jstIgovKJoetilLj1ArFTl4i7bELem67kaFN
+        /X8VT5kW8bK9hOo1+e1Lo6fkL/Zsy+uu25i/gdaZv0AzyEAGSbJxxRzO2fl7Jf13
+        TZ3s7D4V4wIzUyEt75L/e9FMtQQNp7n+/L63Oca8cIj9dOjU2oI6s2ZJlTxW0zE+
+        1j9dIBE713+vqSJfS1W+9y4dr40312ox/PZ0nwTHIX+ArB8PvBVvUJJwov0taiLI
+        KPxqb2m9KhwGWlfiAW6DxfUHt5eIKf0c+5uJTCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=0qCRLx
+        0h2AKsHxckh5wv5Va15TvWqZZLVNedxRK01Us=; b=kB8WCs9c9ZZsiGChHgJJb0
+        KvETPjR7lZmrfTYk0zIdOsx1PGYBKKmp9t1rnJt2Mzm+6A7hbkpCikJasezlldfl
+        V1NoJRXqzDtupB9CfgdJ15cTXxWJkkSQXTZfYC00jipsyTgvB92yYRsFp3NH1+Wu
+        Miq/tJcA7utmmk/yzq8XG2L48RyTtrlEqnWbjd4B/MkXVl3Tdr7rBm0OXNwQgElR
+        SncPpjpuAH1JJ/M8k5eggKb/P6+rlHffYkDYTtLl8nPPGtLHRPr2xlmZ6vAaNgAB
+        HlILqEPlbBmc8k7dlg+Q7DniaGx99/zQQASyWruj2dYMaS3m2FIaWPxd1N8JBQVg
+        ==
+X-ME-Sender: <xms:Dr4qYMmwkEZ2gfWVP9HzpFvlYd-2pmrEo5rRZZ3z0Y4Oa8PpSgKmVA>
+    <xme:Dr4qYL33sZkIjEtKWMmijD1AkiJh3iCnsoyaKUN_LqgSL0LeXhWME2laCWF8nK_85
+    Z7nKqIF1zG8lbRoTw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrieekgddutdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdghihhl
+    lhhirghmucffuhhrrghnugdfuceofihilhhlodhgihhtsegurhhnugdrmhgvqeenucggtf
+    frrghtthgvrhhnpeevffdttddtvdehtdejueethedtheevkefftdelgfeluddtgfffueel
+    vdfgudfhffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpeifihhllhdoghhithesughrnhgurdhmvg
+X-ME-Proxy: <xmx:Dr4qYKqh9pTtUzDBWR3_CeHl3Gh6HFVSpqmCCx6VnZv0G52Q-onPiQ>
+    <xmx:Dr4qYIn93Lta9w0VAdApO6NXnpm7Zia47saC4LSdVuV5rkO5370jVA>
+    <xmx:Dr4qYK3NcE2q9Dk9KfD0IvAAhWnQU4HqjvLEmkxDWPSgxSew1W4TFA>
+    <xmx:Dr4qYP_QGFA3yac49ZlhI_jeppKXv_9e7JWvWyucDGW1u40zAqs4yA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 65D0762C005E; Mon, 15 Feb 2021 13:31:42 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
+Mime-Version: 1.0
+Message-Id: <e9da5d1f-e614-4749-9ad6-7121f0fbe573@www.fastmail.com>
+In-Reply-To: <20210215130334.GM2087@kadam>
+References: <20210213092014.29466-1-will+git@drnd.me>
+ <20210215130334.GM2087@kadam>
+Date:   Mon, 15 Feb 2021 19:30:29 +0100
+From:   "William Durand" <will+git@drnd.me>
+To:     "Dan Carpenter" <dan.carpenter@oracle.com>
+Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8192e: fix typo in a function name
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 at 16:44, Dave Martin <Dave.Martin@arm.com> wrote:
->
-> On Tue, Jan 19, 2021 at 05:29:05PM +0100, Ard Biesheuvel wrote:
-> > On Tue, 19 Jan 2021 at 17:01, Dave Martin <Dave.Martin@arm.com> wrote:
-> > >
-> > > On Fri, Dec 18, 2020 at 06:01:05PM +0100, Ard Biesheuvel wrote:
-> > > > Kernel mode NEON can be used in task or softirq context, but only in
-> > > > a non-nesting manner, i.e., softirq context is only permitted if the
-> > > > interrupt was not taken at a point where the kernel was using the NEON
-> > > > in task context.
-> > > >
-> > > > This means all users of kernel mode NEON have to be aware of this
-> > > > limitation, and either need to provide scalar fallbacks that may be much
-> > > > slower (up to 20x for AES instructions) and potentially less safe, or
-> > > > use an asynchronous interface that defers processing to a later time
-> > > > when the NEON is guaranteed to be available.
-> > > >
-> > > > Given that grabbing and releasing the NEON is cheap, we can relax this
-> > > > restriction, by increasing the granularity of kernel mode NEON code, and
-> > > > always disabling softirq processing while the NEON is being used in task
-> > > > context.
-> > > >
-> > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > >
-> > > Sorry for the slow reply on this...  it looks reasonable, but I have a
-> > > few comments below.
-> > >
-> >
-> > No worries - thanks for taking a look.
-> >
-> > > > ---
-> > > >  arch/arm64/include/asm/assembler.h | 19 +++++++++++++------
-> > > >  arch/arm64/kernel/asm-offsets.c    |  2 ++
-> > > >  arch/arm64/kernel/fpsimd.c         |  4 ++--
-> > > >  3 files changed, 17 insertions(+), 8 deletions(-)
-> > > >
-> > > > diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-> > > > index ddbe6bf00e33..74ce46ed55ac 100644
-> > > > --- a/arch/arm64/include/asm/assembler.h
-> > > > +++ b/arch/arm64/include/asm/assembler.h
-> > > > @@ -15,6 +15,7 @@
-> > > >  #include <asm-generic/export.h>
-> > > >
-> > > >  #include <asm/asm-offsets.h>
-> > > > +#include <asm/alternative.h>
-> > > >  #include <asm/cpufeature.h>
-> > > >  #include <asm/cputype.h>
-> > > >  #include <asm/debug-monitors.h>
-> > > > @@ -717,17 +718,23 @@ USER(\label, ic ivau, \tmp2)                    // invalidate I line PoU
-> > > >       .endm
-> > > >
-> > > >       .macro          if_will_cond_yield_neon
-> > > > -#ifdef CONFIG_PREEMPTION
-> > > >       get_current_task        x0
-> > > >       ldr             x0, [x0, #TSK_TI_PREEMPT]
-> > > > -     sub             x0, x0, #PREEMPT_DISABLE_OFFSET
-> > > > -     cbz             x0, .Lyield_\@
-> > > > +#ifdef CONFIG_PREEMPTION
-> > > > +     cmp             x0, #PREEMPT_DISABLE_OFFSET
-> > > > +     beq             .Lyield_\@      // yield on need_resched in task context
-> > > > +#endif
-> > > > +     /* never yield while serving a softirq */
-> > > > +     tbnz            x0, #SOFTIRQ_SHIFT, .Lnoyield_\@
-> > >
-> > > Can you explain the rationale here?
-> > >
-> > > Using if_will_cond_yield_neon suggests the algo thinks it may run for
-> > > too long the stall preemption until completion, but we happily stall
-> > > preemption _and_ softirqs here.
-> > >
-> > > Is it actually a bug to use the NEON conditional yield helpers in
-> > > softirq context?
-> > >
-> >
-> > No, it is not. But calling kernel_neon_end() from softirq context will
-> > not cause it to finish any faster, so there is really no point in
-> > doing so.
-> >
-> > > Ideally, if processing in softirq context takes an unreasonable about of
-> > > time, the work would be handed off to an asynchronous worker, but that
-> > > does seem to conflict rather with the purpose of this series...
-> > >
-> >
-> > Agreed, but this is not something we can police at this level. If the
-> > caller does an unreasonable amount of work from a softirq, no amount
-> > of yielding is going to make a difference.
->
-> Ack, just wanted to make sure I wasn't missing something.
->
-> Anyone writing softirq code can starve preemption, so I agree that we
-> should trust people to know what they're doing.
->
->
-> > > > +
-> > > > +     adr_l           x0, irq_stat + IRQ_CPUSTAT_SOFTIRQ_PENDING
-> > > > +     this_cpu_offset x1
-> > > > +     ldr             w0, [x0, x1]
-> > > > +     cbnz            w0, .Lyield_\@  // yield on pending softirq in task context
-> > > > +.Lnoyield_\@:
-> > > >       /* fall through to endif_yield_neon */
-> > > >       .subsection     1
-> > > >  .Lyield_\@ :
-> > > > -#else
-> > > > -     .section        ".discard.cond_yield_neon", "ax"
-> > > > -#endif
-> > > >       .endm
-> > > >
-> > > >       .macro          do_cond_yield_neon
-> > > > diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-> > > > index 7d32fc959b1a..34ef70877de4 100644
-> > > > --- a/arch/arm64/kernel/asm-offsets.c
-> > > > +++ b/arch/arm64/kernel/asm-offsets.c
-> > > > @@ -93,6 +93,8 @@ int main(void)
-> > > >    DEFINE(DMA_FROM_DEVICE,    DMA_FROM_DEVICE);
-> > > >    BLANK();
-> > > >    DEFINE(PREEMPT_DISABLE_OFFSET, PREEMPT_DISABLE_OFFSET);
-> > > > +  DEFINE(SOFTIRQ_SHIFT, SOFTIRQ_SHIFT);
-> > > > +  DEFINE(IRQ_CPUSTAT_SOFTIRQ_PENDING, offsetof(irq_cpustat_t, __softirq_pending));
-> > > >    BLANK();
-> > > >    DEFINE(CPU_BOOT_STACK,     offsetof(struct secondary_data, stack));
-> > > >    DEFINE(CPU_BOOT_TASK,              offsetof(struct secondary_data, task));
-> > > > diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-> > > > index 062b21f30f94..823e3a8a8871 100644
-> > > > --- a/arch/arm64/kernel/fpsimd.c
-> > > > +++ b/arch/arm64/kernel/fpsimd.c
-> > > > @@ -180,7 +180,7 @@ static void __get_cpu_fpsimd_context(void)
-> > > >   */
-> > > >  static void get_cpu_fpsimd_context(void)
-> > > >  {
-> > > > -     preempt_disable();
-> > > > +     local_bh_disable();
-> > > >       __get_cpu_fpsimd_context();
-> > > >  }
-> > > >
-> > > > @@ -201,7 +201,7 @@ static void __put_cpu_fpsimd_context(void)
-> > > >  static void put_cpu_fpsimd_context(void)
-> > > >  {
-> > > >       __put_cpu_fpsimd_context();
-> > > > -     preempt_enable();
-> > > > +     local_bh_enable();
-> > > >  }
-> > > >
-> > > >  static bool have_cpu_fpsimd_context(void)
-> > >
-> > > I was concerned about catching all the relevant preempt_disable()s, but
-> > > it had slipped my memory that Julien had factored these into one place.
-> > >
-> > > I can't see off the top of my head any reason why this shouldn't work.
-> > >
-> >
-> > Thanks.
-> >
-> > >
-> > > In threory, switching to local_bh_enable() here will add a check for
-> > > pending softirqs onto context handling fast paths.  I haven't dug into
-> > > how that works, so perhaps this is trivial on top of the preemption
-> > > check in preempt_enable().  Do you see any difference in hackbench or
-> > > similar benchmarks?
-> > >
-> >
-> > I haven't tried, tbh. But by context handling fast paths, you mean
-> > managing the FP/SIMD state at context switch time, right? Checking for
-> > pending softirqs amounts to a single per-CPU load plus compare, so
-> > that should be negligible AFAICT. Obviously, actually handling the
->
-> Yes.  I've tended to assume, rather than prove, that this kind of thing
-> is negligible -- so I confess I had not attempted to measure these
-> effects when writing the original code.
->
-> > softirq may take additional time, but that penalty has to be taken
-> > somewhere - I don't see how that would create extra work that we
-> > wouldn't have to do otherwise.
-> >
-> > I'll do some experiments with hackbench once I get back to this series.
->
-> That sounds fine.
->
-> Probably you won't find a significant difference anyway.
->
+> On Sat, Feb 13, 2021 at 09:20:14AM +0000, William Durand wrote:
+> > Other function names use the verb 'query' so this function should
+> > probably use it too and that's what this patch is about. I didn't
+> > find any other occurrence and the code compiles.
+> > 
+> 
+> It's really just assumed that the code still compiles afterwards.
+> Sometimes, it's hard for me to right commit messages confidently because
+> I don't know if static checker bugs affect real life.  But in this case
+> I really think the commit message could be written more confidently.
+> 
+> Please write it like this:
+> "There is a typo here where it says "qurey" but "query" was intended."
 
-Finally got around to trying this: as expected, I don't see any
-difference at all between the two versions (tested on TX2)
+Thanks Dan, I'll update the commit message shortly and send a new patch.
+
+Will
