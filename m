@@ -2,97 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE8B31C3FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 23:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2A031C406
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 23:27:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhBOWXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 17:23:02 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45148 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhBOWW6 (ORCPT
+        id S229779AbhBOW0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 17:26:18 -0500
+Received: from mail-yb1-f173.google.com ([209.85.219.173]:38847 "EHLO
+        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhBOW0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 17:22:58 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id E14432A4CB;
-        Mon, 15 Feb 2021 17:22:14 -0500 (EST)
-Date:   Tue, 16 Feb 2021 09:22:12 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-In-Reply-To: <CAHp75VeTKfSAnLUiwJ_SO-r4hUn7aQVTquG0j=k95QO_gk+c1g@mail.gmail.com>
-Message-ID: <6bdbd8d8-add1-3c5c-8e3b-8b5ffb715b42@telegraphics.com.au>
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com> <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com> <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com> <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
- <CAHp75VeTKfSAnLUiwJ_SO-r4hUn7aQVTquG0j=k95QO_gk+c1g@mail.gmail.com>
+        Mon, 15 Feb 2021 17:26:14 -0500
+Received: by mail-yb1-f173.google.com with SMTP id 133so8619173ybd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 14:25:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WCYjBj19j1mBgoUgFAPx3GRqxMEDCFPUmgnbsB//gL4=;
+        b=oiEC2/2OMUPQ8FofQhJj5TF/v8RcIGyWdLp1COtoqmIUZpcsb99BTkmkTNjpXe/+PH
+         fCiBLptsPUMudu8VwUaiAy0MkQTJesz/DpSmZKJfoQjJvTkDNPWQKpnrJOZdehsLTOQF
+         CWK8lzVhk8AHmdLWFVYkzi9VxSEkwUmZffCzjJUv0PbFFPuEa3s5oTvFF4d/Nd3BrRMT
+         yCYdC5SsDF82ZYxyYWLDu6FoWsqDLNn7M3FexUKFLdBgW6pJfPCd5Y4wTL5HvqvNWWfr
+         n05M+aDh4i7y5RqdqnbxaF4fdVl5iZHeUFX5zdHoD3XG2mXWzWNjucMPlGOX/whAamFY
+         Kx6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WCYjBj19j1mBgoUgFAPx3GRqxMEDCFPUmgnbsB//gL4=;
+        b=KYe8OUWn0eea2E5i1BN4Pevh562MpuRg4xUKB7/Gctosbmv+1wtoGRedkjlhpxw2/Y
+         6YlJYlj+mjcHNgWvjnwHhiV3MberdVyn70I3kxqP7Sc54wVeHhajXo4QOezCDj2ECB1z
+         kby8VY9fEG8NZX44mnJfpDtGuPeQYsTbd0q/nCn7H2zwRAH8Mr3SRgN+YV9CbE/HvVzG
+         827f9q+1nuUzAic95Jrkz0nYqyqBX0wlKJnT/a3gbuwiv64H+FbaOGRrjdKjFzdXN/5T
+         dfON+O1hS85ZWq3rqgkNYv8fYQfgS3h+lawr0ShW2U+Jm1IlS7CdHE1oslYN9/3OS/Zg
+         +WXw==
+X-Gm-Message-State: AOAM530L3sK/LHvAHTxU8hrqvm+NebvgsYtuYfBXkBl9Wyj5/qha29yG
+        EL22PdW5mquFlF6NJKCIqzytVAS5UI2smM9hfYwYbQ==
+X-Google-Smtp-Source: ABdhPJzI25brqTRNPiKDbaw8zxs/3dnPSzw2CkyA2hA+yWam9mqbXj74HyGpnIFgah+oTmvic3SS4tAP2Nj47L0hJvw=
+X-Received: by 2002:a25:dc94:: with SMTP id y142mr15188087ybe.346.1613427873211;
+ Mon, 15 Feb 2021 14:24:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210121225712.1118239-1-saravanak@google.com>
+ <20210121225712.1118239-3-saravanak@google.com> <20210213185422.GA195733@roeck-us.net>
+ <CAGETcx_RpG45Fwhty1Uj34Mv01qkH5vFv0J6jVtJgTBFQinOBA@mail.gmail.com>
+ <a76a73e4-f7ba-4893-14b8-01d21943241a@roeck-us.net> <CAGETcx9mzYbujVW8ALrNvs1FabvuUpZpChxBb0Tp8q7w+TY4=A@mail.gmail.com>
+ <87v9atpujb.wl-maz@kernel.org>
+In-Reply-To: <87v9atpujb.wl-maz@kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 15 Feb 2021 14:23:57 -0800
+Message-ID: <CAGETcx8msCsFnPk2SV-r2QfVDPBY2RvJQumd9RzbrFCvVUxCXA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] of: property: Add fw_devlink support for interrupts
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021, Andy Shevchenko wrote:
-
-> On Sun, Feb 14, 2021 at 7:12 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> > > So what is really confusing and a pain to me is that:
-> > > For years people like me have been writing device drivers
-> > > with the idea that irq handlers run with interrupts
-> > > disabled after those commits in genirq. So I don't need
-> > > to care about if some other IRQs on the same cpu will
-> > > jump out to access the data the current IRQ handler
-> > > is accessing.
-> > >
-> > > but it turns out the assumption is not true on some platform.
-> > > So should I start to program devices driver with the new idea
-> > > interrupts can actually come while irqhandler is running?
-> > >
-> > > That's the question which really bothers me.
-> > >
+On Mon, Feb 15, 2021 at 1:09 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Hi Saravana,
+>
+> On Mon, 15 Feb 2021 08:29:53 +0000,
+> Saravana Kannan <saravanak@google.com> wrote:
 > >
-> > That scenario seems a little contrived to me (drivers for two or more
-> > devices sharing state through their interrupt handlers). Is it real?
-> > I suppose every platform has its quirks. The irq lock in sonic_interrupt()
-> > is only there because of a platform quirk (the same device can trigger
-> > either of two IRQs). Anyway, no-one expects all drivers to work on all
-> > platforms; I don't know why it bothers you so much when platforms differ.
-> 
-> Isn't it any IRQ chip driver which may get IRQ on one or more lines 
-> simultaneously?
-> The question here is can the handler be re-entrant on the same CPU in 
-> that case?
-> 
+> > On Sun, Feb 14, 2021 at 7:58 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > >
+> > > On 2/14/21 1:12 PM, Saravana Kannan wrote:
+> > > [ ... ]
+> > > >
+> > > > Can you please give me the following details:
+> > > > * The DTS file for the board (not the SoC).
+> > >
+> > > The devicetree file extracted from the running system is attached.
+> > > Hope it helps.
+> >
+> > Hi Guenter,
+> >
+> > Thanks for the DTS file and logs. That helps a lot.
+> >
+> > Looking at the attachment and this line from the earlier email:
+> > [   14.084606][   T11] pci 0005:01:00.0: probe deferral - wait for
+> > supplier interrupt-controller@0
+> >
+> > It's clear the PCI node is waiting on:
+> >         interrupt-controller@0 {
+> >                 #address-cells = <0x00>;
+> >                 device_type = "PowerPC-Interrupt-Source-Controller";
+> >                 compatible = "ibm,opal-xive-vc\0IBM,opal-xics";
+> >                 #interrupt-cells = <0x02>;
+> >                 reg = <0x00 0x00 0x00 0x00>;
+> >                 phandle = <0x804b>;
+> >                 interrupt-controller;
+> >         };
+> >
+> > If I grep for "ibm,opal-xive-vc", I see only one instance of it in the
+> > code. And that eventually ends up getting called like this:
+> > irq_find_matching_fwspec() -> xive_irq_domain_match() -> xive_native_match()
+> >
+> > static bool xive_native_match(struct device_node *node)
+> > {
+> >         return of_device_is_compatible(node, "ibm,opal-xive-vc");
+> > }
+> >
+> > However, when the IRQ domain are first registered, in xive_init_host()
+> > the "np" passed in is NOT the same node that xive_native_match() would
+> > match.
+> > static void __init xive_init_host(struct device_node *np)
+> > {
+> >         xive_irq_domain = irq_domain_add_nomap(np, XIVE_MAX_IRQ,
+> >                                                &xive_irq_domain_ops, NULL);
+> >         if (WARN_ON(xive_irq_domain == NULL))
+> >                 return;
+> >         irq_set_default_host(xive_irq_domain);
+> > }
+> >
+> > Instead, the "np" here is:
+> >         interrupt-controller@6030203180000 {
+> >                 ibm,xive-provision-page-size = <0x10000>;
+> >                 ibm,xive-eq-sizes = <0x0c 0x10 0x15 0x18>;
+> >                 single-escalation-support;
+> >                 ibm,xive-provision-chips = <0x00>;
+> >                 ibm,xive-#priorities = <0x08>;
+> >                 compatible = "ibm,opal-xive-pe\0ibm,opal-intc";
+> >                 reg = <0x60302 0x3180000 0x00 0x10000 0x60302
+> > 0x3190000 0x00 0x10000 0x60302 0x31a0000 0x00 0x10000 0x60302
+> > 0x31b0000 0x00 0x10000>;
+> >                 phandle = <0x8051>;
+> >         };
+> >
+> > There are many ways to fix this, but I first want to make sure this is
+> > a valid way to register irqdomains before trying to fix it. I just
+> > find it weird that the node that's registered is unrelated (not a
+> > parent/child) of the node that matches.
+> >
+> > Marc,
+> >
+> > Is this a valid way to register irqdomains? Just registering
+> > interrupt-controller@6030203180000 DT node where there are multiple
+> > interrupt controllers?
+>
+> Absolutely.
+>
+> The node is only one of the many possible ways to retrieve a
+> domain. In general, what you pass as the of_node/fwnode_handle can be
+> anything you want. It doesn't have to represent anything in the system
+> (we even create then ex-nihilo in some cases), and the match/select
+> callbacks are authoritative when they exist.
+>
+> There is also the use of a default domain, which is used as a fallback
+> when no domain is found via the normal matching procedure.
+>
+> PPC has established a way of dealing with domains long before ARM did,
+> closer to the board files of old than what we would do today (code
+> driven rather than data structure driven).
+>
+> Strictly mapping domains onto HW blocks is a desirable property, but
+> that is all it is. That doesn't affect the very purpose of the IRQ
+> domains, which is to translate numbers from one context into another.
+>
+> I'd be all for rationalising this, but it is pretty hard to introduce
+> semantic where there is none.
 
-An irq_chip handler used only for interrupts having the same priority 
-level cannot be re-entered, thanks to the priority mask.
+Ok, I'm going to disable parsing "interrupts" for PPC. It doesn't look
+like any of the irq drivers are even remotely ready to be converted to
+a proper device driver anyway.
 
-Where the priority levels are different, as in auto_irq_chip in 
-arch/m68k/kernel/ints.c, handle_simple_irq() can be re-entered but not 
-with the same descriptor (i.e. no shared state).
+And if this continues for other properties, I'll just disable
+fw_devlink for PPC entirely.
 
-Documentation/core-api/genericirq.rst says,
-
-   The locking of chip registers is up to the architecture that defines 
-   the chip primitives. The per-irq structure is protected via desc->lock, 
-   by the generic layer.
-
-Since the synchronization of chip registers is left up to the 
-architecture, I think the related code should be portable.
-
-Looking in kernel/irq/*.c, I see that desc->lock is sometimes acquired 
-with raw_spin_lock_irq(&desc->lock) and sometimes 
-raw_spin_lock(&desc->lock).
-
-I don't know whether there are portability issues lurking here; this code 
-is subtle and largely unfamiliar to me.
+-Saravana
