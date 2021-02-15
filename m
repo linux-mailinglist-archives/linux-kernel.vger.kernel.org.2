@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CB431BFA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5209331BFAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:48:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbhBOQpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:45:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50184 "EHLO mail.kernel.org"
+        id S232083AbhBOQrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:47:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230517AbhBOPiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:38:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01EC564EF0;
-        Mon, 15 Feb 2021 15:34:11 +0000 (UTC)
+        id S231140AbhBOPiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:38:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D86064EF2;
+        Mon, 15 Feb 2021 15:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403252;
-        bh=PhHRtP7GNe8NZYZl0FnzuQgNhTym4Yt74x7V66+22CE=;
+        s=korg; t=1613403255;
+        bh=0E08mI+AalxikaHCYFbHxJVQdmeRgju6IU3SyRsu1GI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O9OWi/Y/Ce/ZdgWNtg++pg5jtY6yv5Z1cNJPKfsztL9NE/40urAk+NUPQgL6YDQyO
-         kFZIYbpw6F0VA9fbLhs7H/+7QJ/m26ZUCfk2HOmUTWriD+tqV1RpwAoowGs7kLMV8+
-         3li8NbSlD96RR4rhBFiORWoMoaeR8/kQvVqOvm8w=
+        b=u1RmVLvm00DXcG2DUNq1H/oXpHR9IrdGmrieSPvQXOvHOdBijG36BjjzNKAiXhXja
+         ASoJe8sCaCmK+on9jk4qoOtHwuiwH8HY+Dr0m6sXh3VFQz0iaAovmmuIsI1coBT7KJ
+         CLcsHZNPhNmh0e7pDwKLT5FMOrp7Jkj8tx+GjyGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Luis Machado <luis.machado@linaro.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: [PATCH 5.10 086/104] arm64: mte: Allow PTRACE_PEEKMTETAGS access to the zero page
-Date:   Mon, 15 Feb 2021 16:27:39 +0100
-Message-Id: <20210215152722.229588462@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+174de899852504e4a74a@syzkaller.appspotmail.com,
+        syzbot+3d1c772efafd3c38d007@syzkaller.appspotmail.com,
+        David Howells <dhowells@redhat.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 087/104] rxrpc: Fix clearance of Tx/Rx ring when releasing a call
+Date:   Mon, 15 Feb 2021 16:27:40 +0100
+Message-Id: <20210215152722.264884406@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,75 +43,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Catalin Marinas <catalin.marinas@arm.com>
+From: David Howells <dhowells@redhat.com>
 
-commit 68d54ceeec0e5fee4fb8048e6a04c193f32525ca upstream.
+commit 7b5eab57cac45e270a0ad624ba157c5b30b3d44d upstream.
 
-The ptrace(PTRACE_PEEKMTETAGS) implementation checks whether the user
-page has valid tags (mapped with PROT_MTE) by testing the PG_mte_tagged
-page flag. If this bit is cleared, ptrace(PTRACE_PEEKMTETAGS) returns
--EIO.
+At the end of rxrpc_release_call(), rxrpc_cleanup_ring() is called to clear
+the Rx/Tx skbuff ring, but this doesn't lock the ring whilst it's accessing
+it.  Unfortunately, rxrpc_resend() might be trying to retransmit a packet
+concurrently with this - and whilst it does lock the ring, this isn't
+protection against rxrpc_cleanup_call().
 
-A newly created (PROT_MTE) mapping points to the zero page which had its
-tags zeroed during cpu_enable_mte(). If there were no prior writes to
-this mapping, ptrace(PTRACE_PEEKMTETAGS) fails with -EIO since the zero
-page does not have the PG_mte_tagged flag set.
+Fix this by removing the call to rxrpc_cleanup_ring() from
+rxrpc_release_call().  rxrpc_cleanup_ring() will be called again anyway
+from rxrpc_cleanup_call().  The earlier call is just an optimisation to
+recycle skbuffs more quickly.
 
-Set PG_mte_tagged on the zero page when its tags are cleared during
-boot. In addition, to avoid ptrace(PTRACE_PEEKMTETAGS) succeeding on
-!PROT_MTE mappings pointing to the zero page, change the
-__access_remote_tags() check to (vm_flags & VM_MTE) instead of
-PG_mte_tagged.
+Alternative solutions include rxrpc_release_call() could try to cancel the
+work item or wait for it to complete or rxrpc_cleanup_ring() could lock
+when accessing the ring (which would require a bh lock).
 
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Fixes: 34bfeea4a9e9 ("arm64: mte: Clear the tags when a page is mapped in user-space with PROT_MTE")
-Cc: <stable@vger.kernel.org> # 5.10.x
-Cc: Will Deacon <will@kernel.org>
-Reported-by: Luis Machado <luis.machado@linaro.org>
-Tested-by: Luis Machado <luis.machado@linaro.org>
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Link: https://lore.kernel.org/r/20210210180316.23654-1-catalin.marinas@arm.com
+This can produce a report like the following:
+
+  BUG: KASAN: use-after-free in rxrpc_send_data_packet+0x19b4/0x1e70 net/rxrpc/output.c:372
+  Read of size 4 at addr ffff888011606e04 by task kworker/0:0/5
+  ...
+  Workqueue: krxrpcd rxrpc_process_call
+  Call Trace:
+   ...
+   kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+   rxrpc_send_data_packet+0x19b4/0x1e70 net/rxrpc/output.c:372
+   rxrpc_resend net/rxrpc/call_event.c:266 [inline]
+   rxrpc_process_call+0x1634/0x1f60 net/rxrpc/call_event.c:412
+   process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+   ...
+
+  Allocated by task 2318:
+   ...
+   sock_alloc_send_pskb+0x793/0x920 net/core/sock.c:2348
+   rxrpc_send_data+0xb51/0x2bf0 net/rxrpc/sendmsg.c:358
+   rxrpc_do_sendmsg+0xc03/0x1350 net/rxrpc/sendmsg.c:744
+   rxrpc_sendmsg+0x420/0x630 net/rxrpc/af_rxrpc.c:560
+   ...
+
+  Freed by task 2318:
+   ...
+   kfree_skb+0x140/0x3f0 net/core/skbuff.c:704
+   rxrpc_free_skb+0x11d/0x150 net/rxrpc/skbuff.c:78
+   rxrpc_cleanup_ring net/rxrpc/call_object.c:485 [inline]
+   rxrpc_release_call+0x5dd/0x860 net/rxrpc/call_object.c:552
+   rxrpc_release_calls_on_socket+0x21c/0x300 net/rxrpc/call_object.c:579
+   rxrpc_release_sock net/rxrpc/af_rxrpc.c:885 [inline]
+   rxrpc_release+0x263/0x5a0 net/rxrpc/af_rxrpc.c:916
+   __sock_release+0xcd/0x280 net/socket.c:597
+   ...
+
+  The buggy address belongs to the object at ffff888011606dc0
+   which belongs to the cache skbuff_head_cache of size 232
+
+Fixes: 248f219cb8bc ("rxrpc: Rewrite the data and ack handling code")
+Reported-by: syzbot+174de899852504e4a74a@syzkaller.appspotmail.com
+Reported-by: syzbot+3d1c772efafd3c38d007@syzkaller.appspotmail.com
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Hillf Danton <hdanton@sina.com>
+Link: https://lore.kernel.org/r/161234207610.653119.5287360098400436976.stgit@warthog.procyon.org.uk
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/cpufeature.c |    6 +-----
- arch/arm64/kernel/mte.c        |    3 ++-
- 2 files changed, 3 insertions(+), 6 deletions(-)
+ net/rxrpc/call_object.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1696,16 +1696,12 @@ static void bti_enable(const struct arm6
- #ifdef CONFIG_ARM64_MTE
- static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
- {
--	static bool cleared_zero_page = false;
+--- a/net/rxrpc/call_object.c
++++ b/net/rxrpc/call_object.c
+@@ -548,8 +548,6 @@ void rxrpc_release_call(struct rxrpc_soc
+ 		rxrpc_disconnect_call(call);
+ 	if (call->security)
+ 		call->security->free_call_crypto(call);
 -
- 	/*
- 	 * Clear the tags in the zero page. This needs to be done via the
- 	 * linear map which has the Tagged attribute.
- 	 */
--	if (!cleared_zero_page) {
--		cleared_zero_page = true;
-+	if (!test_and_set_bit(PG_mte_tagged, &ZERO_PAGE(0)->flags))
- 		mte_clear_page_tags(lm_alias(empty_zero_page));
--	}
+-	rxrpc_cleanup_ring(call);
+ 	_leave("");
  }
- #endif /* CONFIG_ARM64_MTE */
  
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -239,11 +239,12 @@ static int __access_remote_tags(struct m
- 		 * would cause the existing tags to be cleared if the page
- 		 * was never mapped with PROT_MTE.
- 		 */
--		if (!test_bit(PG_mte_tagged, &page->flags)) {
-+		if (!(vma->vm_flags & VM_MTE)) {
- 			ret = -EOPNOTSUPP;
- 			put_page(page);
- 			break;
- 		}
-+		WARN_ON_ONCE(!test_bit(PG_mte_tagged, &page->flags));
- 
- 		/* limit access to the end of the page */
- 		offset = offset_in_page(addr);
 
 
