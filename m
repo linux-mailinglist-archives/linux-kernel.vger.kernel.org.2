@@ -2,34 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 196A031BE2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C6431BE1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbhBOQC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:02:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46856 "EHLO mail.kernel.org"
+        id S232647AbhBOP7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:59:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230494AbhBOPdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230495AbhBOPdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 10:33:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66DB764EB3;
-        Mon, 15 Feb 2021 15:30:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7BC764EB6;
+        Mon, 15 Feb 2021 15:30:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403022;
-        bh=QDBg45RFT+SOm/lag6l4rj0iybT9eBugjWUvyOd+7iY=;
+        s=korg; t=1613403025;
+        bh=3nh+QiYmUMSitgBwXEnFguLJUlFGGPN6t8DLeVwDXX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DxVzB8Bz/zsHEqNuOK3si8c3LmxY/dgOcYNdH+z3K5g7qBT8sHkZdS01LpB+lbH3n
-         VMNTLqqRE53iPLXDoKXjuxJgJCCmqGKhC44na1OGfZlYSpCnzHY4JHG5wftG1z3oDj
-         PaBqu7eZffPvvjv724qwkyJ+h6ZrLi1q0RuO/Kuc=
+        b=S8uclLVFlwaKuvgPITAF4EO0yFugZwb1ClrvTttOP6N8gbaVAEOmRsOABI+JhiMoH
+         tP04XHHk1hwiEIHVRBvVSEAO42Vw2NOlBtaJh/qP3Mzes+BGe7Gko53qCMBaN/Bh3x
+         1xROvx/U4+uIjKDyHbT9yJgVIfCEvnrbVJLrmj3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com,
-        Sabyrzhan Tasbolatov <snovitoll@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 59/60] net/qrtr: restrict user-controlled length in qrtr_tun_write_iter()
-Date:   Mon, 15 Feb 2021 16:27:47 +0100
-Message-Id: <20210215152717.273523982@linuxfoundation.org>
+        stable@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.4 60/60] ovl: expand warning in ovl_d_real()
+Date:   Mon, 15 Feb 2021 16:27:48 +0100
+Message-Id: <20210215152717.305663473@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -41,51 +38,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-commit 2a80c15812372e554474b1dba0b1d8e467af295d upstream.
+commit cef4cbff06fbc3be54d6d79ee139edecc2ee8598 upstream.
 
-syzbot found WARNING in qrtr_tun_write_iter [1] when write_iter length
-exceeds KMALLOC_MAX_SIZE causing order >= MAX_ORDER condition.
+There was a syzbot report with this warning but insufficient information...
 
-Additionally, there is no check for 0 length write.
-
-[1]
-WARNING: mm/page_alloc.c:5011
-[..]
-Call Trace:
- alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
- kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
- kmalloc include/linux/slab.h:557 [inline]
- kzalloc include/linux/slab.h:682 [inline]
- qrtr_tun_write_iter+0x8a/0x180 net/qrtr/tun.c:83
- call_write_iter include/linux/fs.h:1901 [inline]
-
-Reported-by: syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Link: https://lore.kernel.org/r/20210202092059.1361381-1-snovitoll@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/qrtr/tun.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/overlayfs/super.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/net/qrtr/tun.c
-+++ b/net/qrtr/tun.c
-@@ -80,6 +80,12 @@ static ssize_t qrtr_tun_write_iter(struc
- 	ssize_t ret;
- 	void *kbuf;
+--- a/fs/overlayfs/super.c
++++ b/fs/overlayfs/super.c
+@@ -79,7 +79,7 @@ static void ovl_dentry_release(struct de
+ static struct dentry *ovl_d_real(struct dentry *dentry,
+ 				 const struct inode *inode)
+ {
+-	struct dentry *real;
++	struct dentry *real = NULL, *lower;
  
-+	if (!len)
-+		return -EINVAL;
-+
-+	if (len > KMALLOC_MAX_SIZE)
-+		return -ENOMEM;
-+
- 	kbuf = kzalloc(len, GFP_KERNEL);
- 	if (!kbuf)
- 		return -ENOMEM;
+ 	/* It's an overlay file */
+ 	if (inode && d_inode(dentry) == inode)
+@@ -98,9 +98,10 @@ static struct dentry *ovl_d_real(struct
+ 	if (real && !inode && ovl_has_upperdata(d_inode(dentry)))
+ 		return real;
+ 
+-	real = ovl_dentry_lowerdata(dentry);
+-	if (!real)
++	lower = ovl_dentry_lowerdata(dentry);
++	if (!lower)
+ 		goto bug;
++	real = lower;
+ 
+ 	/* Handle recursion */
+ 	real = d_real(real, inode);
+@@ -108,8 +109,10 @@ static struct dentry *ovl_d_real(struct
+ 	if (!inode || inode == d_inode(real))
+ 		return real;
+ bug:
+-	WARN(1, "ovl_d_real(%pd4, %s:%lu): real dentry not found\n", dentry,
+-	     inode ? inode->i_sb->s_id : "NULL", inode ? inode->i_ino : 0);
++	WARN(1, "%s(%pd4, %s:%lu): real dentry (%p/%lu) not found\n",
++	     __func__, dentry, inode ? inode->i_sb->s_id : "NULL",
++	     inode ? inode->i_ino : 0, real,
++	     real && d_inode(real) ? d_inode(real)->i_ino : 0);
+ 	return dentry;
+ }
+ 
 
 
