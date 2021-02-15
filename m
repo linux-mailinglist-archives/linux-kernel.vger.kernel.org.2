@@ -2,163 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805C031B96D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8783E31B96B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhBOMj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:39:29 -0500
-Received: from mail-oo1-f41.google.com ([209.85.161.41]:36915 "EHLO
-        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbhBOMjK (ORCPT
+        id S229738AbhBOMjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:39:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhBOMjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:39:10 -0500
-Received: by mail-oo1-f41.google.com with SMTP id e17so1495390oow.4;
-        Mon, 15 Feb 2021 04:38:53 -0800 (PST)
+        Mon, 15 Feb 2021 07:39:09 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046BCC061756;
+        Mon, 15 Feb 2021 04:38:26 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id t2so3856092pjq.2;
+        Mon, 15 Feb 2021 04:38:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1x7bFxRMxFkzhQJ3FsPRcWMZwloVqKz9aeYfS9bbHK8=;
+        b=U/6xwuPrQIky8vio6ycHfVP4qeX0tMrUYsWQc+9WdvWpmTcQjWD3usKTJu1nVUAiam
+         gT0bXalVYLepoqUJ1Xao0hIvz+opYKRiq3VHvVTZwsGYpNlEnaS5FtARzsgsJfSYeUUG
+         /uDLCRh4X+4dDUm+8Gz69QexA50/m2VklYfX1V/k0ilcQCLFjsG+5rWiXq3198Uqa7V9
+         nO1tib4g2k+1Yy9s03UWsEiZDKhrejCafd6sUzJ2JA7wHGRBioKAX1F7ASd5yOsjr1Hf
+         jLm1pHRA3hdbjUKNUH/G7ERtmItZ+N5KAeesjbEsKMZniQvAS6zi3x1iwOhlRugQafJb
+         dZzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YakQtSEFQoUcp92B7pBu7SXNAlj7zK9R9/BYJta3QcY=;
-        b=fYzbxOmHBPssdE8OpfNAVvZ3nwkzRi9LWYn9izc/3vUMrd9JZ8p7LCkghwoYcqPAlx
-         eokqIYxdKOagYeI6opI6H2zeaesDNM3N/VjHWTjHrKa39bouU0CN433W5wJjanxWZuG2
-         8AhqtSAIl7UUTFwpEdktYtl1H9myKKoCjNZWTvjYGmQfLndwRnJNtuU2I/Xs81V4eSH3
-         jOYhbzlmmhrU2qG+MO3UWLcIdBhBJzakASxvBFccF33L5aU82lSK78RAXxIG25toDC8T
-         /8QL8HfQmNuItwC2J5BxOFUpHAQ0KPeWDxDHx6PvPVPttUmQHDbsvSyZiE8RlEUL3GmN
-         ZTmQ==
-X-Gm-Message-State: AOAM532S1139ilrF6reLvhj065dwYkR+goL0YUZDverx1DeoRXhtUexg
-        DVJAzcaGXNZ4hKNmQE7vJ9ETuXyo3LhVfODmohY=
-X-Google-Smtp-Source: ABdhPJzsOaXkky53goutSDt4s3Qrndo6ZxhMZ+k2llX7tHWrnfhh68oTGJsqDIbrVVqlcPFpeGNGsoMWNtvUxybCm7w=
-X-Received: by 2002:a4a:3bcb:: with SMTP id s194mr10782339oos.1.1613392708214;
- Mon, 15 Feb 2021 04:38:28 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1x7bFxRMxFkzhQJ3FsPRcWMZwloVqKz9aeYfS9bbHK8=;
+        b=fKU+xowIiCuRx80tw/zxw5CAvRBuE3oQ40almPEvHXCL623oC0MZ28xmLYoMZgZAZr
+         pXa8bI0C0Xz/QDuSqdTZeqaFuwIcQkTj+cTSLvfFpa5JNyrKmQzNWiCpjMf/8zV3E5Mx
+         3eXwbBOHURyJ/n8kc4tDNwBSdgDd/39MAXO7jhXfOTgZZDvr4R7lfM5rdoDMcevgutBH
+         l5vu1Pnq2tzitqQEWyaPuhF/ZQHT8KTG0CIQGHGGTsDdfAWhzSdHm+/QZL/FF0MpBC/I
+         ym9UkjxH0PMKL0JuFB+q11AeQOoPnxTOP/2puegNcImghYPawyUFcknHyKx7/h38DlAJ
+         heRg==
+X-Gm-Message-State: AOAM531VbaQSk04Jir2o9dEFSbstc5EdVZGnev8PdarSJERJISWNR7IW
+        TMYu8VQGPOS42rVOHPyD63A=
+X-Google-Smtp-Source: ABdhPJzffYI22J7ZgLVJY1Cwdu896/WT5M/lJtQfbDEDJIbSlMoEsRs7xETiDzOQNf89dylo03aLzw==
+X-Received: by 2002:a17:90a:4609:: with SMTP id w9mr16583775pjg.69.1613392705533;
+        Mon, 15 Feb 2021 04:38:25 -0800 (PST)
+Received: from localhost (89.208.244.53.16clouds.com. [89.208.244.53])
+        by smtp.gmail.com with ESMTPSA id 73sm18413112pfa.27.2021.02.15.04.38.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 04:38:25 -0800 (PST)
+Date:   Mon, 15 Feb 2021 20:38:23 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>, daniel@zonque.org,
+        haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+        broonie@kernel.org, andriy.shevchenko@linux.intel.com,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: pca2xx-pci: Fix an issue about missing call to
+ 'pci_free_irq_vectors()'
+Message-ID: <20210215123823.GA618076@nuc8i5>
+References: <20210214145746.602770-1-zhengdejin5@gmail.com>
+ <d113b6f5-d234-452e-3e82-90c5237eff0e@siemens.com>
+ <88dff093-b18f-e23c-9cec-b8623da5857b@linux.intel.com>
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
- <CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com> <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com>
-In-Reply-To: <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 15 Feb 2021 13:38:16 +0100
-Message-ID: <CAMuHMdXduvBqjAqraXkEKErNJFyN6JNq5wqagc4yHHPpH5SPGQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <88dff093-b18f-e23c-9cec-b8623da5857b@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+On Mon, Feb 15, 2021 at 11:41:50AM +0200, Jarkko Nikula wrote:
+> On 2/15/21 11:23 AM, Jan Kiszka wrote:
+> > On 14.02.21 15:57, Dejin Zheng wrote:
+> > > Call to 'pci_free_irq_vectors()' are missing both in the error handling
+> > > path of the probe function, and in the remove function. So add them.
+> > > 
+> > > Fixes: 64e02cb0bdfc7c ("spi: pca2xx-pci: Allow MSI")
+> > > Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> > > ---
+> > >   drivers/spi/spi-pxa2xx-pci.c | 13 ++++++++++---
+> > >   1 file changed, 10 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
+> > > index 14fc41ed2361..1ec840e78ff4 100644
+> > > --- a/drivers/spi/spi-pxa2xx-pci.c
+> > > +++ b/drivers/spi/spi-pxa2xx-pci.c
+> > > @@ -254,8 +254,10 @@ static int pxa2xx_spi_pci_probe(struct pci_dev *dev,
+> > >   	snprintf(buf, sizeof(buf), "pxa2xx-spi.%d", ssp->port_id);
+> > >   	ssp->clk = clk_register_fixed_rate(&dev->dev, buf , NULL, 0,
+> > >   					   c->max_clk_rate);
+> > > -	 if (IS_ERR(ssp->clk))
+> > > -		return PTR_ERR(ssp->clk);
+> > > +	if (IS_ERR(ssp->clk)) {
+> > > +		ret = PTR_ERR(ssp->clk);
+> > > +		goto err_irq;
+> > > +	}
+> > >   	memset(&pi, 0, sizeof(pi));
+> > >   	pi.fwnode = dev->dev.fwnode;
+> > > @@ -268,12 +270,16 @@ static int pxa2xx_spi_pci_probe(struct pci_dev *dev,
+> > >   	pdev = platform_device_register_full(&pi);
+> > >   	if (IS_ERR(pdev)) {
+> > >   		clk_unregister(ssp->clk);
+> > > -		return PTR_ERR(pdev);
+> > > +		ret = PTR_ERR(pdev);
+> > > +		goto err_irq;
+> > >   	}
+> > >   	pci_set_drvdata(dev, pdev);
+> > >   	return 0;
+> > > +err_irq:
+> > > +	pci_free_irq_vectors(dev);
+> > > +	return ret;
+> > >   }
+> > >   static void pxa2xx_spi_pci_remove(struct pci_dev *dev)
+> > > @@ -283,6 +289,7 @@ static void pxa2xx_spi_pci_remove(struct pci_dev *dev)
+> > >   	spi_pdata = dev_get_platdata(&pdev->dev);
+> > > +	pci_free_irq_vectors(dev);
+> > >   	platform_device_unregister(pdev);
+> > >   	clk_unregister(spi_pdata->ssp.clk);
+> > >   }
+> > > 
+> > 
+> > Reviewed-by: Jan Kiszka <jan.kiszka@siemens.com>
+> > 
+> Please fix pca2xx-pci -> pxa2xx-pci in the subject line. With that change
+> you may add:
 
-On Fri, Feb 12, 2021 at 4:00 AM Saravana Kannan <saravanak@google.com> wrote:
-> On Thu, Feb 11, 2021 at 5:00 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >       - I2C on R-Car Gen3 does not seem to use DMA, according to
-> >         /sys/kernel/debug/dmaengine/summary:
-> >
-> >             -dma4chan0    | e66d8000.i2c:tx
-> >             -dma4chan1    | e66d8000.i2c:rx
-> >             -dma5chan0    | e6510000.i2c:tx
->
-> I think I need more context on the problem before I can try to fix it.
-> I'm also very unfamiliar with that file. With fw_devlink=permissive,
-> I2C was using DMA? If so, the next step is to see if the I2C relative
-> probe order with DMA is getting changed and if so, why.
+Jan and Jarkko, Thanks very much for your review. I will modify the
+subject name in patch v2, Thanks again!
 
-More detailed log:
+Dejin
 
-    platform e66d8000.i2c: Linked as a consumer to e6150000.clock-controller
-    platform e66d8000.i2c: Linked as a sync state only consumer to e6055400.gpio
-
-Why is e66d8000.i2c not linked as a consumer to e6700000.dma-controller?
-
-    platform e6700000.dma-controller: Linked as a consumer to
-e6150000.clock-controller
-    platform e66d8000.i2c: Added to deferred list
-    platform e6700000.dma-controller: Added to deferred list
-
-    bus: 'platform': driver_probe_device: matched device
-e6700000.dma-controller with driver rcar-dmac
-    bus: 'platform': really_probe: probing driver rcar-dmac with
-device e6700000.dma-controller
-    platform e6700000.dma-controller: Driver rcar-dmac requests probe deferral
-
-    bus: 'platform': driver_probe_device: matched device e66d8000.i2c
-with driver i2c-rcar
-    bus: 'platform': really_probe: probing driver i2c-rcar with device
-e66d8000.i2c
-
-I2C becomes available...
-
-    i2c-rcar e66d8000.i2c: request_channel failed for tx (-517)
-    [...]
-
-but DMA is not available yet, so the driver falls back to PIO.
-
-    driver: 'i2c-rcar': driver_bound: bound to device 'e66d8000.i2c'
-    bus: 'platform': really_probe: bound device e66d8000.i2c to driver i2c-rcar
-
-    platform e6700000.dma-controller: Retrying from deferred list
-    bus: 'platform': driver_probe_device: matched device
-e6700000.dma-controller with driver rcar-dmac
-    bus: 'platform': really_probe: probing driver rcar-dmac with
-device e6700000.dma-controller
-    platform e6700000.dma-controller: Driver rcar-dmac requests probe deferral
-    platform e6700000.dma-controller: Added to deferred list
-    platform e6700000.dma-controller: Retrying from deferred list
-    bus: 'platform': driver_probe_device: matched device
-e6700000.dma-controller with driver rcar-dmac
-    bus: 'platform': really_probe: probing driver rcar-dmac with
-device e6700000.dma-controller
-    driver: 'rcar-dmac': driver_bound: bound to device 'e6700000.dma-controller'
-    bus: 'platform': really_probe: bound device
-e6700000.dma-controller to driver rcar-dmac
-
-DMA becomes available.
-
-Here userspace is entered. /sys/kernel/debug/dmaengine/summary shows
-that the I2C controllers do not have DMA channels allocated, as the
-kernel has performed no more I2C transfers after DMA became available.
-
-Using i2cdetect shows that DMA is used, which is good:
-
-    i2c-rcar e66d8000.i2c: got DMA channel for rx
-
-With permissive devlinks, the clock controller consumers are not added
-to the deferred probing list, and probe order is slightly different.
-The I2C controllers are still probed before the DMA controllers.
-But DMA becomes available a bit earlier, before the probing of the last
-I2C slave driver.  Hence /sys/kernel/debug/dmaengine/summary shows that
-some I2C transfers did use DMA.
-
-So the real issue is that e66d8000.i2c not linked as a consumer to
-e6700000.dma-controller.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
