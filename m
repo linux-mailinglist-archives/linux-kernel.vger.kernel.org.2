@@ -2,147 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAE431B3BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 01:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA77B31B3CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 02:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbhBOAxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 19:53:18 -0500
-Received: from ozlabs.org ([203.11.71.1]:43539 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229818AbhBOAxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 19:53:15 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Df5DH6kzjz9sCD;
-        Mon, 15 Feb 2021 11:52:31 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613350352;
-        bh=oa6Uc+7uJnYD30C2uWpQl2bbjVcL9J8DziaWhvXWAbg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=e0n4Hg3DM0kwa/YKMUfeFAiiogSXYMUUSmTGTusYiI2ywrwQARB9+g3eet5DEYppS
-         hmDBLchbhn/KeDhF0u1kKN2Btq8GiyaDsTzJ5YHFQrBaRv7PiQfSTf9ShOswwECw2M
-         JK/9sfNkg7BZjers8rj44/01iZjwrqSsNdJgSZobB7DvmjKwWPnl+4/YJhVMVzFmb5
-         QupCL32x9RFaMSpv6RiIQXceNjT7ea2qbtBGiiTcPlmlFl1wJ7kh5vCiCX5b4Ai38q
-         bR+IGnvsenpHruU4w0DLMDIROJNUuPmZIiH4Qjfr3O4NbIu5VZj2swXGSaHAOOJFD5
-         HgRvuRRVsF4xQ==
-Date:   Mon, 15 Feb 2021 11:52:31 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Aya Levin <ayal@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Raed Salem <raeds@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210215115231.2311310a@canb.auug.org.au>
+        id S230256AbhBOA6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 19:58:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhBOA4V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 19:56:21 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D64C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 16:55:41 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id v3so3894730qtw.4
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 16:55:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DmXO8urGBGXKWgbwPOPHslxHIcQKJ4XGI0OA1QXvVs8=;
+        b=NExpD+bAA7wNpdGZd2PjqmKNRar6hMaGbwvnjp++qxJFN05P6hrJpXQlCciUW35LkI
+         +G5KwTCl0aG4TDQCVrES3M2CfQdA2WDCdijWDivj3qs5nJtMZTr0Lk4vOz1BqCblWZcH
+         A6IJH5ZKcjPWZnILfSJW3ZvqFY/K+szrfbQP6ycWRqZMAcPvON5pamInbVD8NyjmFwUT
+         /Khb8PdedyFbpYPgHNt0ZDrmSREFmgpCIAZu9tISnmRoEwcxQzjGHeA4OK3aNvkgPU8W
+         3YQ+MteqCioVazKPbSrxqKaLNlF5gGsdn744iNNuFbOR7X1ubL7u1K8sOI+Fbq8Aibut
+         9veA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=DmXO8urGBGXKWgbwPOPHslxHIcQKJ4XGI0OA1QXvVs8=;
+        b=O+C5N49ziUOhkGNDoOuVW6POA/V83X5JPhrsawqBpwxwLrxmMGsX7UUKPmDBsXlo71
+         0nDSMXpxVb+e8apn/ZW62P90JXGVMp1YL3+zKrszwmXqrooJxzBhIRj21RPlQPuz2+w9
+         CnsRmfufM9kpAW+IO0PECT2+hQUlTHg5ZtnP8DrncE7XpfVwASaafrBNBOeflTWG1XSZ
+         6XF3pTBj6Cac2i54EBFV4zijF6r8P8APlfl+hh8fHAXpNBKDK8Pn3pkhRXwpMdi16xku
+         4MlBsQMA6HKwXLilOxW2ODTnQJZFzUuXwZ/phSp7fc5t8HzGzutTjWBtk0pupb+LWJKG
+         i2wQ==
+X-Gm-Message-State: AOAM533Z+b4F7Ya8s2tWURn1A8NN7kHs3AXoVwiksseVe812OdOZBfpD
+        J0r3M+ZxgWHQKf/Q08Y5JXQZcWg6pB54fQ==
+X-Google-Smtp-Source: ABdhPJyLE9ZKtHVKrfgDbDqmcnh/ujCnQDo9LNBlzrkCj6PYO7z+trzEUA4TWxUxcuaJ/0fCR3PbGQ==
+X-Received: by 2002:aed:2d45:: with SMTP id h63mr12059007qtd.239.1613350540388;
+        Sun, 14 Feb 2021 16:55:40 -0800 (PST)
+Received: from OpenSuse ([138.199.10.7])
+        by smtp.gmail.com with ESMTPSA id g13sm3768615qtp.23.2021.02.14.16.55.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 16:55:39 -0800 (PST)
+Date:   Mon, 15 Feb 2021 06:25:33 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.11
+Message-ID: <YCnGhWm2qLl0v/+q@OpenSuse>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHk-=wg8LpRi9+P2_V+ehJ2_EoJifNh2QmVf47aLXfkCd-1UAQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/49jkGUhnk31rBtkq3GBA.g1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vbYI1gYA5RfZZPVb"
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg8LpRi9+P2_V+ehJ2_EoJifNh2QmVf47aLXfkCd-1UAQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/49jkGUhnk31rBtkq3GBA.g1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+--vbYI1gYA5RfZZPVb
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-Today's linux-next merge of the net-next tree got conflicts in:
+On 14:45 Sun 14 Feb 2021, Linus Torvalds wrote:
+>Nothing unexpected or particularly scary happened this week, so here
+>we are - with 5.11 tagged and pushed out.
+>
+>In fact, it's a smaller-than-average set of commits from rc7 to final,
+>which makes me happy. And I already have several pull requests lined
+>up for tomorrow, so we're all set for the merge window to start.
+>
+>But in the meantime - and yes, I know it's Valentine's Day here in the
+>US - maybe give this release a good testing before you go back and
+>play with development kernels. All right? Because I'm sure your SO
+>will understand.
+>
 
-  drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+Here we go ....... :)
 
-between commit:
+bhaskar@OpenSuse_06:22:58_Mon Feb 15:~> rc-kernel-pull-build-boot.sh
+We have new RC kernel
+remote: Enumerating objects: 6, done.
+remote: Counting objects: 100% (6/6), done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 4 (delta 2), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (4/4), 868 bytes | 289.00 KiB/s, done.
+ From https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux
+    28a173387388..f40ddce88593  master     -> origin/master
+     * [new tag]                   v5.11      -> v5.11
+     Updating 28a173387388..f40ddce88593
+     Fast-forward
+      Makefile | 4 ++--
+       1 file changed, 2 insertions(+), 2 deletions(-)
+       We are fine ..pls proceed..
 
-  e4484d9df500 ("net/mlx5e: Enable striding RQ for Connect-X IPsec capable =
-devices")
 
-from the net tree and commits:
 
-  224169d2a32b ("net/mlx5e: IPsec, Remove unnecessary config flag usage")
-  70038b73e40e ("net/mlx5e: Add listener to trap event")
-  214baf22870c ("net/mlx5e: Support HTB offload")
+~Bhaskar
 
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index a2e0b548bf57,d3534b657b98..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@@ -65,7 -65,8 +65,9 @@@
-  #include "en/devlink.h"
-  #include "lib/mlx5.h"
-  #include "en/ptp.h"
- +#include "fpga/ipsec.h"
-+ #include "qos.h"
-+ #include "en/trap.h"
- =20
-  bool mlx5e_check_fragmented_striding_rq_cap(struct mlx5_core_dev *mdev)
-  {
-@@@ -2069,10 -2106,8 +2107,8 @@@ static void mlx5e_build_rq_frags_info(s
-  	u32 buf_size =3D 0;
-  	int i;
- =20
-- #ifdef CONFIG_MLX5_EN_IPSEC
- -	if (MLX5_IPSEC_DEV(mdev))
- +	if (mlx5_fpga_is_ipsec_device(mdev))
-  		byte_count +=3D MLX5E_METADATA_ETHER_LEN;
-- #endif
- =20
-  	if (mlx5e_rx_is_linear_skb(params, xsk)) {
-  		int frag_stride;
-diff --cc drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 4864deed9dc9,4de5a97ceac6..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@@ -1794,12 -1786,10 +1786,10 @@@ int mlx5e_rq_set_handlers(struct mlx5e_
-  		rq->dealloc_wqe =3D mlx5e_dealloc_rx_mpwqe;
- =20
-  		rq->handle_rx_cqe =3D priv->profile->rx_handlers->handle_rx_cqe_mpwqe;
-- #ifdef CONFIG_MLX5_EN_IPSEC
- -		if (MLX5_IPSEC_DEV(mdev)) {
- -			netdev_err(netdev, "MPWQE RQ with IPSec offload not supported\n");
- +		if (mlx5_fpga_is_ipsec_device(mdev)) {
- +			netdev_err(netdev, "MPWQE RQ with Innova IPSec offload not supported\n=
-");
-  			return -EINVAL;
-  		}
-- #endif
-  		if (!rq->handle_rx_cqe) {
-  			netdev_err(netdev, "RX handler of MPWQE RQ is not set\n");
-  			return -EINVAL;
-
---Sig_/49jkGUhnk31rBtkq3GBA.g1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--vbYI1gYA5RfZZPVb
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmApxc8ACgkQAVBC80lX
-0GwOywf+JQQYI5Qt5YRTa39uK02+aj7eiK5MLNY5+7FXywoX5LTAGLDvxNqZp5Sq
-Wy5SjcdXgTGk8MsmxGas7z5nb3qkAsUZxbYxh+2BCaJ9TdhdAgLLUuN9HLIebRMy
-qCsD/dslZRLowZ3PsTSYEsvGklOZaqvDAIboVlXBowxdQeyiZFJab2lZhfUQETly
-R0gqASJElBFy4qCstmutZs6gloTL6YdMdto49bkglGILww7EHThMi1DNu9SBv+9j
-njRvHWl5N5tlqAG2zIoywNPKrugg2fKsTyw5FKGgMOQIywUDXeWrRmm6mFH+KIjU
-76fCe3/tBkC/vpqcYJqfoRzRomlm/g==
-=prWx
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmApxoUACgkQsjqdtxFL
+KRVyLwgAzyWx4g5Nnwx5sQekCvTquWreN/3AnSswnDizVstgR/jC9gvu3/i3cSg+
+yOyQ7OrFjzQE+Rp37iXuQls/ErR4STjvlCHjbRpIt2tkzmPLev+aHV2W491XatC1
+XtpGYope7QQhhbbb3FxmRgPK2mg4l9VVOhhyKe/x6qtspi7eJZye0J5FvYJJm1Kv
+6wrs2pGRX7e3mPR2PDgL/HkqF8ZuGb3dnZAQCA6X/w14ZWS45uQbNxpzgds829sJ
+FgKdHdIK6da5XzvV36IX0IHwgotdjOo+gR9p/QwkOlyANU2VWuaUZkBN+ZP04Q+2
+p5Z9nLbMqPjvNVN0cnHl73Q5xV/Z5w==
+=skxD
 -----END PGP SIGNATURE-----
 
---Sig_/49jkGUhnk31rBtkq3GBA.g1--
+--vbYI1gYA5RfZZPVb--
