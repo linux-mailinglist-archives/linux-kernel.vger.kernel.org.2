@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D5831B72B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DE731B72C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhBOK2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:28:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
+        id S230257AbhBOK3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:29:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhBOK0j (ORCPT
+        with ESMTP id S230201AbhBOK1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:26:39 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CD4C061786;
-        Mon, 15 Feb 2021 02:25:58 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id r21so8197255wrr.9;
-        Mon, 15 Feb 2021 02:25:58 -0800 (PST)
+        Mon, 15 Feb 2021 05:27:30 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750F3C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:26:50 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id x4so8819186wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:26:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=z9SliCCRum/3A2E2ZMNlI9m+hPoUUx4IbBiUL26CGt4=;
-        b=XmYapkqPECCZQ2urP7izpjxwLyQJGPa8zDUV3C5e8uDSsQB6IFaZE8Ld7RFtvmEdLC
-         +IMr0tT7+eve+w26+I/NErozvBO8U3PwdPvpmvtwN+cTaHKUf/meRJCmnnTR9KPXD4Bc
-         vvJQkfqcvu4L02plGHnXIrzbgRqs9zQ/UaUyZBlfFrDIKY9lwFOrQrzhFw3Xk+c8tEua
-         LSRDeoTQPz4vQTjTydCHi3x7CuaISpuj+M9OsOOvz/MslR6G5deopedI4gqFxSvVP2+f
-         /zzrE4G30+pdmtJlL1L3l+ebqai06+Y4Sjhu1YBwK3vfnVS16n0u4fGCE4RYX+KAjOEc
-         jG4Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V3M/xiqC8wV/3y9yM6WJrdsmEi1wT28KwJ+diusuGyE=;
+        b=jWG7bLz+T1/EUxodu4l9HMpKg7v6tgRITknDTZbLkGgl+ZXymPK+ipJvYAvVwWdNCe
+         lHbFNEXpxyGcomfDlP6ihC0SSO7MMSIKFdLOklsh7FDM4xmvjIv4w2HkTwd4zxzmiIZd
+         6hvUB6uvH6TSPMf7SyTBxd8wWKMA5RbYkZ/bR5dIv1lZ+ustBpK7ZAz5NdWVrRs8Hrwi
+         5VBY7KplDF2Y2I3sTGcvyBlRRVpuaaD2aZEnceichN/YP9KZUhSRJ0/LE7AGZkjGFbaq
+         UK7pFDAEOy69AdsobcIDZDEEV+FTBg1n79i08LujIUAjYHnHSLQtqynUMMIJZ1LJxUst
+         TY2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=z9SliCCRum/3A2E2ZMNlI9m+hPoUUx4IbBiUL26CGt4=;
-        b=miORlS2QrJkYZCekEQ2VqrSRuBC1Zb7busc5VXcYiMByBEVHhdRK/iz05YFcNL3/DH
-         YoT79/LkvPKpYmHQ1K9e/MlLx0cqwtbAfsnsC8gYp3Vfby0oQZGaDfSt06kYdPC/5Zpm
-         /IxHqNMfAeWAYRxbAmYFA6T1mFWrYhesezYdkKjw2S+7TyB3RMjqj24LnOlBygZt7lOI
-         YpszGbwYBXpmt2ch3AjrnqQZVWnS9oPedRgZx7XbdBZxH/A2J+KJXV1oxku5poEYp6JO
-         KW/YnUijjIlk6aOm8qtU7NXlh7kxIuvpZcRHmjbebr7kcL0jU3PC0wOn4dUFh6GMbCnv
-         Th0Q==
-X-Gm-Message-State: AOAM532CLmpGEDiEp8A4fY7GIysIqSChIZ2XKvRAFEwGRkW9hRc/TzPS
-        rGAAb2L7mZYRRSqcDlnluHqqfI/Xsz8=
-X-Google-Smtp-Source: ABdhPJxjPOB8Gm2aMkGNZx+mNq7QWQir4NmLrHP2dOTubysE7eypcREIqAJZbaCXxS9zmJnTV7aZtw==
-X-Received: by 2002:adf:f7c5:: with SMTP id a5mr18324488wrq.243.1613384757517;
-        Mon, 15 Feb 2021 02:25:57 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id g136sm10467906wme.10.2021.02.15.02.25.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 02:25:56 -0800 (PST)
-Date:   Mon, 15 Feb 2021 11:25:55 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Fatih Yildirim <yildirim.fatih@gmail.com>
-Cc:     marvin24@gmx.de, gregkh@linuxfoundation.org,
-        ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH -next] staging: nvec: minor coding style fix
-Message-ID: <YCpMM4HhAGkpHIX7@ulmo.localdomain>
-References: <20210212073423.20562-1-yildirim.fatih@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V3M/xiqC8wV/3y9yM6WJrdsmEi1wT28KwJ+diusuGyE=;
+        b=p3KuBNkEvYr7+MiG3i596WsMKo0Cfh4AWHzMDIupzXCs35ka76aLZBKBrqSLQgYJxS
+         9shA9jiTG5n2pVyK8ek6u9RcJmF9fw6RXgfd+gEWkuIxdW9hzYZk/HdkVznmw5mM9702
+         XIWSMwPbZW4cVEDDZcxJ3HRZT/42v9sXSQGunX9Tj4V1L7JepHj+jsoGTTBdNyEfIh+A
+         SjgCB8xS5JxmMyp1/g3J44Sywffj9gzYSh5lb6dLRYbeWkfxacwyCBy3pBqpAdlEi9su
+         kgDFiyp0Y+B6y37cecfumaUquRlgv+UZbuKFocdMEY372xTrlJVz8bPtRcOIEGIiBLNi
+         Ttcw==
+X-Gm-Message-State: AOAM530KdVHab/t21Say04HrIitv/l1ADPhHwndCT0MDcFfOAmyh0zAR
+        eYiN2hpsIghcsJWGhtpzUzT1MWcphfgGbfMPI0/xRg==
+X-Google-Smtp-Source: ABdhPJxsAjvcE+uYtuJqM2TlAiSIbcNkuW6sJZJAOd/JN52Hk6NPuR78ITJ3OQz+VJXpVDOnlwVVFLak5p2/ImqKlFA=
+X-Received: by 2002:a1c:7e85:: with SMTP id z127mr13758695wmc.131.1613384809179;
+ Mon, 15 Feb 2021 02:26:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Umw6Y6994BHCIjmo"
-Content-Disposition: inline
-In-Reply-To: <20210212073423.20562-1-yildirim.fatih@gmail.com>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+References: <20210213112829.26834-1-saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <20210213112829.26834-1-saiprakash.ranjan@codeaurora.org>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Mon, 15 Feb 2021 10:26:38 +0000
+Message-ID: <CAJ9a7VgwxXgs+Zrb2LgX=E7i1+0wpqiL6gOyktPF7_0eojeVNw@mail.gmail.com>
+Subject: Re: [PATCHv2] coresight: etm4x: Add ETM PID for Cortex-A78
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
 
---Umw6Y6994BHCIjmo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Feb 12, 2021 at 10:34:23AM +0300, Fatih Yildirim wrote:
-> Fix for the below coding style warning.
-> Warning: Move const after static - use 'static const int'
->=20
-> Signed-off-by: Fatih Yildirim <yildirim.fatih@gmail.com>
+On Sat, 13 Feb 2021 at 11:28, Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> Add ETM PID for Cortex-A78 to the list of supported ETMs.
+>
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 > ---
->  drivers/staging/nvec/nvec_power.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Changes in v2:
+>  * Rebased on top of coresight/next from kernel.org coresight repo.
+>
+> ---
+>  drivers/hwtracing/coresight/coresight-etm4x-core.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 15016f757828..a5b13a7779c3 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -1951,6 +1951,7 @@ static const struct amba_id etm4_ids[] = {
+>         CS_AMBA_UCI_ID(0x000bbd05, uci_id_etm4),/* Cortex-A55 */
+>         CS_AMBA_UCI_ID(0x000bbd0a, uci_id_etm4),/* Cortex-A75 */
+>         CS_AMBA_UCI_ID(0x000bbd0c, uci_id_etm4),/* Neoverse N1 */
+> +       CS_AMBA_UCI_ID(0x000bbd41, uci_id_etm4),/* Cortex-A78 */
+>         CS_AMBA_UCI_ID(0x000f0205, uci_id_etm4),/* Qualcomm Kryo */
+>         CS_AMBA_UCI_ID(0x000f0211, uci_id_etm4),/* Qualcomm Kryo */
+>         CS_AMBA_UCI_ID(0x000bb802, uci_id_etm4),/* Qualcomm Kryo 385 Cortex-A55 */
+>
+> base-commit: 06c18e28c402ecfb842df8e22a19a097c35ffca9
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
 
-Acked-by: Thierry Reding <treding@nvidia.com>
 
---Umw6Y6994BHCIjmo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAqTDIACgkQ3SOs138+
-s6GukQ//RtPgmq0gdQENuJQ8oYCYYuLbk/GyI6GciGBnKVAXRMaj1d0TmhVmEF0s
-aB871tDOVfpuQwCl4wyCKSdcKR0ABq2mS0S04KHqP6vP7yQJTAjLLqzQLy7oLjAJ
-R8un8u9upWqK8xGdL9nCiD5CRWCRX9TZ6CG6IV8Xw6mTefz3zrBwmwc3hmXJjLlQ
-AyM8nGUU0FZVPa4Pvzu6d2oIPoZNdbIJSduz8Qo3yI7Cwhr3+9Qhrl0WgHSCWHKU
-QOnr8SPmw+zEegpOJFCfpg7TlxR8EDvnrPLVCOQLMznkyIws8uVv/kLjoSmHDIEv
-2WHthxJtyis/TxLlbbpE4tUHiJ5bg0JZdx50ssweJmtxBYp9FI97S3UTPXBViGZ1
-PxrfIdFyW6zO5npGKP80Es0S/HnhznbVUljucwWk5vquDWQERDffkIDGD3ApBHxc
-OVb6DaKHboha3YgQnqnFaJ+q1oHJ0Tu4k0unOjz8KKkTkSLNsfJfW/jxnsr491Fl
-9VEqo7LpquJyqwcr0/Fto0YBPhC90uJKM2do1tuDb2m1k0QeFf4gg2dLwR9uYDGk
-E8PfgH34Uyqomytd3cNuge60VO5U1Af3Drzm661cHkjtlX9HC1cnbavzrKiRbw8t
-OtnuZv0dGkQQPWO/A154IUXZVAwZRFJTN4vvLThW8y6J6ia7f90=
-=XqYj
------END PGP SIGNATURE-----
-
---Umw6Y6994BHCIjmo--
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
