@@ -2,76 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF76331C2C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED7331C2CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhBOUEl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 15 Feb 2021 15:04:41 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34326 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbhBOUEe (ORCPT
+        id S230318AbhBOUF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 15:05:56 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:57369 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhBOUFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 15:04:34 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id AB0F01F45078
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, pgriffais@valvesoftware.com,
-        z.figura12@gmail.com, joel@joelfernandes.org,
-        malteskarupke@fastmail.fm, linux-api@vger.kernel.org,
-        fweimer@redhat.com, libc-alpha@sourceware.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org, acme@kernel.org,
-        corbet@lwn.net
-Subject: Re: [RFC PATCH 03/13] futex2: Implement vectorized wait
-Organization: Collabora
-References: <20210215152404.250281-1-andrealmeid@collabora.com>
-        <20210215152404.250281-4-andrealmeid@collabora.com>
-Date:   Mon, 15 Feb 2021 15:03:48 -0500
-In-Reply-To: <20210215152404.250281-4-andrealmeid@collabora.com>
- (=?utf-8?Q?=22Andr=C3=A9?=
-        Almeida"'s message of "Mon, 15 Feb 2021 12:23:54 -0300")
-Message-ID: <87ft1xw123.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Mon, 15 Feb 2021 15:05:50 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lBk7B-0006sw-MR; Mon, 15 Feb 2021 20:05:01 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ASoC: codecs: lpass-rx-macro: remove redundant initialization of variable hph_pwr_mode
+Date:   Mon, 15 Feb 2021 20:05:01 +0000
+Message-Id: <20210215200501.90697-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-André Almeida <andrealmeid@collabora.com> writes:
+From: Colin Ian King <colin.king@canonical.com>
 
-> Add support to wait on multiple futexes. This is the interface
-> implemented by this syscall:
->
-> futex_waitv(struct futex_waitv *waiters, unsigned int nr_futexes,
-> 	    unsigned int flags, struct timespec *timo)
->
-> struct futex_waitv {
-> 	void *uaddr;
-> 	unsigned int val;
-> 	unsigned int flags;
-> };
->
-> Given an array of struct futex_waitv, wait on each uaddr. The thread
-> wakes if a futex_wake() is performed at any uaddr. The syscall returns
-> immediately if any waiter has *uaddr != val. *timo is an optional
-> timeout value for the operation. The flags argument of the syscall
-> should be used solely for specifying the timeout as realtime, if needed.
-> Flags for shared futexes, sizes, etc. should be used on the individual
-> flags of each waiter.
+The variable hph_pwr_mode is being initialized with a value that is
+never read and it is being updated later with a new value.  The
+initialization is redundant and can be removed.
 
-Given the previous proposal from Zebediah, one use case Wine has to
-support is the ability to wait on all (instead of any) of a list of
-futexes .  I suppose that could be done by a new FLAG_WAITALL passed on
-the third argument of the syscall.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/codecs/lpass-rx-macro.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index 8c04b3b2c907..76909c50d7b9 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -2038,7 +2038,7 @@ static int rx_macro_load_compander_coeff(struct snd_soc_component *component,
+ {
+ 	u16 comp_coeff_lsb_reg, comp_coeff_msb_reg;
+ 	int i;
+-	int hph_pwr_mode = HPH_LOHIFI;
++	int hph_pwr_mode;
+ 
+ 	if (!rx->comp_enabled[comp])
+ 		return 0;
 -- 
-Gabriel Krisman Bertazi
+2.30.0
+
