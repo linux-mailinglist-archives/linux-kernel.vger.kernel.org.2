@@ -2,83 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4715031BB24
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD9931BB19
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:33:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhBOOdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:33:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhBOOdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:33:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3857464DF4;
-        Mon, 15 Feb 2021 14:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613399541;
-        bh=wkAC5+Pz1fyPNEDU1s3uWND5jzs7Q96skLsoF5pmDvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XZ9fhlHw2ebNfM71Rug5UflI2pWXxWLEJY+08rXCXjNAeDgQqhAyt0K9IhHTCDU7s
-         wsbGwqlowVRZ2N+DHDdfYrNLW+ET8fMu30uonh/xQBSFZiWAlMXWna0lBS57v4b65P
-         I8vKTQaoUvoFgPYxo2sIK6WMXh5MRP4y7rNpMDxk=
-Date:   Mon, 15 Feb 2021 15:32:19 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     stable@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH for 5.10] vdpa_sim: fix param validation in
- vdpasim_get_config()
-Message-ID: <YCqF891BLn5zsUwd@kroah.com>
-References: <20210211162519.215418-1-sgarzare@redhat.com>
+        id S229979AbhBOObU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:31:20 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:34148 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229779AbhBOObO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 09:31:14 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11FEU6H4025770;
+        Mon, 15 Feb 2021 09:30:21 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 36p9gaw29u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 09:30:21 -0500
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 11FEUJYG011821
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 15 Feb 2021 09:30:19 -0500
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 15 Feb 2021 09:30:19 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
+ Mon, 15 Feb 2021 09:30:18 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 15 Feb 2021 09:30:18 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11FEUGbh027532;
+        Mon, 15 Feb 2021 09:30:17 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v3 0/5] iio: core: Add mmap interface infrastructure
+Date:   Mon, 15 Feb 2021 16:32:29 +0200
+Message-ID: <20210215143234.3248-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211162519.215418-1-sgarzare@redhat.com>
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-15_08:2021-02-12,2021-02-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 clxscore=1015
+ mlxscore=0 priorityscore=1501 impostorscore=0 adultscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102150117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 05:25:19PM +0100, Stefano Garzarella wrote:
-> Commit 65b709586e222fa6ffd4166ac7fdb5d5dad113ee upstream.
+Changelog v2 -> v3:
+* https://lore.kernel.org/linux-iio/20210212101143.18993-1-alexandru.ardelean@analog.com/T/#u
+* added 'Documentation: iio: add doc for high-speed buffer API'
+* add 'iio: buffer-dma: split iio_dma_buffer_fileio_free() function'
+* patch 'iio: buffer-dma: Add mmap support'
+   - unwind free on error path in iio_dma_buffer_alloc_blocks()
+   - removed double mm.h include
+* patch 'tools: iio: add example for high-speed buffer support'
+   - call IIO_BUFFER_BLOCK_FREE_IOCTL on the error path of the
+     enable_high_speed() function
 
-No, this really is not that commit, so please do not say it is.
+Changelog v1 -> v2:
+* https://lore.kernel.org/linux-iio/20210211123353.78963-1-alexandru.ardelean@analog.com/T/#t
+* removed IIO_BUFFER_BLOCK_FLAG_CYCLIC flag; will be added in a later
+  patch
+* removed extra line in tools/iio/iio_generic_buffer.c
+* patch 'iio: core: Add mmap interface infrastructure'
+  added docstrings for new hooks (alloc_blocks, mmap, etc)
 
-> Before this patch, if 'offset + len' was equal to
-> sizeof(struct virtio_net_config), the entire buffer wasn't filled,
-> returning incorrect values to the caller.
-> 
-> Since 'vdpasim->config' type is 'struct virtio_net_config', we can
-> safely copy its content under this condition.
-> 
-> Commit 65b709586e22 ("vdpa_sim: add get_config callback in
-> vdpasim_dev_attr") unintentionally solved it upstream while
-> refactoring vdpa_sim.c to support multiple devices. But we don't want
-> to backport it to stable branches as it contains many changes.
-> 
-> Fixes: 2c53d0f64c06 ("vdpasim: vDPA device simulator")
-> Cc: <stable@vger.kernel.org> # 5.10.x
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->  drivers/vdpa/vdpa_sim/vdpa_sim.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index 6a90fdb9cbfc..8ca178d7b02f 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -572,7 +572,7 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
->  {
->  	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
->  
-> -	if (offset + len < sizeof(struct virtio_net_config))
-> +	if (offset + len <= sizeof(struct virtio_net_config))
->  		memcpy(buf, (u8 *)&vdpasim->config + offset, len);
->  }
+This is basically Lars' work adapted from branch:
+  https://github.com/larsclausen/linux/commits/iio-high-speed-5.10
+[hopefully i got the stuff correctly from that branch]
 
-I'll be glad to take a one-off patch, but why can't we take the real
-upstream patch?  That is always the better long-term solution, right?
+What is different, is that this one is adapted on top of the multibuffer
+support (currently at v5) discussed here:
+  https://lore.kernel.org/linux-iio/20210211122452.78106-1-alexandru.ardelean@analog.com/T/#t
 
-thanks,
+Also, adapted an example for high-speed/mmap support in
+'tools/iio/iio_generic_buffer.c'
 
-greg k-h
+The example is adapted from libiio:
+  https://github.com/analogdevicesinc/libiio/blob/master/local.c#L51
+but will all the ioctl()s organized after the one that are reserved
+(hopefully) for IIO
+
+Tested that mmap() works.
+Moved (artifically) valid buffer0 as buffer2 and the operation still
+works.
+
+Alexandru Ardelean (3):
+  Documentation: iio: add doc for high-speed buffer API
+  iio: buffer-dma: split iio_dma_buffer_fileio_free() function
+  tools: iio: add example for high-speed buffer support
+
+Lars-Peter Clausen (2):
+  iio: core: Add mmap interface infrastructure
+  iio: buffer-dma: Add mmap support
+
+ Documentation/iio/iio_high_speed_buffers.rst  | 100 ++++++
+ Documentation/iio/index.rst                   |   2 +
+ drivers/iio/buffer/industrialio-buffer-dma.c  | 324 ++++++++++++++++--
+ .../buffer/industrialio-buffer-dmaengine.c    |  22 +-
+ drivers/iio/industrialio-buffer.c             | 158 +++++++++
+ include/linux/iio/buffer-dma.h                |  27 +-
+ include/linux/iio/buffer_impl.h               |  23 ++
+ include/uapi/linux/iio/buffer.h               |  49 +++
+ tools/iio/iio_generic_buffer.c                | 184 +++++++++-
+ 9 files changed, 841 insertions(+), 48 deletions(-)
+ create mode 100644 Documentation/iio/iio_high_speed_buffers.rst
+
+-- 
+2.17.1
+
