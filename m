@@ -2,156 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA17E31B943
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A2631B946
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbhBOM3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:29:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46699 "EHLO
+        id S230255AbhBOMaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:30:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35936 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230261AbhBOMYS (ORCPT
+        by vger.kernel.org with ESMTP id S230172AbhBOM0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:24:18 -0500
+        Mon, 15 Feb 2021 07:26:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613391771;
+        s=mimecast20190719; t=1613391876;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9+SnmqbEhNFjcfOI3mysTmgNqj2r4gSC7pE8Ni4es9A=;
-        b=biJWGD/xmf3Ukbrsr9yifaK3ITgr0esg3vrpo+z+kqnQGOtZ4BHjV0LPw2MjRlumkqY5Ol
-        1yO6eSZkVlEhp2CNSNbYWh4sfPx9DOxXVA3vjNjEClEusAd0aeqKCdFxJPc9lgN1vhNZom
-        Oc6JuD+/d7Z3cq0yQkeXXdl3pJlE/7o=
+        bh=uEB/obzSHOtmTVEsdMgjSRNQj0mbOgdNvz1v5u4sJFQ=;
+        b=fSmRjhsIgmbs8BYNXwkSBrUmvA2ayigjDpvX3EfiAilqjUaltMsSXGvU1PC+ywiVNHvg7M
+        nrTbzWuaQmDfSUmqKsWDA3aHYPG9HfrkZjjtsfyvO1HgjyqKhbbdbToyLPh3/3xbypC6h0
+        rjSCU9krjD2QsvjFp147CxfF52lKREI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-WztHw_28MlShRZZLY3TeDg-1; Mon, 15 Feb 2021 07:22:50 -0500
-X-MC-Unique: WztHw_28MlShRZZLY3TeDg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-435-4uUu5GQgMdqoALxrJqkUWw-1; Mon, 15 Feb 2021 07:24:32 -0500
+X-MC-Unique: 4uUu5GQgMdqoALxrJqkUWw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6C1B1E563;
-        Mon, 15 Feb 2021 12:22:47 +0000 (UTC)
-Received: from krava (unknown [10.40.195.239])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7E3D660875;
-        Mon, 15 Feb 2021 12:22:39 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 13:22:38 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jianlin Lv <Jianlin.Lv@arm.com>
-Cc:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        irogers@google.com, agerstmayr@redhat.com,
-        kan.liang@linux.intel.com, adrian.hunter@intel.com,
-        iecedge@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] perf tools: Fix arm64 build error with gcc-11
-Message-ID: <YCpnji8ukXa06iBU@krava>
-References: <20210213050516.1221523-1-Jianlin.Lv@arm.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F82B801962;
+        Mon, 15 Feb 2021 12:24:31 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-114-89.ams2.redhat.com [10.36.114.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C0E9D60C0F;
+        Mon, 15 Feb 2021 12:24:22 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        David Hildenbrand <david@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Marek Kedzierski <mkedzier@redhat.com>,
+        Hui Zhu <teawater@gmail.com>,
+        Sebastien Boeuf <sebastien.boeuf@intel.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH v1 2/2] virtio-mem: support VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE
+Date:   Mon, 15 Feb 2021 13:24:21 +0100
+Message-Id: <20210215122421.27964-1-david@redhat.com>
+In-Reply-To: <20210215122143.27608-1-david@redhat.com>
+References: <20210215122143.27608-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210213050516.1221523-1-Jianlin.Lv@arm.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 01:05:16PM +0800, Jianlin Lv wrote:
-> gcc version: 11.0.0 20210208 (experimental) (GCC)
-> 
-> Following build error on arm64:
-> 
-> .......
-> In function ‘printf’,
->     inlined from ‘regs_dump__printf’ at util/session.c:1141:3,
->     inlined from ‘regs__printf’ at util/session.c:1169:2:
-> /usr/include/aarch64-linux-gnu/bits/stdio2.h:107:10: \
->   error: ‘%-5s’ directive argument is null [-Werror=format-overflow=]
-> 
-> 107 |   return __printf_chk (__USE_FORTIFY_LEVEL - 1, __fmt, \
->                 __va_arg_pack ());
-> 
-> ......
-> In function ‘fprintf’,
->   inlined from ‘perf_sample__fprintf_regs.isra’ at \
->     builtin-script.c:622:14:
-> /usr/include/aarch64-linux-gnu/bits/stdio2.h:100:10: \
->     error: ‘%5s’ directive argument is null [-Werror=format-overflow=]
->   100 |   return __fprintf_chk (__stream, __USE_FORTIFY_LEVEL - 1, __fmt,
->   101 |                         __va_arg_pack ());
-> 
-> cc1: all warnings being treated as errors
-> .......
-> 
-> This patch fixes Wformat-overflow warnings. Add ternary operator,
-> The statement evaluates to "Unknown" if reg_name==NULL is met.
-> 
-> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+The spec currently states that while unplugged memory should not be
+read, the device has to allow for reading unplugged memory inside the
+usable region. The primary motivation for this default handling was that
+in some corner cases in Linux, unplugged memory inside added Linux memory
+blocks (and exposed via /proc/iomem as "System RAM (...)") might still
+be read. So to support SBM (Sub Block Mode) in Linux cleanly, the device
+has to support reading unplugged memory.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+One example is kdump(): when makedumpfile isn't used
+or when an older version is used, PG_offline is ignored and unplugged
+memory might still be read. Another corner-case example is /dev/mem: even
+with STRICT_DEVMEM, some unplugged memory might be read by tools
+automatically.
 
-thanks,
-jirka
+For example, QEMU won't support reading unplugged memory with
+file-backed memory backends initially: there is no shared zero page,
+thus, special handling will be required in the future to allow for
+reading unplugged memory when using a file backing (tmpfs/shmem, hugetlbfs,
+...).
 
-> ---
-> v2: Add ternary operator to avoid similar errors in other arch.
-> v3: Declared reg_name in inner block.
-> ---
->  tools/perf/builtin-script.c                            | 4 +++-
->  tools/perf/util/scripting-engines/trace-event-python.c | 3 ++-
->  tools/perf/util/session.c                              | 3 ++-
->  3 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index 42dad4a0f8cf..0d52dc45b1c7 100644
-> --- a/tools/perf/builtin-script.c
-> +++ b/tools/perf/builtin-script.c
-> @@ -643,7 +643,9 @@ static int perf_sample__fprintf_regs(struct regs_dump *regs, uint64_t mask,
->  
->  	for_each_set_bit(r, (unsigned long *) &mask, sizeof(mask) * 8) {
->  		u64 val = regs->regs[i++];
-> -		printed += fprintf(fp, "%5s:0x%"PRIx64" ", perf_reg_name(r), val);
-> +		const char *reg_name = perf_reg_name(r);
-> +
-> +		printed += fprintf(fp, "%5s:0x%"PRIx64" ", reg_name ?: "unknown", val);
->  	}
->  
->  	return printed;
-> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-> index c83c2c6564e0..768bdd4240f4 100644
-> --- a/tools/perf/util/scripting-engines/trace-event-python.c
-> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
-> @@ -699,10 +699,11 @@ static int regs_map(struct regs_dump *regs, uint64_t mask, char *bf, int size)
->  
->  	for_each_set_bit(r, (unsigned long *) &mask, sizeof(mask) * 8) {
->  		u64 val = regs->regs[i++];
-> +		const char *reg_name = perf_reg_name(r);
->  
->  		printed += scnprintf(bf + printed, size - printed,
->  				     "%5s:0x%" PRIx64 " ",
-> -				     perf_reg_name(r), val);
-> +				     reg_name ?: "unknown", val);
->  	}
->  
->  	return printed;
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 25adbcce0281..2b40f1c431a3 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -1138,9 +1138,10 @@ static void regs_dump__printf(u64 mask, u64 *regs)
->  
->  	for_each_set_bit(rid, (unsigned long *) &mask, sizeof(mask) * 8) {
->  		u64 val = regs[i++];
-> +		const char *reg_name = perf_reg_name(rid);
->  
->  		printf(".... %-5s 0x%016" PRIx64 "\n",
-> -		       perf_reg_name(rid), val);
-> +		       reg_name ?: "unknown", val);
->  	}
->  }
->  
-> -- 
-> 2.25.1
-> 
+The device will indicate VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE and fail
+device initialization if the driver does not indicate support. The
+result is that Linux won't be able to make use of any memory without
+this change. With this change, Linux will at least be able to (un)plug
+in Linux memory block granularity. Print an info so this handling can
+be identified.
+
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Marek Kedzierski <mkedzier@redhat.com>
+Cc: Hui Zhu <teawater@gmail.com>
+Cc: Sebastien Boeuf <sebastien.boeuf@intel.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ drivers/virtio/virtio_mem.c     | 12 ++++++++++++
+ include/uapi/linux/virtio_mem.h | 10 +++++++---
+ 2 files changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index 6d4e01c4e2fa..58d8df528728 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -2425,6 +2425,17 @@ static int virtio_mem_init(struct virtio_mem *vm)
+ 			pageblock_nr_pages) * PAGE_SIZE;
+ 	sb_size = max_t(uint64_t, vm->device_block_size, sb_size);
+ 
++	/*
++	 * Unplugged memory might be read in corner cases, for example, via
++	 * kdump. Fallback to adding/removing individual Linux memory blocks.
++	 */
++	if (sb_size < memory_block_size_bytes() && !force_bbm &&
++	    virtio_has_feature(vm->vdev, VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE)) {
++		sb_size = memory_block_size_bytes();
++		dev_info(&vm->vdev->dev,
++			 "The device does not support reading unplugged memory: using big block mode\n");
++	}
++
+ 	if (sb_size < memory_block_size_bytes() && !force_bbm) {
+ 		/* SBM: At least two subblocks per Linux memory block. */
+ 		vm->in_sbm = true;
+@@ -2711,6 +2722,7 @@ static unsigned int virtio_mem_features[] = {
+ #if defined(CONFIG_NUMA) && defined(CONFIG_ACPI_NUMA)
+ 	VIRTIO_MEM_F_ACPI_PXM,
+ #endif
++	VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE,
+ };
+ 
+ static const struct virtio_device_id virtio_mem_id_table[] = {
+diff --git a/include/uapi/linux/virtio_mem.h b/include/uapi/linux/virtio_mem.h
+index 70e01c687d5e..6ac77cfb8aca 100644
+--- a/include/uapi/linux/virtio_mem.h
++++ b/include/uapi/linux/virtio_mem.h
+@@ -68,9 +68,11 @@
+  * explicitly triggered (VIRTIO_MEM_REQ_UNPLUG).
+  *
+  * There are no guarantees what will happen if unplugged memory is
+- * read/written. Such memory should, in general, not be touched. E.g.,
+- * even writing might succeed, but the values will simply be discarded at
+- * random points in time.
++ * read/written. Often, unplugged memory inside the usable region can
++ * be read, to simplify creation of memory dumps; however, some devices
++ * don't even support that. Unplugged memory should, in general, not be
++ * touched. E.g., even writing might succeed, but the values will simply be
++ * discarded at random points in time.
+  *
+  * It can happen that the device cannot process a request, because it is
+  * busy. The device driver has to retry later.
+@@ -87,6 +89,8 @@
+ 
+ /* node_id is an ACPI PXM and is valid */
+ #define VIRTIO_MEM_F_ACPI_PXM		0
++/* any unplugged memory must never be accessed */
++#define VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE	1
+ 
+ 
+ /* --- virtio-mem: guest -> host requests --- */
+-- 
+2.29.2
 
