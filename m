@@ -2,214 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9895031B727
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC42A31B725
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbhBOK2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:28:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
+        id S230243AbhBOK1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:27:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhBOK0Y (ORCPT
+        with ESMTP id S230152AbhBOK0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 05:26:24 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E1AC061756;
-        Mon, 15 Feb 2021 02:25:31 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id h67so3986445wmh.1;
-        Mon, 15 Feb 2021 02:25:31 -0800 (PST)
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03DCC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:25:42 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id k22so3475179pll.6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:25:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xzlWG7IXSmL2eGjXVT7Tn/g8jQeTsF9IX2YIiH3MEIM=;
-        b=hvACttY1S+cPUYKTlA5ro5YHH21PVuKzXjJ5EeJNDpTA2qJ85SGAelpFJRIqzCfL18
-         48OewTlpOCD/i3GDXX11yxk4QIXFwyAWGCauT+bYacj+A5WYpQOu4ZPN6wdKwJgfb8ls
-         w1isD5qF23Roo/p4c1pj+TwZhh8jvDCuCN8tNzdy/rJbAVN46/yp175coouhSnGOwDoB
-         KaJ00UQ5aEGPOyz36JPmCIM5Bdn79Us2YhVHSYItlppd4fnJOElwHAR9XcUP3Z2j9D9V
-         le2h8a/dGTNgmjmLaXx8GCJPKJJm6jrSrg40FdrDf0+hroKJYLzBT9LkWg39gRdrGLVx
-         eEig==
+        d=timesys-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=5QNtL/QJMKYTcCcpXwyC4qEWlr5o4t0EK/CSxuKil3o=;
+        b=allR8ueCxcSNegm7Gn+qidsAEGcOtrJyQt+4UYvGX55E6Xdi1PWKtgJcjns6mIMFqR
+         FL8o3w5LK1D6vX57fAJ164giA8Jkq6WIa++GPhHIOcuqZ/fMpbKpRxUXxxYHsSTotRrS
+         5YHSHWxwTKxpthKx63PjOtskQzyi9cjZXst1cmyVTFbdkB86aoQCTn4GQNJLurSqkXiQ
+         UHQvoy0xCSArkj2zu08KUPxBr3l3/7AAxgvG3Vak52x01AHBnqK6nX0UVLiVfpLDXfPn
+         99FvvM0xs4IUx+EmpvtS26qkjwuFsY7UZFURCnARkRFc/MblHTLBjanbKj+5ThpYMKMI
+         ZtgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xzlWG7IXSmL2eGjXVT7Tn/g8jQeTsF9IX2YIiH3MEIM=;
-        b=rOJrzXliVjjLkG6OqNOeqcX5S6qP9or/v8Lvw99R0zUmRPu/wGpYaA+P+gjEiEkfFR
-         sq0mSb1jylpHoFQCKxlCUXYBNpPuk6H7NSKaLKAzwj6NkK/OFAQv0thQ79tiJVH4YP9e
-         uevUSHnbrUie5EbJgMKWkolV+FxmyG72CJ3SCS03xPtFjULmRrGcAGADceWseI019RfR
-         e8R/6VdwI9rigtNGwz+5Hkn3PaiyHsFGQv2dyQA1rrddybuddWN039X4TO9x1putlQUv
-         On832wJmjnfDPdclwHyds1xpPf9ZKErMkV6vAjpWdbSo4p2IYCG2KmCq9stV0fAYaKye
-         fSdA==
-X-Gm-Message-State: AOAM533EoAkEMK/Rn7WDhKTczamXapdmYXdbBNSNERAhfLYeaMTdEmU0
-        Asj8KUMrH5oPgeuvEbusgtI=
-X-Google-Smtp-Source: ABdhPJwFaUJK5TMILw8ZXXUDuIDatLHYVC4Kl8jky0tFiORDMTEK9pwtISp+LaYoCK8JFTY5hJbK5g==
-X-Received: by 2002:a1c:8096:: with SMTP id b144mr14114028wmd.169.1613384730299;
-        Mon, 15 Feb 2021 02:25:30 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id m13sm4168972wmc.22.2021.02.15.02.25.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 02:25:29 -0800 (PST)
-Date:   Mon, 15 Feb 2021 11:25:27 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH] tty: serial: Add earlycon driver for Tegra Combined UART
-Message-ID: <YCpMF7MyJYB8x7Zi@ulmo.localdomain>
-References: <20210213115824.3306965-1-mperttunen@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="OOpQ8jVg06hQ2UFP"
-Content-Disposition: inline
-In-Reply-To: <20210213115824.3306965-1-mperttunen@nvidia.com>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5QNtL/QJMKYTcCcpXwyC4qEWlr5o4t0EK/CSxuKil3o=;
+        b=UbV9REcyftA5jloqrGDD9sf/4+jPYyxMGvucPBxNMRxKFqHR216fDCSdtl582CKA//
+         DygJ21ULy81tuZg62LyXjS9M5oTULA0DsW5m7RiJf4m7m53Wf7bQaMNHc9fd98OCzLr5
+         kMH5qBDzw+vyf7t0ltRZHGRyhZAwkerRTweb/sba4oO7wwihLr2lTzmpCT5N/n4Q/KMJ
+         u0QNYwc64cXhiId3k2pd3Ttc928FgC62e+t2chwqnJBFFoPLNjXnHZr59AdVS4DZrgJX
+         taSuRwbIKAhi7RbGV2ukzFextSq6PvrFxrXZM0bzBjkQxmzu+2xz/D/Mx583TTZdAjRc
+         E+JA==
+X-Gm-Message-State: AOAM530/h5efVtAutRM4UJekJ5Zw6n0a/ATBAMPCMueOptxcyywLYFlX
+        RDocyGE47Dw7ja1T47m+G6+MhQ==
+X-Google-Smtp-Source: ABdhPJy+60W6ok2/zY3nob6ijfUXD2FXktLLBG1JJc7q8yF1H0737pObi07IBdmUDDckhLzZCXafzQ==
+X-Received: by 2002:a17:90a:4306:: with SMTP id q6mr15201645pjg.138.1613384742448;
+        Mon, 15 Feb 2021 02:25:42 -0800 (PST)
+Received: from prasanth.timesys.com ([59.97.51.145])
+        by smtp.gmail.com with ESMTPSA id g3sm18402396pfq.42.2021.02.15.02.25.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 15 Feb 2021 02:25:42 -0800 (PST)
+From:   prasanth.r@timesys.com
+To:     michal.lkml@markovi.net, masahiroy@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Prasanth R <prasanth.r@timesys.com>
+Subject: [PATCH] kbuild: use shorthand operator for compiler
+Date:   Mon, 15 Feb 2021 15:55:36 +0530
+Message-Id: <1613384736-31129-1-git-send-email-prasanth.r@timesys.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Prasanth R <prasanth.r@timesys.com>
 
---OOpQ8jVg06hQ2UFP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Despite making the gcc as default let the user fix the
+HOST values or we need to point the /usr/bin/gcc
 
-On Sat, Feb 13, 2021 at 01:58:24PM +0200, Mikko Perttunen wrote:
-> Add an earlycon driver for platforms with TCU, namely Tegra194.
-> The driver is compatible with boot parameters passed by NVIDIA
-> boot chains.
+Signed-off-by: Prasanth R <prasanth.r@timesys.com>
+---
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I'm not sure I understand the latter part of this description. What boot
-parameters is this compatible with? Looking at the setup function there
-doesn't seem to be anything out of the ordinary here, so I'm wondering
-if that's just confusing. If there's anything special, it might be worth
-specifically pointing out what that is. Perhaps both in the commit
-message and in a code comment, so it's properly documented.
+diff --git a/Makefile b/Makefile
+index de1acae..46301a6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -410,8 +410,8 @@ ifneq ($(LLVM),)
+ HOSTCC	= clang
+ HOSTCXX	= clang++
+ else
+-HOSTCC	= gcc
+-HOSTCXX	= g++
++HOSTCC	?= gcc
++HOSTCXX	?= g++
+ endif
+ 
+ export KBUILD_USERCFLAGS := -Wall -Wmissing-prototypes -Wstrict-prototypes \
+-- 
+2.7.4
 
->=20
-> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
-> ---
->  drivers/tty/serial/Kconfig              | 12 +++++
->  drivers/tty/serial/Makefile             |  1 +
->  drivers/tty/serial/tegra-tcu-earlycon.c | 72 +++++++++++++++++++++++++
->  3 files changed, 85 insertions(+)
->  create mode 100644 drivers/tty/serial/tegra-tcu-earlycon.c
->=20
-> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> index 34a2899e69c0..d941785e3f46 100644
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -331,6 +331,18 @@ config SERIAL_TEGRA_TCU_CONSOLE
-> =20
->  	  If unsure, say Y.
-> =20
-> +config SERIAL_TEGRA_TCU_EARLYCON
-> +	bool "Earlycon on NVIDIA Tegra Combined UART"
-> +	depends on ARCH_TEGRA || COMPILE_TEST
-> +	select SERIAL_EARLYCON
-> +	select SERIAL_CORE_CONSOLE
-> +	default y if SERIAL_TEGRA_TCU_CONSOLE
-> +	help
-> +	  If you say Y here, TCU output will be supported during the earlycon
-> +	  phase of the boot.
-> +
-> +	  If unsure, say Y.
-> +
->  config SERIAL_MAX3100
->  	tristate "MAX3100 support"
->  	depends on SPI
-> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-> index b85d53f9e9ff..408144326fed 100644
-> --- a/drivers/tty/serial/Makefile
-> +++ b/drivers/tty/serial/Makefile
-> @@ -72,6 +72,7 @@ obj-$(CONFIG_SERIAL_XILINX_PS_UART) +=3D xilinx_uartps.o
->  obj-$(CONFIG_SERIAL_SIRFSOC) +=3D sirfsoc_uart.o
->  obj-$(CONFIG_SERIAL_TEGRA) +=3D serial-tegra.o
->  obj-$(CONFIG_SERIAL_TEGRA_TCU) +=3D tegra-tcu.o
-> +obj-$(CONFIG_SERIAL_TEGRA_TCU_EARLYCON) +=3D tegra-tcu-earlycon.o
->  obj-$(CONFIG_SERIAL_AR933X)   +=3D ar933x_uart.o
->  obj-$(CONFIG_SERIAL_EFM32_UART) +=3D efm32-uart.o
->  obj-$(CONFIG_SERIAL_ARC)	+=3D arc_uart.o
-> diff --git a/drivers/tty/serial/tegra-tcu-earlycon.c b/drivers/tty/serial=
-/tegra-tcu-earlycon.c
-> new file mode 100644
-> index 000000000000..9decfbced0a7
-> --- /dev/null
-> +++ b/drivers/tty/serial/tegra-tcu-earlycon.c
-> @@ -0,0 +1,72 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2017-2021, NVIDIA CORPORATION.  All rights reserved.
-> + */
-> +
-> +#include <linux/console.h>
-> +#include <linux/io.h>
-> +#include <linux/serial_core.h>
-> +
-> +#define NUM_BYTES_FIELD_BIT	24
-> +#define FLUSH_BIT		26
-
-This one seems to be unused.
-
-> +#define INTR_TRIGGER_BIT	31
-
-I wonder if this could somehow be integrated with the existing TCU
-driver since we have these bits defined there already. And really this
-is basically a skeleton version of the same driver.
-
-> +/*
-> + * This function splits the string to be printed (const char *s) into mu=
-ltiple
-> + * packets. Each packet contains a max of 3 characters. Packets are sent=
- to the
-> + * SPE-based combined UART server for printing. Communication with SPE i=
-s done
-> + * through mailbox registers which can generate interrupts for SPE.
-> + */
-> +static void early_tcu_write(struct console *console, const char *s, unsi=
-gned int count)
-> +{
-> +	struct earlycon_device *device =3D console->data;
-> +	u8 __iomem *addr =3D device->port.membase;
-> +	u32 mbox_val =3D BIT(INTR_TRIGGER_BIT);
-> +	unsigned int i;
-> +
-> +	/* Loop for processing each 3 char packet */
-> +	for (i =3D 0; i < count; i++) {
-> +		if (s[i] =3D=3D '\n')
-> +			mbox_val =3D update_and_send_mbox(addr, mbox_val, '\r');
-> +		mbox_val =3D update_and_send_mbox(addr, mbox_val, s[i]);
-> +	}
-> +
-> +	if ((mbox_val >> NUM_BYTES_FIELD_BIT) & 0x3) {
-> +		while (readl(addr) & BIT(INTR_TRIGGER_BIT))
-> +			cpu_relax();
-> +		writel(mbox_val, addr);
-> +	}
-> +}
-
-For example this function already exists in the Tegra TCU driver and
-perhaps some of that could be refactored to work for both cases.
-
-Thierry
-
---OOpQ8jVg06hQ2UFP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAqTBQACgkQ3SOs138+
-s6H4hRAAgbEdLV0psQGZMIiBU/x5LxPg/2BQ+QQMvTvcs7hqenf5Y6GyvVSko+7X
-Uz8Yo432ivikJsmvKcKQ00ObA23XxUvc1lnYj8cpw+G5bQtp2HaINWvoUOfzgOJy
-G1UtFD7pG/jIUXt5eng037qnIjhsmB9nUsJcyChqv3Ipd1UjsMGo1c2u46FD/SKW
-xzLgaj5iyHC5xwq/1Z8TogKezUGVtEaYkKM2n9/5qwUoJRSjfwYg6e2O/05mg71M
-kOi8jX0r7bT6IetzQBd5geS/fswFUVGX53W5TiZpR6PXe0O7aBdxdKCl0hb3yVz3
-j31N1rgGCAtxZF00PGmSnfZkmwQsDV6pl/8HCN9rWZVF725/WSPiP1CW4onN6KYg
-aGImRqJBbhAa8D1zBydFS/BpCfIjRSwBr7NaD9TQPe+QpxbayiXm+iosnkh3XLLc
-VkoX3Fe5dWDbn613g3280WmSWsJ8Ja6SaaHekX/3Fec+cvWfzy8StQ62qF6rd5aK
-WBQThSG98qZjqgdXCj9XylMx3Dw3z7eFU7wV+qRJg3whZ52nWtuRh0XwK9PxsmRm
-40u0LYtRHcMUqKOjfZtBg2f3foumJTrZIZZ7o5rfo81414lsOCk057QiQRx1pGMy
-i9B56j2KBImUecor+VM6hdl3bgx3zf4W1Pi3DSYG1dSWBcJaD9Y=
-=mBE7
------END PGP SIGNATURE-----
-
---OOpQ8jVg06hQ2UFP--
