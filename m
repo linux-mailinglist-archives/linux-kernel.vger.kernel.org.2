@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5B531BD47
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7B631BD46
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:43:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbhBOPnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:43:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45434 "EHLO mail.kernel.org"
+        id S231708AbhBOPnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:43:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229888AbhBOPau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230364AbhBOPau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 10:30:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2602564E70;
-        Mon, 15 Feb 2021 15:28:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D21D564E6D;
+        Mon, 15 Feb 2021 15:28:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613402930;
-        bh=QnWyS61JEJr7+1OhEDFOn2BbiW+bIgRLHdXou9fER/4=;
+        s=korg; t=1613402933;
+        bh=8uz61srI5MpGZlQlk5XsysikPJubFMCHy6yVxUdvUds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=djsPV6U7vS55aCG2J1D/FfSYwI9q/fxDNynUX0pyWeqcfIjluBUpKmfYs3JNH2Rln
-         JcjQEKT+81jOBXtZ/0PQcEseBMmHNIoXxGCFDWvOER5gZrHg6cZNdT+BpwZDuTfVnt
-         fNDtxV+izYnxxTAHOEYMbYpz79GceqSRm7X3K7mc=
+        b=NUlE9Y8sQ6X7pWq4qt0NAlbMgnIh11XamzRRb0L0krfqk0gu7nufRX3dF+CJzi+t/
+         8o5L/ZQbOqzqe/TnQI0XrPwN1x1cpF86bLJ6qsF1gOiv+an8UwFajO6oLM9K6tycKf
+         IZL63SeazC47PQKjWny5f4gBEdBKd5jSzxMMP6+k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 24/60] vmlinux.lds.h: Create section for protection against instrumentation
-Date:   Mon, 15 Feb 2021 16:27:12 +0100
-Message-Id: <20210215152716.128600687@linuxfoundation.org>
+Subject: [PATCH 5.4 25/60] lkdtm: dont move ctors to .rodata
+Date:   Mon, 15 Feb 2021 16:27:13 +0100
+Message-Id: <20210215152716.160248805@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -41,200 +41,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Mark Rutland <mark.rutland@arm.com>
 
-[ Upstream commit 6553896666433e7efec589838b400a2a652b3ffa ]
+[ Upstream commit 3f618ab3323407ee4c6a6734a37eb6e9663ebfb9 ]
 
-Some code pathes, especially the low level entry code, must be protected
-against instrumentation for various reasons:
+When building with KASAN and LKDTM, clang may implictly generate an
+asan.module_ctor function in the LKDTM rodata object. The Makefile moves
+the lkdtm_rodata_do_nothing() function into .rodata by renaming the
+file's .text section to .rodata, and consequently also moves the ctor
+function into .rodata, leading to a boot time crash (splat below) when
+the ctor is invoked by do_ctors().
 
- - Low level entry code can be a fragile beast, especially on x86.
+Let's prevent this by marking the function as noinstr rather than
+notrace, and renaming the file's .noinstr.text to .rodata. Marking the
+function as noinstr will prevent tracing and kprobes, and will inhibit
+any undesireable compiler instrumentation.
 
- - With NO_HZ_FULL RCU state needs to be established before using it.
+The ctor function (if any) will be placed in .text and will work
+correctly.
 
-Having a dedicated section for such code allows to validate with tooling
-that no unsafe functions are invoked.
+Example splat before this patch is applied:
 
-Add the .noinstr.text section and the noinstr attribute to mark
-functions. noinstr implies notrace. Kprobes will gain a section check
-later.
+[    0.916359] Unable to handle kernel execute from non-executable memory at virtual address ffffa0006b60f5ac
+[    0.922088] Mem abort info:
+[    0.922828]   ESR = 0x8600000e
+[    0.923635]   EC = 0x21: IABT (current EL), IL = 32 bits
+[    0.925036]   SET = 0, FnV = 0
+[    0.925838]   EA = 0, S1PTW = 0
+[    0.926714] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000427b3000
+[    0.928489] [ffffa0006b60f5ac] pgd=000000023ffff003, p4d=000000023ffff003, pud=000000023fffe003, pmd=0068000042000f01
+[    0.931330] Internal error: Oops: 8600000e [#1] PREEMPT SMP
+[    0.932806] Modules linked in:
+[    0.933617] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc7 #2
+[    0.935620] Hardware name: linux,dummy-virt (DT)
+[    0.936924] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+[    0.938609] pc : asan.module_ctor+0x0/0x14
+[    0.939759] lr : do_basic_setup+0x4c/0x70
+[    0.940889] sp : ffff27b600177e30
+[    0.941815] x29: ffff27b600177e30 x28: 0000000000000000
+[    0.943306] x27: 0000000000000000 x26: 0000000000000000
+[    0.944803] x25: 0000000000000000 x24: 0000000000000000
+[    0.946289] x23: 0000000000000001 x22: 0000000000000000
+[    0.947777] x21: ffffa0006bf4a890 x20: ffffa0006befb6c0
+[    0.949271] x19: ffffa0006bef9358 x18: 0000000000000068
+[    0.950756] x17: fffffffffffffff8 x16: 0000000000000000
+[    0.952246] x15: 0000000000000000 x14: 0000000000000000
+[    0.953734] x13: 00000000838a16d5 x12: 0000000000000001
+[    0.955223] x11: ffff94000da74041 x10: dfffa00000000000
+[    0.956715] x9 : 0000000000000000 x8 : ffffa0006b60f5ac
+[    0.958199] x7 : f9f9f9f9f9f9f9f9 x6 : 000000000000003f
+[    0.959683] x5 : 0000000000000040 x4 : 0000000000000000
+[    0.961178] x3 : ffffa0006bdc15a0 x2 : 0000000000000005
+[    0.962662] x1 : 00000000000000f9 x0 : ffffa0006bef9350
+[    0.964155] Call trace:
+[    0.964844]  asan.module_ctor+0x0/0x14
+[    0.965895]  kernel_init_freeable+0x158/0x198
+[    0.967115]  kernel_init+0x14/0x19c
+[    0.968104]  ret_from_fork+0x10/0x30
+[    0.969110] Code: 00000003 00000000 00000000 00000000 (00000000)
+[    0.970815] ---[ end trace b5339784e20d015c ]---
 
-Provide also a set of markers: instrumentation_begin()/end()
-
-These are used to mark code inside a noinstr function which calls
-into regular instrumentable text section as safe.
-
-The instrumentation markers are only active when CONFIG_DEBUG_ENTRY is
-enabled as the end marker emits a NOP to prevent the compiler from merging
-the annotation points. This means the objtool verification requires a
-kernel compiled with this option.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200505134100.075416272@linutronix.de
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Kees Cook <keescook@chromium.org>
+Acked-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Link: https://lore.kernel.org/r/20201207170533.10738-1-mark.rutland@arm.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/vmlinux.lds.S |  1 +
- include/asm-generic/sections.h    |  3 ++
- include/asm-generic/vmlinux.lds.h | 10 ++++++
- include/linux/compiler.h          | 53 +++++++++++++++++++++++++++++++
- include/linux/compiler_types.h    |  4 +++
- scripts/mod/modpost.c             |  2 +-
- 6 files changed, 72 insertions(+), 1 deletion(-)
+ drivers/misc/lkdtm/Makefile | 2 +-
+ drivers/misc/lkdtm/rodata.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-index a4e576019d79c..3ea360cad337b 100644
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -102,6 +102,7 @@ SECTIONS
- #ifdef CONFIG_PPC64
- 		*(.tramp.ftrace.text);
- #endif
-+		NOINSTR_TEXT
- 		SCHED_TEXT
- 		CPUIDLE_TEXT
- 		LOCK_TEXT
-diff --git a/include/asm-generic/sections.h b/include/asm-generic/sections.h
-index d1779d442aa51..66397ed10acb7 100644
---- a/include/asm-generic/sections.h
-+++ b/include/asm-generic/sections.h
-@@ -53,6 +53,9 @@ extern char __ctors_start[], __ctors_end[];
- /* Start and end of .opd section - used for function descriptors. */
- extern char __start_opd[], __end_opd[];
+diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
+index c70b3822013f4..30c8ac24635d4 100644
+--- a/drivers/misc/lkdtm/Makefile
++++ b/drivers/misc/lkdtm/Makefile
+@@ -16,7 +16,7 @@ KCOV_INSTRUMENT_rodata.o	:= n
  
-+/* Start and end of instrumentation protected text section */
-+extern char __noinstr_text_start[], __noinstr_text_end[];
-+
- extern __visible const void __nosave_begin, __nosave_end;
+ OBJCOPYFLAGS :=
+ OBJCOPYFLAGS_rodata_objcopy.o	:= \
+-			--rename-section .text=.rodata,alloc,readonly,load
++			--rename-section .noinstr.text=.rodata,alloc,readonly,load
+ targets += rodata.o rodata_objcopy.o
+ $(obj)/rodata_objcopy.o: $(obj)/rodata.o FORCE
+ 	$(call if_changed,objcopy)
+diff --git a/drivers/misc/lkdtm/rodata.c b/drivers/misc/lkdtm/rodata.c
+index 58d180af72cf0..baacb876d1d94 100644
+--- a/drivers/misc/lkdtm/rodata.c
++++ b/drivers/misc/lkdtm/rodata.c
+@@ -5,7 +5,7 @@
+  */
+ #include "lkdtm.h"
  
- /* Function descriptor handling (if any).  Override in asm/sections.h */
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 130f16cc0b86d..9a4a5a43e8867 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -510,6 +510,15 @@
- #define RODATA          RO_DATA_SECTION(4096)
- #define RO_DATA(align)  RO_DATA_SECTION(align)
- 
-+/*
-+ * Non-instrumentable text section
-+ */
-+#define NOINSTR_TEXT							\
-+		ALIGN_FUNCTION();					\
-+		__noinstr_text_start = .;				\
-+		*(.noinstr.text)					\
-+		__noinstr_text_end = .;
-+
- /*
-  * .text section. Map to function alignment to avoid address changes
-  * during second ld run in second ld pass when generating System.map
-@@ -524,6 +533,7 @@
- 		*(TEXT_MAIN .text.fixup)				\
- 		*(.text.unlikely .text.unlikely.*)			\
- 		*(.text.unknown .text.unknown.*)			\
-+		NOINSTR_TEXT						\
- 		*(.text..refcount)					\
- 		*(.ref.text)						\
- 	MEM_KEEP(init.text*)						\
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index f164a9b12813f..9446e8fbe55c5 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -134,12 +134,65 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
- /* Annotate a C jump table to allow objtool to follow the code flow */
- #define __annotate_jump_table __section(.rodata..c_jump_table)
- 
-+#ifdef CONFIG_DEBUG_ENTRY
-+/* Begin/end of an instrumentation safe region */
-+#define instrumentation_begin() ({					\
-+	asm volatile("%c0:\n\t"						\
-+		     ".pushsection .discard.instr_begin\n\t"		\
-+		     ".long %c0b - .\n\t"				\
-+		     ".popsection\n\t" : : "i" (__COUNTER__));		\
-+})
-+
-+/*
-+ * Because instrumentation_{begin,end}() can nest, objtool validation considers
-+ * _begin() a +1 and _end() a -1 and computes a sum over the instructions.
-+ * When the value is greater than 0, we consider instrumentation allowed.
-+ *
-+ * There is a problem with code like:
-+ *
-+ * noinstr void foo()
-+ * {
-+ *	instrumentation_begin();
-+ *	...
-+ *	if (cond) {
-+ *		instrumentation_begin();
-+ *		...
-+ *		instrumentation_end();
-+ *	}
-+ *	bar();
-+ *	instrumentation_end();
-+ * }
-+ *
-+ * If instrumentation_end() would be an empty label, like all the other
-+ * annotations, the inner _end(), which is at the end of a conditional block,
-+ * would land on the instruction after the block.
-+ *
-+ * If we then consider the sum of the !cond path, we'll see that the call to
-+ * bar() is with a 0-value, even though, we meant it to happen with a positive
-+ * value.
-+ *
-+ * To avoid this, have _end() be a NOP instruction, this ensures it will be
-+ * part of the condition block and does not escape.
-+ */
-+#define instrumentation_end() ({					\
-+	asm volatile("%c0: nop\n\t"					\
-+		     ".pushsection .discard.instr_end\n\t"		\
-+		     ".long %c0b - .\n\t"				\
-+		     ".popsection\n\t" : : "i" (__COUNTER__));		\
-+})
-+#endif /* CONFIG_DEBUG_ENTRY */
-+
- #else
- #define annotate_reachable()
- #define annotate_unreachable()
- #define __annotate_jump_table
- #endif
- 
-+#ifndef instrumentation_begin
-+#define instrumentation_begin()		do { } while(0)
-+#define instrumentation_end()		do { } while(0)
-+#endif
-+
- #ifndef ASM_UNREACHABLE
- # define ASM_UNREACHABLE
- #endif
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index 77433633572e4..b94d08d055ff5 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -118,6 +118,10 @@ struct ftrace_likely_data {
- #define notrace			__attribute__((__no_instrument_function__))
- #endif
- 
-+/* Section for code which can't be instrumented at all */
-+#define noinstr								\
-+	noinline notrace __attribute((__section__(".noinstr.text")))
-+
- /*
-  * it doesn't make sense on ARM (currently the only user of __naked)
-  * to trace naked functions because then mcount is called without
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 52f1152c98389..13cda6aa26880 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -960,7 +960,7 @@ static void check_section(const char *modname, struct elf_info *elf,
- 
- #define DATA_SECTIONS ".data", ".data.rel"
- #define TEXT_SECTIONS ".text", ".text.unlikely", ".sched.text", \
--		".kprobes.text", ".cpuidle.text"
-+		".kprobes.text", ".cpuidle.text", ".noinstr.text"
- #define OTHER_TEXT_SECTIONS ".ref.text", ".head.text", ".spinlock.text", \
- 		".fixup", ".entry.text", ".exception.text", ".text.*", \
- 		".coldtext"
+-void notrace lkdtm_rodata_do_nothing(void)
++void noinstr lkdtm_rodata_do_nothing(void)
+ {
+ 	/* Does nothing. We just want an architecture agnostic "return". */
+ }
 -- 
 2.27.0
 
