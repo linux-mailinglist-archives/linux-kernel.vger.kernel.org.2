@@ -2,176 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD3031C065
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD61731C068
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbhBORXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:23:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
+        id S232721AbhBORXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231727AbhBOQTe (ORCPT
+        with ESMTP id S232684AbhBOQUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:19:34 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94171C061D7E
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:14:15 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id t62so6812416qke.7
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:14:15 -0800 (PST)
+        Mon, 15 Feb 2021 11:20:35 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F28DC061D7F;
+        Mon, 15 Feb 2021 08:15:09 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id k204so8264542oih.3;
+        Mon, 15 Feb 2021 08:15:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=9bnQ1cYpKSogma2d9jSskcM/kWG+ieYizroT/wf+fYw=;
-        b=fZdFf8Y10WJwP3iDSS3Z5VyVZRkc0J09nWK3ghTjLayZaQBtALZ8zAhfs0QfifSEkk
-         9UCDPSqsKM90EEUU7EzN/KjQ+x1vD4LB875bg3UUqglChgzLgAyVi/Uyh8m6nO9cEpMt
-         b7wkQN91QNBa4v28HydDX2RkbwWLvNrOVV9oodQvnyQfSxXC2fq8zvZoODL3os3uHDYN
-         CmhqhnaZW2woCDh1PDNhzPD8JZcK9CkmdfedTTwMtsUUtu4aRa7FJ9BVU0As4/HoW2+R
-         JUUAPf3HP2CRj37EmDMU3/PYEc4vc2IsqQHVBGVxXMgHNUlI51p/exyLfxOCpxQ3jXl6
-         2sjg==
+        bh=MYl5MHCuKdaxafcITDi8WG7AF2FO0FFBQDvNyVshv9k=;
+        b=iEAl/WQbHmLE+2j/mBTd6C3do9U8jiebFuVfQgwkXA/ftnbF5+DmAAtzWkod1c8RFk
+         LT9mAyH70OvrqvKA4+lvrCr7zm0Y2L6irH2p1H3QuMnp6xhqNNBx1rrA/Vr2NP2nRuFy
+         WgR77LLQKAxt9qt9mqM9CXnt3iXFZM1aZo4LuJi68rPHi2GeUlkBbWJ87xKTV9H6kIEq
+         8Ei1zvgamm98hzJXpMBV51miqpdglIVtNiCE7sCgxqgEppwHK85gwTa3Px/dIuk0zziY
+         KvMR3FyrjaoIevpYtg3rlR+dGAMwM0q++fyEQ8LUmL8Mq0zpX4Hm4V8WYl9eVAjv0LVp
+         iD4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9bnQ1cYpKSogma2d9jSskcM/kWG+ieYizroT/wf+fYw=;
-        b=jQ3XaVukIQJz6LpTCxjDPjo5GWcEe+idHAIKs2rvXiZVNM2rdDhFIqFuLtsTrV4gqm
-         n5rFzvYmVqq7Cxa222xq98v1W40ohzX6++QPpFccN9kQQ8HKicnp2YVRNwU+tGEo86EG
-         CvPbOH++AirMzQVUo3HMk3J8HyXdqlnNdu7fePkcXTY1539Tp2KOScKeDlqrcsBmaPer
-         jKC8BrbKLYXWSN0DXLqseO65U5VeMExo01RJXb/h8olGcc4dVOtkclYaAGMrzStxwgEW
-         T72bSIFe0tRxss45NyxItHlTubUM/CQV8Qnvo69yzM8ytHoA3kHl6MApdNUnvDSVe0db
-         9tQQ==
-X-Gm-Message-State: AOAM530/++QRsaXjB1A8Wb4eYqAGn13CweCe+FWqXyW4Gtvw7oDC25q2
-        eCgPWt6vmQieplPMKKSgb7QHdQ==
-X-Google-Smtp-Source: ABdhPJzovM58HaLCClF3VUBYsDOrSP/+0sT1fDIUz4gtaDsL/dH2pL1TQ1nvopCVb2IFGgIQdJpNgA==
-X-Received: by 2002:a37:57c7:: with SMTP id l190mr15700031qkb.487.1613405653668;
-        Mon, 15 Feb 2021 08:14:13 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id u7sm10909213qta.75.2021.02.15.08.14.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 08:14:13 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
-        mhocko@suse.com, david@redhat.com, osalvador@suse.de,
-        dan.j.williams@intel.com, sashal@kernel.org,
-        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
-        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
-        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
-        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
-        linux-doc@vger.kernel.org, ira.weiny@intel.com,
-        linux-kselftest@vger.kernel.org, jmorris@namei.org
-Subject: [PATCH v11 14/14] selftests/vm: gup_test: test faulting in kernel, and verify pinnable pages
-Date:   Mon, 15 Feb 2021 11:13:49 -0500
-Message-Id: <20210215161349.246722-15-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210215161349.246722-1-pasha.tatashin@soleen.com>
-References: <20210215161349.246722-1-pasha.tatashin@soleen.com>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=MYl5MHCuKdaxafcITDi8WG7AF2FO0FFBQDvNyVshv9k=;
+        b=SV5RN1sf18N6tpNdI1+utHpdMAV+DwaWGc94Fhn6G63v78HobWZFrqC5zuVs9IYACC
+         7t/+OK4RumB9ZR3roO8cwjsp1DmBrLkCiwqWC6gkRXDX7cvEoCARrRwhzotx+ZyGcVIc
+         8gK1cIEar2V5uopmpotbHGOAlYYWzc4ar79Zt54SEklNc+ds4PxUE6vIPqbdzrHUbtP4
+         aSFrTV5HK/8EWMI9G0O2Z6bmzXG4sgGXHBrNwjene9Uk9iBrBcbU0owt7iVoadoPlwa3
+         Ni88fSKoBWYMPDz7qVhVdK+oMFF44alaItbB40mpweoowxXOnp9RI2IAjxSTzIQNGssz
+         W3wg==
+X-Gm-Message-State: AOAM530QYB/hac1SUsYEvhK1WKe41QKyE9Zi2gnmBcQ19ky4fDlfgXPm
+        XDjd6wK4HXD8Ga0CXhuAxTSDUyPKP/o=
+X-Google-Smtp-Source: ABdhPJyBTYHx+n2JRxZGMxTuzwaaoqRQhFJ5BlG7IpXyHG0oOvfJlFPowdFa6gVI0bimxzz035Mpnw==
+X-Received: by 2002:aca:1708:: with SMTP id j8mr8776530oii.29.1613405708921;
+        Mon, 15 Feb 2021 08:15:08 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a28sm3437281ook.24.2021.02.15.08.15.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Feb 2021 08:15:08 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] scripts/dtc: Update to upstream version
+ v1.6.0-51-g183df9e9c2b9
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org
+References: <20210212033120.GA100407@roeck-us.net>
+ <CAL_JsqLm3mHdPg4wkdhoFXNY1JgTJ56dxi3oLqBS_NBrX=rOfw@mail.gmail.com>
+ <20210212151725.GA57042@roeck-us.net>
+ <CAL_Jsq+e+KdzanMdHYCEoGZn3ybY5_ASN60qiqbOkPWpkbQ6NQ@mail.gmail.com>
+ <CAL_JsqL4suDinALfp4v96arJXpWts8pergO1-aenLv+RN9S64Q@mail.gmail.com>
+ <20210212225049.GC115630@roeck-us.net>
+ <85d6deea-abd9-f7aa-8eb7-9067f6376d49@xilinx.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <06560f35-af85-5a75-80f5-9b2d44feec39@roeck-us.net>
+Date:   Mon, 15 Feb 2021 08:15:06 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <85d6deea-abd9-f7aa-8eb7-9067f6376d49@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When pages are pinned they can be faulted in userland and migrated, and
-they can be faulted right in kernel without migration.
+On 2/15/21 7:23 AM, Michal Simek wrote:
+[ ... ]
 
-In either case, the pinned pages must end-up being pinnable (not movable).
+> 
+>> I think the problem is here:
+>>
+>> /* initialize device tree for usage in early_printk */
+>>         early_init_devtree(_fdt_start);
+>>
+>> That probably also explains why enabling earlycon doesn't help.
+> 
+> Can you please elaborate more on it?
+> I see earlycon to be enabled quite early.
+> 
+> [    0.000000] Ramdisk addr 0x00000000,
+> [    0.000000] Compiled-in FDT at (ptrval)
 
-Add a new test to gup_test, to help verify that the gup/pup
-(get_user_pages() / pin_user_pages()) behavior with respect to pinnable
-and movable pages is reasonable and correct. Specifically, provide a
-way to:
+Unless I was missing something, this is where it failed.
 
-1) Verify that only "pinnable" pages are pinned. This is checked
-automatically for you.
+> [    0.000000] earlycon: ns16550a0 at MMIO 0x44a01000 (options '115200n8')
+> [    0.000000] printk: bootconsole [ns16550a0] enabled
+> [    0.000000] cma: Reserved 16 MiB at 0xaec00000
+> 
+[ ... ]
 
-2) Verify that gup/pup performance is reasonable. This requires
-comparing benchmarks between doing gup/pup on pages that have been
-pre-faulted in from user space, vs. doing gup/pup on pages that are not
-faulted in until gup/pup time (via FOLL_TOUCH). This decision is
-controlled with the new -z command line option.
+> 
+> Please send the patch. Would be the best as early as possible and I will
+> queue it for 5.12.
+> 
+https://lore.kernel.org/patchwork/patch/1380316/
 
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
----
- mm/gup_test.c                         |  6 ++++++
- tools/testing/selftests/vm/gup_test.c | 23 +++++++++++++++++++----
- 2 files changed, 25 insertions(+), 4 deletions(-)
-
-diff --git a/mm/gup_test.c b/mm/gup_test.c
-index a6ed1c877679..d974dec19e1c 100644
---- a/mm/gup_test.c
-+++ b/mm/gup_test.c
-@@ -52,6 +52,12 @@ static void verify_dma_pinned(unsigned int cmd, struct page **pages,
- 
- 				dump_page(page, "gup_test failure");
- 				break;
-+			} else if (cmd == PIN_LONGTERM_BENCHMARK &&
-+				WARN(!is_pinnable_page(page),
-+				     "pages[%lu] is NOT pinnable but pinned\n",
-+				     i)) {
-+				dump_page(page, "gup_test failure");
-+				break;
- 			}
- 		}
- 		break;
-diff --git a/tools/testing/selftests/vm/gup_test.c b/tools/testing/selftests/vm/gup_test.c
-index 943cc2608dc2..1e662d59c502 100644
---- a/tools/testing/selftests/vm/gup_test.c
-+++ b/tools/testing/selftests/vm/gup_test.c
-@@ -13,6 +13,7 @@
- 
- /* Just the flags we need, copied from mm.h: */
- #define FOLL_WRITE	0x01	/* check pte is writable */
-+#define FOLL_TOUCH	0x02	/* mark page accessed */
- 
- static char *cmd_to_str(unsigned long cmd)
- {
-@@ -39,11 +40,11 @@ int main(int argc, char **argv)
- 	unsigned long size = 128 * MB;
- 	int i, fd, filed, opt, nr_pages = 1, thp = -1, repeats = 1, write = 1;
- 	unsigned long cmd = GUP_FAST_BENCHMARK;
--	int flags = MAP_PRIVATE;
-+	int flags = MAP_PRIVATE, touch = 0;
- 	char *file = "/dev/zero";
- 	char *p;
- 
--	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHp")) != -1) {
-+	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHpz")) != -1) {
- 		switch (opt) {
- 		case 'a':
- 			cmd = PIN_FAST_BENCHMARK;
-@@ -110,6 +111,10 @@ int main(int argc, char **argv)
- 		case 'H':
- 			flags |= (MAP_HUGETLB | MAP_ANONYMOUS);
- 			break;
-+		case 'z':
-+			/* fault pages in gup, do not fault in userland */
-+			touch = 1;
-+			break;
- 		default:
- 			return -1;
- 		}
-@@ -167,8 +172,18 @@ int main(int argc, char **argv)
- 	else if (thp == 0)
- 		madvise(p, size, MADV_NOHUGEPAGE);
- 
--	for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
--		p[0] = 0;
-+	/*
-+	 * FOLL_TOUCH, in gup_test, is used as an either/or case: either
-+	 * fault pages in from the kernel via FOLL_TOUCH, or fault them
-+	 * in here, from user space. This allows comparison of performance
-+	 * between those two cases.
-+	 */
-+	if (touch) {
-+		gup.gup_flags |= FOLL_TOUCH;
-+	} else {
-+		for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
-+			p[0] = 0;
-+	}
- 
- 	/* Only report timing information on the *_BENCHMARK commands: */
- 	if ((cmd == PIN_FAST_BENCHMARK) || (cmd == GUP_FAST_BENCHMARK) ||
--- 
-2.25.1
-
+Guenter
