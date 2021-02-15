@@ -2,203 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE49831C370
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74A531C372
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhBOVKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:10:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhBOVKm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:10:42 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C36C06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:09:52 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id ba1so4383015plb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:09:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ou8P1Li7E2gyeKtwfnYhdaQdgF2O0F8yVAbqRLCEDE8=;
-        b=E1IHFqJBAhABl3o3qXIIXC/7j+N9OPZcNtf8P1Afsfz8RvG/bSRLhSEjRBA/9S5w7q
-         jhCC+F3CB0G3LAGdmylE3Re7XOYvLpxv+1/u/Q7Hzg788gaxaEYCUgJl2yS4ttaMEBfs
-         ll1VfIwhczN1r8mZRJ0nEdy2UJou7RY4Hg7XCOKkSAJak7CUv2s6F8LZqEKUH7vRv/8J
-         tiTq8E28dH96z7IfrRSSbsL+7aAj/qXeVK3LiTDZr6K9zsQq2r0JWR5gDA+s4aF9+Ufx
-         FctwvHyMrokBS8KEGb/HQrEUqGZAi6+ozPHHV7YObpTsxlvSa/iGFMesmuZBJLGgLL1H
-         2i8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ou8P1Li7E2gyeKtwfnYhdaQdgF2O0F8yVAbqRLCEDE8=;
-        b=AOqVe3mZfz5H8iCR+w3UDXdHdDoC2xTX63o+V/3VL0z1ILdGskRtX+qcNCZscgyyYh
-         MtM01IDcnN9MHTm8ABERS/gGPdmwQuyEaUT9Wg1FZm7zYBdfpYRPEmfxDVy9THhbnG+w
-         t7q9le+XnE1D2zom/QUXp+pEZTyH46TtY0OiHG55ZuqdjERPGxW0XqX0EguAoncZFNHT
-         8ukCHh/HkyVapiwakun88RCWnYOiNIEb3K7BvLeAE6CmDQ5Ymui1158REj+P5f3usjs7
-         YYTxffXLZdrC5vVP0i9+TnbWcbC5dTVErt29uBPKeGvw43h4pCCeJ2IcABeujyyzBsnb
-         pCvQ==
-X-Gm-Message-State: AOAM5330GIJCklX8NdIPB2dH3iPmJBwTxPdtU2CnMhzOLFZPzP72TqCv
-        LosRGF/2smQmeAkcLFhwhwAW4A==
-X-Google-Smtp-Source: ABdhPJzPv8GpdagdwQO8hWEQDmYqvev39zfpfDqqhw3o5h5pjW+8z3S9DYWJ4RxZeKRtCIYi3ksmAw==
-X-Received: by 2002:a17:90a:de8d:: with SMTP id n13mr477375pjv.136.1613423391915;
-        Mon, 15 Feb 2021 13:09:51 -0800 (PST)
-Received: from x1 ([2601:1c0:4701:ae70:7fd3:1922:5d5d:c85b])
-        by smtp.gmail.com with ESMTPSA id n1sm3308579pgi.78.2021.02.15.13.09.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 13:09:51 -0800 (PST)
-Date:   Mon, 15 Feb 2021 13:09:49 -0800
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v5 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
-Message-ID: <20210215210949.GA1012667@x1>
-References: <20210212223015.727608-1-drew@beagleboard.org>
- <20210212223015.727608-3-drew@beagleboard.org>
- <CAHp75VeqbKjg7pLCgO9-vd2NnqQy6VPaRFKrAWn-1TaJgi1-SA@mail.gmail.com>
+        id S229864AbhBOVLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 16:11:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229790AbhBOVKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 16:10:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id A5DC564DF0;
+        Mon, 15 Feb 2021 21:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613423406;
+        bh=dUuEFDT1rwx08WM/IZoluRuBf64JBwhNfOrta1qFZKA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=dJG6iK8q9x7bk/HO3Tb3Oqy1k4LeKlR/7fnYyicE8WjWloAyPdr3F1PMkYXriMcFO
+         kD+Pr0IzI4ja2sc5GJDSsTALYXVK4624gPnti886tV2Sbux935bGfeG+JfGMDcym3C
+         IGjwhMlZ+tUrWsYNlbktL4ZYDJCamFcetpX8OCVgjx7nGqnEhFE1ju70yzOjMWMOT5
+         BzsaeljG9R3EKn+73zZkZaZ8cPzAu6fye3ix/783Dhm4IWtqV78Ce16Ow0c10mESNB
+         NM2Fft0dqpIyNyltuWtf8b43Kvdhmbp/TNsd7gxZ5sJ1Ba8X3J2Z/U59NEx+gHT1c1
+         ndIHXAsWf7Qzw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 98B0560977;
+        Mon, 15 Feb 2021 21:10:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeqbKjg7pLCgO9-vd2NnqQy6VPaRFKrAWn-1TaJgi1-SA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: wan/lmc: unregister device when no matching device is
+ found
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161342340662.17970.15796742038428831570.git-patchwork-notify@kernel.org>
+Date:   Mon, 15 Feb 2021 21:10:06 +0000
+References: <20210215191757.2667925-1-ztong0001@gmail.com>
+In-Reply-To: <20210215191757.2667925-1-ztong0001@gmail.com>
+To:     Tong Zhang <ztong0001@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, tglx@linutronix.de,
+        bigeasy@linutronix.de, kieran.bingham+renesas@ideasonboard.com,
+        andrew@lunn.ch, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 09:04:20PM +0200, Andy Shevchenko wrote:
-> On Sat, Feb 13, 2021 at 12:30 AM Drew Fustini <drew@beagleboard.org> wrote:
-> >
-> > Add "pinmux-select" to debugfs which will activate a function and group
-> > when "<function-name group-name>" are written to the file. The write
-> 
-> The non-standard way of showing parameters, I would write that as
->  "<function-name> <group-name>".
+Hello:
 
-Sorry for your comments, but I don't understand what you mean by this
-one.  I think we wrote ""<function-name> <group-name>" the same way, no?
+This patch was applied to netdev/net.git (refs/heads/master):
 
+On Mon, 15 Feb 2021 14:17:56 -0500 you wrote:
+> lmc set sc->lmc_media pointer when there is a matching device.
+> However, when no matching device is found, this pointer is NULL
+> and the following dereference will result in a null-ptr-deref.
 > 
-> > operation pinmux_select() handles this by checking that the names map to
-> > valid selectors and then calling ops->set_mux().
-> >
-> > The existing "pinmux-functions" debugfs file lists the pin functions
-> > registered for the pin controller. For example:
-> >
-> > function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
-> > function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
-> > function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
-> > function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
-> > function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
-> > function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
+> To fix this issue, unregister the hdlc device and return an error.
 > 
-> Format this...
+> [    4.569359] BUG: KASAN: null-ptr-deref in lmc_init_one.cold+0x2b6/0x55d [lmc]
+> [    4.569748] Read of size 8 at addr 0000000000000008 by task modprobe/95
+> [    4.570102]
+> [    4.570187] CPU: 0 PID: 95 Comm: modprobe Not tainted 5.11.0-rc7 #94
+> [    4.570527] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812dda519-preb4
+> [    4.571125] Call Trace:
+> [    4.571261]  dump_stack+0x7d/0xa3
+> [    4.571445]  kasan_report.cold+0x10c/0x10e
+> [    4.571667]  ? lmc_init_one.cold+0x2b6/0x55d [lmc]
+> [    4.571932]  lmc_init_one.cold+0x2b6/0x55d [lmc]
+> [    4.572186]  ? lmc_mii_readreg+0xa0/0xa0 [lmc]
+> [    4.572432]  local_pci_probe+0x6f/0xb0
+> [    4.572639]  pci_device_probe+0x171/0x240
+> [    4.572857]  ? pci_device_remove+0xe0/0xe0
+> [    4.573080]  ? kernfs_create_link+0xb6/0x110
+> [    4.573315]  ? sysfs_do_create_link_sd.isra.0+0x76/0xe0
+> [    4.573598]  really_probe+0x161/0x420
+> [    4.573799]  driver_probe_device+0x6d/0xd0
+> [    4.574022]  device_driver_attach+0x82/0x90
+> [    4.574249]  ? device_driver_attach+0x90/0x90
+> [    4.574485]  __driver_attach+0x60/0x100
+> [    4.574694]  ? device_driver_attach+0x90/0x90
+> [    4.574931]  bus_for_each_dev+0xe1/0x140
+> [    4.575146]  ? subsys_dev_iter_exit+0x10/0x10
+> [    4.575387]  ? klist_node_init+0x61/0x80
+> [    4.575602]  bus_add_driver+0x254/0x2a0
+> [    4.575812]  driver_register+0xd3/0x150
+> [    4.576021]  ? 0xffffffffc0018000
+> [    4.576202]  do_one_initcall+0x84/0x250
+> [    4.576411]  ? trace_event_raw_event_initcall_finish+0x150/0x150
+> [    4.576733]  ? unpoison_range+0xf/0x30
+> [    4.576938]  ? ____kasan_kmalloc.constprop.0+0x84/0xa0
+> [    4.577219]  ? unpoison_range+0xf/0x30
+> [    4.577423]  ? unpoison_range+0xf/0x30
+> [    4.577628]  do_init_module+0xf8/0x350
+> [    4.577833]  load_module+0x3fe6/0x4340
+> [    4.578038]  ? vm_unmap_ram+0x1d0/0x1d0
+> [    4.578247]  ? ____kasan_kmalloc.constprop.0+0x84/0xa0
+> [    4.578526]  ? module_frob_arch_sections+0x20/0x20
+> [    4.578787]  ? __do_sys_finit_module+0x108/0x170
+> [    4.579037]  __do_sys_finit_module+0x108/0x170
+> [    4.579278]  ? __ia32_sys_init_module+0x40/0x40
+> [    4.579523]  ? file_open_root+0x200/0x200
+> [    4.579742]  ? do_sys_open+0x85/0xe0
+> [    4.579938]  ? filp_open+0x50/0x50
+> [    4.580125]  ? exit_to_user_mode_prepare+0xfc/0x130
+> [    4.580390]  do_syscall_64+0x33/0x40
+> [    4.580586]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [    4.580859] RIP: 0033:0x7f1a724c3cf7
+> [    4.581054] Code: 48 89 57 30 48 8b 04 24 48 89 47 38 e9 1d a0 02 00 48 89 f8 48 89 f7 48 89 d6 48 891
+> [    4.582043] RSP: 002b:00007fff44941c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> [    4.582447] RAX: ffffffffffffffda RBX: 00000000012ada70 RCX: 00007f1a724c3cf7
+> [    4.582827] RDX: 0000000000000000 RSI: 00000000012ac9e0 RDI: 0000000000000003
+> [    4.583207] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
+> [    4.583587] R10: 00007f1a72527300 R11: 0000000000000246 R12: 00000000012ac9e0
+> [    4.583968] R13: 0000000000000000 R14: 00000000012acc90 R15: 0000000000000001
+> [    4.584349] ==================================================================
 > 
-> > To activate function pinmux-i2c1 and group pinmux-i2c1-pins:
-> >
-> > echo "pinmux-i2c1 pinmux-i2c1-pins" > pinmux-select
-> 
-> ...and this with two leading spaces (for example) to make sure that
-> people will understand that these lines are part of the example.
+> [...]
 
-Ok, thanks.
+Here is the summary with links:
+  - net: wan/lmc: unregister device when no matching device is found
+    https://git.kernel.org/netdev/net/c/62e69bc41977
 
-> 
-> ...
-> 
-> >  drivers/pinctrl/pinmux.c | 99 ++++++++++++++++++++++++++++++++++++++++
-> 
-> Still needs a documentation update.
-
-There is no documentation for any of the existing pinctrl debugfs files.
-I was planning to do this as part of a seperate patch, but I can make it
-part of this series instead.
-
-> 
-> ...
-> 
-> > +       const char *usage =
-> > +               "usage: echo '<function-name> <group-name>' > pinmux-select";
-> 
-> This is quite unusual to have in the kernel. Just return an error
-> code, everything else should be simply documented.
-> 
-> ...
-> 
-> > +       if (len > PINMUX_SELECT_MAX) {
-> 
-> > +               dev_err(pctldev->dev, "write too big for buffer");
-> 
-> Noisy, the user will get an error code and interpret it properly.
-> So, please drop them all. Otherwise it would be quite easy to exhaust
-> kernel buffer with this noise and lost the important messages.
-> 
-> > +               return -EINVAL;
-> 
-> To achieve the above, this rather should be -ENOMEM.
-> 
-> > +       }
-
-Thanks, I will remove the usage message and change the return value.
-
-> 
-> ...
-> 
-> > +       gname = strchr(fname, ' ');
-> > +       if (!gname) {
-> > +               dev_err(pctldev->dev, usage);
-> > +               ret = -EINVAL;
-> > +               goto free_buf;
-> > +       }
-> > +       *gname++ = '\0';
-> 
-> I was thinking about this again and I guess we may allow any amount of
-> spaces in between and any kind of  (like newline or TAB).
-> So, taking above into consideration the code may look like this:
-> 
-> /* Take the input and remove leading and trailing spaces of entire buffer */
-> fname = strstrip(buf);
-> /* Find a separator, i.e. a space character */
-> for (gname = fname; !isspace(gname); gname++)
->   if (*gname == '\0')
->     return -EINVAL;
-> /* Replace separator with %NUL to terminate first word */
-> *gname = '\0';
-> /* Drop space characters between first and second words */
-> gname = skip_spaces(gname + 1);
-> if (*gname == '\0')
->   return -EINVAL;
-> 
-> But please double check the logic.
-> 
-> ...
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Thanks for the example code.  I'll test it out.
-
-
-> 
-> > +free_buf:
-> 
-> exit_free_buf:
-> 
-
-Ok, thanks.
-
-> > +       kfree(buf);
-> > +
-> > +       return ret;
-> > +}
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
