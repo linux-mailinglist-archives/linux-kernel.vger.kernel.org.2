@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF1E31C1FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DAF31C201
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbhBOSyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 13:54:24 -0500
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:40293 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhBOSyO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 13:54:14 -0500
-Received: by mail-wm1-f48.google.com with SMTP id o24so10232094wmh.5;
-        Mon, 15 Feb 2021 10:53:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ubEzZWPze3/t5GrzMOvVGOpAzPZ7obyaNgcvcyBuo8A=;
-        b=M7tjkOXElhfcQUHFY5KrX96UkYdy6AJYPbf2QeiYx63OXaVZt/s8wurzEXXYQSs/QI
-         UffG7UaM0LHBciNuHXBIN89SDG0l8As3L55STDLod1RR2XIcSIM1C8+5wRoIIXG8wcDE
-         DRZu8OLjIIgA1Y5IQMt/ZzroPCZYb/BkahnVPWv0xcb2IwbamJ7pWp/T9EIWRJs7N7k4
-         Y5rvlCbzPuTJTQFHEWHggTz2Rco5hzPJcoCrdg24b8x0tm+Q48tlwqV/L2w4KPu/3sQ4
-         J63UqcTpee1+MfsIf6DPSshev/UmDLXwWsmNz0vjtPBUARHfe84+Jc36Y/8bJKC0xDFK
-         59dg==
-X-Gm-Message-State: AOAM530xbRmYkaka1+Dg40JiqgcFSK4+aO6PePgNIzNSRDUvj4WvsYjL
-        4V83yrKGu8PnoDtsU+Ply1Q=
-X-Google-Smtp-Source: ABdhPJy9COcGz38P5XVPC0HZXAmcQ+bCFmYwqlVFdqpT8meiVLJQp2DpRGh1bPel5XIBV0papONmdw==
-X-Received: by 2002:a1c:7f4a:: with SMTP id a71mr238538wmd.92.1613415212103;
-        Mon, 15 Feb 2021 10:53:32 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id i10sm32631340wrp.0.2021.02.15.10.53.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 10:53:31 -0800 (PST)
-Date:   Mon, 15 Feb 2021 19:53:29 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 21/25] dt-bindings: serial: samsung: Add
- apple,s5l-uart compatible
-Message-ID: <20210215185329.raxlgso6q5hcrijm@kozik-lap>
-References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-22-marcan@marcan.st>
+        id S230433AbhBOSzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 13:55:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229764AbhBOSzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 13:55:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8153B64E31;
+        Mon, 15 Feb 2021 18:54:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613415284;
+        bh=eo/4Fc82BsHSHFe3I6vwWIYa3nQLkkClzzx7vCGgZSs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tppWbswEkgV5Gzo7DB2+3AcEp7Rpd4v5bXyMABw+pmjdDBRMmOaHZvNXGXtL63n2C
+         CMLKP+DMLzr77zDre3x48Io3F3dJnnxh9Fz0cgxtHQ+So+G1UxYqrqBdnp98H8AWAN
+         ZUd86V93kIMOao6HixmADZrToW9RzzdSOTEF8ijCmNQRb6Kv63CswhjkflcKqFn7OL
+         122qQ5XptSMCcjk0317K1EUcgbT1Uy1c/KGqCTnGTiJsIlM48zd3cF3v7lWovv16Lh
+         exqkxmwWEALFOP/6K8sejW9rlqDZTP3hajPhISc/n6CuJy7oiTaZANQwJ5BlWEJGlm
+         pEbr1A90Dnt2A==
+Date:   Mon, 15 Feb 2021 20:54:40 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Subject: Re: [PATCH net-next RFC v3] net: hdlc_x25: Queue outgoing LAPB frames
+Message-ID: <YCrDcMYgSgdKp4eX@unreal>
+References: <20210215072703.43952-1-xie.he.0141@gmail.com>
+ <YCo96zjXHyvKpbUM@unreal>
+ <CAJht_EOQBDdwa0keS9XTKZgXE44_b5cHJt=fFaKy-wFDpe6iaw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210215121713.57687-22-marcan@marcan.st>
+In-Reply-To: <CAJht_EOQBDdwa0keS9XTKZgXE44_b5cHJt=fFaKy-wFDpe6iaw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 09:17:09PM +0900, Hector Martin wrote:
-> Apple mobile devices originally used Samsung SoCs (starting with the
-> S5L8900), and their current in-house SoCs continue to use compatible
-> UART peripherals. We'll call this UART variant apple,s5l-uart.
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  Documentation/devicetree/bindings/serial/samsung_uart.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+On Mon, Feb 15, 2021 at 09:23:32AM -0800, Xie He wrote:
+> On Mon, Feb 15, 2021 at 1:25 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > > +     /* When transmitting data:
+> > > +      * first we'll remove a pseudo header of 1 byte,
+> > > +      * then the LAPB module will prepend an LAPB header of at most 3 bytes.
+> > > +      */
+> > > +     dev->needed_headroom = 3 - 1;
+> >
+> > 3 - 1 = 2
+> >
+> > Thanks
+>
+> Actually this is intentional. It makes the numbers more meaningful.
+>
+> The compiler should automatically generate the "2" so there would be
+> no runtime penalty.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+If you want it intentional, write it in the comment.
 
-Best regards,
-Krzysztof
+/* When transmitting data, we will need extra 2 bytes headroom,
+ * which are 3 bytes of LAPB header minus one byte of pseudo header.
+ */
+ dev->needed_headroom = 2;
