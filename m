@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7859A31BD6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFEA31BD93
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbhBOPsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:48:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45566 "EHLO mail.kernel.org"
+        id S231310AbhBOPtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:49:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231221AbhBOPbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:31:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 297CF64E9A;
-        Mon, 15 Feb 2021 15:29:29 +0000 (UTC)
+        id S231236AbhBOPb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:31:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EFE264E9B;
+        Mon, 15 Feb 2021 15:29:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613402969;
-        bh=61DR1XBeTsw7rAnwTBEmMAQ0YsdQEW5wBadwXUFrbo4=;
+        s=korg; t=1613402975;
+        bh=3bym3cGCTog7NGcDMlZLTSqV4bB0Lt4ugHn+mJrqeT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O4Rb3To9XCJjjRMrMlp6D0vhz2H09RZeBB/fb33yqZDIFwltyDW/hgN5AOAPBkcp0
-         6nJ1Imot2+/O/AWtkmYs1/TEsYuka0swxYq2mXCCqrHlc6X96g/lW8LtHMsYRWZTdM
-         SM8Wu14b9NMXtDVKSBMlXCu7bhWbjlyONGAtO+DE=
+        b=uQwvF7JwQlRmrNaY25TSM389lmUHRH4BXW3AGr/55Y8jXnJnJikCrG9HPsGoTfTC7
+         JSu7MeZtrGqNGypUqYVeapEVUQ3A2LgxFwsXU1p1mt+TC21Ja3aVKmH9gbba2ECY+V
+         stlzYp1htv7Zl8de4KaWYUIstDQmTmBTWe/ayNFY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, AC <achirvasub@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
+        stable@vger.kernel.org, Fangrui Song <maskray@google.com>,
+        kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 38/60] x86/build: Disable CET instrumentation in the kernel for 32-bit too
-Date:   Mon, 15 Feb 2021 16:27:26 +0100
-Message-Id: <20210215152716.579239293@linuxfoundation.org>
+Subject: [PATCH 5.4 40/60] firmware_loader: align .builtin_fw to 8
+Date:   Mon, 15 Feb 2021 16:27:28 +0100
+Message-Id: <20210215152716.647748086@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152715.401453874@linuxfoundation.org>
 References: <20210215152715.401453874@linuxfoundation.org>
@@ -41,54 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Fangrui Song <maskray@google.com>
 
-[ Upstream commit 256b92af784d5043eeb7d559b6d5963dcc2ecb10 ]
+[ Upstream commit 793f49a87aae24e5bcf92ad98d764153fc936570 ]
 
-Commit
+arm64 references the start address of .builtin_fw (__start_builtin_fw)
+with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
+relocations.  The compiler is allowed to emit the
+R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
+include/linux/firmware.h is 8-byte aligned.
 
-  20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
+The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
+multiple of 8, which may not be the case if .builtin_fw is empty.
+Unconditionally align .builtin_fw to fix the linker error.  32-bit
+architectures could use ALIGN(4) but that would add unnecessary
+complexity, so just use ALIGN(8).
 
-disabled CET instrumentation which gets added by default by the Ubuntu
-gcc9 and 10 by default, but did that only for 64-bit builds. It would
-still fail when building a 32-bit target. So disable CET for all x86
-builds.
-
-Fixes: 20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
-Reported-by: AC <achirvasub@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Tested-by: AC <achirvasub@gmail.com>
-Link: https://lkml.kernel.org/r/YCCIgMHkzh/xT4ex@arch-chirva.localdomain
+Link: https://lkml.kernel.org/r/20201208054646.2913063-1-maskray@google.com
+Link: https://github.com/ClangBuiltLinux/linux/issues/1204
+Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
+Signed-off-by: Fangrui Song <maskray@google.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/asm-generic/vmlinux.lds.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index b5e3bfd4facea..8ca3cf7c5ec97 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -61,6 +61,9 @@ endif
- KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow
- KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
- 
-+# Intel CET isn't enabled in the kernel
-+KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
-+
- ifeq ($(CONFIG_X86_32),y)
-         BITS := 32
-         UTS_MACHINE := i386
-@@ -131,9 +134,6 @@ else
- 
-         KBUILD_CFLAGS += -mno-red-zone
-         KBUILD_CFLAGS += -mcmodel=kernel
--
--	# Intel CET isn't enabled in the kernel
--	KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
- endif
- 
- ifdef CONFIG_X86_X32
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 9a4a5a43e8867..2267b7c763c64 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -396,7 +396,7 @@
+ 	}								\
+ 									\
+ 	/* Built-in firmware blobs */					\
+-	.builtin_fw        : AT(ADDR(.builtin_fw) - LOAD_OFFSET) {	\
++	.builtin_fw : AT(ADDR(.builtin_fw) - LOAD_OFFSET) ALIGN(8) {	\
+ 		__start_builtin_fw = .;					\
+ 		KEEP(*(.builtin_fw))					\
+ 		__end_builtin_fw = .;					\
 -- 
 2.27.0
 
