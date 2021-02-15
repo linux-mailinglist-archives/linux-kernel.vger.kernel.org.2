@@ -2,22 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4710731B901
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD0531B90D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhBOMUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:20:20 -0500
-Received: from marcansoft.com ([212.63.210.85]:42528 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230152AbhBOMTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:19:03 -0500
+        id S230334AbhBOMVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:21:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhBOMTF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 07:19:05 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE13C06178B;
+        Mon, 15 Feb 2021 04:18:14 -0800 (PST)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 1EE6D4249C;
-        Mon, 15 Feb 2021 12:18:03 +0000 (UTC)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id D55664249E;
+        Mon, 15 Feb 2021 12:18:08 +0000 (UTC)
 From:   Hector Martin <marcan@marcan.st>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
@@ -33,9 +37,9 @@ Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         Mark Rutland <mark.rutland@arm.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 06/25] arm64: arch_timer: implement support for interrupt-names
-Date:   Mon, 15 Feb 2021 21:16:54 +0900
-Message-Id: <20210215121713.57687-7-marcan@marcan.st>
+Subject: [PATCH v2 07/25] arm64: cpufeature: Add a feature for FIQ support
+Date:   Mon, 15 Feb 2021 21:16:55 +0900
+Message-Id: <20210215121713.57687-8-marcan@marcan.st>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210215121713.57687-1-marcan@marcan.st>
 References: <20210215121713.57687-1-marcan@marcan.st>
@@ -45,79 +49,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows the devicetree to correctly represent the available set of
-timers, which varies from device to device, without the need for fake
-dummy interrupts for unavailable slots.
+Apple ARM SoCs (A11 and newer) have some interrupt sources hard-wired to
+the FIQ line. Introduce a cpufeature that can be used to enable FIQ
+handling via alternatives.
 
-Also add the hyp-virt timer/PPI, which is not currently used, but worth
-representing.
+This is currently enabled for all Apple CPUs. If/when support is
+implemented for older (pre-A11) iPhone/iPad SoCs which do not need FIQs,
+or if newer SoCs are released without the FIQ requirement, we can
+revisit the condition.
 
 Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
- drivers/clocksource/arm_arch_timer.c | 25 +++++++++++++++++++++----
- include/clocksource/arm_arch_timer.h |  1 +
- 2 files changed, 22 insertions(+), 4 deletions(-)
+ arch/arm64/Kconfig               | 11 +++++++++++
+ arch/arm64/include/asm/cpucaps.h |  3 ++-
+ arch/arm64/kernel/cpufeature.c   | 14 ++++++++++++++
+ 3 files changed, 27 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index d0177824c518..0e87b6d1ce97 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -63,6 +63,14 @@ struct arch_timer {
- static u32 arch_timer_rate;
- static int arch_timer_ppi[ARCH_TIMER_MAX_TIMER_PPI];
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index f39568b28ec1..fbc02af404b6 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -1756,6 +1756,17 @@ config ARM64_DEBUG_PRIORITY_MASKING
+ 	  If unsure, say N
+ endif
  
-+static const char *arch_timer_ppi_names[ARCH_TIMER_MAX_TIMER_PPI] = {
-+	"phys-secure",
-+	"phys",
-+	"virt",
-+	"hyp-phys",
-+	"hyp-virt",
-+};
++config ARM64_FIQ_SUPPORT
++	bool "Support for FIQ interrupts"
++	help
++	  Adds support for handling FIQ interrupts as normal IRQs.
++	  This is required on Apple platforms where some IRQ sources are
++	  hardwired to the FIQ interrupt line.
 +
- static struct clock_event_device __percpu *arch_timer_evt;
++	  This option only affects platforms that require FIQ handling.
++	  On all other platforms, unexpected FIQs will continue to
++	  trigger a kernel panic.
++
+ config RELOCATABLE
+ 	bool "Build a relocatable kernel image" if EXPERT
+ 	select ARCH_HAS_RELR
+diff --git a/arch/arm64/include/asm/cpucaps.h b/arch/arm64/include/asm/cpucaps.h
+index b77d997b173b..c36d926ad801 100644
+--- a/arch/arm64/include/asm/cpucaps.h
++++ b/arch/arm64/include/asm/cpucaps.h
+@@ -66,7 +66,8 @@
+ #define ARM64_WORKAROUND_1508412		58
+ #define ARM64_HAS_LDAPR				59
+ #define ARM64_KVM_PROTECTED_MODE		60
++#define ARM64_NEEDS_FIQ				61
  
- static enum arch_timer_ppi_nr arch_timer_uses_ppi = ARCH_TIMER_VIRT_PPI;
-@@ -1280,17 +1288,26 @@ static void __init arch_timer_populate_kvm_info(void)
+-#define ARM64_NCAPS				61
++#define ARM64_NCAPS				62
  
- static int __init arch_timer_of_init(struct device_node *np)
+ #endif /* __ASM_CPUCAPS_H */
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index e99eddec0a46..9fde84beabf1 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1237,6 +1237,12 @@ static bool has_cache_idc(const struct arm64_cpu_capabilities *entry,
+ 	return ctr & BIT(CTR_IDC_SHIFT);
+ }
+ 
++static bool needs_fiq(const struct arm64_cpu_capabilities *entry, int __unused)
++{
++	/* All supported Apple cores need this */
++	return read_cpuid_implementor() == ARM_CPU_IMP_APPLE;
++}
++
+ static void cpu_emulate_effective_ctr(const struct arm64_cpu_capabilities *__unused)
  {
--	int i, ret;
-+	int i, irq, ret;
- 	u32 rate;
-+	bool has_names;
- 
- 	if (arch_timers_present & ARCH_TIMER_TYPE_CP15) {
- 		pr_warn("multiple nodes in dt, skipping\n");
- 		return 0;
- 	}
- 
--	arch_timers_present |= ARCH_TIMER_TYPE_CP15;
--	for (i = ARCH_TIMER_PHYS_SECURE_PPI; i < ARCH_TIMER_MAX_TIMER_PPI; i++)
--		arch_timer_ppi[i] = irq_of_parse_and_map(np, i);
-+
-+	has_names = of_property_read_bool(np, "interrupt-names");
-+
-+	for (i = ARCH_TIMER_PHYS_SECURE_PPI; i < ARCH_TIMER_MAX_TIMER_PPI; i++) {
-+		if (has_names)
-+			irq = of_irq_get_byname(np, arch_timer_ppi_names[i]);
-+		else
-+			irq = of_irq_get(np, i);
-+		if (irq > 0)
-+			arch_timer_ppi[i] = irq;
-+	}
- 
- 	arch_timer_populate_kvm_info();
- 
-diff --git a/include/clocksource/arm_arch_timer.h b/include/clocksource/arm_arch_timer.h
-index 1d68d5613dae..73c7139c866f 100644
---- a/include/clocksource/arm_arch_timer.h
-+++ b/include/clocksource/arm_arch_timer.h
-@@ -32,6 +32,7 @@ enum arch_timer_ppi_nr {
- 	ARCH_TIMER_PHYS_NONSECURE_PPI,
- 	ARCH_TIMER_VIRT_PPI,
- 	ARCH_TIMER_HYP_PPI,
-+	ARCH_TIMER_HYP_VIRT_PPI,
- 	ARCH_TIMER_MAX_TIMER_PPI
+ 	/*
+@@ -2154,6 +2160,14 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
+ 		.matches = has_cpuid_feature,
+ 		.min_field_value = 1,
+ 	},
++#ifdef CONFIG_ARM64_FIQ_SUPPORT
++	{
++		.desc = "FIQs",
++		.capability = ARM64_NEEDS_FIQ,
++		.type = ARM64_CPUCAP_BOOT_CPU_FEATURE,
++		.matches = needs_fiq,
++	},
++#endif
+ 	{},
  };
  
 -- 
