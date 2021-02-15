@@ -2,181 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDB331B80D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E5931B80E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhBOLdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 06:33:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhBOLdP (ORCPT
+        id S230003AbhBOLdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 06:33:54 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:49044 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhBOLdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 06:33:15 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC9AC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:32:28 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id i23so4305061ejg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:32:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=h0PbOw1QnykMU+cJkTod7obeXaHoBYiSFuCrLUWBeAA=;
-        b=WlLw7XtuJt/3SCNQ9pkKVKhoKzyvOLEeV+Yy3uoDo3NxxdhYpvvGIKNQeswZHrzyEn
-         uHjgcyIVO959TN+ssBwC2uA65KpHW5NQrYUAwWohdIXMBtQ6Wr8nJMuIfh485C6Dymtn
-         8abZqXcW/iVeEM+6VHkSeCF8S6GFmOYJFq7CFgL5ObAog1dIz2ZT7FRiFOp3z4K1yqG6
-         DKPF1g+7T44lPKaqkWrSaatCU7ifc5LL/VzrnrAsdGPSelIdHTDY26DOBDoRxEM+MbG5
-         YBbqVVx68RIErlOxeBFOWMnJ1Ls8ks8XsjgvoBAK2LkzSKFQBNVYrarvko7tJupxQGHK
-         5z9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h0PbOw1QnykMU+cJkTod7obeXaHoBYiSFuCrLUWBeAA=;
-        b=VOmtu/bPTtmONOoIHFr4Ttx2hI3WOJkO09Kd6assYaF/+tBm60o2uj3Lhclyu9VRKP
-         G3vpYJPTQdvAsW/heRRkFTvKOqN2XUq3qjfo7P9kz8apxP0OcI8Zlhv6EEol+FuPE7Ot
-         0NaJGq51bazlIb4wo7lw7Wp0+RrDuKqie3Ickc+Przdi/gJb9q9S/dLgPniWngkFWg0f
-         GRWWXx3DLjotRhUflt4zKlecOM6hIASAPCAJUtbwnkJcyuE4CRlcdQqNhq17yRZzCIUc
-         DyFWZG7Khp7SXhfLW97eZzaEHxvGChFqUXVYtVz/uZVQiJKeLK5paVeGtjNaF5oT7viW
-         Vx/w==
-X-Gm-Message-State: AOAM5335QDGGg541OyaUFZcGPj15JHKmbl7kA+o2WozptQX7/48FtKkq
-        J79+Bkq+Elsyai3QSqxVTYr0WzGWKvK3lTt7
-X-Google-Smtp-Source: ABdhPJzFhQfaXYc6TE/l49yGks3K1vhhPRxfgiYQKjBQRuW77bI+gETekoPft9m/iVmzf0P/Pq1ECQ==
-X-Received: by 2002:a17:906:ccd6:: with SMTP id ot22mr1461681ejb.165.1613388746938;
-        Mon, 15 Feb 2021 03:32:26 -0800 (PST)
-Received: from [192.168.0.4] (hst-221-123.medicom.bg. [84.238.221.123])
-        by smtp.googlemail.com with ESMTPSA id a15sm9663066edv.95.2021.02.15.03.32.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Feb 2021 03:32:26 -0800 (PST)
-Subject: Re: [PATCH 1/2] v4l2-ctrl: Add decoder conceal color control
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20210209094527.2173690-1-stanimir.varbanov@linaro.org>
- <20210209094527.2173690-2-stanimir.varbanov@linaro.org>
- <cccae00e-e30e-6691-d954-27379a104115@xs4all.nl>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <489f1417-085d-4057-f2e8-1cc8db0ed161@linaro.org>
-Date:   Mon, 15 Feb 2021 13:32:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 15 Feb 2021 06:33:51 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8E421743;
+        Mon, 15 Feb 2021 12:33:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613388787;
+        bh=BSgf0lC6W+ct3DtqLQSUhG6tO3u7JlCBUaYD+QzMLM0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EgmmopHf3kv7TTNawif/+EmlpdCSDo47+mb7iaF061ccajG0OBzJWsU4PdRxuWaOf
+         +9pQNVksrZh4rGKm/H7yo83wluOvxiHwGhDVm9DCdn8JfOvCBpTe20OgvDz4r10YSA
+         NsMjd/tXZmAeh14fMAkEW9j0V8I82GJb5dkuAMuw=
+Date:   Mon, 15 Feb 2021 13:32:41 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Vincent Abriou <vincent.abriou@st.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-amarula@amarulasolutions.com
+Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: Move drm_bridge_add into probe
+Message-ID: <YCpb2b8TskrKQBYY@pendragon.ideasonboard.com>
+References: <20210203091306.140518-1-jagan@amarulasolutions.com>
+ <1660529.M3retTD8dW@diego>
 MIME-Version: 1.0
-In-Reply-To: <cccae00e-e30e-6691-d954-27379a104115@xs4all.nl>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1660529.M3retTD8dW@diego>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Heiko,
 
+On Wed, Feb 03, 2021 at 01:05:43PM +0100, Heiko Stübner wrote:
+> Am Mittwoch, 3. Februar 2021, 10:13:06 CET schrieb Jagan Teki:
+> > Usual I2C configured DSI bridge drivers have drm_bridge_add
+> > in probe and mipi_dsi_attach in bridge attach functions.
+> > 
+> > With, this approach the drm pipeline is unable to find the
+> > dsi bridge in stm drm drivers since the dw-mipi-dsi bridge is
+> > adding drm bridge during bridge attach operations instead of
+> > the probe.
+> 
+> Shouldn't the STM drm driver not simply defer if it's missing
+> a bridge that is referenced in the devicetree or somewhere?
+> 
+> > This specific issue may not encounter for rockchip drm dsi
+> > drivers, since rockchip drm uses component binding operations,
+> > unlike stm drm drivers.
+> > 
+> > So, possible solutions are
+> > 1. Move drm_bridge_add into the dw-mipi-dsi probe.
+> > 2. Add mipi_dsi_attach in the bridge drivers probe.
+> > 3. Add component binding operations for stm drm drivers.
+> 
+> personally I'd like number (3) a lot ;-) .
 
-On 2/9/21 1:05 PM, Hans Verkuil wrote:
-> On 09/02/2021 10:45, Stanimir Varbanov wrote:
->> Add decoder v4l2 control to set conceal color.
->>
->> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->> ---
->>  .../media/v4l/ext-ctrls-codec.rst             | 20 +++++++++++++++++++
->>  drivers/media/v4l2-core/v4l2-ctrls.c          |  9 +++++++++
->>  include/uapi/linux/v4l2-controls.h            |  1 +
->>  3 files changed, 30 insertions(+)
->>
->> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> index 00944e97d638..994650052333 100644
->> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> @@ -674,6 +674,26 @@ enum v4l2_mpeg_video_frame_skip_mode -
->>      is currently displayed (decoded). This value is reset to 0 whenever
->>      the decoder is started.
->>  
->> +``V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR (integer64)``
->> +    This control sets conceal color in YUV color space. It describes the
->> +    client preference of error conceal color in case of error where
->> +    reference frame is missing. The decoder would paint the reference
->> +    buffer with preferred color and use it for future decoding.
->> +    Applicable to decoders.
-> 
-> You should mention explicitly that this is using 16-bit color components
-> and expects Limited Range.
+We have different opinions on this topic :-) The component framework
+adds a layer of complexity that can be avoided with probe deferral in
+most cases. The main reason why probe deferral isn't always enough is
+circular dependencies, which unless I'm mistaken isn't an issue here.
 
-I don't want to limit the client to Limited range only. I'll mention in
-the description that both ranges are valid.
-
+> With your approach, at least the component-based variants would
+> end up with multiple probe cycles, getting clocks etc until at some point
+> the panel has probed, where in the current way of things, the probe is
+> done once and we continue bringup once the panel has probed and called
+> dsi-attach to signal it is present.
 > 
->> +
->> +.. flat-table::
->> +    :header-rows:  0
->> +    :stub-columns: 0
->> +
->> +    * - Bit 0:15
->> +      - Y luminance
->> +    * - Bit 16:31
->> +      - Cb chrominance
->> +    * - Bit 32:47
->> +      - Cr chrominance
->> +    * - Bit 48:63
->> +      - Must be zero
->> +
->>  ``V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE (boolean)``
->>      If enabled the decoder expects to receive a single slice per buffer,
->>      otherwise the decoder expects a single frame in per buffer.
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
->> index 016cf6204cbb..a3b9d28a00b7 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
->> @@ -945,6 +945,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->>  	case V4L2_CID_MPEG_VIDEO_VBV_SIZE:			return "VBV Buffer Size";
->>  	case V4L2_CID_MPEG_VIDEO_DEC_PTS:			return "Video Decoder PTS";
->>  	case V4L2_CID_MPEG_VIDEO_DEC_FRAME:			return "Video Decoder Frame Count";
->> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:		return "Video Decoder Conceal Color";
->>  	case V4L2_CID_MPEG_VIDEO_VBV_DELAY:			return "Initial Delay for VBV Control";
->>  	case V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE:		return "Horizontal MV Search Range";
->>  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
->> @@ -1430,6 +1431,14 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->>  		*max = 0x7fffffffffffffffLL;
->>  		*step = 1;
->>  		break;
->> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:
->> +		*type = V4L2_CTRL_TYPE_INTEGER64;
->> +		*min = 0;
->> +		/* default for 8bit black, luma is 16, chroma is 128 */
+> Which was actually what Andrzej wished for, when I moved the Rockchip
+> dsi to the common driver.
 > 
-> Since this is 16 bit the actual default luma value for black is 4096 and for chroma use
-> 32768 (i.e. both values are times 256).
-
-If we follow this for pixel format with 10bit per channel we have to
-multiply by 64?
-
+> Or at least make it configurable via a param to the common dw-dsi probe
+> function. Especially as I also need the dsi bridge-less when used as a
+> simple means for the configuring the internal dphy to rx-mode, see [0]
 > 
->> +		*def = 0x8000800010LL;
->> +		*max = 0xffffffffffffLL;
->> +		*step = 1;
->> +		break;
->>  	case V4L2_CID_PIXEL_RATE:
->>  		*type = V4L2_CTRL_TYPE_INTEGER64;
->>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
->> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
->> index 039c0d7add1b..5e5a3068be2d 100644
->> --- a/include/uapi/linux/v4l2-controls.h
->> +++ b/include/uapi/linux/v4l2-controls.h
->> @@ -428,6 +428,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
->>  #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
->>  #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
->>  #define V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID	(V4L2_CID_CODEC_BASE+230)
->> +#define V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR		(V4L2_CID_CODEC_BASE+231)
->>  
->>  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
->>  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
->>
+> Heiko
 > 
-> Regards,
+> [0] https://lore.kernel.org/dri-devel/20210202145632.1263136-1-heiko@sntech.de/
 > 
-> 	Hans
-> 
+> > Option 1 is a relatively possible solution as most of the
+> > mainline drm dsi with bridge drivers have a similar approach
+> > to their dsi host vs bridge registration.
+> > 
+> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > ---
+> >  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 35 +++++++++----------
+> >  1 file changed, 17 insertions(+), 18 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> > index 6b268f9445b3..8a535041f071 100644
+> > --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> > +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> > @@ -314,8 +314,6 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+> >  {
+> >  	struct dw_mipi_dsi *dsi = host_to_dsi(host);
+> >  	const struct dw_mipi_dsi_plat_data *pdata = dsi->plat_data;
+> > -	struct drm_bridge *bridge;
+> > -	struct drm_panel *panel;
+> >  	int ret;
+> >  
+> >  	if (device->lanes > dsi->plat_data->max_data_lanes) {
+> > @@ -329,22 +327,6 @@ static int dw_mipi_dsi_host_attach(struct mipi_dsi_host *host,
+> >  	dsi->format = device->format;
+> >  	dsi->mode_flags = device->mode_flags;
+> >  
+> > -	ret = drm_of_find_panel_or_bridge(host->dev->of_node, 1, 0,
+> > -					  &panel, &bridge);
+> > -	if (ret)
+> > -		return ret;
+> > -
+> > -	if (panel) {
+> > -		bridge = drm_panel_bridge_add_typed(panel,
+> > -						    DRM_MODE_CONNECTOR_DSI);
+> > -		if (IS_ERR(bridge))
+> > -			return PTR_ERR(bridge);
+> > -	}
+> > -
+> > -	dsi->panel_bridge = bridge;
+> > -
+> > -	drm_bridge_add(&dsi->bridge);
+> > -
+> >  	if (pdata->host_ops && pdata->host_ops->attach) {
+> >  		ret = pdata->host_ops->attach(pdata->priv_data, device);
+> >  		if (ret < 0)
+> > @@ -1105,6 +1087,8 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+> >  	struct device *dev = &pdev->dev;
+> >  	struct reset_control *apb_rst;
+> >  	struct dw_mipi_dsi *dsi;
+> > +	struct drm_bridge *bridge;
+> > +	struct drm_panel *panel;
+> >  	int ret;
+> >  
+> >  	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
+> > @@ -1167,6 +1151,20 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+> >  	dw_mipi_dsi_debugfs_init(dsi);
+> >  	pm_runtime_enable(dev);
+> >  
+> > +	ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0,
+> > +					  &panel, &bridge);
+> > +	if (ret)
+> > +		return ERR_PTR(ret);
+> > +
+> > +	if (panel) {
+> > +		bridge = drm_panel_bridge_add_typed(panel,
+> > +						    DRM_MODE_CONNECTOR_DSI);
+> > +		if (IS_ERR(bridge))
+> > +			return ERR_PTR(-ENODEV);
+> > +	}
+> > +
+> > +	dsi->panel_bridge = bridge;
+> > +
+> >  	dsi->dsi_host.ops = &dw_mipi_dsi_host_ops;
+> >  	dsi->dsi_host.dev = dev;
+> >  	ret = mipi_dsi_host_register(&dsi->dsi_host);
+> > @@ -1181,6 +1179,7 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+> >  #ifdef CONFIG_OF
+> >  	dsi->bridge.of_node = pdev->dev.of_node;
+> >  #endif
+> > +	drm_bridge_add(&dsi->bridge);
+> >  
+> >  	return dsi;
+> >  }
 
 -- 
-regards,
-Stan
+Regards,
+
+Laurent Pinchart
