@@ -2,105 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582FC31B9F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C30C31B9F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 14:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhBONHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 08:07:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhBONHI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230170AbhBONHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 08:07:21 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:33778 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229895AbhBONHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 08:07:08 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AF9C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 05:06:27 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id k13so4126976pfh.13
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 05:06:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MFFOxejaiAtToA7myl7RmqtoPYRgeW980AsV00ZQSl8=;
-        b=unuQEYLtyT4/Ao8x5nwwOIRfvuaugs+eGRhuCaq0nuC+p0gTiJxTh1mObC6zZyWo6e
-         cTaHZsu8vRwe4P7el44EMtKRA1LDuwGr3TYxaBGj6S/oSEaRey+AjH0MRweYn8o705lt
-         +sf1BuHpDLdW4v3oSZSKRIbUg2t0ULo2eYpqK1yM6YAmyTg4ZU30V6nFpzFi2JxAJitH
-         HhoxsnvY60nS2A/+Dt5J2o6NmGgdhR6Siho0FzwRtTYAWd4Gz7zbLHU3hhU9vvSX2Q61
-         CgbuuFlnItxljUHcF7PXUHCSSnWlseFiZfPvfbWDV1QZCriGC6k1cMyXdJqhu1Nlgi5+
-         nqGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MFFOxejaiAtToA7myl7RmqtoPYRgeW980AsV00ZQSl8=;
-        b=BQAp+GLiEqR4fGlKEKccHJh/nS7QlmV5KCk2WYT8F6mf54QjfJCbT1JoKwBsk3z3jw
-         VeiFSI6VdPmgS59VkYJh5d2wUkeuB2euci9zGjd2MW6kZ8GA67twKMS7q5a2bx1Lw8cb
-         yMn/InpYHNm7RgY16vtM+talyK8VivK8Q1cK0Ojyp+SSekEm5+rwUINPNPgwaBlDt+Tg
-         Y82GKPpW/WVo7UWmsAfMbOH4vRqMWUaSuwkA6H7VMDvpADMChb/dVlnECi+NKHSJk3aO
-         tjuL0CkJn4EoTPMure3BC17Rlgq+7N/BgV3c267JMvT5++/bM1gYZsdUhI8Wf/FTKMzv
-         srAw==
-X-Gm-Message-State: AOAM533zPzlWdD1DUa3M1CdF5eHJp2/NOOIYmS5lFRicMP+nZ9ppGr1A
-        5qrgUxXcco2VHCmkOU0WdNG0UFD1xIl2vig8mn0=
-X-Google-Smtp-Source: ABdhPJyFfiW9cbacENW0DVWjDGRKgGe5GYOIsNaOn/t7pr0ukLADnJ+l0vTG4Ei3JUN4GA5joaDOggt+M3plgiWbs1g=
-X-Received: by 2002:a63:3d0:: with SMTP id 199mr14876159pgd.4.1613394387088;
- Mon, 15 Feb 2021 05:06:27 -0800 (PST)
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9D7CB1A195C;
+        Mon, 15 Feb 2021 14:06:20 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 986371A1955;
+        Mon, 15 Feb 2021 14:06:20 +0100 (CET)
+Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 83245203A7;
+        Mon, 15 Feb 2021 14:06:20 +0100 (CET)
+Date:   Mon, 15 Feb 2021 15:06:20 +0200
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V3] clk: imx: Fix reparenting of UARTs not associated
+ with sdout
+Message-ID: <20210215130620.3la4bexamozzcvjx@fsr-ub1664-175>
+References: <CAHCN7x+CXUuPN7upiv3D+REOU4d_=i30no+SkRzUjWY58o=uUQ@mail.gmail.com>
+ <20210120144454.f6b72lnasw4q3bde@fsr-ub1664-175>
+ <20210120151305.GC19063@pengutronix.de>
+ <20210120152813.x2pbs5vprevkly23@fsr-ub1664-175>
+ <20210120155001.GD19063@pengutronix.de>
+ <20210120161421.h3yng57m3fetwwih@fsr-ub1664-175>
+ <20210121095617.GI19063@pengutronix.de>
+ <20210121102450.lisl3mzqczdsmzda@fsr-ub1664-175>
+ <CAHCN7x+eMHncRya3KWm5g=stzVf0fzNojS5mFxwvGW-sVoLsYQ@mail.gmail.com>
+ <CAHCN7xLc6dnkA5Fw4cC1_nDG3KrrR4AffUzy-8gG4UKLn-rhzQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
- <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
-In-Reply-To: <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 15 Feb 2021 15:06:10 +0200
-Message-ID: <CAHp75VeTKfSAnLUiwJ_SO-r4hUn7aQVTquG0j=k95QO_gk+c1g@mail.gmail.com>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHCN7xLc6dnkA5Fw4cC1_nDG3KrrR4AffUzy-8gG4UKLn-rhzQ@mail.gmail.com>
+User-Agent: NeoMutt/20180622
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 7:12 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> > So what is really confusing and a pain to me is that:
-> > For years people like me have been writing device drivers
-> > with the idea that irq handlers run with interrupts
-> > disabled after those commits in genirq. So I don't need
-> > to care about if some other IRQs on the same cpu will
-> > jump out to access the data the current IRQ handler
-> > is accessing.
+On 21-02-13 08:44:28, Adam Ford wrote:
+> On Wed, Feb 3, 2021 at 3:22 PM Adam Ford <aford173@gmail.com> wrote:
 > >
-> > but it turns out the assumption is not true on some platform.
-> > So should I start to program devices driver with the new idea
-> > interrupts can actually come while irqhandler is running?
-> >
-> > That's the question which really bothers me.
-> >
->
-> That scenario seems a little contrived to me (drivers for two or more
-> devices sharing state through their interrupt handlers). Is it real?
-> I suppose every platform has its quirks. The irq lock in sonic_interrupt()
-> is only there because of a platform quirk (the same device can trigger
-> either of two IRQs). Anyway, no-one expects all drivers to work on all
-> platforms; I don't know why it bothers you so much when platforms differ.
+> > On Thu, Jan 21, 2021 at 4:24 AM Abel Vesa <abel.vesa@nxp.com> wrote:
+> > >
+> > > On 21-01-21 10:56:17, Sascha Hauer wrote:
+> > > > On Wed, Jan 20, 2021 at 06:14:21PM +0200, Abel Vesa wrote:
+> > > > > On 21-01-20 16:50:01, Sascha Hauer wrote:
+> > > > > > On Wed, Jan 20, 2021 at 05:28:13PM +0200, Abel Vesa wrote:
+> > > > > > > On 21-01-20 16:13:05, Sascha Hauer wrote:
+> > > > > > > > Hi Abel,
+> > > > > > > >
+> > > > > > > > On Wed, Jan 20, 2021 at 04:44:54PM +0200, Abel Vesa wrote:
+> > > > > > > > > On 21-01-18 08:00:43, Adam Ford wrote:
+> > > > > > > > > > On Mon, Jan 18, 2021 at 6:52 AM Abel Vesa <abel.vesa@nxp.com> wrote:
+> > > > > > >
+> > > > > > > ...
+> > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > TBH, I'm against the idea of having to call consumer API from a clock provider driver.
+> > > > > > > > > > > I'm still investigating a way of moving the uart clock control calls in drivers/serial/imx,
+> > > > > > > > > > > where they belong.
+> > > > > > > > > >
+> > > > > > > > > > That makes sense.
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Just a thought. The uart clock used for console remains on from u-boot,
+> > > > > > > > > so maybe it's enough to just add the CLK_IGNORE_UNUSED flag to all the
+> > > > > > > > > uart root clocks and remove the prepare/enable calls for uart clocks
+> > > > > > > > > for good. I don't really have a way to test it right now, but maybe
+> > > > > > > > > you could give it a try.
+> > > > > > > >
+> > > > > > > > That would mean that UART clocks will never be disabled, regardless of
+> > > > > > > > whether they are used for console or not. That doesn't sound very
+> > > > > > > > appealing.
+> > > > > > >
+> > > > > > > AFAIK, the only uart clock that is enabled by u-boot is the one used for
+> > > > > > > the console. Later on, when the serial driver probes, it will enable it itself.
+> > > > > > >
+> > > > > > > Unless I'm missing something, this is exactly what we need.
+> > > > > >
+> > > > > > It might enable it, but with CLK_IGNORE_UNUSED the clock won't be
+> > > > > > disabled again when a port is closed after usage
+> > > > >
+> > > > > OK, tell me what I'm getting wrong in the following scenario:
+> > > > >
+> > > > > U-boot leaves the console uart clock enabled. All the other ones are disabled.
+> > > > >
+> > > > > Kernel i.MX clk driver registers the uart clocks with flag CLK_IGNORE_UNUSED.
+> > > >
+> > > > I was wrong at that point. I originally thought the kernel will never
+> > > > disable these clocks, but in fact it only leaves them enabled during the
+> > > > clk_disable_unused call.
+> > > >
+> > > > However, when CLK_IGNORE_UNUSED becomes relevant it's too late already.
+> > > > I just chatted with Lucas and he told me what the original problem was
+> > > > that his patch solved.
+> > > >
+> > > > The problem comes when an unrelated device and the earlycon UART have
+> > > > the same parent clocks. The parent clock is enabled, but it's reference
+> > > > count is zero. Now when the unrelated device probes and toggles its
+> > > > clocks then the shared parent clock will be disabled due to the
+> > > > reference count being zero. Next time earlycon prints a character the
+> > > > system hangs because the UART gates are still enabled, but their parent
+> > > > clocks no longer are.
+> > > >
+> > >
+> > > Hmm, that is indeed a problem. That's why I think there should be some
+> > > kind of NOCACHE flag for almost all the types of clocks. For example,
+> > > in this case, it makes sense for the core to check the bit in the register
+> > > and then disable the parent based on that instead of relying on the refcount.
+> > > Anyway, that's something that needs to be added in the CCF.
+> > >
+> > > > Overall I think Lucas' patches are still valid and relevant and with
+> > > > Adams patches we even no longer have to enable all UART clocks, but
+> > > > only the ones which are actually needed.
+> > >
+> > > Yeah, for now, I think we can go with Adam's patches. But longterm, I would
+> > > like to remove the special case of the uart clocks we have right now in all
+> > > the i.MX clock drivers.
+> 
+> I looked around at other serial drivers, and I found nothing like this
+> function for enabling all UART clocks.  There are generic functions
+> for registering consoles, earlycon etc, and the serial driver fetches
+> the per and igp clocks from the device tree, so I attempted to simply
+> remove imx_register_uart_clocks().  I booted an i.MX8M Nano from a
+> fully-powered off state, and my serial console came up just fine.
 
-Isn't it any IRQ chip driver which may get IRQ on one or more lines
-simultaneously?
-The question here is can the handler be re-entrant on the same CPU in that case?
+Just because it works, doesn't mean it is safe. To put it simply, the
+risk of some  driver disabling a clock that is parent of the uart clock
+would render the earlycon broken.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> 
+> I checked the clk_summary, and the clock parents are set correctly and
+> the respective clock rates appear to be correct (ie, the console is
+> working at the desired baud rate, and Bluetooth is happy)
+> 
+> Since I don't fully understand the serial driver and the clock
+> dependencies, I don't want to just simply remove the function without
+> discussing it, because I don't know the ramifications.  However, when
+> testing on the i.MX8M Nano, things look OK.
+> I also tested suspend-resume and the console UART appears to return
+> and the Bluetooth UART set to 4Mbps works just fine too.
+> 
+> I'd like to post a V4 which just removes imx_register_uart_clocks and
+> the corresponding calls to it.  I don't know enough about the older
+> 32-bit i.MX SoC's, but I have build-tested it, and I can generate a
+> patch. Are there any objections and/or concerns?
+> 
+
+Please don't remove the imx_register_uart_clocks for now. As much as I
+would like it gone, the way the earlycon could end up broken is
+so ugly that it would make it a real pain to debug it later on.
+
+> adam
+> > >
+> >
+> > Is the patch I submitted good enough for someone's acked-by or
+> > reviewed-by, or are there changes I need to implement?
+> >
+> > adam
+> >
+> > > >
+> > > > Sascha
+> > > >
+> > > >
+> > > > --
+> > > > Pengutronix e.K.                           |                             |
+> > > > Steuerwalder Str. 21                       | https://eur01.safelinks.protection.outlook.com/?url=http%3A%2F%2Fwww.pengutronix.de%2F&amp;data=04%7C01%7Cabel.vesa%40nxp.com%7C12862aeac2934a4a94f108d8d02de573%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637488242849833051%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=fKDvWYJIU7hBROH6yDM9FYUCHJDK9wMjTeJDMxRff8o%3D&amp;reserved=0  |
+> > > > 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> > > > Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
