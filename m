@@ -2,180 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F325F31C091
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD1531C094
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbhBOR1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:27:13 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12570 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230256AbhBOQ0k (ORCPT
+        id S232726AbhBOR2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:28:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231287AbhBOQ1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:26:40 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11FG3URf013038;
-        Mon, 15 Feb 2021 11:25:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=VznWH/st8iEX8OCNg2iZEx5HK0tTns1td9csB+iRJEA=;
- b=Oa3dab+vW7b9UAYaEq0hwtgeljHhE9i1LV7apBvFxwG4RGpQlj8jvCfPjQx28TwlakeX
- LUUaW5gfnPDNiV+5uBs/Cgxw/G/UiCRUrkbEZLase4pUmNXS8255eoa8raHBCZ+CK4uy
- mbrz1bZs+0J/J2skYAR70qgL8bkNbZwZkQO39EhNdxF/Hk/HJmOQ5J3/8H/JSULNWNge
- mHlC4kH6RKCV6Yv//XjI3XgCZjvGdeFqSzBtyc9FAo8J4pZwG7mui/wZJRhrGFnWrYMN
- WNjq8k/hGT1bcD+MMDmtNDbJOFOm/KWC7oT9+IZoVVA6ve+4Ug5m44GVG2MifI3X+bnK fw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36qutyscaa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 11:25:52 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11FG4ach018365;
-        Mon, 15 Feb 2021 11:25:51 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36qutysc9t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 11:25:51 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11FGM5wB031920;
-        Mon, 15 Feb 2021 16:25:50 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma02wdc.us.ibm.com with ESMTP id 36p6d908n5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Feb 2021 16:25:50 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11FGPnsT13238902
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Feb 2021 16:25:49 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 607D86A047;
-        Mon, 15 Feb 2021 16:25:49 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 82A0B6A054;
-        Mon, 15 Feb 2021 16:25:48 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Feb 2021 16:25:48 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.ibm.com>
-To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        dhowells@redhat.com, zohar@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH v8 4/4] ima: Support EC keys for signature verification
-Date:   Mon, 15 Feb 2021 11:25:32 -0500
-Message-Id: <20210215162532.1077098-5-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210215162532.1077098-1-stefanb@linux.ibm.com>
-References: <20210215162532.1077098-1-stefanb@linux.ibm.com>
+        Mon, 15 Feb 2021 11:27:41 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3B6C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:27:00 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id g3so3376150qvl.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:27:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sy2cabYL26t5+pf4Reor+XmaF0QOZcQ9kdQcHzxIJkE=;
+        b=rM51qYuneyDfZEiwnJA8BYhAWb2HWAt7uFs4Ih/RhjhAPxepCK1JFC8ANdDU3//nnD
+         VpQpBENm7Z/UEhT1WUg+0Sq8DbJH6v3iybXVWLtZzdDTWmzZlOap54Ny9Fm17TKGgQb7
+         ltmmhN0XXvQ4RSkkyomqSwJncU23ZcEOn73tf8Cn5KYwGIzXEhQ8+YkarmWmVuPqvSd1
+         K1uPs+i25o+lIS+oWDdJyTiLL/eOnE5a0/qSBFBvbOdXqAE36mIxm+EHGGV2XxnG6rhH
+         49L8Zik26esxZnvmkzMO2bLbFTP94pWuJbglvNmsVHSBfKpe7I1U7UzcGftMW8U8xLz8
+         unIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sy2cabYL26t5+pf4Reor+XmaF0QOZcQ9kdQcHzxIJkE=;
+        b=uQf8mnbvZwhhC6Pa+ujvezEGahui1hcpCuXvQKdZAKPuC5oCUh+eIFnt1eXN8qbO0n
+         oc9Ku22krgXpOD93CUreQXVg391ez1nuHC+rIHgoSEW3Pv3zZDSdgNg9zwy+kOdICIG3
+         HjLD2iMUVVAlypVM+cAEGshZqZy6QOLwdvMnwYdg23Tw8HUvcZlPsJz/Epd6HZjB9ngk
+         HNE3Y5WEQNsP20cnFrYcGMIAz6Rj04VJT7mushHI8qrhSPk0HuLGdfJxhwjGj1JbAwwt
+         4jvBiYTyFVKm0cGTVES0TettrBPD7oLVZT6iFImsXLhl+I70CoejJr8Lwb4aa7gQ2dWy
+         W5xg==
+X-Gm-Message-State: AOAM5320Ad8k+NzudE4UHAzxOrwLsSKHiWc5o+F9Dn7BozZ0AhUAaU9L
+        YpR0X6xa/Dh93MvztPufPfJlnclQuNsNjLVZC4s=
+X-Google-Smtp-Source: ABdhPJwKUtJ7w0KcYRqX4wI/BQbYP465HriDNC/qSfXD6NcK6gDI6rpzdYGClYqLvfF32GcI37Fl5w==
+X-Received: by 2002:a0c:b617:: with SMTP id f23mr15209994qve.44.1613406419374;
+        Mon, 15 Feb 2021 08:26:59 -0800 (PST)
+Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id u7sm10928811qta.75.2021.02.15.08.26.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 08:26:58 -0800 (PST)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Drew Davenport <ddavenport@chromium.org>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), Eric Anholt <eric@anholt.net>,
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org (open list),
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Sean Paul <sean@poorly.run>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        tongtiangen <tongtiangen@huawei.com>
+Subject: [PATCH v3 0/2] arm64: dts: qcom: sm8250: fix display nodes
+Date:   Mon, 15 Feb 2021 11:26:03 -0500
+Message-Id: <20210215162607.21360-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-15_11:2021-02-12,2021-02-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1015 suspectscore=0 malwarescore=0 mlxscore=0
- spamscore=0 phishscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102150124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for IMA signature verification for EC keys. Since SHA type
-of hashes can be used by RSA and ECDSA signature schemes we need to
-look at the key and derive from the key which signature scheme to use.
-Since this can be applied to all types of keys, we change the selection
-of the encoding type to be driven by the key's signature scheme rather
-than by the hash type.
+Add sm8150/sm8250 compatibles to drm/msm and fix the sm8250
+display nodes.
 
-Cc: Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc: linux-integrity@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>
-Cc: keyrings@vger.kernel.org
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
-Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Acked-by: Mimi Zohar <zohar@linux.ibm.com>
+v2: do not remove mmcx-supply from dispcc node
+v3: remove references to dp_phy (missed this in v2, sorry for the spam)
 
----
-v7->v8:
-  - use strncmp to check for 'ecdsa-' to match 'ecdsa-nist-p192' and
-    'ecdsa-nist-p256' key types; previously they were just 'ecdsa'
----
- include/keys/asymmetric-type.h         |  6 ++++++
- security/integrity/digsig_asymmetric.c | 30 ++++++++++++--------------
- 2 files changed, 20 insertions(+), 16 deletions(-)
+Jonathan Marek (2):
+  drm/msm: add compatibles for sm8150/sm8250 display
+  arm64: dts: qcom: sm8250: fix display nodes
 
-diff --git a/include/keys/asymmetric-type.h b/include/keys/asymmetric-type.h
-index a29d3ff2e7e8..c432fdb8547f 100644
---- a/include/keys/asymmetric-type.h
-+++ b/include/keys/asymmetric-type.h
-@@ -72,6 +72,12 @@ const struct asymmetric_key_ids *asymmetric_key_ids(const struct key *key)
- 	return key->payload.data[asym_key_ids];
- }
- 
-+static inline
-+const struct public_key *asymmetric_key_public_key(const struct key *key)
-+{
-+	return key->payload.data[asym_crypto];
-+}
-+
- extern struct key *find_asymmetric_key(struct key *keyring,
- 				       const struct asymmetric_key_id *id_0,
- 				       const struct asymmetric_key_id *id_1,
-diff --git a/security/integrity/digsig_asymmetric.c b/security/integrity/digsig_asymmetric.c
-index a662024b4c70..23240d793b07 100644
---- a/security/integrity/digsig_asymmetric.c
-+++ b/security/integrity/digsig_asymmetric.c
-@@ -84,6 +84,7 @@ int asymmetric_verify(struct key *keyring, const char *sig,
- {
- 	struct public_key_signature pks;
- 	struct signature_v2_hdr *hdr = (struct signature_v2_hdr *)sig;
-+	const struct public_key *pk;
- 	struct key *key;
- 	int ret;
- 
-@@ -105,23 +106,20 @@ int asymmetric_verify(struct key *keyring, const char *sig,
- 	memset(&pks, 0, sizeof(pks));
- 
- 	pks.hash_algo = hash_algo_name[hdr->hash_algo];
--	switch (hdr->hash_algo) {
--	case HASH_ALGO_STREEBOG_256:
--	case HASH_ALGO_STREEBOG_512:
--		/* EC-RDSA and Streebog should go together. */
--		pks.pkey_algo = "ecrdsa";
--		pks.encoding = "raw";
--		break;
--	case HASH_ALGO_SM3_256:
--		/* SM2 and SM3 should go together. */
--		pks.pkey_algo = "sm2";
--		pks.encoding = "raw";
--		break;
--	default:
--		pks.pkey_algo = "rsa";
-+
-+	pk = asymmetric_key_public_key(key);
-+	pks.pkey_algo = pk->pkey_algo;
-+	if (!strcmp(pk->pkey_algo, "rsa"))
- 		pks.encoding = "pkcs1";
--		break;
--	}
-+	else if (!strncmp(pk->pkey_algo, "ecdsa-", 6))
-+		/* edcsa-nist-p192 etc. */
-+		pks.encoding = "x962";
-+	else if (!strcmp(pk->pkey_algo, "ecrdsa") ||
-+		   !strcmp(pk->pkey_algo, "sm2"))
-+		pks.encoding = "raw";
-+	else
-+		return -ENOPKG;
-+
- 	pks.digest = (u8 *)data;
- 	pks.digest_size = datalen;
- 	pks.s = hdr->sig;
+ .../devicetree/bindings/display/msm/dpu.txt   |  4 +--
+ arch/arm64/boot/dts/qcom/sm8250.dtsi          | 31 +++++--------------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |  2 ++
+ drivers/gpu/drm/msm/msm_drv.c                 |  6 ++--
+ 4 files changed, 15 insertions(+), 28 deletions(-)
+
 -- 
-2.29.2
+2.26.1
 
