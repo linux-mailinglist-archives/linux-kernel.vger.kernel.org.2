@@ -2,140 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4687631C1D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B1731C1DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhBOSlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 13:41:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhBOSia (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 13:38:30 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53B1C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:37:48 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id 133so8087790ybd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:37:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dlG7WSBTmTt0VpZB7OCV0qVL7K8LEJDd0nI5vTKhQZg=;
-        b=btS7zOsd8wzWdOEdLz2gpNybzWGD/BAdcRlSgW6lyo+d1eTDlo6Apq86ia5o0yvLol
-         ppNdfSG9Ew07RangzW5JjgXQTYWEJEMBS1EC/xzXNmeZuU/GmzelkZsTTN/ls7pnKGv7
-         M2JilzX+pX7HcaEPfsdGyWLo/ganbfaiisPmzPwHMH6NonEsOA9X85PVMfhfmbz43akz
-         AEe8aueXHiFPpdSsaeQJmX0UTql6yGPgx7lgFMbam7wNCucfYyvpJd8dsY8/OdXZmlHv
-         bkPDYvdNutZddnwMgv58clq+g3ZJkXrKxn3cjKmbDL47DQSeD8hoPaovvo/StdVOscKo
-         HgJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dlG7WSBTmTt0VpZB7OCV0qVL7K8LEJDd0nI5vTKhQZg=;
-        b=I81qUwBwCW9iaaFkv3gkTHh5bxr8z+4jG1SVvzXIK3IelDrkMdvZiut31rxEQF+e+Z
-         7ElBWQNp2n68s74n4kbcjz7SummEw7QDDno2Js16omkJp7shMEZwfVfZrsG1FwHYt4AG
-         et7twkDmXHWA/Sw7MYtQDQGqcgbwpjER40ToeHUw+PLiokwNy/6xHHfErg6AczncugpV
-         rEepuG+fJ+9Cqdg1mWa3i7Zo9D5a+/Q+6WU0/C+Q46IcO11XrQvK2xoPxnDw3k+zCd0a
-         KgRIKA169FsAN7Xw0FjN6V6WPOq3UYakSNLCeUko6vNATCSZujfXFn7Te2BQQun2+fa+
-         aYlw==
-X-Gm-Message-State: AOAM531TuegOtTCbTt61ssNdPUuv8K2ujWIptYqPAYvgen46QMDA2sD8
-        2Lw4t+AxLmU1dMP4wUrrVaRA0aiBryPqMX8dNTQ3uA==
-X-Google-Smtp-Source: ABdhPJyrNN8exbyo9T1MkxxXLxlRiWI1Wl1nf3PhjP4mVD6FrDEXdUPlDEuRTLmkptHAKrq7S6AmU78+qu5pBAVCeIw=
-X-Received: by 2002:a25:8b8b:: with SMTP id j11mr22476525ybl.310.1613414267730;
- Mon, 15 Feb 2021 10:37:47 -0800 (PST)
+        id S231285AbhBOSpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 13:45:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34098 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231208AbhBOSi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 13:38:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F014964E30;
+        Mon, 15 Feb 2021 18:37:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613414235;
+        bh=KLwocW1b/pjrOGoD6o9MPhS3N4zOa1dqYzalWX8/hC4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=b/Y+HBRohVekKApCwy54/JRySkLv6cYb67sVB/4JOxsiTej/vrci+8x1IfBgwFbfj
+         zcIItYRM6wjQnNWa6MPaWjZ4MN6Wislcuiv9gmAh1vl+gqF+QjxceV9m3uu4nFHGGT
+         9+QNT34L7xL67yLszuS726P1BRb03frKNTxj/pnG9EPrTT1Ddh4ioF2shKXdFge5Xo
+         UoExoWOyxNhxaIxKohkjgNYLOcMBmTMMEhaF2QJ1c0V5F2bjaWALRHje0mivIp2Dma
+         PWIOu6mHq6iO7SBSF/3sTMUkCUhCEiaEWPwQgRuFh9OEk5ie62mXqumfasUmbUxc73
+         nHlAQnEYzGNcA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Rong Chen <rong.a.chen@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Yoshinori Sato <ysato@users.osdn.me>,
+        Rich Felker <dalias@libc.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 3/3] scripts/recordmcount.pl: support big endian for ARCH sh
+Date:   Mon, 15 Feb 2021 13:37:11 -0500
+Message-Id: <20210215183711.122258-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210215183711.122258-1-sashal@kernel.org>
+References: <20210215183711.122258-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210215151405.2551143-1-geert+renesas@glider.be>
-In-Reply-To: <20210215151405.2551143-1-geert+renesas@glider.be>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 15 Feb 2021 10:37:11 -0800
-Message-ID: <CAGETcx-c5P76JkB-upi8ArDqa=TrR3bJMnpDTO-59sh83opW8g@mail.gmail.com>
-Subject: Re: [PATCH] staging: board: Fix uninitialized spinlock when attaching genpd
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 7:14 AM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->
-> On Armadillo-800-EVA with CONFIG_DEBUG_SPINLOCK=y:
->
->     BUG: spinlock bad magic on CPU#0, swapper/1
->      lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
->     CPU: 0 PID: 1 Comm: swapper Not tainted 5.11.0-rc5-armadillo-00036-gbbca04be7a80-dirty #287
->     Hardware name: Generic R8A7740 (Flattened Device Tree)
->     [<c010c3c8>] (unwind_backtrace) from [<c010a49c>] (show_stack+0x10/0x14)
->     [<c010a49c>] (show_stack) from [<c0159534>] (do_raw_spin_lock+0x20/0x94)
->     [<c0159534>] (do_raw_spin_lock) from [<c040858c>] (dev_pm_get_subsys_data+0x8c/0x11c)
->     [<c040858c>] (dev_pm_get_subsys_data) from [<c05fbcac>] (genpd_add_device+0x78/0x2b8)
->     [<c05fbcac>] (genpd_add_device) from [<c0412db4>] (of_genpd_add_device+0x34/0x4c)
->     [<c0412db4>] (of_genpd_add_device) from [<c0a1ea74>] (board_staging_register_device+0x11c/0x148)
->     [<c0a1ea74>] (board_staging_register_device) from [<c0a1eac4>] (board_staging_register_devices+0x24/0x28)
->
-> of_genpd_add_device() is called before platform_device_register(), as it
-> needs to attach the genpd before the device is probed.  But the spinlock
-> is only initialized when the device is registered.
->
-> Fix this by open-coding the spinlock initialization, cfr.
-> device_pm_init_common() in the internal drivers/base code, and in the
-> SuperH early platform code.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Exposed by fw_devlinks changing probe order.
-> Masked before due to an unrelated wait context check failure, which
-> disabled any further spinlock checks.
-> https://lore.kernel.org/linux-acpi/CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com
-> ---
->  drivers/staging/board/board.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/staging/board/board.c b/drivers/staging/board/board.c
-> index cb6feb34dd401ae3..604612937f038e92 100644
-> --- a/drivers/staging/board/board.c
-> +++ b/drivers/staging/board/board.c
-> @@ -136,6 +136,7 @@ int __init board_staging_register_clock(const struct board_staging_clk *bsc)
->  static int board_staging_add_dev_domain(struct platform_device *pdev,
->                                         const char *domain)
->  {
-> +       struct device *dev = &pdev->dev;
->         struct of_phandle_args pd_args;
->         struct device_node *np;
->
-> @@ -148,7 +149,11 @@ static int board_staging_add_dev_domain(struct platform_device *pdev,
->         pd_args.np = np;
->         pd_args.args_count = 0;
->
-> -       return of_genpd_add_device(&pd_args, &pdev->dev);
-> +       /* Cfr. device_pm_init_common() */
+From: Rong Chen <rong.a.chen@intel.com>
 
-What's Cfr?
+[ Upstream commit 93ca696376dd3d44b9e5eae835ffbc84772023ec ]
 
-> +       spin_lock_init(&dev->power.lock);
-> +       dev->power.early_init = true;
+The kernel test robot reported the following issue:
 
-Also, I tried looking up, but it's not exactly what this flag
-represents other than the fact the spinlock has been initialized?
-Which is weird to me. So maybe Rafael can double check this?
+    CC [M]  drivers/soc/litex/litex_soc_ctrl.o
+  sh4-linux-objcopy: Unable to change endianness of input file(s)
+  sh4-linux-ld: cannot find drivers/soc/litex/.tmp_gl_litex_soc_ctrl.o: No such file or directory
+  sh4-linux-objcopy: 'drivers/soc/litex/.tmp_mx_litex_soc_ctrl.o': No such file
 
--Saravana
+The problem is that the format of input file is elf32-shbig-linux, but
+sh4-linux-objcopy wants to output a file which format is elf32-sh-linux:
 
-> +
-> +       return of_genpd_add_device(&pd_args, dev);
->  }
->  #else
->  static inline int board_staging_add_dev_domain(struct platform_device *pdev,
-> --
-> 2.25.1
->
+  $ sh4-linux-objdump -d drivers/soc/litex/litex_soc_ctrl.o | grep format
+  drivers/soc/litex/litex_soc_ctrl.o:     file format elf32-shbig-linux
+
+Link: https://lkml.kernel.org/r/20210210150435.2171567-1-rong.a.chen@intel.com
+Link: https://lore.kernel.org/linux-mm/202101261118.GbbYSlHu-lkp@intel.com
+Signed-off-by: Rong Chen <rong.a.chen@intel.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Yoshinori Sato <ysato@users.osdn.me>
+Cc: Rich Felker <dalias@libc.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ scripts/recordmcount.pl | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
+index 2033af758173c..b483d9e62bee9 100755
+--- a/scripts/recordmcount.pl
++++ b/scripts/recordmcount.pl
+@@ -263,7 +263,11 @@ if ($arch eq "x86_64") {
+ 
+     # force flags for this arch
+     $ld .= " -m shlelf_linux";
+-    $objcopy .= " -O elf32-sh-linux";
++    if ($endian eq "big") {
++        $objcopy .= " -O elf32-shbig-linux";
++    } else {
++        $objcopy .= " -O elf32-sh-linux";
++    }
+ 
+ } elsif ($arch eq "powerpc") {
+     $local_regex = "^[0-9a-fA-F]+\\s+t\\s+(\\.?\\S+)";
+-- 
+2.27.0
+
