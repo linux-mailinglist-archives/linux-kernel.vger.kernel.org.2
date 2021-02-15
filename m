@@ -2,304 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEE931C095
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0BB31C09F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhBOR2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:28:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
+        id S232052AbhBOR3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:29:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231866AbhBOQ1v (ORCPT
+        with ESMTP id S232456AbhBOQ2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:27:51 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20557C061797;
-        Mon, 15 Feb 2021 08:27:10 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id v5so11152997lft.13;
-        Mon, 15 Feb 2021 08:27:10 -0800 (PST)
+        Mon, 15 Feb 2021 11:28:45 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00428C061356
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:28:03 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id b14so6899768qkk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 08:28:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FV6VCJqnmDh1otGBmo06V2xl2FJ/aeDw3FKVMAd7wvE=;
-        b=hzP+jSK7OkPtsPJTCxgNTLZqaOY9jXtBJfKuebyHwYFGxs6AClZGfKVEWXDfoLh2AV
-         xYKWkCYo/JKGHimISfGYZrM+cwqxG2kiYd2j0e62KoOFPfcMj/Fowg9/kaphH/8NCEIa
-         PuPMZ6AI9Du4q7pkJlG/u3zYY21Xofgfp5Q/IzaBtZoAer0sQM9+Xk0yavhNIFQwEizC
-         U0BP7Tit3PUO+g1vzpxKH8BM5CNux7d2/M8M3nI23qryhJwAhXhPI8pl2cV/30gp1zJu
-         Wmz3qRuxR6wCFw4aWF41eoYNK9o7MtndTl2jNCLIqIk5Nuz1k0zn0xMDPpmShvm75B5c
-         vOOQ==
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aHVGjnALiPOPuXgV6m+MnfzuhBOeAsUFyy/oek+FHJo=;
+        b=ZvC8pnKKDKcOXwEdfbjC06uVi29fZeu3OMd/DmkmWkDrKXDYGWSGTDKcwsCnItAZHu
+         ewLFBJAUzoQW/ts4Qg0D1sVtlHNOhnhxZ9J3PXD0ujy/RLt3+PILSPC1Vnj6pzb+KjcH
+         xQrhCE8SYnQowxzg1VOG08/bxj+8dYfOf1CfpU786ZsZut26DSgZgdiYu/+gvIN2kdxx
+         wWvC9JlpyQpF5bgyGnXbMgTwSvX8ns0pIiX2aL+Zxkc+UZrF/NmHycbLCNPmE6AZwvZI
+         pTVwSfs9eeVNTVa0MttiMZOrk1GCtQ33/I21EWBHiHHnAb7CcGQVc3ckN0WO7BaXmaEr
+         f9Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FV6VCJqnmDh1otGBmo06V2xl2FJ/aeDw3FKVMAd7wvE=;
-        b=a4rHAFgLgwIa5aI5adWmrIqVfHqs7MGbnel7uEQ1bt6lRbXjY9GTsWT/bWYb/33k0f
-         GCkufj4rpYLJSRaDzb9W7bVlKONcxQY62Q4KKtPEC5i+Yd7P5WFBqIm5BSuTnZI23lun
-         OCeE69yFrzBbpVrxcaBJC2Nz29gXiNLEP7Z6OoyTAbQERcSHohML4nLFOoMv0L0ZY8GI
-         uOSKHhmgViyatkIko+/yfAPPopjCQqEuM6jG88LM3WCXse8fV1tMVX+J7wCmILj+YVwD
-         MZxRz6wZzidJsfYXbZ8y95bfz2b/x1OUsNEFyAKjP8+VrkTmuSewhVIHsY428ngjMeQb
-         o9+w==
-X-Gm-Message-State: AOAM531MswSzWP9cTNoc1S86y/eUb36APGEJReOqx+PsCdKpHGBqYTUl
-        2olAUMZk1C7HoAIlrHkMt2w=
-X-Google-Smtp-Source: ABdhPJxWx3p2QDHHPx5A3UIynUSJTYcuM8yuMWZu9UrxgkNYmKraORM6w/mA2wSyj9h8GwYNke2fwg==
-X-Received: by 2002:a19:fc16:: with SMTP id a22mr8854862lfi.516.1613406428563;
-        Mon, 15 Feb 2021 08:27:08 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id c18sm2826342lft.258.2021.02.15.08.27.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 08:27:08 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 15 Feb 2021 17:27:05 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/2] rcuscale: add kfree_rcu() single-argument scale test
-Message-ID: <20210215162705.GA45713@pc638.lan>
-References: <20210129200505.5273-1-urezki@gmail.com>
- <20210204214648.GL2743@paulmck-ThinkPad-P72>
- <20210209201343.GA15619@pc638.lan>
- <20210210010052.GZ2743@paulmck-ThinkPad-P72>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aHVGjnALiPOPuXgV6m+MnfzuhBOeAsUFyy/oek+FHJo=;
+        b=lyO1PYeL+2hUCWkXKg36xCPuLHUinbEkQRG3TbmBecVnGcQPfu7et0tGK5Xqsw6fy9
+         eDb5i4C1sw5Ye2fDxctddIyvy8nVgtE619unmY1NGKYUhIOF5AaNdvWFtKfaFhOALKJE
+         1VVQiJKXnBxcPFBhpeVDw6+qMGkL6GVMPuftrc8Me1ubpO3Bn3Xrlzp+aldUqJ8oyKya
+         kFzZydusGyoa/CA48I4okCgpq9PaLhjrnZ73YZFZyRkcEapgWOMuZQQq87J1R/5yn2/A
+         +25x9nTtqhmzqBuNAXdVZ+3HKMlOmMzcBRdWBrfScNDCgZIRELVir2y8Tmu0XrQfznWZ
+         loCQ==
+X-Gm-Message-State: AOAM531pygh6sxcP+782TfSOqCmbdSLuHAfcWEr6ee2+wPLhr3b2r2tS
+        oPndIZqh+Gw/9akCRPn3o5lxKtIZY9JGKnp7
+X-Google-Smtp-Source: ABdhPJzMS67fLAlNCW6fQIRfEaMEyptuQBJjy1DW374IA0mimUFgrA0sIJYoLtOjoxK0tCBV1kHFUQ==
+X-Received: by 2002:a05:620a:557:: with SMTP id o23mr727395qko.28.1613406482967;
+        Mon, 15 Feb 2021 08:28:02 -0800 (PST)
+Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id i23sm11319717qtq.42.2021.02.15.08.28.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Feb 2021 08:28:02 -0800 (PST)
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8250: fix display nodes
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210211181002.22922-1-jonathan@marek.ca>
+ <20210211181002.22922-3-jonathan@marek.ca>
+ <CAA8EJprpkvRG79PXkEYUkK1rcyrXFtS39yyquucooiXaxuP_HQ@mail.gmail.com>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <30a1b3ab-0876-a134-2fbe-073a8e8f60c5@marek.ca>
+Date:   Mon, 15 Feb 2021 11:27:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210010052.GZ2743@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAA8EJprpkvRG79PXkEYUkK1rcyrXFtS39yyquucooiXaxuP_HQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:00:52PM -0800, Paul E. McKenney wrote:
-> On Tue, Feb 09, 2021 at 09:13:43PM +0100, Uladzislau Rezki wrote:
-> > On Thu, Feb 04, 2021 at 01:46:48PM -0800, Paul E. McKenney wrote:
-> > > On Fri, Jan 29, 2021 at 09:05:04PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > > To stress and test a single argument of kfree_rcu() call, we
-> > > > should to have a special coverage for it. We used to have it
-> > > > in the test-suite related to vmalloc stressing. The reason is
-> > > > the rcuscale is a correct place for RCU related things.
-> > > > 
-> > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > 
-> > > This is a great addition, but it would be even better if there was
-> > > a way to say "test both in one run".  One way to do this is to have
-> > > torture_param() variables for both kfree_rcu_test_single and (say)
-> > > kfree_rcu_test_double, both bool and both initialized to false.  If both
-> > > have the same value (false or true) both are tested, otherwise only
-> > > the one with value true is tested.  The value of this is that it allows
-> > > testing of both options with one test.
-> > > 
-> > Make sense to me :)
-> > 
-> > >From ba083a543a123455455c81230b7b5a9aa2a9cb7f Mon Sep 17 00:00:00 2001
-> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> > Date: Fri, 29 Jan 2021 19:51:27 +0100
-> > Subject: [PATCH v2 1/1] rcuscale: add kfree_rcu() single-argument scale test
-> > 
-> > To stress and test a single argument of kfree_rcu() call, we
-> > should to have a special coverage for it. We used to have it
-> > in the test-suite related to vmalloc stressing. The reason is
-> > the rcuscale is a correct place for RCU related things.
-> > 
-> > Therefore introduce two torture_param() variables, one is for
-> > single-argument scale test and another one for double-argument
-> > scale test.
-> > 
-> > By default kfree_rcu_test_single and kfree_rcu_test_double are
-> > initialized to false. If both have the same value (false or true)
-> > both are tested in one run, otherwise only the one with value
-> > true is tested. The value of this is that it allows testing of
-> > both options with one test.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  kernel/rcu/rcuscale.c | 33 ++++++++++++++++++++++++++++-----
-> >  1 file changed, 28 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> > index 06491d5530db..0cde5c17f06c 100644
-> > --- a/kernel/rcu/rcuscale.c
-> > +++ b/kernel/rcu/rcuscale.c
-> > @@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
-> >  torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
-> >  torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
-> >  torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
-> > +torture_param(int, kfree_rcu_test_single, 0, "Do we run a kfree_rcu() single-argument scale test?");
-> > +torture_param(int, kfree_rcu_test_double, 0, "Do we run a kfree_rcu() double-argument scale test?");
+On 2/11/21 3:05 PM, Dmitry Baryshkov wrote:
+> On Thu, 11 Feb 2021 at 21:11, Jonathan Marek <jonathan@marek.ca> wrote:
+>>
+>> Apply these fixes to the newly added sm8250 display ndoes
+>>   - Use sm8250 compatibles instead of sdm845 compatibles
+>>   - Remove "notused" interconnect (which apparently was blindly copied from
+>>     my old patches)
+>>   - Use dispcc node example from dt-bindings, removing clocks which aren't
+>>     documented or used by the driver and fixing the region size.
+>>
+>> Note: also removed the mmcx-supply for dispcc which wasn't documented when
+>> it was added. I would have left it there but it is also breaking my
+>> use-case (setting a lower power level than what the bootloader sets?).
 > 
-> Good!  But why int instead of bool?
+> In our use case dispcc does not work w/o mmcx-supply. Compare this
+> with the downstream kernel, which actively uses MMCX domain.
 > 
-> >  static struct task_struct **kfree_reader_tasks;
-> >  static int kfree_nrealthreads;
-> > @@ -641,7 +643,7 @@ kfree_scale_thread(void *arg)
-> >  {
-> >  	int i, loop = 0;
-> >  	long me = (long)arg;
-> > -	struct kfree_obj *alloc_ptr;
-> > +	struct kfree_obj *alloc_ptr[2];
-> 
-> You lost me on this one...
-> 
-> >  	u64 start_time, end_time;
-> >  	long long mem_begin, mem_during = 0;
-> >  
-> > @@ -665,12 +667,33 @@ kfree_scale_thread(void *arg)
-> >  			mem_during = (mem_during + si_mem_available()) / 2;
-> >  		}
-> >  
-> > +		// By default kfree_rcu_test_single and kfree_rcu_test_double are
-> > +		// initialized to false. If both have the same value (false or true)
-> > +		// both are tested in one run, otherwise only the one with value
-> > +		// true is tested.
-> >  		for (i = 0; i < kfree_alloc_num; i++) {
-> > -			alloc_ptr = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
-> > -			if (!alloc_ptr)
-> > -				return -ENOMEM;
-> > +			alloc_ptr[0] = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
-> > +			alloc_ptr[1] = (kfree_rcu_test_single == kfree_rcu_test_double) ?
-> > +				kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL) : NULL;
-> > +
-> > +			// 0 ptr. is freed either over single or double argument.
-> > +			if (alloc_ptr[0]) {
-> > +				if (kfree_rcu_test_single == kfree_rcu_test_double ||
-> > +						kfree_rcu_test_single) {
-> > +					kfree_rcu(alloc_ptr[0]);
-> > +				} else {
-> > +					kfree_rcu(alloc_ptr[0], rh);
-> > +				}
-> > +			}
-> > +
-> > +			// 1 ptr. is always freed over double argument.
-> > +			if (alloc_ptr[1])
-> > +				kfree_rcu(alloc_ptr[1], rh);
-> >  
-> > -			kfree_rcu(alloc_ptr, rh);
-> > +			if (!alloc_ptr[0] ||
-> > +					(kfree_rcu_test_single == kfree_rcu_test_double &&
-> > +						!alloc_ptr[1]))
-> > +				return -ENOMEM;
-> 
-> How about something like this?
-> 
-> 	bool krts = kfree_rcu_test_single || kfree_rcu_test_single == kfree_rcu_test_double;
-> 	bool krtd = kfree_rcu_test_double || kfree_rcu_test_single == kfree_rcu_test_double;
-> 	bool krtb = kfree_rcu_test_single && kfree_rcu_test_double;
-> 	DEFINE_TORTURE_RANDOM(tr);
-> 
-> 	...
-> 
-> 			alloc_ptr = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
-> 			if (!alloc_ptr)
-> 				return -ENOMEM;
-> 			if (krtd || (krtb && (torture_random(&tr) & 0x800)))
-> 				kfree_rcu(alloc_ptr, rh);
-> 			else
-> 				kfree_rcu(alloc_ptr);
-> 
-> >  		}
-> >  
-> >  		cond_resched();
->
-Sorry for my late answer. I got it differently as we discussed offline.
-Please see below the v3. Hope we are on the same page now :)
 
-From e7181d01c5f7fab3418d6df155ccf06aff189328 Mon Sep 17 00:00:00 2001
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Date: Fri, 29 Jan 2021 19:51:27 +0100
-Subject: [PATCH v3 1/1] rcuscale: add kfree_rcu() single-argument scale test
+I sent a v2/v3 leaving the mmcx-supply untouched (I can fix my problem 
+by using rpmhpd_opp_nom in the mmcx-supply instead, so its not a problem 
+with adding it to dispcc). But mmcx-supply still needs to be added to 
+documentation.
 
-To stress and test a single argument of kfree_rcu() call, we
-should to have a special coverage for it. We used to have it
-in the test-suite related to vmalloc stressing. The reason is
-the rcuscale is a correct place for RCU related things.
-
-Therefore introduce two torture_param() variables, one is for
-single-argument scale test and another one for double-argument
-scale test.
-
-By default kfree_rcu_test_single and kfree_rcu_test_double are
-initialized to false. If both have the same value (false or true)
-both are randomly tested, otherwise only the one with value true
-is tested. The value of this is that it allows testing of both
-options with one test.
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/rcuscale.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-index 06491d5530db..0fb540e2b22b 100644
---- a/kernel/rcu/rcuscale.c
-+++ b/kernel/rcu/rcuscale.c
-@@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
- torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
- torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
- torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
-+torture_param(bool, kfree_rcu_test_single, false, "Do we run a kfree_rcu() single-argument scale test?");
-+torture_param(bool, kfree_rcu_test_double, false, "Do we run a kfree_rcu() double-argument scale test?");
- 
- static struct task_struct **kfree_reader_tasks;
- static int kfree_nrealthreads;
-@@ -644,10 +646,13 @@ kfree_scale_thread(void *arg)
- 	struct kfree_obj *alloc_ptr;
- 	u64 start_time, end_time;
- 	long long mem_begin, mem_during = 0;
-+	bool kfree_rcu_test_both;
-+	DEFINE_TORTURE_RANDOM(tr);
- 
- 	VERBOSE_SCALEOUT_STRING("kfree_scale_thread task started");
- 	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
- 	set_user_nice(current, MAX_NICE);
-+	kfree_rcu_test_both = (kfree_rcu_test_single == kfree_rcu_test_double);
- 
- 	start_time = ktime_get_mono_fast_ns();
- 
-@@ -670,7 +675,15 @@ kfree_scale_thread(void *arg)
- 			if (!alloc_ptr)
- 				return -ENOMEM;
- 
--			kfree_rcu(alloc_ptr, rh);
-+			// By default kfree_rcu_test_single and kfree_rcu_test_double are
-+			// initialized to false. If both have the same value (false or true)
-+			// both are randomly tested, otherwise only the one with value true
-+			// is tested.
-+			if ((kfree_rcu_test_single && !kfree_rcu_test_double) ||
-+					(kfree_rcu_test_both && torture_random(&tr) & 0x800))
-+				kfree_rcu(alloc_ptr);
-+			else
-+				kfree_rcu(alloc_ptr, rh);
- 		}
- 
- 		cond_resched();
--- 
-2.20.1
-
+>> Fixes: 7c1dffd471b1 ("arm64: dts: qcom: sm8250.dtsi: add display system nodes")
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sm8250.dtsi | 34 ++++++++--------------------
+>>   1 file changed, 9 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+>> index 947e1accae3a..20a3ff30e924 100644
+>> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+>> @@ -2323,14 +2323,13 @@ usb_2_dwc3: dwc3@a800000 {
+>>                  };
+>>
+>>                  mdss: mdss@ae00000 {
+>> -                       compatible = "qcom,sdm845-mdss";
+>> +                       compatible = "qcom,sm8250-mdss";
+>>                          reg = <0 0x0ae00000 0 0x1000>;
+>>                          reg-names = "mdss";
+>>
+>> -                       interconnects = <&gem_noc MASTER_AMPSS_M0 &config_noc SLAVE_DISPLAY_CFG>,
+>> -                                       <&mmss_noc MASTER_MDP_PORT0 &mc_virt SLAVE_EBI_CH0>,
+>> +                       interconnects = <&mmss_noc MASTER_MDP_PORT0 &mc_virt SLAVE_EBI_CH0>,
+>>                                          <&mmss_noc MASTER_MDP_PORT1 &mc_virt SLAVE_EBI_CH0>;
+>> -                       interconnect-names = "notused", "mdp0-mem", "mdp1-mem";
+>> +                       interconnect-names = "mdp0-mem", "mdp1-mem";
+>>
+>>                          power-domains = <&dispcc MDSS_GDSC>;
+>>
+>> @@ -2356,7 +2355,7 @@ mdss: mdss@ae00000 {
+>>                          ranges;
+>>
+>>                          mdss_mdp: mdp@ae01000 {
+>> -                               compatible = "qcom,sdm845-dpu";
+>> +                               compatible = "qcom,sm8250-dpu";
+>>                                  reg = <0 0x0ae01000 0 0x8f000>,
+>>                                        <0 0x0aeb0000 0 0x2008>;
+>>                                  reg-names = "mdp", "vbif";
+>> @@ -2580,36 +2579,21 @@ opp-358000000 {
+>>
+>>                  dispcc: clock-controller@af00000 {
+>>                          compatible = "qcom,sm8250-dispcc";
+>> -                       reg = <0 0x0af00000 0 0x20000>;
+>> -                       mmcx-supply = <&mmcx_reg>;
+>> +                       reg = <0 0x0af00000 0 0x10000>;
+>>                          clocks = <&rpmhcc RPMH_CXO_CLK>,
+>>                                   <&dsi0_phy 0>,
+>>                                   <&dsi0_phy 1>,
+>>                                   <&dsi1_phy 0>,
+>>                                   <&dsi1_phy 1>,
+>> -                                <0>,
+>> -                                <0>,
+>> -                                <0>,
+>> -                                <0>,
+>> -                                <0>,
+>> -                                <0>,
+>> -                                <0>,
+>> -                                <0>,
+>> -                                <&sleep_clk>;
+>> +                                <&dp_phy 0>,
+>> +                                <&dp_phy 1>;
 > 
-> And this is why I was so confused about the earlier OOMs.  We need
-> something stronger, and not here, but rather inside the above loop.
-> The function rcu_torture_fwd_prog_cond_resched() does what is needed,
-> which needs to be moved to kernel/torture.c or to be a static inline in
-> include/linux/torture.h so that it can be invoked here.
+> There is no dp_phy on sm8250 yet.
 > 
-> The flooding we are looking to emulate has to have frequent trips into
-> userspace, and rcu_torture_fwd_prog_cond_resched() is the way that we
-> emulate those trips.
+>>                          clock-names = "bi_tcxo",
+>>                                        "dsi0_phy_pll_out_byteclk",
+>>                                        "dsi0_phy_pll_out_dsiclk",
+>>                                        "dsi1_phy_pll_out_byteclk",
+>>                                        "dsi1_phy_pll_out_dsiclk",
+>> -                                     "dp_link_clk_divsel_ten",
+>> -                                     "dp_vco_divided_clk_src_mux",
+>> -                                     "dptx1_phy_pll_link_clk",
+>> -                                     "dptx1_phy_pll_vco_div_clk",
+>> -                                     "dptx2_phy_pll_link_clk",
+>> -                                     "dptx2_phy_pll_vco_div_clk",
+>> -                                     "edp_phy_pll_link_clk",
+>> -                                     "edp_phy_pll_vco_div_clk",
+>> -                                     "sleep_clk";
+>> +                                     "dp_phy_pll_link_clk",
+>> +                                     "dp_phy_pll_vco_div_clk";
+>>                          #clock-cells = <1>;
+>>                          #reset-cells = <1>;
+>>                          #power-domain-cells = <1>;
 > 
-> But please make this change be a separate patch.
 > 
-OK. I will have a look at it!
-
---
-Vlad Rezki
+> 
