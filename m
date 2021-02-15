@@ -2,78 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120D431B8A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D37031B894
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhBOMDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:03:51 -0500
-Received: from esa9.hc324-48.eu.iphmx.com ([207.54.69.27]:25404 "EHLO
-        esa9.hc324-48.eu.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230137AbhBOMCt (ORCPT
+        id S230170AbhBOMBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:01:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230101AbhBOMAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:02:49 -0500
-X-Greylist: delayed 404 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Feb 2021 07:02:46 EST
+        Mon, 15 Feb 2021 07:00:37 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAEEC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:59:56 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id cv23so3594099pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:59:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=bmw.de; i=@bmw.de; q=dns/txt; s=mailing1;
-  t=1613390567; x=1644926567;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=1mA8wIgHN+z6L4F5z86ceQfbxFBKQKsTySk3GSWNrIc=;
-  b=aUPqlJGaYdSLXIay5YrnLJEhSlIMsrqffpvOclOFnu/GITa8n+BM9Tx/
-   2xrMX8lt14ABA+PRzdWC3oDjKUEV2MphN1QqzlkDzTO9Wxo6Hyr9jqXnx
-   0fKXVZt1sZOuavVQ6CP2svtnS4Daw70pu+7MVMOsT3acUK2WbobmKl774
-   0=;
-Received: from esagw6.bmwgroup.com (HELO esagw6.muc) ([160.46.252.49]) by
- esa9.hc324-48.eu.iphmx.com with ESMTP/TLS; 15 Feb 2021 12:54:09 +0100
-Received: from esabb2.muc ([160.50.100.34])  by esagw6.muc with ESMTP/TLS;
- 15 Feb 2021 12:54:09 +0100
-Received: from smucm10k.bmwgroup.net (HELO smucm10k.europe.bmw.corp) ([160.48.96.47])
- by esabb2.muc with ESMTP/TLS; 15 Feb 2021 12:54:09 +0100
-Received: from smucm10m.europe.bmw.corp (160.48.96.49) by smucm10k.europe.bmw.corp
- (160.48.96.47) with Microsoft SMTP Server (TLS;
- Mon, 15 Feb 2021 12:54:09 +0100
-Received: from smucm10m.europe.bmw.corp ([160.48.96.49]) by
- smucm10m.europe.bmw.corp ([160.48.96.49]) with mapi id 15.00.1497.010; Mon,
- 15 Feb 2021 12:54:08 +0100
-From:   <Viktor.Rosendahl@bmw.de>
-To:     <rostedt@goodmis.org>
-CC:     <mingo@redhat.com>, <joel@joelfernandes.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Add the latency-collector to tools
-Thread-Topic: [PATCH] Add the latency-collector to tools
-Thread-Index: AQHXAJGP4XBNff+fAUa2aU9NFMM3FKpTTikAgAERnwCABLDZAA==
-Date:   Mon, 15 Feb 2021 11:54:08 +0000
-Message-ID: <d68f3fca6e72e090b56d7097884ac1a3f50f4a18.camel@bmw.de>
-References: <20210126142652.41b961f2@gandalf.local.home>
-         <20210211161742.25386-1-Viktor.Rosendahl@bmw.de>
-         <20210211145648.1e1e1325@gandalf.local.home>
-         <d2a434e4dfa012dcfdf6525f26ffaa04671fcab9.camel@bmw.de>
-In-Reply-To: <d2a434e4dfa012dcfdf6525f26ffaa04671fcab9.camel@bmw.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1C8112EE910BF84FA4222B76BEFAF73A@bmwmail.corp>
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9T76R5wUoQ6QbcA59Hub5qgGpiG4101vCYkJ2djiRCo=;
+        b=Xdeab72MYt/4MBdce4oi3yie43HUKV/20z4HX3pz5bLUk7tI+f6HnUtQVa3a40qvTb
+         ecFqEvZVVT8xC9cp1FzWnqQedrjTwCGrP2h5WUU6A33kQM79To40EoebTJq4j/HfyaUH
+         m1YjnCLa5qoj2q1ymT9CWz1blI6dTAdT2fMUa2toZBYfXbbk7Z3XiSreqGgCYYozXeDd
+         MqrD77H6pQkpoUTzt+dp1ZsVw96gfWHK/MysakzTG/MXfNJa2kSlBOL4W8ULfkpbMrHp
+         4hqsRvXcMeXCTuMWFwP8R6wdAhAbXbfHB3jlMB0WYlukH5/spC945iKZbhtjA2QcGaW7
+         +zMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9T76R5wUoQ6QbcA59Hub5qgGpiG4101vCYkJ2djiRCo=;
+        b=iiRuq3uphPcn9YdTqUyelmryHFo0Qw2cV2Y59astq/XCQeNVaCJOf5MqXDxU53i4dp
+         85dCfynVt69qsf2QJCSwU8n5XLk1/eN7vQUe/k3dZ6h2UdNSPS8GjBJCwET9upS5ep7F
+         rO2tmdtGsr3TB7a5BPwpPC1u0AT82GkgBzr08NJcRReiBfnxVivMp7jX16yjPfCfv+RR
+         3/eyLWFIQTuu0IwdoAlYgS2S8WXwQ0JptOfCJ6SEBvuL9WkraOzDlIs+w0nBdmWaFeik
+         PftabHTRxv30TWaItYNp1bEGzj/fCQ9x8FR3QZHfo42OL3GqC3mAFkOfIJ9edITEwu0c
+         XpWA==
+X-Gm-Message-State: AOAM533DiozFrXhZAOghGm2deTj7yr8eZpTouRIOp4BKSQZPw3m6m8Aw
+        BLubs/c45oCN8sqb/Z2vgo401Q==
+X-Google-Smtp-Source: ABdhPJxyeIoqXJ0bZR6pCINU3u7j0Gjqz6qIZ2C+WQ0CNnZLsez3QVPmXwQ6rbtvNA4AuviLCKIBwQ==
+X-Received: by 2002:a17:90a:7345:: with SMTP id j5mr16120474pjs.176.1613390396064;
+        Mon, 15 Feb 2021 03:59:56 -0800 (PST)
+Received: from localhost ([45.137.216.90])
+        by smtp.gmail.com with ESMTPSA id s135sm19089116pfs.206.2021.02.15.03.59.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 03:59:55 -0800 (PST)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki Poulouse <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Basil Eljuse <Basil.Eljuse@arm.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v1 0/2] perf test: Output sub testing result in cs-etm
+Date:   Mon, 15 Feb 2021 19:59:42 +0800
+Message-Id: <20210215115944.535986-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTAyLTEyIGF0IDEzOjE2ICswMTAwLCBWaWt0b3IgUm9zZW5kYWhsIHdyb3Rl
-Og0KPiANCj4gDQo+IEhvd2V2ZXIsIGZvciBzb21lIHJlYXNvbiBJIGNhbm5vdCByZXByb2R1Y2Ug
-dGhlIGJlaGF2aW9yIG5vdywgYWxsdGhvdWdoIEkgdXNlDQo+IGV4YWN0bHkgdGhlIHNhbWUga2Vy
-bmVsLg0KPiANCj4gQmVjYXVzZSBodW1hbnMgYXJlIG1vcmUgb2Z0ZW4gYXQgZmF1bHQgdGhhbiBj
-b21wdXRlcnMsIEkgY2Fubm90IGRlbnkgdGhlDQo+IHBvc3NpYmlsaXR5IHRoYXQgSSB3b3VsZCBo
-YXZlIG1pc2NvbmZpZ3VyZWQgc29tZXRoaW5nIGFuZCBpdCB3YXMgYWxsIHRoZQ0KPiByZXN1bHQN
-Cj4gb2YgYSBmYXVsdHkgdGVzdC4NCj4gDQoNCkp1c3QgYSBxdWljayB1cGRhdGU6IEkgd2FzIGFi
-bGUgdG8gcmVwcm9kdWNlIHRoaXMgd2VpcmQgYmVoYXZpb3IgdGhhdCBJIHdyb3RlDQphYm91dCBi
-dXQgaXQgdHVybmVkIG91dCB0byBiZSBhIHByb2JsZW0gd2l0aCBteSB0ZXN0aW5nLg0KDQpUaGUg
-dGVzdCB3YXMgZmF1bHR5IGJlY2F1c2Ugb2YgYSBtaXN0YWtlIHRoYXQgSSBoYWQgbWFkZS4NCg0K
-U29ycnkgZm9yIHRoZSBleHRyYSBub2lzZS4NCg0KYmVzdCByZWdhcmRzLA0KDQpWaWt0b3INCg0K
-DQo+IEkgd2lsbCBsZXQgeW91IGtub3cgaWYgY29tZSB1cCB3aXRoIGEgd2F5IG9mIHJlcHJvZHVj
-aW5nIHRoaXMgYmVoYXZpb3IgbGF0ZXIuDQo+IEkNCj4gY2Fubm90IHNwZW5kIG1vcmUgdGltZSBv
-biBpdCByaWdodCBub3cuDQo+IA0KPiA+IA0KDQo=
+The "perf test" can be integrated into testing framework, e.g. Linux
+kernel functional testing (LKFT) [1].  We are not satisfied with only
+outputting the summarized result for Arm CoreSight testing but lacking
+more detailed result for sub testing.
+
+This patch set is to output sub testing result in cs-etm.  Thus the
+testing framework can extract the detailed info and generates reports
+for which sub cases causes failure.
+
+This patch set is cleanly applied on perf/core branch with:
+
+  commit 6db59d357e8e ("perf arm64/s390: Fix printf conversion specifier for IP addresses")
+
+After applied the patches, which is tested on Arm Juno-r2 board with
+option '-v', the output result is shown in below; the introduced sub
+testing result has the format like:
+
+  "CoreSight path testing (CPU0 -> tmc_etf0): PASS".
+
+
+  # perf test 73 -v
+  73: Check Arm CoreSight trace data recording and synthesized samples:
+  --- start ---
+  test child forked, pid 17423
+  Recording trace (only user mode) with path: CPU0 => tmc_etf0
+  Looking at perf.data file for dumping branch samples:       
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:     
+  CoreSight path testing (CPU0 -> tmc_etf0): PASS   
+  Recording trace (only user mode) with path: CPU0 => tmc_etr0
+  Looking at perf.data file for dumping branch samples:       
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:     
+  CoreSight path testing (CPU0 -> tmc_etr0): PASS   
+  Recording trace (only user mode) with path: CPU1 => tmc_etf0
+  Looking at perf.data file for dumping branch samples:       
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:     
+  CoreSight path testing (CPU1 -> tmc_etf0): PASS   
+  Recording trace (only user mode) with path: CPU1 => tmc_etr0
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:     
+  CoreSight path testing (CPU1 -> tmc_etr0): PASS   
+  Recording trace (only user mode) with path: CPU2 => tmc_etf0
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:     
+  CoreSight path testing (CPU2 -> tmc_etf0): PASS   
+  Recording trace (only user mode) with path: CPU2 => tmc_etr0
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:                  
+  CoreSight path testing (CPU2 -> tmc_etr0): PASS        
+  Recording trace (only user mode) with path: CPU3 => tmc_etf0
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:
+  CoreSight path testing (CPU3 -> tmc_etf0): PASS
+  Recording trace (only user mode) with path: CPU3 => tmc_etr0
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:
+  CoreSight path testing (CPU3 -> tmc_etr0): PASS
+  Recording trace (only user mode) with path: CPU4 => tmc_etf0
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:
+  CoreSight path testing (CPU4 -> tmc_etf0): PASS
+  Recording trace (only user mode) with path: CPU4 => tmc_etr0
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:
+  CoreSight path testing (CPU4 -> tmc_etr0): PASS
+  Recording trace (only user mode) with path: CPU5 => tmc_etf0
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:
+  CoreSight path testing (CPU5 -> tmc_etf0): PASS
+  Recording trace (only user mode) with path: CPU5 => tmc_etr0
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:
+  CoreSight path testing (CPU5 -> tmc_etr0): PASS
+  Recording trace with system wide mode
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:
+  CoreSight system wide testing: PASS
+  Recording trace with snapshot mode
+  Looking at perf.data file for dumping branch samples:
+  Looking at perf.data file for reporting branch samples:
+  Looking at perf.data file for instruction samples:
+  CoreSight snapshot testing: PASS
+  test child finished with 0
+  ---- end ----
+  Check Arm CoreSight trace data recording and synthesized samples: Ok
+
+[1] https://lkft.linaro.org/
+
+
+Leo Yan (2):
+  perf test: Suppress logs in cs-etm testing
+  perf test: Output the sub testing result in cs-etm
+
+ tools/perf/tests/shell/test_arm_coresight.sh | 45 ++++++++++----------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
+
+-- 
+2.25.1
+
