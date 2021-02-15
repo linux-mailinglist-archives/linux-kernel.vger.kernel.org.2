@@ -2,126 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA77B31B3CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 02:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8A331B3D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 02:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhBOA6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 19:58:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
+        id S229930AbhBOBIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 20:08:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhBOA4V (ORCPT
+        with ESMTP id S229818AbhBOBH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 19:56:21 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D64C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 16:55:41 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id v3so3894730qtw.4
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 16:55:41 -0800 (PST)
+        Sun, 14 Feb 2021 20:07:59 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973CEC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 17:07:18 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id c8so3692878ljd.12
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 17:07:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DmXO8urGBGXKWgbwPOPHslxHIcQKJ4XGI0OA1QXvVs8=;
-        b=NExpD+bAA7wNpdGZd2PjqmKNRar6hMaGbwvnjp++qxJFN05P6hrJpXQlCciUW35LkI
-         +G5KwTCl0aG4TDQCVrES3M2CfQdA2WDCdijWDivj3qs5nJtMZTr0Lk4vOz1BqCblWZcH
-         A6IJH5ZKcjPWZnILfSJW3ZvqFY/K+szrfbQP6ycWRqZMAcPvON5pamInbVD8NyjmFwUT
-         /Khb8PdedyFbpYPgHNt0ZDrmSREFmgpCIAZu9tISnmRoEwcxQzjGHeA4OK3aNvkgPU8W
-         3YQ+MteqCioVazKPbSrxqKaLNlF5gGsdn744iNNuFbOR7X1ubL7u1K8sOI+Fbq8Aibut
-         9veA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8oLEqXUvdqy1QH/cRggvF58640ngzAUjBT8Tfk3Wjwg=;
+        b=eb+VDAyVwB6RZ6vXNDSIXjjY5/KGJonBZpcw4InpSNpoqcKC9wCYBknhMsgf9sPklg
+         GzCvnbIRKgTg7gtA7teRfKAGGFk9BR9qw3HHsG7GJ3+trFjsmHXqEUXRQMhyaGXIHFPG
+         +BYG0bBsO6r2Y7DOTssLQQLnPqsDN5e1ysQAo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=DmXO8urGBGXKWgbwPOPHslxHIcQKJ4XGI0OA1QXvVs8=;
-        b=O+C5N49ziUOhkGNDoOuVW6POA/V83X5JPhrsawqBpwxwLrxmMGsX7UUKPmDBsXlo71
-         0nDSMXpxVb+e8apn/ZW62P90JXGVMp1YL3+zKrszwmXqrooJxzBhIRj21RPlQPuz2+w9
-         CnsRmfufM9kpAW+IO0PECT2+hQUlTHg5ZtnP8DrncE7XpfVwASaafrBNBOeflTWG1XSZ
-         6XF3pTBj6Cac2i54EBFV4zijF6r8P8APlfl+hh8fHAXpNBKDK8Pn3pkhRXwpMdi16xku
-         4MlBsQMA6HKwXLilOxW2ODTnQJZFzUuXwZ/phSp7fc5t8HzGzutTjWBtk0pupb+LWJKG
-         i2wQ==
-X-Gm-Message-State: AOAM533Z+b4F7Ya8s2tWURn1A8NN7kHs3AXoVwiksseVe812OdOZBfpD
-        J0r3M+ZxgWHQKf/Q08Y5JXQZcWg6pB54fQ==
-X-Google-Smtp-Source: ABdhPJyLE9ZKtHVKrfgDbDqmcnh/ujCnQDo9LNBlzrkCj6PYO7z+trzEUA4TWxUxcuaJ/0fCR3PbGQ==
-X-Received: by 2002:aed:2d45:: with SMTP id h63mr12059007qtd.239.1613350540388;
-        Sun, 14 Feb 2021 16:55:40 -0800 (PST)
-Received: from OpenSuse ([138.199.10.7])
-        by smtp.gmail.com with ESMTPSA id g13sm3768615qtp.23.2021.02.14.16.55.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Feb 2021 16:55:39 -0800 (PST)
-Date:   Mon, 15 Feb 2021 06:25:33 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.11
-Message-ID: <YCnGhWm2qLl0v/+q@OpenSuse>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHk-=wg8LpRi9+P2_V+ehJ2_EoJifNh2QmVf47aLXfkCd-1UAQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8oLEqXUvdqy1QH/cRggvF58640ngzAUjBT8Tfk3Wjwg=;
+        b=HenvGp8k69Xy8Oa2eJGnhQYcXVAsrKGM3Nk4nmMi7pUMDdRIH7ywW7WWCwf9UiVm6c
+         nnKRv6oHbRtxO3C4PBwyxYwsI0Dt3g6UfquEBuMno//sb8dbHZfKL2L9m28V0gAAeRY2
+         m12HHsIuD2lL78qPxccflRD5JN8DzCB8zBOUvHsHXNBZzPRXzz45iWgKEtWmQ6kCGLsl
+         W7TayxjRJvR43GnIItEndXAT9tRWaPezYWjXcOxUTa9v8k2awiXimaRYbYN22wLk0820
+         o7LXq51vsdP91XgzeGVUNwJjeAF3bERHsOpuFgOvy616SH34E5dloIGToKrYQB0Dc2cH
+         jFgA==
+X-Gm-Message-State: AOAM533lDHZ57dpEvKFWPKnVAdf3IyYlGR2ZaFIVcdIy8bX6DuhNmqcT
+        oDO8WTQ7RWjXvnpjD7dbB2KYJWUAZrJOBQ==
+X-Google-Smtp-Source: ABdhPJwsBb2RPnyrVZjy0b3NHN0jvD4JAZ2zK7JgihnIxzswLr32MLY9J2lzGufYXXWFQ4Yz9pI+gw==
+X-Received: by 2002:a2e:bc0e:: with SMTP id b14mr7987715ljf.212.1613351236486;
+        Sun, 14 Feb 2021 17:07:16 -0800 (PST)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id q24sm200098lfa.76.2021.02.14.17.07.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Feb 2021 17:07:16 -0800 (PST)
+Received: by mail-lj1-f173.google.com with SMTP id c17so4887639ljn.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 17:07:16 -0800 (PST)
+X-Received: by 2002:a05:651c:112:: with SMTP id a18mr8181174ljb.465.1613350911576;
+ Sun, 14 Feb 2021 17:01:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vbYI1gYA5RfZZPVb"
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg8LpRi9+P2_V+ehJ2_EoJifNh2QmVf47aLXfkCd-1UAQ@mail.gmail.com>
+References: <CAHk-=wj-k86FOqAVQ4ScnBkX3YEKuMzqTEB2vixdHgovJpHc9w@mail.gmail.com>
+ <591237.1612886997@warthog.procyon.org.uk> <1330473.1612974547@warthog.procyon.org.uk>
+ <1330751.1612974783@warthog.procyon.org.uk> <CAHk-=wjgA-74ddehziVk=XAEMTKswPu1Yw4uaro1R3ibs27ztw@mail.gmail.com>
+ <27816.1613085646@warthog.procyon.org.uk> <CAHk-=wi68OpbwBm6RCodhNUyg6x8N7vi5ufjRtosQSPy_EYqLA@mail.gmail.com>
+ <860729.1613348577@warthog.procyon.org.uk>
+In-Reply-To: <860729.1613348577@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 14 Feb 2021 17:01:35 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh7xY3UF7zEc0BNVNjOox59jYBW-Gfi7=emm+BXPWc6nQ@mail.gmail.com>
+Message-ID: <CAHk-=wh7xY3UF7zEc0BNVNjOox59jYBW-Gfi7=emm+BXPWc6nQ@mail.gmail.com>
+Subject: Re: [GIT PULL] fscache: I/O API modernisation and netfs helper library
+To:     David Howells <dhowells@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        ceph-devel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-cachefs@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---vbYI1gYA5RfZZPVb
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 14:45 Sun 14 Feb 2021, Linus Torvalds wrote:
->Nothing unexpected or particularly scary happened this week, so here
->we are - with 5.11 tagged and pushed out.
+On Sun, Feb 14, 2021 at 4:23 PM David Howells <dhowells@redhat.com> wrote:
 >
->In fact, it's a smaller-than-average set of commits from rc7 to final,
->which makes me happy. And I already have several pull requests lined
->up for tomorrow, so we're all set for the merge window to start.
->
->But in the meantime - and yes, I know it's Valentine's Day here in the
->US - maybe give this release a good testing before you go back and
->play with development kernels. All right? Because I'm sure your SO
->will understand.
->
+> Anyway, I have posted my fscache modernisation patches multiple times for
+> public review, I have tried to involve the wider community in aspects of the
+> development on public mailing lists and I have been including the maintainers
+> in to/cc.
 
-Here we go ....... :)
+So then add those links and the cc's to the commit logs, so that I can
+*see* them.
 
-bhaskar@OpenSuse_06:22:58_Mon Feb 15:~> rc-kernel-pull-build-boot.sh
-We have new RC kernel
-remote: Enumerating objects: 6, done.
-remote: Counting objects: 100% (6/6), done.
-remote: Compressing objects: 100% (4/4), done.
-remote: Total 4 (delta 2), reused 0 (delta 0), pack-reused 0
-Unpacking objects: 100% (4/4), 868 bytes | 289.00 KiB/s, done.
- From https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux
-    28a173387388..f40ddce88593  master     -> origin/master
-     * [new tag]                   v5.11      -> v5.11
-     Updating 28a173387388..f40ddce88593
-     Fast-forward
-      Makefile | 4 ++--
-       1 file changed, 2 insertions(+), 2 deletions(-)
-       We are fine ..pls proceed..
+I'm done with this discussion.
 
+If I see a pull request from you, I DO NOT WANT TO HAVE TO HAVE A
+WEEK-LONG EMAIL THREAD ABOUT HOW I CANNOT SEE THAT IT HAS EVER SEEN
+ANY REVIEW.
 
+So if all I see is "Signed-off-by:" from you, I will promptly throw
+that pull request into the garbage, because it's just not worth my
+time to try to have to get you kicking and screaming to show that
+others have been involved.
 
-~Bhaskar
+Can you not understand that?
 
---vbYI1gYA5RfZZPVb
-Content-Type: application/pgp-signature; name="signature.asc"
+When I get that pull request, I need to see that yes, this has been
+reviewed, people have been involved, and yes, it's been in linux-next.
 
------BEGIN PGP SIGNATURE-----
+I want to see "reviewed-by" and "tested-by", I want to see "cc", and I
+want to see links to submission threads with discussion showing that
+others actually were involved.
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmApxoUACgkQsjqdtxFL
-KRVyLwgAzyWx4g5Nnwx5sQekCvTquWreN/3AnSswnDizVstgR/jC9gvu3/i3cSg+
-yOyQ7OrFjzQE+Rp37iXuQls/ErR4STjvlCHjbRpIt2tkzmPLev+aHV2W491XatC1
-XtpGYope7QQhhbbb3FxmRgPK2mg4l9VVOhhyKe/x6qtspi7eJZye0J5FvYJJm1Kv
-6wrs2pGRX7e3mPR2PDgL/HkqF8ZuGb3dnZAQCA6X/w14ZWS45uQbNxpzgds829sJ
-FgKdHdIK6da5XzvV36IX0IHwgotdjOo+gR9p/QwkOlyANU2VWuaUZkBN+ZP04Q+2
-p5Z9nLbMqPjvNVN0cnHl73Q5xV/Z5w==
-=skxD
------END PGP SIGNATURE-----
+I do *not* want to see just a single signed-off-by line from you, and
+then have to ask for "has anybody else actually seen this and reviewed
+it".
 
---vbYI1gYA5RfZZPVb--
+Look, here's an entirely unrelated example from a single fairly recent
+trivial one-liner memory leak fix:
+
+    Fixes: 87c715dcde63 ("scsi: scsi_debug: Add per_host_store option")
+    Link: https://lore.kernel.org/r/20210208111734.34034-1-mlombard@redhat.com
+    Acked-by: Douglas Gilbert <dgilbert@interlog.com>
+    Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
+    Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+
+that's from a quite a trivial commit. Yes, it's trivial, but it could
+still be wrong, of course. And if somebody ever reports that it causes
+problems despite how simple it was, look at what I have: I have three
+people to contact, and I have a pointer to the actual original
+submission of the patch.
+
+Do we have that for all our commits? No. But it's also not at all
+unusual any more, and in fact many commits have even more, with
+testing etc.
+
+And yes, sometimes the test results and acks come back later after
+you've already pushed the changes out etc, and no, it's generally not
+worth rebasing for that - maybe others have now started to rely on
+whatever public branch you have. Which is why the "Link:" is useful,
+so that if things come in later, the discussion can still be found.
+But quite often, you shouldn't have pushed out some final branch
+before you've gotten at least *some* positive response from people, so
+I do kind of expect some "Acked-by" etc in the commit itself.
+
+THAT is what you need to aim for.
+
+And yes, I'm picking on you. Because we've had this problem before.
+I've complained when you've sent me pull requests that don't even
+build, that you in fact had been told by linux-next didn't build, and
+you still sent them to me.
+
+And as a result, I've asked for more involvement from other people before.
+
+So now I'm clarifying that requirement - I  absolutely need to see
+that it has actually seen testing, that it has seen other people being
+involved, and that it isn't just you throwing spaghetti at the wall to
+see what sticks.
+
+And I'm not going to do that for every pull request. I want to see
+that data *in* the pull request itself.
+
+            Linus
