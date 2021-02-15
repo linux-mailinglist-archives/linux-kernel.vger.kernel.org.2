@@ -2,34 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E0231BF98
+	by mail.lfdr.de (Postfix) with ESMTP id 66C7931BF97
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbhBOQnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:43:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49202 "EHLO mail.kernel.org"
+        id S231814AbhBOQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:42:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231592AbhBOPiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:38:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C751864EA6;
-        Mon, 15 Feb 2021 15:33:52 +0000 (UTC)
+        id S231603AbhBOPiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:38:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 337D464EEB;
+        Mon, 15 Feb 2021 15:33:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403233;
-        bh=KqdBtz4ottQ7UIvyckd2fMKx7JZ7EDOeuUQjGaqDG/A=;
+        s=korg; t=1613403236;
+        bh=iNhBaqcKo5xlqkXO9BkzW2PKLCoLecJSEpmH4XRm8xQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A/jR1HQnmxFPBRbofUWEGsb4Z86VOJspGo0niGdkK3GO+2xZCUUueuCrtIJfLqm/D
-         hVSc36XvxCdKX5Xj0Y0zwZGcKgP9pL/2ltM8WClrSKAJojQvBkAeJkai5h9Guhtep+
-         TnNCEMKzs4v7oIivwffD6IjN1jDJnv8YXszS4w1M=
+        b=U8sDA6q9YKdvxGpdH1T9VNVLAIOBGUy7QcXIABM2/lVs/4cgiHw6SV70JaGXc0jst
+         SB8aFcaTrC9YFAknSIV04kQYAQnFhotJX8TUHZG2Y7LiZMGG7GQGOynFNasnGd8hEX
+         mePPm2BL6CddIngbQE1f8pG3FcXYAMj/SexGeG+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 042/104] ARM: kexec: fix oops after TLB are invalidated
-Date:   Mon, 15 Feb 2021 16:26:55 +0100
-Message-Id: <20210215152720.831687013@linuxfoundation.org>
+Subject: [PATCH 5.10 043/104] kasan: add explicit preconditions to kasan_report()
+Date:   Mon, 15 Feb 2021 16:26:56 +0100
+Message-Id: <20210215152720.867409732@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,202 +52,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-[ Upstream commit 4d62e81b60d4025e2dfcd5ea531cc1394ce9226f ]
+[ Upstream commit 49c6631d3b4f61a7b5bb0453a885a12bfa06ffd8 ]
 
-Giancarlo Ferrari reports the following oops while trying to use kexec:
+Patch series "kasan: Fix metadata detection for KASAN_HW_TAGS", v5.
 
- Unable to handle kernel paging request at virtual address 80112f38
- pgd = fd7ef03e
- [80112f38] *pgd=0001141e(bad)
- Internal error: Oops: 80d [#1] PREEMPT SMP ARM
- ...
+With the introduction of KASAN_HW_TAGS, kasan_report() currently assumes
+that every location in memory has valid metadata associated.  This is
+due to the fact that addr_has_metadata() returns always true.
 
-This is caused by machine_kexec() trying to set the kernel text to be
-read/write, so it can poke values into the relocation code before
-copying it - and an interrupt occuring which changes the page tables.
-The subsequent writes then hit read-only sections that trigger a
-data abort resulting in the above oops.
+As a consequence of this, an invalid address (e.g.  NULL pointer
+address) passed to kasan_report() when KASAN_HW_TAGS is enabled, leads
+to a kernel panic.
 
-Fix this by copying the relocation code, and then writing the variables
-into the destination, thereby avoiding the need to make the kernel text
-read/write.
+Example below, based on arm64:
 
-Reported-by: Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-Tested-by: Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+   BUG: KASAN: invalid-access in 0x0
+   Read at addr 0000000000000000 by task swapper/0/1
+   Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+   Mem abort info:
+     ESR = 0x96000004
+     EC = 0x25: DABT (current EL), IL = 32 bits
+     SET = 0, FnV = 0
+     EA = 0, S1PTW = 0
+   Data abort info:
+     ISV = 0, ISS = 0x00000004
+     CM = 0, WnR = 0
+
+  ...
+
+   Call trace:
+    mte_get_mem_tag+0x24/0x40
+    kasan_report+0x1a4/0x410
+    alsa_sound_last_init+0x8c/0xa4
+    do_one_initcall+0x50/0x1b0
+    kernel_init_freeable+0x1d4/0x23c
+    kernel_init+0x14/0x118
+    ret_from_fork+0x10/0x34
+   Code: d65f03c0 9000f021 f9428021 b6cfff61 (d9600000)
+   ---[ end trace 377c8bb45bdd3a1a ]---
+   hrtimer: interrupt took 48694256 ns
+   note: swapper/0[1] exited with preempt_count 1
+   Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+   SMP: stopping secondary CPUs
+   Kernel Offset: 0x35abaf140000 from 0xffff800010000000
+   PHYS_OFFSET: 0x40000000
+   CPU features: 0x0a7e0152,61c0a030
+   Memory Limit: none
+   ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+
+This series fixes the behavior of addr_has_metadata() that now returns
+true only when the address is valid.
+
+This patch (of 2):
+
+With the introduction of KASAN_HW_TAGS, kasan_report() accesses the
+metadata only when addr_has_metadata() succeeds.
+
+Add a comment to make sure that the preconditions to the function are
+explicitly clarified.
+
+Link: https://lkml.kernel.org/r/20210126134409.47894-1-vincenzo.frascino@arm.com
+Link: https://lkml.kernel.org/r/20210126134409.47894-2-vincenzo.frascino@arm.com
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Leon Romanovsky <leonro@mellanox.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/include/asm/kexec-internal.h | 12 +++++++++
- arch/arm/kernel/asm-offsets.c         |  5 ++++
- arch/arm/kernel/machine_kexec.c       | 20 ++++++--------
- arch/arm/kernel/relocate_kernel.S     | 38 ++++++++-------------------
- 4 files changed, 36 insertions(+), 39 deletions(-)
- create mode 100644 arch/arm/include/asm/kexec-internal.h
+ include/linux/kasan.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/include/asm/kexec-internal.h b/arch/arm/include/asm/kexec-internal.h
-new file mode 100644
-index 0000000000000..ecc2322db7aa1
---- /dev/null
-+++ b/arch/arm/include/asm/kexec-internal.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ARM_KEXEC_INTERNAL_H
-+#define _ARM_KEXEC_INTERNAL_H
-+
-+struct kexec_relocate_data {
-+	unsigned long kexec_start_address;
-+	unsigned long kexec_indirection_page;
-+	unsigned long kexec_mach_type;
-+	unsigned long kexec_r2;
-+};
-+
-+#endif
-diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-index a1570c8bab25a..be8050b0c3dfb 100644
---- a/arch/arm/kernel/asm-offsets.c
-+++ b/arch/arm/kernel/asm-offsets.c
-@@ -12,6 +12,7 @@
- #include <linux/mm.h>
- #include <linux/dma-mapping.h>
- #include <asm/cacheflush.h>
-+#include <asm/kexec-internal.h>
- #include <asm/glue-df.h>
- #include <asm/glue-pf.h>
- #include <asm/mach/arch.h>
-@@ -170,5 +171,9 @@ int main(void)
-   DEFINE(MPU_RGN_PRBAR,	offsetof(struct mpu_rgn, prbar));
-   DEFINE(MPU_RGN_PRLAR,	offsetof(struct mpu_rgn, prlar));
- #endif
-+  DEFINE(KEXEC_START_ADDR,	offsetof(struct kexec_relocate_data, kexec_start_address));
-+  DEFINE(KEXEC_INDIR_PAGE,	offsetof(struct kexec_relocate_data, kexec_indirection_page));
-+  DEFINE(KEXEC_MACH_TYPE,	offsetof(struct kexec_relocate_data, kexec_mach_type));
-+  DEFINE(KEXEC_R2,		offsetof(struct kexec_relocate_data, kexec_r2));
-   return 0; 
- }
-diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
-index 5d84ad333f050..2b09dad7935eb 100644
---- a/arch/arm/kernel/machine_kexec.c
-+++ b/arch/arm/kernel/machine_kexec.c
-@@ -13,6 +13,7 @@
- #include <linux/of_fdt.h>
- #include <asm/mmu_context.h>
- #include <asm/cacheflush.h>
-+#include <asm/kexec-internal.h>
- #include <asm/fncpy.h>
- #include <asm/mach-types.h>
- #include <asm/smp_plat.h>
-@@ -22,11 +23,6 @@
- extern void relocate_new_kernel(void);
- extern const unsigned int relocate_new_kernel_size;
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 30d343b4a40a5..646fa165d2cce 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -196,6 +196,13 @@ void kasan_init_tags(void);
  
--extern unsigned long kexec_start_address;
--extern unsigned long kexec_indirection_page;
--extern unsigned long kexec_mach_type;
--extern unsigned long kexec_boot_atags;
--
- static atomic_t waiting_for_crash_ipi;
+ void *kasan_reset_tag(const void *addr);
  
- /*
-@@ -159,6 +155,7 @@ void (*kexec_reinit)(void);
- void machine_kexec(struct kimage *image)
- {
- 	unsigned long page_list, reboot_entry_phys;
-+	struct kexec_relocate_data *data;
- 	void (*reboot_entry)(void);
- 	void *reboot_code_buffer;
++/**
++ * kasan_report - print a report about a bad memory access detected by KASAN
++ * @addr: address of the bad access
++ * @size: size of the bad access
++ * @is_write: whether the bad access is a write or a read
++ * @ip: instruction pointer for the accessibility check or the bad access itself
++ */
+ bool kasan_report(unsigned long addr, size_t size,
+ 		bool is_write, unsigned long ip);
  
-@@ -174,18 +171,17 @@ void machine_kexec(struct kimage *image)
- 
- 	reboot_code_buffer = page_address(image->control_code_page);
- 
--	/* Prepare parameters for reboot_code_buffer*/
--	set_kernel_text_rw();
--	kexec_start_address = image->start;
--	kexec_indirection_page = page_list;
--	kexec_mach_type = machine_arch_type;
--	kexec_boot_atags = image->arch.kernel_r2;
--
- 	/* copy our kernel relocation code to the control code page */
- 	reboot_entry = fncpy(reboot_code_buffer,
- 			     &relocate_new_kernel,
- 			     relocate_new_kernel_size);
- 
-+	data = reboot_code_buffer + relocate_new_kernel_size;
-+	data->kexec_start_address = image->start;
-+	data->kexec_indirection_page = page_list;
-+	data->kexec_mach_type = machine_arch_type;
-+	data->kexec_r2 = image->arch.kernel_r2;
-+
- 	/* get the identity mapping physical address for the reboot code */
- 	reboot_entry_phys = virt_to_idmap(reboot_entry);
- 
-diff --git a/arch/arm/kernel/relocate_kernel.S b/arch/arm/kernel/relocate_kernel.S
-index 72a08786e16eb..218d524360fcd 100644
---- a/arch/arm/kernel/relocate_kernel.S
-+++ b/arch/arm/kernel/relocate_kernel.S
-@@ -5,14 +5,16 @@
- 
- #include <linux/linkage.h>
- #include <asm/assembler.h>
-+#include <asm/asm-offsets.h>
- #include <asm/kexec.h>
- 
- 	.align	3	/* not needed for this code, but keeps fncpy() happy */
- 
- ENTRY(relocate_new_kernel)
- 
--	ldr	r0,kexec_indirection_page
--	ldr	r1,kexec_start_address
-+	adr	r7, relocate_new_kernel_end
-+	ldr	r0, [r7, #KEXEC_INDIR_PAGE]
-+	ldr	r1, [r7, #KEXEC_START_ADDR]
- 
- 	/*
- 	 * If there is no indirection page (we are doing crashdumps)
-@@ -57,34 +59,16 @@ ENTRY(relocate_new_kernel)
- 
- 2:
- 	/* Jump to relocated kernel */
--	mov lr,r1
--	mov r0,#0
--	ldr r1,kexec_mach_type
--	ldr r2,kexec_boot_atags
-- ARM(	ret lr	)
-- THUMB(	bx lr		)
--
--	.align
--
--	.globl kexec_start_address
--kexec_start_address:
--	.long	0x0
--
--	.globl kexec_indirection_page
--kexec_indirection_page:
--	.long	0x0
--
--	.globl kexec_mach_type
--kexec_mach_type:
--	.long	0x0
--
--	/* phy addr of the atags for the new kernel */
--	.globl kexec_boot_atags
--kexec_boot_atags:
--	.long	0x0
-+	mov	lr, r1
-+	mov	r0, #0
-+	ldr	r1, [r7, #KEXEC_MACH_TYPE]
-+	ldr	r2, [r7, #KEXEC_R2]
-+ ARM(	ret	lr	)
-+ THUMB(	bx	lr	)
- 
- ENDPROC(relocate_new_kernel)
- 
-+	.align	3
- relocate_new_kernel_end:
- 
- 	.globl relocate_new_kernel_size
 -- 
 2.27.0
 
