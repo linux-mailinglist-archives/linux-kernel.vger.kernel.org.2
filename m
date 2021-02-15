@@ -2,262 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9618C31C2A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 667DF31C2A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 20:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhBOTtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 14:49:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229802AbhBOTtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:49:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80C1564DE0;
-        Mon, 15 Feb 2021 19:48:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613418503;
-        bh=7P7ywkXtXv5qTbHgZ/5qoDL3gQu62y8OrUQD7YwV8Ww=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EN1+uUrMuThAGCa+TRFQ8nQ7el4cznY5YoCViDZ5J6o3hOOkDWERJo8I4/Nv9pND1
-         ONqpVMw+gtaeX4iKCmRoLrK+Wxn7w3QWWSpeHUtD7xKmIO52FcKAmWYQuxWZAofbX/
-         1vCWwoNt1Lyv6qt6LZCqf7ybxOwYhkhdkbN6AnO2vPEoUh4W8+HnvIxTta36C4bEjA
-         8GfeVmhwfnEsqtOfKL58jAlEBKRPcz89UnNk7iXsNxyDiGvfCoECXPf5X5VISPwKHT
-         WsBi8ogACdqVsSWwqxL+Bi2sP+4egeCbk8c1rUW/I4GR7KXPfgDNIXl6+D4nhc+9ym
-         xaP5QUJoni7Ew==
-Date:   Mon, 15 Feb 2021 11:48:22 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     <vincent.cheng.xh@renesas.com>
-Cc:     <richardcochran@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 net-next 1/3] ptp: ptp_clockmatrix: Add
- wait_for_sys_apll_dpll_lock.
-Message-ID: <20210215114822.4f698920@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1613192766-14010-2-git-send-email-vincent.cheng.xh@renesas.com>
-References: <1613192766-14010-1-git-send-email-vincent.cheng.xh@renesas.com>
-        <1613192766-14010-2-git-send-email-vincent.cheng.xh@renesas.com>
+        id S230194AbhBOTwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 14:52:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhBOTwi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 14:52:38 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC3EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:51:58 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id df22so9628716edb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 11:51:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ggXAchxe/nqZ+4UDDGVutSsPhwxIlT0f1nO/trNU9oc=;
+        b=IarEwOMOZA33L50oHF3AETzMXemhi0EnToMfhtmZUS8KKm/d0nN+tkOx4xdwD2VTdn
+         WD5BVHnFcSLwHfXjAnYDdhNkNAP7SCxaxnKm8qQAV1i64056rPwLJJ2j2pU0zNNaRvHw
+         43CyDY40W/dharZ3Two4gbZkV6v6WUSmnsu85LWL+H6lNJTpggZFoR/auGcAE8vGCe6F
+         J46nC7kFBtHIUHx+W8Ns6SLSt2Va0IKY/ZrXVAgVRFl0WqvnxM+weHG1wBeWRNHtC5ph
+         3i1TeyBzgvHMLDdcE3N8dvJB/qdfF0OarRY3HS4CNooxK6aOlWAiqLGxkyfsnlXY2m+3
+         3H/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ggXAchxe/nqZ+4UDDGVutSsPhwxIlT0f1nO/trNU9oc=;
+        b=MxWu8C+PUaQUcawuqzsNScF/LWxIDu3kCngHb/nTHPWRnS+hHFOaBGkfX/utCEjqOU
+         BXSCAzaxifWe3DkWUawtKIg1nkxKng0aIN17Q2U+R5Mv6116SeWU7XP8kTQnkSa1WUlU
+         nFKIvph5/z5wCzobUnja3zz0TfeeJIBoSjvw44fc61GwPZOUez5Zx8dcYWFhZ3UD2iQ1
+         GCR4DVTWDwWKwCN1NgKdnKwoYiGx8oVuq6fUG053gOkWo/JwRnxRZJ21WDxhU6YPsEQN
+         eTKK8SA2qQi8WLZeNwhM7GzoDwU9mPpmNxuBHyxPSW6n0VaUcIrnS/VrZpMsGBP9Bn59
+         doSQ==
+X-Gm-Message-State: AOAM532t/vUOL5SYmBCBP63HSttfJ/TGk2+rGIvhg6L492mVMG198GSL
+        DPO31gCWwpDsnubq+TojyUxHQA8yR6c4MsYsVsxPgg==
+X-Google-Smtp-Source: ABdhPJyof1WMeYuO/LOIuwozPZ/M/dMJEhGnpPp9NrjZXVqoSJFYUy5W8dTWP0sEIEjNai5f72V89i+osUosOBSYxh8=
+X-Received: by 2002:a05:6402:3508:: with SMTP id b8mr17395465edd.341.1613418717238;
+ Mon, 15 Feb 2021 11:51:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210215192237.362706-1-pasha.tatashin@soleen.com>
+ <20210215192237.362706-2-pasha.tatashin@soleen.com> <CAMj1kXGxyV0=s6jVZ674O_2amkYSnwSnubnozbzD6g6GOMJE-A@mail.gmail.com>
+ <CA+CK2bA7Xz0Zg5phsQi3mhnp+_PHLAAGRLgFTQNw1FjBHaXsHA@mail.gmail.com> <CAMj1kXESuD-von_dtzYcUMwK7TLF=qTki9bd8_iTo_isBwj13g@mail.gmail.com>
+In-Reply-To: <CAMj1kXESuD-von_dtzYcUMwK7TLF=qTki9bd8_iTo_isBwj13g@mail.gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Mon, 15 Feb 2021 14:51:21 -0500
+Message-ID: <CA+CK2bDJ7Y2-vEpZrZ0fzigAfDgcJOmjhmin_GjTqioYXAYB3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] arm64: mm: correct the inside linear map
+ boundaries during hotplug check
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        James Morris <jmorris@namei.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 13 Feb 2021 00:06:04 -0500 vincent.cheng.xh@renesas.com wrote:
-> From: Vincent Cheng <vincent.cheng.xh@renesas.com>
-> 
-> Part of the device initialization aligns the rising edge of the output
-> clock to the internal 1 PPS clock. If the system APLL and DPLL is not
-> locked, then the alignment will fail and there will be a fixed offset
-> between the internal 1 PPS clock and the output clock.
-> 
-> After loading the device firmware, poll the system APLL and DPLL for
-> locked state prior to initialization, timing out after 2 seconds.
-> 
-> Signed-off-by: Vincent Cheng <vincent.cheng.xh@renesas.com>
-> Acked-by: Richard Cochran <richardcochran@gmail.com>
+On Mon, Feb 15, 2021 at 2:34 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Mon, 15 Feb 2021 at 20:30, Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
+> >
+> > > Can't we simply use signed arithmetic here? This expression works fine
+> > > if the quantities are all interpreted as s64 instead of u64
+> >
+> > I was thinking about that, but I do not like the idea of using sign
+> > arithmetics for physical addresses. Also, I am worried that someone in
+> > the future will unknowingly change it to unsigns or to phys_addr_t. It
+> > is safer to have start explicitly set to 0 in case of wrap.
+>
+> memstart_addr is already a s64 for this exact reason.
 
-> diff --git a/drivers/ptp/idt8a340_reg.h b/drivers/ptp/idt8a340_reg.h
-> index a664dfe..ac524cf 100644
-> --- a/drivers/ptp/idt8a340_reg.h
-> +++ b/drivers/ptp/idt8a340_reg.h
-> @@ -122,6 +122,8 @@
->  #define OTP_SCSR_CONFIG_SELECT            0x0022
->  
->  #define STATUS                            0xc03c
-> +#define DPLL_SYS_STATUS                   0x0020
-> +#define DPLL_SYS_APLL_STATUS              0x0021
->  #define USER_GPIO0_TO_7_STATUS            0x008a
->  #define USER_GPIO8_TO_15_STATUS           0x008b
->  
-> @@ -707,4 +709,12 @@
->  /* Bit definitions for the DPLL_CTRL_COMBO_MASTER_CFG register */
->  #define COMBO_MASTER_HOLD                 BIT(0)
->  
-> +/* Bit definitions for DPLL_SYS_STATUS register */
-> +#define DPLL_SYS_STATE_MASK               (0xf)
-> +
-> +/* Bit definitions for SYS_APLL_STATUS register */
-> +#define SYS_APLL_LOSS_LOCK_LIVE_MASK       BIT(0)
-> +#define SYS_APLL_LOSS_LOCK_LIVE_LOCKED     0
-> +#define SYS_APLL_LOSS_LOCK_LIVE_UNLOCKED   1
-> +
->  #endif
-> diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
-> index 051511f..3de8411 100644
-> --- a/drivers/ptp/ptp_clockmatrix.c
-> +++ b/drivers/ptp/ptp_clockmatrix.c
-> @@ -335,6 +335,79 @@ static int wait_for_boot_status_ready(struct idtcm *idtcm)
->  	return -EBUSY;
->  }
->  
-> +static int read_sys_apll_status(struct idtcm *idtcm, u8 *status)
-> +{
-> +	int err;
-> +
-> +	err = idtcm_read(idtcm, STATUS, DPLL_SYS_APLL_STATUS, status,
-> +			 sizeof(u8));
-> +	return err;
+memstart_addr is basically an offset and it must be negative. For
+example, this would not work if it was not signed:
+#define vmemmap ((struct page *)VMEMMAP_START - (memstart_addr >> PAGE_SHIFT))
 
-Please remove the unnecessary 'err' variable:
+However, on powerpc it is phys_addr_t type.
 
-	return idtcm_read(..
+>
+> Btw, the KASLR check is incorrect: memstart_addr could also be
+> negative when running the 52-bit VA kernel on hardware that is only
+> 48-bit VA capable.
 
-There are bots scanning the tree for such code simplifications, 
-better to get this right from the start than deal with flood of 
-simplifications patches.
+Good point!
 
-> +}
-> +
-> +static int read_sys_dpll_status(struct idtcm *idtcm, u8 *status)
-> +{
-> +	int err;
-> +
-> +	err = idtcm_read(idtcm, STATUS, DPLL_SYS_STATUS, status, sizeof(u8));
-> +
-> +	return err;
+if (IS_ENABLED(CONFIG_ARM64_VA_BITS_52) && (vabits_actual != 52))
+    memstart_addr -= _PAGE_OFFSET(48) - _PAGE_OFFSET(52);
 
-same here
+So, I will remove IS_ENABLED(CONFIG_RANDOMIZE_BASE) again.
 
-> +}
-> +
-> +static int wait_for_sys_apll_dpll_lock(struct idtcm *idtcm)
-> +{
-> +	const char *fmt = "%d ms SYS lock timeout: APLL Loss Lock %d  DPLL state %d";
-> +	u8 i = LOCK_TIMEOUT_MS / LOCK_POLL_INTERVAL_MS;
-
-Using msleep() and loops is quite inaccurate. I'd recommend you switch
-to:
-
-	unsigned long timeout = jiffies + msecs_to_jiffies(LOCK_TIMEOUT_MS);
-
-And then use:
-
-	while (time_is_after_jiffies(timeout))
-
-For the condition.
-
-> +	u8 apll = 0;
-> +	u8 dpll = 0;
-> +
-> +	int err;
-
-No empty lines between variables, please.
-
-> +
-> +	do {
-> +		err = read_sys_apll_status(idtcm, &apll);
-> +
-
-No empty lines between call and the if, please.
-
-> +		if (err)
-> +			return err;
-> +
-> +		err = read_sys_dpll_status(idtcm, &dpll);
-> +
-> +		if (err)
-> +			return err;
-> +
-> +		apll &= SYS_APLL_LOSS_LOCK_LIVE_MASK;
-> +		dpll &= DPLL_SYS_STATE_MASK;
-> +
-> +		if ((apll == SYS_APLL_LOSS_LOCK_LIVE_LOCKED)
-
-parenthesis around a == b are unnecessary.
-
-> +		    && (dpll == DPLL_STATE_LOCKED)) {
-> +			return 0;
-> +		} else if ((dpll == DPLL_STATE_FREERUN) ||
-> +			   (dpll == DPLL_STATE_HOLDOVER) ||
-> +			   (dpll == DPLL_STATE_OPEN_LOOP)) {
-
-same here.
-
-> +			dev_warn(&idtcm->client->dev,
-> +				"No wait state: DPLL_SYS_STATE %d", dpll);
-
-It looks like other prints in this function use \n at the end of the
-lines, should we keep it consistent?
-
-> +			return -EPERM;
-> +		}
-> +
-> +		msleep(LOCK_POLL_INTERVAL_MS);
-> +		i--;
-> +
-
-unnecessary empty line
-
-> +	} while (i);
-> +
-> +	dev_warn(&idtcm->client->dev, fmt, LOCK_TIMEOUT_MS, apll, dpll);
-
-I'd recommend leaving the format in place, that way static code
-checkers can validate the arguments.
-
-> +	return -ETIME;
-
-> +}
-> +
-> +static void wait_for_chip_ready(struct idtcm *idtcm)
-> +{
-> +	if (wait_for_boot_status_ready(idtcm))
-> +		dev_warn(&idtcm->client->dev, "BOOT_STATUS != 0xA0");
-
-no new line?
-
-> +
-> +	if (wait_for_sys_apll_dpll_lock(idtcm))
-> +		dev_warn(&idtcm->client->dev,
-> +			 "Continuing while SYS APLL/DPLL is not locked");
-
-And here.
-
-> +}
-> +
->  static int _idtcm_gettime(struct idtcm_channel *channel,
->  			  struct timespec64 *ts)
->  {
-> @@ -2235,8 +2308,7 @@ static int idtcm_probe(struct i2c_client *client,
->  		dev_warn(&idtcm->client->dev,
->  			 "loading firmware failed with %d\n", err);
->  
-> -	if (wait_for_boot_status_ready(idtcm))
-> -		dev_warn(&idtcm->client->dev, "BOOT_STATUS != 0xA0\n");
-> +	wait_for_chip_ready(idtcm);
->  
->  	if (idtcm->tod_mask) {
->  		for (i = 0; i < MAX_TOD; i++) {
-> diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
-> index 645de2c..0233236 100644
-> --- a/drivers/ptp/ptp_clockmatrix.h
-> +++ b/drivers/ptp/ptp_clockmatrix.h
-> @@ -51,6 +51,9 @@
->  #define TOD_WRITE_OVERHEAD_COUNT_MAX		(2)
->  #define TOD_BYTE_COUNT				(11)
->  
-> +#define LOCK_TIMEOUT_MS			(2000)
-> +#define LOCK_POLL_INTERVAL_MS		(10)
-> +
->  #define PEROUT_ENABLE_OUTPUT_MASK	(0xdeadbeef)
->  
->  #define IDTCM_MAX_WRITE_COUNT		(512)
-> @@ -105,6 +108,18 @@ enum scsr_tod_write_type_sel {
->  	SCSR_TOD_WR_TYPE_SEL_MAX = SCSR_TOD_WR_TYPE_SEL_DELTA_MINUS,
->  };
->  
-> +/* Values STATUS.DPLL_SYS_STATUS.DPLL_SYS_STATE */
-> +enum dpll_state {
-> +	DPLL_STATE_MIN = 0,
-> +	DPLL_STATE_FREERUN = DPLL_STATE_MIN,
-> +	DPLL_STATE_LOCKACQ = 1,
-> +	DPLL_STATE_LOCKREC = 2,
-> +	DPLL_STATE_LOCKED = 3,
-> +	DPLL_STATE_HOLDOVER = 4,
-> +	DPLL_STATE_OPEN_LOOP = 5,
-> +	DPLL_STATE_MAX = DPLL_STATE_OPEN_LOOP,
-> +};
-> +
->  struct idtcm;
->  
->  struct idtcm_channel {
-
+I am OK to change start_linear_pa, end_linear_pa to signed, but IMO
+what I have now is actually safer to make sure that does not break
+again in the future.
