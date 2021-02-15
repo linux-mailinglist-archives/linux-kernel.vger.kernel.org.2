@@ -2,99 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB83631B808
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDB331B80D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhBOLc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 06:32:58 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:50534 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229805AbhBOLcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 06:32:50 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 28D97FB03;
-        Mon, 15 Feb 2021 12:32:08 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id JGyDCSRY25EI; Mon, 15 Feb 2021 12:32:06 +0100 (CET)
-Date:   Mon, 15 Feb 2021 12:32:05 +0100
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ramsay Jones <ramsay@ramsayjones.plus.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-usb@vger.kernel.org,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Subject: Re: [PATCH v2 2/4] usb: typec: tps6598x: Add trace event for status
- register
-Message-ID: <YCpbtV8TyIuCmy+4@bogon.m.sigxcpu.org>
-References: <651ac50b9ff6ed3db8cab9f176514900f6a02a0c.1613131413.git.agx@sigxcpu.org>
- <20210213031237.GP219708@shao2-debian>
- <YClYh7pqDlbXy8qh@bogon.m.sigxcpu.org>
- <6a8eb07f-16d5-f461-cf0b-6c4aaf93b014@ramsayjones.plus.com>
- <CAHk-=wjCAVj7J+KAC1pvtdeM-c76oXZq7k=v40-maKjTo6qfVw@mail.gmail.com>
- <20210214204127.ezrlr4u76onqcxl7@mail>
+        id S229945AbhBOLdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 06:33:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229805AbhBOLdP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 06:33:15 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC9AC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:32:28 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id i23so4305061ejg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:32:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=h0PbOw1QnykMU+cJkTod7obeXaHoBYiSFuCrLUWBeAA=;
+        b=WlLw7XtuJt/3SCNQ9pkKVKhoKzyvOLEeV+Yy3uoDo3NxxdhYpvvGIKNQeswZHrzyEn
+         uHjgcyIVO959TN+ssBwC2uA65KpHW5NQrYUAwWohdIXMBtQ6Wr8nJMuIfh485C6Dymtn
+         8abZqXcW/iVeEM+6VHkSeCF8S6GFmOYJFq7CFgL5ObAog1dIz2ZT7FRiFOp3z4K1yqG6
+         DKPF1g+7T44lPKaqkWrSaatCU7ifc5LL/VzrnrAsdGPSelIdHTDY26DOBDoRxEM+MbG5
+         YBbqVVx68RIErlOxeBFOWMnJ1Ls8ks8XsjgvoBAK2LkzSKFQBNVYrarvko7tJupxQGHK
+         5z9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h0PbOw1QnykMU+cJkTod7obeXaHoBYiSFuCrLUWBeAA=;
+        b=VOmtu/bPTtmONOoIHFr4Ttx2hI3WOJkO09Kd6assYaF/+tBm60o2uj3Lhclyu9VRKP
+         G3vpYJPTQdvAsW/heRRkFTvKOqN2XUq3qjfo7P9kz8apxP0OcI8Zlhv6EEol+FuPE7Ot
+         0NaJGq51bazlIb4wo7lw7Wp0+RrDuKqie3Ickc+Przdi/gJb9q9S/dLgPniWngkFWg0f
+         GRWWXx3DLjotRhUflt4zKlecOM6hIASAPCAJUtbwnkJcyuE4CRlcdQqNhq17yRZzCIUc
+         DyFWZG7Khp7SXhfLW97eZzaEHxvGChFqUXVYtVz/uZVQiJKeLK5paVeGtjNaF5oT7viW
+         Vx/w==
+X-Gm-Message-State: AOAM5335QDGGg541OyaUFZcGPj15JHKmbl7kA+o2WozptQX7/48FtKkq
+        J79+Bkq+Elsyai3QSqxVTYr0WzGWKvK3lTt7
+X-Google-Smtp-Source: ABdhPJzFhQfaXYc6TE/l49yGks3K1vhhPRxfgiYQKjBQRuW77bI+gETekoPft9m/iVmzf0P/Pq1ECQ==
+X-Received: by 2002:a17:906:ccd6:: with SMTP id ot22mr1461681ejb.165.1613388746938;
+        Mon, 15 Feb 2021 03:32:26 -0800 (PST)
+Received: from [192.168.0.4] (hst-221-123.medicom.bg. [84.238.221.123])
+        by smtp.googlemail.com with ESMTPSA id a15sm9663066edv.95.2021.02.15.03.32.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Feb 2021 03:32:26 -0800 (PST)
+Subject: Re: [PATCH 1/2] v4l2-ctrl: Add decoder conceal color control
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20210209094527.2173690-1-stanimir.varbanov@linaro.org>
+ <20210209094527.2173690-2-stanimir.varbanov@linaro.org>
+ <cccae00e-e30e-6691-d954-27379a104115@xs4all.nl>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <489f1417-085d-4057-f2e8-1cc8db0ed161@linaro.org>
+Date:   Mon, 15 Feb 2021 13:32:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210214204127.ezrlr4u76onqcxl7@mail>
+In-Reply-To: <cccae00e-e30e-6691-d954-27379a104115@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Sun, Feb 14, 2021 at 09:41:27PM +0100, Luc Van Oostenryck wrote:
-> On Sun, Feb 14, 2021 at 11:00:48AM -0800, Linus Torvalds wrote:
-> > On Sun, Feb 14, 2021 at 10:42 AM Ramsay Jones
-> > <ramsay@ramsayjones.plus.com> wrote:
-> > >
-> > > >
-> > > > I looked around but didn't find any hints how to fix this. Any pointers
-> > > > I missed (added the sparse list to cc:)?
-> > >
-> > > This is a limitation of sparse; when using the 'stringize' pre-processor
-> > > operator #, the maximum size of the resulting string is about 8k (if I
-> > > remember correctly).
-> > 
-> > Well, yes and no.
-> > 
-> > The C89 standard actually says that a string literal can be at most
-> > 509 characters to be portable. C99 increased it to 4095 characters.
-> > 
-> > Sparse makes the limit higher, and the limit could easily be expanded
-> > way past 8kB - but the point is that large string literals are
-> > actually not guaranteed to be valid C.
-> > 
-> > So honestly, it really sounds like that TRACE_EVENT() thing is doing
-> > something it shouldn't be doing.
-> 
-> In itself, it's OKish but it does a lot of macro expansions and most
-> arguments are macros of macros of ... but the problem seems to be
-> limited to TP_printk().
-> 
-> In the current case, the offender is the string 'print_fmt_tps6598x_status'
-> which is just under 26K long especially because it expand
-> TPS6598X_STATUS_FLAGS_MASK but also because the arguments use FIELD_GET()
-> and thus __BF_FIELD_CHECK().
 
-That was a great hint! Using a custom FIELD_GET() that drops the
-__BF_FIELD_CHECK() makes things fit.
-Cheers,
- -- Guido
 
-> > 
-> > I don't think there's any fundamental limit why sparse does 8kB as a
-> > limit (just a few random buffers). Making sparse accept larger ones
-> > should be as simple as just increasing MAX_STRING, but I really don't
-> > think the kernel should encourage that kind of excessive string sizes.
+On 2/9/21 1:05 PM, Hans Verkuil wrote:
+> On 09/02/2021 10:45, Stanimir Varbanov wrote:
+>> Add decoder v4l2 control to set conceal color.
+>>
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  .../media/v4l/ext-ctrls-codec.rst             | 20 +++++++++++++++++++
+>>  drivers/media/v4l2-core/v4l2-ctrls.c          |  9 +++++++++
+>>  include/uapi/linux/v4l2-controls.h            |  1 +
+>>  3 files changed, 30 insertions(+)
+>>
+>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> index 00944e97d638..994650052333 100644
+>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> @@ -674,6 +674,26 @@ enum v4l2_mpeg_video_frame_skip_mode -
+>>      is currently displayed (decoded). This value is reset to 0 whenever
+>>      the decoder is started.
+>>  
+>> +``V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR (integer64)``
+>> +    This control sets conceal color in YUV color space. It describes the
+>> +    client preference of error conceal color in case of error where
+>> +    reference frame is missing. The decoder would paint the reference
+>> +    buffer with preferred color and use it for future decoding.
+>> +    Applicable to decoders.
 > 
-> Like you noted, there are just a few cases in the kernel and IIRC
-> there is or was one case in it too.
-> I would tend to increase MAX_STRING to something like 32 or 64K,
-> in order to keep it reasonable but let sparse to continue its processing,
-> but add a warning when the string/token is bigger than the current 8K.
+> You should mention explicitly that this is using 16-bit color components
+> and expects Limited Range.
+
+I don't want to limit the client to Limited range only. I'll mention in
+the description that both ranges are valid.
+
 > 
-> -- Luc
+>> +
+>> +.. flat-table::
+>> +    :header-rows:  0
+>> +    :stub-columns: 0
+>> +
+>> +    * - Bit 0:15
+>> +      - Y luminance
+>> +    * - Bit 16:31
+>> +      - Cb chrominance
+>> +    * - Bit 32:47
+>> +      - Cr chrominance
+>> +    * - Bit 48:63
+>> +      - Must be zero
+>> +
+>>  ``V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE (boolean)``
+>>      If enabled the decoder expects to receive a single slice per buffer,
+>>      otherwise the decoder expects a single frame in per buffer.
+>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+>> index 016cf6204cbb..a3b9d28a00b7 100644
+>> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+>> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+>> @@ -945,6 +945,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>>  	case V4L2_CID_MPEG_VIDEO_VBV_SIZE:			return "VBV Buffer Size";
+>>  	case V4L2_CID_MPEG_VIDEO_DEC_PTS:			return "Video Decoder PTS";
+>>  	case V4L2_CID_MPEG_VIDEO_DEC_FRAME:			return "Video Decoder Frame Count";
+>> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:		return "Video Decoder Conceal Color";
+>>  	case V4L2_CID_MPEG_VIDEO_VBV_DELAY:			return "Initial Delay for VBV Control";
+>>  	case V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE:		return "Horizontal MV Search Range";
+>>  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
+>> @@ -1430,6 +1431,14 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>>  		*max = 0x7fffffffffffffffLL;
+>>  		*step = 1;
+>>  		break;
+>> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:
+>> +		*type = V4L2_CTRL_TYPE_INTEGER64;
+>> +		*min = 0;
+>> +		/* default for 8bit black, luma is 16, chroma is 128 */
 > 
+> Since this is 16 bit the actual default luma value for black is 4096 and for chroma use
+> 32768 (i.e. both values are times 256).
+
+If we follow this for pixel format with 10bit per channel we have to
+multiply by 64?
+
+> 
+>> +		*def = 0x8000800010LL;
+>> +		*max = 0xffffffffffffLL;
+>> +		*step = 1;
+>> +		break;
+>>  	case V4L2_CID_PIXEL_RATE:
+>>  		*type = V4L2_CTRL_TYPE_INTEGER64;
+>>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+>> index 039c0d7add1b..5e5a3068be2d 100644
+>> --- a/include/uapi/linux/v4l2-controls.h
+>> +++ b/include/uapi/linux/v4l2-controls.h
+>> @@ -428,6 +428,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
+>>  #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
+>>  #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
+>>  #define V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID	(V4L2_CID_CODEC_BASE+230)
+>> +#define V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR		(V4L2_CID_CODEC_BASE+231)
+>>  
+>>  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
+>>  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
+>>
+> 
+> Regards,
+> 
+> 	Hans
+> 
+
+-- 
+regards,
+Stan
