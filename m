@@ -2,75 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5E731BC1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B983A31BC21
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhBOPS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
+        id S230199AbhBOPS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:18:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhBOPOd (ORCPT
+        with ESMTP id S230031AbhBOPOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:14:33 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5344C061574;
-        Mon, 15 Feb 2021 07:13:52 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 9357A419B4;
-        Mon, 15 Feb 2021 15:13:46 +0000 (UTC)
-Subject: Re: [PATCH v2 06/25] arm64: arch_timer: implement support for
- interrupt-names
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        Olof Johansson <olof@lixom.net>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Kettenis <mark.kettenis@xs4all.nl>
-References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-7-marcan@marcan.st> <87tuqdpije.wl-maz@kernel.org>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <152b52a4-b035-a416-4a78-f7fc7c970e95@marcan.st>
-Date:   Tue, 16 Feb 2021 00:13:44 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 15 Feb 2021 10:14:41 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C04C061756;
+        Mon, 15 Feb 2021 07:14:00 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id z7so3893077plk.7;
+        Mon, 15 Feb 2021 07:14:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MQBEYDbZLUspR4Cas4xHhX333Pehv/osTwNAcBMpXuY=;
+        b=CQUKDoIcRBpm4Oq6Kl/kj7pKKcYjjng52/6QuMBh7xu8ycEXXdPCjDoNHhNjaLzMAp
+         PpoZjlVPrAsNKPFc7EH5vPLJ+r3BNXYfqyK9QoNOCK3IjijK1pV9vFVX+liKR6InbW3j
+         N69n3pzqz0R8HCM1iSX2ek8LAg3dvWnRl+63/g1YPHuOMxzHsocmOPe3A41LPoBy7+k/
+         MZJkOGkscJQNG3eEKof4/HyYeekmPO7GAVOKWL30SKNu1Y2Fe8znWlpN2fzqLvYcrb1y
+         R0Cj0CuBEl2iw2QhUmqNqZ1sc21Ixmduw3FI9QDc8KcsMXgqT/3ffHiuY4Msf/eAIkv4
+         ZZhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MQBEYDbZLUspR4Cas4xHhX333Pehv/osTwNAcBMpXuY=;
+        b=Y114AlawLJCPG1/YkGByDzDUb26FHDJyajrs+kqXjDv1Vqgd0Tc98rFqI6lc2Vd1GX
+         CqLcqyA5BMvt+tupzroSqOACkdZMlr5JeKdviW4S60e6eCM/zHMB6aTDN/r7Oumk0K6m
+         JofW0uSKAkpOQQoJs+KLrbwYgic7ZIVyb3o8MLbdabVE5mjiW8+C1IHUdvIkC5vdwwHW
+         jd6DEVlWOs/E1ItVbmFalMa8NUEy1mVKdeJTwanxlbwSDqU6/8BIUMode+EqZNSAdAdG
+         BJlrWiDnPAEOfGj6W7K0wnZ9uQ//0I7KnJCAZgAkWfNTbJGuy+RK7J2LnVF8jggki1//
+         EufQ==
+X-Gm-Message-State: AOAM532sNuDatK2DReSjFSKLvvXy9WE+lJwE5ka1QnWqDrQcg/qT+cay
+        y3rJCNZJD75eXt8jb6j27AmDvw0mhy2/TKWqzHA=
+X-Google-Smtp-Source: ABdhPJwq/oqehvgAavm6DkE/AtYDGnrfyneBipOjVQogGyrbG7SqrPvRhcFT2I9yV3pXFKozt+yik6ovEYPQK33uQeY=
+X-Received: by 2002:a17:90a:1b23:: with SMTP id q32mr16968661pjq.181.1613402040270;
+ Mon, 15 Feb 2021 07:14:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87tuqdpije.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com>
+ <20210208151244.16338-16-calvin.johnson@oss.nxp.com> <20210208162831.GM1463@shell.armlinux.org.uk>
+ <20210215123309.GA5067@lsv03152.swis.in-blr01.nxp.com>
+In-Reply-To: <20210215123309.GA5067@lsv03152.swis.in-blr01.nxp.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 15 Feb 2021 17:13:44 +0200
+Message-ID: <CAHp75VcpR1uf-6me9-MiXzESP9gtE0=Oz5TaFj0E93C3w4=Fgg@mail.gmail.com>
+Subject: Re: [net-next PATCH v5 15/15] net: dpaa2-mac: Add ACPI support for
+ DPAA2 MAC driver
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        netdev <netdev@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/02/2021 22.28, Marc Zyngier wrote:
-> nit: I'd prefer it if the array was described as:
-> 
-> 	[ARCH_TIMER_PHYS_SECURE_PPI] = "phys-secure",
-> 	[...]
-> 
-> just to avoid that the two get out of sync.
+On Mon, Feb 15, 2021 at 2:33 PM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
+> On Mon, Feb 08, 2021 at 04:28:31PM +0000, Russell King - ARM Linux admin wrote:
 
-Good point, changed it for v3.
+...
 
->>   
->> -	arch_timers_present |= ARCH_TIMER_TYPE_CP15;
-> 
-> You probably didn't want to drop this line, did you?
+> I think of_phy_is_fixed_link() needs to be fixed. I'll add below fix.
+>
+> --- a/drivers/net/mdio/of_mdio.c
+> +++ b/drivers/net/mdio/of_mdio.c
+> @@ -439,6 +439,9 @@ bool of_phy_is_fixed_link(struct device_node *np)
+>         int len, err;
+>         const char *managed;
+>
+> +       if (!np)
+> +               return false;
 
-Ouch. Thanks for catching that.
+AFAICS this doesn't add anything: all of the of_* APIs should handle
+OF nodes being NULL below.
+
+>         /* New binding */
+>         dn = of_get_child_by_name(np, "fixed-link");
+>         if (dn) {
 
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+With Best Regards,
+Andy Shevchenko
