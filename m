@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D2F31B90F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6CF31B913
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 13:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhBOMVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 07:21:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        id S229738AbhBOMWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 07:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbhBOMTJ (ORCPT
+        with ESMTP id S230145AbhBOMTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 07:19:09 -0500
+        Mon, 15 Feb 2021 07:19:10 -0500
 Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2378DC061574;
-        Mon, 15 Feb 2021 04:18:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB4BC061756;
+        Mon, 15 Feb 2021 04:18:29 -0800 (PST)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id C7179424A4;
-        Mon, 15 Feb 2021 12:18:18 +0000 (UTC)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 323FA424AC;
+        Mon, 15 Feb 2021 12:18:23 +0000 (UTC)
 From:   Hector Martin <marcan@marcan.st>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
@@ -37,9 +37,9 @@ Cc:     Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         Mark Rutland <mark.rutland@arm.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 09/25] arm64: entry: Map the FIQ vector to IRQ on NEEDS_FIQ platforms
-Date:   Mon, 15 Feb 2021 21:16:57 +0900
-Message-Id: <20210215121713.57687-10-marcan@marcan.st>
+Subject: [PATCH v2 10/25] asm-generic/io.h:  Add a non-posted variant of ioremap()
+Date:   Mon, 15 Feb 2021 21:16:58 +0900
+Message-Id: <20210215121713.57687-11-marcan@marcan.st>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210215121713.57687-1-marcan@marcan.st>
 References: <20210215121713.57687-1-marcan@marcan.st>
@@ -49,99 +49,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+ARM64 currently defaults to posted MMIO (nGnRnE), but some devices
+require the use of non-posted MMIO (nGnRE). Introduce a new ioremap()
+variant to handle this case. ioremap_np() is aliased to ioremap() by
+default on arches that do not implement this variant.
 
-By default, FIQ exceptions trigger a panic. On platforms that need to
-deliver interrupts via FIQ, this gets redirected via an alternative to
-instead handle FIQ the same way as IRQ. It is up to the irqchip handler
-to discriminate between the two.
+This adds the IORESOURCE_MEM_NONPOSTED flag, which maps to this
+variant and marks a given resource as requiring non-posted mappings.
+This is implemented in the resource system because it is a SoC-level
+requirement, so existing drivers do not need special-case code to pick
+this ioremap variant.
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+Then this is implemented in devres by introducing devm_ioremap_np(),
+and making devm_ioremap_resource() automatically select this variant
+when the resource has the IORESOURCE_MEM_NONPOSTED flag set.
+
 Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
- arch/arm64/kernel/entry.S | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+ include/asm-generic/io.h |  8 +++++++-
+ include/linux/io.h       |  2 ++
+ include/linux/ioport.h   |  1 +
+ lib/devres.c             | 22 ++++++++++++++++++++++
+ 4 files changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index ba5f9aa379ce..bcfd1ac72636 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -547,18 +547,18 @@ SYM_CODE_START(vectors)
- 
- 	kernel_ventry	1, sync				// Synchronous EL1h
- 	kernel_ventry	1, irq				// IRQ EL1h
--	kernel_ventry	1, fiq_invalid			// FIQ EL1h
-+	kernel_ventry	1, fiq				// FIQ EL1h
- 	kernel_ventry	1, error			// Error EL1h
- 
- 	kernel_ventry	0, sync				// Synchronous 64-bit EL0
- 	kernel_ventry	0, irq				// IRQ 64-bit EL0
--	kernel_ventry	0, fiq_invalid			// FIQ 64-bit EL0
-+	kernel_ventry	0, fiq				// FIQ 64-bit EL0
- 	kernel_ventry	0, error			// Error 64-bit EL0
- 
- #ifdef CONFIG_COMPAT
- 	kernel_ventry	0, sync_compat, 32		// Synchronous 32-bit EL0
- 	kernel_ventry	0, irq_compat, 32		// IRQ 32-bit EL0
--	kernel_ventry	0, fiq_invalid_compat, 32	// FIQ 32-bit EL0
-+	kernel_ventry	0, fiq_compat, 32		// FIQ 32-bit EL0
- 	kernel_ventry	0, error_compat, 32		// Error 32-bit EL0
- #else
- 	kernel_ventry	0, sync_invalid, 32		// Synchronous 32-bit EL0
-@@ -658,6 +658,10 @@ SYM_CODE_START_LOCAL_NOALIGN(el1_sync)
- SYM_CODE_END(el1_sync)
- 
- 	.align	6
-+SYM_CODE_START_LOCAL_NOALIGN(el1_fiq)
-+alternative_if_not ARM64_NEEDS_FIQ
-+	b	el1_fiq_invalid
-+alternative_else_nop_endif
- SYM_CODE_START_LOCAL_NOALIGN(el1_irq)
- 	kernel_entry 1
- 	gic_prio_irq_setup pmr=x20, tmp=x1
-@@ -688,6 +692,7 @@ alternative_else_nop_endif
- 
- 	kernel_exit 1
- SYM_CODE_END(el1_irq)
-+SYM_CODE_END(el1_fiq)
- 
- /*
-  * EL0 mode handlers.
-@@ -710,10 +715,15 @@ SYM_CODE_START_LOCAL_NOALIGN(el0_sync_compat)
- SYM_CODE_END(el0_sync_compat)
- 
- 	.align	6
-+SYM_CODE_START_LOCAL_NOALIGN(el0_fiq_compat)
-+alternative_if_not ARM64_NEEDS_FIQ
-+	b	el0_fiq_invalid_compat
-+alternative_else_nop_endif
- SYM_CODE_START_LOCAL_NOALIGN(el0_irq_compat)
- 	kernel_entry 0, 32
- 	b	el0_irq_naked
- SYM_CODE_END(el0_irq_compat)
-+SYM_CODE_END(el0_fiq_compat)
- 
- SYM_CODE_START_LOCAL_NOALIGN(el0_error_compat)
- 	kernel_entry 0, 32
-@@ -722,6 +732,10 @@ SYM_CODE_END(el0_error_compat)
+diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+index c6af40ce03be..43e4bb8d633c 100644
+--- a/include/asm-generic/io.h
++++ b/include/asm-generic/io.h
+@@ -942,7 +942,9 @@ static inline void *phys_to_virt(unsigned long address)
+  *
+  * ioremap_wc() and ioremap_wt() can provide more relaxed caching attributes
+  * for specific drivers if the architecture choses to implement them.  If they
+- * are not implemented we fall back to plain ioremap.
++ * are not implemented we fall back to plain ioremap. Conversely, ioremap_np()
++ * can provide stricter non-posted write semantics if the architecture
++ * implements them.
+  */
+ #ifndef CONFIG_MMU
+ #ifndef ioremap
+@@ -980,6 +982,10 @@ static inline void __iomem *ioremap(phys_addr_t addr, size_t size)
+ #define ioremap_wt ioremap
  #endif
  
- 	.align	6
-+SYM_CODE_START_LOCAL_NOALIGN(el0_fiq)
-+alternative_if_not ARM64_NEEDS_FIQ
-+	b	el0_fiq_invalid
-+alternative_else_nop_endif
- SYM_CODE_START_LOCAL_NOALIGN(el0_irq)
- 	kernel_entry 0
- el0_irq_naked:
-@@ -736,6 +750,7 @@ el0_irq_naked:
++#ifndef ioremap_np
++#define ioremap_np ioremap
++#endif
++
+ /*
+  * ioremap_uc is special in that we do require an explicit architecture
+  * implementation.  In general you do not want to use this function in a
+diff --git a/include/linux/io.h b/include/linux/io.h
+index 8394c56babc2..d718354ed3e1 100644
+--- a/include/linux/io.h
++++ b/include/linux/io.h
+@@ -68,6 +68,8 @@ void __iomem *devm_ioremap_uc(struct device *dev, resource_size_t offset,
+ 				   resource_size_t size);
+ void __iomem *devm_ioremap_wc(struct device *dev, resource_size_t offset,
+ 				   resource_size_t size);
++void __iomem *devm_ioremap_np(struct device *dev, resource_size_t offset,
++				   resource_size_t size);
+ void devm_iounmap(struct device *dev, void __iomem *addr);
+ int check_signature(const volatile void __iomem *io_addr,
+ 			const unsigned char *signature, int length);
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index fe48b7840665..5929a67570ae 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -108,6 +108,7 @@ struct resource {
+ #define IORESOURCE_MEM_32BIT		(3<<3)
+ #define IORESOURCE_MEM_SHADOWABLE	(1<<5)	/* dup: IORESOURCE_SHADOWABLE */
+ #define IORESOURCE_MEM_EXPANSIONROM	(1<<6)
++#define IORESOURCE_MEM_NONPOSTED	(1<<7)
  
- 	b	ret_to_user
- SYM_CODE_END(el0_irq)
-+SYM_CODE_END(el0_fiq)
+ /* PnP I/O specific bits (IORESOURCE_BITS) */
+ #define IORESOURCE_IO_16BIT_ADDR	(1<<0)
+diff --git a/lib/devres.c b/lib/devres.c
+index 2a4ff5d64288..4679dbb1bf5f 100644
+--- a/lib/devres.c
++++ b/lib/devres.c
+@@ -10,6 +10,7 @@ enum devm_ioremap_type {
+ 	DEVM_IOREMAP = 0,
+ 	DEVM_IOREMAP_UC,
+ 	DEVM_IOREMAP_WC,
++	DEVM_IOREMAP_NP,
+ };
  
- SYM_CODE_START_LOCAL(el1_error)
- 	kernel_entry 1
+ void devm_ioremap_release(struct device *dev, void *res)
+@@ -42,6 +43,9 @@ static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
+ 	case DEVM_IOREMAP_WC:
+ 		addr = ioremap_wc(offset, size);
+ 		break;
++	case DEVM_IOREMAP_NP:
++		addr = ioremap_np(offset, size);
++		break;
+ 	}
+ 
+ 	if (addr) {
+@@ -98,6 +102,21 @@ void __iomem *devm_ioremap_wc(struct device *dev, resource_size_t offset,
+ }
+ EXPORT_SYMBOL(devm_ioremap_wc);
+ 
++/**
++ * devm_ioremap_np - Managed ioremap_np()
++ * @dev: Generic device to remap IO address for
++ * @offset: Resource address to map
++ * @size: Size of map
++ *
++ * Managed ioremap_np().  Map is automatically unmapped on driver detach.
++ */
++void __iomem *devm_ioremap_np(struct device *dev, resource_size_t offset,
++			      resource_size_t size)
++{
++	return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_NP);
++}
++EXPORT_SYMBOL(devm_ioremap_np);
++
+ /**
+  * devm_iounmap - Managed iounmap()
+  * @dev: Generic device to unmap for
+@@ -128,6 +147,9 @@ __devm_ioremap_resource(struct device *dev, const struct resource *res,
+ 		return IOMEM_ERR_PTR(-EINVAL);
+ 	}
+ 
++	if (type == DEVM_IOREMAP && res->flags & IORESOURCE_MEM_NONPOSTED)
++		type = DEVM_IOREMAP_NP;
++
+ 	size = resource_size(res);
+ 
+ 	if (res->name)
 -- 
 2.30.0
 
