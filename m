@@ -2,191 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD11031B743
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D475C31B79C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhBOKgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:36:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhBOKgR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:36:17 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB89C0613D6;
-        Mon, 15 Feb 2021 02:35:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=A39YtV79I6NX6ufmEzrnH6OOB8AgR/dyKZIOsgzEBUM=; b=RW7MxplHc81e6ZbgnD4g+ysHaz
-        aBTUncu5RxM5/hSHxgX4dibaEXnjNUBPhCycOoMl56ZeAPwb+MKF/lBRqxvvdJVB26fBj1GbUL1NC
-        Kk8wRDCULJ+pugLZKwlhdIdq96bilg0aEtCSZkXDPPP7ynBGg6ULDEk4fLgEv6fAV9GYo/jX5Vq66
-        Qlj8GTzUM0NruNdZEoSHpT5dJ0Rm4T+2Co7Xa7biHy2joXvItVWHNfqYvsMq2upbEF3zmSzK2aJ00
-        2kOsTE/aFy5U+5lTLuwn4hB8O0jIwwMi+6Ur6SdnpuhQ/2zKdlQeeEgk5V7bJzDS/WQczIqLkJcMT
-        iZDRPgWA==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1lBbE4-0000JP-FN; Mon, 15 Feb 2021 12:35:32 +0200
-Subject: Re: [PATCH] tty: serial: Add earlycon driver for Tegra Combined UART
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210213115824.3306965-1-mperttunen@nvidia.com>
- <YCpMF7MyJYB8x7Zi@ulmo.localdomain>
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-Message-ID: <2cdba410-7cc8-6ad3-53ab-d9c24e58a028@kapsi.fi>
-Date:   Mon, 15 Feb 2021 12:35:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S230332AbhBOKub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:50:31 -0500
+Received: from m12-12.163.com ([220.181.12.12]:41480 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230188AbhBOKns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 05:43:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=errhG
+        B/dNXQnBjvPfS6mCK4LM81vQByDgSK+Rbhb0fQ=; b=eksNk+Sc39fsBtEnsZvu2
+        ewCtxZi1NuEAwU2ggZs+NBG7ogJ0AOHVIiBc7dAGHAEa3e8DSATPOVVStCI+fokV
+        tF3CImjQRglQ19asrym495Tpj0cns58wBgowPStkhaNxDxZbbCe6ndZQhvkyEIMQ
+        VFIKUAstiqDiwKbOB4vH80=
+Received: from yangjunlin.ccdomain.com (unknown [119.137.55.63])
+        by smtp8 (Coremail) with SMTP id DMCowABnqdySTypgUVn9Qg--.6622S2;
+        Mon, 15 Feb 2021 18:40:20 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     linus.walleij@linaro.org, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, maz@kernel.org, etienne.carriere@st.com,
+        geert+renesas@glider.be, matti.vaittinen@fi.rohmeurope.com,
+        fabien.dessenne@st.com, marex@denx.de
+Cc:     linux-gpio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] pinctrl: stm32: add missing of_node_put
+Date:   Mon, 15 Feb 2021 18:36:43 +0800
+Message-Id: <20210215103643.898-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
-In-Reply-To: <YCpMF7MyJYB8x7Zi@ulmo.localdomain>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowABnqdySTypgUVn9Qg--.6622S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWrZF1kur15GryDZw1kCryUZFb_yoW8JF45pF
+        sxCry3K39xt390kryjyw1UZryaga1xKFW8Kw4Ig34xXFySyFWDJr13KFyUXr4DCFWxXa90
+        kFy7Kay7ua1rWFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jrXo7UUUUU=
+X-Originating-IP: [119.137.55.63]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbBRhQ6I13l+nA-mAAAse
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/15/21 12:25 PM, Thierry Reding wrote:
-> On Sat, Feb 13, 2021 at 01:58:24PM +0200, Mikko Perttunen wrote:
->> Add an earlycon driver for platforms with TCU, namely Tegra194.
->> The driver is compatible with boot parameters passed by NVIDIA
->> boot chains.
-> 
-> I'm not sure I understand the latter part of this description. What boot
-> parameters is this compatible with? Looking at the setup function there
-> doesn't seem to be anything out of the ordinary here, so I'm wondering
-> if that's just confusing. If there's anything special, it might be worth
-> specifically pointing out what that is. Perhaps both in the commit
-> message and in a code comment, so it's properly documented.
+From: Junlin Yang <yangjunlin@yulong.com>
 
-It's that the name of the driver 'tegra_comb_uart' matches what the boot 
-chain passes; and that OF_EARLYCON_DECLARE is not used. 
-(OF_EARLYCON_DECLARE cannot anyway be used due to the mailbox 
-indirection in device tree).
+Fix OF node leaks by calling of_node_put in
+for_each_available_child_of_node when the cycle returns.
 
-> 
->>
->> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
->> ---
->>   drivers/tty/serial/Kconfig              | 12 +++++
->>   drivers/tty/serial/Makefile             |  1 +
->>   drivers/tty/serial/tegra-tcu-earlycon.c | 72 +++++++++++++++++++++++++
->>   3 files changed, 85 insertions(+)
->>   create mode 100644 drivers/tty/serial/tegra-tcu-earlycon.c
->>
->> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
->> index 34a2899e69c0..d941785e3f46 100644
->> --- a/drivers/tty/serial/Kconfig
->> +++ b/drivers/tty/serial/Kconfig
->> @@ -331,6 +331,18 @@ config SERIAL_TEGRA_TCU_CONSOLE
->>   
->>   	  If unsure, say Y.
->>   
->> +config SERIAL_TEGRA_TCU_EARLYCON
->> +	bool "Earlycon on NVIDIA Tegra Combined UART"
->> +	depends on ARCH_TEGRA || COMPILE_TEST
->> +	select SERIAL_EARLYCON
->> +	select SERIAL_CORE_CONSOLE
->> +	default y if SERIAL_TEGRA_TCU_CONSOLE
->> +	help
->> +	  If you say Y here, TCU output will be supported during the earlycon
->> +	  phase of the boot.
->> +
->> +	  If unsure, say Y.
->> +
->>   config SERIAL_MAX3100
->>   	tristate "MAX3100 support"
->>   	depends on SPI
->> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
->> index b85d53f9e9ff..408144326fed 100644
->> --- a/drivers/tty/serial/Makefile
->> +++ b/drivers/tty/serial/Makefile
->> @@ -72,6 +72,7 @@ obj-$(CONFIG_SERIAL_XILINX_PS_UART) += xilinx_uartps.o
->>   obj-$(CONFIG_SERIAL_SIRFSOC) += sirfsoc_uart.o
->>   obj-$(CONFIG_SERIAL_TEGRA) += serial-tegra.o
->>   obj-$(CONFIG_SERIAL_TEGRA_TCU) += tegra-tcu.o
->> +obj-$(CONFIG_SERIAL_TEGRA_TCU_EARLYCON) += tegra-tcu-earlycon.o
->>   obj-$(CONFIG_SERIAL_AR933X)   += ar933x_uart.o
->>   obj-$(CONFIG_SERIAL_EFM32_UART) += efm32-uart.o
->>   obj-$(CONFIG_SERIAL_ARC)	+= arc_uart.o
->> diff --git a/drivers/tty/serial/tegra-tcu-earlycon.c b/drivers/tty/serial/tegra-tcu-earlycon.c
->> new file mode 100644
->> index 000000000000..9decfbced0a7
->> --- /dev/null
->> +++ b/drivers/tty/serial/tegra-tcu-earlycon.c
->> @@ -0,0 +1,72 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (c) 2017-2021, NVIDIA CORPORATION.  All rights reserved.
->> + */
->> +
->> +#include <linux/console.h>
->> +#include <linux/io.h>
->> +#include <linux/serial_core.h>
->> +
->> +#define NUM_BYTES_FIELD_BIT	24
->> +#define FLUSH_BIT		26
-> 
-> This one seems to be unused.
+Generated by: scripts/coccinelle/iterators/for_each_child.cocci
 
-True, I'll remove it.
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+---
+ drivers/pinctrl/stm32/pinctrl-stm32.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> 
->> +#define INTR_TRIGGER_BIT	31
-> 
-> I wonder if this could somehow be integrated with the existing TCU
-> driver since we have these bits defined there already. And really this
-> is basically a skeleton version of the same driver.
-> 
->> +/*
->> + * This function splits the string to be printed (const char *s) into multiple
->> + * packets. Each packet contains a max of 3 characters. Packets are sent to the
->> + * SPE-based combined UART server for printing. Communication with SPE is done
->> + * through mailbox registers which can generate interrupts for SPE.
->> + */
->> +static void early_tcu_write(struct console *console, const char *s, unsigned int count)
->> +{
->> +	struct earlycon_device *device = console->data;
->> +	u8 __iomem *addr = device->port.membase;
->> +	u32 mbox_val = BIT(INTR_TRIGGER_BIT);
->> +	unsigned int i;
->> +
->> +	/* Loop for processing each 3 char packet */
->> +	for (i = 0; i < count; i++) {
->> +		if (s[i] == '\n')
->> +			mbox_val = update_and_send_mbox(addr, mbox_val, '\r');
->> +		mbox_val = update_and_send_mbox(addr, mbox_val, s[i]);
->> +	}
->> +
->> +	if ((mbox_val >> NUM_BYTES_FIELD_BIT) & 0x3) {
->> +		while (readl(addr) & BIT(INTR_TRIGGER_BIT))
->> +			cpu_relax();
->> +		writel(mbox_val, addr);
->> +	}
->> +}
-> 
-> For example this function already exists in the Tegra TCU driver and
-> perhaps some of that could be refactored to work for both cases.
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
+index 7d9bded..da72e3e 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+@@ -1542,8 +1542,10 @@ int stm32_pctl_probe(struct platform_device *pdev)
+ 		if (of_property_read_bool(child, "gpio-controller")) {
+ 			bank->rstc = of_reset_control_get_exclusive(child,
+ 								    NULL);
+-			if (PTR_ERR(bank->rstc) == -EPROBE_DEFER)
++			if (PTR_ERR(bank->rstc) == -EPROBE_DEFER) {
++				of_node_put(child);
+ 				return -EPROBE_DEFER;
++			}
+ 
+ 			bank->clk = of_clk_get_by_name(child, NULL);
+ 			if (IS_ERR(bank->clk)) {
+@@ -1551,6 +1553,7 @@ int stm32_pctl_probe(struct platform_device *pdev)
+ 					dev_err(dev,
+ 						"failed to get clk (%ld)\n",
+ 						PTR_ERR(bank->clk));
++				of_node_put(child);
+ 				return PTR_ERR(bank->clk);
+ 			}
+ 			i++;
+-- 
+1.9.1
 
-This is very similar to the main tegra_tcu driver, but considering how 
-simple this driver is, and the main driver using the mailbox framework 
-making the actual implementation incompatible, I was thinking that it's 
-easier to just have this be independent.
 
-> 
-> Thierry
-> 
-
-Thanks,
-Mikko
