@@ -2,124 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DCC31BC31
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6DD31BC34
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhBOPWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:22:36 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:51625 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhBOPTD (ORCPT
+        id S230133AbhBOPXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:23:11 -0500
+Received: from mo-csw1115.securemx.jp ([210.130.202.157]:47520 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230270AbhBOPWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:19:03 -0500
-Received: by mail-il1-f198.google.com with SMTP id c7so5566568ilm.18
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:18:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=G3OO12fHeu5/ZsKky77dakeCnb4d7ffwzbB89AJlTcE=;
-        b=oILiCanRZW+Zcz4lrr5yDjL4PcGgAiDfh8GSN6r1jdFIOAk10tRCysxFMhtteLQIMa
-         KRZpiY2rTNL1EFBadxWMwDqo6xT8wLDPWoYsGjDzf9Fmd0kKd+YLXnDozxQcevb1SxLu
-         fn2koXcLQlEZogsOqBJzI5GkZwFBscXDGc8L6HcfAUFuBXOKbdiDOJ6SB5Q+aJ/jGlwu
-         85qvhlwBvp8ZeCpy+B7vDXLwl2dhRelATgs+CIkuLsM+CDaik9s+zD2qrIXv9J2x/bQ3
-         lBdFrjHZWxRfdcorCbpEB3SHxWQ6bcGbhfgAErz5CKrQchpFZaMM0bKQ6/bxDK2S0Y8O
-         VwXQ==
-X-Gm-Message-State: AOAM5336OnHD1/DBjC5Uezj1TEISfdUnOZupz3dOIL0y2gD9BAmS6PAw
-        zs1WWs9B6J/YknhVzJC70vKYEmu3fohoGx5BjlughIYmKF1h
-X-Google-Smtp-Source: ABdhPJzzqJWM+IoVdr+w0tJnO1rmZDKuYfc1BKxX9v+EyRrjqBqtctATVTL7fQ/E4fxJyBHfG8ssxOZbqDoQmtUOZ+PJ3AgNnz7C
+        Mon, 15 Feb 2021 10:22:46 -0500
+Received: by mo-csw.securemx.jp (mx-mo-csw1115) id 11FFKG6n024333; Tue, 16 Feb 2021 00:20:16 +0900
+X-Iguazu-Qid: 2wGqn5DuWuqX2Ss3iz
+X-Iguazu-QSIG: v=2; s=0; t=1613402415; q=2wGqn5DuWuqX2Ss3iz; m=/wKFgwyBTwVVVznr0ILCXsnu0TO+86riP91KaZy3nkg=
+Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
+        by relay.securemx.jp (mx-mr1113) id 11FFKDcG038195;
+        Tue, 16 Feb 2021 00:20:14 +0900
+Received: from enc01.toshiba.co.jp ([106.186.93.100])
+        by imx2.toshiba.co.jp  with ESMTP id 11FFKD2G008102;
+        Tue, 16 Feb 2021 00:20:13 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 11FFKCeJ017228;
+        Tue, 16 Feb 2021 00:20:13 +0900
+Date:   Tue, 16 Feb 2021 00:20:11 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] net: stmmac: Add Toshiba Visconti SoCs glue driver
+X-TSB-HOP: ON
+Message-ID: <20210215152011.5q7eudtfzn7afmfi@toshiba.co.jp>
+References: <20210215050655.2532-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210215050655.2532-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <YCoPmfunGmu0E8IT@unreal>
+ <20210215072809.n3r5rdswookzri6j@toshiba.co.jp>
+ <YCo9WVvtAeozE42k@unreal>
+ <CAK8P3a391547zH=bYXbLzttP9ehFK=OzcM_XkSJs92dA1z4DGQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:5de:: with SMTP id w30mr12934814iox.36.1613402302024;
- Mon, 15 Feb 2021 07:18:22 -0800 (PST)
-Date:   Mon, 15 Feb 2021 07:18:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000017937c05bb617f1d@google.com>
-Subject: KASAN: use-after-free Read in v4l2_fh_open
-From:   syzbot <syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        mchehab@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a391547zH=bYXbLzttP9ehFK=OzcM_XkSJs92dA1z4DGQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+On Mon, Feb 15, 2021 at 01:19:18PM +0100, Arnd Bergmann wrote:
+> On Mon, Feb 15, 2021 at 10:23 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > On Mon, Feb 15, 2021 at 04:28:09PM +0900, Nobuhiro Iwamatsu wrote:
+> > >
+> > > Sorry, I sent the wrong patchset that didn't fix this point out.
+> > >
+> > > > I asked it before, but never received an answer.
+> > >
+> > > I have received your point out and have sent an email with the content
+> > > to remove this line. But it may not have arrived yet...
+> > >
+> > > > Why did you use "def_bool y" and not "default y"? Isn't it supposed to be
+> > > > "depends on STMMAC_ETH"? And probably it shouldn't be set as a default as "y".
+> > > >
+> > >
+> > > The reason why "def_bool y" was set is that the wrong fix was left when
+> > > debugging. Also, I don't think it is necessary to set "default y".
+> > > This is also incorrect because it says "bool" Toshiba Visconti DWMAC
+> > > support "". I change it to trustate in the new patch.
+> > >
+> > > And this driver is enabled when STMMAC_PLATFORM was Y. And STMMAC_PLATFORM
+> > > depends on STMMAC_ETH.
+> > > So I understand that STMMAC_ETH does not need to be dependents. Is this
+> > > understanding wrong?
+> >
+> > This is correct understanding, just need to clean other entries in that
+> > Kconfig that depends on STMMAC_ETH.
+> 
+> 'tristate' with no default sounds right. I see that some platforms have a
+> default according to the platform, which also makes sense but isn't
+> required. What I would suggest though is a dependency on the platform,
+> to make it easier to disable the front-end based on which platforms
+> are enabled. This would end up as
+> 
+> config DWMAC_VISCONTI
+>         tristate "Toshiba Visconti DWMAC support"
+>         depends on ARCH_VISCONTI || COMPILE_TEST
+>         depends on OF && COMMON_CLK # only add this line if it's
+> required for compilation
+>         default ARCH_VISCONTI
+>
 
-HEAD commit:    291009f6 Merge tag 'pm-5.11-rc8' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17260814d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6a218c95bd23063a
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2391895514ed9ef4a8e
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ec5814d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17179dd4d00000
+The fix at hand is the same as your suggestion.
+Thank you for your comment.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com
+>       Arnd
+> 
 
-==================================================================
-BUG: KASAN: use-after-free in v4l2_fh_init drivers/media/v4l2-core/v4l2-fh.c:25 [inline]
-BUG: KASAN: use-after-free in v4l2_fh_open+0xc7/0x430 drivers/media/v4l2-core/v4l2-fh.c:63
-Read of size 8 at addr ffff8880228b88b8 by task v4l_id/18349
-
-CPU: 1 PID: 18349 Comm: v4l_id Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x137/0x1be lib/dump_stack.c:120
- print_address_description+0x5f/0x3a0 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report+0x15e/0x200 mm/kasan/report.c:413
- v4l2_fh_init drivers/media/v4l2-core/v4l2-fh.c:25 [inline]
- v4l2_fh_open+0xc7/0x430 drivers/media/v4l2-core/v4l2-fh.c:63
- em28xx_v4l2_open+0x15c/0xa60 drivers/media/usb/em28xx/em28xx-video.c:2163
- v4l2_open+0x229/0x360 drivers/media/v4l2-core/v4l2-dev.c:423
- chrdev_open+0x4a0/0x570 fs/char_dev.c:414
- do_dentry_open+0x7cb/0x1010 fs/open.c:817
- do_open fs/namei.c:3254 [inline]
- path_openat+0x2791/0x37a0 fs/namei.c:3371
- do_filp_open+0x191/0x3a0 fs/namei.c:3398
- do_sys_openat2+0xba/0x380 fs/open.c:1172
- do_sys_open fs/open.c:1188 [inline]
- __do_sys_open fs/open.c:1196 [inline]
- __se_sys_open fs/open.c:1192 [inline]
- __x64_sys_open+0x1af/0x1e0 fs/open.c:1192
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7fdd62b00840
-Code: 73 01 c3 48 8b 0d 68 77 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 89 bb 20 00 00 75 10 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 1e f6 ff ff 48 89 04 24
-RSP: 002b:00007ffe8bb255b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 00007ffe8bb25728 RCX: 00007fdd62b00840
-RDX: 00007fdd62aecea0 RSI: 0000000000000000 RDI: 00007ffe8bb26f1c
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000246 R12: 000055f8a7dee8d0
-R13: 00007ffe8bb25720 R14: 0000000000000000 R15: 0000000000000000
-
-The buggy address belongs to the page:
-page:00000000b7dd9778 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn:0x228b8
-flags: 0xfff00000000000()
-raw: 00fff00000000000 ffffea0000580108 ffff88813fffb910 0000000000000000
-raw: 0000000000000000 0000000000000002 00000000ffffff7f 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880228b8780: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880228b8800: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff8880228b8880: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                        ^
- ffff8880228b8900: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880228b8980: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Best regards,
+  Nobuhiro
