@@ -2,105 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265DC31C39D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DE931C3A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhBOVbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:31:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229682AbhBOVb0 (ORCPT
+        id S229718AbhBOVch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 16:32:37 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7908 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229872AbhBOVcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:31:26 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95283C061574;
-        Mon, 15 Feb 2021 13:30:46 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id m144so7662971qke.10;
-        Mon, 15 Feb 2021 13:30:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/ZVUXlIXARs+8uXUZ4VUGe97t/0+FH4zGariG/23quw=;
-        b=oYNPrcJWdwYDcjfr7BRtAMS1ZsIXADGqMxANcWv4k/DopQuXeqYdiTElcc49nNE8qY
-         Yk1qhDCBEziQr03O3cdRQxqrMoCXCuyUhJh+t/9tAsP2rJTyzUk4iL0HbQwt5ZkDsORd
-         QO3GwJHoN1hy01k8G8HRQ0jiJYumQo2qotPTWeCY+c/o4NJ8SCuMt6le81Wl+BHDOFSJ
-         NMUxmsOF3Qi81GJU27WtG8bwB/0POcex15oXQRskGeXUcEhrxkXNX2oyBx24M2MMslET
-         XZC0wGQLpf1OV3jgX2AkouJ6ZDdqMePIuj7AFc0JFZkwwqyZTIUuDkIfFOortZX59Aoq
-         Kzug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/ZVUXlIXARs+8uXUZ4VUGe97t/0+FH4zGariG/23quw=;
-        b=tqHUt9Eoya4Nlf9mX3MOH5oRMQq29jrGm9bWnDn4E8rZkWoZ/spgzpwg2HU/o9Q5W5
-         7MgQ/DEW3kf0lOcuW7hadO3E2iLa4/EYmnwAFsSF4jWga81B1hFr9EGJmtwsg1jGkTH2
-         RjMjUgAGbgYORZEpoI/h7M28M3J37bHPj38y0XsgCxOjHTdmbIxZGPhJ+ytcCHq2I70+
-         mr7FIPt0WMgB371RQT0WSqMUaH/neiEqfustDYX+8TXxhnDAX2IcQQjSu5HhGt7fAb7/
-         eXtO1ink/lvtKcgPUrzb29w/nBAZy0wBd4eGtTfCrsrz58z/ZtgjeetMDFxx+2vXo1OY
-         hdrQ==
-X-Gm-Message-State: AOAM533E0V675nSk6VG7U0eJPjy7ZHKy+KqAVU3anhm2UPzmMYMqNxtc
-        5X7yIhO1nwiBaFewqD8dA2g=
-X-Google-Smtp-Source: ABdhPJww+HEbybVa+NuUj1pReo4TCwVy8br4xX0cmIo5Fn/aZvp3joZCCkrRkQAmV1/YWqIfdDubsQ==
-X-Received: by 2002:a37:8a04:: with SMTP id m4mr16638337qkd.78.1613424645583;
-        Mon, 15 Feb 2021 13:30:45 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id a145sm7038704qkc.125.2021.02.15.13.30.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 13:30:45 -0800 (PST)
-Date:   Mon, 15 Feb 2021 13:30:44 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [RESEND PATCH v2 0/6] lib/find_bit: fast path for small bitmaps
-Message-ID: <20210215213044.GB394846@yury-ThinkPad>
-References: <20210130191719.7085-1-yury.norov@gmail.com>
+        Mon, 15 Feb 2021 16:32:33 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11FLHAWU149306;
+        Mon, 15 Feb 2021 16:31:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=CNTDqlv4xdf1Xplvt/uc/S/HoRq+X45qobe1yMVrGx8=;
+ b=j7jUi7lamdk684WYmZvSx2ceN2qFGK5u8Iyd6JGyNju5ahwWop8OmbQBxFJ0ZVc3686C
+ HDIhDF1IKycwRKu0AL1bh/CadVenJefIRbHYSLSfz/66A7To1Rb1Z6SulaXyuopBIqos
+ SGOHjDnRUoDS+kKcdgAXvAz0Kz76ffDJViNNwDSY1sQJvX4/sqEVrKJ5zpjH3xsF/Fh/
+ Su5AO226JHb5GwljLgfANZ94RY8ltUUi6KJyi4JQFqtzQlr8+fuqphPGh1qCH5gLwFlF
+ eqBpkJwuYJsOt+c1ZWxo55M1amjnnsccoZOmGKClMaSEUp/A0VLk30Y0qDPFvy2NgSv7 sA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36r0r4071v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 16:31:12 -0500
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11FLPXAJ177959;
+        Mon, 15 Feb 2021 16:31:11 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36r0r4071f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 16:31:11 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11FLS6oe013614;
+        Mon, 15 Feb 2021 21:31:10 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04dal.us.ibm.com with ESMTP id 36p6d96aax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 21:31:10 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11FLV9HA40632614
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Feb 2021 21:31:09 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 518FD112062;
+        Mon, 15 Feb 2021 21:31:09 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7AA0F112063;
+        Mon, 15 Feb 2021 21:31:02 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.85.173.121])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Mon, 15 Feb 2021 21:31:02 +0000 (GMT)
+References: <20210213161049.6190-1-nramas@linux.microsoft.com>
+ <20210213161049.6190-2-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v18 01/11] powerpc: Rename kexec elfcorehdr_addr to
+ elf_load_addr
+In-reply-to: <20210213161049.6190-2-nramas@linux.microsoft.com>
+Date:   Mon, 15 Feb 2021 18:31:00 -0300
+Message-ID: <875z2trpbf.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130191719.7085-1-yury.norov@gmail.com>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-15_16:2021-02-12,2021-02-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999 priorityscore=1501
+ lowpriorityscore=0 mlxscore=0 clxscore=1015 adultscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102150156
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[add David Laight <David.Laight@ACULAB.COM> ]
 
-On Sat, Jan 30, 2021 at 11:17:11AM -0800, Yury Norov wrote:
-> Bitmap operations are much simpler and faster in case of small bitmaps
-> which fit into a single word. In linux/bitmap.h we have a machinery that
-> allows compiler to replace actual function call with a few instructions
-> if bitmaps passed into the function are small and their size is known at
-> compile time.
-> 
-> find_*_bit() API lacks this functionality; despite users will benefit from
-> it a lot. One important example is cpumask subsystem when
-> NR_CPUS <= BITS_PER_LONG. In the very best case, the compiler may replace
-> a find_*_bit() call for such a bitmap with a single ffs or ffz instruction.
-> 
-> Tools is synchronized with new implementation where needed.
-> 
-> v1: https://www.spinics.net/lists/kernel/msg3804727.html
-> v2: - employ GENMASK() for bitmaps;
->     - unify find_bit inliners in;
->     - address comments to v1;
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-Comments so far:
- - increased image size (patch #8) - addressed by introducing
-   CONFIG_FAST_PATH;
- - split tools and kernel parts - not clear why it's better.
+> From: Rob Herring <robh@kernel.org>
+>
+> The architecture specific field, elfcorehdr_addr in struct kimage_arch,
+> that holds the address of the buffer in memory for ELF core header for
+> powerpc has a different name than the one used for x86_64.  This makes
+> it hard to have a common code for setting up the device tree for
+> kexec system call.
+>
+> Rename elfcorehdr_addr to elf_load_addr to align with x86_64 name so
+> common code can use it.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> ---
+>  arch/powerpc/include/asm/kexec.h  | 2 +-
+>  arch/powerpc/kexec/file_load.c    | 4 ++--
+>  arch/powerpc/kexec/file_load_64.c | 4 ++--
+>  3 files changed, 5 insertions(+), 5 deletions(-)
 
- Anything else?
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
