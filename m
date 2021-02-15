@@ -2,214 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9381131B689
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FBF31B68B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 10:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhBOJg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 04:36:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhBOJgv (ORCPT
+        id S230186AbhBOJhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 04:37:41 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:25049 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229948AbhBOJh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 04:36:51 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22F2C06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 01:35:52 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed60:c5d6:9422:c618:ee58])
-        by albert.telenet-ops.be with bizsmtp
-        id VMbp2400J2PLE0706MbpDq; Mon, 15 Feb 2021 10:35:49 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lBaIH-0073Fe-6n
-        for linux-kernel@vger.kernel.org; Mon, 15 Feb 2021 10:35:49 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lBaIG-008gLw-Fj
-        for linux-kernel@vger.kernel.org; Mon, 15 Feb 2021 10:35:48 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.11
-Date:   Mon, 15 Feb 2021 10:35:48 +0100
-Message-Id: <20210215093548.2069319-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 15 Feb 2021 04:37:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1613381845; x=1644917845;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Hl0fGYvqiwuQmR4PKwzOXMPzivnSuAJdAdTHd+BQFIM=;
+  b=qfj7bcEohJlzdsjR+CEgNOjTTA8zjZsiLuw8yRiY97bpYjGeCIr8QbF4
+   lH50862PtURVaINrVld+PojtqJ/RLvWkegmHXcoGXv004tpOhpjGI9QWS
+   vMBtyWCI+FZGyWNw6cCFTD8mdnH0euT6atiukAQLcupq6jAgbG/DclerM
+   23qdHIv7S/cJmBEaJPxDUP2S46W3b5qpCcoYTEH5yenVc2FnDe/EqMmSh
+   CtMdaoEHM8KmoB6pbCf0hvDMHrbXX108DJQJV9wlIvsyH1PxeLWN+2y2t
+   Nmh2w2VQ88JBlpRs7VnRS/w3+Sfnb2C2K01g4nFsP0S8LV+ICgJ5v9JUV
+   Q==;
+IronPort-SDR: QSp9OHuNUP6cZtMd8w6ZuJkcopZmRkPEEybzTtduriBBC0/q24cFjOlt2J1SXEHUFKhYRpF+9F
+ nGrGPYAL32A8/ZBO6ZlzazU0vHYQ2LFWsrZe4Qqx2wmiohOZDj2P4wR/eUSme/V+wVU3FV1C3c
+ 53g5WdSziDGizKXJD8WvISvemAsFimIf+jZ7j27JGYxlhKe8Uit+oRfBJ5/XpWa1kiGL5lYnwk
+ 2ieGev/1APITJdju7JUxNR5XyN/7RkQPiPaE+2UlK50Sz4kPF+zZ7jGobWSH7/JNrDoRFtKMhw
+ 5HU=
+X-IronPort-AV: E=Sophos;i="5.81,180,1610434800"; 
+   d="scan'208";a="115090807"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Feb 2021 02:36:07 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 15 Feb 2021 02:36:07 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Mon, 15 Feb 2021 02:36:07 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TYOoOjAV3noM2TST34DmF7GKHUiAgrnvyW4sY/6g9QFL6vqxWAtJcVfSWWE3YC7WS4mRR7aODteNS7hWsFYjXCTr4wes3f49DGtMGwQUzSu1Qq+FlY8gTKWuljfZHmW8sZHWqC6l2XcIfhIsxL7bvXrehbK3kEIM7YimcCbgTMkb/WoxWkTa2TB9NEYeY4sPd5aVgQhUnuOtxWNNiBmKCveom+CJkzA4K/drdAa34fHSJwmfyGAmVThsxs8Tm9gmjCaRTd4+kZ63PDPtUhLNXtQF1FrU4ZcKqds3wCripDdMFcmca1i6zYQ1rfFnHJ+YClvLWwpF1G2IJ31yrmA5ZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hl0fGYvqiwuQmR4PKwzOXMPzivnSuAJdAdTHd+BQFIM=;
+ b=hQ1/p2s6zHuubJEruvX1hi/yxpUV7alpRgxxM4FRZRS2erpwmsRez8bXB2wyJReIVR8teZcWgZe9VG8JcyH0E0U4fDDRJxktRpg8vylg25hLw71m7UNlgNVELyOY82Si/Y7WKu/gm1+211+WS8Jo2vUdmPt4CDIypZheG1bm4qB4/hzbB+dmSiUUKFkm4KIH9VSxn3lgGvFhI8nCLvovuqWRDtMW4b9rg4Vfibcykn2/6lsP1Ns08d7M8Wx+arJiHeW26YylCA2H4vXmBJUF+c36LJ4uMsDTJ+BE9JfvnF0kKrDNx7+ksi4XOXqaqcAYAb6Tb2bAh7iokf6aHCeplQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hl0fGYvqiwuQmR4PKwzOXMPzivnSuAJdAdTHd+BQFIM=;
+ b=YKqhvVti0JIdw+EiXCdiBW04ngNMnCeRv0nzpHGwiEutNtwbqsQLFGM5dcv2lLBfXQFNpaxfx6ROA16QMlx7knoYyz4qPc4we7wCoCL4gxhW07T5+BwY8sKD42hHQaNJtC+J7yG5dtPKn2Fa/1cXAi6eH85v3b/HcnhxyAvWlzw=
+Received: from DM5PR1101MB2329.namprd11.prod.outlook.com (2603:10b6:3:9e::23)
+ by DM6PR11MB4364.namprd11.prod.outlook.com (2603:10b6:5:201::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.38; Mon, 15 Feb
+ 2021 09:36:05 +0000
+Received: from DM5PR1101MB2329.namprd11.prod.outlook.com
+ ([fe80::e048:33b3:3453:5a9]) by DM5PR1101MB2329.namprd11.prod.outlook.com
+ ([fe80::e048:33b3:3453:5a9%11]) with mapi id 15.20.3846.042; Mon, 15 Feb 2021
+ 09:36:05 +0000
+From:   <Bjarni.Jonasson@microchip.com>
+To:     <vladimir.oltean@nxp.com>
+CC:     <andrew@lunn.ch>, <linux-kernel@vger.kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <Steen.Hegelund@microchip.com>,
+        <linux@armlinux.org.uk>, <f.fainelli@gmail.com>, <kuba@kernel.org>,
+        <netdev@vger.kernel.org>, <davem@davemloft.net>,
+        <hkallweit1@gmail.com>, <atenart@kernel.org>,
+        <ioana.ciornei@nxp.com>
+Subject: Re: [PATCH net v1 3/3] net: phy: mscc: coma mode disabled for VSC8514
+Thread-Topic: [PATCH net v1 3/3] net: phy: mscc: coma mode disabled for
+ VSC8514
+Thread-Index: AQHXAUitY8DplGiIOEOE3an50gQw8KpUts0AgARClgA=
+Date:   Mon, 15 Feb 2021 09:36:05 +0000
+Message-ID: <b2eef99237ae547f55391d0cb5db27972ca2fff8.camel@microchip.com>
+References: <20210212140643.23436-1-bjarni.jonasson@microchip.com>
+         <20210212140643.23436-3-bjarni.jonasson@microchip.com>
+         <20210212163241.kbx5eqyaa32js7mp@skbuf>
+In-Reply-To: <20210212163241.kbx5eqyaa32js7mp@skbuf>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [82.163.121.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 61989a35-efca-4cff-4ab6-08d8d1951dcf
+x-ms-traffictypediagnostic: DM6PR11MB4364:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB436474AC33800CD2172132EDE4889@DM6PR11MB4364.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6J/rsj8xx5JBfMnAcnCD2ln2PIcrCPk70veUcSVkoBlJJUn+fPjV1rxNEH1CvNPrUB4pxDTJJN6KGM4KaQwYR06dqNW99oCh7chIaglW863JHZlsoRsXqZQDYR5yN03hvMCfo6a1IEpA2zAI67bHyUxlnutmfzdh2nZQnq99gXW6s4c4oPEj+qpDW/wCplwwKadg8V5AVNmCrUrYGAE2jyT6KUeFPZcd57P4rK84a9MvoU/Qz77SWCBTi8a4v4vcGuvmBLypcwnMtT6ssLu/055O/K4JEg+CSKaAIjCMOyuxVRY8siSbWK6j1N3Yo23/OzK8xZwU7phOoi1y2yZ98jVNFbv4CHoyTiECb3OwsywhxpQuyItYYtnw/MBlFmAgEGuD5shGhKXibPdWmqu0x5X398ixwjHqCYhbm9I8kHlUjQsjOnt+cSmacpuKz7QgNfXDO9rnb8BTbUAuG9l2Jd0cvCbAd3dx55fxpOmTA9iwvsJRDbQzYKaR8wi7KO/mNbDmahM9KFYDCjU0eg2bS8irF0eTEXHlA+ahTlNj+yaXPQ3Nj2hVWGrs5WpzsATe
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1101MB2329.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(396003)(376002)(366004)(2616005)(2906002)(316002)(7416002)(5660300002)(54906003)(83380400001)(4326008)(6506007)(36756003)(8936002)(478600001)(8676002)(26005)(71200400001)(186003)(6486002)(66946007)(6916009)(76116006)(91956017)(6512007)(64756008)(66556008)(66476007)(66446008)(86362001)(99106002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?d1JFbDZJT0lwQnEwUDFFdW1wUWNsOVF3dGpEZ0piSzg0c2FmYlN2b2FGTnJa?=
+ =?utf-8?B?Mkk5SENNUnVLc0xQY3phRE5objFwUHhmUWJ6RlhFaXpMMEdva1F4dmJqajJi?=
+ =?utf-8?B?UDYxR1YveUc3SEFLOFFHV0xxWGFjS0REeml1ODFYc2lHZzFMVEFaYjVMSzBa?=
+ =?utf-8?B?ZCtrNElaQVAxYktuV3JoWTExRXZGeXpUSHdKOTkxeFVLNkIwNWhSRHNRZzF5?=
+ =?utf-8?B?VXBjL01haTVBdjJraHlKMjN6NTBsNTJhb1pVOE9hdFNrUDVsZ3FIVlZlR093?=
+ =?utf-8?B?RUV4OUhURVZnZTdvanhzcUQrMndZMDB0dEVOc1lTdGQ2R0gvN05UQmx5TG8w?=
+ =?utf-8?B?YnFHM3NnOFVTUmtaMnA4SW1rdnBzN0Z6NksrTG1BYWtmMjdwK2UySzFSSHBY?=
+ =?utf-8?B?aXF0MUdub0dWK3pJcEZKNmxkYnFTY1p0QjZrUVBOQ1I4a2JWTEY2NTJqMUhI?=
+ =?utf-8?B?MEs3TTBudFpOVjdhOU5mTGJVQnhYYzlOYThEVFFNTXZ2NUlvSlFsU1VPOHVu?=
+ =?utf-8?B?bmdGdFkwemc2a09zc2VQRFhUSUthY1VtVzgrTXJjVmhBamlodGlzenYxVWtl?=
+ =?utf-8?B?b3A1VlJ0eDVDcytoUmxLM0JDQzhxMmVvTXVUa2hkYkMxQVhNVmQzVzkzTjNG?=
+ =?utf-8?B?UFQ1dnBRTHFUWlBqd3pOR1ZuYnZwTHk5UmFsbzliZXRwbHJKTnc0VytyVnpQ?=
+ =?utf-8?B?RHFGc25pVTlpOFlUNmpYV1ZyRmp3TmM4UHEvbjBvb1ExbFRQOEJKNTZaNXhF?=
+ =?utf-8?B?RTJRSStjb2xxempkY0JlZzVtODNTRTFLZGJ4ZFlZL2YvMkk3bWIva0hVUnVI?=
+ =?utf-8?B?Ung3aFVTMlRzM0x5VFJSSTVTYlpwRTBYanhqZ0Qwb2dnbEs5OW4vOVh3WnFQ?=
+ =?utf-8?B?bzZzZzJ1Um8vdi9PNnBidjVyMExPVXdxL0UrTU9Ub0JpRVJvZW5HM3NHb1pJ?=
+ =?utf-8?B?WGE4Mi9IeHJPQVliQUl3bk5yVFNIRDlONWk3dmwrbUVvaUNybTU1ZThtYzBY?=
+ =?utf-8?B?dmxPRHRVbUhJNXF4QkFkakRVVUtmUVVBZmozM1dtN1BBTmNKVEdtYzZVMVZs?=
+ =?utf-8?B?bkZCWFc1YjlsRWJBeVJFMVRQMWc5anUxUGdWTXVNOUF2Tmt6bktjMHlkdVQv?=
+ =?utf-8?B?UnZydjZ1bDVxYzBhcHVMTWR0WHBCZnpDQW1VUUUvS0Vscm9nSzN0NkhQaERF?=
+ =?utf-8?B?UTZ0UFpxa2JLaUV2UWFBR21NMGRkUk1mMHRUSFh0TzBrcUlmWTJlZWRWeUhL?=
+ =?utf-8?B?V0JyYXlDTzcydllZaDBNVHl6ZmZJY0JiNm9INWlYbDRLUkNHWGx5UHQ1bitJ?=
+ =?utf-8?B?RGNGRzJNK1VzUEo3SnJsTzY3UUNyMUlUSmp1M3Ivd214dXFSbXRCd00xSEFp?=
+ =?utf-8?B?YXhXd2UrcUdFcmNTTWpUc0ZVMzhadFg4Wi8wTmE4a2hEY3VaZ3h4disvY3l5?=
+ =?utf-8?B?b2wrZVRGUFBVb0pmTkhVTGM3aXdYR083S3lmN0owaFMrd2ZpUk53aW1yWHdr?=
+ =?utf-8?B?RjNoZWIzV1pmT2xyK1hNTSt3MmMzYkgxc25XTnRDSGZNSXVSM1NEbGYrRDda?=
+ =?utf-8?B?Mkh2a3JaR3lPUXgrMThhNFhsejFMbERZVlIrMXhqTDZwYnMrMlh6YUtiN0Qy?=
+ =?utf-8?B?WmE4UFNsUHh5YW00STVTVFRWMmJGdHQ3TG5FQVB5a0wyV0d5WTBWVlB2ZDVW?=
+ =?utf-8?B?TTFFRHBhT0hvVkhPZFJiOEMxSnhpTitOcjgyMnBOcVREN0VjN09yd3VOT1hO?=
+ =?utf-8?Q?ufPe0s3qcV+W04C5+k0YZlYfYpgdIZ9wLA9K67k?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CE41EB3656F5D04680B12F9A55941063@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1101MB2329.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61989a35-efca-4cff-4ab6-08d8d1951dcf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Feb 2021 09:36:05.2072
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: s2zqUShWnIuqi8ktK9gPLQaciTDSkqnRGHlUh3Rvz5dvxdNiDD+s9D4XG3cXzCchcolb2L4B1MEWDGRiCh6MhWK4/m3hOzufjbrjdxTA/a0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4364
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.11[1] compared to v5.10[2].
-
-Summarized:
-  - build errors: +0/-3
-  - build warnings: +33/-96
-
-JFYI, when comparing v5.11[1] to v5.11-rc7[3], the summaries are:
-  - build errors: +0/-0
-  - build warnings: +2/-0
-
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f40ddce88593482919761f74910f42f4b84c004b/ (all 192 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/2c85ebc57b3e1817b6ce1a6b703928e113a90442/ (all 192 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/92bf22614b21a2706f4993b278017e437f7785b3/ (all 192 configs)
-
-
-*** ERRORS ***
-
-3 error improvements:
-  - /kisskb/src/arch/powerpc/platforms/powermac/smp.c: error: implicit declaration of function 'cleanup_cpu_mmu_context' [-Werror=implicit-function-declaration]: 914:2 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'disable_kernel_vsx' [-Werror=implicit-function-declaration]: 676:2 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'enable_kernel_vsx' [-Werror=implicit-function-declaration]: 640:2 => 
-
-
-*** WARNINGS ***
-
-33 warning regressions:
-  + .config: warning: override: reassigning to symbol GCC_PLUGIN_CYC_COMPLEXITY:  => 4525, 4499
-  + .config: warning: override: reassigning to symbol GCC_PLUGIN_LATENT_ENTROPY:  => 4501, 4527
-  + .config: warning: override: reassigning to symbol MIPS_CPS_NS16550_SHIFT: 12729, 12743 => 12901, 12888, 12884
-  + .config: warning: override: reassigning to symbol PPC_64K_PAGES:  => 13264
-  + /kisskb/src/arch/arm/mach-omap1/board-h2.c: warning: 'isp1301_gpiod_table' defined but not used [-Wunused-variable]:  => 347:34
-  + /kisskb/src/arch/sh/kernel/traps.c: warning: unused variable 'cpu' [-Wunused-variable]:  => 183:15
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn20.c: warning: (near initialization for 'boot_options.bits') [-Wmissing-braces]:  => 326:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn20.c: warning: missing braces around initializer [-Wmissing-braces]:  => 326:8
-  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc_pf.c: warning: (near initialization for 'rfse.smac_h') [-Wmissing-braces]:  => 1004:9
-  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc_pf.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1004:9
-  + /kisskb/src/drivers/rtc/rtc-rx6110.c: warning: 'rx6110_probe' defined but not used [-Wunused-function]:  => 314:12
-  + /kisskb/src/drivers/soc/qcom/pdr_interface.c: warning: (near initialization for 'req.service_path') [-Wmissing-braces]:  => 572:9
-  + /kisskb/src/drivers/soc/qcom/pdr_interface.c: warning: missing braces around initializer [-Wmissing-braces]:  => 572:9
-  + /kisskb/src/include/linux/minmax.h: warning: comparison of distinct pointer types lacks a cast:  => 18:28
-  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 4200 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
-  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 4224 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
-  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7432 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
-  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7440 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
-  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7456 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
-  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1348 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 2262:1
-  + /opt/cross/kisskb/br-aarch64-glibc-2016.08-613-ge98b4dd/bin/../lib/gcc/aarch64-buildroot-linux-gnu/5.4.0/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 170:24, 102:21
-  + /opt/cross/kisskb/br-aarch64-glibc-2016.08-613-ge98b4dd/bin/../lib/gcc/aarch64-buildroot-linux-gnu/5.4.0/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-  + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 170:24, 102:21
-  + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/config/mips/mips.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 2913:20
-  + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 170:24, 102:21
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 102:21, 170:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/config/mips/mips.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 2791:20
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 102:21, 170:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/config/s390/s390.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 836:20
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-
-96 warning improvements:
-  - /kisskb/src/arch/ia64/include/uapi/asm/cmpxchg.h: warning: value computed is not used [-Wunused-value]: 57:2 => 
-  - /kisskb/src/arch/m68k/include/asm/cmpxchg.h: warning: value computed is not used [-Wunused-value]: 122:3, 79:22 => 
-  - /kisskb/src/arch/parisc/kernel/pci-dma.c: warning: 'proc_pcxl_dma_show' defined but not used [-Wunused-function]: 338:12 => 
-  - /kisskb/src/arch/s390/boot/mem_detect.c: warning: 'detect_memory' uses dynamic stack allocation: 175:1 => 
-  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2960 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 95:1, 51:1 => 
-  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2960 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 95:1 => 
-  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2976 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 51:1 => 
-  - /kisskb/src/block/genhd.c: warning: the frame size of 1688 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 1662:1 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: (near initialization for 'clock_table.DcfClocks') [-Wmissing-braces]: 846:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]: 846:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 1795:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]: 1795:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]: 1279:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: missing braces around initializer [-Wmissing-braces]: 1279:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 1200:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]: 1200:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: (near initialization for 'dcn2_0_nv12_soc.clock_limits') [-Wmissing-braces]: 451:15 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: missing braces around initializer [-Wmissing-braces]: 451:15 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]: 258:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: missing braces around initializer [-Wmissing-braces]: 258:9 => 
-  - /kisskb/src/drivers/media/pci/intel/ipu3/ipu3-cio2.h: warning: large integer implicitly truncated to unsigned type [-Woverflow]: 22:28 => 
-  - /kisskb/src/drivers/net/ethernet/aurora/nb8800.h: warning: "TCR_DIE" redefined: 92, 92:0 => 92
-  - /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation: 441:1 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in conversion from 'long unsigned int' to 'int' changes value from '18446744073709551584' to '-32' [-Woverflow]: 760:2 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in implicit constant conversion [-Woverflow]: 760:2 => 
-  - /kisskb/src/drivers/net/ethernet/neterion/vxge/vxge-config.c: warning: 'vxge_hw_device_hw_info_get' uses dynamic stack allocation: 1092:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_add_vlan_id' uses dynamic stack allocation: 317:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_del_vlan_id' uses dynamic stack allocation: 331:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_probe' uses dynamic stack allocation: 590:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_query_rgid' uses dynamic stack allocation: 216:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_register_dmb' uses dynamic stack allocation: 282:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_signal_ieq' uses dynamic stack allocation: 359:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_unregister_dmb' uses dynamic stack allocation: 303:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'query_info' uses dynamic stack allocation: 85:1 => 
-  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation: 482:1 => 
-  - /kisskb/src/drivers/target/iscsi/iscsi_target.c: warning: 'iscsit_send_datain' uses dynamic stack allocation: 2886:1 => 
-  - /kisskb/src/fs/nfs/super.c: warning: 'nfs_show_stats' uses dynamic stack allocation: 704:1 => 
-  - /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2192 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 1311:1 => 
-  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.14' uses dynamic stack allocation: 295:1 => 
-  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.24' uses dynamic stack allocation: 3667:1 => 
-  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_show_fdinfo' uses dynamic stack allocation: 1819:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_free_coherent' uses dynamic stack allocation: 1439:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_cpu' uses dynamic stack allocation: 1549:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_device' uses dynamic stack allocation: 1580:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_cpu' uses dynamic stack allocation: 1498:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_device' uses dynamic stack allocation: 1517:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_page' uses dynamic stack allocation: 1290:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_resource' uses dynamic stack allocation: 1480:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_sg' uses dynamic stack allocation: 1378:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: '___perf_sw_event' uses dynamic stack allocation: 9116:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_aux_event' uses dynamic stack allocation: 8303:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_bpf_output' uses dynamic stack allocation: 8600:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_cgroup_output' uses dynamic stack allocation: 7871:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_comm_output' uses dynamic stack allocation: 7649:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_ksymbol_output' uses dynamic stack allocation: 8511:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_mmap_output' uses dynamic stack allocation: 8012:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_namespaces_output' uses dynamic stack allocation: 7748:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_read_event' uses dynamic stack allocation: 7268:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_switch_output' uses dynamic stack allocation: 8395:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_task_output' uses dynamic stack allocation: 7555:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_text_poke_output' uses dynamic stack allocation: 8718:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_itrace_start' uses dynamic stack allocation: 8791:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_lost_samples' uses dynamic stack allocation: 8336:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_throttle' uses dynamic stack allocation: 8466:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_swevent_hrtimer' uses dynamic stack allocation: 10275:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_tp_event' uses dynamic stack allocation: 9430:1 => 
-  - /kisskb/src/kernel/rcu/tasks.h: warning: 'show_rcu_tasks_rude_gp_kthread' defined but not used [-Wunused-function]: 710:13 => 
-  - /kisskb/src/kernel/rseq.c: warning: '__rseq_handle_notify_resume' uses dynamic stack allocation: 281:1 => 
-  - /kisskb/src/kernel/rseq.c: warning: 'rseq_syscall' uses dynamic stack allocation: 300:1 => 
-  - /kisskb/src/kernel/smp.c: warning: 'smp_call_function_single' uses dynamic stack allocation: 517:1 => 
-  - /kisskb/src/lib/crypto/chacha20poly1305.c: warning: 'chacha20poly1305_crypt_sg_inplace' uses dynamic stack allocation: 331:1 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_partial.isra.29' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_none.isra.63' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_all.isra.49' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_partial.isra.41' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_partial.isra.17' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_zero.isra.9' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_partial' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_none' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_partial' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_partial' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_zero' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/mm/slub.c: warning: '___slab_alloc' uses dynamic stack allocation: 2759:1 => 
-  - /kisskb/src/mm/slub.c: warning: '__slab_free' uses dynamic stack allocation: 3073:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.60' uses dynamic stack allocation: 2295:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.59' uses dynamic stack allocation: 1992:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.58' uses dynamic stack allocation: 2363:1 => 
-  - /kisskb/src/net/bridge/netfilter/ebtables.c: warning: 'compat_copy_everything_to_user' uses dynamic stack allocation: 1767:1 => 
-  - /kisskb/src/net/sched/sch_cake.c: warning: the frame size of 1480 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 2942:1 => 
-  - warning: unmet direct dependencies detected for MFD_CORE: N/A => 
-  - warning: unmet direct dependencies detected for NEED_MULTIPLE_NODES: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+T24gRnJpLCAyMDIxLTAyLTEyIGF0IDE2OjMyICswMDAwLCBWbGFkaW1pciBPbHRlYW4gd3JvdGU6
+DQo+IEVYVEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50
+cyB1bmxlc3MgeW91DQo+IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gT24gRnJpLCBG
+ZWIgMTIsIDIwMjEgYXQgMDM6MDY6NDNQTSArMDEwMCwgQmphcm5pIEpvbmFzc29uIHdyb3RlOg0K
+PiA+IFRoZSAnY29tYSBtb2RlJyAoY29uZmlndXJhYmxlIHRocm91Z2ggc3cgb3IgaHcpIHByb3Zp
+ZGVzIGFuDQo+ID4gb3B0aW9uYWwgZmVhdHVyZSB0aGF0IG1heSBiZSB1c2VkIHRvIGNvbnRyb2wg
+d2hlbiB0aGUgUEhZcyBiZWNvbWUNCj4gPiBhY3RpdmUuDQo+ID4gVGhlIHR5cGljYWwgdXNhZ2Ug
+aXMgdG8gc3luY2hyb25pemUgdGhlIGxpbmstdXAgdGltZSBhY3Jvc3MNCj4gPiBhbGwgUEhZIGlu
+c3RhbmNlcy4gVGhpcyBwYXRjaCByZWxlYXNlcyBjb21hIG1vZGUgaWYgbm90IGRvbmUgYnkNCj4g
+PiBoYXJkd2FyZSwNCj4gPiBvdGhlcndpc2UgdGhlIHBoeXMgd2lsbCBub3QgbGluay11cC4NCj4g
+PiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBTdGVlbiBIZWdlbHVuZCA8c3RlZW4uaGVnZWx1bmRAbWlj
+cm9jaGlwLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBCamFybmkgSm9uYXNzb24gPGJqYXJuaS5q
+b25hc3NvbkBtaWNyb2NoaXAuY29tPg0KPiA+IEZpeGVzOiBlNGY5YmE2NDJmMGIgKCJuZXQ6IHBo
+eTogbXNjYzogYWRkIHN1cHBvcnQgZm9yIFZTQzg1MTQNCj4gPiBQSFkuIikNCj4gPiAtLS0NCj4g
+PiAgZHJpdmVycy9uZXQvcGh5L21zY2MvbXNjY19tYWluLmMgfCAxMyArKysrKysrKysrKysrDQo+
+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvbmV0L3BoeS9tc2NjL21zY2NfbWFpbi5jDQo+ID4gYi9kcml2ZXJzL25ldC9w
+aHkvbXNjYy9tc2NjX21haW4uYw0KPiA+IGluZGV4IDc1NDZkOWNjM2FiZC4uMDYwMGI1OTI2MThi
+IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L3BoeS9tc2NjL21zY2NfbWFpbi5jDQo+ID4g
+KysrIGIvZHJpdmVycy9uZXQvcGh5L21zY2MvbXNjY19tYWluLmMNCj4gPiBAQCAtMTQxOCw2ICsx
+NDE4LDE4IEBAIHN0YXRpYyB2b2lkIHZzYzg1ODRfZ2V0X2Jhc2VfYWRkcihzdHJ1Y3QNCj4gPiBw
+aHlfZGV2aWNlICpwaHlkZXYpDQo+ID4gICAgICAgdnNjODUzMS0+YWRkciA9IGFkZHI7DQo+ID4g
+IH0NCj4gPiANCj4gPiArc3RhdGljIHZvaWQgdnNjODV4eF9jb21hX21vZGVfcmVsZWFzZShzdHJ1
+Y3QgcGh5X2RldmljZSAqcGh5ZGV2KQ0KPiA+ICt7DQo+ID4gKyAgICAgLyogVGhlIGNvbWEgbW9k
+ZSAocGluIG9yIHJlZykgcHJvdmlkZXMgYW4gb3B0aW9uYWwgZmVhdHVyZQ0KPiA+IHRoYXQNCj4g
+PiArICAgICAgKiBtYXkgYmUgdXNlZCB0byBjb250cm9sIHdoZW4gdGhlIFBIWXMgYmVjb21lIGFj
+dGl2ZS4NCj4gPiArICAgICAgKiBBbHRlcm5hdGl2ZWx5IHRoZSBDT01BX01PREUgcGluIG1heSBi
+ZSBjb25uZWN0ZWQgbG93DQo+ID4gKyAgICAgICogc28gdGhhdCB0aGUgUEhZcyBhcmUgZnVsbHkg
+YWN0aXZlIG9uY2Ugb3V0IG9mIHJlc2V0Lg0KPiA+ICsgICAgICAqLw0KPiA+ICsgICAgIF9fcGh5
+X3dyaXRlKHBoeWRldiwgTVNDQ19FWFRfUEFHRV9BQ0NFU1MsDQo+ID4gTVNDQ19QSFlfUEFHRV9F
+WFRFTkRFRF9HUElPKTsNCj4gPiArICAgICBfX3BoeV93cml0ZShwaHlkZXYsIE1TQ0NfUEhZX0dQ
+SU9fQ09OVFJPTF8yLCAweDA2MDApOw0KPiA+ICsgICAgIF9fcGh5X3dyaXRlKHBoeWRldiwgTVND
+Q19FWFRfUEFHRV9BQ0NFU1MsDQo+ID4gTVNDQ19QSFlfUEFHRV9TVEFOREFSRCk7DQo+IA0KPiBD
+YW4geW91IHBsZWFzZSBkbzoNCj4gICAgICAgICBwaHlfd3JpdGVfcGFnZWQocGh5ZGV2LCBNU0ND
+X1BIWV9QQUdFX0VYVEVOREVEX0dQSU8sDQo+ICAgICAgICAgICAgICAgICAgICAgICAgIE1TQ0Nf
+UEhZX0dQSU9fQ09OVFJPTF8yLCAweDA2MDApOw0KPiANCj4gQW5kIGNhbiB5b3UgcGxlYXNlIHBy
+b3ZpZGUgc29tZSBkZWZpbml0aW9ucyBmb3Igd2hhdCAweDA2MDAgaXM/DQo+IE15IHJlZmVyZW5j
+ZSBtYW51YWwgc2F5cyB0aGF0Og0KPiANCj4gQml0IDEzOg0KPiBDT01BX01PREUgb3V0cHV0IGVu
+YWJsZSAoYWN0aXZlIGxvdykNCj4gQml0IDEyOg0KPiBDT01BX01PREUgb3V0cHV0IGRhdGENCj4g
+Qml0IDExOg0KPiBDT01BX01PREUgaW5wdXQgZGF0YQ0KPiBCaXQgMTA6DQo+IFJlc2VydmVkDQo+
+IEJpdCA5Og0KPiBUcmktc3RhdGUgZW5hYmxlIGZvciBMRURzDQo+IA0KPiAweDYwMCBpcyBCSVQo
+MTApIHwgQklUKDkpLiBCdXQgQklUKDEwKSBpcyByZXNlcnZlZC4gU3VyZSB0aGlzIGlzDQo+IGNv
+cnJlY3Q/DQoNCkkgY2FuIHNlZSB0aGlzIGlzIHVuY2xlYXIuICBUaGUgY29kZSBpcyBhY3R1YWx5
+IHdyaXRpbmcgemVybyB0byBiaXQgMTINCmFuZCAxMy4gIEJpdCA5IGFuZCAxMCBhcmUgbm90IGlu
+dGVyZXN0aW5nIGluIHRoaXMgY29udGV4dC4gIEkgd2lsbA0KY2hhbmdlIGl0IHRvIHVzZSBwaHlf
+bW9kaWZ5X3BhZ2VkKCkgYml0IDEyIGFuZCAxMy4NCg0KPiANCj4gPiArfQ0KPiA+ICsNCj4gPiAg
+c3RhdGljIGludCB2c2M4NTg0X2NvbmZpZ19pbml0KHN0cnVjdCBwaHlfZGV2aWNlICpwaHlkZXYp
+DQo+ID4gIHsNCj4gPiAgICAgICBzdHJ1Y3QgdnNjODUzMV9wcml2YXRlICp2c2M4NTMxID0gcGh5
+ZGV2LT5wcml2Ow0KPiA+IEBAIC0yNjEwLDYgKzI2MjIsNyBAQCBzdGF0aWMgaW50IHZzYzg1MTRf
+Y29uZmlnX2luaXQoc3RydWN0DQo+ID4gcGh5X2RldmljZSAqcGh5ZGV2KQ0KPiA+ICAgICAgICAg
+ICAgICAgcmV0ID0gdnNjODUxNF9jb25maWdfaG9zdF9zZXJkZXMocGh5ZGV2KTsNCj4gPiAgICAg
+ICAgICAgICAgIGlmIChyZXQpDQo+ID4gICAgICAgICAgICAgICAgICAgICAgIGdvdG8gZXJyOw0K
+PiA+ICsgICAgICAgICAgICAgdnNjODV4eF9jb21hX21vZGVfcmVsZWFzZShwaHlkZXYpOw0KPiA+
+ICAgICAgIH0NCj4gPiANCj4gPiAgICAgICBwaHlfdW5sb2NrX21kaW9fYnVzKHBoeWRldik7DQo+
+ID4gLS0NCj4gPiAyLjE3LjENCj4gPiANCg==
