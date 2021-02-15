@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4293E31C0F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9524431C0F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhBORrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:47:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231660AbhBORg2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:36:28 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A716C061574;
-        Mon, 15 Feb 2021 09:35:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=WfBdv0XlEnpVSGZr2AxzwUYGmxRIbjsFvHnItDviNQ0=; b=QgwXQoDqR0KCo9Z7aDGKq5nnVP
-        jExeJ5b00Lcjjj2InVNMrMEhTuqNu10gkVGIn4FDVZxnDpIOWj6MMg+psHP8TvJVqjNakMjrveHHF
-        ScCocLAFsfUl1xgbgF18zD7Prb1A3hRrXGNR5nRxeuWtprzLJzQyEdULiKdITIk80FLiW5HN+1GvM
-        Gf4P5G0cRieS6ha33tlZY3eDIQUjlAnkUvfwCHXWwRAOt5CU9j2JdaasmdFPaP85P89dmzWYmrvEB
-        wjgWTJr24PxvmsDQ6ZqHkDv3C19NqZKLQY5iluwCScVZTCAtnBh/u4oxt3SASv2bUhwyb5jHoD4DQ
-        lHMf78sQ==;
-Received: from [2601:1c0:6280:3f0::6444]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lBhmg-0006cD-T7; Mon, 15 Feb 2021 17:35:43 +0000
-Subject: Re: linux-next: Tree for Feb 15 (CXL on i386)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-References: <20210215203421.43cc2a4a@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f6121dec-1a65-bd25-03b7-bcaf22d0f3b2@infradead.org>
-Date:   Mon, 15 Feb 2021 09:35:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232590AbhBORrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:47:51 -0500
+Received: from mga11.intel.com ([192.55.52.93]:31645 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232430AbhBORiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 12:38:06 -0500
+IronPort-SDR: 20uhJ7i1OHYDuC174w5yDe8p29tNtGp/OF7QAm1SuIYRN3o23I/1GSIBG0eDZKKUxDotbLkGj9
+ jAbfCNnUI0kg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="179226327"
+X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
+   d="scan'208";a="179226327"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 09:36:20 -0800
+IronPort-SDR: HZkYD9uJOUAnACWzxIm2MliZ5P0Ipj1zDYQXW4WQHugCDmw3twAdYGKZRMCVepphS80ut/iYdr
+ m/997U/z7r3w==
+X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
+   d="scan'208";a="424332046"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 09:36:17 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lBhnC-005HSI-JK; Mon, 15 Feb 2021 19:36:14 +0200
+Date:   Mon, 15 Feb 2021 19:36:14 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v7 3/3] drm: Switch to %p4cc format modifier
+Message-ID: <YCqxDsCpjODcLhbp@smile.fi.intel.com>
+References: <20210215114030.11862-1-sakari.ailus@linux.intel.com>
+ <20210215114030.11862-4-sakari.ailus@linux.intel.com>
+ <YCp5+okZ2M0SLTY9@smile.fi.intel.com>
+ <20210215172655.GL3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210215203421.43cc2a4a@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215172655.GL3@paasikivi.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/15/21 1:34 AM, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Feb 15, 2021 at 07:26:55PM +0200, Sakari Ailus wrote:
+> On Mon, Feb 15, 2021 at 03:41:14PM +0200, Andy Shevchenko wrote:
+> ...
+> > > +	seq_printf(m, "\t\tuapi: [FB:%d] ", fb ? fb->base.id : 0);
+> > > +	if (fb)
+> > > +		seq_printf(m, "%p4cc", &fb->format->format);
+> > > +	else
+> > > +		seq_puts(m, "n/a");
+> > 
+> > > +	seq_printf(m, ",0x%llx,%dx%d, visible=%s, src=" DRM_RECT_FP_FMT ", dst=" DRM_RECT_FMT ", rotation=%s\n",
+> > 
+> > Why not to keep two seq_printf() calls?
+> > 
+> > if (fb) {
+> > 	seq_printf();
+> > } else {
+> > 	seq_printf();
+> > }
+> > 
+> > ?
 > 
-> Changes since 20210212:
-> 
+> I could, but it'd repeat a lot of the same format string that is very
+> complicated right now. Therefore I thought it's better to split.
 
+It's fine, why not?
 
-CXL on i386 has these issue:
+> Or do you mean seq_printf() vs. seq_puts()? checkpatch.pl (rightly) warns
+> about it.
 
-../drivers/cxl/mem.c:335:2: error: implicit declaration of function ‘writeq’; did you mean ‘writel’? [-Werror=implicit-function-declaration]
-  writeq(cmd_reg, cxlm->mbox_regs + CXLDEV_MBOX_CMD_OFFSET);
-  ^~~~~~
+If it doesn't take run-time parameters, then definitely
+if (fb)
+	seq_printf();
+else
+	seq_puts();
 
-../drivers/cxl/mem.c:350:15: error: implicit declaration of function ‘readq’; did you mean ‘readl’? [-Werror=implicit-function-declaration]
-  status_reg = readq(cxlm->mbox_regs + CXLDEV_MBOX_STATUS_OFFSET);
-
-
-and lots of these (just one example here):
-
-../drivers/cxl/cxl.h:29:47: note: in expansion of macro ‘GENMASK’
- #define   CXLDEV_MBOX_CMD_PAYLOAD_LENGTH_MASK GENMASK(36, 16)
-                                               ^~~~~~~
-../drivers/cxl/mem.c:329:25: note: in expansion of macro ‘CXLDEV_MBOX_CMD_PAYLOAD_LENGTH_MASK’
-   cmd_reg |= FIELD_PREP(CXLDEV_MBOX_CMD_PAYLOAD_LENGTH_MASK,
-                         ^
-../include/linux/bits.h:36:11: warning: right shift count is negative [-Wshift-count-negative]
-   (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-           ^
-../include/linux/bitfield.h:95:49: note: in definition of macro ‘FIELD_PREP’
-   ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask); \
-                                                 ^~~~~
-../include/linux/bits.h:38:31: note: in expansion of macro ‘__GENMASK’
-  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-                               ^~~~~~~~~
-
+> > >  		   fb ? fb->modifier : 0,
+> > >  		   fb ? fb->width : 0, fb ? fb->height : 0,
+> > >  		   plane_visibility(plane_state),
 
 -- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+With Best Regards,
+Andy Shevchenko
+
+
