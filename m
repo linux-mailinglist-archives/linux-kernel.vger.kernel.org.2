@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BF431BF8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF3431BF58
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbhBOQkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:40:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49600 "EHLO mail.kernel.org"
+        id S231858AbhBOQa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:30:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhBOPgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:36:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B6DB64ED7;
-        Mon, 15 Feb 2021 15:32:34 +0000 (UTC)
+        id S231248AbhBOPhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:37:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FEFE64EE1;
+        Mon, 15 Feb 2021 15:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403154;
-        bh=LnPdiWxmYswvudyCPnAmeCke0qm0uWWt2RBavlq4lGs=;
+        s=korg; t=1613403164;
+        bh=kAABYYgnm3eDTzaiVQSmhvnBVlVRUqcHETZxpS0fzWc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=srq2uu2yQzRpu4EVOyzQMWVZtDgAVLfazGvsKUA7xOYLiSTWDhndJR0CgLi0dSe4C
-         dIIWTbkigzmHft6jC5HLCtGC68GVSjLXe6O1+Do4esXYk7LlXAZZCBG0HHRArRMW/d
-         XsmIESq3/wIki/Ks7r/1oLoNmzIKTcj89jpw0eVI=
+        b=ci/q9QQc3mJTvW+zRj/6nfDJcmA+tN9nY4DY75pySLNPnbDC2AVLb/7/UQku6orRP
+         tQaxhMmnj2CnDIITf9LvRBuUn+TByXD/HRJxTlkT5UmTlgH4DE9JmoDDJ0cXmiO4eS
+         274hfpuf8srru1qAKWp8411Os2qVhfw5Biy5Voc4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Zhou <chenzhou10@huawei.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 049/104] cgroup-v1: add disabled controller check in cgroup1_parse_param()
-Date:   Mon, 15 Feb 2021 16:27:02 +0100
-Message-Id: <20210215152721.061913782@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Eric Anholt <eric@anholt.net>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 053/104] drm/vc4: hvs: Fix buffer overflow with the dlist handling
+Date:   Mon, 15 Feb 2021 16:27:06 +0100
+Message-Id: <20210215152721.190120902@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,45 +44,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Zhou <chenzhou10@huawei.com>
+From: Maxime Ripard <maxime@cerno.tech>
 
-[ Upstream commit 61e960b07b637f0295308ad91268501d744c21b5 ]
+[ Upstream commit facd93f4285c405f9a91b05166147cb39e860666 ]
 
-When mounting a cgroup hierarchy with disabled controller in cgroup v1,
-all available controllers will be attached.
-For example, boot with cgroup_no_v1=cpu or cgroup_disable=cpu, and then
-mount with "mount -t cgroup -ocpu cpu /sys/fs/cgroup/cpu", then all
-enabled controllers will be attached except cpu.
+Commit 0a038c1c29a7 ("drm/vc4: Move LBM creation out of
+vc4_plane_mode_set()") changed the LBM allocation logic from first
+allocating the LBM memory for the plane to running mode_set,
+adding a gap in the LBM, and then running the dlist allocation filling
+that gap.
 
-Fix this by adding disabled controller check in cgroup1_parse_param().
-If the specified controller is disabled, just return error with information
-"Disabled controller xx" rather than attaching all the other enabled
-controllers.
+The gap was introduced by incrementing the dlist array index, but was
+never checking whether or not we were over the array length, leading
+eventually to memory corruptions if we ever crossed this limit.
 
-Fixes: f5dfb5315d34 ("cgroup: take options parsing into ->parse_monolithic()")
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Reviewed-by: Zefan Li <lizefan.x@bytedance.com>
-Reviewed-by: Michal Koutný <mkoutny@suse.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
+vc4_dlist_write had that logic though, and was reallocating a larger
+dlist array when reaching the end of the buffer. Let's share the logic
+between both functions.
+
+Cc: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Eric Anholt <eric@anholt.net>
+Fixes: 0a038c1c29a7 ("drm/vc4: Move LBM creation out of vc4_plane_mode_set()")
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210129160647.128373-1-maxime@cerno.tech
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/cgroup/cgroup-v1.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/vc4/vc4_plane.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index 32596fdbcd5b8..a5751784ad740 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -917,6 +917,9 @@ int cgroup1_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		for_each_subsys(ss, i) {
- 			if (strcmp(param->key, ss->legacy_name))
- 				continue;
-+			if (!cgroup_ssid_enabled(i) || cgroup1_ssid_disabled(i))
-+				return invalfc(fc, "Disabled controller '%s'",
-+					       param->key);
- 			ctx->subsys_mask |= (1 << i);
- 			return 0;
- 		}
+diff --git a/drivers/gpu/drm/vc4/vc4_plane.c b/drivers/gpu/drm/vc4/vc4_plane.c
+index 5612cab552270..af4b8944a6032 100644
+--- a/drivers/gpu/drm/vc4/vc4_plane.c
++++ b/drivers/gpu/drm/vc4/vc4_plane.c
+@@ -220,7 +220,7 @@ static void vc4_plane_reset(struct drm_plane *plane)
+ 	__drm_atomic_helper_plane_reset(plane, &vc4_state->base);
+ }
+ 
+-static void vc4_dlist_write(struct vc4_plane_state *vc4_state, u32 val)
++static void vc4_dlist_counter_increment(struct vc4_plane_state *vc4_state)
+ {
+ 	if (vc4_state->dlist_count == vc4_state->dlist_size) {
+ 		u32 new_size = max(4u, vc4_state->dlist_count * 2);
+@@ -235,7 +235,15 @@ static void vc4_dlist_write(struct vc4_plane_state *vc4_state, u32 val)
+ 		vc4_state->dlist_size = new_size;
+ 	}
+ 
+-	vc4_state->dlist[vc4_state->dlist_count++] = val;
++	vc4_state->dlist_count++;
++}
++
++static void vc4_dlist_write(struct vc4_plane_state *vc4_state, u32 val)
++{
++	unsigned int idx = vc4_state->dlist_count;
++
++	vc4_dlist_counter_increment(vc4_state);
++	vc4_state->dlist[idx] = val;
+ }
+ 
+ /* Returns the scl0/scl1 field based on whether the dimensions need to
+@@ -978,8 +986,10 @@ static int vc4_plane_mode_set(struct drm_plane *plane,
+ 		 * be set when calling vc4_plane_allocate_lbm().
+ 		 */
+ 		if (vc4_state->y_scaling[0] != VC4_SCALING_NONE ||
+-		    vc4_state->y_scaling[1] != VC4_SCALING_NONE)
+-			vc4_state->lbm_offset = vc4_state->dlist_count++;
++		    vc4_state->y_scaling[1] != VC4_SCALING_NONE) {
++			vc4_state->lbm_offset = vc4_state->dlist_count;
++			vc4_dlist_counter_increment(vc4_state);
++		}
+ 
+ 		if (num_planes > 1) {
+ 			/* Emit Cb/Cr as channel 0 and Y as channel
 -- 
 2.27.0
 
