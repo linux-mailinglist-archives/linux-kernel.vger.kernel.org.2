@@ -2,49 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D3C31BBD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 970B131BBC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhBOPGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:06:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbhBOO5H (ORCPT
+        id S230222AbhBOPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:01:42 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:33218 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230117AbhBOO4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:57:07 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7FBC0617AB;
-        Mon, 15 Feb 2021 06:55:48 -0800 (PST)
-Date:   Mon, 15 Feb 2021 14:55:46 -0000
+        Mon, 15 Feb 2021 09:56:30 -0500
+Date:   Mon, 15 Feb 2021 14:55:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613400947;
+        s=2020; t=1613400948;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=SvZatWUFOlAE1MhuIj0oIwsUbxBX74zM4vcDThQQZFw=;
-        b=c4rFW36uQxPk26VlRX7klQOk3wzx2rQ2HB7DztteIt16q5dL0ERnM1UGm9yYkVovdHVQLp
-        y40jH166k2JMEFBFzKfkmfjpcewUO5E32AUEW5T1xz7421mJQroiO/zlXBJY/LTsaRmOQ9
-        SoElWj0CHPEUruwdvRz8WXMn1cs9nt7tccArRiZUpN+DJbbHnBNVwXF2wstvUp3JzLQz+M
-        zLT01vDzmg8JJfibqm2p5LEalygcFJTVc27WLtguOclgOX2ARTkG8YkFnwtjyC3amAcixn
-        NUlDt+QEumhfrLsyLsI6Nwm8Rdg5LNMgy3vyKM0dal1AfhMn1KvS2yOBCi1w2w==
+        bh=UaAPfSK2rL+Cg+mAZXiQwYXpjewfmbhsE03uaFWbZEQ=;
+        b=YQtmhpjitkN3cnuDPB8YztgsD7VC9dafxOKhR7g0p9Fhnfwccv4becdbis+qOBP8P2uL77
+        aNkC10GTphVb9ojY/U4/t3EQUuudydQg5K2KKaFUx/7s39IJsojwL498sZcrFnvnI2QMYd
+        Mv16J0Atmp6s4uXXOzBClujg+bPHxG9vYcrmsjaBXSVCZXkTYWxK3oaDgCVUZPh5So9+sk
+        GXyMzd7j6Uc+Qd6uZeUtv8AvTT/4uFxxOqriM9Jfk+V0yO1N5EQ8gwYlbEs4UAe4XJW0nC
+        /Rd2yav6tekIgmY9060h6rVC9yKaveMyvjJnV5iZxMfQ7AR9GCaMQ8yvw3yIEQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613400947;
+        s=2020e; t=1613400948;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=SvZatWUFOlAE1MhuIj0oIwsUbxBX74zM4vcDThQQZFw=;
-        b=pI3Kwel8+nsHQpw1llXRLm4LFne0Ac5U5zcb9RAvIqQfncHQU2h0XUAC2vikgP6EzpWzaU
-        6uB90CRRuBQEJpBw==
-From:   "tip-bot2 for Uladzislau Rezki (Sony)" <tip-bot2@linutronix.de>
+        bh=UaAPfSK2rL+Cg+mAZXiQwYXpjewfmbhsE03uaFWbZEQ=;
+        b=151HM5plhNcvMy7wMAeinuRHOVr36wgtqLicbYeoLcUWwJCfYOu55aXL00NWPfV+T7uAvf
+        d+o31ZwPS0G7mUDw==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu: Eliminate the __kvfree_rcu() macro
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+Subject: [tip: core/rcu] doc: Update RCU requirements RCU_INIT_POINTER() description
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161340094671.20312.5615708638923293514.tip-bot2@tip-bot2>
+Message-ID: <161340094765.20312.11662112524491072594.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,64 +53,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     5ea5d1ed572cb5ac173674fe770252253d2d9e27
-Gitweb:        https://git.kernel.org/tip/5ea5d1ed572cb5ac173674fe770252253d2d9e27
-Author:        Uladzislau Rezki (Sony) <urezki@gmail.com>
-AuthorDate:    Fri, 20 Nov 2020 12:49:17 +01:00
+Commit-ID:     d756c74e6f6e76e99f8bffcea57833816dd335b6
+Gitweb:        https://git.kernel.org/tip/d756c74e6f6e76e99f8bffcea57833816dd335b6
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Wed, 09 Dec 2020 16:54:41 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 04 Jan 2021 13:42:04 -08:00
+CommitterDate: Mon, 04 Jan 2021 13:35:15 -08:00
 
-rcu: Eliminate the __kvfree_rcu() macro
+doc: Update RCU requirements RCU_INIT_POINTER() description
 
-This commit open-codes the __kvfree_rcu() macro, thus saving a
-few lines of code and improving readability.
+Back in the day, RCU_INIT_POINTER() was the only way to avoid
+memory-barrier instructions while storing NULL to an RCU-protected
+pointer.  Fortunately, in 2016, rcu_assign_pointer() started checking for
+compile-time NULL pointers and omitting the memory-barrier instructions in
+that case.  Unfortunately, RCU's Requirements.rst document was not updated
+accordingly.  This commit therefore at long last carries out that update.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Fixes: 3a37f7275cda ("rcu: No ordering for rcu_assign_pointer() of NULL")
+Link: https://lore.kernel.org/lkml/20201209230755.GV7338@casper.infradead.org/
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ Documentation/RCU/Design/Requirements/Requirements.rst | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index b95373e..f1576cd 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -840,15 +840,6 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-  */
- #define __is_kvfree_rcu_offset(offset) ((offset) < 4096)
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+index f32f8fa..65c7839 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -1668,8 +1668,7 @@ against mishaps and misuse:
+    this purpose.
+ #. It is not necessary to use rcu_assign_pointer() when creating
+    linked structures that are to be published via a single external
+-   pointer. The RCU_INIT_POINTER() macro is provided for this task
+-   and also for assigning ``NULL`` pointers at runtime.
++   pointer. The RCU_INIT_POINTER() macro is provided for this task.
  
--/*
-- * Helper macro for kfree_rcu() to prevent argument-expansion eyestrain.
-- */
--#define __kvfree_rcu(head, offset) \
--	do { \
--		BUILD_BUG_ON(!__is_kvfree_rcu_offset(offset)); \
--		kvfree_call_rcu(head, (rcu_callback_t)(unsigned long)(offset)); \
--	} while (0)
--
- /**
-  * kfree_rcu() - kfree an object after a grace period.
-  * @ptr: pointer to kfree for both single- and double-argument invocations.
-@@ -866,7 +857,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-  * Because the functions are not allowed in the low-order 4096 bytes of
-  * kernel virtual memory, offsets up to 4095 bytes can be accommodated.
-  * If the offset is larger than 4095 bytes, a compile-time error will
-- * be generated in __kvfree_rcu(). If this error is triggered, you can
-+ * be generated in kvfree_rcu_arg_2(). If this error is triggered, you can
-  * either fall back to use of call_rcu() or rearrange the structure to
-  * position the rcu_head structure into the first 4096 bytes.
-  *
-@@ -912,8 +903,11 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
- do {									\
- 	typeof (ptr) ___p = (ptr);					\
- 									\
--	if (___p)							\
--		__kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
-+	if (___p) {									\
-+		BUILD_BUG_ON(!__is_kvfree_rcu_offset(offsetof(typeof(*(ptr)), rhf)));	\
-+		kvfree_call_rcu(&((___p)->rhf), (rcu_callback_t)(unsigned long)		\
-+			(offsetof(typeof(*(ptr)), rhf)));				\
-+	}										\
- } while (0)
- 
- #define kvfree_rcu_arg_1(ptr)					\
+ This not a hard-and-fast list: RCU's diagnostic capabilities will
+ continue to be guided by the number and type of usage bugs found in
