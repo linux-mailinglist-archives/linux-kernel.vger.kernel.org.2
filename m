@@ -2,66 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7FB31C069
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B18331C07A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhBORXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:23:17 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:52667 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232093AbhBOQUd (ORCPT
+        id S232144AbhBOR0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:26:11 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21334 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231247AbhBOQ0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:20:33 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lBgap-0007LW-Ds; Mon, 15 Feb 2021 16:19:23 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] i40e: Fix incorrect use of ip6src due to copy-paste coding error
-Date:   Mon, 15 Feb 2021 16:19:23 +0000
-Message-Id: <20210215161923.83682-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
+        Mon, 15 Feb 2021 11:26:39 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11FG1x5u091416;
+        Mon, 15 Feb 2021 11:25:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=p16JBaGq+vM9x1xiP2OOXyFJ46tBXYMEeSXZL2TEx/I=;
+ b=CzcWJdFpr+XpbiBYf6T+7DDHKwmetzuxF5xOcmKGoArq/ejqxJTJiCtiNF1oTltRrEpv
+ Dl/GOpX2pkIRJ4H8d9T1Pxaxe4BAArNdJkPu+CrbkqNgIbBzawhkmhfoxxRR4W7B5iZl
+ 3G7y/YOFNKIIQHaE+E89wvEngM34uR4ele9V6TjRMMCtjFRpTHtIEOHSFZPR/kvhgytY
+ faF0HaSjr8t3MfTzpGqidNTcVerJz/oYjEeoBYyD4+tai4r/mLkEfzHFn7qxETPv1M/o
+ BE9DIYm85/NtU5hz3/ZAlMaHKe9pREzWxe9IM0R9e5SWT8cirNhN1KDdnf0Z3RZ+6V3K cA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36qt30x00c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 11:25:48 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11FG2IiE092778;
+        Mon, 15 Feb 2021 11:25:48 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36qt30wyyn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 11:25:48 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11FGNSmt000623;
+        Mon, 15 Feb 2021 16:25:47 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma03dal.us.ibm.com with ESMTP id 36p6d8v939-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 16:25:47 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11FGPjJV32047564
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 15 Feb 2021 16:25:45 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 937EE6A04D;
+        Mon, 15 Feb 2021 16:25:45 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC2D86A047;
+        Mon, 15 Feb 2021 16:25:44 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 15 Feb 2021 16:25:44 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.ibm.com>
+To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        dhowells@redhat.com, zohar@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v8 0/4] Add support for x509 certs with NIST p256 and p192 keys
+Date:   Mon, 15 Feb 2021 11:25:28 -0500
+Message-Id: <20210215162532.1077098-1-stefanb@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-15_11:2021-02-12,2021-02-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ suspectscore=0 impostorscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 priorityscore=1501 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102150124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+This series of patches adds support for x509 certificates signed by a CA
+that uses NIST p256 or p192 keys for signing. It also adds support for
+certificates where the public key is a NIST p256 or p192 key. The math
+for ECDSA signature verification is also added.
 
-It appears that the call of ipv6_add_any for the destination address
-is using ip6src instead of ip6dst, this looks like a copy-paste
-coding error. Fix this by replacing ip6src with ip6dst.
+Since self-signed certificates are verified upon loading, the following
+script can be used for testing:
 
-Addresses-Coverity: ("Copy-paste error")
-Fixes: efca91e89b67 ("i40e: Add flow director support for IPv6")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+k=$(keyctl newring test @u)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index 8a4dd77a12da..a8a2b5f683a2 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -4250,7 +4250,7 @@ static int i40e_check_fdir_input_set(struct i40e_vsi *vsi,
- 				    (struct in6_addr *)&ipv6_full_mask))
- 			new_mask |= I40E_L3_V6_DST_MASK;
- 		else if (ipv6_addr_any((struct in6_addr *)
--				       &tcp_ip6_spec->ip6src))
-+				       &tcp_ip6_spec->ip6dst))
- 			new_mask &= ~I40E_L3_V6_DST_MASK;
- 		else
- 			return -EOPNOTSUPP;
+while :; do
+	for hash in sha1 sha224 sha256 sha384 sha512; do
+		openssl req \
+			-x509 \
+			-${hash} \
+			-newkey ec \
+			-pkeyopt ec_paramgen_curve:prime256v1 \
+			-keyout key.pem \
+			-days 365 \
+			-subj '/CN=test' \
+			-nodes \
+			-outform der \
+			-out cert.der
+		keyctl padd asymmetric testkey $k < cert.der
+		if [ $? -ne 0 ]; then
+			echo "ERROR"
+			exit 1
+		fi
+	done
+done
+
+Ecdsa support also works with restricted keyrings where an RSA key is used
+to sign a NIST P256/P192 key. Scripts for testing are here:
+
+https://github.com/stefanberger/eckey-testing
+
+The ECDSA signature verification will be used by IMA Appraisal where ECDSA
+file signatures stored in RPM packages will use substantially less space
+than if RSA signatures were to be used.
+
+   Stefan
+
+v7->v8:
+  - patch 3/4: Do not determine key algo using parse_OID in public_key.c
+    but do this when parsing the certificate. This addresses an issue
+    with certain build configurations where OID_REGISTRY is not available
+    as 'Reported-by: kernel test robot <lkp@intel.com>'.
+
+v6->v7:
+  - Moved some OID defintions to patch 1 for bisectability
+  - Applied R-b's
+  
+v5->v6:
+  - moved ecdsa code into its own module ecdsa_generic built from ecdsa.c
+  - added script-generated test vectors for NIST P256 & P192 and all hashes
+  - parsing of OID that contain header with new parse_oid()
+
+v4->v5:
+  - registering crypto support under names ecdsa-nist-p256/p192 following
+    Hubert Xu's suggestion in other thread
+  - appended IMA ECDSA support patch
+
+v3->v4:
+  - split off of ecdsa crypto part; registering akcipher as "ecdsa" and
+    deriving used curve from digits in parsed key
+
+v2->v3:
+  - patch 2 now includes linux/scatterlist.h
+
+v1->v2:
+  - using faster vli_sub rather than newly added vli_mod_fast to 'reduce'
+    result
+  - rearranged switch statements to follow after RSA
+  - 3rd patch from 1st posting is now 1st patch
+
+
+Stefan Berger (4):
+  crypto: Add support for ECDSA signature verification
+  x509: Detect sm2 keys by their parameters OID
+  x509: Add support for parsing x509 certs with ECDSA keys
+  ima: Support EC keys for signature verification
+
+ crypto/Kconfig                            |  10 +
+ crypto/Makefile                           |   6 +
+ crypto/asymmetric_keys/public_key.c       |   4 +-
+ crypto/asymmetric_keys/x509_cert_parser.c |  46 ++-
+ crypto/asymmetric_keys/x509_public_key.c  |   4 +-
+ crypto/ecc.c                              |  13 +-
+ crypto/ecc.h                              |  28 ++
+ crypto/ecdsa.c                            | 361 ++++++++++++++++++++++
+ crypto/ecdsasignature.asn1                |   4 +
+ crypto/testmgr.c                          |  12 +
+ crypto/testmgr.h                          | 267 ++++++++++++++++
+ include/keys/asymmetric-type.h            |   6 +
+ include/linux/oid_registry.h              |   7 +
+ lib/oid_registry.c                        |  13 +
+ security/integrity/digsig_asymmetric.c    |  30 +-
+ 15 files changed, 780 insertions(+), 31 deletions(-)
+ create mode 100644 crypto/ecdsa.c
+ create mode 100644 crypto/ecdsasignature.asn1
+
 -- 
-2.30.0
+2.29.2
 
