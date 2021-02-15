@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A27E31C0DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:44:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6703731C0DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 18:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbhBORm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 12:42:57 -0500
-Received: from mga05.intel.com ([192.55.52.43]:38865 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232355AbhBORYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:24:33 -0500
-IronPort-SDR: 5p6Ry4wqy1Lgh5KRhoWxZy8uS35Iwz+pLKIMxuHOd+06YRHP2u+hWX5N/74gM0wUNrCyJHIaR2
- yoZR+VxQxThw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="267575380"
-X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
-   d="scan'208";a="267575380"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 09:22:41 -0800
-IronPort-SDR: xefnQJpzJ5DrCRisWmrD7Ac76UF3NqQhUSqIibI+Hqxl0EtDmoiGjuNP5Gw0b8QHVoBMltecHQ
- PbcSzLnZCenA==
-X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
-   d="scan'208";a="438637738"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 09:22:37 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id D590F20518;
-        Mon, 15 Feb 2021 19:22:35 +0200 (EET)
-Date:   Mon, 15 Feb 2021 19:22:35 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
-        laurent.pinchart@ideasonboard.com,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v7 2/3] v4l: ioctl: Use %p4cc printk modifier to print
- FourCC codes
-Message-ID: <20210215172235.GK3@paasikivi.fi.intel.com>
-References: <20210215114030.11862-1-sakari.ailus@linux.intel.com>
- <20210215114030.11862-3-sakari.ailus@linux.intel.com>
- <YCqnu61J2Q8rsrZa@alley>
- <20210215180545.7178e180@coco.lan>
+        id S232684AbhBORnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 12:43:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232288AbhBORYY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 12:24:24 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFE9C061786;
+        Mon, 15 Feb 2021 09:23:44 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id c11so4542218pfp.10;
+        Mon, 15 Feb 2021 09:23:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sLQol9oxPeOG1Kr+YSSO0W5V4v2gUOFh7QiJCDdWNqU=;
+        b=PkxBFU5nVbo5oAYYa/lQpvEaEElCvLWhl43ILCDOizN0iRgnF7V6yqP6qzHIU6WwCo
+         HW4tHjJF1xxu2ds31Pbjpj8r4MsTNwTEtlSRgxhJQreeLE3McunlDsmvy/FoGa42cGr8
+         3wpDfMRo8hRMO2hEoD1r3EuWvn/FqeCaHahfd1TfnbQb/246+9jWL9AS886OLFia/OzI
+         H51eHKJ0HBpSVqlXQdskpc6in/V9HpuqIbdqZe/xI9CamRfb0mZ8zOcD1LnrbFpholCp
+         2cP9YhTwIDwzEdW7bGvqX2xG9zUXPlyNE6CV8TzI/2XyBn9aVntjE8bM48rB4ZsYXUxF
+         xP0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sLQol9oxPeOG1Kr+YSSO0W5V4v2gUOFh7QiJCDdWNqU=;
+        b=UcyRoCvehsS3U/tsivFTm2l6eEabTyilmVvyjgpkV17kjQZ3rF4COPLfgW7dvvNxak
+         xbcasdgRiSchFGKqKFQr0hnR3oKFl2qvh6GVFc5iNDi4Molb/TNvVUk/e5rGfsAlvjje
+         xluQeeKHQyCcxUUssRhUNRaMPxN5MKAf1NqzAE9zsaKNObj6sZ57elrFkHeL8y5uhr2+
+         nnklMFHIpb+P0WQhfIaNrSyixQadJ9p5hPAaQCGrUU1khQVyxqo6I37qgAmgEr3052Zk
+         k3xPanvhCNp4zxN8/LA7/S4DHBiegns+6QRxs2e6xI4KTyVA+aCfFTjmBqXh4owpts4v
+         Ds7Q==
+X-Gm-Message-State: AOAM530tKC0ki2wK8OECh8IyJGnfclybBl5O94k19NnnphNcWIEVRzrw
+        pciXqJZAI4irJ8AAPgfYxUbNyUw9ePIK++Z+uQ4=
+X-Google-Smtp-Source: ABdhPJxMSxQgbZDj60ZX92Qj4c6eJW6AjebayDAVOr2OntGqTt+4gzqZzJwuYnqPvxV46243GSSB71IEf3cvjzqQ2Nc=
+X-Received: by 2002:a63:7f09:: with SMTP id a9mr15435741pgd.63.1613409823721;
+ Mon, 15 Feb 2021 09:23:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210215180545.7178e180@coco.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210215072703.43952-1-xie.he.0141@gmail.com> <YCo96zjXHyvKpbUM@unreal>
+In-Reply-To: <YCo96zjXHyvKpbUM@unreal>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Mon, 15 Feb 2021 09:23:32 -0800
+Message-ID: <CAJht_EOQBDdwa0keS9XTKZgXE44_b5cHJt=fFaKy-wFDpe6iaw@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC v3] net: hdlc_x25: Queue outgoing LAPB frames
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 06:05:45PM +0100, Mauro Carvalho Chehab wrote:
-> Em Mon, 15 Feb 2021 17:56:27 +0100
-> Petr Mladek <pmladek@suse.com> escreveu:
-> 
-> > On Mon 2021-02-15 13:40:29, Sakari Ailus wrote:
-> > > Now that we can print FourCC codes directly using printk, make use of the
-> > > feature in V4L2 core.
-> > > 
-> > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>  
-> > 
-> > Reviewed-by: Petr Mladek <pmladek@suse.com>
-> > 
-> > I am curious whether I could take this via printk tree or if Mauro
-> > would prefer to take this via his tree.
-> 
-> IMO, the best would be if the entire series gets merged via a single
-> tree.
-> 
-> Feel free to merge via the printk one.
-> 
-> Acked-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Mon, Feb 15, 2021 at 1:25 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> > +     /* When transmitting data:
+> > +      * first we'll remove a pseudo header of 1 byte,
+> > +      * then the LAPB module will prepend an LAPB header of at most 3 bytes.
+> > +      */
+> > +     dev->needed_headroom = 3 - 1;
+>
+> 3 - 1 = 2
+>
+> Thanks
 
-Thanks, Mauro!
+Actually this is intentional. It makes the numbers more meaningful.
 
--- 
-Sakari Ailus
+The compiler should automatically generate the "2" so there would be
+no runtime penalty.
