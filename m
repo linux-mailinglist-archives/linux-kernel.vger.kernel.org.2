@@ -2,126 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C278131B7BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DFB31B7BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 12:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbhBOLDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 06:03:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25572 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229870AbhBOLD2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229981AbhBOLDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 06:03:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59416 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229652AbhBOLD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 15 Feb 2021 06:03:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613386921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tWBUts84ZakMrFm1RZc/6Za4l9KVFtjkE6h0wbdwb28=;
-        b=Gs2/Bmi3xVZ4nEfNxQh7gz8GjBa2qneio8C/IpZ8keuG1s/JiRZ43Sx49Fqc04oDuS9pHu
-        cIAoIptMMY7yKP3q+Xu7936oZuz9Uk0bHTgb/+Nm1P2OzNqnpAhotTJIFZ2t9GwEFA5Of9
-        TVQPvqNt0GKUDvJXHrKP0MkHt00vXtc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-7dbsYU6zN96wlzFNSuToRg-1; Mon, 15 Feb 2021 06:01:59 -0500
-X-MC-Unique: 7dbsYU6zN96wlzFNSuToRg-1
-Received: by mail-wr1-f70.google.com with SMTP id v1so3298135wru.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 03:01:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tWBUts84ZakMrFm1RZc/6Za4l9KVFtjkE6h0wbdwb28=;
-        b=Sc5+ytI67NSW9TGtwhttLL/oiFRfXedn+ltXpIQP08QNvVUkVdsKlN3TYhmDx5dIrU
-         TGSgFADW3tRjqNFJpiMkyOXCFrKFwgJOu7d5FDj/KPOSp90Tq82AEL6fnN9o6AcrA6Jx
-         AYs33/A0U9aOUr47Q47SKHTO1Ci1AhnFG24Inh+zyOITru/jmDTQ0NFUbT/xkG8TueQN
-         v0yAO3l9O26hWVY+c/e5zoreCp2rwFFWT6a32Xr9DZdSIJ1b45gGOWDt5yEqYDaBETcI
-         lVFcbJ5r37DHtx2r7X1Ub+LVXjV64pTng20Be+3+4uS2qD7wdahJZ7+5WemCZoGjtnzr
-         tb7Q==
-X-Gm-Message-State: AOAM53350yjF5R1gqJfqCdQ3aiK4tosky3/iIr+iUe141HgOXEFyNvID
-        sxs6lcaX5DByrEB0CmSakFB34TX785xnUf7qGT16TQOJKtC7Heb/Y1Pc9sYJgdfTGevzE92lTDN
-        GhArFqYRYGC3I9m3kWIWeoxMJ
-X-Received: by 2002:adf:9f54:: with SMTP id f20mr18149948wrg.362.1613386917372;
-        Mon, 15 Feb 2021 03:01:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwXQq08i+/RQsXj5NKZe5iGT+5VgnUN92wMUe264vdcFESWjc/jTZFgDiK6vCqqQA2VKRGdBg==
-X-Received: by 2002:adf:9f54:: with SMTP id f20mr18149925wrg.362.1613386917119;
-        Mon, 15 Feb 2021 03:01:57 -0800 (PST)
-Received: from linux.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
-        by smtp.gmail.com with ESMTPSA id x4sm22579304wrn.64.2021.02.15.03.01.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 03:01:56 -0800 (PST)
-Date:   Mon, 15 Feb 2021 12:01:54 +0100
-From:   Guillaume Nault <gnault@redhat.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Davide Caratti <dcaratti@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210215110154.GA28453@linux.home>
-References: <20210215114354.6ddc94c7@canb.auug.org.au>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 11F40AD29;
+        Mon, 15 Feb 2021 11:02:47 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 12:02:49 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/mm for v5.12
+Message-ID: <20210215110249.GG23409@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210215114354.6ddc94c7@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 11:43:54AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the net-next tree got a conflict in:
-> 
->   tools/testing/selftests/net/forwarding/tc_flower.sh
-> 
-> between commit:
-> 
->   d2126838050c ("flow_dissector: fix TTL and TOS dissection on IPv4 fragments")
-> 
-> from the net tree and commits:
-> 
->   203ee5cd7235 ("selftests: tc: Add basic mpls_* matching support for tc-flower")
->   c09bfd9a5df9 ("selftests: tc: Add generic mpls matching support for tc-flower")
-> 
-> from the net-next tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc tools/testing/selftests/net/forwarding/tc_flower.sh
-> index b11d8e6b5bc1,a554838666c4..000000000000
-> --- a/tools/testing/selftests/net/forwarding/tc_flower.sh
-> +++ b/tools/testing/selftests/net/forwarding/tc_flower.sh
-> @@@ -3,7 -3,9 +3,9 @@@
->   
->   ALL_TESTS="match_dst_mac_test match_src_mac_test match_dst_ip_test \
->   	match_src_ip_test match_ip_flags_test match_pcp_test match_vlan_test \
-> - 	match_ip_tos_test match_indev_test match_ip_ttl_test"
-> + 	match_ip_tos_test match_indev_test match_mpls_label_test \
-> + 	match_mpls_tc_test match_mpls_bos_test match_mpls_ttl_test \
->  -	match_mpls_lse_test"
-> ++	match_mpls_lse_test match_ip_ttl_test"
+Hi Linus,
 
-That's technically right. But I think it'd be nicer to have
-"match_ip_ttl_test" appear between "match_ip_tos_test" and
-"match_indev_test", rather than at the end of the list.
+please pull the x86/mm pile (which has x86/cleanups too as they
+topically belong together) for v5.12.
 
-Before these commits, ALL_TESTS listed the tests in the order they were
-implemented in the rest of the file. So I'd rather continue following
-this implicit rule, if at all possible. Also it makes sense to keep
-grouping all match_ip_*_test together.
+Thx.
 
->   NUM_NETIFS=2
->   source tc_common.sh
->   source lib.sh
+---
 
+The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+
+  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_mm_for_v5.12
+
+for you to fetch changes up to 40c1fa52cdb7c13ef88232e374b4b8ac8d820c4f:
+
+  Merge branch 'x86/cleanups' into x86/mm (2021-02-12 13:40:02 +0100)
+
+----------------------------------------------------------------
+- PTRACE_GETREGS/PTRACE_PUTREGS regset selection cleanup
+
+- Another initial cleanup - more to follow - to the fault handling code.
+
+- Other minor cleanups and corrections.
+
+----------------------------------------------------------------
+Adrian Huang (1):
+      x86/mm: Refine mmap syscall implementation
+
+Alexey Dobriyan (1):
+      x86/asm: Fixup TASK_SIZE_MAX comment
+
+Anand K Mistry (1):
+      x86/Kconfig: Remove HPET_EMULATE_RTC depends on RTC
+
+Andy Lutomirski (15):
+      x86/vm86/32: Remove VM86_SCREEN_BITMAP support
+      x86/ptrace: Clean up PTRACE_GETREGS/PTRACE_PUTREGS regset selection
+      x86/fault: Fix AMD erratum #91 errata fixup for user code
+      x86/fault: Skip the AMD erratum #91 workaround on unaffected CPUs
+      x86/fault: Fold mm_fault_error() into do_user_addr_fault()
+      x86/fault/32: Move is_f00f_bug() to do_kern_addr_fault()
+      x86/fault: Document the locking in the fault_signal_pending() path
+      x86/fault: Correct a few user vs kernel checks wrt WRUSS
+      x86/fault: Improve kernel-executing-user-memory handling
+      x86/fault: Split the OOPS code out from no_context()
+      x86/fault: Bypass no_context() for implicit kernel faults from usermode
+      x86/fault: Rename no_context() to kernelmode_fixup_or_oops()
+      x86/fault: Don't look for extable entries for SMEP violations
+      x86/fault: Don't run fixups for SMAP violations
+      x86/{fault,efi}: Fix and rename efi_recover_from_page_fault()
+
+Arvind Sankar (1):
+      x86/mm: Remove duplicate definition of _PAGE_PAT_LARGE
+
+Hao Lee (1):
+      x86/entry: Remove now unused do_IRQ() declaration
+
+Ingo Molnar (1):
+      Merge branch 'x86/cleanups' into x86/mm
+
+Lorenzo Stoakes (1):
+      x86/mm: Increase pgt_buf size for 5-level page tables
+
+Tom Rix (1):
+      x86: Remove definition of DEBUG
+
+Zheng Yongjun (1):
+      x86/mtrr: Convert comma to semicolon
+
+ arch/x86/Kconfig                     |   2 +-
+ arch/x86/include/asm/efi.h           |   2 +-
+ arch/x86/include/asm/irq.h           |   2 -
+ arch/x86/include/asm/page_64_types.h |   2 +-
+ arch/x86/include/asm/pgtable_types.h |   2 -
+ arch/x86/include/asm/vm86.h          |   1 -
+ arch/x86/include/uapi/asm/vm86.h     |   4 +-
+ arch/x86/kernel/cpu/mtrr/cleanup.c   |   4 +-
+ arch/x86/kernel/cpu/mtrr/generic.c   |   1 -
+ arch/x86/kernel/cpu/mtrr/mtrr.c      |   2 -
+ arch/x86/kernel/pci-iommu_table.c    |   3 -
+ arch/x86/kernel/ptrace.c             |  46 +++-
+ arch/x86/kernel/sys_x86_64.c         |   8 +-
+ arch/x86/kernel/vm86_32.c            |  62 ++----
+ arch/x86/mm/fault.c                  | 403 ++++++++++++++++++-----------------
+ arch/x86/mm/init.c                   |  19 +-
+ arch/x86/mm/mmio-mod.c               |   2 -
+ arch/x86/platform/efi/quirks.c       |  16 +-
+ 18 files changed, 298 insertions(+), 283 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
