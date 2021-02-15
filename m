@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376A731B3ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 02:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5097C31B3F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 02:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhBOB0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 20:26:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhBOB02 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 20:26:28 -0500
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58183C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 17:25:48 -0800 (PST)
-Received: by mail-vs1-xe2d.google.com with SMTP id x201so2595012vsc.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 17:25:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nqWxVX3tai8d6xQXNuc7CwStRoLgRKEWoNr21bE/mSo=;
-        b=QOpoZzZaeSCQbZPr1cTUfUvf2158J9Niprw8W19J41RTckcu2Nv8IiqjG1ZyyfpZBP
-         CxrzJD6dUjPg7Wd3LyI9B4r194w2v0RhKtJ7jd+Ocsy+T54GULfQKFE7NdL5uDGYBx4x
-         buYdYsItgZcFvPSVhd2I1nKFsc9X5Cha3B9jU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nqWxVX3tai8d6xQXNuc7CwStRoLgRKEWoNr21bE/mSo=;
-        b=VXXL4Kt6jre+zudKISTvs+6JAqg4LQtan279z4rmDLluapF39LQwQUNjiGV3JV+nok
-         zEvJbyZpDypmQzwzBZ1S6PhOT5eRTcyQuSRBw3Hul+87k1mGZw8SPCYlRigM965822CJ
-         yHbnH/ZlLZTfpuSyi4PC2OxEwEzEdXRYzuR/h5wgemaerUsRpNo4bTzEXj9v6Y96kOck
-         YLmcGZVnuKHIa/pEA16ekrqNK7wy7w8/uHaCCYwcE8z+w0vspYgDWXa97fObzJaoWAT5
-         XUyMY4kbr+mIQkTpzw96AfWQ6Tag7M6IT/sLt1Nl31L1Vc1JiC7iputmnKv4/kAT/Vqo
-         gEHw==
-X-Gm-Message-State: AOAM532FGdIfewWvbd0ZroPrg0oL80XY+/l9rTIO/7A341oQHP+8eEIC
-        2Cy1TxiYdMnZF65BRp+SBX3M1tUTzcNrPpegimHvGA==
-X-Google-Smtp-Source: ABdhPJwxzNCcjBfqsq4WyT6GHAU2U4lh0z0W/tdmtYIKR51lPejDwZXlP7EQG7k4rpH4++0lqRrO0kdZtEA/IDdAV2E=
-X-Received: by 2002:a67:e119:: with SMTP id d25mr7271805vsl.16.1613352347038;
- Sun, 14 Feb 2021 17:25:47 -0800 (PST)
+        id S229750AbhBOB3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 20:29:45 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57901 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhBOB3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 14 Feb 2021 20:29:38 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Df62H4mbYz9rx8;
+        Mon, 15 Feb 2021 12:28:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613352536;
+        bh=ssv6blcH9R4SUj/vVkbyevvWiJkjmfm+qmr+wXT4ybU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=vJy9d9dxkM9Txj9s4qKHnB+Y3rPgkG7QBSgI5LCD2KrU+DcLzEijF+giZqwQFb3va
+         KdiYWBvmHkcRVxt0ULuar9SverlfFj0i41+qDIQNMMwlm2OIfLnoMkN5Vy7qahjyHE
+         X3gyq84UnvXFNGy0e4HiN10sZoifUbqNka2pDasrJhG0gcaIPqSd+7ZXNJZQN/zlB8
+         tuF5nk3fuG2RP1qFmVugNnOFvRteTKrRWmMYU0py0n+2wN+z85t4mWyFlCckBcE0a4
+         cCmqPX4yK28A377DO7vB/KFOSl5UEdAUxIs6pnGpbdw2w7qmKBmNRuzZj5xOrl/oOf
+         sp34V0qyx8rkA==
+Date:   Mon, 15 Feb 2021 12:28:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mtd tree
+Message-ID: <20210215122854.4103ef4d@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
- <YCYybUg4d3+Oij4N@kroah.com> <CANMq1KBuPaU5UtRR8qTgdf+J3pt-xAQq69kCVBdaYGx8F+WmFA@mail.gmail.com>
- <YCY+Ytr2J2R5Vh0+@kroah.com> <CAKOQZ8zPFM29DYPwbnUJEhf+a8kPSJ5E_W06JLFjn-5Fy-ZWWw@mail.gmail.com>
- <YCaipZ+iY65iSrui@kroah.com> <20210212230346.GU4626@dread.disaster.area>
- <CAOyqgcX_wN2RGunDix5rSWxtp3pvSpFy2Stx-Ln4GozgSeS2LQ@mail.gmail.com>
- <20210212232726.GW4626@dread.disaster.area> <20210212235448.GH7187@magnolia>
- <20210215003855.GY4626@dread.disaster.area> <CAOyqgcX6HrbPU39nznmRMXJXtMWA0giYNRsio1jt1p5OU1jvOA@mail.gmail.com>
-In-Reply-To: <CAOyqgcX6HrbPU39nznmRMXJXtMWA0giYNRsio1jt1p5OU1jvOA@mail.gmail.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Mon, 15 Feb 2021 09:25:36 +0800
-Message-ID: <CANMq1KDv-brWeKOTt3aUUi_1SOXSpEFo5pS5A6mpRT8k-O88nA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
- is generated
-To:     Ian Lance Taylor <iant@golang.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Luis Lozano <llozano@chromium.org>,
-        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/OyzF79wBgj_QhVZPDUDqOl1";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 9:12 AM Ian Lance Taylor <iant@golang.org> wrote:
->
-> On Sun, Feb 14, 2021 at 4:38 PM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Fri, Feb 12, 2021 at 03:54:48PM -0800, Darrick J. Wong wrote:
-> > > On Sat, Feb 13, 2021 at 10:27:26AM +1100, Dave Chinner wrote:
-> > >
-> > > > If you can't tell from userspace that a file has data in it other
-> > > > than by calling read() on it, then you can't use cfr on it.
-> > >
-> > > I don't know how to do that, Dave. :)
-> >
-> > If stat returns a non-zero size, then userspace knows it has at
-> > least that much data in it, whether it be zeros or previously
-> > written data. cfr will copy that data. The special zero length
-> > regular pipe files fail this simple "how much data is there to copy
-> > in this file" check...
->
-> This suggests that if the Go standard library sees that
-> copy_file_range reads zero bytes, we should assume that it failed, and
-> should use the fallback path as though copy_file_range returned
-> EOPNOTSUPP or EINVAL.  This will cause an extra system call for an
-> empty file, but as long as copy_file_range does not return an error
-> for cases that it does not support we are going to need an extra
-> system call anyhow.
->
-> Does that seem like a possible mitigation?  That is, are there cases
-> where copy_file_range will fail to do a correct copy, and will return
-> success, and will not return zero?
+--Sig_/OyzF79wBgj_QhVZPDUDqOl1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I'm a bit worried about the sysfs files that report a 4096 bytes file
-size, for 2 reasons:
- - I'm not sure if the content _can_ actually be longer (I couldn't
-find a counterexample)
- - If you're unlucky enough to have a partial write in the output
-filesystem, you'll get a non-zero return value and probably corrupted
-content.
+Hi all,
 
->
-> Ian
+After merging the mtd tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
+
+ERROR: modpost: missing MODULE_LICENSE() in drivers/mtd/parsers/bcm4908-par=
+titions.o
+ERROR: modpost: "bcm4908_partitions_post_parse" [drivers/mtd/parsers/ofpart=
+.ko] undefined!
+
+Caused by commit
+
+  09cf6ee6d21c ("mtd: parsers: ofpart: support BCM4908 fixed partitions")
+
+I have used the mtd tree from next-20210212 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/OyzF79wBgj_QhVZPDUDqOl1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmApzlcACgkQAVBC80lX
+0GzxLwgAkaruwbFpER4mI9xNIHD4F0ZkiCiHzdVxT/ErAbd+wMXpFRX1rWSuTGFo
+cFXLkch0LlGNQTJKNs7cy42q3fl0lZLcTegsLOEfaGrx5pBKs5Jx6QN1AUoRVNjS
+rqGjTyHGYOenSfjc+F4E0vKBJZw8Y4cIxZX2RS/pltX6BkAnw73fQ0v2P6g8I619
+EiQ4oSpFtjgfmNwu1o4rno9TaHW/HYuHcr1HWVN19YS41E46ebQdPsHQKEk88+S/
+Vf0TcNJtfUcHNaM3aJvYin2ov2za7dQwyeR96ARnVfzO9nA0eBbAlDxp78XFneWJ
+cTFs7FqC6MOw4ZxGXl1H2OYfw2xE7Q==
+=siaC
+-----END PGP SIGNATURE-----
+
+--Sig_/OyzF79wBgj_QhVZPDUDqOl1--
