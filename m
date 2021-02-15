@@ -2,85 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829FB31C17C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D99CB31C183
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 19:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhBOS1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 13:27:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48232 "EHLO
+        id S230207AbhBOS2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 13:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhBOS0z (ORCPT
+        with ESMTP id S229908AbhBOS1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 13:26:55 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FEFC061756;
-        Mon, 15 Feb 2021 10:26:14 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id b145so4662897pfb.4;
-        Mon, 15 Feb 2021 10:26:14 -0800 (PST)
+        Mon, 15 Feb 2021 13:27:51 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F54C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:27:11 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id 133so8058131ybd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 10:27:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xOUAe/T2MGoHA6DdbGUuxRC8W/GLeCH9tH82IEaXibA=;
-        b=NRfbNk4LtP/BhuVLIRF0AwcZBnfk6PgPCHFMkziFVQfi6W4mb3nGXKUqD0DU/o7JF3
-         edl8QzDQ/2ff0uaafpNQm/qq4YQ/fnZK2pPgEcnpw+VnJ7xz4jbtXF5/P5NU0mpcCUUf
-         O5G3eBMqwqCYzxa9dIQ3xv3DzZqI1PY/VL24rjiNP2H2SphK+lf1oBhNhrTW39OA34yp
-         Qymk/4sq7RXj1KTaz4zCbWWIUC7juJrHL+EEjMedNer4u2k3/jadkxI70JzMbR01M9n0
-         IpXm+DjbnPkTkATeEGVrKIFf5dXVDOQyhCeDyYk00dsWUIy6ELnZAKf6+qt2ocmBO9Ye
-         gv5Q==
+        bh=uZdfuvZKh6ztrTveUXeyEDkpyKAhS13j3dKVJUZWOmo=;
+        b=D1wwNuFr+0FpZniHfm2h3fZDPqNd00MWNhfBi5k8SLFxmWR02gpFyGqaWAJxK5wHLq
+         yC8+r0/Qj4PjOFCfBZPju5KVwPQFPWWM6tedamfW57Ie0kgx3DvCJ2ZDneu35lApe9I0
+         K8AhKRE0wq2U8HvWoP3fkP546PxdcEVs2X5cyKn7EXPnA0r0SzrUDKvR4D9KMYXhdsnv
+         bX+MfG+ZgUZ5007JZfbD+nfigpk4AUXEVqgm94bg4nks/kdRuHTWs5epatRHNR4guHcp
+         jflSa6JwEvOCochYqol7ikXPawB4hU32wkf12MRnQ0/lhBlq2xNiPfLoTtI3RA8ROU3g
+         jIcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xOUAe/T2MGoHA6DdbGUuxRC8W/GLeCH9tH82IEaXibA=;
-        b=bL6UPsWXLaB8YZXw3E4lV36CsifaMFDjITmsrbYFr+ncJm+yrgLeAPl8HUBN9v6+Il
-         rdN6YDVlCQWPKQ8Tou1nKZRVxnDgrs6t93dOXO6uLQKJi8YLcJbyEB41KS89NC26HRVl
-         PsuMTiMgvobj6QUp4+edl7QC7skubuVCgcSEZUlGCeHQanp6O+ArLDk1Wy07mkLoLTdK
-         Vl05WRdxqObYZH/dTo5/tmxbNU8HoMIJ9E+E/Yqyo2WHSh4Vl6M9JTOfaciojyoF4Anb
-         BCA5aiFeFOuB/JlgkYkLrf/YVE0H86Xj6570rw1VUhdqR3eRJFQ/LFrbbbpkZwsfestA
-         +8Eg==
-X-Gm-Message-State: AOAM533LP/cv6jk9HL+lro3sBmi3R6JQnAkdz2CZRyIRnCqiS5irW1Db
-        zShYyBLUOjIxIdGD44E514Mxx6NBU9UtGoWSMYM=
-X-Google-Smtp-Source: ABdhPJyfvT5Scb5kBdmlrRTQ9J5ttgCmI5xFzvME98Q3rXiKvB9CeiDOcjVpRs51w99dDVX/D/822WjIWkHdg+DRQXo=
-X-Received: by 2002:a05:6a00:854:b029:1b7:6233:c5f with SMTP id
- q20-20020a056a000854b02901b762330c5fmr16623029pfk.73.1613413574363; Mon, 15
- Feb 2021 10:26:14 -0800 (PST)
+        bh=uZdfuvZKh6ztrTveUXeyEDkpyKAhS13j3dKVJUZWOmo=;
+        b=VVzLDVrYsKsSEthEq13PbeJsYyy/oh3kjFYOHTysEuJpSXBSudBsZgbVuIuH60L5kg
+         N+c/QtllB0Bu1AgDSi5rl/icizUH5v3tV2ftS6J3v7O0KP3KQ4edPnTFBhL6996k1KMc
+         7YhSsfRiA6qtMeGsRNozr+ziCHQ50iOnOWudO8fk/ocXSVBwL4ebRf74+9noEklvUpSX
+         k23tH/c+7L0qpSgO0z6GCz5Ssm56qv2vgjB21Nz1MYCySnKuISrkDzvrnmmx5dNnIQmb
+         J8QIirXMq3dnGy7HQioN7FyFuVG/L2xvxa860tXoYmI2oqAaHICXUDrHwIkyvdtfdx65
+         fCJg==
+X-Gm-Message-State: AOAM533DiP+X2VRV9q6rR18TJJy19gq2pKGlkgP7h5VMxp1F3dmqhCz+
+        J05tn4fMZI0sfcFuk0kvQy/Qy7JvBJ3I7aBMsAMGdg==
+X-Google-Smtp-Source: ABdhPJymB8VFqHaEfy3+cqkjsVG6qdmJtTdOYD0tnoDjZEEU0+MNAbjDITZYFZn/B3xUGD1RmKhzH+qUpw2eM3dHaUM=
+X-Received: by 2002:a05:6902:1025:: with SMTP id x5mr24333565ybt.96.1613413630483;
+ Mon, 15 Feb 2021 10:27:10 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHp75VecgvsDqRwmyJZb8z0n4XAUjEStrVmXDZ9-knud7_eO3A@mail.gmail.com>
- <CALeDE9PkZnrZ=cXKB16+oZ0=O=3XSYqsgXi9TKeuWT7KqXrdNQ@mail.gmail.com>
-In-Reply-To: <CALeDE9PkZnrZ=cXKB16+oZ0=O=3XSYqsgXi9TKeuWT7KqXrdNQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 15 Feb 2021 20:25:58 +0200
-Message-ID: <CAHp75VedCFYFr7DAkhV+ZZKqtmff+CDKrR=e2ccz=hW8qcV+uw@mail.gmail.com>
-Subject: Re: commit 0f0aefd733f7 to linux-firmware effectively broke all of
- the setups with old kernels
-To:     Peter Robinson <pbrobinson@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:TI WILINK WIRELES..." <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Josh Boyer <jwboyer@kernel.org>, Ferry Toth <fntoth@gmail.com>
+References: <20210215111619.2385030-1-geert+renesas@glider.be> <CAJZ5v0ikVbMX0R9e_=wOxKfJX5X322AipmpWy-7wVnWE7Ogc9A@mail.gmail.com>
+In-Reply-To: <CAJZ5v0ikVbMX0R9e_=wOxKfJX5X322AipmpWy-7wVnWE7Ogc9A@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 15 Feb 2021 10:26:34 -0800
+Message-ID: <CAGETcx94nNjduOuYKVBZOC9Gm4yfyb9x92ddznyxK4BnDby4PA@mail.gmail.com>
+Subject: Re: [PATCH] driver core: Fix double failed probing with fw_devlink=on
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 8:03 PM Peter Robinson <pbrobinson@gmail.com> wrote:
+On Mon, Feb 15, 2021 at 6:59 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
 >
-> > Seems the commit 0f0aefd733f7 to linux-firmware effectively broke all
-> > of the setups with the old kernels. Firmware name is an ABI (!) and
-> > replacing it like this will definitely break systems with older
-> > kernels. Linux firmware package likely, but unfortunately, should
-> > carry on both versions as long as it's needed. Alternative solution is
-> > to provide the links during installation.
+> On Mon, Feb 15, 2021 at 12:16 PM Geert Uytterhoeven
+> <geert+renesas@glider.be> wrote:
+> >
+> > With fw_devlink=permissive, devices are added to the deferred probe
+> > pending list if their driver's .probe() method returns -EPROBE_DEFER.
+> >
+> > With fw_devlink=on, devices are added to the deferred probe pending list
+> > if they are determined to be a consumer,
+
+If they are determined to be a consumer or if they are determined to
+have a supplier that hasn't probed yet?
+
+> > which happens before their
+> > driver's .probe() method is called.  If the actual probe fails later
+> > (real failure, not -EPROBE_DEFER), the device will still be on the
+> > deferred probe pending list, and it will be probed again when deferred
+> > probing kicks in, which is futile.
+> >
+> > Fix this by explicitly removing the device from the deferred probe
+> > pending list in case of probe failures.
+> >
+> > Fixes: e590474768f1cc04 ("driver core: Set fw_devlink=on by default")
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 >
-> It does provide the links using the copy-firmware.sh and the details in WHENCE.
+> Good catch:
 >
-> The alternative is to leave firmwares in place with CVEs.
+> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Good, thanks, I haven't looked into that script.
+Geert,
 
+The issue is real and needs to be fixed. But I'm confused how this can
+happen. We won't even enter really_probe() if the driver isn't ready.
+We also won't get to run the driver's .probe() if the suppliers aren't
+ready. So how does the device get added to the deferred probe list
+before the driver is ready? Is this due to device_links_driver_bound()
+on the supplier?
 
--- 
-With Best Regards,
-Andy Shevchenko
+Can you give a more detailed step by step on the case you are hitting?
+
+Greg/Rafael,
+
+Let's hold off picking this patch till I get to take a closer look
+(within a day or two) please.
+
+-Saravana
+
+>
+> > ---
+> > Seen on various Renesas R-Car platforms, cfr.
+> > https://lore.kernel.org/linux-acpi/CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com
+> > ---
+> >  drivers/base/dd.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> > index 9179825ff646f4e3..91c4181093c43709 100644
+> > --- a/drivers/base/dd.c
+> > +++ b/drivers/base/dd.c
+> > @@ -639,11 +639,13 @@ static int really_probe(struct device *dev, struct device_driver *drv)
+> >         case -ENXIO:
+> >                 pr_debug("%s: probe of %s rejects match %d\n",
+> >                          drv->name, dev_name(dev), ret);
+> > +               driver_deferred_probe_del(dev);
+> >                 break;
+> >         default:
+> >                 /* driver matched but the probe failed */
+> >                 pr_warn("%s: probe of %s failed with error %d\n",
+> >                         drv->name, dev_name(dev), ret);
+> > +               driver_deferred_probe_del(dev);
+> >         }
+> >         /*
+> >          * Ignore errors returned by ->probe so that the next driver can try
+> > --
+> > 2.25.1
+> >
