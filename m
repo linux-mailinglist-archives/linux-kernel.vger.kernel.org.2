@@ -2,127 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D6A31BB46
+	by mail.lfdr.de (Postfix) with ESMTP id 315D831BB45
 	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 15:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhBOOi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 09:38:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56267 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230263AbhBOOh7 (ORCPT
+        id S230283AbhBOOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 09:38:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230221AbhBOOhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:37:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613399792;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yT/G8N9CXyvljd+tvh5I4wNlZRRzAx+Hntb2QSeKQ2s=;
-        b=H9w9jkluBoC2Ee/VQPxIOf005qfqY2wnwFxJEclwP2CG5bi6NMP9aZZ+Dqck7wImJtgFYi
-        EhqbuD5e7DS10TRZX5ewXxNF8l6MXvbwBY3+YsdOYHkBCx6bWVC0+oz1ZOCW9haipH926F
-        YCuAn6g4zWTfB9xmDLuWm01i1ch6Xng=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-383-wm6eVPO8NSW_VnDGdlSHXQ-1; Mon, 15 Feb 2021 09:36:29 -0500
-X-MC-Unique: wm6eVPO8NSW_VnDGdlSHXQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 493561005501;
-        Mon, 15 Feb 2021 14:36:26 +0000 (UTC)
-Received: from krava (unknown [10.40.195.239])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DC72862A0E;
-        Mon, 15 Feb 2021 14:36:22 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 15:36:21 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Nicholas Fraser <nfraser@codeweavers.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org,
-        Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-Subject: Re: [PATCH 2/4] perf report: Load PE files from debug cache only
-Message-ID: <YCqG5Z4CbMtsWZ5e@krava>
-References: <e58e1237-94ab-e1c9-a7b9-473531906954@codeweavers.com>
+        Mon, 15 Feb 2021 09:37:39 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961F2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:36:58 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id 7so9237779wrz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 06:36:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Do2tQb63bcwLymaHKmZud23cc7ctdAohkzhpdwoDJ3M=;
+        b=TXZxOMoO6m73IpOCtYlqYKg1OilB6K/peHgJVxGleqgbHnI42xxKv59/DeT+8Oy0b6
+         v+JDtsNBUfj1TErC15PmPLuLNd851IZrSBAMfWOHT6nE9lLJ6TudaRAt4eCVVEPKdjMO
+         fpRBjigw+cGCTuVuysYHIR/lgN5wa5Off7KrEwvm5bCgxRmVdeEkwv9Vi0txsX1+tOlc
+         WKUplZGX2OrsO1oTszq1iJR4sDGJfK8IzrMRIpMgmfVVM1FrRtyQTBOieso1Y5aKArUr
+         ov0/wefloQJ0VZ6haNad/2aK3fXNQoFl2jG2dDIDpTralSZRptf5DxC2/kkdcbQxgXSX
+         hqqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Do2tQb63bcwLymaHKmZud23cc7ctdAohkzhpdwoDJ3M=;
+        b=OpyvpfRpVmTN4yvdZoepdtGnRswslxIWxcgRxPazG1g0GpZ/jaZ7VMNyhNDjGZhVhj
+         n44OXAVqRuEXkHXS/DUgMDNCXltOVLM7m6zF12Vq/RRXYIlluWOnnJM8Ekkl2wQToiT2
+         I7dslAnmJQsNYX2w+YVE8jEcwot9sxdR4UdXnQZoJ6cBAg9klrc44wFjla5girZbsnS/
+         p/zT+qZdaAgLe9pq0XVYT42W/KN/XldxSzlTHyRPONmJxiF9fhC89t4vvAx7OZ5s+d78
+         Xj4GfjRzfpdiDfpWgz+HrFw0+wJ4pGUUADg32kEzGUM19XgFQj+0sha29V0eV89GnTdV
+         UObA==
+X-Gm-Message-State: AOAM532XofuZYN6T7dmBjoJO4J3jW0ur7sBdIHAQSK1BubQrxtuGOJIE
+        qmqDiLUkjCOIexxJrtrCivk=
+X-Google-Smtp-Source: ABdhPJyVrllvu0jnkSV2PuUg7VLVVBhu4Oxn4Yc5Gg9oPawn4jnCNuYSHdGS9M6Pp6GuOoFnsMt1QA==
+X-Received: by 2002:a5d:444a:: with SMTP id x10mr12782905wrr.409.1613399817374;
+        Mon, 15 Feb 2021 06:36:57 -0800 (PST)
+Received: from alaa ([197.57.74.212])
+        by smtp.gmail.com with ESMTPSA id o13sm9274347wro.15.2021.02.15.06.36.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 06:36:56 -0800 (PST)
+From:   Alaa Emad <alaaemadhossney.ae@gmail.com>
+To:     mchehab+huawei@kernel.org, gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Alaa Emad <alaaemadhossney.ae@gmail.com>
+Subject: [PATCH resend] staging: hikey9xx: hi6421-spmi-pmic: fixing 
+Date:   Mon, 15 Feb 2021 16:36:52 +0200
+Message-Id: <20210215143652.14122-1-alaaemadhossney.ae@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e58e1237-94ab-e1c9-a7b9-473531906954@codeweavers.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:17:38PM -0500, Nicholas Fraser wrote:
-> dso__load_bfd_symbols() attempts to load a DSO at its original path,
-> then closes it and loads the file in the debug cache. This is incorrect.
-> It should ignore the original file and work with only the debug cache.
-> The original file may have changed or may not even exist, for example if
-> the debug cache has been transferred to another machine via "perf
-> archive".
-> 
-> This fix makes it only load the file in the debug cache.
-> 
-> Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
-> ---
->  tools/perf/util/symbol.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> index 64a039cbba1b..aa9ae875b995 100644
-> --- a/tools/perf/util/symbol.c
-> +++ b/tools/perf/util/symbol.c
-> @@ -1569,7 +1569,7 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
->  	u_int i;
->  	u64 start, len;
->  
-> -	abfd = bfd_openr(dso->long_name, NULL);
-> +	abfd = bfd_openr(debugfile, NULL);
->  	if (!abfd)
->  		return -1;
->  
-> @@ -1586,12 +1586,6 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
->  	if (section)
->  		dso->text_offset = section->vma - section->filepos;
->  
-> -	bfd_close(abfd);
-> -
-> -	abfd = bfd_openr(debugfile, NULL);
-> -	if (!abfd)
-> -		return -1;
-> -
+This patch fix the following issues in hi6421-spmi-pmic.c file:
 
-hum, should you also remove the following code?
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:51: WARNING: please, no space before tabs
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:52: WARNING: please, no space before tabs
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:53: WARNING: please, no space before tabs
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:69: WARNING: please, no space before tabs
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:180: CHECK: Alignment should match open parenthesis
+drivers/staging/hikey9xx/hi6421-spmi-pmic.c:238: CHECK: Alignment should match open parenthesis
 
-        if (!bfd_check_format(abfd, bfd_object)) {
-                pr_debug2("%s: cannot read %s bfd file.\n", __func__,
-                          debugfile);
-                goto out_close;
-        }
 
-        if (bfd_get_flavour(abfd) == bfd_target_elf_flavour)
-                goto out_close;
+Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
 
-it seems to be called already above
+---
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-thanks,
-jirka
-
->  	if (!bfd_check_format(abfd, bfd_object)) {
->  		pr_debug2("%s: cannot read %s bfd file.\n", __func__,
->  			  debugfile);
-> -- 
-> 2.30.0
-> 
+diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+index 9c5e113e1a81..626140cb96f2 100644
+--- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
++++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+@@ -48,9 +48,9 @@ enum hi6421_spmi_pmic_irq_list {
+ /*
+  * The IRQs are mapped as:
+  *
+- * 	======================  =============   ============	=====
+- *	IRQ			MASK REGISTER 	IRQ REGISTER	BIT
+- * 	======================  =============   ============	=====
++ *	======================  =============   ============	=====
++ *	IRQ			MASK REGISTER	IRQ REGISTER	BIT
++ *	======================  =============   ============	=====
+  *	OTMP			0x0202		0x212		bit 0
+  *	VBUS_CONNECT		0x0202		0x212		bit 1
+  *	VBUS_DISCONNECT		0x0202		0x212		bit 2
+@@ -66,7 +66,7 @@ enum hi6421_spmi_pmic_irq_list {
+  *	SIM0_HPD_F		0x0203		0x213		bit 3
+  *	SIM1_HPD_R		0x0203		0x213		bit 4
+  *	SIM1_HPD_F		0x0203		0x213		bit 5
+- * 	======================  =============   ============	=====
++ *	======================  =============   ============	=====
+  */
+ #define SOC_PMIC_IRQ_MASK_0_ADDR	0x0202
+ #define SOC_PMIC_IRQ0_ADDR		0x0212
+@@ -177,7 +177,7 @@ static void hi6421_spmi_pmic_irq_init(struct hi6421_spmi_pmic *ddata)
+ 
+ 	for (i = 0; i < HISI_IRQ_ARRAY; i++)
+ 		regmap_write(ddata->regmap, SOC_PMIC_IRQ_MASK_0_ADDR + i,
+-					HISI_MASK);
++			     HISI_MASK);
+ 
+ 	for (i = 0; i < HISI_IRQ_ARRAY; i++) {
+ 		regmap_read(ddata->regmap, SOC_PMIC_IRQ0_ADDR + i, &pending);
+@@ -235,7 +235,7 @@ static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	ddata->domain = irq_domain_add_simple(np, HISI_IRQ_NUM, 0,
+-					     &hi6421_spmi_domain_ops, ddata);
++					      &hi6421_spmi_domain_ops, ddata);
+ 	if (!ddata->domain) {
+ 		dev_err(dev, "Failed to create IRQ domain\n");
+ 		return -ENODEV;
+-- 
+2.25.1
 
