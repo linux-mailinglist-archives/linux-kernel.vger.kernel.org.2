@@ -2,130 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A0E31C34A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE42431C350
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 21:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhBOUz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 15:55:56 -0500
-Received: from mail-lf1-f52.google.com ([209.85.167.52]:46200 "EHLO
-        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhBOUzu (ORCPT
+        id S229807AbhBOU6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 15:58:22 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:45970 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229694AbhBOU6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 15:55:50 -0500
-Received: by mail-lf1-f52.google.com with SMTP id v5so12523407lft.13;
-        Mon, 15 Feb 2021 12:55:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=whwMqTlS1WBk9AS5zpBCAK3G8DSK1CxTvfiZRNL1dTI=;
-        b=k1HeO8dLyXkPikOGp8cuKd5IS2IQX6E9lpvA99tqqGcZI26e/NiknPZEpmHeaB+N0r
-         NWuk01l+XRvYH/KSpbXYF6jMb5uqnvAUuxUn/aZM3Tc+xdZoIZbfS+TTFMxp/1FU9YJm
-         TLz3iYmAhwbx2o6u98f4Ul837tTvSmbRphjsVgLhVuGhabhFoErEp6ZqUkhx7FSM83VK
-         6GIhc1T0klpnQql9jV+KlXNTFQS05nJkmPyWzH5f1e+l10B17/TL11/k7h4On50EpyEv
-         wcBzAsXblRAE0JWNsLuNIxL38SWdq9qIKtntBkofjV+VKXCTyKJyYIli6sjruynuZ6nu
-         x72Q==
-X-Gm-Message-State: AOAM530EeIQ5bZFVFHXtK5xwECuIgHFGbrYUxTmWs3bD6CgxKLLMVYhU
-        ryMNU4xcS8eJriLr8Gja2CE=
-X-Google-Smtp-Source: ABdhPJzl4f8o29TEkIis3q7JbqLJp6lJCJmwVeq0HyGGLbB9OVwiNeC/gqum50UkbyjMTg9eFj74uw==
-X-Received: by 2002:a19:6b17:: with SMTP id d23mr2984143lfa.103.1613422507756;
-        Mon, 15 Feb 2021 12:55:07 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id d4sm2898773lfi.117.2021.02.15.12.55.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 12:55:07 -0800 (PST)
-Date:   Mon, 15 Feb 2021 21:55:06 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, helgaas@kernel.org, wsa@kernel.org,
-        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <YCrfqungNSSxe5lK@rocinante>
-References: <20210215181550.714101-1-zhengdejin5@gmail.com>
- <20210215181550.714101-2-zhengdejin5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210215181550.714101-2-zhengdejin5@gmail.com>
+        Mon, 15 Feb 2021 15:58:19 -0500
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 1D2924D2DE594;
+        Mon, 15 Feb 2021 12:57:38 -0800 (PST)
+Date:   Mon, 15 Feb 2021 12:57:33 -0800 (PST)
+Message-Id: <20210215.125733.311587463365048945.davem@davemloft.net>
+To:     dan.carpenter@oracle.com
+Cc:     sgoutham@marvell.com, cjacob@marvell.com, gakula@marvell.com,
+        sbhatta@marvell.com, hkelam@marvell.com, kuba@kernel.org,
+        jesse.brandeburg@intel.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net-next] octeontx2-pf: fix an off by one bug in
+ otx2_get_fecparam()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <YCqZvjAzSmJk5Ftb@mwanda>
+References: <YCqZvjAzSmJk5Ftb@mwanda>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Mon, 15 Feb 2021 12:57:38 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dejin,
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Mon, 15 Feb 2021 18:56:46 +0300
 
-Thank you for all the work here!
+> The "<= FEC_MAX_INDEX" comparison should be "< FEC_MAX_INDEX".
+> 
+> I did some cleanup in this function to hopefully make the code a bit
+> clearer.  There was no blank line after the declaration block.  The
+> closing curly brace on the fec[] declaration normally goes on a line
+> by itself.  And I removed the FEC_MAX_INDEX define and used
+> ARRAY_SIZE(fec) instead.
+> 
+> Fixes: d0cf9503e908 ("octeontx2-pf: ethtool fec mode support")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-The subject and the commit message could be improved to include a little
-more details about why do you want to do it, and what problems does it
-aims to solve.
-
-> Introduce pcim_alloc_irq_vectors(), a explicit device-managed version of
-> pci_alloc_irq_vectors().
-
-You can probably drop the "explicit" word from the sentence above.
- 
-> +/**
-> + * pcim_alloc_irq_vectors - a device-managed pci_alloc_irq_vectors()
-> + *
-> + * It depends on calling pcim_enable_device() to make irq resources manageable.
-> + */
-
-It would be "IRQ" in the sentence above.  Also see [1] for more details
-about how to make a patch ready to be accepted.
-
-Also, this comment looks like it's intended to be compliant with the
-kernel-doc format, and if so, then you should describe each argument as
-the bare minimum, so that the entire comment would become this function
-documentation making it also a little more useful.  See [2] for an
-example of how to use kernel-doc.
-
-> +int pcim_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
-> +				unsigned int max_vecs, unsigned int flags)
-> +{
-> +	struct pci_devres *dr;
-> +
-> +       /*Ensure that the pcim_enable_device() function has been called*/
-
-The comment above has to be correctly aligned and it's also missing
-spaces around the sentence to be properly formatted, see [3].
-
-> +	dr = find_pci_dr(dev);
-> +	if (!dr || !dr->enabled)
-> +		return -EINVAL;
-> +
-> +	return pci_alloc_irq_vectors(dev, min_vecs, max_vecs, flags);
-> +}
-
-Question: wouldn't you need to call pci_free_irq_vectors() somewhere,
-possibly to pcim_release() callback?  Although, I am not sure where the
-right place would be.
-
-I am asking, as the documentation (see [4]) suggests that one would have
-to release allocated IRQ vectors (relevant exceprt):
-
->> To automatically use MSI or MSI-X interrupt vectors, use the following
->> function:
->>
->>  int pci_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
->>		unsigned int max_vecs, unsigned int flags);
->>
->> which allocates up to max_vecs interrupt vectors for a PCI device.
->>
->> (...)
->>
->> Any allocated resources should be freed before removing the device using
->> the following function:
->>
->>  void pci_free_irq_vectors(struct pci_dev *dev);
-
-What do you think?
-
-1. https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com/
-2. https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html
-3. https://www.kernel.org/doc/html/latest/process/coding-style.html
-4. https://www.kernel.org/doc/html/latest/PCI/msi-howto.html
-
-Krzysztof
+This doesn't apply to net-next.
