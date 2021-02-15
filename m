@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DBC31BF70
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAA931BF82
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 17:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbhBOQfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 11:35:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49202 "EHLO mail.kernel.org"
+        id S232317AbhBOQiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 11:38:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231447AbhBOPhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:37:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67E7564E9C;
-        Mon, 15 Feb 2021 15:33:00 +0000 (UTC)
+        id S231461AbhBOPht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 10:37:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E46164E8D;
+        Mon, 15 Feb 2021 15:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613403181;
-        bh=445vZ5zW4I0yy7T50vlJ3nojO8A1VZq1mfyxJfDoIY0=;
+        s=korg; t=1613403183;
+        bh=jzPHzKD2Ed5/n9dms/bMHHJ2mn91e8UVJRhc+VNG0ag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c4ErpDO4859bbCzT9xGpL9HX7RfF5QPaVmH2FpAiVAPPl+oZ7IdRZK9jhSXi7z9N2
-         JlHzn5NOH1EZ3mndrW9HN48nGdPkjz+pr3z9IyZ+mdsjsIxaBUi1lebLhHnX7setx/
-         Tyk4Vl2oe12dwXC6lePvGgib6JAlqGIvVkuL9wBw=
+        b=BvpH/4jFmXIbfFj9H+Fgvm6bSOakBuppn7A5O7Y5+mcySjSVXHIVKorsROZigasqU
+         aC0auMu1XWI8L70aDVOCWt//qmGu7V8Wy48jo45YT0lXPKWG72U+P9V7DncTVXawTn
+         GgQNnVF0CjiO4o6KQML6S9GEm0VmcJI5J+Rr++As=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
-        Fabian Frederick <fabf@skynet.be>,
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
         Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 058/104] selftests: netfilter: fix current year
-Date:   Mon, 15 Feb 2021 16:27:11 +0100
-Message-Id: <20210215152721.353681876@linuxfoundation.org>
+Subject: [PATCH 5.10 059/104] netfilter: nftables: fix possible UAF over chains from packet path in netns
+Date:   Mon, 15 Feb 2021 16:27:12 +0100
+Message-Id: <20210215152721.383308708@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
 References: <20210215152719.459796636@linuxfoundation.org>
@@ -41,35 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabian Frederick <fabf@skynet.be>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit a3005b0f83f217c888393c6bf9cd36e3d1616bca ]
+[ Upstream commit 767d1216bff82507c945e92fe719dff2083bb2f4 ]
 
-use date %Y instead of %G to read current year
-Problem appeared when running lkp-tests on 01/01/2021
+Although hooks are released via call_rcu(), chain and rule objects are
+immediately released while packets are still walking over these bits.
 
-Fixes: 48d072c4e8cd ("selftests: netfilter: add time counter check")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
+This patch adds the .pre_exit callback which is invoked before
+synchronize_rcu() in the netns framework to stay safe.
+
+Remove a comment which is not valid anymore since the core does not use
+synchronize_net() anymore since 8c873e219970 ("netfilter: core: free
+hooks with call_rcu").
+
+Suggested-by: Florian Westphal <fw@strlen.de>
+Fixes: df05ef874b28 ("netfilter: nf_tables: release objects on netns destruction")
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/netfilter/nft_meta.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/nf_tables_api.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/netfilter/nft_meta.sh b/tools/testing/selftests/netfilter/nft_meta.sh
-index 087f0e6e71ce7..f33154c04d344 100755
---- a/tools/testing/selftests/netfilter/nft_meta.sh
-+++ b/tools/testing/selftests/netfilter/nft_meta.sh
-@@ -23,7 +23,7 @@ ip -net "$ns0" addr add 127.0.0.1 dev lo
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 9a080767667b7..8739ef135156b 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -8775,6 +8775,17 @@ int __nft_release_basechain(struct nft_ctx *ctx)
+ }
+ EXPORT_SYMBOL_GPL(__nft_release_basechain);
  
- trap cleanup EXIT
++static void __nft_release_hooks(struct net *net)
++{
++	struct nft_table *table;
++	struct nft_chain *chain;
++
++	list_for_each_entry(table, &net->nft.tables, list) {
++		list_for_each_entry(chain, &table->chains, list)
++			nf_tables_unregister_hook(net, table, chain);
++	}
++}
++
+ static void __nft_release_tables(struct net *net)
+ {
+ 	struct nft_flowtable *flowtable, *nf;
+@@ -8790,10 +8801,6 @@ static void __nft_release_tables(struct net *net)
  
--currentyear=$(date +%G)
-+currentyear=$(date +%Y)
- lastyear=$((currentyear-1))
- ip netns exec "$ns0" nft -f /dev/stdin <<EOF
- table inet filter {
+ 	list_for_each_entry_safe(table, nt, &net->nft.tables, list) {
+ 		ctx.family = table->family;
+-
+-		list_for_each_entry(chain, &table->chains, list)
+-			nf_tables_unregister_hook(net, table, chain);
+-		/* No packets are walking on these chains anymore. */
+ 		ctx.table = table;
+ 		list_for_each_entry(chain, &table->chains, list) {
+ 			ctx.chain = chain;
+@@ -8842,6 +8849,11 @@ static int __net_init nf_tables_init_net(struct net *net)
+ 	return 0;
+ }
+ 
++static void __net_exit nf_tables_pre_exit_net(struct net *net)
++{
++	__nft_release_hooks(net);
++}
++
+ static void __net_exit nf_tables_exit_net(struct net *net)
+ {
+ 	mutex_lock(&net->nft.commit_mutex);
+@@ -8855,8 +8867,9 @@ static void __net_exit nf_tables_exit_net(struct net *net)
+ }
+ 
+ static struct pernet_operations nf_tables_net_ops = {
+-	.init	= nf_tables_init_net,
+-	.exit	= nf_tables_exit_net,
++	.init		= nf_tables_init_net,
++	.pre_exit	= nf_tables_pre_exit_net,
++	.exit		= nf_tables_exit_net,
+ };
+ 
+ static int __init nf_tables_module_init(void)
 -- 
 2.27.0
 
