@@ -2,87 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEAC31B6D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA8031B6DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:06:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhBOKCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:02:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47414 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhBOKCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:02:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F35C1AC69;
-        Mon, 15 Feb 2021 10:01:19 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 11:01:16 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] RAS updates for v5.12
-Message-ID: <20210215100116.GB23409@zn.tnic>
+        id S230108AbhBOKG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:06:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhBOKGX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 05:06:23 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E488BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:05:42 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id q72so3433879pjq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 02:05:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DmRB0K44KO7vG/sp1xtUpHVwS6fGMWfTKOE8QU8jS6g=;
+        b=EhjrjjBYBupuI5im9doAwVzO+jGLquTgwobo7U7h3v0K1j4+obz4rjNleNiQ0aPEqZ
+         IHY9+7M4Vd2XXMsNbJe5aNZpoMy2ArzXBurcksVbF1YUiMH6cgwm5mfd+RCu2K0PHI9O
+         hGXGA7Uc5JkSiWzC7Yv18dOIaqkgGJgRdDPb+vfGpEG+wi4fLoHCujyw4qC1yH2f2NID
+         LRnAWqpTTUrx1HSRDEPr9KBqy2AXz3oPQnSljzqgZXbZ5hc5MRdxm7Z16NvzEEX4OGyn
+         AAuHKLuXnOWV0VUvted7bLe42IU2y8LNp07b53RTcEthwczxVjWkAD21NW5756+5CSmx
+         vyiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DmRB0K44KO7vG/sp1xtUpHVwS6fGMWfTKOE8QU8jS6g=;
+        b=elpvVP9NdvTLTLvnvAIAU8j17h8bsMq/ixpGa149bIWXvhH+QtEnvcl3nfimscbVS0
+         0G4rgqnWGt/aLgNtqKyn4zgludL1q3Y/PtdC/HvoOm+rHAOqDF7JzjWDgrj8Rg3rvsHS
+         bTKWYdjKctf+4YW4b+r9UVgb7HGk7c1UlnTxiXhsYZlZ5demxHv4/kuYG0BguiRlx/p5
+         6i4/avVG4WpAUr5jd/ZNDjcYezYTgIqInjRgAoif2Wjt/9VgnjaOH1fzGq2l9Y93fd9m
+         GKQnisJ4HExb7a8N1FJJpDjab4ol5djpf7Y5tVsmj56TVnGAhjqcYYO+OHT/h3asIAh+
+         tkzw==
+X-Gm-Message-State: AOAM533Ssq5DKC8pn/7EIEA+3BRmpPaxNE1AbSGO9ZVmkkSWWh1ZlIQ3
+        lXdoFAyi9/yXI4zNflxIqCyhxGGao9yCMEG9VVM/dA==
+X-Google-Smtp-Source: ABdhPJz3aVkYh+fCF+JZBBZYkK3dCHFrSlukd/ZQkDuxm0T341Lg/HmVz8233DOtYoTwQIYNuKyP66yVJ8zhGG9fRlE=
+X-Received: by 2002:a17:902:7290:b029:e3:1dcf:f3ec with SMTP id
+ d16-20020a1709027290b02900e31dcff3ecmr14638057pll.20.1613383542493; Mon, 15
+ Feb 2021 02:05:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20210208085013.89436-1-songmuchun@bytedance.com>
+ <20210208085013.89436-5-songmuchun@bytedance.com> <YCafit5ruRJ+SL8I@dhcp22.suse.cz>
+In-Reply-To: <YCafit5ruRJ+SL8I@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 15 Feb 2021 18:05:06 +0800
+Message-ID: <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Feb 12, 2021 at 11:32 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 08-02-21 16:50:09, Muchun Song wrote:
+> > When we free a HugeTLB page to the buddy allocator, we should allocate the
+> > vmemmap pages associated with it. But we may cannot allocate vmemmap pages
+> > when the system is under memory pressure, in this case, we just refuse to
+> > free the HugeTLB page instead of looping forever trying to allocate the
+> > pages.
+>
+> Thanks for simplifying the implementation from your early proposal!
+>
+> This will not be looping for ever. The allocation will usually trigger
+> the OOM killer and sooner or later there will be a memory to allocate
+> from or the system panics when there are no eligible tasks to kill. This
+> is just a side note.
+>
+> I think the changelog could benefit from a more explicit documentation
+> of those error failures. There are different cases when the hugetlb page
+> is freed. It can be due to an admin intervention (decrease the pool),
+> overcommit, migration, dissolving and likely some others. Most of them
+> should be fine to stay in the pool which would just increase the surplus
+> pages in the pool. I am not so sure about dissolving path.
 
-please pull the RAS pile for v5.12.
+Thanks. I will update the changelog.
 
-Thx.
+> [...]
+> > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> > index 0209b736e0b4..3d85e3ab7caa 100644
+> > --- a/mm/hugetlb_vmemmap.c
+> > +++ b/mm/hugetlb_vmemmap.c
+> > @@ -169,6 +169,8 @@
+> >   * (last) level. So this type of HugeTLB page can be optimized only when its
+> >   * size of the struct page structs is greater than 2 pages.
+> >   */
+> > +#define pr_fmt(fmt)  "HugeTLB: " fmt
+> > +
+> >  #include "hugetlb_vmemmap.h"
+> >
+> >  /*
+> > @@ -198,6 +200,34 @@ static inline unsigned long free_vmemmap_pages_size_per_hpage(struct hstate *h)
+> >       return (unsigned long)free_vmemmap_pages_per_hpage(h) << PAGE_SHIFT;
+> >  }
+> >
+> > +int alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
+> > +{
+> > +     int ret;
+> > +     unsigned long vmemmap_addr = (unsigned long)head;
+> > +     unsigned long vmemmap_end, vmemmap_reuse;
+> > +
+> > +     if (!free_vmemmap_pages_per_hpage(h))
+> > +             return 0;
+> > +
+> > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
+> > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
+> > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
+> > +
+> > +     /*
+> > +      * The pages which the vmemmap virtual address range [@vmemmap_addr,
+> > +      * @vmemmap_end) are mapped to are freed to the buddy allocator, and
+> > +      * the range is mapped to the page which @vmemmap_reuse is mapped to.
+> > +      * When a HugeTLB page is freed to the buddy allocator, previously
+> > +      * discarded vmemmap pages must be allocated and remapping.
+> > +      */
+> > +     ret = vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse,
+> > +                               GFP_ATOMIC | __GFP_NOWARN | __GFP_THISNODE);
+>
+> I do not think that this is a good allocation mode. GFP_ATOMIC is a non
+> sleeping allocation and a medium memory pressure might cause it to
+> fail prematurely. I do not think this is really an atomic context which
+> couldn't afford memory reclaim. I also do not think we want to grant
 
----
+Because alloc_huge_page_vmemmap is called under hugetlb_lock
+now. So using GFP_ATOMIC indeed makes the code more simpler.
+From the document of the kernel, I learned that __GFP_NOMEMALLOC
+can be used to explicitly forbid access to emergency reserves. So if
+we do not want to use the reserve memory. How about replacing it to
 
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+GFP_ATOMIC | __GFP_NOMEMALLOC | __GFP_NOWARN | __GFP_THISNODE
 
-  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+Thanks.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/ras_updates_for_v5.12
-
-for you to fetch changes up to 9223d0dccb8f8523754122f68316dd1a4f39f7f8:
-
-  thermal: Move therm_throt there from x86/mce (2021-02-08 11:43:20 +0100)
-
-----------------------------------------------------------------
-- Move therm_throt.c to the thermal framework, where it belongs.
-
-- Identify CPUs which miss to enter the broadcast handler, as an
-  additional debugging aid.
-
-----------------------------------------------------------------
-Borislav Petkov (2):
-      x86/mce: Get rid of mcheck_intel_therm_init()
-      thermal: Move therm_throt there from x86/mce
-
-Paul E. McKenney (1):
-      x86/mce: Make mce_timed_out() identify holdout CPUs
-
- arch/x86/Kconfig                                   |  4 ---
- arch/x86/include/asm/mce.h                         | 22 ------------
- arch/x86/include/asm/thermal.h                     | 13 +++++++
- arch/x86/kernel/cpu/intel.c                        |  3 ++
- arch/x86/kernel/cpu/mce/Makefile                   |  2 --
- arch/x86/kernel/cpu/mce/core.c                     | 16 +++++++--
- arch/x86/kernel/cpu/mce/intel.c                    |  1 -
- arch/x86/kernel/irq.c                              | 21 +++++++++++
- drivers/thermal/intel/Kconfig                      |  4 +++
- drivers/thermal/intel/Makefile                     |  1 +
- .../mce => drivers/thermal/intel}/therm_throt.c    | 41 ++++++----------------
- drivers/thermal/intel/thermal_interrupt.h          | 15 ++++++++
- drivers/thermal/intel/x86_pkg_temp_thermal.c       |  4 ++-
- 13 files changed, 84 insertions(+), 63 deletions(-)
- create mode 100644 arch/x86/include/asm/thermal.h
- rename {arch/x86/kernel/cpu/mce => drivers/thermal/intel}/therm_throt.c (96%)
- create mode 100644 drivers/thermal/intel/thermal_interrupt.h
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> access to memory reserve is reasonable. Just think of a huge number of
+> hugetlb pages being freed which can deplete the memory reserve for
+> atomic allocations. I think that you want
+>         GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN | __GFP_THISNODE
+>
+> for an initial implementation. The justification being that the
+> allocation should at least try to reclaim but it shouldn't cause any
+> major disruption because the failure is not fatal. If the failure rate
+> would be impractically high then just drop NORETRY part. You can replace
+> it by __GFP_RETRY_MAYFAIL but that shouldn't be strictly necessary
+> because __GFP_THISNODE on its own implies on OOM killer, but that is
+> kinda ugly to rely on.
+> --
+> Michal Hocko
+> SUSE Labs
