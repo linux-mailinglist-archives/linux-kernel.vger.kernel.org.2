@@ -2,164 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C6B31B723
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9895031B727
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 11:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhBOK1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 05:27:23 -0500
-Received: from mail-eopbgr50082.outbound.protection.outlook.com ([40.107.5.82]:28038
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230049AbhBOKZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 05:25:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ATdLjEjGipkM1zVuxmTQYcg491KMYbAqapaC5NZ+UGC06/gd+xm4iqCQF0rSilBx9QAtegx6mdEm52PxbbwtUkg8yNDmj/FmTQYpXrRpcIhim0g/rrth2K+tbk1PPUlgXwDqke2zfgA5YMC6zOGetWE+N5xQJ09MVRuE1tbt/Gm8Ji/cq7WVdYMn7EzfWHps7WxpMIcLhScEaxOWWyKPYDRZmBlLi5rEorJJWdzxec9kugMj5dk/010Y9OZOnfUoR+Hu3/qVhJN1Ks+o5/G/5UuFx/O75YKNrGj6iS/pWh3XWFsumnnxBK2N973qb0vKwp6Ads1nmq84cfSfCwnuIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0adlE/bSmqZHiyxR1tq1ePVjJTzF0vGXD0IB2hz9PaM=;
- b=dwkBTgRGA1jBdsjjDubCzHo04JOdj3V4wrxj0MUistefT6tmlLEg0kaouRr2ygTlqfcQNB4tDVOgMdWJE4Z4D2hR37zWf5zZGxxUJNY+LphWiNDBEdQGeaCABQwyDlDzCjVO2SQ6EjaBQvR9cuPw69ffMLHVIyMKOvQCo18SIpOBsFbOmqoALOIUYMQKQW7c09XCyKe6jmMThO7zVBeRPuDXtICd3kkSuClHrmzvmOROyl5DRUK30aXfcn4OihIbYD8kaY2eCIsplWDlILagKPnP3pqjdzHMCVXEHlWHqahvQ21aJBPawSD6SZhmWNlXSom+jWVeyj4fFVX5thmGrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
- header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+        id S229927AbhBOK2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 05:28:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhBOK0Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 05:26:24 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E1AC061756;
+        Mon, 15 Feb 2021 02:25:31 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id h67so3986445wmh.1;
+        Mon, 15 Feb 2021 02:25:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rohmsemiconductoreurope.onmicrosoft.com;
- s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0adlE/bSmqZHiyxR1tq1ePVjJTzF0vGXD0IB2hz9PaM=;
- b=kQ3PDojHWoo7JQN2mNDx9i4cORZSSIpfSeMWgbNhqbfgKc1ah5f7MtjA/zScjGPbt1ciWboAIghWBOGqnd8HJqXscx4tivmiFM4IplojnWfdHmkgjybJDWXVj1X2IqbdLvzfI/81MZFoKwT/kSeHJ9MYPfAb9WC+RHbByPj3Im8=
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
- HE1PR0301MB2169.eurprd03.prod.outlook.com (2603:10a6:3:21::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3825.30; Mon, 15 Feb 2021 10:25:06 +0000
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::c18c:4a01:ca24:78c1]) by HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::c18c:4a01:ca24:78c1%5]) with mapi id 15.20.3846.038; Mon, 15 Feb 2021
- 10:25:06 +0000
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-CC:     "agross@kernel.org" <agross@kernel.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [RFC PATCH 3/7] regulator: IRQ based event/error notification
- helpers
-Thread-Topic: [RFC PATCH 3/7] regulator: IRQ based event/error notification
- helpers
-Thread-Index: AQHXAHJWKt8WtHiVxkqAUnHICp8Su6pZCMKA
-Date:   Mon, 15 Feb 2021 10:25:06 +0000
-Message-ID: <6d6583ef2dd5fdeebc6b374de4af3f1b9d46a6c8.camel@fi.rohmeurope.com>
-References: <cover.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
-         <3daf0531910c25d8b0da3964778ae2a6c9049d43.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
-In-Reply-To: <3daf0531910c25d8b0da3964778ae2a6c9049d43.1613042245.git.matti.vaittinen@fi.rohmeurope.com>
-Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Accept-Language: fi-FI, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: fi.rohmeurope.com; dkim=none (message not signed)
- header.d=none;fi.rohmeurope.com; dmarc=none action=none
- header.from=fi.rohmeurope.com;
-x-originating-ip: [2001:14ba:16e2:8300::4]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8a497cae-42e9-4780-562c-08d8d19bf707
-x-ms-traffictypediagnostic: HE1PR0301MB2169:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR0301MB2169B855559113F91FD66AC2AD889@HE1PR0301MB2169.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6UEvsBcaR5NhacXFHXjWVrFX7Vnl06isUpd5w3mktA+xiJiNzjqnsGqQbG5QY7UBFsUQpEI/9k12R66+QyqY9RbMluhp5hJruVrXGQRbzFXqUtBqlzsGJRpqscPARsJ8bqH43JQRQ8nC6LGqMr0IO0oy+LxXSKas2XGw4XFrfLz0BrAg3pFr36xJaxJomTX3yYWedPnx6UiaWSQ333RhGfp6PyXuS6Hfpzf6sWHgJHD42LsbsGGZYJGtyJ1CbH5SjQnNFj4HhrUKtaCCpWTmSHk3QEo0HZs9YvvG8gHq9y35cz2ADzGWxDur/guan6gm3SxHD3li8qvx+1IC5EKc5ZpzMkQX14swK8wk8raq3GOPFsYDlTiXTX4sTxOMVpH/rtSd56brg4NNvMWUth1I+6SvoPAQV8ZvLg9XIKY5EZVqt9zr8ab16DNyz8ozkgA7cysBVH8OIIrHco8r9qsV3khtEteTCoLz/ZSOJ378RzPCsG3w7o95kESgFvAASwkHVArXX8s2wimMoyB3uNL/Eg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(39850400004)(396003)(8936002)(76116006)(6512007)(3450700001)(8676002)(5660300002)(83380400001)(71200400001)(6862004)(186003)(6200100001)(15650500001)(64756008)(478600001)(66476007)(6506007)(66556008)(6486002)(66446008)(4326008)(316002)(86362001)(37006003)(66946007)(2616005)(54906003)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?K3dmQnF2MUkySmI5N3U4WnRXK0k5d0lNVWc2NGw2R1J6Z2kxY3hRRG5BMkI3?=
- =?utf-8?B?SFBRb3ppMy9aUzBOeHNXR2lFVXZjaFhyYjE3Y005a0NNTXM0US9ZZnJUeTZU?=
- =?utf-8?B?ZFgzWnhZTno4dHZwY20xMVNYMVFjVEw2N0tHSzF6U0xPQlBXZXBQVVVPODdo?=
- =?utf-8?B?bUJ5b20wQXF2VHFoME0vTlpvUGZMSmZqNHAxMm1zV29UVEpMd3NvSDA0Q0NK?=
- =?utf-8?B?MjBmR29XOFQwOEdhZ2VkVTkzR3h1aHV6SWttQzBLUmdIVG5ibENPQUlOUlRR?=
- =?utf-8?B?MHgzTU83YmZMRVIyMTlXVXNnZ1c1SEpoT0hUQ0x5V2xCdUcxWlN6VDZKU0lS?=
- =?utf-8?B?YzRYTE9rUEZEM1Uxb001SGZzeVJ2dzJMODVKUGhpTmllaXNaUVkrVDE0UGtn?=
- =?utf-8?B?OTZzZWIva2VtOHhmUytTbjlzSUY1QXNtbVdkVVM3MStmMndHZTRnUzdPWWlC?=
- =?utf-8?B?bXJzWU84VkNBT05WL1Z1WFljcURtejlwVmcrdXdYRzJ2UkRqdXluUzdTLzlo?=
- =?utf-8?B?TzkzRWhzZ2VZM2FNYzFrZEdjajFrYlE0a1VkNG9Vb1ZhclFiWnIwMkMzUGxX?=
- =?utf-8?B?ZjI5WmJFZzFXSEpEN1lmYU9QNnUyQS9ndGppZ1JHbnVyaXRzdE1veHY2Q0ZS?=
- =?utf-8?B?Zm94SEN4ZzErWlVCWHVndzRVbG9KQVUyQkVuSWdkdVVsWGg4YnA0eGo2dnV2?=
- =?utf-8?B?VHBIaGxVamg1VjhoZEplc2NPMFovSUVJQUZ3NnF0aFRBN0ZodXdOVXhsRFpJ?=
- =?utf-8?B?TW1QYlg5OG9mUE9hUnNOMy94K2lUWXBPYVdreHh0bGRsM3RqOEhGRVE5KzRi?=
- =?utf-8?B?VWhLWFk0YnBRUGVQUmZsVElTaWZpRU5oTWh0Yk12VUZQWVU0MVZHaXFPeGdC?=
- =?utf-8?B?bUc0ZEIrTXh2U05VSnp1SkpicUVtY0loS05HbEdwRmQ0bkVZTlRMdGUxbFBW?=
- =?utf-8?B?dUpJV2N5K0V5MWE3VnNqQlF3REdxMER1b2M0bjlSQkhaNXdBMmJDVE1pdzd2?=
- =?utf-8?B?ZE5qNGN3SUdvQmV1VFA0VlZQK0JUUlJsckVnTnBmQTE2ck5LTEhYRU1GUElu?=
- =?utf-8?B?SVBwbWtXQUZSdnFlOHhYcm01YmFzY3phZndxa3JOaEtSSEwwNTdiRFdPUjhX?=
- =?utf-8?B?UGNieWpsK3ZiM2tpdGpycVg2TTBWR0xLMlN6d1Q2RDJXekpra1RUS1hlb083?=
- =?utf-8?B?OUkyMzdhK0xNVlBWRzhPNDAyWkhoQUFYcDJJUkEwRkQxYzlpRUNoRFlwNWpk?=
- =?utf-8?B?bzFseWYweDRsL2VHZVBLVkN6bCtIZ21rUVZ4Um1RK3VNM2RHRUZSQXp6cnN5?=
- =?utf-8?B?SHZsUUhrRFJsWXMreER1bjZmMWdUemxYRjhrNlBZSTZMV2MyQVBpR05IYkN6?=
- =?utf-8?B?VUd0SGtkQU1XakFzNDFxQVlXbU8rMlRETjI5SXhFZzdGcVZweDByV25VQ3cy?=
- =?utf-8?B?ZTRqa3VnMUY1c013cThXc0hzcWlkWHRJbW1jSlZUaW41UXlFajYxNmY0dGR5?=
- =?utf-8?B?REU1eDI2TWVDSnNzd0RnUVJYRGZMZ0hIUWNPQWZQanhmc1hQT3ljamdBWFVp?=
- =?utf-8?B?R2VWS3R2TjRjNGVrY0poN3ZWWG9scnE1dDhKaEdKc2lqMS9tN0tUQ0NrcWRN?=
- =?utf-8?B?V0JSS0E4VTFWaWdiZVhCNXBqN0JNbmx1dW9Wb2RkK1FuWklnWlAzWmk1RktE?=
- =?utf-8?B?bGNvWktRV1RRV2JQZEJEZUJibE5SMmNKRHFvRVRwcUM1anRKRExSa1c0aURC?=
- =?utf-8?B?ZzdNTzlzRGhDbkRRWjBqRkJNSkYwSkRGN3VnOW5rWTFaVG5HREhuWFJQUTMr?=
- =?utf-8?Q?Ar97DN6i5mwHGvIxnWDd9Qnu3mZJNjkZMPdsY=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0E5CA8E4E255104FB3052DA80F8FAD97@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xzlWG7IXSmL2eGjXVT7Tn/g8jQeTsF9IX2YIiH3MEIM=;
+        b=hvACttY1S+cPUYKTlA5ro5YHH21PVuKzXjJ5EeJNDpTA2qJ85SGAelpFJRIqzCfL18
+         48OewTlpOCD/i3GDXX11yxk4QIXFwyAWGCauT+bYacj+A5WYpQOu4ZPN6wdKwJgfb8ls
+         w1isD5qF23Roo/p4c1pj+TwZhh8jvDCuCN8tNzdy/rJbAVN46/yp175coouhSnGOwDoB
+         KaJ00UQ5aEGPOyz36JPmCIM5Bdn79Us2YhVHSYItlppd4fnJOElwHAR9XcUP3Z2j9D9V
+         le2h8a/dGTNgmjmLaXx8GCJPKJJm6jrSrg40FdrDf0+hroKJYLzBT9LkWg39gRdrGLVx
+         eEig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xzlWG7IXSmL2eGjXVT7Tn/g8jQeTsF9IX2YIiH3MEIM=;
+        b=rOJrzXliVjjLkG6OqNOeqcX5S6qP9or/v8Lvw99R0zUmRPu/wGpYaA+P+gjEiEkfFR
+         sq0mSb1jylpHoFQCKxlCUXYBNpPuk6H7NSKaLKAzwj6NkK/OFAQv0thQ79tiJVH4YP9e
+         uevUSHnbrUie5EbJgMKWkolV+FxmyG72CJ3SCS03xPtFjULmRrGcAGADceWseI019RfR
+         e8R/6VdwI9rigtNGwz+5Hkn3PaiyHsFGQv2dyQA1rrddybuddWN039X4TO9x1putlQUv
+         On832wJmjnfDPdclwHyds1xpPf9ZKErMkV6vAjpWdbSo4p2IYCG2KmCq9stV0fAYaKye
+         fSdA==
+X-Gm-Message-State: AOAM533EoAkEMK/Rn7WDhKTczamXapdmYXdbBNSNERAhfLYeaMTdEmU0
+        Asj8KUMrH5oPgeuvEbusgtI=
+X-Google-Smtp-Source: ABdhPJwFaUJK5TMILw8ZXXUDuIDatLHYVC4Kl8jky0tFiORDMTEK9pwtISp+LaYoCK8JFTY5hJbK5g==
+X-Received: by 2002:a1c:8096:: with SMTP id b144mr14114028wmd.169.1613384730299;
+        Mon, 15 Feb 2021 02:25:30 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id m13sm4168972wmc.22.2021.02.15.02.25.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 02:25:29 -0800 (PST)
+Date:   Mon, 15 Feb 2021 11:25:27 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] tty: serial: Add earlycon driver for Tegra Combined UART
+Message-ID: <YCpMF7MyJYB8x7Zi@ulmo.localdomain>
+References: <20210213115824.3306965-1-mperttunen@nvidia.com>
 MIME-Version: 1.0
-X-OriginatorOrg: fi.rohmeurope.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a497cae-42e9-4780-562c-08d8d19bf707
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Feb 2021 10:25:06.6425
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GOBYEx2yCnF6RMTj6WbCaIY4GZtz1eM4Grs6bllpDn2j9FihArwjgIJpBuJsXRChJx2AKGBGOWFqVBaUGIKgOd5U3UPjcvJ2aoMZRW7XuznYmxrGfq/OcK4pCNrmJ4TG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0301MB2169
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="OOpQ8jVg06hQ2UFP"
+Content-Disposition: inline
+In-Reply-To: <20210213115824.3306965-1-mperttunen@nvidia.com>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiBUaHUsIDIwMjEtMDItMTEgYXQgMTQ6MzUgKzAyMDAsIE1hdHRpIFZhaXR0aW5lbiB3cm90
-ZToNCj4gUHJvdmlkZSBoZWxwZXIgZnVuY3Rpb24gZm9yIElDJ3MgaW1wbGVtZW50aW5nIHJlZ3Vs
-YXRvciBub3RpZmljYXRpb25zDQo+IHdoZW4gYW4gSVJRIGZpcmVzLiBUaGUgaGVscGVyIGFsc28g
-d29ya3MgZm9yIElSUXMgd2hpY2ggY2FuIG5vdCBiZQ0KPiBhY2tlZC4NCj4gSGVscGVyIGNhbiBi
-ZSBzZXQgdG8gZGlzYWJsZSB0aGUgSVJRIGF0IGhhbmRsZXIgYW5kIHRoZW4gcmUtZW5hYmxpbmcN
-Cj4gaXQNCj4gb24gZGVsYXllZCB3b3JrIGxhdGVyLiBUaGUgaGVscGVyIGFsc28gYWRkcw0KPiBy
-ZWd1bGF0b3JfZ2V0X2Vycm9yX2ZsYWdzKCkNCj4gZXJyb3JzIGluIGNhY2hlIGZvciB0aGUgZHVy
-YXRpb24gb2YgSVJRIGRpc2FibGluZy4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1hdHRpIFZhaXR0
-aW5lbiA8bWF0dGkudmFpdHRpbmVuQGZpLnJvaG1ldXJvcGUuY29tPg0KPiAtLS0NCj4gDQo+IFRo
-aXMgcGF0Y2ggaGFzIGdvbmUgdGhyb3VnaCBvbmx5IGEgdmVyeSBsaW1pdGVkIGFtb3VudCBvZiB0
-ZXN0aW5nLg0KPiBBbGwNCj4gcmV2aWV3cyAvIHN1Z2dlc3Rpb25zIC8gdGVzdGluZyBpcyBoaWdo
-bHkgYXBwcmVjaWF0ZWQuDQo+IA0KDQovLyBTbmlwDQoNCj4gKw0KPiArc3RhdGljIHZvaWQgZGV2
-X2RlbGF5ZWRfd29ya19kcm9wKHN0cnVjdCBkZXZpY2UgKmRldiwgdm9pZCAqcmVzKQ0KPiArew0K
-PiArCWNhbmNlbF9kZWxheWVkX3dvcmtfc3luYygqKHN0cnVjdCBkZWxheWVkX3dvcmsgKiopcmVz
-KTsNCj4gK30NCj4gKw0KPiAraW50IGRldl9kZWxheWVkX3dvcmtfYXV0b2NhbmNlbChzdHJ1Y3Qg
-ZGV2aWNlICpkZXYsIHN0cnVjdA0KPiBkZWxheWVkX3dvcmsgKncsDQo+ICsJCQkJdm9pZCAoKndv
-cmtlcikoc3RydWN0IHdvcmtfc3RydWN0DQo+ICp3b3JrKSkNCj4gK3sNCj4gKwlzdHJ1Y3QgZGVs
-YXllZF93b3JrICoqcHRyOw0KPiArDQo+ICsJcHRyID0gZGV2cmVzX2FsbG9jKGRldl9kZWxheWVk
-X3dvcmtfZHJvcCwgc2l6ZW9mKCpwdHIpLA0KPiBHRlBfS0VSTkVMKTsNCj4gKwlpZiAoIXB0cikN
-Cj4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ICsNCj4gKwlJTklUX0RFTEFZRURfV09SSyh3LCB3b3Jr
-ZXIpOw0KPiArCSpwdHIgPSB3Ow0KPiArCWRldnJlc19hZGQoZGV2LCBwdHIpOw0KPiArDQo+ICsJ
-cmV0dXJuIDA7DQo+ICt9DQoNCkkgc2VudCB0aGlzIGRldl9kZWxheWVkX3dvcmtfYXV0b2NhbmNl
-bCgpICsgZmV3IGNsZWFudXAgcGF0Y2hlcyBhcyBvd24NCnNlcmllcy4gRGlzY3Vzc2lvbiB0aGF0
-IHNlcmllcyBjcmVhdGVkIG1hZGUgbWUgcmVhbGl6ZSB0aGF0IHdlIGRvbid0DQp3YW50IHRvIGZv
-cmNlIHVzZSBvZiBkZXZtIGJ5IGhpZGluZyB0aGUgV1EgaW5pdCBoZXJlLiBXZSBzaG91bGQNCmlu
-dHJvZHVjZSBhbHNvIG5vbiBkZXZtIHZhcmlhbnQgKyBtYW51YWwgY2FuY2VsbGF0aW9uIHJvdXRp
-bmUgZm9yIHRob3NlDQp3aG8gZG9uJ3QgdXNlIGRldm0gdG8gcmVnaXN0ZXIgcmRldnMuDQoNCkFu
-ZCBhcyBJIHNlZSB0aGF0IEdyZWcgd2FzIHN0cm9uZ2x5IG9wcG9zaW5nIHRoZSBkZXZtIGJhc2Vk
-IGRlbGF5ZWQNCndvcmsgY2FuY2VsbGF0aW9uIC0gSSBndWVzcyB0aGF0IGlmIHdlIHdhbnQgdG8g
-cHJvY2VlZCB3aXRoIHRoaXMgb25lDQp3ZSdkIGJldHRlciBmaXJzdCBpbXBsZW1lbnQgdGhlICdu
-b24gZGV2bScgdmFyaWFudCB3aGljaCB1c2VzIG1hbnVhbCB3cQ0KY2FuY2VsbGF0aW9uICsgbWFu
-dWFsIElSUSBkZXJlZ2lzdGVyaW5nIGFuZCB1c2UgdGhhdCBjYW5jZWxsYXRpb24gdG8NCmJ1aWxk
-IGEgZGV2bSBvbmUuLi4NCg0KSSdsbCB0cnkgdG8gY29vayB2MiBzdGlsbCB0aGlzIHdlZWsuDQoN
-CkJlc3QgUmVnYXJkcw0KCU1hdHRpIFZhaXR0aW5lbg0K
+
+--OOpQ8jVg06hQ2UFP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Feb 13, 2021 at 01:58:24PM +0200, Mikko Perttunen wrote:
+> Add an earlycon driver for platforms with TCU, namely Tegra194.
+> The driver is compatible with boot parameters passed by NVIDIA
+> boot chains.
+
+I'm not sure I understand the latter part of this description. What boot
+parameters is this compatible with? Looking at the setup function there
+doesn't seem to be anything out of the ordinary here, so I'm wondering
+if that's just confusing. If there's anything special, it might be worth
+specifically pointing out what that is. Perhaps both in the commit
+message and in a code comment, so it's properly documented.
+
+>=20
+> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+> ---
+>  drivers/tty/serial/Kconfig              | 12 +++++
+>  drivers/tty/serial/Makefile             |  1 +
+>  drivers/tty/serial/tegra-tcu-earlycon.c | 72 +++++++++++++++++++++++++
+>  3 files changed, 85 insertions(+)
+>  create mode 100644 drivers/tty/serial/tegra-tcu-earlycon.c
+>=20
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index 34a2899e69c0..d941785e3f46 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -331,6 +331,18 @@ config SERIAL_TEGRA_TCU_CONSOLE
+> =20
+>  	  If unsure, say Y.
+> =20
+> +config SERIAL_TEGRA_TCU_EARLYCON
+> +	bool "Earlycon on NVIDIA Tegra Combined UART"
+> +	depends on ARCH_TEGRA || COMPILE_TEST
+> +	select SERIAL_EARLYCON
+> +	select SERIAL_CORE_CONSOLE
+> +	default y if SERIAL_TEGRA_TCU_CONSOLE
+> +	help
+> +	  If you say Y here, TCU output will be supported during the earlycon
+> +	  phase of the boot.
+> +
+> +	  If unsure, say Y.
+> +
+>  config SERIAL_MAX3100
+>  	tristate "MAX3100 support"
+>  	depends on SPI
+> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+> index b85d53f9e9ff..408144326fed 100644
+> --- a/drivers/tty/serial/Makefile
+> +++ b/drivers/tty/serial/Makefile
+> @@ -72,6 +72,7 @@ obj-$(CONFIG_SERIAL_XILINX_PS_UART) +=3D xilinx_uartps.o
+>  obj-$(CONFIG_SERIAL_SIRFSOC) +=3D sirfsoc_uart.o
+>  obj-$(CONFIG_SERIAL_TEGRA) +=3D serial-tegra.o
+>  obj-$(CONFIG_SERIAL_TEGRA_TCU) +=3D tegra-tcu.o
+> +obj-$(CONFIG_SERIAL_TEGRA_TCU_EARLYCON) +=3D tegra-tcu-earlycon.o
+>  obj-$(CONFIG_SERIAL_AR933X)   +=3D ar933x_uart.o
+>  obj-$(CONFIG_SERIAL_EFM32_UART) +=3D efm32-uart.o
+>  obj-$(CONFIG_SERIAL_ARC)	+=3D arc_uart.o
+> diff --git a/drivers/tty/serial/tegra-tcu-earlycon.c b/drivers/tty/serial=
+/tegra-tcu-earlycon.c
+> new file mode 100644
+> index 000000000000..9decfbced0a7
+> --- /dev/null
+> +++ b/drivers/tty/serial/tegra-tcu-earlycon.c
+> @@ -0,0 +1,72 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2017-2021, NVIDIA CORPORATION.  All rights reserved.
+> + */
+> +
+> +#include <linux/console.h>
+> +#include <linux/io.h>
+> +#include <linux/serial_core.h>
+> +
+> +#define NUM_BYTES_FIELD_BIT	24
+> +#define FLUSH_BIT		26
+
+This one seems to be unused.
+
+> +#define INTR_TRIGGER_BIT	31
+
+I wonder if this could somehow be integrated with the existing TCU
+driver since we have these bits defined there already. And really this
+is basically a skeleton version of the same driver.
+
+> +/*
+> + * This function splits the string to be printed (const char *s) into mu=
+ltiple
+> + * packets. Each packet contains a max of 3 characters. Packets are sent=
+ to the
+> + * SPE-based combined UART server for printing. Communication with SPE i=
+s done
+> + * through mailbox registers which can generate interrupts for SPE.
+> + */
+> +static void early_tcu_write(struct console *console, const char *s, unsi=
+gned int count)
+> +{
+> +	struct earlycon_device *device =3D console->data;
+> +	u8 __iomem *addr =3D device->port.membase;
+> +	u32 mbox_val =3D BIT(INTR_TRIGGER_BIT);
+> +	unsigned int i;
+> +
+> +	/* Loop for processing each 3 char packet */
+> +	for (i =3D 0; i < count; i++) {
+> +		if (s[i] =3D=3D '\n')
+> +			mbox_val =3D update_and_send_mbox(addr, mbox_val, '\r');
+> +		mbox_val =3D update_and_send_mbox(addr, mbox_val, s[i]);
+> +	}
+> +
+> +	if ((mbox_val >> NUM_BYTES_FIELD_BIT) & 0x3) {
+> +		while (readl(addr) & BIT(INTR_TRIGGER_BIT))
+> +			cpu_relax();
+> +		writel(mbox_val, addr);
+> +	}
+> +}
+
+For example this function already exists in the Tegra TCU driver and
+perhaps some of that could be refactored to work for both cases.
+
+Thierry
+
+--OOpQ8jVg06hQ2UFP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAqTBQACgkQ3SOs138+
+s6H4hRAAgbEdLV0psQGZMIiBU/x5LxPg/2BQ+QQMvTvcs7hqenf5Y6GyvVSko+7X
+Uz8Yo432ivikJsmvKcKQ00ObA23XxUvc1lnYj8cpw+G5bQtp2HaINWvoUOfzgOJy
+G1UtFD7pG/jIUXt5eng037qnIjhsmB9nUsJcyChqv3Ipd1UjsMGo1c2u46FD/SKW
+xzLgaj5iyHC5xwq/1Z8TogKezUGVtEaYkKM2n9/5qwUoJRSjfwYg6e2O/05mg71M
+kOi8jX0r7bT6IetzQBd5geS/fswFUVGX53W5TiZpR6PXe0O7aBdxdKCl0hb3yVz3
+j31N1rgGCAtxZF00PGmSnfZkmwQsDV6pl/8HCN9rWZVF725/WSPiP1CW4onN6KYg
+aGImRqJBbhAa8D1zBydFS/BpCfIjRSwBr7NaD9TQPe+QpxbayiXm+iosnkh3XLLc
+VkoX3Fe5dWDbn613g3280WmSWsJ8Ja6SaaHekX/3Fec+cvWfzy8StQ62qF6rd5aK
+WBQThSG98qZjqgdXCj9XylMx3Dw3z7eFU7wV+qRJg3whZ52nWtuRh0XwK9PxsmRm
+40u0LYtRHcMUqKOjfZtBg2f3foumJTrZIZZ7o5rfo81414lsOCk057QiQRx1pGMy
+i9B56j2KBImUecor+VM6hdl3bgx3zf4W1Pi3DSYG1dSWBcJaD9Y=
+=mBE7
+-----END PGP SIGNATURE-----
+
+--OOpQ8jVg06hQ2UFP--
