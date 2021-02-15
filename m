@@ -2,149 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC5331B3E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 02:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 376A731B3ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 02:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhBOBTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 14 Feb 2021 20:19:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54690 "EHLO
+        id S229992AbhBOB0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 14 Feb 2021 20:26:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhBOBTj (ORCPT
+        with ESMTP id S229875AbhBOB02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 14 Feb 2021 20:19:39 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435D6C061574;
-        Sun, 14 Feb 2021 17:18:59 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id f18so2526601qvm.9;
-        Sun, 14 Feb 2021 17:18:59 -0800 (PST)
+        Sun, 14 Feb 2021 20:26:28 -0500
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58183C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 17:25:48 -0800 (PST)
+Received: by mail-vs1-xe2d.google.com with SMTP id x201so2595012vsc.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Feb 2021 17:25:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4l1VhsBHSasYP9te6SHg/IFFwtdw9tGkXjD2JBymXQ8=;
-        b=RS+Jc/9J+UqCEjEzQNPQt1YVEkN/AtmWnLz1pFwUcpKqf0+8K5K+WyqFk6YtK5vr7v
-         LYm1CDoNGJL1V8ZjO6lKsvwzEys6VbroKAiE73htrhRH/x9EEceaMLp+rZu1kJJdZfRS
-         zEDEga0rJ1OFXGVuARxfOgkcZSW23yGPUUfc5tFX1hMWHJ66QIvZbYGN8+au5OPt8gTJ
-         iWwysFnIunA2o2RYjCCM5Ysd+lyoKFmeRKSgp1XvJq1ogivlGFb/PuucjvJPN+Uqqddb
-         KwSTQOab4orWSdTGwqXJC7pmVRgggckDVqLANLmqbTnOjjM4wohMcR/SrXZ5UddOsvs5
-         f6Fw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nqWxVX3tai8d6xQXNuc7CwStRoLgRKEWoNr21bE/mSo=;
+        b=QOpoZzZaeSCQbZPr1cTUfUvf2158J9Niprw8W19J41RTckcu2Nv8IiqjG1ZyyfpZBP
+         CxrzJD6dUjPg7Wd3LyI9B4r194w2v0RhKtJ7jd+Ocsy+T54GULfQKFE7NdL5uDGYBx4x
+         buYdYsItgZcFvPSVhd2I1nKFsc9X5Cha3B9jU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4l1VhsBHSasYP9te6SHg/IFFwtdw9tGkXjD2JBymXQ8=;
-        b=Jdqayib+pYdc5SwwGO0V47bFTeAlAIl6azjxSnnvQipBXI/L9P64guwUGnx74viS1Y
-         vD/ElC7t+ezdxUVgkSyPW2yB0Tk8ybmsBS0xkblgkkQd63SuD9GKF4PAZ6xjPWhCBs5a
-         xnOy65OZwRNPiqSurnBDjcJBpOPtH5FaP1tmc38KjORy0sZrxub0HGpmD4iEhLL9hFm1
-         3SXzGYy4SgRFeAI7XVDZ80i4K3afHkkgx48bzDnuAhURithhxxlf/kFUkzWSX9mwsLzD
-         KFwOYsIYz8PDoQrA0A/2dJUH6zSANaycN13jKMxEW1gW+YwNQP29gYFeMdSzhRw9l4p0
-         yAJA==
-X-Gm-Message-State: AOAM5308kcS9iPWUrEKlkKEFjVibKEJ7xA32GTS9rLp9kmr73utMqHJ7
-        bxsp3UKkLiMhTIL0MfIlzGLmvBUJkuY=
-X-Google-Smtp-Source: ABdhPJzkq9+FPRTG8MTlJMBHmj+KBYlFAAWestn5Vc2Xiyuy6MSnYzuVBZFK0ME+TFsg+KqdmHrBEw==
-X-Received: by 2002:a0c:f101:: with SMTP id i1mr12748218qvl.45.1613351938366;
-        Sun, 14 Feb 2021 17:18:58 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id r44sm10643646qtb.28.2021.02.14.17.18.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Feb 2021 17:18:58 -0800 (PST)
-Subject: Re: [RFC PATCH 11/12] platform/x86: skeleton for oftree based board
- device initialization
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>
-References: <20210208222203.22335-1-info@metux.net>
- <20210208222203.22335-12-info@metux.net>
- <CACRpkdYbOX_RDqwxaiugtYB4vSpSKChvKsPjcB_vv3Q74QeG2Q@mail.gmail.com>
- <c5ed2b27-21a2-5a07-8dd9-e080f9a6cd98@metux.net>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <f370fa7b-a5b1-4151-7018-10d1b75fa8b2@gmail.com>
-Date:   Sun, 14 Feb 2021 19:18:55 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nqWxVX3tai8d6xQXNuc7CwStRoLgRKEWoNr21bE/mSo=;
+        b=VXXL4Kt6jre+zudKISTvs+6JAqg4LQtan279z4rmDLluapF39LQwQUNjiGV3JV+nok
+         zEvJbyZpDypmQzwzBZ1S6PhOT5eRTcyQuSRBw3Hul+87k1mGZw8SPCYlRigM965822CJ
+         yHbnH/ZlLZTfpuSyi4PC2OxEwEzEdXRYzuR/h5wgemaerUsRpNo4bTzEXj9v6Y96kOck
+         YLmcGZVnuKHIa/pEA16ekrqNK7wy7w8/uHaCCYwcE8z+w0vspYgDWXa97fObzJaoWAT5
+         XUyMY4kbr+mIQkTpzw96AfWQ6Tag7M6IT/sLt1Nl31L1Vc1JiC7iputmnKv4/kAT/Vqo
+         gEHw==
+X-Gm-Message-State: AOAM532FGdIfewWvbd0ZroPrg0oL80XY+/l9rTIO/7A341oQHP+8eEIC
+        2Cy1TxiYdMnZF65BRp+SBX3M1tUTzcNrPpegimHvGA==
+X-Google-Smtp-Source: ABdhPJwxzNCcjBfqsq4WyT6GHAU2U4lh0z0W/tdmtYIKR51lPejDwZXlP7EQG7k4rpH4++0lqRrO0kdZtEA/IDdAV2E=
+X-Received: by 2002:a67:e119:: with SMTP id d25mr7271805vsl.16.1613352347038;
+ Sun, 14 Feb 2021 17:25:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c5ed2b27-21a2-5a07-8dd9-e080f9a6cd98@metux.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210212124354.1.I7084a6235fbcc522b674a6b1db64e4aff8170485@changeid>
+ <YCYybUg4d3+Oij4N@kroah.com> <CANMq1KBuPaU5UtRR8qTgdf+J3pt-xAQq69kCVBdaYGx8F+WmFA@mail.gmail.com>
+ <YCY+Ytr2J2R5Vh0+@kroah.com> <CAKOQZ8zPFM29DYPwbnUJEhf+a8kPSJ5E_W06JLFjn-5Fy-ZWWw@mail.gmail.com>
+ <YCaipZ+iY65iSrui@kroah.com> <20210212230346.GU4626@dread.disaster.area>
+ <CAOyqgcX_wN2RGunDix5rSWxtp3pvSpFy2Stx-Ln4GozgSeS2LQ@mail.gmail.com>
+ <20210212232726.GW4626@dread.disaster.area> <20210212235448.GH7187@magnolia>
+ <20210215003855.GY4626@dread.disaster.area> <CAOyqgcX6HrbPU39nznmRMXJXtMWA0giYNRsio1jt1p5OU1jvOA@mail.gmail.com>
+In-Reply-To: <CAOyqgcX6HrbPU39nznmRMXJXtMWA0giYNRsio1jt1p5OU1jvOA@mail.gmail.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Mon, 15 Feb 2021 09:25:36 +0800
+Message-ID: <CANMq1KDv-brWeKOTt3aUUi_1SOXSpEFo5pS5A6mpRT8k-O88nA@mail.gmail.com>
+Subject: Re: [PATCH 1/6] fs: Add flag to file_system_type to indicate content
+ is generated
+To:     Ian Lance Taylor <iant@golang.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luis Lozano <llozano@chromium.org>,
+        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/21 5:54 AM, Enrico Weigelt, metux IT consult wrote:
-> On 12.02.21 10:58, Linus Walleij wrote:
-> 
-> Hi,
-> 
->> I think Intel people often take the stance that the ACPI DSDT (or whatever)
->> needs to be fixed.
-> 
-> It should, actually board/firmware vendors should think more carefully
-> and do it right in the first place. But reality is different. And
-> firmware upgrade often is anything but easy (as soon as we leave the
-> field of average Joh Doe's home PC)
-> 
->> If the usecase is to explicitly work around deployed firmware that cannot
->> and will not be upgraded/fixed by describing the hardware using DT
->> instead, based on just the DMI ID then we should spell that out
->> explicitly.
-> 
-> Okay, maybe I should have stated this more clearly.
-> 
-> OTOH, the scope is also a little bit greater: certain external cards
-> that don't need much special handling for the card itself, just
-> enumerate devices (and connections between them) using existing drivers.
-> 
-> That's a pretty common scenario in industrial backplane systems, where
-> we have lots of different (even application specific) cards, usually
-> composed of standard chips, that can be identified by some ID, but
-> cannot describe themselves. We have to write lots of specific drivers
-> for them, usually just for instantiating existing drivers. (we rarely
-> see such code going towards mainline).
-> 
-> A similar case (mainlined) seems to be the RCAR display unit - they're
-> using dt overlays that are built into the driver and applied by it
-> based on the detected DU at runtime. RCAR seems to be a pure DT
+On Mon, Feb 15, 2021 at 9:12 AM Ian Lance Taylor <iant@golang.org> wrote:
+>
+> On Sun, Feb 14, 2021 at 4:38 PM Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > On Fri, Feb 12, 2021 at 03:54:48PM -0800, Darrick J. Wong wrote:
+> > > On Sat, Feb 13, 2021 at 10:27:26AM +1100, Dave Chinner wrote:
+> > >
+> > > > If you can't tell from userspace that a file has data in it other
+> > > > than by calling read() on it, then you can't use cfr on it.
+> > >
+> > > I don't know how to do that, Dave. :)
+> >
+> > If stat returns a non-zero size, then userspace knows it has at
+> > least that much data in it, whether it be zeros or previously
+> > written data. cfr will copy that data. The special zero length
+> > regular pipe files fail this simple "how much data is there to copy
+> > in this file" check...
+>
+> This suggests that if the Go standard library sees that
+> copy_file_range reads zero bytes, we should assume that it failed, and
+> should use the fallback path as though copy_file_range returned
+> EOPNOTSUPP or EINVAL.  This will cause an extra system call for an
+> empty file, but as long as copy_file_range does not return an error
+> for cases that it does not support we are going to need an extra
+> system call anyhow.
+>
+> Does that seem like a possible mitigation?  That is, are there cases
+> where copy_file_range will fail to do a correct copy, and will return
+> success, and will not return zero?
 
-The RCAR use of overlays that are built into the driver are a known
-pattern that is explicitly not to be repeated.  The driver has been
-granted a grandfathered in status, thus an exception as long as
-needed.
+I'm a bit worried about the sysfs files that report a 4096 bytes file
+size, for 2 reasons:
+ - I'm not sure if the content _can_ actually be longer (I couldn't
+find a counterexample)
+ - If you're unlucky enough to have a partial write in the output
+filesystem, you'll get a non-zero return value and probably corrupted
+content.
 
--Frank
-
-> platform, so that's an obvious move. APU2/3/4 is ACPI based, so I went
-> in a different direction - but I'm now investigating how to make DT
-> overlays work on an ACPI platform (eg. needs some initial nodes, ...)
-> In case that's successful, I'll rework my RFC to use overlays, and
-> it will become much smaller (my oftree core changes then won't be
-> necessary anymore).
-> 
->> It feels a bit like fixing a problem using a different hardware description
->> just because we can. Look in drivers/gpio/gpiolib-acpi.c
->> table gpiolib_acpi_quirks[]. It's just an example how this is fixed using
->> fine granular ACPI-specific mechanisms at several places in the kernel
->> instead of just tossing out the whole description and redoing it in
->> device tree.
-> 
-> I'm quite reluctant to put everything in there. Theoretically, for apu
-> case, I could prevent enumerating the incomplete gpios there, but the
-> actual driver setup still remains (certainly don't wanna put that into
-> such a global place). But the original problem of having to write so
-> much code for just instantiating generic drivers remains. And
-> distributing knowledge of certain devices over several places doesn't
-> feel like a good idea to me.
-> 
-> 
-> --mtx
-> 
-
+>
+> Ian
