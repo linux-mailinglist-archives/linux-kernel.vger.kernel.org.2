@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F36031C381
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1949531C386
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 22:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbhBOVWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 16:22:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229662AbhBOVWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 16:22:53 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3449364DE0;
-        Mon, 15 Feb 2021 21:22:11 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 16:22:09 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Xi Ruoyao <xry111@mengyan1223.wang>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org
-Subject: Re: [tip: objtool/urgent] objtool: Fix seg fault with Clang
- non-section symbols
-Message-ID: <20210215162209.5e2a475b@gandalf.local.home>
-In-Reply-To: <20210215155806.bjcouvmkapj4pa4y@treble>
-References: <CAKwvOd=GHdkvAU3u6ROSgtGqC_wrkXo8siL1nZHE-qsqSx0gsw@mail.gmail.com>
-        <YCafKVSTX9MxDBMd@kroah.com>
-        <20210212170750.y7xtitigfqzpchqd@treble>
-        <20210212124547.1dcf067e@gandalf.local.home>
-        <YCfdfkoeh8i0baCj@kroah.com>
-        <20210213091304.2dd51e5f@oasis.local.home>
-        <20210213155203.lehuegwc3h42nebs@treble>
-        <YCf9bnsmXqRGMn+j@kroah.com>
-        <20210214155147.3owdimqv2lyhu6by@treble>
-        <20210215095307.6f5fb12f@gandalf.local.home>
-        <20210215155806.bjcouvmkapj4pa4y@treble>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229744AbhBOVYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 16:24:43 -0500
+Received: from mail-wr1-f46.google.com ([209.85.221.46]:35183 "EHLO
+        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229662AbhBOVYm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 16:24:42 -0500
+Received: by mail-wr1-f46.google.com with SMTP id l12so10755372wry.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 13:24:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9WE7sfWuADZEgBkO6VBLoyU3Kt+14QI5HCaf9dRKQr0=;
+        b=QHld4gcAirLT9KYKVdp2J9gadjhIMcCWtXam524bH4RRL8nYR1kbztFgFVcbnyBu6N
+         sTNpEeT/Qp2/CoIS4LvASklE5qu1VGbuOqQZXUeYE7RfxzQJ00WpUNyMw4bGXnkLwAMe
+         iQmkO65iDLxtkne/Rsy4buPGPpsRwm3rYgFSMAlxK4cvmKQNeLSUauQqh7SKQnopYV/T
+         cYSXnD1RP10ZgTPAg6T3PpQesIDHKB+A1J/4inkPhoipdEzJC50p9syjvULvIuO6yMuP
+         obv1jrYx3r3azUtdqFfpDjs3mi1SlEGIvnkI3MefgMGPjwRuzgRMi/tY3PKlsF4rQgRe
+         pDvA==
+X-Gm-Message-State: AOAM530KZBqmpDbwcCrZfZaQt31s0lBvsHB4LIjGAw3kcs0Z5VEEklD4
+        /dtGdaHzqJyCMqButzP83tm8vElO/Cw=
+X-Google-Smtp-Source: ABdhPJyOdMuEiNm8u20zTsF8TOp7tAyT4IUWQCToD1uMnEiSwNxtuc3/Htz4clHlcbiBTWYOQf6beA==
+X-Received: by 2002:a05:6000:242:: with SMTP id m2mr20027397wrz.422.1613424240136;
+        Mon, 15 Feb 2021 13:24:00 -0800 (PST)
+Received: from ?IPv6:2601:647:4802:9070:e348:9c6c:4cb7:8321? ([2601:647:4802:9070:e348:9c6c:4cb7:8321])
+        by smtp.gmail.com with ESMTPSA id t6sm16067655wrn.96.2021.02.15.13.23.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Feb 2021 13:23:59 -0800 (PST)
+Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
+ it
+To:     Hannes Reinecke <hare@suse.de>, Keith Busch <kbusch@kernel.org>
+Cc:     Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        linux-nvme@lists.infradead.org, Daniel Wagner <dwagner@suse.de>,
+        linux-kernel@vger.kernel.org
+References: <20210212181738.79274-1-dwagner@suse.de>
+ <c3a682d3-58f7-f5cc-caaa-75c36ca464e2@grimberg.me>
+ <20210212210929.GA3851@redsun51.ssa.fujisawa.hgst.com>
+ <ddf87227-1ad3-b8be-23ba-460433f70a85@grimberg.me>
+ <73e4914e-f867-c899-954d-4b61ae2b4c33@suse.de>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <5b45835b-eb81-29e8-e319-a8509474e27f@grimberg.me>
+Date:   Mon, 15 Feb 2021 13:23:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <73e4914e-f867-c899-954d-4b61ae2b4c33@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 09:58:06 -0600
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-> On Mon, Feb 15, 2021 at 09:53:07AM -0500, Steven Rostedt wrote:
-> > On Sun, 14 Feb 2021 09:51:47 -0600
-> > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >   
-> > > Steve, looks like recordmcount avoids referencing weak symbols directly
-> > > by their function symbol.  Maybe it can just skip weak symbols which
-> > > don't have a section symbol, since this seems like a rare scenario.  
-> > 
-> > When does the .text.unlikely section disappear? During the creation of the
-> > object, or later in the linker stage?  
+>>>>> blk_mq_tag_to_rq() will always return a request if the command_id is
+>>>>> in the valid range. Check if the request has been started. If we
+>>>>> blindly process the request we might double complete a request which
+>>>>> can be fatal.
+>>>>
+>>>> How did you get to this one? did the controller send a completion for
+>>>> a completed/bogus request?
+>>>
+>>> If that is the case, then that must mean it's possible the driver could
+>>> have started the command id just before the bogus completion check. Data
+>>> iorruption, right?
+>>
+>> Yes, which is why I don't think this check is very useful..
 > 
-> The section is there, but the symbol associated with the section
-> (".text.unlikely" symbol) isn't generated by the assembler.
-> 
+> I actually view that as a valid protection against spoofed frames.
+> Without it it's easy to crash the machine by injecting fake completions 
+> with random command ids.
 
-Greg,
-
-Does this fix the issue with you? It appears to fix it for my arch linux
-VM that I created that uses binutils 2.36-3.
-
--- Steve
-
-diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-index f9b19524da11..558b67f8364e 100644
---- a/scripts/recordmcount.h
-+++ b/scripts/recordmcount.h
-@@ -562,7 +562,7 @@ static char const * __has_rel_mcount(Elf_Shdr const *const relhdr, /* reltype */
- 	if (w(txthdr->sh_type) != SHT_PROGBITS ||
- 	    !(_w(txthdr->sh_flags) & SHF_EXECINSTR))
- 		return NULL;
--	return txtname;
-+	return shdr0->sh_size ? txtname : NULL;
- }
- 
- static char const *has_rel_mcount(Elf_Shdr const *const relhdr,
+And this doesn't help because the command can have been easily reused
+and started... What is this protecting against? Note that none of the
+other transports checks that, why should tcp?
