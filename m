@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B983A31BC21
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB5B31BC25
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Feb 2021 16:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhBOPS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 10:18:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
+        id S230163AbhBOPTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 10:19:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhBOPOl (ORCPT
+        with ESMTP id S230233AbhBOPO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 10:14:41 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C04C061756;
-        Mon, 15 Feb 2021 07:14:00 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id z7so3893077plk.7;
-        Mon, 15 Feb 2021 07:14:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MQBEYDbZLUspR4Cas4xHhX333Pehv/osTwNAcBMpXuY=;
-        b=CQUKDoIcRBpm4Oq6Kl/kj7pKKcYjjng52/6QuMBh7xu8ycEXXdPCjDoNHhNjaLzMAp
-         PpoZjlVPrAsNKPFc7EH5vPLJ+r3BNXYfqyK9QoNOCK3IjijK1pV9vFVX+liKR6InbW3j
-         N69n3pzqz0R8HCM1iSX2ek8LAg3dvWnRl+63/g1YPHuOMxzHsocmOPe3A41LPoBy7+k/
-         MZJkOGkscJQNG3eEKof4/HyYeekmPO7GAVOKWL30SKNu1Y2Fe8znWlpN2fzqLvYcrb1y
-         R0Cj0CuBEl2iw2QhUmqNqZ1sc21Ixmduw3FI9QDc8KcsMXgqT/3ffHiuY4Msf/eAIkv4
-         ZZhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MQBEYDbZLUspR4Cas4xHhX333Pehv/osTwNAcBMpXuY=;
-        b=Y114AlawLJCPG1/YkGByDzDUb26FHDJyajrs+kqXjDv1Vqgd0Tc98rFqI6lc2Vd1GX
-         CqLcqyA5BMvt+tupzroSqOACkdZMlr5JeKdviW4S60e6eCM/zHMB6aTDN/r7Oumk0K6m
-         JofW0uSKAkpOQQoJs+KLrbwYgic7ZIVyb3o8MLbdabVE5mjiW8+C1IHUdvIkC5vdwwHW
-         jd6DEVlWOs/E1ItVbmFalMa8NUEy1mVKdeJTwanxlbwSDqU6/8BIUMode+EqZNSAdAdG
-         BJlrWiDnPAEOfGj6W7K0wnZ9uQ//0I7KnJCAZgAkWfNTbJGuy+RK7J2LnVF8jggki1//
-         EufQ==
-X-Gm-Message-State: AOAM532sNuDatK2DReSjFSKLvvXy9WE+lJwE5ka1QnWqDrQcg/qT+cay
-        y3rJCNZJD75eXt8jb6j27AmDvw0mhy2/TKWqzHA=
-X-Google-Smtp-Source: ABdhPJwq/oqehvgAavm6DkE/AtYDGnrfyneBipOjVQogGyrbG7SqrPvRhcFT2I9yV3pXFKozt+yik6ovEYPQK33uQeY=
-X-Received: by 2002:a17:90a:1b23:: with SMTP id q32mr16968661pjq.181.1613402040270;
- Mon, 15 Feb 2021 07:14:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com>
- <20210208151244.16338-16-calvin.johnson@oss.nxp.com> <20210208162831.GM1463@shell.armlinux.org.uk>
- <20210215123309.GA5067@lsv03152.swis.in-blr01.nxp.com>
-In-Reply-To: <20210215123309.GA5067@lsv03152.swis.in-blr01.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 15 Feb 2021 17:13:44 +0200
-Message-ID: <CAHp75VcpR1uf-6me9-MiXzESP9gtE0=Oz5TaFj0E93C3w4=Fgg@mail.gmail.com>
-Subject: Re: [net-next PATCH v5 15/15] net: dpaa2-mac: Add ACPI support for
- DPAA2 MAC driver
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Grant Likely <grant.likely@arm.com>,
+        Mon, 15 Feb 2021 10:14:56 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97D4C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 07:14:10 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed60:c5d6:9422:c618:ee58])
+        by albert.telenet-ops.be with bizsmtp
+        id VTE8240042PLE0706TE84E; Mon, 15 Feb 2021 16:14:09 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lBfZf-0079Q4-IO; Mon, 15 Feb 2021 16:14:07 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lBfZe-00AhgE-RK; Mon, 15 Feb 2021 16:14:06 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        netdev <netdev@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] staging: board: Fix uninitialized spinlock when attaching genpd
+Date:   Mon, 15 Feb 2021 16:14:05 +0100
+Message-Id: <20210215151405.2551143-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 2:33 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
-> On Mon, Feb 08, 2021 at 04:28:31PM +0000, Russell King - ARM Linux admin wrote:
+On Armadillo-800-EVA with CONFIG_DEBUG_SPINLOCK=y:
 
-...
+    BUG: spinlock bad magic on CPU#0, swapper/1
+     lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+    CPU: 0 PID: 1 Comm: swapper Not tainted 5.11.0-rc5-armadillo-00036-gbbca04be7a80-dirty #287
+    Hardware name: Generic R8A7740 (Flattened Device Tree)
+    [<c010c3c8>] (unwind_backtrace) from [<c010a49c>] (show_stack+0x10/0x14)
+    [<c010a49c>] (show_stack) from [<c0159534>] (do_raw_spin_lock+0x20/0x94)
+    [<c0159534>] (do_raw_spin_lock) from [<c040858c>] (dev_pm_get_subsys_data+0x8c/0x11c)
+    [<c040858c>] (dev_pm_get_subsys_data) from [<c05fbcac>] (genpd_add_device+0x78/0x2b8)
+    [<c05fbcac>] (genpd_add_device) from [<c0412db4>] (of_genpd_add_device+0x34/0x4c)
+    [<c0412db4>] (of_genpd_add_device) from [<c0a1ea74>] (board_staging_register_device+0x11c/0x148)
+    [<c0a1ea74>] (board_staging_register_device) from [<c0a1eac4>] (board_staging_register_devices+0x24/0x28)
 
-> I think of_phy_is_fixed_link() needs to be fixed. I'll add below fix.
->
-> --- a/drivers/net/mdio/of_mdio.c
-> +++ b/drivers/net/mdio/of_mdio.c
-> @@ -439,6 +439,9 @@ bool of_phy_is_fixed_link(struct device_node *np)
->         int len, err;
->         const char *managed;
->
-> +       if (!np)
-> +               return false;
+of_genpd_add_device() is called before platform_device_register(), as it
+needs to attach the genpd before the device is probed.  But the spinlock
+is only initialized when the device is registered.
 
-AFAICS this doesn't add anything: all of the of_* APIs should handle
-OF nodes being NULL below.
+Fix this by open-coding the spinlock initialization, cfr.
+device_pm_init_common() in the internal drivers/base code, and in the
+SuperH early platform code.
 
->         /* New binding */
->         dn = of_get_child_by_name(np, "fixed-link");
->         if (dn) {
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Exposed by fw_devlinks changing probe order.
+Masked before due to an unrelated wait context check failure, which
+disabled any further spinlock checks.
+https://lore.kernel.org/linux-acpi/CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com
+---
+ drivers/staging/board/board.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/staging/board/board.c b/drivers/staging/board/board.c
+index cb6feb34dd401ae3..604612937f038e92 100644
+--- a/drivers/staging/board/board.c
++++ b/drivers/staging/board/board.c
+@@ -136,6 +136,7 @@ int __init board_staging_register_clock(const struct board_staging_clk *bsc)
+ static int board_staging_add_dev_domain(struct platform_device *pdev,
+ 					const char *domain)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct of_phandle_args pd_args;
+ 	struct device_node *np;
+ 
+@@ -148,7 +149,11 @@ static int board_staging_add_dev_domain(struct platform_device *pdev,
+ 	pd_args.np = np;
+ 	pd_args.args_count = 0;
+ 
+-	return of_genpd_add_device(&pd_args, &pdev->dev);
++	/* Cfr. device_pm_init_common() */
++	spin_lock_init(&dev->power.lock);
++	dev->power.early_init = true;
++
++	return of_genpd_add_device(&pd_args, dev);
+ }
+ #else
+ static inline int board_staging_add_dev_domain(struct platform_device *pdev,
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
