@@ -2,88 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EE431C8D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EC431C8D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhBPKaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:30:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59142 "EHLO mail.kernel.org"
+        id S229993AbhBPKbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:31:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:60084 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229771AbhBPKaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:30:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5634064E08;
-        Tue, 16 Feb 2021 10:29:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613471372;
-        bh=hWGJmDQWT8XgcDBQ7FWNZP9vnjZM2snhaJfPI32QkRc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h9KXzI+VQK8eKmwWqRrnq3PhV8yv3jLCPH9kG4q5pjmm1Lz1ejBNgrfEKqh7m+9cJ
-         QDvDnNyYYoFl0N4Gnz8gHV2/n2+AedJBtShvMhSN1PFNRaKky1Uv+sqPGHFYHiRJ2X
-         jSpDta2pTJn61wx29CEpNdP9fvnQ59LE9Ehulvk/jDDWsQiBTNIwgK2BGFwlEFzhA7
-         sTL5llVU+0UKv4K0+359uJKDamyucH+YWWE4Pj+TM6A8581pmqALdJ0rb5Mjn6yhQF
-         5YX13knYFdSFX00M/6WSQh7VkVKjN6i3z9RAqLAGz01/ZvM8pjD4AIN4LW4DB7rjyW
-         5KUKJUrRnXo/w==
-Received: by mail-oi1-f179.google.com with SMTP id y199so10723708oia.4;
-        Tue, 16 Feb 2021 02:29:32 -0800 (PST)
-X-Gm-Message-State: AOAM533IjMiM8d6IQ+SdixLgOsEE0GhLII4KOPo0WoJcRKzMe7wfNNbu
-        m9qQfuLs3xm8TzErcqHTuSQAT7ZuQRwrKnQcnP4=
-X-Google-Smtp-Source: ABdhPJzLU0yXwpa8zo0VJ9pnLMzT5igdBQF/kLq0nZ5rs/I3kZXxM3I1bGcFbavHO/jgFFGo6VIGqtHL1dM1HGNJFLc=
-X-Received: by 2002:aca:2117:: with SMTP id 23mr2141331oiz.4.1613471371347;
- Tue, 16 Feb 2021 02:29:31 -0800 (PST)
+        id S229662AbhBPKb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:31:26 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2476D1FB;
+        Tue, 16 Feb 2021 02:30:40 -0800 (PST)
+Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.208.215])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0E23B3F73B;
+        Tue, 16 Feb 2021 02:30:34 -0800 (PST)
+From:   Jianlin Lv <Jianlin.Lv@arm.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, mhiramat@kernel.org, fche@redhat.com,
+        irogers@google.com, sumanthk@linux.ibm.com
+Cc:     Jianlin.Lv@arm.com, iecedge@gmail.com,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH v3] perf probe: fix kretprobe issue caused by GCC bug
+Date:   Tue, 16 Feb 2021 18:30:26 +0800
+Message-Id: <20210216103026.323157-1-Jianlin.Lv@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210215121713.57687-1-marcan@marcan.st> <20210215121713.57687-24-marcan@marcan.st>
- <20210215191748.uhus2e6gclkwgjo5@kozik-lap> <CAK8P3a0YzRVa+fa_7xFxR8f+pwSCo5w5kuaPsSSQscR10jwPww@mail.gmail.com>
- <CAJKOXPc+j9F_TVq2ir0ehVvph96UgkjRRCK7Df4KR0tVgWOAng@mail.gmail.com>
-In-Reply-To: <CAJKOXPc+j9F_TVq2ir0ehVvph96UgkjRRCK7Df4KR0tVgWOAng@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 16 Feb 2021 11:29:15 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2mOCfVhR3aeey38sDudJovfz23OOMMHREd8bmy=9-5yw@mail.gmail.com>
-Message-ID: <CAK8P3a2mOCfVhR3aeey38sDudJovfz23OOMMHREd8bmy=9-5yw@mail.gmail.com>
-Subject: Re: [PATCH v2 23/25] tty: serial: samsung_tty: Add earlycon support
- for Apple UARTs
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:20 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Tue, 16 Feb 2021 at 11:19, Arnd Bergmann <arnd@kernel.org> wrote:
-> > > > +     return samsung_early_console_setup(device, opt);
-> > >
-> > > Don't you need to handle the error code - set PROT_DEFAULT() or whatever
-> > > was there before?
-> >
-> > __set_fixmap() has no return value, it just writes a page table entry and
-> > does not fail.
->
-> I meant, handle samsung_early_console_setup() error code (NULL).
+Perf failed to add kretprobe event with debuginfo of vmlinux which is
+compiled by gcc with -fpatchable-function-entry option enabled.
+The same issue with kernel module.
 
-Ah, I see.
+Issue:
 
-I don't think it makes a difference -- if ->setup() fails, the page table entry
-is just left in place unused, and the type of the unused mapping doesn't
-matter. If earlycon tried to unmap the page, the type also would not
-change anything.
+  # perf probe  -v 'kernel_clone%return $retval'
+  ......
+  Writing event: r:probe/kernel_clone__return _text+599624 $retval
+  Failed to write event: Invalid argument
+    Error: Failed to add events. Reason: Invalid argument (Code: -22)
 
-With earlycon, I'd generally lean towards keeping things as simple as possible,
-in order to increase the chance of seeing anything at all. It clearly wouldn't
-hurt to try to add minimal error handling here.
+  # cat /sys/kernel/debug/tracing/error_log
+  [156.75] trace_kprobe: error: Retprobe address must be an function entry
+  Command: r:probe/kernel_clone__return _text+599624 $retval
+                                        ^
 
-       Arnd
+  # llvm-dwarfdump  vmlinux |grep  -A 10  -w 0x00df2c2b
+  0x00df2c2b:   DW_TAG_subprogram
+                DW_AT_external  (true)
+                DW_AT_name      ("kernel_clone")
+                DW_AT_decl_file ("/home/code/linux-next/kernel/fork.c")
+                DW_AT_decl_line (2423)
+                DW_AT_decl_column       (0x07)
+                DW_AT_prototyped        (true)
+                DW_AT_type      (0x00dcd492 "pid_t")
+                DW_AT_low_pc    (0xffff800010092648)
+                DW_AT_high_pc   (0xffff800010092b9c)
+                DW_AT_frame_base        (DW_OP_call_frame_cfa)
+
+  # cat /proc/kallsyms |grep kernel_clone
+  ffff800010092640 T kernel_clone
+  # readelf -s vmlinux |grep -i kernel_clone
+  183173: ffff800010092640  1372 FUNC    GLOBAL DEFAULT    2 kernel_clone
+
+  # objdump -d vmlinux |grep -A 10  -w \<kernel_clone\>:
+  ffff800010092640 <kernel_clone>:
+  ffff800010092640:       d503201f        nop
+  ffff800010092644:       d503201f        nop
+  ffff800010092648:       d503233f        paciasp
+  ffff80001009264c:       a9b87bfd        stp     x29, x30, [sp, #-128]!
+  ffff800010092650:       910003fd        mov     x29, sp
+  ffff800010092654:       a90153f3        stp     x19, x20, [sp, #16]
+
+The entry address of kernel_clone converted by debuginfo is _text+599624
+(0x92648), which is consistent with the value of DW_AT_low_pc attribute.
+But the symbolic address of kernel_clone from /proc/kallsyms is
+ffff800010092640.
+
+This issue is found on arm64, -fpatchable-function-entry=2 is enabled when
+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y;
+Just as objdump displayed the assembler contents of kernel_clone,
+GCC generate 2 NOPs  at the beginning of each function.
+
+kprobe_on_func_entry detects that (_text+599624) is not the entry address
+of the function, which leads to the failure of adding kretprobe event.
+
+kprobe_on_func_entry
+->_kprobe_addr
+->kallsyms_lookup_size_offset
+->arch_kprobe_on_func_entry		// FALSE
+
+The cause of the issue is that the first instruction in the compile unit
+indicated by DW_AT_low_pc does not include NOPs.
+This issue exists in all gcc versions that support
+-fpatchable-function-entry option.
+
+I have reported it to the GCC community:
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=98776
+
+Currently arm64 and PA-RISC may enable fpatchable-function-entry option.
+The kernel compiled with clang does not have this issue.
+
+FIX:
+
+This GCC issue only cause the registration failure of the kretprobe event
+which doesn't need debuginfo. So, stop using debuginfo for retprobe.
+map will be used to query the probe function address.
+
+Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+---
+v2: stop using debuginfo for retprobe, and update changelog.
+v3: Update changelog, fixed misuse of --- marker.
+---
+ tools/perf/util/probe-event.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index 8eae2afff71a..a59d3268adb0 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -894,6 +894,16 @@ static int try_to_find_probe_trace_events(struct perf_probe_event *pev,
+ 	struct debuginfo *dinfo;
+ 	int ntevs, ret = 0;
+ 
++	/* Workaround for gcc #98776 issue.
++	 * Perf failed to add kretprobe event with debuginfo of vmlinux which is
++	 * compiled by gcc with -fpatchable-function-entry option enabled. The
++	 * same issue with kernel module. The retprobe doesn`t need debuginfo.
++	 * This workaround solution use map to query the probe function address
++	 * for retprobe event.
++	 */
++	if (pev->point.retprobe)
++		return 0;
++
+ 	dinfo = open_debuginfo(pev->target, pev->nsi, !need_dwarf);
+ 	if (!dinfo) {
+ 		if (need_dwarf)
+-- 
+2.25.1
+
