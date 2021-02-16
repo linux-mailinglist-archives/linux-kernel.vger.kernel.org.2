@@ -2,157 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D2B31CEDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B4431CEE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhBPRTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:19:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhBPRTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:19:42 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B9CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 09:19:01 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id a207so2030158wmd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 09:19:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JjjMZWwT81OeTqWfJkqjrC+iy3+c6krHrKf6UiyEPcI=;
-        b=HPxJHJC2AvGyQfAmNObp8XL9fetZfvzteZJxv/TsoCSTdhc5onhymwDLNy2j1Kcx35
-         Q068Kf5nfwKwg5uTq2oVU6wjUg7m1UsHjuOtTnIDQtTQ21MrONFknR0rW4M5czmjoLya
-         naXvtdPAlPMvp//j4ClzDj4YeFQrI6Enu/l+k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JjjMZWwT81OeTqWfJkqjrC+iy3+c6krHrKf6UiyEPcI=;
-        b=bfmDQjZOwKVkKc1fbHn0NQp00nZkf+2kt/FOwbB+vDdaxVhkvYhwtI6alZ7yg84Utj
-         M4wZQaF7E5YmJBif8w1aWlGgkv272Nj7ViwDc/fhrem7oJJNM+HOGPgWZ7g1/jllM+m2
-         h+a8y08bFsjkAn8KrWWcaEFAy84Ak372ILVikdMTIdgWc6tPwPLhcwBEhijFl8yT2iu6
-         w31sIDwDgelug8MVnKIIhN3TWiy5lwD75p7vBYeocIcdpPAZjySi93XYZ12hudqPkjCd
-         G2Vf8iHobPzsnTCFP9BX+rrafLu7nVn16C1+W/mC+hwyb9hT326GsAQDrP9yETtPZODf
-         /Qig==
-X-Gm-Message-State: AOAM533x1cXzEKTCx011/Zw0VxvcRS2J6sT2SeQZzWpHWTYFG+7xGMTB
-        mLs6Owcr5bMrcnSVVGoYWoa+Vg==
-X-Google-Smtp-Source: ABdhPJx00ZZBnGcr0oKew6pKBR71/VMcTlo5l3wwLXuPexzbFFwcwFAcQUdc2JC6qKYL9UNYUAHxXQ==
-X-Received: by 2002:a1c:608b:: with SMTP id u133mr4067358wmb.149.1613495939396;
-        Tue, 16 Feb 2021 09:18:59 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::4:76fd])
-        by smtp.gmail.com with ESMTPSA id 17sm5849388wmf.32.2021.02.16.09.18.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 09:18:59 -0800 (PST)
-Date:   Tue, 16 Feb 2021 17:18:58 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: debugfs: was: Re: [PATCH v4] printk: Userspace format
- enumeration support
-Message-ID: <YCv+gpVGHTh9ZMNq@chrisdown.name>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
- <YCvsGzv3qlsWU+UE@alley>
+        id S230514AbhBPRUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:20:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56502 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229628AbhBPRU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:20:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613495980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rOgv2eEZRaweG7NJSebRdSvYOOr4gqJRXTJSspBSCOc=;
+        b=h74MeufS56pS+vSQUpiTiDJslgiawZx4tJtn7aauwv7pBJhcNTfCnkvkZcET1ccH9wgS0S
+        uSIXIOcmQcAWyo9lIedoNUMHCxP1lJvUJ71ea01Qe4mg3wVOss7YoIzXmifMbWipNTDnwz
+        bmUSS78TXUvirG7wUzA62/J22oR4h+8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 12DE6B7A4;
+        Tue, 16 Feb 2021 17:19:40 +0000 (UTC)
+Date:   Tue, 16 Feb 2021 18:19:39 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on cgroup v2
+Message-ID: <YCv+q749iP4J/pWC@dhcp22.suse.cz>
+References: <20210212170159.32153-1-songmuchun@bytedance.com>
+ <20210212170159.32153-4-songmuchun@bytedance.com>
+ <YCv51LgGIWxVjLHT@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YCvsGzv3qlsWU+UE@alley>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+In-Reply-To: <YCv51LgGIWxVjLHT@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Petr Mladek writes:
->> +static size_t printk_fmt_size(const char *fmt)
->> +{
->> +	size_t sz = strlen(fmt) + 1;
->> +
->> +	/*
->> +	 * Some printk formats don't start with KERN_SOH + level. We will add
->> +	 * it later when rendering the output.
->> +	 */
->> +	if (unlikely(fmt[0] != KERN_SOH_ASCII))
->> +		sz += 2;
->
->This approach is hard to maintain. It might be pretty hard and error
->prone to count the size if we want to provide more information.
->
->There are many files in debugfs with not-well defined size.
->They are opened by seq_open_private(). It allows to add
->a line by line by an iterator.
+On Tue 16-02-21 11:59:00, Johannes Weiner wrote:
+> Hello Muchun,
+> 
+> On Sat, Feb 13, 2021 at 01:01:59AM +0800, Muchun Song wrote:
+> > The swap charges the actual number of swap entries on cgroup v2.
+> > If a swap cache page is charged successful, and then we uncharge
+> > the swap counter. It is wrong on cgroup v2. Because the swap
+> > entry is not freed.
+> 
+> The patch makes sense to me. But this code is a bit tricky, we should
+> add more documentation to how it works and what the problem is.
+> 
+> How about this for the changelog?
+> 
+> ---
+> mm: memcontrol: fix swap undercounting for shared pages in cgroup2
+> 
+> When shared pages are swapped in partially, we can have some page
+> tables referencing the in-memory page and some referencing the swap
+> slot. Cgroup1 and cgroup2 handle these overlapping lifetimes slightly
+> differently due to the nature of how they account memory and swap:
+> 
+> Cgroup1 has a unified memory+swap counter that tracks a data page
+> regardless whether it's in-core or swapped out. On swapin, we transfer
+> the charge from the swap entry to the newly allocated swapcache page,
+> even though the swap entry might stick around for a while. That's why
+> we have a mem_cgroup_uncharge_swap() call inside mem_cgroup_charge().
+> 
+> Cgroup2 tracks memory and swap as separate, independent resources and
+> thus has split memory and swap counters. On swapin, we charge the
+> newly allocated swapcache page as memory, while the swap slot in turn
+> must remain charged to the swap counter as long as its allocated too.
+> 
+> The cgroup2 logic was broken by commit 2d1c498072de ("mm: memcontrol:
+> make swap tracking an integral part of memory control"), because it
+> accidentally removed the do_memsw_account() check in the branch inside
+> mem_cgroup_uncharge() that was supposed to tell the difference between
+> the charge transfer in cgroup1 and the separate counters in cgroup2.
+> 
+> As a result, cgroup2 currently undercounts consumed swap when shared
+> pages are partially swapped back in. This in turn allows a cgroup to
+> consume more swap than its configured limit intends.
+> 
+> Add the do_memsw_account() check back to fix this problem.
 
-Hmm, this is optional -- it was just to avoid seq_file having to realloc the 
-buffer. I originally used an iterator and I'm happy to go back to it if it 
-proves more convenient.
+Yes this clarfies both the issue and the subtlety of the accounting.
+Thanks a lot Johannes! This is a great example of how changelogs should
+really look.
 
->We should revert the changes when the file could not get crated.
->It does not make sense to keep the structure when the file is not
->there.
+> ---
+> 
+> > Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> 
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> > ---
+> >  mm/memcontrol.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index c737c8f05992..be6bc5044150 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -6753,7 +6753,7 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+> >  	memcg_check_events(memcg, page);
+> >  	local_irq_enable();
+> >  
+> > -	if (PageSwapCache(page)) {
+> > +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && PageSwapCache(page)) {
+> 
+> It's more descriptive to use do_memsw_account() here, IMO.
+> 
+> We should also add a comment. How about this above the branch?
+> 
+> 	/*
+> 	 * Cgroup1's unified memory+swap counter has been charged with the
+> 	 * new swapcache page, finish the transfer by uncharging the swap
+> 	 * slot. The swap slot would also get uncharged when it dies, but
+> 	 * for shared pages it can stick around indefinitely and we'd count
+> 	 * the page twice the entire time.
+> 	 *
+> 	 * Cgroup2 has separate resource counters for memory and swap,
+> 	 * so this is a non-issue here. Memory and swap charge lifetimes
+> 	 * correspond 1:1 to page and swap slot lifetimes: we charge the
+> 	 * page to memory here, and uncharge swap when the slot is freed.
+> 	 */
 
-See the reply from gregkh on v2, who was quite insistent that we should not 
-check debugfs error codes. I'm happy to do either, but I can't please you both 
-:-)
+Yes very helpful.
 
->I guess that remove_printk_fmt_sec() would even crash when
->ps->file was set to an error code.
+With the changelog update and the comment
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-debugfs checks if its input is an error, so it shouldn't, unless that's not 
-what you're referring to?
+Thanks!
 
->> +}
->> +
->> +#ifdef CONFIG_MODULES
->> +static void remove_printk_fmt_sec(struct module *mod)
->> +{
->> +	struct printk_fmt_sec *ps = NULL;
->> +
->> +	if (WARN_ON_ONCE(!mod))
->> +		return;
->> +
->> +	mutex_lock(&printk_fmts_mutex);
->> +
->> +	ps = find_printk_fmt_sec(mod);
->> +	if (!ps) {
->> +		mutex_unlock(&printk_fmts_mutex);
->> +		return;
->> +	}
->> +
->> +	hash_del(&ps->hnode);
->> +
->> +	mutex_unlock(&printk_fmts_mutex);
->> +
->> +	debugfs_remove(ps->file);
->
->IMHO, we should remove the file before we remove the way how
->to read it. This should be done in the opposite order
->than in store_printk_fmt_sec().
-
-There is a subtle issue with doing this as-is: debugfs_remove(ps->file) cannot 
-be called under printk_fmts_mutex, because we may deadlock due to a pinned 
-debugfs refcnt if debugfs_remove() and _show happen at the same time.
-
-Imagine we go into remove_printk_fmt_sec and grab printk_fmts_lock. On another 
-CPU, we call _show for the same file, which takes a reference in debugfs, but 
-it will stall waiting for printk_fmts_lock. Now we go back into 
-remove_printk_fmt_sec and can't make any forward progress, because 
-debugfs_remove will stall until all reference holders have finished, and there 
-is a deadlock.
-
-That's the reason that debugfs_remove() must be called after we have already 
-finished with the mutex and have the printk_fmt_sec, since we need to know that 
-it's still valid, and we also need to not be under it at the time of removal.
-
-One way to do what you're asking might be to have a flag in the printk_fmt_sec 
-which indicates that we are freeing something, and then take and release the 
-lock twice in remove_printk_fmt_sec. Personally, I feel indifferent to either 
-the current solution or something like that, but if you have a preference for 
-adding a flag or another similar solution, that's fine with me. Just let me 
-know. :-)
+-- 
+Michal Hocko
+SUSE Labs
