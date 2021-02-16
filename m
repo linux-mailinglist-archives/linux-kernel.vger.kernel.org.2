@@ -2,150 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA4631CF22
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6E631CF21
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhBPRft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:35:49 -0500
-Received: from foss.arm.com ([217.140.110.172]:39850 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230017AbhBPRfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230073AbhBPRfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 16 Feb 2021 12:35:46 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A5B9101E;
-        Tue, 16 Feb 2021 09:35:01 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0CEFB3F73B;
-        Tue, 16 Feb 2021 09:34:59 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH] sched: Fix affine_move_task()
-In-Reply-To: <YCfLHxpL+L0BYEyG@hirez.programming.kicks-ass.net>
-References: <YCfLHxpL+L0BYEyG@hirez.programming.kicks-ass.net>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Tue, 16 Feb 2021 17:34:55 +0000
-Message-ID: <jhjv9arsyps.mognet@arm.com>
+Received: from mail.kernel.org ([198.145.29.99]:35252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229845AbhBPRfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:35:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E302664E08;
+        Tue, 16 Feb 2021 17:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613496902;
+        bh=wjx0JYjmzBZmgXCxCB2Y5vcNb3fR4qxlpTRZ+iK19CQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=LQ7ai1t0CGUlQs9jYRsC+OhQkwFKHD4wqqTzVlXdfWU6cJTHN7eoNxwh2yu8c9wVd
+         dmUGLT7HhGGkzk2byJWfafehsOfbK3lPaEqEEOyvSBtIa30IQn39Bdwyk1rwLm7PUu
+         BCrsQCkIwOr/3Winxse99+X8fS+czgnCSPBNuXTGZ9XqRJE8Px3aSip3NMjABhLTp0
+         QTMHd+sQyOVA8ddWZ10VAUaEGzqX8isAY9H0vWUdm1DZHwG1A0t+xtCJbpbyjEofHX
+         crow1j5Gvm/85rRHBIMposk4ZaAc+ltRG+bRUe8Qv2TvB63xpHsLYvdKPkNjnJUq6s
+         MivWMJKTSJb9g==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 8E0A635238D3; Tue, 16 Feb 2021 09:35:02 -0800 (PST)
+Date:   Tue, 16 Feb 2021 09:35:02 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/2] rcuscale: add kfree_rcu() single-argument scale test
+Message-ID: <20210216173502.GY2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210129200505.5273-1-urezki@gmail.com>
+ <20210204214648.GL2743@paulmck-ThinkPad-P72>
+ <20210209201343.GA15619@pc638.lan>
+ <20210210010052.GZ2743@paulmck-ThinkPad-P72>
+ <20210215162705.GA45713@pc638.lan>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215162705.GA45713@pc638.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/02/21 13:50, Peter Zijlstra wrote:
-> When affine_move_task(p) is called on a running task @p, which is not
-> otherwise already changing affinity, we'll first set
-> p->migration_pending and then do:
->
-> 	 stop_one_cpu(cpu_of_rq(rq), migration_cpu_stop, &arg);
->
-> This then gets us to migration_cpu_stop() running on the CPU that was
-> previously running our victim task @p.
->
-> If we find that our task is no longer on that runqueue (this can
-> happen because of a concurrent migration due to load-balance etc.),
-> then we'll end up at the:
->
-> 	} else if (dest_cpu < 1 || pending) {
->
-> branch. Which we'll take because we set pending earlier. Here we first
-> check if the task @p has already satisfied the affinity constraints,
-> if so we bail early [A]. Otherwise we'll reissue migration_cpu_stop()
-> onto the CPU that is now hosting our task @p:
->
-> 	stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
-> 			    &pending->arg, &pending->stop_work);
->
-> Except, we've never initialized pending->arg, which will be all 0s.
->
-> This then results in running migration_cpu_stop() on the next CPU with
-> arg->p == NULL, which gives the by now obvious result of fireworks.
->
-> The cure is to change affine_move_task() to always use pending->arg,
-> furthermore we can use the exact same pattern as the
-> SCA_MIGRATE_ENABLE case, since we'll block on the pending->done
-> completion anyway, no point in adding yet another completion in
-> stop_one_cpu().
->
-> This then gives a clear distinction between the two
-> migration_cpu_stop() use cases:
->
->   - sched_exec() / migrate_task_to() : arg->pending == NULL
->   - affine_move_task() : arg->pending != NULL;
->
-> And we can have it ignore p->migration_pending when !arg->pending. Any
-> stop work from sched_exec() / migrate_task_to() is in addition to stop
-> works from affine_move_task(), which will be sufficient to issue the
-> completion.
->
->
-> NOTES:
->
->  - I've not been able to reproduce this crash on any of my machines
->    without first removing the early termination condition [A] above.
->    Doing this is a functional NOP but obviously widens up the window.
->
+On Mon, Feb 15, 2021 at 05:27:05PM +0100, Uladzislau Rezki wrote:
+> On Tue, Feb 09, 2021 at 05:00:52PM -0800, Paul E. McKenney wrote:
+> > On Tue, Feb 09, 2021 at 09:13:43PM +0100, Uladzislau Rezki wrote:
+> > > On Thu, Feb 04, 2021 at 01:46:48PM -0800, Paul E. McKenney wrote:
+> > > > On Fri, Jan 29, 2021 at 09:05:04PM +0100, Uladzislau Rezki (Sony) wrote:
+> > > > > To stress and test a single argument of kfree_rcu() call, we
+> > > > > should to have a special coverage for it. We used to have it
+> > > > > in the test-suite related to vmalloc stressing. The reason is
+> > > > > the rcuscale is a correct place for RCU related things.
+> > > > > 
+> > > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > 
+> > > > This is a great addition, but it would be even better if there was
+> > > > a way to say "test both in one run".  One way to do this is to have
+> > > > torture_param() variables for both kfree_rcu_test_single and (say)
+> > > > kfree_rcu_test_double, both bool and both initialized to false.  If both
+> > > > have the same value (false or true) both are tested, otherwise only
+> > > > the one with value true is tested.  The value of this is that it allows
+> > > > testing of both options with one test.
+> > > > 
+> > > Make sense to me :)
+> > > 
+> > > >From ba083a543a123455455c81230b7b5a9aa2a9cb7f Mon Sep 17 00:00:00 2001
+> > > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> > > Date: Fri, 29 Jan 2021 19:51:27 +0100
+> > > Subject: [PATCH v2 1/1] rcuscale: add kfree_rcu() single-argument scale test
+> > > 
+> > > To stress and test a single argument of kfree_rcu() call, we
+> > > should to have a special coverage for it. We used to have it
+> > > in the test-suite related to vmalloc stressing. The reason is
+> > > the rcuscale is a correct place for RCU related things.
+> > > 
+> > > Therefore introduce two torture_param() variables, one is for
+> > > single-argument scale test and another one for double-argument
+> > > scale test.
+> > > 
+> > > By default kfree_rcu_test_single and kfree_rcu_test_double are
+> > > initialized to false. If both have the same value (false or true)
+> > > both are tested in one run, otherwise only the one with value
+> > > true is tested. The value of this is that it allows testing of
+> > > both options with one test.
+> > > 
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > ---
+> > >  kernel/rcu/rcuscale.c | 33 ++++++++++++++++++++++++++++-----
+> > >  1 file changed, 28 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> > > index 06491d5530db..0cde5c17f06c 100644
+> > > --- a/kernel/rcu/rcuscale.c
+> > > +++ b/kernel/rcu/rcuscale.c
+> > > @@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
+> > >  torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
+> > >  torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
+> > >  torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
+> > > +torture_param(int, kfree_rcu_test_single, 0, "Do we run a kfree_rcu() single-argument scale test?");
+> > > +torture_param(int, kfree_rcu_test_double, 0, "Do we run a kfree_rcu() double-argument scale test?");
+> > 
+> > Good!  But why int instead of bool?
+> > 
+> > >  static struct task_struct **kfree_reader_tasks;
+> > >  static int kfree_nrealthreads;
+> > > @@ -641,7 +643,7 @@ kfree_scale_thread(void *arg)
+> > >  {
+> > >  	int i, loop = 0;
+> > >  	long me = (long)arg;
+> > > -	struct kfree_obj *alloc_ptr;
+> > > +	struct kfree_obj *alloc_ptr[2];
+> > 
+> > You lost me on this one...
+> > 
+> > >  	u64 start_time, end_time;
+> > >  	long long mem_begin, mem_during = 0;
+> > >  
+> > > @@ -665,12 +667,33 @@ kfree_scale_thread(void *arg)
+> > >  			mem_during = (mem_during + si_mem_available()) / 2;
+> > >  		}
+> > >  
+> > > +		// By default kfree_rcu_test_single and kfree_rcu_test_double are
+> > > +		// initialized to false. If both have the same value (false or true)
+> > > +		// both are tested in one run, otherwise only the one with value
+> > > +		// true is tested.
+> > >  		for (i = 0; i < kfree_alloc_num; i++) {
+> > > -			alloc_ptr = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
+> > > -			if (!alloc_ptr)
+> > > -				return -ENOMEM;
+> > > +			alloc_ptr[0] = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
+> > > +			alloc_ptr[1] = (kfree_rcu_test_single == kfree_rcu_test_double) ?
+> > > +				kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL) : NULL;
+> > > +
+> > > +			// 0 ptr. is freed either over single or double argument.
+> > > +			if (alloc_ptr[0]) {
+> > > +				if (kfree_rcu_test_single == kfree_rcu_test_double ||
+> > > +						kfree_rcu_test_single) {
+> > > +					kfree_rcu(alloc_ptr[0]);
+> > > +				} else {
+> > > +					kfree_rcu(alloc_ptr[0], rh);
+> > > +				}
+> > > +			}
+> > > +
+> > > +			// 1 ptr. is always freed over double argument.
+> > > +			if (alloc_ptr[1])
+> > > +				kfree_rcu(alloc_ptr[1], rh);
+> > >  
+> > > -			kfree_rcu(alloc_ptr, rh);
+> > > +			if (!alloc_ptr[0] ||
+> > > +					(kfree_rcu_test_single == kfree_rcu_test_double &&
+> > > +						!alloc_ptr[1]))
+> > > +				return -ENOMEM;
+> > 
+> > How about something like this?
+> > 
+> > 	bool krts = kfree_rcu_test_single || kfree_rcu_test_single == kfree_rcu_test_double;
+> > 	bool krtd = kfree_rcu_test_double || kfree_rcu_test_single == kfree_rcu_test_double;
+> > 	bool krtb = kfree_rcu_test_single && kfree_rcu_test_double;
+> > 	DEFINE_TORTURE_RANDOM(tr);
+> > 
+> > 	...
+> > 
+> > 			alloc_ptr = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
+> > 			if (!alloc_ptr)
+> > 				return -ENOMEM;
+> > 			if (krtd || (krtb && (torture_random(&tr) & 0x800)))
+> > 				kfree_rcu(alloc_ptr, rh);
+> > 			else
+> > 				kfree_rcu(alloc_ptr);
+> > 
+> > >  		}
+> > >  
+> > >  		cond_resched();
+> >
+> Sorry for my late answer. I got it differently as we discussed offline.
+> Please see below the v3. Hope we are on the same page now :)
 
-FWIW although I mistakenly didn't model any distinction between arg &
-pending->arg, I did "hit" this path in TLA+ [1]
+This does look good to me!  Could you please send it as an email
+containing only the patch, just to make it official?  And to catch the
+attention of anyone who might have tuned out of this email thread.  ;-)
 
->  - With the check [A] removed I can consistently hit the NULL deref
->    and the below patch reliably cures it.
->
->  - The original reporter says that this patch cures the NULL deref
->    but results in another problem, which I've not yet been able to
->    make sense of and obviously have failed at reproduction as well :/
->
+							Thanx, Paul
 
-Do you have a link to that? I fumbled around my mails but haven't seen
-anything.
-
-> Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-The below looks good to me, I'll whack it into the TLA+ machine and see
-where it goes. While at it I need to mention I *have* been cleaning it up
-for upstreaming, but have hit [1] in the process...
-
-[1]: http://lore.kernel.org/r/20210127193035.13789-1-valentin.schneider@arm.com
-
+> >From e7181d01c5f7fab3418d6df155ccf06aff189328 Mon Sep 17 00:00:00 2001
+> From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> Date: Fri, 29 Jan 2021 19:51:27 +0100
+> Subject: [PATCH v3 1/1] rcuscale: add kfree_rcu() single-argument scale test
+> 
+> To stress and test a single argument of kfree_rcu() call, we
+> should to have a special coverage for it. We used to have it
+> in the test-suite related to vmalloc stressing. The reason is
+> the rcuscale is a correct place for RCU related things.
+> 
+> Therefore introduce two torture_param() variables, one is for
+> single-argument scale test and another one for double-argument
+> scale test.
+> 
+> By default kfree_rcu_test_single and kfree_rcu_test_double are
+> initialized to false. If both have the same value (false or true)
+> both are randomly tested, otherwise only the one with value true
+> is tested. The value of this is that it allows testing of both
+> options with one test.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > ---
->  kernel/sched/core.c |   39 ++++++++++++++++++++++++++++-----------
->  1 file changed, 28 insertions(+), 11 deletions(-)
->
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1924,6 +1924,24 @@ static int migration_cpu_stop(void *data
->  	rq_lock(rq, &rf);
+>  kernel/rcu/rcuscale.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index 06491d5530db..0fb540e2b22b 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
+>  torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
+>  torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
+>  torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
+> +torture_param(bool, kfree_rcu_test_single, false, "Do we run a kfree_rcu() single-argument scale test?");
+> +torture_param(bool, kfree_rcu_test_double, false, "Do we run a kfree_rcu() double-argument scale test?");
 >  
->  	pending = p->migration_pending;
-> +	if (pending && !arg->pending) {
-> +		/*
-> +		 * This happens from sched_exec() and migrate_task_to(),
-> +		 * neither of them care about pending and just want a task to
-> +		 * maybe move about.
-> +		 *
-> +		 * Even if there is a pending, we can ignore it, since
-> +		 * affine_move_task() will have it's own stop_work's in flight
-> +		 * which will manage the completion.
-> +		 *
-> +		 * Notably, pending doesn't need to match arg->pending. This can
-> +		 * happen when tripple concurrent affine_move_task() first sets
-                               ^^^^^^
-                           s/tripple/triple
-
-> +		 * pending, then clears pending and eventually sets another
-> +		 * pending.
-> +		 */
-> +		pending = NULL;
-> +	}
-> +
->  	/*
->  	 * If task_rq(p) != rq, it cannot be migrated here, because we're
->  	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
+>  static struct task_struct **kfree_reader_tasks;
+>  static int kfree_nrealthreads;
+> @@ -644,10 +646,13 @@ kfree_scale_thread(void *arg)
+>  	struct kfree_obj *alloc_ptr;
+>  	u64 start_time, end_time;
+>  	long long mem_begin, mem_during = 0;
+> +	bool kfree_rcu_test_both;
+> +	DEFINE_TORTURE_RANDOM(tr);
+>  
+>  	VERBOSE_SCALEOUT_STRING("kfree_scale_thread task started");
+>  	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
+>  	set_user_nice(current, MAX_NICE);
+> +	kfree_rcu_test_both = (kfree_rcu_test_single == kfree_rcu_test_double);
+>  
+>  	start_time = ktime_get_mono_fast_ns();
+>  
+> @@ -670,7 +675,15 @@ kfree_scale_thread(void *arg)
+>  			if (!alloc_ptr)
+>  				return -ENOMEM;
+>  
+> -			kfree_rcu(alloc_ptr, rh);
+> +			// By default kfree_rcu_test_single and kfree_rcu_test_double are
+> +			// initialized to false. If both have the same value (false or true)
+> +			// both are randomly tested, otherwise only the one with value true
+> +			// is tested.
+> +			if ((kfree_rcu_test_single && !kfree_rcu_test_double) ||
+> +					(kfree_rcu_test_both && torture_random(&tr) & 0x800))
+> +				kfree_rcu(alloc_ptr);
+> +			else
+> +				kfree_rcu(alloc_ptr, rh);
+>  		}
+>  
+>  		cond_resched();
+> -- 
+> 2.20.1
+> 
+> > 
+> > And this is why I was so confused about the earlier OOMs.  We need
+> > something stronger, and not here, but rather inside the above loop.
+> > The function rcu_torture_fwd_prog_cond_resched() does what is needed,
+> > which needs to be moved to kernel/torture.c or to be a static inline in
+> > include/linux/torture.h so that it can be invoked here.
+> > 
+> > The flooding we are looking to emulate has to have frequent trips into
+> > userspace, and rcu_torture_fwd_prog_cond_resched() is the way that we
+> > emulate those trips.
+> > 
+> > But please make this change be a separate patch.
+> > 
+> OK. I will have a look at it!
+> 
+> --
+> Vlad Rezki
