@@ -2,111 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F1431D2B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BFC31D2BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhBPWeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 17:34:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbhBPWd5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 17:33:57 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B6DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 14:33:17 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id v3so8262977qtw.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 14:33:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=28kX1GxLg7lo1cpThqCrBTFpdtZ1SsRkJeYqDWMqVBk=;
-        b=CAR3CWMPgdJpoBJljX9lQ5GTu0G3jbZhE01hUDySwZ6aS8QgQCkNsnwXYf+AkH/MkE
-         bg+ayxCRFSMZzWz+f+KOG4+KXyTSMmj7Vpgpvrk4fKrs2fLFyQddOrUhE7v5NW8zX4Rb
-         LRmQmNbYl+ZOgHcqFsHoIo0oPLQ7/Cod8PUfpbNsDFVAYh0dvbJ+NTqhG8ws2IhItLuj
-         /AI+weXUcFhVnK+Jrkt6hQM6loWLkKsSe+Dawl5+Gl1m/7d+Ht9ZY/Tj6cKhUn+n81g5
-         +E2U5Z1YW5HG5SsoJLzmGlMNditSBGExEbhqGk6uGmurCr2sOcWIhl/NS5QiP1hbnNkO
-         S7qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=28kX1GxLg7lo1cpThqCrBTFpdtZ1SsRkJeYqDWMqVBk=;
-        b=jrkC/txsCaTrXYeRHaAuJ8Gx8ipoUHF7bPCDBL4Yz1UFi3Ds+0BLS8oQfhnnTklA3O
-         Ild5WPLaVYIKBB2f2EWSuiHxCPvEXdhusQ+NSs0HpgBjXOEpxv2l2WFumY9ER0AEgIuL
-         k6hJez7ZSgFrvVZ16RvLGIjfOMx8z6TtGTqnwrjBY/rE24xzNXP3t8pruRRy2fdrLzpc
-         aWEmvVDI7GvZRKbuoabr0N2uPwAaubM7K3inKbidZNyTKl+cumX2/43kVSMLnZkGYkeV
-         jqc/WakkjxYYK/m6qKqc91oNedCFwO8v4Bd41QbGkaKs8rMQ0B4QrO6rcnBGDNGIOdlk
-         At0w==
-X-Gm-Message-State: AOAM531Ub7E1U+oD21IOiufaihdpASkYbmgVsVwjtYYwGMaJWelHj8G5
-        dN7Y99l0WW99wYrAQj7/Q3IWNA==
-X-Google-Smtp-Source: ABdhPJzRuwOfmXFsjTP9J73NxK84ZiJCIXfrgr+kvoQFRqDyLOA8SXEs7Ww98LY7qA2dplFRQv9b9g==
-X-Received: by 2002:ac8:149a:: with SMTP id l26mr20519528qtj.210.1613514796152;
-        Tue, 16 Feb 2021 14:33:16 -0800 (PST)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id i6sm14169675qti.30.2021.02.16.14.33.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 14:33:15 -0800 (PST)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Tibor Bana <bana.tibor@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jan Kara <jack@suse.cz>, Pavel Machek <pavel@ucw.cz>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@osdl.org>, vbabka@suse.cz,
-        aarcange@redhat.com, rientjes@google.com, mhocko@kernel.org,
-        zi.yan@cs.rutgers.edu, hannes@cmpxchg.org
-Subject: Re: [regression -next0117] What is kcompactd and why is he eating 100% of my cpu?
-In-Reply-To: <YCu8RuhvU1Env7OF@zx2c4.com>
-References: <20190126200005.GB27513@amd> <12171.1548557813@turing-police.cc.vt.edu> <20190127141556.GB9565@techsingularity.net> <20190127160027.GA9340@amd> <13417.1548624994@turing-police.cc.vt.edu> <20190128091627.GA27972@quack2.suse.cz> <14875.1548810399@turing-police.cc.vt.edu> <9618.1548822577@turing-police.cc.vt.edu> <20190130104020.GE9565@techsingularity.net> <20210125195438.c8d0e7980da0c2931d4f3056@gmail.com>
- <YCu8RuhvU1Env7OF@zx2c4.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1613514794_34945P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 16 Feb 2021 17:33:14 -0500
-Message-ID: <35445.1613514794@turing-police>
+        id S231199AbhBPWfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 17:35:32 -0500
+Received: from mail-eopbgr100121.outbound.protection.outlook.com ([40.107.10.121]:3010
+        "EHLO GBR01-LO2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230332AbhBPWf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 17:35:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WrxSxw8BgKHr/oo4/6gRX7j0H+3iHfjvOdLSls+JLcKG4xdL5SZamUzDqSiFFWcpyP6Q9xkT4nhlbkaiMZA62Tdd1EWMlX6WvGv9ABWXAA1AZyNL+eZZbQNSPkbixzAvcUZh+Ut+cpZvdi6rKTD9Dxt/v62YT25HJVaUl3pHzQDH8ramYEPLouiPiQkmqdUJZ9olZHhBA1G7BjVg7lLJel3IDBO2J3PLvr4ojgSoA4dLVCy28JNEEW/RsmnwbFIg3CbCY6xkxc99wwz7cCILC9ScvDw2F+AmlyiHbv+u2c2u/HX9TBq+DTEjSRyqfREbf5Tv65GYiZKcqEBk/Zbq8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eqBVXNnuNXFjxKQtPxq+L5erj25/eXcAoJ45iba1INo=;
+ b=QoBx/tT+aPBihA7eikhhmrJEhxEc8Yu9LSsrV25/LkaSW5cv0+2j1+USg6zpRlbboEZ2e5aM/xWN3x48UnnUyUWujkiSgI+/bX3tk+rAIX2p0pCI5fNGnOAlvwLIPIXRh8l3z+XGDRW55iNJyVBWB370fngjC7oucuqH+2m50kkYSml6jsGspsyE8h6N2BexuU66MUJ/CS2V71ECAR39HYeMUeu8OuOVmFJWOLALoLADiHXa1fZW0JMMotQmBXQDTXQa8uxa+YwE/HnElb/97bB2aDTQ7sziq5VuMBYP2Ul0zUNg0+KsAMJTIZFYu5PCpHc6f0W2h586UMd9j6L6xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eqBVXNnuNXFjxKQtPxq+L5erj25/eXcAoJ45iba1INo=;
+ b=tUdj56wFwEXhg9iXhnuRj6xdwxVPldwE2b2rYND88w2p9eZ4oh6bQsUg4ggMFvym3rTqxOWUwwuDvfdvUbgs9hQsMulCsFvZQZ1MFe+o+dElNczkMioKDuBXpYMgJrahmK0xudovkaG/DQN417jqWyy0hav0RRiaGEFbNzK+D3M=
+Authentication-Results: garyguo.net; dkim=none (message not signed)
+ header.d=none;garyguo.net; dmarc=none action=none header.from=garyguo.net;
+Received: from CWXP265MB0744.GBRP265.PROD.OUTLOOK.COM (2603:10a6:401:d::23) by
+ CWXP265MB1829.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:35::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3846.36; Tue, 16 Feb 2021 22:34:37 +0000
+Received: from CWXP265MB0744.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::d4fe:4dc4:65f1:b066]) by CWXP265MB0744.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::d4fe:4dc4:65f1:b066%7]) with mapi id 15.20.3825.039; Tue, 16 Feb 2021
+ 22:34:37 +0000
+From:   Gary Guo <gary@garyguo.net>
+Cc:     Gary Guo <gary@garyguo.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Masahiro Yamada <masahiroy@kernel.org>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers: net: xilinx_emaclite: remove arch limitation
+Date:   Tue, 16 Feb 2021 22:33:42 +0000
+Message-Id: <20210216223346.4198-1-gary@garyguo.net>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [2.99.171.246]
+X-ClientProxiedBy: LO2P265CA0121.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:9f::13) To CWXP265MB0744.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:401:d::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Gary-PC.localdomain (2.99.171.246) by LO2P265CA0121.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:9f::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.35 via Frontend Transport; Tue, 16 Feb 2021 22:34:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2a4786ef-cba7-4898-6e26-08d8d2cb0b00
+X-MS-TrafficTypeDiagnostic: CWXP265MB1829:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CWXP265MB18298946A00C6D861F0DF4C4D6879@CWXP265MB1829.GBRP265.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mhqVMTXzL7elbPUS9hVBh0bHoXBmkLRckdtTbcSvjHfV2OHWyDJ//And+C35ZwSDaA+VILBtAl2q0mlxxmKsUO1X0VKwxkE4UV4w1jNWo+MLx2NqIB7vPOBGe8l7PI0w6bJj3W42SNONK8d/YMlwaW1BMDc4Z8PfnjR6mJSV0sl9hjxy/7lH/k7Hu4uQIVCZvYuVLVnJF2QjxbZl1Nr3kvuLNhvFewteM+x4YlVjrRHAXc6ho2ZJVYB6qSBuYWTf0pc//3z3HYnN/Ffq7A/MD3Oie7I1eaVi3pepD0+IaiqVeEa/2D1BT0HKgD/pdSt3UjjOlvGC9man0ovU2J3/z2ZOGvEuzxjCMt6KQTzDaovKumPkoAdPbzYIWAdkzwM92mTlcoSHvhoe7PPoqNgPVJbngp5EuPMz5jWansVs7PXROlU6Y++b01N8NNe2XEHgcCozBKj7ia8VqBbzhREYZ/lei8mCGvYVL6JbttzsynfO866I4n2d8T1ePCnm+64/eAecdoJZ6OsH1P69wk1LNkgy9ZxOS3RIfiJqzniVXWVkwvrsP7diL0d1FB2FRCTM4f7l/46327pmobE7JdsfQZoZy7hF+1GB/46oHGF9KqA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB0744.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(66476007)(66946007)(66556008)(86362001)(5660300002)(1076003)(8676002)(2616005)(6486002)(956004)(6666004)(36756003)(26005)(55236004)(7416002)(6506007)(186003)(54906003)(508600001)(109986005)(8936002)(4326008)(2906002)(52116002)(16526019)(83380400001)(6512007)(266003)(16060500005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nNPJyzWemWbVG4McYoqcgscdwLK0a/BSZNAvCCzuZFZ8L6WaBsyAqeQG1eUz?=
+ =?us-ascii?Q?MMdA65KGUahtkojFfpuBG67apYw+MTfnBbCT+sbB6E6yFYhYLf+gSh7PtvvY?=
+ =?us-ascii?Q?kcd/44pwYN2lj4dpDeAuGFX/4zQNlT5vjePvc+Lv34otmXPzClsIqx7NzwZo?=
+ =?us-ascii?Q?evRwA3rA6aCMuqxDifOfvPcjQOkw9uxQBfzp+kGuNW/k/Gmr2ShGWyJ2SruU?=
+ =?us-ascii?Q?uewoxNuRVM3qsO7hJ98ZBhQ1Ir9zvsJ1XsLSdBXKFdWf4vKLQtZ28l8YM9dt?=
+ =?us-ascii?Q?6EFqVnnAJTOXIGSFJsB427/y7Ph77koMqFrXZJVEGebbIWx36nl5rcKgWQx9?=
+ =?us-ascii?Q?cJ+uMr7O/qnwAOfjhp95PQhz2OcI0yn7sN3qKHoXEbby3eEZltkD8/P9tMOB?=
+ =?us-ascii?Q?Yz3D4Y7E/3h5evER2vJq7qNqG0NSwSJBiyerLKI8ilmFuJjNDNNnNkyvKcuV?=
+ =?us-ascii?Q?PrZh9f/wV48cHjHs8OMq1QOV3VgxX8iaw2UlZVuMifbTmIrV8hpHsOpRPsBA?=
+ =?us-ascii?Q?m0HsdG6Tu8lP1wjA5H0VSCrVpe5opVUzSNybSWj41WkWX9N/HnxpSiQNHSjA?=
+ =?us-ascii?Q?EInHrUmMgNtK44Dh0ontgGbWYBVGNnblg6mEQ5BHMUkUXc3iPpMkYJRY9Fgz?=
+ =?us-ascii?Q?Hs/w0brFKGzL9nK/xWrP1iwTXZVtb3ymVJrVkJ255vwKFXHe4Bo8ap4euI2u?=
+ =?us-ascii?Q?O500p2BH2l3WDO0fE1rTiWrJC0ZZrCBqUnTAWqFHJezRRuvMwvLGfMSCbh2C?=
+ =?us-ascii?Q?fKTZt7xkUFVagb7zLoKIUm06Nb9kddNBn3jvStplXJUgpht4xygG+gj5d/du?=
+ =?us-ascii?Q?fLYtRvccXTZ5cSwlukbZXWSLlE14UIdxEGRneWvaS8wCkpLZWCL6+YeWReby?=
+ =?us-ascii?Q?bdDkTnCks93X9a9W5KzmTmDBCvzBVbQWj3Mk8l4bXik2htwgmLH/6+TqSuf9?=
+ =?us-ascii?Q?tCBqFuiY+SyEsRSD9qNOHHHwHYXwJqIAQMnmHcEAfy6h1coh7I6HHkrmFN5r?=
+ =?us-ascii?Q?V+I1odTHPOsgWT2GO7rkxPbZan1F/g7rWi2iVHkIR/OPc/IsEVm1uj1IByJo?=
+ =?us-ascii?Q?XGf+xqahv7G+zJhXobKHfQhWPoydYK9H5LzCWAhppKKdQa3nS5WJp9ihi5up?=
+ =?us-ascii?Q?QD0tPFwdon3Ooz3ZYJbyMpr8S1CEgs2bQW7p0uqR4Lk8D3LTLE/2TfPkQC4e?=
+ =?us-ascii?Q?khdFS612ofH0BGi+s35OUMSClGbAw2u0299nW6yBPl5U9gDX15UV+BR5JTmr?=
+ =?us-ascii?Q?VTOKub5RI2AoXl6eUXFj/K7bSddNbVaJk1iOk48uCbnJ7bp3ZI2fmgg95Nmk?=
+ =?us-ascii?Q?cMh5Rnd0f5phGI9HYWQtsDdx?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2a4786ef-cba7-4898-6e26-08d8d2cb0b00
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB0744.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2021 22:34:37.9175
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +kI3inpGIN1dwBX5XamEz2oANbRaUzt1hYmNJGtULOkTONiV35jS6uGiJy1vipPlWWhtXmCZ/QD4U5/PSS8MCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB1829
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1613514794_34945P
-Content-Type: text/plain; charset=us-ascii
+The changes made in eccd540 is enough for xilinx_emaclite to run
+without problem on 64-bit systems. I have tested it on a Xilinx
+FPGA with RV64 softcore. The architecture limitation in Kconfig
+seems no longer necessary.
 
-On Tue, 16 Feb 2021 13:36:22 +0100, "Jason A. Donenfeld" said:
+A small change is included to print address with %lx instead of
+casting to int and print with %x.
 
-> Another anecdote: 5.11.0, 64 gigs of ram. If I run QEMU/KVM for a VM
-> with 16 gigs at the same time as a VMware VM with 16 gigs of ram,
-> kcompact goes wild and both VMs get really slow. The key here is running
-> KVM at the same time as VMware.
+Signed-off-by: Gary Guo <gary@garyguo.net>
+---
+ drivers/net/ethernet/xilinx/Kconfig           | 1 -
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c | 4 ++--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-Do things operated as expected if there are 2 KVM instances, or 2 VMware
-instances?
+diff --git a/drivers/net/ethernet/xilinx/Kconfig b/drivers/net/ethernet/xilinx/Kconfig
+index 3b2137d1f4c6..c6eb7f2368aa 100644
+--- a/drivers/net/ethernet/xilinx/Kconfig
++++ b/drivers/net/ethernet/xilinx/Kconfig
+@@ -18,7 +18,6 @@ if NET_VENDOR_XILINX
+ 
+ config XILINX_EMACLITE
+ 	tristate "Xilinx 10/100 Ethernet Lite support"
+-	depends on PPC32 || MICROBLAZE || ARCH_ZYNQ || MIPS || COMPILE_TEST
+ 	select PHYLIB
+ 	help
+ 	  This driver supports the 10/100 Ethernet Lite from Xilinx.
+diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+index 008b9a40faad..007840d4a807 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
++++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+@@ -1193,8 +1193,8 @@ static int xemaclite_of_probe(struct platform_device *ofdev)
+ 	}
+ 
+ 	dev_info(dev,
+-		 "Xilinx EmacLite at 0x%08X mapped to 0x%08lX, irq=%d\n",
+-		 (unsigned int __force)ndev->mem_start,
++		 "Xilinx EmacLite at 0x%08lX mapped to 0x%08lX, irq=%d\n",
++		 (unsigned long __force)ndev->mem_start,
+ 		 (unsigned long __force)lp->base_addr, ndev->irq);
+ 	return 0;
+ 
+-- 
+2.20.1
 
-
---==_Exmh_1613514794_34945P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQIVAwUBYCxIKQdmEQWDXROgAQK8uhAArgjA/4ordtEUP/P2ZzA+Qp428BusiOPI
-EjX+g7Ljis8bOFD9zNxvXPU7VekrZ5svPUYUMoKaPKRnbxQi42UPIDZiBt5aI11B
-yVNyfLZy/LkfV6fcXXZtg3yuldfTIM9ofGiA9WbPgQaneDNdAi79MrEohFmFCt4a
-ov3NXcXbqOQ89O38veGI2vL7+S3xdmBKELlVcxxstWxJrTd0L2yy5QeZ6p2UvYtk
-jypVywPv6ST+G9da5cVh6FSm5z0FvKNsmvy4pLLxobmEEdrLthKYKTZOfwdni6u0
-Oa72lgXGUgLnQ6oZaSpaQn36CvAC1SxpTs94/X5c3lodfiUuxdOzx3qP9/ct0Ty+
-vtoz84m5BUeQI48giJZXGmn5GZYfO/lfvA1vMXCkYcA/bzXjtMxq76SmjI5OPrK8
-C4vkxYq439hxbnfxhxYMPqCXB4sR43yxoxpWoOv3p5TPB9oHfP4wmXjmVjZAEsx2
-8MjDv3n0TwPg3gqFvUohE1AfFwkjtTwc1H5yc2FzxJ+n+sDlT+X43E257EGUNNgs
-KvE2nHxacpWPNCwKAHzgDDcw/Ub3nyth2z91jvU06M/MNiI5hy9ILsZz0TOTqqiX
-+OAfbiXqa2uXfDGzUOv33uLky4Sh3/TeVHA1bU5Ef7w/8Znc/XU5c0STN2dqcGeg
-Qy6d49RMi28=
-=vcZt
------END PGP SIGNATURE-----
-
---==_Exmh_1613514794_34945P--
