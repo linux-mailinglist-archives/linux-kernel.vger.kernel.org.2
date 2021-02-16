@@ -2,218 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF5C31C538
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 03:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1341831C53D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 03:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbhBPCBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 21:01:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229662AbhBPCBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 21:01:40 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4735C60238;
-        Tue, 16 Feb 2021 02:00:59 +0000 (UTC)
-Date:   Mon, 15 Feb 2021 21:00:57 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ftrace: Do not reference symbols in sections without
- size
-Message-ID: <20210215210057.4ceb6339@oasis.local.home>
-In-Reply-To: <20210215200639.67141685@oasis.local.home>
-References: <20210215164446.530f6311@gandalf.local.home>
-        <20210216000504.axm3k4xho47c6drz@treble>
-        <20210215200639.67141685@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229782AbhBPCF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 21:05:28 -0500
+Received: from conuserg-09.nifty.com ([210.131.2.76]:35395 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229662AbhBPCFX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 21:05:23 -0500
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 11G24M7L027793;
+        Tue, 16 Feb 2021 11:04:23 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 11G24M7L027793
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613441063;
+        bh=81li7nxJ92BqT9gDIifD0OE17q+dS/4h3UhsmmXnxME=;
+        h=From:To:Cc:Subject:Date:From;
+        b=elPlDTSq+wYYg9P+/QmuFFkzUOKw8hSkai1EX0I2w5OdpVukBLlFLpDSiFnE1FHyY
+         WDNFor3U5fVQ6KQTwv/7c4Mk9kLXIliC91yiIHRBBas53k3IOsB8IiNKEItt+QgDHg
+         6V40m9t/LVPQJrZTSJUi8k4lO+uQ4em6hqUuIWkuhkgOdMMlD2AHDO4/BrLfZzyzSg
+         GG+EB5nvtLxsvssUbBwg9VMiHhFFE9DK9GC6q70NZi62uctGblBPBT4MgnCNLiM/4e
+         Ulj1vQN4a5q6TazTqfvgkUvdSL03mYNP6PvUEjvderOm7oFEtVsmNC2v2ew8IpSrgI
+         iup1s2ZN/txgw==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 1/2] scripts: add generic syscalltbl.sh
+Date:   Tue, 16 Feb 2021 11:04:11 +0900
+Message-Id: <20210216020412.800836-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/bXGQGfX8vm3N8i=A7vGCG6X"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/bXGQGfX8vm3N8i=A7vGCG6X
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Most of architectures generate syscall headers at the compile time
+in a similar way.
 
-On Mon, 15 Feb 2021 20:06:39 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+The syscall table has the same format for all architectures. Each line
+has up to 5 fields; syscall number, ABI, syscall name, native entry
+point, and compat entry point. The syscall table is processed by
+syscalltbl.sh script into header files.
 
-> Strange, that when I applied this to the latest kernel on a my build
-> system (binutils 2.35), it still created all the necessary mcount
-> locations??
+Despite the same pattern, scripts are maintained per architecture,
+which results in code duplication and bad maintainability.
 
-I know why it worked. If you are using the latest gcc on the latest
-mainline, it will not even bother with recordmcount, and will just
-create the __mcount_loc sections, as latest gcc knows about ftrace.
+As of v5.11-rc1, 12 architectures duplicate similar shell scripts:
 
-(this is what I get for working on a company holiday)
+  $ find arch -name syscalltbl.sh | sort
+  arch/alpha/kernel/syscalls/syscalltbl.sh
+  arch/arm/tools/syscalltbl.sh
+  arch/ia64/kernel/syscalls/syscalltbl.sh
+  arch/m68k/kernel/syscalls/syscalltbl.sh
+  arch/microblaze/kernel/syscalls/syscalltbl.sh
+  arch/mips/kernel/syscalls/syscalltbl.sh
+  arch/parisc/kernel/syscalls/syscalltbl.sh
+  arch/powerpc/kernel/syscalls/syscalltbl.sh
+  arch/sh/kernel/syscalls/syscalltbl.sh
+  arch/sparc/kernel/syscalls/syscalltbl.sh
+  arch/x86/entry/syscalls/syscalltbl.sh
+  arch/xtensa/kernel/syscalls/syscalltbl.sh
 
-Since this is a toolchain issue, perhaps the correct thing to do is to
-backport to stable the changes to have it build with -mrecord-mcount if
-the build system enables it.
+My goal is to unify them into scripts/syscalltbl.sh.
 
-If you are using the lastest compilers to build stable releases, and
-that's causing issues, then you should have the stable releases use the
-latest kernel compiler options.
+__SYSCALL_WITH_COMPAT should be defined as follows:
 
-Greg,
+32-bit kernel:
+  #define __SYSCALL_WITH_COMPAT(nr, native, compat) __SYSCALL(nr, native)
 
-Can you test the following two backports. It does change the semantics
-of what is built, but then again if you are using a newer compiler to
-build stable kernels, that can change things too.
+64-bit kernel:
 
-96f60dfa5819a ("trace: Use -mcount-record for dynamic ftrace")
-07d0408120216 ("tracing: Avoid calling cc-option -mrecord-mcount for every Makefile")
+  #define __SYSCALL_WITH_COMPAT(nr, native, compat) __SYSCALL(nr, compat)
 
-I attached the backports to 4.4. (just compiled tested, I'll test them more tomorrow)
-
-Thanks!
-
--- Steve
-
---MP_/bXGQGfX8vm3N8i=A7vGCG6X
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0001-trace-Use-mcount-record-for-dynamic-ftrace.patch
-
-From f9a03bb58aa222824b3041efbf62488af693feaa Mon Sep 17 00:00:00 2001
-From: Andi Kleen <ak@linux.intel.com>
-Date: Mon, 27 Nov 2017 13:34:13 -0800
-Subject: [PATCH 1/2] trace: Use -mcount-record for dynamic ftrace
-
-gcc 5 supports a new -mcount-record option to generate ftrace
-tables directly. This avoids the need to run record_mcount
-manually.
-
-Use this option when available.
-
-So far doesn't use -mcount-nop, which also exists now.
-
-This is needed to make ftrace work with LTO because the
-normal record-mcount script doesn't run over the link
-time output.
-
-It should also improve build times slightly in the general
-case.
-Link: http://lkml.kernel.org/r/20171127213423.27218-12-andi@firstfloor.org
-
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- scripts/Makefile.build | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 42aef001dfdd..fff1452cb76e 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -221,6 +221,11 @@ cmd_modversions_c =								\
- endif
- 
- ifdef CONFIG_FTRACE_MCOUNT_RECORD
-+# gcc 5 supports generating the mcount tables directly
-+ifneq ($(call cc-option,-mrecord-mcount,y),y)
-+KBUILD_CFLAGS += -mrecord-mcount
-+else
-+# else do it all manually
- ifdef BUILD_C_RECORDMCOUNT
- ifeq ("$(origin RECORDMCOUNT_WARN)", "command line")
-   RECORDMCOUNT_FLAGS = -w
-@@ -250,6 +255,7 @@ cmd_record_mcount =						\
- 		$(sub_cmd_record_mcount)			\
- 	fi;
- endif
-+endif
- 
- define rule_cc_o_c
- 	$(call echo-cmd,checksrc) $(cmd_checksrc)			  \
+ scripts/syscalltbl.sh | 73 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+ create mode 100755 scripts/syscalltbl.sh
+
+diff --git a/scripts/syscalltbl.sh b/scripts/syscalltbl.sh
+new file mode 100755
+index 000000000000..aa6ab156301c
+--- /dev/null
++++ b/scripts/syscalltbl.sh
+@@ -0,0 +1,73 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Generate a syscall table header.
++#
++# Each line of the syscall table should have the following format:
++#
++# NR ABI NAME [NATIVE] [COMPAT]
++#
++# NR       syscall number
++# ABI      ABI name
++# NAME     syscall name
++# NATIVE   native entry point (optional)
++# COMPAT   compat entry point (optional)
++
++set -e
++
++usage() {
++	echo >&2 "usage: $0 [--abis ABIS] INFILE OUTFILE" >&2
++	echo >&2
++	echo >&2 "  INFILE    input syscall table"
++	echo >&2 "  OUTFILE   output header file"
++	echo >&2
++	echo >&2 "options:"
++	echo >&2 "  --abis ABIS        ABI(s) to handle (By default, all lines are handled)"
++	exit 1
++}
++
++# default unless specified by options
++abis=
++
++while [ $# -gt 0 ]
++do
++	case $1 in
++	--abis)
++		abis=$(echo "($2)" | tr ',' '|')
++		shift 2;;
++	-*)
++		echo "$1: unknown option" >&2
++		usage;;
++	*)
++		break;;
++	esac
++done
++
++if [ $# -ne 2 ]; then
++	usage
++fi
++
++infile="$1"
++outfile="$2"
++
++nxt=0
++
++grep -E "^[0-9]+[[:space:]]+$abis" "$infile" | sort -n | {
++
++	while read nr abi name native compat ; do
++
++		while [ $nxt -lt $nr ]; do
++			echo "__SYSCALL($nxt, sys_ni_syscall)"
++			nxt=$((nxt + 1))
++		done
++
++		if [ -n "$compat" ]; then
++			echo "__SYSCALL_WITH_COMPAT($nr, $native, $compat)"
++		elif [ -n "$native" ]; then
++			echo "__SYSCALL($nr, $native)"
++		else
++			echo "__SYSCALL($nr, sys_ni_syscall)"
++		fi
++		nxt=$((nr + 1))
++	done
++} > "$outfile"
 -- 
-2.30.1
+2.27.0
 
-
---MP_/bXGQGfX8vm3N8i=A7vGCG6X
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0002-tracing-Avoid-calling-cc-option-mrecord-mcount-for-e.patch
-
-From 76a3bbb0b0b193ac4dcd3c005cc6abcaddaadfe6 Mon Sep 17 00:00:00 2001
-From: Vasily Gorbik <gor@linux.ibm.com>
-Date: Mon, 6 Aug 2018 15:17:44 +0200
-Subject: [PATCH 2/2] tracing: Avoid calling cc-option -mrecord-mcount for
- every Makefile
-
-Currently if CONFIG_FTRACE_MCOUNT_RECORD is enabled -mrecord-mcount
-compiler flag support is tested for every Makefile.
-
-Top 4 cc-option usages:
-    511 -mrecord-mcount
-     11  -fno-stack-protector
-      9 -Wno-override-init
-      2 -fsched-pressure
-
-To address that move cc-option from scripts/Makefile.build to top Makefile
-and export CC_USING_RECORD_MCOUNT to be used in original place.
-
-While doing that also add -mrecord-mcount to CC_FLAGS_FTRACE (if gcc
-actually supports it).
-
-Link: http://lkml.kernel.org/r/patch-2.thread-aa7b8d.git-de935bace15a.your-ad-here.call-01533557518-ext-9465@work.hours
-
-Acked-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- Makefile               | 7 +++++++
- scripts/Makefile.build | 7 ++-----
- 2 files changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 0057587d2cbe..9f2123555429 100644
---- a/Makefile
-+++ b/Makefile
-@@ -760,6 +760,13 @@ ifdef CONFIG_FUNCTION_TRACER
- ifndef CC_FLAGS_FTRACE
- CC_FLAGS_FTRACE := -pg
- endif
-+ifdef CONFIG_FTRACE_MCOUNT_RECORD
-+  # gcc 5 supports generating the mcount tables directly
-+  ifeq ($(call cc-option-yn,-mrecord-mcount),y)
-+    CC_FLAGS_FTRACE	+= -mrecord-mcount
-+    export CC_USING_RECORD_MCOUNT := 1
-+  endif
-+endif
- export CC_FLAGS_FTRACE
- ifdef CONFIG_HAVE_FENTRY
- CC_USING_FENTRY	:= $(call cc-option, -mfentry -DCC_USING_FENTRY)
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index fff1452cb76e..673ab54c0af6 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -221,11 +221,8 @@ cmd_modversions_c =								\
- endif
- 
- ifdef CONFIG_FTRACE_MCOUNT_RECORD
--# gcc 5 supports generating the mcount tables directly
--ifneq ($(call cc-option,-mrecord-mcount,y),y)
--KBUILD_CFLAGS += -mrecord-mcount
--else
--# else do it all manually
-+ifndef CC_USING_RECORD_MCOUNT
-+# compiler will not generate __mcount_loc use recordmcount or recordmcount.pl
- ifdef BUILD_C_RECORDMCOUNT
- ifeq ("$(origin RECORDMCOUNT_WARN)", "command line")
-   RECORDMCOUNT_FLAGS = -w
--- 
-2.30.1
-
-
---MP_/bXGQGfX8vm3N8i=A7vGCG6X--
