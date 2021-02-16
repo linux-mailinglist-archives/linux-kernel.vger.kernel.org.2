@@ -2,154 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40A231C623
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 06:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 789F031C62D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 06:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbhBPFEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 00:04:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
+        id S229764AbhBPFTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 00:19:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhBPFEh (ORCPT
+        with ESMTP id S229461AbhBPFS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 00:04:37 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3B4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 21:03:57 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id y25so2155808pfp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 21:03:57 -0800 (PST)
+        Tue, 16 Feb 2021 00:18:57 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABFEC061574;
+        Mon, 15 Feb 2021 21:18:16 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id m22so13947785lfg.5;
+        Mon, 15 Feb 2021 21:18:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:newsgroups:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2YpI+iKoMZZUD3Z1xVREz1xTJJ25V96V4TT5cVOnFeQ=;
-        b=Sd1wCKsRm91PkghmzuNllFKEYbNkzmmiBtJGHAFP945o+9bTMHEwf3y3LMCiPr3hps
-         iYEisGYMSrq2GiJpHmtAlBhxmaeTOr9B3DoFiiwgCqhs5OuH+t0eXTvqwM3DCeAHZ4rN
-         YGmG6W45DCwHgeB57UOq8/PDmeVp7+lOp/zxQzQL+RtCoJmeHZNjXEzwNuABuPkzcTyf
-         FYkqOiOo1/XIJfJvAkEBDJfk0mcUC7HBPXwjHB5N5zeITdvaIFZBHLnMjYM1aGA02y0k
-         n0yALGp6Sbt4mvwprS9mS/DYE+aUzesxmhYHQDG2m3EVvRlGW6zHa8hXUIehO7cx+658
-         qhSw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wujt3rEkfz1gBVeqiGJuebMiBQ6EXLfMvV1N3ToSLEg=;
+        b=G1pqEFCRklKjZBFj6/WMCJvTupO2n0FY8ZdI0lPq/s4scqtvILGzYRjptwygMdmpRa
+         M+KeFCamCX7+3s612uofPbUoy+TvLFU2pQ6phK0LV2NAzy93/pvgpyeDNCKXu1m3TIsR
+         /JRe1NQ7zecm8IoIWOnai/+Mb1HWXFbRLmwpW94ujHQvIiP4qK1vE9bzvHL3luJjXbCX
+         v/3dxDs4i1sCs7N3E+GWC4A0+6hExVYA1awT07sNClmS58kanpx9GZxOEdpkTmEh67Sn
+         MWdV18swd+PP8ozVqBEaOcsJb8YvbLp79/4tz2d3bqmg33RlROI3BkfhaKA8qUFbErCF
+         pzEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:newsgroups:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=2YpI+iKoMZZUD3Z1xVREz1xTJJ25V96V4TT5cVOnFeQ=;
-        b=L0Fxy74bJHyQRaeQt3Pg4zS5/4oh+phebTzHov3Ymqwv2+6P8uIBepOqSBJFpl3A8V
-         l8Agi9A8E+UNbgX4tL1rv7myO0ww+C9gw3r8ZowiHMmIuRvCtuai7IX2geWWNFwiICpQ
-         oHCkax7FZwibOCo0QQd4OwyC163cHBOfWMeBvVA4ISdO8TRAN74E2UaUWocwfPC5MZsg
-         LfX0dBVc4jx38mFDaqkW3HQzy0xBpRepbmIIxoWVsA8C28aLdnpJ1yxoSzrj3gQWZHnG
-         oibn/jaPtutfzaNmUQT8vgjPDQhIDLXbJpcnDFDinoskCVLsa/HUlXOCF886cq9p6KF9
-         6N5Q==
-X-Gm-Message-State: AOAM530yPeRuZ6ExFU2lLqtPB2BN8K3L3KOtklx0u1ZQMpB/2pMwB7Qi
-        TIvzmnWWoJ8TAf1v06S4E8A=
-X-Google-Smtp-Source: ABdhPJw88S3vcPyT95UPrUdri00RZDU3YF1IpdwPKN0Vk6npYU9ZRmtrVm7cDBWIhxQaBWyZaz+sRw==
-X-Received: by 2002:aa7:9056:0:b029:1db:7a51:56df with SMTP id n22-20020aa790560000b02901db7a5156dfmr18200294pfo.48.1613451836928;
-        Mon, 15 Feb 2021 21:03:56 -0800 (PST)
-Received: from [192.168.50.50] (c-24-4-73-83.hsd1.ca.comcast.net. [24.4.73.83])
-        by smtp.gmail.com with ESMTPSA id c22sm16840180pfc.12.2021.02.15.21.03.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Feb 2021 21:03:56 -0800 (PST)
-Sender: Vineet Gupta <vineetg76@gmail.com>
-Subject: Re: [PATCH] arc: Replace lkml.org links with lore
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Alexey Brodkin <abrodkin@synopsys.com>,
-        Joe Perches <joe@perches.com>,
-        linux-snps-arc@lists.infradead.org
-Newsgroups: gmane.linux.kernel,gmane.linux.kernel.arc
-References: <20210210232849.1358703-1-keescook@chromium.org>
-From:   Vineet Gupta <vgupta@synopsys.com>
-Message-ID: <8d0dd35a-4bc2-6762-3ae9-a0bf38961f5a@synopsys.com>
-Date:   Mon, 15 Feb 2021 21:03:54 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wujt3rEkfz1gBVeqiGJuebMiBQ6EXLfMvV1N3ToSLEg=;
+        b=HaxoWwEzd2haGhf8WEgaD26LbRxadAJfj+3esbwlQYraaaB1y2k/CmmYv7faH21do1
+         IYhDJ6oC2Tfbzbc5m+bF6QC6hOQhGR6SpMSXU2WE9OVUmeDdMGZMVwjw6W8sTkPQ86jQ
+         62avNgVY3d1CSLNZ9Vn6aQ0Pprxmusl4AOI0TiDtIXvY5fsZOdIhtPE8QsS4ZH+fETLs
+         mnla/1lBTthfYPSM5D0UIhp1ggkMVsWFcLTp+gw9Bcy1UFKrP+XoLb8qSYPpnk/v2ELx
+         0WrRVkk6Vhfgtj+7hlVSEe0YHGxAElKqEFpd+fC0gezITBBOFp4hCtSSz6dU8uAubS9p
+         DMiA==
+X-Gm-Message-State: AOAM531Seymk39Qwfw8O1JuhOsPatOK5MJYa19UuDvWCm8igFviiRWqx
+        38PqUNxou5tuZPKe4T2ARl2jqxHwf1q5aYv3NxY=
+X-Google-Smtp-Source: ABdhPJy9H3EXUc8XuYPIQKDxwM3oPFRhR4c+QWVWNLoFZd2YMqS0S6y9PDhVsr2YqLR65ivGiOSLLFSUYk3dT5a6PGE=
+X-Received: by 2002:a05:6512:2118:: with SMTP id q24mr4994475lfr.133.1613452693694;
+ Mon, 15 Feb 2021 21:18:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210210232849.1358703-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk>
+ <9e49f96cd80eaf9c8ed267a7fbbcb4c6467ee790.camel@redhat.com>
+ <CAH2r5mvPLivjuE=cbijzGSHOvx-hkWSWbcxpoBnJX-BR9pBskQ@mail.gmail.com> <20210216021015.GH2858050@casper.infradead.org>
+In-Reply-To: <20210216021015.GH2858050@casper.infradead.org>
+From:   Steve French <smfrench@gmail.com>
+Date:   Mon, 15 Feb 2021 23:18:02 -0600
+Message-ID: <CAH2r5mv=PZk_wn2=b0VQcaom9TEw1MGLz+qB_Ktxxm2bnV9Nig@mail.gmail.com>
+Subject: Re: [PATCH 00/33] Network fs helper library & fscache kiocb API [ver #3]
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jeff Layton <jlayton@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
+        linux-cachefs@redhat.com, Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-mm <linux-mm@kvack.org>, linux-afs@lists.infradead.org,
+        v9fs-developer@lists.sourceforge.net,
+        Christoph Hellwig <hch@lst.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Wysochanski <dwysocha@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/10/21 3:28 PM, Kees Cook wrote:
-> As started by commit 05a5f51ca566 ("Documentation: Replace lkml.org
-> links with lore"), replace lkml.org links with lore to better use a
-> single source that's more likely to stay available long-term.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Mon, Feb 15, 2021 at 8:10 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Feb 15, 2021 at 06:40:27PM -0600, Steve French wrote:
+> > It could be good if netfs simplifies the problem experienced by
+> > network filesystems on Linux with readahead on large sequential reads
+> > - where we don't get as much parallelism due to only having one
+> > readahead request at a time (thus in many cases there is 'dead time'
+> > on either the network or the file server while waiting for the next
+> > readpages request to be issued).   This can be a significant
+> > performance problem for current readpages when network latency is long
+> > (or e.g. in cases when network encryption is enabled, and hardware
+> > offload not available so time consuming on the server or client to
+> > encrypt the packet).
+> >
+> > Do you see netfs much faster than currentreadpages for ceph?
+> >
+> > Have you been able to get much benefit from throttling readahead with
+> > ceph from the current netfs approach for clamping i/o?
+>
+> The switch from readpages to readahead does help in a couple of corner
+> cases.  For example, if you have two processes reading the same file at
+> the same time, one will now block on the other (due to the page lock)
+> rather than submitting a mess of overlapping and partial reads.
+>
+> We're not there yet on having multiple outstanding reads.  Bill and I
+> had a chat recently about how to make the readahead code detect that
+> it is in a "long fat pipe" situation (as opposed to just dealing with
+> a slow device), and submit extra readahead requests to make best use of
+> the bandwidth and minimise blocking of the application.
+>
+> That's not something for the netfs code to do though; we can get into
+> that situation with highly parallel SSDs.
 
-Acked-by: Vineet Gupta <vgupta@synopsys.com>
+This (readahead behavior improvements in Linux, on single large file sequential
+read workloads like cp or grep) gets particularly interesting
+with SMB3 as multichannel becomes more common.  With one channel having
+one readahead request pending on the network is suboptimal - but not as bad as
+when multichannel is negotiated. Interestingly in most cases two
+network connections
+to the same server (different TCP sockets,but the same mount, even in
+cases where
+only network adapter) can achieve better performance - but still significantly
+lags Windows (and probably other clients) as in Linux we don't keep
+multiple I/Os
+in flight at one time (unless different files are being read at the same time
+by different threads).   As network adapters are added and removed from the
+server (other client typically poll to detect interface changes, and SMB3
+also leverages the "witness protocol" to get notification of adapter additions
+or removals) - it would be helpful to change the maximum number of
+readahead requests in flight.  In addition, as the server throttles back
+(reducing the number of 'credits' granted to the client) it will be important
+to give hints to the readahead logic about reducing the number of
+read ahead requests in flight.   Keeping multiple readahead requests
+is easier to imagine when multiple processes are copying or reading
+files, but there are many scenarios where we could do better with parallelizing
+a single process doing copy by ensuring that there is no 'dead time' on
+the network.
 
-Let me know if you want me to pick this up.
 
-Thx,
--Vineet
+-- 
+Thanks,
 
-> ---
->   arch/arc/include/asm/irqflags-compact.h | 8 ++++++--
->   arch/arc/mm/dma.c                       | 2 +-
->   arch/arc/plat-axs10x/axs10x.c           | 2 +-
->   arch/arc/plat-hsdk/platform.c           | 2 +-
->   4 files changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arc/include/asm/irqflags-compact.h b/arch/arc/include/asm/irqflags-compact.h
-> index 863d63ad18d6..0d63e568d64c 100644
-> --- a/arch/arc/include/asm/irqflags-compact.h
-> +++ b/arch/arc/include/asm/irqflags-compact.h
-> @@ -50,8 +50,12 @@
->    * are redone after IRQs are re-enabled (and gcc doesn't reuse stale register)
->    *
->    * Noted at the time of Abilis Timer List corruption
-> - *	Orig Bug + Rejected solution	: https://lkml.org/lkml/2013/3/29/67
-> - *	Reasoning			: https://lkml.org/lkml/2013/4/8/15
-> + *
-> + * Orig Bug + Rejected solution:
-> + * https://lore.kernel.org/lkml/1364553218-31255-1-git-send-email-vgupta@synopsys.com
-> + *
-> + * Reasoning:
-> + * https://lore.kernel.org/lkml/CA+55aFyFWjpSVQM6M266tKrG_ZXJzZ-nYejpmXYQXbrr42mGPQ@mail.gmail.com
->    *
->    ******************************************************************/
->   
-> diff --git a/arch/arc/mm/dma.c b/arch/arc/mm/dma.c
-> index 517988e60cfc..2a7fbbb83b70 100644
-> --- a/arch/arc/mm/dma.c
-> +++ b/arch/arc/mm/dma.c
-> @@ -32,7 +32,7 @@ void arch_dma_prep_coherent(struct page *page, size_t size)
->   
->   /*
->    * Cache operations depending on function and direction argument, inspired by
-> - * https://lkml.org/lkml/2018/5/18/979
-> + * https://lore.kernel.org/lkml/20180518175004.GF17671@n2100.armlinux.org.uk
->    * "dma_sync_*_for_cpu and direction=TO_DEVICE (was Re: [PATCH 02/20]
->    * dma-mapping: provide a generic dma-noncoherent implementation)"
->    *
-> diff --git a/arch/arc/plat-axs10x/axs10x.c b/arch/arc/plat-axs10x/axs10x.c
-> index 63ea5a606ecd..b821df7b0089 100644
-> --- a/arch/arc/plat-axs10x/axs10x.c
-> +++ b/arch/arc/plat-axs10x/axs10x.c
-> @@ -50,7 +50,7 @@ static void __init axs10x_enable_gpio_intc_wire(void)
->   	 * Current implementation of "irq-dw-apb-ictl" driver doesn't work well
->   	 * with stacked INTCs. In particular problem happens if its master INTC
->   	 * not yet instantiated. See discussion here -
-> -	 * https://lkml.org/lkml/2015/3/4/755
-> +	 * https://lore.kernel.org/lkml/54F6FE2C.7020309@synopsys.com
->   	 *
->   	 * So setup the first gpio block as a passive pass thru and hide it from
->   	 * DT hardware topology - connect MB intc directly to cpu intc
-> diff --git a/arch/arc/plat-hsdk/platform.c b/arch/arc/plat-hsdk/platform.c
-> index b3ea1fa11f87..c4a875b22352 100644
-> --- a/arch/arc/plat-hsdk/platform.c
-> +++ b/arch/arc/plat-hsdk/platform.c
-> @@ -52,7 +52,7 @@ static void __init hsdk_enable_gpio_intc_wire(void)
->   	 * Current implementation of "irq-dw-apb-ictl" driver doesn't work well
->   	 * with stacked INTCs. In particular problem happens if its master INTC
->   	 * not yet instantiated. See discussion here -
-> -	 * https://lkml.org/lkml/2015/3/4/755
-> +	 * https://lore.kernel.org/lkml/54F6FE2C.7020309@synopsys.com
->   	 *
->   	 * So setup the first gpio block as a passive pass thru and hide it from
->   	 * DT hardware topology - connect intc directly to cpu intc
-> 
-
+Steve
