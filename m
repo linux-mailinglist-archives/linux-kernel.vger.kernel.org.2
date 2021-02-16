@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BEB31D277
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7158531D279
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbhBPWKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 17:10:19 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:30576 "EHLO smtp2.axis.com"
+        id S230468AbhBPWKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 17:10:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229722AbhBPWKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 17:10:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1613513416;
-  x=1645049416;
-  h=date:to:cc:subject:message-id:references:mime-version:
-   content-transfer-encoding:in-reply-to:from;
-  bh=jlpRjvnBwlHe14+tAbAX/DLQjSwvp1QJtpM4pjNbj+w=;
-  b=koZW1J88s94/NDcC1oWaVm1zVQkL5Z2wdkjfV3Vje93/A/z8pQNDw5mH
-   sOvszUwedB2qXASz/8Na0aeSXySaRoVSc6r5xDJ9/te2Y7x6syLDHulNr
-   jmj6Tm+mnK4hX91r4yZrIaerLkO/Uki46O9MLEoq/K+YcF5MRBPkgj76u
-   Js71hQqRr0TJu3a2XWd1iYcYrhFy82ouu3E7P/3zQKgLU7NF6jLS+5Cip
-   IfIpx7RpAycXaZQSWtuBrRyafbIvMDdpFQ1TtqemGiusnDV2Mky8RnW08
-   0xhpvfOR/GmAxBb44aIt/29YLjckUmCBL9T6VkDp0XieHTtvoeUXO/qBl
-   w==;
-Date:   Tue, 16 Feb 2021 23:09:33 +0100
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-CC:     <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@axis.com>
-Subject: Re: [PATCH] i2c: exynos5: Preserve high speed master code
-Message-ID: <20210216220933.2wzmft72bhjptzl3@axis.com>
-References: <20210215190322.22094-1-marten.lindahl@axis.com>
- <20210216075141.o4wjnwmmjze2p3cn@kozik-lap>
+        id S229722AbhBPWKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 17:10:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id A3B4364E7A;
+        Tue, 16 Feb 2021 22:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613513408;
+        bh=RqZHkgFXDCElnT+yDP+zNwkPe/1CFdxlaqOgzUsRqUg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=omicZVUHUIwgjcRdLqRkm/+u6aNLwk/UTf6/D1zfDbZfwYcDYkoNLFhHMnMmiDzJP
+         UWNBb497AhK2AJ4+Q50GZiYFfY82HYFiBDGlD0METHt+IjTKzns0RnWIrr5aOfdVAi
+         quXVTex8RgoQCZaq5vXltNIwuNFshv3DbrzVouAZxdOFtgRGR5kcIxGZgYNRZS2Zxe
+         nq0rZ4SPRvGSwA6SfjUL6e2E/yG+c4MozStWA5kPn30co6Ar7UOE0HVkqk6xcwPq83
+         fVgi+RPqa+BfHxvf/FFW0HHAHkp2kTdSLWlWVgl1CjVFAo0bRiU7Ne5eTj4XSvPVQS
+         odRxcJ0EH3RWA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9AF9C60A17;
+        Tue, 16 Feb 2021 22:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210216075141.o4wjnwmmjze2p3cn@kozik-lap>
-User-Agent: NeoMutt/20170113 (1.7.2)
-From:   Marten Lindahl <martenli@axis.com>
+Subject: Re: [PATCH net-next v3 0/3] Fixes applied to VCS8514
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161351340863.15084.10381362758534192005.git-patchwork-notify@kernel.org>
+Date:   Tue, 16 Feb 2021 22:10:08 +0000
+References: <20210216152944.27266-1-bjarni.jonasson@microchip.com>
+In-Reply-To: <20210216152944.27266-1-bjarni.jonasson@microchip.com>
+To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, atenart@kernel.org,
+        f.fainelli@gmail.com, vladimir.oltean@nxp.com,
+        ioana.ciornei@nxp.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof!
+Hello:
 
-Thank you for your comments! Please see my reply below.
-I will send v2 in a moment.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, Feb 16, 2021 at 08:51:41AM +0100, Krzysztof Kozlowski wrote:
-> On Mon, Feb 15, 2021 at 08:03:21PM +0100, Mårten Lindahl wrote:
-> > From: Mårten Lindahl <martenli@axis.com>
-> > 
-> > When the controller starts to send a message with the MASTER_ID field
-> > set (high speed), the whole I2C_ADDR register is overwritten including
-> > MASTER_ID as the SLV_ADDR_MAS field is set.
+On Tue, 16 Feb 2021 16:29:41 +0100 you wrote:
+> 3 different fixes applied to VSC8514:
+> LCPLL reset, serdes calibration and coma mode disabled.
+> Especially the serdes calibration is large and is now placed
+> in a new file 'mscc_serdes.c' which can act as
+> a placeholder for future serdes configuration.
 > 
-> Are you here describing bug in driver or hardware (the controller?)?
-> Looking at the code, I think the driver, but description got me
-> confused.
+> v1 -> v2:
+>   Preserved reversed christmas tree
+>   Removed forward definitions
+>   Fixed build issues
+>   Changed net to net-next
 > 
+> [...]
 
-Yes, it is the driver. I will change.
+Here is the summary with links:
+  - [net-next,v3,1/3] net: phy: mscc: adding LCPLL reset to VSC8514
+    https://git.kernel.org/netdev/net-next/c/3cc2c646be0b
+  - [net-next,v3,2/3] net: phy: mscc: improved serdes calibration applied to VSC8514
+    https://git.kernel.org/netdev/net-next/c/85e97f0b984e
+  - [net-next,v3,3/3] net: phy: mscc: coma mode disabled for VSC8514
+    https://git.kernel.org/netdev/net-next/c/ca0d7fd0a58d
 
-> > 
-> > This patch preserves already written fields in I2C_ADDR when writing
-> > SLV_ADDR_MAS.
-> > 
-> > Signed-off-by: Mårten Lindahl <martenli@axis.com>
-> > ---
-> >  drivers/i2c/busses/i2c-exynos5.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
-> > index 20a9881a0d6c..f2d04c241299 100644
-> > --- a/drivers/i2c/busses/i2c-exynos5.c
-> > +++ b/drivers/i2c/busses/i2c-exynos5.c
-> > @@ -606,6 +606,7 @@ static void exynos5_i2c_message_start(struct exynos5_i2c *i2c, int stop)
-> >  	u32 i2c_ctl;
-> >  	u32 int_en = 0;
-> >  	u32 i2c_auto_conf = 0;
-> > +	u32 i2c_addr = 0;
-> >  	u32 fifo_ctl;
-> >  	unsigned long flags;
-> >  	unsigned short trig_lvl;
-> > @@ -640,7 +641,12 @@ static void exynos5_i2c_message_start(struct exynos5_i2c *i2c, int stop)
-> >  		int_en |= HSI2C_INT_TX_ALMOSTEMPTY_EN;
-> >  	}
-> >  
-> > -	writel(HSI2C_SLV_ADDR_MAS(i2c->msg->addr), i2c->regs + HSI2C_ADDR);
-> > +	i2c_addr = HSI2C_SLV_ADDR_MAS(i2c->msg->addr);
-> > +
-> > +	if (i2c->op_clock >= I2C_MAX_FAST_MODE_PLUS_FREQ)
-> > +		i2c_addr |= readl(i2c->regs + HSI2C_ADDR);
-> 
-> Any reason why not "|= MASTER_ID(i2c->adap.nr)" here instead of more
-> expensive IO read? It's quite important because your current code will
-> bitwise-or old I2C slave address with a new one... This should break
-> during tests with multiple I2C slave devices, shouldn't it?
-> 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-You are correct. It is better to use the macro instead, and yes,
-safer too. I only have one device that supports high speed i2c, but
-I get your point. It could potentially break.
 
-> On which HW did you test it?
-
-I used an Artpec development board as master and INA230EVM board
-as slave.
-
-> 
-> Best regards,
-> Krzysztof
-> 
-
-Best regards
-Mårten
-> 
-> > +
-> > +	writel(i2c_addr, i2c->regs + HSI2C_ADDR);
