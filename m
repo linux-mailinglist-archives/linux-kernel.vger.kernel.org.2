@@ -2,173 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6515731C4DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 02:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAA031C4F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 02:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhBPBKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 20:10:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhBPBJd (ORCPT
+        id S229907AbhBPBQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 20:16:52 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14760 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229796AbhBPBQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 20:09:33 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A525C06178A;
-        Mon, 15 Feb 2021 17:08:19 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id h8so8105164qkk.6;
-        Mon, 15 Feb 2021 17:08:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1E8onOw+L2AIdLifTqqILKE60PtOo/4KA0a+LdKDsTM=;
-        b=IrRmNXDMhi1zg9P5y2sL3qasJhm8ONboRQ+cY7ikz+XEhOkGqw+xbHpyP7cAPiovxA
-         8pwZcmz9dDe7hXfVno03DzXE3jF0N/kMGpRU9/3KjBEXFlCac41DeQ9rpEpzAWusnK+t
-         JpvMEXS2BX0ePDVY1/qEzG/e5FzjnuljzMb4aG1DVikcmdKIltwO/E2lJhFNL5BRVEj/
-         nJL/iLoI29drpuxG1bpRNnWiwVmXNbvH/AUIRhTFZ+zw+PCiskDUXG8OjO0m1QW9xNXv
-         1Y3FZA6C630ennBoqfTHIgiVzuMF/QXF3FxCba+sjG4k7AQOs8T+qrXoMl/PhORW6qWO
-         FB+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1E8onOw+L2AIdLifTqqILKE60PtOo/4KA0a+LdKDsTM=;
-        b=Y1ZSuSEg5iCTHr4BVLPlqHPd54LLQSJ3sHIu/GC1FOMi0m17Sf6McUaihRnyX/6KlU
-         N7TmvUi9hCQ9j6TwcrqlmmslsEbZ7uDmEzMG2MbCFvzo9H3hNeFgc2KAwIpKQpFVnuKB
-         a1uHcH/I5r9hjAFuFizsLddnmuACH2nG91GDcYzk90+7iqCe6SA0u2/fvMf1Vctyvghj
-         P300NZl+A7AicROK3lStq6E81xuNZuQ9WjoyZ189/riAaJbx4t6qCP7Wt6uY28fAJcl0
-         3Bdr8AQgdCuVlV4ep0yk96U/H4DlNvUCnn7YDpBvtqiVbv8xE4Lf7iFM3gBP/Pkr9Lif
-         w5kg==
-X-Gm-Message-State: AOAM5326BL6oskCgPvDQ8ISVd5qoZg0vvtt3wiOiQxutpN2z3y5D6dUz
-        qKzoc2gpFU3DtxID284SNHA=
-X-Google-Smtp-Source: ABdhPJz8Jpmy+7JLGxxDmdFy6jq7vsZtyvVA5sF4LeY69x1YDKdLfyc+hF4E6RCn6Nxi4gsNcX6dyA==
-X-Received: by 2002:a37:d01:: with SMTP id 1mr17588798qkn.247.1613437698469;
-        Mon, 15 Feb 2021 17:08:18 -0800 (PST)
-Received: from localhost.localdomain ([198.52.185.246])
-        by smtp.gmail.com with ESMTPSA id b20sm508830qto.45.2021.02.15.17.08.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 17:08:18 -0800 (PST)
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
-To:     Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com, David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexey Denisov <rtgbnm@gmail.com>,
-        Sergej Bauer <sbauer@blackbox.su>,
-        Tim Harvey <tharvey@gateworks.com>,
-        =?UTF-8?q?Anders=20R=C3=B8nningen?= <anders@ronningen.priv.no>,
-        Hillf Danton <hdanton@sina.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 5/5] TEST ONLY: lan743x: skb_trim failure test
-Date:   Mon, 15 Feb 2021 20:08:06 -0500
-Message-Id: <20210216010806.31948-6-TheSven73@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210216010806.31948-1-TheSven73@gmail.com>
-References: <20210216010806.31948-1-TheSven73@gmail.com>
+        Mon, 15 Feb 2021 20:16:43 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11G11bNm002079;
+        Mon, 15 Feb 2021 20:15:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=gU4FNIphuUI1q38DRUTcXAriUiExmJdHEkApVL/gVdU=;
+ b=ehKGnKc35FezKoeEpXjh2mz4jdRjCR/lYpo97aMuZJNPjxf4SvJ/mys2bgW5QDekbrDr
+ ibbcMlkkH0YxwMVfJETBr1OeZu5AgOLlWy2mPZBUn8XDKjaiXdhsmO0Sx2qBwq1HyXeu
+ AS686W4kAKr3Rf0NyHAXizVY60k+EcyuMr9EDDSkeOIXjFs7Ik35080rTAJXXNc3K9dA
+ 6/7va8qEQnggKJ1+9/TT52dopzO6GDO7h0+wt7S0uY+EfLGMWiU1vOM5W9cJO4af6W2K
+ /pEnrdqKIu99ROitG/g3pPu91AVRVhTLZ8MbkhF6VzE1SRXt1KnaDsrEYMQVhVZSoIjS Ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36r2dwadac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 20:15:56 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11G14di3015818;
+        Mon, 15 Feb 2021 20:15:56 -0500
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36r2dwada2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Feb 2021 20:15:55 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11G1Biw2004463;
+        Tue, 16 Feb 2021 01:15:55 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04wdc.us.ibm.com with ESMTP id 36p6d8tx9m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 01:15:55 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11G1FsBh30933426
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 01:15:54 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BA1822805E;
+        Tue, 16 Feb 2021 01:15:54 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17A8E28058;
+        Tue, 16 Feb 2021 01:15:54 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com.com (unknown [9.85.203.235])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Feb 2021 01:15:53 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
+        kwankhede@nvidia.com, pbonzini@redhat.com,
+        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com,
+        Tony Krowiak <akrowiak@linux.ibm.com>
+Subject: [PATCH v2 0/1] s390/vfio-ap: fix circular lockdep when staring SE guest
+Date:   Mon, 15 Feb 2021 20:15:46 -0500
+Message-Id: <20210216011547.22277-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-15_16:2021-02-12,2021-02-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ bulkscore=0 spamscore=0 priorityscore=1501 suspectscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 lowpriorityscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102160003
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Van Asbroeck <thesven73@gmail.com>
+Commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
+pointer invalidated") introduced a change that results in a circular
+lockdep when a Secure Execution guest that is configured with
+crypto devices is started. The problem resulted due to the fact that the
+patch moved the setting of the guest's AP masks within the protection of
+the matrix_dev->lock when the vfio_ap driver is notified that the KVM 
+pointer has been set. Since it is not critical that setting/clearing of
+the guest's AP masks be done under the matrix_dev->lock when the driver is
+notified, the masks will not be updated under the matrix_dev->lock. The
+lock is necessary for the setting/unsetting of the KVM pointer, however,
+so that will remain in place. 
 
-Simulate low-memory in lan743x_rx_trim_skb(): fail one allocation
-in every 100.
+The dependency chain for the circular lockdep resolved by this patch 
+is (in reverse order):
 
-Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
----
+2:	vfio_ap_mdev_group_notifier:	kvm->lock
+					matrix_dev->lock
 
-To: Bryan Whitehead <bryan.whitehead@microchip.com>
-To: UNGLinuxDriver@microchip.com
-To: "David S. Miller" <davem@davemloft.net>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Alexey Denisov <rtgbnm@gmail.com>
-Cc: Sergej Bauer <sbauer@blackbox.su>
-Cc: Tim Harvey <tharvey@gateworks.com>
-Cc: Anders Rønningen <anders@ronningen.priv.no>
-Cc: Hillf Danton <hdanton@sina.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+1:	handle_pqap:			matrix_dev->lock
+	kvm_vcpu_ioctl:			vcpu->mutex
 
- drivers/net/ethernet/microchip/lan743x_main.c | 28 ++++++++-----------
- 1 file changed, 11 insertions(+), 17 deletions(-)
+0:	kvm_s390_cpus_to_pv:		vcpu->mutex
+	kvm_vm_ioctl:  			kvm->lock
 
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index 6e1b3c996bd7..4751626f4c0f 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -1963,20 +1963,7 @@ static void lan743x_rx_update_tail(struct lan743x_rx *rx, int index)
- 				  index);
- }
- 
--static struct sk_buff *
--lan743x_alloc_skb(struct net_device *netdev, int length, bool can_fail)
--{
--	static int rx_alloc;
--	int counter = rx_alloc++ % 100;
--
--	if (can_fail && counter >= 20 && counter < 30)
--		return NULL;
--
--	return __netdev_alloc_skb(netdev, length, GFP_ATOMIC | GFP_DMA);
--}
--
--static int
--lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index, bool can_fail)
-+static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index)
- {
- 	struct net_device *netdev = rx->adapter->netdev;
- 	struct device *dev = &rx->adapter->pdev->dev;
-@@ -1990,7 +1977,7 @@ lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index, bool can_fail)
- 
- 	descriptor = &rx->ring_cpu_ptr[index];
- 	buffer_info = &rx->buffer_info[index];
--	skb = lan743x_alloc_skb(netdev, buffer_length, can_fail);
-+	skb = __netdev_alloc_skb(netdev, buffer_length, GFP_ATOMIC | GFP_DMA);
- 	if (!skb)
- 		return -ENOMEM;
- 	dma_ptr = dma_map_single(dev, skb->data, buffer_length, DMA_FROM_DEVICE);
-@@ -2078,6 +2065,13 @@ static void lan743x_rx_release_ring_element(struct lan743x_rx *rx, int index)
- static struct sk_buff *
- lan743x_rx_trim_skb(struct sk_buff *skb, int frame_length)
- {
-+	static int trim_cnt;
-+
-+	if ((trim_cnt++ % 100) == 77) {
-+		dev_kfree_skb_irq(skb);
-+		return NULL;
-+	}
-+
- 	if (skb_linearize(skb)) {
- 		dev_kfree_skb_irq(skb);
- 		return NULL;
-@@ -2152,7 +2146,7 @@ static int lan743x_rx_process_buffer(struct lan743x_rx *rx)
- 
- 	/* save existing skb, allocate new skb and map to dma */
- 	skb = buffer_info->skb;
--	if (lan743x_rx_init_ring_element(rx, rx->last_head, true)) {
-+	if (lan743x_rx_init_ring_element(rx, rx->last_head)) {
- 		/* failed to allocate next skb.
- 		 * Memory is very low.
- 		 * Drop this packet and reuse buffer.
-@@ -2357,7 +2351,7 @@ static int lan743x_rx_ring_init(struct lan743x_rx *rx)
- 
- 	rx->last_head = 0;
- 	for (index = 0; index < rx->ring_size; index++) {
--		ret = lan743x_rx_init_ring_element(rx, index, false);
-+		ret = lan743x_rx_init_ring_element(rx, index);
- 		if (ret)
- 			goto cleanup;
- 	}
+Please note that if checkpatch is run against this patch series, you may
+get a "WARNING: Unknown commit id 'f21916ec4826', maybe rebased or not 
+pulled?" message. The commit 'f21916ec4826', however, is definitely
+in the master branch on top of which this patch series was built, so I'm
+not sure why this message is being output by checkpatch. 
+
+Change log v1=> v2:
+------------------
+* No longer holding the matrix_dev->lock prior to setting/clearing the
+  masks supplying the AP configuration to a KVM guest.
+* Make all updates to the data in the matrix mdev that is used to manage
+  AP resources used by the KVM guest in the vfio_ap_mdev_set_kvm() function
+  instead of the group notifier callback.
+* Check for the matrix mdev's KVM pointer in the vfio_ap_mdev_unset_kvm()
+  function instead of the vfio_ap_mdev_release() function.
+
+Tony Krowiak (1):
+  s390/vfio-ap: fix circular lockdep when setting/clearing crypto masks
+
+ drivers/s390/crypto/vfio_ap_ops.c | 119 +++++++++++++++++++++---------
+ 1 file changed, 84 insertions(+), 35 deletions(-)
+
 -- 
-2.17.1
+2.21.1
 
