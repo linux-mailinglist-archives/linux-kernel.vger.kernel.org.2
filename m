@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA2E31C672
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 07:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D789431C674
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 07:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhBPGCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 01:02:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhBPGCi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 01:02:38 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848B3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 22:01:57 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id m2so5586806pgq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 22:01:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MvOw0Ff588/tu4QKvASlxFGu1pPr+mLDUaTBEi6kKFQ=;
-        b=DUfzscmQzTgAwzpztM9K2GbtX8KLV2SMfUHBYNtidPcyg/BwYWSZo7oDrYjhKrnYQp
-         AkSrgHyOlXkWkFmYiZZg/E5zlcKcT3jRGRTHsLEt04tEdxd099aki9ByYiU8qbREEr3X
-         AINXGNKSyCHQ4dRAfIlJePW0Q6x0vbbH7pyoU/AsFlKyhBvDN9ZDo9S2qxAnbyzA7CVC
-         eBDgzJv7zWPbNvJWRYlcJY2FiUZSXRN1oNtwQy57J60pcUliS9uAa6AdmOAaXeL83PPZ
-         fLkxt+CKLyPHFm9gGVNQWqKubqFxuB8E6MXOcjhJDkkCAkROpdqj92SExBRmrHcRAF+8
-         HmzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MvOw0Ff588/tu4QKvASlxFGu1pPr+mLDUaTBEi6kKFQ=;
-        b=joD61OEPTh8Hlw3zbrljmbfovIxsFF/Ppz0mDE1Sx46Dci5KxJHin3pLWry7UZJ9ow
-         kQaZtzKthDX+ejTATI0eO0SDDOxdNcD0waZ/JYR1CZsVjLD2mJfhLrT8ZBuxlggrvfbA
-         /zZLhD5zJiwNfiCS5tbmV8a/5vf9Fi9ZQH1YgaIF4+GvRyBGDRHr7HXsR73yZfk1b1dc
-         fsWHKzzCpnbG4hA6ZS20vMvBC7sboFpySfk+8cpSENTPKKYVsJO9ud0ewM+bXC1yeppb
-         aJ8hr0+d4DeRJDglqGSxudEFDPDvawBqBgOcDM78f+m2cHvRqdYmzqYBkbrKD78ILKCP
-         /H1w==
-X-Gm-Message-State: AOAM530R3vphVVl5+Nrfn8oLZdyIdaVBFIRuFbUKj/kHwSQG7n/R9ytQ
-        dkIETmDVvJNBcjDzrYRlkZUfug==
-X-Google-Smtp-Source: ABdhPJzDOdjC0BnS5wTWY0fZV/zrirrlMNe14bZ2HulTVbOFnKcV6Z2qpvDnW0GfFT2roPEJ7Rs1cA==
-X-Received: by 2002:a63:5703:: with SMTP id l3mr17795055pgb.344.1613455316082;
-        Mon, 15 Feb 2021 22:01:56 -0800 (PST)
-Received: from localhost.localdomain (36-239-219-87.dynamic-ip.hinet.net. [36.239.219.87])
-        by smtp.gmail.com with ESMTPSA id c11sm6161369pfl.52.2021.02.15.22.01.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 22:01:55 -0800 (PST)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Jagan Teki <jagan@amarulasolutions.com>,
-        Adrien Grassein <adrien.grassein@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: pf8x00: Use regulator_map_voltage_ascend for pf8x00_buck7_ops
-Date:   Tue, 16 Feb 2021 14:01:28 +0800
-Message-Id: <20210216060128.126938-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        id S229873AbhBPGFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 01:05:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229662AbhBPGEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 01:04:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F80764DDA;
+        Tue, 16 Feb 2021 06:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613455440;
+        bh=r+OZB827JaqOfN2ks887+1Upc8nphXhkC94g+YGIn8M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AsklDOfrNTLRJuOs3a9ZsgoPK35EJNkFEC4dBkKun7xSuklBW1Z4qnO5wWd4F/Q3Z
+         WUlFY1EUXs2pQ/vDl6Y0eY/lQ5tJRWZehE+lyAXEbJhQqzsqUe0kDnlmBfrKvWQce9
+         2wqYom6NxA9Hmtqfb2Wd0xxUL4dZLY5iah2NjES+mCY2fX6SJ7X7vb2ZlH6iSjgZsr
+         245oU9pKE9i1Kh794k7i5GLtmJNdlnPOQzQH9VP86R4dXS6PU7/CvKgMo4PtD0aVHX
+         ZikNO7d5DJ032Fma4jMNGJwpld1pJCgXE3TmdRLzzejQzkDwp8+JcoQAOETq+rlIHs
+         bQFKv0B75OBKw==
+Date:   Tue, 16 Feb 2021 08:03:56 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Subject: Re: [PATCH net-next RFC v3] net: hdlc_x25: Queue outgoing LAPB frames
+Message-ID: <YCtgTBvR6TD8sPpe@unreal>
+References: <20210215072703.43952-1-xie.he.0141@gmail.com>
+ <YCo96zjXHyvKpbUM@unreal>
+ <CAJht_EOQBDdwa0keS9XTKZgXE44_b5cHJt=fFaKy-wFDpe6iaw@mail.gmail.com>
+ <YCrDcMYgSgdKp4eX@unreal>
+ <CAJht_EPy1Us72YGMune2G3s1TLB4TOCBFJpZt+KbVUV8uoFbfA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJht_EPy1Us72YGMune2G3s1TLB4TOCBFJpZt+KbVUV8uoFbfA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The voltages in pf8x00_sw7_voltages are in ascendant order, so use
-regulator_map_voltage_ascend.
+On Mon, Feb 15, 2021 at 11:08:02AM -0800, Xie He wrote:
+> On Mon, Feb 15, 2021 at 10:54 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Mon, Feb 15, 2021 at 09:23:32AM -0800, Xie He wrote:
+> > > On Mon, Feb 15, 2021 at 1:25 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > > +     /* When transmitting data:
+> > > > > +      * first we'll remove a pseudo header of 1 byte,
+> > > > > +      * then the LAPB module will prepend an LAPB header of at most 3 bytes.
+> > > > > +      */
+> > > > > +     dev->needed_headroom = 3 - 1;
+> > > >
+> > > > 3 - 1 = 2
+> > > >
+> > > > Thanks
+> > >
+> > > Actually this is intentional. It makes the numbers more meaningful.
+> > >
+> > > The compiler should automatically generate the "2" so there would be
+> > > no runtime penalty.
+> >
+> > If you want it intentional, write it in the comment.
+> >
+> > /* When transmitting data, we will need extra 2 bytes headroom,
+> >  * which are 3 bytes of LAPB header minus one byte of pseudo header.
+> >  */
+> >  dev->needed_headroom = 2;
+>
+> I think this is unnecessary. The current comment already explains the
+> meaning of the "1" and the "3". There's no need for a reader of this
+> code to understand what a "2" is. That is the job of the compiler, not
+> the human reader.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/pf8x00-regulator.c | 1 +
- 1 file changed, 1 insertion(+)
+It is not related to compiler/human format. If you need to write "3 - 1"
+to make it easy for users, it means that your comment above is not
+full/correct/e.t.c.
 
-diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
-index 9b28bd63208d..5d319fb81288 100644
---- a/drivers/regulator/pf8x00-regulator.c
-+++ b/drivers/regulator/pf8x00-regulator.c
-@@ -359,6 +359,7 @@ static const struct regulator_ops pf8x00_buck7_ops = {
- 	.disable = regulator_disable_regmap,
- 	.is_enabled = regulator_is_enabled_regmap,
- 	.list_voltage = regulator_list_voltage_table,
-+	.map_voltage = regulator_map_voltage_ascend,
- 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
- 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
- 	.get_current_limit = regulator_get_current_limit_regmap,
--- 
-2.25.1
-
+Thanks
