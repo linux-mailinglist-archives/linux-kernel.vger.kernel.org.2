@@ -2,212 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B79931D088
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D9831D08C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhBPSzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 13:55:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhBPSyx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:54:53 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8E0C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 10:54:13 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id d2so6534088pjs.4
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 10:54:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=LSS7VeTFf1sWhJY5fyJQl0KheTd9K60JF6FeH3GCxrg=;
-        b=bDyDPQV7jxm9AC9Kbej44nUyO7e9ikQAVBWHWuCf6m4SsjoZkV9pWHXIsx06dO+ak6
-         8aSM2SymVDyYuub9YyXC8OmIBO5oFcqGvwGNepwlZ7ccyJfhcO8QIBql9JI3pqiX2Fuw
-         j1klif/eeC82LALv7vbfEOF36jgpMBTsgIysLtIYOy5/V/AMnw+vobQiVIkTJp1UWc9w
-         DBJpDEAjqFxxbKednKjcTl1kcQJ9o42fsCnjttKtraIjnebn0Gpj+GPYsAe4P1dvBQTx
-         +Yu/ej7/HAC1/mff1R/7rpIBIU7G2uz6/1mHBZKRW2iyUUsEXYKiqiR/s+gFdY9x4S4k
-         7DDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=LSS7VeTFf1sWhJY5fyJQl0KheTd9K60JF6FeH3GCxrg=;
-        b=YbiMuxaVuwgjgIt+V5j74W8lgdgcPe8pLl2UEb7HXILTzjLdGm+yOdF+QzdHU4rfLd
-         QkbkGOapoUfZdFiFoFdPIPCw4uVCDZuSl/uD0EAg/PM0hijsqZJEPy63eCxo61rcaVPy
-         G4cxlgZ1yK/HfGHzv8XYpRhyOm8eoK/4P14BpuqxxTEowB3ZGKq5FbkQDjP/L3UrLHqt
-         YJ5Z/yR/pDGkvJiHIW6NmJz9vlgszkNdBRQPhofJ4mLLo3bJQdj1815Ed/+IunEZMRUq
-         1EP1szJzrmQxHFhYkKgSsPQCJPBFye3W3KEpbl0cqe08fxfSzpjNmcZSQSM03JbPqC0f
-         XlkA==
-X-Gm-Message-State: AOAM531QrNGpJdfa5GZmuYIz/cbmUgvRypqdJWYtt/UrhIBqmtMKgH/o
-        y3lIKFYoNnIq8z40+1vkP9AHqw==
-X-Google-Smtp-Source: ABdhPJxyRsttVKac8oS/Pd9KoKHSh+xsMkH7Er01IU3KQLXF2h+YHf7b4VIqO16SNNmhxdX/VS2yig==
-X-Received: by 2002:a17:90b:46cd:: with SMTP id jx13mr5383279pjb.217.1613501652606;
-        Tue, 16 Feb 2021 10:54:12 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id g8sm3820005pjj.41.2021.02.16.10.54.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Feb 2021 10:54:11 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <13583117-59D4-4294-BB23-9D4802E4B8A3@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_E4D2691F-0BAD-4906-899A-C3AF7AC4FEB5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
-Date:   Tue, 16 Feb 2021 11:54:07 -0700
-In-Reply-To: <CAOQ4uxgucdN8hi=wkcvnFhBoZ=L5=ZDc7-6SwKVHYaRODdcFkg@mail.gmail.com>
-Cc:     Luis Henriques <lhenriques@suse.de>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "drinkcat@chromium.org" <drinkcat@chromium.org>,
-        "iant@google.com" <iant@google.com>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "llozano@chromium.org" <llozano@chromium.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "miklos@szeredi.hu" <miklos@szeredi.hu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "dchinner@redhat.com" <dchinner@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "sfrench@samba.org" <sfrench@samba.org>,
-        James Simmons <jsimmons@infradead.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
- <20210215154317.8590-1-lhenriques@suse.de>
- <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
- <73ab4951f48d69f0183548c7a82f7ae37e286d1c.camel@hammerspace.com>
- <CAOQ4uxgPtqG6eTi2AnAV4jTAaNDbeez+Xi2858mz1KLGMFntfg@mail.gmail.com>
- <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
- <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com>
- <87r1lgjm7l.fsf@suse.de>
- <CAOQ4uxgucdN8hi=wkcvnFhBoZ=L5=ZDc7-6SwKVHYaRODdcFkg@mail.gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        id S231203AbhBPSzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 13:55:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231135AbhBPSza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 13:55:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60A9264EC8;
+        Tue, 16 Feb 2021 18:54:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613501690;
+        bh=XLdhnbxpQyUDI0ibwdZi9VWVTk4/FfIbiYNNHh0bGMo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PRPLQ5TwQ5HAvg963yD0IXfVeTU1PfgILSKT/zALIcuO2gE1ArT2oqoNRTFx0AvkL
+         Re4t0dwNDMixZhUOBCnYlnUB4SUeeYbZA69yoB4O7I10DK7/mYSn+QaVeqptrom6ur
+         fnCSuUvoYuIeNRqm1b7cMjhQbmEWOKDYRmGAXaE2A6YAKDixOHVxou7r7qbM8dQM+a
+         XsHab8VVEigD8OhpAPfQ3dvi5fjwDwetEAjQjpOYTtLPusx8Jcw3h+lEbT14SByHeb
+         L/rNkZjdiHrSlh0prLOEYNxbHJBSbQp2ArM+CHdx7e0ov4UxiHmUmTwsxK4TtiuCOZ
+         sAORhJdGrR50Q==
+Date:   Tue, 16 Feb 2021 11:54:47 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH mips-next] vmlinux.lds.h: catch more UBSAN symbols into
+ .data
+Message-ID: <20210216185447.GA64303@24bbad8f3778>
+References: <20210216085442.2967-1-alobakin@pm.me>
+ <CAKwvOdnBgpRff6wa8u1_ogCm_pRey5d_Yro4UCa_O_=tib0FHQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnBgpRff6wa8u1_ogCm_pRey5d_Yro4UCa_O_=tib0FHQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 16, 2021 at 09:56:32AM -0800, 'Nick Desaulniers' via Clang Built Linux wrote:
+> On Tue, Feb 16, 2021 at 12:55 AM Alexander Lobakin <alobakin@pm.me> wrote:
+> >
+> > LKP triggered lots of LD orphan warnings [0]:
+> 
+> Thanks for the patch, just some questions.
+> 
+> With which linker?  Was there a particular config from the bot's
+> report that triggered this?
 
---Apple-Mail=_E4D2691F-0BAD-4906-899A-C3AF7AC4FEB5
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Looks like GNU ld 2.34 (see below).
 
-On Feb 16, 2021, at 6:51 AM, Amir Goldstein <amir73il@gmail.com> wrote:
->>=20
->>> This is easy to solve with a flag COPY_FILE_SPLICE (or something) =
-that
->>> is internal to kernel users.
->>>=20
->>> FWIW, you may want to look at the loop in ovl_copy_up_data()
->>> for improvements to nfsd_copy_file_range().
->>>=20
->>> We can move the check out to copy_file_range syscall:
->>>=20
->>>        if (flags !=3D 0)
->>>                return -EINVAL;
->>>=20
->>> Leave the fallback from all filesystems and check for the
->>> COPY_FILE_SPLICE flag inside generic_copy_file_range().
->>=20
->> Ok, the diff bellow is just to make sure I understood your =
-suggestion.
->>=20
->> The patch will also need to:
->>=20
->> - change nfs and overlayfs calls to vfs_copy_file_range() so that =
-they
->>   use the new flag.
->>=20
->> - check flags in generic_copy_file_checks() to make sure only valid =
-flags
->>   are used (COPY_FILE_SPLICE at the moment).
->>=20
->> Also, where should this flag be defined?  include/uapi/linux/fs.h?
->>=20
->> Cheers,
->> --
->> Luis
->>=20
->> diff --git a/fs/read_write.c b/fs/read_write.c
->> index 75f764b43418..341d315d2a96 100644
->> --- a/fs/read_write.c
->> +++ b/fs/read_write.c
->> @@ -1383,6 +1383,13 @@ ssize_t generic_copy_file_range(struct file =
-*file_in, loff_t pos_in,
->>                                struct file *file_out, loff_t pos_out,
->>                                size_t len, unsigned int flags)
->> {
->> +       if (!(flags & COPY_FILE_SPLICE)) {
->> +               if (!file_out->f_op->copy_file_range)
->> +                       return -EOPNOTSUPP;
->> +               else if (file_out->f_op->copy_file_range !=3D
->> +                        file_in->f_op->copy_file_range)
->> +                       return -EXDEV;
->> +       }
->=20
-> That looks strange, because you are duplicating the logic in
-> do_copy_file_range(). Maybe better:
->=20
-> if (WARN_ON_ONCE(flags & ~COPY_FILE_SPLICE))
->        return -EINVAL;
-> if (flags & COPY_FILE_SPLICE)
->       return do_splice_direct(file_in, &pos_in, file_out, &pos_out,
->                                 len > MAX_RW_COUNT ? MAX_RW_COUNT : =
-len, 0);
-> if (!file_out->f_op->copy_file_range)
->        return -EOPNOTSUPP;
-> return -EXDEV;
+> >
+> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_data299' from
+> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_data299'
+> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_data183' from
+> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_data183'
+> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type3' from
+> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type3'
+> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type2' from
+> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type2'
+> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type0' from
+> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type0'
+> >
+> > [...]
+> >
+> > Seems like "unnamed data" isn't the only type of symbols that UBSAN
+> > instrumentation can emit.
+> > Catch these into .data with the wildcard as well.
+> >
+> > [0] https://lore.kernel.org/linux-mm/202102160741.k57GCNSR-lkp@intel.com
+> >
+> > Fixes: f41b233de0ae ("vmlinux.lds.h: catch UBSAN's "unnamed data" into data")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  include/asm-generic/vmlinux.lds.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> > index cc659e77fcb0..83537e5ee78f 100644
+> > --- a/include/asm-generic/vmlinux.lds.h
+> > +++ b/include/asm-generic/vmlinux.lds.h
+> > @@ -95,7 +95,7 @@
+> >   */
+> >  #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+> >  #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
+> > -#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliteral* .data.$__unnamed_*
+> > +#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliteral* .data.$__unnamed_* .data.$Lubsan_*
+> 
+> Are these sections only created when
+> CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is selected?  (Same with
+> .data.$__unnamed_*)
 
-This shouldn't return -EINVAL to userspace if the flag is not set.
+Most likely, as that config is set in the problematic config. My guess
+is that these are GCC's equivalent of Clang's .data.$__unnamed_...
 
-That implies there *is* some valid way for userspace to call this
-function, which is AFAICS not possible if COPY_FILE_SPLICE is only
-available to in-kernel callers.  Instead, it should continue
-to return -EOPNOTSUPP to userspace if copy_file_range() is not valid
-for this combination of file descriptors, so that applications will
-fall back to the non-CFR implementation.
+$ crl https://lore.kernel.org/linux-mm/202102160741.k57GCNSR-lkp@intel.com/2-a.bin | gzip -d | rg "CONFIG_LD_DEAD_CODE|CONFIG_LD_VERSION"
+CONFIG_LD_VERSION=234000000
+CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
 
-The WARN_ON_ONCE(ret =3D=3D -EOPNOTSUPP) in vfs_copy_file_range() would
-also need to be removed if this will be triggered from userspace.
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_E4D2691F-0BAD-4906-899A-C3AF7AC4FEB5
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmAsFM8ACgkQcqXauRfM
-H+DISQ//Xk8r1HWGp6aO3uH6f50bZtArBkbhRdX1p7E8ijkTPN+2mMwXY8F8Ac0N
-K7wowllKCKlCS3puz1g22oidllG07sA84OAzYvj+keWgxmcdr8LiT1+FmVrlwAJW
-yl7uwuVty3n0hVX3V1uP6k48l+6kNKHfLgEv0pryuKxsSJwgxK0lU7f/kxw3TBBx
-cLl2b126NjEeWasNilay55SGX6XlbecnhTg6sTqH4aSjYJrCOAeSe0owrB9pC1ks
-g2TyCDarbyGHgTiO9WqSQqF7rCzZ1DWaI9iivJgM7UCUO5WfYHKfNUWteiMr7i/7
-wZF4DYBawPFGYuv1mCbel/PuXN3/HQZ2r2UK3mHazf3jbTAgYEmoG9f4keebeGZb
-llGyvrvH9xKAjExhrmJbk/9ztbmwBlWl5QFpmpQRfUZmp92eXhdBJ1/yleXw9syJ
-SCy60rPj38mFYGpprUDF0j1nP4JJGKFz2uSAzgOHdh+ggXA8gLXWmHuM6eCFG3/j
-2CWcXAhFj4DKWvJxFFlcH1tsNuCjlyxo5I/ITpDDGlFNxUG9ebroVuOP3LWt+7uY
-RWKvH6dr2ImHuiN/9s0iL03HHULOvCPYNvfMIrLw1XWcBENBWZVDyWOOxYUu1a5O
-KHIHuK4OEiDJcKXchTH4pZ0MhzeTBL7dYXsHp21XzPRZMRA0+Kw=
-=ExqG
------END PGP SIGNATURE-----
-
---Apple-Mail=_E4D2691F-0BAD-4906-899A-C3AF7AC4FEB5--
+> >  #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
+> >  #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
+> >  #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
+> > --
+> > 2.30.1
+> >
+> >
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
+> 
