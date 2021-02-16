@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945F231CAA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3068E31CAA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhBPMlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:41:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48134 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhBPMlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:41:02 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613479216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=X3blwfF7NbGXbiKfZpPPBVAn/s2HDWS/Ulzem1ZAomk=;
-        b=jk7/SGiWFBznoGqTALSPOXjELreX060pqbsJdjQkx3ySvnDY886OEXayPN/m7HrhTFyq8v
-        4DnGLRQQ1ok0Oi2aumVaFc8pWBRyIG4be3Op9woQ0CyVFtjY9dcGOKEu4OT5IVxMI8gqd1
-        m6KegIYDvLBojLzL5pKVsLn5xCINBwM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8760FAF2C;
-        Tue, 16 Feb 2021 12:40:16 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        boris.ostrovsky@oracle.com
-Subject: [GIT PULL] xen: branch for v5.12-rc1
-Date:   Tue, 16 Feb 2021 13:40:15 +0100
-Message-Id: <20210216124015.28923-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S230064AbhBPMlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 07:41:32 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:60349 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229931AbhBPMlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 07:41:20 -0500
+Received: from [192.168.0.5] (ip5f5aed2c.dynamic.kabel-deutschland.de [95.90.237.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 8DDD320647935;
+        Tue, 16 Feb 2021 13:40:36 +0100 (CET)
+Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+linux-xfs@molgen.mpg.de
+References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
+ <20201229235627.33289-1-buczek@molgen.mpg.de>
+ <20201230221611.GC164134@dread.disaster.area>
+ <20210104162353.GA254939@bfoster>
+ <20210107215444.GG331610@dread.disaster.area>
+ <20210108165657.GC893097@bfoster> <20210111163848.GC1091932@bfoster>
+ <20210113215348.GI331610@dread.disaster.area>
+ <8416da5f-e8e5-8ec6-df3e-5ca89339359c@molgen.mpg.de>
+ <20210216111820.GA534175@bfoster>
+From:   Donald Buczek <buczek@molgen.mpg.de>
+Message-ID: <b62dbd9a-9c80-6383-46f1-dc78ca9bca41@molgen.mpg.de>
+Date:   Tue, 16 Feb 2021 13:40:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210216111820.GA534175@bfoster>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 16.02.21 12:18, Brian Foster wrote:
+> On Mon, Feb 15, 2021 at 02:36:38PM +0100, Donald Buczek wrote:
+>> On 13.01.21 22:53, Dave Chinner wrote:
+>>> [...]
+>>> I agree that a throttling fix is needed, but I'm trying to
+>>> understand the scope and breadth of the problem first instead of
+>>> jumping the gun and making the wrong fix for the wrong reasons that
+>>> just papers over the underlying problems that the throttling bug has
+>>> made us aware of...
+>>
+>> Are you still working on this?
+>>
+>> If it takes more time to understand the potential underlying problem, the fix for the problem at hand should be applied.
+>>
+>> This is a real world problem, accidentally found in the wild. It appears very rarely, but it freezes a filesystem or the whole system. It exists in 5.7 , 5.8 , 5.9 , 5.10 and 5.11 and is caused by c7f87f3984cf ("xfs: fix use-after-free on CIL context on shutdown") which silently added a condition to the wakeup. The condition is based on a wrong assumption.
+>>
+>> Why is this "papering over"? If a reminder was needed, there were better ways than randomly hanging the system.
+>>
+>> Why is
+>>
+>>      if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log))
+>>          wake_up_all(&cil->xc_push_wait);
+>>
+>> , which doesn't work reliably, preferable to
+>>
+>>      if (waitqueue_active(&cil->xc_push_wait))
+>>          wake_up_all(&cil->xc_push_wait);
+>>
+>> which does?
+>>
+> 
+> JFYI, Dave followed up with a patch a couple weeks or so ago:
+> 
+> https://lore.kernel.org/linux-xfs/20210128044154.806715-5-david@fromorbit.com/
 
-Please git pull the following tag:
+Oh, great. I apologize for the unneeded reminder.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.12-rc1-tag
+Best
 
-xen: branch for v5.12-rc1
+   Donald
 
-This batch contains a series of Xen related security fixes, all related
-to limited error handling in Xen backend drivers.
-
-
-Thanks.
-
-Juergen
-
- arch/arm/xen/p2m.c                  |  6 ++++--
- arch/x86/xen/p2m.c                  | 15 +++++++--------
- drivers/block/xen-blkback/blkback.c | 32 ++++++++++++++++++--------------
- drivers/net/xen-netback/netback.c   |  4 +---
- drivers/xen/gntdev.c                | 37 ++++++++++++++++++++-----------------
- drivers/xen/xen-scsiback.c          |  4 ++--
- include/xen/grant_table.h           |  1 +
- 7 files changed, 53 insertions(+), 46 deletions(-)
-
-Jan Beulich (8):
-      Xen/x86: don't bail early from clear_foreign_p2m_mapping()
-      Xen/x86: also check kernel mapping in set_foreign_p2m_mapping()
-      Xen/gntdev: correct dev_bus_addr handling in gntdev_map_grant_pages()
-      Xen/gntdev: correct error checking in gntdev_map_grant_pages()
-      xen-blkback: don't "handle" error by BUG()
-      xen-netback: don't "handle" error by BUG()
-      xen-scsiback: don't "handle" error by BUG()
-      xen-blkback: fix error handling in xen_blkbk_map()
-
-Stefano Stabellini (1):
-      xen/arm: don't ignore return errors from set_phys_to_machine
+> 
+> Brian
+> 
+>> Best
+>>    Donald
+>>
+>>> Cheers,
+>>>
+>>> Dave
+>>
+>
