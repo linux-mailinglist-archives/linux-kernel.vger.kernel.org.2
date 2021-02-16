@@ -2,180 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9936231CDEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6B031CDEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhBPQXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:23:04 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16779 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhBPQWw (ORCPT
+        id S230264AbhBPQZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:25:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhBPQZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:22:52 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602bf1340000>; Tue, 16 Feb 2021 08:22:12 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Feb
- 2021 16:22:11 +0000
-Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 16 Feb 2021 16:22:09 +0000
-From:   Vlad Buslov <vladbu@nvidia.com>
-To:     <xiyou.wangcong@gmail.com>,
-        <syzbot+151e3e714d34ae4ce7e8@syzkaller.appspotmail.com>
-CC:     <davem@davemloft.net>, <jhs@mojatatu.com>, <jiri@resnulli.us>,
-        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Vlad Buslov <vladbu@nvidia.com>
-Subject: [PATCH net] net: sched: fix police ext initialization
-Date:   Tue, 16 Feb 2021 18:22:00 +0200
-Message-ID: <20210216162200.1834139-1-vladbu@nvidia.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <CAM_iQpVEZiOca0po6N5Hcp67LV98k_PhbEXogCJFjpOR0AbGwg@mail.gmail.com>
-References: <CAM_iQpVEZiOca0po6N5Hcp67LV98k_PhbEXogCJFjpOR0AbGwg@mail.gmail.com>
+        Tue, 16 Feb 2021 11:25:06 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF65C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:24:26 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id e9so5760809plh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:24:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JT99kJbdPlhIu/0TowIURKsvoVzFDyN/pQVtyCtqv1A=;
+        b=mGtOjvRdKBKLndMLC58MjliqHoj61eZp6LR6snXXa2lhUVw5TJJ6NUx3VJ7pvfhCq8
+         0GUbZ0dQqLSbl8KAHXkJd1P2I1g8UnSg85+kgYSdEJsLnXZMM3poJt8qE8jd1hirkX5N
+         Us7oP5m5er5ImPMXAY6gPK2/00HrbjhXgt8JeiZjRzYzYqDcjk/7HdXpTS+dEwEKZ+5D
+         1Orp4ecwCTLm7RUQrXxkyLrtEAjYngOEogWZ7iNmHatsfopLWE1GGcLdd15vcOVrigee
+         YslFWrIZz+1p7Mc+rGMIBPnHUMwxtRYyGmkCoEQTsi3TWxQicivOAFqGM1SKNViZCZUa
+         RI3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JT99kJbdPlhIu/0TowIURKsvoVzFDyN/pQVtyCtqv1A=;
+        b=tQgggaVdV7zVMMMVWndOHM9fMm0VNEI55ejnuKm1aOksK1ED+yKccCnnX/gTFe/6ke
+         eNykAUbB/uhL9WzGI3vrYIoWjYIn8s8p3jOdmyKCqosIgpQd+1Q1jxjaQ4or99OYLdys
+         mko2Mwx97UjssJ6I0Fmu5vqhuzBTsxqFgSqgFs4w/svvQpJ8m5j/OM+T5CxmaYObA7U7
+         06jzIpxKb9w2jfuJlNi7teYLY/kmcrl/MnB+m3n7EYVFAcpmsTvVXMxGvmapA6Bt6MHh
+         GCUBxFor1mIw5JIZ3TI06MmN2GyoGFqzAvsVG5fno3KM1yKQUt+IGJPpnkxrE0ZqD+sp
+         r9mw==
+X-Gm-Message-State: AOAM530b8BSzpTh7+Xwtm6bJwMxtNfmBugKsBlVHLa8OcVUY6pYZi6FG
+        svc0ZJ5Th1MFyeshOFnf0Kqjk1h2t1JSDKuB
+X-Google-Smtp-Source: ABdhPJw9uY5E0tuQjCz2+2HB8BHQeX/rAtdev8nofs6lEJ6ENJkXmcykk3SniQ2JnQpRuyOCEXaNDQ==
+X-Received: by 2002:a17:90a:12c5:: with SMTP id b5mr4309128pjg.89.1613492666031;
+        Tue, 16 Feb 2021 08:24:26 -0800 (PST)
+Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id q22sm22111838pgi.66.2021.02.16.08.24.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 08:24:25 -0800 (PST)
+Date:   Tue, 16 Feb 2021 08:24:20 -0800
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Anton Altaparmakov <anton@tuxera.com>
+Cc:     "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] ntfs: move check for valid resident attribute offset and
+ length
+Message-ID: <YCvxtL5WYeO3ofKW@nuc10>
+References: <20210214221247.621431-1-rkovhaev@gmail.com>
+ <2727F0B7-4992-4B24-963F-CC3C4D94CFD2@tuxera.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613492532; bh=O4R2iwkBYENhxWHFO0GQzJomk+OPK+x88ARSmZpOwDs=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        b=B/O8c1oTv3rMnCCf4OdFyZ+rj7Af96mIec1wgaRMrXX36BcWmOM3OCKF7SJatBM+X
-         3uSPIIgZE0L9jX1WTPm9LeGUhrlRwHaMi7CNPVMPBnEIW2SUuogXtD0lb7tP8TtEiM
-         WjCEr6z2hDmh7bF7IN/OE0Hk9Q/08Vvqr+HX7L1er7tmgOJafc5UtKCB9Yd6ETeaIK
-         PuN5cv1fNCqobZvnYAlQn4STwI9iW6rJJYpGMhR8beFN8tLDf0GEzGVpINmJEdZXLi
-         2Au7Mv/Ul48yLUgZSQt6nXwwTnBaRfErKqtPS2Zblm6aNpARunAFwTMaif4WUdsYu/
-         HpOf5wGKNPE1A==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2727F0B7-4992-4B24-963F-CC3C4D94CFD2@tuxera.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When police action is created by cls API tcf_exts_validate() first
-conditional that calls tcf_action_init_1() directly, the action idr is not
-updated according to latest changes in action API that require caller to
-commit newly created action to idr with tcf_idr_insert_many(). This results
-such action not being accessible through act API and causes crash reported
-by syzbot:
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrume=
-nted.h:71 [inline]
-BUG: KASAN: null-ptr-deref in atomic_read include/asm-generic/atomic-instru=
-mented.h:27 [inline]
-BUG: KASAN: null-ptr-deref in __tcf_idr_release net/sched/act_api.c:178 [in=
-line]
-BUG: KASAN: null-ptr-deref in tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act=
-_api.c:598
-Read of size 4 at addr 0000000000000010 by task kworker/u4:5/204
-
-CPU: 0 PID: 204 Comm: kworker/u4:5 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
-gle 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- __kasan_report mm/kasan/report.c:400 [inline]
- kasan_report.cold+0x5f/0xd5 mm/kasan/report.c:413
- check_memory_region_inline mm/kasan/generic.c:179 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
- __tcf_idr_release net/sched/act_api.c:178 [inline]
- tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act_api.c:598
- tc_action_net_exit include/net/act_api.h:151 [inline]
- police_exit_net+0x168/0x360 net/sched/act_police.c:390
- ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
- cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:604
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 204 Comm: kworker/u4:5 Tainted: G    B             5.11.0-rc7-s=
-yzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
-gle 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- panic+0x306/0x73d kernel/panic.c:231
- end_report+0x58/0x5e mm/kasan/report.c:100
- __kasan_report mm/kasan/report.c:403 [inline]
- kasan_report.cold+0x67/0xd5 mm/kasan/report.c:413
- check_memory_region_inline mm/kasan/generic.c:179 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
- __tcf_idr_release net/sched/act_api.c:178 [inline]
- tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act_api.c:598
- tc_action_net_exit include/net/act_api.h:151 [inline]
- police_exit_net+0x168/0x360 net/sched/act_police.c:390
- ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
- cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:604
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Kernel Offset: disabled
-
-Fix the issue by calling tcf_idr_insert_many() after successful action
-initialization.
-
-Fixes: 0fedc63fadf0 ("net_sched: commit action insertions together")
-Reported-by: syzbot+151e3e714d34ae4ce7e8@syzkaller.appspotmail.com
-Signed-off-by: Vlad Buslov <vladbu@nvidia.com>
----
- include/net/act_api.h | 1 +
- net/sched/act_api.c   | 2 +-
- net/sched/cls_api.c   | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/include/net/act_api.h b/include/net/act_api.h
-index 55dab604861f..57be7c5d273b 100644
---- a/include/net/act_api.h
-+++ b/include/net/act_api.h
-@@ -166,6 +166,7 @@ int tcf_idr_create_from_flags(struct tc_action_net *tn,=
- u32 index,
- 			      struct nlattr *est, struct tc_action **a,
- 			      const struct tc_action_ops *ops, int bind,
- 			      u32 flags);
-+void tcf_idr_insert_many(struct tc_action *actions[]);
- void tcf_idr_cleanup(struct tc_action_net *tn, u32 index);
- int tcf_idr_check_alloc(struct tc_action_net *tn, u32 *index,
- 			struct tc_action **a, int bind);
-diff --git a/net/sched/act_api.c b/net/sched/act_api.c
-index 2e85b636b27b..ebc8f1413078 100644
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -908,7 +908,7 @@ static const struct nla_policy tcf_action_policy[TCA_AC=
-T_MAX + 1] =3D {
- 	[TCA_ACT_HW_STATS]	=3D NLA_POLICY_BITFIELD32(TCA_ACT_HW_STATS_ANY),
- };
-=20
--static void tcf_idr_insert_many(struct tc_action *actions[])
-+void tcf_idr_insert_many(struct tc_action *actions[])
- {
- 	int i;
-=20
-diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-index 37b77bd30974..0b3900dd2354 100644
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -3053,6 +3053,7 @@ int tcf_exts_validate(struct net *net, struct tcf_pro=
-to *tp, struct nlattr **tb,
- 			act->type =3D exts->type =3D TCA_OLD_COMPAT;
- 			exts->actions[0] =3D act;
- 			exts->nr_actions =3D 1;
-+			tcf_idr_insert_many(exts->actions);
- 		} else if (exts->action && tb[exts->action]) {
- 			int err;
-=20
---=20
-2.29.2
-
+On Tue, Feb 16, 2021 at 02:40:37AM +0000, Anton Altaparmakov wrote:
+> Hi Rustam,
+> 
+> Thank you for the patch but it is not quite correct:
+> 
+> 1) The first delta: yes that is a good idea to add this check but the error message is incorrect.  It should say "Corrupt standard information attribute in inode." instead.
+> 
+> 2) The second delta: The check of the attribute list attribute needs to remain, i.e. your second delta needs to be deleted.
+> 
+> Please could you address both of the above comments and then resend?  Please then also add: "Acked-by: Anton Altaparmakov <anton@tuxera.com>" to the patch.
+> 
+> Thanks a lot in advance!
+> 
+> Best regards,
+> 
+> 	Anton
+> 
+hi Anton, thank you for the review! I'll resend the patch!
