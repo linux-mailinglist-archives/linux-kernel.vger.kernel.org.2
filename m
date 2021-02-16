@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C598931CF23
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDD431CF25
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhBPRgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:36:25 -0500
-Received: from sym2.noone.org ([178.63.92.236]:41682 "EHLO sym2.noone.org"
+        id S229787AbhBPRg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:36:58 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:44495 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229876AbhBPRgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:36:21 -0500
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4Dg7RF0q3kzvjfn; Tue, 16 Feb 2021 18:35:36 +0100 (CET)
-Date:   Tue, 16 Feb 2021 18:35:36 +0100
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Alex Ghiti <alex@ghiti.fr>, Albert Ou <aou@eecs.berkeley.edu>,
-        Bjorn Topel <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
-        syzkaller <syzkaller@googlegroups.com>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Subject: Re: riscv+KASAN does not boot
-Message-ID: <20210216173534.54vzyfzdm5ioxu7t@distanz.ch>
-References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
- <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
- <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
- <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
- <20210118145310.crnqnh6kax5jqicj@distanz.ch>
- <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
- <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
- <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr>
- <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
- <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
+        id S230428AbhBPRgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:36:54 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613496992; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=pC9G+BUvCiISFv2MlIldVCc/lXBCwMTeGgdEzuGGba0=;
+ b=pN4SOnQ9PGPRZ63qZrFdJQSmzOhOrBAOtOVF4RAxHJ2XmhCvDSU+hL3q6UuCJxX7wTPlkwvn
+ ejYM0mVrJjOWlne+8Tgj9uJF3wOVxz1KADpUIBKp17su68WcLI24yDdQXMfL/+Il8M/EfhVC
+ uKHxN/IusWsuBw1FeknZfFedvS0=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 602c0286fe1d39643850d920 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 17:36:06
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 062F7C43461; Tue, 16 Feb 2021 17:36:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 431A7C433C6;
+        Tue, 16 Feb 2021 17:36:05 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 16 Feb 2021 09:36:05 -0800
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Jeffrey Hugo <jhugo@codeaurora.org>, hemantk@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bus: mhi: core: Use current ee in intvec handler for
+ syserr
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20210216073228.GD5082@thinkpad>
+References: <1613176814-29171-1-git-send-email-jhugo@codeaurora.org>
+ <20210216073228.GD5082@thinkpad>
+Message-ID: <478ca42796c2a049cdbead6900d1b489@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-16 at 12:17:30 +0100, Dmitry Vyukov <dvyukov@google.com> wrote:
-> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > I was fixing KASAN support for my sv48 patchset so I took a look at your
-> > > issue: I built a kernel on top of the branch riscv/fixes using
-> > > https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
-> > > and Buildroot 2020.11. I have the warnings regarding the use of
-> > > __virt_to_phys on wrong addresses (but that's normal since this function
-> > > is used in virt_addr_valid) but not the segfaults you describe.
-> >
-> > Hi Alex,
-> >
-> > Let me try to rebuild buildroot image. Maybe there was something wrong
-> > with my build, though, I did 'make clean' before doing. But at the
-> > same time it worked back in June...
-> >
-> > Re WARNINGs, they indicate kernel bugs. I am working on setting up a
-> > syzbot instance on riscv. If there a WARNING during boot then the
-> > kernel will be marked as broken. No further testing will happen.
-> > Is it a mis-use of WARN_ON? If so, could anybody please remove it or
-> > replace it with pr_err.
+On 2021-02-15 11:32 PM, Manivannan Sadhasivam wrote:
+> On Fri, Feb 12, 2021 at 05:40:14PM -0700, Jeffrey Hugo wrote:
+>> The intvec handler stores the caches ee in a local variable for use in
+>> processing the intvec.  When determining if a syserr is a fatal error 
+>> or
+>> not, the intvec handler is using the cached version, when it should be
+>> using the current ee read from the device.  Currently, the device 
+>> could
+>> be in the PBL ee as the result of a fatal error, but the cached ee 
+>> might
+>> be AMSS, which would cause the intvec handler to incorrectly signal a
+>> non-fatal syserr.
+>> 
+>> Fixes: 3000f85b8f47 ("bus: mhi: core: Add support for basic PM 
+>> operations")
+>> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 > 
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > 
-> Hi,
+> Thanks,
+> Mani
 > 
-> I've localized one issue with riscv/KASAN:
-> KASAN breaks VDSO and that's I think the root cause of weird faults I
-> saw earlier. The following patch fixes it.
-> Could somebody please upstream this fix? I don't know how to add/run
-> tests for this.
+>> ---
+>>  drivers/bus/mhi/core/main.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>> index 4e0131b..f182736 100644
+>> --- a/drivers/bus/mhi/core/main.c
+>> +++ b/drivers/bus/mhi/core/main.c
+>> @@ -448,7 +448,7 @@ irqreturn_t mhi_intvec_threaded_handler(int 
+>> irq_number, void *priv)
+>>  		wake_up_all(&mhi_cntrl->state_event);
+>> 
+>>  		/* For fatal errors, we let controller decide next step */
+>> -		if (MHI_IN_PBL(ee))
+>> +		if (MHI_IN_PBL(mhi_cntrl->ee))
+>>  			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
+>>  		else
+>>  			mhi_pm_sys_err_handler(mhi_cntrl);
+>> --
+>> Qualcomm Technologies, Inc. is a member of the
+>> Code Aurora Forum, a Linux Foundation Collaborative Project.
+>> 
 
-Thanks. I've tested the fix locally using vDSO selftests and sent the
-fix upstream [1]
+This was being fixed by my patch series for execution environment.
 
-[1] https://lore.kernel.org/linux-riscv/20210216173305.2500-1-tklauser@distanz.ch/T/#u
+I should just send the most important of my patches as one line fixers 
+from now on.
+
+Thanks,
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
