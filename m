@@ -2,93 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F256031CAAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9136C31CAAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhBPMo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:44:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
+        id S230030AbhBPMnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 07:43:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhBPMoU (ORCPT
+        with ESMTP id S229812AbhBPMnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:44:20 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B760C061574;
-        Tue, 16 Feb 2021 04:43:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uOWdJIPiqLxSLw1FB8DUC17VYXjO4ss7tBRpE+csj60=; b=X/BCEKx2XCpDmibeE6L/Vxn1JF
-        I0HPwy3x7sk164lmCWc2/VVuIak2O0QCjpoPVlAwoQgnRGXs5ddZvlE/Etzu0upfMvY65uPksc8Vt
-        Yr4QKi7YZ1x1QT1dSIR2s/XXTUaObnfVTSUtIBpr8vic9TNbotQ2PDlFNqk1tqXTuifsOMUOwOdvQ
-        7dpVGzO4E/IFTzDPkeQR061UTp5AuTaZFuZKRCH5s5ZEIwu3ksIXfQ0ipVGdTWveMLEYxK37BS2e3
-        kU8mcPPdegJuCy7/m7suSsW+8Kfu2xg7JAZw8XJJZB1QX4rqTpfX9zaQYUJXdBDe0fCNaK3jv3gte
-        ZF8hRBhQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lBzgS-00Greh-7l; Tue, 16 Feb 2021 12:42:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 70B9A3059DD;
-        Tue, 16 Feb 2021 13:42:26 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3595C203C0769; Tue, 16 Feb 2021 13:42:26 +0100 (CET)
-Date:   Tue, 16 Feb 2021 13:42:26 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, corbet@lwn.net
-Subject: Re: [RFC PATCH 01/13] futex2: Implement wait and wake functions
-Message-ID: <YCu9suNwsselodLD@hirez.programming.kicks-ass.net>
-References: <20210215152404.250281-1-andrealmeid@collabora.com>
- <20210215152404.250281-2-andrealmeid@collabora.com>
- <YCuWvlKRXAygNQZP@hirez.programming.kicks-ass.net>
- <20210216102044.e2cvvqdglqs23yfe@linutronix.de>
+        Tue, 16 Feb 2021 07:43:43 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D91C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:43:01 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id 7so12846365wrz.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:43:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pepuqadm438MArye8Qz+J5Ooe4idQ3PxG+sdr05Ejxs=;
+        b=jBWXD2Q8GnJBrWGxpLmNZ6OJKKUIHriasEH/udWvyXNCTU0EpZk01UKFcyMeAhzwkW
+         5hEw1Lq2V+6I2w/MMd3qkTNTj7FRofzuelpT9CdASnMkOQOkK5rowh9Ac8olPUG4aqFQ
+         /X9LyNc1tG4S+X+lFHuV/V3IjyPlY+CWkCKel2pquPI7RyMg28GQ5FWwRbSunEQ/Bxo1
+         GB5ENs6Ewxy71Izc2Qv3FzB/ZvktFPXCsajSHw/dpeeQQBUa00wvQ5qwcyFntc4NS2vi
+         GdNnd6Yh8mAiMeta2fjayXujXZgO7UX2PkUhps7wC2IjnEiNaquTZuMG7oKO0LFeThKv
+         LD2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pepuqadm438MArye8Qz+J5Ooe4idQ3PxG+sdr05Ejxs=;
+        b=MKnnKqgMx8u21r9VEMXkHVqVVYhg7359WTnc5FZjsjcNUmKW55ByZew/yet2GX//n2
+         Wfgo9R+G0nEtZZe523WqGJr65ZzAhdxeE6urS02sFdJmARnnPHF3O5+15onoeJDv3CZ/
+         Muf25P8qwBFBrxvHa9zpuP6wBpwfBvrCF4UCWBs34KE9Ds5E2ZHUpSPpZj5/1hP+oQoY
+         JU+lvOQO+k/l4jH643xGKPjeP5y5GoJoA+95Nq4nsZ3hMV9yRsNYYSFBpGimL1DCNs2z
+         /ykZzlkFfEMlr5YXxn2Fl2GSYyuA50TCNPxfwxVm0EEi4ET8PvEQmyBZ8sgo0PNY3MVy
+         38jQ==
+X-Gm-Message-State: AOAM531y8inSNB99p2PmtfJrKIpd6WtVCE3BV2LX0hhOH93S2+hzz+5+
+        BsyKsKNYuJU58EC/KpadpXs=
+X-Google-Smtp-Source: ABdhPJxUwH4fcUcZgUz0cWJYFkO90RhfO5d6Anb3CTldI5QPBorcihA5qv0LImvJAoJlQDt6s4OclQ==
+X-Received: by 2002:adf:e585:: with SMTP id l5mr23086855wrm.85.1613479379692;
+        Tue, 16 Feb 2021 04:42:59 -0800 (PST)
+Received: from alaa ([197.57.74.212])
+        by smtp.gmail.com with ESMTPSA id v204sm3557887wmg.38.2021.02.16.04.42.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 04:42:59 -0800 (PST)
+From:   Alaa Emad <alaaemadhossney.ae@gmail.com>
+To:     mchehab+huawei@kernel.org, gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Alaa Emad <alaaemadhossney.ae@gmail.com>
+Subject: [PATCH v2] staging: hikey9xx: fix styling issues
+Date:   Tue, 16 Feb 2021 14:42:55 +0200
+Message-Id: <20210216124255.9353-1-alaaemadhossney.ae@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210216102044.e2cvvqdglqs23yfe@linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:20:44AM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-02-16 10:56:14 [+0100], Peter Zijlstra wrote:
-> > So while I'm in favour of adding a new interface, I'm not sure I see
-> > benefit of reimplementing the basics, sure it seems simpler now, but
-> > that's because you've not implemented all the 'fun' stuff.
-> 
-> The last attempt tried to hide the updated interface within libc which
-> did not fly. The global hash state is one of the problems because it
-> leads to hash collisions of two unrelated locks.
-> It will get simpler if we go into the kernel for each lock/unlock
-> operation but this might not very good in terms of performance for locks
-> which are mostly uncontended. I'm not sure how much we can cheat in
-> terms of VDSO.
+In hi6421-spmi-pmic.c, there are some warnings and Check:
 
-I'm sorry, but I'm failing to understand any of that.
+"WARNING: please, no space before tabs" in lines 51,52,53 and 69.
+"CHECK: Alignment should match open parenthesis" in lines 180 and 238.
 
-How is adding a second global hash going to solve anything? Also, the
-LOCK/UNLOCK primitives as we have them today very much rely on a
-userspace fast path, and I don't see that changing. Only on contention
-do we call into the kernel.
+Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+---
+Changes in v2:
+  - Make the commit message more clearer.
+---
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-The advantage of the new interface is having that NUMA word along with
-the Futex word, in which we can store the node_id for the hash we
-stuffed the futex in, which is awesome, but that too doesn't need a
-re-implementation of all the basics.
+diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+index 9c5e113e1a81..626140cb96f2 100644
+--- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
++++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+@@ -48,9 +48,9 @@ enum hi6421_spmi_pmic_irq_list {
+ /*
+  * The IRQs are mapped as:
+  *
+- * 	======================  =============   ============	=====
+- *	IRQ			MASK REGISTER 	IRQ REGISTER	BIT
+- * 	======================  =============   ============	=====
++ *	======================  =============   ============	=====
++ *	IRQ			MASK REGISTER	IRQ REGISTER	BIT
++ *	======================  =============   ============	=====
+  *	OTMP			0x0202		0x212		bit 0
+  *	VBUS_CONNECT		0x0202		0x212		bit 1
+  *	VBUS_DISCONNECT		0x0202		0x212		bit 2
+@@ -66,7 +66,7 @@ enum hi6421_spmi_pmic_irq_list {
+  *	SIM0_HPD_F		0x0203		0x213		bit 3
+  *	SIM1_HPD_R		0x0203		0x213		bit 4
+  *	SIM1_HPD_F		0x0203		0x213		bit 5
+- * 	======================  =============   ============	=====
++ *	======================  =============   ============	=====
+  */
+ #define SOC_PMIC_IRQ_MASK_0_ADDR	0x0202
+ #define SOC_PMIC_IRQ0_ADDR		0x0212
+@@ -177,7 +177,7 @@ static void hi6421_spmi_pmic_irq_init(struct hi6421_spmi_pmic *ddata)
+ 
+ 	for (i = 0; i < HISI_IRQ_ARRAY; i++)
+ 		regmap_write(ddata->regmap, SOC_PMIC_IRQ_MASK_0_ADDR + i,
+-					HISI_MASK);
++			     HISI_MASK);
+ 
+ 	for (i = 0; i < HISI_IRQ_ARRAY; i++) {
+ 		regmap_read(ddata->regmap, SOC_PMIC_IRQ0_ADDR + i, &pending);
+@@ -235,7 +235,7 @@ static int hi6421_spmi_pmic_probe(struct spmi_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	ddata->domain = irq_domain_add_simple(np, HISI_IRQ_NUM, 0,
+-					     &hi6421_spmi_domain_ops, ddata);
++					      &hi6421_spmi_domain_ops, ddata);
+ 	if (!ddata->domain) {
+ 		dev_err(dev, "Failed to create IRQ domain\n");
+ 		return -ENODEV;
+-- 
+2.25.1
 
-And getting rid of the super multiplexer is also nice.
-
-But re-implementing all the basic stuff again, not so nice.
