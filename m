@@ -2,88 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A57331D181
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDAE31D17C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhBPUXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 15:23:11 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:36095 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhBPUXJ (ORCPT
+        id S230139AbhBPUWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 15:22:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229871AbhBPUV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 15:23:09 -0500
-Received: from [192.168.1.155] ([95.117.73.76]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1N6srH-1lwDaQ3HO3-018Ib5; Tue, 16 Feb 2021 21:20:09 +0100
-Subject: Re: [PATCH] of: property: fw_devlink: Ignore interrupts property for
- some configs
-To:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <treding@nvidia.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>, kernel-team@android.com,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210215224258.1231449-1-saravanak@google.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <255a5fba-d5a1-0c40-c26c-2f6ae0e91d56@metux.net>
-Date:   Tue, 16 Feb 2021 21:20:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 16 Feb 2021 15:21:59 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8D5C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:21:19 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id m188so11602448yba.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:21:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zqItVs551xarAqTOXx3vKqdvAq2kdgOmNogAihMa454=;
+        b=ThYcsxbl9GGOgIWSjQA4X5VpumK7laL0Rao1M1r3y1Lx9Yvfr6MNq4BGXWI+mcFCF9
+         +kyoAGdKTSRVCTouUEIoBPqLPQn3aDG94hQYVjXse/6iIPv84W9bjGn300ONZdQ2UGmR
+         KXmjzWYsgawWoC7z8vGVLZ1C1uJxcFZw/7dkrfSlcUpDJG272tYAayf1hEHR2poniUyk
+         etcwONHg/tyRXjC3qwC+9uP2pDloBZXqoBGqWEb89MAIUWxMI6I+ev9irgksZjJvjx3t
+         bQ56D8OvyJkbH2T/ogz9JEVCc/kxYTVmKiTpmE7rB8PQ7e6FSj/YuPoBAiI9s+DVwY+d
+         +Ecw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zqItVs551xarAqTOXx3vKqdvAq2kdgOmNogAihMa454=;
+        b=hstuYuUG8C+JIig7bMqK/tMjepKNDT2lVC/3Z83zGRa3BWiDZoySK9LqcgdWABvd2R
+         a8l1prsVb0zXc0IUBphls/l7CX+POlTfleW+VygAlQ23mru/fa6HlRi6eZRrTJe8rGw8
+         8+0FTm4OUUe1gd7qDjTE+fSyGj9FWMPq7kiXLfTfCo5IQcnki5ElfhgWefkNz/BYOXJB
+         44LbkaWrXd8JfH+MUqdnGDnbm5+4oPQDEoejd95v7mAc1a9aBywbYIk0YIHYik+8xSVQ
+         DRtKydnw1BTOc6jZh6h0LAZR7qtgl20fKOoI6lzy+x59z9hE2ZGxeIiyWycwDYtdEXZf
+         b9nA==
+X-Gm-Message-State: AOAM532/jPoo4ilcGjaVd7wm0QUdpBpZOxSAn1MzJR2m66T8YTcfcvbz
+        CmwLWvebKjZ0yI+OGwdmw6kCXIAbpNY9XEbUv7s8Qn9dEU4Q2w==
+X-Google-Smtp-Source: ABdhPJwrr5Qgyjz10IJQE+TRaOGEkPRLIH9sUGO0RnNDVutUIe8LZmt3uLu/CSNxarRM958wc39ULdAq3XK5gZygGNU=
+X-Received: by 2002:a25:d6d5:: with SMTP id n204mr1770723ybg.22.1613506878819;
+ Tue, 16 Feb 2021 12:21:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210215224258.1231449-1-saravanak@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:qSif6iokHfmrVqUaq8FGJ2A2coJVPNemx11Xv76FissQOagS2WA
- l1gPeHX69KiJL/8ZvfSOKdl4E11KywiViuH/0O799JHggHHkjWXWwPp75A1u58mcMBjxG1e
- HEfux9E/3gOB53YOK18jUpHz8lIaOhj/8ZKlN2Ug7zoY8o2WvkLEMQdvho7kU2xAS6trNCo
- GKDRHQexuKGAa1gzDTkhQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wIWFmaJlMk8=:EzI+ODY37JvuBoECQcGuF4
- fjfSVUCjtMJrOhvFqHtCzhes2USBlM1Ac6oCxoxMKZfwDfwEQQvyVyM+zjVdg/gRPBurz1Xqi
- 15ELHBnqt1A7V7QBdyobBcNX3whuxkFtPmTwN+06sVxSuUcVtJPRTXSNl+wDihYX+A0MmsXf2
- fuXkOwrAoGCCevZgwCY0F4vxFPNtqJlmXzn4A2wkZ4fhLcrd6snAJ26K9qsqYEK3kjTFVVw2G
- nlZt7k8YY5Js4W4rxxPZR0/neWnNwgeg2ITxknsV03h0YTVQ2SQjc+0ryARjyxxeVdsF5KlG9
- 9e0BCs8kt3vxzaY4y5JmDsvYhGEF1725yR2zIDOWukJ/uglQXXMDQweIgcIxuDwXkD2KvWUso
- ZaArI+leA96eIAisBUoGbmmULRry6eDfhzam9zAZ59ls06gGAzccJ0N1xEtUk
+References: <20210208190735.ibq44r5pc4cwzt7j@linutronix.de>
+ <CANiq72kq_d=5TvdhndP9zkyTD1pHF6WQb+qs01D68DEQH6jVjQ@mail.gmail.com>
+ <20210208204136.sv4omzms3nadse6e@linutronix.de> <CANiq72mw47Qa9M6i23Dp+_3M8juBnv33PJ-6zFk++SV57G2-cQ@mail.gmail.com>
+ <20210209090112.lewvvhnc2y7oyr27@linutronix.de> <CANiq72mG3zXA7j9KbC74hQ1BMgw713Hm3WDAcQBjKxgg0fLHeg@mail.gmail.com>
+ <20210213165040.vzzieegx4aliyosd@linutronix.de> <CANiq72mkkSfbnNM_mmXE-TNKO1orsAeyByMKFy1N6hm+EBA40A@mail.gmail.com>
+ <20210216102856.dnaycukt3oqxoszp@linutronix.de> <CANiq72mge40Uvqf3mb4uof2gi8ktvhjoodfyJY7uLW4guTnvDw@mail.gmail.com>
+ <20210216182619.xd7h4uwpqcw5kcup@linutronix.de>
+In-Reply-To: <20210216182619.xd7h4uwpqcw5kcup@linutronix.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 16 Feb 2021 21:21:07 +0100
+Message-ID: <CANiq72np-G3whePohyYazx3KpP6A+DsRwq-bjd7E7qKb1JG62w@mail.gmail.com>
+Subject: Re: [PATCH v3] auxdisplay: Remove in_interrupt() usage.
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.02.21 23:42, Saravana Kannan wrote:
+On Tue, Feb 16, 2021 at 7:26 PM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> That should be part of the commit message. You can always rewind to the
+> commit message that introduce something and check if the commit message
+> made sense or ignored a detail which made it wrong (or so).
 
-Hi,
+No, it shouldn't. Commit messages are used to justify changes in the
+past, but they shouldn't be used as a replacement for documenting the
+present. The reason `in_interrupt()` is removed should be in the
+commit message; while the reason the precondition for `cond_resched()`
+is fulfilled should be in the code (assuming one finds the comment
+necessary, see below).
 
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 79b68519fe30..5036a362f52e 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1300,6 +1300,9 @@ static struct device_node *parse_interrupts(struct device_node *np,
->   {
->   	struct of_phandle_args sup_args;
->   
-> +	if (!IS_ENABLED(CONFIG_OF_IRQ) || IS_ENABLED(CONFIG_PPC))
-> +		return NULL;
-> +
->   	if (strcmp(prop_name, "interrupts") &&
->   	    strcmp(prop_name, "interrupts-extended"))
->   		return NULL;
+> So it was needed once, it is not needed anymore. That was my arguing in
+> v1 about. No word about general removing in_interrupt() from drivers.
 
-wouldn't it be better to #ifdef-out the whole code in this case ?
+Not sure what you mean by this.
 
+> This is not a fix. It just removes not needed code. Also I don't think
 
---mtx
+It isn't a *bug* fix, yes, but it is a fix because the removal should
+have happened when the code was refactored. We can call it a cleanup,
+if you will.
 
+> that this is a good idea to add a comment to avoid someone to backtrack
+> / double check something. If you rely on a comment instead of double
+> checking that you do is indeed correct you will rely one day on a stale
+> comment and commit to a bug.
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Sure, comments and documentation may contain bugs like anything else.
+That does not mean comments and documentation are useless and we
+should remove all of them. In fact, the kernel lacks quite a lot of
+documentation.
+
+On the stale point: one-liner comments contiguous to the line they
+talk about and function docs are not as prone to get outdated as
+out-of-line docs like `Documentation/`.
+
+> To give you another example: If I would have come along and replaced
+> GFP_ATOMIC with GFP_KERNEL would you ask for a comment?
+
+Yes, I would, because if someone thought `GFP_ATOMIC` was needed at
+some point, then it is likely there is something non-obvious going on.
+
+Of course, it depends on the case. For instance, in the case of our
+patch, having a comment is not a big deal because it is fairly clear,
+specially for `charlcd_write()`. And `cond_resched()` has a
+`might_sleep()` annotation which helps catching future bugs. So if you
+don't add a comment, I will still take the patch since it is good
+patch.
+
+> Anyway, I'm posting a patch with changes as ordered in a jiffy.
+
+It is not an order :-) i.e. don't feel pressured that you need to sign
+off on the comment change -- I can submit the comment on my own later
+on.
+
+Cheers,
+Miguel
