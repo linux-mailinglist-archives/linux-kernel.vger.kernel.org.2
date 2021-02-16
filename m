@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AF131CF8C
+	by mail.lfdr.de (Postfix) with ESMTP id 80E0D31CF8B
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhBPRsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:48:42 -0500
-Received: from mail.zx2c4.com ([104.131.123.232]:51854 "EHLO mail.zx2c4.com"
+        id S231224AbhBPRsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:48:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231330AbhBPRrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:47:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1613497606;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EeUD0/Hrmkha1vgSjrxHXQGMMGTIAxd3b5RgI7gY5e4=;
-        b=ipxFek+CTX1D/JoUVERmSDJlmYeA4+Y38dsHRKibMiaiDM396nBUW6wAAAqN9RXQE44SAH
-        c38acytS63tsoIpYLXnl8L+ZP7qQTypLTPonbP12/lDrj5vlQDFvfx4mCR0LI4PF8K5/UO
-        d3nn2yPgFxWYIiXNic1ircpgLM5208c=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id adf77641 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Tue, 16 Feb 2021 17:46:45 +0000 (UTC)
-Received: by mail-yb1-f182.google.com with SMTP id r127so1847143ybr.1;
-        Tue, 16 Feb 2021 09:46:45 -0800 (PST)
-X-Gm-Message-State: AOAM5327vN98YWUTtVb+x60s79EznA5bjiHmQzk1AIjXLb6SCboEhJaD
-        vkRsbVsRLyrMjCzkFzwtZ+oPaNAlvjwg2cX+ztQ=
-X-Google-Smtp-Source: ABdhPJwhVsAUHKbqej3N09bli7Ip3Grj1LPSZWD38TPvdzb+CintSD1ow5bBZyachx1edPauzqXd/cvVVNds1A+cBKQ=
-X-Received: by 2002:a25:80c9:: with SMTP id c9mr31610024ybm.279.1613497604734;
- Tue, 16 Feb 2021 09:46:44 -0800 (PST)
+        id S231322AbhBPRr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:47:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B80364E04;
+        Tue, 16 Feb 2021 17:46:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613497606;
+        bh=cyWmo2IWHz6XqlAutw5VL0hTTQ/Ovvrs0LDQkd9uUmI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QSxI3viB0aH5Ccqfh5i+x+/nu+dfBHFZoK1THv+wMqsEZFVe0Jp83ooMfBsZyNLwX
+         +pWHY4kn/l2QwaKoI2yAYIZBiAV6jlm4Qy5QaAzLbs/NAXqgEEx+o81mE5Hy7rRnNx
+         v166mEDPC+oP+3blR7/P5nCyfHJEZMTlYCcnZUks=
+Date:   Tue, 16 Feb 2021 18:46:44 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>,
+        Jianxun Zhang <jianxun.zhang@linux.intel.com>
+Subject: Re: [PATCH v1 01/12] gna: add driver module
+Message-ID: <YCwFBNa2npYcEIQ+@kroah.com>
+References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
+ <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
 MIME-Version: 1.0
-References: <0000000000000be4d705bb68dfa7@google.com> <20210216172817.GA14978@arm.com>
-In-Reply-To: <20210216172817.GA14978@arm.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 16 Feb 2021 18:46:34 +0100
-X-Gmail-Original-Message-ID: <CAHmME9q2-wbRmE-VgSoW5fxjGQ9kkafYH-X5gSVvgWESo5rm4Q@mail.gmail.com>
-Message-ID: <CAHmME9q2-wbRmE-VgSoW5fxjGQ9kkafYH-X5gSVvgWESo5rm4Q@mail.gmail.com>
-Subject: Re: KASAN: invalid-access Write in enqueue_timer
-To:     Netdev <netdev@vger.kernel.org>
-Cc:     syzbot <syzbot+95c862be69e37145543f@syzkaller.appspotmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+On Tue, Feb 16, 2021 at 05:05:14PM +0100, Maciej Kwapulinski wrote:
+> --- /dev/null
+> +++ b/drivers/misc/gna/gna_driver.c
+> @@ -0,0 +1,65 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Copyright(c) 2017-2021 Intel Corporation
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME " " fmt
 
-On Tue, Feb 16, 2021 at 6:28 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> Adding Jason and Ard. It may be a use-after-free in the wireguard
-> driver.
+You are a driver, you should never need a pr_* call, so this should not
+be needed.  You should always just use dev_* instead.
 
-Thanks for sending this my way. Note: to my knowledge, Ard doesn't
-work on wireguard.
+> --- /dev/null
+> +++ b/drivers/misc/gna/gna_driver.h
+> @@ -0,0 +1,41 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/* Copyright(c) 2017-2021 Intel Corporation */
+> +
+> +#ifndef __GNA_DRIVER_H__
+> +#define __GNA_DRIVER_H__
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/mutex.h>
+> +#include <linux/types.h>
+> +
+> +#define GNA_DRV_NAME	"gna"
 
-> >  hlist_add_head include/linux/list.h:883 [inline]
-> >  enqueue_timer+0x18/0xc0 kernel/time/timer.c:581
-> >  mod_timer+0x14/0x20 kernel/time/timer.c:1106
-> >  mod_peer_timer drivers/net/wireguard/timers.c:37 [inline]
-> >  wg_timers_any_authenticated_packet_traversal+0x68/0x90 drivers/net/wireguard/timers.c:215
+Way too generic, no one knows what "gna" is.
 
-The line of hlist_add_head that it's hitting is:
+> +#define GNA_DRV_VER	"1.2.0"
 
-static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
-{
-       struct hlist_node *first = h->first;
-       WRITE_ONCE(n->next, first);
-       if (first)
+As Andy said, this means nothing within the kernel (or really, outside
+the kernel either), so please drop.
 
-So that means it's the dereferencing of h that's a problem. That comes from:
+> +
+> +#define GNA_MAX_DEVICES		16
 
-static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
-                         unsigned int idx, unsigned long bucket_expiry)
-{
+Why 16?
 
-       hlist_add_head(&timer->entry, base->vectors + idx);
+And if that's all, then just use the misc device api, that saves you so
+much overhead and mess and you don't have to worry about sysfs and
+classes or anything like that at all.
 
-That means it concerns base->vectors + idx, not the timer_list object
-that wireguard manages. That's confusing. Could that imply that the
-bug is in freeing a previous timer without removing it from the timer
-lists, so that it winds up being in base->vectors?
+thanks,
 
-The allocation and deallocation backtrace is confusing
-
-> >  alloc_netdev_mqs+0x5c/0x3bc net/core/dev.c:10546
-> >  rtnl_create_link+0xc8/0x2b0 net/core/rtnetlink.c:3171
-> >  __rtnl_newlink+0x5bc/0x800 net/core/rtnetlink.c:3433
-
-This suggests it's part of the `ip link add wg0 type wireguard` nelink
-call, during it's allocation of the netdevice's private area. For
-this, the wg_device struct is used. It has no timer_list structures in
-it!
-
-Similarly,
-
-> >  netdev_freemem+0x18/0x2c net/core/dev.c:10500
-> >  netdev_release+0x30/0x44 net/core/net-sysfs.c:1828
-> >  device_release+0x34/0x90 drivers/base/core.c:1980
-
-That smells like `ip link del wg0 type wireguard`. But again,
-wg_device doesn't have any timer_lists in it.
-
-So what's happening here exactly? I'm not really sure yet...
-
-It'd be nice to have a reproducer.
-
-
-Jason
+greg k-h
