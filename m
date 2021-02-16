@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8131331CE92
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421FF31CEB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhBPRAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:00:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
+        id S230464AbhBPRKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhBPRAF (ORCPT
+        with ESMTP id S230364AbhBPRKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:00:05 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB240C061756;
-        Tue, 16 Feb 2021 08:59:24 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id l18so6322703pji.3;
-        Tue, 16 Feb 2021 08:59:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T4k94IHmYOAsw1neG4zAJJJPBOifn3q1Cm7s7hwfxAs=;
-        b=pm3+yLEs1FyxPwpxgknSQ8OTZgHg4lpLMRYpWpJZZxYfW6yoVOFxufDnHrbDbqYbTP
-         e7MhXhXdob/dn8p4bOP98QTw4btfZkKMcSHZohPQiTKIOh6wJajGxliMgWolHkOoURUD
-         RcTH4UMgEH2bwmouvGPidMRmc8ZsLgRGXhUSU/Pk8qDLakNS688ElZzMyXGp994Dfzdg
-         EY2qNS/Kd+VfZpUjjwDUkFeAGFdBBC11g/veGi7ndXsPG+1N73szQitNXhLQ/E7ddUan
-         xtUN1VEOTeZ6O4vGg/7zxA55KaA+7vWvHyxJVhWfURM3R+liZfk+3YiwA/bIU4HSWhna
-         mjVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T4k94IHmYOAsw1neG4zAJJJPBOifn3q1Cm7s7hwfxAs=;
-        b=tgycEzmQwIV7KDkqq8nFKg6p8TGJRyKpVgMiL3S1iE+bdK+QJfbyZ7pAqvn3l8LB80
-         mHY47wmSuCv4R65P6Jt7xVi7ex0JndlW2UXw32wM2qUKRp+L1uaTTPqBxYQwcWSmYJHV
-         H0Z62xLeEFu/IxxR7qZ+ivBiTEr9OqkJHxh0bMs389//Ppv38InU6zs4cVMUg35fjEvl
-         FIVY/apdhubSnYnSy3k/OpNX95Q3kZkDbh4Lbdk2Wf1Imtzt3kpL83o8z4dg18U0NUwR
-         Kyi23EOqdjKS0ss/zxJztX0MlWeQid9m+U9RcbCN3psURBJw4Y+rfR740PFaBHGYWsNp
-         6IOA==
-X-Gm-Message-State: AOAM5322pgAJpb2htZIhp32GbTqloMKL0Cu5v6R+duSl7rLwOp1uPild
-        zFFy9sxBaesl75ADxxUhBdMYHTS/OGxfWTRFKtM+t5hUsx9QWw==
-X-Google-Smtp-Source: ABdhPJwdH193bkuaUeHGr5QPKbsuFa4cwImV+qjhoabD5rMFzZjl8wCp+iBTyrNK58yuJSsPTSdP1UhSM/n1w3kMaEo=
-X-Received: by 2002:a17:90a:4fc1:: with SMTP id q59mr5319710pjh.129.1613494764257;
- Tue, 16 Feb 2021 08:59:24 -0800 (PST)
+        Tue, 16 Feb 2021 12:10:16 -0500
+Received: from pmg02-out3.zxcs.nl (pmg02-out3.zxcs.nl [IPv6:2a06:2ec0:1:b::ffea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F244C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 09:09:28 -0800 (PST)
+Received: from pmg02.zxcs.nl (localhost.localdomain [127.0.0.1])
+        by pmg02.zxcs.nl (ZXCS) with ESMTP id E010F82663;
+        Tue, 16 Feb 2021 18:00:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=pascalroeleven.nl; s=x; h=Content-Transfer-Encoding:MIME-Version:Message-Id
+        :Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=CQp8a9bvhUdwKVBZ0N74gvncL9qmC+u/ZFHCgpEsS+o=; b=J50Nm06a0Q51h3t6vBefpAdhwE
+        qUU6PnVO0ETMQZWrfbYifiMV+K3vdb93a/bgcoI8JZ3JS1n0EaFeqJHVZgqq1g44DdRGCSMiE3rEo
+        EmY0rsoxnQslBiDKQlR25nZJCQPy++iz/NAbm0cHi3xHkDsnBDnUhGvQaEz4IHMw8YiAHnUk9ePCq
+        aJDftDN39WtTpjUSLRFiivUGO/yTCe2xEM2sYqExeJzRAC0bDnpKMNajz9oMh6mwhwsOcw5szbp/4
+        eUV4D77lwpxnlZuFEkxEtocsJrCNP6lKdnMQnTC1gu8qTY9gz1H3yTErRFzsgElA/tROBumk3Ovlm
+        lPXF4nAQ==;
+From:   Pascal Roeleven <dev@pascalroeleven.nl>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Martin Cerveny <m.cerveny@computer.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     linux-sunxi@googlegroups.com,
+        Pascal Roeleven <dev@pascalroeleven.nl>
+Subject: [PATCH RESEND v3 0/2] Add support for Topwise A721 tablet
+Date:   Tue, 16 Feb 2021 17:59:52 +0100
+Message-Id: <20210216165954.43135-1-dev@pascalroeleven.nl>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <CAHp75VfpnGEZcnrQLFYaFQ-HuxTmPw5OnewKmRGfXQf__ztjww@mail.gmail.com>
- <87r1lgx8fo.fsf@meer.lwn.net>
-In-Reply-To: <87r1lgx8fo.fsf@meer.lwn.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Feb 2021 18:59:08 +0200
-Message-ID: <CAHp75Vc0SwC=WxUOiokUik1G4uPE6bHfX_F_ckgp-eEJaVuWhA@mail.gmail.com>
-Subject: Re: anonymous enums in kernel doc
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-AuthUser: dev@pascalroeleven.nl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 6:51 PM Jonathan Corbet <corbet@lwn.net> wrote:
->
-> > Mauro, can you do some test cases in your workflow against anonymous
-> > enum in ernel doc, please?
-> >
-> > They are broken again, please fix the script!
-> >
-> > drivers/pinctrl/intel/pinctrl-intel.c:204: warning: wrong kernel-doc
-> > identifier on line:
-> > * enum - Locking variants of the pad configuration
-> >
-> > Above is simply a wrong statement.
->
-> The real problem, perhaps, is that there seems to be little point in
-> adding kerneldoc comments for anonymous enums; where are you going to
-> use that documentation?
+On request I'm resending the last two patches from the Topwise A721 tablet
+series from a year ago as they weren't picked up. The other patches are
+already merged, so I didn't resend them. They still apply as-is, so no changes
+are made.
 
-I had been explicitly told during review (IIRC by maintainers) to make
-it such, while the initial version was exactly like you are thinking
-of. So, I'm not the right person to be asked :-)
+Changes from v2:
+* Collected acked-by.
 
->  The error message could perhaps be changed to
-> say that; meanwhile, perhaps this one could be fixed with an action like
-> s%/**%/*% ?
+Original cover letter:
 
-See above. I think regression comes from the kernel doc script,
-earlier it was okay. That said, the author of kernel doc changes has
-to submit a patch to amend the driver and maintainers will review it.
+This series add support for the Topwise A721 tablet and it's display.
+It is an old tablet (around 2012) but it might be useful as reference
+as the devicetree is pretty complete.
+
+Changes from v1:
+* Split into multiple patches
+* dt-binding: use yaml instead of txt
+* dt-binding: add Topwise A721 to sunxi.yaml
+* dt-binding: add Topwise to vendor-prefixes
+* drm: Add bus_format, bus_flags and connector_type
+* dts: Use SPDX license identifier instead of boilerplate license text
+* dts: Remove pinctrl leftovers
+
+Pascal Roeleven (2):
+  dt-bindings: arm: Add Topwise A721
+  ARM: dts: sun4i: Add support for Topwise A721 tablet
+
+ .../devicetree/bindings/arm/sunxi.yaml        |   5 +
+ arch/arm/boot/dts/Makefile                    |   3 +-
+ arch/arm/boot/dts/sun4i-a10-topwise-a721.dts  | 242 ++++++++++++++++++
+ 3 files changed, 249 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/sun4i-a10-topwise-a721.dts
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.27.0
+
+
