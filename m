@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65B231CC33
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:41:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2E331CC3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhBPOkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:40:55 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53726 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230305AbhBPOjx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:39:53 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GEZUEc051715;
-        Tue, 16 Feb 2021 09:39:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ix5xI4eV4ktS+Si1szwX06PnD5N08iIL8loUbC9USd4=;
- b=gMzCO/qcyzVEvg/TocQu4V6G+fSEk6lRzbp0oAhI3ZvaIM8tSWEj82WfTKu0Tey2jOkn
- WKnWeID2805aCiLtTYrKbbq7HANDn7Qt3vXS1Acsl364xejF2DtW7wKQwSnj5ZeL/Cad
- YRjI7I+qqDHAYvRMXVKk52eTfNuFl/FT2BaV+RnajBpJjUI3ywq7qsN9Uy5Tu1SWZ+2S
- wxFnc9kkthOdUGov7yxORbfcKkuY1zPgwLJ8y2/gIMD5ffIo9bhR4B0d7rBTuoBnSjSV
- mWjomY4Ir3WQ2KCoVmL+sgmhSRb5/EBksdaWhvxslViYwZnzmr22G3wb4mrJJBPZBdXW Hw== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36rdr5vbbk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 09:39:04 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11GEb4gw007619;
-        Tue, 16 Feb 2021 14:39:03 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma01dal.us.ibm.com with ESMTP id 36p6d9cnbu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 14:39:03 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11GEd2ER6489054
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Feb 2021 14:39:02 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6B767112065;
-        Tue, 16 Feb 2021 14:39:02 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C971112061;
-        Tue, 16 Feb 2021 14:39:01 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.163.23.155])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 16 Feb 2021 14:39:01 +0000 (GMT)
-Subject: Re: [PATCH 2/4] ibmvfc: fix invalid sub-CRQ handles after hard reset
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20210211185742.50143-1-tyreld@linux.ibm.com>
- <20210211185742.50143-3-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <9c53ed35-7f15-8c4a-7cab-378278444ab4@linux.vnet.ibm.com>
-Date:   Tue, 16 Feb 2021 08:39:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229894AbhBPOly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:41:54 -0500
+Received: from mga06.intel.com ([134.134.136.31]:60032 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229916AbhBPOlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 09:41:11 -0500
+IronPort-SDR: jIas1xF4TaOMw+ssUkMtzicRfSWUDAzUO3b4FTlWVdjqE2uvNGLv88+rt1kqPeX96WU+LtIsPJ
+ +vsmfDa+0+/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="244377521"
+X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
+   d="scan'208";a="244377521"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 06:39:14 -0800
+IronPort-SDR: zXTNp0diplCmlIc1HMcl9+3iipNwCOEwZUWnYn4bABY29FaA3CkgDNxoeIKWy3Mx9tjPvJn2Kj
+ /KU7OBGzcpRA==
+X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
+   d="scan'208";a="493310383"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 06:39:11 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lC1VN-005U7J-4w; Tue, 16 Feb 2021 16:39:09 +0200
+Date:   Tue, 16 Feb 2021 16:39:09 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        mika.westerberg@linux.intel.com, rric@kernel.org,
+        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, kw@linux.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] i2c: designware: Use the correct name of
+ device-managed function
+Message-ID: <YCvZDTLYPOvg73lb@smile.fi.intel.com>
+References: <20210216141810.747678-1-zhengdejin5@gmail.com>
+ <20210216141810.747678-4-zhengdejin5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210211185742.50143-3-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-16_04:2021-02-16,2021-02-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- mlxlogscore=882 spamscore=0 phishscore=0 clxscore=1015 impostorscore=0
- mlxscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102160130
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216141810.747678-4-zhengdejin5@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
+On Tue, Feb 16, 2021 at 10:18:09PM +0800, Dejin Zheng wrote:
+> Use the new function pcim_alloc_irq_vectors() to allocate IRQ vectors,
+> the pcim_alloc_irq_vectors() function, an explicit device-managed version
+> of pci_alloc_irq_vectors(). If pcim_enable_device() has been called
+> before, then pci_alloc_irq_vectors() is actually a device-managed
+> function. It is used here as a device-managed function, So replace it
+> with pcim_alloc_irq_vectors().
+
+...
+
+> -	r = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
+> +	r = pcim_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
+>  	if (r < 0)
+>  		return r;
+
+It's good, but now why do we have pci_free_irq_vectors() in the same file?
 
 
 -- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
+With Best Regards,
+Andy Shevchenko
+
 
