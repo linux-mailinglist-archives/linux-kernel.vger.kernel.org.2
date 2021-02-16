@@ -2,105 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A4331C8DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 939F531C8E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBPKcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:32:20 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:35191 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229761AbhBPKcD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:32:03 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1lBxdN-003Xpl-Nn; Tue, 16 Feb 2021 11:31:09 +0100
-Received: from suse-laptop.physik.fu-berlin.de ([160.45.32.140])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lBxdM-001IpR-JZ; Tue, 16 Feb 2021 11:31:09 +0100
-Subject: Re: Pending patches for linux-sh
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Rich Felker <dalias@libc.org>
-Cc:     Rob Landley <rob@landley.net>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <133f8171-09ec-39b3-0660-de780cd879d6@physik.fu-berlin.de>
- <f14d4205-2031-7727-e013-7f75d17d4656@physik.fu-berlin.de>
-Message-ID: <5c4dd910-eb34-4406-626b-0d80957d0379@physik.fu-berlin.de>
-Date:   Tue, 16 Feb 2021 11:31:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230156AbhBPKdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:33:23 -0500
+Received: from verein.lst.de ([213.95.11.211]:40771 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhBPKdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:33:01 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 3E1E76736F; Tue, 16 Feb 2021 11:32:16 +0100 (CET)
+Date:   Tue, 16 Feb 2021 11:32:15 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
+Message-ID: <20210216103215.GB27714@lst.de>
+References: <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk> <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <f14d4205-2031-7727-e013-7f75d17d4656@physik.fu-berlin.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 160.45.32.140
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rich!
-
-Any chance we can get these patches (see below) merged for 5.12?
-
-And let's add this one:
-
-> - [PATCH] scripts/recordmcount.pl: support big endian for ARCH sh
-> - https://marc.info/?l=linux-sh&m=161296964604229&w=2
-
-Adrian
-
-Adrian
-
-On 1/24/21 11:07 PM, John Paul Adrian Glaubitz wrote:
-> Hi Rich!
+On Mon, Feb 15, 2021 at 03:44:52PM +0000, David Howells wrote:
+> Provide a function, readahead_expand(), that expands the set of pages
+> specified by a readahead_control object to encompass a revised area with a
+> proposed size and length.
 > 
-> The following patches are still missing after the 5.11 SH pull:
+> The proposed area must include all of the old area and may be expanded yet
+> more by this function so that the edges align on (transparent huge) page
+> boundaries as allocated.
 > 
->> - [PATCH] [sh] fix trivial misannotations
->> - https://marc.info/?l=linux-kernel&m=160945707001399&w=2
->>
->> - [PATCH] sh: check return code of request_irq
->> - https://marc.info/?l=linux-kernel&m=160867050030140&w=2
->>
->> - [PATCH] sh: boards: Fix the cacography in irq.c
->> - https://marc.info/?l=linux-sh&m=160578410511403&w=2
->>
->> - [PATCH 1/2] sh: boot: add intermediate vmlinux.bin* to targets instead of extra-y
->> - https://marc.info/?l=linux-kernel&m=161088234517301&w=2
->>
->> - [PATCH 2/2] sh: boot: avoid unneeded rebuilds under arch/sh/boot/compressed/
->> - https://marc.info/?l=linux-kernel&m=161088245817344&w=2
->>
->> - [PATCH] maple: fix wrong return value of maple_bus_init().
->> - https://marc.info/?l=linux-kernel&m=160635878212678&w=2
->>
->> - [PATCH] sh: kdump: add some attribute to function
->> - https://marc.info/?l=linux-kernel&m=160758311622653&w=2
->>
->> - [PATCH] sh: kernel: traps: remove unused variable
->> - https://marc.info/?l=linux-kernel&m=160760435528709&w=2
+> The expansion will be cut short if a page already exists in either of the
+> areas being expanded into.  Note that any expansion made in such a case is
+> not rolled back.
 > 
-> Shall they go in for 5.12?
-> 
-> They all look fine to me as they're either trivial fixes or I verified that they
-> don't cause any regression on my SH-7785LCR system.
-> 
-> Adrian
-> 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> This will be used by fscache so that reads can be expanded to cache granule
+> boundaries, thereby allowing whole granules to be stored in the cache, but
+> there are other potential users also.
 
+So looking at linux-next this seems to have a user, but that user is
+dead wood given that nothing implements ->expand_readahead.
+
+Looking at the code structure I think netfs_readahead and
+netfs_rreq_expand is a complete mess and needs to be turned upside
+down, that is instead of calling back from netfs_readahead to the
+calling file system, split it into a few helpers called by the
+caller.
+
+But even after this can't we just expose the cache granule boundary
+to the VM so that the read-ahead request gets setup correctly from
+the very beginning?
