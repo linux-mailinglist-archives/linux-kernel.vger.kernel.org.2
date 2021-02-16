@@ -2,104 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA76F31CE67
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 204C331CE6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhBPQt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:49:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
+        id S230364AbhBPQwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:52:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbhBPQt0 (ORCPT
+        with ESMTP id S229812AbhBPQwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:49:26 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED6FC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:48:45 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id do6so7191198ejc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:48:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+ecI3AnraXxD8s3/KbtK83ACA5HZ+x4/w5NBzKVHXCM=;
-        b=Wm4E81qbjZm4Ote4+krHtLMT/Sg47muTNtm9HAKUxuG6Ynbpz/zx9MMwTAxRVTsgVJ
-         /dzzWYIWuocSvGpYzRWHIensXSKdcLuR4nL7RXCE+p8DgFHIcvSeX0wcN5u7/JmCK0qp
-         acnyO5VrRzp2jteOXYfH01EwKQRMekKGfugDte/4je+KFj4VmoylnLVz45G4U+t/SrpB
-         iZWqFLwHhLLKfGymiYFRCCxGZPBfX3wrdFNwaXAyieuKeokwaE98+EHOUIK5WC+f3xUs
-         9De32myHYjeq1IRoGAK7DkzalOxPCkwfTVMLHCtzioAjkOxq3Tp1syboSAYFWZtlM49Y
-         /hvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+ecI3AnraXxD8s3/KbtK83ACA5HZ+x4/w5NBzKVHXCM=;
-        b=m8MX+M3V7AdVxiYhtOgknF6EKg4EFl9VOfAtIl2CATSIDndmDDOUfuseI2jm4cqtfv
-         pwayuQc2edEYZXDEduepGTasCLuSTW7Ww0OuMfutVIpPmdSVLm2Moo9RIcMxVbRKSWq0
-         u4PCIWk6wVX7eTQuoRrpljiDPsYkhVNl7nE99vBepO20ykl07kApEhUAOpYVZCTgU0gj
-         fkFU5GkR4AQ0zAAQ58VUuwghAszyGv3Unzh9ZGevB6z8jLJHZjSyQ115SXgElzZCPYYb
-         apodfBOC6/GTNmD7nOHYkPq3qjGYI1hIJWscKZF1/d/ViTo9hMF7Mq+qcyd0yabvuyS2
-         vggw==
-X-Gm-Message-State: AOAM533Cb7iRgnG9BxGUVvAbkd9KSbSp9bIVnPt7KLfDkNeMwUdFHw1+
-        j438ihCeoFUXpBNZuie7HBMZwno1SGcchC5oKIMUBA==
-X-Google-Smtp-Source: ABdhPJw7/a6RtFAeh/ix7sMWO3UbzMvUPTqfzkV9KVjhDzFN7lG80bkPRoVGizFBbZxeH5ml2XKSfBwSVxENdDqxJEM=
-X-Received: by 2002:a17:906:5655:: with SMTP id v21mr3112272ejr.264.1613494122365;
- Tue, 16 Feb 2021 08:48:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20210216014538.268106-1-ben.widawsky@intel.com>
- <20210216014538.268106-10-ben.widawsky@intel.com> <20210216154857.0000261d@Huawei.com>
-In-Reply-To: <20210216154857.0000261d@Huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 16 Feb 2021 08:48:32 -0800
-Message-ID: <CAPcyv4j+DZq7fkRTW+_O1-AtAQwOPD65A8M5AWg7XU9N+TksRA@mail.gmail.com>
-Subject: Re: [PATCH v4 9/9] cxl/mem: Add payload dumping for debug
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Tue, 16 Feb 2021 11:52:04 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9E9C061574;
+        Tue, 16 Feb 2021 08:51:24 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 2354EA75;
+        Tue, 16 Feb 2021 16:51:24 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 2354EA75
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1613494284; bh=HLmvc8W/HRBkPh9zXtCkwf3n0e9QtiWcP4PGDLbH4kg=;
+        h=From:To:Subject:In-Reply-To:References:Date:From;
+        b=KYhFxJX3np7CDLbpEmIwJuU/XzKGejAkLbwfgzGJ0NJFv2VORcZa/Rfiw0usyT0j+
+         1lia+cQ4z2sCg74Y3UoAGASS2fDm/xmg9NGuaJ6AehXWvM2bdo0XV+ORK4vsU6tKPn
+         TqX/q5QATAmr+jyMkSM9uVXlYGpzlKCBft8H/bBggSemFRA8Y4jO6JAhbnd7rUAdMY
+         yCqb+jbh2Fw1Vu4ocNkpFAAxvAXo6dMQks8V5dR0WEEUr9zjdBR4Zn7YdPfQgwMaEi
+         7+unwuVDly12oky47LzrNR9fnWP/16DAkoxA+PmVLgxyWvpmzc26CzdkjW0VeDnmje
+         whd2DLazKzSEg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: anonymous enums in kernel doc
+In-Reply-To: <CAHp75VfpnGEZcnrQLFYaFQ-HuxTmPw5OnewKmRGfXQf__ztjww@mail.gmail.com>
+References: <CAHp75VfpnGEZcnrQLFYaFQ-HuxTmPw5OnewKmRGfXQf__ztjww@mail.gmail.com>
+Date:   Tue, 16 Feb 2021 09:51:23 -0700
+Message-ID: <87r1lgx8fo.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 7:50 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Mon, 15 Feb 2021 17:45:38 -0800
-> Ben Widawsky <ben.widawsky@intel.com> wrote:
->
-> > It's often useful in debug scenarios to see what the hardware has dumped
-> > out. As it stands today, any device error will result in the payload not
-> > being copied out, so there is no way to triage commands which weren't
-> > expected to fail (and sometimes the payload may have that information).
-> >
-> > The functionality is protected by normal kernel security mechanisms as
-> > well as a CONFIG option in the CXL driver.
-> >
-> > This was extracted from the original version of the CXL enabling patch
-> > series.
-> >
-> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
->
-> My gut feeling here is use a tracepoint rather than spamming the kernel
-> log.  Alternatively just don't bother merging this patch - it's on the list
-> now anyway so trivial for anyone doing such debug to pick it up.
->
+Andy Shevchenko <andy.shevchenko@gmail.com> writes:
 
-I've long wanted to make dev_dbg() a way to declare trace-points. With
-that, enabling it as a log message, or a trace-point is user policy.
-The value of this is having it readily available, not digging up a
-patch off the list for a debug session.
+> Mauro, can you do some test cases in your workflow against anonymous
+> enum in ernel doc, please?
+>
+> They are broken again, please fix the script!
+>
+> drivers/pinctrl/intel/pinctrl-intel.c:204: warning: wrong kernel-doc
+> identifier on line:
+> * enum - Locking variants of the pad configuration
+>
+> Above is simply a wrong statement.
+
+The real problem, perhaps, is that there seems to be little point in
+adding kerneldoc comments for anonymous enums; where are you going to
+use that documentation?  The error message could perhaps be changed to
+say that; meanwhile, perhaps this one could be fixed with an action like
+s%/**%/*% ?
+
+Thanks,
+
+jon
