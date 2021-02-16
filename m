@@ -2,97 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F11031C756
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FA431C75A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbhBPI0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 03:26:47 -0500
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:39986 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhBPIYS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 03:24:18 -0500
-Received: by mail-lj1-f177.google.com with SMTP id g11so10754928ljj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 00:23:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K09L2ppL2qD1A0Be3qQdcGbeQRk+ta5oa+rnKfp/wak=;
-        b=tsrNDL3mxvAslUcBXSf5mmUktJszs85IlBA2HlCTSZmySBvPLSMlvYEVvmc6GviAmT
-         Jw3dYWU2wjvNM4j0Ijxo1UV3jsG9Z96XYVcahvRVcpdFuAxgrPbQ6+z4sAWhv6iPqnAF
-         /nKEqm5ss0MD+FRWBGgDe6h2gI/4HicHls3LA/1Qd+qJIV3ApL+z6VlSJHTr3RZG1T4l
-         mlXg85uIppSfVSVTG6hdXne/O0EcEl2rsyOHdNqyd74VEsGJzgPNU2y8EfJuMdrU5zI9
-         MCKRq1hCuoeo+wJu9Xxjt0s7snwpH/ae+JGuRm8KyflRwVRCRbbyMzd9GuPS+1SNmWGv
-         JIYg==
-X-Gm-Message-State: AOAM5303ixSYb6uletYJpX5jD4zCZ/TwSr909Yj3Kn7zyh93V+GgG6dz
-        W2OPpcIhrboZE/AvhQ1tTJR5VBz5UNMtNBtCOgY=
-X-Google-Smtp-Source: ABdhPJzfnOdCQ1vxGpDiGN+xCIWMazgRkFTQ/4a7ceYHSDmk/iRvci3NKC95EqzhEwF+Ex1bdOIpnAIv2k3SFWqokqk=
-X-Received: by 2002:a2e:b4af:: with SMTP id q15mr11494892ljm.166.1613463810341;
- Tue, 16 Feb 2021 00:23:30 -0800 (PST)
+        id S229662AbhBPI2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 03:28:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229803AbhBPI2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 03:28:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33A5164E04;
+        Tue, 16 Feb 2021 08:27:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613464037;
+        bh=Le2Eb2HspI0V1QIwLnnFJ5M4qLTd6wfC5sgfrFaVXdo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZnibMyn0sFl9gyI6r4uUD6W0vOzg37DiSUcsVlJXH0BsQVHvEfOZSUSarU50nUhS3
+         2NrSJiTdZjwRdBy+zm7WM9+HZrLpp8YBwsvtUWQHhpa9FVorCYIlYYoLkqY8LucLj3
+         8Bi1AeZQ0C2wWSRl890DABaJCxTAsv94JcyM3ThpeU7gPl1Kz10nFsk/1YuF69zhTI
+         YcOv3oL/zFDX7KVNDxhTW4LfsNC1+FTXxMY0iCl0gIH8uw0mJzLxYzVssu2DhmCi7B
+         YOotpk4IMDoGtFuADgnWAlkUX1+JBIKXBVuFNvIDFpixXynDrcJbImrDIYdvA3Y2U0
+         q9eWcjaMKGZQA==
+Date:   Tue, 16 Feb 2021 10:27:05 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v4] tpm: fix reference counting for struct tpm_chip
+Message-ID: <YCuB2UGll4aU2J0z@kernel.org>
+References: <1613435460-4377-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
-References: <20210212090318.1522292-1-nakamura.shun@jp.fujitsu.com>
- <20210212090318.1522292-3-nakamura.shun@jp.fujitsu.com> <YCpqVuneU+wWtmMC@krava>
-In-Reply-To: <YCpqVuneU+wWtmMC@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 16 Feb 2021 17:23:18 +0900
-Message-ID: <CAM9d7cg7Znpwo8RKAibkmuMVoinGFa9C4WGJsUnfb728wdG-Ag@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] perf tools: Add lexical definition of event name
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 9:34 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Fri, Feb 12, 2021 at 06:03:17PM +0900, Shunsuke Nakamura wrote:
-> > Add the lexical definition of event name so that the numbers are recognizable.
-> >
-> > A64FX defines an event name that starts with a number.
-> >  - 0inst_commit
-> >  - 1inst_commit
-> >  - 2inst_commit
-> >  - 3inst_commit
-> >  - 4inst_commit
-> >
-> > Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-> > ---
-> >  tools/perf/util/parse-events.l | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
-> > index 0b36285a9435..33f627187415 100644
-> > --- a/tools/perf/util/parse-events.l
-> > +++ b/tools/perf/util/parse-events.l
-> > @@ -205,7 +205,7 @@ bpf_source        [^,{}]+\.c[a-zA-Z0-9._]*
-> >  num_dec              [0-9]+
-> >  num_hex              0x[a-fA-F0-9]+
-> >  num_raw_hex  [a-fA-F0-9]+
-> > -name         [a-zA-Z_*?\[\]][a-zA-Z0-9_*?.\[\]]*
-> > +name         [a-zA-Z0-9_*?\[\]][a-zA-Z0-9_*?.\[\]]*
->
-> I can't see anything broken because of this change,
-> also numbers are defined few lines before so we should
-> be fine
+On Tue, Feb 16, 2021 at 01:31:00AM +0100, Lino Sanfilippo wrote:
+> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> 
+> The following sequence of operations results in a refcount warning:
+> 
+> 1. Open device /dev/tpmrm
 
-But this change makes the syntax ambiguous with numbers
-and names. I don't think it's a good idea.
+Add '.' to end.
 
-Is it possible to change the event names not having numbers
-at the beginning like inst_commit0, inst_commit1 and so on?
+> 2. Remove module tpm_tis_spi
 
-Thanks,
-Namhyung
+Add '.' to end.
+
+> 3. Write a TPM command to the file descriptor opened at step 1.
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 3 PID: 1161 at lib/refcount.c:25 kobject_get+0xa0/0xa4
+> refcount_t: addition on 0; use-after-free.
+> Modules linked in: tpm_tis_spi tpm_tis_core tpm mdio_bcm_unimac brcmfmac
+> sha256_generic libsha256 sha256_arm hci_uart btbcm bluetooth cfg80211 vc4
+> brcmutil ecdh_generic ecc snd_soc_core crc32_arm_ce libaes
+> raspberrypi_hwmon ac97_bus snd_pcm_dmaengine bcm2711_thermal snd_pcm
+> snd_timer genet snd phy_generic soundcore [last unloaded: spi_bcm2835]
+> CPU: 3 PID: 1161 Comm: hold_open Not tainted 5.10.0ls-main-dirty #2
+> Hardware name: BCM2711
+> [<c0410c3c>] (unwind_backtrace) from [<c040b580>] (show_stack+0x10/0x14)
+> [<c040b580>] (show_stack) from [<c1092174>] (dump_stack+0xc4/0xd8)
+> [<c1092174>] (dump_stack) from [<c0445a30>] (__warn+0x104/0x108)
+> [<c0445a30>] (__warn) from [<c0445aa8>] (warn_slowpath_fmt+0x74/0xb8)
+> [<c0445aa8>] (warn_slowpath_fmt) from [<c08435d0>] (kobject_get+0xa0/0xa4)
+> [<c08435d0>] (kobject_get) from [<bf0a715c>] (tpm_try_get_ops+0x14/0x54 [tpm])
+> [<bf0a715c>] (tpm_try_get_ops [tpm]) from [<bf0a7d6c>] (tpm_common_write+0x38/0x60 [tpm])
+> [<bf0a7d6c>] (tpm_common_write [tpm]) from [<c05a7ac0>] (vfs_write+0xc4/0x3c0)
+> [<c05a7ac0>] (vfs_write) from [<c05a7ee4>] (ksys_write+0x58/0xcc)
+> [<c05a7ee4>] (ksys_write) from [<c04001a0>] (ret_fast_syscall+0x0/0x4c)
+> Exception stack(0xc226bfa8 to 0xc226bff0)
+> bfa0:                   00000000 000105b4 00000003 beafe664 00000014 00000000
+> bfc0: 00000000 000105b4 000103f8 00000004 00000000 00000000 b6f9c000 beafe684
+> bfe0: 0000006c beafe648 0001056c b6eb6944
+> ---[ end trace d4b8409def9b8b1f ]---
+> 
+> The reason for this warning is the attempt to get the chip->dev reference
+> in tpm_common_write() although the reference counter is already zero.
+> 
+> Since commit 8979b02aaf1d ("tpm: Fix reference count to main device") the
+> extra reference used to prevent a premature zero counter is never taken,
+> because the required TPM_CHIP_FLAG_TPM2 flag is never set.
+> 
+> Fix this by moving the TPM 2 character device handling from
+> tpm_chip_alloc() to tpm_add_char_device() which is called at a later point
+> in time when the flag has been set in case of TPM2.
+> 
+> Commit fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
+> already introduced function tpm_devs_release() to release the extra
+> reference but did not implement the required put on chip->devs that results
+> in the call of this function.
+> 
+> Fix this by putting chip->devs in tpm_chip_unregister().
+> 
+> Finally move the new implemenation for the TPM 2 handling into a new
+> function to avoid multiple checks for the TPM_CHIP_FLAG_TPM2 flag in the
+> good case and error cases.
+> 
+> Fixes: fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
+> Fixes: 8979b02aaf1d ("tpm: Fix reference count to main device")
+> Co-developed-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Signed-off-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> Cc: stable@vger.kernel.org
+
+Put Cc first.
+
+> ---
+>  drivers/char/tpm/tpm-chip.c | 80 ++++++++++++++++++++++++++++-----------------
+>  1 file changed, 50 insertions(+), 30 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index ddaeceb..44cac3a 100644
+> --- a/drivers/char/tpm/tpm-chip.c
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -344,7 +344,6 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+>  	chip->dev_num = rc;
+>  
+>  	device_initialize(&chip->dev);
+> -	device_initialize(&chip->devs);
+>  
+>  	chip->dev.class = tpm_class;
+>  	chip->dev.class->shutdown_pre = tpm_class_shutdown;
+> @@ -352,39 +351,20 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+>  	chip->dev.parent = pdev;
+>  	chip->dev.groups = chip->groups;
+>  
+> -	chip->devs.parent = pdev;
+> -	chip->devs.class = tpmrm_class;
+> -	chip->devs.release = tpm_devs_release;
+> -	/* get extra reference on main device to hold on
+> -	 * behalf of devs.  This holds the chip structure
+> -	 * while cdevs is in use.  The corresponding put
+> -	 * is in the tpm_devs_release (TPM2 only)
+> -	 */
+> -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
+> -		get_device(&chip->dev);
+> -
+>  	if (chip->dev_num == 0)
+>  		chip->dev.devt = MKDEV(MISC_MAJOR, TPM_MINOR);
+>  	else
+>  		chip->dev.devt = MKDEV(MAJOR(tpm_devt), chip->dev_num);
+>  
+> -	chip->devs.devt =
+> -		MKDEV(MAJOR(tpm_devt), chip->dev_num + TPM_NUM_DEVICES);
+> -
+>  	rc = dev_set_name(&chip->dev, "tpm%d", chip->dev_num);
+>  	if (rc)
+>  		goto out;
+> -	rc = dev_set_name(&chip->devs, "tpmrm%d", chip->dev_num);
+> -	if (rc)
+> -		goto out;
+>  
+>  	if (!pdev)
+>  		chip->flags |= TPM_CHIP_FLAG_VIRTUAL;
+>  
+>  	cdev_init(&chip->cdev, &tpm_fops);
+> -	cdev_init(&chip->cdevs, &tpmrm_fops);
+>  	chip->cdev.owner = THIS_MODULE;
+> -	chip->cdevs.owner = THIS_MODULE;
+>  
+>  	rc = tpm2_init_space(&chip->work_space, TPM2_SPACE_BUFFER_SIZE);
+>  	if (rc) {
+> @@ -396,7 +376,6 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+>  	return chip;
+>  
+>  out:
+> -	put_device(&chip->devs);
+>  	put_device(&chip->dev);
+>  	return ERR_PTR(rc);
+>  }
+> @@ -431,6 +410,46 @@ struct tpm_chip *tpmm_chip_alloc(struct device *pdev,
+>  }
+>  EXPORT_SYMBOL_GPL(tpmm_chip_alloc);
+>  
+> +static int tpm_add_tpm2_char_device(struct tpm_chip *chip)
+> +{
+> +	int rc;
+> +
+> +	device_initialize(&chip->devs);
+> +	chip->devs.parent = chip->dev.parent;
+> +	chip->devs.class = tpmrm_class;
+> +
+> +	rc = dev_set_name(&chip->devs, "tpmrm%d", chip->dev_num);
+> +	if (rc)
+> +		goto out_put_devs;
+> +	/*
+> +	 * get extra reference on main device to hold on behalf of devs.
+> +	 * This holds the chip structure while cdevs is in use. The
+> +	 * corresponding put is in the tpm_devs_release.
+> +	 */
+> +	get_device(&chip->dev);
+> +	chip->devs.release = tpm_devs_release;
+> +	chip->devs.devt =
+> +		MKDEV(MAJOR(tpm_devt), chip->dev_num + TPM_NUM_DEVICES);
+> +	cdev_init(&chip->cdevs, &tpmrm_fops);
+> +	chip->cdevs.owner = THIS_MODULE;
+> +
+> +	rc = cdev_device_add(&chip->cdevs, &chip->devs);
+> +	if (rc) {
+> +		dev_err(&chip->devs,
+> +			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
+> +			dev_name(&chip->devs), MAJOR(chip->devs.devt),
+> +			MINOR(chip->devs.devt), rc);
+> +		goto out_put_devs;
+> +	}
+> +
+> +	return 0;
+> +
+> +out_put_devs:
+> +	put_device(&chip->devs);
+> +
+> +	return rc;
+> +}
+> +
+>  static int tpm_add_char_device(struct tpm_chip *chip)
+>  {
+>  	int rc;
+> @@ -445,14 +464,9 @@ static int tpm_add_char_device(struct tpm_chip *chip)
+>  	}
+>  
+>  	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+> -		rc = cdev_device_add(&chip->cdevs, &chip->devs);
+> -		if (rc) {
+> -			dev_err(&chip->devs,
+> -				"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
+> -				dev_name(&chip->devs), MAJOR(chip->devs.devt),
+> -				MINOR(chip->devs.devt), rc);
+> -			return rc;
+> -		}
+> +		rc = tpm_add_tpm2_char_device(chip);
+> +		if (rc)
+> +			goto del_cdev;
+>  	}
+>  
+>  	/* Make the chip available. */
+> @@ -460,6 +474,10 @@ static int tpm_add_char_device(struct tpm_chip *chip)
+>  	idr_replace(&dev_nums_idr, chip, chip->dev_num);
+>  	mutex_unlock(&idr_lock);
+>  
+> +	return 0;
+> +
+> +del_cdev:
+> +	cdev_device_del(&chip->cdev, &chip->dev);
+>  	return rc;
+>  }
+>  
+> @@ -640,8 +658,10 @@ void tpm_chip_unregister(struct tpm_chip *chip)
+>  	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM))
+>  		hwrng_unregister(&chip->hwrng);
+>  	tpm_bios_log_teardown(chip);
+> -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
+> +	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
+>  		cdev_device_del(&chip->cdevs, &chip->devs);
+> +		put_device(&chip->devs);
+> +	}
+>  	tpm_del_char_device(chip);
+>  }
+>  EXPORT_SYMBOL_GPL(tpm_chip_unregister);
+> -- 
+> 2.7.4
+> 
+
+Other than that, this looks good to me.
+
+If this passes testing, I can fix those nit's.
+
+I'll test this post 5.12 PR.
+
+/Jarkko
