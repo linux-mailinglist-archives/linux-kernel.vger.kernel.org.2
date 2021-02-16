@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D6731C700
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE2431C703
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhBPHw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 02:52:26 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:35848 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229695AbhBPHwR (ORCPT
+        id S229931AbhBPHws convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Feb 2021 02:52:48 -0500
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:45170 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhBPHw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 02:52:17 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11G7joHH004321;
-        Tue, 16 Feb 2021 08:51:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=LPtaGRUyWC02QXhqpxIHZK7eZrIwHlrsUNhwHvFXhSg=;
- b=Anmg3nHz9JISQSgQmEFJ3vkx09l6XINTj4DdnIkrL4S3bFYOvVo913Qf8zjJ8rRkwfIB
- ZcTdsFOwlxbAEKtMGANYz8fZ0ikL2mW/74KiKPLNMTLRRFLZ7RFcKmT7RmEpvQyu5VVD
- b5I52wQeoZ6oPUkVRSFwd5X/BOz0awAieQvh7VYJ0asxfWNAY2tHzamDDj1zLQ0Z7CSO
- 8F5JXAbYn7Y4XfkLjw3MAYYrPQ5oX9QTATjW+cfh+49DNDSsL1f5gw76/eybRbpGHkud
- c/7BARQY0ysKE7zRAQzijkBuej1rNyzLyfrlFOXXfqpNHRjsu55PJISg3K4KQCbt7z9b qQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36p706e690-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 08:51:29 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7D15C10002A;
-        Tue, 16 Feb 2021 08:51:29 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6B61D21CA93;
-        Tue, 16 Feb 2021 08:51:29 +0100 (CET)
-Received: from lmecxl0573.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 16 Feb
- 2021 08:51:28 +0100
-Subject: Re: [PATCH 0/3] MAINTAINERS: update STMicroelectronics email
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Arnd Bergmann" <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        "khilman@baylibre.com" <khilman@baylibre.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>
-References: <20210201100023.10985-1-patrice.chotard@foss.st.com>
- <800f8dfa-0949-ddf8-1635-15311c2c9623@foss.st.com>
- <CAK8P3a1Xqd0LijMhoms8vdS8zNDP-r=d7i1XL=kOk606Quo-xg@mail.gmail.com>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <f4275e08-0385-5316-8e46-f97bfb2b0f65@foss.st.com>
-Date:   Tue, 16 Feb 2021 08:51:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 16 Feb 2021 02:52:27 -0500
+Received: by mail-wr1-f51.google.com with SMTP id v7so11793046wrr.12;
+        Mon, 15 Feb 2021 23:52:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0fp86hP8XzCLHuGk3+2XZ6kJDhLEJjnKSzVrThFlsbw=;
+        b=E0+ar4XNnAV/eIz6jSNhIFZ5G/j11BtVlYHKH1HwzUVejrKWPDAQbhgF5J5OvEt5mr
+         jnjzti5fBTg/5YRZNlgM2YLv1d7F19JB5wdOltymU1MPoF3E2FWqbmuZNuIqE/DlWX/w
+         D7O0lvzWiTkuBT0JhkZPH/72y7uAPlVPCkplmH/6CPvI3Ruk+d8yTKl4I/k+ae7woNVF
+         NZaR0Gd/oYYHMvUtV+YXLAVCdxHGUS84pfBbtOsF9v2SUrJSoS5VW6Cj8TR90g/Y8C5x
+         n+r6uYO4fdOsiKRE4315ryzpAugmzIBbQTfzTC/wPh+Ob0VqU0fZS6aZaNJovhNjbnTn
+         xJ8A==
+X-Gm-Message-State: AOAM532wl3ZtNCLyEozIn0yBQZozAgwe6U2MRooyvOw7VckuDCrF+POX
+        xbQM0JsLaDpAt/fzPXlSi7TEN0r7G1Q=
+X-Google-Smtp-Source: ABdhPJxZQplq5hgJFOOHaEpruNZYVmqScKJ3GZnW80JPQlBfh6iYpJ5WdLw/yzzX7xCl9Y6oJpPddQ==
+X-Received: by 2002:adf:f90d:: with SMTP id b13mr23497953wrr.198.1613461904568;
+        Mon, 15 Feb 2021 23:51:44 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id z5sm4677976wrn.8.2021.02.15.23.51.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 23:51:43 -0800 (PST)
+Date:   Tue, 16 Feb 2021 08:51:41 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     =?utf-8?Q?M=C3=A5rten?= Lindahl <marten.lindahl@axis.com>
+Cc:     kernel@axis.com,
+        =?utf-8?Q?M=C3=A5rten?= Lindahl <martenli@axis.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: exynos5: Preserve high speed master code
+Message-ID: <20210216075141.o4wjnwmmjze2p3cn@kozik-lap>
+References: <20210215190322.22094-1-marten.lindahl@axis.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1Xqd0LijMhoms8vdS8zNDP-r=d7i1XL=kOk606Quo-xg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-15_16:2021-02-12,2021-02-15 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210215190322.22094-1-marten.lindahl@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd
+On Mon, Feb 15, 2021 at 08:03:21PM +0100, Mårten Lindahl wrote:
+> From: Mårten Lindahl <martenli@axis.com>
+> 
+> When the controller starts to send a message with the MASTER_ID field
+> set (high speed), the whole I2C_ADDR register is overwritten including
+> MASTER_ID as the SLV_ADDR_MAS field is set.
 
-On 2/15/21 3:19 PM, Arnd Bergmann wrote:
-> On Mon, Feb 15, 2021 at 2:17 PM Patrice CHOTARD
-> <patrice.chotard@foss.st.com> wrote:
->>
->> Hi Arnd, Olof, Kevin
->>
->> What is the best way to get this series merged ?
->> Do you pick it and apply it directly, or do we integrate it in the next STM32 pull request ?
-> 
-> I usually pick up updates to the MAINTAINERS file as bugfixes, so
-> either send them as part of the fixes pull request, or forward them
-> to soc@kernel.org to apply directly.
-> 
-> If you cc me on patches for a particular platform, I usually just ignore them,
-> unless they get sent to soc@kernel.org, and in that case I will either apply
-> them or ask back if they were meant for us.
-> 
->       Arnd
-> 
+Are you here describing bug in driver or hardware (the controller?)?
+Looking at the code, I think the driver, but description got me
+confused.
 
-Ok, i will resend this series to soc@kernel.org.
-Thanks
-Patrice
+> 
+> This patch preserves already written fields in I2C_ADDR when writing
+> SLV_ADDR_MAS.
+> 
+> Signed-off-by: Mårten Lindahl <martenli@axis.com>
+> ---
+>  drivers/i2c/busses/i2c-exynos5.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
+> index 20a9881a0d6c..f2d04c241299 100644
+> --- a/drivers/i2c/busses/i2c-exynos5.c
+> +++ b/drivers/i2c/busses/i2c-exynos5.c
+> @@ -606,6 +606,7 @@ static void exynos5_i2c_message_start(struct exynos5_i2c *i2c, int stop)
+>  	u32 i2c_ctl;
+>  	u32 int_en = 0;
+>  	u32 i2c_auto_conf = 0;
+> +	u32 i2c_addr = 0;
+>  	u32 fifo_ctl;
+>  	unsigned long flags;
+>  	unsigned short trig_lvl;
+> @@ -640,7 +641,12 @@ static void exynos5_i2c_message_start(struct exynos5_i2c *i2c, int stop)
+>  		int_en |= HSI2C_INT_TX_ALMOSTEMPTY_EN;
+>  	}
+>  
+> -	writel(HSI2C_SLV_ADDR_MAS(i2c->msg->addr), i2c->regs + HSI2C_ADDR);
+> +	i2c_addr = HSI2C_SLV_ADDR_MAS(i2c->msg->addr);
+> +
+> +	if (i2c->op_clock >= I2C_MAX_FAST_MODE_PLUS_FREQ)
+> +		i2c_addr |= readl(i2c->regs + HSI2C_ADDR);
+
+Any reason why not "|= MASTER_ID(i2c->adap.nr)" here instead of more
+expensive IO read? It's quite important because your current code will
+bitwise-or old I2C slave address with a new one... This should break
+during tests with multiple I2C slave devices, shouldn't it?
+
+On which HW did you test it?
+
+Best regards,
+Krzysztof
+
+
+> +
+> +	writel(i2c_addr, i2c->regs + HSI2C_ADDR);
