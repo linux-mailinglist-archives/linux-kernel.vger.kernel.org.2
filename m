@@ -2,210 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5223431C9AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF13F31C9B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhBPL36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:29:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229907AbhBPL3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:29:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A94BF64DFF;
-        Tue, 16 Feb 2021 11:28:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613474940;
-        bh=RPjPaTvayhktPzqcqsg1ndjbnlMY4ZXLaVp+CQgT4h4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=btdYIVxrhY203EYeuIVn+hf+O9MCnU4jc3+ifo20WyjTunezcWc/ss5NCNm9kD2yM
-         NiRP82OU5FeL+iR1Mvd+m2h+4eXigLIZK63k3VD2u8bFvrnyL4+rNZRd10a4PFVrtT
-         KAd3AWg1RQAU09Lp2Ite+6kqNCeEtH4cUeyD7KJc=
-Date:   Tue, 16 Feb 2021 12:28:57 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "drinkcat@chromium.org" <drinkcat@chromium.org>,
-        "iant@google.com" <iant@google.com>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "llozano@chromium.org" <llozano@chromium.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "miklos@szeredi.hu" <miklos@szeredi.hu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "dchinner@redhat.com" <dchinner@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "sfrench@samba.org" <sfrench@samba.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
-Message-ID: <YCuseTMyjL+9sWum@kroah.com>
-References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
- <20210215154317.8590-1-lhenriques@suse.de>
- <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
- <73ab4951f48d69f0183548c7a82f7ae37e286d1c.camel@hammerspace.com>
- <CAOQ4uxgPtqG6eTi2AnAV4jTAaNDbeez+Xi2858mz1KLGMFntfg@mail.gmail.com>
- <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
- <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com>
- <87r1lgjm7l.fsf@suse.de>
+        id S230106AbhBPLbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:31:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhBPLbc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:31:32 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9CBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:30:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=v2p5F2l64ss/iukjOf8SrXtGqS4gt9hnzkVOGo1KctE=; b=NiVr76PKF7+lTtseC5CuPHNv7G
+        1tV/o5sEkt/vj/j1TTwmbe0lmKO+I1/25sYS+dxZPrANIDZ7+C1quR2OQ9y1OZ2GZOKYjg+zW09yi
+        2pwOoyeQI6QJS/allnV1+YcFSTAj63iB4zt75MVnaENwrJDpaYOZMRiRrU0NMVRdgAl+5BZm6NH1D
+        82wu9DjVAMbfd6IDFy9SXDCHWdr7Uu2r7CInM/xxNsfsZbGOtIPxNljPKoJx7PZcmGk/TtdNA1Kx3
+        uoeqHKm0Wwjof7ac1a78V9Jv43/IxlX/zqhJVai7kwwxM3u78uHNFAXHINSrsu8f9zrupqIBWwayI
+        HdPft1/A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lByXR-00Gnf2-KR; Tue, 16 Feb 2021 11:29:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 515293003E5;
+        Tue, 16 Feb 2021 12:29:02 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3DD922BB730E1; Tue, 16 Feb 2021 12:29:02 +0100 (CET)
+Date:   Tue, 16 Feb 2021 12:29:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alison Schofield <alison.schofield@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Prarit Bhargava <prarit@redhat.com>, brice.goglin@gmail.com
+Subject: Re: [PATCH] x86, sched: Allow NUMA nodes to share an LLC on Intel
+ platforms
+Message-ID: <YCusfhxYO9rJ2wG1@hirez.programming.kicks-ass.net>
+References: <20210209223943.9834-1-alison.schofield@intel.com>
+ <YCOTujUj3D53uGjd@hirez.programming.kicks-ass.net>
+ <b717d5cd-e40d-c86a-05de-a512a5e3b0af@intel.com>
+ <YCQ2QiC7If2X8jnP@hirez.programming.kicks-ass.net>
+ <20210210221134.GA12410@alison-desk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87r1lgjm7l.fsf@suse.de>
+In-Reply-To: <20210210221134.GA12410@alison-desk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:17:34AM +0000, Luis Henriques wrote:
-> Amir Goldstein <amir73il@gmail.com> writes:
-> 
-> > On Mon, Feb 15, 2021 at 8:57 PM Trond Myklebust <trondmy@hammerspace.com> wrote:
-> >>
-> >> On Mon, 2021-02-15 at 19:24 +0200, Amir Goldstein wrote:
-> >> > On Mon, Feb 15, 2021 at 6:53 PM Trond Myklebust <
-> >> > trondmy@hammerspace.com> wrote:
-> >> > >
-> >> > > On Mon, 2021-02-15 at 18:34 +0200, Amir Goldstein wrote:
-> >> > > > On Mon, Feb 15, 2021 at 5:42 PM Luis Henriques <
-> >> > > > lhenriques@suse.de>
-> >> > > > wrote:
-> >> > > > >
-> >> > > > > Nicolas Boichat reported an issue when trying to use the
-> >> > > > > copy_file_range
-> >> > > > > syscall on a tracefs file.  It failed silently because the file
-> >> > > > > content is
-> >> > > > > generated on-the-fly (reporting a size of zero) and
-> >> > > > > copy_file_range
-> >> > > > > needs
-> >> > > > > to know in advance how much data is present.
-> >> > > > >
-> >> > > > > This commit restores the cross-fs restrictions that existed
-> >> > > > > prior
-> >> > > > > to
-> >> > > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> >> > > > > devices")
-> >> > > > > and
-> >> > > > > removes generic_copy_file_range() calls from ceph, cifs, fuse,
-> >> > > > > and
-> >> > > > > nfs.
-> >> > > > >
-> >> > > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> >> > > > > devices")
-> >> > > > > Link:
-> >> > > > > https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-> >> > > > > Cc: Nicolas Boichat <drinkcat@chromium.org>
-> >> > > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> >> > > >
-> >> > > > Code looks ok.
-> >> > > > You may add:
-> >> > > >
-> >> > > > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> >> > > >
-> >> > > > I agree with Trond that the first paragraph of the commit message
-> >> > > > could
-> >> > > > be improved.
-> >> > > > The purpose of this change is to fix the change of behavior that
-> >> > > > caused the regression.
-> >> > > >
-> >> > > > Before v5.3, behavior was -EXDEV and userspace could fallback to
-> >> > > > read.
-> >> > > > After v5.3, behavior is zero size copy.
-> >> > > >
-> >> > > > It does not matter so much what makes sense for CFR to do in this
-> >> > > > case (generic cross-fs copy).  What matters is that nobody asked
-> >> > > > for
-> >> > > > this change and that it caused problems.
-> >> > > >
-> >> > >
-> >> > > No. I'm saying that this patch should be NACKed unless there is a
-> >> > > real
-> >> > > explanation for why we give crap about this tracefs corner case and
-> >> > > why
-> >> > > it can't be fixed.
-> >> > >
-> >> > > There are plenty of reasons why copy offload across filesystems
-> >> > > makes
-> >> > > sense, and particularly when you're doing NAS. Clone just doesn't
-> >> > > cut
-> >> > > it when it comes to disaster recovery (whereas backup to a
-> >> > > different
-> >> > > storage unit does). If the client has to do the copy, then you're
-> >> > > effectively doubling the load on the server, and you're adding
-> >> > > potentially unnecessary network traffic (or at the very least you
-> >> > > are
-> >> > > doubling that traffic).
-> >> > >
-> >> >
-> >> > I don't understand the use case you are describing.
-> >> >
-> >> > Which filesystem types are you talking about for source and target
-> >> > of copy_file_range()?
-> >> >
-> >> > To be clear, the original change was done to support NFS/CIFS server-
-> >> > side
-> >> > copy and those should not be affected by this change.
-> >> >
-> >>
-> >> That is incorrect:
-> >>
-> >> ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file
-> >> *dst,
-> >>  u64 dst_pos, u64 count)
-> >> {
-> >>
-> >>  /*
-> >>  * Limit copy to 4MB to prevent indefinitely blocking an nfsd
-> >>  * thread and client rpc slot. The choice of 4MB is somewhat
-> >>  * arbitrary. We might instead base this on r/wsize, or make it
-> >>  * tunable, or use a time instead of a byte limit, or implement
-> >>  * asynchronous copy. In theory a client could also recognize a
-> >>  * limit like this and pipeline multiple COPY requests.
-> >>  */
-> >>  count = min_t(u64, count, 1 << 22);
-> >>  return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-> >> }
-> >>
-> >> You are now explicitly changing the behaviour of knfsd when the source
-> >> and destination filesystem differ.
-> >>
-> >> For one thing, you are disallowing the NFSv4.2 copy offload use case of
-> >> copying from a local filesystem to a remote NFS server. However you are
-> >> also disallowing the copy from, say, an XFS formatted partition to an
-> >> ext4 partition.
-> >>
-> >
-> > Got it.
-> 
-> Ugh.  And I guess overlayfs may have a similar problem.
-> 
-> > This is easy to solve with a flag COPY_FILE_SPLICE (or something) that
-> > is internal to kernel users.
-> >
-> > FWIW, you may want to look at the loop in ovl_copy_up_data()
-> > for improvements to nfsd_copy_file_range().
-> >
-> > We can move the check out to copy_file_range syscall:
-> >
-> >         if (flags != 0)
-> >                 return -EINVAL;
-> >
-> > Leave the fallback from all filesystems and check for the
-> > COPY_FILE_SPLICE flag inside generic_copy_file_range().
-> 
-> Ok, the diff bellow is just to make sure I understood your suggestion.
-> 
-> The patch will also need to:
-> 
->  - change nfs and overlayfs calls to vfs_copy_file_range() so that they
->    use the new flag.
-> 
->  - check flags in generic_copy_file_checks() to make sure only valid flags
->    are used (COPY_FILE_SPLICE at the moment).
-> 
-> Also, where should this flag be defined?  include/uapi/linux/fs.h?
+On Wed, Feb 10, 2021 at 02:11:34PM -0800, Alison Schofield wrote:
 
-Why would userspace want/need this flag?
+> This is equivalent to determining if x86_has_numa_in_package.
+> Do you think there is an opportunity to set x86_has_numa_in_package
+> earlier, and use it here and in set_cpu_sibling_map()?
 
+Sure. Not sure that's actually clearer though.
+
+> With that additional info (match_pkg()) how about -
+> 
+> Instead of this:
+> -       if (!topology_same_node(c, o) && x86_match_cpu(snc_cpu))
+> +       if (!topology_same_node(c, o) && x86_match_cpu(snc_cpu) && match_pkg(c, o))
+> 
+> Do this:
+> 
+> -       if (!topology_same_node(c, o) && x86_match_cpu(snc_cpu))
+> +       if (!topology_same_node(c, o) && match_pkg(c, o))
+> 
+> 
+> Looking at Commit 316ad248307f ("sched/x86: Rewrite set_cpu_sibling_map())
+> which reworked topology WARNINGs, the intent was to "make sure to
+> only warn when the check changes the end result"
+> 
+> This check doesn't change the end result. It returns false directly
+> and if it were bypassed completely, it would still return false with
+> a WARNING.
+
+I'm not following the argument, we explicitly *do* modify the end result
+for those SNC caches. Also, by doing what you propose, we fail to get a
+warning if/when AMD decides to do 'funny' things.
+
+Suppose AMD too thinks this is a swell idea, but they have subtly
+different cache behaviour (just for giggles), then it all goes
+undetected, which would be bad.
+
+> If we add that additional match_pkg() check is removing the WARNING for
+> all cases possible?
+
+How many parts had that Intel Cluster-on-Die thing? Seeing how all the
+new parts have the SNC crud, that seems like a finite list.
+
+Wikipedia seems to suggest haswell and broadwell were the only onces
+with COD on, skylake and later has the SNC.
+
+How's something like this then (needs splitting into multiple patches I
+suppose):
+
+---
+ arch/x86/kernel/smpboot.c | 76 +++++++++++++++++++++++++----------------------
+ 1 file changed, 41 insertions(+), 35 deletions(-)
+
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 117e24fbfd8a..cfe23badf9a3 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -458,8 +458,31 @@ static bool match_smt(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ 	return false;
+ }
+ 
++static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
++{
++	if ((c->phys_proc_id == o->phys_proc_id) &&
++		(c->cpu_die_id == o->cpu_die_id))
++		return true;
++	return false;
++}
++
++/*
++ * Unlike the other levels, we do not enforce keeping a
++ * multicore group inside a NUMA node.  If this happens, we will
++ * discard the MC level of the topology later.
++ */
++static bool match_pkg(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
++{
++	if (c->phys_proc_id == o->phys_proc_id)
++		return true;
++	return false;
++}
++
+ /*
+- * Define snc_cpu[] for SNC (Sub-NUMA Cluster) CPUs.
++ * Define intel_cod_cpu[] for Intel COD (Cluster-on-Die) CPUs.
++ *
++ * Any Intel CPU that has multiple nodes per package and doesn't match this
++ * will have the newer SNC (Sub-NUMA Cluster).
+  *
+  * These are Intel CPUs that enumerate an LLC that is shared by
+  * multiple NUMA nodes. The LLC on these systems is shared for
+@@ -473,14 +496,18 @@ static bool match_smt(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+  * NUMA nodes).
+  */
+ 
+-static const struct x86_cpu_id snc_cpu[] = {
+-	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X, NULL),
++static const struct x86_cpu_id intel_cod_cpu[] = {
++	X86_MATCH_INTEL_FAM6_MODEL(HASWELL_X, 0),	/* COD */
++	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL_X, 0),	/* COD */
++	X86_MATCH_INTEL_FAM6_MODEL(ANY, 1),		/* SNC */
+ 	{}
+ };
+ 
+ static bool match_llc(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ {
++	const struct x86_cpu_id *id = x86_match_cpu(intel_cod_cpu);
+ 	int cpu1 = c->cpu_index, cpu2 = o->cpu_index;
++	bool intel_snc = id && id->driver_data;
+ 
+ 	/* Do not match if we do not have a valid APICID for cpu: */
+ 	if (per_cpu(cpu_llc_id, cpu1) == BAD_APICID)
+@@ -495,32 +522,12 @@ static bool match_llc(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ 	 * means 'c' does not share the LLC of 'o'. This will be
+ 	 * reflected to userspace.
+ 	 */
+-	if (!topology_same_node(c, o) && x86_match_cpu(snc_cpu))
++	if (match_pkg(c, o) && !topology_same_node(c, o) && intel_snc)
+ 		return false;
+ 
+ 	return topology_sane(c, o, "llc");
+ }
+ 
+-/*
+- * Unlike the other levels, we do not enforce keeping a
+- * multicore group inside a NUMA node.  If this happens, we will
+- * discard the MC level of the topology later.
+- */
+-static bool match_pkg(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+-{
+-	if (c->phys_proc_id == o->phys_proc_id)
+-		return true;
+-	return false;
+-}
+-
+-static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+-{
+-	if ((c->phys_proc_id == o->phys_proc_id) &&
+-		(c->cpu_die_id == o->cpu_die_id))
+-		return true;
+-	return false;
+-}
+-
+ 
+ #if defined(CONFIG_SCHED_SMT) || defined(CONFIG_SCHED_MC)
+ static inline int x86_sched_itmt_flags(void)
+@@ -592,14 +599,23 @@ void set_cpu_sibling_map(int cpu)
+ 	for_each_cpu(i, cpu_sibling_setup_mask) {
+ 		o = &cpu_data(i);
+ 
++		if (match_pkg(c, o) && !topology_same_node(c, o))
++			x86_has_numa_in_package = true;
++
+ 		if ((i == cpu) || (has_smt && match_smt(c, o)))
+ 			link_mask(topology_sibling_cpumask, cpu, i);
+ 
+ 		if ((i == cpu) || (has_mp && match_llc(c, o)))
+ 			link_mask(cpu_llc_shared_mask, cpu, i);
+ 
++		if ((i == cpu) || (has_mp && match_die(c, o)))
++			link_mask(topology_die_cpumask, cpu, i);
+ 	}
+ 
++	threads = cpumask_weight(topology_sibling_cpumask(cpu));
++	if (threads > __max_smt_threads)
++		__max_smt_threads = threads;
++
+ 	/*
+ 	 * This needs a separate iteration over the cpus because we rely on all
+ 	 * topology_sibling_cpumask links to be set-up.
+@@ -613,8 +629,7 @@ void set_cpu_sibling_map(int cpu)
+ 			/*
+ 			 *  Does this new cpu bringup a new core?
+ 			 */
+-			if (cpumask_weight(
+-			    topology_sibling_cpumask(cpu)) == 1) {
++			if (threads == 1) {
+ 				/*
+ 				 * for each core in package, increment
+ 				 * the booted_cores for this new cpu
+@@ -631,16 +646,7 @@ void set_cpu_sibling_map(int cpu)
+ 			} else if (i != cpu && !c->booted_cores)
+ 				c->booted_cores = cpu_data(i).booted_cores;
+ 		}
+-		if (match_pkg(c, o) && !topology_same_node(c, o))
+-			x86_has_numa_in_package = true;
+-
+-		if ((i == cpu) || (has_mp && match_die(c, o)))
+-			link_mask(topology_die_cpumask, cpu, i);
+ 	}
+-
+-	threads = cpumask_weight(topology_sibling_cpumask(cpu));
+-	if (threads > __max_smt_threads)
+-		__max_smt_threads = threads;
+ }
+ 
+ /* maps the cpu to the sched domain representing multi-core */
