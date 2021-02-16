@@ -2,154 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2B831C608
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 05:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C40A231C623
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 06:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbhBPEgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 23:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
+        id S229722AbhBPFEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 00:04:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbhBPEf7 (ORCPT
+        with ESMTP id S229461AbhBPFEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 23:35:59 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DCAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 20:35:18 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id z68so5492029pgz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 20:35:18 -0800 (PST)
+        Tue, 16 Feb 2021 00:04:37 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3B4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 21:03:57 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id y25so2155808pfp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 21:03:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=g7qpTlou0UffAXpPfgR9N8/GL392LZ2opI0sf/G4JIg=;
-        b=m8rbbnrYMey0qJejmsTRkf4tpyM6s4gLo10+3401Taw8ixlTuFm9wGsQuodGaPIkhI
-         2it0YGED3YR1mtZ7+jemAxpGgCkS5g2r8cbJ/Yxcv5r6sk+n7RcLZ+QpwT217So12cg4
-         Vhd0WrY2xJiIkJHhcKMkVIIIbke+iRZ16ScH1foXA9t42pWF4xEs5AyGPK+bV4HGJPBT
-         2im+gXmV5iurHyTWev/JsRw3MgYIcsthrLT9IE3G/Hrs9qa3jNwz9So7i3rmuYlpl0+8
-         UoMjbLWQ6EA9GCADl/4iWcbrHnPkggOITGn8DxWjKlJpC3+K8Xb86KhkALjP4WqIwRAe
-         PkCQ==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:newsgroups:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2YpI+iKoMZZUD3Z1xVREz1xTJJ25V96V4TT5cVOnFeQ=;
+        b=Sd1wCKsRm91PkghmzuNllFKEYbNkzmmiBtJGHAFP945o+9bTMHEwf3y3LMCiPr3hps
+         iYEisGYMSrq2GiJpHmtAlBhxmaeTOr9B3DoFiiwgCqhs5OuH+t0eXTvqwM3DCeAHZ4rN
+         YGmG6W45DCwHgeB57UOq8/PDmeVp7+lOp/zxQzQL+RtCoJmeHZNjXEzwNuABuPkzcTyf
+         FYkqOiOo1/XIJfJvAkEBDJfk0mcUC7HBPXwjHB5N5zeITdvaIFZBHLnMjYM1aGA02y0k
+         n0yALGp6Sbt4mvwprS9mS/DYE+aUzesxmhYHQDG2m3EVvRlGW6zHa8hXUIehO7cx+658
+         qhSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=g7qpTlou0UffAXpPfgR9N8/GL392LZ2opI0sf/G4JIg=;
-        b=Rmk9o9DQTG++dNnLoD4G343YLChZ6sF5DBCqCgekdHo9UwfxO32ZMz2OjVAvIuYnZR
-         51+KzAmAOQo2S4w86wJFG8kdNR1xWyt1BxQd6JLZNQ3FGiu1QOYyTAfjN1xZ8b6rpYBr
-         cjH0a3uINNOOItEG5IFaQ46VIiHtPJVhGiA6Cno34R3eH7Dw+oYs0640Xx2PSzgTunpz
-         0t2TdYIWgixe1VOcdbUWv8jNlrjlHZxpK2cqwRmgPT/IFNMKdip4mQ1S6ZEufQK0Bg3R
-         dU98na6XMbccNJlkOpQoE333CgnQ1F15GsAxsLZTowT89qywx9mi4XhQ5N5Wj4B6SQGo
-         VbxA==
-X-Gm-Message-State: AOAM531g/7Zqq9Dn8OMuzW93xygQyPy4wWIwGv+EtCAHN/jPoglGFSS5
-        l/O+wv1PBlioN1TfmqaT2lp9RY9OLA/2Rtuh/M4Tew==
-X-Google-Smtp-Source: ABdhPJyB3UwBSZXHSGLaF+VNg2XoceXdDzYRGQ0L/sN5CBcGW7SIylXtDTVsVAw7KDXOkN4b5CRNgsDavYCnxsTAZ18=
-X-Received: by 2002:aa7:9790:0:b029:1d8:263e:cc9b with SMTP id
- o16-20020aa797900000b02901d8263ecc9bmr18547269pfp.2.1613450118006; Mon, 15
- Feb 2021 20:35:18 -0800 (PST)
+        h=x-gm-message-state:sender:subject:to:cc:newsgroups:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=2YpI+iKoMZZUD3Z1xVREz1xTJJ25V96V4TT5cVOnFeQ=;
+        b=L0Fxy74bJHyQRaeQt3Pg4zS5/4oh+phebTzHov3Ymqwv2+6P8uIBepOqSBJFpl3A8V
+         l8Agi9A8E+UNbgX4tL1rv7myO0ww+C9gw3r8ZowiHMmIuRvCtuai7IX2geWWNFwiICpQ
+         oHCkax7FZwibOCo0QQd4OwyC163cHBOfWMeBvVA4ISdO8TRAN74E2UaUWocwfPC5MZsg
+         LfX0dBVc4jx38mFDaqkW3HQzy0xBpRepbmIIxoWVsA8C28aLdnpJ1yxoSzrj3gQWZHnG
+         oibn/jaPtutfzaNmUQT8vgjPDQhIDLXbJpcnDFDinoskCVLsa/HUlXOCF886cq9p6KF9
+         6N5Q==
+X-Gm-Message-State: AOAM530yPeRuZ6ExFU2lLqtPB2BN8K3L3KOtklx0u1ZQMpB/2pMwB7Qi
+        TIvzmnWWoJ8TAf1v06S4E8A=
+X-Google-Smtp-Source: ABdhPJw88S3vcPyT95UPrUdri00RZDU3YF1IpdwPKN0Vk6npYU9ZRmtrVm7cDBWIhxQaBWyZaz+sRw==
+X-Received: by 2002:aa7:9056:0:b029:1db:7a51:56df with SMTP id n22-20020aa790560000b02901db7a5156dfmr18200294pfo.48.1613451836928;
+        Mon, 15 Feb 2021 21:03:56 -0800 (PST)
+Received: from [192.168.50.50] (c-24-4-73-83.hsd1.ca.comcast.net. [24.4.73.83])
+        by smtp.gmail.com with ESMTPSA id c22sm16840180pfc.12.2021.02.15.21.03.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Feb 2021 21:03:56 -0800 (PST)
+Sender: Vineet Gupta <vineetg76@gmail.com>
+Subject: Re: [PATCH] arc: Replace lkml.org links with lore
+To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Alexey Brodkin <abrodkin@synopsys.com>,
+        Joe Perches <joe@perches.com>,
+        linux-snps-arc@lists.infradead.org
+Newsgroups: gmane.linux.kernel,gmane.linux.kernel.arc
+References: <20210210232849.1358703-1-keescook@chromium.org>
+From:   Vineet Gupta <vgupta@synopsys.com>
+Message-ID: <8d0dd35a-4bc2-6762-3ae9-a0bf38961f5a@synopsys.com>
+Date:   Mon, 15 Feb 2021 21:03:54 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <YCpN38i75olgispI@dhcp22.suse.cz> <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
- <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
- <YCpmlGuoTakPJs1u@dhcp22.suse.cz> <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
- <YCp04NVBZpZZ5k7G@dhcp22.suse.cz> <CAMZfGtV8-yJa_eGYtSXc0YY8KhYpgUo=pfj6TZ9zMo8fbz8nWA@mail.gmail.com>
- <YCqhDZ0EAgvCz+wX@dhcp22.suse.cz> <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
- <CAMZfGtWVwEdBfiof3=wW2-FUN4PU-N5J=HfiAETVbwbEzdvAGQ@mail.gmail.com> <YCrN4/EWRTOwNw72@dhcp22.suse.cz>
-In-Reply-To: <YCrN4/EWRTOwNw72@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 16 Feb 2021 12:34:41 +0800
-Message-ID: <CAMZfGtX8xizYQxwB_Ffe6VcesaftkzGPDr=BP=6va_=aR3HikQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210210232849.1358703-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 3:39 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 16-02-21 02:19:20, Muchun Song wrote:
-> > On Tue, Feb 16, 2021 at 1:48 AM Muchun Song <songmuchun@bytedance.com> =
-wrote:
-> > >
-> > > On Tue, Feb 16, 2021 at 12:28 AM Michal Hocko <mhocko@suse.com> wrote=
-:
-> > > >
-> > > > On Mon 15-02-21 23:36:49, Muchun Song wrote:
-> > > > [...]
-> > > > > > There shouldn't be any real reason why the memory allocation fo=
-r
-> > > > > > vmemmaps, or handling vmemmap in general, has to be done from w=
-ithin the
-> > > > > > hugetlb lock and therefore requiring a non-sleeping semantic. A=
-ll that
-> > > > > > can be deferred to a more relaxed context. If you want to make =
-a
-> > > > >
-> > > > > Yeah, you are right. We can put the freeing hugetlb routine to a
-> > > > > workqueue. Just like I do in the previous version (before v13) pa=
-tch.
-> > > > > I will pick up these patches.
-> > > >
-> > > > I haven't seen your v13 and I will unlikely have time to revisit th=
-at
-> > > > version. I just wanted to point out that the actual allocation does=
-n't
-> > > > have to happen from under the spinlock. There are multiple ways to =
-go
-> > > > around that. Dropping the lock would be one of them. Preallocation
-> > > > before the spin lock is taken is another. WQ is certainly an option=
- but
-> > > > I would take it as the last resort when other paths are not feasibl=
-e.
-> > > >
-> > >
-> > > "Dropping the lock" and "Preallocation before the spin lock" can limi=
-t
-> > > the context of put_page to non-atomic context. I am not sure if there
-> > > is a page puted somewhere under an atomic context. e.g. compaction.
-> > > I am not an expert on this.
-> >
-> > Using GFP_KERNEL will also use the current task cpuset to allocate
-> > memory. Do we have an interface to ignore current task cpuset=EF=BC=9FI=
-f not,
-> > WQ may be the only option and it also will not limit the context of
-> > put_page. Right?
->
-> Well, GFP_KERNEL is constrained to the task cpuset only if the said
-> cpuset is hardwalled IIRC. But I do not see why this is a problem.
+On 2/10/21 3:28 PM, Kees Cook wrote:
+> As started by commit 05a5f51ca566 ("Documentation: Replace lkml.org
+> links with lore"), replace lkml.org links with lore to better use a
+> single source that's more likely to stay available long-term.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-I mean that if there are more than one node in the system,
-but the current task cpuset only allows one node. If current
-node has no memory and other nodes have enough memory.
-We can fail to allocate vmemmap pages. But actually it is
-suitable to allocate vmemmap pages from other nodes.
-Right?
+Acked-by: Vineet Gupta <vgupta@synopsys.com>
 
-Thanks.
+Let me know if you want me to pick this up.
 
-> --
-> Michal Hocko
-> SUSE Labs
+Thx,
+-Vineet
+
+> ---
+>   arch/arc/include/asm/irqflags-compact.h | 8 ++++++--
+>   arch/arc/mm/dma.c                       | 2 +-
+>   arch/arc/plat-axs10x/axs10x.c           | 2 +-
+>   arch/arc/plat-hsdk/platform.c           | 2 +-
+>   4 files changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/arc/include/asm/irqflags-compact.h b/arch/arc/include/asm/irqflags-compact.h
+> index 863d63ad18d6..0d63e568d64c 100644
+> --- a/arch/arc/include/asm/irqflags-compact.h
+> +++ b/arch/arc/include/asm/irqflags-compact.h
+> @@ -50,8 +50,12 @@
+>    * are redone after IRQs are re-enabled (and gcc doesn't reuse stale register)
+>    *
+>    * Noted at the time of Abilis Timer List corruption
+> - *	Orig Bug + Rejected solution	: https://lkml.org/lkml/2013/3/29/67
+> - *	Reasoning			: https://lkml.org/lkml/2013/4/8/15
+> + *
+> + * Orig Bug + Rejected solution:
+> + * https://lore.kernel.org/lkml/1364553218-31255-1-git-send-email-vgupta@synopsys.com
+> + *
+> + * Reasoning:
+> + * https://lore.kernel.org/lkml/CA+55aFyFWjpSVQM6M266tKrG_ZXJzZ-nYejpmXYQXbrr42mGPQ@mail.gmail.com
+>    *
+>    ******************************************************************/
+>   
+> diff --git a/arch/arc/mm/dma.c b/arch/arc/mm/dma.c
+> index 517988e60cfc..2a7fbbb83b70 100644
+> --- a/arch/arc/mm/dma.c
+> +++ b/arch/arc/mm/dma.c
+> @@ -32,7 +32,7 @@ void arch_dma_prep_coherent(struct page *page, size_t size)
+>   
+>   /*
+>    * Cache operations depending on function and direction argument, inspired by
+> - * https://lkml.org/lkml/2018/5/18/979
+> + * https://lore.kernel.org/lkml/20180518175004.GF17671@n2100.armlinux.org.uk
+>    * "dma_sync_*_for_cpu and direction=TO_DEVICE (was Re: [PATCH 02/20]
+>    * dma-mapping: provide a generic dma-noncoherent implementation)"
+>    *
+> diff --git a/arch/arc/plat-axs10x/axs10x.c b/arch/arc/plat-axs10x/axs10x.c
+> index 63ea5a606ecd..b821df7b0089 100644
+> --- a/arch/arc/plat-axs10x/axs10x.c
+> +++ b/arch/arc/plat-axs10x/axs10x.c
+> @@ -50,7 +50,7 @@ static void __init axs10x_enable_gpio_intc_wire(void)
+>   	 * Current implementation of "irq-dw-apb-ictl" driver doesn't work well
+>   	 * with stacked INTCs. In particular problem happens if its master INTC
+>   	 * not yet instantiated. See discussion here -
+> -	 * https://lkml.org/lkml/2015/3/4/755
+> +	 * https://lore.kernel.org/lkml/54F6FE2C.7020309@synopsys.com
+>   	 *
+>   	 * So setup the first gpio block as a passive pass thru and hide it from
+>   	 * DT hardware topology - connect MB intc directly to cpu intc
+> diff --git a/arch/arc/plat-hsdk/platform.c b/arch/arc/plat-hsdk/platform.c
+> index b3ea1fa11f87..c4a875b22352 100644
+> --- a/arch/arc/plat-hsdk/platform.c
+> +++ b/arch/arc/plat-hsdk/platform.c
+> @@ -52,7 +52,7 @@ static void __init hsdk_enable_gpio_intc_wire(void)
+>   	 * Current implementation of "irq-dw-apb-ictl" driver doesn't work well
+>   	 * with stacked INTCs. In particular problem happens if its master INTC
+>   	 * not yet instantiated. See discussion here -
+> -	 * https://lkml.org/lkml/2015/3/4/755
+> +	 * https://lore.kernel.org/lkml/54F6FE2C.7020309@synopsys.com
+>   	 *
+>   	 * So setup the first gpio block as a passive pass thru and hide it from
+>   	 * DT hardware topology - connect intc directly to cpu intc
+> 
+
