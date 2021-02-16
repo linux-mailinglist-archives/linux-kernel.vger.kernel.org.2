@@ -2,72 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3E431D0BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEF431D0A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhBPTMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 14:12:18 -0500
-Received: from ec2-34-208-57-251.us-west-2.compute.amazonaws.com ([34.208.57.251]:58762
-        "EHLO ip-172-31-12-36.us-west-2.compute.internal"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230378AbhBPTMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 14:12:17 -0500
-X-Greylist: delayed 545 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Feb 2021 14:12:17 EST
-Received: by ip-172-31-12-36.us-west-2.compute.internal (Postfix, from userid 1001)
-        id 744C640638; Tue, 16 Feb 2021 11:02:26 -0800 (PST)
-Date:   Tue, 16 Feb 2021 11:02:26 -0800
-From:   Daniel Walker <dwalker@fifo99.com>
-To:     Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Walker <danielwa@cisco.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rob Herring <robh+dt@kernel.org>, xe-linux-external@cisco.com,
-        linuxppc-dev@lists.ozlabs.org,
-        Maksym Kokhan <maksym.kokhan@globallogic.com>,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH 1/4] add generic builtin command line
-Message-ID: <20210216190226.GY22125@fifo99.com>
-References: <20190319232448.45964-2-danielwa@cisco.com>
- <20190320155319.2cd3c0f73ef3cdefb65d5d1e@linux-foundation.org>
- <20190320232328.3bijcxek2yg43a25@zorba>
- <20190320201433.6c5c4782f4432d280c0e8361@linux-foundation.org>
- <20190321151308.yt6uc3mxgppm5zko@zorba>
- <20190321151519.1f4479d92228c8a8738e02cf@linux-foundation.org>
- <1613417521.3853.5.camel@chimera>
+        id S230507AbhBPTE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 14:04:26 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:64402 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229874AbhBPTEW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 14:04:22 -0500
+Date:   Tue, 16 Feb 2021 19:03:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1613502214; bh=dHbB+EP2VglqDnAFBAuYo6DPJMDc0d9R10alpdW3CXY=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=ggve0TTkzHlRopJd/p+ejxlP5JynMzd0RhjjBFl+nYojik9OVxndHZ6pKlFeAM9oc
+         46mNabgo0uopK+tV2l7KDNJG7bFVv6Fn7v/jms3TbPUwNxJpPVK2/m2dPYo5xLoK88
+         /YrtLVgcqZTbAFa+0zCi2kDCGmYTA1xSBeC+MKAJwjWG6NVvlkTFuKEEvy9aD45a2W
+         7RDvwJ4EuW+pNTz+oVJg4x0DQ2YFfY/wpYN3ixPy4klcugvT1exw/1Dh3TAyUlQkoj
+         0LGkUFVNiXzGQ4L4vD1auZchLQE8UgkbMB6HEIL0BxR5sb/cHt6p7soJpxuxGwSt4F
+         t0WFQJkXVCtPQ==
+To:     Nick Desaulniers <ndesaulniers@google.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH mips-next] vmlinux.lds.h: catch more UBSAN symbols into .data
+Message-ID: <20210216190212.1668-1-alobakin@pm.me>
+In-Reply-To: <CAKwvOdnBgpRff6wa8u1_ogCm_pRey5d_Yro4UCa_O_=tib0FHQ@mail.gmail.com>
+References: <20210216085442.2967-1-alobakin@pm.me> <CAKwvOdnBgpRff6wa8u1_ogCm_pRey5d_Yro4UCa_O_=tib0FHQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1613417521.3853.5.camel@chimera>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 11:32:01AM -0800, Daniel Gimpelevich wrote:
-> On Thu, 2019-03-21 at 15:15 -0700, Andrew Morton wrote:
-> > On Thu, 21 Mar 2019 08:13:08 -0700 Daniel Walker <danielwa@cisco.com> wrote:
-> > > On Wed, Mar 20, 2019 at 08:14:33PM -0700, Andrew Morton wrote:
-> > > > The patches (or some version of them) are already in linux-next,
-> > > > which messes me up.  I'll disable them for now.
-> > >  
-> > > Those are from my tree, but I remove them when you picked up the series. The
-> > > next linux-next should not have them.
-> > 
-> > Yup, thanks, all looks good now.
-> 
-> This patchset is currently neither in mainline nor in -next. May I ask
-> what happened to it? Thanks.
-> 
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Tue, 16 Feb 2021 09:56:32 -0800
 
-It was dropped silently by Andrew at some point. I wasn't watching -next closely
-to know when. I have no idea why he dropped it.
+> On Tue, Feb 16, 2021 at 12:55 AM Alexander Lobakin <alobakin@pm.me> wrote=
+:
+> >
+> > LKP triggered lots of LD orphan warnings [0]:
+>=20
+> Thanks for the patch, just some questions.
+>=20
+> With which linker?  Was there a particular config from the bot's
+> report that triggered this?
 
-We still use this series extensively in Cisco, and have extended it beyond this
-current series.
+All the info can be found by going through the link from the commit
+message. Compiler was GCC 9.3, so I suppose BFD was used as a linker.
+I mentioned CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=3Dy in the attached
+dotconfig, the warnings and the fix are relevant only for this case.
 
-We can re-submit.
+> >
+> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_data299' from
+> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_data299'
+> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_data183' from
+> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_data183'
+> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type3' from
+> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type3'
+> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type2' from
+> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type2'
+> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type0' from
+> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type0'
+> >
+> > [...]
+> >
+> > Seems like "unnamed data" isn't the only type of symbols that UBSAN
+> > instrumentation can emit.
+> > Catch these into .data with the wildcard as well.
+> >
+> > [0] https://lore.kernel.org/linux-mm/202102160741.k57GCNSR-lkp@intel.co=
+m
+> >
+> > Fixes: f41b233de0ae ("vmlinux.lds.h: catch UBSAN's "unnamed data" into =
+data")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  include/asm-generic/vmlinux.lds.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vm=
+linux.lds.h
+> > index cc659e77fcb0..83537e5ee78f 100644
+> > --- a/include/asm-generic/vmlinux.lds.h
+> > +++ b/include/asm-generic/vmlinux.lds.h
+> > @@ -95,7 +95,7 @@
+> >   */
+> >  #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+> >  #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
+> > -#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundl=
+iteral* .data.$__unnamed_*
+> > +#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundl=
+iteral* .data.$__unnamed_* .data.$Lubsan_*
+>=20
+> Are these sections only created when
+> CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is selected?  (Same with
+> .data.$__unnamed_*)
+>=20
+> >  #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
+> >  #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
+> >  #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
+> > --
+> > 2.30.1
+> >
+> >
+>=20
+>=20
+> --=20
+> Thanks,
+> ~Nick Desaulniers
 
-Daniel
+Al
+
