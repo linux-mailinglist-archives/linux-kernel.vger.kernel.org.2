@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E5131D27F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD81831D271
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhBPWLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 17:11:32 -0500
-Received: from gate.crashing.org ([63.228.1.57]:41763 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230501AbhBPWLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 17:11:20 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 11GM6LUA023081;
-        Tue, 16 Feb 2021 16:06:21 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 11GM6Jik023080;
-        Tue, 16 Feb 2021 16:06:19 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Tue, 16 Feb 2021 16:06:19 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        lkp <lkp@intel.com>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: {standard input}:577: Error: unsupported relocation against base
-Message-ID: <20210216220619.GL28121@gate.crashing.org>
-References: <202101051834.FGH835Vs-lkp@intel.com> <98587e13-d22f-973f-1e16-f7a811f71016@csgroup.eu> <20210205100821.GA71063@shbuild999.sh.intel.com> <87lfbouzgd.fsf@mpe.ellerman.id.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lfbouzgd.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.4.2.3i
+        id S230439AbhBPWHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 17:07:41 -0500
+Received: from sonic313-26.consmr.mail.gq1.yahoo.com ([98.137.65.89]:40803
+        "EHLO sonic313-26.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230418AbhBPWHj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 17:07:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1613513213; bh=mb3T0IloLeWSZfHGM59VvTZ2INcok7KeJezcMTtUqQY=; h=To:Cc:From:Subject:Date:References:From:Subject:Reply-To; b=uENi5N9YaCO2q323TY7dN/JHAb0NQmfPSMUQL1qbP59xRDGSJfq7rBPvOV5C1EJHrJ+TgZYtb5R31lQ4bOGNu1KoXawz7R46XSwDp1EXpnkrylQouS+xAZ6bD5wh+K0YYDjpTt7iCTTrGzAqzqCLDUJjawV1rPwlmzBoIE3Wf3XbEr03Wuo912t8qKLm99B17tiKFs1snf8xNSp7ioViw0LD+PLW3NNShp4I1Yh40cyTGU1QEAG0GFzRRdkdiwvf/xndP41BUhBQinPXsyW2wwdzIXmBLjndp8G0KfpmZxTGSgLD5PlZR+q73roKrHVd11XmEgyU4YEO1DJfJoWpxA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1613513213; bh=1Qfs86HXUq+B8CxB/9PJX02fZLQYRQmJtPrHvBk/4Zu=; h=X-Sonic-MF:To:From:Subject:Date:From:Subject; b=sXEzPTFR4tRX95XQgB5eQeNS60xcq787zmK6R2VU5NEBtE5xsTVEeNR7ZVopEoBkbuAEyrRQ/TjQB28EwvX6zelpcJG68QlJuOJGKkMzgg6sZ7NaiRCjP4sJgygW6US/XY8yNapgM88rio5LTfAdf1WPnL61UyYyPqx+rTE68vOeqv6P8pe3SoE4mCIBCSz6NgVSghQibdMucTGghKu9yoklFXR0SxaCnPOOVQo0JGy4WidPw07wfGmp5XXcIRN9lurSQL+iQDkeQE9CFozbWImlWn9RWgj0BSyja/VQVsr9YZqUZ4fbEBYXGVW0dl/EKcWv1bD9TtMIqmAUhgTtJg==
+X-YMail-OSG: COJHCbwVM1n3zlHjZhDU8t3C.zxreQN6RxqlPl5__XHsF4WTkevQ0TJpcke617U
+ HtipPmb5qSJRZJgme.sg.cVwKxlej7Nwz0Nl8L5puHX5QDbNw7w.Dzz2bcNWLRw1vqlW1NIImRTW
+ RlKFDnOXH04otPDNeVP5Y8fnpU8av4jFwJy5BhWe3xV0oZmLP7GOx8PWmXgym_E8urtNrDqEt8Yk
+ gn541bNUk_zBJm2SVHaVDPpwdfI8VXdhAwbNI7PIEc76OaZhJCbslBQ6iRb2sRl7acKWCdwBauEG
+ kfKIM92ko55aOaj9V2Ab0nySHItzcaSo5jQOLB6pUHjzwjqHVNNtPoH4IRo5me1rLnsfYsPenT1W
+ yV1He0tTiAymft8pOj1.QhoD2urdpptO0jGc4an_lj1YUDGtOFTKwisOjs4bqMej2nGiPedYJNSL
+ SLmQw6MWu5ZzdLFCWuZfCbVPEQEsVRu7S18X4vmnnacUBRvQUs4ffwQzpOmtFy0pEpGbPxzf4EVe
+ 0trvLoiMfsYU5vvLVDP3Q.gi5oqOi6DZtbeHgTrIFHMXqGDa6dPH8F2OcB3pBEIGq_kYBamJtHZY
+ yCHQuAgpnZ8M3YFQKF28VueNcex04j18CfL2e_zYwQ3jSNaO.sk8OQYDL4va1tNTbRnn6aVe_6yu
+ C6MTEkTnF62pL0SLGxembrnatVfeiMo68YD6vz8tvpxF4oQ5MmafKuC31Bgks8ldwhR3sY2tYyBL
+ 41v56lwjMqivBt2JqjnqKk2WxKaCBPsmMbV0xoHpnGzG3PeIMPVAnS39aMfycwMjrTDnOzWsKk_0
+ IWxrbQYbL.IJaoOKFk_k_X54zuMJqrCi34viuf.eNl.YQvyAN_kYle3xQqsefp6faPWAWNrM7bBg
+ xhKkEbaQSGRiJsVxNkjsusfEFSCAmRorv1u_g.DAnYko0kOSkN1hgqXo1FnQGWVwtqlAcdqu4Mn.
+ mwFK3mpBQH0lfHDlXhbRy4zYovIiqd6bnVT3ssXtRbUVX4eL0M0tQc8GCLvSfZ_aroMyNindMRLe
+ IU6H9gM97eP_hOv1iovuTtJcpPjxY5Ejmj8NNf9sPLTuRqDjk41.THynp9jAVQ2pCbbELUiGIekO
+ V8xs2oHn48eF1HObezvwtfThIv22ljpI57K7FyOMv2G_Mnvn7G0ex06fqVjfYnErrZyOqj8VUMTl
+ 1ZUavb2ZhpMC_sbB6QX56smQ0r0TwRAKlLqKn_uU8VgpFRzi_26ic_LnZ3mp3KcHvDkbvO8RW9N8
+ cyP.S8XaLgzU05FekMkPvWHEAqeXFqVOb8bQ8zI_1zwF_Biqt_ePhS_4z37m9t3T0aAaprOOvQ4g
+ cGkfaTxAPEbgA9I7OxbQdxupqIhF9WODWOw3Pah_lnAISk_8SldR4EBqwUDIZT_cB4mYTJ40U9cH
+ UGAioqrqXf0QXHZzF.Cp1oqxrkG_AoxcFY4C2suy2tgG.3rl5k7JQtXFMhkYa7ogI8XmqAvoU4Z7
+ PWONjNIeCYKSQv8Imh0lSq4Vb6jbnH0Rd5htQsTEF7WlxD.GnDY2EYRDQIMQqVQTeIpHQ.FPfaZa
+ qwA9.jhDSZZemFtv0SKTqOiRhavC9I4ytQGg0pEHWT6JWp4iYrwtjCZ7wUmlsWy1pYB_nbwN8YG3
+ UHnTvSlrP33RJKPNEg8..LLl.DnnIyVl5TxDb3WhytemoDBRHGgKSRY08YWfUVZrqpLdGr_gld0b
+ ykrCOnzl9GeJPnLiDvg_WX.rhx4ooA2k0Bs733aY0d1jRyoBr982vP._LAw2WWXCNy9KedHO4yFL
+ Vdv4K1BsMRVYE.EIiCamwf5nkLYYfpgROdCoiVcBQ_fG5jyXooIvxr3hTaqEATuQAw781Fx7lX.t
+ MFnnCPARJZ_.zreaq2LYSt2zpOKUlnLwAE5QIZqprD6wgeeHEks6vN_9dTRpILm6ob3PSVWFM.m3
+ atPb2j2z0R6xwF5Z5rfBkJBnos3O9jc27YxqtkMUmEjjoLpZlD_GIMkLp1XX_H5lGcWMwbATgfah
+ mAUpZgIIxo2IsgAun_GCrnIncjLgHeXJGnPjgLtUN1Ft0.ZHnxDwWeAyinK0rwhinik4BTDT0_VX
+ WPIDUbbJELM3lc6zdhbXx3JFf42NqMxfqS9t64bdRWIH10_NaoVaDL7EmNIy.tMR3dHsW_WnqKVJ
+ ytC493nYuRfPyAeEQIDc9w0eyznVcnvHWqSG6VggJlNHmX.jTrADMwk81gq6WN45L9Rxear5yD4x
+ QEvj3NEiGNI1ai1qDTF8LJUygnL330kMjlXlU5DWt6.sXp.Mx.Mjtk1Ehp4yXfY1ATbjC5o5vJdq
+ x.u81_Ae4Xuv3plKnpRJh8zOTjtfnDfETvkqUWkaQYqFmSLQbkhtAnMcsOD.WNRFJ902VH_vBw3m
+ 5zVZxeuoDGvR4ZoNfoR_.VE_uJIYJP9hpyvTCI6j1_UzSHnExx1CyyZRo_hIQLjSKEx4aL889sdT
+ PbF51PPaassfWe0Q2b04744LdC7Qrtub8NOHlfPgIeqn47mwAZgKV7Zn4.yuQvrhm3mlmt4UZxoC
+ wCUf7cIN47TVvGnGWEGTA_5L5o9vrK6k1vIHa34HrkqR0SHwUinz7KWt.XbWdP0taQbC9W60aDXI
+ xb0XeCG5y35u0B8xqUnP7KjizPXGjHR8ocbWR4fHmkTd1i9H9TBA18xBDAdHGCSdPyI9qDBiQIvI
+ uBQt4CLzQn0MPPcr.HSM3XFXgxnxImJQI2toK8BVD_yjPDSCHVg--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.gq1.yahoo.com with HTTP; Tue, 16 Feb 2021 22:06:53 +0000
+Received: by smtp422.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 49fd909a87fc98d2c5e6fda4e03a24d0;
+          Tue, 16 Feb 2021 22:06:51 +0000 (UTC)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Subject: [GIT PULL] Smack patches for v5.12
+Message-ID: <7fc1be79-b611-24e9-f2fb-282dd061d755@schaufler-ca.com>
+Date:   Tue, 16 Feb 2021 14:06:51 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+References: <7fc1be79-b611-24e9-f2fb-282dd061d755.ref@schaufler-ca.com>
+X-Mailer: WebService/1.1.17712 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.9.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Hello Linus
 
-On Tue, Feb 16, 2021 at 08:36:02PM +1100, Michael Ellerman wrote:
-> Feng Tang <feng.tang@intel.com> writes:
-> >   {standard input}:577: Error: unsupported relocation against base
-> >   {standard input}:580: Error: unsupported relocation against base
-> >   {standard input}:583: Error: unsupported relocation against base
+Here is a Smack change for the 5.12 release. It introduces bound checking=
 
-> > The reason is macro 'mfdcr' requirs an instant number as parameter,
-> > which is not met by show_plbopb_regs().
-> 
-> It doesn't require a constant, it checks if the argument is constant:
-> 
-> #define mfdcr(rn)						\
-> 	({unsigned int rval;					\
-> 	if (__builtin_constant_p(rn) && rn < 1024)		\
-> 		asm volatile("mfdcr %0," __stringify(rn)	\
-> 		              : "=r" (rval));			\
-> 	else if (likely(cpu_has_feature(CPU_FTR_INDEXED_DCR)))	\
-> 		rval = mfdcrx(rn);				\
-> 	else							\
-> 		rval = __mfdcr(rn);				\
-> 	rval;})
+for the smackfs administrative interfaces where they were missing.
 
-It requires a constant number with known (at compile time) value, while
-__builtin_constant_p checks for any constant.  The address of some
-defined symbol is a constant as well normally, for example.
+--
 
-It's better to write that asm as
-	asm volatile("mfdcr %0,%1" : "=r" (rval) : "n"(rn));
-btw (the "n" constraint means "constant integer with known value" (it
-stands for "numeric"), while the "i" constraint means just "constant
-integer").
+The following changes since commit 1048ba83fb1c00cd24172e23e8263972f6b5d9=
+ac:
 
-> But the error you're seeing implies the compiler is choosing the first
-> leg of the if, even when rn == "base + x", which is surprising.
-> 
-> We've had cases in the past of __builtin_constant_p() returning false
-> for things that a human can see are constant at build time, but I've
-> never seen the reverse.
+  Linux 5.11-rc6 (2021-01-31 13:50:09 -0800)
 
-And it doesn't here :-)
+are available in the Git repository at:
 
-But, you need some way to figure out an arg is a constant known number
-here.  We don't have a builtin for that I think.  Maybe some trick can
-be done?  Maybe simply test "rn >= 0" as well, does that work?
+  https://github.com/cschaufler/smack-next tags/Smack-for-v5.12
+
+for you to fetch changes up to 7ef4c19d245f3dc233fd4be5acea436edd1d83d8:
+
+  smackfs: restrict bytes count in smackfs write functions (2021-02-02 17=
+:14:02 -0800)
+
+----------------------------------------------------------------
+Smack updates for v5.12.
+Bounds checking for writes to smackfs interfaces.
+
+----------------------------------------------------------------
+Sabyrzhan Tasbolatov (1):
+      smackfs: restrict bytes count in smackfs write functions
+
+ security/smack/smackfs.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
 
-Segher
