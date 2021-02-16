@@ -2,162 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDE631D0DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A9F31D0D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhBPTTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 14:19:49 -0500
-Received: from mout.gmx.net ([212.227.17.20]:57361 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229879AbhBPTTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 14:19:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613503062;
-        bh=GykttgD/ScwH21Rwzt2CmBMPNmJNtJwa1QV9F7Pvq+U=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=h++RhMptxUfRi21wZODUlTRUOuxvZpCOHAIhPaBIsidiRtgFoMNENpYoKti/cab8s
-         XrvSz3JSxA/Vg8tTImPwWZNvvzPaWGGWrP+9/KSJcvo1a30EtCByvCaJpT0s8YwbvS
-         3muB8nFKznlLT4HDO8+L5Rbc96SbOnFzdxRxQrSQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N0Fxf-1m7CuP0Qh5-00xMrs; Tue, 16
- Feb 2021 20:17:42 +0100
-Subject: Re: [PATCH v4] tpm: fix reference counting for struct tpm_chip
-To:     Stefan Berger <stefanb@linux.ibm.com>, peterhuewe@gmx.de,
-        jarkko@kernel.org, jgg@ziepe.ca
-Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        stable@vger.kernel.org
-References: <1613435460-4377-1-git-send-email-LinoSanfilippo@gmx.de>
- <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
- <d36c324d-2f16-ed2a-7507-0d8f52da20ea@linux.ibm.com>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <5657f8c4-e85e-ad9f-fa1f-ec5d6b659423@gmx.de>
-Date:   Tue, 16 Feb 2021 20:17:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <d36c324d-2f16-ed2a-7507-0d8f52da20ea@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
+        id S230414AbhBPTSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 14:18:55 -0500
+Received: from mail-dm6nam11on2040.outbound.protection.outlook.com ([40.107.223.40]:17089
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230225AbhBPTSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 14:18:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cUcCvkj/p/pc+k+FB1NOm4UrrGQ1dIsxVClkCADAqOvjAj4bziB1OvNsH4dVCN63wiRQ/DLV4bbRxvD2/VMkrDqFI51tLRh9Myomol7efl02/1CjTlN5NvZSWqapWcZRimuKtJ99n6Leikee4KyRTdJTbg6KtRiAVpLvmZAkEMcOsfWh8B6+sR1cPCSuQ7m8T3ANQAmJqOxNxmxsPaOXtGqwIddMdjt4aZ9vX4yO1CZu0cUg0zMsl+Id0hyxmwKfPeV3HlAIddhUMUmamX0Fn8b91H5/kPD3K33d8w7th7Bj3nOtRteTH8D+/izogjY4o9x4r7QKw1e5iCyWz2maCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jWIVzoNz7KPULPlDSYoUIXf7hWoOx4E1oEeVSH8mL5s=;
+ b=Lmva3OZfnpTwL6GBRoQyFWiU72yyx9kOXvd1FZH9hGOMgIj9g3Uwp328PLyA6FGKJbI41pmTNtukK/9s7r8mTlXx5/7hXqqjAPmVPyKf/u6Vy9AR4oXSyRq7/7OyTlg/Z9iyOSSbHGIuWXS9CNdirMJtdLi3dYT5NPlYwd++tYqQysz1bTbuo3oxoIcmOKSAbmyHcj1+uX4NryKRCRy6raXK3qp0gCJ2h9K53oQJ4jA76pG6Jo5iVW1+bKnUCL2AnRRJvYHlDxcRk2KULyRrBasJdYI7aqntz2Sgd9aHOF0sdxhuUu1JeaAacST9BWbjvr06LtvHutTF1RzuSlfZbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jWIVzoNz7KPULPlDSYoUIXf7hWoOx4E1oEeVSH8mL5s=;
+ b=R9BZir0A3CZetCVcQw+Ja7Y8mbvE/qrLupBhwaWV7JJjYvqeQxwAAs3fnowgXBPmBUWM/2W3NYhrMSphlLGG75Q68UtBa2Mv69x1zJfRKKD4L3C68AzRJcgxS9G4UEhc0erynJtON7Sqn/MSsBYrbc1Uchg/6ItqCvwtbcKLRks=
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com (2603:10b6:a03:4a::18)
+ by BY3PR05MB8083.namprd05.prod.outlook.com (2603:10b6:a03:36e::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.11; Tue, 16 Feb
+ 2021 19:17:55 +0000
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::ddba:e1e9:fde7:3b31]) by BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::ddba:e1e9:fde7:3b31%3]) with mapi id 15.20.3846.039; Tue, 16 Feb 2021
+ 19:17:55 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, Juergen Gross <jgross@suse.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        KVM <kvm@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [PATCH v5 4/8] x86/mm/tlb: Flush remote and local TLBs
+ concurrently
+Thread-Topic: [PATCH v5 4/8] x86/mm/tlb: Flush remote and local TLBs
+ concurrently
+Thread-Index: AQHXBFzuDk/+97dVSEa5i3JTefGxeKpbKCAA
+Date:   Tue, 16 Feb 2021 19:17:54 +0000
+Message-ID: <AFA552C0-88B1-4D58-B3C5-1A571DBF0EA6@vmware.com>
+References: <20210209221653.614098-1-namit@vmware.com>
+ <20210209221653.614098-5-namit@vmware.com>
+ <YCu2MQFdV4JTrUQb@hirez.programming.kicks-ass.net>
+In-Reply-To: <YCu2MQFdV4JTrUQb@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [24.6.216.183]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8d0a60f0-c67d-4e85-3a49-08d8d2af9010
+x-ms-traffictypediagnostic: BY3PR05MB8083:
+x-microsoft-antispam-prvs: <BY3PR05MB8083829349529D99571540C2D0879@BY3PR05MB8083.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LPbUNtFBn0N04M5Lm1C3N0zrODoag8LRvwSmI5RqGwf1xyR8CgukS91tO8L/m0b3nYZ6QhlPgMXJvHuMNZn3RQdQG8yg4vumbtgl5LsTzw+qlnczlC4GTBRkIbWV4JrUjK/h2vD2VnP1rMtqOqqYSACd32YkR0b9sKUVsJm1YofFd6VDsPPCWB9INz6erPh/Ht00pn3yU0l7DrwaIzN0Lu/Iu2WAcSbL+fnfMyY7ikovSjj03trUGYRiJcxWMTdiX7fIJn30ryMX6VLLdAKcKEz/IPpfnEh61B+SwaUEEBUGLsfu4nyAWb4YgcjZRAP1si7KKjaqv6q/gtzz5r9IHvLaJjd4QIr82803pOylR9vyF3ehkSipoyu/H9iKe/Cdbf7tVI4HYm4Sp5i3pT+8jOnlLyHXyax9ytawwIhBmuQh6AJssDyJNsimjb22KHM6ckNEjvD/j050Hd261/ppZw8DRCtNWPjKfnucdF+/3z3pt2lllHIAjR2vXrD6WENCpPvMR3EaiTixuN48ZoYhb49YNZGkugoNSwheN2V1F64DDjg83NV/52pHQM7ss2aEou6iSote3Z+pky8VysyH+A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(376002)(136003)(396003)(5660300002)(33656002)(4326008)(6512007)(6486002)(53546011)(478600001)(66946007)(8936002)(2906002)(54906003)(86362001)(83380400001)(316002)(66446008)(186003)(66476007)(66556008)(76116006)(26005)(71200400001)(36756003)(7416002)(2616005)(6916009)(8676002)(64756008)(6506007)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?fyNbfqSd9ANotjCBaT4ktWFbtGRkNLuUxd1+oQ/DB+m87EmQFbfMxnm2cp+i?=
+ =?us-ascii?Q?iM5ozZR5UUJ/OZafBBMcBXa6sqcUtT7+GRC5YnxBQnx2zLH6a+cbLjfeVSTT?=
+ =?us-ascii?Q?SQEAfxa/hxr+mvee9M2qM1y/ca56f+I1wgWVF1aZvrCFIQ3GNZNcjWw70/gr?=
+ =?us-ascii?Q?Y5f24d5dvrt22Qhz/XC9Pt8BqkR9mLOGDFxvN/ROfnk7lqkscAmMeqtJ8iCd?=
+ =?us-ascii?Q?Hlv/cE7tqGlELWkCkjpEZ/hzKpMVPtE63ID7IHlMiIdRAAyU1baBowig2qpi?=
+ =?us-ascii?Q?benTkh4oFrj4I61f2zpDqZj/2WbBhs+jfT6xwDHfb3SFLqi8BmDZrZeuxvkd?=
+ =?us-ascii?Q?g/NYuJ6KWoTP3kMH6jZYKnoiKpRq6ZPuS7saqUvj+p5zLSt3fSdNzaaYSP7+?=
+ =?us-ascii?Q?IgIj31Wi05yZEpfNNDaoqRGJEEBeE0tUVbjvMCORdzx39kzDbwhdq8KLN1aa?=
+ =?us-ascii?Q?r/VuRW2HtLN9sneLkCRWh7vFL7Yx/923YXuWNkxRAZ+cvY3Dhq45HHDzdUg5?=
+ =?us-ascii?Q?QH6gB6gddZQjJ9AVuGjLQsJzCJfnUj3jRJseN+pcbWdb8FYlJARvO0d/OpUL?=
+ =?us-ascii?Q?0cMgZ7mToS8GrRLZKaodp6DvCIpvLZQ4saXcHkbd49RRk8wDKNw3SqL7+ZCz?=
+ =?us-ascii?Q?IEAHl8kPzFQY75I7kkxYISxXFccwBhuNTCJhkaVCsbdUXkvbfrQdGkYS67Qf?=
+ =?us-ascii?Q?3RLnJ1Z3Yd0ES8q80OlRKiVHHkLiX7mjvRmkI+gt3U8xk3RzUoQIWBi9vzhp?=
+ =?us-ascii?Q?26ugbP9cWt5k+JZ5bpvbfDW3CwDsMJRN/5wdpLPsBfG/le3U9kXRWG3jpfTn?=
+ =?us-ascii?Q?n5EVMctzKXjEK73qf9VtfAd0W3pecmu8x0w9bZ/1FZsi1g/czrJ4xX6q8yME?=
+ =?us-ascii?Q?riZF0aFcqY+hOonx37uKBYI/0tCf3GUd66Ib4DvDpSlqO+EVc2EhkKRYhVqX?=
+ =?us-ascii?Q?5Eu88EoeK5OmWfxgCv8zT/YUhQEu8UPVzrI9UEoPC8eKwx6MCXRfvgJNNi3P?=
+ =?us-ascii?Q?UTWJCc4KqFJWkaVvjOJY8OfqGjB1Z921aDk26pGyS2Ai0/EQFwcOx2GoSdnT?=
+ =?us-ascii?Q?zt32ET24WlMzSz9vYz39fmOQUM+Vn3ftnJUW9i3uuIV808DiBhD0JnyAsJoU?=
+ =?us-ascii?Q?TEcDqdJ1QFvWT6yG0uD1ogBw7nfn5eMbBxBp6gtHaOy8sIboedzkV1nZel+a?=
+ =?us-ascii?Q?wPGRu8YP61h7t32vVTsHIM7EW1PHD4QYh89z0jUc5NfyU106Z6MGxKhK3IGO?=
+ =?us-ascii?Q?jRRUlGtxkFpULb+0Ltk9EO86BIdYRpV6FijKxAUpTPx2ur73S+Nk9tpUWJsJ?=
+ =?us-ascii?Q?n7gtPRmstlastTmA2XYCAGyL?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9390762EDE2D8D4786E55865DEDAE795@namprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:N9Z020PUwELxIP0h9mVPoTis529QDzCGk6is8644g5qh2yQvxbG
- pbXRWmA7EgOeAGCf+G6OYdtbgcFve2kQekNc3Ka8blxbgX+X3Id/9yL8XByj5165sRvsjiO
- XqVFcaZT2IB+cuXMsvmtWYUksYnBZsUL619RJvBoIxcoZ/Sxs4xTiP433pWnlzrcFJOhhEg
- 0c2sApYfJHquqqD7RCZtw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:W1xwbuXKB94=:sdmSEGYuF66tRYWywMpUD9
- WS5LuohyHI9YKnvsVi0E3e7B7O3dWdZNFZ0YK6HyCG61UtIVDR+fmSgPtscn0WG+M6PvBWUwq
- FJzvBTQ3Nnw1XYPQok9PWbsfj9trrGspCqRP5rqBXHUvLxlHMYuk8tww1JyKnJuypUEoRiMPB
- gYRHBqPceUC4+G9jOCtKaysHC1aj5GwhOlCj5qke1CS3HAJfXDchPBbsqp9ScMF9d5IS5nrOf
- CJuARLaSqr0KHGO1kxVL/LqJZ8AAoBRTaUNKTiYNv2AI689TL3v6EC5xv0yXOt7Q7FXtjPif5
- p5c/Ve9FjEVH1f6TYsLJ1tnqbLD00WazAotQPA3IfIdn8G1Gtv80as+CtaCyy05XW7k+En4kN
- HR82EFDh6wRluDwluXjsSj/DfO4bOookH0jSv+hBfKfr3+c/YR8/h53KhdkW+5CAGHhsMSpvS
- FVPLAWRHuppUGXP1a+MBfi6uUaAt8iSDZ4FLkk0JjjkfmefJEoDa2rgfErNf1vFTbxiovqmeg
- eLs82QMjmImI8a11rhVyPA8ma3NTUZbXg+xQoUqjYG3ZJ+5MUy7l8ASHBc3CRPCT37fUu9Pfb
- oIbG65iBCFTteXvjohuEQd78DnMA0wqVsmlryMrLVc9yXaciilgopRxZz2C37L5FvyE37olt0
- MFIxTRVIwuWWuCBYVNwzCRN9kVOUdNpJ8hMzUIaIBmTJ4oSrc5ZUXhOHqcTrDUPP45kQLlyxh
- LUTM6G2vM4dqQojQwmzmRgXBgCRiBKy4zuqrZoI3dDxoZWrmZII1bqarP5pPpl0DrSOTlGRnp
- u6zbVdPbPgx96OnlNZ2zXQBGcHak/1yozSxQ0GszcoYlb7FBJ5Wa314b2zVlcBWoW/rePjtzt
- qjdNC87alDMcCzLBxAgw==
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4776.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d0a60f0-c67d-4e85-3a49-08d8d2af9010
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Feb 2021 19:17:54.9690
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SKPOxAghkr3M152dfPKEi0yLDWpx04TQBHLmVJW8qpd/dObjW4As10/cLm99NXak6CNWCIRfDRVTBzg4MqdH1A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR05MB8083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> On Feb 16, 2021, at 4:10 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+>=20
+> On Tue, Feb 09, 2021 at 02:16:49PM -0800, Nadav Amit wrote:
+>> @@ -816,8 +821,8 @@ STATIC_NOPV void native_flush_tlb_others(const struc=
+t cpumask *cpumask,
+>> 	 * doing a speculative memory access.
+>> 	 */
+>> 	if (info->freed_tables) {
+>> -		smp_call_function_many(cpumask, flush_tlb_func,
+>> -			       (void *)info, 1);
+>> +		on_each_cpu_cond_mask(NULL, flush_tlb_func, (void *)info, true,
+>> +				      cpumask);
+>> 	} else {
+>> 		/*
+>> 		 * Although we could have used on_each_cpu_cond_mask(),
+>> @@ -844,14 +849,15 @@ STATIC_NOPV void native_flush_tlb_others(const str=
+uct cpumask *cpumask,
+>> 			if (tlb_is_not_lazy(cpu))
+>> 				__cpumask_set_cpu(cpu, cond_cpumask);
+>> 		}
+>> -		smp_call_function_many(cond_cpumask, flush_tlb_func, (void *)info, 1)=
+;
+>> +		on_each_cpu_cond_mask(NULL, flush_tlb_func, (void *)info, true,
+>> +				      cpumask);
+>> 	}
+>> }
+>=20
+> Surely on_each_cpu_mask() is more appropriate? There the compiler can do
+> the NULL propagation because it's on the same TU.
+>=20
+> --- a/arch/x86/mm/tlb.c
+> +++ b/arch/x86/mm/tlb.c
+> @@ -821,8 +821,7 @@ STATIC_NOPV void native_flush_tlb_multi(
+> 	 * doing a speculative memory access.
+> 	 */
+> 	if (info->freed_tables) {
+> -		on_each_cpu_cond_mask(NULL, flush_tlb_func, (void *)info, true,
+> -				      cpumask);
+> +		on_each_cpu_mask(cpumask, flush_tlb_func, (void *)info, true);
+> 	} else {
+> 		/*
+> 		 * Although we could have used on_each_cpu_cond_mask(),
+> @@ -849,8 +848,7 @@ STATIC_NOPV void native_flush_tlb_multi(
+> 			if (tlb_is_not_lazy(cpu))
+> 				__cpumask_set_cpu(cpu, cond_cpumask);
+> 		}
+> -		on_each_cpu_cond_mask(NULL, flush_tlb_func, (void *)info, true,
+> -				      cpumask);
+> +		on_each_cpu_mask(cpumask, flush_tlb_func, (void *)info, true);
+> 	}
+> }
 
-Hi Stefan,
-
-On 16.02.21 at 17:52, Stefan Berger wrote:
-> On 2/15/21 7:31 PM, Lino Sanfilippo wrote:
->> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
->>
->> The following sequence of operations results in a refcount warning:
->>
->> 1. Open device /dev/tpmrm
->> 2. Remove module tpm_tis_spi
->> 3. Write a TPM command to the file descriptor opened at step 1.
->>
->> ------------[ cut here ]------------
->> WARNING: CPU: 3 PID: 1161 at lib/refcount.c:25 kobject_get+0xa0/0xa4
->> refcount_t: addition on 0; use-after-free.
->> Modules linked in: tpm_tis_spi tpm_tis_core tpm mdio_bcm_unimac brcmfma=
-c
->> sha256_generic libsha256 sha256_arm hci_uart btbcm bluetooth cfg80211 v=
-c4
->> brcmutil ecdh_generic ecc snd_soc_core crc32_arm_ce libaes
->> raspberrypi_hwmon ac97_bus snd_pcm_dmaengine bcm2711_thermal snd_pcm
->> snd_timer genet snd phy_generic soundcore [last unloaded: spi_bcm2835]
->> CPU: 3 PID: 1161 Comm: hold_open Not tainted 5.10.0ls-main-dirty #2
->> Hardware name: BCM2711
->> [<c0410c3c>] (unwind_backtrace) from [<c040b580>] (show_stack+0x10/0x14=
-)
->> [<c040b580>] (show_stack) from [<c1092174>] (dump_stack+0xc4/0xd8)
->> [<c1092174>] (dump_stack) from [<c0445a30>] (__warn+0x104/0x108)
->> [<c0445a30>] (__warn) from [<c0445aa8>] (warn_slowpath_fmt+0x74/0xb8)
->> [<c0445aa8>] (warn_slowpath_fmt) from [<c08435d0>] (kobject_get+0xa0/0x=
-a4)
->> [<c08435d0>] (kobject_get) from [<bf0a715c>] (tpm_try_get_ops+0x14/0x54=
- [tpm])
->> [<bf0a715c>] (tpm_try_get_ops [tpm]) from [<bf0a7d6c>] (tpm_common_writ=
-e+0x38/0x60 [tpm])
->> [<bf0a7d6c>] (tpm_common_write [tpm]) from [<c05a7ac0>] (vfs_write+0xc4=
-/0x3c0)
->> [<c05a7ac0>] (vfs_write) from [<c05a7ee4>] (ksys_write+0x58/0xcc)
->> [<c05a7ee4>] (ksys_write) from [<c04001a0>] (ret_fast_syscall+0x0/0x4c)
->> Exception stack(0xc226bfa8 to 0xc226bff0)
->> bfa0:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 00000000 000105b4 00000003 beaf=
-e664 00000014 00000000
->> bfc0: 00000000 000105b4 000103f8 00000004 00000000 00000000 b6f9c000 be=
-afe684
->> bfe0: 0000006c beafe648 0001056c b6eb6944
->> ---[ end trace d4b8409def9b8b1f ]---
->>
->> The reason for this warning is the attempt to get the chip->dev referen=
-ce
->> in tpm_common_write() although the reference counter is already zero.
->>
->> Since commit 8979b02aaf1d ("tpm: Fix reference count to main device") t=
-he
->> extra reference used to prevent a premature zero counter is never taken=
-,
->> because the required TPM_CHIP_FLAG_TPM2 flag is never set.
->>
->> Fix this by moving the TPM 2 character device handling from
->> tpm_chip_alloc() to tpm_add_char_device() which is called at a later po=
-int
->> in time when the flag has been set in case of TPM2.
->>
->> Commit fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n=
->")
->> already introduced function tpm_devs_release() to release the extra
->> reference but did not implement the required put on chip->devs that res=
-ults
->> in the call of this function.
->>
->> Fix this by putting chip->devs in tpm_chip_unregister().
->>
->> Finally move the new implemenation for the TPM 2 handling into a new
->> function to avoid multiple checks for the TPM_CHIP_FLAG_TPM2 flag in th=
-e
->> good case and error cases.
->>
->> Fixes: fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n=
->")
->> Fixes: 8979b02aaf1d ("tpm: Fix reference count to main device")
->> Co-developed-by: Jason Gunthorpe <jgg@ziepe.ca>
->> Signed-off-by: Jason Gunthorpe <jgg@ziepe.ca>
->> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
->> Cc: stable@vger.kernel.org
->
->
-> I know you'll post another version, but anyway:
->
-> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
-
-Thank you for testing this, I will send a v5 shortly.
-
-Regards,
-Lino
+Indeed, and there is actually an additional bug - I used cpumask in the
+second on_each_cpu_cond_mask() instead of cond_cpumask.
 
