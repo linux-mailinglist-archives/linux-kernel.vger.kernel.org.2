@@ -2,107 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E645431CDE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9936231CDEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhBPQWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:22:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhBPQWB (ORCPT
+        id S230221AbhBPQXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:23:04 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16779 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230073AbhBPQWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:22:01 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6300C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:21:19 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id 75so3157768pgf.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:21:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ICaHiuq9sQswfA1xeW7s9Nu305gjOngzWGENdWHyfwo=;
-        b=XjKpPVRuZw8GCEH6eA2RBf9/ASbC/dgnGma0Q+AKyXDZ0T6p9QUOzoUJsDe76h5lu7
-         ya6hUdzWAgFZJuyfPfJeidvsfxG55K7F0klJbAZnYBgfp7+I45BY2eOU6sNUjjghvdPc
-         go1DegO0GpfqotB05aprkPvCYnCmgX0ghkLKxOfaRtPDIfZokvGAh/dtgSxBzcCNzA9f
-         XVBFGUlYcbC330zRb1hybBZK8mG0HaM95ExkvyOJlC1jTBrI0qTj9wpLJjELa1RD8T5S
-         FEfy1L1Q5+oAZmBgOsQi1wOw+dl8iONd0l0x2druG9Epwbz/dgo3smcQ7cUQX4O/lziz
-         CY9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ICaHiuq9sQswfA1xeW7s9Nu305gjOngzWGENdWHyfwo=;
-        b=hpOIqHQIO4oEROrssU2pAhhelVYgtZO3gvAtS/pDiXIhggiFnVvQWDEKwxjn0SIXG9
-         mmc3r6aKEq0Gkk/QXHRurDHUndOVoxUUv9KgZSIbbvy5pKKz2JkmU+IjY4x1B3NHmlu8
-         o6yq8Yjm/kx7vl2o5KOAmsiMNPs5pryPn7WhGBOXzJjLphIDOyf5jDtLSv8lWf3SEpQj
-         hgjxMV/kyFoJCdyUou0Q9YpdEs6Zw0Y5Y+4IF+ipMVdEXzK54NAKOB8CgpvWRG5Ig1Oq
-         ayLmHa3rXjvcSRqcchBQiilf0WEky3TZmEDE7YpUYiXqMiTLrwHMmwuqDRmYuUFvXKn4
-         CzbQ==
-X-Gm-Message-State: AOAM533uVaFcEaJvM2BOB0g+be1H+f9MPAkSUHtFrbhP0ZLG6P3W81y0
-        67s12VcQhNYmHFMnIfEqYGjuEQ==
-X-Google-Smtp-Source: ABdhPJwK6txOBGk6t8C7EsIVXZPKe4FVavK53stVIFcjWVnrQQ+pL5Jvv8qZcwz2xfxSjbaQ7sgNdg==
-X-Received: by 2002:a62:187:0:b029:1da:e323:a96b with SMTP id 129-20020a6201870000b02901dae323a96bmr20916692pfb.28.1613492479131;
-        Tue, 16 Feb 2021 08:21:19 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:d107:e68e:347d:fd04])
-        by smtp.gmail.com with ESMTPSA id j4sm20756990pfa.131.2021.02.16.08.21.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 08:21:18 -0800 (PST)
-Date:   Tue, 16 Feb 2021 08:21:11 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Brian Gerst <brgerst@gmail.com>, Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v2 1/2] x86/stackprotector/32: Make the canary into a
- regular percpu variable
-Message-ID: <YCvw99dIJ9C90Q6R@google.com>
-References: <cover.1613243844.git.luto@kernel.org>
- <c0ff7dba14041c7e5d1cae5d4df052f03759bef3.1613243844.git.luto@kernel.org>
+        Tue, 16 Feb 2021 11:22:52 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602bf1340000>; Tue, 16 Feb 2021 08:22:12 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Feb
+ 2021 16:22:11 +0000
+Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Feb 2021 16:22:09 +0000
+From:   Vlad Buslov <vladbu@nvidia.com>
+To:     <xiyou.wangcong@gmail.com>,
+        <syzbot+151e3e714d34ae4ce7e8@syzkaller.appspotmail.com>
+CC:     <davem@davemloft.net>, <jhs@mojatatu.com>, <jiri@resnulli.us>,
+        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Vlad Buslov <vladbu@nvidia.com>
+Subject: [PATCH net] net: sched: fix police ext initialization
+Date:   Tue, 16 Feb 2021 18:22:00 +0200
+Message-ID: <20210216162200.1834139-1-vladbu@nvidia.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <CAM_iQpVEZiOca0po6N5Hcp67LV98k_PhbEXogCJFjpOR0AbGwg@mail.gmail.com>
+References: <CAM_iQpVEZiOca0po6N5Hcp67LV98k_PhbEXogCJFjpOR0AbGwg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c0ff7dba14041c7e5d1cae5d4df052f03759bef3.1613243844.git.luto@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613492532; bh=O4R2iwkBYENhxWHFO0GQzJomk+OPK+x88ARSmZpOwDs=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+         References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        b=B/O8c1oTv3rMnCCf4OdFyZ+rj7Af96mIec1wgaRMrXX36BcWmOM3OCKF7SJatBM+X
+         3uSPIIgZE0L9jX1WTPm9LeGUhrlRwHaMi7CNPVMPBnEIW2SUuogXtD0lb7tP8TtEiM
+         WjCEr6z2hDmh7bF7IN/OE0Hk9Q/08Vvqr+HX7L1er7tmgOJafc5UtKCB9Yd6ETeaIK
+         PuN5cv1fNCqobZvnYAlQn4STwI9iW6rJJYpGMhR8beFN8tLDf0GEzGVpINmJEdZXLi
+         2Au7Mv/Ul48yLUgZSQt6nXwwTnBaRfErKqtPS2Zblm6aNpARunAFwTMaif4WUdsYu/
+         HpOf5wGKNPE1A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021, Andy Lutomirski wrote:
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index f923e14e87df..ec39073b4897 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1467,12 +1467,8 @@ static void svm_vcpu_put(struct kvm_vcpu *vcpu)
->  #ifdef CONFIG_X86_64
->  		loadsegment(fs, svm->host.fs);
->  		wrmsrl(MSR_KERNEL_GS_BASE, current->thread.gsbase);
-> -		load_gs_index(svm->host.gs);
-> -#else
-> -#ifdef CONFIG_X86_32_LAZY_GS
-> -		loadsegment(gs, svm->host.gs);
-> -#endif
+When police action is created by cls API tcf_exts_validate() first
+conditional that calls tcf_action_init_1() directly, the action idr is not
+updated according to latest changes in action API that require caller to
+commit newly created action to idr with tcf_idr_insert_many(). This results
+such action not being accessible through act API and causes crash reported
+by syzbot:
 
-This manually GS crud is gone as of commit e79b91bb3c91 ("KVM: SVM: use
-vmsave/vmload for saving/restoring additional host state"), which is queued for
-5.12.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrume=
+nted.h:71 [inline]
+BUG: KASAN: null-ptr-deref in atomic_read include/asm-generic/atomic-instru=
+mented.h:27 [inline]
+BUG: KASAN: null-ptr-deref in __tcf_idr_release net/sched/act_api.c:178 [in=
+line]
+BUG: KASAN: null-ptr-deref in tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act=
+_api.c:598
+Read of size 4 at addr 0000000000000010 by task kworker/u4:5/204
 
->  #endif
-> +		load_gs_index(svm->host.gs);
->  
->  		for (i = 0; i < NR_HOST_SAVE_USER_MSRS; i++)
->  			wrmsrl(host_save_user_msrs[i].index,
-> @@ -3705,13 +3701,11 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu,
->  	} else {
->  		__svm_vcpu_run(svm->vmcb_pa, (unsigned long *)&svm->vcpu.arch.regs);
->  
-> +		/* Restore the percpu segment immediately. */
->  #ifdef CONFIG_X86_64
->  		native_wrmsrl(MSR_GS_BASE, svm->host.gs_base);
->  #else
->  		loadsegment(fs, svm->host.fs);
-> -#ifndef CONFIG_X86_32_LAZY_GS
-> -		loadsegment(gs, svm->host.gs);
-> -#endif
->  #endif
->  	}
+CPU: 0 PID: 204 Comm: kworker/u4:5 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
+gle 01/01/2011
+Workqueue: netns cleanup_net
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ __kasan_report mm/kasan/report.c:400 [inline]
+ kasan_report.cold+0x5f/0xd5 mm/kasan/report.c:413
+ check_memory_region_inline mm/kasan/generic.c:179 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ __tcf_idr_release net/sched/act_api.c:178 [inline]
+ tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act_api.c:598
+ tc_action_net_exit include/net/act_api.h:151 [inline]
+ police_exit_net+0x168/0x360 net/sched/act_police.c:390
+ ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
+ cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:604
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 204 Comm: kworker/u4:5 Tainted: G    B             5.11.0-rc7-s=
+yzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
+gle 01/01/2011
+Workqueue: netns cleanup_net
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ panic+0x306/0x73d kernel/panic.c:231
+ end_report+0x58/0x5e mm/kasan/report.c:100
+ __kasan_report mm/kasan/report.c:403 [inline]
+ kasan_report.cold+0x67/0xd5 mm/kasan/report.c:413
+ check_memory_region_inline mm/kasan/generic.c:179 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ __tcf_idr_release net/sched/act_api.c:178 [inline]
+ tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act_api.c:598
+ tc_action_net_exit include/net/act_api.h:151 [inline]
+ police_exit_net+0x168/0x360 net/sched/act_police.c:390
+ ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
+ cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:604
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Kernel Offset: disabled
+
+Fix the issue by calling tcf_idr_insert_many() after successful action
+initialization.
+
+Fixes: 0fedc63fadf0 ("net_sched: commit action insertions together")
+Reported-by: syzbot+151e3e714d34ae4ce7e8@syzkaller.appspotmail.com
+Signed-off-by: Vlad Buslov <vladbu@nvidia.com>
+---
+ include/net/act_api.h | 1 +
+ net/sched/act_api.c   | 2 +-
+ net/sched/cls_api.c   | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/include/net/act_api.h b/include/net/act_api.h
+index 55dab604861f..57be7c5d273b 100644
+--- a/include/net/act_api.h
++++ b/include/net/act_api.h
+@@ -166,6 +166,7 @@ int tcf_idr_create_from_flags(struct tc_action_net *tn,=
+ u32 index,
+ 			      struct nlattr *est, struct tc_action **a,
+ 			      const struct tc_action_ops *ops, int bind,
+ 			      u32 flags);
++void tcf_idr_insert_many(struct tc_action *actions[]);
+ void tcf_idr_cleanup(struct tc_action_net *tn, u32 index);
+ int tcf_idr_check_alloc(struct tc_action_net *tn, u32 *index,
+ 			struct tc_action **a, int bind);
+diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+index 2e85b636b27b..ebc8f1413078 100644
+--- a/net/sched/act_api.c
++++ b/net/sched/act_api.c
+@@ -908,7 +908,7 @@ static const struct nla_policy tcf_action_policy[TCA_AC=
+T_MAX + 1] =3D {
+ 	[TCA_ACT_HW_STATS]	=3D NLA_POLICY_BITFIELD32(TCA_ACT_HW_STATS_ANY),
+ };
+=20
+-static void tcf_idr_insert_many(struct tc_action *actions[])
++void tcf_idr_insert_many(struct tc_action *actions[])
+ {
+ 	int i;
+=20
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index 37b77bd30974..0b3900dd2354 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -3053,6 +3053,7 @@ int tcf_exts_validate(struct net *net, struct tcf_pro=
+to *tp, struct nlattr **tb,
+ 			act->type =3D exts->type =3D TCA_OLD_COMPAT;
+ 			exts->actions[0] =3D act;
+ 			exts->nr_actions =3D 1;
++			tcf_idr_insert_many(exts->actions);
+ 		} else if (exts->action && tb[exts->action]) {
+ 			int err;
+=20
+--=20
+2.29.2
+
