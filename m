@@ -2,76 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F079731C9C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C0531C9EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhBPLfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:35:51 -0500
-Received: from ozlabs.org ([203.11.71.1]:33215 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230187AbhBPLei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:34:38 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S229771AbhBPLkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:40:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32827 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230374AbhBPLi5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:38:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613475448;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gy+qfCCUOiXuPG3/YfIFX5QFqh7lwdru5JnT0B7FhNU=;
+        b=CH2UjqcC825e1BqBPVkeEAaUAs9DMvFY51uox2c1EsyANbQp7i4TmCeCdDUOx4COg9768H
+        b+S+Rd8GrWVZwyciL4icWBzKaux2bNOJADHC9oD/2H8ivD7UJcMkuDnpHpkEUQUWwNVcpP
+        /uabnTl75uN4NJP2CKNCQ3ttNamof3E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-x-sVj8BpMamYKKbJsOkX9w-1; Tue, 16 Feb 2021 06:37:27 -0500
+X-MC-Unique: x-sVj8BpMamYKKbJsOkX9w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DfzPY3L0yz9sVr;
-        Tue, 16 Feb 2021 22:33:37 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613475217;
-        bh=ridY0eMRba4pufvR09nWyO9lCwHPviWyxj1awfCeJrg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iFeLbxYtWSjPKP7AARi09VMfeVHJ6VRtNSPAPl/Bn8Ryg+qLPkAcaO5XOrd8VYdYF
-         CxHNc13lLeJYp0/39jN6o+B9Is16+hm2I7z9l9ZuovsSi+jB/JIdwgUBLYixDwZ8av
-         NPq6OIMNiANVLr+n2s88v2GhD4hVO3QSlBpETdMs0AA4kLF+WQ+Z3qYyymAN/abFNv
-         03Vob9eiEDqXFedC1Z8Q86ZitwOX4y6USbLHfHbpbYSxzDn8yZ63GFcpLKZAJ+7LXa
-         v7Iej1Vq8Rmp70g59KDFlLWeIxCzB+qFNni528kNQOobA7DXCZE9q74HDa8ZVvWYtE
-         oDFRv+WjpiAqQ==
-Date:   Tue, 16 Feb 2021 22:33:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steve French <smfrench@gmail.com>,
-        CIFS <linux-cifs@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the cifs tree
-Message-ID: <20210216223336.67fc77ad@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E054E9126F;
+        Tue, 16 Feb 2021 11:37:25 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-114-184.ams2.redhat.com [10.36.114.184])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 49D255D765;
+        Tue, 16 Feb 2021 11:37:19 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 2336A1800382; Tue, 16 Feb 2021 12:37:17 +0100 (CET)
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        virtualization@lists.linux-foundation.org (open list:DRM DRIVER FOR QXL
+        VIRTUAL GPU),
+        spice-devel@lists.freedesktop.org (open list:DRM DRIVER FOR QXL VIRTUAL
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 01/10] drm/qxl: properly handle device init failures
+Date:   Tue, 16 Feb 2021 12:37:07 +0100
+Message-Id: <20210216113716.716996-2-kraxel@redhat.com>
+In-Reply-To: <20210216113716.716996-1-kraxel@redhat.com>
+References: <20210216113716.716996-1-kraxel@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vn_DtRKDb6QCnPHVTsv1n0T";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vn_DtRKDb6QCnPHVTsv1n0T
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Specifically do not try release resources which where
+not allocated in the first place.
 
-Hi all,
+Cc: Tong Zhang <ztong0001@gmail.com>
+Tested-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+---
+ drivers/gpu/drm/qxl/qxl_display.c | 3 +++
+ drivers/gpu/drm/qxl/qxl_kms.c     | 4 ++++
+ 2 files changed, 7 insertions(+)
 
-Commit
+diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
+index c326412136c5..ec50d2cfd4e1 100644
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -1183,6 +1183,9 @@ int qxl_destroy_monitors_object(struct qxl_device *qdev)
+ {
+ 	int ret;
+ 
++	if (!qdev->monitors_config_bo)
++		return 0;
++
+ 	qdev->monitors_config = NULL;
+ 	qdev->ram_header->monitors_config = 0;
+ 
+diff --git a/drivers/gpu/drm/qxl/qxl_kms.c b/drivers/gpu/drm/qxl/qxl_kms.c
+index 66d74aaaee06..4dc5ad13f12c 100644
+--- a/drivers/gpu/drm/qxl/qxl_kms.c
++++ b/drivers/gpu/drm/qxl/qxl_kms.c
+@@ -288,6 +288,10 @@ void qxl_device_fini(struct qxl_device *qdev)
+ {
+ 	int cur_idx;
+ 
++	/* check if qxl_device_init() was successful (gc_work is initialized last) */
++	if (!qdev->gc_work.func)
++		return;
++
+ 	for (cur_idx = 0; cur_idx < 3; cur_idx++) {
+ 		if (!qdev->current_release_bo[cur_idx])
+ 			continue;
+-- 
+2.29.2
 
-  f204a0ab8c4f ("cifs: update internal version number")
-
-is missing a Signed-off-by from its author and committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vn_DtRKDb6QCnPHVTsv1n0T
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmArrZAACgkQAVBC80lX
-0Gygvwf+P2rKO9JojCL4NCYM4J7WkX0c+5G+OrYur0jv4kuIYyHSzimRG28i6tAo
-KOGM95N94o0pXty8X2iGSvjIh8J6RVCLP9ROfXn1eS9dSUWwzlTWKl/CmTWOc4Mj
-kfQsK/ww+laqVdWRXOO/HZGfWWzHuO9XB7aIZOhbtq2/iOp1egOI9WD3IJhTV6ey
-pKwTHKGbWQAdygvia6PdjbEtXuN255HDTXkuYP4VPESSrfqSnbgKSKc994TKFtVK
-5OqfySpm5qatwFWNacslgDmaIU9ZAaBfbQxtT4nMU807jCGZWjZefFqCdRjgtFkM
-fmqkDrI142yf19Ik87zqAW8DzhCr/Q==
-=RLmd
------END PGP SIGNATURE-----
-
---Sig_/vn_DtRKDb6QCnPHVTsv1n0T--
