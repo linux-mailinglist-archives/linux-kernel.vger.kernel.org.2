@@ -2,110 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286BD31D1AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D2531D1AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbhBPUjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 15:39:05 -0500
-Received: from mail.codeweavers.com ([50.203.203.244]:46354 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbhBPUjE (ORCPT
+        id S229958AbhBPUkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 15:40:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229796AbhBPUkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 15:39:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=7T+1dSDXmlJhVGwZ01TgYw2ktCZ2H9YMeHFP+6OeIMU=; b=iYkWw37o4443MbcaLfWv6Z2VMS
-        BY4sQh78xgPFU0zfEyxkcHIpsx0EHrLI+KMh/nhqdjTTHaj0EE2Poh+CwwLsuuk6QfXM4mvUkE1kD
-        gcOWg9FEsyi7h4Y2MWd811lI/YCoCdWY7WsX28Rty8n+EJZYUV4g0FmnsoHplg4+zX1c=;
-Received: from [10.69.141.136]
-        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <nfraser@codeweavers.com>)
-        id 1lC76y-0001sQ-3E; Tue, 16 Feb 2021 14:38:22 -0600
-Subject: [PATCH 2/2] perf buildid-cache: Add test for 16-byte build-id
-From:   Nicholas Fraser <nfraser@codeweavers.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-References: <d1c87379-8837-a5e7-eb44-f063ca0f4766@codeweavers.com>
-Message-ID: <c08be235-7434-5208-5f21-e8c9a3265464@codeweavers.com>
-Date:   Tue, 16 Feb 2021 15:38:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 16 Feb 2021 15:40:49 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD992C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:40:08 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id y18so13832052edw.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:40:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qsbkrWZGkD91kMd27lJYVWXYLDx45J5nDBTki3Poz/Y=;
+        b=GYlUAEcxf+YrKRO9EV5o4/Z+28j3rfdzii+w6iCzZUbQExjtVDl60KciVFUspFaevd
+         xQSimjJ/cKCSAjpA2c6+1IwGP+b9RsJeFUgaGgIQI9CHFXTR045ViXPxwRMKJbmKzBsQ
+         dAYOvturlAhwMrFBnspAhiHq5WWA2Hkdic64X8Rcert/bP/eE1q1Jv7U4+KFDK5bEbTc
+         /CSI3/tdjWwHApgQq7qDVuwhFwQXKrhmaTsx+j7jU6+/8SJ3r9U8+h3wqTu3CVO4gC9b
+         /RRgmqX0ARNglqqE3GjZ6Ihebj0PnyzmcQHZB0bQ0S4W5F+0TaIpoP+exgxw3GtFqYl4
+         am7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qsbkrWZGkD91kMd27lJYVWXYLDx45J5nDBTki3Poz/Y=;
+        b=sHOeVhuBci6YTh/U9hq6iSs/h5WQRSaJN1fJq0qCRHVSF2DUceCHC1I/jKQGgaSq3R
+         MWPVN8qYR4Fz2dLh5IIaGLAZ4rtpzNLkZrC1iJHWaBjeVKY8j5IvOknGBxoQk7ekFg+U
+         PrrO7AYgjZyXGXCiVhRWAyS23Z5g+VRN1f9v8ZWjs+6des44C1WOzEOB+EbtlZwSY15a
+         OeatYmzJnIkj5ARILv3jdYP7BYT7dC5+XRL3NN9q4D0g7AfLnMdHKIx7leGRX5+aqZZU
+         u6BlR993hp/E77lu8IUHte7t6eR/6R0CspWm82ehLbm0d4kAg5CINi32JCJnBfQwjNKc
+         jEJg==
+X-Gm-Message-State: AOAM531V0OOZKsR+krnhJSra5wktJAlqyMECE5PvYBQ7cU9XNfiIVnHc
+        ilora72n6c/gIhU2kLaVW4VGHUCJTkk0GSKPa8ArrQ==
+X-Google-Smtp-Source: ABdhPJzItTBAgOKzcio391IOuVIAv/Zadl6m2XXBki/3fUYt940zA/MAddwv1fJXGyV5MfPeAf92HQRO8cYR7bKO5J8=
+X-Received: by 2002:a05:6402:559:: with SMTP id i25mr15504185edx.300.1613508006214;
+ Tue, 16 Feb 2021 12:40:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <d1c87379-8837-a5e7-eb44-f063ca0f4766@codeweavers.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -40.5
-X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  tests/shell/buildid.sh added an ELF executable with an MD5
-    build-id to the perf debug cache but did not check whether the object was
-    printed by a subsequent call to "perf buildid-cache -l". It was bei [...]
- Content analysis details:   (-40.5 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 USER_IN_WELCOMELIST    user is listed in 'welcomelist_from'
-  -20 USER_IN_WHITELIST      DEPRECATED: See USER_IN_WELCOMELIST
-  -20 ALL_TRUSTED            Passed through trusted hosts only via SMTP
- -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
-                             [score: 0.0000]
- -0.0 AWL                    AWL: Adjusted score from AWL reputation of From: address
+References: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
+ <161255840486.339900.5478922203128287192.stgit@djiang5-desk3.ch.intel.com>
+ <20210210235924.GJ4247@nvidia.com> <8ff16d76-6b36-0da6-03ee-aebec2d1a731@intel.com>
+In-Reply-To: <8ff16d76-6b36-0da6-03ee-aebec2d1a731@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 16 Feb 2021 12:39:56 -0800
+Message-ID: <CAPcyv4jDmofa+77q_hG1EimaKxq2_hYu-kVOVbU4mN4XSdOUWA@mail.gmail.com>
+Subject: Re: [PATCH v5 05/14] vfio/mdev: idxd: add basic mdev registration and
+ helper functions
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        kwankhede@nvidia.com, Thomas Gleixner <tglx@linutronix.de>,
+        Vinod Koul <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        Jacob jun Pan <jacob.jun.pan@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>, Yi L Liu <yi.l.liu@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Sanjay K Kumar <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, eric.auger@redhat.com,
+        Parav Pandit <parav@mellanox.com>, netanelg@mellanox.com,
+        shahafs@mellanox.com, Paolo Bonzini <pbonzini@redhat.com>,
+        dmaengine@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tests/shell/buildid.sh added an ELF executable with an MD5 build-id to
-the perf debug cache but did not check whether the object was printed
-by a subsequent call to "perf buildid-cache -l". It was being omitted
-from the list.
+On Tue, Feb 16, 2021 at 11:05 AM Dave Jiang <dave.jiang@intel.com> wrote:
+>
+>
+> On 2/10/2021 4:59 PM, Jason Gunthorpe wrote:
+> > On Fri, Feb 05, 2021 at 01:53:24PM -0700, Dave Jiang wrote:
+> >
+> >> +static int check_vma(struct idxd_wq *wq, struct vm_area_struct *vma)
+> >>   {
+> >> -    /* FIXME: Fill in later */
+> >> +    if (vma->vm_end < vma->vm_start)
+> >> +            return -EINVAL;
+> > These checks are redundant
+>
+> Thanks. Will remove.
+>
+> >
+> >> -static int idxd_mdev_host_release(struct idxd_device *idxd)
+> >> +static int idxd_vdcm_mmap(struct mdev_device *mdev, struct vm_area_struct *vma)
+> >> +{
+> >> +    unsigned int wq_idx, rc;
+> >> +    unsigned long req_size, pgoff = 0, offset;
+> >> +    pgprot_t pg_prot;
+> >> +    struct vdcm_idxd *vidxd = mdev_get_drvdata(mdev);
+> >> +    struct idxd_wq *wq = vidxd->wq;
+> >> +    struct idxd_device *idxd = vidxd->idxd;
+> >> +    enum idxd_portal_prot virt_portal, phys_portal;
+> >> +    phys_addr_t base = pci_resource_start(idxd->pdev, IDXD_WQ_BAR);
+> >> +    struct device *dev = mdev_dev(mdev);
+> >> +
+> >> +    rc = check_vma(wq, vma);
+> >> +    if (rc)
+> >> +            return rc;
+> >> +
+> >> +    pg_prot = vma->vm_page_prot;
+> >> +    req_size = vma->vm_end - vma->vm_start;
+> >> +    vma->vm_flags |= VM_DONTCOPY;
+> >> +
+> >> +    offset = (vma->vm_pgoff << PAGE_SHIFT) &
+> >> +             ((1ULL << VFIO_PCI_OFFSET_SHIFT) - 1);
+> >> +
+> >> +    wq_idx = offset >> (PAGE_SHIFT + 2);
+> >> +    if (wq_idx >= 1) {
+> >> +            dev_err(dev, "mapping invalid wq %d off %lx\n",
+> >> +                    wq_idx, offset);
+> >> +            return -EINVAL;
+> >> +    }
+> >> +
+> >> +    /*
+> >> +     * Check and see if the guest wants to map to the limited or unlimited portal.
+> >> +     * The driver will allow mapping to unlimited portal only if the the wq is a
+> >> +     * dedicated wq. Otherwise, it goes to limited.
+> >> +     */
+> >> +    virt_portal = ((offset >> PAGE_SHIFT) & 0x3) == 1;
+> >> +    phys_portal = IDXD_PORTAL_LIMITED;
+> >> +    if (virt_portal == IDXD_PORTAL_UNLIMITED && wq_dedicated(wq))
+> >> +            phys_portal = IDXD_PORTAL_UNLIMITED;
+> >> +
+> >> +    /* We always map IMS portals to the guest */
+> >> +    pgoff = (base + idxd_get_wq_portal_full_offset(wq->id, phys_portal,
+> >> +                                                   IDXD_IRQ_IMS)) >> PAGE_SHIFT;
+> >> +    dev_dbg(dev, "mmap %lx %lx %lx %lx\n", vma->vm_start, pgoff, req_size,
+> >> +            pgprot_val(pg_prot));
+> >> +    vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> >> +    vma->vm_private_data = mdev;
+> > What ensures the mdev pointer is valid strictly longer than the VMA?
+> > This needs refcounting.
+>
+> Going to take a kref at open and then put_device at close. Does that
+> sound reasonable or should I be calling get_device() in mmap() and then
+> register a notifier for when vma is released?
 
-A previous commit fixed the bug that left it out of the list. This adds
-a test for it.
----
- tools/perf/tests/shell/buildid.sh | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
-index 4861a20edee2..de02a23b7c7b 100755
---- a/tools/perf/tests/shell/buildid.sh
-+++ b/tools/perf/tests/shell/buildid.sh
-@@ -50,6 +50,12 @@ check()
- 		exit 1
- 	fi
- 
-+	${perf} buildid-cache -l|grep $id
-+	if [ $? -ne 0 ]; then
-+		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
-+		exit 1
-+	fi
-+
- 	echo "OK for ${1}"
- }
- 
--- 
-2.30.1
-
-
+Where does this enabling ever look at vm_private_data again? It seems
+to me it should be reasonable for the mdev to die out from underneath
+a vma, just need some tracking to block future uses of the
+vma->vm_private_data from being attempted.
