@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC5931CAA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945F231CAA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhBPMkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:40:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhBPMko (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:40:44 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73179C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:40:03 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed60:c5d6:9422:c618:ee58])
-        by andre.telenet-ops.be with bizsmtp
-        id Vog02400c2PLE0701og0oF; Tue, 16 Feb 2021 13:40:01 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lBze4-007Pal-DB; Tue, 16 Feb 2021 13:40:00 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lBze3-00DLHK-Tg; Tue, 16 Feb 2021 13:39:59 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Magnus Damm <magnus.damm@gmail.com>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        linux-renesas-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] soc: renesas: rmobile-sysc: Mark fwnode when PM domain is added
-Date:   Tue, 16 Feb 2021 13:39:58 +0100
-Message-Id: <20210216123958.3180014-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S230033AbhBPMlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 07:41:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48134 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229931AbhBPMlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 07:41:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613479216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=X3blwfF7NbGXbiKfZpPPBVAn/s2HDWS/Ulzem1ZAomk=;
+        b=jk7/SGiWFBznoGqTALSPOXjELreX060pqbsJdjQkx3ySvnDY886OEXayPN/m7HrhTFyq8v
+        4DnGLRQQ1ok0Oi2aumVaFc8pWBRyIG4be3Op9woQ0CyVFtjY9dcGOKEu4OT5IVxMI8gqd1
+        m6KegIYDvLBojLzL5pKVsLn5xCINBwM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8760FAF2C;
+        Tue, 16 Feb 2021 12:40:16 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        boris.ostrovsky@oracle.com
+Subject: [GIT PULL] xen: branch for v5.12-rc1
+Date:   Tue, 16 Feb 2021 13:40:15 +0100
+Message-Id: <20210216124015.28923-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, there are two drivers binding to the R-Mobile System
-Controller (SYSC):
-  - The rmobile-sysc driver registers PM domains from a core_initcall(),
-    and does not use a platform driver,
-  - The optional rmobile-reset driver registers a reset handler, and
-    does use a platform driver.
+Linus,
 
-As fw_devlink only considers devices, commit bab2d712eeaf9d60 ("PM:
-domains: Mark fwnodes when their powerdomain is added/removed") works
-only for PM Domain drivers where the DT node is a real device node, and
-not for PM Domain drivers using a hierarchical representation inside a
-subnode.  Hence if fw_devlink is enabled, probing of on-chip devices
-that are part of the SYSC PM domain is deferred until the optional
-rmobile-reset driver has been bound.   If the rmobile-reset driver is
-not available, this will never happen, and thus lead to complete system
-boot failures.
+Please git pull the following tag:
 
-Fix this by explicitly marking the fwnode initialized.
+ git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.12-rc1-tag
 
-Suggested-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-This is v2 of "soc: renesas: rmobile-sysc: Set OF_POPULATED and absorb
-reset handling".
-To be queued in renesas-devel as a fix for v5.12 if v5.12-rc1 will have
-fw_devlink enabled.
+xen: branch for v5.12-rc1
 
-v2:
-  - Call fwnode_dev_initialized() instead of setting OF_POPULATED,
-  - Drop reset handling move, as fwnode_dev_initialized() does not
-    prevent the rmobile-reset driver from binding against the same
-    device.
----
- drivers/soc/renesas/rmobile-sysc.c | 2 ++
- 1 file changed, 2 insertions(+)
+This batch contains a series of Xen related security fixes, all related
+to limited error handling in Xen backend drivers.
 
-diff --git a/drivers/soc/renesas/rmobile-sysc.c b/drivers/soc/renesas/rmobile-sysc.c
-index bf64d052f9245db5..204e6135180b919c 100644
---- a/drivers/soc/renesas/rmobile-sysc.c
-+++ b/drivers/soc/renesas/rmobile-sysc.c
-@@ -342,6 +342,8 @@ static int __init rmobile_init_pm_domains(void)
- 			of_node_put(np);
- 			break;
- 		}
-+
-+		fwnode_dev_initialized(&np->fwnode, true);
- 	}
- 
- 	put_special_pds();
--- 
-2.25.1
 
+Thanks.
+
+Juergen
+
+ arch/arm/xen/p2m.c                  |  6 ++++--
+ arch/x86/xen/p2m.c                  | 15 +++++++--------
+ drivers/block/xen-blkback/blkback.c | 32 ++++++++++++++++++--------------
+ drivers/net/xen-netback/netback.c   |  4 +---
+ drivers/xen/gntdev.c                | 37 ++++++++++++++++++++-----------------
+ drivers/xen/xen-scsiback.c          |  4 ++--
+ include/xen/grant_table.h           |  1 +
+ 7 files changed, 53 insertions(+), 46 deletions(-)
+
+Jan Beulich (8):
+      Xen/x86: don't bail early from clear_foreign_p2m_mapping()
+      Xen/x86: also check kernel mapping in set_foreign_p2m_mapping()
+      Xen/gntdev: correct dev_bus_addr handling in gntdev_map_grant_pages()
+      Xen/gntdev: correct error checking in gntdev_map_grant_pages()
+      xen-blkback: don't "handle" error by BUG()
+      xen-netback: don't "handle" error by BUG()
+      xen-scsiback: don't "handle" error by BUG()
+      xen-blkback: fix error handling in xen_blkbk_map()
+
+Stefano Stabellini (1):
+      xen/arm: don't ignore return errors from set_phys_to_machine
