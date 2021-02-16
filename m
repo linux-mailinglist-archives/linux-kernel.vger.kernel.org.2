@@ -2,139 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F3F31CF88
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AF131CF8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhBPRr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:47:57 -0500
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:38634 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhBPRqq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:46:46 -0500
-Received: by mail-lf1-f47.google.com with SMTP id m22so17250915lfg.5;
-        Tue, 16 Feb 2021 09:46:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7KMcXCD/b8icwHFarNkS1sFwXOCJDzvsOL0/W59FEY0=;
-        b=osvsS3whHDVdPV6kkd2W6Fqvy1GZCiO7trQhO2N8yaqPdBObE4p4YgAoTasO8AVBk5
-         oAhuAc2UGcu0nmIiBKwUvXyTdyS6msD37tcyUAjn2MIg2ZtKIV86SEGVV8UQTS+wgcQL
-         zZcIl/N3OU0neIWtNc+bhroMzD04YGUZ3xVQmMiZaJWwQHw5+QIaP1Ov1Pds6kblbipZ
-         SR79tkge90BUOMgnUEWDmIiRPJaywxValBln8ZyyoTh6xlAHYr1zFl5bPTqxhqVtlQuK
-         nBsM7DCcA5dj3DlKOGAHHPCsB6qz3uFuZFIgosvgxu2iuflz2UglQNBzDHqKnuh8BZGQ
-         VEdw==
-X-Gm-Message-State: AOAM530r7+8TUiwXy/LTLoMEs2xm5c6I9s3fqfiUkwdyMTUPpQS3RhgN
-        K4X6FZvTLadgxg4sOmq25gdga9VbCcYytX35
-X-Google-Smtp-Source: ABdhPJz1QN1cmTLZQRKiAHUxEk6a6acGCwDRBNCWaE4UuAYpLjEzV0L3S6+MUOMyl/iPDu+TvQRDlw==
-X-Received: by 2002:ac2:4c41:: with SMTP id o1mr13309969lfk.537.1613497563337;
-        Tue, 16 Feb 2021 09:46:03 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id x1sm3935751ljh.62.2021.02.16.09.46.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 09:46:02 -0800 (PST)
-Date:   Tue, 16 Feb 2021 18:46:01 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, helgaas@kernel.org, wsa@kernel.org,
-        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] i2c: designware: Use the correct name of
- device-managed function
-Message-ID: <YCwE2cf9X/Gd6lWy@rocinante>
-References: <20210216160249.749799-1-zhengdejin5@gmail.com>
- <20210216160249.749799-4-zhengdejin5@gmail.com>
+        id S230299AbhBPRsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:48:42 -0500
+Received: from mail.zx2c4.com ([104.131.123.232]:51854 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231330AbhBPRrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:47:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1613497606;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EeUD0/Hrmkha1vgSjrxHXQGMMGTIAxd3b5RgI7gY5e4=;
+        b=ipxFek+CTX1D/JoUVERmSDJlmYeA4+Y38dsHRKibMiaiDM396nBUW6wAAAqN9RXQE44SAH
+        c38acytS63tsoIpYLXnl8L+ZP7qQTypLTPonbP12/lDrj5vlQDFvfx4mCR0LI4PF8K5/UO
+        d3nn2yPgFxWYIiXNic1ircpgLM5208c=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id adf77641 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Tue, 16 Feb 2021 17:46:45 +0000 (UTC)
+Received: by mail-yb1-f182.google.com with SMTP id r127so1847143ybr.1;
+        Tue, 16 Feb 2021 09:46:45 -0800 (PST)
+X-Gm-Message-State: AOAM5327vN98YWUTtVb+x60s79EznA5bjiHmQzk1AIjXLb6SCboEhJaD
+        vkRsbVsRLyrMjCzkFzwtZ+oPaNAlvjwg2cX+ztQ=
+X-Google-Smtp-Source: ABdhPJwhVsAUHKbqej3N09bli7Ip3Grj1LPSZWD38TPvdzb+CintSD1ow5bBZyachx1edPauzqXd/cvVVNds1A+cBKQ=
+X-Received: by 2002:a25:80c9:: with SMTP id c9mr31610024ybm.279.1613497604734;
+ Tue, 16 Feb 2021 09:46:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210216160249.749799-4-zhengdejin5@gmail.com>
+References: <0000000000000be4d705bb68dfa7@google.com> <20210216172817.GA14978@arm.com>
+In-Reply-To: <20210216172817.GA14978@arm.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Tue, 16 Feb 2021 18:46:34 +0100
+X-Gmail-Original-Message-ID: <CAHmME9q2-wbRmE-VgSoW5fxjGQ9kkafYH-X5gSVvgWESo5rm4Q@mail.gmail.com>
+Message-ID: <CAHmME9q2-wbRmE-VgSoW5fxjGQ9kkafYH-X5gSVvgWESo5rm4Q@mail.gmail.com>
+Subject: Re: KASAN: invalid-access Write in enqueue_timer
+To:     Netdev <netdev@vger.kernel.org>
+Cc:     syzbot <syzbot+95c862be69e37145543f@syzkaller.appspotmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dejin,
+Hi Catalin,
 
-Thank you for all the changes, looks good!
+On Tue, Feb 16, 2021 at 6:28 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> Adding Jason and Ard. It may be a use-after-free in the wireguard
+> driver.
 
-You could improve the subject line, as it is very vague - what is the
-new function name more correct?  Was the other and/or the previous one
-not correct?  Seems like you are correcting a typo of sorts, rather than
-introducing a new function in this file.
+Thanks for sending this my way. Note: to my knowledge, Ard doesn't
+work on wireguard.
 
-> Use the new function pcim_alloc_irq_vectors() to allocate IRQ vectors,
-> the pcim_alloc_irq_vectors() function, an explicit device-managed
-> version of pci_alloc_irq_vectors(). If pcim_enable_device() has been
-> called before, then pci_alloc_irq_vectors() is actually
-> a device-managed function. It is used here as a device-managed
-> function, So replace it with pcim_alloc_irq_vectors().
+> >  hlist_add_head include/linux/list.h:883 [inline]
+> >  enqueue_timer+0x18/0xc0 kernel/time/timer.c:581
+> >  mod_timer+0x14/0x20 kernel/time/timer.c:1106
+> >  mod_peer_timer drivers/net/wireguard/timers.c:37 [inline]
+> >  wg_timers_any_authenticated_packet_traversal+0x68/0x90 drivers/net/wireguard/timers.c:215
 
-The commit is good, but it could use some polish, so to speak.
+The line of hlist_add_head that it's hitting is:
 
-A few suggestions to think about:
+static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
+{
+       struct hlist_node *first = h->first;
+       WRITE_ONCE(n->next, first);
+       if (first)
 
-  - What are we adding and/or changing, and why
-  - Why is using pcim_alloc_irq_vectors(), which is part
-    of the managed devices framework, a better alternative
-    to the pci_alloc_irq_vectors()
-  - And finally why this change allowed us to remove the
-    pci_free_irq_vectors()
+So that means it's the dereferencing of h that's a problem. That comes from:
 
-> At the same time, simplify the error handling path.
+static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
+                         unsigned int idx, unsigned long bucket_expiry)
+{
 
-The change simplifies the error handling path, how?  A line of two which
-explains how it has been achieved might help should someone reads the
-commit message in the future.
+       hlist_add_head(&timer->entry, base->vectors + idx);
 
-[...]
->  	if (controller->setup) {
->  		r = controller->setup(pdev, controller);
-> -		if (r) {
-> -			pci_free_irq_vectors(pdev);
-> +		if (r)
->  			return r;
-> -		}
->  	}
->  
->  	i2c_dw_adjust_bus_speed(dev);
-> @@ -246,10 +244,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
->  		i2c_dw_acpi_configure(&pdev->dev);
->  
->  	r = i2c_dw_validate_speed(dev);
-> -	if (r) {
-> -		pci_free_irq_vectors(pdev);
-> +	if (r)
->  		return r;
-> -	}
->  
->  	i2c_dw_configure(dev);
->  
-> @@ -269,10 +265,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
->  	adap->nr = controller->bus_num;
->  
->  	r = i2c_dw_probe(dev);
-> -	if (r) {
-> -		pci_free_irq_vectors(pdev);
-> +	if (r)
->  		return r;
-> -	}
->  
->  	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
->  	pm_runtime_use_autosuspend(&pdev->dev);
-> @@ -292,7 +286,6 @@ static void i2c_dw_pci_remove(struct pci_dev *pdev)
->  
->  	i2c_del_adapter(&dev->adapter);
->  	devm_free_irq(&pdev->dev, dev->irq, dev);
-> -	pci_free_irq_vectors(pdev);
+That means it concerns base->vectors + idx, not the timer_list object
+that wireguard manages. That's confusing. Could that imply that the
+bug is in freeing a previous timer without removing it from the timer
+lists, so that it winds up being in base->vectors?
 
-If pcim_release() is called should the pci_driver's probe callback fail,
-and I assume that this is precisely the case, then all of the above make
-sense in the view of using pcim_alloc_irq_vectors().
+The allocation and deallocation backtrace is confusing
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+> >  alloc_netdev_mqs+0x5c/0x3bc net/core/dev.c:10546
+> >  rtnl_create_link+0xc8/0x2b0 net/core/rtnetlink.c:3171
+> >  __rtnl_newlink+0x5bc/0x800 net/core/rtnetlink.c:3433
 
-Krzysztof
+This suggests it's part of the `ip link add wg0 type wireguard` nelink
+call, during it's allocation of the netdevice's private area. For
+this, the wg_device struct is used. It has no timer_list structures in
+it!
+
+Similarly,
+
+> >  netdev_freemem+0x18/0x2c net/core/dev.c:10500
+> >  netdev_release+0x30/0x44 net/core/net-sysfs.c:1828
+> >  device_release+0x34/0x90 drivers/base/core.c:1980
+
+That smells like `ip link del wg0 type wireguard`. But again,
+wg_device doesn't have any timer_lists in it.
+
+So what's happening here exactly? I'm not really sure yet...
+
+It'd be nice to have a reproducer.
+
+
+Jason
