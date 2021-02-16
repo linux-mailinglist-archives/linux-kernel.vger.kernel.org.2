@@ -2,113 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6173131D1DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6072031D1DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhBPVHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:07:42 -0500
-Received: from mail.codeweavers.com ([50.203.203.244]:50008 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhBPVHj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:07:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=NyTuXHPEAZ3DeVp3r9+INoXxoExf7nxxyFZwOC9M50M=; b=sqvnjHu/ANYQsUeabflsnxI2wq
-        AHj9Cf4VzXgKVg0zft3MvldwrLV953osBB339iLdaIMJxVgIuAEUTp6VkQGQ4V1FphbzDnwA8sMsA
-        WTXQPzaSLJhpfyy0/dbAT2ONpvF/8CceY/jBGpyeO//iN1wzYUe0CuM5YFD6nXTsq920=;
-Received: from [10.69.141.136]
-        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <nfraser@codeweavers.com>)
-        id 1lC7Yd-0002Rk-Qu; Tue, 16 Feb 2021 15:06:57 -0600
-Subject: [PATCH 2/2] perf buildid-cache: Add test for 16-byte build-id
-From:   Nicholas Fraser <nfraser@codeweavers.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-References: <d1c87379-8837-a5e7-eb44-f063ca0f4766@codeweavers.com>
- <94758ca1-0031-d7c6-6c6a-900fd77ef695@codeweavers.com>
- <27b38347-f71b-5d6c-3190-4c900e864d5d@codeweavers.com>
-Message-ID: <881e2645-263a-b4c7-1f2a-a068f25c1ef7@codeweavers.com>
-Date:   Tue, 16 Feb 2021 16:06:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230196AbhBPVLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:11:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229767AbhBPVLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 16:11:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15D7564EAD
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613509823;
+        bh=zuN//Mi2dqadHAYyFDtFxOXanm3499mh7SOFGrw72PM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EHcR3NV0Tq80HkGPC+eIC8PBXlxPPQGMJXQVwQ+1lSkn7gV2/4Rcp0B6qiUPryxXg
+         DGM1zxzew7oP2R62po/tLIKd7hGK2Oc28+SaCCmBM3BXzorI1/V+4/6RkHV37EeCaM
+         3D7KE9tlYjEB3n6RDOnbNv4tP797Mw9j67U8iMccT0Fo1AHfm0ouTIE/DuBHalkfK1
+         aTdimRDJQP9ryeeFNL3jWaQ2d0f0uwV0HoDw42ak0iLbZlRGhn9in/DirTU10HDsCq
+         3EsTHLJDsCBsCzPaO5aen+8YM5gQ1cPOaekyPOiw8uDpsgVsGG4wOBL7x+RhRAcW5L
+         cQqpATgaVdQ7w==
+Received: by mail-lj1-f172.google.com with SMTP id a17so13640990ljq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 13:10:22 -0800 (PST)
+X-Gm-Message-State: AOAM530AwtCi/KRQ39k6MaxZQQLdj9t/tSUX1Yfq+NvpnCOTbLXoRRzJ
+        4sMBc6vx6QYwB34rj6ToygWMpPuBlxdvShp3m33SSA==
+X-Google-Smtp-Source: ABdhPJwgwy516BjoZrdZrJOhyr/k6Uu8nNx4C91gl4NsH+qZi44hy3J8L1JueNqhpQnF82YBvbfYeMLzGuTLZSqnfEw=
+X-Received: by 2002:a05:651c:1249:: with SMTP id h9mr13363326ljh.425.1613509821328;
+ Tue, 16 Feb 2021 13:10:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <27b38347-f71b-5d6c-3190-4c900e864d5d@codeweavers.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -40.5
-X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  tests/shell/buildid.sh added an ELF executable with an MD5
-    build-id to the perf debug cache but did not check whether the object was
-    printed by a subsequent call to "perf buildid-cache -l". It was bei [...]
- Content analysis details:   (-40.5 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 USER_IN_WELCOMELIST    user is listed in 'welcomelist_from'
-  -20 USER_IN_WHITELIST      DEPRECATED: See USER_IN_WELCOMELIST
-  -20 ALL_TRUSTED            Passed through trusted hosts only via SMTP
- -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
-                             [score: 0.0000]
- -0.0 AWL                    AWL: Adjusted score from AWL reputation of From: address
+References: <YCwewjRBJIBm0sew@mwanda>
+In-Reply-To: <YCwewjRBJIBm0sew@mwanda>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 16 Feb 2021 22:10:10 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ55Ze+aA+qKA8bf=iqNY01H=MuDCKVmn44fLVW1670RxA@mail.gmail.com>
+Message-ID: <CACYkzJ55Ze+aA+qKA8bf=iqNY01H=MuDCKVmn44fLVW1670RxA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: fix a warning message in mark_ptr_not_null_reg()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Dmitrii Banshchikov <me@ubique.spb.ru>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tests/shell/buildid.sh added an ELF executable with an MD5 build-id to
-the perf debug cache but did not check whether the object was printed
-by a subsequent call to "perf buildid-cache -l". It was being omitted
-from the list.
+On Tue, Feb 16, 2021 at 8:37 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> The WARN_ON() argument is a condition, and it generates a stack trace
+> but it doesn't print the warning.
+>
+> Fixes: 4ddb74165ae5 ("bpf: Extract nullable reg type conversion into a helper function")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  kernel/bpf/verifier.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 056df6be3e30..bd4d1dfca73c 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1120,7 +1120,7 @@ static void mark_ptr_not_null_reg(struct bpf_reg_state *reg)
+>                 reg->type = PTR_TO_RDWR_BUF;
+>                 break;
+>         default:
+> -               WARN_ON("unknown nullable register type");
+> +               WARN(1, "unknown nullable register type");
 
-A previous commit fixed the bug that left it out of the list. This adds
-a test for it.
+Should we use WARN_ONCE here? Also, I think the fix should be targeted
+for bpf-next as
+the patch that introduced this hasn't made it to bpf yet.
 
-Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
----
- tools/perf/tests/shell/buildid.sh | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
-index 4861a20edee2..de02a23b7c7b 100755
---- a/tools/perf/tests/shell/buildid.sh
-+++ b/tools/perf/tests/shell/buildid.sh
-@@ -50,6 +50,12 @@ check()
- 		exit 1
- 	fi
- 
-+	${perf} buildid-cache -l|grep $id
-+	if [ $? -ne 0 ]; then
-+		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
-+		exit 1
-+	fi
-+
- 	echo "OK for ${1}"
- }
- 
--- 
-2.30.1
-
+[...]
