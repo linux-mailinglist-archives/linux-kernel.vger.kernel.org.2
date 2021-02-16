@@ -2,133 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AE031CF9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 975B631CF9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhBPRuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:50:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231240AbhBPRuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:50:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE54F64E08;
-        Tue, 16 Feb 2021 17:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613497765;
-        bh=YI1K3YdFbvoFfZazxpp/W/h52AmPp8oWT+kgdF1i6VI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GRSpTgNUyXd8d0aOr8semRt7oBjZYxojgdsSVOVlJJggNybOxexkqWW7qjzcDRXRa
-         yAIq8d3P7mH4KkPcSnLwhfNWj1bX/TCvsgDfr0Y+Sv+3TmfzC4mbO1RzrzZq4hkCwh
-         jUb0LNHIMAC0kx5pVdAqjhn8qFoG/mqEYpkri80F4wFGZJQcUdOxjJX29w6usPPR2K
-         mc9dseAR49XQMoIOx9xZ1BWcU2SdkR7GX8RaKLjCWZbDrYyHw0VijwDFg5jGUe5g29
-         /Q14My3SDMkKcltXFPgIsexjgY/BuHu3KObM05BFQVFhxT+UZQsyu4yApucAqpx1Rs
-         Jo7Xp40+XsIaQ==
-Date:   Tue, 16 Feb 2021 19:49:14 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Michal Hocko <mhocko@suse.com>, Mel Gorman <mgorman@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
- holes in memory layout
-Message-ID: <20210216174914.GD1307762@kernel.org>
-References: <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
- <YCaAHI/rFp1upRLc@dhcp22.suse.cz>
- <20210214180016.GO242749@kernel.org>
- <YCo4Lyio1h2Heixh@dhcp22.suse.cz>
- <20210215212440.GA1307762@kernel.org>
- <YCuDUG89KwQNbsjA@dhcp22.suse.cz>
- <20210216110154.GB1307762@kernel.org>
- <b1302d8e-5380-18d1-0f55-2dfd61f470e6@suse.cz>
- <YCvEeWuU2tBUUNBG@dhcp22.suse.cz>
- <caeebbcc-b6c9-624b-3eeb-591bf59f28a6@suse.cz>
+        id S230495AbhBPRvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231207AbhBPRui (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:50:38 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDC3C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 09:49:58 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id x1so12908930ljj.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 09:49:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+VuxTCvHr9rQ2AHK8GZDJzh1+8H4dp2arkCyg3gMeg8=;
+        b=mnssgDr5lMVggKTEcyrlW0q14dyawmgNnq9Z1DOh7cukiMIpCJf/4hAHmeBOlx9Pz3
+         CpswzC/v0B4R9eDM5Lpw35by5Xthz3H7ppmoFiw29zhLSUJo9CQtB5tYUIulabiQiort
+         46ariByAIlx9L8vjVthysGI3JjKuPw+h6y+CyGltKL6esI2oMDAIykq3LXJ3S2UngRvm
+         v/DvS1+Qh32q2yH9ShKBvKwm0aGaYtvSPMK8OK7ncqypftH1AdXO2AeAwV7B4urmapV5
+         z89kb9SmI4TCg//1+jB6eYOy5pvs9Qd9QXFpxhISPlg9dv0ZI4yBLT+YxAAgerMZbmNb
+         NGBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+VuxTCvHr9rQ2AHK8GZDJzh1+8H4dp2arkCyg3gMeg8=;
+        b=ZcDZUSmBjBpaFkjxB7bld99CKc/M2YpqJs3qx9xj3RtyQlmyB1b0hLEWwrya01dI9Z
+         A8/C0AqG3ggiIEyrVXrPu7Q/+s6fI/okJ/STvCOLSCzmC2VDgooec4EAmKbAw1olBbDq
+         XNdvr440OWpGwX0etq0qrqGt8AACV5KY8FRwj23oDVuHYLRvd3DusQ5ohuYrXVmYs2NX
+         ijD9vzaqsYNvBcPUmGAER9e71LJXii3Jv+FqcMkAqnmKICPtKb5Ype2MD5pVl8z5pHDZ
+         FZaMbQ1w6p0H58czcWGW9LaY+k/iIRFxxUKd/MIloTOkAK66GXGQuaMp9JyXH9jna5A+
+         Wcsw==
+X-Gm-Message-State: AOAM530gr7/nHi8PpL8GUe5n8jNiEo5l9r52ASBv3ZJcpETLYxvPQzCa
+        R6x9VlaQavQnzDFD0m2/XywtCX6GVa4DF1EJS6km4g==
+X-Google-Smtp-Source: ABdhPJw82Q9n+a44TuyEIP/sqYc3OPVPhxwlkjhMcmNO++tsF+KkzgHD/oeyvfAXhc9oMQe+FRU5sOF0sMpKDj0eMZE=
+X-Received: by 2002:a05:651c:301:: with SMTP id a1mr13054304ljp.116.1613497796500;
+ Tue, 16 Feb 2021 09:49:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <caeebbcc-b6c9-624b-3eeb-591bf59f28a6@suse.cz>
+References: <20210216031004.552417-1-masahiroy@kernel.org> <20210216031004.552417-2-masahiroy@kernel.org>
+In-Reply-To: <20210216031004.552417-2-masahiroy@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 16 Feb 2021 09:49:44 -0800
+Message-ID: <CAKwvOdn4rvTOQnHv+Xh1xMKFVH8885oRAL3cNchnDFcmQJZA+w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kbuild: check the minimum linker version in Kconfig
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        David Laight <david.laight@aculab.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        KP Singh <kpsingh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Quentin Perret <qperret@google.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vlastimil,
+On Mon, Feb 15, 2021 at 7:10 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Unify the two scripts/ld-version.sh and scripts/lld-version.sh, and
+> check the minimum linker version like scripts/cc-version.sh did.
+>
+> I tested this script for some corner cases reported in the past:
+>
+>  - GNU ld version 2.25-15.fc23
+>    as reported by commit 8083013fc320 ("ld-version: Fix it on Fedora")
+>
+>  - GNU ld (GNU Binutils) 2.20.1.20100303
+>    as reported by commit 0d61ed17dd30 ("ld-version: Drop the 4th and
+>    5th version components")
+>
+> This script show an error message if the linker is too old:
+>
+>   $ make LD=ld.lld-9
+>     SYNC    include/config/auto.conf
+>   ***
+>   *** Linker is too old.
+>   ***   Your LLD version:    9.0.1
+>   ***   Minimum LLD version: 10.0.1
+>   ***
+>   scripts/Kconfig.include:50: Sorry, this linker is not supported.
+>   make[2]: *** [scripts/kconfig/Makefile:71: syncconfig] Error 1
+>   make[1]: *** [Makefile:600: syncconfig] Error 2
+>   make: *** [Makefile:708: include/config/auto.conf] Error 2
+>
+> I also moved the check for gold to this script, so gold is still rejected:
+>
+>   $ make LD=gold
+>     SYNC    include/config/auto.conf
+>   gold linker is not supported as it is not capable of linking the kernel proper.
+>   scripts/Kconfig.include:50: Sorry, this linker is not supported.
+>   make[2]: *** [scripts/kconfig/Makefile:71: syncconfig] Error 1
+>   make[1]: *** [Makefile:600: syncconfig] Error 2
+>   make: *** [Makefile:708: include/config/auto.conf] Error 2
+>
+> Thanks to David Laight for suggesting shell script improvements.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-On Tue, Feb 16, 2021 at 05:39:12PM +0100, Vlastimil Babka wrote:
-> 
-> 
-> So, Andrea could you please check if this fixes the original
-> fast_isolate_around() issue for you? With the VM_BUG_ON not removed, DEBUG_VM
-> enabled, no changes to struct page initialization...
-> It relies on pageblock_pfn_to_page as the rest of the compaction code.
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Pardon my ignorance of compaction internals, but does this mean that with
-your patch we'll never call set_pfnblock_flags_mask() for a pfn in a hole?
- 
-> Thanks!
-> 
-> ----8<----
-> From f5c8d7bc77d2ec0b4cfec44820ce6f602fdb3a86 Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Tue, 16 Feb 2021 17:32:34 +0100
-> Subject: [PATCH] mm, compaction: make fast_isolate_around() robust against
->  pfns from a wrong zone
-> 
-> TBD
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  mm/compaction.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 190ccdaa6c19..b75645e4678d 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1288,7 +1288,7 @@ static void
->  fast_isolate_around(struct compact_control *cc, unsigned long pfn, unsigned long nr_isolated)
->  {
->  	unsigned long start_pfn, end_pfn;
-> -	struct page *page = pfn_to_page(pfn);
-> +	struct page *page;
->  
->  	/* Do not search around if there are enough pages already */
->  	if (cc->nr_freepages >= cc->nr_migratepages)
-> @@ -1300,7 +1300,11 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn, unsigned long
->  
->  	/* Pageblock boundaries */
->  	start_pfn = pageblock_start_pfn(pfn);
-> -	end_pfn = min(pageblock_end_pfn(pfn), zone_end_pfn(cc->zone)) - 1;
-> +	end_pfn = min(pageblock_end_pfn(pfn), zone_end_pfn(cc->zone));
+>
+>  MAINTAINERS             |  1 -
+>  init/Kconfig            | 21 +++++++----
+>  scripts/Kconfig.include |  7 +++-
+>  scripts/ld-version.sh   | 82 ++++++++++++++++++++++++++++++++++++-----
+>  scripts/lld-version.sh  | 20 ----------
+>  5 files changed, 90 insertions(+), 41 deletions(-)
+>  delete mode 100755 scripts/lld-version.sh
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index df820969be1f..6b82ad6990b7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4314,7 +4314,6 @@ C:        irc://chat.freenode.net/clangbuiltlinux
+>  F:     Documentation/kbuild/llvm.rst
+>  F:     include/linux/compiler-clang.h
+>  F:     scripts/clang-tools/
+> -F:     scripts/lld-version.sh
+>  K:     \b(?i:clang|llvm)\b
+>
+>  CLEANCACHE API
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 7bcfa24524c2..42b69ee29dca 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -33,24 +33,29 @@ config GCC_VERSION
+>         default $(cc-version) if CC_IS_GCC
+>         default 0
+>
+> -config LD_VERSION
+> -       int
+> -       default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
+> -
+>  config CC_IS_CLANG
+>         def_bool $(success,test "$(cc-name)" = Clang)
+>
+> -config LD_IS_LLD
+> -       def_bool $(success,$(LD) -v | head -n 1 | grep -q LLD)
+> -
+>  config CLANG_VERSION
+>         int
+>         default $(cc-version) if CC_IS_CLANG
+>         default 0
+>
+> +config LD_IS_BFD
+> +       def_bool $(success,test "$(ld-name)" = BFD)
 > +
-> +	page = pageblock_pfn_to_page(start_pfn, end_pfn, cc->zone);
-> +	if (!page)
-> +		return;
->  
->  	/* Scan before */
->  	if (start_pfn != pfn) {
-> @@ -1486,7 +1490,7 @@ fast_isolate_freepages(struct compact_control *cc)
->  	}
->  
->  	cc->total_free_scanned += nr_scanned;
-> -	if (!page)
-> +	if (!page || page_zone(page) != cc->zone)
->  		return cc->free_pfn;
->  
->  	low_pfn = page_to_pfn(page);
-> -- 
-> 2.30.0
-> 
+> +config LD_VERSION
+> +       int
+> +       default $(ld-version) if LD_IS_BFD
+> +       default 0
+> +
+> +config LD_IS_LLD
+> +       def_bool $(success,test "$(ld-name)" = LLD)
+> +
+>  config LLD_VERSION
+>         int
+> -       default $(shell,$(srctree)/scripts/lld-version.sh $(LD))
+> +       default $(ld-version) if LD_IS_LLD
+> +       default 0
+>
+>  config CC_CAN_LINK
+>         bool
+> diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
+> index 0228cb9c74aa..58fdb5308725 100644
+> --- a/scripts/Kconfig.include
+> +++ b/scripts/Kconfig.include
+> @@ -45,8 +45,11 @@ $(error-if,$(success,test -z "$(cc-info)"),Sorry$(comma) this compiler is not su
+>  cc-name := $(shell,set -- $(cc-info) && echo $1)
+>  cc-version := $(shell,set -- $(cc-info) && echo $2)
+>
+> -# Fail if the linker is gold as it's not capable of linking the kernel proper
+> -$(error-if,$(success, $(LD) -v | grep -q gold), gold linker '$(LD)' not supported)
+> +# Get the linker name, version, and error out if it is not supported.
+> +ld-info := $(shell,$(srctree)/scripts/ld-version.sh $(LD))
+> +$(error-if,$(success,test -z "$(ld-info)"),Sorry$(comma) this linker is not supported.)
+> +ld-name := $(shell,set -- $(ld-info) && echo $1)
+> +ld-version := $(shell,set -- $(ld-info) && echo $2)
+>
+>  # machine bit flags
+>  #  $(m32-flag): -m32 if the compiler supports it, or an empty string otherwise.
+> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
+> index 0f8a2c0f9502..a463273509b5 100755
+> --- a/scripts/ld-version.sh
+> +++ b/scripts/ld-version.sh
+> @@ -1,11 +1,73 @@
+> -#!/usr/bin/awk -f
+> +#!/bin/sh
+>  # SPDX-License-Identifier: GPL-2.0
+> -# extract linker version number from stdin and turn into single number
+> -       {
+> -       gsub(".*\\)", "");
+> -       gsub(".*version ", "");
+> -       gsub("-.*", "");
+> -       split($1,a, ".");
+> -       print a[1]*10000 + a[2]*100 + a[3];
+> -       exit
+> -       }
+> +#
+> +# Print the linker name and its version in a 5 or 6-digit form.
+> +# Also, perform the minimum version check.
+> +
+> +set -e
+> +
+> +# When you raise the minimum linker version, please update
+> +# Documentation/process/changes.rst as well.
+> +bfd_min_version=2.23.0
+> +lld_min_version=10.0.1
+> +
+> +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
+> +get_canonical_version()
+> +{
+> +       IFS=.
+> +       set -- $1
+> +
+> +       # If the 2nd or 3rd field is missing, fill it with a zero.
+> +       #
+> +       # The 4th field, if present, is ignored.
+> +       # This occurs in development snapshots as in 2.35.1.20201116
+> +       echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
+> +}
+> +
+> +orig_args="$@"
+> +
+> +# Get the first line of the --version output.
+> +IFS='
+> +'
+> +set -- $("$@" --version)
+> +
+> +# Split the line on spaces.
+> +IFS=' '
+> +set -- $1
+> +
+> +if [ "$1" = GNU -a "$2" = ld ]; then
+> +       shift $(($# - 1))
+> +       version=$1
+> +       min_version=$bfd_min_version
+> +       name=BFD
+> +       disp_name="GNU ld"
+> +elif [ "$1" = GNU -a "$2" = gold ]; then
+> +       echo "gold linker is not supported as it is not capable of linking the kernel proper." >&2
+> +       exit 1
+> +elif [ "$1" = LLD ]; then
+> +       version=$2
+> +       min_version=$lld_min_version
+> +       name=LLD
+> +       disp_name=LLD
+> +else
+> +       echo "$orig_args: unknown linker" >&2
+> +       exit 1
+> +fi
+> +
+> +# Some distributions append a package release number, as in 2.34-4.fc32
+> +# Trim the hyphen and any characters that follow.
+> +version=${version%-*}
+> +
+> +cversion=$(get_canonical_version $version)
+> +min_cversion=$(get_canonical_version $min_version)
+> +
+> +if [ "$cversion" -lt "$min_cversion" ]; then
+> +       echo >&2 "***"
+> +       echo >&2 "*** Linker is too old."
+> +       echo >&2 "***   Your $disp_name version:    $version"
+> +       echo >&2 "***   Minimum $disp_name version: $min_version"
+> +       echo >&2 "***"
+> +       exit 1
+> +fi
+> +
+> +echo $name $cversion
+> diff --git a/scripts/lld-version.sh b/scripts/lld-version.sh
+> deleted file mode 100755
+> index d70edb4d8a4f..000000000000
+> --- a/scripts/lld-version.sh
+> +++ /dev/null
+> @@ -1,20 +0,0 @@
+> -#!/bin/sh
+> -# SPDX-License-Identifier: GPL-2.0
+> -#
+> -# Usage: $ ./scripts/lld-version.sh ld.lld
+> -#
+> -# Print the linker version of `ld.lld' in a 5 or 6-digit form
+> -# such as `100001' for ld.lld 10.0.1 etc.
+> -
+> -linker_string="$($* --version)"
+> -
+> -if ! ( echo $linker_string | grep -q LLD ); then
+> -       echo 0
+> -       exit 1
+> -fi
+> -
+> -VERSION=$(echo $linker_string | cut -d ' ' -f 2)
+> -MAJOR=$(echo $VERSION | cut -d . -f 1)
+> -MINOR=$(echo $VERSION | cut -d . -f 2)
+> -PATCHLEVEL=$(echo $VERSION | cut -d . -f 3)
+> -printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
+> --
+> 2.27.0
+>
+
 
 -- 
-Sincerely yours,
-Mike.
+Thanks,
+~Nick Desaulniers
