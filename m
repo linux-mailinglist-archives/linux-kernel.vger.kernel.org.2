@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3294631C6D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2D131C6D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:33:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbhBPHcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 02:32:07 -0500
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:35022 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhBPHcE (ORCPT
+        id S229864AbhBPHc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 02:32:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhBPHc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 02:32:04 -0500
-Received: by mail-wm1-f53.google.com with SMTP id n10so13460112wmq.0;
-        Mon, 15 Feb 2021 23:31:48 -0800 (PST)
+        Tue, 16 Feb 2021 02:32:26 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B67C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 23:31:45 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id g20so5038297plo.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 23:31:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qdlCLTlp7jDhU1SYjcZ4aty98XM8vub3j1b+BGeNYxQ=;
+        b=duahtLR4fZY8WTH/2yQC7gOnUtqcsGr4OK28qGUO7BQPdN+CcjF7orF5ae29J8ot1Q
+         3P284thv2sG3EZJlz3EGzrSHKEvCPubZ1WDr1S6vRmup9WZJOQqxJ6TWKNfrdEupVyod
+         tqgbBt0EmYApooq9fuArONkjyi3L5FGIQNdMfxVJB+wy45IxayqASvuctC2UIykEXeKK
+         YCkvWRnMc6xkwOx2NQQFzXgpufffGsVFd3DvA5v/vnxrQ58HFvO8ymwJo8MDgoQcJkYZ
+         a0Fgl9Z1F3jDl0kmnEBiLrM65g49uJVw3ZN7Nc+fUcbhKpImZkwrDk+4HoaN0qGDVT/i
+         1NdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=xkypD+66j+JEykDAYhgusAW9iuLjXAf+rkAoljhHLHc=;
-        b=sQU72nrK6xwyxaH2gx1DH56kTWzlsnD5blu2sg/N0XeobVbtESykB5on4JPhqaRHWL
-         AsuFtaLn3LPiOKS4MwPdNzwgIEZ/QQt9IvJ+Kym5taH/2Y/i6yXSrWoXKMASstzRlwA1
-         WhozStcCj/FA7NwEOPKrEwbO/dSdLBT3U5T3rDs4Gr3IFEeYqziVYP8ApSujWK27RZmh
-         DaybeE/l9B9qHMRxAp0r24GHsqcXnhv7joO70lXCH4tI9HPIUL1hVT5R7pLBVXCfn3kH
-         /spcM4R4WuPxAOgF3Ld2hFxANStAXfhYbwq3iq0C372GNLuE2w71P6l7C5hN40cElT30
-         Upzg==
-X-Gm-Message-State: AOAM533NFm7txP8ysSzldK1i1u8TSHsB+KnErpjgAYwzopMTIr6KyLTd
-        sCpXWfcBoltkKA8IxoNbhic=
-X-Google-Smtp-Source: ABdhPJwtf7xxwxHb+TZe50BG+Ui9Gg4hfIal9+FHQtbwDPbzChwY23yzFA+XmAY9BiRlRr24mHdKIA==
-X-Received: by 2002:a1c:480a:: with SMTP id v10mr2063421wma.132.1613460682574;
-        Mon, 15 Feb 2021 23:31:22 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id 101sm17597897wrk.4.2021.02.15.23.31.21
+        bh=qdlCLTlp7jDhU1SYjcZ4aty98XM8vub3j1b+BGeNYxQ=;
+        b=KwouVMgPtyoYDShT1/I89WjMg7oBVkjPlHsx4rYAuW8WllVpPsaFHcKAr97Y+AoScZ
+         PtD6dPLcdxxPwjP7lNFRcRMvE/lFniSoHyddnMJbA/HtvCQ2ohv6rJf7+XSc4GKedOnJ
+         b2JHQEEDCNyzeUqxN8wewOQovaYvUYxd3wrbrEkftMuGba3aygl1E0AtJzXE5GKpxIk0
+         AqnzEtINf/WtnMOC9pe1j5ivt5cexYNYw93J2jHYlQg1gFMa2kRPCw0KmYu3oQ40IvHZ
+         /MNQAiFE+4MiOeot38pS3+2LCvZP2fv+gJBJPDt2+zHoevXLzZvnB0gefDbnOluXXNd5
+         vuSw==
+X-Gm-Message-State: AOAM532CchljqUiucWT0zjA4BFJU7iuUiMR3VxmPOTa3JXV9sbfmCXc0
+        uWcxG4FBOlNbkgl/Ktx+rsm8
+X-Google-Smtp-Source: ABdhPJzoO/yqYnmdFzx/IbJw7rU/0JO/ecD//AsZLAlh6JG8BMuEx/ZmggPE5LzgW6v0CV0IF1/WUA==
+X-Received: by 2002:a17:90a:2c9:: with SMTP id d9mr2948983pjd.67.1613460705260;
+        Mon, 15 Feb 2021 23:31:45 -0800 (PST)
+Received: from thinkpad ([2409:4072:618e:567:b42:dd4b:9608:1db1])
+        by smtp.gmail.com with ESMTPSA id c69sm13415949pfb.88.2021.02.15.23.31.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 23:31:21 -0800 (PST)
-Date:   Tue, 16 Feb 2021 08:31:20 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 25/25] arm64: apple: Add initial Mac Mini 2020 (M1)
- devicetree
-Message-ID: <20210216073120.qmlaky43t6uelqc4@kozik-lap>
-References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-26-marcan@marcan.st>
- <20210215192906.7k3unuhph5wnkj5g@kozik-lap>
- <9dd4731c-7826-c1f5-3ce4-831d5186d270@infradead.org>
+        Mon, 15 Feb 2021 23:31:44 -0800 (PST)
+Date:   Tue, 16 Feb 2021 13:01:35 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bus: mhi: core: Fix check for syserr at power_up
+Message-ID: <20210216073135.GC5082@thinkpad>
+References: <1613165243-23359-1-git-send-email-jhugo@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9dd4731c-7826-c1f5-3ce4-831d5186d270@infradead.org>
+In-Reply-To: <1613165243-23359-1-git-send-email-jhugo@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 01:00:58PM -0800, Randy Dunlap wrote:
-> On 2/15/21 11:29 AM, Krzysztof Kozlowski wrote:
-> >> diff --git a/arch/arm64/boot/dts/apple/apple-j274.dts b/arch/arm64/boot/dts/apple/apple-j274.dts
-> >> new file mode 100644
-> >> index 000000000000..9a1be91a2cf0
-> >> --- /dev/null
-> >> +++ b/arch/arm64/boot/dts/apple/apple-j274.dts
-> >> @@ -0,0 +1,41 @@
-> >> +// SPDX-License-Identifier: GPL-2.0+ OR MIT
-> > () around licenses, so:
-> > (GPL-2.0+ OR MIT)
+On Fri, Feb 12, 2021 at 02:27:23PM -0700, Jeffrey Hugo wrote:
+> The check to see if we have reset the device after detecting syserr at
+> power_up is inverted.  wait_for_event_timeout() returns 0 on failure,
+> and a positive value on success.  The check is looking for non-zero
+> as a failure, which is likely to incorrectly cause a device init failure
+> if syserr was detected at power_up.  Fix this.
 > 
-> Hi,
-> When/where does that "() around licenses" apply, please?
+> Fixes: e18d4e9fa79b ("bus: mhi: core: Handle syserr during power_up")
+> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 
-Hmm, somehow this pattern got into me but now I checked on the spdx.dev
-and the preferred syntax is indeed without (). Skip this comment then.
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Best regards,
-Krzysztof
+Thanks,
+Mani
+
+> ---
+>  drivers/bus/mhi/core/pm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index 681960c..36ab7aa 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -1092,7 +1092,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+>  							   &val) ||
+>  					!val,
+>  				msecs_to_jiffies(mhi_cntrl->timeout_ms));
+> -		if (ret) {
+> +		if (!ret) {
+>  			ret = -EIO;
+>  			dev_info(dev, "Failed to reset MHI due to syserr state\n");
+>  			goto error_bhi_offset;
+> -- 
+> Qualcomm Technologies, Inc. is a member of the
+> Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
