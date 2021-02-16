@@ -2,344 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D00431C8E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBE631C8F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhBPKhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:37:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:60216 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhBPKgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:36:11 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 710661042;
-        Tue, 16 Feb 2021 02:35:25 -0800 (PST)
-Received: from e124901.arm.com (unknown [10.57.6.158])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 41A903F73B;
-        Tue, 16 Feb 2021 02:35:24 -0800 (PST)
-From:   vincent.donnefort@arm.com
-To:     peterz@infradead.org, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, valentin.schneider@arm.com,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: [PATCH v2 3/3] cpu/hotplug: Add cpuhp_invoke_callback_range()
-Date:   Tue, 16 Feb 2021 10:35:06 +0000
-Message-Id: <20210216103506.416286-4-vincent.donnefort@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210216103506.416286-1-vincent.donnefort@arm.com>
-References: <20210216103506.416286-1-vincent.donnefort@arm.com>
+        id S230001AbhBPKk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:40:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229767AbhBPKkW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:40:22 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A43DC061574;
+        Tue, 16 Feb 2021 02:39:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gHDXAw/B+mW6hMmWjHJ5AP1o5rqDQiiLPaGpdzXb7Ok=; b=IrZz0SUU89p9EAXf/KDm2T9Y8B
+        02nlaxYtoPnJiHmTETta4Bf3i+3soPeGV8+LZhaWOsoU437IWVJrBaglh6jns+blO4c5SNLHbpnpq
+        +7K0zJ0xln6dl30Gx+iKLOLVS3ushnYJ8+O2AuiPgA1AeGN3SAPKLalYqBhI7nZvbbRpjJFCYSOg8
+        /GAmeX06NVvF47NAblLMIqQkuiIKE/niIioyYGnGuvFeudJePh9zWYfqpsvjZt1W4JM+Uq0d4tv2E
+        I2lzcnfQaaOCQzXpGKqqzM0K6z6yTCYcOQ5yfVtVu4/nZ9GhGnfJLBYLXsFrd0FjOwgZWIzsrkzSY
+        KFr7W4FQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lBxkE-00Gkyh-AG; Tue, 16 Feb 2021 10:38:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 482173059DD;
+        Tue, 16 Feb 2021 11:38:12 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2CBB62058AF24; Tue, 16 Feb 2021 11:38:12 +0100 (CET)
+Date:   Tue, 16 Feb 2021 11:38:12 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Mike Galbraith <efault@gmx.de>, x86@kernel.org
+Subject: Re: [tip: sched/core] sched,x86: Allow !PREEMPT_DYNAMIC
+Message-ID: <YCuglAA95cDfSoFD@hirez.programming.kicks-ass.net>
+References: <YCK1+JyFNxQnWeXK@hirez.programming.kicks-ass.net>
+ <161296521143.23325.3662179234825253723.tip-bot2@tip-bot2>
+ <20210210141838.GA53130@lothringen>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210141838.GA53130@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Donnefort <vincent.donnefort@arm.com>
+On Wed, Feb 10, 2021 at 03:18:38PM +0100, Frederic Weisbecker wrote:
+> Also should we add something like this?
 
-Factorizing and unifying cpuhp callback range invocations, especially for
-the hotunplug path, where two different ways of decrementing were used. The
-first one, decrements before the callback is called:
+I suppose we can do that, but I'd rather have actual numbers to go with
+it, I don't think the trampolines are really that terrible.
 
- cpuhp_thread_fun()
-     state = st->state;
-     st->state--;
-     cpuhp_invoke_callback(state);
-
-The second one, after:
-
- take_down_cpu()|cpuhp_down_callbacks()
-     cpuhp_invoke_callback(st->state);
-     st->state--;
-
-This is problematic for rolling back the steps in case of error, as
-depending on the decrement, the rollback will start from N or N-1. It also
-makes tracing inconsistent, between steps run in the cpuhp thread and
-the others.
-
-Additionally, avoid useless cpuhp_thread_fun() loops by skipping empty
-steps.
-
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index d44877095b8c..382ef48e1271 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -135,6 +135,11 @@ static struct cpuhp_step *cpuhp_get_step(enum cpuhp_state state)
- 	return cpuhp_hp_states + state;
- }
- 
-+static bool cpuhp_step_empty(bool bringup, struct cpuhp_step *step)
-+{
-+	return bringup ? !step->startup.single : !step->teardown.single;
-+}
-+
- /**
-  * cpuhp_invoke_callback _ Invoke the callbacks for a given state
-  * @cpu:	The cpu for which the callback should be invoked
-@@ -157,26 +162,24 @@ static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
- 
- 	if (st->fail == state) {
- 		st->fail = CPUHP_INVALID;
--
--		if (!(bringup ? step->startup.single : step->teardown.single))
--			return 0;
--
- 		return -EAGAIN;
- 	}
- 
-+	if (cpuhp_step_empty(bringup, step)) {
-+		WARN_ON_ONCE(1);
-+		return 0;
-+	}
-+
- 	if (!step->multi_instance) {
- 		WARN_ON_ONCE(lastp && *lastp);
- 		cb = bringup ? step->startup.single : step->teardown.single;
--		if (!cb)
--			return 0;
-+
- 		trace_cpuhp_enter(cpu, st->target, state, cb);
- 		ret = cb(cpu);
- 		trace_cpuhp_exit(cpu, st->state, state, ret);
- 		return ret;
- 	}
- 	cbm = bringup ? step->startup.multi : step->teardown.multi;
--	if (!cbm)
--		return 0;
- 
- 	/* Single invocation for instance add/remove */
- 	if (node) {
-@@ -468,6 +471,15 @@ cpuhp_set_state(struct cpuhp_cpu_state *st, enum cpuhp_state target)
- static inline void
- cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
- {
-+	st->target = prev_state;
-+
-+	/*
-+	 * Already rolling back. No need invert the bringup value or to change
-+	 * the current state.
-+	 */
-+	if (st->rollback)
-+		return;
-+
- 	st->rollback = true;
- 
- 	/*
-@@ -481,7 +493,6 @@ cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
- 			st->state++;
- 	}
- 
--	st->target = prev_state;
- 	st->bringup = !st->bringup;
- }
- 
-@@ -584,10 +595,53 @@ static int finish_cpu(unsigned int cpu)
-  * Hotplug state machine related functions
-  */
- 
--static void undo_cpu_up(unsigned int cpu, struct cpuhp_cpu_state *st)
-+/*
-+ * Get the next state to run. Empty ones will be skipped. Returns true if a
-+ * state must be run.
-+ *
-+ * st->state will be modified ahead of time, to match state_to_run, as if it
-+ * has already ran.
-+ */
-+static bool cpuhp_next_state(bool bringup,
-+			     enum cpuhp_state *state_to_run,
-+			     struct cpuhp_cpu_state *st,
-+			     enum cpuhp_state target)
- {
--	for (st->state--; st->state > st->target; st->state--)
--		cpuhp_invoke_callback(cpu, st->state, false, NULL, NULL);
-+	do {
-+		if (bringup) {
-+			if (st->state >= target)
-+				return false;
-+
-+			*state_to_run = ++st->state;
-+		} else {
-+			if (st->state <= target)
-+				return false;
-+
-+			*state_to_run = st->state--;
-+		}
-+
-+		if (!cpuhp_step_empty(bringup, cpuhp_get_step(*state_to_run)))
-+			break;
-+	} while (true);
-+
-+	return true;
-+}
-+
-+static int cpuhp_invoke_callback_range(bool bringup,
-+				       unsigned int cpu,
-+				       struct cpuhp_cpu_state *st,
-+				       enum cpuhp_state target)
-+{
-+	enum cpuhp_state state;
-+	int err = 0;
-+
-+	while (cpuhp_next_state(bringup, &state, st, target)) {
-+		err = cpuhp_invoke_callback(cpu, state, bringup, NULL, NULL);
-+		if (err)
-+			break;
-+	}
-+
-+	return err;
- }
- 
- static inline bool can_rollback_cpu(struct cpuhp_cpu_state *st)
-@@ -610,16 +664,12 @@ static int cpuhp_up_callbacks(unsigned int cpu, struct cpuhp_cpu_state *st,
- 	enum cpuhp_state prev_state = st->state;
- 	int ret = 0;
- 
--	while (st->state < target) {
--		st->state++;
--		ret = cpuhp_invoke_callback(cpu, st->state, true, NULL, NULL);
--		if (ret) {
--			if (can_rollback_cpu(st)) {
--				st->target = prev_state;
--				undo_cpu_up(cpu, st);
--			}
--			break;
--		}
-+	ret = cpuhp_invoke_callback_range(true, cpu, st, target);
-+	if (ret) {
-+		cpuhp_reset_state(st, prev_state);
-+		if (can_rollback_cpu(st))
-+			WARN_ON(cpuhp_invoke_callback_range(false, cpu, st,
-+							    prev_state));
- 	}
- 	return ret;
- }
-@@ -683,17 +733,9 @@ static void cpuhp_thread_fun(unsigned int cpu)
- 		state = st->cb_state;
- 		st->should_run = false;
- 	} else {
--		if (bringup) {
--			st->state++;
--			state = st->state;
--			st->should_run = (st->state < st->target);
--			WARN_ON_ONCE(st->state > st->target);
--		} else {
--			state = st->state;
--			st->state--;
--			st->should_run = (st->state > st->target);
--			WARN_ON_ONCE(st->state < st->target);
--		}
-+		st->should_run = cpuhp_next_state(bringup, &state, st, st->target);
-+		if (!st->should_run)
-+			goto end;
- 	}
- 
- 	WARN_ON_ONCE(!cpuhp_is_ap_state(state));
-@@ -721,6 +763,7 @@ static void cpuhp_thread_fun(unsigned int cpu)
- 		st->should_run = false;
- 	}
- 
-+end:
- 	cpuhp_lock_release(bringup);
- 	lockdep_release_cpus_lock();
- 
-@@ -874,19 +917,18 @@ static int take_cpu_down(void *_param)
- 		return err;
- 
- 	/*
--	 * We get here while we are in CPUHP_TEARDOWN_CPU state and we must not
--	 * do this step again.
-+	 * Must be called from CPUHP_TEARDOWN_CPU, which means, as we are going
-+	 * down, that the current state is CPUHP_TEARDOWN_CPU - 1.
- 	 */
--	WARN_ON(st->state != CPUHP_TEARDOWN_CPU);
--	st->state--;
-+	WARN_ON(st->state != (CPUHP_TEARDOWN_CPU - 1));
-+
- 	/* Invoke the former CPU_DYING callbacks */
--	for (; st->state > target; st->state--) {
--		ret = cpuhp_invoke_callback(cpu, st->state, false, NULL, NULL);
--		/*
--		 * DYING must not fail!
--		 */
--		WARN_ON_ONCE(ret);
--	}
-+	ret = cpuhp_invoke_callback_range(false, cpu, st, target);
-+
-+	/*
-+	 * DYING must not fail!
-+	 */
-+	WARN_ON_ONCE(ret);
- 
- 	/* Give up timekeeping duties */
- 	tick_handover_do_timer();
-@@ -968,27 +1010,22 @@ void cpuhp_report_idle_dead(void)
- 				 cpuhp_complete_idle_dead, st, 0);
- }
- 
--static void undo_cpu_down(unsigned int cpu, struct cpuhp_cpu_state *st)
--{
--	for (st->state++; st->state < st->target; st->state++)
--		cpuhp_invoke_callback(cpu, st->state, true, NULL, NULL);
--}
--
- static int cpuhp_down_callbacks(unsigned int cpu, struct cpuhp_cpu_state *st,
- 				enum cpuhp_state target)
- {
- 	enum cpuhp_state prev_state = st->state;
- 	int ret = 0;
- 
--	for (; st->state > target; st->state--) {
--		ret = cpuhp_invoke_callback(cpu, st->state, false, NULL, NULL);
--		if (ret) {
--			st->target = prev_state;
--			if (st->state < prev_state)
--				undo_cpu_down(cpu, st);
--			break;
--		}
-+	ret = cpuhp_invoke_callback_range(false, cpu, st, target);
-+	if (ret) {
-+
-+		cpuhp_reset_state(st, prev_state);
-+
-+		if (st->state < prev_state)
-+			WARN_ON(cpuhp_invoke_callback_range(true, cpu, st,
-+							    prev_state));
- 	}
-+
- 	return ret;
- }
- 
-@@ -1161,14 +1198,12 @@ void notify_cpu_starting(unsigned int cpu)
- 
- 	rcu_cpu_starting(cpu);	/* Enables RCU usage on this CPU. */
- 	cpumask_set_cpu(cpu, &cpus_booted_once_mask);
--	while (st->state < target) {
--		st->state++;
--		ret = cpuhp_invoke_callback(cpu, st->state, true, NULL, NULL);
--		/*
--		 * STARTING must not fail!
--		 */
--		WARN_ON_ONCE(ret);
--	}
-+	ret = cpuhp_invoke_callback_range(true, cpu, st, target);
-+
-+	/*
-+	 * STARTING must not fail!
-+	 */
-+	WARN_ON_ONCE(ret);
- }
- 
- /*
-@@ -1774,8 +1809,7 @@ static int cpuhp_issue_call(int cpu, enum cpuhp_state state, bool bringup,
- 	 * If there's nothing to do, we done.
- 	 * Relies on the union for multi_instance.
- 	 */
--	if ((bringup && !sp->startup.single) ||
--	    (!bringup && !sp->teardown.single))
-+	if (cpuhp_step_empty(bringup, sp))
- 		return 0;
- 	/*
- 	 * The non AP bound callbacks can fail on bringup. On teardown
--- 
-2.25.1
-
+> From: Frederic Weisbecker <frederic@kernel.org>
+> Date: Wed, 10 Feb 2021 15:11:39 +0100
+> Subject: [PATCH] preempt/dynamic: Make PREEMPT_DYNAMIC optional
+> 
+> In order not to make the small trampoline overhead mandatory for archs
+> that support HAVE_STATIC_CALL but not HAVE_STATIC_CALL_INLINE, make
+> PREEMPT_DYNAMIC optional.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/Kconfig.preempt | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+> index 416017301660..1fe759677907 100644
+> --- a/kernel/Kconfig.preempt
+> +++ b/kernel/Kconfig.preempt
+> @@ -40,7 +40,6 @@ config PREEMPT
+>  	depends on !ARCH_NO_PREEMPT
+>  	select PREEMPTION
+>  	select UNINLINE_SPIN_UNLOCK if !ARCH_INLINE_SPIN_UNLOCK
+> -	select PREEMPT_DYNAMIC if HAVE_PREEMPT_DYNAMIC
+>  	help
+>  	  This option reduces the latency of the kernel by making
+>  	  all kernel code (that is not executing in a critical section)
+> @@ -83,11 +82,13 @@ config PREEMPTION
+>         select PREEMPT_COUNT
+>  
+>  config PREEMPT_DYNAMIC
+> -	bool
+> +	bool "Override preemption flavour at boot time"
+> +	depends on HAVE_PREEMPT_DYNAMIC && PREEMPT
+> +	default HAVE_STATIC_CALL_INLINE
+>  	help
+>  	  This option allows to define the preemption model on the kernel
+> -	  command line parameter and thus override the default preemption
+> -	  model defined during compile time.
+> +	  command line parameter "preempt=" and thus override the default
+> +	  preemption model defined during compile time.
+>  
+>  	  The feature is primarily interesting for Linux distributions which
+>  	  provide a pre-built kernel binary to reduce the number of kernel
+> @@ -99,3 +100,5 @@ config PREEMPT_DYNAMIC
+>  
+>  	  Interesting if you want the same pre-built kernel should be used for
+>  	  both Server and Desktop workloads.
+> +
+> +	  Say Y if you have CONFIG_HAVE_STATIC_CALL_INLINE.
+> -- 
+> 2.25.1
+> 
