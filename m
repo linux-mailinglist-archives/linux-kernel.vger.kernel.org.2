@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A32A31D21C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:31:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6995231D21E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhBPVbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:31:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230265AbhBPVbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:31:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F211264D99;
-        Tue, 16 Feb 2021 21:30:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613511031;
-        bh=uwBWkNHGck9kFBqA0+H8/eT9Jc5XAGfEFx3Kba3gL4k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ru/chHN9ndSQZRU6kcPNpf0W0XEdZm3ESkkB7+Rme8xma3/EdjnB48g/YGdMRuH26
-         j41sevdpq56S6D1FcUiqUe587rJeGLNYIRpBkq4hqxMWjaE9Nl1B+l8gqbJf5Dbv0Y
-         X5Cf2Gi7bJ+i1AgZ8b3eEwH9ubV/XjpHQMoCQLmsGilr1moNIaV1RqMOQ9aL356hxi
-         0pjTYRxkZjXDSEi9ko3Lp3vor5250L1ucr7rx9ykXonMGZ3PI+0x62A99qUdTQ2rmA
-         ypMWNh9Rtv/fIIaqI0hdt3a5ykleMBdQDvnHOFA1H0amz8tCtnF0fJldfMnmomP8oI
-         qIzSMOFmaTXVw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] drm/i915: Enable -Wuninitialized
-Date:   Tue, 16 Feb 2021 14:29:54 -0700
-Message-Id: <20210216212953.24458-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.30.1
+        id S230415AbhBPVbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:31:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230355AbhBPVbP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 16:31:15 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F29C061574;
+        Tue, 16 Feb 2021 13:30:34 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id w18so7003590pfu.9;
+        Tue, 16 Feb 2021 13:30:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xUh3CEqdSSKuvizlFupLbkEBddVx3zr4k3RSY54OT4Y=;
+        b=NM1DIdK0kYbseTKMsjWst8byp45H5S9NfZds6OsuvdvCJs8jkSAtc7kZyhNY4qjswM
+         Fujh9R8op0lc9Buq9wmf9WaxojtlROwchTm4a9ebQDkw/vCFH4ZHcv/pfzFVMvZ1gVnk
+         x4hUT8hxdD7cEJm32J6y3RG3+BjXW8sbCIHxwjN4uetqd4JqaKXKZiCRjc2+OwabbXJr
+         sjFu2nfqN1QkBKfieVUmDX+biIHLxIVpO7F27u8ul2SsoVJBheDnZlKe7dT4PggsiaDb
+         YmIUAAbt32mlp11R2j8dcx77StDtr4xbHkAIIti9oXxkYRDqxqi8tQd4ol4wiStmUAdT
+         uFXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=xUh3CEqdSSKuvizlFupLbkEBddVx3zr4k3RSY54OT4Y=;
+        b=hcDbj5Lqcdsjw0kIY65qtbW7jTAQcwbV8DNuPrHn4ZcefPSIJPZ3l18E/Idvv3GidW
+         NrvGFBgiE2BrntZDIMhwxeBq6bXup1VLEVSP23nspp49aKHEWsj+Y/FoczUV5+W3Qq9C
+         r/Sr58UAy+0FYDg7kI3nfjP7zKweaJr4WTeInJQuPU/GvTXIEFOJn8PBaghHSntzL4yi
+         pv7AKNgCVX94gJEq3CHx9sw5aW07/nSfCAtS0FMcIYfvBrt5lOlKBPw9ybOv4PR/PC/I
+         CsBni+oedXm5ujkK0f6/HaQgw53OVCTG1hZ8MwN1241aYSaKdmKwWXdIWnLKQ4+GBIhH
+         T/Cw==
+X-Gm-Message-State: AOAM532r/XZE8lft9z6G0JBriAgvH35Z5ZUoBkIh06LLXBm2dgmMIbbo
+        eK8kOzUY6Cm+FfyI+ckSbqQ=
+X-Google-Smtp-Source: ABdhPJwsn7pEQ8cmgx84W2wsuWyc794tUwXJok/ipmRpvvIjkHYT/WYi9aZXLNpkV+3bK9pFspCtvA==
+X-Received: by 2002:a62:14d4:0:b029:1e3:34e7:5797 with SMTP id 203-20020a6214d40000b02901e334e75797mr21993866pfu.43.1613511034569;
+        Tue, 16 Feb 2021 13:30:34 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:cdf7:1c5d:c444:e341])
+        by smtp.gmail.com with ESMTPSA id i67sm23417148pfe.19.2021.02.16.13.30.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 13:30:33 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 16 Feb 2021 13:30:31 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgoldswo@codeaurora.org,
+        linux-fsdevel@vger.kernel.org, mhocko@suse.com, david@redhat.com,
+        vbabka@suse.cz, viro@zeniv.linux.org.uk, joaodias@google.com
+Subject: Re: [RFC 1/2] mm: disable LRU pagevec during the migration
+ temporarily
+Message-ID: <YCw5d2BTsFgq/mZa@google.com>
+References: <20210216170348.1513483-1-minchan@kernel.org>
+ <20210216182242.GJ2858050@casper.infradead.org>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216182242.GJ2858050@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--Wunintialized was disabled in commit c5627461490e ("drm/i915: Disable
--Wuninitialized") because there were two warnings that were false
-positives. The first was due to DECLARE_WAIT_QUEUE_HEAD_ONSTACK, which
-was fixed in LLVM 9.0.0. The second was in busywait_stop, which was
-fixed in LLVM 10.0.0 (issue 415). The kernel's minimum version for LLVM
-is 10.0.1 so this warning can be safely enabled, where it has already
-caught a couple bugs.
+On Tue, Feb 16, 2021 at 06:22:42PM +0000, Matthew Wilcox wrote:
+> On Tue, Feb 16, 2021 at 09:03:47AM -0800, Minchan Kim wrote:
+> > LRU pagevec holds refcount of pages until the pagevec are drained.
+> > It could prevent migration since the refcount of the page is greater
+> > than the expection in migration logic. To mitigate the issue,
+> > callers of migrate_pages drains LRU pagevec via migrate_prep or
+> > lru_add_drain_all before migrate_pages call.
+> > 
+> > However, it's not enough because pages coming into pagevec after the
+> > draining call still could stay at the pagevec so it could keep
+> > preventing page migration. Since some callers of migrate_pages have
+> > retrial logic with LRU draining, the page would migrate at next trail
+> > but it is still fragile in that it doesn't close the fundamental race
+> > between upcoming LRU pages into pagvec and migration so the migration
+> > failure could cause contiguous memory allocation failure in the end.
+> 
+> Have you been able to gather any numbers on this?  eg does migration
+> now succeed 5% more often?
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/220
-Link: https://github.com/ClangBuiltLinux/linux/issues/415
-Link: https://github.com/ClangBuiltLinux/linux/issues/499
-Link: https://github.com/llvm/llvm-project/commit/2e040398f8d691cc378c1abb098824ff49f3f28f
-Link: https://github.com/llvm/llvm-project/commit/c667cdc850c2aa821ffeedbc08c24bc985c59edd
-Fixes: c5627461490e ("drm/i915: Disable -Wuninitialized")
-References: 2ea4a7ba9bf6 ("drm/i915/gt: Avoid uninitialized use of rpcurupei in frequency_show")
-References: 2034c2129bc4 ("drm/i915/display: Ensure that ret is always initialized in icl_combo_phy_verify_state")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/gpu/drm/i915/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+What I measured was how many times migrate_pages retried with force mode
+below debug code.
+The test was android apps launching with cma allocation in background.
+Total cma allocation count was about 500 during the entire testing 
+and have seen about 400 retrial with below debug code.
+With this patchset(with bug fix), the retrial count was reduced under 30.
 
-diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-index 6d9e81ea67f4..60b60204004f 100644
---- a/drivers/gpu/drm/i915/Makefile
-+++ b/drivers/gpu/drm/i915/Makefile
-@@ -21,7 +21,6 @@ subdir-ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
- subdir-ccflags-y += $(call cc-disable-warning, sign-compare)
- subdir-ccflags-y += $(call cc-disable-warning, sometimes-uninitialized)
- subdir-ccflags-y += $(call cc-disable-warning, initializer-overrides)
--subdir-ccflags-y += $(call cc-disable-warning, uninitialized)
- subdir-ccflags-y += $(call cc-disable-warning, frame-address)
- subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
- 
+What I measured was how many times the migrate_pages 
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 04a98bb2f568..caa661be2d16 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1459,6 +1459,11 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+                                                private, page, pass > 2, mode,
+                                                reason);
 
-base-commit: f40ddce88593482919761f74910f42f4b84c004b
--- 
-2.30.1
++                       if (rc && reason == MR_CONTIG_RANGE && pass > 2) {
++                               printk(KERN_ERR, "pfn 0x%lx reason %d\n", page_to_pfn(page), rc);
++                               dump_page(page, "fail to migrate");
++                       }
++
 
