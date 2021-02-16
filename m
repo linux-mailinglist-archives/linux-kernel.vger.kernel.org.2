@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CE631D00D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A5931D02B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhBPSQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 13:16:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:32818 "EHLO mx2.suse.de"
+        id S230469AbhBPSXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 13:23:18 -0500
+Received: from mga03.intel.com ([134.134.136.65]:7660 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229889AbhBPSQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:16:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 18EB2AB4C;
-        Tue, 16 Feb 2021 18:15:46 +0000 (UTC)
-Subject: Re: [RFC/RFT PATCH] scsi: pm8001: Expose HW queues for pm80xx hw
-To:     Viswas.G@microchip.com, john.garry@huawei.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, akshatzen@google.com,
-        Ruksar.devadi@microchip.com, radha@google.com,
-        bjashnani@google.com, vishakhavc@google.com,
-        jinpu.wang@cloud.ionos.com, Ashokkumar.N@microchip.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kashyap.desai@broadcom.com, ming.lei@redhat.com
-References: <1609845423-110410-1-git-send-email-john.garry@huawei.com>
- <SN6PR11MB34882CBBF9CF1C6EA2C50EB29DB79@SN6PR11MB3488.namprd11.prod.outlook.com>
- <0a20dc79-a462-f3fb-14af-db151b688e5a@huawei.com>
- <SN6PR11MB34882607FCD824C9C790AEFC9DB69@SN6PR11MB3488.namprd11.prod.outlook.com>
- <1b491d44-996c-2131-2eb6-5348460f9b5b@huawei.com>
- <SN6PR11MB3488932892D5F34FEE6984499D889@SN6PR11MB3488.namprd11.prod.outlook.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <23f6201d-130a-5bf3-c828-c06f0e0acfbe@suse.de>
-Date:   Tue, 16 Feb 2021 19:15:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229572AbhBPSXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 13:23:15 -0500
+IronPort-SDR: uy9mURPYEK2K8s76qyou7FNgC8upyus+CPoLEa0NdD3sziZBnd/wKNGM5B2HCh7bzy59pkiR2t
+ 9+TWNVfTZ9+Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="183046842"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="183046842"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 10:22:34 -0800
+IronPort-SDR: 4edsNo68YZJHh5PbP7eS+pmfhYoJhfnup3fnRT5m214M7FcmcRemf2FXr8iSGFMYVKd2nnJfKt
+ v5TeoRfQeaWA==
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="399610160"
+Received: from dlbingha-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.134.31])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 10:22:33 -0800
+Date:   Tue, 16 Feb 2021 10:22:32 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v4 4/9] cxl/mem: Add basic IOCTL interface
+Message-ID: <20210216182232.mmo5pwchongpmrau@intel.com>
+References: <20210216014538.268106-1-ben.widawsky@intel.com>
+ <20210216014538.268106-5-ben.widawsky@intel.com>
+ <YCwK9SblYCh/1lZS@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <SN6PR11MB3488932892D5F34FEE6984499D889@SN6PR11MB3488.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCwK9SblYCh/1lZS@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/15/21 6:31 PM, Viswas.G@microchip.com wrote:
-> Hi John,
+On 21-02-16 18:12:05, Al Viro wrote:
+> On Mon, Feb 15, 2021 at 05:45:33PM -0800, Ben Widawsky wrote:
+> > +	if (cmd->info.size_in) {
+> > +		mbox_cmd.payload_in = kvzalloc(cmd->info.size_in, GFP_KERNEL);
+> > +		if (!mbox_cmd.payload_in) {
+> > +			rc = -ENOMEM;
+> > +			goto out;
+> > +		}
+> > +
+> > +		if (copy_from_user(mbox_cmd.payload_in,
+> > +				   u64_to_user_ptr(in_payload),
+> > +				   cmd->info.size_in)) {
+> > +			rc = -EFAULT;
+> > +			goto out;
+> > +		}
 > 
-> We could test this patch and it works fine. Regarding the usage of request->tag, We have some challenges there.
-> Pm80xx driver need tag for internal command as well. Tag is controller wide and we need to assign unique tag
-> for internal command as well. If we use request->tag, how can we get tag for internal commands ? If driver
-> allocate that, how can we make sure it will not conflict with the request->tag ?
-> 
-I have posted a patchset for internal tags some time ago; at the time it 
-was blocked by the missing shared tagset functionality.
-But seeing that we're having it now I guess I'll need to repost; that 
-addresses precisely the issue you've described.
+> Umm...  Do you need to open-code vmemdup_user()?  The only difference is
+> GFP_KERNEL allocation instead of GFP_USER one, and the latter is arguably
+> saner here...  Zeroing is definitely pointless - you either overwrite
+> the entire buffer with copy_from_user(), or you fail and free the damn
+> thing.
 
-Cheers,
+mea culpa. In fact it was previously memdup_user and Dan suggested I switch to
+vmemdup_user.
+https://lore.kernel.org/linux-cxl/CAPcyv4j+ixVgEo5q2OhV4kdkBZbnohZj3KDovReQJjPBsREugw@mail.gmail.com/
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+
+Will fix for the next version.
+
+Thanks.
