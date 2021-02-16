@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A87C31C86A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1204831C86D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhBPJvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:51:46 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:63444 "EHLO z11.mailgun.us"
+        id S230268AbhBPJw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:52:29 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:60369 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230219AbhBPJtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:49:01 -0500
+        id S230236AbhBPJte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 04:49:34 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613468916; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1613468940; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=5g0KY6EHKnW/lWSPcNnepmnfXE0Hal4OUqZT2ISg+Pg=; b=PujnIssg7NCmuxW1ARI+ahnvrobMUNFV2AQVMtomNUc6mW2ZumcHqB+NwOEzY71TKWs6RmyU
- MmIWnCCTIWemciDf8LfL+GSAKs3CFGZ2VPRjo1QucMvfcClYj342pfBtwv9OeMqZQnAP5pi0
- ukSXJ2Oec1uGDX0U/ViabaIWwJs=
+ Sender; bh=HrMT0YQa9Xv2Z5OfD3e1fqfGmBxo+8wrF24kohvXrQU=; b=p+04nFXktF3aKacsxHjaBbeOBZqO9n4XMbieNDUOA3Vu0HVcO40zI33fecCJUyE/bKObWaZe
+ woudBdV3bhMLiGg4JmusoDZ0dQlxt9CjawYmcxQ4n+8mBdyzvLEXS2S9dDkUbZHv4BnBgWUg
+ lHF8QQONyT3aIbnkKEexZxaDkQ4=
 X-Mailgun-Sending-Ip: 104.130.96.11
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 602b94da81f6c45dce7576c3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 09:48:10
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 602b94e07bd8735272689945 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 09:48:16
  GMT
 Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4579BC433C6; Tue, 16 Feb 2021 09:48:09 +0000 (UTC)
+        id AE9E2C43461; Tue, 16 Feb 2021 09:48:16 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +37,9 @@ Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Out
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5CCA9C433C6;
-        Tue, 16 Feb 2021 09:48:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5CCA9C433C6
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0CEE2C433CA;
+        Tue, 16 Feb 2021 09:48:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0CEE2C433CA
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
 From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
@@ -49,9 +49,9 @@ Cc:     Vinod Koul <vkoul@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org,
         Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH 1/3] arm64: dts: qcom: sm8250: Fix level triggered PMU interrupt polarity
-Date:   Tue, 16 Feb 2021 15:17:47 +0530
-Message-Id: <96680a1c6488955c9eef7973c28026462b2a4ec0.1613468366.git.saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH 2/3] arm64: dts: qcom: sm8350: Fix level triggered PMU interrupt polarity
+Date:   Tue, 16 Feb 2021 15:17:48 +0530
+Message-Id: <ca57409198477f7815e32a6a7467dcdc9b93dc4f.1613468366.git.saiprakash.ranjan@codeaurora.org>
 X-Mailer: git-send-email 2.29.0
 In-Reply-To: <cover.1613468366.git.saiprakash.ranjan@codeaurora.org>
 References: <cover.1613468366.git.saiprakash.ranjan@codeaurora.org>
@@ -61,20 +61,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per interrupt documentation for SM8250 SoC, the polarity
+As per interrupt documentation for SM8350 SoC, the polarity
 for level triggered PMU interrupt is low, fix this.
 
-Fixes: 60378f1a171e ("arm64: dts: qcom: sm8250: Add sm8250 dts file")
+Fixes: b7e8f433a673 ("arm64: dts: qcom: Add basic devicetree support for SM8350 SoC")
 Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 ---
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 2 +-
+ arch/arm64/boot/dts/qcom/sm8350.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 947e1accae3a..1864c459a563 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -279,7 +279,7 @@ mmcx_reg: mmcx-reg {
+diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+index 5ef460458f5c..e8bf3f95c674 100644
+--- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+@@ -153,7 +153,7 @@ memory@80000000 {
  
  	pmu {
  		compatible = "arm,armv8-pmuv3";
