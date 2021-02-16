@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883E831CC39
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB72231CC43
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhBPOlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:41:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35934 "EHLO mail.kernel.org"
+        id S230024AbhBPOmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:42:05 -0500
+Received: from mga18.intel.com ([134.134.136.126]:64276 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230295AbhBPOkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:40:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8041E64DFF;
-        Tue, 16 Feb 2021 14:39:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613486367;
-        bh=UNowcMW0SCs9nkZpIMU1XGVDBOUfCP5cIFjY9xFBtkw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bnvg5U1s9dgRqFeGSd8Z+1uzt5GISNX+ggmHL43B7wAFuRrdMgDDNUUH06BSwQl+D
-         NvLeq7gtGG4ooNe7FPohcL4QQJwNV3EaQJN5/Opi/kgI2IdiJKw9w/73+Q5dsS+Xdu
-         6ns259AlSo7mcyDIEyt8a2u4hEZVRfV3/mLd5SYOlMg3HzUnlVgH47S6djl2G33ygX
-         I1h48S1YK+EgTXBS+veJ6JvCqXsN7r/3r2758MEjO3hd/WlcdrBWElGBl3oFGtU6p0
-         RtLxKPS9Bh6SgLauEWeOBgrshGmx2tWNqYnHu/MHe8QdTbQLo3e6Km8t44H6G0GA0X
-         R7BVQIxBZcPkA==
-Date:   Tue, 16 Feb 2021 15:39:22 +0100
-From:   Robert Richter <rric@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Jiri Kosina <trivial@kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oprofile-list@lists.sf.net
-Subject: Re: [PATCH 02/29] alpha: Avoid comma separated statements
-Message-ID: <YCvZGuKvtPi6ktNV@rric.localdomain>
-References: <cover.1598331148.git.joe@perches.com>
- <4facd57f80c70437f085ba3a1bcf13ae0b63c3bc.1598331148.git.joe@perches.com>
- <52f038d9ff547deee4e5b5628507e61ec8d056b7.camel@perches.com>
+        id S229912AbhBPOlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 09:41:53 -0500
+IronPort-SDR: l/cd7nk06vGanIa4BlJt9cGCdjC9P6ey6oXT23dmDqYTKR9Od267hBtbJOlqIYNwVG/GxBxHML
+ 7T6Z63SbodPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="170563656"
+X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
+   d="scan'208";a="170563656"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 06:40:07 -0800
+IronPort-SDR: Pq8V7q6rM2uU+JP3glHQjL4C3bJgpyP//rleNfSJVFUkh9uhxSSg9nl3JIE2jPSZvo7/8XCTec
+ CU5C+bwn4hvg==
+X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
+   d="scan'208";a="361703509"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 06:40:04 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lC1WD-005U7q-H3; Tue, 16 Feb 2021 16:40:01 +0200
+Date:   Tue, 16 Feb 2021 16:40:01 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        mika.westerberg@linux.intel.com, rric@kernel.org,
+        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, kw@linux.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <YCvZQUaTI2Jt6N4q@smile.fi.intel.com>
+References: <20210216141810.747678-1-zhengdejin5@gmail.com>
+ <20210216141810.747678-2-zhengdejin5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <52f038d9ff547deee4e5b5628507e61ec8d056b7.camel@perches.com>
+In-Reply-To: <20210216141810.747678-2-zhengdejin5@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.01.21 10:54:42, Joe Perches wrote:
-> On Mon, 2020-08-24 at 21:55 -0700, Joe Perches wrote:
-> > Use semicolons and braces.
-> 
-> ping?
-> 
-> > 
-> > Signed-off-by: Joe Perches <joe@perches.com>
-> > ---
-> >  arch/alpha/kernel/pci_iommu.c      |  8 +++++---
-> >  arch/alpha/oprofile/op_model_ev4.c | 22 ++++++++++++++--------
-> >  arch/alpha/oprofile/op_model_ev5.c |  8 +++++---
+On Tue, Feb 16, 2021 at 10:18:07PM +0800, Dejin Zheng wrote:
+> Introduce pcim_alloc_irq_vectors(), a device-managed version of
+> pci_alloc_irq_vectors(). Introducing this function can simplify
+> the error handling path in many drivers.
 
-This patch should be rebased as oprofile is going to be removed in
-5.12. A branch is in linux-next.
+> -	if (dev->msi_enabled)
+> -		pci_disable_msi(dev);
+> -	if (dev->msix_enabled)
+> -		pci_disable_msix(dev);
+> +	pci_free_irq_vectors(dev);
 
--Robert
+This change deserves a line in the commit message.
 
-> >  3 files changed, 24 insertions(+), 14 deletions(-)
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
