@@ -2,385 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B9031CD08
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A3531CD04
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhBPPdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 10:33:16 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2571 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhBPPcS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 10:32:18 -0500
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dg4bg5FgHz67pv0;
-        Tue, 16 Feb 2021 23:27:43 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 16 Feb 2021 16:31:33 +0100
-Received: from localhost (10.47.75.223) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 16 Feb
- 2021 15:31:32 +0000
-Date:   Tue, 16 Feb 2021 15:30:26 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Jon Masters" <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Ariel Sibley <Ariel.Sibley@microchip.com>
-Subject: Re: [PATCH v4 5/9] cxl/mem: Add a "RAW" send command
-Message-ID: <20210216153026.00005e33@Huawei.com>
-In-Reply-To: <20210216014538.268106-6-ben.widawsky@intel.com>
-References: <20210216014538.268106-1-ben.widawsky@intel.com>
-        <20210216014538.268106-6-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S230336AbhBPPcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 10:32:43 -0500
+Received: from mail.manjaro.org ([176.9.38.148]:39548 "EHLO mail.manjaro.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229577AbhBPPbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 10:31:51 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.manjaro.org (Postfix) with ESMTP id ECEBC183325;
+        Tue, 16 Feb 2021 16:30:59 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at manjaro.org
+Received: from mail.manjaro.org ([127.0.0.1])
+        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id baaH7EfB4n54; Tue, 16 Feb 2021 16:30:57 +0100 (CET)
+To:     Martin Ashby <martin@ashbysoft.com>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tobias Schramm <t.schramm@manjaro.org>
+References: <20210126213928.136561-1-martin@ashbysoft.com>
+ <10574fda-0a3b-a762-7795-f1fb609b0dde@manjaro.org>
+From:   Tobias Schramm <t.schramm@manjaro.org>
+Subject: Re: [PATCH] Add CHARGE_NOW support to cw2015_battery.c
+Message-ID: <322db883-b25d-4f89-c7f9-b0df0407ad44@manjaro.org>
+Date:   Tue, 16 Feb 2021 16:30:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.75.223]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <10574fda-0a3b-a762-7795-f1fb609b0dde@manjaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US-large
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 17:45:34 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+Hi Martin,
 
-> The CXL memory device send interface will have a number of supported
-> commands. The raw command is not such a command. Raw commands allow
-> userspace to send a specified opcode to the underlying hardware and
-> bypass all driver checks on the command. The primary use for this
-> command is to [begrudgingly] allow undocumented vendor specific hardware
-> commands.
 > 
-> While not the main motivation, it also allows prototyping new hardware
-> commands without a driver patch and rebuild.
+> thanks for the patch. Looks good and tests fine.
 > 
-> While this all sounds very powerful it comes with a couple of caveats:
-> 1. Bug reports using raw commands will not get the same level of
->    attention as bug reports using supported commands (via taint).
-> 2. Supported commands will be rejected by the RAW command.
+eh, scratch that. Didn't have my cup of morning coffee yet. The patch is 
+fine as far as the code change goes. However it is missing a 
+"Signed-off-by" line, certifying your authorship. git can generate that 
+automagically for you with `git commit --signoff`.
+
+>> CHARGE_NOW is expected by some user software (such as waybar)
+>> instead of 'CAPACITY', in order to correctly calculate
+>> remaining battery life.
+>>
+There needs to be a "Signed-off-by" line right here.
+>> ---
+>>   drivers/power/supply/cw2015_battery.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+[ ... ]
 > 
-> With this comes new debugfs knob to allow full access to your toes with
-> your weapon of choice.
-> 
-> Cc: Ariel Sibley <Ariel.Sibley@microchip.com>
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com> (v2)
+> Reviewed-by: Tobias Schramm <t.schramm@manjaro.org>
+Review retracted.
 
-Whilst I'm definitely dubious about introducing this interface
-so early in development, I haven't found any problems with 'how' it
-has been done.
+Please resend the patch with the "Signed-off-by" line included. Then I 
+can mark it as reviewed.
 
-I guess it's now just up to us to hassle our hardware colleagues into
-only using this facility when absolutely necessary...
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Sorry for the confusion,
 
-> ---
->  drivers/cxl/Kconfig          |  18 +++++
->  drivers/cxl/mem.c            | 132 +++++++++++++++++++++++++++++++++++
->  include/uapi/linux/cxl_mem.h |  12 +++-
->  3 files changed, 161 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
-> index 9e80b311e928..97dc4d751651 100644
-> --- a/drivers/cxl/Kconfig
-> +++ b/drivers/cxl/Kconfig
-> @@ -32,4 +32,22 @@ config CXL_MEM
->  	  Chapter 2.3 Type 3 CXL Device in the CXL 2.0 specification.
->  
->  	  If unsure say 'm'.
-> +
-> +config CXL_MEM_RAW_COMMANDS
-> +	bool "RAW Command Interface for Memory Devices"
-> +	depends on CXL_MEM
-> +	help
-> +	  Enable CXL RAW command interface.
-> +
-> +	  The CXL driver ioctl interface may assign a kernel ioctl command
-> +	  number for each specification defined opcode. At any given point in
-> +	  time the number of opcodes that the specification defines and a device
-> +	  may implement may exceed the kernel's set of associated ioctl function
-> +	  numbers. The mismatch is either by omission, specification is too new,
-> +	  or by design. When prototyping new hardware, or developing / debugging
-> +	  the driver it is useful to be able to submit any possible command to
-> +	  the hardware, even commands that may crash the kernel due to their
-> +	  potential impact to memory currently in use by the kernel.
-> +
-> +	  If developing CXL hardware or the driver say Y, otherwise say N.
->  endif
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index a4298cb1182d..6b4feb0ce47d 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -1,6 +1,8 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
->  #include <uapi/linux/cxl_mem.h>
-> +#include <linux/security.h>
-> +#include <linux/debugfs.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
->  #include <linux/cdev.h>
-> @@ -42,7 +44,14 @@
->  
->  enum opcode {
->  	CXL_MBOX_OP_INVALID		= 0x0000,
-> +	CXL_MBOX_OP_RAW			= CXL_MBOX_OP_INVALID,
-> +	CXL_MBOX_OP_ACTIVATE_FW		= 0x0202,
->  	CXL_MBOX_OP_IDENTIFY		= 0x4000,
-> +	CXL_MBOX_OP_SET_PARTITION_INFO	= 0x4101,
-> +	CXL_MBOX_OP_SET_LSA		= 0x4103,
-> +	CXL_MBOX_OP_SET_SHUTDOWN_STATE	= 0x4204,
-> +	CXL_MBOX_OP_SCAN_MEDIA		= 0x4304,
-> +	CXL_MBOX_OP_GET_SCAN_MEDIA	= 0x4305,
->  	CXL_MBOX_OP_MAX			= 0x10000
->  };
->  
-> @@ -92,6 +101,8 @@ struct cxl_memdev {
->  
->  static int cxl_mem_major;
->  static DEFINE_IDA(cxl_memdev_ida);
-> +static struct dentry *cxl_debugfs;
-> +static bool cxl_raw_allow_all;
->  
->  /**
->   * struct cxl_mem_command - Driver representation of a memory device command
-> @@ -128,6 +139,49 @@ struct cxl_mem_command {
->   */
->  static struct cxl_mem_command mem_commands[] = {
->  	CXL_CMD(IDENTIFY, 0, 0x43),
-> +#ifdef CONFIG_CXL_MEM_RAW_COMMANDS
-> +	CXL_CMD(RAW, ~0, ~0),
-> +#endif
-> +};
-> +
-> +/*
-> + * Commands that RAW doesn't permit. The rationale for each:
-> + *
-> + * CXL_MBOX_OP_ACTIVATE_FW: Firmware activation requires adjustment /
-> + * coordination of transaction timeout values at the root bridge level.
-> + *
-> + * CXL_MBOX_OP_SET_PARTITION_INFO: The device memory map may change live
-> + * and needs to be coordinated with HDM updates.
-> + *
-> + * CXL_MBOX_OP_SET_LSA: The label storage area may be cached by the
-> + * driver and any writes from userspace invalidates those contents.
-> + *
-> + * CXL_MBOX_OP_SET_SHUTDOWN_STATE: Set shutdown state assumes no writes
-> + * to the device after it is marked clean, userspace can not make that
-> + * assertion.
-> + *
-> + * CXL_MBOX_OP_[GET_]SCAN_MEDIA: The kernel provides a native error list that
-> + * is kept up to date with patrol notifications and error management.
-> + */
-> +static u16 cxl_disabled_raw_commands[] = {
-> +	CXL_MBOX_OP_ACTIVATE_FW,
-> +	CXL_MBOX_OP_SET_PARTITION_INFO,
-> +	CXL_MBOX_OP_SET_LSA,
-> +	CXL_MBOX_OP_SET_SHUTDOWN_STATE,
-> +	CXL_MBOX_OP_SCAN_MEDIA,
-> +	CXL_MBOX_OP_GET_SCAN_MEDIA,
-> +};
-> +
-> +/*
-> + * Command sets that RAW doesn't permit. All opcodes in this set are
-> + * disabled because they pass plain text security payloads over the
-> + * user/kernel boundary. This functionality is intended to be wrapped
-> + * behind the keys ABI which allows for encrypted payloads in the UAPI
-> + */
-> +static u8 security_command_sets[] = {
-> +	0x44, /* Sanitize */
-> +	0x45, /* Persistent Memory Data-at-rest Security */
-> +	0x46, /* Security Passthrough */
->  };
->  
->  #define cxl_for_each_cmd(cmd)                                                  \
-> @@ -158,6 +212,16 @@ static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
->  	return 0;
->  }
->  
-> +static bool cxl_is_security_command(u16 opcode)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(security_command_sets); i++)
-> +		if (security_command_sets[i] == (opcode >> 8))
-> +			return true;
-> +	return false;
-> +}
-> +
->  static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
->  				 struct mbox_cmd *mbox_cmd)
->  {
-> @@ -426,6 +490,9 @@ static int handle_mailbox_cmd_from_user(struct cxl_mem *cxlm,
->  		cxl_command_names[cmd->info.id].name, mbox_cmd.opcode,
->  		cmd->info.size_in);
->  
-> +	dev_WARN_ONCE(dev, cmd->info.id == CXL_MEM_COMMAND_ID_RAW,
-> +		      "raw command path used\n");
-> +
->  	rc = __cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
->  	cxl_mem_mbox_put(cxlm);
->  	if (rc)
-> @@ -457,6 +524,29 @@ static int handle_mailbox_cmd_from_user(struct cxl_mem *cxlm,
->  	return rc;
->  }
->  
-> +static bool cxl_mem_raw_command_allowed(u16 opcode)
-> +{
-> +	int i;
-> +
-> +	if (!IS_ENABLED(CONFIG_CXL_MEM_RAW_COMMANDS))
-> +		return false;
-> +
-> +	if (security_locked_down(LOCKDOWN_NONE))
-> +		return false;
-> +
-> +	if (cxl_raw_allow_all)
-> +		return true;
-> +
-> +	if (cxl_is_security_command(opcode))
-> +		return false;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(cxl_disabled_raw_commands); i++)
-> +		if (cxl_disabled_raw_commands[i] == opcode)
-> +			return false;
-> +
-> +	return true;
-> +}
-> +
->  /**
->   * cxl_validate_cmd_from_user() - Check fields for CXL_MEM_SEND_COMMAND.
->   * @cxlm: &struct cxl_mem device whose mailbox will be used.
-> @@ -468,6 +558,7 @@ static int handle_mailbox_cmd_from_user(struct cxl_mem *cxlm,
->   *  * %-ENOTTY	- Invalid command specified.
->   *  * %-EINVAL	- Reserved fields or invalid values were used.
->   *  * %-ENOMEM	- Input or output buffer wasn't sized properly.
-> + *  * %-EPERM	- Attempted to use a protected command.
->   *
->   * The result of this command is a fully validated command in @out_cmd that is
->   * safe to send to the hardware.
-> @@ -492,6 +583,40 @@ static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
->  	if (send_cmd->in.size > cxlm->payload_size)
->  		return -EINVAL;
->  
-> +	/*
-> +	 * Checks are bypassed for raw commands but a WARN/taint will occur
-> +	 * later in the callchain
-> +	 */
-> +	if (send_cmd->id == CXL_MEM_COMMAND_ID_RAW) {
-> +		const struct cxl_mem_command temp = {
-> +			.info = {
-> +				.id = CXL_MEM_COMMAND_ID_RAW,
-> +				.flags = 0,
-> +				.size_in = send_cmd->in.size,
-> +				.size_out = send_cmd->out.size,
-> +			},
-> +			.opcode = send_cmd->raw.opcode
-> +		};
-> +
-> +		if (send_cmd->raw.rsvd)
-> +			return -EINVAL;
-> +
-> +		/*
-> +		 * Unlike supported commands, the output size of RAW commands
-> +		 * gets passed along without further checking, so it must be
-> +		 * validated here.
-> +		 */
-> +		if (send_cmd->out.size > cxlm->payload_size)
-> +			return -EINVAL;
-> +
-> +		if (!cxl_mem_raw_command_allowed(send_cmd->raw.opcode))
-> +			return -EPERM;
-> +
-> +		memcpy(out_cmd, &temp, sizeof(temp));
-> +
-> +		return 0;
-> +	}
-> +
->  	if (send_cmd->flags & ~CXL_MEM_COMMAND_FLAG_MASK)
->  		return -EINVAL;
->  
-> @@ -1153,6 +1278,7 @@ static struct pci_driver cxl_mem_driver = {
->  
->  static __init int cxl_mem_init(void)
->  {
-> +	struct dentry *mbox_debugfs;
->  	dev_t devt;
->  	int rc;
->  
-> @@ -1169,11 +1295,17 @@ static __init int cxl_mem_init(void)
->  		return rc;
->  	}
->  
-> +	cxl_debugfs = debugfs_create_dir("cxl", NULL);
-> +	mbox_debugfs = debugfs_create_dir("mbox", cxl_debugfs);
-> +	debugfs_create_bool("raw_allow_all", 0600, mbox_debugfs,
-> +			    &cxl_raw_allow_all);
-> +
->  	return 0;
->  }
->  
->  static __exit void cxl_mem_exit(void)
->  {
-> +	debugfs_remove_recursive(cxl_debugfs);
->  	pci_unregister_driver(&cxl_mem_driver);
->  	unregister_chrdev_region(MKDEV(cxl_mem_major, 0), CXL_MEM_MAX_DEVS);
->  }
-> diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
-> index 18cea908ad0b..8eb669150ecb 100644
-> --- a/include/uapi/linux/cxl_mem.h
-> +++ b/include/uapi/linux/cxl_mem.h
-> @@ -22,6 +22,7 @@
->  #define CXL_CMDS                                                          \
->  	___C(INVALID, "Invalid Command"),                                 \
->  	___C(IDENTIFY, "Identify Command"),                               \
-> +	___C(RAW, "Raw device command"),                                  \
->  	___C(MAX, "invalid / last command")
->  
->  #define ___C(a, b) CXL_MEM_COMMAND_ID_##a
-> @@ -115,6 +116,9 @@ struct cxl_mem_query_commands {
->   * @id: The command to send to the memory device. This must be one of the
->   *	commands returned by the query command.
->   * @flags: Flags for the command (input).
-> + * @raw: Special fields for raw commands
-> + * @raw.opcode: Opcode passed to hardware when using the RAW command.
-> + * @raw.rsvd: Must be zero.
->   * @rsvd: Must be zero.
->   * @retval: Return value from the memory device (output).
->   * @in.size: Size of the payload to provide to the device (input).
-> @@ -135,7 +139,13 @@ struct cxl_mem_query_commands {
->  struct cxl_send_command {
->  	__u32 id;
->  	__u32 flags;
-> -	__u32 rsvd;
-> +	union {
-> +		struct {
-> +			__u16 opcode;
-> +			__u16 rsvd;
-> +		} raw;
-> +		__u32 rsvd;
-> +	};
->  	__u32 retval;
->  
->  	struct {
-
+Tobias Schramm
