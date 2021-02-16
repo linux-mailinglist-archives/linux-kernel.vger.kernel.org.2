@@ -2,158 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5085B31CB64
+	by mail.lfdr.de (Postfix) with ESMTP id C26FF31CB65
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhBPNqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 08:46:08 -0500
-Received: from foss.arm.com ([217.140.110.172]:35456 "EHLO foss.arm.com"
+        id S229970AbhBPNrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 08:47:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53448 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229713AbhBPNqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 08:46:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CC0E31B;
-        Tue, 16 Feb 2021 05:45:16 -0800 (PST)
-Received: from [10.57.48.219] (unknown [10.57.48.219])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E96FF3F694;
-        Tue, 16 Feb 2021 05:45:14 -0800 (PST)
-Subject: Re: [PATCH v2] iommu: Check dev->iommu in iommu_dev_xxx functions
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-Cc:     "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>
-References: <c82f6d0cced74c43947714e7de576d5a@huawei.com>
- <d541ebeb-5b89-7a9d-50a2-3867f9cf78b3@arm.com>
- <33cf95925cfb47dda3ee472e00b9846c@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <f89f150f-20d3-8f22-c6c5-92c19d3d7e33@arm.com>
-Date:   Tue, 16 Feb 2021 13:45:10 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229830AbhBPNrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 08:47:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B2DAEADFB;
+        Tue, 16 Feb 2021 13:46:23 +0000 (UTC)
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>
+References: <20210216113716.716996-1-kraxel@redhat.com>
+ <20210216113716.716996-10-kraxel@redhat.com>
+ <5baf096f-b1ee-46ba-5ee9-1c829b96e088@suse.de>
+Subject: Re: [PATCH 09/10] drm/qxl: map/unmap framebuffers in
+ prepare_fb+cleanup_fb callbacks.
+Message-ID: <ab21d782-2627-7a68-8fab-0acfba416c86@suse.de>
+Date:   Tue, 16 Feb 2021 14:46:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <33cf95925cfb47dda3ee472e00b9846c@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5baf096f-b1ee-46ba-5ee9-1c829b96e088@suse.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="x9v9IxdRWQigs6L1TOinW9XyRZLUO4a8x"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-12 17:28, Shameerali Kolothum Thodi wrote:
-> 
-> 
->> -----Original Message-----
->> From: Shameerali Kolothum Thodi
->> Sent: 12 February 2021 16:45
->> To: 'Robin Murphy' <robin.murphy@arm.com>; linux-kernel@vger.kernel.org;
->> iommu@lists.linux-foundation.org
->> Cc: joro@8bytes.org; jean-philippe@linaro.org; will@kernel.org; Zengtao (B)
->> <prime.zeng@hisilicon.com>; linuxarm@openeuler.org
->> Subject: RE: [PATCH v2] iommu: Check dev->iommu in iommu_dev_xxx functions
->>
->>
->>
->>> -----Original Message-----
->>> From: Robin Murphy [mailto:robin.murphy@arm.com]
->>> Sent: 12 February 2021 16:39
->>> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>;
->>> linux-kernel@vger.kernel.org; iommu@lists.linux-foundation.org
->>> Cc: joro@8bytes.org; jean-philippe@linaro.org; will@kernel.org; Zengtao (B)
->>> <prime.zeng@hisilicon.com>; linuxarm@openeuler.org
->>> Subject: Re: [PATCH v2] iommu: Check dev->iommu in iommu_dev_xxx
->> functions
->>>
->>> On 2021-02-12 14:54, Shameerali Kolothum Thodi wrote:
->>>> Hi Robin/Joerg,
->>>>
->>>>> -----Original Message-----
->>>>> From: Shameer Kolothum
->> [mailto:shameerali.kolothum.thodi@huawei.com]
->>>>> Sent: 01 February 2021 12:41
->>>>> To: linux-kernel@vger.kernel.org; iommu@lists.linux-foundation.org
->>>>> Cc: joro@8bytes.org; robin.murphy@arm.com; jean-philippe@linaro.org;
->>>>> will@kernel.org; Zengtao (B) <prime.zeng@hisilicon.com>;
->>>>> linuxarm@openeuler.org
->>>>> Subject: [Linuxarm] [PATCH v2] iommu: Check dev->iommu in
->>> iommu_dev_xxx
->>>>> functions
->>>>>
->>>>> The device iommu probe/attach might have failed leaving dev->iommu
->>>>> to NULL and device drivers may still invoke these functions resulting
->>>>> in a crash in iommu vendor driver code. Hence make sure we check that.
->>>>>
->>>>> Also added iommu_ops to the "struct dev_iommu" and set it if the dev
->>>>> is successfully associated with an iommu.
->>>>>
->>>>> Fixes: a3a195929d40 ("iommu: Add APIs for multiple domains per
->> device")
->>>>> Signed-off-by: Shameer Kolothum
->>> <shameerali.kolothum.thodi@huawei.com>
->>>>> ---
->>>>> v1 --> v2:
->>>>>    -Added iommu_ops to struct dev_iommu based on the discussion with
->>> Robin.
->>>>>    -Rebased against iommu-tree core branch.
->>>>
->>>> A gentle ping on this...
->>>
->>> Is there a convincing justification for maintaining yet another copy of
->>> the ops pointer rather than simply dereferencing iommu_dev->ops at point
->>> of use?
->>>
->>
->> TBH, nothing I can think of now. That was mainly the way I interpreted your
->> suggestion
->> from the v1.  Now it looks like you didn’t mean it :). I am Ok to rework it to
->> dereference
->> it from iommu_dev. Please let me know.
-> 
-> So we can do something like this,
-> 
-> index fd76e2f579fe..5fd31a3cec18 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -2865,10 +2865,12 @@ EXPORT_SYMBOL_GPL(iommu_fwspec_add_ids);
->    */
->   int iommu_dev_enable_feature(struct device *dev, enum iommu_dev_features feat)
->   {
-> -       const struct iommu_ops *ops = dev->bus->iommu_ops;
-> +       if (dev->iommu && dev->iommu->iommu_dev && dev->iommu->iommu_dev->ops)
-> +               struct iommu_ops  *ops = dev->iommu->iommu_dev->ops;
->   
-> -       if (ops && ops->dev_enable_feat)
-> -               return ops->dev_enable_feat(dev, feat);
-> +               if (ops->dev_enable_feat)
-> +                       return ops->dev_enable_feat(dev, feat);
-> +       }
->   
->          return -ENODEV;
->   }
-> 
-> Again, not sure we need to do the checking for iommu->dev and ops here. If the
-> dev->iommu is set, is it safe to assume that we have a valid iommu->iommu_dev
-> and ops always? (May be it is safer to do the checking in case something
-> else breaks this assumption in future). Please let me know your thoughts.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--x9v9IxdRWQigs6L1TOinW9XyRZLUO4a8x
+Content-Type: multipart/mixed; boundary="Ntn8b3fwwJhazhId2T2oMQUzaoUmTo7m0";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc: David Airlie <airlied@linux.ie>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <virtualization@lists.linux-foundation.org>
+Message-ID: <ab21d782-2627-7a68-8fab-0acfba416c86@suse.de>
+Subject: Re: [PATCH 09/10] drm/qxl: map/unmap framebuffers in
+ prepare_fb+cleanup_fb callbacks.
+References: <20210216113716.716996-1-kraxel@redhat.com>
+ <20210216113716.716996-10-kraxel@redhat.com>
+ <5baf096f-b1ee-46ba-5ee9-1c829b96e088@suse.de>
+In-Reply-To: <5baf096f-b1ee-46ba-5ee9-1c829b96e088@suse.de>
 
-I think it *could* happen that dev->iommu is set by iommu_fwspec_init() 
-but iommu_probe_device() later refuses the device for whatever reason, 
-so we would still need to check iommu->iommu_dev to be completely safe. 
-We can assume iommu_dev->ops is valid, since if the IOMMU driver has 
-returned something bogus from .probe_device then it's a major bug in 
-that driver and crashing is the best indicator :)
+--Ntn8b3fwwJhazhId2T2oMQUzaoUmTo7m0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Robin.
 
-> 
-> Thanks,
-> Shameer
-> 
-> 
+
+Am 16.02.21 um 14:27 schrieb Thomas Zimmermann:
+> Hi
+>=20
+> this is a shadow-buffered plane. Did you consider using the new helpers=
+=20
+> for shadow-buffered planes? They will map the user BO for you and=20
+> provide the mapping in the plane state.
+>=20
+>  From there, you should implement your own plane state on top of struct=
+=20
+> drm_shadow_plane_state, and also move all the other allocations and=20
+> vmaps into prepare_fb and cleanup_fb. Most of this is not actually=20
+> allowed in commit tails. All we'd have to do is to export the reset,=20
+> duplicate and destroy code; similar to what=20
+> __drm_atomic_helper_plane_reset() does.
+
+AFAICT the cursor_bo is used to implement double buffering for the=20
+cursor image.
+
+Ideally, you can do what ast does: pre-allocate/vmap 2 BOs at the end of =
+
+the vram. Then pageflip between them in atomic_update(). Resolves all=20
+the allocation and mapping headaches.
+
+Best regards
+Thomas
+
+>=20
+> Best regards
+> Thomas
+>=20
+>=20
+> Am 16.02.21 um 12:37 schrieb Gerd Hoffmann:
+>> We don't have to map in atomic_update callback then,
+>> making locking a bit less complicated.
+>>
+>> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+>> ---
+>> =C2=A0 drivers/gpu/drm/qxl/qxl_display.c | 14 +++++---------
+>> =C2=A0 1 file changed, 5 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/qxl/qxl_display.c=20
+>> b/drivers/gpu/drm/qxl/qxl_display.c
+>> index 7500560db8e4..39b8c5116d34 100644
+>> --- a/drivers/gpu/drm/qxl/qxl_display.c
+>> +++ b/drivers/gpu/drm/qxl/qxl_display.c
+>> @@ -584,7 +584,6 @@ static void qxl_cursor_atomic_update(struct=20
+>> drm_plane *plane,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_gem_object *obj;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct qxl_bo *cursor_bo =3D NULL, *use=
+r_bo =3D NULL, *old_cursor_bo=20
+>> =3D NULL;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>> -=C2=A0=C2=A0=C2=A0 struct dma_buf_map user_map;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct dma_buf_map cursor_map;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 void *user_ptr;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int size =3D 64*64*4;
+>> @@ -599,11 +598,8 @@ static void qxl_cursor_atomic_update(struct=20
+>> drm_plane *plane,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 obj =3D fb->obj=
+[0];
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 user_bo =3D gem=
+_to_qxl_bo(obj);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* pinning is done in the =
+prepare/cleanup framevbuffer */
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D qxl_bo_kmap_locked=
+(user_bo, &user_map);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 go=
+to out_free_release;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 user_ptr =3D user_map.vadd=
+r; /* TODO: Use mapping abstraction=20
+>> properly */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* mapping is done in the =
+prepare/cleanup framevbuffer */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 user_ptr =3D user_bo->map.=
+vaddr; /* TODO: Use mapping=20
+>> abstraction properly */
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D qxl_all=
+oc_bo_reserved(qdev, release,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 sizeof(struct qxl_cursor) + size,
+>> @@ -639,7 +635,6 @@ static void qxl_cursor_atomic_update(struct=20
+>> drm_plane *plane,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cursor->chunk.d=
+ata_size =3D size;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memcpy(cursor->=
+chunk.data, user_ptr, size);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 qxl_bo_kunmap_l=
+ocked(cursor_bo);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 qxl_bo_kunmap_locked(user_=
+bo);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cmd =3D (struct=
+ qxl_cursor_cmd *) qxl_release_map(qdev, release);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cmd->u.set.visi=
+ble =3D 1;
+>> @@ -778,6 +773,7 @@ static int qxl_plane_prepare_fb(struct drm_plane=20
+>> *plane,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct drm_gem_object *obj;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct qxl_bo *user_bo;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct qxl_surface surf;
+>> +=C2=A0=C2=A0=C2=A0 struct dma_buf_map unused;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!new_state->fb)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>> @@ -815,7 +811,7 @@ static int qxl_plane_prepare_fb(struct drm_plane=20
+>> *plane,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0 return qxl_bo_pin(user_bo);
+>> +=C2=A0=C2=A0=C2=A0 return qxl_bo_kmap(user_bo, &unused);
+>> =C2=A0 }
+>> =C2=A0 static void qxl_plane_cleanup_fb(struct drm_plane *plane,
+>> @@ -834,7 +830,7 @@ static void qxl_plane_cleanup_fb(struct drm_plane =
+
+>> *plane,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 obj =3D old_state->fb->obj[0];
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 user_bo =3D gem_to_qxl_bo(obj);
+>> -=C2=A0=C2=A0=C2=A0 qxl_bo_unpin(user_bo);
+>> +=C2=A0=C2=A0=C2=A0 qxl_bo_kunmap(user_bo);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (old_state->fb !=3D plane->state->fb=
+ && user_bo->shadow) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 qxl_bo_unpin(us=
+er_bo->shadow);
+>>
+>=20
+>=20
 > _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
-> 
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--Ntn8b3fwwJhazhId2T2oMQUzaoUmTo7m0--
+
+--x9v9IxdRWQigs6L1TOinW9XyRZLUO4a8x
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmArzK0FAwAAAAAACgkQlh/E3EQov+Dh
+WQ//fUuC7dIUW2wfGhqz/qBrTYHstG3t4bjZ5svg9dezZB3CccYP7BEx4UAjnLakEI3P9oxCyDAE
+3eNt+JVA2+FeHplWREImJegTtHL6kdunRBUDDhbLGBHO0+lWS6FdA6sk6ayr9mx8a0CsSSbPRnvf
+l0DQFghY6/DiRuWx9hGTupU0hwJ1+C3H1iJwEG4dBj5775CDTyzGbXMnii7WwelyVsCHsejM7d6Q
+4CMRiosBk0iqiM0xogojNAQrzGRl9yhATJHccMvn+YD0WzL7DDpxelb/gaFBdDT2f6ZIioBNr9Xp
+hzzLZw29ctfr0KYym7rEZI1awnDGJAZ2UDWDgEb8jYSgXNGYFMbHlweEXXzQIGIj0MWl4s0vNac8
+hxxsParp/9ZJaiZDIosZDMMcntTfDIlZ+hI5d651jXD6vmLLIjcDpmU5ZuyMuGtiOzkroxapGa7q
+ecd8FM1a4KLh63wiC1BREGZLOGDm5vdR/0aX91ozc01yRr6mg/0xc9zxwBMUFpeXdsEjiyjs1F4O
+aAyH5o3qi1Cb867ynpZmHBwrU7Y1LOWXPGSj9tPJW6WZLyPQQ3Wh4T/mF4iNr7v8M7QpXstjoMB/
+J+Q6+6Yw5E4O7S2AoHcLlfO3Ub1VdAjKKTngaEknAl8kbhg5MDCjTD0kTgt2utp3vzXNhI+VDAXl
+KwY=
+=sXRs
+-----END PGP SIGNATURE-----
+
+--x9v9IxdRWQigs6L1TOinW9XyRZLUO4a8x--
