@@ -2,130 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B941A31CAB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C04631CABB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhBPMqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:46:34 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4012 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhBPMq1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:46:27 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602bbe7a0000>; Tue, 16 Feb 2021 04:45:46 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 16 Feb 2021 12:45:43 +0000
-Date:   Tue, 16 Feb 2021 14:45:40 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <si-wei.liu@oracle.com>
-Subject: Re: [PATCH] vdpa/mlx5: Extract correct pointer from driver data
-Message-ID: <20210216124540.GA94503@mtl-vdi-166.wap.labs.mlnx>
-References: <20210216055022.25248-1-elic@nvidia.com>
- <20210216055022.25248-2-elic@nvidia.com>
- <YCtnxyTHJl9TU87L@unreal>
- <20210216064226.GA83717@mtl-vdi-166.wap.labs.mlnx>
- <YCt2PiMIZxbR15IA@unreal>
+        id S229958AbhBPMsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 07:48:39 -0500
+Received: from foss.arm.com ([217.140.110.172]:34628 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229713AbhBPMsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 07:48:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 00B151FB;
+        Tue, 16 Feb 2021 04:47:50 -0800 (PST)
+Received: from [10.57.48.219] (unknown [10.57.48.219])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7AED3F694;
+        Tue, 16 Feb 2021 04:47:47 -0800 (PST)
+Subject: Re: [RFC PATCH 1/8] of/device: Allow specifying a custom iommu_spec
+ to of_dma_configure
+To:     Mikko Perttunen <mperttunen@nvidia.com>, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, joro@8bytes.org, will@kernel.org,
+        robh+dt@kernel.org, frowand.list@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210208163848.2504291-1-mperttunen@nvidia.com>
+ <20210208163848.2504291-2-mperttunen@nvidia.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <1c33f914-9109-42aa-01f3-04e50cf038c6@arm.com>
+Date:   Tue, 16 Feb 2021 12:47:43 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YCt2PiMIZxbR15IA@unreal>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613479546; bh=pn18katiTd289rOY8eSREICZuvH54YRSbjQc8SMESig=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=MtuqFeXxtdhVlIMg+PhCn5eL63iSwWqucgE+j3OrOyXoQaQ3SXBBcJYU6wFq4lqi1
-         jX3HwBMIj0BkDKlaGeySuZiAlqZ/sP/WHu+4t+8KIF373WhVqDUROtZUO43MMMjHXa
-         RfiT9HNE7U5Av78o8gcFvg6FIEOvnVfd50iAg1tgml6DI4NLYUVR85IHmpejVs1lFh
-         TxGSUQAU5eY8nBqVIhx4IxVIoOtvxidGXqpp3l2C59ryReLWaJmZ9JTe5LPWAVTOJM
-         2nwYfMRT/S8eAKGW+brpSrpnbHRg5t5R2j+2c8Ti3SHcxdafF+8y414Q2u4U9SmElj
-         QqHH5AOboJ2HA==
+In-Reply-To: <20210208163848.2504291-2-mperttunen@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 09:37:34AM +0200, Leon Romanovsky wrote:
-> On Tue, Feb 16, 2021 at 08:42:26AM +0200, Eli Cohen wrote:
-> > On Tue, Feb 16, 2021 at 08:35:51AM +0200, Leon Romanovsky wrote:
-> > > On Tue, Feb 16, 2021 at 07:50:22AM +0200, Eli Cohen wrote:
-> > > > struct mlx5_vdpa_net pointer was stored in drvdata. Extract it as well
-> > > > in mlx5v_remove().
-> > > >
-> > > > Fixes: 74c9729dd892 ("vdpa/mlx5: Connect mlx5_vdpa to auxiliary bus")
-> > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > > > ---
-> > > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > index 6b0a42183622..4103d3b64a2a 100644
-> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > @@ -2036,9 +2036,9 @@ static int mlx5v_probe(struct auxiliary_device *adev,
-> > > >
-> > > >  static void mlx5v_remove(struct auxiliary_device *adev)
-> > > >  {
-> > > > -	struct mlx5_vdpa_dev *mvdev = dev_get_drvdata(&adev->dev);
-> > > > +	struct mlx5_vdpa_net *ndev = dev_get_drvdata(&adev->dev);
-> > > >
-> > > > -	vdpa_unregister_device(&mvdev->vdev);
-> > > > +	vdpa_unregister_device(&ndev->mvdev.vdev);
-> > > >  }
-> > >
-> > > IMHO, The more correct solution is to fix dev_set_drvdata() call,
-> > > because we are regustering/unregistering/allocating "struct mlx5_vdpa_dev".
-> > >
-> >
-> > We're allocating "struct mlx5_vdpa_net". "struct mlx5_vdpa_dev" is just
-> > a member field of "struct mlx5_vdpa_net".
-> 
-> I referred to these lines in the mlx5v_probe():
->   1986         err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
->   1987         if (err)
->   1988                 goto err_mtu;
->   1989
->   1990         err = alloc_resources(ndev);
->   1991         if (err)
->   1992                 goto err_res;
->   1993
->   1994         err = vdpa_register_device(&mvdev->vdev);
-> 
-> So mlx5v_remove() is better to be symmetrical.
-> 
+Hi Mikko,
 
-It's "struct mlx5_vdpa_net" that is being allocated here so it makes
-sense to set this pointer as the the driver data.
-
-> Thanks
+On 2021-02-08 16:38, Mikko Perttunen wrote:
+> To allow for more customized device tree bindings that point to IOMMUs,
+> allow manual specification of iommu_spec to of_dma_configure.
 > 
-> >
-> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > index 88dde3455bfd..079b8fe669af 100644
-> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > @@ -1995,7 +1995,7 @@ static int mlx5v_probe(struct auxiliary_device *adev,
-> > >  	if (err)
-> > >  		goto err_reg;
-> > >
-> > > -	dev_set_drvdata(&adev->dev, ndev);
-> > > +	dev_set_drvdata(&adev->dev, mvdev);
-> > >  	return 0;
-> > >
-> > >  err_reg:
-> > >
-> > > >
-> > > >  static const struct auxiliary_device_id mlx5v_id_table[] = {
-> > >
-> > > > --
-> > > > 2.29.2
-> > > >
+> The initial use case for this is with Host1x, where the driver manages
+> a set of device tree-defined IOMMU contexts that are dynamically
+> allocated to various users. These contexts don't correspond to
+> platform devices and are instead attached to dummy devices on a custom
+> software bus.
+
+I'd suggest taking a closer look at the patches that made this 
+of_dma_configure_id() in the first place, and the corresponding bus code 
+in fsl-mc. At this level, Host1x sounds effectively identical to DPAA2 
+in terms of being a bus of logical devices composed from bits of 
+implicit behind-the-scenes hardware. I mean, compare your series title 
+to the fact that their identifiers are literally named "Isolation 
+Context ID" ;)
+
+Please just use the existing mechanisms to describe a mapping between 
+Host1x context IDs and SMMU Stream IDs, rather than what looks like a 
+giant hacky mess here.
+
+(This also reminds me I wanted to rip out all the PCI special-cases and 
+convert pci_dma_configure() over to passing its own IDs too, so thanks 
+for the memory-jog...)
+
+Robin.
+
+> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+> ---
+>   drivers/iommu/of_iommu.c  | 12 ++++++++----
+>   drivers/of/device.c       |  9 +++++----
+>   include/linux/of_device.h | 34 +++++++++++++++++++++++++++-------
+>   include/linux/of_iommu.h  |  6 ++++--
+>   4 files changed, 44 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+> index e505b9130a1c..3fefa6c63863 100644
+> --- a/drivers/iommu/of_iommu.c
+> +++ b/drivers/iommu/of_iommu.c
+> @@ -87,8 +87,7 @@ int of_get_dma_window(struct device_node *dn, const char *prefix, int index,
+>   }
+>   EXPORT_SYMBOL_GPL(of_get_dma_window);
+>   
+> -static int of_iommu_xlate(struct device *dev,
+> -			  struct of_phandle_args *iommu_spec)
+> +int of_iommu_xlate(struct device *dev, struct of_phandle_args *iommu_spec)
+>   {
+>   	const struct iommu_ops *ops;
+>   	struct fwnode_handle *fwnode = &iommu_spec->np->fwnode;
+> @@ -117,6 +116,7 @@ static int of_iommu_xlate(struct device *dev,
+>   	module_put(ops->owner);
+>   	return ret;
+>   }
+> +EXPORT_SYMBOL_GPL(of_iommu_xlate);
+>   
+>   static int of_iommu_configure_dev_id(struct device_node *master_np,
+>   				     struct device *dev,
+> @@ -177,7 +177,8 @@ static int of_iommu_configure_device(struct device_node *master_np,
+>   
+>   const struct iommu_ops *of_iommu_configure(struct device *dev,
+>   					   struct device_node *master_np,
+> -					   const u32 *id)
+> +					   const u32 *id,
+> +					   struct of_phandle_args *iommu_spec)
+>   {
+>   	const struct iommu_ops *ops = NULL;
+>   	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+> @@ -209,7 +210,10 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+>   		err = pci_for_each_dma_alias(to_pci_dev(dev),
+>   					     of_pci_iommu_init, &info);
+>   	} else {
+> -		err = of_iommu_configure_device(master_np, dev, id);
+> +		if (iommu_spec)
+> +			err = of_iommu_xlate(dev, iommu_spec);
+> +		else
+> +			err = of_iommu_configure_device(master_np, dev, id);
+>   
+>   		fwspec = dev_iommu_fwspec_get(dev);
+>   		if (!err && fwspec)
+> diff --git a/drivers/of/device.c b/drivers/of/device.c
+> index aedfaaafd3e7..84ada2110c5b 100644
+> --- a/drivers/of/device.c
+> +++ b/drivers/of/device.c
+> @@ -88,8 +88,9 @@ int of_device_add(struct platform_device *ofdev)
+>    * can use a platform bus notifier and handle BUS_NOTIFY_ADD_DEVICE events
+>    * to fix up DMA configuration.
+>    */
+> -int of_dma_configure_id(struct device *dev, struct device_node *np,
+> -			bool force_dma, const u32 *id)
+> +int __of_dma_configure(struct device *dev, struct device_node *np,
+> +			bool force_dma, const u32 *id,
+> +			struct of_phandle_args *iommu_spec)
+>   {
+>   	const struct iommu_ops *iommu;
+>   	const struct bus_dma_region *map = NULL;
+> @@ -170,7 +171,7 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+>   	dev_dbg(dev, "device is%sdma coherent\n",
+>   		coherent ? " " : " not ");
+>   
+> -	iommu = of_iommu_configure(dev, np, id);
+> +	iommu = of_iommu_configure(dev, np, id, iommu_spec);
+>   	if (PTR_ERR(iommu) == -EPROBE_DEFER) {
+>   		kfree(map);
+>   		return -EPROBE_DEFER;
+> @@ -184,7 +185,7 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+>   	dev->dma_range_map = map;
+>   	return 0;
+>   }
+> -EXPORT_SYMBOL_GPL(of_dma_configure_id);
+> +EXPORT_SYMBOL_GPL(__of_dma_configure);
+>   
+>   int of_device_register(struct platform_device *pdev)
+>   {
+> diff --git a/include/linux/of_device.h b/include/linux/of_device.h
+> index 07ca187fc5e4..40cc3e788cb9 100644
+> --- a/include/linux/of_device.h
+> +++ b/include/linux/of_device.h
+> @@ -55,14 +55,27 @@ static inline struct device_node *of_cpu_device_node_get(int cpu)
+>   	return of_node_get(cpu_dev->of_node);
+>   }
+>   
+> -int of_dma_configure_id(struct device *dev,
+> +int __of_dma_configure(struct device *dev,
+>   		     struct device_node *np,
+> -		     bool force_dma, const u32 *id);
+> +		     bool force_dma, const u32 *id,
+> +		     struct of_phandle_args *iommu_spec);
+>   static inline int of_dma_configure(struct device *dev,
+>   				   struct device_node *np,
+>   				   bool force_dma)
+>   {
+> -	return of_dma_configure_id(dev, np, force_dma, NULL);
+> +	return __of_dma_configure(dev, np, force_dma, NULL, NULL);
+> +}
+> +static inline int of_dma_configure_id(struct device *dev,
+> +				      struct device_node *np,
+> +				      bool force_dma, const u32 *id)
+> +{
+> +	return __of_dma_configure(dev, np, force_dma, id, NULL);
+> +}
+> +static inline int
+> +of_dma_configure_iommu_spec(struct device *dev, struct device_node *np,
+> +			    bool force_dma, struct of_phandle_args *iommu_spec)
+> +{
+> +	return __of_dma_configure(dev, np, force_dma, NULL, iommu_spec);
+>   }
+>   #else /* CONFIG_OF */
+>   
+> @@ -112,18 +125,25 @@ static inline struct device_node *of_cpu_device_node_get(int cpu)
+>   	return NULL;
+>   }
+>   
+> -static inline int of_dma_configure_id(struct device *dev,
+> +static inline int of_dma_configure(struct device *dev,
+>   				   struct device_node *np,
+>   				   bool force_dma)
+>   {
+>   	return 0;
+>   }
+> -static inline int of_dma_configure(struct device *dev,
+> -				   struct device_node *np,
+> -				   bool force_dma)
+> +
+> +static inline int of_dma_configure_id(struct device *dev,
+> +				      struct device_node *np,
+> +				      bool force_dma, const u32 *id)
+>   {
+>   	return 0;
+>   }
+> +
+> +static inline int
+> +of_dma_configure_iommu_spec(struct device *dev, struct device_node *np,
+> +			    bool force_dma, struct of_phandle_args *iommu_spec)
+> +{	return 0;
+> +}
+>   #endif /* CONFIG_OF */
+>   
+>   #endif /* _LINUX_OF_DEVICE_H */
+> diff --git a/include/linux/of_iommu.h b/include/linux/of_iommu.h
+> index 16f4b3e87f20..e8d1e6d32d77 100644
+> --- a/include/linux/of_iommu.h
+> +++ b/include/linux/of_iommu.h
+> @@ -14,7 +14,8 @@ extern int of_get_dma_window(struct device_node *dn, const char *prefix,
+>   
+>   extern const struct iommu_ops *of_iommu_configure(struct device *dev,
+>   					struct device_node *master_np,
+> -					const u32 *id);
+> +					const u32 *id,
+> +					struct of_phandle_args *iommu_spec);
+>   
+>   #else
+>   
+> @@ -27,7 +28,8 @@ static inline int of_get_dma_window(struct device_node *dn, const char *prefix,
+>   
+>   static inline const struct iommu_ops *of_iommu_configure(struct device *dev,
+>   					 struct device_node *master_np,
+> -					 const u32 *id)
+> +					 const u32 *id,
+> +					 struct of_phandle_args *iommu_spec);
+>   {
+>   	return NULL;
+>   }
+> 
