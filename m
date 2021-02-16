@@ -2,218 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E65C31D301
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 00:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAF431D312
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 00:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhBPXVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 18:21:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhBPXVD (ORCPT
+        id S231137AbhBPXpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 18:45:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34422 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229734AbhBPXpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 18:21:03 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D33C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 15:20:22 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id g20so6373895plo.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 15:20:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eYd6nr0oGbgIL8iQOd6SiixzxgNKcGzXb50I/fmD3eU=;
-        b=RvcQn0UaCGpSOi5+yzxNur/u9DlQYOzZ+HkU2lu/kIIiDAv+SgnkWjtfKmywpqUmMX
-         kaHU31hoqSpJnQfRVSmyeSJ5p0mFr9cYsP1T39R9lpH8ARz21vxFGyWIkE9h4wGpSC5I
-         ehyzgkvDRzUvfhktDiPiISzsMeCYOilyzQIYAE+3h0+uOTK9uXVZXSzN4YyAy9bFJSgW
-         hs1iBwn051J/a2bilJw3I+cffdasOMJeBFqMrmYGXD1UwOjYns3R8piSDvjTmOj19ClK
-         BIPii6FueRopEm2P/znTNvd7DuW0xqhPkVjCiCjDSBIS69RnA1wBLb9EZWXLhg8oi4b2
-         g1+Q==
+        Tue, 16 Feb 2021 18:45:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613519022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CSP5TYqu650KhYGvjztOmE5csI9NW0yzVVbY0leWkZI=;
+        b=DrTSy3kafGd7ffVdU1taQe9jO/Spb5kDV2AlsM+bxFAqYGh2CjQMnxHuDAN+6wXsiytC7H
+        JF01K23QH2Z5hUnffvO+08R6AuaSac29/T9TwLgrw4AO6PNuKnilghn1eTZtfDfAeivwX3
+        wMVnmM7AqSefGozLK9//KGA5b//8LCg=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-469-KH1cdqC8PtC2Gs6aghlgkQ-1; Tue, 16 Feb 2021 18:43:40 -0500
+X-MC-Unique: KH1cdqC8PtC2Gs6aghlgkQ-1
+Received: by mail-qt1-f200.google.com with SMTP id z3so2937999qtv.20
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 15:43:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=eYd6nr0oGbgIL8iQOd6SiixzxgNKcGzXb50I/fmD3eU=;
-        b=YrDNo/v98/zSyVbDtRj9+9S4FABQqP3xUbNimGImYFIxm9iSIZxfEbJOwfn0GBQPC0
-         O/SZ22RMEyCiRUbPflsTyGOsYdcCWM5Fhk9bEnrzii7lVUPVJTQZIAVf7XrOOTTSMkNh
-         GsYJ89ObK4D4OlpPVo6A7A5XUDDutqUtSLZF+sP/U/PAR+Qv+msAfBLRVwfMMTLukW7u
-         +DKUXi9wda8hnVopvPXnUhNiF2Z/jncc7fLVH9BUABoDJfuYQiGVdjsBU0MkUTXL5ddn
-         id7r5XocGxa9OvAaUOjOzFFYef0LO5UrjeQOgYgKfUUoAkLe7NBA+k5AD8x4xOjZP+Vl
-         fB8A==
-X-Gm-Message-State: AOAM532RiT3IvZ0qJ64CJtCSYWJtOFb8k7hE9/6IF2XW+/MvC0ViB4jG
-        VI0JhkAuzBYKhDZ898TM5m3D3A==
-X-Google-Smtp-Source: ABdhPJzNPACEnkId77zBhKhZ9j/Q8qwkJ+LN882PrYB1hh/e/AgoYRFviVwzhnKTSZrdyJHTtfdjfA==
-X-Received: by 2002:a17:902:bb90:b029:df:bdbb:be99 with SMTP id m16-20020a170902bb90b02900dfbdbbbe99mr21643804pls.52.1613517622171;
-        Tue, 16 Feb 2021 15:20:22 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:6948:259b:72c6:5517])
-        by smtp.gmail.com with ESMTPSA id e185sm40770pfe.117.2021.02.16.15.20.20
+        bh=CSP5TYqu650KhYGvjztOmE5csI9NW0yzVVbY0leWkZI=;
+        b=pjr+u1tYyzxFuWtZruk/XyLzR+cDB2fadk8bwMYy7zhsNdJDDcYlZ1hCaKZbzC2n+r
+         A8TynUKaKulq8cyc8VFPYRcD4sbTlnkE86orkmSO6Sdh7TWb1vnbh1bUpwgZZGlEdd8C
+         xt7T1JKhM+urB/ud3ZvpB9TncRrRI3OQ1mp5bqNXXD9anL4C36yIFGo4hP1Vb/6sPmgp
+         lyd+JlxHZMMvWFKG0GLrCUtJJECIzk6dk2/3S5PneHiDZ/shlnyOBbDihQJAnraHOQp3
+         WY3Hb7TAe1ZipQ4YdkRt43KG3K/y2QcOv3ssWkiAP4KZToVK96d1LUjFTCAw0/08T48Z
+         ZcXw==
+X-Gm-Message-State: AOAM53028m7O9QJlqkI8Ni0BaK1y6Dub/v1LQu1NjrtmwH6PSonFqPeq
+        ww/apkKtMUQE+ibt3OXvz7MraNKGP59R2NIrfHx0wUF+pnI5t19hDO9rWXKzvFU5xwo/Kv8uBez
+        FbOiNbDtFPt9xeb5bLlQMA49o
+X-Received: by 2002:a05:620a:cd6:: with SMTP id b22mr21492229qkj.451.1613519020094;
+        Tue, 16 Feb 2021 15:43:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwoewrF38Q6wgd1ErfBYD6lARPXXVDP/Bm9c/cbXWNMU4YW9mO/tBw/lLitRcK/s+IpTQcsSQ==
+X-Received: by 2002:a05:620a:cd6:: with SMTP id b22mr21492214qkj.451.1613519019928;
+        Tue, 16 Feb 2021 15:43:39 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id d17sm418815qkc.40.2021.02.16.15.43.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 15:20:21 -0800 (PST)
-Date:   Tue, 16 Feb 2021 15:20:15 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, rkrcmar@redhat.com, joro@8bytes.org, bp@suse.de,
-        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srutherford@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-Subject: Re: [PATCH v10 12/16] KVM: x86: Introduce new
- KVM_FEATURE_SEV_LIVE_MIGRATION feature & Custom MSR.
-Message-ID: <YCxTL+FYLbM0qk88@google.com>
-References: <cover.1612398155.git.ashish.kalra@amd.com>
- <bb86eda2963d7bef0c469c1ef8d7b32222e3a145.1612398155.git.ashish.kalra@amd.com>
+        Tue, 16 Feb 2021 15:43:39 -0800 (PST)
+Date:   Tue, 16 Feb 2021 18:43:37 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com, jgg@nvidia.com
+Subject: Re: [PATCH v2] vfio/type1: Use follow_pte()
+Message-ID: <20210216234337.GE91264@xz-x1>
+References: <161351571186.15573.5602248562129684350.stgit@gimli.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <bb86eda2963d7bef0c469c1ef8d7b32222e3a145.1612398155.git.ashish.kalra@amd.com>
+In-Reply-To: <161351571186.15573.5602248562129684350.stgit@gimli.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021, Ashish Kalra wrote:
-> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> index 950afebfba88..f6bfa138874f 100644
-> --- a/arch/x86/include/uapi/asm/kvm_para.h
-> +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> @@ -33,6 +33,7 @@
->  #define KVM_FEATURE_PV_SCHED_YIELD	13
->  #define KVM_FEATURE_ASYNC_PF_INT	14
->  #define KVM_FEATURE_MSI_EXT_DEST_ID	15
-> +#define KVM_FEATURE_SEV_LIVE_MIGRATION	16
->  
->  #define KVM_HINTS_REALTIME      0
->  
-> @@ -54,6 +55,7 @@
->  #define MSR_KVM_POLL_CONTROL	0x4b564d05
->  #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
->  #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
-> +#define MSR_KVM_SEV_LIVE_MIGRATION	0x4b564d08
->  
->  struct kvm_steal_time {
->  	__u64 steal;
-> @@ -136,4 +138,6 @@ struct kvm_vcpu_pv_apf_data {
->  #define KVM_PV_EOI_ENABLED KVM_PV_EOI_MASK
->  #define KVM_PV_EOI_DISABLED 0x0
->  
-> +#define KVM_SEV_LIVE_MIGRATION_ENABLED BIT_ULL(0)
-> +
->  #endif /* _UAPI_ASM_X86_KVM_PARA_H */
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index b0d324aed515..93f42b3d3e33 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1627,6 +1627,16 @@ int svm_page_enc_status_hc(struct kvm *kvm, unsigned long gpa,
->  	return ret;
->  }
->  
-> +void sev_update_migration_flags(struct kvm *kvm, u64 data)
-> +{
-
-I don't see the point for a helper.  It's actually going to make the code
-less readable once proper error handling is added.  Given that it's not static
-and exposed via svm.h, without an external user, I assume this got left behind
-when the implicit enabling was removed.
-
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +
-> +	if (!sev_guest(kvm))
-
-I 100% agree with Steve, this needs to check guest_cpuid_has() in addition to
-sev_guest().  And it should return '1', i.e. signal #GP to the guest, not
-silently eat the bad WRMSR.
-
-> +		return;
-> +
-> +	sev->live_migration_enabled = !!(data & KVM_SEV_LIVE_MIGRATION_ENABLED);
-
-The value needs to be checked as well, i.e. all bits except LIVE_MIGRATION...
-should to be reserved to zero.
-
-> +}
-> +
->  int svm_get_shared_pages_list(struct kvm *kvm,
->  			      struct kvm_shared_pages_list *list)
->  {
-> @@ -1639,6 +1649,9 @@ int svm_get_shared_pages_list(struct kvm *kvm,
->  	if (!sev_guest(kvm))
->  		return -ENOTTY;
->  
-> +	if (!sev->live_migration_enabled)
-> +		return -EINVAL;
-
-EINVAL is a weird return value for something that is controlled by the guest,
-especially since it's possible for the guest to support migration, just not
-yet.  EBUSY maybe?  EOPNOTSUPP?
-
-> +
->  	if (!list->size)
->  		return -EINVAL;
->  
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 58f89f83caab..43ea5061926f 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2903,6 +2903,9 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
->  		svm->msr_decfg = data;
->  		break;
->  	}
-> +	case MSR_KVM_SEV_LIVE_MIGRATION:
-> +		sev_update_migration_flags(vcpu->kvm, data);
-> +		break;
-
-There shuld be a svm_get_msr() entry as well, I don't see any reason to prevent
-the guest from reading the MSR.
-
->  	case MSR_IA32_APICBASE:
->  		if (kvm_vcpu_apicv_active(vcpu))
->  			avic_update_vapic_bar(to_svm(vcpu), data);
-> @@ -3976,6 +3979,19 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  			vcpu->arch.cr3_lm_rsvd_bits &= ~(1UL << (best->ebx & 0x3f));
->  	}
->  
-> +	/*
-> +	 * If SEV guest then enable the Live migration feature.
-> +	 */
-> +	if (sev_guest(vcpu->kvm)) {
-> +		struct kvm_cpuid_entry2 *best;
-> +
-> +		best = kvm_find_cpuid_entry(vcpu, KVM_CPUID_FEATURES, 0);
-> +		if (!best)
-> +			return;
-> +
-> +		best->eax |= (1 << KVM_FEATURE_SEV_LIVE_MIGRATION);
-
-Again echoing Steve's concern, userspace is the ultimate authority on what
-features are exposed to the VM.  I don't see any motivation for forcing live
-migration to be enabled.
-
-And as I believe was pointed out elsewhere, this bit needs to be advertised to
-userspace via kvm_cpu_caps.
-
-> +	}
-> +
->  	if (!kvm_vcpu_apicv_active(vcpu))
->  		return;
->  
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 066ca2a9f1e6..e1bffc11e425 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -79,6 +79,7 @@ struct kvm_sev_info {
->  	unsigned long pages_locked; /* Number of pages locked */
->  	struct list_head regions_list;  /* List of registered regions */
->  	u64 ap_jump_table;	/* SEV-ES AP Jump Table address */
-> +	bool live_migration_enabled;
->  	/* List and count of shared pages */
->  	int shared_pages_list_count;
->  	struct list_head shared_pages_list;
-> @@ -592,6 +593,7 @@ int svm_unregister_enc_region(struct kvm *kvm,
->  void pre_sev_run(struct vcpu_svm *svm, int cpu);
->  void __init sev_hardware_setup(void);
->  void sev_hardware_teardown(void);
-> +void sev_update_migration_flags(struct kvm *kvm, u64 data);
->  void sev_free_vcpu(struct kvm_vcpu *vcpu);
->  int sev_handle_vmgexit(struct vcpu_svm *svm);
->  int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in);
-> -- 
-> 2.17.1
+On Tue, Feb 16, 2021 at 03:49:34PM -0700, Alex Williamson wrote:
+> follow_pfn() doesn't make sure that we're using the correct page
+> protections, get the pte with follow_pte() so that we can test
+> protections and get the pfn from the pte.
 > 
+> Fixes: 5cbf3264bc71 ("vfio/type1: Fix VA->PA translation for PFNMAP VMAs in vaddr_get_pfn()")
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+
+Reviewed-by: Peter Xu <peterx@redhat.com>
+
+-- 
+Peter Xu
+
