@@ -2,87 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6B031CDEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A804A31CE00
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhBPQZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:25:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhBPQZG (ORCPT
+        id S230335AbhBPQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:27:33 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39438 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229916AbhBPQ1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:25:06 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF65C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:24:26 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id e9so5760809plh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:24:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JT99kJbdPlhIu/0TowIURKsvoVzFDyN/pQVtyCtqv1A=;
-        b=mGtOjvRdKBKLndMLC58MjliqHoj61eZp6LR6snXXa2lhUVw5TJJ6NUx3VJ7pvfhCq8
-         0GUbZ0dQqLSbl8KAHXkJd1P2I1g8UnSg85+kgYSdEJsLnXZMM3poJt8qE8jd1hirkX5N
-         Us7oP5m5er5ImPMXAY6gPK2/00HrbjhXgt8JeiZjRzYzYqDcjk/7HdXpTS+dEwEKZ+5D
-         1Orp4ecwCTLm7RUQrXxkyLrtEAjYngOEogWZ7iNmHatsfopLWE1GGcLdd15vcOVrigee
-         YslFWrIZz+1p7Mc+rGMIBPnHUMwxtRYyGmkCoEQTsi3TWxQicivOAFqGM1SKNViZCZUa
-         RI3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JT99kJbdPlhIu/0TowIURKsvoVzFDyN/pQVtyCtqv1A=;
-        b=tQgggaVdV7zVMMMVWndOHM9fMm0VNEI55ejnuKm1aOksK1ED+yKccCnnX/gTFe/6ke
-         eNykAUbB/uhL9WzGI3vrYIoWjYIn8s8p3jOdmyKCqosIgpQd+1Q1jxjaQ4or99OYLdys
-         mko2Mwx97UjssJ6I0Fmu5vqhuzBTsxqFgSqgFs4w/svvQpJ8m5j/OM+T5CxmaYObA7U7
-         06jzIpxKb9w2jfuJlNi7teYLY/kmcrl/MnB+m3n7EYVFAcpmsTvVXMxGvmapA6Bt6MHh
-         GCUBxFor1mIw5JIZ3TI06MmN2GyoGFqzAvsVG5fno3KM1yKQUt+IGJPpnkxrE0ZqD+sp
-         r9mw==
-X-Gm-Message-State: AOAM530b8BSzpTh7+Xwtm6bJwMxtNfmBugKsBlVHLa8OcVUY6pYZi6FG
-        svc0ZJ5Th1MFyeshOFnf0Kqjk1h2t1JSDKuB
-X-Google-Smtp-Source: ABdhPJw9uY5E0tuQjCz2+2HB8BHQeX/rAtdev8nofs6lEJ6ENJkXmcykk3SniQ2JnQpRuyOCEXaNDQ==
-X-Received: by 2002:a17:90a:12c5:: with SMTP id b5mr4309128pjg.89.1613492666031;
-        Tue, 16 Feb 2021 08:24:26 -0800 (PST)
-Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id q22sm22111838pgi.66.2021.02.16.08.24.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 08:24:25 -0800 (PST)
-Date:   Tue, 16 Feb 2021 08:24:20 -0800
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     Anton Altaparmakov <anton@tuxera.com>
-Cc:     "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ntfs: move check for valid resident attribute offset and
- length
-Message-ID: <YCvxtL5WYeO3ofKW@nuc10>
-References: <20210214221247.621431-1-rkovhaev@gmail.com>
- <2727F0B7-4992-4B24-963F-CC3C4D94CFD2@tuxera.com>
+        Tue, 16 Feb 2021 11:27:18 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GG5JmK126031;
+        Tue, 16 Feb 2021 11:25:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=h2KZ1bvu1a9qVnwXD9zg+LWh/Rpqhdqvt0dMmFR40Sk=;
+ b=m33wPuJK690vXBjqVMCMqh9RCEidFwXzGuc2ShVqK9ersX2esMtvNyQCFx/Q3Bw7IXy5
+ 3H+yqHjRJQxOGb/IR8R2/bRHknptt5nSYNHzbKQH9bsc+Ftv2Oyo9LoHi/5lxnBak7DN
+ RP4vf6Y1B1fAYubYAPOmMQKENehcPRSRuXwVmPQFs7nLBYt3N92YUtUSAZJw+AForp1r
+ qJ0veYMYH/UT4iGBQtO16zKZq94xmdD+30mJ+piXiJ8dcny/n4PG25w0I1NefNpJIN75
+ vK3JtaXAHMd3Cap9soRecjBnYmKFSZNxcmhBX3TJ4Fe7IAfBWnRymDy/SCrt1At9Y/HL jg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36rh8xgnbj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 11:25:53 -0500
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11GG5sHt127555;
+        Tue, 16 Feb 2021 11:25:52 -0500
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36rh8xgnar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 11:25:52 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11GGHgYA030474;
+        Tue, 16 Feb 2021 16:25:50 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03wdc.us.ibm.com with ESMTP id 36p6d8yha7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 16:25:50 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11GGPn4a11338136
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 16:25:49 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 92C8778063;
+        Tue, 16 Feb 2021 16:25:49 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B00A17805C;
+        Tue, 16 Feb 2021 16:25:40 +0000 (GMT)
+Received: from jarvis.int.hansenpartnership.com (unknown [9.85.199.127])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Feb 2021 16:25:40 +0000 (GMT)
+Message-ID: <12c3890b233c8ec8e3967352001a7b72a8e0bfd0.camel@linux.ibm.com>
+Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Date:   Tue, 16 Feb 2021 08:25:39 -0800
+In-Reply-To: <YCrJjYmr7A2nO6lA@dhcp22.suse.cz>
+References: <20210214091954.GM242749@kernel.org>
+         <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
+         <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
+         <YCo7TqUnBdgJGkwN@dhcp22.suse.cz>
+         <be1d821d3f0aec24ad13ca7126b4359822212eb0.camel@linux.ibm.com>
+         <YCrJjYmr7A2nO6lA@dhcp22.suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2727F0B7-4992-4B24-963F-CC3C4D94CFD2@tuxera.com>
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-16_06:2021-02-16,2021-02-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=752
+ lowpriorityscore=0 clxscore=1015 adultscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102160141
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 02:40:37AM +0000, Anton Altaparmakov wrote:
-> Hi Rustam,
+On Mon, 2021-02-15 at 20:20 +0100, Michal Hocko wrote:
+[...]
+> > >   What kind of flags are we talking about and why would that be a
+> > > problem with memfd_create interface? Could you be more specific
+> > > please?
+> > 
+> > You mean what were the ioctl flags in the patch series linked
+> > above? They were SECRETMEM_EXCLUSIVE and SECRETMEM_UNCACHED in
+> > patch 3/5. 
 > 
-> Thank you for the patch but it is not quite correct:
-> 
-> 1) The first delta: yes that is a good idea to add this check but the error message is incorrect.  It should say "Corrupt standard information attribute in inode." instead.
-> 
-> 2) The second delta: The check of the attribute list attribute needs to remain, i.e. your second delta needs to be deleted.
-> 
-> Please could you address both of the above comments and then resend?  Please then also add: "Acked-by: Anton Altaparmakov <anton@tuxera.com>" to the patch.
-> 
-> Thanks a lot in advance!
-> 
-> Best regards,
-> 
-> 	Anton
-> 
-hi Anton, thank you for the review! I'll resend the patch!
+> OK I see. How many potential modes are we talking about? A few or
+> potentially many?
+ 
+Well I initially thought there were two (uncached or not) until you
+came up with the migratable or non-migratable, which affects the
+security properties.  But now there's also potential for hardware
+backing, like mktme,  described by flags as well.  I suppose you could
+also use RDT to restrict which cache the data goes into: say L1 but not
+L2 on to lessen the impact of fully uncached (although the big thrust
+of uncached was to blunt hyperthread side channels).  So there is
+potential for quite a large expansion even though I'd be willing to bet
+that a lot of the modes people have thought about turn out not to be
+very effective in the field.
+
+James
+
+
