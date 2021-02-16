@@ -2,126 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BEA831CE3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A8631CE4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhBPQk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:40:27 -0500
-Received: from foss.arm.com ([217.140.110.172]:38804 "EHLO foss.arm.com"
+        id S229812AbhBPQm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:42:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50348 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229916AbhBPQkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:40:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F36CD101E;
-        Tue, 16 Feb 2021 08:39:32 -0800 (PST)
-Received: from e124901.arm.com (unknown [10.57.9.41])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4D72E3F73D;
-        Tue, 16 Feb 2021 08:39:31 -0800 (PST)
-From:   vincent.donnefort@arm.com
-To:     peterz@infradead.org, tglx@linutronix.de,
-        vincent.guittot@linaro.org
-Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        patrick.bellasi@matbug.net, valentin.schneider@arm.com,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: [PATCH] sched/pelt: Fix task util_est update filtering
-Date:   Tue, 16 Feb 2021 16:39:21 +0000
-Message-Id: <20210216163921.572228-1-vincent.donnefort@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S230077AbhBPQmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 11:42:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4BE4FAF5B;
+        Tue, 16 Feb 2021 16:41:31 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id f662a3f7;
+        Tue, 16 Feb 2021 16:42:32 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        "drinkcat@chromium.org" <drinkcat@chromium.org>,
+        "iant@google.com" <iant@google.com>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "llozano@chromium.org" <llozano@chromium.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "miklos@szeredi.hu" <miklos@szeredi.hu>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "dchinner@redhat.com" <dchinner@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "sfrench@samba.org" <sfrench@samba.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
+Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
+References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+        <20210215154317.8590-1-lhenriques@suse.de>
+        <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
+        <73ab4951f48d69f0183548c7a82f7ae37e286d1c.camel@hammerspace.com>
+        <CAOQ4uxgPtqG6eTi2AnAV4jTAaNDbeez+Xi2858mz1KLGMFntfg@mail.gmail.com>
+        <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
+        <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com>
+        <87r1lgjm7l.fsf@suse.de>
+        <CAOQ4uxgucdN8hi=wkcvnFhBoZ=L5=ZDc7-6SwKVHYaRODdcFkg@mail.gmail.com>
+Date:   Tue, 16 Feb 2021 16:42:32 +0000
+In-Reply-To: <CAOQ4uxgucdN8hi=wkcvnFhBoZ=L5=ZDc7-6SwKVHYaRODdcFkg@mail.gmail.com>
+        (Amir Goldstein's message of "Tue, 16 Feb 2021 15:51:56 +0200")
+Message-ID: <87blckj75z.fsf@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Donnefort <vincent.donnefort@arm.com>
+Amir Goldstein <amir73il@gmail.com> writes:
 
-Being called for each dequeue, util_est reduces the number of its updates
-by filtering out when the EWMA signal is different from the task util_avg
-by less than 1%. It is a problem for a sudden util_avg ramp-up. Due to the
-decay from a previous high util_avg, EWMA might now be close enough to
-the new util_avg. No update would then happen while it would leave
-ue.enqueued with an out-of-date value.
+>> Ugh.  And I guess overlayfs may have a similar problem.
+>
+> Not exactly.
+> Generally speaking, overlayfs should call vfs_copy_file_range()
+> with the flags it got from layer above, so if called from nfsd it
+> will allow cross fs copy and when called from syscall it won't.
+>
+> There are some corner cases where overlayfs could benefit from
+> COPY_FILE_SPLICE (e.g. copy from lower file to upper file), but
+> let's leave those for now. Just leave overlayfs code as is.
 
-Taking into consideration the two util_est members, EWMA and enqueued for
-the filtering, ensures, for both, an up-to-date value.
+Got it, thanks for clarifying.
 
-This is for now an issue only for the trace probe that might return the
-stale value. Functional-wise, it isn't (yet) a problem, as the value is
-always accessed through max(enqueued, ewma).
+>> > This is easy to solve with a flag COPY_FILE_SPLICE (or something) that
+>> > is internal to kernel users.
+>> >
+>> > FWIW, you may want to look at the loop in ovl_copy_up_data()
+>> > for improvements to nfsd_copy_file_range().
+>> >
+>> > We can move the check out to copy_file_range syscall:
+>> >
+>> >         if (flags != 0)
+>> >                 return -EINVAL;
+>> >
+>> > Leave the fallback from all filesystems and check for the
+>> > COPY_FILE_SPLICE flag inside generic_copy_file_range().
+>>
+>> Ok, the diff bellow is just to make sure I understood your suggestion.
+>>
+>> The patch will also need to:
+>>
+>>  - change nfs and overlayfs calls to vfs_copy_file_range() so that they
+>>    use the new flag.
+>>
+>>  - check flags in generic_copy_file_checks() to make sure only valid flags
+>>    are used (COPY_FILE_SPLICE at the moment).
+>>
+>> Also, where should this flag be defined?  include/uapi/linux/fs.h?
+>
+> Grep for REMAP_FILE_
+> Same header file, same Documentation rst file.
+>
+>>
+>> Cheers,
+>> --
+>> Luis
+>>
+>> diff --git a/fs/read_write.c b/fs/read_write.c
+>> index 75f764b43418..341d315d2a96 100644
+>> --- a/fs/read_write.c
+>> +++ b/fs/read_write.c
+>> @@ -1383,6 +1383,13 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
+>>                                 struct file *file_out, loff_t pos_out,
+>>                                 size_t len, unsigned int flags)
+>>  {
+>> +       if (!(flags & COPY_FILE_SPLICE)) {
+>> +               if (!file_out->f_op->copy_file_range)
+>> +                       return -EOPNOTSUPP;
+>> +               else if (file_out->f_op->copy_file_range !=
+>> +                        file_in->f_op->copy_file_range)
+>> +                       return -EXDEV;
+>> +       }
+>
+> That looks strange, because you are duplicating the logic in
+> do_copy_file_range(). Maybe better:
+>
+> if (WARN_ON_ONCE(flags & ~COPY_FILE_SPLICE))
+>         return -EINVAL;
+> if (flags & COPY_FILE_SPLICE)
+>        return do_splice_direct(file_in, &pos_in, file_out, &pos_out,
+>                                  len > MAX_RW_COUNT ? MAX_RW_COUNT : len, 0);
 
-This problem has been observed using LISA's UtilConvergence:test_means on
-the sd845c board.
+My initial reasoning for duplicating the logic in do_copy_file_range() was
+to allow the generic_copy_file_range() callers to be left unmodified and
+allow the filesystems to default to this implementation.
 
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+With this change, I guess that the calls to generic_copy_file_range() from
+the different filesystems can be dropped, as in my initial patch, as they
+will always get -EINVAL.  The other option would be to set the
+COPY_FILE_SPLICE flag in those calls, but that would get us back to the
+problem we're trying to solve.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 794c2cb945f8..9008e0c42def 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3941,24 +3941,27 @@ static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
- 	trace_sched_util_est_cfs_tp(cfs_rq);
- }
- 
-+#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
-+
- /*
-- * Check if a (signed) value is within a specified (unsigned) margin,
-+ * Check if a (signed) value is within the (unsigned) util_est margin,
-  * based on the observation that:
-  *
-  *     abs(x) < y := (unsigned)(x + y - 1) < (2 * y - 1)
-  *
-- * NOTE: this only works when value + maring < INT_MAX.
-+ * NOTE: this only works when value + UTIL_EST_MARGIN < INT_MAX.
-  */
--static inline bool within_margin(int value, int margin)
-+static inline bool util_est_within_margin(int value)
- {
--	return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
-+	return ((unsigned int)(value + UTIL_EST_MARGIN - 1) <
-+		(2 * UTIL_EST_MARGIN - 1));
- }
- 
- static inline void util_est_update(struct cfs_rq *cfs_rq,
- 				   struct task_struct *p,
- 				   bool task_sleep)
- {
--	long last_ewma_diff;
-+	long last_ewma_diff, last_enqueued_diff;
- 	struct util_est ue;
- 
- 	if (!sched_feat(UTIL_EST))
-@@ -3979,6 +3982,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 	if (ue.enqueued & UTIL_AVG_UNCHANGED)
- 		return;
- 
-+	last_enqueued_diff = ue.enqueued;
-+
- 	/*
- 	 * Reset EWMA on utilization increases, the moving average is used only
- 	 * to smooth utilization decreases.
-@@ -3992,12 +3997,19 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 	}
- 
- 	/*
--	 * Skip update of task's estimated utilization when its EWMA is
-+	 * Skip update of task's estimated utilization when its members are
- 	 * already ~1% close to its last activation value.
- 	 */
- 	last_ewma_diff = ue.enqueued - ue.ewma;
--	if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
-+	last_enqueued_diff -= ue.enqueued;
-+	if (util_est_within_margin(last_ewma_diff)) {
-+		if (!util_est_within_margin(last_enqueued_diff)) {
-+			ue.ewma = ue.enqueued;
-+			goto done;
-+		}
-+
- 		return;
-+	}
- 
- 	/*
- 	 * To avoid overestimation of actual task utilization, skip updates if
+> if (!file_out->f_op->copy_file_range)
+>         return -EOPNOTSUPP;
+> return -EXDEV;
+>
+>>  }
+>> @@ -1474,9 +1481,6 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+>>  {
+>>         ssize_t ret;
+>>
+>> -       if (flags != 0)
+>> -               return -EINVAL;
+>> -
+>
+> This needs to move to the beginning of SYSCALL_DEFINE6(copy_file_range,...
+
+Yep, I didn't included that change in my diff as I wasn't sure if you'd
+like to have the flag visible in userspace.
+
+Anyway, thanks for your patience!
+
+Cheers,
 -- 
-2.25.1
-
+Luis
