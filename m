@@ -2,170 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB8831D258
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F7731D25F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhBPVrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:47:43 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:35157 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhBPVqK (ORCPT
+        id S230316AbhBPVyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:54:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhBPVxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:46:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613511969; x=1645047969;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=21JiiqEIgm5zFzzo3WjE3M2nVZRsuDLR5EdGNJxiEgU=;
-  b=sF/Si8ycZZIEsa1FJD8WqwZIt/BuLipemqZ+fk86pDU0Vy/yyyykiNUW
-   tSwJiro6TSCl8td5D+jLmp3VbzlfE4yMfDlXzYykD4djRJKHTDU7Bjjhx
-   aXPwl/XlC3RjAHlmHK5AVWPuooEbg+6KoRvKqVfy+elbKx+OC/mSrfI6F
-   JG7dPPJZqyxuoQELhCXIqAKUMc8/LewmVt5vkKn1ZtRpxRLjkek8WJZno
-   5LSGRCB28mxPDumrwc4Uqb37og4nBwdjEL69/4bqteNjsSnKwUSd13qUF
-   1vYahwbNZ3nRF/EhkZC5KpgauH2DfZJB8hYUdJD2jYfAW51N55fL6lV5S
-   w==;
-IronPort-SDR: rFZo+EnCajOdqG6loZiGFSJeaRUUzS43m0EDS3lNMYtaSsmQ2po4JosbYewL1hbZCyAXCWOIRP
- 8t6zCD7DrEGmaWwE2hTkzT40/xUnKJMi0DZLqWp6v/oWU9VsXw25gipyBdVg38nayRExmNQnok
- YPSVul1pqHmvluonHiqK4dsiMXSv9puaBxbCujSXxLMdDKYk5vHzvO4ZHlL5Oa3ub9/xLYObNA
- xB/d6B1zStgmScPzO3/PtSbBDgceW44q18U7C9UqPaRiX9QwRATP8T33+5V4mprL7FP9NIn+si
- SUY=
-X-IronPort-AV: E=Sophos;i="5.81,184,1610434800"; 
-   d="scan'208";a="109914805"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Feb 2021 14:43:44 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 16 Feb 2021 14:43:28 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 16 Feb 2021 14:43:25 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <jiri@resnulli.us>, <ivecera@redhat.com>, <nikolay@nvidia.com>,
-        <roopa@nvidia.com>, <vladimir.oltean@nxp.com>,
-        <claudiu.manoil@nxp.com>, <alexandre.belloni@bootlin.com>,
-        <UNGLinuxDriver@microchip.com>, <andrew@lunn.ch>,
-        <vivien.didelot@gmail.com>, <f.fainelli@gmail.com>,
-        <rasmus.villemoes@prevas.dk>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bridge@lists.linux-foundation.org>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next v4 8/8] net: dsa: felix: Add support for MRP
-Date:   Tue, 16 Feb 2021 22:42:05 +0100
-Message-ID: <20210216214205.32385-9-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210216214205.32385-1-horatiu.vultur@microchip.com>
-References: <20210216214205.32385-1-horatiu.vultur@microchip.com>
+        Tue, 16 Feb 2021 16:53:54 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3433C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 13:53:14 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id w18so7035871pfu.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 13:53:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=0zls66CbYUnShNIJgPu/UgmV9jANuDUd31/IHtthW64=;
+        b=rslZrRF79usj1wpjXVj2FLVT6ukeUqIXfYp5xeWcRAHSl9cQ0Fb2JHM2/VQtacubdv
+         0jDyyHeGdw6FoQDPKyx172wGjZ6ol9M0R32Bmyv+r005q0S1f94nj8WnQpqd5p19nBjz
+         zmrlTX/nbqP1cM/ECqSaNioNZ/IYivwB+q2uiXTB0QixjmFBaug0ley9QJW7pjYXUNHT
+         MHCYLkoUTgbovleuh8cFnsmQhpmdcGCbuyLYfpnC5jJPNNvi7xpCq4ibT2w2WOxV7yNo
+         lk93w1kHnbjWL8c1TF8WOgtA+bfPVUpqkgQ7pXgieOh+yyIFhkDM4JWUJvtzrYpn8zob
+         S1xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=0zls66CbYUnShNIJgPu/UgmV9jANuDUd31/IHtthW64=;
+        b=O1e5b7LmngMEacKgU0zvByNMtSUVtDa74t7OrSrM2cICfzMb+eC5zURHf5WjjxyPrd
+         vIqZRvD0dYN7IwH4ja1rv9gid5rwniLJF2SInGflo95yR26nJBoo89C6bwTsWkSvSCM4
+         ETEBg9kaKSObZ72BgUGjZnnp0Dw3ZKhE7FQtO0m+Kb2Tr1IMOnYj+NVLBxyScig5pBB8
+         DrTe6csRpWw2KCS+IR4N59oIxvHNA+6/z9aeK0XTUOfe6mUNDoN8OXPVxwPmLZBO3dbZ
+         ppKOgG/5MGEEoJfcGHO5VNG9UMoBwtqxfArbVz6PMtHZHim7cqQoRhLzSge3lhwLcUo+
+         5+aw==
+X-Gm-Message-State: AOAM531RYQgkwcvzXl/cb8bNGF0q7iDEvLA/A5AaF2aVnNax5zqRhPNl
+        cCOekgjDru0W/OAOFg6uPuWXXQ==
+X-Google-Smtp-Source: ABdhPJxC689jqS6tAFrfu2ZGe+vHaTBYjgdgmtIWwLu49NzPMD60eQHIUluGYkitUp9ffvlSS1L3wA==
+X-Received: by 2002:a05:6a00:1a08:b029:1cd:404e:a70c with SMTP id g8-20020a056a001a08b02901cd404ea70cmr21540920pfv.33.1613512393866;
+        Tue, 16 Feb 2021 13:53:13 -0800 (PST)
+Received: from [2620:15c:17:3:984e:d574:ca36:ce3c] ([2620:15c:17:3:984e:d574:ca36:ce3c])
+        by smtp.gmail.com with ESMTPSA id w11sm106603pge.28.2021.02.16.13.53.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 13:53:13 -0800 (PST)
+Date:   Tue, 16 Feb 2021 13:53:12 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Michal Hocko <mhocko@suse.com>
+cc:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com, akpm@linux-foundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        felipe.franciosi@nutanix.com
+Subject: Re: [RFC PATCH] mm, oom: introduce vm.sacrifice_hugepage_on_oom
+In-Reply-To: <YCt+cVvWPbWvt2rG@dhcp22.suse.cz>
+Message-ID: <b821f4de-3260-f6e2-469f-65ccfa699bb7@google.com>
+References: <20210216030713.79101-1-eiichi.tsukata@nutanix.com> <YCt+cVvWPbWvt2rG@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement functions 'port_mrp_add', 'port_mrp_del',
-'port_mrp_add_ring_role' and 'port_mrp_del_ring_role' to call the mrp
-functions from ocelot.
+On Tue, 16 Feb 2021, Michal Hocko wrote:
 
-Also all MRP frames that arrive to CPU on queue number OCELOT_MRP_CPUQ
-will be forward by the SW.
+> > Hugepages can be preallocated to avoid unpredictable allocation latency.
+> > If we run into 4k page shortage, the kernel can trigger OOM even though
+> > there were free hugepages. When OOM is triggered by user address page
+> > fault handler, we can use oom notifier to free hugepages in user space
+> > but if it's triggered by memory allocation for kernel, there is no way
+> > to synchronously handle it in user space.
+> 
+> Can you expand some more on what kind of problem do you see?
+> Hugetlb pages are, by definition, a preallocated, unreclaimable and
+> admin controlled pool of pages.
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/net/dsa/ocelot/felix.c | 38 ++++++++++++++++++++++++++++++++++
- net/dsa/tag_ocelot.c           |  8 +++++++
- 2 files changed, 46 insertions(+)
+Small nit: true of non-surplus hugetlb pages.
 
-diff --git a/drivers/net/dsa/ocelot/felix.c b/drivers/net/dsa/ocelot/felix.c
-index 800f27d65c6c..fa1c3f14bb88 100644
---- a/drivers/net/dsa/ocelot/felix.c
-+++ b/drivers/net/dsa/ocelot/felix.c
-@@ -1561,6 +1561,40 @@ static int felix_sb_occ_tc_port_bind_get(struct dsa_switch *ds, int port,
- 					      pool_type, p_cur, p_max);
- }
- 
-+static int felix_mrp_add(struct dsa_switch *ds, int port,
-+			 const struct switchdev_obj_mrp *mrp)
-+{
-+	struct ocelot *ocelot = ds->priv;
-+
-+	return ocelot_mrp_add(ocelot, port, mrp);
-+}
-+
-+static int felix_mrp_del(struct dsa_switch *ds, int port,
-+			 const struct switchdev_obj_mrp *mrp)
-+{
-+	struct ocelot *ocelot = ds->priv;
-+
-+	return ocelot_mrp_add(ocelot, port, mrp);
-+}
-+
-+static int
-+felix_mrp_add_ring_role(struct dsa_switch *ds, int port,
-+			const struct switchdev_obj_ring_role_mrp *mrp)
-+{
-+	struct ocelot *ocelot = ds->priv;
-+
-+	return ocelot_mrp_add_ring_role(ocelot, port, mrp);
-+}
-+
-+static int
-+felix_mrp_del_ring_role(struct dsa_switch *ds, int port,
-+			const struct switchdev_obj_ring_role_mrp *mrp)
-+{
-+	struct ocelot *ocelot = ds->priv;
-+
-+	return ocelot_mrp_del_ring_role(ocelot, port, mrp);
-+}
-+
- const struct dsa_switch_ops felix_switch_ops = {
- 	.get_tag_protocol		= felix_get_tag_protocol,
- 	.change_tag_protocol		= felix_change_tag_protocol,
-@@ -1615,6 +1649,10 @@ const struct dsa_switch_ops felix_switch_ops = {
- 	.devlink_sb_occ_max_clear	= felix_sb_occ_max_clear,
- 	.devlink_sb_occ_port_pool_get	= felix_sb_occ_port_pool_get,
- 	.devlink_sb_occ_tc_port_bind_get= felix_sb_occ_tc_port_bind_get,
-+	.port_mrp_add			= felix_mrp_add,
-+	.port_mrp_del			= felix_mrp_del,
-+	.port_mrp_add_ring_role		= felix_mrp_add_ring_role,
-+	.port_mrp_del_ring_role		= felix_mrp_del_ring_role,
- };
- 
- struct net_device *felix_port_to_netdev(struct ocelot *ocelot, int port)
-diff --git a/net/dsa/tag_ocelot.c b/net/dsa/tag_ocelot.c
-index f9df9cac81c5..743809b5806b 100644
---- a/net/dsa/tag_ocelot.c
-+++ b/net/dsa/tag_ocelot.c
-@@ -83,6 +83,7 @@ static struct sk_buff *ocelot_rcv(struct sk_buff *skb,
- 	struct dsa_port *dp;
- 	u8 *extraction;
- 	u16 vlan_tpid;
-+	u64 cpuq;
- 
- 	/* Revert skb->data by the amount consumed by the DSA master,
- 	 * so it points to the beginning of the frame.
-@@ -112,6 +113,7 @@ static struct sk_buff *ocelot_rcv(struct sk_buff *skb,
- 	ocelot_xfh_get_qos_class(extraction, &qos_class);
- 	ocelot_xfh_get_tag_type(extraction, &tag_type);
- 	ocelot_xfh_get_vlan_tci(extraction, &vlan_tci);
-+	ocelot_xfh_get_cpuq(extraction, &cpuq);
- 
- 	skb->dev = dsa_master_find_slave(netdev, 0, src_port);
- 	if (!skb->dev)
-@@ -126,6 +128,12 @@ static struct sk_buff *ocelot_rcv(struct sk_buff *skb,
- 	skb->offload_fwd_mark = 1;
- 	skb->priority = qos_class;
- 
-+#if IS_ENABLED(CONFIG_BRIDGE_MRP)
-+	if (eth_hdr(skb)->h_proto == cpu_to_be16(ETH_P_MRP) &&
-+	    cpuq & BIT(OCELOT_MRP_CPUQ))
-+		skb->offload_fwd_mark = 0;
-+#endif
-+
- 	/* Ocelot switches copy frames unmodified to the CPU. However, it is
- 	 * possible for the user to request a VLAN modification through
- 	 * VCAP_IS1_ACT_VID_REPLACE_ENA. In this case, what will happen is that
--- 
-2.27.0
+> Under those conditions it is expected
+> and required that the sizing would be done very carefully. Why is that a
+> problem in your particular setup/scenario?
+> 
+> If the sizing is really done properly and then a random process can
+> trigger OOM then this can lead to malfunctioning of those workloads
+> which do depend on hugetlb pool, right? So isn't this a kinda DoS
+> scenario?
+> 
+> > This patch introduces a new sysctl vm.sacrifice_hugepage_on_oom. If
+> > enabled, it first tries to free a hugepage if available before invoking
+> > the oom-killer. The default value is disabled not to change the current
+> > behavior.
+> 
+> Why is this interface not hugepage size aware? It is quite different to
+> release a GB huge page or 2MB one. Or is it expected to release the
+> smallest one? To the implementation...
+> 
+> [...]
+> > +static int sacrifice_hugepage(void)
+> > +{
+> > +	int ret;
+> > +
+> > +	spin_lock(&hugetlb_lock);
+> > +	ret = free_pool_huge_page(&default_hstate, &node_states[N_MEMORY], 0);
+> 
+> ... no it is going to release the default huge page. This will be 2MB in
+> most cases but this is not given.
+> 
+> Unless I am mistaken this will free up also reserved hugetlb pages. This
+> would mean that a page fault would SIGBUS which is very likely not
+> something we want to do right? You also want to use oom nodemask rather
+> than a full one.
+> 
+> Overall, I am not really happy about this feature even when above is
+> fixed, but let's hear more the actual problem first.
 
+Shouldn't this behavior be possible as an oomd plugin instead, perhaps 
+triggered by psi?  I'm not sure if oomd is intended only to kill something 
+(oomkilld? lol) or if it can be made to do sysadmin level behavior, such 
+as shrinking the hugetlb pool, to solve the oom condition.
+
+If so, it seems like we want to do this at the absolute last minute.  In 
+other words, reclaim has failed to free memory by other means so we would 
+like to shrink the hugetlb pool.  (It's the reason why it's implemented as 
+a predecessor to oom as opposed to part of reclaim in general.)
+
+Do we have the ability to suppress the oom killer until oomd has a chance 
+to react in this scenario?
