@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF7D31CC85
+	by mail.lfdr.de (Postfix) with ESMTP id D349A31CC87
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhBPO6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:58:51 -0500
-Received: from mga18.intel.com ([134.134.136.126]:1208 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229912AbhBPO6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:58:48 -0500
-IronPort-SDR: N2EXDkv9ZEiOAYjPDLrjhARvCoYtRpdAXWpIvaq9xEj50RfW/cO496RbCb6zpW8OmmMEO5q7D3
- VTlH545b7A/w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="170567169"
-X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
-   d="scan'208";a="170567169"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 06:57:02 -0800
-IronPort-SDR: Zq8HeEFeVHOnTSnG3IYXfriCk8fqQlPxgpK1Y13YT0NeoKk6/diCeKu85sfiEYrJMO2cvVSdy8
- 8Xdh08xlsvxA==
-X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
-   d="scan'208";a="361706392"
-Received: from nshettyk-mobl1.amr.corp.intel.com (HELO [10.212.9.66]) ([10.212.9.66])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 06:56:58 -0800
-Subject: Re: [PATCH v3 1/3] platform/x86: dell-privacy: Add support for Dell
- hardware privacy
-To:     Perry Yuan <perry979106@gmail.com>,
-        Perry Yuan <Perry.Yuan@dell.com>, oder_chiou@realtek.com,
-        perex@perex.cz, tiwai@suse.com, hdegoede@redhat.com,
-        mgross@linux.intel.com
-Cc:     alsa-devel@alsa-project.org, Mario.Limonciello@dell.com,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        platform-driver-x86@vger.kernel.org, broonie@kernel.org
-References: <20210112171723.19484-1-Perry_Yuan@Dell.com>
- <bf048701-4e6b-ad18-1a73-8bca5c922425@linux.intel.com>
- <79277bf2-3c9e-8b66-47a9-b926a2576f7f@gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <31982e8d-3b0d-7187-8798-900f95d876ee@linux.intel.com>
-Date:   Tue, 16 Feb 2021 08:56:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230019AbhBPO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:59:27 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12434 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229864AbhBPO7V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 09:59:21 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GEnctk014819;
+        Tue, 16 Feb 2021 09:58:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vCXzb5OpCKLaHDVmWut1qFi4BxjtzdfHygiEhaPanUU=;
+ b=goCISUI7PndlL4FJ7okkCp5O1fn6oUQQueIOCD4PoY0mHq+yJ+QKn1X5J2Ge4r64/YIf
+ f5X/vdbFZtgiam/MS6xq1CKdQZSyRsk6F7X+0CNXuyECD7yXHAUFEPymkkC1yYfm1wgF
+ q519qcqEqjtuujHWBMQciVDKOiU52IxwtvIlAohS2Dp21XYN7rvyPbF7hsl1BBVmxo/D
+ Hek1R2JNM8fQ46GlAnekwLLEa2OhQDO9x0mvO4YL4ieZ/0t8bh1DQz1YZ9apSSm92Wg0
+ N58K30S+hgp4q4odfn4yAO43Pt3bDSNT5Vu0gJcbvHwGKHXqa4qgLq4y5ImP5kla/LLS rA== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36rg570716-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 09:58:34 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11GEqYTh018382;
+        Tue, 16 Feb 2021 14:58:33 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma02dal.us.ibm.com with ESMTP id 36p6d9mr0s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 14:58:33 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11GEwWxr33489364
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 14:58:32 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A70A6112065;
+        Tue, 16 Feb 2021 14:58:32 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C46AA112062;
+        Tue, 16 Feb 2021 14:58:31 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.163.23.155])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Feb 2021 14:58:31 +0000 (GMT)
+Subject: Re: [PATCH 4/4] ibmvfc: store return code of H_FREE_SUB_CRQ during
+ cleanup
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20210211185742.50143-1-tyreld@linux.ibm.com>
+ <20210211185742.50143-5-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <94321ded-7970-258c-cee9-222f7b2b511f@linux.vnet.ibm.com>
+Date:   Tue, 16 Feb 2021 08:58:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <79277bf2-3c9e-8b66-47a9-b926a2576f7f@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210211185742.50143-5-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-16_04:2021-02-16,2021-02-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
+ impostorscore=0 bulkscore=0 phishscore=0 adultscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102160130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/11/21 12:57 PM, Tyrel Datwyler wrote:
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+> index ba6fcf9cbc57..23b803ac4a13 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+> @@ -5670,7 +5670,7 @@ static int ibmvfc_register_scsi_channel(struct ibmvfc_host *vhost,
+>  
+>  irq_failed:
+>  	do {
+> -		plpar_hcall_norets(H_FREE_SUB_CRQ, vdev->unit_address, scrq->cookie);
+> +		rc = plpar_hcall_norets(H_FREE_SUB_CRQ, vdev->unit_address, scrq->cookie);
+>  	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
 
->>> +static const struct acpi_device_id privacy_acpi_device_ids[] = {
->>> +    {"PNP0C09", 0},
->>> +    { },
->>> +};
->>> +MODULE_DEVICE_TABLE(acpi, privacy_acpi_device_ids);
->>> +
->>> +static struct platform_driver dell_privacy_platform_drv = {
->>> +    .driver = {
->>> +        .name = PRIVACY_PLATFORM_NAME,
->>> +        .acpi_match_table = ACPI_PTR(privacy_acpi_device_ids),
->>> +    },
->>
->> no .probe?
-> Originally i added the probe here, but it cause the driver  .probe 
-> called twice. after i use platform_driver_probe to register the driver 
-> loading process, the duplicated probe issue resolved.
-> 
-> I
->>
->>> +    .remove = dell_privacy_acpi_remove,
->>> +};
->>> +
->>> +int __init dell_privacy_acpi_init(void)
->>> +{
->>> +    int err;
->>> +    struct platform_device *pdev;
->>> +    int privacy_capable = wmi_has_guid(DELL_PRIVACY_GUID);
->>> +
->>> +    if (!wmi_has_guid(DELL_PRIVACY_GUID))
->>> +        return -ENODEV;
->>> +
->>> +    privacy_acpi = kzalloc(sizeof(*privacy_acpi), GFP_KERNEL);
->>> +    if (!privacy_acpi)
->>> +        return -ENOMEM;
->>> +
->>> +    pdev = platform_device_register_simple(
->>> +            PRIVACY_PLATFORM_NAME, PLATFORM_DEVID_NONE, NULL, 0);
->>> +    if (IS_ERR(pdev)) {
->>> +        err = PTR_ERR(pdev);
->>> +        goto pdev_err;
->>> +    }
->>> +    err = platform_driver_probe(&dell_privacy_platform_drv,
->>> +            dell_privacy_acpi_probe);
->>> +    if (err)
->>> +        goto pdrv_err;
->>
->> why is the probe done here? Put differently, what prevents you from 
->> using a 'normal' platform driver, and do the leds_setup in the .probe()?
-> At first ,I used the normal platform driver framework, however tt cause 
-> the driver  .probe called twice. after i use platform_driver_probe to 
-> register the driver loading process, the duplicated probe issue resolved.
+Other places in the driver where we get a busy return code back we have an msleep(100).
+Should we be doing that here as well?
 
-This sounds very odd...
+Thanks,
 
-this looks like a conflict with the ACPI subsystem finding a device and 
-probing the driver that's associated with the PNP0C09 HID, and then this 
-module __init  creating a device manually which leads to a second probe
+Brian
 
-Neither the platform_device_register_simple() nor 
-platform_driver_probe() seem necessary?
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
+
