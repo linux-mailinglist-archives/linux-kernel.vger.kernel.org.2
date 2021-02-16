@@ -2,80 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260DD31C709
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E81931C70E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhBPHzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 02:55:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhBPHyt (ORCPT
+        id S229771AbhBPH5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 02:57:12 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:50869 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229796AbhBPH5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 02:54:49 -0500
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6127C061574;
-        Mon, 15 Feb 2021 23:54:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Coy/hZCMNVQEd82cbAZp1E9jRuaBjYHERBZbVUjwjEY=; b=qoVgrsfQzp/oEa48rOzTrwyUrW
-        zLaJAwQ3VfbYazue2bz6hLFoBBslfeZpIAuu4rrZ+3gcdbTLsAVg78wDK6g9ii3L86SPtQ0JTtNiO
-        FjMUcAVsneZya2q5iIkOhGKIS/izZU/kPvA5KuHmt2KDY0ie51PrLZP65aUWaZCE6+rQ=;
-Received: from p4ff13c8d.dip0.t-ipconnect.de ([79.241.60.141] helo=nf.local)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1lBvBB-0002ji-MX; Tue, 16 Feb 2021 08:53:53 +0100
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, ath9k-devel@qca.qualcomm.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <43ed9abb9e8d7112f3cc168c2f8c489e253635ba.1613090339.git.skhan@linuxfoundation.org>
- <20210216070336.D138BC43463@smtp.codeaurora.org>
-From:   Felix Fietkau <nbd@nbd.name>
-Subject: Re: [PATCH 2/2] ath9k: fix ath_tx_process_buffer() potential null ptr
- dereference
-Message-ID: <0fd9a538-e269-e10e-a7f9-02d4c5848420@nbd.name>
-Date:   Tue, 16 Feb 2021 08:53:51 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Tue, 16 Feb 2021 02:57:02 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5FB7D580248;
+        Tue, 16 Feb 2021 02:55:55 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 16 Feb 2021 02:55:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=OgE+B+oYIxnbEc/wQ/LZmClawQt
+        IgqJ46vVdtsUhNXI=; b=fMiVYrjcYk9CH/Awu1GqkqmCLGes4PLTrvCh4EuQiCK
+        KG1NPuzfSttgEOSCHRzp6SERcMUaQ2cUT90wLZYHOJ+YV8o+lr6q+igOhtJ2hzoO
+        eskXTXPHpZNKZLk5E7SBuWd+o5dTgL38/eigGBu06ijeEwjzBuZu609Oes88mJYr
+        RS3ExWgmbman4kQgJc+7t6TlXHS/ZUTdHiCGoZqVXxdV4PYErzeiiUCPc0VOlAvq
+        q5Zf1/Z6NhEUI+K6O15514n4/pWXMxRBozR3x2QvSaNDfOfuG77OjXtgKsOiNYaE
+        PhNJQT0T+7cQxgs8N4M8uKoEAlgzY0k/EknhAB4DNAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=OgE+B+
+        oYIxnbEc/wQ/LZmClawQtIgqJ46vVdtsUhNXI=; b=nfX/AACZEa5FjTMPGztF3S
+        wvaC+7RARDsQQm0PmaGGwZY5Cpkk5kcDlWiOnw7rjwAxaWaPNHp3qCgzEIbnT3Nc
+        PblA1kb+h0kml4a9tyYbIsoFQGaQ7FQcuXCdQd2XYHHz9Wh+0hYP8a5LQxnFkyc4
+        y/79wV6uJy1GtkLPjrEoBGHywd0D1vjIvgPZ4p5EvqIC/KkqxKm5p81AEBpRLHwk
+        PNWlY4DuyHIKXydIk5jeeKOJ4cbYne3yk/cRbZc8Et6H4jfE0EGoTzMJJWT6ZKke
+        B+25B7HCmlYCrcIBOSbMZMtYt1IRcFUudlNgv+3kCT8zzkeP0H3aoVJ7A837C7fg
+        ==
+X-ME-Sender: <xms:iHorYBVBGtp274OIDmFKHo3n07rbyIYuL4W3ZIzNH6fYM3oHSzFLSg>
+    <xme:iHorYBmw-PAUi-eQ6BfEQ2rEyTLVbY9ASvRB_DA_mWd1GGev41XeaMfnjdwY4EXf6
+    dKF9EHif3MnLyJnlcQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrieelgdduuddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:iHorYNbIhQQCs_6oNXVb_ggg_NV3zuhuhHUUVA_fiLHgc74a4ZaLlg>
+    <xmx:iHorYEUzkh1icnNBCqfzwaBzEYO41aX4FJqMATPCFaiBgEZpaqw-Yg>
+    <xmx:iHorYLmWL0e_Lq68nbrk50nYdaDFL-d8i6aCBQiZ182XDbn_AoaIUQ>
+    <xmx:i3orYFkRC-d10TG9p5HJM4A8z2vc55OEkSxFiQ7JjzhiBCzHw3mZlQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 38DEF24005C;
+        Tue, 16 Feb 2021 02:55:51 -0500 (EST)
+Date:   Tue, 16 Feb 2021 08:55:30 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        dave.stevenson@raspberrypi.com, maz@kernel.org, eric@anholt.net,
+        tzimmermann@suse.de, linux-rpi-kernel@lists.infradead.org,
+        hverkuil-cisco@xs4all.nl, nsaenzjulienne@suse.de,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "ARM: dts: bcm2711: Add the BSC interrupt
+ controller"
+Message-ID: <20210216075530.knleci6sv4m667vv@gilmour>
+References: <20210212191104.2365912-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210216070336.D138BC43463@smtp.codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6bxcug5x2bcw2xf6"
+Content-Disposition: inline
+In-Reply-To: <20210212191104.2365912-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021-02-16 08:03, Kalle Valo wrote:
-> Shuah Khan <skhan@linuxfoundation.org> wrote:
-> 
->> ath_tx_process_buffer() references ieee80211_find_sta_by_ifaddr()
->> return pointer (sta) outside null check. Fix it by moving the code
->> block under the null check.
->> 
->> This problem was found while reviewing code to debug RCU warn from
->> ath10k_wmi_tlv_parse_peer_stats_info() and a subsequent manual audit
->> of other callers of ieee80211_find_sta_by_ifaddr() that don't hold
->> RCU read lock.
->> 
->> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-> 
-> Patch applied to ath-next branch of ath.git, thanks.
-> 
-> a56c14bb21b2 ath9k: fix ath_tx_process_buffer() potential null ptr dereference
-I just took another look at this patch, and it is completely bogus.
-Not only does the stated reason not make any sense (sta is simply passed
-to other functions, not dereferenced without checks), but this also
-introduces a horrible memory leak by skipping buffer completion if sta
-is NULL.
-Please drop it, the code is fine as-is.
+--6bxcug5x2bcw2xf6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- Felix
+On Fri, Feb 12, 2021 at 11:11:04AM -0800, Florian Fainelli wrote:
+> As Dave reported:
+>=20
+> This seems to have unintended side effects.  GIC interrupt 117 is shared
+> between the standard I2C controllers (i2c-bcm2835) and the l2-intc block
+> handling the HDMI I2C interrupts.
+>=20
+> There is not a great way to share an interrupt between an interrupt
+> controller using the chained IRQ handler which is an interrupt flow and
+> another driver like i2c-bcm2835 which uses an interrupt handler
+> (although it specifies IRQF_SHARED).
+>=20
+> Simply revert this change for now which will mean that HDMI I2C will be
+> polled, like it was before.
+>=20
+> Reported-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+
+Acked-by: Maxime Ripard <mripard@kernel.org>
+
+Thanks!
+Maxime
+
+--6bxcug5x2bcw2xf6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYCt6cgAKCRDj7w1vZxhR
+xcslAP9KUslpDXYO8/ygfAO7HvtHmi3uBgecVib764++4rZFsgD/SdzNpTEgfZSr
+dO28YRr8RYfy/OT6Y3dnkNhI0P1T9QU=
+=8p02
+-----END PGP SIGNATURE-----
+
+--6bxcug5x2bcw2xf6--
