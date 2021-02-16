@@ -2,195 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FFD31C721
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFD031C727
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhBPIGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 03:06:52 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:41934 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhBPIGV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 03:06:21 -0500
-Received: by mail-oi1-f173.google.com with SMTP id v193so10377161oie.8;
-        Tue, 16 Feb 2021 00:06:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=83BrpC0oQ/cmeAj/lHKeDzK9StSyqlfuwywAdDjNejw=;
-        b=QBgBUBqgx1FN/5KM3VfFOpGjnuJqRT6RfKbqnFNNIUKXAxvOKKb6hhQNp6UoY2//d9
-         gH9b4zjKmunB8jgDTzJnHj5UkJ22QmdHCTgfoV4ubdn3MknMyfMZNmfTcLgyCH/mVZwz
-         wDgFAs0Uc89WRqE84ReBUia2b1YfWdQ2dHnmDfUbtXn2i71MQcgPyPEGmFwE09AwbpVn
-         moQ3RkGaBjggWRWfEZUeGiRSoqyPP2qKIVBAhFnOGtuIr4RvvBhVgSjpT84b5B0GXUXE
-         5e8BdVdVAxcJMt/Cz526LpfeyJA9AwH96YbaSfigvhtbwTe9Ql5Qa1RrBlepYly2ILPF
-         PKww==
-X-Gm-Message-State: AOAM533sr8FRE/LxLo2YI9f/zHqLnNj/hkQmACmwQPh1dC/tDUXsPSnY
-        zIyAN8KUIYNJ+vE+mSXdU8J2RS8R4Or1uz5LcrA=
-X-Google-Smtp-Source: ABdhPJzz+NpULZTIa3tjUW8686AiYK7eX+4Ie30gH/r1xHcs0vWPfv5qgwYUJGkxQKm1FzqrQsvfEXHLJ4R55M5RltI=
-X-Received: by 2002:aca:d8c6:: with SMTP id p189mr1857071oig.54.1613462740012;
- Tue, 16 Feb 2021 00:05:40 -0800 (PST)
+        id S229754AbhBPIN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 03:13:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40262 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229662AbhBPINV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 03:13:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613463155; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w5QsXYyE8z2VKQ4MnO2HFDm3PsxDTFu4+x9dngf5//g=;
+        b=mJfaUIShUOf+vrFTpdnPwvAuDqNv1KtPX3BaoOmFuXkS+wZj09kth9CArqbSxZvT9AogNw
+        MvQJgMClfgtFYZhducrOa4KfrOmAxqf6WuJMHfMEYJpgZM8HkPg6EZmLwbJ+kbVWGo76JW
+        nNV3NPQrh8KNR7WMyyNZbrHt6V3OlQs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1F986B027;
+        Tue, 16 Feb 2021 08:12:35 +0000 (UTC)
+Date:   Tue, 16 Feb 2021 09:12:33 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, felipe.franciosi@nutanix.com
+Subject: Re: [RFC PATCH] mm, oom: introduce vm.sacrifice_hugepage_on_oom
+Message-ID: <YCt+cVvWPbWvt2rG@dhcp22.suse.cz>
+References: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
 MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
- <CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com>
- <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com>
- <CAMuHMdXduvBqjAqraXkEKErNJFyN6JNq5wqagc4yHHPpH5SPGQ@mail.gmail.com> <CAGETcx_4FGa-rzLp6bjXbm4F4R6H2W78+nM_kN=XPz5hswzANA@mail.gmail.com>
-In-Reply-To: <CAGETcx_4FGa-rzLp6bjXbm4F4R6H2W78+nM_kN=XPz5hswzANA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 16 Feb 2021 09:05:28 +0100
-Message-ID: <CAMuHMdVodauqBmLMxsfi0kQtAFT8ruJ36LJL9YuQgqwQNKwHHg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+On Tue 16-02-21 03:07:13, Eiichi Tsukata wrote:
+> Hugepages can be preallocated to avoid unpredictable allocation latency.
+> If we run into 4k page shortage, the kernel can trigger OOM even though
+> there were free hugepages. When OOM is triggered by user address page
+> fault handler, we can use oom notifier to free hugepages in user space
+> but if it's triggered by memory allocation for kernel, there is no way
+> to synchronously handle it in user space.
 
-On Mon, Feb 15, 2021 at 10:27 PM Saravana Kannan <saravanak@google.com> wrote:
-> On Mon, Feb 15, 2021 at 4:38 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, Feb 12, 2021 at 4:00 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > On Thu, Feb 11, 2021 at 5:00 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > >       - I2C on R-Car Gen3 does not seem to use DMA, according to
-> > > >         /sys/kernel/debug/dmaengine/summary:
-> > > >
-> > > >             -dma4chan0    | e66d8000.i2c:tx
-> > > >             -dma4chan1    | e66d8000.i2c:rx
-> > > >             -dma5chan0    | e6510000.i2c:tx
-> > >
-> > > I think I need more context on the problem before I can try to fix it.
-> > > I'm also very unfamiliar with that file. With fw_devlink=permissive,
-> > > I2C was using DMA? If so, the next step is to see if the I2C relative
-> > > probe order with DMA is getting changed and if so, why.
-> >
-> > More detailed log:
-> >
-> >     platform e66d8000.i2c: Linked as a consumer to e6150000.clock-controller
-> >     platform e66d8000.i2c: Linked as a sync state only consumer to e6055400.gpio
-> >
-> > Why is e66d8000.i2c not linked as a consumer to e6700000.dma-controller?
->
-> Because fw_devlink.strict=1 is not set and dma/iommu is considered an
-> "optional"/"driver decides" dependency.
+Can you expand some more on what kind of problem do you see?
+Hugetlb pages are, by definition, a preallocated, unreclaimable and
+admin controlled pool of pages. Under those conditions it is expected
+and required that the sizing would be done very carefully. Why is that a
+problem in your particular setup/scenario?
 
-Oh, I thought dma/iommu were considered mandatory initially,
-but dropped as dependencies in the late boot process?
+If the sizing is really done properly and then a random process can
+trigger OOM then this can lead to malfunctioning of those workloads
+which do depend on hugetlb pool, right? So isn't this a kinda DoS
+scenario?
 
->
-> >     platform e6700000.dma-controller: Linked as a consumer to
-> > e6150000.clock-controller
->
-> Is this the only supplier of dma-controller?
+> This patch introduces a new sysctl vm.sacrifice_hugepage_on_oom. If
+> enabled, it first tries to free a hugepage if available before invoking
+> the oom-killer. The default value is disabled not to change the current
+> behavior.
 
-No, e6180000.system-controller is also a supplier.
+Why is this interface not hugepage size aware? It is quite different to
+release a GB huge page or 2MB one. Or is it expected to release the
+smallest one? To the implementation...
 
-> >     platform e66d8000.i2c: Added to deferred list
-> >     platform e6700000.dma-controller: Added to deferred list
-> >
-> >     bus: 'platform': driver_probe_device: matched device
-> > e6700000.dma-controller with driver rcar-dmac
-> >     bus: 'platform': really_probe: probing driver rcar-dmac with
-> > device e6700000.dma-controller
-> >     platform e6700000.dma-controller: Driver rcar-dmac requests probe deferral
-> >
-> >     bus: 'platform': driver_probe_device: matched device e66d8000.i2c
-> > with driver i2c-rcar
-> >     bus: 'platform': really_probe: probing driver i2c-rcar with device
-> > e66d8000.i2c
-> >
-> > I2C becomes available...
-> >
-> >     i2c-rcar e66d8000.i2c: request_channel failed for tx (-517)
-> >     [...]
-> >
-> > but DMA is not available yet, so the driver falls back to PIO.
-> >
-> >     driver: 'i2c-rcar': driver_bound: bound to device 'e66d8000.i2c'
-> >     bus: 'platform': really_probe: bound device e66d8000.i2c to driver i2c-rcar
-> >
-> >     platform e6700000.dma-controller: Retrying from deferred list
-> >     bus: 'platform': driver_probe_device: matched device
-> > e6700000.dma-controller with driver rcar-dmac
-> >     bus: 'platform': really_probe: probing driver rcar-dmac with
-> > device e6700000.dma-controller
-> >     platform e6700000.dma-controller: Driver rcar-dmac requests probe deferral
-> >     platform e6700000.dma-controller: Added to deferred list
-> >     platform e6700000.dma-controller: Retrying from deferred list
-> >     bus: 'platform': driver_probe_device: matched device
-> > e6700000.dma-controller with driver rcar-dmac
-> >     bus: 'platform': really_probe: probing driver rcar-dmac with
-> > device e6700000.dma-controller
-> >     driver: 'rcar-dmac': driver_bound: bound to device 'e6700000.dma-controller'
-> >     bus: 'platform': really_probe: bound device
-> > e6700000.dma-controller to driver rcar-dmac
-> >
-> > DMA becomes available.
-> >
-> > Here userspace is entered. /sys/kernel/debug/dmaengine/summary shows
-> > that the I2C controllers do not have DMA channels allocated, as the
-> > kernel has performed no more I2C transfers after DMA became available.
-> >
-> > Using i2cdetect shows that DMA is used, which is good:
-> >
-> >     i2c-rcar e66d8000.i2c: got DMA channel for rx
-> >
-> > With permissive devlinks, the clock controller consumers are not added
-> > to the deferred probing list, and probe order is slightly different.
-> > The I2C controllers are still probed before the DMA controllers.
-> > But DMA becomes available a bit earlier, before the probing of the last
-> > I2C slave driver.
->
-> This seems like a race? I'm guessing it's two different threads
-> probing those two devices? And it just happens to work for
-> "permissive" assuming the boot timing doesn't change?
->
-> > Hence /sys/kernel/debug/dmaengine/summary shows that
-> > some I2C transfers did use DMA.
-> >
-> > So the real issue is that e66d8000.i2c not linked as a consumer to
-> > e6700000.dma-controller.
->
-> That's because fw_devlink.strict=1 isn't set. If you need DMA to be
-> treated as a mandatory supplier, you'll need to set the flag.
->
-> Is fw_devlink=on really breaking anything here? It just seems like
-> "permissive" got lucky with the timing and it could break at any point
-> in the future. Thought?
+[...]
+> +static int sacrifice_hugepage(void)
+> +{
+> +	int ret;
+> +
+> +	spin_lock(&hugetlb_lock);
+> +	ret = free_pool_huge_page(&default_hstate, &node_states[N_MEMORY], 0);
 
-I don't think there is a race.  fw_devlinks calling driver_deferred_probe_add()
-on all consumers has a big impact on probe order.
+... no it is going to release the default huge page. This will be 2MB in
+most cases but this is not given.
 
-Gr{oetje,eeting}s,
+Unless I am mistaken this will free up also reserved hugetlb pages. This
+would mean that a page fault would SIGBUS which is very likely not
+something we want to do right? You also want to use oom nodemask rather
+than a full one.
 
-                        Geert
-
+Overall, I am not really happy about this feature even when above is
+fixed, but let's hear more the actual problem first.
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Michal Hocko
+SUSE Labs
