@@ -2,152 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB8731CAE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 301CE31CAE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbhBPNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 08:09:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46122 "EHLO mx2.suse.de"
+        id S229934AbhBPNMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 08:12:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46888 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229713AbhBPNJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 08:09:08 -0500
+        id S229802AbhBPNMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 08:12:10 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613481083; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tu/09opR+rOaWunzc6yzJsQqaBcSy0Wetier3xAJdn4=;
+        b=pwG37zROGA+8faCWLvy+Mf8FosYPMk8/PJ8dt1dtBwllWesrisk2vfB4D5gXvqF0weUMJj
+        zIvbNC31ZflpX/m7QJRpotSmwfUnQQy11rAmmFdlGS733eAW1d4ax98IvmiEwD84RsGhGV
+        v03nCahzJJXdkQMef0yVo4JjkmuO3r4=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 00D0FAF2C;
-        Tue, 16 Feb 2021 13:08:27 +0000 (UTC)
-Subject: Re: [PATCH 01/10] drm/qxl: properly handle device init failures
-To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc:     David Airlie <airlied@linux.ie>, Tong Zhang <ztong0001@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <spice-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@redhat.com>
-References: <20210216113716.716996-1-kraxel@redhat.com>
- <20210216113716.716996-2-kraxel@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <c9451a9a-b8b4-9393-4397-624df4eba3ff@suse.de>
-Date:   Tue, 16 Feb 2021 14:08:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        by mx2.suse.de (Postfix) with ESMTP id 1AA64AF2C;
+        Tue, 16 Feb 2021 13:11:23 +0000 (UTC)
+Date:   Tue, 16 Feb 2021 14:11:21 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Mike Rapoport <rppt@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
+ holes in memory layout
+Message-ID: <YCvEeWuU2tBUUNBG@dhcp22.suse.cz>
+References: <20210208110820.6269-1-rppt@kernel.org>
+ <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
+ <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
+ <YCaAHI/rFp1upRLc@dhcp22.suse.cz>
+ <20210214180016.GO242749@kernel.org>
+ <YCo4Lyio1h2Heixh@dhcp22.suse.cz>
+ <20210215212440.GA1307762@kernel.org>
+ <YCuDUG89KwQNbsjA@dhcp22.suse.cz>
+ <20210216110154.GB1307762@kernel.org>
+ <b1302d8e-5380-18d1-0f55-2dfd61f470e6@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210216113716.716996-2-kraxel@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="lnl5ZartAQhJsKAaL1FzuGkzuhW2eJapG"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1302d8e-5380-18d1-0f55-2dfd61f470e6@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lnl5ZartAQhJsKAaL1FzuGkzuhW2eJapG
-Content-Type: multipart/mixed; boundary="v3YlMpUxeDNS2gAiEYBJgOuJKw4QJpk4f";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc: David Airlie <airlied@linux.ie>, Tong Zhang <ztong0001@gmail.com>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <virtualization@lists.linux-foundation.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
-Message-ID: <c9451a9a-b8b4-9393-4397-624df4eba3ff@suse.de>
-Subject: Re: [PATCH 01/10] drm/qxl: properly handle device init failures
-References: <20210216113716.716996-1-kraxel@redhat.com>
- <20210216113716.716996-2-kraxel@redhat.com>
-In-Reply-To: <20210216113716.716996-2-kraxel@redhat.com>
+On Tue 16-02-21 13:34:56, Vlastimil Babka wrote:
+> On 2/16/21 12:01 PM, Mike Rapoport wrote:
+> >> 
+> >> I do understand that. And I am not objecting to the patch. I have to
+> >> confess I haven't digested it yet. Any changes to early memory
+> >> intialization have turned out to be subtle and corner cases only pop up
+> >> later. This is almost impossible to review just by reading the code.
+> >> That's why I am asking whether we want to address the specific VM_BUG_ON
+> >> first with something much less tricky and actually reviewable. And
+> >> that's why I am asking whether dropping the bug_on itself is safe to do
+> >> and use as a hot fix which should be easier to backport.
+> > 
+> > I can't say I'm familiar enough with migration and compaction code to say
+> > if it's ok to remove that bug_on. It does point to inconsistency in the
+> > memmap, but probably it's not important.
+> 
+> On closer look, removing the VM_BUG_ON_PAGE() in set_pfnblock_flags_mask() is
+> not safe. If we violate the zone_spans_pfn condition, it means we will write
+> outside of the pageblock bitmap for the zone, and corrupt something.
 
---v3YlMpUxeDNS2gAiEYBJgOuJKw4QJpk4f
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Isn't it enough that at least some pfn from the pageblock belongs to the
+zone in order to have the bitmap allocated for the whole page block
+(even if it partially belongs to a different zone)?
 
+> Actually
+> similar thing can happen in __get_pfnblock_flags_mask() where there's no
+> VM_BUG_ON, but there we can't corrupt memory. But we could theoretically fault
+> to do accessing some unmapped range?
+> 
+> So the checks would have to become unconditional !DEBUG_VM and return instead of
+> causing a BUG. Or we could go back one level and add some checks to
+> fast_isolate_around() to detect a page from zone that doesn't match cc->zone.
 
+Thanks for looking deeper into that. This sounds like a much more
+targeted fix to me.
 
-Am 16.02.21 um 12:37 schrieb Gerd Hoffmann:
-> Specifically do not try release resources which where
-> not allocated in the first place.
+> The question is if there is another code that will break if a page_zone()
+> suddenly changes e.g. in the middle of the pageblock - __pageblock_pfn_to_page()
+> assumes that if first and last page is from the same zone, so are all pages in
+> between, and the rest relies on that. But maybe if Andrea's
+> fast_isolate_around() issue is fixed, that's enough for stable backport.
 
-I still think this should eventually be resolved by using managed code.=20
-But for now
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
->=20
-> Cc: Tong Zhang <ztong0001@gmail.com>
-> Tested-by: Tong Zhang <ztong0001@gmail.com>
-> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-> ---
->   drivers/gpu/drm/qxl/qxl_display.c | 3 +++
->   drivers/gpu/drm/qxl/qxl_kms.c     | 4 ++++
->   2 files changed, 7 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qx=
-l_display.c
-> index c326412136c5..ec50d2cfd4e1 100644
-> --- a/drivers/gpu/drm/qxl/qxl_display.c
-> +++ b/drivers/gpu/drm/qxl/qxl_display.c
-> @@ -1183,6 +1183,9 @@ int qxl_destroy_monitors_object(struct qxl_device=
- *qdev)
->   {
->   	int ret;
->  =20
-> +	if (!qdev->monitors_config_bo)
-> +		return 0;
-> +
->   	qdev->monitors_config =3D NULL;
->   	qdev->ram_header->monitors_config =3D 0;
->  =20
-> diff --git a/drivers/gpu/drm/qxl/qxl_kms.c b/drivers/gpu/drm/qxl/qxl_km=
-s.c
-> index 66d74aaaee06..4dc5ad13f12c 100644
-> --- a/drivers/gpu/drm/qxl/qxl_kms.c
-> +++ b/drivers/gpu/drm/qxl/qxl_kms.c
-> @@ -288,6 +288,10 @@ void qxl_device_fini(struct qxl_device *qdev)
->   {
->   	int cur_idx;
->  =20
-> +	/* check if qxl_device_init() was successful (gc_work is initialized =
-last) */
-> +	if (!qdev->gc_work.func)
-> +		return;
-> +
->   	for (cur_idx =3D 0; cur_idx < 3; cur_idx++) {
->   		if (!qdev->current_release_bo[cur_idx])
->   			continue;
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---v3YlMpUxeDNS2gAiEYBJgOuJKw4QJpk4f--
-
---lnl5ZartAQhJsKAaL1FzuGkzuhW2eJapG
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmArw8kFAwAAAAAACgkQlh/E3EQov+AS
-yw/9HQv+slrvfu2KApiw6CP4w+/qHpWmhrAjamB7sY5PzEy8uPw6IkWHn2OOeP0T3wO/43MujjqW
-2DfNZNZh9Yvsl+OmtFUu/ABbmrN5H2YbMd89EFnFwrTewf8AjW5aELMRiazpwDZmiF9t4zY8Zbgg
-kFD6vckqqHcN6/7svmAuQi4XVxjq7+ULrar3JThqpCwlb38bK4BaGF0sfOaknBfO9qE9J1Yjdzqr
-Mw62KXPUM6sghE1smDOg+qAW6WuSdpnD3eEDW0Dg7xyFDeywcizAVAMHMBz9nMsCKl14QMzg+P5a
-zEwvucnXKFcEbvIhcCbcTal13EwW1nrPc0QlhrE/Xml+LYoMI3mSI0YtwsR4CiudLbgpSQxBggvi
-VsRx7vv874ARwop79x6HpmTnx4GX+fJ9EJa4KFAfuPmqvZr46KczplxqP2kB5im99LW7o9tZ3kdv
-vfGKo2BT8UI0Yc1rkrIEx/nXiYkco+VO9Sf6wbq29+WHcs5EVsPkC8Yz0NIXsQ3/m06Nwugy1Tx9
-b5DdhJWuFnNgc0ThnmcsCcPxfBh3X4txOetY3rf7Foc2qGdO/7D/v5osEDvlHNcynQvq1N1PKqaN
-g37G2NS2lnzYJKasEDnBIaTxy1hEHJs++9TCgdGbWa1WJ8a98NTCGQw5TsdBA9S1uBEmG59xY8/O
-tP4=
-=Wtgq
------END PGP SIGNATURE-----
-
---lnl5ZartAQhJsKAaL1FzuGkzuhW2eJapG--
+There might be some other cases but I think it would be better to have a
+single fix for this particular issue and have it fixed properly and only
+then build something more robust on top.
+-- 
+Michal Hocko
+SUSE Labs
