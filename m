@@ -2,94 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D791231CA5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8A031CA55
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhBPMEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbhBPMCU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:02:20 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA454C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:59:32 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id x16so541114wmk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:59:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=Vdhu8U1QU4NNQOQK7F0IcKROqAkbt4T+2oowJvOiIEI=;
-        b=ZeFHwIKLx8FPqrshhYW0vuyUCycDIe6jJJ4Oi3dPexy/VoZt5EbyHd7OrxmpBDLXXX
-         sFvh5O3l/RCabEg/zzykeEufyihQbduluEKfe/0XA4xiB/L0Z0aFbhTpE/r7O4nAPfTH
-         pdUo91iHchn27Prhs3g8mijIzWMGGVS/SDKYnPlftyQANAA4IdGTeSLb7JAG7WShN0qA
-         QVsgvik1YjRj+1dRZbrUegnz+nhI7IbXe8TKlAt0DnFa4fQ3q6JqPk0ZpdwFhb+1Q7Yn
-         lnZyACt+ZLU7oL/uOyPM5HYt3nA0ZS+5OTHaZ7z3s7WuVguHUy4pTkIkP7NSLLHSopY4
-         vF+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Vdhu8U1QU4NNQOQK7F0IcKROqAkbt4T+2oowJvOiIEI=;
-        b=WQwqmWOH+iHNKGT9AeRb/q+C0SWDwTVx2x3QTEG+PNwuMugmDKGKPRKCWrrj2Sf4PY
-         G3M/URv3nqxOMGIShmG/xHCte3WSQMCrhTkDX2+ncSYhKs+LfWpaqd5yOuLc8UVXrwFJ
-         mGzJeYlcGPiMPkZ2Vuu8sWOHsdjJ79mOyUWTokVz2UKCMIG2DZyI9YAsiazE8MJiJJdx
-         szsEOJOGOALEHaKBSMFg0kxl3YJP2sLGb6HeJrzgcBai0hdITjd8tC9AUe1wqjyTXP9n
-         /ybzkfSUm+LciBFf0zMJOIKLn9/sKXEH+AnLytdWZJmDBjKl3pflJCv/ZhDzaX5wrUrS
-         VtlA==
-X-Gm-Message-State: AOAM531snOKdng4/tmACEgkVV9HM3MKESHSeKPwrkJ3OL86IQdUwbDp9
-        7nPIkhDUWcEbzHT4xMtZMiRZSKbzRR3+Viif
-X-Google-Smtp-Source: ABdhPJy4QtaFpwXzcg7OezjI/QsgDUwtqJ6OSEDxhqyvkNRvsHScS81WKCW86b2sKWSUyZyosirTBg==
-X-Received: by 2002:a1c:2d47:: with SMTP id t68mr3103988wmt.189.1613476771741;
-        Tue, 16 Feb 2021 03:59:31 -0800 (PST)
-Received: from a-VirtualBox (cpc141888-watf13-2-0-cust663.15-2.cable.virginm.net. [86.14.42.152])
-        by smtp.gmail.com with ESMTPSA id a186sm3348583wme.17.2021.02.16.03.59.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 03:59:31 -0800 (PST)
-Date:   Tue, 16 Feb 2021 16:59:26 +0500
-From:   Bilal Wasim <bilalwasim676@gmail.com>
-To:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        matthias.bgg@gmail.com, enric.balletbo@collabora.com,
-        hsinyi@chromium.org, weiyi.lu@mediatek.com
-Subject: Re: [PATCH v2 0/3] Misc bug fixes in mtk power domain driver
-Message-ID: <20210216165926.46bbafc7@a-VirtualBox>
-In-Reply-To: <20210201121416.1488439-1-Bilal.Wasim@imgtec.com>
-References: <20210201121416.1488439-1-Bilal.Wasim@imgtec.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230121AbhBPMDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 07:03:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54890 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230144AbhBPMA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 07:00:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BD284AF9F;
+        Tue, 16 Feb 2021 12:00:14 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 838a0528;
+        Tue, 16 Feb 2021 12:01:16 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     gregkh@linuxfoundation.org
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        "drinkcat@chromium.org" <drinkcat@chromium.org>,
+        "iant@google.com" <iant@google.com>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "llozano@chromium.org" <llozano@chromium.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "miklos@szeredi.hu" <miklos@szeredi.hu>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "dchinner@redhat.com" <dchinner@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "sfrench@samba.org" <sfrench@samba.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
+Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
+References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+        <20210215154317.8590-1-lhenriques@suse.de>
+        <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
+        <73ab4951f48d69f0183548c7a82f7ae37e286d1c.camel@hammerspace.com>
+        <CAOQ4uxgPtqG6eTi2AnAV4jTAaNDbeez+Xi2858mz1KLGMFntfg@mail.gmail.com>
+        <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
+        <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com>
+        <87r1lgjm7l.fsf@suse.de> <YCuseTMyjL+9sWum@kroah.com>
+Date:   Tue, 16 Feb 2021 12:01:16 +0000
+In-Reply-To: <YCuseTMyjL+9sWum@kroah.com> (gregkh@linuxfoundation.org's
+        message of "Tue, 16 Feb 2021 12:28:57 +0100")
+Message-ID: <87k0r8jk6r.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org> writes:
 
-ping - can this series be merged ?
+> On Tue, Feb 16, 2021 at 11:17:34AM +0000, Luis Henriques wrote:
+>> Amir Goldstein <amir73il@gmail.com> writes:
+>> 
+>> > On Mon, Feb 15, 2021 at 8:57 PM Trond Myklebust <trondmy@hammerspace.com> wrote:
+>> >>
+>> >> On Mon, 2021-02-15 at 19:24 +0200, Amir Goldstein wrote:
+>> >> > On Mon, Feb 15, 2021 at 6:53 PM Trond Myklebust <
+>> >> > trondmy@hammerspace.com> wrote:
+>> >> > >
+>> >> > > On Mon, 2021-02-15 at 18:34 +0200, Amir Goldstein wrote:
+>> >> > > > On Mon, Feb 15, 2021 at 5:42 PM Luis Henriques <
+>> >> > > > lhenriques@suse.de>
+>> >> > > > wrote:
+>> >> > > > >
+>> >> > > > > Nicolas Boichat reported an issue when trying to use the
+>> >> > > > > copy_file_range
+>> >> > > > > syscall on a tracefs file.  It failed silently because the file
+>> >> > > > > content is
+>> >> > > > > generated on-the-fly (reporting a size of zero) and
+>> >> > > > > copy_file_range
+>> >> > > > > needs
+>> >> > > > > to know in advance how much data is present.
+>> >> > > > >
+>> >> > > > > This commit restores the cross-fs restrictions that existed
+>> >> > > > > prior
+>> >> > > > > to
+>> >> > > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+>> >> > > > > devices")
+>> >> > > > > and
+>> >> > > > > removes generic_copy_file_range() calls from ceph, cifs, fuse,
+>> >> > > > > and
+>> >> > > > > nfs.
+>> >> > > > >
+>> >> > > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+>> >> > > > > devices")
+>> >> > > > > Link:
+>> >> > > > > https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+>> >> > > > > Cc: Nicolas Boichat <drinkcat@chromium.org>
+>> >> > > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+>> >> > > >
+>> >> > > > Code looks ok.
+>> >> > > > You may add:
+>> >> > > >
+>> >> > > > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+>> >> > > >
+>> >> > > > I agree with Trond that the first paragraph of the commit message
+>> >> > > > could
+>> >> > > > be improved.
+>> >> > > > The purpose of this change is to fix the change of behavior that
+>> >> > > > caused the regression.
+>> >> > > >
+>> >> > > > Before v5.3, behavior was -EXDEV and userspace could fallback to
+>> >> > > > read.
+>> >> > > > After v5.3, behavior is zero size copy.
+>> >> > > >
+>> >> > > > It does not matter so much what makes sense for CFR to do in this
+>> >> > > > case (generic cross-fs copy).  What matters is that nobody asked
+>> >> > > > for
+>> >> > > > this change and that it caused problems.
+>> >> > > >
+>> >> > >
+>> >> > > No. I'm saying that this patch should be NACKed unless there is a
+>> >> > > real
+>> >> > > explanation for why we give crap about this tracefs corner case and
+>> >> > > why
+>> >> > > it can't be fixed.
+>> >> > >
+>> >> > > There are plenty of reasons why copy offload across filesystems
+>> >> > > makes
+>> >> > > sense, and particularly when you're doing NAS. Clone just doesn't
+>> >> > > cut
+>> >> > > it when it comes to disaster recovery (whereas backup to a
+>> >> > > different
+>> >> > > storage unit does). If the client has to do the copy, then you're
+>> >> > > effectively doubling the load on the server, and you're adding
+>> >> > > potentially unnecessary network traffic (or at the very least you
+>> >> > > are
+>> >> > > doubling that traffic).
+>> >> > >
+>> >> >
+>> >> > I don't understand the use case you are describing.
+>> >> >
+>> >> > Which filesystem types are you talking about for source and target
+>> >> > of copy_file_range()?
+>> >> >
+>> >> > To be clear, the original change was done to support NFS/CIFS server-
+>> >> > side
+>> >> > copy and those should not be affected by this change.
+>> >> >
+>> >>
+>> >> That is incorrect:
+>> >>
+>> >> ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file
+>> >> *dst,
+>> >>  u64 dst_pos, u64 count)
+>> >> {
+>> >>
+>> >>  /*
+>> >>  * Limit copy to 4MB to prevent indefinitely blocking an nfsd
+>> >>  * thread and client rpc slot. The choice of 4MB is somewhat
+>> >>  * arbitrary. We might instead base this on r/wsize, or make it
+>> >>  * tunable, or use a time instead of a byte limit, or implement
+>> >>  * asynchronous copy. In theory a client could also recognize a
+>> >>  * limit like this and pipeline multiple COPY requests.
+>> >>  */
+>> >>  count = min_t(u64, count, 1 << 22);
+>> >>  return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
+>> >> }
+>> >>
+>> >> You are now explicitly changing the behaviour of knfsd when the source
+>> >> and destination filesystem differ.
+>> >>
+>> >> For one thing, you are disallowing the NFSv4.2 copy offload use case of
+>> >> copying from a local filesystem to a remote NFS server. However you are
+>> >> also disallowing the copy from, say, an XFS formatted partition to an
+>> >> ext4 partition.
+>> >>
+>> >
+>> > Got it.
+>> 
+>> Ugh.  And I guess overlayfs may have a similar problem.
+>> 
+>> > This is easy to solve with a flag COPY_FILE_SPLICE (or something) that
+>> > is internal to kernel users.
+>> >
+>> > FWIW, you may want to look at the loop in ovl_copy_up_data()
+>> > for improvements to nfsd_copy_file_range().
+>> >
+>> > We can move the check out to copy_file_range syscall:
+>> >
+>> >         if (flags != 0)
+>> >                 return -EINVAL;
+>> >
+>> > Leave the fallback from all filesystems and check for the
+>> > COPY_FILE_SPLICE flag inside generic_copy_file_range().
+>> 
+>> Ok, the diff bellow is just to make sure I understood your suggestion.
+>> 
+>> The patch will also need to:
+>> 
+>>  - change nfs and overlayfs calls to vfs_copy_file_range() so that they
+>>    use the new flag.
+>> 
+>>  - check flags in generic_copy_file_checks() to make sure only valid flags
+>>    are used (COPY_FILE_SPLICE at the moment).
+>> 
+>> Also, where should this flag be defined?  include/uapi/linux/fs.h?
+>
+> Why would userspace want/need this flag?
 
-On Mon,  1 Feb 2021 17:14:13 +0500
-Bilal Wasim <bilalwasim676@gmail.com> wrote:
+In fact, my question sort of implied yours :-)
 
-> Incorrect mask for the "bus_prot_clr" field meant that imgtec
-> gpu power domain (mfg_async) was not powered up correctly, causing
-> failure in driver booting. Fixing this and also adding "domain_suuply"
-> capability to "mfg_async" power domain (for mt8173) as imgtec gpu
-> needs da9211 regulator to be enabled before enabling this subdomain.
-> 
-> Tested with mt8173 elm chromebook.
-> 
-> Bilal Wasim (3):
->   soc: mediatek: pm-domains: Use correct mask for bus_prot_clr
->   soc: mediatek: pm-domains: Add domain_supply cap for mfg_async PD
->   arm64: dts: mediatek: mt8173: Add domain supply for mfg_async
-> 
->  arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 4 ++++
->  arch/arm64/boot/dts/mediatek/mt8173-evb.dts  | 4 ++++
->  arch/arm64/boot/dts/mediatek/mt8173.dtsi     | 2 +-
->  drivers/soc/mediatek/mt8173-pm-domains.h     | 1 +
->  drivers/soc/mediatek/mtk-pm-domains.h        | 2 +-
->  5 files changed, 11 insertions(+), 2 deletions(-)
-> 
+What I wanted to know was whether we would like to allow userspace to
+_explicitly_ revert to the current behaviour (i.e. use the flag to allow
+cross-fs copies) or to continue to return -EINVAL to userspace if flags
+are != 0 (in which case this check would need to move to the syscall
+definition).
 
+Cheers,
+-- 
+Luis
