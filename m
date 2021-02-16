@@ -2,57 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCBE31D16E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6004631D166
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhBPURc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 15:17:32 -0500
-Received: from saturn.retrosnub.co.uk ([46.235.226.198]:52288 "EHLO
-        saturn.retrosnub.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbhBPUR1 (ORCPT
+        id S229961AbhBPUMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 15:12:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhBPUML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 15:17:27 -0500
-X-Greylist: delayed 498 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Feb 2021 15:17:26 EST
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        by saturn.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id F3E7C9E013D;
-        Tue, 16 Feb 2021 20:09:13 +0000 (GMT)
-Date:   Tue, 16 Feb 2021 20:09:12 +0000
-From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     linux-doc@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH 0/5] docs: iio: misc fixes and improvements
-Message-ID: <20210216200912.40ccb1c8@archlinux>
-In-Reply-To: <20210215143511.25471-1-luca@lucaceresoli.net>
-References: <20210215143511.25471-1-luca@lucaceresoli.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 16 Feb 2021 15:12:11 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A784FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:11:30 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id g3so5258487qvl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:11:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ESU2v6PnWuuqrc3aBtGPRviCIYxee3TEkKh6dRFK5uo=;
+        b=Gb3bXHKRAg/D7IARf3bWgbaQnVZPbDzZXMaW8ftiH2UDhv1Dze7XbrejZTpAghSOJQ
+         eyJwEDlW3onw3k29tSH3mp7Ab2RBOAVYpkhTeomnvz0+WRqmFiEa5Uf0WP9eVB2v3eFB
+         P3u29V2HepHJuKqgSy4HGcf1kukKcKKI/xlR/iebsRLPSajCIHprbjaNCv1U4uiep05H
+         sk2rs4bfStcQI7IsirbvbBxXst6SYAMgjx1T7nkNS3mV41BBC0IKs6E6iPIulBL6GHKE
+         iCEFPAilq4jv9bbsQ4ncj0asisko/+/Hnmc0C7OmIEv2drTF3exVkTNjX+LkxJBONs80
+         42aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ESU2v6PnWuuqrc3aBtGPRviCIYxee3TEkKh6dRFK5uo=;
+        b=IC6at8k01b+7NcRb72IW7kepYl5iaCMEf3UKigMCxcdekrfPczHyalQ4291g8HRori
+         rVZtMyqcbC9kfD/0WLkc/66qtxqIRttCPip9JVJuoUD6P2m8SVNH2fc4i3zsHsPl0vJQ
+         g7RN93IYEt54Zlk/fKlWSFaqmN6SXq01TWWZ8bXZ003BZ5Wjt2La6wbdG5T8BTjnwI1/
+         ZYbDzzD5OoX7ECAB/Kzrb8S46V/2c+4pFf5u3+GY7UZVYctQkF1oG5L+8EtnriLJnM8e
+         uVui2R+yvm3+w8Sva8bKwzztzk1e7XbijP2TTGZ1qfQ+WFiiHJsViZoieZ7oIuaznpwS
+         TEmw==
+X-Gm-Message-State: AOAM5326mwkNpWUoTNbAVZTxnIx6OcJOuWL31H0BgQ/RwxtKz4tFkErn
+        NDIwVu5ADk25E35XTEpaffw3xw==
+X-Google-Smtp-Source: ABdhPJzqz6Fnqc3dQq6MdJJTrMD4jpD2ItrVRYu0DaxtvxmCIOqvdeZ2BWlz+1iyg+y1MS2V463oRQ==
+X-Received: by 2002:a05:6214:16cf:: with SMTP id d15mr21451336qvz.32.1613506289989;
+        Tue, 16 Feb 2021 12:11:29 -0800 (PST)
+Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id t6sm13790761qti.2.2021.02.16.12.11.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 12:11:29 -0800 (PST)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org (open list:OPERATING PERFORMANCE POINTS (OPP)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] opp: fix dev_pm_opp_set_rate for different frequency at the same opp level
+Date:   Tue, 16 Feb 2021 15:10:29 -0500
+Message-Id: <20210216201030.19152-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 15:35:06 +0100
-Luca Ceresoli <luca@lucaceresoli.net> wrote:
+There is not "nothing to do" when the opp is the same. The frequency can
+be different from opp->rate.
 
-> Here are a few minor fixes and improvements to the IIO documentation.
-> 
-> Luca Ceresoli (5):
->   docs: iio: fix example formatting
->   docs: iio: fix directory naming
->   docs: iio: document the 'index' attribute too
->   docs: iio: fix bullet list formatting
->   docs: iio: mark "repeat" sysfs attribute as optional
-> 
->  Documentation/driver-api/iio/buffers.rst | 15 ++++++++-------
->  Documentation/iio/iio_configfs.rst       |  2 +-
->  2 files changed, 9 insertions(+), 8 deletions(-)
-> 
-Applied to the togreg branch of iio.git and pushed out as testing
-for reasons not particularly related to these patches (though I guess
-0-day might do a docs build occasionally)
+Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/opp/core.c | 7 +++++--
+ drivers/opp/opp.h  | 1 +
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-Jonathan
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index c3f3d9249cc5..f82cf72f433e 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -986,6 +986,7 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
+ 		    struct dev_pm_opp *opp, unsigned long freq)
+ {
+ 	struct dev_pm_opp *old_opp;
++	unsigned long old_freq;
+ 	int scaling_down, ret;
+ 
+ 	if (unlikely(!opp))
+@@ -996,15 +997,16 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
+ 		_find_current_opp(dev, opp_table);
+ 
+ 	old_opp = opp_table->current_opp;
++	old_freq = opp_table->current_freq;
+ 
+ 	/* Return early if nothing to do */
+-	if (opp_table->enabled && old_opp == opp) {
++	if (opp_table->enabled && old_opp == opp && old_freq == freq) {
+ 		dev_dbg(dev, "%s: OPPs are same, nothing to do\n", __func__);
+ 		return 0;
+ 	}
+ 
+ 	dev_dbg(dev, "%s: switching OPP: Freq %lu -> %lu Hz, Level %u -> %u, Bw %u -> %u\n",
+-		__func__, old_opp->rate, freq, old_opp->level, opp->level,
++		__func__, old_freq, freq, old_opp->level, opp->level,
+ 		old_opp->bandwidth ? old_opp->bandwidth[0].peak : 0,
+ 		opp->bandwidth ? opp->bandwidth[0].peak : 0);
+ 
+@@ -1061,6 +1063,7 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
+ 	/* Make sure current_opp doesn't get freed */
+ 	dev_pm_opp_get(opp);
+ 	opp_table->current_opp = opp;
++	opp_table->current_freq = freq;
+ 
+ 	return ret;
+ }
+diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
+index 9b9daf83b074..9f1d9c877380 100644
+--- a/drivers/opp/opp.h
++++ b/drivers/opp/opp.h
+@@ -186,6 +186,7 @@ struct opp_table {
+ 	enum opp_table_access shared_opp;
+ 	struct dev_pm_opp *current_opp;
+ 	struct dev_pm_opp *suspend_opp;
++	unsigned long current_freq;
+ 
+ 	struct mutex genpd_virt_dev_lock;
+ 	struct device **genpd_virt_devs;
+-- 
+2.26.1
 
