@@ -2,339 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CAB31CFDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C7B31CFDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhBPSGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 13:06:15 -0500
-Received: from mga18.intel.com ([134.134.136.126]:20535 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229867AbhBPSGM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:06:12 -0500
-IronPort-SDR: PLj0kUS2do1npY92+VLxfz/wGy+c5ftP4/nTkP824mFAEEIJjfLr+ObLoA7tkVDiaGmZtj7Ebx
- EN+4Z8mlhixQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="170630574"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="170630574"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 10:04:25 -0800
-IronPort-SDR: i0cr3LxQxbAYuWEbjqkGKe4APMse6AY/KbVPOSZjlooScNtu7j2nmLp+aezh6AutPAxPyVbli8
- yjkWcrfBN6SA==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="426560114"
-Received: from schen9-mobl.amr.corp.intel.com ([10.251.28.82])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 10:04:24 -0800
-Subject: Re: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters and
- add cluster scheduler
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>
-References: <20210106083026.40444-1-song.bao.hua@hisilicon.com>
- <737932c9-846a-0a6b-08b8-e2d2d95b67ce@linux.intel.com>
- <38ce39d2d4754d76934bb07370eff48b@hisilicon.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <5aa5115c-6c1e-700c-a758-c51760bfec47@linux.intel.com>
-Date:   Tue, 16 Feb 2021 10:04:17 -0800
+        id S230001AbhBPSHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 13:07:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229807AbhBPSHE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 13:07:04 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19213C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 10:06:24 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id z32so7668276qtd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 10:06:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jY9iK1+FYhqLlmeOaaKNMJnRWWpPl1FPPGfZFgnoHOA=;
+        b=J61crQvmK+qVVsBKTRgxh97TUx35Xd9UngcxEIQ/FyDCnqG3ntUYW6zNuklrBgg7x5
+         ShKstpDoEWs9PStyAOU+UKjYTs6+5LthtKz9Rg4OdVpGi0Zv3SkYd4HXkdhQvm/NfgdN
+         YprLyz0UaIbY8olus8ju7DrI7UfbrWx/hAZi2BXnPFnU3f2VZ0si/d2X/sfJdfLviiKA
+         1Euhj4lzODbXo/VEV3LvfmPFEY+nKCsAGI51foeMn1jiL289OS7qcCHVaz2+jPqSiPSx
+         MLnSqIDr8fokhb3RBdL+sZA+blwRG/leGdFtkBDxvvrvwBFPcR65/tRVe+4aKs9CI2Ai
+         JhSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jY9iK1+FYhqLlmeOaaKNMJnRWWpPl1FPPGfZFgnoHOA=;
+        b=rj7KIoH+77cZqGgYhowox8Enbm/LPibeYVa6X6kXWiTGvuIwEMNOfByyo3PtGv6zub
+         a6KoPwpPbcsY1HBdDpNsArK9PIViAbGGPjQQkVSl0JQozKMu3f5mFqZn98Daw6U25yhJ
+         v6+e62Q0iOkiNdm2oc3lrk6W+V6GWEIIEgBYorV+itGcTWDLSJNVT0ub5VAD/ZlIiBUs
+         u/gipWztzXeGtDMpUcTKxafkbQEMZn8YGkQ96eukOqR9rw/HZ04AskTXi1eDPcv/Qj64
+         vnejOyyZ9RurrsqxgxR3/HRC9nWIcatoZgEByNLpxVCa+MP96i2bdJyqBmuTcsujqWH0
+         CsYw==
+X-Gm-Message-State: AOAM531eaR9oEq9eeYsVpXtH720w6Sbr2G/BB0mFxRplYCVhkAkaUySP
+        I/aXHkFNVw+gChXl/HB+YBzF9LQlO370OpNR21w=
+X-Google-Smtp-Source: ABdhPJwokn1VAbBbWme8hbQKD48AY7keANjDwy6xiTFqQEmNtcyAGSGs2OgTmgYhB+BvFCvS44aLWw==
+X-Received: by 2002:a05:622a:216:: with SMTP id b22mr19554660qtx.163.1613498782789;
+        Tue, 16 Feb 2021 10:06:22 -0800 (PST)
+Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id x6sm3255622qkj.118.2021.02.16.10.06.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Feb 2021 10:06:22 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] drm/msm: add compatibles for sm8150/sm8250 display
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Drew Davenport <ddavenport@chromium.org>,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        tongtiangen <tongtiangen@huawei.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210215161537.14696-1-jonathan@marek.ca>
+ <20210215161537.14696-2-jonathan@marek.ca>
+ <CAA8EJpo_Fs8Wj6zjH6BQqm=mG=qcGt3_JMj4nK-vsKCzr8tn1g@mail.gmail.com>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <29231c68-0cc4-9d8a-8cb1-791511780bcd@marek.ca>
+Date:   Tue, 16 Feb 2021 13:05:34 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <38ce39d2d4754d76934bb07370eff48b@hisilicon.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAA8EJpo_Fs8Wj6zjH6BQqm=mG=qcGt3_JMj4nK-vsKCzr8tn1g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/3/21 3:32 AM, Song Bao Hua (Barry Song) wrote:
-
+On 2/16/21 11:54 AM, Dmitry Baryshkov wrote:
+> On Mon, 15 Feb 2021 at 19:25, Jonathan Marek <jonathan@marek.ca> wrote:
 >>
->> Attached below are two RFC patches for creating x86 L2
->> cache sched domain, sans the idle cpu selection on wake up code.  It is
->> similar enough in concept to Barry's patch that we should have a
->> single patchset that accommodates both use cases.
+>> The driver already has support for sm8150/sm8250, but the compatibles were
+>> never added.
+>>
+>> Also inverse the non-mdp4 condition in add_display_components() to avoid
+>> having to check every new compatible in the condition.
+>>
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+>>   Documentation/devicetree/bindings/display/msm/dpu.txt | 4 ++--
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c               | 2 ++
+>>   drivers/gpu/drm/msm/msm_drv.c                         | 6 +++---
+>>   3 files changed, 7 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/display/msm/dpu.txt b/Documentation/devicetree/bindings/display/msm/dpu.txt
+>> index 551ae26f60da..5763f43200a0 100644
+>> --- a/Documentation/devicetree/bindings/display/msm/dpu.txt
+>> +++ b/Documentation/devicetree/bindings/display/msm/dpu.txt
+>> @@ -8,7 +8,7 @@ The DPU display controller is found in SDM845 SoC.
+>>
+>>   MDSS:
+>>   Required properties:
+>> -- compatible:  "qcom,sdm845-mdss", "qcom,sc7180-mdss"
+>> +- compatible:  "qcom,sdm845-mdss", "qcom,sc7180-mdss", "qcom,sm8150-mdss", "qcom,sm8250-mdss"
+>>   - reg: physical base address and length of contoller's registers.
+>>   - reg-names: register region names. The following region is required:
+>>     * "mdss"
+>> @@ -41,7 +41,7 @@ Optional properties:
+>>
+>>   MDP:
+>>   Required properties:
+>> -- compatible: "qcom,sdm845-dpu", "qcom,sc7180-dpu"
+>> +- compatible: "qcom,sdm845-dpu", "qcom,sc7180-dpu", "qcom,sm8150-dpu", "qcom,sm8250-dpu"
+>>   - reg: physical base address and length of controller's registers.
+>>   - reg-names : register region names. The following region is required:
+>>     * "mdp"
 > 
-> Hi Tim, Agreed on this.
-> hopefully the RFC v4 I am preparing will cover your case.
+> These two chunks should probably go to the separate patch 'dt-bindings:...'.
 > 
 
-Barry, 
+In this case I think its better to have this change in the same patch, 
+but maybe one of the Robs will disagree.
 
-I've taken a crack at it.  Attached is a patch on top of your
-v3 patches to implement L2 cluster sched domain for x86.
+> Also, could you please pinpoint the reason for adding more
+> compatibility strings, while they map to the same internal data?
+> I think we might want instead to use some generic name for the dpu
+> block, like "qcom,dpu" or "qcom,mdp-dpu" instead of specifying the
+> platform name.
+> 
 
-Thanks.
+sdm845 and sc7180 aren't using generic compatibles, this is just being 
+consistent with that.
 
-Tim
-
----->8------
-
-From 9189e489b019e110ee6e9d4183e243e48f44ff25 Mon Sep 17 00:00:00 2001
-From: Tim Chen <tim.c.chen@linux.intel.com>
-Date: Tue, 16 Feb 2021 08:24:39 -0800
-Subject: [RFC PATCH] scheduler: Add cluster scheduler level for x86
-To: <valentin.schneider@arm.com>, <catalin.marinas@arm.com>, <will@kernel.org>, <rjw@rjwysocki.net>, <vincent.guittot@linaro.org>, <lenb@kernel.org>, <gregkh@linuxfoundation.org>, <jonathan.cameron@huawei.com>, <mingo@redhat.com>, <peterz@infradead.org>, <juri.lelli@redhat.com>, <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>, <mark.rutland@arm.com>, <sudeep.holla@arm.com>, <aubrey.li@linux.intel.com>
-Cc: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>, <linuxarm@openeuler.org>, <xuwei5@huawei.com>, <prime.zeng@hisilicon.com>, <tiantao6@hisilicon.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>
-
-There are x86 CPU architectures (e.g. Jacobsville) where L2 cahce
-is shared among a cluster of cores instead of being exclusive
-to one single core.
-
-To prevent oversubscription of L2 cache, load should be
-balanced between such L2 clusters, especially for tasks with
-no shared data.
-
-Also with cluster scheduling policy where tasks are woken up
-in the same L2 cluster, we will benefit from keeping tasks
-related to each other and likely sharing data in the same L2
-cluster.
-
-Add CPU masks of CPUs sharing the L2 cache so we can build such
-L2 cluster scheduler domain.
-
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
----
- arch/x86/Kconfig                |  8 ++++++
- arch/x86/include/asm/smp.h      |  7 ++++++
- arch/x86/include/asm/topology.h |  1 +
- arch/x86/kernel/cpu/cacheinfo.c |  1 +
- arch/x86/kernel/cpu/common.c    |  3 +++
- arch/x86/kernel/smpboot.c       | 43 ++++++++++++++++++++++++++++++++-
- 6 files changed, 62 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 21f851179ff0..10fc95005df7 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1008,6 +1008,14 @@ config NR_CPUS
- 	  This is purely to save memory: each supported CPU adds about 8KB
- 	  to the kernel image.
- 
-+config SCHED_CLUSTER
-+	bool "Cluster scheduler support"
-+	default n
-+	help
-+	 Cluster scheduler support improves the CPU scheduler's decision
-+	 making when dealing with machines that have clusters of CPUs
-+	 sharing L2 cache. If unsure say N here.
-+
- config SCHED_SMT
- 	def_bool y if SMP
- 
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index c0538f82c9a2..9cbc4ae3078f 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -16,7 +16,9 @@ DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_core_map);
- DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_die_map);
- /* cpus sharing the last level cache: */
- DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_llc_shared_map);
-+DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_l2c_shared_map);
- DECLARE_PER_CPU_READ_MOSTLY(u16, cpu_llc_id);
-+DECLARE_PER_CPU_READ_MOSTLY(u16, cpu_l2c_id);
- DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
- 
- static inline struct cpumask *cpu_llc_shared_mask(int cpu)
-@@ -24,6 +26,11 @@ static inline struct cpumask *cpu_llc_shared_mask(int cpu)
- 	return per_cpu(cpu_llc_shared_map, cpu);
- }
- 
-+static inline struct cpumask *cpu_l2c_shared_mask(int cpu)
-+{
-+	return per_cpu(cpu_l2c_shared_map, cpu);
-+}
-+
- DECLARE_EARLY_PER_CPU_READ_MOSTLY(u16, x86_cpu_to_apicid);
- DECLARE_EARLY_PER_CPU_READ_MOSTLY(u32, x86_cpu_to_acpiid);
- DECLARE_EARLY_PER_CPU_READ_MOSTLY(u16, x86_bios_cpu_apicid);
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index 9239399e5491..2a11ccc14fb1 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -103,6 +103,7 @@ static inline void setup_node_to_cpumask_map(void) { }
- #include <asm-generic/topology.h>
- 
- extern const struct cpumask *cpu_coregroup_mask(int cpu);
-+extern const struct cpumask *cpu_clustergroup_mask(int cpu);
- 
- #define topology_logical_package_id(cpu)	(cpu_data(cpu).logical_proc_id)
- #define topology_physical_package_id(cpu)	(cpu_data(cpu).phys_proc_id)
-diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
-index 3ca9be482a9e..0d03a71e713e 100644
---- a/arch/x86/kernel/cpu/cacheinfo.c
-+++ b/arch/x86/kernel/cpu/cacheinfo.c
-@@ -846,6 +846,7 @@ void init_intel_cacheinfo(struct cpuinfo_x86 *c)
- 		l2 = new_l2;
- #ifdef CONFIG_SMP
- 		per_cpu(cpu_llc_id, cpu) = l2_id;
-+		per_cpu(cpu_l2c_id, cpu) = l2_id;
- #endif
- 	}
- 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 35ad8480c464..fb08c73d752c 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -78,6 +78,9 @@ EXPORT_SYMBOL(smp_num_siblings);
- /* Last level cache ID of each logical CPU */
- DEFINE_PER_CPU_READ_MOSTLY(u16, cpu_llc_id) = BAD_APICID;
- 
-+/* L2 cache ID of each logical CPU */
-+DEFINE_PER_CPU_READ_MOSTLY(u16, cpu_l2c_id) = BAD_APICID;
-+
- /* correctly size the local cpu masks */
- void __init setup_cpu_local_masks(void)
- {
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 117e24fbfd8a..b9e8780b2617 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -101,6 +101,8 @@ EXPORT_PER_CPU_SYMBOL(cpu_die_map);
- 
- DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_llc_shared_map);
- 
-+DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_l2c_shared_map);
-+
- /* Per CPU bogomips and other parameters */
- DEFINE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
- EXPORT_PER_CPU_SYMBOL(cpu_info);
-@@ -501,6 +503,21 @@ static bool match_llc(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
- 	return topology_sane(c, o, "llc");
- }
- 
-+static bool match_l2c(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
-+{
-+	int cpu1 = c->cpu_index, cpu2 = o->cpu_index;
-+
-+	/* Do not match if we do not have a valid APICID for cpu: */
-+	if (per_cpu(cpu_l2c_id, cpu1) == BAD_APICID)
-+		return false;
-+
-+	/* Do not match if L2 cache id does not match: */
-+	if (per_cpu(cpu_l2c_id, cpu1) != per_cpu(cpu_l2c_id, cpu2))
-+		return false;
-+
-+	return topology_sane(c, o, "l2c");
-+}
-+
- /*
-  * Unlike the other levels, we do not enforce keeping a
-  * multicore group inside a NUMA node.  If this happens, we will
-@@ -522,7 +539,7 @@ static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
- }
- 
- 
--#if defined(CONFIG_SCHED_SMT) || defined(CONFIG_SCHED_MC)
-+#if defined(CONFIG_SCHED_SMT) || defined(CONFIG_SCHED_CLUSTER) || defined(CONFIG_SCHED_MC)
- static inline int x86_sched_itmt_flags(void)
- {
- 	return sysctl_sched_itmt_enabled ? SD_ASYM_PACKING : 0;
-@@ -540,12 +557,21 @@ static int x86_smt_flags(void)
- 	return cpu_smt_flags() | x86_sched_itmt_flags();
- }
- #endif
-+#ifdef CONFIG_SCHED_CLUSTER
-+static int x86_cluster_flags(void)
-+{
-+	return cpu_cluster_flags() | x86_sched_itmt_flags();
-+}
-+#endif
- #endif
- 
- static struct sched_domain_topology_level x86_numa_in_package_topology[] = {
- #ifdef CONFIG_SCHED_SMT
- 	{ cpu_smt_mask, x86_smt_flags, SD_INIT_NAME(SMT) },
- #endif
-+#ifdef CONFIG_SCHED_CLUSTER
-+	{ cpu_clustergroup_mask, x86_cluster_flags, SD_INIT_NAME(CLS) },
-+#endif
- #ifdef CONFIG_SCHED_MC
- 	{ cpu_coregroup_mask, x86_core_flags, SD_INIT_NAME(MC) },
- #endif
-@@ -556,6 +582,9 @@ static struct sched_domain_topology_level x86_topology[] = {
- #ifdef CONFIG_SCHED_SMT
- 	{ cpu_smt_mask, x86_smt_flags, SD_INIT_NAME(SMT) },
- #endif
-+#ifdef CONFIG_SCHED_CLUSTER
-+	{ cpu_clustergroup_mask, x86_cluster_flags, SD_INIT_NAME(CLS) },
-+#endif
- #ifdef CONFIG_SCHED_MC
- 	{ cpu_coregroup_mask, x86_core_flags, SD_INIT_NAME(MC) },
- #endif
-@@ -583,6 +612,7 @@ void set_cpu_sibling_map(int cpu)
- 	if (!has_mp) {
- 		cpumask_set_cpu(cpu, topology_sibling_cpumask(cpu));
- 		cpumask_set_cpu(cpu, cpu_llc_shared_mask(cpu));
-+		cpumask_set_cpu(cpu, cpu_l2c_shared_mask(cpu));
- 		cpumask_set_cpu(cpu, topology_core_cpumask(cpu));
- 		cpumask_set_cpu(cpu, topology_die_cpumask(cpu));
- 		c->booted_cores = 1;
-@@ -598,6 +628,8 @@ void set_cpu_sibling_map(int cpu)
- 		if ((i == cpu) || (has_mp && match_llc(c, o)))
- 			link_mask(cpu_llc_shared_mask, cpu, i);
- 
-+		if ((i == cpu) || (has_mp && match_l2c(c, o)))
-+			link_mask(cpu_l2c_shared_mask, cpu, i);
- 	}
- 
- 	/*
-@@ -649,6 +681,11 @@ const struct cpumask *cpu_coregroup_mask(int cpu)
- 	return cpu_llc_shared_mask(cpu);
- }
- 
-+const struct cpumask *cpu_clustergroup_mask(int cpu)
-+{
-+	return cpu_l2c_shared_mask(cpu);
-+}
-+
- static void impress_friends(void)
- {
- 	int cpu;
-@@ -1332,6 +1369,7 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
- 		zalloc_cpumask_var(&per_cpu(cpu_core_map, i), GFP_KERNEL);
- 		zalloc_cpumask_var(&per_cpu(cpu_die_map, i), GFP_KERNEL);
- 		zalloc_cpumask_var(&per_cpu(cpu_llc_shared_map, i), GFP_KERNEL);
-+		zalloc_cpumask_var(&per_cpu(cpu_l2c_shared_map, i), GFP_KERNEL);
- 	}
- 
- 	/*
-@@ -1556,7 +1594,10 @@ static void remove_siblinginfo(int cpu)
- 		cpumask_clear_cpu(cpu, topology_sibling_cpumask(sibling));
- 	for_each_cpu(sibling, cpu_llc_shared_mask(cpu))
- 		cpumask_clear_cpu(cpu, cpu_llc_shared_mask(sibling));
-+	for_each_cpu(sibling, cpu_l2c_shared_mask(cpu))
-+		cpumask_clear_cpu(cpu, cpu_l2c_shared_mask(sibling));
- 	cpumask_clear(cpu_llc_shared_mask(cpu));
-+	cpumask_clear(cpu_l2c_shared_mask(cpu));
- 	cpumask_clear(topology_sibling_cpumask(cpu));
- 	cpumask_clear(topology_core_cpumask(cpu));
- 	cpumask_clear(topology_die_cpumask(cpu));
--- 
-2.20.1
-
+> 
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> index 5a8e3e1fc48c..fff12a4c8bfc 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> @@ -1219,6 +1219,8 @@ static const struct dev_pm_ops dpu_pm_ops = {
+>>   static const struct of_device_id dpu_dt_match[] = {
+>>          { .compatible = "qcom,sdm845-dpu", },
+>>          { .compatible = "qcom,sc7180-dpu", },
+>> +       { .compatible = "qcom,sm8150-dpu", },
+>> +       { .compatible = "qcom,sm8250-dpu", },
+>>          {}
+>>   };
+>>   MODULE_DEVICE_TABLE(of, dpu_dt_match);
+>> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+>> index 94525ac76d4e..928f13d4bfbc 100644
+>> --- a/drivers/gpu/drm/msm/msm_drv.c
+>> +++ b/drivers/gpu/drm/msm/msm_drv.c
+>> @@ -1185,9 +1185,7 @@ static int add_display_components(struct device *dev,
+>>           * Populate the children devices, find the MDP5/DPU node, and then add
+>>           * the interfaces to our components list.
+>>           */
+>> -       if (of_device_is_compatible(dev->of_node, "qcom,mdss") ||
+>> -           of_device_is_compatible(dev->of_node, "qcom,sdm845-mdss") ||
+>> -           of_device_is_compatible(dev->of_node, "qcom,sc7180-mdss")) {
+>> +       if (!of_device_is_compatible(dev->of_node, "qcom,mdp4")) {
+>>                  ret = of_platform_populate(dev->of_node, NULL, NULL, dev);
+>>                  if (ret) {
+>>                          DRM_DEV_ERROR(dev, "failed to populate children devices\n");
+>> @@ -1320,6 +1318,8 @@ static const struct of_device_id dt_match[] = {
+>>          { .compatible = "qcom,mdss", .data = (void *)KMS_MDP5 },
+>>          { .compatible = "qcom,sdm845-mdss", .data = (void *)KMS_DPU },
+>>          { .compatible = "qcom,sc7180-mdss", .data = (void *)KMS_DPU },
+>> +       { .compatible = "qcom,sm8150-mdss", .data = (void *)KMS_DPU },
+>> +       { .compatible = "qcom,sm8250-mdss", .data = (void *)KMS_DPU },
+>>          {}
+>>   };
+>>   MODULE_DEVICE_TABLE(of, dt_match);
+>> --
+>> 2.26.1
+>>
+> 
+> 
