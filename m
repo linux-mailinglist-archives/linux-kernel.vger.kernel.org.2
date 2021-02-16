@@ -2,120 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637A431C6E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0982031C6EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhBPHh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 02:37:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33376 "EHLO mail.kernel.org"
+        id S229928AbhBPHiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 02:38:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229713AbhBPHhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 02:37:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3975264DC3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 07:36:41 +0000 (UTC)
+        id S229676AbhBPHiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 02:38:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 450FD64DC3;
+        Tue, 16 Feb 2021 07:37:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613461001;
-        bh=HcYqW8/qRuo3kSh4HBmRqKKVZrvA9wI0nKwnFND/7Es=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eb7eAeA3BV05Wb/Z+2UfjpMtlj/qV/Ly3mxPD/v9iQrr+56N6vWTTK+Mv6FrtKpOJ
-         eBPTb/sZbX9XXpGCRPn87lcpoYJdtQtcHRrEl05HEnOGRI99VAt8JvjISlDOdJ/gVO
-         Kau7+gfGtwjnsLbZTadj+vkTTM47dKANWYZqqqyV4xKItQEnJnieTkpRYLeUuh+dcY
-         qW7Xj0vY7Rw/8wV6nN6G+QSEDCg9aDz6Re2Cnse/EJUzhvVKLKU5H5g5wipWcqXD6M
-         JYFN9N/PklVelRL4mwNI5XJC7gmMe5sVgbFhirR0zDw2p7Wd1CKTxvXd/xgsP+1qiH
-         cI4qUKs00V7zA==
-Received: by mail-oi1-f177.google.com with SMTP id h17so6417065oih.5
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 23:36:41 -0800 (PST)
-X-Gm-Message-State: AOAM532DZR0zMn9Gb2mLVgq8hUUDkywPW8Xtx+ajDhFe3DUhK67rAlD8
-        71brLNVVfnV47+i7NXpIc450TsNhgYD+LvJKZr4=
-X-Google-Smtp-Source: ABdhPJxGsfTmY4tueuaxx9cadKNbKIICvQuus4c+2Y+WGUaRCs7tMad57+GGr17En0d7WAgajt08A5qc1qvv4euvVKs=
-X-Received: by 2002:aca:307:: with SMTP id 7mr1730193oid.174.1613461000391;
- Mon, 15 Feb 2021 23:36:40 -0800 (PST)
+        s=k20201202; t=1613461058;
+        bh=6OLXpRjMtpO3rJat3zYX+pRYnE0UODR8E8eilUt1wlI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IKK96cwEMia3biqOl2+yZcIHiH7NduEbANNEqBANbJ1bSnjgLtTIUftS3IH0dRw+L
+         0do0UHIe0A2ZgeStQjar6TBFj1a9Es5EyCByeBXYapR4+y5+KbwcUMlMZ0EonCZaXB
+         H14tLwwaZ2GRH3XQBrOjhzSTrPSbhMahxvCJVIcgHFy3ZIR5qP9Xg1RRtmKXEhxBl4
+         4ZoGqJWs6prNDYBVQtRwH7ElfX4/TGZEQDXf8nlUmH8uGIp0xYbWW8ISJYW5T14KxK
+         MGj4i3Qd/GR7WgiISn2OdeuaJtkYCgS1FeSuWnmoYY1VZDk0laA7pxokzvXIz3EQKf
+         hS+lnGIr8gx4A==
+Date:   Tue, 16 Feb 2021 09:37:34 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        si-wei.liu@oracle.com
+Subject: Re: [PATCH] vdpa/mlx5: Extract correct pointer from driver data
+Message-ID: <YCt2PiMIZxbR15IA@unreal>
+References: <20210216055022.25248-1-elic@nvidia.com>
+ <20210216055022.25248-2-elic@nvidia.com>
+ <YCtnxyTHJl9TU87L@unreal>
+ <20210216064226.GA83717@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
-References: <20210215192237.362706-1-pasha.tatashin@soleen.com>
- <20210215192237.362706-2-pasha.tatashin@soleen.com> <CAMj1kXGxyV0=s6jVZ674O_2amkYSnwSnubnozbzD6g6GOMJE-A@mail.gmail.com>
- <CA+CK2bA7Xz0Zg5phsQi3mhnp+_PHLAAGRLgFTQNw1FjBHaXsHA@mail.gmail.com>
- <CAMj1kXESuD-von_dtzYcUMwK7TLF=qTki9bd8_iTo_isBwj13g@mail.gmail.com>
- <CA+CK2bDJ7Y2-vEpZrZ0fzigAfDgcJOmjhmin_GjTqioYXAYB3Q@mail.gmail.com> <1790afff-eebd-1eda-a1b4-0062908f1f32@arm.com>
-In-Reply-To: <1790afff-eebd-1eda-a1b4-0062908f1f32@arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 16 Feb 2021 08:36:29 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEAF-xhrB=L2UHHqOs6CidcYFbbBud89HiYAzcBminTpA@mail.gmail.com>
-Message-ID: <CAMj1kXEAF-xhrB=L2UHHqOs6CidcYFbbBud89HiYAzcBminTpA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] arm64: mm: correct the inside linear map
- boundaries during hotplug check
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        James Morris <jmorris@namei.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216064226.GA83717@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 at 04:12, Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
+On Tue, Feb 16, 2021 at 08:42:26AM +0200, Eli Cohen wrote:
+> On Tue, Feb 16, 2021 at 08:35:51AM +0200, Leon Romanovsky wrote:
+> > On Tue, Feb 16, 2021 at 07:50:22AM +0200, Eli Cohen wrote:
+> > > struct mlx5_vdpa_net pointer was stored in drvdata. Extract it as well
+> > > in mlx5v_remove().
+> > >
+> > > Fixes: 74c9729dd892 ("vdpa/mlx5: Connect mlx5_vdpa to auxiliary bus")
+> > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > ---
+> > >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > index 6b0a42183622..4103d3b64a2a 100644
+> > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > @@ -2036,9 +2036,9 @@ static int mlx5v_probe(struct auxiliary_device *adev,
+> > >
+> > >  static void mlx5v_remove(struct auxiliary_device *adev)
+> > >  {
+> > > -	struct mlx5_vdpa_dev *mvdev = dev_get_drvdata(&adev->dev);
+> > > +	struct mlx5_vdpa_net *ndev = dev_get_drvdata(&adev->dev);
+> > >
+> > > -	vdpa_unregister_device(&mvdev->vdev);
+> > > +	vdpa_unregister_device(&ndev->mvdev.vdev);
+> > >  }
+> >
+> > IMHO, The more correct solution is to fix dev_set_drvdata() call,
+> > because we are regustering/unregistering/allocating "struct mlx5_vdpa_dev".
+> >
 >
+> We're allocating "struct mlx5_vdpa_net". "struct mlx5_vdpa_dev" is just
+> a member field of "struct mlx5_vdpa_net".
+
+I referred to these lines in the mlx5v_probe():
+  1986         err = mlx5_vdpa_alloc_resources(&ndev->mvdev);
+  1987         if (err)
+  1988                 goto err_mtu;
+  1989
+  1990         err = alloc_resources(ndev);
+  1991         if (err)
+  1992                 goto err_res;
+  1993
+  1994         err = vdpa_register_device(&mvdev->vdev);
+
+So mlx5v_remove() is better to be symmetrical.
+
+Thanks
+
 >
->
-> On 2/16/21 1:21 AM, Pavel Tatashin wrote:
-> > On Mon, Feb 15, 2021 at 2:34 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >>
-> >> On Mon, 15 Feb 2021 at 20:30, Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
-> >>>
-> >>>> Can't we simply use signed arithmetic here? This expression works fine
-> >>>> if the quantities are all interpreted as s64 instead of u64
-> >>>
-> >>> I was thinking about that, but I do not like the idea of using sign
-> >>> arithmetics for physical addresses. Also, I am worried that someone in
-> >>> the future will unknowingly change it to unsigns or to phys_addr_t. It
-> >>> is safer to have start explicitly set to 0 in case of wrap.
-> >>
-> >> memstart_addr is already a s64 for this exact reason.
+> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > index 88dde3455bfd..079b8fe669af 100644
+> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > @@ -1995,7 +1995,7 @@ static int mlx5v_probe(struct auxiliary_device *adev,
+> >  	if (err)
+> >  		goto err_reg;
 > >
-> > memstart_addr is basically an offset and it must be negative. For
-> > example, this would not work if it was not signed:
-> > #define vmemmap ((struct page *)VMEMMAP_START - (memstart_addr >> PAGE_SHIFT))
+> > -	dev_set_drvdata(&adev->dev, ndev);
+> > +	dev_set_drvdata(&adev->dev, mvdev);
+> >  	return 0;
 > >
-> > However, on powerpc it is phys_addr_t type.
+> >  err_reg:
 > >
-> >>
-> >> Btw, the KASLR check is incorrect: memstart_addr could also be
-> >> negative when running the 52-bit VA kernel on hardware that is only
-> >> 48-bit VA capable.
+> > >
+> > >  static const struct auxiliary_device_id mlx5v_id_table[] = {
 > >
-> > Good point!
-> >
-> > if (IS_ENABLED(CONFIG_ARM64_VA_BITS_52) && (vabits_actual != 52))
-> >     memstart_addr -= _PAGE_OFFSET(48) - _PAGE_OFFSET(52);
-> >
-> > So, I will remove IS_ENABLED(CONFIG_RANDOMIZE_BASE) again.
-> >
-> > I am OK to change start_linear_pa, end_linear_pa to signed, but IMO
-> > what I have now is actually safer to make sure that does not break
-> > again in the future.
-> An explicit check for the flip over and providing two different start
-> addresses points would be required in order to use the new framework.
-
-I don't think so. We no longer randomize over the same range, but take
-the support PA range into account. (97d6786e0669d)
-
-This should ensure that __pa(_PAGE_OFFSET(vabits_actual)) never
-assumes a negative value. And to Pavel's point re 48/52 bit VAs: the
-fact that vabits_actual appears in this expression means that it
-already takes this into account, so you are correct that we don't have
-to care about that here.
-
-So even if memstart_addr could be negative, this expression should
-never produce a negative value. And with the patch above applied, it
-should never do so when running under KASLR either.
-
-So question to Pavel and Tyler: could you please check whether you
-have that patch, and whether it fixes the issue? It was introduced in
-v5.11, and hasn't been backported yet (it wasn't marked for -stable)
+> > > --
+> > > 2.29.2
+> > >
