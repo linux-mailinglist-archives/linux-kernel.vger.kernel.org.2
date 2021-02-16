@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BCE631D096
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3E431D0BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbhBPTBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 14:01:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbhBPTAy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 14:00:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DD8C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 11:00:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=si3nwQgk4WhPPdjDOtwTA5HyTVJePHR0iIQ1Hc/iHJY=; b=oNxajjxR473tJoLDOhnWwJokbj
-        vrpfUVAfcvgiuerKHidUOcPxCI2UuViQRESA2ZLN2qTO0krpjdP+dSwFC6CMfv+H2S9wqgd1jXhBl
-        RDCpKa5VVkq83HC7phiF3DIaCOjsi4iKLY+TrWOqENoWIXvtaBMaqwzKcoqr2oJuBKEOfmvyJrEfG
-        rVx85UMbASJfL+BvBMjlavN9YgVGoHQfCQ+/IGF9LGk4S7LuovhenhdH0m1ErcdujM4GBo7VY3u9T
-        arnfYSar1vYskfYNBHPh2JyxShC++tiDJ8swjy5djoI/aVycHqXZnirFTMIrLJ7shLsPYLDtw1I2B
-        vTiT6q4A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lC5Zq-0003hh-Ox; Tue, 16 Feb 2021 19:00:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0FB103011E6;
-        Tue, 16 Feb 2021 19:59:58 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EEED12BC732E8; Tue, 16 Feb 2021 19:59:57 +0100 (CET)
-Date:   Tue, 16 Feb 2021 19:59:57 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v5 1/8] smp: Run functions concurrently in
- smp_call_function_many_cond()
-Message-ID: <YCwWLSRVB1RG/NHm@hirez.programming.kicks-ass.net>
-References: <20210209221653.614098-1-namit@vmware.com>
- <20210209221653.614098-2-namit@vmware.com>
- <YCvztEk6sqiCxXZV@hirez.programming.kicks-ass.net>
- <457D8FBC-8F64-48E9-B9E2-1A316DB0C2B6@vmware.com>
+        id S231139AbhBPTMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 14:12:18 -0500
+Received: from ec2-34-208-57-251.us-west-2.compute.amazonaws.com ([34.208.57.251]:58762
+        "EHLO ip-172-31-12-36.us-west-2.compute.internal"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230378AbhBPTMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 14:12:17 -0500
+X-Greylist: delayed 545 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Feb 2021 14:12:17 EST
+Received: by ip-172-31-12-36.us-west-2.compute.internal (Postfix, from userid 1001)
+        id 744C640638; Tue, 16 Feb 2021 11:02:26 -0800 (PST)
+Date:   Tue, 16 Feb 2021 11:02:26 -0800
+From:   Daniel Walker <dwalker@fifo99.com>
+To:     Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Walker <danielwa@cisco.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Rob Herring <robh+dt@kernel.org>, xe-linux-external@cisco.com,
+        linuxppc-dev@lists.ozlabs.org,
+        Maksym Kokhan <maksym.kokhan@globallogic.com>,
+        linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Subject: Re: [PATCH 1/4] add generic builtin command line
+Message-ID: <20210216190226.GY22125@fifo99.com>
+References: <20190319232448.45964-2-danielwa@cisco.com>
+ <20190320155319.2cd3c0f73ef3cdefb65d5d1e@linux-foundation.org>
+ <20190320232328.3bijcxek2yg43a25@zorba>
+ <20190320201433.6c5c4782f4432d280c0e8361@linux-foundation.org>
+ <20190321151308.yt6uc3mxgppm5zko@zorba>
+ <20190321151519.1f4479d92228c8a8738e02cf@linux-foundation.org>
+ <1613417521.3853.5.camel@chimera>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <457D8FBC-8F64-48E9-B9E2-1A316DB0C2B6@vmware.com>
+In-Reply-To: <1613417521.3853.5.camel@chimera>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 06:53:09PM +0000, Nadav Amit wrote:
-> > On Feb 16, 2021, at 8:32 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-
-> > I'm not sure I can explain it yet. It did get me looking at
-> > on_each_cpu() and it appears that wants to be converted too, something
-> > like the below perhaps.
+On Mon, Feb 15, 2021 at 11:32:01AM -0800, Daniel Gimpelevich wrote:
+> On Thu, 2019-03-21 at 15:15 -0700, Andrew Morton wrote:
+> > On Thu, 21 Mar 2019 08:13:08 -0700 Daniel Walker <danielwa@cisco.com> wrote:
+> > > On Wed, Mar 20, 2019 at 08:14:33PM -0700, Andrew Morton wrote:
+> > > > The patches (or some version of them) are already in linux-next,
+> > > > which messes me up.  I'll disable them for now.
+> > >  
+> > > Those are from my tree, but I remove them when you picked up the series. The
+> > > next linux-next should not have them.
+> > 
+> > Yup, thanks, all looks good now.
 > 
-> Looks like a good cleanup, but I cannot say I understand the problem and how
-> it would solve it. Err...
+> This patchset is currently neither in mainline nor in -next. May I ask
+> what happened to it? Thanks.
+> 
 
-Yeah, me neither. Bit of a mystery so far.
+It was dropped silently by Andrew at some point. I wasn't watching -next closely
+to know when. I have no idea why he dropped it.
+
+We still use this series extensively in Cisco, and have extended it beyond this
+current series.
+
+We can re-submit.
+
+Daniel
