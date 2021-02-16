@@ -2,75 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1C631C6C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD7831C6C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhBPHYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 02:24:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
+        id S229833AbhBPHY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 02:24:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhBPHYm (ORCPT
+        with ESMTP id S229742AbhBPHYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 02:24:42 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1B1C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 23:24:02 -0800 (PST)
-Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <jbe@pengutronix.de>)
-        id 1lBuiG-0003lF-5E; Tue, 16 Feb 2021 08:24:00 +0100
-Received: from jbe by dude02.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <jbe@pengutronix.de>)
-        id 1lBuiF-0002Me-5u; Tue, 16 Feb 2021 08:23:59 +0100
-From:   Juergen Borleis <jbe@pengutronix.de>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kernel@pengutronix.de,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: [PATCH v2] fs: ubifs: set s_uuid in super block to support ima/evm uuid options
-Date:   Tue, 16 Feb 2021 08:23:34 +0100
-Message-Id: <20210216072334.7575-2-jbe@pengutronix.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210216072334.7575-1-jbe@pengutronix.de>
-References: <20210216072334.7575-1-jbe@pengutronix.de>
+        Tue, 16 Feb 2021 02:24:24 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD51C061574;
+        Mon, 15 Feb 2021 23:23:43 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dfss74jn1z9sVJ;
+        Tue, 16 Feb 2021 18:23:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613460220;
+        bh=rEaruMpoYcfErqCESTwvdKApaMT8l7KJrGro1hs6ARY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ffE+IUQ6wk7RYgpgsT+L+JtCp3aD5cxTsNiv08FvCu08yKtJMiR/F3FO2ItD9yTpy
+         8LvqnQ39cSqrq2ZJL0al86KNlxDWu1PzLkU1FT5XKcP3mVGZHLQG2TmBZdoVsxiRj2
+         bkKnPnpPDtmCiqfwDh4Zq3akwZ5puZgr506bhzFF27ORhQRoiSqcuBRb5Lhxsq8dRe
+         PDWFZWCrZjYPYdPivJOCTGg66tM4D/JvJL7IK/guyI9Orftcy5KKY7lJLbhlHB0H4l
+         +fH8DWK3M2MRIDW6zduIAbItD45KdtAhh4Us1L0UvXgkJ6V/iJmWRQByz42s7Qo2rG
+         l3TUXUsU/xWNQ==
+Date:   Tue, 16 Feb 2021 18:23:38 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: linux-next: manual merge of the gpio-brgl tree with the arm-soc,
+ net-next trees
+Message-ID: <20210216182338.35915450@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
-X-SA-Exim-Mail-From: jbe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; boundary="Sig_/OJ5L35vA/7r0URmArYbGtqD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+--Sig_/OJ5L35vA/7r0URmArYbGtqD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This is required to provide uuid based integrity functionality for:
-ima_policy (fsuuid option) and the 'evmctl' command ('--uuid' option).
+Hi all,
 
-Co-developed-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Co-developed-by: Juergen Borleis <jbe@pengutronix.de>
-Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
----
- fs/ubifs/super.c | 2 ++
- 1 file changed, 2 insertions(+)
+Today's linux-next merge of the gpio-brgl tree got a conflict in:
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 138b9426c6c1..a8383ca39a47 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -2230,6 +2230,8 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 		goto out_umount;
- 	}
- 
-+	import_uuid(&sb->s_uuid, c->uuid);
-+
- 	mutex_unlock(&c->umount_mutex);
- 	return 0;
- 
--- 
-2.20.1
+  arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
 
+between commits:
+
+  4fd18fc38757 ("arm64: dts: visconti: Add watchdog support for TMPV7708 So=
+C")
+  0109a17564fc ("arm: dts: visconti: Add DT support for Toshiba Visconti5 G=
+PIO driver")
+  ec8a42e73432 ("arm: dts: visconti: Add DT support for Toshiba Visconti5 e=
+thernet controller")
+
+from the arm-soc, net-next trees and commit:
+
+  c988ae37c722 ("arm: dts: visconti: Add DT support for Toshiba Visconti5 G=
+PIO driver")
+
+from the gpio-brgl tree.
+
+I fixed it up (I used the former version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/OJ5L35vA/7r0URmArYbGtqD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmArcvoACgkQAVBC80lX
+0GwVsQf9FXV57Nj1WmR2vKTbRJnIrGhow6TU7NcxStXVGxHcU72o95qnx9RoFFT8
+UfOVf7EC9EJBiFwNFwwmSwxEvk+Nrvj9huj9TPhX0ZzX3G3DAmI6XJyWNI46+e2R
+mJlUxsaq8qDXUU8ZiJQ3k9TWPYuc4zF4Rwc3t9rMZfGNwepDlQL9w8yBc6os3lUH
+cJrTT6f0Znyjl8HJjfJYJd9+nDWDn4QaGLyXBocb0WZwvvH+AKrzqMeAdkZQxWUO
+iTCiTECS2iv2zNeJcXUxKH3PFe5K72ImKO+DTjX0PQGQhn3M1Ol1QlmvVTLM0IJ2
+5+07+yUuN/KpIqaYcwjUgqzXk3bqQw==
+=CTFM
+-----END PGP SIGNATURE-----
+
+--Sig_/OJ5L35vA/7r0URmArYbGtqD--
