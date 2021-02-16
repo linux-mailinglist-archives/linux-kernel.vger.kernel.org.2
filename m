@@ -2,139 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE4931CF28
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 545D231CF2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhBPRhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:37:55 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:34141 "EHLO m42-2.mailgun.net"
+        id S231181AbhBPRjP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Feb 2021 12:39:15 -0500
+Received: from mga01.intel.com ([192.55.52.88]:41647 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229879AbhBPRhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:37:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613497044; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=fkRbx/bVroOWweuzoO/X7+7MoIKD1jrElbt9ifzl6zE=; b=ol+O7PEe3NPv27hsbQJBdCBi2dwzi1RznetXSL78xDiYYpmFb/N5YiLRfSS5Jk89lDVG6+5y
- i31tBIbaRF1kcZhjK8Ku2frbCL1EwOn7c5IqHjbyjgE4mWefiR53BFvsfkt6uqxixA+L9GrF
- tRoXGcm7Fzth4AkEBpXbywf22Wc=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 602c02b606bddda9df2192ec (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 17:36:54
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2B975C43467; Tue, 16 Feb 2021 17:36:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from stor-presley.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6BA6FC433C6;
-        Tue, 16 Feb 2021 17:36:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6BA6FC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Date:   Tue, 16 Feb 2021 09:36:46 -0800
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "cang@codeaurora.org" <cang@codeaurora.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v3 1/1] scsi: ufs: Enable power management for wlun
-Message-ID: <20210216173646.GA35819@stor-presley.qualcomm.com>
-References: <cover.1613070911.git.asutoshd@codeaurora.org>
- <eed327cdace40d1e1d706da5b0fa64ea4ee99422.1613070912.git.asutoshd@codeaurora.org>
- <DM6PR04MB65758E0EBF4171FD6E1CF0CFFC8A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <DM6PR04MB65758E0EBF4171FD6E1CF0CFFC8A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S230216AbhBPRjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:39:12 -0500
+IronPort-SDR: 0jERC9NgPd1uWnVtOxp1EXid92qG/tFp89ygxfuu8BK1S3kcrVr7dKGgR1qELdXCRpheDz3d2L
+ YN9l2dZ7Sl/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="202153228"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="202153228"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 09:37:24 -0800
+IronPort-SDR: 2Xgh563DtrWCeP2htDOm9Ihv9YNP64eKai8aR187ZdtjMy0Y4VPSVtjMqoHHPz2NjBdeHOumSY
+ 12HG6PFotzAA==
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="512599751"
+Received: from marambux-mobl.amr.corp.intel.com ([10.209.93.6])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 09:37:23 -0800
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.17\))
+Subject: Re: [PATCH v1 01/12] gna: add driver module
+From:   Jianxun Zhang <jianxun.zhang@linux.intel.com>
+In-Reply-To: <CAHp75Vep0Fm1k_7gJcozk4t316QmUgt5Qe3PauwDg=py5VnHfQ@mail.gmail.com>
+Date:   Tue, 16 Feb 2021 09:37:23 -0800
+Cc:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <0941CBCA-0760-4017-AE65-47FB3E213974@linux.intel.com>
+References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
+ <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
+ <CAHp75Vep0Fm1k_7gJcozk4t316QmUgt5Qe3PauwDg=py5VnHfQ@mail.gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+X-Mailer: Apple Mail (2.3445.104.17)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13 2021 at 13:37 -0800, Avri Altman wrote:
->> +       } else {
->Is it possible to get here?
->Scsi_scan_host is called only after successful add_wluns
 
-It looks so.
-scsi 0:0:0:49488: Link setup for lun - ufshcd_setup_links
-[...]
-Call trace:
-dump_backtrace+0x0/0x1d4
-show_stack+0x18/0x24
-dump_stack+0xc4/0x144
-ufshcd_setup_links+0xd8/0x100
-ufshcd_slave_alloc+0x134/0x1a0
-scsi_alloc_sdev+0x1c0/0x230
-scsi_probe_and_add_lun+0xc0/0xd48
-__scsi_add_device+0xc0/0x138
-ufshcd_scsi_add_wlus+0x30/0x1c0
-ufshcd_async_scan+0x58/0x240
-async_run_entry_fn+0x48/0x128
-process_one_work+0x1f0/0x470
-worker_thread+0x26c/0x4c8
-kthread+0x13c/0x320
-ret_from_fork+0x10/0x18
 
->
->> +               /* device wlun is probed */
->> +               hba->luns_avail--;
->> +       }
->> +}
->> +
->
->
->>
->>  /**
->> @@ -7254,6 +7312,14 @@ static int ufshcd_scsi_add_wlus(struct ufs_hba
->> *hba)
->>                 goto out;
->>         }
->>         ufshcd_blk_pm_runtime_init(hba->sdev_ufs_device);
->> +       /*
->> +        * A pm_runtime_put_sync is invoked when this device enables
->> blk_pm_runtime
->> +        * & would suspend the device-wlun upon timer expiry.
->> +        * But suspending device wlun _may_ put the ufs device in the pre-defined
->> +        * low power mode (SSU <rpm_lvl>). Probing of other luns may fail then.
->> +        * Don't allow this suspend until all the luns have been probed.
->Maybe add one more sentence: see pm_runtime_mark_last_busy in ufshcd_setup_links
-Done.
-
->
->
->
->> -       ufshcd_clear_ua_wluns(hba);
->Are there any callers left to ufshcd_clear_ua_wluns?
->Can it be removed?
-Let me check.
-
->
->> +       if (hba->wlun_dev_clr_ua)
->> +               ufshcd_clear_ua_wlun(hba, UFS_UPIU_UFS_DEVICE_WLUN);
->>
->>         cmd[4] = pwr_mode << 4;
+> On Feb 16, 2021, at 8:54 AM, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> 
+>> +config INTEL_GNA
+>> +       tristate "Intel(R) Gaussian & Neural Accelerator (Intel(R) GNA)"
+> 
+> Intel (R) Intel (R) RRR!
+This is (from my interpretation) of requirements and guidance specific on how to address this HW IP from Intel’s legal before upstream.
