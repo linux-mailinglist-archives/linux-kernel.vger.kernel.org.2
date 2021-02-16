@@ -2,164 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61A131CE1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 352AB31CE25
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhBPQdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:33:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbhBPQdr (ORCPT
+        id S230302AbhBPQgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:36:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48320 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229764AbhBPQgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:33:47 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52860C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:33:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wQUTkY1oq1agJ9hryvP+SMygbLHZkeBCm/G5cT/kGuo=; b=L9UNtrPvySnvc93doqa6NJBqkt
-        1Z/lUKkPgg5l3xrMVnFrH8OvSv6WmaAB5vjFrL+1qLrCSTbhvWwa5HkIpwoJdrULyM08G7xCUHvvX
-        cVcNOAwEVZI+/iKz4IyeTFz+Krz2GgWvdGkJENhQnw4zaI77+BIYJUjAC19zozAYs5/OvzjfpWywR
-        75BECY3zrlvxcAabJU2Zgr2bgAu4jWmPpTQDV9FWpLx73KCCnOsNVaTM24jn77vFo/bHX88AXRxIw
-        0i2DoIXQ1T2CH0tbgEr8kSpnIb6+Z2tbBGOXrpq7cm+xgYco4VXzxTaTx/LiPrxg44zAo2Yln+oYe
-        SpCP9PGQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lC3HW-0003Ew-3U; Tue, 16 Feb 2021 16:32:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DA06A3035D4;
-        Tue, 16 Feb 2021 17:32:52 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C5EFC2BC42A1E; Tue, 16 Feb 2021 17:32:52 +0100 (CET)
-Date:   Tue, 16 Feb 2021 17:32:52 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Tue, 16 Feb 2021 11:36:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613493275;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KysYIYMpQ7qMwmL/JUOCOKvLfXo3jE4QCyxH618MYzE=;
+        b=YOYDTf7Trq50U2iN2ri3ebMVB/pbjAdiqZeHv8At2BKNYOswrJirI8kB1TbesObe/kJwF6
+        sukwNjy6F1RB/9+0tlMP1KGSx/zseuyNpexWV/eJO+LThf4778H+Ky3IqPklNjMTAR11hm
+        BzKTUuH/MWO2whGJTBQMTTFkLiHUdW4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-p1-EOjkyMC-fthVSXfK3rw-1; Tue, 16 Feb 2021 11:34:33 -0500
+X-MC-Unique: p1-EOjkyMC-fthVSXfK3rw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B1051E561;
+        Tue, 16 Feb 2021 16:34:28 +0000 (UTC)
+Received: from [10.36.114.70] (ovpn-114-70.ams2.redhat.com [10.36.114.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BF8E31970A;
+        Tue, 16 Feb 2021 16:34:18 +0000 (UTC)
+Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+To:     jejb@linux.ibm.com, Michal Hocko <mhocko@suse.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>, Rik van Riel <riel@surriel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v5 1/8] smp: Run functions concurrently in
- smp_call_function_many_cond()
-Message-ID: <YCvztEk6sqiCxXZV@hirez.programming.kicks-ass.net>
-References: <20210209221653.614098-1-namit@vmware.com>
- <20210209221653.614098-2-namit@vmware.com>
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+References: <20210214091954.GM242749@kernel.org>
+ <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
+ <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
+ <YCo7TqUnBdgJGkwN@dhcp22.suse.cz>
+ <be1d821d3f0aec24ad13ca7126b4359822212eb0.camel@linux.ibm.com>
+ <YCrJjYmr7A2nO6lA@dhcp22.suse.cz>
+ <12c3890b233c8ec8e3967352001a7b72a8e0bfd0.camel@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <dfd7db5c-a8c7-0676-59f8-70aa6bcaabe7@redhat.com>
+Date:   Tue, 16 Feb 2021 17:34:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209221653.614098-2-namit@vmware.com>
+In-Reply-To: <12c3890b233c8ec8e3967352001a7b72a8e0bfd0.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 02:16:46PM -0800, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
-> 
-> Currently, on_each_cpu() and similar functions do not exploit the
-> potential of concurrency: the function is first executed remotely and
-> only then it is executed locally. Functions such as TLB flush can take
-> considerable time, so this provides an opportunity for performance
-> optimization.
-> 
-> To do so, modify smp_call_function_many_cond(), to allows the callers to
-> provide a function that should be executed (remotely/locally), and run
-> them concurrently. Keep other smp_call_function_many() semantic as it is
-> today for backward compatibility: the called function is not executed in
-> this case locally.
-> 
-> smp_call_function_many_cond() does not use the optimized version for a
-> single remote target that smp_call_function_single() implements. For
-> synchronous function call, smp_call_function_single() keeps a
-> call_single_data (which is used for synchronization) on the stack.
-> Interestingly, it seems that not using this optimization provides
-> greater performance improvements (greater speedup with a single remote
-> target than with multiple ones). Presumably, holding data structures
-> that are intended for synchronization on the stack can introduce
-> overheads due to TLB misses and false-sharing when the stack is used for
-> other purposes.
-> 
-> Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Rik van Riel <riel@surriel.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Signed-off-by: Nadav Amit <namit@vmware.com>
+On 16.02.21 17:25, James Bottomley wrote:
+> On Mon, 2021-02-15 at 20:20 +0100, Michal Hocko wrote:
+> [...]
+>>>>    What kind of flags are we talking about and why would that be a
+>>>> problem with memfd_create interface? Could you be more specific
+>>>> please?
+>>>
+>>> You mean what were the ioctl flags in the patch series linked
+>>> above? They were SECRETMEM_EXCLUSIVE and SECRETMEM_UNCACHED in
+>>> patch 3/5.
+>>
+>> OK I see. How many potential modes are we talking about? A few or
+>> potentially many?
+>   
+> Well I initially thought there were two (uncached or not) until you
+> came up with the migratable or non-migratable, which affects the
+> security properties.  But now there's also potential for hardware
+> backing, like mktme,  described by flags as well.  I suppose you could
+> also use RDT to restrict which cache the data goes into: say L1 but not
+> L2 on to lessen the impact of fully uncached (although the big thrust
+> of uncached was to blunt hyperthread side channels).  So there is
+> potential for quite a large expansion even though I'd be willing to bet
+> that a lot of the modes people have thought about turn out not to be
+> very effective in the field.
 
-Kernel-CI is giving me a regression that's most likely this patch:
+Thanks for the insight. I remember that even the "uncached" parts was 
+effectively nacked by x86 maintainers (I might be wrong). For the other 
+parts, the question is what we actually want to let user space configure.
 
-  https://kernelci.org/test/case/id/602bdd621c979f83faaddcc6/
+Being able to specify "Very secure" "maximum secure" "average secure" 
+all doesn't really make sense to me. The discussion regarding 
+migratability only really popped up because this is a user-visible thing 
+and not being able to migrate can be a real problem (fragmentation, 
+ZONE_MOVABLE, ...).
 
-I'm not sure I can explain it yet. It did get me looking at
-on_each_cpu() and it appears that wants to be converted too, something
-like the below perhaps.
+-- 
+Thanks,
 
+David / dhildenb
 
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -848,14 +848,7 @@ void __init smp_init(void)
-  */
- void on_each_cpu(smp_call_func_t func, void *info, int wait)
- {
--	unsigned long flags;
--
--	preempt_disable();
--	smp_call_function(func, info, wait);
--	local_irq_save(flags);
--	func(info);
--	local_irq_restore(flags);
--	preempt_enable();
-+	on_each_cpu_mask(cpu_online_mask, func, info, wait);
- }
- EXPORT_SYMBOL(on_each_cpu);
- 
-@@ -878,15 +871,7 @@ EXPORT_SYMBOL(on_each_cpu);
- void on_each_cpu_mask(const struct cpumask *mask, smp_call_func_t func,
- 			void *info, bool wait)
- {
--	unsigned int scf_flags;
--
--	scf_flags = SCF_RUN_LOCAL;
--	if (wait)
--		scf_flags |= SCF_WAIT;
--
--	preempt_disable();
--	smp_call_function_many_cond(mask, func, info, scf_flags, NULL);
--	preempt_enable();
-+	on_each_cpu_cond_mask(NULL, func, info, wait, mask);
- }
- EXPORT_SYMBOL(on_each_cpu_mask);
- 
-@@ -912,6 +897,13 @@ EXPORT_SYMBOL(on_each_cpu_mask);
-  * You must not call this function with disabled interrupts or
-  * from a hardware interrupt handler or from a bottom half handler.
-  */
-+void on_each_cpu_cond(smp_cond_func_t cond_func, smp_call_func_t func,
-+		      void *info, bool wait)
-+{
-+	on_each_cpu_cond_mask(cond_func, func, info, wait, cpu_online_mask);
-+}
-+EXPORT_SYMBOL(on_each_cpu_cond);
-+
- void on_each_cpu_cond_mask(smp_cond_func_t cond_func, smp_call_func_t func,
- 			   void *info, bool wait, const struct cpumask *mask)
- {
-@@ -926,13 +918,6 @@ void on_each_cpu_cond_mask(smp_cond_func
- }
- EXPORT_SYMBOL(on_each_cpu_cond_mask);
- 
--void on_each_cpu_cond(smp_cond_func_t cond_func, smp_call_func_t func,
--		      void *info, bool wait)
--{
--	on_each_cpu_cond_mask(cond_func, func, info, wait, cpu_online_mask);
--}
--EXPORT_SYMBOL(on_each_cpu_cond);
--
- static void do_nothing(void *unused)
- {
- }
-~
