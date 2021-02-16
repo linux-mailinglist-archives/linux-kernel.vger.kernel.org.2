@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6608731C68B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 07:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F2631C68D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 07:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbhBPGm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 01:42:26 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:38728 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhBPGmY (ORCPT
+        id S229979AbhBPGnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 01:43:16 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11050 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhBPGnM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 01:42:24 -0500
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 11G6fSQu001971;
-        Tue, 16 Feb 2021 15:41:29 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 11G6fSQu001971
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613457689;
-        bh=sfEE88E8zodGl9pgVL//ZMGChpopWqeKDKHn6Cpcy54=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PkvY1OsYFbDoHrMrTFk1iWkoCU6CzfhWm0+T7ju+7X5DNc0Gbv/dRZBWytpjZPxeX
-         9+Ur3FKFvOQsHHSxsQ3z1gYSPP+YMP2cpM6oLMrUs5zVNlWWNS8HJObnJyKs+finWl
-         XeYOA9dUDtQdVaDEmuaiC3p3C/ZM08w6/4AUK3HiGl+WiZ2Czn9wizT2yumJHZIaNG
-         HKkVw6o/UX2NFl1JCCHkik7dE+458UiJKnSyN5PuSGGTiLppwdjfijbYRzAZ1Mtopi
-         N/w0v2nkgl95EgMEkVDP52KTBuDqqwWtiWQWlZWKvOgwS3EImruhUz8Qo2mVjpX5gs
-         TuDNgsZ4+b52A==
-X-Nifty-SrcIP: [209.85.214.182]
-Received: by mail-pl1-f182.google.com with SMTP id e9so4973068plh.3;
-        Mon, 15 Feb 2021 22:41:29 -0800 (PST)
-X-Gm-Message-State: AOAM533YjMySGlO+/2g3NuKr9Hx5fcVZtILLN6O5BeKBJVDiCTZhaqZG
-        z2NpLxAcDdrLtVNcxuOwNqk2FerbsDIftaizZpo=
-X-Google-Smtp-Source: ABdhPJxktul2aMlFBFsBcXxpJLNBs4w78dVlT+Nlq3vElgchqmiUh0YSY2itIW2Wvc00Fq9L/x5cgR2OPr0Nf5j8Cg8=
-X-Received: by 2002:a17:90b:1b50:: with SMTP id nv16mr2648284pjb.153.1613457688393;
- Mon, 15 Feb 2021 22:41:28 -0800 (PST)
+        Tue, 16 Feb 2021 01:43:12 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602b69570000>; Mon, 15 Feb 2021 22:42:31 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 16 Feb 2021 06:42:29 +0000
+Date:   Tue, 16 Feb 2021 08:42:26 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <mst@redhat.com>, <jasowang@redhat.com>,
+        <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <si-wei.liu@oracle.com>
+Subject: Re: [PATCH] vdpa/mlx5: Extract correct pointer from driver data
+Message-ID: <20210216064226.GA83717@mtl-vdi-166.wap.labs.mlnx>
+References: <20210216055022.25248-1-elic@nvidia.com>
+ <20210216055022.25248-2-elic@nvidia.com>
+ <YCtnxyTHJl9TU87L@unreal>
 MIME-Version: 1.0
-References: <20210211161154.3892836-1-masahiroy@kernel.org> <20210211171908.GA3820685@ubuntu-m3-large-x86>
-In-Reply-To: <20210211171908.GA3820685@ubuntu-m3-large-x86>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 16 Feb 2021 15:40:51 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATgjCtXT1ZmTs-nLpLBmpvQSLA+FQHazP+trBgQcvcqcQ@mail.gmail.com>
-Message-ID: <CAK7LNATgjCtXT1ZmTs-nLpLBmpvQSLA+FQHazP+trBgQcvcqcQ@mail.gmail.com>
-Subject: Re: [PATCH] gen_compile_commands: prune some directories
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YCtnxyTHJl9TU87L@unreal>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613457752; bh=qWp9a5RC/NYXw8B6UiqomCrqL0T/roq2ulBa23LKIGg=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=gpHwvTRmfv1AhAaOSEGFheACUhRkKsiLMJJ67roVjBf2iSZLiZHA+ZA+dvZEdKU+/
+         LXqr0Ri3SLcsB/GPzCtmyBXOBfD4jzL9I2fCR2kMtCevlJVyNhEfUmSo8PWj6vJ2zy
+         /zRmely51lCHorbcAzhLnhOV69Oqpka7WpARAhP6eiPiCY17Sugd/iSov6HRRBdWwI
+         D6JndPPkAK4CGsQD0cYGpR6tSRy7ATj+2igOr3dottfdh14XTmueCyp9HVtlRp/5JQ
+         L30ZHVUiEy7M9AjHl51YPcGATTXKrL3NNCFg89NWKzRKVUm2fgBSt9wjShzBpAtBcG
+         IIyNGDzGpOOyw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 2:19 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Fri, Feb 12, 2021 at 01:11:54AM +0900, Masahiro Yamada wrote:
-> > If directories are passed to gen_compile_commands.py, os.walk() traverses
-> > all the subdirectories to search for .cmd files, but we know some of them
-> > are not worth traversing.
+On Tue, Feb 16, 2021 at 08:35:51AM +0200, Leon Romanovsky wrote:
+> On Tue, Feb 16, 2021 at 07:50:22AM +0200, Eli Cohen wrote:
+> > struct mlx5_vdpa_net pointer was stored in drvdata. Extract it as well
+> > in mlx5v_remove().
 > >
-> > Use the 'topdown' parameter of os.walk to prune them.
+> > Fixes: 74c9729dd892 ("vdpa/mlx5: Connect mlx5_vdpa to auxiliary bus")
+> > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > ---
+> >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
 > >
-> > Documentation about the 'topdown' option of os.walk:
-> >   When topdown is True, the caller can modify the dirnames list
-> >   in-place (perhaps using del or slice assignment), and walk() will
-> >   only recurse into the subdirectories whose names remain in dirnames;
-> >   this can be used to prune the search, impose a specific order of
-> >   visiting, or even to inform walk() about directories the caller
-> >   creates or renames before it resumes walk() again. Modifying
-> >   dirnames when topdown is False has no effect on the behavior of
-> >   the walk, because in bottom-up mode the directories in dirnames
-> >   are generated before dirpath itself is generated.
+> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > index 6b0a42183622..4103d3b64a2a 100644
+> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > @@ -2036,9 +2036,9 @@ static int mlx5v_probe(struct auxiliary_device *adev,
 > >
-> > This commit prunes four directories, .git, Documentation, include, and
-> > tools.
+> >  static void mlx5v_remove(struct auxiliary_device *adev)
+> >  {
+> > -	struct mlx5_vdpa_dev *mvdev = dev_get_drvdata(&adev->dev);
+> > +	struct mlx5_vdpa_net *ndev = dev_get_drvdata(&adev->dev);
 > >
-> > The first three do not contain any C files. My main motivation is the
-> > last one, tools/ directory.
-> >
-> > Commit 6ca4c6d25949 ("gen_compile_commands: do not support .cmd files
-> > under tools/ directory") stopped supporting the tools/ directory.
-> > The current code no longer picks up .cmd files from the tools/
-> > directory.
-> >
-> > If you run:
-> >
-> >   ./scripts/clang-tools/gen_compile_commands.py --log_level=INFO
-> >
-> > then, you will see several "File ... not found" log messages.
-> >
-> > This is expected, and I do not want to support the tools/ directory.
-> > However, without an explicit comment "do not support tools/", somebody
-> > might try to get it back. Clarify this.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Sorry, I did not realize that gen_compile_commands.py did not intend to
-> support. I was only looking at the history for the current location, not
-> the former one of scripts/gen_compile_commands.py.
->
-> Acked-by: Nathan Chancellor <nathan@kernel.org>
->
+> > -	vdpa_unregister_device(&mvdev->vdev);
+> > +	vdpa_unregister_device(&ndev->mvdev.vdev);
+> >  }
+> 
+> IMHO, The more correct solution is to fix dev_set_drvdata() call,
+> because we are regustering/unregistering/allocating "struct mlx5_vdpa_dev".
+> 
 
-Applied to linux-kbuild.
+We're allocating "struct mlx5_vdpa_net". "struct mlx5_vdpa_dev" is just
+a member field of "struct mlx5_vdpa_net".
 
-
-
-Best Regards
-Masahiro Yamada
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 88dde3455bfd..079b8fe669af 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1995,7 +1995,7 @@ static int mlx5v_probe(struct auxiliary_device *adev,
+>  	if (err)
+>  		goto err_reg;
+> 
+> -	dev_set_drvdata(&adev->dev, ndev);
+> +	dev_set_drvdata(&adev->dev, mvdev);
+>  	return 0;
+> 
+>  err_reg:
+> 
+> >
+> >  static const struct auxiliary_device_id mlx5v_id_table[] = {
+> 
+> > --
+> > 2.29.2
+> >
