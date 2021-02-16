@@ -2,131 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D9831D08C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D1D31D082
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbhBPSzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 13:55:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48208 "EHLO mail.kernel.org"
+        id S231136AbhBPSyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 13:54:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44618 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231135AbhBPSza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:55:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60A9264EC8;
-        Tue, 16 Feb 2021 18:54:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613501690;
-        bh=XLdhnbxpQyUDI0ibwdZi9VWVTk4/FfIbiYNNHh0bGMo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PRPLQ5TwQ5HAvg963yD0IXfVeTU1PfgILSKT/zALIcuO2gE1ArT2oqoNRTFx0AvkL
-         Re4t0dwNDMixZhUOBCnYlnUB4SUeeYbZA69yoB4O7I10DK7/mYSn+QaVeqptrom6ur
-         fnCSuUvoYuIeNRqm1b7cMjhQbmEWOKDYRmGAXaE2A6YAKDixOHVxou7r7qbM8dQM+a
-         XsHab8VVEigD8OhpAPfQ3dvi5fjwDwetEAjQjpOYTtLPusx8Jcw3h+lEbT14SByHeb
-         L/rNkZjdiHrSlh0prLOEYNxbHJBSbQp2ArM+CHdx7e0ov4UxiHmUmTwsxK4TtiuCOZ
-         sAORhJdGrR50Q==
-Date:   Tue, 16 Feb 2021 11:54:47 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH mips-next] vmlinux.lds.h: catch more UBSAN symbols into
- .data
-Message-ID: <20210216185447.GA64303@24bbad8f3778>
-References: <20210216085442.2967-1-alobakin@pm.me>
- <CAKwvOdnBgpRff6wa8u1_ogCm_pRey5d_Yro4UCa_O_=tib0FHQ@mail.gmail.com>
+        id S230317AbhBPSys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 13:54:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8BF0EAE53;
+        Tue, 16 Feb 2021 18:54:05 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id b64fe64e;
+        Tue, 16 Feb 2021 18:55:07 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        "drinkcat@chromium.org" <drinkcat@chromium.org>,
+        "iant@google.com" <iant@google.com>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "llozano@chromium.org" <llozano@chromium.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "miklos@szeredi.hu" <miklos@szeredi.hu>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "dchinner@redhat.com" <dchinner@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "sfrench@samba.org" <sfrench@samba.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
+Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
+References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+        <20210215154317.8590-1-lhenriques@suse.de>
+        <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
+        <73ab4951f48d69f0183548c7a82f7ae37e286d1c.camel@hammerspace.com>
+        <CAOQ4uxgPtqG6eTi2AnAV4jTAaNDbeez+Xi2858mz1KLGMFntfg@mail.gmail.com>
+        <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
+        <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com>
+        <87r1lgjm7l.fsf@suse.de>
+        <CAOQ4uxgucdN8hi=wkcvnFhBoZ=L5=ZDc7-6SwKVHYaRODdcFkg@mail.gmail.com>
+        <87blckj75z.fsf@suse.de>
+        <CAOQ4uxiiy_Jdi3V1ait56=zfDQRBu_5gb+UsCo8GjMZ6XRhozw@mail.gmail.com>
+Date:   Tue, 16 Feb 2021 18:55:06 +0000
+In-Reply-To: <CAOQ4uxiiy_Jdi3V1ait56=zfDQRBu_5gb+UsCo8GjMZ6XRhozw@mail.gmail.com>
+        (Amir Goldstein's message of "Tue, 16 Feb 2021 19:44:48 +0200")
+Message-ID: <874kibkflh.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnBgpRff6wa8u1_ogCm_pRey5d_Yro4UCa_O_=tib0FHQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 09:56:32AM -0800, 'Nick Desaulniers' via Clang Built Linux wrote:
-> On Tue, Feb 16, 2021 at 12:55 AM Alexander Lobakin <alobakin@pm.me> wrote:
-> >
-> > LKP triggered lots of LD orphan warnings [0]:
-> 
-> Thanks for the patch, just some questions.
-> 
-> With which linker?  Was there a particular config from the bot's
-> report that triggered this?
+Amir Goldstein <amir73il@gmail.com> writes:
 
-Looks like GNU ld 2.34 (see below).
+> On Tue, Feb 16, 2021 at 6:41 PM Luis Henriques <lhenriques@suse.de> wrote:
+>>
+>> Amir Goldstein <amir73il@gmail.com> writes:
+>>
+>> >> Ugh.  And I guess overlayfs may have a similar problem.
+>> >
+>> > Not exactly.
+>> > Generally speaking, overlayfs should call vfs_copy_file_range()
+>> > with the flags it got from layer above, so if called from nfsd it
+>> > will allow cross fs copy and when called from syscall it won't.
+>> >
+>> > There are some corner cases where overlayfs could benefit from
+>> > COPY_FILE_SPLICE (e.g. copy from lower file to upper file), but
+>> > let's leave those for now. Just leave overlayfs code as is.
+>>
+>> Got it, thanks for clarifying.
+>>
+>> >> > This is easy to solve with a flag COPY_FILE_SPLICE (or something) that
+>> >> > is internal to kernel users.
+>> >> >
+>> >> > FWIW, you may want to look at the loop in ovl_copy_up_data()
+>> >> > for improvements to nfsd_copy_file_range().
+>> >> >
+>> >> > We can move the check out to copy_file_range syscall:
+>> >> >
+>> >> >         if (flags != 0)
+>> >> >                 return -EINVAL;
+>> >> >
+>> >> > Leave the fallback from all filesystems and check for the
+>> >> > COPY_FILE_SPLICE flag inside generic_copy_file_range().
+>> >>
+>> >> Ok, the diff bellow is just to make sure I understood your suggestion.
+>> >>
+>> >> The patch will also need to:
+>> >>
+>> >>  - change nfs and overlayfs calls to vfs_copy_file_range() so that they
+>> >>    use the new flag.
+>> >>
+>> >>  - check flags in generic_copy_file_checks() to make sure only valid flags
+>> >>    are used (COPY_FILE_SPLICE at the moment).
+>> >>
+>> >> Also, where should this flag be defined?  include/uapi/linux/fs.h?
+>> >
+>> > Grep for REMAP_FILE_
+>> > Same header file, same Documentation rst file.
+>> >
+>> >>
+>> >> Cheers,
+>> >> --
+>> >> Luis
+>> >>
+>> >> diff --git a/fs/read_write.c b/fs/read_write.c
+>> >> index 75f764b43418..341d315d2a96 100644
+>> >> --- a/fs/read_write.c
+>> >> +++ b/fs/read_write.c
+>> >> @@ -1383,6 +1383,13 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
+>> >>                                 struct file *file_out, loff_t pos_out,
+>> >>                                 size_t len, unsigned int flags)
+>> >>  {
+>> >> +       if (!(flags & COPY_FILE_SPLICE)) {
+>> >> +               if (!file_out->f_op->copy_file_range)
+>> >> +                       return -EOPNOTSUPP;
+>> >> +               else if (file_out->f_op->copy_file_range !=
+>> >> +                        file_in->f_op->copy_file_range)
+>> >> +                       return -EXDEV;
+>> >> +       }
+>> >
+>> > That looks strange, because you are duplicating the logic in
+>> > do_copy_file_range(). Maybe better:
+>> >
+>> > if (WARN_ON_ONCE(flags & ~COPY_FILE_SPLICE))
+>> >         return -EINVAL;
+>> > if (flags & COPY_FILE_SPLICE)
+>> >        return do_splice_direct(file_in, &pos_in, file_out, &pos_out,
+>> >                                  len > MAX_RW_COUNT ? MAX_RW_COUNT : len, 0);
+>>
+>> My initial reasoning for duplicating the logic in do_copy_file_range() was
+>> to allow the generic_copy_file_range() callers to be left unmodified and
+>> allow the filesystems to default to this implementation.
+>>
+>> With this change, I guess that the calls to generic_copy_file_range() from
+>> the different filesystems can be dropped, as in my initial patch, as they
+>> will always get -EINVAL.  The other option would be to set the
+>> COPY_FILE_SPLICE flag in those calls, but that would get us back to the
+>> problem we're trying to solve.
+>
+> I don't understand the problem.
+>
+> What exactly is wrong with the code I suggested?
+> Why should any filesystem be changed?
+>
+> Maybe I am missing something.
 
-> >
-> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_data299' from
-> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_data299'
-> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_data183' from
-> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_data183'
-> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type3' from
-> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type3'
-> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type2' from
-> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type2'
-> > mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type0' from
-> > `init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type0'
-> >
-> > [...]
-> >
-> > Seems like "unnamed data" isn't the only type of symbols that UBSAN
-> > instrumentation can emit.
-> > Catch these into .data with the wildcard as well.
-> >
-> > [0] https://lore.kernel.org/linux-mm/202102160741.k57GCNSR-lkp@intel.com
-> >
-> > Fixes: f41b233de0ae ("vmlinux.lds.h: catch UBSAN's "unnamed data" into data")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> > ---
-> >  include/asm-generic/vmlinux.lds.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> > index cc659e77fcb0..83537e5ee78f 100644
-> > --- a/include/asm-generic/vmlinux.lds.h
-> > +++ b/include/asm-generic/vmlinux.lds.h
-> > @@ -95,7 +95,7 @@
-> >   */
-> >  #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-> >  #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
-> > -#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliteral* .data.$__unnamed_*
-> > +#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliteral* .data.$__unnamed_* .data.$Lubsan_*
-> 
-> Are these sections only created when
-> CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is selected?  (Same with
-> .data.$__unnamed_*)
+Ok, I have to do a full brain reboot and start all over.
 
-Most likely, as that config is set in the problematic config. My guess
-is that these are GCC's equivalent of Clang's .data.$__unnamed_...
+Before that, I picked the code you suggested and tested it.  I've mounted
+a cephfs filesystem and used xfs_io to execute a 'copy_range' command
+using /sys/kernel/debug/sched_features as source.  The result was a
+0-sized file in cephfs.  And the reason is thevfs_copy_file_range()
+early exit in:
 
-$ crl https://lore.kernel.org/linux-mm/202102160741.k57GCNSR-lkp@intel.com/2-a.bin | gzip -d | rg "CONFIG_LD_DEAD_CODE|CONFIG_LD_VERSION"
-CONFIG_LD_VERSION=234000000
-CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
+	if (len == 0)
+		return 0;
 
-> >  #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
-> >  #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
-> >  #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
-> > --
-> > 2.30.1
-> >
-> >
-> 
-> 
-> -- 
-> Thanks,
-> ~Nick Desaulniers
-> 
+'len' is set in generic_copy_file_checks().
+
+This means that we're not solving the original problem anymore (probably
+since v1 of this patch, haven't checked).
+
+Also, re-reading Trond's emails, I read: "... also disallowing the copy
+from, say, an XFS formatted partition to an ext4 partition".  Isn't that
+*exactly* what we're trying to do here?  I.e. _prevent_ these copies from
+happening so that tracefs files can't be CFR'ed?
+
+/me stops now and waits to see if the morning brings some sun :-)
+
+Cheers,
+-- 
+Luis
