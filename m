@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B0831C825
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DACB031C829
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbhBPJdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:33:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44572 "EHLO
+        id S229916AbhBPJfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:35:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhBPJdI (ORCPT
+        with ESMTP id S229796AbhBPJfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:33:08 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED80C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:32:27 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id f4so9810487ybk.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:32:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wGwKySOQn+QZLA3kl46oI1OI2cd4E0l7i8tkigky6/o=;
-        b=Hqyve0rfwuAtKaL3EVqxuc3QOJrJSYy3cFjeKwSwsk5/v7UZig+gD/hqNXtnUXZgA3
-         PXzxFY2J/hLcjF4QAzlwqgS0l5q8Qg6qs28xz+h6y0C9y+TPWzE11BEjvmq8UBgZOXhi
-         xKCPLABRyauXBmjZrENmHvSOsodNEfNcWvsuOPvQ5CZG6edYRNntiEx4+GjQwueerVrg
-         FUMRgGnVNDrw9+DsfCeKnNaXewpPgYnDX+csjGqQxfeqSkW9R8VZ3YLeQxMlUw3Nmcay
-         8q5n2AaGbwB/RZGmyj8ciCpDVmpaYaiDdt1NpjaS6hR6bIYEeRGu/rrW98aGZqAvGBms
-         ihbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wGwKySOQn+QZLA3kl46oI1OI2cd4E0l7i8tkigky6/o=;
-        b=ACFjXnhBzUKec2ZHoA25jlXTdvZnGppBV3O36uzIik+3IhdkB2W/1D0gNhUJW7NtCZ
-         VQyND/yWEydVGNriFvvJtup+35MmvYUWTitjMvbyWVCP8d6fom7LKcIYdGJ6s93bp6bc
-         1eVtDdoIYn9YAmWETi90VzUAh10QfxbpziGdDzdCyzpVUdjINV5CKg3RL1JsU1bsobIB
-         GEKdIZSQQcmb8zSZJ3oal3UsDlrN7u777VreYdoqS3LkLgbdZbC/U1oXIqhspYU1OE/v
-         19V3ssD/Ig0FNoFAH/NBYlpAh7B51n09HO0CLHBwY3bYREQ4u66JKavRVRBkkW7RVUrY
-         iofA==
-X-Gm-Message-State: AOAM532cJLE7u6DOvGv9cly9YClDfLW6mklHj1GV08CuZ5+KSfNGqCFe
-        Z/GcdS1z/vTNZlhWVOXw/d89TMqy649iibAPVre+w2RJ1yZtrQ==
-X-Google-Smtp-Source: ABdhPJx5oH48KHDeZy3xbRhosLy5Ma1IJhyfcCndChgrkUctXlX1UW0pm/0xNs610xZAj3xUil2YMjFo82rk1wWBkOI=
-X-Received: by 2002:a25:cdc5:: with SMTP id d188mr906282ybf.422.1613467946635;
- Tue, 16 Feb 2021 01:32:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20210208175824.381484-1-bigeasy@linutronix.de>
- <CANiq72kqfPOpgwvNo3hTesCJztODxVGonJXpeeX=S+O4roNZsw@mail.gmail.com>
- <20210208190735.ibq44r5pc4cwzt7j@linutronix.de> <CANiq72kq_d=5TvdhndP9zkyTD1pHF6WQb+qs01D68DEQH6jVjQ@mail.gmail.com>
- <20210208204136.sv4omzms3nadse6e@linutronix.de> <CANiq72mw47Qa9M6i23Dp+_3M8juBnv33PJ-6zFk++SV57G2-cQ@mail.gmail.com>
- <20210209090112.lewvvhnc2y7oyr27@linutronix.de> <CANiq72mG3zXA7j9KbC74hQ1BMgw713Hm3WDAcQBjKxgg0fLHeg@mail.gmail.com>
- <20210213165040.vzzieegx4aliyosd@linutronix.de>
-In-Reply-To: <20210213165040.vzzieegx4aliyosd@linutronix.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 16 Feb 2021 10:32:15 +0100
-Message-ID: <CANiq72mkkSfbnNM_mmXE-TNKO1orsAeyByMKFy1N6hm+EBA40A@mail.gmail.com>
-Subject: Re: [PATCH v3] auxdisplay: Remove in_interrupt() usage.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Tue, 16 Feb 2021 04:35:21 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532C4C061574;
+        Tue, 16 Feb 2021 01:34:41 -0800 (PST)
+Date:   Tue, 16 Feb 2021 09:34:38 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613468079;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=qEKtAayEr8Y1QiesiNhk/bLBhnWzLsjGwJWi+vtocuI=;
+        b=sLXqXXzu+q53gjVXBENnHxAwlgcO2jLQYRYEX5ygRBMZMD/Hze7T0ftrZKeGqkiiXZO0+h
+        OrKJKJ0zcQJfbXzI/6I1yQS9oqebB5Z4hq9eIiBMiUYXW3gSOK6kexJ6SQqrwSF1ihPO99
+        zrHmMGkdIVOHlCYHf4/h8gQyv5uJkBnjwQDLcrfarmYyOBu+/Bj7c5g2uv8Sy2ooAnZVuX
+        ah/fwDrdrK2Xsetlfli8oPtVLUQRIgbiGHCjYyOSRlRl2O7aAsu6MVYPgzxzNiFKTjU5bT
+        JauhAhmsTGf+fgjJYC4ijOd8UqOVLnXLoOG61FEy6lIqn8B2OrgoRtQ3jN6Jeg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613468079;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=qEKtAayEr8Y1QiesiNhk/bLBhnWzLsjGwJWi+vtocuI=;
+        b=Jgf48xJNaBRIvAurgKxW4zF18Cc115Cdp8pZ1nLvl4NnN0FHk5SpblZ4L+w6H+uAZdVbCS
+        L6/vBlAI6WsbQ9DQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/entry] um: Enforce the usage of asm-generic/softirq_stack.h
+Cc:     Guenter Roeck <linux@roeck-us.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+        Richard Weinberger <richard@nod.at>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+Message-ID: <161346807864.20312.12484247851663762729.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian,
+The following commit has been merged into the x86/entry branch of tip:
 
-On Sat, Feb 13, 2021 at 5:50 PM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> charlcd_write() is invoked as a VFS->write() callback and as such it is
-> always invoked from preemptible context and may sleep.
+Commit-ID:     3aac798a917be3b8f2f647b834bb06bf2f8df4f1
+Gitweb:        https://git.kernel.org/tip/3aac798a917be3b8f2f647b834bb06bf2f8df4f1
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 16 Feb 2021 10:23:14 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 16 Feb 2021 10:23:14 +01:00
 
-Can we put this sentence as a comment in the code, right before the
-call to cond_resched()?
+um: Enforce the usage of asm-generic/softirq_stack.h
 
-> charlcd_puts() is invoked from register/unregister callback which is
-> preemtible. The reboot notifier callback is also invoked from
+The recent rework of the X86 irq stack switching mechanism broke UM as UM
+pulls in the X86 specific variant of softirq_stack.h.
 
-Same for this one.
+Enforce the usage of the asm-generic variant.
 
-In addition, somehow the spelling fixes got lost from the previous version.
+Fixes: 72f40a2823d6 ("x86/softirq/64: Inline do_softirq_own_stack()")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Richard Weinberger <richard@nod.at>
+---
+ arch/um/include/asm/Kbuild | 1 +
+ 1 file changed, 1 insertion(+)
 
-Same for the "code quotes": some have no quotes, others have `` or `'.
-No big deal, I can fix it on my side if needed, but just letting you
-know! :-)
-
-Thanks!
-
-Cheers,
-Miguel
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index 1c63b26..18f8645 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -21,6 +21,7 @@ generic-y += param.h
+ generic-y += pci.h
+ generic-y += percpu.h
+ generic-y += preempt.h
++generic-y += softirq_stack.h
+ generic-y += switch_to.h
+ generic-y += topology.h
+ generic-y += trace_clock.h
