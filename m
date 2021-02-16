@@ -2,148 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9B731CBA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF89F31CBAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhBPORV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:17:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60370 "EHLO mail.kernel.org"
+        id S230090AbhBPOSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:18:22 -0500
+Received: from smtp.asem.it ([151.1.184.197]:61312 "EHLO smtp.asem.it"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229796AbhBPORS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:17:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 782E664D9F;
-        Tue, 16 Feb 2021 14:16:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613484997;
-        bh=TBPqpnUqDioTSDkHJrAsQrWH6tFfXLDdDLnLtyI64lI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PNi4bBUGEEUao/WyabXMwTTxBbpX9Dfp0SpevABA9NU6aCO3WwWi7UeiziJHPQLi7
-         SNXlMvJUlLXOBDpgWtiiFs2rJx6Rdgl8dHdqJnzcYIFPhJIo3u2UACnrFnE+xPXMSP
-         VSw7q4J2ew4RWjoU0rUSfW6HFtSBnzCMeLtMn4e55+bJoHaIy22QjKhfofeqjKpUlp
-         Xvqo/LH1hXfB2cxfS1+Oaoa8PdntiLb9tYYOaHivQs/3o5ugF0DKsxJpLQsHftJ3I4
-         J3VT+7ncRC9HvZ5wf2RHpB/KVYKmSXBZBFCzmOvKF30t5iQJB49YSbi7r6qdPoxvCX
-         LrnjeRLH3mrDg==
-Date:   Tue, 16 Feb 2021 08:16:34 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Wasim Khan <wasim.khan@nxp.com>
-Cc:     "Wasim Khan (OSS)" <wasim.khan@oss.nxp.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PCI : check if type 0 devices have all BARs of size zero
-Message-ID: <20210216141634.GA803078@bjorn-Precision-5520>
+        id S229713AbhBPOSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 09:18:18 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000810734.MSG 
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 15:17:34 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 16
+ Feb 2021 15:17:32 +0100
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 16 Feb 2021 15:17:32 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+CC:     <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH] watchdog: wdat_wdg: fix typo
+Date:   Tue, 16 Feb 2021 15:17:27 +0100
+Message-ID: <20210216141727.641224-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VE1PR04MB6702EE8C0FBAFDFD3B35199090879@VE1PR04MB6702.eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A782F18.602BD3FC.00F3,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 07:52:08AM +0000, Wasim Khan wrote:
-> > -----Original Message-----
-> > From: Bjorn Helgaas <helgaas@kernel.org>
-> > Sent: Tuesday, February 16, 2021 2:43 AM
-> > To: Wasim Khan (OSS) <wasim.khan@oss.nxp.com>
-> > Cc: bhelgaas@google.com; linux-pci@vger.kernel.org; linux-
-> > kernel@vger.kernel.org; Wasim Khan <wasim.khan@nxp.com>
-> > Subject: Re: [PATCH] PCI : check if type 0 devices have all BARs of size zero
-> > 
-> > On Fri, Feb 12, 2021 at 11:08:56AM +0100, Wasim Khan wrote:
-> > > From: Wasim Khan <wasim.khan@nxp.com>
-> > >
-> > > Log a message if all BARs of type 0 devices are of size zero. This can
-> > > help detecting type 0 devices not reporting BAR size correctly.
-> > 
-> > I could be missing something, but I don't think we can do this.  I
-> > would think the simplest possible presilicon testing would find
-> > errors like this, and the first attempt to have a driver claim the
-> > device would fail if required BARs were missing, so I'm not sure
-> > what this would add.
-> 
-> Thank you for the review.
-> I observed this issue with an under development EP. Due to some
-> logic problem in EP's firmware, the BAR sizes were reported zero and
-> crash was observed sometime later in PCIe code. 
+Fix the following typo:
 
-I'm interested in this crash.  The PCI core should not crash just
-because a BAR size is zero, i.e., the BAR looks like it's
-unimplemented.
+"recommeded" --> "recommended"
+"firmare"    --> "firmware"
 
-> I agree with you that such issues should have been caught in
-> pre-silicon testing, but not sure of pre-si testing details and if
-> the issue was specifically observed with real OS. Also, because the
-> EP is in early stage of development, device driver of EP is not
-> available as of now. 
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
+ drivers/watchdog/wdat_wdt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> So, I though it will be a good idea to print an information message
-> only for *type 0* devices to give a quick hint if the zero BAR size
-> is expected for the given EP or not. So that SW can contribute to
-> identify HW problem.
+diff --git a/drivers/watchdog/wdat_wdt.c b/drivers/watchdog/wdat_wdt.c
+index cec7917790e5..195c8c004b69 100644
+--- a/drivers/watchdog/wdat_wdt.c
++++ b/drivers/watchdog/wdat_wdt.c
+@@ -208,7 +208,7 @@ static int wdat_wdt_enable_reboot(struct wdat_wdt *wdat)
+ 	/*
+ 	 * WDAT specification says that the watchdog is required to reboot
+ 	 * the system when it fires. However, it also states that it is
+-	 * recommeded to make it configurable through hardware register. We
++	 * recommended to make it configurable through hardware register. We
+ 	 * enable reboot now if it is configurable, just in case.
+ 	 */
+ 	ret = wdat_wdt_run_action(wdat, ACPI_WDAT_SET_REBOOT, 0, NULL);
+@@ -475,7 +475,7 @@ static int wdat_wdt_suspend_noirq(struct device *dev)
+ 		return 0;
+ 
+ 	/*
+-	 * We need to stop the watchdog if firmare is not doing it or if we
++	 * We need to stop the watchdog if firmware is not doing it or if we
+ 	 * are going suspend to idle (where firmware is not involved). If
+ 	 * firmware is stopping the watchdog we kick it here one more time
+ 	 * to give it some time.
+-- 
+2.25.1
 
-> > While the subject line says "type 0 devices," this code path is
-> > also used for type 1 devices (bridges), and it's quite common for
-> > bridges to have no BARs, which means they would all be hardwired
-> > to zero.
-> 
-> Yes, for type 1 devices, it is common to have zero BAR size, so I
-> added log msg for type 0 devices only , which are in-general
-> expected to have valid BARs.
-
-Oh, right, I missed your check of dev->hdr_type.
-
-> > It is also legal for even type 0 devices to implement no BARs.
-> > They may be operated entirely via config space or via
-> > device-specific BARs that are unknown to the PCI core.
-> 
-> OK, I did not know this . Thank you for sharing this.
-
-This is actually quite common.  On my garden-variet laptop, this:
-
-  $ lspci -v | grep -E "^(\S|        (Memory|I/O))"
-
-finds two type 0 devices that have no BARs:
-
-  00:00.0 Host bridge: Intel Corporation Xeon E3-1200 v6/7th Gen Core Processor Host Bridge/DRAM Registers
-  00:1f.0 ISA bridge: Intel Corporation CM238 Chipset LPC/eSPI Controller
-
-I don't really want to add more dmesg logging for things like this
-that are working correctly.  In this case, I think the best solution
-is to either keep this patch in your private branch for testing or to
-manually inspect the dmesg log, where we already log every BAR we
-discover, for devices that should have BARs but don't.
-
-> > > Signed-off-by: Wasim Khan <wasim.khan@nxp.com>
-> > > ---
-> > >  drivers/pci/probe.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c index
-> > > 953f15abc850..6438d6d56777 100644
-> > > --- a/drivers/pci/probe.c
-> > > +++ b/drivers/pci/probe.c
-> > > @@ -321,6 +321,7 @@ int __pci_read_base(struct pci_dev *dev, enum
-> > > pci_bar_type type,  static void pci_read_bases(struct pci_dev *dev,
-> > > unsigned int howmany, int rom)  {
-> > >  	unsigned int pos, reg;
-> > > +	bool found = false;
-> > >
-> > >  	if (dev->non_compliant_bars)
-> > >  		return;
-> > > @@ -333,8 +334,12 @@ static void pci_read_bases(struct pci_dev *dev,
-> > unsigned int howmany, int rom)
-> > >  		struct resource *res = &dev->resource[pos];
-> > >  		reg = PCI_BASE_ADDRESS_0 + (pos << 2);
-> > >  		pos += __pci_read_base(dev, pci_bar_unknown, res, reg);
-> > > +		found |= res->flags ? 1 : 0;
-> > >  	}
-> > >
-> > > +	if (!dev->hdr_type && !found)
-> > > +		pci_info(dev, "BAR size is 0 for BAR[0..%d]\n", howmany - 1);
-> > > +
-> > >  	if (rom) {
-> > >  		struct resource *res = &dev->resource[PCI_ROM_RESOURCE];
-> > >  		dev->rom_base_reg = rom;
-> > > --
-> > > 2.25.1
-> > >
