@@ -2,321 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975B631CF9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B3231CFA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhBPRvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbhBPRui (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:50:38 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDC3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 09:49:58 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id x1so12908930ljj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 09:49:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+VuxTCvHr9rQ2AHK8GZDJzh1+8H4dp2arkCyg3gMeg8=;
-        b=mnssgDr5lMVggKTEcyrlW0q14dyawmgNnq9Z1DOh7cukiMIpCJf/4hAHmeBOlx9Pz3
-         CpswzC/v0B4R9eDM5Lpw35by5Xthz3H7ppmoFiw29zhLSUJo9CQtB5tYUIulabiQiort
-         46ariByAIlx9L8vjVthysGI3JjKuPw+h6y+CyGltKL6esI2oMDAIykq3LXJ3S2UngRvm
-         v/DvS1+Qh32q2yH9ShKBvKwm0aGaYtvSPMK8OK7ncqypftH1AdXO2AeAwV7B4urmapV5
-         z89kb9SmI4TCg//1+jB6eYOy5pvs9Qd9QXFpxhISPlg9dv0ZI4yBLT+YxAAgerMZbmNb
-         NGBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+VuxTCvHr9rQ2AHK8GZDJzh1+8H4dp2arkCyg3gMeg8=;
-        b=ZcDZUSmBjBpaFkjxB7bld99CKc/M2YpqJs3qx9xj3RtyQlmyB1b0hLEWwrya01dI9Z
-         A8/C0AqG3ggiIEyrVXrPu7Q/+s6fI/okJ/STvCOLSCzmC2VDgooec4EAmKbAw1olBbDq
-         XNdvr440OWpGwX0etq0qrqGt8AACV5KY8FRwj23oDVuHYLRvd3DusQ5ohuYrXVmYs2NX
-         ijD9vzaqsYNvBcPUmGAER9e71LJXii3Jv+FqcMkAqnmKICPtKb5Ype2MD5pVl8z5pHDZ
-         FZaMbQ1w6p0H58czcWGW9LaY+k/iIRFxxUKd/MIloTOkAK66GXGQuaMp9JyXH9jna5A+
-         Wcsw==
-X-Gm-Message-State: AOAM530gr7/nHi8PpL8GUe5n8jNiEo5l9r52ASBv3ZJcpETLYxvPQzCa
-        R6x9VlaQavQnzDFD0m2/XywtCX6GVa4DF1EJS6km4g==
-X-Google-Smtp-Source: ABdhPJw82Q9n+a44TuyEIP/sqYc3OPVPhxwlkjhMcmNO++tsF+KkzgHD/oeyvfAXhc9oMQe+FRU5sOF0sMpKDj0eMZE=
-X-Received: by 2002:a05:651c:301:: with SMTP id a1mr13054304ljp.116.1613497796500;
- Tue, 16 Feb 2021 09:49:56 -0800 (PST)
+        id S231327AbhBPRvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:51:41 -0500
+Received: from mail.zx2c4.com ([104.131.123.232]:52036 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230264AbhBPRvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:51:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1613497832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x6vLcN+xqMivEhRJClR/OiRKsu8E4NuYns8fLQSOv1Q=;
+        b=XSd24Z36dyguJIhuYmlHtrumRpIqSyube+ePKhS94bbrycLZSLS/oO1xt/ajCZ6TDSlMnU
+        idpOeGvX7pZQQNyb+NgpYjwfzvtYlIljIb+Noy2b8AU6WxPfQLa7JSmbgt+K8k2gcDpSAw
+        Q5n96xcd5w6uVbC4svIBFEyy+H4dSZo=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 005f1d5a (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Tue, 16 Feb 2021 17:50:32 +0000 (UTC)
+Received: by mail-yb1-f179.google.com with SMTP id p193so11271825yba.4;
+        Tue, 16 Feb 2021 09:50:32 -0800 (PST)
+X-Gm-Message-State: AOAM532VHOSnLXsQDktJSZmQIFjiGQQ1H2gYJ2X/aMlPdQhaz0C881HC
+        Y1tViwk/TzEgbipL5W80iLR5wgJIrm1WWiWea/8=
+X-Google-Smtp-Source: ABdhPJwHt58xFP7YNMEve7qalwe99uM3eNJOjQyTF4f4AMRjItfs/mCB7J7f54GmIkOIxJqYe9dl3LeVEr9k0RC2Z58=
+X-Received: by 2002:a25:b74c:: with SMTP id e12mr34153553ybm.20.1613497831569;
+ Tue, 16 Feb 2021 09:50:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20210216031004.552417-1-masahiroy@kernel.org> <20210216031004.552417-2-masahiroy@kernel.org>
-In-Reply-To: <20210216031004.552417-2-masahiroy@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 16 Feb 2021 09:49:44 -0800
-Message-ID: <CAKwvOdn4rvTOQnHv+Xh1xMKFVH8885oRAL3cNchnDFcmQJZA+w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kbuild: check the minimum linker version in Kconfig
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        David Laight <david.laight@aculab.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        KP Singh <kpsingh@google.com>,
+References: <0000000000000be4d705bb68dfa7@google.com> <20210216172817.GA14978@arm.com>
+ <CAHmME9q2-wbRmE-VgSoW5fxjGQ9kkafYH-X5gSVvgWESo5rm4Q@mail.gmail.com>
+In-Reply-To: <CAHmME9q2-wbRmE-VgSoW5fxjGQ9kkafYH-X5gSVvgWESo5rm4Q@mail.gmail.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Tue, 16 Feb 2021 18:50:20 +0100
+X-Gmail-Original-Message-ID: <CAHmME9ob9g-pcsKU2=n2SOzjNwyGh9+dL-WGpQn4Da+DD4dPzA@mail.gmail.com>
+Message-ID: <CAHmME9ob9g-pcsKU2=n2SOzjNwyGh9+dL-WGpQn4Da+DD4dPzA@mail.gmail.com>
+Subject: Re: KASAN: invalid-access Write in enqueue_timer
+To:     Netdev <netdev@vger.kernel.org>
+Cc:     syzbot <syzbot+95c862be69e37145543f@syzkaller.appspotmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Kees Cook <keescook@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Quentin Perret <qperret@google.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
         Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 7:10 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Tue, Feb 16, 2021 at 6:46 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
 >
-> Unify the two scripts/ld-version.sh and scripts/lld-version.sh, and
-> check the minimum linker version like scripts/cc-version.sh did.
+> Hi Catalin,
 >
-> I tested this script for some corner cases reported in the past:
+> On Tue, Feb 16, 2021 at 6:28 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > Adding Jason and Ard. It may be a use-after-free in the wireguard
+> > driver.
 >
->  - GNU ld version 2.25-15.fc23
->    as reported by commit 8083013fc320 ("ld-version: Fix it on Fedora")
+> Thanks for sending this my way. Note: to my knowledge, Ard doesn't
+> work on wireguard.
 >
->  - GNU ld (GNU Binutils) 2.20.1.20100303
->    as reported by commit 0d61ed17dd30 ("ld-version: Drop the 4th and
->    5th version components")
+> > >  hlist_add_head include/linux/list.h:883 [inline]
+> > >  enqueue_timer+0x18/0xc0 kernel/time/timer.c:581
+> > >  mod_timer+0x14/0x20 kernel/time/timer.c:1106
+> > >  mod_peer_timer drivers/net/wireguard/timers.c:37 [inline]
+> > >  wg_timers_any_authenticated_packet_traversal+0x68/0x90 drivers/net/wireguard/timers.c:215
 >
-> This script show an error message if the linker is too old:
+> The line of hlist_add_head that it's hitting is:
 >
->   $ make LD=ld.lld-9
->     SYNC    include/config/auto.conf
->   ***
->   *** Linker is too old.
->   ***   Your LLD version:    9.0.1
->   ***   Minimum LLD version: 10.0.1
->   ***
->   scripts/Kconfig.include:50: Sorry, this linker is not supported.
->   make[2]: *** [scripts/kconfig/Makefile:71: syncconfig] Error 1
->   make[1]: *** [Makefile:600: syncconfig] Error 2
->   make: *** [Makefile:708: include/config/auto.conf] Error 2
+> static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
+> {
+>        struct hlist_node *first = h->first;
+>        WRITE_ONCE(n->next, first);
+>        if (first)
 >
-> I also moved the check for gold to this script, so gold is still rejected:
+> So that means it's the dereferencing of h that's a problem. That comes from:
 >
->   $ make LD=gold
->     SYNC    include/config/auto.conf
->   gold linker is not supported as it is not capable of linking the kernel proper.
->   scripts/Kconfig.include:50: Sorry, this linker is not supported.
->   make[2]: *** [scripts/kconfig/Makefile:71: syncconfig] Error 1
->   make[1]: *** [Makefile:600: syncconfig] Error 2
->   make: *** [Makefile:708: include/config/auto.conf] Error 2
+> static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
+>                          unsigned int idx, unsigned long bucket_expiry)
+> {
 >
-> Thanks to David Laight for suggesting shell script improvements.
+>        hlist_add_head(&timer->entry, base->vectors + idx);
 >
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-
-Acked-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
+> That means it concerns base->vectors + idx, not the timer_list object
+> that wireguard manages. That's confusing. Could that imply that the
+> bug is in freeing a previous timer without removing it from the timer
+> lists, so that it winds up being in base->vectors?
 >
->  MAINTAINERS             |  1 -
->  init/Kconfig            | 21 +++++++----
->  scripts/Kconfig.include |  7 +++-
->  scripts/ld-version.sh   | 82 ++++++++++++++++++++++++++++++++++++-----
->  scripts/lld-version.sh  | 20 ----------
->  5 files changed, 90 insertions(+), 41 deletions(-)
->  delete mode 100755 scripts/lld-version.sh
+> The allocation and deallocation backtrace is confusing
 >
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index df820969be1f..6b82ad6990b7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4314,7 +4314,6 @@ C:        irc://chat.freenode.net/clangbuiltlinux
->  F:     Documentation/kbuild/llvm.rst
->  F:     include/linux/compiler-clang.h
->  F:     scripts/clang-tools/
-> -F:     scripts/lld-version.sh
->  K:     \b(?i:clang|llvm)\b
+> > >  alloc_netdev_mqs+0x5c/0x3bc net/core/dev.c:10546
+> > >  rtnl_create_link+0xc8/0x2b0 net/core/rtnetlink.c:3171
+> > >  __rtnl_newlink+0x5bc/0x800 net/core/rtnetlink.c:3433
 >
->  CLEANCACHE API
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 7bcfa24524c2..42b69ee29dca 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -33,24 +33,29 @@ config GCC_VERSION
->         default $(cc-version) if CC_IS_GCC
->         default 0
+> This suggests it's part of the `ip link add wg0 type wireguard` nelink
+> call, during it's allocation of the netdevice's private area. For
+> this, the wg_device struct is used. It has no timer_list structures in
+> it!
 >
-> -config LD_VERSION
-> -       int
-> -       default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
-> -
->  config CC_IS_CLANG
->         def_bool $(success,test "$(cc-name)" = Clang)
+> Similarly,
 >
-> -config LD_IS_LLD
-> -       def_bool $(success,$(LD) -v | head -n 1 | grep -q LLD)
-> -
->  config CLANG_VERSION
->         int
->         default $(cc-version) if CC_IS_CLANG
->         default 0
+> > >  netdev_freemem+0x18/0x2c net/core/dev.c:10500
+> > >  netdev_release+0x30/0x44 net/core/net-sysfs.c:1828
+> > >  device_release+0x34/0x90 drivers/base/core.c:1980
 >
-> +config LD_IS_BFD
-> +       def_bool $(success,test "$(ld-name)" = BFD)
-> +
-> +config LD_VERSION
-> +       int
-> +       default $(ld-version) if LD_IS_BFD
-> +       default 0
-> +
-> +config LD_IS_LLD
-> +       def_bool $(success,test "$(ld-name)" = LLD)
-> +
->  config LLD_VERSION
->         int
-> -       default $(shell,$(srctree)/scripts/lld-version.sh $(LD))
-> +       default $(ld-version) if LD_IS_LLD
-> +       default 0
+> That smells like `ip link del wg0 type wireguard`. But again,
+> wg_device doesn't have any timer_lists in it.
 >
->  config CC_CAN_LINK
->         bool
-> diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
-> index 0228cb9c74aa..58fdb5308725 100644
-> --- a/scripts/Kconfig.include
-> +++ b/scripts/Kconfig.include
-> @@ -45,8 +45,11 @@ $(error-if,$(success,test -z "$(cc-info)"),Sorry$(comma) this compiler is not su
->  cc-name := $(shell,set -- $(cc-info) && echo $1)
->  cc-version := $(shell,set -- $(cc-info) && echo $2)
+> So what's happening here exactly? I'm not really sure yet...
 >
-> -# Fail if the linker is gold as it's not capable of linking the kernel proper
-> -$(error-if,$(success, $(LD) -v | grep -q gold), gold linker '$(LD)' not supported)
-> +# Get the linker name, version, and error out if it is not supported.
-> +ld-info := $(shell,$(srctree)/scripts/ld-version.sh $(LD))
-> +$(error-if,$(success,test -z "$(ld-info)"),Sorry$(comma) this linker is not supported.)
-> +ld-name := $(shell,set -- $(ld-info) && echo $1)
-> +ld-version := $(shell,set -- $(ld-info) && echo $2)
+> It'd be nice to have a reproducer.
 >
->  # machine bit flags
->  #  $(m32-flag): -m32 if the compiler supports it, or an empty string otherwise.
-> diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-> index 0f8a2c0f9502..a463273509b5 100755
-> --- a/scripts/ld-version.sh
-> +++ b/scripts/ld-version.sh
-> @@ -1,11 +1,73 @@
-> -#!/usr/bin/awk -f
-> +#!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0
-> -# extract linker version number from stdin and turn into single number
-> -       {
-> -       gsub(".*\\)", "");
-> -       gsub(".*version ", "");
-> -       gsub("-.*", "");
-> -       split($1,a, ".");
-> -       print a[1]*10000 + a[2]*100 + a[3];
-> -       exit
-> -       }
-> +#
-> +# Print the linker name and its version in a 5 or 6-digit form.
-> +# Also, perform the minimum version check.
-> +
-> +set -e
-> +
-> +# When you raise the minimum linker version, please update
-> +# Documentation/process/changes.rst as well.
-> +bfd_min_version=2.23.0
-> +lld_min_version=10.0.1
-> +
-> +# Convert the version string x.y.z to a canonical 5 or 6-digit form.
-> +get_canonical_version()
-> +{
-> +       IFS=.
-> +       set -- $1
-> +
-> +       # If the 2nd or 3rd field is missing, fill it with a zero.
-> +       #
-> +       # The 4th field, if present, is ignored.
-> +       # This occurs in development snapshots as in 2.35.1.20201116
-> +       echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
-> +}
-> +
-> +orig_args="$@"
-> +
-> +# Get the first line of the --version output.
-> +IFS='
-> +'
-> +set -- $("$@" --version)
-> +
-> +# Split the line on spaces.
-> +IFS=' '
-> +set -- $1
-> +
-> +if [ "$1" = GNU -a "$2" = ld ]; then
-> +       shift $(($# - 1))
-> +       version=$1
-> +       min_version=$bfd_min_version
-> +       name=BFD
-> +       disp_name="GNU ld"
-> +elif [ "$1" = GNU -a "$2" = gold ]; then
-> +       echo "gold linker is not supported as it is not capable of linking the kernel proper." >&2
-> +       exit 1
-> +elif [ "$1" = LLD ]; then
-> +       version=$2
-> +       min_version=$lld_min_version
-> +       name=LLD
-> +       disp_name=LLD
-> +else
-> +       echo "$orig_args: unknown linker" >&2
-> +       exit 1
-> +fi
-> +
-> +# Some distributions append a package release number, as in 2.34-4.fc32
-> +# Trim the hyphen and any characters that follow.
-> +version=${version%-*}
-> +
-> +cversion=$(get_canonical_version $version)
-> +min_cversion=$(get_canonical_version $min_version)
-> +
-> +if [ "$cversion" -lt "$min_cversion" ]; then
-> +       echo >&2 "***"
-> +       echo >&2 "*** Linker is too old."
-> +       echo >&2 "***   Your $disp_name version:    $version"
-> +       echo >&2 "***   Minimum $disp_name version: $min_version"
-> +       echo >&2 "***"
-> +       exit 1
-> +fi
-> +
-> +echo $name $cversion
-> diff --git a/scripts/lld-version.sh b/scripts/lld-version.sh
-> deleted file mode 100755
-> index d70edb4d8a4f..000000000000
-> --- a/scripts/lld-version.sh
-> +++ /dev/null
-> @@ -1,20 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0
-> -#
-> -# Usage: $ ./scripts/lld-version.sh ld.lld
-> -#
-> -# Print the linker version of `ld.lld' in a 5 or 6-digit form
-> -# such as `100001' for ld.lld 10.0.1 etc.
-> -
-> -linker_string="$($* --version)"
-> -
-> -if ! ( echo $linker_string | grep -q LLD ); then
-> -       echo 0
-> -       exit 1
-> -fi
-> -
-> -VERSION=$(echo $linker_string | cut -d ' ' -f 2)
-> -MAJOR=$(echo $VERSION | cut -d . -f 1)
-> -MINOR=$(echo $VERSION | cut -d . -f 2)
-> -PATCHLEVEL=$(echo $VERSION | cut -d . -f 3)
-> -printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
-> --
-> 2.27.0
 >
+> Jason
 
 
--- 
-Thanks,
-~Nick Desaulniers
+Digging around on syzkaller, it looks like there's a similar bug on
+jbd2, concerning iptunnels's allocation:
+
+https://syzkaller.appspot.com/text?tag=CrashReport&x=13afb19cd00000
+
+And one from ext4:
+
+https://syzkaller.appspot.com/text?tag=CrashReport&x=17685330d00000
+
+And from from ext4 with fddup:
+
+https://syzkaller.appspot.com/text?tag=CrashReport&x=17685330d00000
+https://syzkaller.appspot.com/text?tag=CrashReport&x=12d326e8d00000
+
+It might not actually be a wireguard bug?
