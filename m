@@ -2,159 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D8E31CA7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEAA31CA83
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhBPMSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:18:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbhBPMSN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:18:13 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F362FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:17:30 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id v5so15315356lft.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:17:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:cc:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rFwOmulNONpMQjilEPemhnsjOZneCKsayzE9iyzOr6s=;
-        b=P9u0BFR4TD7k0i2Woh9Pkq+FlwaxvbtdnoEkVty3Y8DEp1PI0P6WgMb7geBsPJ2OFI
-         fIb7V2N4rCeIxs+44I7VqSURvcBSgEtZ5ykabjTFuNyEtehvXcT5cec+oN0JZtk3HDsk
-         hOWhiGNTGb5JhQQThe0wm75fI+B83YMaXQhaJTqsssLk2VpcdkfYtOLGlDwX5GYjwSCd
-         afDPyk86iGejPEFBUCDFa8z9PqUdqEu/VlqTqHacih0kdZGLeAHh0Md41f7Hnc1C1bN7
-         y1ZAPLEoTOID1ANJs8JeMAQWKS9Xip2+2R78ze5odRS6NVaT9hAHKZSsMUjITLr97m8j
-         3U8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:cc:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rFwOmulNONpMQjilEPemhnsjOZneCKsayzE9iyzOr6s=;
-        b=BlhQLxf+FP5jMpTGOFc5WX3sNX81AE+MacxI4OX62Kby1O6fb6k6ps0QQLuwfNeaW6
-         PmJSXqhOimhNOeWJQp9DpT/ymN7YvCPaEczQAepOsvLzB3GNeqMmwt8nzO8bU+fur3qs
-         DADkJgvUA14oKv/JiZVrND1wF2YSsZfzKFOCwtrEx8PkAjjRVrNtocco1Qv8mURnITHd
-         Hx1WLlPm2YJ024a4UhmZxLtEDooiJwt8/YDteYcxYipyzP2KnkjkfzCMx/Oc4FUAgJgH
-         25vJaVa8Vidp7yn9TRNevEy3oYDseAIlA+sAUB9og6Xzzh8dMz6UMUjnWXIxhsGXjAOu
-         wI8Q==
-X-Gm-Message-State: AOAM532DLPtaDkSQRzdiy6imv8wXRgAv2aXTO3GAQcERHRc/DWs2TNrA
-        uXeDzfWuob9KQPizjqr0FqmVrfjEbfU=
-X-Google-Smtp-Source: ABdhPJz4KBuhCoueSPOF983ytvDxij5CRwPUKn1HGBZ2XnuwtHlAddPir6QWAFplsXH6wKNHDVhaOg==
-X-Received: by 2002:a05:6512:5ca:: with SMTP id o10mr11240207lfo.619.1613477849497;
-        Tue, 16 Feb 2021 04:17:29 -0800 (PST)
-Received: from [192.168.1.2] (broadband-37-110-156-170.ip.moscow.rt.ru. [37.110.156.170])
-        by smtp.gmail.com with ESMTPSA id t27sm3963531ljk.132.2021.02.16.04.17.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Feb 2021 04:17:28 -0800 (PST)
-Subject: Re: [RFC PATCH 00/13] Add futex2 syscalls
-From:   Andrey Semashev <andrey.semashev@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-References: <9557a62c-ab64-495b-36bd-6d8db426ddce@gmail.com>
-Cc:     andrealmeid@collabora.com
-Message-ID: <b7df4ac2-91a4-a52a-4455-611e0c6d7107@gmail.com>
-Date:   Tue, 16 Feb 2021 15:17:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S230336AbhBPMUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 07:20:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47160 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230291AbhBPMUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 07:20:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9591764DA1;
+        Tue, 16 Feb 2021 12:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613478006;
+        bh=eY3JuZ3bYjD3WZtwZpW3k2wGBYvzuYHR1se+7uL9cBQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rD29hmLZjn/XuY6dCet6nB0+YAsDdv1jA42aZE7Okbk1USxVcblJEgWEs7cvD9J5D
+         r0BBaBIFqkp2ep1fOEsajYT7/K4O313ncgRkf1goUXru9dBixq7IhuBQfMFF6v8UZs
+         kC5aA7cxVppc9PPVwETP4j/O88TsAdt5VIqTwr9UoiMp55Nwk9LmFnbZXTADkVSR2F
+         FHMOYEkJPThB64JGE4MTaX427IcpydTOF7WfNuzBpYuvre2Q+Pc7RD5kNzOUuxYK/Y
+         nhJ6nVWLkWLRGofVPFfPezaCWVb1AxX6f4N82JprJfC0/sIrDe5h2g0iJ26HmHrlv4
+         FoO1uE+lDmkxw==
+Date:   Tue, 16 Feb 2021 14:20:02 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Geetha sowjanya <gakula@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, sgoutham@marvell.com,
+        lcherian@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
+        jerinj@marvell.com
+Subject: Re: [net-next v2] octeontx2-af: cn10k: Fixes CN10K RPM reference
+ issue
+Message-ID: <YCu4cjroqPHBPAnX@unreal>
+References: <20210216113936.26580-1-gakula@marvell.com>
 MIME-Version: 1.0
-In-Reply-To: <9557a62c-ab64-495b-36bd-6d8db426ddce@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216113936.26580-1-gakula@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding André Almeida to CC.
+On Tue, Feb 16, 2021 at 05:09:36PM +0530, Geetha sowjanya wrote:
+> This patch fixes references to uninitialized variables and
+> debugfs entry name for CN10K platform and HW_TSO flag check.
+>
+> Fixes: 3ad3f8f93c81 ("octeontx2-af: cn10k: MAC internal loopback support").
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
 
-On 2/16/21 3:13 PM, Andrey Semashev wrote:
-> Sorry for posting out-of-tree, I just subscribed to the list to reply to 
-> a post that was already sent.
-> 
-> André Almeida wrote:
-> 
->> ** "And what's about FUTEX_64?"
->>
->>  By supporting 64 bit futexes, the kernel structure for futex would
->>  need to have a 64 bit field for the value, and that could defeat one of
->>  the purposes of having different sized futexes in the first place:
->>  supporting smaller ones to decrease memory usage. This might be
->>  something that could be disabled for 32bit archs (and even for
->>  CONFIG_BASE_SMALL).
->>
->>  Which use case would benefit for FUTEX_64? Does it worth the trade-offs?
-> 
-> I strongly believe that 64-bit futex must be supported. I have a few use 
-> cases in mind:
-> 
-> 1. Cooperative robust futexes.
-> 
-> I have a real-world case where multiple processes need to communicate 
-> via shared memory and synchronize via a futex. The processes run under a 
-> supervisor parent process, which can detect termination of its children 
-> and also has access to the shared memory. In order to make the 
-> communication more or less safe in face of one of the child process 
-> crashing, the futex currently contains a portion of pid of the process 
-> that locked it. The parent supervisor is then able to tell that the 
-> crashed child was holding the futex locked and then marke the futex as 
-> "broken" and notify any other threads blocked on it.
-> 
-> Given that pid can be up to 32-bits in size, and we also need some bits 
-> in the futex to implement its logic (i.e. at least "locked" and "broken" 
-> bits, some bits for the ABA counter, etc.), the pid can be truncated and 
-> the above logic may be broken. In the real application, only 15 bits are 
-> left for the pid, which is already less than the actual pid range on the 
-> system.
-> 
-> Note: We're not using the proper pthread robust mutexes because we also 
-> need a condition variable, and condition variables contain a non-robust 
-> mutex internally, which basically nullifies robustness. One could argue 
-> to fix pthread instead, but I view that as a more difficult task as 
-> pthread interface is standardized. We would rather use futex directly 
-> anyway because of more flexibility and less performance overhead.
-> 
-> 2. Parity with WaitOnAddress[1] on Windows.
-> 
-> WaitOnAddress is explicitly documented to support 8-byte states, and its 
-> interface allows for further extension. I'm not a Wine developer, but I 
-> would guess that having a 8-byte futex support to match would be useful 
-> there.
-> 
-> Besides Wine, having a 64-bit futex would be important for 
-> std::atomic[2] and Boost.Atomic in C++, which support waiting and 
-> notifying operations (for std::atomic, introduced in C++20). Waiting and 
-> notifying operations are normally implemented using futex API on Linux 
-> and WaitOnAddress on Windows, and can be emulated with a process-wide 
-> global mutex pool if such API is unavailable for a given atomic size on 
-> the target platform. This means that 64-bit atomics on Linux currently 
-> must be implemented with a lock and therefore cannot be used in 
-> process-shared memory, while there is no such limitation on Windows.
-> 
-> 
-> I'm not sure how much memory is saved by not having 64-bit state in the 
-> kernel futex structures, but this doesn't look like a huge deal on 
-> modern systems - server, desktop or mobile. It may make sense for 
-> extremely low memory embedded systems, and for those targets the support 
-> may be disabled with a switch. In fact, such systems would probably not 
-> support 64-bit atomics anyway. For any other targets I would prefer 
-> 64-bit futex to be available by default.
-> 
-> My main issue with 64-bit being optional though is that applications and 
-> libraries like Boost.Atomic would like (or even require) to know if the 
-> feature is available at compile time rather than run time. std::atomic, 
-> for example, is supposed to be a thin abstraction over atomic 
-> instructions and OS primitives like futex, so performing runtime 
-> detection of the available features in the kernel would be detrimental 
-> there. I'm not sure if this is possible in the current kernel 
-> infrastructure, but it would be best if the lack of 64-bit atomics in 
-> the kernel was detectable through kernel headers (e.g. by a macro for 
-> 64-bit futexes not being defined or something like that), which means 
-> the headers must be generated at kernel configuration time.
-> 
-> [1]: 
-> https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitonaddress 
-> 
-> [2]: https://en.cppreference.com/w/cpp/atomic/atomic
+"---" needs to be here.
 
+Thanks
+
+>
+> v1-v2
+> - Clear HW_TSO flag for 96xx B0 version.
+>
+> This patch fixes the bug introduced by the commit
+> 3ad3f8f93c81 ("octeontx2-af: cn10k: MAC internal loopback support").
+> These changes are not yet merged into net branch, hence submitting
+> to net-next.
+>
+> ---
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c   |  2 ++
+>  .../net/ethernet/marvell/octeontx2/af/rvu_debugfs.c   |  2 +-
+>  .../net/ethernet/marvell/octeontx2/nic/otx2_common.h  |  3 +++
+>  .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c    | 11 ++++++-----
+>  4 files changed, 12 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> index 3a1809c28e83..e668e482383a 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+> @@ -722,12 +722,14 @@ u32 rvu_cgx_get_fifolen(struct rvu *rvu)
+>
+>  static int rvu_cgx_config_intlbk(struct rvu *rvu, u16 pcifunc, bool en)
+>  {
+> +	int pf = rvu_get_pf(pcifunc);
+>  	struct mac_ops *mac_ops;
+>  	u8 cgx_id, lmac_id;
+>
+>  	if (!is_cgx_config_permitted(rvu, pcifunc))
+>  		return -EPERM;
+>
+> +	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
+>  	mac_ops = get_mac_ops(rvu_cgx_pdata(cgx_id, rvu));
+>
+>  	return mac_ops->mac_lmac_intl_lbk(rvu_cgx_pdata(cgx_id, rvu),
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+> index 48a84c65804c..094124b695dc 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+> @@ -2432,7 +2432,7 @@ void rvu_dbg_init(struct rvu *rvu)
+>  		debugfs_create_file("rvu_pf_cgx_map", 0444, rvu->rvu_dbg.root,
+>  				    rvu, &rvu_dbg_rvu_pf_cgx_map_fops);
+>  	else
+> -		debugfs_create_file("rvu_pf_cgx_map", 0444, rvu->rvu_dbg.root,
+> +		debugfs_create_file("rvu_pf_rpm_map", 0444, rvu->rvu_dbg.root,
+>  				    rvu, &rvu_dbg_rvu_pf_cgx_map_fops);
+>
+>  create:
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+> index 4c472646a0ac..f14d388efb51 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+> @@ -407,6 +407,9 @@ static inline void otx2_setup_dev_hw_settings(struct otx2_nic *pfvf)
+>  		pfvf->hw.rq_skid = 600;
+>  		pfvf->qset.rqe_cnt = Q_COUNT(Q_SIZE_1K);
+>  	}
+> +	if (is_96xx_B0(pfvf->pdev))
+> +		__clear_bit(HW_TSO, &hw->cap_flag);
+> +
+>  	if (!is_dev_otx2(pfvf->pdev)) {
+>  		__set_bit(CN10K_MBOX, &hw->cap_flag);
+>  		__set_bit(CN10K_LMTST, &hw->cap_flag);
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> index 3f778fc054b5..22ec03a618b1 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> @@ -816,22 +816,23 @@ static bool is_hw_tso_supported(struct otx2_nic *pfvf,
+>  {
+>  	int payload_len, last_seg_size;
+>
+> +	if (test_bit(HW_TSO, &pfvf->hw.cap_flag))
+> +		return true;
+> +
+> +	/* On 96xx A0, HW TSO not supported */
+> +	if (!is_96xx_B0(pfvf->pdev))
+> +		return false;
+>
+>  	/* HW has an issue due to which when the payload of the last LSO
+>  	 * segment is shorter than 16 bytes, some header fields may not
+>  	 * be correctly modified, hence don't offload such TSO segments.
+>  	 */
+> -	if (!is_96xx_B0(pfvf->pdev))
+> -		return true;
+>
+>  	payload_len = skb->len - (skb_transport_offset(skb) + tcp_hdrlen(skb));
+>  	last_seg_size = payload_len % skb_shinfo(skb)->gso_size;
+>  	if (last_seg_size && last_seg_size < 16)
+>  		return false;
+>
+> -	if (!test_bit(HW_TSO, &pfvf->hw.cap_flag))
+> -		return false;
+> -
+>  	return true;
+>  }
+>
+> --
+> 2.17.1
+>
