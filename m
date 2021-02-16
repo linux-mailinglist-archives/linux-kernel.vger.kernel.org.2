@@ -2,129 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2657331C849
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8822E31C84E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhBPJpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:45:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:59236 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229725AbhBPJpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:45:08 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AF9B1FB;
-        Tue, 16 Feb 2021 01:44:22 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E2B03F694;
-        Tue, 16 Feb 2021 01:44:20 -0800 (PST)
-Subject: Re: [PATCH V3 11/14] coresight: sink: Add TRBE driver
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-12-git-send-email-anshuman.khandual@arm.com>
- <20210212202628.GC2692426@xps15>
- <9ca3b9da-dded-1206-e048-835590b2265e@arm.com>
- <CAJ9a7ViX6UUO66WX7M8hixg7dRdx7XPZNpfr3zwTaT=GBbWJSg@mail.gmail.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <7b20f8b3-4efa-530f-b058-1aae13e4e43e@arm.com>
-Date:   Tue, 16 Feb 2021 15:14:37 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229958AbhBPJqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:46:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45063 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229635AbhBPJqd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 04:46:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613468707;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wcnd7ClbZgShooWszPEgOAqPp+c33seC7pun/tamuzE=;
+        b=hti9g678GWwU23gGIDts/48Kubo5NXXl/1cT/UQlemoHVxp53DCzgmQGQCCE87GwvSFwPS
+        Cs8EulP2Q30rGhWDNW6kOAAt895hwf2nOUH7HC7eJE4iYn5gTIMkfrLDVqHO0/Yo+RSGXv
+        Cg7a34t/6+mDLNMvOdrsvlV5u2K3RHc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-474-MA4WhP80O1ixGB_T6ZurCA-1; Tue, 16 Feb 2021 04:45:04 -0500
+X-MC-Unique: MA4WhP80O1ixGB_T6ZurCA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0CD6A801998;
+        Tue, 16 Feb 2021 09:45:03 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-113-212.ams2.redhat.com [10.36.113.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E7BD15D9C0;
+        Tue, 16 Feb 2021 09:44:55 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Subject: [RFC PATCH 00/10] vdpa: get/set_config() rework
+Date:   Tue, 16 Feb 2021 10:44:44 +0100
+Message-Id: <20210216094454.82106-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAJ9a7ViX6UUO66WX7M8hixg7dRdx7XPZNpfr3zwTaT=GBbWJSg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mike,
+Following the discussion with Michael and Jason [1], I reworked a bit
+get/set_config() in vdpa.
 
-On 2/16/21 2:30 PM, Mike Leach wrote:
-> Hi Anshuman,
-> 
-> There have been plenty of detailed comments so I will restrict mine to
-> a few general issues:-
-> 
-> 1) Currently there appears to be no sysfs support (I cannot see the
-> MODE_SYSFS constants running alongside the MODE_PERF ones present in
-> the other sink drivers). This is present on all other coresight
-> devices, and must be provided for this device. It is useful for
-> testing, and there are users out there who will have scripts to use
-> it. It is not essential it makes it into this set, but should be a
-> follow up set.
+I changed vdpa_get_config() to check the boundaries and added vdpa_set_config().
+When 'offset' or 'len' parameters exceed boundaries, we limit the reading to
+the available configuration space in the device, and we return the amount of
+bytes read/written.
 
-Sure, will try and add it in a follow up series.
+In this way the user space can pass buffers bigger than config space.
+I also returned the amount of bytes read and written to user space.
 
-> 
-> 2) Using FILL mode for TRBE means that the trace will by definition be
-> lossy. Fill mode will halt collection without cleanly stopping and
-> flushing the source. This will result in the sink missing the last of
-> the data from the source as it stops. Even if taking the exception
-> moves into a prohibited region there is still the possibility the last
-> trace operations will not be seen. Further it is possible that the
-> last few bytes of trace will be an incomplete packet, and indeed the
-> start of the next buffer could contain incomplete packets too.
+Patches also available here:
+https://github.com/stefano-garzarella/linux/tree/vdpa-get-set-config-refactoring
 
-Just wondering why TRBE and ETE would not sync with each other in order
-for the ETE to possibly resend all the lost trace data, when the TRBE
-runs out of buffer and wrappers around ? Is this ETE/TRBE behavior same
-for all implementations in the FILL mode ? Just wondering.
+Thanks for your comments,
+Stefano
 
-> 
-> This operation differs from the other sinks which will only halt after
-> the sources have stopped and the path has been flushed. This ensures
-> that the latest trace is complete. The weakness with the older sinks
-> is the lack of interrupt meaning buffers were frequently wrapped so
-> that only the latest trace is available.
+[1] https://lkml.org/lkml/2021/2/10/350
 
-Right.
+Stefano Garzarella (10):
+  vdpa: add get_config_size callback in vdpa_config_ops
+  vdpa: check vdpa_get_config() parameters and return bytes read
+  vdpa: add vdpa_set_config() helper
+  vdpa: remove param checks in the get/set_config callbacks
+  vdpa: remove WARN_ON() in the get/set_config callbacks
+  virtio_vdpa: use vdpa_set_config()
+  vhost/vdpa: use vdpa_set_config()
+  vhost/vdpa: allow user space to pass buffers bigger than config space
+  vhost/vdpa: use get_config_size callback in
+    vhost_vdpa_config_validate()
+  vhost/vdpa: return configuration bytes read and written to user space
 
-> 
-> By using TRBE WRAP mode, with a watermark as described in the TRBE
-> spec, using the interrupts it is possible to approach lossless trace
-> in a way that is not possible with earlier ETR/ETB. This is somethin
-Using TRBTRG_EL1 as the above mentioned watermark ?
+ include/linux/vdpa.h              | 22 ++++-------
+ drivers/vdpa/ifcvf/ifcvf_base.c   |  3 +-
+ drivers/vdpa/ifcvf/ifcvf_main.c   |  8 +++-
+ drivers/vdpa/mlx5/net/mlx5_vnet.c |  9 ++++-
+ drivers/vdpa/vdpa.c               | 51 ++++++++++++++++++++++++
+ drivers/vdpa/vdpa_sim/vdpa_sim.c  | 15 +++++---
+ drivers/vhost/vdpa.c              | 64 ++++++++++++++++---------------
+ drivers/virtio/virtio_vdpa.c      |  3 +-
+ 8 files changed, 116 insertions(+), 59 deletions(-)
 
-> that has been requested by partners since trace became available in
-> linux systems. (There is still a possibility of loss due to filling
-> the buffer completely and overflowing the watermark, but that can be
-> flagged).
-> 
-> While FILL mode trace is a good start, and suitable for some scenarios
-> - WRAP mode needs implementing as well.
+-- 
+2.29.2
 
-I would like to understand this mechanism more. Besides how the perf
-interface suppose to choose between FILL and WRAP mode ? via a new
-event attribute ?
-
-> 
-> 3) Padding: To be clear, it is not safe for the decoder to run off the
-> end of one buffer, into the padding area and continue decoding, or
-> continue through the padding into the next buffer. However I believe
-> the buffer start / stop points are demarked by the aux_output_start /
-> aux_output_end calls?
-
-Yes.
-
-> 
-> With upcoming perf decode updates this should enable the decoder to
-> correctly be started and stopped on the buffer boundaries. The padding
-> is there primarily to ensure that the decoder does not synchronize
-> with the data stream until a genuine sync point is found.
-
-Right.
-
-> 
-> 4) TRBE needs to be a loadable module like the rest of coresight.
-
-Even though the driver has all the module constructs, the Kconfig was
-missing a tristate value, which is being fixed for the next version.
-
-- Anshuman
