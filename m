@@ -2,123 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E81931C70E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E44A31C717
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhBPH5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 02:57:12 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:50869 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229796AbhBPH5C (ORCPT
+        id S229782AbhBPICW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 03:02:22 -0500
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:35135 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhBPICS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 02:57:02 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5FB7D580248;
-        Tue, 16 Feb 2021 02:55:55 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 16 Feb 2021 02:55:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=OgE+B+oYIxnbEc/wQ/LZmClawQt
-        IgqJ46vVdtsUhNXI=; b=fMiVYrjcYk9CH/Awu1GqkqmCLGes4PLTrvCh4EuQiCK
-        KG1NPuzfSttgEOSCHRzp6SERcMUaQ2cUT90wLZYHOJ+YV8o+lr6q+igOhtJ2hzoO
-        eskXTXPHpZNKZLk5E7SBuWd+o5dTgL38/eigGBu06ijeEwjzBuZu609Oes88mJYr
-        RS3ExWgmbman4kQgJc+7t6TlXHS/ZUTdHiCGoZqVXxdV4PYErzeiiUCPc0VOlAvq
-        q5Zf1/Z6NhEUI+K6O15514n4/pWXMxRBozR3x2QvSaNDfOfuG77OjXtgKsOiNYaE
-        PhNJQT0T+7cQxgs8N4M8uKoEAlgzY0k/EknhAB4DNAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=OgE+B+
-        oYIxnbEc/wQ/LZmClawQtIgqJ46vVdtsUhNXI=; b=nfX/AACZEa5FjTMPGztF3S
-        wvaC+7RARDsQQm0PmaGGwZY5Cpkk5kcDlWiOnw7rjwAxaWaPNHp3qCgzEIbnT3Nc
-        PblA1kb+h0kml4a9tyYbIsoFQGaQ7FQcuXCdQd2XYHHz9Wh+0hYP8a5LQxnFkyc4
-        y/79wV6uJy1GtkLPjrEoBGHywd0D1vjIvgPZ4p5EvqIC/KkqxKm5p81AEBpRLHwk
-        PNWlY4DuyHIKXydIk5jeeKOJ4cbYne3yk/cRbZc8Et6H4jfE0EGoTzMJJWT6ZKke
-        B+25B7HCmlYCrcIBOSbMZMtYt1IRcFUudlNgv+3kCT8zzkeP0H3aoVJ7A837C7fg
-        ==
-X-ME-Sender: <xms:iHorYBVBGtp274OIDmFKHo3n07rbyIYuL4W3ZIzNH6fYM3oHSzFLSg>
-    <xme:iHorYBmw-PAUi-eQ6BfEQ2rEyTLVbY9ASvRB_DA_mWd1GGev41XeaMfnjdwY4EXf6
-    dKF9EHif3MnLyJnlcQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrieelgdduuddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:iHorYNbIhQQCs_6oNXVb_ggg_NV3zuhuhHUUVA_fiLHgc74a4ZaLlg>
-    <xmx:iHorYEUzkh1icnNBCqfzwaBzEYO41aX4FJqMATPCFaiBgEZpaqw-Yg>
-    <xmx:iHorYLmWL0e_Lq68nbrk50nYdaDFL-d8i6aCBQiZ182XDbn_AoaIUQ>
-    <xmx:i3orYFkRC-d10TG9p5HJM4A8z2vc55OEkSxFiQ7JjzhiBCzHw3mZlQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 38DEF24005C;
-        Tue, 16 Feb 2021 02:55:51 -0500 (EST)
-Date:   Tue, 16 Feb 2021 08:55:30 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        dave.stevenson@raspberrypi.com, maz@kernel.org, eric@anholt.net,
-        tzimmermann@suse.de, linux-rpi-kernel@lists.infradead.org,
-        hverkuil-cisco@xs4all.nl, nsaenzjulienne@suse.de,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Revert "ARM: dts: bcm2711: Add the BSC interrupt
- controller"
-Message-ID: <20210216075530.knleci6sv4m667vv@gilmour>
-References: <20210212191104.2365912-1-f.fainelli@gmail.com>
+        Tue, 16 Feb 2021 03:02:18 -0500
+Received: by mail-lj1-f175.google.com with SMTP id a17so10727688ljq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 00:02:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uFThXabaiyaapHkWm2pAsaBD7G1U96eLmd8X49gddgo=;
+        b=mDGNOpM9ARCTZ2lxWPZ15G/SFNP1YFOJsZYQVprMqMjSyCfGpEUZFIL/7+KSf5Q/YW
+         U98GsGHKXANQPcqR180XakMylbcBXJmxUN/Vsq2/zwyfMTsmT5kL8IbmN7z79/SBqlC3
+         PROrTRNp13SfmmxjmG/ansuoyXuBJqkb/EBaCLISRbzPq/i7EwHBKZqBlRKss0CXICzn
+         EgHjiTuWbYDja7zpGhOPVbA7RiQpL0yit9SF4LSyz09azvjrczzARjoDFzF/yGaLJEKr
+         cFUI5vIWMcFOnNoM7GYSiBx6vmMIT7G+uzS2CpE6byb2fYxVea4U/RpaBiK90rzLC2Wv
+         klSQ==
+X-Gm-Message-State: AOAM531p9XYB+Pd548H3c1EmToYf92e2B9SGlYDMm2+5j0iChfUe/mEq
+        TpEV+wcjrSf0Qu4PCsnFRK/PdlSF7zg1fg==
+X-Google-Smtp-Source: ABdhPJxZMTAPypUYuhEx+CTwH4TV528teZWJ6i0ongr0r3kKwipLnEVP4lqR9ayYIop3KwGWOcSv6A==
+X-Received: by 2002:a2e:a368:: with SMTP id i8mr4366039ljn.455.1613462496667;
+        Tue, 16 Feb 2021 00:01:36 -0800 (PST)
+Received: from localhost.localdomain (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.googlemail.com with ESMTPSA id l9sm3123586lfp.209.2021.02.16.00.01.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 00:01:36 -0800 (PST)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] coccinelle: misc: add swap script
+Date:   Tue, 16 Feb 2021 11:01:33 +0300
+Message-Id: <20210216080133.455456-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6bxcug5x2bcw2xf6"
-Content-Disposition: inline
-In-Reply-To: <20210212191104.2365912-1-f.fainelli@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Check for opencoded swap() implementation.
 
---6bxcug5x2bcw2xf6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+ scripts/coccinelle/misc/swap.cocci | 77 ++++++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+ create mode 100644 scripts/coccinelle/misc/swap.cocci
 
-On Fri, Feb 12, 2021 at 11:11:04AM -0800, Florian Fainelli wrote:
-> As Dave reported:
->=20
-> This seems to have unintended side effects.  GIC interrupt 117 is shared
-> between the standard I2C controllers (i2c-bcm2835) and the l2-intc block
-> handling the HDMI I2C interrupts.
->=20
-> There is not a great way to share an interrupt between an interrupt
-> controller using the chained IRQ handler which is an interrupt flow and
-> another driver like i2c-bcm2835 which uses an interrupt handler
-> (although it specifies IRQF_SHARED).
->=20
-> Simply revert this change for now which will mean that HDMI I2C will be
-> polled, like it was before.
->=20
-> Reported-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+diff --git a/scripts/coccinelle/misc/swap.cocci b/scripts/coccinelle/misc/swap.cocci
+new file mode 100644
+index 000000000000..38227a5d0855
+--- /dev/null
++++ b/scripts/coccinelle/misc/swap.cocci
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: GPL-2.0-only
++///
++/// Check for opencoded swap() implementation.
++///
++// Confidence: High
++// Copyright: (C) 2021 Denis Efremov ISPRAS
++// Options: --no-includes --include-headers
++//
++// Keywords: swap
++//
++
++virtual patch
++virtual org
++virtual report
++virtual context
++
++@r depends on !patch@
++identifier tmp;
++expression a, b;
++type T;
++position p;
++@@
++
++(
++* T tmp;
++|
++* T tmp = 0;
++|
++* T *tmp = NULL;
++)
++... when != tmp
++* tmp = a;
++* a = b;@p
++* b = tmp;
++... when != tmp
++
++@depends on patch@
++identifier tmp;
++expression a, b;
++type T;
++@@
++
++(
++- T tmp;
++|
++- T tmp = 0;
++|
++- T *tmp = NULL;
++)
++... when != tmp
++- tmp = a;
++- a = b;
++- b = tmp;
+++ swap(a, b);
++... when != tmp
++
++@depends on patch@
++identifier tmp;
++expression a, b;
++@@
++
++- tmp = a;
++- a = b;
++- b = tmp;
+++ swap(a, b);
++
++@script:python depends on report@
++p << r.p;
++@@
++
++coccilib.report.print_report(p[0], "WARNING opportunity for swap()")
++
++@script:python depends on org@
++p << r.p;
++@@
++
++coccilib.org.print_todo(p[0], "WARNING opportunity for swap()")
+-- 
+2.26.2
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
-
-Thanks!
-Maxime
-
---6bxcug5x2bcw2xf6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYCt6cgAKCRDj7w1vZxhR
-xcslAP9KUslpDXYO8/ygfAO7HvtHmi3uBgecVib764++4rZFsgD/SdzNpTEgfZSr
-dO28YRr8RYfy/OT6Y3dnkNhI0P1T9QU=
-=8p02
------END PGP SIGNATURE-----
-
---6bxcug5x2bcw2xf6--
