@@ -2,123 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B92E31CBF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A3031CBFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbhBPObF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:31:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52004 "EHLO
+        id S230188AbhBPOcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:32:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhBPOa5 (ORCPT
+        with ESMTP id S229864AbhBPOcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:30:57 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C03C061574;
-        Tue, 16 Feb 2021 06:30:16 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id AAB2E42037;
-        Tue, 16 Feb 2021 14:30:10 +0000 (UTC)
-Subject: Re: [PATCH v2 02/25] dt-bindings: arm: apple: Add bindings for Apple
- ARM platforms
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-3-marcan@marcan.st>
- <20210215174803.5oalkkmotpc7d7vm@kozik-lap>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <9729c3c2-787e-2894-ddfb-fc9c07d74086@marcan.st>
-Date:   Tue, 16 Feb 2021 23:30:08 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 16 Feb 2021 09:32:16 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B28C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 06:31:36 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id s11so12407026edd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 06:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=Cwp0GvNwrAKCsxhmN2M2a4yWcZ0QuLL5twK22get2lQ=;
+        b=qJlG9FlA7//SkKP/KnlTJeFd6JUIm4cekamkBIQ/iXSOVyrdk18xUSllNJ4yqhudNj
+         0T0x2Lgq/YuugQp4tqCIVxr5a5x1SIES65IWUxlfEnQH0KZUFz+zdymaLQ0384Dj53Dm
+         0zTYT+CPtNsDSqDxlb5EqzolLdigLgLZHpm49UEm/hYLZeG+AqlyfYLgD9CVblwWFEaJ
+         nHo57+pnHaKALVgGE6gghdqaPz9uZa9mbzZFOyOp+gSOv2G7wkg8EovSY4fGuYWvZCUe
+         y21vzEydXuDUw/ARNI7vcaXaQ5LHaHiUcbYQ4iFIo7Oz2VBK95wJMPLXt7njAuGITUwd
+         UA8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=Cwp0GvNwrAKCsxhmN2M2a4yWcZ0QuLL5twK22get2lQ=;
+        b=pp3YmdT3cGxVUOBQ0sJ73iurh1iV8lft4bfC+akAEyinutqGy5cFoxI8br1mcUdcsV
+         UDPlbS9WCRrj2Y2SQYZ1iAtkTFK8Fs8MnBT32MsMTPc8luIVzvCEvLsM54FxpOPyWhWJ
+         U7jCk3JQk1YkY+oqHw1atsGpcJhhFIElb4AB0mOKaB4u3hp/Ad/3cyo+0kapzUtUmKnn
+         D0lQz5F4neVDhU+Xh+amF5I7OlAjpqFULN8T9OJf7wjkmH6fmG0ErS/ZxMdhyDEyQvuh
+         go7poQz1+2BTjnGYqTxVoY0OBnuOysTAzTroj0yyfDflE9RCLLU6zRoyh50nRCpN5MjU
+         9hYw==
+X-Gm-Message-State: AOAM533MPy6W9GCTTwuSsnBE2DayNhHguJzST8UfVJ4J7LOb/epaAZlN
+        cQ9Lp3YDDVhgpbQimQJg+6rz/4nYHPnkkj1O8o44QSYpFEuaomvW
+X-Google-Smtp-Source: ABdhPJysJT0RF7U5yKNSmD/jkMS3xj72OfKUlQ8vlUlq2ZOgMW5AzeNvFj4Rde7f7LSsNc5ePhNzOSjpLi1FnchyB8Q=
+X-Received: by 2002:a50:a6ce:: with SMTP id f14mr20984271edc.346.1613485894678;
+ Tue, 16 Feb 2021 06:31:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210215174803.5oalkkmotpc7d7vm@kozik-lap>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a50:6cc7:0:0:0:0:0 with HTTP; Tue, 16 Feb 2021 06:31:33
+ -0800 (PST)
+X-Originating-IP: [5.35.34.67]
+In-Reply-To: <YClpVIfHYyzd6EWu@zeniv-ca.linux.org.uk>
+References: <20210125154937.26479-1-kda@linux-powerpc.org> <20210127175742.GA1744861@infradead.org>
+ <CAOJe8K0MC-TCURE2Gpci1SLnLXCbUkE7q6SS0fznzBA+Pf-B8Q@mail.gmail.com>
+ <20210129082524.GA2282796@infradead.org> <CAOJe8K0iG91tm8YBRmE_rdMMMbc4iRsMGYNxJk0p9vEedNHEkg@mail.gmail.com>
+ <20210129131855.GA2346744@infradead.org> <YClpVIfHYyzd6EWu@zeniv-ca.linux.org.uk>
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+Date:   Tue, 16 Feb 2021 17:31:33 +0300
+Message-ID: <CAOJe8K00srtuD+VAJOFcFepOqgNUm0mC8C=hLq2=qhUFSfhpuw@mail.gmail.com>
+Subject: Re: [PATCH] fs: export kern_path_locked
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/02/2021 02.48, Krzysztof Kozlowski wrote:
-> On Mon, Feb 15, 2021 at 09:16:50PM +0900, Hector Martin wrote:
->> +description: |
->> +  Apple ARM ("Apple Silicon") platforms should contain compatible strings
->> +  in the following format:
->> +
->> +  - apple,j274 (board/device ID)
->> +  - apple,m1 (SoC name)
->> +  - apple,arm-platform (Apple Silicon)
-> 
-> This description is irrelevant because the rules come from schema below.
-> Maybe instead write few words about the platform? Or describe how to get
-> the board/device ID if it is not obvious?
+On 2/14/21, Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Fri, Jan 29, 2021 at 01:18:55PM +0000, Christoph Hellwig wrote:
+>> On Fri, Jan 29, 2021 at 04:11:05PM +0300, Denis Kirjanov wrote:
+>> > Do you mean just:
+>>
+>> We'll still need to lock the parent inode.
+>
+> Not just "lock", we wouldd need to have the lock _held_ across the
+> entire sequence.  Without that there's no warranty that it will refer
+> to the same object we'd created.
+>
+> In any case, unlink in any potentially public area is pretty much
+> never the right approach.  Once mknod has happened, that's it - too
+> late to bail out.
+>
+> IIRC, most of the PITA in that area is due to unix_autobind()
+> iteractions.  Basically, we try to bind() an unbound socket and
+> another thread does sendmsg() on the same while we are in the
+> middle of ->mknod().  Who should wait for whom?
+>
+> ->mknod() really should be a point of no return - any games with
+> "so we unlink it" are unreliable in the best case, and that's
+> only if we do _not_ unlock the parent through the entire sequence.
+>
+> Seeing that we have separate bindlock and iolock now...  How about
+> this (completely untested) delta?
 
-Good point. Actually, I've gone back and forth over this a few times,
-but I'm going to change the SoC name. Apple calls these things by 5
-different names, but the only two that make any sense to consider are
-the marketing name ("m1") and the SoC name ("t8103"). I'm going to
-switch to the latter (so `apple,t8103`).
+We had a change like that:
+Author: WANG Cong <xiyou.wangcong@gmail.com>
+Date:   Mon Jan 23 11:17:35 2017 -0800
 
-In the past, Apple have dual-sourced SoCs with different IDs under the
-same marketing name, and Apple themselves name most of their compatible
-properties after the lowest-compatible SoC name, so I'm going to go with
-that after all. This will save us grief in the future if they do that
-again, and I think I get to pick the color of this bike shed :)
+    af_unix: move unix_mknod() out of bindlock
 
-Given that, I expanded a bit on the description. Let me know what you think:
+    Dmitry reported a deadlock scenario:
 
-description: |
-   ARM platforms using SoCs designed by Apple Inc., branded "Apple Silicon".
+    unix_bind() path:
+    u->bindlock ==> sb_writer
 
-   This currently includes devices based on the "M1" SoC, starting with the
-   three Mac models released in late 2020:
+    do_splice() path:
+    sb_writer ==> pipe->mutex ==> u->bindlock
 
-   - Mac mini (M1, 2020)
-   - MacBook Pro (13-inch, M1, 2020)
-   - MacBook Air (M1, 2020)
+    In the unix_bind() code path, unix_mknod() does not have to
+    be done with u->bindlock held, since it is a pure fs operation,
+    so we can just move unix_mknod() out.
 
-   The compatible property should follow this format:
 
-   compatible = "apple,<targettype>", "apple,<socid>", "apple,arm-platform";
-
-   <targettype> represents the board/device and comes from the `target-type`
-   property of the root node of the Apple Device Tree, lowercased. It can be
-   queried on macOS using the following command:
-
-   $ ioreg -d2 -l | grep target-type
-
-   <socid> is the lowercased SoC ID. Apple uses at least *five* different
-   names for their SoCs:
-
-   - Marketing name ("M1")
-   - Internal name ("H13G")
-   - Codename ("Tonga")
-   - SoC ID ("T8103")
-   - Package/IC part number ("APL1102")
-
-   Devicetrees should use the the lowercased SoC ID, to avoid confusion if
-   multiple SoCs share the same marketing name. This can be obtained from
-   the `compatible` property of the arm-io node of the Apple Device Tree,
-   which can be queried as follows on macOS:
-
-   $ ioreg -n arm-io | grep compatible
-
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+>
+> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> index 41c3303c3357..c21038b15836 100644
+> --- a/net/unix/af_unix.c
+> +++ b/net/unix/af_unix.c
+> @@ -1034,6 +1034,14 @@ static int unix_bind(struct socket *sock, struct
+> sockaddr *uaddr, int addr_len)
+>  		goto out;
+>  	addr_len = err;
+>
+> +	err = mutex_lock_interruptible(&u->bindlock);
+> +	if (err)
+> +		goto out;
+> +
+> +	err = -EINVAL;
+> +	if (u->addr)
+> +		goto out_up;
+> +
+>  	if (sun_path[0]) {
+>  		umode_t mode = S_IFSOCK |
+>  		       (SOCK_INODE(sock)->i_mode & ~current_umask());
+> @@ -1041,18 +1049,10 @@ static int unix_bind(struct socket *sock, struct
+> sockaddr *uaddr, int addr_len)
+>  		if (err) {
+>  			if (err == -EEXIST)
+>  				err = -EADDRINUSE;
+> -			goto out;
+> +			goto out_up;
+>  		}
+>  	}
+>
+> -	err = mutex_lock_interruptible(&u->bindlock);
+> -	if (err)
+> -		goto out_put;
+> -
+> -	err = -EINVAL;
+> -	if (u->addr)
+> -		goto out_up;
+> -
+>  	err = -ENOMEM;
+>  	addr = kmalloc(sizeof(*addr)+addr_len, GFP_KERNEL);
+>  	if (!addr)
+> @@ -1090,7 +1090,6 @@ static int unix_bind(struct socket *sock, struct
+> sockaddr *uaddr, int addr_len)
+>  	spin_unlock(&unix_table_lock);
+>  out_up:
+>  	mutex_unlock(&u->bindlock);
+> -out_put:
+>  	if (err)
+>  		path_put(&path);
+>  out:
+>
