@@ -2,308 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CCC31CE83
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:56:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A25831CE87
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhBPQ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhBPQzw (ORCPT
+        id S230469AbhBPQ6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:58:06 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:56631 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhBPQ6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:55:52 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EB2C061574;
-        Tue, 16 Feb 2021 08:55:11 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id u143so6489704pfc.7;
-        Tue, 16 Feb 2021 08:55:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B/H6LiWn0A6b/8ios9SP8cUE1Sv4bQ5yNhbgbGBgv2c=;
-        b=bvku63Vnc7mFQXtlbolu8qNCzN2Z7r6KeIfAuYHevo6xfVjCjYxHX1hbWi2iSLSA1s
-         sqL274JEeloGKCO4Omp1Ge8EKcj8eK5+L+a1z6ibRMvsYcjBQpPrrBJCBU9ch5lISf4s
-         TM+mtMHslwl+d2UdMoYG54/tt/kbSIvoo4OmRRZ9RlREhx9u28LFDVJa31yyWtRrWkuv
-         L/oz/6sGLwf3jw8ifepSpKzqtdRLNNSCVEliZ6IrFE9nf5b0E8EeGDgqNpgZ3KTEeWfO
-         i48OB7t5m6eT+jnHXTDSHOdn4S400TWznWwvWkdLWv8WT/VwU4Z8vXahAPkA1WaCH6gu
-         O3sg==
+        Tue, 16 Feb 2021 11:58:03 -0500
+Received: by mail-io1-f72.google.com with SMTP id k4so3156695ioc.23
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:57:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B/H6LiWn0A6b/8ios9SP8cUE1Sv4bQ5yNhbgbGBgv2c=;
-        b=eQyDqAWjDiP/WxpSaMOateagPzFEG/6pYLroQ/bJqB57k8LnFiQqE8Ap46EmrxdYgv
-         7iiywnmmBk3QRgIl3LuUoZ1cuSYap1AlAaY78H42sJ59DqhFK9Sb2ffEQg3cBB83Pa21
-         NFBbqY+nvHA6pbb19mwoUpUMuo5pxsnE9Kn8nB7K7Ry4v550f7c+cf3SbWc3ocu1Oyyp
-         Y85IeGs+FzpHA9QIPObkMIwcwkaIUps7eaged9Trv5P3YzvpiV+Zs4fKhV6WGeljLzU+
-         nWqphFC1pWVoDqKDVbfUF/3vtynmklMcWpamtOU06m62nFm23OlNCuqHOzcqIkj1opek
-         lHuA==
-X-Gm-Message-State: AOAM532GZVrtGnPkSOQmls9zHFaJZjLGZwuw4uO4zWW9DFN2qIhddhIF
-        Weakxk7JB9wukegxQHnX/ufxLWRcsdGKuhkcAmI=
-X-Google-Smtp-Source: ABdhPJxh1nK6gvBMYME2JhZZPEgzFDpvr46SKAtmAYdZiFSXjHLnKprPgueiEnwfl/mD44LmOatwmlRw1Bl8zJOos6k=
-X-Received: by 2002:a63:3d0:: with SMTP id 199mr20202328pgd.4.1613494511176;
- Tue, 16 Feb 2021 08:55:11 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/cY0qWscmzESNuhdF1KDTC8gVtW3bzbaKQCi1T8YxiE=;
+        b=Zh/4xix3dmUtjbwtpkN568JCYkah7DoKuOX39IegjWVs+HjJ/O+S06sRtV/hDeA2rS
+         h5wtnlY/WZ7NsZHO0aJx5Dnir00rHXq4nP2qFIb6p1bVyMiMG/K9cqiNSLGm1wQCw2mH
+         Tp5xPDgLyrYQVnLn+WyykygytWLwpZluxnBlvIETA2mRQrN5ggfJvlkgK9I/V8Ck3Ja7
+         PeV62Oa91pMnGGLTcbDWjgxhK8wNrpgPh2Cr7DWtkxn8l1R2m0hP5h4O79PKDrcnnF0g
+         N10Zel4j7MasYP00NCfZnRGDPxpPiYyI1zmTccQZQxtQhJ/PiqxcI2LQTI4VF9mSZ0bt
+         MsiQ==
+X-Gm-Message-State: AOAM531Nb4bTO+OAmzRnSAuRSYl/phIS0DPxEspW0EO9GWxRHYVGDkHy
+        7StTr0MKUkWqBrYhR//9ycVVUKaLsSPHg307i21Byo6sWWeF
+X-Google-Smtp-Source: ABdhPJzVTRmtZPUVzWLUItwE7NUJUjtZvh/9j8Cg4DCcncGFgQjhzznRK6YhG23Vh0Bde7xjufuC7Qj9f7PlxYKBbCF0Xk35rhc7
 MIME-Version: 1.0
-References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com> <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
-In-Reply-To: <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Feb 2021 18:54:54 +0200
-Message-ID: <CAHp75Vep0Fm1k_7gJcozk4t316QmUgt5Qe3PauwDg=py5VnHfQ@mail.gmail.com>
-Subject: Re: [PATCH v1 01/12] gna: add driver module
-To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
-        Savo Novakovic <savox.novakovic@intel.com>,
-        Jianxun Zhang <jianxun.zhang@linux.intel.com>
+X-Received: by 2002:a05:6602:26c6:: with SMTP id g6mr17487095ioo.150.1613494642690;
+ Tue, 16 Feb 2021 08:57:22 -0800 (PST)
+Date:   Tue, 16 Feb 2021 08:57:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000064f0f05bb76ff3b@google.com>
+Subject: WARNING in slave_kobj_release
+From:   syzbot <syzbot+bfda097c12a00c8cae67@syzkaller.appspotmail.com>
+To:     andy@greyhouse.net, davem@davemloft.net, j.vosburgh@gmail.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        vfalico@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 6:11 PM Maciej Kwapulinski
-<maciej.kwapulinski@linux.intel.com> wrote:
->
-> From: Tomasz Jankowski <tomasz1.jankowski@intel.com>
->
-> Add a new PCI driver for Intel(R) Gaussian & Neural Accelerator
-> with basic support like module loading and unloading. The full
-> function of the driver will be added by further changes.
-
-...
-
-> +config INTEL_GNA
-> +       tristate "Intel(R) Gaussian & Neural Accelerator (Intel(R) GNA)"
-
-Intel (R) Intel (R) RRR!
-
-> +       depends on X86_64 && PCI
-> +       help
-> +         This option enables the Intel(R) Gaussian & Neural Accelerator
-> +         (Intel(R) GNA) driver.
-> +         User space interface is defined in include/uapi/misc/gna.h, while
-> +         information about functionality is in
-> +         Documentation/misc-devices/gna.rst
-
-No module name?
-
-...
-
-> +/* Reverse gna_dev_init() */
-> +static void gna_dev_deinit(struct gna_private *gna_priv)
-> +{
-> +       pci_set_drvdata(gna_priv->pdev, NULL);
-> +}
-
-This is done by device core. Why do you need it?
-
-...
-
-> +       ret = pcim_enable_device(pcidev);
-> +       if (ret) {
-> +               dev_err(&pcidev->dev, "pci device can't be enabled\n");
-
-
-> +               goto end;
-
-Useless label. Return here.
-
-> +       }
-
-...
-
-> +       ret = pci_request_regions(pcidev, GNA_DRV_NAME);
-> +       if (ret)
-> +               goto end;
-
-Why? Can't you use pcim_iomap_regions() directly?
-
-...
-
-> +       ret = pci_set_dma_mask(pcidev, DMA_BIT_MASK(64));
-
-No way. This is an obsoleted API.
-
-> +       if (ret) {
-> +               dev_err(&pcidev->dev, "pci_set_dma_mask returned error %d\n", ret);
-> +               goto err_release_regions;
-> +       }
-
-...
-
-> +       /* init gna device */
-
-Useless comments here and there.
-
-...
-
-> +       gna_priv = devm_kzalloc(&pcidev->dev, sizeof(*gna_priv), GFP_KERNEL);
-> +       if (!gna_priv) {
-> +               ret = -ENOMEM;
-
-> +               goto err_clear_master;
-
-What? You have used pciM_enabled_device(). Please, read documentation.
-
-> +       }
-
-...
-
-> +       gna_priv->bar0.iostart = pci_resource_start(pcidev, 0);
-> +       gna_priv->bar0.iosize = pci_resource_len(pcidev, 0);
-> +       gna_priv->bar0.mem_addr = pcim_iomap(pcidev, 0, 0);
-> +       if (!gna_priv->bar0.mem_addr) {
-> +               dev_err(&pcidev->dev, "could not map BAR 0\n");
-> +               ret = -EINVAL;
-> +               goto err_clear_master;
-> +       }
-
-Why do you need all these?!
-
-...
-
-> +       dev_dbg(&pcidev->dev, "bar0 io start: 0x%llx\n", (unsigned long long)gna_priv->bar0.iostart);
-> +       dev_dbg(&pcidev->dev, "bar0 io size: %llu\n", (unsigned long long)gna_priv->bar0.iosize);
-> +       dev_dbg(&pcidev->dev, "bar0 memory address: %p\n", gna_priv->bar0.mem_addr);
-
-No, please read printk-formats.rst.
-
-...
-
-> +err_clear_master:
-> +       pci_clear_master(pcidev);
-> +err_release_regions:
-> +       pci_release_regions(pcidev);
-> +end:
-> +       dev_err(&pcidev->dev, "gna probe failed with %d\n", ret);
-> +       return ret;
-
-These are all completely redundant.
-
-> +}
-
-...
-
-> +void gna_remove(struct pci_dev *pcidev)
-> +{
-> +       struct gna_private *gna_priv;
-> +
-> +       gna_priv = pci_get_drvdata(pcidev);
-> +
-> +       gna_dev_deinit(gna_priv);
-> +
-> +       pci_clear_master(pcidev);
-> +       pci_release_regions(pcidev);
-> +}
-
-Redundant entire function.
-
-...
-
-> +#include <linux/pci.h>
-
-Haven't noticed how this header is used here.
-
-...
-
-> +       struct device dev;
-
-Missed linux/device.h.
-
-...
-
-> +static int __init gna_drv_init(void)
-> +{
-> +       int ret;
-> +
-> +       mutex_init(&gna_drv_priv.lock);
-> +
-> +       gna_class = class_create(THIS_MODULE, "gna");
-> +       if (IS_ERR(gna_class)) {
-> +               pr_err("class device create failed\n");
-> +               return PTR_ERR(gna_class);
-> +       }
-> +       gna_class->devnode = gna_devnode;
-> +
-> +       ret = pci_register_driver(&gna_driver);
-
-Is it possible to decouple a PCI glue driver from the class as many
-other existing examples are doing?
-
-> +       if (ret) {
-> +               pr_err("pci register driver failed\n");
-> +               class_destroy(gna_class);
-> +               return ret;
-> +       }
-> +
-> +       return 0;
-> +}
-
-...
-
-> +#include <linux/kernel.h>
-
-Why do you need this header?
-
-...
-
-> +#define GNA_DRV_VER    "1.2.0"
-
-Nowadays the version is the Git SHA sum.
-
-...
-
-> +       struct file *fd;
-
-Missed forward declaration.
-
-...
-
-> +       struct list_head memory_list;
-
-Missed linux/list.h
-
-> +       struct list_head flist;
-
-...
-
-> +extern struct gna_driver_private gna_drv_priv;
-
-> +extern int recovery_timeout;
-
-Global?!
-
-...
-
-> +#define GNA_STS_SCORE_COMPLETED                (1 << 0)
-> +#define GNA_STS_STATISTICS_VALID       (1 << 3)
-> +#define GNA_STS_PCI_MMU_ERR            (1 << 4)
-> +#define GNA_STS_PCI_DMA_ERR            (1 << 5)
-> +#define GNA_STS_PCI_UNEXCOMPL_ERR      (1 << 6)
-> +#define GNA_STS_VA_OOR                 (1 << 7)
-> +#define GNA_STS_PARAM_OOR              (1 << 8)
-> +#define GNA_STS_OUTBUF_FULL            (1 << 16)
-> +#define GNA_STS_SATURATE               (1 << 17)
-
-You can use _BITUL() from const.h, but it's up to you.
-
-...
-
-> +#define GNA_ERROR (GNA_STS_PCI_DMA_ERR                 | \
-
-When definitions start on the next line it will be easier to read.
-
-> +                       GNA_STS_PCI_MMU_ERR             | \
-> +                       GNA_STS_PCI_UNEXCOMPL_ERR       | \
-> +                       GNA_STS_PARAM_OOR               | \
-> +                       GNA_STS_VA_OOR)
-
--- 
-With Best Regards,
-Andy Shevchenko
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    f40ddce8 Linux 5.11
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15e8b204d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4b919ebed7b4902
+dashboard link: https://syzkaller.appspot.com/bug?extid=bfda097c12a00c8cae67
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111279f4d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15861a4cd00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bfda097c12a00c8cae67@syzkaller.appspotmail.com
+
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd2f280090
+R13: 00007ffd2f2800b0 R14: 00007ffd2f280088 R15: 0000000000000000
+kobject_add_internal failed for bonding_slave (error: -12 parent: ipvlan1)
+------------[ cut here ]------------
+ODEBUG: assert_init not available (active state 0) object type: timer_list hint: 0x0
+WARNING: CPU: 0 PID: 8425 at lib/debugobjects.c:508 debug_print_object lib/debugobjects.c:505 [inline]
+WARNING: CPU: 0 PID: 8425 at lib/debugobjects.c:508 debug_object_assert_init+0x1fa/0x250 lib/debugobjects.c:890
+Modules linked in:
+CPU: 0 PID: 8425 Comm: syz-executor866 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:debug_print_object lib/debugobjects.c:505 [inline]
+RIP: 0010:debug_object_assert_init+0x1fa/0x250 lib/debugobjects.c:890
+Code: e8 3b 17 ee fd 4c 8b 45 00 48 c7 c7 40 dc 0d 8a 48 c7 c6 a0 d8 0d 8a 48 c7 c2 80 de 0d 8a 31 c9 49 89 d9 31 c0 e8 66 17 7a fd <0f> 0b ff 05 5a 89 e6 09 48 83 c5 38 48 89 e8 48 c1 e8 03 42 80 3c
+RSP: 0018:ffffc90001afeda8 EFLAGS: 00010046
+RAX: 2bba7eb7734aa500 RBX: 0000000000000000 RCX: ffff888020a30000
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffffffff89b0ac20 R08: ffffffff815fb522 R09: ffffed1017384004
+R10: ffffed1017384004 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff888024ccb940 R14: 0000000000000000 R15: ffffffff9020efa8
+FS:  00000000019db300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb44efdf000 CR3: 00000000120f2000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ debug_timer_assert_init kernel/time/timer.c:737 [inline]
+ debug_assert_init kernel/time/timer.c:782 [inline]
+ del_timer+0x3d/0x310 kernel/time/timer.c:1202
+ try_to_grab_pending+0xbd/0x9e0 kernel/workqueue.c:1252
+ __cancel_work_timer+0x84/0x540 kernel/workqueue.c:3098
+ slave_kobj_release+0x50/0xd0 drivers/net/bonding/bond_main.c:1467
+ kobject_cleanup+0x1c9/0x280 lib/kobject.c:705
+ bond_kobj_init drivers/net/bonding/bond_main.c:1488 [inline]
+ bond_alloc_slave drivers/net/bonding/bond_main.c:1505 [inline]
+ bond_enslave+0x630/0x57e0 drivers/net/bonding/bond_main.c:1707
+ do_set_master net/core/rtnetlink.c:2519 [inline]
+ do_setlink+0xcf6/0x3d00 net/core/rtnetlink.c:2715
+ __rtnl_newlink net/core/rtnetlink.c:3376 [inline]
+ rtnl_newlink+0x146b/0x1b00 net/core/rtnetlink.c:3491
+ rtnetlink_rcv_msg+0x887/0xd60 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x9ae/0xd50 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2345
+ ___sys_sendmsg net/socket.c:2399 [inline]
+ __sys_sendmsg+0x2bf/0x370 net/socket.c:2432
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4498e9
+Code: 4f 01 00 85 c0 b8 00 00 00 00 48 0f 44 c3 5b c3 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd2f280058 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00000000004498e9
+RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000000000004
+RBP: 0000000000000004 R08: 0000000000000001 R09: 000000000000000a
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd2f280090
+R13: 00007ffd2f2800b0 R14: 00007ffd2f280088 R15: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
