@@ -2,75 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8B031CA14
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A51FB31CA17
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhBPLqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:46:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230423AbhBPLkV (ORCPT
+        id S231151AbhBPLru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:47:50 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:16608 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230333AbhBPLkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:40:21 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559BAC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:39:39 -0800 (PST)
-Received: from zn.tnic (p200300ec2f07cd0057261f4475df3a88.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:cd00:5726:1f44:75df:3a88])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D48C81EC0258;
-        Tue, 16 Feb 2021 12:39:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1613475577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=jgS+GomQ4NiGavnCUdrwH6fJiuF6SeCslhur8kkvAaE=;
-        b=SH+3SJHOah+1Pnms0y+ql+//doOoRM04jih/iRCcJHn7O1NuSB+LGJoPE7OyEmmtfYPaNj
-        0u9aC0iKxw3UqW5JSpvzWR8+3ZEWV8D0r9RYJCC3sfMCXSZomUCOgJtlUoD9UY970jI+SA
-        FRF2cXfK8OEtza3WCyK0FqDHApgxiYA=
-Date:   Tue, 16 Feb 2021 12:39:36 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, it+linux-x86@molgen.mpg.de,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: smpboot: CPU numbers printed as warning
-Message-ID: <20210216113936.GC10592@zn.tnic>
-References: <e964b2ae-7a15-a510-e76a-56d704949d62@molgen.mpg.de>
- <YCuVEDXyIu+yE4c1@alley>
- <20210216101449.GA10592@zn.tnic>
- <871rdg8dyb.fsf@jogness.linutronix.de>
+        Tue, 16 Feb 2021 06:40:35 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11GBVQf7007994;
+        Tue, 16 Feb 2021 03:39:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=mwQPIoyeymJ4KhwI06kM5MhpkEAfjMT02S2UniYtLmk=;
+ b=SBaRQQgm6BMauPGA4DAaqRW8PqbZNkEvvK+AN4C/RJy8hE+oXbUo2a29ptV0yeDoOpoC
+ VDRFU8MJ16PsJ/TDCvdjkaQVo33dpLNUGhSuoDndAkubMazSu+jXtJIHawEkE4wVpGhY
+ HKmMRN8dITojRBgYOMGdirONondhN6eHLLjQWd8vTVX3RXDFz/slgt689UWzaLXXV7Sv
+ M/LkHfTDqe3IAEp0hKVOXJzJfWvHz5AviFn3rzfD7vF1CApFMyj5zLw0aTGhxpBt6mx8
+ Z8Nj0eDKVt1Eq695RVLw9L+ORmKzj7MHylynu2HpTQbqUcJTuLM3Xgk3g4w/88E+YCrz mg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 36pd0vq81p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 03:39:52 -0800
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Feb
+ 2021 03:39:51 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Feb
+ 2021 03:39:51 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Feb 2021 03:39:51 -0800
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 3BA403F703F;
+        Tue, 16 Feb 2021 03:39:47 -0800 (PST)
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <hkelam@marvell.com>,
+        <sbhatta@marvell.com>, <jerinj@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>
+Subject: [net-next v2] octeontx2-af: cn10k: Fixes CN10K RPM reference issue
+Date:   Tue, 16 Feb 2021 17:09:36 +0530
+Message-ID: <20210216113936.26580-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <871rdg8dyb.fsf@jogness.linutronix.de>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-16_01:2021-02-16,2021-02-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 12:17:24PM +0106, John Ogness wrote:
-> It is supported to provide loglevels for CONT messages. The loglevel is
-> then only used if the append fails:
-> 
->     pr_cont(KERN_INFO "message part");
-> 
-> I don't know if we want to go down that path. But it is supported.
+This patch fixes references to uninitialized variables and
+debugfs entry name for CN10K platform and HW_TSO flag check.
 
-Sounds ok to me. I leave it up to you guys to decide whether we wanna
-change that there.
+Fixes: 3ad3f8f93c81 ("octeontx2-af: cn10k: MAC internal loopback support").
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
 
-But I don't care that much about the CPU numbers ending up getting
-issued at warning level so we can just as well do nothing and leave it
-as is.
+v1-v2
+- Clear HW_TSO flag for 96xx B0 version.
 
-Thx.
+This patch fixes the bug introduced by the commit
+3ad3f8f93c81 ("octeontx2-af: cn10k: MAC internal loopback support").
+These changes are not yet merged into net branch, hence submitting
+to net-next.
 
+---
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c   |  2 ++
+ .../net/ethernet/marvell/octeontx2/af/rvu_debugfs.c   |  2 +-
+ .../net/ethernet/marvell/octeontx2/nic/otx2_common.h  |  3 +++
+ .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c    | 11 ++++++-----
+ 4 files changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+index 3a1809c28e83..e668e482383a 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+@@ -722,12 +722,14 @@ u32 rvu_cgx_get_fifolen(struct rvu *rvu)
+ 
+ static int rvu_cgx_config_intlbk(struct rvu *rvu, u16 pcifunc, bool en)
+ {
++	int pf = rvu_get_pf(pcifunc);
+ 	struct mac_ops *mac_ops;
+ 	u8 cgx_id, lmac_id;
+ 
+ 	if (!is_cgx_config_permitted(rvu, pcifunc))
+ 		return -EPERM;
+ 
++	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
+ 	mac_ops = get_mac_ops(rvu_cgx_pdata(cgx_id, rvu));
+ 
+ 	return mac_ops->mac_lmac_intl_lbk(rvu_cgx_pdata(cgx_id, rvu),
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+index 48a84c65804c..094124b695dc 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+@@ -2432,7 +2432,7 @@ void rvu_dbg_init(struct rvu *rvu)
+ 		debugfs_create_file("rvu_pf_cgx_map", 0444, rvu->rvu_dbg.root,
+ 				    rvu, &rvu_dbg_rvu_pf_cgx_map_fops);
+ 	else
+-		debugfs_create_file("rvu_pf_cgx_map", 0444, rvu->rvu_dbg.root,
++		debugfs_create_file("rvu_pf_rpm_map", 0444, rvu->rvu_dbg.root,
+ 				    rvu, &rvu_dbg_rvu_pf_cgx_map_fops);
+ 
+ create:
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+index 4c472646a0ac..f14d388efb51 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+@@ -407,6 +407,9 @@ static inline void otx2_setup_dev_hw_settings(struct otx2_nic *pfvf)
+ 		pfvf->hw.rq_skid = 600;
+ 		pfvf->qset.rqe_cnt = Q_COUNT(Q_SIZE_1K);
+ 	}
++	if (is_96xx_B0(pfvf->pdev))
++		__clear_bit(HW_TSO, &hw->cap_flag);
++
+ 	if (!is_dev_otx2(pfvf->pdev)) {
+ 		__set_bit(CN10K_MBOX, &hw->cap_flag);
+ 		__set_bit(CN10K_LMTST, &hw->cap_flag);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+index 3f778fc054b5..22ec03a618b1 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+@@ -816,22 +816,23 @@ static bool is_hw_tso_supported(struct otx2_nic *pfvf,
+ {
+ 	int payload_len, last_seg_size;
+ 
++	if (test_bit(HW_TSO, &pfvf->hw.cap_flag))
++		return true;
++
++	/* On 96xx A0, HW TSO not supported */
++	if (!is_96xx_B0(pfvf->pdev))
++		return false;
+ 
+ 	/* HW has an issue due to which when the payload of the last LSO
+ 	 * segment is shorter than 16 bytes, some header fields may not
+ 	 * be correctly modified, hence don't offload such TSO segments.
+ 	 */
+-	if (!is_96xx_B0(pfvf->pdev))
+-		return true;
+ 
+ 	payload_len = skb->len - (skb_transport_offset(skb) + tcp_hdrlen(skb));
+ 	last_seg_size = payload_len % skb_shinfo(skb)->gso_size;
+ 	if (last_seg_size && last_seg_size < 16)
+ 		return false;
+ 
+-	if (!test_bit(HW_TSO, &pfvf->hw.cap_flag))
+-		return false;
+-
+ 	return true;
+ }
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
