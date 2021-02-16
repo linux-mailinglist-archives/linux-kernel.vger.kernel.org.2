@@ -2,140 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A882231CAD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E05331CAD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhBPM7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:59:46 -0500
-Received: from mail-oo1-f44.google.com ([209.85.161.44]:33618 "EHLO
-        mail-oo1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhBPM7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:59:31 -0500
-Received: by mail-oo1-f44.google.com with SMTP id f1so2260750oou.0;
-        Tue, 16 Feb 2021 04:59:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TVzLBkqKt0MyMwotNPEi8xMZ2SypGbVfWBR5eQRTmO0=;
-        b=TSrlLp/dLEvzVgYJtBCOI3GotDN81ZyYyNXCWTYNpHQgk7Li5hOwwdA5DI2aVSvN9u
-         QICOgn7PbSKOcD4TmUPyNR7oKuxBs3DRmjIHypg4EVgbNimg6pKuT5bwMw7moz4dwLlL
-         gjdt7k5aWaERMGI3+fJDXSrlHu2OJ9hawJ1IIJ519xcScgkh+VYkKXqvBJEeJYysa/jh
-         YXE+7Ldl1Zi4IScqJWUOTLySBilR7SJVmtB2c1olcSBMQ1p5so5ih9WB4v9f2GCIdtQX
-         90JznuDtxze58Ae7oSVog6crOzMwV4EJrKQef2q+3GOVSCtmHuJyt0kO8hHSu38Bx9ch
-         Kc3w==
-X-Gm-Message-State: AOAM533dFVUWMFTeNpqtYrlApLDE2W6QZi7whbG0yNmAx4DrvYCjd2vI
-        GNT/Gs4D//cYdXj1Xg9+ht5WAUkYOp5oeLp67ns=
-X-Google-Smtp-Source: ABdhPJxqORgG+iXS2MUSd76bl5TBZKlc/qcbt9O7R3tRFXJ0lESsAEHwXxj7DFW88YmAQPIcXwkV95yEjue34nqZXjY=
-X-Received: by 2002:a4a:ab08:: with SMTP id i8mr13952968oon.40.1613480328418;
- Tue, 16 Feb 2021 04:58:48 -0800 (PST)
-MIME-Version: 1.0
-References: <20210205222644.2357303-1-saravanak@google.com>
- <CAMuHMdVL-1RKJ5u-HDVA4F4w_+8yGvQQuJQBcZMsdV4yXzzfcw@mail.gmail.com>
- <CAGETcx-668+uGigaOMcsvv00mo6o_eGPcH0YyD28OCVEyVbw+w@mail.gmail.com>
- <CAMuHMdWFp_teT5Lgxe6BOpOb4UMM2_4FrKJm-2C6kuCH2YUMrw@mail.gmail.com> <CAGETcx9AZct4h0AdjbNzF5vjoYxT+M+zJ2ddsEN5SV9ALqV48A@mail.gmail.com>
-In-Reply-To: <CAGETcx9AZct4h0AdjbNzF5vjoYxT+M+zJ2ddsEN5SV9ALqV48A@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 16 Feb 2021 13:58:37 +0100
-Message-ID: <CAMuHMdULCQrjba0sM3wUFdPDTB4Txh3LVY-8ACq6P_vFJvk+SA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/8] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
+        id S230015AbhBPNAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 08:00:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41930 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229895AbhBPNAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 08:00:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3F416AF2C;
+        Tue, 16 Feb 2021 12:59:54 +0000 (UTC)
+Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
+ holes in memory layout
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Mike Rapoport <rppt@kernel.org>, Michal Hocko <mhocko@suse.com>
+Cc:     Mel Gorman <mgorman@suse.de>, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org, x86@kernel.org
+References: <20210208110820.6269-1-rppt@kernel.org>
+ <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
+ <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
+ <YCaAHI/rFp1upRLc@dhcp22.suse.cz> <20210214180016.GO242749@kernel.org>
+ <YCo4Lyio1h2Heixh@dhcp22.suse.cz> <20210215212440.GA1307762@kernel.org>
+ <YCuDUG89KwQNbsjA@dhcp22.suse.cz> <20210216110154.GB1307762@kernel.org>
+ <b1302d8e-5380-18d1-0f55-2dfd61f470e6@suse.cz>
+Message-ID: <e3648990-eb2a-5607-286b-c2e7f352c455@suse.cz>
+Date:   Tue, 16 Feb 2021 13:59:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <b1302d8e-5380-18d1-0f55-2dfd61f470e6@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+On 2/16/21 1:34 PM, Vlastimil Babka wrote:
+> On 2/16/21 12:01 PM, Mike Rapoport wrote:
+>>> 
+>>> I do understand that. And I am not objecting to the patch. I have to
+>>> confess I haven't digested it yet. Any changes to early memory
+>>> intialization have turned out to be subtle and corner cases only pop up
+>>> later. This is almost impossible to review just by reading the code.
+>>> That's why I am asking whether we want to address the specific VM_BUG_ON
+>>> first with something much less tricky and actually reviewable. And
+>>> that's why I am asking whether dropping the bug_on itself is safe to do
+>>> and use as a hot fix which should be easier to backport.
+>> 
+>> I can't say I'm familiar enough with migration and compaction code to say
+>> if it's ok to remove that bug_on. It does point to inconsistency in the
+>> memmap, but probably it's not important.
+> 
+> On closer look, removing the VM_BUG_ON_PAGE() in set_pfnblock_flags_mask() is
+> not safe. If we violate the zone_spans_pfn condition, it means we will write
+> outside of the pageblock bitmap for the zone, and corrupt something. Actually
 
-On Mon, Feb 15, 2021 at 10:57 PM Saravana Kannan <saravanak@google.com> wrote:
-> On Mon, Feb 15, 2021 at 7:16 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, Feb 12, 2021 at 4:00 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > On Thu, Feb 11, 2021 at 5:00 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > >   1. R-Car Gen2 (Koelsch), R-Car Gen3 (Salvator-X(S), Ebisu).
-> > > >
-> > > >       - Commit 2dfc564bda4a31bc ("soc: renesas: rcar-sysc: Mark device
-> > > >         node OF_POPULATED after init") is no longer needed (but already
-> > > >         queued for v5.12 anyway)
-> > >
-> > > Rob doesn't like the proliferation of OF_POPULATED and we don't need
-> > > it anymore, so maybe work it out with him? It's a balance between some
-> > > wasted memory (struct device(s)) vs not proliferating OF_POPULATED.
-> >
-> > > >   2. SH/R-Mobile AG5 (kzm9g), APE6 (ape6evm), A1 (armadillo800-eva)
-> > > >
-> > > >       - "PATCH] soc: renesas: rmobile-sysc: Set OF_POPULATED and absorb
-> > > >         reset handling" is no longer needed
-> > > >         https://lore.kernel.org/linux-arm-kernel/20210205133319.1921108-1-geert+renesas@glider.be/
-> > >
-> > > Good to see more evidence that this series is fixing things at a more
-> > > generic level.
-> >
-> > I spoke too soon: if CONFIG_POWER_RESET_RMOBILE=n,
-> > booting fails again, as everything is waiting on the system controller,
-> > which never becomes available.
-> > Rcar-sysc doesn't suffer from this problem, cfr. above.
-> > Perhaps because the rmobile-sysc bindings use a hierarchical instead
-> > of a linear PM domain description, and thus consumers point to the
-> > children of the system controller node?
-> > Cfr. system-controller@e6180000 in arch/arm/boot/dts/r8a7740.dtsi.
->
-> Ok, I see what's going on. The problem is that the "power domain"
-> fwnode being registered is not the node that contains the "compatible"
-> property and becomes a device. So this patch[1] is not helping here.
-> Fix is to do something like this (to avoid using OF_POPULATED flag and
-> breaking reset):
->
-> diff --git a/drivers/soc/renesas/rmobile-sysc.c
-> b/drivers/soc/renesas/rmobile-sysc.c
-> index 9046b8c933cb..b7e66139ef7d 100644
-> --- a/drivers/soc/renesas/rmobile-sysc.c
-> +++ b/drivers/soc/renesas/rmobile-sysc.c
-> @@ -344,6 +344,7 @@ static int __init rmobile_init_pm_domains(void)
->                         of_node_put(np);
->                         break;
->                 }
-> +               fwnode_dev_initialized(&np->fwnode, true);
->         }
->
->         put_special_pds();
->
-> Can you give it a shot?
+Clarification. This is true only for !CONFIG_SPARSEMEM, which is unlikely in
+practice to produce the configurations that trigger this issue. So we can remove
+the VM_BUG_ON_PAGE()
 
-Thanks, works.  Patch sent
-"[PATCH v2] soc: renesas: rmobile-sysc: Mark fwnode when PM domain is added"
-https://lore.kernel.org/linux-arm-kernel/20210216123958.3180014-1-geert+renesas@glider.be/
+> similar thing can happen in __get_pfnblock_flags_mask() where there's no
+> VM_BUG_ON, but there we can't corrupt memory. But we could theoretically fault
+> to do accessing some unmapped range?
+> 
+> So the checks would have to become unconditional !DEBUG_VM and return instead of
+> causing a BUG. Or we could go back one level and add some checks to
+> fast_isolate_around() to detect a page from zone that doesn't match cc->zone.
+> The question is if there is another code that will break if a page_zone()
+> suddenly changes e.g. in the middle of the pageblock - __pageblock_pfn_to_page()
+> assumes that if first and last page is from the same zone, so are all pages in
+> between, and the rest relies on that. But maybe if Andrea's
+> fast_isolate_around() issue is fixed, that's enough for stable backport.
+> 
+> 
+> 
+> 
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
