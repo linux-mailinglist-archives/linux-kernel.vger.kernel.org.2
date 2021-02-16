@@ -2,105 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0356E31D32F
+	by mail.lfdr.de (Postfix) with ESMTP id E26E931D331
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 01:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhBPXy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 18:54:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
+        id S230466AbhBPX5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 18:57:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbhBPXyX (ORCPT
+        with ESMTP id S229577AbhBPX5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 18:54:23 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BABC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 15:53:42 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id f3so13047771oiw.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 15:53:42 -0800 (PST)
+        Tue, 16 Feb 2021 18:57:19 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6471AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 15:56:39 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id y26so19307538eju.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 15:56:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=7YZZZa0Z9sq8S0dHPnPa5oROFnkvvg200VC3qLVC1ME=;
-        b=RnSmnHbst8FK/8ck/1v044L3LQP7/uSxvm23Lzbc2rn4IGOkaXLgNd87nRHGzjPger
-         zlB8oYx9DP/gGdxrNeHurZy9bsGOofhri2hmjd0HjmRBd2VYc/IbWucJXVkZ4zzWIJ9d
-         jIAymqZAgxSXBAPLR3DfKgguFeup49ObfZrx8SiikL9Uj9nAAWEb134DBhTgCmNnKVCk
-         FJ+TLJrr1V6Wnq7c9nk7yO33Phel0tira/u/aAozMLqbKuF2Lvw45gf9QUZGL99zAjXj
-         SBs/Z//UG9o6qnaxZC5F56btUqnBbjjL8Miipmt0Az2S9Ruwft8qF3L0H1MijJ4zeHYB
-         B5YQ==
+        bh=v1fsjgbCZ05cc8hXO6K7K4My807oZ/pqrKSLTXR9l0k=;
+        b=Ebb3tZWHf3D/y/GYLSLShY3I3CWGIwUk/5/ow2pAR6tezFMm8loD+rWC+9OS4a/Vjm
+         W+aOCmNz0gOpNiDwywTiTor/dCT5b0Wrdi5Pg/WqPtPBa4jLK4cOBDL9Oe0MVDvpsww2
+         bREp+cc8ozjYLzqxJhfABHIYE7pY+kUF1BuSnPXmyynRdVjwHKWOcekyc+loV9UsBp4C
+         uMXMcbxI5K1JgVpLdVrMZJn7lUvQ/prv96OB0TsJhNGIONrryYbaZyHrwLtdaBq5VU23
+         z3luqpY1eh46uRbyYjK4la3aX46MK662Tsxq8ALGz0TwtfT826ZxwENQVXr7BupCVUrB
+         KE8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7YZZZa0Z9sq8S0dHPnPa5oROFnkvvg200VC3qLVC1ME=;
-        b=AnoyR0muc66hWlsCgLbOyjj59Dmbty48ZSvIhucM8i6/uVmm0ZGQ9sgM3HzgRQs5gh
-         NZw5wNyuNqXFEmNkNlsbvLxCAHsxD0WSPBQ42zpNgTSq4wEAxOnI42l4VRb6CLYE9vDO
-         +hTLoxGt1mCWvm4XO3dQSPfeSEBosJ1rczyJNlnQzfyPqwR1bMF9PZkHtWwG/DN9zjyZ
-         jntOtVRqNBywE7m0bE1rj7wPbiqIz/pD/XHvE+lsY8BIRFRXJ93Dz7pVYoAeszpeu4y9
-         uZrdZtVeU9cvI/VlcyGmYCA5A3l2snAjeBHRUKfb11954LmJBakWwz+J4KknPWH/KtFV
-         v9Xw==
-X-Gm-Message-State: AOAM531DMI/Aar9HBD2VVSGxvzuMiL8AVK6JXY0xu86YLWxiq7x2pgqP
-        JsUDW944YKyR0D0wQp+ka3OP58BW2qwZzu1ezGS8zg==
-X-Google-Smtp-Source: ABdhPJzkxDyN7ezhP2Gl14bsnM7Bo+Uhwem0JKrjZQtkq1K6lm6ThCe3vJwUHiH4aCthz8yzmwyqCdjjtHg5YgYMUkk=
-X-Received: by 2002:aca:1a17:: with SMTP id a23mr4047592oia.172.1613519622217;
- Tue, 16 Feb 2021 15:53:42 -0800 (PST)
+        bh=v1fsjgbCZ05cc8hXO6K7K4My807oZ/pqrKSLTXR9l0k=;
+        b=AD3bXAm+/Laf+U8it1+BMuE5i8famLobitmSbVVXqQVozCAB3+j9heZuj6fBVIzi3D
+         1fXsA5RMMzPA60tJskuVSK6OR6DiBEPdHdM/hSlgV+TNFygMLtgyQlkR6r1Me4XEqo1n
+         VhLlboJHB/7wiaHJT7C8xupJyz0g/iuSnK9szusmUXzVjnA5ys4A6YrDLb2CYY4ovk02
+         zOEdZPG9el2zc280WR46pRbAc5Iyi/lopBzTRQxYoicItpLm3tV5R3vlX/l6VEg8/ZG2
+         ZK7VZ3VxizpICfxg6+Ix9S1Og+mCXXOJPhpz2x0HJoY6rcIbPLELbiVLqHtk2s0vJFuc
+         gfDw==
+X-Gm-Message-State: AOAM532ocWybBhmr7durTWGF/JRBeQduInA6eGUkRro2z4PChrqES9D/
+        glu4MCMTzCoSK1hokzi2WpGr8l7LZdd7S47IFy4=
+X-Google-Smtp-Source: ABdhPJw+4+D8JrYUjZ9ORrd1Am7KSDIt+5zYTVNV8PKpBa1ehjVA6xIHSijjFwwHjNp+wpk5gWPVMWN7uKGEIf0oL70=
+X-Received: by 2002:a17:906:6943:: with SMTP id c3mr22439086ejs.133.1613519798150;
+ Tue, 16 Feb 2021 15:56:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20210209050047.1958473-1-daniel.diaz@linaro.org>
- <6065587.C4oOSP4HzL@mobilepool36.emlix.com> <3314666.Em9qtOGRgX@mobilepool36.emlix.com>
- <5043253.pljLzkpU8D@mobilepool36.emlix.com>
-In-Reply-To: <5043253.pljLzkpU8D@mobilepool36.emlix.com>
-From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Date:   Tue, 16 Feb 2021 17:53:31 -0600
-Message-ID: <CAEUSe7-NA92bBDco_go6mwkdrtUsxk0H6OX0pUfpDZ0R7VKL=g@mail.gmail.com>
-Subject: Re: [PATCH] scripts: Fix linking extract-cert against libcrypto
-To:     Rolf Eike Beer <eb@emlix.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20210216060128.126938-1-axel.lin@ingics.com>
+In-Reply-To: <20210216060128.126938-1-axel.lin@ingics.com>
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Date:   Wed, 17 Feb 2021 00:56:27 +0100
+Message-ID: <CABkfQAFO6Xog=Eej1k6iT8BpJWLO9=n6o_YEkBxp4d6uiUv0uQ@mail.gmail.com>
+Subject: Re: [PATCH] regulator: pf8x00: Use regulator_map_voltage_ascend for pf8x00_buck7_ops
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Le mar. 16 f=C3=A9vr. 2021 =C3=A0 07:01, Axel Lin <axel.lin@ingics.com> a =
+=C3=A9crit :
+>
+> The voltages in pf8x00_sw7_voltages are in ascendant order, so use
+> regulator_map_voltage_ascend.
+>
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+>  drivers/regulator/pf8x00-regulator.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8=
+x00-regulator.c
+> index 9b28bd63208d..5d319fb81288 100644
+> --- a/drivers/regulator/pf8x00-regulator.c
+> +++ b/drivers/regulator/pf8x00-regulator.c
+> @@ -359,6 +359,7 @@ static const struct regulator_ops pf8x00_buck7_ops =
+=3D {
+>         .disable =3D regulator_disable_regmap,
+>         .is_enabled =3D regulator_is_enabled_regmap,
+>         .list_voltage =3D regulator_list_voltage_table,
+> +       .map_voltage =3D regulator_map_voltage_ascend,
+>         .set_voltage_sel =3D regulator_set_voltage_sel_regmap,
+>         .get_voltage_sel =3D regulator_get_voltage_sel_regmap,
+>         .get_current_limit =3D regulator_get_current_limit_regmap,
+> --
+> 2.25.1
+>
 
-
-On Fri, 12 Feb 2021 at 01:44, Rolf Eike Beer <eb@emlix.com> wrote:
->
-> Am Donnerstag, 11. Februar 2021, 11:29:33 CET schrieb Rolf Eike Beer:
->
-> > I'm just guessing, but your build error looks like you are also
-> > cross-building the tools, which is wrong. You want them to be host-tool=
-s.
-> > So don't export PKG_CONFIG_SYSROOT_DIR, it would then try to link targe=
-t
-> > libraries into a host binary.
->
-> I have looked again how I do it:
->
-> # this is for additional _host_ .pc files
-> export PKG_CONFIG_PATH=3D${prefix}/lib/pkgconfig
->
-> Then have a target-pkg-config, so this code inside several kernel Makefil=
-es
-> will work:
->
-> PKG_CONFIG ?=3D $(CROSS_COMPILE)pkg-config
->
-> And then export your PKG_CONFIG_SYSROOT_DIR and the like inside that. I b=
-et
-> you have all of this already in place, so just remove the SYSROOT_DIR fro=
-m
-> your kernel build script and things should work.
-
-Thank you for your comments! I will try this in our environment in the
-upcoming days.
-
-Greetings!
-
-Daniel D=C3=ADaz
-daniel.diaz@linaro.org
+Reviewed-by: Adrien Grassein <adrien.grassein@gmail.com>
