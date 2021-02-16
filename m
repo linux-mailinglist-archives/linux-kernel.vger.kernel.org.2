@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47E631D1FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1BD31D1D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhBPVTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:19:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
+        id S230006AbhBPVBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:01:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbhBPVTd (ORCPT
+        with ESMTP id S229908AbhBPVBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:19:33 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE0FC061756;
-        Tue, 16 Feb 2021 13:18:52 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id o15so96936wmq.5;
-        Tue, 16 Feb 2021 13:18:52 -0800 (PST)
+        Tue, 16 Feb 2021 16:01:16 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2FAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 13:00:35 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id p6so5300864qvm.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 13:00:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=6vedo8W/6qWPUt/+BKTlFoVhMoDHLM1dBDJR550KtdE=;
-        b=al+D3i+Zt3NA99dyoxSWDLmJSD87CYOfxu0lK8OipS4kCNnFdHTV5q5GiqJPQrbeg8
-         L1Y7nthHQ5hZclx/MNWlP899Nnq6XjGdh+qxuIqgwE582fI5Uh2oEySoQaSZN+tF0qYJ
-         J+xE1gZtgIq5ZEJNqgqoDrJmvYHB9g3AzD4NpwKVIMSKpfaex6yBoo5AToCt1D3wQM3Q
-         s0ApvBBjG2FrvegtK8hZ8bds/zBxOt8EyD6SkmvKHJ+7my15W8fPvJHNrLeNaM7yTBwF
-         wGpcDCgr9jjyGc/onHyTEbf+Q2Z8qsmnuIYxpik5YoST0P+8hHKl1jAqS/FuJ5xDpyEh
-         g2UA==
+        bh=QSVmwKOtk7FB0iPQgSkX8IewiSJ/NEzCzZpU78EnTxA=;
+        b=ni+u71Q3dKJtktZ46g9IYkuvBtAss9ivf72Rz+UoKSYd6WsVV9pE6IFqfhrMzXUNuD
+         EYTp4oONfMN+5vLlGfnYBcfKUwbDdGAKiPbmbuG/ilyaP5pVR6YFz/dqLjOqAausJuhG
+         BtEd2SqJ9dNA1HB/KjqdO7llv5t7Vv6Wo2ckdTMPCENJpImzBuf/VGjs68Ss/MsSzrUx
+         ePs4CmF6oOPeetUchHo9WWAxq3Xq8tcyWIhUKFwUtag/EzCpOajOftompHWD8l/YlE/7
+         G68SdtvkZG8GlM/9heQ8CWT2+5PzdJjru13Jbg6+aiIQZWRgKP1tt0rJ/yywZTZqbxyW
+         btEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6vedo8W/6qWPUt/+BKTlFoVhMoDHLM1dBDJR550KtdE=;
-        b=qCveOmx59nMloAA4FS8rVmCZvTe4qJUkDjXT0qfhDEeqK0p7us9TSZo463mrqI2Kmy
-         wxLqpwORW2/ox0FTf5w1O4IEeD3waNaKyFi8cDPqLa4u2CozZ8+P/zB4gg3w/ycmBllg
-         t52V8Whw3Ckmc8oaF9k+tz1LlyTaSoEV2JZtodFo4VKEn7Hc/WXMd8UIROgHV2+xTUVu
-         mJZaetD49aONa8+nSOkHK6xLfCyNP7x4yEV+Y5Ck9q5DacZePQ4Ghjf4k5gXgqR40DDi
-         vflMc7Ydl35qnN1tFsKpUWU6LEK84FaB+Hj5yndx6a/R7U8HR6uLumXg3uQt3CEaog/H
-         +5cg==
-X-Gm-Message-State: AOAM533QvKw9jobaX5TpoGvHzg7Os16vktywLUZp5a9NSGHexNdPG/Xn
-        1AZftA3tmi3W5nP65a6qdnNDoEFTTdPUhw==
-X-Google-Smtp-Source: ABdhPJy+kXgSH51yldd0iyYVx1Hf74I3mdzTuYAqUt9RNaIEbo1a0SBA0kaurMy9+RPsBS8O24GJKA==
-X-Received: by 2002:a7b:cbd4:: with SMTP id n20mr3880287wmi.171.1613510330882;
-        Tue, 16 Feb 2021 13:18:50 -0800 (PST)
-Received: from trashcan (host-5-58-109-138.bitternet.ua. [5.58.109.138])
-        by smtp.gmail.com with ESMTPSA id m11sm5059974wmi.25.2021.02.16.13.18.48
+        bh=QSVmwKOtk7FB0iPQgSkX8IewiSJ/NEzCzZpU78EnTxA=;
+        b=DohuWUrl1qyYgs5H4kRJs2I6DfG8ULkGxelQ1oNrwIVfK0TXK3L3+Fr2u5jaDLt8YX
+         Iwnx+tpsRnx7pqpArDsEN0w+Wg0YtyjXoGBITS9QQriJTSaIBE29c2YEH8xEOioopWHM
+         06irZ2Zx0nZ84wBwqOkQaFLc3WeL3upXyTr7KPBBoPK1+COysNl4jk1B9brHtA1iRaKH
+         rilZk1Io7XdbYRZTBYZdZ2AldSyqMdHUIRVH9g5acK5bGDWwy47ksAjPl9M/8+/wUItC
+         72m5worrDEJo+dvMZWLJRXi8Q6KJTjBI+9iI5wlkKx/Or35OExzhYq/bT8LzFTie2P1c
+         LX8w==
+X-Gm-Message-State: AOAM533nOj4ZFZ8TBusszny0ZgSSuBneujlDFQUJRXHIsUkywhog+LXW
+        EtF4e+4i7n1tvbxJdoCJpIZdNw==
+X-Google-Smtp-Source: ABdhPJw6mnEhTfDhINL8Wp1Pc1R0Jspmpg0STsdoxtizR44p2V/PXUcBIrbS8W3Mv2DyjYu80L/brg==
+X-Received: by 2002:a05:6214:174d:: with SMTP id dc13mr7983283qvb.62.1613509234873;
+        Tue, 16 Feb 2021 13:00:34 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id x12sm91254qkj.20.2021.02.16.13.00.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 13:18:50 -0800 (PST)
-Date:   Tue, 16 Feb 2021 23:56:49 +0300
-From:   Vladimir Lypak <junak.pub@gmail.com>
-To:     Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     robert.foss@linaro.org, sakari.ailus@linux.intel.com,
-        todor.too@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org,
-        mchehab@kernel.org, laurent.pinchart@ideasonboard.com,
-        jacopo@jmondi.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] media: qcom: camss: V4L2_CID_PIXEL_RATE/LINK_FREQ
- fixes
-Message-ID: <YCwxkdNKXMunBVZG@trashcan>
-References: <20210214213404.8373-1-andrey.konovalov@linaro.org>
+        Tue, 16 Feb 2021 13:00:33 -0800 (PST)
+Date:   Tue, 16 Feb 2021 16:00:32 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: code style: Re: [PATCH v4] printk: Userspace format enumeration
+ support
+Message-ID: <YCwycC8hPsPD7ArU@cmpxchg.org>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <YCv9Xb7ePnDy9xRf@alley>
+ <YCwAbGoVuZJspcx5@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210214213404.8373-1-andrey.konovalov@linaro.org>
+In-Reply-To: <YCwAbGoVuZJspcx5@chrisdown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Andrey!
+On Tue, Feb 16, 2021 at 05:27:08PM +0000, Chris Down wrote:
+> Petr Mladek writes:
+> > I wonder if we could find a better name for the configure switch.
+> > I have troubles to imagine what printk enumeration might mean.
+> > Well, it might be because I am not a native speaker.
+> > 
+> > Anyway, the word "enumeration" is used only in the configure option.
+> > Everything else is "printk_fmt"
+> > 
+> > What about DEBUG_PRINTK_FORMATS?
+> 
+> Hmm, I don't like DEBUG_PRINTK_FMTS because it's not about debugging, it's
+> about enumeration, I guess :-)
+> 
+> The name should reflect that this catalogues the available printks in the
+> kernel -- "debugging" seems to imply something different.
+> 
+> I'm ok with a different name like "printk catalogue" or something like that
+> if you prefer. Personally I think "printk enumeration" is fairly clear --
+> it's about enumerating the available printks -- but anything that captures
+> that spirit is fine.
 
-Thank you for including my patch, i'm glad you did it. This patchset works
-fine for me.
+How about config PRINTK_INDEX?
