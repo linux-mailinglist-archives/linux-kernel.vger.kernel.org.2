@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B3231C860
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A496B31C86B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhBPJtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:49:39 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:52151 "EHLO ozlabs.org"
+        id S229916AbhBPJwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:52:10 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:39766 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230064AbhBPJrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:47:08 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S230218AbhBPJs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 04:48:58 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613468916; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=b0oFYzK0Xfgo+3gaCi9duTWc+l8gkxgl3nkBjznKZjU=; b=rFZS3+cL6X2g/pplbsngwEB18zhfI4iLQ1KMm1N8alN0gi74kx/4WNZjYorwCK1QA9vLm9j/
+ PA60rfD4EwgbqAw8Dlan2ziBdOrcu2nQF1Ju/ae2jLxYb8LRJlv6jcs4Q13qOFxH3hpwNcFD
+ 9r11A+WfCyUPeVYTt0T2dHvbinw=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 602b94d30bb8f50fb989b2a8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 09:48:03
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5FAE5C43461; Tue, 16 Feb 2021 09:48:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dfx1t1pNSz9sVF;
-        Tue, 16 Feb 2021 20:46:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613468786;
-        bh=mhNRPRlD0jLWUQYUSdG7QkkCZ3e0fk0jXhX5UZ0n6MY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XVs4qbdUQfys2JTS2Sk6Csyve3o2DKCVvwWDphjFROy4wLFf5uGjZ11kn2/k1PiW8
-         bCFZdAAuyi8eS3vy1kPBMXbK8NT/yAkEZmtlQ00pUuz2HrCPEfnj8W9ATSTSk5zi8y
-         P8Ljxh/RIu/k1rez4CVSWE7Bj8zM7/14nACA4tE4BDVmnadvYTCFXFP3NoU+iMbKKv
-         QwGesYUHSoxqQVJ9AlfjU5x5ZmXolLOQdScxycfoSgDENzel9pclLhwXN/tF47q5U6
-         pxSLHxT1hMDmAsJfSb4CRBDvwSvsq+3jqf24Lhpp11qvc0mIEStr3RA9YGn6Dub3mC
-         SVoNIi0V2fFNA==
-Date:   Tue, 16 Feb 2021 20:46:24 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the nvdimm tree
-Message-ID: <20210216204624.65a2940a@canb.auug.org.au>
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7A43C433CA;
+        Tue, 16 Feb 2021 09:47:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B7A43C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH 0/3] arm64: dts: qcom: Fix PMU and timer interrupt properties
+Date:   Tue, 16 Feb 2021 15:17:46 +0530
+Message-Id: <cover.1613468366.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xPa+kqWI1+vmB9bFlwx4HgE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xPa+kqWI1+vmB9bFlwx4HgE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Fix PMU interrupt polarity for SM8250 and SM8350 SoCs and the timer
+interrupt property for SM8250 SoC.
 
-Hi all,
+Sai Prakash Ranjan (3):
+  arm64: dts: qcom: sm8250: Fix level triggered PMU interrupt polarity
+  arm64: dts: qcom: sm8350: Fix level triggered PMU interrupt polarity
+  arm64: dts: qcom: sm8250: Fix timer interrupt to specify EL2 physical
+    timer
 
-After merging the nvdimm tree, today's linux-next build (htmldocs)
-produced these warnings:
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 4 ++--
+ arch/arm64/boot/dts/qcom/sm8350.dtsi | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Documentation/driver-api/cxl/memory-devices:112: /home/sfr/next/next/driver=
-s/cxl/mem.c:474: WARNING: Inline literal start-string without end-string.
-Documentation/driver-api/cxl/memory-devices:112: /home/sfr/next/next/driver=
-s/cxl/mem.c:474: WARNING: Inline literal start-string without end-string.
 
-Introduced by commit
+base-commit: d79b47c59576a51d8e288a6b98b75ccf4afb8acd
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-  b754ffbbc0ee ("cxl/mem: Add basic IOCTL interface")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/xPa+kqWI1+vmB9bFlwx4HgE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmArlHEACgkQAVBC80lX
-0GzOwggAmHiOak/0/WRp3H0McpnGASte7k2lGfCM3g+/NtBvigIrgWTW6L5IUdSf
-//HfGO3mIWrt48sJrmUL4D9jcchVWKYMsixg9JSGcp5qH6xBlPcMAvyyLFLEJZTI
-/8O4uv6z/c09h3RK+9GdV2d7uZnlyWkGrzf9sK7qRbSRTJu12uAw7815oQbGFezZ
-I412dZnuM+SyegNBaAXAqFkE3jVX/z2aaUIea//vCPznWJ1zdWP0BBLVWbMSPAao
-PHn9kbhQXk0fOT1phOLBWd7Xz3hLqDpHpuTyNoPsp1KnZEsb1Ao3KHf6p6JxScYn
-Dy/KnnkWbghGrN9ZlqEw3dlXKocotg==
-=U6Di
------END PGP SIGNATURE-----
-
---Sig_/xPa+kqWI1+vmB9bFlwx4HgE--
