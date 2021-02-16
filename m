@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B4F31C832
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7D631C82D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBPJiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:38:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhBPJhv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:37:51 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B1DC061574;
-        Tue, 16 Feb 2021 01:37:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=6p6aP26uvaDys5m2iqcqs2Sq1c/nYDnkVqNjuyxRkDU=; b=Nk4MUsvviR9MIo25CvF38GBU6P
-        HueibuWzMXbLsx5spRiXK/Folbl0pODU9941RNDDvdGqgpXmzjy+XIssHin4gBD797gR8i+2CiWsS
-        9rNh3U6F/8P9YMQY6P8erJIv5tuxOhuvYGDhouTECta/1hzgomSFVtfYUVB8PFrMQrWPJun1bxPxK
-        F5UliehaGMyP6rxujPhSnZT1x9VYjuxdQ5M2cyYF/evDQemtzv8Z0dsy2On6A4eZsIleh4omSGPQF
-        W5ijuSs/k6kq8DUN5Ye3nZYeP/C8DtVAKAcz0jQ+2sxAbBn89IkIUL9Noq6BYQT4PoZiUGODuLnVZ
-        RDBbf8JQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lBwl5-00GheO-QE; Tue, 16 Feb 2021 09:35:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 46AE63059DD;
-        Tue, 16 Feb 2021 10:35:02 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2CE432058CB0E; Tue, 16 Feb 2021 10:35:02 +0100 (CET)
-Date:   Tue, 16 Feb 2021 10:35:02 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, corbet@lwn.net
-Subject: Re: [RFC PATCH 01/13] futex2: Implement wait and wake functions
-Message-ID: <YCuRxl4uRhua+Y5b@hirez.programming.kicks-ass.net>
-References: <20210215152404.250281-1-andrealmeid@collabora.com>
- <20210215152404.250281-2-andrealmeid@collabora.com>
+        id S229913AbhBPJhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:37:01 -0500
+Received: from ozlabs.org ([203.11.71.1]:51451 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229695AbhBPJgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 04:36:50 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dfwnw1P1xz9sVF;
+        Tue, 16 Feb 2021 20:36:04 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1613468164;
+        bh=w01ZzXg+X4lswScuetPh6d5R2awZ8eJK8kV/DFk/9G4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=DvanBx7AL1g74lkUsfxDVc69dv1YNkEwIgcUl1qqHx1uS7I0m4umKPZA4jFa1ryT7
+         CsvSeg8RrNY1p0XnUMpatEMSzpx7VeSvj2dL77+LJ4Hp4J+nUhuQ+szH+xj8EwHMfN
+         IeI2vUHFb5tGVTniXNeTap36+ppe4GU42tWcDTHRGOrR9pYsEWvMze+2rRQNI3CBkB
+         pk4wOFsdHLWrqLh/GCCTHL7YKblU3l9OmAJWFK2sRrqKfVCviGdzCITCNdi2jX4nmR
+         yLJgWwcAFQ2rqlTAUngSNaEhrl1dmLpyeO9cIs/keVIGdHokXLYENZFiaboSo9G4a9
+         oNU3B6RAEzQ5g==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Feng Tang <feng.tang@intel.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     lkp <lkp@intel.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: {standard input}:577: Error: unsupported relocation against base
+In-Reply-To: <20210205100821.GA71063@shbuild999.sh.intel.com>
+References: <202101051834.FGH835Vs-lkp@intel.com>
+ <98587e13-d22f-973f-1e16-f7a811f71016@csgroup.eu>
+ <20210205100821.GA71063@shbuild999.sh.intel.com>
+Date:   Tue, 16 Feb 2021 20:36:02 +1100
+Message-ID: <87lfbouzgd.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210215152404.250281-2-andrealmeid@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 12:23:52PM -0300, André Almeida wrote:
+Feng Tang <feng.tang@intel.com> writes:
+> Hi Christophe and Michael,
+>
+> On Mon, Jan 18, 2021 at 10:24:08PM +0800, Christophe Leroy wrote:
+>>=20
+>> Le 05/01/2021 ? 11:58, kernel test robot a =E9=96=8Frit :
+>> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux=
+.git master
+>> > head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+>> > commit: 8b8319b181fd9d6821703fef1228b4dcde613a16 powerpc/44x: Don't su=
+pport 440 when CONFIG_PPC_47x is set
+>>=20
+>> I see no link with that commit. Looks like the problem has been existing=
+ for some time.
+>> It exists on the commit before that one, it exists on v5.9 and it exists=
+ on v5.10 with that commit
+>> reverted.
+>=20=20
+> Yes, this seems to be a long-standing issue, and we just double checked
+> this compile error.=20
+>
+> It happend when compiling arch/powerpc/platforms/44x/fsp2.c, macro
+> 'mfdcr' requirs an instant number as parameter, while is not met by
+> show_plbopb_regs(). Changing show_plbopb_regs() from function to
+> a macro fixes the error, as the patch below:
+>
+> Thanks,
+> Feng
+>
+>
+> From 3bcb9638afc873d0e803aea1aad4f77bf1c2f6f6 Mon Sep 17 00:00:00 2001
+> From: Feng Tang <feng.tang@intel.com>
+> Date: Fri, 5 Feb 2021 16:08:43 +0800
+> Subject: [PATCH] powerpc/44x/fsp2: fix a compiling error regarding macro
+>  'mdfcr'
+>
+> 0day's kbuild test found error:
+>
+> "
+>   CC      arch/powerpc/platforms/44x/fsp2.o
+>
+>   {standard input}:577: Error: unsupported relocation against base
+>   {standard input}:580: Error: unsupported relocation against base
+>   {standard input}:583: Error: unsupported relocation against base
+> "
+>
+> The reason is macro 'mfdcr' requirs an instant number as parameter,
+> which is not met by show_plbopb_regs().
 
-> +static int futex_dequeue_multiple(struct futexv_head *futexv, unsigned int nr)
-> +{
-> +	int i, ret = -1;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		spin_lock(&futexv->objects[i].bucket->lock);
-> +		if (!list_empty_careful(&futexv->objects[i].list)) {
-> +			list_del_init_careful(&futexv->objects[i].list);
-> +			bucket_dec_waiters(futexv->objects[i].bucket);
+It doesn't require a constant, it checks if the argument is constant:
 
-What's with the careful? AFAICT all sites have that bucket->lock.
+#define mfdcr(rn)						\
+	({unsigned int rval;					\
+	if (__builtin_constant_p(rn) && rn < 1024)		\
+		asm volatile("mfdcr %0," __stringify(rn)	\
+		              : "=3Dr" (rval));			\
+	else if (likely(cpu_has_feature(CPU_FTR_INDEXED_DCR)))	\
+		rval =3D mfdcrx(rn);				\
+	else							\
+		rval =3D __mfdcr(rn);				\
+	rval;})
 
-> +		} else {
-> +			ret = i;
-> +		}
-> +		spin_unlock(&futexv->objects[i].bucket->lock);
-> +	}
-> +
-> +	return ret;
-> +}
+But the error you're seeing implies the compiler is choosing the first
+leg of the if, even when rn =3D=3D "base + x", which is surprising.
 
-> +static int futex_enqueue(struct futexv_head *futexv, unsigned int nr_futexes,
-> +			 int *awakened)
-> +{
-> +	int i, ret;
-> +	u32 uval, *uaddr, val;
-> +	struct futex_bucket *bucket;
-> +
-> +retry:
-> +	set_current_state(TASK_INTERRUPTIBLE);
-> +
-> +	for (i = 0; i < nr_futexes; i++) {
-> +		uaddr = (u32 * __user)futexv->objects[i].uaddr;
-> +		val = (u32)futexv->objects[i].val;
-> +
-> +		bucket = futexv->objects[i].bucket;
-> +
-> +		bucket_inc_waiters(bucket);
-> +		spin_lock(&bucket->lock);
-> +
-> +		ret = futex_get_user(&uval, uaddr);
-> +
-> +		if (unlikely(ret)) {
-> +			spin_unlock(&bucket->lock);
-> +
-> +			bucket_dec_waiters(bucket);
-> +			__set_current_state(TASK_RUNNING);
-> +			*awakened = futex_dequeue_multiple(futexv, i);
-> +
-> +			if (__get_user(uval, uaddr))
-> +				return -EFAULT;
-> +
-> +			if (*awakened >= 0)
-> +				return 1;
-> +
-> +			goto retry;
-> +		}
-> +
-> +		if (uval != val) {
-> +			spin_unlock(&bucket->lock);
-> +
-> +			bucket_dec_waiters(bucket);
-> +			__set_current_state(TASK_RUNNING);
-> +			*awakened = futex_dequeue_multiple(futexv, i);
-> +
-> +			if (*awakened >= 0)
-> +				return 1;
-> +
-> +			return -EAGAIN;
-> +		}
-> +
-> +		list_add_tail(&futexv->objects[i].list, &bucket->list);
+We've had cases in the past of __builtin_constant_p() returning false
+for things that a human can see are constant at build time, but I've
+never seen the reverse.
 
-and here
-
-> +		spin_unlock(&bucket->lock);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-
-> +static void futex_mark_wake(struct futex_waiter *waiter,
-> +			    struct futex_bucket *bucket,
-> +			    struct wake_q_head *wake_q)
-> +{
-> +	struct task_struct *task;
-> +	struct futexv_head *parent = futex_get_parent((uintptr_t)waiter,
-> +						      waiter->index);
-> +
-
-	lockdep_assert_held(&bucket->lock);
-
-> +	parent->hint = true;
-> +	task = parent->task;
-> +	get_task_struct(task);
-> +	list_del_init_careful(&waiter->list);
-
-and here
-
-> +	wake_q_add_safe(wake_q, task);
-> +	bucket_dec_waiters(bucket);
-> +}
-
+cheers
