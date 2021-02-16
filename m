@@ -2,156 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4980831C8B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CF031C8BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhBPKY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:24:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:59892 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229703AbhBPKWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:22:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28754D6E;
-        Tue, 16 Feb 2021 02:21:18 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A60263F73B;
-        Tue, 16 Feb 2021 02:21:15 -0800 (PST)
-Subject: Re: [PATCH V3 08/14] coresight: core: Add support for dedicated
- percpu sinks
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        lcherian@marvell.com, linux-kernel@vger.kernel.org
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-9-git-send-email-anshuman.khandual@arm.com>
- <dce24164-d35b-d9d9-2fcd-e50a1bac0b38@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <14f558ff-25d0-8a64-f5b3-38422dbcd69b@arm.com>
-Date:   Tue, 16 Feb 2021 15:51:38 +0530
+        id S230090AbhBPKZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:25:50 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52852 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhBPKZl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:25:41 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11GAOeRs127257;
+        Tue, 16 Feb 2021 04:24:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1613471080;
+        bh=jXP/A7m1+bRyusmpL52wb3C/gRf4Bo6Hw3U3UA3/J00=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=GedDc0/SqmIZkDbq5PAfBWDTHHn4XOOKFbSDL9C+GnB+tFeuMKrjlaYUapRHsiZiQ
+         hYzFmU6ZeNuEBK3OjHPJ0Hjxz68Im473WdNpa7PKmX289A6NnLKtMcI6b3u7wA4aXy
+         CH52r8WUMom0okKamv0eH+FZAvzGKF+34GfLecAY=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11GAOeDY090324
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 16 Feb 2021 04:24:40 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 16
+ Feb 2021 04:24:40 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 16 Feb 2021 04:24:40 -0600
+Received: from [10.250.234.229] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11GAOZ58004811;
+        Tue, 16 Feb 2021 04:24:36 -0600
+Subject: Re: [PATCH v14 2/4] phy: Add media type and speed serdes
+ configuration interfaces
+To:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210210085255.2006824-1-steen.hegelund@microchip.com>
+ <20210210085255.2006824-3-steen.hegelund@microchip.com>
+ <04d91f6b-775a-8389-b813-31f7b4a778cb@ti.com>
+ <ffa00a2bf83ffa21ffdc61b380ab800c31f8cf28.camel@microchip.com>
+ <704b850f-9345-2e36-e84b-b332fed22270@ti.com> <YCqAMUfinMsnZnrq@lunn.ch>
+ <d5b3ccf9df1968671baadcd3c7a5e068d48867c5.camel@microchip.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <d5351524-d02d-0bdb-53ba-b5b9a72673f2@ti.com>
+Date:   Tue, 16 Feb 2021 15:54:35 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <dce24164-d35b-d9d9-2fcd-e50a1bac0b38@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <d5b3ccf9df1968671baadcd3c7a5e068d48867c5.camel@microchip.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 1/28/21 2:46 PM, Suzuki K Poulose wrote:
-> On 1/27/21 8:55 AM, Anshuman Khandual wrote:
->> Add support for dedicated sinks that are bound to individual CPUs. (e.g,
->> TRBE). To allow quicker access to the sink for a given CPU bound source,
->> keep a percpu array of the sink devices. Also, add support for building
->> a path to the CPU local sink from the ETM.
->>
->> This adds a new percpu sink type CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM.
->> This new sink type is exclusively available and can only work with percpu
->> source type device CORESIGHT_DEV_SUBTYPE_SOURCE_PERCPU_PROC.
->>
->> This defines a percpu structure that accommodates a single coresight_device
->> which can be used to store an initialized instance from a sink driver. As
->> these sinks are exclusively linked and dependent on corresponding percpu
->> sources devices, they should also be the default sink device during a perf
->> session.
->>
->> Outwards device connections are scanned while establishing paths between a
->> source and a sink device. But such connections are not present for certain
->> percpu source and sink devices which are exclusively linked and dependent.
->> Build the path directly and skip connection scanning for such devices.
->>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->> Changes in V3:
->>
->> - Updated coresight_find_default_sink()
->>
->>   drivers/hwtracing/coresight/coresight-core.c | 16 ++++++++++++++--
->>   include/linux/coresight.h                    | 12 ++++++++++++
->>   2 files changed, 26 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
->> index 0062c89..4795e28 100644
->> --- a/drivers/hwtracing/coresight/coresight-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-core.c
->> @@ -23,6 +23,7 @@
->>   #include "coresight-priv.h"
->>     static DEFINE_MUTEX(coresight_mutex);
->> +DEFINE_PER_CPU(struct coresight_device *, csdev_sink);
->>     /**
->>    * struct coresight_node - elements of a path, from source to sink
->> @@ -784,6 +785,13 @@ static int _coresight_build_path(struct coresight_device *csdev,
->>       if (csdev == sink)
->>           goto out;
->>   +    if (coresight_is_percpu_source(csdev) && coresight_is_percpu_sink(sink) &&
->> +        sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev))) {
->> +        _coresight_build_path(sink, sink, path);
->> +        found = true;
->> +        goto out;
->> +    }
->> +
->>       /* Not a sink - recursively explore each port found on this element */
->>       for (i = 0; i < csdev->pdata->nr_outport; i++) {
->>           struct coresight_device *child_dev;
->> @@ -999,8 +1007,12 @@ coresight_find_default_sink(struct coresight_device *csdev)
->>       int depth = 0;
->>         /* look for a default sink if we have not found for this device */
->> -    if (!csdev->def_sink)
->> -        csdev->def_sink = coresight_find_sink(csdev, &depth);
->> +    if (!csdev->def_sink) {
->> +        if (coresight_is_percpu_source(csdev))
->> +            csdev->def_sink = per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
->> +        if (!csdev->def_sink)
->> +            csdev->def_sink = coresight_find_sink(csdev, &depth);
->> +    }
->>       return csdev->def_sink;
->>   }
->>   diff --git a/include/linux/coresight.h b/include/linux/coresight.h
->> index 976ec26..bc3a5ca 100644
->> --- a/include/linux/coresight.h
->> +++ b/include/linux/coresight.h
->> @@ -50,6 +50,7 @@ enum coresight_dev_subtype_sink {
->>       CORESIGHT_DEV_SUBTYPE_SINK_PORT,
->>       CORESIGHT_DEV_SUBTYPE_SINK_BUFFER,
->>       CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM,
->> +    CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM,
->>   };
->>     enum coresight_dev_subtype_link {
->> @@ -428,6 +429,17 @@ static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 o
->>           csa->write(val, offset, false, true);
->>   }
->>   +static inline bool coresight_is_percpu_source(struct coresight_device *csdev)
->> +{
->> +    return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
->> +           csdev->subtype.source_subtype == CORESIGHT_DEV_SUBTYPE_SOURCE_PROC;
+On 16/02/21 2:07 pm, Steen Hegelund wrote:
+> Hi Andrew and Kishon,
 > 
-> Please add () around the last line. Same below.
-
-Okay, will do.
-
-> 
->> +}
->> +
->> +static inline bool coresight_is_percpu_sink(struct coresight_device *csdev)
->> +{
->> +    return csdev && (csdev->type == CORESIGHT_DEV_TYPE_SINK) &&
->> +           csdev->subtype.sink_subtype == CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
-
-Okay, will add here as well.
-
->> +}
->>   #else    /* !CONFIG_64BIT */
->>     static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
+> On Mon, 2021-02-15 at 15:07 +0100, Andrew Lunn wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+>> know the content is safe
 >>
+>> On Mon, Feb 15, 2021 at 05:25:10PM +0530, Kishon Vijay Abraham I
+>> wrote:
+>>> Okay. Is it going to be some sort of manual negotiation where the
+>>> Ethernet controller invokes set_speed with different speeds? Or the
+>>> Ethernet controller will get the speed using some out of band
+>>> mechanism
+>>> and invokes set_speed once with the actual speed?
+>>
+>> Hi Kishon
+>>
+>> There are a few different mechanism possible.
+>>
+>> The SFP has an EEPROM which contains lots of parameters. One is the
+>> maximum baud rate the module supports. PHYLINK will combine this
+>> information with the MAC capabilities to determine the default speed.
+>>
+>> The users can select the mode the MAC works in, e.g. 1000BaseX vs
+>> 2500BaseX, via ethtool -s. Different modes needs different speeds.
+>>
+>> Some copper PHYs will change there host side interface baud rate when
+>> the media side interface changes mode. 10GBASE-X for 10G copper,
+>> 5GBase-X for 5G COPPER, 2500Base-X for 2.5G copper, and SGMII for
+>> old school 10/100/1G Ethernet.
+>>
+>> Mainline Linux has no support for it, but some 'vendor crap' will do
+>> a
+>> manual negotiation, simply trying different speeds and see if the
+>> SERDES establishes link. There is nothing standardised for this, as
+>> far as i know.
+>>
+>>     Andrew
 > 
-> With the above :
-> 
-> Tested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Yes, in case I mention the only way to ensure communication is human
+> intervention to set the speed to the highest common denominator.
+
+Okay.. is it the same case for set_media as well?
+
+Thanks
+Kishon
