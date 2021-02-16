@@ -2,322 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340A331CD59
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF5831CD66
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhBPP5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 10:57:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhBPP5h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 10:57:37 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71969C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 07:56:57 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id g84so11708133oib.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 07:56:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metztli-com.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=I6NuW0fc+nwANoYqf21WbfWaEXZvQBSNDg4ASWjBDTI=;
-        b=dZzbUlhOCf3ojyyRwQAXF3poqL6bgbq2lBD7led1Kc6rXOFT/7UVPvpBaoCPYVA4tG
-         qYZFbaDjnhJs1ERRvqkXO6o2TgR0Paqu6dN6s24/XdNQmQjIxPTEhpfgkSN/CiZEvKMN
-         W/BTLG9MuzUwjQ1Ud8m8mySSibMnuYulldgM2x9H/tEnrHy6MsTT5QkFRJE50pJ7il4j
-         JVyCHEILSEGuZVlk9J8RDCwM/ktOFynAof48j8Ic7JtLG5b83CV4RcH3wVIMUnUhQrsS
-         8tDWFLQsruBTQhGSc10izb14/QbXLkFbkhq++RINnOPC5IiqsIuuZnfoTgXAgy1qAHsb
-         yxIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=I6NuW0fc+nwANoYqf21WbfWaEXZvQBSNDg4ASWjBDTI=;
-        b=EjB3t5FsQji+/ny2T2BFO+KmQN8ky3tFeq9zZqHR/xu//h2gtjF8dkVyt8szr9UFYv
-         R8dsfT9ImagIeXqDbAp5CCJWtM0vXSwHlMA9RkI+aBmserDKUrpYHjmEWnOecwKW64/c
-         ODZv6PGu5Jukp2E2njYcFYhnGTd+WhY7wuctiitggC9NdUEyBtERPuNQ4Pz+K9pSdmy5
-         RNgAnkV67YnOWlM0woM5AlrLs5OXe+GYtWS6EsikIQcr9J8fuPk4ghOdO+gxb9YBxEx5
-         TQXER+h91gbSsMmqj4/pVJNSwp4VEutX8/+ajvasadFgjefRNqIoyzh+VLcYVRDGcbx8
-         Kg0g==
-X-Gm-Message-State: AOAM531ABByVTaidbB5o5QFyjXoPNs/QtlsKgeI9+FnZYmOpiwv4iKoz
-        D0Jd5DPuf2Ecrsd58tgTC6ZV/w==
-X-Google-Smtp-Source: ABdhPJw49mEJ664TeJZdPS8HdsQNbXDUW34dwlsQd0q/FdvaRQHnPcscgpHc95aIk7QrILNzngTKew==
-X-Received: by 2002:a54:4415:: with SMTP id k21mr2939191oiw.38.1613491016784;
-        Tue, 16 Feb 2021 07:56:56 -0800 (PST)
-Received: from ?IPv6:2600:1700:6470:27a0:9384:191b:b59:6836? ([2600:1700:6470:27a0:9384:191b:b59:6836])
-        by smtp.gmail.com with ESMTPSA id m10sm2834522otp.44.2021.02.16.07.56.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 07:56:56 -0800 (PST)
-Message-ID: <97064703c2016908cebb8f1496d67d9751e21a67.camel@metztli.com>
-Subject: Re: [reiser4 SFRN 5.1.3] kernel [5.10.x] read not supported for
- file /test-exec \(pid: 10094 comm: debootstrap\)
-From:   Jose R Rodriguez <jose.r.r@metztli.com>
-To:     Edward Shishkin <edward.shishkin@gmail.com>
-Cc:     reiserfs-devel@vger.kernel.org, hch@lst.de,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 16 Feb 2021 07:56:54 -0800
-In-Reply-To: <e37d5585-318e-3130-82c9-7a740b9af8af@gmail.com>
-References: <20210208125427.CFC7C75EED90@huitzilopochtli.metztli-it.com>
-         <e37d5585-318e-3130-82c9-7a740b9af8af@gmail.com>
-Organization: Metztli Information Technology
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S230261AbhBPP72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 10:59:28 -0500
+Received: from retiisi.eu ([95.216.213.190]:57494 "EHLO hillosipuli.retiisi.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229699AbhBPP7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 10:59:13 -0500
+Received: from lanttu.localdomain (lanttu-e.localdomain [192.168.1.64])
+        by hillosipuli.retiisi.eu (Postfix) with ESMTP id 288D3634CBF;
+        Tue, 16 Feb 2021 17:56:20 +0200 (EET)
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-media@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v9 0/4] Add %p4cc printk modifier for V4L2 and DRM fourcc codes
+Date:   Tue, 16 Feb 2021 17:57:19 +0200
+Message-Id: <20210216155723.17109-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-08 at 17:03 +0100, Edward Shishkin wrote:
-> On 02/08/2021 01:54 PM, Metztli Information Technology wrote:
-> > On Wed, Dec 23, 2020 at 3:40 PM Edward Shishkin < 
-> > edward.shishkin@gmail.com> wrote:
-> > > 
-> > > On 12/23/2020 05:01 PM, Metztli Information Technology wrote:
-> > > > Niltze [Ð—Ð´Ñ€Ð°Ð²Ñ Ñ‚Ð²ÑƒÐ¹Ñ‚Ðµ : Hello], Ed-
-> > > > 
-> > > > I built Linux kernel 5.10.1-1 within the 'Debian way' -- as
-> > > > usual -- to generate a kernel component for my Debian-Installer
-> > > > (d-i).
-> > > > The patch I applied is reiser4-for-5.10-rc3.patch.gz from v5-
-> > > > unstable.
-> > > > 
-> > > > Once I built the proper reiser4progs-2.0.4.tar.gz and generated
-> > > > one set of components for d-i I built the d-i image.
-> > > > 
-> > > > Fact is, the installer throws an error in *both* bare metal and
-> > > > VirtualBox 6.1.16:
-> > > > ...
-> > > > Dec 22 20:19:56 main-menu[330]: INFO: Menu item 'bootstrap-
-> > > > base' selected
-> > > > Dec 22 20:19:56 debootstrap: /usr/sbin/debootstrap --
-> > > > components=main --debian-installer --resolve-deps --
-> > > > keyring=/usr/share/keyrings/archive.gpg buster /target  
-> > > > http://deb.debian.org/debian/
-> > > > Dec 22 20:19:56 debootstrap: /usr/sbin/debootstrap: line 1596:
-> > > > /target/test-exec: Invalid argument
-> > > > Dec 22 20:19:56 kernel: [ 1018.632648] kernel read not
-> > > > supported for file /test-exec (pid: 10077 comm: debootstrap)
-> > > > Dec 22 20:19:56 debootstrap: E: NOEXEC
-> > > > Dec 22 20:19:56 debootstrap: EF: Cannot install into target
-> > > > '/target' mounted with noexec or nodev
-> > > > Dec 22 20:20:12 base-installer: error: exiting on error base-
-> > > > installer/debootstrap-failed
-> > > > Dec 22 20:20:14 main-menu[330]: WARNING **: Configuring
-> > > > 'bootstrap-base' failed with error code 1
-> > > > Dec 22 20:20:14 main-menu[330]: WARNING **: Menu item
-> > > > 'bootstrap-base' failed.
-> > > > Dec 22 20:20:15 main-menu[330]: INFO: Falling back to the
-> > > > package description for brltty-udeb
-> > > > 
-> > > 
-> > > [...]
-> > > 
-> > > > 
-> > > > Apparently, d-i [Debian-installer] complains about being unable
-> > > > to set the test file executable and causes the error when 1 is
-> > > > returned.
-> > > > Notwithstanding, I manually verified that I am able to touch a
-> > > > file and set it +x executable.
-> > > > 
-> > > > Furthermore, tricking the function return value to 0 I am able
-> > > > to make d-i continue with the latest SFRN5 installation (see
-> > > > [*trick*] below); yet, subsequently halts again with
-> > > > an apparently related error --can not proceed any further.
-> > > > 
-> > > > Digging deeper with dmesg, we can see that apparently it is the
-> > > > kernel which cannot 'read' properly. Please find a partial
-> > > > dmesg log with relevant output
-> > > > from an attempt on my physical development machine.
-> > > > ...
-> > > > [  508.614488] Loading Reiser4 (Software Framework Release:
-> > > > 5.1.3). See reiser4.wiki.kernel.org for a description of
-> > > > Reiser4.
-> > > > [  508.661951] SGI XFS with ACLs, security attributes,
-> > > > realtime, quota, no debug enabled
-> > > > [  509.326270] device-mapper: uevent: version 1.0.3
-> > > > [  509.326505] device-mapper: ioctl: 4.43.0-ioctl (2020-10-01)
-> > > > initialised: dm-devel@redhat.com
-> > > > [  509.902828]  sda: sda1 sda2 sda3 sda4 sda5 sda6
-> > > > [  509.915300]  sdb: sdb1 sdb2 sdb3
-> > > > [  511.973360]  sdb: sdb1 sdb2 sdb3
-> > > > [  627.525371] Adding 9765884k swap on /dev/sda3.  Priority:-2
-> > > > extents:1 across:9765884k FS
-> > > > [  636.240812] reiser4[mount(9430)]: reiser4_register_subvol
-> > > > (fs/reiser4/init_volume.c:222)[edward-1932]:
-> > > > [  636.240812] NOTICE: brick /dev/sda6 has been registered
-> > > > [  636.243003] reiser4 (sda6): found disk format 5.1.3.
-> > > > [  643.759971] reiser4 (/dev/sda6): using Hybrid Transaction
-> > > > Model.
-> > > > [  643.759980] reiser4: brick /dev/sda6 activated
-> > > > [  643.788537] EXT4-fs (sda1): mounting ext2 file system using
-> > > > the ext4 subsystem
-> > > > [  643.813474] EXT4-fs (sda1): mounted filesystem without
-> > > > journal. Opts: (null)
-> > > > [  643.813488] ext2 filesystem being mounted at /target/boot
-> > > > supports timestamps until 2038 (0x7fffffff)
-> > > > [  648.168730] kernel read not supported for file /test-exec
-> > > > (pid: 9876 comm: debootstrap) [*trick*]
-> > > > [  898.761385] reiser4: brick /dev/sda6 deactivated
-> > > > [  991.001332] reiser4 (sda6): found disk format 5.1.3.
-> > > > [  999.093471] reiser4 (/dev/sda6): using Hybrid Transaction
-> > > > Model.
-> > > > [  999.093480] reiser4: brick /dev/sda6 activated
-> > > > [ 1009.340117] EXT4-fs (sda1): mounting ext2 file system using
-> > > > the ext4 subsystem
-> > > > [ 1009.362722] EXT4-fs (sda1): mounted filesystem without
-> > > > journal. Opts: (null)
-> > > > [ 1009.362737] ext2 filesystem being mounted at /target/boot
-> > > > supports timestamps until 2038 (0x7fffffff)
-> > > > [ 6373.748413] kernel read not supported for file /test-exec
-> > > > (pid: 10094 comm: debootstrap)
-> > > > [ 6413.169920] kernel read not supported for file /usr/bin/true
-> > > > (pid: 15960 comm: chroot)
-> > > 
-> > > 
-> > > Hello.
-> > > 
-> > > This is because of VFS changes in Linux-5.10.X.
-> > > Specifically, because of the following patch:
-> > > https://lkml.org/lkml/2020/8/17/174
-> > > In the upstream git repository it is commit
-> > > 4d03e3cc59828c82ee89ea6e2
-> > > 
-> > > So, Christoph, what to do now for file systems which implement
-> > > ->read() method of file operations?
-> > 
-> > *deafening silence* it appears that -- in the best of cases --
-> > Christoph engaged in an act of _iter masturbation [1];
-> > and in the worst of cases, the gentleman was aiming straight at
-> > reiser4.
-> > 
-> > > ... It seems that chroot doesn't work
-> > > for them. And people are not able to release distros with
-> > > upgraded
-> > > kernels..
-> > 
-> > Not only 'chroot doesn't work' for us, but even after replacing the
-> > kernel in a reiser4 (proper SFRN ;) instance and
-> >   upon an initial Linux 5.10.x kernel boot:
-> > ...
-> > kernel read not supported for file usr/lib/systemd/systemd (pid: 1
-> > comm: run-init)
-> > kernel panic -- not syncing: Attempted to kill init!
-> > exitcod=0x00000100
-> > ...
-> > 
-> > Fact is some of us have commercial interests when deploying
-> > reiser4, both in cloud instances, baremetal, and on-premises.
-> > 
-> > In the future if -- and only if -- our reiser4 efforts come to
-> > successful fruition, quite likely in due time we will be
-> >   able to financially commit to the Penguin's Linux Foundation
-> > temple, just like large corporations do
-> >   in exchange for indulgences[2] which virtue-wash their past
-> > and/or current corp. officers' *substantially darker deeds*;
-> >   heck, 'indulgence trafficking' seems to assuage->numb->arg(STFU)
-> > that 'virtuous' cult of GNU/Linux
-> >   developers/gatekeepers/maintainers' frivolous, *narcissist*,
-> > ethics and/or moralities so often piled up against
-> >   Reiser's work --which, paradoxically(!?), actually was largely
-> > implemented by Russian developers ;)
-> > 
-> > In the meantime, I hacked a reverse patch that undoes some(all) of
-> > the surreptitious lethal attack on reiser4 fs
-> >   -- at least on AMD64 architectures (I did away with other
-> > arch/Kconfigs).
-> > And no, I am not a git pro-, undoing what I could of commit
-> > 4d03e3cc59828c82ee89ea6e27a2f3cdf95aaadf (as your hinted, Ed)
-> >   does not fix the 'kernel read' issue.
-> > 
-> > Notwithstanding, I would appreciate if you can take a look at the
-> > attached patch. Probably it can be streamlined and/or improved
-> >   further to minimize pain on subsequent Linux kernel upgrades.
-> 
-> 
-> That patch is an attempt to swim against the current ;)
-In a sense all of us who prefer reiser4 do not have a herd mentality.
-So, yes, we 'swim against the current', if you will put it in those
-terms, because we value data integrity (atomicity).
+Hi all,
 
-Notwithstanding, it is only an ephemeral hack for AMD64 architectures.
-I have running locally reiser4 -enabled 5.10.13-2, 5.10.14-2, whereas I
-have an Google Compute Engine (GCE), on an AMD Epyc (reizer4 label)
-zone, custom instance testing with a cloud kernel 5.10.15-2.
+	On merging --- it would seem everyone is happy with merging this
+	through the drm-misc tree. The last patch should wait until all
+	users are gone for sure, probably to the next kernel release.
+	There are no users of drm_get_format_name() in linux-next
+	currently after the 3rd patch.
 
-< https://metztli.it/buster/cloud-5.10.15-2+reizer4_0_2.png >
+This set adds support for %p4cc printk modifier for printing V4L2 and DRM
+fourcc codes. The codes are cumbersome to print manually and by adding the
+modifier, this task is saved from the V4L2 and DRM frameworks as well as
+related drivers. DRM actually had it handled in a way (see 3rd patch) but
+the printk modifier makes printing the format easier even there. On V4L2
+side it saves quite a few lines of repeating different implementations of
+printing the 4cc codes.
 
-Heck, I have updated the reiser4, Software Framework Release Number
-(SFRN) 5.1.3, d-i netboot installer media with a test kernel 5.10.16-2
-< https://metztli.it/buster-reiser5/5.10.x/metztli-reiser4-sfrn5-ng.iso
->
-<
-https://metztli.it/buster-reiser5/5.10.x/metztli-reiser4-sfrn5-ng.iso.SHA256SUM
->
+Further work will include converting the V4L2 drivers doing the same. I
+left these out from this version since individual drivers are easier
+changed without dealing with multiple trees.
 
-... крутые?
-> 
-> I no longer remember, why they want to get rid of set_fs for already
-> 15
-> years, but ->read() and ->write() methods seem to be deprecated, and
-> the
-> correct way would be to implement the new ->read_iter() and
-> write_iter()
-> methods, where reiser4 works with "chunked" streams, represented by
-> iov_iter structure, rather than with "continuous" streams,
-> represented
-> by char __user *buf. The task is not that difficult, but rather time
-> consuming - I don't have a time for this right now..
-> 
-> Thanks,
-> Edward.
-> 
-> > 
-> > The patch has been tested in my local development machine
-> > environment --
-> >   as I intalled the generated reiser4 -enabled linux 5.10.13/14
-> > meta/kernel into a Debian Bullseye already running reiser4 (with
-> > proper SFRN)
-> >   and the kernel booted nicely. Subsequently, after installing the
-> > linux headers, etc. I built a couple of upgraded kernels
-> >   in Debian Buster GCC-8 and Bullseye GCC-10 environments -- thus
-> > the hack seems to be stable.
-> > 
-> > Additionally, I have just made a Debian-Installer (d-i) with a
-> > 'kernel read' -patched Linux 5.10.14.1 which successfully installed
-> >   into a VirtualBox 6.1.18 VM:
-> > < 
-> > https://metztli.it/buster/reiser4_0_2-linux-5.10.14-kernel-read-patched.png
-> >  >
-> > 
-> > > 
-> > > Thanks,
-> > > Edward.
-> > 
-> > Best Professional Regards.
-> > 
-> > [1]
-> > "The bug was fixed, again way back in 2010, and over time chip-
-> > designers have moved on to improved memory management techniques.
-> > Torvalds wrote that this sort of memory space override has been
-> > banished from the x86, powerpc, s390 and RISC-V architectures."
-> > < https://www.theregister.com/2020/10/25/linux_5_10_rc1/ >
-> > 
-> > [2] https://www.britannica.com/topic/indulgence
-> > 
+Since v8:
 
-Best Professional Regards.
+- Reduce ternary conditionals in intel_plane_uapi_info().
+
+- Wrap a long line in intel_plane_hw_info().
+
+Since v7:
+
+- Add more examples, one with big endian and another with a space.
+
+- Add Y10 test format.
+
+- Use "0123" in the size string for temporary buffer.
+
+- Added acks.
+
+- Split the 3rd patch into two: driver changes and removal of
+  drm_get_format_name().
+
+Since v6:
+
+- Don't drop spaces in fourcc codes.
+
+- Print unprintable characters as dot ('.') instead of hexadecimal number
+  in parentheses.
+
+- Convert DRM from drm_get_format_name() to %p4cc. I wonder if this should
+  be merged through the DRM tree, albeit it's probably unlikely to
+  conflict with other changes. Further use of the function could be a
+  problem.
+
+- Make tests more realistic.
+
+Since v5:
+
+- Added V4L2 core conversion to %p4cc, as well as change the DRM
+  fourcc printing function to use %p4cc.
+
+- Add missing checkpatch.pl checks for %p4cc modifier.
+
+Sakari Ailus (4):
+  lib/vsprintf: Add support for printing V4L2 and DRM fourccs
+  v4l: ioctl: Use %p4cc printk modifier to print FourCC codes
+  drm: Switch to %p4cc format modifier
+  drm: Remove drm_get_format_name()
+
+ Documentation/core-api/printk-formats.rst     | 18 ++++
+ drivers/gpu/drm/amd/amdgpu/dce_v10_0.c        |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v11_0.c        |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v6_0.c         |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v8_0.c         |  5 +-
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  5 +-
+ .../arm/display/komeda/komeda_format_caps.h   | 11 ---
+ .../arm/display/komeda/komeda_framebuffer.c   |  4 +-
+ .../gpu/drm/arm/display/komeda/komeda_plane.c |  6 +-
+ drivers/gpu/drm/arm/malidp_mw.c               |  7 +-
+ drivers/gpu/drm/drm_atomic.c                  |  8 +-
+ drivers/gpu/drm/drm_crtc.c                    |  7 +-
+ drivers/gpu/drm/drm_fourcc.c                  | 25 ------
+ drivers/gpu/drm/drm_framebuffer.c             | 11 +--
+ drivers/gpu/drm/drm_mipi_dbi.c                |  5 +-
+ drivers/gpu/drm/drm_plane.c                   |  8 +-
+ .../gpu/drm/hisilicon/kirin/kirin_drm_ade.c   |  5 +-
+ drivers/gpu/drm/i915/display/intel_display.c  | 14 +--
+ .../drm/i915/display/intel_display_debugfs.c  | 19 ++---
+ drivers/gpu/drm/i915/display/intel_sprite.c   |  6 +-
+ drivers/gpu/drm/mcde/mcde_display.c           |  6 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      |  6 +-
+ drivers/gpu/drm/nouveau/nouveau_display.c     |  9 +-
+ drivers/gpu/drm/radeon/atombios_crtc.c        | 10 +--
+ drivers/gpu/drm/sun4i/sun4i_backend.c         |  6 +-
+ drivers/gpu/drm/vkms/vkms_writeback.c         |  7 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           | 15 ++--
+ drivers/media/v4l2-core/v4l2-ioctl.c          | 85 +++++--------------
+ include/drm/drm_fourcc.h                      |  1 -
+ lib/test_printf.c                             | 18 ++++
+ lib/vsprintf.c                                | 39 +++++++++
+ scripts/checkpatch.pl                         |  6 +-
+ 32 files changed, 164 insertions(+), 223 deletions(-)
 
 -- 
-Jose R R
-http://metztli.it
------------------------------------------------------------------------
-Download Metztli Reiser4: Debian Buster w/ Linux 5.9.16 AMD64
------------------------------------------------------------------------
-feats ZSTD compression https://sf.net/projects/metztli-reiser4/
------------------------------------------------------------------------
-or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
------------------------------------------------------------------------
-Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
+2.29.2
+
+*** BLURB HERE ***
+
+Sakari Ailus (4):
+  lib/vsprintf: Add support for printing V4L2 and DRM fourccs
+  v4l: ioctl: Use %p4cc printk modifier to print FourCC codes
+  drm: Switch to %p4cc format modifier
+  drm: Remove drm_get_format_name()
+
+ Documentation/core-api/printk-formats.rst     | 18 ++++
+ drivers/gpu/drm/amd/amdgpu/dce_v10_0.c        |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v11_0.c        |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v6_0.c         |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v8_0.c         |  5 +-
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  5 +-
+ .../arm/display/komeda/komeda_format_caps.h   | 11 ---
+ .../arm/display/komeda/komeda_framebuffer.c   |  4 +-
+ .../gpu/drm/arm/display/komeda/komeda_plane.c |  6 +-
+ drivers/gpu/drm/arm/malidp_mw.c               |  7 +-
+ drivers/gpu/drm/drm_atomic.c                  |  8 +-
+ drivers/gpu/drm/drm_crtc.c                    |  7 +-
+ drivers/gpu/drm/drm_fourcc.c                  | 25 ------
+ drivers/gpu/drm/drm_framebuffer.c             | 11 +--
+ drivers/gpu/drm/drm_mipi_dbi.c                |  5 +-
+ drivers/gpu/drm/drm_plane.c                   |  8 +-
+ .../gpu/drm/hisilicon/kirin/kirin_drm_ade.c   |  5 +-
+ drivers/gpu/drm/i915/display/intel_display.c  | 14 +--
+ .../drm/i915/display/intel_display_debugfs.c  | 30 +++----
+ drivers/gpu/drm/i915/display/intel_sprite.c   |  6 +-
+ drivers/gpu/drm/mcde/mcde_display.c           |  6 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      |  6 +-
+ drivers/gpu/drm/nouveau/nouveau_display.c     |  9 +-
+ drivers/gpu/drm/radeon/atombios_crtc.c        | 10 +--
+ drivers/gpu/drm/sun4i/sun4i_backend.c         |  6 +-
+ drivers/gpu/drm/vkms/vkms_writeback.c         |  7 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           | 15 ++--
+ drivers/media/v4l2-core/v4l2-ioctl.c          | 85 +++++--------------
+ include/drm/drm_fourcc.h                      |  1 -
+ lib/test_printf.c                             | 18 ++++
+ lib/vsprintf.c                                | 39 +++++++++
+ scripts/checkpatch.pl                         |  6 +-
+ 32 files changed, 169 insertions(+), 229 deletions(-)
+
+-- 
+2.29.2
 
