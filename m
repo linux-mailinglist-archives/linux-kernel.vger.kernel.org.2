@@ -2,318 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD8F31D123
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2182C31D12B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhBPTqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 14:46:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56026 "EHLO mail.kernel.org"
+        id S230204AbhBPTsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 14:48:38 -0500
+Received: from mout.gmx.net ([212.227.17.22]:49771 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229761AbhBPTqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 14:46:01 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90D2664D7F;
-        Tue, 16 Feb 2021 19:45:19 +0000 (UTC)
-Date:   Tue, 16 Feb 2021 19:45:11 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
-Subject: Re: [PATCH v3 5/5] tools: iio: add example for high-speed buffer
- support
-Message-ID: <20210216194511.459598a3@archlinux>
-In-Reply-To: <20210215143234.3248-6-alexandru.ardelean@analog.com>
-References: <20210215143234.3248-1-alexandru.ardelean@analog.com>
-        <20210215143234.3248-6-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229720AbhBPTse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 14:48:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613504810;
+        bh=KqNmGOfBolWBBQNx0fdVy8+tHxOAeoJw3Nc3OAYv8BE=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=XNPkEi1jXJlZQYizvVJ5XVuEjtQjOg+hqJsaLIONlxtfS2FEleewmONPPMaBuzAu9
+         QJmnTbzLzMUn75jqhgy1NVSypWVfp2f6ioR9DUyOeZ39NVH4G4X5fjXtuluIiF6bJL
+         9VGfK37yLAbIs1nP5Omh/ynue7BdrnyO0P8XNlT0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MIdif-1l6rVf0193-00EfA5; Tue, 16
+ Feb 2021 20:46:50 +0100
+Subject: Re: [PATCH v5] The following sequence of operations results in a
+ refcount warning:
+To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
+Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
+        David.Laight@ACULAB.COM, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        stable@vger.kernel.org
+References: <1613504532-4165-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1613504532-4165-2-git-send-email-LinoSanfilippo@gmx.de>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <6359614f-b574-9911-e55d-52a39f5e0ea4@gmx.de>
+Date:   Tue, 16 Feb 2021 20:46:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1613504532-4165-2-git-send-email-LinoSanfilippo@gmx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:f5HNPEWMGz0C8nYsBS4Zb2phv5KS0BzeCK2+YVjSyKVAiG2DJcg
+ Ka3bzaU53nraL3OkOpo+BBM+fry0KP9G8VvlX/U9F3W99lIhPFsZwZeFINnNIobpChsz8xG
+ 7V3Nsq+6qB7Q2N8BLUQzeHjM91uv+gB6R2BN0moP74Kfioz+n0/DwTRubGa0VGNmySc3NS5
+ o1afpyz3B6wht8ixEWnBA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vtRtZsBZhQ0=:FI7/Hnoe+2YymhcayBp8P/
+ h/SxrFFGa+Qih+TgTiBGNHUoWuEn4/8LMch6GariBjLH2G9XfmXSDKfahBNMLfzFFaPO4JJyF
+ lNn/ALfecLDGs4oCSPByIATIZYk6e+ewRBR/PFBiQNJSDPP4b/7qUruojEpU/ggGDRte27joF
+ 47Zno1E8Lgd8ZdHNMzet8uy7S21Lqks2Hhcgg+USI3sn5o5oS5vv916gIJjqL7Ut08YnDg9sQ
+ Y445MOYFofYjPFswr0tfbFX8zY8PBrTq5XJmlR7xpum9gTS5hzIO5qFOfNymfLaQMNcf3bDJr
+ 8q/RDu3keqnY3YU23yN0mrGglp97AvP7wqDz5l40W03XCU1ZYL5hU5rVBwb2e+BJn0BIqqwA5
+ wr86sOXJ1iE1Hc7bK1O8Ebdw5bjQ77V47UqAtGmM/O9YOnOKC5Q0zAGgcUu02IPlv9G5A7ciu
+ KSZEYv/1+skq5xb7/FG1CP620yq33dUEGWYGq+W8uOvRaTzU2X2jG9js6dIc5QdYqoLUnhO5H
+ Yn8iK1SuuulKIHbFTo0FqGofeAmIW2BOZoMz6ZvFYhqDat5wAyxBnJxnTVD6sKmOjXvVE6whL
+ a4ECZhntdtUY1W57OxdaM6e85i/Q0QD1xpWhwGlBkzznWWcgay3btg8cW5V/D8A58Y1XtPgyH
+ Ybv1W+aSOzEktuq/r94jYY6VwLLauM2NWhT7Xh1fGaiJH3qWAUxZbTrHN6l1ktzA59hGYmX5w
+ AMaB3qrNiyCNufa2Tj9bEtFMCzIFBUG+iETP4G2IZS58dPBaH/1ZcH6JIwwuov6apx/vxC8k4
+ yjj1TiHOc0JXYXo/pyYbNIkGWqW0rDLypTs6lqMYT5Na3HQORsyKfT+xECisS7c7D3+q30N1q
+ uuGzZdHvfauYAOev8hbg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 16:32:34 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-> Following a recent update to the IIO buffer infrastructure, this change
-> adds a basic example on how to access an IIO buffer via the new mmap()
-> interface.
-> 
-> The ioctl() for the high-speed mode needs to be enabled right from the
-> start, before setting any parameters via sysfs (length, enable, etc), to
-> make sure that the mmap mode is used and not the fileio mode.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Hi Alex,
+Please ignore this patch, I somehow managed to cut off the head line.
+I will resend it shorty.
 
-One comment right at the end but I don't think we need to change it.
-
-Jonathan
-
-> ---
->  tools/iio/iio_generic_buffer.c | 184 +++++++++++++++++++++++++++++++--
->  1 file changed, 178 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
-> index 2491c54a5e4f..99dcc3b339b1 100644
-> --- a/tools/iio/iio_generic_buffer.c
-> +++ b/tools/iio/iio_generic_buffer.c
-> @@ -31,6 +31,7 @@
->  #include <stdbool.h>
->  #include <signal.h>
->  #include <sys/ioctl.h>
-> +#include <sys/mman.h>
->  #include <linux/iio/buffer.h>
->  #include "iio_utils.h"
->  
-> @@ -239,6 +240,133 @@ static int enable_disable_all_channels(char *dev_dir_name, int buffer_idx, int e
->  	return 0;
->  }
->  
-> +struct mmap_block {
-> +	struct iio_buffer_block block;
-> +	void *addr;
-> +};
-> +
-> +static struct mmap_block *enable_high_speed(int buf_fd, unsigned int block_size,
-> +					    int nblocks)
-> +{
-> +	struct iio_buffer_block_alloc_req req = { 0 };
-> +	struct mmap_block *mmaps = NULL;
-> +	int mmaps_cnt = 0;
-> +	int i, ret;
-> +
-> +	/**
-> +	 * Validate we can do high-speed by issuing BLOCK_FREE ioctl.
-> +	 * If using just BLOCK_ALLOC it's distinguish between ENOSYS
-> +	 * and other error types.
-> +	 */
-> +	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
-> +	if (ret < 0) {
-> +		errno = ENOSYS;
-> +		return NULL;
-> +	}
-> +
-> +	/* for now, this */
-> +	req.id = 0;
-> +	req.type = 0;
-> +	req.size = block_size;
-> +	req.count = nblocks;
-> +
-> +	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ALLOC_IOCTL, &req);
-> +	if (ret < 0)
-> +		return NULL;
-> +
-> +	if (req.count == 0) {
-> +		errno = ENOMEM;
-> +		return NULL;
-> +	}
-> +
-> +	if (req.count < nblocks) {
-> +		fprintf(stderr, "Requested %d blocks, got %d\n",
-> +			nblocks, req.count);
-> +		errno = ENOMEM;
-> +		return NULL;
-> +	}
-> +
-> +	mmaps = calloc(req.count, sizeof(*mmaps));
-> +	if (!mmaps) {
-> +		errno = ENOMEM;
-> +		return NULL;
-> +	}
-> +
-> +	for (i = 0; i < req.count; i++) {
-> +		mmaps[i].block.id = i;
-> +		ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_QUERY_IOCTL, &mmaps[i].block);
-> +		if (ret < 0)
-> +			goto error;
-> +
-> +		ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ENQUEUE_IOCTL, &mmaps[i].block);
-> +		if (ret < 0)
-> +			goto error;
-> +
-> +		mmaps[i].addr = mmap(0, mmaps[i].block.size,
-> +				      PROT_READ | PROT_WRITE, MAP_SHARED,
-> +				      buf_fd, mmaps[i].block.data.offset);
-> +
-> +		if (mmaps[i].addr == MAP_FAILED)
-> +			goto error;
-> +
-> +		mmaps_cnt++;
-> +	}
-> +
-> +	return mmaps;
-> +
-> +error:
-> +	for (i = 0; i < mmaps_cnt; i++)
-> +		munmap(mmaps[i].addr, mmaps[i].block.size);
-> +	free(mmaps);
-> +	ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
-> +	return NULL;
-> +}
-> +
-> +static int read_high_speed(int buf_fd, char *data, unsigned int block_size,
-> +			   struct mmap_block *mmaps, unsigned int mmaps_cnt)
-> +{
-> +	struct iio_buffer_block block;
-> +	int ret;
-> +
-> +	/**
-> +	 * This is where some buffer-pool management can do wonders,
-> +	 * but for the sake of this sample-code, we're just going to
-> +	 * copy the data and re-enqueue it back
-> +	 */
-> +	memset(&block, 0, sizeof(block));
-> +	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_DEQUEUE_IOCTL, &block);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/* check for weird conditions */
-> +	if (block.bytes_used > block_size) {
-> +		fprintf(stderr,
-> +			"Got a bigger block (%u) than expected (%u)\n",
-> +			block.bytes_used, block_size);
-> +		return -EFBIG;
-> +	}
-> +
-> +	if (block.bytes_used < block_size) {
-> +		/**
-> +		 * This can be normal, with some real-world data
-> +		 * terminating abruptly. But log it.
-> +		 */
-> +		fprintf(stderr,
-> +			"Got a smaller block (%u) than expected (%u)\n",
-> +			block.bytes_used, block_size);
-> +	}
-> +
-> +	/* memcpy() the data, we lose some more performance here :p */
-> +	memcpy(data, mmaps[block.id].addr, block.bytes_used);
-> +
-> +	/* and re-queue this back */
-> +	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ENQUEUE_IOCTL, &mmaps[block.id].block);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return block.bytes_used;
-> +}
-> +
->  static void print_usage(void)
->  {
->  	fprintf(stderr, "Usage: generic_buffer [options]...\n"
-> @@ -249,6 +377,7 @@ static void print_usage(void)
->  		"  -c <n>     Do n conversions, or loop forever if n < 0\n"
->  		"  -e         Disable wait for event (new data)\n"
->  		"  -g         Use trigger-less mode\n"
-> +		"  -h         Use high-speed buffer access\n"
->  		"  -l <n>     Set buffer length to n samples\n"
->  		"  --device-name -n <name>\n"
->  		"  --device-num -N <num>\n"
-> @@ -356,9 +485,15 @@ int main(int argc, char **argv)
->  
->  	struct iio_channel_info *channels = NULL;
->  
-> +	static bool use_high_speed = false;
-> +	unsigned int block_size;
-> +	int nblocks = 16; /* default */
-> +	int mmaps_cnt = 0;
-> +	struct mmap_block *mmaps = NULL;
-> +
->  	register_cleanup();
->  
-> -	while ((c = getopt_long(argc, argv, "aAb:c:egl:n:N:t:T:w:?", longopts,
-> +	while ((c = getopt_long(argc, argv, "aAb:c:eghl:n:N:t:T:w:?", longopts,
->  				NULL)) != -1) {
->  		switch (c) {
->  		case 'a':
-> @@ -396,6 +531,9 @@ int main(int argc, char **argv)
->  		case 'g':
->  			notrigger = 1;
->  			break;
-> +		case 'h':
-> +			use_high_speed = true;
-> +			break;
->  		case 'l':
->  			errno = 0;
->  			buf_len = strtoul(optarg, &dummy, 10);
-> @@ -659,6 +797,29 @@ int main(int argc, char **argv)
->  		goto error;
->  	}
->  
-> +	scan_size = size_from_channelarray(channels, num_channels);
-> +	block_size = scan_size * buf_len;
-> +	/**
-> +	 * Need to enable high-speed before configuring length/enable.
-> +	 * Otherwise, the DMA buffer will work in fileio mode,
-> +	 * and mmap won't work.
-> +	 */
-> +	if (use_high_speed) {
-> +		/**
-> +		 * The block_size for one block is the same as 'data', but it
-> +		 * doesn't need to be the same size. It is easier for the sake
-> +		 * of this example.
-> +		 */
-> +		mmaps = enable_high_speed(buf_fd, block_size, nblocks);
-> +		if (!mmaps) {
-> +			fprintf(stderr, "Could not enable high-speed mode\n");
-> +			ret = -errno;
-> +			goto error;
-> +		}
-> +		mmaps_cnt = nblocks;
-> +		printf("Using high-speed mode\n");
-> +	}
-> +
->  	/* Setup ring buffer parameters */
->  	ret = write_sysfs_int("length", buf_dir_name, buf_len);
->  	if (ret < 0)
-> @@ -673,8 +834,7 @@ int main(int argc, char **argv)
->  		goto error;
->  	}
->  
-> -	scan_size = size_from_channelarray(channels, num_channels);
-> -	data = malloc(scan_size * buf_len);
-> +	data = malloc(block_size);
->  	if (!data) {
->  		ret = -ENOMEM;
->  		goto error;
-> @@ -721,7 +881,13 @@ int main(int argc, char **argv)
->  			toread = 64;
->  		}
->  
-> -		read_size = read(buf_fd, data, toread * scan_size);
-> +		if (use_high_speed) {
-> +			read_size = read_high_speed(buf_fd, data, block_size,
-> +						    mmaps, mmaps_cnt);
-> +		} else {
-> +			read_size = read(buf_fd, data, toread * scan_size);
-> +		}
-> +
->  		if (read_size < 0) {
->  			if (errno == EAGAIN) {
->  				fprintf(stderr, "nothing available\n");
-> @@ -740,8 +906,14 @@ int main(int argc, char **argv)
->  
->  	if (fd >= 0 && close(fd) == -1)
->  		perror("Failed to close character device");
-> -	if (buf_fd >= 0 && close(buf_fd) == -1)
-> -		perror("Failed to close buffer");
-> +	for (i = 0; i < mmaps_cnt; i++)
-> +		munmap(mmaps[i].addr, mmaps[i].block.size);
-> +	free(mmaps);
-> +	if (buf_fd >= 0) {
-> +		ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
-
-A little odd to call this in paths where we weren't using block
-mode, but seems harmless.
-
-
-> +		if (close(buf_fd) == -1)
-> +			perror("Failed to close buffer");
-> +	}
->  	free(buffer_access);
->  	free(data);
->  	free(buf_dir_name);
-
+Regards,
+Lino
