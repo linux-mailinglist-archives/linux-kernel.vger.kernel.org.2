@@ -2,72 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2182C31D12B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D195031D136
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhBPTsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 14:48:38 -0500
-Received: from mout.gmx.net ([212.227.17.22]:49771 "EHLO mout.gmx.net"
+        id S229812AbhBPTv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 14:51:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229720AbhBPTse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 14:48:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613504810;
-        bh=KqNmGOfBolWBBQNx0fdVy8+tHxOAeoJw3Nc3OAYv8BE=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=XNPkEi1jXJlZQYizvVJ5XVuEjtQjOg+hqJsaLIONlxtfS2FEleewmONPPMaBuzAu9
-         QJmnTbzLzMUn75jqhgy1NVSypWVfp2f6ioR9DUyOeZ39NVH4G4X5fjXtuluIiF6bJL
-         9VGfK37yLAbIs1nP5Omh/ynue7BdrnyO0P8XNlT0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MIdif-1l6rVf0193-00EfA5; Tue, 16
- Feb 2021 20:46:50 +0100
-Subject: Re: [PATCH v5] The following sequence of operations results in a
- refcount warning:
-To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
-Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
-        David.Laight@ACULAB.COM, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        stable@vger.kernel.org
-References: <1613504532-4165-1-git-send-email-LinoSanfilippo@gmx.de>
- <1613504532-4165-2-git-send-email-LinoSanfilippo@gmx.de>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <6359614f-b574-9911-e55d-52a39f5e0ea4@gmx.de>
-Date:   Tue, 16 Feb 2021 20:46:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229572AbhBPTvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 14:51:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 510AE64D7F;
+        Tue, 16 Feb 2021 19:50:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613505041;
+        bh=bZD3iwrDUwsQ4+6q3L0Hj/j6q8I6OMnPXrhDdd4k3NY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cduykwX1liVZkaWUyniYAOznR3gZUfrfBf33PYCwyyc45LCe7Olmk8UfCXavGeQ2/
+         3U1ghl7Ki7sAx+3X/ng8Ve23C+SmKtTHYQLoAwCjxbTt78slOwNIXmQUdbs13GVl0c
+         GRm+ZAxbgq/42xlTsWHnrHLRuGCmxZpkX7/wkKg7uAsKyv0/SLjxAhyENwgOG+bkLA
+         RwmxZnKdXTHq7DZBd9MwNbPbCvHkdDgLT7nsZ7xaiXuGwBObiTizFE42vVE10Zt9VS
+         CRajSIbcNALUqIcqZ7HGGvDLYUrAuJQWnuzybaO8Sh0/FCxTf+CtiI3TlvSF+AGwUB
+         CstKfdf7JUbdQ==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>
+Subject: [PATCH] habanalabs: mark hl_eq_inc_ptr() as static
+Date:   Tue, 16 Feb 2021 21:50:35 +0200
+Message-Id: <20210216195035.21290-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1613504532-4165-2-git-send-email-LinoSanfilippo@gmx.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:f5HNPEWMGz0C8nYsBS4Zb2phv5KS0BzeCK2+YVjSyKVAiG2DJcg
- Ka3bzaU53nraL3OkOpo+BBM+fry0KP9G8VvlX/U9F3W99lIhPFsZwZeFINnNIobpChsz8xG
- 7V3Nsq+6qB7Q2N8BLUQzeHjM91uv+gB6R2BN0moP74Kfioz+n0/DwTRubGa0VGNmySc3NS5
- o1afpyz3B6wht8ixEWnBA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vtRtZsBZhQ0=:FI7/Hnoe+2YymhcayBp8P/
- h/SxrFFGa+Qih+TgTiBGNHUoWuEn4/8LMch6GariBjLH2G9XfmXSDKfahBNMLfzFFaPO4JJyF
- lNn/ALfecLDGs4oCSPByIATIZYk6e+ewRBR/PFBiQNJSDPP4b/7qUruojEpU/ggGDRte27joF
- 47Zno1E8Lgd8ZdHNMzet8uy7S21Lqks2Hhcgg+USI3sn5o5oS5vv916gIJjqL7Ut08YnDg9sQ
- Y445MOYFofYjPFswr0tfbFX8zY8PBrTq5XJmlR7xpum9gTS5hzIO5qFOfNymfLaQMNcf3bDJr
- 8q/RDu3keqnY3YU23yN0mrGglp97AvP7wqDz5l40W03XCU1ZYL5hU5rVBwb2e+BJn0BIqqwA5
- wr86sOXJ1iE1Hc7bK1O8Ebdw5bjQ77V47UqAtGmM/O9YOnOKC5Q0zAGgcUu02IPlv9G5A7ciu
- KSZEYv/1+skq5xb7/FG1CP620yq33dUEGWYGq+W8uOvRaTzU2X2jG9js6dIc5QdYqoLUnhO5H
- Yn8iK1SuuulKIHbFTo0FqGofeAmIW2BOZoMz6ZvFYhqDat5wAyxBnJxnTVD6sKmOjXvVE6whL
- a4ECZhntdtUY1W57OxdaM6e85i/Q0QD1xpWhwGlBkzznWWcgay3btg8cW5V/D8A58Y1XtPgyH
- Ybv1W+aSOzEktuq/r94jYY6VwLLauM2NWhT7Xh1fGaiJH3qWAUxZbTrHN6l1ktzA59hGYmX5w
- AMaB3qrNiyCNufa2Tj9bEtFMCzIFBUG+iETP4G2IZS58dPBaH/1ZcH6JIwwuov6apx/vxC8k4
- yjj1TiHOc0JXYXo/pyYbNIkGWqW0rDLypTs6lqMYT5Na3HQORsyKfT+xECisS7c7D3+q30N1q
- uuGzZdHvfauYAOev8hbg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+hl_eq_inc_ptr() is not called from anywhere outside irq.c so mark
+it as static
 
-Please ignore this patch, I somehow managed to cut off the head line.
-I will resend it shorty.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Lino
+diff --git a/drivers/misc/habanalabs/common/irq.c b/drivers/misc/habanalabs/common/irq.c
+index de53fb5f978a..44a0522b59b9 100644
+--- a/drivers/misc/habanalabs/common/irq.c
++++ b/drivers/misc/habanalabs/common/irq.c
+@@ -47,7 +47,7 @@ inline u32 hl_cq_inc_ptr(u32 ptr)
+  * Increment ptr by 1. If it reaches the number of event queue
+  * entries, set it to 0
+  */
+-inline u32 hl_eq_inc_ptr(u32 ptr)
++static inline u32 hl_eq_inc_ptr(u32 ptr)
+ {
+ 	ptr++;
+ 	if (unlikely(ptr == HL_EQ_LENGTH))
+-- 
+2.25.1
+
