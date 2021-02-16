@@ -2,79 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1A931C839
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3638C31C83B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhBPJmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:42:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229713AbhBPJmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:42:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7462C64E09;
-        Tue, 16 Feb 2021 09:41:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613468488;
-        bh=ymFlalVSZE6VvUvNX82uucfKhpqKL/xJZkolfuRFQfQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hrQ/XJ/UOFNn31C0IOXrJGDZckwsx3OL2WsDqb+T1bTQydlo8pzsTIbTTjoBQ7ib4
-         olZ7U43phHxWbKexly6xYaIC1xIKidezSkFY6LLLDynYO1Goc/QLNtK4leGgNoNNbA
-         N8/Ch9RXkQ5Ft2h5szM5LXeR6neqbzpsT+970sjg7BF007syqLH+J2wWmIlnBGRKUX
-         31+15m2RqN5uSKnYd+IuxVzaTFACpjCutYERYsESukRW0gv8E8xhOV/Rz0j2fLqvon
-         z8nQBENypfgPKEa/uNVunaWg38ce3mG+Y37AWFjOreyZ7onBoIRjaG+IZ0zSHu94bM
-         S1vpeCrz0fPLQ==
-Received: by mail-ot1-f50.google.com with SMTP id q4so8463433otm.9;
-        Tue, 16 Feb 2021 01:41:28 -0800 (PST)
-X-Gm-Message-State: AOAM531tjXGVgHRyEzrTs9uW0wjped0nf217lmbNpr/wwEOCd1fTuzr8
-        OFoJ/Ctm/TEX5+f8xV2kL3GFQ7IJe0rBDve4+w4=
-X-Google-Smtp-Source: ABdhPJxiaMAcH5KZayQiwUcYPr4wMM3nIbzsy3wljGGJAybFgS6PcvoGnnAHy1bNygzh3LOoHKqncABSes1Q8IbFeJs=
-X-Received: by 2002:a9d:6c11:: with SMTP id f17mr14126556otq.210.1613468487646;
- Tue, 16 Feb 2021 01:41:27 -0800 (PST)
+        id S229996AbhBPJmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:42:52 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:44349 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhBPJms (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 04:42:48 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1lBwrn-0007fR-VI; Tue, 16 Feb 2021 09:42:00 +0000
+Date:   Tue, 16 Feb 2021 10:41:59 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        "David P . Quigley" <dpquigl@tycho.nsa.gov>,
+        James Morris <jmorris@namei.org>
+Subject: Re: [PATCH -next] fs: libfs: fix kernel-doc for mnt_userns
+Message-ID: <20210216094159.b4hmjsmkvvrjhdcg@wittgenstein>
+References: <20210216042929.8931-1-rdunlap@infradead.org>
+ <20210216042929.8931-2-rdunlap@infradead.org>
+ <20210216084825.GA23845@lst.de>
 MIME-Version: 1.0
-References: <20210215121713.57687-1-marcan@marcan.st> <20210215121713.57687-15-marcan@marcan.st>
-In-Reply-To: <20210215121713.57687-15-marcan@marcan.st>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 16 Feb 2021 10:41:11 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3rGurSQBubZ8i4+OHpDgM8mOfXiC6UhDYmL0MSQK4BRA@mail.gmail.com>
-Message-ID: <CAK8P3a3rGurSQBubZ8i4+OHpDgM8mOfXiC6UhDYmL0MSQK4BRA@mail.gmail.com>
-Subject: Re: [PATCH v2 14/25] dt-bindings: interrupt-controller: Add DT
- bindings for apple-aic
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210216084825.GA23845@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 1:17 PM Hector Martin <marcan@marcan.st> wrote:
-> +
-> +      The 2nd cell contains the interrupt number.
-> +        - HW IRQs: interrupt number
-> +        - FIQs:
-> +          - 0: physical HV timer
-> +          - 1: virtual HV timer
-> +          - 2: physical guest timer
-> +          - 3: virtual guest timer
+On Tue, Feb 16, 2021 at 09:48:25AM +0100, Christoph Hellwig wrote:
+> On Mon, Feb 15, 2021 at 08:29:27PM -0800, Randy Dunlap wrote:
+> > Fix kernel-doc warning in libfs.c.
+> > 
+> > ../fs/libfs.c:498: warning: Function parameter or member 'mnt_userns' not described in 'simple_setattr'
+> 
+> Shouldn't the subject say simple_setattr instead of mnt_userns?
+> 
+> Otherwise looks good:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-I wonder if you could just model the FIQ as a single shared level interrupt
-(which is essentially what it is), and have every driver that uses it do a
-request_irq() on the same IRQ number.
+Just an fyi, Lukas sent a series for this 1 or 2 weeks ago
+https://lore.kernel.org/lkml/20210204180059.28360-1-lukas.bulwahn@gmail.com
+Hadn't yet replied to that one.
 
-This would avoid having to come up with a fake binding for it, and simplify
-the implementation that then no longer has to peek into each interrupt
-source.
-
-     Arnd
+Christian
