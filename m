@@ -2,186 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C821C31C6AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B36A231C6AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 08:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhBPHBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 02:01:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56780 "EHLO mail.kernel.org"
+        id S229853AbhBPHEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 02:04:31 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:54029 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229787AbhBPHBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 02:01:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 647A164DDA;
-        Tue, 16 Feb 2021 07:01:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613458862;
-        bh=qiM4d1H9+CTD9wzd4pdvrdgb3PnJTLiFotcr6vQnjv0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cmzQ0ZzCfNDitilMJa/qd5oFMvZudnPQOsOtI5t18TdguioeJ7rurCaOvhy7LNcDb
-         LYeQR8cKzRAwwqv1mWziQV0aAKJCyPcQIZPN1BQYtYMnPp4zejYpoffHOzLzhXX1ti
-         TVWS7+sx1G9p/Kns0fwaJV9Jz1YviijDNVbfjZpM=
-Date:   Tue, 16 Feb 2021 08:00:58 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Changheun Lee <nanich.lee@samsung.com>
-Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, damien.lemoal@wdc.com, hch@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, mj0123.lee@samsung.com,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        woosung2.lee@samsung.com, yt0928.kim@samsung.com
-Subject: Re: [PATCH v5 1/2] bio: limit bio max size
-Message-ID: <YCttqriCZWUrFcMw@kroah.com>
-References: <YCtkAZNIgehq3ewF@kroah.com>
- <CGME20210216065845epcas1p2dcb0d476c5118999d6d764badf05c1c5@epcas1p2.samsung.com>
- <20210216064242.14979-1-nanich.lee@samsung.com>
+        id S229695AbhBPHE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 02:04:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613459043; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=1hSt3wBVRzL1X2DnMZ20N61Zl1K47ziXTYF+NXq/lH0=;
+ b=KAQW9tygRIoAdWNAZZIUxcr0RnwvtcMH/mz3ZBF0CZ99kcAB5DcuzmsezkrMxdAnNj2AlsSN
+ MG9rxrx1JKUAitT9AwY+Qvc2P7XYsum4d1b+zgzbzqOvLNfOIHO0ESpTg4Dz0GGKNXejv0JV
+ YgAmgquGCgDfhWfAIQzCcKFSGJM=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 602b6e4981f6c45dce16c55f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 07:03:37
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D138BC43463; Tue, 16 Feb 2021 07:03:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4EC34C433C6;
+        Tue, 16 Feb 2021 07:03:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4EC34C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210216064242.14979-1-nanich.lee@samsung.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 2/2] ath9k: fix ath_tx_process_buffer() potential null ptr
+ dereference
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <43ed9abb9e8d7112f3cc168c2f8c489e253635ba.1613090339.git.skhan@linuxfoundation.org>
+References: <43ed9abb9e8d7112f3cc168c2f8c489e253635ba.1613090339.git.skhan@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210216070336.D138BC43463@smtp.codeaurora.org>
+Date:   Tue, 16 Feb 2021 07:03:36 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 03:42:42PM +0900, Changheun Lee wrote:
-> > 
-> > On Tue, Feb 16, 2021 at 11:00:32AM +0900, Changheun Lee wrote:
-> > > Please feedback to me if more modification is needed to apply. :)
-> > 
-> > No context here :(
-> > 
-> 
-> I'm so sorry. I missed it.
-> 
-> > bio size can grow up to 4GB when muli-page bvec is enabled.
-> > but sometimes it would lead to inefficient behaviors.
-> > in case of large chunk direct I/O, - 32MB chunk read in user space -
-> > all pages for 32MB would be merged to a bio structure if the pages
-> > physical addresses are contiguous. it makes some delay to submit
-> > until merge complete. bio max size should be limited to a proper size.
-> > 
-> > When 32MB chunk read with direct I/O option is coming from userspace,
-> > kernel behavior is below now in do_direct_IO() loop. it's timeline.
-> > 
-> >  | bio merge for 32MB. total 8,192 pages are merged.
-> >  | total elapsed time is over 2ms.
-> >  |------------------ ... ----------------------->|
-> >                                                  | 8,192 pages merged a bio.
-> >                                                  | at this time, first bio submit is done.
-> >                                                  | 1 bio is split to 32 read request and issue.
-> >                                                  |--------------->
-> >                                                   |--------------->
-> >                                                    |--------------->
-> >                                                               ......
-> >                                                                    |--------------->
-> >                                                                     |--------------->|
-> >                           total 19ms elapsed to complete 32MB read done from device. |
-> > 
-> > If bio max size is limited with 1MB, behavior is changed below.
-> > 
-> >  | bio merge for 1MB. 256 pages are merged for each bio.
-> >  | total 32 bio will be made.
-> >  | total elapsed time is over 2ms. it's same.
-> >  | but, first bio submit timing is fast. about 100us.
-> >  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
-> >       | 256 pages merged a bio.
-> >       | at this time, first bio submit is done.
-> >       | and 1 read request is issued for 1 bio.
-> >       |--------------->
-> >            |--------------->
-> >                 |--------------->
-> >                                       ......
-> >                                                  |--------------->
-> >                                                   |--------------->|
-> >         total 17ms elapsed to complete 32MB read done from device. |
-> > 
-> > As a result, read request issue timing is faster if bio max size is limited.
-> > Current kernel behavior with multipage bvec, super large bio can be created.
-> > And it lead to delay first I/O request issue.
-> > 
-> > Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
-> > ---
-> >  block/bio.c            | 13 ++++++++++++-
-> >  include/linux/bio.h    |  2 +-
-> >  include/linux/blkdev.h |  3 +++
-> >  3 files changed, 16 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/block/bio.c b/block/bio.c
-> > index 1f2cc1fbe283..c528e1f944c7 100644
-> > --- a/block/bio.c
-> > +++ b/block/bio.c
-> > @@ -287,6 +287,17 @@ void bio_init(struct bio *bio, struct bio_vec *table,
-> >  }
-> >  EXPORT_SYMBOL(bio_init);
-> >  
-> > +unsigned int bio_max_size(struct bio *bio)
-> > +{
-> > +	struct request_queue *q = bio->bi_disk->queue;
-> > +
-> > +	if (blk_queue_limit_bio_size(q))
-> > +		return blk_queue_get_max_sectors(q, bio_op(bio))
-> > +			<< SECTOR_SHIFT;
-> > +
-> > +	return UINT_MAX;
-> > +}
-> > +
-> >  /**
-> >   * bio_reset - reinitialize a bio
-> >   * @bio:	bio to reset
-> > @@ -877,7 +888,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
-> >  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
-> >  
-> >  		if (page_is_mergeable(bv, page, len, off, same_page)) {
-> > -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-> > +			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
-> >  				*same_page = false;
-> >  				return false;
-> >  			}
-> > diff --git a/include/linux/bio.h b/include/linux/bio.h
-> > index 1edda614f7ce..13b6f6562a5b 100644
-> > --- a/include/linux/bio.h
-> > +++ b/include/linux/bio.h
-> > @@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
-> >  	if (bio->bi_vcnt >= bio->bi_max_vecs)
-> >  		return true;
-> >  
-> > -	if (bio->bi_iter.bi_size > UINT_MAX - len)
-> > +	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
-> >  		return true;
-> >  
-> >  	return false;
-> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> > index f94ee3089e01..3aeab9e7e97b 100644
-> > --- a/include/linux/blkdev.h
-> > +++ b/include/linux/blkdev.h
-> > @@ -621,6 +621,7 @@ struct request_queue {
-> >  #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
-> >  #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
-> >  #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
-> > +#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
-> >  
-> >  #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
-> >  				 (1 << QUEUE_FLAG_SAME_COMP) |		\
-> > @@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
-> >  #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
-> >  #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
-> >  #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
-> > +#define blk_queue_limit_bio_size(q)	\
-> > +	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
-> >  
-> >  extern void blk_set_pm_only(struct request_queue *q);
-> >  extern void blk_clear_pm_only(struct request_queue *q);
-> > -- 
-> > 2.28.0
-> > 
-> 
-> Please feedback to me if more modification is needed to apply. :)
+Shuah Khan <skhan@linuxfoundation.org> wrote:
 
-It's the middle of the merge window, no maintainers can add anything new
-to their trees, so please wait until after 5.12-rc1 is out before we can
-do anything...
+> ath_tx_process_buffer() references ieee80211_find_sta_by_ifaddr()
+> return pointer (sta) outside null check. Fix it by moving the code
+> block under the null check.
+> 
+> This problem was found while reviewing code to debug RCU warn from
+> ath10k_wmi_tlv_parse_peer_stats_info() and a subsequent manual audit
+> of other callers of ieee80211_find_sta_by_ifaddr() that don't hold
+> RCU read lock.
+> 
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-thanks,
+Patch applied to ath-next branch of ath.git, thanks.
 
-greg k-h
+a56c14bb21b2 ath9k: fix ath_tx_process_buffer() potential null ptr dereference
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/43ed9abb9e8d7112f3cc168c2f8c489e253635ba.1613090339.git.skhan@linuxfoundation.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
