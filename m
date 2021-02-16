@@ -2,125 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEE931C956
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A74B31C950
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhBPLFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:05:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53290 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230233AbhBPLDH (ORCPT
+        id S230209AbhBPLEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:04:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229889AbhBPLCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:03:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613473282;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UjPevUc/f1h27YC/iWCBse0mv72F3ucIKOdIwEX5LG8=;
-        b=AvkgOPp+DBPc0FrKWJwDubOtuTW7N7QZR8zo7kgmXnXHIMctpATd5nCqJxHvmK79+qP+s2
-        P2dvCOwOuspzHa8D9x+3Z2BShEWiivzSmv4nj2i+hOXHyXL4DuFXTaDgfZ1qTrAhE669IH
-        yYZhIxt6TEZ6qc+Gby+0O1WX0NUh1rg=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-hWK5CwlLNYeDwW4p53IWdw-1; Tue, 16 Feb 2021 06:01:21 -0500
-X-MC-Unique: hWK5CwlLNYeDwW4p53IWdw-1
-Received: by mail-qk1-f197.google.com with SMTP id f140so7529462qke.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:01:18 -0800 (PST)
+        Tue, 16 Feb 2021 06:02:34 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB097C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:01:53 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id l17so8783918wmq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:01:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sjN8h0Lq9pxA6RJZZiyWtoX7vFzVnZh+87crvRiJkT8=;
+        b=YoNysm9iOjRmdiiS0WnN2CMZZmueOAasEOrrwh6PGwLba76jz/Dk9HaZimomKWck4a
+         qP4QhyKhDIOZBUqC104tO/r8ZtuPUG/9hyRQDZ9/QUz2OiRLkMT8PXmvwEfgLX7agXck
+         urN0Pm08ELmLmlvc/hI7gKe3y490jNMOCJk8b41SPaCHyoE74Pi3DUQmq/hmtapXOjjs
+         vqwpd3ABa8eCLCP1A6hTs/OXdzh99HSLnP5pIgsGXd1XHm/DXH1t3dTnXk55txIqxOb1
+         8tQ/B7PyIcBIJkujwIKZV0+lU/Kr+XQijqHm3LIGr0kxb6jhR5WFvPaB83oJNOkkwv7n
+         PukA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=UjPevUc/f1h27YC/iWCBse0mv72F3ucIKOdIwEX5LG8=;
-        b=CPWjA2JyZBVme+34WPADdUqPbN1Xpmymfcih5vjqQoQacsqjnAnNRBGbzHSWHd4+41
-         NYuq8ReXxqNbMZdCGMYAJM/7TcNYRiL8liFrJ2BU69wHb1DisbenQ6nNNd7rPb2g5uys
-         tnEga5Y5clmWanZPBWnFeXclcNjWloh7HBApA48rfpY12yQGwrwgRHQWZ6W0IZYYN8qM
-         nbLQCHaTCGPWwknmBeKvC7ow8duQxrZm/BHucNMRNYZpZP8p0oZTDsp8fPwy17t5FrxC
-         79NGT4KMjTrGcs9sfTQThU+twmcIDw73WpgsYY4aE0PF6Q7KWfikeQVB3Ac3K1Y6c0VG
-         71IQ==
-X-Gm-Message-State: AOAM532s/Q6beCExhC+6f8c6X0tdd0qZ491mgQzQQ/HuduCEE6dyyvRF
-        v+LfwQU5bu+RixpWz42wf5Qqoncbce43vncOxbKCzwqPkmgzo7LecsuSbF7EVLn7FtNIUCMejYl
-        e3VirSsBbwGnlzc6fN7vLUkbl
-X-Received: by 2002:a05:6214:292:: with SMTP id l18mr19206676qvv.5.1613473277870;
-        Tue, 16 Feb 2021 03:01:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwfxkMdLP8GICFrYv5qcHZzcwXchEHaGAgSDG1h4XsMOzzlGSXOw3kqQRk/cyROnYM/B9O9Vw==
-X-Received: by 2002:a05:6214:292:: with SMTP id l18mr19206653qvv.5.1613473277670;
-        Tue, 16 Feb 2021 03:01:17 -0800 (PST)
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
-        by smtp.gmail.com with ESMTPSA id n5sm13100571qtd.5.2021.02.16.03.01.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 03:01:17 -0800 (PST)
-Message-ID: <752a8c91b7a418fa52cb8a8f28cb30155a574904.camel@redhat.com>
-Subject: Re: [PATCH 00/33] Network fs helper library & fscache kiocb API
- [ver #3]
-From:   Jeff Layton <jlayton@redhat.com>
-To:     Steve French <smfrench@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>, linux-cachefs@redhat.com,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-mm <linux-mm@kvack.org>, linux-afs@lists.infradead.org,
-        v9fs-developer@lists.sourceforge.net,
-        Christoph Hellwig <hch@lst.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nfs <linux-nfs@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Wysochanski <dwysocha@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 16 Feb 2021 06:01:16 -0500
-In-Reply-To: <CAH2r5mvPLivjuE=cbijzGSHOvx-hkWSWbcxpoBnJX-BR9pBskQ@mail.gmail.com>
-References: <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk>
-         <9e49f96cd80eaf9c8ed267a7fbbcb4c6467ee790.camel@redhat.com>
-         <CAH2r5mvPLivjuE=cbijzGSHOvx-hkWSWbcxpoBnJX-BR9pBskQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sjN8h0Lq9pxA6RJZZiyWtoX7vFzVnZh+87crvRiJkT8=;
+        b=pvCY/j4A75O3dfNT/iPnY+YT6C1hO2V+pAxmdQAd04fIU8p8HJjGtqXwLFIGrugXs2
+         eBNIFgt3KtjD9lDHRhw2S7yGbP6Z29O18tzrogIAXfPHMS06L5FbtWnMIc53bgz4xRc5
+         C54LfxNGet9y8EyIeiG2A0LrojbiE77H4N1V1T6oDxAuuXgZE6ZwAfc9M04c8qbDje/2
+         PmDNGW4OT5FUhRuUXfVzsynA9t4VLmEjhafED6m52P82BOtUEPHbPZ/SQb8vXQi1y297
+         qJ/1Q81Wc44vkUWZ0R0lWHFiiOPOw3XjnSeKJyHlzpgvUik8MJoKSacisorm26X0TXRu
+         izag==
+X-Gm-Message-State: AOAM531Vz+7DDGj1JuQx4dIjLMt8a2YstaDQHGrCaFW6LSHgxRIUQyeC
+        GyZGwtSXE7VUjDRWBGKtHHLR+manzIBBUYUx1WSc7w==
+X-Google-Smtp-Source: ABdhPJypD/w08VjpzZ7o56U5ZGoH6r5xWwXWeVWGHtAGfaiWX176KEgnigQ8GgN0VHr2gappeXe6prOuiMKEpqYza4s=
+X-Received: by 2002:a1c:9d51:: with SMTP id g78mr2745742wme.5.1613473312619;
+ Tue, 16 Feb 2021 03:01:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com> <1611737738-1493-15-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1611737738-1493-15-git-send-email-anshuman.khandual@arm.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Tue, 16 Feb 2021 11:01:42 +0000
+Message-ID: <CAJ9a7Vi-mJ_sccLFyDQrUo8opEfGnZG-s0Atw=c0Ukt4kVX5xA@mail.gmail.com>
+Subject: Re: [PATCH V3 14/14] coresight: etm-perf: Add support for trace
+ buffer format
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Leo Yan <leo.yan@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-15 at 18:40 -0600, Steve French wrote:
-> Jeff,
-> What are the performance differences you are seeing (positive or
-> negative) with ceph and netfs, especially with simple examples like
-> file copy or grep of large files?
-> 
-> It could be good if netfs simplifies the problem experienced by
-> network filesystems on Linux with readahead on large sequential reads
-> - where we don't get as much parallelism due to only having one
-> readahead request at a time (thus in many cases there is 'dead time'
-> on either the network or the file server while waiting for the next
-> readpages request to be issued).   This can be a significant
-> performance problem for current readpages when network latency is long
-> (or e.g. in cases when network encryption is enabled, and hardware
-> offload not available so time consuming on the server or client to
-> encrypt the packet).
-> 
-> Do you see netfs much faster than currentreadpages for ceph?
-> 
-> Have you been able to get much benefit from throttling readahead with
-> ceph from the current netfs approach for clamping i/o?
-> 
+On Wed, 27 Jan 2021 at 08:56, Anshuman Khandual
+<anshuman.khandual@arm.com> wrote:
+>
+> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+>
+> CoreSight PMU supports aux-buffer for the ETM tracing. The trace
+> generated by the ETM (associated with individual CPUs, like Intel PT)
+> is captured by a separate IP (CoreSight TMC-ETR/ETF until now).
+>
+> The TMC-ETR applies formatting of the raw ETM trace data, as it
+> can collect traces from multiple ETMs, with the TraceID to indicate
+> the source of a given trace packet.
+>
+> Arm Trace Buffer Extension is new "sink" IP, attached to individual
+> CPUs and thus do not provide additional formatting, like TMC-ETR.
+>
+> Additionally, a system could have both TRBE *and* TMC-ETR for
+> the trace collection. e.g, TMC-ETR could be used as a single
+> trace buffer to collect data from multiple ETMs to correlate
+> the traces from different CPUs. It is possible to have a
+> perf session where some events end up collecting the trace
+> in TMC-ETR while the others in TRBE. Thus we need a way
+> to identify the type of the trace for each AUX record.
+>
+> Define the trace formats exported by the CoreSight PMU.
+> We don't define the flags following the "ETM" as this
+> information is available to the user when issuing
+> the session. What is missing is the additional
+> formatting applied by the "sink" which is decided
+> at the runtime and the user may not have a control on.
+>
+> So we define :
+>  - CORESIGHT format (indicates the Frame format)
+>  - RAW format (indicates the format of the source)
+>
+> The default value is CORESIGHT format for all the records
+> (i,e == 0). Add the RAW format for the TRBE sink driver.
+>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 2 ++
+>  include/uapi/linux/perf_event.h              | 4 ++++
+>  2 files changed, 6 insertions(+)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index 1464d8b..7c0e691 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -511,6 +511,7 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
+>         if (cpudata->mode != CS_MODE_PERF)
+>                 return -EINVAL;
+>
+> +       perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
+>         /*
+>          * If the TRBE was disabled due to lack of space in the AUX buffer or a
+>          * spurious fault, the driver leaves it disabled, truncating the buffer.
+> @@ -606,6 +607,7 @@ static void trbe_handle_overflow(struct perf_output_handle *handle)
+>         size = offset - PERF_IDX2OFF(handle->head, buf);
+>         if (buf->snapshot)
+>                 handle->head = offset;
+> +       perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
+>         perf_aux_output_end(handle, size);
+>
+>         event_data = perf_aux_output_begin(handle, event);
+> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> index 9a5ca45..169e6b3 100644
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -1111,6 +1111,10 @@ enum perf_callchain_context {
+>  #define PERF_AUX_FLAG_COLLISION                        0x08    /* sample collided with another */
+>  #define PERF_AUX_FLAG_PMU_FORMAT_TYPE_MASK     0xff00  /* PMU specific trace format type */
+>
+> +/* CoreSight PMU AUX buffer formats */
+> +#define PERF_AUX_FLAG_CORESIGHT_FORMAT_CORESIGHT       0x0000 /* Default for backward compatibility */
+> +#define PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW             0x0100 /* Raw format of the source */
+> +
+>  #define PERF_FLAG_FD_NO_GROUP          (1UL << 0)
+>  #define PERF_FLAG_FD_OUTPUT            (1UL << 1)
+>  #define PERF_FLAG_PID_CGROUP           (1UL << 2) /* pid=cgroup id, per-cpu mode only */
+> --
+> 2.7.4
+>
 
-I haven't seen big performance differences at all with this set. It's
-pretty much a wash, and it doesn't seem to change how the I/Os are
-ultimately driven on the wire. For instance, the clamp_length op
-basically just mirrors what ceph does today -- it ensures that the
-length of the I/O can't go past the end of the current object.
-
-The main benefits are that we get a large swath of readpage, readpages
-amd write_begin code out of ceph altogether. All of the netfs's need to
-gather and vet pages for I/O, etc. Most of that doesn't have anything to
-do with the filesystem itself. By offloading that into the netfs lib,
-most of that is taken care of for us and we don't need to bother with
-doing that ourselves.
-
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
 -- 
-Jeff Layton <jlayton@redhat.com>
-
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
