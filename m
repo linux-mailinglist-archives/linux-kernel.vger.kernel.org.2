@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5286331C7D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B63C531C7D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhBPJHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:07:46 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37810 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhBPJHK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:07:10 -0500
-Date:   Tue, 16 Feb 2021 10:06:26 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613466388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S229828AbhBPJJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:09:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54208 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229710AbhBPJJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 04:09:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613466516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=pXA7fe5dhXsardy0H04SmPnjEF++cQlTzGur8gI2QwM=;
-        b=uXu4DrRfVfYd+SEG3ThhnB52KojptJp1umEHZg0FmpjEQep/Ku3kzNsXtNtm4y2OvGQYCz
-        OLs6q1Olm4WMjW8Ea8Taei49T0k0cKzTOrGtC+oWXJ9GC9xRA/7JtEnNpLZULW8V29OnOk
-        wHRKW12eXeYum2jTj0jCN9oFFhwRzyFoROpBA1D2OM7d+/uei0+SwOk2ugACt13vA4WPVh
-        S7Uwi+v7smyObt0GWYz9jP+YanQo0+/A5vhfmAt0DTRoaPu4Rv3MoJeSkZdCkGLgqFco24
-        FlES+01Vf/SwNmUk4/j8HuJUCPA0ndLoqPKs4DCDgxP8GNsXW2EkLnFvJ1PJJw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613466388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pXA7fe5dhXsardy0H04SmPnjEF++cQlTzGur8gI2QwM=;
-        b=Ex3kELqMANnnWJzXjLUZrdgvFr6FqspWhFNNwj6u53hxH3IdxEGU5swcYLIBWpwsv6M7s8
-        aY5ia4rpeMb3TYAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     David Howells <dhowells@redhat.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-cachefs@redhat.com,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-afs@lists.infradead.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        Jeff Layton <jlayton@kernel.org>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 34/33] netfs: Use in_interrupt() not in_softirq()
-Message-ID: <20210216090626.kqnk726i6f77libt@linutronix.de>
-References: <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk>
- <1376938.1613429183@warthog.procyon.org.uk>
- <20210216084230.GA23669@lst.de>
+        bh=du+7HNcipHGxWVFmXI0W1DaPaVk4qOBz6vainc7H3Mc=;
+        b=W4Rnd+7DZq/Di3bDVnedOKZpzXSu6jFNr5W9jU9MiozQP3TLyw8Yh1SHMh2Ni6jkusiVSE
+        ROWHo1LTxPG4h6AoJwGMRehRibDlBlYxBzBFEITs8ZdoGQtRJtZJKGCLxfBn9bEsSlvhy4
+        Svp+urp0WsnCkgBR+Lv0m9W0ek6CbHI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CBC81AB4C;
+        Tue, 16 Feb 2021 09:08:35 +0000 (UTC)
+Date:   Tue, 16 Feb 2021 10:08:35 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, mchehab@kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        laurent.pinchart@ideasonboard.com, Joe Perches <joe@perches.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v7 3/3] drm: Switch to %p4cc format modifier
+Message-ID: <YCuLk+vnIxOzT7t+@alley>
+References: <20210215114030.11862-1-sakari.ailus@linux.intel.com>
+ <20210215114030.11862-4-sakari.ailus@linux.intel.com>
+ <54e8c1d5-bb28-eddd-41ad-a89323650be0@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210216084230.GA23669@lst.de>
+In-Reply-To: <54e8c1d5-bb28-eddd-41ad-a89323650be0@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-16 09:42:30 [+0100], Christoph Hellwig wrote:
-> On Mon, Feb 15, 2021 at 10:46:23PM +0000, David Howells wrote:
-> > The in_softirq() in netfs_rreq_terminated() works fine for the cache being
-> > on a normal disk, as the completion handlers may get called in softirq
-> > context, but for an NVMe drive, the completion handler may get called in
-> > IRQ context.
-> > 
-> > Fix to use in_interrupt() instead of in_softirq() throughout the read
-> > helpers, particularly when deciding whether to punt code that might sleep
-> > off to a worker thread.
+On Tue 2021-02-16 09:37:45, Thomas Zimmermann wrote:
+> Hi
 > 
-> We must not use either check, as they all are unreliable especially
-> for PREEMPT-RT.
+> Am 15.02.21 um 12:40 schrieb Sakari Ailus:
+> > Switch DRM drivers from drm_get_format_name() to %p4cc. This gets rid of a
+> > large number of temporary variables at the same time.
+> > 
+> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/dce_v10_0.c        |  5 ++--
+> >   drivers/gpu/drm/amd/amdgpu/dce_v11_0.c        |  5 ++--
+> >   drivers/gpu/drm/amd/amdgpu/dce_v6_0.c         |  5 ++--
+> >   drivers/gpu/drm/amd/amdgpu/dce_v8_0.c         |  5 ++--
+> >   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  5 ++--
+> >   .../arm/display/komeda/komeda_format_caps.h   | 11 --------
+> >   .../arm/display/komeda/komeda_framebuffer.c   |  4 +--
+> >   .../gpu/drm/arm/display/komeda/komeda_plane.c |  6 ++---
+> >   drivers/gpu/drm/arm/malidp_mw.c               |  7 ++----
+> >   drivers/gpu/drm/drm_atomic.c                  |  8 ++----
+> >   drivers/gpu/drm/drm_crtc.c                    |  7 ++----
+> >   drivers/gpu/drm/drm_fourcc.c                  | 25 -------------------
+> >   drivers/gpu/drm/drm_framebuffer.c             | 11 +++-----
+> >   drivers/gpu/drm/drm_mipi_dbi.c                |  5 ++--
+> >   drivers/gpu/drm/drm_plane.c                   |  8 ++----
+> >   .../gpu/drm/hisilicon/kirin/kirin_drm_ade.c   |  5 ++--
+> >   drivers/gpu/drm/i915/display/intel_display.c  | 14 +++--------
+> >   .../drm/i915/display/intel_display_debugfs.c  | 19 ++++++--------
+> >   drivers/gpu/drm/i915/display/intel_sprite.c   |  6 ++---
+> >   drivers/gpu/drm/mcde/mcde_display.c           |  6 ++---
+> >   drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      |  6 ++---
+> >   drivers/gpu/drm/nouveau/nouveau_display.c     |  9 +++----
+> >   drivers/gpu/drm/radeon/atombios_crtc.c        | 10 +++-----
+> >   drivers/gpu/drm/sun4i/sun4i_backend.c         |  6 ++---
+> >   drivers/gpu/drm/vkms/vkms_writeback.c         |  7 ++----
+> >   drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           | 15 +++++------
+> >   include/drm/drm_fourcc.h                      |  1 -
+> >   27 files changed, 64 insertions(+), 157 deletions(-)
+> 
+> This is a nice patchset. For the driver-related changes:
+> 
+> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+> 
+> But landing this patch will certainly give us build errors. There are at
+> least 3 git trees involved: drm-misc-next, amd and i915. I'd expect at least
+> one of them to have additional changes that still require
+> drm_get_format_name().
+> 
+> IMHO we should remove drm_get_format_name() in a later patch. Please remove
+> the changes in drm_fourcc.{c,h} from this patch and maybe add a TODO comment
+> to the declaration that the function is supposed to be removed.
+> 
+> I would merge the patchset through drm-misc-next. And the final removal
+> patch during the next cycle. Ok?
 
-Yes, please. I try to cleanup the users one by one
-    https://lore.kernel.org/r/20200914204209.256266093@linutronix.de/
-    https://lore.kernel.org/amd-gfx/20210209124439.408140-1-bigeasy@linutronix.de/
+Sounds like a plan. I am fine with it from the vsprintf side.
 
-Sebastian
+Best Regards,
+Petr
