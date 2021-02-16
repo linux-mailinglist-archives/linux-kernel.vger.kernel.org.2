@@ -2,80 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1D031D1D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6173131D1DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhBPVHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:07:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230142AbhBPVHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:07:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77FBE64DFF;
-        Tue, 16 Feb 2021 21:06:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613509602;
-        bh=shEHp5/q7ki/y4rElUTq0ZQrpUqBhc9CTq5LH/U/T3A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jgE2WxObCUPnGypO1VSpvNumCF0jtiUWIwgwoKwUWnLJTLO7cDjxvb+OqQrhw4+km
-         2JAWQSZcRK0BvX7C7NqbGZMAkSqjCUlytQxxcPgmNi9zAWvwItyAVlR7gCJV7ZMUZf
-         MURqyIjUGoC/knb/ci54coF4z6wBbIHM5AIVL6WDtYoVH3o4jzObmV7RLl4U0DOll9
-         dxd5VOJBUF8UhdBMrFqxsLzWjrCvuwSytekraXeHav+zgk8llV84r2iBD4Ogt72erN
-         1BRl9984YW6LyFhMxrsZcVbO1ZbBXVRx9VcHOMiCGIzdAZzdIM78kLPJkB+I5K+nIJ
-         +AZUB39dEVukw==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     farah kassabri <fkassabri@habana.ai>
-Subject: [PATCH] habanalabs: set max asid to 2
-Date:   Tue, 16 Feb 2021 23:06:36 +0200
-Message-Id: <20210216210636.30472-1-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S230132AbhBPVHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:07:42 -0500
+Received: from mail.codeweavers.com ([50.203.203.244]:50008 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhBPVHj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 16:07:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=NyTuXHPEAZ3DeVp3r9+INoXxoExf7nxxyFZwOC9M50M=; b=sqvnjHu/ANYQsUeabflsnxI2wq
+        AHj9Cf4VzXgKVg0zft3MvldwrLV953osBB339iLdaIMJxVgIuAEUTp6VkQGQ4V1FphbzDnwA8sMsA
+        WTXQPzaSLJhpfyy0/dbAT2ONpvF/8CceY/jBGpyeO//iN1wzYUe0CuM5YFD6nXTsq920=;
+Received: from [10.69.141.136]
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <nfraser@codeweavers.com>)
+        id 1lC7Yd-0002Rk-Qu; Tue, 16 Feb 2021 15:06:57 -0600
+Subject: [PATCH 2/2] perf buildid-cache: Add test for 16-byte build-id
+From:   Nicholas Fraser <nfraser@codeweavers.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+References: <d1c87379-8837-a5e7-eb44-f063ca0f4766@codeweavers.com>
+ <94758ca1-0031-d7c6-6c6a-900fd77ef695@codeweavers.com>
+ <27b38347-f71b-5d6c-3190-4c900e864d5d@codeweavers.com>
+Message-ID: <881e2645-263a-b4c7-1f2a-a068f25c1ef7@codeweavers.com>
+Date:   Tue, 16 Feb 2021 16:06:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <27b38347-f71b-5d6c-3190-4c900e864d5d@codeweavers.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -40.5
+X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  tests/shell/buildid.sh added an ELF executable with an MD5
+    build-id to the perf debug cache but did not check whether the object was
+    printed by a subsequent call to "perf buildid-cache -l". It was bei [...]
+ Content analysis details:   (-40.5 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 USER_IN_WELCOMELIST    user is listed in 'welcomelist_from'
+  -20 USER_IN_WHITELIST      DEPRECATED: See USER_IN_WELCOMELIST
+  -20 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+ -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
+                             [score: 0.0000]
+ -0.0 AWL                    AWL: Adjusted score from AWL reputation of From: address
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: farah kassabri <fkassabri@habana.ai>
+tests/shell/buildid.sh added an ELF executable with an MD5 build-id to
+the perf debug cache but did not check whether the object was printed
+by a subsequent call to "perf buildid-cache -l". It was being omitted
+from the list.
 
-currently we support only 2 asids in all asics.
-asid 0 for driver, and asic 1 for user.
-no need to setup 1024 asids configurations at init phase.
+A previous commit fixed the bug that left it out of the list. This adds
+a test for it.
 
-Signed-off-by: farah kassabri <fkassabri@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
 ---
- drivers/misc/habanalabs/include/gaudi/gaudi.h | 2 +-
- drivers/misc/habanalabs/include/goya/goya.h   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/tests/shell/buildid.sh | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi.h b/drivers/misc/habanalabs/include/gaudi/gaudi.h
-index f9ea897ae42c..ffae107b1693 100644
---- a/drivers/misc/habanalabs/include/gaudi/gaudi.h
-+++ b/drivers/misc/habanalabs/include/gaudi/gaudi.h
-@@ -38,7 +38,7 @@
+diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
+index 4861a20edee2..de02a23b7c7b 100755
+--- a/tools/perf/tests/shell/buildid.sh
++++ b/tools/perf/tests/shell/buildid.sh
+@@ -50,6 +50,12 @@ check()
+ 		exit 1
+ 	fi
  
- #define QMAN_PQ_ENTRY_SIZE	16			/* Bytes */
- 
--#define MAX_ASID		1024
-+#define MAX_ASID		2
- 
- #define PROT_BITS_OFFS		0xF80
- 
-diff --git a/drivers/misc/habanalabs/include/goya/goya.h b/drivers/misc/habanalabs/include/goya/goya.h
-index 43d241891e45..1b4ca435021d 100644
---- a/drivers/misc/habanalabs/include/goya/goya.h
-+++ b/drivers/misc/habanalabs/include/goya/goya.h
-@@ -30,7 +30,7 @@
- 
- #define QMAN_PQ_ENTRY_SIZE	16			/* Bytes */
- 
--#define MAX_ASID		1024
-+#define MAX_ASID		2
- 
- #define PROT_BITS_OFFS		0xF80
++	${perf} buildid-cache -l|grep $id
++	if [ $? -ne 0 ]; then
++		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
++		exit 1
++	fi
++
+ 	echo "OK for ${1}"
+ }
  
 -- 
-2.25.1
+2.30.1
 
