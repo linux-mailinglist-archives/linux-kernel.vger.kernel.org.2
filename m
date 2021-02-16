@@ -2,122 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0912231D1C2
+	by mail.lfdr.de (Postfix) with ESMTP id EDB6D31D1C4
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhBPUx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 15:53:28 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:50123 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhBPUx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 15:53:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613508785; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=DJ/cCF5+Vw35+SimUiMhAKV4yrK2QxIJTWhxd5v/t40=; b=Ep28obXmFoOWGBRwtEOuwSn8SHNZ0yvkH2TxHe1FFWhmJFKWIl5OuLhPOGngtDFZXShbO5qJ
- w5jWkQs9v4Gp//KBkw3xeSoBsKGcbw6uJ9SyZ9RpwOYtegjHniJ2VLNVD0cRfCd2XLt5Z//y
- 8bD8ofM4DQII+4XRJxE7TY0uQP8=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 602c309206bddda9dfe82bf7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 20:52:34
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5EAE8C43462; Tue, 16 Feb 2021 20:52:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 413C8C433CA;
-        Tue, 16 Feb 2021 20:52:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 413C8C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [PATCH] mhi_bus: core: Wait for ready state after reset
-Date:   Tue, 16 Feb 2021 13:52:25 -0700
-Message-Id: <1613508745-32324-1-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S230313AbhBPUxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 15:53:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhBPUxi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 15:53:38 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4740C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:52:57 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id b14so12793694eju.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:52:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YFshz0e56kZ+qQSxqouSNCJV43gofQ0AnIxpI0Z2FsM=;
+        b=BhUw3SJkYjGoMCMl/NP6DA3khVYOouIHGxo9KByiOKCADD2ds440N2P1NZ6Zhyl0Au
+         1FnlyPFmkZFoayIO9K3JEFGfjoE2B+7GZKsTBxe+HPRxQm44NaGEgPBUt5xDAxbWJ2qm
+         EA4ucRuGXcJGtTCJgL7ioctJc6SPahzKXFpS/i7d9TQoAa54QKf24Z18Fj9slVMHb6Cn
+         UEGmTU6U9CKFWnE0/4Ujz/bk82BFUf9F/H0cBTgknKtzAOWdHdCUOoVHp9pjSdHLGGCa
+         7+PNchMClFu+MM2n7AbPWzLfIRp8SFt75WUv4f5S+C0Lf+Q4B2KvAKjh3qCjHxVxCib1
+         ikEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YFshz0e56kZ+qQSxqouSNCJV43gofQ0AnIxpI0Z2FsM=;
+        b=eKVKW703iu1kapCyH8O0o0MgVyA/5b9+7d4I8gJznx0tt+d8RtfH+OZL0FOyraH6Jw
+         D0By4OeBnabd4cvCAmQfHctLJT4syaXIz95CmDN2XsvI8yvRyqTzUd7UXvsWV02S5Qda
+         tQxoDdU1vFxC3cbUm7eyWc4R9RpeS14GrVahgvMYRDoWApWIrVkwmiCX5ebYwLZi+0pR
+         M66M5fdCzP/qYOG1Y4RKvYuiozvPDwHXmzrd+vCTPBELqVhoZ4U02aTW/g0p8LvLTzfp
+         6d18dn6NG+rftV0LNi+0oApG99I/nzqaKy2QHs2yAutAJ2+CCzDqKoIEIv6dU8ZRjJ3n
+         wtLQ==
+X-Gm-Message-State: AOAM531QUnnlDEbX/Ry6IYHmAf41J/9muzt9Pn66hyqMhlRiIaJXxhOx
+        zvUM5hh7W9WEaoqNpgxjJXcwhIh4aDvnIxuo8pguSw==
+X-Google-Smtp-Source: ABdhPJzM7peO8ohllzmQBORMfOZqGf2IYJVv2j8uOsEwFR7TCY/QIkxO7ZTDOkUbS0Eaf1rQsGC9Z0dXaXtdkFey1Us=
+X-Received: by 2002:a17:906:fad4:: with SMTP id lu20mr11327016ejb.341.1613508776303;
+ Tue, 16 Feb 2021 12:52:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <YCwaIGPd9ktMoYPu@mwanda>
+In-Reply-To: <YCwaIGPd9ktMoYPu@mwanda>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 16 Feb 2021 12:52:46 -0800
+Message-ID: <CAPcyv4jKL7J0XoXE=uz-DOowYg888A5ajhQUxuFC2x8x5JoL3g@mail.gmail.com>
+Subject: Re: [PATCH] cxl/mem: Fix an error code in cxl_mem_mbox_get()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Alison Schofield <alison.schofield@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Colin King <colin.king@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the device has signaled the end of reset by clearing the reset bit,
-it will automatically reinit MHI and the internal device structures.  Once
-That is done, the device will signal it has entered the ready state.
+On Tue, Feb 16, 2021 at 11:17 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> Smatch complains that sometimes when we return success we are holding
+> the mutex and sometimes we have released the mutex.  It turns out that
+> the bug is a missing error code if the mbox is not ready.  It should
+> return -EBUSY instead of success.
+>
+> Fixes: cc1967ac93ab ("cxl/mem: Find device capabilities")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/cxl/mem.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index 3bca8451348a..2ebc84e4d202 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -383,8 +383,8 @@ static int __cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
+>  static int cxl_mem_mbox_get(struct cxl_mem *cxlm)
+>  {
+>         struct device *dev = &cxlm->pdev->dev;
+> -       int rc = -EBUSY;
+>         u64 md_status;
+> +       int rc;
+>
+>         mutex_lock_io(&cxlm->mbox_mutex);
+>
+> @@ -414,6 +414,7 @@ static int cxl_mem_mbox_get(struct cxl_mem *cxlm)
+>         md_status = readq(cxlm->memdev_regs + CXLMDEV_STATUS_OFFSET);
+>         if (!(md_status & CXLMDEV_MBOX_IF_READY && CXLMDEV_READY(md_status))) {
+>                 dev_err(dev, "mbox: reported doorbell ready, but not mbox ready\n");
+> +               rc = -EBUSY;
+>                 goto out;
 
-Signaling the ready state involves sending an interrupt (MSI) to the host
-which might cause IOMMU faults if it occurs at the wrong time.
+Hey, Smatch gave a more thorough report than Coverity:
 
-If the controller is being powered down, and possibly removed, then the
-reset flow would only wait for the end of reset.  At which point, the host
-and device would start a race.  The host may complete its reset work, and
-remove the interrupt handler, which would cause the interrupt to be
-disabled in the IOMMU.  If that occurs before the device signals the ready
-state, then the IOMMU will fault since it blocked an interrupt.  While
-harmless, the fault would appear like a serious issue has occurred so let's
-silence it by making sure the device hits the ready state before the host
-completes its reset processing.
-
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
----
- drivers/bus/mhi/core/pm.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index ef8fb4a..dc69074 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -463,7 +463,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
- 
- 	/* Trigger MHI RESET so that the device will not access host memory */
- 	if (!MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
--		u32 in_reset = -1;
-+		u32 in_reset = -1, ready = 0;
- 		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
- 
- 		dev_dbg(dev, "Triggering MHI Reset in device\n");
-@@ -486,6 +486,25 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
- 		 * hence re-program it
- 		 */
- 		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
-+
-+		if (!MHI_IN_PBL(mhi_get_exec_env(mhi_cntrl))) {
-+			/* wait for ready to be set */
-+			ret = wait_event_timeout(mhi_cntrl->state_event,
-+						 mhi_read_reg_field(mhi_cntrl,
-+							mhi_cntrl->regs,
-+							MHISTATUS,
-+							MHISTATUS_READY_MASK,
-+							MHISTATUS_READY_SHIFT,
-+							&ready)
-+						 || ready, timeout);
-+			if ((!ret || !ready) &&
-+			    cur_state == MHI_PM_SYS_ERR_PROCESS) {
-+				dev_err(dev,
-+					"Device failed to enter READY state\n");
-+				mutex_unlock(&mhi_cntrl->pm_mutex);
-+				return;
-+			}
-+		}
- 	}
- 
- 	dev_dbg(dev,
--- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+http://lore.kernel.org/r/20210215195313.90231-1-colin.king@canonical.com
