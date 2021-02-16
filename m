@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0C831D28A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD0E31D296
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhBPWUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 17:20:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229655AbhBPWUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 17:20:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B2B1E64E79;
-        Tue, 16 Feb 2021 22:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613514007;
-        bh=oX9goetpqG2nZxoOAohhAAX0CnEN2NZK3yS27Ok8Mf4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=pxKiVxBdatulKPCORQbZ9/wUhrFl/8HzSjZgJIrFxHv+vdgjHILKkIGikU8VBta9j
-         3B3G0HkdGW/tot/id5kg2XQeJJyDJylivK157I5o6SN83fa9Gw7WLlwpUJa0gGKjsV
-         urdgm/1ttYS22cuFa2vQHR19sq699iZTQJNDImsUWGqbLgj68ct26KpfHd06H7vGaa
-         SH0CRajFwie4ucIgkLt7A8AwEY4U6TnHIhf+wjRU28Onso36BewrN//1iiBLYXanSr
-         6urI44JIkX9mslx11S/ZNLyZlYy8Gp241xxNd47ckme+dI7m6nCxR9ep2ZEMwt1sTq
-         gui5gcXa1zxYA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AC0DD60A15;
-        Tue, 16 Feb 2021 22:20:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] tg3: Remove unused PHY_BRCM flags
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161351400770.20875.8637152778022778666.git-patchwork-notify@kernel.org>
-Date:   Tue, 16 Feb 2021 22:20:07 +0000
-References: <20210216190837.2555691-1-f.fainelli@gmail.com>
-In-Reply-To: <20210216190837.2555691-1-f.fainelli@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, olteanv@gmail.com,
-        siva.kallam@broadcom.com, prashant@broadcom.com,
-        mchan@broadcom.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
+        id S230482AbhBPW0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 17:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhBPW0M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 17:26:12 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F2CC061756;
+        Tue, 16 Feb 2021 14:25:31 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id b16so13739452lji.13;
+        Tue, 16 Feb 2021 14:25:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=K98hVeDcDZJxSZfWfbNxqH8J1cAFlmmfibl33bktYFY=;
+        b=UPfvyzuIdkAQ9Ywk7shP2hbJY+ignE0bW7f9vkrr66daK+qbwcpwabsiJIxfJbpMNz
+         O7VdKdukhL8S+JCuVVoMGLocXH/AiDqMX5CM9VthHxD3jkh1QYL8QC0wWa7CE/As10cw
+         dQgyvvKfa6rjtYr+haFeOqnyAbUDQuWatIYIwEMAGAbP8hBgL6AeRSQseVAECL43lror
+         IOf+XbwOStJF+lAXVAcc1viIVvkL0LLstL7w+7lbxwZzxbrFfww9K5O+t1vu2TBtjcGp
+         INlOn0ZzIzv/HpxciPM9pbPHCMrWIA8dnbHoK271vzIq+cOxPqElQoPOGNpwYUhXEizp
+         cUow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=K98hVeDcDZJxSZfWfbNxqH8J1cAFlmmfibl33bktYFY=;
+        b=k82WXllZDGwHSL5CG7a2An4EMYf6AZn9tem4yF7VhmHGNtcUgrRtsWFIsl3J7LXwMM
+         gl4lb+4fl+8ChdK8w0vBtQu8m5cNovHAb+XLdq3cl4igYWUADh+lbuvQMYmI3z1xSSWY
+         p4i/OmD0NhiVVI9qS/MzizXRypBvzN4w07jlIvvybY11BfOiMP6VU4w+y+1+sbe/RqYi
+         22YnbKh/aHDh6XAm3CS/NFcVPJB/Q8ieiJSKoVK6sQ0I6XIxYB6BuAtZ7fEMljPLsHvc
+         AtVLRsbehtmpJyA2TBLpSHCbhdVzdtAeMhK1pPPO3/yKF2wDUDr7sGuRolXaw2ecDbT6
+         wzNQ==
+X-Gm-Message-State: AOAM530g23h+TPOEw8h2kjTuizAtqK/IS+FTiaTlcL4NBUTQ8RfQ6Zx/
+        DrN30rAdDJvySnfMhz3BfRE=
+X-Google-Smtp-Source: ABdhPJyWNyeY5rVkSELx/u4xd7HRY3mMPtlpggKEB6qcERexs+/KAJbJ1k6iUufraeRbXAsqAXrjKQ==
+X-Received: by 2002:a2e:900c:: with SMTP id h12mr13165698ljg.219.1613514330017;
+        Tue, 16 Feb 2021 14:25:30 -0800 (PST)
+Received: from localhost (crossness-hoof.volia.net. [93.72.107.198])
+        by smtp.gmail.com with ESMTPSA id j18sm20971lfe.145.2021.02.16.14.25.28
+        (version=TLS1_2 cipher=AES128-SHA bits=128/128);
+        Tue, 16 Feb 2021 14:25:28 -0800 (PST)
+From:   Ruslan Bilovol <ruslan.bilovol@gmail.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Peter Chen <peter.chen@freescale.com>,
+        Daniel Mack <zonque@gmail.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH 0/5] USB Audio Gadget part 1: misc fixes and improvements
+Date:   Wed, 17 Feb 2021 00:24:54 +0200
+Message-Id: <1613514299-20668-1-git-send-email-ruslan.bilovol@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Here are some bug fixes and improvements to
+USB Audio Gadget drivers which I made during
+my work on a new UAC features like feedback endpoint
+implementation and Volume/Mute controls.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+The new UAC features will be sent as a separate
+patch set (aka 'part 2') on top of these changes
+later this week
 
-On Tue, 16 Feb 2021 11:08:37 -0800 you wrote:
-> The tg3 driver tried to communicate towards the PHY driver whether it
-> wanted RGMII in-band signaling enabled or disabled however there is
-> nothing that looks at those flags in drivers/net/phy/broadcom.c so this
-> does do not anything.
-> 
-> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> 
-> [...]
+Ruslan Bilovol (5):
+  usb: gadget: f_uac2: always increase endpoint max_packet_size by one
+    audio slot
+  usb: gadget: f_uac1: stop playback on function disable
+  usb: gadget: f_uac2: validate input parameters
+  usb: gadget: f_uac1: validate input parameters
+  usb: gadget: f_uac1: disable IN/OUT ep if unused
 
-Here is the summary with links:
-  - tg3: Remove unused PHY_BRCM flags
-    https://git.kernel.org/netdev/net-next/c/32aeba1f7a98
+ drivers/usb/gadget/function/f_uac1.c | 273 ++++++++++++++++++++++++++---------
+ drivers/usb/gadget/function/f_uac2.c |  42 +++++-
+ 2 files changed, 246 insertions(+), 69 deletions(-)
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+-- 
+1.9.1
 
