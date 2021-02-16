@@ -2,830 +2,1097 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7BA31D060
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6329A31D068
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhBPSqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 13:46:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50264 "EHLO
+        id S230513AbhBPSsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 13:48:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhBPSqi (ORCPT
+        with ESMTP id S230162AbhBPSsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:46:38 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA696C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 10:45:57 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id u4so13129923ljh.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 10:45:57 -0800 (PST)
+        Tue, 16 Feb 2021 13:48:51 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2588C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 10:48:10 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id a4so5228864pgc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 10:48:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8EoT3iHrvOBjPufuLSqhYiV2//0LM3pU+ATs24o+R3E=;
-        b=XdPdGx9bCFEd9Xxyb1WAy0509/VKjxBvfAt+MHWqLnKW2dRh3iSLZPXyBXM41A1Dv+
-         MUmcikc76+8qgmeGJgtr/O3fDOClIY6F7dBF6rY22Q9JXR0Sz81cDSzcXtgI80Yvo/y/
-         vva8F1FrF8bMhMedfOlAFOoGRbEXYT8QMi4MaiCzkZScwv8tjKf+LH1utbxCm2h/Puof
-         asDX+9IcJYzA2LO2SxbwpIQQY1zp7WgMdfYSN8nkNS4BIKhCXNpl00Wef7/GWhfp8uYL
-         BjD04W09IErSW0Emnlve+zkOfkrxN/M8UOcHgkMtBvEPJ6AeDZ2NCD2chH4Za60hu2sz
-         YwmQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YKrUnHK99NO6dXZJHFV9NunxqQfBb0pV7zfZJqFDakw=;
+        b=t7JyODIa//QTHNywEwamOUNBmXXQxAt6JHj1spdqmO9vw+rlUkdaYcieBKaFU5p0Rg
+         s2yID8BkK43YZATLf96OI+sg5ZNSkh30O5ozRXfNy1kh5w3JQrx9bAaCgdkwpV4xi9bQ
+         JG9EtHKqAZ67OyIr3H71xFllA1Up/jWKJ1fpqRGtgel65n/8A2/16ASYXOMvd8BhpGpS
+         Hxes+wOTLE8OIfaO1/K28guS+5KQAkJH6AMolK7v5YnKg25PBC+wQiAr9Uj3+KtLfDQ7
+         PpYXhIRGhP7DBcRlPXTciyVywPYGsClA538OF4YNCFYgLaFxwPWQGM3tWEtu6aw5FjuD
+         XIMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8EoT3iHrvOBjPufuLSqhYiV2//0LM3pU+ATs24o+R3E=;
-        b=rztJR9e9GA/F1zSlb8n6Op6gQ2IwtI7jthv4XGow0YG66nU4bS/YjMhV2O3QOiPsl7
-         mCpFHz5YvrIlJQZXcmPUwRVKtl/73Hc8eWAveRK1j2o0tGWpKSBHKJ0DFY7+ZC5lJmnh
-         l9w7CtvzcHGqfWER1R1eif7QseLqjVnDbqBy2WZoY9N4FqHW5GtHhBgpEKyoZAShZ1ww
-         ULqQYmVSdVNFjwPOqlTL1SoHNcUcfpMBDTJqj29+RW9M2duph0GtiPZ/rY8y1KjbS20G
-         3kqV24QFHmmJOMa8hRazZDu9TDPEkpaJ2Cj6knEQY/Qu7h6UKTKKOfw5zXDFkcYYz+v+
-         seNg==
-X-Gm-Message-State: AOAM532s8XE1WLIHZXVLA1RU9rJhs03yAMYHw5xP+yckyx6EY6S1lnBN
-        R03agjXhlxB7yKXqJLZF7cuak49dcvdG4fGhcgMVZw==
-X-Google-Smtp-Source: ABdhPJyfJojdOCynd2SWJzRRa5VgjBnEv3Pfv1RTw+dgL++Z4EXy60vE3gBTtbRR0F/mqVgd0iZEO5AF3lS8Rd5L/U4=
-X-Received: by 2002:a05:651c:2112:: with SMTP id a18mr13209044ljq.341.1613501155790;
- Tue, 16 Feb 2021 10:45:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YKrUnHK99NO6dXZJHFV9NunxqQfBb0pV7zfZJqFDakw=;
+        b=rRzYpRVS20+8vWU6c6JaMkPNSNV5qgmD6U4+DuygNpyuo8G/4dnTiUkxshYwmVAWUq
+         VXEnODk3FM7jjdYDYK7jumHEF/PmZiEYEj+KlWFxKH0H9CX8Nmrxh0+QSmuLA1LyliB/
+         KTY381cSsUicNELt7vP5INLNHp+vFf4haiPXmTdldRx6XM3K21kmFZ4UmGmqST90CR9X
+         N1Yrq5Py9rdP4ubnR9DidQkZf9hnNfAplE1f+BEGDxvkwwHQ9SGLVznNDPf4U/jbFa2B
+         m0RrO+g0fjrp3JptzKbn8QkrBboZSDABbQEzEPNoOtewntn8EdIVEkvTJTpVSaL3ME12
+         yggA==
+X-Gm-Message-State: AOAM532OmdF60QOQZNk1BiFSLnU9iDRJmjCXFEf69N5FE+w+NMQUBoOs
+        6stZGRbjwQRzW+GttpnXP8V9yw==
+X-Google-Smtp-Source: ABdhPJxXcS+4x0wyytkE3PLch+a4m01a032NJRYWQXW1udypdsIrsr8pQP1q8TmU/Kp3SKU5N7RBcg==
+X-Received: by 2002:a05:6a00:1a03:b029:1d3:1fa3:4a5d with SMTP id g3-20020a056a001a03b02901d31fa34a5dmr20812830pfv.1.1613501289912;
+        Tue, 16 Feb 2021 10:48:09 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 184sm13787173pgj.93.2021.02.16.10.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 10:48:09 -0800 (PST)
+Date:   Tue, 16 Feb 2021 11:48:07 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Ben Levinsky <ben.levinsky@xilinx.com>
+Cc:     devicetree@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        michal.simek@xilinx.com
+Subject: Re: [PATCH v25 5/5] remoteproc: Add initial zynqmp R5 remoteproc
+ driver
+Message-ID: <20210216184807.GB2771622@xps15>
+References: <20210111020250.6846-1-ben.levinsky@xilinx.com>
+ <20210111020250.6846-6-ben.levinsky@xilinx.com>
 MIME-Version: 1.0
-References: <cover.1613243844.git.luto@kernel.org> <c0ff7dba14041c7e5d1cae5d4df052f03759bef3.1613243844.git.luto@kernel.org>
-In-Reply-To: <c0ff7dba14041c7e5d1cae5d4df052f03759bef3.1613243844.git.luto@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 16 Feb 2021 10:45:44 -0800
-Message-ID: <CAKwvOd=Mrmb9T1h-+y-vXq1fC59U-hfMEO4sg8LV4ZoYJfLLEQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] x86/stackprotector/32: Make the canary into a
- regular percpu variable
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111020250.6846-6-ben.levinsky@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 11:19 AM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On 32-bit kernels, the stackprotector canary is quite nasty -- it is
-> stored at %gs:(20), which is nasty because 32-bit kernels use %fs for
-> percpu storage.  It's even nastier because it means that whether %gs
-> contains userspace state or kernel state while running kernel code
-> depends on whether stackprotector is enabled (this is
-> CONFIG_X86_32_LAZY_GS), and this setting radically changes the way
-> that segment selectors work.  Supporting both variants is a
-> maintenance and testing mess.
->
-> Merely rearranging so that percpu and the stack canary
-> share the same segment would be messy as the 32-bit percpu address
-> layout isn't currently compatible with putting a variable at a fixed
-> offset.
->
-> Fortunately, GCC 8.1 added options that allow the stack canary to be
-> accessed as %fs:__stack_chk_guard, effectively turning it into an ordinary
-> percpu variable.  This lets us get rid of all of the code to manage the
-> stack canary GDT descriptor and the CONFIG_X86_32_LAZY_GS mess.
->
-> (That name is special.  We could use any symbol we want for the
->  %fs-relative mode, but for CONFIG_SMP=n, gcc refuses to let us use any
->  name other than __stack_chk_guard.)
->
-> This patch forcibly disables stackprotector on older compilers that
-> don't support the new options and makes the stack canary into a
-> percpu variable.  The "lazy GS" approach is now used for all 32-bit
-> configurations.
->
-> This patch also makes load_gs_index() work on 32-bit kernels.  On
-> 64-bit kernels, it loads the GS selector and updates the user
-> GSBASE accordingly.  (This is unchanged.)  On 32-bit kernels,
-> it loads the GS selector and updates GSBASE, which is now
-> always the user base.  This means that the overall effect is
-> the same on 32-bit and 64-bit, which avoids some ifdeffery.
->
-> Cc: Sedat Dilek <sedat.dilek@gmail.com>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+On Sun, Jan 10, 2021 at 06:02:50PM -0800, Ben Levinsky wrote:
+> R5 is included in Xilinx Zynq UltraScale MPSoC so by adding this
+> remotproc driver, we can boot the R5 sub-system in two different
+> configurations -
+> 	* Split
+> 	* Lockstep
+> 
+> The Xilinx R5 Remoteproc Driver boots the R5's via calls to the Xilinx
+> Platform Management Unit that handles the R5 configuration, memory access
+> and R5 lifecycle management. The interface to this manager is done in this
+> driver via zynqmp_pm_* function calls.
+> 
+> Signed-off-by: Wendy Liang <wendy.liang@xilinx.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> Signed-off-by: Ed Mooring <ed.mooring@xilinx.com>
+> Signed-off-by: Jason Wu <j.wu@xilinx.com>
+> Signed-off-by: Ben Levinsky <ben.levinsky@xilinx.com>
 > ---
->  arch/x86/Kconfig                          |  7 +-
->  arch/x86/Makefile                         |  8 +++
->  arch/x86/entry/entry_32.S                 | 56 ++--------------
->  arch/x86/include/asm/processor.h          | 15 ++---
->  arch/x86/include/asm/ptrace.h             |  5 +-
->  arch/x86/include/asm/segment.h            | 30 +++------
->  arch/x86/include/asm/stackprotector.h     | 79 +++++------------------
->  arch/x86/include/asm/suspend_32.h         |  6 +-
->  arch/x86/kernel/asm-offsets_32.c          |  5 --
->  arch/x86/kernel/cpu/common.c              |  5 +-
->  arch/x86/kernel/doublefault_32.c          |  4 +-
->  arch/x86/kernel/head_32.S                 | 18 +-----
->  arch/x86/kernel/setup_percpu.c            |  1 -
->  arch/x86/kernel/tls.c                     |  8 +--
->  arch/x86/kvm/svm/svm.c                    | 10 +--
->  arch/x86/lib/insn-eval.c                  |  4 --
->  arch/x86/platform/pvh/head.S              | 14 ----
->  arch/x86/power/cpu.c                      |  6 +-
->  arch/x86/xen/enlighten_pv.c               |  1 -
->  scripts/gcc-x86_32-has-stack-protector.sh |  6 +-
->  20 files changed, 62 insertions(+), 226 deletions(-)
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 21f851179ff0..12d8bf011d08 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -353,10 +353,6 @@ config X86_64_SMP
->         def_bool y
->         depends on X86_64 && SMP
->
-> -config X86_32_LAZY_GS
-> -       def_bool y
-> -       depends on X86_32 && !STACKPROTECTOR
-> -
->  config ARCH_SUPPORTS_UPROBES
->         def_bool y
->
-> @@ -379,7 +375,8 @@ config CC_HAS_SANE_STACKPROTECTOR
->         default $(success,$(srctree)/scripts/gcc-x86_32-has-stack-protector.sh $(CC))
->         help
->            We have to make sure stack protector is unconditionally disabled if
-> -          the compiler produces broken code.
-> +          the compiler produces broken code or if it does not let us control
-> +          the segment on 32-bit kernels.
->
->  menu "Processor type and features"
->
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 7116da3980be..0b5cd8c49ccb 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -76,6 +76,14 @@ ifeq ($(CONFIG_X86_32),y)
->
->          # temporary until string.h is fixed
->          KBUILD_CFLAGS += -ffreestanding
+> v25:
+> - reword error message for rpu configuration
+> - change char name[15] to 16 chars to have null terminated string
+>   in parse_mem_regions()
+> - reword comments in tcm_mem_alloc
+> - call xilinx platform cleanup in parse_tcm_banks() case of failure
+> - check value of mbox_send_message in all instances within this driver 
+> - indentation in zynqmp_r5_remoteproc driver
+> - update style of constructing carveouts to match convention in ST
+>   remoteproc drivers. No longer iterate through memory-region property
+>   using of_count_phandle_with_args. Instead use of_phandle_iterator
+> - use rproc_of_resm_mem_entry_init for vdev0buffer carveout as per feedback
+> - rework loop in zynqmp_r5_pm_request_sram as per feedback
+> - fix comment and linebreak in tcm_mem_alloc description
+> - add comments and remove extraneous devm_ioremap_wc call in tcm_mem_alloc
+> - in parse_tcm_banks remove check for bank not being available
+> - rework order of locals and remove else in zynqmp_r5_rproc_kick
+> - document and update logic for zynqmp_r5_parse_fw
+> - add dev_dbg output in event_notified_idr_cb if
+>   rproc_vq_interrupt(rproc, id) == IRQ_NONE
+> - add comment for handle_event_notified mbox_send_message function call
+> - add comment for zynqmp_r5_mb_rx_cb
+> - update zynqmp_r5_setup_mbox to match convention of mbox setup in ST
+>   remoteproc drivers
+> - change return in zynqmp_r5_setup_mbox to use PTR_ERR
+> - add zynqmp_r5_cleanup_mbox
+> - in zynqmp_r5_probe, reteurn zynqmp_r5_rproc instead of taking in as arg.
+> - in zynqmp_r5_probe use return of PTR_ERR and use zynqmp_r5_cleanup_mbox
+> - in zynqmp_r5_remoteproc_probe update use return value of zynqmp_r5_probe as
+>   either zynqmp_r5_rproc* or PTR_ERR
+> - update loop that cleans up cluster and mboxes in zynqmp_r5_remoteproc_probe
+> - update loop that cleans up cluster and mboxes in zynqmp_r5_remoteproc_remove
+> ---
+>  drivers/remoteproc/Kconfig                |   8 +
+>  drivers/remoteproc/Makefile               |   1 +
+>  drivers/remoteproc/zynqmp_r5_remoteproc.c | 898 ++++++++++++++++++++++
+>  3 files changed, 907 insertions(+)
+>  create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
+> 
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index c6659dfea7c7..c2fe54b1d94f 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -275,6 +275,14 @@ config TI_K3_DSP_REMOTEPROC
+>  	  It's safe to say N here if you're not interested in utilizing
+>  	  the DSP slave processors.
+>  
+> +config ZYNQMP_R5_REMOTEPROC
+> +	tristate "ZynqMP R5 remoteproc support"
+> +	depends on PM && ARCH_ZYNQMP
+> +	select RPMSG_VIRTIO
+> +	select ZYNQMP_IPI_MBOX
+> +	help
+> +	  Say y or m here to support ZynqMP R5 remote processors via the remote
+> +	  processor framework.
+>  endif # REMOTEPROC
+>  
+>  endmenu
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index 3dfa28e6c701..ef1abff654c2 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -33,3 +33,4 @@ obj-$(CONFIG_ST_REMOTEPROC)		+= st_remoteproc.o
+>  obj-$(CONFIG_ST_SLIM_REMOTEPROC)	+= st_slim_rproc.o
+>  obj-$(CONFIG_STM32_RPROC)		+= stm32_rproc.o
+>  obj-$(CONFIG_TI_K3_DSP_REMOTEPROC)	+= ti_k3_dsp_remoteproc.o
+> +obj-$(CONFIG_ZYNQMP_R5_REMOTEPROC)	+= zynqmp_r5_remoteproc.o
+> diff --git a/drivers/remoteproc/zynqmp_r5_remoteproc.c b/drivers/remoteproc/zynqmp_r5_remoteproc.c
+> new file mode 100644
+> index 000000000000..9e228c9ecd43
+> --- /dev/null
+> +++ b/drivers/remoteproc/zynqmp_r5_remoteproc.c
+> @@ -0,0 +1,898 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Zynq R5 Remote Processor driver
+> + *
+> + * Based on origin OMAP and Zynq Remote Processor driver
+> + *
+> + */
 > +
-> +       ifeq ($(CONFIG_STACKPROTECTOR),y)
-> +               ifeq ($(CONFIG_SMP),y)
-> +                       KBUILD_CFLAGS += -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard
+> +#include <linux/firmware/xlnx-zynqmp.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/list.h>
+> +#include <linux/mailbox_client.h>
+> +#include <linux/mailbox/zynqmp-ipi-message.h>
+> +#include <linux/module.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/of_reserved_mem.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/remoteproc.h>
+> +#include <linux/skbuff.h>
+> +#include <linux/sysfs.h>
+> +
+> +#include "remoteproc_internal.h"
+> +
+> +#define MAX_RPROCS	2 /* Support up to 2 RPU */
+> +#define MAX_MEM_PNODES	4 /* Max power nodes for one RPU memory instance */
+> +
+> +#define BANK_LIST_PROP	"sram"
+> +#define DDR_LIST_PROP	"memory-region"
+> +
+> +/* IPI buffer MAX length */
+> +#define IPI_BUF_LEN_MAX	32U
+> +/* RX mailbox client buffer max length */
+> +#define RX_MBOX_CLIENT_BUF_MAX	(IPI_BUF_LEN_MAX + \
+> +				 sizeof(struct zynqmp_ipi_message))
+> +
+> +/*
+> + * Map each Xilinx on-chip SRAM  Bank address to their own respective
+> + * pm_node_id.
+> + */
+> +struct sram_addr_data {
+> +	phys_addr_t addr;
+> +	enum pm_node_id id;
+> +};
+> +
+> +#define NUM_SRAMS 4U
+> +static const struct sram_addr_data zynqmp_banks[NUM_SRAMS] = {
+> +	{0xffe00000UL, NODE_TCM_0_A},
+> +	{0xffe20000UL, NODE_TCM_0_B},
+> +	{0xffe90000UL, NODE_TCM_1_A},
+> +	{0xffeb0000UL, NODE_TCM_1_B},
+> +};
+> +
+> +/**
+> + * struct zynqmp_r5_rproc - ZynqMP R5 core structure
+> + *
+> + * @rx_mc_buf: rx mailbox client buffer to save the rx message
+> + * @tx_mc: tx mailbox client
+> + * @rx_mc: rx mailbox client
+> + * @mbox_work: mbox_work for the RPU remoteproc
+> + * @tx_mc_skbs: socket buffers for tx mailbox client
+> + * @dev: device of RPU instance
+> + * @rproc: rproc handle
+> + * @tx_chan: tx mailbox channel
+> + * @rx_chan: rx mailbox channel
+> + * @pnode_id: RPU CPU power domain id
+> + * @elem: linked list item
+> + */
+> +struct zynqmp_r5_rproc {
+> +	unsigned char rx_mc_buf[RX_MBOX_CLIENT_BUF_MAX];
+> +	struct mbox_client tx_mc;
+> +	struct mbox_client rx_mc;
+> +	struct work_struct mbox_work;
+> +	struct sk_buff_head tx_mc_skbs;
+> +	struct device *dev;
+> +	struct rproc *rproc;
+> +	struct mbox_chan *tx_chan;
+> +	struct mbox_chan *rx_chan;
+> +	u32 pnode_id;
+> +	struct list_head elem;
+> +};
+> +
+> +/*
+> + * r5_set_mode - set RPU operation mode
+> + * @z_rproc: Remote processor private data
+> + * @rpu_mode: mode specified by device tree to configure the RPU to
+> + *
+> + * set RPU operation mode
+> + *
+> + * Return: 0 for success, negative value for failure
+> + */
+> +static int r5_set_mode(struct zynqmp_r5_rproc *z_rproc,
+> +		       enum rpu_oper_mode rpu_mode)
+> +{
+> +	enum rpu_tcm_comb tcm_mode;
+> +	enum rpu_oper_mode cur_rpu_mode;
+> +	int ret;
+> +
+> +	ret = zynqmp_pm_get_rpu_mode(z_rproc->pnode_id, &cur_rpu_mode);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (rpu_mode != cur_rpu_mode) {
+> +		ret = zynqmp_pm_set_rpu_mode(z_rproc->pnode_id, rpu_mode);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	tcm_mode = (rpu_mode == PM_RPU_MODE_LOCKSTEP) ?
+> +		    PM_RPU_TCM_COMB : PM_RPU_TCM_SPLIT;
+> +	return zynqmp_pm_set_tcm_config(z_rproc->pnode_id, tcm_mode);
+> +}
+> +
+> +/*
+> + * zynqmp_r5_rproc_mem_release
+> + * @rproc: single R5 core's corresponding rproc instance
+> + * @mem: mem entry to unmap
+> + *
+> + * Unmap TCM banks when powering down R5 core.
+> + *
+> + * return 0 on success, otherwise non-zero value on failure
+> + */
+> +static int tcm_mem_release(struct rproc *rproc, struct rproc_mem_entry *mem)
+> +{
+> +	u32 pnode_id = (u64)mem->priv;
+> +
+> +	iounmap(mem->va);
+> +	return zynqmp_pm_release_node(pnode_id);
 
-I'm guessing the CC is because this removes stack protector support
-with clang, because it does not yet support
--mstack-protector-guard-symbol= (as Sedat notes)?  I would like to see
-this called out explicitly in the commit message.
+Is the opposite of that call zynqmp_pm_request_node()?  If so doing the power up
+and down of the TCM banks at driver probe() and remove() is highly inefficient.
+Consider using rproc_ops::prepare() and rproc_ops::unprepare().
 
-(If folks are looking to use various compiler features/flags and find
-support missing, please let us know ASAP as it helps give us more time
-to triage and plan work around existing schedules.  Our ML from
-MAINTAINERS <clang-built-linux@googlegroups.com> or
-linux-toolchains@vger.kernel.org works.)
+> +}
 
-For now I've filed:
-https://bugs.llvm.org/show_bug.cgi?id=49209
-
-> +               else
-> +                       KBUILD_CFLAGS += -mstack-protector-guard=global
-> +               endif
-> +       endif
->  else
->          BITS := 64
->          UTS_MACHINE := x86_64
-> diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-> index df8c017e6161..eb0cb662bca5 100644
-> --- a/arch/x86/entry/entry_32.S
-> +++ b/arch/x86/entry/entry_32.S
-> @@ -20,7 +20,7 @@
->   *     1C(%esp) - %ds
->   *     20(%esp) - %es
->   *     24(%esp) - %fs
-> - *     28(%esp) - %gs          saved iff !CONFIG_X86_32_LAZY_GS
-> + *     28(%esp) - unused -- was %gs on old stackprotector kernels
->   *     2C(%esp) - orig_eax
->   *     30(%esp) - %eip
->   *     34(%esp) - %cs
-> @@ -56,14 +56,9 @@
->  /*
->   * User gs save/restore
->   *
-> - * %gs is used for userland TLS and kernel only uses it for stack
-> - * canary which is required to be at %gs:20 by gcc.  Read the comment
-> - * at the top of stackprotector.h for more info.
-> - *
-> - * Local labels 98 and 99 are used.
-> + * This is leftover junk from CONFIG_X86_32_LAZY_GS.  A subsequent patch
-> + * will remove it entirely.
->   */
-> -#ifdef CONFIG_X86_32_LAZY_GS
-> -
->   /* unfortunately push/pop can't be no-op */
->  .macro PUSH_GS
->         pushl   $0
-> @@ -86,49 +81,6 @@
->  .macro SET_KERNEL_GS reg
->  .endm
->
-> -#else  /* CONFIG_X86_32_LAZY_GS */
-> -
-> -.macro PUSH_GS
-> -       pushl   %gs
-> -.endm
-> -
-> -.macro POP_GS pop=0
-> -98:    popl    %gs
-> -  .if \pop <> 0
-> -       add     $\pop, %esp
-> -  .endif
-> -.endm
-> -.macro POP_GS_EX
-> -.pushsection .fixup, "ax"
-> -99:    movl    $0, (%esp)
-> -       jmp     98b
-> -.popsection
-> -       _ASM_EXTABLE(98b, 99b)
-> -.endm
-> -
-> -.macro PTGS_TO_GS
-> -98:    mov     PT_GS(%esp), %gs
-> -.endm
-> -.macro PTGS_TO_GS_EX
-> -.pushsection .fixup, "ax"
-> -99:    movl    $0, PT_GS(%esp)
-> -       jmp     98b
-> -.popsection
-> -       _ASM_EXTABLE(98b, 99b)
-> -.endm
-> -
-> -.macro GS_TO_REG reg
-> -       movl    %gs, \reg
-> -.endm
-> -.macro REG_TO_PTGS reg
-> -       movl    \reg, PT_GS(%esp)
-> -.endm
-> -.macro SET_KERNEL_GS reg
-> -       movl    $(__KERNEL_STACK_CANARY), \reg
-> -       movl    \reg, %gs
-> -.endm
-> -
-> -#endif /* CONFIG_X86_32_LAZY_GS */
->
->  /* Unconditionally switch to user cr3 */
->  .macro SWITCH_TO_USER_CR3 scratch_reg:req
-> @@ -779,7 +731,7 @@ SYM_CODE_START(__switch_to_asm)
->
->  #ifdef CONFIG_STACKPROTECTOR
->         movl    TASK_stack_canary(%edx), %ebx
-> -       movl    %ebx, PER_CPU_VAR(stack_canary)+stack_canary_offset
-> +       movl    %ebx, PER_CPU_VAR(__stack_chk_guard)
->  #endif
->
->  #ifdef CONFIG_RETPOLINE
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-> index c20a52b5534b..c59dff4bbc38 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -441,6 +441,9 @@ struct fixed_percpu_data {
->          * GCC hardcodes the stack canary as %gs:40.  Since the
->          * irq_stack is the object at %gs:0, we reserve the bottom
->          * 48 bytes of the irq stack for the canary.
-> +        *
-> +        * Once we are willing to require -mstack-protector-guard-symbol=
-> +        * support for x86_64 stackprotector, we can get rid of this.
->          */
->         char            gs_base[40];
->         unsigned long   stack_canary;
-> @@ -461,17 +464,7 @@ extern asmlinkage void ignore_sysret(void);
->  void current_save_fsgs(void);
->  #else  /* X86_64 */
->  #ifdef CONFIG_STACKPROTECTOR
-> -/*
-> - * Make sure stack canary segment base is cached-aligned:
-> - *   "For Intel Atom processors, avoid non zero segment base address
-> - *    that is not aligned to cache line boundary at all cost."
-> - * (Optim Ref Manual Assembly/Compiler Coding Rule 15.)
-> - */
-> -struct stack_canary {
-> -       char __pad[20];         /* canary at %gs:20 */
-> -       unsigned long canary;
-> -};
-> -DECLARE_PER_CPU_ALIGNED(struct stack_canary, stack_canary);
-> +DECLARE_PER_CPU(unsigned long, __stack_chk_guard);
->  #endif
->  /* Per CPU softirq stack pointer */
->  DECLARE_PER_CPU(struct irq_stack *, softirq_stack_ptr);
-> diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
-> index d8324a236696..b2c4c12d237c 100644
-> --- a/arch/x86/include/asm/ptrace.h
-> +++ b/arch/x86/include/asm/ptrace.h
-> @@ -37,7 +37,10 @@ struct pt_regs {
->         unsigned short __esh;
->         unsigned short fs;
->         unsigned short __fsh;
-> -       /* On interrupt, gs and __gsh store the vector number. */
-> +       /*
-> +        * On interrupt, gs and __gsh store the vector number.  They never
-> +        * store gs any more.
-> +        */
->         unsigned short gs;
->         unsigned short __gsh;
->         /* On interrupt, this is the error code. */
-> diff --git a/arch/x86/include/asm/segment.h b/arch/x86/include/asm/segment.h
-> index 7fdd4facfce7..72044026eb3c 100644
-> --- a/arch/x86/include/asm/segment.h
-> +++ b/arch/x86/include/asm/segment.h
-> @@ -95,7 +95,7 @@
->   *
->   *  26 - ESPFIX small SS
->   *  27 - per-cpu                       [ offset to per-cpu data area ]
-> - *  28 - stack_canary-20               [ for stack protector ]         <=== cacheline #8
-> + *  28 - unused
->   *  29 - unused
->   *  30 - unused
->   *  31 - TSS for double fault handler
-> @@ -118,7 +118,6 @@
->
->  #define GDT_ENTRY_ESPFIX_SS            26
->  #define GDT_ENTRY_PERCPU               27
-> -#define GDT_ENTRY_STACK_CANARY         28
->
->  #define GDT_ENTRY_DOUBLEFAULT_TSS      31
->
-> @@ -158,12 +157,6 @@
->  # define __KERNEL_PERCPU               0
->  #endif
->
-> -#ifdef CONFIG_STACKPROTECTOR
-> -# define __KERNEL_STACK_CANARY         (GDT_ENTRY_STACK_CANARY*8)
-> -#else
-> -# define __KERNEL_STACK_CANARY         0
-> -#endif
-> -
->  #else /* 64-bit: */
->
->  #include <asm/cache.h>
-> @@ -364,22 +357,15 @@ static inline void __loadsegment_fs(unsigned short value)
->         asm("mov %%" #seg ",%0":"=r" (value) : : "memory")
->
->  /*
-> - * x86-32 user GS accessors:
-> + * x86-32 user GS accessors.  This is ugly and could do with some cleaning up.
->   */
->  #ifdef CONFIG_X86_32
-> -# ifdef CONFIG_X86_32_LAZY_GS
-> -#  define get_user_gs(regs)            (u16)({ unsigned long v; savesegment(gs, v); v; })
-> -#  define set_user_gs(regs, v)         loadsegment(gs, (unsigned long)(v))
-> -#  define task_user_gs(tsk)            ((tsk)->thread.gs)
-> -#  define lazy_save_gs(v)              savesegment(gs, (v))
-> -#  define lazy_load_gs(v)              loadsegment(gs, (v))
-> -# else /* X86_32_LAZY_GS */
-> -#  define get_user_gs(regs)            (u16)((regs)->gs)
-> -#  define set_user_gs(regs, v)         do { (regs)->gs = (v); } while (0)
-> -#  define task_user_gs(tsk)            (task_pt_regs(tsk)->gs)
-> -#  define lazy_save_gs(v)              do { } while (0)
-> -#  define lazy_load_gs(v)              do { } while (0)
-> -# endif        /* X86_32_LAZY_GS */
-> +# define get_user_gs(regs)             (u16)({ unsigned long v; savesegment(gs, v); v; })
-> +# define set_user_gs(regs, v)          loadsegment(gs, (unsigned long)(v))
-> +# define task_user_gs(tsk)             ((tsk)->thread.gs)
-> +# define lazy_save_gs(v)               savesegment(gs, (v))
-> +# define lazy_load_gs(v)               loadsegment(gs, (v))
-> +# define load_gs_index(v)              loadsegment(gs, (v))
->  #endif /* X86_32 */
->
->  #endif /* !__ASSEMBLY__ */
-> diff --git a/arch/x86/include/asm/stackprotector.h b/arch/x86/include/asm/stackprotector.h
-> index 7fb482f0f25b..b6ffe58c70fa 100644
-> --- a/arch/x86/include/asm/stackprotector.h
-> +++ b/arch/x86/include/asm/stackprotector.h
-> @@ -5,30 +5,23 @@
->   * Stack protector works by putting predefined pattern at the start of
->   * the stack frame and verifying that it hasn't been overwritten when
->   * returning from the function.  The pattern is called stack canary
-> - * and unfortunately gcc requires it to be at a fixed offset from %gs.
-> - * On x86_64, the offset is 40 bytes and on x86_32 20 bytes.  x86_64
-> - * and x86_32 use segment registers differently and thus handles this
-> - * requirement differently.
-> + * and unfortunately gcc historically required it to be at a fixed offset
-> + * from the percpu segment base.  On x86_64, the offset is 40 bytes.
->   *
-> - * On x86_64, %gs is shared by percpu area and stack canary.  All
-> - * percpu symbols are zero based and %gs points to the base of percpu
-> - * area.  The first occupant of the percpu area is always
-> - * fixed_percpu_data which contains stack_canary at offset 40.  Userland
-> - * %gs is always saved and restored on kernel entry and exit using
-> - * swapgs, so stack protector doesn't add any complexity there.
-> + * The same segment is shared by percpu area and stack canary.  On
-> + * x86_64, percpu symbols are zero based and %gs (64-bit) points to the
-> + * base of percpu area.  The first occupant of the percpu area is always
-> + * fixed_percpu_data which contains stack_canary at the approproate
-> + * offset.  On x86_32, the stack canary is just a regular percpu
-> + * variable.
->   *
-> - * On x86_32, it's slightly more complicated.  As in x86_64, %gs is
-> - * used for userland TLS.  Unfortunately, some processors are much
-> - * slower at loading segment registers with different value when
-> - * entering and leaving the kernel, so the kernel uses %fs for percpu
-> - * area and manages %gs lazily so that %gs is switched only when
-> - * necessary, usually during task switch.
-> + * Putting percpu data in %fs on 32-bit is a minor optimization compared to
-> + * using %gs.  Since 32-bit userspace normally has %fs == 0, we are likely
-> + * to load 0 into %fs on exit to usermode, whereas with percpu data in
-> + * %gs, we are likely to load a non-null %gs on return to user mode.
->   *
-> - * As gcc requires the stack canary at %gs:20, %gs can't be managed
-> - * lazily if stack protector is enabled, so the kernel saves and
-> - * restores userland %gs on kernel entry and exit.  This behavior is
-> - * controlled by CONFIG_X86_32_LAZY_GS and accessors are defined in
-> - * system.h to hide the details.
-> + * Once we are willing to require GCC 8.1 or better for 64-bit stackprotector
-> + * support, we can remove some of this complexity.
->   */
->
->  #ifndef _ASM_STACKPROTECTOR_H
-> @@ -44,14 +37,6 @@
->  #include <linux/random.h>
->  #include <linux/sched.h>
->
-> -/*
-> - * 24 byte read-only segment initializer for stack canary.  Linker
-> - * can't handle the address bit shifting.  Address will be set in
-> - * head_32 for boot CPU and setup_per_cpu_areas() for others.
-> - */
-> -#define GDT_STACK_CANARY_INIT                                          \
-> -       [GDT_ENTRY_STACK_CANARY] = GDT_ENTRY_INIT(0x4090, 0, 0x18),
-> -
->  /*
->   * Initialize the stackprotector canary value.
->   *
-> @@ -86,7 +71,7 @@ static __always_inline void boot_init_stack_canary(void)
->  #ifdef CONFIG_X86_64
->         this_cpu_write(fixed_percpu_data.stack_canary, canary);
->  #else
-> -       this_cpu_write(stack_canary.canary, canary);
-> +       this_cpu_write(__stack_chk_guard, canary);
->  #endif
->  }
->
-> @@ -95,48 +80,16 @@ static inline void cpu_init_stack_canary(int cpu, struct task_struct *idle)
->  #ifdef CONFIG_X86_64
->         per_cpu(fixed_percpu_data.stack_canary, cpu) = idle->stack_canary;
->  #else
-> -       per_cpu(stack_canary.canary, cpu) = idle->stack_canary;
-> -#endif
-> -}
-> -
-> -static inline void setup_stack_canary_segment(int cpu)
-> -{
-> -#ifdef CONFIG_X86_32
-> -       unsigned long canary = (unsigned long)&per_cpu(stack_canary, cpu);
-> -       struct desc_struct *gdt_table = get_cpu_gdt_rw(cpu);
-> -       struct desc_struct desc;
-> -
-> -       desc = gdt_table[GDT_ENTRY_STACK_CANARY];
-> -       set_desc_base(&desc, canary);
-> -       write_gdt_entry(gdt_table, GDT_ENTRY_STACK_CANARY, &desc, DESCTYPE_S);
-> -#endif
-> -}
-> -
-> -static inline void load_stack_canary_segment(void)
-> -{
-> -#ifdef CONFIG_X86_32
-> -       asm("mov %0, %%gs" : : "r" (__KERNEL_STACK_CANARY) : "memory");
-> +       per_cpu(__stack_chk_guard, cpu) = idle->stack_canary;
->  #endif
->  }
->
->  #else  /* STACKPROTECTOR */
->
-> -#define GDT_STACK_CANARY_INIT
-> -
->  /* dummy boot_init_stack_canary() is defined in linux/stackprotector.h */
->
-> -static inline void setup_stack_canary_segment(int cpu)
-> -{ }
-> -
->  static inline void cpu_init_stack_canary(int cpu, struct task_struct *idle)
->  { }
->
-> -static inline void load_stack_canary_segment(void)
-> -{
-> -#ifdef CONFIG_X86_32
-> -       asm volatile ("mov %0, %%gs" : : "r" (0));
-> -#endif
-> -}
-> -
->  #endif /* STACKPROTECTOR */
->  #endif /* _ASM_STACKPROTECTOR_H */
-> diff --git a/arch/x86/include/asm/suspend_32.h b/arch/x86/include/asm/suspend_32.h
-> index fdbd9d7b7bca..7b132d0312eb 100644
-> --- a/arch/x86/include/asm/suspend_32.h
-> +++ b/arch/x86/include/asm/suspend_32.h
-> @@ -13,12 +13,10 @@
->  /* image of the saved processor state */
->  struct saved_context {
->         /*
-> -        * On x86_32, all segment registers, with the possible exception of
-> -        * gs, are saved at kernel entry in pt_regs.
-> +        * On x86_32, all segment registers except gs are saved at kernel
-> +        * entry in pt_regs.
->          */
-> -#ifdef CONFIG_X86_32_LAZY_GS
->         u16 gs;
-> -#endif
->         unsigned long cr0, cr2, cr3, cr4;
->         u64 misc_enable;
->         bool misc_enable_saved;
-> diff --git a/arch/x86/kernel/asm-offsets_32.c b/arch/x86/kernel/asm-offsets_32.c
-> index 6e043f295a60..2b411cd00a4e 100644
-> --- a/arch/x86/kernel/asm-offsets_32.c
-> +++ b/arch/x86/kernel/asm-offsets_32.c
-> @@ -53,11 +53,6 @@ void foo(void)
->                offsetof(struct cpu_entry_area, tss.x86_tss.sp1) -
->                offsetofend(struct cpu_entry_area, entry_stack_page.stack));
->
-> -#ifdef CONFIG_STACKPROTECTOR
-> -       BLANK();
-> -       OFFSET(stack_canary_offset, stack_canary, canary);
-> -#endif
-> -
->         BLANK();
->         DEFINE(EFI_svam, offsetof(efi_runtime_services_t, set_virtual_address_map));
->  }
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index 35ad8480c464..f208569d2d3b 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -161,7 +161,6 @@ DEFINE_PER_CPU_PAGE_ALIGNED(struct gdt_page, gdt_page) = { .gdt = {
->
->         [GDT_ENTRY_ESPFIX_SS]           = GDT_ENTRY_INIT(0xc092, 0, 0xfffff),
->         [GDT_ENTRY_PERCPU]              = GDT_ENTRY_INIT(0xc092, 0, 0xfffff),
-> -       GDT_STACK_CANARY_INIT
->  #endif
->  } };
->  EXPORT_PER_CPU_SYMBOL_GPL(gdt_page);
-> @@ -599,7 +598,6 @@ void load_percpu_segment(int cpu)
->         __loadsegment_simple(gs, 0);
->         wrmsrl(MSR_GS_BASE, cpu_kernelmode_gs_base(cpu));
->  #endif
-> -       load_stack_canary_segment();
->  }
->
->  #ifdef CONFIG_X86_32
-> @@ -1793,7 +1791,8 @@ DEFINE_PER_CPU(unsigned long, cpu_current_top_of_stack) =
->  EXPORT_PER_CPU_SYMBOL(cpu_current_top_of_stack);
->
->  #ifdef CONFIG_STACKPROTECTOR
-> -DEFINE_PER_CPU_ALIGNED(struct stack_canary, stack_canary);
-> +DEFINE_PER_CPU(unsigned long, __stack_chk_guard);
-> +EXPORT_PER_CPU_SYMBOL(__stack_chk_guard);
->  #endif
->
->  #endif /* CONFIG_X86_64 */
-> diff --git a/arch/x86/kernel/doublefault_32.c b/arch/x86/kernel/doublefault_32.c
-> index 759d392cbe9f..d1d49e3d536b 100644
-> --- a/arch/x86/kernel/doublefault_32.c
-> +++ b/arch/x86/kernel/doublefault_32.c
-> @@ -100,9 +100,7 @@ DEFINE_PER_CPU_PAGE_ALIGNED(struct doublefault_stack, doublefault_stack) = {
->                 .ss             = __KERNEL_DS,
->                 .ds             = __USER_DS,
->                 .fs             = __KERNEL_PERCPU,
-> -#ifndef CONFIG_X86_32_LAZY_GS
-> -               .gs             = __KERNEL_STACK_CANARY,
-> -#endif
-> +               .gs             = 0,
->
->                 .__cr3          = __pa_nodebug(swapper_pg_dir),
->         },
-> diff --git a/arch/x86/kernel/head_32.S b/arch/x86/kernel/head_32.S
-> index 7ed84c282233..67f590425d90 100644
-> --- a/arch/x86/kernel/head_32.S
-> +++ b/arch/x86/kernel/head_32.S
-> @@ -318,8 +318,8 @@ SYM_FUNC_START(startup_32_smp)
->         movl $(__KERNEL_PERCPU), %eax
->         movl %eax,%fs                   # set this cpu's percpu
->
-> -       movl $(__KERNEL_STACK_CANARY),%eax
-> -       movl %eax,%gs
-> +       xorl %eax,%eax
-> +       movl %eax,%gs                   # clear possible garbage in %gs
->
->         xorl %eax,%eax                  # Clear LDT
->         lldt %ax
-> @@ -339,20 +339,6 @@ SYM_FUNC_END(startup_32_smp)
->   */
->  __INIT
->  setup_once:
-> -#ifdef CONFIG_STACKPROTECTOR
-> -       /*
-> -        * Configure the stack canary. The linker can't handle this by
-> -        * relocation.  Manually set base address in stack canary
-> -        * segment descriptor.
-> -        */
-> -       movl $gdt_page,%eax
-> -       movl $stack_canary,%ecx
-> -       movw %cx, 8 * GDT_ENTRY_STACK_CANARY + 2(%eax)
-> -       shrl $16, %ecx
-> -       movb %cl, 8 * GDT_ENTRY_STACK_CANARY + 4(%eax)
-> -       movb %ch, 8 * GDT_ENTRY_STACK_CANARY + 7(%eax)
-> -#endif
-> -
->         andl $0,setup_once_ref  /* Once is enough, thanks */
->         ret
->
-> diff --git a/arch/x86/kernel/setup_percpu.c b/arch/x86/kernel/setup_percpu.c
-> index fd945ce78554..0941d2f44f2a 100644
-> --- a/arch/x86/kernel/setup_percpu.c
-> +++ b/arch/x86/kernel/setup_percpu.c
-> @@ -224,7 +224,6 @@ void __init setup_per_cpu_areas(void)
->                 per_cpu(this_cpu_off, cpu) = per_cpu_offset(cpu);
->                 per_cpu(cpu_number, cpu) = cpu;
->                 setup_percpu_segment(cpu);
-> -               setup_stack_canary_segment(cpu);
->                 /*
->                  * Copy data used in early init routines from the
->                  * initial arrays to the per cpu data areas.  These
-> diff --git a/arch/x86/kernel/tls.c b/arch/x86/kernel/tls.c
-> index 64a496a0687f..3c883e064242 100644
-> --- a/arch/x86/kernel/tls.c
-> +++ b/arch/x86/kernel/tls.c
-> @@ -164,17 +164,11 @@ int do_set_thread_area(struct task_struct *p, int idx,
->                 savesegment(fs, sel);
->                 if (sel == modified_sel)
->                         loadsegment(fs, sel);
-> -
-> -               savesegment(gs, sel);
-> -               if (sel == modified_sel)
-> -                       load_gs_index(sel);
->  #endif
->
-> -#ifdef CONFIG_X86_32_LAZY_GS
->                 savesegment(gs, sel);
->                 if (sel == modified_sel)
-> -                       loadsegment(gs, sel);
-> -#endif
-> +                       load_gs_index(sel);
->         } else {
->  #ifdef CONFIG_X86_64
->                 if (p->thread.fsindex == modified_sel)
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index f923e14e87df..ec39073b4897 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1467,12 +1467,8 @@ static void svm_vcpu_put(struct kvm_vcpu *vcpu)
->  #ifdef CONFIG_X86_64
->                 loadsegment(fs, svm->host.fs);
->                 wrmsrl(MSR_KERNEL_GS_BASE, current->thread.gsbase);
-> -               load_gs_index(svm->host.gs);
-> -#else
-> -#ifdef CONFIG_X86_32_LAZY_GS
-> -               loadsegment(gs, svm->host.gs);
-> -#endif
->  #endif
-> +               load_gs_index(svm->host.gs);
->
->                 for (i = 0; i < NR_HOST_SAVE_USER_MSRS; i++)
->                         wrmsrl(host_save_user_msrs[i].index,
-> @@ -3705,13 +3701,11 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu,
->         } else {
->                 __svm_vcpu_run(svm->vmcb_pa, (unsigned long *)&svm->vcpu.arch.regs);
->
-> +               /* Restore the percpu segment immediately. */
->  #ifdef CONFIG_X86_64
->                 native_wrmsrl(MSR_GS_BASE, svm->host.gs_base);
->  #else
->                 loadsegment(fs, svm->host.fs);
-> -#ifndef CONFIG_X86_32_LAZY_GS
-> -               loadsegment(gs, svm->host.gs);
-> -#endif
->  #endif
->         }
->
-> diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-> index 4229950a5d78..7f89a091f1fb 100644
-> --- a/arch/x86/lib/insn-eval.c
-> +++ b/arch/x86/lib/insn-eval.c
-> @@ -404,10 +404,6 @@ static short get_segment_selector(struct pt_regs *regs, int seg_reg_idx)
->         case INAT_SEG_REG_FS:
->                 return (unsigned short)(regs->fs & 0xffff);
->         case INAT_SEG_REG_GS:
-> -               /*
-> -                * GS may or may not be in regs as per CONFIG_X86_32_LAZY_GS.
-> -                * The macro below takes care of both cases.
-> -                */
->                 return get_user_gs(regs);
->         case INAT_SEG_REG_IGNORE:
->         default:
-> diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-> index 43b4d864817e..afbf0bb252da 100644
-> --- a/arch/x86/platform/pvh/head.S
-> +++ b/arch/x86/platform/pvh/head.S
-> @@ -45,10 +45,8 @@
->
->  #define PVH_GDT_ENTRY_CS       1
->  #define PVH_GDT_ENTRY_DS       2
-> -#define PVH_GDT_ENTRY_CANARY   3
->  #define PVH_CS_SEL             (PVH_GDT_ENTRY_CS * 8)
->  #define PVH_DS_SEL             (PVH_GDT_ENTRY_DS * 8)
-> -#define PVH_CANARY_SEL         (PVH_GDT_ENTRY_CANARY * 8)
->
->  SYM_CODE_START_LOCAL(pvh_start_xen)
->         cld
-> @@ -109,17 +107,6 @@ SYM_CODE_START_LOCAL(pvh_start_xen)
->
->  #else /* CONFIG_X86_64 */
->
-> -       /* Set base address in stack canary descriptor. */
-> -       movl $_pa(gdt_start),%eax
-> -       movl $_pa(canary),%ecx
-> -       movw %cx, (PVH_GDT_ENTRY_CANARY * 8) + 2(%eax)
-> -       shrl $16, %ecx
-> -       movb %cl, (PVH_GDT_ENTRY_CANARY * 8) + 4(%eax)
-> -       movb %ch, (PVH_GDT_ENTRY_CANARY * 8) + 7(%eax)
-> -
-> -       mov $PVH_CANARY_SEL,%eax
-> -       mov %eax,%gs
-> -
->         call mk_early_pgtbl_32
->
->         mov $_pa(initial_page_table), %eax
-> @@ -163,7 +150,6 @@ SYM_DATA_START_LOCAL(gdt_start)
->         .quad GDT_ENTRY(0xc09a, 0, 0xfffff) /* PVH_CS_SEL */
->  #endif
->         .quad GDT_ENTRY(0xc092, 0, 0xfffff) /* PVH_DS_SEL */
-> -       .quad GDT_ENTRY(0x4090, 0, 0x18)    /* PVH_CANARY_SEL */
->  SYM_DATA_END_LABEL(gdt_start, SYM_L_LOCAL, gdt_end)
->
->         .balign 16
-> diff --git a/arch/x86/power/cpu.c b/arch/x86/power/cpu.c
-> index db1378c6ff26..ef4329d67a5f 100644
-> --- a/arch/x86/power/cpu.c
-> +++ b/arch/x86/power/cpu.c
-> @@ -99,11 +99,8 @@ static void __save_processor_state(struct saved_context *ctxt)
->         /*
->          * segment registers
->          */
-> -#ifdef CONFIG_X86_32_LAZY_GS
->         savesegment(gs, ctxt->gs);
-> -#endif
->  #ifdef CONFIG_X86_64
-> -       savesegment(gs, ctxt->gs);
->         savesegment(fs, ctxt->fs);
->         savesegment(ds, ctxt->ds);
->         savesegment(es, ctxt->es);
-> @@ -232,7 +229,6 @@ static void notrace __restore_processor_state(struct saved_context *ctxt)
->         wrmsrl(MSR_GS_BASE, ctxt->kernelmode_gs_base);
->  #else
->         loadsegment(fs, __KERNEL_PERCPU);
-> -       loadsegment(gs, __KERNEL_STACK_CANARY);
->  #endif
->
->         /* Restore the TSS, RO GDT, LDT, and usermode-relevant MSRs. */
-> @@ -255,7 +251,7 @@ static void notrace __restore_processor_state(struct saved_context *ctxt)
->          */
->         wrmsrl(MSR_FS_BASE, ctxt->fs_base);
->         wrmsrl(MSR_KERNEL_GS_BASE, ctxt->usermode_gs_base);
-> -#elif defined(CONFIG_X86_32_LAZY_GS)
-> +#else
->         loadsegment(gs, ctxt->gs);
->  #endif
->
-> diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-> index 9a5a50cdaab5..e18235a6390d 100644
-> --- a/arch/x86/xen/enlighten_pv.c
-> +++ b/arch/x86/xen/enlighten_pv.c
-> @@ -1190,7 +1190,6 @@ static void __init xen_setup_gdt(int cpu)
->         pv_ops.cpu.write_gdt_entry = xen_write_gdt_entry_boot;
->         pv_ops.cpu.load_gdt = xen_load_gdt_boot;
->
-> -       setup_stack_canary_segment(cpu);
->         switch_to_new_gdt(cpu);
->
->         pv_ops.cpu.write_gdt_entry = xen_write_gdt_entry;
-> diff --git a/scripts/gcc-x86_32-has-stack-protector.sh b/scripts/gcc-x86_32-has-stack-protector.sh
-> index f5c119495254..825c75c5b715 100755
-> --- a/scripts/gcc-x86_32-has-stack-protector.sh
-> +++ b/scripts/gcc-x86_32-has-stack-protector.sh
-> @@ -1,4 +1,8 @@
->  #!/bin/sh
->  # SPDX-License-Identifier: GPL-2.0
->
-> -echo "int foo(void) { char X[200]; return 3; }" | $* -S -x c -c -m32 -O0 -fstack-protector - -o - 2> /dev/null | grep -q "%gs"
-> +# This requires GCC 8.1 or better.  Specifically, we require
-> +# -mstack-protector-guard-reg, added by
-> +# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81708
-
-And -mstack-protector-guard-symbol= it would seem, since that's what
-will cause this to fail with Clang?
-
-What about -mstack-protector-guard=global which can be used for non
-SMP?  I'm guessing that came out in an earlier version of GCC than
--mstack-protector-guard-reg, so it doesn't need to be checked?  FWIW,
-some of these were added to Clang in https://reviews.llvm.org/D88631.
+Please move this just after tcm_mem_alloc()
 
 > +
-> +echo "int foo(void) { char X[200]; return 3; }" | $* -S -x c -c -m32 -O0 -fstack-protector -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard - -o - 2> /dev/null | grep -q "%fs"
-> --
-> 2.29.2
->
+> +/*
+> + * zynqmp_r5_rproc_start
+> + * @rproc: single R5 core's corresponding rproc instance
+> + *
+> + * Start R5 Core from designated boot address.
+> + *
+> + * return 0 on success, otherwise non-zero value on failure
+> + */
+> +static int zynqmp_r5_rproc_start(struct rproc *rproc)
+> +{
+> +	struct zynqmp_r5_rproc *z_rproc = rproc->priv;
+> +	enum rpu_boot_mem bootmem;
+> +
+> +	bootmem = (rproc->bootaddr & 0xF0000000) == 0xF0000000 ?
+> +		   PM_RPU_BOOTMEM_HIVEC : PM_RPU_BOOTMEM_LOVEC;
+> +
+> +	dev_dbg(rproc->dev.parent, "RPU boot from %s.",
+> +		bootmem == PM_RPU_BOOTMEM_HIVEC ? "OCM" : "TCM");
+> +
+> +	return zynqmp_pm_request_wake(z_rproc->pnode_id, 1,
+> +				      bootmem, ZYNQMP_PM_REQUEST_ACK_NO);
+> +}
+> +
+> +/*
+> + * zynqmp_r5_rproc_stop
+> + * @rproc: single R5 core's corresponding rproc instance
+> + *
+> + * Power down  R5 Core.
+> + *
+> + * return 0 on success, otherwise non-zero value on failure
+> + */
+> +static int zynqmp_r5_rproc_stop(struct rproc *rproc)
+> +{
+> +	struct zynqmp_r5_rproc *z_rproc = rproc->priv;
+> +
+> +	return zynqmp_pm_force_pwrdwn(z_rproc->pnode_id,
+> +				      ZYNQMP_PM_REQUEST_ACK_BLOCKING);
+> +}
+> +
+> +/*
+> + * zynqmp_r5_rproc_mem_alloc
+> + * @rproc: single R5 core's corresponding rproc instance
+> + * @mem: mem entry to map
+> + *
+> + * Callback to map va for memory-region's carveout.
+> + *
+> + * return 0 on success, otherwise non-zero value on failure
+> + */
+> +static int zynqmp_r5_rproc_mem_alloc(struct rproc *rproc,
+> +				     struct rproc_mem_entry *mem)
+> +{
+> +	void *va;
+> +
+> +	va = ioremap_wc(mem->dma, mem->len);
+> +	if (IS_ERR_OR_NULL(va))
+> +		return -ENOMEM;
+> +
+> +	mem->va = va;
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * zynqmp_r5_rproc_mem_release
+> + * @rproc: single R5 core's corresponding rproc instance
+> + * @mem: mem entry to unmap
+> + *
+> + * Unmap memory-region carveout
+> + *
+> + * return 0 on success, otherwise non-zero value on failure
+> + */
+> +static int zynqmp_r5_rproc_mem_release(struct rproc *rproc,
+> +				       struct rproc_mem_entry *mem)
+> +{
+> +	iounmap(mem->va);
+> +	return 0;
+> +}
+> +
+> +/*
+> + * parse_mem_regions
+> + * @rproc: single R5 core's corresponding rproc instance
+> + *
+> + * Construct rproc mem carveouts from carveout provided in
+> + * memory-region property
+> + *
+> + * return 0 on success, otherwise non-zero value on failure
+> + */
+> +static int parse_mem_regions(struct rproc *rproc)
+> +{
+> +	struct zynqmp_r5_rproc *z_rproc = rproc->priv;
+> +	struct device_node *np = z_rproc->dev->of_node;
+> +	struct device *dev = &rproc->dev;
+> +	struct of_phandle_iterator it;
+> +	struct rproc_mem_entry *mem;
+> +	struct reserved_mem *rmem;
+> +	int index = 0;
+> +
+> +	/* Register associated reserved memory regions */
+> +	of_phandle_iterator_init(&it, np, DDR_LIST_PROP, NULL, 0);
+> +	while (of_phandle_iterator_next(&it) == 0) {
+> +		rmem = of_reserved_mem_lookup(it.node);
+> +		if (!rmem) {
+> +			dev_err(dev, "unable to acquire %s\n", DDR_LIST_PROP);
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (strstr(it.node->name, "vdev0buffer")) {
+> +			mem = rproc_of_resm_mem_entry_init(dev, index,
+> +							   rmem->size,
+> +							   rmem->base,
+> +							   "vdev0buffer");
+> +		} else {
+> +			/*
+> +			 * The ensuing carveout is either for vring, which has
+> +			 * device tree node name of length 15 characters, or
+> +			 * firmware mem, where name is not used by remoteproc
+> +			 *  core later on. So default to vring length of 15.
+
+s/"*  core"/"* core"
+
+> +			 *
+> +			 * Extra char for null-terminated string.
+> +			 */
+> +			char name[16];
+> +
+> +			if (strstr(it.node->name, "vdev0vring")) {
+> +				int vring_id;
+> +
+> +				/*
+> +				 * Expect "rpuXvdev0vringX" as documented
+> +				 * in xilinx remoteproc device tree binding
+> +				 */
+> +				if (strlen(it.node->name) < 15) {
+> +					dev_err(dev, "%pOF is less than 15 chars",
+> +						it.node);
+> +					return -EINVAL;
+> +				}
+> +
+> +				/*
+> +				 * can be 1 of multiple vring IDs per IPC channel
+> +				 * e.g. 'vdev0vring0' and 'vdev0vring1'
+> +				 *
+> +				 * Here get vring ID from 15th char
+> +				 */
+> +				vring_id = it.node->name[14] - '0';
+> +				snprintf(name, sizeof(name), "vdev0vring%d", vring_id);
+
+Function strstr() returns a pointer to the beginning of the string being
+searched for.  As such you should be able to do something like:
+
+                        name = strstr(it.node->name, "vdev0vring");
+                        if (name) {
+                                ...
+
+and simply use @name when calling rproc_mem_entry_init().
+
+> +			} else {
+> +				strncpy(name, it.node->name, 16);
+> +			}
+> +
+> +			mem = rproc_mem_entry_init(dev, NULL,
+> +						   (dma_addr_t)rmem->base,
+> +						   rmem->size, rmem->base,
+> +						   zynqmp_r5_rproc_mem_alloc,
+> +						   zynqmp_r5_rproc_mem_release,
+> +						   name);
+> +		}
+> +
+> +		if (!mem)
+> +			return -ENOMEM;
+> +
+> +		rproc_add_carveout(rproc, mem);
+> +		index++;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * zynqmp_r5_pm_request_tcm
+> + * @addr: base address of mem provided in R5 core's sram property.
+> + *
+> + * Given sram base address, determine its corresponding Xilinx
+> + * Platform Management ID and then request access to this node
+> + * so that it can be power up.
+> + *
+> + * return 0 on success, otherwise non-zero value on failure
+> + */
+> +static int zynqmp_r5_pm_request_sram(phys_addr_t addr)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < NUM_SRAMS; i++) {
+> +		if (zynqmp_banks[i].addr != addr)
+> +			continue;
+> +
+> +		return zynqmp_pm_request_node(zynqmp_banks[i].id,
+> +					      ZYNQMP_PM_CAPABILITY_ACCESS, 0,
+> +					      ZYNQMP_PM_REQUEST_ACK_BLOCKING);
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +/*
+> + * tcm_mem_alloc
+> + * @rproc: single R5 core's corresponding rproc instance
+> + * @mem: mem entry to initialize the va and da fields of
+> + *
+> + * Given TCM bank entry, this callback will set device address for R5
+> + * running on TCM and also setup virtual address for TCM bank
+> + * remoteproc carveout.
+> + *
+> + * return 0 on success, otherwise non-zero value on failure
+> + */
+> +static int tcm_mem_alloc(struct rproc *rproc,
+> +			 struct rproc_mem_entry *mem)
+> +{
+> +	void *va;
+> +	struct device *dev = rproc->dev.parent;
+> +
+> +	va = ioremap_wc(mem->dma, mem->len);
+> +	if (IS_ERR_OR_NULL(va))
+> +		return -ENOMEM;
+> +
+> +	/* Update memory entry va */
+> +	mem->va = va;
+> +
+> +	/*
+> +	 * The R5s expect their TCM banks to be at address 0x0 and 0x2000,
+> +	 * while on the Linux side they are at 0xffexxxxx.
+> +	 *
+> +	 * Zero out the high 12 bits of the address. This will give
+> +	 * expected values for TCM Banks 0A and 0B (0x0 and 0x20000).
+> +	 */
+> +	mem->da &= 0x000fffff;
+> +
+> +	/*
+> +	 * TCM Banks 1A and 1B still have to be translated.
+> +	 *
+> +	 * Below handle these two banks' absolute addresses (0xffe90000 and
+> +	 * 0xffeb0000) and convert to the expected relative addresses
+> +	 * (0x0 and 0x20000).
+> +	 */
+> +	if (mem->da == 0x90000 || mem->da == 0xB0000)
+> +		mem->da -= 0x90000;
+> +
+> +	/* if translated TCM bank address is not valid report error */
+> +	if (mem->da != 0x0 && mem->da != 0x20000) {
+> +		dev_err(dev, "invalid TCM bank address: %x\n", mem->da);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * parse_tcm_banks()
+> + * @rproc: single R5 core's corresponding rproc instance
+> + *
+> + * Given R5 node in remoteproc instance
+> + * allocate remoteproc carveout for TCM memory
+> + * needed for firmware to be loaded
+> + *
+> + * return 0 on success, otherwise non-zero value on failure
+> + */
+> +static int parse_tcm_banks(struct rproc *rproc)
+> +{
+> +	int i, num_banks;
+> +	struct zynqmp_r5_rproc *z_rproc = rproc->priv;
+> +	struct device *dev = &rproc->dev;
+> +	struct device_node *r5_node = z_rproc->dev->of_node;
+> +
+> +	/* go through TCM banks for r5 node */
+> +	num_banks = of_count_phandle_with_args(r5_node, BANK_LIST_PROP, NULL);
+> +	if (num_banks <= 0) {
+> +		dev_err(dev, "need to specify TCM banks\n");
+> +		return -EINVAL;
+> +	}
+> +	for (i = 0; i < num_banks; i++) {
+> +		struct resource rsc;
+> +		resource_size_t size;
+> +		struct device_node *dt_node;
+> +		struct rproc_mem_entry *mem;
+> +		int ret;
+> +		u32 pnode_id; /* zynqmp_pm* fn's expect u32 */
+> +
+> +		dt_node = of_parse_phandle(r5_node, BANK_LIST_PROP, i);
+> +		if (!dt_node)
+> +			return -EINVAL;
+> +
+> +		ret = of_address_to_resource(dt_node, 0, &rsc);
+> +		if (ret < 0) {
+> +			of_node_put(dt_node);
+> +			return ret;
+> +		}
+> +		of_node_put(dt_node);
+> +
+> +		ret = zynqmp_r5_pm_request_sram(rsc.start);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		/* add carveout */
+> +		size = resource_size(&rsc);
+> +		mem = rproc_mem_entry_init(dev, NULL, rsc.start,
+> +					   (size_t)size, rsc.start,
+> +					   tcm_mem_alloc,
+> +					   tcm_mem_release,
+> +					   rsc.name);
+> +		if (!mem) {
+> +			ret = zynqmp_pm_release_node(pnode_id);
+
+Where is @pnode_id initialised?
+
+> +			if (ret)
+> +				dev_warn(dev,
+> +					 "fail to release node: %x ret: %x\n",
+> +					 pnode_id, ret);
+> +			return -ENOMEM;
+> +		}
+> +
+> +		mem->priv = (void *)(u64)pnode_id;
 
 
--- 
+And here too - how does this work when you test things out on your side? 
+
+Please note that I will need a reply to these questions before I review another
+set.
+
+> +		rproc_add_carveout(rproc, mem);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * zynqmp_r5_parse_fw()
+> + * @rproc: single R5 core's corresponding rproc instance
+> + * @fw: ptr to firmware to be loaded onto r5 core
+> + *
+> + * When loading firmware, ensure the necessary carveouts are in remoteproc
+> + *
+> + * return 0 on success, otherwise non-zero value on failure
+> + */
+> +static int zynqmp_r5_parse_fw(struct rproc *rproc, const struct firmware *fw)
+> +{
+> +	int ret;
+> +
+> +	ret = parse_tcm_banks(rproc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = parse_mem_regions(rproc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = rproc_elf_load_rsc_table(rproc, fw);
+> +	if (ret == -EINVAL) {
+> +		/*
+> +		 * resource table only required for IPC.
+> +		 * if not present, this is not necessarily an error;
+> +		 * for example, loading r5 hello world application
+> +		 * so simply inform user and keep going.
+> +		 */
+> +		dev_info(&rproc->dev, "no resource table found.\n");
+> +		ret = 0;
+> +	}
+> +	return ret;
+> +}
+> +
+> +/*
+> + * zynqmp_r5_rproc_kick() - kick a firmware if mbox is provided
+> + * @rproc: r5 core's corresponding rproc structure
+> + * @vqid: virtqueue ID
+> + */
+> +static void zynqmp_r5_rproc_kick(struct rproc *rproc, int vqid)
+> +{
+> +	struct zynqmp_r5_rproc *z_rproc = rproc->priv;
+> +	struct device *dev = rproc->dev.parent;
+> +	struct zynqmp_ipi_message *mb_msg = NULL;
+> +	unsigned int skb_len;
+> +	struct sk_buff *skb;
+> +	int ret;
+> +
+> +	/* If vqid is negative, do not pass the vqid to
+> +	 * mailbox as vqid is supposed to be 0 or positive.
+> +	 * It also gives a way to just kick instead but
+> +	 * not use the IPI buffer.
+> +	 *
+> +	 * For now use negative vqid to assume no message will be
+> +	 * passed with IPI buffer, but just raise interrupt.
+> +	 * This will be faster as it doesn't need to copy the
+> +	 * message to the ZynqMP/Versal IPI message buffer.
+> +	 */
+> +	if (vqid >= 0) {
+> +		skb_len = (unsigned int)(sizeof(vqid) + sizeof(mb_msg));
+> +		skb = alloc_skb(skb_len, GFP_KERNEL);
+> +		if (!skb)
+> +			return;
+> +
+> +		mb_msg = (struct zynqmp_ipi_message *)skb_put(skb, skb_len);
+> +		mb_msg->len = sizeof(vqid);
+> +		memcpy(mb_msg->data, &vqid, sizeof(vqid));
+> +
+> +		skb_queue_tail(&z_rproc->tx_mc_skbs, skb);
+> +	}
+> +
+> +	ret = mbox_send_message(z_rproc->tx_chan, mb_msg);
+> +	if (ret < 0) {
+> +		dev_warn(dev, "Failed to kick remote.\n");
+> +		if (mb_msg) {
+> +			skb_dequeue_tail(&z_rproc->tx_mc_skbs);
+> +			kfree_skb(skb);
+> +		}
+> +	}
+> +}
+> +
+
+I am done reviewing this set.
+
 Thanks,
-~Nick Desaulniers
+Mathieu
+
+> +static struct rproc_ops zynqmp_r5_rproc_ops = {
+> +	.start		= zynqmp_r5_rproc_start,
+> +	.stop		= zynqmp_r5_rproc_stop,
+> +	.load		= rproc_elf_load_segments,
+> +	.parse_fw	= zynqmp_r5_parse_fw,
+> +	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
+> +	.sanity_check	= rproc_elf_sanity_check,
+> +	.get_boot_addr	= rproc_elf_get_boot_addr,
+> +	.kick		= zynqmp_r5_rproc_kick,
+> +};
+> +
+> +/**
+> + * event_notified_idr_cb() - event notified idr callback
+> + * @id: idr id
+> + * @ptr: pointer to idr private data
+> + * @data: data passed to idr_for_each callback
+> + *
+> + * Pass notification to remoteproc virtio
+> + *
+> + * Return: 0. having return is to satisfy the idr_for_each() function
+> + *          pointer input argument requirement.
+> + **/
+> +static int event_notified_idr_cb(int id, void *ptr, void *data)
+> +{
+> +	struct rproc *rproc = data;
+> +
+> +	if (rproc_vq_interrupt(rproc, id) == IRQ_NONE)
+> +		dev_dbg(&rproc->dev, "no message was found in idr with id: %d\n", id);
+> +	return 0;
+> +}
+> +
+> +/**
+> + * handle_event_notified() - remoteproc notification work function
+> + * @work: pointer to the work structure
+> + *
+> + * It checks each registered remoteproc notify IDs.
+> + */
+> +static void handle_event_notified(struct work_struct *work)
+> +{
+> +	struct zynqmp_r5_rproc *z_rproc;
+> +	struct rproc *rproc;
+> +
+> +	z_rproc = container_of(work, struct zynqmp_r5_rproc, mbox_work);
+> +	rproc = z_rproc->rproc;
+> +
+> +	/*
+> +	 * This is to simply raise interrupt as ACK for remote.
+> +	 *
+> +	 * Xilinx mailbox, ATF and SoC specific IPI mapping will handle
+> +	 * mapping to remote processor.
+> +	 */
+> +	if (mbox_send_message(z_rproc->rx_chan, NULL) < 0)
+> +		dev_warn(rproc->dev.parent, "Failed to kick remote.\n");
+> +
+> +	/*
+> +	 * We only use IPI for interrupt. The firmware side may or may
+> +	 * not write the notifyid when it trigger IPI.
+> +	 * And thus, we scan through all the registered notifyids.
+> +	 */
+> +	idr_for_each(&rproc->notifyids, event_notified_idr_cb, rproc);
+> +}
+> +
+> +/**
+> + * zynqmp_r5_mb_rx_cb() - Receive channel mailbox callback
+> + * @cl: mailbox client
+> + * @msg: message pointer
+> + *
+> + * It will schedule the R5 notification work.
+> + */
+> +static void zynqmp_r5_mb_rx_cb(struct mbox_client *cl, void *msg)
+> +{
+> +	struct zynqmp_r5_rproc *z_rproc;
+> +
+> +	z_rproc = container_of(cl, struct zynqmp_r5_rproc, rx_mc);
+> +	/*
+> +	 * Notification can be received with message payload.
+> +	 * To handle this, check for message contents.
+> +	 * If there are contents, copy to ipi message buffer payload location.
+> +	 *
+> +	 * If message is empty, then that means that was simple raising
+> +	 * of interrupt. no payload to process.
+> +	 *
+> +	 * Note: enqueue work regardless of msg as kick may imply that remote
+> +	 * is waiting for ack.
+> +	 */
+> +	if (msg) {
+> +		struct zynqmp_ipi_message *ipi_msg, *buf_msg;
+> +		size_t len;
+> +
+> +		ipi_msg = (struct zynqmp_ipi_message *)msg;
+> +		buf_msg = (struct zynqmp_ipi_message *)z_rproc->rx_mc_buf;
+> +		len = (ipi_msg->len >= IPI_BUF_LEN_MAX) ?
+> +		      IPI_BUF_LEN_MAX : ipi_msg->len;
+> +		buf_msg->len = len;
+> +		memcpy(buf_msg->data, ipi_msg->data, len);
+> +	}
+> +	schedule_work(&z_rproc->mbox_work);
+> +}
+> +
+> +/**
+> + * zynqmp_r5_mb_tx_done() - Request has been sent to the remote
+> + * @cl: mailbox client
+> + * @msg: pointer to the message which has been sent
+> + * @r: status of last TX - OK or error
+> + *
+> + * It will be called by the mailbox framework when the last TX has done.
+> + */
+> +static void zynqmp_r5_mb_tx_done(struct mbox_client *cl, void *msg, int r)
+> +{
+> +	struct zynqmp_r5_rproc *z_rproc;
+> +	struct sk_buff *skb;
+> +
+> +	if (!msg)
+> +		return;
+> +	z_rproc = container_of(cl, struct zynqmp_r5_rproc, tx_mc);
+> +	skb = skb_dequeue(&z_rproc->tx_mc_skbs);
+> +	kfree_skb(skb);
+> +}
+> +
+> +/**
+> + * zynqmp_r5_setup_mbox() - Setup mailboxes
+> + *			    this is used for each individual R5 core
+> + *
+> + * @z_rproc: pointer to the ZynqMP R5 processor platform data
+> + * @node: pointer of the device node
+> + *
+> + * Function to setup mailboxes to talk to RPU.
+> + *
+> + * Return: 0 for success, negative value for failure.
+> + */
+> +static int zynqmp_r5_setup_mbox(struct zynqmp_r5_rproc *z_rproc,
+> +				struct device_node *node)
+> +{
+> +	struct mbox_client *mclient;
+> +
+> +	/* Setup TX mailbox channel client */
+> +	mclient			= &z_rproc->tx_mc;
+> +	mclient->dev		= z_rproc->dev;
+> +	mclient->tx_done	= zynqmp_r5_mb_tx_done;
+> +	mclient->tx_block	= false;
+> +	mclient->knows_txdone	= false;
+> +	mclient->rx_callback	= NULL;
+> +
+> +	/* Setup RX mailbox channel client */
+> +	mclient			= &z_rproc->rx_mc;
+> +	mclient->dev		= z_rproc->dev;
+> +	mclient->tx_done	= NULL;
+> +	mclient->tx_block	= false;
+> +	mclient->knows_txdone	= false;
+> +	mclient->rx_callback	= zynqmp_r5_mb_rx_cb;
+> +
+> +	INIT_WORK(&z_rproc->mbox_work, handle_event_notified);
+> +
+> +	/* Request TX and RX channels */
+> +	z_rproc->tx_chan = mbox_request_channel_byname(&z_rproc->tx_mc, "tx");
+> +	if (IS_ERR(z_rproc->tx_chan)) {
+> +		dev_err(z_rproc->dev, "failed to request mbox tx channel.\n");
+> +		return PTR_ERR(z_rproc->tx_chan);
+> +	}
+> +
+> +	z_rproc->rx_chan = mbox_request_channel_byname(&z_rproc->rx_mc, "rx");
+> +	if (IS_ERR(z_rproc->rx_chan)) {
+> +		dev_err(z_rproc->dev, "failed to request mbox rx channel.\n");
+> +		return PTR_ERR(z_rproc->rx_chan);
+> +	}
+> +	skb_queue_head_init(&z_rproc->tx_mc_skbs);
+> +
+> +	return 0;
+> +}
+> +
+> +static void zynqmp_r5_cleanup_mbox(struct zynqmp_r5_rproc *z_rproc)
+> +{
+> +	mbox_free_channel(z_rproc->tx_chan);
+> +	mbox_free_channel(z_rproc->rx_chan);
+> +}
+> +
+> +/**
+> + * zynqmp_r5_probe() - Probes ZynqMP R5 processor device node
+> + *		       this is called for each individual R5 core to
+> + *		       set up mailbox, Xilinx platform manager unique ID,
+> + *		       add to rproc core
+> + *
+> + * @pdev: domain platform device for current R5 core
+> + * @node: pointer of the device node for current R5 core
+> + * @rpu_mode: mode to configure RPU, split or lockstep
+> + *
+> + * Return: 0 for success, negative value for failure.
+> + */
+> +static struct zynqmp_r5_rproc *zynqmp_r5_probe(struct platform_device *pdev,
+> +					       struct device_node *node,
+> +					       enum rpu_oper_mode rpu_mode)
+> +{
+> +	int ret;
+> +	struct device *dev = &pdev->dev;
+> +	struct rproc *rproc_ptr;
+> +	struct zynqmp_r5_rproc *z_rproc;
+> +
+> +	/* Allocate remoteproc instance */
+> +	rproc_ptr = devm_rproc_alloc(dev, dev_name(dev), &zynqmp_r5_rproc_ops,
+> +				     NULL, sizeof(struct zynqmp_r5_rproc));
+> +	if (!rproc_ptr) {
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	rproc_ptr->auto_boot = false;
+> +	z_rproc = rproc_ptr->priv;
+> +	z_rproc->rproc = rproc_ptr;
+> +	z_rproc->dev = dev;
+> +
+> +	/* Set up DMA mask */
+> +	ret = dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
+> +	if (ret)
+> +		goto error;
+> +
+> +	/* Get R5 power domain node */
+> +	ret = of_property_read_u32(node, "power-domain", &z_rproc->pnode_id);
+> +	if (ret)
+> +		goto error;
+> +
+> +	ret = r5_set_mode(z_rproc, rpu_mode);
+> +	if (ret)
+> +		goto error;
+> +
+> +	if (of_property_read_bool(node, "mboxes")) {
+> +		ret = zynqmp_r5_setup_mbox(z_rproc, node);
+> +		if (ret)
+> +			goto error;
+> +	}
+> +
+> +	/* Add R5 remoteproc */
+> +	ret = devm_rproc_add(dev, rproc_ptr);
+> +	if (ret) {
+> +		zynqmp_r5_cleanup_mbox(z_rproc);
+> +		goto error;
+> +	}
+> +
+> +	return z_rproc;
+> +error:
+> +	return ERR_PTR(ret);
+> +}
+> +
+> +/*
+> + * zynqmp_r5_remoteproc_probe()
+> + *
+> + * @pdev: domain platform device for R5 cluster
+> + *
+> + * called when driver is probed, for each R5 core specified in DT,
+> + * setup as needed to do remoteproc-related operations
+> + *
+> + * Return: 0 for success, negative value for failure.
+> + */
+> +static int zynqmp_r5_remoteproc_probe(struct platform_device *pdev)
+> +{
+> +	int ret, core_count;
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *nc;
+> +	enum rpu_oper_mode rpu_mode = PM_RPU_MODE_LOCKSTEP;
+> +	struct list_head *cluster; /* list to track each core's rproc */
+> +	struct zynqmp_r5_rproc *z_rproc;
+> +	struct platform_device *child_pdev;
+> +	struct list_head *pos;
+> +
+> +	ret = of_property_read_u32(dev->of_node, "xlnx,cluster-mode", &rpu_mode);
+> +	if (ret < 0 || (rpu_mode != PM_RPU_MODE_LOCKSTEP &&
+> +			rpu_mode != PM_RPU_MODE_SPLIT)) {
+> +		dev_err(dev, "invalid cluster mode: ret %d mode %x\n",
+> +			ret, rpu_mode);
+> +		return ret;
+> +	}
+> +
+> +	dev_dbg(dev, "RPU configuration: %s\n",
+> +		rpu_mode == PM_RPU_MODE_LOCKSTEP ? "lockstep" : "split");
+> +
+> +	/*
+> +	 * if 2 RPUs provided but one is lockstep, then we have an
+> +	 * invalid configuration.
+> +	 */
+> +
+> +	core_count = of_get_available_child_count(dev->of_node);
+> +	if ((rpu_mode == PM_RPU_MODE_LOCKSTEP && core_count != 1) ||
+> +	    core_count > MAX_RPROCS)
+> +		return -EINVAL;
+> +
+> +	cluster = devm_kzalloc(dev, sizeof(*cluster), GFP_KERNEL);
+> +	if (!cluster)
+> +		return -ENOMEM;
+> +	INIT_LIST_HEAD(cluster);
+> +
+> +	ret = devm_of_platform_populate(dev);
+> +	if (ret) {
+> +		dev_err(dev, "devm_of_platform_populate failed, ret = %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	/* probe each individual r5 core's remoteproc-related info */
+> +	for_each_available_child_of_node(dev->of_node, nc) {
+> +		child_pdev = of_find_device_by_node(nc);
+> +		if (!child_pdev) {
+> +			dev_err(dev, "could not get R5 core platform device\n");
+> +			ret = -ENODEV;
+> +			goto out;
+> +		}
+> +
+> +		z_rproc = zynqmp_r5_probe(child_pdev, nc, rpu_mode);
+> +		dev_dbg(dev, "%s to probe rpu %pOF\n",
+> +			ret ? "Failed" : "Able",
+> +			nc);
+> +		if (IS_ERR(z_rproc)) {
+> +			ret = PTR_ERR(z_rproc);
+> +			goto out;
+> +		}
+> +		list_add_tail(&z_rproc->elem, cluster);
+> +	}
+> +	/* wire in so each core can be cleaned up at driver remove */
+> +	platform_set_drvdata(pdev, cluster);
+> +	return 0;
+> +out:
+> +	/*
+> +	 * undo core0 upon any failures on core1 in split-mode
+> +	 *
+> +	 * in zynqmp_r5_probe z_rproc is set to null
+> +	 * and ret to non-zero value if error
+> +	 */
+> +	list_for_each(pos, cluster) {
+> +		z_rproc = list_entry(pos, struct zynqmp_r5_rproc, elem);
+> +		zynqmp_r5_cleanup_mbox(z_rproc);
+> +	}
+> +	return ret;
+> +}
+> +
+> +/*
+> + * zynqmp_r5_remoteproc_remove()
+> + *
+> + * @pdev: domain platform device for R5 cluster
+> + *
+> + * When the driver is unloaded, clean up the mailboxes for each
+> + * remoteproc that was initially probed.
+> + */
+> +static int zynqmp_r5_remoteproc_remove(struct platform_device *pdev)
+> +{
+> +	struct list_head *pos, *temp, *cluster = (struct list_head *)
+> +						 platform_get_drvdata(pdev);
+> +	struct zynqmp_r5_rproc *z_rproc = NULL;
+> +
+> +	list_for_each_safe(pos, temp, cluster) {
+> +		z_rproc = list_entry(pos, struct zynqmp_r5_rproc, elem);
+> +		zynqmp_r5_cleanup_mbox(z_rproc);
+> +		list_del(pos);
+> +	}
+> +	return 0;
+> +}
+> +
+> +/* Match table for OF platform binding */
+> +static const struct of_device_id zynqmp_r5_remoteproc_match[] = {
+> +	{ .compatible = "xlnx,zynqmp-r5-remoteproc", },
+> +	{ /* end of list */ },
+> +};
+> +MODULE_DEVICE_TABLE(of, zynqmp_r5_remoteproc_match);
+> +
+> +static struct platform_driver zynqmp_r5_remoteproc_driver = {
+> +	.probe = zynqmp_r5_remoteproc_probe,
+> +	.remove = zynqmp_r5_remoteproc_remove,
+> +	.driver = {
+> +		.name = "zynqmp_r5_remoteproc",
+> +		.of_match_table = zynqmp_r5_remoteproc_match,
+> +	},
+> +};
+> +module_platform_driver(zynqmp_r5_remoteproc_driver);
+> +
+> +MODULE_AUTHOR("Ben Levinsky <ben.levinsky@xilinx.com>");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.17.1
+> 
