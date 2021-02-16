@@ -2,122 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFF131D0B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4837131D0CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhBPTJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 14:09:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhBPTJW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 14:09:22 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2388C061574;
-        Tue, 16 Feb 2021 11:08:41 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id 189so6755128pfy.6;
-        Tue, 16 Feb 2021 11:08:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DDbSq81kjRkOQSUTzOFIYpBc78afn8u5F423xQVG7+o=;
-        b=Ltg5ikKcb0pCOGL0abodIN4jACPbtcMJVs6Avt3uZq6GD2/35DkE9CzT6LlLd4TilK
-         zaNxK+Jo6CfHnUwIAChIYTdt2O2sbskRWZo893re/h0V1myauWJ6RwNZq1BryVNHuPAW
-         +c6laF7erLx2FX24qTWEeI4DjLwXgM6pfvlG/thOTlhKL+N0U9pla6MVZlHXdIJe25fS
-         bPJpsKiMxHuznTlsRi5eq/71HNt3GJtKukKaDPXyt+LG/1D3VNfL/s5W2oVT2kYuA1Mq
-         OU6O+Bwgc5rmCiaHP2GYFWIws5cPWZBbPnfuTC233cVGWzuW4/Go/laoTfGryZvww+MQ
-         x4GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DDbSq81kjRkOQSUTzOFIYpBc78afn8u5F423xQVG7+o=;
-        b=PtORNNKkpyWYj8BP18g3Rg9KJR12ruoaDL/E42Ny0jUybzvSZsorRGfv3inrjMN+bl
-         BgKG7t7cdXd/0ALo+R+lHxXDcjif0o5ixPg5C6sTmQ9w6togszx90OAUDR2ARzJtVjkO
-         5kkU1nvR/y0O5h6QvdQ3NUJ7FLtlA9rwrLp1gs1DSfqOsU3WkWtQjoBUupwGYD7qXNPe
-         94HgI/4E1+M2eRdIQ/pXftvyaUF1UQeFFzz3qPc0MnjRAOwxPdl8xDTMM6MOQcjTkYZP
-         TykcEUXfVQyUas0ENkUO6DpvG7hPYr+0wGiwMxmCKaSQVPwApdXYt0Lxu5CiZzefG7Iq
-         KmCw==
-X-Gm-Message-State: AOAM531aM8VnXVb9kP+OCxls1wNpdAg7lJwJFNUGzLPJ5XsSbGb4pvLM
-        XzRRt70/DnTYbQxXZAqNLWYL3+fxyK8=
-X-Google-Smtp-Source: ABdhPJwsHwl1Xz3y4SIE7CHwzzUelTZlM0h7OwnCX6edk/4HEYyALH7z0PZRu5DQrAzPokoj5dBIDw==
-X-Received: by 2002:a62:3503:0:b029:1aa:6f15:b9fe with SMTP id c3-20020a6235030000b02901aa6f15b9femr20747796pfa.65.1613502520918;
-        Tue, 16 Feb 2021 11:08:40 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id lr7sm3420137pjb.56.2021.02.16.11.08.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 11:08:40 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     olteanv@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Siva Reddy Kallam <siva.kallam@broadcom.com>,
-        Prashant Sreedharan <prashant@broadcom.com>,
-        Michael Chan <mchan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list),
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
-        DRIVERS)
-Subject: [PATCH] tg3: Remove unused PHY_BRCM flags
-Date:   Tue, 16 Feb 2021 11:08:37 -0800
-Message-Id: <20210216190837.2555691-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S230200AbhBPTRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 14:17:17 -0500
+Received: from mout.gmx.net ([212.227.17.20]:34597 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229761AbhBPTRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 14:17:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613502927;
+        bh=E4tIcmYcw1deIws19hTE9bSb/hZ8n3mZUE3MVlKTw5Q=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=MhQUuOjRvqEah4kCJGmhoSO0iECL7rLBinTr47Mh64TUagg6e30cdGcjB5zJjeF4g
+         sngT8lrG+O2HPcL6fiViWSKDlfVczIHb1FV0x8RK5Ffg67tUWV/iItcowZtKY5q4Sb
+         XjgkD6Pzsn/O6JEajl7bxt2+b3iRIha2GM2mA/50=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mr9G2-1lgVAH0JMM-00oBSA; Tue, 16
+ Feb 2021 20:15:27 +0100
+Subject: Re: [PATCH v4] tpm: fix reference counting for struct tpm_chip
+To:     Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     peterhuewe@gmx.de, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        stable@vger.kernel.org, David Laight <David.Laight@ACULAB.COM>
+References: <1613435460-4377-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
+ <20210216125342.GU4718@ziepe.ca> <YCvtF4qfG35tHM5e@kernel.org>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <a9327758-dbd7-9272-b580-c9807bad2e24@gmx.de>
+Date:   Tue, 16 Feb 2021 20:15:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YCvtF4qfG35tHM5e@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5pF6WmKpnSxFSiEfZNQYHo+4PigGBFgtXoWsLIRKkmBKOVJUJOq
+ GO706NNFYRpGIquOXt4QOnNl2L5T4zzfmcOxZsa6IMRgzQJvILDHShcY4C54NHZ+b/0CycF
+ PhiiSdAsiUUJ3BA50WNdGpbF0sNWMjmo5gZpRW70F5VJ71Uj0THiekkPbefta7sftPQwR5A
+ w2CdW9XChmEVb7o/XwNZg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3v3MkXkPuN4=:T9NwJebOiGefsXr8sY1gLx
+ gCrOfcn5BexReeT0DIz6VBShnvlK3zm9ER4WOT0PicpEYGDQIiB+9DpKSPpoU5sNCzqHPO4PY
+ CTbVouM+dnxjneE8QuDtvXrNVdtdPVeaZCt28qf7WEJOODUBd9y+xpsd373VEa9iRUCeIrA7Y
+ uYYjrC9kUL2r19vGDOOSu/ypELlt8/psHzTvxUWV070i+cbU5sa8tWmXJBQAYnN/5JDMPR6Jz
+ YG9fDmblusAnZgjVmjV8dKrWEGSlyiK/jr2qs3ttOj74+z6Ra2pjksPjtlZSkHieL1tgOyZC/
+ frA4VBzV21GvoEtFf0Nhns+wRPhkBaaxzVsvQ4Mqcu+Wd9zxGfusqvdsSwPNUUG05afsrPePj
+ b7mFI8hiNjP92mSs58yDBVTKTTlH5wIJxJLYkK4y+3aCoNzZRu+C4y7wCQYzEnefLuClXv+ju
+ MOV0zVWOnh/hyLJOFilDSW5QLne44n0IjT3bGL3l9dUgjO4Alz5g+UUjrEinXBSvNAlw2D5CL
+ S+R14ksQTgBCWTXCumfO0stdrXWzL40Jva93jDFhdRi+ET31I3sMEdfHM09Y1co2rA+bfO7FT
+ +VDsSu8GZcXepDDMu5T4ykrlopwegZWinOmwqGKJc0Z/tTWHXZXeh8TIg/ageSmbXrDcozegk
+ ytXVE/ByQDdJz02tnF3V2VIM/beb2rlIfSA4oTF+z4al0Io5lk3Kun9Hi7j0egl+N3T2NIxUp
+ FoPz6CpgB8fyodn9g8esDHyd8oBejzFBph5XjS2ugM1douH0v3Lva7mOOUhiu21EjLt448p4x
+ dQKxw3N5Vs7uMa1exKpN9xusjstUSDOZphkwoDWgNfJKt1HZ293B942V5IKfBa2r46xVkXvk1
+ V+cWO5fJo048DHHMhzoQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tg3 driver tried to communicate towards the PHY driver whether it
-wanted RGMII in-band signaling enabled or disabled however there is
-nothing that looks at those flags in drivers/net/phy/broadcom.c so this
-does do not anything.
+Hi
 
-Suggested-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/ethernet/broadcom/tg3.c | 6 ------
- include/linux/brcmphy.h             | 9 +++------
- 2 files changed, 3 insertions(+), 12 deletions(-)
+On 16.02.21 at 17:04, Jarkko Sakkinen wrote:
 
-diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
-index 8936c2bc6286..d2381929931b 100644
---- a/drivers/net/ethernet/broadcom/tg3.c
-+++ b/drivers/net/ethernet/broadcom/tg3.c
-@@ -1580,12 +1580,6 @@ static int tg3_mdio_init(struct tg3 *tp)
- 				     PHY_BRCM_RX_REFCLK_UNUSED |
- 				     PHY_BRCM_DIS_TXCRXC_NOENRGY |
- 				     PHY_BRCM_AUTO_PWRDWN_ENABLE;
--		if (tg3_flag(tp, RGMII_INBAND_DISABLE))
--			phydev->dev_flags |= PHY_BRCM_STD_IBND_DISABLE;
--		if (tg3_flag(tp, RGMII_EXT_IBND_RX_EN))
--			phydev->dev_flags |= PHY_BRCM_EXT_IBND_RX_ENABLE;
--		if (tg3_flag(tp, RGMII_EXT_IBND_TX_EN))
--			phydev->dev_flags |= PHY_BRCM_EXT_IBND_TX_ENABLE;
- 		fallthrough;
- 	case PHY_ID_RTL8211C:
- 		phydev->interface = PHY_INTERFACE_MODE_RGMII;
-diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
-index 16597d3fa011..8fe1d55371ac 100644
---- a/include/linux/brcmphy.h
-+++ b/include/linux/brcmphy.h
-@@ -63,12 +63,9 @@
- 
- #define PHY_BRCM_AUTO_PWRDWN_ENABLE	0x00000001
- #define PHY_BRCM_RX_REFCLK_UNUSED	0x00000002
--#define PHY_BRCM_STD_IBND_DISABLE	0x00000004
--#define PHY_BRCM_EXT_IBND_RX_ENABLE	0x00000008
--#define PHY_BRCM_EXT_IBND_TX_ENABLE	0x00000010
--#define PHY_BRCM_CLEAR_RGMII_MODE	0x00000020
--#define PHY_BRCM_DIS_TXCRXC_NOENRGY	0x00000040
--#define PHY_BRCM_EN_MASTER_MODE		0x00000080
-+#define PHY_BRCM_CLEAR_RGMII_MODE	0x00000004
-+#define PHY_BRCM_DIS_TXCRXC_NOENRGY	0x00000008
-+#define PHY_BRCM_EN_MASTER_MODE		0x00000010
- 
- /* Broadcom BCM7xxx specific workarounds */
- #define PHY_BRCM_7XXX_REV(x)		(((x) >> 8) & 0xff)
--- 
-2.25.1
+>>> +	/*
+>>> +	 * get extra reference on main device to hold on behalf of devs.
+>>> +	 * This holds the chip structure while cdevs is in use. The
+>>> +	 * corresponding put is in the tpm_devs_release.
+>>> +	 */
+>>> +	get_device(&chip->dev);
+>>> +	chip->devs.release =3D tpm_devs_release;
+>>> +	chip->devs.devt =3D
+>>> +		MKDEV(MAJOR(tpm_devt), chip->dev_num + TPM_NUM_DEVICES);
+>
+> Isn't this less than 100 chars?
+>
+
+I just chose the same formatting that the original code used. Personally I=
+ prefer what
+David suggested, so if there is no objection against it I will format it t=
+his way.
+
+Regards,
+Lino
 
