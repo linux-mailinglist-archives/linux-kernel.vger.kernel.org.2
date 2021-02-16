@@ -2,81 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C9131C88D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 954FA31C890
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhBPKOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:14:39 -0500
-Received: from mga06.intel.com ([134.134.136.31]:36802 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229635AbhBPKOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:14:31 -0500
-IronPort-SDR: b/yNd2HyoCGb7folJNVx6X3zZNfRf3k3afLWfjWzBdLOfj2vV3ucDnXHYhxqcEEGyEVEszrATb
- W3CSokmjEaUA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="244326940"
-X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
-   d="scan'208";a="244326940"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 02:12:44 -0800
-IronPort-SDR: XLG93KlggrUX0euPYCsPsnILxtGtL8+XPNTCDrKysJTbdDbOj2XrG8lV2XJVFMvWM5gPX7+UqW
- OgqwQpk68tTA==
-X-IronPort-AV: E=Sophos;i="5.81,183,1610438400"; 
-   d="scan'208";a="361582444"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 02:12:41 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lBxLT-005RFA-1Z; Tue, 16 Feb 2021 12:12:39 +0200
-Date:   Tue, 16 Feb 2021 12:12:39 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
-        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, helgaas@kernel.org, wsa@kernel.org,
-        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <YCual+Fq9mcnxbM4@smile.fi.intel.com>
-References: <20210215181550.714101-1-zhengdejin5@gmail.com>
- <20210215181550.714101-2-zhengdejin5@gmail.com>
- <YCrfqungNSSxe5lK@rocinante>
+        id S230028AbhBPKPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:15:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229767AbhBPKP1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:15:27 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00144C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 02:14:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:To:From:Date:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=XZQnqYULb/gl4wKI0dnM+AVrQ2LyQklzX1J3h5QDRII=; b=TPdPeYYTIHFKdHhMA6FBieZUR1
+        56rbc/Q+FobY51DRosYrVPsDsPUKaKfVkfCJSIwJXKCZQ77xp479j3hu7yH8woN7IGjBt7Hk2vioi
+        xeV71s19Hq9mFL4YECb49KzYcMpPQcR0hPDmezYW4qgzpG3NWHU9a8/ksFxp3+vSjK6mUjegvrn1y
+        11FJp3d04ADNvoLcMqdIV/30/2poIIQwsF8TXl8sr01svS4u4xiDxrI+POR0z27yhi9qbFAUI5kMM
+        /ymHv9eU/yUjU8bIh1l2hXoaydgNF5q1MMOw3ycZ5k6l8KumXn86c74ODr2VBJTX7JcaFDWsY2WCL
+        UiDNQB5Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lBxM2-00GjfB-Sq; Tue, 16 Feb 2021 10:13:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3F0DF3011E6;
+        Tue, 16 Feb 2021 11:13:14 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1A8112058B522; Tue, 16 Feb 2021 11:13:14 +0100 (CET)
+Date:   Tue, 16 Feb 2021 11:13:14 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>, mingo@redhat.com,
+        will@kernel.org, apw@canonical.com, joe@perches.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] mutex: nuke mutex_trylock_recursive
+Message-ID: <YCuaup4u1ZE6crE0@hirez.programming.kicks-ass.net>
+References: <20210216082146.69286-1-christian.koenig@amd.com>
+ <YCuQXAllh91JEZ+Y@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YCrfqungNSSxe5lK@rocinante>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YCuQXAllh91JEZ+Y@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 09:55:06PM +0100, Krzysztof WilczyÅ„ski wrote:
-
-> Question: wouldn't you need to call pci_free_irq_vectors() somewhere,
-> possibly to pcim_release() callback?  Although, I am not sure where the
-> right place would be.
+On Tue, Feb 16, 2021 at 10:29:00AM +0100, Daniel Vetter wrote:
+> On Tue, Feb 16, 2021 at 09:21:46AM +0100, Christian König wrote:
+> > The last user went away in the 5.11 cycle.
+> > 
+> > Signed-off-by: Christian König <christian.koenig@amd.com>
 > 
-> I am asking, as the documentation (see [4]) suggests that one would have
-> to release allocated IRQ vectors (relevant exceprt):
+> Nice.
+> 
+> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> 
+> I think would be good to still stuff this into 5.12 before someone
+> resurrects this zombie.
 
-It's done in pcim_release() but not explicitly.
+Already done:
 
-        if (dev->msi_enabled)
-                pci_disable_msi(dev);
-        if (dev->msix_enabled)
-                pci_disable_msix(dev);
-
-Maybe above can be replaced by pci_free_irq_vectors() to be sure that any
-future change to PCI IRQ allocation APIs.
-
-Yes, I have checked and currently the above code is equivalent to
-pci_free_irq_vectors().
-
-Dejin, please update your patch accordingly.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+  https://lkml.kernel.org/r/161296556531.23325.10473355259841906876.tip-bot2@tip-bot2
