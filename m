@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F17031D147
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D6B31D149
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhBPT5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 14:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37186 "EHLO
+        id S230113AbhBPT5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 14:57:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhBPT5G (ORCPT
+        with ESMTP id S229705AbhBPT5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 14:57:06 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067D6C061574;
-        Tue, 16 Feb 2021 11:56:25 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id do6so8119456ejc.3;
-        Tue, 16 Feb 2021 11:56:25 -0800 (PST)
+        Tue, 16 Feb 2021 14:57:13 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDC2C06174A;
+        Tue, 16 Feb 2021 11:56:33 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id y26so18474637eju.13;
+        Tue, 16 Feb 2021 11:56:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GmrtnPXCD3lM2n5tvEfT5pQqzuGL0Fcvb04FWPJXdvM=;
-        b=TrYyuXNG326Lf9T0XKT3xldpL3tZ5ZK8+oe2VK6wSswubBHEervTdnV0JxTGjAoBd4
-         /V19izDbiTeAay61Fd94z92echr1vTjCKWLju3RFKWwsdI+CGAeYhr8LF1eAhmbpGppk
-         lW4J/WE/Tqp27fC86jNlKFHtNBR1yGdM4Lu3cVKqbS/VSDefDAMpS7CgD5Q/Gei99nMt
-         4+G3zpyk/N9Xvk0RBoJnVSDQ/YlOwg8XYoKk55OE0L8eCZ1BrFuOjzANDRrlayKGafgf
-         oTHCxr4H/fwv/9fkXaRQRVPFWYOu3i8KH/RL1S3uHxI6m8VkwqiBe8zsEQXhYoRTwsYw
-         HFRg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gTKUWEdr7X7gHT2/c0rh/4HOUp41ym8Za7G+Wwf9Lwk=;
+        b=jzGuKPTMZQWNehBBdJksfFwA4UOge6d9q760lIxNyncm7nBdfugSgxT1Keg1HPzAGd
+         JLTkJogzs3pxn3/srZQRlM9pKm51nUl1kC4rxUo5QDMbTY5n3zVLepdEOytL2FUre2Oq
+         ojgUAT6EOzqAFDUj3t+wJcw536Kuqg0NisJaSSSsLq+H/LMKkUpR3X5NmJ79Gh5VCXx2
+         000XzNjAt7yUQ+q/cwGySF6KRhgbUZyPDQ7tGfPHLfnWkpnVsWwlossT9gjdsMktQD3H
+         SCL5QVA+TqcmyT8SzfQ+cd8c1ANJv/41oqptoBynUPMcsX1gzKIyiRrs0LS0IbH24o2P
+         uUNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GmrtnPXCD3lM2n5tvEfT5pQqzuGL0Fcvb04FWPJXdvM=;
-        b=sdjvczTTaGmfUKDSfpkrz91yaYkUVWOnBUq7iAWAp3K32Tp69NNaPvl1zYnqDQYchD
-         yUlW01ltcSefnmd9Jw4acui34znZEeQlcyo3AayS/wEeQAmggCmFN0wOv2T+/d3FT5++
-         wRRmlWSa/TllvkPcevfFnCZo0zVzs6bVIZ7sSMdjCZ0i+I5eBoZU+g9RcOTV+I5SDUAK
-         Hobb2JYFJOGVakIzmT2Okusnhd0UPsraNrezW8RjRGozDaerUJV+FgLAAoj2bIxBQmhL
-         uTTFTH4hLe4WSDNmLlrGRK2wY8ktVFIags1YsjBD6nuM0kP8CCyvaaiKqJznrmn3OYH2
-         L4SA==
-X-Gm-Message-State: AOAM5327aiM6ELMMf4FO7JeuJflNsCWbDawcTmagD2kl5sBe14Mm/Biy
-        9OvtWEuBGGA71PBc4/a595g=
-X-Google-Smtp-Source: ABdhPJzuUW25BARHUvkOTFcexOuBecvymIGNIzWJWeiJ0BjTaZDQQRKmGMvpqd17j/DPPFaByuX54w==
-X-Received: by 2002:a17:906:2652:: with SMTP id i18mr1946178ejc.213.1613505384494;
-        Tue, 16 Feb 2021 11:56:24 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gTKUWEdr7X7gHT2/c0rh/4HOUp41ym8Za7G+Wwf9Lwk=;
+        b=mXMR7k9eado5d2jpC4N4vyDHSQZ6LMjB5OxUCTNaDEZPK+OWAy9BCb10O4K0pl8rtE
+         CHJ2oywoFyuu4aiObY03zq2UxgJlwNX8uNw60b6RTKEqBrx/y+EsQmAG5X4z3bWUX3cp
+         ACkU2QnEh5kx4ljeMVb3KsuBgEiyPmq1bBrT4uSWHGTRjiDqcMjPT1X6uDWM+CidKRul
+         QcRXP34txZ6/zTlE7A20GyzlSSQqJh7iLN/uQcKk2dw9301yP68qwQZHJtvVkwArEQGQ
+         ZO0NftVkQCfhS21Lq3LZQstET8GkiGJwfIoi4d37bzSJt6NY09QbzwGQf8xPr1q6fdRr
+         tLcQ==
+X-Gm-Message-State: AOAM533rqNR4EjR6Rq/pmpk1ORVJk5q3g0lji4DCA61+/NnLI0g16rTF
+        bxeS/3RPsIwQ2SpkvlQORMM=
+X-Google-Smtp-Source: ABdhPJzK70XRIZgLLT7o/B2o/FVR+4gONsXyljCh7z9pr7UcUcn/7nBvSDLpE9BN9tCvYHYZsl0Ihg==
+X-Received: by 2002:a17:906:c1c1:: with SMTP id bw1mr22551444ejb.86.1613505391883;
+        Tue, 16 Feb 2021 11:56:31 -0800 (PST)
 Received: from Ansuel-xps.localdomain (host-87-6-252-11.retail.telecomitalia.it. [87.6.252.11])
-        by smtp.googlemail.com with ESMTPSA id rh22sm963332ejb.105.2021.02.16.11.56.23
+        by smtp.googlemail.com with ESMTPSA id rh22sm963332ejb.105.2021.02.16.11.56.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 11:56:23 -0800 (PST)
+        Tue, 16 Feb 2021 11:56:31 -0800 (PST)
 From:   Ansuel Smith <ansuelsmth@gmail.com>
 To:     Richard Weinberger <richard@nod.at>
 Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
@@ -57,43 +57,44 @@ Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
         Boris Brezillon <bbrezillon@kernel.org>,
         linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] Implement nvmem support for mtd
-Date:   Tue, 16 Feb 2021 20:56:08 +0100
-Message-Id: <20210216195618.27959-1-ansuelsmth@gmail.com>
+Subject: [PATCH 1/3] mtd: partitions: ofpart: skip subnodes parse with compatible
+Date:   Tue, 16 Feb 2021 20:56:09 +0100
+Message-Id: <20210216195618.27959-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210216195618.27959-1-ansuelsmth@gmail.com>
+References: <20210216195618.27959-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mtd support for the nvmem api has been stalled from 2018 with a patch
-half pushed hoping that a scheme is found for the mtd name later. This
-patchset try to address this.
+If a partitions structure is not used, parse direct subnodes as
+fixed-partitions only if a compatible is not found or is of type
+fixed-partition. A parser can be used directly on the subnode and
+subnodes should not be parsed as fixed-partitions by default.
 
-The solution is simple.
-New partitions scheme should always have the partitions {} structure and 
-declare subnodes as partitions is deprecated and should not be used anymore.
-Fixed-partitions parser is changed to parse direct subnode as partitions
-only if the appropriate compatible is used. This change make possible
-the use of nvmem-partitions compatible and the entire partition node can
-be parsed by the nvmem of framework.
-The current code register the partition to the nvmem framework every time
-but skip actually of_node parting. The new nvmem-partitions compatible is
-used to enable of_node parsing on the desired partitions.
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/mtd/parsers/ofpart.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-
-Ansuel Smith (3):
-  mtd: partitions: ofpart: skip subnodes parse with compatible
-  mtd: core: add nvmem-partitions compatible to parse mtd as nvmem cells
-  dt-bindings: mtd: Document use of nvmem-partitions compatible
-
- .../mtd/partitions/nvmem-partitions.yaml      | 105 ++++++++++++++++++
- drivers/mtd/mtdcore.c                         |   2 +-
- drivers/mtd/parsers/ofpart.c                  |   5 +
- 3 files changed, 111 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/nvmem-partitions.yaml
-
+diff --git a/drivers/mtd/parsers/ofpart.c b/drivers/mtd/parsers/ofpart.c
+index daf507c123e6..4b363dd0311c 100644
+--- a/drivers/mtd/parsers/ofpart.c
++++ b/drivers/mtd/parsers/ofpart.c
+@@ -50,6 +50,11 @@ static int parse_fixed_partitions(struct mtd_info *master,
+ 			 master->name, mtd_node);
+ 		ofpart_node = mtd_node;
+ 		dedicated = false;
++
++		/* Skip parsing direct subnodes if a compatible is found and is not fixed-partitions */
++		if (node_has_compatible(ofpart_node) &&
++		    !of_device_is_compatible(ofpart_node, "fixed-partitions"))
++			return 0;
+ 	} else if (!of_device_is_compatible(ofpart_node, "fixed-partitions")) {
+ 		/* The 'partitions' subnode might be used by another parser */
+ 		return 0;
 -- 
 2.30.0
 
