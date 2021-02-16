@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE1F31CC94
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 287D031CC95
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBPPEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 10:04:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhBPPEg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 10:04:36 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58650C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 07:03:56 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id z190so3706084qka.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 07:03:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=ay8uwB0CTxM9fLlpwvadwe5o1xh2kfirYugdARh6qzo=;
-        b=k7EqMg9kJLL8nPXc1g1KYll31mwbGJqR7byNIl86kDtjVabbkoZ7qaxEpL8T2Qi0js
-         aBg+YXVaFEAV8qfY0kQ9bW8iILxOa1qcgm8kDV6aj1yQgs+IbNNcjwmlwUCBMu6psJZw
-         DyRx+dAideXVRR/cyE/z606e+HmEu2WpuO5pbKeaqchwN3QaU+7kICmcJRPCEfOgLj+X
-         UNF4Kv+OgR9qVixgnMdDa+Mu4pH8IN9+32jHuuPNKZD3FOqy2EQ5jj4qL4nv8f0ia7Og
-         GNxcF27O/P6g9AAwfjAAvuOz+PG6RpD/ydI4PIpSPjAVUYVbbILns1LltVdl6e+dmS6R
-         EtBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ay8uwB0CTxM9fLlpwvadwe5o1xh2kfirYugdARh6qzo=;
-        b=GlEHxDJjEsnLSb7r3SKhfDujjt1gONBtBTV4FyPFyNdYTEnpfWnz3LY9PTpqxiBRSP
-         IkQizJ1RDhzEobpZIJS12D4dcWr1PwxkXnPhJB9cHpmgqa9eZFZj/6hNO6BcJ8FSl6ab
-         SYTio52wkY0RwnZ7mJGH0h+IxNcUExcYpGoFW6O6AloO/l3Bya/k4z0n93zP/20jcbm9
-         c8ik49L6x3DpnJCYS/lEMJqM0tNvLnJ+B7cj7tnxdNauSU78aLjanJq2A3myIxGzJ6UW
-         i4GEZGIBetZWVS1sxhYV4SnMaguVXl5oQnMo9un/6a63dd0mbMLTC20sE1Zh2JU+XETR
-         wn/Q==
-X-Gm-Message-State: AOAM5339rjchGVFRxZuKFqDC918DojnWa5wegNIZU5KDllDYs3RODRoM
-        SlXHPRnC0Wig7rqn85HxDmbNWQ==
-X-Google-Smtp-Source: ABdhPJwW7utT/hOP1SW7omxfaCEy7a+KeblzASdzbL2doa5YFxaGaz/wCRpe30wAuw1/8Zizt98i4g==
-X-Received: by 2002:a05:620a:145:: with SMTP id e5mr19950557qkn.293.1613487835630;
-        Tue, 16 Feb 2021 07:03:55 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id t19sm14974271qke.109.2021.02.16.07.03.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 07:03:54 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, tyhicks@linux.microsoft.com,
-        jmorris@namei.org, catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, anshuman.khandual@arm.com,
-        rppt@kernel.org, logang@deltatee.com, ardb@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mhocko@suse.com, linux-mm@kvack.org
-Subject: [PATCH v3 1/1] arm64: mm: correct the inside linear map range during hotplug check
-Date:   Tue, 16 Feb 2021 10:03:51 -0500
-Message-Id: <20210216150351.129018-2-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210216150351.129018-1-pasha.tatashin@soleen.com>
-References: <20210216150351.129018-1-pasha.tatashin@soleen.com>
+        id S230028AbhBPPFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 10:05:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229946AbhBPPE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 10:04:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79E5F64E02;
+        Tue, 16 Feb 2021 15:04:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613487857;
+        bh=dFqS/nktC66uzqreX4zuPT90X5LT9qN9HzXMa79Su5s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=t2xLrlnZ97QVGWSRJYz/K8vzxzGlOwJcQIKXk7No1OGDeG8Qnb9oZRTN22qiDe2+o
+         V3sA4F5D0qE/kgCLj5VSLoGbTLeQsjpAlB5pJA3YzAdVSLN2TKyziQFC3JS1y9R5Uc
+         SGGe9a+s0b774xdIaGl7nzqaS+p4cTsQE29V85/M=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     virtualization@lists.linux-foundation.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] virtio_console: remove pointless check for debugfs_create_dir()
+Date:   Tue, 16 Feb 2021 16:04:10 +0100
+Message-Id: <20210216150410.3844635-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory hotplug may fail on systems with CONFIG_RANDOMIZE_BASE because the
-linear map range is not checked correctly.
+It is impossible for debugfs_create_dir() to return NULL, so checking
+for it gives people a false sense that they actually are doing something
+if an error occurs.  As there is no need to ever change kernel logic if
+debugfs is working "properly" or not, there is no need to check the
+return value of debugfs calls, so remove the checks here as they will
+never be triggered and are wrong.
 
-The start physical address that linear map covers can be actually at the
-end of the range because of randomization. Check that and if so reduce it
-to 0.
-
-This can be verified on QEMU with setting kaslr-seed to ~0ul:
-
-memstart_offset_seed = 0xffff
-START: __pa(_PAGE_OFFSET(vabits_actual)) = ffff9000c0000000
-END:   __pa(PAGE_END - 1) =  1000bfffffff
-
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Fixes: 58284a901b42 ("arm64/mm: Validate hotplug range before creating linear mapping")
-Tested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc: Amit Shah <amit@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: virtualization@lists.linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/mm/mmu.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ drivers/char/virtio_console.c | 23 +++++++++--------------
+ 1 file changed, 9 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index ef7698c4e2f0..0d9c115e427f 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1447,6 +1447,22 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
- struct range arch_get_mappable_range(void)
- {
- 	struct range mhp_range;
-+	u64 start_linear_pa = __pa(_PAGE_OFFSET(vabits_actual));
-+	u64 end_linear_pa = __pa(PAGE_END - 1);
-+
-+	if (IS_ENABLED(CONFIG_RANDOMIZE_BASE)) {
-+		/*
-+		 * Check for a wrap, it is possible because of randomized linear
-+		 * mapping the start physical address is actually bigger than
-+		 * the end physical address. In this case set start to zero
-+		 * because [0, end_linear_pa] range must still be able to cover
-+		 * all addressable physical addresses.
-+		 */
-+		if (start_linear_pa > end_linear_pa)
-+			start_linear_pa = 0;
-+	}
-+
-+	WARN_ON(start_linear_pa > end_linear_pa);
- 
- 	/*
- 	 * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
-@@ -1454,8 +1470,9 @@ struct range arch_get_mappable_range(void)
- 	 * range which can be mapped inside this linear mapping range, must
- 	 * also be derived from its end points.
+diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+index 1836cc56e357..59dfd9c421a1 100644
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -1456,18 +1456,15 @@ static int add_port(struct ports_device *portdev, u32 id)
  	 */
--	mhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
--	mhp_range.end =  __pa(PAGE_END - 1);
-+	mhp_range.start = start_linear_pa;
-+	mhp_range.end =  end_linear_pa;
-+
- 	return mhp_range;
- }
+ 	send_control_msg(port, VIRTIO_CONSOLE_PORT_READY, 1);
+ 
+-	if (pdrvdata.debugfs_dir) {
+-		/*
+-		 * Finally, create the debugfs file that we can use to
+-		 * inspect a port's state at any time
+-		 */
+-		snprintf(debugfs_name, sizeof(debugfs_name), "vport%up%u",
+-			 port->portdev->vdev->index, id);
+-		port->debugfs_file = debugfs_create_file(debugfs_name, 0444,
+-							 pdrvdata.debugfs_dir,
+-							 port,
+-							 &port_debugfs_fops);
+-	}
++	/*
++	 * Finally, create the debugfs file that we can use to
++	 * inspect a port's state at any time
++	 */
++	snprintf(debugfs_name, sizeof(debugfs_name), "vport%up%u",
++		 port->portdev->vdev->index, id);
++	port->debugfs_file = debugfs_create_file(debugfs_name, 0444,
++						 pdrvdata.debugfs_dir,
++						 port, &port_debugfs_fops);
+ 	return 0;
+ 
+ free_inbufs:
+@@ -2244,8 +2241,6 @@ static int __init init(void)
+ 	}
+ 
+ 	pdrvdata.debugfs_dir = debugfs_create_dir("virtio-ports", NULL);
+-	if (!pdrvdata.debugfs_dir)
+-		pr_warn("Error creating debugfs dir for virtio-ports\n");
+ 	INIT_LIST_HEAD(&pdrvdata.consoles);
+ 	INIT_LIST_HEAD(&pdrvdata.portdevs);
  
 -- 
-2.25.1
+2.30.1
 
