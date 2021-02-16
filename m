@@ -2,144 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52B631CFA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC4031CFA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhBPRw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:52:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhBPRv4 (ORCPT
+        id S231136AbhBPRxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:53:55 -0500
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:46308 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhBPRxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:51:56 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C945C061574;
-        Tue, 16 Feb 2021 09:51:16 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id m2so6719879pgq.5;
-        Tue, 16 Feb 2021 09:51:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3K+lLj+ToepKcVL6jFBLayNi2lw8pt4wdM7MFFLValU=;
-        b=kZcTyLWrhkAH4qUDGXjB1kikVrpaTpGrTd8n2Z3kSoT70/do/dOAO6Npv0419YLoCd
-         CX5Zyrq3nlxYGQjRKdBi9EKi2a6ChpsPRJPC0GwTgagj9V2Cduq7Vjav2fiJgsok0BTJ
-         8h5UkGxKjNofhLEDZHNB6M0BH/4bXz22dBGseHbQk8rMrnZqjGLgmF6LNMgS8hjvXYA5
-         7hlYeKl1OciEIkHoZ2q4AchB8oTS4+T+PAImDJF941pChVTLaq7F8+6EhLwX40Glqk/o
-         qqdiF9oLFqy6lm0pdLA/rH1EVN6riAk49srrO2ghiOStFfhOzfqSV/13eQg1mZYX6HPV
-         owJQ==
+        Tue, 16 Feb 2021 12:53:47 -0500
+Received: by mail-wr1-f52.google.com with SMTP id t15so14179932wrx.13;
+        Tue, 16 Feb 2021 09:53:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3K+lLj+ToepKcVL6jFBLayNi2lw8pt4wdM7MFFLValU=;
-        b=qPO5Qluj6aECL+MLnXBe+bsKJB8sEg23JOWlnuj4tDYvB3zIJg3CgzzZMe6VZ63kYf
-         bbBHkfh2jMJtq0Plp954A8527bWG8alA+H8eU2Hf9LI1YIgkS1KMz+jIYCaFIpiNct+J
-         ixLoFyRUEYexVXOaLVPYanrihe6C8jfmOpON+e7E0LhOD8AQq8mGsmLTB+zUNE+4D1iE
-         be9DjNvt6Dyj7WbYPPdB2qKTJqLdl2dSaINg2iTDiJpeceYjhvYjKYsMPTcDq2VGAAlZ
-         PnCrcPlt+/mdnOvOkNfw4gDrWnH8FrWrd2FIkP5MtItyF04g9BFXr4apkPlYhc0igV34
-         4BuQ==
-X-Gm-Message-State: AOAM532qtNUHohHfPBZIppqi5fXtFxMip9kf/F/cocLhgFZUQ0dZKyYZ
-        vNtI5IWeRqOogbLvW441xchlKloFNZP27Kj6dBTow+/Hoj9OnEBM
-X-Google-Smtp-Source: ABdhPJwVO5MhJbC2nXdnYPgfgN9obY3svn0bEpjhbdwa3zbBXc/qZQSpJk11mqKowG1vd/lH/flnG+7qJGBIpEsojE4=
-X-Received: by 2002:a65:4c08:: with SMTP id u8mr12071065pgq.203.1613497875959;
- Tue, 16 Feb 2021 09:51:15 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=7hhHvpEu7DYQ/v3259Si6b7b7fdDorTWBHQPYgf+p1g=;
+        b=O7sYqKD0lyXl1Z9urDW3W9AJAmgss/tYxxr5NtL27y5VqzkyTNDVhGZGWXzL4ZDOrk
+         ZPNWf2BWT2iqMlwa6FfjUjiSkH2V1vBn0xNUkCP2rpO6c+OcZeDA5p3B0I23AKXXDxKk
+         srUH//BST2nYcM131+qvUqv4afalzW3P3Qgxjah/Vqjg6AH/m87n0D/+0iE5miIAsl+7
+         5FMGjaETwf6h945Snkka6izbu+nXoJad8w8duCnjX65lgM8vQnxtJFEZMtmpWt6qzqKI
+         rvoItzbIy/D67POqncgMlvYi6l77ulb417+z6V0m/PFq2m4VrMzTTfoKOjPkUF0FQ6Hv
+         W6qQ==
+X-Gm-Message-State: AOAM5328ACeQYjbw+eYDtvd8Ld0XgY+DFxYWNpXjlm+Oj+GwyE3+c3Ok
+        8Rtd6hbYqgSeg8jBErEJoLP6hR2nwmkMrBAB
+X-Google-Smtp-Source: ABdhPJyKRH+/w2TsWmJRABBfaVeAEhmkriZ2GBYNFBuXEAklP1cU/1zK4rwGyaqIlORN8mGDczAh/g==
+X-Received: by 2002:a5d:5149:: with SMTP id u9mr22325162wrt.348.1613497984879;
+        Tue, 16 Feb 2021 09:53:04 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id n187sm4664269wmf.29.2021.02.16.09.53.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 09:53:04 -0800 (PST)
+Date:   Tue, 16 Feb 2021 18:53:03 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        rric@kernel.org, helgaas@kernel.org, wsa@kernel.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <YCwGf6vSsNoVxgPp@rocinante>
+References: <20210216160249.749799-1-zhengdejin5@gmail.com>
+ <20210216160249.749799-2-zhengdejin5@gmail.com>
 MIME-Version: 1.0
-References: <20210211175140.85391-1-alban.bedel@aerq.com> <CAHp75VfUY5-VtCWjaU6Q=hJY9hyUz8B36C0528RXUxkbnL9yEA@mail.gmail.com>
- <4d67d5627921b0f7ca6579b81f97691c53ef0c34.camel@aerq.com>
-In-Reply-To: <4d67d5627921b0f7ca6579b81f97691c53ef0c34.camel@aerq.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 16 Feb 2021 19:50:59 +0200
-Message-ID: <CAHp75Vczzhs=8k9G1FQYvqOV+Xg3GHp2=TykJX+E5ypT8puFqw@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: pca953x: add support for open drain pins on PCAL6524
-To:     "Bedel, Alban" <alban.bedel@aerq.com>
-Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210216160249.749799-2-zhengdejin5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 6:37 PM Bedel, Alban <alban.bedel@aerq.com> wrote:
-> On Mon, 2021-02-15 at 14:53 +0200, Andy Shevchenko wrote:
-> > Hint: don't forget to include reviewers from previous version
->
-> I added you to the CC list for the new patch, did I miss someone else?
+Hi Dejin,
 
-Then we are fine, thanks!
+> Introduce pcim_alloc_irq_vectors(), a device-managed version of
+> pci_alloc_irq_vectors(). Introducing this function can simplify
+> the error handling path in many drivers.
+> 
+> And use pci_free_irq_vectors() to replace some code in pcim_release(),
+> they are equivalent, and no functional change. It is more explicit
+> that pcim_alloc_irq_vectors() is a device-managed function.
+[...]
 
-> > On Thu, Feb 11, 2021 at 7:52 PM Alban Bedel <alban.bedel@aerq.com>
-> > wrote:
-> > > From a quick glance at various datasheets the PCAL6524 and the
-> > > PCAL6534 seems to be the only chips in this family that support
-> > > setting the drive mode of single pins. Other chips either don't
-> > > support it at all, or can only set the drive mode of whole banks,
-> > > which doesn't map to the GPIO API.
-> > >
-> > > Add a new flag, PCAL65xx_REGS, to mark chips that have the extra
-> > > registers needed for this feature. Then mark the needed register
-> > > banks
-> > > as readable and writable, here we don't set OUT_CONF as writable,
-> > > although it is, as we only need to read it. Finally add a function
-> > > that configures the OUT_INDCONF register when the GPIO API sets the
-> > > drive mode of the pins.
+Some suggestions about the commit message as per:
 
-Before continuing on this, have you considered to split this
-particular chip to a real pin controller and use the existing driver
-only for GPIO part of the functionality?
+  https://lore.kernel.org/linux-pci/YCwE2cf9X%2FGd6lWy@rocinante/
 
-...
+> +/**
+> + * pcim_alloc_irq_vectors - a device-managed pci_alloc_irq_vectors()
+> + * @dev:		PCI device to operate on
+> + * @min_vecs:		minimum number of vectors required (must be >= 1)
+> + * @max_vecs:		maximum (desired) number of vectors
+> + * @flags:		flags or quirks for the allocation
+> + *
+> + * Return the number of vectors allocated, (which might be smaller than
+> + * @max_vecs) if successful, or a negative error code on error. If less
+> + * than @min_vecs interrupt vectors are available for @dev the function
+> + * will fail with -ENOSPC.
+> + *
+> + * It depends on calling pcim_enable_device() to make IRQ resources
+> + * manageable.
+> + */
+> +int pcim_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
+> +				unsigned int max_vecs, unsigned int flags)
+> +{
+> +	struct pci_devres *dr;
+> +
+> +	dr = find_pci_dr(dev);
+> +	if (!dr || !dr->enabled)
+> +		return -EINVAL;
+> +
+> +	return pci_alloc_irq_vectors(dev, min_vecs, max_vecs, flags);
+> +}
+> +EXPORT_SYMBOL(pcim_alloc_irq_vectors);
+[...]
 
-> > > +#define PCAL65xx_REGS          BIT(10)
-> >
-> > Can we have it as a _TYPE, please?
->
-> Let's please take a closer look at these macros and what they mean.
-> Currently we have 3 possible set of functions that are indicated by
-> setting bits in driver_data using the PCA_xxx macros:
->
-> - Basic register only: 0
-> - With interrupt support: PCA_INT
-> - With latching interrupt regs: PCA_INT | PCA_PCAL = PCA_LATCH_INT
->
-> This patch then add a forth case:
->
-> - With pin config regs: PCA_INT | PCA_PCAL | $MACRO_WE_ARE_DICUSSING
->
-> Then there is the PCA953X_TYPE and PCA957X_TYPE macros which indicate
-> the need for a different regmap config and register layout.
+Looks good!  Thank you for adding kernel-doc here!  Much appreciated.
 
-Exactly, and you have a different register layout (coincidentally
-overlaps with the original PCA953x).
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 
-> These are
-> accessed using the PCA_CHIP_TYPE() and are used as an integer value,
-> not as bit-field like the above ones. If we had a struct instead of a
-> packed integer that would be a different field.
-
-How come? It's a bitmask.
-
-> I'll change it to PCAL65xx_TYPE if you insist, but that seems very
-> wrong to me to use the same naming convention for macros meant for
-> different fields.
-
-To me it's the opposite. The 6524 defines a new type (which has some
-registers others don't have). We even have already definitions of
-those special registers. I think TYPE is a better approach here.
-
-> > > +#define PCAL65xx_BANK_INDOUT_CONF BIT(8 + 12)
-> >
-> > IND is a bit ambiguous based on the description below.
-> > After you elaborate, I probably can propose better naming.
->
-> It's derived from the register name in the datasheet which is
-> "Individual pin output port X configuration register".
-
-Since we have already register definitions, if should follow existing
-pattern, i.e. OUT_INDCONF.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Krzysztof
