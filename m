@@ -2,128 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFA331D1B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D99331D1B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhBPUn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 15:43:56 -0500
-Received: from mail-dm6nam11on2047.outbound.protection.outlook.com ([40.107.223.47]:11538
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229767AbhBPUnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 15:43:53 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=flg0HX+spJd2heDWEb+uCPj4Eft0bP0YqPMHVUVYPktPTTLCrEhch9ZK0Dqbl5o23O+b5orI7l+Zfq95gppD7OXXoMMfmYzot4nPkdwBvaIR0QPhVuaZuJOyoaPYh3f1imC1jWWa3NJ+GJfpuYhBwK0uRixhRxj1+8OhaP+RkLj+0o2pebnK2JzqNkuFkM0RxNk1kSrisiLNNXai6RRdQ5unTcCS5MIolhb3QFkWURI3MECnddwufdQMWIrbc4DcidgiVFEHgQC64C9Q1d2Tk2JjDnDzJDYwkeNpfo6Ap54XroxlHZkvG9ACWftpszwZVvCnf9fkMhgmX+HX6leT5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KkEbu0dRZlAVbd261hVABQNbf2uGTgYRyqy8X3LpZfE=;
- b=jc+DqXA2nhr80BfnN4pT+XLTbuw+W1xSkatFjWF+8ggxU0cgPJfQP/My1kEQjDuUA97nr1BDy+vGb4AeG1yxOgOpbL8A4YU720eEcLt0IpxPC1LIGai86UyYrdNYXF6U+w9wLEb5gSbdXcDzCmbPmt0Xk00YOjoWP7oBlzBHxR1oaa2N4YPNHY22ObIc0UGkbOm76HcekIm5s24jTJVFU9GgzFltdaSXinOhYIF6AUlS0cs7MKK+1Z4WfPbCv19n7Pi/AuZVZIAcjRiFHRzGIthbLOvm91XQDnvtZTLd4tD6hn79GdZkW5ky/+t+bvEoWWDxpWuZOvc75A2GYsAazQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KkEbu0dRZlAVbd261hVABQNbf2uGTgYRyqy8X3LpZfE=;
- b=0crr2guB3ar/gL8CtrWek7d25qiX02RHesLdvFCbm2D6OVQrpV0V/VFW3JgmaeffVYwDLFt4WBYawMAO7Qb25Fp9eTMV/aJPSqE31MSbm5cq1Gpuz9Gvpy9dQN8nj0Xk8KuTtfCPb53lmLtEATOpWgnYmQ1ICf/vw3zaTDN15Gs=
-Received: from BYAPR05MB4776.namprd05.prod.outlook.com (2603:10b6:a03:4a::18)
- by BYAPR05MB5256.namprd05.prod.outlook.com (2603:10b6:a03:a2::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.11; Tue, 16 Feb
- 2021 20:42:54 +0000
-Received: from BYAPR05MB4776.namprd05.prod.outlook.com
- ([fe80::ddba:e1e9:fde7:3b31]) by BYAPR05MB4776.namprd05.prod.outlook.com
- ([fe80::ddba:e1e9:fde7:3b31%3]) with mapi id 15.20.3846.039; Tue, 16 Feb 2021
- 20:42:54 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Pv-drivers <Pv-drivers@vmware.com>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] drivers: vmw_balloon: remove dentry pointer for debugfs
-Thread-Topic: [PATCH] drivers: vmw_balloon: remove dentry pointer for debugfs
-Thread-Index: AQHXBHYitwItKcMYT0OrYMzq0WUdnKpbP6yA
-Date:   Tue, 16 Feb 2021 20:42:53 +0000
-Message-ID: <3B46EBB3-3BB5-438C-9576-151052A368F4@vmware.com>
-References: <20210216151209.3954129-1-gregkh@linuxfoundation.org>
-In-Reply-To: <20210216151209.3954129-1-gregkh@linuxfoundation.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=vmware.com;
-x-originating-ip: [24.6.216.183]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 22294ab8-45e0-45ed-50a0-08d8d2bb6f4b
-x-ms-traffictypediagnostic: BYAPR05MB5256:
-x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR05MB5256FEBF4A90A63859F5C77CD0879@BYAPR05MB5256.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: beXfyH6Ddy5i/Q4pVKu57Nyz55Nutw06yRjt8B5unU5ORo0TAMmqnWOuTShJu3WRchq5apC5HL0j2bfSbVYoWH7zN6T+oHWV4uWaJinMxAM9BTdHwi9Ri7M2UyRjUFs7/CdID/HQWNmlGBAKaJBcP5gTfuFluSFda1cEs6x60VJQLtkEqOTkeqepRxcHsY5PHcj2lZ4LnU2/TddKuc7fKpZObIbNKs4uDwAR9t0M5d41oH3HOP3/IxaeJtw2DjDjmwZ3iLhf2KOLB5LX+0R1P5PZCBqnhVNbZK5ZTdnm5AQlArKAkE2qNBEovdO49XdSgh0KIPKFKNQJ32ijI6BufTFcpHXOvaq6Ta7tuPotvytpCKzo86KTEnKI9voXWKNHI2gWOaGd0jbdTLOR0t5T9HWfQ6SO+qBkio7N/3o6J7NAOhwlOONoKCkIUVUSUHi+cqqoH3iotLecs75lNokhXCm/X4qQeDkpfZn9plLS08VOMqqeD7dSiGa3CFjXn5pMCbCBca8HpBYJdYEMakPFtuiojyhWN7cmLAVhBuJO6wn0uZ2lbLMfm83xV8DRtbqIH/kTdfskZrKEhzR+Pi5EeQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(376002)(396003)(346002)(2616005)(316002)(8676002)(26005)(71200400001)(66446008)(4326008)(5660300002)(186003)(53546011)(86362001)(6512007)(2906002)(76116006)(8936002)(64756008)(33656002)(66946007)(36756003)(6506007)(6486002)(66556008)(66476007)(54906003)(478600001)(4744005)(6916009)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?t5qw8hl0EfjVjtn4cCkPu1h5ecNsXfnEf+Y41RwmRshjZCy5ghOSAvRb+R9L?=
- =?us-ascii?Q?dfYdgTYNaIkEoCIHCbQMw39cuqmX1Yvi80P1GSuhj4kUS+SkldqGzy/ED1qg?=
- =?us-ascii?Q?Tm6XVSebIybRTUuDfZEWNjwBYlubB84PvP5sRej1dTLnSly8rsQgW8Cglnik?=
- =?us-ascii?Q?i8wjlmfvLhYm14e2+g2Myqq7cwAmdWBftefQ6fRPO84eJW5kFBPvR84srClI?=
- =?us-ascii?Q?lpacB9qfOW/GgW+HDkDsD8tGxvDnZX0xZBDYb4LsH7Ge6CBbkYs6a5WfuO3J?=
- =?us-ascii?Q?Rz8cLBzvtLdeTOxPWF4EjJKkbcX/YJAPonEL163LnmDyY4kT2UGkDM5/mlxK?=
- =?us-ascii?Q?7gvrgvY34zixrZo88g0tK/52aSCr6Fv+OhV8kolqkvKarI9ddm2qgtr85bzE?=
- =?us-ascii?Q?80+QeExnreTpQ3UBZjPKmhN2h0Pktej8/fB1dtW+mtwRErWX9CDtxiYJR+uc?=
- =?us-ascii?Q?1BGQdRjCTfQYUeKzTUYlFr8UKQhA6usl6cokv4P7qH+n1gP0reX3dzDI2boP?=
- =?us-ascii?Q?1vtZ3dD59gcQRgJqLqbyxfoDXRu0y/jLhnPi79hr7TVZZYNsXYio9eVvIigK?=
- =?us-ascii?Q?fCji3EvNHQL5KRYCvzztZ9dilFyWx0wUCJUes4rkbLgUkX95PtTlnKcfxEDn?=
- =?us-ascii?Q?6fea2ddlaQ70CgtpTs+am9qoyVBcv1ul0hU1SobMY3zQh/T+hsO1fy7PdPI/?=
- =?us-ascii?Q?sbDWosPrbXwW8ZyBTHL/aQGU4iEv8kHI0zs2nV4w0jb6UVvlCDIMnTME6z4k?=
- =?us-ascii?Q?XtHAbH9oMFatLTU5KJHD5KIxH+RfAXqWqVi5EYqpbX36ZefouEHhqflE/7gz?=
- =?us-ascii?Q?nmBdN0lgJ9zAg7yFGxiM6hH2LM02CGrUZwxYtCZBgE7lw2VcUL89IPq4IDz7?=
- =?us-ascii?Q?+aQHnSEBPufQcQB4tuJKxIhnraWhxPEnXSo1ZG6iLyozjNz6Ebu6fdJoktAX?=
- =?us-ascii?Q?ByK7VxYxRmEau8h4qCw6oAsxqLSXHwTiJ5BrHKQrcK5jWBzj681idvjxUi2y?=
- =?us-ascii?Q?3ZkUertWJiLI+oGVi+e0PQz+kPmxLFrwwfN1bI4b37aWkJw5SOdDnEn9FMZ9?=
- =?us-ascii?Q?Q9ntOjtxabx0oP/cGKkjHQiyft23JqJ03GaPByRCONxxS2I05mhXXssGkDwY?=
- =?us-ascii?Q?+sVNx0GLXLByPABQtsjy5nBInuO8r9tddCDpcp+lBnkM8ajjRxQNeQtbG3vI?=
- =?us-ascii?Q?FUlxtwE3CDPfmB0cNzQZNNM2/bTkCc3tk5JGN3L/xaYnBgedQyB3nMPWOIzm?=
- =?us-ascii?Q?0dXCNNQUjy1S7gpQ+33FOM4O2YcHRh9FE3NvRldW+8+hP0B2VdoQ8XTSMKGw?=
- =?us-ascii?Q?Q0IWjR0IQEuHpaEZvB4hj+OI?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <EF0AC10706CEFD4EB66ED67C2BC7D0FA@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S230206AbhBPUpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 15:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229767AbhBPUpC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 15:45:02 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE34C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:44:22 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id b145so6924012pfb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:44:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9MECMeYdmfimYJ7zDt5CQyz07nG2n+cbIiQ18s/WOM0=;
+        b=oQReen7pFyOi06ywuZ6TiFT4cTJV0hjiwGOZjVpnOUoOXFB8bbQiJoZLJWfM8vxI2i
+         YczdC2yCZRqY8j3iha7TP9ddZjW/H+cQelo1WugeEKB+1Njz7vHIUTMRs8b/uK7//kSU
+         3NS094++2h1iFjFthvGxWI6Yt8SD0QipKcS6AAiSYOovoxEm1gvcVzTM7OGjKZLVRVYg
+         HVjfJUDSKtKrmCP4RNypFo9Ti2WjAySzz4ab7j11YZ6Nfe3S7szQG5iZgebsFXvHCxIj
+         8R6vVgiGREwn7fHBElTNM4hI+0cHH2F2BznyiixYs5dWZIe6LexIl+XOY18SDhS7PioP
+         BKbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9MECMeYdmfimYJ7zDt5CQyz07nG2n+cbIiQ18s/WOM0=;
+        b=P57Y/AUr0gE9LZ/q0n+o0J0BrTeEPgqCO5kZ20rfIkSaDb+Le9wNmT2+7W3t7XoLCJ
+         q51QH5OxciMa4CABkaLfBZkUwl5Los4C0rl++D2vprNXALHIfBUn7mOqfPgoStgUMGZ/
+         ARNHOwMD5NtBxwaU2AH/6jVnZtHD0H/cxgBgvmIbQ7LseaNeRelANDCa+P90gwA3YYBB
+         YhKytv0ES6RzQbhE457xW4+m9gIw2EXC6f43f9JrCa4kvPpdHPEAo1Itkkk+kt47Ajew
+         VU6cijT6hb3AUOVTqh35TIYe7Cq2HtmFt7x2NvdoMTh3TjsFZbzk6Xa8XBrNKpYg0qwt
+         jZ7A==
+X-Gm-Message-State: AOAM530La/CnjZxBguKdp8rF3UoqRFSzMlwo/kDC5nsFO7W2mKYphO/E
+        oC4o24qIh4RojRzloOUqZvtQUg==
+X-Google-Smtp-Source: ABdhPJwfl+TkajNcnBpCno49rytjM9JFtkzytXu+3cr0tOskKMMmTQl2ox9DBZWooLbkYEkIR3E0tw==
+X-Received: by 2002:a62:7c55:0:b029:1dd:8c65:1ed8 with SMTP id x82-20020a627c550000b02901dd8c651ed8mr21155461pfc.24.1613508261614;
+        Tue, 16 Feb 2021 12:44:21 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 68sm22497014pfe.33.2021.02.16.12.44.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 12:44:21 -0800 (PST)
+Date:   Tue, 16 Feb 2021 13:44:19 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mike.leach@linaro.org, lcherian@marvell.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 08/14] coresight: core: Add support for dedicated
+ percpu sinks
+Message-ID: <20210216204419.GB2936551@xps15>
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-9-git-send-email-anshuman.khandual@arm.com>
+ <dce24164-d35b-d9d9-2fcd-e50a1bac0b38@arm.com>
+ <20210204183446.GA1636242@xps15>
+ <72bd5139-a6e1-64c0-c111-818bc04a81b8@arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4776.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22294ab8-45e0-45ed-50a0-08d8d2bb6f4b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Feb 2021 20:42:53.8758
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IsPAk09vn10uDZ4AuzQG4AgU1+bBpBtFcrAyCQxKo5wjKoEQUyp8G5D/0YtR95NSOgcrQ8ZsQ52728w68fK9mg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB5256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72bd5139-a6e1-64c0-c111-818bc04a81b8@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Feb 16, 2021, at 7:12 AM, Greg Kroah-Hartman <gregkh@linuxfoundation.o=
-rg> wrote:
->=20
-> There is no need to keep the dentry pointer around for the created
-> debugfs file, as it is only needed when removing it from the system.
-> When it is to be removed, ask debugfs itself for the pointer, to save on
-> storage and make things a bit simpler.
->=20
-> Cc: Nadav Amit <namit@vmware.com>
-> Cc: "VMware, Inc." <pv-drivers@vmware.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
+On Tue, Feb 16, 2021 at 04:10:18PM +0530, Anshuman Khandual wrote:
+> 
+> 
+> On 2/5/21 12:04 AM, Mathieu Poirier wrote:
+> > On Thu, Jan 28, 2021 at 09:16:34AM +0000, Suzuki K Poulose wrote:
+> >> On 1/27/21 8:55 AM, Anshuman Khandual wrote:
+> >>> Add support for dedicated sinks that are bound to individual CPUs. (e.g,
+> >>> TRBE). To allow quicker access to the sink for a given CPU bound source,
+> >>> keep a percpu array of the sink devices. Also, add support for building
+> >>> a path to the CPU local sink from the ETM.
+> >>>
+> >>> This adds a new percpu sink type CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM.
+> >>> This new sink type is exclusively available and can only work with percpu
+> >>> source type device CORESIGHT_DEV_SUBTYPE_SOURCE_PERCPU_PROC.
+> >>>
+> >>> This defines a percpu structure that accommodates a single coresight_device
+> >>> which can be used to store an initialized instance from a sink driver. As
+> >>> these sinks are exclusively linked and dependent on corresponding percpu
+> >>> sources devices, they should also be the default sink device during a perf
+> >>> session.
+> >>>
+> >>> Outwards device connections are scanned while establishing paths between a
+> >>> source and a sink device. But such connections are not present for certain
+> >>> percpu source and sink devices which are exclusively linked and dependent.
+> >>> Build the path directly and skip connection scanning for such devices.
+> >>>
+> >>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> >>> Cc: Mike Leach <mike.leach@linaro.org>
+> >>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> >>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> >>> ---
+> >>> Changes in V3:
+> >>>
+> >>> - Updated coresight_find_default_sink()
+> >>>
+> >>>   drivers/hwtracing/coresight/coresight-core.c | 16 ++++++++++++++--
+> >>>   include/linux/coresight.h                    | 12 ++++++++++++
+> >>>   2 files changed, 26 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> >>> index 0062c89..4795e28 100644
+> >>> --- a/drivers/hwtracing/coresight/coresight-core.c
+> >>> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> >>> @@ -23,6 +23,7 @@
+> >>>   #include "coresight-priv.h"
+> >>>   static DEFINE_MUTEX(coresight_mutex);
+> >>> +DEFINE_PER_CPU(struct coresight_device *, csdev_sink);
+> >>>   /**
+> >>>    * struct coresight_node - elements of a path, from source to sink
+> >>> @@ -784,6 +785,13 @@ static int _coresight_build_path(struct coresight_device *csdev,
+> >>>   	if (csdev == sink)
+> >>>   		goto out;
+> >>> +	if (coresight_is_percpu_source(csdev) && coresight_is_percpu_sink(sink) &&
+> >>> +	    sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev))) {
+> >>> +		_coresight_build_path(sink, sink, path);
+> > 
+> > The return value for _coresight_build_path() needs to be checked.  Otherwise a
+> > failure to allocate a node for the sink will go unoticed and make for a very
+> > hard problem to debug.
+> 
+> How about this instead ?
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 4795e28..e93e669 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -787,9 +787,10 @@ static int _coresight_build_path(struct coresight_device *csdev,
+>  
+>         if (coresight_is_percpu_source(csdev) && coresight_is_percpu_sink(sink) &&
+>             sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev))) {
+> -               _coresight_build_path(sink, sink, path);
+> -               found = true;
+> -               goto out;
+> +               if (_coresight_build_path(sink, sink, path) == 0) {
+> +                       found = true;
+> +                       goto out;
+> +               }
 
-Thanks for the cleanup.
+I am missing the context now but it is a step in the right direction.  I will
+re-assess on your next revision.
 
-Acked-by: Nadav Amit <namit@vmware.com>
+>         }
+>  
+>         /* Not a sink - recursively explore each port found on this element */
+> 
+> > 
+> >>> +		found = true;
+> >>> +		goto out;
+> >>> +	}
+> >>> +
+> >>>   	/* Not a sink - recursively explore each port found on this element */
+> >>>   	for (i = 0; i < csdev->pdata->nr_outport; i++) {
+> >>>   		struct coresight_device *child_dev;
+> >>> @@ -999,8 +1007,12 @@ coresight_find_default_sink(struct coresight_device *csdev)
+> >>>   	int depth = 0;
+> >>>   	/* look for a default sink if we have not found for this device */
+> >>> -	if (!csdev->def_sink)
+> >>> -		csdev->def_sink = coresight_find_sink(csdev, &depth);
+> >>> +	if (!csdev->def_sink) {
+> >>> +		if (coresight_is_percpu_source(csdev))
+> >>> +			csdev->def_sink = per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
+> >>> +		if (!csdev->def_sink)
+> >>> +			csdev->def_sink = coresight_find_sink(csdev, &depth);
+> >>> +	}
+> >>>   	return csdev->def_sink;
+> >>>   }
+> >>> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+> >>> index 976ec26..bc3a5ca 100644
+> >>> --- a/include/linux/coresight.h
+> >>> +++ b/include/linux/coresight.h
+> >>> @@ -50,6 +50,7 @@ enum coresight_dev_subtype_sink {
+> >>>   	CORESIGHT_DEV_SUBTYPE_SINK_PORT,
+> >>>   	CORESIGHT_DEV_SUBTYPE_SINK_BUFFER,
+> >>>   	CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM,
+> >>> +	CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM,
+> > 
+> > Do we absolutely need to add a new sink type?  It is only used in
+> > _coresight_build_path() and that code could be: 
+> > 
+> > 	if (coresight_is_percpu_source(csdev)) {
+> > 	    sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
+> 
+> Do you mean if (sink == per_cpu(...)) above ?
+> 
+> >             if (sink && sink == csdev) {
+> 
+> How could the sink fetched from the source csdev be the same ?
 
+The above should have been:
+
+        if (coresight_is_percpu_source(csdev)) {
+                per_cpu_sink == per_cpu(csdev_sink, source_ops(csdev)->cpu_id(csdev));
+                if (per_cpu_sink && per_cpu_sink == sink) {
+
+Apologies for the confusion.
+
+Mathieu
+
+> 
+> I would still suggest keeping CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM for
+> logical separation between source and sink, which also improves clarity
+> and readability.
