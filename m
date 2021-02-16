@@ -2,125 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A060C31CA91
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F41EC31CA98
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhBPMf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:35:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhBPMfW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:35:22 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6030AC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:34:42 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id n13so9635093ejx.12
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:34:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ueHbYP18tWvlHJTvKfv+KiiuFw4qDAo6d4b9ieKrjtA=;
-        b=MEqDpuWJEK/w8J3txlGCNfi6AsGBbRD5uDoOClDxlhBXfP09gDCTC+7b/DkxAnH9q9
-         PQzhlHUJVxxdR1PfdxFskI1stRZCsyHqn3VhCztonmpPgDpGHn5ac8KEUwz/G4BCeEAe
-         tEP6rgYOjCLGIwIHQMoUXv/8Y2SJpt0Oi2L6euBLpzs7GnPLtk93Pdb0ZSb9GlqdkMuD
-         kRf5mk9JW/jjZ28ka9QT+0x1uM2fQHj8ZVp3vUZbQTE36HH4gu5XMCawt82TvmZSBlHI
-         DD0Ip+GqAS2CnUXZAZ1Po6tm9lGKrTYUu1GD9s0bW2KfyoypvVOHeUupFn3uXHWXcp4I
-         rshA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ueHbYP18tWvlHJTvKfv+KiiuFw4qDAo6d4b9ieKrjtA=;
-        b=nNkRXM6qT7P/aLbk7U84wAV4fmkGpXNCBCTwjTte1/UChSqvMtMEW8itD2ulFX4Tm8
-         srGSx93f+KWqWyvkk3jlvl9OMOKTSc4LNMJcNoEZpsljBtTE0CVpEcmrBgw44H6aJqsQ
-         DFGOA396TH56wFfZqrBYULDrNurmMt19Vc3xlVdNSu4BGmqIiaEboqpMvy4/Lucy18SG
-         aVZ3Wj1rfCl8LF0bc5QsC05BK0/re2UblpHXP/8DXpQmpxs5Cj0vNImuklNxAyMXvCet
-         bM2/1AjdvselP89Z+kUv2A1Z++T+X8Bqo9lQlH3cGFVoak7Z4uEQ0Hi0+617cZsTgjGX
-         YRBw==
-X-Gm-Message-State: AOAM533VfxbwgpFzTe3NbW2//eQEHt2pQYU4mnpyAaUqX+18C37Isfwq
-        B6v0wkZ/YVDVM4ep3Pyvcz1OF2BnEKk6LdwfE2w3KA==
-X-Google-Smtp-Source: ABdhPJxf1wGe7JLUEYPK+lXkKOVAhqieiskKqDKYXDU0fKKFmCiFsnUPANuzIUfBs+8lgCkTxrNRZ/1zVRkOl1+/xy4=
-X-Received: by 2002:a17:906:685a:: with SMTP id a26mr10974693ejs.503.1613478880844;
- Tue, 16 Feb 2021 04:34:40 -0800 (PST)
+        id S229956AbhBPMfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 07:35:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43916 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229754AbhBPMfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 07:35:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2A3EDB0BD;
+        Tue, 16 Feb 2021 12:34:59 +0000 (UTC)
+To:     Mike Rapoport <rppt@kernel.org>, Michal Hocko <mhocko@suse.com>
+Cc:     Mel Gorman <mgorman@suse.de>, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org, x86@kernel.org
+References: <20210208110820.6269-1-rppt@kernel.org>
+ <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
+ <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
+ <YCaAHI/rFp1upRLc@dhcp22.suse.cz> <20210214180016.GO242749@kernel.org>
+ <YCo4Lyio1h2Heixh@dhcp22.suse.cz> <20210215212440.GA1307762@kernel.org>
+ <YCuDUG89KwQNbsjA@dhcp22.suse.cz> <20210216110154.GB1307762@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
+ holes in memory layout
+Message-ID: <b1302d8e-5380-18d1-0f55-2dfd61f470e6@suse.cz>
+Date:   Tue, 16 Feb 2021 13:34:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210215152438.4318-1-nobuhiro1.iwamatsu@toshiba.co.jp> <20210215152438.4318-5-nobuhiro1.iwamatsu@toshiba.co.jp>
-In-Reply-To: <20210215152438.4318-5-nobuhiro1.iwamatsu@toshiba.co.jp>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 16 Feb 2021 18:04:29 +0530
-Message-ID: <CA+G9fYtDdZy=aNnB=8eQA2_h8bOtyFuizfbJzcj3OGcqJuM-Gg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] arm: dts: visconti: Add DT support for Toshiba
- Visconti5 ethernet controller
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210216110154.GB1307762@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nobuhiro,
+On 2/16/21 12:01 PM, Mike Rapoport wrote:
+>> 
+>> I do understand that. And I am not objecting to the patch. I have to
+>> confess I haven't digested it yet. Any changes to early memory
+>> intialization have turned out to be subtle and corner cases only pop up
+>> later. This is almost impossible to review just by reading the code.
+>> That's why I am asking whether we want to address the specific VM_BUG_ON
+>> first with something much less tricky and actually reviewable. And
+>> that's why I am asking whether dropping the bug_on itself is safe to do
+>> and use as a hot fix which should be easier to backport.
+> 
+> I can't say I'm familiar enough with migration and compaction code to say
+> if it's ok to remove that bug_on. It does point to inconsistency in the
+> memmap, but probably it's not important.
+
+On closer look, removing the VM_BUG_ON_PAGE() in set_pfnblock_flags_mask() is
+not safe. If we violate the zone_spans_pfn condition, it means we will write
+outside of the pageblock bitmap for the zone, and corrupt something. Actually
+similar thing can happen in __get_pfnblock_flags_mask() where there's no
+VM_BUG_ON, but there we can't corrupt memory. But we could theoretically fault
+to do accessing some unmapped range?
+
+So the checks would have to become unconditional !DEBUG_VM and return instead of
+causing a BUG. Or we could go back one level and add some checks to
+fast_isolate_around() to detect a page from zone that doesn't match cc->zone.
+The question is if there is another code that will break if a page_zone()
+suddenly changes e.g. in the middle of the pageblock - __pageblock_pfn_to_page()
+assumes that if first and last page is from the same zone, so are all pages in
+between, and the rest relies on that. But maybe if Andrea's
+fast_isolate_around() issue is fixed, that's enough for stable backport.
 
 
-On Mon, 15 Feb 2021 at 21:00, Nobuhiro Iwamatsu
-<nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
->
-> Add the ethernet controller node in Toshiba Visconti5 SoC-specific DT file.
-> And enable this node in TMPV7708 RM main board's board-specific DT file.
->
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> ---
->  .../boot/dts/toshiba/tmpv7708-rm-mbrc.dts     | 18 +++++++++++++
->  arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     | 25 +++++++++++++++++++
->  2 files changed, 43 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-> index ed0bf7f13f54..48fa8776e36f 100644
-> --- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-> +++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-> @@ -41,3 +41,21 @@ &uart1 {
->         clocks = <&uart_clk>;
->         clock-names = "apb_pclk";
->  };
-> +
-> +&piether {
-> +       status = "okay";
-> +       phy-handle = <&phy0>;
-> +       phy-mode = "rgmii-id";
-> +       clocks = <&clk300mhz>, <&clk125mhz>;
-> +       clock-names = "stmmaceth", "phy_ref_clk";
-> +
-> +       mdio0 {
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +               compatible = "snps,dwmac-mdio";
-> +               phy0: ethernet-phy@1 {
-> +                       device_type = "ethernet-phy";
-> +                       reg = <0x1>;
 
-This build error was noticed on LKFT builder while building arm64 dtb
-on linux next 20210216 tag.
 
-arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts:52.3-4 syntax error
-FATAL ERROR: Unable to parse input tree
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-https://gitlab.com/Linaro/lkft/mirrors/next/linux-next/-/jobs/1033072509#L382
-
---
-Linaro LKFT
-https://lkft.linaro.org
