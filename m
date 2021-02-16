@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E92431CA1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E493231CA31
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhBPLsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:48:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230520AbhBPLqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:46:00 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230403AbhBPLwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:52:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42599 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230257AbhBPLuD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:50:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613476117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=coH4C7xdrmgBE3/XsHGmHJNC7rb47IS/kJchI+NLx3A=;
+        b=f0h4L9whb9+3Km2kw3JhRy6CWrPQP+7i17e7XYH8vh3Io7fUAjgNClD+Zv4JhABwBSZq33
+        BgTI4iiP73jtKA0rDyzRMxBnrNOoXt8Z0yZxUpD3WCYVwxoPi5uOWZlGrd7f4PmRe6Pn1i
+        e4duNyQl1zpyHhLy5NnXpDrmaL5sB6Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-349-jKcmJhrLMwullgSDWVKkPg-1; Tue, 16 Feb 2021 06:48:35 -0500
+X-MC-Unique: jKcmJhrLMwullgSDWVKkPg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 163BD64E04;
-        Tue, 16 Feb 2021 11:45:13 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lBymz-00EQ0O-Rt; Tue, 16 Feb 2021 11:45:09 +0000
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B44BE801977;
+        Tue, 16 Feb 2021 11:48:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EDB605C1B4;
+        Tue, 16 Feb 2021 11:48:24 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210216103215.GB27714@lst.de>
+References: <20210216103215.GB27714@lst.de> <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk> <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
+To:     Christoph Hellwig <hch@lst.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 16 Feb 2021 11:45:09 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 14/25] dt-bindings: interrupt-controller: Add DT
- bindings for apple-aic
-In-Reply-To: <CAK8P3a3rGurSQBubZ8i4+OHpDgM8mOfXiC6UhDYmL0MSQK4BRA@mail.gmail.com>
-References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-15-marcan@marcan.st>
- <CAK8P3a3rGurSQBubZ8i4+OHpDgM8mOfXiC6UhDYmL0MSQK4BRA@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <bba8e6790f4fc24fc2e9ecaa5d9eeabe@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: arnd@kernel.org, marcan@marcan.st, linux-arm-kernel@lists.infradead.org, robh@kernel.org, olof@lixom.net, krzk@kernel.org, mark.kettenis@xs4all.nl, tony@atomide.com, mohamed.mediouni@caramail.com, stan@corellium.com, graf@amazon.com, will@kernel.org, linus.walleij@linaro.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1429174.1613476104.1@warthog.procyon.org.uk>
+Date:   Tue, 16 Feb 2021 11:48:24 +0000
+Message-ID: <1429175.1613476104@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-16 09:41, Arnd Bergmann wrote:
-> On Mon, Feb 15, 2021 at 1:17 PM Hector Martin <marcan@marcan.st> wrote:
->> +
->> +      The 2nd cell contains the interrupt number.
->> +        - HW IRQs: interrupt number
->> +        - FIQs:
->> +          - 0: physical HV timer
->> +          - 1: virtual HV timer
->> +          - 2: physical guest timer
->> +          - 3: virtual guest timer
+Christoph Hellwig <hch@lst.de> wrote:
+
+> On Mon, Feb 15, 2021 at 03:44:52PM +0000, David Howells wrote:
+> > Provide a function, readahead_expand(), that expands the set of pages
+> > specified by a readahead_control object to encompass a revised area with a
+> > proposed size and length.
+> ...
+> So looking at linux-next this seems to have a user, but that user is
+> dead wood given that nothing implements ->expand_readahead.
+
+Interesting question.  Code on my fscache-iter branch does implement this, but
+I was asked to split the patchset up, so that's not in this subset.
+
+> Looking at the code structure I think netfs_readahead and
+> netfs_rreq_expand is a complete mess and needs to be turned upside
+> down, that is instead of calling back from netfs_readahead to the
+> calling file system, split it into a few helpers called by the
+> caller.
 > 
-> I wonder if you could just model the FIQ as a single shared level 
-> interrupt
-> (which is essentially what it is), and have every driver that uses it 
-> do a
-> request_irq() on the same IRQ number.
+> But even after this can't we just expose the cache granule boundary
+> to the VM so that the read-ahead request gets setup correctly from
+> the very beginning?
 
-And every driver would simply fail, because we don't allow sharing of
-per-CPU interrupts.
+You need to argue this one with Willy.  In my opinion, the VM should ask the
+filesystem and the expansion be done before ->readahead() is called.  Willy
+disagrees, however.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+David
+
