@@ -2,632 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1522031CCE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F3F31CCEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhBPPYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 10:24:35 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2570 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhBPPYO (ORCPT
+        id S230001AbhBPP1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 10:27:24 -0500
+Received: from sonic306-20.consmr.mail.gq1.yahoo.com ([98.137.68.83]:34837
+        "EHLO sonic306-20.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229784AbhBPP1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 10:24:14 -0500
-Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dg4Lr56rxz67p01;
-        Tue, 16 Feb 2021 23:16:36 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 16 Feb 2021 16:23:30 +0100
-Received: from localhost (10.47.75.223) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 16 Feb
- 2021 15:23:29 +0000
-Date:   Tue, 16 Feb 2021 15:22:23 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Jon Masters" <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v4 4/9] cxl/mem: Add basic IOCTL interface
-Message-ID: <20210216152223.000009e8@Huawei.com>
-In-Reply-To: <20210216014538.268106-5-ben.widawsky@intel.com>
-References: <20210216014538.268106-1-ben.widawsky@intel.com>
-        <20210216014538.268106-5-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Tue, 16 Feb 2021 10:27:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1613489194; bh=W62lh1FNDIGTqfOoKPg3fLtILjHzYCf5zKTQ678bnVY=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=fjtq68O77kXy8UhkgCGmsyJa86KoTpMtIwC8UNjXRksYuLn3kOd7K3uDf9Vs9HnaCBqJMBrgBYuJWILC1JFavg4KcfeGBLL/2cOa4c4kMyqhzA6XiLVyme91sckGaZ/vwexoQRcSVW94A30Glj9xcVYHKBnyVNFa4LPXjQyJ8WDNqRXRt5ad2uR6KZ0FmNATXpMekGjRRy61v7lV5Rn29SPNJPDODCO34pGATTLiSAw+w4EraxMn+Pd3vJazhdFLzXSGdPyf9IHT+XH2roCgAD1vxVxms1kkhOa/f21KTKbDKsh7VRpvHiDs35mbepw0Sbc/VaQcf/iiei003fl3Dg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1613489194; bh=9fcmK848gRdrSo0CtJht6cTIcysIkqcULNO5DR2Srji=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=iq6QL1VhbMcbHuv7hOznssEjlxRjHypKpdp1QnWRE5HkDQjzzk3y/OKqOFPHqjk+0vUlgPjYDre7rGFnbzh1bm8p3nj2ovVlDV6SjA/LvohzWmZ+MB1tyjyZbwkyQ7qN+ZGrjdw7gteuXuH25HqnrE2yiLXNQSyMxsO1/h5GcbJORpfIf13yOXRfopLSLZ1K8Dq5klzOTvCOMUqYP+OtYpIYRqMNPkPFkUhCsWg0hUpenLvIsa5QhC+H2tCBN2BqixzgmtcmkrZwcA/8XkCoAPhLY3ew9d46txUaspQQlQtOoA5tQcnTahayLlp/6HW5mD6nvjRnAR32t0Y16tKunw==
+X-YMail-OSG: ZCNfqqkVM1lPukTTjpbByVKoh.k1QKLvNZ_EkZj_CZLTg6jrLyhwrQ5H28S1jaG
+ 9Cc6vNBVR6.NqaHrPlk2FmSJ.vhVXuUy3RrubPqgnjuu56iVJVxcOtd1x58ozmafrwXe4fgp8I7L
+ AXOmVdF6.kSvMZZA5PJ60rOofNLHcTTsdb1HkqBX_aAY7zorwFTPfBRvOHFrmwtVTjT2L4Dz2tZT
+ GAYKatqzXC_0SE0p90C_5MmYKMPD9sVrZs.b5tmyhRH6OJp4k9Xnk2cCzOfrTdF5J0qipqsyW46C
+ WmYotAiIo2YAomr9JonfMmKyvNKfZsocbw94J8FuIo3A2QJpHrHhsPgzTpeplJoEuaTJKmt3_z5B
+ 7WDRvNLE0SmkgKar7RV.VArTmgOa.L81IobGhUFjKch4wJ9cRagNEscLi00MMRDSbWUN6L3WJ_rF
+ vb4zc4dPL95Qkr7pFc7U5X8pxwesC4wEOz._EcuALUkZOCObdrnhNFTb4XOU.ddrDdO_aCPmO98m
+ RGp40tcpnUR7vjLNNReBNTFk9TetrfnE4N4IVV8rKWP5JskDJvjy3jHyYoyvLJo1_lABbuwyn1m5
+ G42Ck.2JV0uWCqhMMVPSUs0IRnOPjCiDkLtg0gln5ksRmoXhPw_iCboGAczGznuLtpKuvKSEoePQ
+ Lem8oRq7F.vEa7WCKy3DCvb8hVB5sQvlMwdRS_dJTJZJRakWiuWPuKTL8gLfhkv0e9PZbcP7qAxi
+ IJ9P06KzWYFIfmnbFxKdq9X0yR113B9_Tu4w..g4_sib8__mG1dvJESsUy885zk__lTxwnbQHyhn
+ hRYOOIsesf1LQSa27qVespp_jJLSNrm7T59SyNRJR_X0XyAIMkXCkQ.tAO_ZKNWtcpO_qNXDLenG
+ m.S7EfDWpiKPYn4FvbMbJd7n6m5BCl1WJ6V9tkLUfhJAzh9DFww0suBZLb2YOsUg_GEg4qGoAXO7
+ T6xqNhPLlByBP7wkXYITQDhBUFT9iIkjfuQWFiHhhzjxdTozdzDV80LNvnUS0DUOkvCiQtnVp1E1
+ YcfKweea2u7QRMX5j4pPPJvZyjWAlWnIo2SBLbfYhXeFDStRBULRPh9euMeeEI4tYU0exBRIFBvL
+ kTpa640qMN0kelXw8QQc_gsFXReA6M2vB1GSTzeIgUKEkIFZC4_6mwDzLmfzrERy3xJCt07JEyYi
+ Mvo9I.H9LqTOl7fq8oF_Jz3ShnuS6tk17z8lC1eew7Pk34VFnCmx.yXlYztBZ8AA0R_CRazLzWmf
+ GuKu8SMS8buQSLahGwBV2g4yE4Ph91K9W73mDArS6e1iq4_mTDbaIOf2GS2sdKe70Gq1XVqtpPdK
+ nMsiEb2GBvaJZ8FHnXDov1CivtG2.hzOU4FBFYMTH2dTyX5ZuEp0eb.KesjJXpeVEmSG1PrM8Dfi
+ RkcSiLGs6fE3bt_rH3lxk5FLEo.LqMXwRHDNu2avxBZEEANu3.jPRNiZ9Ax_xem7abO6reABSTtJ
+ ix9stwIXGmG6zkjb.s0kC_hOl7QtXJxuGleP9b.lsU9H24P1Mbt.B1G10ptd1dAI2jf4qN4oCLJT
+ 7udYOzZt3DtSJj3CuHJtTvfZJnbIrEXl96imL.hNMINDzXDbGhHZ7oYoPuQy1YvJIwdN9_aA66tC
+ 5c01UfNjoTbDjsGHkwLPLW4rUQfgTnoq5ZyZLn0kD71c.qCWiLI3LKr7NY_mgRlNJ3ex87ee0lyH
+ FdOtTZzjvI3UKxadCCl3gjfUtJuOctDv7qjuIytK9oe_wki_n7BFhQHLmtrN1wSq1z8y0pehYR4W
+ OI_OjvELZp0t_UicTWfio8KbKwph0vwhGaZ0XHa2UTcgXAOGECdv.EBQGYP_R27ykYjd4PRhjrSu
+ rTHJhsy3SrpOjwcqMjoaYeoppdUpNfhUGZ8bUktEHs12xGh9rQTjWC4xdV38tv_koS2gStuSHvNZ
+ tz.mjdkgFvmxB9p7Yd8xwFK7M9U.9mUXpi0MIzmsrCBKjo6kwydkDY4BU.AOZ4gYk0d8TNygZVXn
+ r9L0227Rl3rLf_MPV.OnYjGhewMi0lZ_X3V9wDEaughsolORV.ZVqhRN4a5NB_L0BEK6c4kC34dM
+ uk0e55oBODY7.IRv0hxZbE.HGFfu4GmRE1fOCFYHTxbZybF.YEMiZaV6M2WZogBwicbt2FONBWbe
+ nVxhtqo_W0rxCzcyWRIoqSbVvcY8vL0Za2D.8VHZG6qzeuO01ckSy.xklseQ1Bg.Aw_00xf5o2jc
+ _bZma2dh4CuF7IeoGOg.ZWQCHG6cmd96EN6MWOgZuA6Ep1yzRrgD5MpvKdzr_rvE9VqDwFhceQVV
+ 88qTE.5.G7N4Ji6HO8UVQb2mJDo7TsJkrhwTC6cL8T0TvCYyBBynHj3IZdmvuyA5I2rIS_0Jkddz
+ xdOierW.NOEBTdfK7TbOBb7bf75oPfZjlMdJGq37I3UNqNkS.k7K.UMsulnRr0n39L8paWc9OCE8
+ WoyST.5BnoliiOOkjoH5RtjvTvGVNlzqDzK2I1j2qfneScRsJXGSOJxNnoaCo5GpqX2wfjDMjffp
+ CqGDOi7oynTK3uKtYddTKGEunmk29NvbkKKeyyphWyD4cimhHF8__PbslIF4N4bLobM_GlRPjso3
+ 2ZNu8IKbovSVeNybbGCj6CITQIU5ZyPKBjx.obUMR8IIXf.p0UZuhBp_2Tlk0f3eMpbml.kCai_L
+ 3XGj.6mGxg2LQN8MaSrg6jdRC1t75WplTGG91SisB1lneQq6sce5mDbkBfpmxNe3f56NtdRvv.sm
+ _EqV3CK9ASwgn.UYa4ECDDnL1lEvovv1GFlscsIhB9Xuul2xd1e9s2TcsMr0povCi5U0mw.xWgsD
+ Ba7PyuUYeQ.hfIu.e6pqdCcylORE266SMiih8MIvQxMMt8J1BH0gzTruPuaxZz4s4NJ0D0f8-
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.gq1.yahoo.com with HTTP; Tue, 16 Feb 2021 15:26:34 +0000
+Received: by smtp422.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 6f5b7ba32cd2d33c874cd26015b33c2b;
+          Tue, 16 Feb 2021 15:26:31 +0000 (UTC)
+Subject: Re: [PATCH v24 04/25] IMA: avoid label collisions with stacked LSMs
+To:     Mimi Zohar <zohar@linux.ibm.com>, casey.schaufler@intel.com,
+        jmorris@namei.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Cc:     linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
+        linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20210126164108.1958-1-casey@schaufler-ca.com>
+ <20210126164108.1958-5-casey@schaufler-ca.com>
+ <693f81d9d2f50a920cafbbc8d1d634598b99081a.camel@linux.ibm.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <ae6dcadf-57d5-cb29-a361-d020f6333f59@schaufler-ca.com>
+Date:   Tue, 16 Feb 2021 07:26:30 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <693f81d9d2f50a920cafbbc8d1d634598b99081a.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.75.223]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Language: en-US
+X-Mailer: WebService/1.1.17712 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.9.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 17:45:33 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+On 2/14/2021 10:21 AM, Mimi Zohar wrote:
+> Hi Casey,
+>
+> On Tue, 2021-01-26 at 08:40 -0800, Casey Schaufler wrote:
+>> Integrity measurement may filter on security module information
+>> and needs to be clear in the case of multiple active security
+>> modules which applies. Provide a boot option ima_rules_lsm= to
+>> allow the user to specify an active securty module to apply
+>> filters to. If not specified, use the first registered module
+>> that supports the audit_rule_match() LSM hook. Allow the user
+>> to specify in the IMA policy an lsm= option to specify the
+>> security module to use for a particular rule.
+> Thanks, Casey.
+>
+> (This patch description line length seems short.)
+>
+>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+>> To: Mimi Zohar <zohar@linux.ibm.com>
+>> To: linux-integrity@vger.kernel.org
+>> ---
+>>  Documentation/ABI/testing/ima_policy |  8 +++-
+>>  security/integrity/ima/ima_policy.c  | 64 ++++++++++++++++++++++------
+>>  2 files changed, 57 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+>> index e35263f97fc1..a7943d40466f 100644
+>> --- a/Documentation/ABI/testing/ima_policy
+>> +++ b/Documentation/ABI/testing/ima_policy
+>> @@ -25,7 +25,7 @@ Description:
+>>  			base:	[[func=] [mask=] [fsmagic=] [fsuuid=] [uid=]
+>>  				[euid=] [fowner=] [fsname=]]
+>>  			lsm:	[[subj_user=] [subj_role=] [subj_type=]
+>> -				 [obj_user=] [obj_role=] [obj_type=]]
+>> +				 [obj_user=] [obj_role=] [obj_type=] [lsm=]]
+> "[lsm=]" either requires all LSM rules types (e.g. {subj/obj}_user,
+> role, type) to be exactly the same for multiple LSMs or all of the LSM
+> rule types are applicable to only a single LSM.  Supporting multiple
+> LSMs with exactly the same LSM labels doesn't seem worth the effort.  
+> Keep it simple - a single rule, containing any LSM rule types, is
+> applicable to a single LSM.
 
-> Add a straightforward IOCTL that provides a mechanism for userspace to
-> query the supported memory device commands. CXL commands as they appear
-> to userspace are described as part of the UAPI kerneldoc. The command
-> list returned via this IOCTL will contain the full set of commands that
-> the driver supports, however, some of those commands may not be
-> available for use by userspace.
-> 
-> Memory device commands first appear in the CXL 2.0 specification. They
-> are submitted through a mailbox mechanism specified in the CXL 2.0
-> specification.
-> 
-> The send command allows userspace to issue mailbox commands directly to
-> the hardware. The list of available commands to send are the output of
-> the query command. The driver verifies basic properties of the command
-> and possibly inspect the input (or output) payload to determine whether
-> or not the command is allowed (or might taint the kernel).
-> 
-> Reported-by: kernel test robot <lkp@intel.com> # bug in earlier revision
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com> (v2)
+Thank you. I will add this.
 
-I may be missreading this but I think the logic to ensure commands
-using a variable sized buffer have enough space is broken.
+>
+>>  			option:	[[appraise_type=]] [template=] [permit_directio]
+>>  				[appraise_flag=] [keyrings=]
+>>  		  base:
+>> @@ -114,6 +114,12 @@ Description:
+>>
+>>  			measure subj_user=_ func=FILE_CHECK mask=MAY_READ
+>>
+>> +		It is possible to explicitly specify which security
+>> +		module a rule applies to using lsm=.  If the security
+>> +		modules specified is not active on the system the rule
+>> +		will be rejected.  If lsm= is not specified the first
+>> +		security module registered on the system will be assumed.
+>> +
+>>  		Example of measure rules using alternate PCRs::
+>>
+>>  			measure func=KEXEC_KERNEL_CHECK pcr=4
+>> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+>> index 8002683003e6..de72b719c90c 100644
+>> --- a/security/integrity/ima/ima_policy.c
+>> +++ b/security/integrity/ima/ima_policy.c
+>> @@ -82,6 +82,7 @@ struct ima_rule_entry {
+>>  		void *rules[LSMBLOB_ENTRIES]; /* LSM file metadata specific */
+>>  		char *args_p;	/* audit value */
+>>  		int type;	/* audit type */
+>> +		int which_lsm; /* which of the rules to use */
+>>  	} lsm[MAX_LSM_RULES];
+> Even if we wanted to support multiple LSMs within the same rule having
+> both "rules[LSMBLOB_ENTRIES]" and "which_lsm" shouldn't be necessary.  
+> The LSMBLOB_ENTRIES should already identify the LSM.
+>
+> To support a single LSM per policy rule, "which_lsm" should be defined
+> outside of lsm[MAX_LSM_RULES].  This will simplify the rest of the code
+> (e.g. matching/freeing rules).
+>
+> 	int which_lsm;          /* which of the rules to use */
+> 	struct {
+>                 void *rule;        /* LSM file metadata specific */
+>                 char *args_p;   /* audit value */
+>                 int type;       /* audit type */
+>         } lsm[MAX_LSM_RULES];
 
-Jonathan
+You're right, that is better. I'll incorporate the change.
 
-> ---
->  .clang-format                                 |   1 +
->  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
->  drivers/cxl/mem.c                             | 288 +++++++++++++++++-
->  include/uapi/linux/cxl_mem.h                  | 154 ++++++++++
->  4 files changed, 443 insertions(+), 1 deletion(-)
->  create mode 100644 include/uapi/linux/cxl_mem.h
-> 
-> diff --git a/.clang-format b/.clang-format
-> index 10dc5a9a61b3..3f11c8901b43 100644
-> --- a/.clang-format
-> +++ b/.clang-format
-> @@ -109,6 +109,7 @@ ForEachMacros:
->    - 'css_for_each_child'
->    - 'css_for_each_descendant_post'
->    - 'css_for_each_descendant_pre'
-> +  - 'cxl_for_each_cmd'
->    - 'device_for_each_child_node'
->    - 'dma_fence_chain_for_each'
->    - 'do_for_each_ftrace_op'
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index a4c75a28c839..6eb8e634664d 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -352,6 +352,7 @@ Code  Seq#    Include File                                           Comments
->                                                                       <mailto:michael.klein@puffin.lb.shuttle.de>
->  0xCC  00-0F  drivers/misc/ibmvmc.h                                   pseries VMC driver
->  0xCD  01     linux/reiserfs_fs.h
-> +0xCE  01-02  uapi/linux/cxl_mem.h                                    Compute Express Link Memory Devices
->  0xCF  02     fs/cifs/ioctl.c
->  0xDB  00-0F  drivers/char/mwave/mwavepub.h
->  0xDD  00-3F                                                          ZFCP device driver see drivers/s390/scsi/
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index 410adb1bdffc..a4298cb1182d 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
-> +#include <uapi/linux/cxl_mem.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
->  #include <linux/cdev.h>
-> @@ -40,6 +41,7 @@
->  #define CXL_MAILBOX_TIMEOUT_MS (2 * HZ)
->  
->  enum opcode {
-> +	CXL_MBOX_OP_INVALID		= 0x0000,
->  	CXL_MBOX_OP_IDENTIFY		= 0x4000,
->  	CXL_MBOX_OP_MAX			= 0x10000
->  };
-> @@ -91,6 +93,49 @@ struct cxl_memdev {
->  static int cxl_mem_major;
->  static DEFINE_IDA(cxl_memdev_ida);
->  
-> +/**
-> + * struct cxl_mem_command - Driver representation of a memory device command
-> + * @info: Command information as it exists for the UAPI
-> + * @opcode: The actual bits used for the mailbox protocol
-> + *
-> + * The cxl_mem_command is the driver's internal representation of commands that
-> + * are supported by the driver. Some of these commands may not be supported by
-> + * the hardware. The driver will use @info to validate the fields passed in by
-> + * the user then submit the @opcode to the hardware.
-> + *
-> + * See struct cxl_command_info.
-> + */
-> +struct cxl_mem_command {
-> +	struct cxl_command_info info;
-> +	enum opcode opcode;
-> +};
-> +
-> +#define CXL_CMD(_id, sin, sout)                                                \
-> +	[CXL_MEM_COMMAND_ID_##_id] = {                                         \
-> +	.info =	{                                                              \
-> +			.id = CXL_MEM_COMMAND_ID_##_id,                        \
-> +			.size_in = sin,                                        \
-> +			.size_out = sout,                                      \
-> +		},                                                             \
-> +	.opcode = CXL_MBOX_OP_##_id,                                           \
-> +	}
-> +
-> +/*
-> + * This table defines the supported mailbox commands for the driver. This table
-> + * is made up of a UAPI structure. Non-negative values as parameters in the
-> + * table will be validated against the user's input. For example, if size_in is
-> + * 0, and the user passed in 1, it is an error.
-> + */
-> +static struct cxl_mem_command mem_commands[] = {
-> +	CXL_CMD(IDENTIFY, 0, 0x43),
-> +};
-> +
-> +#define cxl_for_each_cmd(cmd)                                                  \
-> +	for ((cmd) = &mem_commands[0];                                         \
-> +	     ((cmd) - mem_commands) < ARRAY_SIZE(mem_commands); (cmd)++)
-> +
-> +#define cxl_cmd_count ARRAY_SIZE(mem_commands)
-> +
->  static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
->  {
->  	const unsigned long start = jiffies;
-> @@ -312,6 +357,247 @@ static void cxl_mem_mbox_put(struct cxl_mem *cxlm)
->  	mutex_unlock(&cxlm->mbox_mutex);
->  }
->  
-> +/**
-> + * handle_mailbox_cmd_from_user() - Dispatch a mailbox command for userspace.
-> + * @cxlm: The CXL memory device to communicate with.
-> + * @cmd: The validated command.
-> + * @in_payload: Pointer to userspace's input payload.
-> + * @out_payload: Pointer to userspace's output payload.
-> + * @size_out: (Input) Max payload size to copy out.
-> + *            (Output) Payload size hardware generated.
-> + * @retval: Hardware generated return code from the operation.
-> + *
-> + * Return:
-> + *  * %0	- Mailbox transaction succeeded. This implies the mailbox
-> + *  		  protocol completed successfully not that the operation itself
-> + *  		  was successful.
-> + *  * %-ENOMEM  - Couldn't allocate a bounce buffer.
-> + *  * %-EFAULT	- Something happened with copy_to/from_user.
-> + *  * %-EINTR	- Mailbox acquisition interrupted.
-> + *  * %-*	- Transaction level failures.
-> + *
-> + * Creates the appropriate mailbox command and dispatches it on behalf of a
-> + * userspace request. The input and output payloads are copied between
-> + * userspace.
-> + *
-> + * See cxl_send_cmd().
-> + */
-> +static int handle_mailbox_cmd_from_user(struct cxl_mem *cxlm,
-> +					const struct cxl_mem_command *cmd,
-> +					u64 in_payload, u64 out_payload,
-> +					s32 *size_out, u32 *retval)
-> +{
-> +	struct device *dev = &cxlm->pdev->dev;
-> +	struct mbox_cmd mbox_cmd = {
-> +		.opcode = cmd->opcode,
-> +		.size_in = cmd->info.size_in,
-> +	};
-> +	int rc;
-> +
-> +	if (cmd->info.size_out) {
-> +		mbox_cmd.payload_out = kvzalloc(cmd->info.size_out, GFP_KERNEL);
-> +		if (!mbox_cmd.payload_out)
-> +			return -ENOMEM;
-> +	}
-> +
-> +	if (cmd->info.size_in) {
-> +		mbox_cmd.payload_in = kvzalloc(cmd->info.size_in, GFP_KERNEL);
-> +		if (!mbox_cmd.payload_in) {
-> +			rc = -ENOMEM;
-> +			goto out;
-> +		}
-> +
-> +		if (copy_from_user(mbox_cmd.payload_in,
-> +				   u64_to_user_ptr(in_payload),
-> +				   cmd->info.size_in)) {
-> +			rc = -EFAULT;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	rc = cxl_mem_mbox_get(cxlm);
-> +	if (rc)
-> +		goto out;
-> +
-> +	dev_dbg(dev,
-> +		"Submitting %s command for user\n"
-> +		"\topcode: %x\n"
-> +		"\tsize: %ub\n",
-> +		cxl_command_names[cmd->info.id].name, mbox_cmd.opcode,
-> +		cmd->info.size_in);
-> +
-> +	rc = __cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
-> +	cxl_mem_mbox_put(cxlm);
-> +	if (rc)
-> +		goto out;
-> +
-> +	/*
-> +	 * @size_out contains the max size that's allowed to be written back out
-> +	 * to userspace. While the payload may have written more output than
-> +	 * this it will have to be ignored.
-> +	 */
+>
+>
+>>  	char *fsname;
+>>  	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
+>> @@ -90,17 +91,15 @@ struct ima_rule_entry {
+>>
+>>  /**
+>>   * ima_lsm_isset - Is a rule set for any of the active security modules
+>> - * @rules: The set of IMA rules to check
+>> + * @entry: the rule entry to examine
+>> + * @lsm_rule: the specific rule type in question
+>>   *
+>> - * If a rule is set for any LSM return true, otherwise return false.
+>> + * If a rule is set return true, otherwise return false.
+>>   */
+>> -static inline bool ima_lsm_isset(void *rules[])
+>> +static inline bool ima_lsm_isset(struct ima_rule_entry *entry, int lsm_rule)
+>>  {
+>> -	int i;
+>> -
+>> -	for (i = 0; i < LSMBLOB_ENTRIES; i++)
+>> -		if (rules[i])
+>> -			return true;
+>> +	if (entry->lsm[lsm_rule].rules[entry->lsm[lsm_rule].which_lsm])
+>> +		return true;
+> If each IMA policy rule is limited to a specific LSM, then the test
+> would be "entry->which_lsm".
 
-See below for why I don't think this works. The size of mbox_cmd.payload_out
-seems to always be the size userspace specified, never the 1MB this code
-is assuming.  So if the hardware returns more than userspace asks for you
-have a buffer overrun.
+Which would be an improvement.
 
+>
+>>  	return false;
+>>  }
+>>
+>> @@ -273,6 +272,20 @@ static int __init default_appraise_policy_setup(char *str)
+>>  }
+>>  __setup("ima_appraise_tcb", default_appraise_policy_setup);
+>>
+>> +static int ima_rule_lsm __ro_after_init;
+>> +
+>> +static int __init ima_rule_lsm_init(char *str)
+>> +{
+>> +	ima_rule_lsm = lsm_name_to_slot(str);
+>> +	if (ima_rule_lsm < 0) {
+>> +		ima_rule_lsm = 0;
+>> +		pr_err("rule lsm \"%s\" not registered", str);
+>> +	}
+>> +
+>> +	return 1;
+>> +}
+>> +__setup("ima_rule_lsm=", ima_rule_lsm_init);
+> The patch description refers to "ima_rules_lsm=".  Please update one or
+> the other.
 
-> +	if (mbox_cmd.size_out) {
-> +		if (copy_to_user(u64_to_user_ptr(out_payload),
-> +				 mbox_cmd.payload_out, *size_out)) {
-> +			rc = -EFAULT;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * Reporting the actual size, even if it was greater than @size_out
-> +	 * allows userspace to try the command again with a bigger buffer.
-> +	 */
-> +	*size_out = mbox_cmd.size_out;
-> +	*retval = mbox_cmd.return_code;
-> +
-> +out:
-> +	kvfree(mbox_cmd.payload_in);
-> +	kvfree(mbox_cmd.payload_out);
-> +	return rc;
-> +}
-> +
-> +/**
-> + * cxl_validate_cmd_from_user() - Check fields for CXL_MEM_SEND_COMMAND.
-> + * @cxlm: &struct cxl_mem device whose mailbox will be used.
-> + * @send_cmd: &struct cxl_send_command copied in from userspace.
-> + * @out_cmd: Sanitized and populated &struct cxl_mem_command.
-> + *
-> + * Return:
-> + *  * %0	- @out_cmd is ready to send.
-> + *  * %-ENOTTY	- Invalid command specified.
-> + *  * %-EINVAL	- Reserved fields or invalid values were used.
-> + *  * %-ENOMEM	- Input or output buffer wasn't sized properly.
-> + *
-> + * The result of this command is a fully validated command in @out_cmd that is
-> + * safe to send to the hardware.
-> + *
-> + * See handle_mailbox_cmd_from_user()
-> + */
-> +static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
-> +				      const struct cxl_send_command *send_cmd,
-> +				      struct cxl_mem_command *out_cmd)
-> +{
-> +	const struct cxl_command_info *info;
-> +	struct cxl_mem_command *c;
-> +
-> +	if (send_cmd->id == 0 || send_cmd->id >= CXL_MEM_COMMAND_ID_MAX)
-> +		return -ENOTTY;
-> +
-> +	/*
-> +	 * The user can never specify an input payload larger than what hardware
-> +	 * supports, but output can be arbitrarily large (simply write out as
-> +	 * much data as the hardware provides).
-> +	 */
-> +	if (send_cmd->in.size > cxlm->payload_size)
-> +		return -EINVAL;
-> +
-> +	if (send_cmd->flags & ~CXL_MEM_COMMAND_FLAG_MASK)
-> +		return -EINVAL;
-> +
-> +	if (send_cmd->rsvd)
-> +		return -EINVAL;
-> +
-> +	if (send_cmd->in.rsvd || send_cmd->out.rsvd)
-> +		return -EINVAL;
-> +
-> +	/* Convert user's command into the internal representation */
-> +	c = &mem_commands[send_cmd->id];
-> +	info = &c->info;
-> +
-> +	/* Check the input buffer is the expected size */
-> +	if (info->size_in >= 0 && info->size_in != send_cmd->in.size)
-> +		return -ENOMEM;
-> +
-> +	/* Check the output buffer is at least large enough */
-> +	if (info->size_out >= 0 && send_cmd->out.size < info->size_out)
-> +		return -ENOMEM;
-> +
-> +	memcpy(out_cmd, c, sizeof(*c));
-> +	out_cmd->info.size_in = send_cmd->in.size;
-> +	out_cmd->info.size_out = send_cmd->out.size;
-> +
-> +	return 0;
-> +}
-> +
-> +static int cxl_query_cmd(struct cxl_memdev *cxlmd,
-> +			 struct cxl_mem_query_commands __user *q)
-> +{
-> +	struct device *dev = &cxlmd->dev;
-> +	struct cxl_mem_command *cmd;
-> +	u32 n_commands;
-> +	int j = 0;
-> +
-> +	dev_dbg(dev, "Query IOCTL\n");
-> +
-> +	if (get_user(n_commands, &q->n_commands))
-> +		return -EFAULT;
-> +
-> +	/* returns the total number if 0 elements are requested. */
-> +	if (n_commands == 0)
-> +		return put_user(cxl_cmd_count, &q->n_commands);
-> +
-> +	/*
-> +	 * otherwise, return max(n_commands, total commands) cxl_command_info
-> +	 * structures.
-> +	 */
-> +	cxl_for_each_cmd(cmd) {
-> +		const struct cxl_command_info *info = &cmd->info;
-> +
-> +		if (copy_to_user(&q->commands[j++], info, sizeof(*info)))
-> +			return -EFAULT;
-> +
-> +		if (j == n_commands)
-> +			break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int cxl_send_cmd(struct cxl_memdev *cxlmd,
-> +			struct cxl_send_command __user *s)
-> +{
-> +	struct cxl_mem *cxlm = cxlmd->cxlm;
-> +	struct device *dev = &cxlmd->dev;
-> +	struct cxl_send_command send;
-> +	struct cxl_mem_command c;
-> +	int rc;
-> +
-> +	dev_dbg(dev, "Send IOCTL\n");
-> +
-> +	if (copy_from_user(&send, s, sizeof(send)))
-> +		return -EFAULT;
-> +
-> +	rc = cxl_validate_cmd_from_user(cxlmd->cxlm, &send, &c);
-> +	if (rc)
-> +		return rc;
+ima_rules_lsm seem to be more accurate. I'll fix it.
 
-Userspace will pass in send.out set to the size of it's available buffer.
-Then cxl_validate_cmd_from_user() will fill
-c.info.size_out with send.out.size
+>
+> thanks,
+>
+> Mimi
 
-> +
-> +	/* Prepare to handle a full payload for variable sized output */
-> +	if (c.info.size_out < 0)
-
-So this check only works if userspace set the command to have variable size.
-That's not what the docs below suggest should happen.
-
-> +		c.info.size_out = cxlm->payload_size;
-> +
-> +	rc = handle_mailbox_cmd_from_user(cxlm, &c, send.in.payload,
-> +					  send.out.payload, &send.out.size,
-> +					  &send.retval);
-> +	if (rc)
-> +		return rc;
-> +
-> +	return copy_to_user(s, &send, sizeof(send));
-> +}
-> +
-> +static long __cxl_memdev_ioctl(struct cxl_memdev *cxlmd, unsigned int cmd,
-> +			       unsigned long arg)
-> +{
-> +	switch (cmd) {
-> +	case CXL_MEM_QUERY_COMMANDS:
-> +		return cxl_query_cmd(cxlmd, (void __user *)arg);
-> +	case CXL_MEM_SEND_COMMAND:
-> +		return cxl_send_cmd(cxlmd, (void __user *)arg);
-> +	default:
-> +		return -ENOTTY;
-> +	}
-> +}
-> +
->  static long cxl_memdev_ioctl(struct file *file, unsigned int cmd,
->  			     unsigned long arg)
->  {
-> @@ -325,7 +611,7 @@ static long cxl_memdev_ioctl(struct file *file, unsigned int cmd,
->  	if (!percpu_ref_tryget_live(&cxlmd->ops_active))
->  		return -ENXIO;
->  
-> -	/* TODO: ioctl body */
-> +	rc = __cxl_memdev_ioctl(cxlmd, cmd, arg);
->  
->  	percpu_ref_put(&cxlmd->ops_active);
->  
-> diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
-> new file mode 100644
-> index 000000000000..18cea908ad0b
-> --- /dev/null
-> +++ b/include/uapi/linux/cxl_mem.h
-> @@ -0,0 +1,154 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * CXL IOCTLs for Memory Devices
-> + */
-> +
-> +#ifndef _UAPI_CXL_MEM_H_
-> +#define _UAPI_CXL_MEM_H_
-> +
-> +#include <linux/types.h>
-> +
-> +/**
-> + * DOC: UAPI
-> + *
-> + * Not all of all commands that the driver supports are always available for use
-> + * by userspace. Userspace must check the results from the QUERY command in
-> + * order to determine the live set of commands.
-> + */
-> +
-> +#define CXL_MEM_QUERY_COMMANDS _IOR(0xCE, 1, struct cxl_mem_query_commands)
-> +#define CXL_MEM_SEND_COMMAND _IOWR(0xCE, 2, struct cxl_send_command)
-> +
-> +#define CXL_CMDS                                                          \
-> +	___C(INVALID, "Invalid Command"),                                 \
-> +	___C(IDENTIFY, "Identify Command"),                               \
-> +	___C(MAX, "invalid / last command")
-> +
-> +#define ___C(a, b) CXL_MEM_COMMAND_ID_##a
-> +enum { CXL_CMDS };
-> +
-> +#undef ___C
-> +#define ___C(a, b) { b }
-> +static const struct {
-> +	const char *name;
-> +} cxl_command_names[] = { CXL_CMDS };
-> +
-> +/*
-> + * Here's how this actually breaks out:
-> + * cxl_command_names[] = {
-> + *	[CXL_MEM_COMMAND_ID_INVALID] = { "Invalid Command" },
-> + *	[CXL_MEM_COMMAND_ID_IDENTIFY] = { "Identify Command" },
-> + *	...
-> + *	[CXL_MEM_COMMAND_ID_MAX] = { "invalid / last command" },
-> + * };
-> + */
-
-Thanks, this is great.
-
-> +
-> +#undef ___C
-> +
-> +/**
-> + * struct cxl_command_info - Command information returned from a query.
-> + * @id: ID number for the command.
-> + * @flags: Flags that specify command behavior.
-> + * @size_in: Expected input size, or -1 if variable length.
-> + * @size_out: Expected output size, or -1 if variable length.
-> + *
-> + * Represents a single command that is supported by both the driver and the
-> + * hardware. This is returned as part of an array from the query ioctl. The
-> + * following would be a command that takes a variable length input and returns 0
-> + * bytes of output.
-> + *
-> + *  - @id = 10
-> + *  - @flags = 0
-> + *  - @size_in = -1
-> + *  - @size_out = 0
-> + *
-> + * See struct cxl_mem_query_commands.
-> + */
-> +struct cxl_command_info {
-> +	__u32 id;
-> +
-> +	__u32 flags;
-> +#define CXL_MEM_COMMAND_FLAG_MASK GENMASK(0, 0)
-> +
-> +	__s32 size_in;
-> +	__s32 size_out;
-> +};
-> +
-> +/**
-> + * struct cxl_mem_query_commands - Query supported commands.
-> + * @n_commands: In/out parameter. When @n_commands is > 0, the driver will
-> + *		return min(num_support_commands, n_commands). When @n_commands
-> + *		is 0, driver will return the number of total supported commands.
-> + * @rsvd: Reserved for future use.
-> + * @commands: Output array of supported commands. This array must be allocated
-> + *            by userspace to be at least min(num_support_commands, @n_commands)
-> + *
-> + * Allow userspace to query the available commands supported by both the driver,
-> + * and the hardware. Commands that aren't supported by either the driver, or the
-> + * hardware are not returned in the query.
-> + *
-> + * Examples:
-> + *
-> + *  - { .n_commands = 0 } // Get number of supported commands
-> + *  - { .n_commands = 15, .commands = buf } // Return first 15 (or less)
-> + *    supported commands
-> + *
-> + *  See struct cxl_command_info.
-> + */
-> +struct cxl_mem_query_commands {
-> +	/*
-> +	 * Input: Number of commands to return (space allocated by user)
-> +	 * Output: Number of commands supported by the driver/hardware
-> +	 *
-> +	 * If n_commands is 0, kernel will only return number of commands and
-> +	 * not try to populate commands[], thus allowing userspace to know how
-> +	 * much space to allocate
-> +	 */
-
-This is fairly well described in the docs above the structure.
-Perhaps combine the two.
-
-> +	__u32 n_commands;
-> +	__u32 rsvd;
-> +
-> +	struct cxl_command_info __user commands[]; /* out: supported commands */
-> +};
-> +
-> +/**
-> + * struct cxl_send_command - Send a command to a memory device.
-> + * @id: The command to send to the memory device. This must be one of the
-> + *	commands returned by the query command.
-> + * @flags: Flags for the command (input).
-> + * @rsvd: Must be zero.
-> + * @retval: Return value from the memory device (output).
-> + * @in.size: Size of the payload to provide to the device (input).
-> + * @in.rsvd: Must be zero.
-> + * @in.payload: Pointer to memory for payload input, payload is little endian.
-> + * @out.size: Size of the payload received from the device (input/output). This
-> + *	      field is filled in by userspace to let the driver know how much
-> + *	      space was allocated for output. It is populated by the driver to
-> + *	      let userspace know how large the output payload actually was.
-> + * @out.rsvd: Must be zero.
-> + * @out.payload: Pointer to memory for payload output, payload is little endian.
-> + *
-> + * Mechanism for userspace to send a command to the hardware for processing. The
-> + * driver will do basic validation on the command sizes. In some cases even the
-> + * payload may be introspected. Userspace is required to allocate large enough
-> + * buffers for size_out which can be variable length in certain situations.
-> + */
-> +struct cxl_send_command {
-> +	__u32 id;
-> +	__u32 flags;
-> +	__u32 rsvd;
-> +	__u32 retval;
-> +
-> +	struct {
-> +		__s32 size;
-> +		__u32 rsvd;
-> +		__u64 payload;
-> +	} in;
-> +
-> +	struct {
-> +		__s32 size;
-> +		__u32 rsvd;
-> +		__u64 payload;
-> +	} out;
-> +};
-> +
-> +#endif
+Thanks for the review and recommendations.
 
