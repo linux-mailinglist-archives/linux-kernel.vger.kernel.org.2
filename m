@@ -2,128 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2447131C99E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D1631C9A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:27:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhBPLZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:25:04 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39076 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhBPLZA (ORCPT
+        id S230018AbhBPL0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:26:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229703AbhBPL0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:25:00 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11GBMvuo017469;
-        Tue, 16 Feb 2021 05:22:57 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1613474577;
-        bh=tQ1UDP5cdCJOnIdIDk0m4x6l7OoqNMl/eT40Lh0UPR0=;
-        h=From:Subject:To:CC:References:Date:In-Reply-To;
-        b=TcTmnU3UwG3wfWNIH9hQ3dCW3wwMUOxH1in80hi5Bck485afl/lScXQdPnAnCSRGB
-         d8uFIqiKwV6ojpH0TeoQscv89GTYCFGCqyahiOVm7ddLJYEugZzSA5qZNtpIEyh9Jq
-         EkJ72X2hu7tc8hKjQCnUA6FS5rQZyCBNu212IhJc=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11GBMveR043990
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 16 Feb 2021 05:22:57 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 16
- Feb 2021 05:22:57 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 16 Feb 2021 05:22:57 -0600
-Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11GBMobA107909;
-        Tue, 16 Feb 2021 05:22:51 -0600
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v4 net-next 0/9] Cleanup in brport flags switchdev offload
- for DSA
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     "Strashko, Grygorii" <grygorii.strashko@ti.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ivan Vecera <ivecera@redhat.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
-References: <20210212010531.2722925-1-olteanv@gmail.com>
- <97ae293a-f59d-cc7c-21a6-f83880c69c71@ti.com>
- <ba7350f1-f9ff-b77e-65c9-cd5a4ae652d8@ti.com>
- <20210212144053.2pumwc6mlt4l2gcj@skbuf>
-Message-ID: <adcbe8ce-60b3-551a-941b-f8de52a134d7@ti.com>
-Date:   Tue, 16 Feb 2021 16:52:50 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 16 Feb 2021 06:26:22 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA45C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:25:41 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id e11so6810242qtg.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:25:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OpdMgD15nVOmxBqHmgQp5QV05JlNNLMOu1zTK5wectk=;
+        b=BJlVkeg+KiYKigJv0dLocm82YBRds4Ze0jh0m/e1C4EWOqEFjdkvw84Sy7UTocnkSP
+         7JOD+hiV/AhOYlEahswG+drBrVpdQtpxC1+dlJNJxM4GLAWIVkzcn4FNpO6gfLpicS/C
+         ltsSOxMyOOjQtylvk7nP1UVZyj/sTEh6vHZUpkYFV37aYfCTkpt+vy/gJS5dxcxuvqTt
+         KB/tTD0d72xBCF68FnY8LslS+Vnlxl3OnQTVrVwDPMHJp1uxmg63+gfuHup/+mc2gQdi
+         +tWjbjdhol1lp+S5UW5I+3ruWIP+E3U5gNtjhiqwYauzIl0h8Og4Gh+PKIJ8pEm25uOy
+         9Tog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OpdMgD15nVOmxBqHmgQp5QV05JlNNLMOu1zTK5wectk=;
+        b=PYZosPLFEEuCya/btfofI1D9dimW1PebVSZohBtdmMsd3Z/MjygHZKnr562fenFd8Y
+         +qXz5C9LFF3Cu5LK7bvh/gb9TTSHu2dbo/W5GqElB9zq3SU7I7zxBG4RzMInT0ZMrDbS
+         I+56RyDilehCZy5dpdpw5q8xfLUjzy7x7Fwl8keVFLl6f7kZ4OfLUW0WoTNQyXgKG6VW
+         urgi+pj+woxnosh8TKbuuCpJsIlBT/uKqoOxN/O+OPg7Bf0sgx+yYRLw7lBVDyv8tT7B
+         cVqyTQY91FC+OUMt4ehjT40Fps2/9vadgMibkZ6XeB6e8vnx1jDqEKOoV2V1NR4opYBf
+         Odmw==
+X-Gm-Message-State: AOAM53148oZ8uLPQMKtN64gFm+6ozy9pf4ak9zpyNkpOok1N6Rxhw7n/
+        kX7H851eY+HuHq9olDGXWnSywMrSit+eWxHC34g3JA==
+X-Google-Smtp-Source: ABdhPJwpW1GE+h0hCdOCxpmjTvpVz2L9jJNy9DdTONweY3+hgOg8KMJs8pE5xCd0rshQ3wiZ9zidYh4Xdpp/YWRYGQg=
+X-Received: by 2002:aed:3647:: with SMTP id e65mr9003272qtb.43.1613474740157;
+ Tue, 16 Feb 2021 03:25:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210212144053.2pumwc6mlt4l2gcj@skbuf>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
+ <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
+ <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
+ <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
+ <20210118145310.crnqnh6kax5jqicj@distanz.ch> <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
+ <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
+ <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr> <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
+ <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 16 Feb 2021 12:25:28 +0100
+Message-ID: <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
+Subject: Re: riscv+KASAN does not boot
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Tobias Klauser <tklauser@distanz.ch>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Bjorn Topel <bjorn.topel@gmail.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
+        syzkaller <syzkaller@googlegroups.com>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > I was fixing KASAN support for my sv48 patchset so I took a look at your
+> > > issue: I built a kernel on top of the branch riscv/fixes using
+> > > https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
+> > > and Buildroot 2020.11. I have the warnings regarding the use of
+> > > __virt_to_phys on wrong addresses (but that's normal since this function
+> > > is used in virt_addr_valid) but not the segfaults you describe.
+> >
+> > Hi Alex,
+> >
+> > Let me try to rebuild buildroot image. Maybe there was something wrong
+> > with my build, though, I did 'make clean' before doing. But at the
+> > same time it worked back in June...
+> >
+> > Re WARNINGs, they indicate kernel bugs. I am working on setting up a
+> > syzbot instance on riscv. If there a WARNING during boot then the
+> > kernel will be marked as broken. No further testing will happen.
+> > Is it a mis-use of WARN_ON? If so, could anybody please remove it or
+> > replace it with pr_err.
+>
+>
+> Hi,
+>
+> I've localized one issue with riscv/KASAN:
+> KASAN breaks VDSO and that's I think the root cause of weird faults I
+> saw earlier. The following patch fixes it.
+> Could somebody please upstream this fix? I don't know how to add/run
+> tests for this.
+> Thanks
+>
+> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+> index 0cfd6da784f84..cf3a383c1799d 100644
+> --- a/arch/riscv/kernel/vdso/Makefile
+> +++ b/arch/riscv/kernel/vdso/Makefile
+> @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
+>  # Disable gcov profiling for VDSO code
+>  GCOV_PROFILE := n
+>  KCOV_INSTRUMENT := n
+> +KASAN_SANITIZE := n
+>
+>  # Force dependency
+>  $(obj)/vdso.o: $(obj)/vdso.so
 
-On 2/12/21 8:10 PM, Vladimir Oltean wrote:
-> On Fri, Feb 12, 2021 at 08:01:33PM +0530, Vignesh Raghavendra wrote:
->> Hi Vladimir,
->>
->> On 2/12/21 7:47 PM, Grygorii Strashko wrote:
->>>
->>>
->>> On 12/02/2021 03:05, Vladimir Oltean wrote:
->>>> From: Vladimir Oltean <vladimir.oltean@nxp.com>
->> [...]
->>>
->>> Sorry, but we seems just added more work for you.
->>> https://lore.kernel.org/patchwork/cover/1379380/
->>>
->>
->> Could you squash these when you post new version:
->> Sorry for not noticing earlier.
-> 
-> Hey, thanks for the fixup patch and congrats on the new driver support
-> for the AM65 NUSS! What's functionally different compared to the other
-> CPSW instantiations?
-> 
 
-CPSW is mostly present on older TI's 32 bit SoCs and can support upto 2
-external ports.
 
-AM65 NUSS is next generation multi port switch IP (up to 8 external
-ports) present on TI's newer 64 bit platform. It also has different DMA integration and has native HW support to work as both Multi Mac and Switch mode.
+Second issue I am seeing seems to be related to text segment size.
+I check out v5.11 and use this config:
+https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc9178
 
-> Also, do I get it right that you also tested the bridge port flags
-> passed in the new format and that they still work ok? May I add your
-> Tested-by tag?
-> 
+Then trying to boot it using:
+QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
+$ qemu-system-riscv64 -machine virt -smp 2 -m 4G ...
 
-Sorry, I have not done extensive testing but tried couple of cmds. Those worked as expected:
+It shows no output from the kernel whatsoever, even though I have
+earlycon and output shows very early with other configs.
+Kernel boots fine with defconfig and other smaller configs.
 
-root@evm:~# ip link set eth0 type bridge_slave flood off mcast_flood off learning off                                                  
-Error: bridge: bridge flag offload is not supported.
+If I enable KASAN_OUTLINE and CC_OPTIMIZE_FOR_SIZE, then this config
+also boots fine. Both of these options significantly reduce kernel
+size. However, I can also boot the kernel without these 2 configs, if
+I disable a whole lot of subsystem configs. This makes me think that
+there is an issue related to kernel size somewhere in
+qemu/bootloader/kernel bootstrap code.
+Does it make sense to you? Can somebody reproduce what I am seeing?
 
-root@evm:~# ip link set eth0 type bridge_slave  mcast_flood off
-[ 65.025285] am65-cpsw-nuss 8000000.ethernet eth0: BR_MCAST_FLOOD: 0 port 1
-
-Regards
-Vignesh
+Thanks
