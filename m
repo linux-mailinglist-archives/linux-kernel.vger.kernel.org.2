@@ -2,104 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EE531C7A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DADA731C7AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhBPI43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 03:56:29 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:16247 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhBPI41 (ORCPT
+        id S229896AbhBPI5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 03:57:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229694AbhBPI4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 03:56:27 -0500
-Date:   Tue, 16 Feb 2021 08:55:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613465743; bh=Z1B3dJxurktF44XrKPp/L6aM/W1WYsFcVWu3eznTvaw=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=XoH45ZIlE9KmzLuba90pWudggzbMSyC/rqULk0uCPZXV91Qj4Nkx45usHN1gE3m9e
-         XnUyQp2RXSVRhiPrrdzDIzTGRQzeof3nTw2deqUyZ2A3mc9H9RcnITfzsGy+3AawHh
-         RwKxVATRQsTcOWC25zFl+UdlexCfH8zgHmjhPpxPa7stDs6FcNjsmkhKul5s2XBjvg
-         /7VvXCn1U9gQtpKtkgJxbaUIwOtj8FoPSKQHm3yUlF5Zwsd4+VY0K2IG702UYztvKW
-         PrNsDvZbU4BHCabfjSB43UlkMrnc3ihEC+Og4ignXhSnP+E35f0y87AY7NE3wAWgRc
-         icxXlzsRVboHw==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH mips-next] vmlinux.lds.h: catch more UBSAN symbols into .data
-Message-ID: <20210216085442.2967-1-alobakin@pm.me>
+        Tue, 16 Feb 2021 03:56:55 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677BAC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 00:56:15 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id y26so15218502eju.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 00:56:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=y0U+Rv1TeJysLH2QAkxFhbKDvg78z80oMSWOxlzm+JE=;
+        b=y1RHPwDF2YhUvrUGPw24VS6EMScG1Zgn14XKKm48W2InQKoIZF9aQUbLTQaG4qJCn2
+         2y/qxd92YuGiWhRi9nScQYQ9lhpPYHOnXb0h2tZKKnQcpL0G01KuZXIFPDFkmPsQaufp
+         6NwWprFfNK6NhCTn6UoKurHwhd56VFVRABy21065iqqj1LwPMpetkvmMaFaHnhn3GU7w
+         a1VVkgmPzHliuCNQIJYb7YQjkrJ74tQdIIA/ZfEO9Rbw8qseByVUzth2YxB4tmGwfGh1
+         VG6mRpqwUP+87dbDZ8t5mwylZikeKPKa41r6P9TKUiLnwp9ybzzyMFBG03wIcKfxrS9C
+         Uxmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y0U+Rv1TeJysLH2QAkxFhbKDvg78z80oMSWOxlzm+JE=;
+        b=evJk4MmnF3JnPyWlO2CvDOgTi1sgf/MkGcKhW6XjsrmssX34jUOGJs21oZUAs2IW/P
+         Odc2Qk3ZNvtsuTTCo2cLtK8wYpcQj3ewocr67j1wju8q/MpHRyCdHLX5CtpvbjbNXTFb
+         DhLPonHEnzZD2PEAkxC951ZBHqxIax+OX+1rY/hSSleW0NSlbyuXmyu2tKTlzpaEarfV
+         7UXHsmv/9wZjAxNtJuGLkZdPAuXa88cRDnfGW9lzIdUEWA7B+qdWau2FdhgPszim9RG4
+         +7NIFVwo/GGI8IfJ2P06Cp+dPWUMaR0bBd66VaBNV5hXafq/jbqbPKyBzhLFEuEtxsmy
+         Zp6w==
+X-Gm-Message-State: AOAM5331no7C3+zjowjUOYSCZCA7RdvHLtUVzCTCM+v9AEmtisl1LUbK
+        BkqJ8NUnJK/IYDNlEoGh60wopvDiUWj0Qq01
+X-Google-Smtp-Source: ABdhPJwipzZj/FaptbENabrWwE39A8Wdqu22je1Lx4qVtJR2ICara8AGMxBmu4qozck/oVr4U/+UcQ==
+X-Received: by 2002:a17:906:d0c3:: with SMTP id bq3mr18875600ejb.424.1613465772747;
+        Tue, 16 Feb 2021 00:56:12 -0800 (PST)
+Received: from [192.168.0.4] (hst-221-39.medicom.bg. [84.238.221.39])
+        by smtp.googlemail.com with ESMTPSA id n21sm5413028ejl.25.2021.02.16.00.56.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Feb 2021 00:56:12 -0800 (PST)
+Subject: Re: [PATCH 1/2] v4l2-ctrl: Add decoder conceal color control
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20210209094527.2173690-1-stanimir.varbanov@linaro.org>
+ <20210209094527.2173690-2-stanimir.varbanov@linaro.org>
+ <cccae00e-e30e-6691-d954-27379a104115@xs4all.nl>
+ <489f1417-085d-4057-f2e8-1cc8db0ed161@linaro.org>
+ <70c04719-39ac-9ba7-cd2f-6c5b9d5f2275@xs4all.nl>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <12b37304-84d1-63fe-1d85-60268502d8bc@linaro.org>
+Date:   Tue, 16 Feb 2021 10:56:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <70c04719-39ac-9ba7-cd2f-6c5b9d5f2275@xs4all.nl>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LKP triggered lots of LD orphan warnings [0]:
-
-mipsel-linux-ld: warning: orphan section `.data.$Lubsan_data299' from
-`init/do_mounts_rd.o' being placed in section `.data.$Lubsan_data299'
-mipsel-linux-ld: warning: orphan section `.data.$Lubsan_data183' from
-`init/do_mounts_rd.o' being placed in section `.data.$Lubsan_data183'
-mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type3' from
-`init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type3'
-mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type2' from
-`init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type2'
-mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type0' from
-`init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type0'
-
-[...]
-
-Seems like "unnamed data" isn't the only type of symbols that UBSAN
-instrumentation can emit.
-Catch these into .data with the wildcard as well.
-
-[0] https://lore.kernel.org/linux-mm/202102160741.k57GCNSR-lkp@intel.com
-
-Fixes: f41b233de0ae ("vmlinux.lds.h: catch UBSAN's "unnamed data" into data=
-")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- include/asm-generic/vmlinux.lds.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinu=
-x.lds.h
-index cc659e77fcb0..83537e5ee78f 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -95,7 +95,7 @@
-  */
- #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
- #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
--#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliter=
-al* .data.$__unnamed_*
-+#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliter=
-al* .data.$__unnamed_* .data.$Lubsan_*
- #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
- #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
- #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
---=20
-2.30.1
 
 
+On 2/15/21 1:57 PM, Hans Verkuil wrote:
+> On 15/02/2021 12:32, Stanimir Varbanov wrote:
+>>
+>>
+>> On 2/9/21 1:05 PM, Hans Verkuil wrote:
+>>> On 09/02/2021 10:45, Stanimir Varbanov wrote:
+>>>> Add decoder v4l2 control to set conceal color.
+>>>>
+>>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>>>> ---
+>>>>  .../media/v4l/ext-ctrls-codec.rst             | 20 +++++++++++++++++++
+>>>>  drivers/media/v4l2-core/v4l2-ctrls.c          |  9 +++++++++
+>>>>  include/uapi/linux/v4l2-controls.h            |  1 +
+>>>>  3 files changed, 30 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>>> index 00944e97d638..994650052333 100644
+>>>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>>> @@ -674,6 +674,26 @@ enum v4l2_mpeg_video_frame_skip_mode -
+>>>>      is currently displayed (decoded). This value is reset to 0 whenever
+>>>>      the decoder is started.
+>>>>  
+>>>> +``V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR (integer64)``
+>>>> +    This control sets conceal color in YUV color space. It describes the
+>>>> +    client preference of error conceal color in case of error where
+>>>> +    reference frame is missing. The decoder would paint the reference
+>>>> +    buffer with preferred color and use it for future decoding.
+>>>> +    Applicable to decoders.
+>>>
+>>> You should mention explicitly that this is using 16-bit color components
+>>> and expects Limited Range.
+>>
+>> I don't want to limit the client to Limited range only. I'll mention in
+>> the description that both ranges are valid.
+> 
+> OK, but then you need to describe what the color format depends on. See more
+> below.
+> 
+>>
+>>>
+>>>> +
+>>>> +.. flat-table::
+>>>> +    :header-rows:  0
+>>>> +    :stub-columns: 0
+>>>> +
+>>>> +    * - Bit 0:15
+>>>> +      - Y luminance
+>>>> +    * - Bit 16:31
+>>>> +      - Cb chrominance
+>>>> +    * - Bit 32:47
+>>>> +      - Cr chrominance
+>>>> +    * - Bit 48:63
+>>>> +      - Must be zero
+>>>> +
+
+The table how the bits are spread into int64.
+
+>>>>  ``V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE (boolean)``
+>>>>      If enabled the decoder expects to receive a single slice per buffer,
+>>>>      otherwise the decoder expects a single frame in per buffer.
+>>>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+>>>> index 016cf6204cbb..a3b9d28a00b7 100644
+>>>> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+>>>> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+>>>> @@ -945,6 +945,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>>>>  	case V4L2_CID_MPEG_VIDEO_VBV_SIZE:			return "VBV Buffer Size";
+>>>>  	case V4L2_CID_MPEG_VIDEO_DEC_PTS:			return "Video Decoder PTS";
+>>>>  	case V4L2_CID_MPEG_VIDEO_DEC_FRAME:			return "Video Decoder Frame Count";
+>>>> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:		return "Video Decoder Conceal Color";
+>>>>  	case V4L2_CID_MPEG_VIDEO_VBV_DELAY:			return "Initial Delay for VBV Control";
+>>>>  	case V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE:		return "Horizontal MV Search Range";
+>>>>  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
+>>>> @@ -1430,6 +1431,14 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>>>>  		*max = 0x7fffffffffffffffLL;
+>>>>  		*step = 1;
+>>>>  		break;
+>>>> +	case V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR:
+>>>> +		*type = V4L2_CTRL_TYPE_INTEGER64;
+>>>> +		*min = 0;
+>>>> +		/* default for 8bit black, luma is 16, chroma is 128 */
+>>>
+>>> Since this is 16 bit the actual default luma value for black is 4096 and for chroma use
+>>> 32768 (i.e. both values are times 256).
+>>
+>> If we follow this for pixel format with 10bit per channel we have to
+>> multiply by 64?
+> 
+> No, you multiply by 4. 12 bit depth will multiple by 16, and 16 bit depth by 256.
+> 
+> But how do you format this? Using bits 29-0? Or use 9-0 for one color component,
+> 25-16 for another and 41-32 for the last component?
+
+I described this in the table above:
+
+Bit  0:15 - Y luminance
+Bit 16:31 - Cb chrominance
+Bit 32:47 - Cr chrominance
+Bit 48:63 - Must be zero
+
+So depending on the bit depth of the current pixel format:
+
+ 8bit - 0:7  Y', 16:23 Cb, 32:39 Cr
+10bit - 0:9  Y', 16:25 Cb, 32:41 Cr
+12bit - 0:11 Y', 16:27 Cb, 32:43 Cr
+
+> 
+> Also missing is an explanation of which bits are for Y', which for Cb and which for Cr.
+> 
+> It is surprisingly hard to provide an unambiguous description of this :-)
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>>
+>>>
+>>>> +		*def = 0x8000800010LL;
+>>>> +		*max = 0xffffffffffffLL;
+>>>> +		*step = 1;
+>>>> +		break;
+>>>>  	case V4L2_CID_PIXEL_RATE:
+>>>>  		*type = V4L2_CTRL_TYPE_INTEGER64;
+>>>>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+>>>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+>>>> index 039c0d7add1b..5e5a3068be2d 100644
+>>>> --- a/include/uapi/linux/v4l2-controls.h
+>>>> +++ b/include/uapi/linux/v4l2-controls.h
+>>>> @@ -428,6 +428,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
+>>>>  #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
+>>>>  #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
+>>>>  #define V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID	(V4L2_CID_CODEC_BASE+230)
+>>>> +#define V4L2_CID_MPEG_VIDEO_DEC_CONCEAL_COLOR		(V4L2_CID_CODEC_BASE+231)
+>>>>  
+>>>>  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
+>>>>  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
+>>>>
+>>>
+>>> Regards,
+>>>
+>>> 	Hans
+>>>
+>>
+> 
+
+-- 
+regards,
+Stan
