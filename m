@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B8A31CDB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D3431CDB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhBPQML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:12:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230467AbhBPQLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:11:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3013164DF0;
-        Tue, 16 Feb 2021 16:11:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613491874;
-        bh=BnAwcr4oeUbABUoa/t/lY4qqMdgd+TgxOOqMjppumfQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SNneJQvQTK0Y5P+nVLp13bNH6IsnsFwcfMK+gdG3kcSC5gYF7q2UhuDZgf3VSGwWq
-         bh3of2l440ECX6dhSrrtcDC9AvBehFUoFgXQklIB/5TZ47d0udcABU1KugyIqQHbaH
-         o7hs925+0VTZljLrWe3DhLCWI10+0AGwVirTDRZaIAKO5UxOl23E+27BvTbLQHXy68
-         6S/n5vRS67HBCqSFk3s7tlCQKzjqaiPl6Sln3ljiDduxzxTvPQVu1ucB5LXyEz+YMc
-         NknEjR0SSS4Oea2qW/27/FtxVmvXZiAbZOv1OWCDUDMrEyvxSPv/lqVKtwbb6gcE6J
-         4rdevL1XLWV6A==
-Date:   Tue, 16 Feb 2021 18:11:02 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
-        stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v4] tpm: fix reference counting for struct tpm_chip
-Message-ID: <YCvulinbuHWunTqD@kernel.org>
-References: <1613435460-4377-1-git-send-email-LinoSanfilippo@gmx.de>
- <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
- <20210216125342.GU4718@ziepe.ca>
- <YCvtF4qfG35tHM5e@kernel.org>
- <YCvuS9cIT7umOjhy@kernel.org>
+        id S230505AbhBPQMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:12:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhBPQMN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 11:12:13 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3923CC06174A;
+        Tue, 16 Feb 2021 08:11:33 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id b8so5718947plh.12;
+        Tue, 16 Feb 2021 08:11:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=O4BOSVZF//SD2MgB6FxC/ZePgnMl6scWXFEj2mjFbLc=;
+        b=aDkMzIUgy1SLS9scUmC+Su6orAL1zTCD2Yw9xgN+b2/POclQFBzkkXvhroX6ET/lXZ
+         9J4HMvdYYSs/WlS3qjSgBPG6+BCGMhdYnKz8B6HWPcfyhlXm9F9bP1o5D2vu0ZMTtVvf
+         tb7BXQVdOkYGo/ncZ1F19VJhU3dpeFN9E7Zi/BYkL6ISG2IYlZTZ+AgxXZ0zYz51sKkx
+         CIXKzl4CTYK/uQ26mKUjxnQrmW84tGSA0vApC3mm+M1WYpG/2xZQKnftm7IPOJkZtagS
+         YC3U5oqIoksZ+X72FTwO17dcGLHbHtgxJiiLFmmYWk4+dhrwD/ciffEv81zQLEW0neKb
+         k0Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O4BOSVZF//SD2MgB6FxC/ZePgnMl6scWXFEj2mjFbLc=;
+        b=QMvx8Dj7ypYMqZN6TRN9qrORWC2bZCrpgnFKeHtq+EPiTdixm5xqVxpiVW45RkZtOP
+         +YOD63aY+F+9frs5cB6Pfmjjv0Vb6HrhxXn8IX/tny2UPYYqd1PVWzOldnaoH8XfRUEj
+         d/JSwl4G1i45F2LcSC1J6hYEJ9yuHFOJ+Fu8hXeYgVjbPZ8LwVeMhn7PKk+x1bBLpGX2
+         6iGYWl9QqVA2yUJfWYyT07M8db6Y4X9ilxZWxm88qsY/1BAvNZ11QZcReOyrXRNO5ZEZ
+         S9rhkZ8DpeT1OXceZhzKBAB4bALMnfb1b2L46hIQ7cK9Jiub+Vh18wBPVFJl8UrlA6gK
+         xlww==
+X-Gm-Message-State: AOAM532O6pYKDvmTw64LM3wRvjwbNFkAwXxNPD5+bSMb4peDBFa06ruy
+        wm2TD4T5d/EY5uI0bHGkEhQ=
+X-Google-Smtp-Source: ABdhPJxP9MNZA1JtzW+Gu4yCVPqpOMZbT9L05YafA2kUgdGNkmtAltcNUj2Q6GTFOzCDw0WKhHv0MQ==
+X-Received: by 2002:a17:90b:4acc:: with SMTP id mh12mr4951568pjb.10.1613491892710;
+        Tue, 16 Feb 2021 08:11:32 -0800 (PST)
+Received: from localhost (89.208.244.53.16clouds.com. [89.208.244.53])
+        by smtp.gmail.com with ESMTPSA id ms24sm3228789pjb.18.2021.02.16.08.11.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 08:11:32 -0800 (PST)
+Date:   Wed, 17 Feb 2021 00:11:29 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        mika.westerberg@linux.intel.com, rric@kernel.org,
+        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, kw@linux.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] i2c: designware: Use the correct name of
+ device-managed function
+Message-ID: <20210216161129.GA749996@nuc8i5>
+References: <20210216141810.747678-1-zhengdejin5@gmail.com>
+ <20210216141810.747678-4-zhengdejin5@gmail.com>
+ <YCvZDTLYPOvg73lb@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YCvuS9cIT7umOjhy@kernel.org>
+In-Reply-To: <YCvZDTLYPOvg73lb@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 06:09:50PM +0200, Jarkko Sakkinen wrote:
-> On Tue, Feb 16, 2021 at 06:04:42PM +0200, Jarkko Sakkinen wrote:
-> > On Tue, Feb 16, 2021 at 08:53:42AM -0400, Jason Gunthorpe wrote:
-> > > On Tue, Feb 16, 2021 at 01:31:00AM +0100, Lino Sanfilippo wrote:
-> > > >  
-> > > > +static int tpm_add_tpm2_char_device(struct tpm_chip *chip)
-> > 
-> > BTW, this naming is crap.
-> > 
-> > - 2x tpm
-> > - char is useless
-> > 
-> > -> tpm2_add_device
+On Tue, Feb 16, 2021 at 04:39:09PM +0200, Andy Shevchenko wrote:
+> On Tue, Feb 16, 2021 at 10:18:09PM +0800, Dejin Zheng wrote:
+> > Use the new function pcim_alloc_irq_vectors() to allocate IRQ vectors,
+> > the pcim_alloc_irq_vectors() function, an explicit device-managed version
+> > of pci_alloc_irq_vectors(). If pcim_enable_device() has been called
+> > before, then pci_alloc_irq_vectors() is actually a device-managed
+> > function. It is used here as a device-managed function, So replace it
+> > with pcim_alloc_irq_vectors().
 > 
-> Actually, tpm2s_add_device() add put it to tpm2-space.c.
+> ...
+> 
+> > -	r = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
+> > +	r = pcim_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
+> >  	if (r < 0)
+> >  		return r;
+> 
+> It's good, but now why do we have pci_free_irq_vectors() in the same file?
+>
+Done. and thank you for your careful inspection.
 
-No, tpms_add_device() :-)
-
-(sorry)
-
-/Jarkko
 
 > 
-> > > > +{
-> > > > +	int rc;
-> > > > +
-> > > > +	device_initialize(&chip->devs);
-> > > > +	chip->devs.parent = chip->dev.parent;
-> > > > +	chip->devs.class = tpmrm_class;
-> > > > +
-> > > > +	rc = dev_set_name(&chip->devs, "tpmrm%d", chip->dev_num);
-> > > > +	if (rc)
-> > > > +		goto out_put_devs;
-> > 
-> > Right, and empty line missing here.
-> > 
-> > > > +	/*
-> > > > +	 * get extra reference on main device to hold on behalf of devs.
-> > > > +	 * This holds the chip structure while cdevs is in use. The
-> > > > +	 * corresponding put is in the tpm_devs_release.
-> > > > +	 */
-> > > > +	get_device(&chip->dev);
-> > > > +	chip->devs.release = tpm_devs_release;
-> > > > +	chip->devs.devt =
-> > > > +		MKDEV(MAJOR(tpm_devt), chip->dev_num + TPM_NUM_DEVICES);
-> > 
-> > Isn't this less than 100 chars?
-> > 
-> > > > +	cdev_init(&chip->cdevs, &tpmrm_fops);
-> > > > +	chip->cdevs.owner = THIS_MODULE;
-> > > > +
-> > > > +	rc = cdev_device_add(&chip->cdevs, &chip->devs);
-> > > > +	if (rc) {
-> > > > +		dev_err(&chip->devs,
-> > > > +			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
-> > > > +			dev_name(&chip->devs), MAJOR(chip->devs.devt),
-> > > > +			MINOR(chip->devs.devt), rc);
-> > > > +		goto out_put_devs;
-> > > > +	}
-> > > > +
-> > > > +	return 0;
-> > > > +
-> > > > +out_put_devs:
-> > > > +	put_device(&chip->devs);
-> > > 
-> > > I'd rather you organize this so chip->devs.release and the get_device
-> > > is always sent instead of having the possiblity for a put_device that
-> > > doesn't call release
-> > 
-> > /Jarkko
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
