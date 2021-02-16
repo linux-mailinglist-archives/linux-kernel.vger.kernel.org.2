@@ -2,81 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEAE31D229
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC2D31D22D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhBPVeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:34:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230245AbhBPVeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:34:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9420464E08;
-        Tue, 16 Feb 2021 21:33:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613511202;
-        bh=01cUIVJGwWx09GbAFg8jofdiRMyEa+J8ftvfZLNrxFA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KoFDnzHYfZVMEo1PpdZvHhT/MdR7cQwmpxCBE4HYwBElETG+lJZq2t7cVJbI2LQjo
-         i7z0tuuPF3eqypqWbSSPomtzsi813VhvjWyOJa8y7N4EygNu6oWXaovQJjY0SfrOaq
-         aHjIC+5lMd7ZD3vLkhNjwVy2W9JWQRM1yBld9uK8bKcvMt8QVe7BQxUR1jW15svgbM
-         i4xHbxlUziXMi2ODe9oVWZg2TaHbTP3aJBZlXOZGrEt+b4m3G9P2qPUESgDjMEnaiP
-         /MAqSVRoDhI2bvPheLU+QG9STFg2ecq4PuAEZJjCF+n+9GzhhT/DYfCVeuJHVCz6Gd
-         4JesVb34za5tA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michael Fuckner <michael@fuckner.net>
-Subject: [PATCH] Makefile: Remove # characters from compiler string
-Date:   Tue, 16 Feb 2021 14:33:12 -0700
-Message-Id: <20210216213312.30462-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.30.1
+        id S230326AbhBPVgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:36:09 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59904 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhBPVgG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 16:36:06 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 2BA151C0B9E; Tue, 16 Feb 2021 22:35:09 +0100 (CET)
+Date:   Tue, 16 Feb 2021 22:35:08 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 5.10 098/104] switchdev: mrp: Remove
+ SWITCHDEV_ATTR_ID_MRP_PORT_STAT
+Message-ID: <20210216213508.GA32671@amd>
+References: <20210215152719.459796636@linuxfoundation.org>
+ <20210215152722.633343806@linuxfoundation.org>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
+Content-Disposition: inline
+In-Reply-To: <20210215152722.633343806@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using AMD's Optimizing C/C++ Compiler (AOCC), the build fails due
-to a # character in the version string, which is interpreted as a
-comment:
 
-$ make CC=clang defconfig init/main.o
-include/config/auto.conf.cmd:1374: *** invalid syntax in conditional. Stop.
+--2fHTh5uZTiUOsy+g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-$ sed -n 1374p include/config/auto.conf.cmd
-ifneq "$(CC_VERSION_TEXT)" "AMD clang version 11.0.0 (CLANG: AOCC_2.3.0-Build#85 2020_11_10) (based on LLVM Mirror.Version.11.0.0)"
+Hi!
 
-Remove all # characters in the version string so that the build does not
-fail unexpectedly.
+> From: Horatiu Vultur <horatiu.vultur@microchip.com>
+>=20
+> commit 059d2a1004981dce19f0127dabc1b4ec927d202a upstream.
+>=20
+> Now that MRP started to use also SWITCHDEV_ATTR_ID_PORT_STP_STATE to
+> notify HW, then SWITCHDEV_ATTR_ID_MRP_PORT_STAT is not used anywhere
+> else, therefore we can remove it.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1298
-Reported-by: Michael Fuckner <michael@fuckner.net>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Are you sure this is suitable for 5.10 backport? Unlike mainline,
+net/bridge use is not removed, so this will cause compile problem...?
 
-diff --git a/Makefile b/Makefile
-index de1acaefe87e..9bfe1307447e 100644
---- a/Makefile
-+++ b/Makefile
-@@ -581,7 +581,7 @@ endif
- # Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
- # CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
- # and from include/config/auto.conf.cmd to detect the compiler upgrade.
--CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1)
-+CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g')
- 
- ifdef config-build
- # ===========================================================================
+pavel@amd:~/cip/krc$ grep -ri SWITCHDEV_ATTR_ID_MRP_PORT_STATE .
+=2E/include/net/switchdev.h:    SWITCHDEV_ATTR_ID_MRP_PORT_STATE,
+=2E/net/bridge/br_mrp_switchdev.c:		.id =3D SWITCHDEV_ATTR_ID_MRP_PORT_STAT=
+E,
+pavel@amd:~/cip/krc$ e ./net/bridge/br_mrp_switchdev.c
 
-base-commit: f40ddce88593482919761f74910f42f4b84c004b
--- 
-2.30.1
+Best regards,
+								Pavel
 
+> --- a/include/net/switchdev.h
+> +++ b/include/net/switchdev.h
+> @@ -41,7 +41,6 @@ enum switchdev_attr_id {
+>  	SWITCHDEV_ATTR_ID_BRIDGE_MC_DISABLED,
+>  	SWITCHDEV_ATTR_ID_BRIDGE_MROUTER,
+>  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
+> -	SWITCHDEV_ATTR_ID_MRP_PORT_STATE,
+>  	SWITCHDEV_ATTR_ID_MRP_PORT_ROLE,
+>  #endif
+>  };
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--2fHTh5uZTiUOsy+g
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAsOowACgkQMOfwapXb+vKVJQCcDIcS2WwINzf5ghcr5730FQh0
+LIUAnRcLy99KXw1KpKNj4itKHCP2Wju/
+=Z9wu
+-----END PGP SIGNATURE-----
+
+--2fHTh5uZTiUOsy+g--
