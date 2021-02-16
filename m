@@ -2,152 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9F131CE3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEA831CE3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhBPQkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:40:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48438 "EHLO mx2.suse.de"
+        id S230332AbhBPQk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:40:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:38804 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229764AbhBPQjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:39:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8B82FAB4C;
-        Tue, 16 Feb 2021 16:39:13 +0000 (UTC)
-Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
- holes in memory layout
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Rapoport <rppt@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org, x86@kernel.org
-References: <20210208110820.6269-1-rppt@kernel.org>
- <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
- <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
- <YCaAHI/rFp1upRLc@dhcp22.suse.cz> <20210214180016.GO242749@kernel.org>
- <YCo4Lyio1h2Heixh@dhcp22.suse.cz> <20210215212440.GA1307762@kernel.org>
- <YCuDUG89KwQNbsjA@dhcp22.suse.cz> <20210216110154.GB1307762@kernel.org>
- <b1302d8e-5380-18d1-0f55-2dfd61f470e6@suse.cz>
- <YCvEeWuU2tBUUNBG@dhcp22.suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <caeebbcc-b6c9-624b-3eeb-591bf59f28a6@suse.cz>
-Date:   Tue, 16 Feb 2021 17:39:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229916AbhBPQkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 11:40:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F36CD101E;
+        Tue, 16 Feb 2021 08:39:32 -0800 (PST)
+Received: from e124901.arm.com (unknown [10.57.9.41])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4D72E3F73D;
+        Tue, 16 Feb 2021 08:39:31 -0800 (PST)
+From:   vincent.donnefort@arm.com
+To:     peterz@infradead.org, tglx@linutronix.de,
+        vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@matbug.net, valentin.schneider@arm.com,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH] sched/pelt: Fix task util_est update filtering
+Date:   Tue, 16 Feb 2021 16:39:21 +0000
+Message-Id: <20210216163921.572228-1-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YCvEeWuU2tBUUNBG@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Vincent Donnefort <vincent.donnefort@arm.com>
 
-On 2/16/21 2:11 PM, Michal Hocko wrote:
-> On Tue 16-02-21 13:34:56, Vlastimil Babka wrote:
->> On 2/16/21 12:01 PM, Mike Rapoport wrote:
->> >> 
->> >> I do understand that. And I am not objecting to the patch. I have to
->> >> confess I haven't digested it yet. Any changes to early memory
->> >> intialization have turned out to be subtle and corner cases only pop up
->> >> later. This is almost impossible to review just by reading the code.
->> >> That's why I am asking whether we want to address the specific VM_BUG_ON
->> >> first with something much less tricky and actually reviewable. And
->> >> that's why I am asking whether dropping the bug_on itself is safe to do
->> >> and use as a hot fix which should be easier to backport.
->> > 
->> > I can't say I'm familiar enough with migration and compaction code to say
->> > if it's ok to remove that bug_on. It does point to inconsistency in the
->> > memmap, but probably it's not important.
->> 
->> On closer look, removing the VM_BUG_ON_PAGE() in set_pfnblock_flags_mask() is
->> not safe. If we violate the zone_spans_pfn condition, it means we will write
->> outside of the pageblock bitmap for the zone, and corrupt something.
-> 
-> Isn't it enough that at least some pfn from the pageblock belongs to the
-> zone in order to have the bitmap allocated for the whole page block
-> (even if it partially belongs to a different zone)?
-> 
->> Actually
->> similar thing can happen in __get_pfnblock_flags_mask() where there's no
->> VM_BUG_ON, but there we can't corrupt memory. But we could theoretically fault
->> to do accessing some unmapped range?
->> 
->> So the checks would have to become unconditional !DEBUG_VM and return instead of
->> causing a BUG. Or we could go back one level and add some checks to
->> fast_isolate_around() to detect a page from zone that doesn't match cc->zone.
-> 
-> Thanks for looking deeper into that. This sounds like a much more
-> targeted fix to me.
+Being called for each dequeue, util_est reduces the number of its updates
+by filtering out when the EWMA signal is different from the task util_avg
+by less than 1%. It is a problem for a sudden util_avg ramp-up. Due to the
+decay from a previous high util_avg, EWMA might now be close enough to
+the new util_avg. No update would then happen while it would leave
+ue.enqueued with an out-of-date value.
 
-So, Andrea could you please check if this fixes the original
-fast_isolate_around() issue for you? With the VM_BUG_ON not removed, DEBUG_VM
-enabled, no changes to struct page initialization...
-It relies on pageblock_pfn_to_page as the rest of the compaction code.
+Taking into consideration the two util_est members, EWMA and enqueued for
+the filtering, ensures, for both, an up-to-date value.
 
-Thanks!
+This is for now an issue only for the trace probe that might return the
+stale value. Functional-wise, it isn't (yet) a problem, as the value is
+always accessed through max(enqueued, ewma).
 
-----8<----
-From f5c8d7bc77d2ec0b4cfec44820ce6f602fdb3a86 Mon Sep 17 00:00:00 2001
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Tue, 16 Feb 2021 17:32:34 +0100
-Subject: [PATCH] mm, compaction: make fast_isolate_around() robust against
- pfns from a wrong zone
+This problem has been observed using LISA's UtilConvergence:test_means on
+the sd845c board.
 
-TBD
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/compaction.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 190ccdaa6c19..b75645e4678d 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1288,7 +1288,7 @@ static void
- fast_isolate_around(struct compact_control *cc, unsigned long pfn, unsigned long nr_isolated)
- {
- 	unsigned long start_pfn, end_pfn;
--	struct page *page = pfn_to_page(pfn);
-+	struct page *page;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 794c2cb945f8..9008e0c42def 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3941,24 +3941,27 @@ static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
+ 	trace_sched_util_est_cfs_tp(cfs_rq);
+ }
  
- 	/* Do not search around if there are enough pages already */
- 	if (cc->nr_freepages >= cc->nr_migratepages)
-@@ -1300,7 +1300,11 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn, unsigned long
- 
- 	/* Pageblock boundaries */
- 	start_pfn = pageblock_start_pfn(pfn);
--	end_pfn = min(pageblock_end_pfn(pfn), zone_end_pfn(cc->zone)) - 1;
-+	end_pfn = min(pageblock_end_pfn(pfn), zone_end_pfn(cc->zone));
++#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
 +
-+	page = pageblock_pfn_to_page(start_pfn, end_pfn, cc->zone);
-+	if (!page)
-+		return;
+ /*
+- * Check if a (signed) value is within a specified (unsigned) margin,
++ * Check if a (signed) value is within the (unsigned) util_est margin,
+  * based on the observation that:
+  *
+  *     abs(x) < y := (unsigned)(x + y - 1) < (2 * y - 1)
+  *
+- * NOTE: this only works when value + maring < INT_MAX.
++ * NOTE: this only works when value + UTIL_EST_MARGIN < INT_MAX.
+  */
+-static inline bool within_margin(int value, int margin)
++static inline bool util_est_within_margin(int value)
+ {
+-	return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
++	return ((unsigned int)(value + UTIL_EST_MARGIN - 1) <
++		(2 * UTIL_EST_MARGIN - 1));
+ }
  
- 	/* Scan before */
- 	if (start_pfn != pfn) {
-@@ -1486,7 +1490,7 @@ fast_isolate_freepages(struct compact_control *cc)
+ static inline void util_est_update(struct cfs_rq *cfs_rq,
+ 				   struct task_struct *p,
+ 				   bool task_sleep)
+ {
+-	long last_ewma_diff;
++	long last_ewma_diff, last_enqueued_diff;
+ 	struct util_est ue;
+ 
+ 	if (!sched_feat(UTIL_EST))
+@@ -3979,6 +3982,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
+ 	if (ue.enqueued & UTIL_AVG_UNCHANGED)
+ 		return;
+ 
++	last_enqueued_diff = ue.enqueued;
++
+ 	/*
+ 	 * Reset EWMA on utilization increases, the moving average is used only
+ 	 * to smooth utilization decreases.
+@@ -3992,12 +3997,19 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
  	}
  
- 	cc->total_free_scanned += nr_scanned;
--	if (!page)
-+	if (!page || page_zone(page) != cc->zone)
- 		return cc->free_pfn;
+ 	/*
+-	 * Skip update of task's estimated utilization when its EWMA is
++	 * Skip update of task's estimated utilization when its members are
+ 	 * already ~1% close to its last activation value.
+ 	 */
+ 	last_ewma_diff = ue.enqueued - ue.ewma;
+-	if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
++	last_enqueued_diff -= ue.enqueued;
++	if (util_est_within_margin(last_ewma_diff)) {
++		if (!util_est_within_margin(last_enqueued_diff)) {
++			ue.ewma = ue.enqueued;
++			goto done;
++		}
++
+ 		return;
++	}
  
- 	low_pfn = page_to_pfn(page);
+ 	/*
+ 	 * To avoid overestimation of actual task utilization, skip updates if
 -- 
-2.30.0
+2.25.1
 
