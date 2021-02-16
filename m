@@ -2,160 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F6B31CBEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A9031CBE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhBPO2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:28:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58310 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230268AbhBPO1i (ORCPT
+        id S230332AbhBPO1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230206AbhBPO1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:27:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613485570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NsfAQuQEXLoLRBbDa4M48z/HfNRahv2joJ6WWM+PrFI=;
-        b=aRSxkFCzo/Tw3sIVSIYXXolEoMH+jlDHRZiQqfnSYJ3QXS5Vlx0rBXdHdpIRfEfzRtMvHd
-        6YXEgbP9Mnt3+9eEZr2jiEyPM+vhlyeWiCKFEG1S7XmFcMgUOg5yfbEPPEkALnkEjYABFl
-        L1DzDdYrKaGMKb3fukWVOQPVoGy2h8k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-1PI4taZjMv6-EvsIEXcjRg-1; Tue, 16 Feb 2021 09:26:07 -0500
-X-MC-Unique: 1PI4taZjMv6-EvsIEXcjRg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BE8E423C3;
-        Tue, 16 Feb 2021 14:25:39 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-113-212.ams2.redhat.com [10.36.113.212])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 20AA01981B;
-        Tue, 16 Feb 2021 14:25:37 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>, stable@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
+        Tue, 16 Feb 2021 09:27:10 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D792C061574;
+        Tue, 16 Feb 2021 06:26:29 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id z68so6337394pgz.0;
+        Tue, 16 Feb 2021 06:26:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=faHK0cyvGGeTK0Lu2KFV2g1IzncYxmvTiObKgbcKmx0=;
+        b=qRlbmw9QjZCjMvUcUGVN8zUC3MT5NH+dYnEVedbk1SZi/hod3HnSm239TTk2FHeNkJ
+         47kpT0p57IWaSec4PR9BFHfJ8jg52O/paiSrSEaYF2BVX4EdeUYREInTzKa1SvGmxqfw
+         05bwsThstX++KCMslLXP1SgjzvDSBk+XCe/yc3DFAjmryMHMM54cpZ/AmqSIqJtVQxtf
+         Vif7+CBybed6x9vCFHj0QNLoQRFRdSbarw8AZENJgoIm2ayyyN9V6KLSpkyuKkUs1H/H
+         8TkNhjds0aFcVmiaXvPsNa9Uq0QbKHam/pt+Rv5nxXrgVw0wXaiviNQrn9jYK2ayYByY
+         5QsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=faHK0cyvGGeTK0Lu2KFV2g1IzncYxmvTiObKgbcKmx0=;
+        b=PVzVHW0+cIVND28siBgn5ME+ZiTYltipgLrXo5D7vJsovbtuIuYe9Z9shZEkGWxIGy
+         tNZAGeT3EVRvYLvzvH5fMKIv/XqwXTtaNBFum2MSYyBkmcXWJCOWczSmDJVPUVY/V3UR
+         mJPX3ljqG43ijbD5DHhUlIT84fe8FtQNPdlGal1cR3roq0ocksFg4I4waDdchSp6ZyBH
+         I53goXJt07+5OQMC/2Gz8L9Kgc5vi11Yeb4OWTlCsmHbd9G2UYSNfTlThLD9ZSXk/mzP
+         QJwNes/o+Ufa4nJDyI8SUh/UtO9ArejGkg4A3i/rNYxjhn0ydOhdxir0ADUSGNAb4V+y
+         bE9Q==
+X-Gm-Message-State: AOAM533B+CFikrlbHwlp1XTrq3bn19HK+HmHbet3yA4mWnd1O9xM4m54
+        KEKg+G87JY5oFwODsPlH9GE=
+X-Google-Smtp-Source: ABdhPJwiT1RhR1WEFZ7nGGATonnaewsEVZLnFdy6/orkPw4DRiIJmMOFovA/RiTlQCYGzqf5YWP2vQ==
+X-Received: by 2002:a63:af1b:: with SMTP id w27mr19028491pge.162.1613485588909;
+        Tue, 16 Feb 2021 06:26:28 -0800 (PST)
+Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
+        by smtp.gmail.com with ESMTPSA id t1sm22289668pfl.194.2021.02.16.06.26.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 06:26:28 -0800 (PST)
+Date:   Tue, 16 Feb 2021 22:26:26 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        mika.westerberg@linux.intel.com, rric@kernel.org,
+        helgaas@kernel.org, wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH for 5.10 v2 5/5] vdpa_sim: add get_config callback in vdpasim_dev_attr
-Date:   Tue, 16 Feb 2021 15:24:39 +0100
-Message-Id: <20210216142439.258713-6-sgarzare@redhat.com>
-In-Reply-To: <20210216142439.258713-1-sgarzare@redhat.com>
-References: <20210216142439.258713-1-sgarzare@redhat.com>
+Subject: Re: [PATCH v1 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <20210216142626.GA747814@nuc8i5>
+References: <20210215181550.714101-1-zhengdejin5@gmail.com>
+ <20210215181550.714101-2-zhengdejin5@gmail.com>
+ <YCrfqungNSSxe5lK@rocinante>
+ <YCual+Fq9mcnxbM4@smile.fi.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <YCual+Fq9mcnxbM4@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 65b709586e222fa6ffd4166ac7fdb5d5dad113ee upstream.
+On Tue, Feb 16, 2021 at 12:12:39PM +0200, Andy Shevchenko wrote:
+> On Mon, Feb 15, 2021 at 09:55:06PM +0100, Krzysztof Wilczyński wrote:
+> 
+> > Question: wouldn't you need to call pci_free_irq_vectors() somewhere,
+> > possibly to pcim_release() callback?  Although, I am not sure where the
+> > right place would be.
+> > 
+> > I am asking, as the documentation (see [4]) suggests that one would have
+> > to release allocated IRQ vectors (relevant exceprt):
+> 
+> It's done in pcim_release() but not explicitly.
+> 
+>         if (dev->msi_enabled)
+>                 pci_disable_msi(dev);
+>         if (dev->msix_enabled)
+>                 pci_disable_msix(dev);
+> 
+> Maybe above can be replaced by pci_free_irq_vectors() to be sure that any
+> future change to PCI IRQ allocation APIs.
+> 
+> Yes, I have checked and currently the above code is equivalent to
+> pci_free_irq_vectors().
+> 
+> Dejin, please update your patch accordingly.
+>
+Hi Andy and Krzysztof,
 
-The get_config callback can be used by the device to fill the
-config structure.
-The callback will be invoked in vdpasim_get_config() before copying
-bytes into caller buffer.
+I have modified it and sent patch v2. thank you very much!
 
-Move vDPA-net config updates from vdpasim_set_features() in the
-new vdpasim_net_get_config() callback.
-This is safe since in vdpa_get_config() we already check that
-.set_features() callback is called before .get_config().
+BR,
+Dejin
 
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Link: https://lore.kernel.org/r/20201215144256.155342-13-sgarzare@redhat.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Cc: <stable@vger.kernel.org> # 5.10.x
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 35 +++++++++++++++++++-------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index d9c494455156..f2ad450db547 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -69,9 +69,12 @@ static u64 vdpasim_features = (1ULL << VIRTIO_F_ANY_LAYOUT) |
- 			      (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
- 			      (1ULL << VIRTIO_NET_F_MAC);
- 
-+struct vdpasim;
-+
- struct vdpasim_dev_attr {
- 	size_t config_size;
- 	int nvqs;
-+	void (*get_config)(struct vdpasim *vdpasim, void *config);
- };
- 
- /* State of each vdpasim device */
-@@ -524,8 +527,6 @@ static u64 vdpasim_get_features(struct vdpa_device *vdpa)
- static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
--	struct virtio_net_config *config =
--		(struct virtio_net_config *)vdpasim->config;
- 
- 	/* DMA mapping must be done by driver */
- 	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
-@@ -533,16 +534,6 @@ static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
- 
- 	vdpasim->features = features & vdpasim_features;
- 
--	/* We generally only know whether guest is using the legacy interface
--	 * here, so generally that's the earliest we can set config fields.
--	 * Note: We actually require VIRTIO_F_ACCESS_PLATFORM above which
--	 * implies VIRTIO_F_VERSION_1, but let's not try to be clever here.
--	 */
--
--	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
--	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
--	memcpy(config->mac, macaddr_buf, ETH_ALEN);
--
- 	return 0;
- }
- 
-@@ -595,8 +586,13 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
- 
--	if (offset + len < vdpasim->dev_attr.config_size)
--		memcpy(buf, vdpasim->config + offset, len);
-+	if (offset + len > vdpasim->dev_attr.config_size)
-+		return;
-+
-+	if (vdpasim->dev_attr.get_config)
-+		vdpasim->dev_attr.get_config(vdpasim, vdpasim->config);
-+
-+	memcpy(buf, vdpasim->config + offset, len);
- }
- 
- static void vdpasim_set_config(struct vdpa_device *vdpa, unsigned int offset,
-@@ -739,12 +735,23 @@ static const struct vdpa_config_ops vdpasim_net_batch_config_ops = {
- 	.free                   = vdpasim_free,
- };
- 
-+static void vdpasim_net_get_config(struct vdpasim *vdpasim, void *config)
-+{
-+	struct virtio_net_config *net_config =
-+		(struct virtio_net_config *)config;
-+
-+	net_config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
-+	net_config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
-+	memcpy(net_config->mac, macaddr_buf, ETH_ALEN);
-+}
-+
- static int __init vdpasim_dev_init(void)
- {
- 	struct vdpasim_dev_attr dev_attr = {};
- 
- 	dev_attr.nvqs = VDPASIM_VQ_NUM;
- 	dev_attr.config_size = sizeof(struct virtio_net_config);
-+	dev_attr.get_config = vdpasim_net_get_config;
- 
- 	vdpasim_dev = vdpasim_create(&dev_attr);
- 
--- 
-2.29.2
-
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
