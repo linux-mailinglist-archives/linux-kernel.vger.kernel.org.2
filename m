@@ -2,143 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC75631D19D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E176231D1A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhBPUdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 15:33:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhBPUdo (ORCPT
+        id S230101AbhBPUee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 15:34:34 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:43729 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhBPUeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 15:33:44 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49170C061574;
-        Tue, 16 Feb 2021 12:33:04 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id k4so11702481ybp.6;
-        Tue, 16 Feb 2021 12:33:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HA9QSj7wELOZ8H9SPS6eF8YoQdQ/Co16H+hfPWgYYHA=;
-        b=kfO2wiLPPT0I075ZfZkBaNACrvHTgJW+6BRlQYiUESKASVQzhQ+c+706HUpeDEl8PQ
-         z2SIVS6nXkCaTuZ1+jPd/p0G0rT2Bnc6MiksGTibA8TJNo3yyBjBbtdAUH7TwQ8cQEhZ
-         btmEXmUN1MBlhKZW6NOVLMVoDw5z8HeKKEKsS2Uzn3bEao5ByJ567HnRB+R96eDFOLNB
-         aYJIJDP584gGfBecZNEmdH1qEsn65bU1A/gNBR5CxDhEmNi/AiIfjtd99E00B2ghVegb
-         F6WQru3WLQzuaLwgxnpXxUANL5c7u7eCG/HgGdA/XPEgglnBMSIOKQzY+66qdxyU2Nkb
-         Xi/g==
+        Tue, 16 Feb 2021 15:34:31 -0500
+Received: by mail-oi1-f180.google.com with SMTP id d20so12569066oiw.10;
+        Tue, 16 Feb 2021 12:34:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HA9QSj7wELOZ8H9SPS6eF8YoQdQ/Co16H+hfPWgYYHA=;
-        b=mdDlQmwCkxlXTKPJ3ISLEKmqp4Q5Upuyh9VVY36n/LCJ4qu+RWBSuvHuKhmlvN94aq
-         T1dEQZPnztIYwSjsnddHmU/yZIk4kQHjPORLpzTfT+kuyswJGBmSx88JhURSXpXm4cLo
-         oojKVqEPZWamfyDc5+TEO7znVaYtpXDTkelk6Y3DmoJmEzC1jgJee6CV+kfvJdrQiRSk
-         x8dX3u+1TDGgFEdHlunbTWYEK/XwIaCAZf1jOVmDiaLQqJM5I2Dmm5T/u5MRzhTiLYq2
-         D+Yz9ow1GdJO5urQSC3mEvi69orqvA+Wob6kvi3BYoI977wq9yW3Fa0aoLGCYAy1DX4P
-         b1PQ==
-X-Gm-Message-State: AOAM531H3fE1fDIgV7894OTA/Xkp+MIMpWrMNVfX4/dM9HTN3on2eytR
-        OVj4kY6FzK6DkQnd2G2yxmyt4FmkTFTqCbwG6Fc=
-X-Google-Smtp-Source: ABdhPJzkl/xVQdW9SvNUFBc3lshpirOTB/lCIkK1c9kIsdtxFWmtg9EbLB+ps+I/o79J6YKcVYiuSXJ4KicfCU0rzoo=
-X-Received: by 2002:a25:d296:: with SMTP id j144mr32685000ybg.33.1613507583595;
- Tue, 16 Feb 2021 12:33:03 -0800 (PST)
+        bh=SckgAh/+jPmp0yNvSHKEdHbO4vysHXL5ojv3MhSdbzc=;
+        b=KKSElomRTJrzBrrearbunv+rOCe8JYuNEkuRFqhf1o57Szxqkm3ICrf2x4s4S7fsh0
+         f54YqVqO2kyp1fSfX7/ftqYm8tMUZTPeStYobutmBrEIW6iZT4HmWnbLWKT49yZ+caav
+         VK7SmZXWC8+yyqpL5853Nwo9+5RM7u0GOnTon//J7v8GPQO47UBclRjJiLBmXcilYSNw
+         YEue3hwK2/JW0OF4VrOl0RV2ZMnjTsXDis/GS+OjSsZ2maddRf/+fOZkUUOheagELMaj
+         zeHVI5RtUnOkb2RUnropzFuDSnYyrpJkwkgCneoU3vAIQ4sLqZE8BO3Dihe5LrXRTdFt
+         vlMA==
+X-Gm-Message-State: AOAM530dejuPIGnJKGm+qsdXXtVEAt/6fqXFTEY+Q36HEHBHiSC+Keb5
+        OqXcxUiC+VhfgV4+nDQ0Ih5NidkXNZhs3R/TxQ8=
+X-Google-Smtp-Source: ABdhPJyZE1MGdELiCoijLBBkIxYpdSgDMV2rBV4TNuua1VMGf1JhbvfJO90pNBvSJf7k9MB6wKFpdqGlgCvODv6w1Ws=
+X-Received: by 2002:aca:d8c6:: with SMTP id p189mr3784710oig.54.1613507630086;
+ Tue, 16 Feb 2021 12:33:50 -0800 (PST)
 MIME-Version: 1.0
-References: <1613470672-3069-1-git-send-email-pnagar@codeaurora.org>
-In-Reply-To: <1613470672-3069-1-git-send-email-pnagar@codeaurora.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 16 Feb 2021 21:32:52 +0100
-Message-ID: <CANiq72=O0RaHVRcKFF_YDDO4xDFdxaGdH94PgvuibK-ZzHvOxA@mail.gmail.com>
-Subject: Re: [PATCH] RTIC: selinux: ARM64: Move selinux_state to a separate page
-To:     Preeti Nagar <pnagar@codeaurora.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, jmorris@namei.org, serge@hallyn.com,
-        Paul Moore <paul@paul-moore.com>,
-        stephen.smalley.work@gmail.com, Eric Paris <eparis@parisplace.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        selinux@vger.kernel.org, linux-arch <linux-arch@vger.kernel.org>,
-        casey@schaufler-ca.com, Nick Desaulniers <ndesaulniers@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>, psodagud@codeaurora.org,
-        nmardana@codeaurora.org, rkavati@codeaurora.org,
-        vsekhar@codeaurora.org, mreichar@codeaurora.org,
-        Johan Hovold <johan@kernel.org>, Joe Perches <joe@perches.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210216123958.3180014-1-geert+renesas@glider.be> <CAGETcx_YeiNAMkSxtbTSZcsQugxK4=CwhR6UfbSLLHzQ2EfguA@mail.gmail.com>
+In-Reply-To: <CAGETcx_YeiNAMkSxtbTSZcsQugxK4=CwhR6UfbSLLHzQ2EfguA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 16 Feb 2021 21:33:39 +0100
+Message-ID: <CAMuHMdXeR5UkEOjNNHscQX+vCxMFEW-r6FXn14s+mtKDXsbm_Q@mail.gmail.com>
+Subject: Re: [PATCH v2] soc: renesas: rmobile-sysc: Mark fwnode when PM domain
+ is added
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:22 AM Preeti Nagar <pnagar@codeaurora.org> wrote:
->
-> The changes introduce a new security feature, RunTime Integrity Check
-> (RTIC), designed to protect Linux Kernel at runtime. The motivation
-> behind these changes is:
-> 1. The system protection offered by Security Enhancements(SE) for
-> Android relies on the assumption of kernel integrity. If the kernel
-> itself is compromised (by a perhaps as yet unknown future vulnerability),
-> SE for Android security mechanisms could potentially be disabled and
-> rendered ineffective.
-> 2. Qualcomm Snapdragon devices use Secure Boot, which adds cryptographic
-> checks to each stage of the boot-up process, to assert the authenticity
-> of all secure software images that the device executes.  However, due to
-> various vulnerabilities in SW modules, the integrity of the system can be
-> compromised at any time after device boot-up, leading to un-authorized
-> SW executing.
->
-> The feature's idea is to move some sensitive kernel structures to a
-> separate page and monitor further any unauthorized changes to these,
-> from higher Exception Levels using stage 2 MMU. Moving these to a
-> different page will help avoid getting page faults from un-related data.
-> The mechanism we have been working on removes the write permissions for
-> HLOS in the stage 2 page tables for the regions to be monitored, such
-> that any modification attempts to these will lead to faults being
-> generated and handled by handlers. If the protected assets are moved to
-> a separate page, faults will be generated corresponding to change attempts
-> to these assets only. If not moved to a separate page, write attempts to
-> un-related data present on the monitored pages will also be generated.
->
-> Using this feature, some sensitive variables of the kernel which are
-> initialized after init or are updated rarely can also be protected from
-> simple overwrites and attacks trying to modify these.
->
-> Currently, the change moves selinux_state structure to a separate page.
-> The page is 2MB aligned not 4K to avoid TLB related performance impact as,
-> for some CPU core designs, the TLB does not cache 4K stage 2 (IPA to PA)
-> mappings if the IPA comes from a stage 1 mapping. In future, we plan to
-> move more security-related kernel assets to this page to enhance
-> protection.
+Hi Saravana,
 
-Part of this commit message should likely be added as a new file under
-Documentation/ somewhere.
+On Tue, Feb 16, 2021 at 7:26 PM Saravana Kannan <saravanak@google.com> wrote:
+> On Tue, Feb 16, 2021 at 4:40 AM Geert Uytterhoeven
+> <geert+renesas@glider.be> wrote:
+> > Currently, there are two drivers binding to the R-Mobile System
+> > Controller (SYSC):
+> >   - The rmobile-sysc driver registers PM domains from a core_initcall(),
+> >     and does not use a platform driver,
+> >   - The optional rmobile-reset driver registers a reset handler, and
+> >     does use a platform driver.
+> >
+> > As fw_devlink only considers devices, commit bab2d712eeaf9d60 ("PM:
+> > domains: Mark fwnodes when their powerdomain is added/removed") works
+> > only for PM Domain drivers where the DT node is a real device node, and
+> > not for PM Domain drivers using a hierarchical representation inside a
+> > subnode.  Hence if fw_devlink is enabled, probing of on-chip devices
+> > that are part of the SYSC PM domain is deferred until the optional
+> > rmobile-reset driver has been bound.   If the rmobile-reset driver is
+> > not available, this will never happen, and thus lead to complete system
+> > boot failures.
+> >
+> > Fix this by explicitly marking the fwnode initialized.
+> >
+> > Suggested-by: Saravana Kannan <saravanak@google.com>
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> > This is v2 of "soc: renesas: rmobile-sysc: Set OF_POPULATED and absorb
+> > reset handling".
+> > To be queued in renesas-devel as a fix for v5.12 if v5.12-rc1 will have
+> > fw_devlink enabled.
 
-> diff --git a/security/Kconfig b/security/Kconfig
-> index 7561f6f..1af913a 100644
-> --- a/security/Kconfig
-> +++ b/security/Kconfig
-> @@ -291,5 +291,16 @@ config LSM
->
->  source "security/Kconfig.hardening"
->
-> +config SECURITY_RTIC
-> +       bool "RunTime Integrity Check feature"
-> +       depends on ARM64
-> +       help
-> +         RTIC(RunTime Integrity Check) feature is to protect Linux kernel
-> +         at runtime. This relocates some of the security sensitive kernel
-> +         structures to a separate RTIC specific page.
-> +
-> +         This is to enable monitoring and protection of these kernel assets
-> +         from a higher exception level(EL) against any unauthorized changes.
+> Acked-by: Saravana Kannan <saravanak@google.com>
 
-Rewording suggestion:
+Thanks!
 
-         The RTIC (RunTime Integrity Check) feature protects the kernel
-         at runtime by relocating some of its security-sensitive structures
-         to a separate RTIC-specific page. This enables monitoring and
-         and protecting them from a higher exception level against
-         unauthorized changes.
+> Keep in mind that this might have to land in driver-core-next since
+> that API is currently only in driver-core-next.
 
-Cheers,
-Miguel
+That will be resolved once driver-core-next has been merged in v5.12-rc1.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
