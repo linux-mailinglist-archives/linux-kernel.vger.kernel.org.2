@@ -2,121 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B894B31D2C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D14731D2C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhBPWno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 17:43:44 -0500
-Received: from smtp1.axis.com ([195.60.68.17]:26240 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230383AbhBPWnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 17:43:42 -0500
+        id S230495AbhBPWqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 17:46:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230059AbhBPWqW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 17:46:22 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01CC6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 14:45:42 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id z21so7218542pgj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 14:45:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1613515421;
-  x=1645051421;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=YSeteZGXhIbpjDZ1Q5CQTSher5jytRNLCotDTAMdXbE=;
-  b=Tqwk7Iymfc4rUhY02xgmjL9cc6ILNNGnrQZpn0aLzgH78jNmYJ4ZWyGP
-   jT9V41mHQrZmIKpGrTco9XV7f1gI1L7iur3Qzfv4aFf2MZQo6GrZq667g
-   Uy9sYoJVVJQy+nnc2zTkcbfJ7Qkgd89gnSTzUUhBhFxFBGpO4NzQYgjBE
-   qfVGTbDes4ZU1wRQOjzQ3/4fdPGKONUQxU2WVQLqW+FnR4pHC7/o3D/MD
-   Rwv5Dlde/zhYxbpezTnrF9alzs0Is7L5FlV/pQi3IWU1hxZCv3RzDl7Yh
-   ZW8aS7LGCV09n5ikKfY9tNpf5RBbanuTPKoO5YFZbPJv2WEvc6qSXtnfC
-   A==;
-From:   =?UTF-8?q?M=C3=A5rten=20Lindahl?= <marten.lindahl@axis.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     <kernel@axis.com>,
-        =?UTF-8?q?M=C3=A5rten=20Lindahl?= <marten.lindahl@axis.com>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mmc: Try power cycling card if command request times out
-Date:   Tue, 16 Feb 2021 23:42:52 +0100
-Message-ID: <20210216224252.22187-1-marten.lindahl@axis.com>
-X-Mailer: git-send-email 2.11.0
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eP744ksyIQaIeguDzD05uIZyZQDnaagW3/lzjf8E1ng=;
+        b=RFMx2ZAkNGufh856SbHjGmvG4eQ8+5I3ju84KdZLiwvlpvHGt8VWqh/oRnmaM23bSw
+         UR1guiNCLORuZzt6M+Dz07zD5MQdJ1J9cQfgCfIJQxWe1bL88Y36N5I139djALFZAAQE
+         8brkZtSenXD/UuRtrRWSJoLPWjIOeOYFx6F+cUlQDHmIxLikurJaVGvh8tiTwqIIoDEi
+         ezDuDTcvwioz2YNCyDgVzD7kl9q6zvYqEvEECveGaPV3sDMt6JHH1j8PA1EKI7jLcf/A
+         2D5Dy+xsLqYIIQ1KvYiBe/sAsgmdDuwZMGyQuIyZ84Cs4AOl8AmFerTTW9NtAyKVrmOZ
+         usYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eP744ksyIQaIeguDzD05uIZyZQDnaagW3/lzjf8E1ng=;
+        b=ZltmZenEuMslpXQ8SsVXCsf9ZVZTdSjF8Q7bZrJJtLcqdQ7Uybhms/fX8zOxizaAcy
+         dVQsHYBcvRXIWfCIlWoKkvo5fcFQskjffN630gXq+x8DHJRti4zHWXOwX6rtx0HOA3Oj
+         mRQoaqOtg/a2J4o3FiwcBcC+6p9E2mJm9PO5Q/gSsCt+fDYTMqiIhuiy38oh8oo2EXEP
+         cVPgQe4/9VdZvUDT8+/aoZNiDAm/7tio8iYK6+GOEUE0a01HH1VyFZ/wu5/y+CaP/88+
+         7OFTNdOMtY0FgC7Fp9LbhKIUAuqD4QNYrm9u7CSoMf2VyT/88p5BRt5Hmsp9+g+2v3S1
+         vGoQ==
+X-Gm-Message-State: AOAM532dbXLFa2PGqZlOQFxwAwNi7DJABc04wQwOmv28Zhf4Ewn80Upx
+        pI2rn51slzepuc0CUHmV6qRBYw==
+X-Google-Smtp-Source: ABdhPJygOZL2zIMJOQTRwDsQPEqwintQgZG4g/8iRWPJ0p/OVyPuWu59GXB6zqtjecwhyuFWXGKrUg==
+X-Received: by 2002:a63:cd41:: with SMTP id a1mr1877049pgj.177.1613515541378;
+        Tue, 16 Feb 2021 14:45:41 -0800 (PST)
+Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:4e06:8d2c:6f9:5b31])
+        by smtp.gmail.com with ESMTPSA id 184sm1922465pfc.176.2021.02.16.14.45.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 14:45:40 -0800 (PST)
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     Drew Fustini <drew@beagleboard.org>
+Subject: [PATCH v6 0/3] pinctrl: pinmux: Add pinmux-select debugfs file
+Date:   Tue, 16 Feb 2021 14:44:52 -0800
+Message-Id: <20210216224455.1504008-1-drew@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes SD cards that has been run for a long time enters a state
-where it cannot by itself be recovered, but needs a power cycle to be
-operational again. Card status analysis has indicated that the card can
-end up in a state where all external commands are ignored by the card
-since it is halted by data timeouts.
+This series first converts the debugfs files in the pinctrl subsystem to
+octal permissions and then adds a new debugfs file "pinmux-select".
 
-If the card has been heavily used for a long time it can be weared out,
-and should typically be replaced. But on some tests, it shows that the
-card can still be functional after a power cycle, but as it requires an
-operator to do it, the card can remain in a non-operational state for a
-long time until the problem has been observed by the operator.
+Function name and group name can be written to "pinmux-select" which
+will cause the function and group to be activated on the pin controller.
 
-This patch adds function to power cycle the card in case it does not
-respond to a command, and then resend the command if the power cycle
-was successful. This procedure will be tested 1 time before giving up,
-and resuming host operation as normal.
+The final patch in this series documents the debugfs files for pinctrl.
 
-Signed-off-by: Mårten Lindahl <marten.lindahl@axis.com>
----
-Please note: This might not be the way we want to handle these cases,
-but at least it lets us start the discussion. In which cases should the
-mmc framework deal with error messages like ETIMEDOUT, and in which
-cases should it be handled by userspace?
-The mmc framework tries to recover a failed block request
-(mmc_blk_mq_rw_recovery) which may end up in a HW reset of the card.
-Would it be an idea to act in a similar way when an ioctl times out?
+Notes for PATCH v6:
+- add 'Suggested-by:' for Joe Perches to octal permissions patch
+- add 'Reviewed-by:' from Andy and Geert to octal permissions patch
+- reword example in the pinmux-select patch per Andy's advice
+- indent the example output per Andy's advice
+- remove usage error messages as Andy advised it is too verbose
+- return -ENOMEM when write is too big for the input buffer per Andy's advice
+- handle whitespace before, in between, and after the function name and
+  group name as suggested by Andy
+- rename free_buf to exit_free_buf per Andy's advice
+- add documentation patch to series which documents the debugfs files
+  for the pinctrl subsystem including the new pinmux-select file
 
- drivers/mmc/core/block.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+Notes for PATCH v5:
+- convert permissions from symbolic to octal for debugfs_create_file()
+  calls in core.c that Joe Perches pointed out I had missed
+- Linus W: please let me know if I should break this series apart as you
+  already applied an earlier version of octal conversion patch today [1]
+- switch from sscanf() to just pointing to function name and group name
+  inside of the buffer. This also avoids having to allocate additional
+  buffers for fname and gname. Geert and Andy highlighted this security
+  issue and Andy suggested code to use instead of sscanf().
+- switch from devm_kfree() to kfree() after Dan Carpenter warned me
+- remove .read from pinmux_select_ops per Geert since it is write only
+- add usage format to error when unable find fname or gname in buffer
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 42e27a298218..d007b2af64d6 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -976,6 +976,7 @@ static inline void mmc_blk_reset_success(struct mmc_blk_data *md, int type)
-  */
- static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
- {
-+	int type = rq_data_dir(req) == READ ? MMC_BLK_READ : MMC_BLK_WRITE;
- 	struct mmc_queue_req *mq_rq;
- 	struct mmc_card *card = mq->card;
- 	struct mmc_blk_data *md = mq->blkdata;
-@@ -983,7 +984,7 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
- 	bool rpmb_ioctl;
- 	u8 **ext_csd;
- 	u32 status;
--	int ret;
-+	int ret, retry = 1;
- 	int i;
- 
- 	mq_rq = req_to_mmc_queue_req(req);
-@@ -994,9 +995,24 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
- 	case MMC_DRV_OP_IOCTL_RPMB:
- 		idata = mq_rq->drv_op_data;
- 		for (i = 0, ret = 0; i < mq_rq->ioc_count; i++) {
-+cmd_do:
- 			ret = __mmc_blk_ioctl_cmd(card, md, idata[i]);
--			if (ret)
-+			if (ret == -ETIMEDOUT) {
-+				dev_warn(mmc_dev(card->host),
-+					 "error %d sending command\n", ret);
-+cmd_reset:
-+				mmc_blk_reset_success(md, type);
-+				if (retry--) {
-+					dev_warn(mmc_dev(card->host),
-+						 "power cycling card\n");
-+					if (mmc_blk_reset
-+					    (md, card->host, type))
-+						goto cmd_reset;
-+					mmc_blk_reset_success(md, type);
-+					goto cmd_do;
-+				}
- 				break;
-+			}
- 		}
- 		/* Always switch back to main area after RPMB access */
- 		if (rpmb_ioctl)
+Notes for PATCH v4:
+- correct the commit message in the second patch to reference function
+  and group name instead of integer selectors. Apologies for not fixing
+  that in v3
+- fix typos in cover letter
+
+Notes for PATCH v3:
+- add Suggested-by: Andy Shevchenko to the "pinctrl: use to octal
+  permissions for debugfs files" patch
+- change the octal permissions from 0400 to 0444 to correctly match the
+  symbolic permissions (thanks to Joe Perches and Geert Uytterhoeven)
+- note that S_IFREG flag is added to the mode in __debugfs_create_file()
+  (thanks to Andy for highlighting this and Joe for suggesting I should
+  add a note to the commit message)
+- fix order of the goto labels so that the buffers are freed correctly
+  as suggested by Dan Carpenter
+- move from devm_kzalloc() to kzalloc() as the buffers are only used
+  inside the pinmux_select() function and not related to the lifetime
+  of the pin controller device (thanks to Andy for pointing this out)
+- correct the pinmux-select example in commit message to use the
+  function and group name instead of selector (thanks to Geert)
+
+Notes for PATCH v2:
+- create patch series that includes patch to switch all the debugfs
+  files in pinctrl subsystem over to octal permission
+- write function name and group name, instead of error-prone selector
+  numbers, to the 'pinmux-select' file
+- switch from static to dynamic allocation for the kernel buffer filled
+  by strncpy_from_user()
+- look up function selector from function name using
+  pinmux_func_name_to_selector()
+- validate group name with get_function_groups() and match_string()
+- look up selector for group name with pinctrl_get_group_selector()
+
+Notes for PATCH v1:
+- posted seperate patch to switch all the debugfs files in pinctrl
+  subsystem over to octal permission
+- there is no existing documentation for any of the debugfs enteries for
+  pinctrl, so it seemed to have a bigger scope than just this patch. I
+  also noticed that rst documentation is confusingly named "pinctl" (no
+  'r') and started thread about that [2]. Linus suggested chaning that
+  to 'pin-control'. Thus I am planning a seperate documentation patch
+  series where the file is renamed, references changed and a section on
+  the pinctrl debugfs files is added.
+
+Notes for RFC v2 [3]:
+- rename debugfs file "pinmux-set" to "pinmux-select"
+- renmae pinmux_set_write() to pinmux_select()
+- switch from memdup_user_nul() to strncpy_from_user()
+- switch from pr_warn() to dev_err()
+
+[1] https://lore.kernel.org/linux-gpio/20210126044742.87602-1-drew@beagleboard.org/
+[2] https://lore.kernel.org/linux-gpio/20210126050817.GA187797@x1/
+[3] https://lore.kernel.org/linux-gpio/20210123064909.466225-1-drew@beagleboard.org/
+
+Drew Fustini (3):
+  pinctrl: use to octal permissions for debugfs files
+  pinctrl: pinmux: Add pinmux-select debugfs file
+  docs/pinctrl: document debugfs files
+
+ Documentation/driver-api/pinctl.rst |  37 ++++++++++
+ drivers/pinctrl/core.c              |  12 ++--
+ drivers/pinctrl/pinconf.c           |   4 +-
+ drivers/pinctrl/pinmux.c            | 106 +++++++++++++++++++++++++++-
+ 4 files changed, 149 insertions(+), 10 deletions(-)
+
 -- 
-2.11.0
+2.25.1
 
