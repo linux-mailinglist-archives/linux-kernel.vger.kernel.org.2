@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63C531C7D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC5431C7D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhBPJJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:09:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54208 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229710AbhBPJJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:09:22 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613466516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=du+7HNcipHGxWVFmXI0W1DaPaVk4qOBz6vainc7H3Mc=;
-        b=W4Rnd+7DZq/Di3bDVnedOKZpzXSu6jFNr5W9jU9MiozQP3TLyw8Yh1SHMh2Ni6jkusiVSE
-        ROWHo1LTxPG4h6AoJwGMRehRibDlBlYxBzBFEITs8ZdoGQtRJtZJKGCLxfBn9bEsSlvhy4
-        Svp+urp0WsnCkgBR+Lv0m9W0ek6CbHI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CBC81AB4C;
-        Tue, 16 Feb 2021 09:08:35 +0000 (UTC)
-Date:   Tue, 16 Feb 2021 10:08:35 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, mchehab@kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        dri-devel@lists.freedesktop.org, hverkuil@xs4all.nl,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        laurent.pinchart@ideasonboard.com, Joe Perches <joe@perches.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v7 3/3] drm: Switch to %p4cc format modifier
-Message-ID: <YCuLk+vnIxOzT7t+@alley>
-References: <20210215114030.11862-1-sakari.ailus@linux.intel.com>
- <20210215114030.11862-4-sakari.ailus@linux.intel.com>
- <54e8c1d5-bb28-eddd-41ad-a89323650be0@suse.de>
+        id S229890AbhBPJKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:10:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229862AbhBPJKM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 04:10:12 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014FDC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:09:31 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id b21so5836165pgk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:09:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JpjgJuNjtKtWA761imwPHlmI/2f8QxBoEjVaErSVOF4=;
+        b=o0eQ1LM3Qv4IQRjWy6f2MWrt6Re8OIwZFunhQ8HjlkJfcs8mugA0E9sqKbDC0fHNei
+         vanXa+gvBPqfKCKVRUHTGuOwPvXB/+2hawc3t1k+d24VLLhtz+xhFo/zSXfxDmgJIDNp
+         n+wZbvBxnXLFBvpxsoAye3dSP+zUgQmEAexKRtUrtfalSIxGsCrg6nZk8vTWc0n1YPbc
+         Ntjr0OJc6bYKqb7GgtKFjldjfZYUp7QQj5wg1KocQLXXYGzPwXOZBfpR4lLVGepNlHIh
+         wyUQDEi2DM4CzSBCkQLWM/eyAh/wy/vIrDFZNH2qTUyiScsCPdN89RxTbeMfqfN+6UmV
+         fxTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JpjgJuNjtKtWA761imwPHlmI/2f8QxBoEjVaErSVOF4=;
+        b=fWsyBDDPTGCzjqGau9H3XMnK97w7qoN4U82YpwqQpnKxyHY06IUxtcGrnxM3ZQwPB2
+         x0Q3aRLboJT1aOma0at4GrnRRXi97qU2p3adY3mtyrx6xQfqZ3xJELnhsdZFh4KT2UZV
+         GHx04R+P6CWMNmfWTdJmxKq5kbrvGNSnv3G+FvOgXx8Ioe6Iy23/4DJ8OQOmsYiASf2h
+         qYBQrSbEIuyFfiJwyAbM9OMAP1qNcUABdJJleTnzkY9SiAjYVHHYWZBQwzu1rrhsN8tO
+         KA/jstwTP/59X49B29LT5wT9Nei/ado2EuhDEPV89p/UIskMTkF7Czhq4nNM8ccT9uzg
+         GWuQ==
+X-Gm-Message-State: AOAM531tI/Pjf/upEl/2u/Ft/jGaAoBJ+PxtcEPfc2nqXdbvT5nFAgxw
+        LCOR7WhIvFlyy4P+erDxjADKS3vIrDLstFxyagPvq7AsTuymWcNgSwk=
+X-Google-Smtp-Source: ABdhPJwXrvmtXDcEVq1uSnFQgtJ7DognUvtEq53YOKvW7L0RrWC13XTeeNe8QuwyQdkgeEdWtMMSW3QQ6UwM8dfMP5c=
+X-Received: by 2002:a65:5ac9:: with SMTP id d9mr18258982pgt.74.1613466570006;
+ Tue, 16 Feb 2021 01:09:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54e8c1d5-bb28-eddd-41ad-a89323650be0@suse.de>
+References: <20210216072334.7575-1-jbe@pengutronix.de> <20210216072334.7575-2-jbe@pengutronix.de>
+In-Reply-To: <20210216072334.7575-2-jbe@pengutronix.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 16 Feb 2021 11:09:13 +0200
+Message-ID: <CAHp75Vcha++UUE6hw0n_pBnA24q_uJQekABSSktmjCoinfpSoA@mail.gmail.com>
+Subject: Re: [PATCH v2] fs: ubifs: set s_uuid in super block to support
+ ima/evm uuid options
+To:     Juergen Borleis <jbe@pengutronix.de>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-02-16 09:37:45, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 15.02.21 um 12:40 schrieb Sakari Ailus:
-> > Switch DRM drivers from drm_get_format_name() to %p4cc. This gets rid of a
-> > large number of temporary variables at the same time.
-> > 
-> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > ---
-> >   drivers/gpu/drm/amd/amdgpu/dce_v10_0.c        |  5 ++--
-> >   drivers/gpu/drm/amd/amdgpu/dce_v11_0.c        |  5 ++--
-> >   drivers/gpu/drm/amd/amdgpu/dce_v6_0.c         |  5 ++--
-> >   drivers/gpu/drm/amd/amdgpu/dce_v8_0.c         |  5 ++--
-> >   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  5 ++--
-> >   .../arm/display/komeda/komeda_format_caps.h   | 11 --------
-> >   .../arm/display/komeda/komeda_framebuffer.c   |  4 +--
-> >   .../gpu/drm/arm/display/komeda/komeda_plane.c |  6 ++---
-> >   drivers/gpu/drm/arm/malidp_mw.c               |  7 ++----
-> >   drivers/gpu/drm/drm_atomic.c                  |  8 ++----
-> >   drivers/gpu/drm/drm_crtc.c                    |  7 ++----
-> >   drivers/gpu/drm/drm_fourcc.c                  | 25 -------------------
-> >   drivers/gpu/drm/drm_framebuffer.c             | 11 +++-----
-> >   drivers/gpu/drm/drm_mipi_dbi.c                |  5 ++--
-> >   drivers/gpu/drm/drm_plane.c                   |  8 ++----
-> >   .../gpu/drm/hisilicon/kirin/kirin_drm_ade.c   |  5 ++--
-> >   drivers/gpu/drm/i915/display/intel_display.c  | 14 +++--------
-> >   .../drm/i915/display/intel_display_debugfs.c  | 19 ++++++--------
-> >   drivers/gpu/drm/i915/display/intel_sprite.c   |  6 ++---
-> >   drivers/gpu/drm/mcde/mcde_display.c           |  6 ++---
-> >   drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      |  6 ++---
-> >   drivers/gpu/drm/nouveau/nouveau_display.c     |  9 +++----
-> >   drivers/gpu/drm/radeon/atombios_crtc.c        | 10 +++-----
-> >   drivers/gpu/drm/sun4i/sun4i_backend.c         |  6 ++---
-> >   drivers/gpu/drm/vkms/vkms_writeback.c         |  7 ++----
-> >   drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           | 15 +++++------
-> >   include/drm/drm_fourcc.h                      |  1 -
-> >   27 files changed, 64 insertions(+), 157 deletions(-)
-> 
-> This is a nice patchset. For the driver-related changes:
-> 
-> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-> 
-> But landing this patch will certainly give us build errors. There are at
-> least 3 git trees involved: drm-misc-next, amd and i915. I'd expect at least
-> one of them to have additional changes that still require
-> drm_get_format_name().
-> 
-> IMHO we should remove drm_get_format_name() in a later patch. Please remove
-> the changes in drm_fourcc.{c,h} from this patch and maybe add a TODO comment
-> to the declaration that the function is supposed to be removed.
-> 
-> I would merge the patchset through drm-misc-next. And the final removal
-> patch during the next cycle. Ok?
+On Tue, Feb 16, 2021 at 9:24 AM Juergen Borleis <jbe@pengutronix.de> wrote:
+>
+> From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+>
+> This is required to provide uuid based integrity functionality for:
+> ima_policy (fsuuid option) and the 'evmctl' command ('--uuid' option).
 
-Sounds like a plan. I am fine with it from the vsprintf side.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+One issue below has to be addressed nevertheless.
 
-Best Regards,
-Petr
+> Co-developed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Co-developed-by: Juergen Borleis <jbe@pengutronix.de>
+
+According to the documentation [1] above has two issues:
+- all Co-developed-by *must* be accompanied with corresponding SoBs
+- commiter must provide his SoB (but it will be implied by the
+previous requirement in this case)
+
+[1]: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
+
+> Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+> ---
+>  fs/ubifs/super.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+> index 138b9426c6c1..a8383ca39a47 100644
+> --- a/fs/ubifs/super.c
+> +++ b/fs/ubifs/super.c
+> @@ -2230,6 +2230,8 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+>                 goto out_umount;
+>         }
+>
+> +       import_uuid(&sb->s_uuid, c->uuid);
+> +
+>         mutex_unlock(&c->umount_mutex);
+>         return 0;
+>
+> --
+> 2.20.1
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
