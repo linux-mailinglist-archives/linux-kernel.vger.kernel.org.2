@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CAC31CF7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB0531CF34
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhBPRqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:46:47 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:45283 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231272AbhBPRnA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:43:00 -0500
-Received: from uno.lan (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 6CBCC20001B;
-        Tue, 16 Feb 2021 17:41:55 +0000 (UTC)
-From:   Jacopo Mondi <jacopo+renesas@jmondi.org>
-To:     kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 16/16] media: i2c: gmsl: Use 339Kbps I2C bit-rate
-Date:   Tue, 16 Feb 2021 18:41:46 +0100
-Message-Id: <20210216174146.106639-17-jacopo+renesas@jmondi.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+        id S230500AbhBPRkp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 16 Feb 2021 12:40:45 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:47134 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229628AbhBPRkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:40:33 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Dg7X256vfzB09ZP;
+        Tue, 16 Feb 2021 18:39:46 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id obuZMT7z7GUL; Tue, 16 Feb 2021 18:39:46 +0100 (CET)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dg7X24HVlzB09ZM;
+        Tue, 16 Feb 2021 18:39:46 +0100 (CET)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id 769CB1EC; Tue, 16 Feb 2021 18:42:47 +0100 (CET)
+Received: from 37-171-22-224.coucou-networks.fr
+ (37-171-22-224.coucou-networks.fr [37.171.22.224]) by messagerie.c-s.fr
+ (Horde Framework) with HTTP; Tue, 16 Feb 2021 18:42:47 +0100
+Date:   Tue, 16 Feb 2021 18:42:47 +0100
+Message-ID: <20210216184247.Horde.If3nEUb5zLh4eU_4qXZCAw1@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>
+Cc:     Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-kernel@vger.kernel.org,
+        Maksym Kokhan <maksym.kokhan@globallogic.com>,
+        Daniel Walker <dwalker@fifo99.com>,
+        linuxppc-dev@lists.ozlabs.org, xe-linux-external@cisco.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Daniel Walker <danielwa@cisco.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] add generic builtin command line
+References: <20190319232448.45964-2-danielwa@cisco.com>
+ <20190320155319.2cd3c0f73ef3cdefb65d5d1e@linux-foundation.org>
+ <20190320232328.3bijcxek2yg43a25@zorba>
+ <20190320201433.6c5c4782f4432d280c0e8361@linux-foundation.org>
+ <20190321151308.yt6uc3mxgppm5zko@zorba>
+ <20190321151519.1f4479d92228c8a8738e02cf@linux-foundation.org>
+ <1613417521.3853.5.camel@chimera>
+In-Reply-To: <1613417521.3853.5.camel@chimera>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the camera modules initialization routines now running with
-the noise immunity threshold enabled, it is possible to restore
-the bit rate of the I2C transactions transported on the GMSL control
-channel to 339 Kbps.
+Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us> a écrit :
 
-The 339 Kbps bit rate represents the default setting for the serializer
-and the deserializer chips, and the setup/hold time and slave timeout
-time in use are calibrate to support that rate.
+> On Thu, 2019-03-21 at 15:15 -0700, Andrew Morton wrote:
+>> On Thu, 21 Mar 2019 08:13:08 -0700 Daniel Walker <danielwa@cisco.com> wrote:
+>> > On Wed, Mar 20, 2019 at 08:14:33PM -0700, Andrew Morton wrote:
+>> > > The patches (or some version of them) are already in linux-next,
+>> > > which messes me up.  I'll disable them for now.
+>> >
+>> > Those are from my tree, but I remove them when you picked up the  
+>> series. The
+>> > next linux-next should not have them.
+>>
+>> Yup, thanks, all looks good now.
+>
+> This patchset is currently neither in mainline nor in -next. May I ask
+> what happened to it? Thanks.
 
-Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
----
- drivers/media/i2c/max9286.c | 2 +-
- drivers/media/i2c/rdacm20.c | 2 +-
- drivers/media/i2c/rdacm21.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+As far as I remember, there has been a lot of discussion around this series.
 
-diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-index aa01d5bb79ef..0b620f2f8c41 100644
---- a/drivers/media/i2c/max9286.c
-+++ b/drivers/media/i2c/max9286.c
-@@ -330,7 +330,7 @@ static int max9286_i2c_mux_init(struct max9286_priv *priv)
- static void max9286_configure_i2c(struct max9286_priv *priv, bool localack)
- {
- 	u8 config = MAX9286_I2CSLVSH_469NS_234NS | MAX9286_I2CSLVTO_1024US |
--		    MAX9286_I2CMSTBT_105KBPS;
-+		    MAX9286_I2CMSTBT_339KBPS;
- 
- 	if (localack)
- 		config |= MAX9286_I2CLOCACK;
-diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-index 0632ef98eea7..d45e8b0e52a0 100644
---- a/drivers/media/i2c/rdacm20.c
-+++ b/drivers/media/i2c/rdacm20.c
-@@ -450,7 +450,7 @@ static int rdacm20_init(struct v4l2_subdev *sd, unsigned int val)
- 	ret = max9271_configure_i2c(&dev->serializer,
- 				    MAX9271_I2CSLVSH_469NS_234NS |
- 				    MAX9271_I2CSLVTO_1024US |
--				    MAX9271_I2CMSTBT_105KBPS);
-+				    MAX9271_I2CMSTBT_339KBPS);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-index 80b6f16f87a8..552985026458 100644
---- a/drivers/media/i2c/rdacm21.c
-+++ b/drivers/media/i2c/rdacm21.c
-@@ -442,7 +442,7 @@ static int rdacm21_init(struct v4l2_subdev *sd, unsigned int val)
- 	ret = max9271_configure_i2c(&dev->serializer,
- 				    MAX9271_I2CSLVSH_469NS_234NS |
- 				    MAX9271_I2CSLVTO_1024US |
--				    MAX9271_I2CMSTBT_105KBPS);
-+				    MAX9271_I2CMSTBT_339KBPS);
- 	if (ret)
- 		return ret;
- 
--- 
-2.30.0
+As of today, it doesn't apply cleanly anymore and would require rebasing.
+
+I'd suggest also to find the good arguments to convince us that this  
+series has a real added value, not just "cisco use it in its kernels  
+so it is good".
+
+I proposed an alternative at  
+https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1554195798.git.christophe.leroy@c-s.fr/ but never got any feedback so I gave  
+up.
+
+If you submit a new series, don't forget to copy ppclinux-dev and  
+linux-arch lists.
+
+Christophe
+
 
