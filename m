@@ -2,197 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D815231CFE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCA831CFE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhBPSJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 13:09:14 -0500
-Received: from mga12.intel.com ([192.55.52.136]:62405 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229937AbhBPSJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:09:11 -0500
-IronPort-SDR: ffOsQ9QIDQe7FLnHJgCvS2DhdrCPeNCMOZZzeNZ2z4QwTfmLmwjI4AWz60kowZCJXFKlLsDUfp
- oqSTm6MkwiTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="162105138"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="162105138"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 10:08:31 -0800
-IronPort-SDR: 3QS4sXG1CdDRgtOryO4kxvRTp8CEtNV8Dy9NG8rrGQ9qAg9vStzQ79LQbYxSbCSvg3+uhPxQ91
- x78m4i9OB6QA==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="384643113"
-Received: from ideak-desk.fi.intel.com ([10.237.68.141])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 10:08:29 -0800
-Date:   Tue, 16 Feb 2021 20:08:25 +0200
-From:   Imre Deak <imre.deak@intel.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     intel-gfx@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
-Subject: Re: [Intel-gfx] [PATCH v2] drm/i915/gen9bc: Handle TGP PCH during
- suspend/resume
-Message-ID: <20210216180825.GA420119@ideak-desk.fi.intel.com>
-Reply-To: imre.deak@intel.com
-References: <20210212185053.1689716-1-lyude@redhat.com>
+        id S229572AbhBPSK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 13:10:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229845AbhBPSKK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 13:10:10 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD598C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 10:09:29 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id m22so17383713lfg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 10:09:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HJy2hlVhbXbbO3XQqhTLd/RinhfpQEahlpeQ17PFZcA=;
+        b=L4ps34pC9zMLRN4q3K40Mbitkt7IUdJq+gpX9gRZ9ZriSf8T4NiT5YGzjwCBTWxLzy
+         +OUVt/K9HisrleBEka0SqsIz0sHlNh6jfnYKOi4vYlgz9z4IU0MnT4JxzCey7N/aExnu
+         TjBABvyD7CcPMBeyDsSknuzSAmqPYAbHQ964r8UiBoj9KApb2i30jjZA9mnmSh8s6w+B
+         lF4t5qUki8WGKskp2DSgkeb6Qeng7bjuKPW8++FdsZyXf2rei+wX7PQGJVtEo/hEHq8R
+         KCCJeSuRuvoynZoZ9vhEeBdAnhaMsjCdZoCk6yJjlFEu6Gik5ymqi/0Y9p/wtrJzCjUw
+         SFeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HJy2hlVhbXbbO3XQqhTLd/RinhfpQEahlpeQ17PFZcA=;
+        b=qKpLX++kP6F9cEWqKo6p9PZLUtmlM6eiurxaK7WE/BpNnEQu1YoR8mN3WORl11u3WI
+         wqSEnYZwT/j+0Y9MTA8C/coBwstg3qogsMP0QlpxYBPxRcoOoTY9pbUcmK8ifFNDt2rM
+         kGlU7Hu9tD8vcodTuzESPRwzTk05XkToeu38eNuvsgsAsuMi6xQDHEbjQzW9UpiesqFm
+         /3df+wtBcZ2BvdXEcdUluwqzbqJtsgVgoqlVhclnB3Et+0P23MCLO72J2XfYPB/9lLiV
+         Q39N7RDpiQwb1n3/nUb8cgeKLIJ4odUxMwuVSgqB+t9Yr0ALWYN7Esqe8sAbhl3gh9RC
+         TZ5g==
+X-Gm-Message-State: AOAM5302Tqe4xJXvlKl7PcZp172vLWNoO9I23BDhNz40ylwauoiCQwyx
+        E40PNT3w/DDhvOyGL/xSwmiq84m0BUHkl+34CZMg2w==
+X-Google-Smtp-Source: ABdhPJzDE9ztNc8qU4bAglK6q5SoxGPRF+so6E+ARstq0NF2f9wE9Il93pLhnLoZ9srjX3iPAvwsVJSw/9mpPmq85+8=
+X-Received: by 2002:a05:6512:2e3:: with SMTP id m3mr12673941lfq.547.1613498967925;
+ Tue, 16 Feb 2021 10:09:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212185053.1689716-1-lyude@redhat.com>
+References: <1613470672-3069-1-git-send-email-pnagar@codeaurora.org>
+In-Reply-To: <1613470672-3069-1-git-send-email-pnagar@codeaurora.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 16 Feb 2021 10:09:16 -0800
+Message-ID: <CAKwvOdkTkTV6U7zv1WyndLwK_JCB5ptTz64UbqAEwRMV5o7dLw@mail.gmail.com>
+Subject: Re: [PATCH] RTIC: selinux: ARM64: Move selinux_state to a separate page
+To:     Preeti Nagar <pnagar@codeaurora.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Will Deacon <will@kernel.org>, nmardana@codeaurora.org,
+        rkavati@codeaurora.org, vsekhar@codeaurora.org,
+        mreichar@codeaurora.org, johan@kernel.org,
+        Joe Perches <joe@perches.com>, Jessica Yu <jeyu@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Joel Galenson <jgalenson@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Feb 16, 2021 at 2:19 AM Preeti Nagar <pnagar@codeaurora.org> wrote:
+>
+> The changes introduce a new security feature, RunTime Integrity Check
+> (RTIC), designed to protect Linux Kernel at runtime. The motivation
+> behind these changes is:
+> 1. The system protection offered by Security Enhancements(SE) for
+> Android relies on the assumption of kernel integrity. If the kernel
+> itself is compromised (by a perhaps as yet unknown future vulnerability),
+> SE for Android security mechanisms could potentially be disabled and
+> rendered ineffective.
+> 2. Qualcomm Snapdragon devices use Secure Boot, which adds cryptographic
+> checks to each stage of the boot-up process, to assert the authenticity
+> of all secure software images that the device executes.  However, due to
+> various vulnerabilities in SW modules, the integrity of the system can be
+> compromised at any time after device boot-up, leading to un-authorized
+> SW executing.
+>
+> The feature's idea is to move some sensitive kernel structures to a
+> separate page and monitor further any unauthorized changes to these,
+> from higher Exception Levels using stage 2 MMU. Moving these to a
+> different page will help avoid getting page faults from un-related data.
+> The mechanism we have been working on removes the write permissions for
+> HLOS in the stage 2 page tables for the regions to be monitored, such
+> that any modification attempts to these will lead to faults being
+> generated and handled by handlers. If the protected assets are moved to
+> a separate page, faults will be generated corresponding to change attempts
+> to these assets only. If not moved to a separate page, write attempts to
+> un-related data present on the monitored pages will also be generated.
+>
+> Using this feature, some sensitive variables of the kernel which are
+> initialized after init or are updated rarely can also be protected from
+> simple overwrites and attacks trying to modify these.
+>
+> Currently, the change moves selinux_state structure to a separate page.
+> The page is 2MB aligned not 4K to avoid TLB related performance impact as,
+> for some CPU core designs, the TLB does not cache 4K stage 2 (IPA to PA)
+> mappings if the IPA comes from a stage 1 mapping. In future, we plan to
+> move more security-related kernel assets to this page to enhance
+> protection.
+>
+> Signed-off-by: Preeti Nagar <pnagar@codeaurora.org>
 
-thanks for respinning this patchset, some comments below.
+This addresses my feedback from the RFC regarding the section symbols.
+No comment on whether there is a better approach, or the 2MB vs page
+alignment, but perhaps other folks cc'ed can please take a look.
 
-On Fri, Feb 12, 2021 at 01:50:53PM -0500, Lyude Paul wrote:
-> From: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-> 
-> For Legacy S3 suspend/resume GEN9 BC needs to enable and
-> setup TGP PCH.
-> 
-> v2:
-> * Move Wa_14010685332 into it's own function - vsyrjala
-> * Add TODO comment about figuring out if we can move this workaround - imre
-> 
-> Cc: Matt Roper <matthew.d.roper@intel.com>
-> Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+
 > ---
->  drivers/gpu/drm/i915/i915_irq.c | 53 ++++++++++++++++++++++-----------
->  1 file changed, 36 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/i915_irq.c b/drivers/gpu/drm/i915/i915_irq.c
-> index 98145a7f28a4..7d912aa950ee 100644
-> --- a/drivers/gpu/drm/i915/i915_irq.c
-> +++ b/drivers/gpu/drm/i915/i915_irq.c
-> @@ -3040,6 +3040,19 @@ static void valleyview_irq_reset(struct drm_i915_private *dev_priv)
->  	spin_unlock_irq(&dev_priv->irq_lock);
->  }
->  
-> +static void cnp_irq_post_reset(struct drm_i915_private *dev_priv)
-
-Maybe a better name is cnp_display_clock_wa.
-
-> +{
-> +	struct intel_uncore *uncore = &dev_priv->uncore;
+> The RFC patch reviewed available at:
+> https://lore.kernel.org/linux-security-module/1610099389-28329-1-git-send-email-pnagar@codeaurora.org/
+> ---
+>  include/asm-generic/vmlinux.lds.h | 10 ++++++++++
+>  include/linux/init.h              |  6 ++++++
+>  security/Kconfig                  | 11 +++++++++++
+>  security/selinux/hooks.c          |  2 +-
+>  4 files changed, 28 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index b97c628..d1a5434 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -770,6 +770,15 @@
+>                 *(.scommon)                                             \
+>         }
+>
+> +#ifdef CONFIG_SECURITY_RTIC
+> +#define RTIC_BSS                                                       \
+> +       . = ALIGN(SZ_2M);                                               \
+> +       KEEP(*(.bss.rtic))                                              \
+> +       . = ALIGN(SZ_2M);
+> +#else
+> +#define RTIC_BSS
+> +#endif
 > +
-> +	/*
-> +	 * Wa_14010685332:cnp/cmp,tgp,adp
-
-Bspec says this WA applies ICL onwards and it's not PCH specific, for
-instance I haven't found the GEN9/CNP/CMP WA entries for it. Please also
-add a 'clarify platforms where this applies' todo item.
-
-> +	 * TODO: Figure out if this workaround can be applied in the s0ix suspend/resume handlers as
-> +	 * on earlier platforms and whether the workaround is also needed for runtime suspend/resume
-> +	 */
-> +	intel_uncore_rmw(uncore, SOUTH_CHICKEN1, SBCLK_RUN_REFCLK_DIS, SBCLK_RUN_REFCLK_DIS);
-> +	intel_uncore_rmw(uncore, SOUTH_CHICKEN1, SBCLK_RUN_REFCLK_DIS, 0);
-> +}
+>  /*
+>   * Allow archectures to redefine BSS_FIRST_SECTIONS to add extra
+>   * sections to the front of bss.
+> @@ -782,6 +791,7 @@
+>         . = ALIGN(bss_align);                                           \
+>         .bss : AT(ADDR(.bss) - LOAD_OFFSET) {                           \
+>                 BSS_FIRST_SECTIONS                                      \
+> +               RTIC_BSS                                                \
+>                 . = ALIGN(PAGE_SIZE);                                   \
+>                 *(.bss..page_aligned)                                   \
+>                 . = ALIGN(PAGE_SIZE);                                   \
+> diff --git a/include/linux/init.h b/include/linux/init.h
+> index e668832..e6d452a 100644
+> --- a/include/linux/init.h
+> +++ b/include/linux/init.h
+> @@ -300,6 +300,12 @@ void __init parse_early_options(char *cmdline);
+>  /* Data marked not to be saved by software suspend */
+>  #define __nosavedata __section(".data..nosave")
+>
+> +#ifdef CONFIG_SECURITY_RTIC
+> +#define __rticdata  __section(".bss.rtic")
+> +#else
+> +#define __rticdata
+> +#endif
 > +
->  static void gen8_irq_reset(struct drm_i915_private *dev_priv)
->  {
->  	struct intel_uncore *uncore = &dev_priv->uncore;
-> @@ -3061,8 +3074,14 @@ static void gen8_irq_reset(struct drm_i915_private *dev_priv)
->  	GEN3_IRQ_RESET(uncore, GEN8_DE_MISC_);
->  	GEN3_IRQ_RESET(uncore, GEN8_PCU_);
->  
-> -	if (HAS_PCH_SPLIT(dev_priv))
-> +	if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
-
-It was mentioned already earlier, why is this check necessary and can't we
-just call ibx_irq_reset() for all PCHs?
-
-> +		GEN3_IRQ_RESET(uncore, SDE);
-> +	else if (HAS_PCH_SPLIT(dev_priv))
->  		ibx_irq_reset(dev_priv);
+>  #ifdef MODULE
+>  #define __exit_p(x) x
+>  #else
+> diff --git a/security/Kconfig b/security/Kconfig
+> index 7561f6f..1af913a 100644
+> --- a/security/Kconfig
+> +++ b/security/Kconfig
+> @@ -291,5 +291,16 @@ config LSM
+>
+>  source "security/Kconfig.hardening"
+>
+> +config SECURITY_RTIC
+> +       bool "RunTime Integrity Check feature"
+> +       depends on ARM64
+> +       help
+> +         RTIC(RunTime Integrity Check) feature is to protect Linux kernel
+> +         at runtime. This relocates some of the security sensitive kernel
+> +         structures to a separate RTIC specific page.
 > +
-> +	if (INTEL_PCH_TYPE(dev_priv) == PCH_CNP ||
-> +	    (INTEL_PCH_TYPE(dev_priv) >= PCH_TGP && INTEL_PCH_TYPE(dev_priv) < PCH_DG1))
-
-The check could be also moved to the helper.
-
-> +		cnp_irq_post_reset(dev_priv);
->  }
->  
->  static void gen11_display_irq_reset(struct drm_i915_private *dev_priv)
-> @@ -3104,15 +3123,9 @@ static void gen11_display_irq_reset(struct drm_i915_private *dev_priv)
->  	if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
->  		GEN3_IRQ_RESET(uncore, SDE);
->  
-> -	/* Wa_14010685332:cnp/cmp,tgp,adp */
->  	if (INTEL_PCH_TYPE(dev_priv) == PCH_CNP ||
-> -	    (INTEL_PCH_TYPE(dev_priv) >= PCH_TGP &&
-> -	     INTEL_PCH_TYPE(dev_priv) < PCH_DG1)) {
-> -		intel_uncore_rmw(uncore, SOUTH_CHICKEN1,
-> -				 SBCLK_RUN_REFCLK_DIS, SBCLK_RUN_REFCLK_DIS);
-> -		intel_uncore_rmw(uncore, SOUTH_CHICKEN1,
-> -				 SBCLK_RUN_REFCLK_DIS, 0);
-> -	}
-> +	    (INTEL_PCH_TYPE(dev_priv) >= PCH_TGP && INTEL_PCH_TYPE(dev_priv) < PCH_DG1))
-> +		cnp_irq_post_reset(dev_priv);
->  }
->  
->  static void gen11_irq_reset(struct drm_i915_private *dev_priv)
-> @@ -3474,6 +3487,9 @@ static void spt_hpd_irq_setup(struct drm_i915_private *dev_priv)
->  	ibx_display_interrupt_update(dev_priv, hotplug_irqs, enabled_irqs);
->  
->  	spt_hpd_detection_setup(dev_priv);
+> +         This is to enable monitoring and protection of these kernel assets
+> +         from a higher exception level(EL) against any unauthorized changes.
 > +
-> +	if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
-> +		icp_hpd_irq_setup(dev_priv);
+>  endmenu
+>
+> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> index 644b17e..59d7eee 100644
+> --- a/security/selinux/hooks.c
+> +++ b/security/selinux/hooks.c
+> @@ -104,7 +104,7 @@
+>  #include "audit.h"
+>  #include "avc_ss.h"
+>
+> -struct selinux_state selinux_state;
+> +struct selinux_state selinux_state __rticdata;
+>
+>  /* SECMARK reference count */
+>  static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
 
-This doesn't look correct, icp_hpd_irq_setup() redoes the interrupt
-setup done already earlier in this function and
-spt_hpd_detection_setup() is probably also not correct on ICP+. Looks
-like for ICP+ we need to call icp_hpd_irq_setup() instead of
-spt_hpd_irq_setup(), but haven't checked in detail.
 
->  }
->  
->  static u32 ilk_hotplug_enables(struct drm_i915_private *i915,
-> @@ -3764,9 +3780,19 @@ static void gen8_de_irq_postinstall(struct drm_i915_private *dev_priv)
->  	}
->  }
->  
-> +static void icp_irq_postinstall(struct drm_i915_private *dev_priv)
-> +{
-> +	struct intel_uncore *uncore = &dev_priv->uncore;
-> +	u32 mask = SDE_GMBUS_ICP;
-> +
-> +	GEN3_IRQ_INIT(uncore, SDE, ~mask, 0xffffffff);
-> +}
-> +
->  static void gen8_irq_postinstall(struct drm_i915_private *dev_priv)
->  {
-> -	if (HAS_PCH_SPLIT(dev_priv))
-> +	if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
-> +		icp_irq_postinstall(dev_priv);
-> +	else if (HAS_PCH_SPLIT(dev_priv))
->  		ibx_irq_postinstall(dev_priv);
->  
->  	gen8_gt_irq_postinstall(&dev_priv->gt);
-> @@ -3775,13 +3801,6 @@ static void gen8_irq_postinstall(struct drm_i915_private *dev_priv)
->  	gen8_master_intr_enable(dev_priv->uncore.regs);
->  }
->  
-> -static void icp_irq_postinstall(struct drm_i915_private *dev_priv)
-> -{
-> -	struct intel_uncore *uncore = &dev_priv->uncore;
-> -	u32 mask = SDE_GMBUS_ICP;
-> -
-> -	GEN3_IRQ_INIT(uncore, SDE, ~mask, 0xffffffff);
-> -}
->  
->  static void gen11_irq_postinstall(struct drm_i915_private *dev_priv)
->  {
-> -- 
-> 2.29.2
-> 
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+-- 
+Thanks,
+~Nick Desaulniers
