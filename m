@@ -2,204 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B31931C809
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE24131C808
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhBPJ0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:26:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43104 "EHLO
+        id S229946AbhBPJ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:26:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbhBPJ0L (ORCPT
+        with ESMTP id S229830AbhBPJ0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:26:11 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C836C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:25:31 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id u4so10902721ljh.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:25:31 -0800 (PST)
+        Tue, 16 Feb 2021 04:26:08 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20909C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:25:28 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id o24so13711698wmh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:25:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZL5rlbjxVsMFMNC4kLAKrTGkX2YqE+jSsZ4fQeIWLjE=;
-        b=sHlHzFqopMADfQ5d0JJkdYxB+PHGs8gAnMu7s0pRn33BBLrrOLZcSZIfCf0/AjML1d
-         01h6daPUhTznplC2tFeI9PSqCEs6s4MzdLMxvEQpaGJRn4KgCAV0UABS3NoMaTa0m72T
-         1ahY+6xR2aHpfK2IhPlS/2qtFeDfX5yf6b2TA=
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Exh3jg3n/TtKnZWGfFfDIiOa1Lq+MYGlC1ET8Iputzc=;
+        b=FChGD3IiT+eQbJpCR9t7O50n/LmrueYQUvA0eedPnhjL5FwTbBAttUChubzubHzzE+
+         TeFuh3DkLKYTv67VzE91ha47D+tgaEiPVy7rJ8lWsQfLHaZRVt0jwRWzxCBbPr4HwnVv
+         asszquvZj2WmDxHU3OWs1baFcapv1QK36SGy0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZL5rlbjxVsMFMNC4kLAKrTGkX2YqE+jSsZ4fQeIWLjE=;
-        b=FAS5sK+RnkDMF9NQLCCMQsEZ5bcdv0R9VbayJYmFSo1UHBT3gCceZn84CxsL9W0JNc
-         3ZuQ+cq5ic91Ab7ygCNGlUPpPrRspLZTV6sG1s9f0dCghmXTb7MURztjqifJjKy4yG5p
-         QjvDAlqtWJ2+6ILARmKhPTq1XPg49SNvpv8oehCV+5ELR4dFA9LOQC5CLBfJocPMmqop
-         uHRI6CYsOuII9FuKN6onfAlh4Irnb0KNRK22y0SA0GwxedcyYincA6Y8uTGlcmykWExU
-         YDGLAv5kre0oC8F4FTGVF+yKAJVQBOJdzI/dEVRopRzp/3UUgp4fUlFA6gHPDRS39BGs
-         SMJQ==
-X-Gm-Message-State: AOAM5333yAr+ISjUo3xCYuVp+MPK/mwuRgF8KjoDbIVGQUlB6zNNjL/p
-        9a4jSPyXrRJaszOlhfbH5eG8bBflG98FRGSK7wM4y42lBzBwAg==
-X-Google-Smtp-Source: ABdhPJwGpNqk9J0+m/RVQCl7105a0SvmpahvJoFwBxlshZuov4EM3MWKeHzLBL4WDxR8NLzbX6CaTX4eq1B7/GVEI3g=
-X-Received: by 2002:a2e:8803:: with SMTP id x3mr11091233ljh.173.1613467529563;
- Tue, 16 Feb 2021 01:25:29 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=Exh3jg3n/TtKnZWGfFfDIiOa1Lq+MYGlC1ET8Iputzc=;
+        b=UiEvQGocy+gDutekLoRPI4mekgDLkNiJDbw6cAw/46qSiBZJwUpBmm04Ipc4dK9pkb
+         PYg9csPvBlvORGvErFQ/7ssseLtXtzebmWWQB/npUmPbDhh5LfSCA23O9K6nXZ89JxYw
+         UdI6Bwn67TdX/nvLgyRIZc0TJkspzcQt5Dzi5V69wW66QgeXEFnEgVW1XB17/0Bwb3vi
+         xwL78C1qZjzIKpWNL/hg3CjjmbiTWKvtGQNLjZ3OSdvNcDL8f+fhJwzdhDY+uwLVuPPH
+         3gfBfOMuQMiB3kUxlFkj3b5E2xx22PaLcxp+EeCrLw+2+oy3fyd1j5uxZ7R5CQhQHyDU
+         fuFQ==
+X-Gm-Message-State: AOAM532UEO0VKIOKLH0knJTwTUKBjVYBBH5sLZzRQjPzLUqKDqjqFNGA
+        //SdkIpnOaarRGufBlRXQ0zEW3BFl5Fq82JC
+X-Google-Smtp-Source: ABdhPJxCH8w9nrCrGj6DLgq7mUqO7jid+0L9+xJ/lCXaA3/b39BYFgNSlxIAXTKGgH2NqCvGcPhA6A==
+X-Received: by 2002:a7b:c010:: with SMTP id c16mr2501284wmb.134.1613467526735;
+        Tue, 16 Feb 2021 01:25:26 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id k11sm26838869wrv.51.2021.02.16.01.25.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 01:25:26 -0800 (PST)
+Date:   Tue, 16 Feb 2021 10:25:24 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Sharma, Shashank" <Shashank.Sharma@amd.com>
+Subject: Re: DMA-buf and uncached system memory
+Message-ID: <YCuPhOT4GhY3RR/6@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org, lkml <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Sharma, Shashank" <Shashank.Sharma@amd.com>
+References: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
 MIME-Version: 1.0
-References: <8c4f1cb7c51b03d2b2cd451a6404db8e269d94b7.1613465062.git.tommyhebb@gmail.com>
-In-Reply-To: <8c4f1cb7c51b03d2b2cd451a6404db8e269d94b7.1613465062.git.tommyhebb@gmail.com>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Tue, 16 Feb 2021 10:25:18 +0100
-Message-ID: <CAM4kBBKHh0+eabseRcGEkERR1=0Ac31iN1xQtB4MKgR_fuEbEg@mail.gmail.com>
-Subject: Re: [RFC PATCH] z3fold: prevent reclaim/free race for headless pages
-To:     Thomas Hebb <tommyhebb@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <91ff0bbb-ea3a-2663-3453-dea96ccd6dd8@amd.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Mon, Feb 15, 2021 at 09:58:08AM +0100, Christian König wrote:
+> Hi guys,
+> 
+> we are currently working an Freesync and direct scan out from system memory
+> on AMD APUs in A+A laptops.
+> 
+> On problem we stumbled over is that our display hardware needs to scan out
+> from uncached system memory and we currently don't have a way to communicate
+> that through DMA-buf.
+> 
+> For our specific use case at hand we are going to implement something driver
+> specific, but the question is should we have something more generic for
+> this?
+> 
+> After all the system memory access pattern is a PCIe extension and as such
+> something generic.
 
-On Tue, Feb 16, 2021 at 9:44 AM Thomas Hebb <tommyhebb@gmail.com> wrote:
->
-> commit ca0246bb97c2 ("z3fold: fix possible reclaim races") introduced
-> the PAGE_CLAIMED flag "to avoid racing on a z3fold 'headless' page
-> release." By atomically testing and setting the bit in each of
-> z3fold_free() and z3fold_reclaim_page(), a double-free was avoided.
->
-> However, commit 746d179b0e66 ("z3fold: stricter locking and more careful
-> reclaim") appears to have unintentionally broken this behavior by moving
-> the PAGE_CLAIMED check in z3fold_reclaim_page() to after the page lock
-> gets taken, which only happens for non-headless pages. For headless
-> pages, the check is now skipped entirely and races can occur again.
->
-> I have observed such a race on my system:
->
->     page:00000000ffbd76b7 refcount:0 mapcount:0 mapping:0000000000000000 =
-index:0x0 pfn:0x165316
->     flags: 0x2ffff0000000000()
->     raw: 02ffff0000000000 ffffea0004535f48 ffff8881d553a170 0000000000000=
-000
->     raw: 0000000000000000 0000000000000011 00000000ffffffff 0000000000000=
-000
->     page dumped because: VM_BUG_ON_PAGE(page_ref_count(page) =3D=3D 0)
->     ------------[ cut here ]------------
->     kernel BUG at include/linux/mm.h:707!
->     invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
->     CPU: 2 PID: 291928 Comm: kworker/2:0 Tainted: G    B             5.10=
-.7-arch1-1-kasan #1
->     Hardware name: Gigabyte Technology Co., Ltd. H97N-WIFI/H97N-WIFI, BIO=
-S F9b 03/03/2016
->     Workqueue: zswap-shrink shrink_worker
->     RIP: 0010:__free_pages+0x10a/0x130
->     Code: c1 e7 06 48 01 ef 45 85 e4 74 d1 44 89 e6 31 d2 41 83 ec 01 e8 =
-e7 b0 ff ff eb da 48 c7 c6 e0 32 91 88 48 89 ef e8 a6 89 f8 ff <0f> 0b 4c 8=
-9 e7 e8 fc 79 07 00 e9 33 ff ff ff 48 89 ef e8 ff 79 07
->     RSP: 0000:ffff88819a2ffb98 EFLAGS: 00010296
->     RAX: 0000000000000000 RBX: ffffea000594c5a8 RCX: 0000000000000000
->     RDX: 1ffffd4000b298b7 RSI: 0000000000000000 RDI: ffffea000594c5b8
->     RBP: ffffea000594c580 R08: 000000000000003e R09: ffff8881d5520bbb
->     R10: ffffed103aaa4177 R11: 0000000000000001 R12: ffffea000594c5b4
->     R13: 0000000000000000 R14: ffff888165316000 R15: ffffea000594c588
->     FS:  0000000000000000(0000) GS:ffff8881d5500000(0000) knlGS:000000000=
-0000000
->     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->     CR2: 00007f7c8c3654d8 CR3: 0000000103f42004 CR4: 00000000001706e0
->     Call Trace:
->      z3fold_zpool_shrink+0x9b6/0x1240
->      ? sugov_update_single+0x357/0x990
->      ? sched_clock+0x5/0x10
->      ? sched_clock_cpu+0x18/0x180
->      ? z3fold_zpool_map+0x490/0x490
->      ? _raw_spin_lock_irq+0x88/0xe0
->      shrink_worker+0x35/0x90
->      process_one_work+0x70c/0x1210
->      ? pwq_dec_nr_in_flight+0x15b/0x2a0
->      worker_thread+0x539/0x1200
->      ? __kthread_parkme+0x73/0x120
->      ? rescuer_thread+0x1000/0x1000
->      kthread+0x330/0x400
->      ? __kthread_bind_mask+0x90/0x90
->      ret_from_fork+0x22/0x30
->     Modules linked in: rfcomm ebtable_filter ebtables ip6table_filter ip6=
-_tables iptable_filter ccm algif_aead des_generic libdes ecb algif_skcipher=
- cmac bnep md4 algif_hash af_alg vfat fat intel_rapl_msr intel_rapl_common =
-x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel iwlmvm hid_logitec=
-h_hidpp kvm at24 mac80211 snd_hda_codec_realtek iTCO_wdt snd_hda_codec_gene=
-ric intel_pmc_bxt snd_hda_codec_hdmi ledtrig_audio iTCO_vendor_support mei_=
-wdt mei_hdcp snd_hda_intel snd_intel_dspcfg libarc4 soundwire_intel irqbypa=
-ss iwlwifi soundwire_generic_allocation rapl soundwire_cadence intel_cstate=
- snd_hda_codec intel_uncore btusb joydev mousedev snd_usb_audio pcspkr btrt=
-l uvcvideo nouveau btbcm i2c_i801 btintel snd_hda_core videobuf2_vmalloc i2=
-c_smbus snd_usbmidi_lib videobuf2_memops bluetooth snd_hwdep soundwire_bus =
-snd_soc_rt5640 videobuf2_v4l2 cfg80211 snd_soc_rl6231 videobuf2_common snd_=
-rawmidi lpc_ich alx videodev mdio snd_seq_device snd_soc_core mc ecdh_gener=
-ic mxm_wmi mei_me
->      hid_logitech_dj wmi snd_compress e1000e ac97_bus mei ttm rfkill snd_=
-pcm_dmaengine ecc snd_pcm snd_timer snd soundcore mac_hid acpi_pad pkcs8_ke=
-y_parser it87 hwmon_vid crypto_user fuse ip_tables x_tables ext4 crc32c_gen=
-eric crc16 mbcache jbd2 dm_crypt cbc encrypted_keys trusted tpm rng_core us=
-bhid dm_mod crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel =
-aesni_intel crypto_simd cryptd glue_helper xhci_pci xhci_pci_renesas i915 v=
-ideo intel_gtt i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgbl=
-t fb_sys_fops cec drm agpgart
->     ---[ end trace 126d646fc3dc0ad8 ]---
->
-> To fix the issue, re-add the earlier test and set in the case where we
-> have a headless page.
->
-> Fixes: 746d179b0e66 ("z3fold: stricter locking and more careful reclaim")
-> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-> ---
-> I have NOT tested this patch yet beyond compiling it. If the approach
-> seems good, I'll test it on my system for a period of several days and
-> see if I can reproduce the crash before sending a v1.
+Yes it's a problem, and it's a complete mess. So the defacto rules are:
 
-thanks for debugging this, please proceed with the testing.
+1. importer has to do coherent transactions to snoop cpu caches.
 
-Best regards,
-   Vitaly
->  mm/z3fold.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/z3fold.c b/mm/z3fold.c
-> index 0152ad9931a8..8ae944eeb8e2 100644
-> --- a/mm/z3fold.c
-> +++ b/mm/z3fold.c
-> @@ -1350,8 +1350,22 @@ static int z3fold_reclaim_page(struct z3fold_pool =
-*pool, unsigned int retries)
->                         page =3D list_entry(pos, struct page, lru);
->
->                         zhdr =3D page_address(page);
-> -                       if (test_bit(PAGE_HEADLESS, &page->private))
-> +                       if (test_bit(PAGE_HEADLESS, &page->private)) {
-> +                               /*
-> +                                * For non-headless pages, we wait to do =
-this
-> +                                * until we have the page lock to avoid r=
-acing
-> +                                * with __z3fold_alloc(). Headless pages =
-don't
-> +                                * have a lock (and __z3fold_alloc() will=
- never
-> +                                * see them), but we still need to test a=
-nd set
-> +                                * PAGE_CLAIMED to avoid racing with
-> +                                * z3fold_free(), so just do it now befor=
-e
-> +                                * leaving the loop.
-> +                                */
-> +                               if (test_and_set_bit(PAGE_CLAIMED, &page-=
->private))
-> +                                       continue;
-> +
->                                 break;
-> +                       }
->
->                         if (kref_get_unless_zero(&zhdr->refcount) =3D=3D =
-0) {
->                                 zhdr =3D NULL;
-> --
-> 2.30.0
->
+This way both modes work:
+
+- if the buffer is cached, we're fine
+
+- if the buffer is not cached, but the exporter has flushed all the
+  caches, you're mostly just wasting time on inefficient bus cycles. Also
+  this doesn't work if your CPU doesn't just drop clean cachelines. Like I
+  thing some ARM are prone to do, not idea about AMD, Intel is guaranteed
+  to drop them which is why the uncached scanout for integrated Intel +
+  amd discrete "works".
+
+2. exporters picks the mode freely, and can even change it at runtime
+(i915 does this, since we don't have an "allocate for scanout" flag wired
+through consistently). This doesn't work on arm, there the rule is "all
+devices in the same system must use the same mode".
+
+3. This should be solved at the dma-buf layer, but the dma-api refuses to
+tell you this information (at least for dma_alloc_coherent). And I'm not
+going to deal with the bikeshed that would bring into my inbox. Or at
+least there's always been screaming that drivers shouldn't peek behind the
+abstraction.
+
+So I think if AMD also guarantees to drop clean cachelines just do the
+same thing we do right now for intel integrated + discrete amd, but in
+reserve. It's fragile, but it does work.
+
+What we imo shouldn't do is driver private interfaces here, that's just
+going to make the problem worse long term. Or at least driver-private
+interfaces that spawn across drivers behind dma-buf, because imo this is
+really a problem that dma-buf should solve.
+
+If you do want to solve this at the dma-buf level I can try and point you
+at the respective i915 and amdgpu code that makes the magic work - I've
+had to fix it a few times in the past. I'm not sure whether we'd need to
+pass the dynamic nature through though, i.e. whether we want to be able to
+scan out imported dma-buf and hence request they be used in uncached mode.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
