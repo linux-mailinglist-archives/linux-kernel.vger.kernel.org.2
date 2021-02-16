@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E11E31D23C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A151831D23A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:40:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhBPVjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:39:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhBPVjr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:39:47 -0500
-X-Greylist: delayed 165 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 16 Feb 2021 13:39:02 PST
-Received: from gmmr3.centrum.cz (gmmr3.centrum.cz [IPv6:2a00:da80:0:502::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 691F8C061574;
-        Tue, 16 Feb 2021 13:39:02 -0800 (PST)
-Received: from gmmr-1.centrum.cz (unknown [10.255.254.26])
-        by gmmr3.centrum.cz (Postfix) with ESMTP id 4BB2B18009BD1;
-        Tue, 16 Feb 2021 22:36:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=atlas.cz; s=mail;
-        t=1613511375; bh=BOQwvYaKx+mwGwDldsCzFpXiNGdtuG61UIvQL5tA15M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=JfMehplcrYvrRZwr+9Dyc38b0a+oQfLg1AUCcxEnAjz9CLLmpQj2FRZM0fqxTKTkF
-         A3A6DEKtssRnk9+KBc14qOOk5W/DnquYZRIeEAhNbYRy47jHPLRJ7wDWwBX8bWFu/E
-         y15OsPI1ho+S4ZpSfv29Dz5nxpvoJx7U7ixpSH54=
-Received: from vm2.excello.cz (vm2.excello.cz [IPv6:2001:67c:15a0:4000::b])
-        by gmmr-1.centrum.cz (Postfix) with QMQP
-        id 49C8130007702; Tue, 16 Feb 2021 22:36:15 +0100 (CET)
-Received: from vm2.excello.cz by vm2.excello.cz
- (VF-Scanner: Clear:RC:0(2a00:da80:0:502::7):SC:0(-2.8/5.0):CC:0:;
- processed in 0.3 s); 16 Feb 2021 21:36:15 +0000
-X-VF-Scanner-ID: 20210216213615.027371.571.vm2.excello.cz.0
-Received: from gmmr-1.centrum.cz (2a00:da80:0:502::7)
-  by out1.virusfree.cz with ESMTPS (TLSv1.3, TLS_AES_256_GCM_SHA384); 16 Feb 2021 22:36:15 +0100
-Received: from gm-smtp11.centrum.cz (unknown [10.255.254.29])
-        by gmmr-1.centrum.cz (Postfix) with ESMTP id F34E82005DD88;
-        Tue, 16 Feb 2021 22:36:14 +0100 (CET)
-Received: from arkam (unknown [78.45.77.139])
-        by gm-smtp11.centrum.cz (Postfix) with ESMTPA id D278618054D25;
-        Tue, 16 Feb 2021 22:36:14 +0100 (CET)
-Date:   Tue, 16 Feb 2021 22:36:13 +0100
-From:   Petr =?utf-8?B?VmFuxJtr?= <arkamar@atlas.cz>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Petr =?utf-8?B?VmFuxJtr?= <arkamar@atlas.cz>
-Subject: [PATCH] platform/x86: fix typo in Kconfig
-Message-ID: <YCw6zavnfeHRGWgr@arkam>
+        id S230280AbhBPVj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:39:29 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:25392 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229577AbhBPVj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 16:39:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613511539; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=394gxo912siOqaIpJl71yvRDB0TG0CrguHcjHcHjxjg=; b=uWhZMtn7p93KqDuiVSEhYFKxOHtFiHZY7hFPUFDmPqep/UMUnAOkQw/o8lSaRKVClpt42CRb
+ yyIxYv+w207sO4cYx/FhAIG3heTWjBBAE1lNjyUy3f1KPh5ulHaz4QXRGGQdYlqyHgZw+Xpf
+ qzrd/W1F09aqP+EbsnTkh/pLoYc=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 602c3b524129d8cb4a6f04ac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 21:38:26
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3B93BC43462; Tue, 16 Feb 2021 21:38:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4A4EC433CA;
+        Tue, 16 Feb 2021 21:38:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C4A4EC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
+Subject: [PATCH] mhi_bus: core: Check state before processing power_down
+Date:   Tue, 16 Feb 2021 14:38:16 -0700
+Message-Id: <1613511496-22271-1-git-send-email-jhugo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uses by -> used by
+We cannot process a power_down if the power state is DISABLED.  There is
+no valid mhi_ctxt in that case, so attepting to process the power_down
+will likely result in a null pointer dereference.  If the power state is
+DISABLED, there is nothing to do anyways, so just bail early.
 
-Signed-off-by: Petr Vaněk <arkamar@atlas.cz>
+Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 ---
- drivers/platform/x86/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bus/mhi/core/pm.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 91e6176cdfbd..94f2f05bc133 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -1372,7 +1372,7 @@ config INTEL_PMT_CLASS
- 	tristate "Intel Platform Monitoring Technology (PMT) Class driver"
- 	help
- 	  The Intel Platform Monitoring Technology (PMT) class driver provides
--	  the basic sysfs interface and file hierarchy uses by PMT devices.
-+	  the basic sysfs interface and file hierarchy used by PMT devices.
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index 56ba3ab..dc69074 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -1144,6 +1144,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+ 		mhi_deinit_dev_ctxt(mhi_cntrl);
  
- 	  For more information, see:
- 	  <file:Documentation/ABI/testing/sysfs-class-intel_pmt>
+ error_dev_ctxt:
++	mhi_cntrl->pm_state = MHI_PM_DISABLE;
+ 	mutex_unlock(&mhi_cntrl->pm_mutex);
+ 
+ 	return ret;
+@@ -1155,6 +1156,12 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
+ 	enum mhi_pm_state cur_state, transition_state;
+ 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+ 
++	mutex_lock(&mhi_cntrl->pm_mutex);
++	cur_state = mhi_cntrl->pm_state;
++	mutex_unlock(&mhi_cntrl->pm_mutex);
++	if (cur_state == MHI_PM_DISABLE)
++		return; /* Already powered down */
++
+ 	/* If it's not a graceful shutdown, force MHI to linkdown state */
+ 	transition_state = (graceful) ? MHI_PM_SHUTDOWN_PROCESS :
+ 			   MHI_PM_LD_ERR_FATAL_DETECT;
 -- 
-2.26.2
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
 
