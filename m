@@ -2,137 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969E231CF12
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CA231CF14
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhBPRaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:30:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231176AbhBPR2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:28:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 332A064DFF;
-        Tue, 16 Feb 2021 17:28:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613496487;
-        bh=5YQAn+QKwubyb4oA1PMBGtIpuvfy4qAGuzioBsKkxek=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i3pgL3FOy1BiR0jL9UGENPszZ/XIACRMKxCTqu/17NS6r6QPfVQ8WPLRnb8fJv59i
-         lu7PRfhtWD8nYye1qDg7L7TqbHs0MZ9eXAnXJK6MXwlpUn+JeyQ/HSpeXCVoZ2N94A
-         v7ZgolCsA9jPrDX8gjjproQqw/eQJ/a8KVyyIWPs=
-Date:   Tue, 16 Feb 2021 18:28:04 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH v1 00/12] Driver of Intel(R) Gaussian & Neural Accelerator
-Message-ID: <YCwApLLjNAVl5oLd@kroah.com>
-References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
+        id S231169AbhBPRbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:31:01 -0500
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:11423 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230498AbhBPR26 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:28:58 -0500
+Date:   Tue, 16 Feb 2021 17:28:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1613496496; bh=OZJJvVw+aRM0kcaqH3GC0aHgPjhIDjrz+ohzOH7Tkpo=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=KhJ/r3PRPNqaHi7fOGUyK9+UfWY7P+3N4QPFOSKOQjTD1Wj0nSpp7cMiGy4adY2vd
+         og3MNke9w1W4vXr5IC/jXmeEl8S0SmH18L2GDRnjoqz/Zi3caXhqy9vSjdD97fyxzR
+         xAKuEq7zR6StjbFnHvRna33RIY696m8lw6OlMNcU3aM+EtMXpBVFlFPd/S/Tnef5ge
+         FSTSvyM8OvdbvYdwAPQ/xvAqrCkLu6uNAa57L7qdNjm4wpN+7hDb9txF6sx23xHBpO
+         vBaxZ+/MgRbgVeWVVVIt73wKxaYYXEq0Whd4PU566nXW6d7CnrcybQRh8WmErzjzTz
+         CQcj5MzaXZoyA==
+To:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v6 bpf-next 6/6] xsk: build skb by page (aka generic zerocopy xmit)
+Message-ID: <20210216172640.374487-7-alobakin@pm.me>
+In-Reply-To: <20210216172640.374487-1-alobakin@pm.me>
+References: <20210216172640.374487-1-alobakin@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 05:05:13PM +0100, Maciej Kwapulinski wrote:
-> Dear kernel maintainers,
-> 
-> This submission is a kernel driver to support Intel(R) Gaussian & Neural Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-processor available on multiple Intel platforms. AI developers and users can offload continuous inference workloads to an Intel(R) GNA device in order to free processor resources and save power. Noise reduction and speech recognition are the examples of the workloads Intel(R) GNA deals with while its usage is not limited to the two.
-> 
-> For a list of processors equipped with Intel(R) GNA device, please refer to this link:
-> https://docs.openvinotoolkit.org/latest/openvino_docs_IE_DG_supported_plugins_GNA.html 
-> 
-> We think contributing this driver to the upstream kernel project is the best way for developers and users to get the latest Intel(R) GNA support in a Linux kernel, through the mainline to any Linux distributions installed on their systems. Upstreaming also enables contribution from developers around the world to the driver once it is merged.
-> 
-> The driver works with Intel(R) libraries in user space. The Intel(R) driver exposes a few IOCTL interfaces for use by libraries in user space. The libraries are open sourced and are available at:
-> https://github.com/intel/gna
-> 
-> Prior to the submission, these items were tested or examined against GNA driver patch series put on top of v5.11-rc3 tag of mainline kernel:
-> 
-> Linux Kernel patch submission checklist
-> https://www.kernel.org/doc/html/latest/process/submit-checklist.html?highlight=submit%20checklist
-> 
-> 1. If you use a facility then #include the file that defines/declares that facility. Don’t depend on other header files pulling in ones that you use.
-> (Checked)
-> 
-> 2. Builds cleanly:
->    with applicable or modified CONFIG options =y, =m, and =n. No gcc warnings/errors, no linker warnings/errors.
->    Passes allnoconfig, allmodconfig
->    Builds successfully when using O=builddir
-> (Tested by building kernel with Intel(R) GNA driver config set to ‘m’, ‘y’, and ‘n’; allmodconfig, allnoconfig and O=builddir)
-> 
-> 3. Builds on multiple CPU architectures by using local cross-compile tools or some other build farm.
-> (x86_64 architecture tested - this is architecture where GNA is present and validated, please refer to drivers/misc/gna/Kconfig)
-> 
-> 4. ppc64 is a good architecture for cross-compilation checking because it tends to use unsigned long for 64-bit quantities.
-> (x86_64 architecture tested - this is architecture where GNA is present and validated, please refer to drivers/misc/gna/Kconfig)
-> 
-> 5. Check your patch for general style as detailed in Documentation/process/coding-style.rst. Check for trivial violations with the patch style checker prior to submission (scripts/checkpatch.pl). You should be able to justify all violations that remain in your patch.
-> (Checked. Some warnings were in the output. We checked them and feel they can be ignored.)
-> 
-> 6. Any new or modified CONFIG options do not muck up the config menu and default to off unless they meet the exception criteria documented in Documentation/kbuild/kconfig-language.rst Menu attributes: default value.
-> (No explicit default value is provided because Kbuild system sets it off by default.)
-> 
-> 7. All new Kconfig options have help text.
-> (Checked)
-> 
-> 8. Has been carefully reviewed with respect to relevant Kconfig combinations. This is very hard to get right with testing – brainpower pays off here.
-> (Checked)
-> 
-> 10. Use make checkstack and fix any problems that it finds.
->     Note
->     checkstack does not point out problems explicitly, but any one function that uses more than 512 bytes on the stack is a candidate for change.
-> (Checked)
-> 
-> 11. Include kernel-doc to document global kernel APIs. (Not required for static functions, but OK there also.) Use make htmldocs or make pdfdocs to check the kernel-doc and fix any issues.
-> (Addressed by adding new gna.rst in Documentation; tested with output from ‘make htmldocs’)
-> 
-> 12. Has been tested with CONFIG_PREEMPT, CONFIG_DEBUG_PREEMPT, CONFIG_DEBUG_SLAB, CONFIG_DEBUG_PAGEALLOC, CONFIG_DEBUG_MUTEXES, CONFIG_DEBUG_SPINLOCK, CONFIG_DEBUG_ATOMIC_SLEEP, CONFIG_PROVE_RCU and CONFIG_DEBUG_OBJECTS_RCU_HEAD all simultaneously enabled.
-> (Checked)
-> 
-> 13. Has been build- and runtime tested with and without CONFIG_SMP and CONFIG_PREEMPT.
-> (Checked)
-> 
-> 15. All new /proc entries are documented under Documentation/.
-> (The driver doesn’t introduce any new procs)
-> 
-> 16. All new kernel boot parameters are documented in Documentation/admin-guide/kernel-parameters.rst.
-> (The driver doesn’t add boot parameters)
-> 
-> 17. All new module parameters are documented with MODULE_PARM_DESC().
-> (Checked)
-> 
-> 21. Newly-added code has been compiled with gcc -W (use make EXTRA_CFLAGS=-W). This will generate lots of noise, but is good for finding bugs like “warning: comparison between signed.
->     and unsigned”.
-> (Checked)
-> 
-> 24. If any ioctl’s are added by the patch, then also update Documentation/userspace-api/ioctl/ioctl-number.rst.
-> (Updated)
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-What is all of this?  Do you see this on any other patch submission
-00/XX patch description?
+This patch is used to construct skb based on page to save memory copy
+overhead.
 
-And please wrap your columns properly.
+This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
+network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
+directly construct skb. If this feature is not supported, it is still
+necessary to copy data to construct skb.
 
-> The above results only reflect our understanding of the test and the code referred. Please kindly let us know any issues or different observations from any further tests.
-> 
-> Thanks
-> 
-> Series-reviewed-by: Tony Luck <tony.luck@intel.com>
+---------------- Performance Testing ------------
 
-That's not a proper sign-off-by or reviewed-by, why isn't this on the
-individual patches?
+The test environment is Aliyun ECS server.
+Test cmd:
+```
+xdpsock -i eth0 -t  -S -s <msg size>
+```
 
-You all keep coming up with new and unique ways to do patch submissions
-different than anyone else, why go through all of that effort?
+Test result data:
 
-I'll look at this after 5.12-rc1 is out, but odds are, I'm not going to
-be happy with it if this is the start...
+size    64      512     1024    1500
+copy    1916747 1775988 1600203 1440054
+page    1974058 1953655 1945463 1904478
+percent 3.0%    10.0%   21.58%  32.3%
 
-greg k-h
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+[ alobakin:
+ - expand subject to make it clearer;
+ - improve skb->truesize calculation;
+ - reserve some headroom in skb for drivers;
+ - tailroom is not needed as skb is non-linear ]
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ net/xdp/xsk.c | 120 ++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 96 insertions(+), 24 deletions(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 143979ea4165..a71ed664da0a 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -445,6 +445,97 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+ =09sock_wfree(skb);
+ }
+=20
++static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
++=09=09=09=09=09      struct xdp_desc *desc)
++{
++=09struct xsk_buff_pool *pool =3D xs->pool;
++=09u32 hr, len, ts, offset, copy, copied;
++=09struct sk_buff *skb;
++=09struct page *page;
++=09void *buffer;
++=09int err, i;
++=09u64 addr;
++
++=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
++
++=09skb =3D sock_alloc_send_skb(&xs->sk, hr, 1, &err);
++=09if (unlikely(!skb))
++=09=09return ERR_PTR(err);
++
++=09skb_reserve(skb, hr);
++
++=09addr =3D desc->addr;
++=09len =3D desc->len;
++=09ts =3D pool->unaligned ? len : pool->chunk_size;
++
++=09buffer =3D xsk_buff_raw_get_data(pool, addr);
++=09offset =3D offset_in_page(buffer);
++=09addr =3D buffer - pool->addrs;
++
++=09for (copied =3D 0, i =3D 0; copied < len; i++) {
++=09=09page =3D pool->umem->pgs[addr >> PAGE_SHIFT];
++=09=09get_page(page);
++
++=09=09copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
++=09=09skb_fill_page_desc(skb, i, page, offset, copy);
++
++=09=09copied +=3D copy;
++=09=09addr +=3D copy;
++=09=09offset =3D 0;
++=09}
++
++=09skb->len +=3D len;
++=09skb->data_len +=3D len;
++=09skb->truesize +=3D ts;
++
++=09refcount_add(ts, &xs->sk.sk_wmem_alloc);
++
++=09return skb;
++}
++
++static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
++=09=09=09=09     struct xdp_desc *desc)
++{
++=09struct net_device *dev =3D xs->dev;
++=09struct sk_buff *skb;
++
++=09if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
++=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
++=09=09if (IS_ERR(skb))
++=09=09=09return skb;
++=09} else {
++=09=09u32 hr, tr, len;
++=09=09void *buffer;
++=09=09int err;
++
++=09=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
++=09=09tr =3D dev->needed_tailroom;
++=09=09len =3D desc->len;
++
++=09=09skb =3D sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
++=09=09if (unlikely(!skb))
++=09=09=09return ERR_PTR(err);
++
++=09=09skb_reserve(skb, hr);
++=09=09skb_put(skb, len);
++
++=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
++=09=09err =3D skb_store_bits(skb, 0, buffer, len);
++=09=09if (unlikely(err)) {
++=09=09=09kfree_skb(skb);
++=09=09=09return ERR_PTR(err);
++=09=09}
++=09}
++
++=09skb->dev =3D dev;
++=09skb->priority =3D xs->sk.sk_priority;
++=09skb->mark =3D xs->sk.sk_mark;
++=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
++=09skb->destructor =3D xsk_destruct_skb;
++
++=09return skb;
++}
++
+ static int xsk_generic_xmit(struct sock *sk)
+ {
+ =09struct xdp_sock *xs =3D xdp_sk(sk);
+@@ -454,56 +545,37 @@ static int xsk_generic_xmit(struct sock *sk)
+ =09struct sk_buff *skb;
+ =09unsigned long flags;
+ =09int err =3D 0;
+-=09u32 hr, tr;
+=20
+ =09mutex_lock(&xs->mutex);
+=20
+ =09if (xs->queue_id >=3D xs->dev->real_num_tx_queues)
+ =09=09goto out;
+=20
+-=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
+-=09tr =3D xs->dev->needed_tailroom;
+-
+ =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+-=09=09char *buffer;
+-=09=09u64 addr;
+-=09=09u32 len;
+-
+ =09=09if (max_batch-- =3D=3D 0) {
+ =09=09=09err =3D -EAGAIN;
+ =09=09=09goto out;
+ =09=09}
+=20
+-=09=09len =3D desc.len;
+-=09=09skb =3D sock_alloc_send_skb(sk, hr + len + tr, 1, &err);
+-=09=09if (unlikely(!skb))
++=09=09skb =3D xsk_build_skb(xs, &desc);
++=09=09if (IS_ERR(skb)) {
++=09=09=09err =3D PTR_ERR(skb);
+ =09=09=09goto out;
++=09=09}
+=20
+-=09=09skb_reserve(skb, hr);
+-=09=09skb_put(skb, len);
+-
+-=09=09addr =3D desc.addr;
+-=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+-=09=09err =3D skb_store_bits(skb, 0, buffer, len);
+ =09=09/* This is the backpressure mechanism for the Tx path.
+ =09=09 * Reserve space in the completion queue and only proceed
+ =09=09 * if there is space in it. This avoids having to implement
+ =09=09 * any buffering in the Tx path.
+ =09=09 */
+ =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
+-=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
++=09=09if (xskq_prod_reserve(xs->pool->cq)) {
+ =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+ =09=09=09kfree_skb(skb);
+ =09=09=09goto out;
+ =09=09}
+ =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+=20
+-=09=09skb->dev =3D xs->dev;
+-=09=09skb->priority =3D sk->sk_priority;
+-=09=09skb->mark =3D sk->sk_mark;
+-=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
+-=09=09skb->destructor =3D xsk_destruct_skb;
+-
+ =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
+ =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
+ =09=09=09/* Tell user-space to retry the send */
+--=20
+2.30.1
+
+
