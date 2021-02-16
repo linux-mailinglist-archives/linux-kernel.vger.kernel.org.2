@@ -2,109 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DBD31CD6D
+	by mail.lfdr.de (Postfix) with ESMTP id 96BF331CD6E
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhBPQBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:01:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbhBPQBN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:01:13 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1CAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:00:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Mime-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=zD9+E+ZI4r3/IBpj+enzwdFwXkNHRFx6629chcrO5Jo=; b=Oq2osaDx94R7D/gXckdRgZY3EW
-        cox0JwwMGIN6w+fM0S1vOf3NpfkLg5pRxu06MvfhBwb3n6MwSPgkkBEZuehydylfbqzne4ENz+0Hk
-        U5i8EN86I/c3J/GG4FIAh/mrLBu/UMTcuLz236NCC1lc98wt0SmsoFg3xBeVh6aXwKWed3dkd8ToV
-        Il5iPUOp9wjZRn5qQ67Mpm9+19G9gkqWc8FsaUkgZ9zxBfowOu7YC/widj60xKG08dS+kzqPsTjqm
-        sy8DtAsNydq7IRDBMVYhHBcbr09NkAs4znIYHMIC8k7sxhSmxcSatowBqRnEkXJXU8ItStj6RWNWf
-        wNELq1hQ==;
-Received: from [54.239.6.185] (helo=freeip.amazon.com)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lC2m4-0008Lk-8i; Tue, 16 Feb 2021 16:00:28 +0000
-Message-ID: <425a47ad4de9f0f7bd00daf446566e59a9081c7e.camel@infradead.org>
-Subject: Re: [PATCH] virtio_console: remove pointless check for
- debugfs_create_dir()
-From:   Amit Shah <amit@infradead.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        virtualization@lists.linux-foundation.org
-Cc:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 16 Feb 2021 17:00:26 +0100
-In-Reply-To: <20210216150410.3844635-1-gregkh@linuxfoundation.org>
-References: <20210216150410.3844635-1-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S230004AbhBPQB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:01:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38208 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229708AbhBPQBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 11:01:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613491228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JipK6xkF+8oNavIVFVqoSZnucmL1iuE/CDXl5MQc5pU=;
+        b=vMjqzU3jM4ZE03eciuSLI8Yj8wdJrupjqdIZlTuUhziJRXvq3ThnvsqBz0ijeI+6NIlNqN
+        UbEhVy98N5IOqDkbaevsm4AgzgG5OLA3OUyZvpFbGaYNpuL6F7IBaogBynVzpaXEBvqKsJ
+        s54P6RSVumEs7cS05H/7r7hIyixsNG4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CE113AE47;
+        Tue, 16 Feb 2021 16:00:27 +0000 (UTC)
+Date:   Tue, 16 Feb 2021 17:00:27 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: debugfs: was: Re: [PATCH v4] printk: Userspace format enumeration
+ support
+Message-ID: <YCvsGzv3qlsWU+UE@alley>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCafCKg2bAlOw08H@chrisdown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-02-16 at 16:04 +0100, Greg Kroah-Hartman wrote:
-> It is impossible for debugfs_create_dir() to return NULL, so checking
-> for it gives people a false sense that they actually are doing something
-> if an error occurs.  As there is no need to ever change kernel logic if
-> debugfs is working "properly" or not, there is no need to check the
-> return value of debugfs calls, so remove the checks here as they will
-> never be triggered and are wrong.
+On Fri 2021-02-12 15:30:16, Chris Down wrote:
+> We have a number of systems industry-wide that have a subset of their
+> functionality that works as follows:
 > 
-> Cc: Amit Shah <amit@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: virtualization@lists.linux-foundation.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/char/virtio_console.c | 23 +++++++++--------------
->  1 file changed, 9 insertions(+), 14 deletions(-)
+> 1. Receive a message from local kmsg, serial console, or netconsole;
+> 2. Apply a set of rules to classify the message;
+> 3. Do something based on this classification (like scheduling a
+>    remediation for the machine), rinse, and repeat.
 > 
-> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-> index 1836cc56e357..59dfd9c421a1 100644
-> --- a/drivers/char/virtio_console.c
-> +++ b/drivers/char/virtio_console.c
-> @@ -1456,18 +1456,15 @@ static int add_port(struct ports_device *portdev, u32 id)
->  	 */
->  	send_control_msg(port, VIRTIO_CONSOLE_PORT_READY, 1);
->  
-> -	if (pdrvdata.debugfs_dir) {
-> -		/*
-> -		 * Finally, create the debugfs file that we can use to
-> -		 * inspect a port's state at any time
-> -		 */
-> -		snprintf(debugfs_name, sizeof(debugfs_name), "vport%up%u",
-> -			 port->portdev->vdev->index, id);
-> -		port->debugfs_file = debugfs_create_file(debugfs_name, 0444,
-> -							 pdrvdata.debugfs_dir,
-> -							 port,
-> -							 &port_debugfs_fops);
-> -	}
+> As a couple of examples of places we have this implemented just inside
+> Facebook, although this isn't a Facebook-specific problem, we have this
+> inside our netconsole processing (for alarm classification), and as part
+> of our machine health checking. We use these messages to determine
+> fairly important metrics around production health, and it's important
+> that we get them right.
+> 
+> 
+> This patch provides a solution to the issue of silently changed or
+> deleted printks: we record pointers to all printk format strings known
+> at compile time into a new .printk_fmts section, both in vmlinux and
+> modules. At runtime, this can then be iterated by looking at
+> <debugfs>/printk/formats/<module>, which emits the same format as
+> `printk` itself, which we already export elsewhere (for example, in
+> netconsole).
+
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 5a95c688621f..adf545ba9eb9 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> +
+> +static const struct file_operations dfs_formats_fops = {
+> +	.open    = debugfs_pf_open,
+> +	.read    = seq_read,
+> +	.llseek  = seq_lseek,
+> +	.release = single_release,
+> +};
+> +
+> +static size_t printk_fmt_size(const char *fmt)
+> +{
+> +	size_t sz = strlen(fmt) + 1;
+> +
 > +	/*
-> +	 * Finally, create the debugfs file that we can use to
-> +	 * inspect a port's state at any time
+> +	 * Some printk formats don't start with KERN_SOH + level. We will add
+> +	 * it later when rendering the output.
 > +	 */
-> +	snprintf(debugfs_name, sizeof(debugfs_name), "vport%up%u",
-> +		 port->portdev->vdev->index, id);
-> +	port->debugfs_file = debugfs_create_file(debugfs_name, 0444,
-> +						 pdrvdata.debugfs_dir,
-> +						 port, &port_debugfs_fops);
->  	return 0;
->  
->  free_inbufs:
-> @@ -2244,8 +2241,6 @@ static int __init init(void)
->  	}
->  
->  	pdrvdata.debugfs_dir = debugfs_create_dir("virtio-ports", NULL);
-> -	if (!pdrvdata.debugfs_dir)
-> -		pr_warn("Error creating debugfs dir for virtio-ports\n");
->  	INIT_LIST_HEAD(&pdrvdata.consoles);
->  	INIT_LIST_HEAD(&pdrvdata.portdevs);
-> 
+> +	if (unlikely(fmt[0] != KERN_SOH_ASCII))
+> +		sz += 2;
 
-Reviewed-by: Amit Shah <amit@kernel.org>
+This approach is hard to maintain. It might be pretty hard and error
+prone to count the size if we want to provide more information.
 
+There are many files in debugfs with not-well defined size.
+They are opened by seq_open_private(). It allows to add
+a line by line by an iterator.
+
+For example:
+
+	+ /sys/kernel/debug/dynamic_debug/control is opened by
+	  ddebug_proc_open() in lib/dynamic_debug.c
+
+	+ /sys/kernel/debug/tracing/available_filter_functions
+	  is opened by ftrace_avail_open() in kernel/trace/ftrace.c
+
+
+
+> +
+> +	return sz;
+> +}
+> +
+> +static struct printk_fmt_sec *find_printk_fmt_sec(struct module *mod)
+> +{
+> +	struct printk_fmt_sec *ps = NULL;
+> +
+> +	hash_for_each_possible(printk_fmts_mod_sections, ps, hnode,
+> +			       (unsigned long)mod)
+> +		if (ps->module == mod)
+> +			return ps;
+> +
+> +	return NULL;
+> +}
+> +
+> +static void store_printk_fmt_sec(struct module *mod, const char **start,
+> +				 const char **end)
+> +{
+> +	struct printk_fmt_sec *ps = NULL;
+> +	const char **fptr = NULL;
+> +	size_t size = 0;
+> +
+> +	ps = kmalloc(sizeof(struct printk_fmt_sec), GFP_KERNEL);
+> +	if (!ps)
+> +		return;
+> +
+> +	ps->module = mod;
+> +	ps->start = start;
+> +	ps->end = end;
+> +
+> +	for (fptr = ps->start; fptr < ps->end; fptr++)
+> +		size += printk_fmt_size(*fptr);
+> +
+> +	mutex_lock(&printk_fmts_mutex);
+> +	hash_add(printk_fmts_mod_sections, &ps->hnode, (unsigned long)mod);
+> +	mutex_unlock(&printk_fmts_mutex);
+> +
+> +	ps->file = debugfs_create_file(ps_get_module_name(ps), 0444,
+> +				       dfs_formats, mod, &dfs_formats_fops);
+> +
+> +	if (!IS_ERR(ps->file))
+> +		d_inode(ps->file)->i_size = size;
+
+We should revert the changes when the file could not get crated.
+It does not make sense to keep the structure when the file is not
+there.
+
+I guess that remove_printk_fmt_sec() would even crash when
+ps->file was set to an error code.
+
+> +}
+> +
+> +#ifdef CONFIG_MODULES
+> +static void remove_printk_fmt_sec(struct module *mod)
+> +{
+> +	struct printk_fmt_sec *ps = NULL;
+> +
+> +	if (WARN_ON_ONCE(!mod))
+> +		return;
+> +
+> +	mutex_lock(&printk_fmts_mutex);
+> +
+> +	ps = find_printk_fmt_sec(mod);
+> +	if (!ps) {
+> +		mutex_unlock(&printk_fmts_mutex);
+> +		return;
+> +	}
+> +
+> +	hash_del(&ps->hnode);
+> +
+> +	mutex_unlock(&printk_fmts_mutex);
+> +
+> +	debugfs_remove(ps->file);
+
+IMHO, we should remove the file before we remove the way how
+to read it. This should be done in the opposite order
+than in store_printk_fmt_sec().
+
+> +	kfree(ps);
+> +}
+> +
+
+Best Regards,
+Petr
