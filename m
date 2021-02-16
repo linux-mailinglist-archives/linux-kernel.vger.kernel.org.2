@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A9031CBE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B92E31CBF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhBPO1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:27:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
+        id S230154AbhBPObF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:31:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbhBPO1K (ORCPT
+        with ESMTP id S229924AbhBPOa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:27:10 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D792C061574;
-        Tue, 16 Feb 2021 06:26:29 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id z68so6337394pgz.0;
-        Tue, 16 Feb 2021 06:26:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=faHK0cyvGGeTK0Lu2KFV2g1IzncYxmvTiObKgbcKmx0=;
-        b=qRlbmw9QjZCjMvUcUGVN8zUC3MT5NH+dYnEVedbk1SZi/hod3HnSm239TTk2FHeNkJ
-         47kpT0p57IWaSec4PR9BFHfJ8jg52O/paiSrSEaYF2BVX4EdeUYREInTzKa1SvGmxqfw
-         05bwsThstX++KCMslLXP1SgjzvDSBk+XCe/yc3DFAjmryMHMM54cpZ/AmqSIqJtVQxtf
-         Vif7+CBybed6x9vCFHj0QNLoQRFRdSbarw8AZENJgoIm2ayyyN9V6KLSpkyuKkUs1H/H
-         8TkNhjds0aFcVmiaXvPsNa9Uq0QbKHam/pt+Rv5nxXrgVw0wXaiviNQrn9jYK2ayYByY
-         5QsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=faHK0cyvGGeTK0Lu2KFV2g1IzncYxmvTiObKgbcKmx0=;
-        b=PVzVHW0+cIVND28siBgn5ME+ZiTYltipgLrXo5D7vJsovbtuIuYe9Z9shZEkGWxIGy
-         tNZAGeT3EVRvYLvzvH5fMKIv/XqwXTtaNBFum2MSYyBkmcXWJCOWczSmDJVPUVY/V3UR
-         mJPX3ljqG43ijbD5DHhUlIT84fe8FtQNPdlGal1cR3roq0ocksFg4I4waDdchSp6ZyBH
-         I53goXJt07+5OQMC/2Gz8L9Kgc5vi11Yeb4OWTlCsmHbd9G2UYSNfTlThLD9ZSXk/mzP
-         QJwNes/o+Ufa4nJDyI8SUh/UtO9ArejGkg4A3i/rNYxjhn0ydOhdxir0ADUSGNAb4V+y
-         bE9Q==
-X-Gm-Message-State: AOAM533B+CFikrlbHwlp1XTrq3bn19HK+HmHbet3yA4mWnd1O9xM4m54
-        KEKg+G87JY5oFwODsPlH9GE=
-X-Google-Smtp-Source: ABdhPJwiT1RhR1WEFZ7nGGATonnaewsEVZLnFdy6/orkPw4DRiIJmMOFovA/RiTlQCYGzqf5YWP2vQ==
-X-Received: by 2002:a63:af1b:: with SMTP id w27mr19028491pge.162.1613485588909;
-        Tue, 16 Feb 2021 06:26:28 -0800 (PST)
-Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
-        by smtp.gmail.com with ESMTPSA id t1sm22289668pfl.194.2021.02.16.06.26.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 06:26:28 -0800 (PST)
-Date:   Tue, 16 Feb 2021 22:26:26 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        mika.westerberg@linux.intel.com, rric@kernel.org,
-        helgaas@kernel.org, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <20210216142626.GA747814@nuc8i5>
-References: <20210215181550.714101-1-zhengdejin5@gmail.com>
- <20210215181550.714101-2-zhengdejin5@gmail.com>
- <YCrfqungNSSxe5lK@rocinante>
- <YCual+Fq9mcnxbM4@smile.fi.intel.com>
+        Tue, 16 Feb 2021 09:30:57 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C03C061574;
+        Tue, 16 Feb 2021 06:30:16 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id AAB2E42037;
+        Tue, 16 Feb 2021 14:30:10 +0000 (UTC)
+Subject: Re: [PATCH v2 02/25] dt-bindings: arm: apple: Add bindings for Apple
+ ARM platforms
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210215121713.57687-1-marcan@marcan.st>
+ <20210215121713.57687-3-marcan@marcan.st>
+ <20210215174803.5oalkkmotpc7d7vm@kozik-lap>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <9729c3c2-787e-2894-ddfb-fc9c07d74086@marcan.st>
+Date:   Tue, 16 Feb 2021 23:30:08 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YCual+Fq9mcnxbM4@smile.fi.intel.com>
+In-Reply-To: <20210215174803.5oalkkmotpc7d7vm@kozik-lap>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 12:12:39PM +0200, Andy Shevchenko wrote:
-> On Mon, Feb 15, 2021 at 09:55:06PM +0100, Krzysztof Wilczyński wrote:
+On 16/02/2021 02.48, Krzysztof Kozlowski wrote:
+> On Mon, Feb 15, 2021 at 09:16:50PM +0900, Hector Martin wrote:
+>> +description: |
+>> +  Apple ARM ("Apple Silicon") platforms should contain compatible strings
+>> +  in the following format:
+>> +
+>> +  - apple,j274 (board/device ID)
+>> +  - apple,m1 (SoC name)
+>> +  - apple,arm-platform (Apple Silicon)
 > 
-> > Question: wouldn't you need to call pci_free_irq_vectors() somewhere,
-> > possibly to pcim_release() callback?  Although, I am not sure where the
-> > right place would be.
-> > 
-> > I am asking, as the documentation (see [4]) suggests that one would have
-> > to release allocated IRQ vectors (relevant exceprt):
-> 
-> It's done in pcim_release() but not explicitly.
-> 
->         if (dev->msi_enabled)
->                 pci_disable_msi(dev);
->         if (dev->msix_enabled)
->                 pci_disable_msix(dev);
-> 
-> Maybe above can be replaced by pci_free_irq_vectors() to be sure that any
-> future change to PCI IRQ allocation APIs.
-> 
-> Yes, I have checked and currently the above code is equivalent to
-> pci_free_irq_vectors().
-> 
-> Dejin, please update your patch accordingly.
->
-Hi Andy and Krzysztof,
+> This description is irrelevant because the rules come from schema below.
+> Maybe instead write few words about the platform? Or describe how to get
+> the board/device ID if it is not obvious?
 
-I have modified it and sent patch v2. thank you very much!
+Good point. Actually, I've gone back and forth over this a few times,
+but I'm going to change the SoC name. Apple calls these things by 5
+different names, but the only two that make any sense to consider are
+the marketing name ("m1") and the SoC name ("t8103"). I'm going to
+switch to the latter (so `apple,t8103`).
 
-BR,
-Dejin
+In the past, Apple have dual-sourced SoCs with different IDs under the
+same marketing name, and Apple themselves name most of their compatible
+properties after the lowest-compatible SoC name, so I'm going to go with
+that after all. This will save us grief in the future if they do that
+again, and I think I get to pick the color of this bike shed :)
 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Given that, I expanded a bit on the description. Let me know what you think:
+
+description: |
+   ARM platforms using SoCs designed by Apple Inc., branded "Apple Silicon".
+
+   This currently includes devices based on the "M1" SoC, starting with the
+   three Mac models released in late 2020:
+
+   - Mac mini (M1, 2020)
+   - MacBook Pro (13-inch, M1, 2020)
+   - MacBook Air (M1, 2020)
+
+   The compatible property should follow this format:
+
+   compatible = "apple,<targettype>", "apple,<socid>", "apple,arm-platform";
+
+   <targettype> represents the board/device and comes from the `target-type`
+   property of the root node of the Apple Device Tree, lowercased. It can be
+   queried on macOS using the following command:
+
+   $ ioreg -d2 -l | grep target-type
+
+   <socid> is the lowercased SoC ID. Apple uses at least *five* different
+   names for their SoCs:
+
+   - Marketing name ("M1")
+   - Internal name ("H13G")
+   - Codename ("Tonga")
+   - SoC ID ("T8103")
+   - Package/IC part number ("APL1102")
+
+   Devicetrees should use the the lowercased SoC ID, to avoid confusion if
+   multiple SoCs share the same marketing name. This can be obtained from
+   the `compatible` property of the arm-io node of the Apple Device Tree,
+   which can be queried as follows on macOS:
+
+   $ ioreg -n arm-io | grep compatible
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
