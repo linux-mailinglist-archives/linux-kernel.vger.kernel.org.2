@@ -2,230 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 954E231CA66
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 915A531CA71
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhBPMJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:09:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229807AbhBPMJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:09:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D4FD64DEC;
-        Tue, 16 Feb 2021 12:08:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613477319;
-        bh=N6IPz8XGOy0RF1NT74Z7eRigRqaB8x6X5g527PxF5RQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ue+XGyHFzpeClX9mdf4W19RMMHxIBgpWc3l2p8ZY+Miiixo5HvUv2TgXfsJDH3hix
-         rUzDtieqzYLWFVkOub4X2EO1pFXRRxQ6Aawh6BGDbZCrdurRSxGvJUmBmWXVRwiCSZ
-         3xyfXFRIQMeWuBHdZQGk3mY8kK9tUcNlVd+55GC0=
-Date:   Tue, 16 Feb 2021 13:08:37 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "drinkcat@chromium.org" <drinkcat@chromium.org>,
-        "iant@google.com" <iant@google.com>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "llozano@chromium.org" <llozano@chromium.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "miklos@szeredi.hu" <miklos@szeredi.hu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "dchinner@redhat.com" <dchinner@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "sfrench@samba.org" <sfrench@samba.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
-Message-ID: <YCu1xe9PLVhmFMEM@kroah.com>
-References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
- <20210215154317.8590-1-lhenriques@suse.de>
- <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
- <73ab4951f48d69f0183548c7a82f7ae37e286d1c.camel@hammerspace.com>
- <CAOQ4uxgPtqG6eTi2AnAV4jTAaNDbeez+Xi2858mz1KLGMFntfg@mail.gmail.com>
- <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
- <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com>
- <87r1lgjm7l.fsf@suse.de>
- <YCuseTMyjL+9sWum@kroah.com>
- <87k0r8jk6r.fsf@suse.de>
+        id S230121AbhBPMMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 07:12:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhBPMMg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 07:12:36 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB45C061574;
+        Tue, 16 Feb 2021 04:11:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qydaGrdRobsyV5LaMgil96UsQSn4K3xiCgp4dxh0juc=; b=W1OSaSNnkgJkSGPTgy8i13Fnth
+        Q3yMBTUQI35ZC32HOj6lyR72QpKJCByW9IX627qEuospypeWxHjJGIexIeRPMxqE0ne9uQQtNhjrq
+        bpoTv7CK6Y9Cg9FFNDqGjoFa67aUgp2jyFviMRH0o/L4iQMLWden+bu1eFoSy6H1so5yKTP+0qufM
+        SbTdZckJ2IAXD57Vh/FXcxwpn5F8FXBRV1s8PxB45PtPKblZ4qOdDNxWQBJdHGBMLZWA/6dB/GbRW
+        Ryy2BGjIC60/A5VLY8h27Nsvwue8yeJOw2/C9GZKFS6+uYPlFf8abXeJ8FKrixF4vTrxoLGrcBvM1
+        rJh/I4Uw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lBzBS-00GpyS-Qf; Tue, 16 Feb 2021 12:10:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BCFB13059DD;
+        Tue, 16 Feb 2021 13:10:25 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A5D6B2B9C6CCA; Tue, 16 Feb 2021 13:10:25 +0100 (CET)
+Date:   Tue, 16 Feb 2021 13:10:25 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Juergen Gross <jgross@suse.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [PATCH v5 4/8] x86/mm/tlb: Flush remote and local TLBs
+ concurrently
+Message-ID: <YCu2MQFdV4JTrUQb@hirez.programming.kicks-ass.net>
+References: <20210209221653.614098-1-namit@vmware.com>
+ <20210209221653.614098-5-namit@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0r8jk6r.fsf@suse.de>
+In-Reply-To: <20210209221653.614098-5-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 12:01:16PM +0000, Luis Henriques wrote:
-> "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org> writes:
-> 
-> > On Tue, Feb 16, 2021 at 11:17:34AM +0000, Luis Henriques wrote:
-> >> Amir Goldstein <amir73il@gmail.com> writes:
-> >> 
-> >> > On Mon, Feb 15, 2021 at 8:57 PM Trond Myklebust <trondmy@hammerspace.com> wrote:
-> >> >>
-> >> >> On Mon, 2021-02-15 at 19:24 +0200, Amir Goldstein wrote:
-> >> >> > On Mon, Feb 15, 2021 at 6:53 PM Trond Myklebust <
-> >> >> > trondmy@hammerspace.com> wrote:
-> >> >> > >
-> >> >> > > On Mon, 2021-02-15 at 18:34 +0200, Amir Goldstein wrote:
-> >> >> > > > On Mon, Feb 15, 2021 at 5:42 PM Luis Henriques <
-> >> >> > > > lhenriques@suse.de>
-> >> >> > > > wrote:
-> >> >> > > > >
-> >> >> > > > > Nicolas Boichat reported an issue when trying to use the
-> >> >> > > > > copy_file_range
-> >> >> > > > > syscall on a tracefs file.  It failed silently because the file
-> >> >> > > > > content is
-> >> >> > > > > generated on-the-fly (reporting a size of zero) and
-> >> >> > > > > copy_file_range
-> >> >> > > > > needs
-> >> >> > > > > to know in advance how much data is present.
-> >> >> > > > >
-> >> >> > > > > This commit restores the cross-fs restrictions that existed
-> >> >> > > > > prior
-> >> >> > > > > to
-> >> >> > > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> >> >> > > > > devices")
-> >> >> > > > > and
-> >> >> > > > > removes generic_copy_file_range() calls from ceph, cifs, fuse,
-> >> >> > > > > and
-> >> >> > > > > nfs.
-> >> >> > > > >
-> >> >> > > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> >> >> > > > > devices")
-> >> >> > > > > Link:
-> >> >> > > > > https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-> >> >> > > > > Cc: Nicolas Boichat <drinkcat@chromium.org>
-> >> >> > > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> >> >> > > >
-> >> >> > > > Code looks ok.
-> >> >> > > > You may add:
-> >> >> > > >
-> >> >> > > > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> >> >> > > >
-> >> >> > > > I agree with Trond that the first paragraph of the commit message
-> >> >> > > > could
-> >> >> > > > be improved.
-> >> >> > > > The purpose of this change is to fix the change of behavior that
-> >> >> > > > caused the regression.
-> >> >> > > >
-> >> >> > > > Before v5.3, behavior was -EXDEV and userspace could fallback to
-> >> >> > > > read.
-> >> >> > > > After v5.3, behavior is zero size copy.
-> >> >> > > >
-> >> >> > > > It does not matter so much what makes sense for CFR to do in this
-> >> >> > > > case (generic cross-fs copy).  What matters is that nobody asked
-> >> >> > > > for
-> >> >> > > > this change and that it caused problems.
-> >> >> > > >
-> >> >> > >
-> >> >> > > No. I'm saying that this patch should be NACKed unless there is a
-> >> >> > > real
-> >> >> > > explanation for why we give crap about this tracefs corner case and
-> >> >> > > why
-> >> >> > > it can't be fixed.
-> >> >> > >
-> >> >> > > There are plenty of reasons why copy offload across filesystems
-> >> >> > > makes
-> >> >> > > sense, and particularly when you're doing NAS. Clone just doesn't
-> >> >> > > cut
-> >> >> > > it when it comes to disaster recovery (whereas backup to a
-> >> >> > > different
-> >> >> > > storage unit does). If the client has to do the copy, then you're
-> >> >> > > effectively doubling the load on the server, and you're adding
-> >> >> > > potentially unnecessary network traffic (or at the very least you
-> >> >> > > are
-> >> >> > > doubling that traffic).
-> >> >> > >
-> >> >> >
-> >> >> > I don't understand the use case you are describing.
-> >> >> >
-> >> >> > Which filesystem types are you talking about for source and target
-> >> >> > of copy_file_range()?
-> >> >> >
-> >> >> > To be clear, the original change was done to support NFS/CIFS server-
-> >> >> > side
-> >> >> > copy and those should not be affected by this change.
-> >> >> >
-> >> >>
-> >> >> That is incorrect:
-> >> >>
-> >> >> ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file
-> >> >> *dst,
-> >> >>  u64 dst_pos, u64 count)
-> >> >> {
-> >> >>
-> >> >>  /*
-> >> >>  * Limit copy to 4MB to prevent indefinitely blocking an nfsd
-> >> >>  * thread and client rpc slot. The choice of 4MB is somewhat
-> >> >>  * arbitrary. We might instead base this on r/wsize, or make it
-> >> >>  * tunable, or use a time instead of a byte limit, or implement
-> >> >>  * asynchronous copy. In theory a client could also recognize a
-> >> >>  * limit like this and pipeline multiple COPY requests.
-> >> >>  */
-> >> >>  count = min_t(u64, count, 1 << 22);
-> >> >>  return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-> >> >> }
-> >> >>
-> >> >> You are now explicitly changing the behaviour of knfsd when the source
-> >> >> and destination filesystem differ.
-> >> >>
-> >> >> For one thing, you are disallowing the NFSv4.2 copy offload use case of
-> >> >> copying from a local filesystem to a remote NFS server. However you are
-> >> >> also disallowing the copy from, say, an XFS formatted partition to an
-> >> >> ext4 partition.
-> >> >>
-> >> >
-> >> > Got it.
-> >> 
-> >> Ugh.  And I guess overlayfs may have a similar problem.
-> >> 
-> >> > This is easy to solve with a flag COPY_FILE_SPLICE (or something) that
-> >> > is internal to kernel users.
-> >> >
-> >> > FWIW, you may want to look at the loop in ovl_copy_up_data()
-> >> > for improvements to nfsd_copy_file_range().
-> >> >
-> >> > We can move the check out to copy_file_range syscall:
-> >> >
-> >> >         if (flags != 0)
-> >> >                 return -EINVAL;
-> >> >
-> >> > Leave the fallback from all filesystems and check for the
-> >> > COPY_FILE_SPLICE flag inside generic_copy_file_range().
-> >> 
-> >> Ok, the diff bellow is just to make sure I understood your suggestion.
-> >> 
-> >> The patch will also need to:
-> >> 
-> >>  - change nfs and overlayfs calls to vfs_copy_file_range() so that they
-> >>    use the new flag.
-> >> 
-> >>  - check flags in generic_copy_file_checks() to make sure only valid flags
-> >>    are used (COPY_FILE_SPLICE at the moment).
-> >> 
-> >> Also, where should this flag be defined?  include/uapi/linux/fs.h?
-> >
-> > Why would userspace want/need this flag?
-> 
-> In fact, my question sort of implied yours :-)
-> 
-> What I wanted to know was whether we would like to allow userspace to
-> _explicitly_ revert to the current behaviour (i.e. use the flag to allow
-> cross-fs copies) or to continue to return -EINVAL to userspace if flags
-> are != 0 (in which case this check would need to move to the syscall
-> definition).
+On Tue, Feb 09, 2021 at 02:16:49PM -0800, Nadav Amit wrote:
+> @@ -816,8 +821,8 @@ STATIC_NOPV void native_flush_tlb_others(const struct cpumask *cpumask,
+>  	 * doing a speculative memory access.
+>  	 */
+>  	if (info->freed_tables) {
+> -		smp_call_function_many(cpumask, flush_tlb_func,
+> -			       (void *)info, 1);
+> +		on_each_cpu_cond_mask(NULL, flush_tlb_func, (void *)info, true,
+> +				      cpumask);
+>  	} else {
+>  		/*
+>  		 * Although we could have used on_each_cpu_cond_mask(),
+> @@ -844,14 +849,15 @@ STATIC_NOPV void native_flush_tlb_others(const struct cpumask *cpumask,
+>  			if (tlb_is_not_lazy(cpu))
+>  				__cpumask_set_cpu(cpu, cond_cpumask);
+>  		}
+> -		smp_call_function_many(cond_cpumask, flush_tlb_func, (void *)info, 1);
+> +		on_each_cpu_cond_mask(NULL, flush_tlb_func, (void *)info, true,
+> +				      cpumask);
+>  	}
+>  }
 
-No, don't try to mess with userspace that way, the kernel should "just
-work".  Well, in this case "work as best as it can, not always
-successful...", it's an odd syscall.
+Surely on_each_cpu_mask() is more appropriate? There the compiler can do
+the NULL propagation because it's on the same TU.
 
-thanks,
-
-greg k-h
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -821,8 +821,7 @@ STATIC_NOPV void native_flush_tlb_multi(
+ 	 * doing a speculative memory access.
+ 	 */
+ 	if (info->freed_tables) {
+-		on_each_cpu_cond_mask(NULL, flush_tlb_func, (void *)info, true,
+-				      cpumask);
++		on_each_cpu_mask(cpumask, flush_tlb_func, (void *)info, true);
+ 	} else {
+ 		/*
+ 		 * Although we could have used on_each_cpu_cond_mask(),
+@@ -849,8 +848,7 @@ STATIC_NOPV void native_flush_tlb_multi(
+ 			if (tlb_is_not_lazy(cpu))
+ 				__cpumask_set_cpu(cpu, cond_cpumask);
+ 		}
+-		on_each_cpu_cond_mask(NULL, flush_tlb_func, (void *)info, true,
+-				      cpumask);
++		on_each_cpu_mask(cpumask, flush_tlb_func, (void *)info, true);
+ 	}
+ }
+ 
