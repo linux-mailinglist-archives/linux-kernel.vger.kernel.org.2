@@ -2,168 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AE731CB7A
+	by mail.lfdr.de (Postfix) with ESMTP id 99FE031CB7B
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhBPNxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 08:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhBPNws (ORCPT
+        id S230090AbhBPNxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 08:53:12 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45598 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230018AbhBPNww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 08:52:48 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C56C061756;
-        Tue, 16 Feb 2021 05:52:07 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id u20so10183996iot.9;
-        Tue, 16 Feb 2021 05:52:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Udr/uppAMHmYikfRcuoFaAlS+xZhJpxbzyBUOtI9wrk=;
-        b=Fy/wJSxbB0krgrqyFWMD8WxIG8EB1AfwsYuCEIZVLa3TxfnbcEJqz1X18LzcK1fAt7
-         4CjUXknRFAGmXbtUqDlvXj4mcva2R9VVEfehzyPdYx1ptURMNlLn6tXU3Zh4tGPxCCkM
-         Z3GWtH4bE09tDcfR+Dqh4iAjhaaC4tP4JzDYEAUzUo4mKGfGRDJ4T0t3fHBlHLOLibdf
-         x8Ui48xAxAo1dvBJxeg5+VzjB6qklJ/nBXXed7AWPf859RQvH2YiDKW+YE+u8OOeQY+z
-         z2XEQg8j/dveh8MszPz2XYnaeqqf6oMc0RwP9o5RMURB3d+wnWIKepja9kZOCVKp+zGm
-         8W+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Udr/uppAMHmYikfRcuoFaAlS+xZhJpxbzyBUOtI9wrk=;
-        b=dug58UZLGAzhAhKp5XMmJuy91VA0mL6nYiO6JCcs1j8z3bkgu6BqiuWef8DcXXVn6D
-         pKKw1RlwKMyEI5/pIi2BJVGsjjnnOq+WRtV7E1FzvS6jKI1cOIj3BRjkMLg1QplfXkCN
-         y9pcW/QwkjLdqsxEHTYQ4diLvgRx44yVMer6dlOu7FiMPjn63sGI1psYBNQJTtmbBoEu
-         r1iQLAENh76Xh4Ts9gZU9VYvipz6X11IDnDUGvJC/HTNuqJvFSZAh2gK0aTVataiOhm4
-         18tic0Lfp3dDcG2o2PpmaWyKekiJad769EKpvasmkkkncFX/3k3/3Kq1lsQhilYqwd7F
-         ovDQ==
-X-Gm-Message-State: AOAM5339FrMVkN2y7ui2nlVTnC3m+NcbGiVdSIb9In4YiGu5cZwpFidZ
-        xYtGjk/U01Emlf4BfV/F8ZMZutzGf58dTml1jRw=
-X-Google-Smtp-Source: ABdhPJxCRp3/lBHTsRsTI8B3GxGfemBTBTejnJhPDIktXg8Ixbg/0SiVI1SYY7t6Ww8hOj1hz0L786KcAp4lmuPCfGw=
-X-Received: by 2002:a02:660b:: with SMTP id k11mr20707151jac.120.1613483527097;
- Tue, 16 Feb 2021 05:52:07 -0800 (PST)
-MIME-Version: 1.0
-References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
- <20210215154317.8590-1-lhenriques@suse.de> <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
- <73ab4951f48d69f0183548c7a82f7ae37e286d1c.camel@hammerspace.com>
- <CAOQ4uxgPtqG6eTi2AnAV4jTAaNDbeez+Xi2858mz1KLGMFntfg@mail.gmail.com>
- <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
- <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com> <87r1lgjm7l.fsf@suse.de>
-In-Reply-To: <87r1lgjm7l.fsf@suse.de>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 16 Feb 2021 15:51:56 +0200
-Message-ID: <CAOQ4uxgucdN8hi=wkcvnFhBoZ=L5=ZDc7-6SwKVHYaRODdcFkg@mail.gmail.com>
-Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "drinkcat@chromium.org" <drinkcat@chromium.org>,
-        "iant@google.com" <iant@google.com>,
-        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "llozano@chromium.org" <llozano@chromium.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "miklos@szeredi.hu" <miklos@szeredi.hu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "dchinner@redhat.com" <dchinner@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "sfrench@samba.org" <sfrench@samba.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 16 Feb 2021 08:52:52 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GDW3gF007984;
+        Tue, 16 Feb 2021 08:52:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : content-type : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=sOLgDYNkVv+hmSQaf8FRmXUqwoLBNq8nnbihEXVtCiM=;
+ b=TX7hHkDnhXv/bnvoNDuD3iy1MC5pxbD7rLRlI7IrG3lJgvaZcOpqiC70yDq5ql49sLfM
+ GPBsTlOePa1yiz0aK46+/flbPdl5FQ0p6Uom0F5Kzut7rfJqSN3gEiKMo85OGgQiy7As
+ 2aDKIq19CHFuz9TO/amcUKKcEWzY7ylzkBMHGl4H9VUKXEdM7yEwdhFLexoM2q+MMYjy
+ IKY2zzJERL6jSdNtHt4ul/tyI+X2M/aiNQzlP9QZuM0N2KqLRf7VrxW0sID/6pG43zvK
+ ZlIT2A+HpqasWr1UijzfhSLt7FH35zZvs/LuBsI+unRXUGSSmD6d4x5a7BPYG3mww5Le 3w== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36revrrts7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 08:52:07 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11GDlcwT031410;
+        Tue, 16 Feb 2021 13:52:05 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 36p6d8atje-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 13:52:05 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11GDq3jg48562558
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 13:52:03 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30E97A404D;
+        Tue, 16 Feb 2021 13:52:03 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A27AA4053;
+        Tue, 16 Feb 2021 13:52:02 +0000 (GMT)
+Received: from sig-9-65-197-51.ibm.com (unknown [9.65.197.51])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Feb 2021 13:52:02 +0000 (GMT)
+Message-ID: <d42636f6983ac73e8c36f727225b213688780d14.camel@linux.ibm.com>
+Subject: [GIT PULL] integrity subsystem updates for v5.12
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 16 Feb 2021 08:52:01 -0500
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-16_02:2021-02-16,2021-02-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
+ phishscore=0 adultscore=0 spamscore=0 clxscore=1011 impostorscore=0
+ bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102160122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Ugh.  And I guess overlayfs may have a similar problem.
+Hi Linus,
+  
+New is IMA support for measuring kernel critical data, as per usual
+based on policy.   The first example measures the in memory SELinux
+policy.  The second example measures the kernel version.
 
-Not exactly.
-Generally speaking, overlayfs should call vfs_copy_file_range()
-with the flags it got from layer above, so if called from nfsd it
-will allow cross fs copy and when called from syscall it won't.
+In addition are four bug fixes to address memory leaks and a missing
+"static"
+function declaration.
 
-There are some corner cases where overlayfs could benefit from
-COPY_FILE_SPLICE (e.g. copy from lower file to upper file), but
-let's leave those for now. Just leave overlayfs code as is.
+[FYI: Stephen is carrying a manual merge of the pidfd tree with the
+integrity tree.]
 
->
-> > This is easy to solve with a flag COPY_FILE_SPLICE (or something) that
-> > is internal to kernel users.
-> >
-> > FWIW, you may want to look at the loop in ovl_copy_up_data()
-> > for improvements to nfsd_copy_file_range().
-> >
-> > We can move the check out to copy_file_range syscall:
-> >
-> >         if (flags != 0)
-> >                 return -EINVAL;
-> >
-> > Leave the fallback from all filesystems and check for the
-> > COPY_FILE_SPLICE flag inside generic_copy_file_range().
->
-> Ok, the diff bellow is just to make sure I understood your suggestion.
->
-> The patch will also need to:
->
->  - change nfs and overlayfs calls to vfs_copy_file_range() so that they
->    use the new flag.
->
->  - check flags in generic_copy_file_checks() to make sure only valid flags
->    are used (COPY_FILE_SPLICE at the moment).
->
-> Also, where should this flag be defined?  include/uapi/linux/fs.h?
+thanks,
 
-Grep for REMAP_FILE_
-Same header file, same Documentation rst file.
+Mimi
 
->
-> Cheers,
-> --
-> Luis
->
-> diff --git a/fs/read_write.c b/fs/read_write.c
-> index 75f764b43418..341d315d2a96 100644
-> --- a/fs/read_write.c
-> +++ b/fs/read_write.c
-> @@ -1383,6 +1383,13 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
->                                 struct file *file_out, loff_t pos_out,
->                                 size_t len, unsigned int flags)
->  {
-> +       if (!(flags & COPY_FILE_SPLICE)) {
-> +               if (!file_out->f_op->copy_file_range)
-> +                       return -EOPNOTSUPP;
-> +               else if (file_out->f_op->copy_file_range !=
-> +                        file_in->f_op->copy_file_range)
-> +                       return -EXDEV;
-> +       }
 
-That looks strange, because you are duplicating the logic in
-do_copy_file_range(). Maybe better:
+The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
 
-if (WARN_ON_ONCE(flags & ~COPY_FILE_SPLICE))
-        return -EINVAL;
-if (flags & COPY_FILE_SPLICE)
-       return do_splice_direct(file_in, &pos_in, file_out, &pos_out,
-                                 len > MAX_RW_COUNT ? MAX_RW_COUNT : len, 0);
-if (!file_out->f_op->copy_file_range)
-        return -EOPNOTSUPP;
-return -EXDEV;
+  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
 
->  }
-> @@ -1474,9 +1481,6 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
->  {
->         ssize_t ret;
->
-> -       if (flags != 0)
-> -               return -EINVAL;
-> -
+are available in the Git repository at:
 
-This needs to move to the beginning of SYSCALL_DEFINE6(copy_file_range,...
+  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.12
 
-Thanks,
-Amir.
+for you to fetch changes up to f6692213b5045dc461ce0858fb18cf46f328c202:
+
+  integrity: Make function integrity_add_key() static (2021-02-12 11:11:59 -0500)
+
+----------------------------------------------------------------
+integrity-v5.12
+
+----------------------------------------------------------------
+Dinghao Liu (1):
+      evm: Fix memleak in init_desc
+
+Lakshmi Ramasubramanian (4):
+      IMA: define a builtin critical data measurement policy
+      selinux: include a consumer of the new IMA critical data hook
+      ima: Free IMA measurement buffer on error
+      ima: Free IMA measurement buffer after kexec syscall
+
+Mimi Zohar (2):
+      Merge branch 'measure-critical-data' into next-integrity
+      Merge branch 'ima-kexec-fixes' into next-integrity
+
+Raphael Gianotti (1):
+      IMA: Measure kernel version in early boot
+
+Tushar Sugandhi (6):
+      IMA: generalize keyring specific measurement constructs
+      IMA: add support to measure buffer data hash
+      IMA: define a hook to measure kernel integrity critical data
+      IMA: add policy rule to measure critical data
+      IMA: limit critical data measurement based on a label
+      IMA: extend critical data hook to limit the measurement based on a label
+
+Wei Yongjun (1):
+      integrity: Make function integrity_add_key() static
+
+ Documentation/ABI/testing/ima_policy            |   5 +-
+ Documentation/admin-guide/kernel-parameters.txt |   5 +-
+ include/linux/ima.h                             |  10 +++
+ include/linux/kexec.h                           |   5 ++
+ kernel/kexec_file.c                             |   5 ++
+ security/integrity/digsig.c                     |   4 +-
+ security/integrity/evm/evm_crypto.c             |   7 +-
+ security/integrity/ima/ima.h                    |   8 +-
+ security/integrity/ima/ima_api.c                |   8 +-
+ security/integrity/ima/ima_appraise.c           |   2 +-
+ security/integrity/ima/ima_asymmetric_keys.c    |   2 +-
+ security/integrity/ima/ima_init.c               |   5 ++
+ security/integrity/ima/ima_kexec.c              |   3 +
+ security/integrity/ima/ima_main.c               |  59 ++++++++++--
+ security/integrity/ima/ima_policy.c             | 115 +++++++++++++++++++-----
+ security/integrity/ima/ima_queue_keys.c         |   3 +-
+ security/selinux/Makefile                       |   2 +
+ security/selinux/ima.c                          |  44 +++++++++
+ security/selinux/include/ima.h                  |  24 +++++
+ security/selinux/include/security.h             |   3 +-
+ security/selinux/ss/services.c                  |  64 +++++++++++--
+ 21 files changed, 329 insertions(+), 54 deletions(-)
+ create mode 100644 security/selinux/ima.c
+ create mode 100644 security/selinux/include/ima.h
+
