@@ -2,115 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D2931C98E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E90D831C98A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhBPLSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:18:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhBPLSZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:18:25 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BF3C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:17:43 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id b14so9051094qkk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:17:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+yi48HIfDpj5+7cpoyDCNHw6yQcq1pcG1ot9n73mhd0=;
-        b=YxaffVO7zp8rEiGeTbUX5Ki7tJ11g4dLfSxGlgdZKFGK+KHuDT0SyDQ4UZT9KqKHnJ
-         PoA1Jd/7CZfFmqu6gfGH0WTjueyUz5dR778ADBSSVfKqYgCXQYzhrrn15o8FvpD3wahn
-         cZzilJtE3Y+oxQ1168aV2Ewfth8SUlPyWcfrTkiETPp5e6qIytcY4Ru3vRwC3Ret2fnY
-         s8+DxfClW49UgRZhNDCa0sxVclRXzpZQ6WqMZS3krzNGOYK6niAh5aDw2gkWU8GGQkc7
-         fFfyB6OaiYnO3EsONDuqdH5L8VvZ/tfU9NlpKMSddG3pc4SkYCOC98ACXwOnK6t0+wQc
-         SGWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+yi48HIfDpj5+7cpoyDCNHw6yQcq1pcG1ot9n73mhd0=;
-        b=Odf7pO4xj2Net9XfWZKRNhY6lsrt1myYDWvFs5ERkwF8f53+Mtk+rggzoUn3Sr6b+6
-         eCNAC1MCcBbiYBM08TIqhK9APQJv1ba32dniOdw0Af1i1g0JaFjNeHikDoxkVbVymKnn
-         29c0roJ/KsX9sMeywk3xzr6464nufwvzV4soKIRheOSvThwRCJgMx4xrPDmXvlQlfDTi
-         HsNJaCb5kMdgT9yPL1DXEVJwVGMS6tiHe3BmLEYWhpyzKKg5MY5+ppMNKaKu/Thkkvc9
-         g2RQKtHjK9Rm5HqTWGXSd5+P/Wxq+WD9BTz72zHlGcOzaM0+tWsZ1tuMW4PyDvgLx/AG
-         iGWA==
-X-Gm-Message-State: AOAM531HtfufLqWHvdrMxEmJUtWxHzNLIH0SabQFU8gMy87RhyTM2d+a
-        dwOscbKitPM6kullpwasiEIi8f6lZScCQlXK2DYivg==
-X-Google-Smtp-Source: ABdhPJw2r0P+hO2e4Iij8XvdrpsMfa2arPuuYzhNYRXRfcj44xEPwBv3l/b8pplhPflEoRK8Fk16ikz1mbXxTpXZixg=
-X-Received: by 2002:a37:a757:: with SMTP id q84mr18474346qke.501.1613474262101;
- Tue, 16 Feb 2021 03:17:42 -0800 (PST)
+        id S230280AbhBPLRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:17:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33276 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229811AbhBPLRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:17:18 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AE35FAF2C;
+        Tue, 16 Feb 2021 11:16:33 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 678de0d4;
+        Tue, 16 Feb 2021 11:17:34 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        "drinkcat@chromium.org" <drinkcat@chromium.org>,
+        "iant@google.com" <iant@google.com>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "llozano@chromium.org" <llozano@chromium.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "miklos@szeredi.hu" <miklos@szeredi.hu>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "dchinner@redhat.com" <dchinner@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "sfrench@samba.org" <sfrench@samba.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
+Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
+References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+        <20210215154317.8590-1-lhenriques@suse.de>
+        <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
+        <73ab4951f48d69f0183548c7a82f7ae37e286d1c.camel@hammerspace.com>
+        <CAOQ4uxgPtqG6eTi2AnAV4jTAaNDbeez+Xi2858mz1KLGMFntfg@mail.gmail.com>
+        <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
+        <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com>
+Date:   Tue, 16 Feb 2021 11:17:34 +0000
+In-Reply-To: <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com>
+        (Amir Goldstein's message of "Mon, 15 Feb 2021 21:43:03 +0200")
+Message-ID: <87r1lgjm7l.fsf@suse.de>
 MIME-Version: 1.0
-References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
- <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
- <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
- <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
- <20210118145310.crnqnh6kax5jqicj@distanz.ch> <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
- <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
- <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr> <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
-In-Reply-To: <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 16 Feb 2021 12:17:30 +0100
-Message-ID: <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
-Subject: Re: riscv+KASAN does not boot
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Tobias Klauser <tklauser@distanz.ch>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Bjorn Topel <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
-        syzkaller <syzkaller@googlegroups.com>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > I was fixing KASAN support for my sv48 patchset so I took a look at your
-> > issue: I built a kernel on top of the branch riscv/fixes using
-> > https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
-> > and Buildroot 2020.11. I have the warnings regarding the use of
-> > __virt_to_phys on wrong addresses (but that's normal since this function
-> > is used in virt_addr_valid) but not the segfaults you describe.
+Amir Goldstein <amir73il@gmail.com> writes:
+
+> On Mon, Feb 15, 2021 at 8:57 PM Trond Myklebust <trondmy@hammerspace.com> wrote:
+>>
+>> On Mon, 2021-02-15 at 19:24 +0200, Amir Goldstein wrote:
+>> > On Mon, Feb 15, 2021 at 6:53 PM Trond Myklebust <
+>> > trondmy@hammerspace.com> wrote:
+>> > >
+>> > > On Mon, 2021-02-15 at 18:34 +0200, Amir Goldstein wrote:
+>> > > > On Mon, Feb 15, 2021 at 5:42 PM Luis Henriques <
+>> > > > lhenriques@suse.de>
+>> > > > wrote:
+>> > > > >
+>> > > > > Nicolas Boichat reported an issue when trying to use the
+>> > > > > copy_file_range
+>> > > > > syscall on a tracefs file.  It failed silently because the file
+>> > > > > content is
+>> > > > > generated on-the-fly (reporting a size of zero) and
+>> > > > > copy_file_range
+>> > > > > needs
+>> > > > > to know in advance how much data is present.
+>> > > > >
+>> > > > > This commit restores the cross-fs restrictions that existed
+>> > > > > prior
+>> > > > > to
+>> > > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+>> > > > > devices")
+>> > > > > and
+>> > > > > removes generic_copy_file_range() calls from ceph, cifs, fuse,
+>> > > > > and
+>> > > > > nfs.
+>> > > > >
+>> > > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+>> > > > > devices")
+>> > > > > Link:
+>> > > > > https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+>> > > > > Cc: Nicolas Boichat <drinkcat@chromium.org>
+>> > > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+>> > > >
+>> > > > Code looks ok.
+>> > > > You may add:
+>> > > >
+>> > > > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+>> > > >
+>> > > > I agree with Trond that the first paragraph of the commit message
+>> > > > could
+>> > > > be improved.
+>> > > > The purpose of this change is to fix the change of behavior that
+>> > > > caused the regression.
+>> > > >
+>> > > > Before v5.3, behavior was -EXDEV and userspace could fallback to
+>> > > > read.
+>> > > > After v5.3, behavior is zero size copy.
+>> > > >
+>> > > > It does not matter so much what makes sense for CFR to do in this
+>> > > > case (generic cross-fs copy).  What matters is that nobody asked
+>> > > > for
+>> > > > this change and that it caused problems.
+>> > > >
+>> > >
+>> > > No. I'm saying that this patch should be NACKed unless there is a
+>> > > real
+>> > > explanation for why we give crap about this tracefs corner case and
+>> > > why
+>> > > it can't be fixed.
+>> > >
+>> > > There are plenty of reasons why copy offload across filesystems
+>> > > makes
+>> > > sense, and particularly when you're doing NAS. Clone just doesn't
+>> > > cut
+>> > > it when it comes to disaster recovery (whereas backup to a
+>> > > different
+>> > > storage unit does). If the client has to do the copy, then you're
+>> > > effectively doubling the load on the server, and you're adding
+>> > > potentially unnecessary network traffic (or at the very least you
+>> > > are
+>> > > doubling that traffic).
+>> > >
+>> >
+>> > I don't understand the use case you are describing.
+>> >
+>> > Which filesystem types are you talking about for source and target
+>> > of copy_file_range()?
+>> >
+>> > To be clear, the original change was done to support NFS/CIFS server-
+>> > side
+>> > copy and those should not be affected by this change.
+>> >
+>>
+>> That is incorrect:
+>>
+>> ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file
+>> *dst,
+>>  u64 dst_pos, u64 count)
+>> {
+>>
+>>  /*
+>>  * Limit copy to 4MB to prevent indefinitely blocking an nfsd
+>>  * thread and client rpc slot. The choice of 4MB is somewhat
+>>  * arbitrary. We might instead base this on r/wsize, or make it
+>>  * tunable, or use a time instead of a byte limit, or implement
+>>  * asynchronous copy. In theory a client could also recognize a
+>>  * limit like this and pipeline multiple COPY requests.
+>>  */
+>>  count = min_t(u64, count, 1 << 22);
+>>  return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
+>> }
+>>
+>> You are now explicitly changing the behaviour of knfsd when the source
+>> and destination filesystem differ.
+>>
+>> For one thing, you are disallowing the NFSv4.2 copy offload use case of
+>> copying from a local filesystem to a remote NFS server. However you are
+>> also disallowing the copy from, say, an XFS formatted partition to an
+>> ext4 partition.
+>>
 >
-> Hi Alex,
+> Got it.
+
+Ugh.  And I guess overlayfs may have a similar problem.
+
+> This is easy to solve with a flag COPY_FILE_SPLICE (or something) that
+> is internal to kernel users.
 >
-> Let me try to rebuild buildroot image. Maybe there was something wrong
-> with my build, though, I did 'make clean' before doing. But at the
-> same time it worked back in June...
+> FWIW, you may want to look at the loop in ovl_copy_up_data()
+> for improvements to nfsd_copy_file_range().
 >
-> Re WARNINGs, they indicate kernel bugs. I am working on setting up a
-> syzbot instance on riscv. If there a WARNING during boot then the
-> kernel will be marked as broken. No further testing will happen.
-> Is it a mis-use of WARN_ON? If so, could anybody please remove it or
-> replace it with pr_err.
+> We can move the check out to copy_file_range syscall:
+>
+>         if (flags != 0)
+>                 return -EINVAL;
+>
+> Leave the fallback from all filesystems and check for the
+> COPY_FILE_SPLICE flag inside generic_copy_file_range().
 
+Ok, the diff bellow is just to make sure I understood your suggestion.
 
-Hi,
+The patch will also need to:
 
-I've localized one issue with riscv/KASAN:
-KASAN breaks VDSO and that's I think the root cause of weird faults I
-saw earlier. The following patch fixes it.
-Could somebody please upstream this fix? I don't know how to add/run
-tests for this.
-Thanks
+ - change nfs and overlayfs calls to vfs_copy_file_range() so that they
+   use the new flag.
 
-diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-index 0cfd6da784f84..cf3a383c1799d 100644
---- a/arch/riscv/kernel/vdso/Makefile
-+++ b/arch/riscv/kernel/vdso/Makefile
-@@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
- # Disable gcov profiling for VDSO code
- GCOV_PROFILE := n
- KCOV_INSTRUMENT := n
-+KASAN_SANITIZE := n
+ - check flags in generic_copy_file_checks() to make sure only valid flags
+   are used (COPY_FILE_SPLICE at the moment).
 
- # Force dependency
- $(obj)/vdso.o: $(obj)/vdso.so
+Also, where should this flag be defined?  include/uapi/linux/fs.h?
+
+Cheers,
+-- 
+Luis
+
+diff --git a/fs/read_write.c b/fs/read_write.c
+index 75f764b43418..341d315d2a96 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -1383,6 +1383,13 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
+ 				struct file *file_out, loff_t pos_out,
+ 				size_t len, unsigned int flags)
+ {
++	if (!(flags & COPY_FILE_SPLICE)) {
++		if (!file_out->f_op->copy_file_range)
++			return -EOPNOTSUPP;
++		else if (file_out->f_op->copy_file_range !=
++			 file_in->f_op->copy_file_range)
++			return -EXDEV;
++	}
+ 	return do_splice_direct(file_in, &pos_in, file_out, &pos_out,
+ 				len > MAX_RW_COUNT ? MAX_RW_COUNT : len, 0);
+ }
+@@ -1474,9 +1481,6 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+ {
+ 	ssize_t ret;
+ 
+-	if (flags != 0)
+-		return -EINVAL;
+-
+ 	ret = generic_copy_file_checks(file_in, pos_in, file_out, pos_out, &len,
+ 				       flags);
+ 	if (unlikely(ret))
