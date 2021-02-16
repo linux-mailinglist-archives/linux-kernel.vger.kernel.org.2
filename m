@@ -2,115 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD05931CD28
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C87331CD35
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhBPPsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 10:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhBPPsr (ORCPT
+        id S230302AbhBPPuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 10:50:50 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2573 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhBPPur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 10:48:47 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57835C06174A;
-        Tue, 16 Feb 2021 07:48:06 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id o7so6482831pgl.1;
-        Tue, 16 Feb 2021 07:48:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yKpUz4pp/u/PHJPYKcG1YaVfe5CKl2imPNvR4JyBFYE=;
-        b=bfsYo575GoJd041ok+laM4Ze2S7KyjHJf0Srx5FyNMReJb74sZo75MjvzAVGc1anAQ
-         6lgCnMT+leWn3V8hJesoG9eeQ93b7XrMlXcfyIXEc3idRL1auUm4wDo0TsTVBoPN0joV
-         ou/TaTydMyNYRMIVv2ppEyXf0drLwBGQReum0gV/fhojLcA2Haz4I/f4RTFJldjbOrrI
-         RyQ/mWRqnDQPSQMFjrvvhR//MY5L5O9CdzXq8v3nDW4Zb0x5GI7djRS8aWRV05sP8UKB
-         yaX/6fsnhdA08FPa5rKljfhsuRJza+x8f/ZvF7c8VL5S4TOUIqfgsa16dah9NO2dMSr3
-         QRkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yKpUz4pp/u/PHJPYKcG1YaVfe5CKl2imPNvR4JyBFYE=;
-        b=P/bnM5H1rbb+JMzCsE4AkhjPVyoNKG/pvtTSX/A8zae/MSLHWUh29G1kfHj5h6CE1n
-         Vt0XK6VGc5nA64+PoKAtBJHVDx/aV1IJePUSHig13zM+9kpHBUArBBqslsFz/Kt4D0zO
-         IsrXgxcJMbvwgokKhkiRy6O7scsC912O0biBO/qc2CQi9m2tla2iu5IkpkqzJ4yu9NfY
-         sqSKx7wue59x040wAo44ZQUrP0QtDe3Ip6NpRz43yHMb85lGtve9TtgKRQgAC2AOpSHD
-         hLmPrd2CHCBO1m/tICpzc/Uha1WwU4nIZ+s5EgVnFtsOLZYsDLLJgmqv/O2YRiy5hiFN
-         cYNQ==
-X-Gm-Message-State: AOAM5339+vHp5wUnCrEvkuAb5+UZ2ZZpKS++xWCUoQybxFwYm4kYtI/b
-        sF9jwh6dshG77ufNxA1efFo=
-X-Google-Smtp-Source: ABdhPJwaooUaIKDd1k8p39TS9r9FEuHlOTnCnoBBnatGbzSGokeWf0RqRcRmZatTM6RlcbYYacdx4w==
-X-Received: by 2002:a63:c1d:: with SMTP id b29mr19918863pgl.9.1613490485842;
-        Tue, 16 Feb 2021 07:48:05 -0800 (PST)
-Received: from localhost ([2402:3a80:11ea:c83a:a2a4:c5ff:fe20:7222])
-        by smtp.gmail.com with ESMTPSA id n142sm22804138pfd.82.2021.02.16.07.48.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 07:48:05 -0800 (PST)
-Date:   Tue, 16 Feb 2021 21:18:00 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alex Elder <elder@ieee.org>
-Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Marc Dietrich <marvin24@gmx.de>,
-        Jens Frederich <jfrederich@gmail.com>,
-        Daniel Drake <dsd@laptop.org>,
-        Jon Nettleton <jon.nettleton@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        William Cohen <wcohen@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Robert Richter <rric@kernel.org>, greybus-dev@lists.linaro.org,
-        ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH 02/13] staging: greybus: Switch from strlcpy to strscpy
-Message-ID: <20210216154800.jg24ahfj52t6qgbd@apollo>
-References: <20210131172838.146706-1-memxor@gmail.com>
- <20210131172838.146706-3-memxor@gmail.com>
- <b565bdae-10a9-9b6c-ae60-dcee88f7dedd@ieee.org>
+        Tue, 16 Feb 2021 10:50:47 -0500
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Dg4xW0tBwz67pRK;
+        Tue, 16 Feb 2021 23:43:11 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Feb 2021 16:50:05 +0100
+Received: from localhost (10.47.75.223) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 16 Feb
+ 2021 15:50:03 +0000
+Date:   Tue, 16 Feb 2021 15:48:57 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        "Chris Browy" <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Jon Masters" <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH v4 9/9] cxl/mem: Add payload dumping for debug
+Message-ID: <20210216154857.0000261d@Huawei.com>
+In-Reply-To: <20210216014538.268106-10-ben.widawsky@intel.com>
+References: <20210216014538.268106-1-ben.widawsky@intel.com>
+        <20210216014538.268106-10-ben.widawsky@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b565bdae-10a9-9b6c-ae60-dcee88f7dedd@ieee.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.75.223]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 08:24:59PM IST, Alex Elder wrote:
-> This is a good change.  But while you're at it, I would
-> appreciate if you would convert a few spots to use
-> sizeof(dest) rather than a fixed constant.  I will
-> point them out below.
+On Mon, 15 Feb 2021 17:45:38 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
+
+> It's often useful in debug scenarios to see what the hardware has dumped
+> out. As it stands today, any device error will result in the payload not
+> being copied out, so there is no way to triage commands which weren't
+> expected to fail (and sometimes the payload may have that information).
 > 
-> If this is the *only* request for a change on your
-> series, please tell me that and I can sign off on
-
-So far, this has been the only request.
-
-> this without you implementing my suggestion.  But
-> if you post a version 2, please do what I describe.
+> The functionality is protected by normal kernel security mechanisms as
+> well as a CONFIG option in the CXL driver.
 > 
+> This was extracted from the original version of the CXL enabling patch
+> series.
+> 
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
 
-I will incorporate these if I end up sending a v2.
+My gut feeling here is use a tracepoint rather than spamming the kernel
+log.  Alternatively just don't bother merging this patch - it's on the list
+now anyway so trivial for anyone doing such debug to pick it up.
 
-Alternatively, would a separate patch with your suggestions applied on top of
-this be acceptable, if I don't?
+Jonathan
 
--- 
-Kartikeya
+
+
+> ---
+>  drivers/cxl/Kconfig | 13 +++++++++++++
+>  drivers/cxl/mem.c   |  8 ++++++++
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> index 97dc4d751651..3eec9276e586 100644
+> --- a/drivers/cxl/Kconfig
+> +++ b/drivers/cxl/Kconfig
+> @@ -50,4 +50,17 @@ config CXL_MEM_RAW_COMMANDS
+>  	  potential impact to memory currently in use by the kernel.
+>  
+>  	  If developing CXL hardware or the driver say Y, otherwise say N.
+> +
+> +config CXL_MEM_INSECURE_DEBUG
+> +	bool "CXL.mem debugging"
+> +	depends on CXL_MEM
+> +	help
+> +	  Enable debug of all CXL command payloads.
+> +
+> +	  Some CXL devices and controllers support encryption and other
+> +	  security features. The payloads for the commands that enable
+> +	  those features may contain sensitive clear-text security
+> +	  material. Disable debug of those command payloads by default.
+> +	  If you are a kernel developer actively working on CXL
+> +	  security enabling say Y, otherwise say N.
+>  endif
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index dc608bb20a31..237b956f0be0 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -342,6 +342,14 @@ static int __cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
+>  
+>  	/* #5 */
+>  	rc = cxl_mem_wait_for_doorbell(cxlm);
+> +
+> +	if (!cxl_is_security_command(mbox_cmd->opcode) ||
+> +	    IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
+> +		print_hex_dump_debug("Payload ", DUMP_PREFIX_OFFSET, 16, 1,
+> +				     mbox_cmd->payload_in, mbox_cmd->size_in,
+> +				     true);
+> +	}
+> +
+>  	if (rc == -ETIMEDOUT) {
+>  		cxl_mem_mbox_timeout(cxlm, mbox_cmd);
+>  		return rc;
+
