@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1E631C670
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 06:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA2E31C672
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 07:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhBPFvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 00:51:52 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5226 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhBPFvr (ORCPT
+        id S229742AbhBPGCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 01:02:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229662AbhBPGCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 00:51:47 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602b5d4a0000>; Mon, 15 Feb 2021 21:51:06 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Feb
- 2021 05:51:06 +0000
-Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 16 Feb 2021 05:51:04 +0000
-From:   Eli Cohen <elic@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>
-CC:     <si-wei.liu@oracle.com>, <elic@nvidia.com>
-Subject: [PATCH] vdpa/mlx5: Extract correct pointer from driver data
-Date:   Tue, 16 Feb 2021 07:50:22 +0200
-Message-ID: <20210216055022.25248-2-elic@nvidia.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210216055022.25248-1-elic@nvidia.com>
-References: <20210216055022.25248-1-elic@nvidia.com>
+        Tue, 16 Feb 2021 01:02:38 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848B3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 22:01:57 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id m2so5586806pgq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 22:01:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MvOw0Ff588/tu4QKvASlxFGu1pPr+mLDUaTBEi6kKFQ=;
+        b=DUfzscmQzTgAwzpztM9K2GbtX8KLV2SMfUHBYNtidPcyg/BwYWSZo7oDrYjhKrnYQp
+         AkSrgHyOlXkWkFmYiZZg/E5zlcKcT3jRGRTHsLEt04tEdxd099aki9ByYiU8qbREEr3X
+         AINXGNKSyCHQ4dRAfIlJePW0Q6x0vbbH7pyoU/AsFlKyhBvDN9ZDo9S2qxAnbyzA7CVC
+         eBDgzJv7zWPbNvJWRYlcJY2FiUZSXRN1oNtwQy57J60pcUliS9uAa6AdmOAaXeL83PPZ
+         fLkxt+CKLyPHFm9gGVNQWqKubqFxuB8E6MXOcjhJDkkCAkROpdqj92SExBRmrHcRAF+8
+         HmzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MvOw0Ff588/tu4QKvASlxFGu1pPr+mLDUaTBEi6kKFQ=;
+        b=joD61OEPTh8Hlw3zbrljmbfovIxsFF/Ppz0mDE1Sx46Dci5KxJHin3pLWry7UZJ9ow
+         kQaZtzKthDX+ejTATI0eO0SDDOxdNcD0waZ/JYR1CZsVjLD2mJfhLrT8ZBuxlggrvfbA
+         /zZLhD5zJiwNfiCS5tbmV8a/5vf9Fi9ZQH1YgaIF4+GvRyBGDRHr7HXsR73yZfk1b1dc
+         fsWHKzzCpnbG4hA6ZS20vMvBC7sboFpySfk+8cpSENTPKKYVsJO9ud0ewM+bXC1yeppb
+         aJ8hr0+d4DeRJDglqGSxudEFDPDvawBqBgOcDM78f+m2cHvRqdYmzqYBkbrKD78ILKCP
+         /H1w==
+X-Gm-Message-State: AOAM530R3vphVVl5+Nrfn8oLZdyIdaVBFIRuFbUKj/kHwSQG7n/R9ytQ
+        dkIETmDVvJNBcjDzrYRlkZUfug==
+X-Google-Smtp-Source: ABdhPJzDOdjC0BnS5wTWY0fZV/zrirrlMNe14bZ2HulTVbOFnKcV6Z2qpvDnW0GfFT2roPEJ7Rs1cA==
+X-Received: by 2002:a63:5703:: with SMTP id l3mr17795055pgb.344.1613455316082;
+        Mon, 15 Feb 2021 22:01:56 -0800 (PST)
+Received: from localhost.localdomain (36-239-219-87.dynamic-ip.hinet.net. [36.239.219.87])
+        by smtp.gmail.com with ESMTPSA id c11sm6161369pfl.52.2021.02.15.22.01.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 22:01:55 -0800 (PST)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jagan Teki <jagan@amarulasolutions.com>,
+        Adrien Grassein <adrien.grassein@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: pf8x00: Use regulator_map_voltage_ascend for pf8x00_buck7_ops
+Date:   Tue, 16 Feb 2021 14:01:28 +0800
+Message-Id: <20210216060128.126938-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613454666; bh=Emqf4hRPWOz3zcBqDWDIklUs7r/QR5F0BAA/Zmha8aY=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        b=g04IISlDRh+s9XUrmUzy2fnhKBGdTvzfFC7tJvdB3MoBd/bVuTY0TtSK2s0jyYEnj
-         qV2j23sXeWGYEcO6st/ZlDRrhuxUrOyk9SlZ+1i1ouPZq/XeZWXLjJdED9oAFgWBif
-         LoxuCCnt3afF2X3vHiqtGmlgXGIFgntOMamoMMEqOacnqYyCMnuMfKUWb9Bl1Ifkm5
-         NBKgrz3sgOVTKiKn6/tew8iF4bzXhdPlmQ9s78oKzyrgv+BFHlrhRO8xiUEMZ9v5+z
-         QkAd6CiVc/JDktCTyaxgu7SlA1a4BVEqBodozN4HgevK+UFM7I0k2tpeC4tNgAvpeg
-         Mjw2Mqm0cMk8A==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct mlx5_vdpa_net pointer was stored in drvdata. Extract it as well
-in mlx5v_remove().
+The voltages in pf8x00_sw7_voltages are in ascendant order, so use
+regulator_map_voltage_ascend.
 
-Fixes: 74c9729dd892 ("vdpa/mlx5: Connect mlx5_vdpa to auxiliary bus")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/regulator/pf8x00-regulator.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5=
-_vnet.c
-index 6b0a42183622..4103d3b64a2a 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -2036,9 +2036,9 @@ static int mlx5v_probe(struct auxiliary_device *adev,
-=20
- static void mlx5v_remove(struct auxiliary_device *adev)
- {
--	struct mlx5_vdpa_dev *mvdev =3D dev_get_drvdata(&adev->dev);
-+	struct mlx5_vdpa_net *ndev =3D dev_get_drvdata(&adev->dev);
-=20
--	vdpa_unregister_device(&mvdev->vdev);
-+	vdpa_unregister_device(&ndev->mvdev.vdev);
- }
-=20
- static const struct auxiliary_device_id mlx5v_id_table[] =3D {
---=20
-2.29.2
+diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
+index 9b28bd63208d..5d319fb81288 100644
+--- a/drivers/regulator/pf8x00-regulator.c
++++ b/drivers/regulator/pf8x00-regulator.c
+@@ -359,6 +359,7 @@ static const struct regulator_ops pf8x00_buck7_ops = {
+ 	.disable = regulator_disable_regmap,
+ 	.is_enabled = regulator_is_enabled_regmap,
+ 	.list_voltage = regulator_list_voltage_table,
++	.map_voltage = regulator_map_voltage_ascend,
+ 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+ 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+ 	.get_current_limit = regulator_get_current_limit_regmap,
+-- 
+2.25.1
 
