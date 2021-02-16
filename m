@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BEE31D274
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BEB31D277
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhBPWJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 17:09:33 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:32518 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhBPWJ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 17:09:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613513366; x=1645049366;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EkdA4P3+6f4nhO1ioorMAXmDvWtLpcJI9k/w4sPLgyE=;
-  b=uTNo0BKNK0GsBCywbJzFzwGXnPEOhAjS0lg6xyByhZuF53Ps6tRwwvuR
-   0ykHfE/HnIbl4P655tV5ngSoWjvkuyGmCy2FRvtVRc5Tdi9T815GXc7W1
-   xy3Te/flYUFmbn4hL1WcZuhQ2S6UA/9e7h0wqFdO31mgL7ntpux1v49L2
-   VlPBXLDl1l5VPFHkmRYqNs3q9PQnhGhotKShv1O0kvjJ+UVkYDtK7/z8V
-   WqK3InvuJOobERrZtU2GIWPBArFyMtbGdtPc2CXAs/3GZ/VMdWkeznx9x
-   dzLOi4wrJIrOvw+nCkaChWmmLDA8t+9aw3eCpUDhu4vqBYFV70fsTCzdz
-   g==;
-IronPort-SDR: NTohzzE1iJ5dUa3ih+H6KN48LS/39yJACw7ZEXE35cLl0a31yes/NOrGczBjfk7l9wiH4bw/rX
- rOEWOwLbK5ZdpBg+QbImIse4BTy880BC6oeZ4lEowyENXwNMTEgXnBb+rpqzoaCspckWce5htQ
- x/FgC+idrDs75NVt2t3tAPJDl/mjGi6Z1ccZ+pVXUhHrHIiMhkMUQw8B3q2kaDWpEJ5COjTZRi
- nT8NlKNJosYBWk2HmxtL+2GCnTIoq0K3dYV5WsY548Z7fyHf1HO1QRfM+PaE9TmPp74nVngbBH
- RPk=
-X-IronPort-AV: E=Sophos;i="5.81,184,1610434800"; 
-   d="scan'208";a="115337157"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Feb 2021 15:08:11 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 16 Feb 2021 15:08:05 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 16 Feb 2021 15:08:05 -0700
-Date:   Tue, 16 Feb 2021 23:08:04 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Pavel Machek <pavel@denx.de>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 5.10 098/104] switchdev: mrp: Remove
- SWITCHDEV_ATTR_ID_MRP_PORT_STAT
-Message-ID: <20210216220804.iadtjpg7r3masi5m@soft-dev3.localdomain>
-References: <20210215152719.459796636@linuxfoundation.org>
- <20210215152722.633343806@linuxfoundation.org>
- <20210216213508.GA32671@amd>
+        id S230456AbhBPWKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 17:10:19 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:30576 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229722AbhBPWKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 17:10:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1613513416;
+  x=1645049416;
+  h=date:to:cc:subject:message-id:references:mime-version:
+   content-transfer-encoding:in-reply-to:from;
+  bh=jlpRjvnBwlHe14+tAbAX/DLQjSwvp1QJtpM4pjNbj+w=;
+  b=koZW1J88s94/NDcC1oWaVm1zVQkL5Z2wdkjfV3Vje93/A/z8pQNDw5mH
+   sOvszUwedB2qXASz/8Na0aeSXySaRoVSc6r5xDJ9/te2Y7x6syLDHulNr
+   jmj6Tm+mnK4hX91r4yZrIaerLkO/Uki46O9MLEoq/K+YcF5MRBPkgj76u
+   Js71hQqRr0TJu3a2XWd1iYcYrhFy82ouu3E7P/3zQKgLU7NF6jLS+5Cip
+   IfIpx7RpAycXaZQSWtuBrRyafbIvMDdpFQ1TtqemGiusnDV2Mky8RnW08
+   0xhpvfOR/GmAxBb44aIt/29YLjckUmCBL9T6VkDp0XieHTtvoeUXO/qBl
+   w==;
+Date:   Tue, 16 Feb 2021 23:09:33 +0100
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@axis.com>
+Subject: Re: [PATCH] i2c: exynos5: Preserve high speed master code
+Message-ID: <20210216220933.2wzmft72bhjptzl3@axis.com>
+References: <20210215190322.22094-1-marten.lindahl@axis.com>
+ <20210216075141.o4wjnwmmjze2p3cn@kozik-lap>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <20210216213508.GA32671@amd>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210216075141.o4wjnwmmjze2p3cn@kozik-lap>
+User-Agent: NeoMutt/20170113 (1.7.2)
+From:   Marten Lindahl <martenli@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 02/16/2021 22:35, Pavel Machek wrote:
+Hi Krzysztof!
 
-Hi,
+Thank you for your comments! Please see my reply below.
+I will send v2 in a moment.
 
-> Hi!
-> 
-> > From: Horatiu Vultur <horatiu.vultur@microchip.com>
+On Tue, Feb 16, 2021 at 08:51:41AM +0100, Krzysztof Kozlowski wrote:
+> On Mon, Feb 15, 2021 at 08:03:21PM +0100, Mårten Lindahl wrote:
+> > From: Mårten Lindahl <martenli@axis.com>
 > > 
-> > commit 059d2a1004981dce19f0127dabc1b4ec927d202a upstream.
-> > 
-> > Now that MRP started to use also SWITCHDEV_ATTR_ID_PORT_STP_STATE to
-> > notify HW, then SWITCHDEV_ATTR_ID_MRP_PORT_STAT is not used anywhere
-> > else, therefore we can remove it.
+> > When the controller starts to send a message with the MASTER_ID field
+> > set (high speed), the whole I2C_ADDR register is overwritten including
+> > MASTER_ID as the SLV_ADDR_MAS field is set.
 > 
-> Are you sure this is suitable for 5.10 backport? Unlike mainline,
-> net/bridge use is not removed, so this will cause compile problem...?
+> Are you here describing bug in driver or hardware (the controller?)?
+> Looking at the code, I think the driver, but description got me
+> confused.
 > 
-> pavel@amd:~/cip/krc$ grep -ri SWITCHDEV_ATTR_ID_MRP_PORT_STATE .
-> ./include/net/switchdev.h:    SWITCHDEV_ATTR_ID_MRP_PORT_STATE,
-> ./net/bridge/br_mrp_switchdev.c:		.id = SWITCHDEV_ATTR_ID_MRP_PORT_STATE,
-> pavel@amd:~/cip/krc$ e ./net/bridge/br_mrp_switchdev.c
 
-The usage of SWITCHDEV_ATTR_ID_MRP_PORT_STATE in
-net/bridge/br_mrp_switchdev.c is removed in this patch:
-https://www.spinics.net/lists/stable/msg443626.html
+Yes, it is the driver. I will change.
+
+> > 
+> > This patch preserves already written fields in I2C_ADDR when writing
+> > SLV_ADDR_MAS.
+> > 
+> > Signed-off-by: Mårten Lindahl <martenli@axis.com>
+> > ---
+> >  drivers/i2c/busses/i2c-exynos5.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
+> > index 20a9881a0d6c..f2d04c241299 100644
+> > --- a/drivers/i2c/busses/i2c-exynos5.c
+> > +++ b/drivers/i2c/busses/i2c-exynos5.c
+> > @@ -606,6 +606,7 @@ static void exynos5_i2c_message_start(struct exynos5_i2c *i2c, int stop)
+> >  	u32 i2c_ctl;
+> >  	u32 int_en = 0;
+> >  	u32 i2c_auto_conf = 0;
+> > +	u32 i2c_addr = 0;
+> >  	u32 fifo_ctl;
+> >  	unsigned long flags;
+> >  	unsigned short trig_lvl;
+> > @@ -640,7 +641,12 @@ static void exynos5_i2c_message_start(struct exynos5_i2c *i2c, int stop)
+> >  		int_en |= HSI2C_INT_TX_ALMOSTEMPTY_EN;
+> >  	}
+> >  
+> > -	writel(HSI2C_SLV_ADDR_MAS(i2c->msg->addr), i2c->regs + HSI2C_ADDR);
+> > +	i2c_addr = HSI2C_SLV_ADDR_MAS(i2c->msg->addr);
+> > +
+> > +	if (i2c->op_clock >= I2C_MAX_FAST_MODE_PLUS_FREQ)
+> > +		i2c_addr |= readl(i2c->regs + HSI2C_ADDR);
+> 
+> Any reason why not "|= MASTER_ID(i2c->adap.nr)" here instead of more
+> expensive IO read? It's quite important because your current code will
+> bitwise-or old I2C slave address with a new one... This should break
+> during tests with multiple I2C slave devices, shouldn't it?
+> 
+
+You are correct. It is better to use the macro instead, and yes,
+safer too. I only have one device that supports high speed i2c, but
+I get your point. It could potentially break.
+
+> On which HW did you test it?
+
+I used an Artpec development board as master and INA230EVM board
+as slave.
 
 > 
 > Best regards,
-> 								Pavel
+> Krzysztof
 > 
-> > --- a/include/net/switchdev.h
-> > +++ b/include/net/switchdev.h
-> > @@ -41,7 +41,6 @@ enum switchdev_attr_id {
-> >  	SWITCHDEV_ATTR_ID_BRIDGE_MC_DISABLED,
-> >  	SWITCHDEV_ATTR_ID_BRIDGE_MROUTER,
-> >  #if IS_ENABLED(CONFIG_BRIDGE_MRP)
-> > -	SWITCHDEV_ATTR_ID_MRP_PORT_STATE,
-> >  	SWITCHDEV_ATTR_ID_MRP_PORT_ROLE,
-> >  #endif
-> >  };
+
+Best regards
+Mårten
 > 
-> -- 
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
-
-
-
--- 
-/Horatiu
+> > +
+> > +	writel(i2c_addr, i2c->regs + HSI2C_ADDR);
