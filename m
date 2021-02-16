@@ -2,113 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B0D31D2E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7449131D2EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 00:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhBPW7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 17:59:07 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:22535 "EHLO m42-2.mailgun.net"
+        id S231339AbhBPXA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 18:00:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231217AbhBPW7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 17:59:02 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613516318; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=xufzHw9jEo/iWIDfIpIw4U4Wbd5Ej3k0WcIimpzscVM=;
- b=vYp/Lo06QYXEBkbCAfr2X0ZuYWMr2Cpwu172OCE/aAbwGImed+MUSwpD1z0Ino5clafouHoX
- Njyo4tRNfmKs+xg0oryqU6N1cVe+oRzU4MdD6UBxJT6FhE/2kjw3WWEUHSJKguXIcvVS2jyO
- 5vhnOgk0wHk0x0ycK77bvQFBLgE=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 602c4dfd9f8fd267c23dd4a2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 22:58:05
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D5DF7C433CA; Tue, 16 Feb 2021 22:58:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2D975C433C6;
-        Tue, 16 Feb 2021 22:58:04 +0000 (UTC)
+        id S230059AbhBPXAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 18:00:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8432364E7C;
+        Tue, 16 Feb 2021 23:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613516409;
+        bh=bE5OIedoHeCxppUvRDPjNpROSKM6Y/nSf8GltA3Giz4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=h+jQA7LgwHOixIR9PfSVC1HcNkvu6M/ggn/cj7v2YcFkuVB7+hNDLOEhWr8kPcfa4
+         qNo6OAbXilIKFlUHRRS59GbKI+KINwwisNYKvqfzOPpzFJnoJpeRhvubz6VlP1FR3d
+         iCAuYZx32L3VmickoadkgxRXDK0paFn/xk9aBwPrA+xLwdmPJTwZ4op3mAJNTWFinF
+         49qb7sPwKJzW56QdAbB4qkGdaa5Bsp0vOAiGsSo10ftvGX18/mi/rmhLd5f3l0WvMd
+         5OGFwOJ3A8EG9EsddVuIQE52Gdgz5g/tjkYpCUVNDEv5/Fgb4Jaw4S/DX0wxLZTKhP
+         dFnm01Rr5SyEg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 702DB60A0D;
+        Tue, 16 Feb 2021 23:00:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 16 Feb 2021 14:58:04 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] mhi_bus: core: Check state before processing power_down
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <1613511496-22271-1-git-send-email-jhugo@codeaurora.org>
-References: <1613511496-22271-1-git-send-email-jhugo@codeaurora.org>
-Message-ID: <6ed2bb4fb04ac47b86ff4bacab1d3b15@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v4 0/8] bridge: mrp: Extend br_mrp_switchdev_*
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161351640945.9841.8930466212434176971.git-patchwork-notify@kernel.org>
+Date:   Tue, 16 Feb 2021 23:00:09 +0000
+References: <20210216214205.32385-1-horatiu.vultur@microchip.com>
+In-Reply-To: <20210216214205.32385-1-horatiu.vultur@microchip.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, jiri@resnulli.us,
+        ivecera@redhat.com, nikolay@nvidia.com, roopa@nvidia.com,
+        vladimir.oltean@nxp.com, claudiu.manoil@nxp.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        rasmus.villemoes@prevas.dk, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bridge@lists.linux-foundation.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-16 01:38 PM, Jeffrey Hugo wrote:
-> We cannot process a power_down if the power state is DISABLED.  There 
-> is
-> no valid mhi_ctxt in that case, so attepting to process the power_down
-> will likely result in a null pointer dereference.  If the power state 
-> is
-> DISABLED, there is nothing to do anyways, so just bail early.
-> 
-> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/pm.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index 56ba3ab..dc69074 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -1144,6 +1144,7 @@ int mhi_async_power_up(struct mhi_controller 
-> *mhi_cntrl)
->  		mhi_deinit_dev_ctxt(mhi_cntrl);
-> 
->  error_dev_ctxt:
-> +	mhi_cntrl->pm_state = MHI_PM_DISABLE;
->  	mutex_unlock(&mhi_cntrl->pm_mutex);
-> 
->  	return ret;
-> @@ -1155,6 +1156,12 @@ void mhi_power_down(struct mhi_controller
-> *mhi_cntrl, bool graceful)
->  	enum mhi_pm_state cur_state, transition_state;
->  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> 
-> +	mutex_lock(&mhi_cntrl->pm_mutex);
-> +	cur_state = mhi_cntrl->pm_state;
-> +	mutex_unlock(&mhi_cntrl->pm_mutex);
-> +	if (cur_state == MHI_PM_DISABLE)
-Let's unlock the mutex here and not at the top. We acquire it below 
-anyway.
-> +		return; /* Already powered down */
-> +
->  	/* If it's not a graceful shutdown, force MHI to linkdown state */
->  	transition_state = (graceful) ? MHI_PM_SHUTDOWN_PROCESS :
->  			   MHI_PM_LD_ERR_FATAL_DETECT;
+Hello:
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Tue, 16 Feb 2021 22:41:57 +0100 you wrote:
+> This patch series extends MRP switchdev to allow the SW to have a better
+> understanding if the HW can implement the MRP functionality or it needs
+> to help the HW to run it. There are 3 cases:
+> - when HW can't implement at all the functionality.
+> - when HW can implement a part of the functionality but needs the SW
+>   implement the rest. For example if it can't detect when it stops
+>   receiving MRP Test frames but it can copy the MRP frames to CPU to
+>   allow the SW to determine this.  Another example is generating the MRP
+>   Test frames. If HW can't do that then the SW is used as backup.
+> - when HW can implement completely the functionality.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v4,1/8] switchdev: mrp: Remove CONFIG_BRIDGE_MRP
+    https://git.kernel.org/netdev/net-next/c/405be6b46b70
+  - [net-next,v4,2/8] switchdev: mrp: Extend ring_role_mrp and in_role_mrp
+    https://git.kernel.org/netdev/net-next/c/c513efa20c52
+  - [net-next,v4,3/8] bridge: mrp: Add 'enum br_mrp_hw_support'
+    https://git.kernel.org/netdev/net-next/c/e1bd99d07e61
+  - [net-next,v4,4/8] bridge: mrp: Extend br_mrp_switchdev to detect better the errors
+    https://git.kernel.org/netdev/net-next/c/1a3ddb0b7516
+  - [net-next,v4,5/8] bridge: mrp: Update br_mrp to use new return values of br_mrp_switchdev
+    https://git.kernel.org/netdev/net-next/c/cd605d455a44
+  - [net-next,v4,6/8] net: mscc: ocelot: Add support for MRP
+    https://git.kernel.org/netdev/net-next/c/d8ea7ff3995e
+  - [net-next,v4,7/8] net: dsa: add MRP support
+    https://git.kernel.org/netdev/net-next/c/c595c4330da0
+  - [net-next,v4,8/8] net: dsa: felix: Add support for MRP
+    https://git.kernel.org/netdev/net-next/c/a026c50b599f
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
