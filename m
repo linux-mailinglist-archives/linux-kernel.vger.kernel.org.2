@@ -2,161 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A74B31C950
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DD831C952
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhBPLEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:04:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhBPLCe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:02:34 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB097C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:01:53 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id l17so8783918wmq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:01:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sjN8h0Lq9pxA6RJZZiyWtoX7vFzVnZh+87crvRiJkT8=;
-        b=YoNysm9iOjRmdiiS0WnN2CMZZmueOAasEOrrwh6PGwLba76jz/Dk9HaZimomKWck4a
-         qP4QhyKhDIOZBUqC104tO/r8ZtuPUG/9hyRQDZ9/QUz2OiRLkMT8PXmvwEfgLX7agXck
-         urN0Pm08ELmLmlvc/hI7gKe3y490jNMOCJk8b41SPaCHyoE74Pi3DUQmq/hmtapXOjjs
-         vqwpd3ABa8eCLCP1A6hTs/OXdzh99HSLnP5pIgsGXd1XHm/DXH1t3dTnXk55txIqxOb1
-         8tQ/B7PyIcBIJkujwIKZV0+lU/Kr+XQijqHm3LIGr0kxb6jhR5WFvPaB83oJNOkkwv7n
-         PukA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sjN8h0Lq9pxA6RJZZiyWtoX7vFzVnZh+87crvRiJkT8=;
-        b=pvCY/j4A75O3dfNT/iPnY+YT6C1hO2V+pAxmdQAd04fIU8p8HJjGtqXwLFIGrugXs2
-         eBNIFgt3KtjD9lDHRhw2S7yGbP6Z29O18tzrogIAXfPHMS06L5FbtWnMIc53bgz4xRc5
-         C54LfxNGet9y8EyIeiG2A0LrojbiE77H4N1V1T6oDxAuuXgZE6ZwAfc9M04c8qbDje/2
-         PmDNGW4OT5FUhRuUXfVzsynA9t4VLmEjhafED6m52P82BOtUEPHbPZ/SQb8vXQi1y297
-         qJ/1Q81Wc44vkUWZ0R0lWHFiiOPOw3XjnSeKJyHlzpgvUik8MJoKSacisorm26X0TXRu
-         izag==
-X-Gm-Message-State: AOAM531Vz+7DDGj1JuQx4dIjLMt8a2YstaDQHGrCaFW6LSHgxRIUQyeC
-        GyZGwtSXE7VUjDRWBGKtHHLR+manzIBBUYUx1WSc7w==
-X-Google-Smtp-Source: ABdhPJypD/w08VjpzZ7o56U5ZGoH6r5xWwXWeVWGHtAGfaiWX176KEgnigQ8GgN0VHr2gappeXe6prOuiMKEpqYza4s=
-X-Received: by 2002:a1c:9d51:: with SMTP id g78mr2745742wme.5.1613473312619;
- Tue, 16 Feb 2021 03:01:52 -0800 (PST)
+        id S230303AbhBPLFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:05:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230122AbhBPLCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:02:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A6D764DEC;
+        Tue, 16 Feb 2021 11:01:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613473324;
+        bh=F9xS1rR+waUJ6pldremMhnydAS8IhLLyVoVwmU9feZM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DJ8O/kceVbOPBGlphi7x/GCt71EML56KNwx3aC184oMuvDHgyx2XLbCw2gSwklC1D
+         AT7r1daEX9eX6N8JOf3BrtEU9YwaZ5JqyUeNdFvCk72bagPLlg8oFL1d/k8xeCGL7g
+         F0Ohy2EX8C5jkRN7+cPLp4xb+bsUzYBdPWS/wPkzUFCp2Alm10EesU+YjrW/VzvS7b
+         CI+hxb/RIajRftxZygXPZlb8eME/FU2rCWrSHwW3S4F2YpWDftudZt3M5BfLHg+OVe
+         tSsoa9qoMmN4anSUaCBkFL/TufuHjWldKfBtksVGXPsGnr6glJn+HoxVfMSrvX5w+T
+         t9sm+4iarOqsQ==
+Date:   Tue, 16 Feb 2021 13:01:54 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mel Gorman <mgorman@suse.de>, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
+ holes in memory layout
+Message-ID: <20210216110154.GB1307762@kernel.org>
+References: <20210208110820.6269-1-rppt@kernel.org>
+ <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
+ <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
+ <YCaAHI/rFp1upRLc@dhcp22.suse.cz>
+ <20210214180016.GO242749@kernel.org>
+ <YCo4Lyio1h2Heixh@dhcp22.suse.cz>
+ <20210215212440.GA1307762@kernel.org>
+ <YCuDUG89KwQNbsjA@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com> <1611737738-1493-15-git-send-email-anshuman.khandual@arm.com>
-In-Reply-To: <1611737738-1493-15-git-send-email-anshuman.khandual@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Tue, 16 Feb 2021 11:01:42 +0000
-Message-ID: <CAJ9a7Vi-mJ_sccLFyDQrUo8opEfGnZG-s0Atw=c0Ukt4kVX5xA@mail.gmail.com>
-Subject: Re: [PATCH V3 14/14] coresight: etm-perf: Add support for trace
- buffer format
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Leo Yan <leo.yan@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCuDUG89KwQNbsjA@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 at 08:56, Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
->
-> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->
-> CoreSight PMU supports aux-buffer for the ETM tracing. The trace
-> generated by the ETM (associated with individual CPUs, like Intel PT)
-> is captured by a separate IP (CoreSight TMC-ETR/ETF until now).
->
-> The TMC-ETR applies formatting of the raw ETM trace data, as it
-> can collect traces from multiple ETMs, with the TraceID to indicate
-> the source of a given trace packet.
->
-> Arm Trace Buffer Extension is new "sink" IP, attached to individual
-> CPUs and thus do not provide additional formatting, like TMC-ETR.
->
-> Additionally, a system could have both TRBE *and* TMC-ETR for
-> the trace collection. e.g, TMC-ETR could be used as a single
-> trace buffer to collect data from multiple ETMs to correlate
-> the traces from different CPUs. It is possible to have a
-> perf session where some events end up collecting the trace
-> in TMC-ETR while the others in TRBE. Thus we need a way
-> to identify the type of the trace for each AUX record.
->
-> Define the trace formats exported by the CoreSight PMU.
-> We don't define the flags following the "ETM" as this
-> information is available to the user when issuing
-> the session. What is missing is the additional
-> formatting applied by the "sink" which is decided
-> at the runtime and the user may not have a control on.
->
-> So we define :
->  - CORESIGHT format (indicates the Frame format)
->  - RAW format (indicates the format of the source)
->
-> The default value is CORESIGHT format for all the records
-> (i,e == 0). Add the RAW format for the TRBE sink driver.
->
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 2 ++
->  include/uapi/linux/perf_event.h              | 4 ++++
->  2 files changed, 6 insertions(+)
->
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index 1464d8b..7c0e691 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -511,6 +511,7 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->         if (cpudata->mode != CS_MODE_PERF)
->                 return -EINVAL;
->
-> +       perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
->         /*
->          * If the TRBE was disabled due to lack of space in the AUX buffer or a
->          * spurious fault, the driver leaves it disabled, truncating the buffer.
-> @@ -606,6 +607,7 @@ static void trbe_handle_overflow(struct perf_output_handle *handle)
->         size = offset - PERF_IDX2OFF(handle->head, buf);
->         if (buf->snapshot)
->                 handle->head = offset;
-> +       perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW);
->         perf_aux_output_end(handle, size);
->
->         event_data = perf_aux_output_begin(handle, event);
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index 9a5ca45..169e6b3 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -1111,6 +1111,10 @@ enum perf_callchain_context {
->  #define PERF_AUX_FLAG_COLLISION                        0x08    /* sample collided with another */
->  #define PERF_AUX_FLAG_PMU_FORMAT_TYPE_MASK     0xff00  /* PMU specific trace format type */
->
-> +/* CoreSight PMU AUX buffer formats */
-> +#define PERF_AUX_FLAG_CORESIGHT_FORMAT_CORESIGHT       0x0000 /* Default for backward compatibility */
-> +#define PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW             0x0100 /* Raw format of the source */
-> +
->  #define PERF_FLAG_FD_NO_GROUP          (1UL << 0)
->  #define PERF_FLAG_FD_OUTPUT            (1UL << 1)
->  #define PERF_FLAG_PID_CGROUP           (1UL << 2) /* pid=cgroup id, per-cpu mode only */
-> --
-> 2.7.4
->
+On Tue, Feb 16, 2021 at 09:33:20AM +0100, Michal Hocko wrote:
+> On Mon 15-02-21 23:24:40, Mike Rapoport wrote:
+> > On Mon, Feb 15, 2021 at 10:00:31AM +0100, Michal Hocko wrote:
+> > > On Sun 14-02-21 20:00:16, Mike Rapoport wrote:
+> > > > On Fri, Feb 12, 2021 at 02:18:20PM +0100, Michal Hocko wrote:
+> > > 
+> > > > We can correctly set the zone links for the reserved pages for holes in the
+> > > > middle of a zone based on the architecture constraints and with only the
+> > > > holes in the beginning/end of the memory will be not spanned by any
+> > > > node/zone which in practice does not seem to be a problem as the VM_BUG_ON
+> > > > in set_pfnblock_flags_mask() never triggered on pfn 0.
+> > > 
+> > > I really fail to see what you mean by correct zone/node for a memory
+> > > range which is not associated with any real node.
+> > 
+> > We know architectural zone constraints, so we can have always have 1:1
+> > match from pfn to zone. Node indeed will be a guess.
+> 
+> That is true only for some zones.
 
-Reviewed-by: Mike Leach <mike.leach@linaro.org>
+Hmm, and when is it not true?
+
+> Also we do require those to be correct when the memory is managed by the
+> page allocator. I believe we can live with incorrect zones when they are
+> in holes.
+ 
+Note that the holes Andrea reported in the first place are not ranges that
+are not populated, but rather ranges that arch didn't report as usable,
+i.e. there is physical memory and it perfectly fits into an existing node
+and zone.
+
+> > > > > I am sorry, I haven't followed previous discussions. Has the removal of
+> > > > > the VM_BUG_ON been considered as an immediate workaround?
+> > > > 
+> > > > It was never discussed, but I'm not sure it's a good idea.
+> > > > 
+> > > > Judging by the commit message that introduced the VM_BUG_ON (commit
+> > > > 86051ca5eaf5 ("mm: fix usemap initialization")) there was yet another
+> > > > inconsistency in the memory map that required a special care.
+> > > 
+> > > Can we actually explore that path before adding yet additional
+> > > complexity and potentially a very involved fix for a subtle problem?
+> > 
+> > This patch was intended as a fix for inconsistency of the memory map that
+> > is the root cause for triggering this VM_BUG_ON and other corner case
+> > problems. 
+> > 
+> > The previous version [1] is less involved as it does not extend node/zone
+> > spans.
+> 
+> I do understand that. And I am not objecting to the patch. I have to
+> confess I haven't digested it yet. Any changes to early memory
+> intialization have turned out to be subtle and corner cases only pop up
+> later. This is almost impossible to review just by reading the code.
+> That's why I am asking whether we want to address the specific VM_BUG_ON
+> first with something much less tricky and actually reviewable. And
+> that's why I am asking whether dropping the bug_on itself is safe to do
+> and use as a hot fix which should be easier to backport.
+
+I can't say I'm familiar enough with migration and compaction code to say
+if it's ok to remove that bug_on. It does point to inconsistency in the
+memmap, but probably it's not important.
+ 
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+Sincerely yours,
+Mike.
