@@ -2,161 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFB431C800
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCF131C806
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:27:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbhBPJZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:25:21 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2566 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhBPJZS (ORCPT
+        id S229912AbhBPJZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:25:52 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:40118 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229676AbhBPJZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:25:18 -0500
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DfwQh4xyPz67pYb;
-        Tue, 16 Feb 2021 17:19:24 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 16 Feb 2021 10:24:32 +0100
-Received: from [10.210.171.197] (10.210.171.197) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 16 Feb 2021 09:24:31 +0000
-Subject: Re: [PATCH v3] perf tools: Fix arm64 build error with gcc-11
-To:     Jiri Olsa <jolsa@redhat.com>, Jianlin Lv <Jianlin.Lv@arm.com>
-CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
-        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
-        <irogers@google.com>, <agerstmayr@redhat.com>,
-        <kan.liang@linux.intel.com>, <adrian.hunter@intel.com>,
-        <iecedge@gmail.com>, <linux-kernel@vger.kernel.org>
-References: <20210213050516.1221523-1-Jianlin.Lv@arm.com>
- <YCpnji8ukXa06iBU@krava>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <a6da023a-6476-fc20-9488-f129fde930fb@huawei.com>
-Date:   Tue, 16 Feb 2021 09:22:51 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 16 Feb 2021 04:25:47 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11G9Or7h094887;
+        Tue, 16 Feb 2021 09:24:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=zBKsoyvZW42pljgNs2qIOF6TztDTbsqax0iQzIQWQUA=;
+ b=ls1eoaX1u7RQsytL83rm4/g1Khctw+bfpxONuyYaq3xmCBkptSGLNl5Uv0fHxgf57Zcb
+ 77NleuzWvotMzX2wfAcMlqxutmHpcEd4cPdy96U3rCXI9es+TOxuauls3vRkY0tXW9hS
+ pTFdphc+vCrzMB2AvmC1SPHWFERb1PRy+mvpVPHbK81NcGpb+CdPyO6fdWJhtbzGDvr/
+ Ggz+8BKWz1TIgzpPjJchiO9nMfjx8pbztk0Q1B6yqyM3/DveuchH/UikrZrcKm2VQ9wh
+ i7uprdx+m3EbDPCQkKF7DobQrWxLFyVKzwY54a4K83j+yxQS8oNKWFbuxEz/X3L8wp/t Qg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 36p66qx49h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 09:24:53 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11G99UXQ196078;
+        Tue, 16 Feb 2021 09:24:52 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 36prhr9y3r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 09:24:51 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11G9Omeg021442;
+        Tue, 16 Feb 2021 09:24:48 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 16 Feb 2021 01:24:47 -0800
+Date:   Tue, 16 Feb 2021 12:24:38 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        vkor@vkten.in, insafonov@gmail.com, foxhlchen@gmail.com,
+        linux-kernel@vger.kernel.org, yujian.wu1@gmail.com,
+        matthew.v.deangelis@gmail.com, amarjargal16@gmail.com,
+        pterjan@google.com
+Subject: Re: [PATCH 0/6] staging: rtl8723bs: remove DBG_COUNTER
+Message-ID: <20210216092438.GX2087@kadam>
+References: <20210215233440.80617-1-phil@philpotter.co.uk>
 MIME-Version: 1.0
-In-Reply-To: <YCpnji8ukXa06iBU@krava>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.171.197]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215233440.80617-1-phil@philpotter.co.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102160087
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9896 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1011 spamscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102160088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> ---
->>   tools/perf/builtin-script.c                            | 4 +++-
->>   tools/perf/util/scripting-engines/trace-event-python.c | 3 ++-
->>   tools/perf/util/session.c                              | 3 ++-
->>   3 files changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
->> index 42dad4a0f8cf..0d52dc45b1c7 100644
->> --- a/tools/perf/builtin-script.c
->> +++ b/tools/perf/builtin-script.c
->> @@ -643,7 +643,9 @@ static int perf_sample__fprintf_regs(struct regs_dump *regs, uint64_t mask,
->>   
->>   	for_each_set_bit(r, (unsigned long *) &mask, sizeof(mask) * 8) {
->>   		u64 val = regs->regs[i++];
->> -		printed += fprintf(fp, "%5s:0x%"PRIx64" ", perf_reg_name(r), val);
->> +		const char *reg_name = perf_reg_name(r);
->> +
->> +		printed += fprintf(fp, "%5s:0x%"PRIx64" ", reg_name ?: "unknown", val);
->>   	}
->>   
->>   	return printed;
->> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
->> index c83c2c6564e0..768bdd4240f4 100644
->> --- a/tools/perf/util/scripting-engines/trace-event-python.c
->> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
->> @@ -699,10 +699,11 @@ static int regs_map(struct regs_dump *regs, uint64_t mask, char *bf, int size)
->>   
->>   	for_each_set_bit(r, (unsigned long *) &mask, sizeof(mask) * 8) {
->>   		u64 val = regs->regs[i++];
->> +		const char *reg_name = perf_reg_name(r);
->>   
->>   		printed += scnprintf(bf + printed, size - printed,
->>   				     "%5s:0x%" PRIx64 " ",
->> -				     perf_reg_name(r), val);
->> +				     reg_name ?: "unknown", val);
+Looks good.
 
-what I was trying to suggest previously was to add a small helper 
-function for this, like:
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-------- >8 --------
-
-diff --git a/tools/perf/util/perf_regs.h b/tools/perf/util/perf_regs.h
-index a45499126184..2663daf4122c 100644
---- a/tools/perf/util/perf_regs.h
-+++ b/tools/perf/util/perf_regs.h
-@@ -28,18 +28,25 @@ uint64_t arch__user_reg_mask(void);
-  extern const struct sample_reg sample_reg_masks[];
-
-  #include <perf_regs.h>
-
-  #define DWARF_MINIMAL_REGS ((1ULL << PERF_REG_IP) | (1ULL << PERF_REG_SP))
-
-  int perf_reg_value(u64 *valp, struct regs_dump *regs, int id);
-
-+static inline const char *perf_reg_name_str(int id)
-+{
-+	const char *str = perf_reg_name(id);
-+	if (!str)
-+		return "unknown";
-+	return str;
-+}
-+
-  #else
-  #define PERF_REGS_MASK	0
-  #define PERF_REGS_MAX	0
-
-  #define DWARF_MINIMAL_REGS PERF_REGS_MASK
-
--static inline const char *perf_reg_name(int id __maybe_unused)
-+static inline const char *perf_reg_name_str(int id __maybe_unused)
-  {
-  	return "unknown";
-  }
-
-----8<----
-
-So if someone were to make a change to use perf_reg_name() directly 
-later and do not compile with gcc-11, then they may break the build. 
-Hence the helper.
-
-No big deal, though.
-
->>   	}
->>   
->>   	return printed;
->> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
->> index 25adbcce0281..2b40f1c431a3 100644
->> --- a/tools/perf/util/session.c
->> +++ b/tools/perf/util/session.c
->> @@ -1138,9 +1138,10 @@ static void regs_dump__printf(u64 mask, u64 *regs)
->>   
->>   	for_each_set_bit(rid, (unsigned long *) &mask, sizeof(mask) * 8) {
->>   		u64 val = regs[i++];
->> +		const char *reg_name = perf_reg_name(rid);
->>   
->>   		printf(".... %-5s 0x%016" PRIx64 "\n",
->> -		       perf_reg_name(rid), val);
->> +		       reg_name ?: "unknown", val);
->>   	}
->>   }
->>   
->> -- 
->> 2.25.1
->>
-> 
-> .
-> 
+regards,
+dan carpenter
 
