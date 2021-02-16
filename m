@@ -2,93 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A9631C750
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11AA831C753
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbhBPIYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 03:24:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45514 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229811AbhBPIVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 03:21:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613463662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yxFwziSyZyOqU27QatYvWYrbroR4UnAqOg89qO7rMuM=;
-        b=eYhfed6NW++hDwqLUPTACF6UbC/shda+lS/QxJlotWM16Wipv6jy5WmRh0cQc/dRvyIxn1
-        ej82DijW+bwiWE8xN5YuvI0cL/vh4pQBm5opBLNybn59CV64dhCAs6bX7KzaRJl7Wzoetb
-        brEJ3VJWFdkxM425lJ/yR6eCq3l9z6o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8D7B1AD29;
-        Tue, 16 Feb 2021 08:21:02 +0000 (UTC)
-Date:   Tue, 16 Feb 2021 09:21:01 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-Message-ID: <YCuAbWJC751ROfTS@dhcp22.suse.cz>
-References: <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
- <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
- <YCpmlGuoTakPJs1u@dhcp22.suse.cz>
- <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
- <YCp04NVBZpZZ5k7G@dhcp22.suse.cz>
- <CAMZfGtV8-yJa_eGYtSXc0YY8KhYpgUo=pfj6TZ9zMo8fbz8nWA@mail.gmail.com>
- <YCqhDZ0EAgvCz+wX@dhcp22.suse.cz>
- <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
- <YCrFY4ODu/O9KSND@dhcp22.suse.cz>
- <4f8664fb-0d65-b7d6-39d6-2ce5fc86623a@redhat.com>
+        id S229895AbhBPIZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 03:25:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229767AbhBPIW3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 03:22:29 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F40C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 00:21:48 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id v9so6694903edw.8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 00:21:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xnoo0wmivAjtZsEgEktgO+RKl2tieZPPQBjazmOBOqU=;
+        b=Z9Vu0aY51nyWdAxaO8mXDSjbTc43mQTKoZLKO9C80Q9Eizer9riaRFW7Lqs4O782Gh
+         wi0i8XWFSUf4jxHteMhIEOc8Lvkx/Phq7OkuBzzw5XE+YS4k0QrLX8GTtnA0UkSDDLUs
+         J3crWlj0yKdWAa2Mtk/TeAE/O0HLvyapWLlf8XPalfsFmOsmlhIG3gm0ku4CkotSJ+Uv
+         28UkfzIQ32dvxKfkufY0GIGE3R/sfegOpWLT/U0+5ItkJYjm279f7eR8iq4I1wXKqeVE
+         Jo5XYUqPGcasDe86VCbcPee8DPAV9qlRHKmeCAP/pXeRTyBwjsHSWizXtdHHpcsyhvlN
+         nqbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xnoo0wmivAjtZsEgEktgO+RKl2tieZPPQBjazmOBOqU=;
+        b=EQj1q4sX5moUc5FYyIoHtWjRAm7TephkQBItkj8X97tZv2I3271H3cpV2Mh4xQQOlY
+         SuJVRfCKAo31xX5/Gwu3uJwklaehfrYAjoZ5HTmQL4TOBdPagHcQOPIGFwmd/sIvwK0F
+         QimSRNz0kXGWVvxGvwYjAOlwEg4EuE1X9ZctRlEbWOYVqQwGT10KPtz2USA4wtSrkNxd
+         mjURdvJqZv+Sky3H/Ak9CU6nfkpBmF0gf9o3zEWBQxkTzueLZEZaN0I3IdMvj2EcYJbL
+         9/SPFvIwcF/gcqRqYUDN7mYwtVcb6oDpGABxqhQyNmwUzfHFJ3OKE+TDHsQqH4qY8dvb
+         WqMQ==
+X-Gm-Message-State: AOAM530NO2FkkJ/XPd1oxPP51+4hTbcopmnXouEjAshHe08ivCnzGwrg
+        WFHbMbaSW4UrfTm7zIoe2y0=
+X-Google-Smtp-Source: ABdhPJwN0aJw4oDqNgChQKLd0HpHNrQQPz5Yf69fZ8UG0f27hAb0Oqz/qJilxqiV1MOkSJ6vWsMsBA==
+X-Received: by 2002:aa7:c887:: with SMTP id p7mr6605831eds.28.1613463707651;
+        Tue, 16 Feb 2021 00:21:47 -0800 (PST)
+Received: from abel.fritz.box ([2a02:908:1252:fb60:d4a8:bc96:3480:def7])
+        by smtp.gmail.com with ESMTPSA id yh4sm6051192ejb.29.2021.02.16.00.21.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 00:21:47 -0800 (PST)
+From:   "=?UTF-8?q?Christian=20K=C3=B6nig?=" 
+        <ckoenig.leichtzumerken@gmail.com>
+X-Google-Original-From: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        apw@canonical.com, joe@perches.com, linux-kernel@vger.kernel.org
+Cc:     dri-devel@lists.freedesktop.org
+Subject: [PATCH] mutex: nuke mutex_trylock_recursive
+Date:   Tue, 16 Feb 2021 09:21:46 +0100
+Message-Id: <20210216082146.69286-1-christian.koenig@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f8664fb-0d65-b7d6-39d6-2ce5fc86623a@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 16-02-21 09:13:09, David Hildenbrand wrote:
-> On 15.02.21 20:02, Michal Hocko wrote:
-> > Would it be feasible to reused parts of the freed page in
-> > the worst case?
-> 
-> As already discussed, this is only possible when the huge page does not
-> reside on ZONE_MOVABLE/CMA.
+The last user went away in the 5.11 cycle.
 
-Right. But usually this is not the case so it would be at least
-something.
+Signed-off-by: Christian König <christian.koenig@amd.com>
+---
+ include/linux/mutex.h  | 25 -------------------------
+ kernel/locking/mutex.c | 10 ----------
+ scripts/checkpatch.pl  |  6 ------
+ 3 files changed, 41 deletions(-)
 
-> In addition, we can no longer form a huge page at that memory location ever.
-
-Yes, that's why I am saying in the worst case. E.g. when dissolving is
-really necessary like in hwpoison case.
-
-Maybe we are really far from needing something like that. I just wanted
-to mention this option and I was not aware this has been discussed
-previously.
+diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+index dcd185cbfe79..0cd631a19727 100644
+--- a/include/linux/mutex.h
++++ b/include/linux/mutex.h
+@@ -199,29 +199,4 @@ extern void mutex_unlock(struct mutex *lock);
+ 
+ extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
+ 
+-/*
+- * These values are chosen such that FAIL and SUCCESS match the
+- * values of the regular mutex_trylock().
+- */
+-enum mutex_trylock_recursive_enum {
+-	MUTEX_TRYLOCK_FAILED    = 0,
+-	MUTEX_TRYLOCK_SUCCESS   = 1,
+-	MUTEX_TRYLOCK_RECURSIVE,
+-};
+-
+-/**
+- * mutex_trylock_recursive - trylock variant that allows recursive locking
+- * @lock: mutex to be locked
+- *
+- * This function should not be used, _ever_. It is purely for hysterical GEM
+- * raisins, and once those are gone this will be removed.
+- *
+- * Returns:
+- *  - MUTEX_TRYLOCK_FAILED    - trylock failed,
+- *  - MUTEX_TRYLOCK_SUCCESS   - lock acquired,
+- *  - MUTEX_TRYLOCK_RECURSIVE - we already owned the lock.
+- */
+-extern /* __deprecated */ __must_check enum mutex_trylock_recursive_enum
+-mutex_trylock_recursive(struct mutex *lock);
+-
+ #endif /* __LINUX_MUTEX_H */
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index 5352ce50a97e..adb935090768 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -86,16 +86,6 @@ bool mutex_is_locked(struct mutex *lock)
+ }
+ EXPORT_SYMBOL(mutex_is_locked);
+ 
+-__must_check enum mutex_trylock_recursive_enum
+-mutex_trylock_recursive(struct mutex *lock)
+-{
+-	if (unlikely(__mutex_owner(lock) == current))
+-		return MUTEX_TRYLOCK_RECURSIVE;
+-
+-	return mutex_trylock(lock);
+-}
+-EXPORT_SYMBOL(mutex_trylock_recursive);
+-
+ static inline unsigned long __owner_flags(unsigned long owner)
+ {
+ 	return owner & MUTEX_FLAGS;
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 92e888ed939f..15f7f4fa6b99 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -7069,12 +7069,6 @@ sub process {
+ 			}
+ 		}
+ 
+-# check for mutex_trylock_recursive usage
+-		if ($line =~ /mutex_trylock_recursive/) {
+-			ERROR("LOCKING",
+-			      "recursive locking is bad, do not use this ever.\n" . $herecurr);
+-		}
+-
+ # check for lockdep_set_novalidate_class
+ 		if ($line =~ /^.\s*lockdep_set_novalidate_class\s*\(/ ||
+ 		    $line =~ /__lockdep_no_validate__\s*\)/ ) {
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
