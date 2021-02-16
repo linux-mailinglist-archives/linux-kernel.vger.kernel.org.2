@@ -2,114 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251F531CB52
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBD731CB56
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:41:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhBPNjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 08:39:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
+        id S229959AbhBPNlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 08:41:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhBPNjY (ORCPT
+        with ESMTP id S229744AbhBPNlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 08:39:24 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBD3C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 05:38:43 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id q10so12132300edt.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 05:38:42 -0800 (PST)
+        Tue, 16 Feb 2021 08:41:21 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9A0C061574;
+        Tue, 16 Feb 2021 05:40:39 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id t63so9389783qkc.1;
+        Tue, 16 Feb 2021 05:40:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WVdO5Suny8ndHlIrRpoBrmqIPx4CWmlNbuYupKr2Cqc=;
-        b=mx72lufRdfc46M4ag+yiDlWAEO4kn8+gbsl3jWz0aFqVijhPbgaHfBEQpRr24bWoo3
-         Kzcg5/Qv0MqwuyCOWfV1DbKnZu075rzPranwK6vD4iech5drvH3efYd5mAeEH9goRzIa
-         WVW3u5QveHXn/Yw7x4byE6AG/TaLuDBAt4Gb8=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3JewOjQw0FtJtNgCeApdgGf7kQbjOdx2qp+PtYPRynk=;
+        b=SO+jkcapCDtBxWnZFrxewnr06ShtzsemKW6mDn+qTmYv7WV1qM4payyLSQFd3Wssbi
+         4ebKGzqCvnQWJVL7dAQY4wFscsQFWFz2VoP7XLfwbRxOcOd1+jmEu5fdcMTkwlunyR03
+         L0u22YzPQFbp37xmNwPWMWLmE0h2XdQsevJkCCB47up75o/uxfA/J/MlDquWYrEOF4GO
+         dK8kbUGrDTJX6r1UtqXVfofmSiwD9vw6vBiac/Mzk2AQSrvg9B8wCOtLLA9FZxkSqror
+         j8NqS5K7MpJJ6qxjIbBvEsNCZZGy0cbC3oXrJvHGe/54U+tJrA9pgH41+4y4+crnoY5f
+         Qkjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WVdO5Suny8ndHlIrRpoBrmqIPx4CWmlNbuYupKr2Cqc=;
-        b=j9kUYLla4kfLPokBTSaJ9U7Kf68Hr+3eX1Wv0y039a0oXXVsfE8AHfuQh1/cyG1iQM
-         fCsNeliSu5ltMWyt1W9mNOnFRq7erlIPqfNWGxfxZSpC2iGjno2jk3/mlSRWd2w3DTno
-         h0NPc2BmAv0WkP9xeIkkB35Sw/CGyBH8XCnkSQtNtvcxlWbH76g/Uep5g7bRs8/EiedM
-         M0G9JNU+teOhAWDQAMlXofNG1yaxqDhxrije+2O9XYYjxaYfC3Cc6oYNFLqZ7kB8/OtU
-         O6fhFyozLW5QDI3i6F5uY24cz9I4EGTgLk8U4LFS5QcHIYPDbhq4E1iNPMqXvJZ1Ucqe
-         0Vsg==
-X-Gm-Message-State: AOAM530V6ZqRZOXjUIvEbQSeXcikgeVB5U+bF998tIBTuvZHopa2HBUy
-        wTZYa4GlOGVrsiV7tm/vTSt4YQ==
-X-Google-Smtp-Source: ABdhPJzpPnxzHatNnDsBqyQ+8F5czdeOrvKXZriPXHaF1qmKcbRlVfIHYJBPmwi07+8O5GcHXWnEEw==
-X-Received: by 2002:a50:fe02:: with SMTP id f2mr938391edt.173.1613482721746;
-        Tue, 16 Feb 2021 05:38:41 -0800 (PST)
-Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
-        by smtp.gmail.com with ESMTPSA id i21sm13620839edy.9.2021.02.16.05.38.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=3JewOjQw0FtJtNgCeApdgGf7kQbjOdx2qp+PtYPRynk=;
+        b=Uw4N8iO2XyAoT3IWlmrbtoXLiMJUMDvVBKV2j3IQXdDEpSF1DySoIdTynvTggJycDo
+         fzk/GinnDSRP5PDW5NgZmpJ8Yfs3ifCUhTs2x/o7Lud9p07Ts0Zc6atn8g2IPbx4SAGm
+         T+Y37bDZd4KCGvvptqFkNfFAHlGukvak7edVOVpMDM3wra5nPBqx4zI193fdpB9DPe/H
+         CYstgggG1OFIJeMzrWRoWB4kUgXQOPg/RjET142+1AYhrua3XOnDljfcDkpGTrrPzpnY
+         pvs8z3zeBkRXiG93ylhA15T2J3/QyYS3egzePyhBwqrTH4sBBhOEh10+NNJ1l5ITTSXJ
+         MyAQ==
+X-Gm-Message-State: AOAM533wH+GY5SVUwmkLTofLnFitOYUQVqWWDWSggUl+/tQ6MW5tCJ13
+        q143f/zQOC0A4Gyx0UCfNWA=
+X-Google-Smtp-Source: ABdhPJwgyn6Rx0Ml7fck+ccdshjky57XCc1KnkwdqZuhTTpZLK4lPXduVr5+NncQH2D++f5vBPhpQw==
+X-Received: by 2002:a37:468e:: with SMTP id t136mr19220977qka.440.1613482838936;
+        Tue, 16 Feb 2021 05:40:38 -0800 (PST)
+Received: from OpenSuse ([143.244.44.229])
+        by smtp.gmail.com with ESMTPSA id c7sm13343484qtm.60.2021.02.16.05.40.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 05:38:41 -0800 (PST)
-Date:   Tue, 16 Feb 2021 13:38:40 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com,
-        akpm@linux-foundation.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, felipe.franciosi@nutanix.com
-Subject: Re: [RFC PATCH] mm, oom: introduce vm.sacrifice_hugepage_on_oom
-Message-ID: <YCvK4EPg30ocI8gP@chrisdown.name>
-References: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
+        Tue, 16 Feb 2021 05:40:37 -0800 (PST)
+Date:   Tue, 16 Feb 2021 19:10:29 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Janosch Frank <frankja@linux.ibm.com>
+Cc:     borntraeger@de.ibm.com, david@redhat.com, cohuck@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] arch: s390: kvm: Fix oustanding to outstanding in the
+ file kvm-s390.c
+Message-ID: <YCvLTSjlChLHvygM@OpenSuse>
+Mail-Followup-To: Janosch Frank <frankja@linux.ibm.com>,
+        borntraeger@de.ibm.com, david@redhat.com, cohuck@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+References: <20210213153227.1640682-1-unixbhaskar@gmail.com>
+ <f90e91a5-7bc0-2489-51d4-6004eef9db7a@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="MM1/o3wLr7SJP/Ol"
 Content-Disposition: inline
-In-Reply-To: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+In-Reply-To: <f90e91a5-7bc0-2489-51d4-6004eef9db7a@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eiichi,
 
-I agree with Michal's points, and I think there are also some other design 
-questions which don't quite make sense to me. Perhaps you can clear them up?  
-:-)
+--MM1/o3wLr7SJP/Ol
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-Eiichi Tsukata writes:
->diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->index 4bdb58ab14cb..e2d57200fd00 100644
->--- a/mm/hugetlb.c
->+++ b/mm/hugetlb.c
->@@ -1726,8 +1726,8 @@ static int alloc_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
->  * balanced over allowed nodes.
->  * Called with hugetlb_lock locked.
->  */
->-static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
->-							 bool acct_surplus)
->+int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
->+			bool acct_surplus)
-> {
-> 	int nr_nodes, node;
-> 	int ret = 0;
+On 10:08 Mon 15 Feb 2021, Janosch Frank wrote:
+>On 2/13/21 4:32 PM, Bhaskar Chowdhury wrote:
+>>
+>> s/oustanding/outstanding/
+>
+>Hey Bhaskar,
+>
+>while I do encourage anyone to send in changes I'm not a big fan of
+>comment fixes if they are only a couple of characters and when the
+>meaning is still intact despite the spelling mistake.
+>
+>You're creating more work for me than you had writing this patch and the
+>improvement is close to zero.
+>
+>Be warned that I might not pick up such patches in the future.
+>
+>
+>If you're ok with it I'll fix up the subject to this and pick up the patch:
+>"kvm: s390: Fix comment spelling in kvm_s390_vcpu_start()"
+>
+Pls do.
 
-The immediate red flag to me is that we're investing further mm knowledge into 
-hugetlb. For the vast majority of intents and purposes, hugetlb exists outside 
-of the typical memory management lifecycle, and historic behaviour has been to 
-treat a separate reserve that we don't touch. We expect that hugetlb is a 
-reserve which is by and large explicitly managed by the system administrator, 
-not by us, and this seems to violate that.
+>Cheers,
+>Janosch
+>
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  arch/s390/kvm/kvm-s390.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>> index dbafd057ca6a..1d01afaca9fe 100644
+>> --- a/arch/s390/kvm/kvm-s390.c
+>> +++ b/arch/s390/kvm/kvm-s390.c
+>> @@ -4545,7 +4545,7 @@ int kvm_s390_vcpu_start(struct kvm_vcpu *vcpu)
+>>  		/*
+>>  		 * As we are starting a second VCPU, we have to disable
+>>  		 * the IBS facility on all VCPUs to remove potentially
+>> -		 * oustanding ENABLE requests.
+>> +		 * outstanding ENABLE requests.
+>>  		 */
+>>  		__disable_ibs_on_all_vcpus(vcpu->kvm);
+>>  	}
+>> --
+>> 2.30.1
+>>
+>
+>
 
-Shoehorning in shrink-on-OOM support to it seems a little suspicious to me, 
-because we already have a modernised system for huge pages that handles not 
-only this, but many other memory management situations: THP. THP not only has 
-support for this particular case, but so many other features which are 
-necessary to coherently manage it as part of the mm lifecycle. For that reason, 
-I'm not convinced that those composes to a sensible interface.
 
-As some example questions which appear unresolved to me: if hugetlb pages are 
-lost, what mechanisms will we provide to tell automation or the system 
-administrator what to do in that scenario? How should the interface for 
-resolving hugepage starvation due to repeated OOMs look? By what metrics will 
-you decide if releasing the hugepage is worse for the system than selecting a 
-victim for OOM? Why can't the system use the existing THP mechanisms to resolve 
-this ahead of time?
 
-Thanks,
 
-Chris
+--MM1/o3wLr7SJP/Ol
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAry0kACgkQsjqdtxFL
+KRXHdwf/fQnnFjWrAG1FY7B2hDZDpGIwgQTiJwMamKsugT/y73/WNDIamMqIn0W+
+27G6ohO5mjH94Br/2o6IhEfydhyN/buFh/oyklvvlcikfHkC+UoxEHaYCnSx77S3
+C/1Uc126wgQR7YEZ5Bzua9lNbc9+gp1DgHCtL9uBCJFvH2PvQ+aR8XyRZWW52Tuc
+oDFQY4AdmLX92v30pKWiIVEUvCNFXJoeCyVPJ7la9SzDfJE9em642FztEo+vP3CX
+D6Q5y8C6CKWmvxPcPgDOh+DM5FD8C1qCDNtHOPJfBFDbiPwyCidJrLlPDx+gLYpY
+liXmDequghHB/ZqvHHBJPR16CIA7yA==
+=RGPJ
+-----END PGP SIGNATURE-----
+
+--MM1/o3wLr7SJP/Ol--
