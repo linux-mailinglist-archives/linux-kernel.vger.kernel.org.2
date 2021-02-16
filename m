@@ -2,134 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB36031C4BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 02:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B4431C4C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 02:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhBPBEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 20:04:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhBPBEF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 20:04:05 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AEBC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 17:03:24 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id ot7so11406152ejb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 17:03:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zrjbMWbLD5k1YU1gY6sgg8lrLPs48sMOTQtq5qr6+JE=;
-        b=LIupk08tNIWocLfmHYdevHIaMUM6xGoaBpAWMYTkuBgf3r3EGTFB209egHvSXfoGNS
-         GWCWd7fEN/Bq4pnpKID2URgFbQqUTAU0x5/K9yCIWixQjRfUYcasFfnfI4Dz/HnBRG54
-         dhmq2a26jT7RKOsFjj3UmPANSPpO/7HeXa05EhfgHmDdrRYh0xun30YVkTlAlSliJdOU
-         x9oPZ9Mw5Y+RDjR1FrWgrdAicmx3f7lHd4l1LWa9dYQyyqjqsWggjk61PKX40m4ENZxw
-         pC5aJ3gDug4zgcA1QWzS75Qk5sOiWwwLuPUfn3cSlR4bGI7xeUwEbZSP01Nb3XKKQ4gp
-         NviA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zrjbMWbLD5k1YU1gY6sgg8lrLPs48sMOTQtq5qr6+JE=;
-        b=DWc+PxV8NjQbVUXwalfuhky67UZNlTAhCeJUD2AUjXyBbxRLeG4VJAWfRVR8jiMA5c
-         65E/5Poyhm1O/xK9Wf34eSdufUyfopW32f5kYMQhDZMkDs7Hv7npVPxkrpANko5991sa
-         NnKapKaiI4/yGfB0KkHsGYLZwYG4ky14P2786m8M8g8DDdEKBxYreo7K2oY2b3TaOqUd
-         QYPAqTG7wAGp6t52Vkk2Jz+VL9lvc/sFaCdR6OOlQBBpaa3XxCf50QJQNNOh53QPVqlK
-         BNi0rpYFvzEkL3dOS3m6s6lsVL36R+Zv8WhzzKFk8G4nS+M+BZxMBHGlIgmMQxErmbMF
-         +X1A==
-X-Gm-Message-State: AOAM530VBJTRllyle/euMzHlhNVUsVWBSz7DJFjDormZp2vQNpi7mTKU
-        0cbngafDh6aTy49PLtrpSffGKSoxzUYgCJHl07qJxg==
-X-Google-Smtp-Source: ABdhPJy8c/0gVUxzxzOu465gevLaW/oq5+vXZq8cBcdf0ZCueZjV3UO69BfxcbMCkyHxtXaBOFrKeIBIx/oCPyWBv/g=
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr17896470eju.375.1613437403417;
- Mon, 15 Feb 2021 17:03:23 -0800 (PST)
-MIME-Version: 1.0
-References: <CA+G9fYsvDWDogC+xgeG2V9MMofV5svTipDigDiUBje+2jSRK8g@mail.gmail.com>
- <CAK8P3a2OeeW29ekbD70Ns4LTjGRJRT9P0wM-SAxUin1zAxP7TA@mail.gmail.com>
- <CA+G9fYv89bfbixjuudPWkBAucTYg7qhNxcV54RMEkRP5is-bnQ@mail.gmail.com>
- <YCmAGNyFAOZs7GCG@zeniv-ca.linux.org.uk> <CA+G9fYsZnBv4wAEKYb0mgMd-BsgXcPUGBQ=VRKcONqAZry_4XQ@mail.gmail.com>
- <YCqGX36I+KR7SoA8@zeniv-ca.linux.org.uk>
-In-Reply-To: <YCqGX36I+KR7SoA8@zeniv-ca.linux.org.uk>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 16 Feb 2021 06:33:12 +0530
-Message-ID: <CA+G9fYuq7bpDhY3cA5O66bf0nxKUkbtiTMcLMqBYvWKLhNfrjQ@mail.gmail.com>
-Subject: Re: LTP: madvise08.c:203: TFAIL: No sequence in dump after MADV_DODUMP.
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org,
-        chrubis <chrubis@suse.cz>, Jan Stancek <jstancek@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian@brauner.io>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Xu <peterx@redhat.com>,
+        id S229744AbhBPBHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 20:07:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229697AbhBPBHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 20:07:22 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5DF364DCF;
+        Tue, 16 Feb 2021 01:06:40 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 20:06:39 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Petr Vorel <pvorel@suse.cz>,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Joerg.Vehlow@aox-tech.de
-Content-Type: text/plain; charset="UTF-8"
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] ftrace: Do not reference symbols in sections without
+ size
+Message-ID: <20210215200639.67141685@oasis.local.home>
+In-Reply-To: <20210216000504.axm3k4xho47c6drz@treble>
+References: <20210215164446.530f6311@gandalf.local.home>
+        <20210216000504.axm3k4xho47c6drz@treble>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 at 20:05, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Mon, Feb 15, 2021 at 02:11:15PM +0530, Naresh Kamboju wrote:
->
-> > fs/coredump.c:903:9: error: 'return' with a value, in function
-> > returning void [-Werror=return-type]
-> >  903 | return 0;
-> >         | ^
-> >
-> > Build failed due to above error.
->
-> FWIW, here the test results in
-> Running tests.......
-> <<<test_start>>>
-> tag=madvise08 stime=1613398818
-> cmdline="madvise08"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> incrementing stop
-> tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
-> madvise08.c:78: TINFO: Temporary core pattern is '/tmp/ltp-tgvQ3Lz1UZ/B6lwy6/dump-%p'
-> madvise08.c:117: TINFO: Dump file should be dump-2276
-> madvise08.c:201: TPASS: madvise(..., MADV_DONTDUMP)
-> madvise08.c:117: TINFO: Dump file should be dump-2277
-> madvise08.c:205: TPASS: madvise(..., MADV_DODUMP)
->
-> Summary:
-> passed   2
-> failed   0
-> skipped  0
-> warnings 0
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=0 corefile=no
-> cutime=0 cstime=0
-> <<<test_end>>>
->
-> (built without -Werror=return-type, so I'd missed the warnings)
->
-> Anyway, I've folded the fix (with those stray return 0 removed, of course)
-> into #work.coredump and #for-next; works here.  Could you test either
-> branch (in git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git)?
+On Mon, 15 Feb 2021 18:05:04 -0600
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-By using Linaro tuxsuite [1] I have built your tree and tested on x86_64 and
-the reported test PASS now.
+> On Mon, Feb 15, 2021 at 04:44:46PM -0500, Steven Rostedt wrote:
+> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> > 
+> > Starting with binutils 2.36, sections were being removed if they had weak
+> > functions that were optimized out. Unfortunately, these weak functions would
+> > leave references to mcount/fentry calls, that would make recordmcount fail
+> > to find the symbol that matched the call to fentry.  
+> 
+> Binutils 2.36 isn't removing sections, just section *symbols*.
+> 
+> > Before returning the symbol of the section to create the mcount location,
+> > check if that section size is greater than zero. If it has no size, skip
+> > referencing that mcount call location.  
+> 
+> How does this even work?  The .text.unlikely section isn't empty:
+> 
+>   # readelf -SW kernel/kexec_file.o
 
-LTP syscalls [2] and LTP fs [3] tested on x86_64 and both PASS.
+Bah, because I messed up, and realized I was using the first section (shdr0)
+and not the one it was being used for.
 
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Strange, that when I applied this to the latest kernel on a my build
+system (binutils 2.35), it still created all the necessary mcount
+locations??
+
+I'll look more into this.
+
+Thanks for pointing this out.
+
+-- Steve
 
 
-[1] https://gitlab.com/Linaro/tuxsuite
-[2] https://lkft.validation.linaro.org/results/2278012
-[3] https://lkft.validation.linaro.org/results/2280979
 
-- Naresh
+>   
+>   Section Headers:
+>     [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
+>     [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
+>     [ 1] .text             PROGBITS        0000000000000000 000040 001acf 00  AX  0   0  1
+>     [ 2] .rela.text        RELA            0000000000000000 0049e0 001b30 18   I 27   1  8
+>     [ 3] .data             PROGBITS        0000000000000000 001b20 000e80 00  WA  0   0 32
+>     [ 4] .rela.data        RELA            0000000000000000 006510 0010e0 18   I 27   3  8
+>     [ 5] .bss              NOBITS          0000000000000000 0029a0 000060 00  WA  0   0 32
+>     [ 6] .rodata           PROGBITS        0000000000000000 0029a0 000b80 00   A  0   0 32
+>     [ 7] .rodata.str1.1    PROGBITS        0000000000000000 003520 0001c6 01 AMS  0   0  1
+>     [ 8] .text.unlikely    PROGBITS        0000000000000000 0036e6 000038 00  AX  0   0  1
+> 
+
