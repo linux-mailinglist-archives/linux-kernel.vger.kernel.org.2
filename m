@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5597531CAAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F256031CAAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhBPMnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:43:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
+        id S230073AbhBPMo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 07:44:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhBPMnM (ORCPT
+        with ESMTP id S230015AbhBPMoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:43:12 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620C3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:42:31 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id y128so10284211ybf.10
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:42:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M9HMUptyNWsJ5O8nTn609Xb6kh7fmzyYm2B08HuDzsA=;
-        b=JUST5tkdd6dR1viqz3oYv3TXgE8VqtTlLpsRoZLuHfbTrDNybhq91kPhbyVzBwCRl9
-         Z5oV4A4zDTl7NzyUfCK+8mDqdqaqRxDYuAG0pPiG4kH9j5WDa8dwyiJhFipv3VUKbPzw
-         dktYkiugmnrY/hGpqGj48nqmLW6BLObkjGloJTL1Mo3mP5c+u/xGMAVgBvLYEY4pNpe3
-         q41LcsIV/VFCVttuHBMEbSuzfhzeZzvosmY0EfV4LGNoJ79H6LoxHh6PBi0j0nIzsDDZ
-         ue3+tRE/KtfiU95vm7My4OQ3sitCb4dSq4veeg/Luu86Tdt/7nXP43xWgJv0gRvk3uKZ
-         wtQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M9HMUptyNWsJ5O8nTn609Xb6kh7fmzyYm2B08HuDzsA=;
-        b=NIg0IEnug4xflppywivupCPdj+OuheC4yKx2Vgc7WYR1vbNY0rCXyFoTihd5p/S7hF
-         T6G6PvxRQzKbS0ZHXUNiSSWQ3ZSGo6DKpNoClYP8YHZnjdeIDMl345H+f71qWeY3pkdB
-         wg9CrprG+TKpSW91m2Ns/PtH7Iq8v4sDZGjW4pjAYwKd365ix0UXSWKnJxj1CfSR1jVN
-         TOQ+PE5QqLUWWzf2CGmBAdtgKQKapoc7GqIYK1DiMgt92YqFPxYKCZKDkfB8Es7M2sQY
-         GWfnXz6G5pZmF07PnfEncmXyFHdj9DSZxzksY2yV20PrpXAmeOGsiMU8Y6K8oNUsfFT9
-         Qh7w==
-X-Gm-Message-State: AOAM531MfQwpl6PONMxVLzzC9k8AByAa2OCxvulUKeaS5EcSmDbSgEoe
-        4kRhkigNbkCOWXLgFuJyQWVAGfrynbBZAykQips=
-X-Google-Smtp-Source: ABdhPJx5cDEN1OfVowzqd92kxmyO971svK2X2rtdTrA14WmKkbP/pB3/bXB8Z0g/9oxThFBiM2ZYxzbU/yCESbVBeH0=
-X-Received: by 2002:a25:31c2:: with SMTP id x185mr28643027ybx.93.1613479350765;
- Tue, 16 Feb 2021 04:42:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20210208175824.381484-1-bigeasy@linutronix.de>
- <CANiq72kqfPOpgwvNo3hTesCJztODxVGonJXpeeX=S+O4roNZsw@mail.gmail.com>
- <20210208190735.ibq44r5pc4cwzt7j@linutronix.de> <CANiq72kq_d=5TvdhndP9zkyTD1pHF6WQb+qs01D68DEQH6jVjQ@mail.gmail.com>
- <20210208204136.sv4omzms3nadse6e@linutronix.de> <CANiq72mw47Qa9M6i23Dp+_3M8juBnv33PJ-6zFk++SV57G2-cQ@mail.gmail.com>
- <20210209090112.lewvvhnc2y7oyr27@linutronix.de> <CANiq72mG3zXA7j9KbC74hQ1BMgw713Hm3WDAcQBjKxgg0fLHeg@mail.gmail.com>
- <20210213165040.vzzieegx4aliyosd@linutronix.de> <CANiq72mkkSfbnNM_mmXE-TNKO1orsAeyByMKFy1N6hm+EBA40A@mail.gmail.com>
- <20210216102856.dnaycukt3oqxoszp@linutronix.de>
-In-Reply-To: <20210216102856.dnaycukt3oqxoszp@linutronix.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 16 Feb 2021 13:42:19 +0100
-Message-ID: <CANiq72mge40Uvqf3mb4uof2gi8ktvhjoodfyJY7uLW4guTnvDw@mail.gmail.com>
-Subject: Re: [PATCH v3] auxdisplay: Remove in_interrupt() usage.
+        Tue, 16 Feb 2021 07:44:20 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B760C061574;
+        Tue, 16 Feb 2021 04:43:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uOWdJIPiqLxSLw1FB8DUC17VYXjO4ss7tBRpE+csj60=; b=X/BCEKx2XCpDmibeE6L/Vxn1JF
+        I0HPwy3x7sk164lmCWc2/VVuIak2O0QCjpoPVlAwoQgnRGXs5ddZvlE/Etzu0upfMvY65uPksc8Vt
+        Yr4QKi7YZ1x1QT1dSIR2s/XXTUaObnfVTSUtIBpr8vic9TNbotQ2PDlFNqk1tqXTuifsOMUOwOdvQ
+        7dpVGzO4E/IFTzDPkeQR061UTp5AuTaZFuZKRCH5s5ZEIwu3ksIXfQ0ipVGdTWveMLEYxK37BS2e3
+        kU8mcPPdegJuCy7/m7suSsW+8Kfu2xg7JAZw8XJJZB1QX4rqTpfX9zaQYUJXdBDe0fCNaK3jv3gte
+        ZF8hRBhQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lBzgS-00Greh-7l; Tue, 16 Feb 2021 12:42:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 70B9A3059DD;
+        Tue, 16 Feb 2021 13:42:26 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3595C203C0769; Tue, 16 Feb 2021 13:42:26 +0100 (CET)
+Date:   Tue, 16 Feb 2021 13:42:26 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+Cc:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com, z.figura12@gmail.com,
+        joel@joelfernandes.org, malteskarupke@fastmail.fm,
+        linux-api@vger.kernel.org, fweimer@redhat.com,
+        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, acme@kernel.org, corbet@lwn.net
+Subject: Re: [RFC PATCH 01/13] futex2: Implement wait and wake functions
+Message-ID: <YCu9suNwsselodLD@hirez.programming.kicks-ass.net>
+References: <20210215152404.250281-1-andrealmeid@collabora.com>
+ <20210215152404.250281-2-andrealmeid@collabora.com>
+ <YCuWvlKRXAygNQZP@hirez.programming.kicks-ass.net>
+ <20210216102044.e2cvvqdglqs23yfe@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216102044.e2cvvqdglqs23yfe@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:28 AM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> Could we please avoid documenting the obvious? It is more or less common
-> knowledge that the write callback (like any other) is preemptible user
-> context (in which write occurs). The same is true for register/probe
-> functions. The non-preemptible / atomic is mostly the exception because
-> of the callback. Like from a timer or an interrupt.
+On Tue, Feb 16, 2021 at 11:20:44AM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-02-16 10:56:14 [+0100], Peter Zijlstra wrote:
+> > So while I'm in favour of adding a new interface, I'm not sure I see
+> > benefit of reimplementing the basics, sure it seems simpler now, but
+> > that's because you've not implemented all the 'fun' stuff.
+> 
+> The last attempt tried to hide the updated interface within libc which
+> did not fly. The global hash state is one of the problems because it
+> leads to hash collisions of two unrelated locks.
+> It will get simpler if we go into the kernel for each lock/unlock
+> operation but this might not very good in terms of performance for locks
+> which are mostly uncontended. I'm not sure how much we can cheat in
+> terms of VDSO.
 
-It is not so much about documenting the obvious, but about stating
-that 1) the precondition was properly taken into account and that 2)
-nothing non-obvious is undocumented. When code is changed later on, it
-is much more likely assumptions are broken if not documented.
+I'm sorry, but I'm failing to understand any of that.
 
-In fact, from a quick git blame, that seems to be what happened here:
-originally the function could be called from a public function
-intended to be used from inside the kernel; so I assume it was the
-intention to allow calls from softirq contexts. Then it was refactored
-and the check never removed. In this case, the extra check is not a
-big deal, but going in the opposite direction can happen too, and then
-we will have a bug.
+How is adding a second global hash going to solve anything? Also, the
+LOCK/UNLOCK primitives as we have them today very much rely on a
+userspace fast path, and I don't see that changing. Only on contention
+do we call into the kernel.
 
-In general, when a patch for a fix is needed, it's usually a good idea
-to add a comment right in the code. Even if only to avoid someone else
-having to backtrack the calls to see it is only called form fs_ops
-etc.
+The advantage of the new interface is having that NUMA word along with
+the Futex word, in which we can store the node_id for the hash we
+stuffed the futex in, which is awesome, but that too doesn't need a
+re-implementation of all the basics.
 
-Cheers,
-Miguel
+And getting rid of the super multiplexer is also nice.
+
+But re-implementing all the basic stuff again, not so nice.
