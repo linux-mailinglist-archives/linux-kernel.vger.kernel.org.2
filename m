@@ -2,91 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442B931C9F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E3431CA02
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhBPLkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:40:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55692 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230375AbhBPLi5 (ORCPT
+        id S230478AbhBPLmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:42:51 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:48343 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhBPLjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:38:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613475449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LddbWRXDOdoIRx26pBviJhLeOTNZA/vNgqOHA0L1BFU=;
-        b=CzHibBl2ysHjpTyXZnsHzDiEm4J5Kg6vrgtY5si9/pvghkuYvPaQ5w2j4GWFK6Ousxuumr
-        s7Pf3jW5ZjtKDsnknptm8YWiAF8AeiM2212cSQmUvMRtrd8LPxBkAn+fQmvL+tT82MGd3M
-        conhXV4ZI50xgxG6wbo9UDg4H5bGzHc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-145-f_YqtW_wO-iKbDjaR3aryA-1; Tue, 16 Feb 2021 06:37:27 -0500
-X-MC-Unique: f_YqtW_wO-iKbDjaR3aryA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6713835E22;
-        Tue, 16 Feb 2021 11:37:25 +0000 (UTC)
-Received: from sirius.home.kraxel.org (ovpn-114-184.ams2.redhat.com [10.36.114.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8D3EA5B698;
-        Tue, 16 Feb 2021 11:37:25 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id A492A1800870; Tue, 16 Feb 2021 12:37:18 +0100 (CET)
-From:   Gerd Hoffmann <kraxel@redhat.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        virtualization@lists.linux-foundation.org (open list:DRM DRIVER FOR QXL
-        VIRTUAL GPU),
-        spice-devel@lists.freedesktop.org (open list:DRM DRIVER FOR QXL VIRTUAL
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 10/10] drm/qxl: add lock asserts to qxl_bo_kmap_locked + qxl_bo_kunmap_locked
-Date:   Tue, 16 Feb 2021 12:37:16 +0100
-Message-Id: <20210216113716.716996-11-kraxel@redhat.com>
-In-Reply-To: <20210216113716.716996-1-kraxel@redhat.com>
-References: <20210216113716.716996-1-kraxel@redhat.com>
+        Tue, 16 Feb 2021 06:39:01 -0500
+Date:   Tue, 16 Feb 2021 11:38:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1613475495; bh=7//j7y6xoZuLy2Ngmv+kjotOmXPJtO9KtcN3PXcUSkQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=UR4bFjUVK9exL1LGEM/AUDMtHefnF+AYxkSGYHfIuuTYibotYnneCzbLfSH25ETll
+         3sZ7j8t0yPcz+LQVqbPQgctzQBPqc/xUMQpD44biUTxn68PXOeAasfYoCI/JmDkirJ
+         Ih+TBLt+inppDmtRCBP/XdqR+G3tn2q2OyuyY7WaUiZiqC/DWbSaZpJCh8Vm9hyaqg
+         LQp5EnEkGVNvacnPk8Pu+Y4TrWLo9gD6Oxxc+yeoQDIMxAxGZkS5uIzcsf4rZPSPTm
+         Rpk1Obtl8HfjPqOdHERYtF5qtMEf10jJqEmtupATBMFpFt/t7G3j8qgczwlCJLfdNA
+         iz5yhj+A6ApaA==
+To:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v4 bpf-next 0/6] xsk: build skb by page (aka generic zerocopy xmit)
+Message-ID: <20210216113740.62041-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Try avoid re-introducing locking bugs.
+This series introduces XSK generic zerocopy xmit by adding XSK umem
+pages as skb frags instead of copying data to linear space.
+The only requirement for this for drivers is to be able to xmit skbs
+with skb_headlen(skb) =3D=3D 0, i.e. all data including hard headers
+starts from frag 0.
+To indicate whether a particular driver supports this, a new netdev
+priv flag, IFF_TX_SKB_NO_LINEAR, is added (and declared in virtio_net
+as it's already capable of doing it). So consider implementing this
+in your drivers to greatly speed-up generic XSK xmit.
 
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
----
- drivers/gpu/drm/qxl/qxl_object.c | 4 ++++
- 1 file changed, 4 insertions(+)
+The first two bits refactor netdev_priv_flags a bit to harden them
+in terms of bitfield overflow, as IFF_TX_SKB_NO_LINEAR is the last
+one that fits into unsigned int.
+The fifth patch adds headroom and tailroom reservations for the
+allocated skbs on XSK generic xmit path. This ensures there won't
+be any unwanted skb reallocations on fast-path due to headroom and/or
+tailroom driver/device requirements (own headers/descriptors etc.).
+The other three add a new private flag, declare it in virtio_net
+driver and introduce generic XSK zerocopy xmit itself.
 
-diff --git a/drivers/gpu/drm/qxl/qxl_object.c b/drivers/gpu/drm/qxl/qxl_object.c
-index 22748b9566af..90d5e5b7f927 100644
---- a/drivers/gpu/drm/qxl/qxl_object.c
-+++ b/drivers/gpu/drm/qxl/qxl_object.c
-@@ -162,6 +162,8 @@ int qxl_bo_kmap_locked(struct qxl_bo *bo, struct dma_buf_map *map)
- {
- 	int r;
- 
-+	dma_resv_assert_held(bo->tbo.base.resv);
-+
- 	if (bo->kptr) {
- 		bo->map_count++;
- 		goto out;
-@@ -236,6 +238,8 @@ void *qxl_bo_kmap_atomic_page(struct qxl_device *qdev,
- 
- void qxl_bo_kunmap_locked(struct qxl_bo *bo)
- {
-+	dma_resv_assert_held(bo->tbo.base.resv);
-+
- 	if (bo->kptr == NULL)
- 		return;
- 	bo->map_count--;
--- 
-2.29.2
+The main body of work is created and done by Xuan Zhuo. His original
+cover letter:
+
+v3:
+    Optimized code
+
+v2:
+    1. add priv_flags IFF_TX_SKB_NO_LINEAR instead of netdev_feature
+    2. split the patch to three:
+        a. add priv_flags IFF_TX_SKB_NO_LINEAR
+        b. virtio net add priv_flags IFF_TX_SKB_NO_LINEAR
+        c. When there is support this flag, construct skb without linear
+           space
+    3. use ERR_PTR() and PTR_ERR() to handle the err
+
+v1 message log:
+---------------
+
+This patch is used to construct skb based on page to save memory copy
+overhead.
+
+This has one problem:
+
+We construct the skb by fill the data page as a frag into the skb. In
+this way, the linear space is empty, and the header information is also
+in the frag, not in the linear space, which is not allowed for some
+network cards. For example, Mellanox Technologies MT27710 Family
+[ConnectX-4 Lx] will get the following error message:
+
+    mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8,
+    qn 0x1dbb, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
+    00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000030: 00 00 00 00 60 10 68 01 0a 00 1d bb 00 0f 9f d2
+    WQE DUMP: WQ size 1024 WQ cur size 0, WQE index 0xf, len: 64
+    00000000: 00 00 0f 0a 00 1d bb 03 00 00 00 08 00 00 00 00
+    00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000020: 00 00 00 2b 00 08 00 00 00 00 00 05 9e e3 08 00
+    00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
+
+I also tried to use build_skb to construct skb, but because of the
+existence of skb_shinfo, it must be behind the linear space, so this
+method is not working. We can't put skb_shinfo on desc->addr, it will be
+exposed to users, this is not safe.
+
+Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whether the
+network card supports the header information of the packet in the frag
+and not in the linear space.
+
+---------------- Performance Testing ------------
+
+The test environment is Aliyun ECS server.
+Test cmd:
+```
+xdpsock -i eth0 -t  -S -s <msg size>
+```
+
+Test result data:
+
+size    64      512     1024    1500
+copy    1916747 1775988 1600203 1440054
+page    1974058 1953655 1945463 1904478
+percent 3.0%    10.0%   21.58%  32.3%
+
+From v3 [0]:
+ - refactor netdev_priv_flags to make it easier to add new ones and
+   prevent bitwidth overflow;
+ - add headroom (both standard and zerocopy) and tailroom (standard)
+   reservation in skb for drivers to avoid potential reallocations;
+ - fix skb->truesize accounting;
+ - misc comment rewords.
+
+[0] https://lore.kernel.org/netdev/cover.1611236588.git.xuanzhuo@linux.alib=
+aba.com
+
+Alexander Lobakin (3):
+  netdev_priv_flags: add missing IFF_PHONY_HEADROOM self-definition
+  netdevice: check for net_device::priv_flags bitfield overflow
+  xsk: respect device's headroom and tailroom on generic xmit path
+
+Xuan Zhuo (3):
+  net: add priv_flags for allow tx skb without linear
+  virtio-net: support IFF_TX_SKB_NO_LINEAR
+  xsk: build skb by page (aka generic zerocopy xmit)
+
+ drivers/net/virtio_net.c  |   3 +-
+ include/linux/netdevice.h | 138 +++++++++++++++++++++-----------------
+ net/xdp/xsk.c             | 113 ++++++++++++++++++++++++++-----
+ 3 files changed, 173 insertions(+), 81 deletions(-)
+
+--=20
+2.30.1
+
 
