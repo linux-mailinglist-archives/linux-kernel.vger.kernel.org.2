@@ -2,117 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02F531CFCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB85831CFCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhBPSBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 13:01:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbhBPSBZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:01:25 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A038C061786;
-        Tue, 16 Feb 2021 10:00:44 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id x3so1927420qti.5;
-        Tue, 16 Feb 2021 10:00:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MZv88LoGDyoqj+JUsBfVabeWm3XvrAKVtmhQ8+/+qO4=;
-        b=noA0wnAT0o9cRCGQUDoWCay8HcKLJOp41CqraJbgr0dUVJgXnzgQUAbSsAcgKYFWrz
-         ZX4/8YMQjlkIrdJpgK7JvG7txBlCksTyIhn5WVGDX8YoSuEYB9bscqYA+I1tlZKObnNT
-         9gMnfORrhEIAw+8s/tjErap/Fe1hn98xqNTAjMhkziAaXL7kJAb+84hE4+WGPBMhVrIU
-         j4DhjZH7IM+6wbQnSY9MM5SKq/XkmovP+72t7oEF85pbrMehGtV2+DkPBnCl6YUpMLv7
-         WepA5REasHrXHRgJBWvi/WiOJxxbgPUhgbMLwoenvZ0Du9OfqIw1VKee4tVQKsoPzQGC
-         lxrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MZv88LoGDyoqj+JUsBfVabeWm3XvrAKVtmhQ8+/+qO4=;
-        b=nGSOPpQqlgQ6NEVwNQiChA/GECX0nF7+z4kc3htPleph3pkjIcb2IKexbFe7nLPT//
-         90pSKPRThd4Y4e6G70SQ4TZtPwjGtibEeI0u/HPt1UVTaPM47C6Z0Jd20p2LqdJ9H1wJ
-         uICLh91OUrTKyJ1z68WdynAONl2mUTi/OhLD4wnlAJSdKMxZOfmZdEm1+W/RHjlPnvoz
-         P9lsneSdKAvWJyaLQK1y3G0T8WdTSHGIm8mf+QU2duEaI/LkBkkAgzrC3NvewhZecxVM
-         qpMriPm1bZRW027ketoOsKv64zPznqJIatLbc1jG7/L6MOkgbweZk3/NmZLA2kURXiGE
-         ifOw==
-X-Gm-Message-State: AOAM530vQ5r5xHlxBLu189qh4/Pr4UqSDvWNeheaFWFdliF1T0L7UZVu
-        XfR94SBjIFwoTFfVWv1cGJCRIX16rt0=
-X-Google-Smtp-Source: ABdhPJwYR92x2g6usp+e+eae7hovcmvLl8Gibk+9FAtpv8JCfKDcc7oYg5seY7OMZNn+EkTx8nA98A==
-X-Received: by 2002:a05:622a:8:: with SMTP id x8mr20156343qtw.359.1613498443928;
-        Tue, 16 Feb 2021 10:00:43 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id c81sm14537171qkb.88.2021.02.16.10.00.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 10:00:43 -0800 (PST)
-Date:   Tue, 16 Feb 2021 10:00:42 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [RESEND PATCH v2 0/6] lib/find_bit: fast path for small bitmaps
-Message-ID: <20210216180042.GA421019@yury-ThinkPad>
-References: <20210130191719.7085-1-yury.norov@gmail.com>
- <20210215213044.GB394846@yury-ThinkPad>
- <YCuM7yzMoXjpuj8Y@smile.fi.intel.com>
+        id S230121AbhBPSCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 13:02:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229931AbhBPSC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 13:02:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0EF064DA1;
+        Tue, 16 Feb 2021 18:01:46 +0000 (UTC)
+Date:   Tue, 16 Feb 2021 18:01:44 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        syzbot <syzbot+95c862be69e37145543f@syzkaller.appspotmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: KASAN: invalid-access Write in enqueue_timer
+Message-ID: <20210216180143.GB14978@arm.com>
+References: <0000000000000be4d705bb68dfa7@google.com>
+ <20210216172817.GA14978@arm.com>
+ <CAHmME9q2-wbRmE-VgSoW5fxjGQ9kkafYH-X5gSVvgWESo5rm4Q@mail.gmail.com>
+ <CAHmME9ob9g-pcsKU2=n2SOzjNwyGh9+dL-WGpQn4Da+DD4dPzA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YCuM7yzMoXjpuj8Y@smile.fi.intel.com>
+In-Reply-To: <CAHmME9ob9g-pcsKU2=n2SOzjNwyGh9+dL-WGpQn4Da+DD4dPzA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:14:23AM +0200, Andy Shevchenko wrote:
-> On Mon, Feb 15, 2021 at 01:30:44PM -0800, Yury Norov wrote:
-> > [add David Laight <David.Laight@ACULAB.COM> ]
-> > 
-> > On Sat, Jan 30, 2021 at 11:17:11AM -0800, Yury Norov wrote:
-> > > Bitmap operations are much simpler and faster in case of small bitmaps
-> > > which fit into a single word. In linux/bitmap.h we have a machinery that
-> > > allows compiler to replace actual function call with a few instructions
-> > > if bitmaps passed into the function are small and their size is known at
-> > > compile time.
-> > > 
-> > > find_*_bit() API lacks this functionality; despite users will benefit from
-> > > it a lot. One important example is cpumask subsystem when
-> > > NR_CPUS <= BITS_PER_LONG. In the very best case, the compiler may replace
-> > > a find_*_bit() call for such a bitmap with a single ffs or ffz instruction.
-> > > 
-> > > Tools is synchronized with new implementation where needed.
-> > > 
-> > > v1: https://www.spinics.net/lists/kernel/msg3804727.html
-> > > v2: - employ GENMASK() for bitmaps;
-> > >     - unify find_bit inliners in;
-> > >     - address comments to v1;
-> > 
-> > Comments so far:
-> >  - increased image size (patch #8) - addressed by introducing
-> >    CONFIG_FAST_PATH;
-> 
-> >  - split tools and kernel parts - not clear why it's better.
-> 
-> Because tools are user space programs and sometimes may not follow kernel
-> specifics, so they are different logically and changes should be separated.
+On Tue, Feb 16, 2021 at 06:50:20PM +0100, Jason A. Donenfeld wrote:
+> On Tue, Feb 16, 2021 at 6:46 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> > On Tue, Feb 16, 2021 at 6:28 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > >  hlist_add_head include/linux/list.h:883 [inline]
+> > > >  enqueue_timer+0x18/0xc0 kernel/time/timer.c:581
+> > > >  mod_timer+0x14/0x20 kernel/time/timer.c:1106
+> > > >  mod_peer_timer drivers/net/wireguard/timers.c:37 [inline]
+> > > >  wg_timers_any_authenticated_packet_traversal+0x68/0x90 drivers/net/wireguard/timers.c:215
+> >
+> > The line of hlist_add_head that it's hitting is:
+> >
+> > static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
+> > {
+> >        struct hlist_node *first = h->first;
+> >        WRITE_ONCE(n->next, first);
+> >        if (first)
+> >
+> > So that means it's the dereferencing of h that's a problem. That comes from:
+> >
+> > static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
+> >                          unsigned int idx, unsigned long bucket_expiry)
+> > {
+> >
+> >        hlist_add_head(&timer->entry, base->vectors + idx);
+> >
+> > That means it concerns base->vectors + idx, not the timer_list object
+> > that wireguard manages. That's confusing. Could that imply that the
+> > bug is in freeing a previous timer without removing it from the timer
+> > lists, so that it winds up being in base->vectors?
 
-In this specific case tools follow kernel well.
+Good point, it's indeed likely that the timer list is messed up already,
+just an unlucky encounter in the wireguard code.
 
-Nevertheless, if you think it's a blocker for the series, I can split. What
-option for tools is better for you - doubling the number of patches or 
-squashing everything in a patch bomb?
+> Digging around on syzkaller, it looks like there's a similar bug on
+> jbd2, concerning iptunnels's allocation:
+> 
+> https://syzkaller.appspot.com/text?tag=CrashReport&x=13afb19cd00000
+[...]
+> It might not actually be a wireguard bug?
+
+I wonder whether syzbot reported similar issues with
+CONFIG_KASAN_SW_TAGS. It shouldn't be that different from the HW_TAGS
+but at least we can rule out qemu bugs with the MTE emulation.
+
+-- 
+Catalin
