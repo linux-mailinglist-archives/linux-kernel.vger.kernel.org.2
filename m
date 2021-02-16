@@ -2,81 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA4331C4BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 02:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB36031C4BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 02:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhBPBAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 20:00:36 -0500
-Received: from mo-csw-fb1115.securemx.jp ([210.130.202.174]:40688 "EHLO
-        mo-csw-fb.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhBPBAf (ORCPT
+        id S229787AbhBPBEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 20:04:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhBPBEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 20:00:35 -0500
-X-Greylist: delayed 1207 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Feb 2021 20:00:33 EST
-Received: by mo-csw-fb.securemx.jp (mx-mo-csw-fb1115) id 11G0egeW026957; Tue, 16 Feb 2021 09:40:42 +0900
-Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 11G0c839023879; Tue, 16 Feb 2021 09:38:08 +0900
-X-Iguazu-Qid: 2wGqn5DuWvVM6sYQCW
-X-Iguazu-QSIG: v=2; s=0; t=1613435888; q=2wGqn5DuWvVM6sYQCW; m=jnHDndSUrFfAQglWXjmb49JJo8sxPyZ3Gev6yI5lHw8=
-Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
-        by relay.securemx.jp (mx-mr1110) id 11G0c5PV015544;
-        Tue, 16 Feb 2021 09:38:06 +0900
-Received: from enc01.toshiba.co.jp ([106.186.93.100])
-        by imx2.toshiba.co.jp  with ESMTP id 11G0c5oW005610;
-        Tue, 16 Feb 2021 09:38:05 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 11G0c59I026414;
-        Tue, 16 Feb 2021 09:38:05 +0900
-From:   Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] mtd: nand: Fix BBT update issue
-Date:   Tue, 16 Feb 2021 09:37:55 +0900
-X-TSB-HOP: ON
-Message-Id: <b04b128eaca91961597fa9586c7ccaa3934aaa03.1612501067.git.ytc-mb-yfuruyama7@kioxia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1613435875-6846-1-git-send-email-ytc-mb-yfuruyama7@kioxia.com>
-References: <1613435875-6846-1-git-send-email-ytc-mb-yfuruyama7@kioxia.com>
+        Mon, 15 Feb 2021 20:04:05 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AEBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 17:03:24 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id ot7so11406152ejb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Feb 2021 17:03:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zrjbMWbLD5k1YU1gY6sgg8lrLPs48sMOTQtq5qr6+JE=;
+        b=LIupk08tNIWocLfmHYdevHIaMUM6xGoaBpAWMYTkuBgf3r3EGTFB209egHvSXfoGNS
+         GWCWd7fEN/Bq4pnpKID2URgFbQqUTAU0x5/K9yCIWixQjRfUYcasFfnfI4Dz/HnBRG54
+         dhmq2a26jT7RKOsFjj3UmPANSPpO/7HeXa05EhfgHmDdrRYh0xun30YVkTlAlSliJdOU
+         x9oPZ9Mw5Y+RDjR1FrWgrdAicmx3f7lHd4l1LWa9dYQyyqjqsWggjk61PKX40m4ENZxw
+         pC5aJ3gDug4zgcA1QWzS75Qk5sOiWwwLuPUfn3cSlR4bGI7xeUwEbZSP01Nb3XKKQ4gp
+         NviA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zrjbMWbLD5k1YU1gY6sgg8lrLPs48sMOTQtq5qr6+JE=;
+        b=DWc+PxV8NjQbVUXwalfuhky67UZNlTAhCeJUD2AUjXyBbxRLeG4VJAWfRVR8jiMA5c
+         65E/5Poyhm1O/xK9Wf34eSdufUyfopW32f5kYMQhDZMkDs7Hv7npVPxkrpANko5991sa
+         NnKapKaiI4/yGfB0KkHsGYLZwYG4ky14P2786m8M8g8DDdEKBxYreo7K2oY2b3TaOqUd
+         QYPAqTG7wAGp6t52Vkk2Jz+VL9lvc/sFaCdR6OOlQBBpaa3XxCf50QJQNNOh53QPVqlK
+         BNi0rpYFvzEkL3dOS3m6s6lsVL36R+Zv8WhzzKFk8G4nS+M+BZxMBHGlIgmMQxErmbMF
+         +X1A==
+X-Gm-Message-State: AOAM530VBJTRllyle/euMzHlhNVUsVWBSz7DJFjDormZp2vQNpi7mTKU
+        0cbngafDh6aTy49PLtrpSffGKSoxzUYgCJHl07qJxg==
+X-Google-Smtp-Source: ABdhPJy8c/0gVUxzxzOu465gevLaW/oq5+vXZq8cBcdf0ZCueZjV3UO69BfxcbMCkyHxtXaBOFrKeIBIx/oCPyWBv/g=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr17896470eju.375.1613437403417;
+ Mon, 15 Feb 2021 17:03:23 -0800 (PST)
+MIME-Version: 1.0
+References: <CA+G9fYsvDWDogC+xgeG2V9MMofV5svTipDigDiUBje+2jSRK8g@mail.gmail.com>
+ <CAK8P3a2OeeW29ekbD70Ns4LTjGRJRT9P0wM-SAxUin1zAxP7TA@mail.gmail.com>
+ <CA+G9fYv89bfbixjuudPWkBAucTYg7qhNxcV54RMEkRP5is-bnQ@mail.gmail.com>
+ <YCmAGNyFAOZs7GCG@zeniv-ca.linux.org.uk> <CA+G9fYsZnBv4wAEKYb0mgMd-BsgXcPUGBQ=VRKcONqAZry_4XQ@mail.gmail.com>
+ <YCqGX36I+KR7SoA8@zeniv-ca.linux.org.uk>
+In-Reply-To: <YCqGX36I+KR7SoA8@zeniv-ca.linux.org.uk>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 16 Feb 2021 06:33:12 +0530
+Message-ID: <CA+G9fYuq7bpDhY3cA5O66bf0nxKUkbtiTMcLMqBYvWKLhNfrjQ@mail.gmail.com>
+Subject: Re: LTP: madvise08.c:203: TFAIL: No sequence in dump after MADV_DODUMP.
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org,
+        chrubis <chrubis@suse.cz>, Jan Stancek <jstancek@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian@brauner.io>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Vorel <pvorel@suse.cz>,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        Joerg.Vehlow@aox-tech.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed issue of manages BBT (Bad Block Table).
-It didn't mark correctly when a specific block was bad block.
+On Mon, 15 Feb 2021 at 20:05, Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Mon, Feb 15, 2021 at 02:11:15PM +0530, Naresh Kamboju wrote:
+>
+> > fs/coredump.c:903:9: error: 'return' with a value, in function
+> > returning void [-Werror=return-type]
+> >  903 | return 0;
+> >         | ^
+> >
+> > Build failed due to above error.
+>
+> FWIW, here the test results in
+> Running tests.......
+> <<<test_start>>>
+> tag=madvise08 stime=1613398818
+> cmdline="madvise08"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> incrementing stop
+> tst_test.c:1250: TINFO: Timeout per run is 0h 05m 00s
+> madvise08.c:78: TINFO: Temporary core pattern is '/tmp/ltp-tgvQ3Lz1UZ/B6lwy6/dump-%p'
+> madvise08.c:117: TINFO: Dump file should be dump-2276
+> madvise08.c:201: TPASS: madvise(..., MADV_DONTDUMP)
+> madvise08.c:117: TINFO: Dump file should be dump-2277
+> madvise08.c:205: TPASS: madvise(..., MADV_DODUMP)
+>
+> Summary:
+> passed   2
+> failed   0
+> skipped  0
+> warnings 0
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=0 corefile=no
+> cutime=0 cstime=0
+> <<<test_end>>>
+>
+> (built without -Werror=return-type, so I'd missed the warnings)
+>
+> Anyway, I've folded the fix (with those stray return 0 removed, of course)
+> into #work.coredump and #for-next; works here.  Could you test either
+> branch (in git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git)?
 
-This issue occurs when the bad block mark (3-bit chunk) is 
-crosses over 32 bit (e.g. Block10, Block21...) unit.
+By using Linaro tuxsuite [1] I have built your tree and tested on x86_64 and
+the reported test PASS now.
 
-Signed-off-by: Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
----
- drivers/mtd/nand/bbt.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+LTP syscalls [2] and LTP fs [3] tested on x86_64 and both PASS.
 
-diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
-index 044adf913854..979c47e61381 100644
---- a/drivers/mtd/nand/bbt.c
-+++ b/drivers/mtd/nand/bbt.c
-@@ -112,18 +112,20 @@ int nanddev_bbt_set_block_status(struct nand_device *nand, unsigned int entry,
- 			     ((entry * bits_per_block) / BITS_PER_LONG);
- 	unsigned int offs = (entry * bits_per_block) % BITS_PER_LONG;
- 	unsigned long val = status & GENMASK(bits_per_block - 1, 0);
-+	unsigned long shift = ((bits_per_block + offs <= BITS_PER_LONG) ?
-+					(offs + bits_per_block - 1) : (BITS_PER_LONG - 1));
- 
- 	if (entry >= nanddev_neraseblocks(nand))
- 		return -ERANGE;
- 
--	pos[0] &= ~GENMASK(offs + bits_per_block - 1, offs);
-+	pos[0] &= ~GENMASK(shift, offs);
- 	pos[0] |= val << offs;
- 
- 	if (bits_per_block + offs > BITS_PER_LONG) {
- 		unsigned int rbits = bits_per_block + offs - BITS_PER_LONG;
- 
- 		pos[1] &= ~GENMASK(rbits - 1, 0);
--		pos[1] |= val >> rbits;
-+		pos[1] |= (val >> (BITS_PER_LONG - offs));
- 	}
- 
- 	return 0;
--- 
-2.25.1
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+
+[1] https://gitlab.com/Linaro/tuxsuite
+[2] https://lkft.validation.linaro.org/results/2278012
+[3] https://lkft.validation.linaro.org/results/2280979
+
+- Naresh
