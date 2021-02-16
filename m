@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA7C31D1D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C47631D1D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhBPVFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:05:39 -0500
-Received: from mail.codeweavers.com ([50.203.203.244]:49504 "EHLO
+        id S230228AbhBPVGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:06:46 -0500
+Received: from mail.codeweavers.com ([50.203.203.244]:49670 "EHLO
         mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhBPVFh (ORCPT
+        with ESMTP id S230198AbhBPVGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:05:37 -0500
+        Tue, 16 Feb 2021 16:06:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=zY97zwVfWY8WHBbRL37+t2vDGTB3LFeY2gz0qcPX4rg=; b=o6sI+KaNN7UwXzejCtEYCGWm0y
-        DHoKihcJME+Cc+7JpJpi9YRwkz2gwEaChmfLti5vcn2S00KXUe3fjOFxDA2JL2ZJ+3LyxxFmU+6vS
-        IR1GaBhn36H8g08ciVqz7YtYcmeL/CS/XthI989i0Pj5xW2U3iLy80h4iX9apLJSyGSw=;
+        bh=snQhRuDOgG3gM9KJXReOSWJ3Vco57iMwrKIhqXErvcw=; b=Nk4HuqqCQtDxGPkxS2fmWA+MMs
+        MvIBTbgywgsyOr82Klut18b5fjiFl3od/MJr6GKOu17nmj+9pSuUvca4ZViFwqny7X54aEsueepK4
+        EM4xC4kKjX43x1K6nQrbOI5BacIF7LV4CwEDFsMvbQJ3Xqn8ySG23ttKJxJN1yIhVzCA=;
 Received: from [10.69.141.136]
         by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.92)
         (envelope-from <nfraser@codeweavers.com>)
-        id 1lC7We-0002Mh-3R; Tue, 16 Feb 2021 15:04:54 -0600
-Subject: Re: [PATCH 2/2] perf buildid-cache: Add test for 16-byte build-id
+        id 1lC7Xi-0002Oi-Nf; Tue, 16 Feb 2021 15:06:00 -0600
+Subject: [PATCH 1/2] perf report: Remove redundant libbfd checks
 From:   Nicholas Fraser <nfraser@codeweavers.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -46,13 +46,13 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
         Huw Davies <huw@codeweavers.com>
 References: <d1c87379-8837-a5e7-eb44-f063ca0f4766@codeweavers.com>
- <c08be235-7434-5208-5f21-e8c9a3265464@codeweavers.com>
-Message-ID: <3aa04469-b891-5d05-85bc-799af460d54f@codeweavers.com>
-Date:   Tue, 16 Feb 2021 16:04:40 -0500
+ <94758ca1-0031-d7c6-6c6a-900fd77ef695@codeweavers.com>
+Message-ID: <27b38347-f71b-5d6c-3190-4c900e864d5d@codeweavers.com>
+Date:   Tue, 16 Feb 2021 16:05:47 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <c08be235-7434-5208-5f21-e8c9a3265464@codeweavers.com>
+In-Reply-To: <94758ca1-0031-d7c6-6c6a-900fd77ef695@codeweavers.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -62,11 +62,10 @@ X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.
  message has been attached to this so you can view it or label
  similar future email.  If you have any questions, see
  the administrator of that system for details.
- Content preview:  Sorry, I just realized I forgot to run checkpatch.pl on these;
-    they're missing the --signoff. I'll re-send. On 2021-02-16 3:38 p.m., Nicholas
-    Fraser wrote: > tests/shell/buildid.sh added an ELF executable with an MD5
-    build-id to > the perf debug cache but did not check whether the object was
-    printed > by a [...] 
+ Content preview:  This removes the redundant checks bfd_check_format() and bfd_target_elf_flavour.
+    They were previously checking different files. Signed-off-by: Nicholas Fraser
+    <nfraser@codeweavers.com> --- tools/perf/util/symbol.c | 9 --------- 1 file
+    changed, 9 deletions(-) 
  Content analysis details:   (-40.5 points, 5.0 required)
   pts rule name              description
  ---- ---------------------- --------------------------------------------------
@@ -75,42 +74,39 @@ X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.
   -20 ALL_TRUSTED            Passed through trusted hosts only via SMTP
  -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
                              [score: 0.0000]
- -0.0 NICE_REPLY_A           Looks like a legit reply (A)
-  0.0 AWL                    AWL: Adjusted score from AWL reputation of From: address
+ -0.0 AWL                    AWL: Adjusted score from AWL reputation of From: address
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, I just realized I forgot to run checkpatch.pl on these; they're
-missing the --signoff. I'll re-send.
+This removes the redundant checks bfd_check_format() and
+bfd_target_elf_flavour. They were previously checking different files.
 
-On 2021-02-16 3:38 p.m., Nicholas Fraser wrote:
-> tests/shell/buildid.sh added an ELF executable with an MD5 build-id to
-> the perf debug cache but did not check whether the object was printed
-> by a subsequent call to "perf buildid-cache -l". It was being omitted
-> from the list.
-> 
-> A previous commit fixed the bug that left it out of the list. This adds
-> a test for it.
-> ---
->  tools/perf/tests/shell/buildid.sh | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
-> index 4861a20edee2..de02a23b7c7b 100755
-> --- a/tools/perf/tests/shell/buildid.sh
-> +++ b/tools/perf/tests/shell/buildid.sh
-> @@ -50,6 +50,12 @@ check()
->  		exit 1
->  	fi
->  
-> +	${perf} buildid-cache -l|grep $id
-> +	if [ $? -ne 0 ]; then
-> +		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
-> +		exit 1
-> +	fi
-> +
->  	echo "OK for ${1}"
->  }
->  
-> 
+Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+---
+ tools/perf/util/symbol.c | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+index 492c873713cc..08f6f57c84fd 100644
+--- a/tools/perf/util/symbol.c
++++ b/tools/perf/util/symbol.c
+@@ -1586,15 +1586,6 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
+ 	if (section)
+ 		dso->text_offset = section->vma - section->filepos;
+ 
+-	if (!bfd_check_format(abfd, bfd_object)) {
+-		pr_debug2("%s: cannot read %s bfd file.\n", __func__,
+-			  debugfile);
+-		goto out_close;
+-	}
+-
+-	if (bfd_get_flavour(abfd) == bfd_target_elf_flavour)
+-		goto out_close;
+-
+ 	symbols_size = bfd_get_symtab_upper_bound(abfd);
+ 	if (symbols_size == 0) {
+ 		bfd_close(abfd);
+-- 
+2.30.1
+
