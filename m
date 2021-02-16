@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344A731C882
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 797F031C885
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhBPKLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:11:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhBPKLj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:11:39 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BEE8C061574;
-        Tue, 16 Feb 2021 02:10:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=M3sGSrTBwz4qNYhjumdWtmzUj5dwr3S+HhZN9jBgyco=; b=d2WIA82ke4d6idbElbNfc4JiTt
-        2CelTzoLni619XeJSNwMEn6uf8A5GxrMeYXv54drG9i38ULUj2AKPEPNty6Yskh6Ss5RPmhM0q0tF
-        M/x8hbX7kygeHNqSb1IDfON8Y8i8Nldb81lTChkCH/Zvcf8WHOZShqpWpRk8uEJpoWOOXjrppfPnJ
-        X8t7q/x5jqG2NrxnIquyNGWHb8q/VTI6A9L8wAFG9cf5Ecq1cl/ZtIyG07cHQllkaAYHCOgoHRV3d
-        bDq5qwzkzpygGX2Dj+fwYWa4vlSBYkzDS4bdfzuQ5iZL8lOm34Gxk29cH3mb+8U0zuvLXslIE2XfL
-        SNJvnonQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lBxI3-00GjSg-DG; Tue, 16 Feb 2021 10:09:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B468A3011E6;
-        Tue, 16 Feb 2021 11:09:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 91A502B7E1C46; Tue, 16 Feb 2021 11:09:05 +0100 (CET)
-Date:   Tue, 16 Feb 2021 11:09:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <dave.martin@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC PATCH 0/5] running kernel mode SIMD with softirqs disabled
-Message-ID: <YCuZwWWGtqf8PaAf@hirez.programming.kicks-ass.net>
-References: <20201218170106.23280-1-ardb@kernel.org>
+        id S229626AbhBPKMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:12:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229771AbhBPKMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:12:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64EF864D9E;
+        Tue, 16 Feb 2021 10:11:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613470318;
+        bh=O9zZWr1BTSfSC7SFTtkQBQ/xVE2twCkTfF2UAJOatvY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LbATF5kC6aiAcsZiQxoiwOyFy2ZGUj0vA+H2IP8rvzsFynEgS7cZbOnjEmM2GoUyn
+         TyQN96KPs5t2+58U2GLEFvUi/z/mMFeO+wU7Erc45C7SbZfAm1Dq1irE+hTX+3yWZa
+         f313M6wAnbu6w7+Zna5BYl5+VSHNiL5LS6/bKTvEZK87gQdPzRgRG8tSoq3l1jSkR3
+         8UPzruHnZDwjBHyXD2jO5K6VdIHboZw2Xq0OqLGzcm3VgcD8schBjAYk7dvwK+VvCA
+         2p4K5fGpkaNtVWfr4H7OIYjpdAvUUxYQu5NjT1t0BZlZ+e94QGqblRCeH0MCK6lCwh
+         TO6csrcxjnbdw==
+Received: by mail-oi1-f177.google.com with SMTP id l19so10667558oih.6;
+        Tue, 16 Feb 2021 02:11:58 -0800 (PST)
+X-Gm-Message-State: AOAM530UANs0iv5VRC9nJp9BrIlvOQh1d/MVPGTqboxWrNe0kc3xddC4
+        ajlofLCobWh2RFffBye8iAFohA3asL5X/VHS3GE=
+X-Google-Smtp-Source: ABdhPJzG/H3wVcslxTEnqeZi/ylklV0MYm3BcuNOjYzDqles36eR+lldIhLS+bHC1krCppp8jFjbRAV5JR99yHVjGsE=
+X-Received: by 2002:aca:e103:: with SMTP id y3mr1963362oig.11.1613470317705;
+ Tue, 16 Feb 2021 02:11:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218170106.23280-1-ardb@kernel.org>
+References: <20210216130449.3d1f0338@canb.auug.org.au> <OSBPR01MB2983FDFEF1D1E24E7C2DF0F692879@OSBPR01MB2983.jpnprd01.prod.outlook.com>
+In-Reply-To: <OSBPR01MB2983FDFEF1D1E24E7C2DF0F692879@OSBPR01MB2983.jpnprd01.prod.outlook.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 16 Feb 2021 11:11:41 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3CYkfOvta9pRwLXkOsARQF=YNWzdh0z1-r6rMDAEGYig@mail.gmail.com>
+Message-ID: <CAK8P3a3CYkfOvta9pRwLXkOsARQF=YNWzdh0z1-r6rMDAEGYig@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the net-next tree with the arm-soc tree
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 06:01:01PM +0100, Ard Biesheuvel wrote:
-> [ TL;DR for the non-ARM folks on CC: disabling softirq processing when using
->   SIMD in kernel mode could reduce complexity and improve performance, but we
->   need to decide whether we can do this, and how much softirq processing
->   latency we can tolerate. If we can find a satisfactory solution for this,
->   we might do the same for x86 and 32-bit ARM as well. ]
+On Tue, Feb 16, 2021 at 3:20 AM <nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
+> >
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> >
+>
+> This is because the DTS changes are included in net-next. This patch should be merged via the soc tree.
+> I had the same problem before. How is it correct to send a DTS patch?
+> Should I separate into different series?
 
-> - could we do the same on x86, now that kernel_fpu_begin/end is no longer
->   expensive?
+I have already sent the pull requests for the dts files to Linus, so that's
+not changing any more for this time, and he will just have to fix it up
+when he pulls both branches.
 
-Can't we simply save/restore the relevant register set?
+In the future, please send all dts updates to soc@kernel.org (after the
+binding and driver is merged) rather than together with the device drivers.
 
-So something like (note amluto was wanting to add a regset argument):
+Sending the devicetree binding updates is a little trickier, as we tend to
+want them merged both with the driver and the dts files. One way to do
+this is to have a shared branch for the bindings updates, and then base both
+the driver branch and the dts branch on top of the same commits for that.
 
-	<task>
-	kernel_fpu_begin(MMX)
-		<SIRQ>
-		kernel_fpu_begin(SSE)
-		kernel_fpu_end();
-		</SIRQ>
-	...
-	kernel_fpu_end()
+A simpler alternative is to merge only the driver and binding changes in
+one release, and send the dts changes for the following release. This
+obviously takes longer to complete.
 
-Would have to save the MMX regs on first SIRQ invocation of
-kernel_fpu_begin(), and then have softirq context termination </SIRQ>
-above, restore it.
-
-I mean, we already do much the same for the first kernel_fpu_begin(),
-that has to save the user registers, which will be restore when we go
-back to userspace.
-
-So why not do exactly the same for softirq context?
+       Arnd
