@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99C331C856
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DC131C85A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhBPJrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:47:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41909 "EHLO
+        id S229894AbhBPJr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:47:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45753 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229959AbhBPJql (ORCPT
+        by vger.kernel.org with ESMTP id S229695AbhBPJrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:46:41 -0500
+        Tue, 16 Feb 2021 04:47:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613468715;
+        s=mimecast20190719; t=1613468738;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zgJXmECmOauhfYDJPw4bn7OxQRQZ97Yc1PJaarzr/ps=;
-        b=AwiRIDSUsxB9EoIOsNgAipUIU962dm052CHsyJnFbTqpaFMl2V3EGi18cpuCFTi+g+r15t
-        igSXZtMdb6cRaxiHtxLO6DJeE7qXBMYt9V02qJB8dHXRYB2OKgrcdmCcgCfINMcaTFQj2P
-        587TNH11vi4+BtbHzZ1AIw97cjsIHAM=
+        bh=aKEudwAL0ABOP6RtR9S4wa4bhOuDErjR+HWjbOMiYD4=;
+        b=W+W5xtc7NZdr5rzREJ6YGGW4OU9xTX+sWajQHH9cLDqXIs0PQzo4TQZbGMy8FdzeKQfi7r
+        WVUP2d6uP+BS8vmhohDy0woXHsuuWfuvrv6kzdL/j1H/q6w9uQmzYXsNPADFkSWZ/L1+cM
+        IMPOUm5YNDNeOAG/jw5BALp+p2Esguc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-87-VmUvdcoDMjK1N8CpeqbGyA-1; Tue, 16 Feb 2021 04:45:11 -0500
-X-MC-Unique: VmUvdcoDMjK1N8CpeqbGyA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-249-WHfg1IYJPuup6N6pV86-aQ-1; Tue, 16 Feb 2021 04:45:36 -0500
+X-MC-Unique: WHfg1IYJPuup6N6pV86-aQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF698100AA21;
-        Tue, 16 Feb 2021 09:45:09 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA36BAFA80;
+        Tue, 16 Feb 2021 09:45:35 +0000 (UTC)
 Received: from steredhat.redhat.com (ovpn-113-212.ams2.redhat.com [10.36.113.212])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B2F35D9C0;
-        Tue, 16 Feb 2021 09:45:08 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 569F0163F1;
+        Tue, 16 Feb 2021 09:45:31 +0000 (UTC)
 From:   Stefano Garzarella <sgarzare@redhat.com>
 To:     virtualization@lists.linux-foundation.org
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>
-Subject: [RFC PATCH 03/10] vdpa: add vdpa_set_config() helper
-Date:   Tue, 16 Feb 2021 10:44:47 +0100
-Message-Id: <20210216094454.82106-4-sgarzare@redhat.com>
+Subject: [RFC PATCH 04/10] vdpa: remove param checks in the get/set_config callbacks
+Date:   Tue, 16 Feb 2021 10:44:48 +0100
+Message-Id: <20210216094454.82106-5-sgarzare@redhat.com>
 In-Reply-To: <20210216094454.82106-1-sgarzare@redhat.com>
 References: <20210216094454.82106-1-sgarzare@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's add a function similar to vpda_get_config() to check the
-'offset' and 'len' parameters, call the set_config() device callback,
-and return the amount of bytes written.
+vdpa_get_config() and vdpa_set_config() now check parameters before
+calling callbacks, so we can remove these redundant checks.
 
 Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 ---
- include/linux/vdpa.h |  2 ++
- drivers/vdpa/vdpa.c  | 16 ++++++++++++++++
- 2 files changed, 18 insertions(+)
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 3 +--
+ drivers/vdpa/vdpa_sim/vdpa_sim.c  | 6 ------
+ 2 files changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-index 8a679c98f8b1..562fcd14f4b5 100644
---- a/include/linux/vdpa.h
-+++ b/include/linux/vdpa.h
-@@ -334,6 +334,8 @@ static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index 78043ee567b6..ab63dc9b8432 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -1825,8 +1825,7 @@ static void mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset,
+ 	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
+ 	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
  
- int vdpa_get_config(struct vdpa_device *vdev, unsigned int offset,
- 		    void *buf, unsigned int len);
-+int vdpa_set_config(struct vdpa_device *vdev, unsigned int offset,
-+		    const void *buf, unsigned int len);
- 
- /**
-  * vdpa_mgmtdev_ops - vdpa device ops
-diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-index 9ed6c779c63c..825afc690a7e 100644
---- a/drivers/vdpa/vdpa.c
-+++ b/drivers/vdpa/vdpa.c
-@@ -86,6 +86,22 @@ int vdpa_get_config(struct vdpa_device *vdev, unsigned int offset,
+-	if (offset + len <= sizeof(struct virtio_net_config))
+-		memcpy(buf, (u8 *)&ndev->config + offset, len);
++	memcpy(buf, (u8 *)&ndev->config + offset, len);
  }
- EXPORT_SYMBOL_GPL(vdpa_get_config);
  
-+int vdpa_set_config(struct vdpa_device *vdev, unsigned int offset,
-+		    const void *buf, unsigned int len)
-+{
-+	const struct vdpa_config_ops *ops = vdev->config;
-+	int bytes_set;
-+
-+	bytes_set = vdpa_config_size_wrap(vdev, offset, len);
-+	if (bytes_set <= 0)
-+		return bytes_set;
-+
-+	ops->set_config(vdev, offset, buf, bytes_set);
-+
-+	return bytes_set;
-+}
-+EXPORT_SYMBOL_GPL(vdpa_set_config);
-+
- static void vdpa_release_dev(struct device *d)
+ static void mlx5_vdpa_set_config(struct vdpa_device *vdev, unsigned int offset, const void *buf,
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index 779ae6c144d7..392180c6f2cf 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -451,9 +451,6 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
  {
- 	struct vdpa_device *vdev = dev_to_vdpa(d);
+ 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+ 
+-	if (offset + len > vdpasim->dev_attr.config_size)
+-		return;
+-
+ 	if (vdpasim->dev_attr.get_config)
+ 		vdpasim->dev_attr.get_config(vdpasim, vdpasim->config);
+ 
+@@ -465,9 +462,6 @@ static void vdpasim_set_config(struct vdpa_device *vdpa, unsigned int offset,
+ {
+ 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+ 
+-	if (offset + len > vdpasim->dev_attr.config_size)
+-		return;
+-
+ 	memcpy(vdpasim->config + offset, buf, len);
+ 
+ 	if (vdpasim->dev_attr.set_config)
 -- 
 2.29.2
 
