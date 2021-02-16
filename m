@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB6D31D1C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 840E231D1C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhBPUxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 15:53:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhBPUxi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 15:53:38 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4740C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:52:57 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id b14so12793694eju.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:52:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YFshz0e56kZ+qQSxqouSNCJV43gofQ0AnIxpI0Z2FsM=;
-        b=BhUw3SJkYjGoMCMl/NP6DA3khVYOouIHGxo9KByiOKCADD2ds440N2P1NZ6Zhyl0Au
-         1FnlyPFmkZFoayIO9K3JEFGfjoE2B+7GZKsTBxe+HPRxQm44NaGEgPBUt5xDAxbWJ2qm
-         EA4ucRuGXcJGtTCJgL7ioctJc6SPahzKXFpS/i7d9TQoAa54QKf24Z18Fj9slVMHb6Cn
-         UEGmTU6U9CKFWnE0/4Ujz/bk82BFUf9F/H0cBTgknKtzAOWdHdCUOoVHp9pjSdHLGGCa
-         7+PNchMClFu+MM2n7AbPWzLfIRp8SFt75WUv4f5S+C0Lf+Q4B2KvAKjh3qCjHxVxCib1
-         ikEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YFshz0e56kZ+qQSxqouSNCJV43gofQ0AnIxpI0Z2FsM=;
-        b=eKVKW703iu1kapCyH8O0o0MgVyA/5b9+7d4I8gJznx0tt+d8RtfH+OZL0FOyraH6Jw
-         D0By4OeBnabd4cvCAmQfHctLJT4syaXIz95CmDN2XsvI8yvRyqTzUd7UXvsWV02S5Qda
-         tQxoDdU1vFxC3cbUm7eyWc4R9RpeS14GrVahgvMYRDoWApWIrVkwmiCX5ebYwLZi+0pR
-         M66M5fdCzP/qYOG1Y4RKvYuiozvPDwHXmzrd+vCTPBELqVhoZ4U02aTW/g0p8LvLTzfp
-         6d18dn6NG+rftV0LNi+0oApG99I/nzqaKy2QHs2yAutAJ2+CCzDqKoIEIv6dU8ZRjJ3n
-         wtLQ==
-X-Gm-Message-State: AOAM531QUnnlDEbX/Ry6IYHmAf41J/9muzt9Pn66hyqMhlRiIaJXxhOx
-        zvUM5hh7W9WEaoqNpgxjJXcwhIh4aDvnIxuo8pguSw==
-X-Google-Smtp-Source: ABdhPJzM7peO8ohllzmQBORMfOZqGf2IYJVv2j8uOsEwFR7TCY/QIkxO7ZTDOkUbS0Eaf1rQsGC9Z0dXaXtdkFey1Us=
-X-Received: by 2002:a17:906:fad4:: with SMTP id lu20mr11327016ejb.341.1613508776303;
- Tue, 16 Feb 2021 12:52:56 -0800 (PST)
+        id S230090AbhBPUyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 15:54:38 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:55791 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229699AbhBPUy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 15:54:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613508849; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=vMW15tcB/VDtgwUABqW7aniqJwPV/31hchhXCEizb9w=; b=iSFBwicr9WTgcWaFj969SQMwGCZ/M+S9d/dMNrQGy+vHlzPJ07nd93nwSOHUQaIJK5lzNxQJ
+ I4q9guTk3r5mQGvlxeUFyDb/9w9eeG/5CglUgpEnmz3AikctitrZ2QBMI+p7Gqfdr1+Jz0A5
+ DsKbZPoX8yEUwZ8U6o/oAE9T3zM=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 602c30d3790422e0fe4fbff4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 20:53:39
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3E141C433CA; Tue, 16 Feb 2021 20:53:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2FA32C433C6;
+        Tue, 16 Feb 2021 20:53:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2FA32C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH] mhi_bus: core: Return EBUSY if MHI ring is full
+To:     bbhatt@codeaurora.org
+Cc:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fan Wu <wufan@codeaurora.org>,
+        jhugo=codeaurora.org@codeaurora.org
+References: <1613501314-2392-1-git-send-email-jhugo@codeaurora.org>
+ <e3b0dd23ea461ac76a61266b4c657d83@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <5a6a77d2-fc67-753f-7b9f-4a60c808ac92@codeaurora.org>
+Date:   Tue, 16 Feb 2021 13:53:37 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <YCwaIGPd9ktMoYPu@mwanda>
-In-Reply-To: <YCwaIGPd9ktMoYPu@mwanda>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 16 Feb 2021 12:52:46 -0800
-Message-ID: <CAPcyv4jKL7J0XoXE=uz-DOowYg888A5ajhQUxuFC2x8x5JoL3g@mail.gmail.com>
-Subject: Re: [PATCH] cxl/mem: Fix an error code in cxl_mem_mbox_get()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Alison Schofield <alison.schofield@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Colin King <colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e3b0dd23ea461ac76a61266b4c657d83@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:17 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> Smatch complains that sometimes when we return success we are holding
-> the mutex and sometimes we have released the mutex.  It turns out that
-> the bug is a missing error code if the mbox is not ready.  It should
-> return -EBUSY instead of success.
->
-> Fixes: cc1967ac93ab ("cxl/mem: Find device capabilities")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/cxl/mem.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index 3bca8451348a..2ebc84e4d202 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -383,8 +383,8 @@ static int __cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
->  static int cxl_mem_mbox_get(struct cxl_mem *cxlm)
->  {
->         struct device *dev = &cxlm->pdev->dev;
-> -       int rc = -EBUSY;
->         u64 md_status;
-> +       int rc;
->
->         mutex_lock_io(&cxlm->mbox_mutex);
->
-> @@ -414,6 +414,7 @@ static int cxl_mem_mbox_get(struct cxl_mem *cxlm)
->         md_status = readq(cxlm->memdev_regs + CXLMDEV_STATUS_OFFSET);
->         if (!(md_status & CXLMDEV_MBOX_IF_READY && CXLMDEV_READY(md_status))) {
->                 dev_err(dev, "mbox: reported doorbell ready, but not mbox ready\n");
-> +               rc = -EBUSY;
->                 goto out;
+On 2/16/2021 1:22 PM, Bhaumik Bhatt wrote:
+> On 2021-02-16 10:48 AM, Jeffrey Hugo wrote:
+>> From: Fan Wu <wufan@codeaurora.org>
+>>
+>> Currently ENOMEM is returned when MHI ring is full. This error code is
+>> very misleading. Change to EBUSY instead.
+>>
+>> Signed-off-by: Fan Wu <wufan@codeaurora.org>
+>> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+>> ---
+>>  drivers/bus/mhi/core/main.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>> index f182736..21eb5fc 100644
+>> --- a/drivers/bus/mhi/core/main.c
+>> +++ b/drivers/bus/mhi/core/main.c
+>> @@ -996,7 +996,7 @@ static int mhi_queue(struct mhi_device *mhi_dev,
+>> struct mhi_buf_info *buf_info,
+>>
+>>      ret = mhi_is_ring_full(mhi_cntrl, tre_ring);
+>>      if (unlikely(ret)) {
+>> -        ret = -ENOMEM;
+>> +        ret = -EBUSY;
+>>          goto exit_unlock;
+>>      }
+> 
+> ENOMEM is descriptive of the state of the ring since you basically 
+> cannot queue any
+> more packets as no memory is currently available.
+> 
+> But I agree, it can be misleading for this API. How about EAGAIN in 
+> place of EBUSY,
+> which tells the user to try the queue attempt again implying memory 
+> should become
+> available as more elements are consumed by the device/client?
 
-Hey, Smatch gave a more thorough report than Coverity:
+Fan and I think EAGAIN is fine.  Will send a v2.
 
-http://lore.kernel.org/r/20210215195313.90231-1-colin.king@canonical.com
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
