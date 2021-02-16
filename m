@@ -2,55 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669BD31CC2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C65B231CC33
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhBPOju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:39:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230377AbhBPOh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:37:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18C3F64E08;
-        Tue, 16 Feb 2021 14:37:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613486238;
-        bh=vbB6s1ifJDv17sAqk4UHNOS3D8Q+83NryMR7igO9p9U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gv6pJQr8+2L+swIvPetVdHSyhVA/80y3EWeEiEOeNa1wnTmeK7AKqefjXOUx5PT4J
-         lfQ86q/3cc1aGDOwWiwD8w/jMX9SKMEFWw0UTpWnPXiBUtPTByH8tt/9Cc4ZrnbjgV
-         CBtbHt1rlKll8PG1r9oLMd5VEi7wAKkZdou/DcS0=
-Date:   Tue, 16 Feb 2021 15:37:15 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] driver core: dd: remove deferred_devices variable
-Message-ID: <YCvYm9NZmUsDfWTl@kroah.com>
-References: <20210216142400.3759099-1-gregkh@linuxfoundation.org>
- <20210216142400.3759099-2-gregkh@linuxfoundation.org>
- <CAJZ5v0jeGgVv8vLZnimJXcRWZNf926Ff61mT4o4kGQ48FzyYCA@mail.gmail.com>
+        id S230315AbhBPOkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:40:55 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53726 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230305AbhBPOjx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 09:39:53 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GEZUEc051715;
+        Tue, 16 Feb 2021 09:39:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ix5xI4eV4ktS+Si1szwX06PnD5N08iIL8loUbC9USd4=;
+ b=gMzCO/qcyzVEvg/TocQu4V6G+fSEk6lRzbp0oAhI3ZvaIM8tSWEj82WfTKu0Tey2jOkn
+ WKnWeID2805aCiLtTYrKbbq7HANDn7Qt3vXS1Acsl364xejF2DtW7wKQwSnj5ZeL/Cad
+ YRjI7I+qqDHAYvRMXVKk52eTfNuFl/FT2BaV+RnajBpJjUI3ywq7qsN9Uy5Tu1SWZ+2S
+ wxFnc9kkthOdUGov7yxORbfcKkuY1zPgwLJ8y2/gIMD5ffIo9bhR4B0d7rBTuoBnSjSV
+ mWjomY4Ir3WQ2KCoVmL+sgmhSRb5/EBksdaWhvxslViYwZnzmr22G3wb4mrJJBPZBdXW Hw== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36rdr5vbbk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 09:39:04 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11GEb4gw007619;
+        Tue, 16 Feb 2021 14:39:03 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma01dal.us.ibm.com with ESMTP id 36p6d9cnbu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 14:39:03 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11GEd2ER6489054
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 14:39:02 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6B767112065;
+        Tue, 16 Feb 2021 14:39:02 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8C971112061;
+        Tue, 16 Feb 2021 14:39:01 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.163.23.155])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Feb 2021 14:39:01 +0000 (GMT)
+Subject: Re: [PATCH 2/4] ibmvfc: fix invalid sub-CRQ handles after hard reset
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20210211185742.50143-1-tyreld@linux.ibm.com>
+ <20210211185742.50143-3-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <9c53ed35-7f15-8c4a-7cab-378278444ab4@linux.vnet.ibm.com>
+Date:   Tue, 16 Feb 2021 08:39:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jeGgVv8vLZnimJXcRWZNf926Ff61mT4o4kGQ48FzyYCA@mail.gmail.com>
+In-Reply-To: <20210211185742.50143-3-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-16_04:2021-02-16,2021-02-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ mlxlogscore=882 spamscore=0 phishscore=0 clxscore=1015 impostorscore=0
+ mlxscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102160130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 03:34:27PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Feb 16, 2021 at 3:24 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > No need to save the debugfs dentry for the "devices_deferred" debugfs
-> > file (gotta love the juxtaposition), if we need to remove it we can look
-> > it up from debugfs itself.
-> >
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Cc: linux-kernel@vger.kernel.org
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
 
-Thanks for the quick review, I'll queue these up after 5.12-rc1 is out.
 
-greg k-h
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
+
