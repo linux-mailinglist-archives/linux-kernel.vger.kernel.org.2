@@ -2,142 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D1631C9A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BE431C9A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhBPL0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:26:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
+        id S229917AbhBPL3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:29:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhBPL0W (ORCPT
+        with ESMTP id S229742AbhBPL30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:26:22 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA45C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:25:41 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id e11so6810242qtg.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:25:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OpdMgD15nVOmxBqHmgQp5QV05JlNNLMOu1zTK5wectk=;
-        b=BJlVkeg+KiYKigJv0dLocm82YBRds4Ze0jh0m/e1C4EWOqEFjdkvw84Sy7UTocnkSP
-         7JOD+hiV/AhOYlEahswG+drBrVpdQtpxC1+dlJNJxM4GLAWIVkzcn4FNpO6gfLpicS/C
-         ltsSOxMyOOjQtylvk7nP1UVZyj/sTEh6vHZUpkYFV37aYfCTkpt+vy/gJS5dxcxuvqTt
-         KB/tTD0d72xBCF68FnY8LslS+Vnlxl3OnQTVrVwDPMHJp1uxmg63+gfuHup/+mc2gQdi
-         +tWjbjdhol1lp+S5UW5I+3ruWIP+E3U5gNtjhiqwYauzIl0h8Og4Gh+PKIJ8pEm25uOy
-         9Tog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OpdMgD15nVOmxBqHmgQp5QV05JlNNLMOu1zTK5wectk=;
-        b=PYZosPLFEEuCya/btfofI1D9dimW1PebVSZohBtdmMsd3Z/MjygHZKnr562fenFd8Y
-         +qXz5C9LFF3Cu5LK7bvh/gb9TTSHu2dbo/W5GqElB9zq3SU7I7zxBG4RzMInT0ZMrDbS
-         I+56RyDilehCZy5dpdpw5q8xfLUjzy7x7Fwl8keVFLl6f7kZ4OfLUW0WoTNQyXgKG6VW
-         urgi+pj+woxnosh8TKbuuCpJsIlBT/uKqoOxN/O+OPg7Bf0sgx+yYRLw7lBVDyv8tT7B
-         cVqyTQY91FC+OUMt4ehjT40Fps2/9vadgMibkZ6XeB6e8vnx1jDqEKOoV2V1NR4opYBf
-         Odmw==
-X-Gm-Message-State: AOAM53148oZ8uLPQMKtN64gFm+6ozy9pf4ak9zpyNkpOok1N6Rxhw7n/
-        kX7H851eY+HuHq9olDGXWnSywMrSit+eWxHC34g3JA==
-X-Google-Smtp-Source: ABdhPJwpW1GE+h0hCdOCxpmjTvpVz2L9jJNy9DdTONweY3+hgOg8KMJs8pE5xCd0rshQ3wiZ9zidYh4Xdpp/YWRYGQg=
-X-Received: by 2002:aed:3647:: with SMTP id e65mr9003272qtb.43.1613474740157;
- Tue, 16 Feb 2021 03:25:40 -0800 (PST)
+        Tue, 16 Feb 2021 06:29:26 -0500
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19162C061574;
+        Tue, 16 Feb 2021 03:28:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KUscxVs+rrWNv2kr6TsDxHeqHd9L/LtdwqhXLvBu+7w=; b=PoSxaYKW6vIzdysd+/slTJ2kaF
+        AjV8jDph1Sw7Tdd3F1tXxNHDguiVMvl1tjdqhIjv60groA8DXOzGqbVHHaRj1QNkqqQBNa234H+Mm
+        vbuKLf0VB41BwaoQ8opqZQkfcupfQdLHpR+oi5cj6LC30pPKH85k0dgTZYeTDrmNGCx5hNjqAI40A
+        52JBu0kNQNczl/wTjmWVazOsyxMzg2fCTH1M3JX7N3+kN8O6a01Jt32IHXmikka0mxMc5fTSdDNCZ
+        SbvDJ1oapIiNCW3OsjzRClo1Oz11qOXj3Tp2OOXaSDbUM5KcSjekJ8N8I/do7zp/jzDMxPbYy21Dt
+        rORkFNeg==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <cyndis@kapsi.fi>)
+        id 1lByX4-0007AW-F7; Tue, 16 Feb 2021 13:28:42 +0200
+Subject: Re: [PATCH] tty: serial: Add earlycon driver for Tegra Combined UART
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Mikko Perttunen <mperttunen@nvidia.com>,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210213115824.3306965-1-mperttunen@nvidia.com>
+ <YCpMF7MyJYB8x7Zi@ulmo.localdomain>
+ <2cdba410-7cc8-6ad3-53ab-d9c24e58a028@kapsi.fi>
+ <YCpkeJKs/ZnTwgXJ@ulmo.localdomain>
+From:   Mikko Perttunen <cyndis@kapsi.fi>
+Message-ID: <afcd39a4-84f3-eabb-4444-12325230d9a6@kapsi.fi>
+Date:   Tue, 16 Feb 2021 13:28:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
- <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
- <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
- <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
- <20210118145310.crnqnh6kax5jqicj@distanz.ch> <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
- <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
- <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr> <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
- <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 16 Feb 2021 12:25:28 +0100
-Message-ID: <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
-Subject: Re: riscv+KASAN does not boot
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Tobias Klauser <tklauser@distanz.ch>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Bjorn Topel <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
-        syzkaller <syzkaller@googlegroups.com>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YCpkeJKs/ZnTwgXJ@ulmo.localdomain>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: cyndis@kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > I was fixing KASAN support for my sv48 patchset so I took a look at your
-> > > issue: I built a kernel on top of the branch riscv/fixes using
-> > > https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
-> > > and Buildroot 2020.11. I have the warnings regarding the use of
-> > > __virt_to_phys on wrong addresses (but that's normal since this function
-> > > is used in virt_addr_valid) but not the segfaults you describe.
-> >
-> > Hi Alex,
-> >
-> > Let me try to rebuild buildroot image. Maybe there was something wrong
-> > with my build, though, I did 'make clean' before doing. But at the
-> > same time it worked back in June...
-> >
-> > Re WARNINGs, they indicate kernel bugs. I am working on setting up a
-> > syzbot instance on riscv. If there a WARNING during boot then the
-> > kernel will be marked as broken. No further testing will happen.
-> > Is it a mis-use of WARN_ON? If so, could anybody please remove it or
-> > replace it with pr_err.
->
->
-> Hi,
->
-> I've localized one issue with riscv/KASAN:
-> KASAN breaks VDSO and that's I think the root cause of weird faults I
-> saw earlier. The following patch fixes it.
-> Could somebody please upstream this fix? I don't know how to add/run
-> tests for this.
-> Thanks
->
-> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-> index 0cfd6da784f84..cf3a383c1799d 100644
-> --- a/arch/riscv/kernel/vdso/Makefile
-> +++ b/arch/riscv/kernel/vdso/Makefile
-> @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
->  # Disable gcov profiling for VDSO code
->  GCOV_PROFILE := n
->  KCOV_INSTRUMENT := n
-> +KASAN_SANITIZE := n
->
->  # Force dependency
->  $(obj)/vdso.o: $(obj)/vdso.so
+On 2/15/21 2:09 PM, Thierry Reding wrote:
+> On Mon, Feb 15, 2021 at 12:35:31PM +0200, Mikko Perttunen wrote:
+>> On 2/15/21 12:25 PM, Thierry Reding wrote:
+>>> On Sat, Feb 13, 2021 at 01:58:24PM +0200, Mikko Perttunen wrote:
+>>>> Add an earlycon driver for platforms with TCU, namely Tegra194.
+>>>> The driver is compatible with boot parameters passed by NVIDIA
+>>>> boot chains.
+>>>
+>>> I'm not sure I understand the latter part of this description. What boot
+>>> parameters is this compatible with? Looking at the setup function there
+>>> doesn't seem to be anything out of the ordinary here, so I'm wondering
+>>> if that's just confusing. If there's anything special, it might be worth
+>>> specifically pointing out what that is. Perhaps both in the commit
+>>> message and in a code comment, so it's properly documented.
+>>
+>> It's that the name of the driver 'tegra_comb_uart' matches what the boot
+>> chain passes; and that OF_EARLYCON_DECLARE is not used. (OF_EARLYCON_DECLARE
+>> cannot anyway be used due to the mailbox indirection in device tree).
+> 
+> This is all not immediately obvious. Perhaps you can add more of this
+> into the commit message and perhaps provide an example of how this would
+> be used on the kernel command-line.
 
+Will do.
 
+> 
+> You say "mailbox indirection" and looking at the implementation this
+> does seem to use the mailbox's base address as a sort of TX FIFO, which
+> I think is all good. However, I'm wondering if we couldn't somehow
+> detect this all dynamically at runtime. Don't we have access to the
+> device tree node at this point? If so, couldn't we parse all the
+> necessary information from the DT instead of relying on the user
+> providing the mailbox address on the command-line?
 
-Second issue I am seeing seems to be related to text segment size.
-I check out v5.11 and use this config:
-https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc9178
+Sure, I will look at parsing the address from DT manually at init time.
 
-Then trying to boot it using:
-QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
-$ qemu-system-riscv64 -machine virt -smp 2 -m 4G ...
+> 
+> I realize that this would all make things a bit more complicated in this
+> driver, but at the same time it'd make life so much easier for users, so
+> I think it's worth at least considering.
+> 
+> To elaborate on this a bit, I think it'd be much more useful if users
+> could specify something like this:
+> 
+> 	earlycon=tegra-tcu
+> 
+> rather than:
+> 
+> 	earlycon=tegra_comb_uart,0xc150000
+> 
+> Note that I'm not even sure if that's a correct address. It'd be even
+> better if all of this can just be derived from the device tree. My
+> recollection is that earlycon always needs to be explicitly enabled, but
+> I thought it was also possible to derive which console to use from the
+> /chose/stdout-path property in device tree.
 
-It shows no output from the kernel whatsoever, even though I have
-earlycon and output shows very early with other configs.
-Kernel boots fine with defconfig and other smaller configs.
+The reason I don't think this is that complicated is that that is what 
+cboot is already passing to the kernel. Maybe we could support both 
+options since it's just 2 or 3 extra lines.
 
-If I enable KASAN_OUTLINE and CC_OPTIMIZE_FOR_SIZE, then this config
-also boots fine. Both of these options significantly reduce kernel
-size. However, I can also boot the kernel without these 2 configs, if
-I disable a whole lot of subsystem configs. This makes me think that
-there is an issue related to kernel size somewhere in
-qemu/bootloader/kernel bootstrap code.
-Does it make sense to you? Can somebody reproduce what I am seeing?
+> 
+>>>> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+>>>> ---
+>>>>    drivers/tty/serial/Kconfig              | 12 +++++
+>>>>    drivers/tty/serial/Makefile             |  1 +
+>>>>    drivers/tty/serial/tegra-tcu-earlycon.c | 72 +++++++++++++++++++++++++
+>>>>    3 files changed, 85 insertions(+)
+>>>>    create mode 100644 drivers/tty/serial/tegra-tcu-earlycon.c
+>>>>
+>>>> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+>>>> index 34a2899e69c0..d941785e3f46 100644
+>>>> --- a/drivers/tty/serial/Kconfig
+>>>> +++ b/drivers/tty/serial/Kconfig
+>>>> @@ -331,6 +331,18 @@ config SERIAL_TEGRA_TCU_CONSOLE
+>>>>    	  If unsure, say Y.
+>>>> +config SERIAL_TEGRA_TCU_EARLYCON
+>>>> +	bool "Earlycon on NVIDIA Tegra Combined UART"
+>>>> +	depends on ARCH_TEGRA || COMPILE_TEST
+>>>> +	select SERIAL_EARLYCON
+>>>> +	select SERIAL_CORE_CONSOLE
+>>>> +	default y if SERIAL_TEGRA_TCU_CONSOLE
+>>>> +	help
+>>>> +	  If you say Y here, TCU output will be supported during the earlycon
+>>>> +	  phase of the boot.
+>>>> +
+>>>> +	  If unsure, say Y.
+>>>> +
+>>>>    config SERIAL_MAX3100
+>>>>    	tristate "MAX3100 support"
+>>>>    	depends on SPI
+>>>> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+>>>> index b85d53f9e9ff..408144326fed 100644
+>>>> --- a/drivers/tty/serial/Makefile
+>>>> +++ b/drivers/tty/serial/Makefile
+>>>> @@ -72,6 +72,7 @@ obj-$(CONFIG_SERIAL_XILINX_PS_UART) += xilinx_uartps.o
+>>>>    obj-$(CONFIG_SERIAL_SIRFSOC) += sirfsoc_uart.o
+>>>>    obj-$(CONFIG_SERIAL_TEGRA) += serial-tegra.o
+>>>>    obj-$(CONFIG_SERIAL_TEGRA_TCU) += tegra-tcu.o
+>>>> +obj-$(CONFIG_SERIAL_TEGRA_TCU_EARLYCON) += tegra-tcu-earlycon.o
+>>>>    obj-$(CONFIG_SERIAL_AR933X)   += ar933x_uart.o
+>>>>    obj-$(CONFIG_SERIAL_EFM32_UART) += efm32-uart.o
+>>>>    obj-$(CONFIG_SERIAL_ARC)	+= arc_uart.o
+>>>> diff --git a/drivers/tty/serial/tegra-tcu-earlycon.c b/drivers/tty/serial/tegra-tcu-earlycon.c
+>>>> new file mode 100644
+>>>> index 000000000000..9decfbced0a7
+>>>> --- /dev/null
+>>>> +++ b/drivers/tty/serial/tegra-tcu-earlycon.c
+>>>> @@ -0,0 +1,72 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>> +/*
+>>>> + * Copyright (c) 2017-2021, NVIDIA CORPORATION.  All rights reserved.
+>>>> + */
+>>>> +
+>>>> +#include <linux/console.h>
+>>>> +#include <linux/io.h>
+>>>> +#include <linux/serial_core.h>
+>>>> +
+>>>> +#define NUM_BYTES_FIELD_BIT	24
+>>>> +#define FLUSH_BIT		26
+>>>
+>>> This one seems to be unused.
+>>
+>> True, I'll remove it.
+>>
+>>>
+>>>> +#define INTR_TRIGGER_BIT	31
+>>>
+>>> I wonder if this could somehow be integrated with the existing TCU
+>>> driver since we have these bits defined there already. And really this
+>>> is basically a skeleton version of the same driver.
+>>>
+>>>> +/*
+>>>> + * This function splits the string to be printed (const char *s) into multiple
+>>>> + * packets. Each packet contains a max of 3 characters. Packets are sent to the
+>>>> + * SPE-based combined UART server for printing. Communication with SPE is done
+>>>> + * through mailbox registers which can generate interrupts for SPE.
+>>>> + */
+>>>> +static void early_tcu_write(struct console *console, const char *s, unsigned int count)
+>>>> +{
+>>>> +	struct earlycon_device *device = console->data;
+>>>> +	u8 __iomem *addr = device->port.membase;
+>>>> +	u32 mbox_val = BIT(INTR_TRIGGER_BIT);
+>>>> +	unsigned int i;
+>>>> +
+>>>> +	/* Loop for processing each 3 char packet */
+>>>> +	for (i = 0; i < count; i++) {
+>>>> +		if (s[i] == '\n')
+>>>> +			mbox_val = update_and_send_mbox(addr, mbox_val, '\r');
+>>>> +		mbox_val = update_and_send_mbox(addr, mbox_val, s[i]);
+>>>> +	}
+>>>> +
+>>>> +	if ((mbox_val >> NUM_BYTES_FIELD_BIT) & 0x3) {
+>>>> +		while (readl(addr) & BIT(INTR_TRIGGER_BIT))
+>>>> +			cpu_relax();
+>>>> +		writel(mbox_val, addr);
+>>>> +	}
+>>>> +}
+>>>
+>>> For example this function already exists in the Tegra TCU driver and
+>>> perhaps some of that could be refactored to work for both cases.
+>>
+>> This is very similar to the main tegra_tcu driver, but considering how
+>> simple this driver is, and the main driver using the mailbox framework
+>> making the actual implementation incompatible, I was thinking that it's
+>> easier to just have this be independent.
+> 
+> I don't have a strong objection to keeping these functions separate,
+> especially since they are fairly small and not likely to ever change, so
+> the maintenance burden is going to be small in any case.
+> 
+> But even so it might be nice to stash this all into the same file. After
+> all, people aren't going to enable this configuration option if they
+> have the Tegra TCU driver disabled. Once these are integrated, it's also
+> likely not worth even having a separate Kconfig option because the added
+> code is so little.
 
-Thanks
+Will look into integrating this into tegra-tcu.c.
+
+> 
+> Thierry
+> 
+
+Thanks!
+Mikko
