@@ -2,309 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCB631CDA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E0A31CD8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhBPQKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:10:38 -0500
-Received: from mga18.intel.com ([134.134.136.126]:8286 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230131AbhBPQKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:10:16 -0500
-IronPort-SDR: DbvhFxw88F5B67bSnGvCreXqGjwG7XydeP6baa9qu6jelMbeCPxev9S2wx9tPqYdX1M7MlLCGE
- NjOAmDZxnfMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="170591193"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="170591193"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 08:08:28 -0800
-IronPort-SDR: L9eH/nvtmvBpcfvJIIDB8RBU2+zqBYitq1YungWzn2s1h07OuJBiZuF1VGa/6wJpLxGcwvExhx
- mwGmi2tudUuQ==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="493336819"
-Received: from gna-dev.igk.intel.com ([10.102.80.34])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 08:08:22 -0800
-From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
-        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
-        Savo Novakovic <savox.novakovic@intel.com>,
-        Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Subject: [PATCH v1 12/12] gna: add a char device
-Date:   Tue, 16 Feb 2021 17:05:25 +0100
-Message-Id: <20210216160525.5028-13-maciej.kwapulinski@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
-References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
+        id S230200AbhBPQHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:07:17 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:56458 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhBPQHO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 11:07:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1613491633; x=1645027633;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=K+tQMD8xx3vpOED+SB7C0XmgOhYTAWP74+X0dKdV+jg=;
+  b=z869+WybVcHluwaDeWJMr39uJuvBjzlPoD1IT5M9hdfwPxEzpAMKsWie
+   UGvA2uSwq0f1x0ZDdXz9WXffqbUzZ94yL6aw0HTebP4+GEiKn7u3Jqpf1
+   Ay3/9LWx2NZfrNqjLw8sXmCESrRyqY6cNpJ4jhLeuIjLaDLJXT0gbFj70
+   pdf3spJOs9i0/4gUUegYsMmzdqU5ZBv0oVO+Q4N7Jdnj/8T6fGe0KaqaN
+   Q5/uD1SVWa3mGyFHmAMF1MpPdlP92Kj4499zJNIKQtzoQOTQcSsGKH0r3
+   IKFcOtgFFOiMO4urzEal7xwVwWE3liz6TfNyyuDKFqv5CAV9TFLe/HbNG
+   Q==;
+IronPort-SDR: md+biAe9G3WMlW2CpQnA4k5A+4vwGVy8k8ikl7Ip/pH9/5g6LhLuyG32nfEcCesdb7YEf7bLY/
+ rntfqcint+XUfAbj2/b278zV2FMS1Q+6NCBY7FYN/rfkuea32ayC8BwDwbItImyxB8wCWKq5zW
+ oMjTUFoJ4pKg32Tr5qaAR5Sjh5H3nj62a+q07tjFNcZJCyCrIAquQZLxWmymIfuaI6261yPld7
+ T92vHdYLXCkTzM9idwBth46G4myRGfJ0cxyILkpkRkwLW7bHLXVsDT7aBi5nafQ86mVWWiidGM
+ X3E=
+X-IronPort-AV: E=Sophos;i="5.81,184,1610434800"; 
+   d="scan'208";a="106768685"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Feb 2021 09:05:57 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 16 Feb 2021 09:05:56 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Tue, 16 Feb 2021 09:05:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NxFEkaNkXvjWoMcWmgoDgCjidnzxNvNtIfjva7KQgn+ejYejPrOfCPun4zhB325h7Ba/J4KyzsuwIfDYI7fT1wVnA6QXA+1aj3R2b7AALuWmNAFN59DNfkQDKBj2HGH7hI5T9QoCGC/rev8aV6jAKsIcSCNw9qMNBvx/HMZCUP1XkMDOtRDg/wSez6CIrt2XFvZfohOPR8AVoM9kgbsIsseebbTI4r6yird2PaL4r3mlv1rUNV4rcEPqUYT27HbxoNZG8AkEq0Cy5ATezBY/zcaYcL3X/OHk19cSHcsP9DlzdSny3WfR9ETtFzJRZksFWMyGBn0WMoKymMKAcinr6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K+tQMD8xx3vpOED+SB7C0XmgOhYTAWP74+X0dKdV+jg=;
+ b=izo18I/1DQ2/szWY9cpQBoVfnVerrHEUEKng0f1jmCj8hruQsqM3PeQ1Ihlrob8Xzs+f6x3ySnUcylUFMZinol6e3k0lARlIqWZPoEF+Ub3AHQ78gA9z6fXcz0ZHrP5trIzYewpu4gNB+I7hP3vbJRlK6I2HSljKUmEdPplQPZg0tiFGAlZ5Eomm0ah4hhayv31DwOGfygjUH8lkH76Sdvgi1XK+vtD4+Gm8tGzzzH9j625BL5LAoGen7Z/Qzty03KtdaYKytnNMOFVVCRGFj3MzoFLqFCfL2Iw45CJ4osAvZzjMcP55R8y+WLfAk25oqRbYqccBur2I7TAlbkuakg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K+tQMD8xx3vpOED+SB7C0XmgOhYTAWP74+X0dKdV+jg=;
+ b=DIUZOID4lXlpaT08EiX649Xw64ywTyJOJRbiqpV3VIukx1CT0PQVU1kIRrJf5buY4qNNJNz6BP+BFi5CzaRoRZ/Z5WTYzqfMmUjgbJ0/w1t6GCoc1KK0yYb9ONfudtLjcAeCKXYxvtVLw22h6reT/SPFjZMqdDKUVTxy4WxOFxY=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SN6PR11MB3487.namprd11.prod.outlook.com (2603:10b6:805:c3::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Tue, 16 Feb
+ 2021 16:05:52 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::f4e3:108c:4222:7dab]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::f4e3:108c:4222:7dab%4]) with mapi id 15.20.3846.042; Tue, 16 Feb 2021
+ 16:05:51 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <mdalam@codeaurora.org>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <sricharan@codeaurora.org>
+Subject: Re: [PATCH] mtd: spi-nor: gigadevice: Add support for gd25lb256e
+Thread-Topic: [PATCH] mtd: spi-nor: gigadevice: Add support for gd25lb256e
+Thread-Index: AQHW/tRbqHaAg4NgD0qNJyhsV2Um3w==
+Date:   Tue, 16 Feb 2021 16:05:51 +0000
+Message-ID: <360f45eb-a45d-3b61-52f8-db82ffe754a6@microchip.com>
+References: <1612869079-19593-1-git-send-email-mdalam@codeaurora.org>
+ <2df4218ba5ad2a039833bab8c401fa07@codeaurora.org>
+In-Reply-To: <2df4218ba5ad2a039833bab8c401fa07@codeaurora.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none
+ header.from=microchip.com;
+x-originating-ip: [79.115.63.147]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e2be4e64-3b3b-4d0e-c086-08d8d294bbc3
+x-ms-traffictypediagnostic: SN6PR11MB3487:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB348752F9981893B0E9D99E6AF0879@SN6PR11MB3487.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /vnZw8vFyzcr9iT+rdse0CJkvGZoxnB+CuSox43gTxY4CTdzpMnjoFjyZroC4YTkCNGsyFt7WsH2fMw53foMBLo862uYUm96ifpqgKPOPbhzW81G+1NOA7f8VtFQmUAy0dI0NKNj74PnQQ0VtxLBjUTu7urnHhNcv8rYpbW0G/UcVdUT8GHYd/zx4lBqJpreQEY3fqSx9Kg1XkGM+hMGgj5tR3z1qPAjX6zcY7LY4O3oJJIjDsqLJTdZ9zAwFmUI663xmaO/D1xdMC9546aj5wamM2A7zIMXUCIpXJZItWbUwY6RxfayWfThcGCWy5wSlX3CPGZTNa9KJ0tQX919QICPlILcv0kXkr1EkKOPDm0e+Nv61KtjLVNj0K/9+0+WUqW4XkkOU/kopVlmb8Renn2RmdbivH1epQx2a6CkBY4YpfXYugvQ+RjTFK5YK/yRrkXACwgG/JwcbFTpfuDrCdVicUO+vM5vK60QBd2p6K15AVP0/BcuUkouTunyR8k+555mEhmLplBHFNEeeoWfgj2RM25uLrZoyYn2TxIxS6W3gP9Kstkqos8qYBEs1NTHT6g6Hw33YlEgThd1/E9stw9EtKvAM53Tg5eMaN4HzNT89+AnWlPJxAQiLHADpGjhph23J82MwblNupxuFcZxqA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4874.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(39850400004)(346002)(396003)(376002)(186003)(5660300002)(66476007)(64756008)(66946007)(31686004)(76116006)(6486002)(8936002)(26005)(31696002)(53546011)(4326008)(71200400001)(91956017)(66446008)(6512007)(36756003)(2906002)(6506007)(86362001)(478600001)(316002)(110136005)(2616005)(8676002)(83380400001)(66556008)(138113003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?MlBYVTM5OEtwUTF5YlEwYXNSWmk4TVYxRjdJQlBXaXRaL3hZTCt1MXFnYmpZ?=
+ =?utf-8?B?NGgvbzlDcTFVcTY5aVFmMEdlWTkvTzg2Z0g1dnBaSlM1S3hTak9SSTVodS9O?=
+ =?utf-8?B?cEtWUENOaVNuMHo5ZXVyekg3MlNIRm5YTlZOVnZtQk93TXZKbll1TTBLekpW?=
+ =?utf-8?B?dndHU0NIS3NCYmtTZmpRUFowRHRkN0U2L1NtaEhudXZ0T244bU9lbVdJb1Bx?=
+ =?utf-8?B?dzMyQVdDWEY4L0VoZGdWRjVNdUFtRzdhV3RxT2d6YU9UOFdaZERyWnMvMjJ3?=
+ =?utf-8?B?N0JWd1RvYzRkMGt2ejV6Y3BGbkRqSmdrR2d0TmdFVm95UUxYc1Z3WmhTMEI3?=
+ =?utf-8?B?aG15WTl4ai9BSUc0VGZNV2twVnkvNzNFNnkxajFxYWZPS3Zjekt3UVVwWlFz?=
+ =?utf-8?B?a3BIWDZCdllNd3NTaFpwdDVQeTI1YU51WkJhcDc1bmU2QWVyWHE2QjJ1SHZM?=
+ =?utf-8?B?UzQ3M0hWN0pSeEswM0FLSjJoOE0zdEZuSk9JZ2MvK283RXRDU29tUXlHUkcz?=
+ =?utf-8?B?aHFPUnNYQWZyTGVxQTEvVkgxUXQrNWdLeFNJRXQvbTJtTXFod0RRS0wrOVN1?=
+ =?utf-8?B?blJzeklJam04VzhKZTB2dTVwTEM5QkVEL2gyRjdsSlVPa2ZOeSs3WDZKeUlI?=
+ =?utf-8?B?bk9ScUs1ZEZpY3ZGbmZaemprUHRDWUxmcXZNaUN2dlNJSUhIK2UxRHh3eFA1?=
+ =?utf-8?B?VE5XNGsyS0RpblVLTDBPakpFamFoQjhRajAyUXl5VDN1bDhlTElRRkQwVGxO?=
+ =?utf-8?B?ckk3N1RWWDIvUElSYjZPUVpaKzF1aXE2NTBWY1J6dkFRaHZGSDRONHpWQi9x?=
+ =?utf-8?B?MitxT3VoN2gzWmtTbE83RzZoei9xV0FLOHRKalV0MUdmb1Q5Rko2RUZ6TW1y?=
+ =?utf-8?B?SjB2LzNIaU15VmVUZ3dTMWp0ZW8wRGFVQ1MrZ25QR1RyOUY3VFNjcWt5TTZL?=
+ =?utf-8?B?eFRXNDZrQkxJYXFpQW1ScjlteGhMN2VKMHVTNlZCaldoT2ZZbkxpYWFCdnM2?=
+ =?utf-8?B?M3NYcWp2dkttc0l6YmRWODVqb1QvK3ZiRDF4UUpWNE9BNTJ4eWRCbm5obkxJ?=
+ =?utf-8?B?V1BvUmR4eWVaVG41VTJtRW5sZmc3MVMzakFPSzJvdlVkVHA3SGM2TjNrZEpp?=
+ =?utf-8?B?UTloUDdlQmRaa0pIYjN5U0NYeVdXZ09OWDJCcmRJWW1nRzE4NElhTzhkdGhx?=
+ =?utf-8?B?Nm9LVFhjQXNUenZXTkdtOGhPejRRanl2ZVdwK2QxK3BFZWJFb2lGMTJNUE9O?=
+ =?utf-8?B?UDkrTWVzTmxUOExCczgxUkZGenBvMDVtQ1JYRHAzQWwwWlRTWVNnVFBUZCtV?=
+ =?utf-8?B?eWozSVZuMCszUGVjenVxQ0QydTNWVEdGZ0dFd0JkcDVnUGkwb2kzcXBzZjlB?=
+ =?utf-8?B?dXV2RlU2NnBDSUoybGNwTGY4akVqaTVUWDdrQ1Q2dkV1c0hnQ0JaQ3dnVVRQ?=
+ =?utf-8?B?aWl2dU1jcmkweUp1a2ZseVUwMXkwRXpVa2J1MkpkbHFrU0REeml5ZUVWUlNK?=
+ =?utf-8?B?Z0p2dTJkemRLSGhmK1ZRMUg4YUZuSDIxTllidlZja2lpUDRnUytqRnNrQUJH?=
+ =?utf-8?B?WTZtWVZQMVNORks5MVNJYkdEdkRDYmU3bmVielZIdHROVkQ2dm93S0VybDAy?=
+ =?utf-8?B?REYzaUlWZ1NMQWFmTVZ0cldwbWNiQ29VMjRtRkt3Q21reC9qZVVFWFl0Q0tD?=
+ =?utf-8?B?clNUYnplZVA2QktDaW52MFZnRFQwcVdPWDJNZ0xhYU8yQkxPOGxlRGU5eUpC?=
+ =?utf-8?Q?qBd1ziVk9edZ5DmmrQ=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BCDFE40BFBEA2548ADA69AA8ECC42597@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2be4e64-3b3b-4d0e-c086-08d8d294bbc3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Feb 2021 16:05:51.7646
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xg7mRxDqvVipcm2YLjQ8xQVvsLOSZ9+VpWK/5n9cn9viFLTHkYZRscRKKpdJVJ2X04+iLe1Dz1sQhzue0ghmZMFpjquYK06oGxsR3OclxGM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3487
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomasz Jankowski <tomasz1.jankowski@intel.com>
-
-The new char device is the node for applications in user space to
-interact with the driver.
-
-Signed-off-by: Tomasz Jankowski <tomasz1.jankowski@intel.com>
-Tested-by: Savo Novakovic <savox.novakovic@intel.com>
-Co-developed-by: Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Signed-off-by: Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Co-developed-by: Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-Signed-off-by: Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
----
- drivers/misc/gna/gna_device.c | 157 ++++++++++++++++++++++++++++++++++
- drivers/misc/gna/gna_driver.c |  23 ++++-
- 2 files changed, 178 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/misc/gna/gna_device.c b/drivers/misc/gna/gna_device.c
-index 9faf0456fee2..7b2d3b4f863b 100644
---- a/drivers/misc/gna/gna_device.c
-+++ b/drivers/misc/gna/gna_device.c
-@@ -1,12 +1,14 @@
- // SPDX-License-Identifier: GPL-2.0-only
- // Copyright(c) 2017-2021 Intel Corporation
- 
-+#include <linux/cdev.h>
- #include <linux/module.h>
- #include <linux/pci.h>
- 
- #include "gna_device.h"
- #include "gna_driver.h"
- #include "gna_hw.h"
-+#include "gna_ioctl.h"
- #include "gna_request.h"
- 
- #define GNA_DEV_HWID_CNL	0x5A11
-@@ -85,6 +87,150 @@ const struct pci_device_id gna_pci_ids[] = {
- 
- MODULE_DEVICE_TABLE(pci, gna_pci_ids);
- 
-+static inline struct gna_private *inode_to_gna(struct inode *inode)
-+{
-+	return container_of(inode->i_cdev, struct gna_private, cdev);
-+}
-+
-+static int gna_open(struct inode *inode, struct file *f)
-+{
-+	struct gna_file_private *file_priv;
-+	struct gna_private *gna_priv;
-+
-+	gna_priv = inode_to_gna(inode);
-+	if (!gna_priv)
-+		return -ENODEV;
-+
-+	file_priv = kzalloc(sizeof(*file_priv), GFP_KERNEL);
-+	if (!file_priv)
-+		return -ENOMEM;
-+
-+	file_priv->fd = f;
-+	file_priv->gna_priv = gna_priv;
-+
-+	mutex_init(&file_priv->memlist_lock);
-+	INIT_LIST_HEAD(&file_priv->memory_list);
-+
-+	mutex_lock(&gna_priv->filelist_lock);
-+	list_add_tail(&file_priv->flist, &gna_priv->file_list);
-+	mutex_unlock(&gna_priv->filelist_lock);
-+
-+	f->private_data = file_priv;
-+
-+	return 0;
-+}
-+
-+static int gna_release(struct inode *inode, struct file *f)
-+{
-+	struct gna_file_private *iter_file, *temp_file;
-+	struct gna_memory_object *iter_mo, *temp_mo;
-+	struct gna_file_private *file_priv;
-+	struct gna_private *gna_priv;
-+
-+	gna_priv = inode_to_gna(inode);
-+	if (!gna_priv)
-+		return -ENODEV;
-+
-+	/* free all memory objects created by that file */
-+	file_priv = (struct gna_file_private *)f->private_data;
-+	mutex_lock(&file_priv->memlist_lock);
-+	list_for_each_entry_safe(iter_mo, temp_mo, &file_priv->memory_list, file_mem_list) {
-+		queue_work(gna_priv->request_wq, &iter_mo->work);
-+		wait_event(iter_mo->waitq, true);
-+		gna_memory_free(gna_priv, iter_mo);
-+	}
-+	mutex_unlock(&file_priv->memlist_lock);
-+
-+	gna_delete_file_requests(f, gna_priv);
-+
-+	/* delete itself from device's file list */
-+	mutex_lock(&gna_priv->filelist_lock);
-+	list_for_each_entry_safe(iter_file, temp_file, &gna_priv->file_list, flist) {
-+		if (iter_file->fd == f) {
-+			list_del(&iter_file->flist);
-+			f->private_data = NULL;
-+			kfree(iter_file);
-+			break;
-+		}
-+	}
-+	mutex_unlock(&gna_priv->filelist_lock);
-+
-+	return 0;
-+}
-+
-+static const struct file_operations gna_file_ops = {
-+	.owner		=	THIS_MODULE,
-+	.open		=	gna_open,
-+	.release	=	gna_release,
-+	.unlocked_ioctl =	gna_ioctl,
-+};
-+
-+/* Reverse gna_dev_create() */
-+static void gna_dev_release(struct gna_private *gna_priv)
-+{
-+	cdev_device_del(&gna_priv->cdev, &gna_priv->dev);
-+
-+	mutex_lock(&gna_drv_priv.lock);
-+	__clear_bit(MINOR(gna_priv->dev.devt), gna_drv_priv.dev_map);
-+	mutex_unlock(&gna_drv_priv.lock);
-+
-+	dev_set_drvdata(&gna_priv->dev, NULL);
-+}
-+
-+static int gna_dev_create(struct gna_private *gna_priv)
-+{
-+	struct pci_dev *pcidev;
-+	struct device *dev;
-+	dev_t gna_devt;
-+	int dev_num;
-+	int major;
-+	int minor;
-+	int ret;
-+
-+	pcidev = gna_priv->pdev;
-+
-+	mutex_lock(&gna_drv_priv.lock);
-+
-+	dev_num = find_first_zero_bit(gna_drv_priv.dev_map, GNA_MAX_DEVICES);
-+	if (dev_num == GNA_MAX_DEVICES) {
-+		mutex_unlock(&gna_drv_priv.lock);
-+		dev_err(&pcidev->dev, "number of gna devices reached maximum\n");
-+		return -ENODEV;
-+	}
-+
-+	set_bit(dev_num, gna_drv_priv.dev_map);
-+	major = MAJOR(gna_drv_priv.devt);
-+	minor = gna_drv_priv.minor++;
-+
-+	mutex_unlock(&gna_drv_priv.lock);
-+
-+	gna_devt = MKDEV(major, minor);
-+	dev = &gna_priv->dev;
-+	device_initialize(dev);
-+	dev->devt = gna_devt;
-+	dev->class = gna_class;
-+	dev->parent = gna_priv->parent;
-+	dev->groups = NULL;
-+	dev_set_drvdata(dev, gna_priv);
-+	dev_set_name(dev, "gna%d", dev_num);
-+
-+	cdev_init(&gna_priv->cdev, &gna_file_ops);
-+	gna_priv->cdev.owner = THIS_MODULE;
-+
-+	ret = cdev_device_add(&gna_priv->cdev, &gna_priv->dev);
-+	if (ret) {
-+		mutex_lock(&gna_drv_priv.lock);
-+		__clear_bit(minor, gna_drv_priv.dev_map);
-+		mutex_unlock(&gna_drv_priv.lock);
-+		dev_err(&gna_priv->dev, "could not add gna%d char device\n", dev_num);
-+	} else {
-+		dev_info(&gna_priv->dev, "registered gna%d device: major %d, minor %d\n",
-+			 dev_num, major, minor);
-+	}
-+
-+	return ret;
-+}
-+
- static int gna_dev_init(struct gna_private *gna_priv, struct pci_dev *pcidev,
- 			const struct pci_device_id *pci_id)
- {
-@@ -133,8 +279,17 @@ static int gna_dev_init(struct gna_private *gna_priv, struct pci_dev *pcidev,
- 	mutex_init(&gna_priv->reqlist_lock);
- 	INIT_LIST_HEAD(&gna_priv->request_list);
- 
-+	ret = gna_dev_create(gna_priv);
-+	if (ret) {
-+		dev_err(&pcidev->dev, "could not create gna device\n");
-+		goto err_del_wq;
-+	}
-+
- 	return 0;
- 
-+err_del_wq:
-+	destroy_workqueue(gna_priv->request_wq);
-+
- err_pci_drvdata_unset:
- 	pci_set_drvdata(pcidev, NULL);
- 
-@@ -244,6 +399,8 @@ void gna_remove(struct pci_dev *pcidev)
- 
- 	gna_priv = pci_get_drvdata(pcidev);
- 
-+	gna_dev_release(gna_priv);
-+
- 	free_irq(gna_priv->irq, gna_priv);
- 
- 	gna_dev_deinit(gna_priv);
-diff --git a/drivers/misc/gna/gna_driver.c b/drivers/misc/gna/gna_driver.c
-index cb638dfa81ac..5219a5408bc1 100644
---- a/drivers/misc/gna/gna_driver.c
-+++ b/drivers/misc/gna/gna_driver.c
-@@ -46,19 +46,38 @@ static int __init gna_drv_init(void)
- 	}
- 	gna_class->devnode = gna_devnode;
- 
-+	ret = alloc_chrdev_region(&gna_drv_priv.devt, 0, GNA_MAX_DEVICES, "gna");
-+	if (ret) {
-+		pr_err("could not get major number\n");
-+		goto err_destroy_class;
-+	}
-+
-+	pr_debug("major %d\n", MAJOR(gna_drv_priv.devt));
-+	pr_debug("minor %d\n", MINOR(gna_drv_priv.devt));
-+
-+	gna_drv_priv.minor = MINOR(gna_drv_priv.devt);
-+
- 	ret = pci_register_driver(&gna_driver);
- 	if (ret) {
- 		pr_err("pci register driver failed\n");
--		class_destroy(gna_class);
--		return ret;
-+		goto err_unreg_chdev;
- 	}
- 
- 	return 0;
-+
-+err_unreg_chdev:
-+	unregister_chrdev_region(gna_drv_priv.devt, GNA_MAX_DEVICES);
-+
-+err_destroy_class:
-+	class_destroy(gna_class);
-+
-+	return ret;
- }
- 
- static void __exit gna_drv_exit(void)
- {
- 	pci_unregister_driver(&gna_driver);
-+	unregister_chrdev_region(gna_drv_priv.devt, GNA_MAX_DEVICES);
- 	class_destroy(gna_class);
- }
- 
--- 
-2.28.0
-
+SGksDQoNCk9uIDIvMTYvMjEgNToxMCBQTSwgbWRhbGFtQGNvZGVhdXJvcmEub3JnIHdyb3RlOg0K
+PiBFWFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMg
+dW5sZXNzIHlvdSBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDIwMjEtMDItMDkg
+MTY6NDEsIE1kIFNhZHJlIEFsYW0gd3JvdGU6DQo+PiBBZGQgc3VwcG9ydCBmb3IgZ2QyNWxiMjU2
+ZS4gVGhpcyBkZXZpY2UgdGVzdGVkIG9uIElQUTUwMTgNCj4+IHBsYXRmb3JtIHdpdGggZGQgZnJv
+bS90byB0aGUgZmxhc2ggZm9yIHJlYWQvd3JpdGUgcmVzcGVjdGx5LA0KPj4gYW5kIG10ZCBlcmFz
+ZSBmb3IgZXJhc2luZyB0aGUgZmxhc2guDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogTWQgU2FkcmUg
+QWxhbSA8bWRhbGFtQGNvZGVhdXJvcmEub3JnPg0KPj4gLS0tDQo+PiDCoGRyaXZlcnMvbXRkL3Nw
+aS1ub3IvZ2lnYWRldmljZS5jIHwgMyArKysNCj4+IMKgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0
+aW9ucygrKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL2dpZ2FkZXZp
+Y2UuYw0KPj4gYi9kcml2ZXJzL210ZC9zcGktbm9yL2dpZ2FkZXZpY2UuYw0KPj4gaW5kZXggNDQ3
+ZDg0Yi4uOGYxZTdlYyAxMDA2NDQNCj4+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvZ2lnYWRl
+dmljZS5jDQo+PiArKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2dpZ2FkZXZpY2UuYw0KPj4gQEAg
+LTUwLDYgKzUwLDkgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFzaF9pbmZvIGdpZ2FkZXZpY2Vf
+cGFydHNbXSA9IHsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBTUElfTk9SXzRCX09QQ09ERVMgfCBTUElfTk9SX0hBU19MT0NLIHwNCj4+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBTUElfTk9SX0hBU19U
+QiB8IFNQSV9OT1JfVEJfU1JfQklUNikNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC5m
+aXh1cHMgPSAmZ2QyNXEyNTZfZml4dXBzIH0sDQo+PiArwqDCoMKgwqAgeyAiZ2QyNWxiMjU2ZSIs
+IElORk8oMHhjODY3MTksIDAsIDY0ICogMTAyNCwgNTEyLA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFNFQ1RfNEsgfCBTUElfTk9SX0RVQUxfUkVBRCB8
+IFNQSV9OT1JfUVVBRF9SRUFEIHwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBTUElfTk9SXzRCX09QQ09ERVMpIH0sDQo+PiDCoH07DQo+Pg0KPj4gwqBj
+b25zdCBzdHJ1Y3Qgc3BpX25vcl9tYW51ZmFjdHVyZXIgc3BpX25vcl9naWdhZGV2aWNlID0gew0K
+PiANCj4gcGluZyEgSXMgdGhlcmUgYW55IGFkZGl0aW9uYWwgaW5mbyBuZWVkZWQgZm9yIHRoaXMg
+Pw0KDQpObyBvdGhlciBpbmZvIG5lZWRlZCwganVzdCB0aW1lIHRvIHJldmlldyBpdC4gUGxlYXNl
+IHN0b3Agc2VuZGluZw0KZnJlZSBwaW5ncywgZXZlcnkgcGF0Y2ggd2lsbCBiZSByZXZpZXdlZC4N
+Cg0KQ2hlZXJzLA0KdGENCg==
