@@ -2,132 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D5B31CF13
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 969E231CF12
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhBPRak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:30:40 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:24793 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhBPR2x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:28:53 -0500
-Date:   Tue, 16 Feb 2021 17:28:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613496489; bh=rD+msxxQv7QdHAN2CCbl57zhJ/ALAb4aGQXqzumABFM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Ni6bHfF4XFjx2ia6fO83Q0T518R6Bel8xuoyg+zv8ELN+MYQjZ5VeId9LyxU76t1X
-         nfH2p9IRFZk6CFbotdwRXLqAlRzys65NPwy667ttMX/l3gvr0sZRIk7S9BXm2fVWbx
-         sxpEo6BMpSOEIVUhyfTIXWciksEtsLXqray4Sae6ahQYlTr3DFhT6WzlSSl6/dbhTx
-         iMEwZ6vK9yDLyK/cOjPL/K/7u2utm6iqh5Jjc4Wf+kFUP3/m1OGVv+Mkm/xanPxg/S
-         1YmxrUP19F1jZDdjqNCNo5vE5rJXGs+TMycFWCq3oqVYYTPX3bzljFVRsopQMwlXA5
-         y07XqhHkrv1gA==
-To:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v6 bpf-next 5/6] xsk: respect device's headroom and tailroom on generic xmit path
-Message-ID: <20210216172640.374487-6-alobakin@pm.me>
-In-Reply-To: <20210216172640.374487-1-alobakin@pm.me>
-References: <20210216172640.374487-1-alobakin@pm.me>
+        id S231218AbhBPRaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:30:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231176AbhBPR2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:28:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 332A064DFF;
+        Tue, 16 Feb 2021 17:28:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613496487;
+        bh=5YQAn+QKwubyb4oA1PMBGtIpuvfy4qAGuzioBsKkxek=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i3pgL3FOy1BiR0jL9UGENPszZ/XIACRMKxCTqu/17NS6r6QPfVQ8WPLRnb8fJv59i
+         lu7PRfhtWD8nYye1qDg7L7TqbHs0MZ9eXAnXJK6MXwlpUn+JeyQ/HSpeXCVoZ2N94A
+         v7ZgolCsA9jPrDX8gjjproQqw/eQJ/a8KVyyIWPs=
+Date:   Tue, 16 Feb 2021 18:28:04 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH v1 00/12] Driver of Intel(R) Gaussian & Neural Accelerator
+Message-ID: <YCwApLLjNAVl5oLd@kroah.com>
+References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xsk_generic_xmit() allocates a new skb and then queues it for
-xmitting. The size of new skb's headroom is desc->len, so it comes
-to the driver/device with no reserved headroom and/or tailroom.
-Lots of drivers need some headroom (and sometimes tailroom) to
-prepend (and/or append) some headers or data, e.g. CPU tags,
-device-specific headers/descriptors (LSO, TLS etc.), and if case
-of no available space skb_cow_head() will reallocate the skb.
-Reallocations are unwanted on fast-path, especially when it comes
-to XDP, so generic XSK xmit should reserve the spaces declared in
-dev->needed_headroom and dev->needed tailroom to avoid them.
+On Tue, Feb 16, 2021 at 05:05:13PM +0100, Maciej Kwapulinski wrote:
+> Dear kernel maintainers,
+> 
+> This submission is a kernel driver to support Intel(R) Gaussian & Neural Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-processor available on multiple Intel platforms. AI developers and users can offload continuous inference workloads to an Intel(R) GNA device in order to free processor resources and save power. Noise reduction and speech recognition are the examples of the workloads Intel(R) GNA deals with while its usage is not limited to the two.
+> 
+> For a list of processors equipped with Intel(R) GNA device, please refer to this link:
+> https://docs.openvinotoolkit.org/latest/openvino_docs_IE_DG_supported_plugins_GNA.html 
+> 
+> We think contributing this driver to the upstream kernel project is the best way for developers and users to get the latest Intel(R) GNA support in a Linux kernel, through the mainline to any Linux distributions installed on their systems. Upstreaming also enables contribution from developers around the world to the driver once it is merged.
+> 
+> The driver works with Intel(R) libraries in user space. The Intel(R) driver exposes a few IOCTL interfaces for use by libraries in user space. The libraries are open sourced and are available at:
+> https://github.com/intel/gna
+> 
+> Prior to the submission, these items were tested or examined against GNA driver patch series put on top of v5.11-rc3 tag of mainline kernel:
+> 
+> Linux Kernel patch submission checklist
+> https://www.kernel.org/doc/html/latest/process/submit-checklist.html?highlight=submit%20checklist
+> 
+> 1. If you use a facility then #include the file that defines/declares that facility. Don’t depend on other header files pulling in ones that you use.
+> (Checked)
+> 
+> 2. Builds cleanly:
+>    with applicable or modified CONFIG options =y, =m, and =n. No gcc warnings/errors, no linker warnings/errors.
+>    Passes allnoconfig, allmodconfig
+>    Builds successfully when using O=builddir
+> (Tested by building kernel with Intel(R) GNA driver config set to ‘m’, ‘y’, and ‘n’; allmodconfig, allnoconfig and O=builddir)
+> 
+> 3. Builds on multiple CPU architectures by using local cross-compile tools or some other build farm.
+> (x86_64 architecture tested - this is architecture where GNA is present and validated, please refer to drivers/misc/gna/Kconfig)
+> 
+> 4. ppc64 is a good architecture for cross-compilation checking because it tends to use unsigned long for 64-bit quantities.
+> (x86_64 architecture tested - this is architecture where GNA is present and validated, please refer to drivers/misc/gna/Kconfig)
+> 
+> 5. Check your patch for general style as detailed in Documentation/process/coding-style.rst. Check for trivial violations with the patch style checker prior to submission (scripts/checkpatch.pl). You should be able to justify all violations that remain in your patch.
+> (Checked. Some warnings were in the output. We checked them and feel they can be ignored.)
+> 
+> 6. Any new or modified CONFIG options do not muck up the config menu and default to off unless they meet the exception criteria documented in Documentation/kbuild/kconfig-language.rst Menu attributes: default value.
+> (No explicit default value is provided because Kbuild system sets it off by default.)
+> 
+> 7. All new Kconfig options have help text.
+> (Checked)
+> 
+> 8. Has been carefully reviewed with respect to relevant Kconfig combinations. This is very hard to get right with testing – brainpower pays off here.
+> (Checked)
+> 
+> 10. Use make checkstack and fix any problems that it finds.
+>     Note
+>     checkstack does not point out problems explicitly, but any one function that uses more than 512 bytes on the stack is a candidate for change.
+> (Checked)
+> 
+> 11. Include kernel-doc to document global kernel APIs. (Not required for static functions, but OK there also.) Use make htmldocs or make pdfdocs to check the kernel-doc and fix any issues.
+> (Addressed by adding new gna.rst in Documentation; tested with output from ‘make htmldocs’)
+> 
+> 12. Has been tested with CONFIG_PREEMPT, CONFIG_DEBUG_PREEMPT, CONFIG_DEBUG_SLAB, CONFIG_DEBUG_PAGEALLOC, CONFIG_DEBUG_MUTEXES, CONFIG_DEBUG_SPINLOCK, CONFIG_DEBUG_ATOMIC_SLEEP, CONFIG_PROVE_RCU and CONFIG_DEBUG_OBJECTS_RCU_HEAD all simultaneously enabled.
+> (Checked)
+> 
+> 13. Has been build- and runtime tested with and without CONFIG_SMP and CONFIG_PREEMPT.
+> (Checked)
+> 
+> 15. All new /proc entries are documented under Documentation/.
+> (The driver doesn’t introduce any new procs)
+> 
+> 16. All new kernel boot parameters are documented in Documentation/admin-guide/kernel-parameters.rst.
+> (The driver doesn’t add boot parameters)
+> 
+> 17. All new module parameters are documented with MODULE_PARM_DESC().
+> (Checked)
+> 
+> 21. Newly-added code has been compiled with gcc -W (use make EXTRA_CFLAGS=-W). This will generate lots of noise, but is good for finding bugs like “warning: comparison between signed.
+>     and unsigned”.
+> (Checked)
+> 
+> 24. If any ioctl’s are added by the patch, then also update Documentation/userspace-api/ioctl/ioctl-number.rst.
+> (Updated)
 
-Note on max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom)):
+What is all of this?  Do you see this on any other patch submission
+00/XX patch description?
 
-Usually, output functions reserve LL_RESERVED_SPACE(dev), which
-consists of dev->hard_header_len + dev->needed_headroom, aligned
-by 16.
-However, on XSK xmit hard header is already here in the chunk, so
-hard_header_len is not needed. But it'd still be better to align
-data up to cacheline, while reserving no less than driver requests
-for headroom. NET_SKB_PAD here is to double-insure there will be
-no reallocations even when the driver advertises no needed_headroom,
-but in fact need it (not so rare case).
+And please wrap your columns properly.
 
-Fixes: 35fcde7f8deb ("xsk: support for Tx")
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> The above results only reflect our understanding of the test and the code referred. Please kindly let us know any issues or different observations from any further tests.
+> 
+> Thanks
+> 
+> Series-reviewed-by: Tony Luck <tony.luck@intel.com>
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 4faabd1ecfd1..143979ea4165 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -454,12 +454,16 @@ static int xsk_generic_xmit(struct sock *sk)
- =09struct sk_buff *skb;
- =09unsigned long flags;
- =09int err =3D 0;
-+=09u32 hr, tr;
-=20
- =09mutex_lock(&xs->mutex);
-=20
- =09if (xs->queue_id >=3D xs->dev->real_num_tx_queues)
- =09=09goto out;
-=20
-+=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
-+=09tr =3D xs->dev->needed_tailroom;
-+
- =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
- =09=09char *buffer;
- =09=09u64 addr;
-@@ -471,11 +475,13 @@ static int xsk_generic_xmit(struct sock *sk)
- =09=09}
-=20
- =09=09len =3D desc.len;
--=09=09skb =3D sock_alloc_send_skb(sk, len, 1, &err);
-+=09=09skb =3D sock_alloc_send_skb(sk, hr + len + tr, 1, &err);
- =09=09if (unlikely(!skb))
- =09=09=09goto out;
-=20
-+=09=09skb_reserve(skb, hr);
- =09=09skb_put(skb, len);
-+
- =09=09addr =3D desc.addr;
- =09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
- =09=09err =3D skb_store_bits(skb, 0, buffer, len);
---=20
-2.30.1
+That's not a proper sign-off-by or reviewed-by, why isn't this on the
+individual patches?
 
+You all keep coming up with new and unique ways to do patch submissions
+different than anyone else, why go through all of that effort?
 
+I'll look at this after 5.12-rc1 is out, but odds are, I'm not going to
+be happy with it if this is the start...
+
+greg k-h
