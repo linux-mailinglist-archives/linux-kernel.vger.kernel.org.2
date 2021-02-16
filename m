@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F3C31D051
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED7C31D05F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBPSiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 13:38:55 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:33738 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhBPSiw (ORCPT
+        id S230519AbhBPSoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 13:44:22 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41782 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229912AbhBPSoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:38:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1613500732; x=1645036732;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LAtb7q8KeF6V0S8qBZ40P6liWm7mLq7atnaYX/bcDfc=;
-  b=JekclQJlix2CrcNDISJzbbCE29DY6LAa8r6Lu31nvjnnBoLIXqIcwkBQ
-   3467qRVgHNRiL4e/mpwWQ9Euufy82ZBSf7uTV/G1lDh23fqONTsNrgMsB
-   B2uU4MDZPaSZRQVMl0D+nM11dnfG5ErwrzqYsaxNfLlJrlHWWyN+XJ059
-   M=;
-X-IronPort-AV: E=Sophos;i="5.81,184,1610409600"; 
-   d="scan'208";a="88167432"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 16 Feb 2021 18:38:11 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id E4398281E99;
-        Tue, 16 Feb 2021 18:38:09 +0000 (UTC)
-Received: from EX13D13UWB002.ant.amazon.com (10.43.161.21) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 16 Feb 2021 18:38:09 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
- EX13D13UWB002.ant.amazon.com (10.43.161.21) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 16 Feb 2021 18:38:09 +0000
-Received: from dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (172.22.152.76)
- by mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 16 Feb 2021 18:38:08 +0000
-Received: by dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (Postfix, from userid 13116433)
-        id 1A94445897; Tue, 16 Feb 2021 18:38:08 +0000 (UTC)
-Date:   Tue, 16 Feb 2021 18:38:08 +0000
-From:   Shaoying Xu <shaoyi@amazon.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <fllinden@amazon.com>,
-        <benh@amazon.com>, <shaoyi@amazon.com>
-Subject: Re: [PATCH] arm64 module: set plt* section addresses to 0x0
-Message-ID: <20210216183808.GA24095@amazon.com>
-References: <20210216183234.GA23876@amazon.com>
+        Tue, 16 Feb 2021 13:44:17 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GIWDlZ173635;
+        Tue, 16 Feb 2021 13:43:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=V1xU+saz9w4xiE659/nYzU7asqdKegzxMTqU8mFL/EU=;
+ b=VSUZDZmuDejsM9+YVG+Q1nR+xPVfbS3+TRCWqLYBb0Um4A8GTLO5Co0D50p6VCTYqOGW
+ BJl4Be8LnfIrCV6UuxzWNtPnRN6dtr5Nkz9Ha2otr88hWwZR7OL1irT8x1MSlpX+nzsw
+ foSyBHz45yR3Sz0+++/C6/VdQVdNzKz6mYCAPrTTSotpYUIJ1NlbOHq4x9C2BAl5MoFk
+ /ITuT3b3B58mXwvsDMJfG+nkHQ3fFWyH3L37p9l8lWPI1KHLOh93ndfcGkhMyssdqncD
+ 2i4sAfoWysZIZu9qZMIfxLMpja9wgOPeJ62bM1DLeb2++pZTPy5mCvIgL67m7RxvxnNX LQ== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36rhtdusc2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 13:43:30 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11GIaX6F016141;
+        Tue, 16 Feb 2021 18:43:29 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma02dal.us.ibm.com with ESMTP id 36p6d9pf0q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 18:43:29 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11GIhTAJ7799706
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 18:43:29 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 02B7328066;
+        Tue, 16 Feb 2021 18:43:29 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4D7D428058;
+        Tue, 16 Feb 2021 18:43:26 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.160.70.200])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Feb 2021 18:43:25 +0000 (GMT)
+Subject: Re: [PATCH 4/4] ibmvfc: store return code of H_FREE_SUB_CRQ during
+ cleanup
+To:     Brian King <brking@linux.vnet.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20210211185742.50143-1-tyreld@linux.ibm.com>
+ <20210211185742.50143-5-tyreld@linux.ibm.com>
+ <94321ded-7970-258c-cee9-222f7b2b511f@linux.vnet.ibm.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <f5821413-f390-f759-a8a4-764c7f69537c@linux.ibm.com>
+Date:   Tue, 16 Feb 2021 10:43:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210216183234.GA23876@amazon.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <94321ded-7970-258c-cee9-222f7b2b511f@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-16_08:2021-02-16,2021-02-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 phishscore=0 spamscore=0 clxscore=1015 suspectscore=0
+ impostorscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102160153
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So sorry about the double send because I forgot to cc the lists. Please just
-ignore the first one. Thank you! 
+On 2/16/21 6:58 AM, Brian King wrote:
+> On 2/11/21 12:57 PM, Tyrel Datwyler wrote:
+>> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+>> index ba6fcf9cbc57..23b803ac4a13 100644
+>> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+>> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+>> @@ -5670,7 +5670,7 @@ static int ibmvfc_register_scsi_channel(struct ibmvfc_host *vhost,
+>>  
+>>  irq_failed:
+>>  	do {
+>> -		plpar_hcall_norets(H_FREE_SUB_CRQ, vdev->unit_address, scrq->cookie);
+>> +		rc = plpar_hcall_norets(H_FREE_SUB_CRQ, vdev->unit_address, scrq->cookie);
+>>  	} while (rc == H_BUSY || H_IS_LONG_BUSY(rc));
+> 
+> Other places in the driver where we get a busy return code back we have an msleep(100).
+> Should we be doing that here as well?
 
-On Tue, Feb 16, 2021 at 06:32:34PM +0000, Shaoying Xu wrote:
-> These plt* and .text.ftrace_trampoline sections specified for arm64 have 
-> non-zero addressses. Non-zero section addresses in a relocatable ELF would 
-> confuse GDB when it tries to compute the section offsets and it ends up 
-> printing wrong symbol addresses. Therefore, set them to zero, which mirrors 
-> the change in commit 5d8591bc0fba ("module: set ksymtab/kcrctab* section 
-> addresses to 0x0").
+Indeed, and actually even better would be to use rtas_busy_delay() which will
+perform the sleep with the correct ms delay, and marks itself with the
+might_sleep() macro.
+
+-Tyrel
+
 > 
-> Reported-by: Frank van der Linden <fllinden@amazon.com>
-> Signed-off-by: Shaoying Xu <shaoyi@amazon.com>
-> Cc: stable@vger.kernel.org
-> ---
->  arch/arm64/include/asm/module.lds.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> Thanks,
 > 
-> diff --git a/arch/arm64/include/asm/module.lds.h b/arch/arm64/include/asm/module.lds.h
-> index 691f15af788e..810045628c66 100644
-> --- a/arch/arm64/include/asm/module.lds.h
-> +++ b/arch/arm64/include/asm/module.lds.h
-> @@ -1,7 +1,7 @@
->  #ifdef CONFIG_ARM64_MODULE_PLTS
->  SECTIONS {
-> -	.plt (NOLOAD) : { BYTE(0) }
-> -	.init.plt (NOLOAD) : { BYTE(0) }
-> -	.text.ftrace_trampoline (NOLOAD) : { BYTE(0) }
-> +	.plt 0 (NOLOAD) : { BYTE(0) }
-> +	.init.plt 0 (NOLOAD) : { BYTE(0) }
-> +	.text.ftrace_trampoline 0 (NOLOAD) : { BYTE(0) }
->  }
->  #endif
-> -- 
-> 2.16.6
+> Brian
 > 
+
