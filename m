@@ -2,127 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8C331CC8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED3531CC93
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhBPPCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 10:02:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53528 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229628AbhBPPCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 10:02:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9A41FAC90;
-        Tue, 16 Feb 2021 15:02:07 +0000 (UTC)
-Message-ID: <1613487727.13456.210.camel@suse.cz>
-Subject: Re: [RFT][PATCH v1] cpufreq: ACPI: Set cpuinfo.max_freq directly if
- max boost is known
-From:   Giovanni Gherdovich <ggherdovich@suse.cz>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michael Larabel <Michael@phoronix.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 16 Feb 2021 16:02:07 +0100
-In-Reply-To: <1974978.nRy8TqEeLZ@kreacher>
-References: <1974978.nRy8TqEeLZ@kreacher>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S229958AbhBPPEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 10:04:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229880AbhBPPEe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 10:04:34 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07FAC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 07:03:54 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id c1so7259636qtc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 07:03:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nlIjDNwciuLZerl/8KMONEqRooC3ce2GyvtFs6F4uM4=;
+        b=P1tfOetut2I2vGuRsUKhLDELRY/NzRBZQxkQX1Ao+vkgFWiyG9YY+qr9ELeKuwaTxG
+         aTSaaRybuoY6kMpmZwSgvG7WMstkZ76HrGR0prajouzqodZt7EqyyiXcOgCHLc3uqWhq
+         YfiQKKqvetgRothSFf4Ye+tKYmpwTv6E1uPKadXRX6QOCOF7GlGpuBmQ5S4F79g+HeSn
+         W/xyt0A0bLSF1t1eAOWhAUwbIrntQ/vA5ygdkpZJhU2QqFNCMJElApwFgmJKJocGpLWw
+         /BAYG/2p3vVaeFikeTJ8bL2J5rf5o41pVgnVRflLTXhi1BAqNfEQKJyvMJG1jepugJoH
+         /QSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nlIjDNwciuLZerl/8KMONEqRooC3ce2GyvtFs6F4uM4=;
+        b=BfSb7b2OfDBpZB+IvU0Vj7CSo3s8IA31v+ue2X80Vh2ak0LjK6sIjlXFA9gazAz2Vl
+         PcYFavvzmqXR/4BPTqIbGGvUY6Sx4/uH4b7qo15lxl+SogugejofKuGM9SrRD0Qahdwp
+         XDPm0HEm0N/iUwFYctLa16jBYfq7u6u18d9mQ0PhpLBJAYauiDwB3mV73XmlqCLq1QCg
+         OoxGICtf/BR0yq6ULpBPo/w4yxDpC606Umfd2KuYYZaWmhaU0oS4fniowd9ne17Cy0Z7
+         F68b0aJ0NM4YBB3aZmwDqNQ0NwaxoCc7UtDOxs/3VKRMXwIL0+VntpXBIeBfCd8iaHG8
+         DHpA==
+X-Gm-Message-State: AOAM5332ZzN9rutDUXhS2dFh/ULO11P8Idnq0pX8L+5tzZ0TdPz4OIYu
+        5m2AJGT75lsILRuSZb3yzmuH5Q==
+X-Google-Smtp-Source: ABdhPJwMh/Z5O55xxWEmoIiSjHCE6yEstHKMQGgxQ/3H13B7Iy838arwlkSGi/GCtdewYjPehohTxQ==
+X-Received: by 2002:ac8:5bc4:: with SMTP id b4mr19105609qtb.240.1613487833590;
+        Tue, 16 Feb 2021 07:03:53 -0800 (PST)
+Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id t19sm14974271qke.109.2021.02.16.07.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 07:03:52 -0800 (PST)
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, tyhicks@linux.microsoft.com,
+        jmorris@namei.org, catalin.marinas@arm.com, will@kernel.org,
+        akpm@linux-foundation.org, anshuman.khandual@arm.com,
+        rppt@kernel.org, logang@deltatee.com, ardb@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mhocko@suse.com, linux-mm@kvack.org
+Subject: [PATCH v3 0/1] correct the inside linear map range during hotplug check
+Date:   Tue, 16 Feb 2021 10:03:50 -0500
+Message-Id: <20210216150351.129018-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-15 at 20:24 +0100, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Commit 3c55e94c0ade ("cpufreq: ACPI: Extend frequency tables to cover
-> boost frequencies") attempted to address a performance issue involving
-> acpi-cpufreq, the schedutil governor and scale-invariance on x86 by
-> extending the frequency tables created by acpi-cpufreq to cover the
-> entire range of "turbo" (or "boost") frequencies, but that caused
-> frequencies reported via /proc/cpuinfo and the scaling_cur_freq
-> attribute in sysfs to change which may confuse users and monitoring
-> tools.
-> 
-> For this reason, revert the part of commit 3c55e94c0ade adding the
-> extra entry to the frequency table and use the observation that
-> in principle cpuinfo.max_freq need not be equal to the maximum
-> frequency listed in the frequency table for the given policy.
-> 
-> Namely, modify cpufreq_frequency_table_cpuinfo() to allow cpufreq
-> drivers to set their own cpuinfo.max_freq above that frequency and
-> change  acpi-cpufreq to set cpuinfo.max_freq to the maximum boost
-> frequency found via CPPC.
-> 
-> This should be sufficient to let all of the cpufreq subsystem know
-> the real maximum frequency of the CPU without changing frequency
-> reporting.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=211305
-> Fixes: 3c55e94c0ade ("cpufreq: ACPI: Extend frequency tables to cover boost frequencies")
-> Reported-by: Matt McDonald <gardotd426@gmail.com>
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
-> 
-> Michael, Giovanni,
-> 
-> The fix for the EPYC performance regression that was merged into 5.11 introduced
-> an undesirable side-effect by distorting the CPU frequency reporting via
-> /proc/cpuinfo and scaling_cur_freq (see the BZ link above for details).
-> 
-> The patch below is reported to address this problem and it should still allow
-> schedutil to achieve desirable performance, because it simply sets
-> cpuinfo.max_freq without extending the frequency table of the CPU.
-> 
-> Please test this one and let me know if it adversely affects performance.
-> 
-> Thanks!
-> 
-> ---
->  drivers/cpufreq/acpi-cpufreq.c |   62 ++++++++++-------------------------------
->  drivers/cpufreq/freq_table.c   |    8 ++++-
->  2 files changed, 23 insertions(+), 47 deletions(-)
+v3:	- Sync with linux-next where arch_get_mappable_range() was
+	  introduced.
+v2:	- Added test-by Tyler Hicks
+	- Addressed comments from Anshuman Khandual: moved check under
+	  IS_ENABLED(CONFIG_RANDOMIZE_BASE), added 
+	  WARN_ON(start_linear_pa > end_linear_pa);
 
-Hello Rafael,
+Fixes a hotplug error that may occur on systems with CONFIG_RANDOMIZE_BASE
+enabled.
 
-I've run the quick image processing test below and the performance is in line
-with v5.11. I'll send some more results as longer tests complete.
+Applies against linux-next.
 
-TEST        : Intel Open Image Denoise, www.openimagedenoise.org
-INVOCATION  : ./denoise -hdr memorial.pfm -out out.pfm -bench 200 -threads $NTHREADS
-CPU         : MODEL            : 2x AMD EPYC 7742
-              FREQUENCY TABLE  : P2: 1.50 GHz
-                                 P1: 2.00 GHz
-				 P0: 2.25 GHz
-              MAX BOOST        :     3.40 GHz
+v1:
+https://lore.kernel.org/lkml/20210213012316.1525419-1-pasha.tatashin@soleen.com
+v2:
+https://lore.kernel.org/lkml/20210215192237.362706-1-pasha.tatashin@soleen.com
 
-Results: threads, msecs (ratio). Lower is better.
+Pavel Tatashin (1):
+  arm64: mm: correct the inside linear map range during hotplug check
 
-              v5.11          v5.11-patch
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      1   1071.43 (1.00)   1068.57 (1.00)
-      2    541.50 (1.00)    542.26 (1.00)
-      4    276.38 (1.00)    276.96 (1.00)
-      8    149.51 (1.00)    149.24 (1.00)
-     16     78.57 (1.00)     78.57 (1.00)
-     24     57.59 (1.00)     57.67 (1.00)
-     32     46.40 (1.00)     46.30 (1.00)
-     48     37.48 (1.00)     38.28 (1.02)
-     64     33.18 (1.00)     33.69 (1.02)
-     80     30.73 (1.00)     31.24 (1.02)
-     96     28.06 (1.00)     28.79 (1.03)
-    112     27.82 (1.00)     28.14 (1.01)
-    120     28.33 (1.00)     29.16 (1.03)
-    128     28.44 (1.00)     28.35 (1.00)
+ arch/arm64/mm/mmu.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
+-- 
+2.25.1
 
-Giovanni
