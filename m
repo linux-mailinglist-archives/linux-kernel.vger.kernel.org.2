@@ -2,147 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E4231C8F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F01CD31C8F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhBPKjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:39:05 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:53111 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229703AbhBPKi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:38:59 -0500
-Received: from [192.168.0.6] (ip5f5aea7e.dynamic.kabel-deutschland.de [95.90.234.126])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 8021F2064791F;
-        Tue, 16 Feb 2021 11:38:14 +0100 (CET)
-Subject: Re: smpboot: CPU numbers printed as warning
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        it+linux-x86@molgen.mpg.de,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>
-References: <e964b2ae-7a15-a510-e76a-56d704949d62@molgen.mpg.de>
- <YCuVEDXyIu+yE4c1@alley>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <06fbb8ba-5e6a-2430-f447-86324916fc54@molgen.mpg.de>
-Date:   Tue, 16 Feb 2021 11:38:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230166AbhBPKkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:40:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229767AbhBPKkk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:40:40 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA9DC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 02:40:00 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id o7so5981105pgl.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 02:40:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=C/UbC0p2B2OI8LGsLZ5ShRFwCgCZxw1TV90u+LaEK7g=;
+        b=JTUOJ6gupAdS0Uv1yclSHe2rmXAoZsRRWj/Omhc2ModEO0vU1Jksz+ZVkZ7FUBKuXf
+         QY+0aaMIc3YuYsjn2VgKxI/5oS2XF+ydjorVl2FiXl6vjoLHHIgY12ndG31LcErC6kIu
+         PVPGgTJ7kXdCHSJyIO304DK1B2XJLK8UXk5Cd20rjOhskehs/hvQuvyrh7boVhK3wIZx
+         M1+pkeP0NF3re8WFH9h3yELejoQImB6L6vp2qdMjyVU6c6gspt+9yk+Sl9ZpwcBtONqm
+         jIMQdda2R0VGdimnjKpRzgIfNvpIRsLXBp9NFIouIHN/e8gofvB0z9uyRxOlmQgMcb4J
+         SvGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=C/UbC0p2B2OI8LGsLZ5ShRFwCgCZxw1TV90u+LaEK7g=;
+        b=M8U414kUCHq/zZF8NQotPSwsULdcQoRqlVh9nr+u2lUqvU/WGMtS0sf7f7iJccX82t
+         riLrrX1ZlA/mVN3UuhWcJRO+2PGyniP04Ng9JYW6N89kTyHlJ0oEh/9pMYf87Z9gynEy
+         l/LC+G7spISvPqiFmcNI2zBZ3geiV1GccJ91bChtUBEqZ+Kn6fm6eQddYP6hjUPzcuqB
+         kVkS20s1Lf0+6k+3TsaPjYQF8M/e4PAO6iwltv+WISWen0t9tccvyxeXOy6dUXX2bdY9
+         LTyDCFnsRaaSntT3DXVdrFjRWjWQsTS9d+FILBzODdoeQbcKjcX//EWHLsXhlBK2lzV1
+         FpSg==
+X-Gm-Message-State: AOAM530OBGnm814SgZrjxevfvQfNRiCUEQRWcjdOC/9y3qlS/8oaPAJ7
+        3dWPqf560U+Fp4Po5xfU9DtAyw==
+X-Google-Smtp-Source: ABdhPJzF6n1Bw76L8Mvt8EZfVrIA6aPEUV8Ln/oFyqMf3Kv8F8CJsSm2q+7jXG0KMkTrb4NOog9DlA==
+X-Received: by 2002:a63:5d59:: with SMTP id o25mr18241675pgm.322.1613471999788;
+        Tue, 16 Feb 2021 02:39:59 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id l15sm2390356pjq.9.2021.02.16.02.39.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Feb 2021 02:39:59 -0800 (PST)
+Date:   Tue, 16 Feb 2021 16:09:57 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>
+Subject: Re: [PATCH V7 6/6] of: unittest: Statically apply overlays using
+ fdtoverlay
+Message-ID: <20210216103957.gwikizhtoxvb66le@vireshk-i7>
+References: <cover.1611904394.git.viresh.kumar@linaro.org>
+ <3683a542d4141cfcf9c2524a40a9ee75b657c1c2.1611904394.git.viresh.kumar@linaro.org>
+ <20210204015409.GA3150757@robh.at.kernel.org>
+ <20210208111813.oql6jmeaxuq3btz7@vireshk-i7>
+ <CAL_JsqK+eM_RrzXnbm2GJGJuVwAjEz1TeTux18Hc727vovbqDA@mail.gmail.com>
+ <20210209101058.kmqqjxfjz3alre55@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <YCuVEDXyIu+yE4c1@alley>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209101058.kmqqjxfjz3alre55@vireshk-i7>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Petr,
+On 09-02-21, 15:40, Viresh Kumar wrote:
+> And after decent amount of effort understanding how to do this, I
+> finally did it in a not so efficient way, I am sure you can help
+> improving it :)
 
+Ping!
 
-Thank you for the quick reply.
+Also, where do we send patches for dt-schema ? Which list ?
 
-
-Am 16.02.21 um 10:49 schrieb Petr Mladek:
-> On Mon 2021-02-15 20:22:34, Paul Menzel wrote:
-
->> Using Linux 5.10.13 (and before), looking at the Linux kernel warnings, the
->> CPU numbers show up. For example with 12 cpus/threads:
->>
->> ```
->> $ sudo dmesg --level=warn
->> [    0.216103]   #2
->> [    0.220105]   #3
->> [    0.224103]   #4
->> [    0.228104]   #5
->> [    0.232110]   #6
->> [    0.236101]   #7
->> [    0.240102]   #8
->> [    0.244102]   #9
->> [    0.248100]  #10
->> [    0.252098]  #11
->> ```
+> Author: Viresh Kumar <viresh.kumar@linaro.org>
+> Date:   Tue Feb 9 12:19:50 2021 +0530
 > 
-> Is this the exact output from sudo dmesg --level=warn?
-
-Yes, it is.
-
-> It is strange that each CPU number is printed on its own line.
-
-Should it be put on one line, if `dmesg --level=warn` is executed, even 
-with other messages in between?
-
-> Anyway, it might be affected by the new lockless ringbuffer.
-> The original code decided whether to connect the lines only by
-> "current" task pointer. The lockless ring buffer takes into account
-> also CPU number.
+>     dt-validate: Skip "required property" checks for overlays
+>     
+>     The overlays may not carry the required properties and would depend on
+>     the base dtb to carry those, there is no point raising those errors
+>     here.
+>     
+>     Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  tools/dt-validate | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 > 
-> Well, it has never been reliable. For example, I see here:
-> 
-> <6>[    0.238262][    T1] smp: Bringing up secondary CPUs ...
-> <6>[    0.239340][    T1] x86: Booting SMP configuration:
-> <6>[    0.239794][    T1] .... node  #0, CPUs:      #1
-> <6>[    0.113946][    T0] kvm-clock: cpu 1, msr 6ba01041, secondary cpu clock
-> <6>[    0.113946][    T0] smpboot: CPU 1 Converting physical 0 to logical die 1
-> <6>[    0.246056][   T16] kvm-guest: stealtime: cpu 1, msr 17f9f2080
-> <4>[    0.246679][    T1]  #2
-> <6>[    0.113946][    T0] kvm-clock: cpu 2, msr 6ba01081, secondary cpu clock
-> <6>[    0.113946][    T0] smpboot: CPU 2 Converting physical 0 to logical die 2
-> <6>[    0.250023][   T21] kvm-guest: stealtime: cpu 2, msr 17fbf2080
-> <4>[    0.250648][    T1]  #3
-> <6>[    0.113946][    T0] kvm-clock: cpu 3, msr 6ba010c1, secondary cpu clock
-> <6>[    0.113946][    T0] smpboot: CPU 3 Converting physical 0 to logical die 3
-> <6>[    0.254026][   T26] kvm-guest: stealtime: cpu 3, msr 17fdf2080
-> <6>[    0.254568][    T1] smp: Brought up 1 node, 4 CPUs
-> <6>[    0.254597][    T1] smpboot: Max logical packages: 4
-> <6>[    0.255097][    T1] smpboot: Total of 4 processors activated (16896.11 BogoMIPS)
-> 
-> There are another messages printed in between that obviously break pr_cont().
+> diff --git a/tools/dt-validate b/tools/dt-validate
+> index 410b0538ef47..c6117504f1d1 100755
+> --- a/tools/dt-validate
+> +++ b/tools/dt-validate
+> @@ -80,6 +80,23 @@ show_unmatched = False
+>                                    (filename, line, col, fullname, node['compatible']), file=sys.stderr)
+>                              continue
+>  
+> +                        if nodename == '/':
+> +                            is_fragment = False
+> +                            for name in node.items():
+> +                                if name[0] == 'fragment@0':
+> +                                    is_fragment = True
+> +                                    break;
+> +
+> +                            if is_fragment == True:
+> +                                if 'required property' in error.message:
+> +                                    continue
+> +                                elif error.context:
+> +                                    for e in error.context:
+> +                                        if not 'required property' in e.message:
+> +                                            break
+> +                                    else:
+> +                                        continue
+> +
+>                          print(dtschema.format_error(filename, error, nodename=nodename, verbose=verbose) +
+>                              '\n\tFrom schema: ' + schema['$filename'],
+>                              file=sys.stderr)
 
-Yes, that is what I meant.
-
->> If I am not mistaken, this is from `announce_cpu()` in
->> `arch/x86/kernel/smpboot.c`, and the `pr_cont()` in their “forgets” the log
->> level it belongs to, maybe because of SMP and other messages are printed in
->> between.
->>
->> ```
->>          if (system_state < SYSTEM_RUNNING) {
->>                  if (node != current_node) {
->>                          if (current_node > (-1))
->>                                  pr_cont("\n");
->>                          current_node = node;
->>
->>                          printk(KERN_INFO ".... node %*s#%d, CPUs:  ",
->>                                 node_width - num_digits(node), " ", node);
->>                  }
->>
->>                  /* Add padding for the BSP */
->>                  if (cpu == 1)
->>                          pr_cont("%*s", width + 1, " ");
->>
->>                  pr_cont("%*s#%d", width - num_digits(cpu), " ", cpu);
->>
->>          } else
->>                  pr_info("Booting Node %d Processor %d APIC 0x%x\n",
->>                          node, cpu, apicid);
->> ```
-> 
->> Would using `pr_info()` instead be an acceptable fix?
-> 
-> Makes sense to me.
-> 
-> Also you should add '\n' into the previous string to make the behavior
-> clear. It will always be printed on a new line when pr_info()
-> is used.
-
-I am going to reply to Borislav’s response.
-
-
-Kind regards,
-
-Paul
+-- 
+viresh
