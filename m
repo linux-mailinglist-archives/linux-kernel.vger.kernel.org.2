@@ -2,264 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349BF31CD86
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9465F31CD8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbhBPQF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:05:27 -0500
-Received: from mail-lj1-f174.google.com ([209.85.208.174]:36483 "EHLO
-        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbhBPQEU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:04:20 -0500
-Received: by mail-lj1-f174.google.com with SMTP id k22so11829933ljg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:03:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=o4/al9HbxUJ6dIQSP/cYBFZuT9Xf6OYChnIzkZS7oOg=;
-        b=qoPOOOfqGUoCfWf+aCLlh17PzvB2mRrg7Xf068Rjn3fR1Mw6+OwJYDR/kHK3e4IESJ
-         UEQkgOz9G8FOx5XQ4hC86CJ2xGV+OzP63FKtpd4DHVu/YVDQPlsdXjHuYFEB7FtcIzId
-         Nv1i5LLXXrPv0re7PmBFIjIkeXI3kVXnLAEn9kw7qM8tQti/i7jniUYNoYmlVW3Yl6sD
-         O6lYiS4wxTOvcQ7aNW8IkuLcgWoNseBELhKZDRsHCi91i7FIAeC509QHRY8meFIaSYli
-         reww01a7YVIpTUT2v76H3Kl/y8B/0wwGs3FxAK99MSeYGREdbZHQ5oBA6ebTj7Ot5o78
-         +AzQ==
-X-Gm-Message-State: AOAM533F32gtvFwGp0j5t4rr21q5Y1ysyMaLDqW5G6VOwYWX2BF4czGr
-        xzOEB41uvocPcATSYqHwPYo=
-X-Google-Smtp-Source: ABdhPJx8IlxD7Zgl9Uoi0VptdlQbdJH7lD+YsyE/rrdvhDOak+7SeCbwS4RJJ2wi87BXJ2RueZYGRA==
-X-Received: by 2002:a05:651c:2125:: with SMTP id a37mr12855346ljq.19.1613491406542;
-        Tue, 16 Feb 2021 08:03:26 -0800 (PST)
-Received: from localhost.localdomain (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.googlemail.com with ESMTPSA id y19sm992465lji.31.2021.02.16.08.03.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 08:03:25 -0800 (PST)
-From:   Denis Efremov <efremov@linux.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] coccinelle: misc: add minmax script
-Date:   Tue, 16 Feb 2021 19:03:26 +0300
-Message-Id: <20210216160326.1341741-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
+        id S230097AbhBPQGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:06:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230221AbhBPQFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 11:05:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 679D064D9F;
+        Tue, 16 Feb 2021 16:04:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613491491;
+        bh=z8NrUWd5TbVZgAg2HRWl/KOXL0/wZcaDM0wAN4DfoLE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MLywsHKHdAVaj8YuJrWT0XGGerCvVWPJiExCtVVmcVSjy6cUzdc/Go5X3eGyxlkJD
+         s0XWGvet/nk/Tpq2Pf885GcmXoGr05w7p387dru8Xsq4bqNLeGd8HmiUTOVAKYOi+6
+         MAm/GlFetanh4nPjcNV7ux79/yoWxi/+lWtnyt/nj2s+wJVWqgRksRi05aTu8dGF+b
+         NworuHFIoUbZdduZVVcEyPPOnmX1VaQFU4foTyrMKYnZk0h8TFz1HIo+JvLRTMv8xp
+         P9byXBcYMZLBrCAE9sS4PfTOWqytn+JBbtmD2Ye40j2yC9gSxi4BoQN6xCbu/eNeeW
+         ALN/k8vvDMGRQ==
+Date:   Tue, 16 Feb 2021 18:04:39 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
+        stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v4] tpm: fix reference counting for struct tpm_chip
+Message-ID: <YCvtF4qfG35tHM5e@kernel.org>
+References: <1613435460-4377-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
+ <20210216125342.GU4718@ziepe.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216125342.GU4718@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check for opencoded min(), max() implementations.
+On Tue, Feb 16, 2021 at 08:53:42AM -0400, Jason Gunthorpe wrote:
+> On Tue, Feb 16, 2021 at 01:31:00AM +0100, Lino Sanfilippo wrote:
+> >  
+> > +static int tpm_add_tpm2_char_device(struct tpm_chip *chip)
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
- scripts/coccinelle/misc/minmax.cocci | 198 +++++++++++++++++++++++++++
- 1 file changed, 198 insertions(+)
- create mode 100644 scripts/coccinelle/misc/minmax.cocci
+BTW, this naming is crap.
 
-diff --git a/scripts/coccinelle/misc/minmax.cocci b/scripts/coccinelle/misc/minmax.cocci
-new file mode 100644
-index 000000000000..9ae689bb14fb
---- /dev/null
-+++ b/scripts/coccinelle/misc/minmax.cocci
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+///
-+/// Check for opencoded min(), max() implementations.
-+/// Generated patches sometimes require adding a cast to fix compile warning.
-+/// Warnings/patches scope intentionally limited to a function body.
-+///
-+// Confidence: Medium
-+// Copyright: (C) 2021 Denis Efremov ISPRAS
-+// Options: --no-includes --include-headers
-+//
-+// Keywords: min, max
-+//
-+
-+
-+virtual report
-+virtual org
-+virtual context
-+virtual patch
-+
-+@rmax depends on !patch@
-+identifier func;
-+expression x, y;
-+binary operator cmp = {>, >=};
-+position p;
-+@@
-+
-+func(...)
-+{
-+	... when any
-+*	(x cmp y) ?@p x : y
-+	... when any
-+}
-+
-+@rmaxif depends on !patch@
-+identifier func;
-+expression x, y;
-+expression max_val;
-+binary operator cmp = {>, >=};
-+position p;
-+@@
-+
-+func(...)
-+{
-+	... when any
-+*	if (x cmp@p y) {
-+*		max_val = x;
-+*	} else {
-+*		max_val = y;
-+*	}
-+	... when any
-+}
-+
-+@rmin depends on !patch@
-+identifier func;
-+expression x, y;
-+binary operator cmp = {<, <=};
-+position p;
-+@@
-+
-+func(...)
-+{
-+	... when any
-+*	(x cmp y) ?@p x : y
-+	... when any
-+}
-+
-+@rminif depends on !patch@
-+identifier func;
-+expression x, y;
-+expression min_val;
-+binary operator cmp = {<, <=};
-+position p;
-+@@
-+
-+func(...)
-+{
-+	... when any
-+*	if (x cmp@p y) {
-+*		min_val = x;
-+*	} else {
-+*		min_val = y;
-+*	}
-+	... when any
-+}
-+
-+@depends on patch@
-+identifier func;
-+expression x, y;
-+binary operator cmp = {>=, >};
-+@@
-+
-+func(...)
-+{
-+	... when any
-+-	(x cmp y) ? x : y
-++	max(x, y)
-+	... when any
-+}
-+
-+@depends on patch@
-+identifier func;
-+expression x, y;
-+expression max_val;
-+binary operator cmp = {>=, >};
-+@@
-+
-+func(...)
-+{
-+	... when any
-+-	if (x cmp y) {
-+-		max_val = x;
-+-	} else {
-+-		max_val = y;
-+-	}
-++	max_val = max(x, y);
-+	... when any
-+}
-+
-+@depends on patch@
-+identifier func;
-+expression x, y;
-+binary operator cmp = {<=, <};
-+@@
-+
-+func(...)
-+{
-+	... when any
-+-	(x cmp y) ? x : y
-++	min(x, y)
-+	... when any
-+}
-+
-+@depends on patch@
-+identifier func;
-+expression x, y;
-+expression min_val;
-+binary operator cmp = {<=, <};
-+@@
-+
-+func(...)
-+{
-+	... when any
-+-	if (x cmp y) {
-+-		min_val = x;
-+-	} else {
-+-		min_val = y;
-+-	}
-++	min_val = min(x, y);
-+	... when any
-+}
-+
-+@script:python depends on report@
-+p << rmax.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING opportunity for max()")
-+
-+@script:python depends on org@
-+p << rmax.p;
-+@@
-+
-+coccilib.report.print_todo(p[0], "WARNING opportunity for max()")
-+
-+@script:python depends on report@
-+p << rmaxif.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING opportunity for max()")
-+
-+@script:python depends on org@
-+p << rmaxif.p;
-+@@
-+
-+coccilib.report.print_todo(p[0], "WARNING opportunity for max()")
-+
-+@script:python depends on report@
-+p << rmin.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING opportunity for min()")
-+
-+@script:python depends on org@
-+p << rmin.p;
-+@@
-+
-+coccilib.report.print_todo(p[0], "WARNING opportunity for min()")
-+
-+@script:python depends on report@
-+p << rminif.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING opportunity for min()")
-+
-+@script:python depends on org@
-+p << rminif.p;
-+@@
-+
-+coccilib.report.print_todo(p[0], "WARNING opportunity for min()")
--- 
-2.26.2
+- 2x tpm
+- char is useless
 
+-> tpm2_add_device
+
+
+> > +{
+> > +	int rc;
+> > +
+> > +	device_initialize(&chip->devs);
+> > +	chip->devs.parent = chip->dev.parent;
+> > +	chip->devs.class = tpmrm_class;
+> > +
+> > +	rc = dev_set_name(&chip->devs, "tpmrm%d", chip->dev_num);
+> > +	if (rc)
+> > +		goto out_put_devs;
+
+Right, and empty line missing here.
+
+> > +	/*
+> > +	 * get extra reference on main device to hold on behalf of devs.
+> > +	 * This holds the chip structure while cdevs is in use. The
+> > +	 * corresponding put is in the tpm_devs_release.
+> > +	 */
+> > +	get_device(&chip->dev);
+> > +	chip->devs.release = tpm_devs_release;
+> > +	chip->devs.devt =
+> > +		MKDEV(MAJOR(tpm_devt), chip->dev_num + TPM_NUM_DEVICES);
+
+Isn't this less than 100 chars?
+
+> > +	cdev_init(&chip->cdevs, &tpmrm_fops);
+> > +	chip->cdevs.owner = THIS_MODULE;
+> > +
+> > +	rc = cdev_device_add(&chip->cdevs, &chip->devs);
+> > +	if (rc) {
+> > +		dev_err(&chip->devs,
+> > +			"unable to cdev_device_add() %s, major %d, minor %d, err=%d\n",
+> > +			dev_name(&chip->devs), MAJOR(chip->devs.devt),
+> > +			MINOR(chip->devs.devt), rc);
+> > +		goto out_put_devs;
+> > +	}
+> > +
+> > +	return 0;
+> > +
+> > +out_put_devs:
+> > +	put_device(&chip->devs);
+> 
+> I'd rather you organize this so chip->devs.release and the get_device
+> is always sent instead of having the possiblity for a put_device that
+> doesn't call release
+
+/Jarkko
