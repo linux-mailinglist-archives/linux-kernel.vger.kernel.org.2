@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24C331CDC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3926031CDF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhBPQOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:14:10 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11547 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbhBPQNP (ORCPT
+        id S230328AbhBPQZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:25:12 -0500
+Received: from esa1.hc324-48.eu.iphmx.com ([207.54.68.119]:47058 "EHLO
+        esa1.hc324-48.eu.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230033AbhBPQZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:13:15 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602beef20003>; Tue, 16 Feb 2021 08:12:34 -0800
-Received: from reg-r-vrt-018-180.nvidia.com (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 16 Feb 2021 16:12:32 +0000
-References: <0000000000005243f805b05abc7c@google.com>
- <00000000000008f12905bb0923e0@google.com>
- <CAM_iQpVEZiOca0po6N5Hcp67LV98k_PhbEXogCJFjpOR0AbGwg@mail.gmail.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Vlad Buslov <vladbu@nvidia.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-CC:     syzbot <syzbot+151e3e714d34ae4ce7e8@syzkaller.appspotmail.com>,
-        "David Miller" <davem@davemloft.net>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        "Jiri Pirko" <jiri@resnulli.us>, Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: KASAN: null-ptr-deref Read in tcf_idrinfo_destroy
-In-Reply-To: <CAM_iQpVEZiOca0po6N5Hcp67LV98k_PhbEXogCJFjpOR0AbGwg@mail.gmail.com>
-Date:   Tue, 16 Feb 2021 18:12:29 +0200
-Message-ID: <ygnh35xwrnyq.fsf@nvidia.com>
+        Tue, 16 Feb 2021 11:25:08 -0500
+X-Greylist: delayed 398 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Feb 2021 11:25:06 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=bmw.de; i=@bmw.de; q=dns/txt; s=mailing1;
+  t=1613492707; x=1645028707;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=9oEG2z5u3V95BKMG5vyexn2wShlVqEN0j0D1UF1bkGc=;
+  b=mKUWcMze4vZ2X+J/rPuaRCnYPMKCjQE4h1ltjnumX80eYvLSKNKQwfN4
+   6LSxNlNT+dzkeo0Yc1GAUadPTgF4Mp3RBNx2h2DbbqIILx6+GAttKQlhb
+   ZN+cdzjpo+U/sC1YaoWSBMSqFtxxP7eIIbSGAnLv/p0Ouu4HDDs0xSumR
+   g=;
+Received: from esagw6.bmwgroup.com (HELO esagw6.muc) ([160.46.252.49]) by
+ esa1.hc324-48.eu.iphmx.com with ESMTP/TLS; 16 Feb 2021 17:16:42 +0100
+Received: from esabb2.muc ([160.50.100.34])  by esagw6.muc with ESMTP/TLS;
+ 16 Feb 2021 17:16:42 +0100
+Received: from smucm10m.bmwgroup.net (HELO smucm10m.europe.bmw.corp) ([160.48.96.49])
+ by esabb2.muc with ESMTP/TLS; 16 Feb 2021 17:16:42 +0100
+Received: from smucm10m.europe.bmw.corp (160.48.96.49) by smucm10m.europe.bmw.corp
+ (160.48.96.49) with Microsoft SMTP Server (TLS;
+ Tue, 16 Feb 2021 17:16:42 +0100
+Received: from smucm10m.europe.bmw.corp ([160.48.96.49]) by
+ smucm10m.europe.bmw.corp ([160.48.96.49]) with mapi id 15.00.1497.010; Tue,
+ 16 Feb 2021 17:16:42 +0100
+From:   <Viktor.Rosendahl@bmw.de>
+To:     <rostedt@goodmis.org>, <colin.king@canonical.com>
+CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [EXTERNAL] [PATCH][next][V3] tracing/tools: fix a couple of
+ spelling mistakes
+Thread-Topic: [EXTERNAL] [PATCH][next][V3] tracing/tools: fix a couple of
+ spelling mistakes
+Thread-Index: AQHXBHimQNQZ/SyPYUCVig0MMizfNKpa5IOA
+Date:   Tue, 16 Feb 2021 16:16:42 +0000
+Message-ID: <c7bd56b83ac50ffb3a3b3bfad58cde8bf1d24cfa.camel@bmw.de>
+References: <20210216153023.163488-1-colin.king@canonical.com>
+In-Reply-To: <20210216153023.163488-1-colin.king@canonical.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A6755ACBD5A69D4A8695B66F59CF54DB@bmwmail.corp>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613491954; bh=iueBWvrzQvXvpiyEkIDejuii6oURkDiMVH2u8gFcUWU=;
-        h=References:User-agent:From:To:CC:Subject:In-Reply-To:Date:
-         Message-ID:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=pvdrQCW9Wc+7YIOJh3I5O29T7sl5MkIlhfukUO6oEmY2OdvLjHcxm2tkKIqv2tFwW
-         2ZxveW6VNA7uSJ3/YQ3NAvRMwgkvKDE/ELEbz9EqdVfY6NbA5IT/YLIki1f67Tna0D
-         WJnmveJGreRcDlxSMPWgXCmRdefpkdhCib3xooXSjihrZCOjQubjJZrHhaCbH+z5Rn
-         ScyvK7OHUccGYCsjY/kfN/VJAY4oG3e3H5qXS+9cd8JgUbVKlT0TNZOCQpFBYfrkvA
-         MCQZ037Xrmo9xg782X4+LjKi3qs8+X/x/ba+Ovdd00xAnAeGKpTDgh4LDEuOndNSUs
-         NuoQviAE/bx1w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 16 Feb 2021 at 01:22, Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> On Wed, Feb 10, 2021 at 9:53 PM syzbot
-> <syzbot+151e3e714d34ae4ce7e8@syzkaller.appspotmail.com> wrote:
->>
->> syzbot has found a reproducer for the following issue on:
->>
->> HEAD commit:    291009f6 Merge tag 'pm-5.11-rc8' of git://git.kernel.org/p..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=14470d18d00000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=a53fd47f16f22f8c
->> dashboard link: https://syzkaller.appspot.com/bug?extid=151e3e714d34ae4ce7e8
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15f45814d00000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f4aff8d00000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+151e3e714d34ae4ce7e8@syzkaller.appspotmail.com
->>
->> ==================================================================
->> BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:71 [inline]
->> BUG: KASAN: null-ptr-deref in atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
->> BUG: KASAN: null-ptr-deref in __tcf_idr_release net/sched/act_api.c:178 [inline]
->> BUG: KASAN: null-ptr-deref in tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act_api.c:598
->> Read of size 4 at addr 0000000000000010 by task kworker/u4:5/204
->>
->> CPU: 0 PID: 204 Comm: kworker/u4:5 Not tainted 5.11.0-rc7-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Workqueue: netns cleanup_net
->> Call Trace:
->>  __dump_stack lib/dump_stack.c:79 [inline]
->>  dump_stack+0x107/0x163 lib/dump_stack.c:120
->>  __kasan_report mm/kasan/report.c:400 [inline]
->>  kasan_report.cold+0x5f/0xd5 mm/kasan/report.c:413
->>  check_memory_region_inline mm/kasan/generic.c:179 [inline]
->>  check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
->>  instrument_atomic_read include/linux/instrumented.h:71 [inline]
->>  atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
->>  __tcf_idr_release net/sched/act_api.c:178 [inline]
->>  tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act_api.c:598
->>  tc_action_net_exit include/net/act_api.h:151 [inline]
->>  police_exit_net+0x168/0x360 net/sched/act_police.c:390
->
-> This is really strange. It seems we still left some -EBUSY placeholders
-> in the idr, however, we actually call tcf_action_destroy() to clean up
-> everything including -EBUSY ones on error path.
->
-> What do you think, Vlad?
->
-> Thanks.
-
-Hi Cong,
-
-I couldn't reproduce the issue with syzbot repro.c, but it looks like we
-are missing tcf_idr_insert_many() in exts->police handling code inside
-tcf_exts_validate() which calls tcf_action_init_1(). After recent
-changes action is no longer inserted in idr by init_1 and requires
-manual call to tcf_idr_insert_many(). I'll send a fix.
-
-Regards,
-Vlad
+VGhpcyBsb29rcyBnb29kIHRvIG1lLg0KDQpiZXN0IHJlZ2FyZHMsDQoNClZpa3Rvcg0KDQpPbiBU
+dWUsIDIwMjEtMDItMTYgYXQgMTU6MzAgKzAwMDAsIENvbGluIEtpbmcgd3JvdGU6DQo+IEVYVEVS
+TkFMIFNFTkRFUiAtIGJlIENBVVRJT1VTLCBwYXJ0aWN1bGFybHkgd2l0aCBsaW5rcyBhbmQgYXR0
+YWNobWVudHMuIA0KPiBFWFRFUk5FUiBBYnNlbmRlciAtIEJpdHRlIFZPUlNJQ0hUIGJlaW0gw5Zm
+Zm5lbiB2b24gTGlua3MgdW5kIEFuaMOkbmdlbi4gDQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
+PiAtLS0tLS0tLS0tLS0NCj4gDQo+IEZyb206IENvbGluIElhbiBLaW5nIDxjb2xpbi5raW5nQGNh
+bm9uaWNhbC5jb20+DQo+IA0KPiBUaGVyZSBpcyBhIHNwZWxsaW5nIG1pc3Rha2UgaW4gdGhlIC1n
+IGhlbHAgb3B0aW9uLCBJIGJlbGlldmUNCj4gaXQgc2hvdWxkIGJlICJncmFwaCIuICBUaGVyZSBp
+cyBhbHNvIGEgc3BlbGxpbmcgbWlzdGFrZSBpbiBhDQo+IHdhcm5pbmcgbWVzc2FnZS4gRml4IGJv
+dGggbWlzdGFrZXMuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBDb2xpbiBJYW4gS2luZyA8Y29saW4u
+a2luZ0BjYW5vbmljYWwuY29tPg0KPiAtLS0NCj4gDQo+IFYyOiBBbHNvIGZpeCAibnVtbWVyIiBz
+cGVsbGluZyBtaXN0YWtlLg0KPiBWMzogcmUtZm9ybWF0IHRleHQsIGFzIHN1Z2dlc3RlZCBieSBW
+aWt0b3INCj4gDQo+IC0tLQ0KPiAgdG9vbHMvdHJhY2luZy9sYXRlbmN5L2xhdGVuY3ktY29sbGVj
+dG9yLmMgfCA2ICsrKy0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBk
+ZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS90b29scy90cmFjaW5nL2xhdGVuY3kvbGF0
+ZW5jeS1jb2xsZWN0b3IuYw0KPiBiL3Rvb2xzL3RyYWNpbmcvbGF0ZW5jeS9sYXRlbmN5LWNvbGxl
+Y3Rvci5jDQo+IGluZGV4IDU3YjIwODAyZTcxYi4uYjY5ZGU5MjYzZWU2IDEwMDY0NA0KPiAtLS0g
+YS90b29scy90cmFjaW5nL2xhdGVuY3kvbGF0ZW5jeS1jb2xsZWN0b3IuYw0KPiArKysgYi90b29s
+cy90cmFjaW5nL2xhdGVuY3kvbGF0ZW5jeS1jb2xsZWN0b3IuYw0KPiBAQCAtMTY1MCw3ICsxNjUw
+LDcgQEAgc3RhdGljIHZvaWQgc3RhcnRfcHJpbnR0aHJlYWQodm9pZCkNCj4gIAkJaWYgKHVmZCA8
+ICAwIHx8DQo+ICAJCSAgICByZWFkKHVmZCwgc2VlZCwgc2l6ZW9mKCpzZWVkKSkgIT0gc2l6ZW9m
+KCpzZWVkKSkgew0KPiAgCQkJcHJpbnRmKA0KPiAtIldhcm5pbmchIFVzaW5nIHRyaXZpYWwgcmFu
+ZG9tIG51bW1lciBzZWVkLCBzaW5jZSAlcyBub3QgYXZhaWxhYmxlXG4iLA0KPiArIldhcm5pbmch
+IFVzaW5nIHRyaXZpYWwgcmFuZG9tIG51bWJlciBzZWVkLCBzaW5jZSAlcyBub3QgYXZhaWxhYmxl
+XG4iLA0KPiAgCQkJREVWX1VSQU5ET00pOw0KPiAgCQkJZmZsdXNoKHN0ZG91dCk7DQo+ICAJCQkq
+c2VlZCA9IGk7DQo+IEBAIC0xNzExLDggKzE3MTEsOCBAQCBzdGF0aWMgdm9pZCBzaG93X3VzYWdl
+KHZvaWQpDQo+ICAiXHRcdFx0YmVnaW5uaW5nLCBlbmQsIGFuZCBiYWNrdHJhY2UuXG5cbiINCj4g
+IA0KPiAgIi1nLCAtLWdyYXBoXHRcdEVuYWJsZSB0aGUgZGlzcGxheS1ncmFwaCBvcHRpb24gaW4g
+dHJhY2Vfb3B0aW9uLiBUaGlzXG4iDQo+IC0iXHRcdFx0b3B0aW9uIGNhdXNlcyBmdHJhY2UgdG8g
+c2hvdyB0aGUgZnVuY3Rpb25waCBvZiBob3dcbiINCj4gLSJcdFx0XHRmdW5jdGlvbnMgYXJlIGNh
+bGxpbmcgb3RoZXIgZnVuY3Rpb25zLlxuXG4iDQo+ICsiXHRcdFx0b3B0aW9uIGNhdXNlcyBmdHJh
+Y2UgdG8gc2hvdyB0aGUgZ3JhcGggb2YgaG93IGZ1bmN0aW9uc1xuIg0KPiArIlx0XHRcdGFyZSBj
+YWxsaW5nIG90aGVyIGZ1bmN0aW9ucy5cblxuIg0KPiAgDQo+ICAiLWMsIC0tcG9saWN5IFBPTFx0
+UnVuIHRoZSBwcm9ncmFtIHdpdGggc2NoZWR1bGluZyBwb2xpY3kgUE9MLiBQT0wgY2FuIGJlXG4i
+DQo+ICAiXHRcdFx0b3RoZXIsIGJhdGNoLCBpZGxlLCByciBvciBmaWZvLiBUaGUgZGVmYXVsdCBp
+cyByci4gV2hlblxuIg0K
