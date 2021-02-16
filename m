@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD51231C5FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 05:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9CB31C602
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 05:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhBPEaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 23:30:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhBPEa2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 23:30:28 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6221BC061786;
-        Mon, 15 Feb 2021 20:29:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=lwDM3FGLvw88JvWa7gPEM2MZc8nTKorAnJdtBb2TZyw=; b=oYvzSZQlLKei27xd5OawRHeVuv
-        aqlK2QoVX6WbFKngWWUnTg7StbwQQ7v/ZpfMT0REtwEGVnD6rPDiOD8duJphWQLxPhswxLtZDBO9F
-        u44A7oeExizNbYwejTmUz+/zkNYwu71yi8dDDK/rmHB+O6TAVTfVrKFy3xskTaab5Za0CD5F0+B3E
-        phB24m+1sDLEZU8Hh/spt1eQDsqV2negrF1IEbU9oYIlT7AyRF+nfO+OIi+sdadYWERQtn1VonYWG
-        kDWFTF1EPJAkOLSljLdH5cSlIvOObSWP26iG/0xjT2dJyaJItEzLW3abkPMHrbmkVWyXcoY1h86n8
-        Sb+dAoWQ==;
-Received: from [2601:1c0:6280:3f0::b669] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lBrzd-0002nO-Vd; Tue, 16 Feb 2021 04:29:46 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "David P . Quigley" <dpquigl@tycho.nsa.gov>,
-        James Morris <jmorris@namei.org>
-Subject: [PATCH -next] fs: xattr: fix kernel-doc for mnt_userns and vfs xattr helpers
-Date:   Mon, 15 Feb 2021 20:29:29 -0800
-Message-Id: <20210216042929.8931-4-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210216042929.8931-1-rdunlap@infradead.org>
-References: <20210216042929.8931-1-rdunlap@infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230011AbhBPEbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 23:31:33 -0500
+Received: from m12-16.163.com ([220.181.12.16]:45325 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229910AbhBPEbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 23:31:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=hboCNnAqFehWE69dM1
+        PgkN2wYQNA1HFncAXe/EplEqA=; b=iV3Fb/BsDarUdAE2B5f16hf6gTSOAzpPGJ
+        hkXFnHgga4ZMusUHHO5avxfPw/2KdX1T2goBpvBa4HYeVpg+FR/ZIbILP+7CorEI
+        VI6ysFBeBkgrLXilS3HbC2UtK3xUGY/fMS1uStiExbw6uDyHR08Ak+CHkG3/vk9n
+        hroNTsINw=
+Received: from localhost.localdomain (unknown [125.70.193.99])
+        by smtp12 (Coremail) with SMTP id EMCowACHIUkjSitgp1XkcA--.19808S2;
+        Tue, 16 Feb 2021 12:29:27 +0800 (CST)
+From:   Chen Lin <chen45464546@163.com>
+To:     pizza@shaftnet.org
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chen Lin <chen.lin5@zte.com.cn>
+Subject: [PATCH] cw1200: Remove unused function pointer typedef wsm_*
+Date:   Tue, 16 Feb 2021 12:30:33 +0800
+Message-Id: <1613449833-4910-1-git-send-email-chen45464546@163.com>
+X-Mailer: git-send-email 1.7.9.5
+X-CM-TRANSID: EMCowACHIUkjSitgp1XkcA--.19808S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uw15GryxWr1ruw4DtF4UCFg_yoW8Cw15pF
+        Z8Gay7KrWruFn0934UJr4Fv39xtanag3WDCrWDCw1S9rn7twn5GryUtw13JryYyayfWFya
+        yrn0yrWxAr1jkrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jfL05UUUUU=
+X-Originating-IP: [125.70.193.99]
+X-CM-SenderInfo: hfkh0kqvuwkkiuw6il2tof0z/xtbBzgc7nlQHLpPThQAAsU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warnings in xattr.c:
+From: Chen Lin <chen.lin5@zte.com.cn>
 
-../fs/xattr.c:257: warning: Function parameter or member 'mnt_userns' not described in '__vfs_setxattr_locked'
-../fs/xattr.c:485: warning: Function parameter or member 'mnt_userns' not described in '__vfs_removexattr_locked'
+Remove the 'wsm_*' typedef as it is not used.
 
-and fix one function whose kernel-doc was not in the correct format.
-
-Fixes: 71bc356f93a1 ("commoncap: handle idmapped mounts")
-Fixes: b1ab7e4b2a88 ("VFS: Factor out part of vfs_setxattr so it can be called from the SELinux hook for inode_setsecctx.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: David P. Quigley <dpquigl@tycho.nsa.gov>
-Cc: James Morris <jmorris@namei.org>
+Signed-off-by: Chen Lin <chen.lin5@zte.com.cn>
 ---
- fs/xattr.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/net/wireless/st/cw1200/wsm.h |   12 ------------
+ 1 file changed, 12 deletions(-)
 
---- linux-next-20210215.orig/fs/xattr.c
-+++ linux-next-20210215/fs/xattr.c
-@@ -186,12 +186,12 @@ EXPORT_SYMBOL(__vfs_setxattr);
-  *  __vfs_setxattr_noperm - perform setxattr operation without performing
-  *  permission checks.
-  *
-- *  @mnt_userns - user namespace of the mount the inode was found from
-- *  @dentry - object to perform setxattr on
-- *  @name - xattr name to set
-- *  @value - value to set @name to
-- *  @size - size of @value
-- *  @flags - flags to pass into filesystem operations
-+ *  @mnt_userns: user namespace of the mount the inode was found from
-+ *  @dentry: object to perform setxattr on
-+ *  @name: xattr name to set
-+ *  @value: value to set @name to
-+ *  @size: size of @value
-+ *  @flags: flags to pass into filesystem operations
-  *
-  *  returns the result of the internal setxattr or setsecurity operations.
-  *
-@@ -242,6 +242,7 @@ int __vfs_setxattr_noperm(struct user_na
-  * __vfs_setxattr_locked - set an extended attribute while holding the inode
-  * lock
-  *
-+ *  @mnt_userns: user namespace of the mount of the target inode
-  *  @dentry: object to perform setxattr on
-  *  @name: xattr name to set
-  *  @value: value to set @name to
-@@ -473,6 +474,7 @@ EXPORT_SYMBOL(__vfs_removexattr);
-  * __vfs_removexattr_locked - set an extended attribute while holding the inode
-  * lock
-  *
-+ *  @mnt_userns: user namespace of the mount of the target inode
-  *  @dentry: object to perform setxattr on
-  *  @name: name of xattr to remove
-  *  @delegated_inode: on return, will contain an inode pointer that
+diff --git a/drivers/net/wireless/st/cw1200/wsm.h b/drivers/net/wireless/st/cw1200/wsm.h
+index 1ffa479..89fdc91 100644
+--- a/drivers/net/wireless/st/cw1200/wsm.h
++++ b/drivers/net/wireless/st/cw1200/wsm.h
+@@ -785,8 +785,6 @@ struct wsm_tx_confirm {
+ };
+ 
+ /* 3.15 */
+-typedef void (*wsm_tx_confirm_cb) (struct cw1200_common *priv,
+-				   struct wsm_tx_confirm *arg);
+ 
+ /* Note that ideology of wsm_tx struct is different against the rest of
+  * WSM API. wsm_hdr is /not/ a caller-adapted struct to be used as an input
+@@ -862,9 +860,6 @@ struct wsm_rx {
+ /* = sizeof(generic hi hdr) + sizeof(wsm hdr) */
+ #define WSM_RX_EXTRA_HEADROOM (16)
+ 
+-typedef void (*wsm_rx_cb) (struct cw1200_common *priv, struct wsm_rx *arg,
+-			   struct sk_buff **skb_p);
+-
+ /* 3.17 */
+ struct wsm_event {
+ 	/* WSM_STATUS_... */
+@@ -1180,8 +1175,6 @@ struct wsm_switch_channel {
+ int wsm_switch_channel(struct cw1200_common *priv,
+ 		       const struct wsm_switch_channel *arg);
+ 
+-typedef void (*wsm_channel_switch_cb) (struct cw1200_common *priv);
+-
+ #define WSM_START_REQ_ID 0x0017
+ #define WSM_START_RESP_ID 0x0417
+ 
+@@ -1240,8 +1233,6 @@ int wsm_beacon_transmit(struct cw1200_common *priv,
+ 
+ int wsm_stop_find(struct cw1200_common *priv);
+ 
+-typedef void (*wsm_find_complete_cb) (struct cw1200_common *priv, u32 status);
+-
+ struct wsm_suspend_resume {
+ 	/* See 3.52 */
+ 	/* Link ID */
+@@ -1256,9 +1247,6 @@ struct wsm_suspend_resume {
+ 	/* [out] */ int queue;
+ };
+ 
+-typedef void (*wsm_suspend_resume_cb) (struct cw1200_common *priv,
+-				       struct wsm_suspend_resume *arg);
+-
+ /* 3.54 Update-IE request. */
+ struct wsm_update_ie {
+ 	/* WSM_UPDATE_IE_... */
+-- 
+1.7.9.5
+
+
