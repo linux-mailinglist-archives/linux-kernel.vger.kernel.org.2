@@ -2,191 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A7E31D1F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3204331D1F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhBPVRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:17:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhBPVQv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:16:51 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2ECC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 13:16:11 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id r77so10823566qka.12
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 13:16:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4rk2wwMnoEYPma2xWk6NuZcb3jVPhgKDLBkofVU2y60=;
-        b=R+8pOfYFLSejFXP4jPbZWyn2LCtTqjsa107yazeTQYzIiH+LeuXV8YusgV1w2LW7Gj
-         IWuN/sQJoxWt9kjU2m1A0IEY/6wlvACZVnyqcaPH2km5k9LUt8ts3M4OHj1XvYTTZZkW
-         rjW38aeg7HxP9QhTVv54x2qt3u/WscEX2iM4yrYjSBhupKyYIaqkdMFpaqnoJFYmXprV
-         I1zgweu48q+ye18tY0/BN4DBJsh6ih3x8VrOP9uPC0i1KXV2RJOFuixu9mdTmoQ7YBIn
-         GrOIyR0KjHr0uLL9E/aZBqPOXAQgTx/K0/q/9ZXIgZ1bQe7IAfzyHzIn4DlXmhcrZm82
-         xH+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4rk2wwMnoEYPma2xWk6NuZcb3jVPhgKDLBkofVU2y60=;
-        b=L5M4MUxmv9Pfa7F2yQ03SG0ZTr1U8iP2UblMUd2m4f92xbVE4ukGELf8CXWHAYeZ7W
-         1Wt8chk6zk7Ue1mtMDysuIpvY17nNzTh/46q+yxUYWyWvmoumN5EV9aHbe+u0pGaI7DJ
-         m9Jk6D3rmu04t3gzVC56QGjIieKe7c6TXL3kdIDFd0PRZBJh6htnbHC6EhiF+Kmghr2h
-         C5C3E2kozwWk9CBLEWHcycwnoPmIjC7AAbFDNFXQcd/RYcHAT2LZ8Z57iDWSl10wEIhl
-         box89M3SKeYaALWt/7hTbxaK/6q9sRI6gfGH6sTl5WFOCWrBQIiU8nM9q+/ViEC1vE7B
-         vBrA==
-X-Gm-Message-State: AOAM530Gll5wAxXx/QiMRdH4JlBNxYq0e/z/CXLBFguOHq18v2+Z5hCx
-        jdZfp3Iy8NvB9mBAAKK7GV+pyLTA0md3N8PSPE6Nig==
-X-Google-Smtp-Source: ABdhPJw7adO/lfGbSQKSW3fwASRPbVhGElhbv5piVyBRNIk/XQd9cjcJFShG12gleW/Aq/SWUeiZazbBtAYlBzPhYXo=
-X-Received: by 2002:a37:a9d6:: with SMTP id s205mr22217992qke.162.1613510170667;
- Tue, 16 Feb 2021 13:16:10 -0800 (PST)
+        id S230357AbhBPVSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:18:37 -0500
+Received: from ozlabs.org ([203.11.71.1]:53331 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230326AbhBPVSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 16:18:32 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DgDMS4M1jz9s1l;
+        Wed, 17 Feb 2021 08:17:40 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613510270;
+        bh=R0LNSibBu3OIIlayy5e6FVxII6mrY/kC2W+SZs3BLVw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oTrkyjlLVK00IS0LaRzkcsrwt8Qbghswlun+/yWZxyKc3ovlz7bNQY9jjyS6z2Znk
+         cyHktHl8g6EFE9o0/9SfQTB/dn61HnjdQ46mrQT+ftgKe3q7bfQtPCjku/maM6fA1A
+         +wMApI/2Sc4mI0PXTyy5GCdcnHqy2cIDEFJDyFT6/niISBfgTxEwJqToP1QJ+R2HJC
+         Hjg9tL2qlLQmyZkdvdaAJwsK/2b7QbsfpQvbYW3qUzuHca+PZKyEH01p9dKUPiLNfs
+         p5EVm0e502bgAEqzoJk5k8r8W1UztsOPVgn8kIsc+qGkj9Z0+MIlNOCnW7oZt4vi5v
+         wGZARl4kvFAvA==
+Date:   Wed, 17 Feb 2021 08:17:39 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the net-next tree with the arm-soc
+ tree
+Message-ID: <20210217081739.6dfac3ab@canb.auug.org.au>
+In-Reply-To: <TY2PR01MB3692F75AF6192AB0B082B493D8879@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+References: <20210216130449.3d1f0338@canb.auug.org.au>
+        <TY2PR01MB3692F75AF6192AB0B082B493D8879@TY2PR01MB3692.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210215161537.14696-1-jonathan@marek.ca> <20210215161537.14696-2-jonathan@marek.ca>
- <CAA8EJpo_Fs8Wj6zjH6BQqm=mG=qcGt3_JMj4nK-vsKCzr8tn1g@mail.gmail.com> <29231c68-0cc4-9d8a-8cb1-791511780bcd@marek.ca>
-In-Reply-To: <29231c68-0cc4-9d8a-8cb1-791511780bcd@marek.ca>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 17 Feb 2021 00:15:59 +0300
-Message-ID: <CAA8EJpq27u54eusDEgkLBfkWd0Cp+rQq6Jh-LOYYG3CXM2U3Gw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] drm/msm: add compatibles for sm8150/sm8250 display
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Drew Davenport <ddavenport@chromium.org>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        tongtiangen <tongtiangen@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/B_6obi80OI0A4YzQ7Y4XyJb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 at 21:06, Jonathan Marek <jonathan@marek.ca> wrote:
->
-> On 2/16/21 11:54 AM, Dmitry Baryshkov wrote:
-> > On Mon, 15 Feb 2021 at 19:25, Jonathan Marek <jonathan@marek.ca> wrote:
-> >>
-> >> The driver already has support for sm8150/sm8250, but the compatibles were
-> >> never added.
-> >>
-> >> Also inverse the non-mdp4 condition in add_display_components() to avoid
-> >> having to check every new compatible in the condition.
-> >>
-> >> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> >> ---
-> >>   Documentation/devicetree/bindings/display/msm/dpu.txt | 4 ++--
-> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c               | 2 ++
-> >>   drivers/gpu/drm/msm/msm_drv.c                         | 6 +++---
-> >>   3 files changed, 7 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/display/msm/dpu.txt b/Documentation/devicetree/bindings/display/msm/dpu.txt
-> >> index 551ae26f60da..5763f43200a0 100644
-> >> --- a/Documentation/devicetree/bindings/display/msm/dpu.txt
-> >> +++ b/Documentation/devicetree/bindings/display/msm/dpu.txt
-> >> @@ -8,7 +8,7 @@ The DPU display controller is found in SDM845 SoC.
-> >>
-> >>   MDSS:
-> >>   Required properties:
-> >> -- compatible:  "qcom,sdm845-mdss", "qcom,sc7180-mdss"
-> >> +- compatible:  "qcom,sdm845-mdss", "qcom,sc7180-mdss", "qcom,sm8150-mdss", "qcom,sm8250-mdss"
-> >>   - reg: physical base address and length of contoller's registers.
-> >>   - reg-names: register region names. The following region is required:
-> >>     * "mdss"
-> >> @@ -41,7 +41,7 @@ Optional properties:
-> >>
-> >>   MDP:
-> >>   Required properties:
-> >> -- compatible: "qcom,sdm845-dpu", "qcom,sc7180-dpu"
-> >> +- compatible: "qcom,sdm845-dpu", "qcom,sc7180-dpu", "qcom,sm8150-dpu", "qcom,sm8250-dpu"
-> >>   - reg: physical base address and length of controller's registers.
-> >>   - reg-names : register region names. The following region is required:
-> >>     * "mdp"
-> >
-> > These two chunks should probably go to the separate patch 'dt-bindings:...'.
-> >
->
-> In this case I think its better to have this change in the same patch,
-> but maybe one of the Robs will disagree.
->
-> > Also, could you please pinpoint the reason for adding more
-> > compatibility strings, while they map to the same internal data?
-> > I think we might want instead to use some generic name for the dpu
-> > block, like "qcom,dpu" or "qcom,mdp-dpu" instead of specifying the
-> > platform name.
-> >
->
-> sdm845 and sc7180 aren't using generic compatibles, this is just being
-> consistent with that.
+--Sig_/B_6obi80OI0A4YzQ7Y4XyJb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Well, I suppose the common case is to use the 'first compatible' entry
-if the entities are compatible. The generic compatibles is a proposal,
-not an affirmation. Please excuse me if it sounded in a different way.
+Hi Yoshihiro,
 
+On Tue, 16 Feb 2021 11:53:56 +0000 Yoshihiro Shimoda <yoshihiro.shimoda.uh@=
+renesas.com> wrote:
 >
-> >
-> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> >> index 5a8e3e1fc48c..fff12a4c8bfc 100644
-> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> >> @@ -1219,6 +1219,8 @@ static const struct dev_pm_ops dpu_pm_ops = {
-> >>   static const struct of_device_id dpu_dt_match[] = {
-> >>          { .compatible = "qcom,sdm845-dpu", },
-> >>          { .compatible = "qcom,sc7180-dpu", },
-> >> +       { .compatible = "qcom,sm8150-dpu", },
-> >> +       { .compatible = "qcom,sm8250-dpu", },
-> >>          {}
-> >>   };
-> >>   MODULE_DEVICE_TABLE(of, dpu_dt_match);
-> >> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> >> index 94525ac76d4e..928f13d4bfbc 100644
-> >> --- a/drivers/gpu/drm/msm/msm_drv.c
-> >> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> >> @@ -1185,9 +1185,7 @@ static int add_display_components(struct device *dev,
-> >>           * Populate the children devices, find the MDP5/DPU node, and then add
-> >>           * the interfaces to our components list.
-> >>           */
-> >> -       if (of_device_is_compatible(dev->of_node, "qcom,mdss") ||
-> >> -           of_device_is_compatible(dev->of_node, "qcom,sdm845-mdss") ||
-> >> -           of_device_is_compatible(dev->of_node, "qcom,sc7180-mdss")) {
-> >> +       if (!of_device_is_compatible(dev->of_node, "qcom,mdp4")) {
-> >>                  ret = of_platform_populate(dev->of_node, NULL, NULL, dev);
-> >>                  if (ret) {
-> >>                          DRM_DEV_ERROR(dev, "failed to populate children devices\n");
-> >> @@ -1320,6 +1318,8 @@ static const struct of_device_id dt_match[] = {
-> >>          { .compatible = "qcom,mdss", .data = (void *)KMS_MDP5 },
-> >>          { .compatible = "qcom,sdm845-mdss", .data = (void *)KMS_DPU },
-> >>          { .compatible = "qcom,sc7180-mdss", .data = (void *)KMS_DPU },
-> >> +       { .compatible = "qcom,sm8150-mdss", .data = (void *)KMS_DPU },
-> >> +       { .compatible = "qcom,sm8250-mdss", .data = (void *)KMS_DPU },
-> >>          {}
-> >>   };
-> >>   MODULE_DEVICE_TABLE(of, dt_match);
-> >> --
-> >> 2.26.1
-> >>
-> >
-> >
+> > From: Stephen Rothwell, Sent: Tuesday, February 16, 2021 11:05 AM =20
+> <snip>
+> > diff --cc arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+> > index 2407b2d89c1e,48fa8776e36f..000000000000
+> > --- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+> > +++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+> > @@@ -42,11 -42,20 +42,29 @@@
+> >   	clock-names =3D "apb_pclk";
+> >   };
+> >=20
+> >  +&wdt {
+> >  +	status =3D "okay";
+> >  +	clocks =3D <&wdt_clk>;
+> >  +};
+> >  +
+> >  +&gpio {
+> >  +	status =3D "okay";
+> > ++};` =20
+>=20
+> This ` causes the following build error on the next-20210216.
+>=20
+>   DTC     arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dtb
+> Error: arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts:52.3-4 syntax err=
+or
+> FATAL ERROR: Unable to parse input tree
+> scripts/Makefile.lib:336: recipe for target 'arch/arm64/boot/dts/toshiba/=
+tmpv7708-rm-mbrc.dtb' failed
+> make[2]: *** [arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dtb] Error 1
+> scripts/Makefile.build:530: recipe for target 'arch/arm64/boot/dts/toshib=
+a' failed
 
+Sorry about that ( ` is nect to ESC on my keyboard) it will be fixed up
+in today's resolution.
 
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-With best wishes
-Dmitry
+--Sig_/B_6obi80OI0A4YzQ7Y4XyJb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAsNnMACgkQAVBC80lX
+0GzpZgf/fagFUK8DB5v3q2R3ZIAUt9Hdf040aIL1C9twogfZ2rZDWfnnkuBUthdR
+3QG5CWWj1op+fuuCp0IWC7n18bcVHVmv5e3J6Y91JkjO+OUIsZKv27BP/enBHl0D
+rhJKLVDDN0xA1mKtTV8u8dQh23puMVun8zXx9yFgQjKwUbEu6UiUtKCRCYU0MfKR
++KkPGZ/IdRrhUJhaqbWwbxoTC9yj2F1MEXJYXfgAZxyTKg2rpesbIIEickIkXkIx
+2sGVDmduHb+yQS5Sqfjul9l4sjGxaHj+CaLlw5HqAO9lKAdkY9EQsmEiUuybpL9g
+V2x6WDPo5wo9R3BEZWeX6/dGzdAruw==
+=ZIv2
+-----END PGP SIGNATURE-----
+
+--Sig_/B_6obi80OI0A4YzQ7Y4XyJb--
