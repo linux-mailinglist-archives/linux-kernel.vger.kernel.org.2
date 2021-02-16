@@ -2,146 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A804A31CE00
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D415C31CE09
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:29:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhBPQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:27:33 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39438 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229916AbhBPQ1S (ORCPT
+        id S230362AbhBPQ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:28:49 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:58473 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229812AbhBPQ2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:27:18 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GG5JmK126031;
-        Tue, 16 Feb 2021 11:25:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=h2KZ1bvu1a9qVnwXD9zg+LWh/Rpqhdqvt0dMmFR40Sk=;
- b=m33wPuJK690vXBjqVMCMqh9RCEidFwXzGuc2ShVqK9ersX2esMtvNyQCFx/Q3Bw7IXy5
- 3H+yqHjRJQxOGb/IR8R2/bRHknptt5nSYNHzbKQH9bsc+Ftv2Oyo9LoHi/5lxnBak7DN
- RP4vf6Y1B1fAYubYAPOmMQKENehcPRSRuXwVmPQFs7nLBYt3N92YUtUSAZJw+AForp1r
- qJ0veYMYH/UT4iGBQtO16zKZq94xmdD+30mJ+piXiJ8dcny/n4PG25w0I1NefNpJIN75
- vK3JtaXAHMd3Cap9soRecjBnYmKFSZNxcmhBX3TJ4Fe7IAfBWnRymDy/SCrt1At9Y/HL jg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36rh8xgnbj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 11:25:53 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11GG5sHt127555;
-        Tue, 16 Feb 2021 11:25:52 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36rh8xgnar-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 11:25:52 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11GGHgYA030474;
-        Tue, 16 Feb 2021 16:25:50 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03wdc.us.ibm.com with ESMTP id 36p6d8yha7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 16:25:50 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11GGPn4a11338136
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Feb 2021 16:25:49 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 92C8778063;
-        Tue, 16 Feb 2021 16:25:49 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B00A17805C;
-        Tue, 16 Feb 2021 16:25:40 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.199.127])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 16 Feb 2021 16:25:40 +0000 (GMT)
-Message-ID: <12c3890b233c8ec8e3967352001a7b72a8e0bfd0.camel@linux.ibm.com>
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Date:   Tue, 16 Feb 2021 08:25:39 -0800
-In-Reply-To: <YCrJjYmr7A2nO6lA@dhcp22.suse.cz>
-References: <20210214091954.GM242749@kernel.org>
-         <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
-         <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
-         <YCo7TqUnBdgJGkwN@dhcp22.suse.cz>
-         <be1d821d3f0aec24ad13ca7126b4359822212eb0.camel@linux.ibm.com>
-         <YCrJjYmr7A2nO6lA@dhcp22.suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-16_06:2021-02-16,2021-02-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=752
- lowpriorityscore=0 clxscore=1015 adultscore=0 spamscore=0 bulkscore=0
- suspectscore=0 phishscore=0 malwarescore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102160141
+        Tue, 16 Feb 2021 11:28:41 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D670A58016D;
+        Tue, 16 Feb 2021 11:27:34 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute4.internal (MEProxy); Tue, 16 Feb 2021 11:27:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=5u+CoCQxCQHhuISnr7oaYs4kFfzp5tD
+        HZ80oWDpg/OM=; b=A5IzYkDA9xR5Ja1bOpctMItWprM6ZOFcYl/a7Eh7UOJdUKp
+        uRFMNMfurMYO9pcNyLCoXIz/rG2GeMoMiQZNBuTHoqijnsFM6H4I+qf6oVdcZ37K
+        RES1DgCDiEoT6F2GR8yQ7eka2u6Gj6Xl7czQbWIq6RtwjwhOduYXYiT/ccERNNFU
+        udmRWfmmphm95wDJy0u6kDcGZk51/KTg5G/g3TmhdwF6brs44GnSEQB1X6gymJtp
+        5Hs0XqHyInE9DHgOTNrcGFHDsYn9KWzhnt0bzZBlLnI4wDVHiw5Z7QwYxZdDaoYk
+        e9/Rl25ydHuB8S3L5s72tIEcHbMaCp7Ppgtcjrw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=5u+CoC
+        QxCQHhuISnr7oaYs4kFfzp5tDHZ80oWDpg/OM=; b=FOEfrp0zCb+crUOx+Lr0U1
+        bELTWwLDVYghTOTHlUheCZQ53XtchkjaxSrhoR8iYfRT2mzejm5UE9noHzcVO8VT
+        nyUDemfGb2vG/CA6seGVVL4Tu8fVkOzc3DjQINYRwuRwfugKQu3Gv0g/XZXTfS5s
+        q/Bfyd36yCn51i9Km2KxJMQ6TaVLosxdq0OucfN8chyfO805osqiGQg81NJ+0CHN
+        O5AxQeBD0hx0erpUrsMlA4w67pRYwx5PsmHFxuFArfITgTOrgo5Yi7DP7o5scAid
+        9pbWxzBQooB9uti2JxBYtufy/Xyieg7+TJqapuX5pDSmMHaCid9Y5QLMOuMz13mA
+        ==
+X-ME-Sender: <xms:dfIrYNq9Q8bzQ04_33ZUcxGXlbymi05B2VFcykn-yMUnzWvnXgmtWw>
+    <xme:dfIrYPrNV6BSy_q_o2mt0PInxdzACFgXrN21DPMt5bsFauQxewmc1t-U3wcMh7NUY
+    EiAUOagpiy-YQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjedtgdeklecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpehnnhgvthcu
+    oehnnhgvthesfhgrshhtmhgrihhlrdhfmheqnecuggftrfgrthhtvghrnhephfejledtke
+    ehtdejtdekgfegheehfeevfeejffevkeevveekjefhtdehfeeffeegnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhhnvghtsehfrghsthhmrg
+    hilhdrfhhm
+X-ME-Proxy: <xmx:dfIrYKOnSc7Q_I-DeD8-ZkQGL-E2GbEC7SsRS1gcVc8wlKhq_EM3mw>
+    <xmx:dfIrYI4-ICsoMAzGRPl2YrrnQQAoFxeiVPzu38ArfW15uo8eYwMA_w>
+    <xmx:dfIrYM76GWCWdmlNg78Dg1eiSxWcyTwHEIfM3xUPYhhDjsvJP-FFFA>
+    <xmx:dvIrYLQt--O_EPMM_JWDPZaWyneGnXxWuYc1K0sxf6A3R-PurIIFqA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 07794A00060; Tue, 16 Feb 2021 11:27:33 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
+Mime-Version: 1.0
+Message-Id: <d057d7f7-27a5-45ec-88f0-a653572a8ca6@www.fastmail.com>
+In-Reply-To: <20210216104141.umy6zrrkal3dlj5j@pali>
+References: <20210210180322.rlfxdussqhejqpo6@pali>
+ <966f50f2-68b2-4d4f-85f0-396df112c0f4@www.fastmail.com>
+ <20210211195559.n2j4jnchl2ho54mg@pali>
+ <1ad78446-4a40-4c3e-8680-6dbf19616515@www.fastmail.com>
+ <20210211234445.hbv2diphmgbir76u@pali>
+ <000b92cc-9b54-4af9-b95c-d1317fb6f97f@www.fastmail.com>
+ <20210213100139.ckrscepg72zjkj4f@pali>
+ <c0b02aa0-1789-43a3-8d73-057890f703f1@www.fastmail.com>
+ <20210214123310.d6armpep7kxbymbu@pali>
+ <675b7a74-066b-4dc0-8dcb-f11c5606ae52@www.fastmail.com>
+ <20210216104141.umy6zrrkal3dlj5j@pali>
+Date:   Tue, 16 Feb 2021 08:27:10 -0800
+From:   nnet <nnet@fastmail.fm>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
+        a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
+        gregory.clement@bootlin.com, kostap@marvell.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
+        miquel.raynal@bootlin.com, mturquette@baylibre.com,
+        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
+        vladimir.vid@sartura.hr
+Subject: =?UTF-8?Q?Re:_[PATCH_mvebu_v2_00/10]_Armada_37xx:_Fix_cpufreq_changing_b?=
+ =?UTF-8?Q?ase_CPU_speed_to_800_MHz_from_1000_MHz?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-15 at 20:20 +0100, Michal Hocko wrote:
-[...]
-> > >   What kind of flags are we talking about and why would that be a
-> > > problem with memfd_create interface? Could you be more specific
-> > > please?
-> > 
-> > You mean what were the ioctl flags in the patch series linked
-> > above? They were SECRETMEM_EXCLUSIVE and SECRETMEM_UNCACHED in
-> > patch 3/5. 
-> 
-> OK I see. How many potential modes are we talking about? A few or
-> potentially many?
- 
-Well I initially thought there were two (uncached or not) until you
-came up with the migratable or non-migratable, which affects the
-security properties.  But now there's also potential for hardware
-backing, like mktme,  described by flags as well.  I suppose you could
-also use RDT to restrict which cache the data goes into: say L1 but not
-L2 on to lessen the impact of fully uncached (although the big thrust
-of uncached was to blunt hyperthread side channels).  So there is
-potential for quite a large expansion even though I'd be willing to bet
-that a lot of the modes people have thought about turn out not to be
-very effective in the field.
+> Therefore I'm thinking if the correct way is instead to use L1 := L0 voltage value for 1/1.2 GHz mode.
 
-James
-
-
+This latest 04/10 works fine for me going 600MHz <-> 1.2GHz under with and without load.
