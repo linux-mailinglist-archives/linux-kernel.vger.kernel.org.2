@@ -2,116 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359D031C8A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 812E631C8B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbhBPKVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:21:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
+        id S230163AbhBPKWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbhBPKVV (ORCPT
+        with ESMTP id S230010AbhBPKV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:21:21 -0500
-X-Greylist: delayed 81541 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 16 Feb 2021 02:19:35 PST
-Received: from hillosipuli.retiisi.eu (hillosipuli.retiisi.eu [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F65C061574;
-        Tue, 16 Feb 2021 02:19:35 -0800 (PST)
-Received: from lanttu.localdomain (lanttu-e.localdomain [192.168.1.64])
-        by hillosipuli.retiisi.eu (Postfix) with ESMTP id 297AA634CA1;
-        Tue, 16 Feb 2021 12:18:30 +0200 (EET)
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-media@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        mchehab@kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH v8 4/4] drm: Remove drm_get_format_name()
-Date:   Tue, 16 Feb 2021 12:19:31 +0200
-Message-Id: <20210216101931.2110-5-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210216101931.2110-1-sakari.ailus@linux.intel.com>
-References: <20210216101931.2110-1-sakari.ailus@linux.intel.com>
+        Tue, 16 Feb 2021 05:21:27 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D0EC061786;
+        Tue, 16 Feb 2021 02:20:47 -0800 (PST)
+Date:   Tue, 16 Feb 2021 11:20:44 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613470846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7a6EbWhcc1He9imxspIn+eCQuB9DLKRDzdmRL5DBYhk=;
+        b=k4Es/RI9TJqS8Whdcbr/nWxt7F9+yGDKNfzTIhTmEvi10ogJrC9YAwuAlPNqs31bwIrH+j
+        n2yNtqOubFv7pCKUbcm4qCbP4z11nHgugLmKgkn+pomk6IquLT+LBnA3Z4di8kVovQmeM3
+        aybTjJ7bkYPnONMzRsB6ST9v57wwgrGAZJDlpqJ5d1Yt0RuL6pvquLtgeVlMxpA/EUVCLY
+        kkdCbZh6gOqN2Ek6I+Ci5MXR2yPdnLBrhZ8/mWYxwvIZ0aaGgBLZ911xuQhFufuvKQfZ5W
+        YGyB4aE3SxW/IOS/jOxH2daeEIrPYPOZexBJwOg1Vk9DrAPseT8RCxVUdMReDA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613470846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7a6EbWhcc1He9imxspIn+eCQuB9DLKRDzdmRL5DBYhk=;
+        b=sLsdW/5TPSKc5o1seFXs0fqEdHWJsS2WlIEPOV9yYyn1ourZEClZobFApUK1pqDqTBSnOK
+        ZCjAsNHI4pGke8Bw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com, z.figura12@gmail.com,
+        joel@joelfernandes.org, malteskarupke@fastmail.fm,
+        linux-api@vger.kernel.org, fweimer@redhat.com,
+        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, acme@kernel.org, corbet@lwn.net
+Subject: Re: [RFC PATCH 01/13] futex2: Implement wait and wake functions
+Message-ID: <20210216102044.e2cvvqdglqs23yfe@linutronix.de>
+References: <20210215152404.250281-1-andrealmeid@collabora.com>
+ <20210215152404.250281-2-andrealmeid@collabora.com>
+ <YCuWvlKRXAygNQZP@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YCuWvlKRXAygNQZP@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The %p4cc printk format modifier was recently added to print fourcc codes,
-replacing drm_get_format_name(). The function is no longer needed, so
-remove it.
+On 2021-02-16 10:56:14 [+0100], Peter Zijlstra wrote:
+> So while I'm in favour of adding a new interface, I'm not sure I see
+> benefit of reimplementing the basics, sure it seems simpler now, but
+> that's because you've not implemented all the 'fun' stuff.
 
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/gpu/drm/drm_fourcc.c | 25 -------------------------
- include/drm/drm_fourcc.h     |  1 -
- 2 files changed, 26 deletions(-)
+The last attempt tried to hide the updated interface within libc which
+did not fly. The global hash state is one of the problems because it
+leads to hash collisions of two unrelated locks.
+It will get simpler if we go into the kernel for each lock/unlock
+operation but this might not very good in terms of performance for locks
+which are mostly uncontended. I'm not sure how much we can cheat in
+terms of VDSO.
 
-diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-index 03262472059c..5cf45aa6eedc 100644
---- a/drivers/gpu/drm/drm_fourcc.c
-+++ b/drivers/gpu/drm/drm_fourcc.c
-@@ -30,11 +30,6 @@
- #include <drm/drm_device.h>
- #include <drm/drm_fourcc.h>
- 
--static char printable_char(int c)
--{
--	return isascii(c) && isprint(c) ? c : '?';
--}
--
- /**
-  * drm_mode_legacy_fb_format - compute drm fourcc code from legacy description
-  * @bpp: bits per pixels
-@@ -130,26 +125,6 @@ uint32_t drm_driver_legacy_fb_format(struct drm_device *dev,
- }
- EXPORT_SYMBOL(drm_driver_legacy_fb_format);
- 
--/**
-- * drm_get_format_name - fill a string with a drm fourcc format's name
-- * @format: format to compute name of
-- * @buf: caller-supplied buffer
-- */
--const char *drm_get_format_name(uint32_t format, struct drm_format_name_buf *buf)
--{
--	snprintf(buf->str, sizeof(buf->str),
--		 "%c%c%c%c %s-endian (0x%08x)",
--		 printable_char(format & 0xff),
--		 printable_char((format >> 8) & 0xff),
--		 printable_char((format >> 16) & 0xff),
--		 printable_char((format >> 24) & 0x7f),
--		 format & DRM_FORMAT_BIG_ENDIAN ? "big" : "little",
--		 format);
--
--	return buf->str;
--}
--EXPORT_SYMBOL(drm_get_format_name);
--
- /*
-  * Internal function to query information for a given format. See
-  * drm_format_info() for the public API.
-diff --git a/include/drm/drm_fourcc.h b/include/drm/drm_fourcc.h
-index 156b122c0ad5..3ea17b8a79d3 100644
---- a/include/drm/drm_fourcc.h
-+++ b/include/drm/drm_fourcc.h
-@@ -318,6 +318,5 @@ unsigned int drm_format_info_block_height(const struct drm_format_info *info,
- 					  int plane);
- uint64_t drm_format_info_min_pitch(const struct drm_format_info *info,
- 				   int plane, unsigned int buffer_width);
--const char *drm_get_format_name(uint32_t format, struct drm_format_name_buf *buf);
- 
- #endif /* __DRM_FOURCC_H__ */
--- 
-2.29.2
-
+Sebastian
