@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB4731C9BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5202731C9B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhBPLfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:35:03 -0500
-Received: from m12-12.163.com ([220.181.12.12]:37134 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230303AbhBPLdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:33:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ft9IV
-        CaIYYlZGapAVYO7212ce06jLN0YlvxVzsj0xjs=; b=ld6Lc4zjVTWhHFuyf5x3x
-        CgwNiokKW5zEPgYZ+Qg65tankdhoR9Lmv5lH+IZAa2cW7SEKgLTQ3CK3x9kX0HvO
-        YmPoDJ9X+8JtuvbbObtjRxKWQh8B44xGPeAxYl7PdModQJ1Wvwf12zw0rleP5dfP
-        RfmMm5FgNxrg95FQ5YhFHg=
-Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowAA3WvgZrStgEbKIQw--.17887S2;
-        Tue, 16 Feb 2021 19:31:38 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: [PATCH] bus: qcom-ebi2: add missing of_node_put
-Date:   Tue, 16 Feb 2021 19:30:53 +0800
-Message-Id: <20210216113053.1722-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S229761AbhBPLch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:32:37 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:12092 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229811AbhBPLcW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:32:22 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11GBUujp004270;
+        Tue, 16 Feb 2021 03:31:27 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=tTDkPmc0CcmndlBQaCLe72JM+sLOACfpwxbMK7sbpuA=;
+ b=MnkssHTHMPXm5qUxE3vo7xzXrlgjZs44CFyv/R4mQ+vuJM2JxsvP9nUGlQsBigNvuPvh
+ Oq6wAv0bEfOGXinL1Iq5v6arZfSiyrOsQQqOKNt3ejHOS2Cw5Al2a8S2kj2lBqXXq+F4
+ NMmHASLXoS6QSjfQXqTjhHVpC2VU9E0mgEwTs+j4HUyFhf8uHOOb47+L7ttGJKSUhrIH
+ IkKb4d1fhhQ71isoxx4Qf5a60SupbOjO8Q24HBHOw3NPih2fHGNZPVqgamN+wsUyCCOK
+ m5EAfk5w27eSs5YrEdCDqLeRL1UJGt1EN+kjFJMOy5uSWM1HNTgBkYSriuGJp6jDoU67 TQ== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36pf5txsf0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 03:31:27 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Feb
+ 2021 03:31:26 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 16 Feb
+ 2021 03:31:25 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 16 Feb 2021 03:31:25 -0800
+Received: from octopus.marvell.com (octopus.marvell.com [10.5.24.3])
+        by maili.marvell.com (Postfix) with ESMTP id A37343F7043;
+        Tue, 16 Feb 2021 03:31:21 -0800 (PST)
+From:   <kostap@marvell.com>
+To:     <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+CC:     <daniel.lezcano@linaro.org>, <amit.kucheria@linaro.org>,
+        <viresh.kumar@linaro.org>, <linus.walleij@linaro.org>,
+        <sebastian.hesselbarth@gmail.com>, <gregory.clement@bootlin.com>,
+        <andrew@lunn.ch>, <robh+dt@kernel.org>, <mw@semihalf.com>,
+        <jaz@semihalf.com>, <nadavh@marvell.com>, <stefanc@marvell.com>,
+        <bpeled@marvell.com>, Konstantin Porotchkin <kostap@marvell.com>
+Subject: [PATCH 0/2] Fix Marvell CP110 pin control finction names
+Date:   Tue, 16 Feb 2021 13:31:16 +0200
+Message-ID: <20210216113118.17484-1-kostap@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DMCowAA3WvgZrStgEbKIQw--.17887S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1kur15GryDZw1kCryUZFb_yoW3urgEkr
-        Z2vFWxWrnY9rs2ywnFqws8Xr9ayr4kurW8WFWIqa43Za4UAa1DGF4kZr95u34xurW8tr93
-        Cr98AF1rCr18GjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUn4rW7UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbBRho7I13l+nb9mQAAsU
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-16_01:2021-02-16,2021-02-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+From: Konstantin Porotchkin <kostap@marvell.com>
 
-Fix OF node leaks by calling of_node_put in
-for_each_available_child_of_node when the cycle returns.
+These patches are fixing the CP110 pin control driver and the related
+documentation.
+Current CP110 pin control driver uses two different MPP functions named
+the same (sdio) in MPP54 and MPP55 definitions.
+Since these names are used for the MPP functionality selection, all
+function names within single MPP group should be unique.
+This patches series fixes function names in MPP54 and MPP55 pin
+definitions.
 
-Generated by: scripts/coccinelle/iterators/for_each_child.cocci
+Konstantin Porotchkin (2):
+  doc: cp110-system-controller: fix the pin function names
+  drivers/pinctrl: armada-cp110 - fix MPP54/MPP55 functions
 
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
----
- drivers/bus/qcom-ebi2.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../bindings/arm/marvell/cp110-system-controller.txt          | 4 ++--
+ drivers/pinctrl/mvebu/pinctrl-armada-cp110.c                  | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/bus/qcom-ebi2.c b/drivers/bus/qcom-ebi2.c
-index 03ddcf4..0b8f53a 100644
---- a/drivers/bus/qcom-ebi2.c
-+++ b/drivers/bus/qcom-ebi2.c
-@@ -353,8 +353,10 @@ static int qcom_ebi2_probe(struct platform_device *pdev)
- 
- 		/* Figure out the chipselect */
- 		ret = of_property_read_u32(child, "reg", &csindex);
--		if (ret)
-+		if (ret) {
-+			of_node_put(child);
- 			return ret;
-+		}
- 
- 		if (csindex > 5) {
- 			dev_err(dev,
 -- 
-1.9.1
-
+2.17.1
 
