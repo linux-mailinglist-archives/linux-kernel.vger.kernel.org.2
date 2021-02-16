@@ -2,249 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F137E31CE8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C303731CE90
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhBPQ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:58:20 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:33200 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhBPQ6F (ORCPT
+        id S230119AbhBPQ7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:59:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhBPQ7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:58:05 -0500
-Received: by mail-il1-f199.google.com with SMTP id k5so8316216ilu.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:57:48 -0800 (PST)
+        Tue, 16 Feb 2021 11:59:42 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83AC5C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:59:02 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id w19so9986455qki.13
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:59:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7Sbc+/7yHkx+7SnjvZzsa9ETiyUzFfwyyH3lcCN73/I=;
+        b=QcYThMMEVLZEm7VRmsM12lMG8ZDFYS88jVBFd9Z67UWfpdmyePvN+QkKDAKq3kRSIH
+         dT4jdVZPlMZPWZg0Llj4TOx6NJWY0qbNUcZsx5ciWu7MNSKKlK4y4wXs0KmwHZZGjHFt
+         DLwXH+6VOSHgIPGNOVUJPLSqiiXkqe62CQYLohD4C8Ojp89gxsduXZpeeyr404CO/cwm
+         /btydGUcbGStYIzkl/TPAGiZTGJbhC5KYmqo3pe/CabYp0YnhLT8nLeX4MR7qc5/yscQ
+         YFbDP8zkkOL/UrZSrJpS5A/Jlc+/mgT+srW/uf4YPa9qIbeiSpupCbcbdQQoD8ITU4sW
+         4jQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=lgTVbAHqWVNEB/dshAUiMoUnmbR5GQ/5LSK0lrISuIM=;
-        b=POQoXGyuyPZTcwzzKUO6uv1Rbl9nddZynafBLShei6plc6Yqsr816CNrBOwecvJmNJ
-         2E/erXPaZVMj58I2aS+V3k+k/QKTtDg1HrIIIWgKe2psT0R/XfSPhGWz0VRb48TrOB93
-         59JVZmuZgVbTSx4thfJ3v+sgcyGvgktfagaPqcA79EPlXfGJikpvOCGGHlzjkFmBBfNg
-         3uepcODfBaeI/wUTqqm8Q4qa9/TVFEIqtcUQQpEhkHLhlCMIUQDeaX4ghh0LGi4Xl3vV
-         nCTyjMopTk3suMsJQDIdAJ3uEpH/TOr1/GoTfunIpRdGStN4C0JbkWxhworcELhN0KF4
-         VeiA==
-X-Gm-Message-State: AOAM531yOfvFx6mnjrTavpwunIf+A3JV96xLI51ET3ixgaGWjfQlUL1c
-        Ebbv+DD86GYaSwt1kIU9mCgITxw9mWYGPH//4O2ttwjpBC1Y
-X-Google-Smtp-Source: ABdhPJwo/7qGQ7C1owxurAC5XBtTKsCLArLJ1ypFWQwx6rdUiPG3vkJYTvqDu31ul6s1qwiYVyEOHhAU+ASwa6HDnoOfAtT7JR8o
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Sbc+/7yHkx+7SnjvZzsa9ETiyUzFfwyyH3lcCN73/I=;
+        b=GbIzzT7TRU/hfDi5LLKoJfFyITjYjOQ4yIewDso23MC92JsdcCnESzfAHsDGuTbpCK
+         rqTyC4QEK0BcnSVN3e5h3y+Jxj3l9m4VHwgqM+WIzNAweIDqCg7HSRZwcB+d4CG13SZN
+         un5NRAD+Kg9CnPITp0oKxwgmuwCVEZAG/ZQxPLZ7kp6MWZ4DdXI8KJr7FmgBaCQ6nzse
+         UKDuachHBYT2x4lZq8BO7d5T4O9k+UTfBEmZqdwjsCV3HB8pKc93sa8W5pYEElg1Hwy0
+         71406dxnAezXy8l/C8kJYFSCe6z0xa8F6+LmWPTXJRhTAIvSbl2wZXOnskM9GbCCNlAT
+         Xlqw==
+X-Gm-Message-State: AOAM530NZJEufc7bj9EB4kn59ehE2OE4+k926XETKUyEh+YrSDcWIHIQ
+        BlF+pfjjWziteolI8+lRaVR27tnuLvsYKg==
+X-Google-Smtp-Source: ABdhPJxC5HWoRm7IEnPC6r53eTdFdTHnW0AZjQk6Jc2GQkHX3Cxml4Hkq9oeYehom45Pg7eqqCwSWg==
+X-Received: by 2002:a05:620a:148c:: with SMTP id w12mr18486430qkj.186.1613494741630;
+        Tue, 16 Feb 2021 08:59:01 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id q12sm7798492qki.91.2021.02.16.08.59.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 08:59:00 -0800 (PST)
+Date:   Tue, 16 Feb 2021 11:59:00 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on cgroup v2
+Message-ID: <YCv51LgGIWxVjLHT@cmpxchg.org>
+References: <20210212170159.32153-1-songmuchun@bytedance.com>
+ <20210212170159.32153-4-songmuchun@bytedance.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:1ac5:: with SMTP id 188mr11444013jai.71.1613494642945;
- Tue, 16 Feb 2021 08:57:22 -0800 (PST)
-Date:   Tue, 16 Feb 2021 08:57:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000a337b05bb76ff8b@google.com>
-Subject: INFO: task hung in disconnect_work
-From:   syzbot <syzbot+060f9ce2b428f88a288f@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212170159.32153-4-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello Muchun,
 
-syzbot found the following issue on:
+On Sat, Feb 13, 2021 at 01:01:59AM +0800, Muchun Song wrote:
+> The swap charges the actual number of swap entries on cgroup v2.
+> If a swap cache page is charged successful, and then we uncharge
+> the swap counter. It is wrong on cgroup v2. Because the swap
+> entry is not freed.
 
-HEAD commit:    f40ddce8 Linux 5.11
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1644919cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=51ab7ccaffffc30c
-dashboard link: https://syzkaller.appspot.com/bug?extid=060f9ce2b428f88a288f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1217953cd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13baa822d00000
+The patch makes sense to me. But this code is a bit tricky, we should
+add more documentation to how it works and what the problem is.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+060f9ce2b428f88a288f@syzkaller.appspotmail.com
-
-INFO: task kworker/1:0:19 blocked for more than 143 seconds.
-      Not tainted 5.11.0-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/1:0     state:D stack:26712 pid:   19 ppid:     2 flags:0x00004000
-Workqueue: events disconnect_work
-Call Trace:
- context_switch kernel/sched/core.c:4327 [inline]
- __schedule+0x90c/0x21a0 kernel/sched/core.c:5078
- schedule+0xcf/0x270 kernel/sched/core.c:5157
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:5216
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x81a/0x1110 kernel/locking/mutex.c:1103
- disconnect_work+0x18/0x200 net/wireless/sme.c:664
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-INFO: task kworker/0:2:2992 blocked for more than 143 seconds.
-      Not tainted 5.11.0-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/0:2     state:D stack:26200 pid: 2992 ppid:     2 flags:0x00004000
-Workqueue: ipv6_addrconf addrconf_dad_work
-Call Trace:
- context_switch kernel/sched/core.c:4327 [inline]
- __schedule+0x90c/0x21a0 kernel/sched/core.c:5078
- schedule+0xcf/0x270 kernel/sched/core.c:5157
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:5216
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x81a/0x1110 kernel/locking/mutex.c:1103
- addrconf_dad_work+0xa3/0x1280 net/ipv6/addrconf.c:4029
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-INFO: task kworker/0:3:3896 blocked for more than 143 seconds.
-      Not tainted 5.11.0-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/0:3     state:D stack:27192 pid: 3896 ppid:     2 flags:0x00004000
-Workqueue: events linkwatch_event
-Call Trace:
- context_switch kernel/sched/core.c:4327 [inline]
- __schedule+0x90c/0x21a0 kernel/sched/core.c:5078
- schedule+0xcf/0x270 kernel/sched/core.c:5157
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:5216
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x81a/0x1110 kernel/locking/mutex.c:1103
- linkwatch_event+0xb/0x60 net/core/link_watch.c:250
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-INFO: task kworker/1:1:8463 blocked for more than 143 seconds.
-      Not tainted 5.11.0-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/1:1     state:D stack:28672 pid: 8463 ppid:     2 flags:0x00004000
-Workqueue: ipv6_addrconf addrconf_dad_work
-Call Trace:
- context_switch kernel/sched/core.c:4327 [inline]
- __schedule+0x90c/0x21a0 kernel/sched/core.c:5078
- schedule+0xcf/0x270 kernel/sched/core.c:5157
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:5216
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x81a/0x1110 kernel/locking/mutex.c:1103
- addrconf_dad_work+0xa3/0x1280 net/ipv6/addrconf.c:4029
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-Showing all locks held in the system:
-3 locks held by kworker/1:0/19:
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x15f0 kernel/workqueue.c:2246
- #1: ffffc90000dafda8 (cfg80211_disconnect_work){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15f0 kernel/workqueue.c:2250
- #2: ffffffff8d45bce8 (rtnl_mutex){+.+.}-{3:3}, at: disconnect_work+0x18/0x200 net/wireless/sme.c:664
-1 lock held by khungtaskd/1649:
- #0: ffffffff8bd73da0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6259
-3 locks held by kworker/0:2/2992:
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x871/0x15f0 kernel/workqueue.c:2246
- #1: ffffc90001887da8 ((work_completion)(&(&ifa->dad_work)->work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15f0 kernel/workqueue.c:2250
- #2: ffffffff8d45bce8 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_dad_work+0xa3/0x1280 net/ipv6/addrconf.c:4029
-3 locks held by kworker/0:3/3896:
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888010c63d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x15f0 kernel/workqueue.c:2246
- #1: ffffc90002dffda8 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15f0 kernel/workqueue.c:2250
- #2: ffffffff8d45bce8 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xb/0x60 net/core/link_watch.c:250
-1 lock held by in:imklog/8133:
- #0: ffff88802319a8b0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:947
-3 locks held by kworker/1:1/8463:
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888147ba1938 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x871/0x15f0 kernel/workqueue.c:2246
- #1: ffffc9000170fda8 ((work_completion)(&(&ifa->dad_work)->work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15f0 kernel/workqueue.c:2250
- #2: ffffffff8d45bce8 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_dad_work+0xa3/0x1280 net/ipv6/addrconf.c:4029
-3 locks held by syz-executor177/8483:
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1649 Comm: khungtaskd Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd43/0xfa0 kernel/hung_task.c:294
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 4863 Comm: systemd-journal Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:debug_lockdep_rcu_enabled+0x23/0x30 kernel/rcu/update.c:278
-Code: cc cc cc cc cc cc cc 8b 05 de 1e a8 04 85 c0 74 21 8b 05 ac 4f a8 04 85 c0 74 17 65 48 8b 04 25 00 f0 01 00 8b 80 84 09 00 00 <85> c0 0f 94 c0 0f b6 c0 c3 cc cc cc cc 55 53 48 c7 c3 40 5b 03 00
-RSP: 0018:ffffc900013a7940 EFLAGS: 00000202
-RAX: 0000000000000000 RBX: 1ffff92000274f2b RCX: ffffffff8158d5c8
-RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffffffff8da3b448
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8da3b44f
-R10: fffffbfff1b47689 R11: 0000000000000001 R12: 0000000000000002
-R13: ffffffff8bd73da0 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007fd32adca8c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd3281b7000 CR3: 0000000014e8a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- trace_lock_acquire include/trace/events/lock.h:13 [inline]
- lock_acquire+0x57d/0x720 kernel/locking/lockdep.c:5413
- rcu_lock_acquire include/linux/rcupdate.h:259 [inline]
- rcu_read_lock include/linux/rcupdate.h:648 [inline]
- is_bpf_text_address+0x36/0x160 kernel/bpf/core.c:700
- kernel_text_address kernel/extable.c:151 [inline]
- kernel_text_address+0xbd/0xf0 kernel/extable.c:120
- __kernel_text_address+0x9/0x30 kernel/extable.c:105
- unwind_get_return_address arch/x86/kernel/unwind_orc.c:318 [inline]
- unwind_get_return_address+0x51/0x90 arch/x86/kernel/unwind_orc.c:313
- arch_stack_walk+0x93/0xe0 arch/x86/kernel/stacktrace.c:26
- stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:401 [inline]
- ____kasan_kmalloc.constprop.0+0x7f/0xa0 mm/kasan/common.c:429
- kasan_slab_alloc include/linux/kasan.h:209 [inline]
- slab_post_alloc_hook mm/slab.h:512 [inline]
- slab_alloc mm/slab.c:3315 [inline]
- kmem_cache_alloc+0x1ab/0x4c0 mm/slab.c:3486
- prepare_creds+0x3b/0x730 kernel/cred.c:258
- access_override_creds fs/open.c:353 [inline]
- do_faccessat+0x3d7/0x820 fs/open.c:417
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7fd32a0859c7
-Code: 83 c4 08 48 3d 01 f0 ff ff 73 01 c3 48 8b 0d c8 d4 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 15 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a1 d4 2b 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffdcc94f6e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
-RAX: ffffffffffffffda RBX: 00007ffdcc952600 RCX: 00007fd32a0859c7
-RDX: 00007fd32aaf6a00 RSI: 0000000000000000 RDI: 000055b9fd33e9a3
-RBP: 00007ffdcc94f720 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000069 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007ffdcc952600 R15: 00007ffdcc94fc10
-
+How about this for the changelog?
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+mm: memcontrol: fix swap undercounting for shared pages in cgroup2
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+When shared pages are swapped in partially, we can have some page
+tables referencing the in-memory page and some referencing the swap
+slot. Cgroup1 and cgroup2 handle these overlapping lifetimes slightly
+differently due to the nature of how they account memory and swap:
+
+Cgroup1 has a unified memory+swap counter that tracks a data page
+regardless whether it's in-core or swapped out. On swapin, we transfer
+the charge from the swap entry to the newly allocated swapcache page,
+even though the swap entry might stick around for a while. That's why
+we have a mem_cgroup_uncharge_swap() call inside mem_cgroup_charge().
+
+Cgroup2 tracks memory and swap as separate, independent resources and
+thus has split memory and swap counters. On swapin, we charge the
+newly allocated swapcache page as memory, while the swap slot in turn
+must remain charged to the swap counter as long as its allocated too.
+
+The cgroup2 logic was broken by commit 2d1c498072de ("mm: memcontrol:
+make swap tracking an integral part of memory control"), because it
+accidentally removed the do_memsw_account() check in the branch inside
+mem_cgroup_uncharge() that was supposed to tell the difference between
+the charge transfer in cgroup1 and the separate counters in cgroup2.
+
+As a result, cgroup2 currently undercounts consumed swap when shared
+pages are partially swapped back in. This in turn allows a cgroup to
+consume more swap than its configured limit intends.
+
+Add the do_memsw_account() check back to fix this problem.
+---
+
+> Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+> ---
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index c737c8f05992..be6bc5044150 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6753,7 +6753,7 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+>  	memcg_check_events(memcg, page);
+>  	local_irq_enable();
+>  
+> -	if (PageSwapCache(page)) {
+> +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && PageSwapCache(page)) {
+
+It's more descriptive to use do_memsw_account() here, IMO.
+
+We should also add a comment. How about this above the branch?
+
+	/*
+	 * Cgroup1's unified memory+swap counter has been charged with the
+	 * new swapcache page, finish the transfer by uncharging the swap
+	 * slot. The swap slot would also get uncharged when it dies, but
+	 * for shared pages it can stick around indefinitely and we'd count
+	 * the page twice the entire time.
+	 *
+	 * Cgroup2 has separate resource counters for memory and swap,
+	 * so this is a non-issue here. Memory and swap charge lifetimes
+	 * correspond 1:1 to page and swap slot lifetimes: we charge the
+	 * page to memory here, and uncharge swap when the slot is freed.
+	 */
