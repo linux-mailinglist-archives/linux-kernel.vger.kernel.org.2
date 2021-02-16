@@ -2,206 +2,1248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE50331CBD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E3431CBCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbhBPOX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:23:58 -0500
-Received: from mo-csw1516.securemx.jp ([210.130.202.155]:58656 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhBPOXu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:23:50 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 11GEL9eA006563; Tue, 16 Feb 2021 23:21:10 +0900
-X-Iguazu-Qid: 34tMK0YvjOp49yXNIn
-X-Iguazu-QSIG: v=2; s=0; t=1613485269; q=34tMK0YvjOp49yXNIn; m=mU9/KXsCfUUynGn12IkiAO7rYCNEbrnOBscp2b+oV5A=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1513) id 11GEL6XT026383;
-        Tue, 16 Feb 2021 23:21:07 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 11GEL6nN013044;
-        Tue, 16 Feb 2021 23:21:06 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 11GEL5Lg019986;
-        Tue, 16 Feb 2021 23:21:06 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=clvIhSanAEGhYKNYLIJE/9ka7osTAbL0Da5UKGlBIfH6OFIieuXysvizkfPD3sdjwSQR7I+MHAsadvFJvIxwjf2twkJ8ujGy4bo2ER2MDkIG7+hcaxP/dLrvsTdlMqs4dwic8l+Le0d0afDWB5nXs4BT7AHOx1FKg7A1sFS5vO6LtfGd13kQLVZN09xbjSuvQJYJGPYgZbS32+9BoW3Vo5S0/QIqMsUQCQSH5YhR9W/kEYgi5EFqQTVb1gXIkqlDDzkxDdhissIo7QqXn3u9IpHYjTN0srIYbtFcUVvBGxFYr7oL1XU7DUVcG7G6ZdOP0HdqiDPhasPTTt8DFZ1nBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TFcBs3JYkhb6fMhUd/pJHHDszbnPJxHa73gS/C2OX1E=;
- b=O/zSV13nFkVmX/w9/RPxuKQ/som0eL5PwxQuMFQJFFKxLGPBWwlr6G93dmL5aF06ym2dhNCnq+cHjFMN4z8In4LNMAEBIttfBiviuFYhr6Tt+hMuXwbhEIEtBvosc1tNPQiTLdw/ElZ9V343W//OxxxnkKkHP1K/1fNMiuMX0qLz1tCnHuzPlWWuwLUxH6QgW2nKiH8yPtFkw/IJAOvLcKsQeLKY5AAJIFTM1PiQ9fyvxyC2Fb/sFNaV/1k/Pf9SoSsUb5yBeRgm0nZ0CiOabOPpSW0knRBUj5URZFnQt7eB4C4MmO0heM3WiSzhcng/WB9GnkvCeEeH+FD6vmqLLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toshiba.co.jp; dmarc=pass action=none
- header.from=toshiba.co.jp; dkim=pass header.d=toshiba.co.jp; arc=none
-From:   <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     <naresh.kamboju@linaro.org>, <yoshihiro.shimoda.uh@renesas.com>,
-        <sfr@canb.auug.org.au>
-CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>, <olof@lixom.net>,
-        <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
-        <bgolaszewski@baylibre.com>, <linux-next@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lkft-triage@lists.linaro.org>
-Subject: RE: linux-next: manual merge of the net-next tree with the arm-soc
- tree
-Thread-Topic: linux-next: manual merge of the net-next tree with the arm-soc
- tree
-Thread-Index: AQHXBAg4vV8NxMrm20q1gNg3jtvtOKparL4AgAAJsgCAABTF8IAACUvw
-Date:   Tue, 16 Feb 2021 14:21:04 +0000
-X-TSB-HOP: ON
-Message-ID: <TYAPR01MB2990FAA79F1C3F3A0441721892879@TYAPR01MB2990.jpnprd01.prod.outlook.com>
-References: <20210216130449.3d1f0338@canb.auug.org.au>
- <TY2PR01MB3692F75AF6192AB0B082B493D8879@TY2PR01MB3692.jpnprd01.prod.outlook.com>
- <CA+G9fYs=hDh7mYb0E=9hC14f5dSNocH=dANLrvMfxk+hSjS5bg@mail.gmail.com>
- <TYAPR01MB29904A0E8BE08D4BDFDA517C92879@TYAPR01MB2990.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYAPR01MB29904A0E8BE08D4BDFDA517C92879@TYAPR01MB2990.jpnprd01.prod.outlook.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: yes
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=toshiba.co.jp;
-x-originating-ip: [103.91.184.0]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 72464e4f-1d22-46fd-8b9e-08d8d28617f3
-x-ms-traffictypediagnostic: TYCPR01MB6317:
-x-microsoft-antispam-prvs: <TYCPR01MB6317A4E109E709A5837ED3DC92879@TYCPR01MB6317.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LNzBo8mBUjWCN+0wRTs0/DsP1+mMsuruUt1K/2Ce7RNmXDQD8kKD9Xx9vBWXsfqKqYcwT5mYEQo8lrTFA3ZTDuE7taw9Od79qDZnvaOwrat2gOIbLYhMr2yvFIyWqaLu0nVvQpHHTuz6NI759QVMTibSwYET8fLSG5C4Ac+JYJmy7OVB57Ds7jCTI7+yYk5XNAX94XRojOVY0dbC1/NqAwG2Vh6j2HVT+eSc8ADpyNboCWtjkZJxWsUdyavKKUO9YkJoOX08FgQCfD+6kOQDA9DU2wEfrIdJNRjBTyrq16rbiSlZL8Q+RuSplikRjGc4J98rk1fxnokQOI7rSNZzaGiXZDTsLlPW4+UbdWHKZpesKozPPJAeRt6v+H7gmnc6QqiQXaU9snIBB0PfD4LM3MTt1N3VqrNQ88HnCYsIwCJaUKWXo7Iotbcz1wgaIyVM0mbk7BdWIv55nHwgUat6SynR8D0cdZ6xHKT6ob6KZk6B15mKBtZtV2J+8obS1wdZ2yqzbDDSTjSCTGrqyQNMdxDFdEzMv3atc7wb88pUBV5wB0/T+lyj+ToWYQYpGdSigg16G9YcFZOvuQ/23j0kE7ymqiA0/ckeT+i5f9DY1J4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYAPR01MB2990.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(346002)(39860400002)(376002)(478600001)(6506007)(64756008)(53546011)(66476007)(66556008)(66616009)(7696005)(2906002)(66446008)(33656002)(99936003)(55016002)(9686003)(86362001)(52536014)(8676002)(2940100002)(71200400001)(8936002)(5660300002)(66946007)(54906003)(966005)(76116006)(7416002)(316002)(110136005)(4326008)(26005)(83380400001)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?QVV3R1VCNTZMcXB2N2F6dTRBSDFJSXl6ZE5MK01tMUl6MFMrUDV2bE11aTMy?=
- =?utf-8?B?dmoxd2M0UC8wMTkreEh1Wk1Ub095OGFFNWxtM1hLTm1aaTFJTU1JTFlDVDFy?=
- =?utf-8?B?SmxJTUhZWGd6bVBNckxDbTgzRnpiTE95bDNtUkpJZTRUVVByY3puRmJLeTFr?=
- =?utf-8?B?TkR5NUs3M3ZlOFFFeGtHc00za0tzTkN3K1VuM2toZWNPZktZYmJMbEo2QkVC?=
- =?utf-8?B?N2tjTE14UktEeFNHeWNWaUI3TVY2TlE2d2xuRnhoOFVoaWw2ekMxRUhpRjdQ?=
- =?utf-8?B?c2RIVHJCTTVZRy9lZVFkSk1PMGdDQWtLek1tUFBhZHh1STBWcGw4WjF1c21G?=
- =?utf-8?B?UllzSG54aFl6UFN4ZDJYYmE5V2R3Rzk5MGdBdmh0OVdaVStUdUJVbDdHRTZI?=
- =?utf-8?B?eG5qbDJJbTFLeFJZemlka05OaHhBVXU4RkJwWm4xVjBsdUJPR2RvcVBkUFZ0?=
- =?utf-8?B?NXc3c1phalVOYlU1VFhPbVo3Wm0xZjlIQWI1WmZtdkdPdS9yWkEyU2V6SVJi?=
- =?utf-8?B?OHl1N3RUK01EUmFheU40MExJaUovVnI3Sjh0YndDV3BhZlc5ZTByL3RzZmhp?=
- =?utf-8?B?M1RQRG9vVTdMYzJEZmxWYXNjZXRTOUNGbUdObzRrOHN5TVlGREJjZmFxYkxF?=
- =?utf-8?B?cE9ZZEs0YXQ0WU85M0tCYUNPQnBVYmpoc0NQV2lrSjZRNGhXRWVhNndhQ2dK?=
- =?utf-8?B?NksxTHJ2enhtbGFpUlNQNWlHVXZ0Zko5c0IrNnZ3SUdqNHM2WnVDby9KbURH?=
- =?utf-8?B?bzB3Y1lLdWZQeUtDQy9FQnFtL0t1SjN3V2VHaDdpd3VaOWdMWTRHU3hBR0lY?=
- =?utf-8?B?SUpYNS9nRFptZmN3dmxHeW41UXpObUU5L3dwQUkzNHZlOUhPRjVhOFdrc0Zy?=
- =?utf-8?B?UkVIYmhzbjF3N00vTjFhZk5zTmFybFdxTTJJYmNmT3ZFeFlpQ0FqUjJDVWk3?=
- =?utf-8?B?WjF3d1dnWjdiT1dLMVRNS3JFcy85akZMRWVqVlczOXV6SEdEWllkdTZlRHhV?=
- =?utf-8?B?U2R5U1lTRHp1NHV1djVNSUVrVzVyVDlNWFBqNjJiMjR3ZzYzdkZvY1U0UFhD?=
- =?utf-8?B?WS82cy9KL0lNWUJSYTZFV0pUZUJoSG9TNjJoL1NkYy9LdnF5K1NPdWFqeG1p?=
- =?utf-8?B?UlVQRldhVmhacDN4a0MwSjQvUVRzNThQUHN5OWh2VS9sazBkS2hUVm10NnU4?=
- =?utf-8?B?RDJra0Z1U2p3VmxzcmlsVnUzTmVIZzRLQnE2TFlVVHFRS0d2TVZueFFsSjNO?=
- =?utf-8?B?d2hjM2xMQ1ZnUzVORkszdWltYjVxb1I0dkozMndsYTVtT3dvV0YxcUV6cGtN?=
- =?utf-8?B?RXRzV2EyQnc5S2VpS0xEUGY0UWNIV05neUxDQVp1UGd2SzN6bVpEVk1KdHVT?=
- =?utf-8?B?SU83SDRlZFhRN0dGNzhBUW41OTYrQVUvNVN2VDRSNHlTMXdEZ0EzNGsybERM?=
- =?utf-8?B?eGttZnFDcHFPRENhSzZ0UjY1c2preGg2eVFjZlF2Z1BvUnh2NGVONjdiUnZR?=
- =?utf-8?B?eHRwOTZRbUZyZHdhaDB4M1IrRWJORVowN2ZzUVlKOHFkQWgrZGJUZWpjVTN5?=
- =?utf-8?B?aWFMSG51WnZjL3k2WmN3bk9reVEzTHdCZEk3NWwzaHk0aXF6Rjl4bDlzQkxm?=
- =?utf-8?B?ZkJlMWJSc2VkanROZkJRWVJxOW5kdTFkN0FkZm0rd09KRkt4SVQ4UmdycCto?=
- =?utf-8?B?b0dJS1ZGdWVxc2c4eUNQZXNwT09qSzRKSHlhdjRBNkJwMG1uSDlpMktkNHhz?=
- =?utf-8?Q?Pbj7UmMhBxhI8MZiTA=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: multipart/mixed;
-        boundary="_002_TYAPR01MB2990FAA79F1C3F3A0441721892879TYAPR01MB2990jpnp_"
+        id S229996AbhBPOXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:23:33 -0500
+Received: from foss.arm.com ([217.140.110.172]:36040 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229787AbhBPOX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 09:23:27 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A669ED6E;
+        Tue, 16 Feb 2021 06:22:39 -0800 (PST)
+Received: from [10.57.48.219] (unknown [10.57.48.219])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 647503F694;
+        Tue, 16 Feb 2021 06:22:37 -0800 (PST)
+Subject: Re: [PATCH v3 4/6] drm/sprd: add Unisoc's drm display controller
+ driver
+To:     Kevin Tang <kevin3.tang@gmail.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, mark.rutland@arm.com
+Cc:     orsonzhai@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        zhang.lyra@gmail.com
+References: <1609854367-2720-1-git-send-email-kevin3.tang@gmail.com>
+ <1609854367-2720-5-git-send-email-kevin3.tang@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <7c51d0e0-bca5-686d-1017-52aa08ace721@arm.com>
+Date:   Tue, 16 Feb 2021 14:22:33 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYAPR01MB2990.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72464e4f-1d22-46fd-8b9e-08d8d28617f3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Feb 2021 14:21:04.1773
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f109924e-fb71-4ba0-b2cc-65dcdf6fbe4f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5P/rXIwmdMMcMGCosd80yYUU4MQ6J8tbs5SmHpYKR5TsSwWXBfJPTopZjItMiB99bKB89v2lpZYF14/emQ1/Jncqwvyo3BaAaSYudWhoa/LzuswFcAf1+XjzYQoSPC8a
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB6317
-X-OriginatorOrg: toshiba.co.jp
-MSSCP.TransferMailToMossAgent: 103
+In-Reply-To: <1609854367-2720-5-git-send-email-kevin3.tang@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---_002_TYAPR01MB2990FAA79F1C3F3A0441721892879TYAPR01MB2990jpnp_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+On 2021-01-05 13:46, Kevin Tang wrote:
+> Adds DPU(Display Processor Unit) support for the Unisoc's display subsystem.
+> It's support multi planes, scaler, rotation, PQ(Picture Quality) and more.
+> 
+> Cc: Orson Zhai <orsonzhai@gmail.com>
+> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
+> 
+> v2:
+>    - Use drm_xxx to replace all DRM_XXX.
+>    - Use kzalloc to replace devm_kzalloc for sprd_dpu structure init.
+> 
+> v3:
+>    - Remove dpu_layer stuff layer and commit layers by aotmic_update
+> ---
+>   drivers/gpu/drm/sprd/Kconfig    |   1 +
+>   drivers/gpu/drm/sprd/Makefile   |   4 +-
+>   drivers/gpu/drm/sprd/sprd_dpu.c | 985 ++++++++++++++++++++++++++++++++++++++++
+>   drivers/gpu/drm/sprd/sprd_dpu.h | 120 +++++
+>   drivers/gpu/drm/sprd/sprd_drm.c |   1 +
+>   drivers/gpu/drm/sprd/sprd_drm.h |   2 +
+>   6 files changed, 1111 insertions(+), 2 deletions(-)
+>   create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.c
+>   create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.h
+> 
+> diff --git a/drivers/gpu/drm/sprd/Kconfig b/drivers/gpu/drm/sprd/Kconfig
+> index 6e80cc9..9b4ef9a 100644
+> --- a/drivers/gpu/drm/sprd/Kconfig
+> +++ b/drivers/gpu/drm/sprd/Kconfig
+> @@ -3,6 +3,7 @@ config DRM_SPRD
+>   	depends on ARCH_SPRD || COMPILE_TEST
+>   	depends on DRM && OF
+>   	select DRM_KMS_HELPER
+> +	select VIDEOMODE_HELPERS
+>   	select DRM_GEM_CMA_HELPER
+>   	select DRM_KMS_CMA_HELPER
+>   	select DRM_MIPI_DSI
+> diff --git a/drivers/gpu/drm/sprd/Makefile b/drivers/gpu/drm/sprd/Makefile
+> index 86d95d9..6c25bfa 100644
+> --- a/drivers/gpu/drm/sprd/Makefile
+> +++ b/drivers/gpu/drm/sprd/Makefile
+> @@ -1,5 +1,5 @@
+>   # SPDX-License-Identifier: GPL-2.0
+>   
+> -subdir-ccflags-y += -I$(srctree)/$(src)
+> +obj-y := sprd_drm.o \
+> +	sprd_dpu.o
+>   
+> -obj-y := sprd_drm.o
+> diff --git a/drivers/gpu/drm/sprd/sprd_dpu.c b/drivers/gpu/drm/sprd/sprd_dpu.c
+> new file mode 100644
+> index 0000000..d562d44
+> --- /dev/null
+> +++ b/drivers/gpu/drm/sprd/sprd_dpu.c
+> @@ -0,0 +1,985 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 Unisoc Inc.
+> + */
+> +
+> +#include <linux/component.h>
+> +#include <linux/delay.h>
+> +#include <linux/dma-buf.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/wait.h>
+> +#include <linux/workqueue.h>
+> +
+> +#include <drm/drm_atomic_helper.h>
+> +#include <drm/drm_crtc_helper.h>
+> +#include <drm/drm_fb_cma_helper.h>
+> +#include <drm/drm_gem_cma_helper.h>
+> +#include <drm/drm_gem_framebuffer_helper.h>
+> +#include <drm/drm_plane_helper.h>
+> +
+> +#include "sprd_drm.h"
+> +#include "sprd_dpu.h"
+> +
+> +/* Global control registers */
+> +#define REG_DPU_CTRL	0x04
+> +#define REG_DPU_CFG0	0x08
+> +#define REG_PANEL_SIZE	0x20
+> +#define REG_BLEND_SIZE	0x24
+> +#define REG_BG_COLOR	0x2C
+> +
+> +/* Layer0 control registers */
+> +#define REG_LAY_BASE_ADDR0	0x30
+> +#define REG_LAY_BASE_ADDR1	0x34
+> +#define REG_LAY_BASE_ADDR2	0x38
+> +#define REG_LAY_CTRL		0x40
+> +#define REG_LAY_SIZE		0x44
+> +#define REG_LAY_PITCH		0x48
+> +#define REG_LAY_POS		0x4C
+> +#define REG_LAY_ALPHA		0x50
+> +#define REG_LAY_CROP_START	0x5C
+> +
+> +/* Interrupt control registers */
+> +#define REG_DPU_INT_EN		0x1E0
+> +#define REG_DPU_INT_CLR		0x1E4
+> +#define REG_DPU_INT_STS		0x1E8
+> +
+> +/* DPI control registers */
+> +#define REG_DPI_CTRL		0x1F0
+> +#define REG_DPI_H_TIMING	0x1F4
+> +#define REG_DPI_V_TIMING	0x1F8
+> +
+> +/* MMU control registers */
+> +#define REG_MMU_EN			0x800
+> +#define REG_MMU_VPN_RANGE		0x80C
+> +#define REG_MMU_VAOR_ADDR_RD		0x818
+> +#define REG_MMU_VAOR_ADDR_WR		0x81C
+> +#define REG_MMU_INV_ADDR_RD		0x820
+> +#define REG_MMU_INV_ADDR_WR		0x824
+> +#define REG_MMU_PPN1			0x83C
+> +#define REG_MMU_RANGE1			0x840
+> +#define REG_MMU_PPN2			0x844
+> +#define REG_MMU_RANGE2			0x848
+> +
+> +/* Global control bits */
+> +#define BIT_DPU_RUN			BIT(0)
+> +#define BIT_DPU_STOP			BIT(1)
+> +#define BIT_DPU_REG_UPDATE		BIT(2)
+> +#define BIT_DPU_IF_EDPI			BIT(0)
+> +
+> +/* Layer control bits */
+> +#define BIT_DPU_LAY_EN				BIT(0)
+> +#define BIT_DPU_LAY_LAYER_ALPHA			(0x01 << 2)
+> +#define BIT_DPU_LAY_COMBO_ALPHA			(0x02 << 2)
+> +#define BIT_DPU_LAY_FORMAT_YUV422_2PLANE		(0x00 << 4)
+> +#define BIT_DPU_LAY_FORMAT_YUV420_2PLANE		(0x01 << 4)
+> +#define BIT_DPU_LAY_FORMAT_YUV420_3PLANE		(0x02 << 4)
+> +#define BIT_DPU_LAY_FORMAT_ARGB8888			(0x03 << 4)
+> +#define BIT_DPU_LAY_FORMAT_RGB565			(0x04 << 4)
+> +#define BIT_DPU_LAY_DATA_ENDIAN_B0B1B2B3		(0x00 << 8)
+> +#define BIT_DPU_LAY_DATA_ENDIAN_B3B2B1B0		(0x01 << 8)
+> +#define BIT_DPU_LAY_NO_SWITCH			(0x00 << 10)
+> +#define BIT_DPU_LAY_RB_OR_UV_SWITCH		(0x01 << 10)
+> +#define BIT_DPU_LAY_MODE_BLEND_NORMAL		(0x00 << 16)
+> +#define BIT_DPU_LAY_MODE_BLEND_PREMULT		(0x01 << 16)
+> +
+> +/* Interrupt control & status bits */
+> +#define BIT_DPU_INT_DONE		BIT(0)
+> +#define BIT_DPU_INT_TE			BIT(1)
+> +#define BIT_DPU_INT_ERR			BIT(2)
+> +#define BIT_DPU_INT_UPDATE_DONE		BIT(4)
+> +#define BIT_DPU_INT_VSYNC		BIT(5)
+> +#define BIT_DPU_INT_MMU_VAOR_RD		BIT(16)
+> +#define BIT_DPU_INT_MMU_VAOR_WR		BIT(17)
+> +#define BIT_DPU_INT_MMU_INV_RD		BIT(18)
+> +#define BIT_DPU_INT_MMU_INV_WR		BIT(19)
+> +
+> +/* DPI control bits */
+> +#define BIT_DPU_EDPI_TE_EN		BIT(8)
+> +#define BIT_DPU_EDPI_FROM_EXTERNAL_PAD	BIT(10)
+> +#define BIT_DPU_DPI_HALT_EN		BIT(16)
+> +
+> +static const u32 primary_fmts[] = {
+> +	DRM_FORMAT_XRGB8888,
+> +	DRM_FORMAT_XBGR8888,
+> +	DRM_FORMAT_ARGB8888,
+> +	DRM_FORMAT_ABGR8888,
+> +	DRM_FORMAT_RGBA8888,
+> +	DRM_FORMAT_BGRA8888,
+> +	DRM_FORMAT_RGBX8888,
+> +	DRM_FORMAT_RGB565,
+> +	DRM_FORMAT_BGR565,
+> +	DRM_FORMAT_NV12,
+> +	DRM_FORMAT_NV21,
+> +	DRM_FORMAT_NV16,
+> +	DRM_FORMAT_NV61,
+> +	DRM_FORMAT_YUV420,
+> +	DRM_FORMAT_YVU420,
+> +};
+> +
+> +struct sprd_plane {
+> +	struct drm_plane plane;
+> +	u32 index;
+> +};
+> +
+> +static inline struct sprd_plane *to_sprd_plane(struct drm_plane *plane)
+> +{
+> +	return container_of(plane, struct sprd_plane, plane);
+> +}
+> +
+> +static u32 check_mmu_isr(struct sprd_dpu *dpu, u32 reg_val)
+> +{
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +	u32 mmu_mask = BIT_DPU_INT_MMU_VAOR_RD |
+> +			BIT_DPU_INT_MMU_VAOR_WR |
+> +			BIT_DPU_INT_MMU_INV_RD |
+> +			BIT_DPU_INT_MMU_INV_WR;
+> +	u32 val = reg_val & mmu_mask;
+> +	int i;
+> +
+> +	if (val) {
+> +		drm_err(dpu->drm, "--- iommu interrupt err: 0x%04x ---\n", val);
+> +
+> +		if (val & BIT_DPU_INT_MMU_INV_RD)
+> +			drm_err(dpu->drm, "iommu invalid read error, addr: 0x%08x\n",
+> +				readl(ctx->base + REG_MMU_INV_ADDR_RD));
+> +		if (val & BIT_DPU_INT_MMU_INV_WR)
+> +			drm_err(dpu->drm, "iommu invalid write error, addr: 0x%08x\n",
+> +				readl(ctx->base + REG_MMU_INV_ADDR_WR));
+> +		if (val & BIT_DPU_INT_MMU_VAOR_RD)
+> +			drm_err(dpu->drm, "iommu va out of range read error, addr: 0x%08x\n",
+> +				readl(ctx->base + REG_MMU_VAOR_ADDR_RD));
+> +		if (val & BIT_DPU_INT_MMU_VAOR_WR)
+> +			drm_err(dpu->drm, "iommu va out of range write error, addr: 0x%08x\n",
+> +				readl(ctx->base + REG_MMU_VAOR_ADDR_WR));
+> +
+> +		for (i = 0; i < 8; i++) {
+> +			reg_val = layer_reg_rd(ctx, REG_LAY_CTRL, i);
+> +			if (reg_val & 0x1)
+> +				drm_info(dpu->drm, "layer%d: 0x%08x 0x%08x 0x%08x ctrl: 0x%08x\n", i,
+> +					layer_reg_rd(ctx, REG_LAY_BASE_ADDR0, i),
+> +					layer_reg_rd(ctx, REG_LAY_BASE_ADDR1, i),
+> +					layer_reg_rd(ctx, REG_LAY_BASE_ADDR2, i),
+> +					layer_reg_rd(ctx, REG_LAY_CTRL, i));
+> +		}
+> +	}
+> +
+> +	return val;
+> +}
 
-SGksDQoNCkkgYXR0YWNoZWQgYSBwYXRjaCB3aGljaCByZXZpc2UgdGhpcyBpc3N1ZS4NCklmIEkg
-bmVlZCB0byBzZW5kIHdpdGggZ2l0IHNlbmQtZW1haWwsIHBsZWFzZSBsZXQgbWUga25vdy4NCg0K
-QmVzdCByZWdhcmRzLA0KICBOb2J1aGlybw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
-DQo+IEZyb206IGl3YW1hdHN1IG5vYnVoaXJvKOWyqeadviDkv6HmtIsg4pah77yz77y377yj4pev
-77yh77yj77y0KQ0KPiBTZW50OiBUdWVzZGF5LCBGZWJydWFyeSAxNiwgMjAyMSAxMDo0NyBQTQ0K
-PiBUbzogTmFyZXNoIEthbWJvanUgPG5hcmVzaC5rYW1ib2p1QGxpbmFyby5vcmc+OyBZb3NoaWhp
-cm8gU2hpbW9kYSA8eW9zaGloaXJvLnNoaW1vZGEudWhAcmVuZXNhcy5jb20+OyBTdGVwaGVuDQo+
-IFJvdGh3ZWxsIDxzZnJAY2FuYi5hdXVnLm9yZy5hdT4NCj4gQ2M6IERhdmlkIE1pbGxlciA8ZGF2
-ZW1AZGF2ZW1sb2Z0Lm5ldD47IE5ldHdvcmtpbmcgPG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc+OyBP
-bG9mIEpvaGFuc3NvbiA8b2xvZkBsaXhvbS5uZXQ+OyBBcm5kDQo+IEJlcmdtYW5uIDxhcm5kQGFy
-bmRiLmRlPjsgQVJNIDxsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc+OyBCYXJ0
-b3N6IEdvbGFzemV3c2tpDQo+IDxiZ29sYXN6ZXdza2lAYmF5bGlicmUuY29tPjsgTGludXggTmV4
-dCBNYWlsaW5nIExpc3QgPGxpbnV4LW5leHRAdmdlci5rZXJuZWwub3JnPjsgTGludXggS2VybmVs
-IE1haWxpbmcgTGlzdA0KPiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47IGxrZnQtdHJp
-YWdlQGxpc3RzLmxpbmFyby5vcmcNCj4gU3ViamVjdDogUkU6IGxpbnV4LW5leHQ6IG1hbnVhbCBt
-ZXJnZSBvZiB0aGUgbmV0LW5leHQgdHJlZSB3aXRoIHRoZSBhcm0tc29jIHRyZWUNCj4gDQo+IEhp
-LA0KPiANCj4gVGhuYWtzIGZvciB5b3VyIHJlcG9ydC4NCj4gDQo+ID4gTEtGVCBidWlsZGVycyBh
-bHNvIGZvdW5kIHRoaXMgcHJvYmxlbSB3aGlsZSBidWlsZGluZyBhcm02NCBkdGIuDQo+ID4NCj4g
-PiA+IFRoaXMgYCBjYXVzZXMgdGhlIGZvbGxvd2luZyBidWlsZCBlcnJvciBvbiB0aGUgbmV4dC0y
-MDIxMDIxNi4NCj4gPiA+DQo+ID4gPiAgIERUQyAgICAgYXJjaC9hcm02NC9ib290L2R0cy90b3No
-aWJhL3RtcHY3NzA4LXJtLW1icmMuZHRiDQo+ID4gPiBFcnJvcjogYXJjaC9hcm02NC9ib290L2R0
-cy90b3NoaWJhL3RtcHY3NzA4LXJtLW1icmMuZHRzOjUyLjMtNCBzeW50YXggZXJyb3INCj4gPiA+
-IEZBVEFMIEVSUk9SOiBVbmFibGUgdG8gcGFyc2UgaW5wdXQgdHJlZQ0KPiA+ID4gc2NyaXB0cy9N
-YWtlZmlsZS5saWI6MzM2OiByZWNpcGUgZm9yIHRhcmdldCAnYXJjaC9hcm02NC9ib290L2R0cy90
-b3NoaWJhL3RtcHY3NzA4LXJtLW1icmMuZHRiJyBmYWlsZWQNCj4gPiA+IG1ha2VbMl06ICoqKiBb
-YXJjaC9hcm02NC9ib290L2R0cy90b3NoaWJhL3RtcHY3NzA4LXJtLW1icmMuZHRiXSBFcnJvciAx
-DQo+ID4gPiBzY3JpcHRzL01ha2VmaWxlLmJ1aWxkOjUzMDogcmVjaXBlIGZvciB0YXJnZXQgJ2Fy
-Y2gvYXJtNjQvYm9vdC9kdHMvdG9zaGliYScgZmFpbGVkDQo+ID4NCj4gPiByZWY6DQo+ID4gaHR0
-cHM6Ly9naXRsYWIuY29tL0xpbmFyby9sa2Z0L21pcnJvcnMvbmV4dC9saW51eC1uZXh0Ly0vam9i
-cy8xMDMzMDcyNTA5I0wzODINCj4gPg0KPiANCj4gVGhpcyBzZWVtcyB0byBiZSBhIHByb2JsZW0g
-Zml4aW5nIHRoZSBjb25mbGljdC4NCj4gDQo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
-bS9saW51eC9rZXJuZWwvZ2l0L25leHQvbGludXgtbmV4dC5naXQvY29tbWl0Lz9pZD1jNWUxODhl
-YTA4MjkwZDliNjYyNWI0YmVmMzIyMDEyYzBiDQo+IDE5MDJkNw0KPiANCj4gYGBgDQo+IGRpZmYg
-LS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL3Rvc2hpYmEvdG1wdjc3MDgtcm0tbWJyYy5kdHMg
-Yi9hcmNoL2FybTY0L2Jvb3QvZHRzL3Rvc2hpYmEvdG1wdjc3MDgtcm0tbWJyYy5kdHMNCj4gaW5k
-ZXggMjQwN2IyZDg5YzFlOS4uMzc2MGRmOTNhODliNSAxMDA2NDQNCj4gLS0tIGEvYXJjaC9hcm02
-NC9ib290L2R0cy90b3NoaWJhL3RtcHY3NzA4LXJtLW1icmMuZHRzDQo+ICsrKyBiL2FyY2gvYXJt
-NjQvYm9vdC9kdHMvdG9zaGliYS90bXB2NzcwOC1ybS1tYnJjLmR0cw0KPiBAQCAtNDksNCArNDks
-MjIgQEANCj4gDQo+ICAmZ3BpbyB7DQo+ICAJc3RhdHVzID0gIm9rYXkiOw0KPiArfTtgDQo+ICsN
-Cj4gKyZwaWV0aGVyIHsNCj4gKwlzdGF0dXMgPSAib2theSI7DQo+ICsJcGh5LWhhbmRsZSA9IDwm
-cGh5MD47DQo+ICsJcGh5LW1vZGUgPSAicmdtaWktaWQiOw0KPiArCWNsb2NrcyA9IDwmY2xrMzAw
-bWh6PiwgPCZjbGsxMjVtaHo+Ow0KPiArCWNsb2NrLW5hbWVzID0gInN0bW1hY2V0aCIsICJwaHlf
-cmVmX2NsayI7DQo+ICsNCj4gKwltZGlvMCB7DQo+ICsJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0K
-PiArCQkjc2l6ZS1jZWxscyA9IDwwPjsNCj4gKwkJY29tcGF0aWJsZSA9ICJzbnBzLGR3bWFjLW1k
-aW8iOw0KPiArCQlwaHkwOiBldGhlcm5ldC1waHlAMSB7DQo+ICsJCQlkZXZpY2VfdHlwZSA9ICJl
-dGhlcm5ldC1waHkiOw0KPiArCQkJcmVnID0gPDB4MT47DQo+ICsJCX07DQo+ICsJfTsNCj4gIH07
-DQo+IGBgYA0KPiANCj4gU3RlcGhlbiwgY291bGQgeW91IGZpeCB0aGlzPw0KPiANCj4gQmVzdCBy
-ZWdhcmRzLA0KPiAgIE5vYnVoaXJvDQo=
+Please don't do this - if the IOMMU is managed by a separate driver, 
+that driver should handle its own interrupts. If you want to report 
+client-specific information associated with a fault you can use 
+iommu_set_fault_handler() to hook in your reporting function (the IOMMU 
+driver should correspondingly call report_iommu_fault() from its own 
+fault handler).
 
---_002_TYAPR01MB2990FAA79F1C3F3A0441721892879TYAPR01MB2990jpnp_
-Content-Type: application/octet-stream;
-	name="0001-arm64-dts-visconti-Fix-parse-error-for-TMPV7708-RM-m.patch"
-Content-Description: 0001-arm64-dts-visconti-Fix-parse-error-for-TMPV7708-RM-m.patch
-Content-Disposition: attachment;
-	filename="0001-arm64-dts-visconti-Fix-parse-error-for-TMPV7708-RM-m.patch";
-	size=1151; creation-date="Tue, 16 Feb 2021 14:19:33 GMT";
-	modification-date="Tue, 16 Feb 2021 14:19:14 GMT"
-Content-Transfer-Encoding: base64
+Even regardless of the mess this seems to be responsible for in terms of 
+DT bindings and resource claiming, duplicating the basic IOMMU fault 
+processing across all the drivers for your media blocks is clearly not a 
+good path to take.
 
-RnJvbSA3ZDg1MmU2MWRmMjA0ODdlZmQyYWUzNjI3Y2NlNDk4Yjg1ZDJlODg0IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBOb2J1aGlybyBJd2FtYXRzdSA8bm9idWhpcm8xLml3YW1hdHN1
-QHRvc2hpYmEuY28uanA+CkRhdGU6IFR1ZSwgMTYgRmViIDIwMjEgMjM6MDU6MDkgKzA5MDAKU3Vi
-amVjdDogW1BBVENIXSBhcm02NDogZHRzOiB2aXNjb250aTogRml4IHBhcnNlIGVycm9yIGZvciBU
-TVBWNzcwOCBSTSBtYWluCiBib2FyZAoKVGhlIHBhdGNoIGZpeCBjb21taXQ6IGM1ZTE4OGVhMDgy
-OTBkOSAoIk1lcmdlIHJlbW90ZS10cmFja2luZyBicmFuY2gKJ25ldC1uZXh0L21hc3RlciciKS4K
-VGhpcyBtZXJnZSBjb21taXQgZml4ZXMgdG1wdjc3MDgtcm0tbWJyYy5kdHMncyBjb25mbGljdCwg
-YnV0IHRoZSB0eXBvCmNhdXNlcyBhIHBhcnNlIGVycm9yLiBUaGlzIHJlbW92ZXMgdGhpcyB0eXBv
-LgoKcmVmOiBodHRwczovL2dpdGxhYi5jb20vTGluYXJvL2xrZnQvbWlycm9ycy9uZXh0L2xpbnV4
-LW5leHQvLS9qb2JzLzEwMzMwNzI1MDkjTDM4MgpSZXBvcnRlZC1ieTogTmFyZXNoIEthbWJvanUg
-PG5hcmVzaC5rYW1ib2p1QGxpbmFyby5vcmc+ClNpZ25lZC1vZmYtYnk6IE5vYnVoaXJvIEl3YW1h
-dHN1IDxub2J1aGlybzEuaXdhbWF0c3VAdG9zaGliYS5jby5qcD4KLS0tCiBhcmNoL2FybTY0L2Jv
-b3QvZHRzL3Rvc2hpYmEvdG1wdjc3MDgtcm0tbWJyYy5kdHMgfCAyICstCiAxIGZpbGUgY2hhbmdl
-ZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9hcmNoL2FybTY0
-L2Jvb3QvZHRzL3Rvc2hpYmEvdG1wdjc3MDgtcm0tbWJyYy5kdHMgYi9hcmNoL2FybTY0L2Jvb3Qv
-ZHRzL3Rvc2hpYmEvdG1wdjc3MDgtcm0tbWJyYy5kdHMKaW5kZXggMzc2MGRmOTNhODliNTcuLjIz
-MGY0ODdkZDZiMmUzIDEwMDY0NAotLS0gYS9hcmNoL2FybTY0L2Jvb3QvZHRzL3Rvc2hpYmEvdG1w
-djc3MDgtcm0tbWJyYy5kdHMKKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy90b3NoaWJhL3RtcHY3
-NzA4LXJtLW1icmMuZHRzCkBAIC00OSw3ICs0OSw3IEBAICZ3ZHQgewogCiAmZ3BpbyB7CiAJc3Rh
-dHVzID0gIm9rYXkiOwotfTtgCit9OwogCiAmcGlldGhlciB7CiAJc3RhdHVzID0gIm9rYXkiOwot
-LSAKMi4zMC4wCgo=
+Robin.
 
---_002_TYAPR01MB2990FAA79F1C3F3A0441721892879TYAPR01MB2990jpnp_--
+> +
+> +static int dpu_wait_stop_done(struct sprd_dpu *dpu)
+> +{
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +	int rc;
+> +
+> +	if (ctx->stopped)
+> +		return 0;
+> +
+> +	rc = wait_event_interruptible_timeout(ctx->wait_queue, ctx->evt_stop,
+> +					       msecs_to_jiffies(500));
+> +	ctx->evt_stop = false;
+> +
+> +	ctx->stopped = true;
+> +
+> +	if (!rc) {
+> +		drm_err(dpu->drm, "dpu wait for stop done time out!\n");
+> +		return -ETIMEDOUT;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int dpu_wait_update_done(struct sprd_dpu *dpu)
+> +{
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +	int rc;
+> +
+> +	ctx->evt_update = false;
+> +
+> +	rc = wait_event_interruptible_timeout(ctx->wait_queue, ctx->evt_update,
+> +					       msecs_to_jiffies(500));
+> +
+> +	if (!rc) {
+> +		drm_err(dpu->drm, "dpu wait for reg update done time out!\n");
+> +		return -ETIMEDOUT;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static u32 drm_format_to_dpu(struct drm_framebuffer *fb)
+> +{
+> +	u32 format = 0;
+> +
+> +	switch (fb->format->format) {
+> +	case DRM_FORMAT_BGRA8888:
+> +		/* BGRA8888 -> ARGB8888 */
+> +		format |= BIT_DPU_LAY_DATA_ENDIAN_B3B2B1B0;
+> +		format |= BIT_DPU_LAY_FORMAT_ARGB8888;
+> +		break;
+> +	case DRM_FORMAT_RGBX8888:
+> +	case DRM_FORMAT_RGBA8888:
+> +		/* RGBA8888 -> ABGR8888 */
+> +		format |= BIT_DPU_LAY_DATA_ENDIAN_B3B2B1B0;
+> +		/* fallthrough */
+> +	case DRM_FORMAT_ABGR8888:
+> +		/* RB switch */
+> +		format |= BIT_DPU_LAY_RB_OR_UV_SWITCH;
+> +		/* fallthrough */
+> +	case DRM_FORMAT_ARGB8888:
+> +		format |= BIT_DPU_LAY_FORMAT_ARGB8888;
+> +		break;
+> +	case DRM_FORMAT_XBGR8888:
+> +		/* RB switch */
+> +		format |= BIT_DPU_LAY_RB_OR_UV_SWITCH;
+> +		/* fallthrough */
+> +	case DRM_FORMAT_XRGB8888:
+> +		format |= BIT_DPU_LAY_FORMAT_ARGB8888;
+> +		break;
+> +	case DRM_FORMAT_BGR565:
+> +		/* RB switch */
+> +		format |= BIT_DPU_LAY_RB_OR_UV_SWITCH;
+> +		/* fallthrough */
+> +	case DRM_FORMAT_RGB565:
+> +		format |= BIT_DPU_LAY_FORMAT_RGB565;
+> +		break;
+> +	case DRM_FORMAT_NV12:
+> +		/* 2-Lane: Yuv420 */
+> +		format |= BIT_DPU_LAY_FORMAT_YUV420_2PLANE;
+> +		/* Y endian */
+> +		format |= BIT_DPU_LAY_DATA_ENDIAN_B0B1B2B3;
+> +		/* UV endian */
+> +		format |= BIT_DPU_LAY_NO_SWITCH;
+> +		break;
+> +	case DRM_FORMAT_NV21:
+> +		/* 2-Lane: Yuv420 */
+> +		format |= BIT_DPU_LAY_FORMAT_YUV420_2PLANE;
+> +		/* Y endian */
+> +		format |= BIT_DPU_LAY_DATA_ENDIAN_B0B1B2B3;
+> +		/* UV endian */
+> +		format |= BIT_DPU_LAY_RB_OR_UV_SWITCH;
+> +		break;
+> +	case DRM_FORMAT_NV16:
+> +		/* 2-Lane: Yuv422 */
+> +		format |= BIT_DPU_LAY_FORMAT_YUV422_2PLANE;
+> +		/* Y endian */
+> +		format |= BIT_DPU_LAY_DATA_ENDIAN_B3B2B1B0;
+> +		/* UV endian */
+> +		format |= BIT_DPU_LAY_RB_OR_UV_SWITCH;
+> +		break;
+> +	case DRM_FORMAT_NV61:
+> +		/* 2-Lane: Yuv422 */
+> +		format |= BIT_DPU_LAY_FORMAT_YUV422_2PLANE;
+> +		/* Y endian */
+> +		format |= BIT_DPU_LAY_DATA_ENDIAN_B0B1B2B3;
+> +		/* UV endian */
+> +		format |= BIT_DPU_LAY_NO_SWITCH;
+> +		break;
+> +	case DRM_FORMAT_YUV420:
+> +		format |= BIT_DPU_LAY_FORMAT_YUV420_3PLANE;
+> +		/* Y endian */
+> +		format |= BIT_DPU_LAY_DATA_ENDIAN_B0B1B2B3;
+> +		/* UV endian */
+> +		format |= BIT_DPU_LAY_NO_SWITCH;
+> +		break;
+> +	case DRM_FORMAT_YVU420:
+> +		format |= BIT_DPU_LAY_FORMAT_YUV420_3PLANE;
+> +		/* Y endian */
+> +		format |= BIT_DPU_LAY_DATA_ENDIAN_B0B1B2B3;
+> +		/* UV endian */
+> +		format |= BIT_DPU_LAY_RB_OR_UV_SWITCH;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return format;
+> +}
+> +
+> +static u32 drm_rotation_to_dpu(struct drm_plane_state *state)
+> +{
+> +	u32 rotation;
+> +
+> +	switch (state->rotation) {
+> +	default:
+> +	case DRM_MODE_ROTATE_0:
+> +		rotation = DPU_LAYER_ROTATION_0;
+> +		break;
+> +	case DRM_MODE_ROTATE_90:
+> +		rotation = DPU_LAYER_ROTATION_90;
+> +		break;
+> +	case DRM_MODE_ROTATE_180:
+> +		rotation = DPU_LAYER_ROTATION_180;
+> +		break;
+> +	case DRM_MODE_ROTATE_270:
+> +		rotation = DPU_LAYER_ROTATION_270;
+> +		break;
+> +	case DRM_MODE_REFLECT_Y:
+> +		rotation = DPU_LAYER_ROTATION_180_M;
+> +		break;
+> +	case (DRM_MODE_REFLECT_Y | DRM_MODE_ROTATE_90):
+> +		rotation = DPU_LAYER_ROTATION_90_M;
+> +		break;
+> +	case DRM_MODE_REFLECT_X:
+> +		rotation = DPU_LAYER_ROTATION_0_M;
+> +		break;
+> +	case (DRM_MODE_REFLECT_X | DRM_MODE_ROTATE_90):
+> +		rotation = DPU_LAYER_ROTATION_270_M;
+> +		break;
+> +	}
+> +
+> +	return rotation;
+> +}
+> +
+> +static u32 drm_blend_to_dpu(struct drm_plane_state *state)
+> +{
+> +	u32 blend = 0;
+> +
+> +	switch (state->pixel_blend_mode) {
+> +	case DRM_MODE_BLEND_COVERAGE:
+> +		/* alpha mode select - combo alpha */
+> +		blend |= BIT_DPU_LAY_COMBO_ALPHA;
+> +		/* Normal mode */
+> +		blend |= BIT_DPU_LAY_MODE_BLEND_NORMAL;
+> +		break;
+> +	case DRM_MODE_BLEND_PREMULTI:
+> +		/* alpha mode select - combo alpha */
+> +		blend |= BIT_DPU_LAY_COMBO_ALPHA;
+> +		/* Pre-mult mode */
+> +		blend |= BIT_DPU_LAY_MODE_BLEND_PREMULT;
+> +		break;
+> +	case DRM_MODE_BLEND_PIXEL_NONE:
+> +	default:
+> +		/* don't do blending, maybe RGBX */
+> +		/* alpha mode select - layer alpha */
+> +		blend |= BIT_DPU_LAY_LAYER_ALPHA;
+> +		break;
+> +	}
+> +
+> +	return blend;
+> +}
+> +
+> +static void sprd_dpu_layer(struct sprd_dpu *dpu, struct sprd_plane *plane,
+> +			struct drm_plane_state *state)
+> +{
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +	struct drm_gem_cma_object *cma_obj;
+> +	const struct drm_format_info *info;
+> +	struct drm_framebuffer *fb = state->fb;
+> +	u32 addr, size, offset, pitch, blend, format, rotation;
+> +	u32 src_x = state->src_x >> 16;
+> +	u32 src_y = state->src_y >> 16;
+> +	u32 src_w = state->src_w >> 16;
+> +	u32 src_h = state->src_h >> 16;
+> +	u32 dst_x = state->crtc_x;
+> +	u32 dst_y = state->crtc_y;
+> +	u32 alpha = state->alpha;
+> +	int i;
+> +
+> +	offset = (dst_x & 0xffff) | (dst_y << 16);
+> +	size = (src_w & 0xffff) | (src_h << 16);
+> +
+> +	for (i = 0; i < fb->format->num_planes; i++) {
+> +		cma_obj = drm_fb_cma_get_gem_obj(fb, i);
+> +		addr = cma_obj->paddr + fb->offsets[i];
+> +
+> +		if (i == 0)
+> +			layer_reg_wr(ctx, REG_LAY_BASE_ADDR0, addr, plane->index);
+> +		else if (i == 1)
+> +			layer_reg_wr(ctx, REG_LAY_BASE_ADDR1, addr, plane->index);
+> +		else
+> +			layer_reg_wr(ctx, REG_LAY_BASE_ADDR2, addr, plane->index);
+> +	}
+> +
+> +	info = drm_format_info(fb->format->format);
+> +	if (fb->format->num_planes == 3) {
+> +		/* UV pitch is 1/2 of Y pitch */
+> +		pitch = (fb->pitches[0] / info->cpp[0]) |
+> +				(fb->pitches[0] / info->cpp[0] << 15);
+> +	} else {
+> +		pitch = fb->pitches[0] / info->cpp[0];
+> +	}
+> +
+> +	layer_reg_wr(ctx, REG_LAY_POS, offset, plane->index);
+> +	layer_reg_wr(ctx, REG_LAY_SIZE, size, plane->index);
+> +	layer_reg_wr(ctx, REG_LAY_CROP_START,
+> +			src_y << 16 | src_x, plane->index);
+> +	layer_reg_wr(ctx, REG_LAY_ALPHA, alpha, plane->index);
+> +	layer_reg_wr(ctx, REG_LAY_PITCH, pitch, plane->index);
+> +
+> +	format = drm_format_to_dpu(fb);
+> +	blend = drm_blend_to_dpu(state);
+> +	rotation = drm_rotation_to_dpu(state);
+> +
+> +	layer_reg_wr(ctx, REG_LAY_CTRL, BIT_DPU_LAY_EN |
+> +				format |
+> +				blend |
+> +				rotation << 20,
+> +				plane->index);
+> +}
+> +
+> +static void sprd_dpu_flip(struct sprd_dpu *dpu)
+> +{
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +	u32 reg_val;
+> +
+> +	/*
+> +	 * Make sure the dpu is in stop status. DPU has no shadow
+> +	 * registers in EDPI mode. So the config registers can only be
+> +	 * updated in the rising edge of DPU_RUN bit.
+> +	 */
+> +	if (ctx->if_type == SPRD_DPU_IF_EDPI)
+> +		dpu_wait_stop_done(dpu);
+> +
+> +	/* update trigger and wait */
+> +	if (ctx->if_type == SPRD_DPU_IF_DPI) {
+> +		if (!ctx->stopped) {
+> +			dpu_reg_set(ctx, REG_DPU_CTRL, BIT_DPU_REG_UPDATE);
+> +			dpu_wait_update_done(dpu);
+> +		}
+> +
+> +		dpu_reg_set(ctx, REG_DPU_INT_EN, BIT_DPU_INT_ERR);
+> +	} else if (ctx->if_type == SPRD_DPU_IF_EDPI) {
+> +		dpu_reg_set(ctx, REG_DPU_CTRL, BIT_DPU_RUN);
+> +
+> +		ctx->stopped = false;
+> +	}
+> +
+> +	/*
+> +	 * If the following interrupt was disabled in isr,
+> +	 * re-enable it.
+> +	 */
+> +	reg_val = BIT_DPU_INT_MMU_VAOR_RD |
+> +		  BIT_DPU_INT_MMU_VAOR_WR |
+> +		  BIT_DPU_INT_MMU_INV_RD |
+> +		  BIT_DPU_INT_MMU_INV_WR;
+> +	dpu_reg_set(ctx, REG_DPU_INT_EN, reg_val);
+> +}
+> +
+> +static void sprd_dpu_init(struct sprd_dpu *dpu)
+> +{
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +	u32 reg_val, size;
+> +
+> +	writel(0x00, ctx->base + REG_BG_COLOR);
+> +
+> +	size = (ctx->vm.vactive << 16) | ctx->vm.hactive;
+> +	writel(size, ctx->base + REG_PANEL_SIZE);
+> +	writel(size, ctx->base + REG_BLEND_SIZE);
+> +
+> +	writel(0x00, ctx->base + REG_MMU_EN);
+> +	writel(0x00, ctx->base + REG_MMU_PPN1);
+> +	writel(0xffff, ctx->base + REG_MMU_RANGE1);
+> +	writel(0x00, ctx->base + REG_MMU_PPN2);
+> +	writel(0xffff, ctx->base + REG_MMU_RANGE2);
+> +	writel(0x1ffff, ctx->base + REG_MMU_VPN_RANGE);
+> +}
+> +
+> +static void sprd_dpu_fini(struct sprd_dpu *dpu)
+> +{
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +
+> +	writel(0x00, ctx->base + REG_DPU_INT_EN);
+> +	writel(0xff, ctx->base + REG_DPU_INT_CLR);
+> +}
+> +
+> +static void sprd_dpi_init(struct sprd_dpu *dpu)
+> +{
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +	u32 int_mask = 0;
+> +	u32 reg_val;
+> +
+> +	if (ctx->if_type == SPRD_DPU_IF_DPI) {
+> +		/* use dpi as interface */
+> +		dpu_reg_clr(ctx, REG_DPU_CFG0, BIT_DPU_IF_EDPI);
+> +		/* disable Halt function for SPRD DSI */
+> +		dpu_reg_clr(ctx, REG_DPI_CTRL, BIT_DPU_DPI_HALT_EN);
+> +		/* select te from external pad */
+> +		dpu_reg_set(ctx, REG_DPI_CTRL, BIT_DPU_EDPI_FROM_EXTERNAL_PAD);
+> +
+> +		/* set dpi timing */
+> +		reg_val = ctx->vm.hsync_len << 0 |
+> +			  ctx->vm.hback_porch << 8 |
+> +			  ctx->vm.hfront_porch << 20;
+> +		writel(reg_val, ctx->base + REG_DPI_H_TIMING);
+> +
+> +		reg_val = ctx->vm.vsync_len << 0 |
+> +			  ctx->vm.vback_porch << 8 |
+> +			  ctx->vm.vfront_porch << 20;
+> +		writel(reg_val, ctx->base + REG_DPI_V_TIMING);
+> +
+> +		if (ctx->vm.vsync_len + ctx->vm.vback_porch < 32)
+> +			drm_warn(dpu->drm, "Warning: (vsync + vbp) < 32, "
+> +				"underflow risk!\n");
+> +
+> +		/* enable dpu update done INT */
+> +		int_mask |= BIT_DPU_INT_UPDATE_DONE;
+> +		/* enable dpu done INT */
+> +		int_mask |= BIT_DPU_INT_DONE;
+> +		/* enable dpu dpi vsync */
+> +		int_mask |= BIT_DPU_INT_VSYNC;
+> +		/* enable dpu TE INT */
+> +		int_mask |= BIT_DPU_INT_TE;
+> +		/* enable underflow err INT */
+> +		int_mask |= BIT_DPU_INT_ERR;
+> +	} else if (ctx->if_type == SPRD_DPU_IF_EDPI) {
+> +		/* use edpi as interface */
+> +		dpu_reg_set(ctx, REG_DPU_CFG0, BIT_DPU_IF_EDPI);
+> +		/* use external te */
+> +		dpu_reg_set(ctx, REG_DPI_CTRL, BIT_DPU_EDPI_FROM_EXTERNAL_PAD);
+> +		/* enable te */
+> +		dpu_reg_set(ctx, REG_DPI_CTRL, BIT_DPU_EDPI_TE_EN);
+> +
+> +		/* enable stop done INT */
+> +		int_mask |= BIT_DPU_INT_DONE;
+> +		/* enable TE INT */
+> +		int_mask |= BIT_DPU_INT_TE;
+> +	}
+> +
+> +	/* enable iommu va out of range read error INT */
+> +	int_mask |= BIT_DPU_INT_MMU_VAOR_RD;
+> +	/* enable iommu va out of range write error INT */
+> +	int_mask |= BIT_DPU_INT_MMU_VAOR_WR;
+> +	/* enable iommu invalid read error INT */
+> +	int_mask |= BIT_DPU_INT_MMU_INV_RD;
+> +	/* enable iommu invalid write error INT */
+> +	int_mask |= BIT_DPU_INT_MMU_INV_WR;
+> +
+> +	writel(int_mask, ctx->base + REG_DPU_INT_EN);
+> +}
+> +
+> +void sprd_dpu_run(struct sprd_dpu *dpu)
+> +{
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +
+> +	dpu_reg_set(ctx, REG_DPU_CTRL, BIT_DPU_RUN);
+> +
+> +	ctx->stopped = false;
+> +}
+> +
+> +void sprd_dpu_stop(struct sprd_dpu *dpu)
+> +{
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +
+> +	if (ctx->if_type == SPRD_DPU_IF_DPI)
+> +		dpu_reg_set(ctx, REG_DPU_CTRL, BIT_DPU_STOP);
+> +
+> +	dpu_wait_stop_done(dpu);
+> +}
+> +
+> +static int sprd_plane_atomic_check(struct drm_plane *plane,
+> +				  struct drm_plane_state *state)
+> +{
+> +	struct drm_framebuffer *fb = state->fb;
+> +	struct drm_crtc_state *crtc_state;
+> +	u32 fmt;
+> +
+> +	if (!fb || !state->crtc)
+> +		return 0;
+> +
+> +	fmt = drm_format_to_dpu(fb);
+> +	if (!fmt)
+> +		return -EINVAL;
+> +
+> +	crtc_state = drm_atomic_get_crtc_state(state->state, state->crtc);
+> +	if (IS_ERR(crtc_state))
+> +		return PTR_ERR(crtc_state);
+> +
+> +	return drm_atomic_helper_check_plane_state(state, crtc_state,
+> +						  DRM_PLANE_HELPER_NO_SCALING,
+> +						  DRM_PLANE_HELPER_NO_SCALING,
+> +						  true, true);
+> +}
+> +
+> +static void sprd_plane_atomic_update(struct drm_plane *plane,
+> +				    struct drm_plane_state *old_state)
+> +{
+> +	struct drm_plane_state *state = plane->state;
+> +	struct sprd_plane *p = to_sprd_plane(plane);
+> +	struct sprd_dpu *dpu = to_sprd_crtc(state->crtc);
+> +
+> +	/* start configure dpu layers */
+> +	sprd_dpu_layer(dpu, p, state);
+> +}
+> +
+> +static void sprd_plane_atomic_disable(struct drm_plane *plane,
+> +				     struct drm_plane_state *old_state)
+> +{
+> +	struct sprd_plane *p = to_sprd_plane(plane);
+> +	struct sprd_dpu *dpu = to_sprd_crtc(old_state->crtc);
+> +
+> +	layer_reg_wr(&dpu->ctx, REG_LAY_CTRL, 0x00, p->index);
+> +}
+> +
+> +static void sprd_plane_create_properties(struct sprd_plane *p, int index)
+> +{
+> +	unsigned int supported_modes = BIT(DRM_MODE_BLEND_PIXEL_NONE) |
+> +				       BIT(DRM_MODE_BLEND_PREMULTI) |
+> +				       BIT(DRM_MODE_BLEND_COVERAGE);
+> +
+> +	/* create rotation property */
+> +	drm_plane_create_rotation_property(&p->plane,
+> +					   DRM_MODE_ROTATE_0,
+> +					   DRM_MODE_ROTATE_MASK |
+> +					   DRM_MODE_REFLECT_MASK);
+> +
+> +	/* create alpha property */
+> +	drm_plane_create_alpha_property(&p->plane);
+> +
+> +	/* create blend mode property */
+> +	drm_plane_create_blend_mode_property(&p->plane, supported_modes);
+> +
+> +	/* create zpos property */
+> +	drm_plane_create_zpos_immutable_property(&p->plane, index);
+> +}
+> +
+> +static const struct drm_plane_helper_funcs sprd_plane_helper_funcs = {
+> +	.atomic_check = sprd_plane_atomic_check,
+> +	.atomic_update = sprd_plane_atomic_update,
+> +	.atomic_disable = sprd_plane_atomic_disable,
+> +};
+> +
+> +static const struct drm_plane_funcs sprd_plane_funcs = {
+> +	.update_plane = drm_atomic_helper_update_plane,
+> +	.disable_plane	= drm_atomic_helper_disable_plane,
+> +	.destroy = drm_plane_cleanup,
+> +	.reset = drm_atomic_helper_plane_reset,
+> +	.atomic_duplicate_state = drm_atomic_helper_plane_duplicate_state,
+> +	.atomic_destroy_state = drm_atomic_helper_plane_destroy_state,
+> +};
+> +
+> +static struct drm_plane *sprd_plane_init(struct drm_device *drm,
+> +					struct sprd_dpu *dpu)
+> +{
+> +	struct drm_plane *primary = NULL;
+> +	struct sprd_plane *p = NULL;
+> +	int ret, i;
+> +
+> +	for (i = 0; i < 6; i++) {
+> +		p = devm_kzalloc(drm->dev, sizeof(*p), GFP_KERNEL);
+> +		if (!p)
+> +			return ERR_PTR(-ENOMEM);
+> +
+> +		ret = drm_universal_plane_init(drm, &p->plane, 1,
+> +					       &sprd_plane_funcs, primary_fmts,
+> +					       ARRAY_SIZE(primary_fmts), NULL,
+> +					       DRM_PLANE_TYPE_PRIMARY, NULL);
+> +		if (ret) {
+> +			drm_err(drm, "fail to init primary plane\n");
+> +			return ERR_PTR(ret);
+> +		}
+> +
+> +		drm_plane_helper_add(&p->plane, &sprd_plane_helper_funcs);
+> +
+> +		sprd_plane_create_properties(p, i);
+> +
+> +		p->index = i;
+> +		if (i == 0)
+> +			primary = &p->plane;
+> +	}
+> +
+> +	return primary;
+> +}
+> +
+> +static enum drm_mode_status sprd_crtc_mode_valid(struct drm_crtc *crtc,
+> +					const struct drm_display_mode *mode)
+> +{
+> +	struct sprd_dpu *dpu = to_sprd_crtc(crtc);
+> +
+> +	drm_dbg(dpu->drm, "%s() mode: "DRM_MODE_FMT"\n", __func__, DRM_MODE_ARG(mode));
+> +
+> +	if (mode->type & DRM_MODE_TYPE_PREFERRED) {
+> +		drm_display_mode_to_videomode(mode, &dpu->ctx.vm);
+> +
+> +		if ((mode->hdisplay == mode->htotal) ||
+> +		    (mode->vdisplay == mode->vtotal))
+> +			dpu->ctx.if_type = SPRD_DPU_IF_EDPI;
+> +		else
+> +			dpu->ctx.if_type = SPRD_DPU_IF_DPI;
+> +	}
+> +
+> +	return MODE_OK;
+> +}
+> +
+> +static void sprd_crtc_atomic_enable(struct drm_crtc *crtc,
+> +				   struct drm_crtc_state *old_state)
+> +{
+> +	struct sprd_dpu *dpu = to_sprd_crtc(crtc);
+> +
+> +	sprd_dpu_init(dpu);
+> +
+> +	sprd_dpi_init(dpu);
+> +
+> +	enable_irq(dpu->ctx.irq);
+> +
+> +	drm_crtc_vblank_on(&dpu->crtc);
+> +}
+> +
+> +static void sprd_crtc_atomic_disable(struct drm_crtc *crtc,
+> +				    struct drm_crtc_state *old_state)
+> +{
+> +	struct sprd_dpu *dpu = to_sprd_crtc(crtc);
+> +	struct drm_device *drm = dpu->crtc.dev;
+> +
+> +	drm_crtc_vblank_off(&dpu->crtc);
+> +
+> +	disable_irq(dpu->ctx.irq);
+> +
+> +	sprd_dpu_fini(dpu);
+> +
+> +	spin_lock_irq(&drm->event_lock);
+> +	if (crtc->state->event) {
+> +		drm_crtc_send_vblank_event(crtc, crtc->state->event);
+> +		crtc->state->event = NULL;
+> +	}
+> +	spin_unlock_irq(&drm->event_lock);
+> +}
+> +
+> +static int sprd_crtc_atomic_check(struct drm_crtc *crtc,
+> +				 struct drm_crtc_state *state)
+> +{
+> +	drm_dbg(crtc->dev, "%s()\n", __func__);
+> +
+> +	return 0;
+> +}
+> +
+> +static void sprd_crtc_atomic_flush(struct drm_crtc *crtc,
+> +				  struct drm_crtc_state *old_state)
+> +
+> +{
+> +	struct sprd_dpu *dpu = to_sprd_crtc(crtc);
+> +	struct drm_device *drm = dpu->crtc.dev;
+> +
+> +	sprd_dpu_flip(dpu);
+> +
+> +	spin_lock_irq(&drm->event_lock);
+> +	if (crtc->state->event) {
+> +		drm_crtc_send_vblank_event(crtc, crtc->state->event);
+> +		crtc->state->event = NULL;
+> +	}
+> +	spin_unlock_irq(&drm->event_lock);
+> +}
+> +
+> +static int sprd_crtc_enable_vblank(struct drm_crtc *crtc)
+> +{
+> +	struct sprd_dpu *dpu = to_sprd_crtc(crtc);
+> +
+> +	dpu_reg_set(&dpu->ctx, REG_DPU_INT_EN, BIT_DPU_INT_VSYNC);
+> +
+> +	return 0;
+> +}
+> +
+> +static void sprd_crtc_disable_vblank(struct drm_crtc *crtc)
+> +{
+> +	struct sprd_dpu *dpu = to_sprd_crtc(crtc);
+> +
+> +	dpu_reg_clr(&dpu->ctx, REG_DPU_INT_EN, BIT_DPU_INT_VSYNC);
+> +}
+> +
+> +static const struct drm_crtc_helper_funcs sprd_crtc_helper_funcs = {
+> +	.mode_valid	= sprd_crtc_mode_valid,
+> +	.atomic_check	= sprd_crtc_atomic_check,
+> +	.atomic_flush	= sprd_crtc_atomic_flush,
+> +	.atomic_enable	= sprd_crtc_atomic_enable,
+> +	.atomic_disable	= sprd_crtc_atomic_disable,
+> +};
+> +
+> +static const struct drm_crtc_funcs sprd_crtc_funcs = {
+> +	.destroy	= drm_crtc_cleanup,
+> +	.set_config	= drm_atomic_helper_set_config,
+> +	.page_flip	= drm_atomic_helper_page_flip,
+> +	.reset		= drm_atomic_helper_crtc_reset,
+> +	.atomic_duplicate_state	= drm_atomic_helper_crtc_duplicate_state,
+> +	.atomic_destroy_state	= drm_atomic_helper_crtc_destroy_state,
+> +	.enable_vblank	= sprd_crtc_enable_vblank,
+> +	.disable_vblank	= sprd_crtc_disable_vblank,
+> +};
+> +
+> +static int sprd_crtc_init(struct drm_device *drm, struct drm_crtc *crtc,
+> +			 struct drm_plane *primary)
+> +{
+> +	struct device_node *port;
+> +	int ret;
+> +
+> +	/*
+> +	 * set crtc port so that drm_of_find_possible_crtcs call works
+> +	 */
+> +	port = of_parse_phandle(drm->dev->of_node, "ports", 0);
+> +	if (!port) {
+> +		drm_err(drm, "find 'ports' phandle of %s failed\n",
+> +			  drm->dev->of_node->full_name);
+> +		return -EINVAL;
+> +	}
+> +	of_node_put(port);
+> +	crtc->port = port;
+> +
+> +	ret = drm_crtc_init_with_planes(drm, crtc, primary, NULL,
+> +					&sprd_crtc_funcs, NULL);
+> +	if (ret) {
+> +		drm_err(drm, "failed to init crtc.\n");
+> +		return ret;
+> +	}
+> +
+> +	drm_crtc_helper_add(crtc, &sprd_crtc_helper_funcs);
+> +
+> +	return 0;
+> +}
+> +
+> +static irqreturn_t sprd_dpu_isr(int irq, void *data)
+> +{
+> +	struct sprd_dpu *dpu = data;
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +	u32 reg_val, int_mask = 0;
+> +
+> +	reg_val = readl(ctx->base + REG_DPU_INT_STS);
+> +
+> +	/* disable err interrupt */
+> +	if (reg_val & BIT_DPU_INT_ERR) {
+> +		int_mask |= BIT_DPU_INT_ERR;
+> +		drm_warn(dpu->drm, "Warning: dpu underflow!\n");
+> +	}
+> +
+> +	/* dpu update done isr */
+> +	if (reg_val & BIT_DPU_INT_UPDATE_DONE) {
+> +		ctx->evt_update = true;
+> +		wake_up_interruptible_all(&ctx->wait_queue);
+> +	}
+> +
+> +	/* dpu stop done isr */
+> +	if (reg_val & BIT_DPU_INT_DONE) {
+> +		ctx->evt_stop = true;
+> +		wake_up_interruptible_all(&ctx->wait_queue);
+> +	}
+> +
+> +	if (reg_val & BIT_DPU_INT_VSYNC)
+> +		drm_crtc_handle_vblank(&dpu->crtc);
+> +
+> +	int_mask |= check_mmu_isr(dpu, reg_val);
+> +
+> +	writel(reg_val, ctx->base + REG_DPU_INT_CLR);
+> +	dpu_reg_clr(ctx, REG_DPU_INT_EN, int_mask);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int sprd_dpu_bind(struct device *dev, struct device *master, void *data)
+> +{
+> +	struct drm_device *drm = data;
+> +	struct sprd_dpu *dpu = dev_get_drvdata(dev);
+> +	struct drm_plane *plane;
+> +	int ret;
+> +
+> +	plane = sprd_plane_init(drm, dpu);
+> +	if (IS_ERR_OR_NULL(plane)) {
+> +		ret = PTR_ERR(plane);
+> +		return ret;
+> +	}
+> +
+> +	ret = sprd_crtc_init(drm, &dpu->crtc, plane);
+> +	if (ret)
+> +		return ret;
+> +
+> +	dpu->drm = drm;
+> +
+> +	return 0;
+> +}
+> +
+> +static void sprd_dpu_unbind(struct device *dev, struct device *master,
+> +	void *data)
+> +{
+> +	struct sprd_dpu *dpu = dev_get_drvdata(dev);
+> +
+> +	drm_crtc_cleanup(&dpu->crtc);
+> +}
+> +
+> +static const struct component_ops dpu_component_ops = {
+> +	.bind = sprd_dpu_bind,
+> +	.unbind = sprd_dpu_unbind,
+> +};
+> +
+> +static int sprd_dpu_context_init(struct sprd_dpu *dpu,
+> +				struct device *dev)
+> +{
+> +	struct platform_device *pdev = to_platform_device(dev);
+> +	struct dpu_context *ctx = &dpu->ctx;
+> +	struct resource *res;
+> +	int ret;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	ctx->base = devm_ioremap(dev, res->start, resource_size(res));
+> +	if (!ctx->base) {
+> +		dev_err(dev, "failed to map dpu registers\n");
+> +		return -EFAULT;
+> +	}
+> +
+> +	ctx->irq = platform_get_irq(pdev, 0);
+> +	if (ctx->irq < 0) {
+> +		dev_err(dev, "failed to get dpu irq\n");
+> +		return ctx->irq;
+> +	}
+> +
+> +	irq_set_status_flags(ctx->irq, IRQ_NOAUTOEN);
+> +	ret = devm_request_irq(dev, ctx->irq, sprd_dpu_isr,
+> +					0, "DPU", dpu);
+> +	if (ret) {
+> +		dev_err(dev, "failed to register dpu irq handler\n");
+> +		return ret;
+> +	}
+> +
+> +	init_waitqueue_head(&ctx->wait_queue);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id dpu_match_table[] = {
+> +	{ .compatible = "sprd,sharkl3-dpu" },
+> +	{ /* sentinel */ },
+> +};
+> +
+> +static int sprd_dpu_probe(struct platform_device *pdev)
+> +{
+> +	struct sprd_dpu *dpu;
+> +	int ret;
+> +
+> +	dpu = kzalloc(sizeof(*dpu), GFP_KERNEL);
+> +	if (!dpu)
+> +		return -ENOMEM;
+> +
+> +	ret = sprd_dpu_context_init(dpu, &pdev->dev);
+> +	if (ret) {
+> +		kfree(dpu);
+> +		return ret;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, dpu);
+> +
+> +	return component_add(&pdev->dev, &dpu_component_ops);
+> +}
+> +
+> +static int sprd_dpu_remove(struct platform_device *pdev)
+> +{
+> +	struct sprd_dpu *dpu = platform_get_drvdata(pdev);
+> +
+> +	component_del(&pdev->dev, &dpu_component_ops);
+> +
+> +	kfree(dpu);
+> +	return 0;
+> +}
+> +
+> +struct platform_driver sprd_dpu_driver = {
+> +	.probe = sprd_dpu_probe,
+> +	.remove = sprd_dpu_remove,
+> +	.driver = {
+> +		.name = "sprd-dpu-drv",
+> +		.of_match_table = dpu_match_table,
+> +	},
+> +};
+> +
+> +MODULE_AUTHOR("Leon He <leon.he@unisoc.com>");
+> +MODULE_AUTHOR("Kevin Tang <kevin.tang@unisoc.com>");
+> +MODULE_DESCRIPTION("Unisoc Display Controller Driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/gpu/drm/sprd/sprd_dpu.h b/drivers/gpu/drm/sprd/sprd_dpu.h
+> new file mode 100644
+> index 0000000..a937ba1
+> --- /dev/null
+> +++ b/drivers/gpu/drm/sprd/sprd_dpu.h
+> @@ -0,0 +1,120 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020 Unisoc Inc.
+> + */
+> +
+> +#ifndef __SPRD_DPU_H__
+> +#define __SPRD_DPU_H__
+> +
+> +#include <linux/bug.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/string.h>
+> +#include <video/videomode.h>
+> +
+> +#include <drm/drm_crtc.h>
+> +#include <drm/drm_fourcc.h>
+> +#include <drm/drm_print.h>
+> +#include <drm/drm_vblank.h>
+> +#include <uapi/drm/drm_mode.h>
+> +
+> +/* DPU Layer registers offset */
+> +#define DPU_LAY_REG_OFFSET	0x30
+> +
+> +enum {
+> +	SPRD_DPU_IF_DBI = 0,
+> +	SPRD_DPU_IF_DPI,
+> +	SPRD_DPU_IF_EDPI,
+> +	SPRD_DPU_IF_LIMIT
+> +};
+> +
+> +enum {
+> +	DPU_LAYER_ROTATION_0,
+> +	DPU_LAYER_ROTATION_90,
+> +	DPU_LAYER_ROTATION_180,
+> +	DPU_LAYER_ROTATION_270,
+> +	DPU_LAYER_ROTATION_0_M,
+> +	DPU_LAYER_ROTATION_90_M,
+> +	DPU_LAYER_ROTATION_180_M,
+> +	DPU_LAYER_ROTATION_270_M,
+> +};
+> +
+> +/**
+> + * Sprd DPU context structure
+> + *
+> + * @base: DPU controller base address
+> + * @irq: IRQ number to install the handler for
+> + * @if_type: The type of DPI interface, default is DPI mode.
+> + * @vm: videomode structure to use for DPU and DPI initialization
+> + * @stopped: indicates whether DPU are stopped
+> + * @wait_queue: wait queue, used to wait for DPU shadow register update done and
+> + * DPU stop register done interrupt signal.
+> + * @evt_update: wait queue condition for DPU shadow register
+> + * @evt_stop: wait queue condition for DPU stop register
+> + */
+> +struct dpu_context {
+> +	void __iomem *base;
+> +	int irq;
+> +	u8 if_type;
+> +	struct videomode vm;
+> +	bool stopped;
+> +	wait_queue_head_t wait_queue;
+> +	bool evt_update;
+> +	bool evt_stop;
+> +};
+> +
+> +/**
+> + * Sprd DPU device structure
+> + *
+> + * @crtc: DRM crtc
+> + * @ctx: A pointer to the DPU's implementation specific context
+> + */
+> +struct sprd_dpu {
+> +	struct drm_crtc crtc;
+> +	struct drm_device *drm;
+> +	struct dpu_context ctx;
+> +};
+> +
+> +static inline struct sprd_dpu *to_sprd_crtc(struct drm_crtc *crtc)
+> +{
+> +	return container_of(crtc, struct sprd_dpu, crtc);
+> +}
+> +
+> +static inline void
+> +dpu_reg_set(struct dpu_context *ctx, u32 offset, u32 set_bits)
+> +{
+> +	u32 bits = readl_relaxed(ctx->base + offset);
+> +
+> +	writel(bits | set_bits, ctx->base + offset);
+> +}
+> +
+> +static inline void
+> +dpu_reg_clr(struct dpu_context *ctx, u32 offset, u32 clr_bits)
+> +{
+> +	u32 bits = readl_relaxed(ctx->base + offset);
+> +
+> +	writel(bits & ~clr_bits, ctx->base + offset);
+> +}
+> +
+> +static inline u32
+> +layer_reg_rd(struct dpu_context *ctx, u32 offset, int index)
+> +{
+> +	u32 layer_offset = offset + index * DPU_LAY_REG_OFFSET;
+> +
+> +	return readl(ctx->base + layer_offset);
+> +}
+> +
+> +static inline void
+> +layer_reg_wr(struct dpu_context *ctx, u32 offset, u32 cfg_bits, int index)
+> +{
+> +	u32 layer_offset =  offset + index * DPU_LAY_REG_OFFSET;
+> +
+> +	writel(cfg_bits, ctx->base + layer_offset);
+> +}
+> +
+> +void sprd_dpu_run(struct sprd_dpu *dpu);
+> +void sprd_dpu_stop(struct sprd_dpu *dpu);
+> +
+> +#endif
+> diff --git a/drivers/gpu/drm/sprd/sprd_drm.c b/drivers/gpu/drm/sprd/sprd_drm.c
+> index ec101de..ca93be2 100644
+> --- a/drivers/gpu/drm/sprd/sprd_drm.c
+> +++ b/drivers/gpu/drm/sprd/sprd_drm.c
+> @@ -196,6 +196,7 @@ static struct platform_driver sprd_drm_driver = {
+>   
+>   static struct platform_driver *sprd_drm_drivers[]  = {
+>   	&sprd_drm_driver,
+> +	&sprd_dpu_driver,
+>   };
+>   
+>   static int __init sprd_drm_init(void)
+> diff --git a/drivers/gpu/drm/sprd/sprd_drm.h b/drivers/gpu/drm/sprd/sprd_drm.h
+> index 9781fd5..85d4a8b 100644
+> --- a/drivers/gpu/drm/sprd/sprd_drm.h
+> +++ b/drivers/gpu/drm/sprd/sprd_drm.h
+> @@ -13,4 +13,6 @@ struct sprd_drm {
+>   	struct drm_device drm;
+>   };
+>   
+> +extern struct platform_driver sprd_dpu_driver;
+> +
+>   #endif /* _SPRD_DRM_H_ */
+> 
