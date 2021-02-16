@@ -2,152 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D2531D1AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B796C31D1B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhBPUkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 15:40:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhBPUkt (ORCPT
+        id S230183AbhBPUnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 15:43:25 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:54399 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229796AbhBPUnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 15:40:49 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD992C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:40:08 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id y18so13832052edw.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:40:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qsbkrWZGkD91kMd27lJYVWXYLDx45J5nDBTki3Poz/Y=;
-        b=GYlUAEcxf+YrKRO9EV5o4/Z+28j3rfdzii+w6iCzZUbQExjtVDl60KciVFUspFaevd
-         xQSimjJ/cKCSAjpA2c6+1IwGP+b9RsJeFUgaGgIQI9CHFXTR045ViXPxwRMKJbmKzBsQ
-         dAYOvturlAhwMrFBnspAhiHq5WWA2Hkdic64X8Rcert/bP/eE1q1Jv7U4+KFDK5bEbTc
-         /CSI3/tdjWwHApgQq7qDVuwhFwQXKrhmaTsx+j7jU6+/8SJ3r9U8+h3wqTu3CVO4gC9b
-         /RRgmqX0ARNglqqE3GjZ6Ihebj0PnyzmcQHZB0bQ0S4W5F+0TaIpoP+exgxw3GtFqYl4
-         am7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qsbkrWZGkD91kMd27lJYVWXYLDx45J5nDBTki3Poz/Y=;
-        b=sHOeVhuBci6YTh/U9hq6iSs/h5WQRSaJN1fJq0qCRHVSF2DUceCHC1I/jKQGgaSq3R
-         MWPVN8qYR4Fz2dLh5IIaGLAZ4rtpzNLkZrC1iJHWaBjeVKY8j5IvOknGBxoQk7ekFg+U
-         PrrO7AYgjZyXGXCiVhRWAyS23Z5g+VRN1f9v8ZWjs+6des44C1WOzEOB+EbtlZwSY15a
-         OeatYmzJnIkj5ARILv3jdYP7BYT7dC5+XRL3NN9q4D0g7AfLnMdHKIx7leGRX5+aqZZU
-         u6BlR993hp/E77lu8IUHte7t6eR/6R0CspWm82ehLbm0d4kAg5CINi32JCJnBfQwjNKc
-         jEJg==
-X-Gm-Message-State: AOAM531V0OOZKsR+krnhJSra5wktJAlqyMECE5PvYBQ7cU9XNfiIVnHc
-        ilora72n6c/gIhU2kLaVW4VGHUCJTkk0GSKPa8ArrQ==
-X-Google-Smtp-Source: ABdhPJzItTBAgOKzcio391IOuVIAv/Zadl6m2XXBki/3fUYt940zA/MAddwv1fJXGyV5MfPeAf92HQRO8cYR7bKO5J8=
-X-Received: by 2002:a05:6402:559:: with SMTP id i25mr15504185edx.300.1613508006214;
- Tue, 16 Feb 2021 12:40:06 -0800 (PST)
+        Tue, 16 Feb 2021 15:43:21 -0500
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 050001C0003;
+        Tue, 16 Feb 2021 20:42:29 +0000 (UTC)
+Subject: Re: riscv+KASAN does not boot
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Bjorn Topel <bjorn.topel@gmail.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
+        syzkaller <syzkaller@googlegroups.com>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
+ <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
+ <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
+ <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
+ <20210118145310.crnqnh6kax5jqicj@distanz.ch>
+ <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
+ <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
+ <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr>
+ <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
+ <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
+ <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <24857bfc-c557-f141-8ae7-2e3da24f67f5@ghiti.fr>
+Date:   Tue, 16 Feb 2021 15:42:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
- <161255840486.339900.5478922203128287192.stgit@djiang5-desk3.ch.intel.com>
- <20210210235924.GJ4247@nvidia.com> <8ff16d76-6b36-0da6-03ee-aebec2d1a731@intel.com>
-In-Reply-To: <8ff16d76-6b36-0da6-03ee-aebec2d1a731@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 16 Feb 2021 12:39:56 -0800
-Message-ID: <CAPcyv4jDmofa+77q_hG1EimaKxq2_hYu-kVOVbU4mN4XSdOUWA@mail.gmail.com>
-Subject: Re: [PATCH v5 05/14] vfio/mdev: idxd: add basic mdev registration and
- helper functions
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        kwankhede@nvidia.com, Thomas Gleixner <tglx@linutronix.de>,
-        Vinod Koul <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        Jacob jun Pan <jacob.jun.pan@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>, Yi L Liu <yi.l.liu@intel.com>,
-        Baolu Lu <baolu.lu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Sanjay K Kumar <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, eric.auger@redhat.com,
-        Parav Pandit <parav@mellanox.com>, netanelg@mellanox.com,
-        shahafs@mellanox.com, Paolo Bonzini <pbonzini@redhat.com>,
-        dmaengine@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:05 AM Dave Jiang <dave.jiang@intel.com> wrote:
->
->
-> On 2/10/2021 4:59 PM, Jason Gunthorpe wrote:
-> > On Fri, Feb 05, 2021 at 01:53:24PM -0700, Dave Jiang wrote:
-> >
-> >> +static int check_vma(struct idxd_wq *wq, struct vm_area_struct *vma)
-> >>   {
-> >> -    /* FIXME: Fill in later */
-> >> +    if (vma->vm_end < vma->vm_start)
-> >> +            return -EINVAL;
-> > These checks are redundant
->
-> Thanks. Will remove.
->
-> >
-> >> -static int idxd_mdev_host_release(struct idxd_device *idxd)
-> >> +static int idxd_vdcm_mmap(struct mdev_device *mdev, struct vm_area_struct *vma)
-> >> +{
-> >> +    unsigned int wq_idx, rc;
-> >> +    unsigned long req_size, pgoff = 0, offset;
-> >> +    pgprot_t pg_prot;
-> >> +    struct vdcm_idxd *vidxd = mdev_get_drvdata(mdev);
-> >> +    struct idxd_wq *wq = vidxd->wq;
-> >> +    struct idxd_device *idxd = vidxd->idxd;
-> >> +    enum idxd_portal_prot virt_portal, phys_portal;
-> >> +    phys_addr_t base = pci_resource_start(idxd->pdev, IDXD_WQ_BAR);
-> >> +    struct device *dev = mdev_dev(mdev);
-> >> +
-> >> +    rc = check_vma(wq, vma);
-> >> +    if (rc)
-> >> +            return rc;
-> >> +
-> >> +    pg_prot = vma->vm_page_prot;
-> >> +    req_size = vma->vm_end - vma->vm_start;
-> >> +    vma->vm_flags |= VM_DONTCOPY;
-> >> +
-> >> +    offset = (vma->vm_pgoff << PAGE_SHIFT) &
-> >> +             ((1ULL << VFIO_PCI_OFFSET_SHIFT) - 1);
-> >> +
-> >> +    wq_idx = offset >> (PAGE_SHIFT + 2);
-> >> +    if (wq_idx >= 1) {
-> >> +            dev_err(dev, "mapping invalid wq %d off %lx\n",
-> >> +                    wq_idx, offset);
-> >> +            return -EINVAL;
-> >> +    }
-> >> +
-> >> +    /*
-> >> +     * Check and see if the guest wants to map to the limited or unlimited portal.
-> >> +     * The driver will allow mapping to unlimited portal only if the the wq is a
-> >> +     * dedicated wq. Otherwise, it goes to limited.
-> >> +     */
-> >> +    virt_portal = ((offset >> PAGE_SHIFT) & 0x3) == 1;
-> >> +    phys_portal = IDXD_PORTAL_LIMITED;
-> >> +    if (virt_portal == IDXD_PORTAL_UNLIMITED && wq_dedicated(wq))
-> >> +            phys_portal = IDXD_PORTAL_UNLIMITED;
-> >> +
-> >> +    /* We always map IMS portals to the guest */
-> >> +    pgoff = (base + idxd_get_wq_portal_full_offset(wq->id, phys_portal,
-> >> +                                                   IDXD_IRQ_IMS)) >> PAGE_SHIFT;
-> >> +    dev_dbg(dev, "mmap %lx %lx %lx %lx\n", vma->vm_start, pgoff, req_size,
-> >> +            pgprot_val(pg_prot));
-> >> +    vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> >> +    vma->vm_private_data = mdev;
-> > What ensures the mdev pointer is valid strictly longer than the VMA?
-> > This needs refcounting.
->
-> Going to take a kref at open and then put_device at close. Does that
-> sound reasonable or should I be calling get_device() in mmap() and then
-> register a notifier for when vma is released?
+Hi Dmitry,
 
-Where does this enabling ever look at vm_private_data again? It seems
-to me it should be reasonable for the mdev to die out from underneath
-a vma, just need some tracking to block future uses of the
-vma->vm_private_data from being attempted.
+Le 2/16/21 à 6:25 AM, Dmitry Vyukov a écrit :
+> On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>
+>> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>>> I was fixing KASAN support for my sv48 patchset so I took a look at your
+>>>> issue: I built a kernel on top of the branch riscv/fixes using
+>>>> https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
+>>>> and Buildroot 2020.11. I have the warnings regarding the use of
+>>>> __virt_to_phys on wrong addresses (but that's normal since this function
+>>>> is used in virt_addr_valid) but not the segfaults you describe.
+>>>
+>>> Hi Alex,
+>>>
+>>> Let me try to rebuild buildroot image. Maybe there was something wrong
+>>> with my build, though, I did 'make clean' before doing. But at the
+>>> same time it worked back in June...
+>>>
+>>> Re WARNINGs, they indicate kernel bugs. I am working on setting up a
+>>> syzbot instance on riscv. If there a WARNING during boot then the
+>>> kernel will be marked as broken. No further testing will happen.
+>>> Is it a mis-use of WARN_ON? If so, could anybody please remove it or
+>>> replace it with pr_err.
+>>
+>>
+>> Hi,
+>>
+>> I've localized one issue with riscv/KASAN:
+>> KASAN breaks VDSO and that's I think the root cause of weird faults I
+>> saw earlier. The following patch fixes it.
+>> Could somebody please upstream this fix? I don't know how to add/run
+>> tests for this.
+>> Thanks
+>>
+>> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+>> index 0cfd6da784f84..cf3a383c1799d 100644
+>> --- a/arch/riscv/kernel/vdso/Makefile
+>> +++ b/arch/riscv/kernel/vdso/Makefile
+>> @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
+>>   # Disable gcov profiling for VDSO code
+>>   GCOV_PROFILE := n
+>>   KCOV_INSTRUMENT := n
+>> +KASAN_SANITIZE := n
+>>
+>>   # Force dependency
+>>   $(obj)/vdso.o: $(obj)/vdso.so
+
+What's weird is that I don't have any issue without this patch with the 
+following config whereas it indeed seems required for KASAN. But when 
+looking at the segfaults you got earlier, the segfault address is 0xbb0 
+and the cause is an instruction page fault: this address is the PLT base 
+address in vdso.so and an instruction page fault would mean that someone 
+tried to jump at this address, which is weird. At first sight, that does 
+not seem related to your patch above, but clearly I may be wrong.
+
+Tobias, did you observe the same segfaults as Dmitry ?
+
+> 
+> 
+> 
+> Second issue I am seeing seems to be related to text segment size.
+> I check out v5.11 and use this config:
+> https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc9178
+
+This config gave my laptop a hard time ! Finally I was able to boot 
+correctly to userspace, but I realized I used my sv48 branch...Either I 
+fixed your issue along the way or I can't reproduce it, I'll give it a 
+try tomorrow.
+
+> 
+> Then trying to boot it using:
+> QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
+> $ qemu-system-riscv64 -machine virt -smp 2 -m 4G ...
+> 
+> It shows no output from the kernel whatsoever, even though I have
+> earlycon and output shows very early with other configs.
+> Kernel boots fine with defconfig and other smaller configs.
+> 
+> If I enable KASAN_OUTLINE and CC_OPTIMIZE_FOR_SIZE, then this config
+> also boots fine. Both of these options significantly reduce kernel
+> size. However, I can also boot the kernel without these 2 configs, if
+> I disable a whole lot of subsystem configs. This makes me think that
+> there is an issue related to kernel size somewhere in
+> qemu/bootloader/kernel bootstrap code.
+> Does it make sense to you? Can somebody reproduce what I am seeing? >
+
+I did not bring any answer to your question, but at least you know I'm 
+working on it, I'll keep you posted.
+
+Thanks for taking the time to setup syzkaller.
+
+Alex
+
+> Thanks
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
