@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A2531CB4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251F531CB52
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbhBPNiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 08:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        id S230166AbhBPNjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 08:39:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhBPNhm (ORCPT
+        with ESMTP id S229796AbhBPNjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 08:37:42 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8B0C06178A;
-        Tue, 16 Feb 2021 05:36:26 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id x4so14519158wmi.3;
-        Tue, 16 Feb 2021 05:36:26 -0800 (PST)
+        Tue, 16 Feb 2021 08:39:24 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBD3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 05:38:43 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id q10so12132300edt.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 05:38:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jiX7X0M+t1Zm8HAFufsMGCFO60ftU2nIQxPg0v/LgAc=;
-        b=dh0TVcFk5TipZh+je3Yb1saPAbf3bXpgLvSW/RGqK4JrroyTmw3zMbAj8I1BJWA5Zv
-         HlzbFBGp7ACXr+lRXPasomLMIToJAhfnI+kue64Cy9rD8sDBKzyYiuRVmpOTioh54Dcp
-         IF86skOMDZ/UyF+ZIPvW1EyaIryJDnYqpv9ncNoWP+OTZcXZfgcjXhHooAqFOdI/7Unu
-         SwFBRPH5ayZ8frAy9JduLtvCioBYlaoh88vcTdf5kMOPYUNHpufTJwFcQ9RQEnecELu7
-         TDGD8HlLds6n7vQElDnHmO57dnKMQfJomo8Hp1x8O08SQkV7fXH252XjaZ2jU3dzOUNt
-         wCBw==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WVdO5Suny8ndHlIrRpoBrmqIPx4CWmlNbuYupKr2Cqc=;
+        b=mx72lufRdfc46M4ag+yiDlWAEO4kn8+gbsl3jWz0aFqVijhPbgaHfBEQpRr24bWoo3
+         Kzcg5/Qv0MqwuyCOWfV1DbKnZu075rzPranwK6vD4iech5drvH3efYd5mAeEH9goRzIa
+         WVW3u5QveHXn/Yw7x4byE6AG/TaLuDBAt4Gb8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jiX7X0M+t1Zm8HAFufsMGCFO60ftU2nIQxPg0v/LgAc=;
-        b=iUJM4m6YEX883+PGuYkh7BKUJKJmH9R4h1URNn6+FFYr9OXR9L1agapwGFvoCkhaL2
-         nS8VzcDsrVO4bla4Qk217RpYoHCkntjrpgn2SL/mFC/Nck4QkQKcVAemJhIIfsftkI5R
-         oKVgLo05ZgLuvklVFivSN64HoZrCsweKIr4YYboHh+zBbNo9U8E1xMBwTZp00piUDQCf
-         acXSuiQWehBADK1dkKf7UfiDSJivtDVT/Wkr9k2V1xfRQEjcjddX+Wmh8IF0GhJA0IDz
-         splJcWr0RmDqtV08gIaxMMiKiw+fzejD1x+0rdrzB2gHdgeyIG0iNkpchjeJkTQvKn/l
-         5vzw==
-X-Gm-Message-State: AOAM531ZelyhVTXSdR9xHiC1KMfFyToxEqjW8q0/eQ5bpgh4VWwVa3Ff
-        mOfl0Z/d+8tC6q80YAoSsTY=
-X-Google-Smtp-Source: ABdhPJxvZl5N1RQSXEvtJw2P035XT2xAYee21rE7WC7JbYEQs20JATwlQuPzFedpn1HJ1rgx2XNaZQ==
-X-Received: by 2002:a05:600c:414b:: with SMTP id h11mr3373384wmm.125.1613482585467;
-        Tue, 16 Feb 2021 05:36:25 -0800 (PST)
-Received: from localhost.localdomain (67.red-83-54-30.dynamicip.rima-tde.net. [83.54.30.67])
-        by smtp.gmail.com with ESMTPSA id l7sm28032530wrn.11.2021.02.16.05.36.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Feb 2021 05:36:25 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     sboyd@kernel.org
-Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
-        gregkh@linuxfoundation.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        devel@driverdev.osuosl.org, neil@brown.name,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 6/6] MAINTAINERS: add MT7621 CLOCK maintainer
-Date:   Tue, 16 Feb 2021 14:36:17 +0100
-Message-Id: <20210216133617.22333-7-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210216133617.22333-1-sergio.paracuellos@gmail.com>
-References: <20210216133617.22333-1-sergio.paracuellos@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WVdO5Suny8ndHlIrRpoBrmqIPx4CWmlNbuYupKr2Cqc=;
+        b=j9kUYLla4kfLPokBTSaJ9U7Kf68Hr+3eX1Wv0y039a0oXXVsfE8AHfuQh1/cyG1iQM
+         fCsNeliSu5ltMWyt1W9mNOnFRq7erlIPqfNWGxfxZSpC2iGjno2jk3/mlSRWd2w3DTno
+         h0NPc2BmAv0WkP9xeIkkB35Sw/CGyBH8XCnkSQtNtvcxlWbH76g/Uep5g7bRs8/EiedM
+         M0G9JNU+teOhAWDQAMlXofNG1yaxqDhxrije+2O9XYYjxaYfC3Cc6oYNFLqZ7kB8/OtU
+         O6fhFyozLW5QDI3i6F5uY24cz9I4EGTgLk8U4LFS5QcHIYPDbhq4E1iNPMqXvJZ1Ucqe
+         0Vsg==
+X-Gm-Message-State: AOAM530V6ZqRZOXjUIvEbQSeXcikgeVB5U+bF998tIBTuvZHopa2HBUy
+        wTZYa4GlOGVrsiV7tm/vTSt4YQ==
+X-Google-Smtp-Source: ABdhPJzpPnxzHatNnDsBqyQ+8F5czdeOrvKXZriPXHaF1qmKcbRlVfIHYJBPmwi07+8O5GcHXWnEEw==
+X-Received: by 2002:a50:fe02:: with SMTP id f2mr938391edt.173.1613482721746;
+        Tue, 16 Feb 2021 05:38:41 -0800 (PST)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id i21sm13620839edy.9.2021.02.16.05.38.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 05:38:41 -0800 (PST)
+Date:   Tue, 16 Feb 2021 13:38:40 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, felipe.franciosi@nutanix.com
+Subject: Re: [RFC PATCH] mm, oom: introduce vm.sacrifice_hugepage_on_oom
+Message-ID: <YCvK4EPg30ocI8gP@chrisdown.name>
+References: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding myself as maintainer for mt7621 clock driver.
+Hi Eiichi,
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+I agree with Michal's points, and I think there are also some other design 
+questions which don't quite make sense to me. Perhaps you can clear them up?  
+:-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 809a68af5efd..be5ada6b4309 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11288,6 +11288,12 @@ L:	linux-wireless@vger.kernel.org
- S:	Maintained
- F:	drivers/net/wireless/mediatek/mt7601u/
- 
-+MEDIATEK MT7621 CLOCK DRIVER
-+M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-+F:	drivers/clk/ralink/clk-mt7621.c
-+
- MEDIATEK MT7621/28/88 I2C DRIVER
- M:	Stefan Roese <sr@denx.de>
- L:	linux-i2c@vger.kernel.org
--- 
-2.25.1
+Eiichi Tsukata writes:
+>diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>index 4bdb58ab14cb..e2d57200fd00 100644
+>--- a/mm/hugetlb.c
+>+++ b/mm/hugetlb.c
+>@@ -1726,8 +1726,8 @@ static int alloc_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
+>  * balanced over allowed nodes.
+>  * Called with hugetlb_lock locked.
+>  */
+>-static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
+>-							 bool acct_surplus)
+>+int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
+>+			bool acct_surplus)
+> {
+> 	int nr_nodes, node;
+> 	int ret = 0;
 
+The immediate red flag to me is that we're investing further mm knowledge into 
+hugetlb. For the vast majority of intents and purposes, hugetlb exists outside 
+of the typical memory management lifecycle, and historic behaviour has been to 
+treat a separate reserve that we don't touch. We expect that hugetlb is a 
+reserve which is by and large explicitly managed by the system administrator, 
+not by us, and this seems to violate that.
+
+Shoehorning in shrink-on-OOM support to it seems a little suspicious to me, 
+because we already have a modernised system for huge pages that handles not 
+only this, but many other memory management situations: THP. THP not only has 
+support for this particular case, but so many other features which are 
+necessary to coherently manage it as part of the mm lifecycle. For that reason, 
+I'm not convinced that those composes to a sensible interface.
+
+As some example questions which appear unresolved to me: if hugetlb pages are 
+lost, what mechanisms will we provide to tell automation or the system 
+administrator what to do in that scenario? How should the interface for 
+resolving hugepage starvation due to repeated OOMs look? By what metrics will 
+you decide if releasing the hugepage is worse for the system than selecting a 
+victim for OOM? Why can't the system use the existing THP mechanisms to resolve 
+this ahead of time?
+
+Thanks,
+
+Chris
