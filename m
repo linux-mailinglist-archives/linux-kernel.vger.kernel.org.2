@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3042E31CB8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7090531CB8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhBPOFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:05:55 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:51009 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhBPOFv (ORCPT
+        id S230010AbhBPOIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:08:36 -0500
+Received: from angie.orcam.me.uk ([157.25.102.26]:34258 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhBPOIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:05:51 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lC0yT-0000mq-G8; Tue, 16 Feb 2021 14:05:09 +0000
-Subject: NACK: [PATCH][next] tracing/tools: fix spelling mistake "functionph"
- -> "graph"
-From:   Colin Ian King <colin.king@canonical.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Viktor Rosendahl <Viktor.Rosendahl@bmw.de>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210216140112.159926-1-colin.king@canonical.com>
-Message-ID: <87d92a26-ae1c-e76b-76b1-315e4cf759fc@canonical.com>
-Date:   Tue, 16 Feb 2021 14:05:09 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 16 Feb 2021 09:08:24 -0500
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id C062592009D; Tue, 16 Feb 2021 15:07:42 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id B90AE92009C;
+        Tue, 16 Feb 2021 15:07:42 +0100 (CET)
+Date:   Tue, 16 Feb 2021 15:07:42 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] MIPS: Make check condition for SDBBP consistent with
+ EJTAG spec
+In-Reply-To: <20210209140018.GA13043@alpha.franken.de>
+Message-ID: <alpine.DEB.2.21.2102161506160.1521@angie.orcam.me.uk>
+References: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn> <20210209121124.GA11134@alpha.franken.de> <03fcfc00-acdd-a949-046c-3002195d6024@loongson.cn> <20210209140018.GA13043@alpha.franken.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210216140112.159926-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/02/2021 14:01, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There is a spelling mistake in the -g help option, I believe
-> it should be "graph". Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  tools/tracing/latency/latency-collector.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/tracing/latency/latency-collector.c b/tools/tracing/latency/latency-collector.c
-> index 57b20802e71b..8d28234cd6fb 100644
-> --- a/tools/tracing/latency/latency-collector.c
-> +++ b/tools/tracing/latency/latency-collector.c
-> @@ -1711,7 +1711,7 @@ static void show_usage(void)
->  "\t\t\tbeginning, end, and backtrace.\n\n"
->  
->  "-g, --graph\t\tEnable the display-graph option in trace_option. This\n"
-> -"\t\t\toption causes ftrace to show the functionph of how\n"
-> +"\t\t\toption causes ftrace to show the graph of how\n"
->  "\t\t\tfunctions are calling other functions.\n\n"
->  
->  "-c, --policy POL\tRun the program with scheduling policy POL. POL can be\n"
-> 
+On Tue, 9 Feb 2021, Thomas Bogendoerfer wrote:
 
-Found another spelling mistake, sending a V2 soon.
+> > > > diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> > > > index bcce32a..743d759 100644
+> > > > --- a/arch/mips/kernel/genex.S
+> > > > +++ b/arch/mips/kernel/genex.S
+> > > > @@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+> > > >   	MTC0	k0, CP0_DESAVE
+> > > >   	mfc0	k0, CP0_DEBUG
+> > > > -	sll	k0, k0, 30	# Check for SDBBP.
+> > > > -	bgez	k0, ejtag_return
+> > > > +	andi	k0, k0, MIPS_DEBUG_DBP	# Check for SDBBP.
+> > > > +	beqz	k0, ejtag_return
+> > > IMHO both implementations are doing the same thing.
+> > 
+> > When I read the original code, it looks a little confusing
+> > at first glance, the initial aim of this patch is to make the code
+> > more readable and easier to understand.
+> 
+> which your version is, but the description sounds like there is a semantic
+> change somewhere (at least to me). So with a little bit rewording I'm
+> fine with applying your patch.
+
+ Why is it confusing?  This is assembly and you're supposed to understand 
+this stuff when looking into it.  Don't fix what ain't broke!
+
+  Maciej
