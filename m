@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E493231CA31
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D1B31CA35
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhBPLwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:52:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42599 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230257AbhBPLuD (ORCPT
+        id S230204AbhBPLxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:53:34 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:57416 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230355AbhBPLvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:50:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613476117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=coH4C7xdrmgBE3/XsHGmHJNC7rb47IS/kJchI+NLx3A=;
-        b=f0h4L9whb9+3Km2kw3JhRy6CWrPQP+7i17e7XYH8vh3Io7fUAjgNClD+Zv4JhABwBSZq33
-        BgTI4iiP73jtKA0rDyzRMxBnrNOoXt8Z0yZxUpD3WCYVwxoPi5uOWZlGrd7f4PmRe6Pn1i
-        e4duNyQl1zpyHhLy5NnXpDrmaL5sB6Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-jKcmJhrLMwullgSDWVKkPg-1; Tue, 16 Feb 2021 06:48:35 -0500
-X-MC-Unique: jKcmJhrLMwullgSDWVKkPg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B44BE801977;
-        Tue, 16 Feb 2021 11:48:32 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EDB605C1B4;
-        Tue, 16 Feb 2021 11:48:24 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210216103215.GB27714@lst.de>
-References: <20210216103215.GB27714@lst.de> <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk> <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
-To:     Christoph Hellwig <hch@lst.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
+        Tue, 16 Feb 2021 06:51:16 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 69A331C0B81; Tue, 16 Feb 2021 12:50:31 +0100 (CET)
+Date:   Tue, 16 Feb 2021 12:50:29 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 043/104] kasan: add explicit preconditions to
+ kasan_report()
+Message-ID: <20210216115029.GA25795@amd>
+References: <20210215152719.459796636@linuxfoundation.org>
+ <20210215152720.867409732@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1429174.1613476104.1@warthog.procyon.org.uk>
-Date:   Tue, 16 Feb 2021 11:48:24 +0000
-Message-ID: <1429175.1613476104@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
+Content-Disposition: inline
+In-Reply-To: <20210215152720.867409732@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> wrote:
 
-> On Mon, Feb 15, 2021 at 03:44:52PM +0000, David Howells wrote:
-> > Provide a function, readahead_expand(), that expands the set of pages
-> > specified by a readahead_control object to encompass a revised area with a
-> > proposed size and length.
-> ...
-> So looking at linux-next this seems to have a user, but that user is
-> dead wood given that nothing implements ->expand_readahead.
+--gKMricLos+KVdGMg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Interesting question.  Code on my fscache-iter branch does implement this, but
-I was asked to split the patchset up, so that's not in this subset.
+Hi!
 
-> Looking at the code structure I think netfs_readahead and
-> netfs_rreq_expand is a complete mess and needs to be turned upside
-> down, that is instead of calling back from netfs_readahead to the
-> calling file system, split it into a few helpers called by the
-> caller.
-> 
-> But even after this can't we just expose the cache granule boundary
-> to the VM so that the read-ahead request gets setup correctly from
-> the very beginning?
+> From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>=20
+> [ Upstream commit 49c6631d3b4f61a7b5bb0453a885a12bfa06ffd8 ]
+>=20
+> Patch series "kasan: Fix metadata detection for KASAN_HW_TAGS", v5.
+>=20
+> With the introduction of KASAN_HW_TAGS, kasan_report() currently assumes
+> that every location in memory has valid metadata associated.  This is
+> due to the fact that addr_has_metadata() returns always true.
+>=20
+> As a consequence of this, an invalid address (e.g.  NULL pointer
+> address) passed to kasan_report() when KASAN_HW_TAGS is enabled, leads
+> to a kernel panic.
+=2E..
+> This patch (of 2):
+>=20
+> With the introduction of KASAN_HW_TAGS, kasan_report() accesses the
+> metadata only when addr_has_metadata() succeeds.
+>=20
+> Add a comment to make sure that the preconditions to the function are
+> explicitly clarified.
 
-You need to argue this one with Willy.  In my opinion, the VM should ask the
-filesystem and the expansion be done before ->readahead() is called.  Willy
-disagrees, however.
+As the other patch from the series is not applied, I don't believe we
+need this in stable. Changelog does not make any sense with just
+comment change cherry-picked...
 
-David
+Best regards,
+								Pavel
 
+
+> +++ b/include/linux/kasan.h
+> @@ -196,6 +196,13 @@ void kasan_init_tags(void);
+> =20
+>  void *kasan_reset_tag(const void *addr);
+> =20
+> +/**
+> + * kasan_report - print a report about a bad memory access detected by K=
+ASAN
+> + * @addr: address of the bad access
+> + * @size: size of the bad access
+> + * @is_write: whether the bad access is a write or a read
+> + * @ip: instruction pointer for the accessibility check or the bad acces=
+s itself
+> + */
+>  bool kasan_report(unsigned long addr, size_t size,
+>  		bool is_write, unsigned long ip);
+> =20
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--gKMricLos+KVdGMg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmArsYUACgkQMOfwapXb+vL16QCgwGjk5bVNHx2wt4tQeadsawcK
+dgkAnjv+tCzrSGev/VKMFDMwEZG4J8LY
+=I9ka
+-----END PGP SIGNATURE-----
+
+--gKMricLos+KVdGMg--
