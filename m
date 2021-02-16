@@ -2,176 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E0A31C816
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACEBD31C81D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhBPJ35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:29:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhBPJ3o (ORCPT
+        id S230019AbhBPJb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:31:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24174 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229917AbhBPJbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:29:44 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE486C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:29:03 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id g6so12072659wrs.11
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:29:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=EpB/Np1X9XOdtLzOw+R6Gr/oBQo0HGKnRY51GUTJaLU=;
-        b=IkeI/n7xg2njxgWD4VskGpIt6Z5rmgOJCGVPP/19cJtSg/2ztKhL/4bo2XVnY1/KAB
-         EEtU4yyItJDWK/Mhsn8NzKA+MRMfE27e2oooo/cdTetKQ98qJvaB8E/EaPs8whHK0i3J
-         gQDmltQ36sYaI7galw/Kfy0wadv80bncdqsic=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=EpB/Np1X9XOdtLzOw+R6Gr/oBQo0HGKnRY51GUTJaLU=;
-        b=G1izAqrxE7Y3IHdmRbOlpHbX6nYyIeEigLOjnY1DgeiLMmf8jCnT8r0b6qBNZRtN31
-         qe+O2hC6FubwSwY7S6WZlaByTEPqVLtJ/ddK3cVsNWWyibwcWoV5Q7fVyEYUtGnfTPMh
-         88LRp1IojlcFpvFBt8TUSgHLAPnrO+RS8KMQIuRwQh9Kr78q8KgZL6p4DpUaVHsJEdAi
-         dG/8eGI3KhMTrb02Sa4An4IlODdB5TeFih5G79bmygx5DowGWRtsVdmcIg5SR1n4iChf
-         +VdNqnluQd7ZLUOZt8KhR8TshDdcXnpsiflW4VzWi9STxrw41BnV3MGwj5Rmi6bShlWL
-         Q+mg==
-X-Gm-Message-State: AOAM5319ylkGYsKoiXFVKrBkTMkKuxDWV581sxv+q0GTZpRHrsecZG2f
-        d6tr0j/tLZofU0alo4GAlRa1pQ==
-X-Google-Smtp-Source: ABdhPJzWuLNr4nN/qqkIWPK72bvkvGqCaQE2HBT6FhW9qzRPuUcQmk4I368DVqwIPx2qsdN2wg3iVQ==
-X-Received: by 2002:a5d:6a0b:: with SMTP id m11mr22719738wru.414.1613467742586;
-        Tue, 16 Feb 2021 01:29:02 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b15sm25978776wrr.47.2021.02.16.01.29.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 01:29:02 -0800 (PST)
-Date:   Tue, 16 Feb 2021 10:29:00 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        apw@canonical.com, joe@perches.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] mutex: nuke mutex_trylock_recursive
-Message-ID: <YCuQXAllh91JEZ+Y@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        apw@canonical.com, joe@perches.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20210216082146.69286-1-christian.koenig@amd.com>
+        Tue, 16 Feb 2021 04:31:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613467787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WQwBpcCMDRihoSLkY0nXiJYZq45llCzJSk2sVrYmZu4=;
+        b=bzNcbqdRTJB1zWZm7ipwzLN5tMmL5b2XO/cGCS9f207+RnFTN896Z35KoVT+ZtwP2ZxlMz
+        cuDr5LPw2GPYe4NTX/eV5AVUSfZSo7fJj0sYawD2NZvk/l6mLCV6AIg0Kt119hf8w07ZJ+
+        ZdyQS96rNxMyjIcPt21Nkd1KdNOsuAI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-46-Zx6-8XXBP9WnKXi9yDelKg-1; Tue, 16 Feb 2021 04:29:43 -0500
+X-MC-Unique: Zx6-8XXBP9WnKXi9yDelKg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BA5A100A8E8;
+        Tue, 16 Feb 2021 09:29:40 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 709A110023AB;
+        Tue, 16 Feb 2021 09:29:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210216084230.GA23669@lst.de>
+References: <20210216084230.GA23669@lst.de> <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk> <1376938.1613429183@warthog.procyon.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        Jeff Layton <jlayton@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-cachefs@redhat.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-afs@lists.infradead.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 34/33] netfs: Use in_interrupt() not in_softirq()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210216082146.69286-1-christian.koenig@amd.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1419964.1613467771.1@warthog.procyon.org.uk>
+Date:   Tue, 16 Feb 2021 09:29:31 +0000
+Message-ID: <1419965.1613467771@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 09:21:46AM +0100, Christian König wrote:
-> The last user went away in the 5.11 cycle.
+Christoph Hellwig <hch@lst.de> wrote:
+
+> On Mon, Feb 15, 2021 at 10:46:23PM +0000, David Howells wrote:
+> > The in_softirq() in netfs_rreq_terminated() works fine for the cache being
+> > on a normal disk, as the completion handlers may get called in softirq
+> > context, but for an NVMe drive, the completion handler may get called in
+> > IRQ context.
+> > 
+> > Fix to use in_interrupt() instead of in_softirq() throughout the read
+> > helpers, particularly when deciding whether to punt code that might sleep
+> > off to a worker thread.
 > 
-> Signed-off-by: Christian König <christian.koenig@amd.com>
+> We must not use either check, as they all are unreliable especially
+> for PREEMPT-RT.
 
-Nice.
+Is there a better way to do it?  The intent is to process the assessment phase
+in the calling thread's context if possible rather than bumping over to a
+worker thread.  For synchronous I/O, for example, that's done in the caller's
+thread.  Maybe that's the answer - if it's known to be asynchronous, I have to
+punt, but otherwise don't have to.
 
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+David
 
-I think would be good to still stuff this into 5.12 before someone
-resurrects this zombie.
--Daniel
-
-
-> ---
->  include/linux/mutex.h  | 25 -------------------------
->  kernel/locking/mutex.c | 10 ----------
->  scripts/checkpatch.pl  |  6 ------
->  3 files changed, 41 deletions(-)
-> 
-> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-> index dcd185cbfe79..0cd631a19727 100644
-> --- a/include/linux/mutex.h
-> +++ b/include/linux/mutex.h
-> @@ -199,29 +199,4 @@ extern void mutex_unlock(struct mutex *lock);
->  
->  extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
->  
-> -/*
-> - * These values are chosen such that FAIL and SUCCESS match the
-> - * values of the regular mutex_trylock().
-> - */
-> -enum mutex_trylock_recursive_enum {
-> -	MUTEX_TRYLOCK_FAILED    = 0,
-> -	MUTEX_TRYLOCK_SUCCESS   = 1,
-> -	MUTEX_TRYLOCK_RECURSIVE,
-> -};
-> -
-> -/**
-> - * mutex_trylock_recursive - trylock variant that allows recursive locking
-> - * @lock: mutex to be locked
-> - *
-> - * This function should not be used, _ever_. It is purely for hysterical GEM
-> - * raisins, and once those are gone this will be removed.
-> - *
-> - * Returns:
-> - *  - MUTEX_TRYLOCK_FAILED    - trylock failed,
-> - *  - MUTEX_TRYLOCK_SUCCESS   - lock acquired,
-> - *  - MUTEX_TRYLOCK_RECURSIVE - we already owned the lock.
-> - */
-> -extern /* __deprecated */ __must_check enum mutex_trylock_recursive_enum
-> -mutex_trylock_recursive(struct mutex *lock);
-> -
->  #endif /* __LINUX_MUTEX_H */
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index 5352ce50a97e..adb935090768 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -86,16 +86,6 @@ bool mutex_is_locked(struct mutex *lock)
->  }
->  EXPORT_SYMBOL(mutex_is_locked);
->  
-> -__must_check enum mutex_trylock_recursive_enum
-> -mutex_trylock_recursive(struct mutex *lock)
-> -{
-> -	if (unlikely(__mutex_owner(lock) == current))
-> -		return MUTEX_TRYLOCK_RECURSIVE;
-> -
-> -	return mutex_trylock(lock);
-> -}
-> -EXPORT_SYMBOL(mutex_trylock_recursive);
-> -
->  static inline unsigned long __owner_flags(unsigned long owner)
->  {
->  	return owner & MUTEX_FLAGS;
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 92e888ed939f..15f7f4fa6b99 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -7069,12 +7069,6 @@ sub process {
->  			}
->  		}
->  
-> -# check for mutex_trylock_recursive usage
-> -		if ($line =~ /mutex_trylock_recursive/) {
-> -			ERROR("LOCKING",
-> -			      "recursive locking is bad, do not use this ever.\n" . $herecurr);
-> -		}
-> -
->  # check for lockdep_set_novalidate_class
->  		if ($line =~ /^.\s*lockdep_set_novalidate_class\s*\(/ ||
->  		    $line =~ /__lockdep_no_validate__\s*\)/ ) {
-> -- 
-> 2.25.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
