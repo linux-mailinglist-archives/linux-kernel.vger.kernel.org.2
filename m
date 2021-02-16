@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC1F31D2D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7485131D2DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 23:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbhBPWuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 17:50:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbhBPWt5 (ORCPT
+        id S231307AbhBPWvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 17:51:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60312 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231247AbhBPWvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 17:49:57 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B77C061574;
-        Tue, 16 Feb 2021 14:49:17 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id v9so9837802edw.8;
-        Tue, 16 Feb 2021 14:49:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BAnh4iUoX88zAls0LT8rHlfsg/ZfLJmdl8uNzpmodVQ=;
-        b=ZZiU8vRwuF2NrEEHEn9FQR9SKRZ2MNLAuFTNHsrLgONF+BOJi0BzvNMzSU1VQsNwzp
-         o8cG14GJkzWGfIqSbjS9tNMBDMMmIWBhxq83ANfWwH1N3U+7Z5UYmvvGl4OwqL3Hjjc+
-         Uaq65eh55t0cNchGf6lPZuYKBJ7pJiG65ZTqIxH2xw623ih/cH0nQ3xjgRt253sURE9H
-         fCi7oAaiHpC/cqnTOVVtxivL92ivX3WpeF7gPd56JDXuukPuzfYCeEUZ8nMkzM51Pik7
-         hjzZQbShJQ4eOAn3012FqQtzctQUS8AHdrLGd3abviFMyPaVhtxhj6Pzesc2uI5X8fNA
-         XTEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BAnh4iUoX88zAls0LT8rHlfsg/ZfLJmdl8uNzpmodVQ=;
-        b=YurCu1/Aprp5x6PEHNYpihBNJvWe5pI3rhrzGQGgFonIpOz2igUzCaiJOx0sc4UyU7
-         JtrTWipL+GcHQMSI0ufEOdBS9X5rfH+fT5HzYWknxOIPcZpsxoHxGvs/llm9mp5EACXX
-         bHhr2fSEfT5V2z6uW8p4dF26YMwrGI8XRJsZxQzjgy7J8I1YwXQ5WWtLhQtPgYbd2dt0
-         s4Aa2rJTUhUnDP4cTqaWEuC711FAlregVeYzNYe9EixckdyHmaP8781SbRC3bns82n/Y
-         8cZZfrqVG2GvaOhV9T1oYEPi0Mh61F4pHkbGR+2bir/feMsv7/ZMPNjVAislJpPZ/5P9
-         Hkow==
-X-Gm-Message-State: AOAM533bXe/F4UcNS412VkLjAOMnAGMBCJdX164WcX7HwY65qHPEeR1q
-        RPSZxSxcep2Vk5+CSul37DE=
-X-Google-Smtp-Source: ABdhPJxmuC+UbX6bz7xx+6H8nLZGVMcJc462H781ogGe7fCZ6OxqM5YemjZVP6KJbRsKdvFTCfsUPw==
-X-Received: by 2002:a05:6402:27cf:: with SMTP id c15mr23086646ede.179.1613515756058;
-        Tue, 16 Feb 2021 14:49:16 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id t19sm147117ejc.62.2021.02.16.14.49.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 14:49:15 -0800 (PST)
-Date:   Wed, 17 Feb 2021 00:49:14 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org,
-        Siva Reddy Kallam <siva.kallam@broadcom.com>,
-        Prashant Sreedharan <prashant@broadcom.com>,
-        Michael Chan <mchan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM ETHERNET PHY DRIVERS" 
-        <bcm-kernel-feedback-list@broadcom.com>
-Subject: Re: [PATCH] tg3: Remove unused PHY_BRCM flags
-Message-ID: <20210216224914.porzrvn34ipxg2qj@skbuf>
-References: <20210216190837.2555691-1-f.fainelli@gmail.com>
+        Tue, 16 Feb 2021 17:51:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613515784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TatDQ+EGIrCOoR5SAERr+J/vDI7pt6Z6c0khRs5KElQ=;
+        b=LYXIJEPtKOPY0NSJgVXVs/N3qPUoOyXm1pE4U1CAt4LB+imiVhoSgxR5W+HnhFe8ORp8gK
+        3VySS3/ej9xnU4xQQae+BAYuhhvRTilJOcd8XTrfvqA67WiYn288OrxfmYaEpjNxoRcY+Y
+        cIP99N32V4dplBRDErXX2nA8OICGTMo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-2HtE5Td1M_Cd317-Aw3xtw-1; Tue, 16 Feb 2021 17:49:42 -0500
+X-MC-Unique: 2HtE5Td1M_Cd317-Aw3xtw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE77D1E563;
+        Tue, 16 Feb 2021 22:49:41 +0000 (UTC)
+Received: from gimli.home (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D274960C5F;
+        Tue, 16 Feb 2021 22:49:34 +0000 (UTC)
+Subject: [PATCH v2] vfio/type1: Use follow_pte()
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     alex.williamson@redhat.com
+Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com, jgg@nvidia.com,
+        peterx@redhat.com
+Date:   Tue, 16 Feb 2021 15:49:34 -0700
+Message-ID: <161351571186.15573.5602248562129684350.stgit@gimli.home>
+User-Agent: StGit/0.21-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210216190837.2555691-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:08:37AM -0800, Florian Fainelli wrote:
-> The tg3 driver tried to communicate towards the PHY driver whether it
-> wanted RGMII in-band signaling enabled or disabled however there is
-> nothing that looks at those flags in drivers/net/phy/broadcom.c so this
-> does do not anything.
-> 
-> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
+follow_pfn() doesn't make sure that we're using the correct page
+protections, get the pte with follow_pte() so that we can test
+protections and get the pfn from the pte.
 
-FWIW:
+Fixes: 5cbf3264bc71 ("vfio/type1: Fix VA->PA translation for PFNMAP VMAs in vaddr_get_pfn()")
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+---
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+v2: Update to current follow_pte() API, add Reviews
+
+ drivers/vfio/vfio_iommu_type1.c |   14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index ec9fd95a138b..ae4fd2295c95 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -463,9 +463,11 @@ static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
+ 			    unsigned long vaddr, unsigned long *pfn,
+ 			    bool write_fault)
+ {
++	pte_t *ptep;
++	spinlock_t *ptl;
+ 	int ret;
+ 
+-	ret = follow_pfn(vma, vaddr, pfn);
++	ret = follow_pte(vma->vm_mm, vaddr, &ptep, &ptl);
+ 	if (ret) {
+ 		bool unlocked = false;
+ 
+@@ -479,9 +481,17 @@ static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
+ 		if (ret)
+ 			return ret;
+ 
+-		ret = follow_pfn(vma, vaddr, pfn);
++		ret = follow_pte(vma->vm_mm, vaddr, &ptep, &ptl);
++		if (ret)
++			return ret;
+ 	}
+ 
++	if (write_fault && !pte_write(*ptep))
++		ret = -EFAULT;
++	else
++		*pfn = pte_pfn(*ptep);
++
++	pte_unmap_unlock(ptep, ptl);
+ 	return ret;
+ }
+ 
+
