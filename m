@@ -2,85 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640B731CF1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA4631CF22
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbhBPRco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:32:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34874 "EHLO mail.kernel.org"
+        id S230234AbhBPRft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:35:49 -0500
+Received: from foss.arm.com ([217.140.110.172]:39850 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231216AbhBPRb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:31:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C504D64DA1;
-        Tue, 16 Feb 2021 17:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613496677;
-        bh=mXnJDdFhDKnuB4BfSnRg55qq72NgQAWh/t0zlWZx1ac=;
-        h=Date:From:To:Cc:Subject:From;
-        b=drZ2I17AtuopvjlB/V3/59+15qqq0Fx5jdgKbl/5GigP2LPzOJc1m3ojlytCR8Gfi
-         lkfbPmltxTG7V8pADiWoPwoMrxKyocNpF5vBvz4AePysb7acjSyXwQWb0duYJdbw/C
-         1EACbnbvix33Il1O62ICyquCoPmhapOrhIgPAcCmhdaUJh/wY9nqHrF7Mkiy9WNj8m
-         twdc2UEE6l0FZfFLad292feM5Htv70EoKCeRcpEgkvzYILbYQNiH+w5IaxA0BvoKjG
-         ZHMvnMlMTLA5VLbXn29PJMGVi0Baq0xejVYPwAmUm1aOTPv3YKo1GFbRjTRRUE+C75
-         6jHbe1WXaZ2QQ==
-Date:   Tue, 16 Feb 2021 09:31:15 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Victor Hsieh <victorhsieh@google.com>
-Subject: [GIT PULL] fsverity updates for 5.12
-Message-ID: <YCwBY/FsxEsnI0M/@sol.localdomain>
+        id S230017AbhBPRfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:35:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A5B9101E;
+        Tue, 16 Feb 2021 09:35:01 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0CEFB3F73B;
+        Tue, 16 Feb 2021 09:34:59 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH] sched: Fix affine_move_task()
+In-Reply-To: <YCfLHxpL+L0BYEyG@hirez.programming.kicks-ass.net>
+References: <YCfLHxpL+L0BYEyG@hirez.programming.kicks-ass.net>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Tue, 16 Feb 2021 17:34:55 +0000
+Message-ID: <jhjv9arsyps.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
+On 13/02/21 13:50, Peter Zijlstra wrote:
+> When affine_move_task(p) is called on a running task @p, which is not
+> otherwise already changing affinity, we'll first set
+> p->migration_pending and then do:
+>
+> 	 stop_one_cpu(cpu_of_rq(rq), migration_cpu_stop, &arg);
+>
+> This then gets us to migration_cpu_stop() running on the CPU that was
+> previously running our victim task @p.
+>
+> If we find that our task is no longer on that runqueue (this can
+> happen because of a concurrent migration due to load-balance etc.),
+> then we'll end up at the:
+>
+> 	} else if (dest_cpu < 1 || pending) {
+>
+> branch. Which we'll take because we set pending earlier. Here we first
+> check if the task @p has already satisfied the affinity constraints,
+> if so we bail early [A]. Otherwise we'll reissue migration_cpu_stop()
+> onto the CPU that is now hosting our task @p:
+>
+> 	stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+> 			    &pending->arg, &pending->stop_work);
+>
+> Except, we've never initialized pending->arg, which will be all 0s.
+>
+> This then results in running migration_cpu_stop() on the next CPU with
+> arg->p == NULL, which gives the by now obvious result of fireworks.
+>
+> The cure is to change affine_move_task() to always use pending->arg,
+> furthermore we can use the exact same pattern as the
+> SCA_MIGRATE_ENABLE case, since we'll block on the pending->done
+> completion anyway, no point in adding yet another completion in
+> stop_one_cpu().
+>
+> This then gives a clear distinction between the two
+> migration_cpu_stop() use cases:
+>
+>   - sched_exec() / migrate_task_to() : arg->pending == NULL
+>   - affine_move_task() : arg->pending != NULL;
+>
+> And we can have it ignore p->migration_pending when !arg->pending. Any
+> stop work from sched_exec() / migrate_task_to() is in addition to stop
+> works from affine_move_task(), which will be sufficient to issue the
+> completion.
+>
+>
+> NOTES:
+>
+>  - I've not been able to reproduce this crash on any of my machines
+>    without first removing the early termination condition [A] above.
+>    Doing this is a functional NOP but obviously widens up the window.
+>
 
-  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
+FWIW although I mistakenly didn't model any distinction between arg &
+pending->arg, I did "hit" this path in TLA+ [1]
 
-are available in the Git repository at:
+>  - With the check [A] removed I can consistently hit the NULL deref
+>    and the below patch reliably cures it.
+>
+>  - The original reporter says that this patch cures the NULL deref
+>    but results in another problem, which I've not yet been able to
+>    make sense of and obviously have failed at reproduction as well :/
+>
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+Do you have a link to that? I fumbled around my mails but haven't seen
+anything.
 
-for you to fetch changes up to 07c99001312cbf90a357d4877a358f796eede65b:
+> Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-  fs-verity: support reading signature with ioctl (2021-02-07 14:51:19 -0800)
+The below looks good to me, I'll whack it into the TLA+ machine and see
+where it goes. While at it I need to mention I *have* been cleaning it up
+for upstreaming, but have hit [1] in the process...
 
-----------------------------------------------------------------
+[1]: http://lore.kernel.org/r/20210127193035.13789-1-valentin.schneider@arm.com
 
-Add an ioctl which allows reading fs-verity metadata from a file.
+> ---
+>  kernel/sched/core.c |   39 ++++++++++++++++++++++++++++-----------
+>  1 file changed, 28 insertions(+), 11 deletions(-)
+>
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1924,6 +1924,24 @@ static int migration_cpu_stop(void *data
+>  	rq_lock(rq, &rf);
+>  
+>  	pending = p->migration_pending;
+> +	if (pending && !arg->pending) {
+> +		/*
+> +		 * This happens from sched_exec() and migrate_task_to(),
+> +		 * neither of them care about pending and just want a task to
+> +		 * maybe move about.
+> +		 *
+> +		 * Even if there is a pending, we can ignore it, since
+> +		 * affine_move_task() will have it's own stop_work's in flight
+> +		 * which will manage the completion.
+> +		 *
+> +		 * Notably, pending doesn't need to match arg->pending. This can
+> +		 * happen when tripple concurrent affine_move_task() first sets
+                               ^^^^^^
+                           s/tripple/triple
 
-This is useful when a file with fs-verity enabled needs to be served
-somewhere, and the other end wants to do its own fs-verity compatible
-verification of the file.  See the commit messages for details.
-
-This new ioctl has been tested using new xfstests I've written for it.
-
-----------------------------------------------------------------
-Eric Biggers (6):
-      fs-verity: factor out fsverity_get_descriptor()
-      fs-verity: don't pass whole descriptor to fsverity_verify_signature()
-      fs-verity: add FS_IOC_READ_VERITY_METADATA ioctl
-      fs-verity: support reading Merkle tree with ioctl
-      fs-verity: support reading descriptor with ioctl
-      fs-verity: support reading signature with ioctl
-
- Documentation/filesystems/fsverity.rst |  76 +++++++++++++
- fs/ext4/ioctl.c                        |   7 ++
- fs/f2fs/file.c                         |  11 ++
- fs/verity/Makefile                     |   1 +
- fs/verity/fsverity_private.h           |  13 ++-
- fs/verity/open.c                       | 133 ++++++++++++++--------
- fs/verity/read_metadata.c              | 195 +++++++++++++++++++++++++++++++++
- fs/verity/signature.c                  |  20 +---
- include/linux/fsverity.h               |  12 ++
- include/uapi/linux/fsverity.h          |  14 +++
- 10 files changed, 417 insertions(+), 65 deletions(-)
- create mode 100644 fs/verity/read_metadata.c
+> +		 * pending, then clears pending and eventually sets another
+> +		 * pending.
+> +		 */
+> +		pending = NULL;
+> +	}
+> +
+>  	/*
+>  	 * If task_rq(p) != rq, it cannot be migrated here, because we're
+>  	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
