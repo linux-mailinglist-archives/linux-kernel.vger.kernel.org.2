@@ -2,120 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB46F31C56A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 03:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF5C31C538
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 03:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhBPCTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 21:19:15 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:62457 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhBPCRX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 21:17:23 -0500
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210216021638epoutp026109ebff6580ce8d58774b4f3c6dec89~kGMSBAyeF2745527455epoutp026
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 02:16:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210216021638epoutp026109ebff6580ce8d58774b4f3c6dec89~kGMSBAyeF2745527455epoutp026
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1613441798;
-        bh=n1KzZnGEZkk8b8SNO/1FHhADCqXsgE9FiTKZipApFhc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WBPOvNxeNG2Ucct3qvxxCMCUhTTsPE+GHcE423lCly4k+7IajZkwo8Xh4/cPAHxCR
-         +04ZFz/19x2I1ynwTHPccAnq8hIMn8xt6C2BtuWMv7ioJQKGxouOvAmOAHkSubzFMy
-         XoOw6ThBujYcFSMNtJ7RXc96FJA8fxl9WDczFlcA=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210216021638epcas1p24f11c0cdfdcfe6f313602eb68f3f9ccb~kGMRXPGh-0077800778epcas1p25;
-        Tue, 16 Feb 2021 02:16:38 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Dfl2r47Bzz4x9Q9; Tue, 16 Feb
-        2021 02:16:36 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8C.B5.10463.40B2B206; Tue, 16 Feb 2021 11:16:36 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210216021636epcas1p31748fea01f2c9638216f8d8b3b3b3712~kGMPdb02S2589325893epcas1p3N;
-        Tue, 16 Feb 2021 02:16:36 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210216021635epsmtrp24dfa0f30ee37de8d541400e8bcddfa95~kGMPcFs4K0160501605epsmtrp2o;
-        Tue, 16 Feb 2021 02:16:35 +0000 (GMT)
-X-AuditID: b6c32a38-49247a80000028df-20-602b2b04df95
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D5.AD.13470.30B2B206; Tue, 16 Feb 2021 11:16:35 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210216021635epsmtip2de714b89fad651bfbf8674dba59fccad~kGMPH8Fmu3084730847epsmtip2Z;
-        Tue, 16 Feb 2021 02:16:35 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
-        hch@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ming.lei@redhat.com, osandov@fb.com,
-        patchwork-bot@kernel.org, tj@kernel.org, tom.leiming@gmail.com
-Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-Subject: [PATCH v5 1/2] bio: limit bio max size
-Date:   Tue, 16 Feb 2021 11:00:32 +0900
-Message-Id: <20210216020032.19792-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210204010156.5105-1-nanich.lee@samsung.com>
+        id S229720AbhBPCBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 21:01:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229662AbhBPCBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 21:01:40 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4735C60238;
+        Tue, 16 Feb 2021 02:00:59 +0000 (UTC)
+Date:   Mon, 15 Feb 2021 21:00:57 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] ftrace: Do not reference symbols in sections without
+ size
+Message-ID: <20210215210057.4ceb6339@oasis.local.home>
+In-Reply-To: <20210215200639.67141685@oasis.local.home>
+References: <20210215164446.530f6311@gandalf.local.home>
+        <20210216000504.axm3k4xho47c6drz@treble>
+        <20210215200639.67141685@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02TbVBUVRjHO/cudxccnBuQnKEG1ls08r4XWDgqEE1ql5EmJphBdGpZ2TsL
-        tm/cu+uU0wdoBeVdZJRxgTRFqY3c5C3W2Ah2zEDRBtSUEYWigSCBYcNKjdrlwsS35/88v+f8
-        z3NeJLjfJBEkKdAZWU6n1FCEj6jLGRYTJYqIyJVdsgejRmsXQF+M1RCo5MhjDJnP2Qh07dhZ
-        DFVOfuyF/il/gKGlCR45RiPQyOVGAvXXmTFU396II+eD2yI00VyLoxsDi17ok19S0ZOWKwDN
-        //WTGA121+HI5vibSA1gas1zYsZuGRMz7Z+FMyNDJqbNWkYwvU2tYmb+29sEU91hBYyrLZg5
-        8l0FluGzV5OUzypVLCdldXl6VYFOnUztzlS8oZAnyOgoeitKpKQ6pZZNpnakZ0TtKtC4Z6Ok
-        B5UakzuVoeR5KiYlidObjKw0X88bkynWoNIYaJkhmldqeZNOHZ2n126jZbJYuZvM1eSPzE96
-        GXI+uPbNV6IisLMceEsgGQ/HKpxEOfCR+JHdAI5fLV0ViwAunDstFsRjAG01LmKt5VZVORAK
-        DnfBMi0ShAvAgZlOLw9FkJGw+tHoyloBZCcGD99x4h6Bk3YAZ79uwD2UPxkDndYyzBOLyFA4
-        1nVixcOX3A7vVziB4BcCf61qWeG93fmjzbdWmefhwKlJkSfG3Yy5s2HFAJLTEti6PLu62R3w
-        c2eXSIj94czVDrEQB0HXnIMQGioANJeeBoI4BmDz1AVMoOLgosvlLkjcFmHQdjlGSG+G9qdN
-        QHDeCOeWKr08CCR94dFSPwF5BV4//BBf85r60o4JCANHuzYKx1UNoLNhUnwMSC3r5rGsm8fy
-        v/EZgFvBJtbAa9UsTxvi199xG1h57uGoGzQ9WojuB5gE9AMowakAX7ErPNfPV6X88BDL6RWc
-        ScPy/UDuPu1aPOiFPL37v+iMCloeGxcXh+ITEhPkcVSg737ZuMKPVCuN7Pssa2C5tT5M4h1U
-        hOGOnJ099xPT8MifQ3oGFtSSvpPv7p4ZoF8qPtX+rJ9rKdl3vjghdNiWtoe5YcpuCvm053hU
-        StnFipSzBT+Yng3mtFvOG2nXRNmV10eHssT7vw9PTtvzoz+ipYy8F9zbNRz7ZlvDheL6oppp
-        +wL+3IbIsN9kJZmWifzAVutTlTZo2TlMbU8/9Np1Ov345sK3HE6bXNV94OaTJCs3laOou8dJ
-        E7PIwrDuJHwJvLdlU2925r5Lgduql/0r7/67Qaor/ChL50oza7OyUw/47y20/a4Npt4+eCZx
-        6MWXqwyzoOPPweJgsfrkzT8u9nnXF99ZvFs6bsP6Hoa2c+9wr27J2hpVQon4fCUdjnO88j9I
-        nwXldwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsWy7bCSvC6ztnaCwZsfxhZzVm1jtFh9t5/N
-        orX9G5NF8+L1bBanJyxisuh50sRq8bfrHpPF14fFFntvaVtc3jWHzeLQ5GYmi+mb5zBbHL53
-        lcXi4ZKJzBbnTn5itZj32MHi1/KjjBbvf1xntzi1YzKzxfq9P9kcRDwmNr9j99g56y67x+YV
-        Wh6Xz5Z6bFrVyeaxf+4ado/3+66yefRtWcXo8XmTnEf7gW6mAK4oLpuU1JzMstQifbsErozL
-        75+wFkRWnN69gaWB0bWLkZNDQsBE4kpvF2MXIxeHkMBuRok9m44wQiSkJI6feMvaxcgBZAtL
-        HD5cDBIWEvjIKPHlfxCIzSagI9H39hYbSK+IwFEmiQ1XjzGDOMwCBxkljs8+AzZIWEBf4vCq
-        TiYQm0VAVeLutqlsIDavgLXEne7DUMvkJZ72LmcGsTmB4h1LrrBBbLOSOP5hPSNEvaDEyZlP
-        WEBsZqD65q2zmScwCsxCkpqFJLWAkWkVo2RqQXFuem6xYYFhXmq5XnFibnFpXrpecn7uJkZw
-        9Glp7mDcvuqD3iFGJg7GQ4wSHMxKIrzsn7UShHhTEiurUovy44tKc1KLDzFKc7AoifNe6DoZ
-        LySQnliSmp2aWpBaBJNl4uCUamC6+OfRLPvpB4uFZZbmNCz5xB2oMjHtnVhs7meXG6FnVe9u
-        d9x6emFAVElO22+TT93r7KqftOrlL/1s2t+2f6Zy0lvNAyyT7tU7Jahn9zqkR6x8elmA1ab4
-        f5i87IvP+3uXPN/QpzK9ZeHtBgXn/1/TWXvU5vVPNMpuuyQQGDh1y89152us7Jz/ZX77p7Pw
-        0Nq9Nx4aiJ0/M332qvMpJSp22tc2vjh4+X2rWdleqZb4p85ln7s4Gk/OdSt9f27mgfk9HwzO
-        LSuIl7z85+D5Sc6/7rG37bj0WpIxNjBQtmCp49qJlRocBRJP89sWmWnNn3+Qd1pofjfbHYm5
-        Jtvup20xDfTiYc0vnnkm9fPZaq7LSizFGYmGWsxFxYkAx55+yS0DAAA=
-X-CMS-MailID: 20210216021636epcas1p31748fea01f2c9638216f8d8b3b3b3712
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210216021636epcas1p31748fea01f2c9638216f8d8b3b3b3712
-References: <20210204010156.5105-1-nanich.lee@samsung.com>
-        <CGME20210216021636epcas1p31748fea01f2c9638216f8d8b3b3b3712@epcas1p3.samsung.com>
+Content-Type: multipart/mixed; boundary="MP_/bXGQGfX8vm3N8i=A7vGCG6X"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please feedback to me if more modification is needed to apply. :)
+--MP_/bXGQGfX8vm3N8i=A7vGCG6X
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
+On Mon, 15 Feb 2021 20:06:39 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> Strange, that when I applied this to the latest kernel on a my build
+> system (binutils 2.35), it still created all the necessary mcount
+> locations??
+
+I know why it worked. If you are using the latest gcc on the latest
+mainline, it will not even bother with recordmcount, and will just
+create the __mcount_loc sections, as latest gcc knows about ftrace.
+
+(this is what I get for working on a company holiday)
+
+Since this is a toolchain issue, perhaps the correct thing to do is to
+backport to stable the changes to have it build with -mrecord-mcount if
+the build system enables it.
+
+If you are using the lastest compilers to build stable releases, and
+that's causing issues, then you should have the stable releases use the
+latest kernel compiler options.
+
+Greg,
+
+Can you test the following two backports. It does change the semantics
+of what is built, but then again if you are using a newer compiler to
+build stable kernels, that can change things too.
+
+96f60dfa5819a ("trace: Use -mcount-record for dynamic ftrace")
+07d0408120216 ("tracing: Avoid calling cc-option -mrecord-mcount for every Makefile")
+
+I attached the backports to 4.4. (just compiled tested, I'll test them more tomorrow)
+
+Thanks!
+
+-- Steve
+
+--MP_/bXGQGfX8vm3N8i=A7vGCG6X
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0001-trace-Use-mcount-record-for-dynamic-ftrace.patch
+
+From f9a03bb58aa222824b3041efbf62488af693feaa Mon Sep 17 00:00:00 2001
+From: Andi Kleen <ak@linux.intel.com>
+Date: Mon, 27 Nov 2017 13:34:13 -0800
+Subject: [PATCH 1/2] trace: Use -mcount-record for dynamic ftrace
+
+gcc 5 supports a new -mcount-record option to generate ftrace
+tables directly. This avoids the need to run record_mcount
+manually.
+
+Use this option when available.
+
+So far doesn't use -mcount-nop, which also exists now.
+
+This is needed to make ftrace work with LTO because the
+normal record-mcount script doesn't run over the link
+time output.
+
+It should also improve build times slightly in the general
+case.
+Link: http://lkml.kernel.org/r/20171127213423.27218-12-andi@firstfloor.org
+
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
-Changheun Lee
+ scripts/Makefile.build | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 42aef001dfdd..fff1452cb76e 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -221,6 +221,11 @@ cmd_modversions_c =								\
+ endif
+ 
+ ifdef CONFIG_FTRACE_MCOUNT_RECORD
++# gcc 5 supports generating the mcount tables directly
++ifneq ($(call cc-option,-mrecord-mcount,y),y)
++KBUILD_CFLAGS += -mrecord-mcount
++else
++# else do it all manually
+ ifdef BUILD_C_RECORDMCOUNT
+ ifeq ("$(origin RECORDMCOUNT_WARN)", "command line")
+   RECORDMCOUNT_FLAGS = -w
+@@ -250,6 +255,7 @@ cmd_record_mcount =						\
+ 		$(sub_cmd_record_mcount)			\
+ 	fi;
+ endif
++endif
+ 
+ define rule_cc_o_c
+ 	$(call echo-cmd,checksrc) $(cmd_checksrc)			  \
+-- 
+2.30.1
+
+
+--MP_/bXGQGfX8vm3N8i=A7vGCG6X
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0002-tracing-Avoid-calling-cc-option-mrecord-mcount-for-e.patch
+
+From 76a3bbb0b0b193ac4dcd3c005cc6abcaddaadfe6 Mon Sep 17 00:00:00 2001
+From: Vasily Gorbik <gor@linux.ibm.com>
+Date: Mon, 6 Aug 2018 15:17:44 +0200
+Subject: [PATCH 2/2] tracing: Avoid calling cc-option -mrecord-mcount for
+ every Makefile
+
+Currently if CONFIG_FTRACE_MCOUNT_RECORD is enabled -mrecord-mcount
+compiler flag support is tested for every Makefile.
+
+Top 4 cc-option usages:
+    511 -mrecord-mcount
+     11  -fno-stack-protector
+      9 -Wno-override-init
+      2 -fsched-pressure
+
+To address that move cc-option from scripts/Makefile.build to top Makefile
+and export CC_USING_RECORD_MCOUNT to be used in original place.
+
+While doing that also add -mrecord-mcount to CC_FLAGS_FTRACE (if gcc
+actually supports it).
+
+Link: http://lkml.kernel.org/r/patch-2.thread-aa7b8d.git-de935bace15a.your-ad-here.call-01533557518-ext-9465@work.hours
+
+Acked-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ Makefile               | 7 +++++++
+ scripts/Makefile.build | 7 ++-----
+ 2 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 0057587d2cbe..9f2123555429 100644
+--- a/Makefile
++++ b/Makefile
+@@ -760,6 +760,13 @@ ifdef CONFIG_FUNCTION_TRACER
+ ifndef CC_FLAGS_FTRACE
+ CC_FLAGS_FTRACE := -pg
+ endif
++ifdef CONFIG_FTRACE_MCOUNT_RECORD
++  # gcc 5 supports generating the mcount tables directly
++  ifeq ($(call cc-option-yn,-mrecord-mcount),y)
++    CC_FLAGS_FTRACE	+= -mrecord-mcount
++    export CC_USING_RECORD_MCOUNT := 1
++  endif
++endif
+ export CC_FLAGS_FTRACE
+ ifdef CONFIG_HAVE_FENTRY
+ CC_USING_FENTRY	:= $(call cc-option, -mfentry -DCC_USING_FENTRY)
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index fff1452cb76e..673ab54c0af6 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -221,11 +221,8 @@ cmd_modversions_c =								\
+ endif
+ 
+ ifdef CONFIG_FTRACE_MCOUNT_RECORD
+-# gcc 5 supports generating the mcount tables directly
+-ifneq ($(call cc-option,-mrecord-mcount,y),y)
+-KBUILD_CFLAGS += -mrecord-mcount
+-else
+-# else do it all manually
++ifndef CC_USING_RECORD_MCOUNT
++# compiler will not generate __mcount_loc use recordmcount or recordmcount.pl
+ ifdef BUILD_C_RECORDMCOUNT
+ ifeq ("$(origin RECORDMCOUNT_WARN)", "command line")
+   RECORDMCOUNT_FLAGS = -w
+-- 
+2.30.1
+
+
+--MP_/bXGQGfX8vm3N8i=A7vGCG6X--
