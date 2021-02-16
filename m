@@ -2,89 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD92F31D1D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA7C31D1D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhBPVEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:04:48 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:41546 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhBPVEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:04:40 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613509458; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=ZPYgjj7osuMdqrhvYEe/2OiYRLocQeK3kN4ElMketwc=; b=v0XHpTzzxSWzEYkamZUmyK9aSOV5PY09h1sxl7rg6rxzxLt4bzpuFTB4lDNMdB1OPxYRgf3v
- 7EB+wN6nAfT5A6EKrdx+87hP0RP5ecsKQVYqleHfdtQ73ue68hk3GqNuP/zWufCmUAvtaV/E
- 3dnNlbJmUe60h8P9yNdcjogbzUc=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 602c3335b50d5f2cb402946c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 21:03:49
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 416B6C433ED; Tue, 16 Feb 2021 21:03:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6D06C433CA;
-        Tue, 16 Feb 2021 21:03:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E6D06C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fan Wu <wufan@codeaurora.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [PATCH v2] mhi_bus: core: Return EAGAIN if MHI ring is full
-Date:   Tue, 16 Feb 2021 14:03:35 -0700
-Message-Id: <1613509415-23191-1-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S230125AbhBPVFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:05:39 -0500
+Received: from mail.codeweavers.com ([50.203.203.244]:49504 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhBPVFh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 16:05:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=zY97zwVfWY8WHBbRL37+t2vDGTB3LFeY2gz0qcPX4rg=; b=o6sI+KaNN7UwXzejCtEYCGWm0y
+        DHoKihcJME+Cc+7JpJpi9YRwkz2gwEaChmfLti5vcn2S00KXUe3fjOFxDA2JL2ZJ+3LyxxFmU+6vS
+        IR1GaBhn36H8g08ciVqz7YtYcmeL/CS/XthI989i0Pj5xW2U3iLy80h4iX9apLJSyGSw=;
+Received: from [10.69.141.136]
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <nfraser@codeweavers.com>)
+        id 1lC7We-0002Mh-3R; Tue, 16 Feb 2021 15:04:54 -0600
+Subject: Re: [PATCH 2/2] perf buildid-cache: Add test for 16-byte build-id
+From:   Nicholas Fraser <nfraser@codeweavers.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+References: <d1c87379-8837-a5e7-eb44-f063ca0f4766@codeweavers.com>
+ <c08be235-7434-5208-5f21-e8c9a3265464@codeweavers.com>
+Message-ID: <3aa04469-b891-5d05-85bc-799af460d54f@codeweavers.com>
+Date:   Tue, 16 Feb 2021 16:04:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <c08be235-7434-5208-5f21-e8c9a3265464@codeweavers.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Spam-Score: -40.5
+X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  Sorry, I just realized I forgot to run checkpatch.pl on these;
+    they're missing the --signoff. I'll re-send. On 2021-02-16 3:38 p.m., Nicholas
+    Fraser wrote: > tests/shell/buildid.sh added an ELF executable with an MD5
+    build-id to > the perf debug cache but did not check whether the object was
+    printed > by a [...] 
+ Content analysis details:   (-40.5 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 USER_IN_WELCOMELIST    user is listed in 'welcomelist_from'
+  -20 USER_IN_WHITELIST      DEPRECATED: See USER_IN_WELCOMELIST
+  -20 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+ -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
+                             [score: 0.0000]
+ -0.0 NICE_REPLY_A           Looks like a legit reply (A)
+  0.0 AWL                    AWL: Adjusted score from AWL reputation of From: address
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fan Wu <wufan@codeaurora.org>
+Sorry, I just realized I forgot to run checkpatch.pl on these; they're
+missing the --signoff. I'll re-send.
 
-Currently ENOMEM is returned when MHI ring is full. This error code is
-very misleading. Change to EAGAIN instead.
-
-Signed-off-by: Fan Wu <wufan@codeaurora.org>
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
----
-
-v2: Change from EBUSY to EAGAIN
-
- drivers/bus/mhi/core/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index f182736..c043574 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -996,7 +996,7 @@ static int mhi_queue(struct mhi_device *mhi_dev, struct mhi_buf_info *buf_info,
- 
- 	ret = mhi_is_ring_full(mhi_cntrl, tre_ring);
- 	if (unlikely(ret)) {
--		ret = -ENOMEM;
-+		ret = -EAGAIN;
- 		goto exit_unlock;
- 	}
- 
--- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+On 2021-02-16 3:38 p.m., Nicholas Fraser wrote:
+> tests/shell/buildid.sh added an ELF executable with an MD5 build-id to
+> the perf debug cache but did not check whether the object was printed
+> by a subsequent call to "perf buildid-cache -l". It was being omitted
+> from the list.
+> 
+> A previous commit fixed the bug that left it out of the list. This adds
+> a test for it.
+> ---
+>  tools/perf/tests/shell/buildid.sh | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
+> index 4861a20edee2..de02a23b7c7b 100755
+> --- a/tools/perf/tests/shell/buildid.sh
+> +++ b/tools/perf/tests/shell/buildid.sh
+> @@ -50,6 +50,12 @@ check()
+>  		exit 1
+>  	fi
+>  
+> +	${perf} buildid-cache -l|grep $id
+> +	if [ $? -ne 0 ]; then
+> +		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
+> +		exit 1
+> +	fi
+> +
+>  	echo "OK for ${1}"
+>  }
+>  
+> 
