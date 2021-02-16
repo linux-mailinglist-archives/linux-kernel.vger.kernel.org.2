@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6493D31C89E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F1F31C8AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhBPKUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:20:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229717AbhBPKTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:19:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4744164DE0;
-        Tue, 16 Feb 2021 10:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613470753;
-        bh=eY3mTlj51VDYTzN/HdqXV4UVbM576klVPmjNaB7BtAE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rh+goMEe6guEquXfbwF4p/banP+VlKviFUn9KeZpAkmv8y3GfNI82iVu6B1a0WUIE
-         yJXvBuYad7dsukXs4KvDRmvXIVsDfZ2sejfXfi6+ftkhGMG4DMhIPUAwPqwRBZRAJi
-         ebWB2ntvXZXlfawafzxB6dth2N7fvOd1RLc4p1UBmcX9mAw4yMy5Ti60xRd+kESDKV
-         eTOKRF3HYietQXaMe4/gAyeyoGuZ+sYPvKg1bvfg1nKDEURdM8dHeMcmbLM+Ee+dLY
-         u+/8w2/vM+CRK1ouUKeGOsAmYKxkQifPC9ZSdDVRPnP9JZsMRdP2eCXEpyVlHJkDHn
-         ugTurxEvzFh5g==
-Received: by mail-ot1-f43.google.com with SMTP id q4so8538998otm.9;
-        Tue, 16 Feb 2021 02:19:13 -0800 (PST)
-X-Gm-Message-State: AOAM533Cw8RUVddswmW23uki/i7swCFFjVZ4QejdSv+x+ih+PvJNQr2Q
-        sxno6rzhQQ0TSYvEb1DkUz+NULfZ2ORh9g9VzQk=
-X-Google-Smtp-Source: ABdhPJzeQJWVf1L+wYwbHinVXK9KvU0k5wankDGEsyl+37JLP8P0mp30rvYs7XPlpwchpnDqw4uCBBoiq7ecsbMHDRU=
-X-Received: by 2002:a9d:6c11:: with SMTP id f17mr14202610otq.210.1613470752538;
- Tue, 16 Feb 2021 02:19:12 -0800 (PST)
+        id S230077AbhBPKVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:21:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhBPKVV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:21:21 -0500
+Received: from hillosipuli.retiisi.eu (hillosipuli.retiisi.eu [IPv6:2a01:4f9:c010:4572::81:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18236C061756;
+        Tue, 16 Feb 2021 02:19:35 -0800 (PST)
+Received: from lanttu.localdomain (lanttu-e.localdomain [192.168.1.64])
+        by hillosipuli.retiisi.eu (Postfix) with ESMTP id 84FCE634C8E;
+        Tue, 16 Feb 2021 12:18:29 +0200 (EET)
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-media@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v8 0/4] Add %p4cc printk modifier for V4L2 and DRM fourcc codes
+Date:   Tue, 16 Feb 2021 12:19:27 +0200
+Message-Id: <20210216101931.2110-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210215121713.57687-1-marcan@marcan.st> <20210215121713.57687-24-marcan@marcan.st>
- <20210215191748.uhus2e6gclkwgjo5@kozik-lap>
-In-Reply-To: <20210215191748.uhus2e6gclkwgjo5@kozik-lap>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 16 Feb 2021 11:18:56 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0YzRVa+fa_7xFxR8f+pwSCo5w5kuaPsSSQscR10jwPww@mail.gmail.com>
-Message-ID: <CAK8P3a0YzRVa+fa_7xFxR8f+pwSCo5w5kuaPsSSQscR10jwPww@mail.gmail.com>
-Subject: Re: [PATCH v2 23/25] tty: serial: samsung_tty: Add earlycon support
- for Apple UARTs
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 8:19 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> On Mon, Feb 15, 2021 at 09:17:11PM +0900, Hector Martin wrote:
+Hi all,
 
-> > +
-> > +/* Apple S5L */
-> > +static int __init apple_s5l_early_console_setup(struct earlycon_device *device,
-> > +                                             const char *opt)
-> > +{
-> > +     /* Close enough to S3C2410 for earlycon... */
-> > +     device->port.private_data = &s3c2410_early_console_data;
-> > +
-> > +#ifdef CONFIG_ARM64
->
-> if IS_ENABLED()
-> (unless it cannot be used due to missing symbol?)
->
-> > +     /* ... but we need to override the existing fixmap entry as nGnRnE */
-> > +     __set_fixmap(FIX_EARLYCON_MEM_BASE, device->port.mapbase,
-> > +                  __pgprot(PROT_DEVICE_nGnRnE));
-> > +#endif
+	On merging --- it would seem everyone is happy with merging this
+	through the drm-misc tree. The last patch should wait until all
+	users are gone for sure, probably to the next kernel release.
+	There are no users of drm_get_format_name() in linux-next
+	currently after the 3rd patch.
 
-It has to be a preprocessor conditional because PROT_DEVICE_nGnRnE
-is only defined on arm64. We could add a FIXMAP_PAGE_NONPOSTED
-alias for it that defaults to FIXMAP_PAGE_IO, but in the end this is
-really an architecture specific thing and I think leaving it guarded by
-the architecture is appropriate.
+This set adds support for %p4cc printk modifier for printing V4L2 and DRM
+fourcc codes. The codes are cumbersome to print manually and by adding the
+modifier, this task is saved from the V4L2 and DRM frameworks as well as
+related drivers. DRM actually had it handled in a way (see 3rd patch) but
+the printk modifier makes printing the format easier even there. On V4L2
+side it saves quite a few lines of repeating different implementations of
+printing the 4cc codes.
 
-> > +     return samsung_early_console_setup(device, opt);
->
-> Don't you need to handle the error code - set PROT_DEFAULT() or whatever
-> was there before?
+Further work will include converting the V4L2 drivers doing the same. I
+left these out from this version since individual drivers are easier
+changed without dealing with multiple trees.
 
-__set_fixmap() has no return value, it just writes a page table entry and
-does not fail.
+Since v7:
 
-      Arnd
+- Add more examples, one with big endian and another with a space.
+
+- Add Y10 test format.
+
+- Use "0123" in the size string for temporary buffer.
+
+- Added acks.
+
+- Split the 3rd patch into two: driver changes and removal of
+  drm_get_format_name().
+
+Since v6:
+
+- Don't drop spaces in fourcc codes.
+
+- Print unprintable characters as dot ('.') instead of hexadecimal number
+  in parentheses.
+
+- Convert DRM from drm_get_format_name() to %p4cc. I wonder if this should
+  be merged through the DRM tree, albeit it's probably unlikely to
+  conflict with other changes. Further use of the function could be a
+  problem.
+
+- Make tests more realistic.
+
+Since v5:
+
+- Added V4L2 core conversion to %p4cc, as well as change the DRM
+  fourcc printing function to use %p4cc.
+
+- Add missing checkpatch.pl checks for %p4cc modifier.
+
+Sakari Ailus (4):
+  lib/vsprintf: Add support for printing V4L2 and DRM fourccs
+  v4l: ioctl: Use %p4cc printk modifier to print FourCC codes
+  drm: Switch to %p4cc format modifier
+  drm: Remove drm_get_format_name()
+
+ Documentation/core-api/printk-formats.rst     | 18 ++++
+ drivers/gpu/drm/amd/amdgpu/dce_v10_0.c        |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v11_0.c        |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v6_0.c         |  5 +-
+ drivers/gpu/drm/amd/amdgpu/dce_v8_0.c         |  5 +-
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  5 +-
+ .../arm/display/komeda/komeda_format_caps.h   | 11 ---
+ .../arm/display/komeda/komeda_framebuffer.c   |  4 +-
+ .../gpu/drm/arm/display/komeda/komeda_plane.c |  6 +-
+ drivers/gpu/drm/arm/malidp_mw.c               |  7 +-
+ drivers/gpu/drm/drm_atomic.c                  |  8 +-
+ drivers/gpu/drm/drm_crtc.c                    |  7 +-
+ drivers/gpu/drm/drm_fourcc.c                  | 25 ------
+ drivers/gpu/drm/drm_framebuffer.c             | 11 +--
+ drivers/gpu/drm/drm_mipi_dbi.c                |  5 +-
+ drivers/gpu/drm/drm_plane.c                   |  8 +-
+ .../gpu/drm/hisilicon/kirin/kirin_drm_ade.c   |  5 +-
+ drivers/gpu/drm/i915/display/intel_display.c  | 14 +--
+ .../drm/i915/display/intel_display_debugfs.c  | 19 ++---
+ drivers/gpu/drm/i915/display/intel_sprite.c   |  6 +-
+ drivers/gpu/drm/mcde/mcde_display.c           |  6 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      |  6 +-
+ drivers/gpu/drm/nouveau/nouveau_display.c     |  9 +-
+ drivers/gpu/drm/radeon/atombios_crtc.c        | 10 +--
+ drivers/gpu/drm/sun4i/sun4i_backend.c         |  6 +-
+ drivers/gpu/drm/vkms/vkms_writeback.c         |  7 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           | 15 ++--
+ drivers/media/v4l2-core/v4l2-ioctl.c          | 85 +++++--------------
+ include/drm/drm_fourcc.h                      |  1 -
+ lib/test_printf.c                             | 18 ++++
+ lib/vsprintf.c                                | 39 +++++++++
+ scripts/checkpatch.pl                         |  6 +-
+ 32 files changed, 164 insertions(+), 223 deletions(-)
+
+-- 
+2.29.2
+
