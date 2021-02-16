@@ -2,174 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA9D31C87B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 332D531C87F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhBPKB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:01:26 -0500
-Received: from mail-eopbgr80055.outbound.protection.outlook.com ([40.107.8.55]:40830
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229635AbhBPKBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:01:12 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cKtuM0jJ4rXtZn4t/W/s+eStU2n/w7gFfsHZdpPZwhT2/8c4u89duX3s9WdWIHn+G4vtTA3UwpaPoC0r+16uP66ZALMRGRiMU5Xc8zlguaWn5KMMpYJOZeQbeSKnwqkE/MBBWresba9lbTkPgv2PvMxI8YdokGbsdKEYoDfewIpqlnXHAcnpBc+/JzR1B8d0lwFERSjshEzMdBcJCGhb7GbecAWi3Lit9mViStS4xlKQvZMNIpdjJGaxuWpvHqXnT4SXqS+Dt0OuPiw21mTG5jB/t27RKp+Qj8Bgx3TyqmcIlv89NGVpz+zdV6c2PXWJev+RHUlJVicD/DdgvCUXxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SYRx0sY7ceFw88FOzi3Zek4uPZymid44to/SEXt0+SY=;
- b=NLBieBle3LGhpDSKXus1B5U+GeWrXre8TAoYnWeu4Ablk4dkY6kOKI2nQeU5WkyVPiGCEsU7W540rC8m6hjHRmfgvJTYlgvTLd8fzxg2dx4cxkzMbqDziGJBA+OjWMIGeR7u+foWIVF5Hm0G1Eq+LOyXR3TOqlOG24BKW1ho71En7qhzduSCr5F58GRHFes4ELXCHokjiWgsDORuUtz4V7IAwLgYAD4p2QUXFZFc0CzUi3VM4snr2kXgwWyR7F4rFarP/9Gw3Zuhgpv1gAYA82CTa63xkOO17o6u6UQCbO/tnPuv1wwTdDM/xG9H/a7AMNpgF1C6/zXMUTn954pJRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SYRx0sY7ceFw88FOzi3Zek4uPZymid44to/SEXt0+SY=;
- b=QG0OLZr9GISUza5LhRSqp8iFUV/WyVkkAjCFquAliePnjCILEJj7i/IsMYt+sM5l63dec3p5kyVPP9+IcVsw4wYw87OoqO0v7WMGCqDNci5RnYEiLunmBhOkZ20jZUwPLWip4W10dvwq3SbvCLDWqn1oJwYerxBkMUhf19Krg5g=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
- by AM8PR04MB7891.eurprd04.prod.outlook.com (2603:10a6:20b:237::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.30; Tue, 16 Feb
- 2021 10:00:22 +0000
-Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::e90e:b1d6:18a2:2d42]) by AM0PR04MB5636.eurprd04.prod.outlook.com
- ([fe80::e90e:b1d6:18a2:2d42%6]) with mapi id 15.20.3846.042; Tue, 16 Feb 2021
- 10:00:22 +0000
-Date:   Tue, 16 Feb 2021 15:29:59 +0530
-From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        netdev <netdev@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [net-next PATCH v5 15/15] net: dpaa2-mac: Add ACPI support for
- DPAA2 MAC driver
-Message-ID: <20210216095959.GA1015@lsv03152.swis.in-blr01.nxp.com>
-References: <20210208151244.16338-1-calvin.johnson@oss.nxp.com>
- <20210208151244.16338-16-calvin.johnson@oss.nxp.com>
- <20210208162831.GM1463@shell.armlinux.org.uk>
- <20210215123309.GA5067@lsv03152.swis.in-blr01.nxp.com>
- <CAHp75VcpR1uf-6me9-MiXzESP9gtE0=Oz5TaFj0E93C3w4=Fgg@mail.gmail.com>
- <CAHp75Vfcpk_4OQDpk_rvySJbXAyzAubt-n=ckFzggdo9fKvJ4A@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vfcpk_4OQDpk_rvySJbXAyzAubt-n=ckFzggdo9fKvJ4A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [14.142.151.118]
-X-ClientProxiedBy: SG2PR02CA0091.apcprd02.prod.outlook.com
- (2603:1096:4:90::31) To AM0PR04MB5636.eurprd04.prod.outlook.com
- (2603:10a6:208:130::22)
+        id S229927AbhBPKFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:05:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhBPKFM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:05:12 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C6BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 02:04:31 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id e2so662092ilu.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 02:04:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Mz0DGdMjzic+Z5818lQgZsXyz6D0ia8qb6rrQBhtrig=;
+        b=TtKU9O1kMEZQ92eXOuPAZOph+m+SDW4ClQPT0Tbm0pn+YsqEQTjwiZ/H3beWjq9jVE
+         wJgM7C532e54Q6pzRbrTW8updXrKSi+LtC369R2CQEughn9qrs+BwsZtNlWGi5z5fRjW
+         GawPSpZH4xqCzQ20Wu7Nfx4xc8mC1U8/dPDpAUCDjMRHRZoemsYZ0vg6BtO/7WJBQx6U
+         +mqMfPch6LaN4Viv241zFR5sCu43bncWYyxfkEcjhC/l+uKR3f0E9+Qcyz0YsaOnOqhu
+         9Qm95Rb5q9mEVLcfXlVhGPnq01aZis5eyKB+qEspDnWqZsJbvQahFCA9mZ8jZeiL02zQ
+         t8/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Mz0DGdMjzic+Z5818lQgZsXyz6D0ia8qb6rrQBhtrig=;
+        b=F0Qa1Wm6pjT8oyASg2LGINFqVOITDtPIed6AgOrqqXjSr+IykfcqH0l8mAcXXnDJB2
+         XdFm2XvsZ+Z3pnaReZkm5XOcDTfvr8KzBKtcnIRrbVaT7wnSJ5dJ5M+H2JYllPfiL4pZ
+         Rn4lqw2zKSkl2V1dGFxaj+FDAb2DDwl9uzaBfX9c018YgcTj/Pqop4+uJTni7YbXvRoB
+         WUz1NCxEjwz/GhWg1rDSfwW52Bk+ze1e6gB721WINRVZBgP5f7INlgAjjFTJXbzaF4Kw
+         riI34HbVsT3ub3DOEVVA7Pgagwn+vBN74CiUYR1UGRYr3kBC03yY+4eEaqlnp5hpWF6Z
+         RWQg==
+X-Gm-Message-State: AOAM533kGfmpL2L+1pVVkgTlFQsrFz1nzVEULvMmqA7Z2J79/Dmw9ayP
+        xrk11Afv2lv0UtIwB48JimS6Hp1jjBmoYmUt7KA=
+X-Google-Smtp-Source: ABdhPJxtwuMwouBVCpFXNSADxXIhbOlzhD8XtrJAU8tKlNXtZf5cqv4Jc7lMhETNwW/nft1mmuckFJFRA/lFOcVcGTs=
+X-Received: by 2002:a05:6e02:1bee:: with SMTP id y14mr16449921ilv.256.1613469870951;
+ Tue, 16 Feb 2021 02:04:30 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR02CA0091.apcprd02.prod.outlook.com (2603:1096:4:90::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27 via Frontend Transport; Tue, 16 Feb 2021 10:00:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 0c4c8846-17f4-4598-cbb6-08d8d261ac0f
-X-MS-TrafficTypeDiagnostic: AM8PR04MB7891:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM8PR04MB7891C043BE170A5BA9C07E21D2879@AM8PR04MB7891.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: W5rJwajVEkmIUh1RETGD6iQhHLJpuTAyPAJYcGmJDYjuKs2uSfST4+qHX0yiLpBR+wgzMjpTF6ECRuQM/fKUJjA7YsU+myJFuxrIY9V4ilXpqAphcEWIPMTvexjeeqjV38aeEElU6oyBQDb1bIGdKh1uPDEjlr52VdH2Hq6MLPfS2h+5Qb5dSHurePlESTFRidmpwJ1GGJq95hc7bdkNoTAahBKvAiYq1MZmnmpBU7fmvIUvdTSX4UrJdRumh5m47BTKxHerfGjrMdoG/mr7wdgCab9+8sEXM+YrN9G66mtS9N7CO61m2FGRcJnaVrU170ZGtmW5qch8txgrOzZB4MXs61vUP+z622trPfCpRo8kBVQI/v+3ZEHEhVu9MfNN9Ht9rfEyPLTgcecdLA2kC0mGbN490eoSYMMq1wS5CWg3ttrDXgwjNEBhQAj5HqgQsk4D+WRte/UR1wS3WaRner0ZElZNLRqWC8jS+5YAcsMU9SZAyOW4QwJGAvwHXcCJeatpDx5ZZ5OcMOS0POuVjmBH4lUd7NJCdPViE9ejHs0fw2WfBdsJrjNqal7km6Uz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(396003)(376002)(39860400002)(1006002)(7696005)(44832011)(6666004)(33656002)(52116002)(8936002)(2906002)(316002)(54906003)(478600001)(7416002)(956004)(55236004)(8676002)(16526019)(66946007)(6916009)(26005)(66476007)(186003)(86362001)(5660300002)(4326008)(1076003)(53546011)(6506007)(83380400001)(66556008)(55016002)(9686003)(110426009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?oaXCp9gdeboVoCji+nbBy4wP4O13ta0ddYnvFT9hfLKaL+U95C7OD3CdDreR?=
- =?us-ascii?Q?25jvyK5QZPjKKHvSVN3u01pqJrLzzAzR3lTBzQf8+CPb7TuFwni2hdpRN2s1?=
- =?us-ascii?Q?51n4Mz0LeWHrvYI8MCU80yMOiPjjrfMKf7+LpuTR29WvRQZ7qEPzjJjWKmK9?=
- =?us-ascii?Q?Qf7De+I/85MVJQ4fazhUVjsbrhZLgUGgXm4LNjD0ZLjTcnpRvZiptHQMBkKl?=
- =?us-ascii?Q?oIndtlbH+bb5P6/EJMwUPWfTKwBvWNNd00h9W/Hr1RJtraf1wfidrOlc13fH?=
- =?us-ascii?Q?pEPX0cnzDzRLKKvFdpbVa8xqI47P6Tlnei0gL7WsHLPyf5B6Uh91dVv9upfW?=
- =?us-ascii?Q?lfN2Yt3rQyxq7j9sYmkH4+zJRZK22dSXOIM2anu6KISdqw6ra43BM5k1IjND?=
- =?us-ascii?Q?SzyWDYfYg2sAUu+tMxaMtOPWuPuZ66D2Lt25OB7SnLSHsuXTNP+ukI/vGWst?=
- =?us-ascii?Q?AFabV4nNHedh17BQvqEcb60vsR5R4/eD8P67W5v/i415JdZoz/Uw0QXXa8bR?=
- =?us-ascii?Q?RUsA+9PNFOC+OebVyd/wVkZCmP31MRB6XZrY22UDt/sw0H1qRzhitNGJ7xPn?=
- =?us-ascii?Q?EP323ue2MGiqaRh12ddLiC/JN5yFBqfpMVBN7NjfQaqB9x5kHEWDHTvg6fzN?=
- =?us-ascii?Q?5gLUmD9LclgzAwUeLqzRvekg9l+j+It1NuBnZE/Xs4mrAMqpCNrGkpS7sWrY?=
- =?us-ascii?Q?Dx+MF8zsbXIQE7j+aDv29HMs6seVJi2+ylHNE4qjYV9cMQuXjMKdpUA9hAdJ?=
- =?us-ascii?Q?2s8eKZ5vXUf7BT4X2qkBiO4f6Iqia0fwjUM1OhLvwiIDL4TE6XHkjzlH7j3o?=
- =?us-ascii?Q?DoD7HiTMDDveSy1+oxo84rVwGHyegVc56bhI6xMisfxT8IpYr/h02W2QMNN7?=
- =?us-ascii?Q?rGjBFG+LJZRalmPhL+bxetna1hZvNPy8W2/ZFjzA4awO3lS01LT+yZ8o5vrb?=
- =?us-ascii?Q?pBy1F9ehSdEFLkLVGZwucljc7mr7gWRemTY9mpMiSHXjPhqnvzG8+J2dvfY/?=
- =?us-ascii?Q?bEzjSAyWF/6RS4mv7Ve6hdUd5Z08mlfCZCVMI/H4FuTLvFCH1hR/uy5t6ZbW?=
- =?us-ascii?Q?YAIzu5ViQhGikVwwF1zDAZnGnlt1ILxa9HdklILgtsQ8J2cl0p7TPHcc1Gwt?=
- =?us-ascii?Q?F6VVf2cmA45GLmvwRW1lMEvpYyqxFYAPYzd1Vq7DyH/Mj95k7wsPKFDJYvm+?=
- =?us-ascii?Q?fehAfAzUULUzgDnzcvlyqAx9Lg6FZKPTdRMjcwTlT73whZ9SjMBGWremd2z2?=
- =?us-ascii?Q?wy9+foRLeUcW2dvPGdHd1HQ3IB2cX9tNyAm4pU8jFkm0dr2n9nQw4T9psnzC?=
- =?us-ascii?Q?P8uXgLQxCknTLYyXEVAbST6Zqgzud3yytHu8VQ9WQ2bAkw=3D=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c4c8846-17f4-4598-cbb6-08d8d261ac0f
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5636.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2021 10:00:22.4046
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QxRVSp370fsZmMurgyzjO+EvaR8YAMmLV6X0Xg/TKPkrdj0P5mMghwkBRURkIzTwtcWivbTxQM+vY7eSStaIzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7891
+References: <8c4f1cb7c51b03d2b2cd451a6404db8e269d94b7.1613465062.git.tommyhebb@gmail.com>
+ <YCuOnpvM4kM5j+Vn@kroah.com>
+In-Reply-To: <YCuOnpvM4kM5j+Vn@kroah.com>
+From:   Tom Hebb <tommyhebb@gmail.com>
+Date:   Tue, 16 Feb 2021 02:04:20 -0800
+Message-ID: <CAMcCCgT5SJpSRQAhApO+oBzmkEQ_6s85KAMwoicyNate=1cBjQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] z3fold: prevent reclaim/free race for headless pages
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 05:15:36PM +0200, Andy Shevchenko wrote:
-> On Mon, Feb 15, 2021 at 5:13 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
+On Tue, Feb 16, 2021 at 1:21 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Feb 16, 2021 at 12:44:40AM -0800, Thomas Hebb wrote:
+> > commit ca0246bb97c2 ("z3fold: fix possible reclaim races") introduced
+> > the PAGE_CLAIMED flag "to avoid racing on a z3fold 'headless' page
+> > release." By atomically testing and setting the bit in each of
+> > z3fold_free() and z3fold_reclaim_page(), a double-free was avoided.
 > >
-> > On Mon, Feb 15, 2021 at 2:33 PM Calvin Johnson
-> > <calvin.johnson@oss.nxp.com> wrote:
-> > > On Mon, Feb 08, 2021 at 04:28:31PM +0000, Russell King - ARM Linux admin wrote:
+> > However, commit 746d179b0e66 ("z3fold: stricter locking and more carefu=
+l
+> > reclaim") appears to have unintentionally broken this behavior by movin=
+g
+> > the PAGE_CLAIMED check in z3fold_reclaim_page() to after the page lock
+> > gets taken, which only happens for non-headless pages. For headless
+> > pages, the check is now skipped entirely and races can occur again.
 > >
-> > ...
+> > I have observed such a race on my system:
 > >
-> > > I think of_phy_is_fixed_link() needs to be fixed. I'll add below fix.
-> > >
-> > > --- a/drivers/net/mdio/of_mdio.c
-> > > +++ b/drivers/net/mdio/of_mdio.c
-> > > @@ -439,6 +439,9 @@ bool of_phy_is_fixed_link(struct device_node *np)
-> > >         int len, err;
-> > >         const char *managed;
-> > >
-> > > +       if (!np)
-> > > +               return false;
+> >     page:00000000ffbd76b7 refcount:0 mapcount:0 mapping:000000000000000=
+0 index:0x0 pfn:0x165316
+> >     flags: 0x2ffff0000000000()
+> >     raw: 02ffff0000000000 ffffea0004535f48 ffff8881d553a170 00000000000=
+00000
+> >     raw: 0000000000000000 0000000000000011 00000000ffffffff 00000000000=
+00000
+> >     page dumped because: VM_BUG_ON_PAGE(page_ref_count(page) =3D=3D 0)
+> >     ------------[ cut here ]------------
+> >     kernel BUG at include/linux/mm.h:707!
+> >     invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+> >     CPU: 2 PID: 291928 Comm: kworker/2:0 Tainted: G    B             5.=
+10.7-arch1-1-kasan #1
+> >     Hardware name: Gigabyte Technology Co., Ltd. H97N-WIFI/H97N-WIFI, B=
+IOS F9b 03/03/2016
+> >     Workqueue: zswap-shrink shrink_worker
+> >     RIP: 0010:__free_pages+0x10a/0x130
+> >     Code: c1 e7 06 48 01 ef 45 85 e4 74 d1 44 89 e6 31 d2 41 83 ec 01 e=
+8 e7 b0 ff ff eb da 48 c7 c6 e0 32 91 88 48 89 ef e8 a6 89 f8 ff <0f> 0b 4c=
+ 89 e7 e8 fc 79 07 00 e9 33 ff ff ff 48 89 ef e8 ff 79 07
+> >     RSP: 0000:ffff88819a2ffb98 EFLAGS: 00010296
+> >     RAX: 0000000000000000 RBX: ffffea000594c5a8 RCX: 0000000000000000
+> >     RDX: 1ffffd4000b298b7 RSI: 0000000000000000 RDI: ffffea000594c5b8
+> >     RBP: ffffea000594c580 R08: 000000000000003e R09: ffff8881d5520bbb
+> >     R10: ffffed103aaa4177 R11: 0000000000000001 R12: ffffea000594c5b4
+> >     R13: 0000000000000000 R14: ffff888165316000 R15: ffffea000594c588
+> >     FS:  0000000000000000(0000) GS:ffff8881d5500000(0000) knlGS:0000000=
+000000000
+> >     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >     CR2: 00007f7c8c3654d8 CR3: 0000000103f42004 CR4: 00000000001706e0
+> >     Call Trace:
+> >      z3fold_zpool_shrink+0x9b6/0x1240
+> >      ? sugov_update_single+0x357/0x990
+> >      ? sched_clock+0x5/0x10
+> >      ? sched_clock_cpu+0x18/0x180
+> >      ? z3fold_zpool_map+0x490/0x490
+> >      ? _raw_spin_lock_irq+0x88/0xe0
+> >      shrink_worker+0x35/0x90
+> >      process_one_work+0x70c/0x1210
+> >      ? pwq_dec_nr_in_flight+0x15b/0x2a0
+> >      worker_thread+0x539/0x1200
+> >      ? __kthread_parkme+0x73/0x120
+> >      ? rescuer_thread+0x1000/0x1000
+> >      kthread+0x330/0x400
+> >      ? __kthread_bind_mask+0x90/0x90
+> >      ret_from_fork+0x22/0x30
+> >     Modules linked in: rfcomm ebtable_filter ebtables ip6table_filter i=
+p6_tables iptable_filter ccm algif_aead des_generic libdes ecb algif_skciph=
+er cmac bnep md4 algif_hash af_alg vfat fat intel_rapl_msr intel_rapl_commo=
+n x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel iwlmvm hid_logit=
+ech_hidpp kvm at24 mac80211 snd_hda_codec_realtek iTCO_wdt snd_hda_codec_ge=
+neric intel_pmc_bxt snd_hda_codec_hdmi ledtrig_audio iTCO_vendor_support me=
+i_wdt mei_hdcp snd_hda_intel snd_intel_dspcfg libarc4 soundwire_intel irqby=
+pass iwlwifi soundwire_generic_allocation rapl soundwire_cadence intel_csta=
+te snd_hda_codec intel_uncore btusb joydev mousedev snd_usb_audio pcspkr bt=
+rtl uvcvideo nouveau btbcm i2c_i801 btintel snd_hda_core videobuf2_vmalloc =
+i2c_smbus snd_usbmidi_lib videobuf2_memops bluetooth snd_hwdep soundwire_bu=
+s snd_soc_rt5640 videobuf2_v4l2 cfg80211 snd_soc_rl6231 videobuf2_common sn=
+d_rawmidi lpc_ich alx videodev mdio snd_seq_device snd_soc_core mc ecdh_gen=
+eric mxm_wmi mei_me
+> >      hid_logitech_dj wmi snd_compress e1000e ac97_bus mei ttm rfkill sn=
+d_pcm_dmaengine ecc snd_pcm snd_timer snd soundcore mac_hid acpi_pad pkcs8_=
+key_parser it87 hwmon_vid crypto_user fuse ip_tables x_tables ext4 crc32c_g=
+eneric crc16 mbcache jbd2 dm_crypt cbc encrypted_keys trusted tpm rng_core =
+usbhid dm_mod crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_inte=
+l aesni_intel crypto_simd cryptd glue_helper xhci_pci xhci_pci_renesas i915=
+ video intel_gtt i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimg=
+blt fb_sys_fops cec drm agpgart
+> >     ---[ end trace 126d646fc3dc0ad8 ]---
 > >
-> > AFAICS this doesn't add anything: all of the of_* APIs should handle
-> > OF nodes being NULL below.
+> > To fix the issue, re-add the earlier test and set in the case where we
+> > have a headless page.
 > >
-> > >         /* New binding */
-> > >         dn = of_get_child_by_name(np, "fixed-link");
-> > >         if (dn) {
-> 
-> Yes, of_get_next_child() and of_get_property() are NULL aware.
-> 
-> So, the check is redundant.
-Yes, all the function calls in of_phy_is_fixed_link() handles NULL properly.
-I don't see any way this function can oops.
+> > Fixes: 746d179b0e66 ("z3fold: stricter locking and more careful reclaim=
+")
+>
+> This commit id is not in Linus's tree :(
 
-Regards
-Calvin
- 
+Oops, I was building from a 5.10 stable tree and accidentally grabbed
+the ID of the pick there. This is the correct line, will fix in v1:
+
+Fixes: dcf5aedb24f8 ("z3fold: stricter locking and more careful reclaim")
+
+(And sorry for my initial failure to reply-all; I contribute to
+projects that use mailing lists just infrequently enough for me to
+forget all the common mistakes, meaning I repeat them every time.)
+
+> thanks,
+>
+> greg k-h
