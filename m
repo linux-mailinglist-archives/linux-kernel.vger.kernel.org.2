@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77A531C98D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D2931C98E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhBPLSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:18:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230203AbhBPLR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:17:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4981564DDA;
-        Tue, 16 Feb 2021 11:17:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613474235;
-        bh=4V2U/z8BogReCgHyBWSvZkjIKdtYA2RLgt81IN7Hs34=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mLm6BEduKdJUpu2Q8xrnhemcuHrH6kLhboY/IyyHrV0B+h0rr1f0ZJztS3bVQK6rm
-         j88rc1d4gXvgPeIAJ1LAqQQwYqqXDVH208G6iwQcXRs7q3ZS61wCH+5EVi+E5HrM5P
-         EBgs8By+R1UmF0gz4lxYDwAiuvlO1Wi6qY/GYp0eFRE/Irb7e4RPx/FlWOY8Z5CW8M
-         6suUETSB1wtLQHvLHcTaNIJeTjPDcsEQt93ntDku8RMP2ksRwqlTeg3BulFB1Hl8VM
-         DfKRkzmLMaV9lkop+LFyOiXuqrLXAB9JFqxt+BPvJ3fuHzTgcVfk7r3HivTPS5k2z4
-         MfrZ2qlswiUtQ==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 7/6] arm64: dts: qcom: sm8350: Add cpufreq node
-Date:   Tue, 16 Feb 2021 16:47:03 +0530
-Message-Id: <20210216111703.1838663-1-vkoul@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210212115532.1339942-8-vkoul@kernel.org>
-References: <20210212115532.1339942-8-vkoul@kernel.org>
+        id S229925AbhBPLSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:18:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230310AbhBPLSZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:18:25 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BF3C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:17:43 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id b14so9051094qkk.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 03:17:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+yi48HIfDpj5+7cpoyDCNHw6yQcq1pcG1ot9n73mhd0=;
+        b=YxaffVO7zp8rEiGeTbUX5Ki7tJ11g4dLfSxGlgdZKFGK+KHuDT0SyDQ4UZT9KqKHnJ
+         PoA1Jd/7CZfFmqu6gfGH0WTjueyUz5dR778ADBSSVfKqYgCXQYzhrrn15o8FvpD3wahn
+         cZzilJtE3Y+oxQ1168aV2Ewfth8SUlPyWcfrTkiETPp5e6qIytcY4Ru3vRwC3Ret2fnY
+         s8+DxfClW49UgRZhNDCa0sxVclRXzpZQ6WqMZS3krzNGOYK6niAh5aDw2gkWU8GGQkc7
+         fFfyB6OaiYnO3EsONDuqdH5L8VvZ/tfU9NlpKMSddG3pc4SkYCOC98ACXwOnK6t0+wQc
+         SGWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+yi48HIfDpj5+7cpoyDCNHw6yQcq1pcG1ot9n73mhd0=;
+        b=Odf7pO4xj2Net9XfWZKRNhY6lsrt1myYDWvFs5ERkwF8f53+Mtk+rggzoUn3Sr6b+6
+         eCNAC1MCcBbiYBM08TIqhK9APQJv1ba32dniOdw0Af1i1g0JaFjNeHikDoxkVbVymKnn
+         29c0roJ/KsX9sMeywk3xzr6464nufwvzV4soKIRheOSvThwRCJgMx4xrPDmXvlQlfDTi
+         HsNJaCb5kMdgT9yPL1DXEVJwVGMS6tiHe3BmLEYWhpyzKKg5MY5+ppMNKaKu/Thkkvc9
+         g2RQKtHjK9Rm5HqTWGXSd5+P/Wxq+WD9BTz72zHlGcOzaM0+tWsZ1tuMW4PyDvgLx/AG
+         iGWA==
+X-Gm-Message-State: AOAM531HtfufLqWHvdrMxEmJUtWxHzNLIH0SabQFU8gMy87RhyTM2d+a
+        dwOscbKitPM6kullpwasiEIi8f6lZScCQlXK2DYivg==
+X-Google-Smtp-Source: ABdhPJw2r0P+hO2e4Iij8XvdrpsMfa2arPuuYzhNYRXRfcj44xEPwBv3l/b8pplhPflEoRK8Fk16ikz1mbXxTpXZixg=
+X-Received: by 2002:a37:a757:: with SMTP id q84mr18474346qke.501.1613474262101;
+ Tue, 16 Feb 2021 03:17:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
+ <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
+ <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
+ <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
+ <20210118145310.crnqnh6kax5jqicj@distanz.ch> <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
+ <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
+ <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr> <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
+In-Reply-To: <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 16 Feb 2021 12:17:30 +0100
+Message-ID: <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
+Subject: Re: riscv+KASAN does not boot
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Tobias Klauser <tklauser@distanz.ch>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Bjorn Topel <bjorn.topel@gmail.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
+        syzkaller <syzkaller@googlegroups.com>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cpufreq node and reference it for the CPUs.
+On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > I was fixing KASAN support for my sv48 patchset so I took a look at your
+> > issue: I built a kernel on top of the branch riscv/fixes using
+> > https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
+> > and Buildroot 2020.11. I have the warnings regarding the use of
+> > __virt_to_phys on wrong addresses (but that's normal since this function
+> > is used in virt_addr_valid) but not the segfaults you describe.
+>
+> Hi Alex,
+>
+> Let me try to rebuild buildroot image. Maybe there was something wrong
+> with my build, though, I did 'make clean' before doing. But at the
+> same time it worked back in June...
+>
+> Re WARNINGs, they indicate kernel bugs. I am working on setting up a
+> syzbot instance on riscv. If there a WARNING during boot then the
+> kernel will be marked as broken. No further testing will happen.
+> Is it a mis-use of WARN_ON? If so, could anybody please remove it or
+> replace it with pr_err.
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
----
- - appended this to dts patch series
 
- arch/arm64/boot/dts/qcom/sm8350.dtsi | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Hi,
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-index 1aa2a9e00a75..91d4cbbe38dc 100644
---- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-@@ -45,6 +45,7 @@ CPU0: cpu@0 {
- 			reg = <0x0 0x0>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
-+			qcom,freq-domain = <&cpufreq_hw 0>;
- 			L2_0: l2-cache {
- 			      compatible = "cache";
- 			      next-level-cache = <&L3_0>;
-@@ -60,6 +61,7 @@ CPU1: cpu@100 {
- 			reg = <0x0 0x100>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_100>;
-+			qcom,freq-domain = <&cpufreq_hw 0>;
- 			L2_100: l2-cache {
- 			      compatible = "cache";
- 			      next-level-cache = <&L3_0>;
-@@ -72,6 +74,7 @@ CPU2: cpu@200 {
- 			reg = <0x0 0x200>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_200>;
-+			qcom,freq-domain = <&cpufreq_hw 0>;
- 			L2_200: l2-cache {
- 			      compatible = "cache";
- 			      next-level-cache = <&L3_0>;
-@@ -84,6 +87,7 @@ CPU3: cpu@300 {
- 			reg = <0x0 0x300>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_300>;
-+			qcom,freq-domain = <&cpufreq_hw 0>;
- 			L2_300: l2-cache {
- 			      compatible = "cache";
- 			      next-level-cache = <&L3_0>;
-@@ -96,6 +100,7 @@ CPU4: cpu@400 {
- 			reg = <0x0 0x400>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_400>;
-+			qcom,freq-domain = <&cpufreq_hw 1>;
- 			L2_400: l2-cache {
- 			      compatible = "cache";
- 			      next-level-cache = <&L3_0>;
-@@ -108,6 +113,7 @@ CPU5: cpu@500 {
- 			reg = <0x0 0x500>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_500>;
-+			qcom,freq-domain = <&cpufreq_hw 1>;
- 			L2_500: l2-cache {
- 			      compatible = "cache";
- 			      next-level-cache = <&L3_0>;
-@@ -121,6 +127,7 @@ CPU6: cpu@600 {
- 			reg = <0x0 0x600>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_600>;
-+			qcom,freq-domain = <&cpufreq_hw 1>;
- 			L2_600: l2-cache {
- 			      compatible = "cache";
- 			      next-level-cache = <&L3_0>;
-@@ -133,6 +140,7 @@ CPU7: cpu@700 {
- 			reg = <0x0 0x700>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_700>;
-+			qcom,freq-domain = <&cpufreq_hw 2>;
- 			L2_700: l2-cache {
- 			      compatible = "cache";
- 			      next-level-cache = <&L3_0>;
-@@ -852,6 +860,19 @@ apps_bcm_voter: bcm_voter {
- 			};
- 		};
- 
-+		cpufreq_hw: cpufreq@18591000 {
-+			compatible = "qcom,sm8350-cpufreq-epss", "qcom,cpufreq-epss";
-+			reg = <0 0x18591000 0 0x1000>,
-+			      <0 0x18592000 0 0x1000>,
-+			      <0 0x18593000 0 0x1000>;
-+			reg-names = "freq-domain0", "freq-domain1", "freq-domain2";
-+
-+			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_GPLL0>;
-+			clock-names = "xo", "alternate";
-+
-+			#freq-domain-cells = <1>;
-+		};
-+
- 		ufs_mem_hc: ufshc@1d84000 {
- 			compatible = "qcom,sm8350-ufshc", "qcom,ufshc",
- 				     "jedec,ufs-2.0";
--- 
-2.26.2
+I've localized one issue with riscv/KASAN:
+KASAN breaks VDSO and that's I think the root cause of weird faults I
+saw earlier. The following patch fixes it.
+Could somebody please upstream this fix? I don't know how to add/run
+tests for this.
+Thanks
 
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index 0cfd6da784f84..cf3a383c1799d 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
+ # Disable gcov profiling for VDSO code
+ GCOV_PROFILE := n
+ KCOV_INSTRUMENT := n
++KASAN_SANITIZE := n
+
+ # Force dependency
+ $(obj)/vdso.o: $(obj)/vdso.so
