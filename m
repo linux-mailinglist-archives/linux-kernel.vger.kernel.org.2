@@ -2,144 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625E231CEDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BC031CEDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhBPRSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:18:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55895 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229699AbhBPRS1 (ORCPT
+        id S230436AbhBPRSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:18:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230362AbhBPRSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:18:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613495820;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IbwyoqWTddMQQM4e/pb2Tn5NqnOPDp0+cC8mDVS66VE=;
-        b=GHo9tkX1SbVo+1OOHOI1jCap6OUfB4bCMxW4oxuD76Er6F/ojThTD9WEJhFPj/LLOeWxh5
-        rSf81Za2VtpvsR2+eMKnxChzNeT/KJwyy7RWzdfAu44wYqjcSZo4J8dA2tESKfBcpfItMc
-        bWFb/MJKriWt99QEJM9NEz4rxujy5z0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-KxZdhhyXMpKDSHckankMMw-1; Tue, 16 Feb 2021 12:16:50 -0500
-X-MC-Unique: KxZdhhyXMpKDSHckankMMw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 465FB80402E;
-        Tue, 16 Feb 2021 17:16:45 +0000 (UTC)
-Received: from [10.36.114.70] (ovpn-114-70.ams2.redhat.com [10.36.114.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 615F35D9CC;
-        Tue, 16 Feb 2021 17:16:37 +0000 (UTC)
-To:     jejb@linux.ibm.com, Michal Hocko <mhocko@suse.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-References: <20210214091954.GM242749@kernel.org>
- <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
- <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
- <YCo7TqUnBdgJGkwN@dhcp22.suse.cz>
- <be1d821d3f0aec24ad13ca7126b4359822212eb0.camel@linux.ibm.com>
- <YCrJjYmr7A2nO6lA@dhcp22.suse.cz>
- <12c3890b233c8ec8e3967352001a7b72a8e0bfd0.camel@linux.ibm.com>
- <dfd7db5c-a8c7-0676-59f8-70aa6bcaabe7@redhat.com>
- <000cfaa0a9a09f07c5e50e573393cda301d650c9.camel@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <5a8567a9-6940-c23f-0927-e4b5c5db0d5e@redhat.com>
-Date:   Tue, 16 Feb 2021 18:16:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 16 Feb 2021 12:18:43 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A4FC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 09:18:02 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id u4so10059837lfs.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 09:18:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TAIlfyj1+vl6wEY03t8gQIxJzlIrwjx8g7cV2iEl46I=;
+        b=ajc+Ly1Kl3BQHBgTjkn+/wNh48GTRtZTdxzUnLJIhxY4ZFdqnb9AYLaI2XXT/ZVLrv
+         jyngOR5w7dsP5aWWRcFYUODEcZN65i1edh1DfsByO6EIB6AZ32Cuj5vOz3wZdy9r1zNg
+         Y1RHti10VjznC2eoihl0UL/cr+IAYRk25Oczds3MyxDy/ygc6AF2oSQvlGSgLRUMpRT6
+         uFlUP8t+nHMnChWyq4NleRHpwctatl95VSvcqZDV/sKZrHxa/2AT/Si5DDZkL/fAhjxt
+         c/Fyll05dd/xV/YbRAi7tz/eBZ8bA2MyA50QOh9upkC1Ic6UaOz9uHizMUsD+L4RszQ6
+         Mfpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TAIlfyj1+vl6wEY03t8gQIxJzlIrwjx8g7cV2iEl46I=;
+        b=WblKG1V7rAVY2P8wvoMZnTX7IKZSYGEWmSbQloGy5h7G+aM5dFZCRyg+p3cEX6sssW
+         i1yD89mRMfACjTmHYrN5duVhiC0CrRfYx2ZhWzJCyQynV4K5KZc6dTN5zUpFbxp9KfXU
+         5rAQeJkoKFlheTQtKXwTgHdwWQIIFeeJgskObmcwuAbfGu/pVhlxBFay3Q24+YtdxTeP
+         HhlxHCx2AnKv+RHXOwgCvjmYbPmgGDWmUSr/UuY+PXT6Mffs1fJcY6yMAQN8PVw0Ewhw
+         4rlhCgeB9CK4SH0mDj+5wA7Z1Xlcbc8uM1UCftmFyC8ZJiYHmG7tYyabIgVdiUxnsA4C
+         /lLQ==
+X-Gm-Message-State: AOAM533j445pEjhGuAAceoR6JZFNgoah1MQK8CE32U+2wcT74RjCMwtM
+        NFwYWN+xZYN1W2gpsPkwL2k1KWYiGL/RjM6VKUZCnw==
+X-Google-Smtp-Source: ABdhPJwONFMMXGr4fcY9J8n+r2ABk3IrHz+j4bqcUiSnw+UBoHcr+mheWKHCl5jqA0yctFSkbQDCLgqmr3CiqcS7MUw=
+X-Received: by 2002:a05:6512:6c6:: with SMTP id u6mr12389695lff.347.1613495879192;
+ Tue, 16 Feb 2021 09:17:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <000cfaa0a9a09f07c5e50e573393cda301d650c9.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210212170159.32153-1-songmuchun@bytedance.com>
+ <20210212170159.32153-4-songmuchun@bytedance.com> <YCv51LgGIWxVjLHT@cmpxchg.org>
+In-Reply-To: <YCv51LgGIWxVjLHT@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 16 Feb 2021 09:17:45 -0800
+Message-ID: <CALvZod6RPUFnA4zZR20e7M=GriYwWob3DMQqUfhqUMd9aJUq2w@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on cgroup v2
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>   For the other parts, the question is what we actually want to let
->> user space configure.
->>
->> Being able to specify "Very secure" "maximum secure" "average
->> secure"  all doesn't really make sense to me.
-> 
-> Well, it doesn't to me either unless the user feels a cost/benefit, so
-> if max cost $100 per invocation and average cost nothing, most people
-> would chose average unless they had a very good reason not to.  In your
-> migratable model, if we had separate limits for non-migratable and
-> migratable, with non-migratable being set low to prevent exhaustion,
-> max secure becomes a highly scarce resource, whereas average secure is
-> abundant then having the choice might make sense.
+On Tue, Feb 16, 2021 at 9:05 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> Hello Muchun,
+>
+> On Sat, Feb 13, 2021 at 01:01:59AM +0800, Muchun Song wrote:
+> > The swap charges the actual number of swap entries on cgroup v2.
+> > If a swap cache page is charged successful, and then we uncharge
+> > the swap counter. It is wrong on cgroup v2. Because the swap
+> > entry is not freed.
+>
+> The patch makes sense to me. But this code is a bit tricky, we should
+> add more documentation to how it works and what the problem is.
+>
+> How about this for the changelog?
+>
+> ---
+> mm: memcontrol: fix swap undercounting for shared pages in cgroup2
+>
+> When shared pages are swapped in partially, we can have some page
+> tables referencing the in-memory page and some referencing the swap
+> slot. Cgroup1 and cgroup2 handle these overlapping lifetimes slightly
+> differently due to the nature of how they account memory and swap:
+>
+> Cgroup1 has a unified memory+swap counter that tracks a data page
+> regardless whether it's in-core or swapped out. On swapin, we transfer
+> the charge from the swap entry to the newly allocated swapcache page,
+> even though the swap entry might stick around for a while. That's why
+> we have a mem_cgroup_uncharge_swap() call inside mem_cgroup_charge().
+>
+> Cgroup2 tracks memory and swap as separate, independent resources and
+> thus has split memory and swap counters. On swapin, we charge the
+> newly allocated swapcache page as memory, while the swap slot in turn
+> must remain charged to the swap counter as long as its allocated too.
+>
+> The cgroup2 logic was broken by commit 2d1c498072de ("mm: memcontrol:
+> make swap tracking an integral part of memory control"), because it
+> accidentally removed the do_memsw_account() check in the branch inside
+> mem_cgroup_uncharge() that was supposed to tell the difference between
+> the charge transfer in cgroup1 and the separate counters in cgroup2.
+>
+> As a result, cgroup2 currently undercounts consumed swap when shared
+> pages are partially swapped back in. This in turn allows a cgroup to
+> consume more swap than its configured limit intends.
+>
+> Add the do_memsw_account() check back to fix this problem.
+> ---
+>
+> > Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-I hope that we can find a way to handle the migration part internally. 
-Especially, because Mike wants the default to be "as secure as 
-possible", so if there is a flag, it would have to be an opt-out flag.
+With Johannes's suggestions:
 
-I guess as long as we don't temporarily map it into the "owned" location 
-in the direct map shared by all VCPUs we are in a good positon. But this 
-needs more thought, of course.
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-> 
->>   The discussion regarding migratability only really popped up because
->> this is a user-visible thing and not being able to migrate can be a
->> real problem (fragmentation, ZONE_MOVABLE, ...).
-> 
-> I think the biggest use will potentially come from hardware
-> acceleration.  If it becomes simple to add say encryption to a secret
-> page with no cost, then no flag needed.  However, if we only have a
-> limited number of keys so once we run out no more encrypted memory then
-> it becomes a costly resource and users might want a choice of being
-> backed by encryption or not.
-
-Right. But wouldn't HW support with configurable keys etc. need more 
-syscall parameters (meaning, even memefd_secret() as it is would not be 
-sufficient?). I suspect the simplistic flag approach might not be 
-sufficient. I might be wrong because I have no clue about MKTME and friends.
-
-Anyhow, I still think extending memfd_create() might just be good enough 
-- at least for now. Things like HW support might have requirements we 
-don't even know yet and that we cannot even model in memfd_secret() 
-right now.
-
--- 
-Thanks,
-
-David / dhildenb
-
+>
+> > ---
+> >  mm/memcontrol.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index c737c8f05992..be6bc5044150 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -6753,7 +6753,7 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+> >       memcg_check_events(memcg, page);
+> >       local_irq_enable();
+> >
+> > -     if (PageSwapCache(page)) {
+> > +     if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && PageSwapCache(page)) {
+>
+> It's more descriptive to use do_memsw_account() here, IMO.
+>
+> We should also add a comment. How about this above the branch?
+>
+>         /*
+>          * Cgroup1's unified memory+swap counter has been charged with the
+>          * new swapcache page, finish the transfer by uncharging the swap
+>          * slot. The swap slot would also get uncharged when it dies, but
+>          * for shared pages it can stick around indefinitely and we'd count
+>          * the page twice the entire time.
+>          *
+>          * Cgroup2 has separate resource counters for memory and swap,
+>          * so this is a non-issue here. Memory and swap charge lifetimes
+>          * correspond 1:1 to page and swap slot lifetimes: we charge the
+>          * page to memory here, and uncharge swap when the slot is freed.
+>          */
