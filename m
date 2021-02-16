@@ -2,266 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F0A31CA16
+	by mail.lfdr.de (Postfix) with ESMTP id 75F7A31CA15
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhBPLrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:47:33 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:35704 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbhBPLkX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:40:23 -0500
-Date:   Tue, 16 Feb 2021 11:39:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613475568; bh=nnDg7zHTfNPGrVm06t0m1zPhoxeXajfLhRKt/IDM8xQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=JfsEY4hngHGHRZWc3Pm7CWlGpUi+oi9hzY99EOZU2hAhgsm2NNpbtcW3lpMB2RBp9
-         upeqRcI/zFx0rx9fmESEJe3Ws/NIlHcZ52YhaArFghmJDalwiVH8hlHl4k9OOD35dF
-         DxOmB+v/HsJ0a2pSPDRY4Ked0uZXNzn3qTj4c/FMYoL3DmMhMu+7xIVq3wF2FRlAzC
-         LvK+NTEPZQwuPbOSkhQwfPXaokcHTqjZ714Rx/cKU5lgvgrFYlKx4LXr6C0EodZ8Ty
-         6TpQfmZZWIQ2iyzR2+B/jGeSR0ASPALlLGgOV0CVtVQzx/NM0KVHZQ/Mg+TVQJcv13
-         FW4NlUuhRLzeA==
-To:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v4 bpf-next 6/6] xsk: build skb by page (aka generic zerocopy xmit)
-Message-ID: <20210216113740.62041-7-alobakin@pm.me>
-In-Reply-To: <20210216113740.62041-1-alobakin@pm.me>
-References: <20210216113740.62041-1-alobakin@pm.me>
+        id S230459AbhBPLq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:46:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44806 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230418AbhBPLkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:40:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613475565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8PoadPzQITp5/MNkSp8NC5Nl7aOk1hPujGeiYYsA2Dg=;
+        b=ogDC+YTURH/w4Vtcp641CBAcAJgVB/uNXAaowa6EnRos8Cvr9kTW41dNOCAxj2DEoDsSJM
+        Fn0JlrrDL4Fa+iDayNWfnweYakPlOXBQpz8Y7jxOQ0IVmgkfw6sSRoWjRlMyGVV4cTR4Pl
+        qJdy58DGF0+hgWYM3HZKmHcuHamoIvk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E986EB08C;
+        Tue, 16 Feb 2021 11:39:24 +0000 (UTC)
+Date:   Tue, 16 Feb 2021 12:39:23 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Mel Gorman <mgorman@suse.de>, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
+ holes in memory layout
+Message-ID: <YCuu6xosQQ9uIDUS@dhcp22.suse.cz>
+References: <20210208110820.6269-1-rppt@kernel.org>
+ <YCZZeAAC8VOCPhpU@dhcp22.suse.cz>
+ <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
+ <YCaAHI/rFp1upRLc@dhcp22.suse.cz>
+ <20210214180016.GO242749@kernel.org>
+ <YCo4Lyio1h2Heixh@dhcp22.suse.cz>
+ <20210215212440.GA1307762@kernel.org>
+ <YCuDUG89KwQNbsjA@dhcp22.suse.cz>
+ <20210216110154.GB1307762@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216110154.GB1307762@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+On Tue 16-02-21 13:01:54, Mike Rapoport wrote:
+> On Tue, Feb 16, 2021 at 09:33:20AM +0100, Michal Hocko wrote:
+> > On Mon 15-02-21 23:24:40, Mike Rapoport wrote:
+> > > On Mon, Feb 15, 2021 at 10:00:31AM +0100, Michal Hocko wrote:
+> > > > On Sun 14-02-21 20:00:16, Mike Rapoport wrote:
+> > > > > On Fri, Feb 12, 2021 at 02:18:20PM +0100, Michal Hocko wrote:
+> > > > 
+> > > > > We can correctly set the zone links for the reserved pages for holes in the
+> > > > > middle of a zone based on the architecture constraints and with only the
+> > > > > holes in the beginning/end of the memory will be not spanned by any
+> > > > > node/zone which in practice does not seem to be a problem as the VM_BUG_ON
+> > > > > in set_pfnblock_flags_mask() never triggered on pfn 0.
+> > > > 
+> > > > I really fail to see what you mean by correct zone/node for a memory
+> > > > range which is not associated with any real node.
+> > > 
+> > > We know architectural zone constraints, so we can have always have 1:1
+> > > match from pfn to zone. Node indeed will be a guess.
+> > 
+> > That is true only for some zones.
+> 
+> Hmm, and when is it not true?
 
-This patch is used to construct skb based on page to save memory copy
-overhead.
+ZONE_MOVABLE, ZONE_NORMAL and ZONE_DEVICE.
+ 
+> > Also we do require those to be correct when the memory is managed by the
+> > page allocator. I believe we can live with incorrect zones when they are
+> > in holes.
+>  
+> Note that the holes Andrea reported in the first place are not ranges that
+> are not populated, but rather ranges that arch didn't report as usable,
+> i.e. there is physical memory and it perfectly fits into an existing node
+> and zone.
 
-This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
-network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
-directly construct skb. If this feature is not supported, it is still
-necessary to copy data to construct skb.
+Except those are not usable so they have no clear meaning, right?
 
----------------- Performance Testing ------------
+> > > > > > I am sorry, I haven't followed previous discussions. Has the removal of
+> > > > > > the VM_BUG_ON been considered as an immediate workaround?
+> > > > > 
+> > > > > It was never discussed, but I'm not sure it's a good idea.
+> > > > > 
+> > > > > Judging by the commit message that introduced the VM_BUG_ON (commit
+> > > > > 86051ca5eaf5 ("mm: fix usemap initialization")) there was yet another
+> > > > > inconsistency in the memory map that required a special care.
+> > > > 
+> > > > Can we actually explore that path before adding yet additional
+> > > > complexity and potentially a very involved fix for a subtle problem?
+> > > 
+> > > This patch was intended as a fix for inconsistency of the memory map that
+> > > is the root cause for triggering this VM_BUG_ON and other corner case
+> > > problems. 
+> > > 
+> > > The previous version [1] is less involved as it does not extend node/zone
+> > > spans.
+> > 
+> > I do understand that. And I am not objecting to the patch. I have to
+> > confess I haven't digested it yet. Any changes to early memory
+> > intialization have turned out to be subtle and corner cases only pop up
+> > later. This is almost impossible to review just by reading the code.
+> > That's why I am asking whether we want to address the specific VM_BUG_ON
+> > first with something much less tricky and actually reviewable. And
+> > that's why I am asking whether dropping the bug_on itself is safe to do
+> > and use as a hot fix which should be easier to backport.
+> 
+> I can't say I'm familiar enough with migration and compaction code to say
+> if it's ok to remove that bug_on. It does point to inconsistency in the
+> memmap, but probably it's not important.
 
-The test environment is Aliyun ECS server.
-Test cmd:
-```
-xdpsock -i eth0 -t  -S -s <msg size>
-```
-
-Test result data:
-
-size    64      512     1024    1500
-copy    1916747 1775988 1600203 1440054
-page    1974058 1953655 1945463 1904478
-percent 3.0%    10.0%   21.58%  32.3%
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-[ alobakin:
- - expand subject to make it clearer;
- - improve skb->truesize calculation;
- - reserve some headroom in skb for drivers;
- - tailroom is not needed as skb is non-linear ]
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/xdp/xsk.c | 119 ++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 95 insertions(+), 24 deletions(-)
-
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 143979ea4165..ff7bd06e1241 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -445,6 +445,96 @@ static void xsk_destruct_skb(struct sk_buff *skb)
- =09sock_wfree(skb);
- }
-=20
-+static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-+=09=09=09=09=09      struct xdp_desc *desc)
-+{
-+=09struct xsk_buff_pool *pool =3D xs->pool;
-+=09u32 hr, len, offset, copy, copied;
-+=09struct sk_buff *skb;
-+=09struct page *page;
-+=09void *buffer;
-+=09int err, i;
-+=09u64 addr;
-+
-+=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
-+
-+=09skb =3D sock_alloc_send_skb(&xs->sk, hr, 1, &err);
-+=09if (unlikely(!skb))
-+=09=09return ERR_PTR(err);
-+
-+=09skb_reserve(skb, hr);
-+
-+=09addr =3D desc->addr;
-+=09len =3D desc->len;
-+
-+=09buffer =3D xsk_buff_raw_get_data(pool, addr);
-+=09offset =3D offset_in_page(buffer);
-+=09addr =3D buffer - pool->addrs;
-+
-+=09for (copied =3D 0, i =3D 0; copied < len; i++) {
-+=09=09page =3D pool->umem->pgs[addr >> PAGE_SHIFT];
-+=09=09get_page(page);
-+
-+=09=09copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
-+=09=09skb_fill_page_desc(skb, i, page, offset, copy);
-+
-+=09=09copied +=3D copy;
-+=09=09addr +=3D copy;
-+=09=09offset =3D 0;
-+=09}
-+
-+=09skb->len +=3D len;
-+=09skb->data_len +=3D len;
-+=09skb->truesize +=3D pool->unaligned ? len : pool->chunk_size;
-+
-+=09refcount_add(skb->truesize, &xs->sk.sk_wmem_alloc);
-+
-+=09return skb;
-+}
-+
-+static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-+=09=09=09=09     struct xdp_desc *desc)
-+{
-+=09struct net_device *dev =3D xs->dev;
-+=09struct sk_buff *skb;
-+
-+=09if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
-+=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
-+=09=09if (IS_ERR(skb))
-+=09=09=09return skb;
-+=09} else {
-+=09=09u32 hr, tr, len;
-+=09=09void *buffer;
-+=09=09int err;
-+
-+=09=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
-+=09=09tr =3D dev->needed_tailroom;
-+=09=09len =3D desc->len;
-+
-+=09=09skb =3D sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
-+=09=09if (unlikely(!skb))
-+=09=09=09return ERR_PTR(err);
-+
-+=09=09skb_reserve(skb, hr);
-+=09=09skb_put(skb, len);
-+
-+=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
-+=09=09err =3D skb_store_bits(skb, 0, buffer, len);
-+=09=09if (unlikely(err)) {
-+=09=09=09kfree_skb(skb);
-+=09=09=09return ERR_PTR(err);
-+=09=09}
-+=09}
-+
-+=09skb->dev =3D dev;
-+=09skb->priority =3D xs->sk.sk_priority;
-+=09skb->mark =3D xs->sk.sk_mark;
-+=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
-+=09skb->destructor =3D xsk_destruct_skb;
-+
-+=09return skb;
-+}
-+
- static int xsk_generic_xmit(struct sock *sk)
- {
- =09struct xdp_sock *xs =3D xdp_sk(sk);
-@@ -454,56 +544,37 @@ static int xsk_generic_xmit(struct sock *sk)
- =09struct sk_buff *skb;
- =09unsigned long flags;
- =09int err =3D 0;
--=09u32 hr, tr;
-=20
- =09mutex_lock(&xs->mutex);
-=20
- =09if (xs->queue_id >=3D xs->dev->real_num_tx_queues)
- =09=09goto out;
-=20
--=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
--=09tr =3D xs->dev->needed_tailroom;
--
- =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
--=09=09char *buffer;
--=09=09u64 addr;
--=09=09u32 len;
--
- =09=09if (max_batch-- =3D=3D 0) {
- =09=09=09err =3D -EAGAIN;
- =09=09=09goto out;
- =09=09}
-=20
--=09=09len =3D desc.len;
--=09=09skb =3D sock_alloc_send_skb(sk, hr + len + tr, 1, &err);
--=09=09if (unlikely(!skb))
-+=09=09skb =3D xsk_build_skb(xs, &desc);
-+=09=09if (IS_ERR(skb)) {
-+=09=09=09err =3D PTR_ERR(skb);
- =09=09=09goto out;
-+=09=09}
-=20
--=09=09skb_reserve(skb, hr);
--=09=09skb_put(skb, len);
--
--=09=09addr =3D desc.addr;
--=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
--=09=09err =3D skb_store_bits(skb, 0, buffer, len);
- =09=09/* This is the backpressure mechanism for the Tx path.
- =09=09 * Reserve space in the completion queue and only proceed
- =09=09 * if there is space in it. This avoids having to implement
- =09=09 * any buffering in the Tx path.
- =09=09 */
- =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
--=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-+=09=09if (xskq_prod_reserve(xs->pool->cq)) {
- =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
- =09=09=09kfree_skb(skb);
- =09=09=09goto out;
- =09=09}
- =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-=20
--=09=09skb->dev =3D xs->dev;
--=09=09skb->priority =3D sk->sk_priority;
--=09=09skb->mark =3D sk->sk_mark;
--=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
--=09=09skb->destructor =3D xsk_destruct_skb;
--
- =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
- =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
- =09=09=09/* Tell user-space to retry the send */
---=20
-2.30.1
-
-
+Yeah, I am not really clear on that myself TBH. On one hand this cannot
+be really critical because it is a conditional assert on the debuging
+mode. Most production users do not enable it so they wouldn't learn
+about that inconsistency and maybe never notice any difference. This has
+led me to think about this to be something mostly focused on debugging.
+If that is an incorrect assumption then the VM_BUG_ON should be changed
+to something else - either a graceful failure or a real BUG_ON if that
+is really worth it.
+-- 
+Michal Hocko
+SUSE Labs
