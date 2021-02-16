@@ -2,78 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0E631C78D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 762C131C790
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 09:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbhBPIpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 03:45:24 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:44788 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhBPImA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 03:42:00 -0500
-Received: by mail-oi1-f181.google.com with SMTP id r75so10426289oie.11;
-        Tue, 16 Feb 2021 00:41:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ku8Xj83nLsMwP3pJntnRZwjc0a+L78DnpeGJC5WXyEc=;
-        b=fdd4M9lIPY9RJ3vj3kRuFzJFLKmBLd5XPjBvXcOGiQqKVl7TqAibO83tQRbUJ3yXok
-         T2jf4/LXtJA+0wY+meWSKuZSCo3PaUjgk+qOguxt3rrUAv/DRgMndVKWujd6GAfweIG0
-         McaLjlESOJXrY9NlxMMUx/+/Bi3OgKDauLPliHSosUZ7Iz3dLW1uruh8i21nlMn/daf3
-         4XrsVvyE607xdSpYx4SGIvUWlCr2o4CxWfsU11rZVthQGUq+hiTOLX2SGNnpSjFFkIyO
-         ZbbqPA7ixWzH4arcgbX5THcBfFSsJCLNFz5wOMfG4ZmBFScDVGqAvmEXWYKaN9ez6HR1
-         4Irg==
-X-Gm-Message-State: AOAM5310ppoEdzBDL1+hbRkHlu9AU1VpXjfvyilZuLYkot++NIRdsDLL
-        kdc18bRybspP0SrFgQUpPOX5zfO2YOHDiU5M+uM2zzp2
-X-Google-Smtp-Source: ABdhPJzH59+9qfPThs4S+oDVC/b1lqufPtDmCTgP9OCeG611wdnMp8WbBZ27+38vYkskiEhsG65NlvAt7jH5m+gALyg=
-X-Received: by 2002:aca:d8c6:: with SMTP id p189mr1927470oig.54.1613464878460;
- Tue, 16 Feb 2021 00:41:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20210212223015.727608-1-drew@beagleboard.org> <20210212223015.727608-2-drew@beagleboard.org>
-In-Reply-To: <20210212223015.727608-2-drew@beagleboard.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 16 Feb 2021 09:41:07 +0100
-Message-ID: <CAMuHMdULsKoPrYfPxF89-=bCVgzm5RNmOuPDnhxJg9B6j=qc6w@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] pinctrl: use to octal permissions for debugfs files
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229790AbhBPIql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 03:46:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229994AbhBPImx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 03:42:53 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1610164E00;
+        Tue, 16 Feb 2021 08:42:13 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lBvvu-00EOXz-Uy; Tue, 16 Feb 2021 08:42:11 +0000
+Date:   Tue, 16 Feb 2021 08:42:10 +0000
+Message-ID: <87pn10pfod.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel-team@android.com, Lee Jones <lee.jones@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Suman Anna <s-anna@ti.com>
+Subject: Re: [PATCH] mfd: syscon: Don't free allocated name for regmap_config
+In-Reply-To: <d35d3960-c2a6-491d-fd1a-cf3aa95ce109@ideasonboard.com>
+References: <20200903160237.932818-1-maz@kernel.org>
+        <d35d3960-c2a6-491d-fd1a-cf3aa95ce109@ideasonboard.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: tomi.valkeinen@ideasonboard.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel-team@android.com, lee.jones@linaro.org, arnd@arndb.de, s-anna@ti.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 11:30 PM Drew Fustini <drew@beagleboard.org> wrote:
-> Switch over pinctrl debugfs files to use octal permissions as they are
-> preferred over symbolic permissions. Refer to commit f90774e1fd27
-> ("checkpatch: look for symbolic permissions and suggest octal instead").
->
-> Note: S_IFREG flag is added to the mode by __debugfs_create_file()
-> in fs/debugfs/inode.c
->
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+Hi Tomi,
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Tue, 16 Feb 2021 06:34:50 +0000,
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com> wrote:
+> 
+> Hi Marc,
+> 
+> On 03/09/2020 19:02, Marc Zyngier wrote:
+> > The name allocated for the regmap_config structure is freed
+> > pretty early, right after the registration of the MMIO region.
+> > 
+> > Unfortunately, that doesn't follow the life cycle that debugfs
+> > expects, as it can access the name field long after the free
+> > has occured.
+> > 
+> > Move the free on the error path, and keep it forever otherwise.
+> > 
+> > Fixes: e15d7f2b81d2 ("mfd: syscon: Use a unique name with regmap_config")
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  drivers/mfd/syscon.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+> > index 75859e492984..7a660411c562 100644
+> > --- a/drivers/mfd/syscon.c
+> > +++ b/drivers/mfd/syscon.c
+> > @@ -108,7 +108,6 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+> >  	syscon_config.max_register = resource_size(&res) - reg_io_width;
+> >  
+> >  	regmap = regmap_init_mmio(NULL, base, &syscon_config);
+> > -	kfree(syscon_config.name);
+> >  	if (IS_ERR(regmap)) {
+> >  		pr_err("regmap init failed\n");
+> >  		ret = PTR_ERR(regmap);
+> > @@ -145,6 +144,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+> >  	regmap_exit(regmap);
+> >  err_regmap:
+> >  	iounmap(base);
+> > +	kfree(syscon_config.name);
+> >  err_map:
+> >  	kfree(syscon);
+> >  	return ERR_PTR(ret);
+> > 
+> 
+> This patch causes lots of kmemleak reports, for example:
 
-Gr{oetje,eeting}s,
+It may trigger some kmemleak reports, but at the time it was written,
+this patch avoided some very nasty memory corruption with debugfs. The
+problem is that the memory management responsibilities between syscon,
+regmap and debugfs are rather obscure.
 
-                        Geert
+If you can come up with an accurate description of the life cycle of
+syscon_config.name across these 3 subsystems, we may be able to fix it
+for good.
+
+Thanks,
+
+	M.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Without deviation from the norm, progress is not possible.
