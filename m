@@ -2,358 +2,679 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF44A31D047
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:35:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B98131D04E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 19:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhBPSfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 13:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhBPSfA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:35:00 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F2DC06174A;
-        Tue, 16 Feb 2021 10:34:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=eyg+UeV+4Tpex6g1TvIiRZSUpwgPO0gq3ggTbcBo9l0=; b=kO58vtrJ4jUFwByInrufSGbqnp
-        MnehCrsT0xbY2b97KlEsjB4e9z6iAHIg2lVn44Hg2k37Ipvudds1spouPhPn2V4cjm9Jew4V8J5RP
-        +oVnHwz3B2uAxtl/InlGrZQvdtZbjLSdnmCA7lGQYubWzlgrg9QAtlo9Sv7oJZ64SdVd7shijgpt3
-        g65/zZBfmQXVwprCQVZ8WVtjKAPi4v6fgu0rWTtdc9nZMOtG7iKAyX0IXV4XXeo4AuDFl1qXgMpYz
-        VPPhAZ7Pf2UKGT8kVwwHfdAXfo5j3zA4jqzSkHtBcev8l2U/oxjXXAibCOVXNbSdMN5hM7NH2Htzc
-        PNLyNz6g==;
-Received: from [2601:1c0:6280:3f0::b669]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lC5Aq-0000fK-T9; Tue, 16 Feb 2021 18:34:13 +0000
-Subject: Re: [RFC PATCH 06/13] docs: locking: futex2: Add documentation
-To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, corbet@lwn.net
-References: <20210215152404.250281-1-andrealmeid@collabora.com>
- <20210215152404.250281-7-andrealmeid@collabora.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4e70780e-1a4d-79a9-e183-44a3454e0298@infradead.org>
-Date:   Tue, 16 Feb 2021 10:34:05 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230396AbhBPSfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 13:35:30 -0500
+Received: from mga06.intel.com ([134.134.136.31]:18306 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229744AbhBPSfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 13:35:18 -0500
+IronPort-SDR: F8CYzVgVqGPTCbY4hQ03n17d74heZD9OqlnYi8mU1yaq2fcO95fvp1MTMuE33iseH0B95ZW/Hs
+ Yu0EcU/348PA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="244454009"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="244454009"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 10:34:35 -0800
+IronPort-SDR: l39BdLkh9B8vMietA7INSkgCGPye1JQ9nbOgkFUFf27iV45jfYzvk3RusBPeALVtFjDm07PvHm
+ SNMP0zyZb4QA==
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="592301981"
+Received: from dlbingha-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.134.31])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 10:34:34 -0800
+Date:   Tue, 16 Feb 2021 10:34:32 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v4 4/9] cxl/mem: Add basic IOCTL interface
+Message-ID: <20210216183432.lf2uj63uckogfad4@intel.com>
+References: <20210216014538.268106-1-ben.widawsky@intel.com>
+ <20210216014538.268106-5-ben.widawsky@intel.com>
+ <20210216152223.000009e8@Huawei.com>
+ <20210216175314.ut2dn5ujayj57zp2@intel.com>
+ <20210216182849.00002c8c@Huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210215152404.250281-7-andrealmeid@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216182849.00002c8c@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/15/21 7:23 AM, André Almeida wrote:
-> Add a new documentation file specifying both userspace API and internal
-> implementation details of futex2 syscalls.
+On 21-02-16 18:28:49, Jonathan Cameron wrote:
+> On Tue, 16 Feb 2021 09:53:14 -0800
+> Ben Widawsky <ben.widawsky@intel.com> wrote:
 > 
-> Signed-off-by: André Almeida <andrealmeid@collabora.com>
-> ---
->  Documentation/locking/futex2.rst | 198 +++++++++++++++++++++++++++++++
->  Documentation/locking/index.rst  |   1 +
->  2 files changed, 199 insertions(+)
->  create mode 100644 Documentation/locking/futex2.rst
+> > On 21-02-16 15:22:23, Jonathan Cameron wrote:
+> > > On Mon, 15 Feb 2021 17:45:33 -0800
+> > > Ben Widawsky <ben.widawsky@intel.com> wrote:
+> > >   
+> > > > Add a straightforward IOCTL that provides a mechanism for userspace to
+> > > > query the supported memory device commands. CXL commands as they appear
+> > > > to userspace are described as part of the UAPI kerneldoc. The command
+> > > > list returned via this IOCTL will contain the full set of commands that
+> > > > the driver supports, however, some of those commands may not be
+> > > > available for use by userspace.
+> > > > 
+> > > > Memory device commands first appear in the CXL 2.0 specification. They
+> > > > are submitted through a mailbox mechanism specified in the CXL 2.0
+> > > > specification.
+> > > > 
+> > > > The send command allows userspace to issue mailbox commands directly to
+> > > > the hardware. The list of available commands to send are the output of
+> > > > the query command. The driver verifies basic properties of the command
+> > > > and possibly inspect the input (or output) payload to determine whether
+> > > > or not the command is allowed (or might taint the kernel).
+> > > > 
+> > > > Reported-by: kernel test robot <lkp@intel.com> # bug in earlier revision
+> > > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > > Reviewed-by: Dan Williams <dan.j.williams@intel.com> (v2)  
+> > > 
+> > > I may be missreading this but I think the logic to ensure commands
+> > > using a variable sized buffer have enough space is broken.
+> > > 
+> > > Jonathan
+> > >   
+> > > > ---
+> > > >  .clang-format                                 |   1 +
+> > > >  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+> > > >  drivers/cxl/mem.c                             | 288 +++++++++++++++++-
+> > > >  include/uapi/linux/cxl_mem.h                  | 154 ++++++++++
+> > > >  4 files changed, 443 insertions(+), 1 deletion(-)
+> > > >  create mode 100644 include/uapi/linux/cxl_mem.h
+> > > > 
+> > > > diff --git a/.clang-format b/.clang-format
+> > > > index 10dc5a9a61b3..3f11c8901b43 100644
+> > > > --- a/.clang-format
+> > > > +++ b/.clang-format
+> > > > @@ -109,6 +109,7 @@ ForEachMacros:
+> > > >    - 'css_for_each_child'
+> > > >    - 'css_for_each_descendant_post'
+> > > >    - 'css_for_each_descendant_pre'
+> > > > +  - 'cxl_for_each_cmd'
+> > > >    - 'device_for_each_child_node'
+> > > >    - 'dma_fence_chain_for_each'
+> > > >    - 'do_for_each_ftrace_op'
+> > > > diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > > > index a4c75a28c839..6eb8e634664d 100644
+> > > > --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > > > +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > > > @@ -352,6 +352,7 @@ Code  Seq#    Include File                                           Comments
+> > > >                                                                       <mailto:michael.klein@puffin.lb.shuttle.de>
+> > > >  0xCC  00-0F  drivers/misc/ibmvmc.h                                   pseries VMC driver
+> > > >  0xCD  01     linux/reiserfs_fs.h
+> > > > +0xCE  01-02  uapi/linux/cxl_mem.h                                    Compute Express Link Memory Devices
+> > > >  0xCF  02     fs/cifs/ioctl.c
+> > > >  0xDB  00-0F  drivers/char/mwave/mwavepub.h
+> > > >  0xDD  00-3F                                                          ZFCP device driver see drivers/s390/scsi/
+> > > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > > index 410adb1bdffc..a4298cb1182d 100644
+> > > > --- a/drivers/cxl/mem.c
+> > > > +++ b/drivers/cxl/mem.c
+> > > > @@ -1,5 +1,6 @@
+> > > >  // SPDX-License-Identifier: GPL-2.0-only
+> > > >  /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
+> > > > +#include <uapi/linux/cxl_mem.h>
+> > > >  #include <linux/module.h>
+> > > >  #include <linux/mutex.h>
+> > > >  #include <linux/cdev.h>
+> > > > @@ -40,6 +41,7 @@
+> > > >  #define CXL_MAILBOX_TIMEOUT_MS (2 * HZ)
+> > > >  
+> > > >  enum opcode {
+> > > > +	CXL_MBOX_OP_INVALID		= 0x0000,
+> > > >  	CXL_MBOX_OP_IDENTIFY		= 0x4000,
+> > > >  	CXL_MBOX_OP_MAX			= 0x10000
+> > > >  };
+> > > > @@ -91,6 +93,49 @@ struct cxl_memdev {
+> > > >  static int cxl_mem_major;
+> > > >  static DEFINE_IDA(cxl_memdev_ida);
+> > > >  
+> > > > +/**
+> > > > + * struct cxl_mem_command - Driver representation of a memory device command
+> > > > + * @info: Command information as it exists for the UAPI
+> > > > + * @opcode: The actual bits used for the mailbox protocol
+> > > > + *
+> > > > + * The cxl_mem_command is the driver's internal representation of commands that
+> > > > + * are supported by the driver. Some of these commands may not be supported by
+> > > > + * the hardware. The driver will use @info to validate the fields passed in by
+> > > > + * the user then submit the @opcode to the hardware.
+> > > > + *
+> > > > + * See struct cxl_command_info.
+> > > > + */
+> > > > +struct cxl_mem_command {
+> > > > +	struct cxl_command_info info;
+> > > > +	enum opcode opcode;
+> > > > +};
+> > > > +
+> > > > +#define CXL_CMD(_id, sin, sout)                                                \
+> > > > +	[CXL_MEM_COMMAND_ID_##_id] = {                                         \
+> > > > +	.info =	{                                                              \
+> > > > +			.id = CXL_MEM_COMMAND_ID_##_id,                        \
+> > > > +			.size_in = sin,                                        \
+> > > > +			.size_out = sout,                                      \
+> > > > +		},                                                             \
+> > > > +	.opcode = CXL_MBOX_OP_##_id,                                           \
+> > > > +	}
+> > > > +
+> > > > +/*
+> > > > + * This table defines the supported mailbox commands for the driver. This table
+> > > > + * is made up of a UAPI structure. Non-negative values as parameters in the
+> > > > + * table will be validated against the user's input. For example, if size_in is
+> > > > + * 0, and the user passed in 1, it is an error.
+> > > > + */
+> > > > +static struct cxl_mem_command mem_commands[] = {
+> > > > +	CXL_CMD(IDENTIFY, 0, 0x43),
+> > > > +};
+> > > > +
+> > > > +#define cxl_for_each_cmd(cmd)                                                  \
+> > > > +	for ((cmd) = &mem_commands[0];                                         \
+> > > > +	     ((cmd) - mem_commands) < ARRAY_SIZE(mem_commands); (cmd)++)
+> > > > +
+> > > > +#define cxl_cmd_count ARRAY_SIZE(mem_commands)
+> > > > +
+> > > >  static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
+> > > >  {
+> > > >  	const unsigned long start = jiffies;
+> > > > @@ -312,6 +357,247 @@ static void cxl_mem_mbox_put(struct cxl_mem *cxlm)
+> > > >  	mutex_unlock(&cxlm->mbox_mutex);
+> > > >  }
+> > > >  
+> > > > +/**
+> > > > + * handle_mailbox_cmd_from_user() - Dispatch a mailbox command for userspace.
+> > > > + * @cxlm: The CXL memory device to communicate with.
+> > > > + * @cmd: The validated command.
+> > > > + * @in_payload: Pointer to userspace's input payload.
+> > > > + * @out_payload: Pointer to userspace's output payload.
+> > > > + * @size_out: (Input) Max payload size to copy out.
+> > > > + *            (Output) Payload size hardware generated.
+> > > > + * @retval: Hardware generated return code from the operation.
+> > > > + *
+> > > > + * Return:
+> > > > + *  * %0	- Mailbox transaction succeeded. This implies the mailbox
+> > > > + *  		  protocol completed successfully not that the operation itself
+> > > > + *  		  was successful.
+> > > > + *  * %-ENOMEM  - Couldn't allocate a bounce buffer.
+> > > > + *  * %-EFAULT	- Something happened with copy_to/from_user.
+> > > > + *  * %-EINTR	- Mailbox acquisition interrupted.
+> > > > + *  * %-*	- Transaction level failures.
+> > > > + *
+> > > > + * Creates the appropriate mailbox command and dispatches it on behalf of a
+> > > > + * userspace request. The input and output payloads are copied between
+> > > > + * userspace.
+> > > > + *
+> > > > + * See cxl_send_cmd().
+> > > > + */
+> > > > +static int handle_mailbox_cmd_from_user(struct cxl_mem *cxlm,
+> > > > +					const struct cxl_mem_command *cmd,
+> > > > +					u64 in_payload, u64 out_payload,
+> > > > +					s32 *size_out, u32 *retval)
+> > > > +{
+> > > > +	struct device *dev = &cxlm->pdev->dev;
+> > > > +	struct mbox_cmd mbox_cmd = {
+> > > > +		.opcode = cmd->opcode,
+> > > > +		.size_in = cmd->info.size_in,
+> > > > +	};
+> > > > +	int rc;
+> > > > +
+> > > > +	if (cmd->info.size_out) {
+> > > > +		mbox_cmd.payload_out = kvzalloc(cmd->info.size_out, GFP_KERNEL);
+> > > > +		if (!mbox_cmd.payload_out)
+> > > > +			return -ENOMEM;
+> > > > +	}
+> > > > +
+> > > > +	if (cmd->info.size_in) {
+> > > > +		mbox_cmd.payload_in = kvzalloc(cmd->info.size_in, GFP_KERNEL);
+> > > > +		if (!mbox_cmd.payload_in) {
+> > > > +			rc = -ENOMEM;
+> > > > +			goto out;
+> > > > +		}
+> > > > +
+> > > > +		if (copy_from_user(mbox_cmd.payload_in,
+> > > > +				   u64_to_user_ptr(in_payload),
+> > > > +				   cmd->info.size_in)) {
+> > > > +			rc = -EFAULT;
+> > > > +			goto out;
+> > > > +		}
+> > > > +	}
+> > > > +
+> > > > +	rc = cxl_mem_mbox_get(cxlm);
+> > > > +	if (rc)
+> > > > +		goto out;
+> > > > +
+> > > > +	dev_dbg(dev,
+> > > > +		"Submitting %s command for user\n"
+> > > > +		"\topcode: %x\n"
+> > > > +		"\tsize: %ub\n",
+> > > > +		cxl_command_names[cmd->info.id].name, mbox_cmd.opcode,
+> > > > +		cmd->info.size_in);
+> > > > +
+> > > > +	rc = __cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
+> > > > +	cxl_mem_mbox_put(cxlm);
+> > > > +	if (rc)
+> > > > +		goto out;
+> > > > +
+> > > > +	/*
+> > > > +	 * @size_out contains the max size that's allowed to be written back out
+> > > > +	 * to userspace. While the payload may have written more output than
+> > > > +	 * this it will have to be ignored.
+> > > > +	 */  
+> > > 
+> > > See below for why I don't think this works. The size of mbox_cmd.payload_out
+> > > seems to always be the size userspace specified, never the 1MB this code
+> > > is assuming.  So if the hardware returns more than userspace asks for you
+> > > have a buffer overrun.
+> > > 
+> > >   
+> > > > +	if (mbox_cmd.size_out) {
+> > > > +		if (copy_to_user(u64_to_user_ptr(out_payload),
+> > > > +				 mbox_cmd.payload_out, *size_out)) {
+> > > > +			rc = -EFAULT;
+> > > > +			goto out;
+> > > > +		}
+> > > > +	}
+> > > > +
+> > > > +	/*
+> > > > +	 * Reporting the actual size, even if it was greater than @size_out
+> > > > +	 * allows userspace to try the command again with a bigger buffer.
+> > > > +	 */
+> > > > +	*size_out = mbox_cmd.size_out;
+> > > > +	*retval = mbox_cmd.return_code;
+> > > > +
+> > > > +out:
+> > > > +	kvfree(mbox_cmd.payload_in);
+> > > > +	kvfree(mbox_cmd.payload_out);
+> > > > +	return rc;
+> > > > +}
+> > > > +
+> > > > +/**
+> > > > + * cxl_validate_cmd_from_user() - Check fields for CXL_MEM_SEND_COMMAND.
+> > > > + * @cxlm: &struct cxl_mem device whose mailbox will be used.
+> > > > + * @send_cmd: &struct cxl_send_command copied in from userspace.
+> > > > + * @out_cmd: Sanitized and populated &struct cxl_mem_command.
+> > > > + *
+> > > > + * Return:
+> > > > + *  * %0	- @out_cmd is ready to send.
+> > > > + *  * %-ENOTTY	- Invalid command specified.
+> > > > + *  * %-EINVAL	- Reserved fields or invalid values were used.
+> > > > + *  * %-ENOMEM	- Input or output buffer wasn't sized properly.
+> > > > + *
+> > > > + * The result of this command is a fully validated command in @out_cmd that is
+> > > > + * safe to send to the hardware.
+> > > > + *
+> > > > + * See handle_mailbox_cmd_from_user()
+> > > > + */
+> > > > +static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
+> > > > +				      const struct cxl_send_command *send_cmd,
+> > > > +				      struct cxl_mem_command *out_cmd)
+> > > > +{
+> > > > +	const struct cxl_command_info *info;
+> > > > +	struct cxl_mem_command *c;
+> > > > +
+> > > > +	if (send_cmd->id == 0 || send_cmd->id >= CXL_MEM_COMMAND_ID_MAX)
+> > > > +		return -ENOTTY;
+> > > > +
+> > > > +	/*
+> > > > +	 * The user can never specify an input payload larger than what hardware
+> > > > +	 * supports, but output can be arbitrarily large (simply write out as
+> > > > +	 * much data as the hardware provides).
+> > > > +	 */
+> > > > +	if (send_cmd->in.size > cxlm->payload_size)
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	if (send_cmd->flags & ~CXL_MEM_COMMAND_FLAG_MASK)
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	if (send_cmd->rsvd)
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	if (send_cmd->in.rsvd || send_cmd->out.rsvd)
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	/* Convert user's command into the internal representation */
+> > > > +	c = &mem_commands[send_cmd->id];
+> > > > +	info = &c->info;
+> > > > +
+> > > > +	/* Check the input buffer is the expected size */
+> > > > +	if (info->size_in >= 0 && info->size_in != send_cmd->in.size)
+> > > > +		return -ENOMEM;
+> > > > +
+> > > > +	/* Check the output buffer is at least large enough */
+> > > > +	if (info->size_out >= 0 && send_cmd->out.size < info->size_out)
+> > > > +		return -ENOMEM;
+> > > > +
+> > > > +	memcpy(out_cmd, c, sizeof(*c));
+> > > > +	out_cmd->info.size_in = send_cmd->in.size;
+> > > > +	out_cmd->info.size_out = send_cmd->out.size;
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +static int cxl_query_cmd(struct cxl_memdev *cxlmd,
+> > > > +			 struct cxl_mem_query_commands __user *q)
+> > > > +{
+> > > > +	struct device *dev = &cxlmd->dev;
+> > > > +	struct cxl_mem_command *cmd;
+> > > > +	u32 n_commands;
+> > > > +	int j = 0;
+> > > > +
+> > > > +	dev_dbg(dev, "Query IOCTL\n");
+> > > > +
+> > > > +	if (get_user(n_commands, &q->n_commands))
+> > > > +		return -EFAULT;
+> > > > +
+> > > > +	/* returns the total number if 0 elements are requested. */
+> > > > +	if (n_commands == 0)
+> > > > +		return put_user(cxl_cmd_count, &q->n_commands);
+> > > > +
+> > > > +	/*
+> > > > +	 * otherwise, return max(n_commands, total commands) cxl_command_info
+> > > > +	 * structures.
+> > > > +	 */
+> > > > +	cxl_for_each_cmd(cmd) {
+> > > > +		const struct cxl_command_info *info = &cmd->info;
+> > > > +
+> > > > +		if (copy_to_user(&q->commands[j++], info, sizeof(*info)))
+> > > > +			return -EFAULT;
+> > > > +
+> > > > +		if (j == n_commands)
+> > > > +			break;
+> > > > +	}
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +static int cxl_send_cmd(struct cxl_memdev *cxlmd,
+> > > > +			struct cxl_send_command __user *s)
+> > > > +{
+> > > > +	struct cxl_mem *cxlm = cxlmd->cxlm;
+> > > > +	struct device *dev = &cxlmd->dev;
+> > > > +	struct cxl_send_command send;
+> > > > +	struct cxl_mem_command c;
+> > > > +	int rc;
+> > > > +
+> > > > +	dev_dbg(dev, "Send IOCTL\n");
+> > > > +
+> > > > +	if (copy_from_user(&send, s, sizeof(send)))
+> > > > +		return -EFAULT;
+> > > > +
+> > > > +	rc = cxl_validate_cmd_from_user(cxlmd->cxlm, &send, &c);
+> > > > +	if (rc)
+> > > > +		return rc;  
+> > > 
+> > > Userspace will pass in send.out set to the size of it's available buffer.
+> > > Then cxl_validate_cmd_from_user() will fill
+> > > c.info.size_out with send.out.size
+> > >   
+> > > > +
+> > > > +	/* Prepare to handle a full payload for variable sized output */
+> > > > +	if (c.info.size_out < 0)  
+> > > 
+> > > So this check only works if userspace set the command to have variable size.
+> > > That's not what the docs below suggest should happen.
+> > >   
+> > 
+> > Another good catch. This bug was introduced after the last change was made. I
+> > still don't want to have a size_out as part of the mailbox command.
+> > 
+> > Validate should not alter the size_out field except in the case of RAW commands.
+> > 
+> > I believe this is the right fix, handle_mailbox_cmd_from_user() already will
+> > only copy_to the right number of byte, but your eyes on it are appreciated.
+> > 
+> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > index 237b956f0be0..4ca4f5afd9d2 100644
+> > --- a/drivers/cxl/mem.c
+> > +++ b/drivers/cxl/mem.c
+> > @@ -686,7 +686,11 @@ static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
+> > 
+> >         memcpy(out_cmd, c, sizeof(*c));
+> >         out_cmd->info.size_in = send_cmd->in.size;
+> > -       out_cmd->info.size_out = send_cmd->out.size;
+> > +       /*
+> > +        * XXX: out_cmd->info.size_out will be controlled by the driver, and the
+> > +        * specified number of bytes @send_cmd->out.size will be copied back out
+> > +        * to userspace.
+> > +        */
+> > 
+> >         return 0;
+> >  }
 > 
-> diff --git a/Documentation/locking/futex2.rst b/Documentation/locking/futex2.rst
-> new file mode 100644
-> index 000000000000..edd47c22f2df
-> --- /dev/null
-> +++ b/Documentation/locking/futex2.rst
-> @@ -0,0 +1,198 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +======
-> +futex2
-> +======
-> +
-> +:Author: André Almeida <andrealmeid@collabora.com>
-> +
-> +futex, or fast user mutex, is a set of syscalls to allow the userspace to create
+> This deals with the buffer overflow being triggered from userspace.
+> 
+> I'm still nervous.  I really don't like assuming hardware will do the right
+> thing and never send us more data than we expect.
+> 
+> Given the check that it will fit in the target buffer is simple,
+> I'd prefer to harden it and know we can't have a problem.
+> 
+> Jonathan
 
-                                                       drop ^^^ "the"
+I'm working on hardening __cxl_mem_mbox_send_cmd now per your request. With
+that, I think this solves the issue, right?
 
-> +performant synchronization mechanisms, such as mutexes, semaphores and
-> +conditional variables in userspace. C standard libraries, like glibc, uses it
-> +as means to implements more high level interfaces like pthreads.
-
-   as a means to implement
-
-> +
-> +The interface
-> +=============
-> +
-> +uAPI functions
-> +--------------
-> +
-> +.. kernel-doc:: kernel/futex2.c
-> +   :identifiers: sys_futex_wait sys_futex_wake sys_futex_waitv sys_futex_requeue		
-> +
-> +uAPI structures
-> +---------------
-> +
-> +.. kernel-doc:: include/uapi/linux/futex.h
-> +
-> +The ``flag`` argument
-> +---------------------
-> +
-> +The flag is used to specify the size of the futex word
-> +(FUTEX_[8, 16, 32]). It's mandatory to define one, since there's no
-> +default size.
-> +
-> +By default, the timeout uses a monotonic clock, but can be used as a realtime
-> +one by using the FUTEX_REALTIME_CLOCK flag.
-> +
-> +By default, futexes are of the private type, that means that this user address
-> +will be accessed by threads that shares the same memory region. This allows for
-
-                                    share
-
-> +some internal optimizations, so they are faster. However, if the address needs
-> +to be shared with different processes (like using ``mmap()`` or ``shm()``), they
-> +need to be defined as shared and the flag FUTEX_SHARED_FLAG is used to set that.
-> +
-> +By default, the operation has no NUMA-awareness, meaning that the user can't
-> +choose the memory node where the kernel side futex data will be stored. The
-> +user can choose the node where it wants to operate by setting the
-> +FUTEX_NUMA_FLAG and using the following structure (where X can be 8, 16, or
-> +32)::
-> +
-> + struct futexX_numa {
-> +         __uX value;
-> +         __sX hint;
-> + };
-> +
-> +This structure should be passed at the ``void *uaddr`` of futex functions. The
-> +address of the structure will be used to be waited on/waken on, and the
-> +``value`` will be compared to ``val`` as usual. The ``hint`` member is used to
-> +defined which node the futex will use. When waiting, the futex will be
-
-   define
-
-> +registered on a kernel-side table stored on that node; when waking, the futex
-> +will be searched for on that given table. That means that there's no redundancy
-> +between tables, and the wrong ``hint`` value will led to undesired behavior.
-
-                                                     lead
-
-> +Userspace is responsible for dealing with node migrations issues that may
-> +occur. ``hint`` can range from [0, MAX_NUMA_NODES], for specifying a node, or
-
-                             from [0, MAX_NUMA_NODES)
-i.e., what does hint == MAX_NUMA_NODES mean?
-
-> +-1, to use the same node the current process is using.
-> +
-> +When not using FUTEX_NUMA_FLAG on a NUMA system, the futex will be stored on a
-> +global table on some node, defined at compilation time.
-
-   defined how at compilation time?
-
-> +
-> +The ``timo`` argument
-> +---------------------
-> +
-> +As per the Y2038 work done in the kernel, new interfaces shouldn't add timeout
-> +options known to be buggy. Given that, ``timo`` should be a 64bit timeout at
-
-                                                               64-bit
-
-> +all platforms, using an absolute timeout value.
-> +
-> +Implementation
-> +==============
-> +
-> +The internal implementation follows a similar design to the original futex.
-> +Given that we want to replicate the same external behavior of current futex,
-> +this should be somewhat expected.
-> +
-> +Waiting
-> +-------
-> +
-> +For the wait operations, they are all treated as if you want to wait on N
-> +futexes, so the path for futex_wait and futex_waitv is the basically the same.
-> +For both syscalls, the first step is to prepare an internal list for the list
-> +of futexes to wait for (using struct futexv_head). For futex_wait() calls, this
-> +list will have a single object.
-> +
-> +We have a hash table, were waiters register themselves before sleeping.  Then,
-
-                         where                                              Then <no comma>
-
-> +the wake function checks this table looking for waiters at uaddr.  The hash
-> +bucket to be used is determined by a struct futex_key, that stores information
-> +to uniquely identify an address from a given process. Given the huge address
-> +space, there'll be hash collisions, so we store information to be later used on
-> +collision treatment.
-> +
-> +First, for every futex we want to wait on, we check if (``*uaddr == val``).
-> +This check is done holding the bucket lock, so we are correctly serialized with
-> +any futex_wake() calls. If any waiter fails the check above, we dequeue all
-> +futexes. The check (``*uaddr == val``) can fail for two reasons:
-> +
-> +- The values are different, and we return -EAGAIN. However, if while
-> +  dequeueing we found that some futex were awakened, we prioritize this
-
-                                   futexes
-
-> +  and return success.
-> +
-> +- When trying to access the user address, we do so with page faults
-> +  disabled because we are holding a bucket's spin lock (and can't sleep
-> +  while holding a spin lock). If there's an error, it might be a page
-> +  fault, or an invalid address. We release the lock, dequeue everyone
-> +  (because it's illegal to sleep while there are futexes enqueued, we
-> +  could lose wakeups) and try again with page fault enabled. If we
-> +  succeeded, this means that the address is valid, but we need to do
-
-     succeed,
-
-> +  all the work again. For serialization reasons, we need to have the
-> +  spin lock when getting the user value. Additionally, for shared
-> +  futexes, we also need to recalculate the hash, since the underlying
-> +  mapping mechanisms could have changed when dealing with page fault.
-> +  If, even with page fault enabled, we can't access the address, it
-> +  means it's an invalid user address, and we return -EFAULT. For this
-> +  case, we prioritize the error, even if some futex were awaken.
-
-                                                 futexes
-> +
-> +If the check is OK, they are enqueued on a linked list in our bucket, and
-> +proceed to the next one. If all waiters succeed, we put the thread to sleep
-> +until a futex_wake() call, timeout expires or we get a signal. After waking up,
-> +we dequeue everyone, and check if some futex was awaken. This dequeue is done by
-
-                                                was awakened.
-
-> +iteratively walking at each element of struct futex_head list.
-> +
-> +All enqueuing/dequeuing operations requires to hold the bucket lock, to avoid
-> +racing while modifying the list.
-> +
-> +Waking
-> +------
-> +
-> +We get the bucket that's storing the waiters at uaddr, and wake the required
-> +number of waiters, checking for hash collision.
-> +
-> +There's an optimization that makes futex_wake() not taking the bucket lock if
-
-                                                       take
-
-> +there's no one to be wake on that bucket. It checks an atomic counter that each
-
-                        woken / awakened ?
-
-> +bucket has, if it says 0, than the syscall exits. In order to this work, the
-
-                             then                             for this to work, the
-
-> +waiter thread increases it before taking the lock, so the wake thread will
-> +correctly see that there's someone waiting and will continue the path to take
-> +the bucket lock. To get the correct serialization, the waiter issues a memory
-> +barrier after increasing the bucket counter and the waker issues a memory
-> +barrier before checking it.
-> +
-> +Requeuing
-> +---------
-> +
-> +The requeue path first checks for each struct futex_requeue and their flags.
-> +Then, it will compare the excepted value with the one at uaddr1::uaddr.
-
-                             accepted ?
-
-> +Following the same serialization explained at Waking_, we increase the atomic
-> +counter for the bucket of uaddr2 before taking the lock. We need to have both
-> +buckets locks at same time so we don't race with others futexes operations. To
-
-                                                    other futex operations.
-
-> +ensure the locks are taken in the same order for all threads (and thus avoiding
-> +deadlocks), every requeue operation takes the "smaller" bucket first, when
-> +comparing both addresses.
-> +
-> +If the compare with user value succeeds, we proceed by waking ``nr_wake``
-> +futexes, and then requeuing ``nr_requeue`` from bucket of uaddr1 to the uaddr2.
-> +This consists in a simple list deletion/addition and replacing the old futex key
-> +for the new one.
-
-   with the new one.
-(I think.)
-
-> +
-> +Futex keys
-> +----------
-> +
-> +There are two types of futexes: private and shared ones. The private are futexes
-> +meant to be used by threads that shares the same memory space, are easier to be
-
-                                    share
-
-> +uniquely identified an thus can have some performance optimization. The elements
-
-                       and
-
-> +for identifying one are: the start address of the page where the address is,
-> +the address offset within the page and the current->mm pointer.
-> +
-> +Now, for uniquely identifying shared futex:
-
-                                 a shared futex:
-
-> +
-> +- If the page containing the user address is an anonymous page, we can
-> +  just use the same data used for private futexes (the start address of
-> +  the page, the address offset within the page and the current->mm
-> +  pointer) that will be enough for uniquely identifying such futex. We
-
-     pointer); that
-
-> +  also set one bit at the key to differentiate if a private futex is
-> +  used on the same address (mixing shared and private calls do not
-
-                                                               does not
-
-> +  work).
-> +
-> +- If the page is file-backed, current->mm maybe isn't the same one for
-> +  every user of this futex, so we need to use other data: the
-> +  page->index, an UUID for the struct inode and the offset within the
-
-                  a UUID
-
-> +  page.
-> +
-> +Note that members of futex_key doesn't have any particular meaning after they
-
-                                  don't
-
-> +are part of the struct - they are just bytes to identify a futex.  Given that,
-> +we don't need to use a particular name or type that matches the original data,
-> +we only need to care about the bitsize of each component and make both private
-> +and shared fit in the same memory space.
-> +
-> +Source code documentation
-> +=========================
-> +
-> +.. kernel-doc:: kernel/futex2.c
-> +   :no-identifiers: sys_futex_wait sys_futex_wake sys_futex_waitv sys_futex_requeue
-
-
--- 
-~Randy
-
+> 
+> 
+> > 
+> > > > +		c.info.size_out = cxlm->payload_size;
+> > > > +
+> > > > +	rc = handle_mailbox_cmd_from_user(cxlm, &c, send.in.payload,
+> > > > +					  send.out.payload, &send.out.size,
+> > > > +					  &send.retval);
+> > > > +	if (rc)
+> > > > +		return rc;
+> > > > +
+> > > > +	return copy_to_user(s, &send, sizeof(send));
+> > > > +}
+> > > > +
+> > > > +static long __cxl_memdev_ioctl(struct cxl_memdev *cxlmd, unsigned int cmd,
+> > > > +			       unsigned long arg)
+> > > > +{
+> > > > +	switch (cmd) {
+> > > > +	case CXL_MEM_QUERY_COMMANDS:
+> > > > +		return cxl_query_cmd(cxlmd, (void __user *)arg);
+> > > > +	case CXL_MEM_SEND_COMMAND:
+> > > > +		return cxl_send_cmd(cxlmd, (void __user *)arg);
+> > > > +	default:
+> > > > +		return -ENOTTY;
+> > > > +	}
+> > > > +}
+> > > > +
+> > > >  static long cxl_memdev_ioctl(struct file *file, unsigned int cmd,
+> > > >  			     unsigned long arg)
+> > > >  {
+> > > > @@ -325,7 +611,7 @@ static long cxl_memdev_ioctl(struct file *file, unsigned int cmd,
+> > > >  	if (!percpu_ref_tryget_live(&cxlmd->ops_active))
+> > > >  		return -ENXIO;
+> > > >  
+> > > > -	/* TODO: ioctl body */
+> > > > +	rc = __cxl_memdev_ioctl(cxlmd, cmd, arg);
+> > > >  
+> > > >  	percpu_ref_put(&cxlmd->ops_active);
+> > > >  
+> > > > diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
+> > > > new file mode 100644
+> > > > index 000000000000..18cea908ad0b
+> > > > --- /dev/null
+> > > > +++ b/include/uapi/linux/cxl_mem.h
+> > > > @@ -0,0 +1,154 @@
+> > > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > > > +/*
+> > > > + * CXL IOCTLs for Memory Devices
+> > > > + */
+> > > > +
+> > > > +#ifndef _UAPI_CXL_MEM_H_
+> > > > +#define _UAPI_CXL_MEM_H_
+> > > > +
+> > > > +#include <linux/types.h>
+> > > > +
+> > > > +/**
+> > > > + * DOC: UAPI
+> > > > + *
+> > > > + * Not all of all commands that the driver supports are always available for use
+> > > > + * by userspace. Userspace must check the results from the QUERY command in
+> > > > + * order to determine the live set of commands.
+> > > > + */
+> > > > +
+> > > > +#define CXL_MEM_QUERY_COMMANDS _IOR(0xCE, 1, struct cxl_mem_query_commands)
+> > > > +#define CXL_MEM_SEND_COMMAND _IOWR(0xCE, 2, struct cxl_send_command)
+> > > > +
+> > > > +#define CXL_CMDS                                                          \
+> > > > +	___C(INVALID, "Invalid Command"),                                 \
+> > > > +	___C(IDENTIFY, "Identify Command"),                               \
+> > > > +	___C(MAX, "invalid / last command")
+> > > > +
+> > > > +#define ___C(a, b) CXL_MEM_COMMAND_ID_##a
+> > > > +enum { CXL_CMDS };
+> > > > +
+> > > > +#undef ___C
+> > > > +#define ___C(a, b) { b }
+> > > > +static const struct {
+> > > > +	const char *name;
+> > > > +} cxl_command_names[] = { CXL_CMDS };
+> > > > +
+> > > > +/*
+> > > > + * Here's how this actually breaks out:
+> > > > + * cxl_command_names[] = {
+> > > > + *	[CXL_MEM_COMMAND_ID_INVALID] = { "Invalid Command" },
+> > > > + *	[CXL_MEM_COMMAND_ID_IDENTIFY] = { "Identify Command" },
+> > > > + *	...
+> > > > + *	[CXL_MEM_COMMAND_ID_MAX] = { "invalid / last command" },
+> > > > + * };
+> > > > + */  
+> > > 
+> > > Thanks, this is great.
+> > >   
+> > > > +
+> > > > +#undef ___C
+> > > > +
+> > > > +/**
+> > > > + * struct cxl_command_info - Command information returned from a query.
+> > > > + * @id: ID number for the command.
+> > > > + * @flags: Flags that specify command behavior.
+> > > > + * @size_in: Expected input size, or -1 if variable length.
+> > > > + * @size_out: Expected output size, or -1 if variable length.
+> > > > + *
+> > > > + * Represents a single command that is supported by both the driver and the
+> > > > + * hardware. This is returned as part of an array from the query ioctl. The
+> > > > + * following would be a command that takes a variable length input and returns 0
+> > > > + * bytes of output.
+> > > > + *
+> > > > + *  - @id = 10
+> > > > + *  - @flags = 0
+> > > > + *  - @size_in = -1
+> > > > + *  - @size_out = 0
+> > > > + *
+> > > > + * See struct cxl_mem_query_commands.
+> > > > + */
+> > > > +struct cxl_command_info {
+> > > > +	__u32 id;
+> > > > +
+> > > > +	__u32 flags;
+> > > > +#define CXL_MEM_COMMAND_FLAG_MASK GENMASK(0, 0)
+> > > > +
+> > > > +	__s32 size_in;
+> > > > +	__s32 size_out;
+> > > > +};
+> > > > +
+> > > > +/**
+> > > > + * struct cxl_mem_query_commands - Query supported commands.
+> > > > + * @n_commands: In/out parameter. When @n_commands is > 0, the driver will
+> > > > + *		return min(num_support_commands, n_commands). When @n_commands
+> > > > + *		is 0, driver will return the number of total supported commands.
+> > > > + * @rsvd: Reserved for future use.
+> > > > + * @commands: Output array of supported commands. This array must be allocated
+> > > > + *            by userspace to be at least min(num_support_commands, @n_commands)
+> > > > + *
+> > > > + * Allow userspace to query the available commands supported by both the driver,
+> > > > + * and the hardware. Commands that aren't supported by either the driver, or the
+> > > > + * hardware are not returned in the query.
+> > > > + *
+> > > > + * Examples:
+> > > > + *
+> > > > + *  - { .n_commands = 0 } // Get number of supported commands
+> > > > + *  - { .n_commands = 15, .commands = buf } // Return first 15 (or less)
+> > > > + *    supported commands
+> > > > + *
+> > > > + *  See struct cxl_command_info.
+> > > > + */
+> > > > +struct cxl_mem_query_commands {
+> > > > +	/*
+> > > > +	 * Input: Number of commands to return (space allocated by user)
+> > > > +	 * Output: Number of commands supported by the driver/hardware
+> > > > +	 *
+> > > > +	 * If n_commands is 0, kernel will only return number of commands and
+> > > > +	 * not try to populate commands[], thus allowing userspace to know how
+> > > > +	 * much space to allocate
+> > > > +	 */  
+> > > 
+> > > This is fairly well described in the docs above the structure.
+> > > Perhaps combine the two.
+> > >   
+> > > > +	__u32 n_commands;
+> > > > +	__u32 rsvd;
+> > > > +
+> > > > +	struct cxl_command_info __user commands[]; /* out: supported commands */
+> > > > +};
+> > > > +
+> > > > +/**
+> > > > + * struct cxl_send_command - Send a command to a memory device.
+> > > > + * @id: The command to send to the memory device. This must be one of the
+> > > > + *	commands returned by the query command.
+> > > > + * @flags: Flags for the command (input).
+> > > > + * @rsvd: Must be zero.
+> > > > + * @retval: Return value from the memory device (output).
+> > > > + * @in.size: Size of the payload to provide to the device (input).
+> > > > + * @in.rsvd: Must be zero.
+> > > > + * @in.payload: Pointer to memory for payload input, payload is little endian.
+> > > > + * @out.size: Size of the payload received from the device (input/output). This
+> > > > + *	      field is filled in by userspace to let the driver know how much
+> > > > + *	      space was allocated for output. It is populated by the driver to
+> > > > + *	      let userspace know how large the output payload actually was.
+> > > > + * @out.rsvd: Must be zero.
+> > > > + * @out.payload: Pointer to memory for payload output, payload is little endian.
+> > > > + *
+> > > > + * Mechanism for userspace to send a command to the hardware for processing. The
+> > > > + * driver will do basic validation on the command sizes. In some cases even the
+> > > > + * payload may be introspected. Userspace is required to allocate large enough
+> > > > + * buffers for size_out which can be variable length in certain situations.
+> > > > + */
+> > > > +struct cxl_send_command {
+> > > > +	__u32 id;
+> > > > +	__u32 flags;
+> > > > +	__u32 rsvd;
+> > > > +	__u32 retval;
+> > > > +
+> > > > +	struct {
+> > > > +		__s32 size;
+> > > > +		__u32 rsvd;
+> > > > +		__u64 payload;
+> > > > +	} in;
+> > > > +
+> > > > +	struct {
+> > > > +		__s32 size;
+> > > > +		__u32 rsvd;
+> > > > +		__u64 payload;
+> > > > +	} out;
+> > > > +};
+> > > > +
+> > > > +#endif  
+> > >   
+> 
