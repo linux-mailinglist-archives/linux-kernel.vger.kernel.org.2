@@ -2,295 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C58331C5BD
+	by mail.lfdr.de (Postfix) with ESMTP id DD3A531C5BE
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 04:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbhBPDMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 22:12:37 -0500
-Received: from conuserg-07.nifty.com ([210.131.2.74]:34374 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhBPDMe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 22:12:34 -0500
-Received: from grover.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 11G3A8ci028393;
-        Tue, 16 Feb 2021 12:10:09 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 11G3A8ci028393
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613445010;
-        bh=ySLd9Zjvney6DkpWkp4QsTkH/8N065eRejVtyKgK2/A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2OfBjeFlXLrxMjkLI4Mb+lc/HWrSDl2U7BhkylnZKZYtu+Liv28L5Q3fTqM56enhs
-         KjQoKBQSuswRyl+a9Ubq+TvhslLFoLnLqYO6yaVcw/dyxj2NT8aT4ac+eYPedGB3Xr
-         2hqzMIR2lhACVsWITYchNsvEtPqQoL6tHawWHpH3nkZxPOUSU0Csq14TdRt9IUY0RP
-         u8o385PwoGEeldJjtKOO7qEQexn8v0uB3HoyCUjeDo2lYwh6OZXQQomwMj7qldoGxY
-         ahAg5dsccS2eHXjFdIEsEv0paUWKAeTzAcWY6Pjca5UIKvQi75DFi1T4tYJVh2oXCU
-         +pAuOrZfrlsXQ==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     David Laight <david.laight@aculab.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        id S229881AbhBPDMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 22:12:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:53770 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229708AbhBPDMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 15 Feb 2021 22:12:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C92631B;
+        Mon, 15 Feb 2021 19:12:01 -0800 (PST)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CFCF3F73D;
+        Mon, 15 Feb 2021 19:11:57 -0800 (PST)
+Subject: Re: [PATCH v2 1/1] arm64: mm: correct the inside linear map
+ boundaries during hotplug check
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        James Morris <jmorris@namei.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        KP Singh <kpsingh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Quentin Perret <qperret@google.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] kbuild: check the minimum linker version in Kconfig
-Date:   Tue, 16 Feb 2021 12:10:04 +0900
-Message-Id: <20210216031004.552417-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210216031004.552417-1-masahiroy@kernel.org>
-References: <20210216031004.552417-1-masahiroy@kernel.org>
+        Mike Rapoport <rppt@kernel.org>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210215192237.362706-1-pasha.tatashin@soleen.com>
+ <20210215192237.362706-2-pasha.tatashin@soleen.com>
+ <CAMj1kXGxyV0=s6jVZ674O_2amkYSnwSnubnozbzD6g6GOMJE-A@mail.gmail.com>
+ <CA+CK2bA7Xz0Zg5phsQi3mhnp+_PHLAAGRLgFTQNw1FjBHaXsHA@mail.gmail.com>
+ <CAMj1kXESuD-von_dtzYcUMwK7TLF=qTki9bd8_iTo_isBwj13g@mail.gmail.com>
+ <CA+CK2bDJ7Y2-vEpZrZ0fzigAfDgcJOmjhmin_GjTqioYXAYB3Q@mail.gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <1790afff-eebd-1eda-a1b4-0062908f1f32@arm.com>
+Date:   Tue, 16 Feb 2021 08:42:26 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+CK2bDJ7Y2-vEpZrZ0fzigAfDgcJOmjhmin_GjTqioYXAYB3Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unify the two scripts/ld-version.sh and scripts/lld-version.sh, and
-check the minimum linker version like scripts/cc-version.sh did.
 
-I tested this script for some corner cases reported in the past:
 
- - GNU ld version 2.25-15.fc23
-   as reported by commit 8083013fc320 ("ld-version: Fix it on Fedora")
-
- - GNU ld (GNU Binutils) 2.20.1.20100303
-   as reported by commit 0d61ed17dd30 ("ld-version: Drop the 4th and
-   5th version components")
-
-This script show an error message if the linker is too old:
-
-  $ make LD=ld.lld-9
-    SYNC    include/config/auto.conf
-  ***
-  *** Linker is too old.
-  ***   Your LLD version:    9.0.1
-  ***   Minimum LLD version: 10.0.1
-  ***
-  scripts/Kconfig.include:50: Sorry, this linker is not supported.
-  make[2]: *** [scripts/kconfig/Makefile:71: syncconfig] Error 1
-  make[1]: *** [Makefile:600: syncconfig] Error 2
-  make: *** [Makefile:708: include/config/auto.conf] Error 2
-
-I also moved the check for gold to this script, so gold is still rejected:
-
-  $ make LD=gold
-    SYNC    include/config/auto.conf
-  gold linker is not supported as it is not capable of linking the kernel proper.
-  scripts/Kconfig.include:50: Sorry, this linker is not supported.
-  make[2]: *** [scripts/kconfig/Makefile:71: syncconfig] Error 1
-  make[1]: *** [Makefile:600: syncconfig] Error 2
-  make: *** [Makefile:708: include/config/auto.conf] Error 2
-
-Thanks to David Laight for suggesting shell script improvements.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- MAINTAINERS             |  1 -
- init/Kconfig            | 21 +++++++----
- scripts/Kconfig.include |  7 +++-
- scripts/ld-version.sh   | 82 ++++++++++++++++++++++++++++++++++++-----
- scripts/lld-version.sh  | 20 ----------
- 5 files changed, 90 insertions(+), 41 deletions(-)
- delete mode 100755 scripts/lld-version.sh
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index df820969be1f..6b82ad6990b7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4314,7 +4314,6 @@ C:	irc://chat.freenode.net/clangbuiltlinux
- F:	Documentation/kbuild/llvm.rst
- F:	include/linux/compiler-clang.h
- F:	scripts/clang-tools/
--F:	scripts/lld-version.sh
- K:	\b(?i:clang|llvm)\b
- 
- CLEANCACHE API
-diff --git a/init/Kconfig b/init/Kconfig
-index 7bcfa24524c2..42b69ee29dca 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -33,24 +33,29 @@ config GCC_VERSION
- 	default $(cc-version) if CC_IS_GCC
- 	default 0
- 
--config LD_VERSION
--	int
--	default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
--
- config CC_IS_CLANG
- 	def_bool $(success,test "$(cc-name)" = Clang)
- 
--config LD_IS_LLD
--	def_bool $(success,$(LD) -v | head -n 1 | grep -q LLD)
--
- config CLANG_VERSION
- 	int
- 	default $(cc-version) if CC_IS_CLANG
- 	default 0
- 
-+config LD_IS_BFD
-+	def_bool $(success,test "$(ld-name)" = BFD)
-+
-+config LD_VERSION
-+	int
-+	default $(ld-version) if LD_IS_BFD
-+	default 0
-+
-+config LD_IS_LLD
-+	def_bool $(success,test "$(ld-name)" = LLD)
-+
- config LLD_VERSION
- 	int
--	default $(shell,$(srctree)/scripts/lld-version.sh $(LD))
-+	default $(ld-version) if LD_IS_LLD
-+	default 0
- 
- config CC_CAN_LINK
- 	bool
-diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
-index 0228cb9c74aa..58fdb5308725 100644
---- a/scripts/Kconfig.include
-+++ b/scripts/Kconfig.include
-@@ -45,8 +45,11 @@ $(error-if,$(success,test -z "$(cc-info)"),Sorry$(comma) this compiler is not su
- cc-name := $(shell,set -- $(cc-info) && echo $1)
- cc-version := $(shell,set -- $(cc-info) && echo $2)
- 
--# Fail if the linker is gold as it's not capable of linking the kernel proper
--$(error-if,$(success, $(LD) -v | grep -q gold), gold linker '$(LD)' not supported)
-+# Get the linker name, version, and error out if it is not supported.
-+ld-info := $(shell,$(srctree)/scripts/ld-version.sh $(LD))
-+$(error-if,$(success,test -z "$(ld-info)"),Sorry$(comma) this linker is not supported.)
-+ld-name := $(shell,set -- $(ld-info) && echo $1)
-+ld-version := $(shell,set -- $(ld-info) && echo $2)
- 
- # machine bit flags
- #  $(m32-flag): -m32 if the compiler supports it, or an empty string otherwise.
-diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-index 0f8a2c0f9502..a463273509b5 100755
---- a/scripts/ld-version.sh
-+++ b/scripts/ld-version.sh
-@@ -1,11 +1,73 @@
--#!/usr/bin/awk -f
-+#!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
--# extract linker version number from stdin and turn into single number
--	{
--	gsub(".*\\)", "");
--	gsub(".*version ", "");
--	gsub("-.*", "");
--	split($1,a, ".");
--	print a[1]*10000 + a[2]*100 + a[3];
--	exit
--	}
-+#
-+# Print the linker name and its version in a 5 or 6-digit form.
-+# Also, perform the minimum version check.
-+
-+set -e
-+
-+# When you raise the minimum linker version, please update
-+# Documentation/process/changes.rst as well.
-+bfd_min_version=2.23.0
-+lld_min_version=10.0.1
-+
-+# Convert the version string x.y.z to a canonical 5 or 6-digit form.
-+get_canonical_version()
-+{
-+	IFS=.
-+	set -- $1
-+
-+	# If the 2nd or 3rd field is missing, fill it with a zero.
-+	#
-+	# The 4th field, if present, is ignored.
-+	# This occurs in development snapshots as in 2.35.1.20201116
-+	echo $((10000 * $1 + 100 * ${2:-0} + ${3:-0}))
-+}
-+
-+orig_args="$@"
-+
-+# Get the first line of the --version output.
-+IFS='
-+'
-+set -- $("$@" --version)
-+
-+# Split the line on spaces.
-+IFS=' '
-+set -- $1
-+
-+if [ "$1" = GNU -a "$2" = ld ]; then
-+	shift $(($# - 1))
-+	version=$1
-+	min_version=$bfd_min_version
-+	name=BFD
-+	disp_name="GNU ld"
-+elif [ "$1" = GNU -a "$2" = gold ]; then
-+	echo "gold linker is not supported as it is not capable of linking the kernel proper." >&2
-+	exit 1
-+elif [ "$1" = LLD ]; then
-+	version=$2
-+	min_version=$lld_min_version
-+	name=LLD
-+	disp_name=LLD
-+else
-+	echo "$orig_args: unknown linker" >&2
-+	exit 1
-+fi
-+
-+# Some distributions append a package release number, as in 2.34-4.fc32
-+# Trim the hyphen and any characters that follow.
-+version=${version%-*}
-+
-+cversion=$(get_canonical_version $version)
-+min_cversion=$(get_canonical_version $min_version)
-+
-+if [ "$cversion" -lt "$min_cversion" ]; then
-+	echo >&2 "***"
-+	echo >&2 "*** Linker is too old."
-+	echo >&2 "***   Your $disp_name version:    $version"
-+	echo >&2 "***   Minimum $disp_name version: $min_version"
-+	echo >&2 "***"
-+	exit 1
-+fi
-+
-+echo $name $cversion
-diff --git a/scripts/lld-version.sh b/scripts/lld-version.sh
-deleted file mode 100755
-index d70edb4d8a4f..000000000000
---- a/scripts/lld-version.sh
-+++ /dev/null
-@@ -1,20 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--#
--# Usage: $ ./scripts/lld-version.sh ld.lld
--#
--# Print the linker version of `ld.lld' in a 5 or 6-digit form
--# such as `100001' for ld.lld 10.0.1 etc.
--
--linker_string="$($* --version)"
--
--if ! ( echo $linker_string | grep -q LLD ); then
--	echo 0
--	exit 1
--fi
--
--VERSION=$(echo $linker_string | cut -d ' ' -f 2)
--MAJOR=$(echo $VERSION | cut -d . -f 1)
--MINOR=$(echo $VERSION | cut -d . -f 2)
--PATCHLEVEL=$(echo $VERSION | cut -d . -f 3)
--printf "%d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
--- 
-2.27.0
-
+On 2/16/21 1:21 AM, Pavel Tatashin wrote:
+> On Mon, Feb 15, 2021 at 2:34 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+>>
+>> On Mon, 15 Feb 2021 at 20:30, Pavel Tatashin <pasha.tatashin@soleen.com> wrote:
+>>>
+>>>> Can't we simply use signed arithmetic here? This expression works fine
+>>>> if the quantities are all interpreted as s64 instead of u64
+>>>
+>>> I was thinking about that, but I do not like the idea of using sign
+>>> arithmetics for physical addresses. Also, I am worried that someone in
+>>> the future will unknowingly change it to unsigns or to phys_addr_t. It
+>>> is safer to have start explicitly set to 0 in case of wrap.
+>>
+>> memstart_addr is already a s64 for this exact reason.
+> 
+> memstart_addr is basically an offset and it must be negative. For
+> example, this would not work if it was not signed:
+> #define vmemmap ((struct page *)VMEMMAP_START - (memstart_addr >> PAGE_SHIFT))
+> 
+> However, on powerpc it is phys_addr_t type.
+> 
+>>
+>> Btw, the KASLR check is incorrect: memstart_addr could also be
+>> negative when running the 52-bit VA kernel on hardware that is only
+>> 48-bit VA capable.
+> 
+> Good point!
+> 
+> if (IS_ENABLED(CONFIG_ARM64_VA_BITS_52) && (vabits_actual != 52))
+>     memstart_addr -= _PAGE_OFFSET(48) - _PAGE_OFFSET(52);
+> 
+> So, I will remove IS_ENABLED(CONFIG_RANDOMIZE_BASE) again.
+> 
+> I am OK to change start_linear_pa, end_linear_pa to signed, but IMO
+> what I have now is actually safer to make sure that does not break
+> again in the future.
+An explicit check for the flip over and providing two different start
+addresses points would be required in order to use the new framework.
