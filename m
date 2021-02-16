@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD32B31C9FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7BA31C9EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 12:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhBPLmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 06:42:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29441 "EHLO
+        id S229889AbhBPLj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 06:39:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48853 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230376AbhBPLi6 (ORCPT
+        by vger.kernel.org with ESMTP id S230364AbhBPLi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:38:58 -0500
+        Tue, 16 Feb 2021 06:38:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613475450;
+        s=mimecast20190719; t=1613475448;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2KPW0s8srkPK+oIjW73R/hOS007fqavsKuim9JgrbsM=;
-        b=S4VaHKtN2IYerSUF0GcD61jIp3+TRhYIqMYlJjsRLgMEe7Rcr4LxzTbvYg/MGgYiMMXy7r
-        rWZqPy08IATIQzWbZmFVGRkhojvhXZKFnkPSVHz2fw9UyM0pPYhelkku6Myhwzt7kdy6Ig
-        F0WE7z3sAqmh+yUkIcmloRt7LWujZZk=
+        bh=1BNcwAgY2lWfqJewfJz+Q3AkCPMKcBiYlzER8aYP8gc=;
+        b=F5yrq66hVJKQSnsZYO4dDL6cp2sxCiYiwLIMgdX7Cbt2vG3wSXUfH2kNw4GZgY99J6oBTV
+        QB8SsqqVQ6iZmIrbEkJWxq0ZCorfFlz3LYvpkXVyZDRvx5qIHlI6ZugbU/5Lq9+HfjEamV
+        kMm1E55+gvRJ476zXBJXe5UYh/2/7YA=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-ThBwyDJ3Oh2glP8w9lMyTg-1; Tue, 16 Feb 2021 06:37:26 -0500
-X-MC-Unique: ThBwyDJ3Oh2glP8w9lMyTg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-374-JoG8JbKEOXqO0suKiZDyqw-1; Tue, 16 Feb 2021 06:37:26 -0500
+X-MC-Unique: JoG8JbKEOXqO0suKiZDyqw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7A0F80196C;
-        Tue, 16 Feb 2021 11:37:24 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DFEA195D564;
+        Tue, 16 Feb 2021 11:37:25 +0000 (UTC)
 Received: from sirius.home.kraxel.org (ovpn-114-184.ams2.redhat.com [10.36.114.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6A6F619C99;
-        Tue, 16 Feb 2021 11:37:24 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1C7D61002382;
+        Tue, 16 Feb 2021 11:37:25 +0000 (UTC)
 Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id 2BBF218003BE; Tue, 16 Feb 2021 12:37:18 +0100 (CET)
+        id 47B3F1800634; Tue, 16 Feb 2021 12:37:18 +0100 (CET)
 From:   Gerd Hoffmann <kraxel@redhat.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     Gerd Hoffmann <kraxel@redhat.com>,
@@ -46,103 +46,48 @@ Cc:     Gerd Hoffmann <kraxel@redhat.com>,
         VIRTUAL GPU),
         spice-devel@lists.freedesktop.org (open list:DRM DRIVER FOR QXL VIRTUAL
         GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 06/10] drm/qxl: add qxl_bo_kmap/qxl_bo_kunmap
-Date:   Tue, 16 Feb 2021 12:37:12 +0100
-Message-Id: <20210216113716.716996-7-kraxel@redhat.com>
+Subject: [PATCH 07/10] drm/qxl: fix prime kmap
+Date:   Tue, 16 Feb 2021 12:37:13 +0100
+Message-Id: <20210216113716.716996-8-kraxel@redhat.com>
 In-Reply-To: <20210216113716.716996-1-kraxel@redhat.com>
 References: <20210216113716.716996-1-kraxel@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add kmap/kunmap variants which reserve (and pin) the bo.
-They can be used in case the caller doesn't hold a reservation
-for the bo.
+Use the correct kmap variant.  We don't have a reservation here,
+so we can't use the _locked version.
 
 Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 ---
- drivers/gpu/drm/qxl/qxl_object.h |  2 ++
- drivers/gpu/drm/qxl/qxl_object.c | 36 ++++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
+ drivers/gpu/drm/qxl/qxl_prime.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/qxl/qxl_object.h b/drivers/gpu/drm/qxl/qxl_object.h
-index 5bd33650183f..360972ae4869 100644
---- a/drivers/gpu/drm/qxl/qxl_object.h
-+++ b/drivers/gpu/drm/qxl/qxl_object.h
-@@ -64,7 +64,9 @@ extern int qxl_bo_create(struct qxl_device *qdev,
- 			 u32 priority,
- 			 struct qxl_surface *surf,
- 			 struct qxl_bo **bo_ptr);
-+extern int qxl_bo_kmap(struct qxl_bo *bo, struct dma_buf_map *map);
- extern int qxl_bo_kmap_locked(struct qxl_bo *bo, struct dma_buf_map *map);
-+extern int qxl_bo_kunmap(struct qxl_bo *bo);
- extern void qxl_bo_kunmap_locked(struct qxl_bo *bo);
- void *qxl_bo_kmap_atomic_page(struct qxl_device *qdev, struct qxl_bo *bo, int page_offset);
- void qxl_bo_kunmap_atomic_page(struct qxl_device *qdev, struct qxl_bo *bo, void *map);
-diff --git a/drivers/gpu/drm/qxl/qxl_object.c b/drivers/gpu/drm/qxl/qxl_object.c
-index b56d4dfc28cb..22748b9566af 100644
---- a/drivers/gpu/drm/qxl/qxl_object.c
-+++ b/drivers/gpu/drm/qxl/qxl_object.c
-@@ -29,6 +29,9 @@
- #include "qxl_drv.h"
- #include "qxl_object.h"
+diff --git a/drivers/gpu/drm/qxl/qxl_prime.c b/drivers/gpu/drm/qxl/qxl_prime.c
+index dc295b2e2b52..4aa949799446 100644
+--- a/drivers/gpu/drm/qxl/qxl_prime.c
++++ b/drivers/gpu/drm/qxl/qxl_prime.c
+@@ -59,7 +59,7 @@ int qxl_gem_prime_vmap(struct drm_gem_object *obj, struct dma_buf_map *map)
+ 	struct qxl_bo *bo = gem_to_qxl_bo(obj);
+ 	int ret;
  
-+static int __qxl_bo_pin(struct qxl_bo *bo);
-+static void __qxl_bo_unpin(struct qxl_bo *bo);
-+
- static void qxl_ttm_bo_destroy(struct ttm_buffer_object *tbo)
+-	ret = qxl_bo_kmap_locked(bo, map);
++	ret = qxl_bo_kmap(bo, map);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -71,7 +71,7 @@ void qxl_gem_prime_vunmap(struct drm_gem_object *obj,
  {
- 	struct qxl_bo *bo;
-@@ -179,6 +182,25 @@ int qxl_bo_kmap_locked(struct qxl_bo *bo, struct dma_buf_map *map)
- 	return 0;
+ 	struct qxl_bo *bo = gem_to_qxl_bo(obj);
+ 
+-	qxl_bo_kunmap_locked(bo);
++	qxl_bo_kunmap(bo);
  }
  
-+int qxl_bo_kmap(struct qxl_bo *bo, struct dma_buf_map *map)
-+{
-+	int r;
-+
-+	r = qxl_bo_reserve(bo);
-+	if (r)
-+		return r;
-+
-+	r = __qxl_bo_pin(bo);
-+	if (r) {
-+		qxl_bo_unreserve(bo);
-+		return r;
-+	}
-+
-+	r = qxl_bo_kmap_locked(bo, map);
-+	qxl_bo_unreserve(bo);
-+	return r;
-+}
-+
- void *qxl_bo_kmap_atomic_page(struct qxl_device *qdev,
- 			      struct qxl_bo *bo, int page_offset)
- {
-@@ -223,6 +245,20 @@ void qxl_bo_kunmap_locked(struct qxl_bo *bo)
- 	ttm_bo_vunmap(&bo->tbo, &bo->map);
- }
- 
-+int qxl_bo_kunmap(struct qxl_bo *bo)
-+{
-+	int r;
-+
-+	r = qxl_bo_reserve(bo);
-+	if (r)
-+		return r;
-+
-+	qxl_bo_kunmap_locked(bo);
-+	__qxl_bo_unpin(bo);
-+	qxl_bo_unreserve(bo);
-+	return 0;
-+}
-+
- void qxl_bo_kunmap_atomic_page(struct qxl_device *qdev,
- 			       struct qxl_bo *bo, void *pmap)
- {
+ int qxl_gem_prime_mmap(struct drm_gem_object *obj,
 -- 
 2.29.2
 
