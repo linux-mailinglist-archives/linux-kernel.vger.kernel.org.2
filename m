@@ -2,264 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C6831C7C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCC431C7C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 10:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhBPJF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 04:05:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
+        id S230000AbhBPJGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 04:06:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhBPJE4 (ORCPT
+        with ESMTP id S229754AbhBPJGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 04:04:56 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEE4C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:03:58 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id b10so9795290ybn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:03:58 -0800 (PST)
+        Tue, 16 Feb 2021 04:06:00 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54774C06178B
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:04:19 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id z7so5141279plk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 01:04:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9ad5fJQsjFqBClERhvuISieSOy+7o471fO8R0Iulcc0=;
-        b=tI1AQ4QUYL9AKy2+hFDhM63f4PhTt6pzL4oPEXi8AP1xAAO7W6+34oR+1eZwLIvWKu
-         q4SOZf8TqlpZVj9kV/08KQkoQDElVe18yoga8MerOz5ebDwvFeSHeRFeLdeub2RyC40V
-         akatORZ3e+EvviH5abGtlz8jLWpNY0+WdvAxJ5RMUIyPU/Zu38Ik4rW8ryV4iySD3g7V
-         0UzDEhP+4v28eMLMSvu+ROWAC7C6omAeytlQeqMx0i+uVo3blhgosYqb0BQ2/3eVgdFC
-         eFpe9NFQZ9fEATlkNUxJBQWbeted93hWgvv5G8EEjuPCN2nsdiu6DsJ4KVnZ+nzu7bUJ
-         qraQ==
+         :cc:content-transfer-encoding;
+        bh=Hix40Xj1oUuEJXyWgpErtznzZizVsi/XpFAKnYjHmQY=;
+        b=eCXmzNSbiTk7i4WkXniq28m9G37QrlWzW+DY39V8ZNK5WTP7spj9JBNl/75AUeXslS
+         pJixcJGyqDLo4/gX0Lkr+1LUgrtreYH6pDPPHtbPLnLkeQx/1x9tDVzu0zNv77WPe+uF
+         QM23Y4vse2SXdXjhaYvzlAGwnbVJnKqbsBbszex9XCw8oV+SmfE5m6RQXxoFgr5eVZn/
+         qINrIHGW1sADmAiL0WIfXKeZ8p6SxtIV13mV/bwjr35huaocQRV4X7kDW1oPkdZE79ZV
+         Nbja5Hzu2TLV6H4VkmcjRP+LCxUc2OcC22SZjbz8IJ8OdTlvir4xzCcY9KhtszgDIiwM
+         fSOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9ad5fJQsjFqBClERhvuISieSOy+7o471fO8R0Iulcc0=;
-        b=kjveSEv1SR0GwFoYFaDHb8LExrk+JE/Poauh3+DVbE0JbsoHpKfj1a4UR6OsAGO0ln
-         XJGXecbE8KStPQEW52vn5VZeDxWryfOy+onZTBSRjCYgUUqi9LmsXjX9pMMNc8eVzwFr
-         gPrQFpF5I84PCWwZpbQmew2Fd5HwqIRxzj+i5fF1eYAAGBoXZND0QkUrkS05GoGGyKff
-         oWXjafCEVdoNwu9FT0OmSrDjjHGeUmNSLhYL3Q5zaoPc1SpuJSCuN7c2oZJOLy/5hQF3
-         V0gyS/hJRY0jfw9tSg2Y2Lj7+pnjLnVRKCjl4gaXECNDPNxKpolrXyLNbsmBUVA+nRYz
-         zobQ==
-X-Gm-Message-State: AOAM531s5WlP51TSXGrrJiDmWEfPdSda1XPSUayZN6g8ZZzn4o4CYuHv
-        Amy3pSsSZu9F6jE4LWFJOWNRIyOmPBBBvNbkbDbSSw==
-X-Google-Smtp-Source: ABdhPJwammnRdHCaAXy66yT+gsk2paFjDZX3yE3axqzSh4Thxpdsqj+jmOe3mzLIcD9v1AUhX1gtYvtxzp3lPE+IObs=
-X-Received: by 2002:a25:68cf:: with SMTP id d198mr29003255ybc.258.1613466237931;
- Tue, 16 Feb 2021 01:03:57 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Hix40Xj1oUuEJXyWgpErtznzZizVsi/XpFAKnYjHmQY=;
+        b=JG1jXtjjy6Ynn/pJ4KXTT++kZE7PcpvzHKS2+MlybVavxHZx2hJZ5dPbQRW1a7IHgB
+         yEeB38o97dsHnJ0Riv0DviINmBgHc/VNiG73X1JNreo8/QiYZ7fobginHqPk1VEB+N3k
+         Z/r7+j1ASW6IpdwksyY82Z/f612DO7TczJ+wqwWx9bgsLgF6mQg3G5ThsnzCOesjLPqy
+         XOFYAIxO9R+OtdvWE83E7rElr4ofIl+vQC5d8bhQuotO9JpmzM3ifjWRg5hupOeIHXw5
+         1fSPI+226SMFgjS7ceFB/U/eOss2Xdhe7qFkeLaVnDJ7RWJaRbGMu+ln4mwNdMgNKDEx
+         p7wQ==
+X-Gm-Message-State: AOAM533i23qqLUTrirCY5DIsAiyXhO3ityjpA4km1RyXg4Q8chc+PHcz
+        Lar17cUTihapRu8ljpOXjv6+KAVKIN7pgI9BQJakmA==
+X-Google-Smtp-Source: ABdhPJwC+CdCVmurJuKhxiNJoI3GMzP36B8CJFWc2NOLZbqlE1QsTOfDQR+oZ/rFDU9LQIN8Yydx6cwaPCiXV/F65I8=
+X-Received: by 2002:a17:90b:286:: with SMTP id az6mr1469474pjb.147.1613466258888;
+ Tue, 16 Feb 2021 01:04:18 -0800 (PST)
 MIME-Version: 1.0
-References: <1612945128-23174-1-git-send-email-amit.pundir@linaro.org>
- <13bd5e9d-3f3b-0b97-aa48-9a7bc551ddf6@somainline.org> <CAMi1Hd3d8krtQHv-3LuiCcgCWSgL1L0UeSYWJp27KToyW338gw@mail.gmail.com>
- <b8618ac4-85aa-5f7f-8550-07f7eec6cc08@somainline.org>
-In-Reply-To: <b8618ac4-85aa-5f7f-8550-07f7eec6cc08@somainline.org>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Tue, 16 Feb 2021 14:33:22 +0530
-Message-ID: <CAMi1Hd0jb_BrXzZp=L_qZ39wBYc7iFHQbzPa_nQaQ44SohvcQg@mail.gmail.com>
-Subject: Re: [PATCH v3] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add DSI and
- panel bits
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org
+References: <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
+ <YCpmlGuoTakPJs1u@dhcp22.suse.cz> <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
+ <YCp04NVBZpZZ5k7G@dhcp22.suse.cz> <CAMZfGtV8-yJa_eGYtSXc0YY8KhYpgUo=pfj6TZ9zMo8fbz8nWA@mail.gmail.com>
+ <YCqhDZ0EAgvCz+wX@dhcp22.suse.cz> <CAMZfGtW6n_YUbZOPFbivzn-HP4Q2yi0DrUoQ3JAjSYy5m17VWw@mail.gmail.com>
+ <CAMZfGtWVwEdBfiof3=wW2-FUN4PU-N5J=HfiAETVbwbEzdvAGQ@mail.gmail.com>
+ <YCrN4/EWRTOwNw72@dhcp22.suse.cz> <CAMZfGtX8xizYQxwB_Ffe6VcesaftkzGPDr=BP=6va_=aR3HikQ@mail.gmail.com>
+ <YCt/N9LkJT1VJEW1@dhcp22.suse.cz>
+In-Reply-To: <YCt/N9LkJT1VJEW1@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 16 Feb 2021 17:03:42 +0800
+Message-ID: <CAMZfGtVLv7_7sRO0tXiVY_RuAWxTEHz6G=-r7mOXViNhRNPf5A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, 12 Feb 2021 at 23:11, AngeloGioacchino Del Regno
-<angelogioacchino.delregno@somainline.org> wrote:
+On Tue, Feb 16, 2021 at 4:15 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> Il 12/02/21 10:24, Amit Pundir ha scritto:
-> > Hi,
+> On Tue 16-02-21 12:34:41, Muchun Song wrote:
+> > On Tue, Feb 16, 2021 at 3:39 AM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > > Using GFP_KERNEL will also use the current task cpuset to allocate
+> > > > memory. Do we have an interface to ignore current task cpuset=EF=BC=
+=9FIf not,
+> > > > WQ may be the only option and it also will not limit the context of
+> > > > put_page. Right?
+> > >
+> > > Well, GFP_KERNEL is constrained to the task cpuset only if the said
+> > > cpuset is hardwalled IIRC. But I do not see why this is a problem.
 > >
-> > On Thu, 11 Feb 2021 at 00:25, AngeloGioacchino Del Regno
-> > <angelogioacchino.delregno@somainline.org> wrote:
-> >>
-> >> Il 10/02/21 09:18, Amit Pundir ha scritto:
-> >>> From: Sumit Semwal <sumit.semwal@linaro.org>
-> >>>
-> >>> Enabling the Display panel for beryllium requires DSI
-> >>> labibb regulators and panel dts nodes to be added.
-> >>> It is also required to keep some of the regulators as
-> >>> always-on.
-> >>>
-> >>> Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
-> >>> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-> >>> ---
-> >>
-> >> Hello!
-> >> Your patch looks good, however, I have a few concerns...
-> >>
-> >>> v3: Addressed Konrad's concerns. Configured labibb regulators
-> >>>       explicitly based on downstream microvolt values. Display
-> >>>       comes up fine with default discharge-resistor-kohms and
-> >>>       soft-start-us properties, so didn't touch them.
-> >>>       Smoke tested on next-20210209.
-> >>> v2: Rebased to mainline (v5.11-rc6) and fixed build warnings.
-> >>>
-> >>>    .../boot/dts/qcom/sdm845-xiaomi-beryllium.dts      | 64 ++++++++++++++++++++++
-> >>>    1 file changed, 64 insertions(+)
-> >>>
-> >>> diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-> >>> index 86cbae63eaf7..5ac049a247e1 100644
-> >>> --- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-> >>> +++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-> >>> @@ -157,6 +157,14 @@
-> >>>                        regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> >>>                };
-> >>>
-> >>> +             vreg_l14a_1p8: ldo14 {
-> >>> +                     regulator-min-microvolt = <1800000>;
-> >>> +                     regulator-max-microvolt = <1800000>;
-> >>> +                     regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> >>> +                     regulator-boot-on;
-> >>> +                     regulator-always-on;
-> >>> +             };
-> >>> +
-> >>>                vreg_l17a_1p3: ldo17 {
-> >>>                        regulator-min-microvolt = <1304000>;
-> >>>                        regulator-max-microvolt = <1304000>;
-> >>> @@ -191,6 +199,7 @@
-> >>>                        regulator-min-microvolt = <1200000>;
-> >>>                        regulator-max-microvolt = <1200000>;
-> >>>                        regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> >>> +                     regulator-boot-on;
-> >>>                };
-> >>>        };
-> >>>    };
-> >>> @@ -200,6 +209,43 @@
-> >>>        firmware-name = "qcom/sdm845/cdsp.mdt";
-> >>>    };
-> >>>
-> >>> +&dsi0 {
-> >>> +     status = "okay";
-> >>> +     vdda-supply = <&vreg_l26a_1p2>;
-> >>> +
-> >>> +     #address-cells = <1>;
-> >>> +     #size-cells = <0>;
-> >>> +
-> >>> +     panel@0 {
-> >>> +             compatible = "tianma,fhd-video";
-> >>> +             reg = <0>;
-> >>> +             vddi0-supply = <&vreg_l14a_1p8>;
-> >>> +             vddpos-supply = <&lab>;
-> >>> +             vddneg-supply = <&ibb>;
-> >>> +
-> >>> +             #address-cells = <1>;
-> >>> +             #size-cells = <0>;
-> >>> +
-> >>> +             reset-gpios = <&tlmm 6 GPIO_ACTIVE_LOW>;
-> >>> +
-> >>> +             port {
-> >>> +                     tianma_nt36672a_in_0: endpoint {
-> >>> +                             remote-endpoint = <&dsi0_out>;
-> >>> +                     };
-> >>> +             };
-> >>> +     };
-> >>> +};
-> >>> +
-> >>> +&dsi0_out {
-> >>> +     remote-endpoint = <&tianma_nt36672a_in_0>;
-> >>> +     data-lanes = <0 1 2 3>;
-> >>> +};
-> >>> +
-> >>> +&dsi0_phy {
-> >>> +     status = "okay";
-> >>> +     vdds-supply = <&vreg_l1a_0p875>;
-> >>> +};
-> >>> +
-> >>>    &gcc {
-> >>>        protected-clocks = <GCC_QSPI_CORE_CLK>,
-> >>>                           <GCC_QSPI_CORE_CLK_SRC>,
-> >>> @@ -215,6 +261,24 @@
-> >>>        };
-> >>>    };
-> >>>
-> >>> +&ibb {
-> >>> +     regulator-min-microvolt = <4600000>;
-> >>> +     regulator-max-microvolt = <6000000>;
-> >>> +};
-> >>> +
-> >>
-> >> I think you want to also configure overvoltage and overcurrent
-> >> protection values for both LAB and IBB, as these regulators may be a bit
-> >> dangerous if used without.
-> >
-> > Can you point me to the relevant DT properties please. I didn't find
-> > any DT properties which set the over voltage/current protection
-> > properties explicitly in upstream as well as in downstream kernel.
-> > Plus I also do not see "regulator-min/max-microamp" values set
-> > downstream, otherwise I'd have used that as well atleast.
-> >
+> > I mean that if there are more than one node in the system,
+> > but the current task cpuset only allows one node.
 >
-> The regulator-{min/max}-microamp is the equivalent of the downstream
-> "qcom,qpnp-lab-limit-maximum-current" and
-> "qcom,qpnp-ibb-limit-maximum-current.
+> How would that cpuset get a huge pages from a node which is not part of
+> the cpuset? Well, that would be possible if the cpuset was dynamic but I
+> am not sure that such a configuration would be very sensible along with
+> hardwall setup.
 
-Thank you for the information.
+Got it. I didn't realize this before. Thanks.
 
 >
-> I am sorry if we haven't sent our patch series that will introduce the
-> Sony MSM8998 Yoshino and SDM630/636 Nile and Ganges platforms, which
-> are actually using the driver that I've sent fully, as these would have
-> been a nice reference for you.
+> > If current
+> > node has no memory and other nodes have enough memory.
+> > We can fail to allocate vmemmap pages. But actually it is
+> > suitable to allocate vmemmap pages from other nodes.
+> > Right?
 >
-> In any case, I can point you at our public repositories and their
-> downstream equivalents...
->
-> Here you find the downstream configuration for LAB/IBB:
-> https://github.com/sonyxperiadev/kernel/blob/aosp/LA.UM.7.1.r1/arch/arm64/boot/dts/qcom/msm8998-yoshino-common.dtsi#L3158
->
-> ...And here you find the SoMainline upstream stuff for the same:
-> https://github.com/SoMainline/linux/blob/SoMainline/v5.11-rc4/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi#L332
->
-> https://github.com/SoMainline/linux/blob/SoMainline/v5.11-rc4/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-maple.dts#L50
->
-> I hope that clears out your doubts and difficulties about implementing
-> the protections on labibb.
-
-Exactly what I was looking for. Thanks again.
-
->
-> Yours,
-> -- Angelo
->
-> > Regards,
-> > Amit Pundir
-> >
-> >> Besides that, even if it wouldn't be that dangerous, since the
-> >> protection features are present, it would be nice to configure them
-> >> properly as in the rare event that something bad happens, you would be
-> >> able to save the hardware (or at least have a chance to!).
-> >>
-> >>> +&lab {
-> >>> +     regulator-min-microvolt = <4600000>;
-> >>> +     regulator-max-microvolt = <6000000>;
-> >>> +};
-> >>> +
-> >>
-> >> Same here.
-> >>
-> >> Yours,
-> >> -- Angelo
-> >>
-> >>> +&mdss {
-> >>> +     status = "okay";
-> >>> +};
-> >>> +
-> >>> +&mdss_mdp {
-> >>> +     status = "okay";
-> >>> +};
-> >>> +
-> >>>    &mss_pil {
-> >>>        status = "okay";
-> >>>        firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mdt";
-> >>>
-> >>
->
+> Falling back to a different node would be very suboptimal because then
+> you would have vmemmap back by remote pages. We do not want that.
+> --
+> Michal Hocko
+> SUSE Labs
