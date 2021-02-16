@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D5031D10A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 971BB31D133
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhBPTiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 14:38:05 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:34932 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhBPTiA (ORCPT
+        id S229930AbhBPTue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 14:50:34 -0500
+Received: from mx.aristanetworks.com ([162.210.129.12]:59450 "EHLO
+        smtp.aristanetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhBPTub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 14:38:00 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11GJSsZS056676;
-        Tue, 16 Feb 2021 19:36:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=Fyq+yfbGVzplz+I8WdwkPE4BKdkEHW8hMijJ/C45SIE=;
- b=MF5DHR12vrllVI/oOcx15bIJxNF1980OI+HmZyNFRlqQbRdW+PGszqgQPuh/P7TyYq0W
- F5qtDEAr+m4g2ULWdYsj9IZoRskfljD1ADpogvc/+4pZyo4wHUDFI/5t9uSEffc8Vg0o
- QMkT7Ox5eW0GlRhK6FpNMrkMpKbHB4VcRluu0kmSOn3OS8AX5MgGhXKLfWlrtC0ygLF+
- x+TZUJn7M+t+9Qsdo5Z1B8t0uCWqvEIwNimahGfYvahhuUlrpO5dZVMpN0hoWDhiRnmv
- x94K7lJWH/WyY3zSQZqgK3DM9PPkmoBTzNd4PYlg4rvkfu5g9vn9q/rGbKSlfLOf4QUX PA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 36p66r034n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Feb 2021 19:36:58 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11GJU2sk028125;
-        Tue, 16 Feb 2021 19:36:57 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 36prpx7prh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Feb 2021 19:36:56 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11GJaot6025782;
-        Tue, 16 Feb 2021 19:36:50 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 16 Feb 2021 11:36:50 -0800
-Date:   Tue, 16 Feb 2021 22:36:34 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] bpf: fix a warning message in mark_ptr_not_null_reg()
-Message-ID: <YCwewjRBJIBm0sew@mwanda>
-MIME-Version: 1.0
+        Tue, 16 Feb 2021 14:50:31 -0500
+X-Greylist: delayed 628 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Feb 2021 14:50:31 EST
+Received: from us180.sjc.aristanetworks.com (us180.sjc.aristanetworks.com [10.243.128.7])
+        by smtp.aristanetworks.com (Postfix) with ESMTP id 9E0D4400C84;
+        Tue, 16 Feb 2021 11:39:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
+        s=Arista-A; t=1613504351;
+        bh=KzzeBl3CToKQoo8CnA55xVYHNnOE1Mri75OAXviGcJU=;
+        h=Date:To:Subject:From:From;
+        b=IzPgwbhGv4xxIi9ITir8JTH26SNR3V99r7mDBnsQ2M3jaQa37u4e4i2B4mqYB9Gai
+         npWweKVWGJzvUMhlOBVdRMlF9m3Bx+70aBz+pEAwHOLxeOhDy8CBa1j7b+sOHUJNOh
+         o0WcRgXOS1TrCk/f+bx07znjN9O/m9ZzNgxHjx7XgGB+V1FChhT9IwHMQhZ9ujvBOV
+         pY4Nux49lEo0bt9AAOJv4QFxAvDuG7u0oXdE2sLy5wvoCj62+iUx7zoRegvdS2SucX
+         r1+BXr68yxQVWuGQylWkMBchqAgU+5efbQFCmRFKTyJidIyCnqod1rOnOEDv81iyq+
+         9JsK2xHgbuukA==
+Received: by us180.sjc.aristanetworks.com (Postfix, from userid 10189)
+        id 88C9795C05D0; Tue, 16 Feb 2021 11:39:11 -0800 (PST)
+Date:   Tue, 16 Feb 2021 11:39:11 -0800
+To:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, fruggeri@arista.com
+Subject: epoll: different edge-triggered behavior bewteen pipe and
+ socketpair
+User-Agent: Heirloom mailx 12.5 7/5/10
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102160162
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- impostorscore=0 priorityscore=1501 clxscore=1011 spamscore=0 mlxscore=0
- phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102160162
+Content-Transfer-Encoding: 7bit
+Message-Id: <20210216193911.88C9795C05D0@us180.sjc.aristanetworks.com>
+From:   fruggeri@arista.com (Francesco Ruggeri)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The WARN_ON() argument is a condition, and it generates a stack trace
-but it doesn't print the warning.
+pipe() and socketpair() have different behavior wrt edge-triggered
+read epoll, in that no event is generated when data is written into
+a non-empty pipe, but an event is generated if socketpair() is used
+instead.
+This simple modification of the epoll2 testlet from 
+tools/testing/selftests/filesystems/epoll/epoll_wakeup_test.c
+(it just adds a second write) shows the different behavior.
+The testlet passes with pipe() but fails with socketpair() with 5.10.
+They both fail with 4.19.
+Is it fair to assume that 5.10 pipe's behavior is the correct one?
 
-Fixes: 4ddb74165ae5 ("bpf: Extract nullable reg type conversion into a helper function")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Francesco Ruggeri
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 056df6be3e30..bd4d1dfca73c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1120,7 +1120,7 @@ static void mark_ptr_not_null_reg(struct bpf_reg_state *reg)
- 		reg->type = PTR_TO_RDWR_BUF;
- 		break;
- 	default:
--		WARN_ON("unknown nullable register type");
-+		WARN(1, "unknown nullable register type");
- 	}
- }
- 
--- 
-2.30.0
+/*
+ *          t0
+ *           | (ew)
+ *          e0
+ *           | (et)
+ *          s0
+ */
+TEST(epoll2)
+{
+	int efd;
+	int sfd[2];
+	struct epoll_event e;
+
+	ASSERT_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, sfd), 0);
+	//ASSERT_EQ(pipe(sfd), 0);
+
+	efd = epoll_create(1);
+	ASSERT_GE(efd, 0);
+
+	e.events = EPOLLIN | EPOLLET;
+	ASSERT_EQ(epoll_ctl(efd, EPOLL_CTL_ADD, sfd[0], &e), 0);
+
+	ASSERT_EQ(write(sfd[1], "w", 1), 1);
+	EXPECT_EQ(epoll_wait(efd, &e, 1, 0), 1);
+
+	ASSERT_EQ(write(sfd[1], "w", 1), 1);
+	EXPECT_EQ(epoll_wait(efd, &e, 1, 0), 0);
+
+	close(efd);
+	close(sfd[0]);
+	close(sfd[1]);
+}
+
 
