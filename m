@@ -2,196 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6CA31D1BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0912231D1C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 21:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhBPUtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 15:49:02 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:52490 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbhBPUs5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 15:48:57 -0500
-Received: by mail-io1-f69.google.com with SMTP id x17so10045700iov.19
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 12:48:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=orIsO18CBWkBi5Y2F5JsHw46nBBVv5ticc9570jrqkk=;
-        b=mu2yxXpYBxUafELGvhTPx2g4gpguchC+atBNBVE/b74icGQfHW7q2xquB6LQpBn/nt
-         AcBnBNnaqm6vybZDGHpO/1yZRQyB++GVqpnQbUG0VGopkzL4Q0iAw2f2ZHjCNMnzNMVc
-         yLzXjzrnTWfFuHUlJ2wI9SK9zWl7t1qYQDzL93Y1N7n6Uz5TGW+MTLj5qNv+qTa9WDrH
-         crUSbEyrHKsNWzd2YQxEpQrradPLBF1frLgz5+nJYlBocxIFt1rrnjHx7gjgl7n1ZYO7
-         Ck11b2nmGoCoLahmRF8msllji4ut0OOzbkiHbUl7JQm9SLOBy9IzCtAwzwz3wiocJC4j
-         DHPg==
-X-Gm-Message-State: AOAM533wscPdSoFQTjqWCP0CkU/0mz1OE4psNfs4v8r1j6HoZ5XiaIHn
-        KioBiEe2reJ8ktGZUodjLEjNcBJcILG4uQ0J/Du3k8BN6ZCk
-X-Google-Smtp-Source: ABdhPJxoa12ysxlcKMrhxXk/Xm0ca45D5S8Su+qSybPj9wnp7NIjytadqFiYLzY9TqI0rTIYLHU/+Eavnk/HihXdbdZotkS/wMfr
+        id S230256AbhBPUx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 15:53:28 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:50123 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230190AbhBPUx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 15:53:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613508785; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=DJ/cCF5+Vw35+SimUiMhAKV4yrK2QxIJTWhxd5v/t40=; b=Ep28obXmFoOWGBRwtEOuwSn8SHNZ0yvkH2TxHe1FFWhmJFKWIl5OuLhPOGngtDFZXShbO5qJ
+ w5jWkQs9v4Gp//KBkw3xeSoBsKGcbw6uJ9SyZ9RpwOYtegjHniJ2VLNVD0cRfCd2XLt5Z//y
+ 8bD8ofM4DQII+4XRJxE7TY0uQP8=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 602c309206bddda9dfe82bf7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 16 Feb 2021 20:52:34
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5EAE8C43462; Tue, 16 Feb 2021 20:52:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 413C8C433CA;
+        Tue, 16 Feb 2021 20:52:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 413C8C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
+Subject: [PATCH] mhi_bus: core: Wait for ready state after reset
+Date:   Tue, 16 Feb 2021 13:52:25 -0700
+Message-Id: <1613508745-32324-1-git-send-email-jhugo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:35a3:: with SMTP id v35mr22065226jal.36.1613508495810;
- Tue, 16 Feb 2021 12:48:15 -0800 (PST)
-Date:   Tue, 16 Feb 2021 12:48:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bc239f05bb7a38aa@google.com>
-Subject: possible deadlock in skb_queue_tail (2)
-From:   syzbot <syzbot+67791dce9282c8bedfd1@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, ktkhai@virtuozzo.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-        tklauser@distanz.ch
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+After the device has signaled the end of reset by clearing the reset bit,
+it will automatically reinit MHI and the internal device structures.  Once
+That is done, the device will signal it has entered the ready state.
 
-syzbot found the following issue on:
+Signaling the ready state involves sending an interrupt (MSI) to the host
+which might cause IOMMU faults if it occurs at the wrong time.
 
-HEAD commit:    dcc0b490 Merge tag 'powerpc-5.11-8' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11a2fe9cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8cb23303ddb9411f
-dashboard link: https://syzkaller.appspot.com/bug?extid=67791dce9282c8bedfd1
-userspace arch: i386
+If the controller is being powered down, and possibly removed, then the
+reset flow would only wait for the end of reset.  At which point, the host
+and device would start a race.  The host may complete its reset work, and
+remove the interrupt handler, which would cause the interrupt to be
+disabled in the IOMMU.  If that occurs before the device signals the ready
+state, then the IOMMU will fault since it blocked an interrupt.  While
+harmless, the fault would appear like a serious issue has occurred so let's
+silence it by making sure the device hits the ready state before the host
+completes its reset processing.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+67791dce9282c8bedfd1@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.11.0-rc7-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.0/13111 is trying to acquire lock:
-ffff888012d36e60 (rlock-AF_UNIX){+.+.}-{2:2}, at: skb_queue_tail+0x21/0x140 net/core/skbuff.c:3161
-
-but task is already holding lock:
-ffff888012d372a8 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock net/unix/af_unix.c:1108 [inline]
-ffff888012d372a8 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock+0x77/0xa0 net/unix/af_unix.c:1100
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&u->lock/1){+.+.}-{2:2}:
-       _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:361
-       sk_diag_dump_icons net/unix/diag.c:86 [inline]
-       sk_diag_fill+0xaaf/0x10d0 net/unix/diag.c:154
-       sk_diag_dump net/unix/diag.c:192 [inline]
-       unix_diag_dump+0x399/0x590 net/unix/diag.c:220
-       netlink_dump+0x4b9/0xb70 net/netlink/af_netlink.c:2268
-       __netlink_dump_start+0x642/0x900 net/netlink/af_netlink.c:2373
-       netlink_dump_start include/linux/netlink.h:256 [inline]
-       unix_diag_handler_dump+0x411/0x7d0 net/unix/diag.c:321
-       __sock_diag_cmd net/core/sock_diag.c:234 [inline]
-       sock_diag_rcv_msg+0x31a/0x440 net/core/sock_diag.c:265
-       netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
-       sock_diag_rcv+0x26/0x40 net/core/sock_diag.c:276
-       netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
-       netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
-       netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
-       sock_sendmsg_nosec net/socket.c:652 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:672
-       sock_write_iter+0x289/0x3c0 net/socket.c:999
-       call_write_iter include/linux/fs.h:1901 [inline]
-       new_sync_write+0x426/0x650 fs/read_write.c:518
-       vfs_write+0x791/0xa30 fs/read_write.c:605
-       ksys_write+0x1ee/0x250 fs/read_write.c:658
-       do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
-       __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
-       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
-       entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-
--> #0 (rlock-AF_UNIX){+.+.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:2868 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2993 [inline]
-       validate_chain kernel/locking/lockdep.c:3608 [inline]
-       __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
-       lock_acquire kernel/locking/lockdep.c:5442 [inline]
-       lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
-       skb_queue_tail+0x21/0x140 net/core/skbuff.c:3161
-       unix_dgram_sendmsg+0xfb2/0x1a80 net/unix/af_unix.c:1797
-       sock_sendmsg_nosec net/socket.c:652 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:672
-       ____sys_sendmsg+0x331/0x810 net/socket.c:2345
-       ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
-       __sys_sendmmsg+0x292/0x470 net/socket.c:2482
-       __compat_sys_sendmmsg net/compat.c:361 [inline]
-       __do_compat_sys_sendmmsg net/compat.c:368 [inline]
-       __se_compat_sys_sendmmsg net/compat.c:365 [inline]
-       __ia32_compat_sys_sendmmsg+0x9b/0x100 net/compat.c:365
-       do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
-       __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
-       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
-       entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&u->lock/1);
-                               lock(rlock-AF_UNIX);
-                               lock(&u->lock/1);
-  lock(rlock-AF_UNIX);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.0/13111:
- #0: ffff888012d372a8 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock net/unix/af_unix.c:1108 [inline]
- #0: ffff888012d372a8 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock+0x77/0xa0 net/unix/af_unix.c:1100
-
-stack backtrace:
-CPU: 1 PID: 13111 Comm: syz-executor.0 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2117
- check_prev_add kernel/locking/lockdep.c:2868 [inline]
- check_prevs_add kernel/locking/lockdep.c:2993 [inline]
- validate_chain kernel/locking/lockdep.c:3608 [inline]
- __lock_acquire+0x2b26/0x54f0 kernel/locking/lockdep.c:4832
- lock_acquire kernel/locking/lockdep.c:5442 [inline]
- lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
- skb_queue_tail+0x21/0x140 net/core/skbuff.c:3161
- unix_dgram_sendmsg+0xfb2/0x1a80 net/unix/af_unix.c:1797
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x331/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmmsg+0x292/0x470 net/socket.c:2482
- __compat_sys_sendmmsg net/compat.c:361 [inline]
- __do_compat_sys_sendmmsg net/compat.c:368 [inline]
- __se_compat_sys_sendmmsg net/compat.c:365 [inline]
- __ia32_compat_sys_sendmmsg+0x9b/0x100 net/compat.c:365
- do_syscall_32_irqs_on arch/x86/entry/common.c:77 [inline]
- __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:139
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:164
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f6f549
-Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f55485fc EFLAGS: 00000296 ORIG_RAX: 0000000000000159
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00000000200bd000
-RDX: 0000000024924c31 RSI: 000000000004ffe0 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-
+Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/bus/mhi/core/pm.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index ef8fb4a..dc69074 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -463,7 +463,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+ 
+ 	/* Trigger MHI RESET so that the device will not access host memory */
+ 	if (!MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
+-		u32 in_reset = -1;
++		u32 in_reset = -1, ready = 0;
+ 		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
+ 
+ 		dev_dbg(dev, "Triggering MHI Reset in device\n");
+@@ -486,6 +486,25 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+ 		 * hence re-program it
+ 		 */
+ 		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
++
++		if (!MHI_IN_PBL(mhi_get_exec_env(mhi_cntrl))) {
++			/* wait for ready to be set */
++			ret = wait_event_timeout(mhi_cntrl->state_event,
++						 mhi_read_reg_field(mhi_cntrl,
++							mhi_cntrl->regs,
++							MHISTATUS,
++							MHISTATUS_READY_MASK,
++							MHISTATUS_READY_SHIFT,
++							&ready)
++						 || ready, timeout);
++			if ((!ret || !ready) &&
++			    cur_state == MHI_PM_SYS_ERR_PROCESS) {
++				dev_err(dev,
++					"Device failed to enter READY state\n");
++				mutex_unlock(&mhi_cntrl->pm_mutex);
++				return;
++			}
++		}
+ 	}
+ 
+ 	dev_dbg(dev,
+-- 
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
+
