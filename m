@@ -2,157 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D3331CE7C
+	by mail.lfdr.de (Postfix) with ESMTP id 221D931CE7B
 	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbhBPQxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:53:51 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46836 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230097AbhBPQx0 (ORCPT
+        id S230498AbhBPQxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229699AbhBPQxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:53:26 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GGXCgO147308;
-        Tue, 16 Feb 2021 11:52:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=KS8Y+XGxUXIzrrjyQRSiPDJAYsSbs8BAQ7A0YAHTHDk=;
- b=O6cGGnjc5Vscm0lqnxQcRj/MEkjzgCjfGHCpicYcBltnke2b7feh8NgoB2MrZ0NcuoyK
- 3OTO2MktlxxclXlJtiP+JAE+48asEVnYelQsDFC5q7/3tyTqC6JECS7YarVkRLVqBeUQ
- PIwJ3rwjkbCCkf+Aj/vG5sGe/KHqPcaG8XBXIwtUIVoM3/oP64FBtwgim0Z8rLD62nHb
- +mCTdrdwftIoL4+WGtPyyeVU88Uul3TJQQVTD3/qxBCGlfZt5LtRVhWfkMTl9rAY0R9L
- zTQJElv5GZaqCsSGj0q9WWyUV27s0qAjpyFSzIPfZ8gt0bHBQjcxeha3Nbuks6KlTArC OA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36rhhyh988-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 11:52:39 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11GGp7oA059886;
-        Tue, 16 Feb 2021 11:52:38 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36rhhyh97q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 11:52:38 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11GGpiFj003905;
-        Tue, 16 Feb 2021 16:52:37 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma03wdc.us.ibm.com with ESMTP id 36p6d8ypb8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 16:52:37 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11GGqbKU28115350
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Feb 2021 16:52:37 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0A412124053;
-        Tue, 16 Feb 2021 16:52:37 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EC31A124052;
-        Tue, 16 Feb 2021 16:52:36 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 16 Feb 2021 16:52:36 +0000 (GMT)
-Subject: Re: [PATCH v4] tpm: fix reference counting for struct tpm_chip
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
-        jarkko@kernel.org, jgg@ziepe.ca
-Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        stable@vger.kernel.org
-References: <1613435460-4377-1-git-send-email-LinoSanfilippo@gmx.de>
- <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <d36c324d-2f16-ed2a-7507-0d8f52da20ea@linux.ibm.com>
-Date:   Tue, 16 Feb 2021 11:52:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 16 Feb 2021 11:53:22 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF607C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:52:41 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id g6so13920402wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:52:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=d4Oekxjc8XyDSKjFaxtpOI3FRArEZHy/EQSSJyQvN2k=;
+        b=B4J5b5RThEGEcus+UwwEaz80EcbiQMz6DBAZGe2ZxzUcCcvIs0heqPSkHNlhSf9iyc
+         99QgwDTJ/Ms1dhi+gad7C6OVzuR/xPiYlTha3kJcHv9KdWFvSVbrk36+1HA3qOO2CB9g
+         nFatT7dRQ8bAfANkj1mTkv4U0L8cYJqXK206c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=d4Oekxjc8XyDSKjFaxtpOI3FRArEZHy/EQSSJyQvN2k=;
+        b=T89FykV50HFZDkK/wQLp1S6fSCIOZQYay+SdWCkSimhbkwDeWEwnIx9/DTUGbAKNus
+         AqMUNFATlQbglJGFEqElBrkelXRq/mwc+mNga1gTbK3D/X+pejtYdsf8cHgNbQk5ngNj
+         q1CqAQ4nWgT9Y2/TpOnNOKyjEOcRt4qUYt79lMOlXA0HOASvU0aL7BQ7FxOoMuWnVj9j
+         /xq5wikEsxLnE2dIAAIIAjq8NAnR8+uO7Q2qSA5XojCCNwkoIOrfaqKYUYC1PeT/I0sr
+         Yo54NU51J6gI6cTAozvBJ4Po9WYQ77By2dOT/TDQ3cDNBFYw7r9qsaF9PU+EyDW1GkXc
+         xxiw==
+X-Gm-Message-State: AOAM530K84aN/ncag9Abvu536Q4XqKvOezxL2GyjgEADkF2FW1NWLCHY
+        PvmN2Y8oW20OuppU2LCqUZR0QA==
+X-Google-Smtp-Source: ABdhPJxtH3MUDqZcYiZ5cl6Il5cRfTZM+zd4JBaK8cZXoot1VnD0nSRPI4DWKVXShMsX4TLd4NhYDA==
+X-Received: by 2002:a5d:5910:: with SMTP id v16mr13989314wrd.304.1613494360312;
+        Tue, 16 Feb 2021 08:52:40 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::4:76fd])
+        by smtp.gmail.com with ESMTPSA id i1sm3922039wmq.12.2021.02.16.08.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 08:52:40 -0800 (PST)
+Date:   Tue, 16 Feb 2021 16:52:39 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: output: was: Re: [PATCH v4] printk: Userspace format enumeration
+ support
+Message-ID: <YCv4V5EFeuEmyxSz@chrisdown.name>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <YCvqdrBc3wLDClhv@alley>
 MIME-Version: 1.0
-In-Reply-To: <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-16_07:2021-02-16,2021-02-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- priorityscore=1501 phishscore=0 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 impostorscore=0 clxscore=1015 bulkscore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102160146
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YCvqdrBc3wLDClhv@alley>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/15/21 7:31 PM, Lino Sanfilippo wrote:
-> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
->
-> The following sequence of operations results in a refcount warning:
->
-> 1. Open device /dev/tpmrm
-> 2. Remove module tpm_tis_spi
-> 3. Write a TPM command to the file descriptor opened at step 1.
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 3 PID: 1161 at lib/refcount.c:25 kobject_get+0xa0/0xa4
-> refcount_t: addition on 0; use-after-free.
-> Modules linked in: tpm_tis_spi tpm_tis_core tpm mdio_bcm_unimac brcmfmac
-> sha256_generic libsha256 sha256_arm hci_uart btbcm bluetooth cfg80211 vc4
-> brcmutil ecdh_generic ecc snd_soc_core crc32_arm_ce libaes
-> raspberrypi_hwmon ac97_bus snd_pcm_dmaengine bcm2711_thermal snd_pcm
-> snd_timer genet snd phy_generic soundcore [last unloaded: spi_bcm2835]
-> CPU: 3 PID: 1161 Comm: hold_open Not tainted 5.10.0ls-main-dirty #2
-> Hardware name: BCM2711
-> [<c0410c3c>] (unwind_backtrace) from [<c040b580>] (show_stack+0x10/0x14)
-> [<c040b580>] (show_stack) from [<c1092174>] (dump_stack+0xc4/0xd8)
-> [<c1092174>] (dump_stack) from [<c0445a30>] (__warn+0x104/0x108)
-> [<c0445a30>] (__warn) from [<c0445aa8>] (warn_slowpath_fmt+0x74/0xb8)
-> [<c0445aa8>] (warn_slowpath_fmt) from [<c08435d0>] (kobject_get+0xa0/0xa4)
-> [<c08435d0>] (kobject_get) from [<bf0a715c>] (tpm_try_get_ops+0x14/0x54 [tpm])
-> [<bf0a715c>] (tpm_try_get_ops [tpm]) from [<bf0a7d6c>] (tpm_common_write+0x38/0x60 [tpm])
-> [<bf0a7d6c>] (tpm_common_write [tpm]) from [<c05a7ac0>] (vfs_write+0xc4/0x3c0)
-> [<c05a7ac0>] (vfs_write) from [<c05a7ee4>] (ksys_write+0x58/0xcc)
-> [<c05a7ee4>] (ksys_write) from [<c04001a0>] (ret_fast_syscall+0x0/0x4c)
-> Exception stack(0xc226bfa8 to 0xc226bff0)
-> bfa0:                   00000000 000105b4 00000003 beafe664 00000014 00000000
-> bfc0: 00000000 000105b4 000103f8 00000004 00000000 00000000 b6f9c000 beafe684
-> bfe0: 0000006c beafe648 0001056c b6eb6944
-> ---[ end trace d4b8409def9b8b1f ]---
->
-> The reason for this warning is the attempt to get the chip->dev reference
-> in tpm_common_write() although the reference counter is already zero.
->
-> Since commit 8979b02aaf1d ("tpm: Fix reference count to main device") the
-> extra reference used to prevent a premature zero counter is never taken,
-> because the required TPM_CHIP_FLAG_TPM2 flag is never set.
->
-> Fix this by moving the TPM 2 character device handling from
-> tpm_chip_alloc() to tpm_add_char_device() which is called at a later point
-> in time when the flag has been set in case of TPM2.
->
-> Commit fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
-> already introduced function tpm_devs_release() to release the extra
-> reference but did not implement the required put on chip->devs that results
-> in the call of this function.
->
-> Fix this by putting chip->devs in tpm_chip_unregister().
->
-> Finally move the new implemenation for the TPM 2 handling into a new
-> function to avoid multiple checks for the TPM_CHIP_FLAG_TPM2 flag in the
-> good case and error cases.
->
-> Fixes: fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
-> Fixes: 8979b02aaf1d ("tpm: Fix reference count to main device")
-> Co-developed-by: Jason Gunthorpe <jgg@ziepe.ca>
-> Signed-off-by: Jason Gunthorpe <jgg@ziepe.ca>
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> Cc: stable@vger.kernel.org
+Hey Petr,
 
+Petr Mladek writes:
+>This produces something like:
+>
+>3Warning: unable to open an initial console.
+>3Failed to execute %s (error %d)
+>6Kernel memory protection disabled.
+>3Starting init: %s exists but couldn't execute it (error %d)
+>6Run %s as init process
+>7initcall %pS returned %d after %lld usecs
+>7calling  %pS @ %i
+>2initrd overwritten (0x%08lx < 0x%08lx) - disabling it.
+>
+>The loglevel is not well separated. It is neither human readable
+>nor safe for a machine processing . It works only for single digit.
+>[...]
+>It looks in less like: [...]
 
-I know you'll post another version, but anyway:
+Hmm, why is it important that debugfs output is human readable? My impression 
+was that it's fine to have machine-readable stuff there.
 
-Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+Re: not being not safe for machine processing because it only works for a 
+single digit, I'm a little confused. KERN_* levels are, as far as I know, only 
+a single byte wide, and we rely on that already (eg. in printk_skip_header()). 
+We also already have precedent for null-separation/control characters in (for 
+example) /proc/pid/cmdline.
 
+What am I missing? :-)
 
+>Well, it still might be non-trivial to find the string in the code
+>and see what exactly has changed. It might be pretty useful
+>to mention even the source_file:line, for example:
+>
+><3> init/main.c:1489: Warning: unable to open an initial console.\n
+><3> init/main.c:1446: Failed to execute %s (error %d)\n
+><6> init/main.c:1398: Kernel memory protection disabled.\n
+><3> init/main.c:1366: Starting init: %s exists but couldn't execute it (error %d)\n
+
+Almost certainly a theoretical concern, but I am not a big fan of this format, 
+because it relies on a character (":") which is legal in paths (although as 
+you'd expect, we don't have any cases in the kernel right now). That's one of 
+the reasons why I preferred to use nulls, which can't be in a filename.
