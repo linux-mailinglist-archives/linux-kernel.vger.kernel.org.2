@@ -2,183 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C318B31CE5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DC931CE57
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhBPQrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:47:06 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14584 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229699AbhBPQqt (ORCPT
+        id S230445AbhBPQpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:45:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229699AbhBPQpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:46:49 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GGcjPe025880;
-        Tue, 16 Feb 2021 11:44:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=Q5aHAR7pPlj/atdytcBPZccatqTpy1qm0hvpI6B2Sf0=;
- b=aSu0QIsUki902qrNU04AQuAffNS2rmmkgsvzPX/SqRGj503dHwb0uANR9/3BdjdcUOTr
- a5u+ik+W33ZCsmtUxgwWVAHgOiZ8625M6a9uJEkw5M0bu2XcLPXd+ZZsxLUXrIenOu/d
- IJMvDOwpYRE2a0EWmrznneVzszNnlWCT+VonA6hJOlSqIE/ENo5L4A6mG3mzNFTH5W3W
- vYfcPIlcyeuiYpY+PitOIUSYlhf7/ijhbppqWPgF2sgzNwq3Tdj1awqDTi3lk7pFWD+x
- 7YUipYk80l508mrZJAmUo4t0geEsdokwhvGGU4dlOtVmuxjC7/TzSbCC36zPfRgAJOZ1 WQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36rhb68s0h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 11:44:29 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11GGd9Qa029758;
-        Tue, 16 Feb 2021 11:44:25 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36rhb68rud-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 11:44:24 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11GGflQF029695;
-        Tue, 16 Feb 2021 16:44:16 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma04wdc.us.ibm.com with ESMTP id 36p6d8ypak-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 16:44:16 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11GGiFGX8716868
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Feb 2021 16:44:15 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F8AE78060;
-        Tue, 16 Feb 2021 16:44:15 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1EE9578063;
-        Tue, 16 Feb 2021 16:44:05 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.199.127])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 16 Feb 2021 16:44:05 +0000 (GMT)
-Message-ID: <000cfaa0a9a09f07c5e50e573393cda301d650c9.camel@linux.ibm.com>
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Date:   Tue, 16 Feb 2021 08:44:04 -0800
-In-Reply-To: <dfd7db5c-a8c7-0676-59f8-70aa6bcaabe7@redhat.com>
-References: <20210214091954.GM242749@kernel.org>
-         <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
-         <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
-         <YCo7TqUnBdgJGkwN@dhcp22.suse.cz>
-         <be1d821d3f0aec24ad13ca7126b4359822212eb0.camel@linux.ibm.com>
-         <YCrJjYmr7A2nO6lA@dhcp22.suse.cz>
-         <12c3890b233c8ec8e3967352001a7b72a8e0bfd0.camel@linux.ibm.com>
-         <dfd7db5c-a8c7-0676-59f8-70aa6bcaabe7@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Tue, 16 Feb 2021 11:45:50 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08BD4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:45:10 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id g6so13886598wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:45:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=PAXGeHqMomIXFSnFYPBcr/Og6bGBrQhqERVPd3hZ2d0=;
+        b=lHcJyneAv0MH1MuGrzj2A3G7VyJ1dh89eNyWsYHvMpfCwEpkKKMdfv6fqXWtlfKgdV
+         kXht74nAaYUWJqvWjMwpzmaGOVyW3afIC3UuhkHpGQ4kiOB97nadf1xdYaedKQv/tPGA
+         kO+sBqdimoiA5BnXffGbIb6Jimuf9wazJ1iYFBr6wIEJvwSHU2fsEEFtXlkDXWiOuy/z
+         ZeRzc1Ph89fJ6ZMgNu8fV7EKzP5SUB7Ko77/gVxlf/0aqsveROLyX2P9KAhQczCwQLHR
+         LChtekTBbeCkGfo+64ePKTc6+S9ktSgu3z6SkgtKXp9Ge89AyURZaPOH4XTlos8PHXk8
+         Cngw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=PAXGeHqMomIXFSnFYPBcr/Og6bGBrQhqERVPd3hZ2d0=;
+        b=FVfFQYyidDBZBz4MjB+y5tQ3+tYOO1c+Xsm2M46pQtM5LfcFiJ3PZIUOAe6oXzhm/M
+         L4J8ssYtYVw8OZiFYNgpJ60EOzXSY1P/FHX1NFE5kvqskMrLY4Bz8W1I/VV9WZ8trYh8
+         jt2W8bQDTsNzi7oWZqub1Fa4uHukmsxvFqecAjf8qrjmJiZx2Y8d7aPaOn5qblbvqiVE
+         Fvi9V6goOXwRYQUVS4/bZC3ekdM2wY6LSeHHv7PXuoXhjdWIdpmhJFYVYlRkkcB9se7i
+         rvHhm1k4SoFZzXr+AW9f+8SxqrbV+B0v30I+oW4vvAQqWoVC0ZbUWL/pKgbtH8yEHror
+         gx/Q==
+X-Gm-Message-State: AOAM533U8vQsU2Gb5q4Pd5rOeq+P/c+Cbh2WKOJ/parYNH8jaGJ7SDxk
+        usosxXV7zC7vcUDfE2GA9NAWXnB6dfNfTg==
+X-Google-Smtp-Source: ABdhPJz1xpsOoZ+xjdX3qxLJV6QC2epoomGa06tbUJOJyKKBzq4/WwNoBAGQMrBgc8/52f/Q/zWjvA==
+X-Received: by 2002:adf:fc09:: with SMTP id i9mr25143571wrr.235.1613493908643;
+        Tue, 16 Feb 2021 08:45:08 -0800 (PST)
+Received: from dell ([91.110.221.165])
+        by smtp.gmail.com with ESMTPSA id i8sm36904596wry.90.2021.02.16.08.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 08:45:08 -0800 (PST)
+Date:   Tue, 16 Feb 2021 16:45:05 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] MFD for v5.12
+Message-ID: <20210216164505.GB4803@dell>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-16_07:2021-02-16,2021-02-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=398 spamscore=0
- suspectscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102160146
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-02-16 at 17:34 +0100, David Hildenbrand wrote:
-> On 16.02.21 17:25, James Bottomley wrote:
-> > On Mon, 2021-02-15 at 20:20 +0100, Michal Hocko wrote:
-> > [...]
-> > > > >    What kind of flags are we talking about and why would that
-> > > > > be a problem with memfd_create interface? Could you be more
-> > > > > specific please?
-> > > > 
-> > > > You mean what were the ioctl flags in the patch series linked
-> > > > above? They were SECRETMEM_EXCLUSIVE and SECRETMEM_UNCACHED in
-> > > > patch 3/5.
-> > > 
-> > > OK I see. How many potential modes are we talking about? A few or
-> > > potentially many?
-> >   
-> > Well I initially thought there were two (uncached or not) until you
-> > came up with the migratable or non-migratable, which affects the
-> > security properties.  But now there's also potential for hardware
-> > backing, like mktme,  described by flags as well.  I suppose you
-> > could also use RDT to restrict which cache the data goes into: say
-> > L1 but not L2 on to lessen the impact of fully uncached (although
-> > the big thrust of uncached was to blunt hyperthread side
-> > channels).  So there is potential for quite a large expansion even
-> > though I'd be willing to bet that a lot of the modes people have
-> > thought about turn out not to be very effective in the field.
-> 
-> Thanks for the insight. I remember that even the "uncached" parts
-> was effectively nacked by x86 maintainers (I might be wrong).
+Good afternoon Linus,
 
-It wasn't liked by x86 maintainers, no.  Plus there's no
-architecturally standard mechanism for making a page uncached and, as
-the arm people pointed out, sometimes no way of ensuring it's never
-cached.
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
->  For the other parts, the question is what we actually want to let
-> user space configure.
-> 
-> Being able to specify "Very secure" "maximum secure" "average
-> secure"  all doesn't really make sense to me.
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 
-Well, it doesn't to me either unless the user feels a cost/benefit, so
-if max cost $100 per invocation and average cost nothing, most people
-would chose average unless they had a very good reason not to.  In your
-migratable model, if we had separate limits for non-migratable and
-migratable, with non-migratable being set low to prevent exhaustion,
-max secure becomes a highly scarce resource, whereas average secure is
-abundant then having the choice might make sense.
+are available in the Git repository at:
 
->  The discussion regarding migratability only really popped up because
-> this is a user-visible thing and not being able to migrate can be a
-> real problem (fragmentation, ZONE_MOVABLE, ...).
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tags/mfd-next-5.12
 
-I think the biggest use will potentially come from hardware
-acceleration.  If it becomes simple to add say encryption to a secret
-page with no cost, then no flag needed.  However, if we only have a
-limited number of keys so once we run out no more encrypted memory then
-it becomes a costly resource and users might want a choice of being
-backed by encryption or not.
+for you to fetch changes up to 26783d74cc6a440ee3ef9836a008a697981013d0:
 
-James
+  mfd: wm831x-auxadc: Prevent use after free in wm831x_auxadc_read_irq() (2021-02-08 13:54:40 +0000)
 
+----------------------------------------------------------------
+ - Core Frameworks
+   - Standardise MFD_CELL_* helpers
 
+ - New Drivers
+   - Add support for Acer Iconia Tab A500 Embedded Controller
+
+ - New Device Support
+   - Add support for ROHM BD9574MWF to BD9571MWV
+   - Add support for Intel Alder Lake PCH-P PCI to LPSS
+   - Add support for Intel Alder Lake PCH-S PCI to LPSS
+
+ - New Functionality
+   - Support ACPI enumeration; arizona
+
+ - Fix-ups
+   - Managed resources; bd9571mwv
+   - DT additions/fix-ups; bd9571mwv, iqs62x, max8997, gateworks-gsc, ene-kb930
+   - Convert to SPDX; bd9571mw
+   - Fix return values/error handling; sunxi
+   - Provide SOFTDEP; arizona
+   - Make use of DIV_ROUND_UP; mcp-sa11x0
+   - Use generic APIs; arizona
+   - Add MAC address sysfs entries; intel-m10-bmc
+   - Trivial: Coding-style fix-ups; iqs62x
+   - Trivial: Remove superflouous code; iqs62x
+   - Clear-up naming conventions; iqs62x
+
+ - Bug Fixes
+   - Fix 'pointer from integer' error; altera-sysmgr
+   - Convert SGI_MFD_IOC3 from tristate to bool; Kconfig
+   - Fix interrupt handling; gateworks-gsc
+   - Extend required delay; iqs62x
+   - Do not use I2C polling during calibration; iqs62x
+   - Do no adjust clock frequency during calibration; iqs62x
+   - Fix use-after-free; wm831x-auxad
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      mfd: intel-lpss: Add Intel Alder Lake PCH-P PCI IDs
+
+Arnd Bergmann (1):
+      mfd: altera-sysmgr: Fix physical address storing more
+
+Dan Carpenter (1):
+      mfd: wm831x-auxadc: Prevent use after free in wm831x_auxadc_read_irq()
+
+Dmitry Osipenko (2):
+      dt-bindings: mfd: Add ENE KB930 Embedded Controller binding
+      mfd: Add driver for Embedded Controller found on Acer Iconia Tab A500
+
+Hans de Goede (3):
+      mfd: arizona: Add MODULE_SOFTDEP("pre: arizona_ldo1")
+      mfd: arizona: Replace arizona_of_get_type() with device_get_match_data()
+      mfd: arizona: Add support for ACPI enumeration of WM5102 connected over SPI
+
+Jarkko Nikula (1):
+      mfd: intel-lpss: Add Intel Alder Lake PCH-S PCI IDs
+
+Jeff LaBundy (6):
+      mfd: iqs62x: Remove superfluous whitespace above fallthroughs
+      mfd: iqs62x: Remove unused bit mask
+      mfd: iqs62x: Rename regmap_config struct
+      mfd: iqs62x: Increase interrupt handler return delay
+      mfd: iqs62x: Do not poll during ATI
+      mfd: iqs62x: Do not change clock frequency during ATI
+
+Khiem Nguyen (2):
+      mfd: bd9571mwv: Make the driver more generic
+      mfd: bd9571mwv: Add support for BD9574MWF
+
+Lee Jones (2):
+      Merge branches 'ib-mfd-asoc-5.12', 'ib-mfd-bus-5.12' and 'ib-mfd-gpio-regulator-5.12' into ibs-for-mfd-merged
+      mfd: Standardise MFD_CELL_* helper names
+
+Russ Weight (1):
+      mfd: intel-m10-bmc: Expose MAC address and count
+
+Thomas Bogendoerfer (1):
+      mfd: sgi-ioc3: Turn Kconfig option into a bool
+
+Tim Harvey (2):
+      mfd: gateworks-gsc: Fix interrupt type
+      dt-bindings: mfd: gateworks-gsc: Add fan-tach mode
+
+Timon Baetz (1):
+      mfd: max8997: Add of_compatible to Extcon and Charger mfd_cell
+
+Uwe Kleine-König (1):
+      mfd/bus: sunxi-rsb: Make .remove() callback return void
+
+Yoshihiro Shimoda (10):
+      mfd: bd9571mwv: Use devm_mfd_add_devices()
+      dt-bindings: mfd: bd9571mwv: Document BD9574MWF
+      mfd: rohm-generic: Add BD9571 and BD9574
+      regulator: bd9571mwv: rid of using struct bd9571mwv
+      regulator: bd9571mwv: Add BD9574MWF support
+      gpio: bd9571mwv: Use the SPDX license identifier
+      gpio: bd9571mwv: rid of using struct bd9571mwv
+      gpio: bd9571mwv: Add BD9574MWF support
+      mfd: bd9571mwv: Use the SPDX license identifier
+      mfd: bd9571mwv: Use devm_regmap_add_irq_chip()
+
+Zhen Lei (1):
+      dt-bindings: mfd: Correct the node name of the panel LED
+
+Zheng Yongjun (1):
+      mfd: mcp-sa11x0: Use DIV_ROUND_UP to calculate rw_timeout
+
+ .../ABI/testing/sysfs-driver-intel-m10-bmc         |  21 +++
+ .../devicetree/bindings/mfd/bd9571mwv.txt          |   4 +-
+ .../devicetree/bindings/mfd/ene-kb930.yaml         |  65 +++++++
+ .../devicetree/bindings/mfd/gateworks-gsc.yaml     |   3 +-
+ Documentation/devicetree/bindings/mfd/iqs62x.yaml  |   2 +-
+ drivers/bus/sunxi-rsb.c                            |   4 +-
+ drivers/gpio/gpio-bd9571mwv.c                      |  35 ++--
+ drivers/mfd/Kconfig                                |  13 +-
+ drivers/mfd/Makefile                               |   1 +
+ drivers/mfd/ab8500-core.c                          |  42 ++---
+ drivers/mfd/acer-ec-a500.c                         | 202 +++++++++++++++++++++
+ drivers/mfd/altera-sysmgr.c                        |   3 +-
+ drivers/mfd/arizona-core.c                         |  11 --
+ drivers/mfd/arizona-i2c.c                          |  11 +-
+ drivers/mfd/arizona-spi.c                          | 138 +++++++++++++-
+ drivers/mfd/arizona.h                              |   9 -
+ drivers/mfd/axp20x-i2c.c                           |   4 +-
+ drivers/mfd/axp20x-rsb.c                           |   4 +-
+ drivers/mfd/axp20x.c                               |   4 +-
+ drivers/mfd/bd9571mwv.c                            | 178 +++++++++++-------
+ drivers/mfd/db8500-prcmu.c                         |   6 +-
+ drivers/mfd/gateworks-gsc.c                        |   2 +-
+ drivers/mfd/intel-lpss-pci.c                       |  28 +++
+ drivers/mfd/intel-m10-bmc.c                        |  43 +++++
+ drivers/mfd/iqs62x.c                               | 144 ++++++++-------
+ drivers/mfd/max8997.c                              |   4 +-
+ drivers/mfd/mcp-sa11x0.c                           |   3 +-
+ drivers/mfd/mt6360-core.c                          |  12 +-
+ drivers/mfd/wm831x-auxadc.c                        |   3 +-
+ drivers/regulator/bd9571mwv-regulator.c            |  59 +++---
+ include/linux/mfd/axp20x.h                         |   2 +-
+ include/linux/mfd/bd9571mwv.h                      |  45 ++---
+ include/linux/mfd/core.h                           |   6 +-
+ include/linux/mfd/intel-m10-bmc.h                  |   9 +
+ include/linux/mfd/iqs62x.h                         |  11 +-
+ include/linux/mfd/rohm-generic.h                   |   2 +
+ include/linux/sunxi-rsb.h                          |   2 +-
+ 37 files changed, 847 insertions(+), 288 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/ene-kb930.yaml
+ create mode 100644 drivers/mfd/acer-ec-a500.c
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
