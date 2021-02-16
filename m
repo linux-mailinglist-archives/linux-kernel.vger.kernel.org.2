@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EFF31C8CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EE431C8D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 11:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhBPK3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 05:29:45 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38332 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhBPK3j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:29:39 -0500
-Date:   Tue, 16 Feb 2021 11:28:56 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613471337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fi4dPmQjSKkIkqOHrhkXxa2NNDUDTA/zX6+iQHjP4G0=;
-        b=fJKpHlKp7w5dERhikQ1Mn5lP10phU43e5dVS5E3wvRdUnTIgNQN9oAI2kqW7iyYnLgb4BL
-        YNN+Lu5081Nnm0s541/yDt1r7oYhMOxbAYCkzZT8kNLAO9CA4c0uR+xeY3Hbd9A7Ybn7kW
-        BEN6dv5tHp6Td5UtyuWbUs6DIVxZ5moSemuiuXVPTkDpkgqOG8fnFot/PB+BarN6Tl9UPC
-        kK3LGEiFmp5ppRp/IKT+HH82d1OK6lcsSgaUH+Am0BUdHGnf5xjB7cW+rFI1/gxgzFB2aW
-        LzvWDS3StdVkNN8s5TvsjZsiY4JgMx4zhGA/tYWETKO2IC8/+UQKiv15ghnyLg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613471337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fi4dPmQjSKkIkqOHrhkXxa2NNDUDTA/zX6+iQHjP4G0=;
-        b=Ud4lDf/g0DQ1Htmf+oYmD8TH3i120nh3UNacSGK44/3epKNQfZLBzCKM1H2UMUuaemG/8b
-        Cla5HiAArLA+UJCA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Willy Tarreau <w@1wt.eu>
-Subject: Re: [PATCH v3] auxdisplay: Remove in_interrupt() usage.
-Message-ID: <20210216102856.dnaycukt3oqxoszp@linutronix.de>
-References: <20210208175824.381484-1-bigeasy@linutronix.de>
- <CANiq72kqfPOpgwvNo3hTesCJztODxVGonJXpeeX=S+O4roNZsw@mail.gmail.com>
- <20210208190735.ibq44r5pc4cwzt7j@linutronix.de>
- <CANiq72kq_d=5TvdhndP9zkyTD1pHF6WQb+qs01D68DEQH6jVjQ@mail.gmail.com>
- <20210208204136.sv4omzms3nadse6e@linutronix.de>
- <CANiq72mw47Qa9M6i23Dp+_3M8juBnv33PJ-6zFk++SV57G2-cQ@mail.gmail.com>
- <20210209090112.lewvvhnc2y7oyr27@linutronix.de>
- <CANiq72mG3zXA7j9KbC74hQ1BMgw713Hm3WDAcQBjKxgg0fLHeg@mail.gmail.com>
- <20210213165040.vzzieegx4aliyosd@linutronix.de>
- <CANiq72mkkSfbnNM_mmXE-TNKO1orsAeyByMKFy1N6hm+EBA40A@mail.gmail.com>
+        id S230088AbhBPKaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 05:30:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229771AbhBPKaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:30:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5634064E08;
+        Tue, 16 Feb 2021 10:29:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613471372;
+        bh=hWGJmDQWT8XgcDBQ7FWNZP9vnjZM2snhaJfPI32QkRc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=h9KXzI+VQK8eKmwWqRrnq3PhV8yv3jLCPH9kG4q5pjmm1Lz1ejBNgrfEKqh7m+9cJ
+         QDvDnNyYYoFl0N4Gnz8gHV2/n2+AedJBtShvMhSN1PFNRaKky1Uv+sqPGHFYHiRJ2X
+         jSpDta2pTJn61wx29CEpNdP9fvnQ59LE9Ehulvk/jDDWsQiBTNIwgK2BGFwlEFzhA7
+         sTL5llVU+0UKv4K0+359uJKDamyucH+YWWE4Pj+TM6A8581pmqALdJ0rb5Mjn6yhQF
+         5YX13knYFdSFX00M/6WSQh7VkVKjN6i3z9RAqLAGz01/ZvM8pjD4AIN4LW4DB7rjyW
+         5KUKJUrRnXo/w==
+Received: by mail-oi1-f179.google.com with SMTP id y199so10723708oia.4;
+        Tue, 16 Feb 2021 02:29:32 -0800 (PST)
+X-Gm-Message-State: AOAM533IjMiM8d6IQ+SdixLgOsEE0GhLII4KOPo0WoJcRKzMe7wfNNbu
+        m9qQfuLs3xm8TzErcqHTuSQAT7ZuQRwrKnQcnP4=
+X-Google-Smtp-Source: ABdhPJzLU0yXwpa8zo0VJ9pnLMzT5igdBQF/kLq0nZ5rs/I3kZXxM3I1bGcFbavHO/jgFFGo6VIGqtHL1dM1HGNJFLc=
+X-Received: by 2002:aca:2117:: with SMTP id 23mr2141331oiz.4.1613471371347;
+ Tue, 16 Feb 2021 02:29:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANiq72mkkSfbnNM_mmXE-TNKO1orsAeyByMKFy1N6hm+EBA40A@mail.gmail.com>
+References: <20210215121713.57687-1-marcan@marcan.st> <20210215121713.57687-24-marcan@marcan.st>
+ <20210215191748.uhus2e6gclkwgjo5@kozik-lap> <CAK8P3a0YzRVa+fa_7xFxR8f+pwSCo5w5kuaPsSSQscR10jwPww@mail.gmail.com>
+ <CAJKOXPc+j9F_TVq2ir0ehVvph96UgkjRRCK7Df4KR0tVgWOAng@mail.gmail.com>
+In-Reply-To: <CAJKOXPc+j9F_TVq2ir0ehVvph96UgkjRRCK7Df4KR0tVgWOAng@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 16 Feb 2021 11:29:15 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2mOCfVhR3aeey38sDudJovfz23OOMMHREd8bmy=9-5yw@mail.gmail.com>
+Message-ID: <CAK8P3a2mOCfVhR3aeey38sDudJovfz23OOMMHREd8bmy=9-5yw@mail.gmail.com>
+Subject: Re: [PATCH v2 23/25] tty: serial: samsung_tty: Add earlycon support
+ for Apple UARTs
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Hector Martin <marcan@marcan.st>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-16 10:32:15 [+0100], Miguel Ojeda wrote:
-> Hi Sebastian,
-Hi,
-
-> On Sat, Feb 13, 2021 at 5:50 PM Sebastian Andrzej Siewior
-> <bigeasy@linutronix.de> wrote:
+On Tue, Feb 16, 2021 at 11:20 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Tue, 16 Feb 2021 at 11:19, Arnd Bergmann <arnd@kernel.org> wrote:
+> > > > +     return samsung_early_console_setup(device, opt);
+> > >
+> > > Don't you need to handle the error code - set PROT_DEFAULT() or whatever
+> > > was there before?
 > >
-> > charlcd_write() is invoked as a VFS->write() callback and as such it is
-> > always invoked from preemptible context and may sleep.
-> 
-> Can we put this sentence as a comment in the code, right before the
-> call to cond_resched()?
-> 
-> > charlcd_puts() is invoked from register/unregister callback which is
-> > preemtible. The reboot notifier callback is also invoked from
-> 
-> Same for this one.
+> > __set_fixmap() has no return value, it just writes a page table entry and
+> > does not fail.
+>
+> I meant, handle samsung_early_console_setup() error code (NULL).
 
-Could we please avoid documenting the obvious? It is more or less common
-knowledge that the write callback (like any other) is preemptible user
-context (in which write occurs). The same is true for register/probe
-functions. The non-preemptible / atomic is mostly the exception because
-of the callback. Like from a timer or an interrupt.
+Ah, I see.
 
-> In addition, somehow the spelling fixes got lost from the previous version.
-> 
-> Same for the "code quotes": some have no quotes, others have `` or `'.
-> No big deal, I can fix it on my side if needed, but just letting you
-> know! :-)
+I don't think it makes a difference -- if ->setup() fails, the page table entry
+is just left in place unused, and the type of the unused mapping doesn't
+matter. If earlycon tried to unmap the page, the type also would not
+change anything.
 
-I'm so sorry. I must have taken the wrong patch while doing the update.
-My apologies. Once we sorted out the above, I will provide an update.
+With earlycon, I'd generally lean towards keeping things as simple as possible,
+in order to increase the chance of seeing anything at all. It clearly wouldn't
+hurt to try to add minimal error handling here.
 
-> Thanks!
-> 
-> Cheers,
-> Miguel
-
-Sebastian
+       Arnd
