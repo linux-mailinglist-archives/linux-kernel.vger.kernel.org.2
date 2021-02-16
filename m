@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4837131D0CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C6031D0D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 20:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhBPTRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 14:17:17 -0500
-Received: from mout.gmx.net ([212.227.17.20]:34597 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229761AbhBPTRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 14:17:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613502927;
-        bh=E4tIcmYcw1deIws19hTE9bSb/hZ8n3mZUE3MVlKTw5Q=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=MhQUuOjRvqEah4kCJGmhoSO0iECL7rLBinTr47Mh64TUagg6e30cdGcjB5zJjeF4g
-         sngT8lrG+O2HPcL6fiViWSKDlfVczIHb1FV0x8RK5Ffg67tUWV/iItcowZtKY5q4Sb
-         XjgkD6Pzsn/O6JEajl7bxt2+b3iRIha2GM2mA/50=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mr9G2-1lgVAH0JMM-00oBSA; Tue, 16
- Feb 2021 20:15:27 +0100
-Subject: Re: [PATCH v4] tpm: fix reference counting for struct tpm_chip
-To:     Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     peterhuewe@gmx.de, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        stable@vger.kernel.org, David Laight <David.Laight@ACULAB.COM>
-References: <1613435460-4377-1-git-send-email-LinoSanfilippo@gmx.de>
- <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
- <20210216125342.GU4718@ziepe.ca> <YCvtF4qfG35tHM5e@kernel.org>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <a9327758-dbd7-9272-b580-c9807bad2e24@gmx.de>
-Date:   Tue, 16 Feb 2021 20:15:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230376AbhBPTRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 14:17:53 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:35898 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230225AbhBPTRu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 14:17:50 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11GJAJ8d128995;
+        Tue, 16 Feb 2021 19:17:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=wds/CFrm0BgZAJTZAZqSDi8H94fn36D1M5FogD32eFo=;
+ b=MIR1NaCm2FNBmmfDBzdH1qxr86aRB4OVPvB/0xcIV+6Sy/bdAPX2il3HVsy6t0jxf9Dy
+ Rb5tJEIK75x3IlrfKNMfamPC9ziWviFtKC9k7lifMYwdB1wJMtq+9ZkCBCK8ikAdQvYx
+ Kills83kjcnfT6IVtb9SMdSNXJPM/NbKm27go9rBkvmxIt3uC0QXwPfCvextJz87N7D4
+ xbbOIGpb4G4FDgCShbpCQUNvGzTiP2cqpup2io/g0by9txs71MX8mxnoveG1FD+EsnDQ
+ wjtzpwqFv2Ae63jyIo1sL7c5lCaBPcX0+otY9cr8eg6a7ZpTpzuJ9kg1WMT5T7BNk71Y Dg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 36p49b85ta-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 19:17:05 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11GJA2av129930;
+        Tue, 16 Feb 2021 19:17:03 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 36prpx71xa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 19:17:02 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11GJH0Ww013364;
+        Tue, 16 Feb 2021 19:17:01 GMT
+Received: from mwanda (/10.175.221.77)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 16 Feb 2021 11:17:00 -0800
+Date:   Tue, 16 Feb 2021 22:16:48 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Alison Schofield <alison.schofield@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] cxl/mem: Fix an error code in cxl_mem_mbox_get()
+Message-ID: <YCwaIGPd9ktMoYPu@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <YCvtF4qfG35tHM5e@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5pF6WmKpnSxFSiEfZNQYHo+4PigGBFgtXoWsLIRKkmBKOVJUJOq
- GO706NNFYRpGIquOXt4QOnNl2L5T4zzfmcOxZsa6IMRgzQJvILDHShcY4C54NHZ+b/0CycF
- PhiiSdAsiUUJ3BA50WNdGpbF0sNWMjmo5gZpRW70F5VJ71Uj0THiekkPbefta7sftPQwR5A
- w2CdW9XChmEVb7o/XwNZg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3v3MkXkPuN4=:T9NwJebOiGefsXr8sY1gLx
- gCrOfcn5BexReeT0DIz6VBShnvlK3zm9ER4WOT0PicpEYGDQIiB+9DpKSPpoU5sNCzqHPO4PY
- CTbVouM+dnxjneE8QuDtvXrNVdtdPVeaZCt28qf7WEJOODUBd9y+xpsd373VEa9iRUCeIrA7Y
- uYYjrC9kUL2r19vGDOOSu/ypELlt8/psHzTvxUWV070i+cbU5sa8tWmXJBQAYnN/5JDMPR6Jz
- YG9fDmblusAnZgjVmjV8dKrWEGSlyiK/jr2qs3ttOj74+z6Ra2pjksPjtlZSkHieL1tgOyZC/
- frA4VBzV21GvoEtFf0Nhns+wRPhkBaaxzVsvQ4Mqcu+Wd9zxGfusqvdsSwPNUUG05afsrPePj
- b7mFI8hiNjP92mSs58yDBVTKTTlH5wIJxJLYkK4y+3aCoNzZRu+C4y7wCQYzEnefLuClXv+ju
- MOV0zVWOnh/hyLJOFilDSW5QLne44n0IjT3bGL3l9dUgjO4Alz5g+UUjrEinXBSvNAlw2D5CL
- S+R14ksQTgBCWTXCumfO0stdrXWzL40Jva93jDFhdRi+ET31I3sMEdfHM09Y1co2rA+bfO7FT
- +VDsSu8GZcXepDDMu5T4ykrlopwegZWinOmwqGKJc0Z/tTWHXZXeh8TIg/ageSmbXrDcozegk
- ytXVE/ByQDdJz02tnF3V2VIM/beb2rlIfSA4oTF+z4al0Io5lk3Kun9Hi7j0egl+N3T2NIxUp
- FoPz6CpgB8fyodn9g8esDHyd8oBejzFBph5XjS2ugM1douH0v3Lva7mOOUhiu21EjLt448p4x
- dQKxw3N5Vs7uMa1exKpN9xusjstUSDOZphkwoDWgNfJKt1HZ293B942V5IKfBa2r46xVkXvk1
- V+cWO5fJo048DHHMhzoQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102160159
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=992
+ adultscore=0 malwarescore=0 phishscore=0 clxscore=1011 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102160159
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Smatch complains that sometimes when we return success we are holding
+the mutex and sometimes we have released the mutex.  It turns out that
+the bug is a missing error code if the mbox is not ready.  It should
+return -EBUSY instead of success.
 
-On 16.02.21 at 17:04, Jarkko Sakkinen wrote:
+Fixes: cc1967ac93ab ("cxl/mem: Find device capabilities")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/cxl/mem.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->>> +	/*
->>> +	 * get extra reference on main device to hold on behalf of devs.
->>> +	 * This holds the chip structure while cdevs is in use. The
->>> +	 * corresponding put is in the tpm_devs_release.
->>> +	 */
->>> +	get_device(&chip->dev);
->>> +	chip->devs.release =3D tpm_devs_release;
->>> +	chip->devs.devt =3D
->>> +		MKDEV(MAJOR(tpm_devt), chip->dev_num + TPM_NUM_DEVICES);
->
-> Isn't this less than 100 chars?
->
-
-I just chose the same formatting that the original code used. Personally I=
- prefer what
-David suggested, so if there is no objection against it I will format it t=
-his way.
-
-Regards,
-Lino
+diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+index 3bca8451348a..2ebc84e4d202 100644
+--- a/drivers/cxl/mem.c
++++ b/drivers/cxl/mem.c
+@@ -383,8 +383,8 @@ static int __cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
+ static int cxl_mem_mbox_get(struct cxl_mem *cxlm)
+ {
+ 	struct device *dev = &cxlm->pdev->dev;
+-	int rc = -EBUSY;
+ 	u64 md_status;
++	int rc;
+ 
+ 	mutex_lock_io(&cxlm->mbox_mutex);
+ 
+@@ -414,6 +414,7 @@ static int cxl_mem_mbox_get(struct cxl_mem *cxlm)
+ 	md_status = readq(cxlm->memdev_regs + CXLMDEV_STATUS_OFFSET);
+ 	if (!(md_status & CXLMDEV_MBOX_IF_READY && CXLMDEV_READY(md_status))) {
+ 		dev_err(dev, "mbox: reported doorbell ready, but not mbox ready\n");
++		rc = -EBUSY;
+ 		goto out;
+ 	}
+ 
+-- 
+2.30.0
 
