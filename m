@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3068E31CAA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5597531CAAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 13:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhBPMlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 07:41:32 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:60349 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229931AbhBPMlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 07:41:20 -0500
-Received: from [192.168.0.5] (ip5f5aed2c.dynamic.kabel-deutschland.de [95.90.237.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: buczek)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 8DDD320647935;
-        Tue, 16 Feb 2021 13:40:36 +0100 (CET)
-Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+linux-xfs@molgen.mpg.de
-References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
- <20201229235627.33289-1-buczek@molgen.mpg.de>
- <20201230221611.GC164134@dread.disaster.area>
- <20210104162353.GA254939@bfoster>
- <20210107215444.GG331610@dread.disaster.area>
- <20210108165657.GC893097@bfoster> <20210111163848.GC1091932@bfoster>
- <20210113215348.GI331610@dread.disaster.area>
- <8416da5f-e8e5-8ec6-df3e-5ca89339359c@molgen.mpg.de>
- <20210216111820.GA534175@bfoster>
-From:   Donald Buczek <buczek@molgen.mpg.de>
-Message-ID: <b62dbd9a-9c80-6383-46f1-dc78ca9bca41@molgen.mpg.de>
-Date:   Tue, 16 Feb 2021 13:40:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230090AbhBPMnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 07:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230026AbhBPMnM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 07:43:12 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620C3C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:42:31 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id y128so10284211ybf.10
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 04:42:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M9HMUptyNWsJ5O8nTn609Xb6kh7fmzyYm2B08HuDzsA=;
+        b=JUST5tkdd6dR1viqz3oYv3TXgE8VqtTlLpsRoZLuHfbTrDNybhq91kPhbyVzBwCRl9
+         Z5oV4A4zDTl7NzyUfCK+8mDqdqaqRxDYuAG0pPiG4kH9j5WDa8dwyiJhFipv3VUKbPzw
+         dktYkiugmnrY/hGpqGj48nqmLW6BLObkjGloJTL1Mo3mP5c+u/xGMAVgBvLYEY4pNpe3
+         q41LcsIV/VFCVttuHBMEbSuzfhzeZzvosmY0EfV4LGNoJ79H6LoxHh6PBi0j0nIzsDDZ
+         ue3+tRE/KtfiU95vm7My4OQ3sitCb4dSq4veeg/Luu86Tdt/7nXP43xWgJv0gRvk3uKZ
+         wtQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M9HMUptyNWsJ5O8nTn609Xb6kh7fmzyYm2B08HuDzsA=;
+        b=NIg0IEnug4xflppywivupCPdj+OuheC4yKx2Vgc7WYR1vbNY0rCXyFoTihd5p/S7hF
+         T6G6PvxRQzKbS0ZHXUNiSSWQ3ZSGo6DKpNoClYP8YHZnjdeIDMl345H+f71qWeY3pkdB
+         wg9CrprG+TKpSW91m2Ns/PtH7Iq8v4sDZGjW4pjAYwKd365ix0UXSWKnJxj1CfSR1jVN
+         TOQ+PE5QqLUWWzf2CGmBAdtgKQKapoc7GqIYK1DiMgt92YqFPxYKCZKDkfB8Es7M2sQY
+         GWfnXz6G5pZmF07PnfEncmXyFHdj9DSZxzksY2yV20PrpXAmeOGsiMU8Y6K8oNUsfFT9
+         Qh7w==
+X-Gm-Message-State: AOAM531MfQwpl6PONMxVLzzC9k8AByAa2OCxvulUKeaS5EcSmDbSgEoe
+        4kRhkigNbkCOWXLgFuJyQWVAGfrynbBZAykQips=
+X-Google-Smtp-Source: ABdhPJx5cDEN1OfVowzqd92kxmyO971svK2X2rtdTrA14WmKkbP/pB3/bXB8Z0g/9oxThFBiM2ZYxzbU/yCESbVBeH0=
+X-Received: by 2002:a25:31c2:: with SMTP id x185mr28643027ybx.93.1613479350765;
+ Tue, 16 Feb 2021 04:42:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210216111820.GA534175@bfoster>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210208175824.381484-1-bigeasy@linutronix.de>
+ <CANiq72kqfPOpgwvNo3hTesCJztODxVGonJXpeeX=S+O4roNZsw@mail.gmail.com>
+ <20210208190735.ibq44r5pc4cwzt7j@linutronix.de> <CANiq72kq_d=5TvdhndP9zkyTD1pHF6WQb+qs01D68DEQH6jVjQ@mail.gmail.com>
+ <20210208204136.sv4omzms3nadse6e@linutronix.de> <CANiq72mw47Qa9M6i23Dp+_3M8juBnv33PJ-6zFk++SV57G2-cQ@mail.gmail.com>
+ <20210209090112.lewvvhnc2y7oyr27@linutronix.de> <CANiq72mG3zXA7j9KbC74hQ1BMgw713Hm3WDAcQBjKxgg0fLHeg@mail.gmail.com>
+ <20210213165040.vzzieegx4aliyosd@linutronix.de> <CANiq72mkkSfbnNM_mmXE-TNKO1orsAeyByMKFy1N6hm+EBA40A@mail.gmail.com>
+ <20210216102856.dnaycukt3oqxoszp@linutronix.de>
+In-Reply-To: <20210216102856.dnaycukt3oqxoszp@linutronix.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 16 Feb 2021 13:42:19 +0100
+Message-ID: <CANiq72mge40Uvqf3mb4uof2gi8ktvhjoodfyJY7uLW4guTnvDw@mail.gmail.com>
+Subject: Re: [PATCH v3] auxdisplay: Remove in_interrupt() usage.
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.02.21 12:18, Brian Foster wrote:
-> On Mon, Feb 15, 2021 at 02:36:38PM +0100, Donald Buczek wrote:
->> On 13.01.21 22:53, Dave Chinner wrote:
->>> [...]
->>> I agree that a throttling fix is needed, but I'm trying to
->>> understand the scope and breadth of the problem first instead of
->>> jumping the gun and making the wrong fix for the wrong reasons that
->>> just papers over the underlying problems that the throttling bug has
->>> made us aware of...
->>
->> Are you still working on this?
->>
->> If it takes more time to understand the potential underlying problem, the fix for the problem at hand should be applied.
->>
->> This is a real world problem, accidentally found in the wild. It appears very rarely, but it freezes a filesystem or the whole system. It exists in 5.7 , 5.8 , 5.9 , 5.10 and 5.11 and is caused by c7f87f3984cf ("xfs: fix use-after-free on CIL context on shutdown") which silently added a condition to the wakeup. The condition is based on a wrong assumption.
->>
->> Why is this "papering over"? If a reminder was needed, there were better ways than randomly hanging the system.
->>
->> Why is
->>
->>      if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log))
->>          wake_up_all(&cil->xc_push_wait);
->>
->> , which doesn't work reliably, preferable to
->>
->>      if (waitqueue_active(&cil->xc_push_wait))
->>          wake_up_all(&cil->xc_push_wait);
->>
->> which does?
->>
-> 
-> JFYI, Dave followed up with a patch a couple weeks or so ago:
-> 
-> https://lore.kernel.org/linux-xfs/20210128044154.806715-5-david@fromorbit.com/
-
-Oh, great. I apologize for the unneeded reminder.
-
-Best
-
-   Donald
-
-> 
-> Brian
-> 
->> Best
->>    Donald
->>
->>> Cheers,
->>>
->>> Dave
->>
+On Tue, Feb 16, 2021 at 11:28 AM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
 >
+> Could we please avoid documenting the obvious? It is more or less common
+> knowledge that the write callback (like any other) is preemptible user
+> context (in which write occurs). The same is true for register/probe
+> functions. The non-preemptible / atomic is mostly the exception because
+> of the callback. Like from a timer or an interrupt.
+
+It is not so much about documenting the obvious, but about stating
+that 1) the precondition was properly taken into account and that 2)
+nothing non-obvious is undocumented. When code is changed later on, it
+is much more likely assumptions are broken if not documented.
+
+In fact, from a quick git blame, that seems to be what happened here:
+originally the function could be called from a public function
+intended to be used from inside the kernel; so I assume it was the
+intention to allow calls from softirq contexts. Then it was refactored
+and the check never removed. In this case, the extra check is not a
+big deal, but going in the opposite direction can happen too, and then
+we will have a bug.
+
+In general, when a patch for a fix is needed, it's usually a good idea
+to add a comment right in the code. Even if only to avoid someone else
+having to backtrack the calls to see it is only called form fs_ops
+etc.
+
+Cheers,
+Miguel
