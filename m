@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777E331CD38
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B0131CD49
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 16:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhBPPvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 10:51:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45342 "EHLO mail.kernel.org"
+        id S230216AbhBPPyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 10:54:32 -0500
+Received: from mga03.intel.com ([134.134.136.65]:56597 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230305AbhBPPvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 10:51:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84FDE614A5;
-        Tue, 16 Feb 2021 15:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613490624;
-        bh=99dMmcq1kwMsRQeMnsBSINGQ+qLcEXbZ1FU5t8BRZp0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BZlDt/w44yWUTl+k1VdNsSdpauAdQycma3HXUvXioF2yit6H3m5TkD4xSKb6YHo0S
-         hOo0xFyZCicjY9rk4sPs7yvaewJlQxX/EDWtNV3Mvt3KDpVUh7kPDKQMMrC5t7eF95
-         tG1xVAhmYdwm1AATvkMvKvN6zqgp5NsWhVkjY/7M=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] time: test_udelay:  remove dentry pointer for debugfs
-Date:   Tue, 16 Feb 2021 16:50:20 +0100
-Message-Id: <20210216155020.1012407-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
+        id S229787AbhBPPyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 10:54:15 -0500
+IronPort-SDR: uFxRYTFChpiJliSYlvD73+cDX1QnlP2q1EkWIKk5KFj7VpA2yBlGqBHPUiEl0c5kabWt4LfWFk
+ JdCh6aP6hTng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="182993763"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="182993763"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 07:51:01 -0800
+IronPort-SDR: iBvJFjhniTxxdNc4/RTkPjD0M2S0ohTwbRcN6KtHkNPp8clIvTB6KHKbArxCWrP3cHPJUxoinK
+ HoHO8nuqrO3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="384458645"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 16 Feb 2021 07:51:00 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 23B931F1; Tue, 16 Feb 2021 17:50:58 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Pavel Machek <pavel@ucw.cz>
+Subject: [PATCH v1 1/7] leds: lp50xx: Don't spam logs when probe is deferred
+Date:   Tue, 16 Feb 2021 17:50:44 +0200
+Message-Id: <20210216155050.29322-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to keep the dentry pointer around for the created
-debugfs file, as it is only needed when removing it from the system.
-When it is to be removed, ask debugfs itself for the pointer, to save on
-storage and make things a bit simpler.
+When requesting GPIO line the probe can be deferred.
+In such case don't spam logs with an error message.
+This can be achieved by switching to dev_err_probe().
 
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- kernel/time/test_udelay.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/leds/leds-lp50xx.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/time/test_udelay.c b/kernel/time/test_udelay.c
-index 77c63005dc4e..13b11eb62685 100644
---- a/kernel/time/test_udelay.c
-+++ b/kernel/time/test_udelay.c
-@@ -21,7 +21,6 @@
- #define DEBUGFS_FILENAME "udelay_test"
+diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
+index f13117eed976..a2d18ec8fd2b 100644
+--- a/drivers/leds/leds-lp50xx.c
++++ b/drivers/leds/leds-lp50xx.c
+@@ -455,12 +455,9 @@ static int lp50xx_probe_dt(struct lp50xx *priv)
+ 	int i = 0;
  
- static DEFINE_MUTEX(udelay_test_lock);
--static struct dentry *udelay_test_debugfs_file;
- static int udelay_test_usecs;
- static int udelay_test_iterations = DEFAULT_ITERATIONS;
+ 	priv->enable_gpio = devm_gpiod_get_optional(priv->dev, "enable", GPIOD_OUT_LOW);
+-	if (IS_ERR(priv->enable_gpio)) {
+-		ret = PTR_ERR(priv->enable_gpio);
+-		dev_err(&priv->client->dev, "Failed to get enable gpio: %d\n",
+-			ret);
+-		return ret;
+-	}
++	if (IS_ERR(priv->enable_gpio))
++		return dev_err_probe(priv->dev, PTR_ERR(priv->enable_gpio),
++				     "Failed to get enable GPIO\n");
  
-@@ -138,8 +137,8 @@ static const struct file_operations udelay_test_debugfs_ops = {
- static int __init udelay_test_init(void)
- {
- 	mutex_lock(&udelay_test_lock);
--	udelay_test_debugfs_file = debugfs_create_file(DEBUGFS_FILENAME,
--			S_IRUSR, NULL, NULL, &udelay_test_debugfs_ops);
-+	debugfs_create_file(DEBUGFS_FILENAME, S_IRUSR, NULL, NULL,
-+			    &udelay_test_debugfs_ops);
- 	mutex_unlock(&udelay_test_lock);
- 
- 	return 0;
-@@ -150,7 +149,7 @@ module_init(udelay_test_init);
- static void __exit udelay_test_exit(void)
- {
- 	mutex_lock(&udelay_test_lock);
--	debugfs_remove(udelay_test_debugfs_file);
-+	debugfs_remove(debugfs_lookup(DEBUGFS_FILENAME, NULL));
- 	mutex_unlock(&udelay_test_lock);
- }
- 
+ 	priv->regulator = devm_regulator_get(priv->dev, "vled");
+ 	if (IS_ERR(priv->regulator))
 -- 
-2.30.1
+2.30.0
 
