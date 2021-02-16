@@ -2,173 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD39831CB63
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5085B31CB64
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 14:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhBPNqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 08:46:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhBPNqC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229944AbhBPNqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 08:46:08 -0500
+Received: from foss.arm.com ([217.140.110.172]:35456 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229713AbhBPNqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Feb 2021 08:46:02 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823A9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 05:45:21 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id w19so9312452qki.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 05:45:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ru6kEOSEblzMS8sJpCTYk9Zye/4zxUZFCnZm62Z9cuQ=;
-        b=jfhAl+e/pxMzGEiIHEYpgZZSrs8JccuDwXlJ0r1LamXZ0K4c4PzN+pzpyXawNj5Crk
-         YAb13a/SzSu2snzfPFzQr3FSOuv5vwyb8lUObLAbDvxl2VpYx2omQMYcDuziy+KmJxZM
-         BR5ZwbQsdyxOs6gNRuUok55X6qifjFAeuDaRJ97iP4x5mMjQwwVc7aouSXQmXxN+t4kk
-         Zb03VtmY9yE1ou7d7B6EJ4LL1xGRW6FGQuyBp8aFoLLPSr73zbgluQk5twtUGzwp0UZX
-         sEFawjGHMDAYkVVN02jnnLlspUXv9EChjR5dNbKRK/ceROAjYX5kTv3EpKhc/Tcu/W5z
-         46mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ru6kEOSEblzMS8sJpCTYk9Zye/4zxUZFCnZm62Z9cuQ=;
-        b=ZlL05/GIGiTHSdMJXX8mmVBVOsV1Hbx1u5iYaJQ86tE305oZBVJ8TBSJMHLnepuO/+
-         7T+O4wfFR8DG3U6tw6VpTU2mgKDjc0YOuZjP8R+lMs8QD4QVPwk+8XMo6AqjW99OaxY2
-         wZ6+Cta+UrIE8tV/zv97B4orT+o93QEt5m+Z61ra+NwlDBa6QArq5/gRrUB7EsC9y9Du
-         hE5qdLImsSd9pK+rW3E9SJYn8aem0StHifz1rndfKQhAy0nF+LVlBn5ISdDIcQV8VdMT
-         Ee6qnJQ+j0wQaliRXtj6v5gaW2fxcVrpZjXAeuSwhtYchjH+AYCD5fbmPMxLAIZ7+22k
-         E2PQ==
-X-Gm-Message-State: AOAM532g2DNhgm0Q1LmCSMPF+CsbRhjUy37MZqQLKsUiekTBp1g1YIND
-        nso8LtcshrRer9DuJWgh4xid4m18gAD80XhjK+WinA==
-X-Google-Smtp-Source: ABdhPJyImnKIYiSh1kY4z4WN2xM8tWUEidFcQla7zPD3SMrRrsLN6zW1gm1MWiyj8qV6+icLw2LCX3iKTWtT49q/n4k=
-X-Received: by 2002:a05:620a:410f:: with SMTP id j15mr20063309qko.424.1613483120420;
- Tue, 16 Feb 2021 05:45:20 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CC0E31B;
+        Tue, 16 Feb 2021 05:45:16 -0800 (PST)
+Received: from [10.57.48.219] (unknown [10.57.48.219])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E96FF3F694;
+        Tue, 16 Feb 2021 05:45:14 -0800 (PST)
+Subject: Re: [PATCH v2] iommu: Check dev->iommu in iommu_dev_xxx functions
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+Cc:     "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>
+References: <c82f6d0cced74c43947714e7de576d5a@huawei.com>
+ <d541ebeb-5b89-7a9d-50a2-3867f9cf78b3@arm.com>
+ <33cf95925cfb47dda3ee472e00b9846c@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <f89f150f-20d3-8f22-c6c5-92c19d3d7e33@arm.com>
+Date:   Tue, 16 Feb 2021 13:45:10 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
- <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
- <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
- <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
- <20210118145310.crnqnh6kax5jqicj@distanz.ch> <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
- <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
- <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr> <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
- <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com> <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
-In-Reply-To: <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 16 Feb 2021 14:45:08 +0100
-Message-ID: <CACT4Y+ZO35HALQevcqgFR33hUf-6NVF0Z6qFyu8XJm-3eBy4SQ@mail.gmail.com>
-Subject: Re: riscv+KASAN does not boot
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Tobias Klauser <tklauser@distanz.ch>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Bjorn Topel <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
-        syzkaller <syzkaller@googlegroups.com>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <33cf95925cfb47dda3ee472e00b9846c@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 12:25 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > > I was fixing KASAN support for my sv48 patchset so I took a look at your
-> > > > issue: I built a kernel on top of the branch riscv/fixes using
-> > > > https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
-> > > > and Buildroot 2020.11. I have the warnings regarding the use of
-> > > > __virt_to_phys on wrong addresses (but that's normal since this function
-> > > > is used in virt_addr_valid) but not the segfaults you describe.
-> > >
-> > > Hi Alex,
-> > >
-> > > Let me try to rebuild buildroot image. Maybe there was something wrong
-> > > with my build, though, I did 'make clean' before doing. But at the
-> > > same time it worked back in June...
-> > >
-> > > Re WARNINGs, they indicate kernel bugs. I am working on setting up a
-> > > syzbot instance on riscv. If there a WARNING during boot then the
-> > > kernel will be marked as broken. No further testing will happen.
-> > > Is it a mis-use of WARN_ON? If so, could anybody please remove it or
-> > > replace it with pr_err.
-> >
-> >
-> > Hi,
-> >
-> > I've localized one issue with riscv/KASAN:
-> > KASAN breaks VDSO and that's I think the root cause of weird faults I
-> > saw earlier. The following patch fixes it.
-> > Could somebody please upstream this fix? I don't know how to add/run
-> > tests for this.
-> > Thanks
-> >
-> > diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-> > index 0cfd6da784f84..cf3a383c1799d 100644
-> > --- a/arch/riscv/kernel/vdso/Makefile
-> > +++ b/arch/riscv/kernel/vdso/Makefile
-> > @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
-> >  # Disable gcov profiling for VDSO code
-> >  GCOV_PROFILE := n
-> >  KCOV_INSTRUMENT := n
-> > +KASAN_SANITIZE := n
-> >
-> >  # Force dependency
-> >  $(obj)/vdso.o: $(obj)/vdso.so
->
->
->
-> Second issue I am seeing seems to be related to text segment size.
-> I check out v5.11 and use this config:
-> https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc9178
->
-> Then trying to boot it using:
-> QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
-> $ qemu-system-riscv64 -machine virt -smp 2 -m 4G ...
->
-> It shows no output from the kernel whatsoever, even though I have
-> earlycon and output shows very early with other configs.
-> Kernel boots fine with defconfig and other smaller configs.
->
-> If I enable KASAN_OUTLINE and CC_OPTIMIZE_FOR_SIZE, then this config
-> also boots fine. Both of these options significantly reduce kernel
-> size. However, I can also boot the kernel without these 2 configs, if
-> I disable a whole lot of subsystem configs. This makes me think that
-> there is an issue related to kernel size somewhere in
-> qemu/bootloader/kernel bootstrap code.
-> Does it make sense to you? Can somebody reproduce what I am seeing?
+On 2021-02-12 17:28, Shameerali Kolothum Thodi wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Shameerali Kolothum Thodi
+>> Sent: 12 February 2021 16:45
+>> To: 'Robin Murphy' <robin.murphy@arm.com>; linux-kernel@vger.kernel.org;
+>> iommu@lists.linux-foundation.org
+>> Cc: joro@8bytes.org; jean-philippe@linaro.org; will@kernel.org; Zengtao (B)
+>> <prime.zeng@hisilicon.com>; linuxarm@openeuler.org
+>> Subject: RE: [PATCH v2] iommu: Check dev->iommu in iommu_dev_xxx functions
+>>
+>>
+>>
+>>> -----Original Message-----
+>>> From: Robin Murphy [mailto:robin.murphy@arm.com]
+>>> Sent: 12 February 2021 16:39
+>>> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>;
+>>> linux-kernel@vger.kernel.org; iommu@lists.linux-foundation.org
+>>> Cc: joro@8bytes.org; jean-philippe@linaro.org; will@kernel.org; Zengtao (B)
+>>> <prime.zeng@hisilicon.com>; linuxarm@openeuler.org
+>>> Subject: Re: [PATCH v2] iommu: Check dev->iommu in iommu_dev_xxx
+>> functions
+>>>
+>>> On 2021-02-12 14:54, Shameerali Kolothum Thodi wrote:
+>>>> Hi Robin/Joerg,
+>>>>
+>>>>> -----Original Message-----
+>>>>> From: Shameer Kolothum
+>> [mailto:shameerali.kolothum.thodi@huawei.com]
+>>>>> Sent: 01 February 2021 12:41
+>>>>> To: linux-kernel@vger.kernel.org; iommu@lists.linux-foundation.org
+>>>>> Cc: joro@8bytes.org; robin.murphy@arm.com; jean-philippe@linaro.org;
+>>>>> will@kernel.org; Zengtao (B) <prime.zeng@hisilicon.com>;
+>>>>> linuxarm@openeuler.org
+>>>>> Subject: [Linuxarm] [PATCH v2] iommu: Check dev->iommu in
+>>> iommu_dev_xxx
+>>>>> functions
+>>>>>
+>>>>> The device iommu probe/attach might have failed leaving dev->iommu
+>>>>> to NULL and device drivers may still invoke these functions resulting
+>>>>> in a crash in iommu vendor driver code. Hence make sure we check that.
+>>>>>
+>>>>> Also added iommu_ops to the "struct dev_iommu" and set it if the dev
+>>>>> is successfully associated with an iommu.
+>>>>>
+>>>>> Fixes: a3a195929d40 ("iommu: Add APIs for multiple domains per
+>> device")
+>>>>> Signed-off-by: Shameer Kolothum
+>>> <shameerali.kolothum.thodi@huawei.com>
+>>>>> ---
+>>>>> v1 --> v2:
+>>>>>    -Added iommu_ops to struct dev_iommu based on the discussion with
+>>> Robin.
+>>>>>    -Rebased against iommu-tree core branch.
+>>>>
+>>>> A gentle ping on this...
+>>>
+>>> Is there a convincing justification for maintaining yet another copy of
+>>> the ops pointer rather than simply dereferencing iommu_dev->ops at point
+>>> of use?
+>>>
+>>
+>> TBH, nothing I can think of now. That was mainly the way I interpreted your
+>> suggestion
+>> from the v1.  Now it looks like you didn’t mean it :). I am Ok to rework it to
+>> dereference
+>> it from iommu_dev. Please let me know.
+> 
+> So we can do something like this,
+> 
+> index fd76e2f579fe..5fd31a3cec18 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2865,10 +2865,12 @@ EXPORT_SYMBOL_GPL(iommu_fwspec_add_ids);
+>    */
+>   int iommu_dev_enable_feature(struct device *dev, enum iommu_dev_features feat)
+>   {
+> -       const struct iommu_ops *ops = dev->bus->iommu_ops;
+> +       if (dev->iommu && dev->iommu->iommu_dev && dev->iommu->iommu_dev->ops)
+> +               struct iommu_ops  *ops = dev->iommu->iommu_dev->ops;
+>   
+> -       if (ops && ops->dev_enable_feat)
+> -               return ops->dev_enable_feat(dev, feat);
+> +               if (ops->dev_enable_feat)
+> +                       return ops->dev_enable_feat(dev, feat);
+> +       }
+>   
+>          return -ENODEV;
+>   }
+> 
+> Again, not sure we need to do the checking for iommu->dev and ops here. If the
+> dev->iommu is set, is it safe to assume that we have a valid iommu->iommu_dev
+> and ops always? (May be it is safer to do the checking in case something
+> else breaks this assumption in future). Please let me know your thoughts.
 
+I think it *could* happen that dev->iommu is set by iommu_fwspec_init() 
+but iommu_probe_device() later refuses the device for whatever reason, 
+so we would still need to check iommu->iommu_dev to be completely safe. 
+We can assume iommu_dev->ops is valid, since if the IOMMU driver has 
+returned something bogus from .probe_device then it's a major bug in 
+that driver and crashing is the best indicator :)
 
+Robin.
 
-I am debugging the next issue with VDSO. clock_gettime is broken in
-some weird way.
-syzkaller has this function:
-
-static uint64 current_time_ms(void)
-{
-        struct timespec ts;
-        if (clock_gettime(CLOCK_MONOTONIC, &ts))
-        //if (syscall(SYS_clock_gettime, CLOCK_MONOTONIC, &ts))
-                fail("clock_gettime failed");
-        return (uint64)ts.tv_sec * 1000 + (uint64)ts.tv_nsec / 1000000;
-}
-
-When using clock_gettime it producer some nonsense that breaks all
-timeouts (in particular monotonic time goes backwards):
-pid=4343 now=836038064151457975
-pid=4343 now=836038064151457975
-pid=4343 now=836038064151457970
-pid=4343 now=836038064151457971
-
-When I tested it calling real syscall, it works as expected:
-pid=4876 now=2493379
-pid=4876 now=2493392
-pid=4876 now=2493395
-pid=4876 now=2493409
-pid=4876 now=2493414
-
-Is it a known issue? Any ideas?
+> 
+> Thanks,
+> Shameer
+> 
+> 
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
