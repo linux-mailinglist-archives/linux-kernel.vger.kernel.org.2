@@ -2,148 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C303731CE90
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8131331CE92
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhBPQ7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:59:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
+        id S230508AbhBPRAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhBPQ7m (ORCPT
+        with ESMTP id S230332AbhBPRAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:59:42 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83AC5C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:59:02 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id w19so9986455qki.13
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:59:02 -0800 (PST)
+        Tue, 16 Feb 2021 12:00:05 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB240C061756;
+        Tue, 16 Feb 2021 08:59:24 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id l18so6322703pji.3;
+        Tue, 16 Feb 2021 08:59:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7Sbc+/7yHkx+7SnjvZzsa9ETiyUzFfwyyH3lcCN73/I=;
-        b=QcYThMMEVLZEm7VRmsM12lMG8ZDFYS88jVBFd9Z67UWfpdmyePvN+QkKDAKq3kRSIH
-         dT4jdVZPlMZPWZg0Llj4TOx6NJWY0qbNUcZsx5ciWu7MNSKKlK4y4wXs0KmwHZZGjHFt
-         DLwXH+6VOSHgIPGNOVUJPLSqiiXkqe62CQYLohD4C8Ojp89gxsduXZpeeyr404CO/cwm
-         /btydGUcbGStYIzkl/TPAGiZTGJbhC5KYmqo3pe/CabYp0YnhLT8nLeX4MR7qc5/yscQ
-         YFbDP8zkkOL/UrZSrJpS5A/Jlc+/mgT+srW/uf4YPa9qIbeiSpupCbcbdQQoD8ITU4sW
-         4jQw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T4k94IHmYOAsw1neG4zAJJJPBOifn3q1Cm7s7hwfxAs=;
+        b=pm3+yLEs1FyxPwpxgknSQ8OTZgHg4lpLMRYpWpJZZxYfW6yoVOFxufDnHrbDbqYbTP
+         e7MhXhXdob/dn8p4bOP98QTw4btfZkKMcSHZohPQiTKIOh6wJajGxliMgWolHkOoURUD
+         RcTH4UMgEH2bwmouvGPidMRmc8ZsLgRGXhUSU/Pk8qDLakNS688ElZzMyXGp994Dfzdg
+         EY2qNS/Kd+VfZpUjjwDUkFeAGFdBBC11g/veGi7ndXsPG+1N73szQitNXhLQ/E7ddUan
+         xtUN1VEOTeZ6O4vGg/7zxA55KaA+7vWvHyxJVhWfURM3R+liZfk+3YiwA/bIU4HSWhna
+         mjVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7Sbc+/7yHkx+7SnjvZzsa9ETiyUzFfwyyH3lcCN73/I=;
-        b=GbIzzT7TRU/hfDi5LLKoJfFyITjYjOQ4yIewDso23MC92JsdcCnESzfAHsDGuTbpCK
-         rqTyC4QEK0BcnSVN3e5h3y+Jxj3l9m4VHwgqM+WIzNAweIDqCg7HSRZwcB+d4CG13SZN
-         un5NRAD+Kg9CnPITp0oKxwgmuwCVEZAG/ZQxPLZ7kp6MWZ4DdXI8KJr7FmgBaCQ6nzse
-         UKDuachHBYT2x4lZq8BO7d5T4O9k+UTfBEmZqdwjsCV3HB8pKc93sa8W5pYEElg1Hwy0
-         71406dxnAezXy8l/C8kJYFSCe6z0xa8F6+LmWPTXJRhTAIvSbl2wZXOnskM9GbCCNlAT
-         Xlqw==
-X-Gm-Message-State: AOAM530NZJEufc7bj9EB4kn59ehE2OE4+k926XETKUyEh+YrSDcWIHIQ
-        BlF+pfjjWziteolI8+lRaVR27tnuLvsYKg==
-X-Google-Smtp-Source: ABdhPJxC5HWoRm7IEnPC6r53eTdFdTHnW0AZjQk6Jc2GQkHX3Cxml4Hkq9oeYehom45Pg7eqqCwSWg==
-X-Received: by 2002:a05:620a:148c:: with SMTP id w12mr18486430qkj.186.1613494741630;
-        Tue, 16 Feb 2021 08:59:01 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id q12sm7798492qki.91.2021.02.16.08.59.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 08:59:00 -0800 (PST)
-Date:   Tue, 16 Feb 2021 11:59:00 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on cgroup v2
-Message-ID: <YCv51LgGIWxVjLHT@cmpxchg.org>
-References: <20210212170159.32153-1-songmuchun@bytedance.com>
- <20210212170159.32153-4-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T4k94IHmYOAsw1neG4zAJJJPBOifn3q1Cm7s7hwfxAs=;
+        b=tgycEzmQwIV7KDkqq8nFKg6p8TGJRyKpVgMiL3S1iE+bdK+QJfbyZ7pAqvn3l8LB80
+         mHY47wmSuCv4R65P6Jt7xVi7ex0JndlW2UXw32wM2qUKRp+L1uaTTPqBxYQwcWSmYJHV
+         H0Z62xLeEFu/IxxR7qZ+ivBiTEr9OqkJHxh0bMs389//Ppv38InU6zs4cVMUg35fjEvl
+         FIVY/apdhubSnYnSy3k/OpNX95Q3kZkDbh4Lbdk2Wf1Imtzt3kpL83o8z4dg18U0NUwR
+         Kyi23EOqdjKS0ss/zxJztX0MlWeQid9m+U9RcbCN3psURBJw4Y+rfR740PFaBHGYWsNp
+         6IOA==
+X-Gm-Message-State: AOAM5322pgAJpb2htZIhp32GbTqloMKL0Cu5v6R+duSl7rLwOp1uPild
+        zFFy9sxBaesl75ADxxUhBdMYHTS/OGxfWTRFKtM+t5hUsx9QWw==
+X-Google-Smtp-Source: ABdhPJwdH193bkuaUeHGr5QPKbsuFa4cwImV+qjhoabD5rMFzZjl8wCp+iBTyrNK58yuJSsPTSdP1UhSM/n1w3kMaEo=
+X-Received: by 2002:a17:90a:4fc1:: with SMTP id q59mr5319710pjh.129.1613494764257;
+ Tue, 16 Feb 2021 08:59:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212170159.32153-4-songmuchun@bytedance.com>
+References: <CAHp75VfpnGEZcnrQLFYaFQ-HuxTmPw5OnewKmRGfXQf__ztjww@mail.gmail.com>
+ <87r1lgx8fo.fsf@meer.lwn.net>
+In-Reply-To: <87r1lgx8fo.fsf@meer.lwn.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 16 Feb 2021 18:59:08 +0200
+Message-ID: <CAHp75Vc0SwC=WxUOiokUik1G4uPE6bHfX_F_ckgp-eEJaVuWhA@mail.gmail.com>
+Subject: Re: anonymous enums in kernel doc
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Muchun,
+On Tue, Feb 16, 2021 at 6:51 PM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> > Mauro, can you do some test cases in your workflow against anonymous
+> > enum in ernel doc, please?
+> >
+> > They are broken again, please fix the script!
+> >
+> > drivers/pinctrl/intel/pinctrl-intel.c:204: warning: wrong kernel-doc
+> > identifier on line:
+> > * enum - Locking variants of the pad configuration
+> >
+> > Above is simply a wrong statement.
+>
+> The real problem, perhaps, is that there seems to be little point in
+> adding kerneldoc comments for anonymous enums; where are you going to
+> use that documentation?
 
-On Sat, Feb 13, 2021 at 01:01:59AM +0800, Muchun Song wrote:
-> The swap charges the actual number of swap entries on cgroup v2.
-> If a swap cache page is charged successful, and then we uncharge
-> the swap counter. It is wrong on cgroup v2. Because the swap
-> entry is not freed.
+I had been explicitly told during review (IIRC by maintainers) to make
+it such, while the initial version was exactly like you are thinking
+of. So, I'm not the right person to be asked :-)
 
-The patch makes sense to me. But this code is a bit tricky, we should
-add more documentation to how it works and what the problem is.
+>  The error message could perhaps be changed to
+> say that; meanwhile, perhaps this one could be fixed with an action like
+> s%/**%/*% ?
 
-How about this for the changelog?
+See above. I think regression comes from the kernel doc script,
+earlier it was okay. That said, the author of kernel doc changes has
+to submit a patch to amend the driver and maintainers will review it.
 
----
-mm: memcontrol: fix swap undercounting for shared pages in cgroup2
-
-When shared pages are swapped in partially, we can have some page
-tables referencing the in-memory page and some referencing the swap
-slot. Cgroup1 and cgroup2 handle these overlapping lifetimes slightly
-differently due to the nature of how they account memory and swap:
-
-Cgroup1 has a unified memory+swap counter that tracks a data page
-regardless whether it's in-core or swapped out. On swapin, we transfer
-the charge from the swap entry to the newly allocated swapcache page,
-even though the swap entry might stick around for a while. That's why
-we have a mem_cgroup_uncharge_swap() call inside mem_cgroup_charge().
-
-Cgroup2 tracks memory and swap as separate, independent resources and
-thus has split memory and swap counters. On swapin, we charge the
-newly allocated swapcache page as memory, while the swap slot in turn
-must remain charged to the swap counter as long as its allocated too.
-
-The cgroup2 logic was broken by commit 2d1c498072de ("mm: memcontrol:
-make swap tracking an integral part of memory control"), because it
-accidentally removed the do_memsw_account() check in the branch inside
-mem_cgroup_uncharge() that was supposed to tell the difference between
-the charge transfer in cgroup1 and the separate counters in cgroup2.
-
-As a result, cgroup2 currently undercounts consumed swap when shared
-pages are partially swapped back in. This in turn allows a cgroup to
-consume more swap than its configured limit intends.
-
-Add the do_memsw_account() check back to fix this problem.
----
-
-> Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-
-> ---
->  mm/memcontrol.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index c737c8f05992..be6bc5044150 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6753,7 +6753,7 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
->  	memcg_check_events(memcg, page);
->  	local_irq_enable();
->  
-> -	if (PageSwapCache(page)) {
-> +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && PageSwapCache(page)) {
-
-It's more descriptive to use do_memsw_account() here, IMO.
-
-We should also add a comment. How about this above the branch?
-
-	/*
-	 * Cgroup1's unified memory+swap counter has been charged with the
-	 * new swapcache page, finish the transfer by uncharging the swap
-	 * slot. The swap slot would also get uncharged when it dies, but
-	 * for shared pages it can stick around indefinitely and we'd count
-	 * the page twice the entire time.
-	 *
-	 * Cgroup2 has separate resource counters for memory and swap,
-	 * so this is a non-issue here. Memory and swap charge lifetimes
-	 * correspond 1:1 to page and swap slot lifetimes: we charge the
-	 * page to memory here, and uncharge swap when the slot is freed.
-	 */
+-- 
+With Best Regards,
+Andy Shevchenko
