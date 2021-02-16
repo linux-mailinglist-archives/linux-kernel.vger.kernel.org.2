@@ -2,118 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4A731CE73
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D3331CE7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhBPQwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:52:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56872 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229699AbhBPQwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:52:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613494295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fv1cqvwsI0OzZQzjo9Fzqiw9J9sAKYM15trtTiADU8I=;
-        b=m+7A3yBnlzXwcSFUtKDR2Y9JcLQQ7GBKZLbjSDY4uRJe8Oprcc1t3A0Yb4nCpmSjJzTq71
-        m2lvwh4POgKc94rijkZTo8EsctDQ8udo5YFmIVVBqcDZmQE+zdGsrWJMYIvr1Q40Hpav5m
-        AI5AIoiWGkF74EgEjx/NO759Sl7hNIs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 93467AE05;
-        Tue, 16 Feb 2021 16:51:35 +0000 (UTC)
-Date:   Tue, 16 Feb 2021 17:51:34 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     James Bottomley <jejb@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <YCv4FhseXJ8cZ62/@dhcp22.suse.cz>
-References: <20210214091954.GM242749@kernel.org>
- <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
- <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
- <YCo7TqUnBdgJGkwN@dhcp22.suse.cz>
- <be1d821d3f0aec24ad13ca7126b4359822212eb0.camel@linux.ibm.com>
- <YCrJjYmr7A2nO6lA@dhcp22.suse.cz>
- <12c3890b233c8ec8e3967352001a7b72a8e0bfd0.camel@linux.ibm.com>
+        id S230515AbhBPQxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:53:51 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46836 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230097AbhBPQx0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 11:53:26 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11GGXCgO147308;
+        Tue, 16 Feb 2021 11:52:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=KS8Y+XGxUXIzrrjyQRSiPDJAYsSbs8BAQ7A0YAHTHDk=;
+ b=O6cGGnjc5Vscm0lqnxQcRj/MEkjzgCjfGHCpicYcBltnke2b7feh8NgoB2MrZ0NcuoyK
+ 3OTO2MktlxxclXlJtiP+JAE+48asEVnYelQsDFC5q7/3tyTqC6JECS7YarVkRLVqBeUQ
+ PIwJ3rwjkbCCkf+Aj/vG5sGe/KHqPcaG8XBXIwtUIVoM3/oP64FBtwgim0Z8rLD62nHb
+ +mCTdrdwftIoL4+WGtPyyeVU88Uul3TJQQVTD3/qxBCGlfZt5LtRVhWfkMTl9rAY0R9L
+ zTQJElv5GZaqCsSGj0q9WWyUV27s0qAjpyFSzIPfZ8gt0bHBQjcxeha3Nbuks6KlTArC OA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36rhhyh988-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 11:52:39 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11GGp7oA059886;
+        Tue, 16 Feb 2021 11:52:38 -0500
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36rhhyh97q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 11:52:38 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11GGpiFj003905;
+        Tue, 16 Feb 2021 16:52:37 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma03wdc.us.ibm.com with ESMTP id 36p6d8ypb8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Feb 2021 16:52:37 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11GGqbKU28115350
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Feb 2021 16:52:37 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0A412124053;
+        Tue, 16 Feb 2021 16:52:37 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EC31A124052;
+        Tue, 16 Feb 2021 16:52:36 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 16 Feb 2021 16:52:36 +0000 (GMT)
+Subject: Re: [PATCH v4] tpm: fix reference counting for struct tpm_chip
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
+        jarkko@kernel.org, jgg@ziepe.ca
+Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        stable@vger.kernel.org
+References: <1613435460-4377-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <d36c324d-2f16-ed2a-7507-0d8f52da20ea@linux.ibm.com>
+Date:   Tue, 16 Feb 2021 11:52:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12c3890b233c8ec8e3967352001a7b72a8e0bfd0.camel@linux.ibm.com>
+In-Reply-To: <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-16_07:2021-02-16,2021-02-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 suspectscore=0
+ lowpriorityscore=0 impostorscore=0 clxscore=1015 bulkscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102160146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 16-02-21 08:25:39, James Bottomley wrote:
-> On Mon, 2021-02-15 at 20:20 +0100, Michal Hocko wrote:
-> [...]
-> > > >   What kind of flags are we talking about and why would that be a
-> > > > problem with memfd_create interface? Could you be more specific
-> > > > please?
-> > > 
-> > > You mean what were the ioctl flags in the patch series linked
-> > > above? They were SECRETMEM_EXCLUSIVE and SECRETMEM_UNCACHED in
-> > > patch 3/5. 
-> > 
-> > OK I see. How many potential modes are we talking about? A few or
-> > potentially many?
->  
-> Well I initially thought there were two (uncached or not) until you
-> came up with the migratable or non-migratable, which affects the
-> security properties.  But now there's also potential for hardware
-> backing, like mktme,  described by flags as well.
+On 2/15/21 7:31 PM, Lino Sanfilippo wrote:
+> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+>
+> The following sequence of operations results in a refcount warning:
+>
+> 1. Open device /dev/tpmrm
+> 2. Remove module tpm_tis_spi
+> 3. Write a TPM command to the file descriptor opened at step 1.
+>
+> ------------[ cut here ]------------
+> WARNING: CPU: 3 PID: 1161 at lib/refcount.c:25 kobject_get+0xa0/0xa4
+> refcount_t: addition on 0; use-after-free.
+> Modules linked in: tpm_tis_spi tpm_tis_core tpm mdio_bcm_unimac brcmfmac
+> sha256_generic libsha256 sha256_arm hci_uart btbcm bluetooth cfg80211 vc4
+> brcmutil ecdh_generic ecc snd_soc_core crc32_arm_ce libaes
+> raspberrypi_hwmon ac97_bus snd_pcm_dmaengine bcm2711_thermal snd_pcm
+> snd_timer genet snd phy_generic soundcore [last unloaded: spi_bcm2835]
+> CPU: 3 PID: 1161 Comm: hold_open Not tainted 5.10.0ls-main-dirty #2
+> Hardware name: BCM2711
+> [<c0410c3c>] (unwind_backtrace) from [<c040b580>] (show_stack+0x10/0x14)
+> [<c040b580>] (show_stack) from [<c1092174>] (dump_stack+0xc4/0xd8)
+> [<c1092174>] (dump_stack) from [<c0445a30>] (__warn+0x104/0x108)
+> [<c0445a30>] (__warn) from [<c0445aa8>] (warn_slowpath_fmt+0x74/0xb8)
+> [<c0445aa8>] (warn_slowpath_fmt) from [<c08435d0>] (kobject_get+0xa0/0xa4)
+> [<c08435d0>] (kobject_get) from [<bf0a715c>] (tpm_try_get_ops+0x14/0x54 [tpm])
+> [<bf0a715c>] (tpm_try_get_ops [tpm]) from [<bf0a7d6c>] (tpm_common_write+0x38/0x60 [tpm])
+> [<bf0a7d6c>] (tpm_common_write [tpm]) from [<c05a7ac0>] (vfs_write+0xc4/0x3c0)
+> [<c05a7ac0>] (vfs_write) from [<c05a7ee4>] (ksys_write+0x58/0xcc)
+> [<c05a7ee4>] (ksys_write) from [<c04001a0>] (ret_fast_syscall+0x0/0x4c)
+> Exception stack(0xc226bfa8 to 0xc226bff0)
+> bfa0:                   00000000 000105b4 00000003 beafe664 00000014 00000000
+> bfc0: 00000000 000105b4 000103f8 00000004 00000000 00000000 b6f9c000 beafe684
+> bfe0: 0000006c beafe648 0001056c b6eb6944
+> ---[ end trace d4b8409def9b8b1f ]---
+>
+> The reason for this warning is the attempt to get the chip->dev reference
+> in tpm_common_write() although the reference counter is already zero.
+>
+> Since commit 8979b02aaf1d ("tpm: Fix reference count to main device") the
+> extra reference used to prevent a premature zero counter is never taken,
+> because the required TPM_CHIP_FLAG_TPM2 flag is never set.
+>
+> Fix this by moving the TPM 2 character device handling from
+> tpm_chip_alloc() to tpm_add_char_device() which is called at a later point
+> in time when the flag has been set in case of TPM2.
+>
+> Commit fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
+> already introduced function tpm_devs_release() to release the extra
+> reference but did not implement the required put on chip->devs that results
+> in the call of this function.
+>
+> Fix this by putting chip->devs in tpm_chip_unregister().
+>
+> Finally move the new implemenation for the TPM 2 handling into a new
+> function to avoid multiple checks for the TPM_CHIP_FLAG_TPM2 flag in the
+> good case and error cases.
+>
+> Fixes: fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
+> Fixes: 8979b02aaf1d ("tpm: Fix reference count to main device")
+> Co-developed-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Signed-off-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> Cc: stable@vger.kernel.org
 
-I do not remember details about mktme but from what I still recall it
-had keys associated with direct maps. Is the key management something
-that fits into flags management?
 
-> I suppose you could
-> also use RDT to restrict which cache the data goes into: say L1 but not
-> L2 on to lessen the impact of fully uncached (although the big thrust
-> of uncached was to blunt hyperthread side channels).  So there is
-> potential for quite a large expansion even though I'd be willing to bet
-> that a lot of the modes people have thought about turn out not to be
-> very effective in the field.
+I know you'll post another version, but anyway:
 
-Are those very HW specific features really viable through a generic
-syscall? Don't get me wrong but I find it much more likely somebody will
-want a hugetlb (pretty HW independent) without a direct map than a very
-close to the HW caching mode soon.
+Tested-by: Stefan Berger <stefanb@linux.ibm.com>
 
-But thanks for the clarification anyway.
--- 
-Michal Hocko
-SUSE Labs
+
