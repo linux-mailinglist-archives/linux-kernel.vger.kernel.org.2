@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C77931D218
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A32A31D21C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 22:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhBPV3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 16:29:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhBPV3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 16:29:23 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DEEC06174A;
-        Tue, 16 Feb 2021 13:28:43 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id n8so15021283wrm.10;
-        Tue, 16 Feb 2021 13:28:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VQfv48BtkQswJTPi2IAE9RUI+B8YEi5kqxn6TmhUbkQ=;
-        b=BYrQhQfUrTCfPrNF1lqEFF3bDx3yUU1ZARyaZjgXaA+cNRK2n/KXtehMQ1niDGMceG
-         jP24BtUrxEXfMLsKD8YmtdGGpHrB0+mHSPs3EmwT5VPcpy35y01wD7ec+SRt4w5j9FNX
-         nR6oQ5UUsAWQK3nrDScy4BBipzCCdtodo/TgmUjAcgT4mVtfucJIgQJGJRoXc6+zFJhW
-         ZG4BdkINVISs91y0inhpfR05hjC8xXMxIhw7dHrS+BDypt+4WcHWVzX7XDnZnKMfs592
-         HO+N6hlHlGv73t7ZN+JPcRLwAbs/ngEzfk/tq8TYCuDTCm4Tx7E7aAMr1senyTYKVVh2
-         T+JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VQfv48BtkQswJTPi2IAE9RUI+B8YEi5kqxn6TmhUbkQ=;
-        b=o0dgsa650DkR9kesp4gmx1TH/skkjmqgx9sginPhLak+0cnftDExVjpryjaYcbv1tb
-         v/4d4WToAYKfxC0wIOIcxNeUOhUfDzToocY1HRt1/l/wVwcBCwUCaKfh+YmdXU4tz5J0
-         09OgB7zSgXZ2wpuO/Pmk12rfnqB26gKBNVpCOFgNP3oPZ2W6E2SrhTWsn6gF+m1gJH8K
-         9GRqjmBZ7czYMMMRqh1ThB13MGhRufu/Xofqp9stxxJr5OSDdClpEUuWT3EyDjPyUD2v
-         M07sTV1Xc5F+xg9Ms7D+s2BwBz91W1WxqdxrOxt5bTgsK421ZpKJO4uL7gssHxEpslHI
-         qBdQ==
-X-Gm-Message-State: AOAM5325TtMMVZSFij78Kja7aYIhjHluCwvr+xqV8v40FM6z6ClkcIpN
-        ZCI1qDhusjVD4HJLCXhLXqEBg859WT7Yf6Alfio=
-X-Google-Smtp-Source: ABdhPJxzyXIqbz/RLd8uv8M2y5uFe7/Ekao122IZNP763DSBVl5U7sWAWH8+a0EOsFPr8HmFchtdu+eEMIFhoi9WLeo=
-X-Received: by 2002:a05:6000:18a:: with SMTP id p10mr14806672wrx.166.1613510921952;
- Tue, 16 Feb 2021 13:28:41 -0800 (PST)
+        id S230340AbhBPVbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 16:31:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230265AbhBPVbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 16:31:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F211264D99;
+        Tue, 16 Feb 2021 21:30:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613511031;
+        bh=uwBWkNHGck9kFBqA0+H8/eT9Jc5XAGfEFx3Kba3gL4k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ru/chHN9ndSQZRU6kcPNpf0W0XEdZm3ESkkB7+Rme8xma3/EdjnB48g/YGdMRuH26
+         j41sevdpq56S6D1FcUiqUe587rJeGLNYIRpBkq4hqxMWjaE9Nl1B+l8gqbJf5Dbv0Y
+         X5Cf2Gi7bJ+i1AgZ8b3eEwH9ubV/XjpHQMoCQLmsGilr1moNIaV1RqMOQ9aL356hxi
+         0pjTYRxkZjXDSEi9ko3Lp3vor5250L1ucr7rx9ykXonMGZ3PI+0x62A99qUdTQ2rmA
+         ypMWNh9Rtv/fIIaqI0hdt3a5ykleMBdQDvnHOFA1H0amz8tCtnF0fJldfMnmomP8oI
+         qIzSMOFmaTXVw==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] drm/i915: Enable -Wuninitialized
+Date:   Tue, 16 Feb 2021 14:29:54 -0700
+Message-Id: <20210216212953.24458-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210216010806.31948-1-TheSven73@gmail.com> <20210216010806.31948-3-TheSven73@gmail.com>
- <BN8PR11MB36518045F806DAAC37BBD659FA879@BN8PR11MB3651.namprd11.prod.outlook.com>
-In-Reply-To: <BN8PR11MB36518045F806DAAC37BBD659FA879@BN8PR11MB3651.namprd11.prod.outlook.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 16 Feb 2021 16:28:31 -0500
-Message-ID: <CAGngYiXx3PdVtLXgWcWTXF-rakO_azWNSc6yK8PNKinnFV7+8Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/5] lan743x: sync only the received area of
- an rx ring buffer
-To:     Bryan Whitehead <Bryan.Whitehead@microchip.com>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Alexey Denisov <rtgbnm@gmail.com>,
-        Sergej Bauer <sbauer@blackbox.su>,
-        Tim Harvey <tharvey@gateworks.com>,
-        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
-        Hillf Danton <hdanton@sina.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bryan,
+-Wunintialized was disabled in commit c5627461490e ("drm/i915: Disable
+-Wuninitialized") because there were two warnings that were false
+positives. The first was due to DECLARE_WAIT_QUEUE_HEAD_ONSTACK, which
+was fixed in LLVM 9.0.0. The second was in busywait_stop, which was
+fixed in LLVM 10.0.0 (issue 415). The kernel's minimum version for LLVM
+is 10.0.1 so this warning can be safely enabled, where it has already
+caught a couple bugs.
 
-On Tue, Feb 16, 2021 at 3:50 PM <Bryan.Whitehead@microchip.com> wrote:
->
-> Looks Good, Thanks Sven
-> Our testing is in progress, We will let you know our results soon.
->
-> Reviewed-by: Bryan Whitehead <Bryan.Whitehead@microchip.com>
->
+Link: https://github.com/ClangBuiltLinux/linux/issues/220
+Link: https://github.com/ClangBuiltLinux/linux/issues/415
+Link: https://github.com/ClangBuiltLinux/linux/issues/499
+Link: https://github.com/llvm/llvm-project/commit/2e040398f8d691cc378c1abb098824ff49f3f28f
+Link: https://github.com/llvm/llvm-project/commit/c667cdc850c2aa821ffeedbc08c24bc985c59edd
+Fixes: c5627461490e ("drm/i915: Disable -Wuninitialized")
+References: 2ea4a7ba9bf6 ("drm/i915/gt: Avoid uninitialized use of rpcurupei in frequency_show")
+References: 2034c2129bc4 ("drm/i915/display: Ensure that ret is always initialized in icl_combo_phy_verify_state")
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/gpu/drm/i915/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thank you Bryan, I really appreciate your help and expertise.
+diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+index 6d9e81ea67f4..60b60204004f 100644
+--- a/drivers/gpu/drm/i915/Makefile
++++ b/drivers/gpu/drm/i915/Makefile
+@@ -21,7 +21,6 @@ subdir-ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
+ subdir-ccflags-y += $(call cc-disable-warning, sign-compare)
+ subdir-ccflags-y += $(call cc-disable-warning, sometimes-uninitialized)
+ subdir-ccflags-y += $(call cc-disable-warning, initializer-overrides)
+-subdir-ccflags-y += $(call cc-disable-warning, uninitialized)
+ subdir-ccflags-y += $(call cc-disable-warning, frame-address)
+ subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
+ 
+
+base-commit: f40ddce88593482919761f74910f42f4b84c004b
+-- 
+2.30.1
+
