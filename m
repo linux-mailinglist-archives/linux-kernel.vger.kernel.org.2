@@ -2,274 +2,516 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6019431CEBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 811E931CEC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 18:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230492AbhBPRMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 12:12:07 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:37590 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230525AbhBPRLv (ORCPT
+        id S230216AbhBPRNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 12:13:08 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:40342 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhBPRM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:11:51 -0500
-Date:   Tue, 16 Feb 2021 17:10:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613495462; bh=yBLiWMYKtAXu6Q0cJ8YPjPlctXPo/3Ryh70U06uVX/g=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=NgzNkOl5lSqV+fUnKiY55S4Mtjc4ijoQFm6lRBqndPgb7oSQHRRtfI9ihdsJc36Bb
-         xQjBS+q9hmGd3EtPMaE+xpxbeHuoMkYbo/BNaZknED06QGV2zBSGcIixEma/eKYtR8
-         XlcuAu0J8axazr3RaZ43zgchnrcH6PkKXlQi8vI7O7Uektoj4KiE958HPDQ9CMoHnA
-         H4CyagoLFV26k6EMUn44tQrtPMZOX8ta8PG9fvd1Pzb/kTRfWFY0w9T0iUYxMvuQ8O
-         Z3aoTmtqH07qTpIZ5O6GLgop85rVpKaz5EEAco/GkCALmmgffuc++Lgd5LUsjf3fCF
-         YftQHagpzuqRQ==
-To:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v5 bpf-next 6/6] xsk: build skb by page (aka generic zerocopy xmit)
-Message-ID: <20210216171042.372483-1-alobakin@pm.me>
-In-Reply-To: <20210216143333.5861-7-alobakin@pm.me>
-References: <20210216143333.5861-1-alobakin@pm.me> <20210216143333.5861-7-alobakin@pm.me>
+        Tue, 16 Feb 2021 12:12:58 -0500
+Date:   Tue, 16 Feb 2021 18:12:13 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613495534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=xgUFOP38zzoo7uQGFvxcG06DJ4CUwIGShBVYNqohZFI=;
+        b=2caLcZveimD80dIUvu0jyroU1mIK8CrSnMa1QT5z6mkwmDZt+LZ63L3Yrqwgfg/mNrFF0k
+        58jtQtbBRm3wxBlbTZTnnjuiGnCPhEdMYpxPWRozuc+rG9OkksFCNVDT+Z68cRp43gzm1A
+        N2m6ktfJc+t43lgUuO4qzy8qbKCSJ+qTNZADGvKxCGvBZNCtgZTGFzFUzroavMCJLJ+IF0
+        CALaPyF6xWmTL8orEM6Ilvr7JHYFEXHKEMMH8JvsT8F+amEZj1LLQ7a+NYl8V9XiJFgdb/
+        tQ0+20WjdNQE0/mkjuwS3AsDar8yq4BapYvxl94j4iIb0TD2F7BhsJqixiKe7A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613495534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=xgUFOP38zzoo7uQGFvxcG06DJ4CUwIGShBVYNqohZFI=;
+        b=al5hreXtv2IkCuy7pGBJeJNl/vcAjJumBL6P0G84GnttTVqozEgRrSP6FC1vnUr03JLYSi
+        sth1eMToYJqoX1Dw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.11-rt5
+Message-ID: <20210216171213.r32ugl2a5ffjw3fz@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@pm.me>
-Date: Tue, 16 Feb 2021 14:35:02 +0000
+Dear RT folks!
 
-> From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
->=20
-> This patch is used to construct skb based on page to save memory copy
-> overhead.
->=20
-> This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
-> network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
-> directly construct skb. If this feature is not supported, it is still
-> necessary to copy data to construct skb.
->=20
-> ---------------- Performance Testing ------------
->=20
-> The test environment is Aliyun ECS server.
-> Test cmd:
-> ```
-> xdpsock -i eth0 -t  -S -s <msg size>
-> ```
->=20
-> Test result data:
->=20
-> size    64      512     1024    1500
-> copy    1916747 1775988 1600203 1440054
-> page    1974058 1953655 1945463 1904478
-> percent 3.0%    10.0%   21.58%  32.3%
->=20
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-> [ alobakin:
->  - expand subject to make it clearer;
->  - improve skb->truesize calculation;
->  - reserve some headroom in skb for drivers;
->  - tailroom is not needed as skb is non-linear ]
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->  net/xdp/xsk.c | 119 ++++++++++++++++++++++++++++++++++++++++----------
->  1 file changed, 95 insertions(+), 24 deletions(-)
->=20
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 143979ea4165..ff7bd06e1241 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -445,6 +445,96 @@ static void xsk_destruct_skb(struct sk_buff *skb)
->  =09sock_wfree(skb);
->  }
-> =20
-> +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-> +=09=09=09=09=09      struct xdp_desc *desc)
-> +{
-> +=09struct xsk_buff_pool *pool =3D xs->pool;
-> +=09u32 hr, len, offset, copy, copied;
-> +=09struct sk_buff *skb;
-> +=09struct page *page;
-> +=09void *buffer;
-> +=09int err, i;
-> +=09u64 addr;
-> +
-> +=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
-> +
-> +=09skb =3D sock_alloc_send_skb(&xs->sk, hr, 1, &err);
-> +=09if (unlikely(!skb))
-> +=09=09return ERR_PTR(err);
-> +
-> +=09skb_reserve(skb, hr);
-> +
-> +=09addr =3D desc->addr;
-> +=09len =3D desc->len;
-> +
-> +=09buffer =3D xsk_buff_raw_get_data(pool, addr);
-> +=09offset =3D offset_in_page(buffer);
-> +=09addr =3D buffer - pool->addrs;
-> +
-> +=09for (copied =3D 0, i =3D 0; copied < len; i++) {
-> +=09=09page =3D pool->umem->pgs[addr >> PAGE_SHIFT];
-> +=09=09get_page(page);
-> +
-> +=09=09copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
-> +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
-> +
-> +=09=09copied +=3D copy;
-> +=09=09addr +=3D copy;
-> +=09=09offset =3D 0;
-> +=09}
-> +
-> +=09skb->len +=3D len;
-> +=09skb->data_len +=3D len;
-> +=09skb->truesize +=3D pool->unaligned ? len : pool->chunk_size;
-> +
-> +=09refcount_add(skb->truesize, &xs->sk.sk_wmem_alloc);
+I'm pleased to announce the v5.11-rt5 patch set. 
 
-Meh, there's a refcount leak here I accidentally introduced in v4.
-Sorry for that, I'll upload v6 in just a moment.
+Changes since v5.11-rt4:
 
-> +=09return skb;
-> +}
-> +
-> +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-> +=09=09=09=09     struct xdp_desc *desc)
-> +{
-> +=09struct net_device *dev =3D xs->dev;
-> +=09struct sk_buff *skb;
-> +
-> +=09if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
-> +=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
-> +=09=09if (IS_ERR(skb))
-> +=09=09=09return skb;
-> +=09} else {
-> +=09=09u32 hr, tr, len;
-> +=09=09void *buffer;
-> +=09=09int err;
-> +
-> +=09=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
-> +=09=09tr =3D dev->needed_tailroom;
-> +=09=09len =3D desc->len;
-> +
-> +=09=09skb =3D sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
-> +=09=09if (unlikely(!skb))
-> +=09=09=09return ERR_PTR(err);
-> +
-> +=09=09skb_reserve(skb, hr);
-> +=09=09skb_put(skb, len);
-> +
-> +=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
-> +=09=09err =3D skb_store_bits(skb, 0, buffer, len);
-> +=09=09if (unlikely(err)) {
-> +=09=09=09kfree_skb(skb);
-> +=09=09=09return ERR_PTR(err);
-> +=09=09}
-> +=09}
-> +
-> +=09skb->dev =3D dev;
-> +=09skb->priority =3D xs->sk.sk_priority;
-> +=09skb->mark =3D xs->sk.sk_mark;
-> +=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
-> +=09skb->destructor =3D xsk_destruct_skb;
-> +
-> +=09return skb;
-> +}
-> +
->  static int xsk_generic_xmit(struct sock *sk)
->  {
->  =09struct xdp_sock *xs =3D xdp_sk(sk);
-> @@ -454,56 +544,37 @@ static int xsk_generic_xmit(struct sock *sk)
->  =09struct sk_buff *skb;
->  =09unsigned long flags;
->  =09int err =3D 0;
-> -=09u32 hr, tr;
-> =20
->  =09mutex_lock(&xs->mutex);
-> =20
->  =09if (xs->queue_id >=3D xs->dev->real_num_tx_queues)
->  =09=09goto out;
-> =20
-> -=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
-> -=09tr =3D xs->dev->needed_tailroom;
-> -
->  =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
-> -=09=09char *buffer;
-> -=09=09u64 addr;
-> -=09=09u32 len;
-> -
->  =09=09if (max_batch-- =3D=3D 0) {
->  =09=09=09err =3D -EAGAIN;
->  =09=09=09goto out;
->  =09=09}
-> =20
-> -=09=09len =3D desc.len;
-> -=09=09skb =3D sock_alloc_send_skb(sk, hr + len + tr, 1, &err);
-> -=09=09if (unlikely(!skb))
-> +=09=09skb =3D xsk_build_skb(xs, &desc);
-> +=09=09if (IS_ERR(skb)) {
-> +=09=09=09err =3D PTR_ERR(skb);
->  =09=09=09goto out;
-> +=09=09}
-> =20
-> -=09=09skb_reserve(skb, hr);
-> -=09=09skb_put(skb, len);
-> -
-> -=09=09addr =3D desc.addr;
-> -=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
-> -=09=09err =3D skb_store_bits(skb, 0, buffer, len);
->  =09=09/* This is the backpressure mechanism for the Tx path.
->  =09=09 * Reserve space in the completion queue and only proceed
->  =09=09 * if there is space in it. This avoids having to implement
->  =09=09 * any buffering in the Tx path.
->  =09=09 */
->  =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
-> -=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> +=09=09if (xskq_prod_reserve(xs->pool->cq)) {
->  =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
->  =09=09=09kfree_skb(skb);
->  =09=09=09goto out;
->  =09=09}
->  =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-> =20
-> -=09=09skb->dev =3D xs->dev;
-> -=09=09skb->priority =3D sk->sk_priority;
-> -=09=09skb->mark =3D sk->sk_mark;
-> -=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
-> -=09=09skb->destructor =3D xsk_destruct_skb;
-> -
->  =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
->  =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
->  =09=09=09/* Tell user-space to retry the send */
-> --=20
-> 2.30.1
+  - Lazy preemption fix for 64bit PowerPC. It was broken since
+    v5.9-rc2-rt1. Reported by John Ogness.
 
-Al
+  - Two patches for chelsio/cxgb network driver to avoid
+    tasklet_disable() usage in atomic context on !RT.
 
+  - Due to recent softirq rework it was not possible to compile a kernel
+    with RT && !SMP. Reported by Jonathan Schwender, patch by Christian
+    Eggers.
+
+  - Update the block-mq patches to the version, that has been staged for
+    upstream.
+
+Known issues
+     - kdb/kgdb can easily deadlock.
+     - kmsg dumpers expecting not to be called in parallel can clobber
+       their temp buffer.
+     - netconsole triggers WARN.
+
+The delta patch against v5.11-rt4 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.11/incr/patch-5.11-rt4-rt5.patch.xz
+
+You can get this release via the git tree at:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.11-rt5
+
+The RT patch against v5.11 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.11/older/patch-5.11-rt5.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.11/older/patches-5.11-rt5.tar.xz
+
+Sebastian
+
+diff --git a/arch/powerpc/kernel/syscall_64.c b/arch/powerpc/kernel/syscall_64.c
+index b304c68dbcf50..092c014b0653e 100644
+--- a/arch/powerpc/kernel/syscall_64.c
++++ b/arch/powerpc/kernel/syscall_64.c
+@@ -401,7 +401,8 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+ 				if (preempt_count() == 0)
+ 					preempt_schedule_irq();
+ 			} else if (unlikely(*ti_flagsp & _TIF_NEED_RESCHED_LAZY)) {
+-				if (current_thread_info()->preempt_lazy_count == 0)
++				if ((preempt_count() == 0) &&
++				    (current_thread_info()->preempt_lazy_count == 0))
+ 					preempt_schedule_irq();
+ 			}
+ 		}
+diff --git a/drivers/net/ethernet/chelsio/cxgb/common.h b/drivers/net/ethernet/chelsio/cxgb/common.h
+index 6475060649e90..0321be77366c4 100644
+--- a/drivers/net/ethernet/chelsio/cxgb/common.h
++++ b/drivers/net/ethernet/chelsio/cxgb/common.h
+@@ -238,7 +238,6 @@ struct adapter {
+ 	int msg_enable;
+ 	u32 mmio_len;
+ 
+-	struct work_struct ext_intr_handler_task;
+ 	struct adapter_params params;
+ 
+ 	/* Terminator modules. */
+@@ -257,6 +256,7 @@ struct adapter {
+ 
+ 	/* guards async operations */
+ 	spinlock_t async_lock ____cacheline_aligned;
++	u32 pending_thread_intr;
+ 	u32 slow_intr_mask;
+ 	int t1powersave;
+ };
+@@ -334,8 +334,7 @@ void t1_interrupts_enable(adapter_t *adapter);
+ void t1_interrupts_disable(adapter_t *adapter);
+ void t1_interrupts_clear(adapter_t *adapter);
+ int t1_elmer0_ext_intr_handler(adapter_t *adapter);
+-void t1_elmer0_ext_intr(adapter_t *adapter);
+-int t1_slow_intr_handler(adapter_t *adapter);
++irqreturn_t t1_slow_intr_handler(adapter_t *adapter);
+ 
+ int t1_link_start(struct cphy *phy, struct cmac *mac, struct link_config *lc);
+ const struct board_info *t1_get_board_info(unsigned int board_id);
+@@ -347,7 +346,6 @@ int t1_get_board_rev(adapter_t *adapter, const struct board_info *bi,
+ int t1_init_hw_modules(adapter_t *adapter);
+ int t1_init_sw_modules(adapter_t *adapter, const struct board_info *bi);
+ void t1_free_sw_modules(adapter_t *adapter);
+-void t1_fatal_err(adapter_t *adapter);
+ void t1_link_changed(adapter_t *adapter, int port_id);
+ void t1_link_negotiated(adapter_t *adapter, int port_id, int link_stat,
+ 			    int speed, int duplex, int pause);
+diff --git a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
+index 0e4a0f413960a..512da98019c66 100644
+--- a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
++++ b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
+@@ -211,9 +211,10 @@ static int cxgb_up(struct adapter *adapter)
+ 	t1_interrupts_clear(adapter);
+ 
+ 	adapter->params.has_msi = !disable_msi && !pci_enable_msi(adapter->pdev);
+-	err = request_irq(adapter->pdev->irq, t1_interrupt,
+-			  adapter->params.has_msi ? 0 : IRQF_SHARED,
+-			  adapter->name, adapter);
++	err = request_threaded_irq(adapter->pdev->irq, t1_interrupt,
++				   t1_interrupt_thread,
++				   adapter->params.has_msi ? 0 : IRQF_SHARED,
++				   adapter->name, adapter);
+ 	if (err) {
+ 		if (adapter->params.has_msi)
+ 			pci_disable_msi(adapter->pdev);
+@@ -916,51 +917,6 @@ static void mac_stats_task(struct work_struct *work)
+ 	spin_unlock(&adapter->work_lock);
+ }
+ 
+-/*
+- * Processes elmer0 external interrupts in process context.
+- */
+-static void ext_intr_task(struct work_struct *work)
+-{
+-	struct adapter *adapter =
+-		container_of(work, struct adapter, ext_intr_handler_task);
+-
+-	t1_elmer0_ext_intr_handler(adapter);
+-
+-	/* Now reenable external interrupts */
+-	spin_lock_irq(&adapter->async_lock);
+-	adapter->slow_intr_mask |= F_PL_INTR_EXT;
+-	writel(F_PL_INTR_EXT, adapter->regs + A_PL_CAUSE);
+-	writel(adapter->slow_intr_mask | F_PL_INTR_SGE_DATA,
+-		   adapter->regs + A_PL_ENABLE);
+-	spin_unlock_irq(&adapter->async_lock);
+-}
+-
+-/*
+- * Interrupt-context handler for elmer0 external interrupts.
+- */
+-void t1_elmer0_ext_intr(struct adapter *adapter)
+-{
+-	/*
+-	 * Schedule a task to handle external interrupts as we require
+-	 * a process context.  We disable EXT interrupts in the interim
+-	 * and let the task reenable them when it's done.
+-	 */
+-	adapter->slow_intr_mask &= ~F_PL_INTR_EXT;
+-	writel(adapter->slow_intr_mask | F_PL_INTR_SGE_DATA,
+-		   adapter->regs + A_PL_ENABLE);
+-	schedule_work(&adapter->ext_intr_handler_task);
+-}
+-
+-void t1_fatal_err(struct adapter *adapter)
+-{
+-	if (adapter->flags & FULL_INIT_DONE) {
+-		t1_sge_stop(adapter->sge);
+-		t1_interrupts_disable(adapter);
+-	}
+-	pr_alert("%s: encountered fatal error, operation suspended\n",
+-		 adapter->name);
+-}
+-
+ static const struct net_device_ops cxgb_netdev_ops = {
+ 	.ndo_open		= cxgb_open,
+ 	.ndo_stop		= cxgb_close,
+@@ -1062,8 +1018,6 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 			spin_lock_init(&adapter->async_lock);
+ 			spin_lock_init(&adapter->mac_lock);
+ 
+-			INIT_WORK(&adapter->ext_intr_handler_task,
+-				  ext_intr_task);
+ 			INIT_DELAYED_WORK(&adapter->stats_update_task,
+ 					  mac_stats_task);
+ 
+diff --git a/drivers/net/ethernet/chelsio/cxgb/sge.c b/drivers/net/ethernet/chelsio/cxgb/sge.c
+index 2d9c2b5a690a3..cda01f22c71c8 100644
+--- a/drivers/net/ethernet/chelsio/cxgb/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb/sge.c
+@@ -940,10 +940,11 @@ void t1_sge_intr_clear(struct sge *sge)
+ /*
+  * SGE 'Error' interrupt handler
+  */
+-int t1_sge_intr_error_handler(struct sge *sge)
++bool t1_sge_intr_error_handler(struct sge *sge)
+ {
+ 	struct adapter *adapter = sge->adapter;
+ 	u32 cause = readl(adapter->regs + A_SG_INT_CAUSE);
++	bool wake = false;
+ 
+ 	if (adapter->port[0].dev->hw_features & NETIF_F_TSO)
+ 		cause &= ~F_PACKET_TOO_BIG;
+@@ -967,11 +968,14 @@ int t1_sge_intr_error_handler(struct sge *sge)
+ 		sge->stats.pkt_mismatch++;
+ 		pr_alert("%s: SGE packet mismatch\n", adapter->name);
+ 	}
+-	if (cause & SGE_INT_FATAL)
+-		t1_fatal_err(adapter);
++	if (cause & SGE_INT_FATAL) {
++		t1_interrupts_disable(adapter);
++		adapter->pending_thread_intr |= F_PL_INTR_SGE_ERR;
++		wake = true;
++	}
+ 
+ 	writel(cause, adapter->regs + A_SG_INT_CAUSE);
+-	return 0;
++	return wake;
+ }
+ 
+ const struct sge_intr_counts *t1_sge_get_intr_counts(const struct sge *sge)
+@@ -1619,11 +1623,46 @@ int t1_poll(struct napi_struct *napi, int budget)
+ 	return work_done;
+ }
+ 
++irqreturn_t t1_interrupt_thread(int irq, void *data)
++{
++	struct adapter *adapter = data;
++	u32 pending_thread_intr;
++
++	spin_lock_irq(&adapter->async_lock);
++	pending_thread_intr = adapter->pending_thread_intr;
++	adapter->pending_thread_intr = 0;
++	spin_unlock_irq(&adapter->async_lock);
++
++	if (!pending_thread_intr)
++		return IRQ_NONE;
++
++	if (pending_thread_intr & F_PL_INTR_EXT)
++		t1_elmer0_ext_intr_handler(adapter);
++
++	/* This error is fatal, interrupts remain off */
++	if (pending_thread_intr & F_PL_INTR_SGE_ERR) {
++		pr_alert("%s: encountered fatal error, operation suspended\n",
++			 adapter->name);
++		t1_sge_stop(adapter->sge);
++		return IRQ_HANDLED;
++	}
++
++	spin_lock_irq(&adapter->async_lock);
++	adapter->slow_intr_mask |= F_PL_INTR_EXT;
++
++	writel(F_PL_INTR_EXT, adapter->regs + A_PL_CAUSE);
++	writel(adapter->slow_intr_mask | F_PL_INTR_SGE_DATA,
++	       adapter->regs + A_PL_ENABLE);
++	spin_unlock_irq(&adapter->async_lock);
++
++	return IRQ_HANDLED;
++}
++
+ irqreturn_t t1_interrupt(int irq, void *data)
+ {
+ 	struct adapter *adapter = data;
+ 	struct sge *sge = adapter->sge;
+-	int handled;
++	irqreturn_t handled;
+ 
+ 	if (likely(responses_pending(adapter))) {
+ 		writel(F_PL_INTR_SGE_DATA, adapter->regs + A_PL_CAUSE);
+@@ -1645,10 +1684,10 @@ irqreturn_t t1_interrupt(int irq, void *data)
+ 	handled = t1_slow_intr_handler(adapter);
+ 	spin_unlock(&adapter->async_lock);
+ 
+-	if (!handled)
++	if (handled == IRQ_NONE)
+ 		sge->stats.unhandled_irqs++;
+ 
+-	return IRQ_RETVAL(handled != 0);
++	return handled;
+ }
+ 
+ /*
+diff --git a/drivers/net/ethernet/chelsio/cxgb/sge.h b/drivers/net/ethernet/chelsio/cxgb/sge.h
+index a1ba591b34312..716705b96f265 100644
+--- a/drivers/net/ethernet/chelsio/cxgb/sge.h
++++ b/drivers/net/ethernet/chelsio/cxgb/sge.h
+@@ -74,6 +74,7 @@ struct sge *t1_sge_create(struct adapter *, struct sge_params *);
+ int t1_sge_configure(struct sge *, struct sge_params *);
+ int t1_sge_set_coalesce_params(struct sge *, struct sge_params *);
+ void t1_sge_destroy(struct sge *);
++irqreturn_t t1_interrupt_thread(int irq, void *data);
+ irqreturn_t t1_interrupt(int irq, void *cookie);
+ int t1_poll(struct napi_struct *, int);
+ 
+@@ -81,7 +82,7 @@ netdev_tx_t t1_start_xmit(struct sk_buff *skb, struct net_device *dev);
+ void t1_vlan_mode(struct adapter *adapter, netdev_features_t features);
+ void t1_sge_start(struct sge *);
+ void t1_sge_stop(struct sge *);
+-int t1_sge_intr_error_handler(struct sge *);
++bool t1_sge_intr_error_handler(struct sge *sge);
+ void t1_sge_intr_enable(struct sge *);
+ void t1_sge_intr_disable(struct sge *);
+ void t1_sge_intr_clear(struct sge *);
+diff --git a/drivers/net/ethernet/chelsio/cxgb/subr.c b/drivers/net/ethernet/chelsio/cxgb/subr.c
+index ea0f8741d7cfd..310add28fcf59 100644
+--- a/drivers/net/ethernet/chelsio/cxgb/subr.c
++++ b/drivers/net/ethernet/chelsio/cxgb/subr.c
+@@ -170,7 +170,7 @@ void t1_link_changed(adapter_t *adapter, int port_id)
+ 	t1_link_negotiated(adapter, port_id, link_ok, speed, duplex, fc);
+ }
+ 
+-static int t1_pci_intr_handler(adapter_t *adapter)
++static bool t1_pci_intr_handler(adapter_t *adapter)
+ {
+ 	u32 pcix_cause;
+ 
+@@ -179,9 +179,13 @@ static int t1_pci_intr_handler(adapter_t *adapter)
+ 	if (pcix_cause) {
+ 		pci_write_config_dword(adapter->pdev, A_PCICFG_INTR_CAUSE,
+ 				       pcix_cause);
+-		t1_fatal_err(adapter);    /* PCI errors are fatal */
++		/* PCI errors are fatal */
++		t1_interrupts_disable(adapter);
++		adapter->pending_thread_intr |= F_PL_INTR_SGE_ERR;
++		pr_alert("%s: PCI error encountered.\n", adapter->name);
++		return true;
+ 	}
+-	return 0;
++	return false;
+ }
+ 
+ #ifdef CONFIG_CHELSIO_T1_1G
+@@ -210,13 +214,16 @@ static int fpga_phy_intr_handler(adapter_t *adapter)
+ /*
+  * Slow path interrupt handler for FPGAs.
+  */
+-static int fpga_slow_intr(adapter_t *adapter)
++static irqreturn_t fpga_slow_intr(adapter_t *adapter)
+ {
+ 	u32 cause = readl(adapter->regs + A_PL_CAUSE);
++	irqreturn_t ret = IRQ_NONE;
+ 
+ 	cause &= ~F_PL_INTR_SGE_DATA;
+-	if (cause & F_PL_INTR_SGE_ERR)
+-		t1_sge_intr_error_handler(adapter->sge);
++	if (cause & F_PL_INTR_SGE_ERR) {
++		if (t1_sge_intr_error_handler(adapter->sge))
++			ret = IRQ_WAKE_THREAD;
++	}
+ 
+ 	if (cause & FPGA_PCIX_INTERRUPT_GMAC)
+ 		fpga_phy_intr_handler(adapter);
+@@ -231,14 +238,19 @@ static int fpga_slow_intr(adapter_t *adapter)
+ 		/* Clear TP interrupt */
+ 		writel(tp_cause, adapter->regs + FPGA_TP_ADDR_INTERRUPT_CAUSE);
+ 	}
+-	if (cause & FPGA_PCIX_INTERRUPT_PCIX)
+-		t1_pci_intr_handler(adapter);
++	if (cause & FPGA_PCIX_INTERRUPT_PCIX) {
++		if (t1_pci_intr_handler(adapter))
++			ret = IRQ_WAKE_THREAD;
++	}
+ 
+ 	/* Clear the interrupts just processed. */
+ 	if (cause)
+ 		writel(cause, adapter->regs + A_PL_CAUSE);
+ 
+-	return cause != 0;
++	if (ret != IRQ_NONE)
++		return ret;
++
++	return cause == 0 ? IRQ_NONE : IRQ_HANDLED;
+ }
+ #endif
+ 
+@@ -842,31 +854,45 @@ void t1_interrupts_clear(adapter_t* adapter)
+ /*
+  * Slow path interrupt handler for ASICs.
+  */
+-static int asic_slow_intr(adapter_t *adapter)
++static irqreturn_t asic_slow_intr(adapter_t *adapter)
+ {
+ 	u32 cause = readl(adapter->regs + A_PL_CAUSE);
++	irqreturn_t ret = IRQ_HANDLED;
+ 
+ 	cause &= adapter->slow_intr_mask;
+ 	if (!cause)
+-		return 0;
+-	if (cause & F_PL_INTR_SGE_ERR)
+-		t1_sge_intr_error_handler(adapter->sge);
++		return IRQ_NONE;
++	if (cause & F_PL_INTR_SGE_ERR) {
++		if (t1_sge_intr_error_handler(adapter->sge))
++			ret = IRQ_WAKE_THREAD;
++	}
+ 	if (cause & F_PL_INTR_TP)
+ 		t1_tp_intr_handler(adapter->tp);
+ 	if (cause & F_PL_INTR_ESPI)
+ 		t1_espi_intr_handler(adapter->espi);
+-	if (cause & F_PL_INTR_PCIX)
+-		t1_pci_intr_handler(adapter);
+-	if (cause & F_PL_INTR_EXT)
+-		t1_elmer0_ext_intr(adapter);
++	if (cause & F_PL_INTR_PCIX) {
++		if (t1_pci_intr_handler(adapter))
++			ret = IRQ_WAKE_THREAD;
++	}
++	if (cause & F_PL_INTR_EXT) {
++		/* Wake the threaded interrupt to handle external interrupts as
++		 * we require a process context. We disable EXT interrupts in
++		 * the interim and let the thread reenable them when it's done.
++		 */
++		adapter->pending_thread_intr |= F_PL_INTR_EXT;
++		adapter->slow_intr_mask &= ~F_PL_INTR_EXT;
++		writel(adapter->slow_intr_mask | F_PL_INTR_SGE_DATA,
++		       adapter->regs + A_PL_ENABLE);
++		ret = IRQ_WAKE_THREAD;
++	}
+ 
+ 	/* Clear the interrupts just processed. */
+ 	writel(cause, adapter->regs + A_PL_CAUSE);
+ 	readl(adapter->regs + A_PL_CAUSE); /* flush writes */
+-	return 1;
++	return ret;
+ }
+ 
+-int t1_slow_intr_handler(adapter_t *adapter)
++irqreturn_t t1_slow_intr_handler(adapter_t *adapter)
+ {
+ #ifdef CONFIG_CHELSIO_T1_1G
+ 	if (!t1_is_asic(adapter))
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 1b6070bf97bb0..01e9d01d1866e 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -14,6 +14,7 @@
+ #include <linux/export.h>
+ #include <linux/percpu.h>
+ #include <linux/init.h>
++#include <linux/interrupt.h>
+ #include <linux/gfp.h>
+ #include <linux/smp.h>
+ #include <linux/cpu.h>
+@@ -449,6 +450,19 @@ void flush_smp_call_function_from_idle(void)
+ 
+ 	local_irq_save(flags);
+ 	flush_smp_call_function_queue(true);
++
++	if (local_softirq_pending()) {
++
++		if (!IS_ENABLED(CONFIG_PREEMPT_RT)) {
++			do_softirq();
++		} else {
++			struct task_struct *ksoftirqd = this_cpu_ksoftirqd();
++
++			if (ksoftirqd && ksoftirqd->state != TASK_RUNNING)
++				wake_up_process(ksoftirqd);
++		}
++	}
++
+ 	local_irq_restore(flags);
+ }
+ 
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 8f4c141b20c05..a9b66aa086366 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -867,7 +867,7 @@ void tasklet_kill(struct tasklet_struct *t)
+ }
+ EXPORT_SYMBOL(tasklet_kill);
+ 
+-#ifdef CONFIG_SMP
++#if defined(CONFIG_SMP) || defined(CONFIG_PREEMPT_RT)
+ void tasklet_unlock(struct tasklet_struct *t)
+ {
+ 	smp_mb__before_atomic();
+diff --git a/localversion-rt b/localversion-rt
+index ad3da1bcab7e8..0efe7ba1930e1 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt4
++-rt5
