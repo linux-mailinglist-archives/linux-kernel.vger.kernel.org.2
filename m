@@ -2,296 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D285E31CBA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9B731CBA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 15:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhBPOQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 09:16:24 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:35346 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhBPOQV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:16:21 -0500
-Date:   Tue, 16 Feb 2021 14:15:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613484936; bh=jwQMQJwMWvjuZZcVe2rhp855u4r5rgmcy7veIiiilfo=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=iAAK1XqcN5/Z/C7QBWrbabG3FAOsle6D8RUpocNr8GDzPuXnwEsdRsx3ltvbzMUvm
-         JmWzP/IuPJhxF5iMwSRdXO/ZvGFeFrno6nlV67B8KrXAZp1uriQKSpiK6XJ9AMV2ag
-         VtLL8ajT+mKtlT8H4gQ2wYi0skrLXygb1RfprizR10PrpgswX6qsdnFJfHwQojfa60
-         oipM7D+5C/NArok+8HgUb8IXS3X1X807r1qak0Csw9OV5g0o7erFI7WCgKACL6pm0e
-         79X3nZftJdc0tMSPJjL12JxLkDYJwzwXJclbLceSVm7Ig7BQZjWekOpydqPeRY+HYH
-         V6NXKsm7WrHXQ==
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org,
-        Network Development <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v4 bpf-next 6/6] xsk: build skb by page (aka generic zerocopy xmit)
-Message-ID: <20210216141507.3263-1-alobakin@pm.me>
-In-Reply-To: <CAJ8uoz0-ge=_jC8EbR371DMKxYSP8USni5OqVf0yk1-4Z=vnOg@mail.gmail.com>
-References: <20210216113740.62041-1-alobakin@pm.me> <20210216113740.62041-7-alobakin@pm.me> <CAJ8uoz0-ge=_jC8EbR371DMKxYSP8USni5OqVf0yk1-4Z=vnOg@mail.gmail.com>
+        id S229993AbhBPORV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 09:17:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229796AbhBPORS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 09:17:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 782E664D9F;
+        Tue, 16 Feb 2021 14:16:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613484997;
+        bh=TBPqpnUqDioTSDkHJrAsQrWH6tFfXLDdDLnLtyI64lI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PNi4bBUGEEUao/WyabXMwTTxBbpX9Dfp0SpevABA9NU6aCO3WwWi7UeiziJHPQLi7
+         SNXlMvJUlLXOBDpgWtiiFs2rJx6Rdgl8dHdqJnzcYIFPhJIo3u2UACnrFnE+xPXMSP
+         VSw7q4J2ew4RWjoU0rUSfW6HFtSBnzCMeLtMn4e55+bJoHaIy22QjKhfofeqjKpUlp
+         Xvqo/LH1hXfB2cxfS1+Oaoa8PdntiLb9tYYOaHivQs/3o5ugF0DKsxJpLQsHftJ3I4
+         J3VT+7ncRC9HvZ5wf2RHpB/KVYKmSXBZBFCzmOvKF30t5iQJB49YSbi7r6qdPoxvCX
+         LrnjeRLH3mrDg==
+Date:   Tue, 16 Feb 2021 08:16:34 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Wasim Khan <wasim.khan@nxp.com>
+Cc:     "Wasim Khan (OSS)" <wasim.khan@oss.nxp.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] PCI : check if type 0 devices have all BARs of size zero
+Message-ID: <20210216141634.GA803078@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <VE1PR04MB6702EE8C0FBAFDFD3B35199090879@VE1PR04MB6702.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Tue, 16 Feb 2021 15:08:26 +0100
+On Tue, Feb 16, 2021 at 07:52:08AM +0000, Wasim Khan wrote:
+> > -----Original Message-----
+> > From: Bjorn Helgaas <helgaas@kernel.org>
+> > Sent: Tuesday, February 16, 2021 2:43 AM
+> > To: Wasim Khan (OSS) <wasim.khan@oss.nxp.com>
+> > Cc: bhelgaas@google.com; linux-pci@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; Wasim Khan <wasim.khan@nxp.com>
+> > Subject: Re: [PATCH] PCI : check if type 0 devices have all BARs of size zero
+> > 
+> > On Fri, Feb 12, 2021 at 11:08:56AM +0100, Wasim Khan wrote:
+> > > From: Wasim Khan <wasim.khan@nxp.com>
+> > >
+> > > Log a message if all BARs of type 0 devices are of size zero. This can
+> > > help detecting type 0 devices not reporting BAR size correctly.
+> > 
+> > I could be missing something, but I don't think we can do this.  I
+> > would think the simplest possible presilicon testing would find
+> > errors like this, and the first attempt to have a driver claim the
+> > device would fail if required BARs were missing, so I'm not sure
+> > what this would add.
+> 
+> Thank you for the review.
+> I observed this issue with an under development EP. Due to some
+> logic problem in EP's firmware, the BAR sizes were reported zero and
+> crash was observed sometime later in PCIe code. 
 
-> On Tue, Feb 16, 2021 at 12:44 PM Alexander Lobakin <alobakin@pm.me> wrote=
-:
-> >
-> > From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> >
-> > This patch is used to construct skb based on page to save memory copy
-> > overhead.
-> >
-> > This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
-> > network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
-> > directly construct skb. If this feature is not supported, it is still
-> > necessary to copy data to construct skb.
-> >
-> > ---------------- Performance Testing ------------
-> >
-> > The test environment is Aliyun ECS server.
-> > Test cmd:
-> > ```
-> > xdpsock -i eth0 -t  -S -s <msg size>
-> > ```
-> >
-> > Test result data:
-> >
-> > size    64      512     1024    1500
-> > copy    1916747 1775988 1600203 1440054
-> > page    1974058 1953655 1945463 1904478
-> > percent 3.0%    10.0%   21.58%  32.3%
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-> > [ alobakin:
-> >  - expand subject to make it clearer;
-> >  - improve skb->truesize calculation;
-> >  - reserve some headroom in skb for drivers;
-> >  - tailroom is not needed as skb is non-linear ]
-> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->=20
-> Thank you Alexander!
->=20
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+I'm interested in this crash.  The PCI core should not crash just
+because a BAR size is zero, i.e., the BAR looks like it's
+unimplemented.
 
-Thanks!
+> I agree with you that such issues should have been caught in
+> pre-silicon testing, but not sure of pre-si testing details and if
+> the issue was specifically observed with real OS. Also, because the
+> EP is in early stage of development, device driver of EP is not
+> available as of now. 
 
-I have one more generic zerocopy to offer (inspired by this series)
-that wouldn't require IFF_TX_SKB_NO_LINEAR, only a capability to xmit
-S/G packets that almost every NIC has. I'll publish an RFC once this
-and your upcoming changes get merged.
+> So, I though it will be a good idea to print an information message
+> only for *type 0* devices to give a quick hint if the zero BAR size
+> is expected for the given EP or not. So that SW can contribute to
+> identify HW problem.
 
-> > ---
-> >  net/xdp/xsk.c | 119 ++++++++++++++++++++++++++++++++++++++++----------
-> >  1 file changed, 95 insertions(+), 24 deletions(-)
-> >
-> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > index 143979ea4165..ff7bd06e1241 100644
-> > --- a/net/xdp/xsk.c
-> > +++ b/net/xdp/xsk.c
-> > @@ -445,6 +445,96 @@ static void xsk_destruct_skb(struct sk_buff *skb)
-> >         sock_wfree(skb);
-> >  }
-> >
-> > +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-> > +                                             struct xdp_desc *desc)
-> > +{
-> > +       struct xsk_buff_pool *pool =3D xs->pool;
-> > +       u32 hr, len, offset, copy, copied;
-> > +       struct sk_buff *skb;
-> > +       struct page *page;
-> > +       void *buffer;
-> > +       int err, i;
-> > +       u64 addr;
-> > +
-> > +       hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom=
-));
-> > +
-> > +       skb =3D sock_alloc_send_skb(&xs->sk, hr, 1, &err);
-> > +       if (unlikely(!skb))
-> > +               return ERR_PTR(err);
-> > +
-> > +       skb_reserve(skb, hr);
-> > +
-> > +       addr =3D desc->addr;
-> > +       len =3D desc->len;
-> > +
-> > +       buffer =3D xsk_buff_raw_get_data(pool, addr);
-> > +       offset =3D offset_in_page(buffer);
-> > +       addr =3D buffer - pool->addrs;
-> > +
-> > +       for (copied =3D 0, i =3D 0; copied < len; i++) {
-> > +               page =3D pool->umem->pgs[addr >> PAGE_SHIFT];
-> > +               get_page(page);
-> > +
-> > +               copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
-> > +               skb_fill_page_desc(skb, i, page, offset, copy);
-> > +
-> > +               copied +=3D copy;
-> > +               addr +=3D copy;
-> > +               offset =3D 0;
-> > +       }
-> > +
-> > +       skb->len +=3D len;
-> > +       skb->data_len +=3D len;
-> > +       skb->truesize +=3D pool->unaligned ? len : pool->chunk_size;
-> > +
-> > +       refcount_add(skb->truesize, &xs->sk.sk_wmem_alloc);
-> > +
-> > +       return skb;
-> > +}
-> > +
-> > +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-> > +                                    struct xdp_desc *desc)
-> > +{
-> > +       struct net_device *dev =3D xs->dev;
-> > +       struct sk_buff *skb;
-> > +
-> > +       if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
-> > +               skb =3D xsk_build_skb_zerocopy(xs, desc);
-> > +               if (IS_ERR(skb))
-> > +                       return skb;
-> > +       } else {
-> > +               u32 hr, tr, len;
-> > +               void *buffer;
-> > +               int err;
-> > +
-> > +               hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_head=
-room));
-> > +               tr =3D dev->needed_tailroom;
-> > +               len =3D desc->len;
-> > +
-> > +               skb =3D sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, =
-&err);
-> > +               if (unlikely(!skb))
-> > +                       return ERR_PTR(err);
-> > +
-> > +               skb_reserve(skb, hr);
-> > +               skb_put(skb, len);
-> > +
-> > +               buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
-> > +               err =3D skb_store_bits(skb, 0, buffer, len);
-> > +               if (unlikely(err)) {
-> > +                       kfree_skb(skb);
-> > +                       return ERR_PTR(err);
-> > +               }
-> > +       }
-> > +
-> > +       skb->dev =3D dev;
-> > +       skb->priority =3D xs->sk.sk_priority;
-> > +       skb->mark =3D xs->sk.sk_mark;
-> > +       skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
-> > +       skb->destructor =3D xsk_destruct_skb;
-> > +
-> > +       return skb;
-> > +}
-> > +
-> >  static int xsk_generic_xmit(struct sock *sk)
-> >  {
-> >         struct xdp_sock *xs =3D xdp_sk(sk);
-> > @@ -454,56 +544,37 @@ static int xsk_generic_xmit(struct sock *sk)
-> >         struct sk_buff *skb;
-> >         unsigned long flags;
-> >         int err =3D 0;
-> > -       u32 hr, tr;
-> >
-> >         mutex_lock(&xs->mutex);
-> >
-> >         if (xs->queue_id >=3D xs->dev->real_num_tx_queues)
-> >                 goto out;
-> >
-> > -       hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom=
-));
-> > -       tr =3D xs->dev->needed_tailroom;
-> > -
-> >         while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
-> > -               char *buffer;
-> > -               u64 addr;
-> > -               u32 len;
-> > -
-> >                 if (max_batch-- =3D=3D 0) {
-> >                         err =3D -EAGAIN;
-> >                         goto out;
-> >                 }
-> >
-> > -               len =3D desc.len;
-> > -               skb =3D sock_alloc_send_skb(sk, hr + len + tr, 1, &err)=
-;
-> > -               if (unlikely(!skb))
-> > +               skb =3D xsk_build_skb(xs, &desc);
-> > +               if (IS_ERR(skb)) {
-> > +                       err =3D PTR_ERR(skb);
-> >                         goto out;
-> > +               }
-> >
-> > -               skb_reserve(skb, hr);
-> > -               skb_put(skb, len);
-> > -
-> > -               addr =3D desc.addr;
-> > -               buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
-> > -               err =3D skb_store_bits(skb, 0, buffer, len);
-> >                 /* This is the backpressure mechanism for the Tx path.
-> >                  * Reserve space in the completion queue and only proce=
-ed
-> >                  * if there is space in it. This avoids having to imple=
-ment
-> >                  * any buffering in the Tx path.
-> >                  */
-> >                 spin_lock_irqsave(&xs->pool->cq_lock, flags);
-> > -               if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> > +               if (xskq_prod_reserve(xs->pool->cq)) {
-> >                         spin_unlock_irqrestore(&xs->pool->cq_lock, flag=
-s);
-> >                         kfree_skb(skb);
-> >                         goto out;
-> >                 }
-> >                 spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-> >
-> > -               skb->dev =3D xs->dev;
-> > -               skb->priority =3D sk->sk_priority;
-> > -               skb->mark =3D sk->sk_mark;
-> > -               skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.=
-addr;
-> > -               skb->destructor =3D xsk_destruct_skb;
-> > -
-> >                 err =3D __dev_direct_xmit(skb, xs->queue_id);
-> >                 if  (err =3D=3D NETDEV_TX_BUSY) {
-> >                         /* Tell user-space to retry the send */
-> > --
-> > 2.30.1
+> > While the subject line says "type 0 devices," this code path is
+> > also used for type 1 devices (bridges), and it's quite common for
+> > bridges to have no BARs, which means they would all be hardwired
+> > to zero.
+> 
+> Yes, for type 1 devices, it is common to have zero BAR size, so I
+> added log msg for type 0 devices only , which are in-general
+> expected to have valid BARs.
 
-Al
+Oh, right, I missed your check of dev->hdr_type.
 
+> > It is also legal for even type 0 devices to implement no BARs.
+> > They may be operated entirely via config space or via
+> > device-specific BARs that are unknown to the PCI core.
+> 
+> OK, I did not know this . Thank you for sharing this.
+
+This is actually quite common.  On my garden-variet laptop, this:
+
+  $ lspci -v | grep -E "^(\S|        (Memory|I/O))"
+
+finds two type 0 devices that have no BARs:
+
+  00:00.0 Host bridge: Intel Corporation Xeon E3-1200 v6/7th Gen Core Processor Host Bridge/DRAM Registers
+  00:1f.0 ISA bridge: Intel Corporation CM238 Chipset LPC/eSPI Controller
+
+I don't really want to add more dmesg logging for things like this
+that are working correctly.  In this case, I think the best solution
+is to either keep this patch in your private branch for testing or to
+manually inspect the dmesg log, where we already log every BAR we
+discover, for devices that should have BARs but don't.
+
+> > > Signed-off-by: Wasim Khan <wasim.khan@nxp.com>
+> > > ---
+> > >  drivers/pci/probe.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > >
+> > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c index
+> > > 953f15abc850..6438d6d56777 100644
+> > > --- a/drivers/pci/probe.c
+> > > +++ b/drivers/pci/probe.c
+> > > @@ -321,6 +321,7 @@ int __pci_read_base(struct pci_dev *dev, enum
+> > > pci_bar_type type,  static void pci_read_bases(struct pci_dev *dev,
+> > > unsigned int howmany, int rom)  {
+> > >  	unsigned int pos, reg;
+> > > +	bool found = false;
+> > >
+> > >  	if (dev->non_compliant_bars)
+> > >  		return;
+> > > @@ -333,8 +334,12 @@ static void pci_read_bases(struct pci_dev *dev,
+> > unsigned int howmany, int rom)
+> > >  		struct resource *res = &dev->resource[pos];
+> > >  		reg = PCI_BASE_ADDRESS_0 + (pos << 2);
+> > >  		pos += __pci_read_base(dev, pci_bar_unknown, res, reg);
+> > > +		found |= res->flags ? 1 : 0;
+> > >  	}
+> > >
+> > > +	if (!dev->hdr_type && !found)
+> > > +		pci_info(dev, "BAR size is 0 for BAR[0..%d]\n", howmany - 1);
+> > > +
+> > >  	if (rom) {
+> > >  		struct resource *res = &dev->resource[PCI_ROM_RESOURCE];
+> > >  		dev->rom_base_reg = rom;
+> > > --
+> > > 2.25.1
+> > >
