@@ -2,112 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C46131EC3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A90C931EC4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233572AbhBRQ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:28:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231497AbhBRNn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:43:28 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B314F64E33;
-        Thu, 18 Feb 2021 13:42:43 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 13:42:40 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
-Subject: Re: [PATCH v2 2/5] iio: Add output buffer support
-Message-ID: <20210218134240.2dd1feb2@archlinux>
-In-Reply-To: <20210217083438.37865-3-alexandru.ardelean@analog.com>
-References: <20210217083438.37865-1-alexandru.ardelean@analog.com>
-        <20210217083438.37865-3-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233034AbhBRQc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:32:27 -0500
+Received: from RB5727.rapidns.com ([103.224.241.141]:51588 "EHLO RB5727.home"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230481AbhBRNqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:46:07 -0500
+X-Greylist: delayed 126128 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Feb 2021 08:45:30 EST
+Received: from User ([51.103.148.48]) by home with
+ MailEnable ESMTP; Wed, 17 Feb 2021 01:02:51 +0530
+Reply-To: <reem.alhashimi@kakao.com>
+From:   "Ms. Reem Ebrahim" <admission_law@pimrindore.ac.in>
+Subject: Business Plans..
+Date:   Tue, 16 Feb 2021 19:32:52 -0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+        charset="Windows-1251"
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <E146ADCDD5AD4D7283DEEA9344A183A0.MAI@home>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Feb 2021 10:34:35 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+Hello,
 
-> From: Lars-Peter Clausen <lars@metafoo.de>
-> 
-> Currently IIO only supports buffer mode for capture devices like ADCs. Add
-> support for buffered mode for output devices like DACs.
-> 
-> The output buffer implementation is analogous to the input buffer
-> implementation. Instead of using read() to get data from the buffer write()
-> is used to copy data into the buffer.
-> 
-> poll() with POLLOUT will wakeup if there is space available for more or
-> equal to the configured watermark of samples.
-> 
-> Drivers can remove data from a buffer using iio_buffer_remove_sample(), the
-> function can e.g. called from a trigger handler to write the data to
-> hardware.
-> 
-> A buffer can only be either a output buffer or an input, but not both. So,
-> for a device that has an ADC and DAC path, this will mean 2 IIO buffers
-> (one for each direction).
-> 
-> The direction of the buffer is decided by the new direction field of the
-> iio_buffer struct and should be set after allocating and before registering
-> it.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state and Petroleum" also "Minister of State for International Cooperation" in UAE. I write to you on behalf of my other "three (3) colleagues" who has approved me to solicit for your "partnership in claiming of {us$47=Million}" from a Financial Home in Turkey on their behalf and for our "Mutual Benefits".
 
-Just one question on this, otherwise looks good to me.
+The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas deal with Turkey/Greece Government within 2015/2017, however, we don't want our government to know about the fund. If this proposal interests you, let me know, by sending me an email and I will send to you detailed information on how this business would be successfully transacted. Be informed that nobody knows about the secret of this fund except us, and we know how to carry out the entire transaction. So I am compelled to ask, that you will stand on our behalf and receive this fund into any account that is solely controlled by you.
 
-Jonathan
+We will compensate you with 20% of the total amount involved as gratification for being our partner in this transaction. Reply to: rrrmhashimi2021@naver.com
 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 5d641f8adfbd..b9970c68005d 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -162,6 +162,69 @@ static ssize_t iio_buffer_read(struct file *filp, char __user *buf,
->  	return ret;
->  }
->  
-...
-
->  /**
->   * iio_buffer_poll() - poll the buffer to find out if it has data
->   * @filp:	File structure pointer for device access
-> @@ -182,8 +245,19 @@ static __poll_t iio_buffer_poll(struct file *filp,
->  		return 0;
->  
->  	poll_wait(filp, &rb->pollq, wait);
-> -	if (iio_buffer_ready(indio_dev, rb, rb->watermark, 0))
-> -		return EPOLLIN | EPOLLRDNORM;
-> +
-> +	switch (rb->direction) {
-> +	case IIO_BUFFER_DIRECTION_IN:
-> +		if (iio_buffer_ready(indio_dev, rb, rb->watermark, 0))
-> +			return EPOLLIN | EPOLLRDNORM;
-> +		break;
-> +	case IIO_BUFFER_DIRECTION_OUT:
-> +		if (iio_buffer_space_available(rb) >= rb->watermark)
-> +			return EPOLLOUT | EPOLLWRNORM;
-> +		break;
-> +	}
-> +
-> +	/* need a way of knowing if there may be enough data... */
-
-Curious on what this comment is referring to?
-
->  	return 0;
->  }
->  
-> @@ -232,6 +306,16 @@ void iio_buffer_wakeup_poll(struct iio_dev *indio_dev)
->  	}
->  }
-...
+Regards,
+Ms. Reem.
