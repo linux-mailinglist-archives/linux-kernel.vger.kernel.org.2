@@ -2,197 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BF331CD6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D67CC31CD78
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhBPQB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:01:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38208 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229708AbhBPQBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:01:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613491228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JipK6xkF+8oNavIVFVqoSZnucmL1iuE/CDXl5MQc5pU=;
-        b=vMjqzU3jM4ZE03eciuSLI8Yj8wdJrupjqdIZlTuUhziJRXvq3ThnvsqBz0ijeI+6NIlNqN
-        UbEhVy98N5IOqDkbaevsm4AgzgG5OLA3OUyZvpFbGaYNpuL6F7IBaogBynVzpaXEBvqKsJ
-        s54P6RSVumEs7cS05H/7r7hIyixsNG4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CE113AE47;
-        Tue, 16 Feb 2021 16:00:27 +0000 (UTC)
-Date:   Tue, 16 Feb 2021 17:00:27 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: debugfs: was: Re: [PATCH v4] printk: Userspace format enumeration
- support
-Message-ID: <YCvsGzv3qlsWU+UE@alley>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
+        id S230310AbhBPQDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:03:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230149AbhBPQDk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 11:03:40 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE260C061574;
+        Tue, 16 Feb 2021 08:03:00 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 75so3122433pgf.13;
+        Tue, 16 Feb 2021 08:03:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n3sRb5LshDbI1PZnequXT/7ADeWk0eQoDLFgSBLnNpM=;
+        b=a6Wu7wcH699EZGPjthqNP2AJP9x/nusuk+VFJlETtdD7/1/mNIMm8ZIsjjted+6HIs
+         400V3pro5fUhIHawhNowYMKQSmsepHDXoXPsx0LJI/E17mgQc1imN4c223aifbEM3vtL
+         Jnu0JJTJsgxU7xz9o+iqHAUF1aCTHVh5QUlzALooNJE0UqJWu1s6pAFfiDbRAVncVj7z
+         P0xvJSC18e67rlJyeaSlI/btRc9MYjTZJIe3kQS9s+XP/ZU0XhHeH7XsusrLIHEYpsH8
+         AizQXY80ytHP0dCRyBwiSbXwyuk0Ttl5vMnT85LXBfUbibOuCf5Qciiu0ICf424mALKO
+         SwSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=n3sRb5LshDbI1PZnequXT/7ADeWk0eQoDLFgSBLnNpM=;
+        b=Xf4SvwyWnRn+yMOP7di2bvOImlHv/m8tJjW8ftYdPwhoxqelruEXOChYwmuvdnBIzf
+         ylYwVUjMhfhLZkqrEP/nckfpBTJdNV1SSSV3KZl4A7JzPE5qj5/KROaEHxFYi1r1weJz
+         HjFz1wXo8eg61EpsVFKaqNqezOCJPC51aq3+hQLckou3Yd802VEBt+Ul8kks7VdcnkzG
+         5Tt7SVXcxzIIT0bKlk+E0x5XOsfHfoOiNDqN/8YyPTtRjGLqzviiXsuerMor2P0eWKZa
+         FEmbVgJRTF7sqrJ/OJLBSNTE/rQbnjFmkJlqQtYQCqfTzoDZ42zHtKZ4Gc/G3MMHuocC
+         rMiQ==
+X-Gm-Message-State: AOAM533kavk+4uMDOjf25kPaWN3FCX65/hohdduANtndQ7iqrqGWMZjH
+        E0pD9QcyhjFw7mBfqkMivWU=
+X-Google-Smtp-Source: ABdhPJxcR9Rc2efbWbHAErffBiWYtrE3oGE+hiFlnzV3Wy+y7hZXHvVSVdYZnm2wRbquf0z/4wgwmA==
+X-Received: by 2002:a63:884a:: with SMTP id l71mr19643864pgd.75.1613491380462;
+        Tue, 16 Feb 2021 08:03:00 -0800 (PST)
+Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
+        by smtp.gmail.com with ESMTPSA id ms24sm3215313pjb.18.2021.02.16.08.02.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 08:03:00 -0800 (PST)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, kw@linux.com
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
+Subject: [PATCH v3 0/4] Introduce pcim_alloc_irq_vectors()
+Date:   Wed, 17 Feb 2021 00:02:45 +0800
+Message-Id: <20210216160249.749799-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCafCKg2bAlOw08H@chrisdown.name>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-02-12 15:30:16, Chris Down wrote:
-> We have a number of systems industry-wide that have a subset of their
-> functionality that works as follows:
-> 
-> 1. Receive a message from local kmsg, serial console, or netconsole;
-> 2. Apply a set of rules to classify the message;
-> 3. Do something based on this classification (like scheduling a
->    remediation for the machine), rinse, and repeat.
-> 
-> As a couple of examples of places we have this implemented just inside
-> Facebook, although this isn't a Facebook-specific problem, we have this
-> inside our netconsole processing (for alarm classification), and as part
-> of our machine health checking. We use these messages to determine
-> fairly important metrics around production health, and it's important
-> that we get them right.
-> 
-> 
-> This patch provides a solution to the issue of silently changed or
-> deleted printks: we record pointers to all printk format strings known
-> at compile time into a new .printk_fmts section, both in vmlinux and
-> modules. At runtime, this can then be iterated by looking at
-> <debugfs>/printk/formats/<module>, which emits the same format as
-> `printk` itself, which we already export elsewhere (for example, in
-> netconsole).
+Introduce pcim_alloc_irq_vectors(), a device-managed version of
+pci_alloc_irq_vectors(), In some i2c drivers, If pcim_enable_device()
+has been called before, then pci_alloc_irq_vectors() is actually a
+device-managed function. It is used as a device-managed function, So
+replace it with pcim_alloc_irq_vectors().
 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 5a95c688621f..adf545ba9eb9 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> +
-> +static const struct file_operations dfs_formats_fops = {
-> +	.open    = debugfs_pf_open,
-> +	.read    = seq_read,
-> +	.llseek  = seq_lseek,
-> +	.release = single_release,
-> +};
-> +
-> +static size_t printk_fmt_size(const char *fmt)
-> +{
-> +	size_t sz = strlen(fmt) + 1;
-> +
-> +	/*
-> +	 * Some printk formats don't start with KERN_SOH + level. We will add
-> +	 * it later when rendering the output.
-> +	 */
-> +	if (unlikely(fmt[0] != KERN_SOH_ASCII))
-> +		sz += 2;
+Changelog
+---------
+v2 -> v3:
+	- Add some commit comments for replace some codes in
+	  pcim_release() by pci_free_irq_vectors().
+	- Simplify the error handling path in i2c designware
+	  driver.
+v1 -> v2:
+	- Use pci_free_irq_vectors() to replace some code in
+	  pcim_release().
+	- Modify some commit messages.
 
-This approach is hard to maintain. It might be pretty hard and error
-prone to count the size if we want to provide more information.
+Dejin Zheng (4):
+  PCI: Introduce pcim_alloc_irq_vectors()
+  Documentation: devres: Add pcim_alloc_irq_vectors()
+  i2c: designware: Use the correct name of device-managed function
+  i2c: thunderx: Use the correct name of device-managed function
 
-There are many files in debugfs with not-well defined size.
-They are opened by seq_open_private(). It allows to add
-a line by line by an iterator.
+ .../driver-api/driver-model/devres.rst        |  1 +
+ drivers/i2c/busses/i2c-designware-pcidrv.c    | 15 +++------
+ drivers/i2c/busses/i2c-thunderx-pcidrv.c      |  2 +-
+ drivers/pci/pci.c                             | 33 ++++++++++++++++---
+ include/linux/pci.h                           |  3 ++
+ 5 files changed, 38 insertions(+), 16 deletions(-)
 
-For example:
+-- 
+2.25.0
 
-	+ /sys/kernel/debug/dynamic_debug/control is opened by
-	  ddebug_proc_open() in lib/dynamic_debug.c
-
-	+ /sys/kernel/debug/tracing/available_filter_functions
-	  is opened by ftrace_avail_open() in kernel/trace/ftrace.c
-
-
-
-> +
-> +	return sz;
-> +}
-> +
-> +static struct printk_fmt_sec *find_printk_fmt_sec(struct module *mod)
-> +{
-> +	struct printk_fmt_sec *ps = NULL;
-> +
-> +	hash_for_each_possible(printk_fmts_mod_sections, ps, hnode,
-> +			       (unsigned long)mod)
-> +		if (ps->module == mod)
-> +			return ps;
-> +
-> +	return NULL;
-> +}
-> +
-> +static void store_printk_fmt_sec(struct module *mod, const char **start,
-> +				 const char **end)
-> +{
-> +	struct printk_fmt_sec *ps = NULL;
-> +	const char **fptr = NULL;
-> +	size_t size = 0;
-> +
-> +	ps = kmalloc(sizeof(struct printk_fmt_sec), GFP_KERNEL);
-> +	if (!ps)
-> +		return;
-> +
-> +	ps->module = mod;
-> +	ps->start = start;
-> +	ps->end = end;
-> +
-> +	for (fptr = ps->start; fptr < ps->end; fptr++)
-> +		size += printk_fmt_size(*fptr);
-> +
-> +	mutex_lock(&printk_fmts_mutex);
-> +	hash_add(printk_fmts_mod_sections, &ps->hnode, (unsigned long)mod);
-> +	mutex_unlock(&printk_fmts_mutex);
-> +
-> +	ps->file = debugfs_create_file(ps_get_module_name(ps), 0444,
-> +				       dfs_formats, mod, &dfs_formats_fops);
-> +
-> +	if (!IS_ERR(ps->file))
-> +		d_inode(ps->file)->i_size = size;
-
-We should revert the changes when the file could not get crated.
-It does not make sense to keep the structure when the file is not
-there.
-
-I guess that remove_printk_fmt_sec() would even crash when
-ps->file was set to an error code.
-
-> +}
-> +
-> +#ifdef CONFIG_MODULES
-> +static void remove_printk_fmt_sec(struct module *mod)
-> +{
-> +	struct printk_fmt_sec *ps = NULL;
-> +
-> +	if (WARN_ON_ONCE(!mod))
-> +		return;
-> +
-> +	mutex_lock(&printk_fmts_mutex);
-> +
-> +	ps = find_printk_fmt_sec(mod);
-> +	if (!ps) {
-> +		mutex_unlock(&printk_fmts_mutex);
-> +		return;
-> +	}
-> +
-> +	hash_del(&ps->hnode);
-> +
-> +	mutex_unlock(&printk_fmts_mutex);
-> +
-> +	debugfs_remove(ps->file);
-
-IMHO, we should remove the file before we remove the way how
-to read it. This should be done in the opposite order
-than in store_printk_fmt_sec().
-
-> +	kfree(ps);
-> +}
-> +
-
-Best Regards,
-Petr
