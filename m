@@ -2,171 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C8331CE80
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CCC31CE83
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 17:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhBPQzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 11:55:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
+        id S230464AbhBPQ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 11:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbhBPQzL (ORCPT
+        with ESMTP id S230310AbhBPQzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 11:55:11 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54171C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:54:31 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id r77so9982978qka.12
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 08:54:31 -0800 (PST)
+        Tue, 16 Feb 2021 11:55:52 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EB2C061574;
+        Tue, 16 Feb 2021 08:55:11 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id u143so6489704pfc.7;
+        Tue, 16 Feb 2021 08:55:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3Zhyu+nC9+CPMV4JA3grDQ6Xc5qBaXkOYbaPkzmAlcg=;
-        b=gbFxfeL0ybh8TJ11CwDsF8YXkz5foMi6jC7WLCPgNjrHnNJyO5lsI0RR+hGTUzCstP
-         rfjAqDYTpnJgkHzoZUKAr+cKMf/vHLLDZ0OFL9+S2Xx4wbBQZxa8memc4+v1TgD/fFwE
-         k5rIpN3IMKkU6MsdR3u6USf51Vmse//UQHpEiyDVGd3FLPCsYtCwyNIjibsVRtmycboE
-         GNaMDoVw5rOEOa2yFK0wVy7iRy3T1kRSkN72kHwq80EFeXFYXVnBN7OjQo+PkK1fvkdA
-         los2vdAuCqT22DC3wS2OCGU4brNnY8sCSZo6qZ1bqTTRJE7oIR9HHzRQ+ciLfhJv1WT3
-         heVA==
+        bh=B/H6LiWn0A6b/8ios9SP8cUE1Sv4bQ5yNhbgbGBgv2c=;
+        b=bvku63Vnc7mFQXtlbolu8qNCzN2Z7r6KeIfAuYHevo6xfVjCjYxHX1hbWi2iSLSA1s
+         sqL274JEeloGKCO4Omp1Ge8EKcj8eK5+L+a1z6ibRMvsYcjBQpPrrBJCBU9ch5lISf4s
+         TM+mtMHslwl+d2UdMoYG54/tt/kbSIvoo4OmRRZ9RlREhx9u28LFDVJa31yyWtRrWkuv
+         L/oz/6sGLwf3jw8ifepSpKzqtdRLNNSCVEliZ6IrFE9nf5b0E8EeGDgqNpgZ3KTEeWfO
+         i48OB7t5m6eT+jnHXTDSHOdn4S400TWznWwvWkdLWv8WT/VwU4Z8vXahAPkA1WaCH6gu
+         O3sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3Zhyu+nC9+CPMV4JA3grDQ6Xc5qBaXkOYbaPkzmAlcg=;
-        b=KZYzQXCB0n6VZ9nY0bqNHmlRUfKbxKM5kPZuyM2QYBD23GzOmlpnnGaAE8qiLb/v0f
-         F/MvDY97zJtXI2I899oCkeEQqCY+hwUGlWP418ILJhCRHdXgLfeLJC8jrSwTJ9BuN17O
-         Yxty0o5fxuHAyAXyoo6NF28eTDutF7aVSAxZROe4xxvWQMafeFOTcxZy95to4jC0vdUx
-         CYR3sWX9QgbOdvoTdYWIg674pp+yAONNih+eXrgYcUR2dgtAWnPWXUgPhXKifxRJwrgl
-         SK9eoiE+bDOCoDZ+dVQfbStKZdtUnBpb4Y7pqN1aAyZ38D1ERf/cNx7Sle/6w4pDJgVf
-         tEWA==
-X-Gm-Message-State: AOAM533AJdWtbpuAqRV7qQMvweIcnva/UrDstZJZaZ/BhdvCZ+02DLa5
-        I/JuF30kml6d/TWcGVwdMLPbp2OmQc3Hxf9F1T12XA==
-X-Google-Smtp-Source: ABdhPJy5giYk3zchfxtQjLAyvp7G+emQEY5YPUBbkl2jA55BNYnMtVotkiP14rfgzioNsAOrXutaR1HTIJjckO8Gk78=
-X-Received: by 2002:a37:5702:: with SMTP id l2mr20738364qkb.486.1613494469361;
- Tue, 16 Feb 2021 08:54:29 -0800 (PST)
+        bh=B/H6LiWn0A6b/8ios9SP8cUE1Sv4bQ5yNhbgbGBgv2c=;
+        b=eQyDqAWjDiP/WxpSaMOateagPzFEG/6pYLroQ/bJqB57k8LnFiQqE8Ap46EmrxdYgv
+         7iiywnmmBk3QRgIl3LuUoZ1cuSYap1AlAaY78H42sJ59DqhFK9Sb2ffEQg3cBB83Pa21
+         NFBbqY+nvHA6pbb19mwoUpUMuo5pxsnE9Kn8nB7K7Ry4v550f7c+cf3SbWc3ocu1Oyyp
+         Y85IeGs+FzpHA9QIPObkMIwcwkaIUps7eaged9Trv5P3YzvpiV+Zs4fKhV6WGeljLzU+
+         nWqphFC1pWVoDqKDVbfUF/3vtynmklMcWpamtOU06m62nFm23OlNCuqHOzcqIkj1opek
+         lHuA==
+X-Gm-Message-State: AOAM532GZVrtGnPkSOQmls9zHFaJZjLGZwuw4uO4zWW9DFN2qIhddhIF
+        Weakxk7JB9wukegxQHnX/ufxLWRcsdGKuhkcAmI=
+X-Google-Smtp-Source: ABdhPJxh1nK6gvBMYME2JhZZPEgzFDpvr46SKAtmAYdZiFSXjHLnKprPgueiEnwfl/mD44LmOatwmlRw1Bl8zJOos6k=
+X-Received: by 2002:a63:3d0:: with SMTP id 199mr20202328pgd.4.1613494511176;
+ Tue, 16 Feb 2021 08:55:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20210215161537.14696-1-jonathan@marek.ca> <20210215161537.14696-2-jonathan@marek.ca>
-In-Reply-To: <20210215161537.14696-2-jonathan@marek.ca>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 16 Feb 2021 19:54:16 +0300
-Message-ID: <CAA8EJpo_Fs8Wj6zjH6BQqm=mG=qcGt3_JMj4nK-vsKCzr8tn1g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] drm/msm: add compatibles for sm8150/sm8250 display
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Drew Davenport <ddavenport@chromium.org>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        tongtiangen <tongtiangen@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com> <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
+In-Reply-To: <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 16 Feb 2021 18:54:54 +0200
+Message-ID: <CAHp75Vep0Fm1k_7gJcozk4t316QmUgt5Qe3PauwDg=py5VnHfQ@mail.gmail.com>
+Subject: Re: [PATCH v1 01/12] gna: add driver module
+To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>,
+        Jianxun Zhang <jianxun.zhang@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 at 19:25, Jonathan Marek <jonathan@marek.ca> wrote:
+On Tue, Feb 16, 2021 at 6:11 PM Maciej Kwapulinski
+<maciej.kwapulinski@linux.intel.com> wrote:
 >
-> The driver already has support for sm8150/sm8250, but the compatibles were
-> never added.
+> From: Tomasz Jankowski <tomasz1.jankowski@intel.com>
 >
-> Also inverse the non-mdp4 condition in add_display_components() to avoid
-> having to check every new compatible in the condition.
->
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  Documentation/devicetree/bindings/display/msm/dpu.txt | 4 ++--
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c               | 2 ++
->  drivers/gpu/drm/msm/msm_drv.c                         | 6 +++---
->  3 files changed, 7 insertions(+), 5 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/display/msm/dpu.txt b/Documentation/devicetree/bindings/display/msm/dpu.txt
-> index 551ae26f60da..5763f43200a0 100644
-> --- a/Documentation/devicetree/bindings/display/msm/dpu.txt
-> +++ b/Documentation/devicetree/bindings/display/msm/dpu.txt
-> @@ -8,7 +8,7 @@ The DPU display controller is found in SDM845 SoC.
->
->  MDSS:
->  Required properties:
-> -- compatible:  "qcom,sdm845-mdss", "qcom,sc7180-mdss"
-> +- compatible:  "qcom,sdm845-mdss", "qcom,sc7180-mdss", "qcom,sm8150-mdss", "qcom,sm8250-mdss"
->  - reg: physical base address and length of contoller's registers.
->  - reg-names: register region names. The following region is required:
->    * "mdss"
-> @@ -41,7 +41,7 @@ Optional properties:
->
->  MDP:
->  Required properties:
-> -- compatible: "qcom,sdm845-dpu", "qcom,sc7180-dpu"
-> +- compatible: "qcom,sdm845-dpu", "qcom,sc7180-dpu", "qcom,sm8150-dpu", "qcom,sm8250-dpu"
->  - reg: physical base address and length of controller's registers.
->  - reg-names : register region names. The following region is required:
->    * "mdp"
+> Add a new PCI driver for Intel(R) Gaussian & Neural Accelerator
+> with basic support like module loading and unloading. The full
+> function of the driver will be added by further changes.
 
-These two chunks should probably go to the separate patch 'dt-bindings:...'.
+...
 
-Also, could you please pinpoint the reason for adding more
-compatibility strings, while they map to the same internal data?
-I think we might want instead to use some generic name for the dpu
-block, like "qcom,dpu" or "qcom,mdp-dpu" instead of specifying the
-platform name.
+> +config INTEL_GNA
+> +       tristate "Intel(R) Gaussian & Neural Accelerator (Intel(R) GNA)"
+
+Intel (R) Intel (R) RRR!
+
+> +       depends on X86_64 && PCI
+> +       help
+> +         This option enables the Intel(R) Gaussian & Neural Accelerator
+> +         (Intel(R) GNA) driver.
+> +         User space interface is defined in include/uapi/misc/gna.h, while
+> +         information about functionality is in
+> +         Documentation/misc-devices/gna.rst
+
+No module name?
+
+...
+
+> +/* Reverse gna_dev_init() */
+> +static void gna_dev_deinit(struct gna_private *gna_priv)
+> +{
+> +       pci_set_drvdata(gna_priv->pdev, NULL);
+> +}
+
+This is done by device core. Why do you need it?
+
+...
+
+> +       ret = pcim_enable_device(pcidev);
+> +       if (ret) {
+> +               dev_err(&pcidev->dev, "pci device can't be enabled\n");
 
 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> index 5a8e3e1fc48c..fff12a4c8bfc 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> @@ -1219,6 +1219,8 @@ static const struct dev_pm_ops dpu_pm_ops = {
->  static const struct of_device_id dpu_dt_match[] = {
->         { .compatible = "qcom,sdm845-dpu", },
->         { .compatible = "qcom,sc7180-dpu", },
-> +       { .compatible = "qcom,sm8150-dpu", },
-> +       { .compatible = "qcom,sm8250-dpu", },
->         {}
->  };
->  MODULE_DEVICE_TABLE(of, dpu_dt_match);
-> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> index 94525ac76d4e..928f13d4bfbc 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.c
-> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> @@ -1185,9 +1185,7 @@ static int add_display_components(struct device *dev,
->          * Populate the children devices, find the MDP5/DPU node, and then add
->          * the interfaces to our components list.
->          */
-> -       if (of_device_is_compatible(dev->of_node, "qcom,mdss") ||
-> -           of_device_is_compatible(dev->of_node, "qcom,sdm845-mdss") ||
-> -           of_device_is_compatible(dev->of_node, "qcom,sc7180-mdss")) {
-> +       if (!of_device_is_compatible(dev->of_node, "qcom,mdp4")) {
->                 ret = of_platform_populate(dev->of_node, NULL, NULL, dev);
->                 if (ret) {
->                         DRM_DEV_ERROR(dev, "failed to populate children devices\n");
-> @@ -1320,6 +1318,8 @@ static const struct of_device_id dt_match[] = {
->         { .compatible = "qcom,mdss", .data = (void *)KMS_MDP5 },
->         { .compatible = "qcom,sdm845-mdss", .data = (void *)KMS_DPU },
->         { .compatible = "qcom,sc7180-mdss", .data = (void *)KMS_DPU },
-> +       { .compatible = "qcom,sm8150-mdss", .data = (void *)KMS_DPU },
-> +       { .compatible = "qcom,sm8250-mdss", .data = (void *)KMS_DPU },
->         {}
->  };
->  MODULE_DEVICE_TABLE(of, dt_match);
-> --
-> 2.26.1
->
+> +               goto end;
 
+Useless label. Return here.
+
+> +       }
+
+...
+
+> +       ret = pci_request_regions(pcidev, GNA_DRV_NAME);
+> +       if (ret)
+> +               goto end;
+
+Why? Can't you use pcim_iomap_regions() directly?
+
+...
+
+> +       ret = pci_set_dma_mask(pcidev, DMA_BIT_MASK(64));
+
+No way. This is an obsoleted API.
+
+> +       if (ret) {
+> +               dev_err(&pcidev->dev, "pci_set_dma_mask returned error %d\n", ret);
+> +               goto err_release_regions;
+> +       }
+
+...
+
+> +       /* init gna device */
+
+Useless comments here and there.
+
+...
+
+> +       gna_priv = devm_kzalloc(&pcidev->dev, sizeof(*gna_priv), GFP_KERNEL);
+> +       if (!gna_priv) {
+> +               ret = -ENOMEM;
+
+> +               goto err_clear_master;
+
+What? You have used pciM_enabled_device(). Please, read documentation.
+
+> +       }
+
+...
+
+> +       gna_priv->bar0.iostart = pci_resource_start(pcidev, 0);
+> +       gna_priv->bar0.iosize = pci_resource_len(pcidev, 0);
+> +       gna_priv->bar0.mem_addr = pcim_iomap(pcidev, 0, 0);
+> +       if (!gna_priv->bar0.mem_addr) {
+> +               dev_err(&pcidev->dev, "could not map BAR 0\n");
+> +               ret = -EINVAL;
+> +               goto err_clear_master;
+> +       }
+
+Why do you need all these?!
+
+...
+
+> +       dev_dbg(&pcidev->dev, "bar0 io start: 0x%llx\n", (unsigned long long)gna_priv->bar0.iostart);
+> +       dev_dbg(&pcidev->dev, "bar0 io size: %llu\n", (unsigned long long)gna_priv->bar0.iosize);
+> +       dev_dbg(&pcidev->dev, "bar0 memory address: %p\n", gna_priv->bar0.mem_addr);
+
+No, please read printk-formats.rst.
+
+...
+
+> +err_clear_master:
+> +       pci_clear_master(pcidev);
+> +err_release_regions:
+> +       pci_release_regions(pcidev);
+> +end:
+> +       dev_err(&pcidev->dev, "gna probe failed with %d\n", ret);
+> +       return ret;
+
+These are all completely redundant.
+
+> +}
+
+...
+
+> +void gna_remove(struct pci_dev *pcidev)
+> +{
+> +       struct gna_private *gna_priv;
+> +
+> +       gna_priv = pci_get_drvdata(pcidev);
+> +
+> +       gna_dev_deinit(gna_priv);
+> +
+> +       pci_clear_master(pcidev);
+> +       pci_release_regions(pcidev);
+> +}
+
+Redundant entire function.
+
+...
+
+> +#include <linux/pci.h>
+
+Haven't noticed how this header is used here.
+
+...
+
+> +       struct device dev;
+
+Missed linux/device.h.
+
+...
+
+> +static int __init gna_drv_init(void)
+> +{
+> +       int ret;
+> +
+> +       mutex_init(&gna_drv_priv.lock);
+> +
+> +       gna_class = class_create(THIS_MODULE, "gna");
+> +       if (IS_ERR(gna_class)) {
+> +               pr_err("class device create failed\n");
+> +               return PTR_ERR(gna_class);
+> +       }
+> +       gna_class->devnode = gna_devnode;
+> +
+> +       ret = pci_register_driver(&gna_driver);
+
+Is it possible to decouple a PCI glue driver from the class as many
+other existing examples are doing?
+
+> +       if (ret) {
+> +               pr_err("pci register driver failed\n");
+> +               class_destroy(gna_class);
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+
+...
+
+> +#include <linux/kernel.h>
+
+Why do you need this header?
+
+...
+
+> +#define GNA_DRV_VER    "1.2.0"
+
+Nowadays the version is the Git SHA sum.
+
+...
+
+> +       struct file *fd;
+
+Missed forward declaration.
+
+...
+
+> +       struct list_head memory_list;
+
+Missed linux/list.h
+
+> +       struct list_head flist;
+
+...
+
+> +extern struct gna_driver_private gna_drv_priv;
+
+> +extern int recovery_timeout;
+
+Global?!
+
+...
+
+> +#define GNA_STS_SCORE_COMPLETED                (1 << 0)
+> +#define GNA_STS_STATISTICS_VALID       (1 << 3)
+> +#define GNA_STS_PCI_MMU_ERR            (1 << 4)
+> +#define GNA_STS_PCI_DMA_ERR            (1 << 5)
+> +#define GNA_STS_PCI_UNEXCOMPL_ERR      (1 << 6)
+> +#define GNA_STS_VA_OOR                 (1 << 7)
+> +#define GNA_STS_PARAM_OOR              (1 << 8)
+> +#define GNA_STS_OUTBUF_FULL            (1 << 16)
+> +#define GNA_STS_SATURATE               (1 << 17)
+
+You can use _BITUL() from const.h, but it's up to you.
+
+...
+
+> +#define GNA_ERROR (GNA_STS_PCI_DMA_ERR                 | \
+
+When definitions start on the next line it will be easier to read.
+
+> +                       GNA_STS_PCI_MMU_ERR             | \
+> +                       GNA_STS_PCI_UNEXCOMPL_ERR       | \
+> +                       GNA_STS_PARAM_OOR               | \
+> +                       GNA_STS_VA_OOR)
 
 -- 
-With best wishes
-Dmitry
+With Best Regards,
+Andy Shevchenko
