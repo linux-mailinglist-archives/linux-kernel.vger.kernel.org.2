@@ -2,69 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D2231C5B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 04:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E200F31C5BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Feb 2021 04:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhBPDBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 15 Feb 2021 22:01:32 -0500
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:41454 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhBPDB3 (ORCPT
+        id S229652AbhBPDLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 15 Feb 2021 22:11:23 -0500
+Received: from conuserg-07.nifty.com ([210.131.2.74]:32432 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhBPDLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 15 Feb 2021 22:01:29 -0500
-Received: by mail-lf1-f41.google.com with SMTP id d24so13605112lfs.8;
-        Mon, 15 Feb 2021 19:01:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hAaExniY8eD12XfJrRZgauVsXLQgbU0LNTK/CxUaGD0=;
-        b=p2H9nbhToYeTGyCkc0TVm11apr24pZc2N48go0T9gxTY5nogKNPDCCzCYcKm47R0/6
-         bXbf8g3hvV8w0nAhLOOqxcH3UBuD07JwS4RYBYPEuwSo/zRGWRvDC4yMazdWul+ETbwB
-         0NS3gubGy2z8+ohCJ8zOpSAGB/dGkopiiOg30shZILY3k2qYCm0vRfBFNY1GRp51QAn6
-         lkZKgEa8XxyTsKqztR+wIYvoPVarUE3AudpOZ5MzSsOtwpbuZ4J0lwuJNiKJ53g2yOMD
-         3SsmcPNYVv75qVjmSQjM0/tVtF+l0B9MdiFZmusUkmnI0+VDvkc8BBU2fHZMQW8kBwZg
-         Gdtg==
-X-Gm-Message-State: AOAM532U1YSWyeiFIpkEfdKYVuYU0+HmrUA5vewB5WQo9jgt11DJT/xE
-        bDKJARC7a6TpMSNLAaLSs+k=
-X-Google-Smtp-Source: ABdhPJyXp9qx04aRrwD4mwVsy804rjpKjNseqt4qi1Fxu41G4c0v+N3TEFwPYJvXgUUu/xHLZXv29A==
-X-Received: by 2002:a19:8186:: with SMTP id c128mr10274693lfd.377.1613444446773;
-        Mon, 15 Feb 2021 19:00:46 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id u4sm2055765lfi.255.2021.02.15.19.00.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 19:00:46 -0800 (PST)
-Date:   Tue, 16 Feb 2021 04:00:45 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Chen Lin <chen45464546@163.com>
-Cc:     rjw@rjwysocki.net, lenb@kernel.org, helgaas@kernel.org,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chen Lin <chen.lin5@zte.com.cn>
-Subject: Re: [PATCH] PCI: hotplug: Remove unused function pointer typedef
- acpiphp_callback
-Message-ID: <YCs1Xetu4ifu0iGv@rocinante>
-References: <1613443120-4279-1-git-send-email-chen45464546@163.com>
+        Mon, 15 Feb 2021 22:11:21 -0500
+Received: from grover.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 11G3A8ch028393;
+        Tue, 16 Feb 2021 12:10:08 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 11G3A8ch028393
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613445009;
+        bh=dBe0gGOx1OvVHpAym9sqBVoT4U+1i4jHpB2ONSTd2I0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TArhaOeYa41d8mTB+CbWOOoRdz3iscskjLSWqARmnF7ChwdW+oThXMyw0pcqi3dv5
+         ZEEsOOzXSA/MNCxkDvo5TFvqaKbBQfm9afI/umtOuJHhRty19iRjahP4niA2VNW5aC
+         HJc6w7H1nJpq/ZBwELAe/0qkLEnqz3GoNS+ksfKeuvLvsyRn63i4957MnPiW3rSk9Z
+         +1WzJUwN5EGcxVW4/ValtLAHp5XlJwddXPFBHUaBdaqxUCXX9e2n18RI1v8bfK6D6N
+         xA3Cs7YnonPLHc9kVgdYxu3sHdZqPoyCcMp4cT2VV+h4V79YMmODhMxyfco3c00+os
+         qzVbtpbdc3bow==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     David Laight <david.laight@aculab.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] kbuild: remove ld-version macro
+Date:   Tue, 16 Feb 2021 12:10:03 +0900
+Message-Id: <20210216031004.552417-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1613443120-4279-1-git-send-email-chen45464546@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen,
+There is no direct user of ld-version; you can use CONFIG_LD_VERSION
+if needed.
 
-> Remove the 'acpiphp_callback' typedef as it is not used.
-[...]
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Good catch!
+ scripts/Kbuild.include | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-This typedef was initially added in 2005, and then it stopped being used
-around the Kernel version 3.7 release, which is also when the sole user
-of this typedef called acpiphp_for_each_slot() has also been retired.
+diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+index 08e011175b4c..509e0856d653 100644
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -141,13 +141,9 @@ cc-ifversion = $(shell [ $(CONFIG_GCC_VERSION)0 $(1) $(2)000 ] && echo $(3) || e
+ # Usage: KBUILD_LDFLAGS += $(call ld-option, -X, -Y)
+ ld-option = $(call try-run, $(LD) $(KBUILD_LDFLAGS) $(1) -v,$(1),$(2),$(3))
+ 
+-# ld-version
+-# Note this is mainly for HJ Lu's 3 number binutil versions
+-ld-version = $(shell $(LD) --version | $(srctree)/scripts/ld-version.sh)
+-
+ # ld-ifversion
+ # Usage:  $(call ld-ifversion, -ge, 22252, y)
+-ld-ifversion = $(shell [ $(ld-version) $(1) $(2) ] && echo $(3) || echo $(4))
++ld-ifversion = $(shell [ $(CONFIG_LD_VERSION)0 $(1) $(2)0 ] && echo $(3) || echo $(4))
+ 
+ ######
+ 
+-- 
+2.27.0
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
-
-Krzysztof
