@@ -2,187 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC5231DF24
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AA731DF2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234901AbhBQSef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:34:35 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58568 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbhBQSeX (ORCPT
+        id S231544AbhBQSlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:41:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37383 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229774AbhBQSlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:34:23 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id B67F21F457C3
-Subject: Re: [PATCH] test-media: wrap vivid code around $vivid variable
-To:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org
-Cc:     kernel@collabora.com, linux-kernel@vger.kernel.org
-References: <20210217181157.28285-1-helen.koike@collabora.com>
- <c9d01579-7200-2d37-d244-92895353c842@xs4all.nl>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <00c29598-f490-6d5e-cdba-d694feb6d562@collabora.com>
-Date:   Wed, 17 Feb 2021 15:33:33 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 17 Feb 2021 13:41:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613587180;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dl8x4+wFVVURHKDXzzceJJdbMGUykA8qXliYXfk5Wlg=;
+        b=YvAxw4Zwv7XHPoxsUvbMockrwf7WHCqYi86+Puff5qFvVyAsGKDCnWA2CoUcfAnzbSCuAi
+        3odaNKQYun4kMXUQeRePl0gxck+xUOEC7LQRjyGLwkQi+SlvUSAcci3dNCkBzd9VPPtVai
+        /gHid/Ao9xaNpVTnMxelzhpwwHaAm5w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-534-eIye0K15NH66gAmDF3Dwtg-1; Wed, 17 Feb 2021 13:39:37 -0500
+X-MC-Unique: eIye0K15NH66gAmDF3Dwtg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8AD29107ACF9;
+        Wed, 17 Feb 2021 18:39:35 +0000 (UTC)
+Received: from ovpn-114-40.ams2.redhat.com (ovpn-114-40.ams2.redhat.com [10.36.114.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 030425D9C2;
+        Wed, 17 Feb 2021 18:39:32 +0000 (UTC)
+Message-ID: <2ff81838f3f141da3b238e913115a98f44f9b7d2.camel@redhat.com>
+Subject: Re: [MPTCP] KASAN: use-after-free Read in mptcp_established_options
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     syzbot <syzbot+3c1e5ab4997849b69807@syzkaller.appspotmail.com>,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        mptcp@lists.01.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Date:   Wed, 17 Feb 2021 19:39:31 +0100
+In-Reply-To: <000000000000ea934b05bb8b92cf@google.com>
+References: <000000000000ea934b05bb8b92cf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <c9d01579-7200-2d37-d244-92895353c842@xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2021-02-17 at 09:30 -0800, syzbot wrote:
+> syzbot found the following issue on:
+> 
+> HEAD commit:    966df6de lan743x: sync only the received area of an rx rin..
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11afe082d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3c1e5ab4997849b69807
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+3c1e5ab4997849b69807@syzkaller.appspotmail.com
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in mptcp_check_fallback net/mptcp/protocol.h:745 [inline]
+> BUG: KASAN: use-after-free in mptcp_established_options+0x22cf/0x2780 net/mptcp/options.c:724
+> Read of size 8 at addr ffff88802bea10a0 by task syz-executor.1/11042
+> 
+> CPU: 1 PID: 11042 Comm: syz-executor.1 Not tainted 5.11.0-rc7-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:120
+>  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
+>  __kasan_report mm/kasan/report.c:396 [inline]
+>  kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+>  mptcp_check_fallback net/mptcp/protocol.h:745 [inline]
+>  mptcp_established_options+0x22cf/0x2780 net/mptcp/options.c:724
+>  tcp_established_options+0x4ed/0x700 net/ipv4/tcp_output.c:953
+>  tcp_current_mss+0x1d2/0x360 net/ipv4/tcp_output.c:1840
+>  tcp_send_mss+0x28/0x2b0 net/ipv4/tcp.c:943
+>  mptcp_sendmsg_frag+0x13b/0x1220 net/mptcp/protocol.c:1266
+>  mptcp_push_pending+0x2cc/0x650 net/mptcp/protocol.c:1477
+>  mptcp_sendmsg+0xde4/0x2830 net/mptcp/protocol.c:1685
+>  inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:642
+>  sock_sendmsg_nosec net/socket.c:652 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:672
+>  sock_write_iter+0x289/0x3c0 net/socket.c:999
+>  call_write_iter include/linux/fs.h:1901 [inline]
+>  new_sync_write+0x426/0x650 fs/read_write.c:518
+>  vfs_write+0x791/0xa30 fs/read_write.c:605
+>  ksys_write+0x1ee/0x250 fs/read_write.c:658
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x465d99
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ff231ccc188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 000000000056c008 RCX: 0000000000465d99
+> RDX: 000000000003f9b4 RSI: 0000000020000000 RDI: 0000000000000004
+> RBP: 00000000004bcf27 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c008
+> R13: 00007ffeaa2da27f R14: 00007ff231ccc300 R15: 0000000000022000
+> 
+> Allocated by task 11017:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track mm/kasan/common.c:46 [inline]
+>  set_alloc_info mm/kasan/common.c:401 [inline]
+>  ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
+>  kmalloc include/linux/slab.h:552 [inline]
+>  kzalloc include/linux/slab.h:682 [inline]
+>  subflow_create_ctx+0x82/0x230 net/mptcp/subflow.c:1378
+>  subflow_ulp_init+0x62/0x370 net/mptcp/subflow.c:1459
+>  __tcp_set_ulp net/ipv4/tcp_ulp.c:139 [inline]
+>  tcp_set_ulp+0x27c/0x610 net/ipv4/tcp_ulp.c:160
+>  mptcp_subflow_create_socket+0x5bf/0xe20 net/mptcp/subflow.c:1343
+>  __mptcp_socket_create net/mptcp/protocol.c:110 [inline]
+>  mptcp_init_sock net/mptcp/protocol.c:2365 [inline]
+>  mptcp_init_sock+0x140/0x830 net/mptcp/protocol.c:2350
+>  inet6_create net/ipv6/af_inet6.c:256 [inline]
+>  inet6_create+0xa15/0x1010 net/ipv6/af_inet6.c:110
+>  __sock_create+0x3de/0x780 net/socket.c:1406
+>  sock_create net/socket.c:1457 [inline]
+>  __sys_socket+0xef/0x200 net/socket.c:1499
+>  __do_sys_socket net/socket.c:1508 [inline]
+>  __se_sys_socket net/socket.c:1506 [inline]
+>  __x64_sys_socket+0x6f/0xb0 net/socket.c:1506
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Freed by task 10650:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
+>  ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
+>  kasan_slab_free include/linux/kasan.h:192 [inline]
+>  slab_free_hook mm/slub.c:1547 [inline]
+>  slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
+>  slab_free mm/slub.c:3143 [inline]
+>  kmem_cache_free_bulk mm/slub.c:3269 [inline]
+>  kmem_cache_free_bulk+0x253/0xc80 mm/slub.c:3256
+>  kfree_bulk include/linux/slab.h:409 [inline]
+>  kfree_rcu_work+0x4cd/0x860 kernel/rcu/tree.c:3226
+>  process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> 
+> The buggy address belongs to the object at ffff88802bea1000
+>  which belongs to the cache kmalloc-256 of size 256
+> The buggy address is located 160 bytes inside of
+>  256-byte region [ffff88802bea1000, ffff88802bea1100)
+> The buggy address belongs to the page:
+> page:0000000026103328 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2bea0
+> head:0000000026103328 order:1 compound_mapcount:0
+> flags: 0xfff00000010200(slab|head)
+> raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010c413c0
+> raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> 
+> Memory state around the buggy address:
+>  ffff88802bea0f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>  ffff88802bea1000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > ffff88802bea1080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                                ^
+>  ffff88802bea1100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>  ffff88802bea1180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> ==================================================================
 
+very likely
 
-On 2/17/21 3:22 PM, Hans Verkuil wrote:
-> On 17/02/2021 19:11, Helen Koike wrote:
->> The script was trying to load vivid and run some commands on top of it
->> even when $vivid = 0.
->> Wrap all vivid code under $vivid variable.
->>
->> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->> ---
->>   contrib/test/test-media | 66 ++++++++++++++++++++---------------------
->>   1 file changed, 33 insertions(+), 33 deletions(-)
->>
->> diff --git a/contrib/test/test-media b/contrib/test/test-media
->> index 10b7e89d..8cd8bc37 100755
->> --- a/contrib/test/test-media
->> +++ b/contrib/test/test-media
->> @@ -146,29 +146,29 @@ if [ $kmemleak -eq 1 ]; then
->>   	echo clear >/sys/kernel/debug/kmemleak
->>   fi
->>   
->> -rmmod vivid 2&>/dev/null
->> -modprobe vivid n_devs=3 multiplanar=1,2,2 cache_hints=1,0,0 #allocators=0,1,1
-> 
-> Ah, no. Vivid is also used to test dmabuf for vim2m, vimc and vicodec tests. It
-> functions as the allocator for the dma buffers in that case.
-> 
-> So even if vivid isn't given, but only vim2m, vimc or vicodec, it should still be loaded.
+#syz dup: WARNING in dst_release
 
-I see, thanks, ignore this patch then.
-At some point I had a doubt if the script was testing vimc or vivid for 
-some nodes, but this was my mistake.
+(same root cause, we need to clear msk->first when the relevant subflow
+is disposed by the workqueue)
 
-Thanks
-Helen
+/P
 
-> 
-> It isn't needed for vidtv, so I guess it could be disabled if only vidtv is tested.
-> 
-> Regards,
-> 
-> 	Hans
-> 
->> -sleep 1
->> +if [ $vivid -eq 1 ]; then
->> +	rmmod vivid 2&>/dev/null
->> +	modprobe vivid n_devs=3 multiplanar=1,2,2 cache_hints=1,0,0 #allocators=0,1,1
->> +	sleep 1
->>   
->> -tmp=`mktemp`
->> +	tmp=`mktemp`
->>   
->> -if ! $v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-cap ; then
->> -	echo "FAIL: the vivid module failed to load" | tee -a $tmp
->> -	echo "Grand Total for vivid: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
->> -	echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
->> -	exit 0
->> -fi
->> +	if ! $v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-cap ; then
->> +		echo "FAIL: the vivid module failed to load" | tee -a $tmp
->> +		echo "Grand Total for vivid: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
->> +		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
->> +		exit 0
->> +	fi
->>   
->> -$v4l2_ctl -z platform:vivid-000 -d vivid-000-vid-cap -i3 -v width=3840,height=2160,pixelformat=NV24
->> -$v4l2_ctl -z platform:vivid-000 -d vivid-000-vid-out -o1 -x width=3840,height=2160,pixelformat=NV24
->> -$v4l2_ctl -z platform:vivid-001 -d vivid-001-vid-cap -i3 -v width=3840,height=2160,pixelformat=NM16
->> -$v4l2_ctl -z platform:vivid-001 -d vivid-001-vid-out -o1 -x width=3840,height=2160,pixelformat=NM16
->> -$v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-cap -i3 -v width=3840,height=2160,pixelformat=NV24
->> -$v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-out -o1 -x width=3840,height=2160,pixelformat=NM16
->> +	$v4l2_ctl -z platform:vivid-000 -d vivid-000-vid-cap -i3 -v width=3840,height=2160,pixelformat=NV24
->> +	$v4l2_ctl -z platform:vivid-000 -d vivid-000-vid-out -o1 -x width=3840,height=2160,pixelformat=NV24
->> +	$v4l2_ctl -z platform:vivid-001 -d vivid-001-vid-cap -i3 -v width=3840,height=2160,pixelformat=NM16
->> +	$v4l2_ctl -z platform:vivid-001 -d vivid-001-vid-out -o1 -x width=3840,height=2160,pixelformat=NM16
->> +	$v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-cap -i3 -v width=3840,height=2160,pixelformat=NV24
->> +	$v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-out -o1 -x width=3840,height=2160,pixelformat=NM16
->>   
->> -echo
->> +	echo
->>   
->> -if [ $vivid -eq 1 ]; then
->>   	dmesg -n notice
->>   	echo
->>   	echo vivid compliance tests, contiguous planes | tee /dev/kmsg
->> @@ -287,6 +287,18 @@ if [ $vivid -eq 1 ]; then
->>   	echo
->>   	echo
->>   	echo
->> +
->> +	date
->> +	echo
->> +	echo unbind vivid | tee /dev/kmsg
->> +	echo
->> +	echo -n vivid.0 >/sys/bus/platform/drivers/vivid/unbind
->> +	sleep $unbind_time
->> +	echo
->> +	echo rmmod vivid | tee /dev/kmsg
->> +	echo
->> +	rmmod vivid
->> +	sleep $rmmod_time
->>   fi
->>   
->>   if [ $vim2m -eq 1 ]; then
->> @@ -300,7 +312,7 @@ if [ $vim2m -eq 1 ]; then
->>   		echo "FAIL: the vim2m module failed to load" | tee -a $tmp
->>   		echo "Grand Total for vim2m: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
->>   		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
->> -		rmmod vivid
->> +		rmmod vim2m
->>   		exit 0
->>   	fi
->>   
->> @@ -373,7 +385,7 @@ if [ $vimc -eq 1 ]; then
->>   		echo "FAIL: the vimc module failed to load" | tee -a $tmp
->>   		echo "Grand Total for vimc: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
->>   		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
->> -		rmmod vivid
->> +		rmmod vimc
->>   		exit 0
->>   	fi
->>   
->> @@ -467,7 +479,7 @@ if [ $vicodec -eq 1 ]; then
->>   		echo "FAIL: the vicodec module failed to load" | tee -a $tmp
->>   		echo "Grand Total for vicodec: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
->>   		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
->> -		rmmod vivid
->> +		rmmod vicodec
->>   		exit 0
->>   	fi
->>   
->> @@ -603,18 +615,6 @@ if [ $vicodec -eq 1 ]; then
->>   	echo
->>   fi
->>   
->> -date
->> -echo
->> -echo unbind vivid | tee /dev/kmsg
->> -echo
->> -echo -n vivid.0 >/sys/bus/platform/drivers/vivid/unbind
->> -sleep $unbind_time
->> -echo
->> -echo rmmod vivid | tee /dev/kmsg
->> -echo
->> -rmmod vivid
->> -sleep $rmmod_time
->> -
->>   if [ $vidtv -eq 1 ]; then
->>   	rmmod dvb_vidtv_bridge dvb_vidtv_tuner dvb_vidtv_demod 2&>/dev/null
->>   	modprobe vidtv
->>
-> 
