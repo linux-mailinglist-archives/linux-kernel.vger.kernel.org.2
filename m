@@ -2,185 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E31B31DC6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EF531DC74
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233762AbhBQPhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 10:37:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38688 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233818AbhBQPgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 10:36:22 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613576136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y772A/eWsZaF+C4wo6knR7WNB2DOoWuGU2pB7dk5yXE=;
-        b=eg1H5iBaIisy5a851DH22nhXpD8S3BMnoVsVqVAapXmXDOc5K89ApFwKQvxzHv5jn/+9Az
-        WRa480r0lscdzlNklgVhj114uUPgkKQuzmANOZRvxqNhsu2wOOt2hrKyOubCVGLnwNpW82
-        tdEQc0on82zPTBZ7mnL1XBlx5T6hxMI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 04D35B06A;
-        Wed, 17 Feb 2021 15:35:36 +0000 (UTC)
-Date:   Wed, 17 Feb 2021 16:35:34 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: debugfs: was: Re: [PATCH v4] printk: Userspace format
- enumeration support
-Message-ID: <YC03xnsB8586agnT@alley>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
- <YCvsGzv3qlsWU+UE@alley>
- <YCv+gpVGHTh9ZMNq@chrisdown.name>
+        id S233861AbhBQPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 10:37:45 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:41642 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233812AbhBQPhC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 10:37:02 -0500
+Received: by mail-io1-f70.google.com with SMTP id l16so12097698ion.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:36:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=V4Slvj7ntItWb8LzbQuB3PGx+xGHcyKbdozov7Qt7lI=;
+        b=FeMZtNz7I9K2q+Sc4sXi1CurVrJ+UhyOqlLycPhZbjXQbQXGpITvd6ljZFLICikyEw
+         S1UeP4FOD7OXKFNrNhx9adbQf1/AHNjIDiGVOtgk24wHFk1sa6ze2/IViPMlMpQ9sBsV
+         xCCAYsDxm+zjTtZUfIpEkzvu7JFIjatRNXf73dxsJ7WAUdC0C64lNMKigIWY1bV9vNrK
+         GhjDBJrHJIuq2weilxU07VvcI7T4lhVihvdqIo7gQ0aUvp2mSWJDHc8MD2lY0F/D5se5
+         P7EygYdlNwG5y3kbu2JwEcCk/BsQSxjdU1THIQunN3k6z1ndfo64uArOwiTx70Z6O/hm
+         3QBw==
+X-Gm-Message-State: AOAM533JXmEzBny77Ri+nQJeuZRsaG9HCThs3Y3V1GKdnJ46Opyprnwh
+        KfuWuPG/oPuBorx1cesXBs1lCaXkG2R5DMcY1OrvhImgbieW
+X-Google-Smtp-Source: ABdhPJwgAEC7qF6eNYsfvsTmw4p7UvOxm9s2KQY08Zb+4hyEMst1uTKC/KKT6eRjBQ69wihPAg1MZbbH8J1+s6n6maFipQ/EyQbK
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCv+gpVGHTh9ZMNq@chrisdown.name>
+X-Received: by 2002:a92:8711:: with SMTP id m17mr20639780ild.48.1613576181017;
+ Wed, 17 Feb 2021 07:36:21 -0800 (PST)
+Date:   Wed, 17 Feb 2021 07:36:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000016715505bb89fb93@google.com>
+Subject: KASAN: use-after-free Read in tcp_current_mss
+From:   syzbot <syzbot+ea948c9d0dedf6ff57b1@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-02-16 17:18:58, Chris Down wrote:
-> Petr Mladek writes:
-> > > +static size_t printk_fmt_size(const char *fmt)
-> > > +{
-> > > +	size_t sz = strlen(fmt) + 1;
-> > > +
-> > > +	/*
-> > > +	 * Some printk formats don't start with KERN_SOH + level. We will add
-> > > +	 * it later when rendering the output.
-> > > +	 */
-> > > +	if (unlikely(fmt[0] != KERN_SOH_ASCII))
-> > > +		sz += 2;
-> > 
-> > This approach is hard to maintain. It might be pretty hard and error
-> > prone to count the size if we want to provide more information.
-> > 
-> > There are many files in debugfs with not-well defined size.
-> > They are opened by seq_open_private(). It allows to add
-> > a line by line by an iterator.
-> 
-> Hmm, this is optional -- it was just to avoid seq_file having to realloc the
-> buffer. I originally used an iterator and I'm happy to go back to it if it
-> proves more convenient.
+Hello,
 
-Please, go back to iterators ;-)
+syzbot found the following issue on:
 
-> > We should revert the changes when the file could not get crated.
-> > It does not make sense to keep the structure when the file is not
-> > there.
-> 
-> See the reply from gregkh on v2, who was quite insistent that we should not
-> check debugfs error codes. I'm happy to do either, but I can't please you
-> both :-)
+HEAD commit:    773dc50d Merge branch 'Xilinx-axienet-updates'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13460822d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=ea948c9d0dedf6ff57b1
 
-I see. OK, it typically does not make any sense to handle the error.
-The API is safe enough to handle ERR_PTR values. The files allow
-to show something. The user will notice when they are not created.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-But I believe that our case is different. We need to allocate
-a structure, put it into hash table, to be able to show the content
-by the debugfs interface. The only purpose of the structure is
-to provide information for the debugfs file.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ea948c9d0dedf6ff57b1@syzkaller.appspotmail.com
 
-It does not make sense to keep the structure when the file was not
-created.
+==================================================================
+BUG: KASAN: use-after-free in dst_mtu include/net/dst.h:201 [inline]
+BUG: KASAN: use-after-free in tcp_current_mss+0x358/0x360 net/ipv4/tcp_output.c:1835
+Read of size 8 at addr ffff88802943db08 by task syz-executor.2/11568
 
-Also it might make sense to print an error to inform the user
-the some printk formats might be missing. Well, the error might
-make sense only when format for others are shown.
+CPU: 0 PID: 11568 Comm: syz-executor.2 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+ dst_mtu include/net/dst.h:201 [inline]
+ tcp_current_mss+0x358/0x360 net/ipv4/tcp_output.c:1835
+ tcp_send_mss+0x28/0x2b0 net/ipv4/tcp.c:943
+ mptcp_sendmsg_frag+0x13b/0x1220 net/mptcp/protocol.c:1266
+ mptcp_push_pending+0x2cc/0x650 net/mptcp/protocol.c:1477
+ mptcp_sendmsg+0x1ffb/0x2830 net/mptcp/protocol.c:1692
+ inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ sock_write_iter+0x289/0x3c0 net/socket.c:999
+ call_write_iter include/linux/fs.h:1901 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:518
+ vfs_write+0x791/0xa30 fs/read_write.c:605
+ ksys_write+0x1ee/0x250 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465d99
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc692d89188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 0000000000465d99
+RDX: 0000000000000001 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00000000004bcf27 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0b0
+R13: 00007ffc258487df R14: 00007fc692d89300 R15: 0000000000022000
 
-That said, I do not resist on the error handling. The code will
-be safe even without it.
+Allocated by task 11558:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:401 [inline]
+ ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
+ kasan_slab_alloc include/linux/kasan.h:209 [inline]
+ slab_post_alloc_hook mm/slab.h:512 [inline]
+ slab_alloc_node mm/slub.c:2892 [inline]
+ slab_alloc mm/slub.c:2900 [inline]
+ kmem_cache_alloc+0x1c6/0x440 mm/slub.c:2905
+ dst_alloc+0x9e/0x650 net/core/dst.c:93
+ rt_dst_alloc+0x73/0x430 net/ipv4/route.c:1642
+ __mkroute_output net/ipv4/route.c:2457 [inline]
+ ip_route_output_key_hash_rcu+0x955/0x2ce0 net/ipv4/route.c:2684
+ ip_route_output_key_hash+0x1a4/0x2f0 net/ipv4/route.c:2512
+ __ip_route_output_key include/net/route.h:126 [inline]
+ ip_route_output_flow+0x23/0x150 net/ipv4/route.c:2773
+ ip_route_newports include/net/route.h:342 [inline]
+ tcp_v4_connect+0x12d7/0x1c40 net/ipv4/tcp_ipv4.c:281
+ tcp_v6_connect+0x733/0x1df0 net/ipv6/tcp_ipv6.c:248
+ __inet_stream_connect+0x8c5/0xee0 net/ipv4/af_inet.c:661
+ inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:725
+ mptcp_stream_connect+0x156/0x800 net/mptcp/protocol.c:3200
+ __sys_connect_file+0x155/0x1a0 net/socket.c:1835
+ __sys_connect+0x161/0x190 net/socket.c:1852
+ __do_sys_connect net/socket.c:1862 [inline]
+ __se_sys_connect net/socket.c:1859 [inline]
+ __x64_sys_connect+0x6f/0xb0 net/socket.c:1859
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 11559:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
+ ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
+ kasan_slab_free include/linux/kasan.h:192 [inline]
+ slab_free_hook mm/slub.c:1547 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
+ slab_free mm/slub.c:3143 [inline]
+ kmem_cache_free+0x82/0x350 mm/slub.c:3159
+ dst_destroy+0x2bc/0x3c0 net/core/dst.c:129
+ rcu_do_batch kernel/rcu/tree.c:2489 [inline]
+ rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
+ __call_rcu kernel/rcu/tree.c:2965 [inline]
+ call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
+ dst_release net/core/dst.c:179 [inline]
+ dst_release+0x79/0xe0 net/core/dst.c:169
+ tcp_disconnect+0xc26/0x1ec0 net/ipv4/tcp.c:3003
+ __tcp_close+0x486/0x1170 net/ipv4/tcp.c:2745
+ tcp_close+0x29/0xc0 net/ipv4/tcp.c:2867
+ inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+ inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:475
+ __sock_release net/socket.c:597 [inline]
+ sock_release+0x87/0x1b0 net/socket.c:625
+ rds_tcp_accept_one+0x5fc/0xc10 net/rds/tcp_listen.c:220
+ rds_tcp_accept_worker+0x50/0x80 net/rds/tcp.c:515
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
+ __call_rcu kernel/rcu/tree.c:2965 [inline]
+ call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
+ dst_release net/core/dst.c:179 [inline]
+ dst_release+0x79/0xe0 net/core/dst.c:169
+ inet_sock_destruct+0x600/0x830 net/ipv4/af_inet.c:160
+ __sk_destruct+0x4b/0x900 net/core/sock.c:1795
+ rcu_do_batch kernel/rcu/tree.c:2489 [inline]
+ rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
+
+The buggy address belongs to the object at ffff88802943db00
+ which belongs to the cache ip_dst_cache of size 176
+The buggy address is located 8 bytes inside of
+ 176-byte region [ffff88802943db00, ffff88802943dbb0)
+The buggy address belongs to the page:
+page:0000000019369b4d refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2943d
+flags: 0xfff00000000200(slab)
+raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888141745a00
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88802943da00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88802943da80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
+>ffff88802943db00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                      ^
+ ffff88802943db80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
+ ffff88802943dc00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
 
 
-> > I guess that remove_printk_fmt_sec() would even crash when
-> > ps->file was set to an error code.
-> 
-> debugfs checks if its input is an error, so it shouldn't, unless that's not
-> what you're referring to?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Good to know.
-
-> > > +}
-> > > +
-> > > +#ifdef CONFIG_MODULES
-> > > +static void remove_printk_fmt_sec(struct module *mod)
-> > > +{
-> > > +	struct printk_fmt_sec *ps = NULL;
-> > > +
-> > > +	if (WARN_ON_ONCE(!mod))
-> > > +		return;
-> > > +
-> > > +	mutex_lock(&printk_fmts_mutex);
-> > > +
-> > > +	ps = find_printk_fmt_sec(mod);
-> > > +	if (!ps) {
-> > > +		mutex_unlock(&printk_fmts_mutex);
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	hash_del(&ps->hnode);
-> > > +
-> > > +	mutex_unlock(&printk_fmts_mutex);
-> > > +
-> > > +	debugfs_remove(ps->file);
-> > 
-> > IMHO, we should remove the file before we remove the way how
-> > to read it. This should be done in the opposite order
-> > than in store_printk_fmt_sec().
-> 
-> There is a subtle issue with doing this as-is: debugfs_remove(ps->file)
-> cannot be called under printk_fmts_mutex, because we may deadlock due to a
-> pinned debugfs refcnt if debugfs_remove() and _show happen at the same time.
-
-Do we need to call debugfs_remove(ps->file) under printk_fmts_mutex?
-
-> Imagine we go into remove_printk_fmt_sec and grab printk_fmts_lock. On
-> another CPU, we call _show for the same file, which takes a reference in
-> debugfs, but it will stall waiting for printk_fmts_lock. Now we go back into
-> remove_printk_fmt_sec and can't make any forward progress, because
-> debugfs_remove will stall until all reference holders have finished, and
-> there is a deadlock.
-
-Sure. But this will not happen when debugfs_remove(ps->file) was
-called without the mutex. It is safe. The code will wait here
-until all references are released and the file is gone.
-
-It will prevent an non-necessary error when reading file:
-
-CPU0:					CPU1
-
-monitor_check()
-  cat debug/printk/formats/*
-    open(debug/printk/formats/moduleA)
-      # successfully opened the file
-      # took reference count
-
-					rmmod moduleA
-					  remove_printk_fmt_sec()
-					    mutex_lock(&printk_fmts_mutex);
-					    hash_del(&ps->hnode);
-					    mutex_unlock(&printk_fmts_mutex);
-
-					    debugfs_remove(ps->file);
-
-	debugfs_pf_show()
-	  mutex_lock(&printk_fmts_mutex);
-	  ps = find_printk_fmt_sec(mod);
-	  if (unlikely(!ps)) {
-		ret = -ENOENT;
-
-RESTULT: There was no deadlock. The file was opened but the show
-	 callback failed.
-
-Best Regards,
-Petr
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
