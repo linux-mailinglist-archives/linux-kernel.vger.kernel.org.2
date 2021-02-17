@@ -2,110 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDBC31DA9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B395D31DABB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbhBQNcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:32:47 -0500
-Received: from mail-oln040092253050.outbound.protection.outlook.com ([40.92.253.50]:40263
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232952AbhBQNan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:30:43 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=arXwFNLdUuiJkOAYeqZ5YBzNDsywkCPd1VIvaIxqLk/f1c9XRgiaAj6Q7ZfrmR9AMmCWB2V+Jchs1NeBCnmOlGMqyty2wiHbOtdBbd+jLOrn4zWEfbEOtZdE7vzdDiFbsai7+dzIU9cipudjmOaMc7knhEV/YGSQxR2poCMI3vkEopLrhzNbSLQ0Qs66ZExdcajOadFVqtnRXcpGV+gUC4J9Zy9OzQmjdkNDwiBYxG7B0gR+f2t8uY85nCaCeAWYh7FK/jsx3WbKgY/YdLf3k7Pv6O1D4nhDNRfh4EOwi3rtDg4ZO8vy2o47zA19ztePy0wNryI7H+jTML18qkWsoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9MgxC2qaZxvf7J5xdNrqsc7eecKgkTDwqKn4xdzaeOE=;
- b=NNZSS+VpxkNo0MOafIGO0wcf+XMJaz/uLT19Or/G3Cb56MkCG/jx0TKeynhbwyQOmGHkG4S7LmJ5xrtB5XdGLqDGUUdD3PGpSYtrgQ/IVf8/1MLERFzPMUE0fKgpMKHROQQW8RnJiICqicYwj2HMKejGi2OWMrWOVRN73cteu7T6ymnPjDBWtF2l/LAieEBqnnnayX/9C8V2aBogPbBU7CA4RXT7Rh+KJhEFU6t6G6h3qO8kEMj2ay/11pj9GAP3ffZaHJ91VYT9Ar02mzrW40EByyWJOatkDf4XolytnPRNJxecnqPOLjR9ZzLDK9CPZk/AoKRm1lQ7BcB6g608Cw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9MgxC2qaZxvf7J5xdNrqsc7eecKgkTDwqKn4xdzaeOE=;
- b=WrBXOayRQvvxbxx+b4WyshEp3PD9wjK2IfGelXZPf3Cy5xGKYtfgzPmAKuKs7ttNVqKvi+d+2It0sXvrI0KDoxYG8L4JRPV2l4iq+aZjmsLjktkNiTteipePryJneQynWWRssQpb94b9Gs3qnzEKbXf7QrADwSybu8pKlrqCjXUdKYiGaGStO7rdkoCpC5odZntWtCrcEnRyICxp90NgOlbV5E13/cmpSolQQEAR+ilsqXiZIiqtBIqEsPnJVB+Fb30VlPsnP7bnt6cn+2I32aUy6onTKKRgB+lFjcAlMgtgS2bZZbnufJr7dTHjMAJ/DqcT3e6fyi48rDjookuBwQ==
-Received: from SG2APC01FT064.eop-APC01.prod.protection.outlook.com
- (2a01:111:e400:7ebd::40) by
- SG2APC01HT234.eop-APC01.prod.protection.outlook.com (2a01:111:e400:7ebd::415)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Wed, 17 Feb
- 2021 13:29:07 +0000
-Received: from PS1PR04MB2934.apcprd04.prod.outlook.com
- (2a01:111:e400:7ebd::51) by SG2APC01FT064.mail.protection.outlook.com
- (2a01:111:e400:7ebd::485) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend
- Transport; Wed, 17 Feb 2021 13:29:07 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:6130FFD0CD96B75942081AB38902EDCBD4A29F15B42E6C479BDA44E6AEB2A417;UpperCasedChecksum:EFF893FFD8E45B6016E05CFB75C9D76FB803AF1B122606E58E239FAD46DCDBEB;SizeAsReceived:7413;Count:45
-Received: from PS1PR04MB2934.apcprd04.prod.outlook.com
- ([fe80::55d8:45ac:a6c8:b297]) by PS1PR04MB2934.apcprd04.prod.outlook.com
- ([fe80::55d8:45ac:a6c8:b297%3]) with mapi id 15.20.3846.041; Wed, 17 Feb 2021
- 13:29:07 +0000
-From:   mayanksuman@live.com
-To:     rspringer@google.com, toddpoynor@google.com, benchan@chromium.org,
-        rcy@google.com, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     Mayank Suman <mayanksuman@live.com>
-Subject: [PATCH] staging: gasket Fix comparision with Null
-Date:   Wed, 17 Feb 2021 18:58:16 +0530
-Message-ID: <PS1PR04MB2934DD6390C8B16DB832BC97D6869@PS1PR04MB2934.apcprd04.prod.outlook.com>
-X-Mailer: git-send-email 2.30.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [Y6YqTrph77TB5Z9sLm7lbWegjxJ02Hqk]
-X-ClientProxiedBy: BMXPR01CA0038.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:c::24) To PS1PR04MB2934.apcprd04.prod.outlook.com
- (2603:1096:803:3e::21)
-X-Microsoft-Original-Message-ID: <20210217132815.28169-1-mayanksuman@live.com>
+        id S233200AbhBQNfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:35:44 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:14012 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233052AbhBQNbh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 08:31:37 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11HDSWZ2001051;
+        Wed, 17 Feb 2021 14:30:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=bs5hl1wFsAOJu6X9Hycte2PvBsx11N4FQTR9gCM28rE=;
+ b=Rq+WeZxfJKEzCW5WAxI7Pq9xij5zduCIl8/NEiPqAI4XeupiO0sBxkFlWfosF+yWkM6m
+ /wHvgEanq68ssinIUGXqFCKNai3WKh6YVlAUZZkSgm7OEeqQI3sjWM2zDYLAxWcq1Byp
+ 676gwijN38/TCnmIitNy/v13uCqYpA711go8NMJVL0anWDYfEWHg36MR9dBn6c8WIZX9
+ 6FewH84Z9pyBK87CZVwNwnpwfQnKnsQkaHTUhFSl0vHgCNJezNil0+06ABR4MN62Wyzj
+ /dFeHqsRa2hCAiFFBuBePQK1MY3PwZ02Rqt1r5ir2rOR+fq2FcdQ94f4pM1g0gkss66N Ng== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36p4sffbv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Feb 2021 14:30:47 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4A08F10002A;
+        Wed, 17 Feb 2021 14:30:47 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 16BAD2370C9;
+        Wed, 17 Feb 2021 14:30:47 +0100 (CET)
+Received: from localhost (10.75.127.47) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 17 Feb 2021 14:30:46
+ +0100
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andy Gross <agross@kernel.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-msm@vger.kernel.org>, <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v4 00/16] introduce a generic IOCTL interface for RPMsg channels management
+Date:   Wed, 17 Feb 2021 14:28:49 +0100
+Message-ID: <20210217132905.1485-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (103.127.101.170) by BMXPR01CA0038.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:c::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Wed, 17 Feb 2021 13:29:04 +0000
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 45
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: e65fd6a4-04b4-4ffd-b205-08d8d348001d
-X-MS-Exchange-SLBlob-MailProps: 7MJMDUNTCtzhjgYstnB+mPbk1hxdpSWr6ZMlOIB9vplQwgMYnezalEwYUmeQVAFmG6hPm3P9OaqAte8clyKuVroVbmOITOJ/gtW7V0j4mNFeNfc+up4VfnnpTrQoh8Kf8sW98SWNrBAEJCxZujTqV51IhshyWtZOTTaTSISd920FB0vOZ2wkz6w5PhsOaVqQTNfRhnB9wwf+5pm6Kv925bSHz77oZyesCB7G9SJfPo632MBdnn40jpYwU6V6dZbnRBYVRyQNrzuC7KTfQqZWi2dfgvrnu+bZ3iixEKtM98aX0FIq9/hUt//QL56cwcUtx4Yqz3Pisq3xQVRUzm3w5pilD1DLPhSZ82jyCp8owN3AnpoxVA25tEoDTlag6nfPfTxJtl/sRTh3YiWhesi4G0zBqF2zjMz0btnQQnAfj65kogC9/IGFZAMssqYQ6T/Jrp9kgDOETRIBn/uk5vto33/iZL+pZCYbvuWDABf2Emy7J2BPO29Id9kJBY3E5R3+n890slZQ98jOB2jc4c3fk3TEEkBM+gsKIguO7cN5TbD5uC1xsY+smBQ775imVJmyI93yeFbF5SMGBkyVTFNFnGyg2YQvEBSlvwS2W4Cf+qsaNGLOjD7crgbo1hJ8aJ9uPu9t74AEiQLX9aFYBe2RENf7kWv3aawzMCfhIcHvGfhO01p9PGMTQzJvoVkbuJuWFtpDsb2g9F2qxA6FQH9KfaM0/KwlqHY/O4TF1gCtZD0+aSKb5m6Cpw==
-X-MS-TrafficTypeDiagnostic: SG2APC01HT234:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9Q+WecJaBpbrzLolR2sTn29c0XqR57ZwDMAD+oXEmH0+mzoYS19O5xmcBB3xn8YwefCLKpEkE2ppjT7OQF7l1KvIl0sqVTfV5o5BLMVVcPwfkTaKDrOHkZEwNW87nsg3PBdF/PY6HKuS9OTJqcadwRMca3ofXZT2FHDXIWxCaVuV0g1YgOkeoM4MkJjPXaSd1rMJjb27JgsNxgUUsxM1V2H2+cUJ1QFJR292kRY+FwZ2uelV4gZrckTN5XMMuUmplXR35V3rCYuzmizd1LHbU8moSUmvDo3aqwoSXLQirXEI/08Eb8eXGn30gjR0Vb5QZ39ZLPpuStWwE/0y6LXEW1/aAVAC8s7Psj0WWiajA9u1+HZR2r3Vrno3Y5NlUXCe
-X-MS-Exchange-AntiSpam-MessageData: ovpLHVKLEDDQ95IXOGaFBLF8T151VAT0rzJ9LVvO9dOR13xEPnCcdh1scOANrEH3Fbt6xEgpdDRDP2sIZXajRs9EEDFpS8uq6fo2Wvuz2YEZkXvdnwvWilzRJUBDJpT9ER7Wbp0r6KseuCFJalXbUA==
-X-OriginatorOrg: live.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e65fd6a4-04b4-4ffd-b205-08d8d348001d
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2021 13:29:07.1484
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: SG2APC01FT064.eop-APC01.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2APC01HT234
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-17_11:2021-02-16,2021-02-17 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mayank Suman <mayanksuman@live.com>
+This series restructures the RPMsg char driver to decorrelate the control part and to
+create a generic RPMsg ioctl interface compatible with other RPMsg services.
 
-The change was suggested by checkpatch.pl.
+The V4 fixes compilation issue reported by the kernel test robot <lkp@intel.com>
 
-Signed-off-by: Mayank Suman <mayanksuman@live.com>
----
- drivers/staging/gasket/gasket_sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The V3 is based on the guideline proposed by Mathieu Poirier to keep as much as possible
+the legacy implementation of the rpmsg_char used by the GLINK and SMD platforms.
 
-diff --git a/drivers/staging/gasket/gasket_sysfs.c b/drivers/staging/gasket/gasket_sysfs.c
-index af26bc9f1..c5658fdf4 100644
---- a/drivers/staging/gasket/gasket_sysfs.c
-+++ b/drivers/staging/gasket/gasket_sysfs.c
-@@ -228,7 +228,7 @@ int gasket_sysfs_create_entries(struct device *device,
- 	}
- 
- 	mutex_lock(&mapping->mutex);
--	for (i = 0; attrs[i].attr.attr.name != NULL; i++) {
-+	for (i = 0; attrs[i].attr.attr.name; i++) {
- 		if (mapping->attribute_count == GASKET_SYSFS_MAX_NODES) {
- 			dev_err(device,
- 				"Maximum number of sysfs nodes reached for device\n");
+Objectives of the series:
+- Allow to create a service from Linux user application:
+  - with a specific name
+  - with or without name service announcement.
+- Allow to probe the same service by receiving either a NS announcement from the remote firmware
+  or a Linux user application request.
+- Use these services independently of the RPMsg transport implementation (e.g be able to use
+  RPMSg char with the RPMsg virtio bus).
+
+Steps in the series:
+  - Extract the control part of the char dev and create the rpmsg_ctrl.c file (patches 1 to 5)
+  - Enable the use of the chardev with the virtio backend (patches 6 to 10)
+  - Introduce the RPMSG_CREATE_DEV_IOCTL IOCTL to instantiate RPMsg devices (patch 11)
+    The application can then create or release a channel by specifying:
+       - the name service of the device to instantiate.   
+       - the source address.
+       - the destination address.
+  - Instantiate the /dev/rpmsg interface on remote NS announcement (patches 12 to 15)
+
+In this revision, I do not divide the series into several parts in order to show a complete
+picture of the proposed evolution. To simplify the review, as a next step, I can send it in
+several steps listed above.
+
+Known current Limitations:
+- Tested only with virtio RPMsg bus. The glink and smd drivers adaptations have not been tested
+  (not able to test it).
+- For the virtio backend: No NS announcement is sent to the remote processor if the source
+  address is set to RPMSG_ADDR_ANY.
+- For the virtio backend: the existing RPMSG_CREATE_EPT_IOCTL is working but the endpoints are
+  not attached to an exiting channel.
+- to limit patches the pending RPMSG_DESTROY_DEV_IOCTL has not ben implemented. This will be
+  proposed in a second step.
+
+This series can be applied on git/andersson/remoteproc.git for-next branch (d9ff3a5789cb).
+
+This series can be tested using rpmsgexport, rpmsgcreatedev and ping tools available here:
+https://github.com/arnopo/rpmsgexport.git
+
+Reference to the V3 discussion thread: https://lkml.org/lkml/2021/2/4/194
+
+Arnaud Pouliquen (16):
+  rpmsg: char: rename rpmsg_char_init to rpmsg_chrdev_init
+  rpmsg: move RPMSG_ADDR_ANY in user API
+  rpmsg: add short description of the IOCTL defined in UAPI.
+  rpmsg: char: export eptdev create an destroy functions
+  rpmsg: char: dissociate the control device from the rpmsg class
+  rpmsg: move the rpmsg control device from rpmsg_char to rpmsg_ctrl
+  rpmsg: update rpmsg_chrdev_register_device function
+  rpmsg: glink: add sendto and trysendto ops
+  rpmsg: smd: add sendto and trysendto ops
+  rpmsg: char: use sendto to specify the message destination address
+  rpmsg: virtio: register the rpmsg_ctrl device
+  rpmsg: ctrl: introduce RPMSG_CREATE_DEV_IOCTL
+  rpmsg: char: introduce __rpmsg_chrdev_create_eptdev function
+  rpmsg: char: introduce a RPMsg driver for the RPMsg char device
+  rpmsg: char: no dynamic endpoint management for the default one
+  rpmsg: char: return an error if device already open
+
+ drivers/rpmsg/Kconfig             |   9 ++
+ drivers/rpmsg/Makefile            |   1 +
+ drivers/rpmsg/qcom_glink_native.c |  18 ++-
+ drivers/rpmsg/qcom_smd.c          |  18 ++-
+ drivers/rpmsg/rpmsg_char.c        | 237 +++++++++++-------------------
+ drivers/rpmsg/rpmsg_char.h        |  51 +++++++
+ drivers/rpmsg/rpmsg_ctrl.c        | 229 +++++++++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_internal.h    |  10 +-
+ drivers/rpmsg/virtio_rpmsg_bus.c  |  37 ++++-
+ include/linux/rpmsg.h             |   3 +-
+ include/uapi/linux/rpmsg.h        |  18 ++-
+ 11 files changed, 469 insertions(+), 162 deletions(-)
+ create mode 100644 drivers/rpmsg/rpmsg_char.h
+ create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+
 -- 
-2.30.0
+2.17.1
 
