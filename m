@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE03E31DDE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A757631DDD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbhBQREt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:04:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
+        id S234324AbhBQRAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234250AbhBQREp (ORCPT
+        with ESMTP id S234312AbhBQRAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:04:45 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F114C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:04:03 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id gx20so2035862pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:04:03 -0800 (PST)
+        Wed, 17 Feb 2021 12:00:07 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C48C061788
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:59:27 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id e5so12582001otb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:59:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/Ld/ShzShm5KDKAgwYyvO0aBML/jn8k0pry3XCWAfd0=;
-        b=NNmnKat9LAdeDIp7dqqwINwu/xuel5bwjWV2AhyFHnv1G3xHwim1kZA4VfaG5+3LxE
-         +kTEGs36EnXR35RRYWe21MTJ3noNUDZ28NgnVWkcNyanqcNUlxtzUdOCkz5bzy01y0KV
-         ob1uzbj1OdkOguh92oZW72e7vMu1EH/k4r6gT1wbvvrdkfRl6Vtn1vfXWgv6ttqsLxBR
-         Jl+2nwPlkw0pJBtQZOUJCzbhF4mA05FSLzIykMbN2ljUjLVe7x9kR2OS+mMTqPkQgdBr
-         1rN+AaBgusw2bdDfCFRbeaJHPX3K0roEq7KyVX8q5mkr8ligkaLtzWyRqxRXvmStky2H
-         Zadw==
+        d=omnibond-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7sO3sUZqmmuiy5ZWICfkEsaBnSxzPGcJa4JjW5AEhLI=;
+        b=wkvcOIo/YOiyjJMcPp9t49oCoUuB0gAAXQOA0MaUAjtskFk4Y0zabPTmfPgIVj7S9X
+         6m4bAQCAN+3eyk2moKhxkMLMHHsa4aCZhxjaV8ydaA1JKvJevC6E7yHwnT+GGn2n6Ozi
+         46vBTDf/msm46ed3SMv2GWg6LW7yHHgTcQP8J1x7kK5lUTCGzzB3bPk5SP4FKAeyEFDz
+         p6ciTaj85L6iXgw0dC/67tFnsvY0vAY/nZ4dNNdw2UUOJTgGSEEbrdVEXlJxJJZIm1BJ
+         TuwrXToQ9KalPFlBbTGo7eqFOHbfFuTrqO8W7W9EGN/qBxvcyw3G+iuQ9petlOE3k5Wu
+         UoWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/Ld/ShzShm5KDKAgwYyvO0aBML/jn8k0pry3XCWAfd0=;
-        b=REAg+KbLlZstsWOTfuXzsENhcweMITVmMFAR+ZaLhKKdetp1uRYn93P0irGZ717uCJ
-         qozMUPJoAapd53JqEKSvOa54OzC+8nEujd59rAWPAnxh6RKpu9VDUVU3T32Ouoh45+UF
-         Ib0FEkqWneN7P5BekX96wWUTkn1LB6zgaxVF+vicxhKiAE9nyoeC6cNUAdClKN7M4RXY
-         HpdP/btWgEKkFHTLinyDDSxO//fZzyjskTXkdlRYiRIFvdLV1jaKb0S000THcsx6i91A
-         Nm9i+juMfTeYacRDawZCzr77V0X9BLtf8tWokG4V9Bq9ufXxFGnCtf3PnjFtSomm1Q1a
-         igTA==
-X-Gm-Message-State: AOAM533hp9+KNq8u4rStNlO7Ttnnd8vOlCCMeIzdKcwEWAOs1TiQMp3b
-        fF/f4Czmp3T5iGf8u96FVWw=
-X-Google-Smtp-Source: ABdhPJyfQ975J7M7Z5JfrVETyiWjBSfaRb+F1ic1oPoJYbpa/SlUQBc9RmrYKjBg0euvkiHeuMrY1g==
-X-Received: by 2002:a17:902:6bca:b029:e2:c5d6:973e with SMTP id m10-20020a1709026bcab02900e2c5d6973emr25292018plt.40.1613581442936;
-        Wed, 17 Feb 2021 09:04:02 -0800 (PST)
-Received: from localhost.localdomain ([27.61.15.122])
-        by smtp.gmail.com with ESMTPSA id 9sm3200539pgw.61.2021.02.17.09.03.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 09:04:01 -0800 (PST)
-From:   Atul Gopinathan <atulgopinathan@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Atul Gopinathan <atulgopinathan@gmail.com>
-Subject: [PATCH] staging: comedi: cast to (unsigned int *)
-Date:   Wed, 17 Feb 2021 22:29:08 +0530
-Message-Id: <20210217165907.9777-1-atulgopinathan@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7sO3sUZqmmuiy5ZWICfkEsaBnSxzPGcJa4JjW5AEhLI=;
+        b=iU88TLGMnzt+oLh4INRJNMoJ1X0FMT4CBlPH6RnAfc8AzwHVUfxpIhXcKEHd4CMGf4
+         9nLo8f6sFUYFZRDupBKtXkKz7hI6DTzEaSjYDPMUbDCDhPcz7FDS4YT9da3ivv4JnGRL
+         kW3KedgYucUQaGYjw/oWh3xp+2cIbqtQJsYtSs1TiA05PvwG09fXCYpJEUhiR4kWiXPE
+         cgx6QrSSzaOJB+Gky+mr3KDpZ4YQX0bmxvmIlEKph6pajonb5ZIyupxItiskoAq3OgsK
+         eIt2Z+zZ2DWXi4CowqvLi3qRaqjwnVeY7I2lpyvAtUOO7ieamAEWm6lwVac02tX5bdT+
+         Evrw==
+X-Gm-Message-State: AOAM532B9UWG7474dfXdFIJJUXbqFQkFxqU/kfT7CSuxbRnWlCJYoAsX
+        U4yZ1mH6k1N/vDv9UN9ImyaeffsgsD1WP4uW0voRCA==
+X-Google-Smtp-Source: ABdhPJwChss0o2dxG2RNWJW1xeyysww7AKgNgkTjjECbssh7P0+Vree7tQLd/y6uY6aD7E7WIsZvOGZ0HXpRVi3fZGQ=
+X-Received: by 2002:a9d:6c4c:: with SMTP id g12mr66707otq.53.1613581166449;
+ Wed, 17 Feb 2021 08:59:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk>
+ <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
+ <20210216103215.GB27714@lst.de> <20210216132251.GI2858050@casper.infradead.org>
+ <CAOg9mSQYBjnMsDj5pMd6MOGTY5w_ZR=pw7VRYKfP5ZwmHBj2=Q@mail.gmail.com> <1586931.1613576553@warthog.procyon.org.uk>
+In-Reply-To: <1586931.1613576553@warthog.procyon.org.uk>
+From:   Mike Marshall <hubcap@omnibond.com>
+Date:   Wed, 17 Feb 2021 11:59:15 -0500
+Message-ID: <CAOg9mSTyFX+2MMSV77hLDUpHogQ=KXO5oNduA90FLoowPGk0Jw@mail.gmail.com>
+Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
+To:     David Howells <dhowells@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-mm <linux-mm@kvack.org>, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-cifs@vger.kernel.org,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        V9FS Developers <v9fs-developer@lists.sourceforge.net>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resolve the following warning generated by sparse:
+Matthew has looked at how I'm fumbling about
+trying to deal with Orangefs's need for much larger
+than page-sized IO...
 
-drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
-drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
-drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
+I think I need to implement orangefs_readahead
+and from there fire off an asynchronous read
+and while that's going I'll call readahead_page
+with a rac that I've cranked up with readahead_expand
+and when the read gets done I'll have plenty of pages
+for the large IO I did.
 
-compat_ptr() has a return type of "void __user *"
-as defined in "include/linux/compat.h"
+Even if what I think I need to do is somewhere
+near right, the async code in the Orangefs
+kernel module didn't make it into the upstream
+version, so I have to refurbish that. All that to
+say: I don't need readahead_expand
+"tomorrow", but it fits into my plan to
+get Orangefs the extra pages it needs
+without me having open-coded page cache
+code in orangefs_readpage.
 
-cmd->chanlist is of type "unsigned int *" as defined
-in drivers/staging/comedi/comedi.h" in struct
-comedi_cmd.
+-Mike
 
-Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
----
- drivers/staging/comedi/comedi_fops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-index e85a99b68f31..fc4ec38012b4 100644
---- a/drivers/staging/comedi/comedi_fops.c
-+++ b/drivers/staging/comedi/comedi_fops.c
-@@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
- 	cmd->scan_end_arg = v32.scan_end_arg;
- 	cmd->stop_src = v32.stop_src;
- 	cmd->stop_arg = v32.stop_arg;
--	cmd->chanlist = compat_ptr(v32.chanlist);
-+	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
- 	cmd->chanlist_len = v32.chanlist_len;
- 	cmd->data = compat_ptr(v32.data);
- 	cmd->data_len = v32.data_len;
--- 
-2.27.0
-
+On Wed, Feb 17, 2021 at 10:42 AM David Howells <dhowells@redhat.com> wrote:
+>
+> Mike Marshall <hubcap@omnibond.com> wrote:
+>
+> > I plan to try and use readahead_expand in Orangefs...
+>
+> Would it help if I shuffled the readahead_expand patch to the bottom of the
+> pack?
+>
+> David
+>
