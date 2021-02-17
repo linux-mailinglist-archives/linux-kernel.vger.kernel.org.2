@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5636731D401
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 03:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C375931D408
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 03:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbhBQCrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 21:47:40 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:36648 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhBQCrh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 21:47:37 -0500
-Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 17A9020B6C40;
-        Tue, 16 Feb 2021 18:46:57 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 17A9020B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1613530017;
-        bh=H4JU2qfCVJxVHktsTAY9vCsE+wqf20ThHInRYdpff+A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LWKsHCNKSuiuyASRHpZrX7B/JemnJRpWs4OCB+BFRuKZ9ra9AHnwZldoQxBpwpSSR
-         caJcqBszTOWsE3BI0Lcqrn7RBf3XfmaXzIw4IL89I6ifrC8+CaUa3FJVFa6JWyfOap
-         D/KioGHUqcBxG1dLSTDQUI+FK6sM1wmMtW2QrQDE=
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-To:     zohar@linux.ibm.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] IMA: support for duplicate data measurement
-Date:   Tue, 16 Feb 2021 18:46:49 -0800
-Message-Id: <20210217024649.23405-1-tusharsu@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
+        id S230295AbhBQCtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 21:49:20 -0500
+Received: from mga12.intel.com ([192.55.52.136]:4703 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230185AbhBQCtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 21:49:16 -0500
+IronPort-SDR: IEP3g+if30TnAvR8/lTZB4FobmAK1BN9Q/g5vkmeq4v8HBb4m6SnVLnI9itgAkCpStql+TYp2b
+ ma5OI9lSsI0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="162219822"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="162219822"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 18:48:32 -0800
+IronPort-SDR: 83LWfHuLlja+9QoccJ8EJbXvRgeuyQr6Fvnop3h0hxn7cXGXNm1038JR4Fk8KCfwbmVaJ50cS+
+ Q+6yGJ2TEtQg==
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="439191725"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 18:48:32 -0800
+From:   ira.weiny@intel.com
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH 0/4] btrfs: Convert more kmaps to kmap_local_page()
+Date:   Tue, 16 Feb 2021 18:48:22 -0800
+Message-Id: <20210217024826.3466046-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMA does not measure duplicate data since TPM extend is a very expensive
-operation.  However, in some cases, the measurement of duplicate data
-is necessary to accurately determine the current state of the system.
-Eg, SELinux state changing from 'audit', to 'enforcing', and back to
-'audit' again.  In this example, currently, IMA will not measure the
-last state change to 'audit'.  This limits the ability of attestation
-services to accurately determine the current state of the measurements 
-on the system.
+From: Ira Weiny <ira.weiny@intel.com>
 
-Update ima_add_template_entry() to support measurement of duplicate
-data, driven by a Kconfig option - IMA_DISABLE_HTABLE.
+I am submitting these for 5.13.
 
-Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
----
-Change Log v2:
- - Incorporated feedback from Mimi on v1.
- - The fix is not just applicable to measurement of critical data,
-   it now applies to other buffers and file data as well.
- - the fix is driven by a Kconfig option IMA_DISABLE_HTABLE, rather
-   than a IMA policy condition - allow_dup.
+Further work to remove more kmap() calls in favor of the kmap_local_page() this
+series converts those calls which required more than a common pattern which
+were covered in my previous series[1].  This is the second of what I hope to be
+3 series to fully convert btrfs.  However, the 3rd series is going to be an RFC
+because I need to have more eyes on it before I'm sure about what to do.  For
+now this series should be good to go for 5.13.
 
- security/integrity/ima/Kconfig     | 7 +++++++
- security/integrity/ima/ima_queue.c | 5 +++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
+Also this series converts the kmaps in the raid5/6 code which required a fix to
+the kmap'ings which was submitted in [2].
 
-diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
-index 12e9250c1bec..057c20b46587 100644
---- a/security/integrity/ima/Kconfig
-+++ b/security/integrity/ima/Kconfig
-@@ -334,3 +334,10 @@ config IMA_SECURE_AND_OR_TRUSTED_BOOT
-        help
-           This option is selected by architectures to enable secure and/or
-           trusted boot based on IMA runtime policies.
-+
-+config IMA_DISABLE_HTABLE
-+	bool "disable htable to allow measurement of duplicate data"
-+	depends on IMA
-+	default n
-+	help
-+	   This option disables htable to allow measurement of duplicate data.
-diff --git a/security/integrity/ima/ima_queue.c b/security/integrity/ima/ima_queue.c
-index c096ef8945c7..532da87ce519 100644
---- a/security/integrity/ima/ima_queue.c
-+++ b/security/integrity/ima/ima_queue.c
-@@ -168,7 +168,7 @@ int ima_add_template_entry(struct ima_template_entry *entry, int violation,
- 	int result = 0, tpmresult = 0;
- 
- 	mutex_lock(&ima_extend_list_mutex);
--	if (!violation) {
-+	if (!violation && !IS_ENABLED(CONFIG_IMA_DISABLE_HTABLE)) {
- 		if (ima_lookup_digest_entry(digest, entry->pcr)) {
- 			audit_cause = "hash_exists";
- 			result = -EEXIST;
-@@ -176,7 +176,8 @@ int ima_add_template_entry(struct ima_template_entry *entry, int violation,
- 		}
- 	}
- 
--	result = ima_add_digest_entry(entry, 1);
-+	result = ima_add_digest_entry(entry,
-+				      !IS_ENABLED(CONFIG_IMA_DISABLE_HTABLE));
- 	if (result < 0) {
- 		audit_cause = "ENOMEM";
- 		audit_info = 0;
+Thanks,
+Ira
+
+[1] https://lore.kernel.org/lkml/20210210062221.3023586-1-ira.weiny@intel.com/
+[2] https://lore.kernel.org/lkml/20210205163943.GD5033@iweiny-DESK2.sc.intel.com/
+
+
+Ira Weiny (4):
+  fs/btrfs: Convert kmap to kmap_local_page() using coccinelle
+  fs/btrfs: Convert raid5/6 kmaps to kmap_local_page()
+  fs/btrfs: Use kmap_local_page() in __btrfsic_submit_bio()
+  fs/btrfs: Convert block context kmap's to kmap_local_page()
+
+ fs/btrfs/check-integrity.c | 12 ++++----
+ fs/btrfs/compression.c     |  4 +--
+ fs/btrfs/inode.c           |  4 +--
+ fs/btrfs/lzo.c             |  9 +++---
+ fs/btrfs/raid56.c          | 61 +++++++++++++++++++-------------------
+ 5 files changed, 44 insertions(+), 46 deletions(-)
+
 -- 
-2.17.1
+2.28.0.rc0.12.gb6a658bd00c9
 
