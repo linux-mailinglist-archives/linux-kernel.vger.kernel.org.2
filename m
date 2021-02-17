@@ -2,79 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753D531DAE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:47:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA1631DAEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232790AbhBQNqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:46:38 -0500
-Received: from mga11.intel.com ([192.55.52.93]:49319 "EHLO mga11.intel.com"
+        id S232839AbhBQNrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:47:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48182 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231748AbhBQNq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:46:26 -0500
-IronPort-SDR: AGNfUCZ4eQmR1OyD13cQ5ZkA21767Y9Z/Gl4fpy30PzY09PX2RH0J29+/bYgQVRhQ1qOwoGtYs
- 4VM0ui33Z5LA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="179687483"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="179687483"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 05:44:40 -0800
-IronPort-SDR: V7ayCDOY8nnXq9NkW+ZHBLE6NemCXzcUqKAiDmar80O1x3cENFgF3lrNvMoRPtTV/rXjRc2/d8
- 4ZzHff33vwCw==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="494108194"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 05:44:34 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lCN83-005iZj-Ne; Wed, 17 Feb 2021 15:44:31 +0200
-Date:   Wed, 17 Feb 2021 15:44:31 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        mika.westerberg@linux.intel.com, rric@kernel.org,
-        helgaas@kernel.org, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
+        id S232778AbhBQNre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 08:47:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AFCB2B761;
+        Wed, 17 Feb 2021 13:46:51 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 14:46:49 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] Documentation: devres: Add
- pcim_alloc_irq_vectors()
-Message-ID: <YC0dv5zlymiwlH0P@smile.fi.intel.com>
-References: <20210216160249.749799-1-zhengdejin5@gmail.com>
- <20210216160249.749799-3-zhengdejin5@gmail.com>
- <YCv8nCX0ZdAb+CHm@rocinante>
- <20210217105004.GA766103@nuc8i5>
+Subject: Re: [PATCH 2/2] mm: Make alloc_contig_range handle in-use hugetlb
+ pages
+Message-ID: <20210217134649.GB32488@linux>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-3-osalvador@suse.de>
+ <YC0b39IfoI+c0ts1@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210217105004.GA766103@nuc8i5>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YC0b39IfoI+c0ts1@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 06:50:04PM +0800, Dejin Zheng wrote:
-> On Tue, Feb 16, 2021 at 06:10:52PM +0100, Krzysztof Wilczyński wrote:
-
-...
-
-> > Having said that, people might ask - how does it simplify the error
-> > handling path?
+On Wed, Feb 17, 2021 at 02:36:31PM +0100, Michal Hocko wrote:
+> On Wed 17-02-21 11:08:16, Oscar Salvador wrote:
+> > In-use hugetlb pages can be migrated as any other page (LRU
+> > and Movable), so let alloc_contig_range handle them.
 > > 
-> > You might have to back this with a line of two to explain how does the
-> > change achieved that, so that when someone looks at the commit message
-> > it would be clear what the benefits of the change were.
+> > All we need is to succesfully isolate such page.
+> 
+> Again, this is missing a problem statement and a justification why we
+> want/need this.
 
-> The device-managed function is a conventional concept that every developer
-> knows. So don't worry about this. And I really can't explain its operation
-> mechanism to you in a sentence or two. If you are really interested, you
-> can read the relevant code.
+Heh, I was poor in words.
 
-I tend on agree on the above. It would be enough to spell it clearly that it's
-part of devres API (Managed Device Resource) and we are fine.
+"alloc_contig_range() will fail miserably if it finds a HugeTLB page within
+ the range without a chance to handle them. Since HugeTLB pages can be migrated
+ as any other page (LRU and Movable), it does not make sense to bail out.
+ Enable the interface to recognize in-use HugeTLB pages and have a chance
+ to migrate them"
+
+What about something along those lines?
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Oscar Salvador
+SUSE L3
