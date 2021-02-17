@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298D731D664
+	by mail.lfdr.de (Postfix) with ESMTP id A4E8331D665
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhBQIND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 03:13:03 -0500
-Received: from mail-wr1-f49.google.com ([209.85.221.49]:36860 "EHLO
-        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhBQIIc (ORCPT
+        id S232108AbhBQINF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 03:13:05 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:47066 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231922AbhBQIIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 03:08:32 -0500
-Received: by mail-wr1-f49.google.com with SMTP id u14so16361850wri.3;
-        Wed, 17 Feb 2021 00:08:15 -0800 (PST)
+        Wed, 17 Feb 2021 03:08:44 -0500
+Received: by mail-oi1-f169.google.com with SMTP id f3so14062600oiw.13;
+        Wed, 17 Feb 2021 00:08:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U+fDZ975xL8Hj6o7r3HYdRzIxYB9Qn2UcitDVPde2lk=;
-        b=b0XHsg4Sy7LuD0AEwuE5fcZsGgAhoklAKupmZTb/VXaWVzo4sHc82WDqY6OphSc7TX
-         r598VzNsoErV0oS97fe6ZpTe6HmXH9V1bUwS5pyif7+YDA4t07QuMOR0r2cLluotFudO
-         vSATl3gjq8cFlsVwYKgptaPXk36RsYIqcxYu2DPSbd6wLCBterwLEbCfROc03+wWwFp3
-         IZ7027HYrXkSlRK08L46i+/FVx2fnJLc/nmM8eBhW6uFz7U+cam2tug4RzezV0bhWfXZ
-         Zw0ideHQw292l58bGW992U4WlMsh9qZPmOBdaNF1lCWn75jMN7MHSed6xqaxkda4fA5+
-         1LVg==
-X-Gm-Message-State: AOAM531jjXHnaxKI0z7tnmL0nuTL0rELY3BVNQbQMhGksEqk/WG/MXbJ
-        pTm42VFLorywXzCuCmgTrgk=
-X-Google-Smtp-Source: ABdhPJwNT+lcJ8Ykcqd/E88u6ALDtw/JWkUv3IEXbdQLstE1LEVNDwPI3r2r7w5nhQbEelsQ5+QVYw==
-X-Received: by 2002:adf:cf06:: with SMTP id o6mr27655581wrj.169.1613549269872;
-        Wed, 17 Feb 2021 00:07:49 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y6sm1847778wma.10.2021.02.17.00.07.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 00:07:48 -0800 (PST)
-Date:   Wed, 17 Feb 2021 09:07:47 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Marten Lindahl <martenli@axis.com>
-Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH] i2c: exynos5: Preserve high speed master code
-Message-ID: <20210217080747.a7nqzbotszwlb3dd@kozik-lap>
-References: <20210215190322.22094-1-marten.lindahl@axis.com>
- <20210216075141.o4wjnwmmjze2p3cn@kozik-lap>
- <20210216220933.2wzmft72bhjptzl3@axis.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yKvcCaIh14FZjuT3BnlyvNFLaqnatVeX7Lan1VcBW+k=;
+        b=K31f3nmvxP9bMjRPTTSzgdSv5KydDTHM4+8KjJ6PTFARv+NXNw924S0/tyKoyALAJE
+         QtKO6lpGxX27JkrH5EqpZyV/BnES8CB8w+AfEvPAyraUX/c5YWi9yJ4QxKRU5lkM2lZy
+         tncdqEKH+skdYnnAKkQPSxQlYiQUuotGwoObhE+hakLhI0OdWOnAqhwhbUDRUGznW9s+
+         Xiba6fdPXn1m46fV/vxrN05P3FB1qGte9CSIXkkQEdjrSBkjkGR+v0FCnyX1aP/VU6KU
+         Uh6sUKnShzSjwQjRlJxMgVMQBeM0WxnkticBAIPqNgl8gwKb2xvnciNYkDVoqMUAg0GY
+         gy9Q==
+X-Gm-Message-State: AOAM531QcQi9JW4bw3f6vR0i1PKKkqoEkQKjbBYQxfJ468waIFHn3Ujd
+        bROFazEvvsNg5fSzVuZVvRkIKrkJy+U8ha4TWq8=
+X-Google-Smtp-Source: ABdhPJxQlbv0a4XilTt53winmn24q6WqYj2NfsXNHTgTwmm/zZitLqqDZgxJFJYvr9Zc+6jgyfurufz35KtJv5VhfgI=
+X-Received: by 2002:aca:744:: with SMTP id 65mr4860931oih.153.1613549284169;
+ Wed, 17 Feb 2021 00:08:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210216220933.2wzmft72bhjptzl3@axis.com>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org> <20210216174146.106639-11-jacopo+renesas@jmondi.org>
+In-Reply-To: <20210216174146.106639-11-jacopo+renesas@jmondi.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 17 Feb 2021 09:07:53 +0100
+Message-ID: <CAMuHMdWUKhvT2o-=7yQgR5nZkehO0m+MNXnM4Bss98afczi1DA@mail.gmail.com>
+Subject: Re: [PATCH 10/16] media: i2c: max9286: Rename reverse_channel_mv
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:09:33PM +0100, Marten Lindahl wrote:
-> > Any reason why not "|= MASTER_ID(i2c->adap.nr)" here instead of more
-> > expensive IO read? It's quite important because your current code will
-> > bitwise-or old I2C slave address with a new one... This should break
-> > during tests with multiple I2C slave devices, shouldn't it?
-> > 
-> 
-> You are correct. It is better to use the macro instead, and yes,
-> safer too. I only have one device that supports high speed i2c, but
-> I get your point. It could potentially break.
-> 
-> > On which HW did you test it?
-> 
-> I used an Artpec development board as master and INA230EVM board
-> as slave.
+On Tue, Feb 16, 2021 at 6:41 PM Jacopo Mondi <jacopo+renesas@jmondi.org> wrote:
+> Rename the reverse_channel_mv variable to init_rev_chan_mv as
+> the next patches will cache the reverse channel amplitude in
 
-Artpec development board with? What SoC?
+patch?
 
-Best regards,
-Krzysztof
+> a new driver variable.
+>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
