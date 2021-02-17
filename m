@@ -2,267 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF9F31D931
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C965731D93A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbhBQMJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:09:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232664AbhBQMJK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:09:10 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9200C061756;
-        Wed, 17 Feb 2021 04:08:29 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id s11so16101512edd.5;
-        Wed, 17 Feb 2021 04:08:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wCiprttcJrxg36K7+oZp1ekp7sHvdrxJrdrMsQnuA4I=;
-        b=TU4RgbOYRInkGvV+4PQ14uKZwd/i64yZaEV+4i3DVwQOhlkahCyMImCDYghB3xW3zG
-         DKoZ/TIyBu1hSAg9oxDC2t97PGUa0zAobJ+wBL/Q4Q4IuCqVuk5kWkuWv3fifkwgFpZ2
-         0JSS1C5eNo8ceCuY6Dg+0yF9G2hy64Sc7AI1ZV7Yl2e8FnwFkRLr3vFaPVg4UCuj9u2x
-         7DRnxaPaHpZSwZQUSK6x36sTRBV8LuHb+WumkHnGpeoXjvAgn9LpHoCMERB3ZNuWSu9E
-         r3QN7SgH5a6DVvs7OOaV4VUu52OuqD+y98/ZoqAMF1ARP6tIiERIi/JedP2RVGgPzQrV
-         Y3ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=wCiprttcJrxg36K7+oZp1ekp7sHvdrxJrdrMsQnuA4I=;
-        b=I8vKeWFjbh0Qt+RhUUwDeKi83XfPDY+y6a60AYxBYSyIivdz/pjuKoiZ6S64Yvatoa
-         gzQ8MSJckLQaq52xv/Bxuhr0g++ESXND7Krjy/EF+dwlZ+abif9vbZaXGn04ZYv/mtHH
-         NPM9xZTkull+/jNCZdist+UmsUIeOt84QsRQaXJgM/MEfIQxyVPco6KejNX0Psu4GUWA
-         Ij+ll0PdrUg+9Tl1k1ZTpSZR6P47zedeplBNhSkF8yMUZRcXcXCciUwta9zmt1nz4Rh/
-         tRYkelu5PbkrVq4diczPhQK2CaKJPfHGWAVZFBLHMywlsi2FlsdIu8P4WWOVBN/jDfCu
-         iRig==
-X-Gm-Message-State: AOAM532FwuPx8NfqmnSqUWq6RX2oA5nZIedvRcV3GA58ayq4ttNSvBT8
-        n5qfg3BwFDarGfxr+QtqaUM=
-X-Google-Smtp-Source: ABdhPJzUvyFHPz/a/dERWGi/qD53dMGA76GDrWPaNOGriRcbeImOwfvwwv6emN5wUEr416BQDhhthg==
-X-Received: by 2002:a05:6402:4312:: with SMTP id m18mr25916678edc.99.1613563708584;
-        Wed, 17 Feb 2021 04:08:28 -0800 (PST)
-Received: from m4.love (tor-exit-6.zbau.f3netze.de. [2a0b:f4c0:16c:6::1])
-        by smtp.gmail.com with ESMTPSA id lj13sm425377ejb.123.2021.02.17.04.08.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 04:08:27 -0800 (PST)
-Sender: Domenico Andreoli <domenico.andreoli.it@gmail.com>
-Received: from cavok by m4.love with local (Exim 4.94)
-        (envelope-from <cavok@m4>)
-        id 1lCLd1-00066Y-Ih; Wed, 17 Feb 2021 13:08:23 +0100
-Date:   Wed, 17 Feb 2021 13:08:23 +0100
-From:   Domenico Andreoli <cavok@debian.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>, dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
-        Tom Stellard <tstellar@redhat.com>, 705969@bugs.debian.org
-Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
- sections, BTF)
-Message-ID: <YC0HN+0Tva0lOPIt@m4>
-References: <20210204220741.GA920417@kernel.org>
- <CA+icZUXngJL2WXRyeWDjTyBYbXc0uC0_C69nBH9bq4sr_TAx5g@mail.gmail.com>
- <20210208123253.GI920417@kernel.org>
+        id S232676AbhBQMKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:10:32 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:47330 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232427AbhBQMK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:10:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613563807; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=znSz74cIT/XDBLYTbfGeuRihA8uDYq9KOTdfC9YsQ1Q=; b=WM51pBdILVFhGw0QHOH7Q0/vZrQgdRXClqjIRBiIeGog0Ivv0vE5YSqAX/eLGs5A57O2HnKg
+ pCoGK14uP3A5eGyXU0QIEWNRn7plB+7M+jiDE/wAqP1mV3FGGgf5lQ7484H8YoWuS7aSB1EN
+ OxtHs0u3lRknp11H56dTZPzxCVY=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 602d078366a058a0ecd2df5b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 12:09:39
+ GMT
+Sender: clingutla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7F23BC433ED; Wed, 17 Feb 2021 12:09:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from lingutla-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: clingutla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BAABDC433ED;
+        Wed, 17 Feb 2021 12:09:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BAABDC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=clingutla@codeaurora.org
+From:   Lingutla Chandrasekhar <clingutla@codeaurora.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        pkondeti@codeaurora.org, peterz@infradead.org, mingo@kernel.org,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Subject: [PATCH] sched/fair: Ignore percpu threads for imbalance pulls
+Date:   Wed, 17 Feb 2021 17:38:54 +0530
+Message-Id: <20210217120854.1280-1-clingutla@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gIYVh1ASy4tAHzNX"
-Content-Disposition: inline
-In-Reply-To: <20210208123253.GI920417@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In load balancing, when balancing group is unable to pull task
+due to ->cpus_ptr constraints from busy group, then it sets
+LBF_SOME_PINNED to lb env flags, as a consequence, sgc->imbalance
+is set for its parent domain level. which makes the group
+classified as imbalance to get help from another balancing cpu.
 
---gIYVh1ASy4tAHzNX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Consider a 4-CPU big.LITTLE system with CPUs 0-1 as LITTLEs and
+CPUs 2-3 as Bigs with below scenario:
+- CPU0 doing newly_idle balancing
+- CPU1 running percpu kworker and RT task (small tasks)
+- CPU2 running 2 big tasks
+- CPU3 running 1 medium task
 
-On Mon, Feb 08, 2021 at 09:32:53AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Feb 08, 2021 at 03:44:54AM +0100, Sedat Dilek escreveu:
-> > On Thu, Feb 4, 2021 at 11:07 PM Arnaldo Carvalho de Melo
-> > <arnaldo.melo@gmail.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > >         The v1.20 release of pahole and its friends is out, mostly
-> > > addressing problems related to gcc 11 defaulting to DWARF5 for -g,
-> > > available at the usual places:
-> > >
-> > > Main git repo:
-> > >
-> > >    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
-> > >
-> > > Mirror git repo:
-> > >
-> > >    https://github.com/acmel/dwarves.git
-> > >
-> > > tarball + gpg signature:
-> > >
-> > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
-> > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
-> > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
-> > >
-> >=20
-> > FYI:
-> > Debian now ships dwarves package version 1.20-1 in unstable.
-> >=20
-> > Just a small nit to this release and its tagging:
-> >=20
-> > You did:
-> > commit 0d415f68c468b77c5bf8e71965cd08c6efd25fc4 ("pahole: Prep 1.20")
-> >=20
-> > Is this new?
-> >=20
-> > The release before:
-> > commit dd15aa4b0a6421295cbb7c3913429142fef8abe0 ("dwarves: Prep v1.19")
->=20
-> Its minor but intentional, pahole is by far the most well known tool in
-> dwarves, so using that name more frequently (the git repo is pahole.git
-> , for instance) may help more quickly associate with the tool needed for
-> BTF encoding, data analysis, etc. And since its not about only DWARF,
-> perhaps transitioning to using 'pahole' more widely is interesting.
+While CPU0 is doing newly_idle load balance at MC level, it fails to
+pull percpu kworker from CPU1 and sets LBF_SOME_PINNED to lb env flag
+and set sgc->imbalance at DIE level domain. As LBF_ALL_PINNED not cleared,
+it tries to redo the balancing by clearing CPU1 in env cpus, but it don't
+find other busiest_group, so CPU0 stops balacing at MC level without
+clearing 'sgc->imbalance' and restart the load balacing at DIE level.
 
-Any plan to switch also the release tarball name?
+And CPU0 (balancing cpu) finds LITTLE's group as busiest_group with group
+type as imbalance, and Bigs that classified the level below imbalance type
+would be ignored to pick as busiest, and the balancing would be aborted
+without pulling any tasks (by the time, CPU1 might not have running tasks).
 
-We are planning to rename the Debian package once the Bullseye is
-released, currently it's dwarves-dfsg for legacy/unclear reasons.
+It is suboptimal decision to classify the group as imbalance due to
+percpu threads. So don't use LBF_SOME_PINNED for per cpu threads.
 
-Would it be a good idea to switch directly to pahole then?
+Signed-off-by: Lingutla Chandrasekhar <clingutla@codeaurora.org>
 
-Dom
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 04a3ce20da67..44a05ad8c96b 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7560,7 +7560,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+ 
+ 		schedstat_inc(p->se.statistics.nr_failed_migrations_affine);
+ 
+-		env->flags |= LBF_SOME_PINNED;
++		/* Ignore percpu threads for imbalance pulls. */
++		if (p->nr_cpus_allowed > 1)
++			env->flags |= LBF_SOME_PINNED;
+ 
+ 		/*
+ 		 * Remember if this task can be migrated to any other CPU in
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+ a Linux Foundation Collaborative Project.
 
->=20
-> - Arnaldo
-> =20
-> > - Sedat -
-> >=20
-> > > Best Regards,
-> > >
-> > >  - Arnaldo
-> > >
-> > > v1.20:
-> > >
-> > > BTF encoder:
-> > >
-> > >   - Improve ELF error reporting using elf_errmsg(elf_errno()).
-> > >
-> > >   - Improve objcopy error handling.
-> > >
-> > >   - Fix handling of 'restrict' qualifier, that was being treated as a=
- 'const'.
-> > >
-> > >   - Support SHN_XINDEX in st_shndx symbol indexes, to handle ELF obje=
-cts with
-> > >     more than 65534 sections, for instance, which happens with kernel=
-s built
-> > >     with 'KCFLAGS=3D"-ffunction-sections -fdata-sections", Other case=
-s may
-> > >     include when using FG-ASLR, LTO.
-> > >
-> > >   - Cope with functions without a name, as seen sometimes when buildi=
-ng kernel
-> > >     images with some versions of clang, when a SEGFAULT was taking pl=
-ace.
-> > >
-> > >   - Fix BTF variable generation for kernel modules, not skipping vari=
-ables at
-> > >     offset zero.
-> > >
-> > >   - Fix address size to match what is in the ELF file being processed=
-, to fix using
-> > >     a 64-bit pahole binary to generate BTF for a 32-bit vmlinux image.
-> > >
-> > >   - Use kernel module ftrace addresses when finding which functions t=
-o encode,
-> > >     which increases the number of functions encoded.
-> > >
-> > > libbpf:
-> > >
-> > >   - Allow use of packaged version, for distros wanting to dynamically=
- link with
-> > >     the system's libbpf package instead of using the libbpf git submo=
-dule shipped
-> > >     in pahole's source code.
-> > >
-> > > DWARF loader:
-> > >
-> > >   - Support DW_AT_data_bit_offset
-> > >
-> > >     This appeared in DWARF4 but is supported only in gcc's -gdwarf-5,
-> > >     support it in a way that makes the output be the same for both ca=
-ses.
-> > >
-> > >       $ gcc -gdwarf-5 -c examples/dwarf5/bf.c
-> > >       $ pahole bf.o
-> > >       struct pea {
-> > >             long int                   a:1;                  /*     0=
-: 0  8 */
-> > >             long int                   b:1;                  /*     0=
-: 1  8 */
-> > >             long int                   c:1;                  /*     0=
-: 2  8 */
-> > >
-> > >             /* XXX 29 bits hole, try to pack */
-> > >             /* Bitfield combined with next fields */
-> > >
-> > >             int                        after_bitfield;       /*     4=
-     4 */
-> > >
-> > >             /* size: 8, cachelines: 1, members: 4 */
-> > >             /* sum members: 4 */
-> > >             /* sum bitfield members: 3 bits, bit holes: 1, sum bit ho=
-les: 29 bits */
-> > >             /* last cacheline: 8 bytes */
-> > >       };
-> > >
-> > >   - DW_FORM_implicit_const in attr_numeric() and attr_offset()
-> > >
-> > >   - Support DW_TAG_GNU_call_site, its the standardized rename of the =
-previously supported
-> > >     DW_TAG_GNU_call_site.
-> > >
-> > > build:
-> > >
-> > >     - Fix compilation on 32-bit architectures.
-> > >
-> > > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
->=20
-> --=20
->=20
-> - Arnaldo
-
---=20
-rsa4096: 3B10 0CA1 8674 ACBA B4FE  FCD2 CE5B CF17 9960 DE13
-ed25519: FFB4 0CC3 7F2E 091D F7DA  356E CC79 2832 ED38 CB05
-
---gIYVh1ASy4tAHzNX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE0znebYyV6RAN/q8htwRzp/vsqYEFAmAtBzMACgkQtwRzp/vs
-qYFwaQ//cmKhFeLG2+gdsqQq4giRbZXq2lnrUpPV/WHtlMQ/VHjwicMP80GqHZ1h
-7SUDggas/62cxXZ2+9ffyQYUbgvpNwk5MVPsAUOzCJF6EQ/1SDMQEsS2lGEU6SVc
-qtYXB7YTaKCxFNBeh6mcNqpPZnJ4qwezVs52e36Rk0tiYJNneHrhOmXrox16vI1/
-X5q7NaGvfmsB/WpyWiecw7MpuI3aoZq+D7Y5rOoEgCML4s/13rUuybJlAYnsuww5
-9OZomNOWypQpPTmdGBd2APBsK/VaGZkoYtGVGMXqg+XqiYh/1aUlmo95blbsFMuB
-sRKTRoHkY6Hf4JjalAKgUfYAsHnBxBxMdV3nmLypEeEX9YPROBj6e3c7HlkgsWbb
-oxL7WpqxWrVNPl5FtchzMaBD9xt+tWgzhTFLnKNsEbprHAuLzp/p8fPC91HCf7c7
-Ox1gVR2UY0Lju+aByffZlRxJ/pbSYZpTYtKZUXrTw/pGoAqKer4ntNBiRfl4vG97
-PbMKV49faixLwpkTQr1VuS7RpE2nkrnT9mRMVZk4aFxGq5sgpfLWfXmvOtVX6Zq0
-/kyoan585ro4qtlQ5Wxq2TcSU5QNcLCtI4N89wqENyzTbFqZjU4LE/jhtoSYpYOO
-fBf5WybiqIKJSHOArgCXKWQvg7DAfGCP5pkTS2zCye0r3J2MGx8=
-=aQcl
------END PGP SIGNATURE-----
-
---gIYVh1ASy4tAHzNX--
