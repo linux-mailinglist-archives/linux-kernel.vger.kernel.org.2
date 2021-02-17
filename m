@@ -2,136 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA44E31D73D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622F631D73E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhBQKDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 05:03:33 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:19299 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232096AbhBQKD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 05:03:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613556180; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=4JdaXai7Zo7vtd+E83Cf5+ZaD1w9rnJU+MBT88EOUwA=; b=WnspMl1Q94PS4cp7SELKlSyX4/kzo0UXVNT/9g6JdEF0PF8V/J8ftPeCXKZQ7W0I3hohGwEd
- VOPpBBVMXPr3EtrXj38kup1cM5g/o2hBWDkeO0P4sDR8IHd1U2VlEdSqgMvzyPo1DhwdFpT0
- uTfwIPR2WzfQqyDbJLFzHhRcJ5E=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 602ce9a1a1a71e420fd76293 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 10:02:09
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AB214C433ED; Wed, 17 Feb 2021 10:02:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S232142AbhBQKDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 05:03:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30683 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232096AbhBQKDi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 05:03:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613556131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QeuHq6die/zShonildOwEbHDnzqFu2EW3FQb2PhiPf4=;
+        b=g2XyyaFPkAuyyv/5Bmp2g3tI5zsdEsyEybIScOLRX0/yXQP2qWfWCFF9AsZSN1JaqUhVsb
+        tG6C1sgIdPkAbimaFuwO4J9ecdeZ00GgFNX3AGUHX+bqTY58gMoDzzNKNhi7qEn3LqRPEq
+        f7y67WTiLo0MVIeBR8mKp/oDJ3NOaHo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-Yk5OhdPTOE2Z34o6RFtEug-1; Wed, 17 Feb 2021 05:02:09 -0500
+X-MC-Unique: Yk5OhdPTOE2Z34o6RFtEug-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EBD4DC433C6;
-        Wed, 17 Feb 2021 10:02:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EBD4DC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Srinivasan Raju <srini.raju@purelifi.com>
-Cc:     mostafa.afgani@purelifi.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-Subject: Re: [PATCH] [v13] wireless: Initial driver submission for pureLiFi STA devices
-References: <20200928102008.32568-1-srini.raju@purelifi.com>
-        <20210212115030.124490-1-srini.raju@purelifi.com>
-Date:   Wed, 17 Feb 2021 12:02:03 +0200
-In-Reply-To: <20210212115030.124490-1-srini.raju@purelifi.com> (Srinivasan
-        Raju's message of "Fri, 12 Feb 2021 17:19:39 +0530")
-Message-ID: <87v9arovvo.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14902192CC42;
+        Wed, 17 Feb 2021 10:02:08 +0000 (UTC)
+Received: from sirius.home.kraxel.org (ovpn-114-184.ams2.redhat.com [10.36.114.184])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CA6265D9C2;
+        Wed, 17 Feb 2021 10:02:07 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id 2A57A18000A2; Wed, 17 Feb 2021 11:02:06 +0100 (CET)
+Date:   Wed, 17 Feb 2021 11:02:06 +0100
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 09/10] drm/qxl: map/unmap framebuffers in
+ prepare_fb+cleanup_fb callbacks.
+Message-ID: <20210217100206.fh5422uz4gnixyif@sirius.home.kraxel.org>
+References: <20210216113716.716996-1-kraxel@redhat.com>
+ <20210216113716.716996-10-kraxel@redhat.com>
+ <5baf096f-b1ee-46ba-5ee9-1c829b96e088@suse.de>
+ <ab21d782-2627-7a68-8fab-0acfba416c86@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab21d782-2627-7a68-8fab-0acfba416c86@suse.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srinivasan Raju <srini.raju@purelifi.com> writes:
+On Tue, Feb 16, 2021 at 02:46:21PM +0100, Thomas Zimmermann wrote:
+> 
+> 
+> Am 16.02.21 um 14:27 schrieb Thomas Zimmermann:
+> > Hi
+> > 
+> > this is a shadow-buffered plane. Did you consider using the new helpers
+> > for shadow-buffered planes? They will map the user BO for you and
+> > provide the mapping in the plane state.
+> > 
+> >  From there, you should implement your own plane state on top of struct
+> > drm_shadow_plane_state, and also move all the other allocations and
+> > vmaps into prepare_fb and cleanup_fb. Most of this is not actually
+> > allowed in commit tails. All we'd have to do is to export the reset,
+> > duplicate and destroy code; similar to what
+> > __drm_atomic_helper_plane_reset() does.
+> 
+> AFAICT the cursor_bo is used to implement double buffering for the cursor
+> image.
+> 
+> Ideally, you can do what ast does: pre-allocate/vmap 2 BOs at the end of the
+> vram. Then pageflip between them in atomic_update(). Resolves all the
+> allocation and mapping headaches.
 
-> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
-> and LiFi-XL USB devices.
->
-> This driver implementation has been based on the zd1211rw driver.
->
-> Driver is based on 802.11 softMAC Architecture and uses
-> native 802.11 for configuration and management.
->
-> The driver is compiled and tested in ARM, x86 architectures and
-> compiled in powerpc architecture.
->
-> Signed-off-by: Srinivasan Raju <srini.raju@purelifi.com>
+Just waded through the ast patches.
 
-I pushed this now to the pending branch of wireless-drivers-next for
-build testing, let's see what kind of results we get. I didn't manage to
-do a thorough review yet, but few quick comments:
+It is not that simple for qxl.  You have to send a command to the
+virtualization host and take care of the host accessing that memory
+when processing the command, so you can't reuse the memory until the
+host signals it is fine to do so.
 
-> --- a/drivers/net/wireless/Kconfig
-> +++ b/drivers/net/wireless/Kconfig
-> @@ -35,6 +35,7 @@ source "drivers/net/wireless/st/Kconfig"
->  source "drivers/net/wireless/ti/Kconfig"
->  source "drivers/net/wireless/zydas/Kconfig"
->  source "drivers/net/wireless/quantenna/Kconfig"
-> +source "drivers/net/wireless/purelifi/Kconfig"
+But, yes, it should be possible to handle cursor_bo creation in
+prepare_fb without too much effort.
 
-This is supposed to be in alphabetical order.
+take care,
+  Gerd
 
-> --- a/drivers/net/wireless/Makefile
-> +++ b/drivers/net/wireless/Makefile
-> @@ -20,6 +20,7 @@ obj-$(CONFIG_WLAN_VENDOR_ST) += st/
->  obj-$(CONFIG_WLAN_VENDOR_TI) += ti/
->  obj-$(CONFIG_WLAN_VENDOR_ZYDAS) += zydas/
->  obj-$(CONFIG_WLAN_VENDOR_QUANTENNA) += quantenna/
-> +obj-$(CONFIG_WLAN_VENDOR_PURELIFI) += purelifi/
-
-And this one as well. Clearly I missed these with quantenna, but no need
-to redo the same mistake with purelife. Also patches welcome to fix
-quantenna sorting.
-
-> --- /dev/null
-> +++ b/drivers/net/wireless/purelifi/plfxlc/Kconfig
-> @@ -0,0 +1,13 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config PLFXLC
-> +
-> +	tristate "pureLiFi X, XL, XC device support"
-> +	depends on CFG80211 && MAC80211 && USB
-> +	help
-> +	   This driver makes the adapter appear as a normal WLAN interface.
-> +
-> +	   The pureLiFi device requires external STA firmware to be loaded.
-> +
-
-The documentation here is not telling much. I think it goes without
-saying that a firmware is needed, so no need to mention it. And also
-"normal WLAN interface" is a standard upstream requirement so drop that
-as well. Instead describe here in detail what hardware this driver
-supports, for example exact product names, bus types, wifi/ieee
-generation etc.
-
-> +	   To compile this driver as a module, choose M here: the module will
-> +	   be called purelifi.
-
-Didn't you rename it to plfxlc?
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
