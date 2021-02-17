@@ -2,126 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7DF31D734
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA44E31D73D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbhBQKAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 05:00:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbhBQKAa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 05:00:30 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA47C06174A;
-        Wed, 17 Feb 2021 01:59:50 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id t25so8183917pga.2;
-        Wed, 17 Feb 2021 01:59:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U7SfXVPuTP/KtJpCtQU42RjJKMn82tTLAowjEG2x4Ds=;
-        b=J0j9cOFjTF3pDIznsbrvoXaJP/5OqFxDAPVGg/FxlJYiHWcXLGNOdhwUu5rcirAHOV
-         4aHU3PePKxYkQk3NVXjXJ/gnorJd31kIvDcpsgWqQlpHFLl1lz/3OuFBissCD2Uscjl9
-         vDeBBM8IST3IFTO4mapjucnes2+W3xplH1cg5zjSLQ1/bsAUGmhWIBDJeyvofZcsfb2i
-         n0FdKX0oUXQltQkmEHzMcy5T0KQBSkmG7aKDvFu2eOfxFzQiL01KcD+GXBaSS4VcRcdn
-         9T6mgEUckO7THYoJtGqlCnoU74vX4yO9aRisTl9gaP+3h7tENSHYNYTeTrQ2+4cdslvx
-         6vsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U7SfXVPuTP/KtJpCtQU42RjJKMn82tTLAowjEG2x4Ds=;
-        b=jQFHFw6JaG/ZDk68OI6bG7zGaNxjKEGpzZj0sKi1jw2M4TqyKZsn2mwQ1gDL4upeB0
-         GDtoziBZct/hPfGRUuygdhnk+6Ie3V1bofzxQzT9UYCjcUbd1/uU/nFOBy0rrObuANQg
-         E5kpfJqCz04K2dwVTv3hB90QEbLVTFrDiEBlOUoJbQNMcyOeJMlQoK5xCIe4CmvHbIoW
-         zgjTBMg8e2WlECMnLK+3Rhpdmln7T1EkYfe1eOsDdA2tSDUnfDSgwnJuqCR2A6mtWJM5
-         JxFlS0PxRsRAV+Mxpg7+ZdyyOfQTF50m8wlWS0q3NApThHQTkgyHrmLxQJ2CETuXPmR8
-         8vAg==
-X-Gm-Message-State: AOAM530+p38fl0fwQ+y7vo7wHtP3ofKb8uulUgUQZB+Oyfx7PZN2nctY
-        clVN5jI3D4BXIfJOryjmf8p+y1axFJqDDXxJdeUiPay0LC9pNQ==
-X-Google-Smtp-Source: ABdhPJwyASzfs+76tCL85GTNa/uSjIXIUkgPW0bfGzKmj6Z83o3Ry4y2DpOcbsCnNG6fB1S5bNAsxugVw1j3+KaxhUs=
-X-Received: by 2002:a65:4c08:: with SMTP id u8mr14935565pgq.203.1613555990217;
- Wed, 17 Feb 2021 01:59:50 -0800 (PST)
+        id S232126AbhBQKDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 05:03:33 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:19299 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232096AbhBQKD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 05:03:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613556180; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=4JdaXai7Zo7vtd+E83Cf5+ZaD1w9rnJU+MBT88EOUwA=; b=WnspMl1Q94PS4cp7SELKlSyX4/kzo0UXVNT/9g6JdEF0PF8V/J8ftPeCXKZQ7W0I3hohGwEd
+ VOPpBBVMXPr3EtrXj38kup1cM5g/o2hBWDkeO0P4sDR8IHd1U2VlEdSqgMvzyPo1DhwdFpT0
+ uTfwIPR2WzfQqyDbJLFzHhRcJ5E=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 602ce9a1a1a71e420fd76293 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 10:02:09
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AB214C433ED; Wed, 17 Feb 2021 10:02:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EBD4DC433C6;
+        Wed, 17 Feb 2021 10:02:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EBD4DC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     mostafa.afgani@purelifi.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+Subject: Re: [PATCH] [v13] wireless: Initial driver submission for pureLiFi STA devices
+References: <20200928102008.32568-1-srini.raju@purelifi.com>
+        <20210212115030.124490-1-srini.raju@purelifi.com>
+Date:   Wed, 17 Feb 2021 12:02:03 +0200
+In-Reply-To: <20210212115030.124490-1-srini.raju@purelifi.com> (Srinivasan
+        Raju's message of "Fri, 12 Feb 2021 17:19:39 +0530")
+Message-ID: <87v9arovvo.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20210217120617.61b22e5e@canb.auug.org.au>
-In-Reply-To: <20210217120617.61b22e5e@canb.auug.org.au>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 17 Feb 2021 11:59:34 +0200
-Message-ID: <CAHp75Ve54gR54b5bTozqEVFogaGBE8UsuPbvJD4Ozr0wT27tRA@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the pm tree with the i3c tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 4:11 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the pm tree got a conflict in:
->
->   MAINTAINERS
->
-> between commit:
->
->   f06a1af8e739 ("MAINTAINERS: Add Silvaco I3C master")
->
-> from the i3c tree and commit:
->
->   4590d98f5a4f ("sfi: Remove framework for deprecated firmware")
->
-> from the pm tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+Srinivasan Raju <srini.raju@purelifi.com> writes:
 
-Thanks!
-Looks good to me!
-
-> diff --cc MAINTAINERS
-> index fdb32f96ede9,f7ec274a3e5a..000000000000
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@@ -16221,21 -16235,6 +16218,14 @@@ S: Maintaine
->   F:    Documentation/fb/sm712fb.rst
->   F:    drivers/video/fbdev/sm712*
+> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
+> and LiFi-XL USB devices.
 >
->  +SILVACO I3C DUAL-ROLE MASTER
->  +M:    Miquel Raynal <miquel.raynal@bootlin.com>
->  +M:    Conor Culhane <conor.culhane@silvaco.com>
->  +L:    linux-i3c@lists.infradead.org
->  +S:    Maintained
->  +F:    Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
->  +F:    drivers/i3c/master/svc-i3c-master.c
->  +
-> - SIMPLE FIRMWARE INTERFACE (SFI)
-> - S:    Obsolete
-> - W:    http://simplefirmware.org/
-> - F:    arch/x86/platform/sfi/
-> - F:    drivers/sfi/
-> - F:    include/linux/sfi*.h
-> -
->   SIMPLEFB FB DRIVER
->   M:    Hans de Goede <hdegoede@redhat.com>
->   L:    linux-fbdev@vger.kernel.org
+> This driver implementation has been based on the zd1211rw driver.
+>
+> Driver is based on 802.11 softMAC Architecture and uses
+> native 802.11 for configuration and management.
+>
+> The driver is compiled and tested in ARM, x86 architectures and
+> compiled in powerpc architecture.
+>
+> Signed-off-by: Srinivasan Raju <srini.raju@purelifi.com>
 
+I pushed this now to the pending branch of wireless-drivers-next for
+build testing, let's see what kind of results we get. I didn't manage to
+do a thorough review yet, but few quick comments:
 
+> --- a/drivers/net/wireless/Kconfig
+> +++ b/drivers/net/wireless/Kconfig
+> @@ -35,6 +35,7 @@ source "drivers/net/wireless/st/Kconfig"
+>  source "drivers/net/wireless/ti/Kconfig"
+>  source "drivers/net/wireless/zydas/Kconfig"
+>  source "drivers/net/wireless/quantenna/Kconfig"
+> +source "drivers/net/wireless/purelifi/Kconfig"
+
+This is supposed to be in alphabetical order.
+
+> --- a/drivers/net/wireless/Makefile
+> +++ b/drivers/net/wireless/Makefile
+> @@ -20,6 +20,7 @@ obj-$(CONFIG_WLAN_VENDOR_ST) += st/
+>  obj-$(CONFIG_WLAN_VENDOR_TI) += ti/
+>  obj-$(CONFIG_WLAN_VENDOR_ZYDAS) += zydas/
+>  obj-$(CONFIG_WLAN_VENDOR_QUANTENNA) += quantenna/
+> +obj-$(CONFIG_WLAN_VENDOR_PURELIFI) += purelifi/
+
+And this one as well. Clearly I missed these with quantenna, but no need
+to redo the same mistake with purelife. Also patches welcome to fix
+quantenna sorting.
+
+> --- /dev/null
+> +++ b/drivers/net/wireless/purelifi/plfxlc/Kconfig
+> @@ -0,0 +1,13 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +config PLFXLC
+> +
+> +	tristate "pureLiFi X, XL, XC device support"
+> +	depends on CFG80211 && MAC80211 && USB
+> +	help
+> +	   This driver makes the adapter appear as a normal WLAN interface.
+> +
+> +	   The pureLiFi device requires external STA firmware to be loaded.
+> +
+
+The documentation here is not telling much. I think it goes without
+saying that a firmware is needed, so no need to mention it. And also
+"normal WLAN interface" is a standard upstream requirement so drop that
+as well. Instead describe here in detail what hardware this driver
+supports, for example exact product names, bus types, wifi/ieee
+generation etc.
+
+> +	   To compile this driver as a module, choose M here: the module will
+> +	   be called purelifi.
+
+Didn't you rename it to plfxlc?
 
 -- 
-With Best Regards,
-Andy Shevchenko
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
