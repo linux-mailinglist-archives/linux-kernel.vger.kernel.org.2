@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1024231D66C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C8831D671
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbhBQIPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 03:15:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40462 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231927AbhBQION (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 03:14:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613549607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mZOJ/UPZVM5QafRw9G6/ddz8ni+BbKdndoGQZhCbKHc=;
-        b=g7fyRnyh8hvQSOAK41MnNTxYRy1Axsl3WryU6jpMDE2UlxQKdd/vUjPJcEo+cGFAceE7kR
-        smDZN6XkiGwEpXmRmqckxsXa1jzZzGi9yEB1ebtDmjeb2cw9adilSR/1RdyjHnSDlyaWI7
-        u+ywtCLsev6QS0bQSM84Vy0ESjVGNCM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CE6FEB923;
-        Wed, 17 Feb 2021 08:13:26 +0000 (UTC)
-Date:   Wed, 17 Feb 2021 09:13:24 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v15 4/8] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-Message-ID: <YCzQJIeI+dj9vphw@dhcp22.suse.cz>
-References: <CAMZfGtXgVUvCejpxu1o5WDvmQ7S88rWqGi3DAGM6j5NHJgtdcg@mail.gmail.com>
- <YCpN38i75olgispI@dhcp22.suse.cz>
- <CAMZfGtUXJTaMo36aB4nTFuYFy3qfWW69o=4uUo-FjocO8obDgw@mail.gmail.com>
- <CAMZfGtWT8CJ-QpVofB2X-+R7GE7sMa40eiAJm6PyD0ji=FzBYQ@mail.gmail.com>
- <YCpmlGuoTakPJs1u@dhcp22.suse.cz>
- <CAMZfGtWd_ZaXtiEdMKhpnAHDw5CTm-CSPSXW+GfKhyX5qQK=Og@mail.gmail.com>
- <YCp04NVBZpZZ5k7G@dhcp22.suse.cz>
- <CAMZfGtV8-yJa_eGYtSXc0YY8KhYpgUo=pfj6TZ9zMo8fbz8nWA@mail.gmail.com>
- <YCqhDZ0EAgvCz+wX@dhcp22.suse.cz>
- <29cdbd0f-dbc2-1a72-15b7-55f81000fa9e@oracle.com>
+        id S231830AbhBQISW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 03:18:22 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:39986 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231697AbhBQIST (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 03:18:19 -0500
+Received: by mail-ot1-f54.google.com with SMTP id b8so6701889oti.7;
+        Wed, 17 Feb 2021 00:18:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=slle50kgoNxJbklUkZhTyyJhtMMKbICkNQUByIjAzOU=;
+        b=iK5NUiRbfWp5C3AnluH4PAKVYepg0gkT3GiKy3fDasZqIB06bL4mO57S8MivqPwuYg
+         XQh91xSZSBeK6O1ZSA/LLXhHFA7uc/rhAjUKVaZTMjbOtWA9dKiPwSR/kdV6UcytA3zg
+         5mGSznWb7AD2axI6WuW+jqxjO7r9ueVtqhHNBHDiinIpJ1GMIxjR8rQmpL7KSSWjUqPF
+         m62R2ZL9VHgfEQU/mGQtPI8sBiJkJaT23sv9a18YbHtOVOG+/3gCKoJpaSjfqlRzVs6Y
+         MixdIHT+QUa83eVoVkjfunOjTuty/YpN1ldscTjt77tbJ45OnW4dioKHey6RN15Xm11n
+         VO+Q==
+X-Gm-Message-State: AOAM533Q9rLpbS5BDv3j60pod9MCcoJp8DLZySUieB14kFn/5OYTIyr1
+        pMP4x0KY9Ip9ckU/bYn88RYlBQRRAqbv/VT81Nw=
+X-Google-Smtp-Source: ABdhPJy0Zsxob69r2ILVf8ZjCZjUznUmjxaT0KTXuVAzvgy2kE6lxQwrLRsNkKaeb9HIZoMOLqx8vtmR13O1ymChKwU=
+X-Received: by 2002:a05:6830:148d:: with SMTP id s13mr17020227otq.250.1613549858180;
+ Wed, 17 Feb 2021 00:17:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29cdbd0f-dbc2-1a72-15b7-55f81000fa9e@oracle.com>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org> <20210216174146.106639-14-jacopo+renesas@jmondi.org>
+In-Reply-To: <20210216174146.106639-14-jacopo+renesas@jmondi.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 17 Feb 2021 09:17:27 +0100
+Message-ID: <CAMuHMdUdeD880zM+cdduHDAZGuauHc_R6RveiCP8EYejfoOy_Q@mail.gmail.com>
+Subject: Re: [PATCH 13/16] media: i2c: rdacm2x: Implement .init() subdev op
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 16-02-21 11:44:34, Mike Kravetz wrote:
-[...]
-> If we are not going to do the allocations under the lock, then we will need
-> to either preallocate or take the workqueue approach.
+On Tue, Feb 16, 2021 at 6:41 PM Jacopo Mondi <jacopo+renesas@jmondi.org> wrote:
+> The current probe() procedure of the RDACM20 and RDACM20 performs
+> initialization of the serializer image sensors and increases the noise
+> immunity threshold as last operation, which is then compensated by the
+> remote deserializer by increasing the reverse channel signal amplitude
+> once all remotes have bound.
+>
+> The probe routine is then run without noise immunity activated which
+> in noisy environment conditions makes the probe sequence less reliable as
+> the chips configuration requires a relevant amount of i2c transactions.
+>
+> Break chip initialization in two:
+> - At probe time only configure the serializer's reverse channel with
+>   noise immunity activated, to reduce the number of transactions
 
-We can still drop the lock temporarily right? As we already do before
-calling destroy_compound_gigantic_page...
+deactivated?
+
+>   performed without noise immunity protection
+> - Move the chips initialization to the .init() core subdev operation to
+>   be invoked by the deserializer after the camera has probed and it has
+>   increased the reverse channel amplitude
+>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Michal Hocko
-SUSE Labs
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
