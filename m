@@ -2,131 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1172331DB79
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7821E31DB7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbhBQO2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 09:28:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233328AbhBQO2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:28:50 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97DCE64E4A;
-        Wed, 17 Feb 2021 14:28:10 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lCNoG-00EbxP-Gw; Wed, 17 Feb 2021 14:28:08 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com,
-        marcan@marcan.st
-Subject: [PATCH] irqchip: Do not blindly select CONFIG_GENERIC_IRQ_MULTI_HANDLER
-Date:   Wed, 17 Feb 2021 14:28:00 +0000
-Message-Id: <20210217142800.2547737-1-maz@kernel.org>
-X-Mailer: git-send-email 2.30.0
+        id S233500AbhBQO3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 09:29:55 -0500
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:52125 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233381AbhBQO3r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 09:29:47 -0500
+Received: by mail-wm1-f54.google.com with SMTP id o82so2293195wme.1;
+        Wed, 17 Feb 2021 06:29:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yM2rqa31pE2vSB899/jqlE3r2uEYnRVyZYaQUTQ4qds=;
+        b=TS8ZAGbGw9LDb6F2v6yMi9fA933p2dfoi4ZLk2FR9iG23o6Re2CZ/ut9yYx4/wynhd
+         kBa9PQghea76jn7+WLzYhfwLsT4u2bMfRzhvglSUzpADlD1AIPMJKrh4QOroSjo3up9d
+         AgYs3qeCvjPvgZjx4gEjzNE3lmMAV/mzz0DLOnZT0XDauwEyQLhZvGK1Yz+3+qYNcp7G
+         PW0yF3R9RhGtfHf9XxfYRLtOC42waQpV/x8A0KZ83soevH2Ev0EMReZnb1+XXmJYlUt2
+         mauDeAgfJCBiGSB8geKUt79l8gwYbXsn1v65jniAnmhz6IOwiPQxTOf/NH3hCmxSyPBo
+         CZww==
+X-Gm-Message-State: AOAM530LL+IWuAGJFbJbpx9udos+wMRqdo31eG+2mca4Cd6WtRHMgRWL
+        Hr9EKwBVWyUCMiZhHnEre94=
+X-Google-Smtp-Source: ABdhPJyepK93+QBagP0ipGRdAOmgCOzt2cjHaLCE+b91sTA14WfUAplhbR7/UPM5NJE8TOMjUOhcmQ==
+X-Received: by 2002:a1c:7301:: with SMTP id d1mr7341350wmb.33.1613572145912;
+        Wed, 17 Feb 2021 06:29:05 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id r7sm3069313wmh.38.2021.02.17.06.29.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 06:29:04 -0800 (PST)
+Date:   Wed, 17 Feb 2021 15:29:03 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 8/8] arm64: defconfig: Enable wm8960 audio driver.
+Message-ID: <20210217142903.ij5u5n4h7ebj4al3@kozik-lap>
+References: <20210215231943.36910-1-adrien.grassein@gmail.com>
+ <20210215231943.36910-9-adrien.grassein@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, mark.rutland@arm.com, kernel-team@android.com, marcan@marcan.st
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210215231943.36910-9-adrien.grassein@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implementing CONFIG_GENERIC_IRQ_MULTI_HANDLER is a decision that is
-made at the architecture level, and shouldn't involve the irqchip
-at all (we even provide a fallback helper when the option isn't
-selected).
+On Tue, Feb 16, 2021 at 12:19:43AM +0100, Adrien Grassein wrote:
+> This driver is used by the Nitrogen8m Mini SBC.
+> 
+> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> ---
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Drop all instances of such selection from non-arch code.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- drivers/irqchip/Kconfig | 9 ---------
- 1 file changed, 9 deletions(-)
-
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index da7b3cf63b07..1e3dba80ff0b 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -8,7 +8,6 @@ config IRQCHIP
- config ARM_GIC
- 	bool
- 	select IRQ_DOMAIN_HIERARCHY
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
- 
- config ARM_GIC_PM
-@@ -33,7 +32,6 @@ config GIC_NON_BANKED
- 
- config ARM_GIC_V3
- 	bool
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select IRQ_DOMAIN_HIERARCHY
- 	select PARTITION_PERCPU
- 	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
-@@ -64,7 +62,6 @@ config ARM_NVIC
- config ARM_VIC
- 	bool
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 
- config ARM_VIC_NR
- 	int
-@@ -99,14 +96,12 @@ config ATMEL_AIC_IRQ
- 	bool
- 	select GENERIC_IRQ_CHIP
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 
- config ATMEL_AIC5_IRQ
- 	bool
- 	select GENERIC_IRQ_CHIP
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 
- config I8259
-@@ -153,7 +148,6 @@ config DW_APB_ICTL
- config FARADAY_FTINTC010
- 	bool
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 
- config HISILICON_IRQ_MBIGEN
-@@ -169,7 +163,6 @@ config IMGPDC_IRQ
- config IXP4XX_IRQ
- 	bool
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 
- config MADERA_IRQ
-@@ -186,7 +179,6 @@ config CLPS711X_IRQCHIP
- 	bool
- 	depends on ARCH_CLPS711X
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 	default y
- 
-@@ -205,7 +197,6 @@ config OMAP_IRQCHIP
- config ORION_IRQCHIP
- 	bool
- 	select IRQ_DOMAIN
--	select GENERIC_IRQ_MULTI_HANDLER
- 
- config PIC32_EVIC
- 	bool
--- 
-2.30.0
-
+Best regards,
+Krzysztof
