@@ -2,123 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E2D31D4A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F0531D4A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhBQEcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 23:32:06 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34083 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231185AbhBQEWU (ORCPT
+        id S231344AbhBQEeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 23:34:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhBQE0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 23:22:20 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 89A7258037B;
-        Tue, 16 Feb 2021 23:20:10 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 16 Feb 2021 23:20:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=/Ll9sOu6/aNt8
-        sKVthTKqJ9f/C+c6WcSRYeGV0Onyhk=; b=IcCMWw+oIFDwum354Zkm3Z/pcQJ06
-        ZI+zzhRgnmzqSSEivC6y2fhlJ1uiigjNjUBwwzbyNdXgX9XX7vquCYo2jU7h0hWk
-        fVkVYBGhMFwoQ/8Iw/WUSSpfvJ2vdV8TY6wUsiAWsYRAjsgSCVwr3FMaM7GQw/mt
-        zq0s11o9WRfh43LxexLB6T8sdWJEEOIphZKmCP34DRAoJ4UNwFKvtOlgq8D8Fdf5
-        WLENXI5nmD9AGe0mDUfz2/IzSaHOiSeqxNeWe2m/GiIALhDhmmwh+Tbw1z7td8L7
-        InA/KqNOByil73kSoWoBQ1tLHLRCCpiX64TbrjTdh8wKdayB3oKQWWFmA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=/Ll9sOu6/aNt8sKVthTKqJ9f/C+c6WcSRYeGV0Onyhk=; b=FIYYxLsR
-        gnCz93LHiPBAQVKUjCg1/rC6m8VIu1YGLNNhaKJdy7+PzIC5yl2tCxTcRnrW0sSv
-        Ix5tbGdaZ1Elle9p8JCvI4aWZGNK/nJTyPrsA+pX7x5OrzlAXWk12mvkqFu7JmU2
-        dYrpIYTrt0a/HJR1/aKI2aFVjDXCEyK3Chgps5T+aRDl88jhdd9jsAD/1qSHeeQu
-        64YWZmF38J4Y63JMYLlxUXXUH+NeYeIFYWVwscuwcxu0UX9A5KkkmHeDKBRvZjFf
-        xrFZIuSYwIRjbehJ7rRBDUqso98ucPGAu8FSTnAaUu2saz30+l6JyNhiyi51jmP9
-        hF2nrKxCFnqlVA==
-X-ME-Sender: <xms:epksYB5vemyz7r1hTepmDn6Xczf0kQQosbVOOzt_o0kINq51dQ5olQ>
-    <xme:epksYKbWsEZjuPXSN21r6kjqx2YqnyOmUsjodAPdM-B3EHkm8DdDYIBdTYPLC25BU
-    1C2XROpPNiWjMWLEw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjedugdeikecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
-    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
-    grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
-    jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
-    gvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
-    rdhorhhg
-X-ME-Proxy: <xmx:epksYO6yzVRsZhAG92J7Kn4QrByI3nUH5rSuT2xSAL8fiCIy9QShkw>
-    <xmx:epksYFDA1HZ8Y1PI9rzX1WewSwISO_GXoDc46KlFrYxAm-0bnPtupw>
-    <xmx:epksYMcbGmsYu_5hS2nCKBt7OY4nByqi7pABPk-kgSgA71JG4GkFPw>
-    <xmx:epksYPkRTfBhtmBkqotxXMuswpNc4SKxNtIyh9ER8hrmDJ6y-P3XaA>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 015A2240064;
-        Tue, 16 Feb 2021 23:20:09 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Corentin Labbe <clabbe@baylibre.com>
-Cc:     Ondrej Jirman <megous@megous.com>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH net-next v2 5/5] net: stmmac: dwmac-sun8i: Add a shutdown callback
-Date:   Tue, 16 Feb 2021 22:20:06 -0600
-Message-Id: <20210217042006.54559-6-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210217042006.54559-1-samuel@sholland.org>
-References: <20210217042006.54559-1-samuel@sholland.org>
+        Tue, 16 Feb 2021 23:26:42 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96748C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 20:26:02 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id cl8so768243pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 20:26:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YzQ3Ntnx2eFZZBEtRSvFqcJub5kYZcaEUuwH2LgukfU=;
+        b=GF54HJeqkRyhzQ+s1UuFr+w4WNWreO8HkCTv0fjuc8ieF4Vuv1uG68W2aMLLLYVkDL
+         27rv7civIAcFkIQZkHqqknj/dKZ2FNRM+hR+6dtEhwLXINCkAG/6BYMDcfvzQSHGYgy6
+         nxm4+W7b9nypIGbXtoM0RMQUAAyiUNJNyFlzAXX31eP6kPVkLReHqNsR22vw7f7wr/ti
+         9U/Mbq+z/QrGmUUEKZrsjFVM4G4OJv04m9BGogx3DGwPTtrw3C3orl5A0nNx+5jAEdE7
+         +MQHhq3fIwc6Ydgyr7ygK0QVnCVkVQU6Rjmpi1ObI1WizR4NuDQ2FmWaDhg2lxXpr+0V
+         87ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YzQ3Ntnx2eFZZBEtRSvFqcJub5kYZcaEUuwH2LgukfU=;
+        b=Jc3/hVgTd5UQRCLZuM6qQiqb0BDUT/wATU8dCpsgmsF3YHLBsf20Va7ELcbpgS4maW
+         /FioEl8CLFXbahlv+DLo8vuGag/97raLY1yDZPFReooo+D0sJiHw3x2aN67U6OxhleEE
+         LN/pQ8YmAMDMcsYDyM1ARfmIYmwBDnPPrOSVG7xWa2vkJjCxpgt65tfK+rkpg8iZOBba
+         vJbiZSKQSTRhkZg1t0ZUWhv+5gdxW37b/ldQo5fZv7GyX00oMXz3V21uCZsDqpyu3Wf/
+         0zVXqAaFH0rABix0OQUfWyGRGAWIS4ZC98Fnp8fjU5xNLBDS6g6XEUwZA7UO1bpB2aSk
+         TWZw==
+X-Gm-Message-State: AOAM533es7EZVQln6DcdDH2delwM+kXHQ7HSicE3xtaeqmHVZmldx8Pf
+        YmrRO8FjcFbcz53z+z5Y4U3eoA==
+X-Google-Smtp-Source: ABdhPJwD1MjawYnKf/zWxkffns2EzkYqkyajXQZau0EaYhD/LPRTlppqqZbAVVP4NmCKvXiEjHG10A==
+X-Received: by 2002:a17:90b:3781:: with SMTP id mz1mr7396744pjb.178.1613535962017;
+        Tue, 16 Feb 2021 20:26:02 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id t17sm695687pgk.25.2021.02.16.20.26.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Feb 2021 20:26:01 -0800 (PST)
+Date:   Wed, 17 Feb 2021 09:55:58 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 1/2] topology: Allow multiple entities to provide
+ sched_freq_tick() callback
+Message-ID: <20210217042558.o4anjdkayzgqny55@vireshk-i7>
+References: <cover.1611829953.git.viresh.kumar@linaro.org>
+ <d398729676f3d2b0d2ab024a2c9ea6e9ee1d0dca.1611829953.git.viresh.kumar@linaro.org>
+ <20210203114521.GA6380@arm.com>
+ <20210205091424.3od3tme3f7mh7ebp@vireshk-i7>
+ <20210217002422.GA17422@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217002422.GA17422@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Ethernet MAC and PHY are usually major consumers of power on boards
-which may not be able to fully power off (those with no PMIC). Powering
-down the MAC and internal PHY saves power while these boards are "off".
+On 17-02-21, 00:24, Ionela Voinescu wrote:
+> I think it could be merged in patch 1/2 as it's part of enabling the use
+> of multiple sources of information for FIE. Up to you!
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Sure.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-index a3d333b652836..6b75cf2603ffc 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-@@ -1284,6 +1284,15 @@ static int sun8i_dwmac_remove(struct platform_device *pdev)
- 	return 0;
- }
+> >  static void amu_fie_setup(const struct cpumask *cpus)
+> >  {
+> > -	bool invariant;
+> >  	int cpu;
+> >  
+> >  	/* We are already set since the last insmod of cpufreq driver */
+> > @@ -257,25 +256,10 @@ static void amu_fie_setup(const struct cpumask *cpus)
+> >  
+> >  	cpumask_or(amu_fie_cpus, amu_fie_cpus, cpus);
+> >  
+> > -	invariant = topology_scale_freq_invariant();
+> > -
+> > -	/* We aren't fully invariant yet */
+> > -	if (!invariant && !cpumask_equal(amu_fie_cpus, cpu_present_mask))
+> > -		return;
+> > -
+> 
+> You still need these checks, otherwise you could end up with only part
+> of the CPUs setting a scale factor, when only part of the CPUs support
+> AMUs and there is no cpufreq support for FIE.
+
+Both supports_scale_freq_counters() and topology_scale_freq_invariant() take
+care of this now and they will keep reporting the system as invariant until the
+time all the CPUs have counters (in absence of cpufreq).
+
+The topology_set_scale_freq_source() API is supposed to be called multiple
+times, probably once for each policy and so I don't see a need of these checks
+anymore.
+
+> Small(ish) optimisation at the beginning of this function:
+> 
+>     if (cpumask_empty(&scale_freq_counters_mask))
+>         scale_freq_invariant = topology_scale_freq_invariant();
+> 
+> This will save you a call to rebuild_sched_domains_energy(), which is
+> quite expensive, when cpufreq supports FIE and we also have counters.
+
+Good Point.
  
-+static void sun8i_dwmac_shutdown(struct platform_device *pdev)
-+{
-+	struct net_device *ndev = platform_get_drvdata(pdev);
-+	struct stmmac_priv *priv = netdev_priv(ndev);
-+	struct sunxi_priv_data *gmac = priv->plat->bsp_priv;
-+
-+	sun8i_dwmac_exit(pdev, gmac);
-+}
-+
- static const struct of_device_id sun8i_dwmac_match[] = {
- 	{ .compatible = "allwinner,sun8i-h3-emac",
- 		.data = &emac_variant_h3 },
-@@ -1304,6 +1313,7 @@ MODULE_DEVICE_TABLE(of, sun8i_dwmac_match);
- static struct platform_driver sun8i_dwmac_driver = {
- 	.probe  = sun8i_dwmac_probe,
- 	.remove = sun8i_dwmac_remove,
-+	.shutdown = sun8i_dwmac_shutdown,
- 	.driver = {
- 		.name           = "dwmac-sun8i",
- 		.pm		= &stmmac_pltfr_pm_ops,
--- 
-2.26.2
+> After comments addressed,
+> 
+> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
 
+Thanks.
+
+> Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
+
+Just out of curiosity, what exactly did you test and what was the setup ? :)
+
+-- 
+viresh
