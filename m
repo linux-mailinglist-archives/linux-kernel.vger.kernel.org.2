@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46C031E1CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB5831E1D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbhBQWKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 17:10:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229828AbhBQWKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 17:10:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3400A64E2E;
-        Wed, 17 Feb 2021 22:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613599807;
-        bh=RTrHvcKlu4nh2Uhh5Yy4CCmThHz37p3dsD6u6sdppHU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uBEVVJ/HZ7z777vIkozNbFM/29C1elhPuwU3QdWmus+Q2QYy+MtGovMl9EDNLkj9K
-         hevUVs9zP+zR1XKt7PtaRhhLvHqJvGf74BiUnBfdLEyld/Dyg5Euyq8Vutx5UH0q4q
-         xeWcfb/gB0E/gqlp5I1DNY6t201sKSaaSFd68wDZzmncdmjL/nEbDeo9+3Mait1PjC
-         Q3SXeeVDP8Kdiq/gWe8ERrrSTowVYli9wq9+WekMK4+wPSaduj3+UuBLMGsP2Rvp+2
-         My+M+dw2DrN2dx6OOr9gv0LecvNXWMJp/7DmICwe0ZvIQDU3eiKd+ekALrRj5tNsuO
-         wd+kg4O2iFsIA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 22C8560A15;
-        Wed, 17 Feb 2021 22:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next] bpf: fix a warning message in
- mark_ptr_not_null_reg()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161359980713.20364.16930530087071491703.git-patchwork-notify@kernel.org>
-Date:   Wed, 17 Feb 2021 22:10:07 +0000
-References: <YCzJlV3hnF/t1Pk4@mwanda>
-In-Reply-To: <YCzJlV3hnF/t1Pk4@mwanda>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, me@ubique.spb.ru,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
+        id S232972AbhBQWMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 17:12:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232779AbhBQWMv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 17:12:51 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DEEC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 14:12:10 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id v30so378359lfq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 14:12:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=WuwKDyyuRXWc7fqRJdkJjYCH0T2gnlyQjQvkLbody1M=;
+        b=BXdFct9Ium+6cfGRin5RAJLPxE6vTrSXIzaqUdNu4F8+vJeuRchkghvrcNPVao3Oig
+         ftGbZG6MALSjuYrcOVZ+VJ3+A8eK/HfpccCkq4JlrH9ovu2zGgiAC6VuH78NphxJRqnu
+         82gkfIo2G/Q5Qd2OQ+bERMoYxVEuHhxHzHq0aG0K+s1hAXIHbeVedecCdiOAYHVkjGE9
+         qSld7/vkHgEoFjrSvTslJLf3WWie7wpf41ul9eT/6lMKrmX1j4IvMh8+rdrJl4ZS5zAW
+         lqzmIZm0oJ99ZlOeXi5CMCkpCPdBIbjQXtCr65wcs99ATPwbSY8hNGOrlbbG3t+lsfq5
+         fAzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WuwKDyyuRXWc7fqRJdkJjYCH0T2gnlyQjQvkLbody1M=;
+        b=XvvDBcVtqs2d9cQEI0B3Yza5GnTpn0ItRv4nW7yzFWtylFINkuD0dcFJdCq/LZx+cO
+         iCfMRKYdmyxOh4dqROZgxqY5GhCmW4M7kJNqIwl7DHU0nnd71zIHLBYXC2mYEgZPjteF
+         2VAM1YMrXqX+601U9VSPRNpIoBKAn35r7i+tlG6/P+2kt4ahIipI+4fpJEUxBnoj6HnU
+         GxNfQTzxjKf58QD0jv7JN6XG4X6QB6qUNIFRNFTz9xhUuDLcRwwd67yKGjm4m6YO7Fjr
+         wi83CS18RLWGRs9JXpX3CzL86R1i2U16pIOGfemxjEXy3NYC/0O+EbNk9ZHuNp3wt8Im
+         nXSw==
+X-Gm-Message-State: AOAM532NiyXmo1WU8j4C/IllwAhJxVB2J9PFTuW0QoYOXEWPFMKMLzny
+        e1jKPHUVpPBTghX1NmePDtmgiw==
+X-Google-Smtp-Source: ABdhPJyiUQn1DgtgP8VhBGVPISpebORJN8GUzrDnNDS977xRgDas6/AiLbG1cUIdYEeeAROfCsMX/w==
+X-Received: by 2002:a05:6512:3cc:: with SMTP id w12mr559442lfp.650.1613599928830;
+        Wed, 17 Feb 2021 14:12:08 -0800 (PST)
+Received: from localhost.localdomain ([85.249.43.69])
+        by smtp.googlemail.com with ESMTPSA id b7sm382926ljk.52.2021.02.17.14.12.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 14:12:07 -0800 (PST)
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+To:     junak.pub@gmail.com, robert.foss@linaro.org,
+        sakari.ailus@linux.intel.com
+Cc:     todor.too@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org,
+        mchehab@kernel.org, laurent.pinchart@ideasonboard.com,
+        jacopo@jmondi.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] media: qcom: camss: V4L2_CID_PIXEL_RATE/LINK_FREQ fixes
+Date:   Thu, 18 Feb 2021 01:11:31 +0300
+Message-Id: <20210217221134.2606-1-andrey.konovalov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+The first patch adds printing a warning in v4l2_get_link_freq() if
+V4L2_CID_LINK_FREQ isn't implemented (this is a mandatory control for
+CSI-2 transmitter drivers [1], but many sensor drivers don't have it
+currently).
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+The second patch is the start of the work discussed in the "[RFC] Repurpose
+V4L2_CID_PIXEL_RATE for the sampling rate in the pixel array" thread [2].
+I plan to send a few other similar patches for other CSI receiver drivers,
+and if the current patchset needs to wait for those before it can be merged,
+that's fine for me.
 
-On Wed, 17 Feb 2021 10:45:25 +0300 you wrote:
-> The WARN_ON() argument is a condition, not an error message.  So this
-> code will print a stack trace but will not print the warning message.
-> Fix that and also change it to only WARN_ONCE().
-> 
-> Fixes: 4ddb74165ae5 ("bpf: Extract nullable reg type conversion into a helper function")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> [...]
+The reason I decided to post the camss patch first is the patch [3] by
+Vladimir Lypak. The third patch in this series is the Vladimir's patch
+rebased onto the changes done by the second patch. By replacing getting
+the pixel clock with v4l2_get_link_freq() the second patch also fixes the
+integer overflow which Vladimir's patch addresses. So the third patch
+only needs to fix drivers/media/platform/qcom/camss/camss-vfe.c which
+the second patch doesn't touch.
 
-Here is the summary with links:
-  - [v2,bpf-next] bpf: fix a warning message in mark_ptr_not_null_reg()
-    https://git.kernel.org/bpf/bpf-next/c/7b1e385c9a48
+The resulting patchset is free from the "undefined reference to `__udivdi3'"
+issue [4] as the u64 value is only divided by a power of 2, which doesn't
+need do_div().
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+[1] https://linuxtv.org/downloads/v4l-dvb-apis-new/driver-api/csi2.html
+[2] https://www.spinics.net/lists/linux-media/msg183183.html
+[3] https://www.spinics.net/lists/linux-media/msg186875.html
+[4] https://www.spinics.net/lists/linux-media/msg186918.html
+
+Changes in v2:
+
+* Added [PATCH 1/3] v4l: common: v4l2_get_link_freq: add printing a warning
+
+* camss_get_link_freq() changed to take the actual number of lanes as the
+  third arg vs the number of lanes multiplied by 2 in the first version
+
+* Fixed checkpatch warnings and bad indentation
 
 
