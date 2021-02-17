@@ -2,155 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B93BA31D3D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 02:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439D831D3D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 02:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhBQBiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 20:38:10 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38400 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229581AbhBQBh4 (ORCPT
+        id S229501AbhBQBlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 20:41:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229787AbhBQBlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 20:37:56 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11H1XWCP044953;
-        Tue, 16 Feb 2021 20:37:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=iCWjSlNcX4UBfFwLG4pDJ/tExgXS2gWvTLfXRETkPkA=;
- b=ptJN+Tpb0gPSTN+P6H4atItw42j/tBEOTGtMGdGmddFnKmfAMSHkTx5c5ztx6aBJmxJN
- LxarRtqTdFT3Z6uEEwfNqsp5XCsu1OE6yEt41wZZlhs3Zj7GpjTq3KJ9BZnTvKI5/dfe
- bZZzRlMbXFsQ6K8wabFDGWA1koscNuSWzY0N9DVIsFEXzadE2flrlul3myArmITjNeSn
- eJsYXS2g0Rk0d/pci2sV3Ur71UUEUU2OUXizrH98/igZ2o8HhW8WNOg6gf0Yxn3qJsmK
- YN6WhNibK8J+yEr7/t9jERiuwY3o+ehaT6+ZHCTwZDE1nDVRB55WdhKCpCUCkRZK+tH5 og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36rsdvr863-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 20:37:08 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11H1Y3eS046983;
-        Tue, 16 Feb 2021 20:37:07 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36rsdvr85h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 16 Feb 2021 20:37:07 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11H1Vgws007374;
-        Wed, 17 Feb 2021 01:37:06 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03wdc.us.ibm.com with ESMTP id 36p6d92j87-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Feb 2021 01:37:06 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11H1b6mn11469276
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 01:37:06 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 02BE3124058;
-        Wed, 17 Feb 2021 01:37:06 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C9172124055;
-        Wed, 17 Feb 2021 01:37:05 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 17 Feb 2021 01:37:05 +0000 (GMT)
-Subject: Re: [PATCH v5] The following sequence of operations results in a
- refcount warning:
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de,
-        jarkko@kernel.org, jgg@ziepe.ca
-Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
-        David.Laight@ACULAB.COM, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        stable@vger.kernel.org
-References: <1613504532-4165-1-git-send-email-LinoSanfilippo@gmx.de>
- <1613504532-4165-2-git-send-email-LinoSanfilippo@gmx.de>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <c4d81a25-8fa7-93f2-a44a-ad7033553087@linux.ibm.com>
-Date:   Tue, 16 Feb 2021 20:37:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 16 Feb 2021 20:41:44 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C72C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 17:41:04 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id w1so10533883ejk.6
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 17:41:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aUUOJlgDQumqSSsn6b2nMo56O2uNsyRlZI5+0ZRl54U=;
+        b=KqWjsFoguTrjWzkyFDr4S7tTXgUIqm3Y4PfT/ofs5LnJNHjNgmSKwxSugOcsMWm6+H
+         BoTlzMwTcNvHP6B0Bnl3Xw5Fe2tGprhZ2GPvM0Rn5udBuHOtQcFGiGfqkHM0oyecYmCz
+         cKX/9lGvNYEBWtBhHKAZXOmol7P8xRKTge5POr7MV4CoGSMG6hqh5BbhJL2+h+QGvnqW
+         XRTkRKha1iNLzP1IjVsvvhGwzrFR4R8anK/4zjo6cMe7tEDTn+DyDAOKf/rR5EYO6O9x
+         Py/EDa7UkNGrJnz+qr3Y2R1KVSjVymb7XbkoDsAlcn8nQDCNjTw6dBJlhYLqjZLQow/f
+         jUtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aUUOJlgDQumqSSsn6b2nMo56O2uNsyRlZI5+0ZRl54U=;
+        b=SZuQ5mc/wDCme1KP0Vqk/aq3BU52vB31+xQsWA+ZvLg8OocR0z27JmbBQqaTcNaa9q
+         y6WTGDMGT0NiNgm+MnxHHGIE+3wKz/9bMfp2lW1MF4g5klQ4uBldFDDkqT/OhN5WNzdf
+         KhOicRKeuM4f550ShSRD/FYdnfaVGobzrUm0wuNXYXlai/iABheP2hn9p+oB535xWw8X
+         Goh0MPeC3ZhMTNv/iwu0nf5yy5CpNAu57ias3xBM0PpoKttr5/D0xg1bPpNMdKp+2ZxH
+         KGk8bE1mFeyrTHFH9AtisUqn4X+u025tmyyFqK2dHJRrXI54wgyGkLNU1W1qafpQvYia
+         6xCw==
+X-Gm-Message-State: AOAM530XIaV867ayxIGGGlBy10fh/Fghhnzg2QeZfu7W3KK1R0Igkxvk
+        tPmnuVQq+Q9TO8pPIHkCA38/2zZxwnd3NbZo1sgDHA==
+X-Google-Smtp-Source: ABdhPJz4EYHuN8wyWFuoFR7FSadeWSJslfOV5vc8kLUvyWmZnsOwRzCVfCl3RDFdPjy97HCFJP5rvSPOVwvdT+ExobU=
+X-Received: by 2002:a17:906:1352:: with SMTP id x18mr17937904ejb.418.1613526062947;
+ Tue, 16 Feb 2021 17:41:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1613504532-4165-2-git-send-email-LinoSanfilippo@gmx.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-16_15:2021-02-16,2021-02-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- mlxlogscore=999 impostorscore=0 priorityscore=1501 bulkscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 clxscore=1011 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102170005
+References: <20210212171043.2136580-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20210212171043.2136580-1-u.kleine-koenig@pengutronix.de>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 16 Feb 2021 17:40:53 -0800
+Message-ID: <CAPcyv4gqXpQK5ta9enky1MrGVYAGa09DaJHod5CK9Ybe59772w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] libnvdimm: simplify nvdimm_remove()
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel@pengutronix.de, linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/16/21 2:42 PM, Lino Sanfilippo wrote:
-> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+On Fri, Feb 12, 2021 at 9:11 AM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
 >
-> 1. Open device /dev/tpmrm.
-> 2. Remove module tpm_tis_spi.
-> 3. Write a TPM command to the file descriptor opened at step 1.
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 3 PID: 1161 at lib/refcount.c:25 kobject_get+0xa0/0xa4
-> refcount_t: addition on 0; use-after-free.
-> Modules linked in: tpm_tis_spi tpm_tis_core tpm mdio_bcm_unimac brcmfmac
-> sha256_generic libsha256 sha256_arm hci_uart btbcm bluetooth cfg80211 vc4
-> brcmutil ecdh_generic ecc snd_soc_core crc32_arm_ce libaes
-> raspberrypi_hwmon ac97_bus snd_pcm_dmaengine bcm2711_thermal snd_pcm
-> snd_timer genet snd phy_generic soundcore [last unloaded: spi_bcm2835]
-> CPU: 3 PID: 1161 Comm: hold_open Not tainted 5.10.0ls-main-dirty #2
-> Hardware name: BCM2711
-> [<c0410c3c>] (unwind_backtrace) from [<c040b580>] (show_stack+0x10/0x14)
-> [<c040b580>] (show_stack) from [<c1092174>] (dump_stack+0xc4/0xd8)
-> [<c1092174>] (dump_stack) from [<c0445a30>] (__warn+0x104/0x108)
-> [<c0445a30>] (__warn) from [<c0445aa8>] (warn_slowpath_fmt+0x74/0xb8)
-> [<c0445aa8>] (warn_slowpath_fmt) from [<c08435d0>] (kobject_get+0xa0/0xa4)
-> [<c08435d0>] (kobject_get) from [<bf0a715c>] (tpm_try_get_ops+0x14/0x54 [tpm])
-> [<bf0a715c>] (tpm_try_get_ops [tpm]) from [<bf0a7d6c>] (tpm_common_write+0x38/0x60 [tpm])
-> [<bf0a7d6c>] (tpm_common_write [tpm]) from [<c05a7ac0>] (vfs_write+0xc4/0x3c0)
-> [<c05a7ac0>] (vfs_write) from [<c05a7ee4>] (ksys_write+0x58/0xcc)
-> [<c05a7ee4>] (ksys_write) from [<c04001a0>] (ret_fast_syscall+0x0/0x4c)
-> Exception stack(0xc226bfa8 to 0xc226bff0)
-> bfa0:                   00000000 000105b4 00000003 beafe664 00000014 00000000
-> bfc0: 00000000 000105b4 000103f8 00000004 00000000 00000000 b6f9c000 beafe684
-> bfe0: 0000006c beafe648 0001056c b6eb6944
-> ---[ end trace d4b8409def9b8b1f ]---
->
-> The reason for this warning is the attempt to get the chip->dev reference
-> in tpm_common_write() although the reference counter is already zero.
->
-> Since commit 8979b02aaf1d ("tpm: Fix reference count to main device") the
-> extra reference used to prevent a premature zero counter is never taken,
-> because the required TPM_CHIP_FLAG_TPM2 flag is never set.
->
-> Fix this by moving the TPM 2 character device handling from
-> tpm_chip_alloc() to tpm_add_char_device() which is called at a later point
-> in time when the flag has been set in case of TPM2.
->
-> Commit fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
-> already introduced function tpm_devs_release() to release the extra
-> reference but did not implement the required put on chip->devs that results
-> in the call of this function.
->
-> Fix this by putting chip->devs in tpm_chip_unregister().
->
-> Finally move the new implementation for the TPM 2 handling into a new
-> function to avoid multiple checks for the TPM_CHIP_FLAG_TPM2 flag in the
-> good case and error cases.
->
-> Cc: stable@vger.kernel.org
-> Fixes: fdc915f7f719 ("tpm: expose spaces via a device link /dev/tpmrm<n>")
-> Fixes: 8979b02aaf1d ("tpm: Fix reference count to main device")
-> Co-developed-by: Jason Gunthorpe <jgg@ziepe.ca>
-> Signed-off-by: Jason Gunthorpe <jgg@ziepe.ca>
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> nvdimm_remove is only ever called after nvdimm_probe() returned
+> successfully. In this case driver data is always set to a non-NULL value
+> so the check for driver data being NULL can go away as it's always false.
 
-
-Tested-by: Stefan Berger <stefanb@linux.ibm.com>
-
-
+Looks good, thanks.
