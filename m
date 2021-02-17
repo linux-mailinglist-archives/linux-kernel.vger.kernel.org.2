@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D0E31DDD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1C731DDEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234351AbhBQRCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:02:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41378 "EHLO mail.kernel.org"
+        id S234361AbhBQRHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:07:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234340AbhBQRCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:02:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4D5964E42;
-        Wed, 17 Feb 2021 17:01:19 +0000 (UTC)
+        id S234327AbhBQRG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 12:06:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ACDB6146D;
+        Wed, 17 Feb 2021 17:06:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613581279;
-        bh=suQXsZu5FOQt1GV8Sn0zUfOQRwhj5nslyZPOGONixyA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=THdlT2vXlBdLQqQAJ2kMEaIPL/b9av6tmuwJzsCzu0cOjhSjHMaoEJXsvyY7WkUiE
-         QIYl8Z0czUQGCX4ZpPGgGZ4YEaqO4BqGqsm3Nx9WFN2J+My9hs0c4DrIF4vAqc+7DD
-         3CwnsuR0fPIY9So+NCvoBm3ZvlL1/FY9CxXZXIj1K/IO59EYo2c0JXa8sk5ybWnUXK
-         FZrz0D5RZamezay4Ev3Kw1zCuyBhsDVK90w+WGFBC+dlBmhAsc+wNK37uTq6+4mmgr
-         jsRk3xmbSj4q7mZ02cQGt385BK9FfV4GvQX86+18WbCDp/8rezwg1qldtCP0SQDysB
-         SYJ8dZNW7L9aw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 919683522611; Wed, 17 Feb 2021 09:01:19 -0800 (PST)
-Date:   Wed, 17 Feb 2021 09:01:19 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
-Message-ID: <20210217170119.GD2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
- <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
- <20210217155447.GC2743@paulmck-ThinkPad-P72>
+        s=k20201202; t=1613581577;
+        bh=BP5t6ERsQWrPEanvGtc2OTVhseZEcFFTxsRYhLqsuvM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NCXOZhh4ZNY43blTM7CelHyOLo7Sr2H6blfzc5+KkdG/2khdKJKLnuONWyX2XE9Hk
+         ZQUkk+MgvfDf+wOHoLdigjoXPx8+I55m2Xn8FrtsUbnv83QihexmoXRRAs/wcr2MdU
+         Z7mE+5dSd25jOi22Lw5KI3IbfPVVVFFXUwj3FKibVpsg06NKctSAXg3hx46SyuqBkS
+         AE23zgRjVYT1aH+4B5n55vkUniOA4CMZ6hKfEu/dcwYasL3VXv57Y/roKeE0StxswB
+         yx0yDxVIHs5MGCk1Ycz1T5Y+hrrFLLPmIRXHsgQHEh7Ndi7Za5MWMxl5UdzpeBcpwH
+         ecNZvqeckFRVQ==
+Date:   Wed, 17 Feb 2021 17:06:13 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     catalin.marinas@arm.com, saiprakash.ranjan@codeaurora.org,
+        robh@kernel.org, konrad.dybcio@somainline.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: Add part number for Arm Cortex-A78
+Message-ID: <20210217170612.GA4254@willie-the-truck>
+References: <1613580251-12694-1-git-send-email-neeraju@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217155447.GC2743@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1613580251-12694-1-git-send-email-neeraju@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 07:54:47AM -0800, Paul E. McKenney wrote:
-> On Wed, Feb 17, 2021 at 04:32:53PM +0100, Sebastian Andrzej Siewior wrote:
-> > On 2021-02-16 10:36:09 [-0800], Paul E. McKenney wrote:
-> > > Hello, Sebastian,
-> > 
-> > Hi Paul,
-> > 
-> > > I punted on this for the moment by making RCU priority boosting testing
-> > > depend on CONFIG_PREEMPT_RT, but longer term I am wondering if RCU's
-> > > various timed delays and timeouts should use hrtimers rather than normal
-> > > timers in kernels built with CONFIG_RCU_BOOST.  As it is, RCU priority
-> > > boosting can be defeated if any of the RCU grace-period kthread's timeouts
-> > > are serviced by the non-realtime ksoftirqd.
-> > 
-> > I though boosting is accomplished by acquiring a rt_mutex in a
-> > rcu_read() section. Do you have some code to point me to, to see how a
-> > timer is involved here? Or is it the timer saying that *now* boosting is
-> > needed.
+On Wed, Feb 17, 2021 at 10:14:11PM +0530, Neeraj Upadhyay wrote:
+> Add the MIDR part number info for the Arm Cortex-A78.
 > 
-> Yes, this last, which is in the grace-period kthread code, for example,
-> in rcu_gp_fqs_loop().
+> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> ---
+>  arch/arm64/include/asm/cputype.h | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> > If your hrtimer is a "normal" hrtimer then it will be served by
-> > ksoftirqd, too. You would additionally need one of the
-> > HRTIMER_MODE_*_HARD to make it work.
-> 
-> Good to know.  Anything I should worry about for this mode?
-> 
-> Also, the current test expects callbacks to be invoked, which involves a
-> number of additional kthreads and timers, for example, in nocb_gp_wait().
-> I suppose I could instead look at grace-period sequence numbers, but I
-> believe that real-life use cases needing RCU priority boosting also need
-> the callbacks to be invoked reasonably quickly (as in within hundreds
-> of milliseconds up through very small numbers of seconds).
-> 
-> Thoughts?
+> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
+> index ef5b040..3aced88 100644
+> --- a/arch/arm64/include/asm/cputype.h
+> +++ b/arch/arm64/include/asm/cputype.h
+> @@ -72,6 +72,7 @@
+>  #define ARM_CPU_PART_CORTEX_A76		0xD0B
+>  #define ARM_CPU_PART_NEOVERSE_N1	0xD0C
+>  #define ARM_CPU_PART_CORTEX_A77		0xD0D
+> +#define ARM_CPU_PART_CORTEX_A78		0xD41
+>  
+>  #define APM_CPU_PART_POTENZA		0x000
+>  
+> @@ -109,6 +110,7 @@
+>  #define MIDR_CORTEX_A76	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A76)
+>  #define MIDR_NEOVERSE_N1 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_N1)
+>  #define MIDR_CORTEX_A77	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A77)
+> +#define MIDR_CORTEX_A78	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A78)
+>  #define MIDR_THUNDERX	MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX)
+>  #define MIDR_THUNDERX_81XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_81XX)
+>  #define MIDR_THUNDERX_83XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_83XX)
 
-Hmmm...  Unless there are current use cases where callbacks are being
-prevented from being invoked, I will modify rcutorture's testing of RCU
-priority boosting to look only at grace-period progress on the theory
-that most real-time uses offload callbacks, and in that case it is the
-sysadm's job to make sure that they get the CPU time they needs.
+This usually means there's an erratum to work around. What are you hiding ;)
 
-							Thanx, Paul
-
-> > > This might require things like swait_event_idle_hrtimeout_exclusive(),
-> > > either as primitives or just open coded.
-> > > 
-> > > Thoughts?
-> > > 
-> > > 							Thanx, Paul
-> > 
-> > Sebastian
+Will
