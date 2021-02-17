@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA9931D6FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 10:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B27031D700
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 10:29:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbhBQJ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 04:27:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230045AbhBQJ1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 04:27:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A395A64E33;
-        Wed, 17 Feb 2021 09:26:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613553981;
-        bh=fAcVKDtKPT44X9xFpYrvNyyM8U32OFphf2W8r+3sh20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QvcLhgdcV7Kwxbg3HAmaaj8A0U0F2FumuzjmojGddG06REnmnlCAaU7J2kNY2KwEZ
-         8CzIiSJzbXVYozGJ6Ehy1foB0ETZM850CGcXDIg6ZBbiRERbN0VFjVEAoQbYuj76Fv
-         hjG6m6PfiprgGk1R7+SntYzH009FXvqCR6ZcBuaE=
-Date:   Wed, 17 Feb 2021 10:26:18 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 043/104] kasan: add explicit preconditions to
- kasan_report()
-Message-ID: <YCzhOtZd3ldvEzvk@kroah.com>
-References: <20210215152719.459796636@linuxfoundation.org>
- <20210215152720.867409732@linuxfoundation.org>
- <20210216115029.GA25795@amd>
+        id S232038AbhBQJ2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 04:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231897AbhBQJ2S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 04:28:18 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16D4C061574;
+        Wed, 17 Feb 2021 01:27:37 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id f8so5515374plg.5;
+        Wed, 17 Feb 2021 01:27:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VdWPwrAfDCtXEesqZ9idEiSC/QAmDiHlDH/oyb/bNfs=;
+        b=RrScKORaVIZjQYmG81vxtn/OLVLH6OQ1UqLDfJP/8Hec1m41rmcO+X5kWOVnykVuR3
+         eFMwnItIXolcHMwo2XCakLdjwENBD57k9G9dZGFk7oz57Fcva8CKxyvTMtYCvA0RKEVW
+         Afe31vvdKmCuv7JoSz8Y+AYh0vS5He1lj9RBPZeFbkdV5TH/hkxWUmszw/bqjESHJhMH
+         Oj3zANkxUYIMJzGQVb5ebQ7RLi8O+jgnKX2MEFypcmbEDK/vsj3NVPJ40Ex0YDP4G5Z/
+         qf7m/jY85xgx8Ws4kDhuaKKIMcilECk5VDoRAWu2YHfGSIlNJ8i7UK0DBk7VTASUSMFH
+         oHWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VdWPwrAfDCtXEesqZ9idEiSC/QAmDiHlDH/oyb/bNfs=;
+        b=ahHQOCpXOjW9R9MbT1vezLBL0QuyGkoUlGSMcnTvvGktbU9NModlKGdPf4aEGX1ahY
+         yoqzdIyaGlxkk42qToY/HdnfagMuVHyyFyWq9KO/9BoWNxSqhmuq+j4YZbk3GY1zrQ9w
+         uKS/VlRgnup1JNzQCEfna6tYjlm+Uka9AZ9Sul+YFJdmOtFcARABDaif4UsPmtsHCHg+
+         MY4Dy5sTmYWhsWAbZk20mvAZ3gVSc9uI4lzUi29SMYfchSv00FQSZtHObLseBJkLY1vE
+         od88BtxsawS2UYNVi1xGKILGKtYPdY4X0NyYkaa74l9Hlas0CmXkkwJKiGij77huxYrY
+         nnTA==
+X-Gm-Message-State: AOAM5300vnmaikImzg3PKWFMblN3cEnKi9/s9NZrQv+FeL+b5QuafeE6
+        baip8lEDy/ervCOUNVYOeG4=
+X-Google-Smtp-Source: ABdhPJxX/kUTb7rTB9K7X9aM2sRKRDTBhjTLMwoHG2qj2lUTuWfJgTypb4eNXYADo9uXT3Wn6Ijjfg==
+X-Received: by 2002:a17:90a:ab95:: with SMTP id n21mr8462189pjq.92.1613554057497;
+        Wed, 17 Feb 2021 01:27:37 -0800 (PST)
+Received: from localhost.localdomain ([49.207.204.196])
+        by smtp.gmail.com with ESMTPSA id n11sm1571412pjk.38.2021.02.17.01.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 01:27:37 -0800 (PST)
+From:   Allen Pais <allen.lkml@gmail.com>
+To:     jens.wiklander@linaro.org, zajec5@gmail.com
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org,
+        Allen Pais <apais@linux.microsoft.com>
+Subject: [PATCH 0/2] optee: fix OOM seen due to tee_shm_free()
+Date:   Wed, 17 Feb 2021 14:57:12 +0530
+Message-Id: <20210217092714.121297-1-allen.lkml@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210216115029.GA25795@amd>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 12:50:29PM +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > From: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > 
-> > [ Upstream commit 49c6631d3b4f61a7b5bb0453a885a12bfa06ffd8 ]
-> > 
-> > Patch series "kasan: Fix metadata detection for KASAN_HW_TAGS", v5.
-> > 
-> > With the introduction of KASAN_HW_TAGS, kasan_report() currently assumes
-> > that every location in memory has valid metadata associated.  This is
-> > due to the fact that addr_has_metadata() returns always true.
-> > 
-> > As a consequence of this, an invalid address (e.g.  NULL pointer
-> > address) passed to kasan_report() when KASAN_HW_TAGS is enabled, leads
-> > to a kernel panic.
-> ...
-> > This patch (of 2):
-> > 
-> > With the introduction of KASAN_HW_TAGS, kasan_report() accesses the
-> > metadata only when addr_has_metadata() succeeds.
-> > 
-> > Add a comment to make sure that the preconditions to the function are
-> > explicitly clarified.
-> 
-> As the other patch from the series is not applied, I don't believe we
-> need this in stable. Changelog does not make any sense with just
-> comment change cherry-picked...
+From: Allen Pais <apais@linux.microsoft.com>
 
-Good point, now dropped, the AUTOBOT triggered off of the changelog text
-which is nice and scary :)
+The following out of memory errors are seen on kexec reboot
+from the optee core.
+    
+[    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
+[    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
+    
+tee_shm_release() is not invoked on dma shm buffer.
+    
+Implement .shutdown() in optee core as well as bnxt firmware driver
+to handle the release of the buffers correctly.
+    
+More info:
+https://github.com/OP-TEE/optee_os/issues/3637
 
-greg k-h
+Allen Pais (2):
+  optee: fix tee out of memory failure seen during kexec reboot
+  firmware: tee_bnxt: implement shutdown method to handle kexec reboots
+
+ drivers/firmware/broadcom/tee_bnxt_fw.c |  9 ++++
+ drivers/tee/optee/core.c                | 69 ++++++++++++++++++-------
+ 2 files changed, 58 insertions(+), 20 deletions(-)
+
+-- 
+2.25.1
+
