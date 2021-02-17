@@ -2,90 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA6031E14F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 091CF31E150
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhBQVZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:25:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233160AbhBQVYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 16:24:40 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF22CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 13:23:57 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id a207so5270614wmd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 13:23:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=t38IBDiln8jFDPKpINqSVjOUz/xfYh58FCdxyOqAKEc=;
-        b=BCltraG2s2ema6giKHCDQko+FfZRmoVHUbGvqbG+JZXC9sM1J71Qz/xhJOm81KHt8F
-         Itr1Tpk/9ZOUzPOUpMLPYL8OQwtPSbpPuaZsA7UOnkw75yD9qqsjtGq4eFahRSso146A
-         +VE7h+wAtksBGgoSo9DXtsV/nZYreL52v+dsg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=t38IBDiln8jFDPKpINqSVjOUz/xfYh58FCdxyOqAKEc=;
-        b=nyCQllVyiGnP83gPGPU3a8vw43Amtqymt3k/ni3I66OshmvC/2Pl3z6o5N+RBXpFZx
-         sw73MqFc7+O29WWKsJUe40BcyXNuBsaICgV6Ysk9QBczafXKJhaXHNAl1zTY9cqJyuy0
-         NjhAQ5pEEK2eYvXqhttPfMgCO7oWP2INkSYWgoN+OW4lhgz7cLfyEkucWpdEGsmtuFLr
-         mab2u0l75oUJOBXKvYRG1A55JQeUoGFCqxEs4KJduAFYG/4wHT3BaKym/k4otG6QjrzU
-         ipescELcZ6ZIEx5u4xN707lMTGZ/BN+xNoXS7xsuT6couQVVfvRHf/WlbG4+5zlmjSpZ
-         MxjQ==
-X-Gm-Message-State: AOAM531/FDqzHjQYjPgLQh9C/GztrY+aGWgvXU6UpjoPuG6G2ek9R+AW
-        SvA60D4/xqn/Sf3IPm+35UgaJQ==
-X-Google-Smtp-Source: ABdhPJyDHtG+qY2qJkjZDzMhXM5NYtB/BM1HaG+mbM/XjjhPuxQP/5SWsVF5/hvqtHVD/7X9AlJhkA==
-X-Received: by 2002:a05:600c:2184:: with SMTP id e4mr643618wme.107.1613597036649;
-        Wed, 17 Feb 2021 13:23:56 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::4:f7e9])
-        by smtp.gmail.com with ESMTPSA id f20sm5496817wrd.96.2021.02.17.13.23.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 13:23:56 -0800 (PST)
-Date:   Wed, 17 Feb 2021 21:23:55 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S233394AbhBQVZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:25:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50272 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231630AbhBQVYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 16:24:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE33864E6C;
+        Wed, 17 Feb 2021 21:24:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613597045;
+        bh=m2z/x1Zrj0A4fqoRWSZo7Xax9iL04VQAEJ0SYZrLHys=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=COcGE94+mVQ/Mr+h+fiY7w9xxW3RaIR0HS5jqWAyH9hUBE4jRKau7KlRPscLNhfkl
+         lO/deqlC8pVqOMRRdSeE5APP9KGoatdQSnpbh3jwSQlZhQxUgQG2Izi8ZlM5fN0NkL
+         ommgd3wHYUVTfIVwDYT2mw5yug7IgPC8XuqPlh84vVXWnHzYa2yEttw5bOKJatPZ5J
+         o8yeBBYnB67NepUGdEy/blK3j6IgPEInSYTFPL95oPep8oQjkKBs0L9M5jHmpnsFVO
+         uBWbhfUZHbEoPAFiOQ0PHn7vtyy8r6wAYt+s7TknlqHn+kmC1Ck3OqAEWxFv1+TNN3
+         M0MDnwqAxAtZg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B7A3E3522611; Wed, 17 Feb 2021 13:24:04 -0800 (PST)
+Date:   Wed, 17 Feb 2021 13:24:04 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: output: was: Re: [PATCH v4] printk: Userspace format enumeration
- support
-Message-ID: <YC2Ja3DjKd/PFYKg@chrisdown.name>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
- <YCvqdrBc3wLDClhv@alley>
- <YCv4V5EFeuEmyxSz@chrisdown.name>
- <YC0n3vRO788sXqud@alley>
- <YC02GBghuhmlvrXk@chrisdown.name>
- <20210217141717.52089bbc@gandalf.local.home>
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v3 1/1] rcuscale: add kfree_rcu() single-argument scale
+ test
+Message-ID: <20210217212404.GK2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210217185110.2099-1-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217141717.52089bbc@gandalf.local.home>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+In-Reply-To: <20210217185110.2099-1-urezki@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steven Rostedt writes:
->OK, now do the same in C. "%q" "and I guess that "f" in the print statement
->in python (but I don't know for sure) does some magic with converting the
->"\n" and such.
->
->I agree with Petr on this. Print the format itself, and not what is
->converted. It's much easier to convert "\t" and such to what they mean,
->than to go the other way around.
+On Wed, Feb 17, 2021 at 07:51:10PM +0100, Uladzislau Rezki (Sony) wrote:
+> To stress and test a single argument of kfree_rcu() call, we
+> should to have a special coverage for it. We used to have it
+> in the test-suite related to vmalloc stressing. The reason is
+> the rcuscale is a correct place for RCU related things.
+> 
+> Therefore introduce two torture_param() variables, one is for
+> single-argument scale test and another one for double-argument
+> scale test.
+> 
+> By default kfree_rcu_test_single and kfree_rcu_test_double are
+> initialized to false. If both have the same value (false or true)
+> both are randomly tested, otherwise only the one with value true
+> is tested. The value of this is that it allows testing of both
+> options with one test.
+> 
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-To be clear, you're advocating for escaping tabs/newlines/etc on the kernel 
-side, right?
+Queued with the usual wordsmithing, thank you!
 
-That seems to be implied by your first paragraph, but "print the format itself 
-and not what is converted" sounds like the opposite of that to me. I assume 
-your meaning is "escape the format, don't print it raw", which is what Petr was 
-also advocating for? :-)
+							Thanx, Paul
+
+> ---
+>  kernel/rcu/rcuscale.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index 06491d5530db..0fb540e2b22b 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
+>  torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
+>  torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
+>  torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
+> +torture_param(bool, kfree_rcu_test_single, false, "Do we run a kfree_rcu() single-argument scale test?");
+> +torture_param(bool, kfree_rcu_test_double, false, "Do we run a kfree_rcu() double-argument scale test?");
+>  
+>  static struct task_struct **kfree_reader_tasks;
+>  static int kfree_nrealthreads;
+> @@ -644,10 +646,13 @@ kfree_scale_thread(void *arg)
+>  	struct kfree_obj *alloc_ptr;
+>  	u64 start_time, end_time;
+>  	long long mem_begin, mem_during = 0;
+> +	bool kfree_rcu_test_both;
+> +	DEFINE_TORTURE_RANDOM(tr);
+>  
+>  	VERBOSE_SCALEOUT_STRING("kfree_scale_thread task started");
+>  	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
+>  	set_user_nice(current, MAX_NICE);
+> +	kfree_rcu_test_both = (kfree_rcu_test_single == kfree_rcu_test_double);
+>  
+>  	start_time = ktime_get_mono_fast_ns();
+>  
+> @@ -670,7 +675,15 @@ kfree_scale_thread(void *arg)
+>  			if (!alloc_ptr)
+>  				return -ENOMEM;
+>  
+> -			kfree_rcu(alloc_ptr, rh);
+> +			// By default kfree_rcu_test_single and kfree_rcu_test_double are
+> +			// initialized to false. If both have the same value (false or true)
+> +			// both are randomly tested, otherwise only the one with value true
+> +			// is tested.
+> +			if ((kfree_rcu_test_single && !kfree_rcu_test_double) ||
+> +					(kfree_rcu_test_both && torture_random(&tr) & 0x800))
+> +				kfree_rcu(alloc_ptr);
+> +			else
+> +				kfree_rcu(alloc_ptr, rh);
+>  		}
+>  
+>  		cond_resched();
+> -- 
+> 2.20.1
+> 
