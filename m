@@ -2,91 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1880131D9F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B9131D9FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbhBQNJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:09:21 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:49536 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbhBQNJQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:09:16 -0500
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 187FB8C4;
-        Wed, 17 Feb 2021 14:08:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613567313;
-        bh=NNpm0Hf3kc3W6OJD+qsniy9E/7kXWfNfBU8EusaNjks=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=oYKeghuHn4yo3hFxXoPlFvqYk/t7MAVnMx8/Fcdf/wVCS2pphuQzTHpNo1cbXyMfu
-         4q6UcjD3H1P61UXiQpjOuv3ihuX4SsTmZoO3sx1mR4Nd+yYkxWP4fwdL1Jx4LpHrvi
-         iWafh47BA2zodEqR8MAvNLGGgDapQmZIEsdpK2tA=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH 05/16] media: i2c: rdacm20: Check return values
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-6-jacopo+renesas@jmondi.org>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <a96ca801-06a4-952c-a58d-7325eea92c32@ideasonboard.com>
-Date:   Wed, 17 Feb 2021 13:08:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232537AbhBQNLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:11:17 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:42849 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230473AbhBQNLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 08:11:16 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613567453; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=B3QRxLJ6gJmRoLswKWrB0gcSQ+YQnvw7f1kZhRUjVzs=;
+ b=IR7gFZnPN25n82xFwXiq7F+7f99ErDvRMVyJPfQX1xT+4EsPHH81pcbqk4wppyAnOU3DH8GN
+ rD0Pd+BVz8r1efDvcDY6LuAHTlieFlMQWp75HbWD4H4aWmtDexyY0N1S9YgC8TbxzWJBeHb3
+ RgkvZGYxLNxcpcEYi9UynCFFHoM=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 602d15bf98fd902dc20aa0e0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 13:10:23
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5A7F8C43464; Wed, 17 Feb 2021 13:10:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B633AC433CA;
+        Wed, 17 Feb 2021 13:10:22 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210216174146.106639-6-jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Wed, 17 Feb 2021 18:40:22 +0530
+From:   schowdhu@codeaurora.org
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: Re: [PATCH V0 2/6] arm64: dts: qcom: sm8150: Add Data Capture and
+ Compare(DCC) support node
+In-Reply-To: <20210217110331.GS2774@vkoul-mobl.Dlink>
+References: <cover.1613541226.git.schowdhu@codeaurora.org>
+ <893022aecd4ba354adb57bd463206dd93fc19886.1613541226.git.schowdhu@codeaurora.org>
+ <20210217110331.GS2774@vkoul-mobl.Dlink>
+Message-ID: <10001950e73eb5e322fda6359103ebda@codeaurora.org>
+X-Sender: schowdhu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+Hi,
 
-On 16/02/2021 17:41, Jacopo Mondi wrote:
-> The camera module initialization routine does not check the return
-> value of a few functions. Fix that.
+Please find the replies inline.
+
+
+On 2021-02-17 16:33, Vinod Koul wrote:
+> On 17-02-21, 12:18, Souradeep Chowdhury wrote:
+>> Add the DCC(Data Capture and Compare) device tree node entry along 
+>> with
+>> the addresses for register regions.
 > 
+> This should be last patch..
 
-Sounds quite valid to me.
+Ack
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  drivers/media/i2c/rdacm20.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> index 56406d82b5ac..e982373908f2 100644
-> --- a/drivers/media/i2c/rdacm20.c
-> +++ b/drivers/media/i2c/rdacm20.c
-> @@ -470,11 +470,16 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
->  	 *  Ensure that we have a good link configuration before attempting to
->  	 *  identify the device.
->  	 */
-> -	max9271_configure_i2c(&dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
-> -						MAX9271_I2CSLVTO_1024US |
-> -						MAX9271_I2CMSTBT_105KBPS);
-> +	ret = max9271_configure_i2c(&dev->serializer,
-> +				    MAX9271_I2CSLVSH_469NS_234NS |
-> +				    MAX9271_I2CSLVTO_1024US |
-> +				    MAX9271_I2CMSTBT_105KBPS);
-> +	if (ret)
-> +		return ret;
->  
-> -	max9271_configure_gmsl_link(&dev->serializer);
-> +	ret = max9271_configure_gmsl_link(&dev->serializer);
-> +	if (ret)
-> +		return ret;
->  
->  	ret = max9271_verify_id(&dev->serializer);
->  	if (ret < 0)
+>> 
+>> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sm8150.dtsi | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+>> index e5bb17b..3198bd3 100644
+>> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+>> @@ -654,6 +654,13 @@
+>>  			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
+>>  		};
+>> 
+>> +		dcc@010a2000{
 > 
+> no leading zero here and space before {
 
+Ack
+
+> 
+>> +			compatible = "qcom,sm8150-dcc", "qcom,dcc";
+>> +			reg = <0x0 0x010a2000 0x0 0x1000>,
+>> +				<0x0 0x010ad000 0x0 0x3000>;
+> 
+> pls align this to preceding line
+
+Ack
+
+> 
+>> +			reg-names = "dcc-base", "dcc-ram-base";
+>> +		};
+>> +
+>>  		ufs_mem_hc: ufshc@1d84000 {
+>>  			compatible = "qcom,sm8150-ufshc", "qcom,ufshc",
+>>  				     "jedec,ufs-2.0";
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
