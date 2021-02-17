@@ -2,112 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE9331DEDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7543631DEDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbhBQSJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:09:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43030 "EHLO mail.kernel.org"
+        id S233194AbhBQSKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:10:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233065AbhBQSJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:09:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 254BD64E42;
-        Wed, 17 Feb 2021 18:08:31 +0000 (UTC)
+        id S232480AbhBQSKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 13:10:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 245E664DEC
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 18:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613585312;
-        bh=mlVck3mitGbq4KsjHsg+Yp+wLuiTRge4SmXhwvupCJA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pcpUB+bwniLXzIs+cBvLaPRAEjbhPwkCX4VK8YS1MQe3zULOCs4fJgwHYw7Uqo6We
-         gu5Z5Ji2v15gLmkbSOWs4bsN2PwW/6RAAYgicliuB3fHgpcP1Jx2XlrROvRpUS/F9H
-         bhmT6TbKs8+Lgqkb7Y4K5hcHMtuMsAjkmyGZ7XUfcVBaV9aKRFeEwI2wh4hXgPQ/yO
-         xfUcGFLc3bRSqJBkHyzgX53Ubi4iYZOrJk6iQfSHxMloXEsRah/REjZYCj0738UQ2E
-         eIURxqB8vya/y3sxmy0UoW4jXclmaE9h0FL1XeXDlv/1K2Ce7f3Il6dYkUHs7ri+Tc
-         slowUVQ5DxHkA==
-Date:   Wed, 17 Feb 2021 10:08:30 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Stephen Boyd <sboyd@kernel.org>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
-        Jan Kotas <jank@cadence.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
-        Boris BREZILLON <boris.brezillon@free-electrons.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Emilio =?UTF-8?B?TMOzcGV6?= <emilio@elopez.com.ar>,
-        Viresh Kumar <vireshk@kernel.org>, openbmc@lists.ozlabs.org,
-        Michal Simek <michal.simek@xilinx.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Nancy Yuen <yuenn@google.com>, Chen-Yu Tsai <wens@csie.org>,
-        Andy Gross <agross@kernel.org>, Loc Ho <lho@apm.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Richard Woodruff <r-woodruff2@ti.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        =?UTF-8?B?U8O2cmVu?= Brinkmann <soren.brinkmann@xilinx.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Tero Kristo <kristo@kernel.org>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Nuvoton Technologies <tali.perry@nuvoton.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
-Message-ID: <20210217100830.50db2195@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210216082046.GA4803@dell>
-References: <20210212212503.GC179940@dell>
-        <20210212212630.GD179940@dell>
-        <161316754567.1254594.9542583200097699504@swboyd.mtv.corp.google.com>
-        <20210212223739.GE179940@dell>
-        <161317480301.1254594.16648868282165823277@swboyd.mtv.corp.google.com>
-        <YCf4kkMsX+Ymgy6N@lunn.ch>
-        <161333644244.1254594.4498059850307971318@swboyd.mtv.corp.google.com>
-        <YCmUOHTtc+j4eLkO@lunn.ch>
-        <20210215084952.GF179940@dell>
-        <20210215094509.0b1f0bbf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210216082046.GA4803@dell>
+        s=k20201202; t=1613585401;
+        bh=L1OIdISDMiKRSiSWhaILOTGeRPn9DN0OB9U34bRhQek=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tmjHATDWxlVbs//lCjmhXz0QNI7+Gw1Xbz5+af5khjJyi1muOTUw92d/TN1UtGt2+
+         1Z/+ybuCpbO2EuU6sV6G2o8r0rOKaIMJnntjfXGRivIE+IA4mvYi4YbzoyMI7hDer/
+         W+sMpeU/DLDaMfSZAZqoR6H7pmny3c26/AsJDPnaPUqaignJNnOMxixNqBG5+/ifts
+         CzF4JzxfYfG65uKYzuVz7Hvgsk6W8mumOCseKs0S+r2vq7S9vppmiuoK4a5bGMEgTe
+         g0nDVaEOni97kwzYuN4Nci8afgF/Ru1s3VKUKUEVwa0DQWACmxa4F/Mwiofk9/5hLe
+         afBfHjtP+JZig==
+Received: by mail-ed1-f42.google.com with SMTP id z22so17629454edb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:10:01 -0800 (PST)
+X-Gm-Message-State: AOAM533hjJNwQmKODeQEh9kPXgXkB5hSKYK4uPt8TC6a1MrNSIjcZA7g
+        Ua1aYqujNz7V8WpaYBkSjNXJHW1w4vlNfgifHz6UcQ==
+X-Google-Smtp-Source: ABdhPJzwArcpxgytNfc42oZjlVBrqCPpsnJwfz+6zR5LkK02Ldu1E4mXTepd7vnfdobtpuRYckLoG8BqletPssvhb9Y=
+X-Received: by 2002:a17:906:b356:: with SMTP id cd22mr175224ejb.253.1613585399128;
+ Wed, 17 Feb 2021 10:09:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210217120143.6106-1-joro@8bytes.org> <20210217120143.6106-3-joro@8bytes.org>
+In-Reply-To: <20210217120143.6106-3-joro@8bytes.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 17 Feb 2021 10:09:46 -0800
+X-Gmail-Original-Message-ID: <CALCETrWw-we3O4_upDoXJ4NzZHsBqNO69ht6nBp3y+QFhwPgKw@mail.gmail.com>
+Message-ID: <CALCETrWw-we3O4_upDoXJ4NzZHsBqNO69ht6nBp3y+QFhwPgKw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] x86/sev-es: Check if regs->sp is trusted before
+ adjusting #VC IST stack
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     X86 ML <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        stable <stable@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 08:20:46 +0000 Lee Jones wrote:
-> On Mon, 15 Feb 2021, Jakub Kicinski wrote:
-> > On Mon, 15 Feb 2021 08:49:52 +0000 Lee Jones wrote:  
-> > > Yes, please share.  
-> > 
-> > https://github.com/kuba-moo/nipa  
-> 
-> Thanks for this.
-> 
-> Oh, I see.  So you conduct tests locally, then post them up in a
-> section called 'Checks' using the provided API.  
+On Wed, Feb 17, 2021 at 4:02 AM Joerg Roedel <joro@8bytes.org> wrote:
+>
+> From: Joerg Roedel <jroedel@suse.de>
+>
+> The code in the NMI handler to adjust the #VC handler IST stack is
+> needed in case an NMI hits when the #VC handler is still using its IST
+> stack.
+> But the check for this condition also needs to look if the regs->sp
+> value is trusted, meaning it was not set by user-space. Extend the
+> check to not use regs->sp when the NMI interrupted user-space code or
+> the SYSCALL gap.
+>
+> Reported-by: Andy Lutomirski <luto@kernel.org>
+> Fixes: 315562c9af3d5 ("x86/sev-es: Adjust #VC IST Stack on entering NMI handler")
+> Cc: stable@vger.kernel.org # 5.10+
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/kernel/sev-es.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+> index 84c1821819af..0df38b185d53 100644
+> --- a/arch/x86/kernel/sev-es.c
+> +++ b/arch/x86/kernel/sev-es.c
+> @@ -144,7 +144,9 @@ void noinstr __sev_es_ist_enter(struct pt_regs *regs)
+>         old_ist = __this_cpu_read(cpu_tss_rw.x86_tss.ist[IST_INDEX_VC]);
+>
+>         /* Make room on the IST stack */
+> -       if (on_vc_stack(regs->sp))
+> +       if (on_vc_stack(regs->sp) &&
+> +           !user_mode(regs) &&
+> +           !from_syscall_gap(regs))
+>                 new_ist = ALIGN_DOWN(regs->sp, 8) - sizeof(old_ist);
+>         else
+>
 
-For some definition of "locally" - NIPA runs on a rented VM.
+Can you get rid of the linked list hack while you're at it?  This code
+is unnecessarily convoluted right now, and it seems to be just asking
+for weird bugs.  Just stash the old value in a local variable, please.
 
-> I assume that Patchwork does not alert the user when something has
-> gone awry?  Is this something Nipa does?
+Meanwhile, I'm pretty sure I can break this whole scheme if the
+hypervisor is messing with us.  As a trivial example, the sequence
+SYSCALL gap -> #VC -> NMI -> #VC will go quite poorly.  Is this really
+better than just turning IST off for #VC and documenting that we are
+not secure against a malicious hypervisor yet?
 
-The way we run it on netdev is maintainer-centric, IOW we see 
-the failures in patchwork and complain to people manually.
-The netdev mailing list gets too many messages as is, if NIPA 
-responded with results automatically (which is not that hard
-technically) my concern is that people would be more likely to
-send untested patches to the mailing list and rely on the bot.
+--Andy
