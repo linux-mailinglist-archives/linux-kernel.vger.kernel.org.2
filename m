@@ -2,144 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A023231E04E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A7631E05A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235037AbhBQU3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 15:29:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234063AbhBQU3I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 15:29:08 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AF3C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 12:28:27 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id y202so6784240iof.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 12:28:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SPUsxNYOqrjc6yzppnQTsrX18OHvrnDQxeQrl3Z/QyQ=;
-        b=UOzhDngDTYPyFp+8BBBv/5jwzLWBu6Pj+SJEp7sRSJv67zw1R50FNPBel8lvpfJsar
-         58P9swwlymB0Ns0IVqctY+GDabeXda+G5lLmEn+qZzXGk69e13EcBHJryUxB1MIHTOUQ
-         jNObPNjioN90MW/eEriJTA9/PpYLPXfkETGBg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SPUsxNYOqrjc6yzppnQTsrX18OHvrnDQxeQrl3Z/QyQ=;
-        b=rxES9jPUQ/JViExc5NmjP01ZVaR8UZ/4BGMa38xXLuxjb6rGlizYTf3vyB62z4LRDa
-         Ut8gg7yRIf0vkLH+4JImcFuo5ThF6lz/JAxqNGV4+tI0GBZyBIenPo7w8bBDEk3WC8+N
-         SzEt1LBjxuzJWbxuPqKaTyOu7PBvCY9kaPHI/OKord/wT+QbCfcD4eA/RonKwjJI2Yij
-         T1YGFsHP/f/e/Sv0sC6HtClEyx2i/p/3hHRycIV+0Te6bd4iNvPAs4AxyLLENAAkd7s7
-         UtIQmidxaRDStdjGTeLWg0pN3cxKUzE269wHlDbbI2wDDcfABgx0dJczDKSzSI2iPoDj
-         w5HA==
-X-Gm-Message-State: AOAM531e5kEbiJ+gNYPZLMABAZ3rto1lSz9BR1wMGzVIvqktIfXQwqsi
-        P4qcQ+iE6t1LtYnPFP6owrMKzw==
-X-Google-Smtp-Source: ABdhPJxCxxtl2LO3zSwzUplyfCS+xcPKQ30PbjuNpNDojM61C10ViLWbDPBC/OvUHVk3GGMM06Lgwg==
-X-Received: by 2002:a05:6602:2e84:: with SMTP id m4mr654624iow.43.1613593707308;
-        Wed, 17 Feb 2021 12:28:27 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 144sm2195441ioc.41.2021.02.17.12.28.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Feb 2021 12:28:26 -0800 (PST)
-Subject: Re: [PATCH 2/2] ath9k: fix ath_tx_process_buffer() potential null ptr
- dereference
-To:     Kalle Valo <kvalo@codeaurora.org>, Felix Fietkau <nbd@nbd.name>
-Cc:     davem@davemloft.net, kuba@kernel.org, ath9k-devel@qca.qualcomm.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <43ed9abb9e8d7112f3cc168c2f8c489e253635ba.1613090339.git.skhan@linuxfoundation.org>
- <20210216070336.D138BC43463@smtp.codeaurora.org>
- <0fd9a538-e269-e10e-a7f9-02d4c5848420@nbd.name>
- <caac2b21-d5de-32ac-0fe0-75af8fb80bbb@linuxfoundation.org>
- <878s7nqhg0.fsf@codeaurora.org>
- <6bbeb37f-620e-d92d-d042-a507bbb39808@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <5d70b0ab-0627-74a1-3602-98a7c71b871a@linuxfoundation.org>
-Date:   Wed, 17 Feb 2021 13:28:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S234306AbhBQU3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 15:29:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234128AbhBQU3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 15:29:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82D5A64E68;
+        Wed, 17 Feb 2021 20:28:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613593709;
+        bh=23VZSkRr0T33Mc0ai1g+Ty+0gltg7+V4FpAanjCfUEU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LFja3qvGqVqtgCD/mh2IMZwOqORP7LWFTOQlJOdBNocv0EBwpbI5PGupffZQlrb9H
+         BsPobnVcYgYHIDc+SOC1q2HQKbamxBAWFWixXyC/7Q2+PCIQeWMtJntW5auhCuPItp
+         5enK2VhlmQ47qRPdcBF/+/9dRlyoo+5nOpi5bmHPr15WVV0/PXJ3zzQ4fq3X95zzjN
+         TTBUnIbAhnzZJRPD3bjNoovmI1i1HDgQ7xg0cUsKYoatzIWAa6uDg/crAEGvItNevr
+         NwNomyUogjCVcghH7f4hRZe08HieB+cMyyuSNpFldHZB4KutcjJYzE9tHjNNWheV5R
+         eEqfw5ZyQOW/A==
+Date:   Wed, 17 Feb 2021 12:28:27 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>
+Subject: [GIT PULL] f2fs update for 5.12-rc1
+Message-ID: <YC18awybSAcVLPbr@google.com>
 MIME-Version: 1.0
-In-Reply-To: <6bbeb37f-620e-d92d-d042-a507bbb39808@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/17/21 7:56 AM, Shuah Khan wrote:
-> On 2/17/21 12:30 AM, Kalle Valo wrote:
->> Shuah Khan <skhan@linuxfoundation.org> writes:
->>
->>> On 2/16/21 12:53 AM, Felix Fietkau wrote:
->>>>
->>>> On 2021-02-16 08:03, Kalle Valo wrote:
->>>>> Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>>
->>>>>> ath_tx_process_buffer() references ieee80211_find_sta_by_ifaddr()
->>>>>> return pointer (sta) outside null check. Fix it by moving the code
->>>>>> block under the null check.
->>>>>>
->>>>>> This problem was found while reviewing code to debug RCU warn from
->>>>>> ath10k_wmi_tlv_parse_peer_stats_info() and a subsequent manual audit
->>>>>> of other callers of ieee80211_find_sta_by_ifaddr() that don't hold
->>>>>> RCU read lock.
->>>>>>
->>>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->>>>>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
->>>>>
->>>>> Patch applied to ath-next branch of ath.git, thanks.
->>>>>
->>>>> a56c14bb21b2 ath9k: fix ath_tx_process_buffer() potential null ptr 
->>>>> dereference
->>>> I just took another look at this patch, and it is completely bogus.
->>>> Not only does the stated reason not make any sense (sta is simply 
->>>> passed
->>>> to other functions, not dereferenced without checks), but this also
->>>> introduces a horrible memory leak by skipping buffer completion if sta
->>>> is NULL.
->>>> Please drop it, the code is fine as-is.
->>>
+Hi Linus,
 
-Felix,
+Could you please consider this pull request?
 
-I looked at the code path again and found the following path that
-can become a potential dereference downstream. My concern is
-about potential dereference downstream.
+Thanks,
 
-First path: ath_tx_complete_buf()
+The following changes since commit 76c057c84d286140c6c416c3b4ba832cd1d8984e:
 
-1. ath_tx_process_buffer() passes sta to ath_tx_complete_buf()
-2. ath_tx_complete_buf() doesn't check or dereference sta
-    Passes it on to ath_tx_complete()
-3. ath_tx_complete() doesn't check or dereference sta, but assigns
-    it to tx_info->status.status_driver_data[0]
-    tx_info->status.status_driver_data[0] = sta;
+  Merge branch 'parisc-5.11-2' of git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux (2021-01-27 11:06:15 -0800)
 
-ath_tx_complete_buf() should be fixed to check sta perhaps?
+are available in the Git repository at:
 
-This assignment without checking could lead to dereference at some
-point in the future.
+  git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.12-rc1
 
-Second path: ath_tx_complete_aggr()
+for you to fetch changes up to 092af2eb180062f5bafe02a75da9856676eb4f89:
 
-1. ath_tx_process_buffer() passes sta to ath_tx_complete_aggr()
-2. No problems in this path as ath_tx_complete_aggr() checks
-    sta before use.
+  Documentation: f2fs: fix typo s/automaic/automatic (2021-02-16 07:58:35 -0800)
 
-I can send the revert as it moves more code than necessary under
-the null check. As you pointed out, it could lead to memory leak.
-Not knowing this code well, I can't really tell where. However,
-my original concern is valid for ath_tx_complete_buf() path.
+----------------------------------------------------------------
+f2fs-for-5.12-rc1
 
-Sending revert as requested.
+We've added two major features: 1) compression level and 2) checkpoint_merge, in
+this round. 1) compression level expands 'compress_algorithm' mount option to
+accept parameter as format of <algorithm>:<level>, by this way, it gives a way
+to allow user to do more specified config on lz4 and zstd compression level,
+then f2fs compression can provide higher compress ratio. 2) checkpoint_merge
+creates a kernel daemon and makes it to merge concurrent checkpoint requests as
+much as possible to eliminate redundant checkpoint issues. Plus, we can
+eliminate the sluggish issue caused by slow checkpoint operation when the
+checkpoint is done in a process context in a cgroup having low i/o budget and
+cpu shares.
 
-thanks,
--- Shuah
+Enhancement:
+ - add compress level for lz4 and zstd in mount option
+ - checkpoint_merge mount option
+ - deprecate f2fs_trace_io
 
+Bug fix:
+ - flush data when enabling checkpoint back
+ - handle corner cases of mount options
+ - missing ACL update and lock for I_LINKABLE flag
+ - attach FIEMAP_EXTENT_MERGED in f2fs_fiemap
+ - fix potential deadlock in compression flow
+ - fix wrong submit_io condition
+
+As usual, we've cleaned up many code flows and fixed minor bugs.
+
+----------------------------------------------------------------
+Chao Yu (13):
+      f2fs: enhance to update i_mode and acl atomically in f2fs_setattr()
+      f2fs: enforce the immutable flag on open files
+      f2fs: relocate f2fs_precache_extents()
+      f2fs: compress: deny setting unsupported compress algorithm
+      f2fs: compress: support compress level
+      f2fs: introduce a new per-sb directory in sysfs
+      f2fs: fix to tag FIEMAP_EXTENT_MERGED in f2fs_fiemap()
+      f2fs: fix out-of-repair __setattr_copy()
+      f2fs: trival cleanup in move_data_block()
+      f2fs: fix to set/clear I_LINKABLE under i_lock
+      f2fs: compress: fix potential deadlock
+      f2fs: introduce sb_status sysfs node
+      f2fs: relocate inline conversion from mmap() to mkwrite()
+
+Chengguang Xu (1):
+      f2fs: fix to use per-inode maxbytes
+
+Daeho Jeong (3):
+      f2fs: fix null page reference in redirty_blocks
+      f2fs: introduce checkpoint_merge mount option
+      f2fs: add ckpt_thread_ioprio sysfs node
+
+Dehe Gu (1):
+      f2fs: fix a wrong condition in __submit_bio
+
+Ed Tsai (1):
+      Documentation: f2fs: fix typo s/automaic/automatic
+
+Eric Biggers (2):
+      f2fs: clean up post-read processing
+      libfs: unexport generic_ci_d_compare() and generic_ci_d_hash()
+
+Jack Qiu (1):
+      f2fs: remove unused stat_{inc, dec}_atomic_write
+
+Jaegeuk Kim (5):
+      f2fs: handle unallocated section and zone on pinned/atgc
+      f2fs: deprecate f2fs_trace_io
+      f2fs: flush data when enabling checkpoint back
+      f2fs: don't grab superblock freeze for flush/ckpt thread
+      f2fs: give a warning only for readonly partition
+
+Liu Song (1):
+      f2fs: remove unnecessary initialization in xattr.c
+
+Matthew Wilcox (Oracle) (1):
+      f2fs: Remove readahead collision detection
+
+Weichao Guo (1):
+      f2fs: fix to set inode->i_mode correctly for posix_acl_update_mode
+
+Yi Chen (1):
+      f2fs: fix to avoid inconsistent quota data
+
+Zheng Yongjun (1):
+      f2fs: Replace expression with offsetof()
+
+ Documentation/ABI/testing/sysfs-fs-f2fs |  32 +++
+ Documentation/filesystems/f2fs.rst      |  18 +-
+ fs/f2fs/Kconfig                         |  20 +-
+ fs/f2fs/Makefile                        |   1 -
+ fs/f2fs/acl.c                           |  23 +-
+ fs/f2fs/checkpoint.c                    | 177 +++++++++++++-
+ fs/f2fs/compress.c                      | 195 +++++++++++----
+ fs/f2fs/data.c                          | 404 ++++++++++++--------------------
+ fs/f2fs/debug.c                         |  12 +
+ fs/f2fs/f2fs.h                          | 104 ++++++--
+ fs/f2fs/file.c                          |  57 +++--
+ fs/f2fs/gc.c                            |   8 +-
+ fs/f2fs/inline.c                        |   4 +
+ fs/f2fs/namei.c                         |   8 +
+ fs/f2fs/node.c                          |   4 +-
+ fs/f2fs/segment.c                       |   7 -
+ fs/f2fs/segment.h                       |   4 +-
+ fs/f2fs/super.c                         | 198 +++++++++++++---
+ fs/f2fs/sysfs.c                         | 132 ++++++++++-
+ fs/f2fs/trace.c                         | 165 -------------
+ fs/f2fs/trace.h                         |  43 ----
+ fs/f2fs/xattr.c                         |  23 +-
+ fs/libfs.c                              |   8 +-
+ include/linux/f2fs_fs.h                 |   3 +
+ include/linux/fs.h                      |   5 -
+ 25 files changed, 1036 insertions(+), 619 deletions(-)
+ delete mode 100644 fs/f2fs/trace.c
+ delete mode 100644 fs/f2fs/trace.h
