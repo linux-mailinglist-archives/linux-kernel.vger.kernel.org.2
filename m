@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F61631E2C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B54B31E2C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbhBQWs5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Feb 2021 17:48:57 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2842 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232093AbhBQWm1 (ORCPT
+        id S233493AbhBQWt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 17:49:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232849AbhBQWqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 17:42:27 -0500
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Dgt6z6thYz13vm8;
-        Thu, 18 Feb 2021 06:39:07 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 18 Feb 2021 06:41:33 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi761-chm.china.huawei.com (10.1.198.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 18 Feb 2021 06:41:33 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Thu, 18 Feb 2021 06:41:33 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Finn Thain <fthain@telegraphics.com.au>
-CC:     Arnd Bergmann <arnd@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-Thread-Topic: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-Thread-Index: AdcA2xDwQTa7W6j6SmS4J3iBnsSynAAcRXSAABFJYBD//354gP//dYEggAGu1ID//yBa4P/+Ln+AAHCiVQD/+aOIoA==
-Date:   Wed, 17 Feb 2021 22:41:33 +0000
-Message-ID: <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com>
- <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
- <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
-  <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com>
- <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
-In-Reply-To: <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.96.186]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 17 Feb 2021 17:46:31 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D5DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 14:45:50 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id s24so8151iob.6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 14:45:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/EtfkUw3oZIbZL9grKTp0TlguZ3YnmMueDqnvSR1hLE=;
+        b=G99JtRFF1vdJjqqn/RABCm0tquMOxGy/oN/WY6kPzHzvkPQe8hZMxlQg0hgzA2aCLm
+         RHelWdYkBN/tBxpfN13BUrYDTH2GRsxVLqnEPb6P+eP+qxlDVT896QegUP6Z4R3gIRii
+         qVu98AnXgk52wPoQVXX1jeDSYthy+MjlgTWmw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/EtfkUw3oZIbZL9grKTp0TlguZ3YnmMueDqnvSR1hLE=;
+        b=ofYh7qSO2EosRDNTn3jpaIlVTzSx4ibjAf0Hb9RC3FHHJYuKrOtoFn2qQctiiwiSjL
+         Qn8Foya47bjgeuqJ6XX/EiCBmeItQAMRiA/aa/FcEG2Wrf23aLn8fjL0K6xzKmJt5Fbg
+         +1VxnilvV+1NfvGolM62WIouZKnFKOjV8pcDzDsIe5/ZpLxmxIuEd1iW1JMqFPwQ/cx5
+         qiiCfEE0qbm5YMOIL3yfj9Ljp0ToOB5elrQRw3N9PgnY5qxJmjrmrWCQWTrYNdgSEVWf
+         wrnWS5qCu0/T/4PdKlfSHbJR+8szZPRNinbQ2Gr9r1LWygfm/JCLzvwCfHxRlwgECtC5
+         IhtQ==
+X-Gm-Message-State: AOAM533QkuLMWfaGAOVywK7jHOzgG/d65edKV5PTjbq03hhFTJCi4yvY
+        9f5uuPuHUjVDo4mKSxdbcJ9p4Q==
+X-Google-Smtp-Source: ABdhPJylgVAULFgtptVHAUmPUexHtfoFldtftsHUnw61VU/Ievg/yJs/ECX6BTjV7Uk5u2OQUiH3Fw==
+X-Received: by 2002:a05:6638:42:: with SMTP id a2mr1635369jap.99.1613601950364;
+        Wed, 17 Feb 2021 14:45:50 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id e1sm2547255iod.17.2021.02.17.14.45.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Feb 2021 14:45:49 -0800 (PST)
+Subject: Re: [PATCH 5.10 00/54] 5.10.16-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210211150152.885701259@linuxfoundation.org>
+ <0825d0d8-0183-9653-dd74-d5921e360bb7@linuxfoundation.org>
+ <YCfM/llSa65fhR4m@kroah.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <0ec4ad3c-3cbd-aa69-db3f-999f2622037d@linuxfoundation.org>
+Date:   Wed, 17 Feb 2021 15:45:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <YCfM/llSa65fhR4m@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Finn Thain [mailto:fthain@telegraphics.com.au]
-> Sent: Sunday, February 14, 2021 6:11 PM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: Arnd Bergmann <arnd@kernel.org>; tglx@linutronix.de;
-> gregkh@linuxfoundation.org; arnd@arndb.de; geert@linux-m68k.org;
-> funaho@jurai.org; philb@gnu.org; corbet@lwn.net; mingo@redhat.com;
-> linux-m68k@lists.linux-m68k.org; linux-kernel@vger.kernel.org
-> Subject: RE: [RFC] IRQ handlers run with some high-priority interrupts(not NMI)
-> enabled on some platform
+On 2/13/21 5:58 AM, Greg Kroah-Hartman wrote:
+> On Fri, Feb 12, 2021 at 09:17:13AM -0700, Shuah Khan wrote:
+>> On 2/11/21 8:01 AM, Greg Kroah-Hartman wrote:
+>>> This is the start of the stable review cycle for the 5.10.16 release.
+>>> There are 54 patches in this series, all will be posted as a response
+>>> to this one.  If anyone has any issues with these being applied, please
+>>> let me know.
+>>>
+>>> Responses should be made by Sat, 13 Feb 2021 15:01:39 +0000.
+>>> Anything received after that time might be too late.
+>>>
+>>> The whole patch series can be found in one patch at:
+>>> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.16-rc1.gz
+>>> or in the git tree and branch at:
+>>> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+>>> and the diffstat can be found below.
+>>>
+>>> thanks,
+>>>
+>>> greg k-h
+>>>
+>>
+>> Compiled and booted on my test system. No dmesg regressions.
+>>
+>> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+>>
+>> Note: gdm doesn't start and no response to keyboard and mouse.
+>>
+>> I can ssh in and use the system. I am going debug and update you.
+>> 5.4.98-rc1 and 4.9.176-rc1 are fine and no such issues.
 > 
-> On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> Did you ever track this down?
 > 
-> >
-> > So what is really confusing and a pain to me is that:
-> > For years people like me have been writing device drivers
-> > with the idea that irq handlers run with interrupts
-> > disabled after those commits in genirq. So I don't need
-> > to care about if some other IRQs on the same cpu will
-> > jump out to access the data the current IRQ handler
-> > is accessing.
-> >
-> > but it turns out the assumption is not true on some platform.
-> > So should I start to program devices driver with the new idea
-> > interrupts can actually come while irqhandler is running?
-> >
-> > That's the question which really bothers me.
-> >
-> 
-> That scenario seems a little contrived to me (drivers for two or more
-> devices sharing state through their interrupt handlers). Is it real?
-> I suppose every platform has its quirks. The irq lock in sonic_interrupt()
-> is only there because of a platform quirk (the same device can trigger
-> either of two IRQs). Anyway, no-one expects all drivers to work on all
-> platforms; I don't know why it bothers you so much when platforms differ.
 
-Basically, we wrote drivers with the assumption that this driver will
-be cross-platform. (Of course there are some drivers which can only work
-on one platform, for example, if the IP of the device is only used in
-one platform as an internal component of a specific SoC.)
+I am planning make time this week to track this down.
 
-So once a device has two or more interrupts, we need to consider one
-interrupt might preempt another one on m68k on the same cpu if we also
-want to support this driver on m68k. this usually doesn't matter on
-other platforms.
+thanks,
+-- Shuah
 
-on the other hand, there are more than 400 irqs_disabled() in kernel,
-I am really not sure if they are running with the knowledge that
-the true irqs_disabled() actually means some interrupts are off
-and some others are still open on m68k. Or they are running with
-the assumption that the true irqs_disabled() means IRQ is totally
-quiet? If the latter is true, those drivers might fail to work on
-m68k as well.
-
-Thanks
-Barry
