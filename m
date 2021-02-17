@@ -2,178 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACBB31D51C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E563431D513
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhBQFgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 00:36:44 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:46479 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231522AbhBQFgH (ORCPT
+        id S231508AbhBQFfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 00:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231446AbhBQFeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 00:36:07 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210217053525epoutp02bedbf60ec1f730d6a3544fcfd2742414~kcjHkALp-2247622476epoutp02C
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 05:35:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210217053525epoutp02bedbf60ec1f730d6a3544fcfd2742414~kcjHkALp-2247622476epoutp02C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1613540125;
-        bh=IhP01hyIOJgy9AB0COOkaGUvJuycWGdW5+g0OdIMY8o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jSYwAd2S58L70eKQRwNlsIZKAK6SURTyjOCeNZ6E7o+Rt/JAbIAMG/1Geau3MBV9p
-         +jucgjmF8FxDQP7o4n6oHPtHNtyuM9sLyflYv6odbW5NZ2dpSOeW256NZPt7V+p3iP
-         JQ2PSxfTayRFug3AkhEkTEG7Oj7TbCKUs6UcxDQ0=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210217053523epcas1p3a6446e0bb75cf8a118a2ed57a4cf6497~kcjGVndX30867608676epcas1p3a;
-        Wed, 17 Feb 2021 05:35:23 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DgRPk0C3tz4x9Pr; Wed, 17 Feb
-        2021 05:35:22 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        53.B5.02418.91BAC206; Wed, 17 Feb 2021 14:35:21 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210217053521epcas1p2aa80cae5d52f30c8c8882f44abe8045c~kcjEPNufT1063410634epcas1p2d;
-        Wed, 17 Feb 2021 05:35:21 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210217053521epsmtrp27d56e76c29d24f91f154f478718d9418~kcjEOGwsB2012920129epsmtrp2B;
-        Wed, 17 Feb 2021 05:35:21 +0000 (GMT)
-X-AuditID: b6c32a35-c23ff70000010972-4b-602cab19ffc6
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        23.B1.08745.91BAC206; Wed, 17 Feb 2021 14:35:21 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.101.61]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210217053521epsmtip279cb4cd4009f780691c08d108bc26bdb~kcjD68fVw0034600346epsmtip2T;
-        Wed, 17 Feb 2021 05:35:21 +0000 (GMT)
-From:   DooHyun Hwang <dh0421.hwang@samsung.com>
-To:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, axboe@kernel.dk, adrian.hunter@intel.com,
-        satyat@google.com, ebiggers@google.com, gustavoars@kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
-        sh043.lee@samsung.com, cw9316.lee@samsung.com,
-        sh8267.baek@samsung.com, wkon.kim@samsung.com,
-        DooHyun Hwang <dh0421.hwang@samsung.com>
-Subject: [PATCH 2/2] mmc: core: Add no single read retries
-Date:   Wed, 17 Feb 2021 14:22:39 +0900
-Message-Id: <20210217052239.13780-3-dh0421.hwang@samsung.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210217052239.13780-1-dh0421.hwang@samsung.com>
+        Wed, 17 Feb 2021 00:34:07 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F8AC061574;
+        Tue, 16 Feb 2021 21:33:26 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id r77so11737145qka.12;
+        Tue, 16 Feb 2021 21:33:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G7oEC+eTJ+ELbOjqhGFXJgcF60fpnjm1ejAxDJwpCHM=;
+        b=WlMKZ5hlrfOmRvznzBxnUU/mks2XIk1591CeNiGAyG5zeL4WBNFsz38hwwMfPeMXPY
+         5JRNxB0k/Ox1Zso50f3VM9y+vARWP5F4fOTPwrlwt2BWJbu0+g4exxzS35XBvdCOxLu0
+         b2H9Djtf6SVxN25cyTlbxSwYSHZnEh7Lz/jbKp+OaJMdj3R9x2pDzgBzv5xHN/sERL6R
+         mxZl8PlZMqTg6rWiJIEMp3aTwkfZfweUU7BP3DPUryupczW8vt/FjJRwTj6bkYfz8zoq
+         84p6jtMxlaO5WzIvanBIE+JBp2EXZ0lQzie44wsVXHGOd1SXzIjG0E2m0Ek0lp+TQooo
+         ES2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G7oEC+eTJ+ELbOjqhGFXJgcF60fpnjm1ejAxDJwpCHM=;
+        b=eiPT8Imn6QCnf5O05yJu5OdJYKrOwSfQd1n1qV4Xed8d8kQXYZk8NTBjw+erFLj+MS
+         EyyxMiNYbgS5nqSfqp5TPo159rS6uUwW9DQK3+48pq7QfaQDefo6nnR6kk/ENIfR8nZj
+         w0SlUtsaOlblEbOgog7tk30bZWY8KTNMp4si4euvwLJHJ+m+tDjfw+p35BZ1OvZOesdT
+         TEjCs3NasdrbYmJQ3vd7ygQrkTjgrrQu+8dK/KyZ8inpPQFFRv6T4VDSAIDuIWmpdnl3
+         W33qpKLK1fH79MkB6SCvNMKa9RFi0Cb+hA6iBfxP1Kydz2ub07bqepCwVcGF0WAMYRoC
+         urjA==
+X-Gm-Message-State: AOAM533YS4zbpSQOaLAh12mSmTB1EN5eBise9kZlLREEB4Pou7YuXkm7
+        xEgU7XTi4G1ugWMe0qpzybs=
+X-Google-Smtp-Source: ABdhPJxydVvaF0xz2a74Yr+1br9CohCN1SxZFBEJ6l+F7HF64UE3c6NLI+FJbN1HKUCcJEncTGjlPg==
+X-Received: by 2002:ae9:f309:: with SMTP id p9mr19189000qkg.111.1613540005565;
+        Tue, 16 Feb 2021 21:33:25 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id s14sm535960qtq.97.2021.02.16.21.33.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Feb 2021 21:33:25 -0800 (PST)
+Subject: Re: DT overlay applied via pinctrl description
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <63d610ba-5f63-2be1-6215-f44bd88d94d2@xilinx.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <929190e9-1195-4381-ae18-b71d17444569@gmail.com>
+Date:   Tue, 16 Feb 2021 23:33:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01TbUxbVRjO6e39AIFdyofH4hy7upmiQEspnC3ATIamyfyBWQSzRcsVroWs
-        tE1vS+ZidHx/D4iDILCxiV/QwZICGyJ0UlHEMDeow0no2CKbKIzBmuo2xmbLZcq/533e5zlv
-        nvecQ2GSy4SUytWbOZOe1TGEv/jcd7KY6GesL2fKv5pDaGzuDIGsrloCNf1UiqO2kZ9xZJ8a
-        I9GEtRhHD9bOkujBRCOOyvs+FqH+P8ZJNLBWJELOgVYCjTyuBahkaIREtVYXgQof2sVoavxH
-        HI12ZaCeyb/Fr4SoT9ks6vbBP0Vq50WL2tZZQahnpgYJ9bHeTqB2255LIw/oknI4NpszRXL6
-        LEN2rl6bzOzbr9mrUSXIFdGKXSiRidSzeVwyk/p6WvRruTpvEiYyn9VZvFQay/NMbEqSyWAx
-        c5E5Bt6czHDGbJ1RITfG8Gweb9FrY7IMebsVcnmcyqvM1OW4zjfgxnLJ4ZLKL4mj4F5QJaAo
-        SMfD4WGqEvhTErofwLLpHpFQ3AVw/tvyjcINYEfrVfyJo6Fgq8APAHhlsgv8J2pa+p6oBH4U
-        QcfAwZpO3NcI9R01OH2B9BUYvQLg6emFdVUIvRvarVUiHxbTO+DJOy3AhwPpZDi+cH+dh/Q2
-        +HC2GvNhPzoF3pmsxQRNMBz7ZE7sw5hXU9TXgvkGQPoyBX+/1UUI5lToWOwXCzgE/jXaSwpY
-        Ct1LQxuaKgBrHSmCuQ5A52j1RkMJ77rdwBcao2Xw7ECsQG+HX6+eAMLgILjkqd7YSyAsL5UI
-        kp2w/dE/Xgnpxc/CgqcEVg1dk2dwYVn1ADac/4asA5HNm9I0b0rT/P/cUwDrBOGckc/TcrzC
-        qNh8wzaw/rSjVP2g/vZyjAOIKOAAkMKY0EDSHZUpCcxm3z/CmQwak0XH8Q6g8u66HpOGZRm8
-        f0Nv1ihUcUqlEsUnJCaolMzTge/Kr2sktJY1c4c4zsiZnvhElJ/0qKhkJbs4VqzPf8/zpidV
-        86Gp1TKU9PyNk0UB5369tgNfLLOpHsWVSl+Ujasrig8w8y+k1c2kHZKN/qBdu66uk/ZGdKfM
-        xzrmiJvNhZSy8XbbgG35rROqZXIho6JFG/T5TJONrspc3XKcvtRYU3DsJerglXeK437jP7q/
-        tjDxi3N7R7sls62kLCArImDcvqeXOpx641JExJzKnGGk78k68ID8wrBP96dbr2652dJF1ZSx
-        VX2zsjH58ZGgYG7bB6dDd02ER6/s8XwB9w0PhX32uCfddU36dnf3am94W0783osNt0L5V3ve
-        iA2q8DfvDJg5UuicWmQNiQc9dhScPqMnZi9sZcR8DquIwkw8+y/2r4qGYwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupikeLIzCtJLcpLzFFi42LZdlhJXldytU6Cwab/IhYnn6xhs1h9t5/N
-        YsapNlaL+UfOsVrsu3aS3eLi6hZWi19/17Nb/Lo4jdWiY+tkJosdz8+wW+z628xkcXnXHDaL
-        I//7GS1a9x5ht+hffZfNounPPhaLa2dOsFocXxtusfnSNxYHYY8Fm0o9Fu95yeRx+Wypx6ZV
-        nWwed67tYfPo27KK0ePzJrkA9igum5TUnMyy1CJ9uwSujLvbp7IWdAhVtHYtZ2tg/MHXxcjB
-        ISFgIjG1UbaLkYtDSGAHo8SC5VtYuxg5geIyEt3397JD1AhLHD5cDFHzEajm2ztmkBo2AT2J
-        Pb2rWEESIgL/GCU6Z29iA3GYBX4zSkz60cwOUiUsYCWxb3U3E4jNIqAqMe/9bEYQm1fAVuLM
-        659MENvkJf7c7wGbyilgJ/H+Uj+YLQRUM/vYDyaIekGJkzOfsIDYzED1zVtnM09gFJiFJDUL
-        SWoBI9MqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzg6NLS2sG4Z9UHvUOMTByMhxgl
-        OJiVRHjZP2slCPGmJFZWpRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp
-        1cB0pOU4v3OL3eSeM2Lv6zUnHLoTOaf4XZnaCysbgZV6qz9/tpUq1g1a8oBPTmDiroh75f8W
-        rVuxk39V4rJbk7eunFMp/un/Pf8/rGdPn6iI+Oz94Pq8sK+Wi7bumubz5f6zP0Ic0vs+3SiY
-        Pan886s34dnyHt8WvTvbkMyvYKd4qYz77tbdM77Kuc2Im2i5xYfz+CJZ/Yv12xw0OW6WpM/t
-        n1xqmyDBmCa4oevW6zLeeHO99i0CjCGr9Jysvxikxh4o3JbP9HVXQ1WAvkys+4KHaaq3DYNO
-        81tqmbsKznov0sv3RSH1qvav3xX2il2fnolvlrjZFfP61KQTxzZXZyTK5jdJ1tV/WquwLnWn
-        7P1PSizFGYmGWsxFxYkALRaToB0DAAA=
-X-CMS-MailID: 20210217053521epcas1p2aa80cae5d52f30c8c8882f44abe8045c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210217053521epcas1p2aa80cae5d52f30c8c8882f44abe8045c
-References: <20210217052239.13780-1-dh0421.hwang@samsung.com>
-        <CGME20210217053521epcas1p2aa80cae5d52f30c8c8882f44abe8045c@epcas1p2.samsung.com>
+In-Reply-To: <63d610ba-5f63-2be1-6215-f44bd88d94d2@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This makes to handle read errors faster by not retrying
-multiple block read(CMD18) errors with single block reads(CMD17).
++Frank, Rob, devicetree list
 
-On some bad SD Cards that have problem with read operations,
-it is not helpful to retry multiple block read errors with
-several single block reads, and it is delayed to treat read
-operations as I/O error as much as retrying single block reads.
+On 2/16/21 9:35 AM, Michal Simek wrote:
+> Hi,
+> 
+> I have a question about expectations when pinctrl setting is applied. In
+> DTS all nodes are described in the order available in DT.
+> 
+> uart-default {
+> 	mux {
+> 		...
+> 	};
+> 
+> 	conf {
+> 		...
+> 	};
+> };
+> 
+> I don't know if this standard description or not. I definitely see other
+> pinctrl drivers which are using different structure.
+> 
+> Anyway when overlay is applied the order has changed to
+> uart-default {
+> 	conf {
+> 		...
+> 	};
+> 
+> 	mux {
+> 		...
+> 	};
+> };
+> 
+> which is causing issue because pin is configured first via conf node
+> before it is requested via mux. This is something what firmware is
+> checking and error out.
+> 
+> That's why I want to check with you if this is issue with DT binding
+> description we use in zynqmp pinctrl driver posted here
+> https://lore.kernel.org/linux-arm-kernel/1613131643-60062-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com/
+> 
+> I have also tried to use init and default configuration where init is
+> called just with mux setting and then default is called just with config
+> but the issue is there as well because in pinctrl_commit_state()
+> previous state is checked and for MUXes pinmux_disable_setting() is
+> called which release a pin. And then configuration in default is called
+> but without requesting pin which fails for the same reason as above.
+> 
+> That's why my questions are:
+> Are we using incorrect DT description?
+> And is there a need sort subnodes in a way that mux should be called
+> first by core before configuration?
+> Or is there any different way how to do it?
 
-Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
----
- drivers/mmc/core/block.c | 3 ++-
- drivers/mmc/core/host.c  | 6 ++++++
- include/linux/mmc/host.h | 3 +++
- 3 files changed, 11 insertions(+), 1 deletion(-)
+Node ordering and property ordering within a node are not defined
+in the Linux kernel.  If a subsystem or property is depending upon
+a certain order, they must implement a method other than the
+order as accessed by of_* functions.  And as you noted, use of an
+overlay may also change ordering.
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index d666e24fbe0e..e25aaf8fca34 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -1809,7 +1809,8 @@ static void mmc_blk_mq_rw_recovery(struct mmc_queue *mq, struct request *req)
- 
- 	/* FIXME: Missing single sector read for large sector size */
- 	if (!mmc_large_sector(card) && rq_data_dir(req) == READ &&
--	    brq->data.blocks > 1) {
-+	    brq->data.blocks > 1 &&
-+	    !card->host->no_single_read_retry) {
- 		/* Read one sector at a time */
- 		mmc_blk_read_single(mq, req);
- 		return;
-diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-index 9b89a91b6b47..3bf5b2fc111b 100644
---- a/drivers/mmc/core/host.c
-+++ b/drivers/mmc/core/host.c
-@@ -352,6 +352,12 @@ int mmc_of_parse(struct mmc_host *host)
- 	if (device_property_read_bool(dev, "no-mmc"))
- 		host->caps2 |= MMC_CAP2_NO_MMC;
- 
-+	if (device_property_read_bool(dev, "no-single-read-retry")) {
-+		dev_info(host->parent,
-+			"Single block read retrying is not supported\n");
-+		host->no_single_read_retry = true;
-+	}
-+
- 	/* Must be after "non-removable" check */
- 	if (device_property_read_u32(dev, "fixed-emmc-driver-type", &drv_type) == 0) {
- 		if (host->caps & MMC_CAP_NONREMOVABLE)
-diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-index 26a3c7bc29ae..faec55035a63 100644
---- a/include/linux/mmc/host.h
-+++ b/include/linux/mmc/host.h
-@@ -502,6 +502,9 @@ struct mmc_host {
- 	/* Host Software Queue support */
- 	bool			hsq_enabled;
- 
-+	/* Do not retry multi block read as single block read */
-+	bool			no_single_read_retry;
-+
- 	unsigned long		private[] ____cacheline_aligned;
- };
- 
--- 
-2.29.0
+-Frank
+
+> 
+> Thanks,
+> Michal
+> 
 
