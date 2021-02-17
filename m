@@ -2,258 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D490831DD35
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0131531DD3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhBQQVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:21:50 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:57779 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233128AbhBQQVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:21:35 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613578869; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=g6ScauTX2Wi/Zz8wHvhSihq2xKuqDUU1NLocqRH9Yi8=; b=cuVBodplEsJMMUyyxtE5R3b2CpKkg0IsWWpKAOhNIUReEyNIyEMqY1gSHVbt6EX40PgdF88l
- qQz4ImvEh75i4knStnkPYe8uLTKzqgpzPTo6RNsq8V/zdWJIH9rkmEkKjVm866tp6USgXRSf
- 14g0A5jQLCEUi3Erq+8d8iaaROc=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 602d425297484ee2acb6df33 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 16:20:34
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A5F15C43462; Wed, 17 Feb 2021 16:20:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 67971C433CA;
-        Wed, 17 Feb 2021 16:20:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 67971C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [PATCH v2] bus: mhi: core: Sanity check values from remote device before use
-Date:   Wed, 17 Feb 2021 09:20:22 -0700
-Message-Id: <1613578822-18614-1-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S234145AbhBQQWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:22:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234129AbhBQQWa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 11:22:30 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9AFC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:21:50 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id e9so7666818plh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:21:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bwj2VEQ4ikZLXStMngbVQVrHSRYYBYM85rwNvszv13s=;
+        b=Ov16ZyHSFWepKkF6IllIRK+hBBfLe5qmWhpQflPEVUJ2N3wL9m949FdT9yZQwwiYSn
+         qVVGh2QQdns8LanBABMPUIyPdVIDQ76ktuZsSCotbelbZY/nJK5Kv2CVXrmmDpNGJ9l+
+         kO41IcjfFZSFpccgOVPy9EM8cVqgmt0bsVO0TeDNg6oYhP6wb0hAPJ5SO8x52KOFwNEN
+         HUVQMbWsCWnHlZHh+CyeH/oJo44WJqw2jJfHaB5/y24wJNMZE1iVjrc2/UOUSymrTG3+
+         zCVgokBQJMmxm3ZsKiRYSqjSPnq1aR9EARsqQb4MwPK3rLYZSkZoa/w5/zHviwZ3uzO/
+         HfpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bwj2VEQ4ikZLXStMngbVQVrHSRYYBYM85rwNvszv13s=;
+        b=WoY64Az4ANMUXK6gylRYImoImLAKrO2gP/D+a7EawPiobIT6xMdh2lLSae2JQ2NkAQ
+         zQK8a7+s4kVyURvamxO8QeTXTVk3N6zMploXIqpSY5czHyIEWNyugi9njy2Ioq1aQFhm
+         LdHmVlDl/YPK5DDZhRZDYzujEsmuo3BwJEI+FG98YOwU1kEAI8PNVQ/NAMZ+Ra7ww/DS
+         zN/sWYtmo+BbZBd8iXXsiUky2T3hjyALIOZayOAc4jh32Kjg2Q/GA7MBvlBeNlPqfh9J
+         9M4yzXBsLmlPzQ2WLzlZ2KxGv9TpNHSWpaQwZuAre5cUJCjhxOumgkX+C9pgfFP7g4u7
+         J61A==
+X-Gm-Message-State: AOAM533NezjpZl0p9WVR8f1r3UZ3JlKV4Z4gRqimiltq+W/AJdr12k9q
+        uQaDuwuBd5AtxNrrorJM8QdKQQ==
+X-Google-Smtp-Source: ABdhPJwGGTJIBNFKGIKh95oKMrdWxG3JIp0VG9LMy9AJE6gGrhsvaQ6IcJhHmkJTQPLOEjsdYCTUqA==
+X-Received: by 2002:a17:90b:358f:: with SMTP id mm15mr9947155pjb.13.1613578909662;
+        Wed, 17 Feb 2021 08:21:49 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:6948:259b:72c6:5517])
+        by smtp.gmail.com with ESMTPSA id c14sm2411286pfd.109.2021.02.17.08.21.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 08:21:49 -0800 (PST)
+Date:   Wed, 17 Feb 2021 08:21:42 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 1/7] KVM: VMX: read idt_vectoring_info a bit earlier
+Message-ID: <YC1Cljte2ozGSKV/@google.com>
+References: <20210217145718.1217358-1-mlevitsk@redhat.com>
+ <20210217145718.1217358-2-mlevitsk@redhat.com>
+ <09de977a-0275-0f4f-cf75-f45e4b5d9ca5@redhat.com>
+ <666eb754189a380899b82e0a9798eb2560ae6972.camel@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <666eb754189a380899b82e0a9798eb2560ae6972.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When parsing the structures in the shared memory, there are values which
-come from the remote device.  For example, a transfer completion event
-will have a pointer to the tre in the relevant channel's transfer ring.
-Such values should be considered to be untrusted, and validated before
-use.  If we blindly use such values, we may access invalid data or crash
-if the values are corrupted.
+On Wed, Feb 17, 2021, Maxim Levitsky wrote:
+> On Wed, 2021-02-17 at 17:06 +0100, Paolo Bonzini wrote:
+> > On 17/02/21 15:57, Maxim Levitsky wrote:
+> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > > index b3e36dc3f164..e428d69e21c0 100644
+> > > --- a/arch/x86/kvm/vmx/vmx.c
+> > > +++ b/arch/x86/kvm/vmx/vmx.c
+> > > @@ -6921,13 +6921,15 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+> > >  	if (unlikely((u16)vmx->exit_reason.basic == EXIT_REASON_MCE_DURING_VMENTRY))
+> > >  		kvm_machine_check();
+> > >  
+> > > +	if (likely(!vmx->exit_reason.failed_vmentry))
+> > > +		vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
+> > > +
+> > 
+> > Any reason for the if?
+> 
+> Sean Christopherson asked me to do this to avoid updating idt_vectoring_info on failed
+> VM entry, to keep things as they were logically before this patch.
 
-If validation fails, drop the relevant event.
-
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
----
-
-v2: Fix subject
-
- drivers/bus/mhi/core/main.c | 81 +++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 74 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index c043574..1eb2fd3 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -242,6 +242,11 @@ static void mhi_del_ring_element(struct mhi_controller *mhi_cntrl,
- 	smp_wmb();
- }
- 
-+static bool is_valid_ring_ptr(struct mhi_ring *ring, dma_addr_t addr)
-+{
-+	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len;
-+}
-+
- int mhi_destroy_device(struct device *dev, void *data)
- {
- 	struct mhi_device *mhi_dev;
-@@ -383,7 +388,16 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
- 	struct mhi_event_ctxt *er_ctxt =
- 		&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
- 	struct mhi_ring *ev_ring = &mhi_event->ring;
--	void *dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+	dma_addr_t ptr = er_ctxt->rp;
-+	void *dev_rp;
-+
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		return IRQ_HANDLED;
-+	}
-+
-+	dev_rp = mhi_to_virtual(ev_ring, ptr);
- 
- 	/* Only proceed if event ring has pending events */
- 	if (ev_ring->rp == dev_rp)
-@@ -536,6 +550,11 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
- 		struct mhi_buf_info *buf_info;
- 		u16 xfer_len;
- 
-+		if (!is_valid_ring_ptr(tre_ring, ptr)) {
-+			dev_err(&mhi_cntrl->mhi_dev->dev,
-+				"Event element points outside of the tre ring\n");
-+			break;
-+		}
- 		/* Get the TRB this event points to */
- 		ev_tre = mhi_to_virtual(tre_ring, ptr);
- 
-@@ -695,6 +714,12 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
- 	struct mhi_chan *mhi_chan;
- 	u32 chan;
- 
-+	if (!is_valid_ring_ptr(mhi_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event element points outside of the cmd ring\n");
-+		return;
-+	}
-+
- 	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
- 
- 	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
-@@ -719,6 +744,7 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	u32 chan;
- 	int count = 0;
-+	dma_addr_t ptr = er_ctxt->rp;
- 
- 	/*
- 	 * This is a quick check to avoid unnecessary event processing
-@@ -728,7 +754,13 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 	if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
- 		return -EIO;
- 
--	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		return -EIO;
-+	}
-+
-+	dev_rp = mhi_to_virtual(ev_ring, ptr);
- 	local_rp = ev_ring->rp;
- 
- 	while (dev_rp != local_rp) {
-@@ -834,6 +866,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 			 */
- 			if (chan < mhi_cntrl->max_chan) {
- 				mhi_chan = &mhi_cntrl->mhi_chan[chan];
-+				if (!mhi_chan->configured)
-+					break;
- 				parse_xfer_event(mhi_cntrl, local_rp, mhi_chan);
- 				event_quota--;
- 			}
-@@ -845,7 +879,15 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 
- 		mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
- 		local_rp = ev_ring->rp;
--		dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+
-+		ptr = er_ctxt->rp;
-+		if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+			dev_err(&mhi_cntrl->mhi_dev->dev,
-+				"Event ring rp points outside of the event ring\n");
-+			return -EIO;
-+		}
-+
-+		dev_rp = mhi_to_virtual(ev_ring, ptr);
- 		count++;
- 	}
- 
-@@ -868,11 +910,18 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 	int count = 0;
- 	u32 chan;
- 	struct mhi_chan *mhi_chan;
-+	dma_addr_t ptr = er_ctxt->rp;
- 
- 	if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
- 		return -EIO;
- 
--	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		return -EIO;
-+	}
-+
-+	dev_rp = mhi_to_virtual(ev_ring, ptr);
- 	local_rp = ev_ring->rp;
- 
- 	while (dev_rp != local_rp && event_quota > 0) {
-@@ -886,7 +935,8 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 		 * Only process the event ring elements whose channel
- 		 * ID is within the maximum supported range.
- 		 */
--		if (chan < mhi_cntrl->max_chan) {
-+		if (chan < mhi_cntrl->max_chan &&
-+		    mhi_cntrl->mhi_chan[chan].configured) {
- 			mhi_chan = &mhi_cntrl->mhi_chan[chan];
- 
- 			if (likely(type == MHI_PKT_TYPE_TX_EVENT)) {
-@@ -900,7 +950,15 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 
- 		mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
- 		local_rp = ev_ring->rp;
--		dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+
-+		ptr = er_ctxt->rp;
-+		if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+			dev_err(&mhi_cntrl->mhi_dev->dev,
-+				"Event ring rp points outside of the event ring\n");
-+			return -EIO;
-+		}
-+
-+		dev_rp = mhi_to_virtual(ev_ring, ptr);
- 		count++;
- 	}
- 	read_lock_bh(&mhi_cntrl->pm_lock);
-@@ -1365,6 +1423,7 @@ static void mhi_mark_stale_events(struct mhi_controller *mhi_cntrl,
- 	struct mhi_ring *ev_ring;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	unsigned long flags;
-+	dma_addr_t ptr;
- 
- 	dev_dbg(dev, "Marking all events for chan: %d as stale\n", chan);
- 
-@@ -1372,7 +1431,15 @@ static void mhi_mark_stale_events(struct mhi_controller *mhi_cntrl,
- 
- 	/* mark all stale events related to channel as STALE event */
- 	spin_lock_irqsave(&mhi_event->lock, flags);
--	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+
-+	ptr = er_ctxt->rp;
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		dev_rp = ev_ring->rp;
-+	} else {
-+		dev_rp = mhi_to_virtual(ev_ring, ptr);
-+	}
- 
- 	local_rp = ev_ring->rp;
- 	while (dev_rp != local_rp) {
--- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Ya, specifically because the field isn't valid if VM-Enter fails.  I'm also ok
+with an unconditional VMREAD if we add a comment stating that it's unnecessary
+if VM-Enter failed, but faster in the common case.
