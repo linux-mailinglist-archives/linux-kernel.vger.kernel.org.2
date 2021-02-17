@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9E931DA9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A81131DA9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbhBQNdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:33:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233058AbhBQNbN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:31:13 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF396C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 05:30:32 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id e11so9448682qtg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 05:30:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9KvlBXWE9H1CeowlMEMLTPIl6Q9OVw73HzJ2aa5ZmGg=;
-        b=vA5plzml7tzyib+hGFxVRbODs0ykXI8/JjG5qU3MkU5IcmOjw6MZ3XD5lKJBOZeDSv
-         jOfJT+4h563NBykjv6VMmsNE//0tc+OawkhxvM8OJh633rGvQKFH8upmKZWEzJ0hj/b8
-         iTFiNhYg62B7KEB8lwb4xi2KgY+f713Ywjsegh4Bm/nY2ZeuBQV1EsU2lqXoUvRjspGM
-         A1y+r74E+oEXTC67qTFJsYBEJRO7Rzg3kVVnu8CXOFPcvDR6fadB/3RM8D3otxdMO+uK
-         LIvgfB9a3f8v3bcww0R/NeUd00qCTnzezOhDbhTrH5UDvNOpsMjU45kI2/IsElxJFhUf
-         HikA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9KvlBXWE9H1CeowlMEMLTPIl6Q9OVw73HzJ2aa5ZmGg=;
-        b=tPLQxvsocxh15k6UA8Qrfzv3FE4HkS6ZYF7LqflndUor9t+eXnd34txQsiCwp/mIRf
-         9oTPFQX5JXqjbtU22GalUnDxosd9m0nkAINikbdWoFYtRwJC99ZGQAyBdkbavEJvAQzh
-         fIBQMGjrGir8Oq45elzqzZkR/dWmEr7B1oB9JDD1vinnEVhqm/pngpuAFebCasXBA3+k
-         V8c5Sc37DNsizsmdyEiJ+z/1rrVYiawsaDX6oDFHmJ/BSD/sIU1Ekca9GoWVWijgnfSr
-         4RGOZ5at4h2X8rzr97nJ8A2bbjB2ilEFwAbvwgCjfRmx9SK+OpFm1+v2zQr0mblKPNwE
-         54Jw==
-X-Gm-Message-State: AOAM530eXd1v5TL4EgPvCqyV9fHzVcWsGQ6++DE2So6OpXAYdHEkNnBx
-        yNH1j0dANMnIY3M24P8K3xpLwmI/9e/Spmdh03M=
-X-Google-Smtp-Source: ABdhPJyUzFF6WeMX4sFQFQgyNcl6ORc08DpDDsdCdLs2jTqDrjcn2QGP394cLkzhNsofkTrDLzaRWQ==
-X-Received: by 2002:ac8:47d6:: with SMTP id d22mr22147384qtr.44.1613568631867;
-        Wed, 17 Feb 2021 05:30:31 -0800 (PST)
-Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id n8sm1097761qta.61.2021.02.17.05.30.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Feb 2021 05:30:31 -0800 (PST)
-Subject: Re: [PATCH] opp: fix dev_pm_opp_set_rate for different frequency at
- the same opp level
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        "open list:OPERATING PERFORMANCE POINTS (OPP)" 
-        <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210216201030.19152-1-jonathan@marek.ca>
- <20210217045310.thfl7ckxzfiqjlu6@vireshk-i7>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <88b0c110-78fb-cbb0-dd2b-5c4ffb5bc930@marek.ca>
-Date:   Wed, 17 Feb 2021 08:29:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S233168AbhBQNdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:33:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39996 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233061AbhBQNbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 08:31:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613568645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SETwTKFY3v+orwvahxTNxIwQK9vE3JMDX1v8ML7p/dI=;
+        b=N1vhK3c89g1umX8EeWbZlXuiLIAD7rTi0xuYJtvpD8m11GMxlzz3PV1pHcythf0W0H3LW5
+        vVOkYKXZhzctrn0bzDJwrpdKyFB14tgs8hCzm0Mx/vSyrKE5NkvRakLmc9P7YhFFjCDLVE
+        cdlv2ka8MLG3rUmjVvsJ3Xa6jwKDFL4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1D265B1D7;
+        Wed, 17 Feb 2021 13:30:45 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 14:30:43 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <YC0agxVWYRKGm5IO@dhcp22.suse.cz>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-2-osalvador@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210217045310.thfl7ckxzfiqjlu6@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217100816.28860-2-osalvador@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/16/21 11:53 PM, Viresh Kumar wrote:
-> On 16-02-21, 15:10, Jonathan Marek wrote:
->> There is not "nothing to do" when the opp is the same. The frequency can
->> be different from opp->rate.
+On Wed 17-02-21 11:08:15, Oscar Salvador wrote:
+> Free hugetlb pages are tricky to handle so as to no userspace application
+> notices disruption, we need to replace the current free hugepage with
+> a new one.
 > 
-> I am sorry but I am not sure what are you trying to fix here and what exactly is
-> broken here. Can you provide a usecase for your platform where this doesn't work
-> like it used to ?
+> In order to do that, a new function called alloc_and_dissolve_huge_page
+> is introduced.
+> This function will first try to get a new fresh hugetlb page, and if it
+> succeeds, it will dissolve the old one.
 > 
+> With regard to the allocation, since we do not know whether the old page
+> was allocated on a specific node on request, the node the old page belongs
+> to will be tried first, and then we will fallback to all nodes containing
+> memory (N_MEMORY).
 
-The specific case is this opp table:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/qcom/sm8250.dtsi#n439
+I do not think fallback to a different zone is ok. If yes then this
+really requires a very good reasoning. alloc_contig_range is an
+optimistic allocation interface at best and it shouldn't break carefully
+node aware preallocation done by administrator.
 
-It does not define every possible clock frequency, it only defines the 
-rates at which a higher rpmhpd level must be used. Which is the intended 
-use of opp.
+> Note that gigantic hugetlb pages are fenced off since there is a cyclic
+> dependency between them and alloc_contig_range.
 
-Your change broke this completely: the clock rate change can be silently 
-ignored because the opp level is the same. In particular it breaks 
-bluetooth for this platform.
-
->> Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
->>   drivers/opp/core.c | 7 +++++--
->>   drivers/opp/opp.h  | 1 +
->>   2 files changed, 6 insertions(+), 2 deletions(-)
-> 
+Why do we need/want to do all this in the first place?
+-- 
+Michal Hocko
+SUSE Labs
