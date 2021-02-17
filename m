@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10AA31E2FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1D631E303
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbhBQXVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 18:21:40 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:53916 "EHLO m42-2.mailgun.net"
+        id S232021AbhBQXb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 18:31:28 -0500
+Received: from mga03.intel.com ([134.134.136.65]:19683 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231234AbhBQXVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 18:21:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613604073; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=lyJ/HMoHhhljyWh+L2DVmQ7J+9Sbbr4I7CsMTFLVOM4=; b=so8PWXSgvn2Hfk0wN4GX7oRGn6C7V/IUz8CEeH3LJ4XoLl8ctrjGbr/QJ5+24VPXVO8CtIG4
- iDiNfkdI367waaId0UOxkQa3jHJ7e5LWttvce2lr7zrasflHpZklw0ZdzvpY0HQPozm0ymHF
- 9BIFnZv2OCPEbmppneW5V9OJfXU=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 602da4c7666e232b38992adc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 23:20:39
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0A663C43463; Wed, 17 Feb 2021 23:20:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9C385C433C6;
-        Wed, 17 Feb 2021 23:20:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9C385C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] phy/qualcomm: add hbr3_hbr2 voltage and premphasis swing table
-Date:   Wed, 17 Feb 2021 15:20:31 -0800
-Message-Id: <1613604031-27798-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S231466AbhBQXbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 18:31:25 -0500
+IronPort-SDR: CyLoedjzDE/lX/xYgfMg6P0LKSxDxciDQ+xqtNzGYrn2Z+odyswtUPjPf0UVwlQPCtbQ4ZR0C3
+ LaXeY3r2D9bw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="183417919"
+X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
+   d="scan'208";a="183417919"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 15:29:39 -0800
+IronPort-SDR: sn366c49e7ftdmEMSpCxEYtyEdNH2roaTs5/wSWTiK0eedRxMwHo+xG2W4WxsUfYbRvoZcWemg
+ hhXgp1PGv9bQ==
+X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
+   d="scan'208";a="513035005"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 15:29:39 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id AA12D6365;
+        Wed, 17 Feb 2021 15:29:39 -0800 (PST)
+Date:   Wed, 17 Feb 2021 15:29:39 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jassisinghbrar@gmail.com, linux-kernel@vger.kernel.org,
+        Seamus Kelly <seamus.kelly@intel.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v6 20/34] xlink-core: Add xlink core driver xLink
+Message-ID: <20210217232939.GD154917@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20210212222304.110194-1-mgross@linux.intel.com>
+ <20210212222304.110194-21-mgross@linux.intel.com>
+ <ddacd2e2-b491-5443-4006-c8c5d90d583f@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ddacd2e2-b491-5443-4006-c8c5d90d583f@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add hbr3_hbr2 voltage and premphasis swing table to support
-HBR3 link rate.
+On Sun, Feb 14, 2021 at 09:52:51AM -0800, Randy Dunlap wrote:
+> On 2/12/21 2:22 PM, mgross@linux.intel.com wrote:
+> > diff --git a/drivers/misc/xlink-core/Kconfig b/drivers/misc/xlink-core/Kconfig
+> > new file mode 100644
+> > index 000000000000..a0ceb0b48219
+> > --- /dev/null
+> > +++ b/drivers/misc/xlink-core/Kconfig
+> > @@ -0,0 +1,33 @@
+> > +config XLINK_CORE
+> > +	tristate "Support for XLINK CORE"
+> > +	depends on ((XLINK_PCIE_RH_DRIVER || XBAY_XLINK_PCIE_RH_DRIVER) || (XLINK_LOCAL_HOST && (XLINK_PCIE_LH_DRIVER || XBAY_XLINK_PCIE_RH_DRIVER)))
+> 
+> -ELINETOOLONG. Use '\' for line continuation in Kconfig files.
+fixed
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/phy/qualcomm/phy-qcom-qmp.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+> 
+> > +	help
+> > +	  XLINK CORE enables the communication/control subsystem.
+> > +
+> > +	  If unsure, say N.
+> > +
+> > +	  To compile this driver as a module, choose M here: the
+> > +	  module will be called xlink.ko.
+> > +
+> > +config XLINK_LOCAL_HOST
+> > +	tristate "Support for XLINK LOCAL HOST"
+> > +	depends on XLINK_IPC
+> > +	help
+> > +	  XLINK LOCAL HOST enables local host functionality for
+> > +	  the communication/control Sub-System.
+> > +
+> > +	  Enable this config when building the kernel for the Intel Vision
+> > +	  Processing Unit (VPU) Local Host core.
+> > +
+> > +	  If building for a Remote Host kernel, say N.
+> > +
+> > +config XLINK_PSS
+> > +	tristate "Support for XLINK PSS (Pre-Silicon Solution)"
+> > +	depends on XLINK_LOCAL_HOST
+> > +	help
+> > +	  XLINK PSS enables the communication/control subsystem on a PSS platform.
+> > +
+> > +	  Enable this config when building the kernel for the Intel Vision
+> > +	  Processing Unit (VPU) in a simulated env.
+> 
+> Please s/env/environment/.
+fixed
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-index 0939a9e..c920143 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-@@ -2965,6 +2965,20 @@ static void qcom_qmp_phy_dp_aux_init(struct qmp_phy *qphy)
- 	       qphy->pcs + QSERDES_V3_DP_PHY_AUX_INTERRUPT_MASK);
- }
- 
-+static const u8 qmp_dp_v3_pre_emphasis_hbr3_hbr2[4][4] = {
-+        { 0x00, 0x0C, 0x15, 0x1A },
-+        { 0x02, 0x0E, 0x16, 0xFF },
-+        { 0x02, 0x11, 0xFF, 0xFF },
-+        { 0x04, 0xFF, 0xFF, 0xFF }
-+};
-+
-+static const u8 qmp_dp_v3_voltage_swing_hbr3_hbr2[4][4] = {
-+        { 0x02, 0x12, 0x16, 0x1A },
-+        { 0x09, 0x19, 0x1F, 0xFF },
-+        { 0x10, 0x1F, 0xFF, 0xFF },
-+        { 0x1F, 0xFF, 0xFF, 0xFF }
-+};
-+
- static const u8 qmp_dp_v3_pre_emphasis_hbr_rbr[4][4] = {
- 	{ 0x00, 0x0c, 0x14, 0x19 },
- 	{ 0x00, 0x0b, 0x12, 0xff },
-@@ -3000,8 +3014,13 @@ static void qcom_qmp_phy_configure_dp_tx(struct qmp_phy *qphy)
- 		drvr_en = 0x10;
- 	}
- 
--	voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
--	pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
-+	if (dp_opts->link_rate <= 2700) {
-+		voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
-+		pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
-+	} else {
-+		voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr3_hbr2[v_level][p_level];
-+		pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr3_hbr2[v_level][p_level];
-+	}
- 
- 	/* TODO: Move check to config check */
- 	if (voltage_swing_cfg == 0xFF && pre_emphasis_cfg == 0xFF)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+I have the update qued up and I'll post v7 rebased when the merge window closes
 
+--mark
+
+> 
+> > +
+> > +	  If building for a VPU silicon, say N.
+> 
+> 
+> -- 
+> ~Randy
+> 
