@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8B831D956
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D2431D95B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbhBQMXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:23:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232427AbhBQMXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:23:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC8764E0F;
-        Wed, 17 Feb 2021 12:22:21 +0000 (UTC)
-Subject: Re: [SPAM?]Re: arch/m68k/68000/dragen2.c:73:16: error: 'screen_bits'
- undeclared
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <202102121331.d4C0ShlS-lkp@intel.com>
- <CAK8P3a3uM7rCbnJP9r2SFEjm0D7oy2YsXw7VcGzkg5tq7mQbag@mail.gmail.com>
- <2903dec9-b21d-9d91-0ad9-045bd9b2afd4@linux-m68k.org>
- <CAMuHMdVeErFJcngx6Jpznqd0Cm+Rb5OvgGdKjRi7Q8fNmgBA7g@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <43ea12f4-5a54-2a13-95d3-503bd5557c17@linux-m68k.org>
-Date:   Wed, 17 Feb 2021 22:22:19 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232579AbhBQMYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:24:46 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2580 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231808AbhBQMYn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:24:43 -0500
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DgcMF4f0Yz67q1Q;
+        Wed, 17 Feb 2021 20:18:49 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 17 Feb 2021 13:24:00 +0100
+Received: from localhost (10.47.29.73) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Wed, 17 Feb
+ 2021 12:23:59 +0000
+Date:   Wed, 17 Feb 2021 12:22:53 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        "Chris Browy" <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Jon Masters" <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v5 2/9] cxl/mem: Find device capabilities
+Message-ID: <20210217122253.00007bc2@Huawei.com>
+In-Reply-To: <20210217040958.1354670-3-ben.widawsky@intel.com>
+References: <20210217040958.1354670-1-ben.widawsky@intel.com>
+        <20210217040958.1354670-3-ben.widawsky@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVeErFJcngx6Jpznqd0Cm+Rb5OvgGdKjRi7Q8fNmgBA7g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.29.73]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Tue, 16 Feb 2021 20:09:51 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
 
-On 17/2/21 9:42 pm, Geert Uytterhoeven wrote:
-> Hi Greg,
+> Provide enough functionality to utilize the mailbox of a memory device.
+> The mailbox is used to interact with the firmware running on the memory
+> device. The flow is proven with one implemented command, "identify".
+> Because the class code has already told the driver this is a memory
+> device and the identify command is mandatory.
 > 
-> On Wed, Feb 17, 2021 at 5:59 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
->> On 12/2/21 8:05 pm, Arnd Bergmann wrote:
->>> On Fri, Feb 12, 2021 at 6:48 AM kernel test robot <lkp@intel.com> wrote:
->>>> FYI, the error/warning still remains.
->>>
->>>>            |             ^~~~~~~~~~~~
->>>>      arch/m68k/68000/dragen2.c: In function 'init_dragen2':
->>>>>> arch/m68k/68000/dragen2.c:73:16: error: 'screen_bits' undeclared (first use in this function)
->>>>         73 |  LSSA = (long) screen_bits;
->>>>            |                ^~~~~~~~~~~
->>>>      arch/m68k/68000/dragen2.c:73:16: note: each undeclared identifier is reported only once for each function it appears in
->>>
->>> This problem existed before my patch, I just moved the line to another file.
->>> To fix it, one needs to test on real hardware and figure out what is supposed
->>> to go in there.
->>>
->>> The bug was apparently introduced in linux-2.5.70 in this commit:
->>   >
->>> commit 2b1a7e97c8c2d6330a432cbcaf83a0ef5fab848e
->>> Author: gerg <gerg>
->>> Date:   Mon May 26 16:45:57 2003 +0000
->>>
->>>       [PATCH] fix m68knommu DragonEngine2 target setup code
->>>
->>>       Numerous fixes for the m68knommu DragonEngine2 setup code.
->>>
->>>       It was out of date relative to more recent kernels.  Original patches
->>>       from Georges Menie.
->>>
->>>       BKrev: 3ed244c5dPVeFKP63b4kkeS_rEshag
->>
->> Digging around a bit I think the screen_bits data structure was
->> originally in a screen.h file that was generated from a screen.xbm file.
->> That was removed in commit 0c0e6db80683 ("m68k: drop unused parts of
->> 68VZ328 Makefile").
->>
->> Obviously no one seems to be using this, that has been broken for a long
->> time now.
->>
->> I could restore the generated screen.h here, so this could compile at
->> least. I don't have any of the hardware supported in the arch/m68k/68000
->> directory, so I can't test anything we fix in there.
+> CXL devices contain an array of capabilities that describe the
+> interactions software can have with the device or firmware running on
+> the device. A CXL compliant device must implement the device status and
+> the mailbox capability. Additionally, a CXL compliant memory device must
+> implement the memory device capability. Each of the capabilities can
+> [will] provide an offset within the MMIO region for interacting with the
+> CXL device.
 > 
-> Do you have the generated screen.h?
-> Looks like both the tool (xbm2lcd.pl) and the source (screen.xbm)
-> never made it upstream?
-
-I have the tool (xbm2lcd.pl) and screen.xbm from a really old uClinux
-distribution, and I can run it to generate the screen.h.
-So yes, I have a screen.h now.
-
-
->> The other option is to remove the dragen code altogether.
+> The capabilities tell the driver how to find and map the register space
+> for CXL Memory Devices. The registers are required to utilize the CXL
+> spec defined mailbox interface. The spec outlines two mailboxes, primary
+> and secondary. The secondary mailbox is earmarked for system firmware,
+> and not handled in this driver.
 > 
-> Just remove the part protected by checks for CONFIG_INIT_LCD?
+> Primary mailboxes are capable of generating an interrupt when submitting
+> a background command. That implementation is saved for a later time.
+> 
+> Reported-by: Colin Ian King <colin.king@canonical.com> (coverity)
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com> (smatch)
+> Link: https://www.computeexpresslink.org/download-the-specification
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com> (v2)
 
-Yeah, or even all the dragen support if no one wants it anymore.
+Looks good to me. 
 
-Easy enough to add the screen.h (probably rename it, since it is
-dragen specific). And include that in dragen2.c.
-
-Regards
-Greg
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
