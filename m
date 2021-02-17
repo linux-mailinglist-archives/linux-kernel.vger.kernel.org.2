@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9CA31E16E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A60CE31E170
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhBQVc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:32:58 -0500
-Received: from mail.efficios.com ([167.114.26.124]:47986 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233062AbhBQVb6 (ORCPT
+        id S231803AbhBQVd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:33:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232263AbhBQVct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 16:31:58 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 54AA63248C4;
-        Wed, 17 Feb 2021 16:31:16 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id jDVzzbGFUpv3; Wed, 17 Feb 2021 16:31:16 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 17A82324A9D;
-        Wed, 17 Feb 2021 16:31:16 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 17A82324A9D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1613597476;
-        bh=mJpONF+ppVXjDyfJehbKJcFUvKUnYB/SI7ginxxJvX8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=ZbcI3CuqyPiWuPbIUw0uCoHSO0RGiIY6d223PfPyH7TpJqI+p43KTXs+E3TmgVkPA
-         f/AAC8eY0ljO3kt6bUQdvP7BKTEg1Xy8ZsoSDmMn1g3/SxXFP4cRLItaYyiBK6ZkL2
-         hXA6mUbHF7w8gPT67Yjf3MPKVZGw2Rd0N5Y1tLYMz0FTuZk3AHllYm9P4DtdmNwcIC
-         2apQmZnXKS55mLFo2mKv3WrHko1EHlcL+SdgcMuZJOT/SMXiACy1lBcpqUHz+sE47p
-         SiEaMh55DaKrinAIbHnGqEWPyJAamH8Xo0i+nPZX7AYAm8fZbO1DQfOWsuni//39SY
-         rMudcPD+lOORg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id SVC0oEEzfjxs; Wed, 17 Feb 2021 16:31:16 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 08276324B30;
-        Wed, 17 Feb 2021 16:31:16 -0500 (EST)
-Date:   Wed, 17 Feb 2021 16:31:15 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     lttng-dev@lists.lttng.org,
-        diamon-discuss@lists.linuxfoundation.org,
-        linux-trace-users@vger.kernel.org, lwn@lwn.net,
-        linux-kernel@vger.kernel.org
-Message-ID: <2047339870.25949.1613597475930.JavaMail.zimbra@efficios.com>
-Subject: [RELEASE] LTTng-modules 2.11.8 and 2.12.5 (Linux kernel tracer)
+        Wed, 17 Feb 2021 16:32:49 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B333C061574;
+        Wed, 17 Feb 2021 13:32:09 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id t29so9268827pfg.11;
+        Wed, 17 Feb 2021 13:32:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=q5lpJnSfMK2r040N1CTw4nW5Tu3iCtr8TbUrRfyRBDw=;
+        b=XYyy4U5xgETcDbter4ThfNo1nWOwUyn5Zka4yGJXnczgDxpu8OzC2SeQfO652VBz7b
+         PhM7QTV1nG24H/7zGkXgEEhj/sHZrIFSN4mAbV2dY9SLWPJlGs19V6yFIlVlLuIKi0+g
+         wvGTrsrkHtC2g/q+Soxs3lXAbEaXYrcKABklOK2ADvRnTMSyDsCEP5mJ84z2Gz/3/f1F
+         Fe2+uauF3lqBsuqdWiy8H7XsjDQf5z+wsYjgoxt6tRWBNpz1CM2ORMfGHl7tcI2WcR16
+         SFybEEpwND09gVKNl0Tg/ZnbK0DCh62p7azXT5Yb8Q9Uce5XFRBkrgSOcggkaNrjK/FH
+         nHKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=q5lpJnSfMK2r040N1CTw4nW5Tu3iCtr8TbUrRfyRBDw=;
+        b=okcnmrN11fkgNi+fM53l/dsRVhxPDo6ox/zDYOT+4New+3aXLpcySLf27Gwo0iW1M7
+         GQ7iSIEWakhO9EFVHwxUlK14SXM8fTcwuyJxcmzMIoaM89qmf4VDNcYKAXfdJ5QAPo/R
+         PblVfwTw2Exr+5W/7HxmRs2y55qGL+n2w5LlOVgvmpO2SrdYnR8Z4S1tbTrKNnnoXUQD
+         RgLuae2IBnkF88bHX6rLp9Gs3C6eU308R+uU7Qk2htTUfawFrhRnjErwghieWx3YHb0c
+         MpHtx7oZIwoaDd3eZClfsKHX0cUAlJuImX0QQCeGxvHDnhBvSLdPdW8sSctY8W7rrSS4
+         T8fQ==
+X-Gm-Message-State: AOAM533DhSz1Z2M4lenov2+PH7cfH0Hsx2AJHAXDh+0t8z+BRe30rMza
+        KSwMppO5DQm0AFZzgehrv4o=
+X-Google-Smtp-Source: ABdhPJysKKbh3uXsS1n47LDBCg2iETu9A7l0d8w0U7tJONzrFie6igTVAhyGJBI9zbY82LKAKpN9zA==
+X-Received: by 2002:a65:4082:: with SMTP id t2mr1174216pgp.140.1613597528714;
+        Wed, 17 Feb 2021 13:32:08 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:157d:8a19:5427:ea9e])
+        by smtp.gmail.com with ESMTPSA id bj9sm3132679pjb.49.2021.02.17.13.32.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 13:32:07 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 17 Feb 2021 13:32:05 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgoldswo@codeaurora.org,
+        linux-fsdevel@vger.kernel.org, david@redhat.com, vbabka@suse.cz,
+        viro@zeniv.linux.org.uk, joaodias@google.com
+Subject: Re: [RFC 1/2] mm: disable LRU pagevec during the migration
+ temporarily
+Message-ID: <YC2LVXO6e2NVsBqz@google.com>
+References: <20210216170348.1513483-1-minchan@kernel.org>
+ <YCzbCg3+upAo1Kdj@dhcp22.suse.cz>
+ <YC2Am34Fso5Y5SPC@google.com>
+ <20210217211612.GO2858050@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF85 (Linux)/8.8.15_GA_3996)
-Thread-Index: ddylPrE4mnqbB+Gwtqxi1jBzmDJ0lA==
-Thread-Topic: LTTng-modules 2.11.8 and 2.12.5 (Linux kernel tracer)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217211612.GO2858050@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Feb 17, 2021 at 09:16:12PM +0000, Matthew Wilcox wrote:
+> On Wed, Feb 17, 2021 at 12:46:19PM -0800, Minchan Kim wrote:
+> > > I suspect you do not want to add atomic_read inside hot paths, right? Is
+> > > this really something that we have to microoptimize for? atomic_read is
+> > > a simple READ_ONCE on many archs.
+> > 
+> > It's also spin_lock_irq_save in some arch. If the new synchonization is
+> > heavily compilcated, atomic would be better for simple start but I thought
+> > this locking scheme is too simple so no need to add atomic operation in
+> > readside.
+> 
+> What arch uses a spinlock for atomic_read()?  I just had a quick grep and
+> didn't see any.
 
-This is a release announcement for the 2.11.8 and 2.12.5 releases of the
-LTTng kernel tracer.
+Ah, my bad. I was confused with update side.
+Okay, let's use atomic op to make it simple.
 
-New and noteworthy in these releases:
-
-* Support for Linux kernel 5.11,
-* Deal with stable kernel version overflow (sublevel >= 256),
-* Prepare for Ubuntu, SLES, RHEL, and RT release version overflows (which should come sooner
-  or later),
-* Writeback instrumentation: fix out-of-bound read of block device name beyond terminating
-  '\0' character,
-* Writeback instrumentation: fix a crash in wb_workfn when a device disappears when memcg
-  is in use,
-* aarch64: blacklist gcc compiler prior to version 5.1, because they perform unsafe access
-  to deallocated stack.
-
-Thanks,
-
-Mathieu
-
-Project website: https://lttng.org
-Documentation: https://lttng.org/docs
-Download link: https://lttng.org/download
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Thanks for the review, Mattew and Michal.
