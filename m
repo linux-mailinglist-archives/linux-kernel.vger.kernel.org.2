@@ -2,181 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D4931E2CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6931231E2D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233845AbhBQWuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 17:50:35 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:43271 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233304AbhBQWtY (ORCPT
+        id S233571AbhBQWxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 17:53:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234021AbhBQWws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 17:49:24 -0500
-Received: by mail-oi1-f179.google.com with SMTP id d20so16748770oiw.10;
-        Wed, 17 Feb 2021 14:49:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iwFEJ3kjWH7byU1Bj+qTU+zAIBp4rtQWtPBYut/wBEM=;
-        b=T6YBFhb+pWt+f3ejys6q4pjLctaOJOrb2RItftMWmaG1PZYUaje+ln0kG3QFiDLUJa
-         CxRtN4Y0atuKfBqyeoG3xqJCtz/uaK2rCrXm8f/pa8MRZw3FYVUAaH/AcPtDbRJr3tBR
-         aDqf2jw6QiIj6MAAxVvSrp+PopjvfXNwb07bIq8FGL5rPh6b1tJI8lLrMMMKsYlIBdjw
-         QEKVA0vpQMNhTJlvNl/lnA5hYbmxhaR/G1p9iXUaL2m56nYdFxIA+GKzmwBzgIiDq2a/
-         WN+Ced2/vyIftkYbIQEEQgWtBH1H/jOF3KGFSzqokzGhOdraaKojUrbCPFU+GQVHiW2+
-         Rc7w==
-X-Gm-Message-State: AOAM5308IYXUy4RLV7unpjDk2SA30fDHCsJNfseoiX/hiSJBH+xG/GWF
-        RuEcpwpnMcGYvJyKCp9tSg==
-X-Google-Smtp-Source: ABdhPJyf/6sqkBW6AkNJ46Z+XYd5SPLiqxsxxEvUsHVT9KbgLtYtbIRNM/9Zyv8yIyOIeh47JrRsXA==
-X-Received: by 2002:a05:6808:8da:: with SMTP id k26mr704298oij.165.1613602122708;
-        Wed, 17 Feb 2021 14:48:42 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 20sm166385oiz.14.2021.02.17.14.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 14:48:41 -0800 (PST)
-Received: (nullmailer pid 2937635 invoked by uid 1000);
-        Wed, 17 Feb 2021 22:48:39 -0000
-Date:   Wed, 17 Feb 2021 16:48:39 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
-        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
-        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v1 17/18] dt-bindings: media: nxp,imx8mq-vpu: Update
- bindings
-Message-ID: <20210217224839.GA2888647@robh.at.kernel.org>
-References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
- <20210217080306.157876-18-benjamin.gaignard@collabora.com>
+        Wed, 17 Feb 2021 17:52:48 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2998C061574;
+        Wed, 17 Feb 2021 14:52:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=exGxKvz2dkO6Ia4BmvggC59Ll6D9+WqpkO0LLDpW53U=; b=DAsadcKxmsU6ocqG684beBo7F/
+        pwtwAkJtxmTMpf4Yaf/uMliVqkqw8h9mTKmhc9jES0ZyI7WcfPT69f5KQCv6xNKgnrvwupFO9uIti
+        qu+Lr192QSZBD65r5vcrpJeRgG7Wk6phDdZTZ6QSzm2L8F6/Rw6yoDPMSkwF70J9djiWPgzhM4bzW
+        gbH8VzVJvY7blol40F8Lb+Vjx+9EPXX+e6l1ggpAsMYqr+Ou3p9dr73qkXHVrSpAjSVNld/S93yLB
+        Nedtkxx4lvJsktlKJ9eFPfP//m8xQ0/weFQAgZU+eqRSoH/EpVvf4qMA+TiHJsM7LqgUgpfBqCbxz
+        t0ekOKRg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lCVdG-000xt5-Iq; Wed, 17 Feb 2021 22:49:44 +0000
+Date:   Wed, 17 Feb 2021 22:49:18 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
+Message-ID: <20210217224918.GP2858050@casper.infradead.org>
+References: <20210217161358.GM2858050@casper.infradead.org>
+ <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk>
+ <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
+ <1901187.1613601279@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217080306.157876-18-benjamin.gaignard@collabora.com>
+In-Reply-To: <1901187.1613601279@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 09:03:05AM +0100, Benjamin Gaignard wrote:
-> The introduction on HEVC decoder lead to update the bindings
-> to support it.
+On Wed, Feb 17, 2021 at 10:34:39PM +0000, David Howells wrote:
+> Matthew Wilcox <willy@infradead.org> wrote:
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> ---
->  .../bindings/media/nxp,imx8mq-vpu.yaml        | 54 ++++++++++++-------
->  1 file changed, 36 insertions(+), 18 deletions(-)
+> > We're defeating the ondemand_readahead() algorithm here.  Let's suppose
+> > userspace is doing 64kB reads, the filesystem is OrangeFS which only
+> > wants to do 4MB reads, the page cache is initially empty and there's
+> > only one thread doing a sequential read.  ondemand_readahead() calls
+> > get_init_ra_size() which tells it to allocate 128kB and set the async
+> > marker at 64kB.  Then orangefs calls readahead_expand() to allocate the
+> > remainder of the 4MB.  After the app has read the first 64kB, it comes
+> > back to read the next 64kB, sees the readahead marker and tries to trigger
+> > the next batch of readahead, but it's already present, so it does nothing
+> > (see page_cache_ra_unbounded() for what happens with pages present).
 > 
-> diff --git a/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml b/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
-> index 762be3f96ce9..468435c70eef 100644
-> --- a/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
-> +++ b/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
-> @@ -15,24 +15,25 @@ description:
->  
->  properties:
->    compatible:
-> -    const: nxp,imx8mq-vpu
-> +    enum:
-> +      - nxp,imx8mq-vpu
-> +      - nxp,imx8mq-vpu-g2
->  
->    reg:
-> -    maxItems: 3
-> +    maxItems: 1
->  
->    reg-names:
-> -    items:
-> -      - const: g1
-> -      - const: g2
-> -      - const: ctrl
-> +    enum:
-> +      - g1
-> +      - g2
+> It sounds like Christoph is right on the right track and the vm needs to ask
+> the filesystem (and by extension, the cache) before doing the allocation and
+> before setting the trigger flag.  Then we don't need to call back into the vm
+> to expand the readahead.
 
-This isn't a compatible change. You need to state why that's okay if it 
-is okay.
+Doesn't work.  You could read my reply to Christoph, or try to figure out
+how to get rid of
+https://evilpiepirate.org/git/bcachefs.git/tree/fs/bcachefs/fs-io.c#n742
+for yourself.
 
->  
->    interrupts:
-> -    maxItems: 2
-> +    maxItems: 1
->  
->    interrupt-names:
-> -    items:
-> -      - const: g1
-> -      - const: g2
-> +    enum:
-> +      - g1
-> +      - g2
->  
->    clocks:
->      maxItems: 3
-> @@ -46,6 +47,9 @@ properties:
->    power-domains:
->      maxItems: 1
->  
-> +  resets:
-> +    maxItems: 1
-> +
->  required:
->    - compatible
->    - reg
-> @@ -54,6 +58,7 @@ required:
->    - interrupt-names
->    - clocks
->    - clock-names
-> +  - resets
->  
->  additionalProperties: false
->  
-> @@ -61,19 +66,32 @@ examples:
->    - |
->          #include <dt-bindings/clock/imx8mq-clock.h>
->          #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +        #include <dt-bindings/reset/imx8mq-vpu-reset.h>
->  
-> -        vpu: video-codec@38300000 {
-> +        vpu_g1: video-codec@38300000 {
->                  compatible = "nxp,imx8mq-vpu";
-> -                reg = <0x38300000 0x10000>,
-> -                      <0x38310000 0x10000>,
-> -                      <0x38320000 0x10000>;
-> -                reg-names = "g1", "g2", "ctrl";
-> -                interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
-> -                             <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-> -                interrupt-names = "g1", "g2";
-> +                reg = <0x38300000 0x10000>;
-> +                reg-names = "g1";
-> +                interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-> +                interrupt-names = "g1";
-> +                clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
-> +                         <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
-> +                         <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
-> +                clock-names = "g1", "g2", "bus";
-> +                power-domains = <&pgc_vpu>;
-> +                resets = <&vpu_reset IMX8MQ_RESET_VPU_RESET_G1>;
-> +        };
-> +
-> +        vpu_g2: video-codec@38310000 {
-> +                compatible = "nxp,imx8mq-vpu-g2";
-> +                reg = <0x38310000 0x10000>;
-> +                reg-names = "g2";
-> +                interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-> +                interrupt-names = "g2";
->                  clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
->                           <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
->                           <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
->                  clock-names = "g1", "g2", "bus";
->                  power-domains = <&pgc_vpu>;
-> +                resets = <&vpu_reset IMX8MQ_RESET_VPU_RESET_G2>;
->          };
-> -- 
-> 2.25.1
-> 
+> Also, there's Steve's request to try and keep at least two requests in flight
+> for CIFS/SMB at the same time to consider.
+
+That's not relevant to this problem.
