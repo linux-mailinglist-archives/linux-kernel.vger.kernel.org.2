@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B711F31D58F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 211EF31D592
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231661AbhBQGwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 01:52:34 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3373 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231589AbhBQGwN (ORCPT
+        id S231566AbhBQGyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 01:54:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230425AbhBQGyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 01:52:13 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602cbcf10000>; Tue, 16 Feb 2021 22:51:29 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 17 Feb 2021 06:51:27 +0000
-Date:   Wed, 17 Feb 2021 08:51:23 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Si-Wei Liu <si-wei.liu@oracle.com>
-CC:     Jason Wang <jasowang@redhat.com>, <mst@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>
-Subject: Re: [PATCH v1] vdpa/mlx5: Restore the hardware used index after
- change map
-Message-ID: <20210217065123.GA128881@mtl-vdi-166.wap.labs.mlnx>
-References: <0d592ed0-3cea-cfb0-9b7b-9d2755da3f12@redhat.com>
- <20210208100445.GA173340@mtl-vdi-166.wap.labs.mlnx>
- <379d79ff-c8b4-9acb-1ee4-16573b601973@redhat.com>
- <20210209061232.GC210455@mtl-vdi-166.wap.labs.mlnx>
- <411ff244-a698-a312-333a-4fdbeb3271d1@redhat.com>
- <a90dd931-43cc-e080-5886-064deb972b11@oracle.com>
- <b749313c-3a44-f6b2-f9b8-3aefa2c2d72c@redhat.com>
- <24d383db-e65c-82ff-9948-58ead3fc502b@oracle.com>
- <20210210154531.GA70716@mtl-vdi-166.wap.labs.mlnx>
- <fa78717a-3707-520b-35cb-c8e37503dccf@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <fa78717a-3707-520b-35cb-c8e37503dccf@oracle.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613544689; bh=gXlU4wj89dRtYqmSRTd3ZCIacCt3jo7TZ0QmF2GeH/w=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=D51MUk6a1LIHjYR7vDnSfWHJ6CpdnAzYmaYM6Tr0hfGJoFfxpOIegOEJIMEskXkZ7
-         QF5PTei3v6wIctQtI1+JqYxM792BciA+JNi4F387Pd+/decgsAhTEF/ep6s6m3G1SM
-         N4EgF/V5X534ag5JmwlIo0rJzDetHHwSCUtPvGFamTznzpqGW+AApQlsrHt88RGfXT
-         i9MUs6F5d5NvYJAs9AfLMEjl0O5snGW5Rusz2cq8sEDkSkg+FcCPbCfV0YEWPkprk1
-         fYowVXb4ekOBbJFr5efi/ICTD8EcvpccjhTd29aE/8EAp5qyFhlc7zT5leuUUWd9fe
-         Q2qACShDjlaKw==
+        Wed, 17 Feb 2021 01:54:04 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B038C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 22:53:24 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id j12so7796193pfj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 22:53:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=se5FUyCQzSsn7GYKjWN/TuB61TV8alAVKg2rTO/qIOQ=;
+        b=eoq0XBv+owlqCY40+UOo/vTlCiZrwb173bhQ0mCH2cOO6HJiA2rDg2tw0kgeYUo37D
+         iPcUgcdmigJGHITr9RGWcush5yHJ0u32CjASBqicd3+wXJAuTgZ/Hv6yx46/D5DphWu7
+         zeo09aI+T+V8bKC15+2NKkYE/g85J8MD8fauJYuIbEAbLyh7djrZmdw2b0kjvzb/EA5t
+         +Gn5Xc6fKSlq1OEwE26G+mvvR/4S/M1TVGWoQSaNMNHhlnnbP84ehRs+D/MxQ1MpbW51
+         gQfkDgPiRMd4YVkgtg8yNq5qQRBZDWPzcZtZQqgSwK1sLTyiE18sB/0pdlks/2EU2CsJ
+         +wSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=se5FUyCQzSsn7GYKjWN/TuB61TV8alAVKg2rTO/qIOQ=;
+        b=japVfY2gDnwtJTtJpCfgpboEv8GLa6Dyj43jFUp8vN/Il8lg0UV8S7OhTpxV/8MHQ6
+         p1dq/BnwhQOf81NohTU8uTvhfsBEQ4XbiikbYGJvhqSDsOKIDHW7HbWoohEDYTHTb6Y5
+         2MijtJp4SlkCYhBBLZ3MP2gTOn1HD8qSEy0LKiyS/zD2bmrNCJ2/T5PDG7OLDZIUrUP/
+         IU1rpmLiJyYHfspilFw6WzxK8Q/F8J1BnLtSNIflR4IHtU201OGi+dTPO1LXuJAX0dhp
+         KT7y2k666zd1GGBygX4/a9cj9SFn6y/haN8An2E6XUGWUwMlBw0TwP3JeZqvUl3IWm1w
+         3Bhg==
+X-Gm-Message-State: AOAM531FI5Bj6I243VvujhCUeD3ZA7lrXEppKPyYnxuah4RKjr9VPVFq
+        DlxoYxAU05LffJHdbxn9ghU=
+X-Google-Smtp-Source: ABdhPJyGlF0SogcoGEpVNWPFeFGp/lRKtFhk0g+Aadxkk+MXmBubwnnjYJQ+bKdPRL/h1d6oey7HMg==
+X-Received: by 2002:a63:4760:: with SMTP id w32mr22594631pgk.378.1613544803458;
+        Tue, 16 Feb 2021 22:53:23 -0800 (PST)
+Received: from localhost.localdomain ([116.73.175.128])
+        by smtp.gmail.com with ESMTPSA id v1sm1273601pfi.99.2021.02.16.22.53.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 22:53:23 -0800 (PST)
+From:   Selvakumar Elangovan <selvakumar16197@gmail.com>
+To:     matthias.bgg@gmail.com, gregkh@linuxfoundation.org,
+        sergio.paracuellos@gmail.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Staging: mt7621-pci: pci-mt7621: fixed a blank line coding style issue
+Date:   Wed, 17 Feb 2021 12:23:18 +0530
+Message-Id: <20210217065318.6685-1-selvakumar16197@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 04:25:20PM -0800, Si-Wei Liu wrote:
-> 
-> > > The saved mvq->avail_idx will be used to recreate hardware virtq object and
-> > > the used index in create_virtqueue(), once status DRIVER_OK is set. I
-> > > suspect we should pass the index to mvq->used_idx in
-> > > mlx5_vdpa_set_vq_state() below instead.
-> > > 
-> > Right, that's what I am checking but still no final conclusions. I need
-> > to harness hardware guy to provide me with clear answers.
-> OK. Could you update what you find from the hardware guy and let us know
-> e.g. if the current firmware interface would suffice?
-> 
+Removed an unecessary blank line before closing brace reported by
+checkpatch.pl
 
-Te answer I got is that upon query_virtqueue, the hardware available and
-used indices should always return the same value for virtqueues that
-complete in order - that's the case for network virtqueues. The value
-returned is the consumer index of the hardware. These values should be
-provided when creating a virtqueue; in case of attaching to an existing
-virtqueue (e.g. after suspend and resume), the values can be non zero.
+Signed-off-by: Selvakumar Elangovan <selvakumar16197@gmail.com>
+---
+ drivers/staging/mt7621-pci/pci-mt7621.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Currently there's a bug in the firmware where for RX virtqueue, the
-value returned for the available index is wrong. However, the value
-returned for used index is the correct value.
+diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/staging/mt7621-pci/pci-mt7621.c
+index c3532bc138fb..1781c1dcf5b4 100644
+--- a/drivers/staging/mt7621-pci/pci-mt7621.c
++++ b/drivers/staging/mt7621-pci/pci-mt7621.c
+@@ -521,7 +521,6 @@ static void mt7621_pcie_init_ports(struct mt7621_pcie *pcie)
+ 
+ 			if (slot == 1 && tmp && !tmp->enabled)
+ 				phy_power_off(tmp->phy);
+-
+ 		}
+ 	}
+ }
+-- 
+2.17.1
 
-Therefore, we need to return the hardware used index in get_vq_state()
-and restore this value into both the new object's available and used
-indices.
