@@ -2,133 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F329F31E130
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 348BD31E132
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbhBQVTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:19:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbhBQVSr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 16:18:47 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18A7C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 13:18:06 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id f6so2116388iop.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 13:18:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pu/HI7/j8/NKE5Uf3Em92mkrENvyIcE8armO8V6c6ao=;
-        b=L/TMDPONNuR6kUr29jUZByLEQ2KHg3DzccfhS3GwX7i3vLuyz9YIjtOGPglVEA7kpd
-         p8+8dw82wrxsB2jvCvoEOvQ0bKdDtd3sjXK/TbH1NE9jVTMBY7G85w4lhZBYBX6G8owP
-         prdAbzD6dfQBlBoTRjdqnqoFX1zDrvPRulV3w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pu/HI7/j8/NKE5Uf3Em92mkrENvyIcE8armO8V6c6ao=;
-        b=spPg0fhAVwxa4jc5/n6bn89eRdsWAx1XlYsjFvjmr47rGVD2pe4XwFvj2gFloPhIZD
-         Xwpzf4x754AiPeThZlxOa1V0oUgpQSwKBTB0j5i5dpqKrpJDa2TQbvFjYoxrMkx+dd85
-         J5wRF/zExNSDXci2SVoFdeG+GSb6mSGpyA1tdrAvWh07qOA22Z7V06nOeREuOcIeSM/x
-         VlH/o49meAUglUw2Z/QMlc6me0/tUOI0QB1UBmqcHHsaEaMFTcRMr4ggrlWHiE92QW8a
-         CytXwC8lELkympu51Hfvff7fD9pJiYDsdknin704JT+yOkw88sdXeunMBJl9n3+QnggG
-         yCsQ==
-X-Gm-Message-State: AOAM530zCDOIAa8m+uH1oGnOm9p/9q5wxwEnPR5qB9WI6Kw3pQmDdBNF
-        zoy2kLjS28slU5VDy399PpH25A==
-X-Google-Smtp-Source: ABdhPJxBxAJV5Lcl83v5gQoAcF+DqQnaPwDph8xWGoWJGWtWK9vbGPFkOBexJTdZonFywNRn9R2ZxQ==
-X-Received: by 2002:a02:74a:: with SMTP id f71mr1367543jaf.30.1613596685786;
-        Wed, 17 Feb 2021 13:18:05 -0800 (PST)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s9sm1885100ilt.77.2021.02.17.13.18.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 13:18:05 -0800 (PST)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        nbd@nbd.name
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Revert "ath9k: fix ath_tx_process_buffer() potential null ptr dereference"
-Date:   Wed, 17 Feb 2021 14:18:01 -0700
-Message-Id: <20210217211801.22540-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
+        id S233037AbhBQVTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:19:10 -0500
+Received: from mga01.intel.com ([192.55.52.88]:41333 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232648AbhBQVSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 16:18:49 -0500
+IronPort-SDR: Jojm18NKVttbZtuh19S+j7ulfbFizNjvd8cDSUuHR1nSkGtoKioNzRmSdo63Q952jnT9ucywzp
+ a6MHP5nDPsEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="202552896"
+X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
+   d="scan'208";a="202552896"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 13:18:08 -0800
+IronPort-SDR: 6Ub+DP3lNmpif5ozsQYhhvDtBAGT0G3RCtKhn99MYdT2niEzd4eqFF11dIwVg8x7Omzw09npj/
+ iv9QKiUDnaNQ==
+X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
+   d="scan'208";a="494426430"
+Received: from ideak-desk.fi.intel.com ([10.237.68.141])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 13:18:05 -0800
+Date:   Wed, 17 Feb 2021 23:18:02 +0200
+From:   Imre Deak <imre.deak@intel.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     intel-gfx@lists.freedesktop.org,
+        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] drm/i915/gen9bc: Handle TGP PCH during suspend/resume
+Message-ID: <20210217211802.GC558393@ideak-desk.fi.intel.com>
+Reply-To: imre.deak@intel.com
+References: <20210217025337.1929015-1-lyude@redhat.com>
+ <20210217180016.1937401-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217180016.1937401-1-lyude@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ath_tx_process_buffer() doesn't dereference or check sta and passes it
-to ath_tx_complete_aggr() and ath_tx_complete_buf().
+On Wed, Feb 17, 2021 at 01:00:16PM -0500, Lyude Paul wrote:
+> From: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> 
+> For Legacy S3 suspend/resume GEN9 BC needs to enable and
+> setup TGP PCH.
+> 
+> v2:
+> * Move Wa_14010685332 into it's own function - vsyrjala
+> * Add TODO comment about figuring out if we can move this workaround - imre
+> v3:
+> * Rename cnp_irq_post_reset() to cnp_display_clock_wa()
+> * Add TODO item mentioning we need to clarify which platforms this
+>   workaround applies to
+> * Just use ibx_irq_reset() in gen8_irq_reset(). This code should be
+>   functionally equivalent on gen9 bc to the code v2 added
+> * Drop icp_hpd_irq_setup() call in spt_hpd_irq_setup(), this looks to be
+>   more or less identical to spt_hpd_irq_setup() minus additionally enabling
+>   one port. Will update i915 to use icp_hpd_irq_setup() for ICP in a
+>   separate patch.
+> v4:
+> * Revert Wa_14010685332 system list in comments to how it was before
+> * Add back HAS_PCH_SPLIT() check before calling ibx_irq_reset()
+> 
+> Cc: Matt Roper <matthew.d.roper@intel.com>
+> Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
 
-ath_tx_complete_aggr() checks the pointer before use. No problem here.
+Thanks, looks ok to me:
+Reviewed-by: Imre Deak <imre.deak@intel.com>
 
-ath_tx_complete_buf() doesn't check or dereference sta and passes it on
-to ath_tx_complete(). ath_tx_complete() doesn't check or dereference sta,
-but assigns it to tx_info->status.status_driver_data[0]
+nit: cnp_display_clock_gating_wa() would be an even better name, could
+be renamed while applying.
 
-ath_tx_complete_buf() is called from ath_tx_complete_aggr() passing
-null ieee80211_sta pointer.
-
-There is a potential for dereference later on, if and when the
-tx_info->status.status_driver_data[0]is referenced. In addition, the
-rcu read lock might be released before referencing the contents.
-
-ath_tx_complete_buf() should be fixed to check sta perhaps? Worth
-looking into.
-
-Reverting this patch because it doesn't solve the problem and introduces
-memory leak by skipping buffer completion if the pointer (sta) is NULL.
-
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- drivers/net/wireless/ath/ath9k/xmit.c | 28 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath9k/xmit.c b/drivers/net/wireless/ath/ath9k/xmit.c
-index 735858144e3a..1d36aae3f7b6 100644
---- a/drivers/net/wireless/ath/ath9k/xmit.c
-+++ b/drivers/net/wireless/ath/ath9k/xmit.c
-@@ -711,24 +711,20 @@ static void ath_tx_process_buffer(struct ath_softc *sc, struct ath_txq *txq,
- 		ath_tx_count_airtime(sc, sta, bf, ts, tid->tidno);
- 		if (ts->ts_status & (ATH9K_TXERR_FILT | ATH9K_TXERR_XRETRY))
- 			tid->clear_ps_filter = true;
-+	}
- 
--		if (!bf_isampdu(bf)) {
--			if (!flush) {
--				info = IEEE80211_SKB_CB(bf->bf_mpdu);
--				memcpy(info->control.rates, bf->rates,
--				       sizeof(info->control.rates));
--				ath_tx_rc_status(sc, bf, ts, 1,
--						 txok ? 0 : 1, txok);
--				ath_dynack_sample_tx_ts(sc->sc_ah,
--							bf->bf_mpdu, ts, sta);
--			}
--			ath_tx_complete_buf(sc, bf, txq, bf_head, sta,
--					    ts, txok);
--		} else {
--			ath_tx_complete_aggr(sc, txq, bf, bf_head, sta,
--					     tid, ts, txok);
-+	if (!bf_isampdu(bf)) {
-+		if (!flush) {
-+			info = IEEE80211_SKB_CB(bf->bf_mpdu);
-+			memcpy(info->control.rates, bf->rates,
-+			       sizeof(info->control.rates));
-+			ath_tx_rc_status(sc, bf, ts, 1, txok ? 0 : 1, txok);
-+			ath_dynack_sample_tx_ts(sc->sc_ah, bf->bf_mpdu, ts,
-+						sta);
- 		}
--	}
-+		ath_tx_complete_buf(sc, bf, txq, bf_head, sta, ts, txok);
-+	} else
-+		ath_tx_complete_aggr(sc, txq, bf, bf_head, sta, tid, ts, txok);
- 
- 	if (!flush)
- 		ath_txq_schedule(sc, txq);
--- 
-2.27.0
-
+> ---
+>  drivers/gpu/drm/i915/i915_irq.c | 49 +++++++++++++++++++++------------
+>  1 file changed, 32 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/i915_irq.c b/drivers/gpu/drm/i915/i915_irq.c
+> index 98145a7f28a4..9b56a8f81e1a 100644
+> --- a/drivers/gpu/drm/i915/i915_irq.c
+> +++ b/drivers/gpu/drm/i915/i915_irq.c
+> @@ -3040,6 +3040,24 @@ static void valleyview_irq_reset(struct drm_i915_private *dev_priv)
+>  	spin_unlock_irq(&dev_priv->irq_lock);
+>  }
+>  
+> +static void cnp_display_clock_wa(struct drm_i915_private *dev_priv)
+> +{
+> +	struct intel_uncore *uncore = &dev_priv->uncore;
+> +
+> +	/*
+> +	 * Wa_14010685332:cnp/cmp,tgp,adp
+> +	 * TODO: Clarify which platforms this applies to
+> +	 * TODO: Figure out if this workaround can be applied in the s0ix suspend/resume handlers as
+> +	 * on earlier platforms and whether the workaround is also needed for runtime suspend/resume
+> +	 */
+> +	if (INTEL_PCH_TYPE(dev_priv) == PCH_CNP ||
+> +	    (INTEL_PCH_TYPE(dev_priv) >= PCH_TGP && INTEL_PCH_TYPE(dev_priv) < PCH_DG1)) {
+> +		intel_uncore_rmw(uncore, SOUTH_CHICKEN1, SBCLK_RUN_REFCLK_DIS,
+> +				 SBCLK_RUN_REFCLK_DIS);
+> +		intel_uncore_rmw(uncore, SOUTH_CHICKEN1, SBCLK_RUN_REFCLK_DIS, 0);
+> +	}
+> +}
+> +
+>  static void gen8_irq_reset(struct drm_i915_private *dev_priv)
+>  {
+>  	struct intel_uncore *uncore = &dev_priv->uncore;
+> @@ -3063,6 +3081,8 @@ static void gen8_irq_reset(struct drm_i915_private *dev_priv)
+>  
+>  	if (HAS_PCH_SPLIT(dev_priv))
+>  		ibx_irq_reset(dev_priv);
+> +
+> +	cnp_display_clock_wa(dev_priv);
+>  }
+>  
+>  static void gen11_display_irq_reset(struct drm_i915_private *dev_priv)
+> @@ -3104,15 +3124,7 @@ static void gen11_display_irq_reset(struct drm_i915_private *dev_priv)
+>  	if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
+>  		GEN3_IRQ_RESET(uncore, SDE);
+>  
+> -	/* Wa_14010685332:cnp/cmp,tgp,adp */
+> -	if (INTEL_PCH_TYPE(dev_priv) == PCH_CNP ||
+> -	    (INTEL_PCH_TYPE(dev_priv) >= PCH_TGP &&
+> -	     INTEL_PCH_TYPE(dev_priv) < PCH_DG1)) {
+> -		intel_uncore_rmw(uncore, SOUTH_CHICKEN1,
+> -				 SBCLK_RUN_REFCLK_DIS, SBCLK_RUN_REFCLK_DIS);
+> -		intel_uncore_rmw(uncore, SOUTH_CHICKEN1,
+> -				 SBCLK_RUN_REFCLK_DIS, 0);
+> -	}
+> +	cnp_display_clock_wa(dev_priv);
+>  }
+>  
+>  static void gen11_irq_reset(struct drm_i915_private *dev_priv)
+> @@ -3764,9 +3776,19 @@ static void gen8_de_irq_postinstall(struct drm_i915_private *dev_priv)
+>  	}
+>  }
+>  
+> +static void icp_irq_postinstall(struct drm_i915_private *dev_priv)
+> +{
+> +	struct intel_uncore *uncore = &dev_priv->uncore;
+> +	u32 mask = SDE_GMBUS_ICP;
+> +
+> +	GEN3_IRQ_INIT(uncore, SDE, ~mask, 0xffffffff);
+> +}
+> +
+>  static void gen8_irq_postinstall(struct drm_i915_private *dev_priv)
+>  {
+> -	if (HAS_PCH_SPLIT(dev_priv))
+> +	if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
+> +		icp_irq_postinstall(dev_priv);
+> +	else if (HAS_PCH_SPLIT(dev_priv))
+>  		ibx_irq_postinstall(dev_priv);
+>  
+>  	gen8_gt_irq_postinstall(&dev_priv->gt);
+> @@ -3775,13 +3797,6 @@ static void gen8_irq_postinstall(struct drm_i915_private *dev_priv)
+>  	gen8_master_intr_enable(dev_priv->uncore.regs);
+>  }
+>  
+> -static void icp_irq_postinstall(struct drm_i915_private *dev_priv)
+> -{
+> -	struct intel_uncore *uncore = &dev_priv->uncore;
+> -	u32 mask = SDE_GMBUS_ICP;
+> -
+> -	GEN3_IRQ_INIT(uncore, SDE, ~mask, 0xffffffff);
+> -}
+>  
+>  static void gen11_irq_postinstall(struct drm_i915_private *dev_priv)
+>  {
+> -- 
+> 2.29.2
+> 
